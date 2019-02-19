@@ -12,8 +12,9 @@ If you don't already have it, first step is to download ffmpeg.
 
 ## Windows
 
-View the [releases](https://github.com/cdgriffith/FastFlix/releases) for prebuilt Windows binaries. For legal reasons
-the ffmpeg binary cannot bundled and must be [separately downloaded](https://ffmpeg.zeranoe.com/builds/).
+View the [releases](https://github.com/cdgriffith/FastFlix/releases) for Windows binaries (Generated via Appveyor and also available there). 
+
+For legal reasons the ffmpeg binary cannot bundled and must be [separately downloaded](https://ffmpeg.zeranoe.com/builds/).
 
 ## Linux
 
