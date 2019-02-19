@@ -1,5 +1,17 @@
 version: 1.0.0-{build}
 
+skip_commits:
+  files:
+    - data/*
+    - README.md
+    - AUTHORS
+    - CHANGES
+    - LICENSE
+    - .gitignore
+    - .pip8speaks.yml
+  message: /\[skip ci\]/
+
+
 image:
   - Ubuntu1804
   - Visual Studio 2017
