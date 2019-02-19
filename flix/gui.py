@@ -294,7 +294,7 @@ class Settings(QtWidgets.QWidget):
                 ffprobe_ver = ff_version(path, throw=False)
                 if ffprobe_ver:
                     self.main.ffprobe = str(path)
-                    self.main.ffprobe_version =ffprobe_ver
+                    self.main.ffprobe_version = ffprobe_ver
                     updated_ffprobe = True
         warnings = []
         if not updated_ffmpeg:

@@ -91,8 +91,8 @@ class Flix:
                 f'-c:v libx265 -preset {preset} -x265-params log-level=error:crf={crf} -pix_fmt yuv420p '
                 f'{"-map_metadata -1" if start else ""} {f"-vf {filters}" if filters else ""} '
                 f'-map 0:{video_track} {"-an" if audio_track is None else f"-map 0:{audio_track}"} {maps} '
-                f'{"-map 0:s" if keep_subtitles else "-sn"} '  
-                #-filter_complex "[0:v:0][0:3]overlay"
+                f'{"-map 0:s" if keep_subtitles else "-sn"} '
+                # -filter_complex "[0:v:0][0:3]overlay"
                 f' -y "{output}"')
 
     def generate_thumbnail_command(self, source, output, video_track, start_time=0, disable_hdr=False,
@@ -110,29 +110,13 @@ class Flix:
         if crop:
             filter_list.append(f'crop={crop}')
 
-
         filters = ",".join(filter_list) + "," if filter_list else ""
 
         return (f'"{self.ffmpeg}" {start} -loglevel error -i "{source}"  '
-                f" -vf {filters}scale=min(600\,iw):-1 "
+                f" -vf {filters}scale=min(600\\,iw):-1 "
                 f'-map 0:{video_track} -an -y '
                 f'-vframes 1 "{output}"')
 
     @staticmethod
     def execute(command):
         return run(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True)
-
-
-# Subtitle info
-"""
-Bitmap:
-
-
-Text:
-codec_name=ass
-codec_name=mov_text
-
-TAG:language=eng
-TAG:title=English Signs/Songs
-
-"""
