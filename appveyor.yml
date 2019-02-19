@@ -1,0 +1,22 @@
+version: 1.0.0-{build}
+
+image: Visual Studio 2017
+platform: x64
+
+environment:
+  matrix:
+    - PYTHON: "C:\\Python36-x64"
+      PYTHON_VERSION: "3.6.x" # currently 3.6.5
+      PYTHON_ARCH: "64"
+
+install:
+  - cmd: python -m pip install --upgrade pip setuptools --ignore-installed
+  - cmd: python -m pip install -r requirements.txt
+
+build_script:
+  - cmd: build.bat
+
+test: off
+
+artifacts:
+  - path: dist\*

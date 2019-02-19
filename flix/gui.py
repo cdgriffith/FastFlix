@@ -9,6 +9,7 @@ import tempfile
 import importlib.machinery
 
 import reusables
+from box import __version__ as box_version
 
 from flix import Flix, ff_version
 
@@ -17,6 +18,7 @@ if os.getenv('SHIBOKEN2') and os.getenv('PYSIDE2'):
     PySide2 = importlib.machinery.SourceFileLoader('PySide2', os.getenv('PYSIDE2')).load_module()
 
 from PySide2 import QtWidgets, QtCore, QtGui
+from PySide2 import __version__ as pyside_version
 
 __version__ = '1.0.0'
 __author__ = 'Chris Griffith'
@@ -112,7 +114,8 @@ class Main(QtWidgets.QMainWindow):
         if not ffmpeg_version or not ffprobe_version:
             self.converter.setDisabled(True)
             tab_widget.setCurrentIndex(2)
-            message("You need to select ffmpeg and ffprobe or equivalent tools to use before you can encode.")
+            message("You need to select ffmpeg and ffprobe or equivalent tools to use before you can encode.",
+                    parent=self)
 
         logger.info(f"Initialized FastFlix v{__version__}")
         logger.debug(f"ffmpeg version: {self.ffmpeg_version}")
@@ -175,9 +178,12 @@ class About(QtWidgets.QWidget):
         label.setOpenExternalLinks(True)
         label.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
-        supporting_libraries_label = QtWidgets.QLabel("Built with: "
-                                                      "<a href='https://www.python.org/'>Python</a> (PSF LICENSE),"
-                                                      " <a href='https://wiki.qt.io/Qt_for_Python'>PySide2</a> (LGPLv3)")
+        supporting_libraries_label = QtWidgets.QLabel(
+            "Supporting libraries<br>"
+            f"<a href='https://www.python.org/'>Python</a> {reusables.version_string} (PSF LICENSE), "
+            f"<a href='https://wiki.qt.io/Qt_for_Python'>PySide2</a> {pyside_version} (LGPLv3)<br>"
+            f"<a href='https://github.com/cdgriffith/Box'>python-box</a> {box_version} (MIT), "
+            f"<a href='https://github.com/cdgriffith/Reusables'>Reusables</a> {reusables.__version__} (MIT)<br>")
         supporting_libraries_label.setAlignment(QtCore.Qt.AlignCenter)
         supporting_libraries_label.setOpenExternalLinks(True)
 
@@ -201,6 +207,7 @@ class Settings(QtWidgets.QWidget):
         layout = QtWidgets.QGridLayout()
 
         self.warning_message = QtWidgets.QLabel("")
+        self.warning_message.setFixedHeight(40)
 
         # Buttons
         self.button_group = QtWidgets.QButtonGroup()
@@ -223,6 +230,7 @@ class Settings(QtWidgets.QWidget):
         self.binary_select = QtWidgets.QGroupBox("Binaries")
         self.binary_select.setCheckable(False)
         self.binary_select.setDisabled(True)
+        self.binary_select.setFixedHeight(120)
 
         binary_file_box = QtWidgets.QVBoxLayout()
         binary_file_layout = QtWidgets.QHBoxLayout()
@@ -240,11 +248,12 @@ class Settings(QtWidgets.QWidget):
         binary_file_box.addWidget(self.binary_file_info)
         self.binary_select.setLayout(binary_file_box)
 
-        layout.addWidget(self.warning_message)
-        layout.addWidget(self.env_radio)
-        layout.addWidget(self.path_radio)
-        layout.addWidget(self.binary_radio)
-        layout.addWidget(self.binary_select)
+        layout.addWidget(self.warning_message, 0, 0)
+        layout.addWidget(self.env_radio, 1, 0)
+        layout.addWidget(self.path_radio, 2, 0)
+        layout.addWidget(self.binary_radio, 3, 0)
+        layout.addWidget(self.binary_select, 4, 0)
+        layout.addWidget(QtWidgets.QLabel(), 5, 0, 4, 2)
 
         self.setLayout(layout)
         self.check()
@@ -309,20 +318,22 @@ class Settings(QtWidgets.QWidget):
 
     def check(self):
         if self.main.ffmpeg_version and self.main.ffprobe_version:
-            self.warning_message.setText("Everything is under control. Situation normal.")
+            self.warning_message.setText("<b>Status:</b> Everything is under control. Situation normal.")
             self.main.converter.setDisabled(False)
         elif self.main.ffmpeg_version:
-            self.warning_message.setText("ffprobe not found")
+            self.warning_message.setText("<b>Status:</b> ffprobe not found")
             self.main.converter.setDisabled(True)
         elif self.main.ffprobe_version:
-            self.warning_message.setText("ffmpeg not found")
+            self.warning_message.setText("<b>Status:</b> ffmpeg not found")
             self.main.converter.setDisabled(True)
         else:
-            self.warning_message.setText("ffmpeg and ffprobe not found")
+            self.warning_message.setText("<b>Status:</b> ffmpeg and ffprobe not found")
             self.main.converter.setDisabled(True)
         self.main.default_status()
-        logger.debug(f"ffmpeg version: {self.main.ffmpeg_version}")
-        logger.debug(f"ffprobe version: {self.main.ffprobe_version}")
+        if self.main.ffmpeg_version:
+            logger.debug(f"ffmpeg version: {self.main.ffmpeg_version}")
+        if self.main.ffprobe_version:
+            logger.debug(f"ffprobe version: {self.main.ffprobe_version}")
 
 
 class X265(QtWidgets.QWidget):
