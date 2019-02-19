@@ -20,7 +20,7 @@ install:
 
 build_script:
   - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "data\icon.ico;data" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --noconsole flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile
-  - sh: pyinstaller --add-data "data\icon.ico;data" --noconsole flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile
+  - sh: pyinstaller --add-data "data/icon.ico;data" --noconsole flix/gui.py  --icon data/icon.ico --name FastFlix --clean --onefile
 
 test: off
 
