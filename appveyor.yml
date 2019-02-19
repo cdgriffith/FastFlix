@@ -14,7 +14,7 @@ branches:
 install:
   - cmd: C:\Python36-x64\python -m pip install --upgrade pip setuptools --ignore-installed
   - cmd: C:\Python36-x64\python -m pip install -r requirements.txt
-  - sh: sudo apt install python3-pip
+  - sh: sudo apt install python3-pip -y
   - sh: sudo python3.6 -m pip install --upgrade pip setuptools --ignore-installed
   - sh: sudo python3.6 -m pip install -r requirements.txt
 
