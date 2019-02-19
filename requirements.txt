@@ -1,0 +1,5 @@
+PySide2==5.12.0
+shiboken2==5.12.0
+reusables
+python-box
+pyinstaller

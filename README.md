@@ -6,16 +6,25 @@ It is designed to work with ffmpeg with x265 support or an equivalent command li
 
 They are expected to be found via the system path or specified on startup via `FFMPEG` and `FFPROBE` env variables.
 
-# Installing
+# Releases 
 
-If you don't already have it, first step is to download ffmpeg. 
+View the [releases](https://github.com/cdgriffith/FastFlix/releases) for Windows and Linux binaries (Generated via Appveyor and also [available there](https://ci.appveyor.com/project/cdgriffith/fastflix)). 
 
-## Windows
+For legal reasons the ffmpeg binary cannot be bundled with the executable and must be [separately downloaded](https://www.ffmpeg.org/download.html).
 
-View the [releases](https://github.com/cdgriffith/FastFlix/releases) for prebuilt Windows binaries. For legal reasons
-the ffmpeg binary cannot bundled and must be [separately downloaded](https://ffmpeg.zeranoe.com/builds/).
+## Setting up ffmpeg
 
-## Linux
+There are three ways provided a path to ffmpeg. 
+
+1. Looks in the FFMPEG and FFPROBE environment variables
+2. Looks on the system PATH to see if it is already available
+3. Manually link to the directory housing the binary files via the GUI 
+
+## Running the code locally
+
+Requires Python 3.6 or greater. 
+
+Download and extract the [latest zip](https://github.com/cdgriffith/FastFlix/archive/master.zip). Then run the following.
 
 ```
 pip install requirements.txt
