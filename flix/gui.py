@@ -14,6 +14,7 @@ from box import __version__ as box_version
 from flix import Flix, ff_version
 
 if os.getenv('SHIBOKEN2') and os.getenv('PYSIDE2'):
+    # This is required to keep LGPL libraries truly dynamically linked when built into a binary
     importlib.machinery.SourceFileLoader('shiboken2', os.getenv('SHIBOKEN2')).load_module()
     PySide2 = importlib.machinery.SourceFileLoader('PySide2', os.getenv('PYSIDE2')).load_module()
 
