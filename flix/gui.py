@@ -1,9 +1,10 @@
 import sys
 import os
 import logging
+from pathlib import Path
 
 from flix.flix import ff_version
-from flix.shared import QtWidgets
+from flix.shared import QtWidgets, pyinstaller, base_path
 from flix.widgets.main import Main
 
 logging.getLogger('flix')
@@ -14,13 +15,13 @@ def main():
     main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
 
-    ffmpeg = os.getenv("FFMPEG", 'ffmpeg')
+    ffmpeg = os.getenv("FFMPEG", 'ffmpeg' if not pyinstaller else Path(base_path, 'ffmpeg.exe'))
     ffmpeg_version = ff_version(ffmpeg, throw=False)
 
-    ffprobe = os.getenv("FFPROBE", 'ffprobe')
+    ffprobe = os.getenv("FFPROBE", 'ffprobe' if not pyinstaller else Path(base_path, 'ffprobe.exe'))
     ffprobe_version = ff_version(ffprobe, throw=False)
 
-    svt_av1 = os.getenv("SVT_AV1", 'SvtAv1EncApp')
+    svt_av1 = os.getenv("SVT_AV1", 'SvtAv1EncApp' if not pyinstaller else Path(base_path, 'SvtAv1EncApp.exe'))
 
     window = Main(ffmpeg=ffmpeg, ffprobe=ffprobe, ffmpeg_version=ffmpeg_version, ffprobe_version=ffprobe_version,
                   svt_av1=svt_av1,

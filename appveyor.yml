@@ -14,7 +14,7 @@ skip_commits:
 
 image:
   - Visual Studio 2017
-  - Ubuntu1804
+#  - Ubuntu1804
 
 
 platform: x64
@@ -33,17 +33,17 @@ install:
   - cmd: appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/o6qjppgdibf6lpoa/artifacts/Bin/Release/SvtAv1Enc.exp -FileName SvtAv1\SvtAv1Enc.exp
   - cmd: C:\Python36-x64\python -m pip install --upgrade pip setuptools --ignore-installed
   - cmd: C:\Python36-x64\python -m pip install -r requirements.txt
-  - sh: sudo apt install python3-pip -y
-  - sh: sudo python3.6 -m pip install --upgrade pip setuptools --ignore-installed --no-cache-dir
-  - sh: sudo python3.6 -m pip install -r requirements.txt --no-cache-dir --progress-bar off
+#  - sh: sudo apt install python3-pip -y
+#  - sh: sudo python3.6 -m pip install --upgrade pip setuptools --ignore-installed --no-cache-dir
+#  - sh: sudo python3.6 -m pip install -r requirements.txt --no-cache-dir --progress-bar off
 
 
 build_script:
   - cmd: mkdir dist
   - cmd: copy docs\build-licenses.md dist\LICENSE
-  - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "data\icon.ico;data" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." --noconsole flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile
+#  - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "data\icon.ico;data" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." --noconsole flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile
   - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "data\icon.ico;data" --add-data "binary-files/executables/windows/ffmpeg/lgpl/N-93214-g7e4d3dbe18/x86_64/*;." --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." --noconsole flix\gui.py  --icon data\icon.ico --name FastFlix-Bundled --clean --onefile
-  - sh: pyinstaller --add-data "data/icon.ico:data/" --noconsole flix/gui.py  --icon data/icon.ico --name FastFlix --clean --onefile
+#  - sh: pyinstaller --add-data "data/icon.ico:data/" --noconsole flix/gui.py  --icon data/icon.ico --name FastFlix --clean --onefile
 
 test: off
 
