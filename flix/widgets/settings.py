@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import logging
 
-from flix import ff_version
+from flix import ff_version, Flix
 from flix.shared import QtWidgets
 
 logger = logging.getLogger('flix')
@@ -130,16 +130,18 @@ class Settings(QtWidgets.QWidget):
     def check(self):
         if self.main.ffmpeg_version and self.main.ffprobe_version:
             self.warning_message.setText("<b>Status:</b> Everything is under control. Situation normal.")
-            self.main.converter.setDisabled(False)
+            self.main.enable_converters()
+            if 'libx265' not in Flix(ffmpeg=self.main.ffmpeg).ffmpeg_configuration():
+                self.main.disable_converters('x265')
         elif self.main.ffmpeg_version:
             self.warning_message.setText("<b>Status:</b> ffprobe not found")
-            self.main.converter.setDisabled(True)
+            self.main.disable_converters()
         elif self.main.ffprobe_version:
             self.warning_message.setText("<b>Status:</b> ffmpeg not found")
-            self.main.converter.setDisabled(True)
+            self.main.disable_converters()
         else:
             self.warning_message.setText("<b>Status:</b> ffmpeg and ffprobe not found")
-            self.main.converter.setDisabled(True)
+            self.main.disable_converters()
         self.main.default_status()
         if self.main.ffmpeg_version:
             logger.debug(f"ffmpeg version: {self.main.ffmpeg_version}")

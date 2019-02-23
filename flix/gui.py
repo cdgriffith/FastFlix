@@ -20,9 +20,12 @@ def main():
     ffprobe = os.getenv("FFPROBE", 'ffprobe')
     ffprobe_version = ff_version(ffprobe, throw=False)
 
+    svt_av1 = os.getenv("SVT_AV1", 'SvtAv1EncApp')
+
     window = Main(ffmpeg=ffmpeg, ffprobe=ffprobe, ffmpeg_version=ffmpeg_version, ffprobe_version=ffprobe_version,
+                  svt_av1=svt_av1,
                   source=sys.argv[1] if len(sys.argv) > 1 else "")
-    window.setFixedWidth(622)
+    window.setMinimumWidth(622)
     window.setFixedHeight(710)
     window.show()
     sys.exit(main_app.exec_())

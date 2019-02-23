@@ -3,10 +3,12 @@ import logging
 import os
 
 from flix.shared import QtWidgets, QtGui, pyinstaller, base_path, message
+from flix.widgets.av1 import AV1
 from flix.widgets.x265 import X265
 from flix.widgets.logs import Logs
 from flix.widgets.about import About
 from flix.widgets.settings import Settings
+from flix.flix import Flix
 from flix.version import __version__
 
 logger = logging.getLogger('flix')
@@ -14,13 +16,16 @@ logger = logging.getLogger('flix')
 
 class Main(QtWidgets.QMainWindow):
 
-    def __init__(self, ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, source="", parent=None):
+    def __init__(self, ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, svt_av1, source="", parent=None):
         super(Main, self).__init__(parent)
-        self.converter = X265(parent=self, source=source)
-        self.converter.show()
+        self.x265 = X265(parent=self, source=source)
+        self.av1 = AV1(parent=self, source=source)
+        self.x265.show()
+        self.av1.show()
 
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
+        self.svt_av1 =svt_av1
         self.ffmpeg_version = ffmpeg_version
         self.ffprobe_version = ffprobe_version
 
@@ -29,7 +34,8 @@ class Main(QtWidgets.QMainWindow):
         self.default_status()
 
         tab_widget = QtWidgets.QTabWidget()
-        tab_widget.addTab(self.converter, "x265")
+        tab_widget.addTab(self.av1, "AV1")
+        tab_widget.addTab(self.x265, "x265")
         tab_widget.addTab(Logs(self), 'Logs')
         tab_widget.addTab(Settings(self), 'Settings')
         tab_widget.addTab(About(self), 'About')
@@ -40,10 +46,14 @@ class Main(QtWidgets.QMainWindow):
                                        os.path.join(os.path.dirname(__file__), '../data/icon.ico')))
 
         if not ffmpeg_version or not ffprobe_version:
-            self.converter.setDisabled(True)
+            self.x265.setDisabled(True)
             tab_widget.setCurrentIndex(2)
             message("You need to select ffmpeg and ffprobe or equivalent tools to use before you can encode.",
                     parent=self)
+
+        if 'libx265' not in Flix(ffmpeg=ffmpeg).ffmpeg_configuration():
+            self.x265.setDisabled(True)
+            tab_widget.setCurrentIndex(2)
 
         logger.info(f"Initialized FastFlix v{__version__}")
         logger.debug(f"ffmpeg version: {self.ffmpeg_version}")
@@ -57,10 +67,22 @@ class Main(QtWidgets.QMainWindow):
                                     f" ffprobe version {self.ffprobe_version}")
 
     def closeEvent(self, event):
-        if self.converter.encoding_worker and self.converter.encoding_worker.is_alive():
-            self.converter.encoding_worker.kill()
+        if self.x265.encoding_worker and self.x265.encoding_worker.is_alive():
+            self.x265.encoding_worker.kill()
         try:
-            os.remove(self.converter.thumb_file)
+            os.remove(self.x265.thumb_file)
         except OSError:
             pass
         event.accept()
+
+    def disable_converters(self, converters=('x265', 'av1')):
+        if isinstance(converters, str):
+            return getattr(self, converters).setDisabled(True)
+        for converter in converters:
+            getattr(self, converter).setDisabled(True)
+
+    def enable_converters(self, converters=('x265', 'av1')):
+        if isinstance(converters, str):
+            return getattr(self, converters).setDisabled(False)
+        for converter in converters:
+            getattr(self, converter).setDisabled(False)

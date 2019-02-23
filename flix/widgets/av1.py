@@ -11,21 +11,22 @@ import reusables
 from flix import Flix
 from flix.shared import QtGui, QtCore, QtWidgets, error_message
 from flix.widgets.worker import Worker
+from flix.av1 import convert
 
 logger = logging.getLogger('flix')
 
-__all__ = ['X265']
+__all__ = ['AV1']
 
 
-class X265(QtWidgets.QWidget):
+class AV1(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
 
     def __init__(self, parent=None, source=""):
-        super(X265, self).__init__(parent)
+        super(AV1, self).__init__(parent)
         self.main = parent
-        self.thumb_file = Path(tempfile.gettempdir(), "flix_x265_preview.png")
+        self.thumb_file = Path(tempfile.gettempdir(), "flix_av1_preview.png")
         layout = QtWidgets.QGridLayout()
         self.setFixedHeight(650)
         self.setFixedWidth(620)
@@ -76,19 +77,19 @@ class X265(QtWidgets.QWidget):
         source_info_layout.addLayout(source_height_layout)
         source_info_layout.addLayout(source_colorspace_layout)
 
-        # Convert HDR
-        self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
-        self.convert_hdr_check.setChecked(False)
-        self.convert_hdr_check.hide()
-        self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
-        source_info_layout.addWidget(self.convert_hdr_check)
-
-        # Keep subs
-        self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
-        self.keep_subtitles.setChecked(False)
-        self.keep_subtitles.hide()
-        source_info_layout.addWidget(self.keep_subtitles)
-        source_info_layout.addStretch()
+        # # Convert HDR
+        # self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
+        # self.convert_hdr_check.setChecked(False)
+        # self.convert_hdr_check.hide()
+        # self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
+        # source_info_layout.addWidget(self.convert_hdr_check)
+        #
+        # # Keep subs
+        # self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
+        # self.keep_subtitles.setChecked(False)
+        # self.keep_subtitles.hide()
+        # source_info_layout.addWidget(self.keep_subtitles)
+        # source_info_layout.addStretch()
 
         # Duration Settings
         self.timing = QtWidgets.QGroupBox("Start Time / Duration")
@@ -126,27 +127,17 @@ class X265(QtWidgets.QWidget):
 
         # Quality
         quality_layout = QtWidgets.QHBoxLayout()
-        quality_layout.addWidget(QtWidgets.QLabel("crf"), stretch=0)
+        quality_layout.addWidget(QtWidgets.QLabel("Quality"), stretch=0)
         self.crfs = QtWidgets.QComboBox()
         self.crfs.addItems([str(x / 2) for x in range(61)])
         self.crfs.setCurrentIndex(40)
         quality_layout.addWidget(self.crfs, stretch=1)
 
-        self.preset = QtWidgets.QComboBox()
-        self.preset.addItems([
-            "ultrafast",
-            "superfast",
-            "veryfast",
-            "faster",
-            "fast",
-            "medium",
-            "slow",
-            "slower",
-            "veryslow",
-            "placebo"])
-        self.preset.setCurrentIndex(5)
-        quality_layout.addWidget(QtWidgets.QLabel("preset"), stretch=0)
-        quality_layout.addWidget(self.preset, stretch=1)
+        self.mode = QtWidgets.QComboBox()
+        self.mode.addItems(["0", "1", "3"])
+        self.mode.setCurrentIndex(2)
+        quality_layout.addWidget(QtWidgets.QLabel("Encoding Mode"), stretch=0)
+        quality_layout.addWidget(self.mode, stretch=1)
 
         # Select Tracks
         audio_box_layout = QtWidgets.QHBoxLayout()
@@ -248,7 +239,7 @@ class X265(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def open_file(self, update_text):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="Open Video",
-                                                         filter="Video Files (*.mp4 *.m4v *.mov *.mkv *.avi *.divx)")
+                                                         filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx)")
         if not filename or not filename[0]:
             return
         update_text.setText(filename[0])
@@ -261,7 +252,7 @@ class X265(QtWidgets.QWidget):
         f = Path(self.input_file_path.text())
         save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.mp4")
         filename = QtWidgets.QFileDialog.getSaveFileName(self, caption="Save Video As", dir=str(save_file),
-                                                         filter="Video File(*.mp4 *.mkv)")
+                                                         filter="Video File (*.mkv)")
         return filename[0] if filename else False
 
     @staticmethod
@@ -293,7 +284,7 @@ class X265(QtWidgets.QWidget):
 
     @property
     def flix(self):
-        return Flix(ffmpeg=self.main.ffmpeg, ffprobe=self.main.ffprobe)
+        return Flix(ffmpeg=self.main.ffmpeg, ffprobe=self.main.ffprobe, svt_av1=self.main.svt_av1)
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
@@ -324,14 +315,14 @@ class X265(QtWidgets.QWidget):
 
         if self.streams['subtitle'] and self.streams['subtitle'][0].codec_name in ('ass', 'ssa', 'mov_text'):
             logger.debug("Supported subtitles detected")
-            self.keep_subtitles.show()
-            self.keep_subtitles.setChecked(True)
+            # self.keep_subtitles.show()
+            # self.keep_subtitles.setChecked(True)
         else:
             if self.streams['subtitle']:
                 # hdmv_pgs_subtitle, dvd_subtitle
                 logger.warning(f"Cannot keep subtitles of type: {self.streams['subtitle'][0].codec_name}")
-            self.keep_subtitles.setChecked(False)
-            self.keep_subtitles.hide()
+            # self.keep_subtitles.setChecked(False)
+            # self.keep_subtitles.hide()
         if self.streams['video']:
             self.update_source_labels(**self.streams['video'][0])
         self.generate_thumbnail()
@@ -355,7 +346,7 @@ class X265(QtWidgets.QWidget):
             output=self.thumb_file,
             video_track=self.streams['video'][self.video_box.currentIndex()]['index'],
             start_time=start_time,
-            disable_hdr=self.convert_hdr_check.isChecked(),
+            # disable_hdr=self.convert_hdr_check.isChecked(),
             crop=crop
         )
         logger.info("Generating thumbnail")
@@ -387,6 +378,8 @@ class X265(QtWidgets.QWidget):
         assert height > 0
         assert width <= self.video_width
         assert height <= self.video_height
+        assert width % 8 == 0
+        assert height % 8 == 0
         return f"{width}:{height}:{left}:{top}"
 
     @reusables.log_exception('flix', show_traceback=False)
@@ -433,22 +426,32 @@ class X265(QtWidgets.QWidget):
             error_message("Crop values are not numeric")
             return
         except AssertionError:
-            error_message("Crop values must be positive and less than video dimensions")
+            error_message("Crop values must be divisible by eight, positive integers, and less than video dimensions")
             return
 
-        remove_hdr = self.convert_hdr_check.isChecked()
-
-        command = self.flix.generate_x265_command(source_video, self.output_video, video_track, audio_track,
-                                                  duration=duration, start_time=start_time,
-                                                  crf=self.crfs.currentText(), preset=self.preset.currentText(),
-                                                  disable_hdr=remove_hdr,
-                                                  keep_subtitles=self.keep_subtitles.isChecked(), crop=crop)
+        params = {
+            "flix": self.flix,
+            "source": source_video,
+            "output": self.output_video,
+            "video_track": video_track,
+            "audio_track": audio_track,
+            "build_dir": tempfile.gettempdir(),
+            "start_time": start_time,
+            "duration": duration,
+            "save_segments": True,
+            "auto_crop": True,
+            "save_yuv": False,
+            "overwrite": False,
+            "crop": crop,
+            "crf": self.crfs.currentText(),
+            "mode": self.mode.currentText(),
+        }
 
         self.create_button.setDisabled(True)
         self.kill_button.show()
         self.main.status.showMessage("Encoding...")
         logger.info("Converting video")
-        self.encoding_worker = Worker(self, command, cmd_type="convert")
+        self.encoding_worker = Worker(self, target=convert, params=params, cmd_type="convert")
         self.encoding_worker.start()
 
     @reusables.log_exception('flix', show_traceback=False)
