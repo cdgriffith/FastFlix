@@ -184,7 +184,7 @@ class Flix:
                 f'-f segment -segment_time {segment_size} -an -sn -dn "{out}"')
 
     def yuv_command(self, source, output, bit_depth=8, crop=None):
-        assert output.endswith('yuv')
+        assert output.endswith(('yuv', 'y4m'))
 
         return (f'"{self.ffmpeg}" -loglevel fatal -i "{source}" -c:v rawvideo '
                 f'-pix_fmt {"yuv420p10le" if bit_depth == 10 else "yuv420p"}'
