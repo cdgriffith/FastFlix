@@ -1,4 +1,4 @@
-version: 1.0.0-{build}
+version: 1.1.0-{build}
 
 skip_commits:
   files:
@@ -13,8 +13,9 @@ skip_commits:
 
 
 image:
-  - Ubuntu1804
   - Visual Studio 2017
+  - Ubuntu1804
+
 
 platform: x64
 
@@ -26,10 +27,10 @@ branches:
 install:
   - cmd: git clone -b ffmpeg --single-branch https://github.com/cdgriffith/binary-files.git
   - cmd: mkdir SvtAv1
-  - cmd: appvoyer download https://ci.appveyor.com/api/buildjobs/o6qjppgdibf6lpoa/artifacts/Bin%2FRelease%2FSvtAv1Enc.dll -FileName SvtAv1\SvtAv1Enc.dll
-  - cmd: appvoyer download https://ci.appveyor.com/api/buildjobs/o6qjppgdibf6lpoa/artifacts/Bin%2FRelease%2FSvtAv1EncApp.exe -FileName SvtAv1\SvtAv1EncApp.exe
-  - cmd: appvoyer download https://ci.appveyor.com/api/buildjobs/o6qjppgdibf6lpoa/artifacts/Bin%2FRelease%2FSvtAv1Enc.lib -FileName SvtAv1\SvtAv1Enc.lib
-  - cmd: appvoyer download https://ci.appveyor.com/api/buildjobs/o6qjppgdibf6lpoa/artifacts/Bin%2FRelease%2FSvtAv1Enc.exp -FileName SvtAv1\SvtAv1Enc.exp
+  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/o6qjppgdibf6lpoa/artifacts/Bin%2FRelease%2FSvtAv1Enc.dll -FileName SvtAv1\SvtAv1Enc.dll
+  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/o6qjppgdibf6lpoa/artifacts/Bin%2FRelease%2FSvtAv1EncApp.exe -FileName SvtAv1\SvtAv1EncApp.exe
+  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/o6qjppgdibf6lpoa/artifacts/Bin%2FRelease%2FSvtAv1Enc.lib -FileName SvtAv1\SvtAv1Enc.lib
+  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/o6qjppgdibf6lpoa/artifacts/Bin%2FRelease%2FSvtAv1Enc.exp -FileName SvtAv1\SvtAv1Enc.exp
   - cmd: C:\Python36-x64\python -m pip install --upgrade pip setuptools --ignore-installed
   - cmd: C:\Python36-x64\python -m pip install -r requirements.txt
   - sh: sudo apt install python3-pip -y
