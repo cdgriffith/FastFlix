@@ -30,8 +30,6 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
     info, fmt = flix.parse(file)
     if not video_track:
         video_track = info.video[0].index
-    if not audio_track:
-        audio_track = info.audio[0].index
     height = int(info.video[0].height)
     width = int(info.video[0].width)
     assert height <= 2160
@@ -91,11 +89,13 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
     else:
         logger.warning(f'unknown audio codec {info.audio[0].codec_name} converting to ogg')
 
-    aud_out = Path(outer_temp_dir, f"audio.{cx.suffix}")
-
-    aud = flix.extract_audio_command(file, start_time, duration=duration, output=str(aud_out), audio_track=audio_track,
-                                     audio_format=cx.format, convert=cx.convert)
-    flix.execute(aud).check_returncode()
+    aud_out = None
+    if audio_track:
+        aud_out = Path(outer_temp_dir, f"audio.{cx.suffix}")
+        aud = flix.extract_audio_command(file, start_time, duration=duration,
+                                         output=str(aud_out), audio_track=audio_track,
+                                         audio_format=cx.format, convert=cx.convert)
+        flix.execute(aud).check_returncode()
 
     cmd1 = flix.video_split_command(file, start_time=start_time, duration=duration, segment_size=segment_size,
                                     build_dir=parts_temp_dir, video_track=video_track)
@@ -126,13 +126,15 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
 
     main_bin = Path(outer_temp_dir, "no_audio.mkv")
     main_file = Path(output)
-    cmb = flix.combine_command(video_list, str(main_bin), build_dir=outer_temp_dir)
+    cmb = flix.combine_command(video_list, main_bin if audio_track else main_file, build_dir=outer_temp_dir)
     flix.execute(cmb).check_returncode()
 
-    combine = flix.add_audio_command(main_bin,
-                                     aud_out,
-                                     main_file)
-    flix.execute(combine).check_returncode()
+    if audio_track:
+        combine = flix.add_audio_command(main_bin,
+                                         aud_out,
+                                         main_file)
+        flix.execute(combine).check_returncode()
+
     if not save_segments:
         logger.debug(f'cleaning up temp files for {outer_temp_dir}')
         try:
@@ -156,4 +158,3 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
 
     logger.info(f'AV1 encoding took {time.time() - st:.2f} seconds')
     return 0
-

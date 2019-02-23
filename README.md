@@ -1,10 +1,10 @@
 # FastFlix
 
-FastFlix is a super simple converter and clip maker.
+FastFlix is a current and next-gen video encoder. 
 
-It is designed to work with ffmpeg with x265 support or an equivalent command line tool.
+It can encode videos in AV1, and extended to use x265 with a GPL build of ffmpeg. 
 
-They are expected to be found via the system path or specified on startup via `FFMPEG` and `FFPROBE` env variables.
+Read more about it and the licensing in the [docs](docs/README.md)
 
 # Releases 
 

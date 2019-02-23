@@ -429,6 +429,8 @@ class AV1(QtWidgets.QWidget):
             error_message("Crop values must be divisible by eight, positive integers, and less than video dimensions")
             return
 
+        av1_settings = self.main.get_settings()['svt_av1']
+
         params = {
             "flix": self.flix,
             "source": source_video,
@@ -438,14 +440,17 @@ class AV1(QtWidgets.QWidget):
             "build_dir": tempfile.gettempdir(),
             "start_time": start_time,
             "duration": duration,
-            "save_segments": True,
+            "save_segments": av1_settings.get('save_segments', False),
             "auto_crop": True,
-            "save_yuv": False,
+            "save_yuv": av1_settings.get('save_raw', False),
             "overwrite": False,
             "crop": crop,
+            "segment_size": av1_settings.get('segment_size', 60),
             "crf": self.crfs.currentText(),
             "mode": self.mode.currentText(),
         }
+
+        logger.debug(f'Encoding with params: {params}')
 
         self.create_button.setDisabled(True)
         self.kill_button.show()

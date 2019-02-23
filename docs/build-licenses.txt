@@ -1,15 +1,15 @@
-Ours and all third party licenses included in FastFlix. 
+This file contains ours and all third party licenses included in FastFlix.
 
 FFMPEG, PySide2 and SVT-AV1 are dynamically linked (where bundled).
 
-* [FastFlix](#fastflix) (MIT)
-* [Box](#box) (MIT)
-* [Reusables](#reusables) (MIT)
-* [ffmpeg](#ffmpeg) (LGPLv2.1)
-* [PySide2](#pyside2) (LGPLv3)
-* [PyInstaller](#pyinstaller) (Modified GPL)
-* [Python](#python) (PSF)
-* [SVT-AV1](#svt-av1) (Modified BSD)
+* FastFlix (MIT)
+* Box (MIT)
+* Reusables) (MIT)
+* ffmpeg (LGPLv2.1)
+* PySide2 (LGPLv3)
+* PyInstaller (Modified GPL)
+* Python (PSF)
+* SVT-AV1 (Modified BSD)
 
 ## FastFlix
 

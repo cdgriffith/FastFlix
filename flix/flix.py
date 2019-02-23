@@ -5,7 +5,7 @@ from pathlib import Path
 
 from box import Box, BoxError
 
-__all__ = ['FlixError', 'ff_version', 'Flix']
+__all__ = ['FlixError', 'ff_version', 'Flix', 'svt_av1_version']
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -22,8 +22,33 @@ def ff_version(ff, throw=True):
         if throw:
             raise FlixError(f'"{ff}" file not found')
         else:
-            return None
+            return False
     return res.stdout.decode("utf-8").split(" ", 4)[2]
+
+
+def svt_av1_version(sv1_av1):
+    """
+    SVT AV1 Currently does not have a version associated with it's build so can only check for existence
+
+    :param sv1_av1: Path to executable
+    :return: True if SVT-AV1 else False
+    """
+    res = Flix.execute(f'"{sv1_av1}" -help')
+    if res.returncode != 0:
+        logger.warning(f'{sv1_av1} errored while checking version')
+        return False
+    try:
+        lines = res.stdout.decode("utf-8").split("\n")
+    except (ValueError, AttributeError):
+        logger.warning(f'{sv1_av1} errored while decoding output')
+        return False
+    if len(lines) < 2:
+        logger.warning(f'{sv1_av1} did not have enough output to check, must not be right')
+        return False
+    if lines[1].startswith('SVT-AV1'):
+        return True
+    logger.warning(f'{sv1_av1} not a SVT-AV1 file')
+    return False
 
 
 class Flix:
@@ -51,7 +76,7 @@ class Flix:
         line_denote = "configuration: "
         for line in output.split('\n'):
             if line.startswith(line_denote):
-                config = [x[9:].strip() for x in line[len(line_denote):].split(" ")]
+                config = [x[9:].strip() for x in line[len(line_denote):].split(" ") if x.startswith('--enable')]
         return config
 
     def parse(self, file):

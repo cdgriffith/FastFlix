@@ -1,15 +1,21 @@
 #!/usr/bin/env python
+from pathlib import Path
+
 import reusables
 from box import __version__ as box_version
 
-from flix.shared import QtWidgets, QtCore, QtGui, pyside_version, pyinstaller
+from flix.shared import QtWidgets, QtCore, QtGui, pyside_version, pyinstaller, base_path
 from flix.version import __version__
 
 __all__ = ['About']
 
 
 class About(QtWidgets.QWidget):
+
+    # TODO add all licenses
+
     def __init__(self, parent=None):
+        print(base_path)
         super(About, self).__init__(parent)
         layout = QtWidgets.QGridLayout()
         label = QtWidgets.QLabel(f"<b>FastFlix</b> v{__version__}<br>"
@@ -32,11 +38,26 @@ class About(QtWidgets.QWidget):
         layout.addWidget(label)
         layout.addWidget(supporting_libraries_label)
 
+        if Path(base_path, 'bundled').exists():
+            bundle_label = QtWidgets.QLabel(
+                "Bundled with: <a href='https://github.com/OpenVisualCloud/SVT-AV1'>SVT AV1</a> (Modified BSD) and "
+                "<a href='https://www.ffmpeg.org/download.html'>ffmpeg</a> (LGPL)")
+            bundle_label.setAlignment(QtCore.Qt.AlignCenter)
+            bundle_label.setOpenExternalLinks(True)
+            layout.addWidget(bundle_label)
+
         if pyinstaller:
             pyinstaller_label = QtWidgets.QLabel("Packaged with: <a href='https://www.pyinstaller.org/index.html'>"
                                                  "PyInstaller</a>")
             pyinstaller_label.setAlignment(QtCore.Qt.AlignCenter)
             pyinstaller_label.setOpenExternalLinks(True)
             layout.addWidget(pyinstaller_label)
+
+        replacer = '\\'
+        license_label = QtWidgets.QLabel(
+            f"<a href='file:///{base_path.replace(replacer, '/')}/docs/build-licenses.txt' download>LICENSES</a>")
+        license_label.setAlignment(QtCore.Qt.AlignCenter)
+        license_label.setOpenExternalLinks(True)
+        layout.addWidget(license_label)
 
         self.setLayout(layout)

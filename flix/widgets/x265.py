@@ -415,7 +415,7 @@ class X265(QtWidgets.QWidget):
             if not start_time:
                 start_time = 0
             if not duration:
-                error_message("Please select a duration amount or disable the Start Time / Duration field")
+                return error_message("Please select a duration amount or disable the Start Time / Duration field")
         if Path(self.output_video).exists():
             em = QtWidgets.QMessageBox()
             em.setText("Output video already exists, overwrite?")

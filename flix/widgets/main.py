@@ -25,7 +25,7 @@ class Main(QtWidgets.QMainWindow):
 
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
-        self.svt_av1 =svt_av1
+        self.svt_av1 = svt_av1
         self.ffmpeg_version = ffmpeg_version
         self.ffprobe_version = ffprobe_version
 
@@ -33,11 +33,13 @@ class Main(QtWidgets.QMainWindow):
         self.setStatusBar(self.status)
         self.default_status()
 
+        self.settings = Settings(self)
+
         tab_widget = QtWidgets.QTabWidget()
         tab_widget.addTab(self.av1, "AV1")
         tab_widget.addTab(self.x265, "x265")
         tab_widget.addTab(Logs(self), 'Logs')
-        tab_widget.addTab(Settings(self), 'Settings')
+        tab_widget.addTab(self.settings, 'Settings')
         tab_widget.addTab(About(self), 'About')
 
         self.setCentralWidget(tab_widget)
@@ -86,3 +88,6 @@ class Main(QtWidgets.QMainWindow):
             return getattr(self, converters).setDisabled(False)
         for converter in converters:
             getattr(self, converter).setDisabled(False)
+
+    def get_settings(self):
+        return self.settings.get_settings()
