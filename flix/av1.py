@@ -7,15 +7,44 @@ import shutil
 import logging
 
 from box import Box
+import reusables
 
 from flix import FlixError
 
 logger = logging.getLogger('flix')
 
+audio_codecs = Box({
+    'ac3': {
+        'format': 'ac3',
+        'suffix': 'ac3',
+        'convert': False
+    },
+    'mp3': {
+        'format': 'mp3',
+        'suffix': 'mp3',
+        'convert': False
+    },
+    'opus': {
+        'format': 'opus',
+        'suffix': 'ogg',
+        'convert': False
+    },
+    'pcm_s16le': {
+        'format': 'opus',
+        'suffix': 'ogg',
+        'convert': True
+    },
+    'default': {
+        'format': 'opus',
+        'suffix': 'ogg',
+        'convert': True
+    },
+})
 
+@reusables.log_exception('flix', show_traceback=True)
 def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0',
             duration=None, save_segments=False, auto_crop=True, save_yuv=False, overwrite=False, crop=None,
-            crf=30, mode=3, video_track=None, audio_track=None, segment_size=60):
+            crf=30, mode=3, video_track=None, audio_track=None, segment_size=60, scale=None):
     st = time.time()
     file = Path(source)
     if Path(output).exists() and not overwrite:
@@ -30,8 +59,11 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
     info, fmt = flix.parse(file)
     if not video_track:
         video_track = info.video[0].index
-    height = int(info.video[0].height)
-    width = int(info.video[0].width)
+    if scale:
+        width, height = (int(x) for x in scale.split(":"))
+    else:
+        height = int(info.video[0].height)
+        width = int(info.video[0].width)
     assert height <= 2160
     assert width <= 4096
     fps_num, fps_denom = [int(x) for x in info.video[0].r_frame_rate.split("/")]
@@ -55,42 +87,14 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
             crop = f'{width}:{height}:0:0'
             logger.info(f'applying crop, new resolution of {width}x{height}')
 
-    audio_codecs = Box({
-        'ac3': {
-            'format': 'ac3',
-            'suffix': 'ac3',
-            'convert': False
-        },
-        'mp3': {
-            'format': 'mp3',
-            'suffix': 'mp3',
-            'convert': False
-        },
-        'opus': {
-            'format': 'opus',
-            'suffix': 'ogg',
-            'convert': False
-        },
-        'pcm_s16le': {
-            'format': 'opus',
-            'suffix': 'ogg',
-            'convert': True
-        },
-        'default': {
-            'format': 'opus',
-            'suffix': 'ogg',
-            'convert': True
-        },
-    })
-
     cx = audio_codecs['default']
-    if info.audio[0].codec_name in audio_codecs:
-        cx = audio_codecs[info.audio[0].codec_name]
-    else:
-        logger.warning(f'unknown audio codec {info.audio[0].codec_name} converting to ogg')
-
     aud_out = None
+
     if audio_track:
+        if info.audio[0].codec_name in audio_codecs:
+            cx = audio_codecs[info.audio[0].codec_name]
+        else:
+            logger.warning(f'unknown audio codec {info.audio[0].codec_name} converting to ogg')
         aud_out = Path(outer_temp_dir, f"audio.{cx.suffix}")
         aud = flix.extract_audio_command(file, start_time, duration=duration,
                                          output=str(aud_out), audio_track=audio_track,
@@ -107,12 +111,12 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
 
     for num, src, yuv_output in sorted(yuv_list, key=lambda x: x[0]):
         logger.debug(f'Encoding segment {num + 1} of {len(yuv_list)}')
-        yuv_cmd = flix.yuv_command(str(src), str(yuv_output), crop=crop)
+        yuv_cmd = flix.yuv_command(src, yuv_output, crop=crop, scale=scale)
         flix.execute(yuv_cmd).check_returncode()
         out_vid = Path(av1_parts, f'{num}.ivf')
-        video_list.append(str(out_vid))
-        svt_av1_cmd = flix.svt_av1_command(str(yuv_output),
-                                           str(out_vid),
+        video_list.append(out_vid)
+        svt_av1_cmd = flix.svt_av1_command(yuv_output,
+                                           out_vid,
                                            height, width,
                                            fps_num=fps_num, fps_denom=fps_denom,
                                            bit_depth=bit_depth,
@@ -140,7 +144,8 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
         try:
             shutil.rmtree(parts_temp_dir, ignore_errors=True)
             shutil.rmtree(av1_parts, ignore_errors=True)
-            aud_out.unlink()
+            if aud_out:
+                aud_out.unlink()
             main_bin.unlink()
         except OSError as err:
             logger.warning(f'Cannot delete all files under {outer_temp_dir}: {err}')

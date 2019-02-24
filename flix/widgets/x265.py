@@ -56,39 +56,83 @@ class X265(QtWidgets.QWidget):
         self.open_input_file.clicked.connect(lambda: self.open_file(self.input_file_path))
 
         # Media Info
+        # self.source_label_width = QtWidgets.QLabel("")
+        # self.source_label_height = QtWidgets.QLabel("")
+        # self.source_label_duration = QtWidgets.QLabel("")
+        # self.source_label_colorspace = QtWidgets.QLabel("")
+        # source_width_layout = QtWidgets.QHBoxLayout()
+        # source_width_layout.addWidget(QtWidgets.QLabel("Width: "))
+        # source_width_layout.addWidget(self.source_label_width)
+        # source_height_layout = QtWidgets.QHBoxLayout()
+        # source_height_layout.addWidget(QtWidgets.QLabel("Height: "))
+        # source_height_layout.addWidget(self.source_label_height)
+        # source_colorspace_layout = QtWidgets.QHBoxLayout()
+        # self.source_label_for_colorspace = QtWidgets.QLabel("Colorspace: ")
+        # source_colorspace_layout.addWidget(self.source_label_for_colorspace)
+        # source_colorspace_layout.addWidget(self.source_label_colorspace)
+        # source_info_layout = QtWidgets.QVBoxLayout()
+        # source_info_layout.addWidget(QtWidgets.QLabel("Media Info"))
+        # source_info_layout.addLayout(source_width_layout)
+        # source_info_layout.addLayout(source_height_layout)
+        # source_info_layout.addLayout(source_colorspace_layout)
+
+        # Scale
         self.source_label_width = QtWidgets.QLabel("")
         self.source_label_height = QtWidgets.QLabel("")
         self.source_label_duration = QtWidgets.QLabel("")
         self.source_label_colorspace = QtWidgets.QLabel("")
-        source_width_layout = QtWidgets.QHBoxLayout()
-        source_width_layout.addWidget(QtWidgets.QLabel("Width: "))
-        source_width_layout.addWidget(self.source_label_width)
-        source_height_layout = QtWidgets.QHBoxLayout()
-        source_height_layout.addWidget(QtWidgets.QLabel("Height: "))
-        source_height_layout.addWidget(self.source_label_height)
-        source_colorspace_layout = QtWidgets.QHBoxLayout()
-        self.source_label_for_colorspace = QtWidgets.QLabel("Colorspace: ")
-        source_colorspace_layout.addWidget(self.source_label_for_colorspace)
-        source_colorspace_layout.addWidget(self.source_label_colorspace)
-        source_info_layout = QtWidgets.QVBoxLayout()
-        source_info_layout.addWidget(QtWidgets.QLabel("Media Info"))
-        source_info_layout.addLayout(source_width_layout)
-        source_info_layout.addLayout(source_height_layout)
-        source_info_layout.addLayout(source_colorspace_layout)
+        self.scale_area = QtWidgets.QGroupBox("Scale")
+        self.scale_area.setCheckable(True)
+        self.scale_area.setChecked(False)
+        scale_layout = QtWidgets.QVBoxLayout()
 
-        # Convert HDR
-        self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
-        self.convert_hdr_check.setChecked(False)
-        self.convert_hdr_check.hide()
-        self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
-        source_info_layout.addWidget(self.convert_hdr_check)
+        dimensions_layout = QtWidgets.QHBoxLayout()
+        dimensions_layout.addWidget(QtWidgets.QLabel("Dimensions:"))
+        self.source_label_width = QtWidgets.QLabel("0")
+        dimensions_layout.addWidget(self.source_label_width)
+        dimensions_layout.addWidget(QtWidgets.QLabel("x"))
+        self.source_label_height = QtWidgets.QLabel("0")
+        dimensions_layout.addWidget(self.source_label_height)
+        dimensions_layout.addStretch()
 
-        # Keep subs
-        self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
-        self.keep_subtitles.setChecked(False)
-        self.keep_subtitles.hide()
-        source_info_layout.addWidget(self.keep_subtitles)
-        source_info_layout.addStretch()
+        new_scale_layout = QtWidgets.QHBoxLayout()
+        new_scale_layout.addStretch()
+        new_scale_layout.addWidget(QtWidgets.QLabel("Scale:"))
+        self.scale_width = QtWidgets.QLineEdit("0")
+        self.scale_width.editingFinished.connect(self.scale_update)
+        new_scale_layout.addWidget(self.scale_width)
+        new_scale_layout.addWidget(QtWidgets.QLabel("x"))
+        self.scale_height = QtWidgets.QLineEdit("0")
+        self.scale_height.editingFinished.connect(self.scale_update)
+        self.scale_height.setDisabled(True)
+        new_scale_layout.addWidget(self.scale_height)
+        new_scale_layout.addStretch()
+
+        self.keep_aspect_button = QtWidgets.QCheckBox("Keep (near) aspect ratio")
+        self.keep_aspect_button.setChecked(True)
+        self.keep_aspect_button.toggled.connect(self.scale_update)
+
+        self.scale_warning_message = QtWidgets.QLabel("")
+
+        scale_layout.addLayout(dimensions_layout)
+        scale_layout.addLayout(new_scale_layout)
+        scale_layout.addWidget(self.keep_aspect_button)
+        scale_layout.addWidget(self.scale_warning_message)
+        self.scale_area.setLayout(scale_layout)
+
+        # # Convert HDR
+        # self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
+        # self.convert_hdr_check.setChecked(False)
+        # self.convert_hdr_check.hide()
+        # self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
+        # source_info_layout.addWidget(self.convert_hdr_check)
+        #
+        # # Keep subs
+        # self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
+        # self.keep_subtitles.setChecked(False)
+        # self.keep_subtitles.hide()
+        # source_info_layout.addWidget(self.keep_subtitles)
+        # source_info_layout.addStretch()
 
         # Duration Settings
         self.timing = QtWidgets.QGroupBox("Start Time / Duration")
@@ -227,7 +271,7 @@ class X265(QtWidgets.QWidget):
 
         # Add root layouts
         layout.addLayout(input_file_layout, 1, 0, 1, 4)
-        layout.addLayout(source_info_layout, 2, 0, 3, 1)
+        layout.addWidget(self.scale_area, 2, 0, 3, 1)
         layout.addWidget(self.timing, 2, 1, 3, 1)
         layout.addWidget(self.crop, 2, 2, 3, 2)
         layout.addLayout(quality_layout, 5, 0, 1, 4)
@@ -372,6 +416,43 @@ class X265(QtWidgets.QWidget):
     def video_track_change(self, index):
         self.update_source_labels(**self.streams['video'][index])
 
+    @reusables.log_exception('flix', show_traceback=False)
+    def scale_update(self, *args):
+        keep_aspect = self.keep_aspect_button.isChecked()
+        self.scale_height.setDisabled(keep_aspect)
+        if keep_aspect and (not self.video_height or not self.video_width):
+            return self.scale_warning_message.setText("Invalid source dimensions")
+
+        try:
+            scale_width = int(self.scale_width.text())
+            assert scale_width > 0
+        except (ValueError, AssertionError):
+            return self.scale_warning_message.setText("Invalid width")
+
+        if scale_width % 8:
+            return self.scale_warning_message.setText("Width must be divisible by 8")
+
+        if keep_aspect:
+            ratio = scale_width / self.video_width
+            scale_height = ratio * self.video_height
+            mod = int(scale_height % 8)
+            if mod:
+                scale_height -= mod
+                logger.info(f"Have to adjust scale height by {mod} pixels")
+                self.scale_warning_message.setText(f"height has -{mod}px off aspect")
+            self.scale_height.setText(str(int(scale_height)))
+            return
+
+        try:
+            scale_height = int(self.scale_height.text())
+            assert scale_height > 0
+        except (ValueError, AssertionError):
+            return self.scale_warning_message.setText("Invalid height")
+
+        if scale_height % 8:
+            return self.scale_warning_message.setText("Height must be divisible by 8")
+        self.scale_warning_message.setText("")
+
     def build_crop(self):
         if not self.crop.isChecked():
             return None
@@ -427,21 +508,32 @@ class X265(QtWidgets.QWidget):
             else:
                 return
 
-        try:
-            crop = self.build_crop()
-        except ValueError:
-            error_message("Crop values are not numeric")
-            return
-        except AssertionError:
-            error_message("Crop values must be positive and less than video dimensions")
-            return
+        crop = None
+        if self.crop.isChecked():
+            try:
+                crop = self.build_crop()
+            except ValueError:
+                error_message("Crop values are not numeric")
+                return
+            except AssertionError:
+                error_message("Crop values must be positive and less than video dimensions")
+                return
+
+        scale = None
+        if self.scale_area.isChecked():
+            try:
+                scale = self.build_scale()
+            except ValueError:
+                return error_message("Scale values are not numeric")
+            except AssertionError:
+                return error_message("Scale values must be positive integers")
 
         remove_hdr = self.convert_hdr_check.isChecked()
 
         command = self.flix.generate_x265_command(source_video, self.output_video, video_track, audio_track,
                                                   duration=duration, start_time=start_time,
                                                   crf=self.crfs.currentText(), preset=self.preset.currentText(),
-                                                  disable_hdr=remove_hdr,
+                                                  disable_hdr=remove_hdr, scale=scale,
                                                   keep_subtitles=self.keep_subtitles.isChecked(), crop=crop)
 
         self.create_button.setDisabled(True)

@@ -98,7 +98,7 @@ class Flix:
 
     def generate_x265_command(self, source, output, video_track, audio_track=None, additional_tracks=(),
                               start_time=0, duration=None, crf=20, preset="medium", disable_hdr=False, scale_width=None,
-                              scale_height=None, keep_subtitles=False, crop=None):
+                              scale_height=None, keep_subtitles=False, crop=None, scale=None):
         start = ''
         if duration:
             start = f'-ss {start_time} -t {duration}'
@@ -113,10 +113,13 @@ class Flix:
             filter_list.append('zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,'
                                'zscale=t=bt709:m=bt709:r=tv,format=yuv420p')
 
-        if scale_width:
+        if scale:
+            filter_list.append(f'scale={scale}')
+        elif scale_width:
             filter_list.append(f'scale={scale_width}:-1')
         elif scale_height:
             filter_list.append(f'scale=-1:{scale_height}')
+
 
         if crop:
             filter_list.append(f'crop={crop}')
@@ -208,12 +211,20 @@ class Flix:
                 f'{"-map_metadata -1" if start else ""} -map 0:{video_track} -c copy '
                 f'-f segment -segment_time {segment_size} -an -sn -dn "{out}"')
 
-    def yuv_command(self, source, output, bit_depth=8, crop=None):
-        assert output.endswith(('yuv', 'y4m'))
+    def yuv_command(self, source, output, bit_depth=8, crop=None, scale=None):
+        assert str(output).endswith(('yuv', 'y4m'))
+
+        filter_list = []
+        if crop:
+            filter_list.append(f'crop={crop}')
+        if scale:
+            filter_list.append(f'scale={scale}')
+
+        filters = ",".join(filter_list) if filter_list else ""
 
         return (f'"{self.ffmpeg}" -loglevel fatal -i "{source}" -c:v rawvideo '
                 f'-pix_fmt {"yuv420p10le" if bit_depth == 10 else "yuv420p"}'
-                f' {f"-vf crop={crop}" if crop else ""} "{output}"')
+                f' {f"-vf {filters}" if filters else ""} "{output}"')
 
     def svt_av1_command(self, source, output, height, width, fps_num, fps_denom, crf=30, mode=3, bit_depth=8):
         if not self.av1:
@@ -224,17 +235,17 @@ class Flix:
             if (intra_period + 8) > (fps_num / fps_denom):
                 break
         # currently broke  -fps-num {fps_num} -fps-denom {fps_denom}
-
+        # -fps {round(fps_num/fps_denom)}
         logger.debug(f'setting intra-period to {intra_period} based of fps {float(fps_num / fps_denom):.2f}')
         return (f'"{self.av1}" -intra-period {intra_period} -enc-mode {mode} -bit-depth {bit_depth} '
-                f'-w {width} -h {height} -fps {round(fps_num/fps_denom)} '
+                f'-w {width} -h {height} -fps-num {fps_num} -fps-denom {fps_denom} '
                 f'-q {crf} -i "{source}" -b "{output}"')
 
     def combine_command(self, videos, output, build_dir="."):
         import uuid
         file_list = os.path.abspath(os.path.join(build_dir, uuid.uuid4().hex))
         with open(file_list, 'w') as f:
-            f.write("\n".join(['file {}'.format(video.replace("\\", "\\\\")) for video in videos]))
+            f.write("\n".join(['file {}'.format(str(video).replace("\\", "\\\\")) for video in videos]))
         return f'"{self.ffmpeg}" -safe 0 -f concat -i "{file_list}" -c copy "{output}"'
 
     def extract_audio_command(self, video, start_time, duration, output, audio_track=0,

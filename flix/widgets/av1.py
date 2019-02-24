@@ -56,34 +56,17 @@ class AV1(QtWidgets.QWidget):
         input_file_layout.setSpacing(20)
         self.open_input_file.clicked.connect(lambda: self.open_file(self.input_file_path))
 
-        # Media Info
+        # Scale
         self.source_label_width = QtWidgets.QLabel("")
         self.source_label_height = QtWidgets.QLabel("")
         self.source_label_duration = QtWidgets.QLabel("")
         self.source_label_colorspace = QtWidgets.QLabel("")
-        # source_width_layout = QtWidgets.QHBoxLayout()
-        # source_width_layout.addWidget(QtWidgets.QLabel("Width: "))
-        # source_width_layout.addWidget(self.source_label_width)
-        # source_height_layout = QtWidgets.QHBoxLayout()
-        # source_height_layout.addWidget(QtWidgets.QLabel("Height: "))
-        # source_height_layout.addWidget(self.source_label_height)
-        # source_colorspace_layout = QtWidgets.QHBoxLayout()
-        # self.source_label_for_colorspace = QtWidgets.QLabel("Colorspace: ")
-        # source_colorspace_layout.addWidget(self.source_label_for_colorspace)
-        # source_colorspace_layout.addWidget(self.source_label_colorspace)
-        # source_info_layout = QtWidgets.QVBoxLayout()
-        # source_info_layout.addWidget(QtWidgets.QLabel("Media Info"))
-        # source_info_layout.addLayout(source_width_layout)
-        # source_info_layout.addLayout(source_height_layout)
-        # source_info_layout.addLayout(source_colorspace_layout)
         self.scale_area = QtWidgets.QGroupBox("Scale")
         self.scale_area.setCheckable(True)
         self.scale_area.setChecked(False)
-        #self.crop.setFixedHeight(110)
         scale_layout = QtWidgets.QVBoxLayout()
 
         dimensions_layout = QtWidgets.QHBoxLayout()
-        # dimensions_layout.addStretch()
         dimensions_layout.addWidget(QtWidgets.QLabel("Dimensions:"))
         self.source_label_width = QtWidgets.QLabel("0")
         dimensions_layout.addWidget(self.source_label_width)
@@ -116,9 +99,6 @@ class AV1(QtWidgets.QWidget):
         scale_layout.addWidget(self.keep_aspect_button)
         scale_layout.addWidget(self.scale_warning_message)
         self.scale_area.setLayout(scale_layout)
-
-
-
 
         # # Convert HDR
         # self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
@@ -330,7 +310,7 @@ class AV1(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def save_file(self):
         f = Path(self.input_file_path.text())
-        save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.mp4")
+        save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.mkv")
         filename = QtWidgets.QFileDialog.getSaveFileName(self, caption="Save Video As", dir=str(save_file),
                                                          filter="Video File (*.mkv)")
         return filename[0] if filename else False
@@ -443,6 +423,13 @@ class AV1(QtWidgets.QWidget):
     def video_track_change(self, index):
         self.update_source_labels(**self.streams['video'][index])
 
+    def build_scale(self):
+        width = int(self.scale_width.text())
+        height = int(self.scale_height.text())
+        assert 0 < width <= 2160
+        assert 0 < height <= 4096
+        return f"{width}:{height}"
+
     def build_crop(self):
         if not self.crop.isChecked():
             return None
@@ -500,14 +487,27 @@ class AV1(QtWidgets.QWidget):
             else:
                 return
 
-        try:
-            crop = self.build_crop()
-        except ValueError:
-            error_message("Crop values are not numeric")
-            return
-        except AssertionError:
-            error_message("Crop values must be divisible by eight, positive integers, and less than video dimensions")
-            return
+        crop = None
+        if self.crop.isChecked():
+            try:
+                crop = self.build_crop()
+            except ValueError:
+                return error_message("Crop values are not numeric")
+            except AssertionError:
+                return error_message("Crop values must be divisible by eight, "
+                                     "positive integers, and less than video dimensions")
+
+        scale = None
+        if self.scale_area.isChecked():
+            try:
+                scale = self.build_scale()
+            except ValueError:
+                return error_message("Scale values are not numeric")
+            except AssertionError:
+                return error_message("Scale values must be positive integers less than 4096x2160")
+
+        if not scale and (self.video_height > 2160 or self.video_width > 4096):
+            return error_message("Currently only videos at resolutions less than 4096x2160 are supported")
 
         av1_settings = self.main.get_settings()['svt_av1']
 
@@ -524,6 +524,7 @@ class AV1(QtWidgets.QWidget):
             "auto_crop": True,
             "save_yuv": av1_settings.get('save_raw', False),
             "overwrite": False,
+            "scale": scale,
             "crop": crop,
             "segment_size": av1_settings.get('segment_size', 60),
             "crf": self.crfs.currentText(),
