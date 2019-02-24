@@ -111,7 +111,7 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
 
     for num, src, yuv_output in sorted(yuv_list, key=lambda x: x[0]):
         logger.debug(f'Encoding segment {num + 1} of {len(yuv_list)}')
-        yuv_cmd = flix.yuv_command(src, yuv_output, crop=crop, scale=scale)
+        yuv_cmd = flix.yuv_command(src, yuv_output, fps_num, fps_denom, crop=crop, scale=scale)
         flix.execute(yuv_cmd).check_returncode()
         out_vid = Path(av1_parts, f'{num}.ivf')
         video_list.append(out_vid)

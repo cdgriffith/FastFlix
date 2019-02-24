@@ -211,7 +211,7 @@ class Flix:
                 f'{"-map_metadata -1" if start else ""} -map 0:{video_track} -c copy '
                 f'-f segment -segment_time {segment_size} -an -sn -dn "{out}"')
 
-    def yuv_command(self, source, output, bit_depth=8, crop=None, scale=None):
+    def yuv_command(self, source, output, fps_num, fps_denom, bit_depth=8, crop=None, scale=None):
         assert str(output).endswith(('yuv', 'y4m'))
 
         filter_list = []
@@ -224,7 +224,7 @@ class Flix:
 
         return (f'"{self.ffmpeg}" -loglevel fatal -i "{source}" -c:v rawvideo '
                 f'-pix_fmt {"yuv420p10le" if bit_depth == 10 else "yuv420p"}'
-                f' {f"-vf {filters}" if filters else ""} "{output}"')
+                f' {f"-vf {filters}" if filters else ""}  -r {round(fps_num/fps_denom)} "{output}"')
 
     def svt_av1_command(self, source, output, height, width, fps_num, fps_denom, crf=30, mode=3, bit_depth=8):
         if not self.av1:
@@ -238,7 +238,7 @@ class Flix:
         # -fps {round(fps_num/fps_denom)}
         logger.debug(f'setting intra-period to {intra_period} based of fps {float(fps_num / fps_denom):.2f}')
         return (f'"{self.av1}" -intra-period {intra_period} -enc-mode {mode} -bit-depth {bit_depth} '
-                f'-w {width} -h {height} -fps-num {fps_num} -fps-denom {fps_denom} '
+                f'-w {width} -h {height} -fps {round(fps_num/fps_denom)} '
                 f'-q {crf} -i "{source}" -b "{output}"')
 
     def combine_command(self, videos, output, build_dir="."):

@@ -303,9 +303,9 @@ class X265(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def save_file(self):
         f = Path(self.input_file_path.text())
-        save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.mp4")
+        save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.mkv")
         filename = QtWidgets.QFileDialog.getSaveFileName(self, caption="Save Video As", dir=str(save_file),
-                                                         filter="Video File(*.mp4 *.mkv)")
+                                                         filter="Video File(*.mkv *.mp4)")
         return filename[0] if filename else False
 
     @staticmethod
@@ -528,13 +528,14 @@ class X265(QtWidgets.QWidget):
             except AssertionError:
                 return error_message("Scale values must be positive integers")
 
-        remove_hdr = self.convert_hdr_check.isChecked()
+        # remove_hdr = self.convert_hdr_check.isChecked()
+        # self.keep_subtitles.isChecked()
 
         command = self.flix.generate_x265_command(source_video, self.output_video, video_track, audio_track,
                                                   duration=duration, start_time=start_time,
                                                   crf=self.crfs.currentText(), preset=self.preset.currentText(),
-                                                  disable_hdr=remove_hdr, scale=scale,
-                                                  keep_subtitles=self.keep_subtitles.isChecked(), crop=crop)
+                                                  disable_hdr=None, scale=scale,
+                                                  keep_subtitles=None, crop=crop)
 
         self.create_button.setDisabled(True)
         self.kill_button.show()
