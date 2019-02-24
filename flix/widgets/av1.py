@@ -61,21 +61,64 @@ class AV1(QtWidgets.QWidget):
         self.source_label_height = QtWidgets.QLabel("")
         self.source_label_duration = QtWidgets.QLabel("")
         self.source_label_colorspace = QtWidgets.QLabel("")
-        source_width_layout = QtWidgets.QHBoxLayout()
-        source_width_layout.addWidget(QtWidgets.QLabel("Width: "))
-        source_width_layout.addWidget(self.source_label_width)
-        source_height_layout = QtWidgets.QHBoxLayout()
-        source_height_layout.addWidget(QtWidgets.QLabel("Height: "))
-        source_height_layout.addWidget(self.source_label_height)
-        source_colorspace_layout = QtWidgets.QHBoxLayout()
-        self.source_label_for_colorspace = QtWidgets.QLabel("Colorspace: ")
-        source_colorspace_layout.addWidget(self.source_label_for_colorspace)
-        source_colorspace_layout.addWidget(self.source_label_colorspace)
-        source_info_layout = QtWidgets.QVBoxLayout()
-        source_info_layout.addWidget(QtWidgets.QLabel("Media Info"))
-        source_info_layout.addLayout(source_width_layout)
-        source_info_layout.addLayout(source_height_layout)
-        source_info_layout.addLayout(source_colorspace_layout)
+        # source_width_layout = QtWidgets.QHBoxLayout()
+        # source_width_layout.addWidget(QtWidgets.QLabel("Width: "))
+        # source_width_layout.addWidget(self.source_label_width)
+        # source_height_layout = QtWidgets.QHBoxLayout()
+        # source_height_layout.addWidget(QtWidgets.QLabel("Height: "))
+        # source_height_layout.addWidget(self.source_label_height)
+        # source_colorspace_layout = QtWidgets.QHBoxLayout()
+        # self.source_label_for_colorspace = QtWidgets.QLabel("Colorspace: ")
+        # source_colorspace_layout.addWidget(self.source_label_for_colorspace)
+        # source_colorspace_layout.addWidget(self.source_label_colorspace)
+        # source_info_layout = QtWidgets.QVBoxLayout()
+        # source_info_layout.addWidget(QtWidgets.QLabel("Media Info"))
+        # source_info_layout.addLayout(source_width_layout)
+        # source_info_layout.addLayout(source_height_layout)
+        # source_info_layout.addLayout(source_colorspace_layout)
+        self.scale_area = QtWidgets.QGroupBox("Scale")
+        self.scale_area.setCheckable(True)
+        self.scale_area.setChecked(False)
+        #self.crop.setFixedHeight(110)
+        scale_layout = QtWidgets.QVBoxLayout()
+
+        dimensions_layout = QtWidgets.QHBoxLayout()
+        # dimensions_layout.addStretch()
+        dimensions_layout.addWidget(QtWidgets.QLabel("Dimensions:"))
+        self.source_label_width = QtWidgets.QLabel("0")
+        dimensions_layout.addWidget(self.source_label_width)
+        dimensions_layout.addWidget(QtWidgets.QLabel("x"))
+        self.source_label_height = QtWidgets.QLabel("0")
+        dimensions_layout.addWidget(self.source_label_height)
+        dimensions_layout.addStretch()
+
+        new_scale_layout = QtWidgets.QHBoxLayout()
+        new_scale_layout.addStretch()
+        new_scale_layout.addWidget(QtWidgets.QLabel("Scale:"))
+        self.scale_width = QtWidgets.QLineEdit("0")
+        self.scale_width.editingFinished.connect(self.scale_update)
+        new_scale_layout.addWidget(self.scale_width)
+        new_scale_layout.addWidget(QtWidgets.QLabel("x"))
+        self.scale_height = QtWidgets.QLineEdit("0")
+        self.scale_height.editingFinished.connect(self.scale_update)
+        self.scale_height.setDisabled(True)
+        new_scale_layout.addWidget(self.scale_height)
+        new_scale_layout.addStretch()
+
+        self.keep_aspect_button = QtWidgets.QCheckBox("Keep (near) aspect ratio")
+        self.keep_aspect_button.setChecked(True)
+        self.keep_aspect_button.toggled.connect(self.scale_update)
+
+        self.scale_warning_message = QtWidgets.QLabel("")
+
+        scale_layout.addLayout(dimensions_layout)
+        scale_layout.addLayout(new_scale_layout)
+        scale_layout.addWidget(self.keep_aspect_button)
+        scale_layout.addWidget(self.scale_warning_message)
+        self.scale_area.setLayout(scale_layout)
+
+
+
 
         # # Convert HDR
         # self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
@@ -174,7 +217,7 @@ class AV1(QtWidgets.QWidget):
         self.crop = QtWidgets.QGroupBox("Crop")
         self.crop.setCheckable(True)
         self.crop.setChecked(False)
-        self.crop.setFixedHeight(110)
+        # self.crop.setFixedHeight(110)
         crop_layout = QtWidgets.QVBoxLayout()
 
         crop_top_layout = QtWidgets.QHBoxLayout()
@@ -218,7 +261,7 @@ class AV1(QtWidgets.QWidget):
 
         # Add root layouts
         layout.addLayout(input_file_layout, 1, 0, 1, 4)
-        layout.addLayout(source_info_layout, 2, 0, 3, 1)
+        layout.addWidget(self.scale_area, 2, 0, 3, 1)
         layout.addWidget(self.timing, 2, 1, 3, 1)
         layout.addWidget(self.crop, 2, 2, 3, 2)
         layout.addLayout(quality_layout, 5, 0, 1, 4)
@@ -235,6 +278,43 @@ class AV1(QtWidgets.QWidget):
         self.update_source_labels(0, 0)
         if source:
             self.update_video_info()
+
+    @reusables.log_exception('flix', show_traceback=False)
+    def scale_update(self, *args):
+        keep_aspect = self.keep_aspect_button.isChecked()
+        self.scale_height.setDisabled(keep_aspect)
+        if keep_aspect and (not self.video_height or not self.video_width):
+            return self.scale_warning_message.setText("Invalid source dimensions")
+
+        try:
+            scale_width = int(self.scale_width.text())
+            assert scale_width > 0
+        except (ValueError, AssertionError):
+            return self.scale_warning_message.setText("Invalid width")
+
+        if scale_width % 8:
+            return self.scale_warning_message.setText("Width must be divisible by 8")
+
+        if keep_aspect:
+            ratio = scale_width / self.video_width
+            scale_height = ratio * self.video_height
+            mod = int(scale_height % 8)
+            if mod:
+                scale_height -= mod
+                logger.info(f"Have to adjust scale height by {mod} pixels")
+                self.scale_warning_message.setText(f"height has -{mod}px off aspect")
+            self.scale_height.setText(str(int(scale_height)))
+            return
+
+        try:
+            scale_height = int(self.scale_height.text())
+            assert scale_height > 0
+        except (ValueError, AssertionError):
+            return self.scale_warning_message.setText("Invalid height")
+
+        if scale_height % 8:
+            return self.scale_warning_message.setText("Height must be divisible by 8")
+        self.scale_warning_message.setText("")
 
     @reusables.log_exception('flix', show_traceback=False)
     def open_file(self, update_text):
@@ -272,8 +352,8 @@ class AV1(QtWidgets.QWidget):
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_source_labels(self, width, height, **kwargs):
-        self.source_label_width.setText(f"{width}px" if width else "")
-        self.source_label_height.setText(f"{height}px" if height else "")
+        self.source_label_width.setText(f"{width}px" if width else "0")
+        self.source_label_height.setText(f"{height}px" if height else "0")
         self.video_height = int(height)
         self.video_width = int(width)
         self.source_label_duration.setText(str(timedelta(seconds=float(self.video_duration)))[:10])
@@ -489,6 +569,7 @@ class AV1(QtWidgets.QWidget):
     def dragMoveEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()
 
+    @reusables.log_exception('flix', show_traceback=False)
     def dropEvent(self, event):
         if not event.mimeData().hasUrls:
             return event.ignore()

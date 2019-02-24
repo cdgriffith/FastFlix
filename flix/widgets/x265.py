@@ -183,7 +183,7 @@ class X265(QtWidgets.QWidget):
         self.crop = QtWidgets.QGroupBox("Crop")
         self.crop.setCheckable(True)
         self.crop.setChecked(False)
-        self.crop.setFixedHeight(110)
+        #self.crop.setFixedHeight(180)
         crop_layout = QtWidgets.QVBoxLayout()
 
         crop_top_layout = QtWidgets.QHBoxLayout()
