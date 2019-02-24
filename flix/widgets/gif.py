@@ -15,18 +15,19 @@ from flix.av1 import convert
 
 logger = logging.getLogger('flix')
 
-__all__ = ['AV1']
+__all__ = ['GIF']
 
 
-class AV1(QtWidgets.QWidget):
+class GIF(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
 
     def __init__(self, parent=None, source=""):
-        super(AV1, self).__init__(parent)
+        super(GIF, self).__init__(parent)
         self.main = parent
-        self.thumb_file = Path(tempfile.gettempdir(), "flix_av1_preview.png")
+        self.thumb_file = Path(tempfile.gettempdir(), "flix_gif_preview.png")
+        self.pallet_file = Path(tempfile.gettempdir(), "flix_gif_pallet.png")
         layout = QtWidgets.QGridLayout()
         self.setFixedHeight(650)
         self.setFixedWidth(620)
@@ -88,7 +89,7 @@ class AV1(QtWidgets.QWidget):
         new_scale_layout.addWidget(self.scale_height)
         new_scale_layout.addStretch()
 
-        self.keep_aspect_button = QtWidgets.QCheckBox("Keep (near) aspect ratio")
+        self.keep_aspect_button = QtWidgets.QCheckBox("Keep aspect ratio")
         self.keep_aspect_button.setChecked(True)
         self.keep_aspect_button.toggled.connect(self.scale_update)
 
@@ -100,19 +101,21 @@ class AV1(QtWidgets.QWidget):
         scale_layout.addWidget(self.scale_warning_message)
         self.scale_area.setLayout(scale_layout)
 
-        # # Convert HDR
-        # self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
-        # self.convert_hdr_check.setChecked(False)
-        # self.convert_hdr_check.hide()
-        # self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
-        # source_info_layout.addWidget(self.convert_hdr_check)
-        #
-        # # Keep subs
-        # self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
-        # self.keep_subtitles.setChecked(False)
-        # self.keep_subtitles.hide()
-        # source_info_layout.addWidget(self.keep_subtitles)
-        # source_info_layout.addStretch()
+        # Convert HDR
+        self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
+        self.convert_hdr_check.setChecked(False)
+        self.convert_hdr_check.hide()
+        self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
+        #        source_info_layout.addWidget(self.convert_hdr_check)
+
+        self.fps_change = QtWidgets.QHBoxLayout()
+        self.fps_label = QtWidgets.QLabel("FPS")
+        self.fps_box = QtWidgets.QLineEdit("15")
+        self.fps_change.addWidget(self.fps_label)
+        self.fps_change.addWidget(self.fps_box)
+        self.fps_change.addWidget(QtWidgets.QLabel("Max FPS"))
+        self.fps_max = QtWidgets.QLabel("0")
+        self.fps_change.addWidget(self.fps_max)
 
         # Duration Settings
         self.timing = QtWidgets.QGroupBox("Start Time / Duration")
@@ -148,28 +151,7 @@ class AV1(QtWidgets.QWidget):
         self.output_video = None
         self.encoding_worker = None
 
-        # Quality
-        quality_layout = QtWidgets.QHBoxLayout()
-        quality_layout.addWidget(QtWidgets.QLabel("Quality"), stretch=0)
-        self.crfs = QtWidgets.QComboBox()
-        self.crfs.addItems([str(x / 2) for x in range(61)])
-        self.crfs.setCurrentIndex(40)
-        quality_layout.addWidget(self.crfs, stretch=1)
-
-        self.mode = QtWidgets.QComboBox()
-        self.mode.addItems(["0", "1", "3"])
-        self.mode.setCurrentIndex(2)
-        quality_layout.addWidget(QtWidgets.QLabel("Encoding Mode"), stretch=0)
-        quality_layout.addWidget(self.mode, stretch=1)
-
         # Select Tracks
-        audio_box_layout = QtWidgets.QHBoxLayout()
-        self.audio_box = QtWidgets.QComboBox()
-        self.audio_box.addItems([])
-        audio_box_layout.addWidget(QtWidgets.QLabel("Audio: "), stretch=0)
-        audio_box_layout.addWidget(self.audio_box, stretch=1)
-        audio_box_layout.setSpacing(20)
-
         video_box_layout = QtWidgets.QHBoxLayout()
         self.video_box = QtWidgets.QComboBox()
         self.video_box.addItems([])
@@ -244,8 +226,7 @@ class AV1(QtWidgets.QWidget):
         layout.addWidget(self.scale_area, 2, 0, 3, 1)
         layout.addWidget(self.timing, 2, 1, 3, 1)
         layout.addWidget(self.crop, 2, 2, 3, 2)
-        layout.addLayout(quality_layout, 5, 0, 1, 4)
-        layout.addLayout(audio_box_layout, 6, 0, 1, 4)
+        layout.addLayout(self.fps_change, 5, 0, 1, 4)
         layout.addLayout(video_box_layout, 7, 0, 1, 4)
         layout.addWidget(self.kill_button, 8, 0, 1, 1)
         layout.addWidget(self.create_button, 8, 3, 1, 1)
@@ -277,18 +258,9 @@ class AV1(QtWidgets.QWidget):
         except (ValueError, AssertionError):
             return self.scale_warning_message.setText("Invalid width")
 
-        if scale_width % 8:
-            return self.scale_warning_message.setText("Width must be divisible by 8")
-
         if keep_aspect:
             ratio = scale_width / width
             scale_height = ratio * height
-            self.scale_height.setText(str(int(scale_height)))
-            mod = int(scale_height % 8)
-            if mod:
-                scale_height -= mod
-                logger.info(f"Have to adjust scale height by {mod} pixels")
-                self.scale_warning_message.setText(f"height has -{mod}px off aspect")
             self.scale_height.setText(str(int(scale_height)))
             return
 
@@ -298,11 +270,7 @@ class AV1(QtWidgets.QWidget):
         except (ValueError, AssertionError):
             return self.scale_warning_message.setText("Invalid height")
 
-        if scale_height % 8:
-            return self.scale_warning_message.setText("Height must be divisible by 8")
         self.scale_warning_message.setText("")
-
-
 
     @reusables.log_exception('flix', show_traceback=False)
     def open_file(self, update_text):
@@ -318,9 +286,9 @@ class AV1(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def save_file(self):
         f = Path(self.input_file_path.text())
-        save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.mkv")
-        filename = QtWidgets.QFileDialog.getSaveFileName(self, caption="Save Video As", dir=str(save_file),
-                                                         filter="Video File (*.mkv)")
+        save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.gif")
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, caption="Save GIF As", dir=str(save_file),
+                                                         filter="GIF File (*.gif)")
         return filename[0] if filename else False
 
     @staticmethod
@@ -357,40 +325,21 @@ class AV1(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
         self.streams, self.format_info = self.flix.parse(self.input_file_path.text())
-        text_audio_tracks = [(f'{i}: language {x.get("tags", {"language": "unknown"}).get("language", "unknown")}'
-                              f' - channels {x.channels}'
-                              f' - codec {x.codec_name}') for i, x in enumerate(self.streams['audio'])] + ["Disabled"]
+        print(self.streams)
         text_video_tracks = [f'{i}: codec {x.codec_name}' for i, x in enumerate(self.streams['video'])]
-
-        for i in range(self.audio_box.count()):
-            self.audio_box.removeItem(0)
 
         for i in range(self.video_box.count()):
             self.video_box.removeItem(0)
 
-        self.audio_box.addItems(text_audio_tracks)
         self.video_box.addItems(text_video_tracks)
         self.video_duration = float(self.format_info.get('duration', 0))
 
-        logger.debug(f"{len(self.streams['video'])} video tracks found")
-        logger.debug(f"{len(self.streams['audio'])} audio tracks found")
-        if self.streams['subtitle']:
-            logger.debug(f"{len(self.streams['subtitle'])} subtitle tracks found")
-        if self.streams['attachment']:
-            logger.debug(f"{len(self.streams['attachment'])} attachment tracks found")
-        if self.streams['data']:
-            logger.debug(f"{len(self.streams['data'])} data tracks found")
+        x, y = self.streams['video'][0].r_frame_rate.split("/")
+        fps = (float(x) / float(y))
+        self.fps_max.setText(f"{fps if fps < 30 else 30:.2f}")
 
-        if self.streams['subtitle'] and self.streams['subtitle'][0].codec_name in ('ass', 'ssa', 'mov_text'):
-            logger.debug("Supported subtitles detected")
-            # self.keep_subtitles.show()
-            # self.keep_subtitles.setChecked(True)
-        else:
-            if self.streams['subtitle']:
-                # hdmv_pgs_subtitle, dvd_subtitle
-                logger.warning(f"Cannot keep subtitles of type: {self.streams['subtitle'][0].codec_name}")
-            # self.keep_subtitles.setChecked(False)
-            # self.keep_subtitles.hide()
+        logger.debug(f"{len(self.streams['video'])} video tracks found")
+
         if self.streams['video']:
             self.update_source_labels(**self.streams['video'][0])
         self.generate_thumbnail()
@@ -429,13 +378,16 @@ class AV1(QtWidgets.QWidget):
 
     @reusables.log_exception('flix', show_traceback=False)
     def video_track_change(self, index):
+        x, y = self.streams['video'][index].r_frame_rate.split("/")
+        fps = (float(x) / float(y))
+        self.fps_max.setText(f"{fps if fps < 30 else 30:.2f}")
         self.update_source_labels(**self.streams['video'][index])
 
     def build_scale(self):
         width = int(self.scale_width.text())
         height = int(self.scale_height.text())
-        assert 0 < width <= 2160
-        assert 0 < height <= 4096
+        assert 0 < width
+        assert 0 < height
         return f"{width}:{height}"
 
     def build_crop(self):
@@ -453,8 +405,6 @@ class AV1(QtWidgets.QWidget):
         assert height > 0
         assert width <= self.video_width
         assert height <= self.video_height
-        assert width % 8 == 0
-        assert height % 8 == 0
         self.source_label_width.setText(str(width))
         self.source_label_height.setText(str(height))
         return f"{width}:{height}:{left}:{top}"
@@ -471,12 +421,9 @@ class AV1(QtWidgets.QWidget):
         if not self.output_video:
             logger.warning("No output video specified, canceling encoding")
             return
-        if not self.output_video.lower().endswith(("mkv", "mp4")):
-            return error_message("Output file must end with .mp4 or .mkv")
+        if not self.output_video.lower().endswith("gif"):
+            return error_message("Output file must end with .gif")
         video_track = self.streams['video'][self.video_box.currentIndex()]['index']
-        audio_track = None
-        if self.audio_box.currentText() != 'Disabled':
-            audio_track = self.streams['audio'][self.audio_box.currentIndex()]['index']
         start_time = 0
         duration = None
         if self.timing.isChecked():
@@ -504,8 +451,7 @@ class AV1(QtWidgets.QWidget):
             except ValueError:
                 return error_message("Crop values are not numeric")
             except AssertionError:
-                return error_message("Crop values must be divisible by eight, "
-                                     "positive integers, and less than video dimensions")
+                return error_message("Crop values must be positive integers, and less than video dimensions")
 
         scale = None
         if self.scale_area.isChecked():
@@ -514,41 +460,33 @@ class AV1(QtWidgets.QWidget):
             except ValueError:
                 return error_message("Scale values are not numeric")
             except AssertionError:
-                return error_message("Scale values must be positive integers less than 4096x2160")
+                return error_message("Scale values must be positive integers")
 
-        if not scale and (self.video_height > 2160 or self.video_width > 4096):
-            return error_message("Currently only videos at resolutions less than 4096x2160 are supported")
+        self.main.status.showMessage("Encoding...")
 
-        av1_settings = self.main.get_settings()['svt_av1']
-
-        params = {
-            "flix": self.flix,
-            "source": source_video,
-            "output": self.output_video,
-            "video_track": video_track,
-            "audio_track": audio_track,
-            "build_dir": tempfile.gettempdir(),
-            "start_time": start_time,
-            "duration": duration,
-            "save_segments": av1_settings.get('save_segments', False),
-            "auto_crop": True,
-            "save_yuv": av1_settings.get('save_raw', False),
-            "overwrite": False,
-            "scale": scale,
-            "crop": crop,
-            "segment_size": av1_settings.get('segment_size', 60),
-            "crf": self.crfs.currentText(),
-            "mode": self.mode.currentText(),
-        }
-
-        logger.debug(f'Encoding with params: {params}')
+        filters = self.flix.generate_filters(scale=scale, crop=crop)
+        pal_cmd = self.flix.generate_pallet_command(source=source_video, output=self.pallet_file, filters=filters,
+                                                    video_track=video_track, start_time=start_time, duration=duration)
+        self.flix.execute(pal_cmd).check_returncode()
+        cmd = self.flix.generate_gif_command(source=source_video, output=self.output_video, filters=filters,
+                                             video_track=video_track, pallet_file=self.pallet_file,
+                                             start_time=start_time, duration=duration, fps=self.fps)
 
         self.create_button.setDisabled(True)
         self.kill_button.show()
-        self.main.status.showMessage("Encoding...")
-        logger.info("Converting video")
-        self.encoding_worker = Worker(self, target=convert, params=params, cmd_type="convert")
+
+        self.encoding_worker = Worker(self, cmd, cmd_type="convert")
         self.encoding_worker.start()
+
+    @property
+    def fps(self):
+        try:
+            fps = float(self.fps_box.text())
+            assert 1 <= fps < 30
+        except (ValueError, AssertionError):
+            logger.warning('Bad FPS value must be between 1 and 30, setting to default of 15')
+            fps = 15
+        return fps
 
     @reusables.log_exception('flix', show_traceback=False)
     def conversion_cancelled(self):

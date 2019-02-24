@@ -30,7 +30,7 @@ def main():
                   ffmpeg_version=ffmpeg_version, ffprobe_version=ffprobe_version,
                   svt_av1=svt_av1,
                   source=sys.argv[1] if len(sys.argv) > 1 else "")
-    window.setMinimumWidth(622)
+    window.setFixedWidth(622)
     window.setFixedHeight(710)
     window.show()
     sys.exit(main_app.exec_())

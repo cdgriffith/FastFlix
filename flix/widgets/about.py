@@ -18,6 +18,7 @@ class About(QtWidgets.QWidget):
         print(base_path)
         super(About, self).__init__(parent)
         layout = QtWidgets.QGridLayout()
+
         label = QtWidgets.QLabel(f"<b>FastFlix</b> v{__version__}<br>"
                                  f"<br>Author: <a href='https://github.com/cdgriffith'>Chris Griffith</a>"
                                  f"<br>License: MIT")

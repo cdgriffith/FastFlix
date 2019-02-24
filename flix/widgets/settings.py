@@ -20,6 +20,7 @@ class Settings(QtWidgets.QWidget):
         self.ffmpeg_button = "path"
         self.svt_av1_button = "default"
 
+
         self.ffmpeg_warning_message = QtWidgets.QLabel("")
         self.ffmpeg_warning_message.setFixedHeight(40)
 

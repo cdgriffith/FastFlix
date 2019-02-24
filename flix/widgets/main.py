@@ -5,6 +5,7 @@ import os
 from flix.shared import QtWidgets, QtGui, pyinstaller, base_path, message
 from flix.widgets.av1 import AV1
 from flix.widgets.x265 import X265
+from flix.widgets.gif import GIF
 from flix.widgets.logs import Logs
 from flix.widgets.about import About
 from flix.widgets.settings import Settings
@@ -20,6 +21,7 @@ class Main(QtWidgets.QMainWindow):
         super(Main, self).__init__(parent)
         self.x265 = X265(parent=self, source=source)
         self.av1 = AV1(parent=self, source=source)
+        self.gif = GIF(parent=self, source=source)
         self.x265.show()
         self.av1.show()
 
@@ -36,6 +38,7 @@ class Main(QtWidgets.QMainWindow):
         self.settings = Settings(self)
 
         tab_widget = QtWidgets.QTabWidget()
+        tab_widget.addTab(self.gif, "GIF")
         tab_widget.addTab(self.av1, "AV1")
         tab_widget.addTab(self.x265, "x265")
         tab_widget.addTab(Logs(self), 'Logs')
@@ -49,7 +52,7 @@ class Main(QtWidgets.QMainWindow):
 
         if not ffmpeg_version or not ffprobe_version:
             self.x265.setDisabled(True)
-            tab_widget.setCurrentIndex(2)
+            tab_widget.setCurrentIndex(3)
             message("You need to select ffmpeg and ffprobe or equivalent tools to use before you can encode.",
                     parent=self)
 

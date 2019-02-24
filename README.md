@@ -1,8 +1,8 @@
 # FastFlix
 
-FastFlix is a current and next-gen video encoder. 
+FastFlix is a GIF converter as well as current and next-gen video encoder. 
 
-It can encode videos in AV1, and extended to use x265 with a GPL build of ffmpeg. 
+It can encode videos into AV1, GIF, and extended to use x265 with a GPL build of ffmpeg. 
 
 Read more about it and the licensing in the [docs](docs/README.md)
 

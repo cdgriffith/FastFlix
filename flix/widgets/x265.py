@@ -108,7 +108,7 @@ class X265(QtWidgets.QWidget):
         new_scale_layout.addWidget(self.scale_height)
         new_scale_layout.addStretch()
 
-        self.keep_aspect_button = QtWidgets.QCheckBox("Keep (near) aspect ratio")
+        self.keep_aspect_button = QtWidgets.QCheckBox("Keep aspect ratio")
         self.keep_aspect_button.setChecked(True)
         self.keep_aspect_button.toggled.connect(self.scale_update)
 
@@ -420,7 +420,12 @@ class X265(QtWidgets.QWidget):
     def scale_update(self, *args):
         keep_aspect = self.keep_aspect_button.isChecked()
         self.scale_height.setDisabled(keep_aspect)
-        if keep_aspect and (not self.video_height or not self.video_width):
+        height = self.video_height
+        width = self.video_width
+        if self.crop.isChecked():
+            width, height, *_ = (int(x) for x in self.build_crop().split(":"))
+
+        if keep_aspect and (not height or not width):
             return self.scale_warning_message.setText("Invalid source dimensions")
 
         try:
@@ -429,17 +434,9 @@ class X265(QtWidgets.QWidget):
         except (ValueError, AssertionError):
             return self.scale_warning_message.setText("Invalid width")
 
-        if scale_width % 8:
-            return self.scale_warning_message.setText("Width must be divisible by 8")
-
         if keep_aspect:
-            ratio = scale_width / self.video_width
-            scale_height = ratio * self.video_height
-            mod = int(scale_height % 8)
-            if mod:
-                scale_height -= mod
-                logger.info(f"Have to adjust scale height by {mod} pixels")
-                self.scale_warning_message.setText(f"height has -{mod}px off aspect")
+            ratio = scale_width / width
+            scale_height = ratio * height
             self.scale_height.setText(str(int(scale_height)))
             return
 
@@ -449,8 +446,6 @@ class X265(QtWidgets.QWidget):
         except (ValueError, AssertionError):
             return self.scale_warning_message.setText("Invalid height")
 
-        if scale_height % 8:
-            return self.scale_warning_message.setText("Height must be divisible by 8")
         self.scale_warning_message.setText("")
 
     def build_crop(self):
@@ -468,6 +463,8 @@ class X265(QtWidgets.QWidget):
         assert height > 0
         assert width <= self.video_width
         assert height <= self.video_height
+        self.source_label_width.setText(str(width))
+        self.source_label_height.setText(str(height))
         return f"{width}:{height}:{left}:{top}"
 
     @reusables.log_exception('flix', show_traceback=False)
