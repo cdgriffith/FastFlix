@@ -39,7 +39,7 @@ class Main(QtWidgets.QMainWindow):
 
         tab_widget = QtWidgets.QTabWidget()
         tab_widget.addTab(self.gif, "GIF")
-        tab_widget.addTab(self.av1, "AV1")
+        tab_widget.addTab(self.av1, "AV1 (Experimental)")
         tab_widget.addTab(self.x265, "x265")
         tab_widget.addTab(Logs(self), 'Logs')
         tab_widget.addTab(self.settings, 'Settings')
@@ -52,19 +52,19 @@ class Main(QtWidgets.QMainWindow):
 
         if not ffmpeg_version or not ffprobe_version:
             self.x265.setDisabled(True)
-            tab_widget.setCurrentIndex(3)
+            tab_widget.setCurrentIndex(4)
             message("You need to select ffmpeg and ffprobe or equivalent tools to use before you can encode.",
                     parent=self)
-
-        try:
-            ff_config = Flix(ffmpeg=ffmpeg, ffprobe=ffprobe).ffmpeg_configuration()
-        except FlixError:
-            self.x265.setDisabled(True)
-            tab_widget.setCurrentIndex(2)
         else:
-            if 'libx265' not in ff_config:
+            try:
+                ff_config = Flix(ffmpeg=ffmpeg, ffprobe=ffprobe).ffmpeg_configuration()
+            except FlixError:
                 self.x265.setDisabled(True)
-                tab_widget.setCurrentIndex(2)
+                tab_widget.setCurrentIndex(1)
+            else:
+                if 'libx265' not in ff_config:
+                    self.x265.setDisabled(True)
+                    tab_widget.setCurrentIndex(1)
 
         logger.info(f"Initialized FastFlix v{__version__}")
         logger.debug(f"ffmpeg version: {self.ffmpeg_version}")
@@ -86,13 +86,13 @@ class Main(QtWidgets.QMainWindow):
             pass
         event.accept()
 
-    def disable_converters(self, converters=('x265', 'av1')):
+    def disable_converters(self, converters=('x265', 'av1', 'gif')):
         if isinstance(converters, str):
             return getattr(self, converters).setDisabled(True)
         for converter in converters:
             getattr(self, converter).setDisabled(True)
 
-    def enable_converters(self, converters=('x265', 'av1')):
+    def enable_converters(self, converters=('x265', 'av1', 'gif')):
         if isinstance(converters, str):
             return getattr(self, converters).setDisabled(False)
         for converter in converters:

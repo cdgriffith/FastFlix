@@ -15,11 +15,12 @@ class Settings(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(Settings, self).__init__(parent)
         self.main = parent
+        self.default_ffmpeg = self.main.ffmpeg
+        self.default_ffprobe = self.main.ffprobe
         self.default_svt_av1 = self.main.svt_av1
         layout = QtWidgets.QGridLayout()
-        self.ffmpeg_button = "path"
+        self.ffmpeg_button = "default"
         self.svt_av1_button = "default"
-
 
         self.ffmpeg_warning_message = QtWidgets.QLabel("")
         self.ffmpeg_warning_message.setFixedHeight(40)
@@ -28,10 +29,10 @@ class Settings(QtWidgets.QWidget):
         self.button_group = QtWidgets.QButtonGroup()
 
         self.env_radio = QtWidgets.QRadioButton("Environment Variables (FFMPEG and FFPROBE)")
-        self.path_radio = QtWidgets.QRadioButton("System PATH")
+        self.path_radio = QtWidgets.QRadioButton("Default")
         self.binary_radio = QtWidgets.QRadioButton("Direct path to binaries")
         self.env_radio.name = "env"
-        self.path_radio.name = "path"
+        self.path_radio.name = "default"
         self.binary_radio.name = "binary"
         self.path_radio.setChecked(True)
 
@@ -177,7 +178,7 @@ class Settings(QtWidgets.QWidget):
             self.ffmpeg_env()
         if x.name == 'binary':
             self.check_ffmpeg_dir(self.ffmpeg_file_path.text())
-        if x.name == 'path':
+        if x.name == 'default':
             self.ffmpeg_path()
         self.ffmpeg_check()
 
@@ -199,9 +200,9 @@ class Settings(QtWidgets.QWidget):
         self.main.svt_av1 = os.getenv('SVT_AV1')
 
     def ffmpeg_path(self):
-        self.main.ffmpeg = 'ffmpeg'
+        self.main.ffmpeg = self.default_ffmpeg
         self.main.ffmpeg_version = ff_version(self.main.ffmpeg, throw=False)
-        self.main.ffprobe = 'ffprobe'
+        self.main.ffprobe = self.default_ffprobe
         self.main.ffprobe_version = ff_version(self.main.ffprobe, throw=False)
 
     def ffmpeg_env(self):

@@ -11,7 +11,7 @@ import reusables
 from flix import Flix
 from flix.shared import QtGui, QtCore, QtWidgets, error_message
 from flix.widgets.worker import Worker
-from flix.av1 import convert
+
 
 logger = logging.getLogger('flix')
 
@@ -108,14 +108,16 @@ class GIF(QtWidgets.QWidget):
         self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
         #        source_info_layout.addWidget(self.convert_hdr_check)
 
-        self.fps_change = QtWidgets.QHBoxLayout()
         self.fps_label = QtWidgets.QLabel("FPS")
-        self.fps_box = QtWidgets.QLineEdit("15")
-        self.fps_change.addWidget(self.fps_label)
-        self.fps_change.addWidget(self.fps_box)
-        self.fps_change.addWidget(QtWidgets.QLabel("Max FPS"))
-        self.fps_max = QtWidgets.QLabel("0")
-        self.fps_change.addWidget(self.fps_max)
+        # self.fps_box = QtWidgets.QLineEdit("15")
+
+        self.fps_box = QtWidgets.QSpinBox()
+        self.fps_box.setRange(1, 30)
+        self.fps_box.setSingleStep(1)
+        self.fps_box.setValue(15)
+
+
+
 
         # Duration Settings
         self.timing = QtWidgets.QGroupBox("Start Time / Duration")
@@ -222,15 +224,34 @@ class GIF(QtWidgets.QWidget):
         self.crop.toggled.connect(lambda x: self.generate_thumbnail())
 
         # Add root layouts
-        layout.addLayout(input_file_layout, 1, 0, 1, 4)
-        layout.addWidget(self.scale_area, 2, 0, 3, 1)
-        layout.addWidget(self.timing, 2, 1, 3, 1)
-        layout.addWidget(self.crop, 2, 2, 3, 2)
-        layout.addLayout(self.fps_change, 5, 0, 1, 4)
-        layout.addLayout(video_box_layout, 7, 0, 1, 4)
+        layout.addLayout(input_file_layout, 1, 0, 1, 12)
+        layout.addWidget(self.scale_area, 2, 0, 3, 3)
+        layout.addWidget(self.timing, 2, 3, 3, 3)
+        layout.addWidget(self.crop, 2, 6, 3, 6)
+
+        self.fps_max = QtWidgets.QLabel("0")
+
+        # TODO cleanup
+        f = QtWidgets.QHBoxLayout()
+        self.fps_label.setFixedWidth(45)
+        f.addWidget(self.fps_label)
+        f.addWidget(self.fps_box)
+
+        p = QtWidgets.QHBoxLayout()
+        mx = QtWidgets.QLabel("Max FPS:")
+        mx.setFixedWidth(45)
+        p.addWidget(mx)
+        p.addWidget(self.fps_max)
+
+        layout.addLayout(f, 5, 0, 1, 2)
+        layout.addLayout(p, 5, 2, 1, 1)
+
+        layout.addWidget(self.convert_hdr_check, 5, 5, 1, 4)
+
+        layout.addLayout(video_box_layout, 7, 0, 1, 12)
         layout.addWidget(self.kill_button, 8, 0, 1, 1)
         layout.addWidget(self.create_button, 8, 3, 1, 1)
-        layout.addWidget(self.preview, 9, 0, 1, 4)
+        layout.addWidget(self.preview, 9, 0, 1, 12)
 
         self.setLayout(layout)
 
@@ -334,8 +355,9 @@ class GIF(QtWidgets.QWidget):
         self.video_duration = float(self.format_info.get('duration', 0))
 
         x, y = self.streams['video'][0].r_frame_rate.split("/")
-        fps = (float(x) / float(y))
-        self.fps_max.setText(f"{fps if fps < 30 else 30:.2f}")
+        fps = round(float(x) / float(y))
+        self.fps_box.setRange(1, fps if fps < 30 else 30)
+        self.fps_max.setText(f"{fps if fps < 30 else 30}")
 
         logger.debug(f"{len(self.streams['video'])} video tracks found")
 
@@ -362,7 +384,7 @@ class GIF(QtWidgets.QWidget):
             output=self.thumb_file,
             video_track=self.streams['video'][self.video_box.currentIndex()]['index'],
             start_time=start_time,
-            # disable_hdr=self.convert_hdr_check.isChecked(),
+            disable_hdr=self.convert_hdr_check.isChecked(),
             crop=crop
         )
         logger.info("Generating thumbnail")
@@ -378,8 +400,9 @@ class GIF(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def video_track_change(self, index):
         x, y = self.streams['video'][index].r_frame_rate.split("/")
-        fps = (float(x) / float(y))
-        self.fps_max.setText(f"{fps if fps < 30 else 30:.2f}")
+        fps = round(float(x) / float(y))
+        self.fps_max.setText(f"{fps if fps < 30 else 30}")
+        self.fps_box.setRange(1, (fps if fps < 30 else 30))
         self.update_source_labels(**self.streams['video'][index])
 
     def build_scale(self):
@@ -463,13 +486,14 @@ class GIF(QtWidgets.QWidget):
 
         self.main.status.showMessage("Encoding...")
 
-        filters = self.flix.generate_filters(scale=scale, crop=crop)
+        filters = self.flix.generate_filters(scale=scale, crop=crop ,disable_hdr=self.convert_hdr_check.isChecked())
         pal_cmd = self.flix.generate_pallet_command(source=source_video, output=self.pallet_file, filters=filters,
                                                     video_track=video_track, start_time=start_time, duration=duration)
         self.flix.execute(pal_cmd).check_returncode()
         cmd = self.flix.generate_gif_command(source=source_video, output=self.output_video, filters=filters,
                                              video_track=video_track, pallet_file=self.pallet_file,
-                                             start_time=start_time, duration=duration, fps=self.fps)
+                                             start_time=start_time, duration=duration, fps=self.fps,
+                                             )
 
         self.create_button.setDisabled(True)
         self.kill_button.show()
