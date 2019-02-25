@@ -41,8 +41,8 @@ build_script:
   - cmd: mkdir dist
   - cmd: copy docs\build-licenses.txt dist\LICENSE
   - cmd: type nul > bundled
-#  - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "data\icon.ico;data" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." --noconsole flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile
-  - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "bundled;." --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;data" --add-data "binary-files/executables/windows/ffmpeg/lgpl/N-93214-g7e4d3dbe18/x86_64/*;." --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." --noconsole flix\gui.py  --icon data\icon.ico --name FastFlix-Bundled --clean --onefile
+#  - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "data\icon.ico;data" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." --noconsole flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile --noconsole
+  - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "bundled;." --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;data" --add-data "binary-files/executables/windows/ffmpeg/lgpl/N-93214-g7e4d3dbe18/x86_64/*;." --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." flix\gui.py  --icon data\icon.ico --name FastFlix-Bundled --clean --onefile
 #  - sh: pyinstaller --add-data "data/icon.ico:data/" --noconsole flix/gui.py  --icon data/icon.ico --name FastFlix --clean --onefile
 
 test: off
