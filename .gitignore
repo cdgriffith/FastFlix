@@ -109,3 +109,6 @@ lvenv/
 config.yaml
 *.bat
 *.sh
+binary-files/
+SvtAv1/
+bundled

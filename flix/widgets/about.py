@@ -15,7 +15,6 @@ class About(QtWidgets.QWidget):
     # TODO add all licenses
 
     def __init__(self, parent=None):
-        print(base_path)
         super(About, self).__init__(parent)
         layout = QtWidgets.QGridLayout()
 

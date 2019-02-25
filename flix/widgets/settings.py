@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import logging
 
-from flix.flix import ff_version, Flix, svt_av1_version
+from flix.flix import ff_version, Flix, svt_av1_version, FlixError
 from flix.shared import QtWidgets
 
 logger = logging.getLogger('flix')
@@ -267,15 +267,20 @@ class Settings(QtWidgets.QWidget):
 
     def ffmpeg_check(self):
         if self.main.ffmpeg_version and self.main.ffprobe_version:
-            ff_config = Flix(ffmpeg=self.main.ffmpeg).ffmpeg_configuration()
-            self.ffmpeg_warning_message.setText("<b>Status:</b> Everything is under control. Situation normal.")
-            self.main.enable_converters()
-            # if 'libaom' not in ff_config:
-            #     self.main.disable_converters('x265')
-            if 'libx265' not in ff_config:
-                self.ffmpeg_warning_message.setText("<b>Status:</b> "
-                                                    "libx265 support not found, disabled x265 conversion.")
-                self.main.disable_converters('x265')
+            try:
+                ff_config = Flix(ffmpeg=self.main.ffmpeg, ffprobe=self.main.ffprobe).ffmpeg_configuration()
+            except FlixError:
+                self.ffmpeg_warning_message.setText("<b>Status:</b> Error checking ffmpeg version")
+                self.main.disable_converters()
+            else:
+                self.ffmpeg_warning_message.setText("<b>Status:</b> Everything is under control. Situation normal.")
+                self.main.enable_converters()
+                # if 'libaom' not in ff_config:
+                #     self.main.disable_converters('x265')
+                if 'libx265' not in ff_config:
+                    self.ffmpeg_warning_message.setText("<b>Status:</b> "
+                                                        "libx265 support not found, disabled x265 conversion.")
+                    self.main.disable_converters('x265')
         elif self.main.ffmpeg_version:
             self.ffmpeg_warning_message.setText("<b>Status:</b> ffprobe not found")
             self.main.disable_converters()

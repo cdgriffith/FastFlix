@@ -325,7 +325,6 @@ class GIF(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
         self.streams, self.format_info = self.flix.parse(self.input_file_path.text())
-        print(self.streams)
         text_video_tracks = [f'{i}: codec {x.codec_name}' for i, x in enumerate(self.streams['video'])]
 
         for i in range(self.video_box.count()):

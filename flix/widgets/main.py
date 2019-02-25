@@ -9,7 +9,7 @@ from flix.widgets.gif import GIF
 from flix.widgets.logs import Logs
 from flix.widgets.about import About
 from flix.widgets.settings import Settings
-from flix.flix import Flix
+from flix.flix import Flix, FlixError
 from flix.version import __version__
 
 logger = logging.getLogger('flix')
@@ -56,9 +56,15 @@ class Main(QtWidgets.QMainWindow):
             message("You need to select ffmpeg and ffprobe or equivalent tools to use before you can encode.",
                     parent=self)
 
-        if 'libx265' not in Flix(ffmpeg=ffmpeg).ffmpeg_configuration():
+        try:
+            ff_config = Flix(ffmpeg=ffmpeg, ffprobe=ffprobe).ffmpeg_configuration()
+        except FlixError:
             self.x265.setDisabled(True)
             tab_widget.setCurrentIndex(2)
+        else:
+            if 'libx265' not in ff_config:
+                self.x265.setDisabled(True)
+                tab_widget.setCurrentIndex(2)
 
         logger.info(f"Initialized FastFlix v{__version__}")
         logger.debug(f"ffmpeg version: {self.ffmpeg_version}")
