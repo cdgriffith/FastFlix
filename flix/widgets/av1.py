@@ -157,8 +157,8 @@ class AV1(QtWidgets.QWidget):
         quality_layout.addWidget(self.crfs, stretch=1)
 
         self.mode = QtWidgets.QComboBox()
-        self.mode.addItems(["0", "1", "3"])
-        self.mode.setCurrentIndex(2)
+        self.mode.addItems(list(map(str, range(8))))  # Currently supports 0-8 encoding
+        self.mode.setCurrentIndex(4)
         quality_layout.addWidget(QtWidgets.QLabel("Encoding Mode"), stretch=0)
         quality_layout.addWidget(self.mode, stretch=1)
 
