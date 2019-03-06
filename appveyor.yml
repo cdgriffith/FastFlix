@@ -1,4 +1,4 @@
-version: test
+version: TEMP_VER
 
 skip_commits:
   files:
@@ -39,12 +39,12 @@ build_script:
   - cmd: type nul > bundled
   - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "bundled;." --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --add-data "binary-files/executables/windows/ffmpeg/lgpl/N-93214-g7e4d3dbe18/x86_64/*;." --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile
   - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" flix\gui.py  --icon data\icon.ico --name FastFlix-Light --clean --onefile
-
+  - cmd: move dist\*.exe .
 
 test: off
 
 artifacts:
-  - path: dist\*
+  - path: '*.exe'
 
 deploy:
   - provider: Environment
