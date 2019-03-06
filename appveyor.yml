@@ -26,10 +26,10 @@ branches:
 install:
   - cmd: git clone -b ffmpeg --single-branch https://github.com/cdgriffith/binary-files.git
   - cmd: mkdir SvtAv1
-  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/projects/OpenVisualCloud/svt-av1/artifacts/Bin/Release/SvtAv1Enc.dll?branch=master
-  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/projects/OpenVisualCloud/svt-av1/artifacts/Bin/Release/SvtAv1EncApp.exe?branch=master
-  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/projects/OpenVisualCloud/svt-av1/artifacts/Bin/Release/SvtAv1Enc.lib?branch=master
-  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/projects/OpenVisualCloud/svt-av1/artifacts/Bin/Release/SvtAv1Enc.exp?branch=master
+  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/projects/OpenVisualCloud/svt-av1/artifacts/Bin/Release/SvtAv1Enc.dll?branch=master -FileName SvtAv1\SvtAv1Enc.dll
+  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/projects/OpenVisualCloud/svt-av1/artifacts/Bin/Release/SvtAv1EncApp.exe?branch=master -FileName SvtAv1\SvtAv1EncApp.exe
+  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/projects/OpenVisualCloud/svt-av1/artifacts/Bin/Release/SvtAv1Enc.lib?branch=master -FileName SvtAv1\SvtAv1Enc.lib
+  - cmd: appveyor DownloadFile https://ci.appveyor.com/api/projects/OpenVisualCloud/svt-av1/artifacts/Bin/Release/SvtAv1Enc.exp?branch=master -FileName SvtAv1\SvtAv1Enc.exp
   - cmd: C:\Python36-x64\python -m pip install --upgrade pip setuptools --ignore-installed
   - cmd: C:\Python36-x64\python -m pip install -r requirements.txt
 #  - sh: sudo apt install python3-pip -y
