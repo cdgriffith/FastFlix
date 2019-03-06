@@ -1,4 +1,4 @@
-version: 1.1.0-{build}
+version: test
 
 skip_commits:
   files:
@@ -23,6 +23,7 @@ branches:
   - build
 
 install:
+  - ps: Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe data\get_version.py)"
   - cmd: git clone -b ffmpeg --single-branch https://github.com/cdgriffith/binary-files.git
   - cmd: mkdir SvtAv1
   - cmd: appveyor DownloadFile https://ci.appveyor.com/api/projects/OpenVisualCloud/svt-av1/artifacts/Bin/Release/SvtAv1Enc.dll?branch=master -FileName SvtAv1\SvtAv1Enc.dll

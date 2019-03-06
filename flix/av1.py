@@ -9,7 +9,7 @@ import logging
 from box import Box
 import reusables
 
-from flix import FlixError
+from flix.flix import FlixError
 
 logger = logging.getLogger('flix')
 

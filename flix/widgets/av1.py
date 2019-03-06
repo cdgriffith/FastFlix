@@ -8,7 +8,7 @@ import tempfile
 
 import reusables
 
-from flix import Flix
+from flix.flix import Flix
 from flix.shared import QtGui, QtCore, QtWidgets, error_message
 from flix.widgets.worker import Worker
 from flix.av1 import convert
