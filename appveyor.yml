@@ -44,3 +44,14 @@ test: off
 
 artifacts:
   - path: dist\*
+
+deploy:
+  - provider: Environment
+    name: release
+    on:
+      branch: master
+
+  - provider: Environment
+    name: release
+    on:
+      branch: build
