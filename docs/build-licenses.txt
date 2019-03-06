@@ -4,7 +4,7 @@ FFMPEG, PySide2 and SVT-AV1 are dynamically linked (where bundled).
 
 * FastFlix (MIT)
 * Box (MIT)
-* Reusables) (MIT)
+* Reusables (MIT)
 * ffmpeg (LGPLv2.1)
 * PySide2 (LGPLv3)
 * PyInstaller (Modified GPL)
