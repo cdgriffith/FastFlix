@@ -25,6 +25,7 @@ branches:
 install:
   - ps: >-
     try {Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe data\get_version.py)"}
+
     catch {Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe data\get_version.py)-$env:APPVEYOR_BUILD_ID"}
   - ps: Update-AppveyorBuild -Message "[$env:APPVEYOR_REPO_BRANCH] $env:APPVEYOR_REPO_COMMIT_MESSAGE"
   - cmd: git clone -b ffmpeg --single-branch https://github.com/cdgriffith/binary-files.git
