@@ -1,3 +1,6 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/208k29cvoq8xwf8j/branch/master?svg=true)](https://ci.appveyor.com/project/cdgriffith/fastflix/branch/master)
+
+
 # FastFlix
 
 FastFlix is a GIF converter as well as current and next-gen video encoder. 
