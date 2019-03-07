@@ -19,11 +19,12 @@ platform: x64
 
 branches:
   only:
-  - master
-  - build
+    - master
+    - build
 
 install:
   - ps: Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe data\get_version.py)"
+  - ps: Update-AppveyorBuild -Message "[$env:APPVEYOR_REPO_BRANCH] $env:APPVEYOR_REPO_COMMIT_MESSAGE"
   - cmd: git clone -b ffmpeg --single-branch https://github.com/cdgriffith/binary-files.git
   - cmd: mkdir SvtAv1
   - cmd: appveyor DownloadFile https://ci.appveyor.com/api/projects/OpenVisualCloud/svt-av1/artifacts/Bin/Release/SvtAv1Enc.dll?branch=master -FileName SvtAv1\SvtAv1Enc.dll
@@ -44,15 +45,27 @@ build_script:
 test: off
 
 artifacts:
-  - path: '*.exe'
+  - path: 'FastFlix*exe'
+
+#deploy:
+#  - provider: Environment
+#    name: release
+#    on:
+#      branch: master
+#
+#  - provider: Environment
+#    name: release
+#    on:
+#      branch: build
+#
 
 deploy:
   - provider: Environment
-    name: release
+    artifact: 'FastFlix*exe'
+    draft: false
+    prerelease: false
     on:
-      branch: master
-
-  - provider: Environment
-    name: release
-    on:
-      branch: build
+      branch:
+        - master
+        - build
+      APPVEYOR_REPO_TAG: false
