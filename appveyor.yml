@@ -39,9 +39,9 @@ install:
 
 build_script:
   - cmd: mkdir dist
-  - cmd: type nul > bundled
+  - ps: '[IO.File]::WriteAllLines("bundled", "ffmpeg and svtav1")'
   - ps: 'New-Item -Path Env: -Name VERSION -Value $(C:\Python36-x64\python.exe data\get_version.py)'
-  - ps: 'echo "Building branch $env:APPVEYOR_REPO_BRANCH - version $env.VERSION"'
+  - ps: 'echo "Building branch $env:APPVEYOR_REPO_BRANCH - version $env:VERSION"'
   - ps: 'if ($env:APPVEYOR_REPO_BRANCH -eq "master") { C:\Python36-x64\Scripts\pyinstaller --add-data "bundled;." --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --add-data "binary-files/executables/windows/ffmpeg/lgpl/N-93214-g7e4d3dbe18/x86_64/*;." --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile --noconsole }'
   - ps: 'if ($env:APPVEYOR_REPO_BRANCH -eq "master") { C:\Python36-x64\Scripts\pyinstaller --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" flix\gui.py  --icon data\icon.ico --name FastFlix-Light --clean --onefile --noconsole }'
   - ps: 'if ($env:APPVEYOR_REPO_BRANCH -ne "master") { [IO.File]::WriteAllLines("build_version", $env:VERSION) }'
