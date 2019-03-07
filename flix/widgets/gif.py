@@ -9,7 +9,7 @@ import tempfile
 import reusables
 
 from flix.flix import Flix
-from flix.shared import QtGui, QtCore, QtWidgets, error_message
+from flix.shared import QtGui, QtCore, QtWidgets, error_message, width
 from flix.widgets.worker import Worker
 
 
@@ -30,7 +30,7 @@ class GIF(QtWidgets.QWidget):
         self.pallet_file = Path(tempfile.gettempdir(), "flix_gif_pallet.png")
         layout = QtWidgets.QGridLayout()
         self.setFixedHeight(650)
-        self.setFixedWidth(620)
+        self.setFixedWidth(width)
         self.setAcceptDrops(True)
 
         self.video_width = None

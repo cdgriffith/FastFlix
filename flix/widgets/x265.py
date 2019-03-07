@@ -9,7 +9,7 @@ import tempfile
 import reusables
 
 from flix.flix import Flix
-from flix.shared import QtGui, QtCore, QtWidgets, error_message
+from flix.shared import QtGui, QtCore, QtWidgets, error_message, width
 from flix.widgets.worker import Worker
 
 logger = logging.getLogger('flix')
@@ -28,7 +28,7 @@ class X265(QtWidgets.QWidget):
         self.thumb_file = Path(tempfile.gettempdir(), "flix_x265_preview.png")
         layout = QtWidgets.QGridLayout()
         self.setFixedHeight(650)
-        self.setFixedWidth(620)
+        self.setFixedWidth(width)
         self.setAcceptDrops(True)
 
         self.video_width = None

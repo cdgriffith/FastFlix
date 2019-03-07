@@ -20,6 +20,7 @@ if os.getenv('PYSIDE2'):
 from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2 import __version__ as pyside_version
 
+width = 800
 
 def message(msg, parent=None):
     sm = QtWidgets.QMessageBox(parent=parent)

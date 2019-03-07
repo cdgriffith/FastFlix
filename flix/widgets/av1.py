@@ -9,7 +9,7 @@ import tempfile
 import reusables
 
 from flix.flix import Flix
-from flix.shared import QtGui, QtCore, QtWidgets, error_message
+from flix.shared import QtGui, QtCore, QtWidgets, error_message, width
 from flix.widgets.worker import Worker
 from flix.av1 import convert
 
@@ -29,7 +29,7 @@ class AV1(QtWidgets.QWidget):
         self.thumb_file = Path(tempfile.gettempdir(), "flix_av1_preview.png")
         layout = QtWidgets.QGridLayout()
         self.setFixedHeight(650)
-        self.setFixedWidth(620)
+        # self.setFixedWidth(620)
         self.setAcceptDrops(True)
 
         self.video_width = None
@@ -73,10 +73,8 @@ class AV1(QtWidgets.QWidget):
         dimensions_layout.addWidget(QtWidgets.QLabel("x"))
         self.source_label_height = QtWidgets.QLabel("0")
         dimensions_layout.addWidget(self.source_label_height)
-        dimensions_layout.addStretch()
 
         new_scale_layout = QtWidgets.QHBoxLayout()
-        new_scale_layout.addStretch()
         new_scale_layout.addWidget(QtWidgets.QLabel("Scale:"))
         self.scale_width = QtWidgets.QLineEdit("0")
         self.scale_width.editingFinished.connect(self.scale_update)
@@ -86,7 +84,6 @@ class AV1(QtWidgets.QWidget):
         self.scale_height.editingFinished.connect(self.scale_update)
         self.scale_height.setDisabled(True)
         new_scale_layout.addWidget(self.scale_height)
-        new_scale_layout.addStretch()
 
         self.keep_aspect_button = QtWidgets.QCheckBox("Keep (near) aspect ratio")
         self.keep_aspect_button.setChecked(True)
@@ -240,16 +237,16 @@ class AV1(QtWidgets.QWidget):
         self.crop.toggled.connect(lambda x: self.generate_thumbnail())
 
         # Add root layouts
-        layout.addLayout(input_file_layout, 1, 0, 1, 4)
+        layout.addLayout(input_file_layout, 1, 0, 1, 10)
         layout.addWidget(self.scale_area, 2, 0, 3, 1)
-        layout.addWidget(self.timing, 2, 1, 3, 1)
-        layout.addWidget(self.crop, 2, 2, 3, 2)
-        layout.addLayout(quality_layout, 5, 0, 1, 4)
-        layout.addLayout(audio_box_layout, 6, 0, 1, 4)
-        layout.addLayout(video_box_layout, 7, 0, 1, 4)
-        layout.addWidget(self.kill_button, 8, 0, 1, 1)
-        layout.addWidget(self.create_button, 8, 3, 1, 1)
-        layout.addWidget(self.preview, 9, 0, 1, 4)
+        layout.addWidget(self.timing, 2, 1, 3, 5)
+        layout.addWidget(self.crop, 2, 6, 3, 4)
+        layout.addLayout(quality_layout, 5, 0, 1, 10)
+        layout.addLayout(audio_box_layout, 6, 0, 1, 10)
+        layout.addLayout(video_box_layout, 7, 0, 1, 10)
+        layout.addWidget(self.kill_button, 8, 0, 1, 10)
+        layout.addWidget(self.create_button, 8, 7, 1, 3)
+        layout.addWidget(self.preview, 9, 0, 1, 10)
 
         self.setLayout(layout)
 
