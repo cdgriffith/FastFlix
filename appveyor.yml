@@ -1,4 +1,4 @@
-version: TEMP_VER
+version: TEMP_VER-{build}
 
 skip_commits:
   files:
