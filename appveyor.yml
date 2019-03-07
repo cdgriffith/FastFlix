@@ -23,7 +23,9 @@ branches:
     - build
 
 install:
-  - ps: Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe data\get_version.py)"
+  - ps: >-
+    try {Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe data\get_version.py)"}
+    catch {Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe data\get_version.py)-$env:APPVEYOR_BUILD_ID"}
   - ps: Update-AppveyorBuild -Message "[$env:APPVEYOR_REPO_BRANCH] $env:APPVEYOR_REPO_COMMIT_MESSAGE"
   - cmd: git clone -b ffmpeg --single-branch https://github.com/cdgriffith/binary-files.git
   - cmd: mkdir SvtAv1
@@ -38,8 +40,17 @@ install:
 build_script:
   - cmd: mkdir dist
   - cmd: type nul > bundled
-  - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "bundled;." --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --add-data "binary-files/executables/windows/ffmpeg/lgpl/N-93214-g7e4d3dbe18/x86_64/*;." --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile
-  - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" flix\gui.py  --icon data\icon.ico --name FastFlix-Light --clean --onefile
+  - cmd: >-
+      echo "Building branch: $env:APPVEYOR_REPO_BRANCH"
+      New-Item -Path Env: -Name VERSION -Value $(C:\Python36-x64\python.exe data\get_version.py)
+      if ($env:APPVEYOR_REPO_BRANCH -eq "master") {
+        C:\Python36-x64\Scripts\pyinstaller --add-data "bundled;." --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --add-data "binary-files/executables/windows/ffmpeg/lgpl/N-93214-g7e4d3dbe18/x86_64/*;." --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile --noconsole
+        C:\Python36-x64\Scripts\pyinstaller --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" flix\gui.py  --icon data\icon.ico --name FastFlix-Light --clean --onefile --noconsole
+      } ELSE {
+        [IO.File]::WriteAllLines('build_version', $env:VERSION)
+        C:\Python36-x64\Scripts\pyinstaller --add-data "bundled;." --add-data "build_version;." --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --add-data "binary-files/executables/windows/ffmpeg/lgpl/N-93214-g7e4d3dbe18/x86_64/*;." --paths "C:\Python36-x64\Lib\site-packages\shiboken2" --add-data "SvtAv1\*;." flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile
+        C:\Python36-x64\Scripts\pyinstaller --add-data "build_version;." --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" flix\gui.py  --icon data\icon.ico --name FastFlix-Light --clean --onefile
+      }
   - cmd: move dist\*.exe .
 
 test: off
@@ -69,4 +80,3 @@ deploy:
       branch:
         - master
         - build
-      APPVEYOR_REPO_TAG: false
