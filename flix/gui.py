@@ -29,8 +29,7 @@ def main():
     ffmpeg_version = ff_version(ffmpeg, throw=False)
     ffprobe_version = ff_version(ffprobe, throw=False)
 
-    svt_av1 = os.getenv("SVT_AV1",
-                        Path(base_path, 'SvtAv1EncApp.exe') if reusables.win_based else 'SvtAv1EncApp')
+    svt_av1 = os.getenv("SVT_AV1", Path(base_path, 'SvtAv1EncApp.exe') if reusables.win_based else 'SvtAv1EncApp')
 
     window = Main(ffmpeg=ffmpeg, ffprobe=ffprobe,
                   ffmpeg_version=ffmpeg_version, ffprobe_version=ffprobe_version,

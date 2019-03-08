@@ -1,27 +1,16 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/208k29cvoq8xwf8j/branch/master?svg=true)](https://ci.appveyor.com/project/cdgriffith/fastflix/branch/master)
 
-
 # FastFlix
 
 FastFlix is a GIF converter as well as current and next-gen video encoder. 
 
-It can encode videos into AV1, GIF, and extended to use x265 with a GPL build of ffmpeg. 
+It can encode videos into AV1, GIF, and can be extended to use x265 with a GPL build of ffmpeg. 
 
 Read more about it and the licensing in the [docs](docs/README.md)
 
 # Releases 
 
-View the [releases](https://github.com/cdgriffith/FastFlix/releases) for Windows and Linux binaries (Generated via Appveyor and also [available there](https://ci.appveyor.com/project/cdgriffith/fastflix)). 
-
-For legal reasons the ffmpeg binary cannot be bundled with the executable and must be [separately downloaded](https://www.ffmpeg.org/download.html).
-
-## Setting up ffmpeg
-
-There are three ways provided a path to ffmpeg. 
-
-1. Looks in the FFMPEG and FFPROBE environment variables
-2. Looks on the system PATH to see if it is already available
-3. Manually link to the directory housing the binary files via the GUI 
+View the [releases](https://github.com/cdgriffith/FastFlix/releases) for 64 bit Windows binaries (Generated via Appveyor and also [available there](https://ci.appveyor.com/project/cdgriffith/fastflix)). 
 
 ## Running the code locally
 
@@ -33,6 +22,8 @@ Download and extract the [latest zip](https://github.com/cdgriffith/FastFlix/arc
 pip install requirements.txt
 python -m flix
 ```
+
+You will need [ffmpeg](https://www.ffmpeg.org/download.html) and [SVT AV1](https://github.com/OpenVisualCloud/SVT-AV1) executables.
 
 # License
 
