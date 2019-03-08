@@ -60,10 +60,19 @@ deploy:
     name: release
     artifact: 'FastFlix*exe'
     draft: false
+    prerelease: true
+    description: ''
+    on:
+      branch:
+        - build
+        - develop
+
+  - provider: Environment
+    name: release
+    artifact: 'FastFlix*exe'
+    draft: false
     prerelease: false
     description: ''
     on:
       branch:
         - master
-        - build
-        - develop

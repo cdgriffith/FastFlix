@@ -128,9 +128,9 @@ class X265(QtWidgets.QWidget):
         # source_info_layout.addWidget(self.convert_hdr_check)
         #
         # # Keep subs
-        # self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
-        # self.keep_subtitles.setChecked(False)
-        # self.keep_subtitles.hide()
+        self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
+        self.keep_subtitles.setChecked(False)
+        self.keep_subtitles.hide()
         # source_info_layout.addWidget(self.keep_subtitles)
         # source_info_layout.addStretch()
 
@@ -526,13 +526,12 @@ class X265(QtWidgets.QWidget):
                 return error_message("Scale values must be positive integers")
 
         # remove_hdr = self.convert_hdr_check.isChecked()
-        # self.keep_subtitles.isChecked()
 
         command = self.flix.generate_x265_command(source_video, self.output_video, video_track, audio_track,
                                                   duration=duration, start_time=start_time,
                                                   crf=self.crfs.currentText(), preset=self.preset.currentText(),
                                                   disable_hdr=None, scale=scale,
-                                                  keep_subtitles=None, crop=crop)
+                                                  keep_subtitles=self.keep_subtitles.isChecked(), crop=crop)
 
         self.create_button.setDisabled(True)
         self.kill_button.show()
