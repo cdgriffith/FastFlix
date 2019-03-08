@@ -220,7 +220,7 @@ class X265(QtWidgets.QWidget):
         # Preview Image
         self.preview = QtWidgets.QLabel()
         self.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.preview.setFixedSize(600, 400)
+        self.preview.setFixedSize(width, 400)
         self.preview.setStyleSheet('border-top: 2px solid #dddddd;')  # background-color:#f0f0f0
 
         # Cropping

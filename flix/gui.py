@@ -17,10 +17,16 @@ def main():
     main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
 
-    ffmpeg = os.getenv("FFMPEG", Path(base_path, 'ffmpeg.exe') if reusables.win_based else 'ffmpeg')
-    ffmpeg_version = ff_version(ffmpeg, throw=False)
+    ffmpeg = 'ffmpeg'
+    ffprobe = 'ffprobe'
+    if pyinstaller and reusables.win_based and Path(base_path, 'bundled').exists():
+        ffmpeg = Path(base_path, 'ffmpeg.exe')
+        ffprobe = Path(base_path, 'ffprobe.exe')
+    elif reusables.win_based:
+        ffmpeg = 'ffmpeg.exe'
+        ffprobe = 'ffprobe.exe'
 
-    ffprobe = os.getenv("FFPROBE", Path(base_path, 'ffprobe.exe') if reusables.win_based else 'ffprobe')
+    ffmpeg_version = ff_version(ffmpeg, throw=False)
     ffprobe_version = ff_version(ffprobe, throw=False)
 
     svt_av1 = os.getenv("SVT_AV1",
