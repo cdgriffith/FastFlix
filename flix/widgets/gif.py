@@ -174,7 +174,7 @@ class GIF(QtWidgets.QWidget):
         # Preview Image
         self.preview = QtWidgets.QLabel()
         self.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.preview.setFixedSize(600, 400)
+        self.preview.setFixedSize(width, 400)
         self.preview.setStyleSheet('border-top: 2px solid #dddddd;')  # background-color:#f0f0f0
 
         # Cropping
@@ -249,8 +249,8 @@ class GIF(QtWidgets.QWidget):
         layout.addWidget(self.convert_hdr_check, 5, 5, 1, 4)
 
         layout.addLayout(video_box_layout, 7, 0, 1, 12)
-        layout.addWidget(self.kill_button, 8, 0, 1, 1)
-        layout.addWidget(self.create_button, 8, 3, 1, 1)
+        layout.addWidget(self.kill_button, 8, 0, 1, 2)
+        layout.addWidget(self.create_button, 8, 10, 1, 2)
         layout.addWidget(self.preview, 9, 0, 1, 12)
 
         self.setLayout(layout)

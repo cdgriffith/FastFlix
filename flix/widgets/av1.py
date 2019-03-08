@@ -29,7 +29,7 @@ class AV1(QtWidgets.QWidget):
         self.thumb_file = Path(tempfile.gettempdir(), "flix_av1_preview.png")
         layout = QtWidgets.QGridLayout()
         self.setFixedHeight(650)
-        # self.setFixedWidth(620)
+        self.setFixedWidth(width)
         self.setAcceptDrops(True)
 
         self.video_width = None
@@ -149,8 +149,8 @@ class AV1(QtWidgets.QWidget):
         quality_layout = QtWidgets.QHBoxLayout()
         quality_layout.addWidget(QtWidgets.QLabel("Quality"), stretch=0)
         self.crfs = QtWidgets.QComboBox()
-        self.crfs.addItems([str(x / 2) for x in range(61)])
-        self.crfs.setCurrentIndex(40)
+        self.crfs.addItems([str(x) for x in range(63)])
+        self.crfs.setCurrentIndex(30)
         quality_layout.addWidget(self.crfs, stretch=1)
 
         self.mode = QtWidgets.QComboBox()
@@ -187,7 +187,7 @@ class AV1(QtWidgets.QWidget):
         # Preview Image
         self.preview = QtWidgets.QLabel()
         self.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.preview.setFixedSize(600, 400)
+        self.preview.setFixedSize(width, 400)
         self.preview.setStyleSheet('border-top: 2px solid #dddddd;')  # background-color:#f0f0f0
 
         # Cropping
@@ -244,9 +244,9 @@ class AV1(QtWidgets.QWidget):
         layout.addLayout(quality_layout, 5, 0, 1, 10)
         layout.addLayout(audio_box_layout, 6, 0, 1, 10)
         layout.addLayout(video_box_layout, 7, 0, 1, 10)
-        layout.addWidget(self.kill_button, 8, 0, 1, 10)
-        layout.addWidget(self.create_button, 8, 7, 1, 3)
-        layout.addWidget(self.preview, 9, 0, 1, 10)
+        layout.addWidget(self.kill_button, 8, 0, 1, 2)
+        layout.addWidget(self.create_button, 8, 8, 1, 2)
+        layout.addWidget(self.preview, 10, 0, 1, 10)
 
         self.setLayout(layout)
 
@@ -541,7 +541,7 @@ class AV1(QtWidgets.QWidget):
         logger.debug(f'Encoding with params: {params}')
 
         self.create_button.setDisabled(True)
-        self.kill_button.show()
+        self.kill_button.hide()
         self.main.status.showMessage("Encoding...")
         logger.info("Converting video")
         self.encoding_worker = Worker(self, target=convert, params=params, cmd_type="convert")

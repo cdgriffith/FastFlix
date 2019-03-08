@@ -121,11 +121,11 @@ class X265(QtWidgets.QWidget):
         self.scale_area.setLayout(scale_layout)
 
         # # Convert HDR
-        # self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
-        # self.convert_hdr_check.setChecked(False)
-        # self.convert_hdr_check.hide()
-        # self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
-        # source_info_layout.addWidget(self.convert_hdr_check)
+        self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
+        self.convert_hdr_check.setChecked(False)
+        self.convert_hdr_check.hide()
+        self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
+        #source_info_layout.addWidget(self.convert_hdr_check)
         #
         # # Keep subs
         self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
@@ -448,6 +448,13 @@ class X265(QtWidgets.QWidget):
 
         self.scale_warning_message.setText("")
 
+    def build_scale(self):
+        width = int(self.scale_width.text())
+        height = int(self.scale_height.text())
+        assert 0 < width <= 2160
+        assert 0 < height <= 4096
+        return f"{width}:{height}"
+
     def build_crop(self):
         if not self.crop.isChecked():
             return None
@@ -525,12 +532,12 @@ class X265(QtWidgets.QWidget):
             except AssertionError:
                 return error_message("Scale values must be positive integers")
 
-        # remove_hdr = self.convert_hdr_check.isChecked()
+        remove_hdr = self.convert_hdr_check.isChecked()
 
         command = self.flix.generate_x265_command(source_video, self.output_video, video_track, audio_track,
                                                   duration=duration, start_time=start_time,
                                                   crf=self.crfs.currentText(), preset=self.preset.currentText(),
-                                                  disable_hdr=None, scale=scale,
+                                                  disable_hdr=remove_hdr, scale=scale,
                                                   keep_subtitles=self.keep_subtitles.isChecked(), crop=crop)
 
         self.create_button.setDisabled(True)
