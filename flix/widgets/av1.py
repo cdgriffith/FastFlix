@@ -299,7 +299,6 @@ class AV1(QtWidgets.QWidget):
             return self.scale_warning_message.setText("Height must be divisible by 8")
         self.scale_warning_message.setText("")
 
-
     @reusables.log_exception('flix', show_traceback=False)
     def open_file(self, update_text):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="Open Video",
