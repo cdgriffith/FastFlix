@@ -77,8 +77,6 @@ class X265(QtWidgets.QWidget):
         # source_info_layout.addLayout(source_colorspace_layout)
 
         # Scale
-        self.source_label_width = QtWidgets.QLabel("")
-        self.source_label_height = QtWidgets.QLabel("")
         self.source_label_duration = QtWidgets.QLabel("")
         self.source_label_colorspace = QtWidgets.QLabel("")
         self.scale_area = QtWidgets.QGroupBox("Scale")
@@ -325,8 +323,8 @@ class X265(QtWidgets.QWidget):
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_source_labels(self, width, height, **kwargs):
-        self.source_label_width.setText(f"{width}px" if width else "")
-        self.source_label_height.setText(f"{height}px" if height else "")
+        self.source_label_width.setText(f"{width}px" if width else "0")
+        self.source_label_height.setText(f"{height}px" if height else "0")
         self.video_height = int(height)
         self.video_width = int(width)
         self.source_label_duration.setText(str(timedelta(seconds=float(self.video_duration)))[:10])
