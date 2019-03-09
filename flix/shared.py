@@ -11,13 +11,16 @@ except AttributeError:
     base_path = os.path.abspath(".")
     pyinstaller = False
 
-if os.getenv('SHIBOKEN2') and os.getenv('PYSIDE2'):
-    # This is required to keep LGPL libraries truly dynamically linked when built into a binary
+# This is required to keep LGPL libraries truly dynamically linked when built into a binary
+if os.getenv('SHIBOKEN2'):
     importlib.machinery.SourceFileLoader('shiboken2', os.getenv('SHIBOKEN2')).load_module()
+if os.getenv('PYSIDE2'):
     PySide2 = importlib.machinery.SourceFileLoader('PySide2', os.getenv('PYSIDE2')).load_module()
 
 from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2 import __version__ as pyside_version
+
+main_width = 800
 
 
 def message(msg, parent=None):
@@ -37,4 +40,3 @@ def error_message(msg, details=None, traceback=False, parent=None):
         em.setDetailedText(traceback.format_exc())
     em.setStandardButtons(QtWidgets.QMessageBox.Ok)
     em.exec_()
-

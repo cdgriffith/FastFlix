@@ -90,6 +90,7 @@ ENV/
 env.bak/
 venv.bak/
 lvenv/
+venv*/
 
 # Spyder project settings
 .spyderproject
@@ -109,3 +110,6 @@ lvenv/
 config.yaml
 *.bat
 *.sh
+binary-files/
+SvtAv1/
+bundled

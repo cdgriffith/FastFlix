@@ -1,6 +1,15 @@
 Changelog
 ---------
 
+Version 1.1.0
+~~~~~~~~~~~~~
+
+* Add AV1 support
+* Add GIF support
+* Add Settings page
+* Add About page
+* Large amount of changes, fixes, and bugs introduced
+
 Version 1.0.0
 ~~~~~~~~~~~~~
 

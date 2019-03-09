@@ -11,21 +11,22 @@ import reusables
 from flix.flix import Flix
 from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 from flix.widgets.worker import Worker
+from flix.av1 import convert
 
 logger = logging.getLogger('flix')
 
-__all__ = ['X265']
+__all__ = ['AV1']
 
 
-class X265(QtWidgets.QWidget):
+class AV1(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
 
     def __init__(self, parent=None, source=""):
-        super(X265, self).__init__(parent)
+        super(AV1, self).__init__(parent)
         self.main = parent
-        self.thumb_file = Path(tempfile.gettempdir(), "flix_x265_preview.png")
+        self.thumb_file = Path(tempfile.gettempdir(), "flix_av1_preview.png")
         layout = QtWidgets.QGridLayout()
         self.setFixedHeight(650)
         self.setFixedWidth(main_width)
@@ -55,28 +56,9 @@ class X265(QtWidgets.QWidget):
         input_file_layout.setSpacing(20)
         self.open_input_file.clicked.connect(lambda: self.open_file(self.input_file_path))
 
-        # Media Info
-        # self.source_label_width = QtWidgets.QLabel("")
-        # self.source_label_height = QtWidgets.QLabel("")
-        # self.source_label_duration = QtWidgets.QLabel("")
-        # self.source_label_colorspace = QtWidgets.QLabel("")
-        # source_width_layout = QtWidgets.QHBoxLayout()
-        # source_width_layout.addWidget(QtWidgets.QLabel("Width: "))
-        # source_width_layout.addWidget(self.source_label_width)
-        # source_height_layout = QtWidgets.QHBoxLayout()
-        # source_height_layout.addWidget(QtWidgets.QLabel("Height: "))
-        # source_height_layout.addWidget(self.source_label_height)
-        # source_colorspace_layout = QtWidgets.QHBoxLayout()
-        # self.source_label_for_colorspace = QtWidgets.QLabel("Colorspace: ")
-        # source_colorspace_layout.addWidget(self.source_label_for_colorspace)
-        # source_colorspace_layout.addWidget(self.source_label_colorspace)
-        # source_info_layout = QtWidgets.QVBoxLayout()
-        # source_info_layout.addWidget(QtWidgets.QLabel("Media Info"))
-        # source_info_layout.addLayout(source_width_layout)
-        # source_info_layout.addLayout(source_height_layout)
-        # source_info_layout.addLayout(source_colorspace_layout)
-
         # Scale
+        self.source_label_width = QtWidgets.QLabel("")
+        self.source_label_height = QtWidgets.QLabel("")
         self.source_label_duration = QtWidgets.QLabel("")
         self.source_label_colorspace = QtWidgets.QLabel("")
         self.scale_area = QtWidgets.QGroupBox("Scale")
@@ -91,10 +73,8 @@ class X265(QtWidgets.QWidget):
         dimensions_layout.addWidget(QtWidgets.QLabel("x"))
         self.source_label_height = QtWidgets.QLabel("0")
         dimensions_layout.addWidget(self.source_label_height)
-        dimensions_layout.addStretch()
 
         new_scale_layout = QtWidgets.QHBoxLayout()
-        new_scale_layout.addStretch()
         new_scale_layout.addWidget(QtWidgets.QLabel("Scale:"))
         self.scale_width = QtWidgets.QLineEdit("0")
         self.scale_width.editingFinished.connect(self.scale_update)
@@ -104,9 +84,8 @@ class X265(QtWidgets.QWidget):
         self.scale_height.editingFinished.connect(self.scale_update)
         self.scale_height.setDisabled(True)
         new_scale_layout.addWidget(self.scale_height)
-        new_scale_layout.addStretch()
 
-        self.keep_aspect_button = QtWidgets.QCheckBox("Keep aspect ratio")
+        self.keep_aspect_button = QtWidgets.QCheckBox("Keep (near) aspect ratio")
         self.keep_aspect_button.setChecked(True)
         self.keep_aspect_button.toggled.connect(self.scale_update)
 
@@ -119,16 +98,16 @@ class X265(QtWidgets.QWidget):
         self.scale_area.setLayout(scale_layout)
 
         # # Convert HDR
-        self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
-        self.convert_hdr_check.setChecked(False)
-        self.convert_hdr_check.hide()
-        self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
+        # self.convert_hdr_check = QtWidgets.QCheckBox("Convert HDR to SD")
+        # self.convert_hdr_check.setChecked(False)
+        # self.convert_hdr_check.hide()
+        # self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
         # source_info_layout.addWidget(self.convert_hdr_check)
         #
         # # Keep subs
-        self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
-        self.keep_subtitles.setChecked(False)
-        self.keep_subtitles.hide()
+        # self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
+        # self.keep_subtitles.setChecked(False)
+        # self.keep_subtitles.hide()
         # source_info_layout.addWidget(self.keep_subtitles)
         # source_info_layout.addStretch()
 
@@ -168,27 +147,17 @@ class X265(QtWidgets.QWidget):
 
         # Quality
         quality_layout = QtWidgets.QHBoxLayout()
-        quality_layout.addWidget(QtWidgets.QLabel("crf"), stretch=0)
+        quality_layout.addWidget(QtWidgets.QLabel("Quality"), stretch=0)
         self.crfs = QtWidgets.QComboBox()
-        self.crfs.addItems([str(x / 2) for x in range(61)])
-        self.crfs.setCurrentIndex(40)
+        self.crfs.addItems([str(x) for x in range(63)])
+        self.crfs.setCurrentIndex(30)
         quality_layout.addWidget(self.crfs, stretch=1)
 
-        self.preset = QtWidgets.QComboBox()
-        self.preset.addItems([
-            "ultrafast",
-            "superfast",
-            "veryfast",
-            "faster",
-            "fast",
-            "medium",
-            "slow",
-            "slower",
-            "veryslow",
-            "placebo"])
-        self.preset.setCurrentIndex(5)
-        quality_layout.addWidget(QtWidgets.QLabel("preset"), stretch=0)
-        quality_layout.addWidget(self.preset, stretch=1)
+        self.mode = QtWidgets.QComboBox()
+        self.mode.addItems(list(map(str, range(8))))  # Currently supports 0-8 encoding
+        self.mode.setCurrentIndex(4)
+        quality_layout.addWidget(QtWidgets.QLabel("Encoding Mode"), stretch=0)
+        quality_layout.addWidget(self.mode, stretch=1)
 
         # Select Tracks
         audio_box_layout = QtWidgets.QHBoxLayout()
@@ -225,7 +194,7 @@ class X265(QtWidgets.QWidget):
         self.crop = QtWidgets.QGroupBox("Crop")
         self.crop.setCheckable(True)
         self.crop.setChecked(False)
-        # self.crop.setFixedHeight(180)
+        # self.crop.setFixedHeight(110)
         crop_layout = QtWidgets.QVBoxLayout()
 
         crop_top_layout = QtWidgets.QHBoxLayout()
@@ -268,16 +237,16 @@ class X265(QtWidgets.QWidget):
         self.crop.toggled.connect(lambda x: self.generate_thumbnail())
 
         # Add root layouts
-        layout.addLayout(input_file_layout, 1, 0, 1, 4)
+        layout.addLayout(input_file_layout, 1, 0, 1, 10)
         layout.addWidget(self.scale_area, 2, 0, 3, 1)
-        layout.addWidget(self.timing, 2, 1, 3, 1)
-        layout.addWidget(self.crop, 2, 2, 3, 2)
-        layout.addLayout(quality_layout, 5, 0, 1, 4)
-        layout.addLayout(audio_box_layout, 6, 0, 1, 4)
-        layout.addLayout(video_box_layout, 7, 0, 1, 4)
-        layout.addWidget(self.kill_button, 8, 0, 1, 1)
-        layout.addWidget(self.create_button, 8, 3, 1, 1)
-        layout.addWidget(self.preview, 9, 0, 1, 4)
+        layout.addWidget(self.timing, 2, 1, 3, 5)
+        layout.addWidget(self.crop, 2, 6, 3, 4)
+        layout.addLayout(quality_layout, 5, 0, 1, 10)
+        layout.addLayout(audio_box_layout, 6, 0, 1, 10)
+        layout.addLayout(video_box_layout, 7, 0, 1, 10)
+        layout.addWidget(self.kill_button, 8, 0, 1, 2)
+        layout.addWidget(self.create_button, 8, 8, 1, 2)
+        layout.addWidget(self.preview, 10, 0, 1, 10)
 
         self.setLayout(layout)
 
@@ -288,9 +257,52 @@ class X265(QtWidgets.QWidget):
             self.update_video_info()
 
     @reusables.log_exception('flix', show_traceback=False)
+    def scale_update(self, *args):
+        keep_aspect = self.keep_aspect_button.isChecked()
+        self.scale_height.setDisabled(keep_aspect)
+        height = self.video_height
+        width = self.video_width
+        if self.crop.isChecked():
+            width, height, *_ = (int(x) for x in self.build_crop().split(":"))
+
+        if keep_aspect and (not height or not width):
+            return self.scale_warning_message.setText("Invalid source dimensions")
+
+        try:
+            scale_width = int(self.scale_width.text())
+            assert scale_width > 0
+        except (ValueError, AssertionError):
+            return self.scale_warning_message.setText("Invalid main_width")
+
+        if scale_width % 8:
+            return self.scale_warning_message.setText("Width must be divisible by 8")
+
+        if keep_aspect:
+            ratio = scale_width / width
+            scale_height = ratio * height
+            self.scale_height.setText(str(int(scale_height)))
+            mod = int(scale_height % 8)
+            if mod:
+                scale_height -= mod
+                logger.info(f"Have to adjust scale height by {mod} pixels")
+                self.scale_warning_message.setText(f"height has -{mod}px off aspect")
+            self.scale_height.setText(str(int(scale_height)))
+            return
+
+        try:
+            scale_height = int(self.scale_height.text())
+            assert scale_height > 0
+        except (ValueError, AssertionError):
+            return self.scale_warning_message.setText("Invalid height")
+
+        if scale_height % 8:
+            return self.scale_warning_message.setText("Height must be divisible by 8")
+        self.scale_warning_message.setText("")
+
+    @reusables.log_exception('flix', show_traceback=False)
     def open_file(self, update_text):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="Open Video",
-                                                         filter="Video Files (*.mp4 *.m4v *.mov *.mkv *.avi *.divx)")
+                                                         filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx)")
         if not filename or not filename[0]:
             return
         update_text.setText(filename[0])
@@ -303,7 +315,7 @@ class X265(QtWidgets.QWidget):
         f = Path(self.input_file_path.text())
         save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.mkv")
         filename = QtWidgets.QFileDialog.getSaveFileName(self, caption="Save Video As", dir=str(save_file),
-                                                         filter="Video File(*.mkv *.mp4)")
+                                                         filter="Video File (*.mkv)")
         return filename[0] if filename else False
 
     @staticmethod
@@ -335,7 +347,7 @@ class X265(QtWidgets.QWidget):
 
     @property
     def flix(self):
-        return Flix(ffmpeg=self.main.ffmpeg, ffprobe=self.main.ffprobe)
+        return Flix(ffmpeg=self.main.ffmpeg, ffprobe=self.main.ffprobe, svt_av1=self.main.svt_av1)
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
@@ -366,14 +378,14 @@ class X265(QtWidgets.QWidget):
 
         if self.streams['subtitle'] and self.streams['subtitle'][0].codec_name in ('ass', 'ssa', 'mov_text'):
             logger.debug("Supported subtitles detected")
-            self.keep_subtitles.show()
-            self.keep_subtitles.setChecked(True)
+            # self.keep_subtitles.show()
+            # self.keep_subtitles.setChecked(True)
         else:
             if self.streams['subtitle']:
                 # hdmv_pgs_subtitle, dvd_subtitle
                 logger.warning(f"Cannot keep subtitles of type: {self.streams['subtitle'][0].codec_name}")
-            self.keep_subtitles.setChecked(False)
-            self.keep_subtitles.hide()
+            # self.keep_subtitles.setChecked(False)
+            # self.keep_subtitles.hide()
         if self.streams['video']:
             self.update_source_labels(**self.streams['video'][0])
         self.generate_thumbnail()
@@ -397,7 +409,7 @@ class X265(QtWidgets.QWidget):
             output=self.thumb_file,
             video_track=self.streams['video'][self.video_box.currentIndex()]['index'],
             start_time=start_time,
-            disable_hdr=self.convert_hdr_check.isChecked(),
+            # disable_hdr=self.convert_hdr_check.isChecked(),
             crop=crop
         )
         logger.info("Generating thumbnail")
@@ -413,38 +425,6 @@ class X265(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def video_track_change(self, index):
         self.update_source_labels(**self.streams['video'][index])
-
-    @reusables.log_exception('flix', show_traceback=False)
-    def scale_update(self, *args):
-        keep_aspect = self.keep_aspect_button.isChecked()
-        self.scale_height.setDisabled(keep_aspect)
-        height = self.video_height
-        width = self.video_width
-        if self.crop.isChecked():
-            width, height, *_ = (int(x) for x in self.build_crop().split(":"))
-
-        if keep_aspect and (not height or not width):
-            return self.scale_warning_message.setText("Invalid source dimensions")
-
-        try:
-            scale_width = int(self.scale_width.text())
-            assert scale_width > 0
-        except (ValueError, AssertionError):
-            return self.scale_warning_message.setText("Invalid main_width")
-
-        if keep_aspect:
-            ratio = scale_width / width
-            scale_height = ratio * height
-            self.scale_height.setText(str(int(scale_height)))
-            return
-
-        try:
-            scale_height = int(self.scale_height.text())
-            assert scale_height > 0
-        except (ValueError, AssertionError):
-            return self.scale_warning_message.setText("Invalid height")
-
-        self.scale_warning_message.setText("")
 
     def build_scale(self):
         width = int(self.scale_width.text())
@@ -468,6 +448,8 @@ class X265(QtWidgets.QWidget):
         assert height > 0
         assert width <= self.video_width
         assert height <= self.video_height
+        assert width % 8 == 0
+        assert height % 8 == 0
         self.source_label_width.setText(str(width))
         self.source_label_height.setText(str(height))
         return f"{width}:{height}:{left}:{top}"
@@ -498,7 +480,7 @@ class X265(QtWidgets.QWidget):
             if not start_time:
                 start_time = 0
             if not duration:
-                return error_message("Please select a duration amount or disable the Start Time / Duration field")
+                error_message("Please select a duration amount or disable the Start Time / Duration field")
         if Path(self.output_video).exists():
             em = QtWidgets.QMessageBox()
             em.setText("Output video already exists, overwrite?")
@@ -515,11 +497,10 @@ class X265(QtWidgets.QWidget):
             try:
                 crop = self.build_crop()
             except ValueError:
-                error_message("Crop values are not numeric")
-                return
+                return error_message("Crop values are not numeric")
             except AssertionError:
-                error_message("Crop values must be positive and less than video dimensions")
-                return
+                return error_message("Crop values must be divisible by eight, "
+                                     "positive integers, and less than video dimensions")
 
         scale = None
         if self.scale_area.isChecked():
@@ -528,21 +509,40 @@ class X265(QtWidgets.QWidget):
             except ValueError:
                 return error_message("Scale values are not numeric")
             except AssertionError:
-                return error_message("Scale values must be positive integers")
+                return error_message("Scale values must be positive integers less than 4096x2160")
 
-        remove_hdr = self.convert_hdr_check.isChecked()
+        if not scale and (self.video_height > 2160 or self.video_width > 4096):
+            return error_message("Currently only videos at resolutions less than 4096x2160 are supported")
 
-        command = self.flix.generate_x265_command(source_video, self.output_video, video_track, audio_track,
-                                                  duration=duration, start_time=start_time,
-                                                  crf=self.crfs.currentText(), preset=self.preset.currentText(),
-                                                  disable_hdr=remove_hdr, scale=scale,
-                                                  keep_subtitles=self.keep_subtitles.isChecked(), crop=crop)
+        av1_settings = self.main.get_settings()['svt_av1']
+
+        params = {
+            "flix": self.flix,
+            "source": source_video,
+            "output": self.output_video,
+            "video_track": video_track,
+            "audio_track": audio_track,
+            "build_dir": tempfile.gettempdir(),
+            "start_time": start_time,
+            "duration": duration,
+            "save_segments": av1_settings.get('save_segments', False),
+            "auto_crop": True,
+            "save_yuv": av1_settings.get('save_raw', False),
+            "overwrite": False,
+            "scale": scale,
+            "crop": crop,
+            "segment_size": av1_settings.get('segment_size', 60),
+            "crf": self.crfs.currentText(),
+            "mode": self.mode.currentText(),
+        }
+
+        logger.debug(f'Encoding with params: {params}')
 
         self.create_button.setDisabled(True)
-        self.kill_button.show()
+        self.kill_button.hide()
         self.main.status.showMessage("Encoding...")
         logger.info("Converting video")
-        self.encoding_worker = Worker(self, command, cmd_type="convert")
+        self.encoding_worker = Worker(self, target=convert, params=params, cmd_type="convert")
         self.encoding_worker.start()
 
     @reusables.log_exception('flix', show_traceback=False)
@@ -575,6 +575,7 @@ class X265(QtWidgets.QWidget):
     def dragMoveEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()
 
+    @reusables.log_exception('flix', show_traceback=False)
     def dropEvent(self, event):
         if not event.mimeData().hasUrls:
             return event.ignore()

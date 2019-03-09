@@ -12,30 +12,39 @@ __all__ = ['Worker']
 
 
 class Worker(QtCore.QThread):
-    def __init__(self, app, command, cmd_type="convert"):
+    def __init__(self, app, command="", target=None, params=None, cmd_type="convert"):
         super(Worker, self).__init__(app)
         self.app = app
         self.command = command
+        self.target = target
+        self.params = params if params else {}
         self.cmd_type = cmd_type
         self.process = None
         self.killed = False
 
     def run(self):
-        logger.info(f"Running command: {self.command}")
-        self.process = self.start_exec()
-        while True:
-            next_line = self.process.stdout.readline().decode('utf-8')
-            if not next_line:
-                if self.process.poll() is not None:
-                    break
-                else:
-                    continue
-            logger.debug(f"ffmpeg - {next_line}")
+        if self.command:
+            logger.info(f"Running command: {self.command}")
+            self.process = self.start_exec()
+            while True:
+                next_line = self.process.stdout.readline().decode('utf-8')
+                if not next_line:
+                    if self.process.poll() is not None:
+                        break
+                    else:
+                        continue
+                logger.debug(f"ffmpeg - {next_line}")
+            return_code = self.process.poll()
+            if self.killed:
+                return self.app.cancelled.emit()
+        else:
+            try:
+                return_code = self.target(**self.params)
+            except Exception as err:
+                logger.error(f'Could not run target {self.target}: {err}')
+                return self.app.completed.emit(1)
 
-        return_code = self.process.poll()
-        if self.killed:
-            self.app.cancelled.emit()
-        elif self.cmd_type == "convert":
+        if self.cmd_type == "convert":
             self.app.completed.emit(return_code)
         elif self.cmd_type == "thumb":
             self.app.thumbnail_complete.emit()
@@ -44,10 +53,12 @@ class Worker(QtCore.QThread):
         return Popen(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, shell=True)
 
     def is_alive(self):
+        if not self.process:
+            return False
         return True if self.process.poll() is None else False
 
     def kill(self):
-        if self.is_alive():
+        if self.process and self.is_alive():
             self.killed = True
             if reusables.win_based:
                 run(f"TASKKILL /F /PID {self.process.pid} /T", stdin=PIPE, stdout=PIPE, stderr=PIPE)
