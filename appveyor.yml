@@ -57,10 +57,8 @@ artifacts:
 
 deploy:
   - provider: Environment
-    name: release
+    name: pre-release
     artifact: 'FastFlix*exe'
-    draft: false
-    prerelease: true
     description: ''
     on:
       branch:
@@ -70,8 +68,6 @@ deploy:
   - provider: Environment
     name: release
     artifact: 'FastFlix*exe'
-    draft: false
-    prerelease: false
     description: ''
     on:
       branch:
