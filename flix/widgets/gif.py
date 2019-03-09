@@ -9,7 +9,7 @@ import tempfile
 import reusables
 
 from flix.flix import Flix
-from flix.shared import QtGui, QtCore, QtWidgets, error_message, width
+from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 from flix.widgets.worker import Worker
 
 
@@ -30,7 +30,7 @@ class GIF(QtWidgets.QWidget):
         self.pallet_file = Path(tempfile.gettempdir(), "flix_gif_pallet.png")
         layout = QtWidgets.QGridLayout()
         self.setFixedHeight(650)
-        self.setFixedWidth(width)
+        self.setFixedWidth(main_width)
         self.setAcceptDrops(True)
 
         self.video_width = None
@@ -116,9 +116,6 @@ class GIF(QtWidgets.QWidget):
         self.fps_box.setSingleStep(1)
         self.fps_box.setValue(15)
 
-
-
-
         # Duration Settings
         self.timing = QtWidgets.QGroupBox("Start Time / Duration")
         self.timing.setCheckable(True)
@@ -174,7 +171,7 @@ class GIF(QtWidgets.QWidget):
         # Preview Image
         self.preview = QtWidgets.QLabel()
         self.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.preview.setFixedSize(width, 400)
+        self.preview.setFixedSize(main_width, 400)
         self.preview.setStyleSheet('border-top: 2px solid #dddddd;')  # background-color:#f0f0f0
 
         # Cropping
@@ -277,7 +274,7 @@ class GIF(QtWidgets.QWidget):
             scale_width = int(self.scale_width.text())
             assert scale_width > 0
         except (ValueError, AssertionError):
-            return self.scale_warning_message.setText("Invalid width")
+            return self.scale_warning_message.setText("Invalid main_width")
 
         if keep_aspect:
             ratio = scale_width / width
@@ -486,15 +483,13 @@ class GIF(QtWidgets.QWidget):
 
         self.main.status.showMessage("Encoding...")
 
-        filters = self.flix.generate_filters(scale=scale, crop=crop ,disable_hdr=self.convert_hdr_check.isChecked())
+        filters = self.flix.generate_filters(scale=scale, crop=crop, disable_hdr=self.convert_hdr_check.isChecked())
         pal_cmd = self.flix.generate_pallet_command(source=source_video, output=self.pallet_file, filters=filters,
                                                     video_track=video_track, start_time=start_time, duration=duration)
         self.flix.execute(pal_cmd).check_returncode()
         cmd = self.flix.generate_gif_command(source=source_video, output=self.output_video, filters=filters,
                                              video_track=video_track, pallet_file=self.pallet_file,
-                                             start_time=start_time, duration=duration, fps=self.fps,
-                                             )
-
+                                             start_time=start_time, duration=duration, fps=self.fps)
         self.create_button.setDisabled(True)
         self.kill_button.show()
 

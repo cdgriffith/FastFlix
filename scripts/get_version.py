@@ -28,4 +28,3 @@ elif pr_branch:
 
 else:
     write_and_exit(f'{__version__}-{branch}-{now}')
-

@@ -41,6 +41,7 @@ audio_codecs = Box({
     },
 })
 
+
 @reusables.log_exception('flix', show_traceback=True)
 def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0',
             duration=None, save_segments=False, auto_crop=True, save_yuv=False, overwrite=False, crop=None,
@@ -74,14 +75,14 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
             assert crop_check[0] % 8 == 0
             assert crop_check[1] % 8 == 0
         except AssertionError:
-            raise FlixError("CROP BAD: Video height and width must be divisible by 8")
+            raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
     else:
         crop_height = height % 8
         crop_width = width % 8
         crop = None
         if crop_height or crop_width:
             if not auto_crop:
-                raise FlixError('CROP BAD: Video height and width must be divisible by 8')
+                raise FlixError('CROP BAD: Video height and main_width must be divisible by 8')
             width = width - crop_width
             height = height - crop_height
             crop = f'{width}:{height}:0:0'

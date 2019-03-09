@@ -20,7 +20,8 @@ if os.getenv('PYSIDE2'):
 from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2 import __version__ as pyside_version
 
-width = 800
+main_width = 800
+
 
 def message(msg, parent=None):
     sm = QtWidgets.QMessageBox(parent=parent)
@@ -39,4 +40,3 @@ def error_message(msg, details=None, traceback=False, parent=None):
         em.setDetailedText(traceback.format_exc())
     em.setStandardButtons(QtWidgets.QMessageBox.Ok)
     em.exec_()
-

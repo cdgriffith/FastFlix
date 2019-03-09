@@ -9,7 +9,7 @@ import tempfile
 import reusables
 
 from flix.flix import Flix
-from flix.shared import QtGui, QtCore, QtWidgets, error_message, width
+from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 from flix.widgets.worker import Worker
 from flix.av1 import convert
 
@@ -29,7 +29,7 @@ class AV1(QtWidgets.QWidget):
         self.thumb_file = Path(tempfile.gettempdir(), "flix_av1_preview.png")
         layout = QtWidgets.QGridLayout()
         self.setFixedHeight(650)
-        self.setFixedWidth(width)
+        self.setFixedWidth(main_width)
         self.setAcceptDrops(True)
 
         self.video_width = None
@@ -187,7 +187,7 @@ class AV1(QtWidgets.QWidget):
         # Preview Image
         self.preview = QtWidgets.QLabel()
         self.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.preview.setFixedSize(width, 400)
+        self.preview.setFixedSize(main_width, 400)
         self.preview.setStyleSheet('border-top: 2px solid #dddddd;')  # background-color:#f0f0f0
 
         # Cropping
@@ -272,7 +272,7 @@ class AV1(QtWidgets.QWidget):
             scale_width = int(self.scale_width.text())
             assert scale_width > 0
         except (ValueError, AssertionError):
-            return self.scale_warning_message.setText("Invalid width")
+            return self.scale_warning_message.setText("Invalid main_width")
 
         if scale_width % 8:
             return self.scale_warning_message.setText("Width must be divisible by 8")
@@ -298,7 +298,6 @@ class AV1(QtWidgets.QWidget):
         if scale_height % 8:
             return self.scale_warning_message.setText("Height must be divisible by 8")
         self.scale_warning_message.setText("")
-
 
 
     @reusables.log_exception('flix', show_traceback=False)

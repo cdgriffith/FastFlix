@@ -9,7 +9,7 @@ import tempfile
 import reusables
 
 from flix.flix import Flix
-from flix.shared import QtGui, QtCore, QtWidgets, error_message, width
+from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 from flix.widgets.worker import Worker
 
 logger = logging.getLogger('flix')
@@ -28,7 +28,7 @@ class X265(QtWidgets.QWidget):
         self.thumb_file = Path(tempfile.gettempdir(), "flix_x265_preview.png")
         layout = QtWidgets.QGridLayout()
         self.setFixedHeight(650)
-        self.setFixedWidth(width)
+        self.setFixedWidth(main_width)
         self.setAcceptDrops(True)
 
         self.video_width = None
@@ -123,7 +123,7 @@ class X265(QtWidgets.QWidget):
         self.convert_hdr_check.setChecked(False)
         self.convert_hdr_check.hide()
         self.convert_hdr_check.toggled.connect(lambda x: self.generate_thumbnail())
-        #source_info_layout.addWidget(self.convert_hdr_check)
+        # source_info_layout.addWidget(self.convert_hdr_check)
         #
         # # Keep subs
         self.keep_subtitles = QtWidgets.QCheckBox("Keep Subtitles")
@@ -218,14 +218,14 @@ class X265(QtWidgets.QWidget):
         # Preview Image
         self.preview = QtWidgets.QLabel()
         self.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.preview.setFixedSize(width, 400)
+        self.preview.setFixedSize(main_width, 400)
         self.preview.setStyleSheet('border-top: 2px solid #dddddd;')  # background-color:#f0f0f0
 
         # Cropping
         self.crop = QtWidgets.QGroupBox("Crop")
         self.crop.setCheckable(True)
         self.crop.setChecked(False)
-        #self.crop.setFixedHeight(180)
+        # self.crop.setFixedHeight(180)
         crop_layout = QtWidgets.QVBoxLayout()
 
         crop_top_layout = QtWidgets.QHBoxLayout()
@@ -430,7 +430,7 @@ class X265(QtWidgets.QWidget):
             scale_width = int(self.scale_width.text())
             assert scale_width > 0
         except (ValueError, AssertionError):
-            return self.scale_warning_message.setText("Invalid width")
+            return self.scale_warning_message.setText("Invalid main_width")
 
         if keep_aspect:
             ratio = scale_width / width

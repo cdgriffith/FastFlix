@@ -6,7 +6,7 @@ from pathlib import Path
 import reusables
 
 from flix.flix import ff_version
-from flix.shared import QtWidgets, pyinstaller, base_path, width
+from flix.shared import QtWidgets, pyinstaller, base_path, main_width
 from flix.widgets.main import Main
 
 logging.getLogger('flix')
@@ -35,7 +35,7 @@ def main():
                   ffmpeg_version=ffmpeg_version, ffprobe_version=ffprobe_version,
                   svt_av1=svt_av1,
                   source=sys.argv[1] if len(sys.argv) > 1 else "")
-    window.setFixedWidth(width)
+    window.setFixedWidth(main_width)
     window.setFixedHeight(710)
     window.show()
     sys.exit(main_app.exec_())
