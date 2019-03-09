@@ -21,6 +21,7 @@ branches:
   only:
     - master
     - build
+    - develop
 
 install:
   - ps: >-
