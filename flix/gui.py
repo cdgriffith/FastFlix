@@ -18,6 +18,8 @@ def main():
     main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
 
+    logging.basicConfig(level=logging.DEBUG)
+
     ffmpeg = 'ffmpeg'
     ffprobe = 'ffprobe'
     if pyinstaller and reusables.win_based and Path(base_path, 'bundled').exists():
