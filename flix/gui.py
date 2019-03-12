@@ -7,7 +7,7 @@ import reusables
 
 from flix.flix import ff_version
 from flix.shared import QtWidgets, pyinstaller, base_path, main_width
-from flix.widgets.main2 import Main
+from flix.widgets.container import Container
 
 
 logging.getLogger('flix')
@@ -32,7 +32,7 @@ def main():
 
     svt_av1 = os.getenv("SVT_AV1", Path(base_path, 'SvtAv1EncApp.exe') if reusables.win_based else 'SvtAv1EncApp')
 
-    window = Main(ffmpeg=ffmpeg, ffprobe=ffprobe,
+    window = Container(ffmpeg=ffmpeg, ffprobe=ffprobe,
                   ffmpeg_version=ffmpeg_version, ffprobe_version=ffprobe_version,
                   svt_av1=svt_av1,
                   source=sys.argv[1] if len(sys.argv) > 1 else "")

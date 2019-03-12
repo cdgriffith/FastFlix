@@ -18,6 +18,7 @@ if os.getenv('PYSIDE2'):
     PySide2 = importlib.machinery.SourceFileLoader('PySide2', os.getenv('PYSIDE2')).load_module()
 
 from PySide2 import QtWidgets, QtCore, QtGui
+from PySide2.QtCore import Qt
 from PySide2 import __version__ as pyside_version
 
 main_width = 800
