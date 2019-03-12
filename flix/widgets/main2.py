@@ -211,6 +211,77 @@ class Main(QtWidgets.QWidget):
         self.grid.addWidget(self.crop, 2, 5, 3, 2)
 
 
-    def open_file(self, file):
-        pass
+    @reusables.log_exception('flix', show_traceback=False)
+    def open_file(self, update_text):
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="Open Video",
+                                                         filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx)")
+        if not filename or not filename[0]:
+            return
+        update_text.setText(filename[0])
+        self.update_video_info()
+        self.open_input_file.setDefault(False)
+        self.create_button.setDefault(True)
+
+    @reusables.log_exception('flix', show_traceback=False)
+    def save_file(self):
+        f = Path(self.input_file_path.text())
+        save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.mkv")
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, caption="Save Video As", dir=str(save_file),
+                                                         filter="Video File (*.mkv)")
+        return filename[0] if filename else False
+
+
+    @reusables.log_exception('flix', show_traceback=False)
+    def update_video_info(self):
+        self.streams, self.format_info = self.flix.parse(self.input_file_path.text())
+        text_audio_tracks = []
+        for i, x in enumerate(self.streams['audio']):
+            track_info = f"{i}: "
+            tags = x.get("tags")
+            if tags:
+                track_info += tags.get('title')
+                if 'language' in tags:
+                    track_info += f' {tags.language}'
+            track_info += f' - {x.codec_name}'
+            if 'profile' in x:
+                track_info += f' ({x.profile})'
+            track_info += f' - {x.channels} channels'
+
+            text_audio_tracks.append(track_info)
+        text_audio_tracks.append("Disabled")
+        text_video_tracks = [f'{i}: codec {x.codec_name}' for i, x in enumerate(self.streams['video'])]
+
+        for i in range(self.audio_box.count()):
+            self.audio_box.removeItem(0)
+
+        for i in range(self.video_box.count()):
+            self.video_box.removeItem(0)
+
+        self.audio_box.addItems(text_audio_tracks)
+        self.video_box.addItems(text_video_tracks)
+        self.video_duration = float(self.format_info.get('duration', 0))
+
+        logger.debug(f"{len(self.streams['video'])} video tracks found")
+        logger.debug(f"{len(self.streams['audio'])} audio tracks found")
+        if self.streams['subtitle']:
+            logger.debug(f"{len(self.streams['subtitle'])} subtitle tracks found")
+        if self.streams['attachment']:
+            logger.debug(f"{len(self.streams['attachment'])} attachment tracks found")
+        if self.streams['data']:
+            logger.debug(f"{len(self.streams['data'])} data tracks found")
+
+        if self.streams['subtitle'] and self.streams['subtitle'][0].codec_name in ('ass', 'ssa', 'mov_text'):
+            logger.debug("Supported subtitles detected")
+            # self.keep_subtitles.show()
+            # self.keep_subtitles.setChecked(True)
+        else:
+            if self.streams['subtitle']:
+                # hdmv_pgs_subtitle, dvd_subtitle
+                logger.warning(f"Cannot keep subtitles of type: {self.streams['subtitle'][0].codec_name}")
+            # self.keep_subtitles.setChecked(False)
+            # self.keep_subtitles.hide()
+        if self.streams['video']:
+            self.update_source_labels(**self.streams['video'][0])
+        self.generate_thumbnail()
+
 
