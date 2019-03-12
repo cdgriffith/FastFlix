@@ -34,12 +34,30 @@ audio_codecs = Box({
         'suffix': 'ogg',
         'convert': True
     },
+    'dts': {
+      'format': 'dts',
+      'suffix': 'dts',
+      'convert': False
+    },
+    'truehd': {
+        'format': 'truehd',
+        'suffix': 'dts',
+        'convert': False
+    },
     'default': {
         'format': 'opus',
         'suffix': 'ogg',
         'convert': True
     },
 })
+
+
+def run(flix, cmd):
+    result = flix.execute(cmd)
+    try:
+        result.check_returncode()
+    except Exception:
+        raise FlixError(f'Could not run command: {result.stderr.decode("utf-8")}')
 
 
 @reusables.log_exception('flix', show_traceback=True)
@@ -91,20 +109,9 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
     cx = audio_codecs['default']
     aud_out = None
 
-    if audio_track:
-        if info.audio[0].codec_name in audio_codecs:
-            cx = audio_codecs[info.audio[0].codec_name]
-        else:
-            logger.warning(f'unknown audio codec {info.audio[0].codec_name} converting to ogg')
-        aud_out = Path(outer_temp_dir, f"audio.{cx.suffix}")
-        aud = flix.extract_audio_command(file, start_time, duration=duration,
-                                         output=str(aud_out), audio_track=audio_track,
-                                         audio_format=cx.format, convert=cx.convert)
-        flix.execute(aud).check_returncode()
-
     cmd1 = flix.video_split_command(file, start_time=start_time, duration=duration, segment_size=segment_size,
                                     build_dir=parts_temp_dir, video_track=video_track)
-    flix.execute(cmd1).check_returncode()
+    run(flix, cmd1)
 
     yuv_list = [(int(x.stem), x, Path(yuv_temp_dir, f"{x.stem}.yuv")) for x in Path(parts_temp_dir).iterdir()]
     video_list = []
@@ -123,22 +130,33 @@ def convert(flix, source, output, build_dir=tempfile.gettempdir(), start_time='0
                                            bit_depth=bit_depth,
                                            crf=crf,
                                            mode=mode)
-        flix.execute(svt_av1_cmd).check_returncode()
+        run(flix, svt_av1_cmd)
         if not save_yuv:
             os.remove(yuv_output)
         if not save_segments:
             src.unlink()
 
+    if audio_track:
+        if info.audio[0].codec_name in audio_codecs:
+            cx = audio_codecs[info.audio[0].codec_name]
+        else:
+            logger.warning(f'unknown audio codec {info.audio[0].codec_name} converting to ogg')
+        aud_out = Path(outer_temp_dir, f"audio.{cx.suffix}")
+        aud = flix.extract_audio_command(file, start_time, duration=duration,
+                                         output=str(aud_out), audio_track=audio_track,
+                                         audio_format=cx.format, convert=cx.convert)
+        run(flix, aud)
+
     main_bin = Path(outer_temp_dir, "no_audio.mkv")
     main_file = Path(output)
     cmb = flix.combine_command(video_list, main_bin if audio_track else main_file, build_dir=outer_temp_dir)
-    flix.execute(cmb).check_returncode()
+    run(flix, cmb)
 
     if audio_track:
         combine = flix.add_audio_command(main_bin,
                                          aud_out,
                                          main_file)
-        flix.execute(combine).check_returncode()
+        run(flix, combine)
 
     if not save_segments:
         logger.debug(f'cleaning up temp files for {outer_temp_dir}')

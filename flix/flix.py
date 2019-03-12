@@ -169,7 +169,7 @@ class Flix:
 
         filters = ",".join(filter_list)
 
-        return (f'"{self.ffmpeg}" -loglevel fatal {start} -i "{source}" '
+        return (f'"{self.ffmpeg}" -loglevel error {start} -i "{source}" '
                 f'-c:v libx265 -preset {preset} -x265-params log-level=error:crf={crf} -pix_fmt yuv420p '
                 f'{"-map_metadata -1 -write_tmcd 0 -shortest" if start else ""} {f"-vf {filters}" if filters else ""} '
                 f'-map 0:{video_track} {"-an" if audio_track is None else f"-map 0:{audio_track}"} {maps} '
@@ -206,7 +206,7 @@ class Flix:
 
         filters = ",".join(filter_list)
 
-        return (f'"{self.ffmpeg}" -loglevel fatal -i "{source}" {start} '
+        return (f'"{self.ffmpeg}" -loglevel error -i "{source}" {start} '
                 f'-c:v libaom-av1 -b:v 0 -strict experimental -crf {crf} -pix_fmt yuv420p '
                 f'{"-map_metadata -1" if start else ""} {f"-vf {filters}" if filters else ""} '
                 f'-map 0:{video_track} {"-an" if audio_track is None else f"-map 0:{audio_track}"} {maps} '
@@ -250,9 +250,9 @@ class Flix:
         src = Path(source)
         out = Path(build_dir, f"%04d{src.suffix}")
 
-        return (f'"{self.ffmpeg}" -loglevel fatal {start} -i "{source}" '
-                f'{"-map_metadata -1" if start else ""} -map 0:{video_track} -c copy '
-                f'-f segment -segment_time {segment_size} -an -sn -dn "{out}"')
+        return (f'"{self.ffmpeg}" -loglevel error {start} -i "{source}" '
+                f'{"-map_metadata -1" if start else ""} -map 0:{video_track} -c copy -sc_threshold 0 '
+                f'-reset_timestamps 1 -f segment -segment_time {segment_size} -an -sn -dn "{out}"')
 
     def yuv_command(self, source, output, bit_depth=8, crop=None, scale=None):
         assert str(output).endswith(('yuv', 'y4m'))
@@ -265,7 +265,7 @@ class Flix:
 
         filters = ",".join(filter_list) if filter_list else ""
 
-        return (f'"{self.ffmpeg}" -loglevel fatal -i "{source}" -c:v rawvideo '
+        return (f'"{self.ffmpeg}" -loglevel error -i "{source}" -c:v rawvideo '
                 f'-pix_fmt {"yuv420p10le" if bit_depth == 10 else "yuv420p"}'
                 f' {f"-vf {filters}" if filters else ""} "{output}"')
 
@@ -287,7 +287,7 @@ class Flix:
         file_list = os.path.abspath(os.path.join(build_dir, uuid.uuid4().hex))
         with open(file_list, 'w') as f:
             f.write("\n".join(['file {}'.format(str(video).replace("\\", "\\\\")) for video in videos]))
-        return f'"{self.ffmpeg}" -safe 0 -f concat -i "{file_list}" -c copy "{output}"'
+        return f'"{self.ffmpeg}" -safe 0 -f concat -i "{file_list}" -reset_timestamps 1 -c copy "{output}"'
 
     def extract_audio_command(self, video, start_time, duration, output, audio_track=0,
                               audio_format="adts", convert=False):
@@ -303,5 +303,8 @@ class Flix:
                 f'-vn {options} -map 0:{audio_track} "{output}"')
 
     def add_audio_command(self, video_source, audio_source, output, video_track=0, audio_track=0):
+        # -shortest ?
+        # https://videoblerg.wordpress.com/2017/11/10/ffmpeg-and-how-to-use-it-wrong/
         return (f'"{self.ffmpeg}" -i "{video_source}" -i "{audio_source}" '
-                f'-c copy -map 0:{video_track} -map 1:{audio_track} -shortest "{output}"')
+                f'-c copy -map 0:{video_track} -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0" '
+                f'-map 1:{audio_track} "{output}"')

@@ -352,9 +352,21 @@ class AV1(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
         self.streams, self.format_info = self.flix.parse(self.input_file_path.text())
-        text_audio_tracks = [(f'{i}: language {x.get("tags", {"language": "unknown"}).get("language", "unknown")}'
-                              f' - channels {x.channels}'
-                              f' - codec {x.codec_name}') for i, x in enumerate(self.streams['audio'])] + ["Disabled"]
+        text_audio_tracks = []
+        for i, x in enumerate(self.streams['audio']):
+            track_info = f"{i}: "
+            tags = x.get("tags")
+            if tags:
+                track_info += tags.get('title')
+                if 'language' in tags:
+                    track_info += f' {tags.language}'
+            track_info += f' - {x.codec_name}'
+            if 'profile' in x:
+                track_info += f' ({x.profile})'
+            track_info += f' - {x.channels} channels'
+
+            text_audio_tracks.append(track_info)
+        text_audio_tracks.append("Disabled")
         text_video_tracks = [f'{i}: codec {x.codec_name}' for i, x in enumerate(self.streams['video'])]
 
         for i in range(self.audio_box.count()):
