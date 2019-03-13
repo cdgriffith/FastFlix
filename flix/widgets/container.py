@@ -17,7 +17,7 @@ class Container(QtWidgets.QMainWindow):
         self.setMinimumSize(1200, 800)
 
     def init_menu(self):
-        exit_action = QtWidgets.QAction(QtGui.QIcon('exit.png'), '&Exit', self)
+        exit_action = QtWidgets.QAction('&Exit', self)
         exit_action.setShortcut(QtGui.QKeySequence('Ctrl+Q'))
         exit_action.setStatusTip('Exit application')
         exit_action.triggered.connect(self.close)
@@ -26,4 +26,11 @@ class Container(QtWidgets.QMainWindow):
         file_menu = menubar.addMenu('&File')
         file_menu.addAction(exit_action)
 
-        settings_menu = menubar.addMenu('&Settings')
+        about_action = QtWidgets.QAction('&About', self)
+        about_action.triggered.connect(self.about)
+
+        help_menu = menubar.addMenu('&Help')
+        help_menu.addAction(about_action)
+
+    def about(self):
+        pass

@@ -12,11 +12,15 @@ from box import Box
 from flix.flix import Flix
 from flix.shared import QtGui, QtCore, Qt, QtWidgets, error_message, main_width
 from flix.widgets.video_options import VideoOptions
+from flix.widgets.worker import Worker
 
 logger = logging.getLogger('flix')
 
 
 class Main(QtWidgets.QWidget):
+    completed = QtCore.Signal(int)
+    thumbnail_complete = QtCore.Signal()
+    cancelled = QtCore.Signal()
 
     def __init__(self, parent, source=""):
         super().__init__(parent)
@@ -38,6 +42,11 @@ class Main(QtWidgets.QWidget):
         self.ffmpeg = 'ffmpeg'
         self.ffprobe = 'ffprobe'
         self.svt_av1 = 'C:\\Users\\teckc\\Downloads\\svt-av1-1.0.239\\SvtAv1EncApp.exe'
+        self.thumb_file = 'test.png'
+
+        #self.completed.connect(self.conversion_complete)
+        #self.cancelled.connect(self.conversion_cancelled)
+        self.thumbnail_complete.connect(self.thumbnail_generated)
 
         self.options = Box()
 
@@ -63,7 +72,7 @@ class Main(QtWidgets.QWidget):
         input_file_layout = QtWidgets.QHBoxLayout()
         self.widgets.input_file = QtWidgets.QLineEdit("")
         self.widgets.input_file.setReadOnly(True)
-        self.widgets.input_file.setFixedWidth(400)
+        #self.widgets.input_file.setFixedWidth(400)
         open_input_file = QtWidgets.QPushButton("...")
         open_input_file.setFixedWidth(50)
         open_input_file.setDefault(True)
@@ -88,7 +97,7 @@ class Main(QtWidgets.QWidget):
         output_file_layout = QtWidgets.QHBoxLayout()
         self.widgets.output_file = QtWidgets.QLineEdit("")
         self.widgets.output_file.setReadOnly(True)
-        self.widgets.output_file.setFixedWidth(400)
+        #self.widgets.output_file.setFixedWidth()
         open_input_file = QtWidgets.QPushButton("...")
         open_input_file.setFixedWidth(50)
         open_input_file.setDefault(True)
@@ -112,7 +121,7 @@ class Main(QtWidgets.QWidget):
     def init_preview_image(self):
         self.widgets.preview = QtWidgets.QLabel()
         self.widgets.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.widgets.preview.setFixedSize(400, 200)
+        self.widgets.preview.setFixedSize(320, 180)
         self.widgets.preview.setStyleSheet('border: 2px solid #dddddd;')  # background-color:#f0f0f0
         self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (Qt.AlignTop | Qt.AlignRight))
 
@@ -120,65 +129,38 @@ class Main(QtWidgets.QWidget):
         self.widgets.start_time, layout = self.build_hoz_int_field("Start  ", right_stretch=False, time_field=True)
         self.widgets.duration, layout = self.build_hoz_int_field("  End  ", left_stretch=False, layout=layout, time_field=True)
 
-        # layout = QtWidgets.QHBoxLayout()
-        # layout.addWidget(QtWidgets.QLabel("Start: "))
-        # self.widgets.start_time = QtWidgets.QLineEdit("00:00:00")
-        # layout.addWidget(self.widgets.start_time)
-        #
-        # layout.addWidget(QtWidgets.QLabel("End: "))
-        # self.widgets.duration = QtWidgets.QLineEdit("00:00:00")
-        # layout.addWidget(self.widgets.duration)
-
         self.grid.addLayout(layout, 4, 0)
 
     def init_scale(self):
-        self.source_label_duration = QtWidgets.QLabel("")
-        self.source_label_colorspace = QtWidgets.QLabel("")
-        self.scale_area = QtWidgets.QGroupBox()
+        scale_area = QtWidgets.QGroupBox()
         scale_layout = QtWidgets.QVBoxLayout()
 
-        dimensions_layout = QtWidgets.QHBoxLayout()
-        dimensions_layout.addWidget(QtWidgets.QLabel("Dimensions:"))
-        self.source_label_width = QtWidgets.QLabel("0")
-        dimensions_layout.addWidget(self.source_label_width)
-        dimensions_layout.addWidget(QtWidgets.QLabel("x"))
-        self.source_label_height = QtWidgets.QLabel("0")
-        dimensions_layout.addWidget(self.source_label_height)
-        dimensions_layout.addStretch()
-
         self.widgets.scale.width, new_scale_layout = self.build_hoz_int_field("Width  ", right_stretch=False)
-        self.widgets.scale.height, new_scale_layout, lb, rb = self.build_hoz_int_field("  Height  ", left_stretch=False, layout=new_scale_layout, return_buttons=True)
+        self.widgets.scale.height, new_scale_layout, lb, rb = self.build_hoz_int_field(
+            "  Height  ", left_stretch=False, layout=new_scale_layout, return_buttons=True)
         self.widgets.scale.height.setDisabled(True)
         lb.setDisabled(True)
         rb.setDisabled(True)
+        QtWidgets.QPushButton()
 
+        self.widgets.scale.keep_aspect = QtWidgets.QCheckBox("Keep aspect ratio")
+        self.widgets.scale.keep_aspect.setChecked(True)
+        self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
 
-        # new_scale_layout = QtWidgets.QHBoxLayout()
-        # new_scale_layout.addWidget(QtWidgets.QLabel("Scale:"))
-        # self.scale_width = QtWidgets.QLineEdit("0")
-        # # self.scale_width.editingFinished.connect(self.scale_update)
-        # new_scale_layout.addWidget(self.scale_width)
-        # new_scale_layout.addWidget(QtWidgets.QLabel("x"))
-        # self.scale_height = QtWidgets.QLineEdit("0")
-        # # self.scale_height.editingFinished.connect(self.scale_update)
-        #
-        # new_scale_layout.addWidget(self.scale_height)
-
-        self.keep_aspect_button = QtWidgets.QCheckBox("Keep aspect ratio")
-        self.keep_aspect_button.setChecked(True)
-        # self.keep_aspect_button.toggled.connect(self.scale_update)
-
-        self.scale_warning_message = QtWidgets.QLabel("")
-
-        # scale_layout.addLayout(dimensions_layout)
         scale_layout.addLayout(new_scale_layout)
-        scale_layout.addWidget(self.keep_aspect_button)
-        # scale_layout.addWidget(self.scale_warning_message)
-        self.scale_area.setLayout(scale_layout)
+        scale_layout.addWidget(self.widgets.scale.keep_aspect)
 
-        self.grid.addWidget(self.scale_area, 0, 5, 2, 2)
+        scale_area.setLayout(scale_layout)
 
-    def build_hoz_int_field(self, name, button_size=22, left_stretch=True, right_stretch=True, layout=None, return_buttons=False, time_field=False):
+        self.grid.addWidget(scale_area, 0, 5, 2, 2)
+
+    @staticmethod
+    def toggle_disable(widget_list):
+        for widget in widget_list:
+            widget.setDisabled(widget.isEnabled())
+
+    def build_hoz_int_field(self, name, button_size=22, left_stretch=True, right_stretch=True,
+                            layout=None, return_buttons=False, time_field=False):
         widget = QtWidgets.QLineEdit(self.number_to_time(0) if time_field else "0")
         widget.setFixedHeight(button_size)
         if not layout:
@@ -188,9 +170,11 @@ class Main(QtWidgets.QWidget):
             layout.addStretch()
         layout.addWidget(QtWidgets.QLabel(name))
         minus_button = QtWidgets.QPushButton("-")
+        minus_button.setAutoRepeat(True)
         minus_button.setFixedSize(button_size, button_size)
         minus_button.clicked.connect(lambda: self.modify_int(widget, 'minus', time_field))
         plus_button = QtWidgets.QPushButton("+")
+        plus_button.setAutoRepeat(True)
         plus_button.setFixedSize(button_size, button_size)
         plus_button.clicked.connect(lambda: self.modify_int(widget, 'add', time_field))
         if not time_field:
@@ -228,7 +212,6 @@ class Main(QtWidgets.QWidget):
 
         self.grid.addWidget(crop_box, 2, 5, 3, 2)
 
-
     def modify_int(self, widget, method="add", time_field=False):
         if time_field:
             value = self.time_to_number(widget.text())
@@ -246,7 +229,6 @@ class Main(QtWidgets.QWidget):
             return
         widget.setText(str(new_value) if not time_field else self.number_to_time(new_value))
 
-
     @reusables.log_exception('flix', show_traceback=False)
     def open_file(self):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="Open Video",
@@ -255,10 +237,8 @@ class Main(QtWidgets.QWidget):
             return
         self.input_video = filename[0]
         self.widgets.input_file.setText(self.input_video)
-
         self.update_video_info()
-        #self.open_input_file.setDefault(False)
-        #self.create_button.setDefault(True)
+        self.generate_thumbnail()
 
     @reusables.log_exception('flix', show_traceback=False)
     def save_file(self):
@@ -276,8 +256,8 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
         self.streams, self.format_info = self.flix.parse(self.input_video)
-        logger.info(self.streams)
-        logger.info(self.format_info)
+        logger.debug(self.streams)
+        logger.debug(self.format_info)
         text_audio_tracks = []
         for i, x in enumerate(self.streams.audio):
             track_info = f"{i}: "
@@ -297,8 +277,12 @@ class Main(QtWidgets.QWidget):
         for i in range(self.widgets.video_track.count()):
             self.widgets.video_track.removeItem(0)
 
-        #self.audio_box.addItems(text_audio_tracks)
+        self.widgets.scale.width.setText(str(self.streams.video[0].width))
+        self.widgets.scale.height.setText(str(self.streams.video[0].height))
         self.widgets.video_track.addItems(text_video_tracks)
+
+        self.widgets.video_track.setDisabled(bool(len(self.streams.video) == 1))
+
         # self.video_duration = float(self.format_info.get('duration', 0))
         video_duration = float(self.format_info.get('duration', 0))
 
@@ -353,3 +337,35 @@ class Main(QtWidgets.QWidget):
                 logger.info(f'Not a valid int: {v}')
             total += v * (60 ** i)
         return total
+
+    @reusables.log_exception('flix', show_traceback=False)
+    def generate_thumbnail(self):
+        if not self.input_video:
+            return
+        # try:
+        #     crop = self.build_crop()
+        # except (ValueError, AssertionError):
+        #     logger.warning("Invalid crop, thumbnail will not reflect it")
+        #     crop = None
+        # if self.timing.isChecked():
+        #     start_time = self._get_start_time()
+        # elif self.video_duration > 5:
+
+        start_time = 5
+        thumb_command = self.flix.generate_thumbnail_command(
+            source=self.input_video,
+            output=self.thumb_file,
+            video_track=self.streams['video'][self.widgets.video_track.currentIndex()]['index'],
+            start_time=start_time,
+            # disable_hdr=self.convert_hdr_check.isChecked(),
+        )
+        logger.info("Generating thumbnail")
+        worker = Worker(self, thumb_command, cmd_type="thumb")
+        worker.start()
+
+    @reusables.log_exception('flix', show_traceback=False)
+    def thumbnail_generated(self):
+        print('called')
+        pixmap = QtGui.QPixmap(str(self.thumb_file))
+        pixmap = pixmap.scaled(320, 180, QtCore.Qt.KeepAspectRatio)
+        self.widgets.preview.setPixmap(pixmap)
