@@ -49,6 +49,9 @@ class Main(QtWidgets.QWidget):
         #self.cancelled.connect(self.conversion_cancelled)
         self.thumbnail_complete.connect(self.thumbnail_generated)
 
+        self.video_width = 0
+        self.video_height = 0
+
         self.options = Box()
 
         self.grid = QtWidgets.QGridLayout()
@@ -58,7 +61,7 @@ class Main(QtWidgets.QWidget):
         self.init_preview_image()
 
         options = VideoOptions(self)
-        self.grid.addWidget(options, 5, 0, 10, 14)
+        self.grid.addWidget(options, 5, 0, 10, 15)
         self.grid.setSpacing(5)
 
         self.setLayout(self.grid)
@@ -66,18 +69,35 @@ class Main(QtWidgets.QWidget):
 
     def init_video_area(self):
         layout = QtWidgets.QVBoxLayout()
-        layout.addLayout(self.init_input_file())
+        layout.addLayout(self.init_button_menu())
         layout.addLayout(self.init_video_track_select())
         layout.addLayout(self.init_output_type())
         layout.addLayout(self.init_start_time())
         layout.addLayout(self.init_output_file())
+        layout.addStretch()
         self.grid.addLayout(layout, 0, 0, 5, 6)
 
     def init_scale_and_crop(self):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.init_scale())
         layout.addWidget(self.init_crop())
+        layout.addStretch()
         self.grid.addLayout(layout, 0, 6, 5, 4)
+
+    def init_button_menu(self):
+        layout = QtWidgets.QHBoxLayout()
+        open_input_file = QtWidgets.QPushButton("Source")
+        open_input_file.setFixedSize(100, 50)
+        open_input_file.setDefault(True)
+        open_input_file.clicked.connect(lambda: self.open_file())
+        open_input_file.setStyleSheet('background: blue')
+        convert = QtWidgets.QPushButton("Convert")
+        convert.setFixedSize(100, 50)
+        convert.setStyleSheet('background: green')
+        layout.addWidget(open_input_file)
+        layout.addWidget(convert)
+        layout.addStretch()
+        return layout
 
     def init_input_file(self):
         layout = QtWidgets.QHBoxLayout()
@@ -188,10 +208,6 @@ class Main(QtWidgets.QWidget):
         crop_layout.addLayout(crop_bottom_layout)
 
         crop_box.setLayout(crop_layout)
-        self.widgets.crop.top.editingFinished.connect(lambda: self.generate_thumbnail())
-        self.widgets.crop.left.editingFinished.connect(lambda: self.generate_thumbnail())
-        self.widgets.crop.right.editingFinished.connect(lambda: self.generate_thumbnail())
-        self.widgets.crop.bottom.editingFinished.connect(lambda: self.generate_thumbnail())
 
         return crop_box
 
@@ -229,14 +245,36 @@ class Main(QtWidgets.QWidget):
             return widget, layout, minus_button, plus_button
         return widget, layout
 
-
-
     def init_preview_image(self):
         self.widgets.preview = QtWidgets.QLabel()
         self.widgets.preview.setBackgroundRole(QtGui.QPalette.Base)
         self.widgets.preview.setFixedSize(320, 180)
         self.widgets.preview.setStyleSheet('border: 2px solid #dddddd;')  # background-color:#f0f0f0
+
+        buttons = self.init_preview_buttons()
+
         self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (Qt.AlignTop | Qt.AlignRight))
+        self.grid.addLayout(buttons, 0, 14, 5, 1)
+
+    def init_preview_buttons(self):
+        layout = QtWidgets.QVBoxLayout()
+        refresh = QtWidgets.QPushButton("R")
+        refresh.setFixedWidth(20)
+        preview = QtWidgets.QPushButton("P")
+        preview.setFixedWidth(20)
+        one = QtWidgets.QPushButton("1")
+        one.setFixedWidth(20)
+        two = QtWidgets.QPushButton("2")
+        two.setFixedWidth(20)
+
+        refresh.clicked.connect(lambda: self.generate_thumbnail())
+
+        layout.addWidget(refresh)
+        layout.addWidget(preview)
+        layout.addWidget(one)
+        layout.addWidget(two)
+        layout.addStretch()
+        return layout
 
     def modify_int(self, widget, method="add", time_field=False):
         if time_field:
@@ -262,7 +300,7 @@ class Main(QtWidgets.QWidget):
         if not filename or not filename[0]:
             return
         self.input_video = filename[0]
-        self.widgets.input_file.setText(self.input_video)
+        #self.widgets.input_file.setText(self.input_video)
         self.update_video_info()
         self.generate_thumbnail()
 
@@ -277,6 +315,23 @@ class Main(QtWidgets.QWidget):
     @property
     def flix(self):
         return Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
+
+    def build_crop(self):
+        top = int(self.widgets.crop.top.text())
+        left = int(self.widgets.crop.left.text())
+        right = int(self.widgets.crop.right.text())
+        bottom = int(self.widgets.crop.bottom.text())
+        width = self.video_width - right - left
+        height = self.video_height - bottom - top
+        assert top >= 0
+        assert left >= 0
+        assert width > 0
+        assert height > 0
+        assert width <= self.video_width
+        assert height <= self.video_height
+        assert width % 8 == 0
+        assert height % 8 == 0
+        return f"{width}:{height}:{left}:{top}"
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
@@ -302,8 +357,11 @@ class Main(QtWidgets.QWidget):
         for i in range(self.widgets.video_track.count()):
             self.widgets.video_track.removeItem(0)
 
-        self.widgets.scale.width.setText(str(self.streams.video[0].width))
-        self.widgets.scale.height.setText(str(self.streams.video[0].height))
+        self.video_width = self.streams.video[0].width
+        self.video_height = self.streams.video[0].height
+
+        self.widgets.scale.width.setText(str(self.video_width))
+        self.widgets.scale.height.setText(str(self.video_height))
         self.widgets.video_track.addItems(text_video_tracks)
 
         self.widgets.video_track.setDisabled(bool(len(self.streams.video) == 1))
@@ -340,6 +398,14 @@ class Main(QtWidgets.QWidget):
     def number_to_time(number):
         return str(timedelta(seconds=float(number)))[:10]
 
+    @property
+    def start_time(self):
+        return self.time_to_number(self.widgets.start_time.text())
+
+    @property
+    def duration(self):
+        return self.time_to_number(self.widgets.duration.text())
+
     @staticmethod
     def time_to_number(string_time):
         try:
@@ -367,21 +433,22 @@ class Main(QtWidgets.QWidget):
     def generate_thumbnail(self):
         if not self.input_video:
             return
-        # try:
-        #     crop = self.build_crop()
-        # except (ValueError, AssertionError):
-        #     logger.warning("Invalid crop, thumbnail will not reflect it")
-        #     crop = None
-        # if self.timing.isChecked():
-        #     start_time = self._get_start_time()
-        # elif self.video_duration > 5:
-
-        start_time = 5
+        try:
+            crop = self.build_crop()
+        except (ValueError, AssertionError):
+            logger.warning("Invalid crop, thumbnail will not reflect it")
+            crop = None
+        start_time = 0
+        if self.start_time:
+            start_time = self.start_time
+        elif self.duration > 5:
+            start_time = 5
         thumb_command = self.flix.generate_thumbnail_command(
             source=self.input_video,
             output=self.thumb_file,
             video_track=self.streams['video'][self.widgets.video_track.currentIndex()]['index'],
             start_time=start_time,
+            crop=crop
             # disable_hdr=self.convert_hdr_check.isChecked(),
         )
         logger.info("Generating thumbnail")
