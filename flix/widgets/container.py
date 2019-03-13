@@ -3,7 +3,7 @@ import logging
 import os
 
 from flix.shared import QtWidgets, QtGui, pyinstaller, base_path, message
-from flix.widgets.main2 import Main
+from flix.widgets.main import Main
 
 
 class Container(QtWidgets.QMainWindow):
