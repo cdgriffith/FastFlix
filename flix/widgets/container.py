@@ -14,7 +14,7 @@ class Container(QtWidgets.QMainWindow):
         main = Main(self)
         self.setCentralWidget(main)
         #self.setFixedSize(1440, 800)
-        self.setMinimumSize(1200, 800)
+        self.setMinimumSize(1000, 600)
 
     def init_menu(self):
         exit_action = QtWidgets.QAction('&Exit', self)

@@ -35,6 +35,7 @@ class Main(QtWidgets.QWidget):
             start_time=None,
             duration=None,
             video_track=None,
+            convert_to=None,
             crop=Box(top=None, bottom=None, left=None, right=None),
             scale=Box(width=None, height=None, keep_aspect_ratio=None)
         )
@@ -52,87 +53,89 @@ class Main(QtWidgets.QWidget):
 
         self.grid = QtWidgets.QGridLayout()
 
-        self.init_input_file()
-        self.init_video_track_select()
-        self.init_output_file()
-        self.init_output_type()
-
-        self.init_start_time()
+        self.init_video_area()
+        self.init_scale_and_crop()
         self.init_preview_image()
-        self.init_scale()
-        self.init_crop()
 
         options = VideoOptions(self)
         self.grid.addWidget(options, 5, 0, 10, 14)
+        self.grid.setSpacing(5)
 
         self.setLayout(self.grid)
         self.show()
 
+    def init_video_area(self):
+        layout = QtWidgets.QVBoxLayout()
+        layout.addLayout(self.init_input_file())
+        layout.addLayout(self.init_video_track_select())
+        layout.addLayout(self.init_output_type())
+        layout.addLayout(self.init_start_time())
+        layout.addLayout(self.init_output_file())
+        self.grid.addLayout(layout, 0, 0, 5, 6)
+
+    def init_scale_and_crop(self):
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.init_scale())
+        layout.addWidget(self.init_crop())
+        self.grid.addLayout(layout, 0, 6, 5, 4)
+
     def init_input_file(self):
-        input_file_layout = QtWidgets.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         self.widgets.input_file = QtWidgets.QLineEdit("")
         self.widgets.input_file.setReadOnly(True)
-        #self.widgets.input_file.setFixedWidth(400)
         open_input_file = QtWidgets.QPushButton("...")
         open_input_file.setFixedWidth(50)
+        open_input_file.setMaximumHeight(22)
         open_input_file.setDefault(True)
-        input_file_layout.addWidget(QtWidgets.QLabel("Source File:"))
-        input_file_layout.addWidget(self.widgets.input_file)
-        input_file_layout.addWidget(open_input_file)
-        input_file_layout.setSpacing(20)
+        layout.addWidget(QtWidgets.QLabel("Source File:"))
+        layout.addWidget(self.widgets.input_file)
+        layout.addWidget(open_input_file)
+        layout.setSpacing(10)
         open_input_file.clicked.connect(lambda: self.open_file())
-        self.grid.addLayout(input_file_layout, 0, 0)
+        return layout
 
     def init_video_track_select(self):
-        video_box_layout = QtWidgets.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         self.widgets.video_track = QtWidgets.QComboBox()
         self.widgets.video_track.addItems([])
-        video_box_layout.addWidget(QtWidgets.QLabel("Video: "), stretch=0)
-        video_box_layout.addWidget(self.widgets.video_track, stretch=1)
-        video_box_layout.setSpacing(20)
-        # self.video_box.currentIndexChanged.connect(self.video_track_change)
-        self.grid.addLayout(video_box_layout, 1, 0)
+        layout.addWidget(QtWidgets.QLabel("Video: "), stretch=0)
+        layout.addWidget(self.widgets.video_track, stretch=1)
+        layout.setSpacing(10)
+        return layout
 
     def init_output_file(self):
-        output_file_layout = QtWidgets.QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         self.widgets.output_file = QtWidgets.QLineEdit("")
         self.widgets.output_file.setReadOnly(True)
-        #self.widgets.output_file.setFixedWidth()
-        open_input_file = QtWidgets.QPushButton("...")
-        open_input_file.setFixedWidth(50)
-        open_input_file.setDefault(True)
-        output_file_layout.addWidget(QtWidgets.QLabel("Save As:"))
-        output_file_layout.addWidget(self.widgets.output_file)
-        output_file_layout.addWidget(open_input_file)
-        output_file_layout.setSpacing(20)
-        # open_input_file.clicked.connect(lambda: self.open_file(self.widgets.output_file))
-        self.grid.addLayout(output_file_layout, 2, 0)
+        open_file = QtWidgets.QPushButton("...")
+        open_file.setFixedWidth(50)
+        open_file.setDefault(False)
+        layout.addWidget(QtWidgets.QLabel("Save As:"))
+        layout.addWidget(self.widgets.output_file)
+        layout.addWidget(open_file)
+        layout.setSpacing(10)
+        open_file.clicked.connect(lambda: self.save_file())
+        return layout
 
     def init_output_type(self):
-        video_box_layout = QtWidgets.QHBoxLayout()
-        video_box = QtWidgets.QComboBox()
-        video_box.addItems(['GIF', 'AV1 (Experimental)'])
-        video_box_layout.addWidget(QtWidgets.QLabel("Output: "), stretch=0)
-        video_box_layout.addWidget(video_box, stretch=1)
-        video_box_layout.setSpacing(20)
-        # self.video_box.currentIndexChanged.connect(self.video_track_change)
-        self.grid.addLayout(video_box_layout, 3, 0)
-
-    def init_preview_image(self):
-        self.widgets.preview = QtWidgets.QLabel()
-        self.widgets.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.widgets.preview.setFixedSize(320, 180)
-        self.widgets.preview.setStyleSheet('border: 2px solid #dddddd;')  # background-color:#f0f0f0
-        self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (Qt.AlignTop | Qt.AlignRight))
+        layout = QtWidgets.QHBoxLayout()
+        self.widgets.convert_to = QtWidgets.QComboBox()
+        self.widgets.convert_to.addItems(['GIF', 'AV1 (Experimental)'])
+        layout.addWidget(QtWidgets.QLabel("Output: "), stretch=0)
+        layout.addWidget(self.widgets.convert_to, stretch=1)
+        layout.setSpacing(10)
+        return layout
 
     def init_start_time(self):
-        self.widgets.start_time, layout = self.build_hoz_int_field("Start  ", right_stretch=False, time_field=True)
-        self.widgets.duration, layout = self.build_hoz_int_field("  End  ", left_stretch=False, layout=layout, time_field=True)
-
-        self.grid.addLayout(layout, 4, 0)
+        self.widgets.start_time, layout = self.build_hoz_int_field(
+            "Start  ", right_stretch=False, time_field=True)
+        self.widgets.duration, layout = self.build_hoz_int_field(
+            "  End  ", left_stretch=False, layout=layout, time_field=True)
+        return layout
 
     def init_scale(self):
         scale_area = QtWidgets.QGroupBox()
+        scale_area.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
         scale_layout = QtWidgets.QVBoxLayout()
 
         self.widgets.scale.width, new_scale_layout = self.build_hoz_int_field("Width  ", right_stretch=False)
@@ -143,16 +146,54 @@ class Main(QtWidgets.QWidget):
         rb.setDisabled(True)
         QtWidgets.QPushButton()
 
+        bottom_row = QtWidgets.QHBoxLayout()
         self.widgets.scale.keep_aspect = QtWidgets.QCheckBox("Keep aspect ratio")
+        self.widgets.scale.keep_aspect.setMaximumHeight(40)
         self.widgets.scale.keep_aspect.setChecked(True)
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
 
+        label = QtWidgets.QLabel('Scale', alignment=(Qt.AlignBottom | Qt.AlignRight))
+        label.setStyleSheet("QLabel{color:#777}")
+        label.setMaximumHeight(40)
+        bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=Qt.AlignCenter)
+
         scale_layout.addLayout(new_scale_layout)
-        scale_layout.addWidget(self.widgets.scale.keep_aspect)
+        #scale_layout.addWidget(self.widgets.scale.keep_aspect)
+        bottom_row.addWidget(label)
+        scale_layout.addLayout(bottom_row)
 
         scale_area.setLayout(scale_layout)
 
-        self.grid.addWidget(scale_area, 0, 5, 2, 2)
+        return scale_area
+
+    def init_crop(self):
+        crop_box = QtWidgets.QGroupBox()
+        crop_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
+        crop_layout = QtWidgets.QVBoxLayout()
+        self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field("Top  ")
+        self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field("Left  ",
+                                                                          right_stretch=False)
+        self.widgets.crop.right, crop_hz_layout = self.build_hoz_int_field("    Right  ",
+                                                                           left_stretch=False,
+                                                                           layout=crop_hz_layout)
+        self.widgets.crop.bottom, crop_bottom_layout = self.build_hoz_int_field("Bottom  ", right_stretch=True)
+
+        label = QtWidgets.QLabel("Crop", alignment=(Qt.AlignBottom | Qt.AlignRight))
+        label.setStyleSheet("QLabel{color:#777}")
+        label.setMaximumHeight(40)
+        crop_bottom_layout.addWidget(label)
+
+        crop_layout.addLayout(crop_top_layout)
+        crop_layout.addLayout(crop_hz_layout)
+        crop_layout.addLayout(crop_bottom_layout)
+
+        crop_box.setLayout(crop_layout)
+        self.widgets.crop.top.editingFinished.connect(lambda: self.generate_thumbnail())
+        self.widgets.crop.left.editingFinished.connect(lambda: self.generate_thumbnail())
+        self.widgets.crop.right.editingFinished.connect(lambda: self.generate_thumbnail())
+        self.widgets.crop.bottom.editingFinished.connect(lambda: self.generate_thumbnail())
+
+        return crop_box
 
     @staticmethod
     def toggle_disable(widget_list):
@@ -188,29 +229,14 @@ class Main(QtWidgets.QWidget):
             return widget, layout, minus_button, plus_button
         return widget, layout
 
-    def init_crop(self):
-        crop_box = QtWidgets.QGroupBox()
-        crop_layout = QtWidgets.QVBoxLayout()
-        self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field("Top  ")
-        self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field("Left  ",
-                                                                          right_stretch=False)
-        self.widgets.crop.right, crop_hz_layout = self.build_hoz_int_field("    Right  ",
-                                                                           left_stretch=False,
-                                                                           layout=crop_hz_layout)
-        self.widgets.crop.bottom, crop_bottom_layout = self.build_hoz_int_field("Bottom  ")
 
-        crop_layout.addLayout(crop_top_layout)
-        crop_layout.addLayout(crop_hz_layout)
-        crop_layout.addLayout(crop_bottom_layout)
 
-        crop_box.setLayout(crop_layout)
-        # self.widgets.crop.top.editingFinished.connect(lambda: self.generate_thumbnail())
-        # self.widgets.crop.left.editingFinished.connect(lambda: self.generate_thumbnail())
-        # self.widgets.crop.right.editingFinished.connect(lambda: self.generate_thumbnail())
-        # self.widgets.crop.bottom.editingFinished.connect(lambda: self.generate_thumbnail())
-        # self.crop.toggled.connect(lambda x: self.generate_thumbnail())
-
-        self.grid.addWidget(crop_box, 2, 5, 3, 2)
+    def init_preview_image(self):
+        self.widgets.preview = QtWidgets.QLabel()
+        self.widgets.preview.setBackgroundRole(QtGui.QPalette.Base)
+        self.widgets.preview.setFixedSize(320, 180)
+        self.widgets.preview.setStyleSheet('border: 2px solid #dddddd;')  # background-color:#f0f0f0
+        self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (Qt.AlignTop | Qt.AlignRight))
 
     def modify_int(self, widget, method="add", time_field=False):
         if time_field:
@@ -242,7 +268,7 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception('flix', show_traceback=False)
     def save_file(self):
-        f = Path(self.input_file_path.text())
+        f = Path(self.input_video)
         save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.mkv")
         filename = QtWidgets.QFileDialog.getSaveFileName(self, caption="Save Video As", dir=str(save_file),
                                                          filter="Video File (*.mkv)")
@@ -251,7 +277,6 @@ class Main(QtWidgets.QWidget):
     @property
     def flix(self):
         return Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
-
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
