@@ -174,6 +174,9 @@ class Main(QtWidgets.QWidget):
         rb.setDisabled(True)
         QtWidgets.QPushButton()
 
+        self.widgets.scale.width.textChanged.connect(self.scale_update)
+        #self.widgets.scale.height.textChanged.connect(self.scale_update)
+
         bottom_row = QtWidgets.QHBoxLayout()
         self.widgets.scale.keep_aspect = QtWidgets.QCheckBox("Keep aspect ratio")
         self.widgets.scale.keep_aspect.setMaximumHeight(40)
@@ -330,15 +333,51 @@ class Main(QtWidgets.QWidget):
         bottom = int(self.widgets.crop.bottom.text())
         width = self.video_width - right - left
         height = self.video_height - bottom - top
-        assert top >= 0, "Top must be positive number"
-        assert left >= 0, "Left must be positive number"
-        assert width > 0, "Total video width must be greater than 0"
-        assert height > 0, "Total video height must be greater than 0"
         if (top+left+right+bottom) == 0:
             return None
-        assert width <= self.video_width
-        assert height <= self.video_height
+        try:
+            assert top >= 0, "Top must be positive number"
+            assert left >= 0, "Left must be positive number"
+            assert width > 0, "Total video width must be greater than 0"
+            assert height > 0, "Total video height must be greater than 0"
+            assert width <= self.video_width, "Width must be smaller than video width"
+            assert height <= self.video_height, "Height must be smaller than video height"
+        except AssertionError as err:
+            logging.info(f'Invalid Crop {err}')
+            return
         return f"{width}:{height}:{left}:{top}"
+
+    @reusables.log_exception('flix', show_traceback=False)
+    def scale_update(self, *args):
+        keep_aspect = self.widgets.scale.keep_aspect.isChecked()
+        if not keep_aspect:
+            return
+        self.widgets.scale.height.setDisabled(keep_aspect)
+        height = self.video_height
+        width = self.video_width
+        if self.build_crop():
+            width, height, *_ = (int(x) for x in self.build_crop().split(":"))
+
+        if keep_aspect and (not height or not width):
+            return logger.info("Invalid source dimensions")
+
+        try:
+            scale_width = int(self.widgets.scale.width.text())
+            assert scale_width > 0
+        except (ValueError, AssertionError):
+            logger.info("Invalid width")
+            return
+            #return self.scale_warning_message.setText("Invalid main_width")
+
+        # if scale_width % 8:
+        #     return self.scale_warning_message.setText("Width must be divisible by 8")
+
+        if keep_aspect:
+            ratio = scale_width / width
+            scale_height = ratio * height
+            self.widgets.scale.height.setText(str(int(scale_height)))
+            return
+
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
