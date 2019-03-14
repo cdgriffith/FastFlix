@@ -52,6 +52,8 @@ class Main(QtWidgets.QWidget):
         self.thumb_file = 'test.png'
         self.pallet_file = 'pallet.png'
 
+        self.video_options = VideoOptions(self)
+
         #self.completed.connect(self.conversion_complete)
         #self.cancelled.connect(self.conversion_cancelled)
         self.thumbnail_complete.connect(self.thumbnail_generated)
@@ -68,8 +70,8 @@ class Main(QtWidgets.QWidget):
         self.init_scale_and_crop()
         self.init_preview_image()
 
-        options = VideoOptions(self)
-        self.grid.addWidget(options, 5, 0, 10, 15)
+
+        self.grid.addWidget(self.video_options, 5, 0, 10, 15)
         self.grid.setSpacing(5)
 
         self.setLayout(self.grid)
@@ -152,6 +154,8 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(QtWidgets.QLabel("Output: "), stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=1)
         layout.setSpacing(10)
+        self.widgets.convert_to.currentIndexChanged.connect(self.video_options.change_conversion)
+
         return layout
 
     def init_start_time(self):
