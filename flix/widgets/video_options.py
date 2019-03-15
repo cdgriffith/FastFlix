@@ -7,6 +7,7 @@ import logging
 import tempfile
 
 import reusables
+from box import Box, BoxList
 
 from flix.flix import Flix
 from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
@@ -22,17 +23,32 @@ class VideoOptions(QtWidgets.QTabWidget):
         super().__init__(parent)
         self.main = parent
 
-        self.converters = [
-             {'quality': gif.GIF(self)},
+        self.converters = BoxList([
+             {'quality': gif.GIF(self), 'audio': False, 'subtitles': False},
              {'quality': QtWidgets.QWidget()},
              {'quality': QtWidgets.QWidget()}
-        ]
+        ])
+
+        self.selected = 0
 
         self.addTab(self.converters[0]['quality'], "Quality")
         self.addTab(QtWidgets.QWidget(), "Audio")
         self.addTab(QtWidgets.QWidget(), "Subtitles")
+        self.addTab(QtWidgets.QWidget(), "Command List")
+
+        self.setTabEnabled(1, False)
+        self.setTabEnabled(2, False)
 
     def change_conversion(self, conversion):
+        options = self.converters[conversion]
         self.removeTab(0)
-        self.insertTab(0, self.converters[conversion]['quality'], "Quality")
+        self.insertTab(0, options.quality, "Quality")
         self.setCurrentIndex(0)
+        self.setTabEnabled(1, options.get('audio', True))
+        self.setTabEnabled(2, options.get('subtitles', True))
+        self.selected = conversion
+
+    def get_settings(self):
+        settings = Box()
+        settings.update(self.converters[self.selected].quality.get_settings())
+        return settings

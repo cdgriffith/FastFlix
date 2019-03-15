@@ -17,6 +17,8 @@ from flix.widgets.av1 import AV1
 from flix.widgets.x265 import X265
 from flix.widgets.gif import GIF
 
+from flix.builders import (gif as gif_builder)
+
 logger = logging.getLogger('flix')
 
 
@@ -34,6 +36,10 @@ class Main(QtWidgets.QWidget):
         # self.x265 = X265(parent=self, source=source)
         # self.av1 = AV1(parent=self, source=source)
         # self.gif = GIF(parent=self, source=source)
+
+        self.builders = Box(
+            gif=gif_builder
+        )
 
         self.widgets = Box(
             input_file=None,
@@ -70,7 +76,6 @@ class Main(QtWidgets.QWidget):
         self.init_scale_and_crop()
         self.init_preview_image()
 
-
         self.grid.addWidget(self.video_options, 5, 0, 10, 15)
         self.grid.setSpacing(5)
 
@@ -103,7 +108,7 @@ class Main(QtWidgets.QWidget):
         convert = QtWidgets.QPushButton("Convert")
         convert.setFixedSize(100, 50)
         convert.setStyleSheet('background: green')
-        convert.clicked.connect(lambda: self.create_video())
+        convert.clicked.connect(lambda: self.build_commands())
         layout.addWidget(open_input_file)
         layout.addWidget(convert)
         layout.addStretch()
@@ -510,6 +515,26 @@ class Main(QtWidgets.QWidget):
         pixmap = QtGui.QPixmap(str(self.thumb_file))
         pixmap = pixmap.scaled(320, 180, QtCore.Qt.KeepAspectRatio)
         self.widgets.preview.setPixmap(pixmap)
+
+    def build_scale(self):
+        return None
+
+    def get_all_settings(self):
+        settings = Box(
+            crop=self.build_crop(),
+            scale=self.build_scale(),
+            source=self.input_video,
+            start_time=self.start_time,
+            duration=self.duration,
+            video_track=self.widgets.video_track.currentIndex()
+        )
+        settings.update(**self.video_options.get_settings())
+        return settings
+
+    def build_commands(self):
+        settings = self.get_all_settings()
+        convert = self.widgets.convert_to.currentText()[:3].lower()
+        print(self.builders[convert].build(**settings))
 
     @reusables.log_exception('flix', show_traceback=False)
     def create_video(self):
