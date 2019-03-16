@@ -3,9 +3,6 @@ import logging
 import os
 
 from flix.shared import QtWidgets, QtGui, pyinstaller, base_path, message
-from flix.widgets.av1 import AV1
-from flix.widgets.x265 import X265
-from flix.widgets.gif import GIF
 from flix.widgets.logs import Logs
 from flix.widgets.about import About
 from flix.widgets.settings import Settings

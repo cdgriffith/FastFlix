@@ -4,19 +4,15 @@ from pathlib import Path
 import time
 from datetime import timedelta
 import logging
-import tempfile
 
 import reusables
 from box import Box
 
 from flix.flix import Flix
-from flix.shared import QtGui, QtCore, Qt, QtWidgets, error_message, main_width, base_path
+from flix.shared import QtGui, QtCore, Qt, QtWidgets, error_message, base_path
 from flix.widgets.video_options import VideoOptions
 from flix.widgets.worker import Worker
 from flix.widgets.command_runner import Worker as CW
-from flix.widgets.av1 import AV1
-from flix.widgets.x265 import X265
-from flix.widgets.gif import GIF
 from flix.builders import helpers
 
 from flix.builders import (gif as gif_builder)
