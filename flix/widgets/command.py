@@ -16,8 +16,12 @@ class Command(QtWidgets.QTabWidget):
         self.setFixedHeight(60)
 
         grid = QtWidgets.QGridLayout()
-        grid.addWidget(QtWidgets.QLabel(f"Command {number} {'looped' if loop else ''}"))
-        grid.addWidget(self.widget)
+        grid.addWidget(QtWidgets.QLabel(f"Command {number}"), 0, 0, 1, 2)
+        if loop is not None:
+            grid.addWidget(QtWidgets.QLabel(f'loop {loop}'), 1, 0, 1, 1)
+            grid.addWidget(self.widget, 1, 1, 1, 1)
+        else:
+            grid.addWidget(self.widget, 1, 0, 1, 2)
         self.setLayout(grid)
 
 

@@ -20,5 +20,5 @@ def build(source, video_track, fps=15, dither="sierra2_4a",
                  f'-i "{source}" -i "{{pallet_file}}" -map 0:{video_track} '
                  f'-lavfi "{gif_filters} [x]; [x][1:v] paletteuse=dither={dither}" -y "{{output}}" ')
 
-    return (command(command_1, False, ['ffmpeg', 'pallet_file', 'output']),
-            command(command_2, False, ['ffmpeg', 'pallet_file', 'output']))
+    return (command(command_1, None, ['ffmpeg', 'pallet_file', 'output']),
+            command(command_2, None, ['ffmpeg', 'pallet_file', 'output']))
