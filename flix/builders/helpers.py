@@ -1,6 +1,16 @@
-from collections import namedtuple
+from dataclasses import dataclass
 
-command = namedtuple("Command", ['command', 'loop', 'variables'])
+
+@dataclass
+class Command:
+    command: str
+    variables: list
+    internal: bool
+
+@dataclass
+class Loop:
+    type: str
+    condition: str
 
 
 def generate_filters(**kwargs):

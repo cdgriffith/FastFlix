@@ -4,6 +4,7 @@ import os
 
 from flix.shared import QtWidgets, QtGui, pyinstaller, base_path, message
 from flix.widgets.main import Main
+from flix.widgets.about import About
 
 
 class Container(QtWidgets.QMainWindow):
@@ -15,6 +16,7 @@ class Container(QtWidgets.QMainWindow):
         self.setCentralWidget(main)
         #self.setFixedSize(1440, 800)
         self.setMinimumSize(1000, 600)
+        self.about = QtWidgets.QWidget()
 
     def init_menu(self):
         exit_action = QtWidgets.QAction('&Exit', self)
@@ -27,10 +29,11 @@ class Container(QtWidgets.QMainWindow):
         file_menu.addAction(exit_action)
 
         about_action = QtWidgets.QAction('&About', self)
-        about_action.triggered.connect(self.about)
+        about_action.triggered.connect(self.show_about)
 
         help_menu = menubar.addMenu('&Help')
         help_menu.addAction(about_action)
 
-    def about(self):
-        pass
+    def show_about(self):
+        self.about = About()
+        self.about.show()

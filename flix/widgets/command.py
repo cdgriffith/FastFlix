@@ -5,9 +5,16 @@ from box import Box
 from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 
 
+class Loop(QtWidgets.QWidget):
+
+    def __init__(self, parent, type, condition, commands):
+        super(Loop, self).__init__(parent)
+        # TODO loops
+
+
 class Command(QtWidgets.QTabWidget):
 
-    def __init__(self, parent, command, number, loop, enabled=True):
+    def __init__(self, parent, command, number, enabled=True):
         super(Command, self).__init__(parent)
         self.command = command
         self.widget = QtWidgets.QLineEdit()
@@ -17,11 +24,7 @@ class Command(QtWidgets.QTabWidget):
 
         grid = QtWidgets.QGridLayout()
         grid.addWidget(QtWidgets.QLabel(f"Command {number}"), 0, 0, 1, 2)
-        if loop is not None:
-            grid.addWidget(QtWidgets.QLabel(f'loop {loop}'), 1, 0, 1, 1)
-            grid.addWidget(self.widget, 1, 1, 1, 1)
-        else:
-            grid.addWidget(self.widget, 1, 0, 1, 2)
+        grid.addWidget(self.widget, 1, 0, 1, 2)
         self.setLayout(grid)
 
 
@@ -49,8 +52,9 @@ class CommandList(QtWidgets.QWidget):
         self.inner_widget.setSizePolicy(sp)
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(5)
+        # TODO handle new loop thing
         for index, command in enumerate(commands, 1):
-            new_item = Command(self.scroll_area, command.command, index, command.loop)
+            new_item = Command(self.scroll_area, command.command, index)
             layout.addWidget(new_item)
         layout.addStretch()
         self.inner_widget.setLayout(layout)

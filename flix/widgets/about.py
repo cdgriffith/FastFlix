@@ -18,6 +18,8 @@ class About(QtWidgets.QWidget):
         super(About, self).__init__(parent)
         layout = QtWidgets.QGridLayout()
 
+        self.setMinimumSize(400, 400)
+
         build_file = Path(base_path, 'build_version')
 
         label = QtWidgets.QLabel(f"<b>FastFlix</b> v{__version__}<br>"
@@ -64,3 +66,4 @@ class About(QtWidgets.QWidget):
         layout.addWidget(license_label)
 
         self.setLayout(layout)
+        self.show()

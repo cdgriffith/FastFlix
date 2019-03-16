@@ -13,6 +13,7 @@ from flix.flix import Flix
 from flix.shared import QtGui, QtCore, Qt, QtWidgets, error_message, main_width
 from flix.widgets.video_options import VideoOptions
 from flix.widgets.worker import Worker
+from flix.widgets.command_runner import Worker as CW
 from flix.widgets.av1 import AV1
 from flix.widgets.x265 import X265
 from flix.widgets.gif import GIF
@@ -30,6 +31,8 @@ class Main(QtWidgets.QWidget):
     def __init__(self, parent, source=""):
         super().__init__(parent)
         self.container = parent
+
+        self.command_runner = None
 
         self.input_video = None
         self.streams, self.format_info = None, None
@@ -108,7 +111,7 @@ class Main(QtWidgets.QWidget):
         convert = QtWidgets.QPushButton("Convert")
         convert.setFixedSize(100, 50)
         convert.setStyleSheet('background: green')
-        convert.clicked.connect(lambda: self.build_commands())
+        convert.clicked.connect(lambda: self.create_video())
         layout.addWidget(open_input_file)
         layout.addWidget(convert)
         layout.addStretch()
@@ -312,6 +315,7 @@ class Main(QtWidgets.QWidget):
         if time_field and new_value < 0:
             return
         widget.setText(str(new_value) if not time_field else self.number_to_time(new_value))
+        self.build_commands()
 
     @reusables.log_exception('flix', show_traceback=False)
     def open_file(self):
@@ -535,9 +539,11 @@ class Main(QtWidgets.QWidget):
         convert = self.widgets.convert_to.currentText()[:3].lower()
         commands = self.builders[convert].build(**settings)
         self.video_options.commands.update_commands(commands)
+        return commands
 
     @reusables.log_exception('flix', show_traceback=False)
     def create_video(self):
+
         if not self.input_video:
             return error_message("Have to select a video first")
 
@@ -550,6 +556,18 @@ class Main(QtWidgets.QWidget):
         if not output_video:
             logger.warning("No output video specified, canceling encoding")
             return
+
+        commands = self.build_commands()
+        for command in commands:
+            command.command = command.command.format(ffmpeg=self.ffmpeg,
+                                       ffprobe=self.ffprobe,
+                                       svt_av1=self.svt_av1,
+                                       output=output_video)
+
+        self.command_runner = CW(self, commands)
+        self.command_runner.start()
+        return
+
         if not output_video.lower().endswith("gif"):
             return error_message("Output file must end with .gif")
         video_track = self.streams['video'][self.widgets.video_track.currentIndex()]['index']
