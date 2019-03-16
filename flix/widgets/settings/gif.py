@@ -5,8 +5,9 @@ from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 
 class GIF(QtWidgets.QWidget):
 
-    def __init__(self, parent):
+    def __init__(self, parent, main):
         super(GIF, self).__init__(parent)
+        self.main = main
 
         grid = QtWidgets.QGridLayout()
 
@@ -30,6 +31,7 @@ class GIF(QtWidgets.QWidget):
         self.widgets.fps = QtWidgets.QComboBox()
         self.widgets.fps.addItems([str(x) for x in range(1, 31)])
         self.widgets.fps.setCurrentIndex(14)
+        self.widgets.fps.currentIndexChanged.connect(lambda: self.main.build_commands())
         layout.addWidget(self.widgets.fps)
         return layout
 
@@ -37,8 +39,10 @@ class GIF(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel('Remove HDR'))
         self.widgets.remove_hdr = QtWidgets.QComboBox()
-        self.widgets.remove_hdr.addItems(['Auto Remove', 'Yes', 'No'])
+        self.widgets.remove_hdr.addItems(['No', 'Yes'])
         self.widgets.remove_hdr.setCurrentIndex(0)
+        self.widgets.remove_hdr.setDisabled(True)
+        self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.remove_hdr)
         return layout
 
@@ -54,12 +58,23 @@ class GIF(QtWidgets.QWidget):
                                       'bayer:bayer_scale=3',
                                       'none'])
         self.widgets.dither.setCurrentIndex(0)
+        self.widgets.dither.currentIndexChanged.connect(lambda: self.main.build_commands())
         layout.addWidget(self.widgets.dither)
         return layout
 
     def get_settings(self):
         return Box(
             fps=int(self.widgets.fps.currentText()),
-            remove_hdr=self.widgets.remove_hdr.currentText(),
+            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             dither=self.widgets.dither.currentText()
         )
+
+    def new_source(self):
+        if self.main.streams['video'][self.main.video_track].get('color_space', '').startswith('bt2020'):
+            self.widgets.remove_hdr.setDisabled(False)
+            self.widgets.dither.setCurrentIndex(1)
+        else:
+            self.widgets.dither.setCurrentIndex(0)
+            self.widgets.remove_hdr.setDisabled(True)
+        self.widgets.fps.setCurrentIndex(14)
+        self.widgets.dither.setCurrentIndex(0)

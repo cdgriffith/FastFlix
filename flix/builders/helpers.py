@@ -1,16 +1,30 @@
-from dataclasses import dataclass
+# from dataclasses import dataclass
+#
+# @dataclass
+# class Command:
+#     command: str
+#     variables: list
+#     internal: bool
+#
+# @dataclass
+# class Loop:
+#     type: str
+#     condition: str
 
 
-@dataclass
-class Command:
-    command: str
-    variables: list
-    internal: bool
-
-@dataclass
 class Loop:
-    type: str
-    condition: str
+
+    def __init__(self, type, condition):
+        self.type = type
+        self.condition = condition
+
+
+class Command:
+
+    def __init__(self, command, variables, internal):
+        self.command = command
+        self.variables = variables
+        self.internal = internal
 
 
 def generate_filters(**kwargs):
@@ -22,6 +36,7 @@ def generate_filters(**kwargs):
     :param crop:
     :param scale:
     :param scale_filter:
+    :param rotate:
     :return:
     """
     crop = kwargs.get('crop')
@@ -30,6 +45,7 @@ def generate_filters(**kwargs):
     scale_width = kwargs.get('scale_width')
     scale_height = kwargs.get('scale_height')
     disable_hdr = kwargs.get('disable_hdr')
+    rotate = kwargs.get('rotate')
 
     filter_list = []
     if crop:
@@ -40,6 +56,19 @@ def generate_filters(**kwargs):
         filter_list.append(f'scale={scale_width}:-1:flags={scale_filter}')
     elif scale_height:
         filter_list.append(f'scale=-1:{scale_height}:flags={scale_filter}')
+    if rotate is not None:
+        if rotate <= 3:
+            # 0 = 90CounterCLockwise and Vertical Flip (default)
+            # 1 = 90Clockwise
+            # 2 = 90CounterClockwise
+            # 3 = 90Clockwise and Vertical Flip
+            filter_list.append(f'transpose={rotate}')
+        if rotate == 4:
+            # 180
+            filter_list.append(f'transpose=2,transpose=2')
+        if rotate == 5:
+            # 180 and Vertical Flip
+            filter_list.append(f'transpose=3,transpose=1')
 
     if disable_hdr:
         filter_list.append('zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,'

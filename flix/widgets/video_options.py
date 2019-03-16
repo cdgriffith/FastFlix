@@ -25,7 +25,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.main = parent
 
         self.converters = BoxList([
-             {'quality': gif.GIF(self), 'audio': False, 'subtitles': False},
+             {'quality': gif.GIF(self, self.main), 'audio': False, 'subtitles': False},
              {'quality': QtWidgets.QWidget()},
              {'quality': QtWidgets.QWidget()}
         ])
@@ -56,3 +56,5 @@ class VideoOptions(QtWidgets.QTabWidget):
         settings.update(self.converters[self.selected].quality.get_settings())
         return settings
 
+    def new_source(self):
+        self.converters[self.selected].quality.new_source()

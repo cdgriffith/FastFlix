@@ -16,10 +16,10 @@ __all__ = ['Worker']
 
 
 class Worker(QtCore.QThread):
-    def __init__(self, app, command_list):
-        super(Worker, self).__init__(app)
+    def __init__(self, parent, command_list):
+        super(Worker, self).__init__(parent)
         self.tempdir = tempfile.gettempdir()
-        self.app = app
+        self.app = parent
         self.command_list = command_list
         self.process = None
         self.killed = False

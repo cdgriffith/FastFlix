@@ -213,25 +213,12 @@ class Flix:
                 f'{"-map 0:s" if keep_subtitles else "-sn"} '
                 f' -y "{output}"')
 
-    def generate_thumbnail_command(self, source, output, video_track, start_time=0, disable_hdr=False,
-                                   crop=None):
+    def generate_thumbnail_command(self, source, output, video_track, start_time=0, filters=None):
         start = ''
         if start_time:
             start = f'-ss {start_time}'
-
-        filter_list = []
-
-        if disable_hdr:
-            filter_list.append('zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,'
-                               'zscale=t=bt709:m=bt709:r=tv,format=yuv420p')
-
-        if crop:
-            filter_list.append(f'crop={crop}')
-
-        filters = ",".join(filter_list) + "," if filter_list else ""
-
         return (f'"{self.ffmpeg}" {start} -loglevel error -i "{source}" '
-                f" -vf {filters}scale=min(600\\,iw):-1 "
+                f" -vf {filters+',' if filters else ''}scale=min(300\\,iw):-1 "
                 f'-map 0:{video_track} -an -y '
                 f'-vframes 1 "{output}"')
 
@@ -308,3 +295,4 @@ class Flix:
         return (f'"{self.ffmpeg}" -i "{video_source}" -i "{audio_source}" '
                 f'-c copy -map 0:{video_track} -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0" '
                 f'-map 1:{audio_track} "{output}"')
+
