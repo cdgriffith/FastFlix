@@ -16,7 +16,7 @@ class GIF(QtWidgets.QWidget):
         self.widgets = Box(
             fps=None,
             remove_hdr=None,
-        dither=None)
+            dither=None)
 
         grid.addLayout(self.init_fps(), 1, 0)
         grid.addLayout(self.init_remove_hdr(), 2, 0)

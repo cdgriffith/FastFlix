@@ -46,6 +46,8 @@ def generate_filters(**kwargs):
     scale_height = kwargs.get('scale_height')
     disable_hdr = kwargs.get('disable_hdr')
     rotate = kwargs.get('rotate')
+    vflip = kwargs.get('v_flip')
+    hflip = kwargs.get('h_flip')
 
     filter_list = []
     if crop:
@@ -58,17 +60,13 @@ def generate_filters(**kwargs):
         filter_list.append(f'scale=-1:{scale_height}:flags={scale_filter}')
     if rotate is not None:
         if rotate <= 3:
-            # 0 = 90CounterCLockwise and Vertical Flip (default)
-            # 1 = 90Clockwise
-            # 2 = 90CounterClockwise
-            # 3 = 90Clockwise and Vertical Flip
             filter_list.append(f'transpose={rotate}')
         if rotate == 4:
-            # 180
             filter_list.append(f'transpose=2,transpose=2')
-        if rotate == 5:
-            # 180 and Vertical Flip
-            filter_list.append(f'transpose=3,transpose=1')
+    if vflip:
+        filter_list.append('vflip')
+    if hflip:
+        filter_list.append('hflip')
 
     if disable_hdr:
         filter_list.append('zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,'

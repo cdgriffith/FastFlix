@@ -10,7 +10,7 @@ import reusables
 from box import Box
 
 from flix.flix import Flix
-from flix.shared import QtGui, QtCore, Qt, QtWidgets, error_message, main_width
+from flix.shared import QtGui, QtCore, Qt, QtWidgets, error_message, main_width, base_path
 from flix.widgets.video_options import VideoOptions
 from flix.widgets.worker import Worker
 from flix.widgets.command_runner import Worker as CW
@@ -33,8 +33,6 @@ class Main(QtWidgets.QWidget):
         super().__init__(parent)
         self.container = parent
 
-
-
         self.input_video = None
         self.streams, self.format_info = None, None
         # self.x265 = X265(parent=self, source=source)
@@ -54,6 +52,8 @@ class Main(QtWidgets.QWidget):
             convert_to=None,
             rotate=None,
             convert_button=None,
+            v_flip=None,
+            h_flip=None,
             crop=Box(top=None, bottom=None, left=None, right=None),
             scale=Box(width=None, height=None, keep_aspect_ratio=None)
         )
@@ -94,9 +94,8 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(self.init_button_menu())
         layout.addLayout(self.init_video_track_select())
-        layout.addLayout(self.init_output_type())
-        layout.addLayout(self.init_start_time())
-        layout.addWidget(self.init_rorate())
+
+        layout.addWidget(self.init_rotate())
         layout.addStretch()
         self.grid.addLayout(layout, 0, 0, 5, 6)
 
@@ -104,6 +103,7 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.init_scale())
         layout.addWidget(self.init_crop())
+        layout.addWidget(self.init_start_time())
         layout.addStretch()
         self.grid.addLayout(layout, 0, 6, 5, 4)
 
@@ -120,8 +120,11 @@ class Main(QtWidgets.QWidget):
         convert.clicked.connect(lambda: self.create_video())
         self.widgets.convert_button = convert
         layout.addWidget(open_input_file)
-        layout.addWidget(convert)
         layout.addStretch()
+        layout.addLayout(self.init_output_type(), alignment=Qt.AlignRight)
+        layout.addStretch()
+        layout.addWidget(convert)
+
         return layout
 
     def init_input_file(self):
@@ -143,57 +146,65 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.video_track = QtWidgets.QComboBox()
         self.widgets.video_track.addItems([])
-        layout.addWidget(QtWidgets.QLabel("Video: "), stretch=0)
+        self.widgets.video_track.currentIndexChanged.connect(lambda: self.page_update())
+        layout.addWidget(QtWidgets.QLabel("Video Track "), stretch=0)
         layout.addWidget(self.widgets.video_track, stretch=1)
         layout.setSpacing(10)
         return layout
 
-    def init_rorate(self):
-        # if rotate < 3:
-        #     # 0 = 90CounterCLockwise and Vertical Flip (default)
-        #     # 1 = 90Clockwise
-        #     # 2 = 90CounterClockwise
-        #     # 3 = 90Clockwise and Vertical Flip
-        # if rotate == 4:
-        #     # 180
-        # if rotate == 5:
-        #     # 180 and Vertical Flip
+    def init_rotate(self):
         group_box = QtWidgets.QGroupBox()
-        group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
+        rotation_dir = Path(base_path, 'data', 'rotations')
+        group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-15px; padding-bottom:-5px}")
         group = QtWidgets.QButtonGroup()
+
+        v_size = QtCore.QSize(40, 60)
+        h_size = QtCore.QSize(60, 40)
+
         rot_none = QtWidgets.QRadioButton("None")
-        rot_0 = QtWidgets.QRadioButton("90CC-VF")
-        rot_1 = QtWidgets.QRadioButton("90C")
-        rot_2 = QtWidgets.QRadioButton("90CC")
-        rot_3 = QtWidgets.QRadioButton("90C-VF")
-        rot_4 = QtWidgets.QRadioButton("180")
-        rot_5 = QtWidgets.QRadioButton("180-VF")
-        rot_0.name = 0
-        rot_1.name = 1
-        rot_2.name = 2
-        rot_3.name = 3
-        rot_4.name = 4
-        rot_5.name = 5
+        rot_none.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix.png'))))
+        rot_none.setIconSize(h_size)
         rot_none.name = None
-        group.addButton(rot_0)
+
+        rot_1 = QtWidgets.QRadioButton("90°")
+        rot_1.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix C90.png'))))
+        rot_1.setIconSize(v_size)
+        rot_1.name = 1
+
+        rot_2 = QtWidgets.QRadioButton("270°")
+        rot_2.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix CC90.png'))))
+        rot_2.setIconSize(v_size)
+        rot_2.name = 2
+
+        rot_4 = QtWidgets.QRadioButton("180°")
+        rot_4.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix 180.png'))))
+        rot_4.setIconSize(h_size)
+        rot_4.name = 4
+
+        self.widgets.v_flip = QtWidgets.QCheckBox("Vertical Flip")
+        self.widgets.v_flip.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix VF.png'))))
+        self.widgets.v_flip.setIconSize(h_size)
+        self.widgets.v_flip.toggled.connect(lambda: self.page_update())
+
+        self.widgets.h_flip = QtWidgets.QCheckBox("Horizontal Flip")
+        self.widgets.h_flip.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix HF.png'))))
+        self.widgets.h_flip.setIconSize(h_size)
+        self.widgets.h_flip.toggled.connect(lambda: self.page_update())
+
         group.addButton(rot_1)
         group.addButton(rot_2)
-        group.addButton(rot_3)
         group.addButton(rot_4)
-        group.addButton(rot_5)
         group.addButton(rot_none)
         layout = QtWidgets.QGridLayout()
-        layout.addWidget(rot_none, 0, 0)
-        layout.addWidget(rot_0, 0, 1)
-        layout.addWidget(rot_1, 0, 2)
-        layout.addWidget(rot_2, 0, 3)
-        layout.addWidget(rot_3, 1, 1)
-        layout.addWidget(rot_4, 1, 2)
-        layout.addWidget(rot_5, 1, 3)
-        label = QtWidgets.QLabel("Rotation", alignment=(Qt.AlignBottom | Qt.AlignLeft))
+        layout.addWidget(rot_none, 1, 0)
+        layout.addWidget(rot_1, 0, 0)
+        layout.addWidget(rot_2, 0, 2)
+        layout.addWidget(rot_4, 0, 1)
+        layout.addWidget(self.widgets.v_flip, 1, 2)
+        layout.addWidget(self.widgets.h_flip, 1, 1)
+        label = QtWidgets.QLabel("Rotation", alignment=(Qt.AlignBottom | Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
-        label.setMaximumHeight(40)
-        layout.addWidget(label, 1, 0)
+        layout.addWidget(label, 1, 3)
         group_box.setLayout(layout)
         rot_none.setChecked(True)
         self.widgets.rotate = group
@@ -226,13 +237,16 @@ class Main(QtWidgets.QWidget):
         return layout
 
     def init_start_time(self):
+        group_box = QtWidgets.QGroupBox()
+        group_box.setStyleSheet("QGroupBox{padding-top:18px; margin-top:-18px}")
         self.widgets.start_time, layout = self.build_hoz_int_field(
             "Start  ", right_stretch=False, time_field=True)
         self.widgets.duration, layout = self.build_hoz_int_field(
             "  End  ", left_stretch=False, layout=layout, time_field=True)
         self.widgets.start_time.textChanged.connect(lambda: self.page_update())
         self.widgets.duration.textChanged.connect(lambda: self.page_update())
-        return layout
+        group_box.setLayout(layout)
+        return group_box
 
     def init_scale(self):
         scale_area = QtWidgets.QGroupBox()
@@ -276,7 +290,7 @@ class Main(QtWidgets.QWidget):
 
     def init_crop(self):
         crop_box = QtWidgets.QGroupBox()
-        crop_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
+        crop_box.setStyleSheet("QGroupBox{padding-top:17px; margin-top:-18px}")
         crop_layout = QtWidgets.QVBoxLayout()
         self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field("Top  ")
         self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field("Left  ",
@@ -341,7 +355,8 @@ class Main(QtWidgets.QWidget):
     def init_preview_image(self):
         self.widgets.preview = QtWidgets.QLabel()
         self.widgets.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.widgets.preview.setFixedSize(320, 180)
+        self.widgets.preview.setFixedSize(320, 213)
+        self.widgets.preview.setAlignment(QtCore.Qt.AlignCenter)
         self.widgets.preview.setStyleSheet('border: 2px solid #dddddd;')  # background-color:#f0f0f0
 
         buttons = self.init_preview_buttons()
@@ -488,7 +503,7 @@ class Main(QtWidgets.QWidget):
             track_info += f' - {x.channels} channels'
 
             text_audio_tracks.append(track_info)
-        text_video_tracks = [f'{i}: codec {x.codec_name}' for i, x in enumerate(self.streams.video)]
+        text_video_tracks = [f'{i}: codec {x.codec_name} - profile {x.get("profile")} - pix_fmt {x.get("pix_fmt")}' for i, x in enumerate(self.streams.video)]
 
         for i in range(self.widgets.video_track.count()):
             self.widgets.video_track.removeItem(0)
@@ -599,7 +614,7 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def thumbnail_generated(self):
         pixmap = QtGui.QPixmap(str(self.thumb_file))
-        pixmap = pixmap.scaled(320, 180, QtCore.Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(320, 213, QtCore.Qt.KeepAspectRatio)
         self.widgets.preview.setPixmap(pixmap)
 
     def build_scale(self):
@@ -618,7 +633,9 @@ class Main(QtWidgets.QWidget):
             start_time=self.start_time,
             duration=self.duration,
             video_track=self.widgets.video_track.currentIndex(),
-            rotate=self.widgets.rotate.checkedButton().name
+            rotate=self.widgets.rotate.checkedButton().name,
+            v_flip=self.widgets.v_flip.isChecked(),
+            h_flip=self.widgets.h_flip.isChecked()
         )
         settings.update(**self.video_options.get_settings())
         return settings
