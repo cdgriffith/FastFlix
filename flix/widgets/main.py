@@ -352,7 +352,7 @@ class Main(QtWidgets.QWidget):
             assert width <= self.video_width, "Width must be smaller than video width"
             assert height <= self.video_height, "Height must be smaller than video height"
         except AssertionError as err:
-            logging.info(f'Invalid Crop {err}')
+            error_message(f'Invalid Crop: {err}', parent=self)
             return
         return f"{width}:{height}:{left}:{top}"
 
@@ -386,7 +386,6 @@ class Main(QtWidgets.QWidget):
             scale_height = ratio * height
             self.widgets.scale.height.setText(str(int(scale_height)))
             return
-
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
@@ -534,7 +533,8 @@ class Main(QtWidgets.QWidget):
     def build_commands(self):
         settings = self.get_all_settings()
         convert = self.widgets.convert_to.currentText()[:3].lower()
-        print(self.builders[convert].build(**settings))
+        commands = self.builders[convert].build(**settings)
+        self.video_options.commands.update_commands(commands)
 
     @reusables.log_exception('flix', show_traceback=False)
     def create_video(self):
@@ -566,14 +566,10 @@ class Main(QtWidgets.QWidget):
             else:
                 return
 
-        try:
-            crop = self.build_crop()
-        except ValueError:
-            return error_message("Crop values are not numeric")
-        except AssertionError:
-            return error_message("Crop values must be positive integers, and less than video dimensions")
+        crop = self.build_crop()
 
-        scale= None
+        scale = None
+
             # try:
             #     scale = self.build_scale()
             # except ValueError:

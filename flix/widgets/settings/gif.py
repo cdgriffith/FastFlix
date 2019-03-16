@@ -46,9 +46,15 @@ class GIF(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel('Dither'))
         self.widgets.dither = QtWidgets.QComboBox()
-        self.widgets.dither.addItems(['dither'])
+        self.widgets.dither.addItems(['sierra2_4a',
+                                      'floyd_steinberg',
+                                      'sierra2',
+                                      'bayer:bayer_scale=1',
+                                      'bayer:bayer_scale=2',
+                                      'bayer:bayer_scale=3',
+                                      'none'])
         self.widgets.dither.setCurrentIndex(0)
-        layout.addWidget(self.widgets.remove_hdr)
+        layout.addWidget(self.widgets.dither)
         return layout
 
     def get_settings(self):

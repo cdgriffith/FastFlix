@@ -1,3 +1,8 @@
+from collections import namedtuple
+
+command = namedtuple("Command", ['command', 'loop', 'variables'])
+
+
 def generate_filters(**kwargs):
     """
 
