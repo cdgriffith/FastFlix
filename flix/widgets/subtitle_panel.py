@@ -32,7 +32,7 @@ class SubtitleList(QtWidgets.QWidget):
         self.inner_widget = QtWidgets.QWidget()
 
         self.scroll_area = QtWidgets.QScrollArea(self)
-        self.scroll_area.setMinimumHeight(300)
+        self.scroll_area.setMinimumHeight(200)
 
         layout.addWidget(self.scroll_area)
 

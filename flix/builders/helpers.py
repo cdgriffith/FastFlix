@@ -1,17 +1,3 @@
-# from dataclasses import dataclass
-#
-# @dataclass
-# class Command:
-#     command: str
-#     variables: list
-#     internal: bool
-#
-# @dataclass
-# class Loop:
-#     type: str
-#     condition: str
-
-
 class Loop:
 
     def __init__(self, type, condition):
@@ -28,17 +14,6 @@ class Command:
 
 
 def generate_filters(**kwargs):
-    """
-
-    :param disable_hdr:
-    :param scale_width:
-    :param scale_height:
-    :param crop:
-    :param scale:
-    :param scale_filter:
-    :param rotate:
-    :return:
-    """
     crop = kwargs.get('crop')
     scale = kwargs.get('scale')
     scale_filter = kwargs.get('scale_filter', 'lanczos')

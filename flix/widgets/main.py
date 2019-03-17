@@ -28,7 +28,7 @@ class Main(QtWidgets.QWidget):
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
 
-    def __init__(self, parent, source=""):
+    def __init__(self, parent):
         super().__init__(parent)
         self.container = parent
 
@@ -453,20 +453,7 @@ class Main(QtWidgets.QWidget):
         self.streams, self.format_info = self.flix.parse(self.input_video)
         logger.debug(self.streams)
         logger.debug(self.format_info)
-        text_audio_tracks = []
-        for i, x in enumerate(self.streams.audio):
-            track_info = f"{i}: "
-            tags = x.get("tags")
-            if tags:
-                track_info += tags.get('title', '')
-                if 'language' in tags:
-                    track_info += f' {tags.language}'
-            track_info += f' - {x.codec_name}'
-            if 'profile' in x:
-                track_info += f' ({x.profile})'
-            track_info += f' - {x.channels} channels'
 
-            text_audio_tracks.append(track_info)
         text_video_tracks = [f'{i}: codec {x.codec_name} - profile {x.get("profile")} - pix_fmt {x.get("pix_fmt")}' for
                              i, x in enumerate(self.streams.video)]
 
@@ -589,9 +576,9 @@ class Main(QtWidgets.QWidget):
     def build_commands(self):
         settings = self.get_all_settings()
         convert = self.widgets.convert_to.currentText()[:3].lower()
-        commands = self.builders[convert].build(**settings)
-        self.video_options.commands.update_commands(commands)
-        return commands
+        #commands = self.builders[convert].build(**settings)
+        #self.video_options.commands.update_commands(commands)
+        return []
 
     def page_update(self):
         self.build_commands()
