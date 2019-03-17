@@ -20,7 +20,7 @@ class VideoOptions(QtWidgets.QTabWidget):
 
         self.converters = BoxList([
              {'name': 'GIF', 'quality': gif.GIF(self, self.main), 'audio': False, 'subtitles': False},
-             {'name': 'VP9', 'quality': vp9.VP9(self, self.main)},
+             {'name': 'VP9', 'quality': vp9.VP9(self, self.main), 'audio': True, 'subtitles': True},
              #{'quality': QtWidgets.QWidget()}
         ])
 
@@ -53,7 +53,10 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     def get_settings(self):
         settings = Box()
-        settings.update(self.converters[self.selected].quality.get_settings())
+        options = self.converters[self.selected]
+        settings.update(options.quality.get_settings())
+        if options.get('audio', True):
+            settings.update(self.audio.get_settings())
         return settings
 
     def new_source(self):

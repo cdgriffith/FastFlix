@@ -573,6 +573,7 @@ class Main(QtWidgets.QWidget):
             h_flip=self.widgets.h_flip.isChecked()
         )
         settings.update(**self.video_options.get_settings())
+        logger.debug(f"Settings gathered: {settings.to_dict()}")
         return settings
 
     def build_commands(self):
