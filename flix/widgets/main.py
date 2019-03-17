@@ -4,7 +4,7 @@ from pathlib import Path
 import time
 from datetime import timedelta
 import logging
-from tempfile import gettempdir
+from tempfile import TemporaryDirectory
 
 import reusables
 from box import Box
@@ -18,7 +18,7 @@ from flix.widgets.command_runner import Worker as CW
 from flix.builders import helpers
 from flix.version import __version__
 
-from flix.builders import (gif as gif_builder)
+from flix.builders import (gif as gif_builder, vp9 as vp9_builder)
 
 logger = logging.getLogger('flix')
 
@@ -34,7 +34,7 @@ class Main(QtWidgets.QWidget):
 
         self.path = Box(
             data=Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True)),
-            temp=Path(gettempdir(), 'FastFlix')
+
         )
 
         self.path.ffmpeg = Path(self.path.data, "ffmpeg")
@@ -53,7 +53,8 @@ class Main(QtWidgets.QWidget):
         # self.gif = GIF(parent=self, source=source)
 
         self.builders = Box(
-            gif=gif_builder
+            gif=gif_builder,
+            vp9=vp9_builder
         )
 
         self.widgets = Box(
@@ -74,7 +75,7 @@ class Main(QtWidgets.QWidget):
         self.ffmpeg = 'ffmpeg'
         self.ffprobe = 'ffprobe'
         self.svt_av1 = 'C:\\Users\\teckc\\Downloads\\svt-av1-1.0.239\\SvtAv1EncApp.exe'
-        self.thumb_file = Path(self.path.temp, 'thumbnail.png')
+        self.thumb_file = Path(self.path.data, 'thumbnail_preview.png')
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
         self.video_options = VideoOptions(self)
 
@@ -226,7 +227,7 @@ class Main(QtWidgets.QWidget):
     def init_output_type(self):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
-        self.widgets.convert_to.addItems(['GIF', 'AV1 (Experimental)'])
+        self.widgets.convert_to.addItems([x.name for x in self.video_options.converters])
         layout.addWidget(QtWidgets.QLabel("Output: "), stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=1)
         layout.setSpacing(10)
@@ -454,8 +455,9 @@ class Main(QtWidgets.QWidget):
         logger.debug(self.streams)
         logger.debug(self.format_info)
 
-        text_video_tracks = [f'{i}: codec {x.codec_name} - profile {x.get("profile")} - pix_fmt {x.get("pix_fmt")}' for
-                             i, x in enumerate(self.streams.video)]
+        text_video_tracks = [(f'{x.index}: codec {x.codec_name} '
+                              f'- pix_fmt {x.get("pix_fmt")} '
+                              f'- profile {x.get("profile")}') for x in self.streams.video]
 
         for i in range(self.widgets.video_track.count()):
             self.widgets.video_track.removeItem(0)
@@ -576,9 +578,9 @@ class Main(QtWidgets.QWidget):
     def build_commands(self):
         settings = self.get_all_settings()
         convert = self.widgets.convert_to.currentText()[:3].lower()
-        #commands = self.builders[convert].build(**settings)
-        #self.video_options.commands.update_commands(commands)
-        return []
+        commands = self.builders[convert].build(**settings)
+        self.video_options.commands.update_commands(commands)
+        return commands
 
     def page_update(self):
         self.build_commands()
@@ -593,7 +595,7 @@ class Main(QtWidgets.QWidget):
         if self.encoding_worker and self.encoding_worker.is_alive():
             return error_message("Still encoding something else")
 
-        self.output_video = self.save_file(extension="gif")
+        self.output_video = self.save_file(extension="webm")
         if not self.input_video:
             return error_message("Please provide a source video")
         if not self.output_video:
@@ -608,7 +610,7 @@ class Main(QtWidgets.QWidget):
                                                      output=self.output_video)
 
         self.widgets.convert_button.setDisabled(True)
-        self.command_runner = CW(self, commands)
+        self.command_runner = CW(self, commands, self.path.data)
         self.command_runner.start()
 
     @reusables.log_exception('flix', show_traceback=False)

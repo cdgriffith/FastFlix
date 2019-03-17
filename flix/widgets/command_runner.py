@@ -16,9 +16,9 @@ __all__ = ['Worker']
 
 
 class Worker(QtCore.QThread):
-    def __init__(self, parent, command_list):
+    def __init__(self, parent, command_list, work_dir):
         super(Worker, self).__init__(parent)
-        self.tempdir = tempfile.gettempdir()
+        self.tempdir = tempfile.TemporaryDirectory(prefix="Temp", dir=work_dir)
         self.app = parent
         self.command_list = command_list
         self.process = None
@@ -33,7 +33,7 @@ class Worker(QtCore.QThread):
         print(file_numbers)
         for num, ext in file_numbers:
             if num not in self.temp_files:
-                self.temp_files[num] = Path(self.tempdir, f'{uuid4().hex}.{ext}')
+                self.temp_files[num] = Path(self.tempdir.name, f'{uuid4().hex}.{ext}')
             print(num)
             command = command.replace(f'<tempfile.{num}.{ext}>', str(self.temp_files[num]))
             print(command)
@@ -88,11 +88,11 @@ class Worker(QtCore.QThread):
 
         for command in self.command_list:
             self.run_command(command.command)
-
+        self.tempdir.cleanup()
         self.app.completed.emit(0)
 
     def start_exec(self, command):
-        return Popen(command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, shell=True)
+        return Popen(command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, shell=True, cwd=self.tempdir.name)
 
     def is_alive(self):
         if not self.process:

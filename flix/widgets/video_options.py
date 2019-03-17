@@ -1,21 +1,13 @@
 #!/usr/bin/env python
-import os
-from pathlib import Path
-import time
-from datetime import timedelta
 import logging
-import tempfile
 
-import reusables
 from box import Box, BoxList
 
-from flix.flix import Flix
-from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
-from flix.widgets.worker import Worker
-from flix.widgets.command_panel import CommandList
-from flix.widgets.settings import gif
-from flix.widgets.audio_panel import AudioList
-from flix.widgets.subtitle_panel import SubtitleList
+from flix.shared import QtWidgets
+from flix.widgets.panels.command_panel import CommandList
+from flix.widgets.panels import gif, vp9
+from flix.widgets.panels.audio_panel import AudioList
+from flix.widgets.panels.subtitle_panel import SubtitleList
 
 logger = logging.getLogger('flix')
 
@@ -27,9 +19,9 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.main = parent
 
         self.converters = BoxList([
-             {'quality': gif.GIF(self, self.main), 'audio': False, 'subtitles': False},
-             {'quality': gif.GIF(self, self.main)},
-             {'quality': QtWidgets.QWidget()}
+             {'name': 'GIF', 'quality': gif.GIF(self, self.main), 'audio': False, 'subtitles': False},
+             {'name': 'VP9', 'quality': vp9.VP9(self, self.main)},
+             #{'quality': QtWidgets.QWidget()}
         ])
 
         self.selected = 0
@@ -47,13 +39,17 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.setTabEnabled(2, False)
 
     def change_conversion(self, conversion):
+        for converter in self.converters:
+            converter.quality.hide()
         options = self.converters[conversion]
+        options.quality.show()
         self.removeTab(0)
         self.insertTab(0, options.quality, "Quality")
         self.setCurrentIndex(0)
         self.setTabEnabled(1, options.get('audio', True))
         self.setTabEnabled(2, options.get('subtitles', True))
         self.selected = conversion
+        options.quality.new_source()
 
     def get_settings(self):
         settings = Box()
