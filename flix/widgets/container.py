@@ -17,7 +17,6 @@ class Container(QtWidgets.QMainWindow):
         self.init_menu()
         main = Main(self)
         self.setCentralWidget(main)
-        #self.setFixedSize(1440, 800)
         self.setMinimumSize(1200, 600)
 
     def init_menu(self):
@@ -45,5 +44,4 @@ class Container(QtWidgets.QMainWindow):
         self.about.show()
 
     def show_logs(self):
-        # self.logs = Logs()
         self.logs.show()

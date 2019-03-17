@@ -4,9 +4,11 @@ from pathlib import Path
 import time
 from datetime import timedelta
 import logging
+from tempfile import gettempdir
 
 import reusables
 from box import Box
+from appdirs import user_data_dir
 
 from flix.flix import Flix
 from flix.shared import QtGui, QtCore, Qt, QtWidgets, error_message, base_path
@@ -14,6 +16,7 @@ from flix.widgets.video_options import VideoOptions
 from flix.widgets.worker import Worker
 from flix.widgets.command_runner import Worker as CW
 from flix.builders import helpers
+from flix.version import __version__
 
 from flix.builders import (gif as gif_builder)
 
@@ -28,6 +31,19 @@ class Main(QtWidgets.QWidget):
     def __init__(self, parent, source=""):
         super().__init__(parent)
         self.container = parent
+
+        self.path = Box(
+            data=Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True)),
+            temp=Path(gettempdir(), 'FastFlix')
+        )
+
+        self.path.ffmpeg = Path(self.path.data, "ffmpeg")
+        self.path.svt_av1 = Path(self.path.data, "svt_av1")
+
+        for path in self.path.values():
+            path.mkdir(parents=True, exist_ok=True)
+
+        self.setAcceptDrops(True)
 
         self.input_video = None
         self.streams, self.format_info = None, None
@@ -57,8 +73,7 @@ class Main(QtWidgets.QWidget):
         self.ffmpeg = 'ffmpeg'
         self.ffprobe = 'ffprobe'
         self.svt_av1 = 'C:\\Users\\teckc\\Downloads\\svt-av1-1.0.239\\SvtAv1EncApp.exe'
-        self.thumb_file = 'test.png'
-        self.pallet_file = 'pallet.png'
+        self.thumb_file = Path(self.path.temp, 'thumbnail.png')
 
         self.video_options = VideoOptions(self)
 
@@ -632,3 +647,18 @@ class Main(QtWidgets.QWidget):
     def conversion_cancelled(self):
         self.widgets.convert_button.setDisabled(False)
         os.remove(self.output_video)
+
+    @reusables.log_exception('flix', show_traceback=False)
+    def dropEvent(self, event):
+        if not event.mimeData().hasUrls:
+            return event.ignore()
+        event.setDropAction(QtCore.Qt.CopyAction)
+        event.accept()
+        self.input_video = str(event.mimeData().urls()[0].toLocalFile())
+        self.update_video_info()
+
+    def dragEnterEvent(self, event):
+        event.accept() if event.mimeData().hasUrls else event.ignore()
+
+    def dragMoveEvent(self, event):
+        event.accept() if event.mimeData().hasUrls else event.ignore()
