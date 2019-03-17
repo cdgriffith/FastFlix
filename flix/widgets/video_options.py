@@ -12,8 +12,10 @@ from box import Box, BoxList
 from flix.flix import Flix
 from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 from flix.widgets.worker import Worker
-from flix.widgets.command import CommandList
+from flix.widgets.command_panel import CommandList
 from flix.widgets.settings import gif
+from flix.widgets.audio_panel import AudioList
+from flix.widgets.subtitle_panel import SubtitleList
 
 logger = logging.getLogger('flix')
 
@@ -34,9 +36,11 @@ class VideoOptions(QtWidgets.QTabWidget):
 
         self.commands = CommandList(self)
 
+        self.audio = AudioList(self)
+        self.subtitles = SubtitleList(self)
         self.addTab(self.converters[0]['quality'], "Quality")
-        self.addTab(QtWidgets.QWidget(), "Audio")
-        self.addTab(QtWidgets.QWidget(), "Subtitles")
+        self.addTab(self.audio, "Audio")
+        self.addTab(self.subtitles, "Subtitles")
         self.addTab(self.commands, "Command List")
 
         self.setTabEnabled(1, False)

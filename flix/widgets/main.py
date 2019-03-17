@@ -47,6 +47,7 @@ class Main(QtWidgets.QWidget):
 
         self.input_video = None
         self.streams, self.format_info = None, None
+
         # self.x265 = X265(parent=self, source=source)
         # self.av1 = AV1(parent=self, source=source)
         # self.gif = GIF(parent=self, source=source)
@@ -74,7 +75,7 @@ class Main(QtWidgets.QWidget):
         self.ffprobe = 'ffprobe'
         self.svt_av1 = 'C:\\Users\\teckc\\Downloads\\svt-av1-1.0.239\\SvtAv1EncApp.exe'
         self.thumb_file = Path(self.path.temp, 'thumbnail.png')
-
+        self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
         self.video_options = VideoOptions(self)
 
         self.completed.connect(self.conversion_complete)
@@ -416,10 +417,6 @@ class Main(QtWidgets.QWidget):
                                                          filter=f"Save File (*.{extension}")
         return filename[0] if filename else False
 
-    @property
-    def flix(self):
-        return Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
-
     def build_crop(self):
         top = int(self.widgets.crop.top.text())
         left = int(self.widgets.crop.left.text())
@@ -560,7 +557,6 @@ class Main(QtWidgets.QWidget):
             start_time=settings.start_time,
             # disable_hdr=self.convert_hdr_check.isChecked(),
         )
-        logger.info("Generating thumbnail")
         worker = Worker(self, thumb_command, cmd_type="thumb")
         worker.start()
 
