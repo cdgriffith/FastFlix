@@ -4,6 +4,8 @@ import re
 from flix.builders.helpers import generate_filters, Command
 from flix.builders.audio import build as build_audio
 
+extension = "webm"
+
 
 def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=None, single_pass=False,
           quality='good', audio_tracks=(), speed=1, **kwargs):
@@ -14,7 +16,7 @@ def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=No
     if reusables.win_based:
         ending = "NUL"
 
-    beginning = (f'{{ffmpeg}} -y '
+    beginning = (f'"{{ffmpeg}}" -y '
                  f' {f"-ss {start_time}" if start_time else ""}  '
                  f'{f"-t {duration}" if duration else ""} '
                  f'-i "{source}" '

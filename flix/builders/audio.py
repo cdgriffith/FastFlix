@@ -2,10 +2,10 @@
 from flix.builders.helpers import generate_filters, Command
 
 
-def build(audio_tracks, allowed_codec=()):
+def build(audio_tracks, allowed_codec=(), audio_file_index=0):
     command_list = []
     for track in audio_tracks:
-        command_list.append(f'-map 0:{track.index}')
+        command_list.append(f'-map {audio_file_index}:{track.index}')
         if allowed_codec:
             if 'conversion' in track:
                 if track.conversion.codec not in allowed_codec:

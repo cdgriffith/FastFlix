@@ -5,7 +5,7 @@ from box import Box, BoxList
 
 from flix.shared import QtWidgets
 from flix.widgets.panels.command_panel import CommandList
-from flix.widgets.panels import gif, vp9
+from flix.widgets.panels import gif, vp9, av1
 from flix.widgets.panels.audio_panel import AudioList
 from flix.widgets.panels.subtitle_panel import SubtitleList
 
@@ -21,7 +21,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.converters = BoxList([
              {'name': 'GIF', 'quality': gif.GIF(self, self.main), 'audio': False, 'subtitles': False},
              {'name': 'VP9', 'quality': vp9.VP9(self, self.main), 'audio': True, 'subtitles': True},
-             #{'quality': QtWidgets.QWidget()}
+             {'name': 'AV1', 'quality': av1.AV1(self, self.main), 'audio': True, 'subtitles': True},
         ])
 
         self.selected = 0

@@ -1,16 +1,37 @@
 class Loop:
 
-    def __init__(self, type, condition):
-        self.type = type
+    item = "loop"
+
+    def __init__(self, condition, commands, name="", ensure_paths=()):
+        self.name = name
         self.condition = condition
+        self.commands = commands
+        self.ensure_paths = ensure_paths
 
 
 class Command:
 
-    def __init__(self, command, variables, internal):
+    item = "command"
+
+    def __init__(self, command, variables, internal, name="", ensure_paths=()):
+        self.name = name
         self.command = command
         self.variables = variables
         self.internal = internal
+        self.ensure_paths = ensure_paths
+
+
+def start_and_input(source, **kwargs):
+    start_time = kwargs.get('start_time')
+    duration = kwargs.get('duration')
+
+    #f'{{ffmpeg}} {f"-ss {start_time}" if start_time else ""} '
+                 # f'{f"-t {duration}" if duration else ""} '
+                 # f'-i "{source}" -i "<tempfile.1.png>" -map 0:{video_track} '
+
+    return (f'"{{ffmpeg}}" {f"-ss {start_time}" if start_time else ""} '
+                 f'{f"-t {duration}" if duration else ""} '
+                 f'-i "{source}" ')
 
 
 def generate_filters(**kwargs):

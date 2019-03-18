@@ -5,11 +5,20 @@ from box import Box
 from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 
 
-class Loop(QtWidgets.QWidget):
+class Loop(QtWidgets.QGroupBox):
 
-    def __init__(self, parent, type, condition, commands):
+    def __init__(self, parent, condition, commands, number):
         super(Loop, self).__init__(parent)
-        # TODO loops
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(QtWidgets.QLabel("Loop: "))
+        self.condition = condition
+        self.number = number
+        self.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
+
+        for index, item in enumerate(commands, 1):
+            new_item = Command(parent, item.command, index)
+            layout.addWidget(new_item)
+        self.setLayout(layout)
 
 
 class Command(QtWidgets.QTabWidget):
@@ -52,10 +61,13 @@ class CommandList(QtWidgets.QWidget):
         self.inner_widget.setSizePolicy(sp)
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(5)
-        # TODO handle new loop thing
-        for index, command in enumerate(commands, 1):
-            new_item = Command(self.scroll_area, command.command, index)
-            layout.addWidget(new_item)
+        for index, item in enumerate(commands, 1):
+            if item.item == "command":
+                new_item = Command(self.scroll_area, item.command, index)
+                layout.addWidget(new_item)
+            elif item.item == "loop":
+                new_item = Loop(self.scroll_area, item.condition, item.commands, index)
+                layout.addWidget(new_item)
         layout.addStretch()
         self.inner_widget.setLayout(layout)
         self.scroll_area.setWidget(self.inner_widget)

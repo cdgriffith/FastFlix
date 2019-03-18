@@ -6,47 +6,23 @@ from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 
 logger = logging.getLogger('flix')
 
-recommended_bitrates = [
-    "150k   (320x240p @ 24,25,30)",
-    "276k   (640x360p @ 24,25,30)",
-    "512k   (640x480p @ 24,25,30)",
-    "1024k  (1280x720p @ 24,25,30)",
-    "1800k (1280x720p @ 50,60)",
-    "1800k (1920x1080p @ 24,25,30)",
-    "3000k (1920x1080p @ 50,60)",
-    "6000k (2560x1440p @ 24,25,30)",
-    "9000k (2560x1440p @ 50,60)",
-    "12000k (3840x2160p @ 24,25,30)",
-    "18000k (3840x2160p @ 50,60)"
-]
 
-recommended_crfs = [
-    "37 (240p)",
-    "36 (360p)",
-    "33 (480p)",
-    "32 (720p)",
-    "31 (1080p)",
-    "24 (1440p)",
-    "15 (2160p)"
-]
-
-
-class VP9(QtWidgets.QWidget):
+class AV1(QtWidgets.QWidget):
 
     def __init__(self, parent, main):
-        super(VP9, self).__init__(parent)
+        super(AV1, self).__init__(parent)
         self.main = main
 
         grid = QtWidgets.QGridLayout()
 
-        grid.addWidget(QtWidgets.QLabel("VP9"), 0, 0)
+        grid.addWidget(QtWidgets.QLabel("AV1"), 0, 0)
 
         self.widgets = Box(
             fps=None,
             remove_hdr=None,
             mode=None)
 
-        self.mode = 'CRF'
+        self.mode = 'QP'
 
         grid.addLayout(self.init_remove_hdr(), 1, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
@@ -78,9 +54,9 @@ class VP9(QtWidgets.QWidget):
 
     def init_modes(self):
         layout = QtWidgets.QGridLayout()
-        crf_group_box = QtWidgets.QGroupBox()
-        crf_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        crf_box_layout = QtWidgets.QHBoxLayout()
+        qp_group_box = QtWidgets.QGroupBox()
+        qp_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
+        qp_box_layout = QtWidgets.QHBoxLayout()
         bitrate_group_box = QtWidgets.QGroupBox()
         bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
         bitrate_box_layout = QtWidgets.QHBoxLayout()
@@ -92,28 +68,28 @@ class VP9(QtWidgets.QWidget):
         bitrate_radio = QtWidgets.QRadioButton("Bitrate")
         self.widgets.mode.addButton(bitrate_radio)
         self.widgets.bitrate = QtWidgets.QComboBox()
-        self.widgets.bitrate.addItems(recommended_bitrates)
+        self.widgets.bitrate.addItems(['30'])
         self.widgets.bitrate.currentIndexChanged.connect(lambda: self.main.build_commands())
-        self.widgets.bitrate.setCurrentIndex(6)
+        # self.widgets.bitrate.setCurrentIndex(6)
         bitrate_box_layout.addWidget(bitrate_radio)
         bitrate_box_layout.addWidget(self.widgets.bitrate)
 
-        crf_radio = QtWidgets.QRadioButton("CRF")
-        crf_radio.setChecked(True)
-        self.widgets.mode.addButton(crf_radio)
+        qp_radio = QtWidgets.QRadioButton("QP")
+        qp_radio.setChecked(True)
+        self.widgets.mode.addButton(qp_radio)
 
-        self.widgets.crf = QtWidgets.QComboBox()
-        self.widgets.crf.addItems(recommended_crfs)
-        self.widgets.crf.setCurrentIndex(4)
-        self.widgets.crf.currentIndexChanged.connect(lambda: self.main.build_commands())
+        self.widgets.qp = QtWidgets.QComboBox()
+        self.widgets.qp.addItems(['30'])
+        self.widgets.qp.setCurrentIndex(0)
+        self.widgets.qp.currentIndexChanged.connect(lambda: self.main.build_commands())
 
-        crf_box_layout.addWidget(crf_radio)
-        crf_box_layout.addWidget(self.widgets.crf)
+        qp_box_layout.addWidget(qp_radio)
+        qp_box_layout.addWidget(self.widgets.qp)
 
         bitrate_group_box.setLayout(bitrate_box_layout)
-        crf_group_box.setLayout(crf_box_layout)
+        qp_group_box.setLayout(qp_box_layout)
 
-        layout.addWidget(crf_group_box, 0, 0)
+        layout.addWidget(qp_group_box, 0, 0)
         layout.addWidget(bitrate_group_box, 1, 0)
         return layout
 
@@ -122,7 +98,7 @@ class VP9(QtWidgets.QWidget):
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
         )
         if self.mode == "CRF":
-            settings.crf = int(self.widgets.crf.currentText().split(" ", 1)[0])
+            settings.qp = int(self.widgets.qp.currentText().split(" ", 1)[0])
         else:
             settings.bitrate = self.widgets.bitrate.currentText().split(" ", 1)[0]
         logger.info(settings)

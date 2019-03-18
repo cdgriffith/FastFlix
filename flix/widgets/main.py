@@ -18,7 +18,7 @@ from flix.widgets.command_runner import Worker as CW
 from flix.builders import helpers
 from flix.version import __version__
 
-from flix.builders import (gif as gif_builder, vp9 as vp9_builder)
+from flix.builders import (gif as gif_builder, vp9 as vp9_builder, av1 as av1_builder)
 
 logger = logging.getLogger('flix')
 
@@ -31,10 +31,16 @@ class Main(QtWidgets.QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.container = parent
+        self.initialized = False
 
         self.path = Box(
             data=Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True)),
 
+        )
+
+        self.input_defaults = Box(
+            scale=None,
+            crop=None
         )
 
         self.path.ffmpeg = Path(self.path.data, "ffmpeg")
@@ -54,7 +60,8 @@ class Main(QtWidgets.QWidget):
 
         self.builders = Box(
             gif=gif_builder,
-            vp9=vp9_builder
+            vp9=vp9_builder,
+            av1=av1_builder
         )
 
         self.widgets = Box(
@@ -74,7 +81,7 @@ class Main(QtWidgets.QWidget):
 
         self.ffmpeg = 'ffmpeg'
         self.ffprobe = 'ffprobe'
-        self.svt_av1 = 'C:\\Users\\teckc\\Downloads\\svt-av1-1.0.239\\SvtAv1EncApp.exe'
+        self.svt_av1 = 'C:\\Users\\teckc\\Downloads\\svt-av1-1.0.314\\SvtAv1EncApp.exe'
         self.thumb_file = Path(self.path.data, 'thumbnail_preview.png')
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
         self.video_options = VideoOptions(self)
@@ -102,6 +109,7 @@ class Main(QtWidgets.QWidget):
 
         self.setLayout(self.grid)
         self.show()
+        self.initialized = True
 
     def init_video_area(self):
         layout = QtWidgets.QVBoxLayout()
@@ -558,34 +566,57 @@ class Main(QtWidgets.QWidget):
     def build_scale(self):
         width = self.widgets.scale.width.text()
         height = self.widgets.scale.height.text()
+        if self.convert_to == 'av1':
+            pass
+            #TODO enforce 8
+
         return f"{width}:{height}"
 
     def get_all_settings(self):
+        if not self.initialized:
+            return
+        stream_info = self.streams.video[self.widgets.video_track.currentIndex()]
+
+        scale = self.build_scale()
+        if scale in (f"{stream_info.width}:-1",
+                     f"-1:{stream_info.height}",
+                     f"{stream_info.width}:{stream_info.height}"):
+            scale = None
+
         settings = Box(
             crop=self.build_crop(),
-            scale=self.build_scale(),
+            scale=scale,
             source=self.input_video,
             start_time=self.start_time,
             duration=self.duration,
             video_track=self.widgets.video_track.currentIndex(),
             rotate=self.widgets.rotate.checkedButton().name,
             v_flip=self.widgets.v_flip.isChecked(),
-            h_flip=self.widgets.h_flip.isChecked()
+            h_flip=self.widgets.h_flip.isChecked(),
+            streams=self.streams,
+            format_info=self.format_info,
+            work_dir=self.path.data
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")
         return settings
 
     def build_commands(self):
+        if not self.initialized:
+            return
         settings = self.get_all_settings()
-        convert = self.widgets.convert_to.currentText()[:3].lower()
-        commands = self.builders[convert].build(**settings)
+        commands = self.builders[self.convert_to].build(**settings)
         self.video_options.commands.update_commands(commands)
         return commands
 
     def page_update(self):
         self.build_commands()
         self.generate_thumbnail()
+
+    @property
+    def convert_to(self):
+        if self.widgets.convert_to:
+            return self.widgets.convert_to.currentText()[:3].lower()
 
     @reusables.log_exception('flix', show_traceback=False)
     def create_video(self):
@@ -596,7 +627,7 @@ class Main(QtWidgets.QWidget):
         if self.encoding_worker and self.encoding_worker.is_alive():
             return error_message("Still encoding something else")
 
-        self.output_video = self.save_file(extension="webm")
+        self.output_video = self.save_file(extension=self.builders[self.convert_to].extension)
         if not self.input_video:
             return error_message("Please provide a source video")
         if not self.output_video:
@@ -604,11 +635,18 @@ class Main(QtWidgets.QWidget):
             return
 
         commands = self.build_commands()
-        for command in commands:
-            command.command = command.command.format(ffmpeg=self.ffmpeg,
-                                                     ffprobe=self.ffprobe,
-                                                     svt_av1=self.svt_av1,
-                                                     output=self.output_video)
+        for item in commands:
+            if item.item == "command":
+                item.command = item.command.format(ffmpeg=self.ffmpeg,
+                                                         ffprobe=self.ffprobe,
+                                                         av1=self.svt_av1,
+                                                         output=self.output_video)
+            elif item.item == "loop":
+                for sub_item in item.commands:
+                    sub_item.command = sub_item.command.format(ffmpeg=self.ffmpeg,
+                                                       ffprobe=self.ffprobe,
+                                                       av1=self.svt_av1,
+                                                       output=self.output_video)
 
         self.widgets.convert_button.setDisabled(True)
         self.command_runner = CW(self, commands, self.path.data)

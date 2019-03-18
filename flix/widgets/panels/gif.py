@@ -70,6 +70,8 @@ class GIF(QtWidgets.QWidget):
         )
 
     def new_source(self):
+        if not self.main.streams:
+            return
         if self.main.streams['video'][self.main.video_track].get('color_space', '').startswith('bt2020'):
             self.widgets.remove_hdr.setDisabled(False)
             self.widgets.dither.setCurrentIndex(1)
