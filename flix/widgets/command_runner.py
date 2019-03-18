@@ -50,14 +50,15 @@ class Worker(QtCore.QThread):
         command = self.replace_temps(command)
         logger.info(f"Running command: {command}")
         self.process = self.start_exec(command)
-        while True:
-            next_line = self.process.stdout.readline().decode('utf-8')
-            if not next_line:
-                if self.process.poll() is not None:
-                    break
-                else:
-                    continue
-            logger.debug(f"ffmpeg - {next_line.strip()}")
+        self.process.wait()
+        # for line in self.process.stdout:
+        #     logger.debug(f"command - {line}")
+            # next_line = self.process.stdout.readline().decode('utf-8')
+            # if not next_line:
+            #     if self.process.poll() is not None:
+            #         break
+            #     else:
+            #         continue
         return_code = self.process.poll()
         if self.killed:
             return self.app.cancelled.emit()
@@ -89,13 +90,14 @@ class Worker(QtCore.QThread):
                                 return self.app.completed.emit(code)
         except:
             logger.exception("Could not run commands!")
+            self.tempdir.cleanup()
             self.app.completed.emit(1)
         else:
             self.tempdir.cleanup()
             self.app.completed.emit(0)
 
     def start_exec(self, command):
-        return Popen(command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, shell=True, cwd=self.tempdir.name)
+        return Popen(command, shell=True, cwd=self.tempdir.name, stdin=PIPE, bufsize=0, universal_newlines=False)
 
     def is_alive(self):
         if not self.process:
