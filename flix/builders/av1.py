@@ -6,7 +6,6 @@ from box import Box
 from pathlib import Path
 import logging
 import os
-from tempfile import TemporaryDirectory
 
 from flix.builders.helpers import (generate_filters, start_and_input, Loop, Command)
 from flix.builders.audio import build as audio_builder
@@ -16,6 +15,7 @@ logger = logging.getLogger('flix')
 
 class FlixError(Exception):
     pass
+
 
 extension = "mkv"
 
@@ -100,9 +100,8 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
 
     no_audio_file = Path(build_dir, "combined.mkv")
     command_2 = Command(
-        (f'"{{ffmpeg}}" -y -safe 0 -f concat -i "{concat_list}" -reset_timestamps 1 -c copy "{no_audio_file}"'),
+        f'"{{ffmpeg}}" -y -safe 0 -f concat -i "{concat_list}" -reset_timestamps 1 -c copy "{no_audio_file}"',
         ['ffmpeg'], False)
-
 
     audio = audio_builder(audio_tracks, audio_file_index=1)
 
@@ -110,69 +109,9 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
                          f'{f"-ss {start_time}" if start_time else ""} '
                          f'{f"-t {duration - start_time}" if duration else ""} '
                          f'-i "{no_audio_file}" -i "{file}" '
-                         f'-c copy -map 0:{video_track} ' #  -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
+                         f'-c copy -map 0:{video_track} '  # -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
                          f'{audio} "{{output}}"'),
                         ['ffmpeg', 'output'],
                         False)
 
-    return (command_1, main_loop, command_2, command_3)
-
-
-    # total_time = kwargs.get("duration", format_info.duration) - start_time
-    # frames = int(total_time * int(fps_num / fps_denom))
-    #     command_1 = Command((f'"{{ffmpeg}}" {f"-ss {start_time}" if start_time else ""} '
-    #                          f'-nostdin -i "{source}" -vframes {frames} -f rawvideo '
-    #                          f'{f"-vf {filters}" if filters else ""} '
-    #                          f'-pix_fmt {"yuv420p" if bit_depth == 8 else "yuv420p10le"} -an - | '
-    #                          f'"{{av1}}" -intra-period {intra_period} -enc-mode {mode} -w {width} -h {height} '
-    #                          f'-bit-depth {bit_depth} -n {frames} -i stdin -q {qp} '
-    #                          f'-fps-num {fps_num} -fps-denom {fps_denom} -b <tempfile.1.ivf>'),
-    #                         ['ffmpeg', 'av1'], False)
-    #    return command_1, command_3
-
-
-    # OLD WAY
-    #
-    # command_1 = Command((f'{start_and_input(source, **kwargs)} '
-    #                      f'{"-map_metadata -1" if kwargs.get("start_time") else ""} '
-    #                      f'-map 0:{video_track} -c copy -sc_threshold 0 '
-    #                      f'-reset_timestamps 1 -f segment -segment_time {segment_size} -an -sn -dn '
-    #                      f'"{Path(path.origional_parts, f"%04d{file.suffix}")}"'),
-    #                     ['ffmpeg'], False,
-    #                     name="Semgment movie into smaller files",
-    #                     ensure_paths=[build_dir] + list(path.values()))
-    #
-    # def func(y4m_dir, parts_dir):
-    #     return sorted([(int(x.stem), x, Path(y4m_dir, f"{x.stem}.y4m")) for x in Path(parts_dir).iterdir()],
-    #                   key=lambda x: x[0])
-    #
-    # concat_list = Path(build_dir, 'concat_list.txt')
-    #
-    # loop_command_1 = (f'"{{ffmpeg}}" -i "<loop.1>" '
-    #                   f' {f"-vf {filters}" if filters else ""} "<loop.2>"')
-    #
-    # intra_period = 1
-    # for i in range(1, 31):
-    #     intra_period = (i * 8) - 1
-    #     if (intra_period + 8) > (fps_num / fps_denom):
-    #         break
-    # logger.debug(f'setting intra-period to {intra_period} based of fps {float(fps_num / fps_denom):.2f}')
-    # loop_command_2 = (f'"{{av1}}" -intra-period {intra_period} -enc-mode {mode} -bit-depth {bit_depth} '
-    #                   f' -fps-num {fps_num} -fps-denom {fps_denom} '
-    #                   f'-q {crf} -i "<loop.2>" -b "{path.av1_parts}{os.sep}<loop.0>.ivf"')
-    # loop_command_3 = f"echo file '{path.av1_parts}{os.sep}<loop.0>.ivf'' > {concat_list}"
-    #
-    # # TODO internal cleanup command
-    #
-    # main_loop = Loop(condition=lambda: func(path.y4m, path.origional_parts),
-    #                  commands=[
-    #                      Command(loop_command_1, ['ffmpeg'], False),
-    #                      Command(loop_command_2, ['av1'], False),
-    #                      Command(loop_command_3, [], False)
-    #                  ])
-    #
-    # no_audio_file = Path(build_dir, "combined.mkv")
-    # command_2 = Command(
-    #     (f'"{{ffmpeg}}" -safe 0 -f concat -i "{concat_list}" -reset_timestamps 1 -c copy "{no_audio_file}"'),
-    #     ['ffmpeg'], False)
-    #
+    return command_1, main_loop, command_2, command_3

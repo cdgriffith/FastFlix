@@ -57,8 +57,6 @@ class Flix:
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
         self.av1 = svt_av1
-        ff_version(self.ffmpeg)
-        ff_version(self.ffprobe)
 
     def probe(self, file):
         command = f'"{self.ffprobe}" -v quiet -print_format json -show_format -show_streams "{file}"'

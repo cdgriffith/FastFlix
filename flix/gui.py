@@ -1,46 +1,73 @@
 import sys
-import os
 import logging
 from pathlib import Path
 
-import reusables
+from appdirs import user_data_dir
 
-from flix.flix import ff_version
-from flix.shared import QtWidgets, pyinstaller, base_path, main_width
+from flix.version import __version__
+from flix.flix import ff_version, FlixError
+from flix.shared import QtWidgets, error_message
 from flix.widgets.container import Container
 
-
-logging.getLogger('flix')
+logger = logging.getLogger('flix')
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG)
+
     main_app = QtWidgets.QApplication(sys.argv)
     main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
 
-    logging.basicConfig(level=logging.DEBUG)
+    data_path = Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
+    first_time = not data_path.exists()
+    data_path.mkdir(parents=True, exist_ok=True)
 
-    ffmpeg = 'ffmpeg'
-    ffprobe = 'ffprobe'
-    if pyinstaller and reusables.win_based and Path(base_path, 'bundled').exists():
-        ffmpeg = Path(base_path, 'ffmpeg.exe')
-        ffprobe = Path(base_path, 'ffprobe.exe')
-    elif reusables.win_based:
-        ffmpeg = 'ffmpeg.exe'
-        ffprobe = 'ffprobe.exe'
+    ffmpeg_folder = Path(data_path, 'ffmpeg')
+    ffmpeg_folder.mkdir(parents=True, exist_ok=True)
+    ffmpeg = Path(ffmpeg_folder, 'ffmpeg.exe')
+    ffprobe = Path(ffmpeg_folder, 'ffprobe.exe')
 
-    ffmpeg_version = ff_version(ffmpeg, throw=False)
-    ffprobe_version = ff_version(ffprobe, throw=False)
+    svt_av1_folder = Path(data_path, 'svt_av1')
+    svt_av1_folder.mkdir(parents=True, exist_ok=True)
+    svt_av1 = Path(svt_av1_folder, 'SvtAv1EncApp.exe')
 
-    svt_av1 = os.getenv("SVT_AV1", Path(base_path, 'SvtAv1EncApp.exe') if reusables.win_based else 'SvtAv1EncApp')
+    if first_time:
+        first_time_setup(ffmpeg_folder, svt_av1_folder)
+
+    if not all([x.exists() for x in (ffmpeg, ffprobe, svt_av1)]):
+        qm = QtWidgets.QMessageBox
+        ret = qm.question(None, '', 'Not all required libraries found! <br> Re-extra them?', qm.Yes | qm.No)
+        if ret == qm.Yes:
+            first_time_setup(ffmpeg_folder, svt_av1_folder)
+        else:
+            sys.exit(1)
+
+    try:
+        ffmpeg_version = ff_version(ffmpeg, throw=True)
+        ffprobe_version = ff_version(ffprobe, throw=True)
+    except FlixError:
+        error_message("ffmpeg or ffmpeg could not be executed properly!")
+        sys.exit(1)
 
     window = Container(ffmpeg=ffmpeg, ffprobe=ffprobe,
-                  ffmpeg_version=ffmpeg_version, ffprobe_version=ffprobe_version,
-                  svt_av1=svt_av1,
-                  source=sys.argv[1] if len(sys.argv) > 1 else "")
+                       ffmpeg_version=ffmpeg_version, ffprobe_version=ffprobe_version,
+                       svt_av1=svt_av1,
+                       source=sys.argv[1] if len(sys.argv) > 1 else "")
 
     window.show()
     sys.exit(main_app.exec_())
+
+
+def first_time_setup(ffmpeg_folder, svt_av1_folder):
+    import subprocess
+    import shutil
+    logger.info("Performing first time setup")
+    subprocess.run(f'{Path("extra", "7za.exe")} e {Path("extra", "ffmpeg_lgpl.7z")} -o"{ffmpeg_folder}" -y',
+                   stdout=subprocess.PIPE, shell=True).check_returncode()
+    for file in Path('extra', 'svt_av1').iterdir():
+        # Python 3.6 doesn't quite have everything usable as paths yet
+        shutil.copy(str(file), str(svt_av1_folder))
 
 
 if __name__ == '__main__':

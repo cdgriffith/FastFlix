@@ -113,3 +113,4 @@ config.yaml
 binary-files/
 SvtAv1/
 bundled
+extra/
