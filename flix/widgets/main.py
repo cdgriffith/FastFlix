@@ -577,6 +577,10 @@ class Main(QtWidgets.QWidget):
             return
         stream_info = self.streams.video[self.widgets.video_track.currentIndex()]
 
+        duration = self.duration
+        if self.duration == float(self.format_info.get('duration', 0)):
+            duration = None
+
         scale = self.build_scale()
         if scale in (f"{stream_info.width}:-1",
                      f"-1:{stream_info.height}",
@@ -588,7 +592,7 @@ class Main(QtWidgets.QWidget):
             scale=scale,
             source=self.input_video,
             start_time=self.start_time,
-            duration=self.duration,
+            duration=duration,
             video_track=self.widgets.video_track.currentIndex(),
             rotate=self.widgets.rotate.checkedButton().name,
             v_flip=self.widgets.v_flip.isChecked(),

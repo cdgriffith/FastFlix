@@ -60,7 +60,10 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
         if crop_height or crop_width:
             raise FlixError('CROP BAD: Video height and main_width must be divisible by 8')
 
-    command_1 = Command((f'{start_and_input(source, start_time=start_time, duration=duration, **kwargs)} -y '
+    command_1 = Command((f'{{ffmpeg}} -y '
+                         f'{f"-ss {start_time}" if start_time else ""} '
+                         f'{f"-t {duration - start_time}" if duration else ""} '
+                         f'-i "{source}" '
                          f'{"-map_metadata -1" if kwargs.get("start_time") else ""} '
                          f'-map 0:{video_track} -c copy -sc_threshold 0 '
                          f'-reset_timestamps 1 -f segment -segment_time {segment_size} -an -sn -dn '
@@ -103,17 +106,26 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
         f'"{{ffmpeg}}" -y -safe 0 -f concat -i "{concat_list}" -reset_timestamps 1 -c copy "{no_audio_file}"',
         ['ffmpeg'], False)
 
-    audio = audio_builder(audio_tracks, audio_file_index=1)
+    audio = audio_builder(audio_tracks, audio_file_index=0)
+
+    audio_file = Path(build_dir, 'audio.mkv')
+    command_audio = Command((f'"{{ffmpeg}}" -y '
+                             f'{f"-ss {start_time}" if start_time else ""} '
+                             f'{f"-t {duration - start_time}" if duration else ""} '
+                             f'-i "{source}" '
+                             f'{audio} "{audio_file}"'
+                             ), ['ffmpeg'], False)
 
     command_3 = Command((f'"{{ffmpeg}}" -y '
-                         f'{f"-ss {start_time}" if start_time else ""} '
-                         f'{f"-t {duration - start_time}" if duration else ""} '
-                         f'-i "{no_audio_file}" -i "{file}" '
-                         f'-c copy -map 0:{video_track} '  # -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
-                         f'{audio} "{{output}}"'),
+                         f'-i "{no_audio_file}" -i "{audio_file}" '
+                         f'{"-map_metadata -1" if start_time or duration else ""} '
+                         f'-c copy -map 0:v -map 1:a -avoid_negative_ts make_zero '  # -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
+                         f'"{{output}}"'),
                         ['ffmpeg', 'output'],
                         False)
 
     cleanup_command = Command(f'if exist "{build_dir}" rd /s /q "{build_dir}"', [], False)
 
-    return cleanup_command, command_1, main_loop, command_2, command_3, cleanup_command
+
+    return cleanup_command, command_1, main_loop, command_2, command_audio, command_3# , cleanup_command
+
