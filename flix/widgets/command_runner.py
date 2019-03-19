@@ -50,6 +50,19 @@ class Worker(QtCore.QThread):
         command = self.replace_temps(command)
         logger.info(f"Running command: {command}")
         self.process = self.start_exec(command)
+        for line in self.process.stdout:
+            print(line.strip())
+        # while True:
+        #     char = self.process.stdout.read(1)
+        #     if char == '' and child.poll() != None:
+        #         break
+        #     if char != '':
+        #         # simple print to console
+        #         #             sys.stdout.write(char)
+        #         #             sys.stdout.flush()
+        #         lineAfterCarriage += char
+        #         if char in ('\r', '\n' ):
+
         self.process.wait()
         # for line in self.process.stdout:
         #     logger.debug(f"command - {line}")
@@ -97,7 +110,7 @@ class Worker(QtCore.QThread):
             self.app.completed.emit(0)
 
     def start_exec(self, command):
-        return Popen(command, shell=True, cwd=self.tempdir.name, stdin=PIPE, bufsize=0, universal_newlines=False)
+        return Popen(command, shell=True, cwd=self.tempdir.name, stdin=PIPE, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
 
     def is_alive(self):
         if not self.process:

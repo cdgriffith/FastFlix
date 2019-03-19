@@ -18,48 +18,41 @@ class VideoOptions(QtWidgets.QTabWidget):
         super().__init__(parent)
         self.main = parent
 
-        self.converters = BoxList([
-             {'name': 'GIF', 'quality': gif.GIF(self, self.main), 'audio': False, 'subtitles': False},
-             {'name': 'VP9', 'quality': vp9.VP9(self, self.main), 'audio': True, 'subtitles': True},
-             {'name': 'AV1', 'quality': av1.AV1(self, self.main), 'audio': True, 'subtitles': True},
-        ])
-
         self.selected = 0
 
         self.commands = CommandList(self)
+        self.current_plugin = self.main.plugins.values()[0]
+        self.current_settings = self.current_plugin.settings_panel(self, self.main)
 
         self.audio = AudioList(self)
         self.subtitles = SubtitleList(self)
-        self.addTab(self.converters[0]['quality'], "Quality")
+        self.addTab(self.current_settings, "Quality")
         self.addTab(self.audio, "Audio")
         self.addTab(self.subtitles, "Subtitles")
         self.addTab(self.commands, "Command List")
 
-        self.setTabEnabled(1, False)
-        self.setTabEnabled(2, False)
 
     def change_conversion(self, conversion):
-        for converter in self.converters:
-            converter.quality.hide()
-        options = self.converters[conversion]
-        options.quality.show()
+        self.current_settings.close()
+        self.current_plugin = self.main.plugins[conversion]
+        self.current_settings = self.current_plugin.settings_panel(self, self.main)
+        self.current_settings.show()
         self.removeTab(0)
-        self.insertTab(0, options.quality, "Quality")
+        self.insertTab(0, self.current_settings, "Quality")
         self.setCurrentIndex(0)
-        self.setTabEnabled(1, options.get('audio', True))
-        self.setTabEnabled(2, options.get('subtitles', True))
+        self.setTabEnabled(1, getattr(self.current_plugin, 'enable_audio', True))
+        self.setTabEnabled(2, getattr(self.current_plugin, 'enable_subtitles', True))
         self.selected = conversion
-        options.quality.new_source()
+        self.current_settings.new_source()
 
     def get_settings(self):
         settings = Box()
-        options = self.converters[self.selected]
-        settings.update(options.quality.get_settings())
-        if options.get('audio', True):
+        settings.update(self.current_settings.get_settings())
+        if getattr(self.current_plugin, 'enable_audio', True):
             settings.update(self.audio.get_settings())
         return settings
 
     def new_source(self):
         self.audio.new_source()
-        self.converters[self.selected].quality.new_source()
+        self.current_settings.new_source()
 

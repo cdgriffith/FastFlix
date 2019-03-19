@@ -5,6 +5,7 @@ import time
 from datetime import timedelta
 import logging
 from tempfile import TemporaryDirectory
+import importlib.machinery
 
 import reusables
 from box import Box
@@ -22,6 +23,17 @@ from flix.builders import (gif as gif_builder, vp9 as vp9_builder, av1 as av1_bu
 
 logger = logging.getLogger('flix')
 
+root = os.path.abspath(os.path.dirname(__file__))
+
+
+def load_plugins():
+    plugins = Box()
+    for item in Path(root, os.pardir, 'plugins').iterdir():
+        if item.is_dir():
+            plugin = importlib.machinery.SourceFileLoader(f'plugin_{item.name}', str(Path(item, 'main.py'))).load_module()
+            plugins[plugin.name] = plugin
+    return plugins
+
 
 class Main(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
@@ -33,9 +45,10 @@ class Main(QtWidgets.QWidget):
         self.container = parent
         self.initialized = False
 
+        self.plugins = load_plugins()
+
         self.path = Box(
             data=Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True)),
-
         )
 
         self.input_defaults = Box(
@@ -57,12 +70,6 @@ class Main(QtWidgets.QWidget):
         # self.x265 = X265(parent=self, source=source)
         # self.av1 = AV1(parent=self, source=source)
         # self.gif = GIF(parent=self, source=source)
-
-        self.builders = Box(
-            gif=gif_builder,
-            vp9=vp9_builder,
-            av1=av1_builder
-        )
 
         self.widgets = Box(
             input_file=None,
@@ -235,11 +242,11 @@ class Main(QtWidgets.QWidget):
     def init_output_type(self):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
-        self.widgets.convert_to.addItems([x.name for x in self.video_options.converters])
+        self.widgets.convert_to.addItems(list(self.plugins.keys()))
         layout.addWidget(QtWidgets.QLabel("Output: "), stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=1)
         layout.setSpacing(10)
-        self.widgets.convert_to.currentIndexChanged.connect(self.video_options.change_conversion)
+        self.widgets.convert_to.currentTextChanged.connect(self.video_options.change_conversion)
 
         return layout
 
@@ -606,10 +613,10 @@ class Main(QtWidgets.QWidget):
         return settings
 
     def build_commands(self):
-        if not self.initialized:
+        if not self.initialized or not self.streams:
             return
         settings = self.get_all_settings()
-        commands = self.builders[self.convert_to].build(**settings)
+        commands = self.plugins[self.convert_to].build(**settings)
         self.video_options.commands.update_commands(commands)
         return commands
 
@@ -631,7 +638,7 @@ class Main(QtWidgets.QWidget):
         if self.encoding_worker and self.encoding_worker.is_alive():
             return error_message("Still encoding something else")
 
-        self.output_video = self.save_file(extension=self.builders[self.convert_to].extension)
+        self.output_video = self.save_file(extension=self.plugins[self.convert_to].video_extension)
         if not self.input_video:
             return error_message("Please provide a source video")
         if not self.output_video:

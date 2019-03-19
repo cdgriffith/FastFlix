@@ -2,7 +2,7 @@ import logging
 
 from box import Box
 
-from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
+from flix.shared import QtWidgets
 
 logger = logging.getLogger('flix')
 
@@ -12,7 +12,6 @@ class AV1(QtWidgets.QWidget):
     def __init__(self, parent, main):
         super(AV1, self).__init__(parent)
         self.main = main
-
         grid = QtWidgets.QGridLayout()
 
         grid.addWidget(QtWidgets.QLabel("AV1"), 0, 0)

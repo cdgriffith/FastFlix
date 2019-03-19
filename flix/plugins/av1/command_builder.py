@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 
 import reusables
 from box import Box
@@ -92,14 +93,23 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
                       f'-q {crf} -i "<loop.2>" -b "{path.av1_parts}{os.sep}<loop.0>.ivf"')
     loop_command_3 = f"echo file '{path.av1_parts}{os.sep}<loop.0>.ivf'' > {concat_list}"
 
-    # TODO internal cleanup command
+    loop_command_4 = 'del /f "<loop.2>"'
 
     main_loop = Loop(condition=lambda: func(path.y4m, path.origional_parts),
                      commands=[
                          Command(loop_command_1, ['ffmpeg'], False),
                          Command(loop_command_2, ['av1'], False),
-                         Command(loop_command_3, [], False)
+                         Command(loop_command_3, [], False),
+                         Command(loop_command_4, [], False)
                      ])
+
+    cleanup_command = Command(f'if exist "{build_dir}" rd /s /q "{build_dir}"', [], False)
+
+    if not audio_tracks:
+        command_2 = Command(
+            f'"{{ffmpeg}}" -y -safe 0 -f concat -i "{concat_list}" -reset_timestamps 1 -c copy "{{output}}"',
+            ['ffmpeg'], False)
+        return cleanup_command, command_1, main_loop, command_2, cleanup_command
 
     no_audio_file = Path(build_dir, "combined.mkv")
     command_2 = Command(
@@ -119,13 +129,12 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
     command_3 = Command((f'"{{ffmpeg}}" -y '
                          f'-i "{no_audio_file}" -i "{audio_file}" '
                          f'{"-map_metadata -1" if start_time or duration else ""} '
-                         f'-c copy -map 0:v -map 1:a -avoid_negative_ts make_zero '  # -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
+                         f'-c copy -map 0:v -map 1:a -avoid_negative_ts make_zero '  
+                         # -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
                          f'"{{output}}"'),
                         ['ffmpeg', 'output'],
                         False)
 
     cleanup_command = Command(f'if exist "{build_dir}" rd /s /q "{build_dir}"', [], False)
 
-
-    return cleanup_command, command_1, main_loop, command_2, command_audio, command_3# , cleanup_command
-
+    return cleanup_command, command_1, main_loop, command_2, command_audio, command_3, cleanup_command
