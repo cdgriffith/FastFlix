@@ -5,8 +5,7 @@ __author__ = 'Chris Griffith'
 name = 'av1'
 
 video_extension = "mkv"
-video_width_divisor = 8
-video_height_divisor = 8
+video_dimension_divisor = 8
 
 enable_subtitles = True
 enable_audio = True

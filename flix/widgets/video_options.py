@@ -5,7 +5,6 @@ from box import Box, BoxList
 
 from flix.shared import QtWidgets
 from flix.widgets.panels.command_panel import CommandList
-from flix.widgets.panels import gif, vp9, av1
 from flix.widgets.panels.audio_panel import AudioList
 from flix.widgets.panels.subtitle_panel import SubtitleList
 

@@ -19,7 +19,6 @@ from flix.widgets.command_runner import Worker as CW
 from flix.builders import helpers
 from flix.version import __version__
 
-from flix.builders import (gif as gif_builder, vp9 as vp9_builder, av1 as av1_builder)
 
 logger = logging.getLogger('flix')
 
@@ -398,17 +397,21 @@ class Main(QtWidgets.QWidget):
         return layout
 
     def modify_int(self, widget, method="add", time_field=False):
+        modifier = 1
         if time_field:
             value = self.time_to_number(widget.text())
             if value is None:
                 return
         else:
+            modifier = getattr(self.plugins[self.convert_to], 'video_dimension_divisor', 1)
             try:
                 value = int(widget.text())
+                value = int(value + (value % modifier))
             except ValueError:
                 logger.warning('...dummy')
                 return
-        modifier = (1 if method == 'add' else -1)
+
+        modifier = (modifier if method == 'add' else -modifier)
         new_value = value + modifier
         if time_field and new_value < 0:
             return
@@ -457,12 +460,57 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception('flix', show_traceback=False)
     def scale_update(self):
         keep_aspect = self.widgets.scale.keep_aspect.isChecked()
-        if not keep_aspect:
-            self.widgets.scale.height.setText(str(self.video_height))
-            return
-        self.widgets.scale.height.setDisabled(keep_aspect)
+        # if not keep_aspect:
+        #     self.widgets.scale.height.setText(str(self.video_height))
+        #     return
+        # self.widgets.scale.height.setDisabled(keep_aspect)
 
-        self.widgets.scale.height.setText("-1")
+        #keep_aspect = self.keep_aspect_button.isChecked()
+        self.widgets.scale.height.setDisabled(keep_aspect)
+        height = self.video_height
+        width = self.video_width
+        if self.build_crop():
+            width, height, *_ = (int(x) for x in self.build_crop().split(":"))
+
+        if keep_aspect and (not height or not width):
+            return logger.warning("Invalid source dimensions")
+            #return self.scale_warning_message.setText("Invalid source dimensions")
+
+        try:
+            scale_width = int(self.widgets.scale.width.text())
+            assert scale_width > 0
+        except (ValueError, AssertionError):
+            return logger.warning("Invalid main_width")
+            #return self.scale_warning_message.setText("Invalid main_width")
+
+        if scale_width % 8:
+            return logger.warning("Width must be divisible by 8")
+            #return self.scale_warning_message.setText("Width must be divisible by 8")
+
+        if keep_aspect:
+            ratio = scale_width / width
+            scale_height = ratio * height
+            self.widgets.scale.height.setText(str(int(scale_height)))
+            mod = int(scale_height % 8)
+            if mod:
+                scale_height -= mod
+                logger.info(f"Have to adjust scale height by {mod} pixels")
+                #self.scale_warning_message.setText(f"height has -{mod}px off aspect")
+            self.widgets.scale.height.setText(str(int(scale_height)))
+            return
+
+        try:
+            scale_height = int(self.scale_height.text())
+            assert scale_height > 0
+        except (ValueError, AssertionError):
+            return logger.warning("Invalid height")
+            #return self.scale_warning_message.setText("Invalid height")
+
+        if scale_height % 8:
+            return logger.warning("Height must be divisible by 8")
+            #return self.scale_warning_message.setText("Height must be divisible by 8")
+        #self.scale_warning_message.setText("")
+
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):

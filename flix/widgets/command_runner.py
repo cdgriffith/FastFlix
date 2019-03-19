@@ -100,8 +100,8 @@ class Worker(QtCore.QThread):
                             code = self.run_command(cmd)
                             print(code)
                             if code:
-                                return self.app.completed.emit(code)
-        except:
+                                return self.app.completed.emit(str(code))
+        except Exception:
             logger.exception("Could not run commands!")
             self.tempdir.cleanup()
             self.app.completed.emit(1)

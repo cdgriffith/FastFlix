@@ -5,8 +5,7 @@ __author__ = 'Chris Griffith'
 name = 'vp9'
 
 video_extension = "webm"
-video_width_divisor = 1
-video_height_divisor = 1
+video_dimension_divisor = 1
 
 enable_subtitles = True
 enable_audio = True

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-#!/usr/bin/env python
 
 import reusables
 from box import Box
@@ -8,7 +7,7 @@ from pathlib import Path
 import logging
 import os
 
-from flix.builders.helpers import (generate_filters, start_and_input, Loop, Command)
+from flix.builders.helpers import (generate_filters, Loop, Command)
 from flix.builders.audio import build as audio_builder
 
 logger = logging.getLogger('flix')
@@ -46,20 +45,22 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
     else:
         height = int(streams.video[0].height)
         width = int(streams.video[0].width)
+        if crop:
+            crop_check = crop.split(":")
+            print(crop_check)
+            try:
+                assert crop_check[0] % 8 == 0
+                assert crop_check[1] % 8 == 0
+            except AssertionError:
+                raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
+        else:
+            crop_height = height % 8
+            crop_width = width % 8
+            if crop_height or crop_width:
+                raise FlixError('CROP BAD: Video height and main_width must be divisible by 8')
+
     assert height <= 2160
     assert width <= 4096
-    if crop:
-        crop_check = crop.split(":")
-        try:
-            assert crop_check[0] % 8 == 0
-            assert crop_check[1] % 8 == 0
-        except AssertionError:
-            raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
-    else:
-        crop_height = height % 8
-        crop_width = width % 8
-        if crop_height or crop_width:
-            raise FlixError('CROP BAD: Video height and main_width must be divisible by 8')
 
     command_1 = Command((f'{{ffmpeg}} -y '
                          f'{f"-ss {start_time}" if start_time else ""} '
@@ -91,7 +92,7 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
     loop_command_2 = (f'"{{av1}}" -intra-period {intra_period} -enc-mode {mode} -bit-depth {bit_depth} '
                       f' -fps-num {fps_num} -fps-denom {fps_denom} -w {width} -h {height} '
                       f'-q {crf} -i "<loop.2>" -b "{path.av1_parts}{os.sep}<loop.0>.ivf"')
-    loop_command_3 = f"echo file '{path.av1_parts}{os.sep}<loop.0>.ivf'' > {concat_list}"
+    loop_command_3 = f"echo file '{path.av1_parts}{os.sep}<loop.0>.ivf'' >> {concat_list}"
 
     loop_command_4 = 'del /f "<loop.2>"'
 
@@ -129,7 +130,7 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
     command_3 = Command((f'"{{ffmpeg}}" -y '
                          f'-i "{no_audio_file}" -i "{audio_file}" '
                          f'{"-map_metadata -1" if start_time or duration else ""} '
-                         f'-c copy -map 0:v -map 1:a -avoid_negative_ts make_zero '  
+                         f'-c copy -map 0:v -map 1:a '  # shortest  
                          # -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
                          f'"{{output}}"'),
                         ['ffmpeg', 'output'],
