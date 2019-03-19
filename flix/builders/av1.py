@@ -114,4 +114,6 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
                         ['ffmpeg', 'output'],
                         False)
 
-    return command_1, main_loop, command_2, command_3
+    cleanup_command = Command(f'if exist "{build_dir}" rd /s /q "{build_dir}"', [], False)
+
+    return cleanup_command, command_1, main_loop, command_2, command_3, cleanup_command
