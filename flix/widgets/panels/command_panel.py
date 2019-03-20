@@ -7,23 +7,23 @@ from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 
 class Loop(QtWidgets.QGroupBox):
 
-    def __init__(self, parent, condition, commands, number):
+    def __init__(self, parent, condition, commands, number, name=""):
         super(Loop, self).__init__(parent)
         layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Loop: "))
+        layout.addWidget(QtWidgets.QLabel("Loop" if not name else name))
         self.condition = condition
         self.number = number
         self.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
 
         for index, item in enumerate(commands, 1):
-            new_item = Command(parent, item.command, index)
+            new_item = Command(parent, item.command, index, item.name)
             layout.addWidget(new_item)
         self.setLayout(layout)
 
 
 class Command(QtWidgets.QTabWidget):
 
-    def __init__(self, parent, command, number, enabled=True):
+    def __init__(self, parent, command, number, name="", enabled=True):
         super(Command, self).__init__(parent)
         self.command = command
         self.widget = QtWidgets.QLineEdit()
@@ -32,7 +32,7 @@ class Command(QtWidgets.QTabWidget):
         self.setFixedHeight(60)
 
         grid = QtWidgets.QGridLayout()
-        grid.addWidget(QtWidgets.QLabel(f"Command {number}"), 0, 0, 1, 2)
+        grid.addWidget(QtWidgets.QLabel(f"Command {number}" if not name else name), 0, 0, 1, 2)
         grid.addWidget(self.widget, 1, 0, 1, 2)
         self.setLayout(grid)
 
@@ -63,10 +63,10 @@ class CommandList(QtWidgets.QWidget):
         layout.setSpacing(5)
         for index, item in enumerate(commands, 1):
             if item.item == "command":
-                new_item = Command(self.scroll_area, item.command, index)
+                new_item = Command(self.scroll_area, item.command, index, name=item.name)
                 layout.addWidget(new_item)
             elif item.item == "loop":
-                new_item = Loop(self.scroll_area, item.condition, item.commands, index)
+                new_item = Loop(self.scroll_area, item.condition, item.commands, index, name=item.name)
                 layout.addWidget(new_item)
         layout.addStretch()
         self.inner_widget.setLayout(layout)

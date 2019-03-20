@@ -93,10 +93,11 @@ class Main(QtWidgets.QWidget):
         self.video_options = VideoOptions(self)
 
         self.completed.connect(self.conversion_complete)
-        # self.cancelled.connect(self.conversion_cancelled)
+        self.cancelled.connect(self.conversion_cancelled)
         self.thumbnail_complete.connect(self.thumbnail_generated)
         self.encoding_worker = None
         self.command_runner = None
+        self.converting = False
 
         self.video_width = 0
         self.video_height = 0
@@ -679,6 +680,9 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception('flix', show_traceback=False)
     def create_video(self):
+        if self.converting:
+            self.command_runner.kill()
+            return
 
         if not self.input_video:
             return error_message("Have to select a video first")
@@ -707,16 +711,19 @@ class Main(QtWidgets.QWidget):
                                                        av1=self.svt_av1,
                                                        output=self.output_video)
 
-        self.widgets.convert_button.setDisabled(True)
+        self.widgets.convert_button.setText("Cancel")
+        self.widgets.convert_button.setStyleSheet("background-color:red;")
+        self.converting = True
         self.command_runner = CW(self, commands, self.path.data)
         self.command_runner.start()
 
     @reusables.log_exception('flix', show_traceback=False)
     def conversion_complete(self, return_code):
-        self.widgets.convert_button.setDisabled(False)
+        self.widgets.convert_button.setStyleSheet("background-color:green;")
+        self.converting = False
 
-        if return_code:
-            error_message("Could not encode video due to an error, please view the logs for more details")
+        if return_code or not Path(self.output_video).exists():
+            error_message("Could not encode video due to an error, please view the logs for more details!")
         else:
             sm = QtWidgets.QMessageBox()
             sm.setText("Encoded successfully, view now?")
@@ -728,8 +735,12 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception('flix', show_traceback=False)
     def conversion_cancelled(self):
-        self.widgets.convert_button.setDisabled(False)
-        os.remove(self.output_video)
+        self.widgets.convert_button.setStyleSheet("background-color:green;")
+        self.converting = False
+        try:
+            os.remove(self.output_video)
+        except OSError:
+            pass
 
     @reusables.log_exception('flix', show_traceback=False)
     def dropEvent(self, event):

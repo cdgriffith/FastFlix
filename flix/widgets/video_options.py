@@ -30,7 +30,6 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.addTab(self.subtitles, "Subtitles")
         self.addTab(self.commands, "Command List")
 
-
     def change_conversion(self, conversion):
         self.current_settings.close()
         self.current_plugin = self.main.plugins[conversion]
@@ -42,6 +41,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.setTabEnabled(1, getattr(self.current_plugin, 'enable_audio', True))
         self.setTabEnabled(2, getattr(self.current_plugin, 'enable_subtitles', True))
         self.selected = conversion
+        self.audio.allowed_formats(self.current_plugin.audio_formats)
         self.current_settings.new_source()
 
     def get_settings(self):
@@ -52,6 +52,6 @@ class VideoOptions(QtWidgets.QTabWidget):
         return settings
 
     def new_source(self):
-        self.audio.new_source()
+        self.audio.new_source(self.current_plugin.audio_formats)
         self.current_settings.new_source()
 

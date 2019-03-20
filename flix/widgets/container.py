@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import logging
 import os
+from pathlib import Path
 
 from flix.shared import QtWidgets, QtGui, pyinstaller, base_path, message
 from flix.widgets.main import Main
@@ -18,6 +19,7 @@ class Container(QtWidgets.QMainWindow):
         main = Main(self)
         self.setCentralWidget(main)
         self.setMinimumSize(1200, 600)
+        self.setWindowIcon(QtGui.QIcon(str(Path("data", "icon.ico"))))
 
     def init_menu(self):
         exit_action = QtWidgets.QAction('&Exit', self)

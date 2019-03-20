@@ -13,12 +13,13 @@ class Command:
 
     item = "command"
 
-    def __init__(self, command, variables, internal, name="", ensure_paths=()):
+    def __init__(self, command, variables, internal, name="", ensure_paths=(), exe=None):
         self.name = name
         self.command = command
         self.variables = variables
         self.internal = internal
         self.ensure_paths = ensure_paths
+        self.exe = None
 
 
 def start_and_input(source, **kwargs):

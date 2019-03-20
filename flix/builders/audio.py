@@ -1,21 +1,15 @@
 #!/usr/bin/env python
-from flix.builders.helpers import generate_filters, Command
 
 
-def build(audio_tracks, allowed_codec=(), audio_file_index=0):
+def build(audio_tracks, audio_file_index=0):
     command_list = []
     for track in audio_tracks:
         command_list.append(f'-map {audio_file_index}:{track.index}')
-        if allowed_codec:
-            if 'conversion' in track:
-                if track.conversion.codec not in allowed_codec:
-                    raise Exception('Invalid codec')
-                command_list.append(f'-c:a:{track.index} {track.conversion.codec} -b:a:{track.index} {track.conversion.bitrate} ')
-                continue
-            if track.codec not in allowed_codec:
-                raise Exception('Invalid codec')
+        if track.conversion.codec == 'none':
             command_list.append(f'-c:a:{track.index} copy')
-        else:
-            command_list.append(f'-c:a:{track.index} copy')
+        elif 'conversion' in track:
+            command_list.append(f'-c:a:{track.index} {track.conversion.codec} '
+                                f'-b:a:{track.index} {track.conversion.bitrate} ')
+
     return " ".join(command_list)
 

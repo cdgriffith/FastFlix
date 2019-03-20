@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import logging
 import re
+import time
 import tempfile
 from pathlib import Path
 from uuid import uuid4
@@ -14,11 +15,16 @@ logger = logging.getLogger('flix')
 
 __all__ = ['Worker']
 
+white_detect = re.compile(r'^\s+')
+
 
 class Worker(QtCore.QThread):
     def __init__(self, parent, command_list, work_dir):
         super(Worker, self).__init__(parent)
         self.tempdir = tempfile.TemporaryDirectory(prefix="Temp", dir=work_dir)
+        # self.logger = logging.getLogger(f'command_logger')
+        # TODO setup file logger for command output self.logger
+        # TODO calculate time based off frames
         self.app = parent
         self.command_list = command_list
         self.process = None
@@ -44,14 +50,20 @@ class Worker(QtCore.QThread):
             command = command.replace(f"<loop.{i}>", str(items[i]))
         return command
 
-    def run_command(self, command):
+    def run_command(self, command, command_type=None):
 
         # if command:
         command = self.replace_temps(command)
         logger.info(f"Running command: {command}")
         self.process = self.start_exec(command)
-        for line in self.process.stdout:
-            print(line.strip())
+        if not command_type:
+            for line in self.process.stdout:
+                logger.info(line.strip())
+        elif command_type == 'ffmpeg':
+            for line in self.process.stdout:
+                if not white_detect.match(line):
+                    logger.info(line.rstrip())
+
         # while True:
         #     char = self.process.stdout.read(1)
         #     if char == '' and child.poll() != None:
@@ -85,29 +97,33 @@ class Worker(QtCore.QThread):
     def run(self):
         try:
             for command in self.command_list:
+                if self.killed:
+                    self.tempdir.cleanup()
+                    return
                 if command.ensure_paths:
                     for path in command.ensure_paths:
                         path.mkdir(parents=True, exist_ok=True)
                 if command.item == "command":
-                    code = self.run_command(command.command)
-                    print(code)
-                    if code:
+                    code = self.run_command(command.command, command.exe)
+                    if code and not self.killed:
                         return self.app.completed.emit(str(code))
                 elif command.item == "loop":
                     for index, res in enumerate(command.condition()):
                         for item in command.commands:
                             cmd = self.replace_loop_args(item.command, index, res)
-                            code = self.run_command(cmd)
-                            print(code)
-                            if code:
+                            code = self.run_command(cmd, item.exe)
+                            if code and not self.killed:
                                 return self.app.completed.emit(str(code))
-        except Exception:
+        except Exception as err:
+            print(err)
             logger.exception("Could not run commands!")
             self.tempdir.cleanup()
-            self.app.completed.emit(1)
+            if not self.killed:
+                self.app.completed.emit(1)
         else:
             self.tempdir.cleanup()
-            self.app.completed.emit(0)
+            if not self.killed:
+                self.app.completed.emit(0)
 
     def start_exec(self, command):
         return Popen(command, shell=True, cwd=self.tempdir.name, stdin=PIPE, stdout=PIPE, stderr=STDOUT, universal_newlines=True)

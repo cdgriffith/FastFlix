@@ -4,10 +4,25 @@ from box import Box
 
 from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 
+# TODO refine list (ffmpeg -encoders)
+available_encoders = [
+    'aac',
+    'ac3',
+    'dca',
+    'flac',
+    'libopus',
+    'sonic',
+    'sonicls',
+    'truehd',
+    'tta',
+    'libvorbis',
+    'wavpack'
+]
+
 
 class Audio(QtWidgets.QTabWidget):
 
-    def __init__(self, parent, audio, index, codec, enabled=True, original=False, first=False, last=False):
+    def __init__(self, parent, audio, index, codec, enabled=True, original=False, first=False, last=False, codecs=(), channels=2):
         super(Audio, self).__init__(parent)
         self.parent = parent
         self.audio = audio
@@ -17,6 +32,8 @@ class Audio(QtWidgets.QTabWidget):
         self.last = last
         self.index = index
         self.codec = codec
+        self.codecs = codecs
+        self.channels = channels
 
         self.widgets = Box(
             audio_info=QtWidgets.QLineEdit(audio),
@@ -55,13 +72,14 @@ class Audio(QtWidgets.QTabWidget):
     def init_conversion(self):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
-        self.widgets.convert_to.addItems(['none',
-                                          'libvorbis',
-                                          'libopus'])
+        self.update_codecs(self.codecs)
 
         self.widgets.convert_bitrate = QtWidgets.QComboBox()
 
-        self.widgets.convert_bitrate.addItems(['96k'])
+        self.widgets.convert_bitrate.addItems([f'{x}k' for x in range(32 * self.channels,
+                                                                      (256 * self.channels) + 1,
+                                                                      32 * int(self.channels))])
+        self.widgets.convert_bitrate.setCurrentIndex(3)
 
         layout.addWidget(QtWidgets.QLabel("Conversion: "))
         layout.addWidget(self.widgets.convert_to)
@@ -71,14 +89,28 @@ class Audio(QtWidgets.QTabWidget):
 
         return layout
 
+    def update_codecs(self, codec_list):
+        current = self.widgets.convert_to.currentText()
+        for i in range(self.widgets.convert_to.count()):
+            self.widgets.convert_to.removeItem(0)
+        passthrough_available = False
+        if self.codec in codec_list:
+            passthrough_available = True
+            self.widgets.convert_to.addItem('none')
+        self.widgets.convert_to.addItems(list(set(available_encoders) & set(codec_list)))
+        if current in codec_list:
+            index = codec_list.index(current)
+            if passthrough_available:
+                index += 1
+            self.widgets.convert_to.setCurrentIndex(index)
+        self.widgets.convert_to.setCurrentIndex(0)  # Will either go to 'copy' or first listed
+
     @property
     def enabled(self):
         return self.widgets.enable_check.isChecked()
 
     @property
     def conversion(self):
-        if self.widgets.convert_bitrate.currentText() == 'none':
-            return None
         return {'codec': self.widgets.convert_to.currentText(),
                 'bitrate': self.widgets.convert_bitrate.currentText()}
 
@@ -124,7 +156,7 @@ class AudioList(QtWidgets.QWidget):
         self.inner_widget.setFixedWidth(self.scroll_area.width() - 3)
         return super(AudioList, self).resizeEvent(event)
 
-    def new_source(self):
+    def new_source(self, codecs):
         self.inner_widget = QtWidgets.QWidget()
         self.tracks = []
         layout = QtWidgets.QVBoxLayout()
@@ -143,7 +175,7 @@ class AudioList(QtWidgets.QWidget):
             track_info += f' - {x.channels} channels'
 
             new_item = Audio(self, track_info, original=True, first=True if i == 1 else False, index=x.index,
-                             codec=x.codec_name)
+                             codec=x.codec_name, codecs=codecs, channels=x.channels)
             layout.addWidget(new_item)
             self.tracks.append(new_item)
 
@@ -154,6 +186,12 @@ class AudioList(QtWidgets.QWidget):
         self.inner_layout = layout
         self.inner_widget.setLayout(layout)
         self.init_inner()
+
+    def allowed_formats(self, allowed_formats=None):
+        if not allowed_formats:
+            return
+        for track in self.tracks:
+            track.update_codecs(allowed_formats)
 
     def reorder(self):
         for widget in self.tracks:
