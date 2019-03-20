@@ -13,7 +13,7 @@ logger = logging.getLogger('flix')
 
 class VideoOptions(QtWidgets.QTabWidget):
 
-    def __init__(self, parent):
+    def __init__(self, parent, available_audio_encoders):
         super().__init__(parent)
         self.main = parent
 
@@ -23,7 +23,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.current_plugin = self.main.plugins.values()[0]
         self.current_settings = self.current_plugin.settings_panel(self, self.main)
 
-        self.audio = AudioList(self)
+        self.audio = AudioList(self, available_audio_encoders)
         self.subtitles = SubtitleList(self)
         self.addTab(self.current_settings, "Quality")
         self.addTab(self.audio, "Audio")

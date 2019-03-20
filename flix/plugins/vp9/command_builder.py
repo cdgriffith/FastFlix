@@ -4,13 +4,11 @@ import re
 from flix.builders.helpers import generate_filters, Command
 from flix.builders.audio import build as build_audio
 
-extension = "webm"
-
 
 def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=None, single_pass=False,
           quality='good', audio_tracks=(), speed=1, **kwargs):
     filters = generate_filters(**kwargs)
-    audio = build_audio(audio_tracks, allowed_codec=('libopus', 'libvorbis'))
+    audio = build_audio(audio_tracks)
 
     ending = "dev/null && \\"
     if reusables.win_based:

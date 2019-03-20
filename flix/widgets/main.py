@@ -43,6 +43,8 @@ class Main(QtWidgets.QWidget):
         super().__init__(parent)
         self.container = parent
         self.initialized = False
+        self.loading_video = True
+        self.scale_updating = False
 
         self.plugins = load_plugins()
 
@@ -90,7 +92,7 @@ class Main(QtWidgets.QWidget):
         self.svt_av1 = 'C:\\Users\\teckc\\Downloads\\svt-av1-1.0.314\\SvtAv1EncApp.exe'
         self.thumb_file = Path(self.path.data, 'thumbnail_preview.png')
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
-        self.video_options = VideoOptions(self)
+        self.video_options = VideoOptions(self, available_audio_encoders=self.flix.get_audio_encoders())
 
         self.completed.connect(self.conversion_complete)
         self.cancelled.connect(self.conversion_cancelled)
@@ -277,8 +279,8 @@ class Main(QtWidgets.QWidget):
 
         # TODO scale 0 error
 
-        self.widgets.scale.width.textChanged.connect(lambda: (self.scale_update() and self.page_update()))
-        self.widgets.scale.height.textChanged.connect(lambda: self.page_update())
+        self.widgets.scale.width.textChanged.connect(lambda: self.scale_update())
+        self.widgets.scale.height.textChanged.connect(lambda: self.scale_update())
 
         bottom_row = QtWidgets.QHBoxLayout()
         self.widgets.scale.keep_aspect = QtWidgets.QCheckBox("Keep aspect ratio")
@@ -286,7 +288,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.keep_aspect.setChecked(True)
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.scale_update())
-        self.widgets.scale.keep_aspect.toggled.connect(lambda: self.page_update())
 
         label = QtWidgets.QLabel('Scale', alignment=(Qt.AlignBottom | Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
@@ -460,6 +461,9 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception('flix', show_traceback=False)
     def scale_update(self):
+        if self.scale_updating:
+            return False
+        self.scale_updating = True
         keep_aspect = self.widgets.scale.keep_aspect.isChecked()
         # if not keep_aspect:
         #     self.widgets.scale.height.setText(str(self.video_height))
@@ -474,6 +478,7 @@ class Main(QtWidgets.QWidget):
             width, height, *_ = (int(x) for x in self.build_crop().split(":"))
 
         if keep_aspect and (not height or not width):
+            self.scale_updating = False
             return logger.warning("Invalid source dimensions")
             #return self.scale_warning_message.setText("Invalid source dimensions")
 
@@ -481,10 +486,12 @@ class Main(QtWidgets.QWidget):
             scale_width = int(self.widgets.scale.width.text())
             assert scale_width > 0
         except (ValueError, AssertionError):
+            self.scale_updating = False
             return logger.warning("Invalid main_width")
             #return self.scale_warning_message.setText("Invalid main_width")
 
         if scale_width % 8:
+            self.scale_updating = False
             return logger.warning("Width must be divisible by 8")
             #return self.scale_warning_message.setText("Width must be divisible by 8")
 
@@ -496,12 +503,14 @@ class Main(QtWidgets.QWidget):
             if mod:
                 scale_height -= mod
                 logger.info(f"Have to adjust scale height by {mod} pixels")
-                #self.scale_warning_message.setText(f"height has -{mod}px off aspect")
+                #self.scale_warning_message.setText()
+            logger.info(f"height has -{mod}px off aspect")
             self.widgets.scale.height.setText(str(int(scale_height)))
+            self.scale_updating = False
             return
 
         try:
-            scale_height = int(self.scale_height.text())
+            scale_height = int(self.widgets.scale.height.text())
             assert scale_height > 0
         except (ValueError, AssertionError):
             return logger.warning("Invalid height")
@@ -511,10 +520,13 @@ class Main(QtWidgets.QWidget):
             return logger.warning("Height must be divisible by 8")
             #return self.scale_warning_message.setText("Height must be divisible by 8")
         #self.scale_warning_message.setText("")
+        self.page_update()
+        self.scale_updating = False
 
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
+        self.loading_video = True
         self.streams, self.format_info = self.flix.parse(self.input_video)
         logger.debug(self.streams)
         logger.debug(self.format_info)
@@ -529,8 +541,10 @@ class Main(QtWidgets.QWidget):
         self.video_width = self.streams.video[0].width
         self.video_height = self.streams.video[0].height
 
-        self.widgets.scale.width.setText(str(self.video_width))
-        self.widgets.scale.height.setText("-1")
+        self.widgets.scale.width.setText(
+            str(self.video_width + (self.video_width % self.plugins[self.convert_to].video_dimension_divisor)))
+        self.widgets.scale.height.setText(
+            str(self.video_height + (self.video_height % self.plugins[self.convert_to].video_dimension_divisor)))
         self.widgets.video_track.addItems(text_video_tracks)
 
         self.widgets.video_track.setDisabled(bool(len(self.streams.video) == 1))
@@ -549,6 +563,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.duration.setText(self.number_to_time(video_duration))
 
         self.video_options.new_source()
+        self.loading_video = False
 
     @property
     def video_track(self):
@@ -662,7 +677,7 @@ class Main(QtWidgets.QWidget):
         return settings
 
     def build_commands(self):
-        if not self.initialized or not self.streams:
+        if not self.initialized or not self.streams or self.loading_video:
             return
         settings = self.get_all_settings()
         commands = self.plugins[self.convert_to].build(**settings)
@@ -670,6 +685,8 @@ class Main(QtWidgets.QWidget):
         return commands
 
     def page_update(self):
+        if not self.initialized or self.loading_video:
+            return
         self.build_commands()
         self.generate_thumbnail()
 

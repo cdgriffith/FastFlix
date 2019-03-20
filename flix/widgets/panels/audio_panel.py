@@ -2,27 +2,13 @@
 
 from box import Box
 
-from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
-
-# TODO refine list (ffmpeg -encoders)
-available_encoders = [
-    'aac',
-    'ac3',
-    'dca',
-    'flac',
-    'libopus',
-    'sonic',
-    'sonicls',
-    'truehd',
-    'tta',
-    'libvorbis',
-    'wavpack'
-]
+from flix.shared import QtGui, QtCore, QtWidgets
 
 
 class Audio(QtWidgets.QTabWidget):
 
-    def __init__(self, parent, audio, index, codec, enabled=True, original=False, first=False, last=False, codecs=(), channels=2):
+    def __init__(self, parent, audio, index, codec, available_audio_encoders,
+                 enabled=True, original=False, first=False, last=False, codecs=(), channels=2):
         super(Audio, self).__init__(parent)
         self.parent = parent
         self.audio = audio
@@ -34,6 +20,7 @@ class Audio(QtWidgets.QTabWidget):
         self.codec = codec
         self.codecs = codecs
         self.channels = channels
+        self.available_audio_encoders = available_audio_encoders
 
         self.widgets = Box(
             audio_info=QtWidgets.QLineEdit(audio),
@@ -97,7 +84,7 @@ class Audio(QtWidgets.QTabWidget):
         if self.codec in codec_list:
             passthrough_available = True
             self.widgets.convert_to.addItem('none')
-        self.widgets.convert_to.addItems(list(set(available_encoders) & set(codec_list)))
+        self.widgets.convert_to.addItems(sorted(set(self.available_audio_encoders) & set(codec_list)))
         if current in codec_list:
             index = codec_list.index(current)
             if passthrough_available:
@@ -125,10 +112,11 @@ class Audio(QtWidgets.QTabWidget):
 
 class AudioList(QtWidgets.QWidget):
 
-    def __init__(self, parent):
+    def __init__(self, parent, available_audio_encoders):
         super(AudioList, self).__init__(parent)
         self.main = parent.main
         self.inner_layout = None
+        self.available_audio_encoders = available_audio_encoders
 
         layout = QtWidgets.QGridLayout()
         layout.addWidget(QtWidgets.QLabel('Audio Tracks'))
@@ -175,7 +163,8 @@ class AudioList(QtWidgets.QWidget):
             track_info += f' - {x.channels} channels'
 
             new_item = Audio(self, track_info, original=True, first=True if i == 1 else False, index=x.index,
-                             codec=x.codec_name, codecs=codecs, channels=x.channels)
+                             codec=x.codec_name, codecs=codecs, channels=x.channels,
+                             available_audio_encoders=self.available_audio_encoders)
             layout.addWidget(new_item)
             self.tracks.append(new_item)
 

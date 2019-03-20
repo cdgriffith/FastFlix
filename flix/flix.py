@@ -1,4 +1,4 @@
-from subprocess import run, PIPE
+from subprocess import run, PIPE, Popen, STDOUT
 import logging
 import os
 from pathlib import Path
@@ -293,4 +293,18 @@ class Flix:
         return (f'"{self.ffmpeg}" -i "{video_source}" -i "{audio_source}" '
                 f'-c copy -map 0:{video_track} -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0" '
                 f'-map 1:{audio_track} "{output}"')
+
+    def get_audio_encoders(self):
+        cmd = Popen(f'{self.ffmpeg} -hide_banner -encoders', shell=True,
+                    stderr=STDOUT, stdout=PIPE, universal_newlines=True)
+        encoders = []
+        start_line = " ------"
+        started = False
+        for line in cmd.stdout:
+            if started:
+                if line.strip().startswith("A"):
+                    encoders.append(line.strip().split(" ")[1])
+            elif line.startswith(start_line):
+                started = True
+        return encoders
 
