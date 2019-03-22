@@ -33,13 +33,13 @@ def main():
     svt_av1 = Path(svt_av1_folder, 'SvtAv1EncApp.exe')
 
     if first_time:
-        first_time_setup(ffmpeg_folder, svt_av1_folder)
+        first_time_setup(ffmpeg_folder, svt_av1_folder, data_path)
 
-    if not all([x.exists() for x in (ffmpeg, ffprobe, svt_av1)]):
+    if not all([x.exists() for x in (ffmpeg, ffprobe, svt_av1, Path(data_path, "plugins"))]):
         qm = QtWidgets.QMessageBox
         ret = qm.question(None, '', 'Not all required libraries found! <br> Re-extra them?', qm.Yes | qm.No)
         if ret == qm.Yes:
-            first_time_setup(ffmpeg_folder, svt_av1_folder)
+            first_time_setup(ffmpeg_folder, svt_av1_folder, data_path)
         else:
             sys.exit(1)
 
@@ -53,21 +53,22 @@ def main():
     window = Container(ffmpeg=ffmpeg, ffprobe=ffprobe,
                        ffmpeg_version=ffmpeg_version, ffprobe_version=ffprobe_version,
                        svt_av1=svt_av1,
-                       source=sys.argv[1] if len(sys.argv) > 1 else "")
+                       source=sys.argv[1] if len(sys.argv) > 1 else "",
+                       data_path=data_path)
 
     window.show()
     sys.exit(main_app.exec_())
 
 
-def first_time_setup(ffmpeg_folder, svt_av1_folder):
+def first_time_setup(ffmpeg_folder, svt_av1_folder, data_path):
     import subprocess
-    import shutil
     logger.info("Performing first time setup")
     subprocess.run(f'{Path("extra", "7za.exe")} e {Path("extra", "ffmpeg_lgpl.7z")} -o"{ffmpeg_folder}" -y',
                    stdout=subprocess.PIPE, shell=True).check_returncode()
-    for file in Path('extra', 'svt_av1').iterdir():
-        # Python 3.6 doesn't quite have everything usable as paths yet
-        shutil.copy(str(file), str(svt_av1_folder))
+    subprocess.run(f'{Path("extra", "7za.exe")} x {Path("extra", "plugins.7z")} -o"{data_path}" -y',
+                   stdout=subprocess.PIPE, shell=True).check_returncode()
+    subprocess.run(f'{Path("extra", "7za.exe")} e {Path("extra", "svt-*.7z")} -o"{svt_av1_folder}" -y',
+                   stdout=subprocess.PIPE, shell=True).check_returncode()
 
 
 if __name__ == '__main__':

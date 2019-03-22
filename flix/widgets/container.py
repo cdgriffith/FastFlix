@@ -11,12 +11,12 @@ from flix.widgets.logs import Logs
 
 class Container(QtWidgets.QMainWindow):
 
-    def __init__(self, parent=None, **kwargs):
-        super(Container, self).__init__(parent)
+    def __init__(self, data_path, **kwargs):
+        super(Container, self).__init__()
         self.logs = Logs()
         self.about = None
         self.init_menu()
-        main = Main(self)
+        main = Main(self, data_path)
         self.setCentralWidget(main)
         self.setMinimumSize(1200, 600)
         self.setWindowIcon(QtGui.QIcon(str(Path("data", "icon.ico"))))

@@ -25,12 +25,13 @@ logger = logging.getLogger('flix')
 root = os.path.abspath(os.path.dirname(__file__))
 
 
-def load_plugins():
+def load_plugins(data_path):
     plugins = Box()
-    for item in Path(root, os.pardir, 'plugins').iterdir():
+    for item in Path(data_path, "plugins").iterdir():
         if item.is_dir():
             plugin = importlib.machinery.SourceFileLoader(f'plugin_{item.name}', str(Path(item, 'main.py'))).load_module()
             plugins[plugin.name] = plugin
+    print(plugins)
     return plugins
 
 
@@ -39,18 +40,19 @@ class Main(QtWidgets.QWidget):
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
 
-    def __init__(self, parent):
+    def __init__(self, parent, data_path):
         super().__init__(parent)
         self.container = parent
         self.initialized = False
         self.loading_video = True
         self.scale_updating = False
-
-        self.plugins = load_plugins()
-
         self.path = Box(
-            data=Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True)),
+            data=data_path, # Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
         )
+
+        self.plugins = load_plugins(data_path)
+
+
 
         self.input_defaults = Box(
             scale=None,
