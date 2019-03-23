@@ -696,6 +696,7 @@ class Main(QtWidgets.QWidget):
     def create_video(self):
         if self.converting:
             self.command_runner.kill()
+            self.command_runner.exit(1)
             return
 
         if not self.input_video:

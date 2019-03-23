@@ -70,9 +70,13 @@ class Worker(QtCore.QThread):
         self.process = self.start_exec(command)
         if not command_type:
             for line in self.process.stdout:
+                if self.killed:
+                    break
                 logger.info(line.strip())
         elif command_type == 'ffmpeg':
             for line in self.process.stdout:
+                if self.killed:
+                    break
                 if not white_detect.match(line):
                     logger.info(line.rstrip())
 
@@ -97,9 +101,6 @@ class Worker(QtCore.QThread):
             #     else:
             #         continue
         return_code = self.process.poll()
-        if self.killed:
-            return self.app.cancelled.emit()
-        self.process = None
         return return_code
         # else:
         #     try:
@@ -128,8 +129,8 @@ class Worker(QtCore.QThread):
                             code = self.run_command(cmd, item.exe)
                             if code and not self.killed:
                                 return self.app.completed.emit(str(code))
-        except:
-            logger.exception("Could not run commands!")
+        except Exception as err:
+            logger.exception(f"Could not run commands - {err}")
             self.tempdir.cleanup()
             if not self.killed:
                 self.app.completed.emit(1)
@@ -148,13 +149,18 @@ class Worker(QtCore.QThread):
         return True if self.process.poll() is None else False
 
     def kill(self):
+        self.killed = True
+        logger.info("Killing worker process")
         if self.process and self.is_alive():
-            self.killed = True
             if reusables.win_based:
-                run(f"TASKKILL /F /PID {self.process.pid} /T", stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                run(f"TASKKILL /F /PID {self.process.pid} /T", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
             else:
-                run(f"kill -9 {self.process.pid}", stdin=PIPE, stdout=PIPE, stderr=PIPE)
-            return self.process.terminate()
+                run(f"kill -9 {self.process.pid}", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+            try:
+                self.process.terminate()
+            except Exception as err:
+                print(f"Couldn't kill process: {err}")
+        self.app.cancelled.emit()
+        self.exit()
 
-    def __del__(self):
-        self.kill()
+
