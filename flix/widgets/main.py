@@ -136,12 +136,12 @@ class Main(QtWidgets.QWidget):
 
     def init_button_menu(self):
         layout = QtWidgets.QHBoxLayout()
-        open_input_file = QtWidgets.QPushButton("Source")
+        open_input_file = QtWidgets.QPushButton("🎞 Source")
         open_input_file.setFixedSize(100, 50)
         open_input_file.setDefault(True)
         open_input_file.clicked.connect(lambda: self.open_file())
         open_input_file.setStyleSheet('background: blue')
-        convert = QtWidgets.QPushButton("Convert")
+        convert = QtWidgets.QPushButton("Convert 🎥")
         convert.setFixedSize(100, 50)
         convert.setStyleSheet('background: green')
         convert.clicked.connect(lambda: self.create_video())
@@ -725,7 +725,7 @@ class Main(QtWidgets.QWidget):
                                                        av1=self.svt_av1,
                                                        output=self.output_video)
 
-        self.widgets.convert_button.setText("Cancel")
+        self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")
         self.converting = True
         self.command_runner = CW(self, commands, self.path.data)
@@ -735,7 +735,7 @@ class Main(QtWidgets.QWidget):
     def conversion_complete(self, return_code):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
-        self.widgets.convert_button.setText("Convert")
+        self.widgets.convert_button.setText("Convert 🎥")
 
         if return_code or not Path(self.output_video).exists():
             error_message("Could not encode video due to an error, please view the logs for more details!")
@@ -752,7 +752,7 @@ class Main(QtWidgets.QWidget):
     def conversion_cancelled(self):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
-        self.widgets.convert_button.setText("Convert")
+        self.widgets.convert_button.setText("Convert 🎥")
         try:
             os.remove(self.output_video)
         except OSError:
