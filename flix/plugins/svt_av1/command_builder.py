@@ -21,16 +21,9 @@ extension = "mkv"
 
 
 @reusables.log_exception('flix', show_traceback=True)
-def build(source, video_track, streams, work_dir, start_time, duration, mode=7, segment_size=60,
-          crf=25, audio_tracks=(), **kwargs):
+def build(source, video_track, streams, work_dir, start_time, duration, speed=7, segment_size=60,
+          qp=25, bitrate=None, audio_tracks=(), **kwargs):
     file = Path(source)
-
-    build_dir = Path(work_dir, "build")
-    path = Box(
-        origional_parts=Path(build_dir, "originals"),
-        y4m=Path(build_dir, "y4m"),
-        av1_parts=Path(build_dir, "avi")
-    )
 
     filters = generate_filters(**kwargs)
 
@@ -69,17 +62,16 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
                          f'{"-map_metadata -1" if kwargs.get("start_time") else ""} '
                          f'-map 0:{video_track} -c copy -sc_threshold 0 '
                          f'-reset_timestamps 1 -f segment -segment_time {segment_size} -an -sn -dn '
-                         f'"{Path(path.origional_parts, f"%04d{file.suffix}")}"'),
+                         f'"<tempdir.1>{os.sep}%04d{file.suffix}"'),
                         ['ffmpeg'], False,
                         name="Semgment movie into smaller files",
-                        ensure_paths=[build_dir] + list(path.values()),
                         exe='ffmpeg')
 
-    def func(y4m_dir, parts_dir):
-        return sorted([(int(x.stem), x, Path(y4m_dir, f"{x.stem}.yuv")) for x in Path(parts_dir).iterdir()],
+    def func(tempfiles, tempdirs):
+        print(tempfiles)
+        print(tempdirs)
+        return sorted([(int(x.stem), x, Path(tempdirs['3'], f"{x.stem}.yuv")) for x in Path(tempdirs['1']).iterdir()],
                       key=lambda x: x[0])
-
-    concat_list = Path(build_dir, 'concat_list.txt')
 
     loop_command_1 = (f'"{{ffmpeg}}" -y -i "<loop.1>" '
                       f' {f"-vf {filters}" if filters else ""} "<loop.2>"')
@@ -90,43 +82,49 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
         if (intra_period + 8) > (fps_num / fps_denom):
             break
     logger.debug(f'setting intra-period to {intra_period} based of fps {float(fps_num / fps_denom):.2f}')
-    loop_command_2 = (f'"{{av1}}" -intra-period {intra_period} -enc-mode {mode} -bit-depth {bit_depth} '
+
+    quality = f"-tbr {bitrate}" if bitrate else f"-q {qp}"
+
+    loop_command_2 = (f'"{{av1}}" -intra-period {intra_period} -enc-mode {speed} -bit-depth {bit_depth} '
                       f' -fps-num {fps_num} -fps-denom {fps_denom} -w {width} -h {height} '
-                      f'-q {crf} -i "<loop.2>" -b "{path.av1_parts}{os.sep}<loop.0>.ivf"')
-    loop_command_3 = f"echo file '{path.av1_parts}{os.sep}<loop.0>.ivf'' >> {concat_list}"
+                      f'{quality} -i "<loop.2>" -b "<tempdir.2>{os.sep}<loop.0>.ivf"')
+
+    loop_command_3 = f"echo file '<tempdir.2>{os.sep}<loop.0>.ivf' >> <tempfile.5.log>"
 
     loop_command_4 = 'del /f "<loop.2>"'
 
-    main_loop = Loop(condition=lambda: func(path.y4m, path.origional_parts),
+    main_loop = Loop(name="Convert segmented input files into AV1 video files",
+                     condition=func,
+                     dirs=['2', '3'],
+                     files=[],
                      commands=[
-                         Command(loop_command_1, ['ffmpeg'], False, exe='ffmpeg'),
-                         Command(loop_command_2, ['av1'], False),
-                         Command(loop_command_3, [], False),
-                         Command(loop_command_4, [], False)
+                         Command(loop_command_1, ['ffmpeg'], False, exe='ffmpeg', name='Convert segment to raw YUV'),
+                         Command(loop_command_2, ['av1'], False, name='Convert YUV into AV1 binary IVF files'),
+                         Command(loop_command_3, [], False, name='Add new IVF file to ffmpeg concat list'),
+                         Command(loop_command_4, [], False, name='Remove large YUV temp file')
                      ])
-
-    cleanup_command = Command(f'if exist "{build_dir}" rd /s /q "{build_dir}"', [], False)
 
     if not audio_tracks:
         command_2 = Command(
-            f'"{{ffmpeg}}" -y -safe 0 -f concat -i "{concat_list}" -reset_timestamps 1 -c copy "{{output}}"',
-            ['ffmpeg'], False, exe='ffmpeg')
-        return cleanup_command, command_1, main_loop, command_2, cleanup_command
+            f'"{{ffmpeg}}" -y -safe 0 -f concat -i "<tempfile.5.log>" -reset_timestamps 1 -c copy "{{output}}"',
+            ['ffmpeg'], False, exe='ffmpeg', name='Wrap IVF binary output into MKV container')
+        return command_1, main_loop, command_2
 
-    no_audio_file = Path(build_dir, "combined.mkv")
+    no_audio_file = '<tempfile.6.mkv>'
     command_2 = Command(
-        f'"{{ffmpeg}}" -y -safe 0 -f concat -i "{concat_list}" -reset_timestamps 1 -c copy "{no_audio_file}"',
+        f'"{{ffmpeg}}" -y -safe 0 -f concat -i "<tempfile.5.log>" -reset_timestamps 1 -c copy "{no_audio_file}"',
         ['ffmpeg'], False, exe='ffmpeg')
 
     audio = audio_builder(audio_tracks, audio_file_index=0)
 
-    audio_file = Path(build_dir, 'audio.mkv')
+    audio_file = 'tempfile.7.mkv'
     command_audio = Command((f'"{{ffmpeg}}" -y '
                              f'-i "{source}" '
                              f'{f"-ss {start_time}" if start_time else ""} '
                              f'{f"-t {duration - start_time}" if duration else ""} '
                              f'{audio} "{audio_file}"'
-                             ), ['ffmpeg'], False, exe='ffmpeg')
+                             ), ['ffmpeg'], False, exe='ffmpeg',
+                            name='Split audio at proper time offsets into new file')
 
     command_3 = Command((f'"{{ffmpeg}}" -y '
                          f'-i "{no_audio_file}" -i "{audio_file}" '
@@ -135,8 +133,7 @@ def build(source, video_track, streams, work_dir, start_time, duration, mode=7, 
                          # -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
                          f'"{{output}}"'),
                         ['ffmpeg', 'output'],
-                        False, exe='ffmpeg')
+                        False, exe='ffmpeg',
+                        name='Combine audio and video files into MKV container')
 
-    cleanup_command = Command(f'if exist "{build_dir}" rd /s /q "{build_dir}"', [], False)
-
-    return cleanup_command, command_1, main_loop, command_2, command_audio, command_3, cleanup_command
+    return command_1, main_loop, command_2, command_audio, command_3

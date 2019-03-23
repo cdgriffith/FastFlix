@@ -31,7 +31,7 @@ class AV1(QtWidgets.QWidget):
 
         grid = QtWidgets.QGridLayout()
 
-        grid.addWidget(QtWidgets.QLabel("FFMPEG libaom-av1"), 0, 0)
+        # grid.addWidget(QtWidgets.QLabel("FFMPEG libaom-av1"), 0, 0)
 
         self.widgets = Box(
             fps=None,
@@ -40,7 +40,7 @@ class AV1(QtWidgets.QWidget):
 
         self.mode = 'CRF'
 
-        grid.addLayout(self.init_remove_hdr(), 1, 0, 1, 2)
+        grid.addLayout(self.init_remove_hdr(), 0, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
 
         grid.addWidget(QtWidgets.QWidget(), 5, 0, 5, 2)

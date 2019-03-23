@@ -6,6 +6,28 @@ from flix.shared import QtWidgets
 
 logger = logging.getLogger('flix')
 
+recommended_bitrates = [
+    "150000   (320x240p @ 24,25,30)",
+    "276000   (640x360p @ 24,25,30)",
+    "512000   (640x480p @ 24,25,30)",
+    "1024000  (1280x720p @ 24,25,30)",
+    "1800000 (1280x720p @ 50,60)",
+    "1800000 (1920x1080p @ 24,25,30)",
+    "3000000 (1920x1080p @ 50,60)",
+    "6000000 (2560x1440p @ 24,25,30)",
+    "9000000 (2560x1440p @ 50,60)",
+    "12000000 (3840x2160p @ 24,25,30)",
+    "18000000 (3840x2160p @ 50,60)",
+    "Custom"
+]
+
+recommended_qp = [
+    "24 - recommended",
+    "30 - standard",
+    '50 - "I\'m just testing to see if this works"',
+    "Custom"
+]
+
 
 class AV1(QtWidgets.QWidget):
 
@@ -14,7 +36,6 @@ class AV1(QtWidgets.QWidget):
         self.main = main
         grid = QtWidgets.QGridLayout()
 
-        grid.addWidget(QtWidgets.QLabel("AV1"), 0, 0)
 
         self.widgets = Box(
             fps=None,
@@ -24,7 +45,8 @@ class AV1(QtWidgets.QWidget):
         self.mode = 'QP'
 
         grid.addLayout(self.init_remove_hdr(), 1, 0, 1, 2)
-        grid.addLayout(self.init_modes(), 0, 2, 4, 4)
+        grid.addLayout(self.init_speed(), 0, 0, 1, 2)
+        grid.addLayout(self.init_modes(), 0, 2, 2, 4)
 
         grid.addWidget(QtWidgets.QWidget(), 5, 0, 5, 2)
         self.setLayout(grid)
@@ -51,55 +73,85 @@ class AV1(QtWidgets.QWidget):
         layout.addWidget(self.widgets.remove_hdr)
         return layout
 
+    def init_speed(self):
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(QtWidgets.QLabel('Speed'))
+        self.widgets.speed = QtWidgets.QComboBox()
+        self.widgets.speed.addItems([str(x) for x in range(9)])
+        self.widgets.speed.setCurrentIndex(7)
+        self.widgets.speed.currentIndexChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.speed)
+        return layout
+
     def init_modes(self):
         layout = QtWidgets.QGridLayout()
         qp_group_box = QtWidgets.QGroupBox()
         qp_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
         qp_box_layout = QtWidgets.QHBoxLayout()
-        bitrate_group_box = QtWidgets.QGroupBox()
-        bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        bitrate_box_layout = QtWidgets.QHBoxLayout()
+
         # rotation_dir = Path(base_path, 'data', 'rotations')
         # group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-15px; padding-bottom:-5px}")
         self.widgets.mode = QtWidgets.QButtonGroup()
         self.widgets.mode.buttonClicked.connect(self.set_mode)
 
-        bitrate_radio = QtWidgets.QRadioButton("Bitrate")
-        self.widgets.mode.addButton(bitrate_radio)
-        self.widgets.bitrate = QtWidgets.QComboBox()
-        self.widgets.bitrate.addItems(['30'])
-        self.widgets.bitrate.currentIndexChanged.connect(lambda: self.main.build_commands())
+        # bitrate_group_box = QtWidgets.QGroupBox()
+        # bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
+        # bitrate_box_layout = QtWidgets.QHBoxLayout()
+        # bitrate_radio = QtWidgets.QRadioButton("Bitrate")
+        # bitrate_radio.setFixedWidth(80)
+        # self.widgets.mode.addButton(bitrate_radio)
+        # self.widgets.bitrate = QtWidgets.QComboBox()
+        # self.widgets.bitrate.setFixedWidth(250)
+        # self.widgets.bitrate.addItems(recommended_bitrates)
+        # self.widgets.bitrate.currentIndexChanged.connect(lambda: self.main.build_commands())
         # self.widgets.bitrate.setCurrentIndex(6)
-        bitrate_box_layout.addWidget(bitrate_radio)
-        bitrate_box_layout.addWidget(self.widgets.bitrate)
+        # self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
+        # self.widgets.custom_bitrate.setFixedWidth(100)
+        # bitrate_box_layout.addWidget(bitrate_radio)
+        # bitrate_box_layout.addWidget(self.widgets.bitrate)
+        # bitrate_box_layout.addStretch()
+        # bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
+        # bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
 
         qp_radio = QtWidgets.QRadioButton("QP")
         qp_radio.setChecked(True)
+        qp_radio.setFixedWidth(80)
         self.widgets.mode.addButton(qp_radio)
 
         self.widgets.qp = QtWidgets.QComboBox()
-        self.widgets.qp.addItems(['30'])
+        self.widgets.qp.setFixedWidth(250)
+        self.widgets.qp.addItems(recommended_qp)
         self.widgets.qp.setCurrentIndex(0)
         self.widgets.qp.currentIndexChanged.connect(lambda: self.main.build_commands())
-
+        self.widgets.custom_qp = QtWidgets.QLineEdit("30")
+        self.widgets.custom_qp.setFixedWidth(100)
         qp_box_layout.addWidget(qp_radio)
         qp_box_layout.addWidget(self.widgets.qp)
+        qp_box_layout.addStretch()
+        qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
+        qp_box_layout.addWidget(self.widgets.custom_qp)
 
-        bitrate_group_box.setLayout(bitrate_box_layout)
+        # bitrate_group_box.setLayout(bitrate_box_layout)
+        qp_group_box.setLayout(qp_box_layout)
+
+        # bitrate_group_box.setLayout(bitrate_box_layout)
         qp_group_box.setLayout(qp_box_layout)
 
         layout.addWidget(qp_group_box, 0, 0)
-        layout.addWidget(bitrate_group_box, 1, 0)
+        # layout.addWidget(bitrate_group_box, 1, 0)
         return layout
 
     def get_settings(self):
         settings = Box(
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+            speed=self.widgets.speed.currentText()
         )
-        if self.mode == "CRF":
-            settings.qp = int(self.widgets.qp.currentText().split(" ", 1)[0])
+        if self.mode == "QP":
+            qp = self.widgets.qp.currentText()
+            settings.qp = int(qp.split(" ", 1)[0]) if qp.lower() != 'custom' else self.widgets.custom_qp.text()
         else:
-            settings.bitrate = self.widgets.bitrate.currentText().split(" ", 1)[0]
+            bitrate = self.widgets.bitrate.currentText()
+            settings.bitrate = bitrate.split(" ", 1)[0] if bitrate.lower() != 'custom' else self.widgets.bitrate.text()
         logger.info(settings)
         return settings
 

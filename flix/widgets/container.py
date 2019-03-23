@@ -16,7 +16,7 @@ class Container(QtWidgets.QMainWindow):
         self.logs = Logs()
         self.about = None
         self.init_menu()
-        main = Main(self, data_path)
+        main = Main(self, data_path, **kwargs)
         self.setCentralWidget(main)
         self.setMinimumSize(1200, 600)
         self.setWindowIcon(QtGui.QIcon(str(Path("data", "icon.ico"))))

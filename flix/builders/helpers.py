@@ -2,11 +2,13 @@ class Loop:
 
     item = "loop"
 
-    def __init__(self, condition, commands, name="", ensure_paths=()):
+    def __init__(self, condition, commands, dirs=(), files=(), name="", ensure_paths=()):
         self.name = name
         self.condition = condition
         self.commands = commands
         self.ensure_paths = ensure_paths
+        self.dirs = dirs
+        self.files = files
 
 
 class Command:

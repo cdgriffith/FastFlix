@@ -2,28 +2,15 @@
 
 # FastFlix
 
-FastFlix is a GIF converter as well as current and next-gen video encoder. 
+FastFlix is a AV1 encoder, GIF maker, and general command wrapper. 
 
-It can encode videos into AV1, GIF, and can be extended to use x265 with a GPL build of ffmpeg. 
+It can encode videos into AV1, GIF, and VP9. 
 
 Read more about it and the licensing in the [docs](docs/README.md)
 
 # Releases 
 
 View the [releases](https://github.com/cdgriffith/FastFlix/releases) for 64 bit Windows binaries (Generated via Appveyor and also [available there](https://ci.appveyor.com/project/cdgriffith/fastflix)). 
-
-## Running the code locally
-
-Requires Python 3.6 or greater. 
-
-Download and extract the [latest zip](https://github.com/cdgriffith/FastFlix/archive/master.zip). Then run the following.
-
-```
-pip install requirements.txt
-python -m flix
-```
-
-You will need [ffmpeg](https://www.ffmpeg.org/download.html) and [SVT AV1](https://github.com/OpenVisualCloud/SVT-AV1) executables.
 
 # License
 

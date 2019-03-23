@@ -21,20 +21,22 @@ def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=No
                  f'-map 0:{video_track} '
                  f'-c:v libvpx-vp9 '
                  f'{f"-vf {filters}" if filters else ""} '
-                 f'-passlogfile "<tempfile.1.log>" '
                  f'{"-pix_fmt yuv420p" if force420 else ""} '
-                 f'{"-row-mt 1" if row_mt else ""}')
+                 f'{"-row-mt 1" if row_mt else ""} ')
 
+    if not single_pass:
+        beginning += '-passlogfile "<tempfile.1.log>" '
 
     beginning = re.sub('[ ]+', ' ', beginning)
 
     if bitrate:
-        command_1 = f'{beginning} -b:v {bitrate} -quality {quality} -pass 1 -an -f webm {ending}'
+        command_1 = f'{beginning} -b:v {bitrate} -quality good -pass 1 -an -f webm {ending}'
         command_2 = f'{beginning} -b:v {bitrate}  -quality {quality} -speed {speed} -pass 2 {audio} "{{output}}"'
 
     elif crf:
-        command_1 = f'{beginning} -b:v 0 -crf {crf} -quality {quality} -pass 1 -an -f webm {ending}'
-        command_2 = f'{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} -pass 2 {audio} "{{output}}"'
+        command_1 = f'{beginning} -b:v 0 -crf {crf} -quality good -pass 1 -an -f webm {ending}'
+        command_2 = (f'{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} '
+                     f'{"-pass 2" if not single_pass else ""} {audio} "{{output}}"')
 
     else:
         return []

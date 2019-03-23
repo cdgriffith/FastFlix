@@ -11,7 +11,7 @@ class GIF(QtWidgets.QWidget):
 
         grid = QtWidgets.QGridLayout()
 
-        grid.addWidget(QtWidgets.QLabel("GIF"), 0, 0)
+        # grid.addWidget(QtWidgets.QLabel("GIF"), 0, 0)
 
         self.widgets = Box(
             fps=None,
@@ -20,7 +20,7 @@ class GIF(QtWidgets.QWidget):
 
         grid.addLayout(self.init_fps(), 1, 0)
         grid.addLayout(self.init_remove_hdr(), 2, 0)
-        grid.addLayout(self.init_dither(), 3, 0)
+        grid.addLayout(self.init_dither(), 0, 0)
 
         grid.addWidget(QtWidgets.QWidget(), 5, 0, 5, 2)
         self.setLayout(grid)

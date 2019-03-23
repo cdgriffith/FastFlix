@@ -10,7 +10,7 @@ class Loop(QtWidgets.QGroupBox):
     def __init__(self, parent, condition, commands, number, name=""):
         super(Loop, self).__init__(parent)
         layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Loop" if not name else name))
+        layout.addWidget(QtWidgets.QLabel(f"Loop: {name}"))
         self.condition = condition
         self.number = number
         self.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
@@ -27,6 +27,7 @@ class Command(QtWidgets.QTabWidget):
         super(Command, self).__init__(parent)
         self.command = command
         self.widget = QtWidgets.QLineEdit()
+        self.widget.setReadOnly(True)
         self.widget.setText(command)
         self.widget.setDisabled(not enabled)
         self.setFixedHeight(60)
@@ -55,6 +56,8 @@ class CommandList(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def update_commands(self, commands):
+        if not commands:
+            return
         self.inner_widget = QtWidgets.QWidget()
         sp = QtWidgets.QSizePolicy()
         sp.setHorizontalPolicy(QtWidgets.QSizePolicy.Policy.Maximum)

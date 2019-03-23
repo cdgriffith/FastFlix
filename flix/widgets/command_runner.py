@@ -6,10 +6,11 @@ import tempfile
 from pathlib import Path
 from uuid import uuid4
 from subprocess import Popen, PIPE, run, STDOUT
+import sys
 
 import reusables
 
-from flix.shared import QtCore
+from flix.shared import QtCore, QtWidgets, QtGui
 
 logger = logging.getLogger('flix')
 
@@ -21,7 +22,7 @@ white_detect = re.compile(r'^\s+')
 class Worker(QtCore.QThread):
     def __init__(self, parent, command_list, work_dir):
         super(Worker, self).__init__(parent)
-        self.tempdir = tempfile.TemporaryDirectory(prefix="Temp", dir=work_dir)
+        self.tempdir = tempfile.TemporaryDirectory(prefix="temp_", dir=work_dir)
         # self.logger = logging.getLogger(f'command_logger')
         # TODO setup file logger for command output self.logger
         # TODO calculate time based off frames
@@ -40,8 +41,21 @@ class Worker(QtCore.QThread):
             if num not in self.temp_files:
                 self.temp_files[num] = Path(self.tempdir.name, f'{uuid4().hex}.{ext}')
             command = command.replace(f'<tempfile.{num}.{ext}>', str(self.temp_files[num]))
-        # TODO temp dirs
+        for num in set(self.re_tempdir.findall(command)):
+            if num not in self.temp_dirs:
+                self.temp_dirs[num] = Path(tempfile.mkdtemp(prefix=f"{num}_", dir=self.tempdir.name))
+            command = command.replace(f'<tempdir.{num}>', str(self.temp_dirs[num]))
+        print(self.temp_files)
+        print(self.temp_dirs)
         return command
+
+    def loop_creates(self, dirs, files):
+        for num, ext in files:
+            if num not in self.temp_files:
+                self.temp_files[num] = Path(self.tempdir.name, f'{uuid4().hex}.{ext}')
+        for num in dirs:
+            if num not in self.temp_dirs:
+                self.temp_dirs[num] = Path(tempfile.mkdtemp(prefix=f"{num}_", dir=self.tempdir.name))
 
     @staticmethod
     def replace_loop_args(command, index, items):
@@ -75,7 +89,7 @@ class Worker(QtCore.QThread):
         #         lineAfterCarriage += char
         #         if char in ('\r', '\n' ):
 
-        self.process.wait()
+        # self.process.wait()
         # for line in self.process.stdout:
         #     logger.debug(f"command - {line}")
             # next_line = self.process.stdout.readline().decode('utf-8')
@@ -87,6 +101,7 @@ class Worker(QtCore.QThread):
         return_code = self.process.poll()
         if self.killed:
             return self.app.cancelled.emit()
+        self.process = None
         return return_code
         # else:
         #     try:
@@ -108,14 +123,14 @@ class Worker(QtCore.QThread):
                     if code and not self.killed:
                         return self.app.completed.emit(str(code))
                 elif command.item == "loop":
-                    for index, res in enumerate(command.condition()):
+                    self.loop_creates(command.dirs, command.files)
+                    for index, res in enumerate(command.condition(self.temp_files, self.temp_dirs)):
                         for item in command.commands:
                             cmd = self.replace_loop_args(item.command, index, res)
                             code = self.run_command(cmd, item.exe)
                             if code and not self.killed:
                                 return self.app.completed.emit(str(code))
-        except Exception as err:
-            print(err)
+        except:
             logger.exception("Could not run commands!")
             self.tempdir.cleanup()
             if not self.killed:
@@ -126,7 +141,8 @@ class Worker(QtCore.QThread):
                 self.app.completed.emit(0)
 
     def start_exec(self, command):
-        return Popen(command, shell=True, cwd=self.tempdir.name, stdin=PIPE, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+        return Popen(command, shell=True, cwd=self.tempdir.name, stdin=PIPE, stdout=PIPE, stderr=STDOUT,
+                     universal_newlines=True)
 
     def is_alive(self):
         if not self.process:
@@ -143,4 +159,10 @@ class Worker(QtCore.QThread):
             return self.process.terminate()
 
     def __del__(self):
+        print("Killing")
         self.kill()
+
+    def exit(self, *args, **kwargs):
+        print(args)
+        print(kwargs)
+        super(self, Worker).exit(*args, **kwargs)

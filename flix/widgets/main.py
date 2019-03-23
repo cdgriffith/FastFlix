@@ -40,7 +40,7 @@ class Main(QtWidgets.QWidget):
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
 
-    def __init__(self, parent, data_path):
+    def __init__(self, parent, data_path, ffmpeg, ffprobe, svt_av1, **kwargs):
         super().__init__(parent)
         self.container = parent
         self.initialized = False
@@ -52,6 +52,9 @@ class Main(QtWidgets.QWidget):
 
         self.plugins = load_plugins(Path(root, os.pardir, 'plugins'))
 
+        self.ffmpeg = ffmpeg
+        self.ffprobe = ffprobe
+        self.svt_av1 = svt_av1
 
 
         self.input_defaults = Box(
@@ -89,9 +92,6 @@ class Main(QtWidgets.QWidget):
             scale=Box(width=None, height=None, keep_aspect_ratio=None)
         )
 
-        self.ffmpeg = 'ffmpeg'
-        self.ffprobe = 'ffprobe'
-        self.svt_av1 = 'C:\\Users\\teckc\\Downloads\\svt-av1-1.0.314\\SvtAv1EncApp.exe'
         self.thumb_file = Path(self.path.data, 'thumbnail_preview.png')
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
         self.video_options = VideoOptions(self, available_audio_encoders=self.flix.get_audio_encoders())
@@ -740,6 +740,7 @@ class Main(QtWidgets.QWidget):
     def conversion_complete(self, return_code):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
+        self.widgets.convert_button.setText("Convert")
 
         if return_code or not Path(self.output_video).exists():
             error_message("Could not encode video due to an error, please view the logs for more details!")
@@ -756,6 +757,7 @@ class Main(QtWidgets.QWidget):
     def conversion_cancelled(self):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
+        self.widgets.convert_button.setText("Convert")
         try:
             os.remove(self.output_video)
         except OSError:

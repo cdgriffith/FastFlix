@@ -157,7 +157,7 @@ class VP9(QtWidgets.QWidget):
         bitrate_box_layout.addWidget(bitrate_radio)
         bitrate_box_layout.addWidget(self.widgets.bitrate)
         bitrate_box_layout.addStretch()
-        bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom (in kbps):"))
+        bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
         bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
 
         crf_radio = QtWidgets.QRadioButton("CRF")
