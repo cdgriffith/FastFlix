@@ -6,8 +6,8 @@ from pathlib import Path
 import logging
 
 
-from flix.builders.helpers import (generate_filters, Command)
-from flix.builders.audio import build as audio_builder
+from flix.plugins.common.helpers import (generate_filters, Command)
+from flix.plugins.common.audio import build as audio_builder
 
 logger = logging.getLogger('flix')
 

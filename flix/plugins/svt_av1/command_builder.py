@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 
 import reusables
-from box import Box
 
 from pathlib import Path
 import logging
 import os
 
-from flix.builders.helpers import (generate_filters, Loop, Command)
-from flix.builders.audio import build as audio_builder
+from plugins.common.helpers import (generate_filters, Loop, Command)
+from plugins.common.audio import build_audio
 
 logger = logging.getLogger('flix')
 
@@ -20,8 +19,21 @@ class FlixError(Exception):
 extension = "mkv"
 
 
+def build_audio(audio_tracks, audio_file_index=0):
+    command_list = []
+    for track in audio_tracks:
+        command_list.append(f'-map {audio_file_index}:{track.index}')
+        if track.conversion.codec == 'none':
+            command_list.append(f'-c:a:{track.index} copy')
+        elif 'conversion' in track:
+            command_list.append(f'-c:a:{track.index} {track.conversion.codec} '
+                                f'-b:a:{track.index} {track.conversion.bitrate} ')
+
+    return " ".join(command_list)
+
+
 @reusables.log_exception('flix', show_traceback=True)
-def build(source, video_track, streams, work_dir, start_time, duration, speed=7, segment_size=60,
+def build(source, video_track, streams, start_time, duration, speed=7, segment_size=60,
           qp=25, bitrate=None, audio_tracks=(), **kwargs):
     file = Path(source)
 
@@ -40,7 +52,6 @@ def build(source, video_track, streams, work_dir, start_time, duration, speed=7,
         width = int(streams.video[0].width)
         if crop:
             crop_check = crop.split(":")
-            print(crop_check)
             try:
                 assert crop_check[0] % 8 == 0
                 assert crop_check[1] % 8 == 0
@@ -68,8 +79,6 @@ def build(source, video_track, streams, work_dir, start_time, duration, speed=7,
                         exe='ffmpeg')
 
     def func(tempfiles, tempdirs):
-        print(tempfiles)
-        print(tempdirs)
         return sorted([(int(x.stem), x, Path(tempdirs['3'], f"{x.stem}.yuv")) for x in Path(tempdirs['1']).iterdir()],
                       key=lambda x: x[0])
 
@@ -115,7 +124,7 @@ def build(source, video_track, streams, work_dir, start_time, duration, speed=7,
         f'"{{ffmpeg}}" -y -safe 0 -f concat -i "<tempfile.5.log>" -reset_timestamps 1 -c copy "{no_audio_file}"',
         ['ffmpeg'], False, exe='ffmpeg')
 
-    audio = audio_builder(audio_tracks, audio_file_index=0)
+    audio = build_audio(audio_tracks, audio_file_index=0)
 
     audio_file = 'tempfile.7.mkv'
     command_audio = Command((f'"{{ffmpeg}}" -y '

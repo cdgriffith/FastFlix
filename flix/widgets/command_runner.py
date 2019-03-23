@@ -45,8 +45,6 @@ class Worker(QtCore.QThread):
             if num not in self.temp_dirs:
                 self.temp_dirs[num] = Path(tempfile.mkdtemp(prefix=f"{num}_", dir=self.tempdir.name))
             command = command.replace(f'<tempdir.{num}>', str(self.temp_dirs[num]))
-        print(self.temp_files)
-        print(self.temp_dirs)
         return command
 
     def loop_creates(self, dirs, files):
@@ -159,10 +157,4 @@ class Worker(QtCore.QThread):
             return self.process.terminate()
 
     def __del__(self):
-        print("Killing")
         self.kill()
-
-    def exit(self, *args, **kwargs):
-        print(args)
-        print(kwargs)
-        super(self, Worker).exit(*args, **kwargs)

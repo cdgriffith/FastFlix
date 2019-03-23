@@ -1,6 +1,6 @@
 from box import Box
 
-from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
+from flix.shared import QtWidgets
 
 
 class GIF(QtWidgets.QWidget):

@@ -1,4 +1,4 @@
-from flix.builders.helpers import generate_filters, Command, start_and_input
+from plugins.common.helpers import generate_filters, Command, start_and_input
 
 extension = "gif"
 

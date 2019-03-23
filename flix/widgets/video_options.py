@@ -40,7 +40,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.insertTab(0, self.current_settings, "Quality")
         self.setCurrentIndex(0)
         self.setTabEnabled(1, getattr(self.current_plugin, 'enable_audio', True))
-        self.setTabEnabled(2, getattr(self.current_plugin, 'enable_subtitles', True))
+        # self.setTabEnabled(2, getattr(self.current_plugin, 'enable_subtitles', True))
         self.selected = conversion
         self.audio.allowed_formats(self.current_plugin.audio_formats)
         self.current_settings.new_source()

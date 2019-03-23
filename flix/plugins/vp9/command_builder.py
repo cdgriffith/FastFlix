@@ -1,8 +1,20 @@
 import reusables
 import re
 
-from flix.builders.helpers import generate_filters, Command
-from flix.builders.audio import build as build_audio
+from plugins.common.helpers import generate_filters, Command
+from plugins.common.audio import build_audio
+
+def build_audio(audio_tracks, audio_file_index=0):
+    command_list = []
+    for track in audio_tracks:
+        command_list.append(f'-map {audio_file_index}:{track.index}')
+        if track.conversion.codec == 'none':
+            command_list.append(f'-c:a:{track.index} copy')
+        elif 'conversion' in track:
+            command_list.append(f'-c:a:{track.index} {track.conversion.codec} '
+                                f'-b:a:{track.index} {track.conversion.bitrate} ')
+
+    return " ".join(command_list)
 
 
 def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=None, single_pass=False,

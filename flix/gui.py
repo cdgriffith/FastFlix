@@ -73,8 +73,8 @@ def first_time_setup(ffmpeg_folder, svt_av1_folder, data_path):
     commands = [
         subprocess.run(f'{Path(base_path, "extra", "7za.exe")} e {Path(base_path, "extra", "ffmpeg_lgpl.7z")} -o"{ffmpeg_folder}" -y',
                        stdout=subprocess.PIPE, shell=True),
-        # subprocess.run(f'{Path(base_path, "extra", "7za.exe")} x {Path(base_path, "extra", "plugins.7z")} -o"{data_path}" -y',
-        #                stdout=subprocess.PIPE, shell=True),
+        subprocess.run(f'{Path(base_path, "extra", "7za.exe")} x {Path(base_path, "extra", "plugins.7z")} -o"{data_path}" -y',
+                       stdout=subprocess.PIPE, shell=True),
         subprocess.run(f'{Path(base_path, "extra", "7za.exe")} e {[x for x in Path(base_path, "extra").iterdir() if svt_re.match(str(x.name))][0]} -o"{svt_av1_folder}" -y',
                        stdout=subprocess.PIPE, shell=True)
     ]

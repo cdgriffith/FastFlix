@@ -1,24 +1,20 @@
 #!/usr/bin/env python
 import os
+import sys
 from pathlib import Path
 import time
 from datetime import timedelta
 import logging
-from tempfile import TemporaryDirectory
 import importlib.machinery
 
 import reusables
 from box import Box
-from appdirs import user_data_dir
-
 from flix.flix import Flix
 from flix.shared import QtGui, QtCore, Qt, QtWidgets, error_message, base_path
 from flix.widgets.video_options import VideoOptions
 from flix.widgets.worker import Worker
 from flix.widgets.command_runner import Worker as CW
-from flix.builders import helpers
-from flix.version import __version__
-
+from flix.plugins.common import helpers
 
 logger = logging.getLogger('flix')
 
@@ -26,12 +22,12 @@ root = os.path.abspath(os.path.dirname(__file__))
 
 
 def load_plugins(plugin_dir):
+    sys.path.insert(0, str(Path(plugin_dir, os.pardir)))
     plugins = Box()
     for item in plugin_dir.iterdir():
-        if item.is_dir():
+        if item.is_dir() and not item.name.startswith("_") and item.name != 'common':
             plugin = importlib.machinery.SourceFileLoader(f'plugin_{item.name}', str(Path(item, 'main.py'))).load_module()
             plugins[plugin.name] = plugin
-    print(plugins)
     return plugins
 
 
@@ -47,15 +43,14 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         self.scale_updating = False
         self.path = Box(
-            data=data_path, # Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
+            data=data_path,  # Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
         )
 
-        self.plugins = load_plugins(Path(root, os.pardir, 'plugins'))
+        self.plugins = load_plugins(Path(data_path, 'plugins'))
 
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
         self.svt_av1 = svt_av1
-
 
         self.input_defaults = Box(
             scale=None,

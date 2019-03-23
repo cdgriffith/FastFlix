@@ -28,10 +28,6 @@ def start_and_input(source, **kwargs):
     start_time = kwargs.get('start_time', 0)
     duration = kwargs.get('duration')
 
-    #f'{{ffmpeg}} {f"-ss {start_time}" if start_time else ""} '
-                 # f'{f"-t {duration}" if duration else ""} '
-                 # f'-i "{source}" -i "<tempfile.1.png>" -map 0:{video_track} '
-
     return (f'"{{ffmpeg}}" -i "{source}" -y {f"-ss {start_time}" if start_time else ""} '
                  f'{f"-t {duration - start_time}" if duration else ""} ')
 

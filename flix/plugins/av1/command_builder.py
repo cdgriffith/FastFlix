@@ -1,8 +1,9 @@
 import reusables
 import re
 
-from flix.builders.helpers import generate_filters, Command
-from flix.builders.audio import build as build_audio
+from plugins.common.helpers import generate_filters, Command
+from plugins.common.audio import build_audio
+
 
 
 def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=None,  audio_tracks=(), **kwargs):
