@@ -4,18 +4,6 @@ import re
 from plugins.common.helpers import generate_filters, Command
 from plugins.common.audio import build_audio
 
-def build_audio(audio_tracks, audio_file_index=0):
-    command_list = []
-    for track in audio_tracks:
-        command_list.append(f'-map {audio_file_index}:{track.index}')
-        if track.conversion.codec == 'none':
-            command_list.append(f'-c:a:{track.index} copy')
-        elif 'conversion' in track:
-            command_list.append(f'-c:a:{track.index} {track.conversion.codec} '
-                                f'-b:a:{track.index} {track.conversion.bitrate} ')
-
-    return " ".join(command_list)
-
 
 def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=None, single_pass=False,
           quality='good', audio_tracks=(), speed=1, row_mt=0, force420=True, **kwargs):
@@ -27,9 +15,9 @@ def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=No
         ending = "NUL"
 
     beginning = (f'"{{ffmpeg}}" -y '
+                 f'-i "{source}" '
                  f' {f"-ss {start_time}" if start_time else ""}  '
                  f'{f"-t {duration}" if duration else ""} '
-                 f'-i "{source}" '
                  f'-map 0:{video_track} '
                  f'-c:v libvpx-vp9 '
                  f'{f"-vf {filters}" if filters else ""} '

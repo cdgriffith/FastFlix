@@ -7,13 +7,14 @@ from flix.shared import QtGui, QtCore, QtWidgets
 
 class Audio(QtWidgets.QTabWidget):
 
-    def __init__(self, parent, audio, index, codec, available_audio_encoders,
+    def __init__(self, parent, audio, index, codec, available_audio_encoders, outdex=None,
                  enabled=True, original=False, first=False, last=False, codecs=(), channels=2):
         super(Audio, self).__init__(parent)
         self.parent = parent
         self.audio = audio
         self.setFixedHeight(60)
         self.original = original
+        self.outdex = index if self.original else outdex
         self.first = first
         self.last = last
         self.index = index
@@ -23,21 +24,38 @@ class Audio(QtWidgets.QTabWidget):
         self.available_audio_encoders = available_audio_encoders
 
         self.widgets = Box(
+            track_number=QtWidgets.QLabel(f'{index}:{self.outdex}' if enabled else '❌'),
             audio_info=QtWidgets.QLineEdit(audio),
             up_button=QtWidgets.QPushButton("^"),
             down_button=QtWidgets.QPushButton("v"),
             enable_check=QtWidgets.QCheckBox("Enabled"),
+            dup_button=QtWidgets.QPushButton("➕"),
+            delete_button=QtWidgets.QPushButton("⛔"),
             convert_to=None,
             convert_bitrate=None,
         )
 
         self.widgets.enable_check.setChecked(enabled)
+        self.widgets.enable_check.toggled.connect(lambda: self.parent.reorder())
+
+        self.widgets.dup_button.clicked.connect(lambda: self.dup_me())
+        self.widgets.dup_button.setFixedWidth(20)
+        self.widgets.delete_button.clicked.connect(lambda: self.del_me())
+        self.widgets.delete_button.setFixedWidth(20)
+
+        self.widgets.track_number.setFixedWidth(20)
 
         grid = QtWidgets.QGridLayout()
         grid.addLayout(self.init_move_buttons(), 0, 0)
-        grid.addWidget(self.widgets.audio_info, 0, 1)
-        grid.addLayout(self.init_conversion(), 0, 2)
-        grid.addWidget(self.widgets.enable_check, 0, 3)
+        grid.addWidget(self.widgets.track_number, 0, 1)
+        grid.addWidget(self.widgets.audio_info, 0, 2)
+        grid.addLayout(self.init_conversion(), 0, 3)
+
+        if not original:
+            grid.addWidget(self.widgets.delete_button, 0, 4)
+        else:
+            grid.addWidget(self.widgets.dup_button, 0, 5)
+            grid.addWidget(self.widgets.enable_check, 0, 4)
         self.setLayout(grid)
 
     def init_move_buttons(self):
@@ -109,6 +127,27 @@ class Audio(QtWidgets.QTabWidget):
         self.last = last
         self.widgets.down_button.setDisabled(self.last)
 
+    def dup_me(self):
+        new = Audio(parent=self.parent, audio=self.audio, index=self.index,
+                    outdex=len(self.parent.tracks) + 1, codec=self.codec,
+                    available_audio_encoders=self.parent.available_audio_encoders,
+                    enabled=True, original=False, codecs=self.codecs, channels=self.channels
+                    )
+
+        self.parent.tracks.append(new)
+        self.parent.reorder()
+
+    def del_me(self):
+        self.parent.remove_track(self)
+
+    def set_outdex(self, outdex):
+        self.outdex = outdex
+        if not self.enabled:
+            self.widgets.track_number.setText('❌')
+        else:
+            self.widgets.track_number.setText(f'{self.index}:{self.outdex}')
+
+
 
 class AudioList(QtWidgets.QWidget):
 
@@ -151,7 +190,7 @@ class AudioList(QtWidgets.QWidget):
         layout.setSpacing(5)
 
         for i, x in enumerate(self.main.streams.audio, 1):
-            track_info = f"{i}: "
+            track_info = ""
             tags = x.get("tags")
             if tags:
                 track_info += tags.get('title', '')
@@ -172,6 +211,8 @@ class AudioList(QtWidgets.QWidget):
             self.tracks[-1].set_last()
 
         layout.addStretch()
+        # layout.
+
         self.inner_layout = layout
         self.inner_widget.setLayout(layout)
         self.init_inner()
@@ -185,12 +226,20 @@ class AudioList(QtWidgets.QWidget):
     def reorder(self):
         for widget in self.tracks:
             self.inner_layout.removeWidget(widget)
-        for widget in self.tracks:
+        self.inner_layout.takeAt(0)
+        disabled = 0
+        for index, widget in enumerate(self.tracks, 1):
             self.inner_layout.addWidget(widget)
+            if not widget.enabled:
+                disabled += 1
+            widget.set_outdex(index - disabled)
             widget.set_first(False)
             widget.set_last(False)
         self.tracks[0].set_first(True)
         self.tracks[-1].set_last(True)
+        self.inner_layout.addStretch()
+        self.inner_widget.setFixedHeight(len(self.tracks) * 70)
+        self.inner_widget.setLayout(self.inner_layout)
 
     def move_up(self, audio_widget):
         index = self.tracks.index(audio_widget)
@@ -206,5 +255,12 @@ class AudioList(QtWidgets.QWidget):
         tracks = []
         for track in self.tracks:
             if track.enabled:
-                tracks.append({'index': track.index, 'conversion': track.conversion, 'codec': track.codec})
+                tracks.append({'index': track.index, 'outdex': track.outdex,
+                               'conversion': track.conversion, 'codec': track.codec})
+        print(tracks)
         return Box(audio_tracks=tracks)
+
+    def remove_track(self, track):
+        self.tracks.pop(self.tracks.index(track))
+        track.close()
+        self.reorder()

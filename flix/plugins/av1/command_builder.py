@@ -5,7 +5,6 @@ from plugins.common.helpers import generate_filters, Command
 from plugins.common.audio import build_audio
 
 
-
 def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=None,  audio_tracks=(), **kwargs):
     filters = generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
