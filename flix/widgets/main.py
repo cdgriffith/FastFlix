@@ -25,9 +25,9 @@ logger = logging.getLogger('flix')
 root = os.path.abspath(os.path.dirname(__file__))
 
 
-def load_plugins(data_path):
+def load_plugins(plugin_dir):
     plugins = Box()
-    for item in Path(data_path, "plugins").iterdir():
+    for item in plugin_dir.iterdir():
         if item.is_dir():
             plugin = importlib.machinery.SourceFileLoader(f'plugin_{item.name}', str(Path(item, 'main.py'))).load_module()
             plugins[plugin.name] = plugin
@@ -50,7 +50,7 @@ class Main(QtWidgets.QWidget):
             data=data_path, # Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
         )
 
-        self.plugins = load_plugins(data_path)
+        self.plugins = load_plugins(Path(root, os.pardir, 'plugins'))
 
 
 
@@ -695,7 +695,7 @@ class Main(QtWidgets.QWidget):
     @property
     def convert_to(self):
         if self.widgets.convert_to:
-            return self.widgets.convert_to.currentText()[:3].lower()
+            return self.widgets.convert_to.currentText()
 
     @reusables.log_exception('flix', show_traceback=False)
     def create_video(self):

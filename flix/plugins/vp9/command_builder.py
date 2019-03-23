@@ -6,7 +6,7 @@ from flix.builders.audio import build as build_audio
 
 
 def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=None, single_pass=False,
-          quality='good', audio_tracks=(), speed=1, **kwargs):
+          quality='good', audio_tracks=(), speed=1, row_mt=0, force420=True, **kwargs):
     filters = generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
 
@@ -21,16 +21,19 @@ def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=No
                  f'-map 0:{video_track} '
                  f'-c:v libvpx-vp9 '
                  f'{f"-vf {filters}" if filters else ""} '
-                 f'-passlogfile "<tempfile.1.log>" ')
+                 f'-passlogfile "<tempfile.1.log>" '
+                 f'{"-pix_fmt yuv420p" if force420 else ""} '
+                 f'{"-row-mt 1" if row_mt else ""}')
+
 
     beginning = re.sub('[ ]+', ' ', beginning)
 
     if bitrate:
-        command_1 = f'{beginning} -b:v {bitrate} -quality good -speed 4 -pass 1 -an -f webm {ending}'
+        command_1 = f'{beginning} -b:v {bitrate} -quality {quality} -pass 1 -an -f webm {ending}'
         command_2 = f'{beginning} -b:v {bitrate}  -quality {quality} -speed {speed} -pass 2 {audio} "{{output}}"'
 
     elif crf:
-        command_1 = f'{beginning} -b:v 0 -crf {crf} -quality good -speed 4 -pass 1 -an -f webm {ending}'
+        command_1 = f'{beginning} -b:v 0 -crf {crf} -quality {quality} -pass 1 -an -f webm {ending}'
         command_2 = f'{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} -pass 2 {audio} "{{output}}"'
 
     else:
