@@ -684,6 +684,7 @@ class Main(QtWidgets.QWidget):
     def page_update(self):
         if not self.initialized or self.loading_video:
             return
+        self.last_page_update = time.time()
         self.build_commands()
         self.generate_thumbnail()
 

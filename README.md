@@ -4,9 +4,20 @@
 
 FastFlix is a AV1 encoder, GIF maker, and general command wrapper. 
 
-It can encode videos into AV1, GIF, and VP9. 
+It can encode videos into AV1, GIF, and VP9, and is easily extendable! 
 
 Read more about it and the licensing in the [docs](docs/README.md)
+
+# Plugins
+
+Included plugins:
+
+* AV1 (SVT-AV1)
+* AV1 (FFMPEG libaom - currently very slow)
+* VP9
+* GIF
+
+The plugins are extracted to `C:\Users\<username>\AppData\Roaming\FastFlix\<version>\pluigins`, and you can build or include your own. 
 
 # Releases 
 

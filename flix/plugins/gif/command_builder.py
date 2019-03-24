@@ -19,5 +19,5 @@ def build(source, video_track, fps=15, dither="sierra2_4a", **kwargs):
     command_2 = (f'{beginning} -i "<tempfile.1.png>" -map 0:{video_track} '
                  f'-lavfi "{gif_filters} [x]; [x][1:v] paletteuse=dither={dither}" -y "{{output}}" ')
 
-    return [Command(command_1, ['ffmpeg', 'pallet_file', 'output'], False),
-            Command(command_2, ['ffmpeg', 'pallet_file', 'output'], False)]
+    return [Command(command_1, ['ffmpeg', 'pallet_file', 'output'], False, name="Pallet generation"),
+            Command(command_2, ['ffmpeg', 'pallet_file', 'output'], False, name="GIF creation")]

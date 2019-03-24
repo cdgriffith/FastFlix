@@ -26,10 +26,10 @@ def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=No
     if bitrate:
         command_1 = f'{beginning} -passlogfile "<tempfile.1.log>" -b:v {bitrate} -pass 1 -an -f matroska {ending}'
         command_2 = f'{beginning} -passlogfile "<tempfile.1.log>" -b:v {bitrate} -pass 2 {audio} "{{output}}"'
-        return [Command(command_1, ['ffmpeg', 'output'], False),
-                Command(command_2, ['ffmpeg', 'output'], False)]
+        return [Command(command_1, ['ffmpeg', 'output'], False, name="First Pass bitrate"),
+                Command(command_2, ['ffmpeg', 'output'], False, name="Second Pass bitrate")]
     elif crf:
         command_1 = f'{beginning} -b:v 0 -crf {crf} {audio} "{{output}}"'
-        return [Command(command_1, ['ffmpeg', 'output'], False)]
+        return [Command(command_1, ['ffmpeg', 'output'], False, name="Single Pass CRF")]
 
 

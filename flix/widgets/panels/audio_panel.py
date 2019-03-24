@@ -21,6 +21,7 @@ class Audio(QtWidgets.QTabWidget):
         self.codec = codec
         self.codecs = codecs
         self.channels = channels
+        self.loading = True
         self.available_audio_encoders = available_audio_encoders
 
         self.widgets = Box(
@@ -36,7 +37,7 @@ class Audio(QtWidgets.QTabWidget):
         )
 
         self.widgets.enable_check.setChecked(enabled)
-        self.widgets.enable_check.toggled.connect(lambda: self.parent.reorder())
+        #self.widgets.enable_check.toggled.connect(lambda: self.parent.reorder())
 
         self.widgets.dup_button.clicked.connect(lambda: self.dup_me())
         self.widgets.dup_button.setFixedWidth(20)
@@ -57,6 +58,7 @@ class Audio(QtWidgets.QTabWidget):
             grid.addWidget(self.widgets.dup_button, 0, 5)
             grid.addWidget(self.widgets.enable_check, 0, 4)
         self.setLayout(grid)
+        self.loading = False
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
@@ -77,6 +79,7 @@ class Audio(QtWidgets.QTabWidget):
     def init_conversion(self):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
+
         self.update_codecs(self.codecs)
 
         self.widgets.convert_bitrate = QtWidgets.QComboBox()
@@ -86,6 +89,8 @@ class Audio(QtWidgets.QTabWidget):
                                                                       32 * int(self.channels))])
         self.widgets.convert_bitrate.setCurrentIndex(3)
 
+        self.widgets.convert_bitrate.currentIndexChanged.connect(lambda: self.page_update())
+        self.widgets.convert_to.currentIndexChanged.connect(lambda: self.page_update())
         layout.addWidget(QtWidgets.QLabel("Conversion: "))
         layout.addWidget(self.widgets.convert_to)
 
@@ -94,7 +99,12 @@ class Audio(QtWidgets.QTabWidget):
 
         return layout
 
+    def page_update(self):
+        if not self.loading:
+            return self.parent.main.page_update()
+
     def update_codecs(self, codec_list):
+        self.loading = True
         current = self.widgets.convert_to.currentText()
         for i in range(self.widgets.convert_to.count()):
             self.widgets.convert_to.removeItem(0)
@@ -109,6 +119,7 @@ class Audio(QtWidgets.QTabWidget):
                 index += 1
             self.widgets.convert_to.setCurrentIndex(index)
         self.widgets.convert_to.setCurrentIndex(0)  # Will either go to 'copy' or first listed
+        self.loading = False
 
     @property
     def enabled(self):
@@ -240,6 +251,7 @@ class AudioList(QtWidgets.QWidget):
         self.inner_layout.addStretch()
         self.inner_widget.setFixedHeight(len(self.tracks) * 70)
         self.inner_widget.setLayout(self.inner_layout)
+        self.main.page_update()
 
     def move_up(self, audio_widget):
         index = self.tracks.index(audio_widget)
@@ -257,7 +269,6 @@ class AudioList(QtWidgets.QWidget):
             if track.enabled:
                 tracks.append({'index': track.index, 'outdex': track.outdex,
                                'conversion': track.conversion, 'codec': track.codec})
-        print(tracks)
         return Box(audio_tracks=tracks)
 
     def remove_track(self, track):

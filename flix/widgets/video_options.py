@@ -44,6 +44,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.selected = conversion
         self.audio.allowed_formats(self.current_plugin.audio_formats)
         self.current_settings.new_source()
+        self.main.page_update()
 
     def get_settings(self):
         settings = Box()

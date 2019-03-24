@@ -42,6 +42,6 @@ def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=No
         return []
 
     if crf and single_pass:
-        return [Command(command_2, ['ffmpeg', 'output'], False)]
-    return [Command(command_1, ['ffmpeg', 'output'], False),
-            Command(command_2, ['ffmpeg', 'output'], False)]
+        return [Command(command_2, ['ffmpeg', 'output'], False, name="Single pass CRF")]
+    return [Command(command_1, ['ffmpeg', 'output'], False, name=f"First pass {'bitrate' if bitrate else 'CRF'}"),
+            Command(command_2, ['ffmpeg', 'output'], False, name=f"Second pass {'bitrate' if bitrate else 'CRF'} ")]

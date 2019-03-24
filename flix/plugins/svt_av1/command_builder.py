@@ -109,7 +109,7 @@ def build(source, video_track, streams, start_time, duration, speed=7, segment_s
     no_audio_file = '<tempfile.6.mkv>'
     command_2 = Command(
         f'"{{ffmpeg}}" -y -safe 0 -f concat -i "<tempfile.5.log>" -reset_timestamps 1 -c copy "{no_audio_file}"',
-        ['ffmpeg'], False, exe='ffmpeg')
+        ['ffmpeg'], False, exe='ffmpeg', name="Add all the IVF files into a single MKV video")
 
     audio = build_audio(audio_tracks, audio_file_index=0)
 
