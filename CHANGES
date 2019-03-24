@@ -1,6 +1,17 @@
 Changelog
 ---------
 
+Version 1.2.0
+~~~~~~~~~~~~~
+
+* Huge GUI redesign and rewrite
+* VP9 support added
+* AV1 (native ffmpeg) support added
+* Changed to a modular plugin model
+* Audio selector page
+* Command list
+
+
 Version 1.1.0
 ~~~~~~~~~~~~~
 
