@@ -69,10 +69,39 @@ class Worker(QtCore.QThread):
         logger.info(f"Running command: {command}")
         self.process = self.start_exec(command)
         if not command_type:
-            for line in self.process.stdout:
-                if self.killed:
+            line_wait = False
+            line = ''
+            while True:
+                char = self.process.stdout.read(1)
+                if char == '' and self.process.poll() != None:
                     break
-                logger.info(line.strip())
+                if char != '':
+                    if char in ('\r', '\n'):
+                        logger.info(line)
+                        line = ''
+                        continue
+                    if ord(char) == 8:
+                        if not line_wait:
+                            logger.info(line)
+                            line = ''
+                        line_wait = True
+                        continue
+                    if line_wait and -ord(char) == 32:
+                        continue
+                    line += char
+                    line_wait = False
+
+
+                    # simple print to console
+                    # sys.stdout.write(char if 32 < ord(char) < 126 else f"[{ord(char)}]")
+                    # sys.stdout.flush()
+                    #lineAfterCarriage += char
+                    #if char in ('\r', '\n'):
+
+            # for line in self.process.stdout:
+            #     if self.killed:
+            #         break
+            #     logger.info(line.strip())
         elif command_type == 'ffmpeg':
             for line in self.process.stdout:
                 if self.killed:
@@ -80,16 +109,7 @@ class Worker(QtCore.QThread):
                 if not white_detect.match(line):
                     logger.info(line.rstrip())
 
-        # while True:
-        #     char = self.process.stdout.read(1)
-        #     if char == '' and child.poll() != None:
-        #         break
-        #     if char != '':
-        #         # simple print to console
-        #         #             sys.stdout.write(char)
-        #         #             sys.stdout.flush()
-        #         lineAfterCarriage += char
-        #         if char in ('\r', '\n' ):
+
 
         # self.process.wait()
         # for line in self.process.stdout:
@@ -162,5 +182,3 @@ class Worker(QtCore.QThread):
                 print(f"Couldn't kill process: {err}")
         self.app.cancelled.emit()
         self.exit()
-
-

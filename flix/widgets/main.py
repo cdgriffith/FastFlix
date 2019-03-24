@@ -151,7 +151,6 @@ class Main(QtWidgets.QWidget):
         layout.addLayout(self.init_output_type(), alignment=Qt.AlignRight)
         layout.addStretch()
         layout.addWidget(convert)
-
         return layout
 
     def init_input_file(self):
