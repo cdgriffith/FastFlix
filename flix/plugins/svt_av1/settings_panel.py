@@ -36,17 +36,19 @@ class AV1(QtWidgets.QWidget):
         self.main = main
         grid = QtWidgets.QGridLayout()
 
-
         self.widgets = Box(
             fps=None,
             remove_hdr=None,
-            mode=None)
+            mode=None,
+            segment_size=None)
 
         self.mode = 'QP'
 
         grid.addLayout(self.init_remove_hdr(), 1, 0, 1, 2)
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
+
         grid.addLayout(self.init_modes(), 0, 2, 2, 4)
+        grid.addLayout(self.init_segment_size(), 3, 0, 1, 2)
 
         grid.addWidget(QtWidgets.QWidget(), 5, 0, 5, 2)
         self.setLayout(grid)
@@ -81,6 +83,16 @@ class AV1(QtWidgets.QWidget):
         self.widgets.speed.setCurrentIndex(7)
         self.widgets.speed.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.speed)
+        return layout
+
+    def init_segment_size(self):
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(QtWidgets.QLabel('Segment Size (seconds)'))
+        self.widgets.segment_size = QtWidgets.QComboBox()
+        self.widgets.segment_size.addItems(["10", "30", "60", "90", "120", "240"])
+        self.widgets.segment_size.setCurrentIndex(2)
+        self.widgets.segment_size.currentIndexChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.segment_size)
         return layout
 
     def init_modes(self):
@@ -144,7 +156,8 @@ class AV1(QtWidgets.QWidget):
     def get_settings(self):
         settings = Box(
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
-            speed=self.widgets.speed.currentText()
+            speed=self.widgets.speed.currentText(),
+            segment_size=int(self.widgets.segment_size.currentText())
         )
         if self.mode == "QP":
             qp = self.widgets.qp.currentText()
