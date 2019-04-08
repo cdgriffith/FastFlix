@@ -25,18 +25,19 @@ def build(source, video_track, streams, start_time, duration, speed=7, segment_s
     file = Path(source)
 
     filters = generate_filters(**kwargs)
+    disable_hdr = kwargs.get('disable_hdr', False)
 
     fps_num, fps_denom = [int(x) for x in
-                          streams.video[0].get('avg_frame_rate', streams.video[0].r_frame_rate).split("/")]
-    bit_depth = 10 if streams.video[0].pix_fmt == 'yuv420p10le' else 8
+                          streams.video[video_track].get('avg_frame_rate', streams.video[video_track].r_frame_rate).split("/")]
+    bit_depth = 10 if streams.video[video_track].pix_fmt == 'yuv420p10le' and not disable_hdr else 8
     crop = kwargs.get("crop")
     scale = kwargs.get("scale")
 
     if scale:
         width, height = (int(x) for x in scale.split(":"))
     else:
-        height = int(streams.video[0].height)
-        width = int(streams.video[0].width)
+        height = int(streams.video[video_track].height)
+        width = int(streams.video[video_track].width)
         if crop:
             crop_check = crop.split(":")
             try:
@@ -53,16 +54,19 @@ def build(source, video_track, streams, start_time, duration, speed=7, segment_s
     assert height <= 2160
     assert width <= 4096
 
+    audio = build_audio(audio_tracks, audio_file_index=0)
+    audio_file = '<tempfile.7.mkv>'
+
     command_1 = Command((f'{{ffmpeg}} -y '
-                         f'-i "{source}" '
                          f'{f"-ss {start_time}" if start_time else ""} '
                          f'{f"-t {duration - start_time}" if duration else ""} '
+                         f'-i "{source}" '
                          f'{"-map_metadata -1" if kwargs.get("start_time") else ""} '
                          f'-map 0:{video_track} -c copy -sc_threshold 0 '
                          f'-reset_timestamps 1 -f segment -segment_time {segment_size} -an -sn -dn '
                          f'"<tempdir.1>{os.sep}%04d{file.suffix}"'),
                         ['ffmpeg'], False,
-                        name="Semgment movie into smaller files",
+                        name="Segment movie into smaller files",
                         exe='ffmpeg')
 
     def func(tempfiles, tempdirs):
@@ -70,6 +74,7 @@ def build(source, video_track, streams, start_time, duration, speed=7, segment_s
                       key=lambda x: x[0])
 
     loop_command_1 = (f'"{{ffmpeg}}" -y -i "<loop.1>" '
+                      f'-pix_fmt {"yuv420p10le" if bit_depth == 10 and not disable_hdr else "yuv420p"}'
                       f' {f"-vf {filters}" if filters else ""} "<loop.2>"')
 
     intra_period = 1
@@ -82,6 +87,7 @@ def build(source, video_track, streams, start_time, duration, speed=7, segment_s
     quality = f"-tbr {bitrate}" if bitrate else f"-q {qp}"
 
     loop_command_2 = (f'"{{av1}}" -intra-period {intra_period} -enc-mode {speed} -bit-depth {bit_depth} '
+                      # f'{"-hdr 1" if not disable_hdr and bit_depth == 10 else ""}'
                       f' -fps-num {fps_num} -fps-denom {fps_denom} -w {width} -h {height} '
                       f'{quality} -i "<loop.2>" -b "<tempdir.2>{os.sep}<loop.0>.ivf"')
 
@@ -111,21 +117,20 @@ def build(source, video_track, streams, start_time, duration, speed=7, segment_s
         f'"{{ffmpeg}}" -y -safe 0 -f concat -i "<tempfile.5.log>" -reset_timestamps 1 -c copy "{no_audio_file}"',
         ['ffmpeg'], False, exe='ffmpeg', name="Add all the IVF files into a single MKV video")
 
-    audio = build_audio(audio_tracks, audio_file_index=0)
+    #
 
-    audio_file = 'tempfile.7.mkv'
     command_audio = Command((f'"{{ffmpeg}}" -y '
-                             f'-i "{source}" '
                              f'{f"-ss {start_time}" if start_time else ""} '
                              f'{f"-t {duration - start_time}" if duration else ""} '
+                             f'-i "{source}" '
                              f'{audio} "{audio_file}"'
                              ), ['ffmpeg'], False, exe='ffmpeg',
                             name='Split audio at proper time offsets into new file')
 
     command_3 = Command((f'"{{ffmpeg}}" -y '
                          f'-i "{no_audio_file}" -i "{audio_file}" '
-                         f'{"-map_metadata -1" if start_time or duration else ""} '
-                         f'-c copy -map 0:v -map 1:a '  # shortest  
+                         f'{"-map_metadata -1 -shortest -reset_timestamps 1" if start_time or duration else ""} '
+                         f'-c copy -map 0:v -map 1:a '  
                          # -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
                          f'"{{output}}"'),
                         ['ffmpeg', 'output'],

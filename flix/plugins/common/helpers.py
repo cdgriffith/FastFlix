@@ -25,7 +25,7 @@ class Command:
 
 
 def start_and_input(source, **kwargs):
-    start_time = kwargs.get('start_time', 0)
+    start_time = kwargs.get('start_time', 0) or 0
     duration = kwargs.get('duration')
 
     return (f'"{{ffmpeg}}" -i "{source}" -y {f"-ss {start_time}" if start_time else ""} '

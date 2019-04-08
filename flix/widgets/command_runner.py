@@ -74,6 +74,7 @@ class Worker(QtCore.QThread):
             while True:
                 char = self.process.stdout.read(1)
                 if char == '' and self.process.poll() != None:
+                    logger.info(line)
                     break
                 if char != '':
                     if char in ('\r', '\n'):
@@ -105,6 +106,7 @@ class Worker(QtCore.QThread):
         elif command_type == 'ffmpeg':
             for line in self.process.stdout:
                 if self.killed:
+                    logger.info(line.rstrip())
                     break
                 if not white_detect.match(line):
                     logger.info(line.rstrip())
