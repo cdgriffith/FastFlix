@@ -2,7 +2,7 @@ import logging
 
 from box import Box
 
-from flix.shared import QtWidgets
+from flix.shared import QtWidgets, QtCore
 
 logger = logging.getLogger('flix')
 
@@ -59,7 +59,12 @@ class VP9(QtWidgets.QWidget):
         grid.addLayout(self.init_force_420(), 5, 0, 1, 2)
         grid.addLayout(self.init_single_pass(), 6, 0, 1, 2)
 
-        grid.addWidget(QtWidgets.QWidget(), 8, 0, 3, 2)
+        grid.addWidget(QtWidgets.QWidget(), 8, 0)
+        grid.setRowStretch(8, 1)
+        guide_label = QtWidgets.QLabel(f"<a href='https://trac.ffmpeg.org/wiki/Encode/VP9'>FFMPEG VP9 Encoding Guide</a>")
+        guide_label.setAlignment(QtCore.Qt.AlignBottom)
+        guide_label.setOpenExternalLinks(True)
+        grid.addWidget(guide_label, 9, 0, -1, 1)
         self.setLayout(grid)
         self.hide()
 

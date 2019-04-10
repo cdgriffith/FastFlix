@@ -2,7 +2,7 @@ import logging
 
 from box import Box
 
-from flix.shared import QtWidgets
+from flix.shared import QtWidgets, QtCore
 
 logger = logging.getLogger('flix')
 
@@ -50,7 +50,13 @@ class AV1(QtWidgets.QWidget):
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
         grid.addLayout(self.init_segment_size(), 3, 0, 1, 2)
 
-        grid.addWidget(QtWidgets.QWidget(), 5, 0, 5, 2)
+        grid.addWidget(QtWidgets.QWidget(), 5, 0)
+        grid.setRowStretch(5, 1)
+        guide_label = QtWidgets.QLabel(
+            f"<a href='https://github.com/OpenVisualCloud/SVT-AV1'>SVT-AV1 Github</a>")
+        guide_label.setAlignment(QtCore.Qt.AlignBottom)
+        guide_label.setOpenExternalLinks(True)
+        grid.addWidget(guide_label, 9, 0, -1, 1)
         self.setLayout(grid)
         self.hide()
 

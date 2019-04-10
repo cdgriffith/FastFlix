@@ -369,10 +369,10 @@ class Main(QtWidgets.QWidget):
         self.widgets.preview.setAlignment(QtCore.Qt.AlignCenter)
         self.widgets.preview.setStyleSheet('border: 2px solid #dddddd;')  # background-color:#f0f0f0
 
-        buttons = self.init_preview_buttons()
+        #buttons = self.init_preview_buttons()
 
         self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (Qt.AlignTop | Qt.AlignRight))
-        self.grid.addLayout(buttons, 0, 14, 5, 1)
+        #self.grid.addLayout(buttons, 0, 14, 5, 1)
 
     def init_preview_buttons(self):
         layout = QtWidgets.QVBoxLayout()
