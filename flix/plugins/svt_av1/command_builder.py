@@ -84,7 +84,7 @@ def build(source, video_track, streams, start_time, duration, speed=7, segment_s
             break
     logger.debug(f'setting intra-period to {intra_period} based of fps {float(fps_num / fps_denom):.2f}')
 
-    quality = f"-tbr {bitrate}" if bitrate else f"-q {qp}"
+    quality = f"-rc 1 -tbr {bitrate}" if bitrate else f"-rc 0 -q {qp}"
 
     loop_command_2 = (f'"{{av1}}" -intra-period {intra_period} -enc-mode {speed} -bit-depth {bit_depth} '
                       # f'{"-hdr 1" if not disable_hdr and bit_depth == 10 else ""}'
