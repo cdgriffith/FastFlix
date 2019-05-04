@@ -1,5 +1,6 @@
 import sys
 import logging
+from logging.handlers import SocketHandler
 from pathlib import Path
 
 from appdirs import user_data_dir
@@ -14,6 +15,8 @@ logger = logging.getLogger('flix')
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
+    socket_handler = SocketHandler('127.0.0.1', 19996)
+    logger.addHandler(socket_handler)
 
     main_app = QtWidgets.QApplication(sys.argv)
     main_app.setStyle("fusion")

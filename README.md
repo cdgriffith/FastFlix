@@ -8,6 +8,9 @@ It can encode videos into AV1, GIF, and VP9, and is easily extendable!
 
 Read more about it and the licensing in the [docs](docs/README.md) folder.
 
+![preview](https://raw.githubusercontent.com/cdgriffith/binary-files/fast-flix/media/fastflix/2.0.0/main.png)
+
+
 # Plugins
 
 Included plugins:
