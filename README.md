@@ -6,7 +6,7 @@ FastFlix is a AV1 encoder, GIF maker, and general command wrapper.
 
 It can encode videos into AV1, GIF, and VP9, and is easily extendable! 
 
-Read more about it and the licensing in the [docs](docs/README.md)
+Read more about it and the licensing in the [docs](docs/README.md) folder.
 
 # Plugins
 
