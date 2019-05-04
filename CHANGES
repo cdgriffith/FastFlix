@@ -1,16 +1,17 @@
 Changelog
 ---------
 
-Version 1.2.0
+Version 2.0.0
 ~~~~~~~~~~~~~
 
-* Huge GUI redesign and rewrite
-* VP9 support added
-* AV1 (native ffmpeg) support added
-* Changed to a modular plugin model
-* Audio selector page
-* Command list
-
+* Adding AV1 support (both FFMPEG libaom-av1 and SVT-AV1)
+* Adding VP9 support
+* Adding Visible command list
+* Adding Audio transcoding options
+* Changing into MIT license
+* Changing into plugin module design
+* Removing all GPL or restrictive licensed products (including x265)
+* Major Layout Redesign
 
 Version 1.1.0
 ~~~~~~~~~~~~~
