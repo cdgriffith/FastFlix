@@ -4,3 +4,5 @@ reusables
 python-box
 pyinstaller
 ruamel.yaml
+appdirs
+pypiwin32

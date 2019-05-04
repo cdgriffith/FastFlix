@@ -10,16 +10,16 @@ Thankfully the wonderful creators of ffmpeg and PySide2 want their work shared a
 software under the LGPL. The "catch" is that it has to overrideable so you can select your own version or
 alternative instead.
 
-#### Changing ffmpeg and ffprobe
+#### Changing ffmpeg and SVT AV1 
 
-Provide environment variables `FFMPEG` and `FFPROBE` with full paths to their respective 
-executables prior to startup of the executable. It is also possible to select the directory they are 
-located in via the GUI itself. 
+The built-in binaries are extracted on first load-up to you're roaming user directory, so you can find and 
+override them with your own versions. 
+
+Example paths: 
 
 ```
-set FFMPEG=C:\ffmpeg.exe
-set FFPROBE=C:\ffprobe.exe
-FastFlix.exe
+C:\Users\me\AppData\Roaming\FastFlix\1.1.0\ffmpeg
+C:\Users\me\AppData\Roaming\FastFlix\1.1.0\svt_av1
 ```
 
 #### Changing PySide2 (and shiboken2)
@@ -33,12 +33,4 @@ set SHIBOKEN2=venv\Lib\site-packages\shiboken2\__init__.py
 FastFlix.exe
 ```
 
-#### Changing SVT-AV1
-
-You're not going to believe this, but you also can change SVT-AV1 encoder via env vars! 
-
-```
-set SVT-AV1=C:\SvtAv1EncApp.exe
-FastFlix.exe
-```
 
