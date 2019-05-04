@@ -41,14 +41,14 @@ class AV1(QtWidgets.QWidget):
         self.mode = 'CRF'
 
         grid.addLayout(self.init_remove_hdr(), 0, 0, 1, 2)
-        grid.addLayout(self.init_modes(), 0, 2, 4, 4)
+        grid.addLayout(self.init_modes(), 0, 2, 3, 3)
 
         grid.addWidget(QtWidgets.QWidget(), 5, 0)
         grid.setRowStretch(5, 1)
         guide_label = QtWidgets.QLabel(f"<a href='https://trac.ffmpeg.org/wiki/Encode/AV1'>FFMPEG AV1 Encoding Guide</a>")
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 6, 0, -1, 1)
+        grid.addWidget(guide_label, 9, 0, -1, 1)
 
         self.setLayout(grid)
         self.hide()
@@ -77,9 +77,11 @@ class AV1(QtWidgets.QWidget):
     def init_modes(self):
         layout = QtWidgets.QGridLayout()
         crf_group_box = QtWidgets.QGroupBox()
+        crf_group_box.setFixedHeight(40)
         crf_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
         crf_box_layout = QtWidgets.QHBoxLayout()
         bitrate_group_box = QtWidgets.QGroupBox()
+        bitrate_group_box.setFixedHeight(40)
         bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
         bitrate_box_layout = QtWidgets.QHBoxLayout()
         # rotation_dir = Path(base_path, 'data', 'rotations')
