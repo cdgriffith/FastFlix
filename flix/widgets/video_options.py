@@ -28,7 +28,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.subtitles.hide()
         self.addTab(self.current_settings, "Quality")
         self.addTab(self.audio, "Audio")
-        #self.addTab(self.subtitles, "Subtitles")
+        # self.addTab(self.subtitles, "Subtitles")
         self.addTab(self.commands, "Command List")
 
     def change_conversion(self, conversion):
@@ -56,4 +56,3 @@ class VideoOptions(QtWidgets.QTabWidget):
     def new_source(self):
         self.audio.new_source(self.current_plugin.audio_formats)
         self.current_settings.new_source()
-

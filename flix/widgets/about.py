@@ -23,7 +23,7 @@ class About(QtWidgets.QWidget):
         build_file = Path(base_path, 'build_version')
 
         label = QtWidgets.QLabel(f"<b>FastFlix</b> v{__version__}<br>"
-                                 f"{f'Build: {build_file.read_text().strip()}<br>' if build_file.exists() else '' }"
+                                 f"{f'Build: {build_file.read_text().strip()}<br>' if build_file.exists() else ''}"
                                  f"<br>Author: <a href='https://github.com/cdgriffith'>Chris Griffith</a>"
                                  f"<br>License: MIT")
         label.setFont(QtGui.QFont("Arial", 14))

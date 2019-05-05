@@ -26,7 +26,8 @@ def load_plugins(plugin_dir):
     plugins = Box()
     for item in plugin_dir.iterdir():
         if item.is_dir() and not item.name.startswith("_") and item.name != 'common':
-            plugin = importlib.machinery.SourceFileLoader(f'plugin_{item.name}', str(Path(item, 'main.py'))).load_module()
+            plugin = importlib.machinery.SourceFileLoader(f'plugin_{item.name}',
+                                                          str(Path(item, 'main.py'))).load_module()
             plugins[plugin.name] = plugin
     return plugins
 
@@ -369,10 +370,10 @@ class Main(QtWidgets.QWidget):
         self.widgets.preview.setAlignment(QtCore.Qt.AlignCenter)
         self.widgets.preview.setStyleSheet('border: 2px solid #dddddd;')  # background-color:#f0f0f0
 
-        #buttons = self.init_preview_buttons()
+        # buttons = self.init_preview_buttons()
 
         self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (Qt.AlignTop | Qt.AlignRight))
-        #self.grid.addLayout(buttons, 0, 14, 5, 1)
+        # self.grid.addLayout(buttons, 0, 14, 5, 1)
 
     def init_preview_buttons(self):
         layout = QtWidgets.QVBoxLayout()
@@ -466,7 +467,7 @@ class Main(QtWidgets.QWidget):
         #     return
         # self.widgets.scale.height.setDisabled(keep_aspect)
 
-        #keep_aspect = self.keep_aspect_button.isChecked()
+        # keep_aspect = self.keep_aspect_button.isChecked()
         self.widgets.scale.height.setDisabled(keep_aspect)
         height = self.video_height
         width = self.video_width
@@ -476,7 +477,7 @@ class Main(QtWidgets.QWidget):
         if keep_aspect and (not height or not width):
             self.scale_updating = False
             return logger.warning("Invalid source dimensions")
-            #return self.scale_warning_message.setText("Invalid source dimensions")
+            # return self.scale_warning_message.setText("Invalid source dimensions")
 
         try:
             scale_width = int(self.widgets.scale.width.text())
@@ -484,12 +485,12 @@ class Main(QtWidgets.QWidget):
         except (ValueError, AssertionError):
             self.scale_updating = False
             return logger.warning("Invalid main_width")
-            #return self.scale_warning_message.setText("Invalid main_width")
+            # return self.scale_warning_message.setText("Invalid main_width")
 
         if scale_width % 8:
             self.scale_updating = False
             return logger.warning("Width must be divisible by 8")
-            #return self.scale_warning_message.setText("Width must be divisible by 8")
+            # return self.scale_warning_message.setText("Width must be divisible by 8")
 
         if keep_aspect:
             ratio = scale_width / width
@@ -499,7 +500,7 @@ class Main(QtWidgets.QWidget):
             if mod:
                 scale_height -= mod
                 logger.info(f"Have to adjust scale height by {mod} pixels")
-                #self.scale_warning_message.setText()
+                # self.scale_warning_message.setText()
             logger.info(f"height has -{mod}px off aspect")
             self.widgets.scale.height.setText(str(int(scale_height)))
             self.scale_updating = False
@@ -510,15 +511,14 @@ class Main(QtWidgets.QWidget):
             assert scale_height > 0
         except (ValueError, AssertionError):
             return logger.warning("Invalid height")
-            #return self.scale_warning_message.setText("Invalid height")
+            # return self.scale_warning_message.setText("Invalid height")
 
         if scale_height % 8:
             return logger.warning("Height must be divisible by 8")
-            #return self.scale_warning_message.setText("Height must be divisible by 8")
-        #self.scale_warning_message.setText("")
+            # return self.scale_warning_message.setText("Height must be divisible by 8")
+        # self.scale_warning_message.setText("")
         self.page_update()
         self.scale_updating = False
-
 
     @reusables.log_exception('flix', show_traceback=False)
     def update_video_info(self):
@@ -635,7 +635,7 @@ class Main(QtWidgets.QWidget):
         height = self.widgets.scale.height.text()
         if self.convert_to == 'av1':
             pass
-            #TODO enforce 8
+            # TODO enforce 8
 
         return f"{width}:{height}"
 
@@ -716,15 +716,15 @@ class Main(QtWidgets.QWidget):
         for item in commands:
             if item.item == "command":
                 item.command = item.command.format(ffmpeg=self.ffmpeg,
-                                                         ffprobe=self.ffprobe,
-                                                         av1=self.svt_av1,
-                                                         output=self.output_video)
+                                                   ffprobe=self.ffprobe,
+                                                   av1=self.svt_av1,
+                                                   output=self.output_video)
             elif item.item == "loop":
                 for sub_item in item.commands:
                     sub_item.command = sub_item.command.format(ffmpeg=self.ffmpeg,
-                                                       ffprobe=self.ffprobe,
-                                                       av1=self.svt_av1,
-                                                       output=self.output_video)
+                                                               ffprobe=self.ffprobe,
+                                                               av1=self.svt_av1,
+                                                               output=self.output_video)
 
         self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")

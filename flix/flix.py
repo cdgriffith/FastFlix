@@ -119,7 +119,7 @@ class Flix:
             start = f'-ss {start_time} -t {duration}'
 
         return (f'"{self.ffmpeg}" {start} -i "{source}" -map 0:{video_track} '
-                f'-vf "{f"{filters}," if filters else "" }palettegen" -y "{output}"')
+                f'-vf "{f"{filters}," if filters else ""}palettegen" -y "{output}"')
 
     def generate_gif_command(self, source, output, pallet_file, video_track, additional_tracks=(),
                              start_time=0, duration=None, filters=None, fps=15, dither="sierra2_4a"):
@@ -216,7 +216,7 @@ class Flix:
         if start_time:
             start = f'-ss {start_time}'
         return (f'"{self.ffmpeg}" {start} -loglevel error -i "{source}" '
-                f" -vf {filters+',' if filters else ''}scale=min(320\\,iw):-1 "
+                f" -vf {filters + ',' if filters else ''}scale=min(320\\,iw):-1 "
                 f'-map 0:{video_track} -an -y '
                 f'-vframes 1 "{output}"')
 
@@ -307,4 +307,3 @@ class Flix:
             elif line.startswith(start_line):
                 started = True
         return encoders
-

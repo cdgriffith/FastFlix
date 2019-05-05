@@ -5,7 +5,6 @@ import reusables
 from pathlib import Path
 import logging
 
-
 from flix.plugins.common.helpers import (generate_filters, Command)
 from flix.plugins.common.audio import build as audio_builder
 
@@ -59,13 +58,13 @@ def build(source, video_track, streams, start_time, format_info, duration, mode=
     total_time = kwargs.get("duration", format_info.duration) - start_time
     frames = int(total_time * int(fps_num / fps_denom))
     command_1 = Command((f'"{{ffmpeg}}" {f"-ss {start_time}" if start_time else ""} '
-                             f'-nostdin -i "{source}" -vframes {frames} -f rawvideo '
-                             f'{f"-vf {filters}" if filters else ""} '
-                             f'-pix_fmt {"yuv420p" if bit_depth == 8 else "yuv420p10le"} -an - | '
-                             f'"{{av1}}" -intra-period {intra_period} -enc-mode {mode} -w {width} -h {height} '
-                             f'-bit-depth {bit_depth} -n {frames} -i stdin -q {qp} '
-                             f'-fps-num {fps_num} -fps-denom {fps_denom} -b <tempfile.1.ivf>'),
-                            ['ffmpeg', 'av1'], False)
+                         f'-nostdin -i "{source}" -vframes {frames} -f rawvideo '
+                         f'{f"-vf {filters}" if filters else ""} '
+                         f'-pix_fmt {"yuv420p" if bit_depth == 8 else "yuv420p10le"} -an - | '
+                         f'"{{av1}}" -intra-period {intra_period} -enc-mode {mode} -w {width} -h {height} '
+                         f'-bit-depth {bit_depth} -n {frames} -i stdin -q {qp} '
+                         f'-fps-num {fps_num} -fps-denom {fps_denom} -b <tempfile.1.ivf>'),
+                        ['ffmpeg', 'av1'], False)
 
     audio = audio_builder(audio_tracks, audio_file_index=1)
 
@@ -73,7 +72,7 @@ def build(source, video_track, streams, start_time, format_info, duration, mode=
                          f'{f"-ss {start_time}" if start_time else ""} '
                          f'{f"-t {duration - start_time}" if duration else ""} '
                          f'-i "<tempfile.1.ivf>" -i "{file}" '
-                         f'-c copy -map 0:{video_track} ' #  -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
+                         f'-c copy -map 0:{video_track} '  # -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
                          f'{audio} "{{output}}"'),
                         ['ffmpeg', 'output'],
                         False)

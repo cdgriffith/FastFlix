@@ -38,4 +38,4 @@ class Logs(QtWidgets.QWidget):
 
     def closeEvent(self, event):
         self.hide()
-        #event.accept()
+        # event.accept()

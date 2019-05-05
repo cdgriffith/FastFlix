@@ -73,7 +73,7 @@ class Worker(QtCore.QThread):
             line = ''
             while True:
                 char = self.process.stdout.read(1)
-                if char == '' and self.process.poll() != None:
+                if char == '' and self.process.poll() is not None:
                     logger.info(line)
                     break
                 if char != '':
@@ -92,12 +92,11 @@ class Worker(QtCore.QThread):
                     line += char
                     line_wait = False
 
-
                     # simple print to console
                     # sys.stdout.write(char if 32 < ord(char) < 126 else f"[{ord(char)}]")
                     # sys.stdout.flush()
-                    #lineAfterCarriage += char
-                    #if char in ('\r', '\n'):
+                    # lineAfterCarriage += char
+                    # if char in ('\r', '\n'):
 
             # for line in self.process.stdout:
             #     if self.killed:
@@ -111,17 +110,15 @@ class Worker(QtCore.QThread):
                 if not white_detect.match(line):
                     logger.info(line.rstrip())
 
-
-
         # self.process.wait()
         # for line in self.process.stdout:
         #     logger.debug(f"command - {line}")
-            # next_line = self.process.stdout.readline().decode('utf-8')
-            # if not next_line:
-            #     if self.process.poll() is not None:
-            #         break
-            #     else:
-            #         continue
+        # next_line = self.process.stdout.readline().decode('utf-8')
+        # if not next_line:
+        #     if self.process.poll() is not None:
+        #         break
+        #     else:
+        #         continue
         return_code = self.process.poll()
         return return_code
         # else:
