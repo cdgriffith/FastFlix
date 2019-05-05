@@ -19,7 +19,7 @@ class Container(QtWidgets.QMainWindow):
         main = Main(self, data_path, **kwargs)
         self.setCentralWidget(main)
         self.setMinimumSize(1200, 600)
-        self.setWindowIcon(QtGui.QIcon(str(Path("data", "icon.ico"))))
+        self.setWindowIcon(QtGui.QIcon(str(Path(base_path, "data", "icon.ico"))))
 
     def init_menu(self):
         exit_action = QtWidgets.QAction('&Exit', self)
