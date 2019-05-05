@@ -18,10 +18,12 @@ class About(QtWidgets.QWidget):
         super(About, self).__init__(parent)
         layout = QtWidgets.QGridLayout()
 
+        self.setMinimumSize(400, 400)
+
         build_file = Path(base_path, 'build_version')
 
         label = QtWidgets.QLabel(f"<b>FastFlix</b> v{__version__}<br>"
-                                 f"{f'Build: {build_file.read_text().strip()}<br>' if build_file.exists() else '' }"
+                                 f"{f'Build: {build_file.read_text().strip()}<br>' if build_file.exists() else ''}"
                                  f"<br>Author: <a href='https://github.com/cdgriffith'>Chris Griffith</a>"
                                  f"<br>License: MIT")
         label.setFont(QtGui.QFont("Arial", 14))
@@ -64,3 +66,4 @@ class About(QtWidgets.QWidget):
         layout.addWidget(license_label)
 
         self.setLayout(layout)
+        self.show()

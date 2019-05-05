@@ -35,3 +35,7 @@ class Logs(QtWidgets.QWidget):
         log_text_box.setLevel(logging.DEBUG)
         layout.addWidget(log_text_box.widget)
         self.setLayout(layout)
+
+    def closeEvent(self, event):
+        self.hide()
+        # event.accept()
