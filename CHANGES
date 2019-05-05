@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+Version 2.0.1
+~~~~~~~~~~~~~
+
+* Fixing broken exe, requiring console for time being
+
 Version 2.0.0
 ~~~~~~~~~~~~~
 
