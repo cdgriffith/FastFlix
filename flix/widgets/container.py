@@ -3,7 +3,7 @@ import logging
 import os
 from pathlib import Path
 
-from flix.shared import QtWidgets, QtGui, pyinstaller, base_path, message
+from flix.shared import QtWidgets, QtGui, pyinstaller, base_path, message, Qt
 from flix.widgets.main import Main
 from flix.widgets.about import About
 from flix.widgets.logs import Logs
@@ -11,12 +11,12 @@ from flix.widgets.logs import Logs
 
 class Container(QtWidgets.QMainWindow):
 
-    def __init__(self, data_path, **kwargs):
+    def __init__(self, data_path, work_path, **kwargs):
         super(Container, self).__init__()
         self.logs = Logs()
         self.about = None
         self.init_menu()
-        main = Main(self, data_path, **kwargs)
+        main = Main(self, data_path, work_path, **kwargs)
         self.setCentralWidget(main)
         self.setMinimumSize(1200, 600)
         self.setWindowIcon(QtGui.QIcon(str(Path(base_path, "data", "icon.ico"))))

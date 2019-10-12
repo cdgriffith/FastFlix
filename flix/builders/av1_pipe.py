@@ -37,6 +37,7 @@ def build(source, video_track, streams, start_time, format_info, duration, mode=
         width = int(streams.video[0].width)
     assert height <= 2160
     assert width <= 4096
+
     if crop:
         crop_check = crop.split(":")
         try:

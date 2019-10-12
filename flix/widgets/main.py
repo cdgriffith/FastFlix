@@ -37,7 +37,7 @@ class Main(QtWidgets.QWidget):
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
 
-    def __init__(self, parent, data_path, ffmpeg, ffprobe, svt_av1, **kwargs):
+    def __init__(self, parent, data_path, work_path, ffmpeg, ffprobe, svt_av1, **kwargs):
         super().__init__(parent)
         self.container = parent
         self.initialized = False
@@ -45,6 +45,7 @@ class Main(QtWidgets.QWidget):
         self.scale_updating = False
         self.path = Box(
             data=data_path,  # Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
+            work=work_path
         )
 
         self.plugins = load_plugins(Path(data_path, 'plugins'))
@@ -88,7 +89,7 @@ class Main(QtWidgets.QWidget):
             scale=Box(width=None, height=None, keep_aspect_ratio=None)
         )
 
-        self.thumb_file = Path(self.path.data, 'thumbnail_preview.png')
+        self.thumb_file = Path(self.path.work, 'thumbnail_preview.png')
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
         self.video_options = VideoOptions(self, available_audio_encoders=self.flix.get_audio_encoders())
 
@@ -666,7 +667,7 @@ class Main(QtWidgets.QWidget):
             h_flip=self.widgets.h_flip.isChecked(),
             streams=self.streams,
             format_info=self.format_info,
-            work_dir=self.path.data
+            work_dir=self.path.work
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")
@@ -729,7 +730,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")
         self.converting = True
-        self.command_runner = CW(self, commands, self.path.data)
+        self.command_runner = CW(self, commands, self.path.work)
         self.command_runner.start()
 
     @reusables.log_exception('flix', show_traceback=False)

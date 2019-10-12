@@ -2,12 +2,14 @@ import sys
 import logging
 from logging.handlers import SocketHandler
 from pathlib import Path
+from distutils.version import StrictVersion
 
 from appdirs import user_data_dir
+from box import Box
 
 from flix.version import __version__
 from flix.flix import ff_version, FlixError
-from flix.shared import QtWidgets, error_message, base_path
+from flix.shared import QtWidgets, error_message, base_path, Qt
 from flix.widgets.container import Container
 
 logger = logging.getLogger('flix')
@@ -25,6 +27,27 @@ def main():
     data_path = Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
     first_time = not data_path.exists()
     data_path.mkdir(parents=True, exist_ok=True)
+
+    config_file = Path(data_path.parent, "fastflix.json")
+    if not config_file.exists():
+        config = Box({"version": __version__,
+                      "work_dir": str(data_path)})
+        config.to_json(filename=config_file, indent=2)
+    else:
+        config = Box.from_json(filename=config_file)
+        if StrictVersion(config.version) < StrictVersion(__version__):
+            # do upgrade of config
+            config.version = __version__
+            config.to_json(filename=config_file, indent=2)
+    work_dir = Path(config.get('work_dir', data_path))
+    if not work_dir.exists():
+        try:
+            work_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as err:
+            logger.error(f"Cannot use specified working directory {work_dir}"
+                         f" - Falling back to {data_path} due to error: {err}")
+            work_dir = data_path
+            work_dir.mkdir(parents=True, exist_ok=True)
 
     ffmpeg_folder = Path(data_path, 'ffmpeg')
     ffmpeg_folder.mkdir(parents=True, exist_ok=True)
@@ -58,8 +81,8 @@ def main():
                            ffmpeg_version=ffmpeg_version, ffprobe_version=ffprobe_version,
                            svt_av1=svt_av1,
                            source=sys.argv[1] if len(sys.argv) > 1 else "",
-                           data_path=data_path)
-
+                           data_path=data_path,
+                           work_path=work_dir)
         window.show()
     except (Exception, BaseException, SystemError, SystemExit) as err:
         print(err)

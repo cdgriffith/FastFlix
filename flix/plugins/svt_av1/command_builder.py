@@ -91,7 +91,7 @@ def build(source, video_track, streams, start_time, duration, speed=7, segment_s
                       f' -fps-num {fps_num} -fps-denom {fps_denom} -w {width} -h {height} '
                       f'{quality} -i "<loop.2>" -b "<tempdir.2>{os.sep}<loop.0>.ivf"')
 
-    loop_command_3 = f"echo file '<tempdir.2>{os.sep}<loop.0>.ivf' >> <tempfile.5.log>"
+    loop_command_3 = f"echo file '<tempdir.2>{os.sep}<loop.0>.ivf' >> \"<tempfile.5.log>\""
 
     loop_command_4 = 'del /f "<loop.2>"'
 
