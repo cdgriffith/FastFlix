@@ -7,7 +7,7 @@ from pathlib import Path
 import logging
 
 from flix.plugins.common.helpers import generate_filters, Command
-from flix.plugins.common.audio import build as audio_builder
+from flix.plugins.common.audio import build_audio
 
 logger = logging.getLogger("flix")
 
@@ -73,7 +73,7 @@ def build(source, video_track, streams, start_time, format_info, duration, mode=
         False,
     )
 
-    audio = audio_builder(audio_tracks, audio_file_index=1)
+    audio = build_audio(audio_tracks, audio_file_index=1)
 
     command_3 = Command(
         (

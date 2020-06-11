@@ -101,6 +101,8 @@ class Main(QtWidgets.QWidget):
 
         self.video_width = 0
         self.video_height = 0
+        self.initial_video_width = 0
+        self.initial_video_height = 0
 
         self.default_options = Box()
         self.output_video = None
@@ -117,6 +119,7 @@ class Main(QtWidgets.QWidget):
         self.setLayout(self.grid)
         self.show()
         self.initialized = True
+        self.last_page_update = time.time()
 
     def init_video_area(self):
         layout = QtWidgets.QVBoxLayout()
@@ -355,11 +358,24 @@ class Main(QtWidgets.QWidget):
         minus_button = QtWidgets.QPushButton("-")
         minus_button.setAutoRepeat(True)
         minus_button.setFixedSize(button_size, button_size)
-        minus_button.clicked.connect(lambda: self.modify_int(widget, "minus", time_field))
+        minus_button.clicked.connect(
+            lambda: [
+                self.modify_int(widget, "minus", time_field),
+                widget.setStyleSheet("background-color: white;"),
+                self.page_update(),
+            ]
+        )
         plus_button = QtWidgets.QPushButton("+")
         plus_button.setAutoRepeat(True)
         plus_button.setFixedSize(button_size, button_size)
-        plus_button.clicked.connect(lambda: self.modify_int(widget, "add", time_field))
+        plus_button.clicked.connect(
+            lambda: [
+                self.modify_int(widget, "add", time_field),
+                widget.setStyleSheet("background-color: white;"),
+                self.page_update(),
+            ]
+        )
+
         if not time_field:
             widget.setFixedWidth(40)
         layout.addWidget(minus_button)
@@ -470,14 +486,11 @@ class Main(QtWidgets.QWidget):
     def scale_update(self):
         if self.scale_updating:
             return False
-        self.scale_updating = True
-        keep_aspect = self.widgets.scale.keep_aspect.isChecked()
-        # if not keep_aspect:
-        #     self.widgets.scale.height.setText(str(self.video_height))
-        #     return
-        # self.widgets.scale.height.setDisabled(keep_aspect)
 
-        # keep_aspect = self.keep_aspect_button.isChecked()
+        self.scale_updating = True
+
+        keep_aspect = self.widgets.scale.keep_aspect.isChecked()
+
         self.widgets.scale.height.setDisabled(keep_aspect)
         height = self.video_height
         width = self.video_width
@@ -499,12 +512,13 @@ class Main(QtWidgets.QWidget):
 
         if scale_width % 8:
             self.scale_updating = False
+            self.widgets.scale.width.setStyleSheet("background-color: red;")
             return logger.warning("Width must be divisible by 8")
             # return self.scale_warning_message.setText("Width must be divisible by 8")
 
         if keep_aspect:
-            ratio = scale_width / width
-            scale_height = ratio * height
+            ratio = self.initial_video_height / self.initial_video_width
+            scale_height = ratio * scale_width
             self.widgets.scale.height.setText(str(int(scale_height)))
             mod = int(scale_height % 8)
             if mod:
@@ -513,6 +527,9 @@ class Main(QtWidgets.QWidget):
                 # self.scale_warning_message.setText()
             logger.info(f"height has -{mod}px off aspect")
             self.widgets.scale.height.setText(str(int(scale_height)))
+            self.widgets.scale.width.setStyleSheet("background-color: white;")
+            self.widgets.scale.height.setStyleSheet("background-color: white;")
+            self.page_update()
             self.scale_updating = False
             return
 
@@ -520,13 +537,18 @@ class Main(QtWidgets.QWidget):
             scale_height = int(self.widgets.scale.height.text())
             assert scale_height > 0
         except (ValueError, AssertionError):
+            self.scale_updating = False
             return logger.warning("Invalid height")
             # return self.scale_warning_message.setText("Invalid height")
 
         if scale_height % 8:
+            self.widgets.scale.height.setStyleSheet("background-color: red;")
+            self.scale_updating = False
             return logger.warning("Height must be divisible by 8")
             # return self.scale_warning_message.setText("Height must be divisible by 8")
         # self.scale_warning_message.setText("")
+        self.widgets.scale.width.setStyleSheet("background-color: white;")
+        self.widgets.scale.height.setStyleSheet("background-color: white;")
         self.page_update()
         self.scale_updating = False
 
@@ -538,15 +560,29 @@ class Main(QtWidgets.QWidget):
         logger.debug(self.format_info)
 
         text_video_tracks = [
-            (f"{x.index}: codec {x.codec_name} " f'- pix_fmt {x.get("pix_fmt")} ' f'- profile {x.get("profile")}')
+            f"{x.index}: codec {x.codec_name} " f'- pix_fmt {x.get("pix_fmt")} ' f'- profile {x.get("profile")}'
             for x in self.streams.video
         ]
 
         for i in range(self.widgets.video_track.count()):
             self.widgets.video_track.removeItem(0)
 
-        self.video_width = self.streams.video[0].width
-        self.video_height = self.streams.video[0].height
+        rotation = 0
+        if "rotate" in self.streams.video[0].tags:
+            rotation = abs(int(self.streams.video[0].tags.rotate))
+        # elif 'side_data_list' in self.streams.video[0]:
+        #     rots = [abs(int(x.rotation)) for x in self.streams.video[0].side_data_list if 'rotation' in x]
+        #     rotation = rots[0] if rots else 0
+
+        if rotation in (90, 270):
+            self.video_width = self.streams.video[0].height
+            self.video_height = self.streams.video[0].width
+        else:
+            self.video_width = self.streams.video[0].width
+            self.video_height = self.streams.video[0].height
+
+        self.initial_video_width = self.video_width
+        self.initial_video_height = self.video_height
 
         self.widgets.scale.width.setText(
             str(self.video_width + (self.video_width % self.plugins[self.convert_to].video_dimension_divisor))

@@ -17,7 +17,7 @@ logger = logging.getLogger("flix")
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(name)-6s  %(levelname)-8s %(message)s")
     socket_handler = SocketHandler("127.0.0.1", 19996)
     logger.addHandler(socket_handler)
 
