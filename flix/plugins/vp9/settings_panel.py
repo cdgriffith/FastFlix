@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import logging
 
 from box import Box
 
 from flix.shared import QtWidgets, QtCore
 
-logger = logging.getLogger('flix')
+logger = logging.getLogger("flix")
 
 recommended_bitrates = [
     "150k   (320x240p @ 24,25,30)",
@@ -18,7 +19,7 @@ recommended_bitrates = [
     "9000k (2560x1440p @ 50,60)",
     "12000k (3840x2160p @ 24,25,30)",
     "18000k (3840x2160p @ 50,60)",
-    "Custom"
+    "Custom",
 ]
 
 recommended_crfs = [
@@ -29,12 +30,11 @@ recommended_crfs = [
     "31 (1080p)",
     "24 (1440p)",
     "15 (2160p)",
-    "Custom"
+    "Custom",
 ]
 
 
 class VP9(QtWidgets.QWidget):
-
     def __init__(self, parent, main):
         super(VP9, self).__init__(parent)
         self.main = main
@@ -43,12 +43,9 @@ class VP9(QtWidgets.QWidget):
 
         # grid.addWidget(QtWidgets.QLabel("VP9"), 0, 0)
 
-        self.widgets = Box(
-            fps=None,
-            remove_hdr=None,
-            mode=None)
+        self.widgets = Box(fps=None, remove_hdr=None, mode=None)
 
-        self.mode = 'CRF'
+        self.mode = "CRF"
 
         grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
@@ -61,7 +58,9 @@ class VP9(QtWidgets.QWidget):
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
-        guide_label = QtWidgets.QLabel(f"<a href='https://trac.ffmpeg.org/wiki/Encode/VP9'>FFMPEG VP9 Encoding Guide</a>")
+        guide_label = QtWidgets.QLabel(
+            f"<a href='https://trac.ffmpeg.org/wiki/Encode/VP9'>FFMPEG VP9 Encoding Guide</a>"
+        )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 9, 0, -1, 1)
@@ -80,9 +79,9 @@ class VP9(QtWidgets.QWidget):
 
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel('Remove HDR'))
+        layout.addWidget(QtWidgets.QLabel("Remove HDR"))
         self.widgets.remove_hdr = QtWidgets.QComboBox()
-        self.widgets.remove_hdr.addItems(['No', 'Yes'])
+        self.widgets.remove_hdr.addItems(["No", "Yes"])
         self.widgets.remove_hdr.setCurrentIndex(0)
         self.widgets.remove_hdr.setDisabled(True)
         self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.main.page_update())
@@ -91,9 +90,9 @@ class VP9(QtWidgets.QWidget):
 
     def init_quality(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel('Quality'))
+        layout.addWidget(QtWidgets.QLabel("Quality"))
         self.widgets.quality = QtWidgets.QComboBox()
-        self.widgets.quality.addItems(['realtime', 'good', 'best'])
+        self.widgets.quality.addItems(["realtime", "good", "best"])
         self.widgets.quality.setCurrentIndex(1)
         self.widgets.quality.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.quality)
@@ -101,7 +100,7 @@ class VP9(QtWidgets.QWidget):
 
     def init_speed(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel('Speed'))
+        layout.addWidget(QtWidgets.QLabel("Speed"))
         self.widgets.speed = QtWidgets.QComboBox()
         self.widgets.speed.addItems([str(x) for x in range(6)])
         self.widgets.speed.setCurrentIndex(0)
@@ -111,7 +110,7 @@ class VP9(QtWidgets.QWidget):
 
     def init_row_mt(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel('Row multithreading'))
+        layout.addWidget(QtWidgets.QLabel("Row multithreading"))
         self.widgets.row_mt = QtWidgets.QCheckBox()
         self.widgets.row_mt.setChecked(False)
         self.widgets.row_mt.toggled.connect(lambda: self.main.page_update())
@@ -120,7 +119,7 @@ class VP9(QtWidgets.QWidget):
 
     def init_force_420(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel('Force 4:2:0 chroma subsampling'))
+        layout.addWidget(QtWidgets.QLabel("Force 4:2:0 chroma subsampling"))
         self.widgets.force_420 = QtWidgets.QCheckBox()
         self.widgets.force_420.setChecked(True)
         self.widgets.force_420.toggled.connect(lambda: self.main.page_update())
@@ -129,7 +128,7 @@ class VP9(QtWidgets.QWidget):
 
     def init_single_pass(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel('Single Pass (CRF)'))
+        layout.addWidget(QtWidgets.QLabel("Single Pass (CRF)"))
         self.widgets.single_pass = QtWidgets.QCheckBox()
         self.widgets.single_pass.setChecked(False)
         self.widgets.single_pass.toggled.connect(lambda: self.main.page_update())
@@ -197,14 +196,16 @@ class VP9(QtWidgets.QWidget):
             speed=self.widgets.speed.currentText(),
             row_mt=int(self.widgets.row_mt.isChecked()),
             force_420=self.widgets.force_420.isChecked(),
-            single_pass=self.widgets.single_pass.isChecked()
+            single_pass=self.widgets.single_pass.isChecked(),
         )
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
-            settings.crf = int(crf.split(" ", 1)[0]) if crf.lower() != 'custom' else self.widgets.custom_cref.currentText()
+            settings.crf = (
+                int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_cref.currentText()
+            )
         else:
             bitrate = self.widgets.bitrate.currentText()
-            if bitrate.lower() == 'custom':
+            if bitrate.lower() == "custom":
                 settings.bitrate = self.widgets.custom_bitrate.currentText()
             else:
                 settings.bitrate = bitrate.split(" ", 1)[0]
@@ -214,7 +215,7 @@ class VP9(QtWidgets.QWidget):
     def new_source(self):
         if not self.main.streams:
             return
-        if self.main.streams['video'][self.main.video_track].get('color_space', '').startswith('bt2020'):
+        if self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
             self.widgets.remove_hdr.setDisabled(False)
         else:
             self.widgets.remove_hdr.setDisabled(True)

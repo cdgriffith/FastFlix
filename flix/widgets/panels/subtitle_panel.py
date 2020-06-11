@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from box import Box
 
@@ -6,7 +7,6 @@ from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 
 
 class Subtitle(QtWidgets.QTabWidget):
-
     def __init__(self, parent, audio, number, enabled=True):
         super(Subtitle, self).__init__(parent)
         self.audio = audio
@@ -22,12 +22,11 @@ class Subtitle(QtWidgets.QTabWidget):
 
 
 class SubtitleList(QtWidgets.QWidget):
-
     def __init__(self, parent):
         super(SubtitleList, self).__init__(parent)
 
         layout = QtWidgets.QGridLayout()
-        layout.addWidget(QtWidgets.QLabel('Subtitle Tracks'))
+        layout.addWidget(QtWidgets.QLabel("Subtitle Tracks"))
 
         self.inner_widget = QtWidgets.QWidget()
 

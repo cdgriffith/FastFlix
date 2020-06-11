@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import logging
 import re
 import time
@@ -12,11 +13,11 @@ import reusables
 
 from flix.shared import QtCore, QtWidgets, QtGui
 
-logger = logging.getLogger('flix')
+logger = logging.getLogger("flix")
 
-__all__ = ['Worker']
+__all__ = ["Worker"]
 
-white_detect = re.compile(r'^\s+')
+white_detect = re.compile(r"^\s+")
 
 
 class Worker(QtCore.QThread):
@@ -30,8 +31,8 @@ class Worker(QtCore.QThread):
         self.command_list = command_list
         self.process = None
         self.killed = False
-        self.re_tempfile = re.compile(r'<tempfile\.(\d+)\.(\w+)>')
-        self.re_tempdir = re.compile(r'<tempdir\.(\d+)>')
+        self.re_tempfile = re.compile(r"<tempfile\.(\d+)\.(\w+)>")
+        self.re_tempdir = re.compile(r"<tempdir\.(\d+)>")
         self.temp_files = {}
         self.temp_dirs = {}
 
@@ -39,18 +40,18 @@ class Worker(QtCore.QThread):
         file_numbers = set(self.re_tempfile.findall(command))
         for num, ext in file_numbers:
             if num not in self.temp_files:
-                self.temp_files[num] = Path(self.tempdir.name, f'{uuid4().hex}.{ext}')
-            command = command.replace(f'<tempfile.{num}.{ext}>', str(self.temp_files[num]))
+                self.temp_files[num] = Path(self.tempdir.name, f"{uuid4().hex}.{ext}")
+            command = command.replace(f"<tempfile.{num}.{ext}>", str(self.temp_files[num]))
         for num in set(self.re_tempdir.findall(command)):
             if num not in self.temp_dirs:
                 self.temp_dirs[num] = Path(tempfile.mkdtemp(prefix=f"{num}_", dir=self.tempdir.name))
-            command = command.replace(f'<tempdir.{num}>', str(self.temp_dirs[num]))
+            command = command.replace(f"<tempdir.{num}>", str(self.temp_dirs[num]))
         return command
 
     def loop_creates(self, dirs, files):
         for num, ext in files:
             if num not in self.temp_files:
-                self.temp_files[num] = Path(self.tempdir.name, f'{uuid4().hex}.{ext}')
+                self.temp_files[num] = Path(self.tempdir.name, f"{uuid4().hex}.{ext}")
         for num in dirs:
             if num not in self.temp_dirs:
                 self.temp_dirs[num] = Path(tempfile.mkdtemp(prefix=f"{num}_", dir=self.tempdir.name))
@@ -70,21 +71,21 @@ class Worker(QtCore.QThread):
         self.process = self.start_exec(command)
         if not command_type:
             line_wait = False
-            line = ''
+            line = ""
             while True:
                 char = self.process.stdout.read(1)
-                if char == '' and self.process.poll() is not None:
+                if char == "" and self.process.poll() is not None:
                     logger.info(line)
                     break
-                if char != '':
-                    if char in ('\r', '\n'):
+                if char != "":
+                    if char in ("\r", "\n"):
                         logger.info(line)
-                        line = ''
+                        line = ""
                         continue
                     if ord(char) == 8:
                         if not line_wait:
                             logger.info(line)
-                            line = ''
+                            line = ""
                         line_wait = True
                         continue
                     if line_wait and -ord(char) == 32:
@@ -102,7 +103,7 @@ class Worker(QtCore.QThread):
             #     if self.killed:
             #         break
             #     logger.info(line.strip())
-        elif command_type == 'ffmpeg':
+        elif command_type == "ffmpeg":
             for line in self.process.stdout:
                 if self.killed:
                     logger.info(line.rstrip())
@@ -159,8 +160,9 @@ class Worker(QtCore.QThread):
                 self.app.completed.emit(0)
 
     def start_exec(self, command):
-        return Popen(command, shell=True, cwd=self.tempdir.name, stdin=PIPE, stdout=PIPE, stderr=STDOUT,
-                     universal_newlines=True)
+        return Popen(
+            command, shell=True, cwd=self.tempdir.name, stdin=PIPE, stdout=PIPE, stderr=STDOUT, universal_newlines=True
+        )
 
     def is_alive(self):
         if not self.process:

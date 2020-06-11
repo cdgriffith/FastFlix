@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import shutil
 import os
@@ -11,9 +12,9 @@ data_path = Path(user_data_dir("FastFlix", appauthor=False, version=__version__,
 data_path.mkdir(parents=True, exist_ok=True)
 
 
-dest = f'{data_path}{os.sep}plugins'
+dest = f"{data_path}{os.sep}plugins"
 
 print(f"Copying plugins to {dest}")
 
 shutil.rmtree(dest, ignore_errors=True)
-shutil.copytree(f'flix{os.sep}plugins', dest)
+shutil.copytree(f"flix{os.sep}plugins", dest)

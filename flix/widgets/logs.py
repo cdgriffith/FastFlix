@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import logging
 
 from flix.shared import QtWidgets
 
-__all__ = ['Logs']
+__all__ = ["Logs"]
 
-logger = logging.getLogger('flix')
+logger = logging.getLogger("flix")
 
 
 class QPlainTextEditLogger(logging.Handler):
@@ -27,7 +28,7 @@ class Logs(QtWidgets.QWidget):
 
         layout = QtWidgets.QVBoxLayout()
         log_text_box = QPlainTextEditLogger(self)
-        log_text_box.setFormatter(logging.Formatter('<b>%(levelname)s</b> - %(asctime)s - %(message)s'))
+        log_text_box.setFormatter(logging.Formatter("<b>%(levelname)s</b> - %(asctime)s - %(message)s"))
         log_text_box.setLevel(logging.DEBUG)
         logger.setLevel(logging.DEBUG)
         logger.addHandler(log_text_box)

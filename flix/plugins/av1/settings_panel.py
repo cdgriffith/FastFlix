@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import logging
 
 from box import Box
 
 from flix.shared import QtWidgets, QtCore
 
-logger = logging.getLogger('flix')
+logger = logging.getLogger("flix")
 
 recommended_bitrates = [
     "100k   (320x240p @ 24,25,30)",
@@ -17,14 +18,13 @@ recommended_bitrates = [
     "4000k (2560x1440p @ 24,25,30)",
     "6000k (2560x1440p @ 50,60)",
     "9000k (3840x2160p @ 24,25,30)",
-    "13000k (3840x2160p @ 50,60)"
+    "13000k (3840x2160p @ 50,60)",
 ]
 
 recommended_crfs = [str(x) for x in range(0, 63)]
 
 
 class AV1(QtWidgets.QWidget):
-
     def __init__(self, parent, main):
         super(AV1, self).__init__(parent)
         self.main = main
@@ -33,19 +33,18 @@ class AV1(QtWidgets.QWidget):
 
         # grid.addWidget(QtWidgets.QLabel("FFMPEG libaom-av1"), 0, 0)
 
-        self.widgets = Box(
-            fps=None,
-            remove_hdr=None,
-            mode=None)
+        self.widgets = Box(fps=None, remove_hdr=None, mode=None)
 
-        self.mode = 'CRF'
+        self.mode = "CRF"
 
         grid.addLayout(self.init_remove_hdr(), 0, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 3, 3)
 
         grid.addWidget(QtWidgets.QWidget(), 5, 0)
         grid.setRowStretch(5, 1)
-        guide_label = QtWidgets.QLabel(f"<a href='https://trac.ffmpeg.org/wiki/Encode/AV1'>FFMPEG AV1 Encoding Guide</a>")
+        guide_label = QtWidgets.QLabel(
+            f"<a href='https://trac.ffmpeg.org/wiki/Encode/AV1'>FFMPEG AV1 Encoding Guide</a>"
+        )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 9, 0, -1, 1)
@@ -65,9 +64,9 @@ class AV1(QtWidgets.QWidget):
 
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel('Remove HDR'))
+        layout.addWidget(QtWidgets.QLabel("Remove HDR"))
         self.widgets.remove_hdr = QtWidgets.QComboBox()
-        self.widgets.remove_hdr.addItems(['No', 'Yes'])
+        self.widgets.remove_hdr.addItems(["No", "Yes"])
         self.widgets.remove_hdr.setCurrentIndex(0)
         self.widgets.remove_hdr.setDisabled(True)
         self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.main.page_update())
@@ -118,9 +117,7 @@ class AV1(QtWidgets.QWidget):
         return layout
 
     def get_settings(self):
-        settings = Box(
-            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
-        )
+        settings = Box(disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),)
         if self.mode == "CRF":
             settings.crf = int(self.widgets.crf.currentText().split(" ", 1)[0])
         else:
@@ -131,7 +128,7 @@ class AV1(QtWidgets.QWidget):
     def new_source(self):
         if not self.main.streams:
             return
-        if self.main.streams['video'][self.main.video_track].get('color_space', '').startswith('bt2020'):
+        if self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
             self.widgets.remove_hdr.setDisabled(False)
         else:
             self.widgets.remove_hdr.setDisabled(True)

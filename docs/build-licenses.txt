@@ -132,7 +132,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ### The PyInstaller licensing terms
 
- 
+
 
 Copyright (c) 2010-2019, PyInstaller Development Team
 Copyright (c) 2005-2009, Giovanni Bajo
@@ -154,8 +154,8 @@ those combinations without any restriction coming from the use of those
 files. (The General Public License restrictions do apply in other respects;
 for example, they cover modification of the files, and distribution when
 not linked into a combine executable.)
- 
- 
+
+
 #### Bootloader and Related Files
 
 
@@ -165,7 +165,7 @@ final executable. This includes files in directories:
 ./bootloader/
 ./PyInstaller/loader
 
- 
+
 #### About the PyInstaller Development Team
 
 
@@ -665,7 +665,7 @@ Version 2.1, February 1999
 
     Copyright (C) 1991, 1999 Free Software Foundation, Inc.
     51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-    
+
     Everyone is permitted to copy and distribute verbatim copies
     of this license document, but changing it is not allowed.
 

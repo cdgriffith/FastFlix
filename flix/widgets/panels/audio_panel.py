@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from box import Box
 
@@ -6,9 +7,21 @@ from flix.shared import QtGui, QtCore, QtWidgets
 
 
 class Audio(QtWidgets.QTabWidget):
-
-    def __init__(self, parent, audio, index, codec, available_audio_encoders, outdex=None,
-                 enabled=True, original=False, first=False, last=False, codecs=(), channels=2):
+    def __init__(
+        self,
+        parent,
+        audio,
+        index,
+        codec,
+        available_audio_encoders,
+        outdex=None,
+        enabled=True,
+        original=False,
+        first=False,
+        last=False,
+        codecs=(),
+        channels=2,
+    ):
         super(Audio, self).__init__(parent)
         self.parent = parent
         self.audio = audio
@@ -25,7 +38,7 @@ class Audio(QtWidgets.QTabWidget):
         self.available_audio_encoders = available_audio_encoders
 
         self.widgets = Box(
-            track_number=QtWidgets.QLabel(f'{index}:{self.outdex}' if enabled else '❌'),
+            track_number=QtWidgets.QLabel(f"{index}:{self.outdex}" if enabled else "❌"),
             audio_info=QtWidgets.QLineEdit(audio),
             up_button=QtWidgets.QPushButton("^"),
             down_button=QtWidgets.QPushButton("v"),
@@ -37,7 +50,7 @@ class Audio(QtWidgets.QTabWidget):
         )
 
         self.widgets.enable_check.setChecked(enabled)
-        #self.widgets.enable_check.toggled.connect(lambda: self.parent.reorder())
+        # self.widgets.enable_check.toggled.connect(lambda: self.parent.reorder())
 
         self.widgets.dup_button.clicked.connect(lambda: self.dup_me())
         self.widgets.dup_button.setFixedWidth(20)
@@ -84,9 +97,9 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.convert_bitrate = QtWidgets.QComboBox()
 
-        self.widgets.convert_bitrate.addItems([f'{x}k' for x in range(32 * self.channels,
-                                                                      (256 * self.channels) + 1,
-                                                                      32 * int(self.channels))])
+        self.widgets.convert_bitrate.addItems(
+            [f"{x}k" for x in range(32 * self.channels, (256 * self.channels) + 1, 32 * int(self.channels))]
+        )
         self.widgets.convert_bitrate.setCurrentIndex(3)
 
         self.widgets.convert_bitrate.currentIndexChanged.connect(lambda: self.page_update())
@@ -111,7 +124,7 @@ class Audio(QtWidgets.QTabWidget):
         passthrough_available = False
         if self.codec in codec_list:
             passthrough_available = True
-            self.widgets.convert_to.addItem('none')
+            self.widgets.convert_to.addItem("none")
         self.widgets.convert_to.addItems(sorted(set(self.available_audio_encoders) & set(codec_list)))
         if current in codec_list:
             index = codec_list.index(current)
@@ -127,8 +140,7 @@ class Audio(QtWidgets.QTabWidget):
 
     @property
     def conversion(self):
-        return {'codec': self.widgets.convert_to.currentText(),
-                'bitrate': self.widgets.convert_bitrate.currentText()}
+        return {"codec": self.widgets.convert_to.currentText(), "bitrate": self.widgets.convert_bitrate.currentText()}
 
     def set_first(self, first=True):
         self.first = first
@@ -139,11 +151,18 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.down_button.setDisabled(self.last)
 
     def dup_me(self):
-        new = Audio(parent=self.parent, audio=self.audio, index=self.index,
-                    outdex=len(self.parent.tracks) + 1, codec=self.codec,
-                    available_audio_encoders=self.parent.available_audio_encoders,
-                    enabled=True, original=False, codecs=self.codecs, channels=self.channels
-                    )
+        new = Audio(
+            parent=self.parent,
+            audio=self.audio,
+            index=self.index,
+            outdex=len(self.parent.tracks) + 1,
+            codec=self.codec,
+            available_audio_encoders=self.parent.available_audio_encoders,
+            enabled=True,
+            original=False,
+            codecs=self.codecs,
+            channels=self.channels,
+        )
 
         self.parent.tracks.append(new)
         self.parent.reorder()
@@ -154,14 +173,12 @@ class Audio(QtWidgets.QTabWidget):
     def set_outdex(self, outdex):
         self.outdex = outdex
         if not self.enabled:
-            self.widgets.track_number.setText('❌')
+            self.widgets.track_number.setText("❌")
         else:
-            self.widgets.track_number.setText(f'{self.index}:{self.outdex}')
-
+            self.widgets.track_number.setText(f"{self.index}:{self.outdex}")
 
 
 class AudioList(QtWidgets.QWidget):
-
     def __init__(self, parent, available_audio_encoders):
         super(AudioList, self).__init__(parent)
         self.main = parent.main
@@ -169,7 +186,7 @@ class AudioList(QtWidgets.QWidget):
         self.available_audio_encoders = available_audio_encoders
 
         layout = QtWidgets.QGridLayout()
-        layout.addWidget(QtWidgets.QLabel('Audio Tracks'))
+        layout.addWidget(QtWidgets.QLabel("Audio Tracks"))
 
         self.inner_widget = QtWidgets.QWidget()
 
@@ -204,17 +221,25 @@ class AudioList(QtWidgets.QWidget):
             track_info = ""
             tags = x.get("tags")
             if tags:
-                track_info += tags.get('title', '')
-                if 'language' in tags:
-                    track_info += f' {tags.language}'
-            track_info += f' - {x.codec_name}'
-            if 'profile' in x:
-                track_info += f' ({x.profile})'
-            track_info += f' - {x.channels} channels'
+                track_info += tags.get("title", "")
+                if "language" in tags:
+                    track_info += f" {tags.language}"
+            track_info += f" - {x.codec_name}"
+            if "profile" in x:
+                track_info += f" ({x.profile})"
+            track_info += f" - {x.channels} channels"
 
-            new_item = Audio(self, track_info, original=True, first=True if i == 1 else False, index=x.index,
-                             codec=x.codec_name, codecs=codecs, channels=x.channels,
-                             available_audio_encoders=self.available_audio_encoders)
+            new_item = Audio(
+                self,
+                track_info,
+                original=True,
+                first=True if i == 1 else False,
+                index=x.index,
+                codec=x.codec_name,
+                codecs=codecs,
+                channels=x.channels,
+                available_audio_encoders=self.available_audio_encoders,
+            )
             layout.addWidget(new_item)
             self.tracks.append(new_item)
 
@@ -267,8 +292,9 @@ class AudioList(QtWidgets.QWidget):
         tracks = []
         for track in self.tracks:
             if track.enabled:
-                tracks.append({'index': track.index, 'outdex': track.outdex,
-                               'conversion': track.conversion, 'codec': track.codec})
+                tracks.append(
+                    {"index": track.index, "outdex": track.outdex, "conversion": track.conversion, "codec": track.codec}
+                )
         return Box(audio_tracks=tracks)
 
     def remove_track(self, track):

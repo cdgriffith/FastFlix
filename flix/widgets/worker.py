@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import logging
 from subprocess import Popen, PIPE, run, STDOUT
 
@@ -6,9 +7,9 @@ import reusables
 
 from flix.shared import QtCore
 
-logger = logging.getLogger('flix')
+logger = logging.getLogger("flix")
 
-__all__ = ['Worker']
+__all__ = ["Worker"]
 
 
 class Worker(QtCore.QThread):
@@ -27,7 +28,7 @@ class Worker(QtCore.QThread):
             logger.info(f"Running command: {self.command}")
             self.process = self.start_exec()
             while True:
-                next_line = self.process.stdout.readline().decode('utf-8')
+                next_line = self.process.stdout.readline().decode("utf-8")
                 if not next_line:
                     if self.process.poll() is not None:
                         break
@@ -41,7 +42,7 @@ class Worker(QtCore.QThread):
             try:
                 return_code = self.target(**self.params)
             except Exception as err:
-                logger.error(f'Could not run target {self.target}: {err}')
+                logger.error(f"Could not run target {self.target}: {err}")
                 return self.app.completed.emit(1)
 
         if self.cmd_type == "convert":

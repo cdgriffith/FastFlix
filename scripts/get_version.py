@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import sys
 import os
@@ -14,17 +15,17 @@ def write_and_exit(msg):
     sys.exit(0)
 
 
-build_id = os.getenv('APPVEYOR_BUILD_ID')
-branch = os.getenv('APPVEYOR_REPO_BRANCH', 'none')
-pr_branch = os.getenv('APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH')
-pr_number = os.getenv('APPVEYOR_PULL_REQUEST_NUMBER')
-now = dt.now().strftime('%Y.%m.%d-%H.%M')
+build_id = os.getenv("APPVEYOR_BUILD_ID")
+branch = os.getenv("APPVEYOR_REPO_BRANCH", "none")
+pr_branch = os.getenv("APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH")
+pr_number = os.getenv("APPVEYOR_PULL_REQUEST_NUMBER")
+now = dt.now().strftime("%Y.%m.%d-%H.%M")
 
-if not pr_branch and branch == 'master':
+if not pr_branch and branch == "master":
     write_and_exit(__version__)
 
 elif pr_branch:
-    write_and_exit(f'{__version__}-pr-{pr_number}-{now}')
+    write_and_exit(f"{__version__}-pr-{pr_number}-{now}")
 
 else:
-    write_and_exit(f'{__version__}-{branch}-{now}')
+    write_and_exit(f"{__version__}-{branch}-{now}")

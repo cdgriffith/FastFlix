@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import logging
 
 from box import Box, BoxList
@@ -8,11 +9,10 @@ from flix.widgets.panels.command_panel import CommandList
 from flix.widgets.panels.audio_panel import AudioList
 from flix.widgets.panels.subtitle_panel import SubtitleList
 
-logger = logging.getLogger('flix')
+logger = logging.getLogger("flix")
 
 
 class VideoOptions(QtWidgets.QTabWidget):
-
     def __init__(self, parent, available_audio_encoders):
         super().__init__(parent)
         self.main = parent
@@ -39,7 +39,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.removeTab(0)
         self.insertTab(0, self.current_settings, "Quality")
         self.setCurrentIndex(0)
-        self.setTabEnabled(1, getattr(self.current_plugin, 'enable_audio', True))
+        self.setTabEnabled(1, getattr(self.current_plugin, "enable_audio", True))
         # self.setTabEnabled(2, getattr(self.current_plugin, 'enable_subtitles', True))
         self.selected = conversion
         self.audio.allowed_formats(self.current_plugin.audio_formats)
@@ -49,7 +49,7 @@ class VideoOptions(QtWidgets.QTabWidget):
     def get_settings(self):
         settings = Box()
         settings.update(self.current_settings.get_settings())
-        if getattr(self.current_plugin, 'enable_audio', True):
+        if getattr(self.current_plugin, "enable_audio", True):
             settings.update(self.audio.get_settings())
         return settings
 

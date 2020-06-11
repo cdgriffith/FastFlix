@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
 import sys
 from pathlib import Path
@@ -16,7 +17,7 @@ from flix.widgets.worker import Worker
 from flix.widgets.command_runner import Worker as CW
 from flix.plugins.common import helpers
 
-logger = logging.getLogger('flix')
+logger = logging.getLogger("flix")
 
 root = os.path.abspath(os.path.dirname(__file__))
 
@@ -25,9 +26,10 @@ def load_plugins(plugin_dir):
     sys.path.insert(0, str(Path(plugin_dir, os.pardir)))
     plugins = Box()
     for item in plugin_dir.iterdir():
-        if item.is_dir() and not item.name.startswith("_") and item.name != 'common':
-            plugin = importlib.machinery.SourceFileLoader(f'plugin_{item.name}',
-                                                          str(Path(item, 'main.py'))).load_module()
+        if item.is_dir() and not item.name.startswith("_") and item.name != "common":
+            plugin = importlib.machinery.SourceFileLoader(
+                f"plugin_{item.name}", str(Path(item, "main.py"))
+            ).load_module()
             plugins[plugin.name] = plugin
     return plugins
 
@@ -45,19 +47,16 @@ class Main(QtWidgets.QWidget):
         self.scale_updating = False
         self.path = Box(
             data=data_path,  # Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
-            work=work_path
+            work=work_path,
         )
 
-        self.plugins = load_plugins(Path(data_path, 'plugins'))
+        self.plugins = load_plugins(Path(data_path, "plugins"))
 
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
         self.svt_av1 = svt_av1
 
-        self.input_defaults = Box(
-            scale=None,
-            crop=None
-        )
+        self.input_defaults = Box(scale=None, crop=None)
 
         self.path.ffmpeg = Path(self.path.data, "ffmpeg")
         self.path.svt_av1 = Path(self.path.data, "svt_av1")
@@ -86,10 +85,10 @@ class Main(QtWidgets.QWidget):
             v_flip=None,
             h_flip=None,
             crop=Box(top=None, bottom=None, left=None, right=None),
-            scale=Box(width=None, height=None, keep_aspect_ratio=None)
+            scale=Box(width=None, height=None, keep_aspect_ratio=None),
         )
 
-        self.thumb_file = Path(self.path.work, 'thumbnail_preview.png')
+        self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
         self.video_options = VideoOptions(self, available_audio_encoders=self.flix.get_audio_encoders())
 
@@ -142,10 +141,10 @@ class Main(QtWidgets.QWidget):
         open_input_file.setFixedSize(100, 50)
         open_input_file.setDefault(True)
         open_input_file.clicked.connect(lambda: self.open_file())
-        open_input_file.setStyleSheet('background: blue')
+        open_input_file.setStyleSheet("background: blue")
         convert = QtWidgets.QPushButton("Convert 🎥")
         convert.setFixedSize(100, 50)
-        convert.setStyleSheet('background: green')
+        convert.setStyleSheet("background: green")
         convert.clicked.connect(lambda: self.create_video())
         self.widgets.convert_button = convert
         layout.addWidget(open_input_file)
@@ -182,7 +181,7 @@ class Main(QtWidgets.QWidget):
 
     def init_rotate(self):
         group_box = QtWidgets.QGroupBox()
-        rotation_dir = Path(base_path, 'data', 'rotations')
+        rotation_dir = Path(base_path, "data", "rotations")
         group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-15px; padding-bottom:-5px}")
         group = QtWidgets.QButtonGroup()
 
@@ -190,32 +189,32 @@ class Main(QtWidgets.QWidget):
         h_size = QtCore.QSize(60, 40)
 
         rot_none = QtWidgets.QRadioButton("No Rotation")
-        rot_none.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix.png'))))
+        rot_none.setIcon(QtGui.QIcon(str(Path(rotation_dir, "FastFlix.png"))))
         rot_none.setIconSize(h_size)
         rot_none.name = None
 
         rot_1 = QtWidgets.QRadioButton("90°")
-        rot_1.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix C90.png'))))
+        rot_1.setIcon(QtGui.QIcon(str(Path(rotation_dir, "FastFlix C90.png"))))
         rot_1.setIconSize(v_size)
         rot_1.name = 1
 
         rot_2 = QtWidgets.QRadioButton("270°")
-        rot_2.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix CC90.png'))))
+        rot_2.setIcon(QtGui.QIcon(str(Path(rotation_dir, "FastFlix CC90.png"))))
         rot_2.setIconSize(v_size)
         rot_2.name = 2
 
         rot_4 = QtWidgets.QRadioButton("180°")
-        rot_4.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix 180.png'))))
+        rot_4.setIcon(QtGui.QIcon(str(Path(rotation_dir, "FastFlix 180.png"))))
         rot_4.setIconSize(h_size)
         rot_4.name = 4
 
         self.widgets.v_flip = QtWidgets.QCheckBox("Vertical Flip")
-        self.widgets.v_flip.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix VF.png'))))
+        self.widgets.v_flip.setIcon(QtGui.QIcon(str(Path(rotation_dir, "FastFlix VF.png"))))
         self.widgets.v_flip.setIconSize(h_size)
         self.widgets.v_flip.toggled.connect(lambda: self.page_update())
 
         self.widgets.h_flip = QtWidgets.QCheckBox("Horizontal Flip")
-        self.widgets.h_flip.setIcon(QtGui.QIcon(str(Path(rotation_dir, 'FastFlix HF.png'))))
+        self.widgets.h_flip.setIcon(QtGui.QIcon(str(Path(rotation_dir, "FastFlix HF.png"))))
         self.widgets.h_flip.setIconSize(h_size)
         self.widgets.h_flip.toggled.connect(lambda: self.page_update())
 
@@ -253,10 +252,10 @@ class Main(QtWidgets.QWidget):
     def init_start_time(self):
         group_box = QtWidgets.QGroupBox()
         group_box.setStyleSheet("QGroupBox{padding-top:18px; margin-top:-18px}")
-        self.widgets.start_time, layout = self.build_hoz_int_field(
-            "Start  ", right_stretch=False, time_field=True)
+        self.widgets.start_time, layout = self.build_hoz_int_field("Start  ", right_stretch=False, time_field=True)
         self.widgets.duration, layout = self.build_hoz_int_field(
-            "  End  ", left_stretch=False, layout=layout, time_field=True)
+            "  End  ", left_stretch=False, layout=layout, time_field=True
+        )
         self.widgets.start_time.textChanged.connect(lambda: self.page_update())
         self.widgets.duration.textChanged.connect(lambda: self.page_update())
         group_box.setLayout(layout)
@@ -269,7 +268,8 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.scale.width, new_scale_layout = self.build_hoz_int_field("Width  ", right_stretch=False)
         self.widgets.scale.height, new_scale_layout, lb, rb = self.build_hoz_int_field(
-            "  Height  ", left_stretch=False, layout=new_scale_layout, return_buttons=True)
+            "  Height  ", left_stretch=False, layout=new_scale_layout, return_buttons=True
+        )
         self.widgets.scale.height.setDisabled(True)
         lb.setDisabled(True)
         rb.setDisabled(True)
@@ -287,7 +287,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.scale_update())
 
-        label = QtWidgets.QLabel('Scale', alignment=(Qt.AlignBottom | Qt.AlignRight))
+        label = QtWidgets.QLabel("Scale", alignment=(Qt.AlignBottom | Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
         label.setMaximumHeight(40)
         bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=Qt.AlignCenter)
@@ -305,11 +305,10 @@ class Main(QtWidgets.QWidget):
         crop_box.setStyleSheet("QGroupBox{padding-top:17px; margin-top:-18px}")
         crop_layout = QtWidgets.QVBoxLayout()
         self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field("Top  ")
-        self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field("Left  ",
-                                                                          right_stretch=False)
-        self.widgets.crop.right, crop_hz_layout = self.build_hoz_int_field("    Right  ",
-                                                                           left_stretch=False,
-                                                                           layout=crop_hz_layout)
+        self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field("Left  ", right_stretch=False)
+        self.widgets.crop.right, crop_hz_layout = self.build_hoz_int_field(
+            "    Right  ", left_stretch=False, layout=crop_hz_layout
+        )
         self.widgets.crop.bottom, crop_bottom_layout = self.build_hoz_int_field("Bottom  ", right_stretch=True)
 
         self.widgets.crop.top.textChanged.connect(lambda: self.page_update())
@@ -335,8 +334,16 @@ class Main(QtWidgets.QWidget):
         for widget in widget_list:
             widget.setDisabled(widget.isEnabled())
 
-    def build_hoz_int_field(self, name, button_size=22, left_stretch=True, right_stretch=True,
-                            layout=None, return_buttons=False, time_field=False):
+    def build_hoz_int_field(
+        self,
+        name,
+        button_size=22,
+        left_stretch=True,
+        right_stretch=True,
+        layout=None,
+        return_buttons=False,
+        time_field=False,
+    ):
         widget = QtWidgets.QLineEdit(self.number_to_time(0) if time_field else "0")
         widget.setFixedHeight(button_size)
         if not layout:
@@ -348,11 +355,11 @@ class Main(QtWidgets.QWidget):
         minus_button = QtWidgets.QPushButton("-")
         minus_button.setAutoRepeat(True)
         minus_button.setFixedSize(button_size, button_size)
-        minus_button.clicked.connect(lambda: self.modify_int(widget, 'minus', time_field))
+        minus_button.clicked.connect(lambda: self.modify_int(widget, "minus", time_field))
         plus_button = QtWidgets.QPushButton("+")
         plus_button.setAutoRepeat(True)
         plus_button.setFixedSize(button_size, button_size)
-        plus_button.clicked.connect(lambda: self.modify_int(widget, 'add', time_field))
+        plus_button.clicked.connect(lambda: self.modify_int(widget, "add", time_field))
         if not time_field:
             widget.setFixedWidth(40)
         layout.addWidget(minus_button)
@@ -369,7 +376,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.preview.setBackgroundRole(QtGui.QPalette.Base)
         self.widgets.preview.setFixedSize(320, 213)
         self.widgets.preview.setAlignment(QtCore.Qt.AlignCenter)
-        self.widgets.preview.setStyleSheet('border: 2px solid #dddddd;')  # background-color:#f0f0f0
+        self.widgets.preview.setStyleSheet("border: 2px solid #dddddd;")  # background-color:#f0f0f0
 
         # buttons = self.init_preview_buttons()
 
@@ -403,37 +410,39 @@ class Main(QtWidgets.QWidget):
             if value is None:
                 return
         else:
-            modifier = getattr(self.plugins[self.convert_to], 'video_dimension_divisor', 1)
+            modifier = getattr(self.plugins[self.convert_to], "video_dimension_divisor", 1)
             try:
                 value = int(widget.text())
                 value = int(value + (value % modifier))
             except ValueError:
-                logger.warning('...dummy')
+                logger.warning("...dummy")
                 return
 
-        modifier = (modifier if method == 'add' else -modifier)
+        modifier = modifier if method == "add" else -modifier
         new_value = value + modifier
         if time_field and new_value < 0:
             return
         widget.setText(str(new_value) if not time_field else self.number_to_time(new_value))
         self.build_commands()
 
-    @reusables.log_exception('flix', show_traceback=False)
+    @reusables.log_exception("flix", show_traceback=False)
     def open_file(self):
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="Open Video",
-                                                         filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx)")
+        filename = QtWidgets.QFileDialog.getOpenFileName(
+            self, caption="Open Video", filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx)"
+        )
         if not filename or not filename[0]:
             return
         self.input_video = filename[0]
         self.update_video_info()
         self.page_update()
 
-    @reusables.log_exception('flix', show_traceback=False)
+    @reusables.log_exception("flix", show_traceback=False)
     def save_file(self, extension="mkv"):
         f = Path(self.input_video)
         save_file = os.path.join(f.parent, f"{f.stem}-flix-{int(time.time())}.{extension}")
-        filename = QtWidgets.QFileDialog.getSaveFileName(self, caption="Save Video As", dir=str(save_file),
-                                                         filter=f"Save File (*.{extension}")
+        filename = QtWidgets.QFileDialog.getSaveFileName(
+            self, caption="Save Video As", dir=str(save_file), filter=f"Save File (*.{extension}"
+        )
         return filename[0] if filename else False
 
     def build_crop(self):
@@ -453,11 +462,11 @@ class Main(QtWidgets.QWidget):
             assert width <= self.video_width, "Width must be smaller than video width"
             assert height <= self.video_height, "Height must be smaller than video height"
         except AssertionError as err:
-            error_message(f'Invalid Crop: {err}', parent=self)
+            error_message(f"Invalid Crop: {err}", parent=self)
             return
         return f"{width}:{height}:{left}:{top}"
 
-    @reusables.log_exception('flix', show_traceback=False)
+    @reusables.log_exception("flix", show_traceback=False)
     def scale_update(self):
         if self.scale_updating:
             return False
@@ -521,16 +530,17 @@ class Main(QtWidgets.QWidget):
         self.page_update()
         self.scale_updating = False
 
-    @reusables.log_exception('flix', show_traceback=False)
+    @reusables.log_exception("flix", show_traceback=False)
     def update_video_info(self):
         self.loading_video = True
         self.streams, self.format_info = self.flix.parse(self.input_video)
         logger.debug(self.streams)
         logger.debug(self.format_info)
 
-        text_video_tracks = [(f'{x.index}: codec {x.codec_name} '
-                              f'- pix_fmt {x.get("pix_fmt")} '
-                              f'- profile {x.get("profile")}') for x in self.streams.video]
+        text_video_tracks = [
+            (f"{x.index}: codec {x.codec_name} " f'- pix_fmt {x.get("pix_fmt")} ' f'- profile {x.get("profile")}')
+            for x in self.streams.video
+        ]
 
         for i in range(self.widgets.video_track.count()):
             self.widgets.video_track.removeItem(0)
@@ -539,22 +549,24 @@ class Main(QtWidgets.QWidget):
         self.video_height = self.streams.video[0].height
 
         self.widgets.scale.width.setText(
-            str(self.video_width + (self.video_width % self.plugins[self.convert_to].video_dimension_divisor)))
+            str(self.video_width + (self.video_width % self.plugins[self.convert_to].video_dimension_divisor))
+        )
         self.widgets.scale.height.setText(
-            str(self.video_height + (self.video_height % self.plugins[self.convert_to].video_dimension_divisor)))
+            str(self.video_height + (self.video_height % self.plugins[self.convert_to].video_dimension_divisor))
+        )
         self.widgets.video_track.addItems(text_video_tracks)
 
         self.widgets.video_track.setDisabled(bool(len(self.streams.video) == 1))
 
-        video_duration = float(self.format_info.get('duration', 0))
+        video_duration = float(self.format_info.get("duration", 0))
 
         logger.debug(f"{len(self.streams['video'])} video tracks found")
         logger.debug(f"{len(self.streams['audio'])} audio tracks found")
-        if self.streams['subtitle']:
+        if self.streams["subtitle"]:
             logger.debug(f"{len(self.streams['subtitle'])} subtitle tracks found")
-        if self.streams['attachment']:
+        if self.streams["attachment"]:
             logger.debug(f"{len(self.streams['attachment'])} attachment tracks found")
-        if self.streams['data']:
+        if self.streams["data"]:
             logger.debug(f"{len(self.streams['data'])} data tracks found")
 
         self.widgets.duration.setText(self.number_to_time(video_duration))
@@ -594,22 +606,22 @@ class Main(QtWidgets.QWidget):
             try:
                 micro = int(extra[0])
             except ValueError:
-                logger.info('bad micro value')
+                logger.info("bad micro value")
                 return
-        total = float(f'.{micro}')
+        total = float(f".{micro}")
         for i, v in enumerate(reversed(base.split(":"))):
             try:
                 v = int(v)
             except ValueError:
-                logger.info(f'Not a valid int: {v}')
+                logger.info(f"Not a valid int: {v}")
             total += v * (60 ** i)
         return total
 
-    @reusables.log_exception('flix', show_traceback=False)
+    @reusables.log_exception("flix", show_traceback=False)
     def generate_thumbnail(self):
         if not self.input_video:
             return
-        logger.debug('Generating thumbnail')
+        logger.debug("Generating thumbnail")
 
         settings = self.get_all_settings()
         filters = helpers.generate_filters(**settings)
@@ -617,7 +629,7 @@ class Main(QtWidgets.QWidget):
         thumb_command = self.flix.generate_thumbnail_command(
             source=self.input_video,
             output=self.thumb_file,
-            video_track=self.streams['video'][self.widgets.video_track.currentIndex()]['index'],
+            video_track=self.streams["video"][self.widgets.video_track.currentIndex()]["index"],
             filters=filters,
             start_time=settings.start_time,
             # disable_hdr=self.convert_hdr_check.isChecked(),
@@ -625,7 +637,7 @@ class Main(QtWidgets.QWidget):
         worker = Worker(self, thumb_command, cmd_type="thumb")
         worker.start()
 
-    @reusables.log_exception('flix', show_traceback=False)
+    @reusables.log_exception("flix", show_traceback=False)
     def thumbnail_generated(self):
         pixmap = QtGui.QPixmap(str(self.thumb_file))
         pixmap = pixmap.scaled(320, 213, QtCore.Qt.KeepAspectRatio)
@@ -634,7 +646,7 @@ class Main(QtWidgets.QWidget):
     def build_scale(self):
         width = self.widgets.scale.width.text()
         height = self.widgets.scale.height.text()
-        if self.convert_to == 'av1':
+        if self.convert_to == "av1":
             pass
             # TODO enforce 8
 
@@ -646,13 +658,15 @@ class Main(QtWidgets.QWidget):
         stream_info = self.streams.video[self.widgets.video_track.currentIndex()]
 
         duration = self.duration
-        if self.duration == float(self.format_info.get('duration', 0)):
+        if self.duration == float(self.format_info.get("duration", 0)):
             duration = None
 
         scale = self.build_scale()
-        if scale in (f"{stream_info.width}:-1",
-                     f"-1:{stream_info.height}",
-                     f"{stream_info.width}:{stream_info.height}"):
+        if scale in (
+            f"{stream_info.width}:-1",
+            f"-1:{stream_info.height}",
+            f"{stream_info.width}:{stream_info.height}",
+        ):
             scale = None
 
         settings = Box(
@@ -667,7 +681,7 @@ class Main(QtWidgets.QWidget):
             h_flip=self.widgets.h_flip.isChecked(),
             streams=self.streams,
             format_info=self.format_info,
-            work_dir=self.path.work
+            work_dir=self.path.work,
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")
@@ -693,7 +707,7 @@ class Main(QtWidgets.QWidget):
         if self.widgets.convert_to:
             return self.widgets.convert_to.currentText()
 
-    @reusables.log_exception('flix', show_traceback=False)
+    @reusables.log_exception("flix", show_traceback=False)
     def create_video(self):
         if self.converting:
             self.command_runner.kill()
@@ -716,16 +730,14 @@ class Main(QtWidgets.QWidget):
         commands = self.build_commands()
         for item in commands:
             if item.item == "command":
-                item.command = item.command.format(ffmpeg=self.ffmpeg,
-                                                   ffprobe=self.ffprobe,
-                                                   av1=self.svt_av1,
-                                                   output=self.output_video)
+                item.command = item.command.format(
+                    ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, av1=self.svt_av1, output=self.output_video
+                )
             elif item.item == "loop":
                 for sub_item in item.commands:
-                    sub_item.command = sub_item.command.format(ffmpeg=self.ffmpeg,
-                                                               ffprobe=self.ffprobe,
-                                                               av1=self.svt_av1,
-                                                               output=self.output_video)
+                    sub_item.command = sub_item.command.format(
+                        ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, av1=self.svt_av1, output=self.output_video
+                    )
 
         self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")
@@ -733,7 +745,7 @@ class Main(QtWidgets.QWidget):
         self.command_runner = CW(self, commands, self.path.work)
         self.command_runner.start()
 
-    @reusables.log_exception('flix', show_traceback=False)
+    @reusables.log_exception("flix", show_traceback=False)
     def conversion_complete(self, return_code):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
@@ -750,7 +762,7 @@ class Main(QtWidgets.QWidget):
             if sm.clickedButton().text() == "View":
                 QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(self.output_video))
 
-    @reusables.log_exception('flix', show_traceback=False)
+    @reusables.log_exception("flix", show_traceback=False)
     def conversion_cancelled(self):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
@@ -760,7 +772,7 @@ class Main(QtWidgets.QWidget):
         except OSError:
             pass
 
-    @reusables.log_exception('flix', show_traceback=False)
+    @reusables.log_exception("flix", show_traceback=False)
     def dropEvent(self, event):
         if not event.mimeData().hasUrls:
             return event.ignore()
