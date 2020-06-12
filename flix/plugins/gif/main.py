@@ -3,7 +3,7 @@
 __version__ = "1.0.0"
 __author__ = "Chris Griffith"
 
-name = "gif"
+name = "GIF"
 
 video_extension = "gif"
 video_dimension_divisor = 1

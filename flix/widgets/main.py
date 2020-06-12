@@ -115,6 +115,7 @@ class Main(QtWidgets.QWidget):
 
         self.grid.addWidget(self.video_options, 5, 0, 10, 15)
         self.grid.setSpacing(5)
+        self.side_data = Box()
 
         self.setLayout(self.grid)
         self.show()
@@ -249,7 +250,6 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(self.widgets.convert_to, stretch=1)
         layout.setSpacing(10)
         self.widgets.convert_to.currentTextChanged.connect(self.video_options.change_conversion)
-
         return layout
 
     def init_start_time(self):
@@ -556,6 +556,7 @@ class Main(QtWidgets.QWidget):
     def update_video_info(self):
         self.loading_video = True
         self.streams, self.format_info = self.flix.parse(self.input_video)
+        self.side_data = self.flix.parse_hdr_details(self.input_video)
         logger.debug(self.streams)
         logger.debug(self.format_info)
 
@@ -718,6 +719,7 @@ class Main(QtWidgets.QWidget):
             streams=self.streams,
             format_info=self.format_info,
             work_dir=self.path.work,
+            side_data=self.side_data,
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")

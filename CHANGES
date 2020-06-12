@@ -5,10 +5,12 @@ Version 2.1.0
 ~~~~~~~~~~~~~
 
 * Adding config file that will allow for customizable work directory
+* Adding support for HEVC conversion
 * Updating SVT-AV1 to build 1.0.2565
 * Fixing windows scaling display issues
 * Fixing scaling to properly keep scaling and will be red when bad
 * Fixing scaling for videos with rotation
+* Fixing audio builder to select correct tracks
 
 Version 2.0.1
 ~~~~~~~~~~~~~

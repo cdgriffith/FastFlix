@@ -1,0 +1,87 @@
+# -*- coding: utf-8 -*-
+import reusables
+import re
+
+from box import Box
+
+from plugins.common.helpers import generate_filters, Command
+from plugins.common.audio import build_audio
+
+
+def build(
+    source,
+    video_track,
+    bitrate=None,
+    crf=None,
+    start_time=0,
+    duration=None,
+    preset="fast",
+    audio_tracks=(),
+    disable_hdr=False,
+    side_data=None,
+    x265_params=None,
+    **kwargs,
+):
+    filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
+    audio = build_audio(audio_tracks)
+
+    ending = "dev/null && \\"
+    if reusables.win_based:
+        ending = "NUL"
+
+    if not side_data:
+        side_data = Box(default_box=True)
+
+    beginning = (
+        f'"{{ffmpeg}}" -y '
+        f'-i "{source}" '
+        f' {f"-ss {start_time}" if start_time else ""}  '
+        f'{f"-to {duration}" if duration else ""} '
+        f"-map 0:{video_track} "
+        f"-c:v libx265 "
+        f'{f"-vf {filters}" if filters else ""} '
+        # f'{"-pix_fmt yuv420p" if force420 else ""} '
+    )
+
+    beginning = re.sub("[ ]+", " ", beginning)
+
+    if not disable_hdr:
+        x265_params = f"-x265-params {x265_params}"
+        if side_data.color_primaries == "bt2020":
+            x265_params += "hdr-opt=1:repeat-headers=1:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc"
+
+        if side_data.master_display:
+            x265_params += (
+                ':master-display="'
+                f"G{side_data.master_display.green}"
+                f"B{side_data.master_display.blue}"
+                f"R{side_data.master_display.red}"
+                f"WP{side_data.master_display.white}"
+                f'L{side_data.master_display.luminance}"'
+            )
+    elif x265_params:
+        x265_params = f"-x265-params {x265_params}"
+
+    if x265_params:
+        beginning += x265_params
+
+    if side_data.cll:
+        pass
+
+    if bitrate:
+        command_1 = f'{beginning}:pass=1 -passlogfile "<tempfile.1.log>" -b:v {bitrate} -an -f mp4 {ending}'
+        command_2 = (
+            f'{beginning}:pass=2 -passlogfile "<tempfile.1.log>" '
+            f'-b:v {bitrate} -preset {preset} {audio} "{{output}}"'
+        )
+        return [
+            Command(command_1, ["ffmpeg", "output"], False, name="First pass bitrate"),
+            Command(command_2, ["ffmpeg", "output"], False, name="Second pass bitrate"),
+        ]
+
+    elif crf:
+        command = f'{beginning} -crf {crf} -preset {preset} {audio} "{{output}}"'
+        return [Command(command, ["ffmpeg", "output"], False, name="Single pass CRF")]
+
+    else:
+        return []

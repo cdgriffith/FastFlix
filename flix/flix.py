@@ -2,9 +2,10 @@
 from subprocess import run, PIPE, Popen, STDOUT
 import logging
 import os
+import json
 from pathlib import Path
 
-from box import Box, BoxError
+from box import Box, BoxError, BoxList
 
 __all__ = ["FlixError", "ff_version", "Flix", "svt_av1_version"]
 
@@ -368,3 +369,44 @@ class Flix:
             elif line.startswith(start_line):
                 started = True
         return encoders
+
+    def parse_hdr_details(self, video_source, video_track=0):
+        command = (
+            f"{self.ffprobe} -select_streams v:{video_track} -print_format json -show_frames "
+            '-read_intervals "%+#1" '
+            '-show_entries "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt" '
+            f'-i "{video_source}"'
+        )
+
+        result = run(command, shell=True, stdout=PIPE, stderr=PIPE)
+        data = Box.from_json(result.stdout.decode("utf-8"), default_box=True, default_box_attr=None)
+        if "frames" not in data or not len(data.frames):
+            return
+        data = data.frames[0]
+
+        master_display = None
+        cll = None
+
+        def s(a, v):
+            return int(a.get(v, "0").split("/")[0])
+
+        for item in data.get("side_data_list", BoxList(default_box=True)):
+            if item.side_data_type == "Mastering display metadata":
+                master_display = Box(
+                    red=f"({s(item, 'red_x')},{s(item, 'red_y')})",
+                    green=f"({s(item, 'green_x')},{s(item, 'green_y')})",
+                    blue=f"({s(item, 'blue_x')},{s(item, 'blue_y')})",
+                    white=f"({s(item, 'white_x')},{s(item, 'white_y')})",
+                    luminance=f"({s(item, 'max_luminance')},{s(item, 'min_luminance')})",
+                )
+            if item.side_data_type == "Content light level metadata":
+                cll = Box(max_content=item.max_content, max_average=item.max_average)
+
+        return Box(
+            pix_fmt=data.pix_fmt,
+            color_space=data.color_space,
+            color_primaries=data.color_primaries,
+            color_transfer=data.color_transfer,
+            master_display=master_display,
+            cll=cll,
+        )

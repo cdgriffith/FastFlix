@@ -3,16 +3,17 @@
 __version__ = "1.0.0"
 __author__ = "Chris Griffith"
 
-name = "AV1"
+name = "HEVC"
 
 video_extension = "mkv"
-video_dimension_divisor = 8
+video_dimension_divisor = 1
 
 enable_subtitles = True
 enable_audio = True
 
 audio_formats = [
     "aac",
+    "libfdk-aac",
     "ac3",
     "dts",
     "truehd",
@@ -57,5 +58,5 @@ audio_formats = [
     "pcm_u8",
 ]
 
-from plugins.av1.command_builder import build
-from plugins.av1.settings_panel import AV1 as settings_panel
+from plugins.hevc.command_builder import build
+from plugins.hevc.settings_panel import HEVC as settings_panel

@@ -217,7 +217,7 @@ class AudioList(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(5)
 
-        for i, x in enumerate(self.main.streams.audio, 1):
+        for i, x in enumerate(self.main.streams.audio):
             track_info = ""
             tags = x.get("tags")
             if tags:

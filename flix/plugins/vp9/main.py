@@ -3,7 +3,7 @@
 __version__ = "1.0.0"
 __author__ = "Chris Griffith"
 
-name = "vp9"
+name = "VP9"
 
 video_extension = "webm"
 video_dimension_divisor = 1
