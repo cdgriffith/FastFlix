@@ -4,6 +4,7 @@ import logging
 from logging.handlers import SocketHandler
 from pathlib import Path
 from distutils.version import StrictVersion
+from datetime import datetime
 
 from appdirs import user_data_dir
 from box import Box
@@ -28,6 +29,11 @@ def main():
     data_path = Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
     first_time = not data_path.exists()
     data_path.mkdir(parents=True, exist_ok=True)
+    log_dir = data_path / "logs"
+    log_dir.mkdir(parents=True, exist_ok=True)
+
+    fileHandler = logging.FileHandler(log_dir / f"flix_{datetime.now().isoformat().replace(':', '.')}")
+    logger.addHandler(fileHandler)
 
     config_file = Path(data_path.parent, "fastflix.json")
     if not config_file.exists():

@@ -14,6 +14,9 @@ class Audio(QtWidgets.QTabWidget):
         index,
         codec,
         available_audio_encoders,
+        title="",
+        language="",
+        profile="",
         outdex=None,
         enabled=True,
         original=False,
@@ -29,6 +32,9 @@ class Audio(QtWidgets.QTabWidget):
         self.original = original
         self.outdex = index if self.original else outdex
         self.first = first
+        self.track_name = title
+        self.profile = profile
+        self.language = language
         self.last = last
         self.index = index
         self.codec = codec
@@ -39,18 +45,37 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{index}:{self.outdex}" if enabled else "❌"),
-            audio_info=QtWidgets.QLineEdit(audio),
+            title=QtWidgets.QLineEdit(title),
+            audio_info=QtWidgets.QLabel(audio),
             up_button=QtWidgets.QPushButton("^"),
             down_button=QtWidgets.QPushButton("v"),
             enable_check=QtWidgets.QCheckBox("Enabled"),
             dup_button=QtWidgets.QPushButton("➕"),
             delete_button=QtWidgets.QPushButton("⛔"),
+            downmix=QtWidgets.QComboBox(),
             convert_to=None,
             convert_bitrate=None,
         )
+        downmix_options = [
+            "mono",
+            "stereo",
+            "2.1 / 3.0",
+            "3.1 / 4.0",
+            "4.1 / 5.0",
+            "5.1 / 6.0",
+            "6.1 / 7.0",
+            "7.1 / 8.0",
+        ]
+        self.widgets.title.setFixedWidth(200)
+        self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+
+        self.widgets.downmix.addItems(["No Downmix"] + downmix_options[: channels - 2])
+        self.widgets.downmix.currentIndexChanged.connect(self.update_downmix)
+        self.widgets.downmix.setCurrentIndex(0)
+        self.widgets.downmix.setDisabled(True)
 
         self.widgets.enable_check.setChecked(enabled)
-        # self.widgets.enable_check.toggled.connect(lambda: self.parent.reorder())
+        self.widgets.enable_check.toggled.connect(self.update_enable)
 
         self.widgets.dup_button.clicked.connect(lambda: self.dup_me())
         self.widgets.dup_button.setFixedWidth(20)
@@ -63,13 +88,16 @@ class Audio(QtWidgets.QTabWidget):
         grid.addLayout(self.init_move_buttons(), 0, 0)
         grid.addWidget(self.widgets.track_number, 0, 1)
         grid.addWidget(self.widgets.audio_info, 0, 2)
-        grid.addLayout(self.init_conversion(), 0, 3)
+        grid.addWidget(QtWidgets.QLabel("Title: "), 0, 3)
+        grid.addWidget(self.widgets.title, 0, 4)
+        grid.addLayout(self.init_conversion(), 0, 5)
+        grid.addWidget(self.widgets.downmix, 0, 6)
 
         if not original:
-            grid.addWidget(self.widgets.delete_button, 0, 4)
+            grid.addWidget(self.widgets.delete_button, 0, 7)
         else:
-            grid.addWidget(self.widgets.dup_button, 0, 5)
-            grid.addWidget(self.widgets.enable_check, 0, 4)
+            grid.addWidget(self.widgets.dup_button, 0, 8)
+            grid.addWidget(self.widgets.enable_check, 0, 7)
         self.setLayout(grid)
         self.loading = False
 
@@ -98,12 +126,12 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.convert_bitrate = QtWidgets.QComboBox()
 
         self.widgets.convert_bitrate.addItems(
-            [f"{x}k" for x in range(32 * self.channels, (256 * self.channels) + 1, 32 * int(self.channels))]
+            [f"{x}k" for x in range(32 * self.channels, (256 * self.channels) + 1, 32 * self.channels)]
         )
         self.widgets.convert_bitrate.setCurrentIndex(3)
 
         self.widgets.convert_bitrate.currentIndexChanged.connect(lambda: self.page_update())
-        self.widgets.convert_to.currentIndexChanged.connect(lambda: self.page_update())
+        self.widgets.convert_to.currentIndexChanged.connect(self.update_conversion)
         layout.addWidget(QtWidgets.QLabel("Conversion: "))
         layout.addWidget(self.widgets.convert_to)
 
@@ -112,6 +140,33 @@ class Audio(QtWidgets.QTabWidget):
 
         return layout
 
+    def update_enable(self):
+        enabled = self.widgets.enable_check.isChecked()
+        self.widgets.track_number.setText(f"{self.index}:{self.outdex}" if enabled else "❌")
+        self.parent.reorder()
+        self.page_update()
+
+    def update_downmix(self):
+        channels = self.widgets.downmix.currentIndex()
+        self.widgets.convert_bitrate.clear()
+        if channels > 0:
+            self.widgets.convert_bitrate.addItems(
+                [f"{x}k" for x in range(32 * channels, (256 * channels) + 1, 32 * channels)]
+            )
+        else:
+            self.widgets.convert_bitrate.addItems(
+                [f"{x}k" for x in range(32 * self.channels, (256 * self.channels) + 1, 32 * self.channels)]
+            )
+        self.widgets.convert_bitrate.setCurrentIndex(3)
+        self.page_update()
+
+    def update_conversion(self):
+        if self.widgets.convert_to.currentIndex() == 0:
+            self.widgets.downmix.setDisabled(True)
+        else:
+            self.widgets.downmix.setDisabled(False)
+        self.page_update()
+
     def page_update(self):
         if not self.loading:
             return self.parent.main.page_update()
@@ -119,8 +174,7 @@ class Audio(QtWidgets.QTabWidget):
     def update_codecs(self, codec_list):
         self.loading = True
         current = self.widgets.convert_to.currentText()
-        for i in range(self.widgets.convert_to.count()):
-            self.widgets.convert_to.removeItem(0)
+        self.widgets.convert_to.clear()
         passthrough_available = False
         if self.codec in codec_list:
             passthrough_available = True
@@ -141,6 +195,14 @@ class Audio(QtWidgets.QTabWidget):
     @property
     def conversion(self):
         return {"codec": self.widgets.convert_to.currentText(), "bitrate": self.widgets.convert_bitrate.currentText()}
+
+    @property
+    def downmix(self):
+        return self.widgets.downmix.currentIndex()
+
+    @property
+    def title(self):
+        return self.widgets.title.text()
 
     def set_first(self, first=True):
         self.first = first
@@ -219,7 +281,7 @@ class AudioList(QtWidgets.QWidget):
 
         for i, x in enumerate(self.main.streams.audio):
             track_info = ""
-            tags = x.get("tags")
+            tags = x.get("tags", {})
             if tags:
                 track_info += tags.get("title", "")
                 if "language" in tags:
@@ -232,6 +294,9 @@ class AudioList(QtWidgets.QWidget):
             new_item = Audio(
                 self,
                 track_info,
+                title=tags.get("title"),
+                language=tags.get("language"),
+                profile=x.get("profile"),
                 original=True,
                 first=True if i == 1 else False,
                 index=x.index,
@@ -293,7 +358,14 @@ class AudioList(QtWidgets.QWidget):
         for track in self.tracks:
             if track.enabled:
                 tracks.append(
-                    {"index": track.index, "outdex": track.outdex, "conversion": track.conversion, "codec": track.codec}
+                    {
+                        "index": track.index,
+                        "outdex": track.outdex,
+                        "conversion": track.conversion,
+                        "codec": track.codec,
+                        "downmix": track.downmix,
+                        "title": track.title,
+                    }
                 )
         return Box(audio_tracks=tracks)
 

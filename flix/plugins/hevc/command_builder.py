@@ -20,6 +20,7 @@ def build(
     disable_hdr=False,
     side_data=None,
     x265_params=None,
+    intra_encoding=False,
     **kwargs,
 ):
     filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
@@ -45,25 +46,30 @@ def build(
 
     beginning = re.sub("[ ]+", " ", beginning)
 
+    if not x265_params:
+        x265_params = []
+
     if not disable_hdr:
-        x265_params = f"-x265-params {x265_params}"
         if side_data.color_primaries == "bt2020":
-            x265_params += "hdr-opt=1:repeat-headers=1:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc"
+            x265_params.extend(
+                ["hdr-opt=1", "repeat-headers=1", "colorprim=bt2020", "transfer=smpte2084", "colormatrix=bt2020nc"]
+            )
 
         if side_data.master_display:
-            x265_params += (
-                ':master-display="'
+            x265_params.append(
+                "master-display="
                 f"G{side_data.master_display.green}"
                 f"B{side_data.master_display.blue}"
                 f"R{side_data.master_display.red}"
                 f"WP{side_data.master_display.white}"
-                f'L{side_data.master_display.luminance}"'
+                f"L{side_data.master_display.luminance}"
             )
-    elif x265_params:
-        x265_params = f"-x265-params {x265_params}"
+
+    if intra_encoding:
+        x265_params.append("keyint=1")
 
     if x265_params:
-        beginning += x265_params
+        beginning += "-x265-params {}".format(":".join(x265_params))
 
     if side_data.cll:
         pass

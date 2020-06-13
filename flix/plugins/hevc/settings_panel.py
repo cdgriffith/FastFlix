@@ -39,13 +39,14 @@ class HEVC(QtWidgets.QWidget):
 
         grid = QtWidgets.QGridLayout()
 
-        self.widgets = Box(remove_hdr=None, mode=None)
+        self.widgets = Box(remove_hdr=None, mode=None, intra_encoding=None)
 
         self.mode = "CRF"
 
         grid.addLayout(self.init_modes(), 0, 2, 8, 4)
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)
         grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
+        grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 2)
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
@@ -61,10 +62,10 @@ class HEVC(QtWidgets.QWidget):
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
         label = QtWidgets.QLabel("Remove HDR")
-        layout.addWidget(label)
         label.setToolTip(
             "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
         )
+        layout.addWidget(label)
         self.widgets.remove_hdr = QtWidgets.QComboBox()
         self.widgets.remove_hdr.addItems(["No", "Yes"])
         self.widgets.remove_hdr.setCurrentIndex(0)
@@ -73,9 +74,29 @@ class HEVC(QtWidgets.QWidget):
         layout.addWidget(self.widgets.remove_hdr)
         return layout
 
+    def init_intra_encoding(self):
+        layout = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("Intra-encoding")
+        label.setToolTip(
+            "Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
+            "This option is not recommenced unless you need to conform to Blu-ray standards to burn to a physical disk"
+        )
+        layout.addWidget(label)
+        self.widgets.intra_encoding = QtWidgets.QComboBox()
+        self.widgets.intra_encoding.addItems(["No", "Yes"])
+        self.widgets.intra_encoding.setCurrentIndex(0)
+        self.widgets.intra_encoding.currentIndexChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.intra_encoding)
+        return layout
+
     def init_preset(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Preset"))
+        label = QtWidgets.QLabel("Preset")
+        label.setToolTip(
+            "The slower the preset, the better the compression and quality\n"
+            "Slow is highest personal recommenced, as past that is much smaller gains"
+        )
+        layout.addWidget(label)
         self.widgets.preset = QtWidgets.QComboBox()
         self.widgets.preset.addItems(
             ["ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"]
@@ -139,13 +160,13 @@ class HEVC(QtWidgets.QWidget):
 
     def get_settings(self):
         settings = Box(
-            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()), preset=self.widgets.preset.currentText(),
+            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+            preset=self.widgets.preset.currentText(),
+            intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
         )
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
-            settings.crf = (
-                int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_cref.currentText()
-            )
+            settings.crf = int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_crf.text()
         else:
             bitrate = self.widgets.bitrate.currentText()
             if bitrate.lower() == "custom":

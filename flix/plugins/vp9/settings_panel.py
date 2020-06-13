@@ -200,9 +200,7 @@ class VP9(QtWidgets.QWidget):
         )
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
-            settings.crf = (
-                int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_cref.currentText()
-            )
+            settings.crf = int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_crf.text()
         else:
             bitrate = self.widgets.bitrate.currentText()
             if bitrate.lower() == "custom":
