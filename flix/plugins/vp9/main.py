@@ -4,6 +4,7 @@ __version__ = "1.0.0"
 __author__ = "Chris Griffith"
 
 name = "VP9"
+requires = "libvpx"
 
 video_extension = "webm"
 video_dimension_divisor = 1

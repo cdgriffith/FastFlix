@@ -4,6 +4,7 @@ __version__ = "1.0.0"
 __author__ = "Chris Griffith"
 
 name = "HEVC"
+requires = "libx265"
 
 video_extension = "mkv"
 video_dimension_divisor = 1

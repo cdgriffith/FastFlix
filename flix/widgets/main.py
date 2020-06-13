@@ -22,7 +22,7 @@ logger = logging.getLogger("flix")
 root = os.path.abspath(os.path.dirname(__file__))
 
 
-def load_plugins(plugin_dir):
+def load_plugins(plugin_dir, configuration):
     sys.path.insert(0, str(Path(plugin_dir, os.pardir)))
     plugins = Box()
     for item in plugin_dir.iterdir():
@@ -30,7 +30,9 @@ def load_plugins(plugin_dir):
             plugin = importlib.machinery.SourceFileLoader(
                 f"plugin_{item.name}", str(Path(item, "main.py"))
             ).load_module()
-            plugins[plugin.name] = plugin
+            requires = getattr(plugin, "requires", None)
+            if not requires or (requires and requires in configuration):
+                plugins[plugin.name] = plugin
     return plugins
 
 
@@ -49,8 +51,6 @@ class Main(QtWidgets.QWidget):
             data=data_path,  # Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
             work=work_path,
         )
-
-        self.plugins = load_plugins(Path(data_path, "plugins"))
 
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
@@ -90,6 +90,8 @@ class Main(QtWidgets.QWidget):
 
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
+        self.plugins = load_plugins(Path(data_path, "plugins"), self.flix.ffmpeg_configuration())
+
         self.video_options = VideoOptions(self, available_audio_encoders=self.flix.get_audio_encoders())
 
         self.completed.connect(self.conversion_complete)
