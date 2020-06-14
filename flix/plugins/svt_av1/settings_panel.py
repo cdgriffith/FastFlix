@@ -161,7 +161,6 @@ class AV1(QtWidgets.QWidget):
         else:
             bitrate = self.widgets.bitrate.currentText()
             settings.bitrate = bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.bitrate.text()
-        logger.info(settings)
         return settings
 
     def new_source(self):

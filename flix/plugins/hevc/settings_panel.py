@@ -173,7 +173,6 @@ class HEVC(QtWidgets.QWidget):
                 settings.bitrate = self.widgets.custom_bitrate.currentText()
             else:
                 settings.bitrate = bitrate.split(" ", 1)[0]
-        logger.info(settings)
         return settings
 
     def new_source(self):

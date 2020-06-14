@@ -60,8 +60,9 @@ def build(
         return []
 
     if crf and single_pass:
-        return [Command(command_2, ["ffmpeg", "output"], False, name="Single pass CRF")]
+        return [Command(command_2, ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")]
+    pass_type = "bitrate" if bitrate else "CRF"
     return [
-        Command(command_1, ["ffmpeg", "output"], False, name=f"First pass {'bitrate' if bitrate else 'CRF'}"),
-        Command(command_2, ["ffmpeg", "output"], False, name=f"Second pass {'bitrate' if bitrate else 'CRF'} "),
+        Command(command_1, ["ffmpeg", "output"], False, name=f"First pass {pass_type}", exe="ffmpeg"),
+        Command(command_2, ["ffmpeg", "output"], False, name=f"Second pass {pass_type} ", exe="ffmpeg"),
     ]

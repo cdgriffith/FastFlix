@@ -25,6 +25,6 @@ def build(source, video_track, fps=15, dither="sierra2_4a", **kwargs):
     )
 
     return [
-        Command(command_1, ["ffmpeg", "pallet_file", "output"], False, name="Pallet generation"),
-        Command(command_2, ["ffmpeg", "pallet_file", "output"], False, name="GIF creation"),
+        Command(command_1, ["ffmpeg", "pallet_file", "output"], False, name="Pallet generation", exe="ffmpeg"),
+        Command(command_2, ["ffmpeg", "pallet_file", "output"], False, name="GIF creation", exe="ffmpeg"),
     ]

@@ -22,7 +22,7 @@ class Command:
         self.variables = variables
         self.internal = internal
         self.ensure_paths = ensure_paths
-        self.exe = None
+        self.exe = exe
 
 
 def start_and_input(source, **kwargs):

@@ -8,6 +8,7 @@ Version 2.1.0
 * Adding support for HEVC conversion
 * Adding support for audio downmixing and custom titles
 * Adding log to file
+* Adding realtime logging for ffmpeg conversions
 * Updating SVT-AV1 to build 1.0.2565
 * Fixing windows scaling display issues
 * Fixing scaling to properly keep scaling and will be red when bad

@@ -65,6 +65,9 @@ def build(
                 f"L{side_data.master_display.luminance}"
             )
 
+        if side_data.cll:
+            x265_params.append(f"max-cll={side_data.cll}")
+
     if intra_encoding:
         x265_params.append("keyint=1")
 
@@ -81,13 +84,13 @@ def build(
             f'-b:v {bitrate} -preset {preset} {audio} "{{output}}"'
         )
         return [
-            Command(command_1, ["ffmpeg", "output"], False, name="First pass bitrate"),
-            Command(command_2, ["ffmpeg", "output"], False, name="Second pass bitrate"),
+            Command(command_1, ["ffmpeg", "output"], False, name="First pass bitrate", exe="ffmpeg"),
+            Command(command_2, ["ffmpeg", "output"], False, name="Second pass bitrate", exe="ffmpeg"),
         ]
 
     elif crf:
         command = f'{beginning} -crf {crf} -preset {preset} {audio} "{{output}}"'
-        return [Command(command, ["ffmpeg", "output"], False, name="Single pass CRF")]
+        return [Command(command, ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")]
 
     else:
         return []

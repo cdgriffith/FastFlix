@@ -64,7 +64,6 @@ class Worker(QtCore.QThread):
         return command
 
     def run_command(self, command, command_type=None):
-
         # if command:
         command = self.replace_temps(command)
         logger.info(f"Running command: {command}")
@@ -110,6 +109,8 @@ class Worker(QtCore.QThread):
                     break
                 if not white_detect.match(line):
                     logger.info(line.rstrip())
+                    if line.strip().startswith(("frame", "encoded")):
+                        self.app.log_label_update(line.strip())
 
         # self.process.wait()
         # for line in self.process.stdout:

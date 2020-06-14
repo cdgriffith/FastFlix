@@ -122,7 +122,6 @@ class AV1(QtWidgets.QWidget):
             settings.crf = int(self.widgets.crf.currentText().split(" ", 1)[0])
         else:
             settings.bitrate = self.widgets.bitrate.currentText().split(" ", 1)[0]
-        logger.info(settings)
         return settings
 
     def new_source(self):

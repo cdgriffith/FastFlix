@@ -69,10 +69,6 @@ class Main(QtWidgets.QWidget):
         self.input_video = None
         self.streams, self.format_info = None, None
 
-        # self.x265 = X265(parent=self, source=source)
-        # self.av1 = AV1(parent=self, source=source)
-        # self.gif = GIF(parent=self, source=source)
-
         self.widgets = Box(
             input_file=None,
             preview=None,
@@ -100,6 +96,7 @@ class Main(QtWidgets.QWidget):
         self.encoding_worker = None
         self.command_runner = None
         self.converting = False
+        self.side_data = Box()
 
         self.video_width = 0
         self.video_height = 0
@@ -115,14 +112,37 @@ class Main(QtWidgets.QWidget):
         self.init_scale_and_crop()
         self.init_preview_image()
 
+        log_label_font = QtGui.QFont()
+        log_label_font.setFamily("Courier New")
+        log_label_font.setPointSize(11)
+        self.log_label = QtWidgets.QLabel("")
+        self.log_label.setFont(log_label_font)
+
         self.grid.addWidget(self.video_options, 5, 0, 10, 15)
+        self.grid.addWidget(self.log_label, 16, 0, 1, 15)
         self.grid.setSpacing(5)
-        self.side_data = Box()
 
         self.setLayout(self.grid)
         self.show()
         self.initialized = True
         self.last_page_update = time.time()
+
+    def log_label_update(self, text):
+        if text.startswith("frame"):
+            d = Box(default_box=True, default_box_attr="")
+            g = text.strip().split()
+            for i, x in enumerate(g):
+                if "=" in x:
+                    a = x.split("=")
+                    if a[1]:
+                        d[a[0]] = a[1]
+                    else:
+                        d[a[0]] = g[i + 1]
+            text = (
+                f" fps: {d.fps:<4}    frame: {d.frame:<10}    size: {d.size:<10}    "
+                f"time: {d.time:<11}    bitrate: {d.bitrate:<20}   speed: {d.speed}"
+            )
+        self.log_label.setText(text)
 
     def init_video_area(self):
         layout = QtWidgets.QVBoxLayout()
