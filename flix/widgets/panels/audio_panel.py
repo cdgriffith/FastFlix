@@ -94,7 +94,7 @@ class Audio(QtWidgets.QTabWidget):
         grid.addWidget(self.widgets.downmix, 0, 6)
 
         if not original:
-            grid.addWidget(self.widgets.delete_button, 0, 7)
+            grid.addWidget(self.widgets.delete_button, 0, 8, 1, 2)
         else:
             grid.addWidget(self.widgets.dup_button, 0, 8)
             grid.addWidget(self.widgets.enable_check, 0, 7)
@@ -219,7 +219,7 @@ class Audio(QtWidgets.QTabWidget):
             index=self.index,
             outdex=len(self.parent.tracks) + 1,
             codec=self.codec,
-            available_audio_encoders=self.parent.available_audio_encoders,
+            available_audio_encoders=self.available_audio_encoders,
             enabled=True,
             original=False,
             codecs=self.codecs,

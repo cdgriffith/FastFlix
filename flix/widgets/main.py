@@ -57,6 +57,7 @@ class Main(QtWidgets.QWidget):
         self.svt_av1 = svt_av1
 
         self.input_defaults = Box(scale=None, crop=None)
+        self.initial_duration = 0
 
         self.path.ffmpeg = Path(self.path.data, "ffmpeg")
         self.path.svt_av1 = Path(self.path.data, "svt_av1")
@@ -618,6 +619,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.video_track.setDisabled(bool(len(self.streams.video) == 1))
 
         video_duration = float(self.format_info.get("duration", 0))
+        self.initial_duration = video_duration
 
         logger.debug(f"{len(self.streams['video'])} video tracks found")
         logger.debug(f"{len(self.streams['audio'])} audio tracks found")
@@ -718,6 +720,8 @@ class Main(QtWidgets.QWidget):
 
         duration = self.duration
         if self.duration == float(self.format_info.get("duration", 0)):
+            duration = None
+        if self.duration - 0.1 <= self.initial_duration <= self.duration + 0.1:
             duration = None
 
         scale = self.build_scale()

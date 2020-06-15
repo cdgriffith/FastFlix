@@ -23,10 +23,10 @@ recommended_bitrates = [
 ]
 
 recommended_crfs = [
-    "28 (480p)",
-    "26 (720p)",
-    "24 (1080p)",
-    "22 (1440p)",
+    "24 (480p)",
+    "23 (720p)",
+    "22 (1080p)",
+    "21 (1440p)",
     "20 (2160p)",
     "Custom",
 ]
@@ -101,7 +101,7 @@ class HEVC(QtWidgets.QWidget):
         self.widgets.preset.addItems(
             ["ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"]
         )
-        self.widgets.preset.setCurrentIndex(4)
+        self.widgets.preset.setCurrentIndex(6)
         self.widgets.preset.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.preset)
         return layout

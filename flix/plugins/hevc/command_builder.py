@@ -38,7 +38,10 @@ def build(
         f'-i "{source}" '
         f' {f"-ss {start_time}" if start_time else ""}  '
         f'{f"-to {duration}" if duration else ""} '
+        "-c:s copy "
         f"-map 0:{video_track} "
+        "-map_chapters 0 "
+        "-map_metadata 0 "
         f"-c:v libx265 "
         f'{f"-vf {filters}" if filters else ""} '
         # f'{"-pix_fmt yuv420p" if force420 else ""} '
