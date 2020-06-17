@@ -2,7 +2,6 @@
 from subprocess import run, PIPE, Popen, STDOUT
 import logging
 import os
-import json
 from pathlib import Path
 
 from box import Box, BoxError, BoxList
@@ -396,7 +395,7 @@ class Flix:
                     red=f"({s(item, 'red_x')},{s(item, 'red_y')})",
                     green=f"({s(item, 'green_x')},{s(item, 'green_y')})",
                     blue=f"({s(item, 'blue_x')},{s(item, 'blue_y')})",
-                    white=f"({s(item, 'white_x')},{s(item, 'white_y')})",
+                    white=f"({s(item, 'white_point_x')},{s(item, 'white_point_y')})",
                     luminance=f"({s(item, 'max_luminance')},{s(item, 'min_luminance')})",
                 )
             if item.side_data_type == "Content light level metadata":

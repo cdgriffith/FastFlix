@@ -5,6 +5,7 @@ from logging.handlers import SocketHandler
 from pathlib import Path
 from distutils.version import StrictVersion
 from datetime import datetime
+import shutil
 
 from appdirs import user_data_dir
 from box import Box
@@ -27,10 +28,20 @@ def main():
     main_app.setApplicationDisplayName("FastFlix")
 
     data_path = Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
+    ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
     first_time = not data_path.exists()
     data_path.mkdir(parents=True, exist_ok=True)
     log_dir = data_path / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
+
+    ffmpeg = Path(shutil.which("ffmpeg"))
+    ffprobe = Path(shutil.which("ffprobe"))
+
+    if ffmpeg_folder.exists():
+        ffmpeg = [x for x in ffmpeg_folder.iterdir() if x.is_file() and x.name.lower() in ("ffmpeg", "ffmpeg.exe")][0]
+        ffprobe = [x for x in ffmpeg_folder.iterdir() if x.is_file() and x.name.lower() in ("ffprobe", "ffprobe.exe")][
+            0
+        ]
 
     fileHandler = logging.FileHandler(log_dir / f"flix_{datetime.now().isoformat().replace(':', '.')}")
     logger.addHandler(fileHandler)
@@ -45,6 +56,10 @@ def main():
             # do upgrade of config
             config.version = __version__
             config.to_json(filename=config_file, indent=2)
+        if "ffmpeg" in config:
+            ffmpeg = Path(config.ffmpeg)
+        if "ffprobe" in config:
+            ffprobe = Path(config.ffprobe)
     work_dir = Path(config.get("work_dir", data_path))
     if not work_dir.exists():
         try:
@@ -57,14 +72,22 @@ def main():
             work_dir = data_path
             work_dir.mkdir(parents=True, exist_ok=True)
 
-    ffmpeg_folder = Path(data_path, "ffmpeg")
-    ffmpeg_folder.mkdir(parents=True, exist_ok=True)
-    ffmpeg = Path(ffmpeg_folder, "ffmpeg.exe")
-    ffprobe = Path(ffmpeg_folder, "ffprobe.exe")
+    if not ffmpeg or not ffprobe:
+        # download em
+        pass
+    else:
+        logger.info(f"Using ffmpeg {ffmpeg}")
+        logger.info(f"Using ffprobe {ffprobe}")
+
+    svt_av1 = shutil.which("SvtAv1EncApp")
+    if not svt_av1:
+        # download em
+        pass
 
     svt_av1_folder = Path(data_path, "svt_av1")
     svt_av1_folder.mkdir(parents=True, exist_ok=True)
     svt_av1 = Path(svt_av1_folder, "SvtAv1EncApp.exe")
+    # svt_av1_folder = None
 
     if first_time:
         first_time_setup(ffmpeg_folder, svt_av1_folder, data_path)

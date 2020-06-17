@@ -6,6 +6,7 @@ from box import Box
 
 from plugins.common.helpers import generate_filters, Command
 from plugins.common.audio import build_audio
+from plugins.common.subtitles import build_subtitle
 
 
 def build(
@@ -17,6 +18,7 @@ def build(
     duration=None,
     preset="fast",
     audio_tracks=(),
+    subtitle_tracks=(),
     disable_hdr=False,
     side_data=None,
     x265_params=None,
@@ -25,6 +27,7 @@ def build(
 ):
     filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
     audio = build_audio(audio_tracks)
+    subtitles = build_subtitle(subtitle_tracks, subtitle_start_pos=len(audio_tracks) + 1)
 
     ending = "dev/null && \\"
     if reusables.win_based:
@@ -38,10 +41,8 @@ def build(
         f'-i "{source}" '
         f' {f"-ss {start_time}" if start_time else ""}  '
         f'{f"-to {duration}" if duration else ""} '
-        "-c:s copy "
         f"-map 0:{video_track} "
-        "-map_chapters 0 "
-        "-map_metadata 0 "
+        # "-pix_fmt yuv420p10le "
         f"-c:v libx265 "
         f'{f"-vf {filters}" if filters else ""} '
         # f'{"-pix_fmt yuv420p" if force420 else ""} '
@@ -80,11 +81,13 @@ def build(
     if side_data.cll:
         pass
 
+    extra_data = "-map_chapters 0"  # -map_metadata 0 # safe to do for rotation?
+
     if bitrate:
         command_1 = f'{beginning}:pass=1 -passlogfile "<tempfile.1.log>" -b:v {bitrate} -an -f mp4 {ending}'
         command_2 = (
             f'{beginning}:pass=2 -passlogfile "<tempfile.1.log>" '
-            f'-b:v {bitrate} -preset {preset} {audio} "{{output}}"'
+            f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
         )
         return [
             Command(command_1, ["ffmpeg", "output"], False, name="First pass bitrate", exe="ffmpeg"),
@@ -92,7 +95,7 @@ def build(
         ]
 
     elif crf:
-        command = f'{beginning} -crf {crf} -preset {preset} {audio} "{{output}}"'
+        command = f'{beginning} -crf {crf} -preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
         return [Command(command, ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")]
 
     else:

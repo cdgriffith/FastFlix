@@ -675,7 +675,8 @@ class Main(QtWidgets.QWidget):
                 v = int(v)
             except ValueError:
                 logger.info(f"Not a valid int: {v}")
-            total += v * (60 ** i)
+            else:
+                total += v * (60 ** i)
         return total
 
     @reusables.log_exception("flix", show_traceback=False)
@@ -763,6 +764,7 @@ class Main(QtWidgets.QWidget):
         if not self.initialized or self.loading_video:
             return
         self.last_page_update = time.time()
+        self.video_options.refresh()
         self.build_commands()
         self.generate_thumbnail()
 
