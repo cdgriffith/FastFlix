@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from box import Box
+import iso639
 
 from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 from flix.widgets.panels.abstract_list import FlixList
@@ -16,11 +17,9 @@ dispositions = [
     "karaoke",
     "forced",
     "hearing_impaired",
-    "visual_impaired",
-    "clean_effects",
-    "attached_pic",
-    "timed_thumbnails",
 ]
+
+language_list = [vars(x)["part2t"] for x in iso639.languages.languages if vars(x)["part2t"].strip()]
 
 
 class Subtitle(QtWidgets.QTabWidget):
@@ -33,19 +32,16 @@ class Subtitle(QtWidgets.QTabWidget):
         self.subtitle = Box(subtitle, default_box=True)
         self.first = first
         self.last = False
+        self.subtitle_lang = subtitle.get("tags", {}).get("language")
 
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{self.index}:{self.outdex}" if enabled else "❌"),
-            title=QtWidgets.QLabel(f"{self.subtitle.codec_long_name} {self.subtitle.tags.get('language')}"),
+            title=QtWidgets.QLabel(f"  {self.subtitle.codec_long_name}"),
             up_button=QtWidgets.QPushButton("^"),
             down_button=QtWidgets.QPushButton("v"),
             enable_check=QtWidgets.QCheckBox("Preserve"),
-            disposition=QtWidgets.QComboBox()
-            # dup_button=QtWidgets.QPushButton("➕"),
-            # delete_button=QtWidgets.QPushButton("⛔"),
-            # downmix=QtWidgets.QComboBox(),
-            # convert_to=None,
-            # convert_bitrate=None,
+            disposition=QtWidgets.QComboBox(),
+            language=QtWidgets.QComboBox(),
         )
 
         self.widgets.disposition.addItems(dispositions)
@@ -63,13 +59,18 @@ class Subtitle(QtWidgets.QTabWidget):
 
         self.setFixedHeight(60)
 
+        disposition_layout = QtWidgets.QHBoxLayout()
+        disposition_layout.addStretch()
+        disposition_layout.addWidget(QtWidgets.QLabel("Disposition"))
+        disposition_layout.addWidget(self.widgets.disposition)
+
         grid = QtWidgets.QGridLayout()
         grid.addLayout(self.init_move_buttons(), 0, 0)
         grid.addWidget(self.widgets.track_number, 0, 1)
         grid.addWidget(self.widgets.title, 0, 2)
-        grid.addWidget(self.widgets.enable_check, 0, 3)
-        grid.addWidget(QtWidgets.QLabel("Disposition"), 0, 4)
-        grid.addWidget(self.widgets.disposition, 0, 5)
+        grid.addLayout(disposition_layout, 0, 4)
+        grid.addLayout(self.init_language(), 0, 5)
+        grid.addWidget(self.widgets.enable_check, 0, 6)
 
         self.setLayout(grid)
         self.loading = False
@@ -88,6 +89,18 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets.down_button.clicked.connect(lambda: self.parent.move_down(self))
         layout.addWidget(self.widgets.up_button)
         layout.addWidget(self.widgets.down_button)
+        return layout
+
+    def init_language(self):
+        self.widgets.language.addItems(language_list)
+        try:
+            self.widgets.language.setCurrentIndex(language_list.index(self.subtitle_lang))
+        except Exception:
+            self.widgets.language.setCurrentIndex(language_list.index("eng"))
+
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(QtWidgets.QLabel("Language"))
+        layout.addWidget(self.widgets.language)
         return layout
 
     def set_first(self, first=True):
@@ -113,6 +126,10 @@ class Subtitle(QtWidgets.QTabWidget):
     @property
     def enabled(self):
         return self.widgets.enable_check.isChecked()
+
+    @property
+    def language(self):
+        return self.widgets.language.currentText()
 
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()
@@ -145,5 +162,12 @@ class SubtitleList(FlixList):
         tracks = []
         for track in self.tracks:
             if track.enabled:
-                tracks.append({"index": track.index, "outdex": track.outdex, "disposition": track.disposition})
+                tracks.append(
+                    {
+                        "index": track.index,
+                        "outdex": track.outdex,
+                        "disposition": track.disposition,
+                        "language": track.language,
+                    }
+                )
         return Box(subtitle_tracks=tracks)

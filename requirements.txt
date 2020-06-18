@@ -1,4 +1,5 @@
 appdirs
+iso-639
 pyinstaller
 pypiwin32
 PySide2==5.15.0

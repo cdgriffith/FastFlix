@@ -16,7 +16,7 @@ def build_audio(audio_tracks, audio_file_index=0):
             command_list.append(f"-c:{track.outdex} copy")
         elif "conversion" in track:
             command_list.append(
-                f"-c:a:{track.outdex-1} {track.conversion.codec} -b:a:{track.outdex-1} {track.conversion.bitrate} {downmix}"
+                f"-c:{track.outdex} {track.conversion.codec} -b:a:{track.outdex} {track.conversion.bitrate} {downmix}"
             )
 
     return " ".join(command_list)

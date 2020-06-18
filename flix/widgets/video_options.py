@@ -56,8 +56,10 @@ class VideoOptions(QtWidgets.QTabWidget):
         return settings
 
     def new_source(self):
-        self.audio.new_source(self.current_plugin.audio_formats, starting_pos=1)
-        self.subtitles.new_source(starting_pos=len(self.audio) + 1)
+        if getattr(self.current_plugin, "enable_audio", True):
+            self.audio.new_source(self.current_plugin.audio_formats, starting_pos=1)
+        if getattr(self.current_plugin, "enable_subtitles", True):
+            self.subtitles.new_source(starting_pos=len(self.audio) + 1)
         self.current_settings.new_source()
 
     def refresh(self):

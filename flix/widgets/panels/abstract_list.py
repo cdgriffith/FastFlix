@@ -96,7 +96,7 @@ class FlixList(QtWidgets.QWidget):
         self.reorder()
 
     def __len__(self):
-        return len(self.tracks)
+        return len([x for x in self.tracks if x.enabled])
 
     def refresh(self, starting_pos=0):
         self.starting_pos = starting_pos

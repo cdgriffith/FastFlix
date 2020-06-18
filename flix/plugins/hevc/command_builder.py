@@ -27,7 +27,7 @@ def build(
 ):
     filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
     audio = build_audio(audio_tracks)
-    subtitles = build_subtitle(subtitle_tracks, subtitle_start_pos=len(audio_tracks) + 1)
+    subtitles = build_subtitle(subtitle_tracks)
 
     ending = "dev/null && \\"
     if reusables.win_based:
