@@ -33,9 +33,8 @@ def main():
     main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
 
-    data_path = Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
+    data_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
     ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
-    first_time = not data_path.exists()
     data_path.mkdir(parents=True, exist_ok=True)
     log_dir = data_path / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -51,10 +50,9 @@ def main():
             if file.is_file() and file.name.lower() in ("ffprobe", "ffprobe.exe"):
                 ffprobe = file
 
-    fileHandler = logging.FileHandler(log_dir / f"flix_{datetime.now().isoformat().replace(':', '.')}")
-    logger.addHandler(fileHandler)
+    logger.addHandler(logging.FileHandler(log_dir / f"flix_{datetime.now().isoformat().replace(':', '.')}"))
 
-    config_file = Path(data_path.parent, "fastflix.json")
+    config_file = Path(data_path, "fastflix.json")
     if not config_file.exists():
         config = Box({"version": __version__, "work_dir": str(data_path)})
         config.to_json(filename=config_file, indent=2)
