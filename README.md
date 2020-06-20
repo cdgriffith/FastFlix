@@ -15,6 +15,7 @@ Read more about it and the licensing in the [docs](docs/README.md) folder.
 
 Included plugins:
 
+* HEVC (libx265)
 * AV1 (SVT-AV1)
 * AV1 (FFMPEG libaom - currently very slow)
 * VP9
@@ -28,7 +29,7 @@ View the [releases](https://github.com/cdgriffith/FastFlix/releases) for 64 bit 
 
 # License
 
-Copyright (C) 2019 Chris Griffith
+Copyright (C) 2019-2020 Chris Griffith
 
 This software is licensed under the MIT which you can read in the `LICENSE` file.
 

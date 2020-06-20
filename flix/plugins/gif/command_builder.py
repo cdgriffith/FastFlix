@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from plugins.common.helpers import generate_filters, Command, start_and_input
+from flix.plugins.common.helpers import generate_filters, Command, start_and_input
 
 extension = "gif"
 

@@ -2,12 +2,12 @@
 import reusables
 import re
 
-from plugins.common.helpers import generate_filters, Command
-from plugins.common.audio import build_audio
+from flix.plugins.common import helpers
+from flix.plugins.common.audio import build_audio
 
 
 def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=None, audio_tracks=(), **kwargs):
-    filters = generate_filters(**kwargs)
+    filters = helpers.generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
 
     ending = "dev/null && \\"
@@ -30,9 +30,9 @@ def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=No
         command_1 = f'{beginning} -passlogfile "<tempfile.1.log>" -b:v {bitrate} -pass 1 -an -f matroska {ending}'
         command_2 = f'{beginning} -passlogfile "<tempfile.1.log>" -b:v {bitrate} -pass 2 {audio} "{{output}}"'
         return [
-            Command(command_1, ["ffmpeg", "output"], False, name="First Pass bitrate"),
-            Command(command_2, ["ffmpeg", "output"], False, name="Second Pass bitrate"),
+            helpers.Command(command_1, ["ffmpeg", "output"], False, name="First Pass bitrate"),
+            helpers.Command(command_2, ["ffmpeg", "output"], False, name="Second Pass bitrate"),
         ]
     elif crf:
         command_1 = f'{beginning} -b:v 0 -crf {crf} {audio} "{{output}}"'
-        return [Command(command_1, ["ffmpeg", "output"], False, name="Single Pass CRF")]
+        return [helpers.Command(command_1, ["ffmpeg", "output"], False, name="Single Pass CRF")]

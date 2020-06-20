@@ -22,18 +22,17 @@ logger = logging.getLogger("flix")
 root = os.path.abspath(os.path.dirname(__file__))
 
 
-def load_plugins(plugin_dir, configuration):
-    sys.path.insert(0, str(Path(plugin_dir, os.pardir)))
-    plugins = Box()
-    for item in plugin_dir.iterdir():
-        if item.is_dir() and not item.name.startswith("_") and item.name != "common":
-            plugin = importlib.machinery.SourceFileLoader(
-                f"plugin_{item.name}", str(Path(item, "main.py"))
-            ).load_module()
-            requires = getattr(plugin, "requires", None)
-            if not requires or (requires and requires in configuration):
-                plugins[plugin.name] = plugin
-    return plugins
+def load_plugins(enable_svt_av1=True):
+    from flix.plugins.av1 import main as av1_plugin
+    from flix.plugins.hevc import main as hevc_plugin
+    from flix.plugins.svt_av1 import main as svt_av1_plugin
+    from flix.plugins.gif import main as gif_plugin
+    from flix.plugins.vp9 import main as vp9_plugin
+
+    plugins = [av1_plugin, hevc_plugin, gif_plugin, vp9_plugin]
+    if enable_svt_av1:
+        plugins.append(svt_av1_plugin)
+    return {plugin.name: plugin for plugin in plugins}
 
 
 class Main(QtWidgets.QWidget):
@@ -58,9 +57,6 @@ class Main(QtWidgets.QWidget):
 
         self.input_defaults = Box(scale=None, crop=None)
         self.initial_duration = 0
-
-        self.path.ffmpeg = Path(self.path.data, "ffmpeg")
-        self.path.svt_av1 = Path(self.path.data, "svt_av1")
 
         for path in self.path.values():
             path.mkdir(parents=True, exist_ok=True)
@@ -87,7 +83,8 @@ class Main(QtWidgets.QWidget):
 
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
-        self.plugins = load_plugins(Path(data_path, "plugins"), self.flix.ffmpeg_configuration())
+        self.plugins = load_plugins(enable_svt_av1=self.svt_av1)
+        # External: (Path(data_path, "plugins"), self.flix.ffmpeg_configuration()
 
         self.video_options = VideoOptions(self, available_audio_encoders=self.flix.get_audio_encoders())
 

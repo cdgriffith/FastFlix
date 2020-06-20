@@ -20,7 +20,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.selected = 0
 
         self.commands = CommandList(self)
-        self.current_plugin = self.main.plugins.values()[0]
+        self.current_plugin = list(self.main.plugins.values())[0]
         self.current_settings = self.current_plugin.settings_panel(self, self.main)
 
         self.audio = AudioList(self, available_audio_encoders)

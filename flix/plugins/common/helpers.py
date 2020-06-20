@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+
 class Loop:
 
     item = "loop"
@@ -72,3 +74,17 @@ def generate_filters(**kwargs):
         )
 
     return ",".join(filter_list)
+
+
+# def load_external_plugins(plugin_dir, configuration):
+#     sys.path.insert(0, str(Path(plugin_dir, os.pardir)))
+#     plugins = Box()
+#     for item in plugin_dir.iterdir():
+#         if item.is_dir() and not item.name.startswith("_") and item.name != "common":
+#             plugin = importlib.machinery.SourceFileLoader(
+#                 f"plugin_{item.name}", str(Path(item, "main.py"))
+#             ).load_module()
+#             requires = getattr(plugin, "requires", None)
+#             if not requires or (requires and requires in configuration):
+#                 plugins[plugin.name] = plugin
+#     return plugins

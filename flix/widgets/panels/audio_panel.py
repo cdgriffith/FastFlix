@@ -284,6 +284,7 @@ class AudioList(FlixList):
             self.tracks.append(new_item)
 
         if self.tracks:
+            self.tracks[0].set_first()
             self.tracks[-1].set_last()
 
         super()._new_source(self.tracks)

@@ -57,5 +57,5 @@ audio_formats = [
     "pcm_u8",
 ]
 
-from plugins.svt_av1.command_builder import build
-from plugins.svt_av1.settings_panel import AV1 as settings_panel
+from flix.plugins.svt_av1.command_builder import build
+from flix.plugins.svt_av1.settings_panel import AV1 as settings_panel

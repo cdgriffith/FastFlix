@@ -97,5 +97,5 @@ audio_formats = [
     "wmav2",
 ]
 
-from plugins.hevc.command_builder import build
-from plugins.hevc.settings_panel import HEVC as settings_panel
+from flix.plugins.hevc.command_builder import build
+from flix.plugins.hevc.settings_panel import HEVC as settings_panel

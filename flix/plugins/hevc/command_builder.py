@@ -4,9 +4,9 @@ import re
 
 from box import Box
 
-from plugins.common.helpers import generate_filters, Command
-from plugins.common.audio import build_audio
-from plugins.common.subtitles import build_subtitle
+from flix.plugins.common.helpers import generate_filters, Command
+from flix.plugins.common.audio import build_audio
+from flix.plugins.common.subtitles import build_subtitle
 
 
 def build(

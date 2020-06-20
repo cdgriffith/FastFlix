@@ -6,21 +6,9 @@ are to use or further copy this software.
 
 ### Dynamically linked libraries
 
-Thankfully the wonderful creators of ffmpeg and PySide2 want their work shared and have provided use of their
+Thankfully the wonderful creators of PySide2 want their work shared and have provided use of their
 software under the LGPL. The "catch" is that it has to overrideable so you can select your own version or
 alternative instead.
-
-#### Changing ffmpeg and SVT AV1
-
-The built-in binaries are extracted on first load-up to you're roaming user directory, so you can find and
-override them with your own versions.
-
-Example paths:
-
-```
-C:\Users\me\AppData\Roaming\FastFlix\1.1.0\ffmpeg
-C:\Users\me\AppData\Roaming\FastFlix\1.1.0\svt_av1
-```
 
 #### Changing PySide2 (and shiboken2)
 

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from box import Box
-import iso639
 
 from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 from flix.widgets.panels.abstract_list import FlixList
@@ -19,7 +18,27 @@ dispositions = [
     "hearing_impaired",
 ]
 
-language_list = [vars(x)["part2t"] for x in iso639.languages.languages if vars(x)["part2t"].strip()]
+languages = (
+    "aar,abk,ace,ach,ada,ady,afh,afr,ain,aka,akk,ale,alt,amh,ang,anp,ara,arc,arg,arn,arp,arw,asm,ast,ava,ave,"
+    "awa,aym,aze,bak,bal,bam,ban,bas,bej,bel,bem,ben,bho,bik,bin,bis,bla,bod,bos,bra,bre,bua,bug,bul,byn,cad,"
+    "car,cat,ceb,ces,cha,chb,che,chg,chk,chm,chn,cho,chp,chr,chu,chv,chy,cop,cor,cos,cre,crh,csb,cym,dak,dan,"
+    "dar,del,den,deu,dgr,din,div,doi,dsb,dua,dum,dyu,dzo,efi,egy,eka,ell,elx,eng,enm,epo,est,eus,ewe,ewo,fan,"
+    "fao,fas,fat,fij,fil,fin,fon,fra,frm,fro,frr,frs,fry,ful,fur,gaa,gay,gba,gez,gil,gla,gle,glg,glv,gmh,goh,"
+    "gon,gor,got,grb,grc,grn,gsw,guj,gwi,hai,hat,hau,haw,heb,her,hil,hin,hit,hmn,hmo,hrv,hsb,hun,hup,hye,iba,"
+    "ibo,ido,iii,iku,ile,ilo,ina,ind,inh,ipk,isl,ita,jav,jbo,jpn,jpr,jrb,kaa,kab,kac,kal,kam,kan,kas,kat,kau,"
+    "kaw,kaz,kbd,kha,khm,kho,kik,kin,kir,kmb,kok,kom,kon,kor,kos,kpe,krc,krl,kru,kua,kum,kur,kut,lad,lah,lam,"
+    "lao,lat,lav,lez,lim,lin,lit,lol,loz,ltz,lua,lub,lug,lui,lun,luo,lus,mad,mag,mah,mai,mak,mal,man,mar,mas,"
+    "mdf,mdr,men,mga,mic,min,mis,mkd,mlg,mlt,mnc,mni,moh,mon,mos,mri,msa,mul,mus,mwl,mwr,mya,myv,nap,nau,nav,"
+    "nbl,nde,ndo,nds,nep,new,nia,niu,nld,nno,nob,nog,non,nor,nqo,nso,nwc,nya,nym,nyn,nyo,nzi,oci,oji,ori,orm,"
+    "osa,oss,ota,pag,pal,pam,pan,pap,pau,peo,phn,pli,pol,pon,por,pro,pus,que,raj,rap,rar,roh,rom,ron,run,rup,"
+    "rus,sad,sag,sah,sam,san,sas,sat,scn,sco,sel,sga,shn,sid,sin,slk,slv,sma,sme,smj,smn,smo,sms,sna,snd,snk,"
+    "sog,som,sot,spa,sqi,srd,srn,srp,srr,ssw,suk,sun,sus,sux,swa,swe,syc,syr,tah,tam,tat,tel,tem,ter,tet,tgk,"
+    "tgl,tha,tig,tir,tiv,tkl,tlh,tli,tmh,tog,ton,tpi,tsi,tsn,tso,tuk,tum,tur,tvl,twi,tyv,udm,uga,uig,ukr,umb,"
+    "und,urd,uzb,vai,ven,vie,vol,vot,wal,war,was,wln,wol,xal,xho,yao,yap,yid,yor,zap,zbl,zen,zgh,zha,zho,zul,"
+    "zun,zxx,zza"
+)
+
+language_list = languages.split(",")
 
 
 class Subtitle(QtWidgets.QTabWidget):
@@ -52,7 +71,7 @@ class Subtitle(QtWidgets.QTabWidget):
         for disposition, is_set in self.subtitle.disposition.items():
             if is_set:
                 try:
-                    self.widgets.downmix.setCurrentIndex(dispositions.index(disposition))
+                    self.widgets.disposition.setCurrentIndex(dispositions.index(disposition))
                 except ValueError:
                     pass  # TODO figure out all possible dispositions for subtitles / log if issue
                 break
@@ -154,6 +173,7 @@ class SubtitleList(FlixList):
             new_item = Subtitle(self, track, index=track.index, first=True if index == 0 else False)
             self.tracks.append(new_item)
         if self.tracks:
+            self.tracks[0].set_first()
             self.tracks[-1].set_last()
 
         super()._new_source(self.tracks)

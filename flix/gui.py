@@ -7,8 +7,14 @@ from distutils.version import StrictVersion
 from datetime import datetime
 import shutil
 
+try:
+    import pkg_resources.py2_warn  # Needed for pyinstaller
+except ImportError:
+    pass
+
 from appdirs import user_data_dir
 from box import Box
+import reusables
 
 from flix.version import __version__
 from flix.flix import ff_version, FlixError
@@ -36,12 +42,14 @@ def main():
 
     ffmpeg = Path(shutil.which("ffmpeg"))
     ffprobe = Path(shutil.which("ffprobe"))
+    svt_av1 = shutil.which("SvtAv1EncApp")
 
     if ffmpeg_folder.exists():
-        ffmpeg = [x for x in ffmpeg_folder.iterdir() if x.is_file() and x.name.lower() in ("ffmpeg", "ffmpeg.exe")][0]
-        ffprobe = [x for x in ffmpeg_folder.iterdir() if x.is_file() and x.name.lower() in ("ffprobe", "ffprobe.exe")][
-            0
-        ]
+        for file in ffmpeg_folder.iterdir():
+            if file.is_file() and file.name.lower() in ("ffmpeg", "ffmpeg.exe"):
+                ffmpeg = file
+            if file.is_file() and file.name.lower() in ("ffprobe", "ffprobe.exe"):
+                ffprobe = file
 
     fileHandler = logging.FileHandler(log_dir / f"flix_{datetime.now().isoformat().replace(':', '.')}")
     logger.addHandler(fileHandler)
@@ -60,6 +68,8 @@ def main():
             ffmpeg = Path(config.ffmpeg)
         if "ffprobe" in config:
             ffprobe = Path(config.ffprobe)
+        if "svt_av1" in config:
+            svt_av1 = Path(config.svt_av1)
     work_dir = Path(config.get("work_dir", data_path))
     if not work_dir.exists():
         try:
@@ -73,33 +83,49 @@ def main():
             work_dir.mkdir(parents=True, exist_ok=True)
 
     if not ffmpeg or not ffprobe:
-        # download em
-        pass
+        qm = QtWidgets.QMessageBox
+        if reusables.win_based:
+            qm.question(
+                None,
+                "FFmpeg not found!",
+                f"<h2>FFmpeg not found!</h2>"
+                f"<br> Please <a href='https://ffmpeg.zeranoe.com/builds/'> download FFmpeg </a> "
+                f"<br> <br>You must add ffmpeg.exe and ffprobe.exe to the folder:"
+                f"<br> {ffmpeg_folder} "
+                f"<br> or to the system path",
+                qm.Close,
+            )
+        else:
+            qm.question(
+                None, "<h2>FFmpeg not found!</h2>", "Please download FFmpeg via your platform package manager", qm.Close
+            )
+        sys.exit(1)
     else:
         logger.info(f"Using ffmpeg {ffmpeg}")
         logger.info(f"Using ffprobe {ffprobe}")
 
-    svt_av1 = shutil.which("SvtAv1EncApp")
-    if not svt_av1:
-        # download em
-        pass
+    svt_av1_folder = Path(user_data_dir("SVT-AV1", appauthor=False, roaming=True))
+    if not svt_av1 and svt_av1_folder.exists():
+        svt_av1 = Path(svt_av1_folder, "SvtAv1EncApp.exe")
 
-    svt_av1_folder = Path(data_path, "svt_av1")
-    svt_av1_folder.mkdir(parents=True, exist_ok=True)
-    svt_av1 = Path(svt_av1_folder, "SvtAv1EncApp.exe")
-    # svt_av1_folder = None
-
-    if first_time:
-        first_time_setup(ffmpeg_folder, svt_av1_folder, data_path)
-
-    if not all([x.exists() for x in (ffmpeg, ffprobe, svt_av1, Path(data_path, "plugins"))]):
+    if (not svt_av1 or not svt_av1.exists()) and reusables.win_based:
         qm = QtWidgets.QMessageBox
-        ret = qm.question(None, "", "Not all required libraries found! <br> Re-extract them?", qm.Yes | qm.No)
+        ret = qm.question(
+            None,
+            "Download SVT-AV1",
+            f"<h2>Would you like to download SVT-AV1?<h2>" f"<br> Will be placed in:" f"<br> {svt_av1_folder}",
+            qm.Yes | qm.No,
+        )
         if ret == qm.Yes:
-            first_time_setup(ffmpeg_folder, svt_av1_folder, data_path)
-        else:
-            sys.exit(1)
-
+            svt_av1_folder.mkdir(parents=True, exist_ok=True)
+            try:
+                download_svt_av1(svt_av1_folder)
+            except Exception:
+                logging.exception("Could not download newest SVT-AV1!")
+                qm.question(None, "", f"Could not download SVT-AV1!", qm.Close)
+                sys.exit(1)
+            else:
+                svt_av1 = Path(svt_av1_folder, "SvtAv1EncApp.exe")
     try:
         ffmpeg_version = ff_version(ffmpeg, throw=True)
         ffprobe_version = ff_version(ffprobe, throw=True)
@@ -119,43 +145,22 @@ def main():
             work_path=work_dir,
         )
         window.show()
-    except (Exception, BaseException, SystemError, SystemExit) as err:
-        print(err)
+    except (Exception, BaseException, SystemError, SystemExit):
+        logger.exception("HARD FAIL: Unexpected error")
         sys.exit(1)
     sys.exit(main_app.exec_())
 
 
-def first_time_setup(ffmpeg_folder, svt_av1_folder, data_path):
-    import subprocess
-    import re
+def download_svt_av1(svt_av1_folder):
+    import requests
 
-    logger.info("Performing first time setup")
-    svt_re = re.compile(r"svt-.*\.7z")
+    logger.info(f"Downloading SVT-AV1 to {svt_av1_folder}")
 
-    commands = [
-        subprocess.run(
-            f'{Path(base_path, "extra", "7za.exe")} e {Path(base_path, "extra", "ffmpeg_lgpl.7z")} -o"{ffmpeg_folder}" -y',
-            stdout=subprocess.PIPE,
-            shell=True,
-        ),
-        subprocess.run(
-            f'{Path(base_path, "extra", "7za.exe")} x {Path(base_path, "extra", "plugins.7z")} -o"{data_path}" -y',
-            stdout=subprocess.PIPE,
-            shell=True,
-        ),
-        subprocess.run(
-            f'{Path(base_path, "extra", "7za.exe")} e {[x for x in Path(base_path, "extra").iterdir() if svt_re.match(str(x.name))][0]} -o"{svt_av1_folder}" -y',
-            stdout=subprocess.PIPE,
-            shell=True,
-        ),
-    ]
-    err = False
-    for command in commands:
-        if command.returncode != 0:
-            print(f'"{command.args}" returned {command.returncode}: {command.stderr} - {command.stdout}')
-            err = True
-    if err:
-        sys.exit(1)
+    if reusables.win_based:
+        svt_av1_releases = requests.get(f"https://api.github.com/repos/OpenVisualCloud/SVT-AV1/releases").json()
+        svt_av1_assets = requests.get(svt_av1_releases[0]["assets_url"]).json()
+        for asset in svt_av1_assets:
+            reusables.download(asset["browser_download_url"], save_dir=svt_av1_folder)
 
 
 if __name__ == "__main__":

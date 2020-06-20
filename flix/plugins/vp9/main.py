@@ -14,5 +14,5 @@ enable_audio = True
 
 audio_formats = ["libopus", "libvorbis"]
 
-from plugins.vp9.command_builder import build
-from plugins.vp9.settings_panel import VP9 as settings_panel
+from flix.plugins.vp9.command_builder import build
+from flix.plugins.vp9.settings_panel import VP9 as settings_panel

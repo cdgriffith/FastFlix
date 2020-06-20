@@ -2,8 +2,8 @@
 import reusables
 import re
 
-from plugins.common.helpers import generate_filters, Command
-from plugins.common.audio import build_audio
+from flix.plugins.common.helpers import generate_filters, Command
+from flix.plugins.common.audio import build_audio
 
 
 def build(

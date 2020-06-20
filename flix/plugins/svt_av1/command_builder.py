@@ -7,8 +7,8 @@ from pathlib import Path
 import logging
 import os
 
-from plugins.common.helpers import generate_filters, Loop, Command
-from plugins.common.audio import build_audio
+from flix.plugins.common.helpers import generate_filters, Loop, Command
+from flix.plugins.common.audio import build_audio
 
 logger = logging.getLogger("flix")
 
@@ -65,8 +65,8 @@ def build(
             if crop_height or crop_width:
                 raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
 
-    assert height <= 2160
-    assert width <= 4096
+    # assert height <= 2160
+    # assert width <= 4096
 
     audio = build_audio(audio_tracks, audio_file_index=0)
     audio_file = "<tempfile.7.mkv>"
