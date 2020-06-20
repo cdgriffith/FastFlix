@@ -630,6 +630,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.duration.setText(self.number_to_time(video_duration))
 
         self.video_options.new_source()
+        self.generate_thumbnail()
         self.loading_video = False
 
     @property

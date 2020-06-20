@@ -65,8 +65,8 @@ def build(
             if crop_height or crop_width:
                 raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
 
-    # assert height <= 2160
-    # assert width <= 4096
+    assert height <= 2160
+    assert width <= 4096
 
     audio = build_audio(audio_tracks, audio_file_index=0)
     audio_file = "<tempfile.7.mkv>"
@@ -107,12 +107,12 @@ def build(
             break
     logger.debug(f"setting intra-period to {intra_period} based of fps {float(fps_num / fps_denom):.2f}")
 
-    quality = f"-rc 1 -tbr {bitrate}" if bitrate else f"-rc 0 -q {qp}"
+    quality = f"-rc 1 -tbr {bitrate}" if bitrate else f"--rc 0 -q {qp}"
 
     loop_command_2 = (
-        f'"{{av1}}" -intra-period {intra_period} -enc-mode {speed} -bit-depth {bit_depth} '
+        f'"{{av1}}" --keyint {intra_period} --preset {speed} --input-depth {bit_depth} '
         # f'{"-hdr 1" if not disable_hdr and bit_depth == 10 else ""}'
-        f" -fps-num {fps_num} -fps-denom {fps_denom} -w {width} -h {height} "
+        f" --fps-num {fps_num} --fps-denom {fps_denom} -w {width} -h {height} "
         f'{quality} -i "<loop.2>" -b "<tempdir.2>{os.sep}<loop.0>.ivf"'
     )
 

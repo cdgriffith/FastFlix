@@ -8,7 +8,7 @@ from datetime import datetime
 import shutil
 
 try:
-    import pkg_resources.py2_warn  # Needed for pyinstaller
+    import pkg_resources.py2_warn  # Needed for pyinstaller on 3.8
 except ImportError:
     pass
 
