@@ -6,20 +6,28 @@ from pathlib import Path
 from distutils.version import StrictVersion
 from datetime import datetime
 import shutil
+import traceback
 
 try:
     import pkg_resources.py2_warn  # Needed for pyinstaller on 3.8
 except ImportError:
     pass
 
-from appdirs import user_data_dir
-from box import Box
-import reusables
+try:
+    from appdirs import user_data_dir
+    from box import Box
+    import reusables
+    import requests
 
-from flix.version import __version__
-from flix.flix import ff_version, FlixError
-from flix.shared import QtWidgets, error_message, base_path, Qt
-from flix.widgets.container import Container
+    from flix.version import __version__
+    from flix.flix import ff_version, FlixError
+    from flix.shared import QtWidgets, error_message, base_path, Qt
+    from flix.widgets.container import Container
+except ImportError as err:
+    traceback.print_exc()
+    print("Could not load FastFlix properly!", file=sys.stderr)
+    input("Plese report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
+    sys.exit(1)
 
 logger = logging.getLogger("flix")
 
@@ -39,8 +47,12 @@ def main():
     log_dir = data_path / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    ffmpeg = Path(shutil.which("ffmpeg"))
-    ffprobe = Path(shutil.which("ffprobe"))
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg:
+        ffmpeg = Path(ffmpeg)
+    ffprobe = shutil.which("ffprobe")
+    if ffprobe:
+        ffprobe = Path(ffprobe)
     svt_av1 = shutil.which("SvtAv1EncApp")
 
     if ffmpeg_folder.exists():
@@ -111,7 +123,7 @@ def main():
         ret = qm.question(
             None,
             "Download SVT-AV1",
-            f"<h2>Would you like to download SVT-AV1?<h2>" f"<br> Will be placed in:" f"<br> {svt_av1_folder}",
+            f"<h2>Would you like to download SVT-AV1?</h2>" f"<br> Will be placed in:" f"<br> {svt_av1_folder}",
             qm.Yes | qm.No,
         )
         if ret == qm.Yes:
@@ -150,8 +162,6 @@ def main():
 
 
 def download_svt_av1(svt_av1_folder):
-    import requests
-
     logger.info(f"Downloading SVT-AV1 to {svt_av1_folder}")
 
     if reusables.win_based:
@@ -162,4 +172,9 @@ def download_svt_av1(svt_av1_folder):
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception:
+        traceback.print_exc()
+        input("Error while running FastFlix!\n"
+              "Plese report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
