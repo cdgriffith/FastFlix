@@ -1,8 +1,7 @@
-PySide2==5.12.0
-shiboken2==5.12.0
-reusables
-python-box
-pyinstaller
-ruamel.yaml
 appdirs
-pypiwin32
+PySide2==5.15
+python-box
+requests
+reusables
+ruamel.yaml
+shiboken2==5.15

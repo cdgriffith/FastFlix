@@ -28,18 +28,15 @@ install:
       try {Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe scripts\get_version.py)"}
       catch {Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe scripts\get_version.py)-$env:APPVEYOR_BUILD_ID"}
   - ps: Update-AppveyorBuild -Message "[$env:APPVEYOR_REPO_BRANCH] $env:APPVEYOR_REPO_COMMIT_MESSAGE"
-  - cmd: git clone -b fast-flix --single-branch https://github.com/cdgriffith/binary-files.git
   - cmd: C:\Python36-x64\python -m pip install --upgrade pip setuptools --ignore-installed
-  - cmd: C:\Python36-x64\python -m pip install -r requirements.txt
-  - cmd: pushd flix && ..\binary-files\executables\windows\7-zip\1900\x64\7za.exe a "..\plugins.7z" "plugins" && popd
+  - cmd: C:\Python36-x64\python -m pip install -r requirements-build.txt
 
 build_script:
   - ps: mkdir dist
-  - cmd: echo "" > bundled
   - ps: 'New-Item -Path Env: -Name VERSION -Value $(C:\Python36-x64\python.exe scripts\get_version.py)'
   - cmd: echo %VERSION% > build_version
   - ps: 'echo "Building branch $env:APPVEYOR_REPO_BRANCH - version $env:VERSION"'
-  - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "bundled;." --add-data "plugins.7z;extra" --add-data "data\rotations\*;data\rotations" --add-data "data\icon.ico;data" --add-data "binary-files\executables\windows\svt-av1\svt-1.0.2565.7z;extra" --add-data "docs\build-licenses.txt;docs" --add-data "binary-files\executables\windows\7-zip\1900\x64\*;extra" --add-data "binary-files\executables\windows\ffmpeg\lgpl\N-93214-g7e4d3dbe18\x86_64\ffmpeg_lgpl.7z;extra" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile
+  - cmd: C:\Python36-x64\Scripts\pyinstaller --add-data "data\rotations\*;data\rotations" --add-data "data\icon.ico;data" --add-data "docs\build-licenses.txt;docs" --hidden-import="pkg_resources.py2_warn" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile
   # - cmd: IF NOT %APPVEYOR_REPO_BRANCH% == build ( C:\Python36-x64\Scripts\pyinstaller --add-data "bundled;." --add-data "plugins.7z;extra"  --add-data "build_version;." --add-data "data\rotations\*;data\rotations" --add-data "data\icon.ico;data" --add-data "binary-files\executables\windows\svt-av1\svt-1.0.549.7z;extra" --add-data "docs\build-licenses.txt;docs" --add-data "binary-files\executables\windows\7-zip\1900\x64\*;extra" --add-data "binary-files\executables\windows\ffmpeg\lgpl\N-93214-g7e4d3dbe18\x86_64\ffmpeg_lgpl.7z;extra" --paths "C:\Python36-x64\Lib\site-packages\shiboken2" flix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile --noconsole )
   - cmd: move dist\*.exe .
 

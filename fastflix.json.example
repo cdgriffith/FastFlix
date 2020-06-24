@@ -1,0 +1,7 @@
+{
+  "version": "2.1.0",
+  "work_dir": "C:\\Users\\<YourUser>\\AppData\\Roaming\\FastFlix",
+  "ffmpeg": "C:\\Users\\<YourUser>\\AppData\\Roaming\\FFmpeg\\ffmpeg.exe",
+  "ffprobe": "C:\\Users\\<YourUser>\\AppData\\Roaming\\FFmpeg\\ffprobe.exe",
+  "svt_av1": "C:\\Users\\<YourUser>\\AppData\\Roaming\\SVT-AV1\\SvtAv1EncApp.exe"
+}

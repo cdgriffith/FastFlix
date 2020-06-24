@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 import logging
 
 from box import Box
 
 from flix.shared import QtWidgets, QtCore
 
-logger = logging.getLogger('flix')
+logger = logging.getLogger("flix")
 
 recommended_bitrates = [
     "150000   (320x240p @ 24,25,30)",
@@ -18,31 +19,21 @@ recommended_bitrates = [
     "9000000 (2560x1440p @ 50,60)",
     "12000000 (3840x2160p @ 24,25,30)",
     "18000000 (3840x2160p @ 50,60)",
-    "Custom"
+    "Custom",
 ]
 
-recommended_qp = [
-    "24 - recommended",
-    "30 - standard",
-    '50 - "I\'m just testing to see if this works"',
-    "Custom"
-]
+recommended_qp = ["24 - recommended", "30 - standard", '50 - "I\'m just testing to see if this works"', "Custom"]
 
 
 class AV1(QtWidgets.QWidget):
-
     def __init__(self, parent, main):
         super(AV1, self).__init__(parent)
         self.main = main
         grid = QtWidgets.QGridLayout()
 
-        self.widgets = Box(
-            fps=None,
-            remove_hdr=None,
-            mode=None,
-            segment_size=None)
+        self.widgets = Box(fps=None, remove_hdr=None, mode=None, segment_size=None)
 
-        self.mode = 'QP'
+        self.mode = "QP"
 
         grid.addLayout(self.init_remove_hdr(), 1, 0, 1, 2)
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
@@ -52,8 +43,7 @@ class AV1(QtWidgets.QWidget):
 
         grid.addWidget(QtWidgets.QWidget(), 5, 0)
         grid.setRowStretch(5, 1)
-        guide_label = QtWidgets.QLabel(
-            f"<a href='https://github.com/OpenVisualCloud/SVT-AV1'>SVT-AV1 Github</a>")
+        guide_label = QtWidgets.QLabel(f"<a href='https://github.com/OpenVisualCloud/SVT-AV1'>SVT-AV1 Github</a>")
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 9, 0, -1, 1)
@@ -72,9 +62,9 @@ class AV1(QtWidgets.QWidget):
 
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel('Remove HDR'))
+        layout.addWidget(QtWidgets.QLabel("Remove HDR"))
         self.widgets.remove_hdr = QtWidgets.QComboBox()
-        self.widgets.remove_hdr.addItems(['No', 'Yes'])
+        self.widgets.remove_hdr.addItems(["No", "Yes"])
         self.widgets.remove_hdr.setCurrentIndex(0)
         self.widgets.remove_hdr.setDisabled(True)
         self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.main.page_update())
@@ -83,7 +73,7 @@ class AV1(QtWidgets.QWidget):
 
     def init_speed(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel('Speed'))
+        layout.addWidget(QtWidgets.QLabel("Speed"))
         self.widgets.speed = QtWidgets.QComboBox()
         self.widgets.speed.addItems([str(x) for x in range(9)])
         self.widgets.speed.setCurrentIndex(7)
@@ -93,7 +83,7 @@ class AV1(QtWidgets.QWidget):
 
     def init_segment_size(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel('Segment Size (seconds)'))
+        layout.addWidget(QtWidgets.QLabel("Segment Size (seconds)"))
         self.widgets.segment_size = QtWidgets.QComboBox()
         self.widgets.segment_size.addItems(["10", "30", "60", "90", "120", "240"])
         self.widgets.segment_size.setCurrentIndex(2)
@@ -163,21 +153,20 @@ class AV1(QtWidgets.QWidget):
         settings = Box(
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             speed=self.widgets.speed.currentText(),
-            segment_size=int(self.widgets.segment_size.currentText())
+            segment_size=int(self.widgets.segment_size.currentText()),
         )
         if self.mode == "QP":
             qp = self.widgets.qp.currentText()
-            settings.qp = int(qp.split(" ", 1)[0]) if qp.lower() != 'custom' else self.widgets.custom_qp.text()
+            settings.qp = int(qp.split(" ", 1)[0]) if qp.lower() != "custom" else self.widgets.custom_qp.text()
         else:
             bitrate = self.widgets.bitrate.currentText()
-            settings.bitrate = bitrate.split(" ", 1)[0] if bitrate.lower() != 'custom' else self.widgets.bitrate.text()
-        logger.info(settings)
+            settings.bitrate = bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.bitrate.text()
         return settings
 
     def new_source(self):
         if not self.main.streams:
             return
-        if self.main.streams['video'][self.main.video_track].get('color_space', '').startswith('bt2020'):
+        if self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
             self.widgets.remove_hdr.setDisabled(False)
         else:
             self.widgets.remove_hdr.setDisabled(True)

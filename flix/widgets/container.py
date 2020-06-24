@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import logging
 import os
 from pathlib import Path
@@ -10,7 +11,6 @@ from flix.widgets.logs import Logs
 
 
 class Container(QtWidgets.QMainWindow):
-
     def __init__(self, data_path, work_path, **kwargs):
         super(Container, self).__init__()
         self.logs = Logs()
@@ -22,22 +22,22 @@ class Container(QtWidgets.QMainWindow):
         self.setWindowIcon(QtGui.QIcon(str(Path(base_path, "data", "icon.ico"))))
 
     def init_menu(self):
-        exit_action = QtWidgets.QAction('&Exit', self)
-        exit_action.setShortcut(QtGui.QKeySequence('Ctrl+Q'))
-        exit_action.setStatusTip('Exit application')
+        exit_action = QtWidgets.QAction("&Exit", self)
+        exit_action.setShortcut(QtGui.QKeySequence("Ctrl+Q"))
+        exit_action.setStatusTip("Exit application")
         exit_action.triggered.connect(self.close)
 
         menubar = self.menuBar()
-        file_menu = menubar.addMenu('&File')
+        file_menu = menubar.addMenu("&File")
         file_menu.addAction(exit_action)
 
-        about_action = QtWidgets.QAction('&About', self)
+        about_action = QtWidgets.QAction("&About", self)
         about_action.triggered.connect(self.show_about)
 
-        log_action = QtWidgets.QAction('View &Logs', self)
+        log_action = QtWidgets.QAction("View &Logs", self)
         log_action.triggered.connect(self.show_logs)
 
-        help_menu = menubar.addMenu('&Help')
+        help_menu = menubar.addMenu("&Help")
         help_menu.addAction(log_action)
         help_menu.addAction(about_action)
 

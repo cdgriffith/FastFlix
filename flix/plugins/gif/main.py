@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-__version__ = '1.0.0'
-__author__ = 'Chris Griffith'
+# -*- coding: utf-8 -*-
+__version__ = "1.0.0"
+__author__ = "Chris Griffith"
 
-name = 'gif'
+name = "GIF"
 
 video_extension = "gif"
 video_dimension_divisor = 1
@@ -12,7 +13,5 @@ enable_audio = False
 
 audio_formats = []
 
-from plugins.gif.command_builder import build
-from plugins.gif.settings_panel import GIF as settings_panel
-
-
+from flix.plugins.gif.command_builder import build
+from flix.plugins.gif.settings_panel import GIF as settings_panel

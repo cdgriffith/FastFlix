@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from box import Box
 
@@ -6,7 +7,6 @@ from flix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
 
 
 class Loop(QtWidgets.QGroupBox):
-
     def __init__(self, parent, condition, commands, number, name=""):
         super(Loop, self).__init__(parent)
         layout = QtWidgets.QVBoxLayout()
@@ -22,7 +22,6 @@ class Loop(QtWidgets.QGroupBox):
 
 
 class Command(QtWidgets.QTabWidget):
-
     def __init__(self, parent, command, number, name="", enabled=True):
         super(Command, self).__init__(parent)
         self.command = command
@@ -39,12 +38,11 @@ class Command(QtWidgets.QTabWidget):
 
 
 class CommandList(QtWidgets.QWidget):
-
     def __init__(self, parent):
         super(CommandList, self).__init__(parent)
 
         layout = QtWidgets.QGridLayout()
-        layout.addWidget(QtWidgets.QLabel('Commands to execute'))
+        layout.addWidget(QtWidgets.QLabel("Commands to execute"))
 
         self.inner_widget = QtWidgets.QWidget()
 

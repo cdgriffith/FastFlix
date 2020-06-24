@@ -1,0 +1,9 @@
+appdirs
+pyinstaller
+pypiwin32
+PySide2==5.14.2.2
+python-box
+requests
+reusables
+ruamel.yaml
+shiboken2==5.14.2.2
