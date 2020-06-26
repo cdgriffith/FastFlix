@@ -5,6 +5,7 @@ from logging.handlers import SocketHandler
 from pathlib import Path
 from distutils.version import StrictVersion
 from datetime import datetime
+import os
 import shutil
 import traceback
 
@@ -61,6 +62,12 @@ def main():
                 ffmpeg = file
             if file.is_file() and file.name.lower() in ("ffprobe", "ffprobe.exe"):
                 ffprobe = file
+        if (not ffmpeg or not ffprobe) and (ffmpeg_folder / "bin").exists():
+            for file in (ffmpeg_folder / "bin").iterdir():
+                if file.is_file() and file.name.lower() in ("ffmpeg", "ffmpeg.exe"):
+                    ffmpeg = file
+                if file.is_file() and file.name.lower() in ("ffprobe", "ffprobe.exe"):
+                    ffprobe = file
 
     logger.addHandler(logging.FileHandler(log_dir / f"flix_{datetime.now().isoformat().replace(':', '.')}"))
 
@@ -95,21 +102,28 @@ def main():
     if not ffmpeg or not ffprobe:
         qm = QtWidgets.QMessageBox
         if reusables.win_based:
-            qm.question(
+            ret = qm.question(
                 None,
                 "FFmpeg not found!",
-                f"<h2>FFmpeg not found!</h2>"
-                f"<br> Please <a href='https://ffmpeg.zeranoe.com/builds/'> download FFmpeg </a> "
-                f"<br> <br>You must add ffmpeg.exe and ffprobe.exe to the folder:"
-                f"<br> {ffmpeg_folder} "
-                f"<br> or to the system path",
-                qm.Close,
+                f"<h2>FFmpeg not found!</h2>" f"<br> Automatically download FFmpeg?",
+                qm.Yes | qm.No,
             )
+            if ret == qm.Yes:
+                try:
+                    windows_download_ffmpeg(ffmpeg_folder)
+                except Exception as err:
+                    logger.exception("Could not download FFmpeg")
+                    sys.exit(2)
+                else:
+                    ffmpeg = ffmpeg_folder / "bin" / "ffmpeg.exe"
+                    ffprobe = ffmpeg_folder / "bin" / "ffprobe.exe"
+            else:
+                sys.exit(1)
         else:
             qm.question(
                 None, "<h2>FFmpeg not found!</h2>", "Please download FFmpeg via your platform package manager", qm.Close
             )
-        sys.exit(1)
+            sys.exit(1)
     else:
         logger.info(f"Using ffmpeg {ffmpeg}")
         logger.info(f"Using ffprobe {ffprobe}")
@@ -171,10 +185,34 @@ def download_svt_av1(svt_av1_folder):
             reusables.download(asset["browser_download_url"], save_dir=svt_av1_folder)
 
 
+def windows_download_ffmpeg(ffmpeg_folder):
+    ffmpeg_folder.mkdir(exist_ok=True)
+    url = "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip"
+    logger.info(f"Downloading {url} to {ffmpeg_folder}")
+    req = requests.get(url, headers={"referer": "https://ffmpeg.zeranoe.com/"}, stream=True,)
+    with open(ffmpeg_folder / "ffmpeg-latest-win64-static.zip", "wb") as f:
+        for block in req.iter_content(chunk_size=4096):
+            f.write(block)
+
+    reusables.extract(ffmpeg_folder / "ffmpeg-latest-win64-static.zip", path=ffmpeg_folder)
+    sub_dir = ffmpeg_folder / "ffmpeg-latest-win64-static"
+
+    for item in os.listdir(sub_dir):
+        shutil.move(str(sub_dir / item), str(ffmpeg_folder))
+
+    try:
+        sub_dir.unlink()
+        Path("ffmpeg-latest-win64-static.zip").unlink()
+    except OSError:
+        pass
+
+
 if __name__ == "__main__":
     try:
         main()
     except Exception:
         traceback.print_exc()
-        input("Error while running FastFlix!\n"
-              "Plese report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
+        input(
+            "Error while running FastFlix!\n"
+            "Plese report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)"
+        )
