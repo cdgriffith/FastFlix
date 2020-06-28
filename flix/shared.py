@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import sys
 import importlib.machinery
@@ -12,14 +13,16 @@ except AttributeError:
     pyinstaller = False
 
 # This is required to keep LGPL libraries truly dynamically linked when built into a binary
-if os.getenv('SHIBOKEN2'):
-    importlib.machinery.SourceFileLoader('shiboken2', os.getenv('SHIBOKEN2')).load_module()
-if os.getenv('PYSIDE2'):
-    PySide2 = importlib.machinery.SourceFileLoader('PySide2', os.getenv('PYSIDE2')).load_module()
+if os.getenv("SHIBOKEN2"):
+    importlib.machinery.SourceFileLoader("shiboken2", os.getenv("SHIBOKEN2")).load_module()
+if os.getenv("PYSIDE2"):
+    PySide2 = importlib.machinery.SourceFileLoader("PySide2", os.getenv("PYSIDE2")).load_module()
 
 from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2.QtCore import Qt
 from PySide2 import __version__ as pyside_version
+
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
 main_width = 800
 
@@ -38,6 +41,7 @@ def error_message(msg, details=None, traceback=False, parent=None):
         em.setDetailedText(details)
     elif traceback:
         import traceback
+
         em.setDetailedText(traceback.format_exc())
     em.setStandardButtons(QtWidgets.QMessageBox.Ok)
     em.exec_()

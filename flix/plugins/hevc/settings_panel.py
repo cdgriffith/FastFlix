@@ -23,43 +23,35 @@ recommended_bitrates = [
 ]
 
 recommended_crfs = [
-    "37 (240p)",
-    "36 (360p)",
-    "33 (480p)",
-    "32 (720p)",
-    "31 (1080p)",
-    "24 (1440p)",
-    "15 (2160p)",
+    "24 (480p)",
+    "23 (720p)",
+    "22 (1080p)",
+    "21 (1440p)",
+    "20 (2160p)",
     "Custom",
 ]
 
 
-class VP9(QtWidgets.QWidget):
+class HEVC(QtWidgets.QWidget):
     def __init__(self, parent, main):
-        super(VP9, self).__init__(parent)
+        super(HEVC, self).__init__(parent)
         self.main = main
 
         grid = QtWidgets.QGridLayout()
 
-        # grid.addWidget(QtWidgets.QLabel("VP9"), 0, 0)
-
-        self.widgets = Box(fps=None, remove_hdr=None, mode=None)
+        self.widgets = Box(remove_hdr=None, mode=None, intra_encoding=None)
 
         self.mode = "CRF"
 
+        grid.addLayout(self.init_modes(), 0, 2, 8, 4)
+        grid.addLayout(self.init_preset(), 1, 0, 1, 2)
         grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
-        grid.addLayout(self.init_modes(), 0, 2, 4, 4)
-        grid.addLayout(self.init_quality(), 1, 0, 1, 2)
-        grid.addLayout(self.init_speed(), 0, 0, 1, 2)
-
-        grid.addLayout(self.init_row_mt(), 4, 0, 1, 2)
-        grid.addLayout(self.init_force_420(), 5, 0, 1, 2)
-        grid.addLayout(self.init_single_pass(), 6, 0, 1, 2)
+        grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 2)
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
         guide_label = QtWidgets.QLabel(
-            f"<a href='https://trac.ffmpeg.org/wiki/Encode/VP9'>FFMPEG VP9 Encoding Guide</a>"
+            f"<a href='https://trac.ffmpeg.org/wiki/Encode/H.265'>FFMPEG HEVC / H.265 Encoding Guide</a>"
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
@@ -67,19 +59,13 @@ class VP9(QtWidgets.QWidget):
         self.setLayout(grid)
         self.hide()
 
-    # def init_fps(self):
-    #     layout = QtWidgets.QHBoxLayout()
-    #     layout.addWidget(QtWidgets.QLabel("FPS"))
-    #     self.widgets.fps = QtWidgets.QComboBox()
-    #     self.widgets.fps.addItems([str(x) for x in range(1, 31)])
-    #     self.widgets.fps.setCurrentIndex(14)
-    #     self.widgets.fps.currentIndexChanged.connect(lambda: self.main.build_commands())
-    #     layout.addWidget(self.widgets.fps)
-    #     return layout
-
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Remove HDR"))
+        label = QtWidgets.QLabel("Remove HDR")
+        label.setToolTip(
+            "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
+        )
+        layout.addWidget(label)
         self.widgets.remove_hdr = QtWidgets.QComboBox()
         self.widgets.remove_hdr.addItems(["No", "Yes"])
         self.widgets.remove_hdr.setCurrentIndex(0)
@@ -88,51 +74,36 @@ class VP9(QtWidgets.QWidget):
         layout.addWidget(self.widgets.remove_hdr)
         return layout
 
-    def init_quality(self):
+    def init_intra_encoding(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Quality"))
-        self.widgets.quality = QtWidgets.QComboBox()
-        self.widgets.quality.addItems(["realtime", "good", "best"])
-        self.widgets.quality.setCurrentIndex(1)
-        self.widgets.quality.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.quality)
+        label = QtWidgets.QLabel("Intra-encoding")
+        label.setToolTip(
+            "Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
+            "This option is not recommenced unless you need to conform to Blu-ray standards to burn to a physical disk"
+        )
+        layout.addWidget(label)
+        self.widgets.intra_encoding = QtWidgets.QComboBox()
+        self.widgets.intra_encoding.addItems(["No", "Yes"])
+        self.widgets.intra_encoding.setCurrentIndex(0)
+        self.widgets.intra_encoding.currentIndexChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.intra_encoding)
         return layout
 
-    def init_speed(self):
+    def init_preset(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Speed"))
-        self.widgets.speed = QtWidgets.QComboBox()
-        self.widgets.speed.addItems([str(x) for x in range(6)])
-        self.widgets.speed.setCurrentIndex(0)
-        self.widgets.speed.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.speed)
-        return layout
-
-    def init_row_mt(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Row multithreading"))
-        self.widgets.row_mt = QtWidgets.QCheckBox()
-        self.widgets.row_mt.setChecked(False)
-        self.widgets.row_mt.toggled.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.row_mt)
-        return layout
-
-    def init_force_420(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Force 4:2:0 chroma subsampling"))
-        self.widgets.force_420 = QtWidgets.QCheckBox()
-        self.widgets.force_420.setChecked(True)
-        self.widgets.force_420.toggled.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.force_420)
-        return layout
-
-    def init_single_pass(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Single Pass (CRF)"))
-        self.widgets.single_pass = QtWidgets.QCheckBox()
-        self.widgets.single_pass.setChecked(False)
-        self.widgets.single_pass.toggled.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.single_pass)
+        label = QtWidgets.QLabel("Preset")
+        label.setToolTip(
+            "The slower the preset, the better the compression and quality\n"
+            "Slow is highest personal recommenced, as past that is much smaller gains"
+        )
+        layout.addWidget(label)
+        self.widgets.preset = QtWidgets.QComboBox()
+        self.widgets.preset.addItems(
+            ["ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"]
+        )
+        self.widgets.preset.setCurrentIndex(6)
+        self.widgets.preset.currentIndexChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.preset)
         return layout
 
     def init_modes(self):
@@ -143,8 +114,6 @@ class VP9(QtWidgets.QWidget):
         bitrate_group_box = QtWidgets.QGroupBox()
         bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
         bitrate_box_layout = QtWidgets.QHBoxLayout()
-        # rotation_dir = Path(base_path, 'data', 'rotations')
-        # group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-15px; padding-bottom:-5px}")
         self.widgets.mode = QtWidgets.QButtonGroup()
         self.widgets.mode.buttonClicked.connect(self.set_mode)
 
@@ -192,11 +161,8 @@ class VP9(QtWidgets.QWidget):
     def get_settings(self):
         settings = Box(
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
-            quality=self.widgets.quality.currentText(),
-            speed=self.widgets.speed.currentText(),
-            row_mt=int(self.widgets.row_mt.isChecked()),
-            force_420=self.widgets.force_420.isChecked(),
-            single_pass=self.widgets.single_pass.isChecked(),
+            preset=self.widgets.preset.currentText(),
+            intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
         )
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()

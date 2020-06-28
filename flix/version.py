@@ -1,3 +1,4 @@
 #!/usr/bin/env python
-__version__ = '2.0.1'
-__author__ = 'Chris Griffith'
+# -*- coding: utf-8 -*-
+__version__ = "2.1.0"
+__author__ = "Chris Griffith"

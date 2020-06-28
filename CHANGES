@@ -1,6 +1,22 @@
 Changelog
 ---------
 
+Version 2.1.0
+~~~~~~~~~~~~~
+
+* Adding config file that will allow for customizable work directory
+* Adding support for HEVC conversion
+* Adding support for audio downmixing and custom titles
+* Adding log to file
+* Adding realtime logging for ffmpeg conversions
+* Adding support to automatically download SVT-AV1
+* Fixing windows scaling display issues
+* Fixing scaling to properly keep scaling and will be red when bad
+* Fixing scaling for videos with rotation
+* Fixing audio to convert correct tracks
+* Removing bundling of FFmpeg and SVT-AV1
+* Removing support for external plugins
+
 Version 2.0.1
 ~~~~~~~~~~~~~
 
