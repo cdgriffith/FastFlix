@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+Version 2.1.1
+~~~~~~~~~~~~~
+
+* Fixing parse_hdr_details bug (thanks to Jan Temešinko and schlotkins)
+
 Version 2.1.0
 ~~~~~~~~~~~~~
 

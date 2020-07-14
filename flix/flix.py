@@ -378,7 +378,11 @@ class Flix:
         )
 
         result = run(command, shell=True, stdout=PIPE, stderr=PIPE)
-        data = Box.from_json(result.stdout.decode("utf-8"), default_box=True, default_box_attr=None)
+        try:
+            data = Box.from_json(result.stdout.decode("utf-8"), default_box=True, default_box_attr=None)
+        except BoxError:
+            # No details to parse
+            return
         if "frames" not in data or not len(data.frames):
             return
         data = data.frames[0]
