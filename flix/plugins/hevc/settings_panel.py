@@ -43,19 +43,26 @@ class HEVC(QtWidgets.QWidget):
 
         self.mode = "CRF"
 
-        grid.addLayout(self.init_modes(), 0, 2, 8, 4)
+        grid.addLayout(self.init_modes(), 0, 2, 6, 4)
+        grid.addLayout(self.init_custom(), 6, 2, 8, 4)
+
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)
         grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
         grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 4, 0, 1, 2)
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
+
         guide_label = QtWidgets.QLabel(
-            f"<a href='https://trac.ffmpeg.org/wiki/Encode/H.265'>FFMPEG HEVC / H.265 Encoding Guide</a>"
+            "<a href='https://trac.ffmpeg.org/wiki/Encode/H.265'>FFMPEG HEVC / H.265 Encoding Guide</a>"
+            " | <a href='https://codecalamity.com/encoding-uhd-4k-hdr10-videos-with-ffmpeg/'>"
+            "CodeCalamity UHD HDR Encoding Guide</a>"
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 9, 0, -1, 1)
+
         self.setLayout(grid)
         self.hide()
 
@@ -104,6 +111,28 @@ class HEVC(QtWidgets.QWidget):
         self.widgets.preset.setCurrentIndex(6)
         self.widgets.preset.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.preset)
+        return layout
+
+    def init_max_mux(self):
+        layout = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("Max Muxing Queue Size")
+        label.setToolTip('Only change this if you are getting the error "Too many packets buffered for output stream"')
+        layout.addWidget(label)
+        self.widgets.max_mux = QtWidgets.QComboBox()
+        self.widgets.max_mux.addItems(["default", "1024", "2048", "4096", "8192"])
+        self.widgets.max_mux.setCurrentIndex(0)
+        self.widgets.max_mux.currentIndexChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.max_mux)
+        return layout
+
+    def init_custom(self):
+        layout = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("Custom ffmpeg options")
+        label.setToolTip("extra flags or options, cannot modify existing settings")
+        layout.addWidget(label)
+        self.widgets.extra = QtWidgets.QLineEdit()
+        self.widgets.extra.textChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.extra)
         return layout
 
     def init_modes(self):
@@ -163,7 +192,10 @@ class HEVC(QtWidgets.QWidget):
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
             intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
+            max_mux=self.widgets.max_mux.currentText(),
+            extra=self.widgets.extra.text(),
         )
+
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
             settings.crf = int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_crf.text()

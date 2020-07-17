@@ -267,7 +267,7 @@ class Flix:
             start = f"-ss {start_time}"
         return (
             f'"{self.ffmpeg}" {start} -loglevel error -i "{source}" '
-            f" -vf {filters + ',' if filters else ''}scale=min(320\\,iw):-1 "
+            f' -vf {filters + "," if filters else ""}scale="min(320\\,iw):-1" '
             f"-map 0:{video_track} -an -y "
             f'-vframes 1 "{output}"'
         )

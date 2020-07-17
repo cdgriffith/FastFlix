@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+Version 2.2.0
+~~~~~~~~~~~~~
+
+* Adding custom extra ffmpeg args for HEVC
+* Adding max mux queue size change for HEVC
+* Fixing issue with codec not being set as copy (thanks to schlotkins)
+* Fixing quotes around parens on linux
+
 Version 2.1.1
 ~~~~~~~~~~~~~
 

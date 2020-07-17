@@ -23,6 +23,8 @@ def build(
     side_data=None,
     x265_params=None,
     intra_encoding=False,
+    max_mux="default",
+    extra="",
     **kwargs,
 ):
     filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
@@ -41,6 +43,7 @@ def build(
         f'-i "{source}" '
         f' {f"-ss {start_time}" if start_time else ""}  '
         f'{f"-to {duration}" if duration else ""} '
+        f"{extra} "
         f"-map 0:{video_track} "
         # "-pix_fmt yuv420p10le "
         f"-c:v libx265 "
@@ -49,6 +52,9 @@ def build(
     )
 
     beginning = re.sub("[ ]+", " ", beginning)
+
+    if max_mux and max_mux != "default":
+        beginning += f"-max_muxing_queue_size {max_mux}"
 
     if not x265_params:
         x265_params = []
@@ -76,7 +82,7 @@ def build(
         x265_params.append("keyint=1")
 
     if x265_params:
-        beginning += "-x265-params {}".format(":".join(x265_params))
+        beginning += '-x265-params "{}"'.format(":".join(x265_params))
 
     if side_data.cll:
         pass
