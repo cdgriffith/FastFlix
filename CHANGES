@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Version 2.1.2
+~~~~~~~~~~~~~
+
+* Fixing issue with codec not being set as copy (thanks to schlotkins)
+* Fixing quotes around parens on linux
+
 Version 2.1.1
 ~~~~~~~~~~~~~
 
