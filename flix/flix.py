@@ -356,7 +356,7 @@ class Flix:
 
     def get_audio_encoders(self):
         cmd = Popen(
-            f"{self.ffmpeg} -hide_banner -encoders", shell=True, stderr=STDOUT, stdout=PIPE, universal_newlines=True
+            f'"{self.ffmpeg}" -hide_banner -encoders', shell=True, stderr=STDOUT, stdout=PIPE, universal_newlines=True
         )
         encoders = []
         start_line = " ------"
