@@ -371,7 +371,7 @@ class Flix:
 
     def parse_hdr_details(self, video_source, video_track=0):
         command = (
-            f"{self.ffprobe} -select_streams v:{video_track} -print_format json -show_frames "
+            f'"{self.ffprobe}" -select_streams v:{video_track} -print_format json -show_frames '
             '-read_intervals "%+#1" '
             '-show_entries "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt" '
             f'-i "{video_source}"'

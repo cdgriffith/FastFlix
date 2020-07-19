@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Version 2.3.0
+~~~~~~~~~~~~~
+
+* Fixing HDR details not being parsed due to not quoting path to ffprobe (thanks to schlotkins)
+* Changing always allowing pass-through for audio
+
 Version 2.2.0
 ~~~~~~~~~~~~~
 
