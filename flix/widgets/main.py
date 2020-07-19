@@ -814,8 +814,9 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
         self.widgets.convert_button.setText("Convert 🎥")
+        output = Path(self.output_video)
 
-        if return_code or not Path(self.output_video).exists():
+        if return_code or not output.exists() or output.stat().st_size <= 10:
             error_message("Could not encode video due to an error, please view the logs for more details!")
         else:
             sm = QtWidgets.QMessageBox()

@@ -4,8 +4,10 @@ Changelog
 Version 2.3.0
 ~~~~~~~~~~~~~
 
-* Fixing HDR details not being parsed due to not quoting path to ffprobe (thanks to schlotkins)
+* Changing that custom mode fields are blocked unless "Custom" is selected
 * Changing always allowing pass-through for audio
+* Fixing HDR details not being parsed due to not quoting path to ffprobe (thanks to schlotkins)
+* Fixing killing child processes on *nix
 
 Version 2.2.0
 ~~~~~~~~~~~~~

@@ -54,7 +54,7 @@ def build(
     beginning = re.sub("[ ]+", " ", beginning)
 
     if max_mux and max_mux != "default":
-        beginning += f"-max_muxing_queue_size {max_mux}"
+        beginning += f"-max_muxing_queue_size {max_mux} "
 
     if not x265_params:
         x265_params = []
@@ -82,12 +82,12 @@ def build(
         x265_params.append("keyint=1")
 
     if x265_params:
-        beginning += '-x265-params "{}"'.format(":".join(x265_params))
+        beginning += '-x265-params "{}" '.format(":".join(x265_params))
 
     if side_data.cll:
         pass
 
-    extra_data = "-map_chapters 0"  # -map_metadata 0 # safe to do for rotation?
+    extra_data = "-map_chapters 0 "  # -map_metadata 0 # safe to do for rotation?
 
     if bitrate:
         command_1 = f'{beginning}:pass=1 -passlogfile "<tempfile.1.log>" -b:v {bitrate} -an -f mp4 {ending}'

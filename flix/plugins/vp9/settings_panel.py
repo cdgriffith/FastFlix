@@ -154,10 +154,11 @@ class VP9(QtWidgets.QWidget):
         self.widgets.bitrate = QtWidgets.QComboBox()
         self.widgets.bitrate.setFixedWidth(250)
         self.widgets.bitrate.addItems(recommended_bitrates)
-        self.widgets.bitrate.currentIndexChanged.connect(lambda: self.main.build_commands())
         self.widgets.bitrate.setCurrentIndex(6)
+        self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
         self.widgets.custom_bitrate.setFixedWidth(100)
+        self.widgets.custom_bitrate.setDisabled(True)
         bitrate_box_layout.addWidget(bitrate_radio)
         bitrate_box_layout.addWidget(self.widgets.bitrate)
         bitrate_box_layout.addStretch()
@@ -173,9 +174,10 @@ class VP9(QtWidgets.QWidget):
         self.widgets.crf.setFixedWidth(250)
         self.widgets.crf.addItems(recommended_crfs)
         self.widgets.crf.setCurrentIndex(4)
-        self.widgets.crf.currentIndexChanged.connect(lambda: self.main.build_commands())
+        self.widgets.crf.currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets.custom_crf = QtWidgets.QLineEdit("30")
         self.widgets.custom_crf.setFixedWidth(100)
+        self.widgets.custom_crf.setDisabled(True)
         crf_box_layout.addWidget(crf_radio)
         crf_box_layout.addWidget(self.widgets.crf)
         crf_box_layout.addStretch()
@@ -188,6 +190,11 @@ class VP9(QtWidgets.QWidget):
         layout.addWidget(crf_group_box, 0, 0)
         layout.addWidget(bitrate_group_box, 1, 0)
         return layout
+
+    def mode_update(self):
+        self.widgets.custom_crf.setDisabled(self.widgets.crf.currentText() != "Custom")
+        self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
+        self.main.build_commands()
 
     def get_settings(self):
         settings = Box(

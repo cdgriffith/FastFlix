@@ -8,6 +8,8 @@ from pathlib import Path
 from uuid import uuid4
 from subprocess import Popen, PIPE, run, STDOUT
 import sys
+import os
+import signal
 
 import reusables
 
@@ -108,6 +110,8 @@ class Worker(QtCore.QThread):
                     logger.info(line.rstrip())
                     break
                 if not white_detect.match(line):
+                    if "Skipping NAL unit" in line:
+                        continue
                     logger.info(line.rstrip())
                     if line.strip().startswith(("frame", "encoded")):
                         self.app.log_label_update(line.strip())
@@ -162,7 +166,14 @@ class Worker(QtCore.QThread):
 
     def start_exec(self, command):
         return Popen(
-            command, shell=True, cwd=self.tempdir.name, stdin=PIPE, stdout=PIPE, stderr=STDOUT, universal_newlines=True
+            command,
+            shell=True,
+            cwd=self.tempdir.name,
+            stdin=PIPE,
+            stdout=PIPE,
+            stderr=STDOUT,
+            universal_newlines=True,
+            preexec_fn=os.setsid if not reusables.win_based else None,
         )
 
     def is_alive(self):
@@ -171,16 +182,21 @@ class Worker(QtCore.QThread):
         return True if self.process.poll() is None else False
 
     def kill(self):
-        self.killed = True
-        logger.info("Killing worker process")
-        if self.process and self.is_alive():
-            if reusables.win_based:
-                run(f"TASKKILL /F /PID {self.process.pid} /T", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
-            else:
-                run(f"kill -9 {self.process.pid}", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+        logger.info(f"Killing worker process {self.process.pid}")
+        if self.process:
             try:
+                if reusables.win_based:
+                    os.kill(self.process.pid, signal.CTRL_C_EVENT)
+                else:
+                    os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
                 self.process.terminate()
             except Exception as err:
-                print(f"Couldn't kill process: {err}")
+                print(f"Couldn't terminate process: {err}")
+
+            # if reusables.win_based:
+            #     run(f"TASKKILL /F /PID {self.process.pid} /T", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+            # else:
+            #     run(f"kill -9 {self.process.pid}", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+        self.killed = True
         self.app.cancelled.emit()
         self.exit()
