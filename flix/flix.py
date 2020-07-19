@@ -381,7 +381,11 @@ class Flix:
         try:
             data = Box.from_json(result.stdout.decode("utf-8"), default_box=True, default_box_attr=None)
         except BoxError:
-            # No details to parse
+            # Could not parse details
+            logger.error(
+                "COULD NOT PARSE FFPROBE HDR METADATA, PLEASE OPEN ISSUE WITH THESE DETAILS:"
+                f"\nSTDOUT: {result.stdout.decode('utf-8')}\nSTDERR: {result.stderr.decode('utf-8')}"
+            )
             return
         if "frames" not in data or not len(data.frames):
             return

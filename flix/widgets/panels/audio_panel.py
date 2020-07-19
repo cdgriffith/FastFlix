@@ -182,10 +182,10 @@ class Audio(QtWidgets.QTabWidget):
         self.loading = True
         current = self.widgets.convert_to.currentText()
         self.widgets.convert_to.clear()
-        passthrough_available = False
-        if self.codec in codec_list:
-            passthrough_available = True
-            self.widgets.convert_to.addItem("none")
+        # passthrough_available = False
+        # if self.codec in codec_list:
+        passthrough_available = True
+        self.widgets.convert_to.addItem("none")
         self.widgets.convert_to.addItems(sorted(set(self.available_audio_encoders) & set(codec_list)))
         if current in codec_list:
             index = codec_list.index(current)
