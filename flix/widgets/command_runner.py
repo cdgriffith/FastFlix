@@ -2,12 +2,10 @@
 # -*- coding: utf-8 -*-
 import logging
 import re
-import time
 import tempfile
 from pathlib import Path
 from uuid import uuid4
-from subprocess import Popen, PIPE, run, STDOUT
-import sys
+from subprocess import Popen, PIPE, STDOUT
 import os
 import signal
 
@@ -26,9 +24,6 @@ class Worker(QtCore.QThread):
     def __init__(self, parent, command_list, work_dir):
         super(Worker, self).__init__(parent)
         self.tempdir = tempfile.TemporaryDirectory(prefix="temp_", dir=work_dir)
-        # self.logger = logging.getLogger(f'command_logger')
-        # TODO setup file logger for command output self.logger
-        # TODO calculate time based off frames
         self.app = parent
         self.command_list = command_list
         self.process = None
@@ -94,16 +89,6 @@ class Worker(QtCore.QThread):
                     line += char
                     line_wait = False
 
-                    # simple print to console
-                    # sys.stdout.write(char if 32 < ord(char) < 126 else f"[{ord(char)}]")
-                    # sys.stdout.flush()
-                    # lineAfterCarriage += char
-                    # if char in ('\r', '\n'):
-
-            # for line in self.process.stdout:
-            #     if self.killed:
-            #         break
-            #     logger.info(line.strip())
         elif command_type == "ffmpeg":
             for line in self.process.stdout:
                 if self.killed:
@@ -116,22 +101,8 @@ class Worker(QtCore.QThread):
                     if line.strip().startswith(("frame", "encoded")):
                         self.app.log_label_update(line.strip())
 
-        # self.process.wait()
-        # for line in self.process.stdout:
-        #     logger.debug(f"command - {line}")
-        # next_line = self.process.stdout.readline().decode('utf-8')
-        # if not next_line:
-        #     if self.process.poll() is not None:
-        #         break
-        #     else:
-        #         continue
         return_code = self.process.poll()
         return return_code
-        # else:
-        #     try:
-        #         return target(**params)
-        #     except Exception as err:
-        #         logger.error(f'Could not run target {target}: {err}')
 
     def run(self):
         try:
@@ -192,11 +163,6 @@ class Worker(QtCore.QThread):
                 self.process.terminate()
             except Exception as err:
                 print(f"Couldn't terminate process: {err}")
-
-            # if reusables.win_based:
-            #     run(f"TASKKILL /F /PID {self.process.pid} /T", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
-            # else:
-            #     run(f"kill -9 {self.process.pid}", stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
         self.killed = True
         self.app.cancelled.emit()
         self.exit()
