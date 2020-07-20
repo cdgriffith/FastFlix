@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+Version 2.3.1
+~~~~~~~~~~~~~
+
+* Fixing #35 custom CRF / bitrate values not updating in the command panel (thanks to schlotkins)
+
 Version 2.3.0
 ~~~~~~~~~~~~~
 
