@@ -1,3 +1,31 @@
+[tool.poetry]
+name = "fastflix"
+version = "2.3.0"
+description = "Easy to use video encoder GUI wrapper"
+authors = ["Chris Griffith <chris@cdgriffith.com>"]
+license = "MIT"
+include = ["fastflix/data/rotations/*.png", "fastflix/data/icon.ico"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+appdirs = "^1.4.4"
+PySide2 = "^5.15.0"
+shiboken2 = "^5.15.0"
+python-box = {version = "^5.0.1", extras = ["all"]}
+requests = "^2.24.0"
+reusables = "^0.9.5"
+"ruamel.yaml" = "^0.16.10"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry.scripts]
+fastflix = 'fastflix.__main__:main'
+
 [tool.black]
 line-length = 120
 target-version = ['py36', 'py37', 'py38']

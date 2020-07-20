@@ -1,6 +1,6 @@
 appdirs
 PySide2==5.15
-python-box
+python-box[all]
 requests
 reusables
 ruamel.yaml

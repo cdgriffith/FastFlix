@@ -115,4 +115,4 @@ SvtAv1/
 bundled
 extra/
 *.7z
-binary-files/
+.pypirc
