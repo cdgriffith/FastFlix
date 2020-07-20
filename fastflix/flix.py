@@ -390,6 +390,8 @@ class Flix:
         if "frames" not in data or not len(data.frames):
             return
         data = data.frames[0]
+        if not data.get("side_data_list"):
+            return
 
         master_display = None
         cll = None
@@ -397,7 +399,7 @@ class Flix:
         def s(a, v):
             return int(a.get(v, "0").split("/")[0])
 
-        for item in data.get("side_data_list", BoxList(default_box=True)):
+        for item in data["side_data_list"]:
             if item.side_data_type == "Mastering display metadata":
                 master_display = Box(
                     red=f"({s(item, 'red_x')},{s(item, 'red_y')})",
