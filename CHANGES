@@ -4,6 +4,8 @@ Changelog
 Version 2.3.0
 ~~~~~~~~~~~~~
 
+* Adding to pypi
+* Changing package to "fastflix"
 * Changing that custom mode fields are blocked unless "Custom" is selected
 * Changing always allowing pass-through for audio
 * Fixing HDR details not being parsed due to not quoting path to ffprobe (thanks to schlotkins)

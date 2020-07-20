@@ -24,9 +24,18 @@ Currently there is support for:
 
 # Releases
 
+## Windows
 View the [releases](https://github.com/cdgriffith/FastFlix/releases) for 64 bit Windows binaries (Generated via Appveyor and also [available there](https://ci.appveyor.com/project/cdgriffith/fastflix)).
 
-There are no builds currently for linux or MacOS but should work fine by cloning the repo and running directly:
+## MacOS and Linux
+
+Please use [pipx](https://pipxproject.github.io/pipx/installation/) to install as a properly virtualized app
+
+```
+pipx install fastflix
+```
+
+## Running from source code or without pipx
 
 ```
 git clone https://github.com/cdgriffith/FastFlix.git

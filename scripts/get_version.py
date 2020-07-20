@@ -6,7 +6,7 @@ import os
 from datetime import datetime as dt
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir))
-from flix.version import __version__
+from fastflix.version import __version__
 
 
 def write_and_exit(msg):
