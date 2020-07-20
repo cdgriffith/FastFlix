@@ -157,6 +157,7 @@ class HEVC(QtWidgets.QWidget):
         self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
         self.widgets.custom_bitrate.setFixedWidth(100)
         self.widgets.custom_bitrate.setDisabled(True)
+        self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
         bitrate_box_layout.addWidget(bitrate_radio)
         bitrate_box_layout.addWidget(self.widgets.bitrate)
         bitrate_box_layout.addStretch()
@@ -176,6 +177,7 @@ class HEVC(QtWidgets.QWidget):
         self.widgets.custom_crf = QtWidgets.QLineEdit("30")
         self.widgets.custom_crf.setFixedWidth(100)
         self.widgets.custom_crf.setDisabled(True)
+        self.widgets.custom_crf.textChanged.connect(lambda: self.main.build_commands())
         crf_box_layout.addWidget(crf_radio)
         crf_box_layout.addWidget(self.widgets.crf)
         crf_box_layout.addStretch()
@@ -205,7 +207,7 @@ class HEVC(QtWidgets.QWidget):
 
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
-            settings.crf = int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_crf.text()
+            settings.crf = int(crf.split(" ", 1)[0]) if crf != "Custom" else int(self.widgets.custom_crf.text())
         else:
             bitrate = self.widgets.bitrate.currentText()
             if bitrate.lower() == "custom":
