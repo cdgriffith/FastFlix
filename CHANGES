@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Version 2.3.2
+~~~~~~~~~~~~~
+
+* Fixing #39 HEVC two pass bitrate does not work (thanks to schlotkins)
+
+
 Version 2.3.1
 ~~~~~~~~~~~~~
 

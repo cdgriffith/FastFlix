@@ -31,7 +31,7 @@ def build(
     audio = build_audio(audio_tracks)
     subtitles = build_subtitle(subtitle_tracks)
 
-    ending = "dev/null && \\"
+    ending = "/dev/null"
     if reusables.win_based:
         ending = "NUL"
 
@@ -81,18 +81,24 @@ def build(
     if intra_encoding:
         x265_params.append("keyint=1")
 
-    if x265_params:
-        beginning += '-x265-params "{}" '.format(":".join(x265_params))
-
     if side_data.cll:
         pass
 
     extra_data = "-map_chapters 0 "  # -map_metadata 0 # safe to do for rotation?
 
+    def get_x265_params(params=()):
+        if not isinstance(params, (list, tuple)):
+            params = [params]
+        all_params = x265_params + list(params)
+        return '-x265-params "{}" '.format(":".join(all_params)) if all_params else ""
+
     if bitrate:
-        command_1 = f'{beginning}:pass=1 -passlogfile "<tempfile.1.log>" -b:v {bitrate} -an -f mp4 {ending}'
+        command_1 = (
+            f'{beginning} {get_x265_params(["pass=1"])} '
+            f'-passlogfile "<tempfile.1.log>" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {ending}'
+        )
         command_2 = (
-            f'{beginning}:pass=2 -passlogfile "<tempfile.1.log>" '
+            f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "<tempfile.1.log>" '
             f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
         )
         return [
@@ -101,7 +107,10 @@ def build(
         ]
 
     elif crf:
-        command = f'{beginning} -crf {crf} -preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
+        command = (
+            f"{beginning} {get_x265_params()}  -crf {crf} "
+            f'-preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
+        )
         return [Command(command, ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")]
 
     else:
