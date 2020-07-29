@@ -226,3 +226,4 @@ class HEVC(QtWidgets.QWidget):
 
     def set_mode(self, x):
         self.mode = x.text()
+        self.main.build_commands()

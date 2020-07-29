@@ -24,7 +24,7 @@ def build(
     filters = generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
 
-    ending = "dev/null && \\"
+    ending = "/dev/null"
     if reusables.win_based:
         ending = "NUL"
 
