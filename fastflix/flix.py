@@ -409,7 +409,7 @@ class Flix:
                     luminance=f"({s(item, 'max_luminance')},{s(item, 'min_luminance')})",
                 )
             if item.side_data_type == "Content light level metadata":
-                cll = f"({item.max_content},{item.max_average})"
+                cll = f"{item.max_content},{item.max_average}"
 
         return Box(
             pix_fmt=data.pix_fmt,

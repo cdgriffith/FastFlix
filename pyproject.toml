@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastflix"
-version = "2.3.2"
+version = "2.3.3"
 description = "Easy to use video encoder GUI wrapper"
 authors = ["Chris Griffith <chris@cdgriffith.com>"]
 license = "MIT"
@@ -12,7 +12,7 @@ python = "^3.6"
 appdirs = "^1.4.4"
 PySide2 = "^5.15.0"
 shiboken2 = "^5.15.0"
-python-box = {version = "^5.0.1", extras = ["all"]}
+python-box = {version = "^5.1.1", extras = ["all"]}
 requests = "^2.24.0"
 reusables = "^0.9.5"
 "ruamel.yaml" = "^0.16.10"
