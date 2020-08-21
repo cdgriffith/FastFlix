@@ -47,14 +47,13 @@ class About(QtWidgets.QWidget):
         layout.addWidget(label)
         layout.addWidget(supporting_libraries_label)
 
-        if Path(base_path, "bundled").exists():
-            bundle_label = QtWidgets.QLabel(
-                "Bundled with: <a href='https://github.com/OpenVisualCloud/SVT-AV1'>SVT AV1</a> (Modified BSD) and "
-                "<a href='https://www.ffmpeg.org/download.html'>ffmpeg</a> (LGPL)"
-            )
-            bundle_label.setAlignment(QtCore.Qt.AlignCenter)
-            bundle_label.setOpenExternalLinks(True)
-            layout.addWidget(bundle_label)
+        bundle_label = QtWidgets.QLabel(
+            "Conversion Tools<br> <a href='https://github.com/OpenVisualCloud/SVT-AV1'>SVT AV1</a> (Modified BSD) and "
+            "<a href='https://www.ffmpeg.org/download.html'>FFmpeg</a> (Various)"
+        )
+        bundle_label.setAlignment(QtCore.Qt.AlignCenter)
+        bundle_label.setOpenExternalLinks(True)
+        layout.addWidget(bundle_label)
 
         if pyinstaller:
             pyinstaller_label = QtWidgets.QLabel(
@@ -62,14 +61,15 @@ class About(QtWidgets.QWidget):
             )
             pyinstaller_label.setAlignment(QtCore.Qt.AlignCenter)
             pyinstaller_label.setOpenExternalLinks(True)
+            layout.addWidget(QtWidgets.QLabel())
             layout.addWidget(pyinstaller_label)
 
-        replacer = "\\"
         license_label = QtWidgets.QLabel(
-            f"<a href='file:///{base_path.replace(replacer, '/')}/docs/build-licenses.txt' download>LICENSES</a>"
+            f"<a href='https://github.com/cdgriffith/FastFlix/blob/master/docs/build-licenses.txt'>LICENSES</a>"
         )
         license_label.setAlignment(QtCore.Qt.AlignCenter)
         license_label.setOpenExternalLinks(True)
+        layout.addWidget(QtWidgets.QLabel())
         layout.addWidget(license_label)
 
         self.setLayout(layout)

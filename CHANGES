@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Version 2.3.3
+~~~~~~~~~~~~~
+
+* Fixing #46 max-cll was being sent incorrectly to x265-params (thanks to HannesJo0139)
+* Fixing #43 audio bitrate being set to wrong track (thanks to HannesJo0139)
+
 Version 2.3.2
 ~~~~~~~~~~~~~
 
