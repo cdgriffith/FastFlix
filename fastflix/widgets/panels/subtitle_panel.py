@@ -99,7 +99,7 @@ class Subtitle(QtWidgets.QTabWidget):
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(0)
-        layout.setMargin(0)
+        # layout.setMargin(0)
         # self.widgets.up_button = QtWidgets.QPushButton("^")
         self.widgets.up_button.setDisabled(self.first)
         self.widgets.up_button.setFixedWidth(20)

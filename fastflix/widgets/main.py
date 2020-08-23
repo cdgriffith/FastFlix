@@ -175,7 +175,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button = convert
         layout.addWidget(open_input_file)
         layout.addStretch()
-        layout.addLayout(self.init_output_type(), alignment=QtCore.Qt.AlignRight)
+        layout.addLayout(self.init_output_type(), QtCore.Qt.AlignRight)
         layout.addStretch()
         layout.addWidget(convert)
         return layout

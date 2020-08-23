@@ -5,8 +5,8 @@ from pathlib import Path
 import reusables
 from box import __version__ as box_version
 
-from qtpy import QtWidgets, QtCore, QtGui
-from fastflix.shared import pyside_version, pyinstaller, base_path
+from qtpy import QtWidgets, QtCore, QtGui, API
+from fastflix.shared import pyinstaller, base_path
 from fastflix.version import __version__
 
 __all__ = ["About"]
@@ -25,7 +25,7 @@ class About(QtWidgets.QWidget):
             f"<b>FastFlix</b> v{__version__}<br>"
             f"{f'Build: {build_file.read_text().strip()}<br>' if build_file.exists() else ''}"
             f"<br>Author: <a href='https://github.com/cdgriffith'>Chris Griffith</a>"
-            f"<br>License: MIT"
+            f"<br>Dual License: MIT (Code) / {'L' if API == 'pyside2' else ''}GPL (Release)"
         )
         label.setFont(QtGui.QFont("Arial", 14))
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -35,7 +35,6 @@ class About(QtWidgets.QWidget):
         supporting_libraries_label = QtWidgets.QLabel(
             "Supporting libraries<br>"
             f"<a href='https://www.python.org/'>Python</a> {reusables.version_string} (PSF LICENSE), "
-            f"<a href='https://wiki.qt.io/Qt_for_Python'>PySide2</a> {pyside_version} (LGPLv3)<br>"
             f"<a href='https://github.com/cdgriffith/Box'>python-box</a> {box_version} (MIT), "
             f"<a href='https://github.com/cdgriffith/Reusables'>Reusables</a> {reusables.__version__} (MIT)<br>"
         )
