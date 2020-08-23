@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+Version 2.3.4
+~~~~~~~~~~~~~
+
+* Fixing audio downmixing only taking for last downmixing setting
+
 Version 2.3.3
 ~~~~~~~~~~~~~
 
