@@ -11,7 +11,7 @@ import signal
 
 import reusables
 
-from fastflix.shared import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 logger = logging.getLogger("fastflix")
 

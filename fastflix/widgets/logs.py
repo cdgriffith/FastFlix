@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from fastflix.shared import QtWidgets
+from qtpy import QtWidgets, QtCore, QtGui
 
 __all__ = ["Logs"]
 

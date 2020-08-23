@@ -3,7 +3,9 @@
 
 from box import Box
 
-from fastflix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
+from qtpy import QtWidgets, QtCore, QtGui
+
+from fastflix.shared import error_message, main_width
 from fastflix.widgets.panels.abstract_list import FlixList
 
 dispositions = [

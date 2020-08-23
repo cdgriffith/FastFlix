@@ -5,7 +5,7 @@ from subprocess import Popen, PIPE, run, STDOUT
 
 import reusables
 
-from fastflix.shared import QtCore
+from qtpy import QtWidgets, QtCore, QtGui
 
 logger = logging.getLogger("fastflix")
 

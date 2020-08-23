@@ -3,7 +3,7 @@ import logging
 
 from box import Box
 
-from fastflix.shared import QtWidgets, QtCore
+from qtpy import QtWidgets, QtCore, QtGui
 
 logger = logging.getLogger("fastflix")
 

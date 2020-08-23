@@ -20,9 +20,11 @@ try:
     import reusables
     import requests
 
+    from qtpy import QtWidgets, QtCore, QtGui
+
     from fastflix.version import __version__
     from fastflix.flix import ff_version, FlixError
-    from fastflix.shared import QtWidgets, error_message, base_path, Qt
+    from fastflix.shared import error_message, base_path
     from fastflix.widgets.container import Container
 except ImportError as err:
     traceback.print_exc()

@@ -3,7 +3,7 @@
 
 from box import Box
 
-from fastflix.shared import QtGui, QtCore, QtWidgets
+from qtpy import QtWidgets, QtCore, QtGui
 from fastflix.widgets.panels.abstract_list import FlixList
 
 

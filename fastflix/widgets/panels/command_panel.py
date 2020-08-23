@@ -3,7 +3,7 @@
 
 from box import Box
 
-from fastflix.shared import QtGui, QtCore, QtWidgets, error_message, main_width
+from qtpy import QtWidgets, QtCore, QtGui
 
 
 class Loop(QtWidgets.QGroupBox):

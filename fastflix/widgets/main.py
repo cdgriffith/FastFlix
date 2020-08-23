@@ -8,10 +8,12 @@ import logging
 import pkg_resources
 import importlib.machinery  # Needed for pyinstaller
 
+from qtpy import QtWidgets, QtCore, QtGui
+
 import reusables
 from box import Box
 from fastflix.flix import Flix
-from fastflix.shared import QtGui, QtCore, Qt, QtWidgets, error_message
+from fastflix.shared import error_message
 from fastflix.widgets.video_options import VideoOptions
 from fastflix.widgets.worker import Worker
 from fastflix.widgets.command_runner import Worker as CW
@@ -173,7 +175,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button = convert
         layout.addWidget(open_input_file)
         layout.addStretch()
-        layout.addLayout(self.init_output_type(), alignment=Qt.AlignRight)
+        layout.addLayout(self.init_output_type(), alignment=QtCore.Qt.AlignRight)
         layout.addStretch()
         layout.addWidget(convert)
         return layout
@@ -270,7 +272,7 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(rot_4, 0, 1)
         layout.addWidget(self.widgets.v_flip, 1, 2)
         layout.addWidget(self.widgets.h_flip, 1, 1)
-        label = QtWidgets.QLabel("Rotation", alignment=(Qt.AlignBottom | Qt.AlignRight))
+        label = QtWidgets.QLabel("Rotation", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
         layout.addWidget(label, 1, 3)
         group_box.setLayout(layout)
@@ -327,10 +329,10 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.scale_update())
 
-        label = QtWidgets.QLabel("Scale", alignment=(Qt.AlignBottom | Qt.AlignRight))
+        label = QtWidgets.QLabel("Scale", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
         label.setMaximumHeight(40)
-        bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=Qt.AlignCenter)
+        bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=QtCore.Qt.AlignCenter)
 
         scale_layout.addLayout(new_scale_layout)
         bottom_row.addWidget(label)
@@ -356,7 +358,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.right.textChanged.connect(lambda: self.page_update())
         self.widgets.crop.bottom.textChanged.connect(lambda: self.page_update())
 
-        label = QtWidgets.QLabel("Crop", alignment=(Qt.AlignBottom | Qt.AlignRight))
+        label = QtWidgets.QLabel("Crop", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
         label.setMaximumHeight(40)
         crop_bottom_layout.addWidget(label)
@@ -433,7 +435,7 @@ class Main(QtWidgets.QWidget):
 
         # buttons = self.init_preview_buttons()
 
-        self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (Qt.AlignTop | Qt.AlignRight))
+        self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
         # self.grid.addLayout(buttons, 0, 14, 5, 1)
 
     def init_preview_buttons(self):
