@@ -4,7 +4,7 @@ Changelog
 Version 2.4.0
 ~~~~~~~~~~~~~
 
-* Changing to using qtpy instead of only Pyside2
+* Changing to using qtpy which supports dynamic linking of either pyside2 or pyqt5, instead of only Pyside2
 
 Version 2.3.4
 ~~~~~~~~~~~~~
