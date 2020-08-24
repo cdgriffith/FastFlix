@@ -20,7 +20,7 @@ __all__ = ["Worker"]
 white_detect = re.compile(r"^\s+")
 
 
-class Worker(QtCore.QThread):
+class Worker(QtCore.QProcess):
     def __init__(self, parent, command_list, work_dir):
         super(Worker, self).__init__(parent)
         self.tempdir = tempfile.TemporaryDirectory(prefix="temp_", dir=work_dir)

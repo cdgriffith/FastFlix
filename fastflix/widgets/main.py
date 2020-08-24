@@ -12,10 +12,10 @@ from qtpy import QtWidgets, QtCore, QtGui
 
 import reusables
 from box import Box
-from fastflix.flix import Flix
+from fastflix.flix import Flix, FlixError
 from fastflix.shared import error_message
 from fastflix.widgets.video_options import VideoOptions
-from fastflix.widgets.worker import Worker
+from fastflix.widgets.worker import ThumbnailCreator
 from fastflix.widgets.command_runner import Worker as CW
 from fastflix.plugins.common import helpers
 
@@ -172,6 +172,7 @@ class Main(QtWidgets.QWidget):
         convert.setFixedSize(100, 50)
         convert.setStyleSheet("background: green")
         convert.clicked.connect(lambda: self.create_video())
+        convert.setDisabled(True)
         self.widgets.convert_button = convert
         layout.addWidget(open_input_file)
         layout.addStretch()
@@ -593,8 +594,22 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
+        # TODO show path to video file
         self.loading_video = True
-        self.streams, self.format_info = self.flix.parse(self.input_video)
+        try:
+            self.streams, self.format_info = self.flix.parse(self.input_video)
+        except FlixError:
+            error_message(f"Not a video file<br>{self.input_video}")
+            self.input_video = None
+            self.streams = None
+            self.format_info = None
+            for i in range(self.widgets.video_track.count()):
+                self.widgets.video_track.removeItem(0)
+            self.widgets.convert_button.setDisabled(True)
+            self.widgets.preview.setText("No Video File")
+            self.page_update()
+            return
+
         self.side_data = self.flix.parse_hdr_details(self.input_video)
         logger.debug(self.streams)
         logger.debug(self.format_info)
@@ -607,8 +622,18 @@ class Main(QtWidgets.QWidget):
         for i in range(self.widgets.video_track.count()):
             self.widgets.video_track.removeItem(0)
 
+        if len(self.streams.video) == 0:
+            error_message(f"No video tracks detected in file<br>{self.input_video}")
+            self.input_video = None
+            self.streams = None
+            self.format_info = None
+            self.widgets.convert_button.setDisabled(True)
+            self.widgets.preview.setText("No Video File")
+            self.page_update()
+            return
+
         rotation = 0
-        if "rotate" in self.streams.video[0].tags:
+        if "rotate" in self.streams.video[0].get("tags", {}):
             rotation = abs(int(self.streams.video[0].tags.rotate))
         # elif 'side_data_list' in self.streams.video[0]:
         #     rots = [abs(int(x.rotation)) for x in self.streams.video[0].side_data_list if 'rotation' in x]
@@ -649,8 +674,9 @@ class Main(QtWidgets.QWidget):
         self.widgets.duration.setText(self.number_to_time(video_duration))
 
         self.video_options.new_source()
-        self.generate_thumbnail()
+        self.widgets.convert_button.setDisabled(False)
         self.loading_video = False
+        self.generate_thumbnail()
 
     @property
     def video_track(self):
@@ -698,9 +724,8 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def generate_thumbnail(self):
-        if not self.input_video:
+        if not self.input_video or self.loading_video:
             return
-        logger.debug("Generating thumbnail")
 
         settings = self.get_all_settings()
         filters = helpers.generate_filters(**settings)
@@ -711,13 +736,17 @@ class Main(QtWidgets.QWidget):
             video_track=self.streams["video"][self.widgets.video_track.currentIndex()]["index"],
             filters=filters,
             start_time=settings.start_time,
-            # disable_hdr=self.convert_hdr_check.isChecked(),
         )
-        worker = Worker(self, thumb_command, cmd_type="thumb")
+        self.thumb_file.unlink(missing_ok=True)
+        worker = ThumbnailCreator(self, thumb_command)
         worker.start()
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def thumbnail_generated(self):
+        if not self.thumb_file.exists():
+            self.widgets.preview.setText("Error Updating Thumbnail")
+            return
+
         pixmap = QtGui.QPixmap(str(self.thumb_file))
         pixmap = pixmap.scaled(320, 213, QtCore.Qt.KeepAspectRatio)
         self.widgets.preview.setPixmap(pixmap)
