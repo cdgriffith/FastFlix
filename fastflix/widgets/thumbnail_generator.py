@@ -14,7 +14,7 @@ __all__ = ["ThumbnailCreator"]
 
 class ThumbnailCreator(QtCore.QThread):
     def __init__(self, app, command=""):
-        super(ThumbnailCreator, self).__init__(app)
+        super().__init__(app)
         self.app = app
         self.command = command
 

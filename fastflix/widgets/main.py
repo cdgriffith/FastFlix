@@ -15,8 +15,8 @@ from box import Box
 from fastflix.flix import Flix, FlixError
 from fastflix.shared import error_message
 from fastflix.widgets.video_options import VideoOptions
-from fastflix.widgets.worker import ThumbnailCreator
-from fastflix.widgets.command_runner import Worker as CW
+from fastflix.widgets.thumbnail_generator import ThumbnailCreator
+from fastflix.widgets.command_runner import CommandRunner
 from fastflix.plugins.common import helpers
 
 logger = logging.getLogger("fastflix")
@@ -31,7 +31,7 @@ def load_plugins(enable_svt_av1=True):
     from fastflix.plugins.gif import main as gif_plugin
     from fastflix.plugins.vp9 import main as vp9_plugin
 
-    plugins = [av1_plugin, hevc_plugin, gif_plugin, vp9_plugin]
+    plugins = [hevc_plugin, av1_plugin, gif_plugin, vp9_plugin]
     if enable_svt_av1:
         plugins.append(svt_av1_plugin)
     return {plugin.name: plugin for plugin in plugins}
@@ -174,9 +174,10 @@ class Main(QtWidgets.QWidget):
         convert.clicked.connect(lambda: self.create_video())
         convert.setDisabled(True)
         self.widgets.convert_button = convert
+        self.widgets.convert_button.setStyleSheet("background-color:grey;")
         layout.addWidget(open_input_file)
         layout.addStretch()
-        layout.addLayout(self.init_output_type(), QtCore.Qt.AlignRight)
+        layout.addLayout(self.init_output_type())
         layout.addStretch()
         layout.addWidget(convert)
         return layout
@@ -286,8 +287,9 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
         self.widgets.convert_to.addItems(list(self.plugins.keys()))
-        layout.addWidget(QtWidgets.QLabel("Output: "), stretch=0)
-        layout.addWidget(self.widgets.convert_to, stretch=1)
+        layout.addWidget(QtWidgets.QLabel("Encoder: "), stretch=0)
+        layout.addWidget(self.widgets.convert_to, stretch=0)
+        layout.addStretch()
         layout.setSpacing(10)
         self.widgets.convert_to.currentTextChanged.connect(self.video_options.change_conversion)
         return layout
@@ -606,6 +608,7 @@ class Main(QtWidgets.QWidget):
             for i in range(self.widgets.video_track.count()):
                 self.widgets.video_track.removeItem(0)
             self.widgets.convert_button.setDisabled(True)
+            self.widgets.convert_button.setStyleSheet("background-color:gray;")
             self.widgets.preview.setText("No Video File")
             self.page_update()
             return
@@ -628,6 +631,7 @@ class Main(QtWidgets.QWidget):
             self.streams = None
             self.format_info = None
             self.widgets.convert_button.setDisabled(True)
+            self.widgets.convert_button.setStyleSheet("background-color:gray;")
             self.widgets.preview.setText("No Video File")
             self.page_update()
             return
@@ -675,6 +679,7 @@ class Main(QtWidgets.QWidget):
 
         self.video_options.new_source()
         self.widgets.convert_button.setDisabled(False)
+        self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.loading_video = False
         self.generate_thumbnail()
 
@@ -793,6 +798,9 @@ class Main(QtWidgets.QWidget):
             format_info=self.format_info,
             work_dir=self.path.work,
             side_data=self.side_data,
+            ffmpeg=self.ffmpeg,
+            ffprobe=self.ffprobe,
+            av1=self.svt_av1,
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")
@@ -854,7 +862,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")
         self.converting = True
-        self.command_runner = CW(self, commands, self.path.work)
+        self.command_runner = CommandRunner(self, commands, self.path.work)
         self.command_runner.start()
 
     @reusables.log_exception("fastflix", show_traceback=False)
