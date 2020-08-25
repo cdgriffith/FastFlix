@@ -6,7 +6,7 @@ from fastflix.plugins.common import helpers
 from fastflix.plugins.common.audio import build_audio
 
 
-def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=None, audio_tracks=(), **kwargs):
+def build(source, video_track, ffmpeg, bitrate=None, crf=None, start_time=0, duration=None, audio_tracks=(), **kwargs):
     filters = helpers.generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
 
@@ -15,7 +15,7 @@ def build(source, video_track, bitrate=None, crf=None, start_time=0, duration=No
         ending = "NUL"
 
     beginning = (
-        f'"{{ffmpeg}}" -y '
+        f'"{ffmpeg}" -y '
         f' {f"-ss {start_time}" if start_time else ""}  '
         f'{f"-t {duration}" if duration else ""} '
         f'-i "{source}" '

@@ -4,11 +4,11 @@ from fastflix.plugins.common.helpers import generate_filters, Command, start_and
 extension = "gif"
 
 
-def build(source, video_track, fps=15, dither="sierra2_4a", **kwargs):
+def build(source, video_track, ffmpeg, fps=15, dither="sierra2_4a", **kwargs):
 
     filters = generate_filters(**kwargs)
 
-    beginning = start_and_input(source, **kwargs)
+    beginning = start_and_input(source, ffmpeg, **kwargs)
 
     command_1 = (
         f"{beginning} -map 0:{video_track} "

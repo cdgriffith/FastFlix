@@ -61,7 +61,6 @@ class CommandRunner(QtCore.QThread):
         return command
 
     def run_command(self, command, command_type=None):
-        # if command:
         command = self.replace_temps(command)
         logger.info(f"Running command: {command}")
         self.process = self.start_exec(command)

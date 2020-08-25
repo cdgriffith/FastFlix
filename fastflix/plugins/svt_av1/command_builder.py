@@ -24,6 +24,8 @@ extension = "mkv"
 def build(
     source,
     video_track,
+    ffmpeg,
+    av1,
     streams,
     start_time,
     duration,
@@ -73,7 +75,7 @@ def build(
 
     command_1 = Command(
         (
-            f"{{ffmpeg}} -y "
+            f'"{ffmpeg}" -y '
             f'{f"-ss {start_time}" if start_time else ""} '
             f'{f"-t {duration - start_time}" if duration else ""} '
             f'-i "{source}" '
@@ -95,7 +97,7 @@ def build(
         )
 
     loop_command_1 = (
-        f'"{{ffmpeg}}" -y -i "<loop.1>" '
+        f'"{ffmpeg}" -y -i "<loop.1>" '
         f'-pix_fmt {"yuv420p10le" if bit_depth == 10 and not disable_hdr else "yuv420p"}'
         f' {f"-vf {filters}" if filters else ""} "<loop.2>"'
     )
@@ -110,7 +112,7 @@ def build(
     quality = f"-rc 1 -tbr {bitrate}" if bitrate else f"--rc 0 -q {qp}"
 
     loop_command_2 = (
-        f'"{{av1}}" --keyint {intra_period} --preset {speed} --input-depth {bit_depth} '
+        f'"{av1}" --keyint {intra_period} --preset {speed} --input-depth {bit_depth} '
         # f'{"-hdr 1" if not disable_hdr and bit_depth == 10 else ""}'
         f" --fps-num {fps_num} --fps-denom {fps_denom} -w {width} -h {height} "
         f'{quality} -i "<loop.2>" -b "<tempdir.2>{os.sep}<loop.0>.ivf"'
@@ -135,7 +137,7 @@ def build(
 
     if not audio_tracks:
         command_2 = Command(
-            f'"{{ffmpeg}}" -y -safe 0 -f concat -i "<tempfile.5.log>" -reset_timestamps 1 -c copy "{{output}}"',
+            f'"{ffmpeg}" -y -safe 0 -f concat -i "<tempfile.5.log>" -reset_timestamps 1 -c copy "{{output}}"',
             ["ffmpeg"],
             False,
             exe="ffmpeg",
@@ -145,7 +147,7 @@ def build(
 
     no_audio_file = "<tempfile.6.mkv>"
     command_2 = Command(
-        f'"{{ffmpeg}}" -y -safe 0 -f concat -i "<tempfile.5.log>" -reset_timestamps 1 -c copy "{no_audio_file}"',
+        f'"{ffmpeg}" -y -safe 0 -f concat -i "<tempfile.5.log>" -reset_timestamps 1 -c copy "{no_audio_file}"',
         ["ffmpeg"],
         False,
         exe="ffmpeg",
@@ -156,7 +158,7 @@ def build(
 
     command_audio = Command(
         (
-            f'"{{ffmpeg}}" -y '
+            f'"{ffmpeg}" -y '
             f'{f"-ss {start_time}" if start_time else ""} '
             f'{f"-t {duration - start_time}" if duration else ""} '
             f'-i "{source}" '
@@ -170,7 +172,7 @@ def build(
 
     command_3 = Command(
         (
-            f'"{{ffmpeg}}" -y '
+            f'"{ffmpeg}" -y '
             f'-i "{no_audio_file}" -i "{audio_file}" '
             f'{"-map_metadata -1 -shortest -reset_timestamps 1" if start_time or duration else ""} '
             f"-c copy -map 0:v -map 1:a "
