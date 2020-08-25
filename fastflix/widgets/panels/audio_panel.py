@@ -307,6 +307,7 @@ class AudioList(FlixList):
                         "codec": track.codec,
                         "downmix": track.downmix,
                         "title": track.title,
+                        "language": track.language,
                     }
                 )
         return Box(audio_tracks=tracks)

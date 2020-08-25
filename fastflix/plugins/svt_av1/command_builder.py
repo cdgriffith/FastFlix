@@ -174,7 +174,7 @@ def build(
         (
             f'"{ffmpeg}" -y '
             f'-i "{no_audio_file}" -i "{audio_file}" '
-            f'{"-map_metadata -1 -shortest -reset_timestamps 1" if start_time or duration else ""} '
+            f'-map_metadata -1 {"-shortest -reset_timestamps 1" if start_time or duration else ""} '
             f"-c copy -map 0:v -map 1:a "
             # -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0"
             f'"{{output}}"'

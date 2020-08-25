@@ -26,6 +26,8 @@ def build(
     intra_encoding=False,
     max_mux="default",
     extra="",
+    pix_fmt="yuv420p10le",
+    tune=None,
     **kwargs,
 ):
     filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
@@ -46,10 +48,11 @@ def build(
         f'{f"-to {duration}" if duration else ""} '
         f"{extra} "
         f"-map 0:{video_track} "
-        # "-pix_fmt yuv420p10le "
+        f"-pix_fmt {pix_fmt} "
         f"-c:v libx265 "
         f'{f"-vf {filters}" if filters else ""} '
-        # f'{"-pix_fmt yuv420p" if force420 else ""} '
+        f'{f"-tune {tune}" if tune else ""} '
+        "-map_metadata -1 "
     )
 
     if max_mux and max_mux != "default":

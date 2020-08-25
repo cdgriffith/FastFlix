@@ -6,6 +6,7 @@ Version 2.4.0
 
 * Changing to using qtpy which supports dynamic linking of either pyside2 or pyqt5, instead of only Pyside2
 * Fixing #4 Error Box when someone other than video file is dropped onto fastflix
+* Fixing #44 Remove metadata from original file
 
 Version 2.3.4
 ~~~~~~~~~~~~~

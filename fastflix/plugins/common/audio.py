@@ -11,6 +11,8 @@ def build_audio(audio_tracks, audio_file_index=0):
             f'-metadata:s:{track.outdex} title="{track.title}" '
             f'-metadata:s:{track.outdex} handler="{track.title}"'
         )
+        if track.language:
+            command_list.append(f"-metadata:s:{track.outdex} language={track.language}")
         if track.conversion.codec == "none":
             command_list.append(f"-c:{track.outdex} copy")
         elif "conversion" in track:

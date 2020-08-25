@@ -170,7 +170,7 @@ class CommandRunner(QtCore.QThread):
                     os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
                 self.process.terminate()
             except Exception as err:
-                print(f"Couldn't terminate process: {err}")
+                logger.exception(f"Couldn't terminate process: {err}")
         self.killed = True
         self.app.cancelled.emit()
         self.exit()

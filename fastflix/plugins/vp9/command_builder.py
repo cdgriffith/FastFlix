@@ -39,6 +39,7 @@ def build(
         f'{f"-vf {filters}" if filters else ""} '
         f'{"-pix_fmt yuv420p" if force420 else ""} '
         f'{"-row-mt 1" if row_mt else ""} '
+        "-map_metadata -1 "
     )
 
     if not single_pass:

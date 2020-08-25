@@ -22,6 +22,7 @@ def build(source, video_track, ffmpeg, bitrate=None, crf=None, start_time=0, dur
         f"-map 0:{video_track} "
         f"-c:v libaom-av1 -strict experimental "
         f'{f"-vf {filters}" if filters else ""} '
+        "-map_metadata -1 "
     )
 
     beginning = re.sub("[ ]+", " ", beginning)

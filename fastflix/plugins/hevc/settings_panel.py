@@ -28,8 +28,11 @@ recommended_crfs = [
     "22 (1080p)",
     "21 (1440p)",
     "20 (2160p)",
-    "Custom",
+    "18",
+    "16" "Custom",
 ]
+
+pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
 
 
 class HEVC(QtWidgets.QWidget):
@@ -42,6 +45,7 @@ class HEVC(QtWidgets.QWidget):
         self.widgets = Box(remove_hdr=None, mode=None, intra_encoding=None)
 
         self.mode = "CRF"
+        self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 6, 4)
         grid.addLayout(self.init_custom(), 6, 2, 8, 4)
@@ -50,6 +54,8 @@ class HEVC(QtWidgets.QWidget):
         grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
         grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 4, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 5, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 2)
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
@@ -68,16 +74,16 @@ class HEVC(QtWidgets.QWidget):
 
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Remove HDR")
-        label.setToolTip(
+        self.remove_hdr_label = QtWidgets.QLabel("Remove HDR")
+        self.remove_hdr_label.setToolTip(
             "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
         )
-        layout.addWidget(label)
+        layout.addWidget(self.remove_hdr_label)
         self.widgets.remove_hdr = QtWidgets.QComboBox()
         self.widgets.remove_hdr.addItems(["No", "Yes"])
         self.widgets.remove_hdr.setCurrentIndex(0)
         self.widgets.remove_hdr.setDisabled(True)
-        self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.main.page_update())
+        self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.setting_change())
         layout.addWidget(self.widgets.remove_hdr)
         return layout
 
@@ -111,6 +117,30 @@ class HEVC(QtWidgets.QWidget):
         self.widgets.preset.setCurrentIndex(6)
         self.widgets.preset.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.preset)
+        return layout
+
+    def init_tune(self):
+        layout = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("Tune")
+        label.setToolTip("Tune the settings for a particular type of source or situation.")
+        layout.addWidget(label)
+        self.widgets.tune = QtWidgets.QComboBox()
+        self.widgets.tune.addItems(["default", "psnr", "ssim", "grain", "zero-latency", "fast-decode", "animation"])
+        self.widgets.tune.setCurrentIndex(0)
+        self.widgets.tune.currentIndexChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.tune)
+        return layout
+
+    def init_pix_fmt(self):
+        layout = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("Bit depth")
+        label.setToolTip("Pixel Format (requires at least 10-bit for HDR)")
+        layout.addWidget(label)
+        self.widgets.pix_fmt = QtWidgets.QComboBox()
+        self.widgets.pix_fmt.addItems(pix_fmts)
+        self.widgets.pix_fmt.setCurrentIndex(1)
+        self.widgets.pix_fmt.currentIndexChanged.connect(lambda: self.setting_change(pix_change=True))
+        layout.addWidget(self.widgets.pix_fmt)
         return layout
 
     def init_max_mux(self):
@@ -196,6 +226,35 @@ class HEVC(QtWidgets.QWidget):
         self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
         self.main.build_commands()
 
+    def setting_change(self, update=True, pix_change=False):
+        if self.updating_settings:
+            return
+        if pix_change:
+            self.main.page_update()
+            return
+        self.updating_settings = True
+        remove_hdr = bool(self.widgets.remove_hdr.currentIndex())
+        bit_depth = self.main.streams["video"][self.main.video_track].bit_depth
+
+        if remove_hdr:
+            self.widgets.pix_fmt.clear()
+            self.widgets.pix_fmt.addItems([pix_fmts[0:1]])
+            self.widgets.pix_fmt.setCurrentIndex(0)
+        else:
+            self.widgets.pix_fmt.clear()
+            if bit_depth == 12:
+                self.widgets.pix_fmt.addItems(pix_fmts[2:])
+                self.widgets.pix_fmt.setCurrentIndex(0)
+            elif bit_depth == 10:
+                self.widgets.pix_fmt.addItems(pix_fmts[1:])
+                self.widgets.pix_fmt.setCurrentIndex(0)
+            else:
+                self.widgets.pix_fmt.addItems(pix_fmts)
+                self.widgets.pix_fmt.setCurrentIndex(1)
+        if update:
+            self.main.page_update()
+        self.updating_settings = False
+
     def get_settings(self):
         settings = Box(
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
@@ -203,7 +262,11 @@ class HEVC(QtWidgets.QWidget):
             intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
             max_mux=self.widgets.max_mux.currentText(),
             extra=self.widgets.extra.text(),
+            pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
         )
+
+        tune = self.widgets.tune.currentText()
+        settings.tune = tune if tune.lower() != "default" else None
 
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
@@ -219,10 +282,18 @@ class HEVC(QtWidgets.QWidget):
     def new_source(self):
         if not self.main.streams:
             return
-        if self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
+        if "zcale" not in self.main.flix.filters:
+            self.widgets.remove_hdr.setDisabled(True)
+            self.remove_hdr_label.setStyleSheet("QLabel{color:#777}")
+            self.remove_hdr_label.setToolTip("cannot remove HDR, zcale filter not in current version of FFmpeg")
+            logger.warning("zcale filter not detected in current version of FFmpeg, cannot remove HDR")
+        elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
             self.widgets.remove_hdr.setDisabled(False)
+            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
         else:
             self.widgets.remove_hdr.setDisabled(True)
+            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
+        self.setting_change(update=False)
 
     def set_mode(self, x):
         self.mode = x.text()
