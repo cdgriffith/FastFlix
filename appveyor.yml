@@ -13,7 +13,7 @@ skip_commits:
 
 
 image:
-  - Visual Studio 2017
+  - Visual Studio 2019
 
 platform: x64
 
@@ -28,8 +28,8 @@ install:
       try {Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe scripts\get_version.py)"}
       catch {Update-AppveyorBuild -Version "$(C:\Python36-x64\python.exe scripts\get_version.py)-$env:APPVEYOR_BUILD_ID"}
   - ps: Update-AppveyorBuild -Message "[$env:APPVEYOR_REPO_BRANCH] $env:APPVEYOR_REPO_COMMIT_MESSAGE"
-  - cmd: C:\Python36-x64\python -m pip install --upgrade pip setuptools --ignore-installed
-  - cmd: C:\Python36-x64\python -m pip install -r requirements-build.txt
+  - cmd: C:\Python38-x64\python -m pip install --upgrade pip setuptools --ignore-installed
+  - cmd: C:\Python38-x64\python -m pip install -r requirements-build.txt
 
 build_script:
   - ps: mkdir dist
