@@ -1,8 +1,9 @@
 appdirs
 pyinstaller
 pypiwin32
-pyside2
+pyqt5
 python-box
 requests
 reusables
 ruamel.yaml
+qtpy

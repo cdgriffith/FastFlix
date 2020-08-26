@@ -1,5 +1,8 @@
 This file contains ours and all third party licenses included in FastFlix.
 
+FastFlix's code is MIT licenced, when bundled into an exe it reflects the licence of the version of QT library
+it is using. LGPL for PySide2 and GPL for PyQT5.
+
 * FastFlix (MIT)
 * Box (MIT)
 * Requests (Apache 2.0)

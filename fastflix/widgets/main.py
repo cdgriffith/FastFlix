@@ -499,7 +499,7 @@ class Main(QtWidgets.QWidget):
         f = Path(self.input_video)
         save_file = os.path.join(f.parent, f"{f.stem}-fastflix-{int(time.time())}.{extension}")
         filename = QtWidgets.QFileDialog.getSaveFileName(
-            self, caption="Save Video As", dir=str(save_file), filter=f"Save File (*.{extension}"
+            self, caption="Save Video As", directory=str(save_file), filter=f"Save File (*.{extension}"
         )
         return filename[0] if filename else False
 
@@ -742,7 +742,10 @@ class Main(QtWidgets.QWidget):
             filters=filters,
             start_time=settings.start_time,
         )
-        self.thumb_file.unlink(missing_ok=True)
+        try:
+            self.thumb_file.unlink()
+        except OSError:
+            pass
         worker = ThumbnailCreator(self, thumb_command)
         worker.start()
 
