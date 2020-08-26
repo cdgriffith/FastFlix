@@ -901,6 +901,7 @@ class Main(QtWidgets.QWidget):
         event.accept()
         self.input_video = str(event.mimeData().urls()[0].toLocalFile())
         self.update_video_info()
+        self.page_update()
 
     def dragEnterEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()
