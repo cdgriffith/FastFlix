@@ -11,18 +11,18 @@ import signal
 
 import reusables
 
-from fastflix.shared import QtCore, QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 
 logger = logging.getLogger("fastflix")
 
-__all__ = ["Worker"]
+__all__ = ["CommandRunner"]
 
 white_detect = re.compile(r"^\s+")
 
 
-class Worker(QtCore.QThread):
+class CommandRunner(QtCore.QThread):
     def __init__(self, parent, command_list, work_dir):
-        super(Worker, self).__init__(parent)
+        super().__init__(parent)
         self.tempdir = tempfile.TemporaryDirectory(prefix="temp_", dir=work_dir)
         self.app = parent
         self.command_list = command_list
@@ -61,7 +61,6 @@ class Worker(QtCore.QThread):
         return command
 
     def run_command(self, command, command_type=None):
-        # if command:
         command = self.replace_temps(command)
         logger.info(f"Running command: {command}")
         self.process = self.start_exec(command)
@@ -90,15 +89,24 @@ class Worker(QtCore.QThread):
                     line_wait = False
 
         elif command_type == "ffmpeg":
-            for line in self.process.stdout:
+            last_write = 0
+            for i, line in enumerate(self.process.stdout):
                 if self.killed:
                     logger.info(line.rstrip())
                     break
                 if not white_detect.match(line):
                     if "Skipping NAL unit" in line:
+                        last_write -= 1
                         continue
-                    logger.info(line.rstrip())
-                    if line.strip().startswith(("frame", "encoded")):
+
+                    line = line.strip()
+                    if line.startswith("frame"):
+                        if last_write + 50 < i:
+                            last_write = i
+                            logger.info(line.rstrip())
+                    else:
+                        logger.info(line.rstrip())
+                    if line.startswith(("frame", "encoded")):
                         self.app.log_label_update(line.strip())
 
         return_code = self.process.poll()
@@ -162,7 +170,7 @@ class Worker(QtCore.QThread):
                     os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
                 self.process.terminate()
             except Exception as err:
-                print(f"Couldn't terminate process: {err}")
+                logger.exception(f"Couldn't terminate process: {err}")
         self.killed = True
         self.app.cancelled.emit()
         self.exit()

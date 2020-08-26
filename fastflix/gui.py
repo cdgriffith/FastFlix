@@ -20,14 +20,17 @@ try:
     import reusables
     import requests
 
+    from qtpy import QtWidgets, QtCore, QtGui
+    from qtpy import QT_VERSION, API
+
     from fastflix.version import __version__
     from fastflix.flix import ff_version, FlixError
-    from fastflix.shared import QtWidgets, error_message, base_path, Qt
+    from fastflix.shared import error_message, base_path
     from fastflix.widgets.container import Container
 except ImportError as err:
     traceback.print_exc()
     print("Could not load FastFlix properly!", file=sys.stderr)
-    input("Plese report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
+    input("Please report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
     sys.exit(1)
 
 logger = logging.getLogger("fastflix")
@@ -37,6 +40,9 @@ def main():
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(name)-6s  %(levelname)-8s %(message)s")
     socket_handler = SocketHandler("127.0.0.1", 19996)
     logger.addHandler(socket_handler)
+
+    logger.info(f"Starting FastFlix {__version__}")
+    logger.debug(f"Using qt engine {API} version {QT_VERSION}")
 
     main_app = QtWidgets.QApplication(sys.argv)
     main_app.setStyle("fusion")

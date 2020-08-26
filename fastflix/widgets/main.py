@@ -8,13 +8,15 @@ import logging
 import pkg_resources
 import importlib.machinery  # Needed for pyinstaller
 
+from qtpy import QtWidgets, QtCore, QtGui
+
 import reusables
 from box import Box
-from fastflix.flix import Flix
-from fastflix.shared import QtGui, QtCore, Qt, QtWidgets, error_message
+from fastflix.flix import Flix, FlixError
+from fastflix.shared import error_message
 from fastflix.widgets.video_options import VideoOptions
-from fastflix.widgets.worker import Worker
-from fastflix.widgets.command_runner import Worker as CW
+from fastflix.widgets.thumbnail_generator import ThumbnailCreator
+from fastflix.widgets.command_runner import CommandRunner
 from fastflix.plugins.common import helpers
 
 logger = logging.getLogger("fastflix")
@@ -29,7 +31,7 @@ def load_plugins(enable_svt_av1=True):
     from fastflix.plugins.gif import main as gif_plugin
     from fastflix.plugins.vp9 import main as vp9_plugin
 
-    plugins = [av1_plugin, hevc_plugin, gif_plugin, vp9_plugin]
+    plugins = [hevc_plugin, av1_plugin, gif_plugin, vp9_plugin]
     if enable_svt_av1:
         plugins.append(svt_av1_plugin)
     return {plugin.name: plugin for plugin in plugins}
@@ -170,10 +172,12 @@ class Main(QtWidgets.QWidget):
         convert.setFixedSize(100, 50)
         convert.setStyleSheet("background: green")
         convert.clicked.connect(lambda: self.create_video())
+        convert.setDisabled(True)
         self.widgets.convert_button = convert
+        self.widgets.convert_button.setStyleSheet("background-color:grey;")
         layout.addWidget(open_input_file)
         layout.addStretch()
-        layout.addLayout(self.init_output_type(), alignment=Qt.AlignRight)
+        layout.addLayout(self.init_output_type())
         layout.addStretch()
         layout.addWidget(convert)
         return layout
@@ -270,7 +274,7 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(rot_4, 0, 1)
         layout.addWidget(self.widgets.v_flip, 1, 2)
         layout.addWidget(self.widgets.h_flip, 1, 1)
-        label = QtWidgets.QLabel("Rotation", alignment=(Qt.AlignBottom | Qt.AlignRight))
+        label = QtWidgets.QLabel("Rotation", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
         layout.addWidget(label, 1, 3)
         group_box.setLayout(layout)
@@ -283,8 +287,9 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
         self.widgets.convert_to.addItems(list(self.plugins.keys()))
-        layout.addWidget(QtWidgets.QLabel("Output: "), stretch=0)
-        layout.addWidget(self.widgets.convert_to, stretch=1)
+        layout.addWidget(QtWidgets.QLabel("Encoder: "), stretch=0)
+        layout.addWidget(self.widgets.convert_to, stretch=0)
+        layout.addStretch()
         layout.setSpacing(10)
         self.widgets.convert_to.currentTextChanged.connect(self.video_options.change_conversion)
         return layout
@@ -327,10 +332,10 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.scale_update())
 
-        label = QtWidgets.QLabel("Scale", alignment=(Qt.AlignBottom | Qt.AlignRight))
+        label = QtWidgets.QLabel("Scale", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
         label.setMaximumHeight(40)
-        bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=Qt.AlignCenter)
+        bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=QtCore.Qt.AlignCenter)
 
         scale_layout.addLayout(new_scale_layout)
         bottom_row.addWidget(label)
@@ -356,7 +361,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.right.textChanged.connect(lambda: self.page_update())
         self.widgets.crop.bottom.textChanged.connect(lambda: self.page_update())
 
-        label = QtWidgets.QLabel("Crop", alignment=(Qt.AlignBottom | Qt.AlignRight))
+        label = QtWidgets.QLabel("Crop", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
         label.setMaximumHeight(40)
         crop_bottom_layout.addWidget(label)
@@ -433,7 +438,7 @@ class Main(QtWidgets.QWidget):
 
         # buttons = self.init_preview_buttons()
 
-        self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (Qt.AlignTop | Qt.AlignRight))
+        self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
         # self.grid.addLayout(buttons, 0, 14, 5, 1)
 
     def init_preview_buttons(self):
@@ -494,7 +499,7 @@ class Main(QtWidgets.QWidget):
         f = Path(self.input_video)
         save_file = os.path.join(f.parent, f"{f.stem}-fastflix-{int(time.time())}.{extension}")
         filename = QtWidgets.QFileDialog.getSaveFileName(
-            self, caption="Save Video As", dir=str(save_file), filter=f"Save File (*.{extension}"
+            self, caption="Save Video As", directory=str(save_file), filter=f"Save File (*.{extension}"
         )
         return filename[0] if filename else False
 
@@ -591,8 +596,23 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
+        # TODO show path to video file
         self.loading_video = True
-        self.streams, self.format_info = self.flix.parse(self.input_video)
+        try:
+            self.streams, self.format_info = self.flix.parse(self.input_video)
+        except FlixError:
+            error_message(f"Not a video file<br>{self.input_video}")
+            self.input_video = None
+            self.streams = None
+            self.format_info = None
+            for i in range(self.widgets.video_track.count()):
+                self.widgets.video_track.removeItem(0)
+            self.widgets.convert_button.setDisabled(True)
+            self.widgets.convert_button.setStyleSheet("background-color:gray;")
+            self.widgets.preview.setText("No Video File")
+            self.page_update()
+            return
+
         self.side_data = self.flix.parse_hdr_details(self.input_video)
         logger.debug(self.streams)
         logger.debug(self.format_info)
@@ -605,8 +625,19 @@ class Main(QtWidgets.QWidget):
         for i in range(self.widgets.video_track.count()):
             self.widgets.video_track.removeItem(0)
 
+        if len(self.streams.video) == 0:
+            error_message(f"No video tracks detected in file<br>{self.input_video}")
+            self.input_video = None
+            self.streams = None
+            self.format_info = None
+            self.widgets.convert_button.setDisabled(True)
+            self.widgets.convert_button.setStyleSheet("background-color:gray;")
+            self.widgets.preview.setText("No Video File")
+            self.page_update()
+            return
+
         rotation = 0
-        if "rotate" in self.streams.video[0].tags:
+        if "rotate" in self.streams.video[0].get("tags", {}):
             rotation = abs(int(self.streams.video[0].tags.rotate))
         # elif 'side_data_list' in self.streams.video[0]:
         #     rots = [abs(int(x.rotation)) for x in self.streams.video[0].side_data_list if 'rotation' in x]
@@ -647,8 +678,10 @@ class Main(QtWidgets.QWidget):
         self.widgets.duration.setText(self.number_to_time(video_duration))
 
         self.video_options.new_source()
-        self.generate_thumbnail()
+        self.widgets.convert_button.setDisabled(False)
+        self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.loading_video = False
+        self.generate_thumbnail()
 
     @property
     def video_track(self):
@@ -696,9 +729,8 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def generate_thumbnail(self):
-        if not self.input_video:
+        if not self.input_video or self.loading_video:
             return
-        logger.debug("Generating thumbnail")
 
         settings = self.get_all_settings()
         filters = helpers.generate_filters(**settings)
@@ -709,13 +741,20 @@ class Main(QtWidgets.QWidget):
             video_track=self.streams["video"][self.widgets.video_track.currentIndex()]["index"],
             filters=filters,
             start_time=settings.start_time,
-            # disable_hdr=self.convert_hdr_check.isChecked(),
         )
-        worker = Worker(self, thumb_command, cmd_type="thumb")
+        try:
+            self.thumb_file.unlink()
+        except OSError:
+            pass
+        worker = ThumbnailCreator(self, thumb_command)
         worker.start()
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def thumbnail_generated(self):
+        if not self.thumb_file.exists():
+            self.widgets.preview.setText("Error Updating Thumbnail")
+            return
+
         pixmap = QtGui.QPixmap(str(self.thumb_file))
         pixmap = pixmap.scaled(320, 213, QtCore.Qt.KeepAspectRatio)
         self.widgets.preview.setPixmap(pixmap)
@@ -762,6 +801,9 @@ class Main(QtWidgets.QWidget):
             format_info=self.format_info,
             work_dir=self.path.work,
             side_data=self.side_data,
+            ffmpeg=self.ffmpeg,
+            ffprobe=self.ffprobe,
+            av1=self.svt_av1,
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")
@@ -823,7 +865,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")
         self.converting = True
-        self.command_runner = CW(self, commands, self.path.work)
+        self.command_runner = CommandRunner(self, commands, self.path.work)
         self.command_runner.start()
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -862,6 +904,7 @@ class Main(QtWidgets.QWidget):
         event.accept()
         self.input_video = str(event.mimeData().urls()[0].toLocalFile())
         self.update_video_info()
+        self.page_update()
 
     def dragEnterEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()

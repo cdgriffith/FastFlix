@@ -9,6 +9,7 @@ from fastflix.plugins.common.audio import build_audio
 def build(
     source,
     video_track,
+    ffmpeg,
     bitrate=None,
     crf=None,
     start_time=0,
@@ -29,7 +30,7 @@ def build(
         ending = "NUL"
 
     beginning = (
-        f'"{{ffmpeg}}" -y '
+        f'"{ffmpeg}" -y '
         f'-i "{source}" '
         f' {f"-ss {start_time}" if start_time else ""}  '
         f'{f"-t {duration}" if duration else ""} '
@@ -38,6 +39,7 @@ def build(
         f'{f"-vf {filters}" if filters else ""} '
         f'{"-pix_fmt yuv420p" if force420 else ""} '
         f'{"-row-mt 1" if row_mt else ""} '
+        "-map_metadata -1 "
     )
 
     if not single_pass:

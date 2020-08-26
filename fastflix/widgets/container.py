@@ -3,7 +3,7 @@
 from pathlib import Path
 import pkg_resources
 
-from fastflix.shared import QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 from fastflix.widgets.main import Main
 from fastflix.widgets.about import About
 from fastflix.widgets.logs import Logs
@@ -39,8 +39,12 @@ class Container(QtWidgets.QMainWindow):
         log_action = QtWidgets.QAction("View &Logs", self)
         log_action.triggered.connect(self.show_logs)
 
+        report_action = QtWidgets.QAction("Report &Issue", self)
+        report_action.triggered.connect(self.open_issues)
+
         help_menu = menubar.addMenu("&Help")
         help_menu.addAction(log_action)
+        help_menu.addAction(report_action)
         help_menu.addAction(about_action)
 
     def show_about(self):
@@ -49,3 +53,6 @@ class Container(QtWidgets.QMainWindow):
 
     def show_logs(self):
         self.logs.show()
+
+    def open_issues(self):
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl("https://github.com/cdgriffith/FastFlix/issues"))

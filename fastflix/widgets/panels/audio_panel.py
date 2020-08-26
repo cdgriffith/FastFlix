@@ -3,7 +3,7 @@
 
 from box import Box
 
-from fastflix.shared import QtGui, QtCore, QtWidgets
+from qtpy import QtWidgets, QtCore, QtGui
 from fastflix.widgets.panels.abstract_list import FlixList
 
 
@@ -110,7 +110,7 @@ class Audio(QtWidgets.QTabWidget):
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(0)
-        layout.setMargin(0)
+        # layout.setMargin(0)
         # self.widgets.up_button = QtWidgets.QPushButton("^")
         self.widgets.up_button.setDisabled(self.first)
         self.widgets.up_button.setFixedWidth(20)
@@ -307,6 +307,7 @@ class AudioList(FlixList):
                         "codec": track.codec,
                         "downmix": track.downmix,
                         "title": track.title,
+                        "language": track.language,
                     }
                 )
         return Box(audio_tracks=tracks)

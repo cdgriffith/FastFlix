@@ -3,7 +3,7 @@ import logging
 
 from box import Box
 
-from fastflix.shared import QtWidgets, QtCore
+from qtpy import QtWidgets, QtCore, QtGui
 
 logger = logging.getLogger("fastflix")
 
@@ -79,7 +79,11 @@ class VP9(QtWidgets.QWidget):
 
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Remove HDR"))
+        remove_hdr_level = QtWidgets.QLabel("Remove HDR")
+        remove_hdr_level.setToolTip(
+            "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
+        )
+        layout.addWidget(remove_hdr_level)
         self.widgets.remove_hdr = QtWidgets.QComboBox()
         self.widgets.remove_hdr.addItems(["No", "Yes"])
         self.widgets.remove_hdr.setCurrentIndex(0)
@@ -90,7 +94,12 @@ class VP9(QtWidgets.QWidget):
 
     def init_quality(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Quality"))
+        quality_level = QtWidgets.QLabel("Quality")
+        quality_level.setToolTip(
+            "good is the default and recommended for most applications <br> "
+            "best is recommended if you have lots of time and want the best compression efficiency."
+        )
+        layout.addWidget(quality_level)
         self.widgets.quality = QtWidgets.QComboBox()
         self.widgets.quality.addItems(["realtime", "good", "best"])
         self.widgets.quality.setCurrentIndex(1)
@@ -100,7 +109,13 @@ class VP9(QtWidgets.QWidget):
 
     def init_speed(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Speed"))
+        speed_level = QtWidgets.QLabel("Speed")
+        speed_level.setToolTip(
+            "Using 1 or 2 will increase encoding speed at the expense of having some impact on "
+            "quality and rate control accuracy.<br> 4 or 5 will turn off rate distortion optimization, "
+            "having even more of an impact on quality."
+        )
+        layout.addWidget(speed_level)
         self.widgets.speed = QtWidgets.QComboBox()
         self.widgets.speed.addItems([str(x) for x in range(6)])
         self.widgets.speed.setCurrentIndex(0)
@@ -110,7 +125,12 @@ class VP9(QtWidgets.QWidget):
 
     def init_row_mt(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Row multithreading"))
+        row_mt_label = QtWidgets.QLabel("Row multithreading")
+        row_mt_label.setToolTip(
+            "This improves encoding speed significantly on systems that "
+            "are otherwise underutilised when encoding VP9."
+        )
+        layout.addWidget(row_mt_label)
         self.widgets.row_mt = QtWidgets.QCheckBox()
         self.widgets.row_mt.setChecked(False)
         self.widgets.row_mt.toggled.connect(lambda: self.main.page_update())
@@ -119,7 +139,12 @@ class VP9(QtWidgets.QWidget):
 
     def init_force_420(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Force 4:2:0 chroma subsampling"))
+        sub_label = QtWidgets.QLabel("Force 4:2:0 chroma subsampling")
+        sub_label.setToolTip(
+            "If your input source is using 4:2:2 or 4:4:4 chroma subsampling, "
+            "some players might not be able to handle the output that libvpx produces."
+        )
+        layout.addWidget(sub_label)
         self.widgets.force_420 = QtWidgets.QCheckBox()
         self.widgets.force_420.setChecked(True)
         self.widgets.force_420.toggled.connect(lambda: self.main.page_update())

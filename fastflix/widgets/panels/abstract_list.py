@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from box import Box
 
-from fastflix.shared import QtGui, QtCore, QtWidgets
+from qtpy import QtWidgets, QtCore, QtGui
 
 
 class FlixList(QtWidgets.QWidget):

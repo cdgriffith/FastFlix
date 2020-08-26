@@ -52,11 +52,62 @@ def svt_av1_version(sv1_av1):
     return False
 
 
+def guess_bit_depth(pix_fmt, color_primaries):
+    eight = (
+        "bgr0",
+        "bgra",
+        "gbrp",
+        "gray",
+        "monob",
+        "monow",
+        "nv12",
+        "nv12m",
+        "nv16",
+        "nv20le",
+        "nv21",
+        "pal8",
+        "rgb24",
+        "rgb48le",
+        "rgba",
+        "rgba64le",
+        "ya8",
+        "yuv410p",
+        "yuv411p",
+        "yuv420p",
+        "yuv422p",
+        "yuv440p",
+        "yuv444p",
+        "yuva420p",
+        "yuva422p",
+        "yuva444p",
+        "yuvj420p",
+        "yuvj422p",
+        "yuvj444p",
+    )
+
+    ten = ("yuv420p10le", "yuv422p10le", "yuv444p10le", "gbrp10le", "gray10le")
+
+    twelve = ("yuv420p12le", "yuv422p12le", "yuv444p12le", "gbrp12le", "gray12le")
+
+    if pix_fmt in eight:
+        return 8
+    if pix_fmt in ten:
+        return 10
+    if pix_fmt in twelve:
+        return 12
+
+    if color_primaries == "bt2020":
+        return 10
+    else:
+        return 8
+
+
 class Flix:
     def __init__(self, ffmpeg="ffmpeg", ffprobe="ffprobe", svt_av1="SvtAv1EncApp"):
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
         self.av1 = svt_av1
+        self.config, self.filters = self.ffmpeg_configuration()
 
     def probe(self, file):
         command = f'"{self.ffprobe}" -v quiet -print_format json -show_format -show_streams "{file}"'
@@ -75,7 +126,16 @@ class Flix:
         for line in output.split("\n"):
             if line.startswith(line_denote):
                 config = [x[9:].strip() for x in line[len(line_denote) :].split(" ") if x.startswith("--enable")]
-        return config
+
+        filter_output = self.execute(f'"{self.ffmpeg}" -hide_banner -filters').stdout.decode("utf-8")
+
+        filters = []
+        for i, line in enumerate(filter_output.split("\n")):
+            if i < 8 or not line.strip():
+                continue
+            filters.append(line.strip().split(" ")[1])
+
+        return config, filters
 
     def parse(self, file):
         data = self.probe(file)
@@ -88,6 +148,13 @@ class Flix:
                 streams[track.codec_type].append(track)
             else:
                 logger.error(f"Unknown codec: {track.codec_type}")
+
+        for stream in streams.video:
+            if "bits_per_raw_sample" in stream:
+                stream.bit_depth = int(stream.bits_per_raw_sample)
+            else:
+                stream.bit_depth = guess_bit_depth(stream.pix_fmt, stream.get("color_primaries"))
+
         return streams, data.format
 
     @staticmethod
@@ -268,7 +335,7 @@ class Flix:
         return (
             f'"{self.ffmpeg}" {start} -loglevel error -i "{source}" '
             f' -vf {filters + "," if filters else ""}scale="min(320\\,iw):-1" '
-            f"-map 0:{video_track} -an -y "
+            f"-map 0:{video_track} -an -y -map_metadata -1 "
             f'-vframes 1 "{output}"'
         )
 

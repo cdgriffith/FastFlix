@@ -2,11 +2,7 @@
 
 # FastFlix
 
-FastFlix is a AV1 and HEVC encoder, GIF maker, and general ffmpeg command wrapper.
-
-It can encode videos into HEVC, AV1, GIF, and VP9, and is easily extendable!
-
-Read more about it and the licensing in the [docs](docs/README.md) folder.
+FastFlix is a AV1, HEVC (x265) and VP9 encoder, GIF maker, and general ffmpeg command wrapper.
 
 ![preview](https://raw.githubusercontent.com/cdgriffith/binary-files/fast-flix/media/fastflix/2.0.0/main.png)
 
@@ -16,7 +12,7 @@ Read more about it and the licensing in the [docs](docs/README.md) folder.
 Currently there is support for:
 
 * HEVC (libx265)
-* AV1 (SVT-AV1)
+* AV1 (SVT-AV1 on Windows)
 * AV1 (FFMPEG libaom - currently very slow)
 * VP9
 * GIF
@@ -35,7 +31,7 @@ Please use [pipx](https://pipxproject.github.io/pipx/installation/) to install a
 pipx install fastflix
 ```
 
-## Running from source code or without pipx
+## Running from source code
 
 ```
 git clone https://github.com/cdgriffith/FastFlix.git
@@ -50,8 +46,6 @@ python -m flix
 
 Copyright (C) 2019-2020 Chris Griffith
 
-This software is licensed under the MIT which you can read in the `LICENSE` file.
-
-This software dynamically links PySide2 which is [LGPLv3 licensed](https://doc.qt.io/qt-5/lgpl.html) and can change the
-library used by specifying two environment variables, `SHIBOKEN2` and `PYSIDE2` which must point to the `__init__.py` file for the respective libraries.
+The code itself is licensed under the MIT which you can read in the `LICENSE` file.
+Read more about the release licensing in the [docs](docs/README.md) folder.
 

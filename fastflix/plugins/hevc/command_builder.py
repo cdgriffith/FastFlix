@@ -12,6 +12,7 @@ from fastflix.plugins.common.subtitles import build_subtitle
 def build(
     source,
     video_track,
+    ffmpeg,
     bitrate=None,
     crf=None,
     start_time=0,
@@ -25,6 +26,8 @@ def build(
     intra_encoding=False,
     max_mux="default",
     extra="",
+    pix_fmt="yuv420p10le",
+    tune=None,
     **kwargs,
 ):
     filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
@@ -39,19 +42,18 @@ def build(
         side_data = Box(default_box=True)
 
     beginning = (
-        f'"{{ffmpeg}}" -y '
+        f'"{ffmpeg}" -y '
         f'-i "{source}" '
         f' {f"-ss {start_time}" if start_time else ""}  '
         f'{f"-to {duration}" if duration else ""} '
         f"{extra} "
         f"-map 0:{video_track} "
-        # "-pix_fmt yuv420p10le "
+        f"-pix_fmt {pix_fmt} "
         f"-c:v libx265 "
         f'{f"-vf {filters}" if filters else ""} '
-        # f'{"-pix_fmt yuv420p" if force420 else ""} '
+        f'{f"-tune {tune}" if tune else ""} '
+        "-map_metadata -1 "
     )
-
-    beginning = re.sub("[ ]+", " ", beginning)
 
     if max_mux and max_mux != "default":
         beginning += f"-max_muxing_queue_size {max_mux} "
@@ -102,8 +104,12 @@ def build(
             f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
         )
         return [
-            Command(command_1, ["ffmpeg", "output"], False, name="First pass bitrate", exe="ffmpeg"),
-            Command(command_2, ["ffmpeg", "output"], False, name="Second pass bitrate", exe="ffmpeg"),
+            Command(
+                re.sub("[ ]+", " ", command_1), ["ffmpeg", "output"], False, name="First pass bitrate", exe="ffmpeg"
+            ),
+            Command(
+                re.sub("[ ]+", " ", command_2), ["ffmpeg", "output"], False, name="Second pass bitrate", exe="ffmpeg"
+            ),
         ]
 
     elif crf:
@@ -111,7 +117,9 @@ def build(
             f"{beginning} {get_x265_params()}  -crf {crf} "
             f'-preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
         )
-        return [Command(command, ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")]
+        return [
+            Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")
+        ]
 
     else:
         return []

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from box import Box
 
-from fastflix.shared import QtWidgets
+from qtpy import QtWidgets, QtCore, QtGui
 
 
 class GIF(QtWidgets.QWidget):
@@ -24,7 +24,9 @@ class GIF(QtWidgets.QWidget):
 
     def init_fps(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("FPS"))
+        fps_label = QtWidgets.QLabel("FPS")
+        fps_label.setToolTip("Frames Per Second")
+        layout.addWidget(fps_label)
         self.widgets.fps = QtWidgets.QComboBox()
         self.widgets.fps.addItems([str(x) for x in range(1, 31)])
         self.widgets.fps.setCurrentIndex(14)
@@ -34,7 +36,11 @@ class GIF(QtWidgets.QWidget):
 
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Remove HDR"))
+        remove_hdr_level = QtWidgets.QLabel("Remove HDR")
+        remove_hdr_level.setToolTip(
+            "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
+        )
+        layout.addWidget(remove_hdr_level)
         self.widgets.remove_hdr = QtWidgets.QComboBox()
         self.widgets.remove_hdr.addItems(["No", "Yes"])
         self.widgets.remove_hdr.setCurrentIndex(0)
@@ -45,7 +51,12 @@ class GIF(QtWidgets.QWidget):
 
     def init_dither(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Dither"))
+        dither_label = QtWidgets.QLabel("Dither")
+        dither_label.setToolTip(
+            "Dither is an intentionally applied form of noise used to randomize quantization error, <br> "
+            "preventing large-scale patterns such as color banding in images."
+        )
+        layout.addWidget(dither_label)
         self.widgets.dither = QtWidgets.QComboBox()
         self.widgets.dither.addItems(
             [
