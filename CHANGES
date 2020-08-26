@@ -7,7 +7,7 @@ Version 2.4.0
 * Adding larger command line view to see entire command at once
 * Changing to using qtpy which supports dynamic linking of either PySide2 or pyqt5, instead of only PySide2
 * Fixing #4 Error Message Box when someone other than video file is dropped onto fastflix
-* Fixing #44 Remove metadata from original file
+* Fixing #44 Remove metadata from original file (thanks to HannesJo0139)
 * Fixing #20 Adding hoverhelp for most converter options
 
 Version 2.3.4
