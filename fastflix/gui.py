@@ -173,6 +173,7 @@ def main():
             source=sys.argv[1] if len(sys.argv) > 1 else "",
             data_path=data_path,
             work_path=work_dir,
+            config_file=config_file,
         )
         window.show()
     except (Exception, BaseException, SystemError, SystemExit):
