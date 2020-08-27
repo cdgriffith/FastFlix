@@ -24,16 +24,13 @@ class Settings(QtWidgets.QWidget):
         self.ffmpeg_path.setText(str(self.main_app.ffmpeg))
         ffmpeg_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
         ffmpeg_path_button.clicked.connect(lambda: self.select_ffmpeg())
-        # self.ffmpeg_path.textChanged.connect(lambda: self.update_ffmpeg)
         layout.addWidget(ffmpeg_label, 0, 0)
         layout.addWidget(self.ffmpeg_path, 0, 1)
         layout.addWidget(ffmpeg_path_button, 0, 2)
 
-        # TODO change to  QtWidgets.QFileDialog
         ffprobe_label = QtWidgets.QLabel("FFprobe")
         self.ffprobe_path = QtWidgets.QLineEdit()
         self.ffprobe_path.setText(str(self.main_app.ffprobe))
-        # self.ffprobe_path.textChanged.connect(lambda: self.update_ffprobe)
         ffprobe_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
         ffprobe_path_button.clicked.connect(lambda: self.select_ffprobe())
         layout.addWidget(ffprobe_label, 1, 0)
@@ -43,7 +40,6 @@ class Settings(QtWidgets.QWidget):
         work_dir_label = QtWidgets.QLabel("Work Directory")
         self.work_dir = QtWidgets.QLineEdit()
         self.work_dir.setText(str(self.main_app.path.work))
-        # self.ffprobe_path.textChanged.connect(lambda: self.update_ffprobe)
         work_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
         work_path_button.clicked.connect(lambda: self.select_work_path())
         layout.addWidget(work_dir_label, 2, 0)
@@ -53,7 +49,6 @@ class Settings(QtWidgets.QWidget):
         svt_av1_label = QtWidgets.QLabel("SVT AV1")
         self.svt_av1_path = QtWidgets.QLineEdit()
         self.svt_av1_path.setText(str(self.main_app.svt_av1) if self.main_app.svt_av1 else "")
-        # self.ffprobe_path.textChanged.connect(lambda: self.update_ffprobe)
         svt_av1_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
         svt_av1_path_button.clicked.connect(lambda: self.select_svt_av1())
         layout.addWidget(svt_av1_label, 3, 0)
@@ -110,7 +105,8 @@ class Settings(QtWidgets.QWidget):
             return
         self.ffmpeg_path.setText(filename[0])
 
-    def path_check(self, name, new_path):
+    @staticmethod
+    def path_check(name, new_path):
         if not new_path.exists():
             which = shutil.which(str(new_path))
             if not which:

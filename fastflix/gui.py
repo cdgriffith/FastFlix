@@ -212,7 +212,7 @@ def windows_download_ffmpeg(ffmpeg_folder):
     ffmpeg_folder.mkdir(exist_ok=True)
     url = "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip"
     logger.info(f"Downloading {url} to {ffmpeg_folder}")
-    req = requests.get(url, headers={"referer": "https://ffmpeg.zeranoe.com/"}, stream=True,)
+    req = requests.get(url, headers={"referer": "https://ffmpeg.zeranoe.com/"}, stream=True)
     with open(ffmpeg_folder / "ffmpeg-latest-win64-static.zip", "wb") as f:
         for block in req.iter_content(chunk_size=4096):
             f.write(block)

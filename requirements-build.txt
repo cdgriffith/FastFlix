@@ -3,7 +3,7 @@ pyinstaller
 pypiwin32
 pyqt5
 python-box
+qtpy
 requests
 reusables
 ruamel.yaml
-qtpy

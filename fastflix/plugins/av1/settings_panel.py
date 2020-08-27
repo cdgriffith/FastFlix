@@ -138,7 +138,7 @@ class AV1(QtWidgets.QWidget):
         self.main.build_commands()
 
     def get_settings(self):
-        settings = Box(disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),)
+        settings = Box(disable_hdr=bool(self.widgets.remove_hdr.currentIndex()))
         if self.mode == "CRF":
             settings.crf = int(self.widgets.crf.currentText().split(" ", 1)[0])
         else:
