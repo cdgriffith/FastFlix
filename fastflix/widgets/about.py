@@ -70,4 +70,3 @@ class About(QtWidgets.QWidget):
         layout.addWidget(license_label)
 
         self.setLayout(layout)
-        self.show()
