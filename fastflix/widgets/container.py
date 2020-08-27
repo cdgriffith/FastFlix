@@ -30,7 +30,9 @@ class Container(QtWidgets.QMainWindow):
 
         file_menu = menubar.addMenu("&File")
 
-        setting_action = QtWidgets.QAction("&Settings", self)
+        setting_action = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogListView), "&Settings", self
+        )
         setting_action.setShortcut("Ctrl+S")
         setting_action.triggered.connect(self.show_setting)
 
@@ -45,10 +47,14 @@ class Container(QtWidgets.QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction(exit_action)
 
-        about_action = QtWidgets.QAction("&About", self)
+        about_action = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogInfoView), "&About", self
+        )
         about_action.triggered.connect(self.show_about)
 
-        log_action = QtWidgets.QAction("View &Logs", self)
+        log_action = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogDetailedView), "View &Logs", self
+        )
         log_action.triggered.connect(self.show_logs)
 
         report_action = QtWidgets.QAction("Report &Issue", self)
