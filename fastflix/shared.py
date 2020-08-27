@@ -20,14 +20,14 @@ QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 main_width = 800
 
 
-def message(msg, parent=None):
+def message(msg):
     sm = QtWidgets.QMessageBox()
     sm.setText(msg)
     sm.setStandardButtons(QtWidgets.QMessageBox.Ok)
     sm.exec_()
 
 
-def error_message(msg, details=None, traceback=False, parent=None):
+def error_message(msg, details=None, traceback=False):
     em = QtWidgets.QMessageBox()
     em.setText(msg)
     if details:
@@ -36,5 +36,5 @@ def error_message(msg, details=None, traceback=False, parent=None):
         import traceback
 
         em.setDetailedText(traceback.format_exc())
-    em.setStandardButtons(QtWidgets.QMessageBox.Ok)
+    em.setStandardButtons(QtWidgets.QMessageBox.Close)
     em.exec_()
