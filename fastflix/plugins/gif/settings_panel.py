@@ -84,11 +84,15 @@ class GIF(QtWidgets.QWidget):
     def new_source(self):
         if not self.main.streams:
             return
-        if self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
-            self.widgets.remove_hdr.setDisabled(False)
-            self.widgets.dither.setCurrentIndex(1)
-        else:
-            self.widgets.dither.setCurrentIndex(0)
+        if "zcale" not in self.main.flix.filters:
             self.widgets.remove_hdr.setDisabled(True)
+            self.remove_hdr_label.setStyleSheet("QLabel{color:#777}")
+            self.remove_hdr_label.setToolTip("cannot remove HDR, zcale filter not in current version of FFmpeg")
+        elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
+            self.widgets.remove_hdr.setDisabled(False)
+            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
+        else:
+            self.widgets.remove_hdr.setDisabled(True)
+            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
         self.widgets.fps.setCurrentIndex(14)
         self.widgets.dither.setCurrentIndex(0)
