@@ -29,7 +29,8 @@ recommended_crfs = [
     "21 (1440p)",
     "20 (2160p)",
     "18",
-    "16" "Custom",
+    "16",
+    "Custom",
 ]
 
 pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]

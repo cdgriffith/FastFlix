@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+Version 2.4.1
+~~~~~~~~~~~~~
+
+* Fixing HEVC custom CRF issue
+
 Version 2.4.0
 ~~~~~~~~~~~~~
 
