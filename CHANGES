@@ -5,6 +5,7 @@ Version 2.5.0
 ~~~~~~~~~~~~~
 
 * Adding settings dialog
+* Fixing no bitrate should be specified for lossless audio
 
 Version 2.4.1
 ~~~~~~~~~~~~~
