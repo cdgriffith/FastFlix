@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-lossless = ['flac', 'truehd']
+lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
 
 
 def build_audio(audio_tracks, audio_file_index=0):
@@ -21,8 +21,6 @@ def build_audio(audio_tracks, audio_file_index=0):
             bitrate = ""
             if track.conversion.codec not in lossless:
                 bitrate = f"-b:{track.outdex} {track.conversion.bitrate} "
-            command_list.append(
-                f"-c:{track.outdex} {track.conversion.codec} {bitrate} {downmix}"
-            )
+            command_list.append(f"-c:{track.outdex} {track.conversion.codec} {bitrate} {downmix}")
 
     return " ".join(command_list)

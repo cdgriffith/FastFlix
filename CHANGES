@@ -10,7 +10,7 @@ Version 2.5.0
 Version 2.4.1
 ~~~~~~~~~~~~~
 
-* Fixing HEVC custom CRF issue
+* Fixing #52 HEVC custom CRF issue (thanks to 2600box)
 
 Version 2.4.0
 ~~~~~~~~~~~~~
