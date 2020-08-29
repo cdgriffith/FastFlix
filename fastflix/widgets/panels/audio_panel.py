@@ -5,6 +5,7 @@ from box import Box
 
 from qtpy import QtWidgets, QtCore, QtGui
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.plugins.common.audio import lossless
 
 
 class Audio(QtWidgets.QTabWidget):
@@ -136,6 +137,7 @@ class Audio(QtWidgets.QTabWidget):
             [f"{x}k" for x in range(32 * self.channels, (256 * self.channels) + 1, 32 * self.channels)]
         )
         self.widgets.convert_bitrate.setCurrentIndex(3)
+        self.widgets.convert_bitrate.setDisabled(True)
 
         self.widgets.convert_bitrate.currentIndexChanged.connect(lambda: self.page_update())
         self.widgets.convert_to.currentIndexChanged.connect(self.update_conversion)
@@ -170,8 +172,13 @@ class Audio(QtWidgets.QTabWidget):
     def update_conversion(self):
         if self.widgets.convert_to.currentIndex() == 0:
             self.widgets.downmix.setDisabled(True)
+            self.widgets.convert_bitrate.setDisabled(True)
         else:
             self.widgets.downmix.setDisabled(False)
+            if self.widgets.convert_to.currentText() in lossless:
+                self.widgets.convert_bitrate.setDisabled(True)
+            else:
+                self.widgets.convert_bitrate.setDisabled(False)
         self.page_update()
 
     def page_update(self):
@@ -193,6 +200,8 @@ class Audio(QtWidgets.QTabWidget):
                 index += 1
             self.widgets.convert_to.setCurrentIndex(index)
         self.widgets.convert_to.setCurrentIndex(0)  # Will either go to 'copy' or first listed
+        if self.widgets.convert_bitrate:
+            self.widgets.convert_bitrate.setDisabled(True)
         self.loading = False
 
     @property

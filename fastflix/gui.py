@@ -8,6 +8,7 @@ from datetime import datetime
 import os
 import shutil
 import traceback
+from json import JSONDecodeError
 
 try:
     import pkg_resources.py2_warn  # Needed for pyinstaller on 3.8
@@ -25,7 +26,7 @@ try:
 
     from fastflix.version import __version__
     from fastflix.flix import ff_version, FlixError
-    from fastflix.shared import error_message, base_path
+    from fastflix.shared import error_message, base_path, message
     from fastflix.widgets.container import Container
 except ImportError as err:
     traceback.print_exc()
@@ -82,7 +83,22 @@ def main():
         config = Box({"version": __version__, "work_dir": str(data_path)})
         config.to_json(filename=config_file, indent=2)
     else:
-        config = Box.from_json(filename=config_file)
+        try:
+            config = Box.from_json(filename=config_file)
+        except JSONDecodeError as err:
+            logger.exception(f'Error with config file: "{config_file}"')
+            error_message(
+                msg=f"Bad config file: {config_file}"
+                "<br> If you are unsure what to do, just delete the file"
+                f"<br><br>Error: {err}",
+                traceback=True,
+            )
+            sys.exit(1)
+        if "version" not in config or "work_dir" not in config:
+            message("Config file does not have all required fields, adding defaults")
+            config.version = __version__
+            config.work_dir = str(data_path)
+            config.to_json(filename=config_file, indent=2)
         if StrictVersion(config.version) < StrictVersion(__version__):
             # do upgrade of config
             config.version = __version__
@@ -173,6 +189,7 @@ def main():
             source=sys.argv[1] if len(sys.argv) > 1 else "",
             data_path=data_path,
             work_path=work_dir,
+            config_file=config_file,
         )
         window.show()
     except (Exception, BaseException, SystemError, SystemExit):
@@ -195,7 +212,7 @@ def windows_download_ffmpeg(ffmpeg_folder):
     ffmpeg_folder.mkdir(exist_ok=True)
     url = "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip"
     logger.info(f"Downloading {url} to {ffmpeg_folder}")
-    req = requests.get(url, headers={"referer": "https://ffmpeg.zeranoe.com/"}, stream=True,)
+    req = requests.get(url, headers={"referer": "https://ffmpeg.zeranoe.com/"}, stream=True)
     with open(ffmpeg_folder / "ffmpeg-latest-win64-static.zip", "wb") as f:
         for block in req.iter_content(chunk_size=4096):
             f.write(block)

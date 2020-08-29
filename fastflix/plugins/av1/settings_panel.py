@@ -138,7 +138,7 @@ class AV1(QtWidgets.QWidget):
         self.main.build_commands()
 
     def get_settings(self):
-        settings = Box(disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),)
+        settings = Box(disable_hdr=bool(self.widgets.remove_hdr.currentIndex()))
         if self.mode == "CRF":
             settings.crf = int(self.widgets.crf.currentText().split(" ", 1)[0])
         else:
@@ -148,10 +148,17 @@ class AV1(QtWidgets.QWidget):
     def new_source(self):
         if not self.main.streams:
             return
-        if self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
+        if "zcale" not in self.main.flix.filters:
+            self.widgets.remove_hdr.setDisabled(True)
+            self.remove_hdr_label.setStyleSheet("QLabel{color:#777}")
+            self.remove_hdr_label.setToolTip("cannot remove HDR, zcale filter not in current version of FFmpeg")
+            logger.warning("zcale filter not detected in current version of FFmpeg, cannot remove HDR")
+        elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
             self.widgets.remove_hdr.setDisabled(False)
+            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
         else:
             self.widgets.remove_hdr.setDisabled(True)
+            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
 
     def set_mode(self, x):
         self.mode = x.text()

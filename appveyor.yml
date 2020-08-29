@@ -42,17 +42,17 @@ build_script:
 after_build:
   - cmd: move dist\*.exe .
   - cmd: move docs\build-licenses.txt LICENSE
-  - cmd: 7z a FastFlix_%VERSION%.zip FastFlix*exe LICENSE
+  - cmd: 7z a FastFlix_%VERSION%_win64.zip FastFlix*exe LICENSE
 
 test: off
 
 artifacts:
-  - path: 'FastFlix_%VERSION%.zip'
+  - path: 'FastFlix_%VERSION%_win64.zip'
 
 deploy:
   - provider: Environment
     name: pre-release
-    artifact: 'FastFlix_%VERSION%.zip'
+    artifact: 'FastFlix_%VERSION%_win64.zip'
     description: ''
     on:
       branch:
@@ -60,7 +60,7 @@ deploy:
 
   - provider: Environment
     name: release
-    artifact: 'FastFlix_%VERSION%.zip'
+    artifact: 'FastFlix_%VERSION%_win64.zip'
     description: ''
     on:
       branch:
