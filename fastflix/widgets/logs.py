@@ -13,6 +13,7 @@ class QPlainTextEditLogger(logging.Handler):
         super(QPlainTextEditLogger, self).__init__()
         self.widget = QtWidgets.QTextBrowser(parent)
         self.widget.setReadOnly(True)
+        self.widget.setDisabled(True)
 
     def emit(self, record):
         msg = self.format(record)
@@ -26,6 +27,7 @@ class Logs(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(Logs, self).__init__(parent)
 
+        self.setMinimumSize(800, 600)
         layout = QtWidgets.QVBoxLayout()
         log_text_box = QPlainTextEditLogger(self)
         log_text_box.setFormatter(logging.Formatter("<b>%(levelname)s</b> - %(asctime)s - %(message)s"))
@@ -34,6 +36,7 @@ class Logs(QtWidgets.QWidget):
         logger.addHandler(log_text_box)
 
         log_text_box.setLevel(logging.DEBUG)
+        layout.addWidget(QtWidgets.QLabel("Log window scrolling bug causing crashes, currently disabled for safety"))
         layout.addWidget(log_text_box.widget)
         self.setLayout(layout)
 
