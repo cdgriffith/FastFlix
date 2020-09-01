@@ -25,8 +25,8 @@ root = os.path.abspath(os.path.dirname(__file__))
 
 
 def load_plugins(enable_svt_av1=True):
-    from fastflix.plugins.av1 import main as av1_plugin
-    from fastflix.plugins.hevc import main as hevc_plugin
+    from fastflix.plugins.av1_aom import main as av1_plugin
+    from fastflix.plugins.hevc_x265 import main as hevc_plugin
     from fastflix.plugins.svt_av1 import main as svt_av1_plugin
     from fastflix.plugins.gif import main as gif_plugin
     from fastflix.plugins.vp9 import main as vp9_plugin
@@ -762,7 +762,7 @@ class Main(QtWidgets.QWidget):
     def build_scale(self):
         width = self.widgets.scale.width.text()
         height = self.widgets.scale.height.text()
-        if self.convert_to == "av1":
+        if self.convert_to == "av1_aom":
             pass
             # TODO enforce 8
 

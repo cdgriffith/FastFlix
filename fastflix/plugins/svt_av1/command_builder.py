@@ -129,7 +129,7 @@ def build(
         files=[],
         commands=[
             Command(loop_command_1, ["ffmpeg"], False, exe="ffmpeg", name="Convert segment to raw YUV"),
-            Command(loop_command_2, ["av1"], False, name="Convert YUV into AV1 binary IVF files"),
+            Command(loop_command_2, ["av1_aom"], False, name="Convert YUV into AV1 binary IVF files"),
             Command(loop_command_3, [], False, name="Add new IVF file to ffmpeg concat list"),
             Command(loop_command_4, [], False, name="Remove large YUV temp file"),
         ],

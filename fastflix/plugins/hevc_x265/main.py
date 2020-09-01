@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__version__ = "1.0.0"
 __author__ = "Chris Griffith"
 
-name = "HEVC"
+name = "HEVC (x265)"
 requires = "libx265"
 
 video_extension = "mkv"
@@ -97,5 +96,5 @@ audio_formats = [
     "wmav2",
 ]
 
-from fastflix.plugins.hevc.command_builder import build
-from fastflix.plugins.hevc.settings_panel import HEVC as settings_panel
+from fastflix.plugins.hevc_x265.command_builder import build
+from fastflix.plugins.hevc_x265.settings_panel import HEVC as settings_panel

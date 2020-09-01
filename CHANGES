@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+Version 2.6.0
+~~~~~~~~~~~~~
+
+* Adding AV1 AOM settings for cpu-used, tile-columns, tile-rows, row-mt
+* Adding HEVC x265 setting for profile
+* Changing plugins to include library used for encoding
+
 Version 2.5.0
 ~~~~~~~~~~~~~
 

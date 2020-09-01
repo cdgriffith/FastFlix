@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__version__ = "1.1.0"
 __author__ = "Chris Griffith"
 
-name = "av1 (SVT AV1)"
+name = "av1_aom (SVT AV1)"
 
 video_extension = "mkv"
 video_dimension_divisor = 8

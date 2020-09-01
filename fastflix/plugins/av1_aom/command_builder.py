@@ -6,7 +6,21 @@ from fastflix.plugins.common import helpers
 from fastflix.plugins.common.audio import build_audio
 
 
-def build(source, video_track, ffmpeg, bitrate=None, crf=None, start_time=0, duration=None, audio_tracks=(), **kwargs):
+def build(
+    source,
+    video_track,
+    ffmpeg,
+    bitrate=None,
+    crf=None,
+    start_time=0,
+    duration=None,
+    audio_tracks=(),
+    row_mt=None,
+    cpu_used="1",
+    tile_columns="-1",
+    tile_rows="-1",
+    **kwargs,
+):
     filters = helpers.generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
 
@@ -22,8 +36,14 @@ def build(source, video_track, ffmpeg, bitrate=None, crf=None, start_time=0, dur
         f"-map 0:{video_track} "
         f"-c:v libaom-av1 -strict experimental "
         f'{f"-vf {filters}" if filters else ""} '
+        f"-cpu-used {cpu_used} "
+        f"-tile-rows {tile_rows} "
+        f"-tile-columns {tile_columns} "
         "-map_metadata -1 "
     )
+
+    if row_mt is not None:
+        beginning += f"-row-mt {row_mt} "
 
     beginning = re.sub("[ ]+", " ", beginning)
 
