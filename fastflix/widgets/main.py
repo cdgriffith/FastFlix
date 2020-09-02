@@ -520,7 +520,7 @@ class Main(QtWidgets.QWidget):
             assert width <= self.video_width, "Width must be smaller than video width"
             assert height <= self.video_height, "Height must be smaller than video height"
         except AssertionError as err:
-            error_message(f"Invalid Crop: {err}", parent=self)
+            error_message(f"Invalid Crop: {err}")
             return
         return f"{width}:{height}:{left}:{top}"
 
