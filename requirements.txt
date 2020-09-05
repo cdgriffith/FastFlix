@@ -1,4 +1,6 @@
 appdirs
+colorama
+coloredlogs
 pyside2
 python-box
 requests

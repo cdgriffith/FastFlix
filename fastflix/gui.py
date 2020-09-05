@@ -9,6 +9,7 @@ import os
 import shutil
 import traceback
 from json import JSONDecodeError
+import coloredlogs
 
 try:
     import pkg_resources.py2_warn  # Needed for pyinstaller on 3.8
@@ -41,6 +42,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(name)-6s  %(levelname)-8s %(message)s")
     socket_handler = SocketHandler("127.0.0.1", 19996)
     logger.addHandler(socket_handler)
+    coloredlogs.install(level="DEBUG", logger=logger)
 
     logger.info(f"Starting FastFlix {__version__}")
     logger.debug(f"Using qt engine {API} version {QT_VERSION}")
