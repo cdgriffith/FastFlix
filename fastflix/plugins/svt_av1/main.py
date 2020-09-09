@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 __author__ = "Chris Griffith"
 
-name = "av1_aom (SVT AV1)"
+name = "AV1 (SVT AV1)"
 
 video_extension = "mkv"
 video_dimension_divisor = 8
 
 enable_subtitles = False
 enable_audio = True
+enable_attachments = False
 
 audio_formats = [
     "aac",

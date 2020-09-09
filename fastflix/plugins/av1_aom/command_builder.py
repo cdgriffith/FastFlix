@@ -34,7 +34,7 @@ def build(
         f'{f"-t {duration}" if duration else ""} '
         f'-i "{source}" '
         f"-map 0:{video_track} "
-        f"-c:v libaom-av1 -strict experimental "
+        f"-c:v:0 libaom-av1 -strict experimental "
         f'{f"-vf {filters}" if filters else ""} '
         f"-cpu-used {cpu_used} "
         f"-tile-rows {tile_rows} "

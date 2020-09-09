@@ -35,7 +35,7 @@ def build(
         f' {f"-ss {start_time}" if start_time else ""}  '
         f'{f"-t {duration}" if duration else ""} '
         f"-map 0:{video_track} "
-        f"-c:v libvpx-vp9 "
+        f"-c:v:0 libvpx-vp9 "
         f'{f"-vf {filters}" if filters else ""} '
         f'{"-pix_fmt yuv420p" if force420 else ""} '
         f'{"-row-mt 1" if row_mt else ""} '

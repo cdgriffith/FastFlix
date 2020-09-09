@@ -9,6 +9,7 @@ video_dimension_divisor = 1
 
 enable_subtitles = False
 enable_audio = False
+enable_attachments = False
 
 audio_formats = []
 

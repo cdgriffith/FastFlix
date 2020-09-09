@@ -10,6 +10,7 @@ video_dimension_divisor = 1
 
 enable_subtitles = True
 enable_audio = True
+enable_attachments = True
 
 audio_formats = ["libopus", "libvorbis"]
 

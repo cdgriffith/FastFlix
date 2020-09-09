@@ -139,7 +139,7 @@ class Main(QtWidgets.QWidget):
                     else:
                         d[a[0]] = g[i + 1]
             text = (
-                f" fps: {d.fps:<4}    frame: {d.frame:<10}    size: {d.size:<10}    "
+                f" fps: {d.fps:<6}    frame: {d.frame:<10}    size: {d.size:<10}    "
                 f"time: {d.time:<11}    bitrate: {d.bitrate:<20}   speed: {d.speed}"
             )
         self.log_label.setText(text)

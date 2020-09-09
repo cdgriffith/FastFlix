@@ -23,13 +23,17 @@ recommended_bitrates = [
 ]
 
 recommended_crfs = [
-    "24 (480p)",
-    "23 (720p)",
-    "22 (1080p)",
-    "21 (1440p)",
-    "20 (2160p)",
+    "28",
+    "27",
+    "26",
+    "25",
+    "24",
+    "23",
+    "22",
+    "21",
+    "20",
+    "19",
     "18",
-    "16",
     "Custom",
 ]
 
@@ -116,7 +120,7 @@ class HEVC(QtWidgets.QWidget):
         self.widgets.preset.addItems(
             ["ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"]
         )
-        self.widgets.preset.setCurrentIndex(6)
+        self.widgets.preset.setCurrentIndex(5)
         self.widgets.preset.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.preset)
         return layout
@@ -211,12 +215,15 @@ class HEVC(QtWidgets.QWidget):
         crf_radio = QtWidgets.QRadioButton("CRF")
         crf_radio.setChecked(True)
         crf_radio.setFixedWidth(80)
+        crf_radio.setToolTip("28 is x265's default<br>"
+                             "24 is  \"Visually Indistinguishable\"<br>"
+                             "22 is near what I use for 4K Videos")
         self.widgets.mode.addButton(crf_radio)
 
         self.widgets.crf = QtWidgets.QComboBox()
         self.widgets.crf.setFixedWidth(250)
         self.widgets.crf.addItems(recommended_crfs)
-        self.widgets.crf.setCurrentIndex(4)
+        self.widgets.crf.setCurrentIndex(0)
         self.widgets.crf.currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets.custom_crf = QtWidgets.QLineEdit("30")
         self.widgets.custom_crf.setFixedWidth(100)

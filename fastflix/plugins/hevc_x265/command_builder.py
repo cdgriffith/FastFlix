@@ -50,7 +50,7 @@ def build(
         f"{extra} "
         f"-map 0:{video_track} "
         f"-pix_fmt {pix_fmt} "
-        f"-c:v libx265 "
+        f"-c:v:0 libx265 "
         f'{f"-vf {filters}" if filters else ""} '
         f'{f"-tune {tune}" if tune else ""} '
         "-map_metadata -1 "
