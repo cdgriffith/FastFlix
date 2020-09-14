@@ -72,6 +72,9 @@ def build(
     assert height <= 2160
     assert width <= 4096
 
+    for track in audio_tracks:
+        track.outdex -= 1
+
     audio = build_audio(audio_tracks, audio_file_index=0)
     audio_file = "<tempfile.7.mkv>"
 

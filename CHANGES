@@ -12,6 +12,7 @@ Version 2.6.0
 * Fixing FPS not showing correctly when dealing with higher numbers
 * Fixing #60 video track not selected properly
 * Fixing crash on SVT-AV1 due to HDR label issue
+* Fixing SVT-AV1 audio tracks being converted incorrectly
 
 Version 2.5.0
 ~~~~~~~~~~~~~

@@ -692,6 +692,10 @@ class Main(QtWidgets.QWidget):
     def original_video_track(self):
         return int(self.widgets.video_track.currentText().split(":", 1)[0])
 
+    @property
+    def pix_fmt(self):
+        return self.streams.video[self.video_track].pix_fmt
+
     @staticmethod
     def number_to_time(number):
         return str(timedelta(seconds=float(number)))[:10]
@@ -796,6 +800,7 @@ class Main(QtWidgets.QWidget):
             duration=duration,
             video_track=self.original_video_track,
             stream_track=self.video_track,
+            pix_fmt=self.pix_fmt,
             rotate=self.widgets.rotate.checkedButton().name,
             v_flip=self.widgets.v_flip.isChecked(),
             h_flip=self.widgets.h_flip.isChecked(),
