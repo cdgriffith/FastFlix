@@ -58,4 +58,4 @@ audio_formats = [
 ]
 
 from fastflix.plugins.svt_av1.command_builder import build
-from fastflix.plugins.svt_av1.settings_panel import AV1 as settings_panel
+from fastflix.plugins.svt_av1.settings_panel import SVT_AV1 as settings_panel

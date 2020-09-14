@@ -636,6 +636,7 @@ class Main(QtWidgets.QWidget):
             self.page_update()
             return
 
+        # TODO set width and height by video track
         rotation = 0
         if "rotate" in self.streams.video[0].get("tags", {}):
             rotation = abs(int(self.streams.video[0].tags.rotate))
@@ -685,11 +686,11 @@ class Main(QtWidgets.QWidget):
 
     @property
     def video_track(self):
-        try:
-            return int(self.widgets.video_track.currentText().split(":", 1)[0])
-        except Exception:
-            logger.warning("Unknown video track!")
-            return None
+        return int(self.widgets.video_track.currentIndex())
+
+    @property
+    def original_video_track(self):
+        return int(self.widgets.video_track.currentText().split(":", 1)[0])
 
     @staticmethod
     def number_to_time(number):
@@ -738,7 +739,7 @@ class Main(QtWidgets.QWidget):
         thumb_command = self.flix.generate_thumbnail_command(
             source=self.input_video,
             output=self.thumb_file,
-            video_track=self.streams["video"][self.widgets.video_track.currentIndex()]["index"],
+            video_track=self.streams["video"][self.video_track]["index"],
             filters=filters,
             start_time=settings.start_time,
         )
@@ -771,7 +772,7 @@ class Main(QtWidgets.QWidget):
     def get_all_settings(self):
         if not self.initialized:
             return
-        stream_info = self.streams.video[self.widgets.video_track.currentIndex()]
+        stream_info = self.streams.video[self.video_track]
 
         duration = self.duration
         if self.duration == float(self.format_info.get("duration", 0)):
@@ -793,7 +794,8 @@ class Main(QtWidgets.QWidget):
             source=self.input_video,
             start_time=self.start_time,
             duration=duration,
-            video_track=self.widgets.video_track.currentIndex(),
+            video_track=self.original_video_track,
+            stream_track=self.video_track,
             rotate=self.widgets.rotate.checkedButton().name,
             v_flip=self.widgets.v_flip.isChecked(),
             h_flip=self.widgets.h_flip.isChecked(),

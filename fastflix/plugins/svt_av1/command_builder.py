@@ -24,6 +24,7 @@ extension = "mkv"
 def build(
     source,
     video_track,
+    stream_track,
     ffmpeg,
     av1,
     streams,
@@ -32,6 +33,7 @@ def build(
     speed=7,
     segment_size=60,
     qp=25,
+    pix_fmt="yuv420p10le",
     bitrate=None,
     audio_tracks=(),
     **kwargs,
@@ -43,17 +45,17 @@ def build(
 
     fps_num, fps_denom = [
         int(x)
-        for x in streams.video[video_track].get("avg_frame_rate", streams.video[video_track].r_frame_rate).split("/")
+        for x in streams.video[stream_track].get("avg_frame_rate", streams.video[stream_track].r_frame_rate).split("/")
     ]
-    bit_depth = 10 if streams.video[video_track].pix_fmt == "yuv420p10le" and not disable_hdr else 8
+    bit_depth = 10 if pix_fmt == "yuv420p10le" and not disable_hdr else 8
     crop = kwargs.get("crop")
     scale = kwargs.get("scale")
 
     if scale:
         width, height = (int(x) for x in scale.split(":"))
     else:
-        height = int(streams.video[video_track].height)
-        width = int(streams.video[video_track].width)
+        height = int(streams.video[stream_track].height)
+        width = int(streams.video[stream_track].width)
         if crop:
             crop_check = crop.split(":")
             try:

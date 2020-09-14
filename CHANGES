@@ -10,6 +10,8 @@ Version 2.6.0
 * Changing HEVC default speed to "medium" and crf to 28 to match x265 defaults
 * Changing command builders to specify stream instead of video track for codec
 * Fixing FPS not showing correctly when dealing with higher numbers
+* Fixing #60 video track not selected properly
+* Fixing crash on SVT-AV1 due to HDR label issue
 
 Version 2.5.0
 ~~~~~~~~~~~~~
