@@ -32,13 +32,17 @@ class AV1(QtWidgets.QWidget):
 
         grid = QtWidgets.QGridLayout()
 
-        # grid.addWidget(QtWidgets.QLabel("FFMPEG libaom-av1"), 0, 0)
+        # grid.addWidget(QtWidgets.QLabel("FFMPEG libaom-av1_aom"), 0, 0)
 
         self.widgets = Box(fps=None, remove_hdr=None, mode=None)
 
         self.mode = "CRF"
 
         grid.addLayout(self.init_remove_hdr(), 0, 0, 1, 2)
+        grid.addLayout(self.init_cpu_used(), 1, 0, 1, 2)
+        grid.addLayout(self.init_row_mt(), 2, 0, 1, 2)
+        grid.addLayout(self.init_tile_columns(), 3, 0, 1, 2)
+        grid.addLayout(self.init_tile_rows(), 4, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 3, 3)
 
         grid.addWidget(QtWidgets.QWidget(), 5, 0)
@@ -53,23 +57,61 @@ class AV1(QtWidgets.QWidget):
         self.setLayout(grid)
         self.hide()
 
-    # def init_fps(self):
-    #     layout = QtWidgets.QHBoxLayout()
-    #     layout.addWidget(QtWidgets.QLabel("FPS"))
-    #     self.widgets.fps = QtWidgets.QComboBox()
-    #     self.widgets.fps.addItems([str(x) for x in range(1, 31)])
-    #     self.widgets.fps.setCurrentIndex(14)
-    #     self.widgets.fps.currentIndexChanged.connect(lambda: self.main.build_commands())
-    #     layout.addWidget(self.widgets.fps)
-    #     return layout
+    def init_cpu_used(self):
+        layout = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("CPU Used")
+        label.setToolTip("Quality/Speed ratio modifier (defaults to 1)")
+        layout.addWidget(label)
+        self.widgets.cpu_used = QtWidgets.QComboBox()
+        self.widgets.cpu_used.addItems([str(x) for x in range(0, 9)])
+        self.widgets.cpu_used.setCurrentIndex(1)
+        self.widgets.cpu_used.currentIndexChanged.connect(lambda: self.main.build_commands())
+        layout.addWidget(self.widgets.cpu_used)
+        return layout
+
+    def init_row_mt(self):
+        layout = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("Row Multi-Threading")
+        label.setToolTip("Enable row based multi-threading")
+        layout.addWidget(label)
+        self.widgets.row_mt = QtWidgets.QComboBox()
+        self.widgets.row_mt.addItems(["default", "enabled", "disabled"])
+        self.widgets.row_mt.setCurrentIndex(0)
+        self.widgets.row_mt.currentIndexChanged.connect(lambda: self.main.build_commands())
+        layout.addWidget(self.widgets.row_mt)
+        return layout
+
+    def init_tile_columns(self):
+        layout = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("Tile Columns")
+        label.setToolTip("Log2 of number of tile columns to use")
+        layout.addWidget(label)
+        self.widgets.tile_columns = QtWidgets.QComboBox()
+        self.widgets.tile_columns.addItems([str(x) for x in range(-1, 7)])
+        self.widgets.tile_columns.setCurrentIndex(0)
+        self.widgets.tile_columns.currentIndexChanged.connect(lambda: self.main.build_commands())
+        layout.addWidget(self.widgets.tile_columns)
+        return layout
+
+    def init_tile_rows(self):
+        layout = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("Tile Rows")
+        label.setToolTip("Log2 of number of tile rows to use")
+        layout.addWidget(label)
+        self.widgets.tile_rows = QtWidgets.QComboBox()
+        self.widgets.tile_rows.addItems([str(x) for x in range(-1, 7)])
+        self.widgets.tile_rows.setCurrentIndex(0)
+        self.widgets.tile_rows.currentIndexChanged.connect(lambda: self.main.build_commands())
+        layout.addWidget(self.widgets.tile_rows)
+        return layout
 
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
-        remove_hdr_level = QtWidgets.QLabel("Remove HDR")
-        remove_hdr_level.setToolTip(
+        self.remove_hdr_label = QtWidgets.QLabel("Remove HDR")
+        self.remove_hdr_label.setToolTip(
             "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
         )
-        layout.addWidget(remove_hdr_level)
+        layout.addWidget(self.remove_hdr_label)
         self.widgets.remove_hdr = QtWidgets.QComboBox()
         self.widgets.remove_hdr.addItems(["No", "Yes"])
         self.widgets.remove_hdr.setCurrentIndex(0)
@@ -138,7 +180,15 @@ class AV1(QtWidgets.QWidget):
         self.main.build_commands()
 
     def get_settings(self):
-        settings = Box(disable_hdr=bool(self.widgets.remove_hdr.currentIndex()))
+        conversions = {"default": None, "enabled": 1, "disabled": 0}
+        settings = Box(
+            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+            cpu_used=self.widgets.cpu_used.currentText(),
+            row_mt=conversions[self.widgets.row_mt.currentText()],
+            tile_rows=self.widgets.tile_rows.currentText(),
+            tile_columns=self.widgets.tile_columns.currentText(),
+        )
+
         if self.mode == "CRF":
             settings.crf = int(self.widgets.crf.currentText().split(" ", 1)[0])
         else:

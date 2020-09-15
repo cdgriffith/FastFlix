@@ -28,6 +28,7 @@ def build(
     extra="",
     pix_fmt="yuv420p10le",
     tune=None,
+    profile="default",
     **kwargs,
 ):
     filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
@@ -49,11 +50,14 @@ def build(
         f"{extra} "
         f"-map 0:{video_track} "
         f"-pix_fmt {pix_fmt} "
-        f"-c:v libx265 "
+        f"-c:v:0 libx265 "
         f'{f"-vf {filters}" if filters else ""} '
         f'{f"-tune {tune}" if tune else ""} '
         "-map_metadata -1 "
     )
+
+    if profile and profile != "default":
+        beginning += f"-profile {profile} "
 
     if max_mux and max_mux != "default":
         beginning += f"-max_muxing_queue_size {max_mux} "

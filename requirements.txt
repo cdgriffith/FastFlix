@@ -1,6 +1,9 @@
 appdirs
-pyside2
+colorama
+coloredlogs
 python-box
 requests
 reusables
 ruamel.yaml
+pyqt5
+qtpy

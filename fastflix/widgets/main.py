@@ -25,8 +25,8 @@ root = os.path.abspath(os.path.dirname(__file__))
 
 
 def load_plugins(enable_svt_av1=True):
-    from fastflix.plugins.av1 import main as av1_plugin
-    from fastflix.plugins.hevc import main as hevc_plugin
+    from fastflix.plugins.av1_aom import main as av1_plugin
+    from fastflix.plugins.hevc_x265 import main as hevc_plugin
     from fastflix.plugins.svt_av1 import main as svt_av1_plugin
     from fastflix.plugins.gif import main as gif_plugin
     from fastflix.plugins.vp9 import main as vp9_plugin
@@ -139,7 +139,7 @@ class Main(QtWidgets.QWidget):
                     else:
                         d[a[0]] = g[i + 1]
             text = (
-                f" fps: {d.fps:<4}    frame: {d.frame:<10}    size: {d.size:<10}    "
+                f" fps: {d.fps:<6}    frame: {d.frame:<10}    size: {d.size:<10}    "
                 f"time: {d.time:<11}    bitrate: {d.bitrate:<20}   speed: {d.speed}"
             )
         self.log_label.setText(text)
@@ -520,7 +520,7 @@ class Main(QtWidgets.QWidget):
             assert width <= self.video_width, "Width must be smaller than video width"
             assert height <= self.video_height, "Height must be smaller than video height"
         except AssertionError as err:
-            error_message(f"Invalid Crop: {err}", parent=self)
+            error_message(f"Invalid Crop: {err}")
             return
         return f"{width}:{height}:{left}:{top}"
 
@@ -636,6 +636,7 @@ class Main(QtWidgets.QWidget):
             self.page_update()
             return
 
+        # TODO set width and height by video track
         rotation = 0
         if "rotate" in self.streams.video[0].get("tags", {}):
             rotation = abs(int(self.streams.video[0].tags.rotate))
@@ -685,11 +686,15 @@ class Main(QtWidgets.QWidget):
 
     @property
     def video_track(self):
-        try:
-            return int(self.widgets.video_track.currentText().split(":", 1)[0])
-        except Exception:
-            logger.warning("Unknown video track!")
-            return None
+        return int(self.widgets.video_track.currentIndex())
+
+    @property
+    def original_video_track(self):
+        return int(self.widgets.video_track.currentText().split(":", 1)[0])
+
+    @property
+    def pix_fmt(self):
+        return self.streams.video[self.video_track].pix_fmt
 
     @staticmethod
     def number_to_time(number):
@@ -738,7 +743,7 @@ class Main(QtWidgets.QWidget):
         thumb_command = self.flix.generate_thumbnail_command(
             source=self.input_video,
             output=self.thumb_file,
-            video_track=self.streams["video"][self.widgets.video_track.currentIndex()]["index"],
+            video_track=self.streams["video"][self.video_track]["index"],
             filters=filters,
             start_time=settings.start_time,
         )
@@ -762,16 +767,16 @@ class Main(QtWidgets.QWidget):
     def build_scale(self):
         width = self.widgets.scale.width.text()
         height = self.widgets.scale.height.text()
-        if self.convert_to == "av1":
-            pass
-            # TODO enforce 8
+        # if self.convert_to == "AV1 (AOM)":
+        #     pass
+        # TODO enforce 8
 
         return f"{width}:{height}"
 
     def get_all_settings(self):
         if not self.initialized:
             return
-        stream_info = self.streams.video[self.widgets.video_track.currentIndex()]
+        stream_info = self.streams.video[self.video_track]
 
         duration = self.duration
         if self.duration == float(self.format_info.get("duration", 0)):
@@ -793,7 +798,9 @@ class Main(QtWidgets.QWidget):
             source=self.input_video,
             start_time=self.start_time,
             duration=duration,
-            video_track=self.widgets.video_track.currentIndex(),
+            video_track=self.original_video_track,
+            stream_track=self.video_track,
+            pix_fmt=self.pix_fmt,
             rotate=self.widgets.rotate.checkedButton().name,
             v_flip=self.widgets.v_flip.isChecked(),
             h_flip=self.widgets.h_flip.isChecked(),

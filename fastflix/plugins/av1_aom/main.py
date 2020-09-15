@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__version__ = "1.0.0"
 __author__ = "Chris Griffith"
 
-name = "AV1"
+name = "AV1 (AOM)"
 requires = "libaom"
 
 video_extension = "mkv"
@@ -58,5 +57,5 @@ audio_formats = [
     "pcm_u8",
 ]
 
-from fastflix.plugins.av1.command_builder import build
-from fastflix.plugins.av1.settings_panel import AV1 as settings_panel
+from fastflix.plugins.av1_aom.command_builder import build
+from fastflix.plugins.av1_aom.settings_panel import AV1 as settings_panel

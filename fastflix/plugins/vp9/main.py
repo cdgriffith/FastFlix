@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__version__ = "1.0.0"
 __author__ = "Chris Griffith"
 
 name = "VP9"
@@ -11,6 +10,7 @@ video_dimension_divisor = 1
 
 enable_subtitles = True
 enable_audio = True
+enable_attachments = True
 
 audio_formats = ["libopus", "libvorbis"]
 

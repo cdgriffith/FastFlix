@@ -1,6 +1,19 @@
 Changelog
 ---------
 
+Version 2.6.0
+~~~~~~~~~~~~~
+
+* Adding AV1 AOM settings for cpu-used, tile-columns, tile-rows, row-mt
+* Adding HEVC x265 setting for profile
+* Changing plugins to include library used for encoding
+* Changing HEVC default speed to "medium" and crf to 28 to match x265 defaults
+* Changing command builders to specify stream instead of video track for codec
+* Fixing FPS not showing correctly when dealing with higher numbers
+* Fixing #60 video track not selected properly (thanks to -L0Lock-)
+* Fixing crash on SVT-AV1 due to HDR label issue
+* Fixing SVT-AV1 audio tracks being converted incorrectly
+
 Version 2.5.0
 ~~~~~~~~~~~~~
 

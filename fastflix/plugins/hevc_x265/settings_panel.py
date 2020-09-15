@@ -23,13 +23,17 @@ recommended_bitrates = [
 ]
 
 recommended_crfs = [
-    "24 (480p)",
-    "23 (720p)",
-    "22 (1080p)",
-    "21 (1440p)",
-    "20 (2160p)",
+    "28",
+    "27",
+    "26",
+    "25",
+    "24",
+    "23",
+    "22",
+    "21",
+    "20",
+    "19",
     "18",
-    "16",
     "Custom",
 ]
 
@@ -57,6 +61,7 @@ class HEVC(QtWidgets.QWidget):
         grid.addLayout(self.init_max_mux(), 4, 0, 1, 2)
         grid.addLayout(self.init_tune(), 5, 0, 1, 2)
         grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 2)
+        grid.addLayout(self.init_profile(), 7, 0, 1, 2)
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
@@ -115,7 +120,7 @@ class HEVC(QtWidgets.QWidget):
         self.widgets.preset.addItems(
             ["ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"]
         )
-        self.widgets.preset.setCurrentIndex(6)
+        self.widgets.preset.setCurrentIndex(5)
         self.widgets.preset.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.preset)
         return layout
@@ -123,7 +128,7 @@ class HEVC(QtWidgets.QWidget):
     def init_tune(self):
         layout = QtWidgets.QHBoxLayout()
         label = QtWidgets.QLabel("Tune")
-        label.setToolTip("Tune the settings for a particular type of source or situation.")
+        label.setToolTip("Tune the settings for a particular type of source or situation")
         layout.addWidget(label)
         self.widgets.tune = QtWidgets.QComboBox()
         self.widgets.tune.addItems(["default", "psnr", "ssim", "grain", "zero-latency", "fast-decode", "animation"])
@@ -132,9 +137,21 @@ class HEVC(QtWidgets.QWidget):
         layout.addWidget(self.widgets.tune)
         return layout
 
+    def init_profile(self):
+        layout = QtWidgets.QHBoxLayout()
+        label = QtWidgets.QLabel("Profile")
+        label.setToolTip("Enforce an encode profile")
+        layout.addWidget(label)
+        self.widgets.profile = QtWidgets.QComboBox()
+        self.widgets.profile.addItems(["default", "main", "main10", "mainstillpicture"])
+        self.widgets.profile.setCurrentIndex(0)
+        self.widgets.profile.currentIndexChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.profile)
+        return layout
+
     def init_pix_fmt(self):
         layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Bit depth")
+        label = QtWidgets.QLabel("Bit Depth")
         label.setToolTip("Pixel Format (requires at least 10-bit for HDR)")
         layout.addWidget(label)
         self.widgets.pix_fmt = QtWidgets.QComboBox()
@@ -198,12 +215,15 @@ class HEVC(QtWidgets.QWidget):
         crf_radio = QtWidgets.QRadioButton("CRF")
         crf_radio.setChecked(True)
         crf_radio.setFixedWidth(80)
+        crf_radio.setToolTip("28 is x265's default<br>"
+                             "24 is  \"Visually Indistinguishable\"<br>"
+                             "22 is near what I use for 4K Videos")
         self.widgets.mode.addButton(crf_radio)
 
         self.widgets.crf = QtWidgets.QComboBox()
         self.widgets.crf.setFixedWidth(250)
         self.widgets.crf.addItems(recommended_crfs)
-        self.widgets.crf.setCurrentIndex(4)
+        self.widgets.crf.setCurrentIndex(0)
         self.widgets.crf.currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets.custom_crf = QtWidgets.QLineEdit("30")
         self.widgets.custom_crf.setFixedWidth(100)
@@ -264,6 +284,7 @@ class HEVC(QtWidgets.QWidget):
             max_mux=self.widgets.max_mux.currentText(),
             extra=self.widgets.extra.text(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
+            profile=self.widgets.profile.currentText(),
         )
 
         tune = self.widgets.tune.currentText()

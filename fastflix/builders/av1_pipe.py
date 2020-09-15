@@ -65,11 +65,11 @@ def build(source, video_track, streams, start_time, format_info, duration, mode=
             f'-nostdin -i "{source}" -vframes {frames} -f rawvideo '
             f'{f"-vf {filters}" if filters else ""} '
             f'-pix_fmt {"yuv420p" if bit_depth == 8 else "yuv420p10le"} -an - | '
-            f'"{{av1}}" -intra-period {intra_period} -enc-mode {mode} -w {width} -h {height} '
+            f'"{{av1_aom}}" -intra-period {intra_period} -enc-mode {mode} -w {width} -h {height} '
             f"-bit-depth {bit_depth} -n {frames} -i stdin -q {qp} "
             f"-fps-num {fps_num} -fps-denom {fps_denom} -b <tempfile.1.ivf>"
         ),
-        ["ffmpeg", "av1"],
+        ["ffmpeg", "av1_aom"],
         False,
     )
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__version__ = "1.0.0"
 __author__ = "Chris Griffith"
 
 name = "GIF"
@@ -10,6 +9,7 @@ video_dimension_divisor = 1
 
 enable_subtitles = False
 enable_audio = False
+enable_attachments = False
 
 audio_formats = []
 

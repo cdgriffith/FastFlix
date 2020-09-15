@@ -1,4 +1,6 @@
 appdirs
+colorama
+coloredlogs
 pyinstaller
 pypiwin32
 pyqt5
