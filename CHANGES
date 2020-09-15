@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+Version 2.6.1
+~~~~~~~~~~~~~
+
+* Fixing #62 VP9 and GIF crashing due to label bug (thanks to -L0Lock-)
+
 Version 2.6.0
 ~~~~~~~~~~~~~
 
