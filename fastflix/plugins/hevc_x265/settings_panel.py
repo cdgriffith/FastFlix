@@ -21,19 +21,23 @@ recommended_bitrates = [
     "18000k (3840x2160p @ 50,60)",
     "Custom",
 ]
+"24 (480p)",
+"23 (720p)",
+"22 (1080p)",
+"21 (1440p)",
 
 recommended_crfs = [
-    "28",
+    "28 (x265 default - lower quality)",
     "27",
     "26",
     "25",
-    "24",
-    "23",
-    "22",
-    "21",
-    "20",
+    "24 (480p)",
+    "23 (720p)",
+    "22 (1080p)",
+    "21 (1440p)",
+    "20 (2160p)",
     "19",
-    "18",
+    "18 (very high quality)",
     "Custom",
 ]
 
@@ -212,15 +216,18 @@ class HEVC(QtWidgets.QWidget):
         bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
         bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
 
+        crf_help = ("CRF is extremely source dependant,<br>"
+                    "the resolution-to-crf are mere suggestions!<br><br>"
+                    "Quality also depends on encoding speed.<br> "
+                    "For example, SLOW CRF 22 will have a result near FAST CRF 20.")
         crf_radio = QtWidgets.QRadioButton("CRF")
         crf_radio.setChecked(True)
         crf_radio.setFixedWidth(80)
-        crf_radio.setToolTip("28 is x265's default<br>"
-                             "24 is  \"Visually Indistinguishable\"<br>"
-                             "22 is near what I use for 4K Videos")
+        crf_radio.setToolTip(crf_help)
         self.widgets.mode.addButton(crf_radio)
 
         self.widgets.crf = QtWidgets.QComboBox()
+        self.widgets.crf.setToolTip(crf_help)
         self.widgets.crf.setFixedWidth(250)
         self.widgets.crf.addItems(recommended_crfs)
         self.widgets.crf.setCurrentIndex(0)

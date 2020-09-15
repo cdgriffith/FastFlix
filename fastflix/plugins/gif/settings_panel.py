@@ -36,11 +36,11 @@ class GIF(QtWidgets.QWidget):
 
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
-        remove_hdr_level = QtWidgets.QLabel("Remove HDR")
-        remove_hdr_level.setToolTip(
+        self.remove_hdr_label = QtWidgets.QLabel("Remove HDR")
+        self.remove_hdr_label.setToolTip(
             "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
         )
-        layout.addWidget(remove_hdr_level)
+        layout.addWidget(self.remove_hdr_label)
         self.widgets.remove_hdr = QtWidgets.QComboBox()
         self.widgets.remove_hdr.addItems(["No", "Yes"])
         self.widgets.remove_hdr.setCurrentIndex(0)

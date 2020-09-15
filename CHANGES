@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Version 2.6.1
+~~~~~~~~~~~~~
+
+* Adding HEVC crf suggestions back
+* Fixing #62 VP9 and GIF crashing due to label bug (thanks to -L0Lock-)
+
 Version 2.6.0
 ~~~~~~~~~~~~~
 
@@ -8,7 +14,7 @@ Version 2.6.0
 * Adding HEVC x265 setting for profile
 * Changing plugins to include library used for encoding
 * Changing HEVC default speed to "medium" and crf to 28 to match x265 defaults
-* Changing command builders to specify stream instead of video track for codec
+* Fixing command builders to specify stream instead of video track for codec
 * Fixing FPS not showing correctly when dealing with higher numbers
 * Fixing #60 video track not selected properly (thanks to -L0Lock-)
 * Fixing crash on SVT-AV1 due to HDR label issue
