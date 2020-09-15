@@ -767,9 +767,9 @@ class Main(QtWidgets.QWidget):
     def build_scale(self):
         width = self.widgets.scale.width.text()
         height = self.widgets.scale.height.text()
-        if self.convert_to == "av1_aom":
-            pass
-            # TODO enforce 8
+        # if self.convert_to == "AV1 (AOM)":
+        #     pass
+        # TODO enforce 8
 
         return f"{width}:{height}"
 

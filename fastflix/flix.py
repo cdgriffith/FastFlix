@@ -321,7 +321,7 @@ class Flix:
 
         return (
             f'"{self.ffmpeg}" -loglevel error -i "{source}" {start} '
-            f"-c:v libaom-av1_aom -b:v 0 -strict experimental -crf {crf} -pix_fmt yuv420p "
+            f"-c:v libaom-av1 -b:v 0 -strict experimental -crf {crf} -pix_fmt yuv420p "
             f'{"-map_metadata -1" if start else ""} {f"-vf {filters}" if filters else ""} '
             f'-map 0:{video_track} {"-an" if audio_track is None else f"-map 0:{audio_track}"} {maps} '
             f'{"-map 0:s" if keep_subtitles else "-sn"} '
