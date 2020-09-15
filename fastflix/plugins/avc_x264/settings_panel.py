@@ -23,31 +23,27 @@ recommended_bitrates = [
 ]
 
 recommended_crfs = [
-    "28 (x265 default - lower quality)",
-    "27",
-    "26",
-    "25",
-    "24 (480p)",
-    "23 (720p)",
-    "22 (1080p)",
-    "21 (1440p)",
-    "20 (2160p)",
-    "19",
-    "18 (very high quality)",
+    "23 (x264 default - lower quality)",
+    "22",
+    "21",
+    "20",
+    "19 (480p)",
+    "18 (720p)",
+    "17 (1080p)",
+    "16 (1440p)",
+    "15 (2160p)",
+    "14 (high quality)",
     "Custom",
 ]
 
-pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
-
-
-class HEVC(QtWidgets.QWidget):
+class AVC(QtWidgets.QWidget):
     def __init__(self, parent, main):
-        super(HEVC, self).__init__(parent)
+        super(AVC, self).__init__(parent)
         self.main = main
 
         grid = QtWidgets.QGridLayout()
 
-        self.widgets = Box(remove_hdr=None, mode=None, intra_encoding=None)
+        self.widgets = Box(remove_hdr=None, mode=None)
 
         self.mode = "CRF"
         self.updating_settings = False
@@ -57,19 +53,17 @@ class HEVC(QtWidgets.QWidget):
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)
         grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
-        grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 4, 0, 1, 2)
-        grid.addLayout(self.init_tune(), 5, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 2)
-        grid.addLayout(self.init_profile(), 7, 0, 1, 2)
+        # grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 4, 0, 1, 2)
+        # grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 2)
+        grid.addLayout(self.init_profile(), 5, 0, 1, 2)
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
 
         guide_label = QtWidgets.QLabel(
-            "<a href='https://trac.ffmpeg.org/wiki/Encode/H.265'>FFMPEG HEVC / H.265 Encoding Guide</a>"
-            " | <a href='https://codecalamity.com/encoding-uhd-4k-hdr10-videos-with-ffmpeg/'>"
-            "CodeCalamity UHD HDR Encoding Guide</a>"
+            "<a href='https://trac.ffmpeg.org/wiki/Encode/H.264'>FFMPEG AVC / H.264 Encoding Guide</a>"
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
@@ -93,20 +87,6 @@ class HEVC(QtWidgets.QWidget):
         layout.addWidget(self.widgets.remove_hdr)
         return layout
 
-    def init_intra_encoding(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Intra-encoding")
-        label.setToolTip(
-            "Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
-            "This option is not recommenced unless you need to conform to Blu-ray standards to burn to a physical disk"
-        )
-        layout.addWidget(label)
-        self.widgets.intra_encoding = QtWidgets.QComboBox()
-        self.widgets.intra_encoding.addItems(["No", "Yes"])
-        self.widgets.intra_encoding.setCurrentIndex(0)
-        self.widgets.intra_encoding.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.intra_encoding)
-        return layout
 
     def init_preset(self):
         layout = QtWidgets.QHBoxLayout()
@@ -131,7 +111,7 @@ class HEVC(QtWidgets.QWidget):
         label.setToolTip("Tune the settings for a particular type of source or situation")
         layout.addWidget(label)
         self.widgets.tune = QtWidgets.QComboBox()
-        self.widgets.tune.addItems(["default", "psnr", "ssim", "grain", "zerolatency", "fastdecode", "animation"])
+        self.widgets.tune.addItems(["default", "film", "animation", "grain", "stillimage", "psnr", "ssim",  "zerolatency", "fastdecode"])
         self.widgets.tune.setCurrentIndex(0)
         self.widgets.tune.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.tune)
@@ -143,22 +123,10 @@ class HEVC(QtWidgets.QWidget):
         label.setToolTip("Enforce an encode profile")
         layout.addWidget(label)
         self.widgets.profile = QtWidgets.QComboBox()
-        self.widgets.profile.addItems(["default", "main", "main10", "mainstillpicture"])
+        self.widgets.profile.addItems(["default", "baseline", "main", "high", "high10", "high422", "high444"])
         self.widgets.profile.setCurrentIndex(0)
         self.widgets.profile.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.profile)
-        return layout
-
-    def init_pix_fmt(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Bit Depth")
-        label.setToolTip("Pixel Format (requires at least 10-bit for HDR)")
-        layout.addWidget(label)
-        self.widgets.pix_fmt = QtWidgets.QComboBox()
-        self.widgets.pix_fmt.addItems(pix_fmts)
-        self.widgets.pix_fmt.setCurrentIndex(1)
-        self.widgets.pix_fmt.currentIndexChanged.connect(lambda: self.setting_change(pix_change=True))
-        layout.addWidget(self.widgets.pix_fmt)
         return layout
 
     def init_max_mux(self):
@@ -250,31 +218,11 @@ class HEVC(QtWidgets.QWidget):
         self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
         self.main.build_commands()
 
-    def setting_change(self, update=True, pix_change=False):
+    def setting_change(self, update=True):
         if self.updating_settings:
             return
-        if pix_change:
-            self.main.page_update()
-            return
         self.updating_settings = True
-        remove_hdr = bool(self.widgets.remove_hdr.currentIndex())
-        bit_depth = self.main.streams["video"][self.main.video_track].bit_depth
 
-        if remove_hdr:
-            self.widgets.pix_fmt.clear()
-            self.widgets.pix_fmt.addItems([pix_fmts[0:1]])
-            self.widgets.pix_fmt.setCurrentIndex(0)
-        else:
-            self.widgets.pix_fmt.clear()
-            if bit_depth == 12:
-                self.widgets.pix_fmt.addItems(pix_fmts[2:])
-                self.widgets.pix_fmt.setCurrentIndex(0)
-            elif bit_depth == 10:
-                self.widgets.pix_fmt.addItems(pix_fmts[1:])
-                self.widgets.pix_fmt.setCurrentIndex(0)
-            else:
-                self.widgets.pix_fmt.addItems(pix_fmts)
-                self.widgets.pix_fmt.setCurrentIndex(1)
         if update:
             self.main.page_update()
         self.updating_settings = False
@@ -283,10 +231,8 @@ class HEVC(QtWidgets.QWidget):
         settings = Box(
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
-            intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
             max_mux=self.widgets.max_mux.currentText(),
             extra=self.widgets.extra.text(),
-            pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             profile=self.widgets.profile.currentText(),
         )
 

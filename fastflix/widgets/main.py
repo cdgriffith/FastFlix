@@ -30,8 +30,9 @@ def load_plugins(enable_svt_av1=True):
     from fastflix.plugins.svt_av1 import main as svt_av1_plugin
     from fastflix.plugins.gif import main as gif_plugin
     from fastflix.plugins.vp9 import main as vp9_plugin
+    from fastflix.plugins.avc_x264 import main as avc_plugin
 
-    plugins = [hevc_plugin, av1_plugin, gif_plugin, vp9_plugin]
+    plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, av1_plugin]
     if enable_svt_av1:
         plugins.append(svt_av1_plugin)
     return {plugin.name: plugin for plugin in plugins}
