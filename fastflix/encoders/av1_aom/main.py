@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 __author__ = "Chris Griffith"
 
-name = "AV1 (SVT AV1)"
+name = "AV1 (AOM)"
+requires = "libaom"
 
 video_extension = "mkv"
 video_dimension_divisor = 8
 
-enable_subtitles = False
+enable_subtitles = True
 enable_audio = True
-enable_attachments = False
 
 audio_formats = [
     "aac",
@@ -57,5 +57,5 @@ audio_formats = [
     "pcm_u8",
 ]
 
-from fastflix.plugins.svt_av1.command_builder import build
-from fastflix.plugins.svt_av1.settings_panel import SVT_AV1 as settings_panel
+from fastflix.encoders.av1_aom.command_builder import build
+from fastflix.encoders.av1_aom.settings_panel import AV1 as settings_panel

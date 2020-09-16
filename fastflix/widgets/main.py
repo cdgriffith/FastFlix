@@ -17,7 +17,7 @@ from fastflix.shared import error_message
 from fastflix.widgets.video_options import VideoOptions
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.command_runner import CommandRunner
-from fastflix.plugins.common import helpers
+from fastflix.encoders.common import helpers
 
 logger = logging.getLogger("fastflix")
 
@@ -25,12 +25,12 @@ root = os.path.abspath(os.path.dirname(__file__))
 
 
 def load_plugins(enable_svt_av1=True):
-    from fastflix.plugins.av1_aom import main as av1_plugin
-    from fastflix.plugins.hevc_x265 import main as hevc_plugin
-    from fastflix.plugins.svt_av1 import main as svt_av1_plugin
-    from fastflix.plugins.gif import main as gif_plugin
-    from fastflix.plugins.vp9 import main as vp9_plugin
-    from fastflix.plugins.avc_x264 import main as avc_plugin
+    from fastflix.encoders.av1_aom import main as av1_plugin
+    from fastflix.encoders.hevc_x265 import main as hevc_plugin
+    from fastflix.encoders.svt_av1 import main as svt_av1_plugin
+    from fastflix.encoders.gif import main as gif_plugin
+    from fastflix.encoders.vp9 import main as vp9_plugin
+    from fastflix.encoders.avc_x264 import main as avc_plugin
 
     plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, av1_plugin]
     if enable_svt_av1:
@@ -87,7 +87,7 @@ class Main(QtWidgets.QWidget):
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
         self.plugins = load_plugins(enable_svt_av1=self.svt_av1)
-        # External: (Path(data_path, "plugins"), self.fastflix.ffmpeg_configuration()
+        # External: (Path(data_path, "encoders"), self.fastflix.ffmpeg_configuration()
 
         self.video_options = VideoOptions(self, available_audio_encoders=self.flix.get_audio_encoders())
 

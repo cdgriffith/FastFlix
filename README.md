@@ -2,20 +2,22 @@
 
 # FastFlix
 
-FastFlix is a AV1, HEVC (x265) and VP9 encoder, GIF maker, and general ffmpeg command wrapper.
+FastFlix is a simple and friendly GUI for encoding videos. 
 
 ![preview](https://raw.githubusercontent.com/cdgriffith/binary-files/fast-flix/media/fastflix/2.0.0/main.png)
 
+It uses `FFmpeg` under the hood for the heavy lifting, and can work with a variety of encoders.  
 
-# Encoders
+#  Encoders
 
 Currently there is support for:
 
-* HEVC (libx265)
 * AV1 (SVT-AV1 on Windows)
 * AV1 (FFMPEG libaom - currently very slow)
-* VP9
+* AVC (libx264)
+* HEVC (libx265)
 * GIF
+* VP9
 
 
 # Releases

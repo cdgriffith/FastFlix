@@ -36,6 +36,7 @@ recommended_crfs = [
     "Custom",
 ]
 
+
 class AVC(QtWidgets.QWidget):
     def __init__(self, parent, main):
         super(AVC, self).__init__(parent)
@@ -87,7 +88,6 @@ class AVC(QtWidgets.QWidget):
         layout.addWidget(self.widgets.remove_hdr)
         return layout
 
-
     def init_preset(self):
         layout = QtWidgets.QHBoxLayout()
         label = QtWidgets.QLabel("Preset")
@@ -111,7 +111,8 @@ class AVC(QtWidgets.QWidget):
         label.setToolTip("Tune the settings for a particular type of source or situation")
         layout.addWidget(label)
         self.widgets.tune = QtWidgets.QComboBox()
-        self.widgets.tune.addItems(["default", "film", "animation", "grain", "stillimage", "psnr", "ssim",  "zerolatency", "fastdecode"])
+        self.widgets.tune.addItems(
+            ["default", "film", "animation", "grain", "stillimage", "psnr", "ssim", "zerolatency", "fastdecode"])
         self.widgets.tune.setCurrentIndex(0)
         self.widgets.tune.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.tune)

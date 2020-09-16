@@ -4,9 +4,9 @@ import re
 
 from box import Box
 
-from fastflix.plugins.common.helpers import generate_filters, Command
-from fastflix.plugins.common.audio import build_audio
-from fastflix.plugins.common.subtitles import build_subtitle
+from fastflix.encoders.common.helpers import generate_filters, Command
+from fastflix.encoders.common.audio import build_audio
+from fastflix.encoders.common.subtitles import build_subtitle
 
 
 def build(

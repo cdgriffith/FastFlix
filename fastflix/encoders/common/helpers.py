@@ -78,7 +78,7 @@ def generate_filters(**kwargs):
 
 # def load_external_plugins(plugin_dir, configuration):
 #     sys.path.insert(0, str(Path(plugin_dir, os.pardir)))
-#     plugins = Box()
+#     encoders = Box()
 #     for item in plugin_dir.iterdir():
 #         if item.is_dir() and not item.name.startswith("_") and item.name != "common":
 #             plugin = importlib.machinery.SourceFileLoader(
@@ -86,5 +86,5 @@ def generate_filters(**kwargs):
 #             ).load_module()
 #             requires = getattr(plugin, "requires", None)
 #             if not requires or (requires and requires in configuration):
-#                 plugins[plugin.name] = plugin
-#     return plugins
+#                 encoders[plugin.name] = plugin
+#     return encoders

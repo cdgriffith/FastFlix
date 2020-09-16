@@ -97,5 +97,5 @@ audio_formats = [
     "wmav2",
 ]
 
-from fastflix.plugins.hevc_x265.command_builder import build
-from fastflix.plugins.hevc_x265.settings_panel import HEVC as settings_panel
+from fastflix.encoders.hevc_x265.command_builder import build
+from fastflix.encoders.hevc_x265.settings_panel import HEVC as settings_panel
