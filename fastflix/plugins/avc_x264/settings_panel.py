@@ -8,17 +8,17 @@ from qtpy import QtWidgets, QtCore, QtGui
 logger = logging.getLogger("fastflix")
 
 recommended_bitrates = [
-    "150k   (320x240p @ 24,25,30)",
-    "276k   (640x360p @ 24,25,30)",
-    "512k   (640x480p @ 24,25,30)",
-    "1024k  (1280x720p @ 24,25,30)",
-    "1800k (1280x720p @ 50,60)",
-    "1800k (1920x1080p @ 24,25,30)",
-    "3000k (1920x1080p @ 50,60)",
-    "6000k (2560x1440p @ 24,25,30)",
-    "9000k (2560x1440p @ 50,60)",
-    "12000k (3840x2160p @ 24,25,30)",
-    "18000k (3840x2160p @ 50,60)",
+    "500k    (320x240p @ 30fps)",
+    "800k    (640x360p @ 30fps)",
+    "1000k  (640x480p @ 30fps)",
+    "1500k  (1280x720p @ 30fps)",
+    "3000k  (1280x720p @ 60fps)",
+    "5000k  (1080p @ 30fps)",
+    "8000k  (1080p @ 60fps)",
+    "12000k (1440p @ 30fps)",
+    "20000k (1440p @ 60fps)",
+    "30000k (2160p @ 30fps)",
+    "45000k (2160p @ 60fps)",
     "Custom",
 ]
 
@@ -181,9 +181,7 @@ class AVC(QtWidgets.QWidget):
         bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
 
         crf_help = ("CRF is extremely source dependant,<br>"
-                    "the resolution-to-crf are mere suggestions!<br><br>"
-                    "Quality also depends on encoding speed.<br> "
-                    "For example, SLOW CRF 22 will have a result near FAST CRF 20.")
+                    "the resolution-to-crf are mere suggestions!<br>")
         crf_radio = QtWidgets.QRadioButton("CRF")
         crf_radio.setChecked(True)
         crf_radio.setFixedWidth(80)
