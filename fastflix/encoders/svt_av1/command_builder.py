@@ -7,8 +7,8 @@ from pathlib import Path
 import logging
 import os
 
-from fastflix.plugins.common.helpers import generate_filters, Loop, Command
-from fastflix.plugins.common.audio import build_audio
+from fastflix.encoders.common.helpers import generate_filters, Loop, Command
+from fastflix.encoders.common.audio import build_audio
 
 logger = logging.getLogger("fastflix")
 

@@ -12,7 +12,7 @@ from fastflix.widgets.settings import Settings
 
 class Container(QtWidgets.QMainWindow):
     def __init__(self, data_path, work_path, config_file, **kwargs):
-        super(Container, self).__init__()
+        super().__init__()
         self.logs = Logs()
         self.about = None
         self.init_menu()
@@ -21,9 +21,8 @@ class Container(QtWidgets.QMainWindow):
         self.setCentralWidget(self.main)
         self.setMinimumSize(1200, 600)
         my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
-        icon = QtGui.QIcon(my_data)
-        self.setWindowIcon(icon)
-        self.setWindowIcon(icon)
+        self.icon = QtGui.QIcon(my_data)
+        self.setWindowIcon(self.icon)
 
     def init_menu(self):
         menubar = self.menuBar()

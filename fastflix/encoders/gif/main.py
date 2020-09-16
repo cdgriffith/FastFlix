@@ -13,5 +13,5 @@ enable_attachments = False
 
 audio_formats = []
 
-from fastflix.plugins.gif.command_builder import build
-from fastflix.plugins.gif.settings_panel import GIF as settings_panel
+from fastflix.encoders.gif.command_builder import build
+from fastflix.encoders.gif.settings_panel import GIF as settings_panel

@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+Version 2.7.0
+~~~~~~~~~~~~~
+
+* Adding AVC support
+* Fixing taskbar does not always show icon
+
 Version 2.6.1
 ~~~~~~~~~~~~~
 

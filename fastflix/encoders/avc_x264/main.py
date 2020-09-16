@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 __author__ = "Chris Griffith"
 
-name = "HEVC (x265)"
-requires = "libx265"
+name = "AVC (x264)"
+requires = "libx264"
 
 video_extension = "mkv"
 video_dimension_divisor = 1
@@ -97,5 +97,5 @@ audio_formats = [
     "wmav2",
 ]
 
-from fastflix.plugins.hevc_x265.command_builder import build
-from fastflix.plugins.hevc_x265.settings_panel import HEVC as settings_panel
+from fastflix.encoders.avc_x264.command_builder import build
+from fastflix.encoders.avc_x264.settings_panel import AVC as settings_panel

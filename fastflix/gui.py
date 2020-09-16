@@ -47,6 +47,15 @@ def main():
     logger.info(f"Starting FastFlix {__version__}")
     logger.debug(f"Using qt engine {API} version {QT_VERSION}")
 
+    if reusables.win_based:
+        # This fixes the taskbar icon not always appearing
+        try:
+            import ctypes
+            app_id = f'cdgriffith.fastflix.{__version__}'.encode('utf-8')
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
+        except Exception:
+            logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
+
     main_app = QtWidgets.QApplication(sys.argv)
     main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
@@ -193,6 +202,7 @@ def main():
             work_path=work_dir,
             config_file=config_file,
         )
+        main_app.setWindowIcon(window.icon)
         window.show()
     except (Exception, BaseException, SystemError, SystemExit):
         logger.exception("HARD FAIL: Unexpected error")

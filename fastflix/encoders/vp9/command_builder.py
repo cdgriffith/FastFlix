@@ -2,8 +2,8 @@
 import reusables
 import re
 
-from fastflix.plugins.common.helpers import generate_filters, Command
-from fastflix.plugins.common.audio import build_audio
+from fastflix.encoders.common.helpers import generate_filters, Command
+from fastflix.encoders.common.audio import build_audio
 
 
 def build(
