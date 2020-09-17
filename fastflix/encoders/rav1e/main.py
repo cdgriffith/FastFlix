@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 __author__ = "Chris Griffith"
 
-name = "AV1 (SVT AV1)"
-requires = "libsvtav1"
+name = "AV1 (rav1e)"
+requires = "librav1e"
 
 video_extension = "mkv"
 video_dimension_divisor = 8
@@ -58,5 +58,5 @@ audio_formats = [
     "pcm_u8",
 ]
 
-from fastflix.encoders.svt_av1.command_builder import build
-from fastflix.encoders.svt_av1.settings_panel import SVT_AV1 as settings_panel
+from fastflix.encoders.rav1e.command_builder import build
+from fastflix.encoders.rav1e.settings_panel import RAV1E as settings_panel

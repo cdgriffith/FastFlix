@@ -24,17 +24,17 @@ logger = logging.getLogger("fastflix")
 root = os.path.abspath(os.path.dirname(__file__))
 
 
-def load_plugins(enable_svt_av1=True):
+def load_plugins():
     from fastflix.encoders.av1_aom import main as av1_plugin
     from fastflix.encoders.hevc_x265 import main as hevc_plugin
     from fastflix.encoders.svt_av1 import main as svt_av1_plugin
+    from fastflix.encoders.rav1e import main as rav1e_plugin
     from fastflix.encoders.gif import main as gif_plugin
     from fastflix.encoders.vp9 import main as vp9_plugin
     from fastflix.encoders.avc_x264 import main as avc_plugin
 
-    plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, av1_plugin]
-    if enable_svt_av1:
-        plugins.append(svt_av1_plugin)
+    plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, av1_plugin, rav1e_plugin, svt_av1_plugin]
+
     return {plugin.name: plugin for plugin in plugins}
 
 
@@ -86,7 +86,7 @@ class Main(QtWidgets.QWidget):
 
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
-        self.plugins = load_plugins(enable_svt_av1=self.svt_av1)
+        self.plugins = load_plugins()
         # External: (Path(data_path, "encoders"), self.fastflix.ffmpeg_configuration()
 
         self.video_options = VideoOptions(self, available_audio_encoders=self.flix.get_audio_encoders())

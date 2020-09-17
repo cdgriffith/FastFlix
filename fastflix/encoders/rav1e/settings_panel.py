@@ -5,6 +5,8 @@ from box import Box
 
 from qtpy import QtWidgets, QtCore, QtGui
 
+from fastflix.encoders.common.setting_panel import SettingPanel
+
 logger = logging.getLogger("fastflix")
 
 recommended_bitrates = [
@@ -42,30 +44,28 @@ recommended_qp = [
 pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
 
 
-class SVT_AV1(QtWidgets.QWidget):
+class RAV1E(SettingPanel):
     def __init__(self, parent, main):
-        super(SVT_AV1, self).__init__(parent)
+        super().__init__(parent)
         self.main = main
         grid = QtWidgets.QGridLayout()
-
-        self.widgets = Box(fps=None, remove_hdr=None, mode=None, segment_size=None)
 
         self.mode = "QP"
 
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
         grid.addLayout(self.init_remove_hdr(), 1, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmts(), 2, 0, 1, 2)
+        grid.addLayout(self.init_tiles(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
-        grid.addLayout(self.init_tier(), 5, 0, 1, 2)
-        grid.addLayout(self.init_sc_detection(), 6, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmts(), 5, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
         grid.addLayout(self.init_single_pass(), 4, 2, 1, 1)
+        grid.addLayout(self._add_custom(), 5, 2, 1, 4)
         grid.addWidget(QtWidgets.QWidget(), 5, 0)
         grid.setRowStretch(5, 1)
         guide_label = QtWidgets.QLabel(
-            f"<a href='https://github.com/AOMediaCodec/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md'>SVT-AV1 Encoding Guide</a>"
+            f"<a href='https://github.com/xiph/rav1e/blob/master/README.md'>rav1e github</a>"
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
@@ -73,52 +73,23 @@ class SVT_AV1(QtWidgets.QWidget):
         self.setLayout(grid)
         self.hide()
 
-    def _add_combo_box(self, label, options, widget_name, connect="default", enabled=True, default=0, tooltip=""):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel(label)
-        label.setToolTip(tooltip)
-        layout.addWidget(label)
-        self.widgets[widget_name] = QtWidgets.QComboBox()
-        self.widgets[widget_name].addItems(options)
-        self.widgets[widget_name].setCurrentIndex(default)
-        self.widgets[widget_name].setDisabled(not enabled)
-        if connect:
-            if connect == "default":
-                self.widgets[widget_name].currentIndexChanged.connect(lambda: self.main.page_update())
-            else:
-                self.widgets[widget_name].currentIndexChanged.connect(connect)
-        layout.addWidget(self.widgets[widget_name])
-
-        return layout, self.widgets[widget_name], label
+    def init_speed(self):
+        return self._add_combo_box("Speed", [str(x) for x in range(-1, 11)], "speed")
 
     def init_tile_rows(self):
-        layout, combo_box, label = self._add_combo_box("Tile Rows", [str(x) for x in range(0, 7)], "tile_rows")
-        return layout
+        return self._add_combo_box("Tile Rows", [str(x) for x in range(-1, 17)], "tile_rows", default=1)
 
     def init_tile_columns(self):
-        layout, combo_box, label = self._add_combo_box("Tile Columns", [str(x) for x in range(0, 5)], "tile_columns")
-        return layout
+        return self._add_combo_box("Tile Columns", [str(x) for x in range(-1, 17)], "tile_columns", default=1)
 
-    def init_pix_fmts(self):
-        layout, combo_box, label = self._add_combo_box("Bit Depth", pix_fmts, "pix_fmt")
-        return layout
-
-    def init_tier(self):
-        layout, combo_box, label = self._add_combo_box("Tier", ["main", "high"], "tier")
-        return layout
-
-    def init_sc_detection(self):
-        layout, combo_box, label = self._add_combo_box("Scene Detection", ["false", "true"], "sc_detection")
-        return layout
+    def init_tiles(self):
+        return self._add_combo_box("Tiles", [str(x) for x in range(-1, 17)], "tiles", default=1)
 
     def init_single_pass(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Single Pass"))
-        self.widgets.single_pass = QtWidgets.QCheckBox()
-        self.widgets.single_pass.setChecked(False)
-        self.widgets.single_pass.toggled.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.single_pass)
-        return layout
+        return self._add_check_box("Single Pass (Bitrate)", "single_pass", checked=True)
+
+    def init_pix_fmts(self):
+        return self._add_combo_box("Bit Depth", pix_fmts, "pix_fmt")
 
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()
@@ -133,16 +104,6 @@ class SVT_AV1(QtWidgets.QWidget):
         self.widgets.remove_hdr.setDisabled(True)
         self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.remove_hdr)
-        return layout
-
-    def init_speed(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Speed"))
-        self.widgets.speed = QtWidgets.QComboBox()
-        self.widgets.speed.addItems([str(x) for x in range(9)])
-        self.widgets.speed.setCurrentIndex(7)
-        self.widgets.speed.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.speed)
         return layout
 
     def init_modes(self):
@@ -218,10 +179,8 @@ class SVT_AV1(QtWidgets.QWidget):
             speed=self.widgets.speed.currentText(),
             tile_columns=int(self.widgets.tile_columns.currentText()),
             tile_rows=int(self.widgets.tile_rows.currentText()),
+            tiles=int(self.widgets.tiles.currentText()),
             single_pass=self.widgets.single_pass.isChecked(),
-            tier=int(self.widgets.tier.currentIndex()),
-            sc_detection=int(self.widgets.sc_detection.currentIndex()),
-            pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
         )
         if self.mode == "QP":
             qp = self.widgets.qp.currentText()

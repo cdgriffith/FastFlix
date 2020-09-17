@@ -9,7 +9,10 @@ import os
 import shutil
 import traceback
 from json import JSONDecodeError
-import coloredlogs
+from multiprocessing import Process
+
+from multiprocessing.connection import Client
+import time
 
 try:
     import pkg_resources.py2_warn  # Needed for pyinstaller on 3.8
@@ -21,6 +24,7 @@ try:
     from box import Box
     import reusables
     import requests
+    import coloredlogs
 
     from qtpy import QtWidgets, QtCore, QtGui
     from qtpy import QT_VERSION, API
@@ -29,6 +33,7 @@ try:
     from fastflix.flix import ff_version, FlixError
     from fastflix.shared import error_message, base_path, message
     from fastflix.widgets.container import Container
+    from fastflix.background_runner import listen
 except ImportError as err:
     traceback.print_exc()
     print("Could not load FastFlix properly!", file=sys.stderr)
@@ -56,6 +61,12 @@ def main():
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
         except Exception:
             logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
+
+    # Process(target=listen, daemon=False).start()
+    # time.sleep(1)
+    # with Client(('localhost', 6000), authkey=b'Do not let eve find us!') as conn:
+    #     conn.send([8, 8])
+    #     conn.send(b'stop server')
 
     main_app = QtWidgets.QApplication(sys.argv)
     main_app.setStyle("fusion")
