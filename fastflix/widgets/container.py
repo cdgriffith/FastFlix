@@ -7,6 +7,7 @@ from qtpy import QtCore, QtWidgets, QtGui
 from fastflix.widgets.main import Main
 from fastflix.widgets.about import About
 from fastflix.widgets.logs import Logs
+from fastflix.widgets.changes import Changes
 from fastflix.widgets.settings import Settings
 
 
@@ -14,6 +15,7 @@ class Container(QtWidgets.QMainWindow):
     def __init__(self, data_path, work_path, config_file, **kwargs):
         super().__init__()
         self.logs = Logs()
+        self.changes = Changes()
         self.about = None
         self.init_menu()
         self.config_file = config_file
@@ -56,11 +58,17 @@ class Container(QtWidgets.QMainWindow):
         )
         log_action.triggered.connect(self.show_logs)
 
+        changes_action = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogDetailedView), "View &Changes", self
+        )
+        changes_action.triggered.connect(self.show_changes)
+
         report_action = QtWidgets.QAction("Report &Issue", self)
         report_action.triggered.connect(self.open_issues)
 
         help_menu = menubar.addMenu("&Help")
         help_menu.addAction(log_action)
+        help_menu.addAction(changes_action)
         help_menu.addAction(report_action)
         help_menu.addAction(about_action)
 
@@ -74,6 +82,9 @@ class Container(QtWidgets.QMainWindow):
 
     def show_logs(self):
         self.logs.show()
+
+    def show_changes(self):
+        self.changes.show()
 
     def open_issues(self):
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("https://github.com/cdgriffith/FastFlix/issues"))

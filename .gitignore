@@ -116,3 +116,5 @@ bundled
 extra/
 *.7z
 .pypirc
+fastflix/CHANGES
+

@@ -25,6 +25,9 @@ try:
     import requests
     import coloredlogs
 
+    from qtpy import QtWidgets
+    from qtpy import QT_VERSION, API
+
     from fastflix.version import __version__
     from fastflix.flix import ff_version, FlixError
     from fastflix.shared import error_message, base_path, message
@@ -101,6 +104,24 @@ def main():
                 sent_response = False
 
 
+def parse_changes(last_version=None):
+    changes = (Path(__file__).parent / "CHANGES").read_text().splitlines()
+    if last_version:
+        version_hit = False
+        last_line = None
+        for i, line in enumerate(changes):
+            if line.startswith(f"Version {last_version}"):
+                version_hit = True
+            if version_hit and not line.strip():
+                last_line = i
+                break
+        if last_line:
+            print("found last version")
+            return "\n".join(changes[3:last_line])
+
+    return "\n".join(changes[3:50])
+
+
 def required_info(logger):
     if reusables.win_based:
         # This fixes the taskbar icon not always appearing
@@ -163,6 +184,10 @@ def required_info(logger):
             config.to_json(filename=config_file, indent=2)
         if StrictVersion(config.version) < StrictVersion(__version__):
             # do upgrade of config
+            message(
+                f"<h2 style='text-align: center;'>Welcome to FastFlix {__version__}!</h2><br>"
+                f"<p style='text-align: center; font-size: 15px;'>Please check out the changes made since your last update ({config.version})<br>View the change log in the Help menu (Alt+H then C)<br></p>"
+            )
             config.version = __version__
             config.to_json(filename=config_file, indent=2)
         if "ffmpeg" in config:
@@ -197,16 +222,13 @@ def start_app(queue, status_queue):
     coloredlogs.install(level="DEBUG", logger=logger)
     logger.info(f"Starting FastFlix {__version__}")
 
-    (ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, data_path, work_dir, config_file) = required_info(logger)
-
-    from qtpy import QtWidgets
-    from qtpy import QT_VERSION, API
-
     logger.debug(f"Using qt engine {API} version {QT_VERSION}")
-    main_app = QtWidgets.QApplication(sys.argv)
-    main_app.setStyle("fusion")
-    main_app.setApplicationDisplayName("FastFlix")
+
     try:
+        main_app = QtWidgets.QApplication(sys.argv)
+        main_app.setStyle("fusion")
+        main_app.setApplicationDisplayName("FastFlix")
+        (ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, data_path, work_dir, config_file) = required_info(logger)
         window = Container(
             ffmpeg=ffmpeg,
             ffprobe=ffprobe,

@@ -1,29 +1,28 @@
-Changelog
----------
+# Changelog
 
-Version 3.0.0
-~~~~~~~~~~~~~
+## Version  3.0.0
 
 * Adding AVC support (libx264)
 * Adding rav1e support (librav1e)
 * Adding SVT AV1 support (libsvtav1) directly with FFmpeg
 * Adding SVT AV1 dual pass, tier, scene detection, and tile parameters
 * Adding various speed improvements
+* Adding changelog in GUI
+* Adding version upgrade dialogue
 * Fixing taskbar does not always show icon
 * Changing major internal re-write to keep encoding even if GUI dies
 * Changing bitrate suggestion resolutions to be more readable with fps
 * Changing command builders to specify the temporary files themselves
+* Changing changelog to proper markdown
 * Removing support for the direct SVT AV1 encoder
 * Removing support for cutielog / socket based logging
 
-Version 2.6.1
-~~~~~~~~~~~~~
+## Version  2.6.1
 
 * Adding HEVC crf suggestions back
 * Fixing #62 VP9 and GIF crashing due to label bug (thanks to -L0Lock-)
 
-Version 2.6.0
-~~~~~~~~~~~~~
+## Version  2.6.0
 
 * Adding AV1 AOM settings for cpu-used, tile-columns, tile-rows, row-mt
 * Adding HEVC x265 setting for profile
@@ -35,19 +34,16 @@ Version 2.6.0
 * Fixing crash on SVT-AV1 due to HDR label issue
 * Fixing SVT-AV1 audio tracks being converted incorrectly
 
-Version 2.5.0
-~~~~~~~~~~~~~
+## Version  2.5.0
 
 * Adding settings dialog
 * Fixing no bitrate should be specified for lossless audio
 
-Version 2.4.1
-~~~~~~~~~~~~~
+## Version  2.4.1
 
 * Fixing #52 HEVC custom CRF issue (thanks to 2600box)
 
-Version 2.4.0
-~~~~~~~~~~~~~
+## Version  2.4.0
 
 * Adding larger command line view to see entire command at once
 * Changing to using qtpy which supports dynamic linking of either PySide2 or pyqt5, instead of only PySide2
@@ -55,30 +51,25 @@ Version 2.4.0
 * Fixing #44 Remove metadata from original file (thanks to HannesJo0139)
 * Fixing #20 Adding hoverhelp for most converter options
 
-Version 2.3.4
-~~~~~~~~~~~~~
+## Version  2.3.4
 
 * Fixing audio downmixing only taking for last downmixing setting
 
-Version 2.3.3
-~~~~~~~~~~~~~
+## Version  2.3.3
 
 * Fixing #46 max-cll was being sent incorrectly to x265-params (thanks to HannesJo0139)
 * Fixing #43 audio bitrate being set to wrong track (thanks to HannesJo0139)
 
-Version 2.3.2
-~~~~~~~~~~~~~
+## Version  2.3.2
 
 * Fixing #39 HEVC two pass bitrate does not work (thanks to schlotkins)
 
 
-Version 2.3.1
-~~~~~~~~~~~~~
+## Version  2.3.1
 
 * Fixing #35 custom CRF / bitrate values not updating in the command panel (thanks to schlotkins)
 
-Version 2.3.0
-~~~~~~~~~~~~~
+## Version  2.3.0
 
 * Adding to pypi
 * Changing package to "fastflix"
@@ -87,21 +78,18 @@ Version 2.3.0
 * Fixing HDR details not being parsed due to not quoting path to ffprobe (thanks to schlotkins)
 * Fixing killing child processes on *nix
 
-Version 2.2.0
-~~~~~~~~~~~~~
+## Version  2.2.0
 
 * Adding custom extra ffmpeg args for HEVC
 * Adding max mux queue size change for HEVC
 * Fixing issue with codec not being set as copy (thanks to schlotkins)
 * Fixing quotes around parens on linux
 
-Version 2.1.1
-~~~~~~~~~~~~~
+## Version  2.1.1
 
 * Fixing parse_hdr_details bug (thanks to Jan Temešinko and schlotkins)
 
-Version 2.1.0
-~~~~~~~~~~~~~
+## Version  2.1.0
 
 * Adding config file that will allow for customizable work directory
 * Adding support for HEVC conversion
@@ -116,13 +104,11 @@ Version 2.1.0
 * Removing bundling of FFmpeg and SVT-AV1
 * Removing support for external plugins
 
-Version 2.0.1
-~~~~~~~~~~~~~
+## Version  2.0.1
 
 * Fixing broken exe, requiring console for time being
 
-Version 2.0.0
-~~~~~~~~~~~~~
+## Version  2.0.0
 
 * Adding AV1 support (both FFMPEG libaom-av1 and SVT-AV1)
 * Adding VP9 support
@@ -133,8 +119,7 @@ Version 2.0.0
 * Removing all GPL or restrictive licensed products (including x265)
 * Major Layout Redesign
 
-Version 1.1.0
-~~~~~~~~~~~~~
+## Version  1.1.0
 
 * Add AV1 support
 * Add GIF support
@@ -142,7 +127,6 @@ Version 1.1.0
 * Add About page
 * Large amount of changes, fixes, and bugs introduced
 
-Version 1.0.0
-~~~~~~~~~~~~~
+## Version  1.0.0
 
 * Initial release
