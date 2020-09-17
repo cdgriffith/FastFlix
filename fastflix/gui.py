@@ -38,6 +38,7 @@ except ImportError as err:
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG)
 
     queue = Queue()
     status_queue = Queue()
@@ -45,12 +46,14 @@ def main():
     gui_proc = Process(target=start_app, args=(queue, status_queue))
     gui_proc.start()
 
-    excess = ""
-    finished_message = False
+    logger = logging.getLogger("fastflix-core")
+    coloredlogs.install(level="DEBUG", logger=logger)
+    logger.info(f"Starting FastFlix {__version__}")
+
+    finished_message = True
     sent_response = True
     gui_close_message = False
     queued_requests = []
-    a = 0
     while True:
         if not gui_close_message and not gui_proc.is_alive():
             gui_proc.join()
@@ -59,15 +62,21 @@ def main():
                 print("The GUI might have died, but I'm going to keep converting!")
             else:
                 break
-        time.sleep(0.01)  # just in case something goes horribly wrong don't peak the CPU
-        a += 1
         try:
             request = queue.get(block=True, timeout=0.01)
         except Empty:
             if not runner.is_alive() and not sent_response and not queued_requests:
+                excess = runner.process.stdout.read().strip()
+                if excess:
+                    logger.info(excess)
+                ret = runner.process.poll()
+                if ret > 0:
+                    logger.warning(f"Error during conversion")
+                else:
+                    logger.info("conversion complete")
                 status_queue.put("complete")
                 sent_response = True
-                print("conversion complete")
+
                 if not gui_proc.is_alive():
                     return
         else:
@@ -76,32 +85,23 @@ def main():
                     queued_requests.append(request)
                 else:
                     runner.start_exec(*request[1:])
+                    finished_message = False
                     sent_response = False
             if request[0] == "cancel":
                 runner.kill()
                 status_queue.put("cancelled")
                 sent_response = True
-        if runner.is_alive():
-            data = runner.read(200)
-            if not data:
-                continue
-            messages, *new_excess = data.rsplit("\n")
-            print(messages, new_excess)
-            # print(excess + messages)
-            if new_excess:
-                excess = new_excess[0]
-        else:
+        if not runner.is_alive():
             if not finished_message:
-                data = excess + (runner.read() or "")
-                if data:
-                    print(data)
+                logger.info(runner.read() or "")
                 finished_message = True
             if queued_requests:
                 runner.start_exec(*queued_requests.pop()[1:])
+                finished_message = False
                 sent_response = False
 
 
-def required_info(queue, logger):
+def required_info(logger):
     if reusables.win_based:
         # This fixes the taskbar icon not always appearing
         try:
@@ -192,13 +192,12 @@ def required_info(queue, logger):
 
 
 def start_app(queue, status_queue):
-    logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(name)-6s  %(levelname)-8s %(message)s")
 
     logger = logging.getLogger("fastflix")
     coloredlogs.install(level="DEBUG", logger=logger)
     logger.info(f"Starting FastFlix {__version__}")
 
-    (ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, data_path, work_dir, config_file) = required_info(queue, logger)
+    (ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, data_path, work_dir, config_file) = required_info(logger)
 
     from qtpy import QtWidgets
     from qtpy import QT_VERSION, API

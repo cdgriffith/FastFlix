@@ -4,10 +4,11 @@ Changelog
 Version 3.0.0
 ~~~~~~~~~~~~~
 
-* Adding AVC support
-* Adding rav1e support (via librav1e)
-* Adding SVT AV1 support for libsvtav1 directly with FFmpeg
+* Adding AVC support (libx264)
+* Adding rav1e support (librav1e)
+* Adding SVT AV1 support (libsvtav1) directly with FFmpeg
 * Adding SVT AV1 dual pass, tier, scene detection, and tile parameters
+* Adding various speed improvements
 * Fixing taskbar does not always show icon
 * Changing major internal re-write to keep encoding even if GUI dies
 * Changing bitrate suggestion resolutions to be more readable with fps

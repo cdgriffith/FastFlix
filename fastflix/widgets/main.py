@@ -945,7 +945,6 @@ class Notifier(QtCore.QThread):
         while True:
             status = self.status_queue.get()
             if status == "complete":
-                print("COMPLETE!")
                 self.app.completed.emit(0)
             elif status == "cancelled":
                 self.app.cancelled.emit()

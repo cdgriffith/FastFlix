@@ -13,9 +13,9 @@ from threading import Thread
 import reusables
 
 
-logger = logging.getLogger("fastflix")
+logger = logging.getLogger("fastflix-core")
 
-__all__ = ["CommandRunner", "BackgroundRunner"]
+__all__ = ["BackgroundRunner"]
 
 white_detect = re.compile(r"^\s+")
 
@@ -26,6 +26,7 @@ class BackgroundRunner:
         self.killed = False
 
     def start_exec(self, command, work_dir):
+        logger.info(f"Running command: {command}")
         self.process = Popen(
             command,
             shell=True,
@@ -33,9 +34,18 @@ class BackgroundRunner:
             stdin=PIPE,
             stdout=PIPE,
             stderr=STDOUT,
-            universal_newlines=True,
+            encoding="utf-8",
             preexec_fn=os.setsid if not reusables.win_based else None,
         )
+        Thread(target=self.read_output).start()
+
+    def read_output(self):
+        while True:
+            if not self.is_alive():
+                return
+            line = self.process.stdout.readline().rstrip()
+            if line:
+                logger.info(line)
 
     def read(self, limit=None):
         if not self.is_alive():
