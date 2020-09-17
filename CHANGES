@@ -3,19 +3,20 @@
 ## Version  3.0.0
 
 * Adding AVC support (libx264)
-* Adding rav1e support (librav1e)
-* Adding SVT AV1 support (libsvtav1) directly with FFmpeg
+* Adding #65 rav1e support (librav1e)
+* Adding #49 SVT AV1 support (libsvtav1) directly with FFmpeg
 * Adding SVT AV1 dual pass, tier, scene detection, and tile parameters
-* Adding Status Panel to view encoding logs
+* Adding #67 Status Panel to view encoding logs
 * Adding various speed improvements
 * Adding changelog in GUI
-* Adding version upgrade dialogue
+* Adding #68 version upgrade dialogue
 * Fixing taskbar does not always show icon
+* Fixing #55 GUI logs by splitting them from core logs
 * Changing major internal re-write to keep encoding even if GUI dies
 * Changing bitrate suggestion resolutions to be more readable with fps
 * Changing command builders to specify the temporary files themselves
 * Changing changelog to proper markdown
-* Removing support for the direct SVT AV1 encoder
+* Removing support for the direct SVT AV1 encoder (fixes #24)
 * Removing support for cutielog / socket based logging
 
 ## Version  2.6.1
