@@ -16,6 +16,7 @@ python-box = {version = "^5.1.1", extras = ["all"]}
 requests = "^2.24.0"
 reusables = "^0.9.5"
 "ruamel.yaml" = "^0.16.10"
+mistune = "^0.8.4"
 
 [tool.poetry.dev-dependencies]
 

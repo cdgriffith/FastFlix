@@ -1,6 +1,7 @@
 appdirs
 colorama
 coloredlogs
+mistune
 pyqt5
 python-box
 qtpy
