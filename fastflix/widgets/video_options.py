@@ -9,6 +9,7 @@ from fastflix.widgets.panels.command_panel import CommandList
 from fastflix.widgets.panels.audio_panel import AudioList
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
 from fastflix.widgets.panels.status_panel import StatusPanel
+from fastflix.widgets.panels.attachment_panel import AttachmentPanel
 
 logger = logging.getLogger("fastflix")
 
@@ -26,10 +27,12 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.audio = AudioList(self, available_audio_encoders)
         self.subtitles = SubtitleList(self)
         self.status = StatusPanel(self, log_queue)
+        self.attachments = AttachmentPanel(self)
         # self.subtitles.hide()
         self.addTab(self.current_settings, "Quality")
         self.addTab(self.audio, "Audio")
         self.addTab(self.subtitles, "Subtitles")
+        self.addTab(self.attachments, "Cover")
         self.addTab(self.commands, "Command List")
         self.addTab(self.status, "Encoding Status")
 
@@ -43,6 +46,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.setCurrentIndex(0)
         self.setTabEnabled(1, getattr(self.current_plugin, "enable_audio", True))
         self.setTabEnabled(2, getattr(self.current_plugin, "enable_subtitles", True))
+        self.setTabEnabled(3, getattr(self.current_plugin, "enable_attachments", True))
         self.selected = conversion
         self.audio.allowed_formats(self.current_plugin.audio_formats)
         self.current_settings.new_source()
@@ -55,6 +59,8 @@ class VideoOptions(QtWidgets.QTabWidget):
             settings.update(self.audio.get_settings())
         if getattr(self.current_plugin, "enable_subtitles", True):
             settings.update(self.subtitles.get_settings())
+        if getattr(self.current_plugin, "enable_attachments", True):
+            settings.update(self.attachments.get_settings())
         return settings
 
     def new_source(self):
