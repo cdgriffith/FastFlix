@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import reusables
 import re
+from pathlib import Path
+import secrets
+
 
 from box import Box
 
@@ -13,6 +16,7 @@ def build(
     source,
     video_track,
     ffmpeg,
+    temp_dir,
     bitrate=None,
     crf=None,
     start_time=0,
@@ -91,6 +95,7 @@ def build(
         pass
 
     extra_data = "-map_chapters 0 "  # -map_metadata 0 # safe to do for rotation?
+    pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
 
     def get_x265_params(params=()):
         if not isinstance(params, (list, tuple)):
@@ -101,10 +106,10 @@ def build(
     if bitrate:
         command_1 = (
             f'{beginning} {get_x265_params(["pass=1"])} '
-            f'-passlogfile "<tempfile.1.log>" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {ending}'
+            f'-passlogfile "{pass_log_file}" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {ending}'
         )
         command_2 = (
-            f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "<tempfile.1.log>" '
+            f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "{pass_log_file}" '
             f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
         )
         return [

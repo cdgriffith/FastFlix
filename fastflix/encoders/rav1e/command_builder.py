@@ -5,7 +5,7 @@ import reusables
 
 from pathlib import Path
 import logging
-import os
+import secrets
 import re
 
 from fastflix.encoders.common.helpers import generate_filters, Loop, Command
@@ -34,6 +34,7 @@ def build(
     streams,
     start_time,
     duration,
+    temp_dir,
     tiles=0,
     tile_columns=0,
     tile_rows=0,
@@ -89,7 +90,8 @@ def build(
     )
 
     if not single_pass:
-        beginning += '-passlogfile "<tempfile.1.log>" '
+        pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
+        beginning += f'-passlogfile "{pass_log_file}" '
 
     beginning = re.sub("[ ]+", " ", beginning)
 

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import reusables
 import re
+from pathlib import Path
+import secrets
 
 from fastflix.encoders.common.helpers import generate_filters, Command
 from fastflix.encoders.common.audio import build_audio
@@ -10,6 +12,7 @@ def build(
     source,
     video_track,
     ffmpeg,
+    temp_dir,
     bitrate=None,
     crf=None,
     start_time=0,
@@ -43,7 +46,8 @@ def build(
     )
 
     if not single_pass:
-        beginning += '-passlogfile "<tempfile.1.log>" '
+        pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
+        beginning += f'-passlogfile "{pass_log_file}" '
 
     beginning = re.sub("[ ]+", " ", beginning)
 

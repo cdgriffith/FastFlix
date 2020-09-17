@@ -6,6 +6,7 @@ import time
 from datetime import timedelta
 import logging
 import pkg_resources
+import tempfile
 import importlib.machinery  # Needed for pyinstaller
 
 from qtpy import QtWidgets, QtCore, QtGui
@@ -16,7 +17,6 @@ from fastflix.flix import Flix, FlixError
 from fastflix.shared import error_message
 from fastflix.widgets.video_options import VideoOptions
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
-from fastflix.widgets.command_runner import CommandRunner
 from fastflix.encoders.common import helpers
 
 logger = logging.getLogger("fastflix")
@@ -26,12 +26,12 @@ root = os.path.abspath(os.path.dirname(__file__))
 
 def load_plugins():
     from fastflix.encoders.av1_aom import main as av1_plugin
-    from fastflix.encoders.hevc_x265 import main as hevc_plugin
     from fastflix.encoders.svt_av1 import main as svt_av1_plugin
     from fastflix.encoders.rav1e import main as rav1e_plugin
     from fastflix.encoders.gif import main as gif_plugin
     from fastflix.encoders.vp9 import main as vp9_plugin
     from fastflix.encoders.avc_x264 import main as avc_plugin
+    from fastflix.encoders.hevc_x265 import main as hevc_plugin
 
     plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, av1_plugin, rav1e_plugin, svt_av1_plugin]
 
@@ -43,7 +43,7 @@ class Main(QtWidgets.QWidget):
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
 
-    def __init__(self, parent, data_path, work_path, ffmpeg, ffprobe, svt_av1, **kwargs):
+    def __init__(self, parent, data_path, work_path, ffmpeg, ffprobe, worker_queue, status_queue, **kwargs):
         super().__init__(parent)
         self.container = parent
         self.initialized = False
@@ -54,15 +54,21 @@ class Main(QtWidgets.QWidget):
             work=work_path,
         )
 
+        self.worker_queue = worker_queue
+        self.status_queue = status_queue
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
-        self.svt_av1 = svt_av1
+
+        self.notifier = Notifier(self, self.status_queue)
+        self.notifier.start()
 
         self.input_defaults = Box(scale=None, crop=None)
         self.initial_duration = 0
 
         for path in self.path.values():
             path.mkdir(parents=True, exist_ok=True)
+        self.temp_dir = tempfile.TemporaryDirectory(prefix="temp_", dir=work_path)
+        self.path.temp_dir = self.temp_dir.name
 
         self.setAcceptDrops(True)
 
@@ -85,7 +91,7 @@ class Main(QtWidgets.QWidget):
         )
 
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
-        self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, svt_av1=self.svt_av1)
+        self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe)
         self.plugins = load_plugins()
         # External: (Path(data_path, "encoders"), self.fastflix.ffmpeg_configuration()
 
@@ -811,7 +817,7 @@ class Main(QtWidgets.QWidget):
             side_data=self.side_data,
             ffmpeg=self.ffmpeg,
             ffprobe=self.ffprobe,
-            av1=self.svt_av1,
+            temp_dir=self.path.temp_dir,
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")
@@ -833,6 +839,11 @@ class Main(QtWidgets.QWidget):
         self.build_commands()
         self.generate_thumbnail()
 
+    def close(self):
+        self.temp_dir.cleanup()
+        self.notifier.terminate()
+        super().close()
+
     @property
     def convert_to(self):
         if self.widgets.convert_to:
@@ -841,9 +852,11 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def create_video(self):
         if self.converting:
-            self.command_runner.kill()
-            self.command_runner.exit(1)
+            self.worker_queue.put(["cancel"])
             return
+        #     self.command_runner.kill()
+        #     self.command_runner.exit(1)
+        #     return
 
         if not self.input_video:
             return error_message("Have to select a video first")
@@ -861,20 +874,18 @@ class Main(QtWidgets.QWidget):
         commands = self.build_commands()
         for item in commands:
             if item.item == "command":
-                item.command = item.command.format(
-                    ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, av1=self.svt_av1, output=self.output_video
-                )
+                item.command = item.command.format(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, output=self.output_video)
             elif item.item == "loop":
                 for sub_item in item.commands:
                     sub_item.command = sub_item.command.format(
-                        ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, av1=self.svt_av1, output=self.output_video
+                        ffmpeg=self.ffmpeg, ffprobe=self.ffprobe, output=self.output_video
                     )
 
         self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")
         self.converting = True
-        self.command_runner = CommandRunner(self, commands, self.path.work)
-        self.command_runner.start()
+        for command in commands:
+            self.worker_queue.put(("command", command.command, self.path.temp_dir))
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_complete(self, return_code):
@@ -919,3 +930,22 @@ class Main(QtWidgets.QWidget):
 
     def dragMoveEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()
+
+
+class Notifier(QtCore.QThread):
+    def __init__(self, parent, status_queue):
+        super().__init__(parent)
+        self.app = parent
+        self.status_queue = status_queue
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        while True:
+            status = self.status_queue.get()
+            if status == "complete":
+                print("COMPLETE!")
+                self.app.completed.emit(0)
+            elif status == "cancelled":
+                self.app.cancelled.emit()

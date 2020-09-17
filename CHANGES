@@ -9,8 +9,11 @@ Version 3.0.0
 * Adding SVT AV1 support for libsvtav1 directly with FFmpeg
 * Adding SVT AV1 dual pass, tier, scene detection, and tile parameters
 * Fixing taskbar does not always show icon
+* Changing major internal re-write to keep encoding even if GUI dies
 * Changing bitrate suggestion resolutions to be more readable with fps
+* Changing command builders to specify the temporary files themselves
 * Removing support for the direct SVT AV1 encoder
+* Removing support for cutielog / socket based logging
 
 Version 2.6.1
 ~~~~~~~~~~~~~
