@@ -51,7 +51,8 @@ def main():
         # This fixes the taskbar icon not always appearing
         try:
             import ctypes
-            app_id = f'cdgriffith.fastflix.{__version__}'.encode('utf-8')
+
+            app_id = f"cdgriffith.fastflix.{__version__}".encode("utf-8")
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
         except Exception:
             logger.exception("Could not set application ID for Windows, please raise issue in github with above error")

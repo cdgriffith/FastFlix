@@ -2,11 +2,11 @@
 
 # FastFlix
 
-FastFlix is a simple and friendly GUI for encoding videos. 
+FastFlix is a simple and friendly GUI for encoding videos.
 
 ![preview](https://raw.githubusercontent.com/cdgriffith/binary-files/fast-flix/media/fastflix/2.0.0/main.png)
 
-It uses `FFmpeg` under the hood for the heavy lifting, and can work with a variety of encoders.  
+It uses `FFmpeg` under the hood for the heavy lifting, and can work with a variety of encoders.
 
 #  Encoders
 

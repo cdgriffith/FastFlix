@@ -212,10 +212,12 @@ class HEVC(QtWidgets.QWidget):
         bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
         bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
 
-        crf_help = ("CRF is extremely source dependant,<br>"
-                    "the resolution-to-crf are mere suggestions!<br><br>"
-                    "Quality also depends on encoding speed.<br> "
-                    "For example, SLOW CRF 22 will have a result near FAST CRF 20.")
+        crf_help = (
+            "CRF is extremely source dependant,<br>"
+            "the resolution-to-crf are mere suggestions!<br><br>"
+            "Quality also depends on encoding speed.<br> "
+            "For example, SLOW CRF 22 will have a result near FAST CRF 20."
+        )
         crf_radio = QtWidgets.QRadioButton("CRF")
         crf_radio.setChecked(True)
         crf_radio.setFixedWidth(80)

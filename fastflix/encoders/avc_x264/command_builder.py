@@ -60,7 +60,6 @@ def build(
     if max_mux and max_mux != "default":
         beginning += f"-max_muxing_queue_size {max_mux} "
 
-
     if side_data.cll:
         pass
 
@@ -68,7 +67,7 @@ def build(
 
     if bitrate:
         command_1 = (
-            f'{beginning} -pass 1 '
+            f"{beginning} -pass 1 "
             f'-passlogfile "<tempfile.1.log>" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {ending}'
         )
         command_2 = (
@@ -85,10 +84,7 @@ def build(
         ]
 
     elif crf:
-        command = (
-            f"{beginning} -crf {crf} "
-            f'-preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
-        )
+        command = f"{beginning} -crf {crf} " f'-preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
         return [
             Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")
         ]

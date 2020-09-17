@@ -112,7 +112,8 @@ class AVC(QtWidgets.QWidget):
         layout.addWidget(label)
         self.widgets.tune = QtWidgets.QComboBox()
         self.widgets.tune.addItems(
-            ["default", "film", "animation", "grain", "stillimage", "psnr", "ssim", "zerolatency", "fastdecode"])
+            ["default", "film", "animation", "grain", "stillimage", "psnr", "ssim", "zerolatency", "fastdecode"]
+        )
         self.widgets.tune.setCurrentIndex(0)
         self.widgets.tune.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.tune)
@@ -181,8 +182,7 @@ class AVC(QtWidgets.QWidget):
         bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
         bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
 
-        crf_help = ("CRF is extremely source dependant,<br>"
-                    "the resolution-to-crf are mere suggestions!<br>")
+        crf_help = "CRF is extremely source dependant,<br>" "the resolution-to-crf are mere suggestions!<br>"
         crf_radio = QtWidgets.QRadioButton("CRF")
         crf_radio.setChecked(True)
         crf_radio.setFixedWidth(80)
