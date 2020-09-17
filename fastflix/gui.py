@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from multiprocessing import freeze_support
 import sys
 import logging
 from pathlib import Path
@@ -10,8 +11,6 @@ import traceback
 from json import JSONDecodeError
 from multiprocessing import Process, Queue
 from queue import Empty
-from subprocess import Popen, PIPE, STDOUT
-import time
 
 try:
     import pkg_resources.py2_warn  # Needed for pyinstaller on 3.8
@@ -45,10 +44,15 @@ def main():
 
     queue = Queue()
     status_queue = Queue()
-    runner = BackgroundRunner()
-    gui_proc = Process(target=start_app, args=(queue, status_queue))
-    gui_proc.start()
+    log_queue = Queue()
 
+    def log(msg, level=logging.INFO):
+        log_queue.put(msg)
+        logger.log(level, msg)
+
+    runner = BackgroundRunner(log_queue=log_queue)
+    gui_proc = Process(target=start_app, args=(queue, status_queue, log_queue))
+    gui_proc.start()
     logger = logging.getLogger("fastflix-core")
     coloredlogs.install(level="DEBUG", logger=logger)
     logger.info(f"Starting FastFlix {__version__}")
@@ -62,7 +66,7 @@ def main():
             gui_proc.join()
             gui_close_message = True
             if runner.is_alive() or queued_requests:
-                print("The GUI might have died, but I'm going to keep converting!")
+                log("The GUI might have died, but I'm going to keep converting!", logging.WARNING)
             else:
                 break
         try:
@@ -71,12 +75,12 @@ def main():
             if not runner.is_alive() and not sent_response and not queued_requests:
                 excess = runner.process.stdout.read().strip()
                 if excess:
-                    logger.info(excess)
+                    log(excess)
                 ret = runner.process.poll()
                 if ret > 0:
-                    logger.warning(f"Error during conversion")
+                    log(f"Error during conversion", logging.WARNING)
                 else:
-                    logger.info("conversion complete")
+                    log("conversion complete")
                 status_queue.put("complete")
                 sent_response = True
 
@@ -87,6 +91,7 @@ def main():
                 if runner.is_alive():
                     queued_requests.append(request)
                 else:
+                    log_queue.put("CLEAR_WINDOW")
                     runner.start_exec(*request[1:])
                     finished_message = False
                     sent_response = False
@@ -96,7 +101,7 @@ def main():
                 sent_response = True
         if not runner.is_alive():
             if not finished_message:
-                logger.info(runner.read() or "")
+                log(runner.read() or "")
                 finished_message = True
             if queued_requests:
                 runner.start_exec(*queued_requests.pop()[1:])
@@ -216,8 +221,7 @@ def required_info(logger):
     return ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, data_path, work_dir, config_file
 
 
-def start_app(queue, status_queue):
-
+def start_app(queue, status_queue, log_queue):
     logger = logging.getLogger("fastflix")
     coloredlogs.install(level="DEBUG", logger=logger)
     logger.info(f"Starting FastFlix {__version__}")
@@ -240,6 +244,7 @@ def start_app(queue, status_queue):
             config_file=config_file,
             worker_queue=queue,
             status_queue=status_queue,
+            log_queue=log_queue,
         )
         main_app.setWindowIcon(window.icon)
         window.show()
@@ -273,6 +278,7 @@ def windows_download_ffmpeg(ffmpeg_folder):
 
 
 if __name__ == "__main__":
+    freeze_support()
     try:
         main()
     except Exception:

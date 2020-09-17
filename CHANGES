@@ -6,6 +6,7 @@
 * Adding rav1e support (librav1e)
 * Adding SVT AV1 support (libsvtav1) directly with FFmpeg
 * Adding SVT AV1 dual pass, tier, scene detection, and tile parameters
+* Adding Status Panel to view encoding logs
 * Adding various speed improvements
 * Adding changelog in GUI
 * Adding version upgrade dialogue

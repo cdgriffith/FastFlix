@@ -8,28 +8,30 @@ from qtpy import QtWidgets, QtCore, QtGui
 from fastflix.widgets.panels.command_panel import CommandList
 from fastflix.widgets.panels.audio_panel import AudioList
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
+from fastflix.widgets.panels.status_panel import StatusPanel
 
 logger = logging.getLogger("fastflix")
 
 
 class VideoOptions(QtWidgets.QTabWidget):
-    def __init__(self, parent, available_audio_encoders):
+    def __init__(self, parent, available_audio_encoders, log_queue):
         super().__init__(parent)
         self.main = parent
 
         self.selected = 0
-
         self.commands = CommandList(self)
         self.current_plugin = list(self.main.plugins.values())[0]
         self.current_settings = self.current_plugin.settings_panel(self, self.main)
 
         self.audio = AudioList(self, available_audio_encoders)
         self.subtitles = SubtitleList(self)
+        self.status = StatusPanel(self, log_queue)
         # self.subtitles.hide()
         self.addTab(self.current_settings, "Quality")
         self.addTab(self.audio, "Audio")
         self.addTab(self.subtitles, "Subtitles")
         self.addTab(self.commands, "Command List")
+        self.addTab(self.status, "Encoding Status")
 
     def change_conversion(self, conversion):
         self.current_settings.close()

@@ -43,7 +43,7 @@ class Main(QtWidgets.QWidget):
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
 
-    def __init__(self, parent, data_path, work_path, ffmpeg, ffprobe, worker_queue, status_queue, **kwargs):
+    def __init__(self, parent, data_path, work_path, ffmpeg, ffprobe, worker_queue, status_queue, log_queue, **kwargs):
         super().__init__(parent)
         self.container = parent
         self.initialized = False
@@ -56,6 +56,7 @@ class Main(QtWidgets.QWidget):
 
         self.worker_queue = worker_queue
         self.status_queue = status_queue
+        self.log_queue = log_queue
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
 
@@ -95,7 +96,9 @@ class Main(QtWidgets.QWidget):
         self.plugins = load_plugins()
         # External: (Path(data_path, "encoders"), self.fastflix.ffmpeg_configuration()
 
-        self.video_options = VideoOptions(self, available_audio_encoders=self.flix.get_audio_encoders())
+        self.video_options = VideoOptions(
+            self, available_audio_encoders=self.flix.get_audio_encoders(), log_queue=log_queue
+        )
 
         self.completed.connect(self.conversion_complete)
         self.cancelled.connect(self.conversion_cancelled)
@@ -840,6 +843,7 @@ class Main(QtWidgets.QWidget):
         self.generate_thumbnail()
 
     def close(self):
+        self.status_queue.put("exit")
         self.temp_dir.cleanup()
         self.notifier.terminate()
         super().close()
@@ -886,6 +890,7 @@ class Main(QtWidgets.QWidget):
         self.converting = True
         for command in commands:
             self.worker_queue.put(("command", command.command, self.path.temp_dir))
+        self.video_options.setCurrentWidget(self.video_options.status)
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_complete(self, return_code):
@@ -948,3 +953,5 @@ class Notifier(QtCore.QThread):
                 self.app.completed.emit(0)
             elif status == "cancelled":
                 self.app.cancelled.emit()
+            elif status == "exit":
+                return

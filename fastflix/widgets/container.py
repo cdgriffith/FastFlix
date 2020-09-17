@@ -53,23 +53,26 @@ class Container(QtWidgets.QMainWindow):
         )
         about_action.triggered.connect(self.show_about)
 
-        log_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogDetailedView), "View &Logs", self
-        )
-        log_action.triggered.connect(self.show_logs)
-
         changes_action = QtWidgets.QAction(
             self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogDetailedView), "View &Changes", self
         )
         changes_action.triggered.connect(self.show_changes)
 
-        report_action = QtWidgets.QAction("Report &Issue", self)
+        log_action = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogDetailedView), "View GUI Debug &Logs", self
+        )
+        log_action.triggered.connect(self.show_logs)
+
+        report_action = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_DialogHelpButton), "Report &Issue", self
+        )
         report_action.triggered.connect(self.open_issues)
 
         help_menu = menubar.addMenu("&Help")
-        help_menu.addAction(log_action)
         help_menu.addAction(changes_action)
         help_menu.addAction(report_action)
+        help_menu.addAction(log_action)
+        help_menu.addSeparator()
         help_menu.addAction(about_action)
 
     def show_about(self):

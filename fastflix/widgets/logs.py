@@ -10,10 +10,10 @@ logger = logging.getLogger("fastflix")
 
 class QPlainTextEditLogger(logging.Handler):
     def __init__(self, parent):
-        super(QPlainTextEditLogger, self).__init__()
+        super().__init__()
         self.widget = QtWidgets.QTextBrowser(parent)
         self.widget.setReadOnly(True)
-        self.widget.setDisabled(True)
+        self.widget.setDisabled(False)
 
     def emit(self, record):
         msg = self.format(record)
@@ -36,7 +36,6 @@ class Logs(QtWidgets.QWidget):
         logger.addHandler(log_text_box)
 
         log_text_box.setLevel(logging.DEBUG)
-        layout.addWidget(QtWidgets.QLabel("Log window scrolling bug causing crashes, currently disabled for safety"))
         layout.addWidget(log_text_box.widget)
         self.setLayout(layout)
 

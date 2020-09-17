@@ -21,9 +21,10 @@ white_detect = re.compile(r"^\s+")
 
 
 class BackgroundRunner:
-    def __init__(self):
+    def __init__(self, log_queue):
         self.process = None
         self.killed = False
+        self.log_queue = log_queue
 
     def start_exec(self, command, work_dir):
         logger.info(f"Running command: {command}")
@@ -46,6 +47,7 @@ class BackgroundRunner:
             line = self.process.stdout.readline().rstrip()
             if line:
                 logger.info(line)
+                self.log_queue.put(line)
 
     def read(self, limit=None):
         if not self.is_alive():
