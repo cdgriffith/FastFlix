@@ -26,6 +26,10 @@
 * Removing support for the direct SVT AV1 encoder (fixes #24)
 * Removing support for cutielog / socket based logging
 
+## Version 2.6.2
+
+* Switching windows builds from zeranoe.com to gyan.dev
+
 ## Version  2.6.1
 
 * Adding HEVC crf suggestions back
