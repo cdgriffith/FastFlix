@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __author__ = "Chris Griffith"
+from pathlib import Path
+import pkg_resources
 
 name = "VP9"
 requires = "libvpx"
+icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_vp9.png")).resolve())
+
 
 video_extension = "webm"
 video_dimension_divisor = 1

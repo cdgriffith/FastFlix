@@ -37,6 +37,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.addTab(self.status, "Encoding Status")
 
     def change_conversion(self, conversion):
+        conversion = conversion.strip()
         self.current_settings.close()
         self.current_plugin = self.main.plugins[conversion]
         self.current_settings = self.current_plugin.settings_panel(self, self.main)

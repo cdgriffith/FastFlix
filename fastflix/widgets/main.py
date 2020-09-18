@@ -74,6 +74,9 @@ class Main(QtWidgets.QWidget):
         self.setAcceptDrops(True)
 
         self.input_video = None
+        self.video_path_widget = QtWidgets.QLineEdit()
+        self.video_path_widget.setEnabled(False)
+        self.video_path_widget.setStyleSheet("QLineEdit{color:#222}")
         self.streams, self.format_info = None, None
 
         self.widgets = Box(
@@ -133,9 +136,14 @@ class Main(QtWidgets.QWidget):
     def init_video_area(self):
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(self.init_button_menu())
+        layout.addWidget(self.video_path_widget)
         layout.addLayout(self.init_video_track_select())
 
-        layout.addWidget(self.init_rotate())
+        hg = QtWidgets.QHBoxLayout()
+        hg.addWidget(self.init_rotate())
+        hg.addWidget(self.init_flip())
+
+        layout.addLayout(hg)
         layout.addStretch()
         self.grid.addLayout(layout, 0, 0, 5, 6)
 
@@ -193,14 +201,33 @@ class Main(QtWidgets.QWidget):
         layout.setSpacing(10)
         return layout
 
+
+    def init_flip(self):
+        self.flip_combo_box = QtWidgets.QComboBox()
+
+        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix.png")).resolve())
+        vert_flip_file = str(
+            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix VF.png")).resolve()
+        )
+        hoz_flip_file = str(
+            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix HF.png")).resolve()
+        )
+
+        self.flip_combo_box.addItems(['No Flip', "Vertical Flip", "Horizontal Flip", "Vert + Hoz Flip"])
+        self.flip_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
+        self.flip_combo_box.setItemIcon(1, QtGui.QIcon(vert_flip_file))
+        self.flip_combo_box.setItemIcon(2, QtGui.QIcon(hoz_flip_file))
+        self.flip_combo_box.setIconSize(QtCore.QSize(35, 35))
+        self.flip_combo_box.currentIndexChanged.connect(lambda: self.page_update())
+        return self.flip_combo_box
+
+    def get_flips(self):
+        mapping = {0: (False, False), 1: (True, False), 2: (False, True), 3: (True, True)}
+        return mapping[self.flip_combo_box.currentIndex()]
+
+
     def init_rotate(self):
-        group_box = QtWidgets.QGroupBox()
-
-        group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-15px; padding-bottom:-5px}")
-        group = QtWidgets.QButtonGroup()
-
-        v_size = QtCore.QSize(40, 60)
-        h_size = QtCore.QSize(60, 40)
+        self.rotate_combo_box = QtWidgets.QComboBox()
 
         no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix.png")).resolve())
         rot_90_file = str(
@@ -212,68 +239,30 @@ class Main(QtWidgets.QWidget):
         rot_180_file = str(
             Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix 180.png")).resolve()
         )
-        vert_flip_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix VF.png")).resolve()
-        )
-        hoz_flip_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix HF.png")).resolve()
-        )
 
-        rot_none = QtWidgets.QRadioButton("No Rotation")
-        rot_none.setIcon(QtGui.QIcon(no_rot_file))
-        rot_none.setIconSize(h_size)
-        rot_none.name = None
+        self.rotate_combo_box.addItems(['No Rotation', "90°", "180°", "270°"])
+        self.rotate_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
+        self.rotate_combo_box.setItemIcon(1, QtGui.QIcon(rot_90_file))
+        self.rotate_combo_box.setItemIcon(2, QtGui.QIcon(rot_180_file))
+        self.rotate_combo_box.setItemIcon(3, QtGui.QIcon(rot_270_file))
+        self.rotate_combo_box.setIconSize(QtCore.QSize(35, 35))
+        self.rotate_combo_box.currentIndexChanged.connect(lambda: self.page_update())
+        return self.rotate_combo_box
 
-        rot_1 = QtWidgets.QRadioButton("90°")
-        rot_1.setIcon(QtGui.QIcon(rot_90_file))
-        rot_1.setIconSize(v_size)
-        rot_1.name = 1
-
-        rot_2 = QtWidgets.QRadioButton("270°")
-        rot_2.setIcon(QtGui.QIcon(rot_270_file))
-        rot_2.setIconSize(v_size)
-        rot_2.name = 2
-
-        rot_4 = QtWidgets.QRadioButton("180°")
-        rot_4.setIcon(QtGui.QIcon(rot_180_file))
-        rot_4.setIconSize(h_size)
-        rot_4.name = 4
-
-        self.widgets.v_flip = QtWidgets.QCheckBox("Vertical Flip")
-        self.widgets.v_flip.setIcon(QtGui.QIcon(vert_flip_file))
-        self.widgets.v_flip.setIconSize(h_size)
-        self.widgets.v_flip.toggled.connect(lambda: self.page_update())
-
-        self.widgets.h_flip = QtWidgets.QCheckBox("Horizontal Flip")
-        self.widgets.h_flip.setIcon(QtGui.QIcon(hoz_flip_file))
-        self.widgets.h_flip.setIconSize(h_size)
-        self.widgets.h_flip.toggled.connect(lambda: self.page_update())
-
-        group.addButton(rot_1)
-        group.addButton(rot_2)
-        group.addButton(rot_4)
-        group.addButton(rot_none)
-        layout = QtWidgets.QGridLayout()
-        layout.addWidget(rot_none, 1, 0)
-        layout.addWidget(rot_1, 0, 0)
-        layout.addWidget(rot_2, 0, 2)
-        layout.addWidget(rot_4, 0, 1)
-        layout.addWidget(self.widgets.v_flip, 1, 2)
-        layout.addWidget(self.widgets.h_flip, 1, 1)
-        label = QtWidgets.QLabel("Rotation", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
-        label.setStyleSheet("QLabel{color:#777}")
-        layout.addWidget(label, 1, 3)
-        group_box.setLayout(layout)
-        rot_none.setChecked(True)
-        self.widgets.rotate = group
-        self.widgets.rotate.buttonClicked.connect(lambda: self.page_update())
-        return group_box
+    def rotation_to_transpose(self):
+        mapping = {0: None, 1: 1, 2:4, 3:2}
+        return mapping[self.rotate_combo_box.currentIndex()]
 
     def init_output_type(self):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
-        self.widgets.convert_to.addItems(list(self.plugins.keys()))
-        layout.addWidget(QtWidgets.QLabel("Encoder: "), stretch=0)
+        self.widgets.convert_to.addItems([f"   {x}" for x in self.plugins.keys()])
+        for i, plugin in enumerate(self.plugins.values()):
+            if getattr(plugin, "icon", False):
+                self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
+        self.widgets.convert_to.setIconSize(QtCore.QSize(35, 35))
+
+        #layout.addWidget(QtWidgets.QLabel("Encoder: "), stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=0)
         layout.addStretch()
         layout.setSpacing(10)
@@ -477,6 +466,7 @@ class Main(QtWidgets.QWidget):
         if not filename or not filename[0]:
             return
         self.input_video = filename[0]
+        self.video_path_widget.setText(self.input_video)
         self.update_video_info()
         self.page_update()
 
@@ -589,6 +579,7 @@ class Main(QtWidgets.QWidget):
         except FlixError:
             error_message(f"Not a video file<br>{self.input_video}")
             self.input_video = None
+            self.video_path_widget.setText("")
             self.streams = None
             self.format_info = None
             for i in range(self.widgets.video_track.count()):
@@ -614,6 +605,7 @@ class Main(QtWidgets.QWidget):
         if len(self.streams.video) == 0:
             error_message(f"No video tracks detected in file<br>{self.input_video}")
             self.input_video = None
+            self.video_path_widget.setText("")
             self.streams = None
             self.format_info = None
             self.widgets.convert_button.setDisabled(True)
@@ -778,6 +770,7 @@ class Main(QtWidgets.QWidget):
         ):
             scale = None
 
+        v_flip, h_flip = self.get_flips()
         settings = Box(
             crop=self.build_crop(),
             scale=scale,
@@ -787,9 +780,9 @@ class Main(QtWidgets.QWidget):
             video_track=self.original_video_track,
             stream_track=self.video_track,
             pix_fmt=self.pix_fmt,
-            rotate=self.widgets.rotate.checkedButton().name,
-            v_flip=self.widgets.v_flip.isChecked(),
-            h_flip=self.widgets.h_flip.isChecked(),
+            rotate=self.rotation_to_transpose(),
+            v_flip=v_flip,
+            h_flip=h_flip,
             streams=self.streams,
             format_info=self.format_info,
             work_dir=self.path.work,
@@ -827,7 +820,7 @@ class Main(QtWidgets.QWidget):
     @property
     def convert_to(self):
         if self.widgets.convert_to:
-            return self.widgets.convert_to.currentText()
+            return self.widgets.convert_to.currentText().strip()
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def create_video(self):
@@ -903,6 +896,7 @@ class Main(QtWidgets.QWidget):
         event.setDropAction(QtCore.Qt.CopyAction)
         event.accept()
         self.input_video = str(event.mimeData().urls()[0].toLocalFile())
+        self.video_path_widget.setText(self.input_video)
         self.update_video_info()
         self.page_update()
 

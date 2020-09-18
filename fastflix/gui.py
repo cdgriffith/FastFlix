@@ -251,6 +251,7 @@ def start_app(queue, status_queue, log_queue):
         main_app.exec_()
     except (Exception, BaseException, SystemError, SystemExit) as err:
         logger.exception(f"HARD FAIL: Unexpected error: {err}")
+        print(f"Unexpected error: {err}")
     else:
         logger.info("Fastflix shutting down")
 

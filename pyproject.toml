@@ -4,7 +4,7 @@ version = "3.0.0a0"
 description = "Easy to use video encoder GUI"
 authors = ["Chris Griffith <chris@cdgriffith.com>"]
 license = "MIT"
-include = ["fastflix/data/rotations/*.png", "fastflix/data/icon.ico", "fastflix/CHANGES"]
+include = ["fastflix/data/rotations/*.png", "fastflix/data/encoders/*.png", "fastflix/data/icon.ico", "fastflix/CHANGES"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

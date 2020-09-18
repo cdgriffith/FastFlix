@@ -11,6 +11,8 @@
 * Adding various speed improvements
 * Adding changelog in GUI
 * Adding #68 version upgrade dialogue
+* Adding icons to encoders drop down
+* Adding video filename path
 * Fixing taskbar does not always show icon
 * Fixing #55 GUI logs by splitting them from core logs
 * Fixing that mkv cover attachments would show as video tracks
@@ -18,6 +20,7 @@
 * Changing bitrate suggestion resolutions to be more readable with fps
 * Changing command builders to specify the temporary files themselves
 * Changing changelog to proper markdown
+* Changing rotation and flip section to drop downs
 * Removing support for the direct SVT AV1 encoder (fixes #24)
 * Removing support for cutielog / socket based logging
 

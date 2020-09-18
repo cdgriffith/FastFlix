@@ -18,14 +18,17 @@ class Changes(QtWidgets.QScrollArea):
         self.setWidgetResizable(True)
         self.setMinimumWidth(500)
         self.setMinimumHeight(500)
-        # making qwidget object
         content = QtWidgets.QWidget(self)
         self.setWidget(content)
-        # vertical box layout
         lay = QtWidgets.QVBoxLayout(content)
 
-        # creating label
-        self.label = QtWidgets.QLabel(markdown((Path(__file__).parent.parent / "CHANGES").read_text()))
+        changes_files = Path(__file__).parent.parent / "CHANGES"
+        if not changes_files.exists():
+            changes_files = Path(__file__).parent.parent.parent / "CHANGES"
+            if not changes_files.exists():
+                raise Exception("Could not locate changlog file")
+
+        self.label = QtWidgets.QLabel(markdown((changes_files.read_text())))
 
         # setting alignment to the text
         self.label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)

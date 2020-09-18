@@ -58,7 +58,7 @@ def generate_filters(**kwargs):
     elif scale_height:
         filter_list.append(f"scale=-1:{scale_height}:flags={scale_filter}")
     if rotate is not None:
-        if rotate <= 3:
+        if rotate < 3:
             filter_list.append(f"transpose={rotate}")
         if rotate == 4:
             filter_list.append(f"transpose=2,transpose=2")
