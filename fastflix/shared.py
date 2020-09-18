@@ -2,9 +2,11 @@
 import importlib.machinery
 import os
 import sys
+from distutils.version import StrictVersion
 from pathlib import Path
 
 import pkg_resources
+import requests
 
 try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -51,18 +53,22 @@ class MyMessageBox(QtWidgets.QMessageBox):
         return result
 
 
-def message(msg):
+def message(msg, title=None):
     sm = QtWidgets.QMessageBox()
     sm.setText(msg)
+    if title:
+        sm.setWindowTitle(title)
     sm.setStandardButtons(QtWidgets.QMessageBox.Ok)
     sm.setWindowIcon(icon)
     sm.exec_()
 
 
-def error_message(msg, details=None, traceback=False):
+def error_message(msg, details=None, traceback=False, title=None):
     em = MyMessageBox()
     em.setText(msg)
     em.setWindowIcon(icon)
+    if title:
+        em.setWindowTitle(title)
     if details:
         em.setInformativeText(details)
     elif traceback:
@@ -71,3 +77,27 @@ def error_message(msg, details=None, traceback=False):
         em.setDetailedText(traceback.format_exc())
     em.setStandardButtons(QtWidgets.QMessageBox.Close)
     em.exec_()
+
+
+def latest_ffmpeg(no_new_dialog=False):
+    from fastflix.version import __version__
+
+    url = "https://api.github.com/repos/cdgriffith/FastFlix/releases/latest"
+    data = requests.get(url).json()
+    if data["tag_name"] != __version__ and StrictVersion(data["tag_name"]) > StrictVersion(__version__):
+        for asset in data["assets"]:
+            if asset["name"].endswith("win64.zip"):
+                link = asset["browser_download_url"]
+                break
+        else:
+            if no_new_dialog:
+                message("You are using the latest version of FastFlix")
+            return
+        message(
+            f"There is a newer version of FastFlix available! <br> "
+            f"<a href='{link}'>Download FastFlix {data['tag_name']} now</a>",
+            title="New Version",
+        )
+        return
+    if no_new_dialog:
+        message("You are using the latest version of FastFlix")

@@ -8,6 +8,7 @@ import pkg_resources
 import reusables
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.shared import latest_ffmpeg
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -64,7 +65,7 @@ class Container(QtWidgets.QMainWindow):
         changes_action.triggered.connect(self.show_changes)
 
         log_dir_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_FileLinkIcon), "Open Log Directory", self
+            self.style().standardIcon(QtWidgets.QStyle.SP_DialogOpenButton), "Open Log Directory", self
         )
         log_dir_action.triggered.connect(self.show_log_dir)
 
@@ -78,11 +79,18 @@ class Container(QtWidgets.QMainWindow):
         )
         report_action.triggered.connect(self.open_issues)
 
+        version_action = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_BrowserReload), "Check for Newer Version of FastFlix", self
+        )
+        version_action.triggered.connect(lambda: latest_ffmpeg(no_new_dialog=True))
+
         help_menu = menubar.addMenu("&Help")
         help_menu.addAction(changes_action)
         help_menu.addAction(report_action)
         help_menu.addAction(log_dir_action)
         help_menu.addAction(log_action)
+        help_menu.addSeparator()
+        help_menu.addAction(version_action)
         help_menu.addSeparator()
         help_menu.addAction(about_action)
 

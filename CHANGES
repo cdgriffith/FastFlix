@@ -13,6 +13,7 @@
 * Adding #68 version upgrade dialogue
 * Adding icons to encoders drop down
 * Adding video filename path
+* Adding check for new ffmpeg on startup
 * Fixing Windows taskbar does not always show icon
 * Fixing #55 GUI logs by splitting them from core logs
 * Fixing that mkv cover attachments would show as video tracks

@@ -25,7 +25,7 @@ try:
     from qtpy import API, QT_VERSION, QtWidgets
 
     from fastflix.flix import FlixError, ff_version
-    from fastflix.shared import base_path, error_message, message
+    from fastflix.shared import base_path, error_message, latest_ffmpeg, message
     from fastflix.version import __version__
     from fastflix.widgets.command_runner import BackgroundRunner
     from fastflix.widgets.container import Container
@@ -254,6 +254,8 @@ def required_info(logger, data_path, log_dir):
     except FlixError:
         error_message("ffmpeg or ffmpeg could not be executed properly!<br>")
         sys.exit(1)
+
+    latest_ffmpeg()
 
     return ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, work_dir, config_file
 
