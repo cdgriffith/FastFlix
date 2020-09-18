@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 from pathlib import Path
 
 from qtpy import QtWidgets, QtCore, QtGui
 
+logger = logging.getLogger("fastflix")
+
 
 class AttachmentPanel(QtWidgets.QWidget):
-    # TODO what if they select wrong thing?
-    # TODO support updating if they type something in
-    # TODO add frame where images will appear
     # TODO allow passthrough of existing covers
     def __init__(self, parent):
         super().__init__(parent)
@@ -24,10 +24,10 @@ class AttachmentPanel(QtWidgets.QWidget):
         layout.addWidget(QtWidgets.QLabel("Poster Cover"), 0, 0, 1, 5)
         layout.addWidget(QtWidgets.QLabel("Landscape Cover"), 0, 6, 1, 5)
 
-        self.poster = QtWidgets.QLabel("<Poster Cover>")
+        self.poster = QtWidgets.QLabel()
         self.poster.setSizePolicy(sp)
 
-        self.landscape = QtWidgets.QLabel("<Landscape Cover>")
+        self.landscape = QtWidgets.QLabel()
         self.landscape.setSizePolicy(sp)
 
         layout.addWidget(self.poster, 1, 0, 8, 5)
@@ -41,6 +41,7 @@ class AttachmentPanel(QtWidgets.QWidget):
     def init_cover(self):
         layout = QtWidgets.QHBoxLayout()
         self.cover_path = QtWidgets.QLineEdit()
+        self.cover_path.textChanged.connect(lambda: self.update_cover())
         button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogContentsView))
         button.clicked.connect(lambda: self.select_cover())
 
@@ -58,14 +59,30 @@ class AttachmentPanel(QtWidgets.QWidget):
         if not filename or not filename[0]:
             return
         self.cover_path.setText(filename[0])
-        pixmap = QtGui.QPixmap(filename[0])
-        pixmap = pixmap.scaled(320, 320, QtCore.Qt.KeepAspectRatio)
-        self.poster.setPixmap(pixmap)
-        self.main.page_update()
+        self.update_cover()
+
+    def update_cover(self):
+        cover = self.cover_path.text()
+        if (
+            not Path(cover).exists()
+            or not Path(cover).is_file()
+            or not cover.lower().endswith((".jpg", ".png", ".jpeg"))
+        ):
+            return
+        try:
+            pixmap = QtGui.QPixmap(cover)
+            pixmap = pixmap.scaled(250, 250, QtCore.Qt.KeepAspectRatio)
+            self.poster.setPixmap(pixmap)
+        except Exception:
+            logger.exception("Bad image")
+            self.cover_path.setText("")
+        else:
+            self.main.page_update()
 
     def init_landscape_cover(self):
         layout = QtWidgets.QHBoxLayout()
         self.landscape_cover_path = QtWidgets.QLineEdit()
+        self.landscape_cover_path.textChanged.connect(lambda: self.update_landscape_cover())
         button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogContentsView))
         button.clicked.connect(lambda: self.select_landscape_cover())
 
@@ -83,10 +100,25 @@ class AttachmentPanel(QtWidgets.QWidget):
         if not filename or not filename[0]:
             return
         self.landscape_cover_path.setText(filename[0])
-        pixmap = QtGui.QPixmap(filename[0])
-        pixmap = pixmap.scaled(320, 320, QtCore.Qt.KeepAspectRatio)
-        self.landscape.setPixmap(pixmap)
-        self.main.page_update()
+        self.update_landscape_cover()
+
+    def update_landscape_cover(self):
+        cover = self.landscape_cover_path.text()
+        if (
+            not Path(cover).exists()
+            or not Path(cover).is_file()
+            or not cover.lower().endswith((".jpg", ".png", ".jpeg"))
+        ):
+            return
+        try:
+            pixmap = QtGui.QPixmap(cover)
+            pixmap = pixmap.scaled(250, 250, QtCore.Qt.KeepAspectRatio)
+            self.landscape.setPixmap(pixmap)
+        except Exception:
+            logger.exception("Bad image")
+            self.landscape_cover_path.setText("")
+        else:
+            self.main.page_update()
 
     def get_settings(self):
         cover_land = self.landscape_cover_path.text()
@@ -94,13 +126,13 @@ class AttachmentPanel(QtWidgets.QWidget):
 
         cover_mime_type = "image/jpeg"
         cover_ext_type = "jpg"
-        if cover.endswith("png"):
+        if cover.lower().endswith("png"):
             cover_mime_type = "image/png"
             cover_ext_type = "png"
 
         cover_land_mime_type = "image/jpeg"
         cover_land_ext_type = "jpg"
-        if cover_land.endswith("png"):
+        if cover_land.lower().endswith("png"):
             cover_land_mime_type = "image/png"
             cover_land_ext_type = "png"
 
