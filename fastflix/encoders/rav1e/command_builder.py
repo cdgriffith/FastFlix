@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
+import re
+import secrets
+from pathlib import Path
+
 import reusables
 
-from pathlib import Path
-import logging
-import secrets
-import re
-
-from fastflix.encoders.common.helpers import generate_filters, Loop, Command
 from fastflix.encoders.common.audio import build_audio
+from fastflix.encoders.common.helpers import Command, Loop, generate_filters
 
 logger = logging.getLogger("fastflix")
 

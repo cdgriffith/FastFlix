@@ -4,9 +4,9 @@ from pathlib import Path
 
 import reusables
 from box import __version__ as box_version
+from qtpy import API, QtCore, QtGui, QtWidgets
 
-from qtpy import QtWidgets, QtCore, QtGui, API
-from fastflix.shared import pyinstaller, base_path
+from fastflix.shared import base_path, pyinstaller
 from fastflix.version import __version__
 
 __all__ = ["About"]

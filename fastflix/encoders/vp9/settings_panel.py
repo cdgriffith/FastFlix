@@ -2,8 +2,7 @@
 import logging
 
 from box import Box
-
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 logger = logging.getLogger("fastflix")
 

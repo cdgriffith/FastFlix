@@ -4,8 +4,7 @@
 import math
 
 from box import Box
-
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 
 class Loop(QtWidgets.QGroupBox):

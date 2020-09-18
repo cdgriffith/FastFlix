@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-import reusables
 import re
-from pathlib import Path
 import secrets
+from pathlib import Path
 
+import reusables
 from box import Box
 
-from fastflix.encoders.common.helpers import generate_filters, Command
 from fastflix.encoders.common.audio import build_audio
+from fastflix.encoders.common.helpers import Command, generate_filters
 from fastflix.encoders.common.subtitles import build_subtitle
 
 

@@ -4,7 +4,7 @@
 import logging
 from pathlib import Path
 
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 logger = logging.getLogger("fastflix")
 
@@ -80,9 +80,9 @@ class AttachmentPanel(QtWidgets.QWidget):
             self.main.page_update()
             return
         if (
-                not Path(cover).exists()
-                or not Path(cover).is_file()
-                or not cover.lower().endswith((".jpg", ".png", ".jpeg"))
+            not Path(cover).exists()
+            or not Path(cover).is_file()
+            or not cover.lower().endswith((".jpg", ".png", ".jpeg"))
         ):
             return
         try:
@@ -125,9 +125,9 @@ class AttachmentPanel(QtWidgets.QWidget):
             self.main.page_update()
             return
         if (
-                not Path(cover).exists()
-                or not Path(cover).is_file()
-                or not cover.lower().endswith((".jpg", ".png", ".jpeg"))
+            not Path(cover).exists()
+            or not Path(cover).is_file()
+            or not cover.lower().endswith((".jpg", ".png", ".jpeg"))
         ):
             return
         try:
@@ -159,11 +159,15 @@ class AttachmentPanel(QtWidgets.QWidget):
         idx = 0
         commands = []
         if cover:
-            commands.append(f' -attach "{cover}" -metadata:s:t:{idx} mimetype={cover_mime_type} '
-                            f'-metadata:s:t:{idx} filename="cover.{cover_ext_type}" ')
+            commands.append(
+                f' -attach "{cover}" -metadata:s:t:{idx} mimetype={cover_mime_type} '
+                f'-metadata:s:t:{idx} filename="cover.{cover_ext_type}" '
+            )
             idx += 1
         if cover_land:
-            commands.append(f' -attach "{cover_land}" -metadata:s:t:{idx} mimetype={cover_land_mime_type} '
-                            f'-metadata:s:t:{idx} filename="cover_land.{cover_land_ext_type}" ')
+            commands.append(
+                f' -attach "{cover_land}" -metadata:s:t:{idx} mimetype={cover_land_mime_type} '
+                f'-metadata:s:t:{idx} filename="cover_land.{cover_land_ext_type}" '
+            )
 
         return {"attachments": "".join(commands)}

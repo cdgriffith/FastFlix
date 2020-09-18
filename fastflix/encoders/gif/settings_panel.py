@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from box import Box
+from qtpy import QtCore, QtGui, QtWidgets
 
-from qtpy import QtWidgets, QtCore, QtGui
+from fastflix.encoders.common.setting_panel import SettingPanel
 
 
-class GIF(QtWidgets.QWidget):
+class GIF(SettingPanel):
     def __init__(self, parent, main):
         super(GIF, self).__init__(parent)
         self.main = main

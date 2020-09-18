@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from box import Box
+from qtpy import QtCore, QtGui, QtWidgets
 
-from qtpy import QtWidgets, QtCore, QtGui
-from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.encoders.common.audio import lossless
+from fastflix.widgets.panels.abstract_list import FlixList
 
 
 class Audio(QtWidgets.QTabWidget):

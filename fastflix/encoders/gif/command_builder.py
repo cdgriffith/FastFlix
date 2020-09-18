@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from pathlib import Path
 import secrets
+from pathlib import Path
 
-from fastflix.encoders.common.helpers import generate_filters, Command, start_and_input
+from fastflix.encoders.common.helpers import Command, generate_filters, start_and_input
 
 extension = "gif"
 

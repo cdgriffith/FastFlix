@@ -5,10 +5,14 @@ from qtpy import QtWidgets
 
 
 class SettingPanel(QtWidgets.QWidget):
+
+    ffmpeg_extras = ""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.widgets = Box()
         self.labels = Box()
+        self.ffmpeg_extras_widget = None
 
     def _add_combo_box(self, label, options, widget_name, connect="default", enabled=True, default=0, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
@@ -54,18 +58,26 @@ class SettingPanel(QtWidgets.QWidget):
 
         return layout
 
-    def _add_custom(self, widget_name="extra", connect="default"):
+    def _add_custom(self, connect="default"):
         layout = QtWidgets.QHBoxLayout()
         self.labels.ffmpeg_options = QtWidgets.QLabel("Custom ffmpeg options")
         self.labels.ffmpeg_options.setToolTip("Extra flags or options, cannot modify existing settings")
         layout.addWidget(self.labels.ffmpeg_options)
-        self.widgets[widget_name] = QtWidgets.QLineEdit()
+        self.ffmpeg_extras_widget = QtWidgets.QLineEdit()
         if connect:
             if connect == "default":
-                self.widgets[widget_name].textChanged.connect(lambda: self.main.page_update())
+                connect = lambda: self.main.page_update()
             elif connect == "self":
-                self.widgets[widget_name].textChanged.connect(lambda: self.page_update())
-            else:
-                self.widgets[widget_name].textChanged.connect(connect)
-        layout.addWidget(self.widgets[widget_name])
+                connect = lambda: self.page_update()
+        self.ffmpeg_extras_widget.textChanged.connect(lambda: self._update_extra(connect))
+        layout.addWidget(self.ffmpeg_extras_widget)
         return layout
+
+    def _update_extra(self, widget_name, connect=None):
+        self.ffmpeg_extras = self.ffmpeg_extras_widget.text()
+        if connect:
+            connect()
+
+    def new_source(self):
+        super().__init__()
+        self.ffmpeg_extras_widget.setText(self.ffmpeg_extras)

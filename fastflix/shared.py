@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+import importlib.machinery
 import os
 import sys
-import importlib.machinery
 from pathlib import Path
+
 import pkg_resources
 
 try:
@@ -15,7 +16,7 @@ except AttributeError:
     pyinstaller = False
 
 
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 

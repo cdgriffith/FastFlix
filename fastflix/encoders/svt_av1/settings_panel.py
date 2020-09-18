@@ -1,9 +1,11 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
 
 from box import Box
+from qtpy import QtCore, QtGui, QtWidgets
 
-from qtpy import QtWidgets, QtCore, QtGui
+from fastflix.encoders.common.setting_panel import SettingPanel
 
 logger = logging.getLogger("fastflix")
 
@@ -42,7 +44,7 @@ recommended_qp = [
 pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
 
 
-class SVT_AV1(QtWidgets.QWidget):
+class SVT_AV1(SettingPanel):
     def __init__(self, parent, main):
         super(SVT_AV1, self).__init__(parent)
         self.main = main
@@ -59,17 +61,18 @@ class SVT_AV1(QtWidgets.QWidget):
         grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
         grid.addLayout(self.init_tier(), 5, 0, 1, 2)
         grid.addLayout(self.init_sc_detection(), 6, 0, 1, 2)
+        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
         grid.addLayout(self.init_single_pass(), 4, 2, 1, 1)
-        grid.addWidget(QtWidgets.QWidget(), 5, 0)
-        grid.setRowStretch(5, 1)
+        # grid.addWidget(QtWidgets.QWidget(), 5, 0)
+        grid.setRowStretch(8, 1)
         guide_label = QtWidgets.QLabel(
             f"<a href='https://github.com/AOMediaCodec/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md'>SVT-AV1 Encoding Guide</a>"
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 9, 0, -1, 1)
+        grid.addWidget(guide_label, 11, 0, -1, 1)
         self.setLayout(grid)
         self.hide()
 
@@ -222,6 +225,7 @@ class SVT_AV1(QtWidgets.QWidget):
             tier=int(self.widgets.tier.currentIndex()),
             sc_detection=int(self.widgets.sc_detection.currentIndex()),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
+            extra=self.ffmpeg_extras,
         )
         if self.mode == "QP":
             qp = self.widgets.qp.currentText()

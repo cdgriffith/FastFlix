@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from subprocess import run, PIPE, Popen, STDOUT
 import logging
 import os
 from pathlib import Path
+from subprocess import PIPE, STDOUT, Popen, run
 
 from box import Box, BoxError, BoxList
 

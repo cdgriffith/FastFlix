@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 __all__ = ["Logs"]
 

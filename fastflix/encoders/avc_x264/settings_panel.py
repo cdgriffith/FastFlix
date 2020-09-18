@@ -2,8 +2,9 @@
 import logging
 
 from box import Box
+from qtpy import QtCore, QtWidgets
 
-from qtpy import QtWidgets, QtCore, QtGui
+from fastflix.encoders.common.setting_panel import SettingPanel
 
 logger = logging.getLogger("fastflix")
 
@@ -37,7 +38,7 @@ recommended_crfs = [
 ]
 
 
-class AVC(QtWidgets.QWidget):
+class AVC(SettingPanel):
     def __init__(self, parent, main):
         super(AVC, self).__init__(parent)
         self.main = main
@@ -50,7 +51,7 @@ class AVC(QtWidgets.QWidget):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 6, 4)
-        grid.addLayout(self.init_custom(), 10, 0, 1, 6)
+        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)
         grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
@@ -143,16 +144,6 @@ class AVC(QtWidgets.QWidget):
         layout.addWidget(self.widgets.max_mux)
         return layout
 
-    def init_custom(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Custom ffmpeg options")
-        label.setToolTip("extra flags or options, cannot modify existing settings")
-        layout.addWidget(label)
-        self.widgets.extra = QtWidgets.QLineEdit()
-        self.widgets.extra.textChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.extra)
-        return layout
-
     def init_modes(self):
         layout = QtWidgets.QGridLayout()
         crf_group_box = QtWidgets.QGroupBox()
@@ -231,8 +222,8 @@ class AVC(QtWidgets.QWidget):
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
             max_mux=self.widgets.max_mux.currentText(),
-            extra=self.widgets.extra.text(),
             profile=self.widgets.profile.currentText(),
+            extra=self.ffmpeg_extras,
         )
 
         tune = self.widgets.tune.currentText()

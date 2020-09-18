@@ -1448,4 +1448,3 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 This software is licensed under the MIT license.
 
 © 2020 Peter Odding.
-

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from qtpy import QtWidgets, QtCore
+from qtpy import QtCore, QtWidgets
 
 
 class StatusPanel(QtWidgets.QWidget):

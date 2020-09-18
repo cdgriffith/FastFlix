@@ -3,13 +3,13 @@
 import logging
 
 from box import Box, BoxList
+from qtpy import QtCore, QtGui, QtWidgets
 
-from qtpy import QtWidgets, QtCore, QtGui
-from fastflix.widgets.panels.command_panel import CommandList
-from fastflix.widgets.panels.audio_panel import AudioList
-from fastflix.widgets.panels.subtitle_panel import SubtitleList
-from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.attachment_panel import AttachmentPanel
+from fastflix.widgets.panels.audio_panel import AudioList
+from fastflix.widgets.panels.command_panel import CommandList
+from fastflix.widgets.panels.status_panel import StatusPanel
+from fastflix.widgets.panels.subtitle_panel import SubtitleList
 
 logger = logging.getLogger("fastflix")
 

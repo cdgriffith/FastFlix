@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
-import reusables
 import re
-from pathlib import Path
 import secrets
+from pathlib import Path
 
-
+import reusables
 from box import Box
 
-from fastflix.encoders.common.helpers import generate_filters, Command
 from fastflix.encoders.common.audio import build_audio
+from fastflix.encoders.common.helpers import Command, generate_filters
 from fastflix.encoders.common.subtitles import build_subtitle
 
 
@@ -49,9 +48,9 @@ def build(
 
     beginning = (
         f'"{ffmpeg}" -y '
-        f'-i "{source}" '
         f' {f"-ss {start_time}" if start_time else ""}  '
         f'{f"-to {duration}" if duration else ""} '
+        f'-i "{source}" '
         f"{extra} "
         f"-map 0:{video_track} "
         f"-pix_fmt {pix_fmt} "

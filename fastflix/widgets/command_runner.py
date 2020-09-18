@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+import os
 import re
+import signal
 import tempfile
 from pathlib import Path
-from uuid import uuid4
-from subprocess import Popen, PIPE, STDOUT
-import os
-import signal
+from subprocess import PIPE, STDOUT, Popen
 from threading import Thread
+from uuid import uuid4
 
 import reusables
-
 
 logger = logging.getLogger("fastflix-core")
 

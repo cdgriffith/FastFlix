@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
-import mistune
-
-from qtpy import QtWidgets, QtCore, QtGui
 from pathlib import Path
+
+import mistune
+from qtpy import QtCore, QtGui, QtWidgets
 
 __all__ = ["Changes"]
 

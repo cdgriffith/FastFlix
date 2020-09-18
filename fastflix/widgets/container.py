@@ -1,19 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import sys
 from pathlib import Path
-import pkg_resources
+from subprocess import run
 
-from qtpy import QtCore, QtWidgets, QtGui
-from fastflix.widgets.main import Main
+import pkg_resources
+import reusables
+from qtpy import QtCore, QtGui, QtWidgets
+
 from fastflix.widgets.about import About
-from fastflix.widgets.logs import Logs
 from fastflix.widgets.changes import Changes
+from fastflix.widgets.logs import Logs
+from fastflix.widgets.main import Main
 from fastflix.widgets.settings import Settings
 
 
 class Container(QtWidgets.QMainWindow):
     def __init__(self, data_path, work_path, config_file, **kwargs):
         super().__init__()
+        self.log_dir = data_path / "logs"
         self.logs = Logs()
         self.changes = Changes()
         self.about = None
@@ -58,6 +63,11 @@ class Container(QtWidgets.QMainWindow):
         )
         changes_action.triggered.connect(self.show_changes)
 
+        log_dir_action = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_FileLinkIcon), "Open Log Directory", self
+        )
+        log_dir_action.triggered.connect(self.show_log_dir)
+
         log_action = QtWidgets.QAction(
             self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogDetailedView), "View GUI Debug &Logs", self
         )
@@ -71,6 +81,7 @@ class Container(QtWidgets.QMainWindow):
         help_menu = menubar.addMenu("&Help")
         help_menu.addAction(changes_action)
         help_menu.addAction(report_action)
+        help_menu.addAction(log_dir_action)
         help_menu.addAction(log_action)
         help_menu.addSeparator()
         help_menu.addAction(about_action)
@@ -91,3 +102,32 @@ class Container(QtWidgets.QMainWindow):
 
     def open_issues(self):
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("https://github.com/cdgriffith/FastFlix/issues"))
+
+    def show_log_dir(self):
+        OpenFolder(self, self.log_dir).run()
+
+
+class OpenFolder(QtCore.QThread):
+    def __init__(self, parent, path):
+        super().__init__(parent)
+        self.app = parent
+        self.path = str(path)
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        if reusables.win_based:
+            run(["explorer", self.path])
+            # Also possible through ctypes shell extension
+            # import ctypes
+            #
+            # ctypes.windll.ole32.CoInitialize(None)
+            # pidl = ctypes.windll.shell32.ILCreateFromPathW(self.path)
+            # ctypes.windll.shell32.SHOpenFolderAndSelectItems(pidl, 0, None, 0)
+            # ctypes.windll.shell32.ILFree(pidl)
+            # ctypes.windll.ole32.CoUninitialize()
+        elif sys.platform == "darwin":
+            run(["open", self.path])
+        else:
+            run(["xdg-open", self.path])

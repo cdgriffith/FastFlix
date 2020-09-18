@@ -1,9 +1,9 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
 
 from box import Box
-
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 
@@ -181,6 +181,7 @@ class RAV1E(SettingPanel):
             tile_rows=int(self.widgets.tile_rows.currentText()),
             tiles=int(self.widgets.tiles.currentText()),
             single_pass=self.widgets.single_pass.isChecked(),
+            extra=self.ffmpeg_extras,
         )
         if self.mode == "QP":
             qp = self.widgets.qp.currentText()

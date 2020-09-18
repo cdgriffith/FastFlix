@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import importlib.machinery  # Needed for pyinstaller
+import logging
 import os
-from pathlib import Path
+import tempfile
 import time
 from datetime import timedelta
-import logging
+from pathlib import Path
+
 import pkg_resources
-import tempfile
-import importlib.machinery  # Needed for pyinstaller
-
-from qtpy import QtWidgets, QtCore, QtGui
-
 import reusables
 from box import Box
+from qtpy import QtCore, QtGui, QtWidgets
+
+from fastflix.encoders.common import helpers
 from fastflix.flix import Flix, FlixError
 from fastflix.shared import error_message
-from fastflix.widgets.video_options import VideoOptions
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
-from fastflix.encoders.common import helpers
+from fastflix.widgets.video_options import VideoOptions
 
 logger = logging.getLogger("fastflix")
 
@@ -26,17 +26,20 @@ root = os.path.abspath(os.path.dirname(__file__))
 
 def load_plugins(configuration):
     from fastflix.encoders.av1_aom import main as av1_plugin
-    from fastflix.encoders.svt_av1 import main as svt_av1_plugin
-    from fastflix.encoders.rav1e import main as rav1e_plugin
-    from fastflix.encoders.gif import main as gif_plugin
-    from fastflix.encoders.vp9 import main as vp9_plugin
     from fastflix.encoders.avc_x264 import main as avc_plugin
+    from fastflix.encoders.gif import main as gif_plugin
     from fastflix.encoders.hevc_x265 import main as hevc_plugin
+    from fastflix.encoders.rav1e import main as rav1e_plugin
+    from fastflix.encoders.svt_av1 import main as svt_av1_plugin
+    from fastflix.encoders.vp9 import main as vp9_plugin
 
     plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, av1_plugin, rav1e_plugin, svt_av1_plugin]
 
-    return {plugin.name: plugin for plugin in plugins
-            if (not getattr(plugin, "requires", None)) or plugin.requires in configuration}
+    return {
+        plugin.name: plugin
+        for plugin in plugins
+        if (not getattr(plugin, "requires", None)) or plugin.requires in configuration
+    }
 
 
 class Main(QtWidgets.QWidget):
@@ -75,7 +78,7 @@ class Main(QtWidgets.QWidget):
         self.setAcceptDrops(True)
 
         self.input_video = None
-        self.video_path_widget = QtWidgets.QLineEdit()
+        self.video_path_widget = QtWidgets.QLineEdit("No Source Selected")
         self.video_path_widget.setEnabled(False)
         self.video_path_widget.setStyleSheet("QLineEdit{color:#222}")
         self.streams, self.format_info = None, None
@@ -201,7 +204,6 @@ class Main(QtWidgets.QWidget):
         layout.setSpacing(10)
         return layout
 
-
     def init_flip(self):
         self.flip_combo_box = QtWidgets.QComboBox()
 
@@ -216,7 +218,7 @@ class Main(QtWidgets.QWidget):
             Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix 180.png")).resolve()
         )
 
-        self.flip_combo_box.addItems(['No Flip', "Vertical Flip", "Horizontal Flip", "Vert + Hoz Flip"])
+        self.flip_combo_box.addItems(["No Flip", "Vertical Flip", "Horizontal Flip", "Vert + Hoz Flip"])
         self.flip_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
         self.flip_combo_box.setItemIcon(1, QtGui.QIcon(vert_flip_file))
         self.flip_combo_box.setItemIcon(2, QtGui.QIcon(hoz_flip_file))
@@ -228,7 +230,6 @@ class Main(QtWidgets.QWidget):
     def get_flips(self):
         mapping = {0: (False, False), 1: (True, False), 2: (False, True), 3: (True, True)}
         return mapping[self.flip_combo_box.currentIndex()]
-
 
     def init_rotate(self):
         self.rotate_combo_box = QtWidgets.QComboBox()
@@ -244,7 +245,7 @@ class Main(QtWidgets.QWidget):
             Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix 180.png")).resolve()
         )
 
-        self.rotate_combo_box.addItems(['No Rotation', "90°", "180°", "270°"])
+        self.rotate_combo_box.addItems(["No Rotation", "90°", "180°", "270°"])
         self.rotate_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
         self.rotate_combo_box.setItemIcon(1, QtGui.QIcon(rot_90_file))
         self.rotate_combo_box.setItemIcon(2, QtGui.QIcon(rot_180_file))
@@ -254,7 +255,7 @@ class Main(QtWidgets.QWidget):
         return self.rotate_combo_box
 
     def rotation_to_transpose(self):
-        mapping = {0: None, 1: 1, 2:4, 3:2}
+        mapping = {0: None, 1: 1, 2: 4, 3: 2}
         return mapping[self.rotate_combo_box.currentIndex()]
 
     def init_output_type(self):
@@ -266,7 +267,7 @@ class Main(QtWidgets.QWidget):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
         self.widgets.convert_to.setIconSize(QtCore.QSize(35, 35))
 
-        #layout.addWidget(QtWidgets.QLabel("Encoder: "), stretch=0)
+        # layout.addWidget(QtWidgets.QLabel("Encoder: "), stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=0)
         layout.addStretch()
         layout.setSpacing(10)
@@ -583,7 +584,7 @@ class Main(QtWidgets.QWidget):
         except FlixError:
             error_message(f"Not a video file<br>{self.input_video}")
             self.input_video = None
-            self.video_path_widget.setText("")
+            self.video_path_widget.setText("No Source Selected")
             self.streams = None
             self.format_info = None
             for i in range(self.widgets.video_track.count()):
@@ -609,7 +610,7 @@ class Main(QtWidgets.QWidget):
         if len(self.streams.video) == 0:
             error_message(f"No video tracks detected in file<br>{self.input_video}")
             self.input_video = None
-            self.video_path_widget.setText("")
+            self.video_path_widget.setText("No Source Selected")
             self.streams = None
             self.format_info = None
             self.widgets.convert_button.setDisabled(True)

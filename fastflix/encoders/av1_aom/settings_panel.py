@@ -2,8 +2,9 @@
 import logging
 
 from box import Box
+from qtpy import QtCore, QtGui, QtWidgets
 
-from qtpy import QtWidgets, QtCore, QtGui
+from fastflix.encoders.common.setting_panel import SettingPanel
 
 logger = logging.getLogger("fastflix")
 
@@ -25,7 +26,7 @@ recommended_bitrates = [
 recommended_crfs = ["34", "32", "30", "28", "26", "24", "22", "20", "Custom"]
 
 
-class AV1(QtWidgets.QWidget):
+class AV1(SettingPanel):
     def __init__(self, parent, main):
         super(AV1, self).__init__(parent)
         self.main = main
@@ -45,14 +46,14 @@ class AV1(QtWidgets.QWidget):
         grid.addLayout(self.init_tile_rows(), 4, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 3, 3)
 
-        grid.addWidget(QtWidgets.QWidget(), 5, 0)
-        grid.setRowStretch(5, 1)
+        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
+        grid.setRowStretch(8, 1)
         guide_label = QtWidgets.QLabel(
             f"<a href='https://trac.ffmpeg.org/wiki/Encode/AV1'>FFMPEG AV1 Encoding Guide</a>"
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 9, 0, -1, 1)
+        grid.addWidget(guide_label, 11, 0, -1, 1)
 
         self.setLayout(grid)
         self.hide()
@@ -181,12 +182,14 @@ class AV1(QtWidgets.QWidget):
 
     def get_settings(self):
         conversions = {"default": None, "enabled": 1, "disabled": 0}
+        print(self.widgets.extra.text())
         settings = Box(
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             cpu_used=self.widgets.cpu_used.currentText(),
             row_mt=conversions[self.widgets.row_mt.currentText()],
             tile_rows=self.widgets.tile_rows.currentText(),
             tile_columns=self.widgets.tile_columns.currentText(),
+            extra=self.ffmpeg_extras,
         )
 
         if self.mode == "CRF":

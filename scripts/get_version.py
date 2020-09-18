@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 import os
+import sys
 from datetime import datetime as dt
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir))

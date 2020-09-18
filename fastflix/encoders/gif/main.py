@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 __author__ = "Chris Griffith"
 from pathlib import Path
+
 import pkg_resources
 
 name = "GIF"

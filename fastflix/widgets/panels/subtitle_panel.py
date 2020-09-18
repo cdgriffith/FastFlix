@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from box import Box
-
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.shared import error_message, main_width
 from fastflix.widgets.panels.abstract_list import FlixList

@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
-from subprocess import PIPE, run, STDOUT
+from subprocess import PIPE, STDOUT, run
 
 import reusables
-
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 logger = logging.getLogger("fastflix")
 

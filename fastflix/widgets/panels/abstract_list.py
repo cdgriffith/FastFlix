@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from box import Box
-
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 
 class FlixList(QtWidgets.QWidget):

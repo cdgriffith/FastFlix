@@ -50,4 +50,3 @@ Copyright (C) 2019-2020 Chris Griffith
 
 The code itself is licensed under the MIT which you can read in the `LICENSE` file.
 Read more about the release licensing in the [docs](docs/README.md) folder.
-

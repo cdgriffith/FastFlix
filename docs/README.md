@@ -11,5 +11,3 @@ The windows releases are LGPL, as they are bundled with pyside2 during packaging
 #### Windows
 
 You will need `pywin32`, I use the precompiled binaries from "https://www.lfd.uci.edu/~gohlke/pythonlibs"
-
-

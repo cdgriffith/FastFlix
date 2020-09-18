@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
+import re
+import secrets
+from pathlib import Path
+
 import reusables
 
-from pathlib import Path
-import logging
-import secrets
-import re
-
-from fastflix.encoders.common.helpers import generate_filters, Loop, Command
 from fastflix.encoders.common.audio import build_audio
+from fastflix.encoders.common.helpers import Command, generate_filters
 
 logger = logging.getLogger("fastflix")
 
@@ -46,6 +46,7 @@ def build(
     audio_tracks=(),
     single_pass=False,
     attachments="",
+    extra="",
     **kwargs,
 ):
     filters = generate_filters(**kwargs)
@@ -77,9 +78,10 @@ def build(
 
     beginning = (
         f'"{ffmpeg}" -y '
-        f'-i "{source}" '
         f' {f"-ss {start_time}" if start_time else ""}  '
         f'{f"-t {duration}" if duration else ""} '
+        f'-i "{source}" '
+        f"{extra} "
         f"-map 0:{video_track} "
         f"-pix_fmt {pix_fmt} "
         f"-c:v:0 libsvtav1 "

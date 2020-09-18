@@ -1,9 +1,11 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
 
 from box import Box
+from qtpy import QtCore, QtGui, QtWidgets
 
-from qtpy import QtWidgets, QtCore, QtGui
+from fastflix.encoders.common.setting_panel import SettingPanel
 
 logger = logging.getLogger("fastflix")
 
@@ -40,9 +42,9 @@ recommended_crfs = [
 pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
 
 
-class HEVC(QtWidgets.QWidget):
+class HEVC(SettingPanel):
     def __init__(self, parent, main):
-        super(HEVC, self).__init__(parent)
+        super().__init__(parent)
         self.main = main
 
         grid = QtWidgets.QGridLayout()
@@ -53,7 +55,7 @@ class HEVC(QtWidgets.QWidget):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 6, 4)
-        grid.addLayout(self.init_custom(), 10, 0, 1, 6)
+        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)
         grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
@@ -172,16 +174,6 @@ class HEVC(QtWidgets.QWidget):
         layout.addWidget(self.widgets.max_mux)
         return layout
 
-    def init_custom(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Custom ffmpeg options")
-        label.setToolTip("extra flags or options, cannot modify existing settings")
-        layout.addWidget(label)
-        self.widgets.extra = QtWidgets.QLineEdit()
-        self.widgets.extra.textChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.extra)
-        return layout
-
     def init_modes(self):
         layout = QtWidgets.QGridLayout()
         crf_group_box = QtWidgets.QGroupBox()
@@ -286,9 +278,9 @@ class HEVC(QtWidgets.QWidget):
             preset=self.widgets.preset.currentText(),
             intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
             max_mux=self.widgets.max_mux.currentText(),
-            extra=self.widgets.extra.text(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             profile=self.widgets.profile.currentText(),
+            extra=self.ffmpeg_extras,
         )
 
         tune = self.widgets.tune.currentText()

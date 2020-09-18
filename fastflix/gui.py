@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-from multiprocessing import freeze_support
-import sys
 import logging
-from pathlib import Path
-from distutils.version import StrictVersion
-from datetime import datetime
 import os
 import shutil
+import sys
 import traceback
+from datetime import datetime
+from distutils.version import StrictVersion
 from json import JSONDecodeError
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, freeze_support
+from pathlib import Path
 from queue import Empty
 
 try:
@@ -18,20 +17,18 @@ except ImportError:
     pass
 
 try:
+    import coloredlogs
+    import requests
+    import reusables
     from appdirs import user_data_dir
     from box import Box
-    import reusables
-    import requests
-    import coloredlogs
+    from qtpy import API, QT_VERSION, QtWidgets
 
-    from qtpy import QtWidgets
-    from qtpy import QT_VERSION, API
-
+    from fastflix.flix import FlixError, ff_version
+    from fastflix.shared import base_path, error_message, message
     from fastflix.version import __version__
-    from fastflix.flix import ff_version, FlixError
-    from fastflix.shared import error_message, base_path, message
-    from fastflix.widgets.container import Container
     from fastflix.widgets.command_runner import BackgroundRunner
+    from fastflix.widgets.container import Container
 except ImportError as err:
     traceback.print_exc()
     print("Could not load FastFlix properly!", file=sys.stderr)
@@ -39,8 +36,16 @@ except ImportError as err:
     sys.exit(1)
 
 
+def file_date():
+    return datetime.now().isoformat().replace(":", ".").rsplit(".")[0]
+
+
 def main():
     logging.basicConfig(level=logging.DEBUG)
+    data_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
+    data_path.mkdir(parents=True, exist_ok=True)
+    log_dir = data_path / "logs"
+    log_dir.mkdir(parents=True, exist_ok=True)
 
     queue = Queue()
     status_queue = Queue()
@@ -51,7 +56,7 @@ def main():
         logger.log(level, msg)
 
     runner = BackgroundRunner(log_queue=log_queue)
-    gui_proc = Process(target=start_app, args=(queue, status_queue, log_queue))
+    gui_proc = Process(target=start_app, args=(queue, status_queue, log_queue, data_path, log_dir))
     gui_proc.start()
     logger = logging.getLogger("fastflix-core")
     coloredlogs.install(level="DEBUG", logger=logger)
@@ -81,6 +86,7 @@ def main():
                     log(f"Error during conversion", logging.WARNING)
                 else:
                     log("conversion complete")
+                reusables.remove_file_handlers(logger)
                 status_queue.put("complete")
                 sent_response = True
 
@@ -92,6 +98,13 @@ def main():
                     queued_requests.append(request)
                 else:
                     log_queue.put("CLEAR_WINDOW")
+                    reusables.remove_file_handlers(logger)
+                    reusables.add_file_handler(
+                        logger,
+                        log_dir / f"flix_conversion_{file_date()}.log",
+                        level=logging.DEBUG,
+                        log_format="%(asctime)s - %(message)s",
+                    )
                     runner.start_exec(*request[1:])
                     finished_message = False
                     sent_response = False
@@ -127,7 +140,7 @@ def parse_changes(last_version=None):
     return "\n".join(changes[3:50])
 
 
-def required_info(logger):
+def required_info(logger, data_path, log_dir):
     if reusables.win_based:
         # This fixes the taskbar icon not always appearing
         try:
@@ -138,12 +151,7 @@ def required_info(logger):
         except Exception:
             logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
 
-    data_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
     ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
-    data_path.mkdir(parents=True, exist_ok=True)
-    log_dir = data_path / "logs"
-    log_dir.mkdir(parents=True, exist_ok=True)
-
     ffmpeg = shutil.which("ffmpeg")
     if ffmpeg:
         ffmpeg = Path(ffmpeg)
@@ -164,7 +172,7 @@ def required_info(logger):
                 if file.is_file() and file.name.lower() in ("ffprobe", "ffprobe.exe"):
                     ffprobe = file
 
-    logger.addHandler(logging.FileHandler(log_dir / f"flix_{datetime.now().isoformat().replace(':', '.')}"))
+    logger.addHandler(logging.FileHandler(log_dir / f"flix_gui_{file_date()}.log"))
 
     config_file = Path(data_path, "fastflix.json")
     if not config_file.exists():
@@ -218,10 +226,10 @@ def required_info(logger):
         error_message("ffmpeg or ffmpeg could not be executed properly!")
         sys.exit(1)
 
-    return ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, data_path, work_dir, config_file
+    return ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, work_dir, config_file
 
 
-def start_app(queue, status_queue, log_queue):
+def start_app(queue, status_queue, log_queue, data_path, log_dir):
     logger = logging.getLogger("fastflix")
     coloredlogs.install(level="DEBUG", logger=logger)
     logger.info(f"Starting FastFlix {__version__}")
@@ -232,7 +240,9 @@ def start_app(queue, status_queue, log_queue):
         main_app = QtWidgets.QApplication(sys.argv)
         main_app.setStyle("fusion")
         main_app.setApplicationDisplayName("FastFlix")
-        (ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, data_path, work_dir, config_file) = required_info(logger)
+        (ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, work_dir, config_file) = required_info(
+            logger, data_path, log_dir
+        )
         window = Container(
             ffmpeg=ffmpeg,
             ffprobe=ffprobe,
@@ -254,6 +264,12 @@ def start_app(queue, status_queue, log_queue):
         print(f"Unexpected error: {err}")
     else:
         logger.info("Fastflix shutting down")
+        for item in Path(work_dir).iterdir():
+            if item.is_dir() and item.stem.startswith("temp_"):
+                shutil.rmtree(item, ignore_errors=True)
+        thumb = Path(work_dir) / "thumbnail_preview.png"
+        if thumb.exists():
+            thumb.unlink(missing_ok=True)
 
 
 def windows_download_ffmpeg(ffmpeg_folder):
