@@ -219,11 +219,40 @@ def required_info(logger, data_path, log_dir):
             work_dir = data_path
             work_dir.mkdir(parents=True, exist_ok=True)
 
+    if not ffmpeg or not ffprobe:
+        qm = QtWidgets.QMessageBox
+        if reusables.win_based:
+            ret = qm.question(
+                None,
+                "FFmpeg not found!",
+                f"<h2>FFmpeg not found!</h2>" f"<br> Automatically download FFmpeg?",
+                qm.Yes | qm.No,
+            )
+            if ret == qm.Yes:
+                try:
+                    windows_download_ffmpeg(ffmpeg_folder)
+                except Exception as err:
+                    logger.exception("Could not download FFmpeg")
+                    sys.exit(2)
+                else:
+                    ffmpeg = ffmpeg_folder / "bin" / "ffmpeg.exe"
+                    ffprobe = ffmpeg_folder / "bin" / "ffprobe.exe"
+            else:
+                sys.exit(1)
+        else:
+            qm.question(
+                None, "<h2>FFmpeg not found!</h2>", "Please download FFmpeg via your platform package manager", qm.Close
+            )
+            sys.exit(1)
+    else:
+        logger.info(f"Using ffmpeg {ffmpeg}")
+        logger.info(f"Using ffprobe {ffprobe}")
+
     try:
         ffmpeg_version = ff_version(ffmpeg, throw=True)
         ffprobe_version = ff_version(ffprobe, throw=True)
     except FlixError:
-        error_message("ffmpeg or ffmpeg could not be executed properly!")
+        error_message("ffmpeg or ffmpeg could not be executed properly!<br>")
         sys.exit(1)
 
     return ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, work_dir, config_file
@@ -275,23 +304,25 @@ def start_app(queue, status_queue, log_queue, data_path, log_dir):
 def windows_download_ffmpeg(ffmpeg_folder):
     ffmpeg_folder.mkdir(exist_ok=True)
     url = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.zip"
-    # logger.info(f"Downloading {url} to {ffmpeg_folder}")
     req = requests.get(url, headers={"referer": "https://www.gyan.dev"}, stream=True)
     with open(ffmpeg_folder / "ffmpeg-git-full.zip", "wb") as f:
-        for block in req.iter_content(chunk_size=4096):
+        for i, block in enumerate(req.iter_content(chunk_size=1024)):
+            if i % 1000 == 0.0:
+                print(f"Downloaded {i // 1000}MB")
             f.write(block)
 
     reusables.extract(ffmpeg_folder / "ffmpeg-git-full.zip", path=ffmpeg_folder)
-    sub_dir = ffmpeg_folder / "ffmpeg-latest-win64-static"
+    try:
+        Path(ffmpeg_folder / "ffmpeg-git-full.zip").unlink()
+    except OSError:
+        pass
+
+    sub_dir = next(Path(ffmpeg_folder).glob("ffmpeg-*"))
 
     for item in os.listdir(sub_dir):
         shutil.move(str(sub_dir / item), str(ffmpeg_folder))
 
-    try:
-        sub_dir.unlink()
-        Path("ffmpeg-git-full.zip").unlink()
-    except OSError:
-        pass
+    shutil.rmtree(sub_dir, ignore_errors=True)
 
 
 if __name__ == "__main__":
