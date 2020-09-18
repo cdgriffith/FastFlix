@@ -212,24 +212,26 @@ def download_svt_av1(svt_av1_folder):
 
 def windows_download_ffmpeg(ffmpeg_folder):
     ffmpeg_folder.mkdir(exist_ok=True)
-    url = "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip"
-    logger.info(f"Downloading {url} to {ffmpeg_folder}")
-    req = requests.get(url, headers={"referer": "https://ffmpeg.zeranoe.com/"}, stream=True)
-    with open(ffmpeg_folder / "ffmpeg-latest-win64-static.zip", "wb") as f:
-        for block in req.iter_content(chunk_size=4096):
+    url = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.zip"
+    req = requests.get(url, headers={"referer": "https://www.gyan.dev"}, stream=True)
+    with open(ffmpeg_folder / "ffmpeg-git-full.zip", "wb") as f:
+        for i, block in enumerate(req.iter_content(chunk_size=1024)):
+            if i % 1000 == 0.0:
+                print(f"Downloaded {i // 1000}MB")
             f.write(block)
 
-    reusables.extract(ffmpeg_folder / "ffmpeg-latest-win64-static.zip", path=ffmpeg_folder)
-    sub_dir = ffmpeg_folder / "ffmpeg-latest-win64-static"
+    reusables.extract(ffmpeg_folder / "ffmpeg-git-full.zip", path=ffmpeg_folder)
+    try:
+        Path(ffmpeg_folder / "ffmpeg-git-full.zip").unlink()
+    except OSError:
+        pass
+
+    sub_dir = next(Path(ffmpeg_folder).glob("ffmpeg-*"))
 
     for item in os.listdir(sub_dir):
         shutil.move(str(sub_dir / item), str(ffmpeg_folder))
 
-    try:
-        sub_dir.unlink()
-        Path("ffmpeg-latest-win64-static.zip").unlink()
-    except OSError:
-        pass
+    shutil.rmtree(sub_dir, ignore_errors=True)
 
 
 if __name__ == "__main__":
