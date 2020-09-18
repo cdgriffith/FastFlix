@@ -144,7 +144,9 @@ class Flix:
         streams = Box({"video": [], "audio": [], "subtitle": [], "attachment": [], "data": []})
 
         for track in data.streams:
-            if track.codec_type in streams:
+            if track.codec_type == "video" and track.get("disposition", {}).get("attached_pic"):
+                streams.attachment.append(track)
+            elif track.codec_type in streams:
                 streams[track.codec_type].append(track)
             else:
                 logger.error(f"Unknown codec: {track.codec_type}")

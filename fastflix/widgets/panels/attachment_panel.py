@@ -20,9 +20,19 @@ class AttachmentPanel(QtWidgets.QWidget):
         sp = QtWidgets.QSizePolicy()
         sp.setVerticalPolicy(QtWidgets.QSizePolicy.Policy.Maximum)
 
+        info = QtWidgets.QLabel()
+        info.setPixmap(self.style().standardIcon(QtWidgets.QStyle.SP_MessageBoxWarning).pixmap(16, 16))
+        info.setToolTip(
+            "Hardly any system supports MKV's covers as thumbnails by default<br><br> "
+            "Windows needs the ICAROS shell extension with proper settings applied <br><br> "
+            "Android / Google products do not support covers <br>"
+            ""
+        )
+
         # row, column, row span, column span
         layout.addWidget(QtWidgets.QLabel("Poster Cover"), 0, 0, 1, 5)
-        layout.addWidget(QtWidgets.QLabel("Landscape Cover"), 0, 6, 1, 5)
+        layout.addWidget(QtWidgets.QLabel("Landscape Cover"), 0, 6, 1, 4)
+        layout.addWidget(info, 0, 10, 1, 1)
 
         self.poster = QtWidgets.QLabel()
         self.poster.setSizePolicy(sp)
@@ -35,6 +45,7 @@ class AttachmentPanel(QtWidgets.QWidget):
 
         layout.addLayout(self.init_cover(), 9, 0, 1, 4)
         layout.addLayout(self.init_landscape_cover(), 9, 6, 1, 4)
+        layout.columnStretch(5)
 
         self.setLayout(layout)
 
@@ -62,7 +73,11 @@ class AttachmentPanel(QtWidgets.QWidget):
         self.update_cover()
 
     def update_cover(self):
-        cover = self.cover_path.text()
+        cover = self.cover_path.text().strip()
+        if not cover:
+            self.poster.setPixmap(QtGui.QPixmap())
+            self.main.page_update()
+            return
         if (
             not Path(cover).exists()
             or not Path(cover).is_file()
@@ -71,7 +86,7 @@ class AttachmentPanel(QtWidgets.QWidget):
             return
         try:
             pixmap = QtGui.QPixmap(cover)
-            pixmap = pixmap.scaled(250, 250, QtCore.Qt.KeepAspectRatio)
+            pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.poster.setPixmap(pixmap)
         except Exception:
             logger.exception("Bad image")
@@ -103,7 +118,11 @@ class AttachmentPanel(QtWidgets.QWidget):
         self.update_landscape_cover()
 
     def update_landscape_cover(self):
-        cover = self.landscape_cover_path.text()
+        cover = self.landscape_cover_path.text().strip()
+        if not cover:
+            self.landscape.setPixmap(QtGui.QPixmap())
+            self.main.page_update()
+            return
         if (
             not Path(cover).exists()
             or not Path(cover).is_file()
@@ -112,7 +131,7 @@ class AttachmentPanel(QtWidgets.QWidget):
             return
         try:
             pixmap = QtGui.QPixmap(cover)
-            pixmap = pixmap.scaled(250, 250, QtCore.Qt.KeepAspectRatio)
+            pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.landscape.setPixmap(pixmap)
         except Exception:
             logger.exception("Bad image")

@@ -44,6 +44,7 @@ def build(
     bitrate=None,
     audio_tracks=(),
     single_pass=False,
+    attachments="",
     **kwargs,
 ):
     filters = generate_filters(**kwargs)
@@ -87,6 +88,7 @@ def build(
         f"-tiles {tiles} "
         f'{f"-vf {filters}" if filters else ""} '
         "-map_metadata -1 "
+        f"{attachments} "
     )
 
     if not single_pass:

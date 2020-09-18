@@ -22,6 +22,7 @@ def build(
     cpu_used="1",
     tile_columns="-1",
     tile_rows="-1",
+    attachments="",
     **kwargs,
 ):
     filters = helpers.generate_filters(**kwargs)
@@ -43,6 +44,7 @@ def build(
         f"-tile-rows {tile_rows} "
         f"-tile-columns {tile_columns} "
         "-map_metadata -1 "
+        f"{attachments} "
     )
 
     if row_mt is not None:

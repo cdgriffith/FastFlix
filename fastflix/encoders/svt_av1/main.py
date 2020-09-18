@@ -10,7 +10,7 @@ video_dimension_divisor = 8
 
 enable_subtitles = False
 enable_audio = True
-enable_attachments = False
+enable_attachments = True
 
 audio_formats = [
     "aac",

@@ -30,6 +30,7 @@ def build(
     pix_fmt="yuv420p10le",
     tune=None,
     profile="default",
+    attachments="",
     **kwargs,
 ):
     filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
@@ -55,6 +56,7 @@ def build(
         f'{f"-vf {filters}" if filters else ""} '
         f'{f"-tune {tune}" if tune else ""} '
         "-map_metadata -1 "
+        f"{attachments} "
     )
 
     if profile and profile != "default":
