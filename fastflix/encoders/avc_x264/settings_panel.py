@@ -50,7 +50,7 @@ class AVC(QtWidgets.QWidget):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 6, 4)
-        grid.addLayout(self.init_custom(), 6, 2, 8, 4)
+        grid.addLayout(self.init_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)
         grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
@@ -60,15 +60,15 @@ class AVC(QtWidgets.QWidget):
         # grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 2)
         grid.addLayout(self.init_profile(), 5, 0, 1, 2)
 
-        grid.addWidget(QtWidgets.QWidget(), 8, 0)
-        grid.setRowStretch(8, 1)
+        # grid.addWidget(QtWidgets.QWidget(), 8, 0)
+        grid.setRowStretch(9, 1)
 
         guide_label = QtWidgets.QLabel(
             "<a href='https://trac.ffmpeg.org/wiki/Encode/H.264'>FFMPEG AVC / H.264 Encoding Guide</a>"
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 9, 0, -1, 1)
+        grid.addWidget(guide_label, 11, 0, -1, 1)
 
         self.setLayout(grid)
         self.hide()

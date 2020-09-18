@@ -24,7 +24,7 @@ logger = logging.getLogger("fastflix")
 root = os.path.abspath(os.path.dirname(__file__))
 
 
-def load_plugins():
+def load_plugins(configuration):
     from fastflix.encoders.av1_aom import main as av1_plugin
     from fastflix.encoders.svt_av1 import main as svt_av1_plugin
     from fastflix.encoders.rav1e import main as rav1e_plugin
@@ -35,7 +35,8 @@ def load_plugins():
 
     plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, av1_plugin, rav1e_plugin, svt_av1_plugin]
 
-    return {plugin.name: plugin for plugin in plugins}
+    return {plugin.name: plugin for plugin in plugins
+            if (not getattr(plugin, "requires", None)) or plugin.requires in configuration}
 
 
 class Main(QtWidgets.QWidget):
@@ -50,7 +51,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         self.scale_updating = False
         self.path = Box(
-            data=data_path,  # Path(user_data_dir("FastFlix", appauthor=False, version=__version__, roaming=True))
+            data=data_path,
             work=work_path,
         )
 
@@ -96,8 +97,7 @@ class Main(QtWidgets.QWidget):
 
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
         self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe)
-        self.plugins = load_plugins()
-        # External: (Path(data_path, "encoders"), self.fastflix.ffmpeg_configuration()
+        self.plugins = load_plugins(self.flix.config)
 
         self.video_options = VideoOptions(
             self, available_audio_encoders=self.flix.get_audio_encoders(), log_queue=log_queue
@@ -145,7 +145,7 @@ class Main(QtWidgets.QWidget):
 
         layout.addLayout(hg)
         layout.addStretch()
-        self.grid.addLayout(layout, 0, 0, 5, 6)
+        self.grid.addLayout(layout, 0, 0, 6, 6)
 
     def init_scale_and_crop(self):
         layout = QtWidgets.QVBoxLayout()
@@ -212,11 +212,15 @@ class Main(QtWidgets.QWidget):
         hoz_flip_file = str(
             Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix HF.png")).resolve()
         )
+        rot_180_file = str(
+            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix 180.png")).resolve()
+        )
 
         self.flip_combo_box.addItems(['No Flip', "Vertical Flip", "Horizontal Flip", "Vert + Hoz Flip"])
         self.flip_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
         self.flip_combo_box.setItemIcon(1, QtGui.QIcon(vert_flip_file))
         self.flip_combo_box.setItemIcon(2, QtGui.QIcon(hoz_flip_file))
+        self.flip_combo_box.setItemIcon(3, QtGui.QIcon(rot_180_file))
         self.flip_combo_box.setIconSize(QtCore.QSize(35, 35))
         self.flip_combo_box.currentIndexChanged.connect(lambda: self.page_update())
         return self.flip_combo_box

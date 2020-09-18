@@ -53,7 +53,7 @@ class HEVC(QtWidgets.QWidget):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 6, 4)
-        grid.addLayout(self.init_custom(), 8, 0, 8, 6)
+        grid.addLayout(self.init_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)
         grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
@@ -72,7 +72,7 @@ class HEVC(QtWidgets.QWidget):
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 10, 0, -1, 1)
+        grid.addWidget(guide_label, 11, 0, -1, 1)
 
         self.setLayout(grid)
         self.hide()
