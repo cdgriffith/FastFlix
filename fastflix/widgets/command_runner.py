@@ -144,16 +144,7 @@ class CommandRunner(QtCore.QThread):
                 self.app.completed.emit(0)
 
     def start_exec(self, command):
-        return Popen(
-            command,
-            shell=True,
-            cwd=self.tempdir.name,
-            stdin=PIPE,
-            stdout=PIPE,
-            stderr=STDOUT,
-            universal_newlines=True,
-            preexec_fn=os.setsid if not reusables.win_based else None,
-        )
+        return Popen(command, shell=True, cwd=self.tempdir.name, stdout=PIPE, stderr=STDOUT, encoding="utf-8")
 
     def is_alive(self):
         if not self.process:
@@ -164,13 +155,8 @@ class CommandRunner(QtCore.QThread):
         logger.info(f"Killing worker process {self.process.pid}")
         if self.process:
             try:
-                if reusables.win_based:
-                    os.kill(self.process.pid, signal.CTRL_C_EVENT)
-                else:
-                    os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
                 self.process.terminate()
             except Exception as err:
                 logger.exception(f"Couldn't terminate process: {err}")
         self.killed = True
         self.app.cancelled.emit()
-        self.exit()

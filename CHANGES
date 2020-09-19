@@ -1,6 +1,11 @@
 Changelog
 ---------
 
+Version 2.6.3
+~~~~~~~~~~~~~
+
+* Fixing #71 #26 encoding issues in video files (thanks to -L0Lock-)
+
 Version 2.6.2
 ~~~~~~~~~~~~~
 
