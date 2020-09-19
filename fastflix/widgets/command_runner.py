@@ -8,6 +8,7 @@ from uuid import uuid4
 from subprocess import Popen, PIPE, STDOUT
 import os
 import signal
+import secrets
 
 import reusables
 
@@ -23,7 +24,8 @@ white_detect = re.compile(r"^\s+")
 class CommandRunner(QtCore.QThread):
     def __init__(self, parent, command_list, work_dir):
         super().__init__(parent)
-        self.tempdir = tempfile.TemporaryDirectory(prefix="temp_", dir=work_dir)
+        self.tempdir = str(Path(work_dir) / f"temp_{secrets.token_hex(12)}")
+        os.makedirs(self.tempdir, exist_ok=True)
         self.app = parent
         self.command_list = command_list
         self.process = None
@@ -37,21 +39,21 @@ class CommandRunner(QtCore.QThread):
         file_numbers = set(self.re_tempfile.findall(command))
         for num, ext in file_numbers:
             if num not in self.temp_files:
-                self.temp_files[num] = Path(self.tempdir.name, f"{uuid4().hex}.{ext}")
+                self.temp_files[num] = Path(self.tempdir, f"{uuid4().hex}.{ext}")
             command = command.replace(f"<tempfile.{num}.{ext}>", str(self.temp_files[num]))
         for num in set(self.re_tempdir.findall(command)):
             if num not in self.temp_dirs:
-                self.temp_dirs[num] = Path(tempfile.mkdtemp(prefix=f"{num}_", dir=self.tempdir.name))
+                self.temp_dirs[num] = Path(tempfile.mkdtemp(prefix=f"{num}_", dir=self.tempdir))
             command = command.replace(f"<tempdir.{num}>", str(self.temp_dirs[num]))
         return command
 
     def loop_creates(self, dirs, files):
         for num, ext in files:
             if num not in self.temp_files:
-                self.temp_files[num] = Path(self.tempdir.name, f"{uuid4().hex}.{ext}")
+                self.temp_files[num] = Path(self.tempdir, f"{uuid4().hex}.{ext}")
         for num in dirs:
             if num not in self.temp_dirs:
-                self.temp_dirs[num] = Path(tempfile.mkdtemp(prefix=f"{num}_", dir=self.tempdir.name))
+                self.temp_dirs[num] = Path(tempfile.mkdtemp(prefix=f"{num}_", dir=self.tempdir))
 
     @staticmethod
     def replace_loop_args(command, index, items):
@@ -116,7 +118,6 @@ class CommandRunner(QtCore.QThread):
         try:
             for command in self.command_list:
                 if self.killed:
-                    self.tempdir.cleanup()
                     return
                 if command.ensure_paths:
                     for path in command.ensure_paths:
@@ -135,25 +136,14 @@ class CommandRunner(QtCore.QThread):
                                 return self.app.completed.emit(str(code))
         except Exception as err:
             logger.exception(f"Could not run commands - {err}")
-            self.tempdir.cleanup()
             if not self.killed:
                 self.app.completed.emit(1)
         else:
-            self.tempdir.cleanup()
             if not self.killed:
                 self.app.completed.emit(0)
 
     def start_exec(self, command):
-        return Popen(
-            command,
-            shell=True,
-            cwd=self.tempdir.name,
-            stdin=PIPE,
-            stdout=PIPE,
-            stderr=STDOUT,
-            universal_newlines=True,
-            preexec_fn=os.setsid if not reusables.win_based else None,
-        )
+        return Popen(command, shell=True, cwd=self.tempdir, stdout=PIPE, stderr=STDOUT, encoding="utf-8")
 
     def is_alive(self):
         if not self.process:
@@ -164,13 +154,8 @@ class CommandRunner(QtCore.QThread):
         logger.info(f"Killing worker process {self.process.pid}")
         if self.process:
             try:
-                if reusables.win_based:
-                    os.kill(self.process.pid, signal.CTRL_C_EVENT)
-                else:
-                    os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
                 self.process.terminate()
             except Exception as err:
                 logger.exception(f"Couldn't terminate process: {err}")
         self.killed = True
         self.app.cancelled.emit()
-        self.exit()

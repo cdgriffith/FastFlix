@@ -78,7 +78,9 @@ def main():
                 if file.is_file() and file.name.lower() in ("ffprobe", "ffprobe.exe"):
                     ffprobe = file
 
-    logger.addHandler(logging.FileHandler(log_dir / f"flix_{datetime.now().isoformat().replace(':', '.')}"))
+    logger.addHandler(
+        logging.FileHandler(log_dir / f"flix_{datetime.now().isoformat().replace(':', '.')}", encoding="utf-8")
+    )
 
     config_file = Path(data_path, "fastflix.json")
     if not config_file.exists():
