@@ -3,6 +3,8 @@
 import logging
 import os
 import re
+import secrets
+import shlex
 import signal
 import tempfile
 from pathlib import Path
@@ -23,58 +25,42 @@ class BackgroundRunner:
     def __init__(self, log_queue):
         self.process = None
         self.killed = False
+        self.output_file = None
         self.log_queue = log_queue
 
     def start_exec(self, command, work_dir):
         logger.info(f"Running command: {command}")
+        self.clean()
+        self.output_file = Path(work_dir) / f"encoder_output_{secrets.token_hex(6)}.log"
         self.process = Popen(
-            command,
-            shell=True,
-            cwd=work_dir,
-            stdin=PIPE,
-            stdout=PIPE,
-            stderr=STDOUT,
-            encoding="utf-8",
-            preexec_fn=os.setsid if not reusables.win_based else None,
+            command, shell=True, cwd=work_dir, stdout=open(self.output_file, "w"), stderr=STDOUT, encoding="utf-8"
         )
         Thread(target=self.read_output).start()
 
     def read_output(self):
-        while True:
-            if not self.is_alive():
-                return
-            line = self.process.stdout.readline().rstrip()
-            if line:
-                logger.info(line)
-                self.log_queue.put(line)
+        with open(self.output_file, "r") as f:
+            while True:
+                if not self.is_alive():
+                    excess = f.read()
+                    logger.info(excess)
+                    self.log_queue.put(excess)
+                    return
+                line = f.readline().rstrip()
+                if line:
+                    logger.info(line)
+                    self.log_queue.put(line)
 
     def read(self, limit=None):
         if not self.is_alive():
             return
         return self.process.stdout.read(limit)
 
-    # def run_command(self, command, work_dir):
-    #     logger.info(f"Running command: {command}")
-    #     last_write = 0
-    #     for i, line in enumerate(self.process.stdout):
-    #         if self.killed:
-    #             logger.info(line.rstrip())
-    #             break
-    #         if not white_detect.match(line):
-    #             if "Skipping NAL unit" in line:
-    #                 last_write -= 1
-    #                 continue
-    #
-    #             line = line.strip()
-    #             if line.startswith("frame"):
-    #                 if last_write + 50 < i:
-    #                     last_write = i
-    #                     logger.info(line.rstrip())
-    #             else:
-    #                 logger.info(line.rstrip())
-    #
-    #     return_code = self.process.poll()
-    #     return return_code
+    def clean(self):
+        if self.output_file and self.output_file.exists():
+            try:
+                self.output_file.unlink()
+            except OSError:
+                pass
 
     def is_alive(self):
         if not self.process:

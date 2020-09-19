@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import shutil
 import sys
 from pathlib import Path
 from subprocess import run
@@ -8,7 +9,7 @@ import pkg_resources
 import reusables
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.shared import latest_ffmpeg
+from fastflix.shared import latest_ffmpeg, message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -31,6 +32,32 @@ class Container(QtWidgets.QMainWindow):
         my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
         self.icon = QtGui.QIcon(my_data)
         self.setWindowIcon(self.icon)
+
+    def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+        if self.main.converting:
+            sm = QtWidgets.QMessageBox()
+            sm.setText("<h2>There is a conversion in process!</h2>")
+            sm.addButton("Cancel Conversion", QtWidgets.QMessageBox.RejectRole)
+            sm.addButton("Close GUI Only", QtWidgets.QMessageBox.DestructiveRole)
+            sm.addButton("Keep FastFlix Open", QtWidgets.QMessageBox.AcceptRole)
+            sm.exec_()
+            if sm.clickedButton().text() == "Cancel Conversion":
+                self.main.worker_queue.put(["cancel"])
+                self.main.close()
+            elif sm.clickedButton().text() == "Close GUI Only":
+                self.main.close(no_cleanup=True)
+                return super(Container, self).closeEvent(a0)
+            else:
+                a0.ignore()
+                return
+
+        for item in self.main.path.work.iterdir():
+            if item.is_dir() and item.stem.startswith("temp_"):
+                shutil.rmtree(item, ignore_errors=True)
+        thumb = Path(self.main.path.work) / "thumbnail_preview.png"
+        if thumb.exists():
+            thumb.unlink(missing_ok=True)
+        super(Container, self).closeEvent(a0)
 
     def init_menu(self):
         menubar = self.menuBar()

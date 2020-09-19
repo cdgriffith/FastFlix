@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
+from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from subprocess import PIPE, STDOUT, Popen, run
 
 from box import Box, BoxError, BoxList
 
-__all__ = ["FlixError", "ff_version", "Flix", "svt_av1_version"]
+__all__ = ["FlixError", "ff_version", "Flix", "guess_bit_depth"]
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -25,31 +26,6 @@ def ff_version(ff, throw=True):
         else:
             return False
     return res.stdout.decode("utf-8").split(" ", 4)[2]
-
-
-def svt_av1_version(sv1_av1):
-    """
-    SVT AV1 Currently does not have a version associated with it's build so can only check for existence
-
-    :param sv1_av1: Path to executable
-    :return: True if SVT-AV1 else False
-    """
-    res = Flix.execute(f'"{sv1_av1}" -help')
-    if res.returncode != 0:
-        logger.warning(f"{sv1_av1} errored while checking version")
-        return False
-    try:
-        lines = res.stdout.decode("utf-8").split("\n")
-    except (ValueError, AttributeError):
-        logger.warning(f"{sv1_av1} errored while decoding output")
-        return False
-    if len(lines) < 2:
-        logger.warning(f"{sv1_av1} did not have enough output to check, must not be right")
-        return False
-    if lines[1].startswith("SVT-AV1"):
-        return True
-    logger.warning(f"{sv1_av1} not a SVT-AV1 file")
-    return False
 
 
 def guess_bit_depth(pix_fmt, color_primaries):
@@ -103,11 +79,11 @@ def guess_bit_depth(pix_fmt, color_primaries):
 
 
 class Flix:
-    def __init__(self, ffmpeg="ffmpeg", ffprobe="ffprobe", svt_av1="SvtAv1EncApp"):
+    def __init__(self, ffmpeg="ffmpeg", ffprobe="ffprobe"):
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
-        self.av1 = svt_av1
-        self.config, self.filters = self.ffmpeg_configuration()
+        self.config, self.filters, self.ffmpeg_version = self.ffmpeg_configuration()
+        self.ffprobe_version = ff_version(ffprobe, True)
 
     def probe(self, file):
         command = f'"{self.ffprobe}" -v quiet -print_format json -show_format -show_streams "{file}"'
@@ -120,8 +96,12 @@ class Flix:
             raise FlixError(result.stderr)
 
     def ffmpeg_configuration(self):
-        output = self.execute(f'"{self.ffmpeg}" -version').stdout.decode("utf-8")
+        res = self.execute(f'"{self.ffmpeg}" -version')
+        if res.returncode != 0:
+            raise FlixError(f'"{self.ffmpeg}" file not found')
+        output = res.stdout.decode("utf-8")
         config = []
+        version = output.split(" ", 4)[2]
         line_denote = "configuration: "
         for line in output.split("\n"):
             if line.startswith(line_denote):
@@ -135,7 +115,7 @@ class Flix:
                 continue
             filters.append(line.strip().split(" ")[1])
 
-        return config, filters
+        return config, filters, version
 
     def parse(self, file):
         data = self.probe(file)
@@ -277,59 +257,6 @@ class Flix:
             f' -y "{output}"'
         )
 
-    def generate_av1_command(
-        self,
-        source,
-        output,
-        video_track,
-        audio_track=None,
-        additional_tracks=(),
-        start_time=0,
-        duration=None,
-        crf=20,
-        disable_hdr=False,
-        scale_width=None,
-        scale_height=None,
-        keep_subtitles=False,
-        crop=None,
-    ):
-        start = ""
-        if start_time:
-            start += "-ss {start_time}"
-        if duration:
-            start += f" -t {duration} -write_tmcd 0"
-
-        maps = ""
-        for track in additional_tracks:
-            maps += f" -map 0:{track} "
-
-        filter_list = []
-
-        if disable_hdr:
-            filter_list.append(
-                "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,"
-                "zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
-            )
-
-        if scale_width:
-            filter_list.append(f"scale={scale_width}:-1")
-        elif scale_height:
-            filter_list.append(f"scale=-1:{scale_height}")
-
-        if crop:
-            filter_list.append(f"crop={crop}")
-
-        filters = ",".join(filter_list)
-
-        return (
-            f'"{self.ffmpeg}" -loglevel error -i "{source}" {start} '
-            f"-c:v libaom-av1 -b:v 0 -strict experimental -crf {crf} -pix_fmt yuv420p "
-            f'{"-map_metadata -1" if start else ""} {f"-vf {filters}" if filters else ""} '
-            f'-map 0:{video_track} {"-an" if audio_track is None else f"-map 0:{audio_track}"} {maps} '
-            f'{"-map 0:s" if keep_subtitles else "-sn"} '
-            f' -y "{output}"'
-        )
-
     def generate_thumbnail_command(self, source, output, video_track, start_time=0, filters=None):
         start = ""
         if start_time:
@@ -376,21 +303,6 @@ class Flix:
             f'"{self.ffmpeg}" -loglevel error -i "{source}" -c:v rawvideo '
             f'-pix_fmt {"yuv420p10le" if bit_depth == 10 else "yuv420p"}'
             f' {f"-vf {filters}" if filters else ""} "{output}"'
-        )
-
-    def svt_av1_command(self, source, output, height, width, fps_num, fps_denom, crf=30, mode=3, bit_depth=8):
-        if not self.av1:
-            raise FlixError("AV1 not defined")
-        intra_period = 1
-        for i in range(1, 31):
-            intra_period = (i * 8) - 1
-            if (intra_period + 8) > (fps_num / fps_denom):
-                break
-        logger.debug(f"setting intra-period to {intra_period} based of fps {float(fps_num / fps_denom):.2f}")
-        return (
-            f'"{self.av1}" -intra-period {intra_period} -enc-mode {mode} -bit-depth {bit_depth} '
-            f"-w {width} -h {height} -fps-num {fps_num} -fps-denom {fps_denom} "
-            f'-q {crf} -i "{source}" -b "{output}"'
         )
 
     def combine_command(self, videos, output, build_dir="."):

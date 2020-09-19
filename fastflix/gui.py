@@ -24,7 +24,7 @@ try:
     from box import Box
     from qtpy import API, QT_VERSION, QtWidgets
 
-    from fastflix.flix import FlixError, ff_version
+    from fastflix.flix import Flix, FlixError
     from fastflix.shared import base_path, error_message, latest_ffmpeg, message
     from fastflix.version import __version__
     from fastflix.widgets.command_runner import BackgroundRunner
@@ -41,6 +41,7 @@ def file_date():
 
 
 def main():
+
     logging.basicConfig(level=logging.DEBUG)
     data_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
     data_path.mkdir(parents=True, exist_ok=True)
@@ -62,7 +63,12 @@ def main():
     coloredlogs.install(level="DEBUG", logger=logger)
     logger.info(f"Starting FastFlix {__version__}")
 
-    finished_message = True
+    for leftover in Path(data_path).glob(f"encoder_output_*.log"):
+        try:
+            leftover.unlink()
+        except OSError:
+            pass
+
     sent_response = True
     gui_close_message = False
     queued_requests = []
@@ -78,9 +84,7 @@ def main():
             request = queue.get(block=True, timeout=0.01)
         except Empty:
             if not runner.is_alive() and not sent_response and not queued_requests:
-                excess = runner.process.stdout.read().strip()
-                if excess:
-                    log(excess)
+                runner.clean()
                 ret = runner.process.poll()
                 if ret > 0:
                     log(f"Error during conversion", logging.WARNING)
@@ -113,13 +117,10 @@ def main():
                 status_queue.put("cancelled")
                 sent_response = True
         if not runner.is_alive():
-            if not finished_message:
-                log(runner.read() or "")
-                finished_message = True
             if queued_requests:
                 runner.start_exec(*queued_requests.pop()[1:])
-                finished_message = False
                 sent_response = False
+    runner.clean()
 
 
 def parse_changes(last_version=None):
@@ -196,10 +197,10 @@ def required_info(logger, data_path, log_dir):
             config.work_dir = str(data_path)
             config.to_json(filename=config_file, indent=2)
         if StrictVersion(config.version) < StrictVersion(__version__):
-            # do upgrade of config
             message(
                 f"<h2 style='text-align: center;'>Welcome to FastFlix {__version__}!</h2><br>"
-                f"<p style='text-align: center; font-size: 15px;'>Please check out the changes made since your last update ({config.version})<br>View the change log in the Help menu (Alt+H then C)<br></p>"
+                f"<p style='text-align: center; font-size: 15px;'>Please check out the changes made since your last "
+                f"update ({config.version})<br>View the change log in the Help menu (Alt+H then C)<br></p>"
             )
             config.version = __version__
             config.to_json(filename=config_file, indent=2)
@@ -245,19 +246,18 @@ def required_info(logger, data_path, log_dir):
             )
             sys.exit(1)
     else:
-        logger.info(f"Using ffmpeg {ffmpeg}")
-        logger.info(f"Using ffprobe {ffprobe}")
+        logger.info(f"Using FFmpeg {ffmpeg}")
+        logger.info(f"Using FFprobe {ffprobe}")
 
     try:
-        ffmpeg_version = ff_version(ffmpeg, throw=True)
-        ffprobe_version = ff_version(ffprobe, throw=True)
+        flix = Flix(ffmpeg=ffmpeg, ffprobe=ffprobe)
     except FlixError:
-        error_message("ffmpeg or ffmpeg could not be executed properly!<br>")
+        error_message("FFmpeg or FFmpeg could not be executed properly!<br>", traceback=True)
         sys.exit(1)
 
     latest_ffmpeg()
 
-    return ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, work_dir, config_file
+    return flix, work_dir, config_file
 
 
 def start_app(queue, status_queue, log_queue, data_path, log_dir):
@@ -271,14 +271,10 @@ def start_app(queue, status_queue, log_queue, data_path, log_dir):
         main_app = QtWidgets.QApplication(sys.argv)
         main_app.setStyle("fusion")
         main_app.setApplicationDisplayName("FastFlix")
-        (ffmpeg, ffprobe, ffmpeg_version, ffprobe_version, work_dir, config_file) = required_info(
-            logger, data_path, log_dir
-        )
+
+        flix, work_dir, config_file = required_info(logger, data_path, log_dir)
         window = Container(
-            ffmpeg=ffmpeg,
-            ffprobe=ffprobe,
-            ffmpeg_version=ffmpeg_version,
-            ffprobe_version=ffprobe_version,
+            flix=flix,
             source=sys.argv[1] if len(sys.argv) > 1 else "",
             data_path=data_path,
             work_path=work_dir,
@@ -295,12 +291,6 @@ def start_app(queue, status_queue, log_queue, data_path, log_dir):
         print(f"Unexpected error: {err}")
     else:
         logger.info("Fastflix shutting down")
-        for item in Path(work_dir).iterdir():
-            if item.is_dir() and item.stem.startswith("temp_"):
-                shutil.rmtree(item, ignore_errors=True)
-        thumb = Path(work_dir) / "thumbnail_preview.png"
-        if thumb.exists():
-            thumb.unlink(missing_ok=True)
 
 
 def windows_download_ffmpeg(ffmpeg_folder):

@@ -47,7 +47,7 @@ class Main(QtWidgets.QWidget):
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
 
-    def __init__(self, parent, data_path, work_path, ffmpeg, ffprobe, worker_queue, status_queue, log_queue, **kwargs):
+    def __init__(self, parent, data_path, work_path, worker_queue, status_queue, log_queue, flix, **kwargs):
         super().__init__(parent)
         self.container = parent
         self.initialized = False
@@ -61,8 +61,8 @@ class Main(QtWidgets.QWidget):
         self.worker_queue = worker_queue
         self.status_queue = status_queue
         self.log_queue = log_queue
-        self.ffmpeg = ffmpeg
-        self.ffprobe = ffprobe
+        self.ffmpeg = flix.ffmpeg
+        self.ffprobe = flix.ffprobe
 
         self.notifier = Notifier(self, self.status_queue)
         self.notifier.start()
@@ -99,7 +99,7 @@ class Main(QtWidgets.QWidget):
         )
 
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
-        self.flix = Flix(ffmpeg=self.ffmpeg, ffprobe=self.ffprobe)
+        self.flix = flix
         self.plugins = load_plugins(self.flix.config)
 
         self.video_options = VideoOptions(
@@ -816,9 +816,10 @@ class Main(QtWidgets.QWidget):
         self.build_commands()
         self.generate_thumbnail()
 
-    def close(self):
+    def close(self, no_cleanup=False):
         self.status_queue.put("exit")
-        self.temp_dir.cleanup()
+        if not no_cleanup:
+            self.temp_dir.cleanup()
         self.notifier.terminate()
         super().close()
 
