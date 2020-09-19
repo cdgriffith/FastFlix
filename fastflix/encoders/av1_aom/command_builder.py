@@ -14,6 +14,7 @@ def build(
     video_track,
     ffmpeg,
     temp_dir,
+    output_video,
     bitrate=None,
     crf=None,
     start_time=0,
@@ -58,11 +59,11 @@ def build(
     if bitrate:
         pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
         command_1 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {bitrate} -pass 1 -an -f matroska {ending}'
-        command_2 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {bitrate} -pass 2 {audio} "{{output}}"'
+        command_2 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {bitrate} -pass 2 {audio} "{output_video}"'
         return [
             helpers.Command(command_1, ["ffmpeg", "output"], False, name="First Pass bitrate"),
             helpers.Command(command_2, ["ffmpeg", "output"], False, name="Second Pass bitrate"),
         ]
     elif crf:
-        command_1 = f'{beginning} -b:v 0 -crf {crf} {audio} "{{output}}"'
+        command_1 = f'{beginning} -b:v 0 -crf {crf} {audio} "{output_video}"'
         return [helpers.Command(command_1, ["ffmpeg", "output"], False, name="Single Pass CRF")]

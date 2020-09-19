@@ -35,6 +35,7 @@ def build(
     start_time,
     duration,
     temp_dir,
+    output_video,
     tiles=0,
     tile_columns=0,
     tile_rows=0,
@@ -100,15 +101,15 @@ def build(
     pass_type = "bitrate" if bitrate else "QP"
 
     if not bitrate:
-        command_1 = f'{beginning} -qp {qp} {audio} "{{output}}"'
+        command_1 = f'{beginning} -qp {qp} {audio} "{output_video}"'
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
 
     if single_pass:
-        command_1 = f'{beginning} -b:v {bitrate} {audio} "{{output}}"'
+        command_1 = f'{beginning} -b:v {bitrate} {audio} "{output_video}"'
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
     else:
         command_1 = f"{beginning} -b:v {bitrate} -pass 1 -an -f matroska {ending}"
-        command_2 = f'{beginning} -b:v {bitrate} -pass 2 {audio} "{{output}}"'
+        command_2 = f'{beginning} -b:v {bitrate} -pass 2 {audio} "{output_video}"'
         return [
             Command(command_1, ["ffmpeg", "output"], False, name=f"First pass {pass_type}", exe="ffmpeg"),
             Command(command_2, ["ffmpeg", "output"], False, name=f"Second pass {pass_type} ", exe="ffmpeg"),

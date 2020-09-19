@@ -3,6 +3,7 @@
 
 import math
 
+import reusables
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
@@ -41,9 +42,21 @@ class Command(QtWidgets.QTabWidget):
 class CommandList(QtWidgets.QWidget):
     def __init__(self, parent):
         super(CommandList, self).__init__(parent)
+        self.video_options = parent
 
         layout = QtWidgets.QGridLayout()
-        layout.addWidget(QtWidgets.QLabel("Commands to execute"))
+
+        top_row = QtWidgets.QHBoxLayout()
+        top_row.addWidget(QtWidgets.QLabel("Commands to execute"))
+
+        copy_commands_button = QtWidgets.QPushButton("Copy Commands")
+        copy_commands_button.setToolTip("Copy all commands to the clipboard")
+        copy_commands_button.clicked.connect(lambda: self.copy_commands_to_clipboard())
+
+        top_row.addStretch()
+        top_row.addWidget(copy_commands_button)
+
+        layout.addLayout(top_row, 0, 0)
 
         self.inner_widget = QtWidgets.QWidget()
 
@@ -51,8 +64,16 @@ class CommandList(QtWidgets.QWidget):
         self.scroll_area.setMinimumHeight(200)
 
         layout.addWidget(self.scroll_area)
-
+        self.commands = []
         self.setLayout(layout)
+
+    def _prep_commands(self):
+        return f"\r\n".join(self.commands) if reusables.win_based else f"\n".join(self.commands)
+
+    def copy_commands_to_clipboard(self):
+        cmds = self._prep_commands()
+        print(cmds)
+        self.video_options.main.container.app.clipboard().setText(cmds)
 
     def update_commands(self, commands):
         if not commands:
@@ -63,9 +84,11 @@ class CommandList(QtWidgets.QWidget):
         self.inner_widget.setSizePolicy(sp)
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(5)
+        self.commands = []
         for index, item in enumerate(commands, 1):
             if item.item == "command":
                 new_item = Command(self.scroll_area, item.command, index, name=item.name)
+                self.commands.append(item.command)
                 layout.addWidget(new_item)
             elif item.item == "loop":
                 new_item = Loop(self.scroll_area, item.condition, item.commands, index, name=item.name)

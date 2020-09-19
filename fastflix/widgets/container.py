@@ -18,8 +18,9 @@ from fastflix.widgets.settings import Settings
 
 
 class Container(QtWidgets.QMainWindow):
-    def __init__(self, data_path, work_path, config_file, **kwargs):
+    def __init__(self, data_path, work_path, config_file, main_app, **kwargs):
         super().__init__()
+        self.app = main_app
         self.log_dir = data_path / "logs"
         self.logs = Logs()
         self.changes = Changes()

@@ -2,6 +2,7 @@
 import importlib.machinery
 import os
 import sys
+from datetime import datetime
 from distutils.version import StrictVersion
 from pathlib import Path
 
@@ -101,3 +102,7 @@ def latest_ffmpeg(no_new_dialog=False):
         return
     if no_new_dialog:
         message("You are using the latest version of FastFlix")
+
+
+def file_date():
+    return datetime.now().isoformat().replace(":", ".").rsplit(".", 1)[0]

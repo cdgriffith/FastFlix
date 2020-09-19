@@ -14,6 +14,7 @@ def build(
     video_track,
     ffmpeg,
     temp_dir,
+    output_video,
     bitrate=None,
     crf=None,
     start_time=0,
@@ -54,13 +55,13 @@ def build(
 
     if bitrate:
         command_1 = f"{beginning} -b:v {bitrate} -quality good -pass 1 -an -f webm {ending}"
-        command_2 = f'{beginning} -b:v {bitrate}  -quality {quality} -speed {speed} -pass 2 {audio} "{{output}}"'
+        command_2 = f'{beginning} -b:v {bitrate}  -quality {quality} -speed {speed} -pass 2 {audio} "{output_video}"'
 
     elif crf:
         command_1 = f"{beginning} -b:v 0 -crf {crf} -quality good -pass 1 -an -f webm {ending}"
         command_2 = (
             f"{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} "
-            f'{"-pass 2" if not single_pass else ""} {audio} "{{output}}"'
+            f'{"-pass 2" if not single_pass else ""} {audio} "{output_video}"'
         )
 
     else:

@@ -35,6 +35,7 @@ def build(
     start_time,
     temp_dir,
     duration,
+    output_video,
     tier="main",
     tile_columns=0,
     tile_rows=0,
@@ -102,21 +103,21 @@ def build(
 
     if single_pass:
         if bitrate:
-            command_1 = f'{beginning} -b:v {bitrate} -rc 1 {audio} "{{output}}"'
+            command_1 = f'{beginning} -b:v {bitrate} -rc 1 {audio} "{output_video}"'
 
         elif qp is not None:
-            command_1 = f'{beginning} -qp {qp} -rc 0 {audio} "{{output}}"'
+            command_1 = f'{beginning} -qp {qp} -rc 0 {audio} "{output_video}"'
         else:
             return []
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
     else:
         if bitrate:
             command_1 = f"{beginning} -b:v {bitrate} -rc 1 -pass 1 -an -f matroska {ending}"
-            command_2 = f'{beginning} -b:v {bitrate} -rc 1 -pass 2 {audio} "{{output}}"'
+            command_2 = f'{beginning} -b:v {bitrate} -rc 1 -pass 2 {audio} "{output_video}"'
 
         elif qp is not None:
             command_1 = f"{beginning} -qp {qp} -rc 0 -pass 1 -an -f matroska {ending}"
-            command_2 = f'{beginning} -qp {qp} -rc 0 -pass 2 {audio} "{{output}}"'
+            command_2 = f'{beginning} -qp {qp} -rc 0 -pass 2 {audio} "{output_video}"'
         else:
             return []
         return [

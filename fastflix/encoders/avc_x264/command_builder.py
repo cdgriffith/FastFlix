@@ -16,6 +16,7 @@ def build(
     video_track,
     ffmpeg,
     temp_dir,
+    output_video,
     bitrate=None,
     crf=None,
     start_time=0,
@@ -78,7 +79,7 @@ def build(
         )
         command_2 = (
             f'{beginning} -pass 2 -passlogfile "{pass_log_file}" '
-            f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
+            f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {extra_data} "{output_video}"'
         )
         return [
             Command(
@@ -90,7 +91,7 @@ def build(
         ]
 
     elif crf:
-        command = f"{beginning} -crf {crf} " f'-preset {preset} {audio} {subtitles} {extra_data} "{{output}}"'
+        command = f"{beginning} -crf {crf} " f'-preset {preset} {audio} {subtitles} {extra_data} "{output_video}"'
         return [
             Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")
         ]

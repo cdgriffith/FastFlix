@@ -182,7 +182,7 @@ class AV1(SettingPanel):
 
     def get_settings(self):
         conversions = {"default": None, "enabled": 1, "disabled": 0}
-        print(self.widgets.extra.text())
+
         settings = Box(
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             cpu_used=self.widgets.cpu_used.currentText(),

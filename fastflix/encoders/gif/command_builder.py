@@ -7,7 +7,7 @@ from fastflix.encoders.common.helpers import Command, generate_filters, start_an
 extension = "gif"
 
 
-def build(source, video_track, ffmpeg, temp_dir, fps=15, dither="sierra2_4a", **kwargs):
+def build(source, video_track, ffmpeg, temp_dir, output_video, fps=15, dither="sierra2_4a", **kwargs):
 
     filters = generate_filters(**kwargs)
 
@@ -25,7 +25,7 @@ def build(source, video_track, ffmpeg, temp_dir, fps=15, dither="sierra2_4a", **
 
     command_2 = (
         f'{beginning} -i "{temp_palette}" -map 0:{video_track} '
-        f'-lavfi "{gif_filters} [x]; [x][1:v] paletteuse=dither={dither}" -y "{{output}}" '
+        f'-lavfi "{gif_filters} [x]; [x][1:v] paletteuse=dither={dither}" -y "{output_video}" '
     )
 
     return [

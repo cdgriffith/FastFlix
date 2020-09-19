@@ -25,7 +25,7 @@ try:
     from qtpy import API, QT_VERSION, QtWidgets
 
     from fastflix.flix import Flix, FlixError
-    from fastflix.shared import base_path, error_message, latest_ffmpeg, message
+    from fastflix.shared import base_path, error_message, file_date, latest_ffmpeg, message
     from fastflix.version import __version__
     from fastflix.widgets.command_runner import BackgroundRunner
     from fastflix.widgets.container import Container
@@ -34,10 +34,6 @@ except ImportError as err:
     print("Could not load FastFlix properly!", file=sys.stderr)
     input("Please report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
     sys.exit(1)
-
-
-def file_date():
-    return datetime.now().isoformat().replace(":", ".").rsplit(".")[0]
 
 
 def main():
@@ -282,6 +278,7 @@ def start_app(queue, status_queue, log_queue, data_path, log_dir):
             worker_queue=queue,
             status_queue=status_queue,
             log_queue=log_queue,
+            main_app=main_app,
         )
         main_app.setWindowIcon(window.icon)
         window.show()
