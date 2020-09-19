@@ -10,17 +10,21 @@ It uses `FFmpeg` under the hood for the heavy lifting, and can work with a varie
 
 #  Encoders
 
-<img src="./fastflix/data/encoders/icon_av1_aom.png" height="200" alt="av1_aom" >
+<img src="./fastflix/data/encoders/icon_x265.png" height="100" alt="x265" >
+<img src="./fastflix/data/encoders/icon_x264.png" height="100" alt="x264" >
+<img src="./fastflix/data/encoders/icon_av1_aom.png" height="100" alt="av1_aom" >
+<img src="./fastflix/data/encoders/icon_rav1e.png" height="100" alt="rav1e" >
+<img src="./fastflix/data/encoders/icon_svt_av1.png" height="100" alt="svt_av1" >
+<img src="./fastflix/data/encoders/icon_vp9.png" height="100" alt="vpg" >
+<img src="./fastflix/data/encoders/icon_gif.png" height="100" alt="gif" >
 
-Currently there is support for:
+Currently FastFlix supports the following encoders if their required libraries are in FFmpeg:
 
-* AV1 (SVT-AV1 on Windows)
-* AV1 (FFMPEG libaom - currently very slow)
-* AVC (libx264)
 * HEVC (libx265)
+* AVC (libx264)
+* AV1 (libaom-av1, libsvtav1, librav1e)
+* VP9 (libvpx)
 * GIF
-* VP9
-
 
 # Releases
 
