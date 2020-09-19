@@ -99,12 +99,13 @@ def main():
                 else:
                     log_queue.put("CLEAR_WINDOW")
                     reusables.remove_file_handlers(logger)
-                    reusables.add_file_handler(
-                        logger,
+                    new_file_handler = reusables.get_file_handler(
                         log_dir / f"flix_conversion_{file_date()}.log",
                         level=logging.DEBUG,
                         log_format="%(asctime)s - %(message)s",
+                        encoding="utf-8",
                     )
+                    logger.addHandler(new_file_handler)
                     runner.start_exec(*request[1:])
                     finished_message = False
                     sent_response = False
@@ -169,7 +170,7 @@ def required_info(logger, data_path, log_dir):
                 if file.is_file() and file.name.lower() in ("ffprobe", "ffprobe.exe"):
                     ffprobe = file
 
-    logger.addHandler(logging.FileHandler(log_dir / f"flix_gui_{file_date()}.log"))
+    logger.addHandler(logging.FileHandler(log_dir / f"flix_gui_{file_date()}.log", encoding="utf-8"))
 
     config_file = Path(data_path, "fastflix.json")
     if not config_file.exists():
