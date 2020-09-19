@@ -62,12 +62,14 @@ def build(
                 assert crop_check[0] % 8 == 0
                 assert crop_check[1] % 8 == 0
             except AssertionError:
-                raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
+                logger.error("CROP BAD: Video height and main_width must be divisible by 8")
+                return []
         else:
             crop_height = height % 8
             crop_width = width % 8
             if crop_height or crop_width:
-                raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
+                logger.error("CROP BAD: Video height and main_width must be divisible by 8")
+                return []
 
     assert height <= 2160
     assert width <= 4096
