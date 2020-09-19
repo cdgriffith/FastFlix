@@ -10,6 +10,8 @@ It uses `FFmpeg` under the hood for the heavy lifting, and can work with a varie
 
 #  Encoders
 
+<img src="./fastflix/data/encoders/icon_av1_aom.png" height="200" alt="av1_aom" >
+
 Currently there is support for:
 
 * AV1 (SVT-AV1 on Windows)
