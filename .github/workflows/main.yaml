@@ -14,22 +14,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - run: sudo apt install python3-dev python3-pyqt5 -y
+
     - name: PyInstaller Linux
       uses: JackMcKew/pyinstaller-action-linux@main
       with:
         path: .
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: FastFlix
-        path: ./dist/
 
     - name: PyInstaller Windows
       uses: JackMcKew/pyinstaller-action-windows@main
       with:
         path: .
 
+    - run: cp ./LICENSE ./dist/
+
     - uses: actions/upload-artifact@v2
       with:
-        name: FastFlix.exe
+        name: FastFlix
         path: ./dist/
