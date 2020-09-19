@@ -31,6 +31,10 @@
 * Removing support for the direct SVT AV1 encoder (fixes #24)
 * Removing support for cutielog / socket based logging
 
+## Version 2.6.3
+* Fixing #71 #26 encoding issues in video files (thanks to -L0Lock-)
+* Fixing tempfile issue with recursion on cleanup
+* Fixing SVT AV1 command building raising errors on bad crop
 
 ## Version 2.6.2
 
