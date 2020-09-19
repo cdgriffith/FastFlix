@@ -15,13 +15,8 @@
 * Adding video filename path
 * Adding check for new ffmpeg on startup
 * Adding #69 nice feature for language selection (thanks to HannesJo0139)
-* Adding button to copy commands to clipboard
-* Fixing Windows taskbar does not always show icon
-* Fixing #55 GUI logs by splitting them from core logs
-* Fixing #42 log output from FFmpeg stopped due to PIPE filling up (thanks to Trevbams)
-* Fixing that mkv cover attachments would show as video tracks
-* Fixing plugins should not be available if no FFmpeg library for them
-* Changing logs to be separated into GUI and conversion logs
+* Adding #13 button to copy commands to clipboard and save to file
+* Changing #8 logs to be separated into GUI and conversion logs
 * Changing major internal re-write to keep encoding even if GUI dies
 * Changing bitrate suggestion resolutions to be more readable with fps
 * Changing command builders to specify the temporary files themselves
@@ -29,6 +24,11 @@
 * Changing rotation and flip section to drop downs
 * Removing support for the direct SVT AV1 encoder (fixes #24)
 * Removing support for cutielog / socket based logging
+* Fixing Windows taskbar does not always show icon
+* Fixing #55 GUI logs by splitting them from core logs
+* Fixing #42 log output from FFmpeg stopped due to PIPE filling up (thanks to Trevbams)
+* Fixing that mkv cover attachments would show as video tracks
+* Fixing plugins should not be available if no FFmpeg library for them
 
 ## Version 2.6.2
 

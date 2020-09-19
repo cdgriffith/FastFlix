@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import math
+from pathlib import Path
 
 import reusables
 from box import Box
@@ -49,12 +49,21 @@ class CommandList(QtWidgets.QWidget):
         top_row = QtWidgets.QHBoxLayout()
         top_row.addWidget(QtWidgets.QLabel("Commands to execute"))
 
-        copy_commands_button = QtWidgets.QPushButton("Copy Commands")
+        copy_commands_button = QtWidgets.QPushButton(
+            self.style().standardIcon(QtWidgets.QStyle.SP_ToolBarVerticalExtensionButton), "Copy Commands"
+        )
         copy_commands_button.setToolTip("Copy all commands to the clipboard")
         copy_commands_button.clicked.connect(lambda: self.copy_commands_to_clipboard())
 
+        save_commands_button = QtWidgets.QPushButton(
+            self.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton), "Save Commands"
+        )
+        save_commands_button.setToolTip("Save commands to file")
+        save_commands_button.clicked.connect(lambda: self.save_commands_to_file())
+
         top_row.addStretch()
         top_row.addWidget(copy_commands_button)
+        top_row.addWidget(save_commands_button)
 
         layout.addLayout(top_row, 0, 0)
 
@@ -74,6 +83,15 @@ class CommandList(QtWidgets.QWidget):
         cmds = self._prep_commands()
         print(cmds)
         self.video_options.main.container.app.clipboard().setText(cmds)
+
+    @reusables.log_exception("fastflix", show_traceback=False)
+    def save_commands_to_file(self):
+        ext = ".bat" if reusables.win_based else ".sh"
+        filename = QtWidgets.QFileDialog.getSaveFileName(
+            self, caption="Save Video As", directory=str(Path("~").expanduser()), filter=f"Save File (*{ext})"
+        )
+        if filename:
+            Path(filename[0]).write_text(self._prep_commands())
 
     def update_commands(self, commands):
         if not commands:
