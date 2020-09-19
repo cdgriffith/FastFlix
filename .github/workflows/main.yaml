@@ -1,0 +1,35 @@
+name: Package Application with Pyinstaller
+
+on:
+  push:
+    branches: [ master, develop, build, 3.0 ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: PyInstaller Linux
+      uses: JackMcKew/pyinstaller-action-linux@main
+      with:
+        path: .
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: FastFlix
+        path: ./dist/
+
+    - name: PyInstaller Windows
+      uses: JackMcKew/pyinstaller-action-windows@main
+      with:
+        path: .
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: FastFlix.exe
+        path: ./dist/
