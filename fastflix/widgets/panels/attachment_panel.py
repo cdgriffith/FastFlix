@@ -33,7 +33,7 @@ class AttachmentPanel(QtWidgets.QWidget):
         # row, column, row span, column span
         layout.addWidget(QtWidgets.QLabel("Poster Cover"), 0, 0, 1, 5)
         layout.addWidget(QtWidgets.QLabel("Landscape Cover"), 0, 6, 1, 4)
-        layout.addWidget(info, 0, 10, 1, 1)
+        layout.addWidget(info, 0, 9, 1, 1, QtCore.Qt.AlignRight)
 
         self.poster = QtWidgets.QLabel()
         self.poster.setSizePolicy(sp)
@@ -41,8 +41,8 @@ class AttachmentPanel(QtWidgets.QWidget):
         self.landscape = QtWidgets.QLabel()
         self.landscape.setSizePolicy(sp)
 
-        layout.addWidget(self.poster, 1, 0, 8, 5)
-        layout.addWidget(self.landscape, 1, 6, 8, 5)
+        layout.addWidget(self.poster, 1, 0, 8, 4)
+        layout.addWidget(self.landscape, 1, 6, 8, 4)
 
         layout.addLayout(self.init_cover(), 9, 0, 1, 4)
         layout.addLayout(self.init_landscape_cover(), 9, 6, 1, 4)

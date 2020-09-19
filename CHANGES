@@ -22,13 +22,15 @@
 * Changing command builders to specify the temporary files themselves
 * Changing changelog to proper markdown
 * Changing rotation and flip section to drop downs
-* Removing support for the direct SVT AV1 encoder (fixes #24)
-* Removing support for cutielog / socket based logging
 * Fixing Windows taskbar does not always show icon
 * Fixing #55 GUI logs by splitting them from core logs
 * Fixing #42 log output from FFmpeg stopped due to PIPE filling up (thanks to Trevbams)
 * Fixing that mkv cover attachments would show as video tracks
 * Fixing plugins should not be available if no FFmpeg library for them
+* Fixing error on audio tracks listing zero channels
+* Removing support for the direct SVT AV1 encoder (fixes #24)
+* Removing support for cutielog / socket based logging
+
 
 ## Version 2.6.2
 

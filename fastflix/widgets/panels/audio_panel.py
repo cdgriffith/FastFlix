@@ -144,6 +144,29 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.convert_bitrate.addItems(
             [f"{x}k" for x in range(32 * self.channels, (256 * self.channels) + 1, 32 * self.channels)]
+            if self.channels
+            else [
+                "32k",
+                "64k",
+                "96k",
+                "128k",
+                "160k",
+                "192k",
+                "224k",
+                "256k",
+                "320k",
+                "512K",
+                "768k",
+                "896k",
+                "1024k",
+                "1152k",
+                "1280k",
+                "1408k",
+                "1536k",
+                "1664k",
+                "1792k",
+                "1920k",
+            ]
         )
         self.widgets.convert_bitrate.setCurrentIndex(3)
         self.widgets.convert_bitrate.setDisabled(True)
