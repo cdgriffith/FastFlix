@@ -10,7 +10,7 @@ It uses `FFmpeg` under the hood for the heavy lifting, and can work with a varie
 
 #  Encoders
 
-<img src="./fastflix/data/encoders/icon_x265.png" width="120" alt="x265" > <img src="./fastflix/data/encoders/icon_x264.png" width="120" alt="x264" > <img src="./fastflix/data/encoders/icon_av1_aom.png" width="120" alt="av1_aom" > <img src="./fastflix/data/encoders/icon_rav1e.png" width="120" alt="rav1e" > <img src="./fastflix/data/encoders/icon_svt_av1.png" width="120" alt="svt_av1" > <img src="./fastflix/data/encoders/icon_vp9.png" width="120" alt="vpg" >
+<img src="./fastflix/data/encoders/icon_x265.png" width="120" alt="x265" > <img src="./fastflix/data/encoders/icon_x264.png" width="120" alt="x264" >  <img src="./fastflix/data/encoders/icon_vp9.png" width="120" alt="vpg" > <img src="./fastflix/data/encoders/icon_rav1e.png" width="120" alt="rav1e" > <img src="./fastflix/data/encoders/icon_av1_aom.png" width="120" alt="av1_aom" ><img src="./fastflix/data/encoders/icon_svt_av1.png" width="120" alt="svt_av1" >
 
 Currently FastFlix supports the following encoders if their required libraries are in FFmpeg:
 
