@@ -833,9 +833,6 @@ class Main(QtWidgets.QWidget):
         if self.converting:
             self.worker_queue.put(["cancel"])
             return
-        #     self.command_runner.kill()
-        #     self.command_runner.exit(1)
-        #     return
 
         if not self.input_video:
             return error_message("Have to select a video first")

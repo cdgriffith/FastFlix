@@ -73,9 +73,6 @@ def build(
             if crop_height or crop_width:
                 raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
 
-    assert height <= 2160
-    assert width <= 4096
-
     beginning = (
         f'"{ffmpeg}" -y '
         f' {f"-ss {start_time}" if start_time else ""}  '

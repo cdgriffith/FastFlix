@@ -6,6 +6,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.audio import lossless
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.widgets.panels.subtitle_panel import language_list
 
 
 class Audio(QtWidgets.QTabWidget):
@@ -37,7 +38,6 @@ class Audio(QtWidgets.QTabWidget):
         self.first = first
         self.track_name = title
         self.profile = profile
-        self.language = language
         self.last = last
         self.index = index
         self.codec = codec
@@ -54,6 +54,7 @@ class Audio(QtWidgets.QTabWidget):
             enable_check=QtWidgets.QCheckBox("Enabled"),
             dup_button=QtWidgets.QPushButton("➕"),
             delete_button=QtWidgets.QPushButton("⛔"),
+            language=QtWidgets.QComboBox(),
             downmix=QtWidgets.QComboBox(),
             convert_to=None,
             convert_bitrate=None,
@@ -69,6 +70,12 @@ class Audio(QtWidgets.QTabWidget):
             "6.1 / 7.0",
             "7.1 / 8.0",
         ]
+
+        self.widgets.language.addItems(["None"] + language_list)
+        if language:
+            self.widgets.language.setCurrentText(language)
+
+        self.widgets.language.currentIndexChanged.connect(lambda: self.page_update())
         self.widgets.title.setFixedWidth(200)
         self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
@@ -77,7 +84,6 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.downmix.setCurrentIndex(0)
         self.widgets.downmix.setDisabled(True)
 
-        self.widgets.enable_check
         self.widgets.enable_check.setChecked(enabled)
         self.widgets.enable_check.toggled.connect(self.update_enable)
 
@@ -96,15 +102,18 @@ class Audio(QtWidgets.QTabWidget):
         grid.addWidget(self.widgets.title, 0, 4)
         grid.addLayout(self.init_conversion(), 0, 5)
         grid.addWidget(self.widgets.downmix, 0, 6)
+        grid.addWidget(self.widgets.language, 0, 7)
+
+        right_button_start_index = 8
 
         if not original:
             spacer = QtWidgets.QLabel()
             spacer.setFixedWidth(63)
-            grid.addWidget(spacer, 0, 7)
-            grid.addWidget(self.widgets.delete_button, 0, 8)
+            grid.addWidget(spacer, 0, right_button_start_index)
+            grid.addWidget(self.widgets.delete_button, 0, right_button_start_index + 1)
         else:
-            grid.addWidget(self.widgets.enable_check, 0, 7)
-            grid.addWidget(self.widgets.dup_button, 0, 8)
+            grid.addWidget(self.widgets.enable_check, 0, right_button_start_index)
+            grid.addWidget(self.widgets.dup_button, 0, right_button_start_index + 1)
         self.setLayout(grid)
         self.loading = False
 
@@ -217,6 +226,11 @@ class Audio(QtWidgets.QTabWidget):
         return self.widgets.downmix.currentIndex()
 
     @property
+    def language(self):
+        text = self.widgets.language.currentText()
+        return None if text == "None" else text
+
+    @property
     def title(self):
         return self.widgets.title.text()
 
@@ -233,6 +247,7 @@ class Audio(QtWidgets.QTabWidget):
             parent=self.parent,
             audio=self.audio,
             index=self.index,
+            language=self.language,
             outdex=len(self.parent.tracks) + 1,
             codec=self.codec,
             available_audio_encoders=self.available_audio_encoders,
