@@ -26,8 +26,6 @@ jobs:
       with:
         path: .
 
-    - run: cp ./LICENSE ./dist/
-
     - uses: actions/upload-artifact@v2
       with:
         name: FastFlix

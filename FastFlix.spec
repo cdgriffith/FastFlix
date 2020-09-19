@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['fastflix/gui.py'],
-             pathex=['/mnt/c/Users/Chris/PycharmProjects/FastFlix'],
+             pathex=['.'],
              binaries=[],
              datas=[('fastflix/data/encoders/*', 'fastflix/data/encoders'), ('fastflix/data/rotations/*', 'fastflix/data/rotations'), ('fastflix/data/icon.ico', 'fastflix/data'), ('CHANGES', 'fastflix/.'), ('docs/build-licenses.txt', 'docs')],
              hiddenimports=['qtpy', 'pyqt5', 'requests', 'python-box', 'reusables', 'pkg_resources.py2_warn', 'coloredlogs', 'appdirs', 'ruamel.yaml', 'mistune'],
