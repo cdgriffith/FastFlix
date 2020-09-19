@@ -1,10 +1,8 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/208k29cvoq8xwf8j/branch/master?svg=true)](https://ci.appveyor.com/project/cdgriffith/fastflix/branch/master)
-
 # FastFlix
 
-FastFlix is a simple and friendly GUI for encoding videos.
+![preview](./docs/gui_preview.png)
 
-![preview](https://raw.githubusercontent.com/cdgriffith/binary-files/fast-flix/media/fastflix/2.0.0/main.png)
+FastFlix is a simple and friendly GUI for encoding videos.
 
 It uses `FFmpeg` under the hood for the heavy lifting, and can work with a variety of encoders.
 
@@ -23,6 +21,8 @@ It uses `FFmpeg` under the hood for the heavy lifting, and can work with a varie
 # Releases
 
 ## Windows
+[![Build status](https://ci.appveyor.com/api/projects/status/208k29cvoq8xwf8j/branch/master?svg=true)](https://ci.appveyor.com/project/cdgriffith/fastflix/branch/master)
+
 View the [releases](https://github.com/cdgriffith/FastFlix/releases) for 64 bit Windows binaries (Generated via Appveyor and also [available there](https://ci.appveyor.com/project/cdgriffith/fastflix)).
 
 ## MacOS and Linux
@@ -48,5 +48,6 @@ python -m flix
 
 Copyright (C) 2019-2020 Chris Griffith
 
-The code itself is licensed under the MIT which you can read in the `LICENSE` file.
-Read more about the release licensing in the [docs](docs/README.md) folder.
+The code itself is licensed under the MIT which you can read in the `LICENSE` file. <br>
+Read more about the release licensing in the [docs](docs/README.md) folder. <br>
+Encoder icons for [VP9](https://commons.wikimedia.org/wiki/File:Vp9-logo-for-mediawiki.svg) and [AOM AV1](https://commons.wikimedia.org/wiki/File:AV1_logo_2018.svg) are from Wikimedia Commons all others are self created.
