@@ -81,7 +81,6 @@ class CommandList(QtWidgets.QWidget):
 
     def copy_commands_to_clipboard(self):
         cmds = self._prep_commands()
-        print(cmds)
         self.video_options.main.container.app.clipboard().setText(cmds)
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -90,7 +89,7 @@ class CommandList(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getSaveFileName(
             self, caption="Save Video As", directory=str(Path("~").expanduser()), filter=f"Save File (*{ext})"
         )
-        if filename:
+        if filename and filename[0]:
             Path(filename[0]).write_text(self._prep_commands())
 
     def update_commands(self, commands):

@@ -120,24 +120,6 @@ def main():
     runner.clean()
 
 
-def parse_changes(last_version=None):
-    changes = (Path(__file__).parent / "CHANGES").read_text().splitlines()
-    if last_version:
-        version_hit = False
-        last_line = None
-        for i, line in enumerate(changes):
-            if line.startswith(f"Version {last_version}"):
-                version_hit = True
-            if version_hit and not line.strip():
-                last_line = i
-                break
-        if last_line:
-            print("found last version")
-            return "\n".join(changes[3:last_line])
-
-    return "\n".join(changes[3:50])
-
-
 def required_info(logger, data_path, log_dir):
     if reusables.win_based:
         # This fixes the taskbar icon not always appearing

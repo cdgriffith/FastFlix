@@ -37,15 +37,15 @@ class CoverPanel(QtWidgets.QWidget):
         layout.addWidget(info, 0, 9, 1, 1, QtCore.Qt.AlignRight)
 
         poster_options_layout = QtWidgets.QHBoxLayout()
-        self.cover_passthrough_checkbox = QtWidgets.QCheckBox("Copy Existing Cover")
-        self.small_cover_passthrough_checkbox = QtWidgets.QCheckBox("Copy Existing Small Cover")
+        self.cover_passthrough_checkbox = QtWidgets.QCheckBox("Copy Cover")
+        self.small_cover_passthrough_checkbox = QtWidgets.QCheckBox("Copy Small Cover (no preview)")
 
         poster_options_layout.addWidget(self.cover_passthrough_checkbox)
         poster_options_layout.addWidget(self.small_cover_passthrough_checkbox)
 
         land_options_layout = QtWidgets.QHBoxLayout()
-        self.land_passthrough_checkbox = QtWidgets.QCheckBox("Copy Existing Landscape Cover")
-        self.small_land_passthrough_checkbox = QtWidgets.QCheckBox("Copy Existing Small Landscape Cover")
+        self.land_passthrough_checkbox = QtWidgets.QCheckBox("Copy Landscape Cover")
+        self.small_land_passthrough_checkbox = QtWidgets.QCheckBox("Copy Small Landscape Cover  (no preview)")
 
         land_options_layout.addWidget(self.land_passthrough_checkbox)
         land_options_layout.addWidget(self.small_land_passthrough_checkbox)
