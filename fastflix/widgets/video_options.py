@@ -5,9 +5,9 @@ import logging
 from box import Box, BoxList
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.widgets.panels.attachment_panel import AttachmentPanel
 from fastflix.widgets.panels.audio_panel import AudioList
 from fastflix.widgets.panels.command_panel import CommandList
+from fastflix.widgets.panels.cover_panel import CoverPanel
 from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
 
@@ -27,7 +27,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.audio = AudioList(self, available_audio_encoders)
         self.subtitles = SubtitleList(self)
         self.status = StatusPanel(self, log_queue)
-        self.attachments = AttachmentPanel(self)
+        self.attachments = CoverPanel(self)
         # self.subtitles.hide()
         self.addTab(self.current_settings, "Quality")
         self.addTab(self.audio, "Audio")
@@ -69,6 +69,8 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.audio.new_source(self.current_plugin.audio_formats, starting_pos=1)
         if getattr(self.current_plugin, "enable_subtitles", True):
             self.subtitles.new_source(starting_pos=len(self.audio) + 1)
+        if getattr(self.current_plugin, "enable_attachments", True):
+            self.attachments.new_source(self.main.streams.attachment)
         self.current_settings.new_source()
 
     def refresh(self):

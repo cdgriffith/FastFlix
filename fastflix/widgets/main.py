@@ -80,6 +80,7 @@ class Main(QtWidgets.QWidget):
         self.input_video = None
         self.video_path_widget = QtWidgets.QLineEdit("No Source Selected")
         self.output_video_path_widget = QtWidgets.QLineEdit("")
+        self.output_video_path_widget.setDisabled(True)
         self.video_path_widget.setEnabled(False)
         self.video_path_widget.setStyleSheet("QLineEdit{color:#222}")
         self.output_video_path_widget.setStyleSheet("QLineEdit{color:#222}")
@@ -144,11 +145,15 @@ class Main(QtWidgets.QWidget):
 
         output_layout = QtWidgets.QHBoxLayout()
 
+        output_layout.addWidget(QtWidgets.QLabel("Output"))
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
-        output_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
-        output_path_button.clicked.connect(lambda: self.save_file())
+        self.output_path_button = QtWidgets.QPushButton(
+            icon=self.style().standardIcon(QtWidgets.QStyle.SP_DialogOpenButton)
+        )
+        self.output_path_button.clicked.connect(lambda: self.save_file())
+        self.output_path_button.setDisabled(True)
 
-        output_layout.addWidget(output_path_button)
+        output_layout.addWidget(self.output_path_button)
         layout.addLayout(output_layout)
 
         layout.addLayout(self.init_video_track_select())
@@ -483,6 +488,8 @@ class Main(QtWidgets.QWidget):
         self.input_video = filename[0]
         self.video_path_widget.setText(self.input_video)
         self.output_video_path_widget.setText(self.generate_output_filename)
+        self.output_video_path_widget.setDisabled(False)
+        self.output_path_button.setDisabled(False)
         self.update_video_info()
         self.page_update()
 
@@ -599,12 +606,16 @@ class Main(QtWidgets.QWidget):
         # TODO show path to video file
         self.loading_video = True
         try:
-            self.streams, self.format_info = self.flix.parse(self.input_video)
+            self.streams, self.format_info = self.flix.parse(
+                self.input_video, work_dir=self.path.work, extract_covers=True
+            )
         except FlixError:
             error_message(f"Not a video file<br>{self.input_video}")
             self.input_video = None
             self.video_path_widget.setText("No Source Selected")
             self.output_video_path_widget.setText("")
+            self.output_path_button.setDisabled(True)
+            self.output_video_path_widget.setDisabled(True)
             self.streams = None
             self.format_info = None
             for i in range(self.widgets.video_track.count()):
@@ -632,6 +643,8 @@ class Main(QtWidgets.QWidget):
             self.input_video = None
             self.video_path_widget.setText("No Source Selected")
             self.output_video_path_widget.setText("")
+            self.output_path_button.setDisabled(True)
+            self.output_video_path_widget.setDisabled(True)
             self.streams = None
             self.format_info = None
             self.widgets.convert_button.setDisabled(True)
@@ -830,13 +843,14 @@ class Main(QtWidgets.QWidget):
         self.video_options.commands.update_commands(commands)
         return commands
 
-    def page_update(self):
+    def page_update(self, build_thumbnail=True):
         if not self.initialized or self.loading_video:
             return
         self.last_page_update = time.time()
         self.video_options.refresh()
         self.build_commands()
-        self.generate_thumbnail()
+        if build_thumbnail:
+            self.generate_thumbnail()
 
     def close(self, no_cleanup=False):
         self.status_queue.put("exit")
@@ -887,6 +901,8 @@ class Main(QtWidgets.QWidget):
             sm.exec_()
             if sm.clickedButton().text().startswith("Append"):
                 self.output_video_path_widget.setText(f"{self.output_video}.{self.current_plugin.video_extension}")
+                self.output_video_path_widget.setDisabled(False)
+                self.output_path_button.setDisabled(False)
             elif not sm.clickedButton().text().startswith("Continue"):
                 return
 
@@ -936,6 +952,8 @@ class Main(QtWidgets.QWidget):
         self.input_video = str(event.mimeData().urls()[0].toLocalFile())
         self.video_path_widget.setText(self.input_video)
         self.output_video_path_widget.setText(self.generate_output_filename)
+        self.output_video_path_widget.setDisabled(False)
+        self.output_path_button.setDisabled(False)
         self.update_video_info()
         self.page_update()
 

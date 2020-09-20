@@ -82,6 +82,7 @@ class Flix:
     def __init__(self, ffmpeg="ffmpeg", ffprobe="ffprobe"):
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
+        self.tp = ThreadPool(processes=4)
         self.config, self.filters, self.ffmpeg_version = self.ffmpeg_configuration()
         self.ffprobe_version = ff_version(ffprobe, True)
 
@@ -117,26 +118,36 @@ class Flix:
 
         return config, filters, version
 
-    def parse(self, file):
+    def extract_attachment(self, args):
+        file, stream, work_dir, file_name = args
+        self.execute(f'{self.ffmpeg} -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir)
+
+    def parse(self, file, work_dir=None, extract_covers=False):
         data = self.probe(file)
         if "streams" not in data:
             raise FlixError("Not a video file")
         streams = Box({"video": [], "audio": [], "subtitle": [], "attachment": [], "data": []})
 
+        covers = []
         for track in data.streams:
             if track.codec_type == "video" and track.get("disposition", {}).get("attached_pic"):
+                filename = track.get("tags", {}).get("filename", "")
+                if filename.rsplit(".", 1)[0] in ("cover", "small_cover", "cover_land", "small_cover_land"):
+                    covers.append((file, track.index, work_dir, filename))
                 streams.attachment.append(track)
             elif track.codec_type in streams:
                 streams[track.codec_type].append(track)
             else:
                 logger.error(f"Unknown codec: {track.codec_type}")
 
+        if extract_covers:
+            self.tp.map(self.extract_attachment, covers)
+
         for stream in streams.video:
             if "bits_per_raw_sample" in stream:
                 stream.bit_depth = int(stream.bits_per_raw_sample)
             else:
                 stream.bit_depth = guess_bit_depth(stream.pix_fmt, stream.get("color_primaries"))
-
         return streams, data.format
 
     @staticmethod
@@ -269,9 +280,9 @@ class Flix:
         )
 
     @staticmethod
-    def execute(command):
+    def execute(command, work_dir=None):
         logger.debug(f"running command: {command}")
-        return run(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True)
+        return run(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True, cwd=work_dir)
 
     def video_split_command(self, source, video_track=0, start_time=0, duration=None, build_dir=".", segment_size=60):
         start = ""
