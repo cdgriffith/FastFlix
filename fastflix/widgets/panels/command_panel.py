@@ -4,7 +4,6 @@ import math
 from pathlib import Path
 
 import reusables
-from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 
@@ -31,7 +30,9 @@ class Command(QtWidgets.QTabWidget):
         self.widget.setReadOnly(True)
         self.widget.setText(command)
         self.widget.setDisabled(not enabled)
-        self.setMinimumHeight(45 + (math.ceil(len(command) / 180) * 25))
+        font_height = QtGui.QFontMetrics(self.widget.document().defaultFont()).height()
+        lines = math.ceil(len(command) / 200)
+        self.setMinimumHeight(int(font_height + ((lines + 2) * (font_height * 1.25))))
 
         grid = QtWidgets.QGridLayout()
         grid.addWidget(QtWidgets.QLabel(f"Command {number}" if not name else name), 0, 0, 1, 2)

@@ -4,7 +4,6 @@ import os
 import shutil
 import sys
 import traceback
-from datetime import datetime
 from distutils.version import StrictVersion
 from json import JSONDecodeError
 from multiprocessing import Process, Queue, freeze_support
@@ -80,7 +79,6 @@ def main():
             request = queue.get(block=True, timeout=0.01)
         except Empty:
             if not runner.is_alive() and not sent_response and not queued_requests:
-                runner.clean()
                 ret = runner.process.poll()
                 if ret > 0:
                     log(f"Error during conversion", logging.WARNING)

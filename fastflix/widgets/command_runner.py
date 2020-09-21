@@ -1,18 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
-import os
 import re
 import secrets
 import shlex
-import signal
-import tempfile
 from pathlib import Path
-from subprocess import PIPE, STDOUT, Popen
+from subprocess import STDOUT, Popen
 from threading import Thread
-from uuid import uuid4
-
-import reusables
 
 logger = logging.getLogger("fastflix-core")
 
@@ -30,10 +24,9 @@ class BackgroundRunner:
 
     def start_exec(self, command, work_dir):
         logger.info(f"Running command: {command}")
-        self.clean()
         self.output_file = Path(work_dir) / f"encoder_output_{secrets.token_hex(6)}.log"
         self.process = Popen(
-            command, shell=True, cwd=work_dir, stdout=open(self.output_file, "w"), stderr=STDOUT, encoding="utf-8"
+            shlex.split(command), cwd=work_dir, stdout=open(self.output_file, "w"), stderr=STDOUT, encoding="utf-8"
         )
         Thread(target=self.read_output).start()
 
@@ -44,23 +37,20 @@ class BackgroundRunner:
                     excess = f.read()
                     logger.info(excess)
                     self.log_queue.put(excess)
-                    return
+                    break
                 line = f.readline().rstrip()
                 if line:
                     logger.info(line)
                     self.log_queue.put(line)
+        try:
+            self.output_file.unlink()
+        except OSError:
+            pass
 
     def read(self, limit=None):
         if not self.is_alive():
             return
         return self.process.stdout.read(limit)
-
-    def clean(self):
-        if self.output_file and self.output_file.exists():
-            try:
-                self.output_file.unlink()
-            except OSError:
-                pass
 
     def is_alive(self):
         if not self.process:
@@ -76,6 +66,7 @@ class BackgroundRunner:
                 # else:
                 #     os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
                 self.process.terminate()
+                self.process.kill()
             except Exception as err:
                 logger.exception(f"Couldn't terminate process: {err}")
         self.killed = True

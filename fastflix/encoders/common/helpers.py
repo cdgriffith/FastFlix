@@ -32,8 +32,8 @@ def start_and_input(source, ffmpeg, start_time=0, duration=None, copy_chapters=T
     return (
         f'"{ffmpeg}" -y '
         f'{f"-ss {start_time}" if start_time else ""} '
-        f'{f"-t {duration - start_time}" if duration else ""} '
         f'-i "{source}" '
+        f'{f"-t {duration - start_time}" if duration else ""} '
         f"{'-map_metadata -1' if remove_metadata else ''} "
         f"{'-map_chapters 0' if copy_chapters else ''} "
     )
@@ -76,17 +76,3 @@ def generate_filters(**kwargs):
         )
 
     return ",".join(filter_list)
-
-
-# def load_external_plugins(plugin_dir, configuration):
-#     sys.path.insert(0, str(Path(plugin_dir, os.pardir)))
-#     encoders = Box()
-#     for item in plugin_dir.iterdir():
-#         if item.is_dir() and not item.name.startswith("_") and item.name != "common":
-#             plugin = importlib.machinery.SourceFileLoader(
-#                 f"plugin_{item.name}", str(Path(item, "main.py"))
-#             ).load_module()
-#             requires = getattr(plugin, "requires", None)
-#             if not requires or (requires and requires in configuration):
-#                 encoders[plugin.name] = plugin
-#     return encoders
