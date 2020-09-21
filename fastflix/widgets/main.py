@@ -149,9 +149,7 @@ class Main(QtWidgets.QWidget):
 
         output_layout.addWidget(QtWidgets.QLabel("Output"))
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
-        self.output_path_button = QtWidgets.QPushButton(
-            icon=self.style().standardIcon(QtWidgets.QStyle.SP_DialogOpenButton)
-        )
+        self.output_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirHomeIcon))
         self.output_path_button.clicked.connect(lambda: self.save_file())
         self.output_path_button.setDisabled(True)
 

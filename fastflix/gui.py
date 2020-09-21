@@ -36,7 +36,6 @@ except ImportError as err:
 
 
 def main():
-
     logging.basicConfig(level=logging.DEBUG)
     data_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
     data_path.mkdir(parents=True, exist_ok=True)
@@ -107,6 +106,7 @@ def main():
                     runner.start_exec(*request[1:])
                     sent_response = False
             if request[0] == "cancel":
+                queued_requests = []
                 runner.kill()
                 status_queue.put("cancelled")
                 sent_response = True
@@ -238,7 +238,6 @@ def required_info(logger, data_path, log_dir):
 def start_app(queue, status_queue, log_queue, data_path, log_dir):
     logger = logging.getLogger("fastflix")
     coloredlogs.install(level="DEBUG", logger=logger)
-    logger.info(f"Starting FastFlix {__version__}")
 
     logger.debug(f"Using qt engine {API} version {QT_VERSION}")
 

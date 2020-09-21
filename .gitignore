@@ -118,3 +118,6 @@ extra/
 .pypirc
 fastflix/CHANGES
 *.exe
+
+icons.py
+test.html

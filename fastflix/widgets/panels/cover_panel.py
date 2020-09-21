@@ -51,6 +51,11 @@ class CoverPanel(QtWidgets.QWidget):
         land_options_layout.addWidget(self.cover_land_passthrough_checkbox)
         land_options_layout.addWidget(self.small_cover_land_passthrough_checkbox)
 
+        self.cover_passthrough_checkbox.toggled.connect(lambda: self.cover_passthrough_check())
+        self.small_cover_passthrough_checkbox.toggled.connect(lambda: self.small_cover_passthrough_check())
+        self.cover_land_passthrough_checkbox.toggled.connect(lambda: self.cover_land_passthrough_check())
+        self.small_cover_land_passthrough_checkbox.toggled.connect(lambda: self.small_cover_land_passthrough_check())
+
         self.poster = QtWidgets.QLabel()
         self.poster.setSizePolicy(sp)
 
@@ -184,7 +189,6 @@ class CoverPanel(QtWidgets.QWidget):
         if attr:
             cover_image = attr.text()
         if getattr(self, f"{filename}_passthrough_checkbox").isChecked():
-            print(filename, getattr(self, f"{filename}_passthrough_checkbox").isChecked())
             cover_image = str(Path(self.main.path.work) / self.attachments[filename].name)
         if cover_image:
             mime_type, ext_type = self.image_type(cover_image)
@@ -256,10 +260,10 @@ class CoverPanel(QtWidgets.QWidget):
 
     def new_source(self, attachments):
 
-        self.cover_passthrough_checkbox.disconnect()
-        self.small_cover_passthrough_checkbox.disconnect()
-        self.cover_land_passthrough_checkbox.disconnect()
-        self.small_cover_land_passthrough_checkbox.disconnect()
+        self.cover_passthrough_checkbox.toggled.disconnect()
+        self.small_cover_passthrough_checkbox.toggled.disconnect()
+        self.cover_land_passthrough_checkbox.toggled.disconnect()
+        self.small_cover_land_passthrough_checkbox.toggled.disconnect()
 
         self.cover_passthrough_checkbox.setChecked(False)
         self.small_cover_passthrough_checkbox.setChecked(False)
