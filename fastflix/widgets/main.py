@@ -163,20 +163,21 @@ class Main(QtWidgets.QWidget):
         transform_layout = QtWidgets.QHBoxLayout()
         transform_layout.addWidget(self.init_rotate(), stretch=True)
         transform_layout.addWidget(self.init_flip(), stretch=True)
-        layout.addLayout(transform_layout)
 
-        metadata_layout = QtWidgets.QHBoxLayout()
+        metadata_layout = QtWidgets.QVBoxLayout()
         self.widgets.remove_metadata = QtWidgets.QCheckBox("Remove Metadata")
         self.widgets.remove_metadata.setChecked(True)
         self.widgets.remove_metadata.toggled.connect(self.page_update)
         self.widgets.chapters = QtWidgets.QCheckBox("Copy Chapters")
         self.widgets.chapters.setChecked(True)
         self.widgets.chapters.toggled.connect(self.page_update)
+
         metadata_layout.addWidget(self.widgets.remove_metadata)
         metadata_layout.addWidget(self.widgets.chapters)
 
-        layout.addLayout(metadata_layout)
+        transform_layout.addLayout(metadata_layout)
 
+        layout.addLayout(transform_layout)
         layout.addStretch()
         self.grid.addLayout(layout, 0, 0, 6, 6)
 

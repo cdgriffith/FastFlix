@@ -5,7 +5,7 @@ import re
 import secrets
 import shlex
 from pathlib import Path
-from subprocess import STDOUT, Popen
+from subprocess import Popen
 from threading import Thread
 
 logger = logging.getLogger("fastflix-core")
@@ -20,30 +20,46 @@ class BackgroundRunner:
         self.process = None
         self.killed = False
         self.output_file = None
+        self.error_output_file = None
         self.log_queue = log_queue
 
     def start_exec(self, command, work_dir):
         logger.info(f"Running command: {command}")
         self.output_file = Path(work_dir) / f"encoder_output_{secrets.token_hex(6)}.log"
+        self.error_output_file = Path(work_dir) / f"encoder_error_output_{secrets.token_hex(6)}.log"
         self.process = Popen(
-            shlex.split(command), cwd=work_dir, stdout=open(self.output_file, "w"), stderr=STDOUT, encoding="utf-8"
+            shlex.split(command),
+            cwd=work_dir,
+            stdout=open(self.output_file, "w"),
+            stderr=open(self.error_output_file, "w"),
+            encoding="utf-8",
         )
         Thread(target=self.read_output).start()
 
     def read_output(self):
-        with open(self.output_file, "r") as f:
+        with open(self.output_file, "r") as out_file, open(self.error_output_file, "r") as err_file:
             while True:
                 if not self.is_alive():
-                    excess = f.read()
+                    excess = out_file.read()
                     logger.info(excess)
                     self.log_queue.put(excess)
+
+                    err_excess = err_file.read()
+                    logger.info(err_excess)
+                    self.log_queue.put(err_excess)
                     break
-                line = f.readline().rstrip()
+                line = out_file.readline().rstrip()
                 if line:
                     logger.info(line)
                     self.log_queue.put(line)
+
+                err_line = err_file.readline().rstrip()
+                if err_line:
+                    logger.info(err_line)
+                    self.log_queue.put(err_line)
         try:
             self.output_file.unlink()
+            self.error_output_file.unlink()
         except OSError:
             pass
 

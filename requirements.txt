@@ -2,7 +2,7 @@ appdirs
 colorama
 coloredlogs
 mistune
-pyqt5
+pyside2
 python-box
 qtpy
 requests

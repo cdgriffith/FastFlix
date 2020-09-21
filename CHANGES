@@ -13,6 +13,7 @@
 * Adding #68 version upgrade dialogue
 * Adding icons to encoders drop down
 * Adding video filename path
+* Adding Windows installer
 * Adding check for new ffmpeg on startup
 * Adding #69 nice feature for language selection (thanks to HannesJo0139)
 * Adding #13 button to copy commands to clipboard and save to file

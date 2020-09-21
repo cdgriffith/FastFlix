@@ -55,9 +55,8 @@ class Container(QtWidgets.QMainWindow):
         for item in self.main.path.work.iterdir():
             if item.is_dir() and item.stem.startswith("temp_"):
                 shutil.rmtree(item, ignore_errors=True)
-        thumb = Path(self.main.path.work) / "thumbnail_preview.png"
-        if thumb.exists():
-            thumb.unlink(missing_ok=True)
+            if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
+                item.unlink()
         super(Container, self).closeEvent(a0)
 
     def init_menu(self):

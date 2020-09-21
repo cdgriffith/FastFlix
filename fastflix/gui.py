@@ -105,7 +105,6 @@ def main():
                     )
                     logger.addHandler(new_file_handler)
                     runner.start_exec(*request[1:])
-                    finished_message = False
                     sent_response = False
             if request[0] == "cancel":
                 runner.kill()
@@ -115,7 +114,6 @@ def main():
             if queued_requests:
                 runner.start_exec(*queued_requests.pop()[1:])
                 sent_response = False
-    runner.clean()
 
 
 def required_info(logger, data_path, log_dir):
