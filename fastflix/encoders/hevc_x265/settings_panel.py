@@ -53,19 +53,19 @@ class HEVC(SettingPanel):
 
         self.mode = "CRF"
         self.updating_settings = False
-
-        grid.addLayout(self.init_modes(), 0, 2, 6, 4)
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
-        grid.addLayout(self.init_preset(), 1, 0, 1, 2)
-        grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
-        grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 4, 0, 1, 2)
-        grid.addLayout(self.init_tune(), 5, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 2)
-        grid.addLayout(self.init_profile(), 7, 0, 1, 2)
+        grid.addLayout(self.init_preset(), 1, 0, 1, 1)
+        grid.addLayout(self._add_remove_hdr(), 2, 0, 1, 1)
+        grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 1)
+        grid.addLayout(self.init_max_mux(), 4, 0, 1, 1)
+        grid.addLayout(self.init_tune(), 5, 0, 1, 1)
+        grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 1)
+        grid.addLayout(self.init_profile(), 7, 0, 1, 1)
 
-        grid.setRowStretch(9, 1)
+        grid.addLayout(self.init_modes(), 0, 1, 6, 5)
+
+        grid.setRowStretch(9, True)
 
         guide_label = QtWidgets.QLabel(
             "<a href='https://trac.ffmpeg.org/wiki/Encode/H.265'>FFMPEG HEVC / H.265 Encoding Guide</a>"
@@ -79,64 +79,51 @@ class HEVC(SettingPanel):
         self.setLayout(grid)
         self.hide()
 
-    def init_remove_hdr(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.remove_hdr_label = QtWidgets.QLabel("Remove HDR")
-        self.remove_hdr_label.setToolTip(
-            "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
-        )
-        layout.addWidget(self.remove_hdr_label)
-        self.widgets.remove_hdr = QtWidgets.QComboBox()
-        self.widgets.remove_hdr.addItems(["No", "Yes"])
-        self.widgets.remove_hdr.setCurrentIndex(0)
-        self.widgets.remove_hdr.setDisabled(True)
-        self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.setting_change())
-        layout.addWidget(self.widgets.remove_hdr)
-        return layout
-
     def init_intra_encoding(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Intra-encoding")
-        label.setToolTip(
-            "Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
-            "This option is not recommenced unless you need to conform to Blu-ray standards to burn to a physical disk"
+        return self._add_combo_box(
+            label="Intra-encoding",
+            widget_name="intra_encoding",
+            options=["No", "Yes"],
+            tooltip=(
+                "Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
+                "This option is not recommenced unless you need to conform "
+                "to Blu-ray standards to burn to a physical disk"
+            ),
+            connect="default",
         )
-        layout.addWidget(label)
-        self.widgets.intra_encoding = QtWidgets.QComboBox()
-        self.widgets.intra_encoding.addItems(["No", "Yes"])
-        self.widgets.intra_encoding.setCurrentIndex(0)
-        self.widgets.intra_encoding.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.intra_encoding)
-        return layout
 
     def init_preset(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Preset")
-        label.setToolTip(
-            "The slower the preset, the better the compression and quality\n"
-            "Slow is highest personal recommenced, as past that is much smaller gains"
+        return self._add_combo_box(
+            label="Preset",
+            widget_name="preset",
+            options=[
+                "ultrafast",
+                "superfast",
+                "veryfast",
+                "faster",
+                "fast",
+                "medium",
+                "slow",
+                "slower",
+                "veryslow",
+                "placebo",
+            ],
+            tooltip=(
+                "The slower the preset, the better the compression and quality\n"
+                "Slow is highest personal recommenced, as past that is much smaller gains"
+            ),
+            connect="default",
+            default=5,
         )
-        layout.addWidget(label)
-        self.widgets.preset = QtWidgets.QComboBox()
-        self.widgets.preset.addItems(
-            ["ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"]
-        )
-        self.widgets.preset.setCurrentIndex(5)
-        self.widgets.preset.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.preset)
-        return layout
 
     def init_tune(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Tune")
-        label.setToolTip("Tune the settings for a particular type of source or situation")
-        layout.addWidget(label)
-        self.widgets.tune = QtWidgets.QComboBox()
-        self.widgets.tune.addItems(["default", "psnr", "ssim", "grain", "zerolatency", "fastdecode", "animation"])
-        self.widgets.tune.setCurrentIndex(0)
-        self.widgets.tune.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.tune)
-        return layout
+        return self._add_combo_box(
+            label="Tune",
+            widget_name="tune",
+            options=["default", "psnr", "ssim", "grain", "zerolatency", "fastdecode", "animation"],
+            tooltip="Tune the settings for a particular type of source or situation",
+            connect="default",
+        )
 
     def init_profile(self):
         layout = QtWidgets.QHBoxLayout()
@@ -296,22 +283,6 @@ class HEVC(SettingPanel):
             else:
                 settings.bitrate = bitrate.split(" ", 1)[0]
         return settings
-
-    def new_source(self):
-        if not self.main.streams:
-            return
-        if "zcale" not in self.main.flix.filters:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#777}")
-            self.remove_hdr_label.setToolTip("cannot remove HDR, zcale filter not in current version of FFmpeg")
-            logger.warning("zcale filter not detected in current version of FFmpeg, cannot remove HDR")
-        elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
-            self.widgets.remove_hdr.setDisabled(False)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
-        else:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
-        self.setting_change(update=False)
 
     def set_mode(self, x):
         self.mode = x.text()

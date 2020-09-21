@@ -27,13 +27,15 @@ class Command:
         self.exe = exe
 
 
-def start_and_input(source, ffmpeg, **kwargs):
-    start_time = kwargs.get("start_time", 0) or 0
-    duration = kwargs.get("duration")
+def start_and_input(source, ffmpeg, start_time=0, duration=None, copy_chapters=True, remove_metadata=True, **_):
 
     return (
-        f'"{ffmpeg}" -i "{source}" -y {f"-ss {start_time}" if start_time else ""} '
+        f'"{ffmpeg}" -y '
+        f'{f"-ss {start_time}" if start_time else ""} '
         f'{f"-t {duration - start_time}" if duration else ""} '
+        f'-i "{source}" '
+        f"{'-map_metadata -1' if remove_metadata else ''} "
+        f"{'-map_chapters 0' if copy_chapters else ''} "
     )
 
 

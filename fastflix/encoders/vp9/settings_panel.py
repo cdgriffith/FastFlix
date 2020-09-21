@@ -4,6 +4,8 @@ import logging
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.encoders.common.setting_panel import SettingPanel
+
 logger = logging.getLogger("fastflix")
 
 recommended_bitrates = [
@@ -33,7 +35,7 @@ recommended_crfs = [
 ]
 
 
-class VP9(QtWidgets.QWidget):
+class VP9(SettingPanel):
     def __init__(self, parent, main):
         super(VP9, self).__init__(parent)
         self.main = main
@@ -54,6 +56,7 @@ class VP9(QtWidgets.QWidget):
         grid.addLayout(self.init_row_mt(), 4, 0, 1, 2)
         grid.addLayout(self.init_force_420(), 5, 0, 1, 2)
         grid.addLayout(self.init_single_pass(), 6, 0, 1, 2)
+        grid.addLayout(self._add_custom(), 9, 0, 1, 6)
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
@@ -62,7 +65,7 @@ class VP9(QtWidgets.QWidget):
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 9, 0, -1, 1)
+        grid.addWidget(guide_label, 10, 0, -1, 1)
         self.setLayout(grid)
         self.hide()
 
@@ -230,6 +233,7 @@ class VP9(QtWidgets.QWidget):
             row_mt=int(self.widgets.row_mt.isChecked()),
             force_420=self.widgets.force_420.isChecked(),
             single_pass=self.widgets.single_pass.isChecked(),
+            extra=self.ffmpeg_extras,
         )
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()

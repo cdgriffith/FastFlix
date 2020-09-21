@@ -16,6 +16,7 @@
 * Adding check for new ffmpeg on startup
 * Adding #69 nice feature for language selection (thanks to HannesJo0139)
 * Adding #13 button to copy commands to clipboard and save to file
+* Adding options to remove metadata and copy chapters
 * Changing #8 logs to be separated into GUI and conversion logs
 * Changing major internal re-write to keep encoding even if GUI dies
 * Changing bitrate suggestion resolutions to be more readable with fps

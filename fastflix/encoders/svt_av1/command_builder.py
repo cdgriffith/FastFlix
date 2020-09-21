@@ -9,7 +9,8 @@ from pathlib import Path
 import reusables
 
 from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_filters
+from fastflix.encoders.common.helpers import Command, generate_filters, start_and_input
+from fastflix.encoders.common.subtitles import build_subtitle
 
 logger = logging.getLogger("fastflix")
 
@@ -32,9 +33,7 @@ def build(
     stream_track,
     ffmpeg,
     streams,
-    start_time,
     temp_dir,
-    duration,
     output_video,
     tier="main",
     tile_columns=0,
@@ -45,6 +44,7 @@ def build(
     pix_fmt="yuv420p10le",
     bitrate=None,
     audio_tracks=(),
+    subtitle_tracks=(),
     single_pass=False,
     attachments="",
     extra="",
@@ -52,6 +52,7 @@ def build(
 ):
     filters = generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
+    subtitles = build_subtitle(subtitle_tracks)
 
     crop = kwargs.get("crop")
     scale = kwargs.get("scale")
@@ -74,23 +75,17 @@ def build(
             if crop_height or crop_width:
                 raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
 
-    beginning = (
-        f'"{ffmpeg}" -y '
-        f' {f"-ss {start_time}" if start_time else ""}  '
-        f'{f"-t {duration}" if duration else ""} '
-        f'-i "{source}" '
+    beginning = start_and_input(source, ffmpeg, **kwargs) + (
         f"{extra} "
         f"-map 0:{video_track} "
         f"-pix_fmt {pix_fmt} "
-        f"-c:v:0 libsvtav1 "
+        f"-c:v:0 libsvtav1 -strict experimental "
         f"-preset {speed} "
         f"-tile_columns {tile_columns} "
         f"-tile_rows {tile_rows} "
         f"-tier {tier} "
         f"-sc_detection {sc_detection} "
         f'{f"-vf {filters}" if filters else ""} '
-        "-map_metadata -1 "
-        f"{attachments} "
     )
 
     if not single_pass:
@@ -103,21 +98,21 @@ def build(
 
     if single_pass:
         if bitrate:
-            command_1 = f'{beginning} -b:v {bitrate} -rc 1 {audio} "{output_video}"'
+            command_1 = f'{beginning} -b:v {bitrate} -rc 1 {audio} {subtitles} {attachments} "{output_video}"'
 
         elif qp is not None:
-            command_1 = f'{beginning} -qp {qp} -rc 0 {audio} "{output_video}"'
+            command_1 = f'{beginning} -qp {qp} -rc 0 {audio} {subtitles} {attachments} "{output_video}"'
         else:
             return []
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
     else:
         if bitrate:
             command_1 = f"{beginning} -b:v {bitrate} -rc 1 -pass 1 -an -f matroska {ending}"
-            command_2 = f'{beginning} -b:v {bitrate} -rc 1 -pass 2 {audio} "{output_video}"'
+            command_2 = f'{beginning} -b:v {bitrate} -rc 1 -pass 2 {audio} {subtitles} {attachments} "{output_video}"'
 
         elif qp is not None:
             command_1 = f"{beginning} -qp {qp} -rc 0 -pass 1 -an -f matroska {ending}"
-            command_2 = f'{beginning} -qp {qp} -rc 0 -pass 2 {audio} "{output_video}"'
+            command_2 = f'{beginning} -qp {qp} -rc 0 -pass 2 {audio} {subtitles} {attachments} "{output_video}"'
         else:
             return []
         return [

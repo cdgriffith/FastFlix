@@ -7,7 +7,7 @@ import reusables
 from box import Box
 
 from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_filters
+from fastflix.encoders.common.helpers import Command, generate_filters, start_and_input
 from fastflix.encoders.common.subtitles import build_subtitle
 
 
@@ -19,8 +19,6 @@ def build(
     output_video,
     bitrate=None,
     crf=None,
-    start_time=0,
-    duration=None,
     preset="fast",
     audio_tracks=(),
     subtitle_tracks=(),
@@ -45,19 +43,13 @@ def build(
     if not side_data:
         side_data = Box(default_box=True)
 
-    beginning = (
-        f'"{ffmpeg}" -y '
-        f'-i "{source}" '
-        f' {f"-ss {start_time}" if start_time else ""}  '
-        f'{f"-to {duration}" if duration else ""} '
+    beginning = start_and_input(source, ffmpeg, **kwargs) + (
         f"{extra} "
         f"-map 0:{video_track} "
         f"-pix_fmt {pix_fmt} "
         f"-c:v:0 libx264 "
         f'{f"-vf {filters}" if filters else ""} '
         f'{f"-tune {tune}" if tune else ""} '
-        "-map_metadata -1 "
-        f"{attachments} "
     )
 
     if profile and profile != "default":
@@ -79,7 +71,7 @@ def build(
         )
         command_2 = (
             f'{beginning} -pass 2 -passlogfile "{pass_log_file}" '
-            f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {extra_data} "{output_video}"'
+            f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {attachments} {extra_data} "{output_video}"'
         )
         return [
             Command(
@@ -91,7 +83,10 @@ def build(
         ]
 
     elif crf:
-        command = f"{beginning} -crf {crf} " f'-preset {preset} {audio} {subtitles} {extra_data} "{output_video}"'
+        command = (
+            f"{beginning} -crf {crf} "
+            f'-preset {preset} {audio} {subtitles} {attachments} {extra_data} "{output_video}"'
+        )
         return [
             Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")
         ]

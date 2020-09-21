@@ -5,8 +5,9 @@ from pathlib import Path
 
 import reusables
 
-from fastflix.encoders.common import helpers
 from fastflix.encoders.common.audio import build_audio
+from fastflix.encoders.common.helpers import Command, generate_filters, start_and_input
+from fastflix.encoders.common.subtitles import build_subtitle
 
 
 def build(
@@ -17,9 +18,8 @@ def build(
     output_video,
     bitrate=None,
     crf=None,
-    start_time=0,
-    duration=None,
     audio_tracks=(),
+    subtitle_tracks=(),
     row_mt=None,
     cpu_used="1",
     tile_columns="-1",
@@ -28,18 +28,15 @@ def build(
     extra="",
     **kwargs,
 ):
-    filters = helpers.generate_filters(**kwargs)
+    filters = generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
+    subtitles = build_subtitle(subtitle_tracks)
 
     ending = "/dev/null"
     if reusables.win_based:
         ending = "NUL"
 
-    beginning = (
-        f'"{ffmpeg}" -y '
-        f' {f"-ss {start_time}" if start_time else ""}  '
-        f'{f"-t {duration}" if duration else ""} '
-        f'-i "{source}" '
+    beginning = start_and_input(source, ffmpeg, **kwargs) + (
         f"{extra} "
         f"-map 0:{video_track} "
         f"-c:v:0 libaom-av1 -strict experimental "
@@ -47,8 +44,6 @@ def build(
         f"-cpu-used {cpu_used} "
         f"-tile-rows {tile_rows} "
         f"-tile-columns {tile_columns} "
-        "-map_metadata -1 "
-        f"{attachments} "
     )
 
     if row_mt is not None:
@@ -59,11 +54,11 @@ def build(
     if bitrate:
         pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
         command_1 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {bitrate} -pass 1 -an -f matroska {ending}'
-        command_2 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {bitrate} -pass 2 {audio} "{output_video}"'
+        command_2 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {bitrate} -pass 2 {audio} {subtitles} {attachments} "{output_video}"'
         return [
-            helpers.Command(command_1, ["ffmpeg", "output"], False, name="First Pass bitrate"),
-            helpers.Command(command_2, ["ffmpeg", "output"], False, name="Second Pass bitrate"),
+            Command(command_1, ["ffmpeg", "output"], False, name="First Pass bitrate"),
+            Command(command_2, ["ffmpeg", "output"], False, name="Second Pass bitrate"),
         ]
     elif crf:
-        command_1 = f'{beginning} -b:v 0 -crf {crf} {audio} "{output_video}"'
-        return [helpers.Command(command_1, ["ffmpeg", "output"], False, name="Single Pass CRF")]
+        command_1 = f'{beginning} -b:v 0 -crf {crf} {audio} {subtitles} {attachments} "{output_video}"'
+        return [Command(command_1, ["ffmpeg", "output"], False, name="Single Pass CRF")]

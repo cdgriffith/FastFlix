@@ -1,18 +1,24 @@
 # -*- coding: utf-8 -*-
+import logging
 
 from box import Box
 from qtpy import QtWidgets
 
+logger = logging.getLogger("fastflix")
+
 
 class SettingPanel(QtWidgets.QWidget):
 
-    ffmpeg_extras = ""
+    ffmpeg_extras_widget = QtWidgets.QLineEdit()
+    extras_connected = False
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.widgets = Box()
         self.labels = Box()
-        self.ffmpeg_extras_widget = None
+        if not self.extras_connected:
+            self.ffmpeg_extras_widget.textChanged.connect(lambda: self.main.page_update())
+            self.extras_connected = True
 
     def _add_combo_box(self, label, options, widget_name, connect="default", enabled=True, default=0, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
@@ -63,21 +69,44 @@ class SettingPanel(QtWidgets.QWidget):
         self.labels.ffmpeg_options = QtWidgets.QLabel("Custom ffmpeg options")
         self.labels.ffmpeg_options.setToolTip("Extra flags or options, cannot modify existing settings")
         layout.addWidget(self.labels.ffmpeg_options)
-        self.ffmpeg_extras_widget = QtWidgets.QLineEdit()
-        if connect:
-            if connect == "default":
-                connect = lambda: self.main.page_update()
-            elif connect == "self":
+        if connect and connect != "default":
+            self.ffmpeg_extras_widget.disconnect()
+            if connect == "self":
                 connect = lambda: self.page_update()
-        self.ffmpeg_extras_widget.textChanged.connect(lambda: self._update_extra(connect))
+            self.ffmpeg_extras_widget.textChanged.connect(connect)
         layout.addWidget(self.ffmpeg_extras_widget)
         return layout
 
-    def _update_extra(self, widget_name, connect=None):
-        self.ffmpeg_extras = self.ffmpeg_extras_widget.text()
-        if connect:
-            connect()
+    def _add_remove_hdr(self):
+        return self._add_combo_box(
+            label="Remove HDR",
+            widget_name="remove_hdr",
+            options=["No", "Yes"],
+            tooltip=(
+                "Convert BT2020 colorspace into bt709\n "
+                "WARNING: This will take much longer and result in a larger file"
+            ),
+            enabled=False,
+            connect="default",
+        )
+
+    @property
+    def ffmpeg_extras(self):
+        return self.ffmpeg_extras_widget.text().strip()
 
     def new_source(self):
-        super().__init__()
-        self.ffmpeg_extras_widget.setText(self.ffmpeg_extras)
+        if not self.main.streams:
+            return
+        if "remove_hdr" in self.widgets and "remove_hdr" in self.labels:
+            if "zcale" not in self.main.flix.filters:
+                self.widgets.remove_hdr.setDisabled(True)
+                self.labels["remove_hdr"].setStyleSheet("QLabel{color:#777}")
+                self.labels["remove_hdr"].setToolTip("cannot remove HDR, zcale filter not in current version of FFmpeg")
+                logger.warning("zcale filter not detected in current version of FFmpeg, cannot remove HDR")
+            elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
+                self.widgets.remove_hdr.setDisabled(False)
+                self.labels["remove_hdr"].setStyleSheet("QLabel{color:#000}")
+            else:
+                self.widgets.remove_hdr.setDisabled(True)
+                self.labels["remove_hdr"].setStyleSheet("QLabel{color:#000}")
+        self.setting_change(update=False)

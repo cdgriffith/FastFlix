@@ -7,7 +7,7 @@ import reusables
 from box import Box
 
 from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_filters
+from fastflix.encoders.common.helpers import Command, generate_filters, start_and_input
 from fastflix.encoders.common.subtitles import build_subtitle
 
 
@@ -19,8 +19,6 @@ def build(
     output_video,
     bitrate=None,
     crf=None,
-    start_time=0,
-    duration=None,
     preset="fast",
     audio_tracks=(),
     subtitle_tracks=(),
@@ -47,19 +45,13 @@ def build(
     if not side_data:
         side_data = Box(default_box=True)
 
-    beginning = (
-        f'"{ffmpeg}" -y '
-        f' {f"-ss {start_time}" if start_time else ""}  '
-        f'{f"-to {duration}" if duration else ""} '
-        f'-i "{source}" '
+    beginning = start_and_input(source, ffmpeg, **kwargs) + (
         f"{extra} "
         f"-map 0:{video_track} "
         f"-pix_fmt {pix_fmt} "
         f"-c:v:0 libx265 "
         f'{f"-vf {filters}" if filters else ""} '
         f'{f"-tune {tune}" if tune else ""} '
-        "-map_metadata -1 "
-        f"{attachments} "
     )
 
     if profile and profile != "default":
@@ -96,7 +88,6 @@ def build(
     if side_data.cll:
         pass
 
-    extra_data = "-map_chapters 0 "  # -map_metadata 0 # safe to do for rotation?
     pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
 
     def get_x265_params(params=()):
@@ -112,7 +103,7 @@ def build(
         )
         command_2 = (
             f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "{pass_log_file}" '
-            f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {extra_data} "{output_video}"'
+            f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {attachments}"{output_video}"'
         )
         return [
             Command(
@@ -126,7 +117,7 @@ def build(
     elif crf:
         command = (
             f"{beginning} {get_x265_params()}  -crf {crf} "
-            f'-preset {preset} {audio} {subtitles} {extra_data} "{output_video}"'
+            f'-preset {preset} {audio} {subtitles} {attachments} "{output_video}"'
         )
         return [
             Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")

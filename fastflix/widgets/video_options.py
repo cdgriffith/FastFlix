@@ -56,12 +56,17 @@ class VideoOptions(QtWidgets.QTabWidget):
     def get_settings(self):
         settings = Box()
         settings.update(self.current_settings.get_settings())
+        tracks = 1
         if getattr(self.current_plugin, "enable_audio", True):
-            settings.update(self.audio.get_settings())
+            audio_settings = self.audio.get_settings()
+            tracks += audio_settings.audio_track_count
+            settings.update(audio_settings)
         if getattr(self.current_plugin, "enable_subtitles", True):
-            settings.update(self.subtitles.get_settings())
+            subtitle_settings = self.subtitles.get_settings()
+            tracks += subtitle_settings.subtitle_track_count
+            settings.update(subtitle_settings)
         if getattr(self.current_plugin, "enable_attachments", True):
-            settings.update(self.attachments.get_settings())
+            settings.update(self.attachments.get_settings(out_stream_start_index=tracks))
         return settings
 
     def new_source(self):

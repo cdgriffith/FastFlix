@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import re
 from pathlib import Path
 
 from box import Box
@@ -168,12 +169,12 @@ class CoverPanel(QtWidgets.QWidget):
         else:
             self.main.page_update()
 
-    def get_settings(self):
-
-        idx = 0
+    def get_settings(self, out_stream_start_index=0):
+        track_index = out_stream_start_index
         commands = []
         if self.cover_passthrough_checkbox.isChecked():
-            commands.append(f" -map 0:{self.attachments.cover.stream}")
+            commands.append(f" -map 0:{self.attachments.cover.stream} -c:{track_index} copy ")
+            track_index += 1
         elif self.cover_path.text():
             cover_mime_type = "image/jpeg"
             cover_ext_type = "jpg"
@@ -181,13 +182,14 @@ class CoverPanel(QtWidgets.QWidget):
                 cover_mime_type = "image/png"
                 cover_ext_type = "png"
             commands.append(
-                f' -attach "{self.cover_path.text()}" -metadata:s:t:{idx} mimetype={cover_mime_type} '
-                f'-metadata:s:t:{idx} filename="cover.{cover_ext_type}" '
+                f' -attach "{self.cover_path.text()}" -metadata:s:{track_index} mimetype={cover_mime_type} '
+                f'-metadata:s:{track_index}  filename="cover.{cover_ext_type}" '
             )
-            idx += 1
+            track_index += 1
 
         if self.land_passthrough_checkbox.isChecked():
-            commands.append(f" -map 0:{self.attachments.cover_land.stream}")
+            commands.append(f" -map 0:{self.attachments.cover_land.stream}  -c:{track_index} copy ")
+            track_index += 1
 
         elif self.landscape_cover_path.text():
             cover_land_mime_type = "image/jpeg"
@@ -196,16 +198,22 @@ class CoverPanel(QtWidgets.QWidget):
                 cover_land_mime_type = "image/png"
                 cover_land_ext_type = "png"
             commands.append(
-                f' -attach "{self.landscape_cover_path.text()}" -metadata:s:t:{idx} mimetype={cover_land_mime_type} '
-                f'-metadata:s:t:{idx} filename="cover_land.{cover_land_ext_type}" '
+                f' -attach "{self.landscape_cover_path.text()}" -metadata:s:{track_index} mimetype={cover_land_mime_type} '
+                f'-metadata:s:{track_index}  filename="cover_land.{cover_land_ext_type}" '
             )
+            track_index += 1
 
         if self.small_land_passthrough_checkbox.isChecked():
-            commands.append(f" -map 0:{self.attachments.small_cover_land.stream}")
+            commands.append(f" -map 0:{self.attachments.small_cover_land.stream} -c:{track_index} copy  ")
+            track_index += 1
         if self.small_cover_passthrough_checkbox.isChecked():
-            commands.append(f" -map 0:{self.attachments.small_cover.stream}")
+            commands.append(f" -map 0:{self.attachments.small_cover.stream} -c:{track_index} copy ")
+            track_index += 1
 
-        return {"attachments": "".join(commands)}
+        return Box(
+            attachments=re.sub("[ ]+", " ", " ".join(commands)),
+            attachments_track_count=track_index - out_stream_start_index,
+        )
 
     def cover_passthrough_check(self):
         checked = self.cover_passthrough_checkbox.isChecked()
@@ -228,7 +236,6 @@ class CoverPanel(QtWidgets.QWidget):
         self.main.page_update(build_thumbnail=False)
 
     def small_cover_passthrough_check(self):
-        checked = self.small_cover_passthrough_checkbox.isChecked()
         self.main.page_update(build_thumbnail=False)
 
     def land_passthrough_check(self):
@@ -252,7 +259,6 @@ class CoverPanel(QtWidgets.QWidget):
         self.main.page_update(build_thumbnail=False)
 
     def small_land_passthrough_check(self):
-        checked = self.small_land_passthrough_checkbox.isChecked()
         self.main.page_update(build_thumbnail=False)
 
     def new_source(self, attachments):
@@ -293,7 +299,7 @@ class CoverPanel(QtWidgets.QWidget):
                 self.cover_path.setDisabled(True)
                 self.cover_path.setText("")
                 self.cover_button.setDisabled(True)
-                self.attachments.cover = {"name": filename, "stream": attachment.index}
+                self.attachments.cover = {"name": filename, "stream": attachment.index, "tags": attachment.tags}
             if base_name == "cover_land":
                 self.land_passthrough_checkbox.setChecked(True)
                 self.land_passthrough_checkbox.setDisabled(False)
@@ -301,15 +307,19 @@ class CoverPanel(QtWidgets.QWidget):
                 self.landscape_cover_path.setDisabled(True)
                 self.landscape_cover_path.setText("")
                 self.landscape_button.setDisabled(True)
-                self.attachments.cover_land = {"name": filename, "stream": attachment.index}
+                self.attachments.cover_land = {"name": filename, "stream": attachment.index, "tags": attachment.tags}
             if base_name == "small_cover":
                 self.small_cover_passthrough_checkbox.setChecked(True)
                 self.small_cover_passthrough_checkbox.setDisabled(False)
-                self.attachments.small_cover = {"name": filename, "stream": attachment.index}
+                self.attachments.small_cover = {"name": filename, "stream": attachment.index, "tags": attachment.tags}
             if base_name == "small_cover_land":
                 self.small_land_passthrough_checkbox.setChecked(True)
                 self.small_land_passthrough_checkbox.setDisabled(False)
-                self.attachments.small_cover_land = {"name": filename, "stream": attachment.index}
+                self.attachments.small_cover_land = {
+                    "name": filename,
+                    "stream": attachment.index,
+                    "tags": attachment.tags,
+                }
 
         self.cover_passthrough_checkbox.toggled.connect(lambda: self.cover_passthrough_check())
         self.small_cover_passthrough_checkbox.toggled.connect(lambda: self.small_cover_passthrough_check())

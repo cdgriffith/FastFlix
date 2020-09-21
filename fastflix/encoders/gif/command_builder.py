@@ -7,11 +7,13 @@ from fastflix.encoders.common.helpers import Command, generate_filters, start_an
 extension = "gif"
 
 
-def build(source, video_track, ffmpeg, temp_dir, output_video, fps=15, dither="sierra2_4a", **kwargs):
+def build(source, video_track, ffmpeg, temp_dir, output_video, fps=15, dither="sierra2_4a", extra="", **kwargs):
 
     filters = generate_filters(**kwargs)
 
     beginning = start_and_input(source, ffmpeg, **kwargs)
+    if extra:
+        beginning += f" {extra} "
 
     temp_palette = Path(temp_dir) / f"temp_palette_{secrets.token_hex(10)}.png"
 

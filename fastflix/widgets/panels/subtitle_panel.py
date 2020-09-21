@@ -191,4 +191,4 @@ class SubtitleList(FlixList):
                         "language": track.language,
                     }
                 )
-        return Box(subtitle_tracks=tracks)
+        return Box(subtitle_tracks=tracks, subtitle_track_count=len(tracks))

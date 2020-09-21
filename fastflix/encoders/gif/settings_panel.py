@@ -16,11 +16,13 @@ class GIF(SettingPanel):
 
         self.widgets = Box(fps=None, remove_hdr=None, dither=None)
 
-        grid.addLayout(self.init_fps(), 1, 0)
-        grid.addLayout(self.init_remove_hdr(), 2, 0)
-        grid.addLayout(self.init_dither(), 0, 0)
+        grid.addLayout(self.init_dither(), 0, 0, 1, 2)
+        grid.addLayout(self.init_fps(), 1, 0, 1, 2)
+        grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
+        grid.addLayout(self._add_custom(), 11, 0, 1, 6)
 
-        grid.addWidget(QtWidgets.QWidget(), 5, 0, 5, 2)
+        grid.addWidget(QtWidgets.QWidget(), 5, 0, 5, 6)
+        grid.rowStretch(5)
         self.setLayout(grid)
 
     def init_fps(self):
@@ -80,6 +82,7 @@ class GIF(SettingPanel):
             fps=int(self.widgets.fps.currentText()),
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             dither=self.widgets.dither.currentText(),
+            extra=self.ffmpeg_extras,
         )
 
     def new_source(self):

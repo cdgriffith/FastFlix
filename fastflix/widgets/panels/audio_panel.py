@@ -357,4 +357,4 @@ class AudioList(FlixList):
                         "language": track.language,
                     }
                 )
-        return Box(audio_tracks=tracks)
+        return Box(audio_tracks=tracks, audio_track_count=len(tracks))

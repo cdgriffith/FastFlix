@@ -120,7 +120,7 @@ class Flix:
 
     def extract_attachment(self, args):
         file, stream, work_dir, file_name = args
-        self.execute(f'{self.ffmpeg} -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir)
+        self.execute(f'{self.ffmpeg} -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir)
 
     def parse(self, file, work_dir=None, extract_covers=False):
         data = self.probe(file)

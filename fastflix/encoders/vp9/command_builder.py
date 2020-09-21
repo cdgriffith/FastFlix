@@ -6,7 +6,8 @@ from pathlib import Path
 import reusables
 
 from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_filters
+from fastflix.encoders.common.helpers import Command, generate_filters, start_and_input
+from fastflix.encoders.common.subtitles import build_subtitle
 
 
 def build(
@@ -17,34 +18,32 @@ def build(
     output_video,
     bitrate=None,
     crf=None,
-    start_time=0,
-    duration=None,
+    subtitle_tracks=(),
     single_pass=False,
     quality="good",
     audio_tracks=(),
     speed=1,
     row_mt=0,
     force420=True,
+    extra="",
+    attachments="",
     **kwargs,
 ):
     filters = generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
+    subtitles = build_subtitle(subtitle_tracks)
 
     ending = "/dev/null"
     if reusables.win_based:
         ending = "NUL"
 
-    beginning = (
-        f'"{ffmpeg}" -y '
-        f'-i "{source}" '
-        f' {f"-ss {start_time}" if start_time else ""}  '
-        f'{f"-t {duration}" if duration else ""} '
+    beginning = start_and_input(source, ffmpeg, **kwargs) + (
+        f"{extra} "
         f"-map 0:{video_track} "
         f"-c:v:0 libvpx-vp9 "
         f'{f"-vf {filters}" if filters else ""} '
         f'{"-pix_fmt yuv420p" if force420 else ""} '
         f'{"-row-mt 1" if row_mt else ""} '
-        "-map_metadata -1 "
     )
 
     if not single_pass:
@@ -55,13 +54,13 @@ def build(
 
     if bitrate:
         command_1 = f"{beginning} -b:v {bitrate} -quality good -pass 1 -an -f webm {ending}"
-        command_2 = f'{beginning} -b:v {bitrate}  -quality {quality} -speed {speed} -pass 2 {audio} "{output_video}"'
+        command_2 = f'{beginning} -b:v {bitrate}  -quality {quality} -speed {speed} -pass 2 {audio} {subtitles} {attachments} "{output_video}"'
 
     elif crf:
         command_1 = f"{beginning} -b:v 0 -crf {crf} -quality good -pass 1 -an -f webm {ending}"
         command_2 = (
             f"{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} "
-            f'{"-pass 2" if not single_pass else ""} {audio} "{output_video}"'
+            f'{"-pass 2" if not single_pass else ""} {audio} {subtitles} {attachments} "{output_video}"'
         )
 
     else:

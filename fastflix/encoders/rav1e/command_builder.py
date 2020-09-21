@@ -9,7 +9,8 @@ from pathlib import Path
 import reusables
 
 from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, Loop, generate_filters
+from fastflix.encoders.common.helpers import Command, generate_filters, start_and_input
+from fastflix.encoders.common.subtitles import build_subtitle
 
 logger = logging.getLogger("fastflix")
 
@@ -32,8 +33,6 @@ def build(
     stream_track,
     ffmpeg,
     streams,
-    start_time,
-    duration,
     temp_dir,
     output_video,
     tiles=0,
@@ -44,12 +43,15 @@ def build(
     pix_fmt="yuv420p10le",
     bitrate=None,
     audio_tracks=(),
+    subtitle_tracks=(),
     single_pass=False,
     attachments="",
+    extra="",
     **kwargs,
 ):
     filters = generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
+    subtitles = build_subtitle(subtitle_tracks)
 
     crop = kwargs.get("crop")
     scale = kwargs.get("scale")
@@ -75,21 +77,16 @@ def build(
     assert height <= 2160
     assert width <= 4096
 
-    beginning = (
-        f'"{ffmpeg}" -y '
-        f'-i "{source}" '
-        f' {f"-ss {start_time}" if start_time else ""}  '
-        f'{f"-t {duration}" if duration else ""} '
+    beginning = start_and_input(source, ffmpeg, **kwargs) + (
+        f"{extra}"
         f"-map 0:{video_track} "
         f"-pix_fmt {pix_fmt} "
-        f"-c:v:0 librav1e "
+        f"-c:v:0 librav1e -strict experimental "
         f"-speed {speed} "
         f"-tile_columns {tile_columns} "
         f"-tile_rows {tile_rows} "
         f"-tiles {tiles} "
         f'{f"-vf {filters}" if filters else ""} '
-        "-map_metadata -1 "
-        f"{attachments} "
     )
 
     if not single_pass:
@@ -101,15 +98,15 @@ def build(
     pass_type = "bitrate" if bitrate else "QP"
 
     if not bitrate:
-        command_1 = f'{beginning} -qp {qp} {audio} "{output_video}"'
+        command_1 = f'{beginning} -qp {qp} {audio} {subtitles} {attachments} "{output_video}"'
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
 
     if single_pass:
-        command_1 = f'{beginning} -b:v {bitrate} {audio} "{output_video}"'
+        command_1 = f'{beginning} -b:v {bitrate} {audio} {subtitles} {attachments} "{output_video}"'
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
     else:
         command_1 = f"{beginning} -b:v {bitrate} -pass 1 -an -f matroska {ending}"
-        command_2 = f'{beginning} -b:v {bitrate} -pass 2 {audio} "{output_video}"'
+        command_2 = f'{beginning} -b:v {bitrate} -pass 2 {audio} {subtitles} {attachments} "{output_video}"'
         return [
             Command(command_1, ["ffmpeg", "output"], False, name=f"First pass {pass_type}", exe="ffmpeg"),
             Command(command_2, ["ffmpeg", "output"], False, name=f"Second pass {pass_type} ", exe="ffmpeg"),

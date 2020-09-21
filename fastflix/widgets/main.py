@@ -99,6 +99,8 @@ class Main(QtWidgets.QWidget):
             h_flip=None,
             crop=Box(top=None, bottom=None, left=None, right=None),
             scale=Box(width=None, height=None, keep_aspect_ratio=None),
+            remove_metadata=None,
+            chapters=None,
         )
 
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
@@ -158,11 +160,23 @@ class Main(QtWidgets.QWidget):
 
         layout.addLayout(self.init_video_track_select())
 
-        hg = QtWidgets.QHBoxLayout()
-        hg.addWidget(self.init_rotate(), stretch=True)
-        hg.addWidget(self.init_flip(), stretch=True)
+        transform_layout = QtWidgets.QHBoxLayout()
+        transform_layout.addWidget(self.init_rotate(), stretch=True)
+        transform_layout.addWidget(self.init_flip(), stretch=True)
+        layout.addLayout(transform_layout)
 
-        layout.addLayout(hg)
+        metadata_layout = QtWidgets.QHBoxLayout()
+        self.widgets.remove_metadata = QtWidgets.QCheckBox("Remove Metadata")
+        self.widgets.remove_metadata.setChecked(True)
+        self.widgets.remove_metadata.toggled.connect(self.page_update)
+        self.widgets.chapters = QtWidgets.QCheckBox("Copy Chapters")
+        self.widgets.chapters.setChecked(True)
+        self.widgets.chapters.toggled.connect(self.page_update)
+        metadata_layout.addWidget(self.widgets.remove_metadata)
+        metadata_layout.addWidget(self.widgets.chapters)
+
+        layout.addLayout(metadata_layout)
+
         layout.addStretch()
         self.grid.addLayout(layout, 0, 0, 6, 6)
 
@@ -287,8 +301,12 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(self.widgets.convert_to, stretch=0)
         layout.addStretch()
         layout.setSpacing(10)
-        self.widgets.convert_to.currentTextChanged.connect(self.video_options.change_conversion)
+        self.widgets.convert_to.currentTextChanged.connect(self.change_conversion)
         return layout
+
+    def change_conversion(self):
+        self.output_video_path_widget.setText(self.generate_output_filename)
+        self.video_options.change_conversion(self.widgets.convert_to.currentText())
 
     def init_start_time(self):
         group_box = QtWidgets.QGroupBox()
@@ -725,6 +743,14 @@ class Main(QtWidgets.QWidget):
     def duration(self):
         return self.time_to_number(self.widgets.duration.text())
 
+    @property
+    def remove_metadata(self):
+        return self.widgets.remove_metadata.isChecked()
+
+    @property
+    def copy_chapters(self):
+        return self.widgets.chapters.isChecked()
+
     @staticmethod
     def time_to_number(string_time):
         try:
@@ -830,6 +856,8 @@ class Main(QtWidgets.QWidget):
             ffprobe=self.ffprobe,
             temp_dir=self.path.temp_dir,
             output_video=self.output_video,
+            remove_metadata=self.remove_metadata,
+            copy_chapters=self.copy_chapters,
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")
