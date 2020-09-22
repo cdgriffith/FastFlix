@@ -65,7 +65,6 @@ class SVT_AV1(SettingPanel):
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
         grid.addLayout(self.init_single_pass(), 4, 2, 1, 1)
-        # grid.addWidget(QtWidgets.QWidget(), 5, 0)
         grid.setRowStretch(8, 1)
         guide_label = QtWidgets.QLabel(
             f"<a href='https://github.com/AOMediaCodec/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md'>SVT-AV1 Encoding Guide</a>"
@@ -103,7 +102,7 @@ class SVT_AV1(SettingPanel):
         return layout
 
     def init_pix_fmts(self):
-        layout, combo_box, label = self._add_combo_box("Bit Depth", pix_fmts, "pix_fmt")
+        layout, combo_box, label = self._add_combo_box("Bit Depth", pix_fmts, "pix_fmt", default=1)
         return layout
 
     def init_tier(self):

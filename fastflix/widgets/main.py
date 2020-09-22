@@ -359,6 +359,7 @@ class Main(QtWidgets.QWidget):
         return scale_area
 
     def init_crop(self):
+        # TODO don't let people put in letters to boxes
         crop_box = QtWidgets.QGroupBox()
         crop_box.setStyleSheet("QGroupBox{padding-top:17px; margin-top:-18px}")
         crop_layout = QtWidgets.QVBoxLayout()
@@ -716,7 +717,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setDisabled(False)
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.loading_video = False
-        self.generate_thumbnail()
 
     @property
     def video_track(self):
@@ -775,11 +775,10 @@ class Main(QtWidgets.QWidget):
         return total
 
     @reusables.log_exception("fastflix", show_traceback=False)
-    def generate_thumbnail(self):
+    def generate_thumbnail(self, settings):
         if not self.input_video or self.loading_video:
             return
 
-        settings = self.get_all_settings()
         filters = helpers.generate_filters(**settings)
 
         thumb_command = self.flix.generate_thumbnail_command(
@@ -809,10 +808,6 @@ class Main(QtWidgets.QWidget):
     def build_scale(self):
         width = self.widgets.scale.width.text()
         height = self.widgets.scale.height.text()
-        # if self.convert_to == "AV1 (AOM)":
-        #     pass
-        # TODO enforce 8
-
         return f"{width}:{height}"
 
     def get_all_settings(self):
@@ -868,16 +863,16 @@ class Main(QtWidgets.QWidget):
         settings = self.get_all_settings()
         commands = self.plugins[self.convert_to].build(**settings)
         self.video_options.commands.update_commands(commands)
-        return commands
+        return settings, commands
 
     def page_update(self, build_thumbnail=True):
         if not self.initialized or self.loading_video:
             return
         self.last_page_update = time.time()
         self.video_options.refresh()
-        self.build_commands()
+        settings, _ = self.build_commands()
         if build_thumbnail:
-            self.generate_thumbnail()
+            self.generate_thumbnail(settings)
 
     def close(self, no_cleanup=False):
         self.status_queue.put("exit")
@@ -933,7 +928,7 @@ class Main(QtWidgets.QWidget):
             elif not sm.clickedButton().text().startswith("Continue"):
                 return
 
-        commands = self.build_commands()
+        _, commands = self.build_commands()
 
         self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")

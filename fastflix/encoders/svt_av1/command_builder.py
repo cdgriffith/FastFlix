@@ -73,6 +73,11 @@ def build(
         pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
         beginning += f'-passlogfile "{pass_log_file}" '
 
+    if not disable_hdr and pix_fmt == "yuv420p10le":
+
+        if side_data.color_primaries == "bt2020":
+            beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
+
     beginning = re.sub("[ ]+", " ", beginning)
 
     pass_type = "bitrate" if bitrate else "QP"

@@ -72,25 +72,27 @@ def build(
         beginning += f'-passlogfile "{pass_log_file}" '
 
     if not disable_hdr and pix_fmt == "yuv420p10le":
-        rav1e_options = []
+
         if side_data.color_primaries == "bt2020":
-            rav1e_options.extend(["primaries=BT2020", "transfer=SMPTE2084", "matrix=BT2020NCL"])
+            beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
-        if side_data.master_display:
-            rav1e_options.append(
-                "mastering-display="
-                f"G{side_data.master_display.green}"
-                f"B{side_data.master_display.blue}"
-                f"R{side_data.master_display.red}"
-                f"WP{side_data.master_display.white}"
-                f"L{side_data.master_display.luminance}"
-            )
-
-        if side_data.cll:
-            rav1e_options.append(f"content-light={side_data.cll}")
-        if rav1e_options:
-            opts = ":".join(rav1e_options)
-            beginning += f'-rav1e-params "{opts}"'
+        # Currently unsupported https://github.com/xiph/rav1e/issues/2554
+        #         rav1e_options = []
+        # if side_data.master_display:
+        #     rav1e_options.append(
+        #         "mastering-display="
+        #         f"G{side_data.master_display.green}"
+        #         f"B{side_data.master_display.blue}"
+        #         f"R{side_data.master_display.red}"
+        #         f"WP{side_data.master_display.white}"
+        #         f"L{side_data.master_display.luminance}"
+        #     )
+        #
+        # if side_data.cll:
+        #     rav1e_options.append(f"content-light={side_data.cll}")
+        # if rav1e_options:
+        #     opts = ":".join(rav1e_options)
+        #     beginning += f'-rav1e-params "{opts}"'
 
     beginning = re.sub("[ ]+", " ", beginning)
 

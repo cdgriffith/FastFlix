@@ -75,7 +75,7 @@ class FlixList(QtWidgets.QWidget):
         self.inner_widget.setFixedHeight(len(self.tracks) * 70)
         self.inner_widget.setLayout(self.inner_layout)
         if update:
-            self.main.page_update()
+            self.main.page_update(build_thumbnail=False)
 
     def move_up(self, widget):
         index = self.tracks.index(widget)

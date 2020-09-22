@@ -184,8 +184,7 @@ class Audio(QtWidgets.QTabWidget):
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()
         self.widgets.track_number.setText(f"{self.index}:{self.outdex}" if enabled else "❌")
-        self.parent.reorder()
-        self.page_update()
+        self.parent.reorder(update=True)
 
     def update_downmix(self):
         channels = self.widgets.downmix.currentIndex()
@@ -215,7 +214,7 @@ class Audio(QtWidgets.QTabWidget):
 
     def page_update(self):
         if not self.loading:
-            return self.parent.main.page_update()
+            return self.parent.main.page_update(build_thumbnail=False)
 
     def update_codecs(self, codec_list):
         self.loading = True
