@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+import reusables
+
+null = "/dev/null"
+if reusables.win_based:
+    null = "NUL"
 
 
 class Loop:
-
     item = "loop"
 
     def __init__(self, condition, commands, dirs=(), files=(), name="", ensure_paths=()):
@@ -15,7 +19,6 @@ class Loop:
 
 
 class Command:
-
     item = "command"
 
     def __init__(self, command, variables, internal, name="", ensure_paths=(), exe=None):
@@ -27,16 +30,52 @@ class Command:
         self.exe = exe
 
 
-def start_and_input(source, ffmpeg, start_time=0, duration=None, copy_chapters=True, remove_metadata=True, **_):
-
+def generate_ffmpeg_start(
+    source,
+    ffmpeg,
+    encoder,
+    video_track,
+    start_time=0,
+    duration=None,
+    pix_fmt="yuv420p10le",
+    filters=None,
+    max_mux="default",
+    **_,
+):
     return (
         f'"{ffmpeg}" -y '
         f'{f"-ss {start_time}" if start_time else ""} '
-        f'-i "{source}" '
         f'{f"-t {duration - start_time}" if duration else ""} '
-        f"{'-map_metadata -1' if remove_metadata else ''} "
-        f"{'-map_chapters 0' if copy_chapters else ''} "
+        f'-i "{source}" '
+        f"{f'-max_muxing_queue_size {max_mux}' if max_mux != 'default' else ''} "
+        f"-map 0:{video_track} "
+        f"-c:v:0 {encoder} "
+        f"-pix_fmt {pix_fmt} "
+        f'{f"-vf {filters}" if filters else ""} '
     )
+
+
+def generate_ending(
+    audio,
+    subtitles,
+    cover,
+    output_video=None,
+    copy_chapters=True,
+    remove_metadata=True,
+    null_ending=False,
+    extra="",
+    **_,
+):
+    ending = (
+        f" {'-map_metadata -1' if remove_metadata else ''} "
+        f"{'-map_chapters 0' if copy_chapters else ''} "
+        f"{audio} {subtitles} {cover} {extra} "
+    )
+    if output_video and not null_ending:
+        ending += f'"{output_video}"'
+    else:
+        ending += null
+    return ending
 
 
 def generate_filters(**kwargs):

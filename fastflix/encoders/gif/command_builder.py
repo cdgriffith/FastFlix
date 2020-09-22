@@ -2,23 +2,39 @@
 import secrets
 from pathlib import Path
 
-from fastflix.encoders.common.helpers import Command, generate_filters, start_and_input
+from fastflix.encoders.common.helpers import Command, generate_filters
 
 extension = "gif"
 
 
-def build(source, video_track, ffmpeg, temp_dir, output_video, fps=15, dither="sierra2_4a", extra="", **kwargs):
-
+def build(
+    source,
+    video_track,
+    ffmpeg,
+    temp_dir,
+    output_video,
+    fps=15,
+    dither="sierra2_4a",
+    extra="",
+    start_time=0,
+    duration=0,
+    **kwargs,
+):
     filters = generate_filters(**kwargs)
 
-    beginning = start_and_input(source, ffmpeg, **kwargs)
+    beginning = (
+        f'"{ffmpeg}" -y '
+        f'{f"-ss {start_time}" if start_time else ""} '
+        f'{f"-t {duration - start_time}" if duration else ""} '
+        f'-i "{source}" '
+    )
     if extra:
         beginning += f" {extra} "
 
     temp_palette = Path(temp_dir) / f"temp_palette_{secrets.token_hex(10)}.png"
 
     command_1 = (
-        f"{beginning} -map 0:{video_track} " f'-vf "{f"{filters}," if filters else "" }palettegen" -y "{temp_palette}"'
+        f"{beginning} -map 0:{video_track} " f'-vf "{f"{filters}," if filters else ""}palettegen" -y "{temp_palette}"'
     )
 
     gif_filters = f"fps={fps:.2f}"

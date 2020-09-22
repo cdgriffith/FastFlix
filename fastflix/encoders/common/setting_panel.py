@@ -97,16 +97,9 @@ class SettingPanel(QtWidgets.QWidget):
     def new_source(self):
         if not self.main.streams:
             return
-        if "remove_hdr" in self.widgets and "remove_hdr" in self.labels:
-            # if "zcale" not in self.main.flix.filters:
-            #     self.widgets.remove_hdr.setDisabled(True)
-            #     self.labels["remove_hdr"].setStyleSheet("QLabel{color:#777}")
-            #     self.labels["remove_hdr"].setToolTip("cannot remove HDR, zcale filter not in current version of FFmpeg")
-            #     logger.warning("zcale filter not detected in current version of FFmpeg, cannot remove HDR")
-            if self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
-                self.widgets.remove_hdr.setDisabled(False)
-                self.labels["remove_hdr"].setStyleSheet("QLabel{color:#000}")
-            else:
-                self.widgets.remove_hdr.setDisabled(True)
-                self.labels["remove_hdr"].setStyleSheet("QLabel{color:#000}")
-        self.setting_change(update=False)
+        elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
+            self.widgets.remove_hdr.setDisabled(False)
+            self.labels.remove_hdr.setStyleSheet("QLabel{color:#000}")
+        else:
+            self.widgets.remove_hdr.setDisabled(True)
+            self.labels.remove_hdr.setStyleSheet("QLabel{color:#000}")

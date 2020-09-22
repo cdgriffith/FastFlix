@@ -18,7 +18,7 @@ class GIF(SettingPanel):
 
         grid.addLayout(self.init_dither(), 0, 0, 1, 2)
         grid.addLayout(self.init_fps(), 1, 0, 1, 2)
-        grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
+        grid.addLayout(self._add_remove_hdr(), 2, 0, 1, 2)
         grid.addLayout(self._add_custom(), 11, 0, 1, 6)
 
         grid.addWidget(QtWidgets.QWidget(), 5, 0, 5, 6)
@@ -35,21 +35,6 @@ class GIF(SettingPanel):
         self.widgets.fps.setCurrentIndex(14)
         self.widgets.fps.currentIndexChanged.connect(lambda: self.main.build_commands())
         layout.addWidget(self.widgets.fps)
-        return layout
-
-    def init_remove_hdr(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.remove_hdr_label = QtWidgets.QLabel("Remove HDR")
-        self.remove_hdr_label.setToolTip(
-            "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
-        )
-        layout.addWidget(self.remove_hdr_label)
-        self.widgets.remove_hdr = QtWidgets.QComboBox()
-        self.widgets.remove_hdr.addItems(["No", "Yes"])
-        self.widgets.remove_hdr.setCurrentIndex(0)
-        self.widgets.remove_hdr.setDisabled(True)
-        self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.remove_hdr)
         return layout
 
     def init_dither(self):
@@ -86,17 +71,6 @@ class GIF(SettingPanel):
         )
 
     def new_source(self):
-        if not self.main.streams:
-            return
-        if "zcale" not in self.main.flix.filters:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#777}")
-            self.remove_hdr_label.setToolTip("cannot remove HDR, zcale filter not in current version of FFmpeg")
-        elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
-            self.widgets.remove_hdr.setDisabled(False)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
-        else:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
+        super().new_source()
         self.widgets.fps.setCurrentIndex(14)
         self.widgets.dither.setCurrentIndex(0)

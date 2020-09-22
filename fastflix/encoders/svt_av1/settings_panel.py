@@ -55,12 +55,13 @@ class SVT_AV1(SettingPanel):
         self.mode = "QP"
 
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
-        grid.addLayout(self.init_remove_hdr(), 1, 0, 1, 2)
+        grid.addLayout(self._add_remove_hdr(), 1, 0, 1, 2)
         grid.addLayout(self.init_pix_fmts(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
         grid.addLayout(self.init_tier(), 5, 0, 1, 2)
         grid.addLayout(self.init_sc_detection(), 6, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 7, 0, 1, 2)
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
@@ -75,43 +76,31 @@ class SVT_AV1(SettingPanel):
         self.setLayout(grid)
         self.hide()
 
-    def _add_combo_box(self, label, options, widget_name, connect="default", enabled=True, default=0, tooltip=""):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel(label)
-        label.setToolTip(tooltip)
-        layout.addWidget(label)
-        self.widgets[widget_name] = QtWidgets.QComboBox()
-        self.widgets[widget_name].addItems(options)
-        self.widgets[widget_name].setCurrentIndex(default)
-        self.widgets[widget_name].setDisabled(not enabled)
-        if connect:
-            if connect == "default":
-                self.widgets[widget_name].currentIndexChanged.connect(lambda: self.main.page_update())
-            else:
-                self.widgets[widget_name].currentIndexChanged.connect(connect)
-        layout.addWidget(self.widgets[widget_name])
-
-        return layout, self.widgets[widget_name], label
-
     def init_tile_rows(self):
-        layout, combo_box, label = self._add_combo_box("Tile Rows", [str(x) for x in range(0, 7)], "tile_rows")
-        return layout
+        return self._add_combo_box(label="Tile Rows", options=[str(x) for x in range(0, 7)], widget_name="tile_rows")
 
     def init_tile_columns(self):
-        layout, combo_box, label = self._add_combo_box("Tile Columns", [str(x) for x in range(0, 5)], "tile_columns")
-        return layout
+        return self._add_combo_box(
+            label="Tile Columns", options=[str(x) for x in range(0, 5)], widget_name="tile_columns"
+        )
 
     def init_pix_fmts(self):
-        layout, combo_box, label = self._add_combo_box("Bit Depth", pix_fmts, "pix_fmt", default=1)
-        return layout
+        return self._add_combo_box(label="Bit Depth", options=pix_fmts, widget_name="pix_fmt", default=1)
 
     def init_tier(self):
-        layout, combo_box, label = self._add_combo_box("Tier", ["main", "high"], "tier")
-        return layout
+        return self._add_combo_box(label="Tier", options=["main", "high"], widget_name="tier")
 
     def init_sc_detection(self):
-        layout, combo_box, label = self._add_combo_box("Scene Detection", ["false", "true"], "sc_detection")
-        return layout
+        return self._add_combo_box(label="Scene Detection", options=["false", "true"], widget_name="sc_detection")
+
+    def init_max_mux(self):
+        return self._add_combo_box(
+            label="Max Muxing Queue Size",
+            tooltip='Useful when you have the "Too many packets buffered for output stream" error',
+            widget_name="max_mux",
+            options=["default", "1024", "2048", "4096", "8192"],
+            default=1,
+        )
 
     def init_single_pass(self):
         layout = QtWidgets.QHBoxLayout()
@@ -122,30 +111,8 @@ class SVT_AV1(SettingPanel):
         layout.addWidget(self.widgets.single_pass)
         return layout
 
-    def init_remove_hdr(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.remove_hdr_label = QtWidgets.QLabel("Remove HDR")
-        self.remove_hdr_label.setToolTip(
-            "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
-        )
-        layout.addWidget(self.remove_hdr_label)
-        self.widgets.remove_hdr = QtWidgets.QComboBox()
-        self.widgets.remove_hdr.addItems(["No", "Yes"])
-        self.widgets.remove_hdr.setCurrentIndex(0)
-        self.widgets.remove_hdr.setDisabled(True)
-        self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.remove_hdr)
-        return layout
-
     def init_speed(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Speed"))
-        self.widgets.speed = QtWidgets.QComboBox()
-        self.widgets.speed.addItems([str(x) for x in range(9)])
-        self.widgets.speed.setCurrentIndex(7)
-        self.widgets.speed.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.speed)
-        return layout
+        return self._add_combo_box(label="Speed", widget_name="speed", options=[str(x) for x in range(9)], default=7)
 
     def init_modes(self):
         layout = QtWidgets.QGridLayout()
@@ -224,6 +191,7 @@ class SVT_AV1(SettingPanel):
             tier=int(self.widgets.tier.currentIndex()),
             sc_detection=int(self.widgets.sc_detection.currentIndex()),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
+            max_mux=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
         )
         if self.mode == "QP":
@@ -233,21 +201,6 @@ class SVT_AV1(SettingPanel):
             bitrate = self.widgets.bitrate.currentText()
             settings.bitrate = bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.bitrate.text()
         return settings
-
-    def new_source(self):
-        if not self.main.streams:
-            return
-        if "zcale" not in self.main.flix.filters:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#777}")
-            self.remove_hdr_label.setToolTip("cannot remove HDR, zcale filter not in current version of FFmpeg")
-            logger.warning("zcale filter not detected in current version of FFmpeg, cannot remove HDR")
-        elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
-            self.widgets.remove_hdr.setDisabled(False)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
-        else:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
 
     def set_mode(self, x):
         self.mode = x.text()

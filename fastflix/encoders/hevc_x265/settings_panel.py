@@ -49,11 +49,8 @@ class HEVC(SettingPanel):
 
         grid = QtWidgets.QGridLayout()
 
-        self.widgets = Box(remove_hdr=None, mode=None, intra_encoding=None)
-
         self.mode = "CRF"
         self.updating_settings = False
-        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 1)
         grid.addLayout(self._add_remove_hdr(connect=lambda: self.setting_change()), 2, 0, 1, 1)
@@ -66,6 +63,8 @@ class HEVC(SettingPanel):
         grid.addLayout(self.init_modes(), 0, 1, 6, 5)
 
         grid.setRowStretch(9, True)
+
+        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         guide_label = QtWidgets.QLabel(
             "<a href='https://trac.ffmpeg.org/wiki/Encode/H.265'>FFMPEG HEVC / H.265 Encoding Guide</a>"
@@ -126,40 +125,32 @@ class HEVC(SettingPanel):
         )
 
     def init_profile(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Profile")
-        label.setToolTip("Enforce an encode profile")
-        layout.addWidget(label)
-        self.widgets.profile = QtWidgets.QComboBox()
-        self.widgets.profile.addItems(["default", "main", "main10", "mainstillpicture"])
-        self.widgets.profile.setCurrentIndex(0)
-        self.widgets.profile.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.profile)
-        return layout
+        return self._add_combo_box(
+            label="Profile",
+            tooltip="Enforce an encode profile",
+            widget_name="profile",
+            options=["default", "main", "main10", "mainstillpicture"],
+            default=0,
+        )
 
     def init_pix_fmt(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Bit Depth")
-        label.setToolTip("Pixel Format (requires at least 10-bit for HDR)")
-        layout.addWidget(label)
-        self.widgets.pix_fmt = QtWidgets.QComboBox()
-        self.widgets.pix_fmt.addItems(pix_fmts)
-        self.widgets.pix_fmt.setCurrentIndex(1)
-        self.widgets.pix_fmt.currentIndexChanged.connect(lambda: self.setting_change(pix_change=True))
-        layout.addWidget(self.widgets.pix_fmt)
-        return layout
+        return self._add_combo_box(
+            label="Bit Depth",
+            tooltip="Pixel Format (requires at least 10-bit for HDR)",
+            widget_name="pix_fmt",
+            options=pix_fmts,
+            default=1,
+            connect=lambda: self.setting_change(pix_change=True),
+        )
 
     def init_max_mux(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Max Muxing Queue Size")
-        label.setToolTip('Only change this if you are getting the error "Too many packets buffered for output stream"')
-        layout.addWidget(label)
-        self.widgets.max_mux = QtWidgets.QComboBox()
-        self.widgets.max_mux.addItems(["default", "1024", "2048", "4096", "8192"])
-        self.widgets.max_mux.setCurrentIndex(0)
-        self.widgets.max_mux.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.max_mux)
-        return layout
+        return self._add_combo_box(
+            label="Max Muxing Queue Size",
+            tooltip='Useful when you have the "Too many packets buffered for output stream" error',
+            widget_name="max_mux",
+            options=["default", "1024", "2048", "4096", "8192"],
+            default=1,
+        )
 
     def init_modes(self):
         layout = QtWidgets.QGridLayout()

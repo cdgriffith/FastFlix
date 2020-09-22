@@ -3,10 +3,8 @@ import re
 import secrets
 from pathlib import Path
 
-import reusables
-
 from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_filters, start_and_input
+from fastflix.encoders.common.helpers import Command, generate_ending, generate_ffmpeg_start, generate_filters, null
 from fastflix.encoders.common.subtitles import build_subtitle
 
 
@@ -24,27 +22,25 @@ def build(
     audio_tracks=(),
     speed=1,
     row_mt=0,
-    force420=True,
-    extra="",
+    pix_fmt="yuv420p10le",
     attachments="",
     **kwargs,
 ):
     filters = generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
     subtitles = build_subtitle(subtitle_tracks)
-
-    ending = "/dev/null"
-    if reusables.win_based:
-        ending = "NUL"
-
-    beginning = start_and_input(source, ffmpeg, **kwargs) + (
-        f"{extra} "
-        f"-map 0:{video_track} "
-        f"-c:v:0 libvpx-vp9 "
-        f'{f"-vf {filters}" if filters else ""} '
-        f'{"-pix_fmt yuv420p" if force420 else ""} '
-        f'{"-row-mt 1" if row_mt else ""} '
+    ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
+    beginning = generate_ffmpeg_start(
+        source=source,
+        ffmpeg=ffmpeg,
+        encoder="libvpx-vp9",
+        video_track=video_track,
+        filters=filters,
+        pix_fmt=pix_fmt,
+        **kwargs,
     )
+
+    beginning += f'{"-row-mt 1" if row_mt else ""} '
 
     if not single_pass:
         pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
@@ -53,15 +49,15 @@ def build(
     beginning = re.sub("[ ]+", " ", beginning)
 
     if bitrate:
-        command_1 = f"{beginning} -b:v {bitrate} -quality good -pass 1 -an -f webm {ending}"
-        command_2 = f'{beginning} -b:v {bitrate}  -quality {quality} -speed {speed} -pass 2 {audio} {subtitles} {attachments} "{output_video}"'
+        command_1 = f"{beginning} -b:v {bitrate} -quality good -pass 1 -an -f webm {null}"
+        command_2 = f"{beginning} -b:v {bitrate} -quality {quality} -speed {speed} -pass 2" + ending
 
     elif crf:
-        command_1 = f"{beginning} -b:v 0 -crf {crf} -quality good -pass 1 -an -f webm {ending}"
+        command_1 = f"{beginning} -b:v 0 -crf {crf} -quality good -pass 1 -an -f webm {null}"
         command_2 = (
             f"{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} "
-            f'{"-pass 2" if not single_pass else ""} {audio} {subtitles} {attachments} "{output_video}"'
-        )
+            f'{"-pass 2" if not single_pass else ""}'
+        ) + ending
 
     else:
         return []

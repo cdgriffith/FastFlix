@@ -3,11 +3,10 @@ import re
 import secrets
 from pathlib import Path
 
-import reusables
 from box import Box
 
 from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_filters, start_and_input
+from fastflix.encoders.common.helpers import Command, generate_ending, generate_ffmpeg_start, generate_filters, null
 from fastflix.encoders.common.subtitles import build_subtitle
 
 
@@ -24,9 +23,7 @@ def build(
     subtitle_tracks=(),
     disable_hdr=False,
     side_data=None,
-    max_mux="default",
-    extra="",
-    pix_fmt="yuv420p10le",
+    pix_fmt="yuv420p",
     tune=None,
     profile="default",
     attachments="",
@@ -35,28 +32,30 @@ def build(
     filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
     audio = build_audio(audio_tracks)
     subtitles = build_subtitle(subtitle_tracks)
-
-    ending = "/dev/null"
-    if reusables.win_based:
-        ending = "NUL"
+    ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
 
     if not side_data:
         side_data = Box(default_box=True)
 
-    beginning = start_and_input(source, ffmpeg, **kwargs) + (
-        f"{extra} "
-        f"-map 0:{video_track} "
-        f"-pix_fmt {pix_fmt} "
-        f"-c:v:0 libx264 "
-        f'{f"-vf {filters}" if filters else ""} '
-        f'{f"-tune {tune}" if tune else ""} '
+    beginning = generate_ffmpeg_start(
+        source=source,
+        ffmpeg=ffmpeg,
+        encoder="libx264",
+        video_track=video_track,
+        filters=filters,
+        pix_fmt=pix_fmt,
+        **kwargs,
     )
+
+    beginning += f'{f"-tune {tune}" if tune else ""} '
 
     if profile and profile != "default":
         beginning += f"-profile {profile} "
 
-    if max_mux and max_mux != "default":
-        beginning += f"-max_muxing_queue_size {max_mux} "
+    if not disable_hdr and pix_fmt == "yuv420p10le":
+
+        if side_data.color_primaries == "bt2020":
+            beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
     if side_data.cll:
         pass
@@ -67,12 +66,11 @@ def build(
     if bitrate:
         command_1 = (
             f"{beginning} -pass 1 "
-            f'-passlogfile "{pass_log_file}" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {ending}'
+            f'-passlogfile "{pass_log_file}" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {null}'
         )
         command_2 = (
-            f'{beginning} -pass 2 -passlogfile "{pass_log_file}" '
-            f'-b:v {bitrate} -preset {preset} {audio} {subtitles} {attachments} {extra_data} "{output_video}"'
-        )
+            f'{beginning} -pass 2 -passlogfile "{pass_log_file}" ' f"-b:v {bitrate} -preset {preset} {extra_data}"
+        ) + ending
         return [
             Command(
                 re.sub("[ ]+", " ", command_1), ["ffmpeg", "output"], False, name="First pass bitrate", exe="ffmpeg"
@@ -83,10 +81,7 @@ def build(
         ]
 
     elif crf:
-        command = (
-            f"{beginning} -crf {crf} "
-            f'-preset {preset} {audio} {subtitles} {attachments} {extra_data} "{output_video}"'
-        )
+        command = (f"{beginning} -crf {crf} " f"-preset {preset} {extra_data}") + ending
         return [
             Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")
         ]

@@ -39,11 +39,14 @@ class AV1(SettingPanel):
 
         self.mode = "CRF"
 
-        grid.addLayout(self.init_remove_hdr(), 0, 0, 1, 2)
+        grid.addLayout(self._add_remove_hdr(), 0, 0, 1, 2)
         grid.addLayout(self.init_cpu_used(), 1, 0, 1, 2)
         grid.addLayout(self.init_row_mt(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 3, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 4, 0, 1, 2)
+        grid.addLayout(self.init_usage(), 5, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
+
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
 
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
@@ -106,20 +109,23 @@ class AV1(SettingPanel):
         layout.addWidget(self.widgets.tile_rows)
         return layout
 
-    def init_remove_hdr(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.remove_hdr_label = QtWidgets.QLabel("Remove HDR")
-        self.remove_hdr_label.setToolTip(
-            "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
+    def init_max_mux(self):
+        return self._add_combo_box(
+            label="Max Muxing Queue Size",
+            tooltip='Useful when you have the "Too many packets buffered for output stream" error',
+            widget_name="max_mux",
+            options=["default", "1024", "2048", "4096", "8192"],
+            default=1,
         )
-        layout.addWidget(self.remove_hdr_label)
-        self.widgets.remove_hdr = QtWidgets.QComboBox()
-        self.widgets.remove_hdr.addItems(["No", "Yes"])
-        self.widgets.remove_hdr.setCurrentIndex(0)
-        self.widgets.remove_hdr.setDisabled(True)
-        self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.remove_hdr)
-        return layout
+
+    def init_usage(self):
+        return self._add_combo_box(
+            label="Usage",
+            tooltip="Quality and compression efficiency vs speed trade-off",
+            widget_name="usage",
+            options=["good", "realtime"],
+            default=0,
+        )
 
     def init_modes(self):
         layout = QtWidgets.QGridLayout()
@@ -183,10 +189,12 @@ class AV1(SettingPanel):
 
         settings = Box(
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+            usage=self.widgets.usage.currentText(),
             cpu_used=self.widgets.cpu_used.currentText(),
             row_mt=conversions[self.widgets.row_mt.currentText()],
             tile_rows=self.widgets.tile_rows.currentText(),
             tile_columns=self.widgets.tile_columns.currentText(),
+            max_mux=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
         )
 
@@ -195,21 +203,6 @@ class AV1(SettingPanel):
         else:
             settings.bitrate = self.widgets.bitrate.currentText().split(" ", 1)[0]
         return settings
-
-    def new_source(self):
-        if not self.main.streams:
-            return
-        if "zcale" not in self.main.flix.filters:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#777}")
-            self.remove_hdr_label.setToolTip("cannot remove HDR, zcale filter not in current version of FFmpeg")
-            logger.warning("zcale filter not detected in current version of FFmpeg, cannot remove HDR")
-        elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
-            self.widgets.remove_hdr.setDisabled(False)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
-        else:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
 
     def set_mode(self, x):
         self.mode = x.text()

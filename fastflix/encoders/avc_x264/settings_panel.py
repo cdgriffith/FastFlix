@@ -54,7 +54,7 @@ class AVC(SettingPanel):
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)
-        grid.addLayout(self.init_remove_hdr(), 2, 0, 1, 2)
+        grid.addLayout(self._add_remove_hdr(), 2, 0, 1, 2)
         # grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
         grid.addLayout(self.init_tune(), 4, 0, 1, 2)
@@ -73,21 +73,6 @@ class AVC(SettingPanel):
 
         self.setLayout(grid)
         self.hide()
-
-    def init_remove_hdr(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.remove_hdr_label = QtWidgets.QLabel("Remove HDR")
-        self.remove_hdr_label.setToolTip(
-            "Convert BT2020 colorspace into bt709\n " "WARNING: This will take much longer and result in a larger file"
-        )
-        layout.addWidget(self.remove_hdr_label)
-        self.widgets.remove_hdr = QtWidgets.QComboBox()
-        self.widgets.remove_hdr.addItems(["No", "Yes"])
-        self.widgets.remove_hdr.setCurrentIndex(0)
-        self.widgets.remove_hdr.setDisabled(True)
-        self.widgets.remove_hdr.currentIndexChanged.connect(lambda: self.setting_change())
-        layout.addWidget(self.widgets.remove_hdr)
-        return layout
 
     def init_preset(self):
         layout = QtWidgets.QHBoxLayout()
@@ -239,22 +224,6 @@ class AVC(SettingPanel):
             else:
                 settings.bitrate = bitrate.split(" ", 1)[0]
         return settings
-
-    def new_source(self):
-        if not self.main.streams:
-            return
-        if "zcale" not in self.main.flix.filters:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#777}")
-            self.remove_hdr_label.setToolTip("cannot remove HDR, zcale filter not in current version of FFmpeg")
-            logger.warning("zcale filter not detected in current version of FFmpeg, cannot remove HDR")
-        elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
-            self.widgets.remove_hdr.setDisabled(False)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
-        else:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.remove_hdr_label.setStyleSheet("QLabel{color:#000}")
-        self.setting_change(update=False)
 
     def set_mode(self, x):
         self.mode = x.text()
