@@ -44,7 +44,7 @@ class AV1(SettingPanel):
         grid.addLayout(self.init_row_mt(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 3, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 4, 0, 1, 2)
-        grid.addLayout(self.init_modes(), 0, 2, 3, 3)
+        grid.addLayout(self.init_modes(), 0, 2, 4, 4)
 
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
         grid.setRowStretch(8, 1)
@@ -131,8 +131,6 @@ class AV1(SettingPanel):
         bitrate_group_box.setFixedHeight(40)
         bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
         bitrate_box_layout = QtWidgets.QHBoxLayout()
-        # rotation_dir = Path(base_path, 'data', 'rotations')
-        # group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-15px; padding-bottom:-5px}")
         self.widgets.mode = QtWidgets.QButtonGroup()
         self.widgets.mode.buttonClicked.connect(self.set_mode)
 

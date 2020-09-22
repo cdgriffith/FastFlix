@@ -89,7 +89,7 @@ class RAV1E(SettingPanel):
         return self._add_check_box("Single Pass (Bitrate)", "single_pass", checked=True)
 
     def init_pix_fmts(self):
-        return self._add_combo_box("Bit Depth", pix_fmts, "pix_fmt")
+        return self._add_combo_box("Bit Depth", pix_fmts, "pix_fmt", default=1)
 
     def init_remove_hdr(self):
         layout = QtWidgets.QHBoxLayout()

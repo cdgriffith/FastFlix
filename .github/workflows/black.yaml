@@ -14,5 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: pip install black
+    - run: sudo apt install python3-pip -y
+    - run: pip3 install black
     - run: black --check

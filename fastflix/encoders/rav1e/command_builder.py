@@ -44,38 +44,16 @@ def build(
     bitrate=None,
     audio_tracks=(),
     subtitle_tracks=(),
+    disable_hdr=False,
+    side_data=None,
     single_pass=False,
     attachments="",
     extra="",
     **kwargs,
 ):
-    filters = generate_filters(**kwargs)
+    filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
     audio = build_audio(audio_tracks)
     subtitles = build_subtitle(subtitle_tracks)
-
-    crop = kwargs.get("crop")
-    scale = kwargs.get("scale")
-
-    if scale:
-        width, height = (int(x) for x in scale.split(":"))
-    else:
-        height = int(streams.video[stream_track].height)
-        width = int(streams.video[stream_track].width)
-        if crop:
-            crop_check = crop.split(":")
-            try:
-                assert crop_check[0] % 8 == 0
-                assert crop_check[1] % 8 == 0
-            except AssertionError:
-                raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
-        else:
-            crop_height = height % 8
-            crop_width = width % 8
-            if crop_height or crop_width:
-                raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
-
-    assert height <= 2160
-    assert width <= 4096
 
     beginning = start_and_input(source, ffmpeg, **kwargs) + (
         f"{extra}"
@@ -83,8 +61,8 @@ def build(
         f"-pix_fmt {pix_fmt} "
         f"-c:v:0 librav1e -strict experimental "
         f"-speed {speed} "
-        f"-tile_columns {tile_columns} "
-        f"-tile_rows {tile_rows} "
+        f"-tile-columns {tile_columns} "
+        f"-tile-rows {tile_rows} "
         f"-tiles {tiles} "
         f'{f"-vf {filters}" if filters else ""} '
     )
@@ -92,6 +70,27 @@ def build(
     if not single_pass:
         pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
         beginning += f'-passlogfile "{pass_log_file}" '
+
+    if not disable_hdr and pix_fmt == "yuv420p10le":
+        rav1e_options = []
+        if side_data.color_primaries == "bt2020":
+            rav1e_options.extend(["primaries=BT2020", "transfer=SMPTE2084", "matrix=BT2020NCL"])
+
+        if side_data.master_display:
+            rav1e_options.append(
+                "mastering-display="
+                f"G{side_data.master_display.green}"
+                f"B{side_data.master_display.blue}"
+                f"R{side_data.master_display.red}"
+                f"WP{side_data.master_display.white}"
+                f"L{side_data.master_display.luminance}"
+            )
+
+        if side_data.cll:
+            rav1e_options.append(f"content-light={side_data.cll}")
+        if rav1e_options:
+            opts = ":".join(rav1e_options)
+            beginning += f'-rav1e-params "{opts}"'
 
     beginning = re.sub("[ ]+", " ", beginning)
 

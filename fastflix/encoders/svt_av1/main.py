@@ -12,7 +12,7 @@ video_extension = "mkv"
 video_dimension_divisor = 8
 icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_svt_av1.png")).resolve())
 
-enable_subtitles = False
+enable_subtitles = True
 enable_audio = True
 enable_attachments = True
 

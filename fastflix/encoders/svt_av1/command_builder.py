@@ -41,39 +41,20 @@ def build(
     speed=7,
     qp=25,
     sc_detection=0,
+    disable_hdr=False,
     pix_fmt="yuv420p10le",
     bitrate=None,
     audio_tracks=(),
     subtitle_tracks=(),
+    side_data=None,
     single_pass=False,
     attachments="",
     extra="",
     **kwargs,
 ):
-    filters = generate_filters(**kwargs)
+    filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
     audio = build_audio(audio_tracks)
     subtitles = build_subtitle(subtitle_tracks)
-
-    crop = kwargs.get("crop")
-    scale = kwargs.get("scale")
-
-    if scale:
-        width, height = (int(x) for x in scale.split(":"))
-    else:
-        height = int(streams.video[stream_track].height)
-        width = int(streams.video[stream_track].width)
-        if crop:
-            crop_check = crop.split(":")
-            try:
-                assert crop_check[0] % 8 == 0
-                assert crop_check[1] % 8 == 0
-            except AssertionError:
-                raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
-        else:
-            crop_height = height % 8
-            crop_width = width % 8
-            if crop_height or crop_width:
-                raise FlixError("CROP BAD: Video height and main_width must be divisible by 8")
 
     beginning = start_and_input(source, ffmpeg, **kwargs) + (
         f"{extra} "
