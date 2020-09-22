@@ -16,4 +16,4 @@ jobs:
 
     - run: sudo apt install python3-pip python3-setuptools -y
     - run: pip3 install black
-    - run: black --check
+    - run: python -m black --check .

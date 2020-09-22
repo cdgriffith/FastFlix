@@ -23,19 +23,15 @@ class CoverPanel(QtWidgets.QWidget):
         sp.setVerticalPolicy(QtWidgets.QSizePolicy.Policy.Maximum)
         sp.setHorizontalPolicy(QtWidgets.QSizePolicy.Policy.Maximum)
 
-        info = QtWidgets.QLabel()
-        info.setPixmap(self.style().standardIcon(QtWidgets.QStyle.SP_MessageBoxWarning).pixmap(16, 16))
-        info.setToolTip(
-            "Hardly any system supports MKV's covers as thumbnails by default<br><br> "
-            "Windows needs the ICAROS shell extension with proper settings applied <br><br> "
-            "Android / Google products do not support covers <br>"
-            ""
-        )
-
         # row, column, row span, column span
         layout.addWidget(QtWidgets.QLabel("Poster Cover"), 0, 0, 1, 5)
         layout.addWidget(QtWidgets.QLabel("Landscape Cover"), 0, 6, 1, 4)
-        layout.addWidget(info, 0, 9, 1, 1, QtCore.Qt.AlignRight)
+        info_label = QtWidgets.QLabel(
+            "<a href='https://codecalamity.com/guides/video-thumbnails/'>"
+            "Enabling cover thumbnails on your system</a>"
+        )
+        info_label.setOpenExternalLinks(True)
+        layout.addWidget(info_label, 10, 0, 1, 9, QtCore.Qt.AlignLeft)
 
         poster_options_layout = QtWidgets.QHBoxLayout()
         self.cover_passthrough_checkbox = QtWidgets.QCheckBox("Copy Cover")
