@@ -57,7 +57,7 @@ class RAV1E(SettingPanel):
         grid.addLayout(self.init_tiles(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmts(), 5, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 5, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
@@ -113,7 +113,6 @@ class RAV1E(SettingPanel):
             widget_name="pix_fmt",
             options=pix_fmts,
             default=1,
-            connect=lambda: self.setting_change(pix_change=True),
         )
 
     def init_max_mux(self):
@@ -208,7 +207,9 @@ class RAV1E(SettingPanel):
             settings.qp = int(qp.split(" ", 1)[0]) if qp.lower() != "custom" else self.widgets.custom_qp.text()
         else:
             bitrate = self.widgets.bitrate.currentText()
-            settings.bitrate = bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.bitrate.text()
+            settings.bitrate = (
+                bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.custom_bitrate.text()
+            )
         return settings
 
     def set_mode(self, x):

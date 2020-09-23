@@ -225,7 +225,7 @@ class VP9(SettingPanel):
         else:
             bitrate = self.widgets.bitrate.currentText()
             if bitrate.lower() == "custom":
-                settings.bitrate = self.widgets.custom_bitrate.currentText()
+                settings.bitrate = self.widgets.custom_bitrate.text()
             else:
                 settings.bitrate = bitrate.split(" ", 1)[0]
         return settings

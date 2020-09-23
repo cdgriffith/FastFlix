@@ -56,7 +56,7 @@ class SVT_AV1(SettingPanel):
 
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
         grid.addLayout(self._add_remove_hdr(), 1, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmts(), 2, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
         grid.addLayout(self.init_tier(), 5, 0, 1, 2)
@@ -217,7 +217,9 @@ class SVT_AV1(SettingPanel):
             settings.qp = int(qp.split(" ", 1)[0]) if qp.lower() != "custom" else self.widgets.custom_qp.text()
         else:
             bitrate = self.widgets.bitrate.currentText()
-            settings.bitrate = bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.bitrate.text()
+            settings.bitrate = (
+                bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.custom_bitrate.text()
+            )
         return settings
 
     def set_mode(self, x):

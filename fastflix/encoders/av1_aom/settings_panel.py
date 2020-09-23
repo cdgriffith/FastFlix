@@ -125,7 +125,6 @@ class AV1(SettingPanel):
             widget_name="pix_fmt",
             options=pix_fmts,
             default=1,
-            connect=lambda: self.setting_change(pix_change=True),
         )
 
     def init_modes(self):
@@ -201,9 +200,13 @@ class AV1(SettingPanel):
         )
 
         if self.mode == "CRF":
-            settings.crf = int(self.widgets.crf.currentText().split(" ", 1)[0])
+            crf = self.widgets.crf.currentText()
+            settings.crf = int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_crf.text()
         else:
-            settings.bitrate = self.widgets.bitrate.currentText().split(" ", 1)[0]
+            bitrate = self.widgets.bitrate.currentText()
+            settings.bitrate = (
+                bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.custom_bitrate.text()
+            )
         return settings
 
     def set_mode(self, x):
