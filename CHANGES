@@ -32,6 +32,7 @@
 * Fixing error on audio tracks listing zero channels
 * Removing support for the direct SVT AV1 encoder (fixes #24)
 * Removing support for cutielog / socket based logging
+* Removing flix as library support (cleaning out old command generator code)
 
 ## Version 2.6.3
 * Fixing #71 #26 encoding issues in video files (thanks to -L0Lock-)

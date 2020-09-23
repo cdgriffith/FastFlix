@@ -92,7 +92,7 @@ class Main(QtWidgets.QWidget):
             input_file=None,
             preview=None,
             start_time=None,
-            duration=None,
+            end_time=None,
             video_track=None,
             convert_to=None,
             rotate=None,
@@ -103,6 +103,7 @@ class Main(QtWidgets.QWidget):
             scale=Box(width=None, height=None, keep_aspect_ratio=None),
             remove_metadata=None,
             chapters=None,
+            fast_time=None,
         )
 
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
@@ -316,12 +317,25 @@ class Main(QtWidgets.QWidget):
     def init_start_time(self):
         group_box = QtWidgets.QGroupBox()
         group_box.setStyleSheet("QGroupBox{padding-top:18px; margin-top:-18px}")
-        self.widgets.start_time, layout = self.build_hoz_int_field("Start  ", right_stretch=False, time_field=True)
-        self.widgets.duration, layout = self.build_hoz_int_field(
-            "  End  ", left_stretch=False, layout=layout, time_field=True
+        self.widgets.start_time, layout = self.build_hoz_int_field(
+            "Start  ", right_stretch=False, left_stretch=True, time_field=True
+        )
+        self.widgets.end_time, layout = self.build_hoz_int_field(
+            "  End  ", left_stretch=False, right_stretch=True, layout=layout, time_field=True
         )
         self.widgets.start_time.textChanged.connect(lambda: self.page_update())
-        self.widgets.duration.textChanged.connect(lambda: self.page_update())
+        self.widgets.end_time.textChanged.connect(lambda: self.page_update())
+        self.widgets.fast_time = QtWidgets.QComboBox()
+        self.widgets.fast_time.addItems(["fast", "exact"])
+        self.widgets.fast_time.setCurrentIndex(0)
+        self.widgets.fast_time.setToolTip(
+            "uses [fast] seek to a rough position ahead of timestamp, "
+            "vs a specific [exact] frame lookup. (GIF encodings use [fast])"
+        )
+        self.widgets.fast_time.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
+        self.widgets.fast_time.setFixedWidth(55)
+        layout.addWidget(QtWidgets.QLabel(" "))
+        layout.addWidget(self.widgets.fast_time, QtCore.Qt.AlignRight)
         group_box.setLayout(layout)
         return group_box
 
@@ -411,7 +425,8 @@ class Main(QtWidgets.QWidget):
     ):
 
         widget = QtWidgets.QLineEdit(self.number_to_time(0) if time_field else "0")
-        widget.setValidator(self.only_int)
+        if not time_field:
+            widget.setValidator(self.only_int)
         widget.setFixedHeight(button_size)
         if not layout:
             layout = QtWidgets.QHBoxLayout()
@@ -442,6 +457,8 @@ class Main(QtWidgets.QWidget):
 
         if not time_field:
             widget.setFixedWidth(40)
+        else:
+            widget.setFixedWidth(60)
         layout.addWidget(minus_button)
         layout.addWidget(widget)
         layout.addWidget(plus_button)
@@ -719,7 +736,7 @@ class Main(QtWidgets.QWidget):
         if self.streams["data"]:
             logger.debug(f"{len(self.streams['data'])} data tracks found")
 
-        self.widgets.duration.setText(self.number_to_time(video_duration))
+        self.widgets.end_time.setText(self.number_to_time(video_duration))
 
         self.video_options.new_source()
         self.widgets.convert_button.setDisabled(False)
@@ -747,8 +764,12 @@ class Main(QtWidgets.QWidget):
         return self.time_to_number(self.widgets.start_time.text())
 
     @property
-    def duration(self):
-        return self.time_to_number(self.widgets.duration.text())
+    def end_time(self):
+        return self.time_to_number(self.widgets.end_time.text())
+
+    @property
+    def fast_time(self):
+        return self.widgets.fast_time.currentText() == "fast"
 
     @property
     def remove_metadata(self):
@@ -787,7 +808,7 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or self.loading_video:
             return
 
-        if settings.pix_fmt == "yuv420p10le":
+        if settings.pix_fmt == "yuv420p10le" and self.pix_fmt in ("yuv420p10le", "yuv420p12le"):
             settings.disable_hdr = True
         filters = helpers.generate_filters(**settings)
 
@@ -825,11 +846,11 @@ class Main(QtWidgets.QWidget):
             return
         stream_info = self.streams.video[self.video_track]
 
-        duration = self.duration
-        if self.duration == float(self.format_info.get("duration", 0)):
-            duration = None
-        if self.duration - 0.1 <= self.initial_duration <= self.duration + 0.1:
-            duration = None
+        end_time = self.end_time
+        if self.end_time == float(self.format_info.get("duration", 0)):
+            end_time = None
+        if self.end_time and self.end_time - 0.1 <= self.initial_duration <= self.end_time + 0.1:
+            end_time = None
 
         scale = self.build_scale()
         if scale in (
@@ -845,7 +866,7 @@ class Main(QtWidgets.QWidget):
             scale=scale,
             source=self.input_video,
             start_time=self.start_time,
-            duration=duration,
+            end_time=end_time,
             video_track=self.original_video_track,
             stream_track=self.video_track,
             pix_fmt=self.pix_fmt,
@@ -862,6 +883,7 @@ class Main(QtWidgets.QWidget):
             output_video=self.output_video,
             remove_metadata=self.remove_metadata,
             copy_chapters=self.copy_chapters,
+            fast_time=self.fast_time,
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")

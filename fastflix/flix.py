@@ -2,10 +2,9 @@
 import logging
 import os
 from multiprocessing.pool import ThreadPool
-from pathlib import Path
 from subprocess import PIPE, STDOUT, Popen, run
 
-from box import Box, BoxError, BoxList
+from box import Box, BoxError
 
 __all__ = ["FlixError", "ff_version", "Flix", "guess_bit_depth"]
 
@@ -172,102 +171,6 @@ class Flix:
 
         return ",".join(filter_list)
 
-    def generate_pallet_command(self, source, output, filters, video_track, start_time=0, duration=None):
-        start = ""
-        if duration:
-            start = f"-ss {start_time} -t {duration}"
-
-        return (
-            f'"{self.ffmpeg}" {start} -i "{source}" -map 0:{video_track} '
-            f'-vf "{f"{filters}," if filters else ""}palettegen" -y "{output}"'
-        )
-
-    def generate_gif_command(
-        self,
-        source,
-        output,
-        pallet_file,
-        video_track,
-        additional_tracks=(),
-        start_time=0,
-        duration=None,
-        filters=None,
-        fps=15,
-        dither="sierra2_4a",
-    ):
-        start = ""
-        if duration:
-            start = f"-ss {start_time} -t {duration}"
-
-        maps = ""
-        for track in additional_tracks:
-            maps += f" -map 0:{track} "
-
-        gif_filters = f"fps={fps:.2f}"
-        if filters:
-            gif_filters += f",{filters}"
-
-        return (
-            f'"{self.ffmpeg}" {start} -i "{source}" -i "{pallet_file}" -map 0:{video_track} '
-            f'-lavfi "{gif_filters} [x]; [x][1:v] paletteuse=dither={dither}" -y "{output}" '
-        )
-
-    def generate_x265_command(
-        self,
-        source,
-        output,
-        video_track,
-        audio_track=None,
-        additional_tracks=(),
-        start_time=0,
-        duration=None,
-        crf=20,
-        preset="medium",
-        disable_hdr=False,
-        scale_width=None,
-        scale_height=None,
-        keep_subtitles=False,
-        crop=None,
-        scale=None,
-    ):
-        start = ""
-        if duration:
-            start = f"-ss {start_time} -t {duration}"
-
-        maps = ""
-        for track in additional_tracks:
-            maps += f" -map 0:{track} "
-
-        filter_list = []
-
-        if disable_hdr:
-            filter_list.append(
-                "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,"
-                "zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
-            )
-
-        if scale:
-            filter_list.append(f"scale={scale}")
-        elif scale_width:
-            filter_list.append(f"scale={scale_width}:-1")
-        elif scale_height:
-            filter_list.append(f"scale=-1:{scale_height}")
-
-        if crop:
-            filter_list.append(f"crop={crop}")
-
-        filters = ",".join(filter_list)
-
-        return (
-            f'"{self.ffmpeg}" -loglevel error {start} -i "{source}" '
-            f"-c:v libx265 -preset {preset} -x265-params log-level=error:crf={crf} -pix_fmt yuv420p "
-            f'{"-map_metadata -1 -write_tmcd 0 -shortest" if start else ""} {f"-vf {filters}" if filters else ""} '
-            f'-map 0:{video_track} {"-an" if audio_track is None else f"-map 0:{audio_track}"} {maps} '
-            f'{"-map 0:s" if keep_subtitles else "-sn"} '
-            # -filter_complex "[0:v:0][0:3]overlay"
-            f' -y "{output}"'
-        )
-
     def generate_thumbnail_command(self, source, output, video_track, start_time=0, filters=None):
         start = ""
         if start_time:
@@ -283,68 +186,6 @@ class Flix:
     def execute(command, work_dir=None):
         logger.debug(f"running command: {command}")
         return run(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True, cwd=work_dir)
-
-    def video_split_command(self, source, video_track=0, start_time=0, duration=None, build_dir=".", segment_size=60):
-        start = ""
-        if start_time:
-            start += f"-ss {start_time}"
-        if duration:
-            start += f" -t {duration}"
-        src = Path(source)
-        out = Path(build_dir, f"%04d{src.suffix}")
-
-        return (
-            f'"{self.ffmpeg}" -loglevel error {start} -i "{source}" '
-            f'{"-map_metadata -1" if start else ""} -map 0:{video_track} -c copy -sc_threshold 0 '
-            f'-reset_timestamps 1 -f segment -segment_time {segment_size} -an -sn -dn "{out}"'
-        )
-
-    def yuv_command(self, source, output, bit_depth=8, crop=None, scale=None):
-        assert str(output).endswith(("yuv", "y4m"))
-
-        filter_list = []
-        if crop:
-            filter_list.append(f"crop={crop}")
-        if scale:
-            filter_list.append(f"scale={scale}")
-
-        filters = ",".join(filter_list) if filter_list else ""
-
-        return (
-            f'"{self.ffmpeg}" -loglevel error -i "{source}" -c:v rawvideo '
-            f'-pix_fmt {"yuv420p10le" if bit_depth == 10 else "yuv420p"}'
-            f' {f"-vf {filters}" if filters else ""} "{output}"'
-        )
-
-    def combine_command(self, videos, output, build_dir="."):
-        import uuid
-
-        file_list = os.path.abspath(os.path.join(build_dir, uuid.uuid4().hex))
-        with open(file_list, "w") as f:
-            f.write("\n".join(["file {}".format(str(video).replace("\\", "\\\\")) for video in videos]))
-        return f'"{self.ffmpeg}" -safe 0 -f concat -i "{file_list}" -reset_timestamps 1 -c copy "{output}"'
-
-    def extract_audio_command(
-        self, video, start_time, duration, output, audio_track=0, audio_format="adts", convert=False
-    ):
-        start = ""
-        if start_time:
-            start += f"-ss {start_time}"
-        if duration:
-            start += f" -t {duration}"
-
-        options = f"-acodec copy -f {audio_format}" if not convert else f"-acodec libvorbis"
-
-        return f'"{self.ffmpeg}" {start} -i "{video}" ' f'-vn {options} -map 0:{audio_track} "{output}"'
-
-    def add_audio_command(self, video_source, audio_source, output, video_track=0, audio_track=0):
-        # -shortest ?
-        # https://videoblerg.wordpress.com/2017/11/10/ffmpeg-and-how-to-use-it-wrong/
-        return (
-            f'"{self.ffmpeg}" -i "{video_source}" -i "{audio_source}" '
-            f'-c copy -map 0:{video_track} -af "aresample=async=1:min_hard_comp=0.100000:first_pts=0" '
-            f'-map 1:{audio_track} "{output}"'
-        )
 
     def get_audio_encoders(self):
         cmd = Popen(

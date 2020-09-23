@@ -17,7 +17,7 @@ def build(
     dither="sierra2_4a",
     extra="",
     start_time=0,
-    duration=0,
+    end_time=None,
     **kwargs,
 ):
     filters = generate_filters(**kwargs)
@@ -25,7 +25,7 @@ def build(
     beginning = (
         f'"{ffmpeg}" -y '
         f'{f"-ss {start_time}" if start_time else ""} '
-        f'{f"-t {duration - start_time}" if duration else ""} '
+        f'{f"-to {end_time}" if end_time else ""} '
         f'-i "{source}" '
     )
     if extra:

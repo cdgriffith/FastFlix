@@ -36,17 +36,22 @@ def generate_ffmpeg_start(
     encoder,
     video_track,
     start_time=0,
-    duration=None,
+    end_time=None,
     pix_fmt="yuv420p10le",
     filters=None,
     max_mux="default",
+    fast_time=True,
     **_,
 ):
+    time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
+    time_one = time_settings if fast_time else ""
+    time_two = time_settings if not fast_time else ""
+
     return (
         f'"{ffmpeg}" -y '
-        f'{f"-ss {start_time}" if start_time else ""} '
-        f'{f"-t {duration - start_time}" if duration else ""} '
+        f" {time_one} "
         f'-i "{source}" '
+        f" {time_two} "
         f"{f'-max_muxing_queue_size {max_mux}' if max_mux != 'default' else ''} "
         f"-map 0:{video_track} "
         f"-c:v:0 {encoder} "

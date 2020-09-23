@@ -38,6 +38,9 @@ recommended_crfs = [
 ]
 
 
+pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
+
+
 class AVC(SettingPanel):
     def __init__(self, parent, main):
         super(AVC, self).__init__(parent)
@@ -55,11 +58,10 @@ class AVC(SettingPanel):
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)
         grid.addLayout(self._add_remove_hdr(), 2, 0, 1, 2)
-        # grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
         grid.addLayout(self.init_tune(), 4, 0, 1, 2)
-        # grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 2)
         grid.addLayout(self.init_profile(), 5, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 2)
 
         # grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(9, 1)
@@ -128,6 +130,15 @@ class AVC(SettingPanel):
         self.widgets.max_mux.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.max_mux)
         return layout
+
+    def init_pix_fmt(self):
+        return self._add_combo_box(
+            label="Bit Depth",
+            tooltip="Pixel Format (requires at least 10-bit for HDR)",
+            widget_name="pix_fmt",
+            options=pix_fmts,
+            default=0,
+        )
 
     def init_modes(self):
         layout = QtWidgets.QGridLayout()
@@ -209,6 +220,7 @@ class AVC(SettingPanel):
             preset=self.widgets.preset.currentText(),
             max_mux=self.widgets.max_mux.currentText(),
             profile=self.widgets.profile.currentText(),
+            pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             extra=self.ffmpeg_extras,
         )
 
