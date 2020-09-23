@@ -177,6 +177,7 @@ class SVT_AV1(SettingPanel):
         self.widgets.custom_qp = QtWidgets.QLineEdit("30")
         self.widgets.custom_qp.setFixedWidth(100)
         self.widgets.custom_qp.setDisabled(True)
+        self.widgets.custom_qp.setValidator(self.only_int)
         self.widgets.custom_qp.textChanged.connect(lambda: self.main.build_commands())
         qp_box_layout.addWidget(qp_radio)
         qp_box_layout.addWidget(self.widgets.qp)

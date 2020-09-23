@@ -63,6 +63,7 @@ class Main(QtWidgets.QWidget):
         self.log_queue = log_queue
         self.ffmpeg = flix.ffmpeg
         self.ffprobe = flix.ffprobe
+        self.only_int = QtGui.QIntValidator()
 
         self.notifier = Notifier(self, self.status_queue)
         self.notifier.start()
@@ -408,7 +409,9 @@ class Main(QtWidgets.QWidget):
         return_buttons=False,
         time_field=False,
     ):
+
         widget = QtWidgets.QLineEdit(self.number_to_time(0) if time_field else "0")
+        widget.setValidator(self.only_int)
         widget.setFixedHeight(button_size)
         if not layout:
             layout = QtWidgets.QHBoxLayout()

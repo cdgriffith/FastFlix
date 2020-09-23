@@ -166,6 +166,7 @@ class AV1(SettingPanel):
         self.widgets.custom_crf = QtWidgets.QLineEdit("30")
         self.widgets.custom_crf.setFixedWidth(100)
         self.widgets.custom_crf.setDisabled(True)
+        self.widgets.custom_crf.setValidator(self.only_int)
         self.widgets.custom_crf.textChanged.connect(lambda: self.main.build_commands())
         crf_box_layout.addWidget(crf_radio)
         crf_box_layout.addWidget(self.widgets.crf)

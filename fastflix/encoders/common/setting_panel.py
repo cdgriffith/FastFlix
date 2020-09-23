@@ -2,7 +2,7 @@
 import logging
 
 from box import Box
-from qtpy import QtWidgets
+from qtpy import QtGui, QtWidgets
 
 logger = logging.getLogger("fastflix")
 
@@ -16,6 +16,7 @@ class SettingPanel(QtWidgets.QWidget):
         super().__init__(*args, **kwargs)
         self.widgets = Box()
         self.labels = Box()
+        self.only_int = QtGui.QIntValidator()
         if not self.extras_connected:
             self.ffmpeg_extras_widget.textChanged.connect(lambda: self.main.page_update())
             self.extras_connected = True
