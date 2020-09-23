@@ -9,7 +9,7 @@ import pkg_resources
 import reusables
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.shared import latest_ffmpeg, message
+from fastflix.shared import latest_fastflix, message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -109,7 +109,7 @@ class Container(QtWidgets.QMainWindow):
         version_action = QtWidgets.QAction(
             self.style().standardIcon(QtWidgets.QStyle.SP_BrowserReload), "Check for Newer Version of FastFlix", self
         )
-        version_action.triggered.connect(lambda: latest_ffmpeg(no_new_dialog=True))
+        version_action.triggered.connect(lambda: latest_fastflix(no_new_dialog=True))
 
         help_menu = menubar.addMenu("&Help")
         help_menu.addAction(changes_action)

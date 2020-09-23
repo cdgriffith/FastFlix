@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pkg_resources
 import requests
+import reusables
 
 try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -80,23 +81,33 @@ def error_message(msg, details=None, traceback=False, title=None):
     em.exec_()
 
 
-def latest_ffmpeg(no_new_dialog=False):
+def latest_fastflix(no_new_dialog=False):
     from fastflix.version import __version__
 
     url = "https://api.github.com/repos/cdgriffith/FastFlix/releases/latest"
     data = requests.get(url).json()
     if data["tag_name"] != __version__ and StrictVersion(data["tag_name"]) > StrictVersion(__version__):
+        portable, installer = None, None
         for asset in data["assets"]:
             if asset["name"].endswith("win64.zip"):
-                link = asset["browser_download_url"]
-                break
-        else:
+                portable = asset["browser_download_url"]
+            if asset["name"].endswith("installer.exe"):
+                installer = asset["browser_download_url"]
+
+        if not portable and not installer:
             if no_new_dialog:
                 message("You are using the latest version of FastFlix")
             return
+        download_link = ""
+        if installer:
+            download_link += f"<a href='{installer}'>Download FastFlix installer {data['tag_name']}</a><br>"
+        if portable:
+            download_link += f"<a href='{portable}'>Download FastFlix portable {data['tag_name']}</a><br>"
+        if not reusables.win_based:
+            html_link = data["html_url"]
+            download_link = f"<a href='{html_link}'>View FastFlix {data['tag_name']} now</a>"
         message(
-            f"There is a newer version of FastFlix available! <br> "
-            f"<a href='{link}'>Download FastFlix {data['tag_name']} now</a>",
+            f"There is a newer version of FastFlix available! <br> {download_link}",
             title="New Version",
         )
         return

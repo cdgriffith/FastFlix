@@ -25,6 +25,8 @@ recommended_bitrates = [
 
 recommended_crfs = ["34", "32", "30", "28", "26", "24", "22", "20", "Custom"]
 
+pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
+
 
 class AV1(SettingPanel):
     def __init__(self, parent, main):
@@ -46,6 +48,7 @@ class AV1(SettingPanel):
         grid.addLayout(self.init_tile_rows(), 4, 0, 1, 2)
         grid.addLayout(self.init_usage(), 5, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 7, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
 
@@ -62,52 +65,40 @@ class AV1(SettingPanel):
         self.hide()
 
     def init_cpu_used(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("CPU Used")
-        label.setToolTip("Quality/Speed ratio modifier (defaults to 1)")
-        layout.addWidget(label)
-        self.widgets.cpu_used = QtWidgets.QComboBox()
-        self.widgets.cpu_used.addItems([str(x) for x in range(0, 9)])
-        self.widgets.cpu_used.setCurrentIndex(1)
-        self.widgets.cpu_used.currentIndexChanged.connect(lambda: self.main.build_commands())
-        layout.addWidget(self.widgets.cpu_used)
-        return layout
+        return self._add_combo_box(
+            label="CPU Used",
+            tooltip="Quality/Speed ratio modifier (defaults to 1)",
+            widget_name="cpu_used",
+            options=[str(x) for x in range(0, 9)],
+            default=1,
+        )
 
     def init_row_mt(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Row Multi-Threading")
-        label.setToolTip("Enable row based multi-threading")
-        layout.addWidget(label)
-        self.widgets.row_mt = QtWidgets.QComboBox()
-        self.widgets.row_mt.addItems(["default", "enabled", "disabled"])
-        self.widgets.row_mt.setCurrentIndex(0)
-        self.widgets.row_mt.currentIndexChanged.connect(lambda: self.main.build_commands())
-        layout.addWidget(self.widgets.row_mt)
-        return layout
+        return self._add_combo_box(
+            label="Row Multi-Threading",
+            tooltip="Enable row based multi-threading",
+            widget_name="row_mt",
+            options=["default", "enabled", "disabled"],
+            default=0,
+        )
 
     def init_tile_columns(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Tile Columns")
-        label.setToolTip("Log2 of number of tile columns to use")
-        layout.addWidget(label)
-        self.widgets.tile_columns = QtWidgets.QComboBox()
-        self.widgets.tile_columns.addItems([str(x) for x in range(-1, 7)])
-        self.widgets.tile_columns.setCurrentIndex(0)
-        self.widgets.tile_columns.currentIndexChanged.connect(lambda: self.main.build_commands())
-        layout.addWidget(self.widgets.tile_columns)
-        return layout
+        return self._add_combo_box(
+            label="Tile Columns",
+            tooltip="Log2 of number of tile columns to encode faster (lesser quality)",
+            widget_name="tile_columns",
+            options=[str(x) for x in range(-1, 7)],
+            default=0,
+        )
 
     def init_tile_rows(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Tile Rows")
-        label.setToolTip("Log2 of number of tile rows to use")
-        layout.addWidget(label)
-        self.widgets.tile_rows = QtWidgets.QComboBox()
-        self.widgets.tile_rows.addItems([str(x) for x in range(-1, 7)])
-        self.widgets.tile_rows.setCurrentIndex(0)
-        self.widgets.tile_rows.currentIndexChanged.connect(lambda: self.main.build_commands())
-        layout.addWidget(self.widgets.tile_rows)
-        return layout
+        return self._add_combo_box(
+            label="Tile Rows",
+            tooltip="Log2 of number of tile rows to encode faster (lesser quality)",
+            widget_name="tile_rows",
+            options=[str(x) for x in range(-1, 7)],
+            default=0,
+        )
 
     def init_max_mux(self):
         return self._add_combo_box(
@@ -125,6 +116,16 @@ class AV1(SettingPanel):
             widget_name="usage",
             options=["good", "realtime"],
             default=0,
+        )
+
+    def init_pix_fmt(self):
+        return self._add_combo_box(
+            label="Bit Depth",
+            tooltip="Pixel Format (requires at least 10-bit for HDR)",
+            widget_name="pix_fmt",
+            options=pix_fmts,
+            default=1,
+            connect=lambda: self.setting_change(pix_change=True),
         )
 
     def init_modes(self):
@@ -195,6 +196,7 @@ class AV1(SettingPanel):
             tile_rows=self.widgets.tile_rows.currentText(),
             tile_columns=self.widgets.tile_columns.currentText(),
             max_mux=self.widgets.max_mux.currentText(),
+            pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             extra=self.ffmpeg_extras,
         )
 

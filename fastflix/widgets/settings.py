@@ -57,6 +57,7 @@ class Settings(QtWidgets.QWidget):
         cancel.clicked.connect(lambda: self.close())
 
         button_layout = QtWidgets.QHBoxLayout()
+        button_layout.addWidget(QtWidgets.QLabel("A FastFlix restart is required to apply changes"))
         button_layout.addStretch()
         button_layout.addWidget(cancel)
         button_layout.addWidget(save)

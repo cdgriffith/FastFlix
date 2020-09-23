@@ -77,15 +77,29 @@ class SVT_AV1(SettingPanel):
         self.hide()
 
     def init_tile_rows(self):
-        return self._add_combo_box(label="Tile Rows", options=[str(x) for x in range(0, 7)], widget_name="tile_rows")
+        return self._add_combo_box(
+            label="Tile Rows",
+            tooltip="Break the video into rows to encode faster (lesser quality)",
+            options=[str(x) for x in range(0, 7)],
+            widget_name="tile_rows",
+        )
 
     def init_tile_columns(self):
         return self._add_combo_box(
-            label="Tile Columns", options=[str(x) for x in range(0, 5)], widget_name="tile_columns"
+            label="Tile Columns",
+            tooltip="Break the video into columns to encode faster (lesser quality)",
+            options=[str(x) for x in range(0, 5)],
+            widget_name="tile_columns",
         )
 
-    def init_pix_fmts(self):
-        return self._add_combo_box(label="Bit Depth", options=pix_fmts, widget_name="pix_fmt", default=1)
+    def init_pix_fmt(self):
+        return self._add_combo_box(
+            label="Bit Depth",
+            tooltip="Pixel Format (requires at least 10-bit for HDR)",
+            widget_name="pix_fmt",
+            options=pix_fmts,
+            default=1,
+        )
 
     def init_tier(self):
         return self._add_combo_box(label="Tier", options=["main", "high"], widget_name="tier")
@@ -112,7 +126,13 @@ class SVT_AV1(SettingPanel):
         return layout
 
     def init_speed(self):
-        return self._add_combo_box(label="Speed", widget_name="speed", options=[str(x) for x in range(9)], default=7)
+        return self._add_combo_box(
+            label="Speed",
+            widget_name="speed",
+            options=[str(x) for x in range(9)],
+            tooltip="Quality/Speed ratio modifier",
+            default=7,
+        )
 
     def init_modes(self):
         layout = QtWidgets.QGridLayout()
@@ -120,8 +140,6 @@ class SVT_AV1(SettingPanel):
         qp_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
         qp_box_layout = QtWidgets.QHBoxLayout()
 
-        # rotation_dir = Path(base_path, 'data', 'rotations')
-        # group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-15px; padding-bottom:-5px}")
         self.widgets.mode = QtWidgets.QButtonGroup()
         self.widgets.mode.buttonClicked.connect(self.set_mode)
 

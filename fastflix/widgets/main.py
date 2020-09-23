@@ -81,6 +81,7 @@ class Main(QtWidgets.QWidget):
         self.video_path_widget = QtWidgets.QLineEdit("No Source Selected")
         self.output_video_path_widget = QtWidgets.QLineEdit("")
         self.output_video_path_widget.setDisabled(True)
+        self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
         self.video_path_widget.setEnabled(False)
         self.video_path_widget.setStyleSheet("QLineEdit{color:#222}")
         self.output_video_path_widget.setStyleSheet("QLineEdit{color:#222}")
@@ -166,9 +167,13 @@ class Main(QtWidgets.QWidget):
         self.widgets.remove_metadata = QtWidgets.QCheckBox("Remove Metadata")
         self.widgets.remove_metadata.setChecked(True)
         self.widgets.remove_metadata.toggled.connect(self.page_update)
+        self.widgets.remove_metadata.setToolTip(
+            "Scrub away all incoming metadata, like video titles, unique markings and so on."
+        )
         self.widgets.chapters = QtWidgets.QCheckBox("Copy Chapters")
         self.widgets.chapters.setChecked(True)
         self.widgets.chapters.toggled.connect(self.page_update)
+        self.widgets.chapters.setToolTip("Copy the chapter markers as is from incoming source.")
 
         metadata_layout.addWidget(self.widgets.remove_metadata)
         metadata_layout.addWidget(self.widgets.chapters)
@@ -779,6 +784,8 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or self.loading_video:
             return
 
+        if settings.pix_fmt == "yuv420p10le":
+            settings.disable_hdr = True
         filters = helpers.generate_filters(**settings)
 
         thumb_command = self.flix.generate_thumbnail_command(

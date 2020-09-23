@@ -75,13 +75,30 @@ class RAV1E(SettingPanel):
         self.hide()
 
     def init_speed(self):
-        return self._add_combo_box("Speed", [str(x) for x in range(-1, 11)], "speed")
+        return self._add_combo_box(
+            label="Speed",
+            tooltip="Quality/Speed ratio modifier (defaults to -1)",
+            options=[str(x) for x in range(-1, 11)],
+            widget_name="speed",
+        )
 
     def init_tile_rows(self):
-        return self._add_combo_box("Tile Rows", [str(x) for x in range(-1, 17)], "tile_rows", default=1)
+        return self._add_combo_box(
+            label="Tile Rows",
+            tooltip="Break the video into rows to encode faster (lesser quality)",
+            options=[str(x) for x in range(-1, 17)],
+            widget_name="tile_rows",
+            default=1,
+        )
 
     def init_tile_columns(self):
-        return self._add_combo_box("Tile Columns", [str(x) for x in range(-1, 17)], "tile_columns", default=1)
+        return self._add_combo_box(
+            label="Tile Columns",
+            tooltip="Break the video into columns to encode faster (lesser quality)",
+            options=[str(x) for x in range(-1, 17)],
+            widget_name="tile_columns",
+            default=1,
+        )
 
     def init_tiles(self):
         return self._add_combo_box("Tiles", [str(x) for x in range(-1, 17)], "tiles", default=1)
@@ -89,8 +106,15 @@ class RAV1E(SettingPanel):
     def init_single_pass(self):
         return self._add_check_box("Single Pass (Bitrate)", "single_pass", checked=True)
 
-    def init_pix_fmts(self):
-        return self._add_combo_box("Bit Depth", pix_fmts, "pix_fmt", default=1)
+    def init_pix_fmt(self):
+        return self._add_combo_box(
+            label="Bit Depth",
+            tooltip="Pixel Format (requires at least 10-bit for HDR)",
+            widget_name="pix_fmt",
+            options=pix_fmts,
+            default=1,
+            connect=lambda: self.setting_change(pix_change=True),
+        )
 
     def init_max_mux(self):
         return self._add_combo_box(

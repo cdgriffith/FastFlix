@@ -24,7 +24,7 @@ try:
     from qtpy import API, QT_VERSION, QtWidgets
 
     from fastflix.flix import Flix, FlixError
-    from fastflix.shared import base_path, error_message, file_date, latest_ffmpeg, message
+    from fastflix.shared import base_path, error_message, file_date, latest_fastflix, message
     from fastflix.version import __version__
     from fastflix.widgets.command_runner import BackgroundRunner
     from fastflix.widgets.container import Container
@@ -152,7 +152,7 @@ def required_info(logger, data_path, log_dir):
 
     config_file = Path(data_path, "fastflix.json")
     if not config_file.exists():
-        config = Box({"version": __version__, "work_dir": str(data_path)})
+        config = Box({"version": __version__, "work_dir": str(data_path), "disable_update_check": False})
         config.to_json(filename=config_file, indent=2)
     else:
         try:
@@ -170,6 +170,7 @@ def required_info(logger, data_path, log_dir):
             message("Config file does not have all required fields, adding defaults")
             config.version = __version__
             config.work_dir = str(data_path)
+            config.disable_update_check = False
             config.to_json(filename=config_file, indent=2)
         if StrictVersion(config.version) < StrictVersion(__version__):
             message(
@@ -230,7 +231,8 @@ def required_info(logger, data_path, log_dir):
         error_message("FFmpeg or FFmpeg could not be executed properly!<br>", traceback=True)
         sys.exit(1)
 
-    latest_ffmpeg()
+    if not config.get("disable_update_check"):
+        latest_fastflix()
 
     return flix, work_dir, config_file
 
