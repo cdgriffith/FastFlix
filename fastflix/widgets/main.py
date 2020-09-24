@@ -909,11 +909,14 @@ class Main(QtWidgets.QWidget):
             self.generate_thumbnail(settings)
 
     def close(self, no_cleanup=False):
-        self.status_queue.put("exit")
-        if not no_cleanup:
-            self.temp_dir.cleanup()
-        self.notifier.terminate()
-        super().close()
+        try:
+            self.status_queue.put("exit")
+        except KeyboardInterrupt:
+            if not no_cleanup:
+                self.temp_dir.cleanup()
+            self.notifier.terminate()
+            super().close()
+            raise
 
     @property
     def convert_to(self):
