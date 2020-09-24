@@ -29,15 +29,14 @@ InstallDirRegKey HKLM "Software\FastFlix" "Install_Dir"
 
 ; Pages
 
+  !insertmacro MUI_PAGE_LICENSE "docs\build-licenses.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
 
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
-  !define MUI_FINISHPAGE_RUN
-  !define MUI_FINISHPAGE_RUN_TEXT "Start FastFlix"
-  !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLink"
+  !define MUI_FINISHPAGE_TEXT "Thank you for installing FastFlix!"
   !insertmacro MUI_PAGE_FINISH
 
 
@@ -79,10 +78,6 @@ Section "FastFlix (required)"
   WriteUninstaller "$INSTDIR\uninstall.exe"
 
 SectionEnd
-
-Function LaunchLink
-  ExecShell "" "$INSTDIR\FastFlix.exe"
-FunctionEnd
 
 ; Optional section (can be disabled by the user)
 Section "Start Menu Shortcuts"

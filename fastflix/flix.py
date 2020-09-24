@@ -188,8 +188,8 @@ class Flix:
         return run(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True, cwd=work_dir)
 
     def get_audio_encoders(self):
-        cmd = Popen(
-            f'"{self.ffmpeg}" -hide_banner -encoders', shell=True, stderr=STDOUT, stdout=PIPE, universal_newlines=True
+        cmd = run(
+            [f"{self.ffmpeg}", "-hide_banner", "-encoders"], stdin=PIPE, stdout=PIPE, stderr=STDOUT, encoding="utf-8"
         )
         encoders = []
         start_line = " ------"
@@ -210,7 +210,7 @@ class Flix:
             f'-i "{video_source}"'
         )
 
-        result = run(command, shell=True, stdout=PIPE, stderr=PIPE)
+        result = run(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         try:
             data = Box.from_json(result.stdout.decode("utf-8"), default_box=True, default_box_attr=None)
         except BoxError:

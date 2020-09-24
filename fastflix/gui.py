@@ -133,10 +133,10 @@ def required_info(logger, data_path, log_dir):
     ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
     ffmpeg = shutil.which("ffmpeg")
     if ffmpeg:
-        ffmpeg = Path(ffmpeg)
+        ffmpeg = Path(ffmpeg).resolve()
     ffprobe = shutil.which("ffprobe")
     if ffprobe:
-        ffprobe = Path(ffprobe)
+        ffprobe = Path(ffprobe).resolve()
 
     if ffmpeg_folder.exists():
         for file in ffmpeg_folder.iterdir():
