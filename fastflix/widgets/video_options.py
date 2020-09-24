@@ -57,29 +57,29 @@ class VideoOptions(QtWidgets.QTabWidget):
         settings = Box()
         settings.update(self.current_settings.get_settings())
         tracks = 1
-        if getattr(self.current_plugin, "enable_audio", True):
+        if getattr(self.current_plugin, "enable_audio", False):
             audio_settings = self.audio.get_settings()
             tracks += audio_settings.audio_track_count
             settings.update(audio_settings)
-        if getattr(self.current_plugin, "enable_subtitles", True):
+        if getattr(self.current_plugin, "enable_subtitles", False):
             subtitle_settings = self.subtitles.get_settings()
             tracks += subtitle_settings.subtitle_track_count
             settings.update(subtitle_settings)
-        if getattr(self.current_plugin, "enable_attachments", True):
+        if getattr(self.current_plugin, "enable_attachments", False):
             settings.update(self.attachments.get_settings(out_stream_start_index=tracks))
         return settings
 
     def new_source(self):
-        if getattr(self.current_plugin, "enable_audio", True):
+        if getattr(self.current_plugin, "enable_audio", False):
             self.audio.new_source(self.current_plugin.audio_formats, starting_pos=1)
-        if getattr(self.current_plugin, "enable_subtitles", True):
+        if getattr(self.current_plugin, "enable_subtitles", False):
             self.subtitles.new_source(starting_pos=len(self.audio) + 1)
-        if getattr(self.current_plugin, "enable_attachments", True):
+        if getattr(self.current_plugin, "enable_attachments", False):
             self.attachments.new_source(self.main.streams.attachment)
         self.current_settings.new_source()
 
     def refresh(self):
-        if getattr(self.current_plugin, "enable_audio", True):
+        if getattr(self.current_plugin, "enable_audio", False):
             self.audio.refresh(starting_pos=1)
-        if getattr(self.current_plugin, "enable_subtitles", True):
+        if getattr(self.current_plugin, "enable_subtitles", False):
             self.subtitles.refresh(starting_pos=len(self.audio) + 1)

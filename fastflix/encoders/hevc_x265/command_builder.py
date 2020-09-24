@@ -58,7 +58,7 @@ def build(
         x265_params = []
 
     if not disable_hdr:
-        if side_data.color_primaries == "bt2020":
+        if side_data and side_data.get("color_primaries") == "bt2020":
             x265_params.extend(
                 ["hdr-opt=1", "repeat-headers=1", "colorprim=bt2020", "transfer=smpte2084", "colormatrix=bt2020nc"]
             )

@@ -13,7 +13,7 @@ icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/
 video_extension = "webm"
 video_dimension_divisor = 1
 
-enable_subtitles = True
+enable_subtitles = False
 enable_audio = True
 enable_attachments = False
 

@@ -75,7 +75,7 @@ def build(
 
     if not disable_hdr and pix_fmt == "yuv420p10le":
 
-        if side_data.color_primaries == "bt2020":
+        if side_data and side_data.get("color_primaries") == "bt2020":
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
     beginning = re.sub("[ ]+", " ", beginning)
