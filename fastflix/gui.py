@@ -202,7 +202,7 @@ def required_info(logger, data_path, log_dir):
             ret = qm.question(
                 None,
                 "FFmpeg not found!",
-                f"<h2>FFmpeg not found!</h2>" f"<br> Automatically download FFmpeg?",
+                f"<h2>FFmpeg not found!</h2> <br> Automatically download FFmpeg?",
                 qm.Yes | qm.No,
             )
             if ret == qm.Yes:
@@ -218,7 +218,11 @@ def required_info(logger, data_path, log_dir):
                 sys.exit(1)
         else:
             qm.question(
-                None, "<h2>FFmpeg not found!</h2>", "Please download FFmpeg via your platform package manager", qm.Close
+                None,
+                "FFmpeg not found!",
+                "<h2>FFmpeg not found!</h2> "
+                "Please <a href='https://ffmpeg.org/download.html'>download a static FFmpeg</a> and add it to PATH",
+                qm.Close,
             )
             sys.exit(1)
     else:

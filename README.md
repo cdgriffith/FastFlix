@@ -4,7 +4,7 @@
 
 FastFlix is a simple and friendly GUI for encoding videos.
 
-It uses `FFmpeg` under the hood for the heavy lifting, and can work with a variety of encoders.
+It needs `FFmpeg` (version 4.3 or greater) under the hood for the heavy lifting, and can work with a variety of encoders.
 
 #  Encoders
 
@@ -17,6 +17,12 @@ It uses `FFmpeg` under the hood for the heavy lifting, and can work with a varie
 * AV1 (libsvtav1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_svt_av1.png" height="30" alt="svt_av1" >
 * VP9 (libvpx) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_vp9.png" height="30" alt="vpg" >
 * GIF (gif) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_gif.png" height="30" alt="gif" >
+
+Most builds do not have all these encoders available by default and may require custom compiling FFmpeg for a specific encoder.
+
+* [Window FFmpeg (and more) auto builder](https://github.com/m-ab-s/media-autobuild_suite)
+* [Windows cross compile FFmpeg (build on linux)](https://github.com/rdp/ffmpeg-windows-build-helpers)
+* [FFmpeg compilation guide](https://trac.ffmpeg.org/wiki/CompilationGuide)
 
 # Releases
 
@@ -32,6 +38,9 @@ Please use [pipx](https://pipxproject.github.io/pipx/installation/) to install a
 ```
 pipx install fastflix
 ```
+
+You will need to have `ffmpeg` and `ffprobe` executables on your PATH and they must be executable. Version 4.3 or greater is required, and may not be updated in your package manager system.
+Check out the [FFmpeg download page for static builds](https://ffmpeg.org/download.html) for Linux and Mac.
 
 ## Running from source code
 
