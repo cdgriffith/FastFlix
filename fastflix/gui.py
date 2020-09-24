@@ -89,6 +89,9 @@ def main():
 
                 if not gui_proc.is_alive():
                     return
+        except KeyboardInterrupt:
+            status_queue.put("exit")
+            return
         else:
             if request[0] == "command":
                 if runner.is_alive():
@@ -313,3 +316,5 @@ if __name__ == "__main__":
             "Error while running FastFlix!\n"
             "Plese report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)"
         )
+    except KeyboardInterrupt:
+        pass
