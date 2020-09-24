@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
 import shutil
 import sys
 from pathlib import Path
@@ -15,6 +16,8 @@ from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
 from fastflix.widgets.main import Main
 from fastflix.widgets.settings import Settings
+
+logger = logging.getLogger("fastflix")
 
 
 class Container(QtWidgets.QMainWindow):
@@ -33,6 +36,7 @@ class Container(QtWidgets.QMainWindow):
         my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
         self.icon = QtGui.QIcon(my_data)
         self.setWindowIcon(self.icon)
+        self.setAcceptDrops(True)
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         if self.main.converting:
@@ -140,6 +144,11 @@ class Container(QtWidgets.QMainWindow):
 
     def show_log_dir(self):
         OpenFolder(self, self.log_dir).run()
+
+    def dragEnterEvent(self, event):
+        logger.debug(event.mimeData().text())
+        logger.debug(event.mimeData().urls())
+        event.accept() if event.mimeData().hasUrls else event.ignore()
 
 
 class OpenFolder(QtCore.QThread):

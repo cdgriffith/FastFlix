@@ -256,9 +256,9 @@ def start_app(queue, status_queue, log_queue, data_path, log_dir):
         main_app.setStyle("fusion")
         main_app.setApplicationDisplayName("FastFlix")
 
-        timer = QtCore.QTimer()
-        timer.timeout.connect(lambda: None)
-        timer.start(100)
+        # timer = QtCore.QTimer()
+        # timer.timeout.connect(lambda: None)
+        # timer.start(100)
 
         flix, work_dir, config_file = required_info(logger, data_path, log_dir)
         window = Container(

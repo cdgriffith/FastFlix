@@ -648,7 +648,6 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
-        # TODO show path to video file
         self.loading_video = True
         try:
             self.streams, self.format_info = self.flix.parse(

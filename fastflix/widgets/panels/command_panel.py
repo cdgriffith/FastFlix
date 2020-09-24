@@ -26,7 +26,7 @@ class Command(QtWidgets.QTabWidget):
     def __init__(self, parent, command, number, name="", enabled=True):
         super(Command, self).__init__(parent)
         self.command = command
-        self.widget = QtWidgets.QTextEdit()
+        self.widget = QtWidgets.QTextBrowser()
         self.widget.setReadOnly(True)
         self.widget.setText(command)
         self.widget.setDisabled(not enabled)
