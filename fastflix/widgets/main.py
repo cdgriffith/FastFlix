@@ -115,10 +115,10 @@ class Main(QtWidgets.QWidget):
             self, available_audio_encoders=self.flix.get_audio_encoders(), log_queue=log_queue
         )
 
-        self.completed.connect(self.conversion_complete)
-        self.cancelled.connect(self.conversion_cancelled)
-        self.close_event.connect(self.close)
-        self.thumbnail_complete.connect(self.thumbnail_generated)
+        self.completed.connect(self.conversion_complete, QtCore.Qt.BlockingQueuedConnection)
+        self.cancelled.connect(self.conversion_cancelled, QtCore.Qt.BlockingQueuedConnection)
+        self.close_event.connect(self.close, QtCore.Qt.BlockingQueuedConnection)
+        self.thumbnail_complete.connect(self.thumbnail_generated, QtCore.Qt.BlockingQueuedConnection)
         self.encoding_worker = None
         self.command_runner = None
         self.converting = False
