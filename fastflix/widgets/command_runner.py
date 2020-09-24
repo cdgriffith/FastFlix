@@ -5,7 +5,7 @@ import re
 import secrets
 import shlex
 from pathlib import Path
-from subprocess import Popen
+from subprocess import PIPE, Popen
 from threading import Thread
 
 logger = logging.getLogger("fastflix-core")
@@ -32,6 +32,7 @@ class BackgroundRunner:
             cwd=work_dir,
             stdout=open(self.output_file, "w"),
             stderr=open(self.error_output_file, "w"),
+            stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc on linux
             encoding="utf-8",
         )
         Thread(target=self.read_output).start()
