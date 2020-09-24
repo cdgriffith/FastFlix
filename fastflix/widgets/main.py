@@ -916,6 +916,7 @@ class Main(QtWidgets.QWidget):
                 self.temp_dir.cleanup()
             self.notifier.terminate()
             super().close()
+            self.container.close()
             raise
 
     @property
