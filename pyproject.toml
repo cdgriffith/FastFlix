@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastflix"
-version = "3.0.0a0"
+version = "3.0.0a1"
 description = "Easy to use video encoder GUI"
 authors = ["Chris Griffith <chris@cdgriffith.com>"]
 license = "MIT"

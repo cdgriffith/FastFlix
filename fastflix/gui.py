@@ -21,7 +21,7 @@ try:
     import reusables
     from appdirs import user_data_dir
     from box import Box
-    from qtpy import API, QT_VERSION, QtWidgets
+    from qtpy import API, QT_VERSION, QtCore, QtWidgets
 
     from fastflix.flix import Flix, FlixError
     from fastflix.shared import base_path, error_message, file_date, latest_fastflix, message
@@ -252,6 +252,10 @@ def start_app(queue, status_queue, log_queue, data_path, log_dir):
         main_app = QtWidgets.QApplication(sys.argv)
         main_app.setStyle("fusion")
         main_app.setApplicationDisplayName("FastFlix")
+
+        timer = QtCore.QTimer()
+        timer.timeout.connect(lambda: None)
+        timer.start(100)
 
         flix, work_dir, config_file = required_info(logger, data_path, log_dir)
         window = Container(

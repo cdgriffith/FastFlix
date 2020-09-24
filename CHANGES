@@ -31,7 +31,7 @@
 * Fixing plugins should not be available if no FFmpeg library for them
 * Fixing error on audio tracks listing zero channels
 * Removing support for the direct SVT AV1 encoder (fixes #24)
-* Removing support for cutielog / socket based logging
+* Removing support for cutelog / socket based logging
 * Removing flix as library support (cleaning out old command generator code)
 
 ## Version 2.6.3
