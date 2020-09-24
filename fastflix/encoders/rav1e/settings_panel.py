@@ -202,6 +202,7 @@ class RAV1E(SettingPanel):
             single_pass=self.widgets.single_pass.isChecked(),
             max_mux=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
+            pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
         )
         if self.mode == "QP":
             qp = self.widgets.qp.currentText()

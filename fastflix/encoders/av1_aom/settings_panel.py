@@ -50,7 +50,7 @@ class AV1(SettingPanel):
         grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
         grid.addLayout(self.init_pix_fmt(), 7, 0, 1, 2)
 
-        grid.addLayout(self.init_modes(), 0, 2, 4, 4)
+        grid.addLayout(self.init_modes(), 0, 2, 5, 4)
 
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
         grid.setRowStretch(8, 1)

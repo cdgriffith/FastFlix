@@ -51,14 +51,16 @@ class VP9(SettingPanel):
         self.mode = "CRF"
 
         grid.addLayout(self._add_remove_hdr(), 2, 0, 1, 2)
-        grid.addLayout(self.init_modes(), 0, 2, 4, 4)
+        grid.addLayout(self.init_modes(), 0, 2, 6, 4)
+        grid.addLayout(self.init_single_pass(), 6, 2, 1, 2)
+
         grid.addLayout(self.init_quality(), 1, 0, 1, 2)
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
 
         grid.addLayout(self.init_row_mt(), 4, 0, 1, 2)
         grid.addLayout(self.init_pix_fmt(), 5, 0, 1, 2)
-        grid.addLayout(self.init_single_pass(), 6, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 7, 0, 1, 2)
+
+        grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
         grid.addLayout(self._add_custom(), 9, 0, 1, 6)
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
@@ -79,7 +81,6 @@ class VP9(SettingPanel):
             widget_name="pix_fmt",
             options=pix_fmts,
             default=1,
-            connect=lambda: self.setting_change(pix_change=True),
         )
 
     def init_quality(self):

@@ -68,6 +68,7 @@ class GIF(SettingPanel):
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             dither=self.widgets.dither.currentText(),
             extra=self.ffmpeg_extras,
+            pix_fmt="yuv420p",  # hack for thumbnails to show properly
         )
 
     def new_source(self):

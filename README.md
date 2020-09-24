@@ -39,7 +39,7 @@ Please use [pipx](https://pipxproject.github.io/pipx/installation/) to install a
 pipx install fastflix
 ```
 
-You will need to have `ffmpeg` and `ffprobe` executables on your PATH and they must be executable. Version 4.3 or greater is required, and may not be updated in your package manager system.
+You will need to have `ffmpeg` and `ffprobe` executables on your PATH and they must be executable. Version 4.3 or greater is required. The one in your in your package manager system may not support all encoders or options.
 Check out the [FFmpeg download page for static builds](https://ffmpeg.org/download.html) for Linux and Mac.
 
 ## Running from source code
