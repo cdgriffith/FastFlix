@@ -151,6 +151,7 @@ def required_info(logger, data_path, log_dir):
     logger.addHandler(logging.FileHandler(log_dir / f"flix_gui_{file_date()}.log", encoding="utf-8"))
 
     config_file = Path(data_path, "fastflix.json")
+    logger.debug(f'Using config file "{config_file}"')
     if not config_file.exists():
         config = Box({"version": __version__, "work_dir": str(data_path), "disable_update_check": False})
         config.to_json(filename=config_file, indent=2)
