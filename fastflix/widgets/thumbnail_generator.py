@@ -22,5 +22,6 @@ class ThumbnailCreator(QtCore.QThread):
         result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, shell=True)
         if result.returncode > 0:
             logger.error(f"Could not generate thumbnail: {result.stdout}")
+            self.app.thumbnail_complete.emit(0)
         else:
-            self.app.thumbnail_complete.emit()
+            self.app.thumbnail_complete.emit(1)

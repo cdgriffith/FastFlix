@@ -44,7 +44,7 @@ def load_plugins(configuration):
 
 class Main(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
-    thumbnail_complete = QtCore.Signal()
+    thumbnail_complete = QtCore.Signal(int)
     cancelled = QtCore.Signal()
     close_event = QtCore.Signal()
 
@@ -115,10 +115,10 @@ class Main(QtWidgets.QWidget):
             self, available_audio_encoders=self.flix.get_audio_encoders(), log_queue=log_queue
         )
 
-        self.completed.connect(self.conversion_complete, QtCore.Qt.BlockingQueuedConnection)
-        self.cancelled.connect(self.conversion_cancelled, QtCore.Qt.BlockingQueuedConnection)
-        self.close_event.connect(self.close, QtCore.Qt.BlockingQueuedConnection)
-        self.thumbnail_complete.connect(self.thumbnail_generated, QtCore.Qt.BlockingQueuedConnection)
+        self.completed.connect(self.conversion_complete)
+        self.cancelled.connect(self.conversion_cancelled)
+        self.close_event.connect(self.close)
+        self.thumbnail_complete.connect(self.thumbnail_generated)
         self.encoding_worker = None
         self.command_runner = None
         self.converting = False
@@ -829,8 +829,8 @@ class Main(QtWidgets.QWidget):
         worker.start()
 
     @reusables.log_exception("fastflix", show_traceback=False)
-    def thumbnail_generated(self):
-        if not self.thumb_file.exists():
+    def thumbnail_generated(self, success=False):
+        if not success or not self.thumb_file.exists():
             self.widgets.preview.setText("Error Updating Thumbnail")
             return
 
@@ -1006,7 +1006,9 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def dropEvent(self, event):
         if not event.mimeData().hasUrls:
+            logger.debug(event.mimeData().text())
             return event.ignore()
+
         event.setDropAction(QtCore.Qt.CopyAction)
         event.accept()
         self.input_video = str(event.mimeData().urls()[0].toLocalFile())
@@ -1018,6 +1020,8 @@ class Main(QtWidgets.QWidget):
         self.page_update()
 
     def dragEnterEvent(self, event):
+        logger.debug(event.mimeData().text())
+        logger.debug(event.mimeData().urls())
         event.accept() if event.mimeData().hasUrls else event.ignore()
 
     def dragMoveEvent(self, event):
