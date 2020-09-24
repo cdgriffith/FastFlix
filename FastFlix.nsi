@@ -1,9 +1,8 @@
 ; FastFlix.nsi
 ;
 
-  !include "MUI2.nsh"
-SetCompressor lzma
-
+!include "MUI2.nsh"
+!include LogicLib.nsh
 ;--------------------------------
 
 ; The name of the installer
@@ -18,12 +17,13 @@ RequestExecutionLevel admin
 ; Build Unicode installer
 Unicode True
 
+SetCompressor lzma
+
 ; The default installation directory
 InstallDir $PROGRAMFILES64\FastFlix
 
-; Registry key to check for directory (so if you install again, it will
-; overwrite the old one automatically)
-InstallDirRegKey HKLM "Software\NSIS_FastFlix" "Install_Dir"
+; Registry key to check for directory (so if you install again, it will overwrite the old one automatically)
+InstallDirRegKey HKLM "Software\FastFlix" "Install_Dir"
 
 ;--------------------------------
 
@@ -35,12 +35,25 @@ InstallDirRegKey HKLM "Software\NSIS_FastFlix" "Install_Dir"
 
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
+  !define MUI_FINISHPAGE_RUN
+  !define MUI_FINISHPAGE_RUN_TEXT "Start FastFlix"
+  !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLink"
+  !insertmacro MUI_PAGE_FINISH
+
 
 ;Languages
 
   !insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
+Function .onInit
+  ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\FastFlix" "UninstallString"
+  ${If} $0 != ""
+    Messagebox MB_OK|MB_ICONINFORMATION  "You will now be prompted to first uninstall the previous version of FastFlix"
+    ExecWait '$0 _?=$INSTDIR'
+  ${EndIf}
+FunctionEnd
+
 
 ; The stuff to install
 Section "FastFlix (required)"
@@ -50,11 +63,13 @@ Section "FastFlix (required)"
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
 
+  Delete "$INSTDIR\uninstall.exe"
   ; Put file there
   File /r "dist\FastFlix\*"
 
   ; Write the installation path into the registry
-  WriteRegStr HKLM SOFTWARE\NSIS_FastFlix "Install_Dir" "$INSTDIR"
+  WriteRegStr HKLM SOFTWARE\FastFlix "Install_Dir" "$INSTDIR"
+  WriteRegStr HKLM SOFTWARE\FastFlix "UninstallString" '"$INSTDIR\uninstall.exe"'
 
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\FastFlix" "DisplayName" "FastFlix"
@@ -64,6 +79,10 @@ Section "FastFlix (required)"
   WriteUninstaller "$INSTDIR\uninstall.exe"
 
 SectionEnd
+
+Function LaunchLink
+  ExecShell "" "$INSTDIR\FastFlix.exe"
+FunctionEnd
 
 ; Optional section (can be disabled by the user)
 Section "Start Menu Shortcuts"
@@ -82,7 +101,7 @@ Section "Uninstall"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\FastFlix"
   DeleteRegKey HKLM SOFTWARE\FastFlix
 
-  ; Remove files and uninstaller
+  ; Remove files
   Delete $INSTDIR\*
 
   ; Remove shortcuts, if any
@@ -92,5 +111,7 @@ Section "Uninstall"
   RMDir "$SMPROGRAMS\FastFlix"
   RMDir /r "$INSTDIR"
   RMDir "$INSTDIR"
+
+  Delete "$INSTDIR\uninstall.exe"
 
 SectionEnd
