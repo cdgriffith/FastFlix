@@ -46,6 +46,7 @@ class Main(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal()
     cancelled = QtCore.Signal()
+    close_event = QtCore.Signal()
 
     def __init__(self, parent, data_path, work_path, worker_queue, status_queue, log_queue, flix, **kwargs):
         super().__init__(parent)
@@ -116,6 +117,7 @@ class Main(QtWidgets.QWidget):
 
         self.completed.connect(self.conversion_complete)
         self.cancelled.connect(self.conversion_cancelled)
+        self.close_event.connect(self.close)
         self.thumbnail_complete.connect(self.thumbnail_generated)
         self.encoding_worker = None
         self.command_runner = None
@@ -1035,4 +1037,5 @@ class Notifier(QtCore.QThread):
             elif status == "cancelled":
                 self.app.cancelled.emit()
             elif status == "exit":
+                self.app.close_event.emit()
                 return
