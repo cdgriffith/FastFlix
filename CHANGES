@@ -1,5 +1,9 @@
 # Changelog
 
+## Version  3.0.1
+
+* Fixing missing import when installing from pip (linux only release)
+
 ## Version  3.0.0
 
 * Adding AVC support (libx264)
