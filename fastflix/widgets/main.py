@@ -1005,7 +1005,6 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def dropEvent(self, event):
         if not event.mimeData().hasUrls:
-            logger.debug(event.mimeData().text())
             return event.ignore()
 
         event.setDropAction(QtCore.Qt.CopyAction)
@@ -1019,8 +1018,6 @@ class Main(QtWidgets.QWidget):
         self.page_update()
 
     def dragEnterEvent(self, event):
-        logger.debug(event.mimeData().text())
-        logger.debug(event.mimeData().urls())
         event.accept() if event.mimeData().hasUrls else event.ignore()
 
     def dragMoveEvent(self, event):

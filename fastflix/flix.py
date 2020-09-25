@@ -189,12 +189,17 @@ class Flix:
 
     def get_audio_encoders(self):
         cmd = run(
-            [f"{self.ffmpeg}", "-hide_banner", "-encoders"], stdin=PIPE, stdout=PIPE, stderr=STDOUT, encoding="utf-8"
+            [f"{self.ffmpeg}", "-hide_banner", "-encoders"],
+            stdin=PIPE,
+            stdout=PIPE,
+            stderr=STDOUT,
+            encoding="utf-8",
+            universal_newlines=True,
         )
         encoders = []
         start_line = " ------"
         started = False
-        for line in cmd.stdout:
+        for line in cmd.stdout.splitlines():
             if started:
                 if line.strip().startswith("A"):
                     encoders.append(line.strip().split(" ")[1])
