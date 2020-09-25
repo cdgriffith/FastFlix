@@ -4,9 +4,9 @@ from pathlib import Path
 
 import reusables
 from box import __version__ as box_version
+from qtpy import API, QtCore, QtGui, QtWidgets
 
-from qtpy import QtWidgets, QtCore, QtGui, API
-from fastflix.shared import pyinstaller, base_path
+from fastflix.shared import base_path, pyinstaller
 from fastflix.version import __version__
 
 __all__ = ["About"]
@@ -37,6 +37,7 @@ class About(QtWidgets.QWidget):
             f"<a href='https://www.python.org/'>Python</a> {reusables.version_string} (PSF LICENSE), "
             f"<a href='https://github.com/cdgriffith/Box'>python-box</a> {box_version} (MIT), "
             f"<a href='https://github.com/cdgriffith/Reusables'>Reusables</a> {reusables.__version__} (MIT)<br>"
+            "mistune (BSD), colorama (BSD), coloredlogs (MIT), Requests (Apache 2.0)"
         )
         supporting_libraries_label.setAlignment(QtCore.Qt.AlignCenter)
         supporting_libraries_label.setOpenExternalLinks(True)
@@ -45,8 +46,8 @@ class About(QtWidgets.QWidget):
         layout.addWidget(supporting_libraries_label)
 
         bundle_label = QtWidgets.QLabel(
-            "Conversion Tools<br> <a href='https://github.com/OpenVisualCloud/SVT-AV1'>SVT AV1</a> (Modified BSD) and "
-            "<a href='https://www.ffmpeg.org/download.html'>FFmpeg</a> (Various)"
+            "Conversion suite: <a href='https://www.ffmpeg.org/download.html'>FFmpeg</a> (Various)<br><br>"
+            "Encoders: <br> SVT AV1 (MIT), rav1e (MIT), aom (MIT), x265 (GPL), x264 (GPL), libvpx (BSD)"
         )
         bundle_label.setAlignment(QtCore.Qt.AlignCenter)
         bundle_label.setOpenExternalLinks(True)

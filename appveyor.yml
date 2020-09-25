@@ -3,6 +3,7 @@ version: TEMP_VER-{build}
 skip_commits:
   files:
     - data/*
+    - docs/*
     - README.md
     - AUTHORS
     - CHANGES
@@ -36,32 +37,18 @@ build_script:
   - ps: 'New-Item -Path Env: -Name VERSION -Value $(C:\Python38-x64\python.exe scripts\get_version.py)'
   - cmd: echo %VERSION% > build_version
   - ps: 'echo "Building branch $env:APPVEYOR_REPO_BRANCH - version $env:VERSION"'
-  - cmd: C:\Python38-x64\Scripts\pyinstaller --add-data "fastflix\data\rotations\*;fastflix\data\rotations" --add-data "fastflix\data\icon.ico;fastflix\data" --add-data "docs\build-licenses.txt;docs" --hidden-import=pyqt5 --hidden-import=requests --hidden-import="python-box" --hidden-import=reusables --hidden-import="pkg_resources.py2_warn"  fastflix\gui.py  --icon fastflix\data\icon.ico --name FastFlix --clean --onefile
-  # - cmd: IF NOT %APPVEYOR_REPO_BRANCH% == build ( C:\Python38-x64\Scripts\pyinstaller --add-data "bundled;." --add-data "plugins.7z;extra"  --add-data "build_version;." --add-data "data\rotations\*;data\rotations" --add-data "data\icon.ico;data" --add-data "binary-files\executables\windows\svt-av1_aom\svt-1.0.549.7z;extra" --add-data "docs\build-licenses.txt;docs" --add-data "binary-files\executables\windows\7-zip\1900\x64\*;extra" --add-data "binary-files\executables\windows\ffmpeg\lgpl\N-93214-g7e4d3dbe18\x86_64\ffmpeg_lgpl.7z;extra" --paths "C:\Python38-x64\Lib\site-packages\shiboken2" fastflix\gui.py  --icon data\icon.ico --name FastFlix --clean --onefile --noconsole )
+  - cmd: C:\Python38-x64\Scripts\pyinstaller --add-data "fastflix\data\encoders\*;fastflix\data\encoders" --add-data "fastflix\data\rotations\*;fastflix\data\rotations" --add-data "fastflix\data\icon.ico;fastflix\data" --add-data "CHANGES;fastflix\." --add-data "docs\build-licenses.txt;docs" --hidden-import=pyqt5 --hidden-import=requests --hidden-import="python-box" --hidden-import=reusables --hidden-import="pkg_resources.py2_warn"  fastflix\gui.py  --icon fastflix\data\icon.ico --name FastFlix --clean --onefile
+  - cmd: C:\Python38-x64\Scripts\pyinstaller --add-data "fastflix\data\encoders\*;fastflix\data\encoders" --add-data "fastflix\data\rotations\*;fastflix\data\rotations" --add-data "fastflix\data\icon.ico;fastflix\data" --add-data "CHANGES;fastflix\." --add-data "docs\build-licenses.txt;docs" --hidden-import=pyqt5 --hidden-import=requests --hidden-import="python-box" --hidden-import=reusables --hidden-import="pkg_resources.py2_warn"  fastflix\gui.py  --icon fastflix\data\icon.ico --name FastFlix --clean
+  - cmd: '"C:\Program Files (x86)\NSIS\makensis.exe" FastFlix.nsi'
 
 after_build:
   - cmd: move dist\*.exe .
   - cmd: move docs\build-licenses.txt LICENSE
-  - cmd: 7z a FastFlix_%VERSION%_win64.zip FastFlix*exe LICENSE
+  - cmd: 7z a FastFlix_%VERSION%_win64.zip FastFlix.exe LICENSE
+  - cmd: move FastFlix_installer.exe FastFlix_%VERSION%_installer.exe
 
 test: off
 
 artifacts:
   - path: 'FastFlix_%VERSION%_win64.zip'
-
-deploy:
-  - provider: Environment
-    name: pre-release
-    artifact: 'FastFlix_%VERSION%_win64.zip'
-    description: ''
-    on:
-      branch:
-        - develop
-
-  - provider: Environment
-    name: release
-    artifact: 'FastFlix_%VERSION%_win64.zip'
-    description: ''
-    on:
-      branch:
-        - master
+  - path: 'FastFlix_%VERSION%_installer.exe'

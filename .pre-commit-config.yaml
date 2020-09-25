@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.0
+    rev: v3.2.0
     hooks:
     - id: mixed-line-ending
     - id: trailing-whitespace
@@ -10,6 +10,16 @@ repos:
     - id: fix-encoding-pragma
     - id: check-byte-order-marker
     - id: debug-statements
+    - id: check-added-large-files
+    - id: check-case-conflict
+    - id: check-executables-have-shebangs
+    - id: check-toml
+    - id: detect-private-key
+    - id: end-of-file-fixer
+  - repo: https://github.com/PyCQA/isort
+    rev: master
+    hooks:
+    -   id: isort
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:

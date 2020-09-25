@@ -3,35 +3,41 @@
 import logging
 
 from box import Box, BoxList
+from qtpy import QtCore, QtGui, QtWidgets
 
-from qtpy import QtWidgets, QtCore, QtGui
-from fastflix.widgets.panels.command_panel import CommandList
 from fastflix.widgets.panels.audio_panel import AudioList
+from fastflix.widgets.panels.command_panel import CommandList
+from fastflix.widgets.panels.cover_panel import CoverPanel
+from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
 
 logger = logging.getLogger("fastflix")
 
 
 class VideoOptions(QtWidgets.QTabWidget):
-    def __init__(self, parent, available_audio_encoders):
+    def __init__(self, parent, available_audio_encoders, log_queue):
         super().__init__(parent)
         self.main = parent
 
         self.selected = 0
-
         self.commands = CommandList(self)
         self.current_plugin = list(self.main.plugins.values())[0]
         self.current_settings = self.current_plugin.settings_panel(self, self.main)
 
         self.audio = AudioList(self, available_audio_encoders)
         self.subtitles = SubtitleList(self)
+        self.status = StatusPanel(self, log_queue)
+        self.attachments = CoverPanel(self)
         # self.subtitles.hide()
         self.addTab(self.current_settings, "Quality")
         self.addTab(self.audio, "Audio")
         self.addTab(self.subtitles, "Subtitles")
+        self.addTab(self.attachments, "Cover")
         self.addTab(self.commands, "Command List")
+        self.addTab(self.status, "Encoding Status")
 
     def change_conversion(self, conversion):
+        conversion = conversion.strip()
         self.current_settings.close()
         self.current_plugin = self.main.plugins[conversion]
         self.current_settings = self.current_plugin.settings_panel(self, self.main)
@@ -41,6 +47,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.setCurrentIndex(0)
         self.setTabEnabled(1, getattr(self.current_plugin, "enable_audio", True))
         self.setTabEnabled(2, getattr(self.current_plugin, "enable_subtitles", True))
+        self.setTabEnabled(3, getattr(self.current_plugin, "enable_attachments", True))
         self.selected = conversion
         self.audio.allowed_formats(self.current_plugin.audio_formats)
         self.current_settings.new_source()
@@ -49,21 +56,30 @@ class VideoOptions(QtWidgets.QTabWidget):
     def get_settings(self):
         settings = Box()
         settings.update(self.current_settings.get_settings())
-        if getattr(self.current_plugin, "enable_audio", True):
-            settings.update(self.audio.get_settings())
-        if getattr(self.current_plugin, "enable_subtitles", True):
-            settings.update(self.subtitles.get_settings())
+        tracks = 1
+        if getattr(self.current_plugin, "enable_audio", False):
+            audio_settings = self.audio.get_settings()
+            tracks += audio_settings.audio_track_count
+            settings.update(audio_settings)
+        if getattr(self.current_plugin, "enable_subtitles", False):
+            subtitle_settings = self.subtitles.get_settings()
+            tracks += subtitle_settings.subtitle_track_count
+            settings.update(subtitle_settings)
+        if getattr(self.current_plugin, "enable_attachments", False):
+            settings.update(self.attachments.get_settings(out_stream_start_index=tracks))
         return settings
 
     def new_source(self):
-        if getattr(self.current_plugin, "enable_audio", True):
+        if getattr(self.current_plugin, "enable_audio", False):
             self.audio.new_source(self.current_plugin.audio_formats, starting_pos=1)
-        if getattr(self.current_plugin, "enable_subtitles", True):
+        if getattr(self.current_plugin, "enable_subtitles", False):
             self.subtitles.new_source(starting_pos=len(self.audio) + 1)
+        if getattr(self.current_plugin, "enable_attachments", False):
+            self.attachments.new_source(self.main.streams.attachment)
         self.current_settings.new_source()
 
     def refresh(self):
-        if getattr(self.current_plugin, "enable_audio", True):
+        if getattr(self.current_plugin, "enable_audio", False):
             self.audio.refresh(starting_pos=1)
-        if getattr(self.current_plugin, "enable_subtitles", True):
+        if getattr(self.current_plugin, "enable_subtitles", False):
             self.subtitles.refresh(starting_pos=len(self.audio) + 1)

@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "fastflix"
-version = "2.6.3"
-description = "Easy to use video encoder GUI wrapper"
+version = "3.0.0"
+description = "Easy to use video encoder GUI"
 authors = ["Chris Griffith <chris@cdgriffith.com>"]
 license = "MIT"
-include = ["fastflix/data/rotations/*.png", "fastflix/data/icon.ico"]
+include = ["fastflix/data/rotations/*.png", "fastflix/data/encoders/*.png", "fastflix/data/icon.ico", "fastflix/CHANGES"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -16,6 +16,7 @@ python-box = {version = "^5.1.1", extras = ["all"]}
 requests = "^2.24.0"
 reusables = "^0.9.5"
 "ruamel.yaml" = "^0.16.10"
+mistune = "^0.8.4"
 
 [tool.poetry.dev-dependencies]
 

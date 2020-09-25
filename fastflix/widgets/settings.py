@@ -4,8 +4,7 @@ import shutil
 from pathlib import Path
 
 from box import Box
-
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.shared import error_message
 
@@ -46,15 +45,6 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.work_dir, 2, 1)
         layout.addWidget(work_path_button, 2, 2)
 
-        svt_av1_label = QtWidgets.QLabel("SVT AV1")
-        self.svt_av1_path = QtWidgets.QLineEdit()
-        self.svt_av1_path.setText(str(self.main_app.svt_av1) if self.main_app.svt_av1 else "")
-        svt_av1_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
-        svt_av1_path_button.clicked.connect(lambda: self.select_svt_av1())
-        layout.addWidget(svt_av1_label, 3, 0)
-        layout.addWidget(self.svt_av1_path, 3, 1)
-        layout.addWidget(svt_av1_path_button, 3, 2)
-
         layout.addWidget(QtWidgets.QLabel("Config File"), 4, 0)
         layout.addWidget(QtWidgets.QLabel(str(self.config_file)), 4, 1)
 
@@ -67,6 +57,7 @@ class Settings(QtWidgets.QWidget):
         cancel.clicked.connect(lambda: self.close())
 
         button_layout = QtWidgets.QHBoxLayout()
+        button_layout.addWidget(QtWidgets.QLabel("A FastFlix restart is required to apply changes"))
         button_layout.addStretch()
         button_layout.addWidget(cancel)
         button_layout.addWidget(save)
@@ -79,12 +70,8 @@ class Settings(QtWidgets.QWidget):
         new_ffmpeg = Path(self.ffmpeg_path.text())
         new_ffprobe = Path(self.ffprobe_path.text())
         new_work_dir = Path(self.work_dir.text())
-        new_svt_av1 = Path(self.svt_av1_path.text())
-        if new_svt_av1 == Path():
-            new_svt_av1 = None
         errors = bool(self.update_ffmpeg(new_ffmpeg))
         errors |= bool(self.update_ffprobe(new_ffprobe))
-        errors |= bool(self.update_svt_av1(new_svt_av1))
 
         try:
             new_work_dir.mkdir(exist_ok=True, parents=True)
@@ -145,28 +132,6 @@ class Settings(QtWidgets.QWidget):
         self.update_setting("ffprobe", str(new_path))
         self.main_app.ffprobe = new_path
 
-    def select_svt_av1(self):
-        dirname = Path(self.svt_av1_path.text()).parent
-        if not dirname.exists():
-            dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="SVT AV1 location", directory=str(dirname))
-        if not filename or not filename[0]:
-            return
-        self.svt_av1_path.setText(filename[0])
-
-    def update_svt_av1(self, new_path):
-        if self.main_app.svt_av1 == new_path:
-            return
-        if not new_path:
-            self.update_setting("svt_av1", "")
-            self.main_app.svt_av1 = None
-        else:
-            new_path = self.path_check("SVT AV1", new_path)
-            if not new_path:
-                return True
-            self.update_setting("svt_av1", str(new_path))
-            self.main_app.svt_av1 = new_path
-
     def select_work_path(self):
         dirname = Path(self.work_dir.text())
         if not dirname.exists():
@@ -180,11 +145,11 @@ class Settings(QtWidgets.QWidget):
         self.work_dir.setText(work_path)
 
     def update_setting(self, name, value):
+        # TODO change work dir in main and create new temp folder
         mappings = {
             "work_dir": "work_dir",
             "ffmpeg": "ffmpeg",
             "ffprobe": "ffprobe",
-            "svt_av1": "svt_av1",
         }
 
         settings = Box(box_dots=True).from_json(filename=self.config_file)

@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
-import sys
 import logging
-from logging.handlers import SocketHandler
-from pathlib import Path
-from distutils.version import StrictVersion
-from datetime import datetime
 import os
 import shutil
+import sys
 import traceback
+from distutils.version import StrictVersion
 from json import JSONDecodeError
-import coloredlogs
+from multiprocessing import Process, Queue, freeze_support
+from pathlib import Path
+from queue import Empty
 
 try:
     import pkg_resources.py2_warn  # Needed for pyinstaller on 3.8
@@ -17,17 +16,17 @@ except ImportError:
     pass
 
 try:
+    import coloredlogs
+    import requests
+    import reusables
     from appdirs import user_data_dir
     from box import Box
-    import reusables
-    import requests
+    from qtpy import API, QT_VERSION, QtCore, QtWidgets
 
-    from qtpy import QtWidgets, QtCore, QtGui
-    from qtpy import QT_VERSION, API
-
+    from fastflix.flix import Flix, FlixError
+    from fastflix.shared import base_path, error_message, file_date, latest_fastflix, message
     from fastflix.version import __version__
-    from fastflix.flix import ff_version, FlixError
-    from fastflix.shared import error_message, base_path, message
+    from fastflix.widgets.command_runner import BackgroundRunner
     from fastflix.widgets.container import Container
 except ImportError as err:
     traceback.print_exc()
@@ -35,35 +34,109 @@ except ImportError as err:
     input("Please report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
     sys.exit(1)
 
-logger = logging.getLogger("fastflix")
-
 
 def main():
-    logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(name)-6s  %(levelname)-8s %(message)s")
-    socket_handler = SocketHandler("127.0.0.1", 19996)
-    logger.addHandler(socket_handler)
-    coloredlogs.install(level="DEBUG", logger=logger)
-
-    logger.info(f"Starting FastFlix {__version__}")
-    logger.debug(f"Using qt engine {API} version {QT_VERSION}")
-
-    main_app = QtWidgets.QApplication(sys.argv)
-    main_app.setStyle("fusion")
-    main_app.setApplicationDisplayName("FastFlix")
-
+    logging.basicConfig(level=logging.DEBUG)
     data_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
-    ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
     data_path.mkdir(parents=True, exist_ok=True)
     log_dir = data_path / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
 
+    queue = Queue()
+    status_queue = Queue()
+    log_queue = Queue()
+
+    def log(msg, level=logging.INFO):
+        log_queue.put(msg)
+        logger.log(level, msg)
+
+    runner = BackgroundRunner(log_queue=log_queue)
+    gui_proc = Process(target=start_app, args=(queue, status_queue, log_queue, data_path, log_dir))
+    gui_proc.start()
+    logger = logging.getLogger("fastflix-core")
+    coloredlogs.install(level="DEBUG", logger=logger)
+    logger.info(f"Starting FastFlix {__version__}")
+
+    for leftover in Path(data_path).glob(f"encoder_output_*.log"):
+        try:
+            leftover.unlink()
+        except OSError:
+            pass
+
+    sent_response = True
+    gui_close_message = False
+    queued_requests = []
+    while True:
+        if not gui_close_message and not gui_proc.is_alive():
+            gui_proc.join()
+            gui_close_message = True
+            if runner.is_alive() or queued_requests:
+                log("The GUI might have died, but I'm going to keep converting!", logging.WARNING)
+            else:
+                break
+        try:
+            request = queue.get(block=True, timeout=0.01)
+        except Empty:
+            if not runner.is_alive() and not sent_response and not queued_requests:
+                ret = runner.process.poll()
+                if ret > 0:
+                    log(f"Error during conversion", logging.WARNING)
+                else:
+                    log("conversion complete")
+                reusables.remove_file_handlers(logger)
+                status_queue.put("complete")
+                sent_response = True
+
+                if not gui_proc.is_alive():
+                    return
+        except KeyboardInterrupt:
+            status_queue.put("exit")
+            return
+        else:
+            if request[0] == "command":
+                if runner.is_alive():
+                    queued_requests.append(request)
+                else:
+                    log_queue.put("CLEAR_WINDOW")
+                    reusables.remove_file_handlers(logger)
+                    new_file_handler = reusables.get_file_handler(
+                        log_dir / f"flix_conversion_{file_date()}.log",
+                        level=logging.DEBUG,
+                        log_format="%(asctime)s - %(message)s",
+                        encoding="utf-8",
+                    )
+                    logger.addHandler(new_file_handler)
+                    runner.start_exec(*request[1:])
+                    sent_response = False
+            if request[0] == "cancel":
+                queued_requests = []
+                runner.kill()
+                status_queue.put("cancelled")
+                sent_response = True
+        if not runner.is_alive():
+            if queued_requests:
+                runner.start_exec(*queued_requests.pop()[1:])
+                sent_response = False
+
+
+def required_info(logger, data_path, log_dir):
+    if reusables.win_based:
+        # This fixes the taskbar icon not always appearing
+        try:
+            import ctypes
+
+            app_id = f"cdgriffith.fastflix.{__version__}".encode("utf-8")
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
+        except Exception:
+            logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
+
+    ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
     ffmpeg = shutil.which("ffmpeg")
     if ffmpeg:
-        ffmpeg = Path(ffmpeg)
+        ffmpeg = Path(ffmpeg).resolve()
     ffprobe = shutil.which("ffprobe")
     if ffprobe:
-        ffprobe = Path(ffprobe)
-    svt_av1 = shutil.which("SvtAv1EncApp")
+        ffprobe = Path(ffprobe).resolve()
 
     if ffmpeg_folder.exists():
         for file in ffmpeg_folder.iterdir():
@@ -78,13 +151,12 @@ def main():
                 if file.is_file() and file.name.lower() in ("ffprobe", "ffprobe.exe"):
                     ffprobe = file
 
-    logger.addHandler(
-        logging.FileHandler(log_dir / f"flix_{datetime.now().isoformat().replace(':', '.')}", encoding="utf-8")
-    )
+    logger.addHandler(logging.FileHandler(log_dir / f"flix_gui_{file_date()}.log", encoding="utf-8"))
 
     config_file = Path(data_path, "fastflix.json")
+    logger.debug(f'Using config file "{config_file}"')
     if not config_file.exists():
-        config = Box({"version": __version__, "work_dir": str(data_path)})
+        config = Box({"version": __version__, "work_dir": str(data_path), "disable_update_check": False})
         config.to_json(filename=config_file, indent=2)
     else:
         try:
@@ -102,17 +174,20 @@ def main():
             message("Config file does not have all required fields, adding defaults")
             config.version = __version__
             config.work_dir = str(data_path)
+            config.disable_update_check = False
             config.to_json(filename=config_file, indent=2)
         if StrictVersion(config.version) < StrictVersion(__version__):
-            # do upgrade of config
+            message(
+                f"<h2 style='text-align: center;'>Welcome to FastFlix {__version__}!</h2><br>"
+                f"<p style='text-align: center; font-size: 15px;'>Please check out the changes made since your last "
+                f"update ({config.version})<br>View the change log in the Help menu (Alt+H then C)<br></p>"
+            )
             config.version = __version__
             config.to_json(filename=config_file, indent=2)
         if "ffmpeg" in config:
             ffmpeg = Path(config.ffmpeg)
         if "ffprobe" in config:
             ffprobe = Path(config.ffprobe)
-        if "svt_av1" in config:
-            svt_av1 = Path(config.svt_av1)
     work_dir = Path(config.get("work_dir", data_path))
     if not work_dir.exists():
         try:
@@ -131,7 +206,7 @@ def main():
             ret = qm.question(
                 None,
                 "FFmpeg not found!",
-                f"<h2>FFmpeg not found!</h2>" f"<br> Automatically download FFmpeg?",
+                f"<h2>FFmpeg not found!</h2> <br> Automatically download FFmpeg?",
                 qm.Yes | qm.No,
             )
             if ret == qm.Yes:
@@ -147,69 +222,64 @@ def main():
                 sys.exit(1)
         else:
             qm.question(
-                None, "<h2>FFmpeg not found!</h2>", "Please download FFmpeg via your platform package manager", qm.Close
+                None,
+                "FFmpeg not found!",
+                "<h2>FFmpeg not found!</h2> "
+                "Please <a href='https://ffmpeg.org/download.html'>download a static FFmpeg</a> and add it to PATH",
+                qm.Close,
             )
             sys.exit(1)
     else:
-        logger.info(f"Using ffmpeg {ffmpeg}")
-        logger.info(f"Using ffprobe {ffprobe}")
+        logger.info(f"Using FFmpeg {ffmpeg}")
+        logger.info(f"Using FFprobe {ffprobe}")
 
-    svt_av1_folder = Path(user_data_dir("SVT-AV1", appauthor=False, roaming=True))
-    if not svt_av1 and svt_av1_folder.exists():
-        svt_av1 = Path(svt_av1_folder, "SvtAv1EncApp.exe")
-
-    if (not svt_av1 or not svt_av1.exists()) and reusables.win_based:
-        qm = QtWidgets.QMessageBox
-        ret = qm.question(
-            None,
-            "Download SVT-AV1",
-            f"<h2>Would you like to download SVT-AV1?</h2>" f"<br> Will be placed in:" f"<br> {svt_av1_folder}",
-            qm.Yes | qm.No,
-        )
-        if ret == qm.Yes:
-            svt_av1_folder.mkdir(parents=True, exist_ok=True)
-            try:
-                download_svt_av1(svt_av1_folder)
-            except Exception:
-                logging.exception("Could not download newest SVT-AV1!")
-                qm.question(None, "", f"Could not download SVT-AV1!", qm.Close)
-                sys.exit(1)
-            else:
-                svt_av1 = Path(svt_av1_folder, "SvtAv1EncApp.exe")
     try:
-        ffmpeg_version = ff_version(ffmpeg, throw=True)
-        ffprobe_version = ff_version(ffprobe, throw=True)
+        flix = Flix(ffmpeg=ffmpeg, ffprobe=ffprobe)
     except FlixError:
-        error_message("ffmpeg or ffmpeg could not be executed properly!")
+        error_message("FFmpeg or FFmpeg could not be executed properly!<br>", traceback=True)
         sys.exit(1)
 
+    if not config.get("disable_update_check"):
+        latest_fastflix()
+
+    return flix, work_dir, config_file
+
+
+def start_app(queue, status_queue, log_queue, data_path, log_dir):
+    logger = logging.getLogger("fastflix")
+    coloredlogs.install(level="DEBUG", logger=logger)
+
+    logger.debug(f"Using qt engine {API} version {QT_VERSION}")
+
     try:
+        main_app = QtWidgets.QApplication(sys.argv)
+        main_app.setStyle("fusion")
+        main_app.setApplicationDisplayName("FastFlix")
+
+        # timer = QtCore.QTimer()
+        # timer.timeout.connect(lambda: None)
+        # timer.start(100)
+
+        flix, work_dir, config_file = required_info(logger, data_path, log_dir)
         window = Container(
-            ffmpeg=ffmpeg,
-            ffprobe=ffprobe,
-            ffmpeg_version=ffmpeg_version,
-            ffprobe_version=ffprobe_version,
-            svt_av1=svt_av1,
+            flix=flix,
             source=sys.argv[1] if len(sys.argv) > 1 else "",
             data_path=data_path,
             work_path=work_dir,
             config_file=config_file,
+            worker_queue=queue,
+            status_queue=status_queue,
+            log_queue=log_queue,
+            main_app=main_app,
         )
+        main_app.setWindowIcon(window.icon)
         window.show()
-    except (Exception, BaseException, SystemError, SystemExit):
-        logger.exception("HARD FAIL: Unexpected error")
-        sys.exit(1)
-    sys.exit(main_app.exec_())
-
-
-def download_svt_av1(svt_av1_folder):
-    logger.info(f"Downloading SVT-AV1 to {svt_av1_folder}")
-
-    if reusables.win_based:
-        svt_av1_releases = requests.get(f"https://api.github.com/repos/OpenVisualCloud/SVT-AV1/releases").json()
-        svt_av1_assets = requests.get(svt_av1_releases[0]["assets_url"]).json()
-        for asset in svt_av1_assets:
-            reusables.download(asset["browser_download_url"], save_dir=svt_av1_folder)
+        main_app.exec_()
+    except (Exception, BaseException, SystemError, SystemExit) as err:
+        logger.exception(f"HARD FAIL: Unexpected error: {err}")
+        print(f"Unexpected error: {err}")
+    else:
+        logger.info("Fastflix shutting down")
 
 
 def windows_download_ffmpeg(ffmpeg_folder):
@@ -237,6 +307,7 @@ def windows_download_ffmpeg(ffmpeg_folder):
 
 
 if __name__ == "__main__":
+    freeze_support()
     try:
         main()
     except Exception:
@@ -245,3 +316,5 @@ if __name__ == "__main__":
             "Error while running FastFlix!\n"
             "Plese report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)"
         )
+    except KeyboardInterrupt:
+        pass

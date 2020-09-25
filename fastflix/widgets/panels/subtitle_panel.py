@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from box import Box
-
-from qtpy import QtWidgets, QtCore, QtGui
+from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.shared import error_message, main_width
 from fastflix.widgets.panels.abstract_list import FlixList
@@ -25,7 +24,7 @@ languages = (
     "awa,aym,aze,bak,bal,bam,ban,bas,bej,bel,bem,ben,bho,bik,bin,bis,bla,bod,bos,bra,bre,bua,bug,bul,byn,cad,"
     "car,cat,ceb,ces,cha,chb,che,chg,chk,chm,chn,cho,chp,chr,chu,chv,chy,cop,cor,cos,cre,crh,csb,cym,dak,dan,"
     "dar,del,den,deu,dgr,din,div,doi,dsb,dua,dum,dyu,dzo,efi,egy,eka,ell,elx,eng,enm,epo,est,eus,ewe,ewo,fan,"
-    "fao,fas,fat,fij,fil,fin,fon,fra,frm,fro,frr,frs,fry,ful,fur,gaa,gay,gba,gez,gil,gla,gle,glg,glv,gmh,goh,"
+    "fao,fas,fat,fij,fil,fin,fon,fra,fre,frm,fro,frr,frs,fry,ful,fur,gaa,gay,gba,gez,gil,gla,gle,glg,glv,gmh,goh,"
     "gon,gor,got,grb,grc,grn,gsw,guj,gwi,hai,hat,hau,haw,heb,her,hil,hin,hit,hmn,hmo,hrv,hsb,hun,hup,hye,iba,"
     "ibo,ido,iii,iku,ile,ilo,ina,ind,inh,ipk,isl,ita,jav,jbo,jpn,jpr,jrb,kaa,kab,kac,kal,kam,kan,kas,kat,kau,"
     "kaw,kaz,kbd,kha,khm,kho,kik,kin,kir,kmb,kok,kom,kon,kor,kos,kpe,krc,krl,kru,kua,kum,kur,kut,lad,lah,lam,"
@@ -155,12 +154,11 @@ class Subtitle(QtWidgets.QTabWidget):
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()
         self.widgets.track_number.setText(f"{self.index}:{self.outdex}" if enabled else "❌")
-        self.parent.reorder()
-        self.page_update()
+        self.parent.reorder(update=True)
 
     def page_update(self):
         if not self.loading:
-            return self.parent.main.page_update()
+            return self.parent.main.page_update(build_thumbnail=False)
 
 
 class SubtitleList(FlixList):
@@ -192,4 +190,4 @@ class SubtitleList(FlixList):
                         "language": track.language,
                     }
                 )
-        return Box(subtitle_tracks=tracks)
+        return Box(subtitle_tracks=tracks, subtitle_track_count=len(tracks))

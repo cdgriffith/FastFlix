@@ -1,6 +1,7 @@
 appdirs
 colorama
 coloredlogs
+mistune
 pyinstaller
 pypiwin32
 pyqt5
