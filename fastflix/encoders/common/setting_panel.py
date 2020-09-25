@@ -9,13 +9,15 @@ logger = logging.getLogger("fastflix")
 
 class SettingPanel(QtWidgets.QWidget):
 
-    ffmpeg_extras_widget = QtWidgets.QLineEdit()
+    ffmpeg_extras_widget = None
     extras_connected = False
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.widgets = Box()
         self.labels = Box()
+        if not self.ffmpeg_extras_widget:
+            self.ffmpeg_extras_widget = QtWidgets.QLineEdit()
         self.only_int = QtGui.QIntValidator()
         if not self.extras_connected:
             self.ffmpeg_extras_widget.textChanged.connect(lambda: self.main.page_update())
