@@ -94,16 +94,12 @@ def latest_fastflix(no_new_dialog=False):
             if asset["name"].endswith("installer.exe"):
                 installer = asset["browser_download_url"]
 
-        if not portable and not installer:
-            if no_new_dialog:
-                message("You are using the latest version of FastFlix")
-            return
         download_link = ""
         if installer:
             download_link += f"<a href='{installer}'>Download FastFlix installer {data['tag_name']}</a><br>"
         if portable:
             download_link += f"<a href='{portable}'>Download FastFlix portable {data['tag_name']}</a><br>"
-        if not reusables.win_based:
+        if (not portable and not installer) or not reusables.win_based:
             html_link = data["html_url"]
             download_link = f"<a href='{html_link}'>View FastFlix {data['tag_name']} now</a>"
         message(
