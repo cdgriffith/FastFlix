@@ -1,5 +1,10 @@
 # Changelog
 
+## Version  3.1.0
+
+* Adding support for video title, aka handler_name tag
+* Fixing output name is not regenerated on encoder switch if matching extension
+
 ## Version  3.0.2
 
 * Fixing #76 Windows FFmpeg builds switch from gyan.dev to https://github.com/BtbN/FFmpeg-Builds/releases (thanks to sioc)
