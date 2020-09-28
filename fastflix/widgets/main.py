@@ -3,6 +3,7 @@
 import importlib.machinery  # Needed for pyinstaller
 import logging
 import os
+import secrets
 import tempfile
 import time
 from datetime import timedelta
@@ -152,7 +153,9 @@ class Main(QtWidgets.QWidget):
 
         output_layout = QtWidgets.QHBoxLayout()
 
-        output_layout.addWidget(QtWidgets.QLabel("Output"))
+        output_label = QtWidgets.QLabel("Output")
+        output_label.setFixedWidth(70)
+        output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
         self.output_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirHomeIcon))
         self.output_path_button.clicked.connect(lambda: self.save_file())
@@ -162,6 +165,23 @@ class Main(QtWidgets.QWidget):
         layout.addLayout(output_layout)
 
         layout.addLayout(self.init_video_track_select())
+
+        title_layout = QtWidgets.QHBoxLayout()
+
+        title_label = QtWidgets.QLabel("Title")
+        title_label.setFixedWidth(70)
+        title_label.setToolTip('Uses the "HANDLER_NAME" tag')
+        self.widgets.video_title = QtWidgets.QLineEdit()
+        self.widgets.video_title.setToolTip('Uses the "HANDLER_NAME" tag')
+        self.widgets.video_title.textChanged.connect(lambda: self.page_update(build_thumbnail=False))
+        self.widgets.suggested_video_title = QtWidgets.QCheckBox("Use Suggested")
+        self.widgets.suggested_video_title.toggled.connect(self.change_suggested_title)
+
+        title_layout.addWidget(title_label)
+        title_layout.addWidget(self.widgets.video_title)
+        title_layout.addWidget(self.widgets.suggested_video_title)
+
+        layout.addLayout(title_layout)
 
         transform_layout = QtWidgets.QHBoxLayout()
         transform_layout.addWidget(self.init_rotate(), stretch=True)
@@ -237,24 +257,22 @@ class Main(QtWidgets.QWidget):
         self.widgets.video_track = QtWidgets.QComboBox()
         self.widgets.video_track.addItems([])
         self.widgets.video_track.currentIndexChanged.connect(lambda: self.page_update())
-        layout.addWidget(QtWidgets.QLabel("Video Track "), stretch=0)
+
+        track_label = QtWidgets.QLabel("Video Track")
+        track_label.setFixedWidth(65)
+        layout.addWidget(track_label)
         layout.addWidget(self.widgets.video_track, stretch=1)
         layout.setSpacing(10)
         return layout
 
     def init_flip(self):
         self.flip_combo_box = QtWidgets.QComboBox()
+        rotation_folder = "../data/rotations/FastFlix"
 
-        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix.png")).resolve())
-        vert_flip_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix VF.png")).resolve()
-        )
-        hoz_flip_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix HF.png")).resolve()
-        )
-        rot_180_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix 180.png")).resolve()
-        )
+        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder}.png")).resolve())
+        vert_flip_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} VF.png")).resolve())
+        hoz_flip_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} HF.png")).resolve())
+        rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
 
         self.flip_combo_box.addItems(["No Flip", "Vertical Flip", "Horizontal Flip", "Vert + Hoz Flip"])
         self.flip_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
@@ -271,17 +289,12 @@ class Main(QtWidgets.QWidget):
 
     def init_rotate(self):
         self.rotate_combo_box = QtWidgets.QComboBox()
+        rotation_folder = "../data/rotations/FastFlix"
 
-        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix.png")).resolve())
-        rot_90_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix C90.png")).resolve()
-        )
-        rot_270_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix CC90.png")).resolve()
-        )
-        rot_180_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix 180.png")).resolve()
-        )
+        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder}.png")).resolve())
+        rot_90_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} C90.png")).resolve())
+        rot_270_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} CC90.png")).resolve())
+        rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
 
         self.rotate_combo_box.addItems(["No Rotation", "90°", "180°", "270°"])
         self.rotate_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
@@ -313,7 +326,8 @@ class Main(QtWidgets.QWidget):
         return layout
 
     def change_conversion(self):
-        self.output_video_path_widget.setText(self.generate_output_filename)
+        if not self.output_video_path_widget.text().endswith(self.plugins[self.convert_to].video_extension):
+            self.output_video_path_widget.setText(self.generate_output_filename)
         self.video_options.change_conversion(self.widgets.convert_to.currentText())
 
     def init_start_time(self):
@@ -414,6 +428,25 @@ class Main(QtWidgets.QWidget):
     def toggle_disable(widget_list):
         for widget in widget_list:
             widget.setDisabled(widget.isEnabled())
+
+    def change_suggested_title(self):
+        if self.widgets.suggested_video_title.isChecked():
+            self.widgets.video_title.setText("VideoHandler")
+            self.widgets.video_title.setDisabled(True)
+            self.page_update(build_thumbnail=False)
+            return
+
+        title_name = [
+            v for k, v in self.streams["video"][self.video_track].get("tags", {}).items() if k.lower() == "handler_name"
+        ]
+        if title_name:
+            self.widgets.video_title.setText(title_name[0])
+        self.widgets.video_title.setDisabled(False)
+        self.page_update(build_thumbnail=False)
+
+    @property
+    def title(self):
+        return self.widgets.video_title.text()
 
     def build_hoz_int_field(
         self,
@@ -541,8 +574,8 @@ class Main(QtWidgets.QWidget):
     @property
     def generate_output_filename(self):
         if self.input_video:
-            return f"{Path(self.input_video).parent / Path(self.input_video).stem}-fastflix-{file_date()}.{self.plugins[self.convert_to].video_extension}"
-        return f"{Path('~').expanduser()}{os.sep}fastflix-{file_date()}.{self.plugins[self.convert_to].video_extension}"
+            return f"{Path(self.input_video).parent / Path(self.input_video).stem}-fastflix-{secrets.token_hex(2)}.{self.plugins[self.convert_to].video_extension}"
+        return f"{Path('~').expanduser()}{os.sep}fastflix-{secrets.token_hex(2)}.{self.plugins[self.convert_to].video_extension}"
 
     @property
     def output_video(self):
@@ -738,6 +771,18 @@ class Main(QtWidgets.QWidget):
             logger.debug(f"{len(self.streams['data'])} data tracks found")
 
         self.widgets.end_time.setText(self.number_to_time(video_duration))
+        title_name = [
+            v for k, v in self.streams["video"][self.video_track].get("tags", {}).items() if k.lower() == "handler_name"
+        ]
+        if title_name:
+            self.widgets.suggested_video_title.setChecked(False)
+            self.widgets.video_title.setText(title_name[0])
+            # self.widgets.video_title.setText("VideoHandler")
+            # self.widgets.video_title.setDisabled(True)
+        else:
+            self.widgets.suggested_video_title.setChecked(True)
+            # self.widgets.video_title.setText("VideoHandler")
+            # self.widgets.video_title.setDisabled(True)
 
         self.video_options.new_source()
         self.widgets.convert_button.setDisabled(False)
@@ -885,6 +930,7 @@ class Main(QtWidgets.QWidget):
             remove_metadata=self.remove_metadata,
             copy_chapters=self.copy_chapters,
             fast_time=self.fast_time,
+            video_title=self.title,
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")

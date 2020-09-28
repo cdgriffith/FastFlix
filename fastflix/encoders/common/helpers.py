@@ -41,11 +41,13 @@ def generate_ffmpeg_start(
     filters=None,
     max_mux="default",
     fast_time=True,
+    video_title="",
     **_,
 ):
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
     time_one = time_settings if fast_time else ""
     time_two = time_settings if not fast_time else ""
+    title = f'-metadata:s:0 handler_name="{video_title}"' if video_title else ""
 
     return (
         f'"{ffmpeg}" -y '
@@ -55,6 +57,7 @@ def generate_ffmpeg_start(
         f"{f'-max_muxing_queue_size {max_mux}' if max_mux != 'default' else ''} "
         f"-map 0:{video_track} "
         f"-c:v:0 {encoder} "
+        f"{title} "
         f"-pix_fmt {pix_fmt} "
         f'{f"-vf {filters}" if filters else ""} '
     )
