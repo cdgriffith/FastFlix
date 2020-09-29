@@ -20,7 +20,7 @@ class Settings(QtWidgets.QWidget):
 
         ffmpeg_label = QtWidgets.QLabel("FFmpeg")
         self.ffmpeg_path = QtWidgets.QLineEdit()
-        self.ffmpeg_path.setText(str(self.main_app.ffmpeg))
+        self.ffmpeg_path.setText(str(self.main_app.flix.ffmpeg))
         ffmpeg_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
         ffmpeg_path_button.clicked.connect(lambda: self.select_ffmpeg())
         layout.addWidget(ffmpeg_label, 0, 0)
@@ -29,7 +29,7 @@ class Settings(QtWidgets.QWidget):
 
         ffprobe_label = QtWidgets.QLabel("FFprobe")
         self.ffprobe_path = QtWidgets.QLineEdit()
-        self.ffprobe_path.setText(str(self.main_app.ffprobe))
+        self.ffprobe_path.setText(str(self.main_app.flix.ffprobe))
         ffprobe_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
         ffprobe_path_button.clicked.connect(lambda: self.select_ffprobe())
         layout.addWidget(ffprobe_label, 1, 0)
@@ -56,8 +56,13 @@ class Settings(QtWidgets.QWidget):
         )
         cancel.clicked.connect(lambda: self.close())
 
+        # self.use_sane_audio = QtWidgets.QCheckBox("Use Sane Audio Selection (updatable in config file)")
+        # self.disable_version_check = QtWidgets.QCheckBox("Disable update check on startup")
+        #
+        # layout.addWidget(self.use_sane_audio, 5, 0, 1, 2)
+        # layout.addWidget(self.disable_version_check, 6, 0, 1, 2)
+
         button_layout = QtWidgets.QHBoxLayout()
-        button_layout.addWidget(QtWidgets.QLabel("A FastFlix restart is required to apply changes"))
         button_layout.addStretch()
         button_layout.addWidget(cancel)
         button_layout.addWidget(save)
@@ -80,6 +85,7 @@ class Settings(QtWidgets.QWidget):
         else:
             self.update_setting("work_dir", new_work_dir)
             self.main_app.path.work = new_work_dir
+            self.main_app.config_update(new_ffmpeg, new_ffprobe)
         if not errors:
             self.close()
 
@@ -106,13 +112,13 @@ class Settings(QtWidgets.QWidget):
         return new_path
 
     def update_ffmpeg(self, new_path):
-        if self.main_app.ffmpeg == new_path:
+        if self.main_app.flix.ffmpeg == new_path:
             return
         new_path = self.path_check("FFmpeg", new_path)
         if not new_path:
             return True
         self.update_setting("ffmpeg", str(new_path))
-        self.main_app.ffmpeg = new_path
+        self.main_app.flix.ffmpeg = new_path
 
     def select_ffprobe(self):
         dirname = Path(self.ffprobe_path.text()).parent
@@ -124,13 +130,13 @@ class Settings(QtWidgets.QWidget):
         self.ffprobe_path.setText(filename[0])
 
     def update_ffprobe(self, new_path):
-        if self.main_app.ffprobe == new_path:
+        if self.main_app.flix.ffprobe == new_path:
             return
         new_path = self.path_check("FFprobe", new_path)
         if not new_path:
             return True
         self.update_setting("ffprobe", str(new_path))
-        self.main_app.ffprobe = new_path
+        self.main_app.flix.ffprobe = new_path
 
     def select_work_path(self):
         dirname = Path(self.work_dir.text())

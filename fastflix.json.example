@@ -1,7 +1,0 @@
-{
-  "version": "3.0.0",
-  "work_dir": "C:\\Users\\<YourUser>\\AppData\\Roaming\\FastFlix",
-  "ffmpeg": "C:\\Users\\<YourUser>\\AppData\\Roaming\\FFmpeg\\ffmpeg.exe",
-  "ffprobe": "C:\\Users\\<YourUser>\\AppData\\Roaming\\FFmpeg\\ffprobe.exe",
-  "disable_update_check": true
-}
