@@ -3,6 +3,7 @@
 ## Version  3.1.0
 
 * Adding support for movie title
+* Adding settings for disable update check on startup and limited audio conversions
 * Changing no longer need to restart for setting page changes
 * Fixing output name is not regenerated on encoder switch if matching extension
 
