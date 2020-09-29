@@ -4,6 +4,8 @@
 
 FastFlix is a simple and friendly GUI for encoding videos.
 
+FastFlix keeps HDR10 metadata for x265, which will be expanded to AV1 libraries when available.
+
 It needs `FFmpeg` (version 4.3 or greater) under the hood for the heavy lifting, and can work with a variety of encoders.
 
 #  Encoders
@@ -52,6 +54,27 @@ python3 -m venv venv
 pip install -r requirements.txt
 python -m fastflix
 ```
+
+# HDR
+
+On any 10-bit or higher video output, FastFlix will copy the input HDR colorspace (bt2020). Which is [different than HDR10 or HDR10+](https://codecalamity.com/hdr-hdr10-hdr10-hlg-and-dolby-vision/).
+
+## HDR10
+
+FastFlix was created to easily extract / copy HDR10 data, but as of sept 2020, only x265 supports copying that data through FFmpeg, no AV1 library does.
+
+* rav1e -  can set mastering data and CLL via their CLI but [not through ffmpeg](https://github.com/xiph/rav1e/issues/2554).
+* SVT AV1 - accepts a "--enable-hdr" flag that is [not well documented](https://github.com/AOMediaCodec/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md), not supported through FFmpeg.
+* aomenc (libaom-av1) - does not look to support HDR10
+
+## HDR10+
+
+FastFlix does not currently support copying HDR10+ metadata, but is a planned feature for x265.
+
+## Dolby Vision
+
+FastFlix does not plan to support Dolby Visions proprietary format, as it requires royalties.
+
 
 # License
 

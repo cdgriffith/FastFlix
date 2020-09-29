@@ -60,11 +60,11 @@ class Main(QtWidgets.QWidget):
             work=work_path,
         )
 
+        self.config = self.container.config
+
         self.worker_queue = worker_queue
         self.status_queue = status_queue
         self.log_queue = log_queue
-        self.ffmpeg = flix.ffmpeg
-        self.ffprobe = flix.ffprobe
         self.only_int = QtGui.QIntValidator()
 
         self.notifier = Notifier(self, self.status_queue)
@@ -146,6 +146,13 @@ class Main(QtWidgets.QWidget):
         self.initialized = True
         self.last_page_update = time.time()
 
+    def config_update(self, ffmpeg, ffprobe):
+        self.flix.update(ffmpeg, ffprobe)
+        self.plugins = load_plugins(self.flix.config)
+        self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
+        self.change_output_types()
+        self.page_update(build_thumbnail=True)
+
     def init_video_area(self):
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(self.init_button_menu())
@@ -170,16 +177,13 @@ class Main(QtWidgets.QWidget):
 
         title_label = QtWidgets.QLabel("Title")
         title_label.setFixedWidth(70)
-        title_label.setToolTip('Uses the "HANDLER_NAME" tag')
+        title_label.setToolTip('Set the "title" tag, sometimes shown as "Movie Name"')
         self.widgets.video_title = QtWidgets.QLineEdit()
-        self.widgets.video_title.setToolTip('Uses the "HANDLER_NAME" tag')
+        self.widgets.video_title.setToolTip('Set the "title" tag, sometimes shown as "Movie Name"')
         self.widgets.video_title.textChanged.connect(lambda: self.page_update(build_thumbnail=False))
-        self.widgets.suggested_video_title = QtWidgets.QCheckBox("Use Suggested")
-        self.widgets.suggested_video_title.toggled.connect(self.change_suggested_title)
 
         title_layout.addWidget(title_label)
         title_layout.addWidget(self.widgets.video_title)
-        title_layout.addWidget(self.widgets.suggested_video_title)
 
         layout.addLayout(title_layout)
 
@@ -309,23 +313,29 @@ class Main(QtWidgets.QWidget):
         mapping = {0: None, 1: 1, 2: 4, 3: 2}
         return mapping[self.rotate_combo_box.currentIndex()]
 
-    def init_output_type(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.widgets.convert_to = QtWidgets.QComboBox()
+    def change_output_types(self):
+        self.widgets.convert_to.clear()
         self.widgets.convert_to.addItems([f"   {x}" for x in self.plugins.keys()])
         for i, plugin in enumerate(self.plugins.values()):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
         self.widgets.convert_to.setIconSize(QtCore.QSize(35, 35))
 
+    def init_output_type(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.widgets.convert_to = QtWidgets.QComboBox()
+        self.change_output_types()
+        self.widgets.convert_to.currentTextChanged.connect(self.change_conversion)
         # layout.addWidget(QtWidgets.QLabel("Encoder: "), stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=0)
         layout.addStretch()
         layout.setSpacing(10)
-        self.widgets.convert_to.currentTextChanged.connect(self.change_conversion)
+
         return layout
 
     def change_conversion(self):
+        if not self.convert_to:
+            return
         if not self.output_video_path_widget.text().endswith(self.plugins[self.convert_to].video_extension):
             self.output_video_path_widget.setText(self.generate_output_filename)
         self.video_options.change_conversion(self.widgets.convert_to.currentText())
@@ -428,21 +438,6 @@ class Main(QtWidgets.QWidget):
     def toggle_disable(widget_list):
         for widget in widget_list:
             widget.setDisabled(widget.isEnabled())
-
-    def change_suggested_title(self):
-        if self.widgets.suggested_video_title.isChecked():
-            self.widgets.video_title.setText("VideoHandler")
-            self.widgets.video_title.setDisabled(True)
-            self.page_update(build_thumbnail=False)
-            return
-
-        title_name = [
-            v for k, v in self.streams["video"][self.video_track].get("tags", {}).items() if k.lower() == "handler_name"
-        ]
-        if title_name:
-            self.widgets.video_title.setText(title_name[0])
-        self.widgets.video_title.setDisabled(False)
-        self.page_update(build_thumbnail=False)
 
     @property
     def title(self):
@@ -771,18 +766,11 @@ class Main(QtWidgets.QWidget):
             logger.debug(f"{len(self.streams['data'])} data tracks found")
 
         self.widgets.end_time.setText(self.number_to_time(video_duration))
-        title_name = [
-            v for k, v in self.streams["video"][self.video_track].get("tags", {}).items() if k.lower() == "handler_name"
-        ]
+        title_name = [v for k, v in self.format_info.get("tags", {}).items() if k.lower() == "title"]
         if title_name:
-            self.widgets.suggested_video_title.setChecked(False)
             self.widgets.video_title.setText(title_name[0])
-            # self.widgets.video_title.setText("VideoHandler")
-            # self.widgets.video_title.setDisabled(True)
         else:
-            self.widgets.suggested_video_title.setChecked(True)
-            # self.widgets.video_title.setText("VideoHandler")
-            # self.widgets.video_title.setDisabled(True)
+            self.widgets.video_title.setText("")
 
         self.video_options.new_source()
         self.widgets.convert_button.setDisabled(False)
@@ -923,8 +911,8 @@ class Main(QtWidgets.QWidget):
             format_info=self.format_info,
             work_dir=self.path.work,
             side_data=self.side_data,
-            ffmpeg=self.ffmpeg,
-            ffprobe=self.ffprobe,
+            ffmpeg=self.flix.ffmpeg,
+            ffprobe=self.flix.ffprobe,
             temp_dir=self.path.temp_dir,
             output_video=self.output_video,
             remove_metadata=self.remove_metadata,

@@ -8,6 +8,7 @@ from subprocess import run
 
 import pkg_resources
 import reusables
+from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.shared import latest_fastflix, message
@@ -30,6 +31,7 @@ class Container(QtWidgets.QMainWindow):
         self.about = None
         self.init_menu()
         self.config_file = config_file
+        self.config = Box.from_json(filename=self.config_file)
         self.main = Main(self, data_path, work_path, **kwargs)
         self.setCentralWidget(self.main)
         self.setMinimumSize(1200, 600)

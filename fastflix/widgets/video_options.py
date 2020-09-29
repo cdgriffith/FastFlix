@@ -36,6 +36,13 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.addTab(self.commands, "Command List")
         self.addTab(self.status, "Encoding Status")
 
+    @property
+    def audio_formats(self):
+        plugin_formats = set(self.current_plugin.audio_formats)
+        if self.main.config.get("use_sane_audio") and self.main.config.get("sane_audio_selection"):
+            return list(plugin_formats & set(self.main.config.sane_audio_selection))
+        return list(plugin_formats)
+
     def change_conversion(self, conversion):
         conversion = conversion.strip()
         self.current_settings.close()
@@ -49,7 +56,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.setTabEnabled(2, getattr(self.current_plugin, "enable_subtitles", True))
         self.setTabEnabled(3, getattr(self.current_plugin, "enable_attachments", True))
         self.selected = conversion
-        self.audio.allowed_formats(self.current_plugin.audio_formats)
+        self.audio.allowed_formats(self.audio_formats)
         self.current_settings.new_source()
         self.main.page_update()
 
@@ -71,7 +78,7 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     def new_source(self):
         if getattr(self.current_plugin, "enable_audio", False):
-            self.audio.new_source(self.current_plugin.audio_formats, starting_pos=1)
+            self.audio.new_source(self.audio_formats, starting_pos=1)
         if getattr(self.current_plugin, "enable_subtitles", False):
             self.subtitles.new_source(starting_pos=len(self.audio) + 1)
         if getattr(self.current_plugin, "enable_attachments", False):

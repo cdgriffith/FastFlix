@@ -79,11 +79,14 @@ def guess_bit_depth(pix_fmt, color_primaries):
 
 class Flix:
     def __init__(self, ffmpeg="ffmpeg", ffprobe="ffprobe"):
+        self.tp = ThreadPool(processes=4)
+        self.update(ffmpeg, ffprobe)
+
+    def update(self, ffmpeg, ffprobe):
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
-        self.tp = ThreadPool(processes=4)
         self.config, self.filters, self.ffmpeg_version = self.ffmpeg_configuration()
-        self.ffprobe_version = ff_version(ffprobe, True)
+        self.ffprobe_version = ff_version(self.ffprobe, True)
 
     def probe(self, file):
         command = f'"{self.ffprobe}" -v quiet -print_format json -show_format -show_streams "{file}"'
