@@ -34,6 +34,29 @@ except ImportError as err:
     input("Please report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
     sys.exit(1)
 
+sane_audio_defaults = [
+    "aac",
+    "ac3",
+    "alac",
+    "dca",
+    "dts",
+    "eac3",
+    "flac",
+    "libfdk_aac",
+    "libmp3lame",
+    "libopus",
+    "libvorbis",
+    "libwavpack",
+    "mlp",
+    "opus",
+    "snoicls",
+    "sonic",
+    "truehd",
+    "tta",
+    "vorbis",
+    "wavpack",
+]
+
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
@@ -170,6 +193,12 @@ def required_info(logger, data_path, log_dir):
                 traceback=True,
             )
             sys.exit(1)
+        if "disable_update_check" not in config:
+            config.disable_update_check = False
+        if "use_sane_audio" not in config:
+            config.use_sane_audio = True
+        if "sane_audio_selection" not in config:
+            config.sane_audio_selection = sane_audio_defaults
         if "version" not in config or "work_dir" not in config:
             message("Config file does not have all required fields, adding defaults")
             config.version = __version__

@@ -56,11 +56,16 @@ class Settings(QtWidgets.QWidget):
         )
         cancel.clicked.connect(lambda: self.close())
 
-        # self.use_sane_audio = QtWidgets.QCheckBox("Use Sane Audio Selection (updatable in config file)")
-        # self.disable_version_check = QtWidgets.QCheckBox("Disable update check on startup")
-        #
-        # layout.addWidget(self.use_sane_audio, 5, 0, 1, 2)
-        # layout.addWidget(self.disable_version_check, 6, 0, 1, 2)
+        self.use_sane_audio = QtWidgets.QCheckBox("Use Sane Audio Selection (updatable in config file)")
+        if "use_sane_audio" not in self.main_app.config or self.main_app.config.use_sane_audio:
+            self.use_sane_audio.setChecked(True)
+        self.disable_version_check = QtWidgets.QCheckBox("Disable update check on startup")
+        if "disable_version_check" not in self.main_app.config:
+            self.disable_version_check.setChecked(False)
+        elif self.main_app.config.disable_version_check:
+            self.disable_version_check.setChecked(True)
+        layout.addWidget(self.use_sane_audio, 5, 0, 1, 2)
+        layout.addWidget(self.disable_version_check, 6, 0, 1, 2)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
@@ -85,8 +90,13 @@ class Settings(QtWidgets.QWidget):
         else:
             self.update_setting("work_dir", new_work_dir)
             self.main_app.path.work = new_work_dir
-            self.main_app.config_update(new_ffmpeg, new_ffprobe)
+
+        self.update_setting("use_sane_audio", self.use_sane_audio.isChecked())
+        self.update_setting("disable_version_check", self.disable_version_check.isChecked())
+
         if not errors:
+            self.main_app.config = Box.from_json(filename=self.config_file)
+            self.main_app.config_update(new_ffmpeg, new_ffprobe)
             self.close()
 
     def select_ffmpeg(self):
@@ -117,8 +127,9 @@ class Settings(QtWidgets.QWidget):
         new_path = self.path_check("FFmpeg", new_path)
         if not new_path:
             return True
-        self.update_setting("ffmpeg", str(new_path))
+        self.update_setting("ffmpeg", str(new_path), delete=True)
         self.main_app.flix.ffmpeg = new_path
+        return True
 
     def select_ffprobe(self):
         dirname = Path(self.ffprobe_path.text()).parent
@@ -135,8 +146,9 @@ class Settings(QtWidgets.QWidget):
         new_path = self.path_check("FFprobe", new_path)
         if not new_path:
             return True
-        self.update_setting("ffprobe", str(new_path))
+        self.update_setting("ffprobe", str(new_path), delete=True)
         self.main_app.flix.ffprobe = new_path
+        return True
 
     def select_work_path(self):
         dirname = Path(self.work_dir.text())
@@ -150,20 +162,25 @@ class Settings(QtWidgets.QWidget):
             return
         self.work_dir.setText(work_path)
 
-    def update_setting(self, name, value):
+    def update_setting(self, name, value, delete=False):
         # TODO change work dir in main and create new temp folder
         mappings = {
             "work_dir": "work_dir",
             "ffmpeg": "ffmpeg",
             "ffprobe": "ffprobe",
+            "use_sane_audio": "use_sane_audio",
+            "disable_version_check": "disable_version_check",
         }
 
         settings = Box(box_dots=True).from_json(filename=self.config_file)
         old_settings = settings.copy()
-        if value:
-            settings[mappings[name]] = str(value)
-        else:
+        if isinstance(value, Path):
+            value = str(value)
+        if value == "" and delete:
             del settings[mappings[name]]
+        else:
+            settings[mappings[name]] = value
+
         try:
             settings.to_json(filename=self.config_file, indent=2)
         except Exception:
