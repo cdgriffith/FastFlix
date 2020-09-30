@@ -936,9 +936,10 @@ class Main(QtWidgets.QWidget):
             return
         settings = self.get_all_settings()
         commands = self.plugins[self.convert_to].build(**settings)
+        after_done = self.video_options.commands.after_done(builder=True)
+        if after_done is not None:
+            commands.append(after_done)
         self.video_options.commands.update_commands(commands)
-        if self.video_options.commands.after_done is not None:
-            commands.append(self.video_options.commands.after_done(builder=True))
         return settings, commands
 
     def page_update(self, build_thumbnail=True):

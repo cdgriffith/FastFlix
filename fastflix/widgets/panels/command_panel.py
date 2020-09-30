@@ -205,6 +205,7 @@ class CommandList(QtWidgets.QWidget):
                 self.scroll_area, "echo 'done'", len(self.commands) + 1, name="hidden", height=70
             )
         self.commands.append(self.after_done_widget)
+        current_index = self.after_done_combo.currentIndex()
         self.after_done_widget.show()  # Have to show then re-hide to get sizing event properly
         layout.addWidget(self.after_done_widget)
         layout.addStretch()
@@ -213,6 +214,7 @@ class CommandList(QtWidgets.QWidget):
         self.scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.inner_widget.setFixedWidth(self.scroll_area.width() - 3)
         self.after_done_widget.hide()
+        self.after_done_combo.setCurrentIndex(current_index)
 
     def resizeEvent(self, event: QtGui.QResizeEvent):
         self.inner_widget.setFixedWidth(self.scroll_area.width() - 3)
