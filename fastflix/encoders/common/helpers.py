@@ -21,13 +21,14 @@ class Loop:
 class Command:
     item = "command"
 
-    def __init__(self, command, variables, internal, name="", ensure_paths=(), exe=None):
+    def __init__(self, command, variables, internal, name="", ensure_paths=(), exe=None, shell=False):
         self.name = name
         self.command = command
         self.variables = variables
         self.internal = internal
         self.ensure_paths = ensure_paths
         self.exe = exe
+        self.shell = shell
 
 
 def generate_ffmpeg_start(

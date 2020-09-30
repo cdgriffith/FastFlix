@@ -23,12 +23,13 @@ class BackgroundRunner:
         self.error_output_file = None
         self.log_queue = log_queue
 
-    def start_exec(self, command, work_dir):
+    def start_exec(self, command, work_dir, shell=False):
         logger.info(f"Running command: {command}")
         self.output_file = Path(work_dir) / f"encoder_output_{secrets.token_hex(6)}.log"
         self.error_output_file = Path(work_dir) / f"encoder_error_output_{secrets.token_hex(6)}.log"
         self.process = Popen(
-            shlex.split(command),
+            shlex.split(command) if not shell else command,
+            shell=shell,
             cwd=work_dir,
             stdout=open(self.output_file, "w"),
             stderr=open(self.error_output_file, "w"),
