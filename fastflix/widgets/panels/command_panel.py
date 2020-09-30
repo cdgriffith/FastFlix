@@ -56,13 +56,14 @@ class Command(QtWidgets.QTabWidget):
             self.setMinimumHeight(height)
         self.number = number
         self.name = name
+        self.label = QtWidgets.QLabel(f"Command {self.number}" if not self.name else self.name)
         self.update_grid()
         self.widget.setDisabled(not enabled)
 
     def update_grid(self):
         grid = QtWidgets.QVBoxLayout()
-        print(self.name)
-        grid.addWidget(QtWidgets.QLabel(f"Command {self.number}" if not self.name else self.name))
+        self.label.setText(f"Command {self.number}" if not self.name else self.name)
+        grid.addWidget(self.label)
         grid.addWidget(self.widget)
         grid.addStretch()
         self.setLayout(grid)
@@ -111,9 +112,11 @@ class CommandList(QtWidgets.QWidget):
         self.after_done_widget = None
 
         top_row.addStretch()
-        top_row.addWidget(self.after_done_combo)
+
         top_row.addWidget(copy_commands_button)
         top_row.addWidget(save_commands_button)
+        top_row.addWidget(QtWidgets.QLabel("After Conversion: "))
+        top_row.addWidget(self.after_done_combo)
 
         layout.addLayout(top_row, 0, 0)
 
@@ -156,13 +159,13 @@ class CommandList(QtWidgets.QWidget):
             return
         if option in custom:
             command = custom[option]
-        if reusables.win_based:
+        elif reusables.win_based:
             command = done_actions["windows"][option]
         else:
             command = done_actions["linux"][option]
 
         if builder:
-            return BuilderCommand(command, [], False)
+            return BuilderCommand(command, [], False, shell=True)
         return command
 
     @reusables.log_exception("fastflix", show_traceback=False)

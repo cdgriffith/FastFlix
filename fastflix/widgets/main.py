@@ -455,6 +455,7 @@ class Main(QtWidgets.QWidget):
     ):
 
         widget = QtWidgets.QLineEdit(self.number_to_time(0) if time_field else "0")
+        widget.setObjectName(name)
         if not time_field:
             widget.setValidator(self.only_int)
         widget.setFixedHeight(button_size)
@@ -470,7 +471,6 @@ class Main(QtWidgets.QWidget):
         minus_button.clicked.connect(
             lambda: [
                 self.modify_int(widget, "minus", time_field),
-                widget.setStyleSheet("background-color: white;"),
                 self.page_update(),
             ]
         )
@@ -480,7 +480,6 @@ class Main(QtWidgets.QWidget):
         plus_button.clicked.connect(
             lambda: [
                 self.modify_int(widget, "add", time_field),
-                widget.setStyleSheet("background-color: white;"),
                 self.page_update(),
             ]
         )
@@ -541,7 +540,7 @@ class Main(QtWidgets.QWidget):
                 value = int(widget.text())
                 value = int(value + (value % modifier))
             except ValueError:
-                logger.warning("...dummy")
+                logger.exception("This shouldn't be possible, but you somehow put in not an integer")
                 return
 
         modifier = modifier if method == "add" else -modifier
@@ -632,17 +631,20 @@ class Main(QtWidgets.QWidget):
             return logger.warning("Invalid main_width")
             # return self.scale_warning_message.setText("Invalid main_width")
 
-        if scale_width % 8:
+        if scale_width % 2:
             self.scale_updating = False
             self.widgets.scale.width.setStyleSheet("background-color: red;")
-            return logger.warning("Width must be divisible by 8")
+            self.widgets.scale.width.setToolTip("Width must be divisible by 2")
+            return logger.warning("Width must be divisible by 2")
             # return self.scale_warning_message.setText("Width must be divisible by 8")
+        else:
+            self.widgets.scale.width.setToolTip("")
 
         if keep_aspect:
             ratio = self.initial_video_height / self.initial_video_width
             scale_height = ratio * scale_width
             self.widgets.scale.height.setText(str(int(scale_height)))
-            mod = int(scale_height % 8)
+            mod = int(scale_height % 2)
             if mod:
                 scale_height -= mod
                 logger.info(f"Have to adjust scale height by {mod} pixels")
@@ -663,10 +665,13 @@ class Main(QtWidgets.QWidget):
             return logger.warning("Invalid height")
             # return self.scale_warning_message.setText("Invalid height")
 
-        if scale_height % 8:
+        if scale_height % 2:
             self.widgets.scale.height.setStyleSheet("background-color: red;")
+            self.widgets.scale.width.setToolTip("Height must be divisible by 2")
             self.scale_updating = False
-            return logger.warning("Height must be divisible by 8")
+            return logger.warning("Height must be divisible by 2")
+        else:
+            self.widgets.scale.width.setToolTip("")
             # return self.scale_warning_message.setText("Height must be divisible by 8")
         # self.scale_warning_message.setText("")
         self.widgets.scale.width.setStyleSheet("background-color: white;")
@@ -846,12 +851,14 @@ class Main(QtWidgets.QWidget):
             settings.disable_hdr = True
         filters = helpers.generate_filters(**settings)
 
+        preview_place = self.initial_duration // 10 if settings.start_time == 0 else settings.start_time
+
         thumb_command = self.flix.generate_thumbnail_command(
             source=self.input_video,
             output=self.thumb_file,
             video_track=self.streams["video"][self.video_track]["index"],
             filters=filters,
-            start_time=settings.start_time,
+            start_time=preview_place,
         )
         try:
             self.thumb_file.unlink()
@@ -1007,7 +1014,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setStyleSheet("background-color:red;")
         self.converting = True
         for command in commands:
-            self.worker_queue.put(("command", command.command, self.path.temp_dir))
+            self.worker_queue.put(("command", command.command, self.path.temp_dir, command.shell))
         self.video_options.setCurrentWidget(self.video_options.status)
 
     @reusables.log_exception("fastflix", show_traceback=False)
