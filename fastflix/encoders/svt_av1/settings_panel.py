@@ -46,7 +46,7 @@ pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
 
 class SVT_AV1(SettingPanel):
     def __init__(self, parent, main):
-        super(SVT_AV1, self).__init__(parent)
+        super().__init__(parent, main)
         self.main = main
         grid = QtWidgets.QGridLayout()
 
