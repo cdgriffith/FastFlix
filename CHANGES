@@ -1,5 +1,10 @@
 # Changelog
 
+## Version  3.0.2
+
+* Fixing #76 Windows FFmpeg builds switch from gyan.dev to https://github.com/BtbN/FFmpeg-Builds/releases (thanks to sioc)
+* Fixing failure size calculation limit on file to 500 bytes due to VP9
+
 ## Version  3.0.1
 
 * Fixing missing import when installing from pip (linux only release)
