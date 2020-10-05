@@ -284,17 +284,21 @@ def start_app(queue, status_queue, log_queue, data_path, log_dir):
 
 def windows_download_ffmpeg(ffmpeg_folder):
     ffmpeg_folder.mkdir(exist_ok=True)
-    url = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.zip"
-    req = requests.get(url, headers={"referer": "https://www.gyan.dev"}, stream=True)
-    with open(ffmpeg_folder / "ffmpeg-git-full.zip", "wb") as f:
+    url = (
+        "https://github.com/BtbN/FFmpeg-Builds/releases/download/"
+        "autobuild-2020-10-05-12-30/ffmpeg-N-99471-g290de64759-win64-gpl.zip"
+    )
+    req = requests.get(url, stream=True)
+    filename = ffmpeg_folder / "ffmpeg-full.zip"
+    with open(filename, "wb") as f:
         for i, block in enumerate(req.iter_content(chunk_size=1024)):
             if i % 1000 == 0.0:
                 print(f"Downloaded {i // 1000}MB")
             f.write(block)
 
-    reusables.extract(ffmpeg_folder / "ffmpeg-git-full.zip", path=ffmpeg_folder)
+    reusables.extract(filename, path=ffmpeg_folder)
     try:
-        Path(ffmpeg_folder / "ffmpeg-git-full.zip").unlink()
+        Path(filename).unlink()
     except OSError:
         pass
 
