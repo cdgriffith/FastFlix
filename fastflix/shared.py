@@ -94,6 +94,7 @@ def latest_fastflix(no_new_dialog=False):
         logger.warning("Could not connect to github to check for newer versions.")
         if no_new_dialog:
             message("Could not connect to github to check for newer versions.")
+        return
 
     if data["tag_name"] != __version__ and StrictVersion(data["tag_name"]) > StrictVersion(__version__):
         portable, installer = None, None
