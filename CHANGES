@@ -5,10 +5,11 @@
 * Adding support for movie title
 * Adding settings for disable update check on startup and limited audio conversions
 * Adding #57 after conversion options (thanks to TGMais)
-* Changing thumbnail preview will start at 10% in if no start time given
+* Changing #80 thumbnail preview will start at 10% in if no start time given (thanks to zsumie)
 * Changing no longer need to restart for setting page changes
 * Changing width and height will only give warnings if not divisible by two
 * Fixing output name is not regenerated on encoder switch if matching extension
+* Fixing #79 crash on no internet connection (thanks to L0Lock)
 
 ## Version  3.0.2
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import importlib.machinery
+import logging
 import os
 import sys
 from datetime import datetime
@@ -28,6 +29,8 @@ main_width = 800
 
 my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
 icon = QtGui.QIcon(my_data)
+
+logger = logging.getLogger("fastflix")
 
 
 class MyMessageBox(QtWidgets.QMessageBox):
@@ -85,7 +88,13 @@ def latest_fastflix(no_new_dialog=False):
     from fastflix.version import __version__
 
     url = "https://api.github.com/repos/cdgriffith/FastFlix/releases/latest"
-    data = requests.get(url).json()
+    try:
+        data = requests.get(url, timeout=15 if no_new_dialog else 3).json()
+    except Exception:
+        logger.warning("Could not connect to github to check for newer versions.")
+        if no_new_dialog:
+            message("Could not connect to github to check for newer versions.")
+
     if data["tag_name"] != __version__ and StrictVersion(data["tag_name"]) > StrictVersion(__version__):
         portable, installer = None, None
         for asset in data["assets"]:
