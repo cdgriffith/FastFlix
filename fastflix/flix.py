@@ -104,7 +104,10 @@ class Flix:
             raise FlixError(f'"{self.ffmpeg}" file not found')
         output = res.stdout.decode("utf-8")
         config = []
-        version = output.split(" ", 4)[2]
+        try:
+            version = output.split(" ", 4)[2]
+        except (ValueError, IndexError):
+            raise FlixError(f'Cannot parse version of ffmpeg from "{output}"')
         line_denote = "configuration: "
         for line in output.split("\n"):
             if line.startswith(line_denote):
