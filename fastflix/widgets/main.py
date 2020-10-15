@@ -319,7 +319,7 @@ class Main(QtWidgets.QWidget):
         for i, plugin in enumerate(self.plugins.values()):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
-        self.widgets.convert_to.setFont(QtGui.QFont("Libre Franklin Semibold", 10, italic=False))
+        self.widgets.convert_to.setFont(QtGui.QFont("helvetica", 10, weight=57))
         self.widgets.convert_to.setIconSize(QtCore.QSize(40, 40))
 
     def init_output_type(self):

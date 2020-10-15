@@ -278,25 +278,6 @@ def required_info(logger, data_path, log_dir):
     return flix, work_dir, config_file
 
 
-def load_fonts():
-    franklin_dir = "data/fonts/Libre Franklin/"
-
-    def get_font(directory, font_file):
-        return Path(pkg_resources.resource_filename("fastflix", str(Path(directory, font_file)))).resolve().absolute()
-
-    libre_franklin_medium_italic = get_font(franklin_dir, "LibreFranklinMediumItalic.otf")
-    libre_franklin_medium = get_font(franklin_dir, "LibreFranklinMedium.otf")
-    libre_franklin_semi_bold = get_font(franklin_dir, "LibreFranklinSemibold.otf")
-    libre_franklin_semi_bold_italic = get_font(franklin_dir, "LibreFranklinSemiboldItalic.otf")
-
-    # Has to happen after the main app is created
-    fontbase = QtGui.QFontDatabase()
-    fontbase.addApplicationFont(str(libre_franklin_medium))
-    fontbase.addApplicationFont(str(libre_franklin_semi_bold))
-    fontbase.addApplicationFont(str(libre_franklin_medium_italic))
-    fontbase.addApplicationFont(str(libre_franklin_semi_bold_italic))
-
-
 def start_app(queue, status_queue, log_queue, data_path, log_dir):
     logger = logging.getLogger("fastflix")
     coloredlogs.install(level="DEBUG", logger=logger)
@@ -308,8 +289,7 @@ def start_app(queue, status_queue, log_queue, data_path, log_dir):
         main_app.setStyle("fusion")
         main_app.setApplicationDisplayName("FastFlix")
 
-        load_fonts()
-        my_font = QtGui.QFont("Libre Franklin Medium", 9, weight=57)
+        my_font = QtGui.QFont("helvetica", 9, weight=57)
         main_app.setFont(my_font)
 
         flix, work_dir, config_file = required_info(logger, data_path, log_dir)
