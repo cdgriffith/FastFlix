@@ -319,7 +319,8 @@ class Main(QtWidgets.QWidget):
         for i, plugin in enumerate(self.plugins.values()):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
-        self.widgets.convert_to.setIconSize(QtCore.QSize(35, 35))
+        self.widgets.convert_to.setFont(QtGui.QFont("Libre Franklin Semibold", 10, italic=False))
+        self.widgets.convert_to.setIconSize(QtCore.QSize(40, 40))
 
     def init_output_type(self):
         layout = QtWidgets.QHBoxLayout()
@@ -366,7 +367,8 @@ class Main(QtWidgets.QWidget):
         return group_box
 
     def init_scale(self):
-        scale_area = QtWidgets.QGroupBox()
+        scale_area = QtWidgets.QGroupBox(self)
+        scale_area.setFont(self.container.font())
         scale_area.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
         scale_layout = QtWidgets.QVBoxLayout()
 

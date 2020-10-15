@@ -10,6 +10,8 @@ from multiprocessing import Process, Queue, freeze_support
 from pathlib import Path
 from queue import Empty
 
+import pkg_resources
+
 try:
     import pkg_resources.py2_warn  # Needed for pyinstaller on 3.8
 except ImportError:
@@ -21,13 +23,15 @@ try:
     import reusables
     from appdirs import user_data_dir
     from box import Box
-    from qtpy import API, QT_VERSION, QtCore, QtWidgets
+    from qtpy import API, QT_VERSION, QtCore, QtGui, QtWidgets
 
     from fastflix.flix import Flix, FlixError
     from fastflix.shared import base_path, error_message, file_date, latest_fastflix, message
     from fastflix.version import __version__
     from fastflix.widgets.command_runner import BackgroundRunner
     from fastflix.widgets.container import Container
+
+
 except ImportError as err:
     traceback.print_exc()
     print("Could not load FastFlix properly!", file=sys.stderr)
@@ -274,6 +278,29 @@ def required_info(logger, data_path, log_dir):
     return flix, work_dir, config_file
 
 
+def load_fonts():
+    franklin_dir = "data/fonts/Libre Franklin/"
+
+    def get_font(directory, font_file):
+        return Path(pkg_resources.resource_filename(__name__, str(Path(directory, font_file)))).resolve()
+
+    libre_franklin_medium_italic = get_font(franklin_dir, "LibreFranklinMediumItalic.otf")
+    libre_franklin_medium = get_font(franklin_dir, "LibreFranklinMedium.otf")
+    libre_franklin_semi_bold = get_font(franklin_dir, "LibreFranklinSemibold.otf")
+    libre_franklin_semi_bold_italic = get_font(franklin_dir, "LibreFranklinSemiboldItalic.otf")
+
+    # Has to happen after the main app is created
+    fontbase = QtGui.QFontDatabase()
+    fontbase.addApplicationFont(str(libre_franklin_medium))
+    fontbase.addApplicationFont(str(libre_franklin_semi_bold))
+    fontbase.addApplicationFont(str(libre_franklin_medium_italic))
+    fontbase.addApplicationFont(str(libre_franklin_semi_bold_italic))
+
+    for font in ("Libre Franklin Medium", "Libre Franklin Semibold"):
+        if not fontbase.hasFamily(font):
+            raise Exception(f'Could not load font "{font}"')
+
+
 def start_app(queue, status_queue, log_queue, data_path, log_dir):
     logger = logging.getLogger("fastflix")
     coloredlogs.install(level="DEBUG", logger=logger)
@@ -285,9 +312,9 @@ def start_app(queue, status_queue, log_queue, data_path, log_dir):
         main_app.setStyle("fusion")
         main_app.setApplicationDisplayName("FastFlix")
 
-        # timer = QtCore.QTimer()
-        # timer.timeout.connect(lambda: None)
-        # timer.start(100)
+        load_fonts()
+        my_font = QtGui.QFont("Libre Franklin Medium", 9, weight=57)
+        main_app.setFont(my_font)
 
         flix, work_dir, config_file = required_info(logger, data_path, log_dir)
         window = Container(
