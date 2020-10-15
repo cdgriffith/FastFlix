@@ -282,7 +282,7 @@ def load_fonts():
     franklin_dir = "data/fonts/Libre Franklin/"
 
     def get_font(directory, font_file):
-        return Path(pkg_resources.resource_filename(__name__, str(Path(directory, font_file)))).resolve()
+        return Path(pkg_resources.resource_filename("fastflix", str(Path(directory, font_file)))).resolve().absolute()
 
     libre_franklin_medium_italic = get_font(franklin_dir, "LibreFranklinMediumItalic.otf")
     libre_franklin_medium = get_font(franklin_dir, "LibreFranklinMedium.otf")
