@@ -296,10 +296,6 @@ def load_fonts():
     fontbase.addApplicationFont(str(libre_franklin_medium_italic))
     fontbase.addApplicationFont(str(libre_franklin_semi_bold_italic))
 
-    for font in ("Libre Franklin Medium", "Libre Franklin Semibold"):
-        if not fontbase.hasFamily(font):
-            raise Exception(f'Could not load font "{font}"')
-
 
 def start_app(queue, status_queue, log_queue, data_path, log_dir):
     logger = logging.getLogger("fastflix")
