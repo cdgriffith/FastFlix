@@ -123,3 +123,11 @@ def latest_fastflix(no_new_dialog=False):
 
 def file_date():
     return datetime.now().isoformat().replace(":", ".").rsplit(".", 1)[0]
+
+
+class FastFlixError(Exception):
+    """Generic FastFlixError"""
+
+
+class FastFlixInternalException(FastFlixError):
+    """This should always be caught and never seen by user"""

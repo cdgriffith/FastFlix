@@ -6,7 +6,7 @@ from pathlib import Path
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.shared import error_message
+from fastflix.shared import FastFlixInternalException, error_message
 
 
 class Settings(QtWidgets.QWidget):
@@ -80,8 +80,11 @@ class Settings(QtWidgets.QWidget):
         new_ffmpeg = Path(self.ffmpeg_path.text())
         new_ffprobe = Path(self.ffprobe_path.text())
         new_work_dir = Path(self.work_dir.text())
-        errors = bool(self.update_ffmpeg(new_ffmpeg))
-        errors |= bool(self.update_ffprobe(new_ffprobe))
+        try:
+            self.update_ffmpeg(new_ffmpeg)
+            self.update_ffprobe(new_ffprobe)
+        except FastFlixInternalException:
+            return
 
         try:
             new_work_dir.mkdir(exist_ok=True, parents=True)
@@ -94,10 +97,9 @@ class Settings(QtWidgets.QWidget):
         self.update_setting("use_sane_audio", self.use_sane_audio.isChecked())
         self.update_setting("disable_version_check", self.disable_version_check.isChecked())
 
-        if not errors:
-            self.main_app.config = Box.from_json(filename=self.config_file)
-            self.main_app.config_update(new_ffmpeg, new_ffprobe)
-            self.close()
+        self.main_app.config = Box.from_json(filename=self.config_file)
+        self.main_app.config_update(new_ffmpeg, new_ffprobe)
+        self.close()
 
     def select_ffmpeg(self):
         dirname = Path(self.ffmpeg_path.text()).parent
@@ -114,19 +116,17 @@ class Settings(QtWidgets.QWidget):
             which = shutil.which(str(new_path))
             if not which:
                 error_message(f"No {name} instance found at {new_path}, not updated")
-                return
+                raise FastFlixInternalException(f"No {name} instance found at {new_path}, not updated")
             return Path(which)
         if not new_path.is_file():
             error_message(f"{new_path} is not a file")
-            return
+            raise FastFlixInternalException(f"No {name} instance found at {new_path}, not updated")
         return new_path
 
     def update_ffmpeg(self, new_path):
         if self.main_app.flix.ffmpeg == new_path:
-            return
+            return False
         new_path = self.path_check("FFmpeg", new_path)
-        if not new_path:
-            return True
         self.update_setting("ffmpeg", str(new_path), delete=True)
         self.main_app.flix.ffmpeg = new_path
         return True
@@ -142,10 +142,8 @@ class Settings(QtWidgets.QWidget):
 
     def update_ffprobe(self, new_path):
         if self.main_app.flix.ffprobe == new_path:
-            return
+            return False
         new_path = self.path_check("FFprobe", new_path)
-        if not new_path:
-            return True
         self.update_setting("ffprobe", str(new_path), delete=True)
         self.main_app.flix.ffprobe = new_path
         return True
