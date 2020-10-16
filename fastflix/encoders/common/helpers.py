@@ -81,6 +81,7 @@ def generate_ending(
         f"{audio} {subtitles} {cover} {extra} "
     )
     if output_video and not null_ending:
+        output_video = output_video.replace("\\", "/")
         ending += f'"{output_video}"'
     else:
         ending += null

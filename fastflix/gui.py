@@ -26,7 +26,15 @@ try:
     from qtpy import API, QT_VERSION, QtCore, QtGui, QtWidgets
 
     from fastflix.flix import Flix, FlixError
-    from fastflix.shared import base_path, error_message, file_date, latest_fastflix, message
+    from fastflix.shared import (
+        allow_sleep_mode,
+        base_path,
+        error_message,
+        file_date,
+        latest_fastflix,
+        message,
+        prevent_sleep_mode,
+    )
     from fastflix.version import __version__
     from fastflix.widgets.command_runner import BackgroundRunner
     from fastflix.widgets.container import Container
@@ -102,7 +110,7 @@ def main():
             else:
                 break
         try:
-            request = queue.get(block=True, timeout=0.01)
+            request = queue.get(block=True, timeout=0.05)
         except Empty:
             if not runner.is_alive() and not sent_response and not queued_requests:
                 ret = runner.process.poll()
@@ -115,9 +123,11 @@ def main():
                 sent_response = True
 
                 if not gui_proc.is_alive():
+                    allow_sleep_mode()
                     return
         except KeyboardInterrupt:
             status_queue.put("exit")
+            allow_sleep_mode()
             return
         else:
             if request[0] == "command":
@@ -133,13 +143,16 @@ def main():
                         encoding="utf-8",
                     )
                     logger.addHandler(new_file_handler)
+                    prevent_sleep_mode()
                     runner.start_exec(*request[1:])
                     sent_response = False
             if request[0] == "cancel":
                 queued_requests = []
                 runner.kill()
+                allow_sleep_mode()
                 status_queue.put("cancelled")
                 sent_response = True
+
         if not runner.is_alive():
             if queued_requests:
                 runner.start_exec(*queued_requests.pop()[1:])
