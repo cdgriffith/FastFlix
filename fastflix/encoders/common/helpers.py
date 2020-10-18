@@ -21,13 +21,14 @@ class Loop:
 class Command:
     item = "command"
 
-    def __init__(self, command, variables, internal, name="", ensure_paths=(), exe=None):
+    def __init__(self, command, variables, internal, name="", ensure_paths=(), exe=None, shell=False):
         self.name = name
         self.command = command
         self.variables = variables
         self.internal = internal
         self.ensure_paths = ensure_paths
         self.exe = exe
+        self.shell = shell
 
 
 def generate_ffmpeg_start(
@@ -41,17 +42,20 @@ def generate_ffmpeg_start(
     filters=None,
     max_mux="default",
     fast_time=True,
+    video_title="",
     **_,
 ):
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
     time_one = time_settings if fast_time else ""
     time_two = time_settings if not fast_time else ""
+    title = f'-metadata title="{video_title}"' if video_title else ""
 
     return (
         f'"{ffmpeg}" -y '
         f" {time_one} "
         f'-i "{source}" '
         f" {time_two} "
+        f"{title} "
         f"{f'-max_muxing_queue_size {max_mux}' if max_mux != 'default' else ''} "
         f"-map 0:{video_track} "
         f"-c:v:0 {encoder} "
@@ -77,6 +81,7 @@ def generate_ending(
         f"{audio} {subtitles} {cover} {extra} "
     )
     if output_video and not null_ending:
+        output_video = output_video.replace("\\", "/")
         ending += f'"{output_video}"'
     else:
         ending += null

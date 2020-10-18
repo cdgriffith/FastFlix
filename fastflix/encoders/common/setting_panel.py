@@ -6,20 +6,16 @@ from qtpy import QtGui, QtWidgets
 
 logger = logging.getLogger("fastflix")
 
+ffmpeg_extra_command = ""
+
 
 class SettingPanel(QtWidgets.QWidget):
-
-    ffmpeg_extras_widget = QtWidgets.QLineEdit()
-    extras_connected = False
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, parent, main, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.main = main
         self.widgets = Box()
         self.labels = Box()
         self.only_int = QtGui.QIntValidator()
-        if not self.extras_connected:
-            self.ffmpeg_extras_widget.textChanged.connect(lambda: self.main.page_update())
-            self.extras_connected = True
 
     def _add_combo_box(self, label, options, widget_name, connect="default", enabled=True, default=0, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
@@ -70,11 +66,15 @@ class SettingPanel(QtWidgets.QWidget):
         self.labels.ffmpeg_options = QtWidgets.QLabel("Custom ffmpeg options")
         self.labels.ffmpeg_options.setToolTip("Extra flags or options, cannot modify existing settings")
         layout.addWidget(self.labels.ffmpeg_options)
+        self.ffmpeg_extras_widget = QtWidgets.QLineEdit()
+        self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
         if connect and connect != "default":
             self.ffmpeg_extras_widget.disconnect()
             if connect == "self":
                 connect = lambda: self.page_update()
             self.ffmpeg_extras_widget.textChanged.connect(connect)
+        else:
+            self.ffmpeg_extras_widget.textChanged.connect(lambda: self.ffmpeg_extra_update())
         layout.addWidget(self.ffmpeg_extras_widget)
         return layout
 
@@ -93,7 +93,12 @@ class SettingPanel(QtWidgets.QWidget):
 
     @property
     def ffmpeg_extras(self):
-        return self.ffmpeg_extras_widget.text().strip()
+        return ffmpeg_extra_command
+
+    def ffmpeg_extra_update(self):
+        global ffmpeg_extra_command
+        ffmpeg_extra_command = self.ffmpeg_extras_widget.text().strip()
+        self.main.page_update()
 
     def new_source(self):
         if not self.main.streams:

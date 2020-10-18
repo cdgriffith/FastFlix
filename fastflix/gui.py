@@ -10,6 +10,8 @@ from multiprocessing import Process, Queue, freeze_support
 from pathlib import Path
 from queue import Empty
 
+import pkg_resources
+
 try:
     import pkg_resources.py2_warn  # Needed for pyinstaller on 3.8
 except ImportError:
@@ -21,18 +23,51 @@ try:
     import reusables
     from appdirs import user_data_dir
     from box import Box
-    from qtpy import API, QT_VERSION, QtCore, QtWidgets
+    from qtpy import API, QT_VERSION, QtCore, QtGui, QtWidgets
 
     from fastflix.flix import Flix, FlixError
-    from fastflix.shared import base_path, error_message, file_date, latest_fastflix, message
+    from fastflix.shared import (
+        allow_sleep_mode,
+        base_path,
+        error_message,
+        file_date,
+        latest_fastflix,
+        message,
+        prevent_sleep_mode,
+    )
     from fastflix.version import __version__
     from fastflix.widgets.command_runner import BackgroundRunner
     from fastflix.widgets.container import Container
+
+
 except ImportError as err:
     traceback.print_exc()
     print("Could not load FastFlix properly!", file=sys.stderr)
     input("Please report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
     sys.exit(1)
+
+sane_audio_defaults = [
+    "aac",
+    "ac3",
+    "alac",
+    "dca",
+    "dts",
+    "eac3",
+    "flac",
+    "libfdk_aac",
+    "libmp3lame",
+    "libopus",
+    "libvorbis",
+    "libwavpack",
+    "mlp",
+    "opus",
+    "snoicls",
+    "sonic",
+    "truehd",
+    "tta",
+    "vorbis",
+    "wavpack",
+]
 
 
 def main():
@@ -75,7 +110,7 @@ def main():
             else:
                 break
         try:
-            request = queue.get(block=True, timeout=0.01)
+            request = queue.get(block=True, timeout=0.05)
         except Empty:
             if not runner.is_alive() and not sent_response and not queued_requests:
                 ret = runner.process.poll()
@@ -88,9 +123,11 @@ def main():
                 sent_response = True
 
                 if not gui_proc.is_alive():
+                    allow_sleep_mode()
                     return
         except KeyboardInterrupt:
             status_queue.put("exit")
+            allow_sleep_mode()
             return
         else:
             if request[0] == "command":
@@ -106,13 +143,16 @@ def main():
                         encoding="utf-8",
                     )
                     logger.addHandler(new_file_handler)
+                    prevent_sleep_mode()
                     runner.start_exec(*request[1:])
                     sent_response = False
             if request[0] == "cancel":
                 queued_requests = []
                 runner.kill()
+                allow_sleep_mode()
                 status_queue.put("cancelled")
                 sent_response = True
+
         if not runner.is_alive():
             if queued_requests:
                 runner.start_exec(*queued_requests.pop()[1:])
@@ -170,6 +210,12 @@ def required_info(logger, data_path, log_dir):
                 traceback=True,
             )
             sys.exit(1)
+        if "disable_update_check" not in config:
+            config.disable_update_check = False
+        if "use_sane_audio" not in config:
+            config.use_sane_audio = True
+        if "sane_audio_selection" not in config:
+            config.sane_audio_selection = sane_audio_defaults
         if "version" not in config or "work_dir" not in config:
             message("Config file does not have all required fields, adding defaults")
             config.version = __version__
@@ -256,9 +302,8 @@ def start_app(queue, status_queue, log_queue, data_path, log_dir):
         main_app.setStyle("fusion")
         main_app.setApplicationDisplayName("FastFlix")
 
-        # timer = QtCore.QTimer()
-        # timer.timeout.connect(lambda: None)
-        # timer.start(100)
+        my_font = QtGui.QFont("helvetica", 9, weight=57)
+        main_app.setFont(my_font)
 
         flix, work_dir, config_file = required_info(logger, data_path, log_dir)
         window = Container(

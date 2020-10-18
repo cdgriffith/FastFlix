@@ -3,6 +3,7 @@
 import importlib.machinery  # Needed for pyinstaller
 import logging
 import os
+import secrets
 import tempfile
 import time
 from datetime import timedelta
@@ -59,11 +60,11 @@ class Main(QtWidgets.QWidget):
             work=work_path,
         )
 
+        self.config = self.container.config
+
         self.worker_queue = worker_queue
         self.status_queue = status_queue
         self.log_queue = log_queue
-        self.ffmpeg = flix.ffmpeg
-        self.ffprobe = flix.ffprobe
         self.only_int = QtGui.QIntValidator()
 
         self.notifier = Notifier(self, self.status_queue)
@@ -145,6 +146,13 @@ class Main(QtWidgets.QWidget):
         self.initialized = True
         self.last_page_update = time.time()
 
+    def config_update(self, ffmpeg, ffprobe):
+        self.flix.update(ffmpeg, ffprobe)
+        self.plugins = load_plugins(self.flix.config)
+        self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
+        self.change_output_types()
+        self.page_update(build_thumbnail=True)
+
     def init_video_area(self):
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(self.init_button_menu())
@@ -152,7 +160,9 @@ class Main(QtWidgets.QWidget):
 
         output_layout = QtWidgets.QHBoxLayout()
 
-        output_layout.addWidget(QtWidgets.QLabel("Output"))
+        output_label = QtWidgets.QLabel("Output")
+        output_label.setFixedWidth(70)
+        output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
         self.output_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirHomeIcon))
         self.output_path_button.clicked.connect(lambda: self.save_file())
@@ -162,6 +172,20 @@ class Main(QtWidgets.QWidget):
         layout.addLayout(output_layout)
 
         layout.addLayout(self.init_video_track_select())
+
+        title_layout = QtWidgets.QHBoxLayout()
+
+        title_label = QtWidgets.QLabel("Title")
+        title_label.setFixedWidth(70)
+        title_label.setToolTip('Set the "title" tag, sometimes shown as "Movie Name"')
+        self.widgets.video_title = QtWidgets.QLineEdit()
+        self.widgets.video_title.setToolTip('Set the "title" tag, sometimes shown as "Movie Name"')
+        self.widgets.video_title.textChanged.connect(lambda: self.page_update(build_thumbnail=False))
+
+        title_layout.addWidget(title_label)
+        title_layout.addWidget(self.widgets.video_title)
+
+        layout.addLayout(title_layout)
 
         transform_layout = QtWidgets.QHBoxLayout()
         transform_layout.addWidget(self.init_rotate(), stretch=True)
@@ -237,24 +261,22 @@ class Main(QtWidgets.QWidget):
         self.widgets.video_track = QtWidgets.QComboBox()
         self.widgets.video_track.addItems([])
         self.widgets.video_track.currentIndexChanged.connect(lambda: self.page_update())
-        layout.addWidget(QtWidgets.QLabel("Video Track "), stretch=0)
+
+        track_label = QtWidgets.QLabel("Video Track")
+        track_label.setFixedWidth(65)
+        layout.addWidget(track_label)
         layout.addWidget(self.widgets.video_track, stretch=1)
         layout.setSpacing(10)
         return layout
 
     def init_flip(self):
         self.flip_combo_box = QtWidgets.QComboBox()
+        rotation_folder = "../data/rotations/FastFlix"
 
-        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix.png")).resolve())
-        vert_flip_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix VF.png")).resolve()
-        )
-        hoz_flip_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix HF.png")).resolve()
-        )
-        rot_180_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix 180.png")).resolve()
-        )
+        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder}.png")).resolve())
+        vert_flip_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} VF.png")).resolve())
+        hoz_flip_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} HF.png")).resolve())
+        rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
 
         self.flip_combo_box.addItems(["No Flip", "Vertical Flip", "Horizontal Flip", "Vert + Hoz Flip"])
         self.flip_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
@@ -271,17 +293,12 @@ class Main(QtWidgets.QWidget):
 
     def init_rotate(self):
         self.rotate_combo_box = QtWidgets.QComboBox()
+        rotation_folder = "../data/rotations/FastFlix"
 
-        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix.png")).resolve())
-        rot_90_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix C90.png")).resolve()
-        )
-        rot_270_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix CC90.png")).resolve()
-        )
-        rot_180_file = str(
-            Path(pkg_resources.resource_filename(__name__, f"../data/rotations/FastFlix 180.png")).resolve()
-        )
+        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder}.png")).resolve())
+        rot_90_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} C90.png")).resolve())
+        rot_270_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} CC90.png")).resolve())
+        rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
 
         self.rotate_combo_box.addItems(["No Rotation", "90°", "180°", "270°"])
         self.rotate_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
@@ -296,24 +313,32 @@ class Main(QtWidgets.QWidget):
         mapping = {0: None, 1: 1, 2: 4, 3: 2}
         return mapping[self.rotate_combo_box.currentIndex()]
 
-    def init_output_type(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.widgets.convert_to = QtWidgets.QComboBox()
+    def change_output_types(self):
+        self.widgets.convert_to.clear()
         self.widgets.convert_to.addItems([f"   {x}" for x in self.plugins.keys()])
         for i, plugin in enumerate(self.plugins.values()):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
-        self.widgets.convert_to.setIconSize(QtCore.QSize(35, 35))
+        self.widgets.convert_to.setFont(QtGui.QFont("helvetica", 10, weight=57))
+        self.widgets.convert_to.setIconSize(QtCore.QSize(40, 40))
 
+    def init_output_type(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.widgets.convert_to = QtWidgets.QComboBox()
+        self.change_output_types()
+        self.widgets.convert_to.currentTextChanged.connect(self.change_conversion)
         # layout.addWidget(QtWidgets.QLabel("Encoder: "), stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=0)
         layout.addStretch()
         layout.setSpacing(10)
-        self.widgets.convert_to.currentTextChanged.connect(self.change_conversion)
+
         return layout
 
     def change_conversion(self):
-        self.output_video_path_widget.setText(self.generate_output_filename)
+        if not self.convert_to:
+            return
+        if not self.output_video_path_widget.text().endswith(self.plugins[self.convert_to].video_extension):
+            self.output_video_path_widget.setText(self.generate_output_filename)
         self.video_options.change_conversion(self.widgets.convert_to.currentText())
 
     def init_start_time(self):
@@ -342,7 +367,8 @@ class Main(QtWidgets.QWidget):
         return group_box
 
     def init_scale(self):
-        scale_area = QtWidgets.QGroupBox()
+        scale_area = QtWidgets.QGroupBox(self)
+        scale_area.setFont(self.container.font())
         scale_area.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
         scale_layout = QtWidgets.QVBoxLayout()
 
@@ -415,6 +441,10 @@ class Main(QtWidgets.QWidget):
         for widget in widget_list:
             widget.setDisabled(widget.isEnabled())
 
+    @property
+    def title(self):
+        return self.widgets.video_title.text()
+
     def build_hoz_int_field(
         self,
         name,
@@ -427,6 +457,7 @@ class Main(QtWidgets.QWidget):
     ):
 
         widget = QtWidgets.QLineEdit(self.number_to_time(0) if time_field else "0")
+        widget.setObjectName(name)
         if not time_field:
             widget.setValidator(self.only_int)
         widget.setFixedHeight(button_size)
@@ -442,7 +473,6 @@ class Main(QtWidgets.QWidget):
         minus_button.clicked.connect(
             lambda: [
                 self.modify_int(widget, "minus", time_field),
-                widget.setStyleSheet("background-color: white;"),
                 self.page_update(),
             ]
         )
@@ -452,7 +482,6 @@ class Main(QtWidgets.QWidget):
         plus_button.clicked.connect(
             lambda: [
                 self.modify_int(widget, "add", time_field),
-                widget.setStyleSheet("background-color: white;"),
                 self.page_update(),
             ]
         )
@@ -513,7 +542,7 @@ class Main(QtWidgets.QWidget):
                 value = int(widget.text())
                 value = int(value + (value % modifier))
             except ValueError:
-                logger.warning("...dummy")
+                logger.exception("This shouldn't be possible, but you somehow put in not an integer")
                 return
 
         modifier = modifier if method == "add" else -modifier
@@ -541,8 +570,8 @@ class Main(QtWidgets.QWidget):
     @property
     def generate_output_filename(self):
         if self.input_video:
-            return f"{Path(self.input_video).parent / Path(self.input_video).stem}-fastflix-{file_date()}.{self.plugins[self.convert_to].video_extension}"
-        return f"{Path('~').expanduser()}{os.sep}fastflix-{file_date()}.{self.plugins[self.convert_to].video_extension}"
+            return f"{Path(self.input_video).parent / Path(self.input_video).stem}-fastflix-{secrets.token_hex(2)}.{self.plugins[self.convert_to].video_extension}"
+        return f"{Path('~').expanduser()}{os.sep}fastflix-{secrets.token_hex(2)}.{self.plugins[self.convert_to].video_extension}"
 
     @property
     def output_video(self):
@@ -604,17 +633,20 @@ class Main(QtWidgets.QWidget):
             return logger.warning("Invalid main_width")
             # return self.scale_warning_message.setText("Invalid main_width")
 
-        if scale_width % 8:
+        if scale_width % 2:
             self.scale_updating = False
             self.widgets.scale.width.setStyleSheet("background-color: red;")
-            return logger.warning("Width must be divisible by 8")
+            self.widgets.scale.width.setToolTip("Width must be divisible by 2")
+            return logger.warning("Width must be divisible by 2")
             # return self.scale_warning_message.setText("Width must be divisible by 8")
+        else:
+            self.widgets.scale.width.setToolTip("")
 
         if keep_aspect:
             ratio = self.initial_video_height / self.initial_video_width
             scale_height = ratio * scale_width
             self.widgets.scale.height.setText(str(int(scale_height)))
-            mod = int(scale_height % 8)
+            mod = int(scale_height % 2)
             if mod:
                 scale_height -= mod
                 logger.info(f"Have to adjust scale height by {mod} pixels")
@@ -635,10 +667,13 @@ class Main(QtWidgets.QWidget):
             return logger.warning("Invalid height")
             # return self.scale_warning_message.setText("Invalid height")
 
-        if scale_height % 8:
+        if scale_height % 2:
             self.widgets.scale.height.setStyleSheet("background-color: red;")
+            self.widgets.scale.width.setToolTip("Height must be divisible by 2")
             self.scale_updating = False
-            return logger.warning("Height must be divisible by 8")
+            return logger.warning("Height must be divisible by 2")
+        else:
+            self.widgets.scale.width.setToolTip("")
             # return self.scale_warning_message.setText("Height must be divisible by 8")
         # self.scale_warning_message.setText("")
         self.widgets.scale.width.setStyleSheet("background-color: white;")
@@ -738,6 +773,11 @@ class Main(QtWidgets.QWidget):
             logger.debug(f"{len(self.streams['data'])} data tracks found")
 
         self.widgets.end_time.setText(self.number_to_time(video_duration))
+        title_name = [v for k, v in self.format_info.get("tags", {}).items() if k.lower() == "title"]
+        if title_name:
+            self.widgets.video_title.setText(title_name[0])
+        else:
+            self.widgets.video_title.setText("")
 
         self.video_options.new_source()
         self.widgets.convert_button.setDisabled(False)
@@ -813,12 +853,14 @@ class Main(QtWidgets.QWidget):
             settings.disable_hdr = True
         filters = helpers.generate_filters(**settings)
 
+        preview_place = self.initial_duration // 10 if settings.start_time == 0 else settings.start_time
+
         thumb_command = self.flix.generate_thumbnail_command(
             source=self.input_video,
             output=self.thumb_file,
             video_track=self.streams["video"][self.video_track]["index"],
             filters=filters,
-            start_time=settings.start_time,
+            start_time=preview_place,
         )
         try:
             self.thumb_file.unlink()
@@ -878,13 +920,14 @@ class Main(QtWidgets.QWidget):
             format_info=self.format_info,
             work_dir=self.path.work,
             side_data=self.side_data,
-            ffmpeg=self.ffmpeg,
-            ffprobe=self.ffprobe,
+            ffmpeg=self.flix.ffmpeg,
+            ffprobe=self.flix.ffprobe,
             temp_dir=self.path.temp_dir,
             output_video=self.output_video,
             remove_metadata=self.remove_metadata,
             copy_chapters=self.copy_chapters,
             fast_time=self.fast_time,
+            video_title=self.title,
         )
         settings.update(**self.video_options.get_settings())
         logger.debug(f"Settings gathered: {settings.to_dict()}")
@@ -895,6 +938,9 @@ class Main(QtWidgets.QWidget):
             return
         settings = self.get_all_settings()
         commands = self.plugins[self.convert_to].build(**settings)
+        after_done = self.video_options.commands.after_done(builder=True)
+        if after_done is not None:
+            commands.append(after_done)
         self.video_options.commands.update_commands(commands)
         return settings, commands
 
@@ -971,7 +1017,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setStyleSheet("background-color:red;")
         self.converting = True
         for command in commands:
-            self.worker_queue.put(("command", command.command, self.path.temp_dir))
+            self.worker_queue.put(("command", command.command, self.path.temp_dir, command.shell))
         self.video_options.setCurrentWidget(self.video_options.status)
 
     @reusables.log_exception("fastflix", show_traceback=False)

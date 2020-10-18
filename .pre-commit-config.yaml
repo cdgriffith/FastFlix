@@ -16,10 +16,10 @@ repos:
     - id: check-toml
     - id: detect-private-key
     - id: end-of-file-fixer
-  - repo: https://github.com/PyCQA/isort
-    rev: master
-    hooks:
-    -   id: isort
+#  - repo: https://github.com/PyCQA/isort
+#    rev: master
+#    hooks:
+#    -   id: isort
   - repo: https://github.com/psf/black
     rev: 20.8b1
     hooks:

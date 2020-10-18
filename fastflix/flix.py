@@ -79,11 +79,14 @@ def guess_bit_depth(pix_fmt, color_primaries):
 
 class Flix:
     def __init__(self, ffmpeg="ffmpeg", ffprobe="ffprobe"):
+        self.tp = ThreadPool(processes=4)
+        self.update(ffmpeg, ffprobe)
+
+    def update(self, ffmpeg, ffprobe):
         self.ffmpeg = ffmpeg
         self.ffprobe = ffprobe
-        self.tp = ThreadPool(processes=4)
         self.config, self.filters, self.ffmpeg_version = self.ffmpeg_configuration()
-        self.ffprobe_version = ff_version(ffprobe, True)
+        self.ffprobe_version = ff_version(self.ffprobe, True)
 
     def probe(self, file):
         command = f'"{self.ffprobe}" -v quiet -print_format json -show_format -show_streams "{file}"'
@@ -101,7 +104,10 @@ class Flix:
             raise FlixError(f'"{self.ffmpeg}" file not found')
         output = res.stdout.decode("utf-8")
         config = []
-        version = output.split(" ", 4)[2]
+        try:
+            version = output.split(" ", 4)[2]
+        except (ValueError, IndexError):
+            raise FlixError(f'Cannot parse version of ffmpeg from "{output}"')
         line_denote = "configuration: "
         for line in output.split("\n"):
             if line.startswith(line_denote):

@@ -1,6 +1,6 @@
 This document contains ours and third party licenses included in FastFlix.
 
-FastFlix's code is MIT licenced.  When bundled into a Window's exe it is GPL licenced (blame PyQT5 for that).
+FastFlix's code is MIT licenced.  When bundled into a Window's exe it is GPL licenced.
 
 * FastFlix (MIT)
 * Box (MIT)
@@ -20,6 +20,11 @@ FastFlix's code is MIT licenced.  When bundled into a Window's exe it is GPL lic
 # Specified by QT_API environment variable
 * PySide2 (LGPLv3)
 * PyQT5 (GPLv3)
+
+
+Any embedded fonts have their own licenses each found in the "fastflix/data/fonts" directory.
+
+##### LICENSES #####
 
 
 ## FastFlix (code only)

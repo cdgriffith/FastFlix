@@ -7,7 +7,7 @@ from fastflix.encoders.common.setting_panel import SettingPanel
 
 class GIF(SettingPanel):
     def __init__(self, parent, main):
-        super(GIF, self).__init__(parent)
+        super().__init__(parent, main)
         self.main = main
 
         grid = QtWidgets.QGridLayout()
