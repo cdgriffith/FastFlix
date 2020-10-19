@@ -93,7 +93,7 @@ def build(
 
     if bitrate:
         command_1 = (
-            f'{beginning} {get_x265_params(["pass=1"])} '
+            f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1"])} '
             f'-passlogfile "{pass_log_file}" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {null}'
         )
         command_2 = (

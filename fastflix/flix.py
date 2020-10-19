@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-from multiprocessing.pool import ThreadPool
-from subprocess import PIPE, STDOUT, Popen, run
+from multiprocessing.pool import Pool
+from subprocess import PIPE, STDOUT, run
+import shlex
 
 from box import Box, BoxError
 
@@ -79,7 +80,6 @@ def guess_bit_depth(pix_fmt, color_primaries):
 
 class Flix:
     def __init__(self, ffmpeg="ffmpeg", ffprobe="ffprobe"):
-        self.tp = ThreadPool(processes=4)
         self.update(ffmpeg, ffprobe)
 
     def update(self, ffmpeg, ffprobe):
@@ -125,7 +125,9 @@ class Flix:
 
     def extract_attachment(self, args):
         file, stream, work_dir, file_name = args
-        self.execute(f'{self.ffmpeg} -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir)
+        self.execute(
+            f'"{self.ffmpeg}" -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir, timeout=5
+        )
 
     def parse(self, file, work_dir=None, extract_covers=False):
         data = self.probe(file)
@@ -146,7 +148,8 @@ class Flix:
                 logger.error(f"Unknown codec: {track.codec_type}")
 
         if extract_covers:
-            self.tp.map(self.extract_attachment, covers)
+            with Pool(processes=4) as pool:
+                pool.map(self.extract_attachment, covers)
 
         for stream in streams.video:
             if "bits_per_raw_sample" in stream:
@@ -188,9 +191,9 @@ class Flix:
         )
 
     @staticmethod
-    def execute(command, work_dir=None):
+    def execute(command, work_dir=None, timeout=None):
         logger.debug(f"running command: {command}")
-        return run(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True, cwd=work_dir)
+        return run(shlex.split(command), stdout=PIPE, stderr=PIPE, stdin=PIPE, cwd=work_dir, timeout=timeout)
 
     def get_audio_encoders(self):
         cmd = run(

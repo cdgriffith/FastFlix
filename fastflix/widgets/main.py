@@ -239,12 +239,12 @@ class Main(QtWidgets.QWidget):
     def init_button_menu(self):
         layout = QtWidgets.QHBoxLayout()
         open_input_file = QtWidgets.QPushButton("🎞 Source")
-        open_input_file.setFixedSize(100, 50)
+        open_input_file.setFixedSize(95, 50)
         open_input_file.setDefault(True)
         open_input_file.clicked.connect(lambda: self.open_file())
         open_input_file.setStyleSheet("background: blue")
         convert = QtWidgets.QPushButton("Convert 🎥")
-        convert.setFixedSize(100, 50)
+        convert.setFixedSize(95, 50)
         convert.setStyleSheet("background: green")
         convert.clicked.connect(lambda: self.create_video())
         convert.setDisabled(True)
@@ -254,7 +254,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.pause_resume.setDisabled(True)
         self.widgets.pause_resume.setStyleSheet("background-color: gray;")
         self.widgets.pause_resume.clicked.connect(self.pause_resume)
-        self.widgets.pause_resume.setFixedSize(80, 50)
+        self.widgets.pause_resume.setFixedSize(60, 50)
 
         layout.addWidget(open_input_file)
         layout.addStretch()
@@ -1055,6 +1055,7 @@ class Main(QtWidgets.QWidget):
         self.paused = False
         self.widgets.convert_button.setText("Convert 🎥")
         self.widgets.pause_resume.setDisabled(True)
+        self.widgets.pause_resume.setText("Pause")
         self.widgets.pause_resume.setStyleSheet("background-color:gray;")
         output = Path(self.output_video)
 
@@ -1076,6 +1077,7 @@ class Main(QtWidgets.QWidget):
         self.paused = False
         self.widgets.convert_button.setText("Convert 🎥")
         self.widgets.pause_resume.setDisabled(True)
+        self.widgets.pause_resume.setText("Pause")
         self.widgets.pause_resume.setStyleSheet("background-color:gray;")
         try:
             os.remove(self.output_video)

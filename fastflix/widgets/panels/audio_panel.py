@@ -27,6 +27,7 @@ class Audio(QtWidgets.QTabWidget):
         last=False,
         codecs=(),
         channels=2,
+        all_info=None,
     ):
         self.loading = True
         super(Audio, self).__init__(parent)
@@ -44,6 +45,7 @@ class Audio(QtWidgets.QTabWidget):
         self.codecs = codecs
         self.channels = channels
         self.available_audio_encoders = available_audio_encoders
+        self.setToolTip(all_info.to_yaml())
 
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{index}:{self.outdex}" if enabled else "❌"),
@@ -326,6 +328,7 @@ class AudioList(FlixList):
                 codecs=codecs,
                 channels=x.channels,
                 available_audio_encoders=self.available_audio_encoders,
+                all_info=x,
             )
             self.tracks.append(new_item)
 
