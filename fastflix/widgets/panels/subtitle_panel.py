@@ -42,6 +42,10 @@ languages = (
 language_list = languages.split(",")
 
 
+# TODO enforce only one burn in on convert
+# TODO add fake empty subtitle track?
+
+
 class Subtitle(QtWidgets.QTabWidget):
     def __init__(self, parent, subtitle, index, enabled=True, first=False):
         self.loading = True
@@ -197,6 +201,17 @@ class SubtitleList(FlixList):
         if self.tracks:
             self.tracks[0].set_first()
             self.tracks[-1].set_last()
+
+        first_default, first_forced = None, None
+        for track in self.tracks:
+            if not first_default and track.disposition == "default":
+                first_default = track
+            if not first_forced and track.disposition == "forced":
+                first_forced = track
+        if first_forced is not None:
+            first_forced.widgets.burn_in.setChecked(True)
+        elif first_default is not None:
+            first_default.widgets.burn_in.setChecked(True)
 
         super()._new_source(self.tracks)
 

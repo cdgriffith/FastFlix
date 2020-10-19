@@ -2,7 +2,7 @@
 
 ## Version  3.2.0
 
-* Adding #75 burn-in subtitle support
+* Adding #75 burn-in subtitle support - will auto-select first subtitle track that is forced, or default as lower priority (thanks to Trevbams)
 
 ## Version  3.1.0
 
