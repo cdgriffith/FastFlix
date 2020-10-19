@@ -4,7 +4,7 @@
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.shared import error_message, main_width
+from fastflix.shared import error_message, main_width, FastFlixInternalException
 from fastflix.widgets.panels.abstract_list import FlixList
 
 dispositions = [
@@ -62,11 +62,13 @@ class Subtitle(QtWidgets.QTabWidget):
             enable_check=QtWidgets.QCheckBox("Preserve"),
             disposition=QtWidgets.QComboBox(),
             language=QtWidgets.QComboBox(),
+            burn_in=QtWidgets.QCheckBox("Burn In"),
         )
 
         self.widgets.disposition.addItems(dispositions)
         self.widgets.enable_check.setChecked(enabled)
         self.widgets.enable_check.toggled.connect(self.update_enable)
+        self.widgets.burn_in.toggled.connect(self.page_update)
         self.widgets.disposition.currentIndexChanged.connect(self.page_update)
         self.widgets.disposition.setCurrentIndex(0)
         for disposition, is_set in self.subtitle.disposition.items():
@@ -78,6 +80,7 @@ class Subtitle(QtWidgets.QTabWidget):
                 break
 
         self.setFixedHeight(60)
+        self.setToolTip(self.subtitle.to_yaml())
 
         disposition_layout = QtWidgets.QHBoxLayout()
         disposition_layout.addStretch()
@@ -89,9 +92,10 @@ class Subtitle(QtWidgets.QTabWidget):
         grid.addWidget(self.widgets.track_number, 0, 1)
         grid.addWidget(self.widgets.title, 0, 2)
         grid.addLayout(disposition_layout, 0, 4)
-        grid.addLayout(self.init_language(), 0, 5)
+        grid.addWidget(self.widgets.burn_in, 0, 5)
+        grid.addLayout(self.init_language(), 0, 6)
         # grid.addWidget(self.init_extract_button(), 0, 6)
-        grid.addWidget(self.widgets.enable_check, 0, 7)
+        grid.addWidget(self.widgets.enable_check, 0, 8)
 
         self.setLayout(grid)
         self.loading = False
@@ -165,6 +169,10 @@ class Subtitle(QtWidgets.QTabWidget):
     def language(self):
         return self.widgets.language.currentText()
 
+    @property
+    def burn_in(self):
+        return self.widgets.burn_in.isChecked()
+
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()
         self.widgets.track_number.setText(f"{self.index}:{self.outdex}" if enabled else "❌")
@@ -194,6 +202,7 @@ class SubtitleList(FlixList):
 
     def get_settings(self):
         tracks = []
+        burn_in_count = 0
         for track in self.tracks:
             if track.enabled:
                 tracks.append(
@@ -202,6 +211,11 @@ class SubtitleList(FlixList):
                         "outdex": track.outdex,
                         "disposition": track.disposition,
                         "language": track.language,
+                        "burn_in": track.burn_in,
                     }
                 )
+                if track.burn_in:
+                    burn_in_count += 1
+        if burn_in_count > 1:
+            raise FastFlixInternalException("More than one track selected to burn in")
         return Box(subtitle_tracks=tracks, subtitle_track_count=len(tracks))

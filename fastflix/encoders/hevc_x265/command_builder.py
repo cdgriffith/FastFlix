@@ -31,9 +31,10 @@ def build(
     attachments="",
     **kwargs,
 ):
-    filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
+
     audio = build_audio(audio_tracks)
-    subtitles = build_subtitle(subtitle_tracks)
+    subtitles, burn_in_track = build_subtitle(subtitle_tracks)
+    filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
     ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
 
     if not side_data:

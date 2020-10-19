@@ -43,6 +43,7 @@ def generate_ffmpeg_start(
     max_mux="default",
     fast_time=True,
     video_title="",
+    custom_map=False,
     **_,
 ):
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
@@ -57,10 +58,10 @@ def generate_ffmpeg_start(
         f" {time_two} "
         f"{title} "
         f"{f'-max_muxing_queue_size {max_mux}' if max_mux != 'default' else ''} "
-        f"-map 0:{video_track} "
-        f"-c:v:0 {encoder} "
+        f'{f"-map 0:{video_track}" if not filters else ""} '
+        f'{filters if filters else ""} '
+        f"-c:v {encoder} "
         f"-pix_fmt {pix_fmt} "
-        f'{f"-vf {filters}" if filters else ""} '
     )
 
 
@@ -88,16 +89,21 @@ def generate_ending(
     return ending
 
 
-def generate_filters(**kwargs):
-    crop = kwargs.get("crop")
-    scale = kwargs.get("scale")
-    scale_filter = kwargs.get("scale_filter", "lanczos")
-    scale_width = kwargs.get("scale_width")
-    scale_height = kwargs.get("scale_height")
-    disable_hdr = kwargs.get("disable_hdr")
-    rotate = kwargs.get("rotate")
-    vflip = kwargs.get("v_flip")
-    hflip = kwargs.get("h_flip")
+def generate_filters(
+    video_track,
+    crop=None,
+    scale=None,
+    scale_filter="lanczos",
+    scale_width=None,
+    scale_height=None,
+    disable_hdr=False,
+    rotate=None,
+    vflip=None,
+    hflip=None,
+    burn_in_track=None,
+    custom_filters=None,
+    **_,
+):
 
     filter_list = []
     if crop:
@@ -124,4 +130,20 @@ def generate_filters(**kwargs):
             "zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
         )
 
-    return ",".join(filter_list)
+    filters = ",".join(filter_list)
+    if custom_filters:
+        filters = f"{filters},{custom_filters}"
+
+    if burn_in_track is not None:
+        if filters:
+            # You have to overlay first for it to work when scaled
+            return f' -filter_complex "[0:{video_track}][0:{burn_in_track}]overlay[subbed];[subbed]{filters}[v]" -map "[v]" '
+        else:
+            return f' -filter_complex "[0:{video_track}][0:{burn_in_track}]overlay[v]" -map "[v]" '
+    elif filters:
+        return f' -filter_complex "[0:{video_track}]{filters}[v]" -map "[v]" '
+    return None
+
+    # # TODO also support disable HDR and burn in
+
+    # return ",".join(filter_list)

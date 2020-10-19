@@ -25,6 +25,7 @@ class BackgroundRunner:
 
     def start_exec(self, command, work_dir, shell=False):
         logger.info(f"Running command: {command}")
+        Path(work_dir).mkdir(exist_ok=True, parents=True)
         self.output_file = Path(work_dir) / f"encoder_output_{secrets.token_hex(6)}.log"
         self.error_output_file = Path(work_dir) / f"encoder_error_output_{secrets.token_hex(6)}.log"
         self.process = Popen(

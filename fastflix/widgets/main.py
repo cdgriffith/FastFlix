@@ -16,7 +16,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
 from fastflix.flix import FlixError
-from fastflix.shared import error_message, file_date
+from fastflix.shared import error_message, file_date, FastFlixInternalException
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
 
@@ -851,14 +851,13 @@ class Main(QtWidgets.QWidget):
 
         if settings.pix_fmt == "yuv420p10le" and self.pix_fmt in ("yuv420p10le", "yuv420p12le"):
             settings.disable_hdr = True
-        filters = helpers.generate_filters(**settings)
+        filters = helpers.generate_filters(custom_filters='scale="min(320\\,iw):-1"', **settings)
 
         preview_place = self.initial_duration // 10 if settings.start_time == 0 else settings.start_time
 
         thumb_command = self.flix.generate_thumbnail_command(
             source=self.input_video,
             output=self.thumb_file,
-            video_track=self.streams["video"][self.video_track]["index"],
             filters=filters,
             start_time=preview_place,
         )
@@ -935,8 +934,12 @@ class Main(QtWidgets.QWidget):
 
     def build_commands(self):
         if not self.initialized or not self.streams or self.loading_video:
-            return
-        settings = self.get_all_settings()
+            return None, None
+        try:
+            settings = self.get_all_settings()
+        except FastFlixInternalException as err:
+            error_message(str(err))
+            return None, None
         commands = self.plugins[self.convert_to].build(**settings)
         after_done = self.video_options.commands.after_done(builder=True)
         if after_done is not None:

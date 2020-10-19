@@ -177,14 +177,13 @@ class Flix:
 
         return ",".join(filter_list)
 
-    def generate_thumbnail_command(self, source, output, video_track, start_time=0, filters=None):
+    def generate_thumbnail_command(self, source, output, filters, start_time=0):
         start = ""
         if start_time:
             start = f"-ss {start_time}"
         return (
             f'"{self.ffmpeg}" {start} -loglevel error -i "{source}" '
-            f' -vf {filters + "," if filters else ""}scale="min(320\\,iw):-1" '
-            f"-map 0:{video_track} -an -y -map_metadata -1 "
+            f" {filters} -an -y -map_metadata -1 "
             f'-vframes 1 "{output}"'
         )
 

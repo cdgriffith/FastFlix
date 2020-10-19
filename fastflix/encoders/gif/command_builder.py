@@ -20,7 +20,7 @@ def build(
     end_time=None,
     **kwargs,
 ):
-    filters = generate_filters(**kwargs)
+    filters = generate_filters(video_track=video_track, **kwargs)
 
     beginning = (
         f'"{ffmpeg}" -y '
