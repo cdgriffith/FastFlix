@@ -106,6 +106,7 @@ class Main(QtWidgets.QWidget):
             remove_metadata=None,
             chapters=None,
             fast_time=None,
+            pause_resume=QtWidgets.QPushButton("Pause"),
         )
 
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
@@ -140,11 +141,26 @@ class Main(QtWidgets.QWidget):
 
         self.grid.addWidget(self.video_options, 5, 0, 10, 14)
         self.grid.setSpacing(5)
+        self.paused = False
 
         self.setLayout(self.grid)
         self.show()
         self.initialized = True
         self.last_page_update = time.time()
+
+    def pause_resume(self):
+        if not self.paused:
+            self.paused = True
+            self.worker_queue.put(["pause"])
+            self.widgets.pause_resume.setText("Resume")
+            self.widgets.pause_resume.setStyleSheet("background-color: green;")
+            logger.info("Pausing FFmpeg conversion via pustils")
+        else:
+            self.paused = False
+            self.worker_queue.put(["resume"])
+            self.widgets.pause_resume.setText("Pause")
+            self.widgets.pause_resume.setStyleSheet("background-color: orange;")
+            logger.info("Resuming FFmpeg conversion")
 
     def config_update(self, ffmpeg, ffprobe):
         self.flix.update(ffmpeg, ffprobe)
@@ -234,10 +250,17 @@ class Main(QtWidgets.QWidget):
         convert.setDisabled(True)
         self.widgets.convert_button = convert
         self.widgets.convert_button.setStyleSheet("background-color:grey;")
+
+        self.widgets.pause_resume.setDisabled(True)
+        self.widgets.pause_resume.setStyleSheet("background-color: gray;")
+        self.widgets.pause_resume.clicked.connect(self.pause_resume)
+        self.widgets.pause_resume.setFixedSize(80, 50)
+
         layout.addWidget(open_input_file)
         layout.addStretch()
         layout.addLayout(self.init_output_type())
         layout.addStretch()
+        layout.addWidget(self.widgets.pause_resume)
         layout.addWidget(convert)
         return layout
 
@@ -1018,6 +1041,8 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")
+        self.widgets.pause_resume.setDisabled(False)
+        self.widgets.pause_resume.setStyleSheet("background-color:orange;")
         self.converting = True
         for command in commands:
             self.worker_queue.put(("command", command.command, self.path.temp_dir, command.shell))
@@ -1027,7 +1052,10 @@ class Main(QtWidgets.QWidget):
     def conversion_complete(self, return_code):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
+        self.paused = False
         self.widgets.convert_button.setText("Convert 🎥")
+        self.widgets.pause_resume.setDisabled(True)
+        self.widgets.pause_resume.setStyleSheet("background-color:gray;")
         output = Path(self.output_video)
 
         if return_code or not output.exists() or output.stat().st_size <= 500:
@@ -1045,7 +1073,10 @@ class Main(QtWidgets.QWidget):
     def conversion_cancelled(self):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
+        self.paused = False
         self.widgets.convert_button.setText("Convert 🎥")
+        self.widgets.pause_resume.setDisabled(True)
+        self.widgets.pause_resume.setStyleSheet("background-color:gray;")
         try:
             os.remove(self.output_video)
         except OSError:

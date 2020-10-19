@@ -146,6 +146,10 @@ def main():
                     prevent_sleep_mode()
                     runner.start_exec(*request[1:])
                     sent_response = False
+            if request[0] == "pause":
+                runner.pause()
+            if request[0] == "resume":
+                runner.resume()
             if request[0] == "cancel":
                 queued_requests = []
                 runner.kill()
