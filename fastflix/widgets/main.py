@@ -1007,15 +1007,15 @@ class Main(QtWidgets.QWidget):
 
         if not self.input_video:
             return error_message("Have to select a video first")
-
         if self.encoding_worker and self.encoding_worker.is_alive():
             return error_message("Still encoding something else")
-
         if not self.input_video:
             return error_message("Please provide a source video")
         if not self.output_video:
-            error_message("Please specify output video")
-            return
+            return error_message("Please specify output video")
+        if Path(self.input_video).resolve().absolute() == Path(self.output_video).resolve().absolute():
+            return error_message("Output video path is same as source!")
+
         if not self.output_video.lower().endswith(self.current_plugin.video_extension):
             sm = QtWidgets.QMessageBox()
             sm.setText(
@@ -1035,6 +1035,16 @@ class Main(QtWidgets.QWidget):
                 self.output_video_path_widget.setDisabled(False)
                 self.output_path_button.setDisabled(False)
             elif not sm.clickedButton().text().startswith("Continue"):
+                return
+
+        out_file_path = Path(self.output_video)
+        if out_file_path.exists() and out_file_path.stat().st_size > 0:
+            sm = QtWidgets.QMessageBox()
+            sm.setText("That output file already exists and is not empty!")
+            sm.addButton("Cancel", QtWidgets.QMessageBox.DestructiveRole)
+            sm.addButton("Overwrite", QtWidgets.QMessageBox.RejectRole)
+            sm.exec_()
+            if sm.clickedButton().text() == "Cancel":
                 return
 
         _, commands = self.build_commands()

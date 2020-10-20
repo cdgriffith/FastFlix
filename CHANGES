@@ -5,6 +5,7 @@
 * Adding #75 burn-in subtitle support - will auto-select first subtitle track that is forced, or default as lower priority (thanks to Trevbams)
 * Adding #84 pause / resume functionality (thanks to loungebob)
 * Adding hover info for Audio and Subtitle tracks
+* Adding confirm overwrite dialog if file already exists and is not empty
 * Changing to explicitly set no-slow-firstpass for x265 bitrate runs
 
 ## Version  3.1.0

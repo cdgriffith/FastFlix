@@ -45,7 +45,8 @@ class Audio(QtWidgets.QTabWidget):
         self.codecs = codecs
         self.channels = channels
         self.available_audio_encoders = available_audio_encoders
-        self.setToolTip(all_info.to_yaml())
+        if all_info:
+            self.setToolTip(all_info.to_yaml())
 
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{index}:{self.outdex}" if enabled else "❌"),
