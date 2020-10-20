@@ -45,8 +45,6 @@ class Audio(QtWidgets.QTabWidget):
         self.codecs = codecs
         self.channels = channels
         self.available_audio_encoders = available_audio_encoders
-        if all_info:
-            self.setToolTip(all_info.to_yaml())
 
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{index}:{self.outdex}" if enabled else "❌"),
@@ -62,6 +60,9 @@ class Audio(QtWidgets.QTabWidget):
             convert_to=None,
             convert_bitrate=None,
         )
+
+        if all_info:
+            self.widgets.audio_info.setToolTip(all_info.to_yaml())
 
         downmix_options = [
             "mono",
