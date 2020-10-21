@@ -183,7 +183,7 @@ class Flix:
     def generate_thumbnail_command(self, source, output, filters, start_time=0):
         start = ""
         if start_time:
-            start = f""
+            start = f"-ss {start_time}"
         return (
             f'"{self.ffmpeg}" {start} -loglevel error -i "{source}" '
             f" {filters} -an -y -map_metadata -1 "

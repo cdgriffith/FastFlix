@@ -627,9 +627,12 @@ class Main(QtWidgets.QWidget):
             return
         start_pos = self.start_time or self.initial_duration // 10
         r, b, l, t = self.flix.get_auto_crop(self.input_video, self.video_width, self.video_height, start_pos)
+        # Hack to stop thumb gen
+        self.loading_video = True
         self.widgets.crop.top.setText(str(t))
         self.widgets.crop.left.setText(str(l))
         self.widgets.crop.right.setText(str(r))
+        self.loading_video = False
         self.widgets.crop.bottom.setText(str(b))
 
     def build_crop(self):
