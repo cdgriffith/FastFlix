@@ -60,7 +60,6 @@ def build(
     if side_data.cll:
         pass
 
-    extra_data = "-map_chapters 0 "  # -map_metadata 0 # safe to do for rotation?
     pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
 
     if bitrate:
@@ -68,9 +67,7 @@ def build(
             f"{beginning} -pass 1 "
             f'-passlogfile "{pass_log_file}" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {null}'
         )
-        command_2 = (
-            f'{beginning} -pass 2 -passlogfile "{pass_log_file}" ' f"-b:v {bitrate} -preset {preset} {extra_data}"
-        ) + ending
+        command_2 = (f'{beginning} -pass 2 -passlogfile "{pass_log_file}" ' f"-b:v {bitrate} -preset {preset}") + ending
         return [
             Command(
                 re.sub("[ ]+", " ", command_1), ["ffmpeg", "output"], False, name="First pass bitrate", exe="ffmpeg"
@@ -81,7 +78,7 @@ def build(
         ]
 
     elif crf:
-        command = (f"{beginning} -crf {crf} " f"-preset {preset} {extra_data}") + ending
+        command = (f"{beginning} -crf {crf} " f"-preset {preset} ") + ending
         return [
             Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")
         ]

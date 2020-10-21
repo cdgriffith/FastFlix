@@ -6,7 +6,9 @@
 * Adding #84 pause / resume functionality (thanks to loungebob)
 * Adding hover info for Audio and Subtitle tracks
 * Adding confirm overwrite dialog if file already exists and is not empty
+* Adding #81 auto crop feature
 * Changing to explicitly set no-slow-firstpass for x265 bitrate runs
+* Fixing AVC always copied chapters
 
 ## Version  3.1.0
 

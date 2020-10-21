@@ -131,8 +131,10 @@ def generate_filters(
         )
 
     filters = ",".join(filter_list)
-    if custom_filters:
+    if filters and custom_filters:
         filters = f"{filters},{custom_filters}"
+    elif not filters and custom_filters:
+        filters = custom_filters
 
     if burn_in_track is not None:
         if filters:

@@ -434,7 +434,7 @@ class Main(QtWidgets.QWidget):
         crop_box = QtWidgets.QGroupBox()
         crop_box.setStyleSheet("QGroupBox{padding-top:17px; margin-top:-18px}")
         crop_layout = QtWidgets.QVBoxLayout()
-        self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field("Top  ")
+        self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field("       Top  ")
         self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field("Left  ", right_stretch=False)
         self.widgets.crop.right, crop_hz_layout = self.build_hoz_int_field(
             "    Right  ", left_stretch=False, layout=crop_hz_layout
@@ -449,13 +449,28 @@ class Main(QtWidgets.QWidget):
         label = QtWidgets.QLabel("Crop", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
         label.setMaximumHeight(40)
-        crop_bottom_layout.addWidget(label)
+
+        auto_crop = QtWidgets.QPushButton("Auto")
+        auto_crop.setMaximumHeight(40)
+
+        auto_crop.setFixedWidth(50)
+        auto_crop.setToolTip(
+            "Automatically detect black borders at current start time (or at 10% in if start time is 0)"
+        )
+        auto_crop.clicked.connect(self.get_auto_crop)
+
+        # crop_bottom_layout.addWidget(label)
+        l2 = QtWidgets.QVBoxLayout()
+        l2.addWidget(auto_crop, alignment=(QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
+        l2.addWidget(label, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
 
         crop_layout.addLayout(crop_top_layout)
         crop_layout.addLayout(crop_hz_layout)
         crop_layout.addLayout(crop_bottom_layout)
-
-        crop_box.setLayout(crop_layout)
+        outer = QtWidgets.QHBoxLayout()
+        outer.addLayout(crop_layout)
+        outer.addLayout(l2)
+        crop_box.setLayout(outer)
 
         return crop_box
 
@@ -510,9 +525,9 @@ class Main(QtWidgets.QWidget):
         )
 
         if not time_field:
-            widget.setFixedWidth(40)
+            widget.setFixedWidth(45)
         else:
-            widget.setFixedWidth(60)
+            widget.setFixedWidth(65)
         layout.addWidget(minus_button)
         layout.addWidget(widget)
         layout.addWidget(plus_button)
@@ -606,6 +621,16 @@ class Main(QtWidgets.QWidget):
             self, caption="Save Video As", directory=self.generate_output_filename, filter=f"Save File (*.{extension})"
         )
         self.output_video_path_widget.setText(filename[0] if filename else "")
+
+    def get_auto_crop(self):
+        if not self.input_video or not self.initialized or self.loading_video:
+            return
+        start_pos = self.start_time or self.initial_duration // 10
+        r, b, l, t = self.flix.get_auto_crop(self.input_video, self.video_width, self.video_height, start_pos)
+        self.widgets.crop.top.setText(str(r))
+        self.widgets.crop.left.setText(str(b))
+        self.widgets.crop.right.setText(str(t))
+        self.widgets.crop.bottom.setText(str(l))
 
     def build_crop(self):
         top = int(self.widgets.crop.top.text())
@@ -755,6 +780,12 @@ class Main(QtWidgets.QWidget):
             self.page_update()
             return
 
+        self.widgets.crop.top.setText("0")
+        self.widgets.crop.left.setText("0")
+        self.widgets.crop.right.setText("0")
+        self.widgets.crop.bottom.setText("0")
+        self.widgets.start_time.setText("0:00:00")
+
         # TODO set width and height by video track
         rotation = 0
         if "rotate" in self.streams.video[0].get("tags", {}):
@@ -874,7 +905,7 @@ class Main(QtWidgets.QWidget):
 
         if settings.pix_fmt == "yuv420p10le" and self.pix_fmt in ("yuv420p10le", "yuv420p12le"):
             settings.disable_hdr = True
-        filters = helpers.generate_filters(custom_filters='scale="min(320\\,iw):-1"', **settings)
+        filters = helpers.generate_filters(custom_filters="scale='min(320\\,iw):-1'", **settings)
 
         preview_place = self.initial_duration // 10 if settings.start_time == 0 else settings.start_time
 
