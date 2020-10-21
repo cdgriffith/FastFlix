@@ -11,6 +11,7 @@
 * Changing to explicitly set no-slow-firstpass for x265 bitrate runs
 * Fixing AVC always copied chapters
 * Fixing how aspect ratio interacted with crop
+* Fixing HEVC would copy HDR10 details on 8-bit videos
 
 ## Version  3.1.0
 

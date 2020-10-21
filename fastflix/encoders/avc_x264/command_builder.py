@@ -52,7 +52,7 @@ def build(
     if profile and profile != "default":
         beginning += f"-profile {profile} "
 
-    if not disable_hdr and pix_fmt == "yuv420p10le":
+    if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
         if side_data and side_data.get("color_primaries") == "bt2020":
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"

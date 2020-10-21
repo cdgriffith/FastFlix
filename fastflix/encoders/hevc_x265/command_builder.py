@@ -58,7 +58,7 @@ def build(
     if not x265_params:
         x265_params = []
 
-    if not disable_hdr:
+    if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
         if side_data and side_data.get("color_primaries") == "bt2020":
             x265_params.extend(
                 ["hdr-opt=1", "repeat-headers=1", "colorprim=bt2020", "transfer=smpte2084", "colormatrix=bt2020nc"]

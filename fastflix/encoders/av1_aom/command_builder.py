@@ -54,7 +54,7 @@ def build(
     if row_mt is not None:
         beginning += f"-row-mt {row_mt} "
 
-    if not disable_hdr and pix_fmt == "yuv420p10le":
+    if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
         if side_data and side_data.get("color_primaries") == "bt2020":
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
