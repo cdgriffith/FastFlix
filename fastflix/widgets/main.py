@@ -414,7 +414,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.keep_aspect.setMaximumHeight(40)
         self.widgets.scale.keep_aspect.setChecked(True)
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
-        self.widgets.scale.keep_aspect.toggled.connect(lambda: self.scale_update())
+        self.widgets.scale.keep_aspect.toggled.connect(lambda: self.keep_aspect_update())
 
         label = QtWidgets.QLabel("Scale", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
@@ -656,6 +656,27 @@ class Main(QtWidgets.QWidget):
             return
         return f"{width}:{height}:{left}:{top}"
 
+    def keep_aspect_update(self):
+        keep_aspect = self.widgets.scale.keep_aspect.isChecked()
+        if keep_aspect:
+            self.widgets.scale.height.setText("-1")
+        else:
+            try:
+                scale_width = int(self.widgets.scale.width.text())
+                assert scale_width > 0
+            except (ValueError, AssertionError):
+                self.scale_updating = False
+                return logger.warning("Invalid width")
+
+            ratio = self.initial_video_height / self.initial_video_width
+            scale_height = ratio * scale_width
+            mod = int(scale_height % 2)
+            if mod:
+                scale_height -= mod
+                logger.info(f"Have to adjust scale height by {mod} pixels")
+            self.widgets.scale.height.setText(str(int(scale_height)))
+        self.scale_update()
+
     @reusables.log_exception("fastflix", show_traceback=False)
     def scale_update(self):
         if self.scale_updating:
@@ -681,50 +702,60 @@ class Main(QtWidgets.QWidget):
             assert scale_width > 0
         except (ValueError, AssertionError):
             self.scale_updating = False
-            return logger.warning("Invalid main_width")
+            return logger.warning("Invalid width")
             # return self.scale_warning_message.setText("Invalid main_width")
 
         if scale_width % 2:
             self.scale_updating = False
             self.widgets.scale.width.setStyleSheet("background-color: red;")
-            self.widgets.scale.width.setToolTip("Width must be divisible by 2")
+            self.widgets.scale.width.setToolTip(
+                f"Width must be divisible by 2 - Source width: {self.initial_video_width}"
+            )
             return logger.warning("Width must be divisible by 2")
             # return self.scale_warning_message.setText("Width must be divisible by 8")
         else:
-            self.widgets.scale.width.setToolTip("")
+            self.widgets.scale.width.setToolTip(f"Source width: {self.initial_video_width}")
 
         if keep_aspect:
-            ratio = self.initial_video_height / self.initial_video_width
-            scale_height = ratio * scale_width
-            self.widgets.scale.height.setText(str(int(scale_height)))
-            mod = int(scale_height % 2)
-            if mod:
-                scale_height -= mod
-                logger.info(f"Have to adjust scale height by {mod} pixels")
-                # self.scale_warning_message.setText()
-            logger.info(f"height has -{mod}px off aspect")
-            self.widgets.scale.height.setText(str(int(scale_height)))
+            self.widgets.scale.height.setText("-1")
             self.widgets.scale.width.setStyleSheet("background-color: white;")
             self.widgets.scale.height.setStyleSheet("background-color: white;")
             self.page_update()
             self.scale_updating = False
             return
+            # ratio = self.initial_video_height / self.initial_video_width
+            # scale_height = ratio * scale_width
+            # self.widgets.scale.height.setText(str(int(scale_height)))
+            # mod = int(scale_height % 2)
+            # if mod:
+            #     scale_height -= mod
+            #     logger.info(f"Have to adjust scale height by {mod} pixels")
+            #     # self.scale_warning_message.setText()
+            # logger.info(f"height has -{mod}px off aspect")
+            # self.widgets.scale.height.setText(str(int(scale_height)))
+            # self.widgets.scale.width.setStyleSheet("background-color: white;")
+            # self.widgets.scale.height.setStyleSheet("background-color: white;")
+            # self.page_update()
+            # self.scale_updating = False
+            # return
 
         try:
             scale_height = int(self.widgets.scale.height.text())
-            assert scale_height > 0
+            assert scale_height == -1 or scale_height > 0
         except (ValueError, AssertionError):
             self.scale_updating = False
             return logger.warning("Invalid height")
             # return self.scale_warning_message.setText("Invalid height")
 
-        if scale_height % 2:
+        if scale_height != -1 and scale_height % 2:
             self.widgets.scale.height.setStyleSheet("background-color: red;")
-            self.widgets.scale.width.setToolTip("Height must be divisible by 2")
+            self.widgets.scale.height.setToolTip(
+                f"Height must be divisible by 2 - Source height: {self.initial_video_height}"
+            )
             self.scale_updating = False
-            return logger.warning("Height must be divisible by 2")
+            return logger.warning(f"Height must be divisible by 2 - Source height: {self.initial_video_height}")
         else:
-            self.widgets.scale.width.setToolTip("")
+            self.widgets.scale.height.setToolTip(f"Source height: {self.initial_video_height}")
             # return self.scale_warning_message.setText("Height must be divisible by 8")
         # self.scale_warning_message.setText("")
         self.widgets.scale.width.setStyleSheet("background-color: white;")
@@ -810,9 +841,11 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.width.setText(
             str(self.video_width + (self.video_width % self.plugins[self.convert_to].video_dimension_divisor))
         )
+        self.widgets.scale.width.setToolTip(f"Source width: {self.initial_video_width}")
         self.widgets.scale.height.setText(
             str(self.video_height + (self.video_height % self.plugins[self.convert_to].video_dimension_divisor))
         )
+        self.widgets.scale.height.setToolTip(f"Source height: {self.initial_video_height}")
         self.widgets.video_track.addItems(text_video_tracks)
 
         self.widgets.video_track.setDisabled(bool(len(self.streams.video) == 1))

@@ -72,7 +72,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets.disposition.addItems(dispositions)
         self.widgets.enable_check.setChecked(enabled)
         self.widgets.enable_check.toggled.connect(self.update_enable)
-        self.widgets.burn_in.toggled.connect(self.page_update)
+        self.widgets.burn_in.toggled.connect(self.update_burn_in)
         self.widgets.disposition.currentIndexChanged.connect(self.page_update)
         self.widgets.disposition.setCurrentIndex(0)
         for disposition, is_set in self.subtitle.disposition.items():
@@ -106,6 +106,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
         self.setLayout(grid)
         self.loading = False
+        self.updating_burn = False
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
@@ -184,6 +185,17 @@ class Subtitle(QtWidgets.QTabWidget):
         enabled = self.widgets.enable_check.isChecked()
         self.widgets.track_number.setText(f"{self.index}:{self.outdex}" if enabled else "❌")
         self.parent.reorder(update=True)
+
+    def update_burn_in(self):
+        if self.updating_burn:
+            return
+        self.updating_burn = True
+        enable = self.widgets.burn_in.isChecked()
+        if enable and [1 for track in self.parent.tracks if track.enabled and track.burn_in and track is not self]:
+            self.widgets.burn_in.setChecked(False)
+            error_message("There is an existing burn-in track, only one can be enabled at a time")
+        self.updating_burn = False
+        self.page_update()
 
     def page_update(self):
         if not self.loading:
