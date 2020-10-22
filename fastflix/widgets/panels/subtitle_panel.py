@@ -42,7 +42,6 @@ languages = (
 language_list = languages.split(",")
 
 
-# TODO enforce only one burn in on convert
 # TODO add fake empty subtitle track?
 
 

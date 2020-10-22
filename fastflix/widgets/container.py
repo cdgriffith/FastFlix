@@ -11,7 +11,7 @@ import reusables
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.shared import latest_fastflix, message
+from fastflix.shared import latest_fastflix, message, latest_ffmpeg
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -116,6 +116,12 @@ class Container(QtWidgets.QMainWindow):
         )
         version_action.triggered.connect(lambda: latest_fastflix(no_new_dialog=True))
 
+        # TODO Won't enable until can do it non-blocking
+        ffmpeg_update_action = QtWidgets.QAction(
+            self.style().standardIcon(QtWidgets.QStyle.SP_ArrowDown), "Download Newest FFmpeg", self
+        )
+        ffmpeg_update_action.triggered.connect(lambda: latest_ffmpeg(done_alert=True))
+
         help_menu = menubar.addMenu("&Help")
         help_menu.addAction(changes_action)
         help_menu.addAction(report_action)
@@ -123,6 +129,7 @@ class Container(QtWidgets.QMainWindow):
         help_menu.addAction(log_action)
         help_menu.addSeparator()
         help_menu.addAction(version_action)
+        # help_menu.addAction(ffmpeg_update_action)
         help_menu.addSeparator()
         help_menu.addAction(about_action)
 
