@@ -1156,10 +1156,17 @@ class Main(QtWidgets.QWidget):
         self.widgets.pause_resume.setDisabled(True)
         self.widgets.pause_resume.setText("Pause")
         self.widgets.pause_resume.setStyleSheet("background-color:gray;")
-        try:
-            os.remove(self.output_video)
-        except OSError:
-            pass
+
+        sm = QtWidgets.QMessageBox()
+        sm.setText("Conversion cancelled, delete incomplete file?")
+        sm.addButton("Delete", QtWidgets.QMessageBox.YesRole)
+        sm.addButton("Keep", QtWidgets.QMessageBox.NoRole)
+        sm.exec_()
+        if sm.clickedButton().text() == "Delete":
+            try:
+                os.remove(self.output_video)
+            except OSError:
+                pass
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def dropEvent(self, event):
