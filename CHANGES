@@ -3,7 +3,7 @@
 
 ## Version  3.2.1
 
-* Fixing psutil not listed as requirement for pip
+* Fixing psutil not listed as requirement for pip (thanks to I-Iawk)
 
 ## Version  3.2.0
 
