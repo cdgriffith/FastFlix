@@ -55,13 +55,13 @@ class StatusPanel(QtWidgets.QWidget):
             time_passed, speed = combined.split("|")
             time_passed = self.main.time_to_number(time_passed)
             speed = float(speed)
+            assert speed > 0.0001
+            data = timedelta(seconds=(self.get_movie_length() - time_passed) // speed)
         except Exception:
             self.eta_label.setText(f"ETA: N/A")
         else:
             if not speed:
                 self.eta_label.setText(f"ETA: N/A")
-            data = timedelta(seconds=(self.get_movie_length() - time_passed) // speed)
-
             self.eta_label.setText(f"ETA: {data}")
 
     def update_bitrate(self, bitrate):
@@ -71,7 +71,7 @@ class StatusPanel(QtWidgets.QWidget):
             bitrate, _ = bitrate.split("k", 1)
             bitrate = float(bitrate)
             size_eta = (self.get_movie_length() * bitrate) / 8000
-        except Exception as err:
+        except Exception:
             self.size_label.setText(f"Size Est: N/A")
         else:
             if not size_eta:
@@ -97,15 +97,13 @@ class Logs(QtWidgets.QTextBrowser):
             return
         if self.status_panel.hide_nal.isChecked() and msg.lstrip().startswith("Last message repeated"):
             return
-        if msg.startswith("frame"):
-            details = [x.split("=") for x in splitter.split(msg)]
-            # [['frame', '   34'], ['ps', '9.2'], ['', '36.0'], ['ize', '   26368kB'],
-            # ['ime', '00:00:53.19'], ['itrate', '4060.8kbits/s'], ['peed', '14.5x']]
-            speed = details[-1][1]
-            time = details[-3][1]
-            self.status_panel.speed.emit(f"{time.strip()}|{speed.strip().rstrip('x')}")
-            bitrate = details[-2][1]
-            self.status_panel.bitrate.emit(bitrate)
+        if msg.startswith("frame="):
+            try:
+                details = [x.split("=") for x in splitter.split(msg)]
+                self.status_panel.speed.emit(f"{details[-3][1].strip()}|{details[-1][1].strip().rstrip('x')}")
+                self.status_panel.bitrate.emit(details[-2][1])
+            except Exception:
+                pass
         self.append(msg)
 
     def clear(self):
