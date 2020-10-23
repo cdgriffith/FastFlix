@@ -1,8 +1,9 @@
 # Changelog
 
-## Version  3.2.2
+## Version  3.3.0
 
 * Adding ETA and size estimates on status panel
+* Adding custom x265-params options
 * Fixing #89 x265 params for hdr10 changed names (thanks to SlashX)
 
 ## Version  3.2.1
