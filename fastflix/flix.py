@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-from multiprocessing.pool import ThreadPool
-from subprocess import PIPE, STDOUT, Popen, run
+from multiprocessing.pool import Pool
+from subprocess import PIPE, STDOUT, run
+import shlex
 
 from box import Box, BoxError
 
@@ -79,7 +80,6 @@ def guess_bit_depth(pix_fmt, color_primaries):
 
 class Flix:
     def __init__(self, ffmpeg="ffmpeg", ffprobe="ffprobe"):
-        self.tp = ThreadPool(processes=4)
         self.update(ffmpeg, ffprobe)
 
     def update(self, ffmpeg, ffprobe):
@@ -125,7 +125,9 @@ class Flix:
 
     def extract_attachment(self, args):
         file, stream, work_dir, file_name = args
-        self.execute(f'{self.ffmpeg} -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir)
+        self.execute(
+            f'"{self.ffmpeg}" -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir, timeout=5
+        )
 
     def parse(self, file, work_dir=None, extract_covers=False):
         data = self.probe(file)
@@ -146,7 +148,8 @@ class Flix:
                 logger.error(f"Unknown codec: {track.codec_type}")
 
         if extract_covers:
-            self.tp.map(self.extract_attachment, covers)
+            with Pool(processes=4) as pool:
+                pool.map(self.extract_attachment, covers)
 
         for stream in streams.video:
             if "bits_per_raw_sample" in stream:
@@ -177,21 +180,42 @@ class Flix:
 
         return ",".join(filter_list)
 
-    def generate_thumbnail_command(self, source, output, video_track, start_time=0, filters=None):
+    def generate_thumbnail_command(self, source, output, filters, start_time=0):
         start = ""
         if start_time:
             start = f"-ss {start_time}"
         return (
             f'"{self.ffmpeg}" {start} -loglevel error -i "{source}" '
-            f' -vf {filters + "," if filters else ""}scale="min(320\\,iw):-1" '
-            f"-map 0:{video_track} -an -y -map_metadata -1 "
+            f" {filters} -an -y -map_metadata -1 "
             f'-vframes 1 "{output}"'
         )
 
+    def get_auto_crop(self, source, video_width, video_height, start_time):
+        command = f'"{self.ffmpeg}" -ss {start_time} -hide_banner -i "{source}" -vf cropdetect -vframes 10 -f null - '
+        output = self.execute(command)
+
+        width, height, x_crop, y_crop = None, None, None, None
+        for line in output.stderr.decode("utf-8").splitlines():
+            if line.startswith("[Parsed_cropdetect"):
+                w, h, x, y = [int(x) for x in line.rsplit("=")[1].split(":")]
+                if not width or (width and w < width):
+                    width = w
+                if not height or (height and h < height):
+                    height = h
+                if not x_crop or (x_crop and x > x_crop):
+                    x_crop = x
+                if not y_crop or (y_crop and y > y_crop):
+                    y_crop = y
+
+        if None in (width, height, x_crop, y_crop):
+            return 0, 0, 0, 0
+
+        return video_width - width - x_crop, video_height - height - y_crop, x_crop, y_crop
+
     @staticmethod
-    def execute(command, work_dir=None):
+    def execute(command, work_dir=None, timeout=None):
         logger.debug(f"running command: {command}")
-        return run(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, shell=True, cwd=work_dir)
+        return run(shlex.split(command), stdout=PIPE, stderr=PIPE, stdin=PIPE, cwd=work_dir, timeout=timeout)
 
     def get_audio_encoders(self):
         cmd = run(

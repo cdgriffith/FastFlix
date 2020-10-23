@@ -29,9 +29,9 @@ def build(
     usage="good",
     **kwargs,
 ):
-    filters = generate_filters(**kwargs)
     audio = build_audio(audio_tracks)
-    subtitles = build_subtitle(subtitle_tracks)
+    subtitles, burn_in_track = build_subtitle(subtitle_tracks)
+    filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
     ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
     beginning = generate_ffmpeg_start(
         source=source,
@@ -54,7 +54,7 @@ def build(
     if row_mt is not None:
         beginning += f"-row-mt {row_mt} "
 
-    if not disable_hdr and pix_fmt == "yuv420p10le":
+    if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
         if side_data and side_data.get("color_primaries") == "bt2020":
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"

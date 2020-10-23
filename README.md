@@ -8,6 +8,8 @@ FastFlix keeps HDR10 metadata for x265, which will be expanded to AV1 libraries 
 
 It needs `FFmpeg` (version 4.3 or greater) under the hood for the heavy lifting, and can work with a variety of encoders.
 
+Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki) for help or more details!
+
 #  Encoders
 
  FastFlix supports the following encoders when their required libraries are found in FFmpeg:

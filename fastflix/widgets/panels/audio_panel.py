@@ -27,6 +27,7 @@ class Audio(QtWidgets.QTabWidget):
         last=False,
         codecs=(),
         channels=2,
+        all_info=None,
     ):
         self.loading = True
         super(Audio, self).__init__(parent)
@@ -59,6 +60,9 @@ class Audio(QtWidgets.QTabWidget):
             convert_to=None,
             convert_bitrate=None,
         )
+
+        if all_info:
+            self.widgets.audio_info.setToolTip(all_info.to_yaml())
 
         downmix_options = [
             "mono",
@@ -326,6 +330,7 @@ class AudioList(FlixList):
                 codecs=codecs,
                 channels=x.channels,
                 available_audio_encoders=self.available_audio_encoders,
+                all_info=x,
             )
             self.tracks.append(new_item)
 

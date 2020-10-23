@@ -4,7 +4,7 @@
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.shared import error_message, main_width
+from fastflix.shared import error_message, main_width, FastFlixInternalException
 from fastflix.widgets.panels.abstract_list import FlixList
 
 dispositions = [
@@ -42,6 +42,9 @@ languages = (
 language_list = languages.split(",")
 
 
+# TODO add fake empty subtitle track?
+
+
 class Subtitle(QtWidgets.QTabWidget):
     def __init__(self, parent, subtitle, index, enabled=True, first=False):
         self.loading = True
@@ -62,11 +65,13 @@ class Subtitle(QtWidgets.QTabWidget):
             enable_check=QtWidgets.QCheckBox("Preserve"),
             disposition=QtWidgets.QComboBox(),
             language=QtWidgets.QComboBox(),
+            burn_in=QtWidgets.QCheckBox("Burn In"),
         )
 
         self.widgets.disposition.addItems(dispositions)
         self.widgets.enable_check.setChecked(enabled)
         self.widgets.enable_check.toggled.connect(self.update_enable)
+        self.widgets.burn_in.toggled.connect(self.update_burn_in)
         self.widgets.disposition.currentIndexChanged.connect(self.page_update)
         self.widgets.disposition.setCurrentIndex(0)
         for disposition, is_set in self.subtitle.disposition.items():
@@ -78,6 +83,10 @@ class Subtitle(QtWidgets.QTabWidget):
                 break
 
         self.setFixedHeight(60)
+        self.widgets.title.setToolTip(self.subtitle.to_yaml())
+        self.widgets.burn_in.setToolTip(
+            "Overlay this subtitle track onto the video during conversion. " "Cannot remove afterwards."
+        )
 
         disposition_layout = QtWidgets.QHBoxLayout()
         disposition_layout.addStretch()
@@ -89,12 +98,14 @@ class Subtitle(QtWidgets.QTabWidget):
         grid.addWidget(self.widgets.track_number, 0, 1)
         grid.addWidget(self.widgets.title, 0, 2)
         grid.addLayout(disposition_layout, 0, 4)
-        grid.addLayout(self.init_language(), 0, 5)
+        grid.addWidget(self.widgets.burn_in, 0, 5)
+        grid.addLayout(self.init_language(), 0, 6)
         # grid.addWidget(self.init_extract_button(), 0, 6)
-        grid.addWidget(self.widgets.enable_check, 0, 7)
+        grid.addWidget(self.widgets.enable_check, 0, 8)
 
         self.setLayout(grid)
         self.loading = False
+        self.updating_burn = False
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
@@ -165,10 +176,25 @@ class Subtitle(QtWidgets.QTabWidget):
     def language(self):
         return self.widgets.language.currentText()
 
+    @property
+    def burn_in(self):
+        return self.widgets.burn_in.isChecked()
+
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()
         self.widgets.track_number.setText(f"{self.index}:{self.outdex}" if enabled else "❌")
         self.parent.reorder(update=True)
+
+    def update_burn_in(self):
+        if self.updating_burn:
+            return
+        self.updating_burn = True
+        enable = self.widgets.burn_in.isChecked()
+        if enable and [1 for track in self.parent.tracks if track.enabled and track.burn_in and track is not self]:
+            self.widgets.burn_in.setChecked(False)
+            error_message("There is an existing burn-in track, only one can be enabled at a time")
+        self.updating_burn = False
+        self.page_update()
 
     def page_update(self):
         if not self.loading:
@@ -190,10 +216,22 @@ class SubtitleList(FlixList):
             self.tracks[0].set_first()
             self.tracks[-1].set_last()
 
+        first_default, first_forced = None, None
+        for track in self.tracks:
+            if not first_default and track.disposition == "default":
+                first_default = track
+            if not first_forced and track.disposition == "forced":
+                first_forced = track
+        if first_forced is not None:
+            first_forced.widgets.burn_in.setChecked(True)
+        elif first_default is not None:
+            first_default.widgets.burn_in.setChecked(True)
+
         super()._new_source(self.tracks)
 
     def get_settings(self):
         tracks = []
+        burn_in_count = 0
         for track in self.tracks:
             if track.enabled:
                 tracks.append(
@@ -202,6 +240,11 @@ class SubtitleList(FlixList):
                         "outdex": track.outdex,
                         "disposition": track.disposition,
                         "language": track.language,
+                        "burn_in": track.burn_in,
                     }
                 )
+                if track.burn_in:
+                    burn_in_count += 1
+        if burn_in_count > 1:
+            raise FastFlixInternalException("More than one track selected to burn in")
         return Box(subtitle_tracks=tracks, subtitle_track_count=len(tracks))

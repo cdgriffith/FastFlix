@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from pathlib import Path
+import re
 
 import mistune
 from qtpy import QtCore, QtGui, QtWidgets
@@ -10,6 +11,8 @@ __all__ = ["Changes"]
 logger = logging.getLogger("fastflix")
 
 markdown = mistune.Markdown()
+
+issues = re.compile(r"\s(#\d+)\s")
 
 
 class Changes(QtWidgets.QScrollArea):
@@ -28,7 +31,13 @@ class Changes(QtWidgets.QScrollArea):
             if not changes_files.exists():
                 raise Exception("Could not locate changlog file")
 
-        self.label = QtWidgets.QLabel(markdown((changes_files.read_text())))
+        content = changes_files.read_text()
+        linked_content = issues.sub(
+            " <a href='https://github.com/cdgriffith/FastFlix/issues/\\1' >\\1</a> ", content
+        ).replace("issues/#", "issues/")
+
+        self.label = QtWidgets.QLabel(markdown(linked_content))
+        self.label.setOpenExternalLinks(True)
 
         # setting alignment to the text
         self.label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)

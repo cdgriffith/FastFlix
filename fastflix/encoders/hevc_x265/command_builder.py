@@ -31,9 +31,10 @@ def build(
     attachments="",
     **kwargs,
 ):
-    filters = generate_filters(disable_hdr=disable_hdr, **kwargs)
+
     audio = build_audio(audio_tracks)
-    subtitles = build_subtitle(subtitle_tracks)
+    subtitles, burn_in_track = build_subtitle(subtitle_tracks)
+    filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
     ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
 
     if not side_data:
@@ -57,7 +58,7 @@ def build(
     if not x265_params:
         x265_params = []
 
-    if not disable_hdr:
+    if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
         if side_data and side_data.get("color_primaries") == "bt2020":
             x265_params.extend(
                 ["hdr-opt=1", "repeat-headers=1", "colorprim=bt2020", "transfer=smpte2084", "colormatrix=bt2020nc"]
@@ -92,7 +93,7 @@ def build(
 
     if bitrate:
         command_1 = (
-            f'{beginning} {get_x265_params(["pass=1"])} '
+            f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1"])} '
             f'-passlogfile "{pass_log_file}" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {null}'
         )
         command_2 = (

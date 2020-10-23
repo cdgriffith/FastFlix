@@ -7,6 +7,7 @@ import shlex
 from pathlib import Path
 from subprocess import PIPE, Popen
 from threading import Thread
+import psutil
 
 logger = logging.getLogger("fastflix-core")
 
@@ -25,9 +26,10 @@ class BackgroundRunner:
 
     def start_exec(self, command, work_dir, shell=False):
         logger.info(f"Running command: {command}")
+        Path(work_dir).mkdir(exist_ok=True, parents=True)
         self.output_file = Path(work_dir) / f"encoder_output_{secrets.token_hex(6)}.log"
         self.error_output_file = Path(work_dir) / f"encoder_error_output_{secrets.token_hex(6)}.log"
-        self.process = Popen(
+        self.process = psutil.Popen(
             shlex.split(command) if not shell else command,
             shell=shell,
             cwd=work_dir,
@@ -36,6 +38,7 @@ class BackgroundRunner:
             stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc on linux
             encoding="utf-8",
         )
+
         Thread(target=self.read_output).start()
 
     def read_output(self):
@@ -88,3 +91,13 @@ class BackgroundRunner:
             except Exception as err:
                 logger.exception(f"Couldn't terminate process: {err}")
         self.killed = True
+
+    def pause(self):
+        if not self.process:
+            return False
+        self.process.suspend()
+
+    def resume(self):
+        if not self.process:
+            return False
+        self.process.resume()

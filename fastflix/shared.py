@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 import importlib.machinery
+import shutil
 import logging
 import os
 import sys
 from datetime import datetime
 from distutils.version import StrictVersion
 from pathlib import Path
+from threading import Thread
 
 import pkg_resources
 import requests
 import reusables
+from appdirs import user_data_dir
 
 try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -81,6 +84,69 @@ def error_message(msg, details=None, traceback=False, title=None):
         em.setDetailedText(traceback.format_exc())
     em.setStandardButtons(QtWidgets.QMessageBox.Close)
     em.exec_()
+
+
+def latest_ffmpeg(done_alert=False):
+    ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
+    ffmpeg_folder.mkdir(exist_ok=True)
+    url = "https://api.github.com/repos/BtbN/FFmpeg-Builds/releases/latest"
+
+    try:
+        data = requests.get(url, timeout=15).json()
+    except Exception:
+        message("Could not connect to github to check for newer versions.")
+        return
+
+    gpl_ffmpeg = [asset for asset in data["assets"] if asset["name"].endswith("win64-gpl.zip")]
+    if not gpl_ffmpeg:
+        message(
+            "Could not find any matching FFmpeg ending with 'win64-gpl.zip' with "
+            "latest release from <a href='https://github.com/BtbN/FFmpeg-Builds/releases/'>"
+            "https://github.com/BtbN/FFmpeg-Builds/releases/</a> "
+        )
+        return
+
+    req = requests.get(gpl_ffmpeg[0]["browser_download_url"], stream=True)
+
+    filename = ffmpeg_folder / "ffmpeg-full.zip"
+    with open(filename, "wb") as f:
+        for i, block in enumerate(req.iter_content(chunk_size=1024)):
+            if i % 1000 == 0.0:
+                logger.debug(f"Downloaded {i // 1000}MB")
+            f.write(block)
+
+    if filename.stat().st_size < 1000:
+        message("FFmpeg was not properly downloaded as the file size is too small")
+        try:
+            Path(filename).unlink()
+        except OSError:
+            pass
+        return
+
+    try:
+        reusables.extract(filename, path=ffmpeg_folder)
+    except Exception:
+        message(f"Could not extract FFmpeg files from {filename}!")
+        return
+
+    try:
+        shutil.rmtree(str(ffmpeg_folder / "bin"), ignore_errors=True)
+        shutil.rmtree(str(ffmpeg_folder / "doc"), ignore_errors=True)
+        Path(filename).unlink()
+    except OSError:
+        pass
+
+    sub_dir = next(Path(ffmpeg_folder).glob("ffmpeg-*"))
+
+    for item in os.listdir(sub_dir):
+        try:
+            shutil.move(str(sub_dir / item), str(ffmpeg_folder))
+        except Exception as err:
+            message(f"Error while moving files in {ffmpeg_folder}: {err}")
+
+    shutil.rmtree(sub_dir, ignore_errors=True)
+    if done_alert:
+        message(f"FFmpeg has been downloaded to {ffmpeg_folder}")
 
 
 def latest_fastflix(no_new_dialog=False):

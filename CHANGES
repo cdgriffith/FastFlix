@@ -1,5 +1,19 @@
 # Changelog
 
+## Version  3.2.0
+
+* Adding #75 burn-in subtitle support (thanks to Trevbams)
+* Adding #81 auto crop feature (thanks to HannesJo0139)
+* Adding #84 pause / resume functionality (thanks to loungebob)
+* Adding hover info for Audio and Subtitle tracks
+* Adding confirm overwrite dialog if file already exists and is not empty
+* Adding linking to issues in changelog file
+* Changing to explicitly set no-slow-firstpass for x265 bitrate runs
+* Changing FFmpeg to download latest available
+* Fixing AVC always copied chapters
+* Fixing how aspect ratio interacted with crop
+* Fixing HEVC would copy HDR10 details on 8-bit videos
+
 ## Version  3.1.0
 
 * Adding support for movie title
