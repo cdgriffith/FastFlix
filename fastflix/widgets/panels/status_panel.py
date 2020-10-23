@@ -1,22 +1,83 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import re
+from datetime import timedelta
 
 from qtpy import QtCore, QtWidgets
 
 
+splitter = re.compile(r"\s+[a-zA-Z]")
+
+
 class StatusPanel(QtWidgets.QWidget):
+    speed = QtCore.Signal(str)
+    bitrate = QtCore.Signal(str)
+
     def __init__(self, parent, log_queue):
         super().__init__(parent)
         self.main = parent.main
 
         layout = QtWidgets.QGridLayout()
+
         self.hide_nal = QtWidgets.QCheckBox("Hide NAL unit messages")
         self.hide_nal.setChecked(True)
-        layout.addWidget(QtWidgets.QLabel("Encoder Output"), 0, 0)
-        layout.addWidget(self.hide_nal, 0, 1, QtCore.Qt.AlignRight)
+
+        self.eta_label = QtWidgets.QLabel("ETA: N/A")
+        self.eta_label.setToolTip("Estimated time left for current command")
+        self.eta_label.setStyleSheet("QLabel{margin-right:50px}")
+        self.size_label = QtWidgets.QLabel("Size Est: N/A")
+        self.size_label.setToolTip("Estimated file size based on bitrate")
+
+        h_box = QtWidgets.QHBoxLayout()
+        h_box.addWidget(QtWidgets.QLabel("Encoder Output"), alignment=QtCore.Qt.AlignLeft)
+        h_box.addStretch(1)
+        h_box.addWidget(self.eta_label)
+        h_box.addWidget(self.size_label)
+        h_box.addStretch(1)
+        h_box.addWidget(self.hide_nal, alignment=QtCore.Qt.AlignRight)
+
+        layout.addLayout(h_box, 0, 0)
+
         self.inner_widget = Logs(self, log_queue)
-        layout.addWidget(self.inner_widget, 1, 0, 1, 2)
+        layout.addWidget(self.inner_widget, 1, 0)
         self.setLayout(layout)
+
+        self.speed.connect(self.update_speed)
+        self.bitrate.connect(self.update_bitrate)
+
+    def get_movie_length(self):
+        return self.main.end_time - self.main.start_time
+
+    def update_speed(self, combined):
+        if not combined:
+            self.eta_label.setText(f"ETA: N/A")
+        try:
+            time_passed, speed = combined.split("|")
+            time_passed = self.main.time_to_number(time_passed)
+            speed = float(speed)
+        except Exception:
+            self.eta_label.setText(f"ETA: N/A")
+        else:
+            if not speed:
+                self.eta_label.setText(f"ETA: N/A")
+            data = timedelta(seconds=(self.get_movie_length() - time_passed) // speed)
+
+            self.eta_label.setText(f"ETA: {data}")
+
+    def update_bitrate(self, bitrate):
+        if not bitrate:
+            self.size_label.setText(f"Size Est: N/A")
+        try:
+            bitrate, _ = bitrate.split("k", 1)
+            bitrate = float(bitrate)
+            size_eta = (self.get_movie_length() * bitrate) / 8000
+        except Exception as err:
+            self.size_label.setText(f"Size Est: N/A")
+        else:
+            if not size_eta:
+                self.size_label.setText(f"Size Est: N/A")
+
+            self.size_label.setText(f"Size Est: {size_eta:.2f}MB")
 
 
 class Logs(QtWidgets.QTextBrowser):
@@ -36,6 +97,15 @@ class Logs(QtWidgets.QTextBrowser):
             return
         if self.status_panel.hide_nal.isChecked() and msg.lstrip().startswith("Last message repeated"):
             return
+        if msg.startswith("frame"):
+            details = [x.split("=") for x in splitter.split(msg)]
+            # [['frame', '   34'], ['ps', '9.2'], ['', '36.0'], ['ize', '   26368kB'],
+            # ['ime', '00:00:53.19'], ['itrate', '4060.8kbits/s'], ['peed', '14.5x']]
+            speed = details[-1][1]
+            time = details[-3][1]
+            self.status_panel.speed.emit(f"{time.strip()}|{speed.strip().rstrip('x')}")
+            bitrate = details[-2][1]
+            self.status_panel.bitrate.emit(bitrate)
         self.append(msg)
 
     def clear(self):

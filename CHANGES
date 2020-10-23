@@ -2,6 +2,7 @@
 
 ## Version  3.2.2
 
+* Adding ETA and size estimates on status panel
 * Fixing #89 x265 params for hdr10 changed names (thanks to SlashX)
 
 ## Version  3.2.1
