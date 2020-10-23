@@ -1,9 +1,12 @@
 # Changelog
 
+## Version  3.2.2
+
+* Fixing #89 x265 params for hdr10 changed names (thanks to SlashX)
 
 ## Version  3.2.1
 
-* Fixing psutil not listed as requirement for pip (thanks to I-Iawk)
+* Fixing #87 psutil not listed as requirement for pip (thanks to I-Iawk)
 
 ## Version  3.2.0
 
