@@ -226,11 +226,15 @@ class HEVC(SettingPanel):
     def init_x265_params(self):
         layout = QtWidgets.QHBoxLayout()
         self.labels.x265_params = QtWidgets.QLabel("Additional x265 params")
-        self.labels.x265_params.setToolTip(
-            "Extra x265 params in opt=1:opt2=0 format,\ncannot modify existing settings\nexamples: aq-mode=3:rc-lookahead=10 "
+        tool_tip = (
+            "Extra x265 params in opt=1:opt2=0 format,\n"
+            "cannot modify generated settings\n"
+            "examples: aq-mode=3:rc-lookahead=10 "
         )
+        self.labels.x265_params.setToolTip(tool_tip)
         layout.addWidget(self.labels.x265_params)
         self.widgets.x265_params = QtWidgets.QLineEdit()
+        self.widgets.x265_params.setToolTip(tool_tip)
         self.widgets.x265_params.textChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.x265_params)
         return layout
