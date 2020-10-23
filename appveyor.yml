@@ -12,6 +12,8 @@ skip_commits:
     - .pip8speaks.yml
   message: /\[skip ci\]/
 
+environment:
+  PATH: C:\Python38-x64\Scripts;$(PATH)
 
 image:
   - Visual Studio 2019
