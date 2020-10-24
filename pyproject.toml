@@ -27,7 +27,7 @@ requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
 [tool.poetry.scripts]
-fastflix = 'fastflix.__main__:main'
+fastflix = 'fastflix.__main__:start_fastflix'
 
 [tool.black]
 line-length = 120

@@ -7,6 +7,7 @@
 * Changing height to say "Auto" when keeping aspect ratio
 * Fixing cover extraction could timeout and crash program
 * Fixing #89 x265 params for hdr10 changed names (thanks to SlashX)
+* Fixing #92 cannot start FastFlix on Mac (thanks to Paul Bakaus)
 
 ## Version  3.2.1
 
