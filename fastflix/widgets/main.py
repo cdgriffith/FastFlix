@@ -91,19 +91,19 @@ class Main(QtWidgets.QWidget):
         self.streams, self.format_info = None, None
 
         self.widgets = Box(
-            preview=None,
             start_time=None,
             end_time=None,
             video_track=None,
-            convert_to=None,
             rotate=None,
-            convert_button=None,
             flip=None,
             crop=Box(top=None, bottom=None, left=None, right=None),
             scale=Box(width=None, height=None, keep_aspect_ratio=None),
             remove_metadata=None,
             chapters=None,
             fast_time=None,
+            preview=None,
+            convert_to=None,
+            convert_button=None,
             pause_resume=QtWidgets.QPushButton("Pause"),
         )
         self.buttons = []
@@ -689,6 +689,8 @@ class Main(QtWidgets.QWidget):
 
     def disable_all(self):
         for name, widget in self.widgets.items():
+            if name in ("preview", "convert_button", "pause_resume"):
+                continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
                     if isinstance(sub_widget, QtWidgets.QWidget):
@@ -697,9 +699,13 @@ class Main(QtWidgets.QWidget):
                 widget.setDisabled(True)
         for button in self.buttons:
             button.setDisabled(True)
+        self.output_path_button.setDisabled(True)
+        self.output_video_path_widget.setDisabled(True)
 
     def enable_all(self):
         for name, widget in self.widgets.items():
+            if name in ("preview", "convert_button", "pause_resume"):
+                continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
                     if isinstance(sub_widget, QtWidgets.QWidget):
@@ -710,6 +716,8 @@ class Main(QtWidgets.QWidget):
             button.setDisabled(False)
         if self.widgets.scale.keep_aspect.isChecked():
             self.widgets.scale.height.setDisabled(True)
+        self.output_path_button.setDisabled(False)
+        self.output_video_path_widget.setDisabled(False)
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def scale_update(self):
