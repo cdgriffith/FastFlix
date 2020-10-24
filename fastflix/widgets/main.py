@@ -1178,7 +1178,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
         self.paused = False
-        self.self.enable_all()
+        self.enable_all()
         self.widgets.convert_button.setText("Convert 🎥")
         self.widgets.pause_resume.setDisabled(True)
         self.widgets.pause_resume.setText("Pause")
