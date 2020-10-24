@@ -183,19 +183,21 @@ class Flix:
 
         return ",".join(filter_list)
 
-    def generate_thumbnail_command(self, source, output, filters, start_time=0):
+    def generate_thumbnail_command(self, source, output, filters, start_time=0, input_track=0):
         start = ""
         if start_time:
             start = f"-ss {start_time}"
         return (
             f'"{self.ffmpeg}" {start} -loglevel error -i "{source}" '
-            f" {filters} -an -y -map_metadata -1 "
-            f'-vframes 1 "{output}"'
+            f" {filters} -an -y -map_metadata -1 -map 0:{input_track} "
+            f'-vframes 1 "{output}" '
         )
 
-    def get_auto_crop(self, source, video_width, video_height, start_time):
-        command = f'"{self.ffmpeg}" -ss {start_time} -hide_banner -i "{source}" -vf cropdetect -vframes 10 -f null - '
-        output = self.execute(command)
+    def get_auto_crop(self, source, video_width, video_height, start_time, input_track):
+        output = self.execute(
+            f'"{self.ffmpeg}" -ss {start_time} -hide_banner -i "{source}" '
+            f"-map 0:{input_track} -vf cropdetect -vframes 10 -f null - "
+        )
 
         width, height, x_crop, y_crop = None, None, None, None
         for line in output.stderr.decode("utf-8").splitlines():
