@@ -2,7 +2,7 @@
 import logging
 import os
 from multiprocessing.pool import Pool
-from subprocess import PIPE, STDOUT, run
+from subprocess import PIPE, STDOUT, run, TimeoutExpired
 import shlex
 
 from box import Box, BoxError
@@ -125,9 +125,12 @@ class Flix:
 
     def extract_attachment(self, args):
         file, stream, work_dir, file_name = args
-        self.execute(
-            f'"{self.ffmpeg}" -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir, timeout=5
-        )
+        try:
+            self.execute(
+                f'"{self.ffmpeg}" -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir, timeout=5
+            )
+        except TimeoutExpired:
+            logger.warning(f"WARNING Timeout while extracting cover file {file_name}")
 
     def parse(self, file, work_dir=None, extract_covers=False):
         data = self.probe(file)
@@ -180,19 +183,21 @@ class Flix:
 
         return ",".join(filter_list)
 
-    def generate_thumbnail_command(self, source, output, filters, start_time=0):
+    def generate_thumbnail_command(self, source, output, filters, start_time=0, input_track=0):
         start = ""
         if start_time:
             start = f"-ss {start_time}"
         return (
             f'"{self.ffmpeg}" {start} -loglevel error -i "{source}" '
-            f" {filters} -an -y -map_metadata -1 "
-            f'-vframes 1 "{output}"'
+            f" {filters} -an -y -map_metadata -1 -map 0:{input_track} "
+            f'-vframes 1 "{output}" '
         )
 
-    def get_auto_crop(self, source, video_width, video_height, start_time):
-        command = f'"{self.ffmpeg}" -ss {start_time} -hide_banner -i "{source}" -vf cropdetect -vframes 10 -f null - '
-        output = self.execute(command)
+    def get_auto_crop(self, source, video_width, video_height, start_time, input_track):
+        output = self.execute(
+            f'"{self.ffmpeg}" -ss {start_time} -hide_banner -i "{source}" '
+            f"-map 0:{input_track} -vf cropdetect -vframes 10 -f null - "
+        )
 
         width, height, x_crop, y_crop = None, None, None, None
         for line in output.stderr.decode("utf-8").splitlines():

@@ -20,6 +20,7 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 * AV1 (libaom-av1) &nbsp; <img src="./fastflix/data/encoders/icon_av1_aom.png" height="30" alt="av1_aom" >
 * AV1 (libsvtav1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_svt_av1.png" height="30" alt="svt_av1" >
 * VP9 (libvpx) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_vp9.png" height="30" alt="vpg" >
+* WEBP (libwebp) &nbsp;&nbsp;&nbsp;<img src="./fastflix/data/encoders/icon_webp.png" height="30" alt="vpg" >
 * GIF (gif) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_gif.png" height="30" alt="gif" >
 
 Most builds do not have all these encoders available by default and may require custom compiling FFmpeg for a specific encoder.
@@ -37,7 +38,12 @@ View the [releases](https://github.com/cdgriffith/FastFlix/releases) for 64 bit 
 
 ## MacOS and Linux
 
-Please use [pipx](https://pipxproject.github.io/pipx/installation/) to install as a properly virtualized app
+Due to a recent library addition there have been unexpected dependencies on *nix systems that will try to be removed in future versions.
+
+**MacOS** You will need to have Xcode installed  
+**Linux** Please install `gcc` and python3 development files (`python3-dev` on Ubuntu, `python3-devel` on RedHat)
+
+Then please use [pipx](https://pipxproject.github.io/pipx/installation/) to install as a properly virtualized app
 
 ```
 pipx install fastflix

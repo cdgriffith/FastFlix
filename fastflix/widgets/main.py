@@ -33,8 +33,9 @@ def load_plugins(configuration):
     from fastflix.encoders.rav1e import main as rav1e_plugin
     from fastflix.encoders.svt_av1 import main as svt_av1_plugin
     from fastflix.encoders.vp9 import main as vp9_plugin
+    from fastflix.encoders.webp import main as webp_plugin
 
-    plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, av1_plugin, rav1e_plugin, svt_av1_plugin]
+    plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, webp_plugin, av1_plugin, rav1e_plugin, svt_av1_plugin]
 
     return {
         plugin.name: plugin
@@ -91,23 +92,22 @@ class Main(QtWidgets.QWidget):
         self.streams, self.format_info = None, None
 
         self.widgets = Box(
-            input_file=None,
-            preview=None,
             start_time=None,
             end_time=None,
             video_track=None,
-            convert_to=None,
             rotate=None,
-            convert_button=None,
-            v_flip=None,
-            h_flip=None,
+            flip=None,
             crop=Box(top=None, bottom=None, left=None, right=None),
             scale=Box(width=None, height=None, keep_aspect_ratio=None),
             remove_metadata=None,
             chapters=None,
             fast_time=None,
+            preview=None,
+            convert_to=None,
+            convert_button=None,
             pause_resume=QtWidgets.QPushButton("Pause"),
         )
+        self.buttons = []
 
         self.thumb_file = Path(self.path.work, "thumbnail_preview.png")
         self.flix = flix
@@ -143,6 +143,7 @@ class Main(QtWidgets.QWidget):
         self.grid.setSpacing(5)
         self.paused = False
 
+        self.disable_all()
         self.setLayout(self.grid)
         self.show()
         self.initialized = True
@@ -264,20 +265,20 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(convert)
         return layout
 
-    def init_input_file(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.widgets.input_file = QtWidgets.QLineEdit("")
-        self.widgets.input_file.setReadOnly(True)
-        open_input_file = QtWidgets.QPushButton("...")
-        open_input_file.setFixedWidth(50)
-        open_input_file.setMaximumHeight(22)
-        open_input_file.setDefault(True)
-        layout.addWidget(QtWidgets.QLabel("Source File:"))
-        layout.addWidget(self.widgets.input_file)
-        layout.addWidget(open_input_file)
-        layout.setSpacing(10)
-        open_input_file.clicked.connect(lambda: self.open_file())
-        return layout
+    # def init_input_file(self):
+    #     layout = QtWidgets.QHBoxLayout()
+    #     self.widgets.input_file = QtWidgets.QLineEdit("")
+    #     self.widgets.input_file.setReadOnly(True)
+    #     open_input_file = QtWidgets.QPushButton("...")
+    #     open_input_file.setFixedWidth(50)
+    #     open_input_file.setMaximumHeight(22)
+    #     open_input_file.setDefault(True)
+    #     layout.addWidget(QtWidgets.QLabel("Source File:"))
+    #     layout.addWidget(self.widgets.input_file)
+    #     layout.addWidget(open_input_file)
+    #     layout.setSpacing(10)
+    #     open_input_file.clicked.connect(lambda: self.open_file())
+    #     return layout
 
     def init_video_track_select(self):
         layout = QtWidgets.QHBoxLayout()
@@ -293,7 +294,7 @@ class Main(QtWidgets.QWidget):
         return layout
 
     def init_flip(self):
-        self.flip_combo_box = QtWidgets.QComboBox()
+        self.widgets.flip = QtWidgets.QComboBox()
         rotation_folder = "../data/rotations/FastFlix"
 
         no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder}.png")).resolve())
@@ -301,21 +302,21 @@ class Main(QtWidgets.QWidget):
         hoz_flip_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} HF.png")).resolve())
         rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
 
-        self.flip_combo_box.addItems(["No Flip", "Vertical Flip", "Horizontal Flip", "Vert + Hoz Flip"])
-        self.flip_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
-        self.flip_combo_box.setItemIcon(1, QtGui.QIcon(vert_flip_file))
-        self.flip_combo_box.setItemIcon(2, QtGui.QIcon(hoz_flip_file))
-        self.flip_combo_box.setItemIcon(3, QtGui.QIcon(rot_180_file))
-        self.flip_combo_box.setIconSize(QtCore.QSize(35, 35))
-        self.flip_combo_box.currentIndexChanged.connect(lambda: self.page_update())
-        return self.flip_combo_box
+        self.widgets.flip.addItems(["No Flip", "Vertical Flip", "Horizontal Flip", "Vert + Hoz Flip"])
+        self.widgets.flip.setItemIcon(0, QtGui.QIcon(no_rot_file))
+        self.widgets.flip.setItemIcon(1, QtGui.QIcon(vert_flip_file))
+        self.widgets.flip.setItemIcon(2, QtGui.QIcon(hoz_flip_file))
+        self.widgets.flip.setItemIcon(3, QtGui.QIcon(rot_180_file))
+        self.widgets.flip.setIconSize(QtCore.QSize(35, 35))
+        self.widgets.flip.currentIndexChanged.connect(lambda: self.page_update())
+        return self.widgets.flip
 
     def get_flips(self):
         mapping = {0: (False, False), 1: (True, False), 2: (False, True), 3: (True, True)}
-        return mapping[self.flip_combo_box.currentIndex()]
+        return mapping[self.widgets.flip.currentIndex()]
 
     def init_rotate(self):
-        self.rotate_combo_box = QtWidgets.QComboBox()
+        self.widgets.rotate = QtWidgets.QComboBox()
         rotation_folder = "../data/rotations/FastFlix"
 
         no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder}.png")).resolve())
@@ -323,18 +324,18 @@ class Main(QtWidgets.QWidget):
         rot_270_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} CC90.png")).resolve())
         rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
 
-        self.rotate_combo_box.addItems(["No Rotation", "90°", "180°", "270°"])
-        self.rotate_combo_box.setItemIcon(0, QtGui.QIcon(no_rot_file))
-        self.rotate_combo_box.setItemIcon(1, QtGui.QIcon(rot_90_file))
-        self.rotate_combo_box.setItemIcon(2, QtGui.QIcon(rot_180_file))
-        self.rotate_combo_box.setItemIcon(3, QtGui.QIcon(rot_270_file))
-        self.rotate_combo_box.setIconSize(QtCore.QSize(35, 35))
-        self.rotate_combo_box.currentIndexChanged.connect(lambda: self.page_update())
-        return self.rotate_combo_box
+        self.widgets.rotate.addItems(["No Rotation", "90°", "180°", "270°"])
+        self.widgets.rotate.setItemIcon(0, QtGui.QIcon(no_rot_file))
+        self.widgets.rotate.setItemIcon(1, QtGui.QIcon(rot_90_file))
+        self.widgets.rotate.setItemIcon(2, QtGui.QIcon(rot_180_file))
+        self.widgets.rotate.setItemIcon(3, QtGui.QIcon(rot_270_file))
+        self.widgets.rotate.setIconSize(QtCore.QSize(35, 35))
+        self.widgets.rotate.currentIndexChanged.connect(lambda: self.page_update())
+        return self.widgets.rotate
 
     def rotation_to_transpose(self):
         mapping = {0: None, 1: 1, 2: 4, 3: 2}
-        return mapping[self.rotate_combo_box.currentIndex()]
+        return mapping[self.widgets.rotate.currentIndex()]
 
     def change_output_types(self):
         self.widgets.convert_to.clear()
@@ -400,6 +401,7 @@ class Main(QtWidgets.QWidget):
             "  Height  ", left_stretch=False, layout=new_scale_layout, return_buttons=True
         )
         self.widgets.scale.height.setDisabled(True)
+        self.widgets.scale.height.setText("Auto")
         lb.setDisabled(True)
         rb.setDisabled(True)
         QtWidgets.QPushButton()
@@ -452,12 +454,12 @@ class Main(QtWidgets.QWidget):
 
         auto_crop = QtWidgets.QPushButton("Auto")
         auto_crop.setMaximumHeight(40)
-
         auto_crop.setFixedWidth(50)
         auto_crop.setToolTip(
             "Automatically detect black borders at current start time (or at 10% in if start time is 0)"
         )
         auto_crop.clicked.connect(self.get_auto_crop)
+        self.buttons.append(auto_crop)
 
         # crop_bottom_layout.addWidget(label)
         l2 = QtWidgets.QVBoxLayout()
@@ -523,7 +525,8 @@ class Main(QtWidgets.QWidget):
                 self.page_update(),
             ]
         )
-
+        self.buttons.append(minus_button)
+        self.buttons.append(plus_button)
         if not time_field:
             widget.setFixedWidth(45)
         else:
@@ -626,7 +629,9 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or not self.initialized or self.loading_video:
             return
         start_pos = self.start_time or self.initial_duration // 10
-        r, b, l, t = self.flix.get_auto_crop(self.input_video, self.video_width, self.video_height, start_pos)
+        r, b, l, t = self.flix.get_auto_crop(
+            self.input_video, self.video_width, self.video_height, start_pos, self.original_video_track
+        )
         # Hack to stop thumb gen
         self.loading_video = True
         self.widgets.crop.top.setText(str(t))
@@ -636,10 +641,14 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.bottom.setText(str(b))
 
     def build_crop(self):
-        top = int(self.widgets.crop.top.text())
-        left = int(self.widgets.crop.left.text())
-        right = int(self.widgets.crop.right.text())
-        bottom = int(self.widgets.crop.bottom.text())
+        try:
+            top = int(self.widgets.crop.top.text())
+            left = int(self.widgets.crop.left.text())
+            right = int(self.widgets.crop.right.text())
+            bottom = int(self.widgets.crop.bottom.text())
+        except ValueError:
+            logger.error("Invalid crop")
+            return None
         width = self.video_width - right - left
         height = self.video_height - bottom - top
         if (top + left + right + bottom) == 0:
@@ -658,15 +667,21 @@ class Main(QtWidgets.QWidget):
 
     def keep_aspect_update(self):
         keep_aspect = self.widgets.scale.keep_aspect.isChecked()
+
         if keep_aspect:
-            self.widgets.scale.height.setText("-1")
+            self.widgets.scale.height.setText("Auto")
         else:
             try:
                 scale_width = int(self.widgets.scale.width.text())
                 assert scale_width > 0
             except (ValueError, AssertionError):
                 self.scale_updating = False
+                if self.widgets.scale.height.text() == "Auto":
+                    self.widgets.scale.height.setText("-1")
                 return logger.warning("Invalid width")
+
+            if self.initial_video_height == 0 or self.initial_video_width == 0:
+                return logger.warning("Input video does not exist or has 0 dimension")
 
             ratio = self.initial_video_height / self.initial_video_width
             scale_height = ratio * scale_width
@@ -676,6 +691,38 @@ class Main(QtWidgets.QWidget):
                 logger.info(f"Have to adjust scale height by {mod} pixels")
             self.widgets.scale.height.setText(str(int(scale_height)))
         self.scale_update()
+
+    def disable_all(self):
+        for name, widget in self.widgets.items():
+            if name in ("preview", "convert_button", "pause_resume"):
+                continue
+            if isinstance(widget, dict):
+                for sub_widget in widget.values():
+                    if isinstance(sub_widget, QtWidgets.QWidget):
+                        sub_widget.setDisabled(True)
+            elif isinstance(widget, QtWidgets.QWidget):
+                widget.setDisabled(True)
+        for button in self.buttons:
+            button.setDisabled(True)
+        self.output_path_button.setDisabled(True)
+        self.output_video_path_widget.setDisabled(True)
+
+    def enable_all(self):
+        for name, widget in self.widgets.items():
+            if name in ("preview", "convert_button", "pause_resume"):
+                continue
+            if isinstance(widget, dict):
+                for sub_widget in widget.values():
+                    if isinstance(sub_widget, QtWidgets.QWidget):
+                        sub_widget.setDisabled(False)
+            elif isinstance(widget, QtWidgets.QWidget):
+                widget.setDisabled(False)
+        for button in self.buttons:
+            button.setDisabled(False)
+        if self.widgets.scale.keep_aspect.isChecked():
+            self.widgets.scale.height.setDisabled(True)
+        self.output_path_button.setDisabled(False)
+        self.output_video_path_widget.setDisabled(False)
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def scale_update(self):
@@ -717,7 +764,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.scale.width.setToolTip(f"Source width: {self.initial_video_width}")
 
         if keep_aspect:
-            self.widgets.scale.height.setText("-1")
+            self.widgets.scale.height.setText("Auto")
             self.widgets.scale.width.setStyleSheet("background-color: white;")
             self.widgets.scale.height.setStyleSheet("background-color: white;")
             self.page_update()
@@ -739,8 +786,9 @@ class Main(QtWidgets.QWidget):
             # self.scale_updating = False
             # return
 
+        scale_height = self.widgets.scale.height.text()
         try:
-            scale_height = int(self.widgets.scale.height.text())
+            scale_height = -1 if scale_height == "Auto" else int(scale_height)
             assert scale_height == -1 or scale_height > 0
         except (ValueError, AssertionError):
             self.scale_updating = False
@@ -870,6 +918,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.video_title.setText("")
 
         self.video_options.new_source()
+        self.enable_all()
         self.widgets.convert_button.setDisabled(False)
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.loading_video = False
@@ -950,6 +999,7 @@ class Main(QtWidgets.QWidget):
             output=self.thumb_file,
             filters=filters,
             start_time=preview_place,
+            input_track=self.original_video_track,
         )
         try:
             self.thumb_file.unlink()
@@ -971,6 +1021,8 @@ class Main(QtWidgets.QWidget):
     def build_scale(self):
         width = self.widgets.scale.width.text()
         height = self.widgets.scale.height.text()
+        if height == "Auto":
+            height = -1
         return f"{width}:{height}"
 
     def get_all_settings(self):
@@ -1104,6 +1156,8 @@ class Main(QtWidgets.QWidget):
             elif not sm.clickedButton().text().startswith("Continue"):
                 return
 
+        Path(self.path.temp_dir).mkdir(parents=True, exist_ok=True)
+
         out_file_path = Path(self.output_video)
         if out_file_path.exists() and out_file_path.stat().st_size > 0:
             sm = QtWidgets.QMessageBox()
@@ -1123,6 +1177,7 @@ class Main(QtWidgets.QWidget):
         self.converting = True
         for command in commands:
             self.worker_queue.put(("command", command.command, self.path.temp_dir, command.shell))
+        self.disable_all()
         self.video_options.setCurrentWidget(self.video_options.status)
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -1130,6 +1185,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
         self.paused = False
+        self.enable_all()
         self.widgets.convert_button.setText("Convert 🎥")
         self.widgets.pause_resume.setDisabled(True)
         self.widgets.pause_resume.setText("Pause")
@@ -1152,6 +1208,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
         self.paused = False
+        self.enable_all()
         self.widgets.convert_button.setText("Convert 🎥")
         self.widgets.pause_resume.setDisabled(True)
         self.widgets.pause_resume.setText("Pause")
@@ -1175,13 +1232,17 @@ class Main(QtWidgets.QWidget):
 
         event.setDropAction(QtCore.Qt.CopyAction)
         event.accept()
-        self.input_video = str(event.mimeData().urls()[0].toLocalFile())
-        self.video_path_widget.setText(self.input_video)
-        self.output_video_path_widget.setText(self.generate_output_filename)
-        self.output_video_path_widget.setDisabled(False)
-        self.output_path_button.setDisabled(False)
-        self.update_video_info()
-        self.page_update()
+        try:
+            self.input_video = str(event.mimeData().urls()[0].toLocalFile())
+        except (ValueError, IndexError):
+            return event.ignore()
+        else:
+            self.video_path_widget.setText(self.input_video)
+            self.output_video_path_widget.setText(self.generate_output_filename)
+            self.output_video_path_widget.setDisabled(False)
+            self.output_path_button.setDisabled(False)
+            self.update_video_info()
+            self.page_update()
 
     def dragEnterEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()

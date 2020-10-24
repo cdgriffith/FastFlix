@@ -4,6 +4,7 @@ repos:
     hooks:
     - id: mixed-line-ending
     - id: trailing-whitespace
+      exclude: README.md
     - id: requirements-txt-fixer
     - id: check-yaml
     - id: check-json
