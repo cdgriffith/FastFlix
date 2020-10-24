@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastflix"
-version = "3.2.1"
+version = "3.3.0"
 description = "Easy to use video encoder GUI"
 authors = ["Chris Griffith <chris@cdgriffith.com>"]
 license = "MIT"
@@ -27,7 +27,7 @@ requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
 [tool.poetry.scripts]
-fastflix = 'fastflix.__main__:main'
+fastflix = 'fastflix.__main__:start_fastflix'
 
 [tool.black]
 line-length = 120

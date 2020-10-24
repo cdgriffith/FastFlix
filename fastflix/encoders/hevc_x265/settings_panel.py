@@ -61,6 +61,7 @@ class HEVC(SettingPanel):
         grid.addLayout(self.init_profile(), 7, 0, 1, 1)
 
         grid.addLayout(self.init_modes(), 0, 1, 6, 5)
+        grid.addLayout(self.init_x265_params(), 6, 1, 1, 5)
 
         grid.setRowStretch(9, True)
 
@@ -222,6 +223,22 @@ class HEVC(SettingPanel):
         self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
         self.main.build_commands()
 
+    def init_x265_params(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.labels.x265_params = QtWidgets.QLabel("Additional x265 params")
+        tool_tip = (
+            "Extra x265 params in opt=1:opt2=0 format,\n"
+            "cannot modify generated settings\n"
+            "examples: aq-mode=3:rc-lookahead=10 "
+        )
+        self.labels.x265_params.setToolTip(tool_tip)
+        layout.addWidget(self.labels.x265_params)
+        self.widgets.x265_params = QtWidgets.QLineEdit()
+        self.widgets.x265_params.setToolTip(tool_tip)
+        self.widgets.x265_params.textChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.x265_params)
+        return layout
+
     def setting_change(self, update=True, pix_change=False):
         if self.updating_settings:
             return
@@ -258,6 +275,7 @@ class HEVC(SettingPanel):
             max_mux=self.widgets.max_mux.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             profile=self.widgets.profile.currentText(),
+            x265_params=self.widgets.x265_params.text().split(":"),
             extra=self.ffmpeg_extras,
         )
 

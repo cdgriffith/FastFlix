@@ -37,7 +37,12 @@ View the [releases](https://github.com/cdgriffith/FastFlix/releases) for 64 bit 
 
 ## MacOS and Linux
 
-Please use [pipx](https://pipxproject.github.io/pipx/installation/) to install as a properly virtualized app
+Due to a recent library addition there have been unexpected dependencies on *nix systems that will try to be removed in future versions.
+
+**MacOS** You will need to have Xcode installed  
+**Linux** Please install `gcc` and python3 development files (`python3-dev` on Ubuntu, `python3-devel` on RedHat)
+
+Then please use [pipx](https://pipxproject.github.io/pipx/installation/) to install as a properly virtualized app
 
 ```
 pipx install fastflix

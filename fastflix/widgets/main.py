@@ -659,7 +659,7 @@ class Main(QtWidgets.QWidget):
     def keep_aspect_update(self):
         keep_aspect = self.widgets.scale.keep_aspect.isChecked()
         if keep_aspect:
-            self.widgets.scale.height.setText("-1")
+            self.widgets.scale.height.setText("Auto")
         else:
             try:
                 scale_width = int(self.widgets.scale.width.text())
@@ -717,7 +717,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.scale.width.setToolTip(f"Source width: {self.initial_video_width}")
 
         if keep_aspect:
-            self.widgets.scale.height.setText("-1")
+            self.widgets.scale.height.setText("Auto")
             self.widgets.scale.width.setStyleSheet("background-color: white;")
             self.widgets.scale.height.setStyleSheet("background-color: white;")
             self.page_update()
@@ -739,8 +739,9 @@ class Main(QtWidgets.QWidget):
             # self.scale_updating = False
             # return
 
+        scale_height = self.widgets.scale.height.text()
         try:
-            scale_height = int(self.widgets.scale.height.text())
+            scale_height = -1 if scale_height == "Auto" else int(scale_height)
             assert scale_height == -1 or scale_height > 0
         except (ValueError, AssertionError):
             self.scale_updating = False
@@ -971,6 +972,8 @@ class Main(QtWidgets.QWidget):
     def build_scale(self):
         width = self.widgets.scale.width.text()
         height = self.widgets.scale.height.text()
+        if height == "Auto":
+            height = -1
         return f"{width}:{height}"
 
     def get_all_settings(self):

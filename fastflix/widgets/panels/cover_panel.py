@@ -285,27 +285,28 @@ class CoverPanel(QtWidgets.QWidget):
         for attachment in attachments:
             filename = attachment.get("tags", {}).get("filename", "")
             base_name = filename.rsplit(".", 1)[0]
-            if base_name == "cover":
+            file_path = Path(self.main.path.work) / filename
+            if base_name == "cover" and file_path.exists():
                 self.cover_passthrough_checkbox.setChecked(True)
                 self.cover_passthrough_checkbox.setDisabled(False)
-                self.update_cover(str(Path(self.main.path.work) / filename))
+                self.update_cover(str(file_path))
                 self.cover_path.setDisabled(True)
                 self.cover_path.setText("")
                 self.cover_button.setDisabled(True)
                 self.attachments.cover = {"name": filename, "stream": attachment.index, "tags": attachment.tags}
-            if base_name == "cover_land":
+            if base_name == "cover_land" and file_path.exists():
                 self.cover_land_passthrough_checkbox.setChecked(True)
                 self.cover_land_passthrough_checkbox.setDisabled(False)
-                self.update_landscape_cover(str(Path(self.main.path.work) / filename))
+                self.update_landscape_cover(str(file_path))
                 self.cover_land.setDisabled(True)
                 self.cover_land.setText("")
                 self.landscape_button.setDisabled(True)
                 self.attachments.cover_land = {"name": filename, "stream": attachment.index, "tags": attachment.tags}
-            if base_name == "small_cover":
+            if base_name == "small_cover" and file_path.exists():
                 self.small_cover_passthrough_checkbox.setChecked(True)
                 self.small_cover_passthrough_checkbox.setDisabled(False)
                 self.attachments.small_cover = {"name": filename, "stream": attachment.index, "tags": attachment.tags}
-            if base_name == "small_cover_land":
+            if base_name == "small_cover_land" and file_path.exists():
                 self.small_cover_land_passthrough_checkbox.setChecked(True)
                 self.small_cover_land_passthrough_checkbox.setDisabled(False)
                 self.attachments.small_cover_land = {

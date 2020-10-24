@@ -2,7 +2,7 @@
 import logging
 import os
 from multiprocessing.pool import Pool
-from subprocess import PIPE, STDOUT, run
+from subprocess import PIPE, STDOUT, run, TimeoutExpired
 import shlex
 
 from box import Box, BoxError
@@ -125,9 +125,12 @@ class Flix:
 
     def extract_attachment(self, args):
         file, stream, work_dir, file_name = args
-        self.execute(
-            f'"{self.ffmpeg}" -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir, timeout=5
-        )
+        try:
+            self.execute(
+                f'"{self.ffmpeg}" -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir, timeout=5
+            )
+        except TimeoutExpired:
+            logger.warning(f"WARNING Timeout while extracting cover file {file_name}")
 
     def parse(self, file, work_dir=None, extract_covers=False):
         data = self.probe(file)
