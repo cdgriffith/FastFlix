@@ -4,6 +4,7 @@
 
 * Adding ETA and size estimates on status panel
 * Adding custom x265-params options
+* Adding support for WebP encodings
 * Changing height to say "Auto" when keeping aspect ratio
 * Changing that buttons will be disabled without video or when encoding
 * Fixing cover extraction could timeout and crash program
@@ -11,6 +12,8 @@
 * Fixing #92 cannot start FastFlix on Mac (thanks to Paul Bakaus)
 * Fixing autocrop sometimes failing due to muxing size limitations
 * Fixing thumbnail generation did not work for videos with multiple video tracks
+* Fixing gif generation to work with new filter_complex
+* Fixing gif output network location would not work
 
 ## Version  3.2.1
 

@@ -33,8 +33,9 @@ def load_plugins(configuration):
     from fastflix.encoders.rav1e import main as rav1e_plugin
     from fastflix.encoders.svt_av1 import main as svt_av1_plugin
     from fastflix.encoders.vp9 import main as vp9_plugin
+    from fastflix.encoders.webp import main as webp_plugin
 
-    plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, av1_plugin, rav1e_plugin, svt_av1_plugin]
+    plugins = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, webp_plugin, av1_plugin, rav1e_plugin, svt_av1_plugin]
 
     return {
         plugin.name: plugin
@@ -640,10 +641,14 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.bottom.setText(str(b))
 
     def build_crop(self):
-        top = int(self.widgets.crop.top.text())
-        left = int(self.widgets.crop.left.text())
-        right = int(self.widgets.crop.right.text())
-        bottom = int(self.widgets.crop.bottom.text())
+        try:
+            top = int(self.widgets.crop.top.text())
+            left = int(self.widgets.crop.left.text())
+            right = int(self.widgets.crop.right.text())
+            bottom = int(self.widgets.crop.bottom.text())
+        except ValueError:
+            logger.error("Invalid crop")
+            return None
         width = self.video_width - right - left
         height = self.video_height - bottom - top
         if (top + left + right + bottom) == 0:
@@ -1151,6 +1156,8 @@ class Main(QtWidgets.QWidget):
             elif not sm.clickedButton().text().startswith("Continue"):
                 return
 
+        Path(self.path.temp_dir).mkdir(parents=True, exist_ok=True)
+
         out_file_path = Path(self.output_video)
         if out_file_path.exists() and out_file_path.stat().st_size > 0:
             sm = QtWidgets.QMessageBox()
@@ -1225,13 +1232,17 @@ class Main(QtWidgets.QWidget):
 
         event.setDropAction(QtCore.Qt.CopyAction)
         event.accept()
-        self.input_video = str(event.mimeData().urls()[0].toLocalFile())
-        self.video_path_widget.setText(self.input_video)
-        self.output_video_path_widget.setText(self.generate_output_filename)
-        self.output_video_path_widget.setDisabled(False)
-        self.output_path_button.setDisabled(False)
-        self.update_video_info()
-        self.page_update()
+        try:
+            self.input_video = str(event.mimeData().urls()[0].toLocalFile())
+        except (ValueError, IndexError):
+            return event.ignore()
+        else:
+            self.video_path_widget.setText(self.input_video)
+            self.output_video_path_widget.setText(self.generate_output_filename)
+            self.output_video_path_widget.setDisabled(False)
+            self.output_path_button.setDisabled(False)
+            self.update_video_info()
+            self.page_update()
 
     def dragEnterEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()

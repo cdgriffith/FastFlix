@@ -102,6 +102,7 @@ def generate_filters(
     hflip=None,
     burn_in_track=None,
     custom_filters=None,
+    raw_filters=False,
     **_,
 ):
 
@@ -139,13 +140,14 @@ def generate_filters(
     if burn_in_track is not None:
         if filters:
             # You have to overlay first for it to work when scaled
-            return f' -filter_complex "[0:{video_track}][0:{burn_in_track}]overlay[subbed];[subbed]{filters}[v]" -map "[v]" '
+            filter_complex = f"[0:{video_track}][0:{burn_in_track}]overlay[subbed];[subbed]{filters}[v]"
+
         else:
-            return f' -filter_complex "[0:{video_track}][0:{burn_in_track}]overlay[v]" -map "[v]" '
+            filter_complex = f"[0:{video_track}][0:{burn_in_track}]overlay[v]"
     elif filters:
-        return f' -filter_complex "[0:{video_track}]{filters}[v]" -map "[v]" '
-    return None
-
-    # # TODO also support disable HDR and burn in
-
-    # return ",".join(filter_list)
+        filter_complex = f"[0:{video_track}]{filters}[v]"
+    else:
+        return None
+    if raw_filters:
+        return filter_complex
+    return f' -filter_complex "{filter_complex}" -map "[v]" '

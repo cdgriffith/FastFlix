@@ -20,8 +20,9 @@ def build(
     end_time=None,
     **kwargs,
 ):
-    filters = generate_filters(video_track=video_track, **kwargs)
-
+    palletgen_filters = generate_filters(video_track=video_track, custom_filters="palettegen", **kwargs)
+    filters = generate_filters(video_track=video_track, custom_filters=f"fps={fps:.2f}", raw_filters=True, **kwargs)
+    output_video = output_video.replace("\\", "/")
     beginning = (
         f'"{ffmpeg}" -y '
         f'{f"-ss {start_time}" if start_time else ""} '
@@ -33,17 +34,15 @@ def build(
 
     temp_palette = Path(temp_dir) / f"temp_palette_{secrets.token_hex(10)}.png"
 
-    command_1 = (
-        f"{beginning} -map 0:{video_track} " f'-vf "{f"{filters}," if filters else ""}palettegen" -y "{temp_palette}"'
-    )
+    command_1 = f'{beginning} {palletgen_filters}  -y "{temp_palette}"'
 
     gif_filters = f"fps={fps:.2f}"
     if filters:
         gif_filters += f",{filters}"
 
     command_2 = (
-        f'{beginning} -i "{temp_palette}" -map 0:{video_track} '
-        f'-lavfi "{gif_filters} [x]; [x][1:v] paletteuse=dither={dither}" -y "{output_video}" '
+        f'{beginning} -i "{temp_palette}" '
+        f'-filter_complex "{filters};[v][1:v]paletteuse=dither={dither}[o]" -map "[o]" -y "{output_video}" '
     )
 
     return [
