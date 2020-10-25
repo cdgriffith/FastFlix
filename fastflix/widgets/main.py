@@ -596,7 +596,10 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def open_file(self):
         filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="Open Video", filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx)"
+            self,
+            caption="Open Video",
+            filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx *.webm *.mpg *.mp2 *.mpeg *.mpe *.mpv *.ogg *.m4p"
+            " *.wmv *.mov *.qt *.flv *.hevc *.gif *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2)",
         )
         if not filename or not filename[0]:
             return
