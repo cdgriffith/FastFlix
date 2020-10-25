@@ -1,5 +1,10 @@
 # Changelog
 
+## Version  3.3.1
+
+* Fixing #96 input selection did not support all video formats
+* Fixing #95 unicode decode error for FFmpeg output
+
 ## Version  3.3.0
 
 * Adding ETA and size estimates on status panel

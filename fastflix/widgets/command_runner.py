@@ -42,7 +42,9 @@ class BackgroundRunner:
         Thread(target=self.read_output).start()
 
     def read_output(self):
-        with open(self.output_file, "r") as out_file, open(self.error_output_file, "r") as err_file:
+        with open(self.output_file, "r", encoding="utf-8") as out_file, open(
+            self.error_output_file, "r", encoding="utf-8"
+        ) as err_file:
             while True:
                 if not self.is_alive():
                     excess = out_file.read()
