@@ -29,6 +29,11 @@ def build(
     tune=None,
     profile="default",
     attachments="",
+    hdr10=False,
+    hdr10_opt=False,
+    repeat_headers=False,
+    hdr10plus_metadata="",
+    aq_mode=2,
     **kwargs,
 ):
 
@@ -58,16 +63,16 @@ def build(
     if not x265_params:
         x265_params = []
 
+    x265_params.append(f"aq-mode={aq_mode}")
+    x265_params.append(f"repeat-headers={'1' if repeat_headers else '0'}")
+
     if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
+        x265_params.append(f"hdr10_opt={'1' if hdr10_opt else '0'}")
+
         if side_data and side_data.get("color_primaries") == "bt2020":
             # hdr/hdr10 and hdr-opt/hdr10-opt are the same thing for different x265 versions
             x265_params.extend(
                 [
-                    "hdr=1",
-                    "hdr10=1",
-                    "hdr-opt=1",
-                    "hdr10-opt=1",
-                    "repeat-headers=1",
                     "colorprim=bt2020",
                     "transfer=smpte2084",
                     "colormatrix=bt2020nc",
@@ -75,6 +80,7 @@ def build(
             )
 
         if side_data.master_display:
+            hdr10 = True
             x265_params.append(
                 "master-display="
                 f"G{side_data.master_display.green}"
@@ -85,7 +91,13 @@ def build(
             )
 
         if side_data.cll:
+            hdr10 = True
             x265_params.append(f"max-cll={side_data.cll}")
+
+        x265_params.append(f"hdr10={'1' if hdr10 else '0'}")
+
+    if hdr10plus_metadata:
+        x265_params.append(f"dhdr10-info='{hdr10plus_metadata}'")
 
     if intra_encoding:
         x265_params.append("keyint=1")

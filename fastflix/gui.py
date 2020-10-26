@@ -115,12 +115,13 @@ def main():
         except Empty:
             if not runner.is_alive() and not sent_response and not queued_requests:
                 ret = runner.process.poll()
-                if ret > 0:
+                if ret > 0 or runner.error_detected:
                     log(f"Error during conversion", logging.WARNING)
+                    status_queue.put("error")
                 else:
                     log("conversion complete")
+                    status_queue.put("complete")
                 reusables.remove_file_handlers(logger)
-                status_queue.put("complete")
                 sent_response = True
 
                 if not gui_proc.is_alive():

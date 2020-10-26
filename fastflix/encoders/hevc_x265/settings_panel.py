@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+from pathlib import Path
 
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
@@ -60,8 +61,13 @@ class HEVC(SettingPanel):
         grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 1)
         grid.addLayout(self.init_profile(), 7, 0, 1, 1)
 
-        grid.addLayout(self.init_modes(), 0, 1, 6, 5)
+        grid.addLayout(self.init_modes(), 0, 1, 5, 5)
+        grid.addLayout(self.init_hdr10(), 5, 1, 1, 1)
+        grid.addLayout(self.init_hdr10_opt(), 5, 2, 1, 1)
+        grid.addLayout(self.init_repeat_headers(), 5, 3, 1, 1)
+        grid.addLayout(self.init_aq_mode(), 5, 4, 1, 2)
         grid.addLayout(self.init_x265_params(), 6, 1, 1, 5)
+        grid.addLayout(self.init_dhdr10_info(), 7, 1, 1, 5)
 
         grid.setRowStretch(9, True)
 
@@ -78,6 +84,69 @@ class HEVC(SettingPanel):
 
         self.setLayout(grid)
         self.hide()
+
+    def init_dhdr10_info(self):
+        return self._add_file_select(
+            label="HDR10+ Metadata", widget_name="hdr10plus_metadata", button_action=lambda: self.dhdr10_update()
+        )
+
+    def init_hdr10(self):
+        return self._add_check_box(
+            label="Force HDR10 signaling",
+            widget_name="hdr10",
+            tooltip=(
+                "hdr10: Force signaling of HDR10 parameters in SEI packets.\n"
+                " Enabled automatically when --master-display or --max-cll is specified.\n"
+                " Useful when there is a desire to signal 0 values for max-cll and max-fall.\n"
+                " Default disabled."
+            ),
+            checked=True,
+            connect=lambda: self.setting_change(),
+        )
+
+    def init_hdr10_opt(self):
+        return self._add_check_box(
+            label="| HDR10 Optimizations",
+            widget_name="hdr10_opt",
+            tooltip=(
+                "hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.\n"
+                "It is recommended that AQ-mode be enabled along with this feature"
+            ),
+            checked=False,
+            connect=lambda: self.setting_change(),
+        )
+
+    def init_repeat_headers(self):
+        return self._add_check_box(
+            label="| Repeat Headers",
+            widget_name="repeat_headers",
+            tooltip=(
+                "If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.\n"
+                "This is intended for use when you do not have a container to keep the stream headers for you\n"
+                " and you want keyframes to be random access points."
+            ),
+            checked=True,
+        )
+
+    def init_aq_mode(self):
+        return self._add_combo_box(
+            label="| Adaptive Quantization",
+            widget_name="aq_mode",
+            options=[
+                "disabled",
+                "enabled",
+                "enabled + auto-variance",
+                "enabled + av + dark bias",
+                "enabled + av + edge",
+            ],
+            tooltip=(
+                "Adaptive Quantization operating mode.\n"
+                "Raise or lower per-block quantization based on complexity analysis of the source image.\n"
+                "The more complex the block, the more quantization is used.\n"
+                "Default: AQ enabled with auto-variance"
+            ),
+            default=2,
+        )
 
     def init_intra_encoding(self):
         return self._add_combo_box(
@@ -229,7 +298,7 @@ class HEVC(SettingPanel):
         tool_tip = (
             "Extra x265 params in opt=1:opt2=0 format,\n"
             "cannot modify generated settings\n"
-            "examples: aq-mode=3:rc-lookahead=10 "
+            "examples: level-idc=4.1:rc-lookahead=10 "
         )
         self.labels.x265_params.setToolTip(tool_tip)
         layout.addWidget(self.labels.x265_params)
@@ -239,19 +308,46 @@ class HEVC(SettingPanel):
         layout.addWidget(self.widgets.x265_params)
         return layout
 
+    def dhdr10_update(self):
+        dirname = Path(self.widgets.hdr10plus_metadata.text()).parent
+        if not dirname.exists():
+            dirname = Path()
+        filename = QtWidgets.QFileDialog.getOpenFileName(
+            self, caption="hdr10_metadata", directory=str(dirname), filter="HDR10+ Metadata (*.json)"
+        )
+        if not filename or not filename[0]:
+            return
+        self.widgets.hdr10plus_metadata.setText(filename[0])
+        self.main.page_update()
+
     def setting_change(self, update=True, pix_change=False):
         if self.updating_settings:
             return
+        self.updating_settings = True
         if pix_change:
+            if self.widgets.pix_fmt.currentText().startswith("8-bit"):
+                self.widgets.hdr10_opt.setDisabled(True)
+                self.widgets.hdr10_opt.setChecked(False)
+                self.widgets.hdr10.setDisabled(True)
+                self.widgets.hdr10.setChecked(False)
+            else:
+                self.widgets.hdr10.setDisabled(False)
+                self.widgets.hdr10.setChecked(True)
+                self.widgets.hdr10_opt.setDisabled(False)
+            self.updating_settings = False
             self.main.page_update()
             return
-        self.updating_settings = True
+
         remove_hdr = self.widgets.remove_hdr.currentIndex()
         bit_depth = self.main.streams["video"][self.main.video_track].bit_depth
         if remove_hdr == 1:
             self.widgets.pix_fmt.clear()
             self.widgets.pix_fmt.addItems([pix_fmts[0]])
             self.widgets.pix_fmt.setCurrentIndex(0)
+            self.widgets.hdr10_opt.setDisabled(True)
+            self.widgets.hdr10_opt.setChecked(False)
+            self.widgets.hdr10.setDisabled(True)
+            self.widgets.hdr10.setChecked(False)
         else:
             self.widgets.pix_fmt.clear()
             if bit_depth == 12:
@@ -263,9 +359,17 @@ class HEVC(SettingPanel):
             else:
                 self.widgets.pix_fmt.addItems(pix_fmts)
                 self.widgets.pix_fmt.setCurrentIndex(1)
+            if not self.widgets.pix_fmt.currentText().startswith("8-bit"):
+                self.widgets.hdr10_opt.setDisabled(False)
+                self.widgets.hdr10.setDisabled(False)
+                self.widgets.hdr10.setChecked(True)
         if update:
             self.main.page_update()
         self.updating_settings = False
+
+    def new_source(self):
+        super().new_source()
+        self.setting_change()
 
     def get_settings(self):
         settings = Box(
@@ -275,9 +379,15 @@ class HEVC(SettingPanel):
             max_mux=self.widgets.max_mux.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             profile=self.widgets.profile.currentText(),
-            x265_params=self.widgets.x265_params.text().split(":"),
+            hdr10_opt=self.widgets.hdr10_opt.isChecked(),
+            repeat_headers=self.widgets.repeat_headers.isChecked(),
+            aq_mode=self.widgets.aq_mode.currentIndex(),
+            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
             extra=self.ffmpeg_extras,
         )
+
+        x265_params_text = self.widgets.x265_params.text().strip()
+        settings.x265_params = x265_params_text.split(":") if x265_params_text else []
 
         tune = self.widgets.tune.currentText()
         settings.tune = tune if tune.lower() != "default" else None

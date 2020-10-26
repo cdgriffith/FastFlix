@@ -23,6 +23,7 @@ class BackgroundRunner:
         self.output_file = None
         self.error_output_file = None
         self.log_queue = log_queue
+        self.error_detected = False
 
     def start_exec(self, command, work_dir, shell=False):
         logger.info(f"Running command: {command}")
@@ -38,6 +39,7 @@ class BackgroundRunner:
             stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc on linux
             encoding="utf-8",
         )
+        self.error_detected = False
 
         Thread(target=self.read_output).start()
 
@@ -64,6 +66,8 @@ class BackgroundRunner:
                 if err_line:
                     logger.info(err_line)
                     self.log_queue.put(err_line)
+                    if "Conversion failed!" in err_line:
+                        self.error_detected = True
         try:
             self.output_file.unlink()
             self.error_output_file.unlink()

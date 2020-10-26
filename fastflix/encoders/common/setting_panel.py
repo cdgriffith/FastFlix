@@ -78,6 +78,30 @@ class SettingPanel(QtWidgets.QWidget):
         layout.addWidget(self.ffmpeg_extras_widget)
         return layout
 
+    def _add_file_select(self, label, widget_name, button_action, connect="default", enabled=True, tooltip=""):
+        layout = QtWidgets.QHBoxLayout()
+        self.labels[widget_name] = QtWidgets.QLabel(label)
+        self.labels[widget_name].setToolTip(tooltip)
+
+        self.widgets[widget_name] = QtWidgets.QLineEdit()
+        self.widgets[widget_name].setDisabled(not enabled)
+
+        if connect:
+            if connect == "default":
+                self.widgets[widget_name].textChanged.connect(lambda: self.main.page_update())
+            elif connect == "self":
+                self.widgets[widget_name].textChanged.connect(lambda: self.page_update())
+            else:
+                self.widgets[widget_name].textChanged.connect(connect)
+
+        button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogContentsView))
+        button.clicked.connect(button_action)
+
+        layout.addWidget(self.labels[widget_name])
+        layout.addWidget(self.widgets[widget_name])
+        layout.addWidget(button)
+        return layout
+
     def _add_remove_hdr(self, connect="default"):
         return self._add_combo_box(
             label="Remove HDR",
