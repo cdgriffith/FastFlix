@@ -101,7 +101,6 @@ class HEVC(SettingPanel):
                 " Default disabled."
             ),
             checked=True,
-            connect=lambda: self.setting_change(),
         )
 
     def init_hdr10_opt(self):
@@ -113,7 +112,6 @@ class HEVC(SettingPanel):
                 "It is recommended that AQ-mode be enabled along with this feature"
             ),
             checked=False,
-            connect=lambda: self.setting_change(),
         )
 
     def init_repeat_headers(self):
@@ -334,8 +332,8 @@ class HEVC(SettingPanel):
                 self.widgets.hdr10.setDisabled(False)
                 self.widgets.hdr10.setChecked(True)
                 self.widgets.hdr10_opt.setDisabled(False)
-            self.updating_settings = False
             self.main.page_update()
+            self.updating_settings = False
             return
 
         remove_hdr = self.widgets.remove_hdr.currentIndex()
