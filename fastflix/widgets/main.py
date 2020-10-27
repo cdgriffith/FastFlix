@@ -870,7 +870,7 @@ class Main(QtWidgets.QWidget):
             self.unsetCursor()
             return
 
-        self.side_data = self.flix.parse_hdr_details(self.input_video)
+        self.side_data = self.flix.parse_hdr_details(self.input_video, streams=self.streams)
         logger.debug(self.streams)
         logger.debug(self.format_info)
 
