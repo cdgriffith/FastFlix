@@ -631,10 +631,37 @@ class Main(QtWidgets.QWidget):
     def get_auto_crop(self):
         if not self.input_video or not self.initialized or self.loading_video:
             return
+
+        # self.container.show_splash()
+        # self.setWindowFlags(QtCore.Qt.WindowStaysOnBottomHint)
+        # import time
+        # time.sleep(10)
+
+        label = QtWidgets.QLabel(self)
+        label.setText("""<font size=65><b>Running AutoCrop</b></font>""")
+        label.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
+        label.show()
+        self.container.app.processEvents()
+
         start_pos = self.start_time or self.initial_duration // 10
         r, b, l, t = self.flix.get_auto_crop(
             self.input_video, self.video_width, self.video_height, start_pos, self.original_video_track
         )
+        second_time = start_pos + 100
+        if second_time < self.initial_duration:
+            r2, b2, l2, t2 = self.flix.get_auto_crop(
+                self.input_video, self.video_width, self.video_height, second_time, self.original_video_track
+            )
+            if r2 < r or l2 < l:
+                r, l = r2, l2
+            if b2 < b or t2 < t:
+                b, t = b2, t2
+
+        if t + b > self.video_height * 0.9 or r + l > self.video_width * 0.9:
+            logger.warning(f"Autocrop tried to crop too much (left {l}, top {t}, right {r}, bottom {b}), ignoring")
+            label.close()
+            return
+
         # Hack to stop thumb gen
         self.loading_video = True
         self.widgets.crop.top.setText(str(t))
@@ -642,6 +669,8 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.right.setText(str(r))
         self.loading_video = False
         self.widgets.crop.bottom.setText(str(b))
+        # self.container.close_splash()
+        label.close()
 
     def build_crop(self):
         try:
@@ -817,6 +846,12 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
         self.loading_video = True
+        splash_label = QtWidgets.QLabel(self)
+        splash_label.setText("""<font size=65><b>Loading Video Details...</b></font>""")
+        splash_label.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
+        splash_label.show()
+        self.container.app.processEvents()
+
         try:
             self.streams, self.format_info = self.flix.parse(
                 self.input_video, work_dir=self.path.work, extract_covers=True
@@ -836,6 +871,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setStyleSheet("background-color:gray;")
             self.widgets.preview.setText("No Video File")
             self.page_update()
+            splash_label.close()
             return
 
         self.side_data = self.flix.parse_hdr_details(self.input_video)
@@ -863,6 +899,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setStyleSheet("background-color:gray;")
             self.widgets.preview.setText("No Video File")
             self.page_update()
+            splash_label.close()
             return
 
         self.widgets.crop.top.setText("0")
@@ -925,6 +962,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setDisabled(False)
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.loading_video = False
+        splash_label.close()
 
     @property
     def video_track(self):

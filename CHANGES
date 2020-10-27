@@ -4,7 +4,9 @@
 
 * Adding HDR10+ support for x265
 * Adding x265 params hdr10, hdr10-opt, aq-mode and repeat-headers
-* Fixing #103 x265-params were being pre-pended with an extra ":"
+* Adding basic splash info for some events
+* Changing that autocrop will test two spots if possible (thanks to HannesJo0139)
+* Fixing #103 x265-params were being pre-pended with an extra ":" (thanks to Zeid164)
 * Fixing #101 FFmpeg status codes now taken into account for errors
 
 ## Version  3.3.1

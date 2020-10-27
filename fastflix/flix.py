@@ -203,13 +203,11 @@ class Flix:
         for line in output.stderr.decode("utf-8").splitlines():
             if line.startswith("[Parsed_cropdetect"):
                 w, h, x, y = [int(x) for x in line.rsplit("=")[1].split(":")]
-                if not width or (width and w < width):
+                if (not x_crop or (x_crop and x > x_crop)) and (not width or (width and w < width)):
                     width = w
-                if not height or (height and h < height):
-                    height = h
-                if not x_crop or (x_crop and x > x_crop):
                     x_crop = x
-                if not y_crop or (y_crop and y > y_crop):
+                if (not height or (height and h < height)) and (not y_crop or (y_crop and y > y_crop)):
+                    height = h
                     y_crop = y
 
         if None in (width, height, x_crop, y_crop):
