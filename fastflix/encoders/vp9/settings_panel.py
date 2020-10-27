@@ -61,12 +61,14 @@ class VP9(SettingPanel):
         grid.addLayout(self.init_pix_fmt(), 5, 0, 1, 2)
 
         grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
+        grid.addLayout(self.init_profile(), 7, 0, 1, 2)
         grid.addLayout(self._add_custom(), 9, 0, 1, 6)
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
         guide_label = QtWidgets.QLabel(
             f"<a href='https://trac.ffmpeg.org/wiki/Encode/VP9'>FFMPEG VP9 Encoding Guide</a>"
+            "| <a href='https://developers.google.com/media/vp9/hdr-encoding/'>Google's VP9 HDR Encoding Guide</a>"
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
@@ -83,59 +85,53 @@ class VP9(SettingPanel):
             default=1,
         )
 
-    def init_quality(self):
-        layout = QtWidgets.QHBoxLayout()
-        quality_level = QtWidgets.QLabel("Quality")
-        quality_level.setToolTip(
-            "good is the default and recommended for most applications <br> "
-            "best is recommended if you have lots of time and want the best compression efficiency."
+    def init_profile(self):
+        return self._add_combo_box(
+            label="Profile",
+            tooltip="profile: must be 'main' or 'high' for HDR",
+            widget_name="profile",
+            options=["baseline", "main", "high"],
+            default=1,
         )
-        layout.addWidget(quality_level)
-        self.widgets.quality = QtWidgets.QComboBox()
-        self.widgets.quality.addItems(["realtime", "good", "best"])
-        self.widgets.quality.setCurrentIndex(1)
-        self.widgets.quality.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.quality)
-        return layout
+
+    def init_quality(self):
+        return self._add_combo_box(
+            label="Quality",
+            tooltip=(
+                "good is the default and recommended for most applications <br> "
+                "best is recommended if you have lots of time and want the best compression efficiency."
+            ),
+            widget_name="quality",
+            options=["realtime", "good", "best"],
+            default=1,
+        )
 
     def init_speed(self):
-        layout = QtWidgets.QHBoxLayout()
-        speed_level = QtWidgets.QLabel("Speed")
-        speed_level.setToolTip(
-            "Using 1 or 2 will increase encoding speed at the expense of having some impact on "
-            "quality and rate control accuracy.<br> 4 or 5 will turn off rate distortion optimization, "
-            "having even more of an impact on quality."
+        return self._add_combo_box(
+            label="Speed",
+            tooltip=(
+                "Using 1 or 2 will increase encoding speed at the expense of having some impact on "
+                "quality and rate control accuracy.<br> 4 or 5 will turn off rate distortion optimization, "
+                "having even more of an impact on quality."
+            ),
+            widget_name="speed",
+            options=[str(x) for x in range(-8, 9)],
+            default=9,
         )
-        layout.addWidget(speed_level)
-        self.widgets.speed = QtWidgets.QComboBox()
-        self.widgets.speed.addItems([str(x) for x in range(6)])
-        self.widgets.speed.setCurrentIndex(0)
-        self.widgets.speed.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.speed)
-        return layout
 
     def init_row_mt(self):
-        layout = QtWidgets.QHBoxLayout()
-        row_mt_label = QtWidgets.QLabel("Row multithreading")
-        row_mt_label.setToolTip(
-            "This improves encoding speed significantly on systems that "
-            "are otherwise underutilised when encoding VP9."
+        return self._add_check_box(
+            label="Row multithreading",
+            tooltip=(
+                "This improves encoding speed significantly on systems that "
+                "are otherwise underutilised when encoding VP9."
+            ),
+            widget_name="row_mt",
+            checked=False,
         )
-        layout.addWidget(row_mt_label)
-        self.widgets.row_mt = QtWidgets.QCheckBox()
-        self.widgets.row_mt.setChecked(False)
-        self.widgets.row_mt.toggled.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.row_mt)
-        return layout
 
     def init_single_pass(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Single Pass (CRF)"))
-        self.widgets.single_pass = QtWidgets.QCheckBox()
-        self.widgets.single_pass.setChecked(False)
-        self.widgets.single_pass.toggled.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.single_pass)
-        return layout
+        return self._add_check_box(label="Single Pass (CRF)", tooltip="", widget_name="single_pass", checked=False)
 
     def init_max_mux(self):
         return self._add_combo_box(
@@ -219,6 +215,7 @@ class VP9(SettingPanel):
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             single_pass=self.widgets.single_pass.isChecked(),
             max_mux=self.widgets.max_mux.currentText(),
+            profile=self.widgets.profile.currentText(),
             extra=self.ffmpeg_extras,
         )
         if self.mode == "CRF":

@@ -23,9 +23,11 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 * WEBP (libwebp) &nbsp;&nbsp;&nbsp;<img src="./fastflix/data/encoders/icon_webp.png" height="30" alt="vpg" >
 * GIF (gif) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_gif.png" height="30" alt="gif" >
 
-Most builds do not have all these encoders available by default and may require custom compiling FFmpeg for a specific encoder.
+All of these are currently supported by [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) which is the default FFmpeg downloaded.
 
-* [Window FFmpeg (and more) auto builder](https://github.com/m-ab-s/media-autobuild_suite)
+Most other builds do not have all these encoders available by default and may require custom compiling FFmpeg for a specific encoder.
+
+* [Windows FFmpeg (and more) auto builder](https://github.com/m-ab-s/media-autobuild_suite)
 * [Windows cross compile FFmpeg (build on linux)](https://github.com/rdp/ffmpeg-windows-build-helpers)
 * [FFmpeg compilation guide](https://trac.ffmpeg.org/wiki/CompilationGuide)
 
@@ -77,7 +79,9 @@ FastFlix was created to easily extract / copy HDR10 data, but as of sept 2020, o
 
 ## HDR10+
 
-FastFlix does not currently support copying HDR10+ metadata, but is a planned feature for x265.
+FastFlix supports using generated or [extracted JSON HDR10+ Metadata](https://github.com/cdgriffith/FastFlix/wiki/HDR10-Plus-Metadata-Extraction) with HEVC encodes via x265. However that is highly
+dependant on a FFmpeg version that has been compiled with x265 that has HDR10+ support. [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) 
+have this support as of 10/23/2020 and may require a [manual upgrade](https://github.com/cdgriffith/FastFlix/wiki/Updating-FFmpeg).
 
 ## Dolby Vision
 

@@ -14,6 +14,8 @@ def build(
     ffmpeg,
     temp_dir,
     output_video,
+    streams,
+    stream_track,
     bitrate=None,
     crf=None,
     subtitle_tracks=(),
@@ -24,6 +26,7 @@ def build(
     row_mt=0,
     pix_fmt="yuv420p10le",
     attachments="",
+    profile="main",
     disable_hdr=False,
     side_data=None,
     **kwargs,
@@ -50,19 +53,21 @@ def build(
 
     if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
-        if side_data and side_data.get("color_primaries") == "bt2020":
-            beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
+        if streams.video[stream_track].get("color_primaries") == "bt2020" or (
+            side_data and side_data.get("color_primaries") == "bt2020"
+        ):
+            beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc -color_range 1"
 
     beginning = re.sub("[ ]+", " ", beginning)
 
     if bitrate:
-        command_1 = f"{beginning} -b:v {bitrate} -quality good -pass 1 -an -f webm {null}"
-        command_2 = f"{beginning} -b:v {bitrate} -quality {quality} -speed {speed} -pass 2" + ending
+        command_1 = f"{beginning} -b:v {bitrate} -quality {quality} -speed {speed} -profile {profile} -pass 1 -an -f webm {null}"
+        command_2 = f"{beginning} -b:v {bitrate} -quality {quality} -speed {speed} -profile {profile} -pass 2" + ending
 
     elif crf:
-        command_1 = f"{beginning} -b:v 0 -crf {crf} -quality good -pass 1 -an -f webm {null}"
+        command_1 = f"{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} -profile {profile} -pass 1 -an -f webm {null}"
         command_2 = (
-            f"{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} "
+            f"{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} -profile {profile}  "
             f'{"-pass 2" if not single_pass else ""}'
         ) + ending
 
