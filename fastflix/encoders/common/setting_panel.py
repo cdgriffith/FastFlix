@@ -85,6 +85,7 @@ class SettingPanel(QtWidgets.QWidget):
 
         self.widgets[widget_name] = QtWidgets.QLineEdit()
         self.widgets[widget_name].setDisabled(not enabled)
+        self.widgets[widget_name].setToolTip(tooltip)
 
         if connect:
             if connect == "default":

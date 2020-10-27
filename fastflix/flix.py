@@ -158,7 +158,6 @@ class Flix:
                 stream.bit_depth = int(stream.bits_per_raw_sample)
             else:
                 stream.bit_depth = guess_bit_depth(stream.pix_fmt, stream.get("color_primaries"))
-        print(streams)
         return streams, data.format
 
     @staticmethod

@@ -38,9 +38,6 @@ def build(
     aq_mode=2,
     **kwargs,
 ):
-
-    print()
-
     audio = build_audio(audio_tracks)
     subtitles, burn_in_track = build_subtitle(subtitle_tracks)
     filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
@@ -76,7 +73,6 @@ def build(
         if streams.video[video_track].get("color_primaries") == "bt2020" or (
             side_data and side_data.get("color_primaries") == "bt2020"
         ):
-            # hdr/hdr10 and hdr-opt/hdr10-opt are the same thing for different x265 versions
             x265_params.extend(
                 [
                     "colorprim=bt2020",
