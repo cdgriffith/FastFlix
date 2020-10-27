@@ -244,8 +244,11 @@ class Flix:
         master_display = None
         cll = None
 
-        def s(a, v):
-            return int(a.get(v, "0").split("/")[0])
+        def s(a, v, base=50_000):
+            upper, lower = [int(x) for x in a.get(v, "0/0").split("/")]
+            if lower != base:
+                upper *= base / lower
+            return int(upper)
 
         for item in data["side_data_list"]:
             if item.side_data_type == "Mastering display metadata":
@@ -254,7 +257,7 @@ class Flix:
                     green=f"({s(item, 'green_x')},{s(item, 'green_y')})",
                     blue=f"({s(item, 'blue_x')},{s(item, 'blue_y')})",
                     white=f"({s(item, 'white_point_x')},{s(item, 'white_point_y')})",
-                    luminance=f"({s(item, 'max_luminance')},{s(item, 'min_luminance')})",
+                    luminance=f"({s(item, 'max_luminance', base=10_000)},{s(item, 'min_luminance', base=10_000)})",
                 )
             if item.side_data_type == "Content light level metadata":
                 cll = f"{item.max_content},{item.max_average}"
@@ -262,16 +265,20 @@ class Flix:
 
     def parse_hdr_details(self, video_source, video_track=0, streams=None):
         if streams and streams.video and streams.video[video_track].get("side_data_list"):
-            master_display, cll = self.convert_mastering_display(streams.video[0])
-            if master_display:
-                return Box(
-                    pix_fmt=streams.video[video_track].get("pix_fmt"),
-                    color_space=streams.video[video_track].get("color_space"),
-                    color_primaries=streams.video[video_track].get("color_primaries"),
-                    color_transfer=streams.video[video_track].get("color_transfer"),
-                    master_display=master_display,
-                    cll=cll,
-                )
+            try:
+                master_display, cll = self.convert_mastering_display(streams.video[0])
+            except Exception:
+                logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
+            else:
+                if master_display:
+                    return Box(
+                        pix_fmt=streams.video[video_track].get("pix_fmt"),
+                        color_space=streams.video[video_track].get("color_space"),
+                        color_primaries=streams.video[video_track].get("color_primaries"),
+                        color_transfer=streams.video[video_track].get("color_transfer"),
+                        master_display=master_display,
+                        cll=cll,
+                    )
 
         command = (
             f'"{self.ffprobe}" -select_streams v:{video_track} -print_format json -show_frames '
@@ -297,13 +304,16 @@ class Flix:
         if not data.get("side_data_list"):
             return
 
-        master_display, cll = self.convert_mastering_display(data)
-
-        return Box(
-            pix_fmt=data.pix_fmt,
-            color_space=data.color_space,
-            color_primaries=data.color_primaries,
-            color_transfer=data.color_transfer,
-            master_display=master_display,
-            cll=cll,
-        )
+        try:
+            master_display, cll = self.convert_mastering_display(data)
+        except Exception:
+            logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
+        else:
+            return Box(
+                pix_fmt=data.pix_fmt,
+                color_space=data.color_space,
+                color_primaries=data.color_primaries,
+                color_transfer=data.color_transfer,
+                master_display=master_display,
+                cll=cll,
+            )

@@ -1,5 +1,13 @@
 # Changelog
 
+## Version  3.4.2
+
+* Fixing color space details being passed correctly to everything other than x265 as well
+* Fixing HDR10+ details on README
+* Fixing #102 better with taking into account master-display ratios (thanks to leonardyan)
+* Fixing VP9 to accept profiles so HDR10 can be copied properly
+* Fixing #108 HEVC can select wrong video track for encoding (thanks to Zeid164)
+
 ## Version  3.4.1
 
 * Fixing #102 color space and HDR details not parsed from webm correctly (thanks to leonardyan)

@@ -29,6 +29,8 @@ def build(
     ffmpeg,
     temp_dir,
     output_video,
+    streams,
+    stream_track,
     tier="main",
     tile_columns=0,
     tile_rows=0,
@@ -75,7 +77,9 @@ def build(
 
     if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
-        if side_data and side_data.get("color_primaries") == "bt2020":
+        if streams.video[stream_track].get("color_primaries") == "bt2020" or (
+            side_data and side_data.get("color_primaries") == "bt2020"
+        ):
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
     beginning = re.sub("[ ]+", " ", beginning)

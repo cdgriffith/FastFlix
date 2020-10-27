@@ -70,7 +70,7 @@ def build(
     if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
         x265_params.append(f"hdr10_opt={'1' if hdr10_opt else '0'}")
 
-        if streams.video[video_track].get("color_primaries") == "bt2020" or (
+        if streams.video[stream_track].get("color_primaries") == "bt2020" or (
             side_data and side_data.get("color_primaries") == "bt2020"
         ):
             x265_params.extend(
