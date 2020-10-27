@@ -239,30 +239,8 @@ class Flix:
                 started = True
         return encoders
 
-    def parse_hdr_details(self, video_source, video_track=0):
-        command = (
-            f'"{self.ffprobe}" -select_streams v:{video_track} -print_format json -show_frames '
-            '-read_intervals "%+#1" '
-            '-show_entries "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt" '
-            f'-i "{video_source}"'
-        )
-
-        result = run(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        try:
-            data = Box.from_json(result.stdout.decode("utf-8"), default_box=True, default_box_attr=None)
-        except BoxError:
-            # Could not parse details
-            logger.error(
-                "COULD NOT PARSE FFPROBE HDR METADATA, PLEASE OPEN ISSUE WITH THESE DETAILS:"
-                f"\nSTDOUT: {result.stdout.decode('utf-8')}\nSTDERR: {result.stderr.decode('utf-8')}"
-            )
-            return
-        if "frames" not in data or not len(data.frames):
-            return
-        data = data.frames[0]
-        if not data.get("side_data_list"):
-            return
-
+    @staticmethod
+    def convert_mastering_display(data):
         master_display = None
         cll = None
 
@@ -280,6 +258,46 @@ class Flix:
                 )
             if item.side_data_type == "Content light level metadata":
                 cll = f"{item.max_content},{item.max_average}"
+        return master_display, cll
+
+    def parse_hdr_details(self, video_source, video_track=0, streams=None):
+        if streams and streams.video and streams.video[video_track].get("side_data_list"):
+            master_display, cll = self.convert_mastering_display(streams.video[0])
+            if master_display:
+                return Box(
+                    pix_fmt=streams.video[video_track].get("pix_fmt"),
+                    color_space=streams.video[video_track].get("color_space"),
+                    color_primaries=streams.video[video_track].get("color_primaries"),
+                    color_transfer=streams.video[video_track].get("color_transfer"),
+                    master_display=master_display,
+                    cll=cll,
+                )
+
+        command = (
+            f'"{self.ffprobe}" -select_streams v:{video_track} -print_format json -show_frames '
+            '-read_intervals "%+#1" '
+            '-show_entries "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt" '
+            f'-i "{video_source}"'
+        )
+
+        result = run(command, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+
+        try:
+            data = Box.from_json(result.stdout.decode("utf-8"), default_box=True, default_box_attr=None)
+        except BoxError:
+            # Could not parse details
+            logger.error(
+                "COULD NOT PARSE FFPROBE HDR METADATA, PLEASE OPEN ISSUE WITH THESE DETAILS:"
+                f"\nSTDOUT: {result.stdout.decode('utf-8')}\nSTDERR: {result.stderr.decode('utf-8')}"
+            )
+            return
+        if "frames" not in data or not len(data.frames):
+            return
+        data = data.frames[0]
+        if not data.get("side_data_list"):
+            return
+
+        master_display, cll = self.convert_mastering_display(data)
 
         return Box(
             pix_fmt=data.pix_fmt,

@@ -16,6 +16,8 @@ def build(
     ffmpeg,
     temp_dir,
     output_video,
+    streams,
+    stream_track,
     bitrate=None,
     crf=None,
     preset="fast",
@@ -36,7 +38,6 @@ def build(
     aq_mode=2,
     **kwargs,
 ):
-
     audio = build_audio(audio_tracks)
     subtitles, burn_in_track = build_subtitle(subtitle_tracks)
     filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
@@ -69,8 +70,9 @@ def build(
     if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
         x265_params.append(f"hdr10_opt={'1' if hdr10_opt else '0'}")
 
-        if side_data and side_data.get("color_primaries") == "bt2020":
-            # hdr/hdr10 and hdr-opt/hdr10-opt are the same thing for different x265 versions
+        if streams.video[video_track].get("color_primaries") == "bt2020" or (
+            side_data and side_data.get("color_primaries") == "bt2020"
+        ):
             x265_params.extend(
                 [
                     "colorprim=bt2020",

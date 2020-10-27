@@ -67,7 +67,9 @@ class HEVC(SettingPanel):
         grid.addLayout(self.init_repeat_headers(), 5, 3, 1, 1)
         grid.addLayout(self.init_aq_mode(), 5, 4, 1, 2)
         grid.addLayout(self.init_x265_params(), 6, 1, 1, 5)
-        grid.addLayout(self.init_dhdr10_info(), 7, 1, 1, 5)
+
+        grid.addLayout(self.init_dhdr10_info(), 7, 1, 1, 4)
+        grid.addWidget(self.init_dhdr10_warning(), 7, 5, 1, 4)
 
         grid.setRowStretch(9, True)
 
@@ -77,6 +79,8 @@ class HEVC(SettingPanel):
             "<a href='https://trac.ffmpeg.org/wiki/Encode/H.265'>FFMPEG HEVC / H.265 Encoding Guide</a>"
             " | <a href='https://codecalamity.com/encoding-uhd-4k-hdr10-videos-with-ffmpeg/'>"
             "CodeCalamity UHD HDR Encoding Guide</a>"
+            " | <a href='https://github.com/cdgriffith/FastFlix/wiki/HDR10-Plus-Metadata-Extraction'>"
+            "HDR10+ Metadata Extraction"
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
@@ -87,8 +91,24 @@ class HEVC(SettingPanel):
 
     def init_dhdr10_info(self):
         return self._add_file_select(
-            label="HDR10+ Metadata", widget_name="hdr10plus_metadata", button_action=lambda: self.dhdr10_update()
+            label="HDR10+ Metadata",
+            widget_name="hdr10plus_metadata",
+            button_action=lambda: self.dhdr10_update(),
+            tooltip="dhdr10_info: Path to HDR10+ JSON metadata file",
         )
+
+    def init_dhdr10_warning(self):
+        label = QtWidgets.QLabel()
+        label.setToolTip(
+            "WARNING: This only works on a few FFmpeg builds, and it will not raise error on failure!\n"
+            "Specifically, FFmpeg needs the x265 ENABLE_HDR10_PLUS option enabled on compile.\n"
+            "The latest windows builds from BtbN should have this feature.\n"
+            "I do not know of any public Linux/Mac ones that do."
+        )
+        icon = self.style().standardIcon(QtWidgets.QStyle.SP_MessageBoxWarning)
+        label.setPixmap(icon.pixmap(16))
+        # label.style().standardIcon(QtWidgets.QStyle.SP_MessageBoxWarning)
+        return label
 
     def init_hdr10(self):
         return self._add_check_box(
@@ -119,7 +139,7 @@ class HEVC(SettingPanel):
             label="| Repeat Headers",
             widget_name="repeat_headers",
             tooltip=(
-                "If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.\n"
+                "repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.\n"
                 "This is intended for use when you do not have a container to keep the stream headers for you\n"
                 " and you want keyframes to be random access points."
             ),
@@ -138,7 +158,7 @@ class HEVC(SettingPanel):
                 "enabled + av + edge",
             ],
             tooltip=(
-                "Adaptive Quantization operating mode.\n"
+                "aq-mode: Adaptive Quantization operating mode.\n"
                 "Raise or lower per-block quantization based on complexity analysis of the source image.\n"
                 "The more complex the block, the more quantization is used.\n"
                 "Default: AQ enabled with auto-variance"
@@ -152,7 +172,7 @@ class HEVC(SettingPanel):
             widget_name="intra_encoding",
             options=["No", "Yes"],
             tooltip=(
-                "Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
+                "keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
                 "This option is not recommenced unless you need to conform "
                 "to Blu-ray standards to burn to a physical disk"
             ),
@@ -176,7 +196,7 @@ class HEVC(SettingPanel):
                 "placebo",
             ],
             tooltip=(
-                "The slower the preset, the better the compression and quality\n"
+                "preset: The slower the preset, the better the compression and quality\n"
                 "Slow is highest personal recommenced, as past that is much smaller gains"
             ),
             connect="default",
@@ -188,14 +208,14 @@ class HEVC(SettingPanel):
             label="Tune",
             widget_name="tune",
             options=["default", "psnr", "ssim", "grain", "zerolatency", "fastdecode", "animation"],
-            tooltip="Tune the settings for a particular type of source or situation",
+            tooltip="tune: Tune the settings for a particular type of source or situation",
             connect="default",
         )
 
     def init_profile(self):
         return self._add_combo_box(
             label="Profile",
-            tooltip="Enforce an encode profile",
+            tooltip="profile: Enforce an encode profile",
             widget_name="profile",
             options=["default", "main", "main10", "mainstillpicture"],
             default=0,
@@ -214,7 +234,9 @@ class HEVC(SettingPanel):
     def init_max_mux(self):
         return self._add_combo_box(
             label="Max Muxing Queue Size",
-            tooltip='Useful when you have the "Too many packets buffered for output stream" error',
+            tooltip=(
+                "max_muxing_queue_size: " 'Useful when you have the "Too many packets buffered for output stream" error'
+            ),
             widget_name="max_mux",
             options=["default", "1024", "2048", "4096", "8192"],
             default=1,

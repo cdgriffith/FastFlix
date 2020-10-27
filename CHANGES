@@ -1,5 +1,10 @@
 # Changelog
 
+## Version  3.4.1
+
+* Fixing #102 color space and HDR details not parsed from webm correctly (thanks to leonardyan)
+* Fixing no warning messages for HDR10+ experimental feature
+
 ## Version  3.4.0
 
 * Adding #83 HDR10+ support for x265 (thanks to SlashX)
