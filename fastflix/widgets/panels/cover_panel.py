@@ -185,7 +185,7 @@ class CoverPanel(QtWidgets.QWidget):
         if attr:
             cover_image = attr.text()
         if getattr(self, f"{filename}_passthrough_checkbox").isChecked():
-            cover_image = str(Path(self.main.path.work) / self.attachments[filename].name)
+            cover_image = str(Path(self.main.path.temp_dir) / self.attachments[filename].name)
         if cover_image:
             mime_type, ext_type = self.image_type(cover_image)
             return (
@@ -213,7 +213,7 @@ class CoverPanel(QtWidgets.QWidget):
         if checked:
             self.cover_path.setDisabled(True)
             self.cover_button.setDisabled(True)
-            pixmap = QtGui.QPixmap(str(Path(self.main.path.work) / self.attachments.cover.name))
+            pixmap = QtGui.QPixmap(str(Path(self.main.path.temp_dir) / self.attachments.cover.name))
             pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.poster.setPixmap(pixmap)
         else:
@@ -236,7 +236,7 @@ class CoverPanel(QtWidgets.QWidget):
         if checked:
             self.cover_land.setDisabled(True)
             self.landscape_button.setDisabled(True)
-            pixmap = QtGui.QPixmap(str(Path(self.main.path.work) / self.attachments.cover_land.name))
+            pixmap = QtGui.QPixmap(str(Path(self.main.path.temp_dir) / self.attachments.cover_land.name))
             pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.landscape.setPixmap(pixmap)
         else:
@@ -285,7 +285,7 @@ class CoverPanel(QtWidgets.QWidget):
         for attachment in attachments:
             filename = attachment.get("tags", {}).get("filename", "")
             base_name = filename.rsplit(".", 1)[0]
-            file_path = Path(self.main.path.work) / filename
+            file_path = Path(self.main.path.temp_dir) / filename
             if base_name == "cover" and file_path.exists():
                 self.cover_passthrough_checkbox.setChecked(True)
                 self.cover_passthrough_checkbox.setDisabled(False)

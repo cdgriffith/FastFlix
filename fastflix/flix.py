@@ -132,18 +132,17 @@ class Flix:
         except TimeoutExpired:
             logger.warning(f"WARNING Timeout while extracting cover file {file_name}")
 
-    def parse(self, file, work_dir=None, extract_covers=False):
+    def parse(self, file, temp_dir=None, extract_covers=False):
         data = self.probe(file)
         if "streams" not in data:
             raise FlixError("Not a video file")
         streams = Box({"video": [], "audio": [], "subtitle": [], "attachment": [], "data": []})
-
         covers = []
         for track in data.streams:
             if track.codec_type == "video" and track.get("disposition", {}).get("attached_pic"):
                 filename = track.get("tags", {}).get("filename", "")
                 if filename.rsplit(".", 1)[0] in ("cover", "small_cover", "cover_land", "small_cover_land"):
-                    covers.append((file, track.index, work_dir, filename))
+                    covers.append((file, track.index, temp_dir, filename))
                 streams.attachment.append(track)
             elif track.codec_type in streams:
                 streams[track.codec_type].append(track)
