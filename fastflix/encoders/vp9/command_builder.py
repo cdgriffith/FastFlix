@@ -26,7 +26,7 @@ def build(
     row_mt=0,
     pix_fmt="yuv420p10le",
     attachments="",
-    profile="main",
+    profile=1,
     disable_hdr=False,
     side_data=None,
     **kwargs,
@@ -60,16 +60,15 @@ def build(
 
     beginning = re.sub("[ ]+", " ", beginning)
 
+    details = f"-quality {quality} -speed {speed} -profile {profile}"
+
     if bitrate:
-        command_1 = f"{beginning} -b:v {bitrate} -quality {quality} -speed {speed} -profile {profile} -pass 1 -an -f webm {null}"
-        command_2 = f"{beginning} -b:v {bitrate} -quality {quality} -speed {speed} -profile {profile} -pass 2" + ending
+        command_1 = f"{beginning} -b:v {bitrate} {details} -pass 1 -an -f webm {null}"
+        command_2 = f"{beginning} -b:v {bitrate} {details} -pass 2" + ending
 
     elif crf:
-        command_1 = f"{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} -profile {profile} -pass 1 -an -f webm {null}"
-        command_2 = (
-            f"{beginning} -b:v 0 -crf {crf} -quality {quality} -speed {speed} -profile {profile}  "
-            f'{"-pass 2" if not single_pass else ""}'
-        ) + ending
+        command_1 = f"{beginning} -b:v 0 -crf {crf} {details} -pass 1 -an -f webm {null}"
+        command_2 = (f"{beginning} -b:v 0 -crf {crf} {details} " f'{"-pass 2" if not single_pass else ""}') + ending
 
     else:
         return []

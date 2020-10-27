@@ -5,6 +5,7 @@
 * Fixing color space details being passed correctly to everything other than x265 as well
 * Fixing HDR10+ details on README
 * Fixing #102 better with taking into account master-display ratios (thanks to leonardyan)
+* Fixing VP9 to accept profiles so HDR10 can be copied properly
 
 ## Version  3.4.1
 

@@ -67,7 +67,7 @@ class VP9(SettingPanel):
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
         guide_label = QtWidgets.QLabel(
-            f"<a href='https://trac.ffmpeg.org/wiki/Encode/VP9'>FFMPEG VP9 Encoding Guide</a>"
+            "<a href='https://trac.ffmpeg.org/wiki/Encode/VP9'>FFMPEG VP9 Encoding Guide</a> "
             "| <a href='https://developers.google.com/media/vp9/hdr-encoding/'>Google's VP9 HDR Encoding Guide</a>"
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
@@ -88,10 +88,15 @@ class VP9(SettingPanel):
     def init_profile(self):
         return self._add_combo_box(
             label="Profile",
-            tooltip="profile: must be 'main' or 'high' for HDR",
+            tooltip="profile: VP9 coding profile - must match bit depth",
             widget_name="profile",
-            options=["baseline", "main", "high"],
-            default=1,
+            options=[
+                "0: 8-bit | 4:2:0",
+                "1: 8-bit | 4:2:2 or 4:4:4",
+                "2: 10 or 12-bit | 4:2:0",
+                "3: 10 or 12-bit | 4:2:2 or 4:4:4",
+            ],
+            default=2,
         )
 
     def init_quality(self):
@@ -215,7 +220,7 @@ class VP9(SettingPanel):
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             single_pass=self.widgets.single_pass.isChecked(),
             max_mux=self.widgets.max_mux.currentText(),
-            profile=self.widgets.profile.currentText(),
+            profile=self.widgets.profile.currentIndex(),
             extra=self.ffmpeg_extras,
         )
         if self.mode == "CRF":
