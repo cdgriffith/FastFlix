@@ -632,7 +632,7 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or not self.initialized or self.loading_video:
             return
 
-        self.setCursor(Qt.WaitCursor)
+        self.setCursor(QtCore.Qt.WaitCursor)
         self.container.app.processEvents()
 
         start_pos = self.start_time or self.initial_duration // 10
@@ -836,7 +836,7 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
         self.loading_video = True
-        self.setCursor(Qt.WaitCursor)
+        self.setCursor(QtCore.Qt.WaitCursor)
         splash_label = QtWidgets.QLabel(self)
         splash_label.setText("""<font size=65><b>Loading Video Details...</b></font>""")
         splash_label.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
@@ -1027,7 +1027,7 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or self.loading_video:
             return
 
-        self.setCursor(Qt.WaitCursor)
+        self.setCursor(QtCore.Qt.WaitCursor)
 
         if settings.pix_fmt == "yuv420p10le" and self.pix_fmt in ("yuv420p10le", "yuv420p12le"):
             settings.disable_hdr = True
@@ -1145,7 +1145,7 @@ class Main(QtWidgets.QWidget):
             self.status_queue.put("exit")
         except KeyboardInterrupt:
             if not no_cleanup:
-                self.path.temp_dir.cleanup()
+                self.temp_dir.cleanup()
             self.notifier.terminate()
             super().close()
             self.container.close()
@@ -1296,7 +1296,7 @@ class Main(QtWidgets.QWidget):
 class Notifier(QtCore.QThread):
     def __init__(self, parent, status_queue):
         super().__init__(parent)
-        self.app = parent
+        self.main = parent
         self.status_queue = status_queue
 
     def __del__(self):
@@ -1306,61 +1306,11 @@ class Notifier(QtCore.QThread):
         while True:
             status = self.status_queue.get()
             if status == "complete":
-                self.app.completed.emit(0)
+                self.main.completed.emit(0)
             if status == "error":
-                self.app.completed.emit(1)
+                self.main.completed.emit(1)
             elif status == "cancelled":
-                self.app.cancelled.emit()
+                self.main.cancelled.emit()
             elif status == "exit":
-                self.app.close_event.emit()
+                self.main.close_event.emit()
                 return
-
-
-import math, sys
-from qtpy.QtCore import Qt, QTimer
-from qtpy.QtGui import *
-from qtpy.QtWidgets import *
-
-
-class Overlay(QWidget):
-    def __init__(self, parent=None):
-
-        QWidget.__init__(self, parent)
-        palette = QPalette(self.palette())
-        palette.setColor(palette.Background, Qt.transparent)
-        self.setPalette(palette)
-
-    def paintEvent(self, event):
-
-        painter = QPainter()
-        painter.begin(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.fillRect(event.rect(), QBrush(QColor(255, 255, 255, 127)))
-        painter.setPen(QPen(Qt.NoPen))
-
-        for i in range(6):
-            if (self.counter / 5) % 6 == i:
-                painter.setBrush(QBrush(QColor(127 + (self.counter % 5) * 32, 127, 127)))
-            else:
-                painter.setBrush(QBrush(QColor(127, 127, 127)))
-            painter.drawEllipse(
-                self.width() / 2 + 30 * math.cos(2 * math.pi * i / 6.0) - 10,
-                self.height() / 2 + 30 * math.sin(2 * math.pi * i / 6.0) - 10,
-                20,
-                20,
-            )
-
-        painter.end()
-
-    def showEvent(self, event):
-
-        self.timer = self.startTimer(50)
-        self.counter = 0
-
-    def timerEvent(self, event):
-
-        self.counter += 1
-        self.update()
-        if self.counter == 60:
-            self.killTimer(self.timer)
-            self.hide()
