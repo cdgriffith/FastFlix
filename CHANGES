@@ -2,9 +2,9 @@
 
 ## Version  3.4.0
 
-* Adding HDR10+ support for x265
+* Adding #83 HDR10+ support for x265 (thanks to SlashX)
 * Adding x265 params hdr10, hdr10-opt, aq-mode and repeat-headers
-* Adding basic splash info for some events
+* Adding basic splash info and waiting cursor for events
 * Changing that autocrop will test two spots if possible (thanks to HannesJo0139)
 * Changing covers generated in their own temp directory
 * Fixing #103 x265-params were being pre-pended with an extra ":" (thanks to Zeid164)
