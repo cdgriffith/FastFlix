@@ -599,7 +599,7 @@ class Main(QtWidgets.QWidget):
             self,
             caption="Open Video",
             filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx *.webm *.mpg *.mp2 *.mpeg *.mpe *.mpv *.ogg *.m4p"
-            " *.wmv *.mov *.qt *.flv *.hevc *.gif *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2)",
+            " *.wmv *.mov *.qt *.flv *.hevc *.gif *.webp *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2)",
         )
         if not filename or not filename[0]:
             return
@@ -631,10 +631,29 @@ class Main(QtWidgets.QWidget):
     def get_auto_crop(self):
         if not self.input_video or not self.initialized or self.loading_video:
             return
+
+        self.setCursor(QtCore.Qt.WaitCursor)
+        self.container.app.processEvents()
+
         start_pos = self.start_time or self.initial_duration // 10
         r, b, l, t = self.flix.get_auto_crop(
             self.input_video, self.video_width, self.video_height, start_pos, self.original_video_track
         )
+        second_time = start_pos + 100
+        if second_time < self.initial_duration:
+            r2, b2, l2, t2 = self.flix.get_auto_crop(
+                self.input_video, self.video_width, self.video_height, second_time, self.original_video_track
+            )
+            if r2 < r or l2 < l:
+                r, l = r2, l2
+            if b2 < b or t2 < t:
+                b, t = b2, t2
+
+        if t + b > self.video_height * 0.9 or r + l > self.video_width * 0.9:
+            logger.warning(f"Autocrop tried to crop too much (left {l}, top {t}, right {r}, bottom {b}), ignoring")
+            self.unsetCursor()
+            return
+
         # Hack to stop thumb gen
         self.loading_video = True
         self.widgets.crop.top.setText(str(t))
@@ -817,9 +836,20 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
         self.loading_video = True
+        self.setCursor(QtCore.Qt.WaitCursor)
+        splash_label = QtWidgets.QLabel(self)
+        splash_label.setText("""<font size=65><b>Loading Video Details...</b></font>""")
+        splash_label.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
+        splash_label.show()
+        self.container.app.processEvents()
+
+        self.temp_dir.cleanup()
+        self.temp_dir = tempfile.TemporaryDirectory(prefix="temp_", dir=self.path.work)
+        self.path.temp_dir = self.temp_dir.name
+
         try:
             self.streams, self.format_info = self.flix.parse(
-                self.input_video, work_dir=self.path.work, extract_covers=True
+                self.input_video, temp_dir=self.path.temp_dir, extract_covers=True
             )
         except FlixError:
             error_message(f"Not a video file<br>{self.input_video}")
@@ -836,6 +866,8 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setStyleSheet("background-color:gray;")
             self.widgets.preview.setText("No Video File")
             self.page_update()
+            splash_label.close()
+            self.unsetCursor()
             return
 
         self.side_data = self.flix.parse_hdr_details(self.input_video)
@@ -863,6 +895,8 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setStyleSheet("background-color:gray;")
             self.widgets.preview.setText("No Video File")
             self.page_update()
+            splash_label.close()
+            self.unsetCursor()
             return
 
         self.widgets.crop.top.setText("0")
@@ -925,6 +959,8 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setDisabled(False)
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.loading_video = False
+        self.unsetCursor()
+        splash_label.close()
 
     @property
     def video_track(self):
@@ -991,6 +1027,8 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or self.loading_video:
             return
 
+        self.setCursor(QtCore.Qt.WaitCursor)
+
         if settings.pix_fmt == "yuv420p10le" and self.pix_fmt in ("yuv420p10le", "yuv420p12le"):
             settings.disable_hdr = True
         filters = helpers.generate_filters(custom_filters="scale='min(320\\,iw):-1'", **settings)
@@ -1013,6 +1051,7 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def thumbnail_generated(self, success=False):
+        self.unsetCursor()
         if not success or not self.thumb_file.exists():
             self.widgets.preview.setText("Error Updating Thumbnail")
             return
@@ -1257,7 +1296,7 @@ class Main(QtWidgets.QWidget):
 class Notifier(QtCore.QThread):
     def __init__(self, parent, status_queue):
         super().__init__(parent)
-        self.app = parent
+        self.main = parent
         self.status_queue = status_queue
 
     def __del__(self):
@@ -1267,9 +1306,11 @@ class Notifier(QtCore.QThread):
         while True:
             status = self.status_queue.get()
             if status == "complete":
-                self.app.completed.emit(0)
+                self.main.completed.emit(0)
+            if status == "error":
+                self.main.completed.emit(1)
             elif status == "cancelled":
-                self.app.cancelled.emit()
+                self.main.cancelled.emit()
             elif status == "exit":
-                self.app.close_event.emit()
+                self.main.close_event.emit()
                 return

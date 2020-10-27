@@ -48,6 +48,12 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(QtWidgets.QLabel("Config File"), 4, 0)
         layout.addWidget(QtWidgets.QLabel(str(self.config_file)), 4, 1)
 
+        config_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileIcon))
+        config_button.pressed.connect(
+            lambda: QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(self.config_file)))
+        )
+        layout.addWidget(config_button, 4, 2)
+
         save = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DialogApplyButton), text="Save")
         save.clicked.connect(lambda: self.save())
 

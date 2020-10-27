@@ -132,18 +132,17 @@ class Flix:
         except TimeoutExpired:
             logger.warning(f"WARNING Timeout while extracting cover file {file_name}")
 
-    def parse(self, file, work_dir=None, extract_covers=False):
+    def parse(self, file, temp_dir=None, extract_covers=False):
         data = self.probe(file)
         if "streams" not in data:
             raise FlixError("Not a video file")
         streams = Box({"video": [], "audio": [], "subtitle": [], "attachment": [], "data": []})
-
         covers = []
         for track in data.streams:
             if track.codec_type == "video" and track.get("disposition", {}).get("attached_pic"):
                 filename = track.get("tags", {}).get("filename", "")
                 if filename.rsplit(".", 1)[0] in ("cover", "small_cover", "cover_land", "small_cover_land"):
-                    covers.append((file, track.index, work_dir, filename))
+                    covers.append((file, track.index, temp_dir, filename))
                 streams.attachment.append(track)
             elif track.codec_type in streams:
                 streams[track.codec_type].append(track)
@@ -203,13 +202,11 @@ class Flix:
         for line in output.stderr.decode("utf-8").splitlines():
             if line.startswith("[Parsed_cropdetect"):
                 w, h, x, y = [int(x) for x in line.rsplit("=")[1].split(":")]
-                if not width or (width and w < width):
+                if (not x_crop or (x_crop and x > x_crop)) and (not width or (width and w < width)):
                     width = w
-                if not height or (height and h < height):
-                    height = h
-                if not x_crop or (x_crop and x > x_crop):
                     x_crop = x
-                if not y_crop or (y_crop and y > y_crop):
+                if (not height or (height and h < height)) and (not y_crop or (y_crop and y > y_crop)):
+                    height = h
                     y_crop = y
 
         if None in (width, height, x_crop, y_crop):
