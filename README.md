@@ -71,7 +71,9 @@ On any 10-bit or higher video output, FastFlix will copy the input HDR colorspac
 
 ## HDR10
 
-FastFlix was created to easily extract / copy HDR10 data, but as of sept 2020, only x265 and VP9 support copying that data through FFmpeg, no AV1 library does.
+FastFlix was created to easily extract / copy HDR10 data, but as of sept 2020, only x265 support copying that data through FFmpeg, no AV1 library does.
+
+VP9 has limited support to copy some existing HDR10 metadata, usually from other VP9 files. Will have the line "Mastering Display Metadata, has_primaries:1 has_luminance:1 ..." when it works.
 
 * rav1e -  can set mastering data and CLL via their CLI but [not through ffmpeg](https://github.com/xiph/rav1e/issues/2554).
 * SVT AV1 - accepts a "--enable-hdr" flag that is [not well documented](https://github.com/AOMediaCodec/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md), not supported through FFmpeg.
