@@ -3,8 +3,16 @@ import sys
 from pathlib import Path
 import pkg_resources
 import time
+from collections import namedtuple
+from typing import List
 
 from qtpy import QtWidgets, QtGui, QtCore
+from box import Box
+
+from fastflix.flix import ffmpeg_configuration, ffmpeg_audio_encoders
+from fastflix.models.config import Config, MissingFF
+from fastflix.widgets.progress_bar import Task, ProgressBar
+from fastflix.shared import latest_ffmpeg
 
 
 def create_app():
@@ -18,68 +26,31 @@ def create_app():
     return main_app
 
 
-class Worker(QtCore.QObject):
-    finished = QtCore.Signal(int)
-    status_signal = QtCore.Signal(str)
-
-    def __init__(self, parent, app, tasks, **kwargs):
-        super().__init__(parent, **kwargs)
-        self.app = app
-        self.tasks = tasks
-
-    @QtCore.Slot()
-    def run_tasks(self):
-        ratio = 100 // len(self.tasks)
-        for i, task in enumerate(self.tasks, start=1):
-            time.sleep(0.5)
-            self.status_signal.emit(str(i * ratio) + "|||" + str(task))
-
-        self.finished.emit()
-
-
-class ProgressBar(QtWidgets.QWidget):
-    def __init__(self, app, tasks):
-        super().__init__()
-        self.status = QtWidgets.QLabel()
-        self.progress_bar = QtWidgets.QProgressBar(self)
-        self.progress_bar.setGeometry(30, 40, 500, 75)
-        self.layout = QtWidgets.QVBoxLayout()
-        self.layout.addWidget(self.status, alignment=QtCore.Qt.AlignCenter)
-        self.layout.addWidget(self.progress_bar)
-        self.setLayout(self.layout)
-        self.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
-        # self.setGeometry(300, 300, 550, 100)
-
-        self.obj = Worker(self, app, tasks)
-        self.thread = QtCore.QThread()
-        self.thread.started.connect(self.obj.run_tasks)
-        self.obj.status_signal.connect(self.status_update)
-        self.obj.moveToThread(self.thread)
-        self.obj.finished.connect(self.thread.quit)
-        self.obj.finished.connect(self.close)  # To hide the progress bar after the progress is completed
-
-    def start_progress(self):  # To restart the progress every time
-        self.show()
-        self.thread.start()
-
-    def status_update(self, status):
-        percentage, label = status.split("|||")  # May raise value error
-        self.status.setText(label)
-        self.progress_bar.setValue(int(percentage))
-
-
 if __name__ == "__main__":
     app = create_app()
-    popup = ProgressBar(app, [1, 2, 3, 4, 5])
-    popup.start_progress()
+    app.fastflix = Box(default_box=True)
+    config = Config()
+    try:
+        config.load()
+    except MissingFF:
+        # TODO ask to download
+        ProgressBar(app, config, [Task("Downloading FFmpeg", latest_ffmpeg, {})], signal_task=True)
+
+    ProgressBar(
+        app,
+        config,
+        [
+            Task("Gather FFmpeg version", ffmpeg_configuration, {}),
+            Task("Gather FFmpeg audio encoders", ffmpeg_audio_encoders, {}),
+        ],
+    )
+    print(app.fastflix)
     # a = QtWidgets.QSplashScreen(QtGui.QPixmap(str(Path(pkg_resources.resource_filename(__name__, "data/splash_screens/loading.png")).resolve())))
     # a.show()
     # app.processEvents()
     #
-    # import time
-    # time.sleep(5)
-
-    sys.exit(app.exec_())
+    app.quit()
+    # sys.exit(app.exec_())
 
 
 # def start_app(queue, status_queue, log_queue, data_path, log_dir):
