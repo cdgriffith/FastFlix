@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
-import sys
-from pathlib import Path
-import pkg_resources
-import time
 from collections import namedtuple
 from typing import List
 
-from qtpy import QtWidgets, QtGui, QtCore
+from qtpy import QtWidgets, QtCore
 
 from fastflix.models.config import Config
 
