@@ -202,7 +202,14 @@ def required_info(logger, data_path, log_dir):
     config_file = Path(data_path, "fastflix.json")
     logger.debug(f'Using config file "{config_file}"')
     if not config_file.exists():
-        config = Box({"version": __version__, "work_dir": str(data_path), "disable_update_check": False})
+        config = Box(
+            {
+                "version": __version__,
+                "work_dir": str(data_path),
+                "disable_update_check": False,
+                "disable_automatic_subtitle_burn_in": False,
+            }
+        )
         config.to_json(filename=config_file, indent=2)
     else:
         try:
@@ -218,6 +225,13 @@ def required_info(logger, data_path, log_dir):
             sys.exit(1)
         if "disable_update_check" not in config:
             config.disable_update_check = False
+        if "disable_automatic_subtitle_burn_in" not in config:
+            config.disable_automatic_subtitle_burn_in = False
+            message(
+                "<h2 style='text-align: center;'>Behavior Change Warning!</h2>"
+                f"<p style='text-align: center; font-size: 15px;'>Subtitles are Burned-in by default if forced / "
+                f"default ones are found. <br> You can disable this behavior in the settings."
+            )
         if "use_sane_audio" not in config:
             config.use_sane_audio = True
         if "sane_audio_selection" not in config:
@@ -227,7 +241,6 @@ def required_info(logger, data_path, log_dir):
             config.version = __version__
             config.work_dir = str(data_path)
             config.disable_update_check = False
-            config.to_json(filename=config_file, indent=2)
         if StrictVersion(config.version) < StrictVersion(__version__):
             message(
                 f"<h2 style='text-align: center;'>Welcome to FastFlix {__version__}!</h2><br>"
@@ -235,7 +248,7 @@ def required_info(logger, data_path, log_dir):
                 f"update ({config.version})<br>View the change log in the Help menu (Alt+H then C)<br></p>"
             )
             config.version = __version__
-            config.to_json(filename=config_file, indent=2)
+        config.to_json(filename=config_file, indent=2)
         if "ffmpeg" in config:
             ffmpeg = Path(config.ffmpeg)
         if "ffprobe" in config:

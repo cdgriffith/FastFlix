@@ -1,5 +1,13 @@
 # Changelog
 
+## Version  3.4.3
+
+* Fixing #110 (multi) no warning for those updating about automatic burn-in subtitles (thanks to loungebob)
+* Fixing #110 (multi) no option to disable automatic subtitle burn-in behavior  (thanks to loungebob)
+* Fixing #110 (multi) waiting cursor may not go away by removing for now (thanks to loungebob)
+* Fixing timeout for covers extraction not working
+* Fixing changing settings without video would crash GUI
+
 ## Version  3.4.2
 
 * Fixing color space details being passed correctly to everything other than x265 as well
