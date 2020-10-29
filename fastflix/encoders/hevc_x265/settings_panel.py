@@ -341,7 +341,7 @@ class HEVC(SettingPanel):
         self.main.page_update()
 
     def setting_change(self, update=True, pix_change=False):
-        if self.updating_settings:
+        if self.updating_settings or not self.main.input_video:
             return
         self.updating_settings = True
         if pix_change:

@@ -70,8 +70,16 @@ class Settings(QtWidgets.QWidget):
             self.disable_version_check.setChecked(False)
         elif self.main_app.config.disable_version_check:
             self.disable_version_check.setChecked(True)
+
+        self.disable_burn_in = QtWidgets.QCheckBox("Disable automatic subtitle Burn-In")
+        if "disable_automatic_subtitle_burn_in" not in self.main_app.config:
+            self.disable_burn_in.setChecked(False)
+        elif self.main_app.config.disable_automatic_subtitle_burn_in:
+            self.disable_burn_in.setChecked(True)
+
         layout.addWidget(self.use_sane_audio, 5, 0, 1, 2)
         layout.addWidget(self.disable_version_check, 6, 0, 1, 2)
+        layout.addWidget(self.disable_burn_in, 7, 0, 1, 2)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
@@ -102,6 +110,7 @@ class Settings(QtWidgets.QWidget):
 
         self.update_setting("use_sane_audio", self.use_sane_audio.isChecked())
         self.update_setting("disable_version_check", self.disable_version_check.isChecked())
+        self.update_setting("disable_automatic_subtitle_burn_in", self.disable_burn_in.isChecked())
 
         self.main_app.config = Box.from_json(filename=self.config_file)
         self.main_app.config_update(new_ffmpeg, new_ffprobe)
@@ -174,6 +183,7 @@ class Settings(QtWidgets.QWidget):
             "ffprobe": "ffprobe",
             "use_sane_audio": "use_sane_audio",
             "disable_version_check": "disable_version_check",
+            "disable_automatic_subtitle_burn_in": "disable_automatic_subtitle_burn_in",
         }
 
         settings = Box(box_dots=True).from_json(filename=self.config_file)

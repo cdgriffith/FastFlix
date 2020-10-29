@@ -222,10 +222,11 @@ class SubtitleList(FlixList):
                 first_default = track
             if not first_forced and track.disposition == "forced":
                 first_forced = track
-        if first_forced is not None:
-            first_forced.widgets.burn_in.setChecked(True)
-        elif first_default is not None:
-            first_default.widgets.burn_in.setChecked(True)
+        if not self.main.config.disable_automatic_subtitle_burn_in:
+            if first_forced is not None:
+                first_forced.widgets.burn_in.setChecked(True)
+            elif first_default is not None:
+                first_default.widgets.burn_in.setChecked(True)
 
         super()._new_source(self.tracks)
 

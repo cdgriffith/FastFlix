@@ -4,6 +4,7 @@ import os
 from multiprocessing.pool import Pool
 from subprocess import PIPE, STDOUT, run, TimeoutExpired
 import shlex
+import time
 
 from box import Box, BoxError
 
@@ -90,7 +91,6 @@ class Flix:
 
     def probe(self, file):
         command = f'"{self.ffprobe}" -v quiet -print_format json -show_format -show_streams "{file}"'
-        logger.debug(f"running probe command: {command}")
         result = self.execute(command)
         try:
             return Box.from_json(result.stdout.decode("utf-8"))
@@ -127,10 +127,10 @@ class Flix:
         file, stream, work_dir, file_name = args
         try:
             self.execute(
-                f'"{self.ffmpeg}" -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir, timeout=5
+                f'"{self.ffmpeg}" -y -i "{file}" -map 0:{stream} -c copy "{file_name}"', work_dir=work_dir, timeout=10
             )
         except TimeoutExpired:
-            logger.warning(f"WARNING Timeout while extracting cover file {file_name}")
+            logger.warning(f"WARNING Timeout while extracting covers")
 
     def parse(self, file, temp_dir=None, extract_covers=False):
         data = self.probe(file)
@@ -150,8 +150,15 @@ class Flix:
                 logger.error(f"Unknown codec: {track.codec_type}")
 
         if extract_covers:
+            logger.debug("About to extract covers")
             with Pool(processes=4) as pool:
-                pool.map(self.extract_attachment, covers)
+                results = pool.map_async(self.extract_attachment, covers)
+                for i in range(40):
+                    time.sleep(0.1)
+                    if results.ready():
+                        break
+                else:
+                    logger.warning(f"Timeout while extracting covers")
 
         for stream in streams.video:
             if "bits_per_raw_sample" in stream:

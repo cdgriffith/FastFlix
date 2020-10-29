@@ -632,7 +632,7 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or not self.initialized or self.loading_video:
             return
 
-        self.setCursor(QtCore.Qt.WaitCursor)
+        # self.setCursor(QtCore.Qt.WaitCursor)
         self.container.app.processEvents()
 
         start_pos = self.start_time or self.initial_duration // 10
@@ -836,14 +836,17 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
         self.loading_video = True
-        self.setCursor(QtCore.Qt.WaitCursor)
+        # self.setCursor(QtCore.Qt.WaitCursor)
         splash_label = QtWidgets.QLabel(self)
         splash_label.setText("""<font size=65><b>Loading Video Details...</b></font>""")
         splash_label.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
         splash_label.show()
         self.container.app.processEvents()
 
-        self.temp_dir.cleanup()
+        try:
+            self.temp_dir.cleanup()
+        except Exception:
+            pass
         self.temp_dir = tempfile.TemporaryDirectory(prefix="temp_", dir=self.path.work)
         self.path.temp_dir = self.temp_dir.name
 
@@ -869,7 +872,6 @@ class Main(QtWidgets.QWidget):
             splash_label.close()
             self.unsetCursor()
             return
-
         self.side_data = self.flix.parse_hdr_details(self.input_video, streams=self.streams)
         logger.debug(self.streams)
         logger.debug(self.format_info)
@@ -1027,7 +1029,7 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or self.loading_video:
             return
 
-        self.setCursor(QtCore.Qt.WaitCursor)
+        # self.setCursor(QtCore.Qt.WaitCursor)
 
         if settings.pix_fmt == "yuv420p10le" and self.pix_fmt in ("yuv420p10le", "yuv420p12le"):
             settings.disable_hdr = True
@@ -1145,7 +1147,10 @@ class Main(QtWidgets.QWidget):
             self.status_queue.put("exit")
         except KeyboardInterrupt:
             if not no_cleanup:
-                self.temp_dir.cleanup()
+                try:
+                    self.temp_dir.cleanup()
+                except Exception:
+                    pass
             self.notifier.terminate()
             super().close()
             self.container.close()
