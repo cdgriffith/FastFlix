@@ -1,0 +1,26 @@
+---
+
+Starting:
+  en: Starting
+  fr: Aller
+  es: Lanzamiento
+
+Gather FFmpeg version:
+  en: Gather FFmpeg version
+  fr: Rassemblez la version FFmpeg
+  es: Reúna la versión de FFmpeg
+
+Gather FFmpeg audio encoders:
+  en: Gather FFmpeg audio encoders
+  fr: Rassemblez les encodeurs audio FFmpeg
+  es: Reúna codificadores de audio FFmpeg
+
+Initialize Encoders:
+  en: Initialize Encoders
+  fr: Initialiser les Encodeurs
+  es: Inicializar Codificadores
+
+Downloading FFmpeg:
+  en: Downloading FFmpeg
+  fr: Téléchargement de FFmpeg
+  es: Descargando FFmpeg

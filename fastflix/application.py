@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 import sys
 from pathlib import Path
-import pkg_resources
-import time
-from collections import namedtuple
-from typing import List
+import logging
 
 from qtpy import QtWidgets, QtGui, QtCore
 from box import Box
+import coloredlogs
+from appdirs import user_data_dir
 
 from fastflix.flix import ffmpeg_configuration, ffmpeg_audio_encoders
 from fastflix.models.config import Config, MissingFF
 from fastflix.widgets.progress_bar import Task, ProgressBar
-from fastflix.shared import latest_ffmpeg
+from fastflix.shared import latest_ffmpeg, file_date
+from fastflix.resources import main_icon
+from fastflix.version import __version__
+from fastflix.language import t, change_language
 
 
 def create_app():
@@ -21,37 +23,73 @@ def create_app():
     main_app.setApplicationDisplayName("FastFlix")
     my_font = QtGui.QFont("helvetica", 9, weight=57)
     main_app.setFont(my_font)
-    main_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icon.ico")).resolve())
     main_app.setWindowIcon(QtGui.QIcon(main_icon))
     return main_app
 
 
+def init_logging():
+    logging.basicConfig(level=logging.DEBUG)
+    data_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
+    data_path.mkdir(parents=True, exist_ok=True)
+    log_dir = data_path / "logs"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    core_logger = logging.getLogger("fastflix-core")
+    gui_logger = logging.getLogger("fastflix")
+    coloredlogs.install(level="DEBUG", logger=core_logger)
+    coloredlogs.install(level="DEBUG", logger=gui_logger)
+    gui_logger.addHandler(logging.FileHandler(log_dir / f"flix_gui_{file_date()}.log", encoding="utf-8"))
+    core_logger.info(f"{t('Starting')} FastFlix {__version__}")
+    return gui_logger
+
+
+def init_encoders(app: QtWidgets.QApplication, **_):
+    from fastflix.encoders.av1_aom import main as av1_plugin
+    from fastflix.encoders.avc_x264 import main as avc_plugin
+    from fastflix.encoders.gif import main as gif_plugin
+    from fastflix.encoders.hevc_x265 import main as hevc_plugin
+    from fastflix.encoders.rav1e import main as rav1e_plugin
+    from fastflix.encoders.svt_av1 import main as svt_av1_plugin
+    from fastflix.encoders.vp9 import main as vp9_plugin
+    from fastflix.encoders.webp import main as webp_plugin
+
+    encoders = [hevc_plugin, avc_plugin, gif_plugin, vp9_plugin, webp_plugin, av1_plugin, rav1e_plugin, svt_av1_plugin]
+
+    app.fastflix.encoders = {
+        encoder.name: encoder
+        for encoder in encoders
+        if (not getattr(encoder, "requires", None)) or encoder.requires in app.fastflix.ffmpeg.config
+    }
+
+
 if __name__ == "__main__":
+    logger = init_logging()
     app = create_app()
     app.fastflix = Box(default_box=True)
     config = Config()
     try:
         config.load()
     except MissingFF:
+        change_language(config.language)
         # TODO ask to download
-        ProgressBar(app, config, [Task("Downloading FFmpeg", latest_ffmpeg, {})], signal_task=True)
+        ProgressBar(app, config, [Task(t("Downloading FFmpeg"), latest_ffmpeg, {})], signal_task=True)
+    else:
+        change_language(config.language)
 
-    ProgressBar(
-        app,
-        config,
-        [
-            Task("Gather FFmpeg version", ffmpeg_configuration, {}),
-            Task("Gather FFmpeg audio encoders", ffmpeg_audio_encoders, {}),
-        ],
-    )
+    startup_tasks = [
+        Task(t("Gather FFmpeg version"), ffmpeg_configuration, {}),
+        Task(t("Gather FFmpeg audio encoders"), ffmpeg_audio_encoders, {}),
+        Task(t("Initialize Encoders"), init_encoders, {}),
+    ]
+
+    ProgressBar(app, config, startup_tasks)
     print(app.fastflix)
+
     # a = QtWidgets.QSplashScreen(QtGui.QPixmap(str(Path(pkg_resources.resource_filename(__name__, "data/splash_screens/loading.png")).resolve())))
     # a.show()
     # app.processEvents()
     #
     app.quit()
     # sys.exit(app.exec_())
-
 
 # def start_app(queue, status_queue, log_queue, data_path, log_dir):
 #     logger = logging.getLogger("fastflix")

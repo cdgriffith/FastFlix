@@ -23,6 +23,7 @@ class Config:
     config_path: Path = fastflix_folder / "fastflix.json"
     ffmpeg: Path = None
     ffprobe: Path = None
+    language: str = "en"
     work_dir: Path = fastflix_folder
     use_sane_audio: bool = True
     disable_version_check: bool = False
