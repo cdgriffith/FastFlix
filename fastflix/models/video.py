@@ -6,30 +6,15 @@ from typing import Union, Any
 from appdirs import user_data_dir
 from box import Box
 
-
-class ValidDataClass:
-    def __setattr__(self, key, value):
-        if value is not None and key in self.__class__.__annotations__:
-            annotation = self.__class__.__annotations__[key]
-            if hasattr(annotation, "__args__"):
-                annotation = annotation.__args__
-            elif hasattr(annotation, "_name"):
-                # Assuming this is a typing object we can't handle
-                return super().__setattr__(key, value)
-            try:
-                if not isinstance(value, annotation):
-                    raise ValueError(f'"{key}" attempted to be set to "{value}" but must be of type "{annotation}"')
-            except TypeError as err:
-                print(f"Could not validate type for {key}: {err}")
-        return super().__setattr__(key, value)
+from fastflix.models.base import BaseDataClass
 
 
 @dataclass
-class VideoSettings(ValidDataClass):
+class VideoSettings(BaseDataClass):
     crop: str = None
-    end_time: float = None
+    end_time: Union[float, int] = None
     start_time: Union[float, int] = 0
-    fast_seek: Any = True
+    fast_seek: bool = True
     rotate: str = None
     vertical_flip: bool = False
     horizontal_flip: bool = False
@@ -39,7 +24,7 @@ class VideoSettings(ValidDataClass):
 
 
 @dataclass
-class Video(ValidDataClass):
+class Video(BaseDataClass):
     source: Path
     width: int
     height: int

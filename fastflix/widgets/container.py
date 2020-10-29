@@ -17,26 +17,27 @@ from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
 from fastflix.widgets.main import Main
 from fastflix.widgets.settings import Settings
+from fastflix.resources import main_icon
 
 logger = logging.getLogger("fastflix")
 
 
 class Container(QtWidgets.QMainWindow):
-    def __init__(self, data_path, work_path, config_file, main_app, **kwargs):
-        super().__init__()
-        self.app = main_app
-        self.log_dir = data_path / "logs"
+    def __init__(self, app, **kwargs):
+        super().__init__(None)
+        self.app = app
+
         self.logs = Logs()
         self.changes = Changes()
         self.about = None
+
         self.init_menu()
-        self.config_file = config_file
-        self.config = Box.from_json(filename=self.config_file)
-        self.main = Main(self, data_path, work_path, **kwargs)
+
+        self.main = Main(self, app)
+
         self.setCentralWidget(self.main)
-        self.setMinimumSize(1200, 600)
-        my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
-        self.icon = QtGui.QIcon(my_data)
+        self.setMinimumSize(QtCore.QSize(1200, 600))
+        self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:

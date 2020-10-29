@@ -6,6 +6,8 @@ import re
 import mistune
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.resources import changes_file, local_changes_file
+
 __all__ = ["Changes"]
 
 logger = logging.getLogger("fastflix")
@@ -25,13 +27,13 @@ class Changes(QtWidgets.QScrollArea):
         self.setWidget(content)
         lay = QtWidgets.QVBoxLayout(content)
 
-        changes_files = Path(__file__).parent.parent / "CHANGES"
-        if not changes_files.exists():
-            changes_files = Path(__file__).parent.parent.parent / "CHANGES"
-            if not changes_files.exists():
+        if changes_file.exists():
+            content = changes_file.read_text()
+        else:
+            if not local_changes_file.exists():
                 raise Exception("Could not locate changlog file")
+            content = local_changes_file.read_text()
 
-        content = changes_files.read_text()
         linked_content = issues.sub(
             " <a href='https://github.com/cdgriffith/FastFlix/issues/\\1' >\\1</a> ", content
         ).replace("issues/#", "issues/")

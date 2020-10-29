@@ -10,6 +10,7 @@ from box import Box, BoxError
 import reusables
 
 from fastflix.models.config import Config
+from fastflix.language import t
 
 # __all__ = ["FlixError", "ff_version", "Flix", "guess_bit_depth"]
 
@@ -72,7 +73,7 @@ def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
 
 
 def execute(command: List, work_dir: Path = None, timeout: int = None) -> CompletedProcess:
-    print(f"running command: {' '.join(command)}")
+    logger.info(f"{t('Running command')}: {' '.join(command)}")
     return run(
         " ".join(command) if reusables.win_based else command,
         stdout=PIPE,
@@ -98,8 +99,8 @@ def ffmpeg_configuration(app, config: Config, **_) -> Tuple[str, list]:
     for line in res.stdout.split("\n"):
         if line.startswith(line_denote):
             config = [x[9:].strip() for x in line[len(line_denote) :].split(" ") if x.startswith("--enable")]
-    app.fastflix.ffmpeg.version = version
-    app.fastflix.ffmpeg.config = config
+    app.fastflix.ffmpeg_version = version
+    app.fastflix.ffmpeg_config = config
     # return version, config
 
 
@@ -227,7 +228,7 @@ def ffmpeg_audio_encoders(app, config: Config) -> List:
                 encoders.append(line.strip().split(" ")[1])
         elif line.startswith(start_line):
             started = True
-    app.fastflix.ffmpeg.audio_encoders = encoders
+    app.fastflix.audio_encoders = encoders
     return encoders
 
 

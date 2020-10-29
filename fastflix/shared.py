@@ -196,6 +196,30 @@ def file_date():
     return datetime.now().isoformat().replace(":", ".").rsplit(".", 1)[0]
 
 
+def time_to_number(string_time):
+    try:
+        return float(string_time)
+    except ValueError:
+        pass
+    base, *extra = string_time.split(".")
+    micro = 0
+    if extra and len(extra) == 1:
+        try:
+            micro = int(extra[0])
+        except ValueError:
+            logger.info("bad micro value")
+            return
+    total = float(f".{micro}")
+    for i, v in enumerate(reversed(base.split(":"))):
+        try:
+            v = int(v)
+        except ValueError:
+            logger.info(f"Not a valid int: {v}")
+        else:
+            total += v * (60 ** i)
+    return total
+
+
 CONTINUOUS = 0x80000000
 SYSTEM_REQUIRED = 0x00000001
 

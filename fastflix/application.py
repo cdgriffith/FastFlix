@@ -15,6 +15,8 @@ from fastflix.shared import latest_ffmpeg, file_date
 from fastflix.resources import main_icon
 from fastflix.version import __version__
 from fastflix.language import t, change_language
+from fastflix.widgets.container import Container
+from fastflix.models.fastflix import FastFlix
 
 
 def create_app():
@@ -27,17 +29,13 @@ def create_app():
     return main_app
 
 
-def init_logging():
+def init_logging(app: QtWidgets.QApplication):
     logging.basicConfig(level=logging.DEBUG)
-    data_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
-    data_path.mkdir(parents=True, exist_ok=True)
-    log_dir = data_path / "logs"
-    log_dir.mkdir(parents=True, exist_ok=True)
     core_logger = logging.getLogger("fastflix-core")
     gui_logger = logging.getLogger("fastflix")
     coloredlogs.install(level="DEBUG", logger=core_logger)
     coloredlogs.install(level="DEBUG", logger=gui_logger)
-    gui_logger.addHandler(logging.FileHandler(log_dir / f"flix_gui_{file_date()}.log", encoding="utf-8"))
+    gui_logger.addHandler(logging.FileHandler(app.fastflix.log_path / f"flix_gui_{file_date()}.log", encoding="utf-8"))
     core_logger.info(f"{t('Starting')} FastFlix {__version__}")
     return gui_logger
 
@@ -57,39 +55,50 @@ def init_encoders(app: QtWidgets.QApplication, **_):
     app.fastflix.encoders = {
         encoder.name: encoder
         for encoder in encoders
-        if (not getattr(encoder, "requires", None)) or encoder.requires in app.fastflix.ffmpeg.config
+        if (not getattr(encoder, "requires", None)) or encoder.requires in app.fastflix.ffmpeg_config
     }
 
 
-if __name__ == "__main__":
-    logger = init_logging()
+def init_fastflix_internal_structure(app: QtWidgets.QApplication):
+    app.fastflix = FastFlix()
+    app.fastflix.data_path.mkdir(parents=True, exist_ok=True)
+    app.fastflix.log_path.mkdir(parents=True, exist_ok=True)
+
+
+def entry():
     app = create_app()
-    app.fastflix = Box(default_box=True)
-    config = Config()
+    init_fastflix_internal_structure(app)
+    init_logging(app)
+    app.fastflix.config = Config()
     try:
-        config.load()
+        app.fastflix.config.load()
     except MissingFF:
-        change_language(config.language)
+        change_language(app.fastflix.config.language)
         # TODO ask to download
-        ProgressBar(app, config, [Task(t("Downloading FFmpeg"), latest_ffmpeg, {})], signal_task=True)
+        ProgressBar(app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
     else:
-        change_language(config.language)
+        change_language(app.fastflix.config.language)
 
     startup_tasks = [
-        Task(t("Gather FFmpeg version"), ffmpeg_configuration, {}),
-        Task(t("Gather FFmpeg audio encoders"), ffmpeg_audio_encoders, {}),
-        Task(t("Initialize Encoders"), init_encoders, {}),
+        Task(t("Gather FFmpeg version"), ffmpeg_configuration),
+        Task(t("Gather FFmpeg audio encoders"), ffmpeg_audio_encoders),
+        Task(t("Initialize Encoders"), init_encoders),
     ]
 
-    ProgressBar(app, config, startup_tasks)
-    print(app.fastflix)
+    ProgressBar(app, startup_tasks)
+
+    container = Container(app)
+    container.show()
 
     # a = QtWidgets.QSplashScreen(QtGui.QPixmap(str(Path(pkg_resources.resource_filename(__name__, "data/splash_screens/loading.png")).resolve())))
     # a.show()
     # app.processEvents()
     #
-    app.quit()
-    # sys.exit(app.exec_())
+    app.exec_()
+
+
+if __name__ == "__main__":
+    entry()
 
 # def start_app(queue, status_queue, log_queue, data_path, log_dir):
 #     logger = logging.getLogger("fastflix")
