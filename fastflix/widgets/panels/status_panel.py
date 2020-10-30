@@ -5,6 +5,7 @@ from datetime import timedelta
 
 from qtpy import QtCore, QtWidgets
 
+from fastflix.models.fastflix_app import FastFlixApp
 
 splitter = re.compile(r"\s+[a-zA-Z]")
 
@@ -13,8 +14,9 @@ class StatusPanel(QtWidgets.QWidget):
     speed = QtCore.Signal(str)
     bitrate = QtCore.Signal(str)
 
-    def __init__(self, parent, log_queue):
+    def __init__(self, parent, app: FastFlixApp, log_queue):
         super().__init__(parent)
+        self.app = app
         self.main = parent.main
 
         layout = QtWidgets.QGridLayout()

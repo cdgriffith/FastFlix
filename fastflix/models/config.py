@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 import shutil
-from typing import List
+from typing import List, Dict
 
 from appdirs import user_data_dir
 from box import Box
@@ -29,7 +29,8 @@ class Config:
     disable_version_check: bool = False
     disable_update_check: bool = False
     disable_automatic_subtitle_burn_in: bool = False
-    sane_audio_defaults: List = (
+    custom_after_run_scripts: Dict = field(default_factory=dict)
+    sane_audio_selection: List = (
         "aac",
         "ac3",
         "alac",

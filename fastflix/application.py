@@ -16,11 +16,11 @@ from fastflix.resources import main_icon
 from fastflix.version import __version__
 from fastflix.language import t, change_language
 from fastflix.widgets.container import Container
-from fastflix.models.fastflix import FastFlix
+from fastflix.models.fastflix_app import FastFlixApp
 
 
 def create_app():
-    main_app = QtWidgets.QApplication(sys.argv)
+    main_app = FastFlixApp(sys.argv)
     main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
     my_font = QtGui.QFont("helvetica", 9, weight=57)
@@ -29,7 +29,7 @@ def create_app():
     return main_app
 
 
-def init_logging(app: QtWidgets.QApplication):
+def init_logging(app: FastFlixApp):
     logging.basicConfig(level=logging.DEBUG)
     core_logger = logging.getLogger("fastflix-core")
     gui_logger = logging.getLogger("fastflix")
@@ -40,7 +40,7 @@ def init_logging(app: QtWidgets.QApplication):
     return gui_logger
 
 
-def init_encoders(app: QtWidgets.QApplication, **_):
+def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.av1_aom import main as av1_plugin
     from fastflix.encoders.avc_x264 import main as avc_plugin
     from fastflix.encoders.gif import main as gif_plugin
@@ -59,15 +59,14 @@ def init_encoders(app: QtWidgets.QApplication, **_):
     }
 
 
-def init_fastflix_internal_structure(app: QtWidgets.QApplication):
-    app.fastflix = FastFlix()
+def init_fastflix_directories(app: FastFlixApp):
     app.fastflix.data_path.mkdir(parents=True, exist_ok=True)
     app.fastflix.log_path.mkdir(parents=True, exist_ok=True)
 
 
 def entry():
     app = create_app()
-    init_fastflix_internal_structure(app)
+    init_fastflix_directories(app)
     init_logging(app)
     app.fastflix.config = Config()
     try:

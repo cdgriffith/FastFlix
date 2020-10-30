@@ -3,12 +3,14 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
+from fastflix.models.fastflix_app import FastFlixApp
 
 
 class WEBP(SettingPanel):
-    def __init__(self, parent, main):
+    def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main)
         self.main = main
+        self.app = app
 
         grid = QtWidgets.QGridLayout()
 

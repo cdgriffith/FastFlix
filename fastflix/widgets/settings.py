@@ -7,20 +7,21 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.shared import FastFlixInternalException, error_message
+from fastflix.models.fastflix_app import FastFlixApp
 
 
 class Settings(QtWidgets.QWidget):
-    def __init__(self, config_file, main_app, *args, **kwargs):
+    def __init__(self, app: FastFlixApp, *args, **kwargs):
         super().__init__(None, *args, **kwargs)
-        self.config_file = config_file
-        self.main_app = main_app
+        self.config_file = self.app.fastflix.config.config_path
+        self.app = app
         self.setWindowTitle("Settings")
         self.setMinimumSize(600, 200)
         layout = QtWidgets.QGridLayout()
 
         ffmpeg_label = QtWidgets.QLabel("FFmpeg")
         self.ffmpeg_path = QtWidgets.QLineEdit()
-        self.ffmpeg_path.setText(str(self.main_app.flix.ffmpeg))
+        self.ffmpeg_path.setText(str(self.app.fastflix.config.ffmpeg))
         ffmpeg_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
         ffmpeg_path_button.clicked.connect(lambda: self.select_ffmpeg())
         layout.addWidget(ffmpeg_label, 0, 0)
@@ -29,7 +30,7 @@ class Settings(QtWidgets.QWidget):
 
         ffprobe_label = QtWidgets.QLabel("FFprobe")
         self.ffprobe_path = QtWidgets.QLineEdit()
-        self.ffprobe_path.setText(str(self.main_app.flix.ffprobe))
+        self.ffprobe_path.setText(str(self.app.fastflix.config.ffprobe))
         ffprobe_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
         ffprobe_path_button.clicked.connect(lambda: self.select_ffprobe())
         layout.addWidget(ffprobe_label, 1, 0)
@@ -38,7 +39,7 @@ class Settings(QtWidgets.QWidget):
 
         work_dir_label = QtWidgets.QLabel("Work Directory")
         self.work_dir = QtWidgets.QLineEdit()
-        self.work_dir.setText(str(self.main_app.path.work))
+        self.work_dir.setText(str(self.app.fastflix.config.work_path))
         work_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
         work_path_button.clicked.connect(lambda: self.select_work_path())
         layout.addWidget(work_dir_label, 2, 0)
@@ -63,19 +64,19 @@ class Settings(QtWidgets.QWidget):
         cancel.clicked.connect(lambda: self.close())
 
         self.use_sane_audio = QtWidgets.QCheckBox("Use Sane Audio Selection (updatable in config file)")
-        if "use_sane_audio" not in self.main_app.config or self.main_app.config.use_sane_audio:
+        if self.app.fastflix.config.use_sane_audio:
             self.use_sane_audio.setChecked(True)
         self.disable_version_check = QtWidgets.QCheckBox("Disable update check on startup")
-        if "disable_version_check" not in self.main_app.config:
+        if not self.app.fastflix.config.disable_version_check:
             self.disable_version_check.setChecked(False)
-        elif self.main_app.config.disable_version_check:
+        elif self.app.fastflix.config.disable_version_check:
             self.disable_version_check.setChecked(True)
 
         self.disable_burn_in = QtWidgets.QCheckBox("Disable automatic subtitle Burn-In")
-        if "disable_automatic_subtitle_burn_in" not in self.main_app.config:
-            self.disable_burn_in.setChecked(False)
-        elif self.main_app.config.disable_automatic_subtitle_burn_in:
+        if self.app.fastflix.config.disable_automatic_subtitle_burn_in:
             self.disable_burn_in.setChecked(True)
+        else:
+            self.disable_burn_in.setChecked(False)
 
         layout.addWidget(self.use_sane_audio, 5, 0, 1, 2)
         layout.addWidget(self.disable_version_check, 6, 0, 1, 2)
@@ -112,8 +113,8 @@ class Settings(QtWidgets.QWidget):
         self.update_setting("disable_version_check", self.disable_version_check.isChecked())
         self.update_setting("disable_automatic_subtitle_burn_in", self.disable_burn_in.isChecked())
 
-        self.main_app.config = Box.from_json(filename=self.config_file)
-        self.main_app.config_update(new_ffmpeg, new_ffprobe)
+        self.app.fastflix.config.load()
+        # TODO self.main_app.config_update(new_ffmpeg, new_ffprobe)
         self.close()
 
     def select_ffmpeg(self):

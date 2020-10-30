@@ -19,11 +19,13 @@ from fastflix.widgets.main import Main
 from fastflix.widgets.settings import Settings
 from fastflix.resources import main_icon
 
+from fastflix.models.fastflix_app import FastFlixApp
+
 logger = logging.getLogger("fastflix")
 
 
 class Container(QtWidgets.QMainWindow):
-    def __init__(self, app, **kwargs):
+    def __init__(self, app: FastFlixApp, **kwargs):
         super().__init__(None)
         self.app = app
 
@@ -65,20 +67,19 @@ class Container(QtWidgets.QMainWindow):
                 item.unlink()
         super(Container, self).closeEvent(a0)
 
+    def si(self, widget):
+        return self.style().standardIcon(widget)
+
     def init_menu(self):
         menubar = self.menuBar()
 
         file_menu = menubar.addMenu("&File")
 
-        setting_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogListView), "&Settings", self
-        )
+        setting_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogListView), "&Settings", self)
         setting_action.setShortcut("Ctrl+S")
         setting_action.triggered.connect(self.show_setting)
 
-        exit_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_DialogCancelButton), "&Exit", self
-        )
+        exit_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogCancelButton), "&Exit", self)
         exit_action.setShortcut(QtGui.QKeySequence("Ctrl+Q"))
         exit_action.setStatusTip("Exit application")
         exit_action.triggered.connect(self.close)
@@ -87,40 +88,30 @@ class Container(QtWidgets.QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction(exit_action)
 
-        about_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogInfoView), "&About", self
-        )
+        about_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), "&About", self)
         about_action.triggered.connect(self.show_about)
 
-        changes_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogDetailedView), "View &Changes", self
-        )
+        changes_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), "View &Changes", self)
         changes_action.triggered.connect(self.show_changes)
 
-        log_dir_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_DialogOpenButton), "Open Log Directory", self
-        )
+        log_dir_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogOpenButton), "Open Log Directory", self)
         log_dir_action.triggered.connect(self.show_log_dir)
 
         log_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogDetailedView), "View GUI Debug &Logs", self
+            self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), "View GUI Debug &Logs", self
         )
         log_action.triggered.connect(self.show_logs)
 
-        report_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_DialogHelpButton), "Report &Issue", self
-        )
+        report_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogHelpButton), "Report &Issue", self)
         report_action.triggered.connect(self.open_issues)
 
         version_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_BrowserReload), "Check for Newer Version of FastFlix", self
+            self.si(QtWidgets.QStyle.SP_BrowserReload), "Check for Newer Version of FastFlix", self
         )
         version_action.triggered.connect(lambda: latest_fastflix(no_new_dialog=True))
 
         # TODO Won't enable until can do it non-blocking
-        ffmpeg_update_action = QtWidgets.QAction(
-            self.style().standardIcon(QtWidgets.QStyle.SP_ArrowDown), "Download Newest FFmpeg", self
-        )
+        ffmpeg_update_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), "Download Newest FFmpeg", self)
         ffmpeg_update_action.triggered.connect(lambda: latest_ffmpeg(done_alert=True))
 
         help_menu = menubar.addMenu("&Help")
@@ -139,7 +130,7 @@ class Container(QtWidgets.QMainWindow):
         self.about.show()
 
     def show_setting(self):
-        self.setting = Settings(self.config_file, self.main)
+        self.setting = Settings(self.app)
         self.setting.show()
 
     def show_logs(self):

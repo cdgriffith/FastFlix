@@ -11,22 +11,25 @@ from fastflix.widgets.panels.cover_panel import CoverPanel
 from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
 
+from fastflix.models.fastflix_app import FastFlixApp
+
 logger = logging.getLogger("fastflix")
 
 
 class VideoOptions(QtWidgets.QTabWidget):
-    def __init__(self, parent, available_audio_encoders, log_queue):
+    def __init__(self, parent, app: FastFlixApp, available_audio_encoders, log_queue):
         super().__init__(parent)
         self.main = parent
+        self.app = app
 
         self.selected = 0
-        self.commands = CommandList(self)
-        self.current_settings = self.main.current_encoder.settings_panel(self, self.main)
+        self.commands = CommandList(self, self.app)
+        self.current_settings = self.main.current_encoder.settings_panel(self, self.main, self.app)
 
-        self.audio = AudioList(self, available_audio_encoders)
-        self.subtitles = SubtitleList(self)
-        self.status = StatusPanel(self, log_queue)
-        self.attachments = CoverPanel(self)
+        self.audio = AudioList(self, self.app)
+        self.subtitles = SubtitleList(self, self.app)
+        self.status = StatusPanel(self, self.app, log_queue)
+        self.attachments = CoverPanel(self, self.app)
         # self.subtitles.hide()
         self.addTab(self.current_settings, "Quality")
         self.addTab(self.audio, "Audio")
@@ -37,16 +40,19 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     @property
     def audio_formats(self):
-        plugin_formats = set(self.main.current_encoder.audio_formats)
-        if self.main.config.get("use_sane_audio") and self.main.config.get("sane_audio_selection"):
-            return list(plugin_formats & set(self.main.config.sane_audio_selection))
-        return list(plugin_formats)
+        try:
+            plugin_formats = set(self.main.current_encoder.audio_formats)
+            if self.app.fastflix.config.use_sane_audio and self.app.fastflix.config.sane_audio_selection:
+                return list(plugin_formats & set(self.app.fastflix.config.sane_audio_selection))
+            return list(plugin_formats)
+        except Exception as err:
+            logger.exception("what")
 
     def change_conversion(self, conversion):
         conversion = conversion.strip()
         self.current_settings.close()
-        self.main.current_encoder = self.main.plugins[conversion]
-        self.current_settings = self.main.current_encoder.settings_panel(self, self.main)
+        # self.main.current_encoder = self.main.plugins[conversion]
+        self.current_settings = self.main.current_encoder.settings_panel(self, self.main, self.app)
         self.current_settings.show()
         self.removeTab(0)
         self.insertTab(0, self.current_settings, "Quality")

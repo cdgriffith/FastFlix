@@ -6,6 +6,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.shared import error_message, main_width, FastFlixInternalException
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.models.fastflix_app import FastFlixApp
 
 dispositions = [
     "none",
@@ -202,9 +203,10 @@ class Subtitle(QtWidgets.QTabWidget):
 
 
 class SubtitleList(FlixList):
-    def __init__(self, parent, starting_pos=0):
+    def __init__(self, parent, app: FastFlixApp, starting_pos=0):
         super().__init__(parent, "Subtitle Tracks", starting_pos)
         self.main = parent.main
+        self.app = app
 
     def new_source(self, starting_pos=0):
         self.starting_pos = starting_pos
@@ -222,7 +224,7 @@ class SubtitleList(FlixList):
                 first_default = track
             if not first_forced and track.disposition == "forced":
                 first_forced = track
-        if not self.main.config.disable_automatic_subtitle_burn_in:
+        if not self.app.fastflix.config.disable_automatic_subtitle_burn_in:
             if first_forced is not None:
                 first_forced.widgets.burn_in.setChecked(True)
             elif first_default is not None:

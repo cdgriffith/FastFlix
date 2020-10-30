@@ -8,6 +8,7 @@ import reusables
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.helpers import Command as BuilderCommand
+from fastflix.models.fastflix_app import FastFlixApp
 
 done_actions = {
     "linux": {
@@ -71,9 +72,9 @@ class Command(QtWidgets.QTabWidget):
 
 
 class CommandList(QtWidgets.QWidget):
-    def __init__(self, parent):
+    def __init__(self, parent, app: FastFlixApp):
         super(CommandList, self).__init__(parent)
-        self.video_options = parent
+        self.app = app
 
         layout = QtWidgets.QGridLayout()
 
@@ -102,8 +103,8 @@ class CommandList(QtWidgets.QWidget):
             actions.update(["shutdown", "restart"])
         else:
             actions.update(done_actions["linux"].keys())
-        if "custom_after_run_scripts" in self.video_options.main.config:
-            actions.update(self.video_options.main.config.custom_after_run_scripts)
+        if self.app.fastflix.config.custom_after_run_scripts:
+            actions.update(self.app.fastflix.config.custom_after_run_scripts)
 
         self.after_done_combo.addItems(sorted(actions))
         self.after_done_combo.setToolTip("Run a command after conversion completes")
@@ -150,15 +151,10 @@ class CommandList(QtWidgets.QWidget):
         if self.after_done_widget is None:
             return
         option = self.after_done_combo.currentText()
-        custom = (
-            self.video_options.main.config.custom_after_run_scripts
-            if "custom_after_run_scripts" in self.video_options.main.config
-            else {}
-        )
         if option == "None":
             return
-        if option in custom:
-            command = custom[option]
+        if option in self.app.fastflix.config.custom_after_run_scripts:
+            command = self.app.fastflix.config.custom_after_run_scripts[option]
         elif reusables.win_based:
             command = done_actions["windows"][option]
         else:

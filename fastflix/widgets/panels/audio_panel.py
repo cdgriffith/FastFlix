@@ -7,6 +7,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.encoders.common.audio import lossless
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.widgets.panels.subtitle_panel import language_list
+from fastflix.models.fastflix_app import FastFlixApp
 
 
 class Audio(QtWidgets.QTabWidget):
@@ -298,9 +299,9 @@ class Audio(QtWidgets.QTabWidget):
 
 
 class AudioList(FlixList):
-    def __init__(self, parent, available_audio_encoders, starting_pos=0):
+    def __init__(self, parent, app: FastFlixApp, starting_pos=0):
         super(AudioList, self).__init__(parent, "Audio Tracks", starting_pos)
-        self.available_audio_encoders = available_audio_encoders
+        self.available_audio_encoders = app.fastflix.audio_encoders
 
     def new_source(self, codecs, starting_pos=0):
         self.starting_pos = starting_pos
@@ -344,7 +345,7 @@ class AudioList(FlixList):
         if not allowed_formats:
             return
         for track in self.tracks:
-            track.update_codecs(allowed_formats)
+            track.update_codecs(allowed_formats or set())
 
     def get_settings(self):
         tracks = []

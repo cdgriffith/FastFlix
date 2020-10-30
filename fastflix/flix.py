@@ -118,9 +118,9 @@ def probe(config: Config, file: Path) -> Box:
     ]
     result = execute(command)
     try:
-        return Box.from_json(result.stdout.decode("utf-8"))
+        return Box.from_json(result.stdout)
     except BoxError:
-        logger.error(f"Could not decode output: {result.stderr}")
+        logger.error(f"Could not read output: {result.stdout} - {result.stderr}")
         raise FlixError(result.stderr)
 
 
