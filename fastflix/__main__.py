@@ -2,7 +2,7 @@
 import traceback
 from multiprocessing import freeze_support
 
-from fastflix.gui import main
+from fastflix.entry import main
 
 
 def start_fastflix():

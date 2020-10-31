@@ -29,3 +29,33 @@ Running command:
   en: Running command
   fr: Commande en cours d'exécution
   es: Comando de ejecución
+
+Preserve: # Copy, Keep (for saving incoming subtitle track)
+  en: Preserve
+
+Burn In: # Overlay (for encoding subtitles into the video itself)
+  en: Burn In
+
+Language:
+  en: Language
+
+Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.:
+  en: Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.
+
+More than one track selected to burn in:
+  en: More than one track selected to burn in
+
+There is an existing burn-in track, only one can be enabled at a time:
+  en: There is an existing burn-in track, only one can be enabled at a time
+
+There is a conversion in process!:
+  en: There is a conversion in process!
+
+Cancel Conversion:
+  en: Cancel Conversion
+
+Close GUI Only:
+  en: Close GUI Only
+
+Keep FastFlix Open:
+  en: Keep FastFlix Open

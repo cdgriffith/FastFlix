@@ -7,6 +7,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.shared import error_message, main_width, FastFlixInternalException
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.language import t
 
 dispositions = [
     "none",
@@ -63,10 +64,10 @@ class Subtitle(QtWidgets.QTabWidget):
             title=QtWidgets.QLabel(f"  {self.subtitle.codec_long_name}"),
             up_button=QtWidgets.QPushButton("^"),
             down_button=QtWidgets.QPushButton("v"),
-            enable_check=QtWidgets.QCheckBox("Preserve"),
+            enable_check=QtWidgets.QCheckBox(t("Preserve")),
             disposition=QtWidgets.QComboBox(),
             language=QtWidgets.QComboBox(),
-            burn_in=QtWidgets.QCheckBox("Burn In"),
+            burn_in=QtWidgets.QCheckBox(t("Burn In")),
         )
 
         self.widgets.disposition.addItems(dispositions)
@@ -86,7 +87,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.setFixedHeight(60)
         self.widgets.title.setToolTip(self.subtitle.to_yaml())
         self.widgets.burn_in.setToolTip(
-            "Overlay this subtitle track onto the video during conversion. " "Cannot remove afterwards."
+            t("Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.")
         )
 
         disposition_layout = QtWidgets.QHBoxLayout()
@@ -145,7 +146,7 @@ class Subtitle(QtWidgets.QTabWidget):
             self.widgets.language.setCurrentIndex(language_list.index("eng"))
 
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Language"))
+        layout.addWidget(QtWidgets.QLabel(t("Language")))
         layout.addWidget(self.widgets.language)
         return layout
 
@@ -166,8 +167,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
     @property
     def disposition(self):
-        text = self.widgets.disposition.currentText()
-        return 0 if text == "none" else text
+        return 0 if self.widgets.disposition.currentIndex() == 0 else self.widgets.disposition.currentText()
 
     @property
     def enabled(self):
@@ -193,7 +193,7 @@ class Subtitle(QtWidgets.QTabWidget):
         enable = self.widgets.burn_in.isChecked()
         if enable and [1 for track in self.parent.tracks if track.enabled and track.burn_in and track is not self]:
             self.widgets.burn_in.setChecked(False)
-            error_message("There is an existing burn-in track, only one can be enabled at a time")
+            error_message(t("There is an existing burn-in track, only one can be enabled at a time"))
         self.updating_burn = False
         self.page_update()
 
@@ -249,5 +249,5 @@ class SubtitleList(FlixList):
                 if track.burn_in:
                     burn_in_count += 1
         if burn_in_count > 1:
-            raise FastFlixInternalException("More than one track selected to burn in")
+            raise FastFlixInternalException(t("More than one track selected to burn in"))
         return Box(subtitle_tracks=tracks, subtitle_track_count=len(tracks))

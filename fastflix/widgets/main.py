@@ -46,11 +46,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         self.scale_updating = False
 
-        self.worker_queue = Queue()
-        self.status_queue = Queue()
-        self.log_queue = Queue()
-
-        self.notifier = Notifier(self, self.status_queue)
+        self.notifier = Notifier(self, self.app.fastflix.status_queue)
         self.notifier.start()
 
         self.input_defaults = Box(scale=None, crop=None)
@@ -92,7 +88,10 @@ class Main(QtWidgets.QWidget):
         self.thumb_file = Path(self.app.fastflix.config.work_path, "thumbnail_preview.png")
 
         self.video_options = VideoOptions(
-            self, app=self.app, available_audio_encoders=self.app.fastflix.audio_encoders, log_queue=self.log_queue
+            self,
+            app=self.app,
+            available_audio_encoders=self.app.fastflix.audio_encoders,
+            log_queue=self.app.fastflix.log_queue,
         )
 
         self.completed.connect(self.conversion_complete)
@@ -124,13 +123,13 @@ class Main(QtWidgets.QWidget):
     def pause_resume(self):
         if not self.paused:
             self.paused = True
-            self.worker_queue.put(["pause"])
+            self.app.fastflix.worker_queue.put(["pause"])
             self.widgets.pause_resume.setText("Resume")
             self.widgets.pause_resume.setStyleSheet("background-color: green;")
             logger.info("Pausing FFmpeg conversion via pustils")
         else:
             self.paused = False
-            self.worker_queue.put(["resume"])
+            self.app.fastflix.worker_queue.put(["resume"])
             self.widgets.pause_resume.setText("Pause")
             self.widgets.pause_resume.setStyleSheet("background-color: orange;")
             logger.info("Resuming FFmpeg conversion")
@@ -1101,7 +1100,7 @@ class Main(QtWidgets.QWidget):
 
     def close(self, no_cleanup=False):
         try:
-            self.status_queue.put("exit")
+            self.app.fastflix.status_queue.put("exit")
         except KeyboardInterrupt:
             if not no_cleanup:
                 try:
@@ -1126,7 +1125,7 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def create_video(self):
         if self.converting:
-            self.worker_queue.put(["cancel"])
+            self.app.fastflix.worker_queue.put(["cancel"])
             return
 
         if not self.input_video:
@@ -1181,7 +1180,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.pause_resume.setStyleSheet("background-color:orange;")
         self.converting = True
         for command in commands:
-            self.worker_queue.put(("command", command.command, self.temp_dir_name, command.shell))
+            self.app.fastflix.worker_queue.put(("command", command.command, self.temp_dir_name, command.shell))
         self.disable_all()
         self.video_options.setCurrentWidget(self.video_options.status)
 

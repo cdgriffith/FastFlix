@@ -18,6 +18,7 @@ from fastflix.widgets.logs import Logs
 from fastflix.widgets.main import Main
 from fastflix.widgets.settings import Settings
 from fastflix.resources import main_icon
+from fastflix.language import t
 
 from fastflix.models.fastflix_app import FastFlixApp
 
@@ -45,10 +46,10 @@ class Container(QtWidgets.QMainWindow):
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         if self.main.converting:
             sm = QtWidgets.QMessageBox()
-            sm.setText("<h2>There is a conversion in process!</h2>")
-            sm.addButton("Cancel Conversion", QtWidgets.QMessageBox.RejectRole)
-            sm.addButton("Close GUI Only", QtWidgets.QMessageBox.DestructiveRole)
-            sm.addButton("Keep FastFlix Open", QtWidgets.QMessageBox.AcceptRole)
+            sm.setText(f"<h2>{t('There is a conversion in process!')}</h2>")
+            sm.addButton(t("Cancel Conversion"), QtWidgets.QMessageBox.RejectRole)
+            sm.addButton(t("Close GUI Only"), QtWidgets.QMessageBox.DestructiveRole)
+            sm.addButton(t("Keep FastFlix Open"), QtWidgets.QMessageBox.AcceptRole)
             sm.exec_()
             if sm.clickedButton().text() == "Cancel Conversion":
                 self.main.worker_queue.put(["cancel"])
@@ -60,7 +61,7 @@ class Container(QtWidgets.QMainWindow):
                 a0.ignore()
                 return
 
-        for item in self.main.path.work.iterdir():
+        for item in self.app.fastflix.config.work_path.iterdir():
             if item.is_dir() and item.stem.startswith("temp_"):
                 shutil.rmtree(item, ignore_errors=True)
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):

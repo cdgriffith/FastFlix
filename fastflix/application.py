@@ -64,11 +64,11 @@ def init_fastflix_directories(app: FastFlixApp):
     app.fastflix.log_path.mkdir(parents=True, exist_ok=True)
 
 
-def entry():
+def start_app(fastflix):
     app = create_app()
+    app.fastflix = fastflix
     init_fastflix_directories(app)
     init_logging(app)
-    app.fastflix.config = Config()
     try:
         app.fastflix.config.load()
     except MissingFF:
@@ -95,9 +95,6 @@ def entry():
     #
     app.exec_()
 
-
-if __name__ == "__main__":
-    entry()
 
 # def start_app(queue, status_queue, log_queue, data_path, log_dir):
 #     logger = logging.getLogger("fastflix")

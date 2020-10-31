@@ -89,9 +89,6 @@ def main():
     runner = BackgroundRunner(log_queue=log_queue)
     gui_proc = Process(target=start_app, args=(queue, status_queue, log_queue, data_path, log_dir))
     gui_proc.start()
-    logger = logging.getLogger("fastflix-core")
-    coloredlogs.install(level="DEBUG", logger=logger)
-    logger.info(f"Starting FastFlix {__version__}")
 
     for leftover in Path(data_path).glob(f"encoder_output_*.log"):
         try:
