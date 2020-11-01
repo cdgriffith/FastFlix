@@ -5,9 +5,9 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.audio import lossless
+from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.widgets.panels.subtitle_panel import language_list
-from fastflix.models.fastflix_app import FastFlixApp
 
 
 class Audio(QtWidgets.QTabWidget):

@@ -2,15 +2,15 @@
 import logging
 import os
 from multiprocessing.pool import Pool
-from subprocess import PIPE, run, TimeoutExpired, CompletedProcess
-from typing import Tuple, List, Union
 from pathlib import Path
+from subprocess import PIPE, CompletedProcess, TimeoutExpired, run
+from typing import List, Tuple, Union
 
-from box import Box, BoxError
 import reusables
+from box import Box, BoxError
 
-from fastflix.models.config import Config
 from fastflix.language import t
+from fastflix.models.config import Config
 
 # __all__ = ["FlixError", "ff_version", "Flix", "guess_bit_depth"]
 

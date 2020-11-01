@@ -1,45 +1,73 @@
 # -*- coding: utf-8 -*-
-from pathlib import Path
-from dataclasses import dataclass, asdict, field
 import shutil
-from typing import List, Dict, Union
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import Dict, List, Union
 
 from appdirs import user_data_dir
-from box import Box
+from box import Box, BoxError
 
 from fastflix.version import __version__
 
 fastflix_folder = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
 ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
 
+NO_OPT = object()
+
 
 class MissingFF(Exception):
     """Required files not found"""
 
 
+class ConfigError(Exception):
+    pass
+
+
 @dataclass
 class Profile:
-    name: str
     auto_crop: bool = False
-    keep_aspect_ratio: bool = False
+    keep_aspect_ratio: bool = True
     fast_seek: bool = True
+    rotate: int = 0
+    flip: int = 0
+    copy_chapters: bool = True
+    remove_metadata: bool = True
     remove_hdr: bool = False
-    max_muxing_queue_size: int = 1024
+    max_muxing_queue_size: str = "1024"
     custom_ffmpeg: str = ""
+    encoder: str = "HEVC (x265)"
     subtitle_language: str = "en"
     subtitle_automatic_burn_in: bool = True
     subtitle_only_preferred_language: bool = True
+    x265_mode: str = "crf"
     x265_crf: int = 28
     x265_bitrate: str = "28000k"
     x265_preset: str = "medium"
-    x265_tune: Union[str, None] = None
-    x265_bit_depth: Union[str, None] = None
-    x265_profile: Union[str, None] = None
+    x265_tune: str = "default"
+    x265_profile: str = "default"
     x265_hdr10_signaling: bool = True
     x265_hdr10_opt: bool = True
+    x265_dhdr10_opt: bool = False
     x265_repeat_headers: bool = True
     x265_aq: int = 2
     x265_params: str = ""
+    x265_intra_encoding: bool = False
+
+
+def get_preset_defaults():
+    return {
+        "standard": Profile(),
+        "film": Profile(auto_crop=True, x265_crf=20, x265_mode="crf", x265_preset="slow"),
+        "test": Profile(
+            keep_aspect_ratio=False,
+            auto_crop=True,
+            rotate=180,
+            flip=2,
+            copy_chapters=False,
+            remove_metadata=True,
+            remove_hdr=True,
+        ),
+    }
 
 
 @dataclass
@@ -51,11 +79,12 @@ class Config:
     language: str = "en"
     work_path: Path = fastflix_folder
     use_sane_audio: bool = True
+    default_profile: str = "standard"
     disable_version_check: bool = False
     disable_update_check: bool = False
     disable_automatic_subtitle_burn_in: bool = False
     custom_after_run_scripts: Dict = field(default_factory=dict)
-    defaults: Dict[str, Profile] = field(default_factory=lambda: {"standard": Profile})
+    profiles: Dict[str, Profile] = field(default_factory=get_preset_defaults)
     sane_audio_selection: List = field(
         default_factory=lambda: [
             "aac",
@@ -76,6 +105,11 @@ class Config:
             "tta",
         ]
     )
+
+    def opt(self, profile_option_name, default=NO_OPT):
+        if default != NO_OPT:
+            return getattr(self.profiles[self.default_profile], profile_option_name, default)
+        return getattr(self.profiles[self.default_profile], profile_option_name)
 
     def find_ffmpeg_file(self, name):
         if ff_location := shutil.which(name):
@@ -105,12 +139,14 @@ class Config:
             finally:
                 self.save()
             return
-
-        data = Box.from_yaml(filename=self.config_path)
+        try:
+            data = Box.from_yaml(filename=self.config_path)
+        except BoxError as err:
+            raise ConfigError(f"{self.config_path}: {err}")
         paths = ("work_path", "ffmpeg", "ffprobe")
         for key, value in data.items():
             if key == "defaults":
-                self.defaults = {k: Profile(**v) for k, v in value.items() if k != "standard"}
+                self.profiles = {k: Profile(**v) for k, v in value.items() if k != "standard"}
                 continue
             if key in self and key not in ("config_path", "version"):
                 setattr(self, key, Path(value) if key in paths and value else value)
@@ -120,13 +156,15 @@ class Config:
         if not self.ffprobe or not self.ffprobe.exists():
             self.find_ffmpeg_file("ffprobe")
 
+        self.profiles = get_preset_defaults()
+
     def save(self):
         items = asdict(self)
         del items["config_path"]
         for k, v in items.items():
             if isinstance(v, Path):
                 items[k] = str(v.absolute())
-        items["defaults"] = {k: asdict(v) for k, v in self.defaults.items() if k != "standard"}
+        items["profiles"] = {k: asdict(v) for k, v in self.profiles.items() if k not in get_preset_defaults().keys()}
         return Box(items).to_yaml(filename=self.config_path, default_flow_style=False)
 
     def __iter__(self):

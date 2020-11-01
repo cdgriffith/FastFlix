@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
-from pathlib import Path
 import re
+from pathlib import Path
 
 import mistune
 from qtpy import QtCore, QtGui, QtWidgets

@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-from pathlib import Path
 import logging
-from queue import Queue, Empty
-
-# from multiprocessing
+from pathlib import Path
+from queue import Empty, Queue
 
 import reusables
 from appdirs import user_data_dir
 
-from fastflix.shared import allow_sleep_mode, prevent_sleep_mode, file_date
+from fastflix.shared import allow_sleep_mode, file_date, prevent_sleep_mode
 from fastflix.widgets.command_runner import BackgroundRunner
+
+# from multiprocessing
+
 
 logger = logging.getLogger("fastflix-core")
 

@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from pathlib import Path
-import shutil
-import os
 import logging
+import os
+import shutil
 import sys
+from pathlib import Path
 
 import requests
-from appdirs import user_data_dir
 import reusables
+from appdirs import user_data_dir
 from qtpy import QtWidgets
 
-from fastflix.shared import message
 from fastflix.language import t
+from fastflix.shared import message
 
-logger = logging.getLogger('fastflix')
+logger = logging.getLogger("fastflix")
 
 
 def ask_for_ffmpeg():
@@ -56,8 +56,8 @@ def latest_ffmpeg(signal, **_):
     gpl_ffmpeg = [asset for asset in data["assets"] if asset["name"].endswith("win64-gpl.zip")]
     if not gpl_ffmpeg:
         message(
-            t("Could not find any matching FFmpeg ending with 'win64-gpl.zip' with") +
-            f" {t('latest release from')} <a href='https://github.com/BtbN/FFmpeg-Builds/releases/'>"
+            t("Could not find any matching FFmpeg ending with 'win64-gpl.zip' with")
+            + f" {t('latest release from')} <a href='https://github.com/BtbN/FFmpeg-Builds/releases/'>"
             "https://github.com/BtbN/FFmpeg-Builds/releases/</a> "
         )
         raise

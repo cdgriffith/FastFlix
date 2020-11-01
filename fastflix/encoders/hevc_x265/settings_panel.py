@@ -122,7 +122,7 @@ class HEVC(SettingPanel):
                 " Useful when there is a desire to signal 0 values for max-cll and max-fall.\n"
                 " Default disabled."
             ),
-            checked=True,
+            opt="x265_hdr10_signaling",
         )
 
     def init_hdr10_opt(self):
@@ -133,7 +133,7 @@ class HEVC(SettingPanel):
                 "hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.\n"
                 "It is recommended that AQ-mode be enabled along with this feature"
             ),
-            checked=False,
+            opt="x265_hdr10_opt",
         )
 
     def init_repeat_headers(self):
@@ -145,7 +145,7 @@ class HEVC(SettingPanel):
                 "This is intended for use when you do not have a container to keep the stream headers for you\n"
                 " and you want keyframes to be random access points."
             ),
-            checked=True,
+            opt="x265_repeat_headers",
         )
 
     def init_aq_mode(self):
@@ -165,7 +165,7 @@ class HEVC(SettingPanel):
                 "The more complex the block, the more quantization is used.\n"
                 "Default: AQ enabled with auto-variance"
             ),
-            default=2,
+            opt="x265_aq",
         )
 
     def init_intra_encoding(self):
@@ -178,7 +178,7 @@ class HEVC(SettingPanel):
                 "This option is not recommenced unless you need to conform "
                 "to Blu-ray standards to burn to a physical disk"
             ),
-            connect="default",
+            opt="x265_intra_encoding",
         )
 
     def init_preset(self):
@@ -202,7 +202,7 @@ class HEVC(SettingPanel):
                 "Slow is highest personal recommenced, as past that is much smaller gains"
             ),
             connect="default",
-            default=5,
+            opt="x265_preset",
         )
 
     def init_tune(self):
@@ -212,6 +212,7 @@ class HEVC(SettingPanel):
             options=["default", "psnr", "ssim", "grain", "zerolatency", "fastdecode", "animation"],
             tooltip="tune: Tune the settings for a particular type of source or situation",
             connect="default",
+            opt="x265_tune",
         )
 
     def init_profile(self):
@@ -220,7 +221,7 @@ class HEVC(SettingPanel):
             tooltip="profile: Enforce an encode profile",
             widget_name="profile",
             options=["default", "main", "main10", "mainstillpicture"],
-            default=0,
+            opt="x265_profile",
         )
 
     def init_pix_fmt(self):
@@ -229,7 +230,6 @@ class HEVC(SettingPanel):
             tooltip="Pixel Format (requires at least 10-bit for HDR)",
             widget_name="pix_fmt",
             options=pix_fmts,
-            default=1,
             connect=lambda: self.setting_change(pix_change=True),
         )
 
@@ -241,7 +241,7 @@ class HEVC(SettingPanel):
             ),
             widget_name="max_mux",
             options=["default", "1024", "2048", "4096", "8192"],
-            default=1,
+            opt="max_muxing_queue_size",
         )
 
     def init_modes(self):

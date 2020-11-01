@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from multiprocessing import Process, Queue
 import logging
-import traceback
 import sys
+import traceback
+from multiprocessing import Process, Queue
 
 try:
     import coloredlogs
@@ -12,6 +12,11 @@ try:
     from box import Box
     from qtpy import API, QT_VERSION, QtCore, QtGui, QtWidgets
 
+    from fastflix.application import start_app
+    from fastflix.conversion_worker import converter
+    from fastflix.models.config import Config
+    from fastflix.models.fastflix import FastFlix
+    from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
     from fastflix.shared import (
         allow_sleep_mode,
         base_path,
@@ -21,12 +26,7 @@ try:
         message,
         prevent_sleep_mode,
     )
-    from fastflix.program_downloads import latest_ffmpeg, ask_for_ffmpeg
     from fastflix.version import __version__
-    from fastflix.models.fastflix import FastFlix
-    from fastflix.models.config import Config
-    from fastflix.conversion_worker import converter
-    from fastflix.application import start_app
 
 except ImportError as err:
     traceback.print_exc()

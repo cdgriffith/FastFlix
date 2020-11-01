@@ -5,13 +5,12 @@ import logging
 from box import Box, BoxList
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.widgets.panels.audio_panel import AudioList
 from fastflix.widgets.panels.command_panel import CommandList
 from fastflix.widgets.panels.cover_panel import CoverPanel
 from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
-
-from fastflix.models.fastflix_app import FastFlixApp
 
 logger = logging.getLogger("fastflix")
 
@@ -95,3 +94,6 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.audio.refresh(starting_pos=1)
         if getattr(self.main.current_encoder, "enable_subtitles", False):
             self.subtitles.refresh(starting_pos=len(self.audio) + 1)
+
+    def update_profile(self):
+        self.current_settings.update_profile()

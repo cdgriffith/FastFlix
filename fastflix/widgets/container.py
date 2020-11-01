@@ -11,18 +11,17 @@ import reusables
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.language import t
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.program_downloads import latest_ffmpeg
+from fastflix.resources import main_icon
 from fastflix.shared import latest_fastflix, message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
 from fastflix.widgets.main import Main
-from fastflix.widgets.settings import Settings
-from fastflix.resources import main_icon
-from fastflix.language import t
 from fastflix.widgets.progress_bar import ProgressBar, Task
-from fastflix.program_downloads import latest_ffmpeg
-
-from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.widgets.settings import Settings
 
 logger = logging.getLogger("fastflix")
 

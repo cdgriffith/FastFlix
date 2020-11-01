@@ -2,7 +2,7 @@
 import secrets
 from pathlib import Path
 
-from fastflix.encoders.common.helpers import Command, generate_filters, generate_ffmpeg_start, generate_ending
+from fastflix.encoders.common.helpers import Command, generate_ending, generate_ffmpeg_start, generate_filters
 
 extension = "gif"
 

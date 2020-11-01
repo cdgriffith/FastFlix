@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import importlib.machinery
-import shutil
 import logging
 import os
+import shutil
 import sys
 from datetime import datetime
 from distutils.version import StrictVersion

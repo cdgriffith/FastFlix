@@ -7,6 +7,7 @@ import shlex
 from pathlib import Path
 from subprocess import PIPE, Popen
 from threading import Thread
+
 import psutil
 
 logger = logging.getLogger("fastflix-core")

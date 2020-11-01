@@ -16,13 +16,13 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
-from fastflix.flix import FlixError, parse, generate_thumbnail_command, get_auto_crop, parse_hdr_details
-from fastflix.shared import error_message, file_date, FastFlixInternalException, time_to_number
-from fastflix.widgets.thumbnail_generator import ThumbnailCreator
-from fastflix.widgets.video_options import VideoOptions
-
+from fastflix.flix import FlixError, generate_thumbnail_command, get_auto_crop, parse, parse_hdr_details
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
+from fastflix.shared import FastFlixInternalException, error_message, file_date, time_to_number
+from fastflix.widgets.thumbnail_generator import ThumbnailCreator
+from fastflix.widgets.video_options import VideoOptions
+from fastflix.language import t
 
 logger = logging.getLogger("fastflix")
 
@@ -74,7 +74,7 @@ class Main(QtWidgets.QWidget):
             rotate=None,
             flip=None,
             crop=Box(top=None, bottom=None, left=None, right=None),
-            scale=Box(width=None, height=None, keep_aspect_ratio=None),
+            scale=Box(width=None, height=None, keep_aspect=None),
             remove_metadata=None,
             chapters=None,
             fast_time=None,
@@ -198,6 +198,8 @@ class Main(QtWidgets.QWidget):
         transform_layout.addLayout(metadata_layout)
 
         layout.addLayout(transform_layout)
+
+        layout.addLayout(self.init_profile())
         layout.addStretch()
         self.grid.addLayout(layout, 0, 0, 6, 6)
 
@@ -264,6 +266,30 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(self.widgets.video_track, stretch=1)
         layout.setSpacing(10)
         return layout
+
+    def init_profile(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.widgets.profile_box = QtWidgets.QComboBox()
+        self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
+        self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
+        layout.addWidget(QtWidgets.QLabel(t("Profile")))
+        layout.addWidget(self.widgets.profile_box)
+        layout.addStretch()
+        return layout
+
+    def set_profile(self):
+        # TODO Have to update all the defaults
+        # self.video_options.new_source()
+        self.app.fastflix.config.default_profile = self.widgets.profile_box.currentText()
+        if self.app.fastflix.config.opt("auto_crop"):
+            self.get_auto_crop()
+        if not self.app.fastflix.config.opt("keep_aspect_ratio"):
+            self.widgets.scale.keep_aspect.setChecked(False)
+        if (rotate := self.app.fastflix.config.opt("rotate")) > 0:
+            self.widgets.rotate.setCurrentIndex(rotate // 90)
+        if (flip := self.app.fastflix.config.opt("flip")) > 0:
+            self.widgets.flip.setCurrentIndex(flip)
+        self.video_options.update_profile()
 
     def init_flip(self):
         self.widgets.flip = QtWidgets.QComboBox()
@@ -940,6 +966,8 @@ class Main(QtWidgets.QWidget):
             self.widgets.video_title.setText("")
 
         self.video_options.new_source()
+        if self.app.fastflix.config.opt("auto_crop"):
+            self.get_auto_crop()
         self.enable_all()
         self.widgets.convert_button.setDisabled(False)
         self.widgets.convert_button.setStyleSheet("background-color:green;")

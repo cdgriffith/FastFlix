@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
 from dataclasses import dataclass, field
-from typing import List, Dict, Callable
+from typing import Callable, Dict, List
 
-from qtpy import QtWidgets, QtCore
 import reusables
+from qtpy import QtCore, QtWidgets
 
 
 @dataclass

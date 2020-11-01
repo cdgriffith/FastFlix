@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from multiprocessing import Queue
 import logging
+from multiprocessing import Queue
 
 logger = logging.getLogger("fastflix")
 

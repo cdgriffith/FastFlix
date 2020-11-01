@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
+from typing import List
 
 from box import Box
 from qtpy import QtGui, QtWidgets
+
+from fastflix.models.fastflix_app import FastFlixApp
 
 logger = logging.getLogger("fastflix")
 
@@ -10,20 +13,35 @@ ffmpeg_extra_command = ""
 
 
 class SettingPanel(QtWidgets.QWidget):
-    def __init__(self, parent, main, app, *args, **kwargs):
+    def __init__(self, parent, main, app: FastFlixApp, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.main = main
+        self.app = app
         self.widgets = Box()
         self.labels = Box()
+        self.opts = Box()
         self.only_int = QtGui.QIntValidator()
 
-    def _add_combo_box(self, label, options, widget_name, connect="default", enabled=True, default=0, tooltip=""):
+    def determine_default(self, opt, items: List):
+        if isinstance(opt, str):
+            return items.index(opt)
+        if isinstance(opt, bool):
+            return int(opt)
+        return opt
+
+    def _add_combo_box(
+        self, label, options, widget_name, opt=None, connect="default", enabled=True, default=0, tooltip=""
+    ):
         layout = QtWidgets.QHBoxLayout()
         self.labels[widget_name] = QtWidgets.QLabel(label)
         self.labels[widget_name].setToolTip(tooltip)
 
         self.widgets[widget_name] = QtWidgets.QComboBox()
         self.widgets[widget_name].addItems(options)
+
+        if opt:
+            default = self.determine_default(self.app.fastflix.config.opt(opt), options)
+            self.opts[widget_name] = opt
         self.widgets[widget_name].setCurrentIndex(default)
         self.widgets[widget_name].setDisabled(not enabled)
         self.widgets[widget_name].setToolTip(tooltip)
@@ -40,13 +58,14 @@ class SettingPanel(QtWidgets.QWidget):
 
         return layout
 
-    def _add_check_box(self, label, widget_name, connect="default", enabled=True, checked=True, tooltip=""):
+    def _add_check_box(self, label, widget_name, opt, connect="default", enabled=True, checked=True, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
         self.labels[widget_name] = QtWidgets.QLabel(label)
         self.labels[widget_name].setToolTip(tooltip)
 
         self.widgets[widget_name] = QtWidgets.QCheckBox()
-        self.widgets[widget_name].setChecked(checked)
+        self.opts[widget_name] = opt
+        self.widgets[widget_name].setChecked(self.app.fastflix.config.opt(opt))
         self.widgets[widget_name].setDisabled(not enabled)
         if connect:
             if connect == "default":
@@ -112,7 +131,7 @@ class SettingPanel(QtWidgets.QWidget):
                 "Convert BT2020 colorspace into bt709\n "
                 "WARNING: This will take much longer and result in a larger file"
             ),
-            enabled=False,
+            opt="remove_hdr",
             connect=connect,
         )
 
@@ -134,3 +153,14 @@ class SettingPanel(QtWidgets.QWidget):
         else:
             self.widgets.remove_hdr.setDisabled(True)
             self.labels.remove_hdr.setStyleSheet("QLabel{color:#000}")
+
+    def update_profile(self):
+        for widget_name, opt in self.opts.items():
+            if isinstance(self.widgets[widget_name], QtWidgets.QComboBox):
+                default = self.determine_default(
+                    self.app.fastflix.config.opt(opt),
+                    [self.widgets[widget_name].itemText(i) for i in range(self.widgets[widget_name].count())],
+                )
+                self.widgets[widget_name].setCurrentIndex(default)
+            elif isinstance(self.widgets[widget_name], QtWidgets.QCheckBox):
+                self.widgets[widget_name].setChecked(self.app.fastflix.config.opt(opt))

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
-from typing import Union, List
-from pathlib import Path
 from multiprocessing import Queue
+from pathlib import Path
+from typing import List, Union
 
 from appdirs import user_data_dir
 

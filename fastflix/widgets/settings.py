@@ -6,8 +6,8 @@ from pathlib import Path
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.shared import FastFlixInternalException, error_message
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import FastFlixInternalException, error_message
 
 
 class Settings(QtWidgets.QWidget):

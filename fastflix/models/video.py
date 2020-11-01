@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from pathlib import Path
 from dataclasses import dataclass
-from typing import Union, Any
+from pathlib import Path
+from typing import Any, Union
 
 from appdirs import user_data_dir
 from box import Box

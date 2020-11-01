@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-import sys
 import logging
+import sys
 
-from qtpy import QtGui
 import coloredlogs
 import reusables
+from qtpy import QtGui
 
-from fastflix.flix import ffmpeg_configuration, ffmpeg_audio_encoders
+from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration
+from fastflix.language import change_language, t
 from fastflix.models.config import MissingFF
-from fastflix.widgets.progress_bar import Task, ProgressBar
-from fastflix.shared import file_date
-from fastflix.resources import main_icon
-from fastflix.version import __version__
-from fastflix.language import t, change_language
-from fastflix.widgets.container import Container
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.program_downloads import latest_ffmpeg, ask_for_ffmpeg
+from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
+from fastflix.resources import main_icon
+from fastflix.shared import file_date
+from fastflix.version import __version__
+from fastflix.widgets.container import Container
+from fastflix.widgets.progress_bar import ProgressBar, Task
 
 logger = logging.getLogger("fastflix")
 
