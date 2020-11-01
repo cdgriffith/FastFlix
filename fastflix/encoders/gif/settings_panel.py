@@ -8,7 +8,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 
 class GIF(SettingPanel):
     def __init__(self, parent, main, app: FastFlixApp):
-        super().__init__(parent, main)
+        super().__init__(parent, main, app)
         self.main = main
         self.app = app
 

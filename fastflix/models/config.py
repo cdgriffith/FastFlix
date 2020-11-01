@@ -82,7 +82,7 @@ class Config:
             return setattr(self, name, Path(ff_location).resolve())
 
         if not ffmpeg_folder.exists():
-            raise MissingFF(f"Could not find {name}")
+            raise MissingFF(name)
         for file in ffmpeg_folder.iterdir():
             if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
                 setattr(self, name, file)
@@ -95,7 +95,6 @@ class Config:
                         break
                 else:
                     raise MissingFF(name)
-        raise MissingFF(name)
 
     def load(self):
         if not self.config_path.exists():
@@ -108,13 +107,13 @@ class Config:
             return
 
         data = Box.from_yaml(filename=self.config_path)
-        paths = ("work_dir", "ffmpeg", "ffprobe")
+        paths = ("work_path", "ffmpeg", "ffprobe")
         for key, value in data.items():
             if key == "defaults":
                 self.defaults = {k: Profile(**v) for k, v in value.items() if k != "standard"}
                 continue
             if key in self and key not in ("config_path", "version"):
-                setattr(self, key, Path(value) if key in paths else value)
+                setattr(self, key, Path(value) if key in paths and value else value)
         if not self.ffmpeg or not self.ffmpeg.exists():
             self.find_ffmpeg_file("ffmpeg")
 

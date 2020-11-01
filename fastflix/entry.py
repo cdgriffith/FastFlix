@@ -18,10 +18,10 @@ try:
         error_message,
         file_date,
         latest_fastflix,
-        latest_ffmpeg,
         message,
         prevent_sleep_mode,
     )
+    from fastflix.program_downloads import latest_ffmpeg, ask_for_ffmpeg
     from fastflix.version import __version__
     from fastflix.models.fastflix import FastFlix
     from fastflix.models.config import Config

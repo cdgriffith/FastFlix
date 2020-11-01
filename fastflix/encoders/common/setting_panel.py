@@ -10,7 +10,7 @@ ffmpeg_extra_command = ""
 
 
 class SettingPanel(QtWidgets.QWidget):
-    def __init__(self, parent, main, *args, **kwargs):
+    def __init__(self, parent, main, app, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.main = main
         self.widgets = Box()

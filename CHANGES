@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 4.0.0
+
+* Adding multi-lingual support (thanks to leonardyan)
+* Adding profiles
+* Changing large internal re-write
+
 ## Version  3.4.3
 
 * Fixing #110 (multi) no warning for those updating about automatic burn-in subtitles (thanks to loungebob)

@@ -11,7 +11,7 @@ import reusables
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.shared import latest_fastflix, message, latest_ffmpeg
+from fastflix.shared import latest_fastflix, message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -19,6 +19,8 @@ from fastflix.widgets.main import Main
 from fastflix.widgets.settings import Settings
 from fastflix.resources import main_icon
 from fastflix.language import t
+from fastflix.widgets.progress_bar import ProgressBar, Task
+from fastflix.program_downloads import latest_ffmpeg
 
 from fastflix.models.fastflix_app import FastFlixApp
 
@@ -113,7 +115,7 @@ class Container(QtWidgets.QMainWindow):
 
         # TODO Won't enable until can do it non-blocking
         ffmpeg_update_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), "Download Newest FFmpeg", self)
-        ffmpeg_update_action.triggered.connect(lambda: latest_ffmpeg(done_alert=True))
+        ffmpeg_update_action.triggered.connect(self.download_ffmpeg)
 
         help_menu = menubar.addMenu("&Help")
         help_menu.addAction(changes_action)
@@ -122,7 +124,8 @@ class Container(QtWidgets.QMainWindow):
         help_menu.addAction(log_action)
         help_menu.addSeparator()
         help_menu.addAction(version_action)
-        # help_menu.addAction(ffmpeg_update_action)
+        if reusables.win_based:
+            help_menu.addAction(ffmpeg_update_action)
         help_menu.addSeparator()
         help_menu.addAction(about_action)
 
@@ -145,6 +148,9 @@ class Container(QtWidgets.QMainWindow):
 
     def show_log_dir(self):
         OpenFolder(self, self.log_dir).run()
+
+    def download_ffmpeg(self):
+        ProgressBar(self.app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
 
 
 class OpenFolder(QtCore.QThread):

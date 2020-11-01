@@ -59,3 +59,36 @@ Close GUI Only:
 
 Keep FastFlix Open:
   en: Keep FastFlix Open
+
+FFmpeg not found!:
+  en: FFmpeg not found!
+
+Please:
+  en: Please
+
+download a static FFmpeg:
+  en: download a static FFmpeg
+
+and add it to PATH:
+  en: and add it to PATH
+
+Automatically download FFmpeg?:
+  en: Automatically download FFmpeg?
+
+FFmpeg was not properly downloaded as the file size is too small:
+  en: FFmpeg was not properly downloaded as the file size is too small
+
+Could not extract FFmpeg files from:
+  en: Could not extract FFmpeg files from
+
+Error while moving files in:
+  en: Error while moving files in
+
+Could not connect to github to check for newer versions.:
+  en: Could not connect to github to check for newer versions.
+
+latest release from:
+  en: latest release from
+
+Could not find any matching FFmpeg ending with 'win64-gpl.zip' with:
+  en: Could not find any matching FFmpeg ending with 'win64-gpl.zip' with

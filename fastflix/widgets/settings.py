@@ -13,8 +13,8 @@ from fastflix.models.fastflix_app import FastFlixApp
 class Settings(QtWidgets.QWidget):
     def __init__(self, app: FastFlixApp, *args, **kwargs):
         super().__init__(None, *args, **kwargs)
-        self.config_file = self.app.fastflix.config.config_path
         self.app = app
+        self.config_file = self.app.fastflix.config.config_path
         self.setWindowTitle("Settings")
         self.setMinimumSize(600, 200)
         layout = QtWidgets.QGridLayout()

@@ -9,12 +9,13 @@ import reusables
 from fastflix.flix import ffmpeg_configuration, ffmpeg_audio_encoders
 from fastflix.models.config import MissingFF
 from fastflix.widgets.progress_bar import Task, ProgressBar
-from fastflix.shared import latest_ffmpeg, file_date
+from fastflix.shared import file_date
 from fastflix.resources import main_icon
 from fastflix.version import __version__
 from fastflix.language import t, change_language
 from fastflix.widgets.container import Container
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.program_downloads import latest_ffmpeg, ask_for_ffmpeg
 
 logger = logging.getLogger("fastflix")
 
@@ -30,23 +31,17 @@ def create_app():
 
 
 def init_logging(app: FastFlixApp):
-    #     logging.basicConfig(level=logging.DEBUG)
-    #     core_logger = logging.getLogger("fastflix-core")
     gui_logger = logging.getLogger("fastflix")
     stream_handler = reusables.get_stream_handler(level=logging.DEBUG)
     file_handler = reusables.get_file_handler(
-        app.fastflix.log_path / f"flix_gui_{file_date()}.log", level=logging.DEBUG, encoding="utf-8"
+        app.fastflix.log_path / f"flix_gui_{file_date()}.log",
+        level=logging.DEBUG,
+        encoding="utf-8",
     )
     gui_logger.setLevel(logging.DEBUG)
     gui_logger.addHandler(stream_handler)
     gui_logger.addHandler(file_handler)
     coloredlogs.install(level="DEBUG", logger=gui_logger)
-
-
-#     coloredlogs.install(level="DEBUG", logger=gui_logger)
-#
-#     core_logger.info(f"{t('Starting')} FastFlix {__version__}")
-#     return gui_logger
 
 
 def init_encoders(app: FastFlixApp, **_):
@@ -74,8 +69,11 @@ def init_fastflix_directories(app: FastFlixApp):
 
 
 def register_app():
+    """
+    On Windows you have to set the AppUser Model ID or else the
+    taskbar icon will not appear as expected.
+    """
     if reusables.win_based:
-        # This fixes the taskbar icon not always appearing
         try:
             import ctypes
 
@@ -95,8 +93,8 @@ def start_app(fastflix):
         app.fastflix.config.load()
     except MissingFF:
         change_language(app.fastflix.config.language)
-        # TODO ask to download
-        ProgressBar(app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
+        if reusables.win_based and ask_for_ffmpeg():
+            ProgressBar(app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
     except Exception as err:
         # TODO give edit / delete options
         logger.exception("Could not load config file!")
