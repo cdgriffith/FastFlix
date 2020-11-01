@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 import sys
-from pathlib import Path
 import logging
 
-from qtpy import QtWidgets, QtGui, QtCore
-from box import Box
+from qtpy import QtGui
 import coloredlogs
-from appdirs import user_data_dir
+import reusables
 
 from fastflix.flix import ffmpeg_configuration, ffmpeg_audio_encoders
-from fastflix.models.config import Config, MissingFF
+from fastflix.models.config import MissingFF
 from fastflix.widgets.progress_bar import Task, ProgressBar
 from fastflix.shared import latest_ffmpeg, file_date
 from fastflix.resources import main_icon
@@ -17,6 +15,8 @@ from fastflix.version import __version__
 from fastflix.language import t, change_language
 from fastflix.widgets.container import Container
 from fastflix.models.fastflix_app import FastFlixApp
+
+logger = logging.getLogger("fastflix")
 
 
 def create_app():
@@ -30,14 +30,23 @@ def create_app():
 
 
 def init_logging(app: FastFlixApp):
-    logging.basicConfig(level=logging.DEBUG)
-    core_logger = logging.getLogger("fastflix-core")
+    #     logging.basicConfig(level=logging.DEBUG)
+    #     core_logger = logging.getLogger("fastflix-core")
     gui_logger = logging.getLogger("fastflix")
-    coloredlogs.install(level="DEBUG", logger=core_logger)
+    stream_handler = reusables.get_stream_handler(level=logging.DEBUG)
+    file_handler = reusables.get_file_handler(
+        app.fastflix.log_path / f"flix_gui_{file_date()}.log", level=logging.DEBUG, encoding="utf-8"
+    )
+    gui_logger.setLevel(logging.DEBUG)
+    gui_logger.addHandler(stream_handler)
+    gui_logger.addHandler(file_handler)
     coloredlogs.install(level="DEBUG", logger=gui_logger)
-    gui_logger.addHandler(logging.FileHandler(app.fastflix.log_path / f"flix_gui_{file_date()}.log", encoding="utf-8"))
-    core_logger.info(f"{t('Starting')} FastFlix {__version__}")
-    return gui_logger
+
+
+#     coloredlogs.install(level="DEBUG", logger=gui_logger)
+#
+#     core_logger.info(f"{t('Starting')} FastFlix {__version__}")
+#     return gui_logger
 
 
 def init_encoders(app: FastFlixApp, **_):
@@ -64,17 +73,34 @@ def init_fastflix_directories(app: FastFlixApp):
     app.fastflix.log_path.mkdir(parents=True, exist_ok=True)
 
 
+def register_app():
+    if reusables.win_based:
+        # This fixes the taskbar icon not always appearing
+        try:
+            import ctypes
+
+            app_id = f"cdgriffith.fastflix.{__version__}".encode("utf-8")
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
+        except Exception:
+            logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
+
+
 def start_app(fastflix):
     app = create_app()
     app.fastflix = fastflix
     init_fastflix_directories(app)
     init_logging(app)
+    register_app()
     try:
         app.fastflix.config.load()
     except MissingFF:
         change_language(app.fastflix.config.language)
         # TODO ask to download
         ProgressBar(app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
+    except Exception as err:
+        # TODO give edit / delete options
+        logger.exception("Could not load config file!")
+        sys.exit(1)
     else:
         change_language(app.fastflix.config.language)
 
@@ -89,39 +115,4 @@ def start_app(fastflix):
     container = Container(app)
     container.show()
 
-    # a = QtWidgets.QSplashScreen(QtGui.QPixmap(str(Path(pkg_resources.resource_filename(__name__, "data/splash_screens/loading.png")).resolve())))
-    # a.show()
-    # app.processEvents()
-    #
     app.exec_()
-
-
-# def start_app(queue, status_queue, log_queue, data_path, log_dir):
-#     logger = logging.getLogger("fastflix")
-#     coloredlogs.install(level="DEBUG", logger=logger)
-#
-#     logger.debug(f"Using qt engine {API} version {QT_VERSION}")
-#
-#     try:
-#
-#
-#         flix, work_dir, config_file = required_info(logger, data_path, log_dir)
-#         window = Container(
-#             flix=flix,
-#             source=sys.argv[1] if len(sys.argv) > 1 else "",
-#             data_path=data_path,
-#             work_path=work_dir,
-#             config_file=config_file,
-#             worker_queue=queue,
-#             status_queue=status_queue,
-#             log_queue=log_queue,
-#             main_app=main_app,
-#         )
-#         main_app.setWindowIcon(window.icon)
-#         window.show()
-#         main_app.exec_()
-#     except (Exception, BaseException, SystemError, SystemExit) as err:
-#         logger.exception(f"HARD FAIL: Unexpected error: {err}")
-#         print(f"Unexpected error: {err}")
-#     else:
-#         logger.info("Fastflix shutting down")

@@ -1,14 +1,38 @@
 # -*- coding: utf-8 -*-
 from multiprocessing import Process, Queue
 import logging
+import traceback
+import sys
 
-import coloredlogs
+try:
+    import coloredlogs
+    import requests
+    import reusables
+    from appdirs import user_data_dir
+    from box import Box
+    from qtpy import API, QT_VERSION, QtCore, QtGui, QtWidgets
 
-from fastflix.models.fastflix import FastFlix
-from fastflix.models.config import Config
-from fastflix.conversion_worker import converter
-from fastflix.application import start_app
-from fastflix.version import __version__
+    from fastflix.shared import (
+        allow_sleep_mode,
+        base_path,
+        error_message,
+        file_date,
+        latest_fastflix,
+        latest_ffmpeg,
+        message,
+        prevent_sleep_mode,
+    )
+    from fastflix.version import __version__
+    from fastflix.models.fastflix import FastFlix
+    from fastflix.models.config import Config
+    from fastflix.conversion_worker import converter
+    from fastflix.application import start_app
+
+except ImportError as err:
+    traceback.print_exc()
+    print("Could not load FastFlix properly!", file=sys.stderr)
+    input("Please report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
+    sys.exit(1)
 
 
 def main():
