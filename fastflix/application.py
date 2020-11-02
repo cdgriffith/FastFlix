@@ -97,7 +97,7 @@ def start_app(fastflix):
             ProgressBar(app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
     except Exception as err:
         # TODO give edit / delete options
-        logger.exception("Could not load config file!")
+        logger.exception(t("Could not load config file!"))
         sys.exit(1)
     else:
         change_language(app.fastflix.config.language)

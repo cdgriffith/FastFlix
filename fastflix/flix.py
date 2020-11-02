@@ -11,6 +11,9 @@ from box import Box, BoxError
 
 from fastflix.language import t
 from fastflix.models.config import Config
+from functools import partial
+import time
+from multiprocessing.pool import ThreadPool
 
 # __all__ = ["FlixError", "ff_version", "Flix", "guess_bit_depth"]
 
@@ -134,7 +137,7 @@ def parse(config: Config, file: Path, temp_dir: Path, extract_covers: bool = Fal
         if track.codec_type == "video" and track.get("disposition", {}).get("attached_pic"):
             filename = track.get("tags", {}).get("filename", "")
             if filename.rsplit(".", 1)[0] in ("cover", "small_cover", "cover_land", "small_cover_land"):
-                covers.append((file, track.index, temp_dir, filename))
+                covers.append((config.ffmpeg, file, track.index, temp_dir, filename))
             streams.attachment.append(track)
         elif track.codec_type in streams:
             streams[track.codec_type].append(track)
@@ -153,10 +156,10 @@ def parse(config: Config, file: Path, temp_dir: Path, extract_covers: bool = Fal
     return streams, data.format
 
 
-def extract_attachment(config: Config, source: Path, stream: int, work_dir: Path, file_name: str):
+def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, file_name: str):
     try:
         execute(
-            [f'"{config.ffmpeg}"', "-y", "-i", f'"{source}"', "-map", f"0:{stream}", "-c", "copy", f'"{file_name}"'],
+            [f'"{ffmpeg}"', "-y", "-i", f'"{source}"', "-map", f"0:{stream}", "-c", "copy", f'"{file_name}"'],
             work_dir=work_dir,
             timeout=5,
         )
@@ -178,14 +181,21 @@ def generate_thumbnail_command(
 
 
 def get_auto_crop(
-    config: Config, source: Path, video_width: int, video_height: int, start_time: float, input_track: int
+    config: Config,
+    source: Path,
+    video_width: int,
+    video_height: int,
+    input_track: int,
+    start_time: float,
+    result_list: List,
+    **_,
 ) -> Tuple[int, int, int, int]:
     output = execute(
         [
             f'"{config.ffmpeg}"',
+            "-hide_banner",
             "-ss",
             f"{start_time}",
-            "-hide_banner",
             "-i",
             f'"{source}"',
             "-map",
@@ -214,7 +224,7 @@ def get_auto_crop(
     if None in (width, height, x_crop, y_crop):
         return 0, 0, 0, 0
 
-    return video_width - width - x_crop, video_height - height - y_crop, x_crop, y_crop
+    result_list.append([video_width - width - x_crop, video_height - height - y_crop, x_crop, y_crop])
 
 
 def ffmpeg_audio_encoders(app, config: Config) -> List:

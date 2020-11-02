@@ -1,94 +1,77 @@
----
-
-Starting:
-  en: Starting
-  fr: Aller
-  es: Lanzamiento
-
-Gather FFmpeg version:
-  en: Gather FFmpeg version
-  fr: Rassemblez la version FFmpeg
-  es: Reúna la versión de FFmpeg
-
+Automatically download FFmpeg?:
+  en: Automatically download FFmpeg?
+Burn In:
+  en: Burn In
+Cancel Conversion:
+  en: Cancel Conversion
+Close GUI Only:
+  en: Close GUI Only
+Could not connect to github to check for newer versions.:
+  en: Could not connect to github to check for newer versions.
+Could not extract FFmpeg files from:
+  en: Could not extract FFmpeg files from
+Could not find any matching FFmpeg ending with 'win64-gpl.zip' with:
+  en: Could not find any matching FFmpeg ending with 'win64-gpl.zip' with
+Downloading FFmpeg:
+  en: Downloading FFmpeg
+  es: Descargando FFmpeg
+Error while moving files in:
+  en: Error while moving files in
+FFmpeg not found!:
+  en: FFmpeg not found!
+FFmpeg was not properly downloaded as the file size is too small:
+  en: FFmpeg was not properly downloaded as the file size is too small
 Gather FFmpeg audio encoders:
   en: Gather FFmpeg audio encoders
   fr: Rassemblez les encodeurs audio FFmpeg
-  es: Reúna codificadores de audio FFmpeg
-
+Gather FFmpeg version:
+  en: Gather FFmpeg version
+  es: "Re\xFAna la versi\xF3n de FFmpeg"
+  fr: Rassemblez la version FFmpeg
 Initialize Encoders:
   en: Initialize Encoders
-  fr: Initialiser les Encodeurs
   es: Inicializar Codificadores
-
-Downloading FFmpeg:
-  en: Downloading FFmpeg
-  fr: Téléchargement de FFmpeg
-  es: Descargando FFmpeg
-
-Running command:
-  en: Running command
-  fr: Commande en cours d'exécution
-  es: Comando de ejecución
-
-Preserve: # Copy, Keep (for saving incoming subtitle track)
-  en: Preserve
-
-Burn In: # Overlay (for encoding subtitles into the video itself)
-  en: Burn In
-
-Language:
-  en: Language
-
-Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.:
-  en: Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.
-
-More than one track selected to burn in:
-  en: More than one track selected to burn in
-
-There is an existing burn-in track, only one can be enabled at a time:
-  en: There is an existing burn-in track, only one can be enabled at a time
-
-There is a conversion in process!:
-  en: There is a conversion in process!
-
-Cancel Conversion:
-  en: Cancel Conversion
-
-Close GUI Only:
-  en: Close GUI Only
-
+  fr: Initialiser les Encodeurs
 Keep FastFlix Open:
   en: Keep FastFlix Open
-
-FFmpeg not found!:
-  en: FFmpeg not found!
-
+Language:
+  en: Language
+More than one track selected to burn in:
+  en: More than one track selected to burn in
+Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.:
+  en: Overlay this subtitle track onto the video during conversion. Cannot remove
+    afterwards.
 Please:
   en: Please
-
-download a static FFmpeg:
-  en: download a static FFmpeg
-
+Preserve:
+  en: Preserve
+Profile:
+  en: Profile
+Running command:
+  en: Running command
+Starting:
+  en: Starting
+  es: Lanzamiento
+  fr: Aller
+There is a conversion in process!:
+  en: There is a conversion in process!
+There is an existing burn-in track, only one can be enabled at a time:
+  en: There is an existing burn-in track, only one can be enabled at a time
 and add it to PATH:
   en: and add it to PATH
-
-Automatically download FFmpeg?:
-  en: Automatically download FFmpeg?
-
-FFmpeg was not properly downloaded as the file size is too small:
-  en: FFmpeg was not properly downloaded as the file size is too small
-
-Could not extract FFmpeg files from:
-  en: Could not extract FFmpeg files from
-
-Error while moving files in:
-  en: Error while moving files in
-
-Could not connect to github to check for newer versions.:
-  en: Could not connect to github to check for newer versions.
-
+download a static FFmpeg:
+  en: download a static FFmpeg
 latest release from:
   en: latest release from
-
-Could not find any matching FFmpeg ending with 'win64-gpl.zip' with:
-  en: Could not find any matching FFmpeg ending with 'win64-gpl.zip' with
+Autocrop tried to crop too much:
+  en: Autocrop tried to crop too much
+left:
+  en: left
+right:
+  en: right
+top:
+  en: top
+bottom:
+  en: bottom
+ignoring:
+  en: ignoring

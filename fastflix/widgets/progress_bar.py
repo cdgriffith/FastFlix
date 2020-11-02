@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from collections import namedtuple
 from dataclasses import dataclass, field
 from typing import Callable, Dict, List
 
@@ -58,6 +57,7 @@ class ProgressBar(QtWidgets.QWidget):
         else:
             for i, task in enumerate(self.tasks, start=1):
                 self.status.setText(task.name)
+                self.app.processEvents()
                 task.command(config=self.app.fastflix.config, app=self.app, **task.kwargs)
                 self.progress_bar.setValue(int(i * ratio))
 

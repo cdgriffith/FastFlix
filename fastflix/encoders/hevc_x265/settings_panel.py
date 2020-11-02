@@ -71,7 +71,7 @@ class HEVC(SettingPanel):
         grid.addLayout(self.init_x265_params(), 6, 1, 1, 5)
 
         grid.addLayout(self.init_dhdr10_info(), 7, 1, 1, 4)
-        grid.addWidget(self.init_dhdr10_warning(), 7, 5, 1, 4)
+        grid.addWidget(self.init_dhdr10_warning(), 7, 5, 1, 1)
 
         grid.setRowStretch(9, True)
 
@@ -86,7 +86,7 @@ class HEVC(SettingPanel):
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, -1, 1)
+        grid.addWidget(guide_label, 11, 0, 1, 6)
 
         self.setLayout(grid)
         self.hide()
@@ -182,7 +182,7 @@ class HEVC(SettingPanel):
         )
 
     def init_preset(self):
-        return self._add_combo_box(
+        layout = self._add_combo_box(
             label="Preset",
             widget_name="preset",
             options=[
@@ -204,6 +204,9 @@ class HEVC(SettingPanel):
             connect="default",
             opt="x265_preset",
         )
+        self.labels["preset"].setMinimumWidth(200)
+        self.widgets["preset"].setMinimumWidth(200)
+        return layout
 
     def init_tune(self):
         return self._add_combo_box(

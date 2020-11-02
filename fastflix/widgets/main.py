@@ -16,13 +16,14 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
-from fastflix.flix import FlixError, generate_thumbnail_command, get_auto_crop, parse, parse_hdr_details
+from fastflix.flix import FlixError, generate_thumbnail_command, run_auto_crop, parse, parse_hdr_details, get_auto_crop
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.shared import FastFlixInternalException, error_message, file_date, time_to_number
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
 from fastflix.language import t
+from fastflix.widgets.progress_bar import ProgressBar, Task
 
 logger = logging.getLogger("fastflix")
 
@@ -630,34 +631,45 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or not self.initialized or self.loading_video:
             return
 
-        self.app.processEvents()
-
         start_pos = self.start_time or self.initial_duration // 10
-        r, b, l, t = get_auto_crop(
-            self.app.fastflix.config,
-            self.input_video,
-            self.video_width,
-            self.video_height,
-            start_pos,
-            self.original_video_track,
-        )
-        second_time = start_pos + 100
-        if second_time < self.initial_duration:
-            r2, b2, l2, t2 = get_auto_crop(
-                self.app.fastflix.config,
-                self.input_video,
-                self.video_width,
-                self.video_height,
-                second_time,
-                self.original_video_track,
+
+        blocks = int((self.initial_duration - start_pos) // 5)
+        times = [x for x in range(int(start_pos), int(self.initial_duration), blocks) if x < self.initial_duration][:4]
+
+        self.app.processEvents()
+        result_list = []
+        tasks = [
+            Task(
+                f"Finding black bars at {timedelta(seconds=x)}",
+                get_auto_crop,
+                dict(
+                    source=self.input_video,
+                    video_width=self.video_width,
+                    video_height=self.video_height,
+                    input_track=self.original_video_track,
+                    start_time=x,
+                    end_time=self.end_time,
+                    result_list=result_list,
+                ),
             )
-            if r2 < r or l2 < l:
-                r, l = r2, l2
-            if b2 < b or t2 < t:
-                b, t = b2, t2
+            for x in times
+        ]
+        ProgressBar(self.app, tasks)
+
+        smallest = (self.video_height + self.video_width) * 2
+        selected = result_list[0]
+        for result in result_list:
+            if (total := sum(result)) < smallest:
+                selected = result
+                smallest = total
+
+        r, b, l, t = selected
 
         if t + b > self.video_height * 0.9 or r + l > self.video_width * 0.9:
-            logger.warning(f"Autocrop tried to crop too much (left {l}, top {t}, right {r}, bottom {b}), ignoring")
+            logger.warning(
+                f"{t('Autocrop tried to crop too much')}"
+                f" ({t('left')} {l}, {t('top')} {t}, {t('right')} {r}, {t('bottom')} {b}), {t('ignoring')}"
+            )
             return
 
         # Hack to stop thumb gen

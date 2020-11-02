@@ -112,7 +112,6 @@ class Container(QtWidgets.QMainWindow):
         )
         version_action.triggered.connect(lambda: latest_fastflix(no_new_dialog=True))
 
-        # TODO Won't enable until can do it non-blocking
         ffmpeg_update_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), "Download Newest FFmpeg", self)
         ffmpeg_update_action.triggered.connect(self.download_ffmpeg)
 
