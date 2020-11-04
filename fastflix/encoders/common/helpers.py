@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import reusables
 
+from fastflix.models.fastflix import FastFlix
+
 null = "/dev/null"
 if reusables.win_based:
     null = "NUL"
@@ -90,7 +92,7 @@ def generate_ending(
 
 
 def generate_filters(
-    video_track,
+    selected_track,
     crop=None,
     scale=None,
     scale_filter="lanczos",
@@ -98,9 +100,9 @@ def generate_filters(
     scale_height=None,
     disable_hdr=False,
     rotate=None,
-    vflip=None,
-    hflip=None,
-    burn_in_track=None,
+    vertical_flip=None,
+    horizontal_flip=None,
+    burn_in_subtitle_track=None,
     custom_filters=None,
     raw_filters=False,
     **_,
@@ -120,9 +122,9 @@ def generate_filters(
             filter_list.append(f"transpose={rotate}")
         if rotate == 4:
             filter_list.append(f"transpose=2,transpose=2")
-    if vflip:
+    if vertical_flip:
         filter_list.append("vflip")
-    if hflip:
+    if horizontal_flip:
         filter_list.append("hflip")
 
     if disable_hdr:
@@ -137,15 +139,15 @@ def generate_filters(
     elif not filters and custom_filters:
         filters = custom_filters
 
-    if burn_in_track is not None:
+    if burn_in_subtitle_track is not None:
         if filters:
             # You have to overlay first for it to work when scaled
-            filter_complex = f"[0:{video_track}][0:{burn_in_track}]overlay[subbed];[subbed]{filters}[v]"
+            filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[subbed];[subbed]{filters}[v]"
 
         else:
-            filter_complex = f"[0:{video_track}][0:{burn_in_track}]overlay[v]"
+            filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
     elif filters:
-        filter_complex = f"[0:{video_track}]{filters}[v]"
+        filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:
         return None
     if raw_filters:

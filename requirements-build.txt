@@ -1,6 +1,7 @@
 appdirs
 colorama
 coloredlogs
+iso639-lang
 mistune
 psutil
 pyinstaller

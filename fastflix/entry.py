@@ -10,9 +10,7 @@ try:
     import reusables
     from appdirs import user_data_dir
     from box import Box
-    from qtpy import API, QT_VERSION, QtCore, QtGui, QtWidgets
 
-    from fastflix.application import start_app
     from fastflix.conversion_worker import converter
     from fastflix.models.config import Config
     from fastflix.models.fastflix import FastFlix
@@ -35,6 +33,13 @@ except ImportError as err:
     sys.exit(1)
 
 
+def separate_app_process(fastflix):
+    """ This prevents any QT components being imported in the main process"""
+    from fastflix.application import start_app
+
+    start_app(fastflix)
+
+
 def main():
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger("fastflix-core")
@@ -48,6 +53,6 @@ def main():
     fastflix.status_queue = Queue()
     fastflix.log_queue = Queue()
 
-    gui_proc = Process(target=start_app, args=(fastflix,))
+    gui_proc = Process(target=separate_app_process, args=(fastflix,))
     gui_proc.start()
     converter(gui_proc, fastflix)

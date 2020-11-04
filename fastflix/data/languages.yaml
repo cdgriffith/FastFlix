@@ -1,13 +1,19 @@
+Audio Tracks:
+  en: Audio Tracks
 Autocrop tried to crop too much:
   en: Autocrop tried to crop too much
 Automatically download FFmpeg?:
   en: Automatically download FFmpeg?
+Bitrate:
+  en: Bitrate
 Burn In:
   en: Burn In
 Cancel Conversion:
   en: Cancel Conversion
 Close GUI Only:
   en: Close GUI Only
+Conversion:
+  en: Conversion
 Could not connect to github to check for newer versions.:
   en: Could not connect to github to check for newer versions.
 Could not extract FFmpeg files from:
@@ -19,6 +25,10 @@ Determine HDR details:
 Downloading FFmpeg:
   en: Downloading FFmpeg
   es: Descargando FFmpeg
+Enabled:
+  en: Enabled
+Error Updating Thumbnail:
+  en: Error Updating Thumbnail
 Error while moving files in:
   en: Error while moving files in
 FFmpeg not found!:
@@ -42,6 +52,8 @@ Language:
   en: Language
 More than one track selected to burn in:
   en: More than one track selected to burn in
+No Downmix:
+  en: No Downmix
 Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.:
   en: Overlay this subtitle track onto the video during conversion. Cannot remove
     afterwards.
@@ -55,6 +67,10 @@ Profile:
   en: Profile
 Running command:
   en: Running command
+Source height:
+  en: Source height
+Source width:
+  en: Source width
 Starting:
   en: Starting
   es: Lanzamiento
@@ -63,10 +79,20 @@ There is a conversion in process!:
   en: There is a conversion in process!
 There is an existing burn-in track, only one can be enabled at a time:
   en: There is an existing burn-in track, only one can be enabled at a time
+Title:
+  en: Title
 and add it to PATH:
   en: and add it to PATH
+attachment tracks found:
+  en: attachment tracks found
+audio tracks found:
+  en: audio tracks found
 bottom:
   en: bottom
+channels:
+  en: channels
+codec:
+  en: codec
 download a static FFmpeg:
   en: download a static FFmpeg
 ignoring:
@@ -75,7 +101,17 @@ latest release from:
   en: latest release from
 left:
   en: left
+none:
+  en: none
+pix_fmt:
+  en: pix_fmt
+profile:
+  en: profile
 right:
   en: right
+subtitle tracks found:
+  en: subtitle tracks found
 top:
   en: top
+video tracks found:
+  en: video tracks found

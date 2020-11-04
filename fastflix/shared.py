@@ -127,7 +127,7 @@ def file_date():
     return datetime.now().isoformat().replace(":", ".").rsplit(".", 1)[0]
 
 
-def time_to_number(string_time):
+def time_to_number(string_time: str) -> float:
     try:
         return float(string_time)
     except ValueError:

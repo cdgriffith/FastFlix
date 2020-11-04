@@ -3,11 +3,16 @@
 
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
+from iso639 import Lang
+from iso639.exceptions import InvalidLanguageValue
 
 from fastflix.encoders.common.audio import lossless
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.widgets.panels.abstract_list import FlixList
-from fastflix.widgets.panels.subtitle_panel import language_list
+from fastflix.models.encode import AudioTrack
+from fastflix.language import t
+
+language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt3"] and v["pt1"]), key=lambda x: x.lower())
 
 
 class Audio(QtWidgets.QTabWidget):
@@ -53,7 +58,7 @@ class Audio(QtWidgets.QTabWidget):
             audio_info=QtWidgets.QLabel(audio),
             up_button=QtWidgets.QPushButton("^"),
             down_button=QtWidgets.QPushButton("v"),
-            enable_check=QtWidgets.QCheckBox("Enabled"),
+            enable_check=QtWidgets.QCheckBox(t("Enabled")),
             dup_button=QtWidgets.QPushButton("➕"),
             delete_button=QtWidgets.QPushButton("⛔"),
             language=QtWidgets.QComboBox(),
@@ -76,15 +81,22 @@ class Audio(QtWidgets.QTabWidget):
             "7.1 / 8.0",
         ]
 
-        self.widgets.language.addItems(["None"] + language_list)
+        self.widgets.language.addItems(["No Language Set"] + language_list)
+        self.widgets.language.setMaximumWidth(150)
         if language:
-            self.widgets.language.setCurrentText(language)
+            try:
+                lang = Lang(language).name
+            except InvalidLanguageValue:
+                pass
+            else:
+                if lang in language_list:
+                    self.widgets.language.setCurrentText(lang)
 
         self.widgets.language.currentIndexChanged.connect(lambda: self.page_update())
         self.widgets.title.setFixedWidth(200)
         self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
-        self.widgets.downmix.addItems(["No Downmix"] + downmix_options[: channels - 2])
+        self.widgets.downmix.addItems([t("No Downmix")] + downmix_options[: channels - 2])
         self.widgets.downmix.currentIndexChanged.connect(self.update_downmix)
         self.widgets.downmix.setCurrentIndex(0)
         self.widgets.downmix.setDisabled(True)
@@ -103,7 +115,7 @@ class Audio(QtWidgets.QTabWidget):
         grid.addLayout(self.init_move_buttons(), 0, 0)
         grid.addWidget(self.widgets.track_number, 0, 1)
         grid.addWidget(self.widgets.audio_info, 0, 2)
-        grid.addWidget(QtWidgets.QLabel("Title: "), 0, 3)
+        grid.addWidget(QtWidgets.QLabel(f"{t('Title')}: "), 0, 3)
         grid.addWidget(self.widgets.title, 0, 4)
         grid.addLayout(self.init_conversion(), 0, 5)
         grid.addWidget(self.widgets.downmix, 0, 6)
@@ -178,10 +190,10 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.convert_bitrate.currentIndexChanged.connect(lambda: self.page_update())
         self.widgets.convert_to.currentIndexChanged.connect(self.update_conversion)
-        layout.addWidget(QtWidgets.QLabel("Conversion: "))
+        layout.addWidget(QtWidgets.QLabel(f"{t('Conversion')}: "))
         layout.addWidget(self.widgets.convert_to)
 
-        layout.addWidget(QtWidgets.QLabel("Bitrate: "))
+        layout.addWidget(QtWidgets.QLabel(f"{t('Bitrate')}: "))
         layout.addWidget(self.widgets.convert_bitrate)
 
         return layout
@@ -228,7 +240,7 @@ class Audio(QtWidgets.QTabWidget):
         # passthrough_available = False
         # if self.codec in codec_list:
         passthrough_available = True
-        self.widgets.convert_to.addItem("none")
+        self.widgets.convert_to.addItem(t("none"))
         self.widgets.convert_to.addItems(sorted(set(self.available_audio_encoders) & set(codec_list)))
         if current in codec_list:
             index = codec_list.index(current)
@@ -254,8 +266,9 @@ class Audio(QtWidgets.QTabWidget):
 
     @property
     def language(self):
-        text = self.widgets.language.currentText()
-        return None if text == "None" else text
+        if self.widgets.language.currentIndex() == 0:
+            return None
+        return Lang(self.widgets.language.currentText()).pt3
 
     @property
     def title(self):
@@ -300,7 +313,7 @@ class Audio(QtWidgets.QTabWidget):
 
 class AudioList(FlixList):
     def __init__(self, parent, app: FastFlixApp, starting_pos=0):
-        super(AudioList, self).__init__(parent, "Audio Tracks", starting_pos)
+        super(AudioList, self).__init__(parent, t("Audio Tracks"), starting_pos)
         self.available_audio_encoders = app.fastflix.audio_encoders
         self.app = app
 
@@ -317,7 +330,7 @@ class AudioList(FlixList):
             track_info += f" - {x.codec_name}"
             if "profile" in x:
                 track_info += f" ({x.profile})"
-            track_info += f" - {x.channels} channels"
+            track_info += f" - {x.channels} {t('channels')}"
 
             new_item = Audio(
                 self,
@@ -353,14 +366,16 @@ class AudioList(FlixList):
         for track in self.tracks:
             if track.enabled:
                 tracks.append(
-                    {
-                        "index": track.index,
-                        "outdex": track.outdex,
-                        "conversion": track.conversion,
-                        "codec": track.codec,
-                        "downmix": track.downmix,
-                        "title": track.title,
-                        "language": track.language,
-                    }
+                    AudioTrack(
+                        index=track.index,
+                        outdex=track.outdex,
+                        conversion_bitrate=track.conversion["bitrate"],
+                        conversion_codec=track.conversion["codec"],
+                        codec=track.codec,
+                        downmix=track.downmix,
+                        title=track.title,
+                        language=track.language,
+                    )
                 )
+
         return Box(audio_tracks=tracks, audio_track_count=len(tracks))

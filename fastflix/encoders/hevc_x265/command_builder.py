@@ -2,6 +2,7 @@
 import re
 import secrets
 from pathlib import Path
+from dataclasses import asdict
 
 from box import Box
 
@@ -9,25 +10,19 @@ from fastflix.encoders.common.audio import build_audio
 from fastflix.encoders.common.helpers import Command, generate_ending, generate_ffmpeg_start, generate_filters, null
 from fastflix.encoders.common.subtitles import build_subtitle
 
+# from fastflix.models.encode import
+from fastflix.models.fastflix import FastFlix
+
 
 def build(
-    source,
-    video_track,
-    ffmpeg,
-    temp_dir,
-    output_video,
-    streams,
-    stream_track,
+    fastflix: FastFlix,
     bitrate=None,
     crf=None,
     preset="fast",
-    audio_tracks=(),
-    subtitle_tracks=(),
     disable_hdr=False,
     side_data=None,
     x265_params=None,
     intra_encoding=False,
-    pix_fmt="yuv420p10le",
     tune=None,
     profile="default",
     attachments="",
@@ -38,21 +33,29 @@ def build(
     aq_mode=2,
     **kwargs,
 ):
-    audio = build_audio(audio_tracks)
-    subtitles, burn_in_track = build_subtitle(subtitle_tracks)
-    filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
-    ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
+    audio = build_audio(fastflix.current_video.video_settings.audio_tracks)
+    subtitles, burn_in_track = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
+    filters = generate_filters(
+        disable_hdr=disable_hdr, burn_in_track=burn_in_track, **asdict(fastflix.current_video.video_settings)
+    )
+    ending = generate_ending(
+        audio=audio,
+        subtitles=subtitles,
+        cover=attachments,
+        output_video=fastflix.current_video.video_settings.output_path,
+        **kwargs,
+    )
 
     if not side_data:
         side_data = Box(default_box=True)
 
     beginning = generate_ffmpeg_start(
-        source=source,
-        ffmpeg=ffmpeg,
+        source=fastflix.current_video.source,
+        ffmpeg=fastflix.config.ffmpeg,
         encoder="libx265",
-        video_track=video_track,
+        video_track=fastflix.current_video.video_settings.selected_track,
         filters=filters,
-        pix_fmt=pix_fmt,
+        pix_fmt=fastflix.current_video.video_settings.pix_fmt,
         **kwargs,
     )
 
@@ -70,9 +73,7 @@ def build(
     if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
         x265_params.append(f"hdr10_opt={'1' if hdr10_opt else '0'}")
 
-        if streams.video[stream_track].get("color_primaries") == "bt2020" or (
-            side_data and side_data.get("color_primaries") == "bt2020"
-        ):
+        if fastflix.current_video.color_space == "bt2020":
             x265_params.extend(
                 [
                     "colorprim=bt2020",

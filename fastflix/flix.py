@@ -90,7 +90,7 @@ def execute(command: List, work_dir: Union[Path, str] = None, timeout: int = Non
     )
 
 
-def ffmpeg_configuration(app, config: Config, **_) -> Tuple[str, list]:
+def ffmpeg_configuration(app, config: Config, **_):
     """ Extract the version and libraries available from the specified version of FFmpeg """
     res = execute([f'"{config.ffmpeg}"', "-version"])
     if res.returncode != 0:
@@ -315,22 +315,22 @@ def convert_mastering_display(data: Box) -> Tuple[Box, str]:
 def parse_hdr_details(app: FastFlixApp, **_):
     streams = app.fastflix.current_video.streams
     video_track = app.fastflix.current_video.video_settings.selected_track
-    if streams and streams.video and streams.video[video_track].get("side_data_list"):
-        try:
-            master_display, cll = convert_mastering_display(streams.video[0])
-        except Exception:
-            logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
-        else:
-            if master_display:
-                return Box(
-                    pix_fmt=streams.video[video_track].get("pix_fmt"),
-                    color_space=streams.video[video_track].get("color_space"),
-                    color_primaries=streams.video[video_track].get("color_primaries"),
-                    color_transfer=streams.video[video_track].get("color_transfer"),
-                    master_display=master_display,
-                    cll=cll,
-                )
-
+    if streams and streams.video:
+        for video_stream in streams.video:
+            if video_stream["index"] == video_track and video_stream.get("side_data_list"):
+                try:
+                    master_display, cll = convert_mastering_display(streams.video[0])
+                except Exception:
+                    logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
+                else:
+                    if master_display:
+                        app.fastflix.current_video.pix_fmt = streams.video[video_track].get("pix_fmt")
+                        app.fastflix.current_video.color_space = streams.video[video_track].get("color_space")
+                        app.fastflix.current_video.color_primaries = streams.video[video_track].get("color_primaries")
+                        app.fastflix.current_video.color_transfer = streams.video[video_track].get("color_transfer")
+                        app.fastflix.current_video.master_display = master_display
+                        app.fastflix.current_video.cll = cll
+                        return
     result = execute(
         [
             f'"{app.fastflix.config.ffprobe}"',

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import importlib.machinery  # Needed for pyinstaller
+from dataclasses import asdict
 import logging
 import os
 import secrets
@@ -9,6 +10,7 @@ import time
 from datetime import timedelta
 from pathlib import Path
 from queue import Queue
+from typing import Union, Tuple, List, Dict
 
 import pkg_resources
 import reusables
@@ -18,7 +20,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.encoders.common import helpers
 from fastflix.flix import FlixError, generate_thumbnail_command, parse, parse_hdr_details, get_auto_crop
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import Video
+from fastflix.models.video import Video, VideoSettings
 from fastflix.shared import FastFlixInternalException, error_message, file_date, time_to_number
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
@@ -288,13 +290,14 @@ class Main(QtWidgets.QWidget):
         self.app.fastflix.config.save()
         if not previous_auto_crop and self.app.fastflix.config.opt("auto_crop"):
             self.get_auto_crop()
-        if not self.app.fastflix.config.opt("keep_aspect_ratio"):
-            self.widgets.scale.keep_aspect.setChecked(False)
-        if (rotate := self.app.fastflix.config.opt("rotate")) > 0:
-            self.widgets.rotate.setCurrentIndex(rotate // 90)
-        if (flip := self.app.fastflix.config.opt("flip")) > 0:
-            self.widgets.flip.setCurrentIndex(flip)
+        self.loading_video = True
+        self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
+        self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") // 90)
+        self.widgets.flip.setCurrentIndex(self.app.fastflix.config.opt("flip"))
         self.video_options.update_profile()
+        # Hack to prevent a lot of thumbnail generation
+        self.loading_video = False
+        self.page_update()
 
     def init_flip(self):
         self.widgets.flip = QtWidgets.QComboBox()
@@ -314,7 +317,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.flip.currentIndexChanged.connect(lambda: self.page_update())
         return self.widgets.flip
 
-    def get_flips(self):
+    def get_flips(self) -> Tuple[bool, bool]:
         mapping = {0: (False, False), 1: (True, False), 2: (False, True), 3: (True, True)}
         return mapping[self.widgets.flip.currentIndex()]
 
@@ -635,10 +638,14 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or not self.initialized or self.loading_video:
             return
 
-        start_pos = self.start_time or self.initial_duration // 10
+        start_pos = self.start_time or self.app.fastflix.current_video.duration // 10
 
-        blocks = int((self.initial_duration - start_pos) // 5)
-        times = [x for x in range(int(start_pos), int(self.initial_duration), blocks) if x < self.initial_duration][:4]
+        blocks = int((self.app.fastflix.current_video.duration - start_pos) // 5)
+        times = [
+            x
+            for x in range(int(start_pos), int(self.app.fastflix.current_video.duration), blocks)
+            if x < self.app.fastflix.current_video.duration
+        ][:4]
 
         self.app.processEvents()
         result_list = []
@@ -684,7 +691,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = False
         self.widgets.crop.bottom.setText(str(b))
 
-    def build_crop(self):
+    def build_crop(self) -> Union[str, None]:
         try:
             top = int(self.widgets.crop.top.text())
             left = int(self.widgets.crop.left.text())
@@ -698,21 +705,22 @@ class Main(QtWidgets.QWidget):
         if (top + left + right + bottom) == 0:
             return None
         try:
-            assert top >= 0, "Top must be positive number"
-            assert left >= 0, "Left must be positive number"
-            assert width > 0, "Total video width must be greater than 0"
-            assert height > 0, "Total video height must be greater than 0"
-            assert width <= self.app.fastflix.current_video.width, "Width must be smaller than video width"
-            assert height <= self.app.fastflix.current_video.height, "Height must be smaller than video height"
+            assert top >= 0, t("Top must be positive number")
+            assert left >= 0, t("Left must be positive number")
+            assert width > 0, t("Total video width must be greater than 0")
+            assert height > 0, t("Total video height must be greater than 0")
+            assert width <= self.app.fastflix.current_video.width, t("Width must be smaller than video width")
+            assert height <= self.app.fastflix.current_video.height, t("Height must be smaller than video height")
         except AssertionError as err:
-            error_message(f"Invalid Crop: {err}")
+            error_message(f"{t('Invalid Crop')}: {err}")
             return
         return f"{width}:{height}:{left}:{top}"
 
-    def keep_aspect_update(self):
+    def keep_aspect_update(self) -> None:
         keep_aspect = self.widgets.scale.keep_aspect.isChecked()
 
         if keep_aspect:
+            # TODO need to find way to translate and keep logic
             self.widgets.scale.height.setText("Auto")
         else:
             try:
@@ -785,7 +793,7 @@ class Main(QtWidgets.QWidget):
 
         if keep_aspect and (not height or not width):
             self.scale_updating = False
-            return logger.warning("Invalid source dimensions")
+            return logger.warning(t("Invalid source dimensions"))
             # return self.scale_warning_message.setText("Invalid source dimensions")
 
         try:
@@ -793,19 +801,19 @@ class Main(QtWidgets.QWidget):
             assert scale_width > 0
         except (ValueError, AssertionError):
             self.scale_updating = False
-            return logger.warning("Invalid width")
+            return logger.warning(t("Invalid width"))
             # return self.scale_warning_message.setText("Invalid main_width")
 
         if scale_width % 2:
             self.scale_updating = False
             self.widgets.scale.width.setStyleSheet("background-color: red;")
             self.widgets.scale.width.setToolTip(
-                f"Width must be divisible by 2 - Source width: {self.app.fastflix.current_video.width}"
+                f"{t('Width must be divisible by 2 - Source width')}: {self.app.fastflix.current_video.width}"
             )
-            return logger.warning("Width must be divisible by 2")
+            return logger.warning(t("Width must be divisible by 2"))
             # return self.scale_warning_message.setText("Width must be divisible by 8")
         else:
-            self.widgets.scale.width.setToolTip(f"Source width: {self.app.fastflix.current_video.width}")
+            self.widgets.scale.width.setToolTip(f"{t('Source width')}: {self.app.fastflix.current_video.width}")
 
         if keep_aspect:
             self.widgets.scale.height.setText("Auto")
@@ -836,20 +844,20 @@ class Main(QtWidgets.QWidget):
             assert scale_height == -1 or scale_height > 0
         except (ValueError, AssertionError):
             self.scale_updating = False
-            return logger.warning("Invalid height")
+            return logger.warning(t("Invalid height"))
             # return self.scale_warning_message.setText("Invalid height")
 
         if scale_height != -1 and scale_height % 2:
             self.widgets.scale.height.setStyleSheet("background-color: red;")
             self.widgets.scale.height.setToolTip(
-                f"Height must be divisible by 2 - Source height: {self.app.fastflix.current_video.height}"
+                f"{t('Height must be divisible by 2 - Source height')}: {self.app.fastflix.current_video.height}"
             )
             self.scale_updating = False
             return logger.warning(
-                f"Height must be divisible by 2 - Source height: {self.app.fastflix.current_video.height}"
+                f"{t('Height must be divisible by 2 - Source height')}: {self.app.fastflix.current_video.height}"
             )
         else:
-            self.widgets.scale.height.setToolTip(f"Source height: {self.app.fastflix.current_video.height}")
+            self.widgets.scale.height.setToolTip(f"{t('Source height')}: {self.app.fastflix.current_video.height}")
             # return self.scale_warning_message.setText("Height must be divisible by 8")
         # self.scale_warning_message.setText("")
         self.widgets.scale.width.setStyleSheet("background-color: white;")
@@ -860,7 +868,7 @@ class Main(QtWidgets.QWidget):
     def clear_current_video(self):
         self.app.fastflix.current_video = None
         self.input_video = None
-        self.video_path_widget.setText("No Source Selected")
+        self.video_path_widget.setText(t("No Source Selected"))
         self.output_video_path_widget.setText("")
         self.output_path_button.setDisabled(True)
         self.output_video_path_widget.setDisabled(True)
@@ -868,23 +876,26 @@ class Main(QtWidgets.QWidget):
             self.widgets.video_track.removeItem(0)
         self.widgets.convert_button.setDisabled(True)
         self.widgets.convert_button.setStyleSheet("background-color:gray;")
-        self.widgets.preview.setText("No Video File")
+        self.widgets.preview.setText(t("No Video File"))
         self.page_update()
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
         self.loading_video = True
         self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())
-        tasks = [Task(t("Parse Video details"), parse), Task(t("Determine HDR details"), parse_hdr_details)]
+        tasks = [
+            Task(t("Parse Video details"), parse),
+            Task(t("Determine HDR details"), parse_hdr_details),
+        ]
 
         try:
             ProgressBar(self.app, tasks)
         except FlixError:
-            error_message(f"Not a video file<br>{self.input_video}")
+            error_message(f"{t('Not a video file')}<br>{self.input_video}")
             self.clear_current_video()
 
         text_video_tracks = [
-            f"{x.index}: codec {x.codec_name} " f'- pix_fmt {x.get("pix_fmt")} ' f'- profile {x.get("profile")}'
+            f'{x.index}: {t("codec")} {x.codec_name} - {t("pix_fmt")} {x.get("pix_fmt")} - {t("profile")} {x.get("profile")}'
             for x in self.app.fastflix.current_video.streams.video
         ]
         self.widgets.video_track.clear()
@@ -903,7 +914,7 @@ class Main(QtWidgets.QWidget):
                 )
             )
         )
-        self.widgets.scale.width.setToolTip(f"Source width: {self.app.fastflix.current_video.width}")
+        self.widgets.scale.width.setToolTip(f"{t('Source width')}: {self.app.fastflix.current_video.width}")
         self.widgets.scale.height.setText(
             str(
                 self.app.fastflix.current_video.height
@@ -913,22 +924,20 @@ class Main(QtWidgets.QWidget):
                 )
             )
         )
-        self.widgets.scale.height.setToolTip(f"Source height: {self.app.fastflix.current_video.height}")
+        self.widgets.scale.height.setToolTip(f"{t('Source height')}: {self.app.fastflix.current_video.height}")
         self.widgets.video_track.addItems(text_video_tracks)
 
         self.widgets.video_track.setDisabled(bool(len(self.app.fastflix.current_video.streams.video) == 1))
 
-        self.initial_duration = self.app.fastflix.current_video.duration
-
-        logger.debug(f"{len(self.app.fastflix.current_video.streams['video'])} video tracks found")
-        logger.debug(f"{len(self.app.fastflix.current_video.streams['audio'])} audio tracks found")
+        logger.debug(f"{len(self.app.fastflix.current_video.streams['video'])} {t('video tracks found')}")
+        logger.debug(f"{len(self.app.fastflix.current_video.streams['audio'])} {t('audio tracks found')}")
 
         if self.app.fastflix.current_video.streams["subtitle"]:
-            logger.debug(f"{len(self.app.fastflix.current_video.streams['subtitle'])} subtitle tracks found")
+            logger.debug(f"{len(self.app.fastflix.current_video.streams['subtitle'])} {t('subtitle tracks found')}")
         if self.app.fastflix.current_video.streams["attachment"]:
-            logger.debug(f"{len(self.app.fastflix.current_video.streams['attachment'])} attachment tracks found")
+            logger.debug(f"{len(self.app.fastflix.current_video.streams['attachment'])} {t('attachment tracks found')}")
         if self.app.fastflix.current_video.streams["data"]:
-            logger.debug(f"{len(self.app.fastflix.current_video.streams['data'])} data tracks found")
+            logger.debug(f"{len(self.app.fastflix.current_video.streams['data'])} {t('data tracks found')}")
 
         self.widgets.end_time.setText(self.number_to_time(self.app.fastflix.current_video.duration))
         title_name = [
@@ -948,51 +957,63 @@ class Main(QtWidgets.QWidget):
         self.loading_video = False
 
     @property
-    def video_track(self):
+    def video_track(self) -> int:
         return int(self.widgets.video_track.currentIndex())
 
     @property
-    def original_video_track(self):
+    def original_video_track(self) -> int:
         return int(self.widgets.video_track.currentText().split(":", 1)[0])
 
     @property
-    def pix_fmt(self):
+    def pix_fmt(self) -> str:
         return self.app.fastflix.current_video.streams.video[self.video_track].pix_fmt
 
     @staticmethod
-    def number_to_time(number):
+    def number_to_time(number) -> str:
         return str(timedelta(seconds=float(number)))[:10]
 
     @property
-    def start_time(self):
+    def start_time(self) -> float:
         return time_to_number(self.widgets.start_time.text())
 
     @property
-    def end_time(self):
+    def end_time(self) -> float:
         return time_to_number(self.widgets.end_time.text())
 
     @property
-    def fast_time(self):
+    def fast_time(self) -> bool:
         return self.widgets.fast_time.currentText() == "fast"
 
     @property
-    def remove_metadata(self):
+    def remove_metadata(self) -> bool:
         return self.widgets.remove_metadata.isChecked()
 
     @property
-    def copy_chapters(self):
+    def copy_chapters(self) -> bool:
         return self.widgets.chapters.isChecked()
 
     @reusables.log_exception("fastflix", show_traceback=False)
-    def generate_thumbnail(self, settings):
+    def generate_thumbnail(self):
         if not self.input_video or self.loading_video:
             return
 
-        if settings.pix_fmt == "yuv420p10le" and self.pix_fmt in ("yuv420p10le", "yuv420p12le"):
-            settings.disable_hdr = True
-        filters = helpers.generate_filters(custom_filters="scale='min(320\\,iw):-1'", **settings)
+        disable_hdr = False
+        if self.app.fastflix.current_video.video_settings.pix_fmt == "yuv420p10le" and self.pix_fmt in (
+            "yuv420p10le",
+            "yuv420p12le",
+        ):
+            disable_hdr = True
+        filters = helpers.generate_filters(
+            custom_filters="scale='min(320\\,iw):-1'",
+            disable_hdr=disable_hdr,
+            **asdict(self.app.fastflix.current_video.video_settings),
+        )
 
-        preview_place = self.initial_duration // 10 if settings.start_time == 0 else settings.start_time
+        preview_place = (
+            self.app.fastflix.current_video.duration // 10
+            if self.app.fastflix.current_video.video_settings.start_time == 0
+            else self.app.fastflix.current_video.video_settings.start_time
+        )
 
         thumb_command = generate_thumbnail_command(
             config=self.app.fastflix.config,
@@ -1000,7 +1021,7 @@ class Main(QtWidgets.QWidget):
             output=self.thumb_file,
             filters=filters,
             start_time=preview_place,
-            input_track=self.original_video_track,
+            input_track=self.app.fastflix.current_video.video_settings.selected_track,
         )
         try:
             self.thumb_file.unlink()
@@ -1012,7 +1033,7 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def thumbnail_generated(self, success=False):
         if not success or not self.thumb_file.exists():
-            self.widgets.preview.setText("Error Updating Thumbnail")
+            self.widgets.preview.setText(t("Error Updating Thumbnail"))
             return
 
         pixmap = QtGui.QPixmap(str(self.thumb_file))
@@ -1034,7 +1055,7 @@ class Main(QtWidgets.QWidget):
         end_time = self.end_time
         if self.end_time == float(self.app.fastflix.current_video.format.get("duration", 0)):
             end_time = None
-        if self.end_time and self.end_time - 0.1 <= self.initial_duration <= self.end_time + 0.1:
+        if self.end_time and self.end_time - 0.1 <= self.app.fastflix.current_video.duration <= self.end_time + 0.1:
             end_time = None
 
         scale = self.build_scale()
@@ -1046,58 +1067,59 @@ class Main(QtWidgets.QWidget):
             scale = None
 
         v_flip, h_flip = self.get_flips()
-        settings = Box(
+        self.app.fastflix.current_video.video_settings = VideoSettings(
             crop=self.build_crop(),
             scale=scale,
-            source=self.input_video,
             start_time=self.start_time,
             end_time=end_time,
-            video_track=self.original_video_track,
-            stream_track=self.video_track,
+            selected_track=self.original_video_track,
+            # stream_track=self.video_track,
             pix_fmt=self.pix_fmt,
             rotate=self.rotation_to_transpose(),
-            v_flip=v_flip,
-            h_flip=h_flip,
-            streams=self.app.fastflix.current_video.streams,
-            format_info=self.app.fastflix.current_video.format,
-            work_dir=self.app.fastflix.current_video.work_path,
-            side_data=self.side_data,
-            ffmpeg=self.app.fastflix.config.ffmpeg,
-            ffprobe=self.app.fastflix.config.ffprobe,
-            temp_dir=self.temp_dir_name,
-            output_video=self.output_video,
-            remove_metadata=self.remove_metadata,
-            copy_chapters=self.copy_chapters,
-            fast_time=self.fast_time,
+            vertical_flip=v_flip,
+            horizontal_flip=h_flip,
+            output_path=Path(self.output_video),
+            # streams=self.app.fastflix.current_video.streams,
+            # format_info=self.app.fastflix.current_video.format,
+            # work_dir=self.app.fastflix.current_video.work_path,
+            # side_data=self.side_data,
+            # ffmpeg=self.app.fastflix.config.ffmpeg,
+            # ffprobe=self.app.fastflix.config.ffprobe,
+            # temp_dir=self.temp_dir_name,
+            # output_video=self.output_video,
+            # remove_metadata=self.remove_metadata,
+            # copy_chapters=self.copy_chapters,
+            # fast_time=self.fast_time,
             video_title=self.title,
         )
-        settings.update(**self.video_options.get_settings())
-        logger.debug(f"Settings gathered: {settings.to_dict()}")
-        return settings
+
+        self.app.fastflix.current_video.video_settings.encoder_options = self.video_options.get_settings()
 
     def build_commands(self):
         if not self.initialized or not self.app.fastflix.current_video.streams or self.loading_video:
             return None, None
         try:
-            settings = self.get_all_settings()
+            self.get_all_settings()
         except FastFlixInternalException as err:
             error_message(str(err))
             return None, None
-        commands = self.app.fastflix.encoders[self.convert_to].build(**settings)
-        after_done = self.video_options.commands.after_done(builder=True)
-        if after_done is not None:
-            commands.append(after_done)
-        self.video_options.commands.update_commands(commands)
-        return settings, commands
+
+        # commands = self.app.fastflix.encoders[self.convert_to].build(**settings)
+        # after_done = self.video_options.commands.after_done(builder=True)
+        # if after_done is not None:
+        #     commands.append(after_done)
+        # self.video_options.commands.update_commands(commands)
+        # return settings, commands
 
     def page_update(self, build_thumbnail=True):
         if not self.initialized or self.loading_video:
             return
         self.last_page_update = time.time()
         self.video_options.refresh()
-        settings, _ = self.build_commands()
+        # TODO fix
+        self.build_commands()
         if build_thumbnail:
-            self.generate_thumbnail(settings)
+            self.generate_thumbnail()
 
     def close(self, no_cleanup=False):
         try:
@@ -1130,13 +1152,13 @@ class Main(QtWidgets.QWidget):
             return
 
         if not self.input_video:
-            return error_message("Have to select a video first")
+            return error_message(t("Have to select a video first"))
         if self.encoding_worker and self.encoding_worker.is_alive():
-            return error_message("Still encoding something else")
+            return error_message(t("Still encoding something else"))
         if not self.output_video:
-            return error_message("Please specify output video")
+            return error_message(t("Please specify output video"))
         if self.input_video.resolve().absolute() == Path(self.output_video).resolve().absolute():
-            return error_message("Output video path is same as source!")
+            return error_message(t("Output video path is same as source!"))
 
         if not self.output_video.lower().endswith(self.current_encoder.video_extension):
             sm = QtWidgets.QMessageBox()
@@ -1171,15 +1193,16 @@ class Main(QtWidgets.QWidget):
             if sm.clickedButton().text() == "Cancel":
                 return
 
-        _, commands = self.build_commands()
+        # _, commands = self.build_commands()
 
         self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")
         self.widgets.pause_resume.setDisabled(False)
         self.widgets.pause_resume.setStyleSheet("background-color:orange;")
         self.converting = True
-        for command in commands:
-            self.app.fastflix.worker_queue.put(("command", command.command, self.temp_dir_name, command.shell))
+        # TODO fix
+        # for command in commands:
+        #     self.app.fastflix.worker_queue.put(("command", command.command, self.temp_dir_name, command.shell))
         self.disable_all()
         self.video_options.setCurrentWidget(self.video_options.status)
 
