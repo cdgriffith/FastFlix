@@ -66,34 +66,31 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     def get_settings(self):
         settings = Box()
-        settings.update(self.current_settings.get_settings())
-        tracks = 1
+        self.current_settings.update_video_encoder_settings()
+
         if getattr(self.main.current_encoder, "enable_audio", False):
-            audio_settings = self.audio.get_settings()
-            tracks += audio_settings.audio_track_count
-            settings.update(audio_settings)
+            self.audio.update_audio_settings()
         if getattr(self.main.current_encoder, "enable_subtitles", False):
             subtitle_settings = self.subtitles.get_settings()
-            tracks += subtitle_settings.subtitle_track_count
             settings.update(subtitle_settings)
         if getattr(self.main.current_encoder, "enable_attachments", False):
-            settings.update(self.attachments.get_settings(out_stream_start_index=tracks))
+            settings.update(self.attachments.get_settings())
         return settings
 
     def new_source(self):
         if getattr(self.main.current_encoder, "enable_audio", False):
-            self.audio.new_source(self.audio_formats, starting_pos=1)
+            self.audio.new_source(self.audio_formats)
         if getattr(self.main.current_encoder, "enable_subtitles", False):
-            self.subtitles.new_source(starting_pos=len(self.audio) + 1)
+            self.subtitles.new_source()
         if getattr(self.main.current_encoder, "enable_attachments", False):
             self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
         self.current_settings.new_source()
 
     def refresh(self):
         if getattr(self.main.current_encoder, "enable_audio", False):
-            self.audio.refresh(starting_pos=1)
+            self.audio.refresh()
         if getattr(self.main.current_encoder, "enable_subtitles", False):
-            self.subtitles.refresh(starting_pos=len(self.audio) + 1)
+            self.subtitles.refresh()
 
     def update_profile(self):
         self.current_settings.update_profile()

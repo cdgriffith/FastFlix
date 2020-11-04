@@ -8,6 +8,8 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.encode import x265Settings
+from fastflix.encoders.hevc_x265.main import name
 
 logger = logging.getLogger("fastflix")
 
@@ -396,26 +398,27 @@ class HEVC(SettingPanel):
         super().new_source()
         self.setting_change()
 
-    def get_settings(self):
-        settings = Box(
+    def update_video_encoder_settings(self):
+
+        x265_params_text = self.widgets.x265_params.text().strip()
+        tune = self.widgets.tune.currentText()
+
+        settings = x265Settings(
+            name=name,
             disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
             intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
             max_mux=self.widgets.max_mux.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             profile=self.widgets.profile.currentText(),
+            hdr10=self.widgets.hdr10.isChecked(),
             hdr10_opt=self.widgets.hdr10_opt.isChecked(),
             repeat_headers=self.widgets.repeat_headers.isChecked(),
             aq_mode=self.widgets.aq_mode.currentIndex(),
+            tune=tune if tune.lower() != "default" else None,
+            x265_params=x265_params_text.split(":") if x265_params_text else [],
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
-            extra=self.ffmpeg_extras,
         )
-
-        x265_params_text = self.widgets.x265_params.text().strip()
-        settings.x265_params = x265_params_text.split(":") if x265_params_text else []
-
-        tune = self.widgets.tune.currentText()
-        settings.tune = tune if tune.lower() != "default" else None
 
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
@@ -426,7 +429,8 @@ class HEVC(SettingPanel):
                 settings.bitrate = self.widgets.custom_bitrate.text()
             else:
                 settings.bitrate = bitrate.split(" ", 1)[0]
-        return settings
+
+        self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):
         self.mode = x.text()

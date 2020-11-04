@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from multiprocessing import Queue
 from pathlib import Path
-from typing import List, Union
+from typing import List, Union, Dict
 
 from appdirs import user_data_dir
 
@@ -14,7 +14,7 @@ from fastflix.models.video import Video
 @dataclass
 class FastFlix(BaseDataClass):
     audio_encoders: List[str] = None
-    encoders: List = None
+    encoders: Dict = None
     config: Config = None
     data_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
     log_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "logs"

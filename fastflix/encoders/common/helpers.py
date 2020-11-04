@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+from typing import List, Union
+from pathlib import Path
 import reusables
 
 from fastflix.models.fastflix import FastFlix
+from fastflix.models.encode import AudioTrack, SubtitleTrack
 
 null = "/dev/null"
 if reusables.win_based:
@@ -70,8 +73,8 @@ def generate_ffmpeg_start(
 def generate_ending(
     audio,
     subtitles,
-    cover,
-    output_video=None,
+    cover="",
+    output_video: Path = None,
     copy_chapters=True,
     remove_metadata=True,
     null_ending=False,
@@ -84,7 +87,7 @@ def generate_ending(
         f"{audio} {subtitles} {cover} {extra} "
     )
     if output_video and not null_ending:
-        output_video = output_video.replace("\\", "/")
+        output_video = str(output_video).replace("\\", "/")
         ending += f'"{output_video}"'
     else:
         ending += null
@@ -98,7 +101,7 @@ def generate_filters(
     scale_filter="lanczos",
     scale_width=None,
     scale_height=None,
-    disable_hdr=False,
+    remove_hdr=False,
     rotate=None,
     vertical_flip=None,
     horizontal_flip=None,
@@ -127,7 +130,7 @@ def generate_filters(
     if horizontal_flip:
         filter_list.append("hflip")
 
-    if disable_hdr:
+    if remove_hdr:
         filter_list.append(
             "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,"
             "zscale=t=bt709:m=bt709:r=tv,format=yuv420p"

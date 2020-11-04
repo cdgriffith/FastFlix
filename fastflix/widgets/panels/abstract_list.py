@@ -2,17 +2,20 @@
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.models.fastflix_app import FastFlixApp
+
 
 class FlixList(QtWidgets.QWidget):
     """
     Children widgets must have "set_first", "set_last", and "set_outdex" methods and "enabled" property.
     """
 
-    def __init__(self, parent, list_name, starting_pos=1):
+    def __init__(self, app: FastFlixApp, parent, list_name, list_type):
         super().__init__(parent)
+        self.app = app
         self.main = parent.main
         self.inner_layout = None
-        self.starting_pos = starting_pos
+        self.list_type = list_type
 
         layout = QtWidgets.QGridLayout()
         layout.addWidget(QtWidgets.QLabel(list_name))
@@ -61,7 +64,12 @@ class FlixList(QtWidgets.QWidget):
             self.inner_layout.removeWidget(widget)
         self.inner_layout.takeAt(0)
         disabled = 0
-        for index, widget in enumerate(self.tracks, self.starting_pos):
+        start = 1  # Audio starts after video
+        if self.list_type == "subtitle":
+            # After audio + video
+            start = len(self.app.fastflix.current_video.video_settings.audio_tracks) + 1
+
+        for index, widget in enumerate(self.tracks, start):
             self.inner_layout.addWidget(widget)
             if not widget.enabled:
                 disabled += 1
@@ -98,6 +106,5 @@ class FlixList(QtWidgets.QWidget):
     def __len__(self):
         return len([x for x in self.tracks if x.enabled])
 
-    def refresh(self, starting_pos=0):
-        self.starting_pos = starting_pos
+    def refresh(self):
         self.reorder(update=False)

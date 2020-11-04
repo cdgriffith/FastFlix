@@ -67,6 +67,8 @@ class Audio(QtWidgets.QTabWidget):
             convert_bitrate=None,
         )
 
+        self.widgets.title.setMaximumWidth(150)
+
         if all_info:
             self.widgets.audio_info.setToolTip(all_info.to_yaml())
 
@@ -82,7 +84,7 @@ class Audio(QtWidgets.QTabWidget):
         ]
 
         self.widgets.language.addItems(["No Language Set"] + language_list)
-        self.widgets.language.setMaximumWidth(150)
+        self.widgets.language.setMaximumWidth(110)
         if language:
             try:
                 lang = Lang(language).name
@@ -312,21 +314,20 @@ class Audio(QtWidgets.QTabWidget):
 
 
 class AudioList(FlixList):
-    def __init__(self, parent, app: FastFlixApp, starting_pos=0):
-        super(AudioList, self).__init__(parent, t("Audio Tracks"), starting_pos)
+    def __init__(self, parent, app: FastFlixApp):
+        super(AudioList, self).__init__(app, parent, t("Audio Tracks"), "audio")
         self.available_audio_encoders = app.fastflix.audio_encoders
         self.app = app
 
-    def new_source(self, codecs, starting_pos=0):
-        self.starting_pos = starting_pos
+    def new_source(self, codecs):
         self.tracks = []
-        for i, x in enumerate(self.app.fastflix.current_video.streams.audio):
+        for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
             track_info = ""
             tags = x.get("tags", {})
             if tags:
                 track_info += tags.get("title", "")
-                if "language" in tags:
-                    track_info += f" {tags.language}"
+                # if "language" in tags:
+                #     track_info += f" {tags.language}"
             track_info += f" - {x.codec_name}"
             if "profile" in x:
                 track_info += f" ({x.profile})"
@@ -341,6 +342,7 @@ class AudioList(FlixList):
                 original=True,
                 first=True if i == 0 else False,
                 index=x.index,
+                outdex=i,
                 codec=x.codec_name,
                 codecs=codecs,
                 channels=x.channels,
@@ -361,7 +363,7 @@ class AudioList(FlixList):
         for track in self.tracks:
             track.update_codecs(allowed_formats or set())
 
-    def get_settings(self):
+    def update_audio_settings(self):
         tracks = []
         for track in self.tracks:
             if track.enabled:
@@ -377,5 +379,4 @@ class AudioList(FlixList):
                         language=track.language,
                     )
                 )
-
-        return Box(audio_tracks=tracks, audio_track_count=len(tracks))
+        self.app.fastflix.current_video.video_settings.audio_tracks = tracks

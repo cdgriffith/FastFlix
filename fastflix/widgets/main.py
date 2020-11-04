@@ -10,15 +10,24 @@ import time
 from datetime import timedelta
 from pathlib import Path
 from queue import Queue
+import copy
 from typing import Union, Tuple, List, Dict
 
 import pkg_resources
 import reusables
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
+from appdirs import user_data_dir
 
 from fastflix.encoders.common import helpers
-from fastflix.flix import FlixError, generate_thumbnail_command, parse, parse_hdr_details, get_auto_crop
+from fastflix.flix import (
+    FlixError,
+    generate_thumbnail_command,
+    parse,
+    parse_hdr_details,
+    get_auto_crop,
+    extract_attachments,
+)
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video, VideoSettings
 from fastflix.shared import FastFlixInternalException, error_message, file_date, time_to_number
@@ -606,6 +615,9 @@ class Main(QtWidgets.QWidget):
             caption="Open Video",
             filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx *.webm *.mpg *.mp2 *.mpeg *.mpe *.mpv *.ogg *.m4p"
             " *.wmv *.mov *.qt *.flv *.hevc *.gif *.webp *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2)",
+            directory=str(
+                self.app.fastflix.current_video.source.parent if self.app.fastflix.current_video else Path.home()
+            ),
         )
         if not filename or not filename[0]:
             return
@@ -885,6 +897,7 @@ class Main(QtWidgets.QWidget):
         self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())
         tasks = [
             Task(t("Parse Video details"), parse),
+            Task(t("Extract covers"), extract_attachments),
             Task(t("Determine HDR details"), parse_hdr_details),
         ]
 
@@ -997,15 +1010,15 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or self.loading_video:
             return
 
-        disable_hdr = False
+        remove_hdr = False
         if self.app.fastflix.current_video.video_settings.pix_fmt == "yuv420p10le" and self.pix_fmt in (
             "yuv420p10le",
             "yuv420p12le",
         ):
-            disable_hdr = True
+            remove_hdr = True
         filters = helpers.generate_filters(
             custom_filters="scale='min(320\\,iw):-1'",
-            disable_hdr=disable_hdr,
+            remove_hdr=remove_hdr,
             **asdict(self.app.fastflix.current_video.video_settings),
         )
 
@@ -1095,28 +1108,38 @@ class Main(QtWidgets.QWidget):
 
         self.app.fastflix.current_video.video_settings.encoder_options = self.video_options.get_settings()
 
-    def build_commands(self):
+    @property
+    def current_encoder(self):
+        try:
+            return self.app.fastflix.encoders[
+                self.app.fastflix.current_video.video_settings.video_encoder_settings.name
+            ]
+        except AttributeError:
+            return self.app.fastflix.encoders[self.convert_to]
+
+    def build_commands(self) -> bool:
         if not self.initialized or not self.app.fastflix.current_video.streams or self.loading_video:
-            return None, None
+            return False
         try:
             self.get_all_settings()
         except FastFlixInternalException as err:
             error_message(str(err))
-            return None, None
+            return False
 
-        # commands = self.app.fastflix.encoders[self.convert_to].build(**settings)
-        # after_done = self.video_options.commands.after_done(builder=True)
-        # if after_done is not None:
-        #     commands.append(after_done)
-        # self.video_options.commands.update_commands(commands)
-        # return settings, commands
+        commands = self.current_encoder.build(fastflix=self.app.fastflix)
+        if not commands:
+            return False
+        after_done = self.video_options.commands.after_done(builder=True)
+        if after_done is not None:
+            commands.append(after_done)
+        self.video_options.commands.update_commands(commands)
+        return True
 
     def page_update(self, build_thumbnail=True):
         if not self.initialized or self.loading_video:
             return
         self.last_page_update = time.time()
         self.video_options.refresh()
-        # TODO fix
         self.build_commands()
         if build_thumbnail:
             self.generate_thumbnail()
@@ -1141,9 +1164,9 @@ class Main(QtWidgets.QWidget):
             return self.widgets.convert_to.currentText().strip()
         return list(self.app.fastflix.encoders.keys())[0]
 
-    @property
-    def current_encoder(self):
-        return self.app.fastflix.encoders[self.convert_to]
+    # @property
+    # def current_encoder(self):
+    #     return self.app.fastflix.encoders[self.convert_to]
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def create_video(self):
@@ -1193,15 +1216,17 @@ class Main(QtWidgets.QWidget):
             if sm.clickedButton().text() == "Cancel":
                 return
 
-        # _, commands = self.build_commands()
+        if not self.build_commands():
+            return
 
         self.widgets.convert_button.setText("⛔ Cancel")
         self.widgets.convert_button.setStyleSheet("background-color:red;")
         self.widgets.pause_resume.setDisabled(False)
         self.widgets.pause_resume.setStyleSheet("background-color:orange;")
         self.converting = True
-        # TODO fix
-        # for command in commands:
+
+        self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
+        # for command in self.app.fastflix.current_video.video_settings.conversion_commands:
         #     self.app.fastflix.worker_queue.put(("command", command.command, self.temp_dir_name, command.shell))
         self.disable_all()
         self.video_options.setCurrentWidget(self.video_options.status)

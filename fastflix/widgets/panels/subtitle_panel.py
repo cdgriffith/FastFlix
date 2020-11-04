@@ -122,7 +122,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
     def init_language(self):
         self.widgets.language.addItems(language_list)
-        self.widgets.language.setMaximumWidth(150)
+        self.widgets.language.setMaximumWidth(110)
         try:
             self.widgets.language.setCurrentIndex(language_list.index(Lang(self.subtitle_lang).name))
         except Exception:
@@ -186,13 +186,12 @@ class Subtitle(QtWidgets.QTabWidget):
 
 
 class SubtitleList(FlixList):
-    def __init__(self, parent, app: FastFlixApp, starting_pos=0):
-        super().__init__(parent, "Subtitle Tracks", starting_pos)
+    def __init__(self, parent, app: FastFlixApp):
+        super().__init__(app, parent, "Subtitle Tracks", "subtitle")
         self.main = parent.main
         self.app = app
 
-    def new_source(self, starting_pos=0):
-        self.starting_pos = starting_pos
+    def new_source(self):
         self.tracks = []
         for index, track in enumerate(self.app.fastflix.current_video.streams.subtitle):
             enabled = True
@@ -241,4 +240,4 @@ class SubtitleList(FlixList):
                     burn_in_count += 1
         if burn_in_count > 1:
             raise FastFlixInternalException(t("More than one track selected to burn in"))
-        return Box(subtitle_tracks=tracks, subtitle_track_count=len(tracks))
+        self.app.fastflix.current_video.video_settings.subtitle_tracks = tracks

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from dataclasses import asdict
 import logging
 from multiprocessing import Queue
 

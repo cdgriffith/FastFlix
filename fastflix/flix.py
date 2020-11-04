@@ -154,17 +154,6 @@ def parse(app: FastFlixApp, **_):
     covers = []
     for track in data.streams:
         if track.codec_type == "video" and track.get("disposition", {}).get("attached_pic"):
-            filename = track.get("tags", {}).get("filename", "")
-            if filename.rsplit(".", 1)[0] in ("cover", "small_cover", "cover_land", "small_cover_land"):
-                covers.append(
-                    (
-                        app.fastflix.config.ffmpeg,
-                        app.fastflix.current_video.source,
-                        track.index,
-                        app.fastflix.current_video.work_path,
-                        filename,
-                    )
-                )
             streams.attachment.append(track)
         elif track.codec_type in streams:
             streams[track.codec_type].append(track)
@@ -185,8 +174,19 @@ def parse(app: FastFlixApp, **_):
     app.fastflix.current_video.width, app.fastflix.current_video.height = determine_rotation(streams)
     app.fastflix.current_video.format = data.format
     app.fastflix.current_video.duration = float(data.format.get("duration", 0))
-    with Pool(processes=4) as pool:
-        pool.starmap(extract_attachment, covers)
+
+
+def extract_attachments(app: FastFlixApp, **_):
+    for track in app.fastflix.current_video.streams.attachment:
+        filename = track.get("tags", {}).get("filename", "")
+        if filename.rsplit(".", 1)[0] in ("cover", "small_cover", "cover_land", "small_cover_land"):
+            extract_attachment(
+                app.fastflix.config.ffmpeg,
+                app.fastflix.current_video.source,
+                track.index,
+                app.fastflix.current_video.work_path,
+                filename,
+            )
 
 
 def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: TemporaryDirectory, file_name: str):

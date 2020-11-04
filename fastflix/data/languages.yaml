@@ -31,6 +31,8 @@ Error Updating Thumbnail:
   en: Error Updating Thumbnail
 Error while moving files in:
   en: Error while moving files in
+Extract covers:
+  en: Extract covers
 FFmpeg not found!:
   en: FFmpeg not found!
 FFmpeg was not properly downloaded as the file size is too small:
