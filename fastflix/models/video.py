@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Union
+from tempfile import TemporaryDirectory
 
 from appdirs import user_data_dir
 from box import Box
@@ -21,16 +22,26 @@ class VideoSettings(BaseDataClass):
     remove_metadata: bool = True
     copy_chapters: bool = True
     video_title: str = None
+    selected_track: int = 0
 
 
 @dataclass
 class Video(BaseDataClass):
     source: Path
-    width: int
-    height: int
-    duration: Union[float, int]
-    colorspace: str = None
+    width: int = 0
+    height: int = 0
+    duration: Union[float, int] = 0
+
     output_path: Path = None
-    streams: dict = None
+    streams: Box = None
     bit_depth: int = 8
-    video_settings: VideoSettings = None
+    video_settings: VideoSettings = field(default_factory=lambda: VideoSettings())
+    work_path: TemporaryDirectory = None
+    pix_fmt: str = ""
+
+    # HDR10 Details
+    color_space: str = ""
+    color_primaries: str = ""
+    color_transfer: str = ""
+    master_display: Box = None
+    cll: str = ""

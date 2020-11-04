@@ -16,7 +16,7 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
-from fastflix.flix import FlixError, generate_thumbnail_command, run_auto_crop, parse, parse_hdr_details, get_auto_crop
+from fastflix.flix import FlixError, generate_thumbnail_command, parse, parse_hdr_details, get_auto_crop
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.shared import FastFlixInternalException, error_message, file_date, time_to_number
@@ -120,6 +120,9 @@ class Main(QtWidgets.QWidget):
         self.show()
         self.initialized = True
         self.last_page_update = time.time()
+
+    def get_temp_work_path(self):
+        return tempfile.TemporaryDirectory(prefix="temp_", dir=self.app.fastflix.config.work_path)
 
     def pause_resume(self):
         if not self.paused:
@@ -602,8 +605,8 @@ class Main(QtWidgets.QWidget):
         )
         if not filename or not filename[0]:
             return
-        self.input_video = filename[0]
-        self.video_path_widget.setText(self.input_video)
+        self.input_video = Path(filename[0])
+        self.video_path_widget.setText(str(self.input_video))
         self.output_video_path_widget.setText(self.generate_output_filename)
         self.output_video_path_widget.setDisabled(False)
         self.output_path_button.setDisabled(False)
@@ -613,7 +616,7 @@ class Main(QtWidgets.QWidget):
     @property
     def generate_output_filename(self):
         if self.input_video:
-            return f"{Path(self.input_video).parent / Path(self.input_video).stem}-fastflix-{secrets.token_hex(2)}.{self.app.fastflix.encoders[self.convert_to].video_extension}"
+            return f"{self.input_video.parent / self.input_video.stem}-fastflix-{secrets.token_hex(2)}.{self.app.fastflix.encoders[self.convert_to].video_extension}"
         return f"{Path('~').expanduser()}{os.sep}fastflix-{secrets.token_hex(2)}.{self.app.fastflix.encoders[self.convert_to].video_extension}"
 
     @property
@@ -854,22 +857,28 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
         self.loading_video = True
-        splash_label = QtWidgets.QLabel(self)
-        splash_label.setText("""<font size=65><b>Loading Video Details...</b></font>""")
-        splash_label.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
-        splash_label.show()
-        self.app.processEvents()
+        # splash_label = QtWidgets.QLabel(self)
+        # splash_label.setText("""<font size=65><b>Loading Video Details...</b></font>""")
+        # splash_label.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
+        # splash_label.show()
+        # self.app.processEvents()
 
-        try:
-            self.temp_dir.cleanup()
-        except Exception:
-            pass
-        self.temp_dir = tempfile.TemporaryDirectory(prefix="temp_", dir=self.app.fastflix.config.work_path)
-        self.temp_dir_name = self.temp_dir.name
+        self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())
+
+        tasks = [Task(t("Parse Video details"), parse), Task(t("Determine HDR details"), parse_hdr_details)]
+        ProgressBar(self.app, tasks)
+
+        return
+        # try:
+        #     self.temp_dir.cleanup()
+        # except Exception:
+        #     pass
+        # self.temp_dir =
+        # self.temp_dir_name = self.temp_dir.name
 
         try:
             self.streams, self.format_info = parse(
-                self.app.fastflix.config, self.input_video, temp_dir=self.temp_dir_name, extract_covers=True
+                self.app, self.input_video, temp_dir=Path(self.temp_dir_name), extract_covers=True
             )
         except FlixError:
             error_message(f"Not a video file<br>{self.input_video}")
@@ -886,8 +895,9 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setStyleSheet("background-color:gray;")
             self.widgets.preview.setText("No Video File")
             self.page_update()
-            splash_label.close()
+            # splash_label.close()
             return
+
         self.side_data = parse_hdr_details(self.app.fastflix.config, self.input_video, streams=self.streams)
         logger.debug(self.streams)
         logger.debug(self.format_info)
@@ -913,7 +923,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setStyleSheet("background-color:gray;")
             self.widgets.preview.setText("No Video File")
             self.page_update()
-            splash_label.close()
+            # splash_label.close()
             return
 
         self.widgets.crop.top.setText("0")
@@ -921,21 +931,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.right.setText("0")
         self.widgets.crop.bottom.setText("0")
         self.widgets.start_time.setText("0:00:00")
-
-        # TODO set width and height by video track
-        rotation = 0
-        if "rotate" in self.streams.video[0].get("tags", {}):
-            rotation = abs(int(self.streams.video[0].tags.rotate))
-        # elif 'side_data_list' in self.streams.video[0]:
-        #     rots = [abs(int(x.rotation)) for x in self.streams.video[0].side_data_list if 'rotation' in x]
-        #     rotation = rots[0] if rots else 0
-
-        if rotation in (90, 270):
-            self.video_width = self.streams.video[0].height
-            self.video_height = self.streams.video[0].width
-        else:
-            self.video_width = self.streams.video[0].width
-            self.video_height = self.streams.video[0].height
 
         self.initial_video_width = self.video_width
         self.initial_video_height = self.video_height
@@ -958,8 +953,7 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.video_track.setDisabled(bool(len(self.streams.video) == 1))
 
-        video_duration = float(self.format_info.get("duration", 0))
-        self.initial_duration = video_duration
+        self.initial_duration = self.app.fastflix.current_video.duration
 
         logger.debug(f"{len(self.streams['video'])} video tracks found")
         logger.debug(f"{len(self.streams['audio'])} audio tracks found")
@@ -1172,11 +1166,9 @@ class Main(QtWidgets.QWidget):
             return error_message("Have to select a video first")
         if self.encoding_worker and self.encoding_worker.is_alive():
             return error_message("Still encoding something else")
-        if not self.input_video:
-            return error_message("Please provide a source video")
         if not self.output_video:
             return error_message("Please specify output video")
-        if Path(self.input_video).resolve().absolute() == Path(self.output_video).resolve().absolute():
+        if self.input_video.resolve().absolute() == Path(self.output_video).resolve().absolute():
             return error_message("Output video path is same as source!")
 
         if not self.output_video.lower().endswith(self.current_encoder.video_extension):
@@ -1277,11 +1269,11 @@ class Main(QtWidgets.QWidget):
         event.setDropAction(QtCore.Qt.CopyAction)
         event.accept()
         try:
-            self.input_video = str(event.mimeData().urls()[0].toLocalFile())
+            self.input_video = Path(event.mimeData().urls()[0].toLocalFile())
         except (ValueError, IndexError):
             return event.ignore()
         else:
-            self.video_path_widget.setText(self.input_video)
+            self.video_path_widget.setText(str(self.input_video))
             self.output_video_path_widget.setText(self.generate_output_filename)
             self.output_video_path_widget.setDisabled(False)
             self.output_path_button.setDisabled(False)

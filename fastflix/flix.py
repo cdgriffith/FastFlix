@@ -11,6 +11,7 @@ from box import Box, BoxError
 
 from fastflix.language import t
 from fastflix.models.config import Config
+from fastflix.models.fastflix_app import FastFlixApp
 from functools import partial
 import time
 from multiprocessing.pool import ThreadPool
@@ -107,10 +108,10 @@ def ffmpeg_configuration(app, config: Config, **_) -> Tuple[str, list]:
     # return version, config
 
 
-def probe(config: Config, file: Path) -> Box:
+def probe(app: FastFlixApp, file: Path) -> Box:
     """ Run FFprobe on a file """
     command = [
-        f'"{config.ffprobe}"',
+        f'"{app.fastflix.config.ffprobe}"',
         "-v",
         "quiet",
         "-print_format",
@@ -127,8 +128,25 @@ def probe(config: Config, file: Path) -> Box:
         raise FlixError(result.stderr)
 
 
-def parse(config: Config, file: Path, temp_dir: Path, extract_covers: bool = False) -> Tuple[Box, str]:
-    data = probe(config, file)
+def determine_rotation(streams) -> Tuple[int, int]:
+    rotation = 0
+    if "rotate" in streams.video[0].get("tags", {}):
+        rotation = abs(int(streams.video[0].tags.rotate))
+    # elif 'side_data_list' in self.streams.video[0]:
+    #     rots = [abs(int(x.rotation)) for x in self.streams.video[0].side_data_list if 'rotation' in x]
+    #     rotation = rots[0] if rots else 0
+
+    if rotation in (90, 270):
+        video_width = streams.video[0].height
+        video_height = streams.video[0].width
+    else:
+        video_width = streams.video[0].width
+        video_height = streams.video[0].height
+    return video_width, video_height
+
+
+def parse(app: FastFlixApp, **_):
+    data = probe(app, app.fastflix.current_video.source)
     if "streams" not in data:
         raise FlixError("Not a video file")
     streams = Box({"video": [], "audio": [], "subtitle": [], "attachment": [], "data": []})
@@ -137,29 +155,52 @@ def parse(config: Config, file: Path, temp_dir: Path, extract_covers: bool = Fal
         if track.codec_type == "video" and track.get("disposition", {}).get("attached_pic"):
             filename = track.get("tags", {}).get("filename", "")
             if filename.rsplit(".", 1)[0] in ("cover", "small_cover", "cover_land", "small_cover_land"):
-                covers.append((config.ffmpeg, file, track.index, temp_dir, filename))
+                covers.append(
+                    (
+                        app.fastflix.config.ffmpeg,
+                        app.fastflix.current_video.source,
+                        track.index,
+                        app.fastflix.current_video.work_path,
+                        filename,
+                    )
+                )
             streams.attachment.append(track)
         elif track.codec_type in streams:
             streams[track.codec_type].append(track)
         else:
             logger.error(f"Unknown codec: {track.codec_type}")
 
-    if extract_covers:
-        with Pool(processes=4) as pool:
-            pool.starmap(extract_attachment, covers)
-
     for stream in streams.video:
         if "bits_per_raw_sample" in stream:
             stream.bit_depth = int(stream.bits_per_raw_sample)
         else:
             stream.bit_depth = guess_bit_depth(stream.pix_fmt, stream.get("color_primaries"))
-    return streams, data.format
+
+    app.fastflix.current_video.streams = streams
+    app.fastflix.current_video.video_settings.selected_track = streams.video[0].index
+    app.fastflix.current_video.width, app.fastflix.current_video.height = determine_rotation(streams)
+    print(data)
+    app.fastflix.current_video.duration = float(data.format.get("duration", 0))
+    with Pool(processes=4) as pool:
+        pool.starmap(extract_attachment, covers)
 
 
 def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, file_name: str):
     try:
         execute(
-            [f'"{ffmpeg}"', "-y", "-i", f'"{source}"', "-map", f"0:{stream}", "-c", "copy", f'"{file_name}"'],
+            [
+                f'"{ffmpeg}"',
+                "-y",
+                "-i",
+                f'"{source}"',
+                "-map",
+                f"0:{stream}",
+                "-c",
+                "copy",
+                "-vframes",
+                "1",
+                f'"{file_name}"',
+            ],
             work_dir=work_dir,
             timeout=5,
         )
@@ -189,7 +230,7 @@ def get_auto_crop(
     start_time: float,
     result_list: List,
     **_,
-) -> Tuple[int, int, int, int]:
+):
     output = execute(
         [
             f'"{config.ffmpeg}"',
@@ -254,6 +295,7 @@ def convert_mastering_display(data: Box) -> Tuple[Box, str]:
 
     for item in data["side_data_list"]:
         if item.side_data_type == "Mastering display metadata":
+            # TODO make into dataclass
             master_display = Box(
                 red=f"({s(item, 'red_x')},{s(item, 'red_y')})",
                 green=f"({s(item, 'green_x')},{s(item, 'green_y')})",
@@ -266,7 +308,9 @@ def convert_mastering_display(data: Box) -> Tuple[Box, str]:
     return master_display, cll
 
 
-def parse_hdr_details(config: Config, source: Path, video_track: int = 0, streams: Box = None) -> Union[Box, None]:
+def parse_hdr_details(app: FastFlixApp, **_):
+    streams = app.fastflix.current_video.streams
+    video_track = app.fastflix.current_video.video_settings.selected_track
     if streams and streams.video and streams.video[video_track].get("side_data_list"):
         try:
             master_display, cll = convert_mastering_display(streams.video[0])
@@ -285,7 +329,7 @@ def parse_hdr_details(config: Config, source: Path, video_track: int = 0, stream
 
     result = execute(
         [
-            f'"{config.ffprobe}"',
+            f'"{app.fastflix.config.ffprobe}"',
             "-select_streams",
             f"v:{video_track}",
             "-print_format",
@@ -296,7 +340,7 @@ def parse_hdr_details(config: Config, source: Path, video_track: int = 0, stream
             "-show_entries",
             '"frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt"',
             "-i",
-            f'"{source}"',
+            f'"{app.fastflix.current_video.source}"',
         ]
     )
 
@@ -320,11 +364,9 @@ def parse_hdr_details(config: Config, source: Path, video_track: int = 0, stream
     except Exception:
         logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
     else:
-        return Box(
-            pix_fmt=data.pix_fmt,
-            color_space=data.color_space,
-            color_primaries=data.color_primaries,
-            color_transfer=data.color_transfer,
-            master_display=master_display,
-            cll=cll,
-        )
+        app.fastflix.current_video.pix_fmt = data.pix_fmt
+        app.fastflix.current_video.color_space = data.color_space
+        app.fastflix.current_video.color_primaries = data.color_primaries
+        app.fastflix.current_video.color_transfer = data.color_transfer
+        app.fastflix.current_video.master_display = master_display
+        app.fastflix.current_video.cll = cll

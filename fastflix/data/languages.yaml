@@ -1,3 +1,5 @@
+Autocrop tried to crop too much:
+  en: Autocrop tried to crop too much
 Automatically download FFmpeg?:
   en: Automatically download FFmpeg?
 Burn In:
@@ -12,6 +14,8 @@ Could not extract FFmpeg files from:
   en: Could not extract FFmpeg files from
 Could not find any matching FFmpeg ending with 'win64-gpl.zip' with:
   en: Could not find any matching FFmpeg ending with 'win64-gpl.zip' with
+Determine HDR details:
+  en: Determine HDR details
 Downloading FFmpeg:
   en: Downloading FFmpeg
   es: Descargando FFmpeg
@@ -41,6 +45,8 @@ More than one track selected to burn in:
 Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.:
   en: Overlay this subtitle track onto the video during conversion. Cannot remove
     afterwards.
+Parse Video details:
+  en: Parse Video details
 Please:
   en: Please
 Preserve:
@@ -59,19 +65,17 @@ There is an existing burn-in track, only one can be enabled at a time:
   en: There is an existing burn-in track, only one can be enabled at a time
 and add it to PATH:
   en: and add it to PATH
+bottom:
+  en: bottom
 download a static FFmpeg:
   en: download a static FFmpeg
+ignoring:
+  en: ignoring
 latest release from:
   en: latest release from
-Autocrop tried to crop too much:
-  en: Autocrop tried to crop too much
 left:
   en: left
 right:
   en: right
 top:
   en: top
-bottom:
-  en: bottom
-ignoring:
-  en: ignoring
