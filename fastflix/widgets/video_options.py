@@ -86,7 +86,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         if getattr(self.main.current_encoder, "enable_subtitles", False):
             self.subtitles.new_source(starting_pos=len(self.audio) + 1)
         if getattr(self.main.current_encoder, "enable_attachments", False):
-            self.attachments.new_source(self.main.streams.attachment)
+            self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
         self.current_settings.new_source()
 
     def refresh(self):

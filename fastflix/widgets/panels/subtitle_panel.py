@@ -211,7 +211,7 @@ class SubtitleList(FlixList):
     def new_source(self, starting_pos=0):
         self.starting_pos = starting_pos
         self.tracks = []
-        for index, track in enumerate(self.main.streams.subtitle):
+        for index, track in enumerate(self.app.fastflix.current_video.streams.subtitle):
             new_item = Subtitle(self, track, index=track.index, first=True if index == 0 else False)
             self.tracks.append(new_item)
         if self.tracks:

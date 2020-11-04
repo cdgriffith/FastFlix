@@ -145,9 +145,13 @@ class SettingPanel(QtWidgets.QWidget):
         self.main.page_update()
 
     def new_source(self):
-        if not self.main.streams:
+        if not self.app.fastflix.current_video.streams:
             return
-        elif self.main.streams["video"][self.main.video_track].get("color_space", "").startswith("bt2020"):
+        elif (
+            self.app.fastflix.current_video.streams["video"][self.main.video_track]
+            .get("color_space", "")
+            .startswith("bt2020")
+        ):
             self.widgets.remove_hdr.setDisabled(False)
             self.labels.remove_hdr.setStyleSheet("QLabel{color:#000}")
         else:

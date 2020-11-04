@@ -5,6 +5,7 @@ from multiprocessing.pool import Pool
 from pathlib import Path
 from subprocess import PIPE, CompletedProcess, TimeoutExpired, run
 from typing import List, Tuple, Union
+from tempfile import TemporaryDirectory
 
 import reusables
 from box import Box, BoxError
@@ -76,7 +77,7 @@ def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
         return 8
 
 
-def execute(command: List, work_dir: Path = None, timeout: int = None) -> CompletedProcess:
+def execute(command: List, work_dir: Union[Path, str] = None, timeout: int = None) -> CompletedProcess:
     logger.info(f"{t('Running command')}: {' '.join(command)}")
     return run(
         " ".join(command) if reusables.win_based else command,
@@ -170,6 +171,9 @@ def parse(app: FastFlixApp, **_):
         else:
             logger.error(f"Unknown codec: {track.codec_type}")
 
+    if not streams.video:
+        raise FlixError("There were no video streams detected")
+
     for stream in streams.video:
         if "bits_per_raw_sample" in stream:
             stream.bit_depth = int(stream.bits_per_raw_sample)
@@ -179,13 +183,13 @@ def parse(app: FastFlixApp, **_):
     app.fastflix.current_video.streams = streams
     app.fastflix.current_video.video_settings.selected_track = streams.video[0].index
     app.fastflix.current_video.width, app.fastflix.current_video.height = determine_rotation(streams)
-    print(data)
+    app.fastflix.current_video.format = data.format
     app.fastflix.current_video.duration = float(data.format.get("duration", 0))
     with Pool(processes=4) as pool:
         pool.starmap(extract_attachment, covers)
 
 
-def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, file_name: str):
+def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: TemporaryDirectory, file_name: str):
     try:
         execute(
             [
@@ -201,7 +205,7 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
                 "1",
                 f'"{file_name}"',
             ],
-            work_dir=work_dir,
+            work_dir=work_dir.name,
             timeout=5,
         )
     except TimeoutExpired:

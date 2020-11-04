@@ -38,6 +38,7 @@ class Video(BaseDataClass):
     video_settings: VideoSettings = field(default_factory=lambda: VideoSettings())
     work_path: TemporaryDirectory = None
     pix_fmt: str = ""
+    format: Box = None
 
     # HDR10 Details
     color_space: str = ""

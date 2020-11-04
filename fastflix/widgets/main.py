@@ -66,7 +66,6 @@ class Main(QtWidgets.QWidget):
         self.video_path_widget.setEnabled(False)
         self.video_path_widget.setStyleSheet("QLineEdit{color:#222}")
         self.output_video_path_widget.setStyleSheet("QLineEdit{color:#222}")
-        self.streams, self.format_info = None, None
 
         self.widgets = Box(
             start_time=None,
@@ -284,8 +283,10 @@ class Main(QtWidgets.QWidget):
     def set_profile(self):
         # TODO Have to update all the defaults
         # self.video_options.new_source()
+        previous_auto_crop = self.app.fastflix.config.opt("auto_crop")
         self.app.fastflix.config.default_profile = self.widgets.profile_box.currentText()
-        if self.app.fastflix.config.opt("auto_crop"):
+        self.app.fastflix.config.save()
+        if not previous_auto_crop and self.app.fastflix.config.opt("auto_crop"):
             self.get_auto_crop()
         if not self.app.fastflix.config.opt("keep_aspect_ratio"):
             self.widgets.scale.keep_aspect.setChecked(False)
@@ -647,8 +648,8 @@ class Main(QtWidgets.QWidget):
                 get_auto_crop,
                 dict(
                     source=self.input_video,
-                    video_width=self.video_width,
-                    video_height=self.video_height,
+                    video_width=self.app.fastflix.current_video.width,
+                    video_height=self.app.fastflix.current_video.height,
                     input_track=self.original_video_track,
                     start_time=x,
                     end_time=self.end_time,
@@ -659,7 +660,7 @@ class Main(QtWidgets.QWidget):
         ]
         ProgressBar(self.app, tasks)
 
-        smallest = (self.video_height + self.video_width) * 2
+        smallest = (self.app.fastflix.current_video.height + self.app.fastflix.current_video.width) * 2
         selected = result_list[0]
         for result in result_list:
             if (total := sum(result)) < smallest:
@@ -668,7 +669,7 @@ class Main(QtWidgets.QWidget):
 
         r, b, l, t = selected
 
-        if t + b > self.video_height * 0.9 or r + l > self.video_width * 0.9:
+        if t + b > self.app.fastflix.current_video.height * 0.9 or r + l > self.app.fastflix.current_video.width * 0.9:
             logger.warning(
                 f"{t('Autocrop tried to crop too much')}"
                 f" ({t('left')} {l}, {t('top')} {t}, {t('right')} {r}, {t('bottom')} {b}), {t('ignoring')}"
@@ -692,8 +693,8 @@ class Main(QtWidgets.QWidget):
         except ValueError:
             logger.error("Invalid crop")
             return None
-        width = self.video_width - right - left
-        height = self.video_height - bottom - top
+        width = self.app.fastflix.current_video.width - right - left
+        height = self.app.fastflix.current_video.height - bottom - top
         if (top + left + right + bottom) == 0:
             return None
         try:
@@ -701,8 +702,8 @@ class Main(QtWidgets.QWidget):
             assert left >= 0, "Left must be positive number"
             assert width > 0, "Total video width must be greater than 0"
             assert height > 0, "Total video height must be greater than 0"
-            assert width <= self.video_width, "Width must be smaller than video width"
-            assert height <= self.video_height, "Height must be smaller than video height"
+            assert width <= self.app.fastflix.current_video.width, "Width must be smaller than video width"
+            assert height <= self.app.fastflix.current_video.height, "Height must be smaller than video height"
         except AssertionError as err:
             error_message(f"Invalid Crop: {err}")
             return
@@ -723,10 +724,10 @@ class Main(QtWidgets.QWidget):
                     self.widgets.scale.height.setText("-1")
                 return logger.warning("Invalid width")
 
-            if self.initial_video_height == 0 or self.initial_video_width == 0:
+            if self.app.fastflix.current_video.height == 0 or self.app.fastflix.current_video.width == 0:
                 return logger.warning("Input video does not exist or has 0 dimension")
 
-            ratio = self.initial_video_height / self.initial_video_width
+            ratio = self.app.fastflix.current_video.height / self.app.fastflix.current_video.width
             scale_height = ratio * scale_width
             mod = int(scale_height % 2)
             if mod:
@@ -777,8 +778,8 @@ class Main(QtWidgets.QWidget):
         keep_aspect = self.widgets.scale.keep_aspect.isChecked()
 
         self.widgets.scale.height.setDisabled(keep_aspect)
-        height = self.video_height
-        width = self.video_width
+        height = self.app.fastflix.current_video.height
+        width = self.app.fastflix.current_video.width
         if self.build_crop():
             width, height, *_ = (int(x) for x in self.build_crop().split(":"))
 
@@ -799,12 +800,12 @@ class Main(QtWidgets.QWidget):
             self.scale_updating = False
             self.widgets.scale.width.setStyleSheet("background-color: red;")
             self.widgets.scale.width.setToolTip(
-                f"Width must be divisible by 2 - Source width: {self.initial_video_width}"
+                f"Width must be divisible by 2 - Source width: {self.app.fastflix.current_video.width}"
             )
             return logger.warning("Width must be divisible by 2")
             # return self.scale_warning_message.setText("Width must be divisible by 8")
         else:
-            self.widgets.scale.width.setToolTip(f"Source width: {self.initial_video_width}")
+            self.widgets.scale.width.setToolTip(f"Source width: {self.app.fastflix.current_video.width}")
 
         if keep_aspect:
             self.widgets.scale.height.setText("Auto")
@@ -813,7 +814,7 @@ class Main(QtWidgets.QWidget):
             self.page_update()
             self.scale_updating = False
             return
-            # ratio = self.initial_video_height / self.initial_video_width
+            # ratio = self.app.fastflix.current_video.height / self.app.fastflix.current_video.width
             # scale_height = ratio * scale_width
             # self.widgets.scale.height.setText(str(int(scale_height)))
             # mod = int(scale_height % 2)
@@ -841,12 +842,14 @@ class Main(QtWidgets.QWidget):
         if scale_height != -1 and scale_height % 2:
             self.widgets.scale.height.setStyleSheet("background-color: red;")
             self.widgets.scale.height.setToolTip(
-                f"Height must be divisible by 2 - Source height: {self.initial_video_height}"
+                f"Height must be divisible by 2 - Source height: {self.app.fastflix.current_video.height}"
             )
             self.scale_updating = False
-            return logger.warning(f"Height must be divisible by 2 - Source height: {self.initial_video_height}")
+            return logger.warning(
+                f"Height must be divisible by 2 - Source height: {self.app.fastflix.current_video.height}"
+            )
         else:
-            self.widgets.scale.height.setToolTip(f"Source height: {self.initial_video_height}")
+            self.widgets.scale.height.setToolTip(f"Source height: {self.app.fastflix.current_video.height}")
             # return self.scale_warning_message.setText("Height must be divisible by 8")
         # self.scale_warning_message.setText("")
         self.widgets.scale.width.setStyleSheet("background-color: white;")
@@ -854,118 +857,83 @@ class Main(QtWidgets.QWidget):
         self.page_update()
         self.scale_updating = False
 
+    def clear_current_video(self):
+        self.app.fastflix.current_video = None
+        self.input_video = None
+        self.video_path_widget.setText("No Source Selected")
+        self.output_video_path_widget.setText("")
+        self.output_path_button.setDisabled(True)
+        self.output_video_path_widget.setDisabled(True)
+        for i in range(self.widgets.video_track.count()):
+            self.widgets.video_track.removeItem(0)
+        self.widgets.convert_button.setDisabled(True)
+        self.widgets.convert_button.setStyleSheet("background-color:gray;")
+        self.widgets.preview.setText("No Video File")
+        self.page_update()
+
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
         self.loading_video = True
-        # splash_label = QtWidgets.QLabel(self)
-        # splash_label.setText("""<font size=65><b>Loading Video Details...</b></font>""")
-        # splash_label.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
-        # splash_label.show()
-        # self.app.processEvents()
-
         self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())
-
         tasks = [Task(t("Parse Video details"), parse), Task(t("Determine HDR details"), parse_hdr_details)]
-        ProgressBar(self.app, tasks)
-
-        return
-        # try:
-        #     self.temp_dir.cleanup()
-        # except Exception:
-        #     pass
-        # self.temp_dir =
-        # self.temp_dir_name = self.temp_dir.name
 
         try:
-            self.streams, self.format_info = parse(
-                self.app, self.input_video, temp_dir=Path(self.temp_dir_name), extract_covers=True
-            )
+            ProgressBar(self.app, tasks)
         except FlixError:
             error_message(f"Not a video file<br>{self.input_video}")
-            self.input_video = None
-            self.video_path_widget.setText("No Source Selected")
-            self.output_video_path_widget.setText("")
-            self.output_path_button.setDisabled(True)
-            self.output_video_path_widget.setDisabled(True)
-            self.streams = None
-            self.format_info = None
-            for i in range(self.widgets.video_track.count()):
-                self.widgets.video_track.removeItem(0)
-            self.widgets.convert_button.setDisabled(True)
-            self.widgets.convert_button.setStyleSheet("background-color:gray;")
-            self.widgets.preview.setText("No Video File")
-            self.page_update()
-            # splash_label.close()
-            return
-
-        self.side_data = parse_hdr_details(self.app.fastflix.config, self.input_video, streams=self.streams)
-        logger.debug(self.streams)
-        logger.debug(self.format_info)
+            self.clear_current_video()
 
         text_video_tracks = [
             f"{x.index}: codec {x.codec_name} " f'- pix_fmt {x.get("pix_fmt")} ' f'- profile {x.get("profile")}'
-            for x in self.streams.video
+            for x in self.app.fastflix.current_video.streams.video
         ]
-
-        for i in range(self.widgets.video_track.count()):
-            self.widgets.video_track.removeItem(0)
-
-        if len(self.streams.video) == 0:
-            error_message(f"No video tracks detected in file<br>{self.input_video}")
-            self.input_video = None
-            self.video_path_widget.setText("No Source Selected")
-            self.output_video_path_widget.setText("")
-            self.output_path_button.setDisabled(True)
-            self.output_video_path_widget.setDisabled(True)
-            self.streams = None
-            self.format_info = None
-            self.widgets.convert_button.setDisabled(True)
-            self.widgets.convert_button.setStyleSheet("background-color:gray;")
-            self.widgets.preview.setText("No Video File")
-            self.page_update()
-            # splash_label.close()
-            return
-
+        self.widgets.video_track.clear()
         self.widgets.crop.top.setText("0")
         self.widgets.crop.left.setText("0")
         self.widgets.crop.right.setText("0")
         self.widgets.crop.bottom.setText("0")
         self.widgets.start_time.setText("0:00:00")
 
-        self.initial_video_width = self.video_width
-        self.initial_video_height = self.video_height
-
         self.widgets.scale.width.setText(
             str(
-                self.video_width
-                + (self.video_width % self.app.fastflix.encoders[self.convert_to].video_dimension_divisor)
+                self.app.fastflix.current_video.width
+                + (
+                    self.app.fastflix.current_video.width
+                    % self.app.fastflix.encoders[self.convert_to].video_dimension_divisor
+                )
             )
         )
-        self.widgets.scale.width.setToolTip(f"Source width: {self.initial_video_width}")
+        self.widgets.scale.width.setToolTip(f"Source width: {self.app.fastflix.current_video.width}")
         self.widgets.scale.height.setText(
             str(
-                self.video_height
-                + (self.video_height % self.app.fastflix.encoders[self.convert_to].video_dimension_divisor)
+                self.app.fastflix.current_video.height
+                + (
+                    self.app.fastflix.current_video.height
+                    % self.app.fastflix.encoders[self.convert_to].video_dimension_divisor
+                )
             )
         )
-        self.widgets.scale.height.setToolTip(f"Source height: {self.initial_video_height}")
+        self.widgets.scale.height.setToolTip(f"Source height: {self.app.fastflix.current_video.height}")
         self.widgets.video_track.addItems(text_video_tracks)
 
-        self.widgets.video_track.setDisabled(bool(len(self.streams.video) == 1))
+        self.widgets.video_track.setDisabled(bool(len(self.app.fastflix.current_video.streams.video) == 1))
 
         self.initial_duration = self.app.fastflix.current_video.duration
 
-        logger.debug(f"{len(self.streams['video'])} video tracks found")
-        logger.debug(f"{len(self.streams['audio'])} audio tracks found")
-        if self.streams["subtitle"]:
-            logger.debug(f"{len(self.streams['subtitle'])} subtitle tracks found")
-        if self.streams["attachment"]:
-            logger.debug(f"{len(self.streams['attachment'])} attachment tracks found")
-        if self.streams["data"]:
-            logger.debug(f"{len(self.streams['data'])} data tracks found")
+        logger.debug(f"{len(self.app.fastflix.current_video.streams['video'])} video tracks found")
+        logger.debug(f"{len(self.app.fastflix.current_video.streams['audio'])} audio tracks found")
 
-        self.widgets.end_time.setText(self.number_to_time(video_duration))
-        title_name = [v for k, v in self.format_info.get("tags", {}).items() if k.lower() == "title"]
+        if self.app.fastflix.current_video.streams["subtitle"]:
+            logger.debug(f"{len(self.app.fastflix.current_video.streams['subtitle'])} subtitle tracks found")
+        if self.app.fastflix.current_video.streams["attachment"]:
+            logger.debug(f"{len(self.app.fastflix.current_video.streams['attachment'])} attachment tracks found")
+        if self.app.fastflix.current_video.streams["data"]:
+            logger.debug(f"{len(self.app.fastflix.current_video.streams['data'])} data tracks found")
+
+        self.widgets.end_time.setText(self.number_to_time(self.app.fastflix.current_video.duration))
+        title_name = [
+            v for k, v in self.app.fastflix.current_video.format.get("tags", {}).items() if k.lower() == "title"
+        ]
         if title_name:
             self.widgets.video_title.setText(title_name[0])
         else:
@@ -978,7 +946,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setDisabled(False)
         self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.loading_video = False
-        splash_label.close()
 
     @property
     def video_track(self):
@@ -990,7 +957,7 @@ class Main(QtWidgets.QWidget):
 
     @property
     def pix_fmt(self):
-        return self.streams.video[self.video_track].pix_fmt
+        return self.app.fastflix.current_video.streams.video[self.video_track].pix_fmt
 
     @staticmethod
     def number_to_time(number):
@@ -1062,10 +1029,10 @@ class Main(QtWidgets.QWidget):
     def get_all_settings(self):
         if not self.initialized:
             return
-        stream_info = self.streams.video[self.video_track]
+        stream_info = self.app.fastflix.current_video.streams.video[self.video_track]
 
         end_time = self.end_time
-        if self.end_time == float(self.format_info.get("duration", 0)):
+        if self.end_time == float(self.app.fastflix.current_video.format.get("duration", 0)):
             end_time = None
         if self.end_time and self.end_time - 0.1 <= self.initial_duration <= self.end_time + 0.1:
             end_time = None
@@ -1091,9 +1058,9 @@ class Main(QtWidgets.QWidget):
             rotate=self.rotation_to_transpose(),
             v_flip=v_flip,
             h_flip=h_flip,
-            streams=self.streams,
-            format_info=self.format_info,
-            work_dir=self.app.fastflix.config.work_path,
+            streams=self.app.fastflix.current_video.streams,
+            format_info=self.app.fastflix.current_video.format,
+            work_dir=self.app.fastflix.current_video.work_path,
             side_data=self.side_data,
             ffmpeg=self.app.fastflix.config.ffmpeg,
             ffprobe=self.app.fastflix.config.ffprobe,
@@ -1109,7 +1076,7 @@ class Main(QtWidgets.QWidget):
         return settings
 
     def build_commands(self):
-        if not self.initialized or not self.streams or self.loading_video:
+        if not self.initialized or not self.app.fastflix.current_video.streams or self.loading_video:
             return None, None
         try:
             settings = self.get_all_settings()

@@ -302,11 +302,12 @@ class AudioList(FlixList):
     def __init__(self, parent, app: FastFlixApp, starting_pos=0):
         super(AudioList, self).__init__(parent, "Audio Tracks", starting_pos)
         self.available_audio_encoders = app.fastflix.audio_encoders
+        self.app = app
 
     def new_source(self, codecs, starting_pos=0):
         self.starting_pos = starting_pos
         self.tracks = []
-        for i, x in enumerate(self.main.streams.audio):
+        for i, x in enumerate(self.app.fastflix.current_video.streams.audio):
             track_info = ""
             tags = x.get("tags", {})
             if tags:
