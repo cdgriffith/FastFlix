@@ -27,10 +27,10 @@ class BackgroundRunner:
         self.log_queue = log_queue
         self.error_detected = False
         self.success_detected = False
-        self.errors = []
-        self.successes = []
+        self.error_message = []
+        self.success_message = []
 
-    def start_exec(self, command, work_dir, shell=False, errors=(), successes=()):
+    def start_exec(self, command, work_dir: str, shell: bool = False, errors=(), successes=()):
         self.clean()
         logger.info(f"Running command: {command}")
         Path(work_dir).mkdir(exist_ok=True, parents=True)
@@ -38,8 +38,8 @@ class BackgroundRunner:
         self.error_output_file = Path(work_dir) / f"encoder_error_output_{secrets.token_hex(6)}.log"
         self.output_file.touch(exist_ok=True)
         self.error_output_file.touch(exist_ok=True)
-        self.errors = errors
-        self.successes = successes
+        self.error_message = errors
+        self.success_message = successes
 
         self.process = psutil.Popen(
             shlex.split(command) if not shell else command,
@@ -61,8 +61,8 @@ class BackgroundRunner:
         self.error_output_file = Path(work_dir) / f"encoder_error_output_{secrets.token_hex(6)}.log"
         self.output_file.touch(exist_ok=True)
         self.error_output_file.touch(exist_ok=True)
-        self.errors = errors
-        self.successes = successes
+        self.error_message = errors
+        self.success_message = successes
 
         self.process = psutil.Popen(
             command_one,
@@ -104,7 +104,7 @@ class BackgroundRunner:
                     logger.info(line)
                     self.log_queue.put(line)
                     if not self.success_detected:
-                        for success in self.successes:
+                        for success in self.success_message:
                             if success in line:
                                 self.success_detected = True
 
@@ -115,7 +115,7 @@ class BackgroundRunner:
                     if "Conversion failed!" in err_line:
                         self.error_detected = True
                     if not self.error_detected:
-                        for error in self.errors:
+                        for error in self.error_message:
                             if error in err_line:
                                 self.error_detected = True
 

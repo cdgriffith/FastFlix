@@ -2,7 +2,10 @@
 import logging
 import sys
 import traceback
-from multiprocessing import Process, Queue
+
+# from multiprocessing import Process, Queue
+from threading import Thread
+from queue import Queue
 
 try:
     import coloredlogs
@@ -11,7 +14,7 @@ try:
     from appdirs import user_data_dir
     from box import Box
 
-    from fastflix.conversion_worker import converter
+    from fastflix.conversion_worker import queue_worker
     from fastflix.models.config import Config
     from fastflix.models.fastflix import FastFlix
     from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
@@ -53,6 +56,9 @@ def main():
     fastflix.status_queue = Queue()
     fastflix.log_queue = Queue()
 
-    gui_proc = Process(target=separate_app_process, args=(fastflix,))
+    gui_proc = Thread(target=separate_app_process, args=(fastflix,))
     gui_proc.start()
-    converter(gui_proc, fastflix)
+    try:
+        queue_worker(gui_proc, fastflix)
+    finally:
+        gui_proc.join()

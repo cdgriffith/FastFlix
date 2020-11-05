@@ -77,6 +77,7 @@ class Config:
     ffmpeg: Path = None
     ffprobe: Path = None
     language: str = "en"
+    continue_on_failure: bool = True
     work_path: Path = fastflix_folder
     use_sane_audio: bool = True
     default_profile: str = "standard"

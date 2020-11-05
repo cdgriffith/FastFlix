@@ -36,6 +36,15 @@ class VideoSettings(BaseDataClass):
 
 
 @dataclass
+class Status(BaseDataClass):
+    success: bool = False
+    error: bool = False
+    complete: bool = False
+    running: bool = False
+    current_command: int = 0
+
+
+@dataclass
 class Video(BaseDataClass):
     source: Path
     width: int = 0
@@ -43,7 +52,7 @@ class Video(BaseDataClass):
     duration: Union[float, int] = 0
     streams: Box = None
     bit_depth: int = 8
-    video_settings: VideoSettings = field(default_factory=lambda: VideoSettings())
+
     work_path: TemporaryDirectory = None
     pix_fmt: str = ""
     format: Box = None
@@ -56,3 +65,6 @@ class Video(BaseDataClass):
     # HDR10 Details
     master_display: Box = None
     cll: str = ""
+
+    video_settings: VideoSettings = field(default_factory=VideoSettings)
+    status: Status = field(default_factory=Status)

@@ -137,13 +137,13 @@ class Main(QtWidgets.QWidget):
     def pause_resume(self):
         if not self.paused:
             self.paused = True
-            self.app.fastflix.worker_queue.put(["pause"])
+            self.app.fastflix.worker_queue.put("pause")
             self.widgets.pause_resume.setText("Resume")
             self.widgets.pause_resume.setStyleSheet("background-color: green;")
             logger.info("Pausing FFmpeg conversion via pustils")
         else:
             self.paused = False
-            self.app.fastflix.worker_queue.put(["resume"])
+            self.app.fastflix.worker_queue.put("resume")
             self.widgets.pause_resume.setText("Pause")
             self.widgets.pause_resume.setStyleSheet("background-color: orange;")
             logger.info("Resuming FFmpeg conversion")
@@ -1118,7 +1118,12 @@ class Main(QtWidgets.QWidget):
             return self.app.fastflix.encoders[self.convert_to]
 
     def build_commands(self) -> bool:
-        if not self.initialized or not self.app.fastflix.current_video.streams or self.loading_video:
+        if (
+            not self.initialized
+            or not self.app.fastflix.current_video
+            or not self.app.fastflix.current_video.streams
+            or self.loading_video
+        ):
             return False
         try:
             self.get_all_settings()
@@ -1172,7 +1177,7 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def create_video(self):
         if self.converting:
-            self.app.fastflix.worker_queue.put(["cancel"])
+            self.app.fastflix.worker_queue.put("cancel")
             return
 
         if not self.input_video:
@@ -1227,8 +1232,10 @@ class Main(QtWidgets.QWidget):
         self.converting = True
 
         self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
-        for command in self.app.fastflix.current_video.video_settings.conversion_commands:
-            self.app.fastflix.worker_queue.put(("command", command.command, self.temp_dir_name, command.shell))
+        # ("command", command.command, self.temp_dir_name, command.shell)
+        # for command in self.app.fastflix.current_video.video_settings.conversion_commands:
+        print(self.app.fastflix.queue)
+        self.app.fastflix.worker_queue.put("start")
         self.disable_all()
         self.video_options.setCurrentWidget(self.video_options.status)
 
