@@ -73,7 +73,7 @@ class HEVC(SettingPanel):
         grid.addLayout(self.init_x265_params(), 6, 1, 1, 5)
 
         grid.addLayout(self.init_dhdr10_info(), 7, 1, 1, 4)
-        grid.addWidget(self.init_dhdr10_warning(), 7, 5, 1, 1)
+        grid.addLayout(self.init_dhdr10_warning_and_opt(), 7, 5, 1, 1)
 
         grid.setRowStretch(9, True)
 
@@ -101,7 +101,7 @@ class HEVC(SettingPanel):
             tooltip="dhdr10_info: Path to HDR10+ JSON metadata file",
         )
 
-    def init_dhdr10_warning(self):
+    def init_dhdr10_warning_and_opt(self):
         label = QtWidgets.QLabel()
         label.setToolTip(
             "WARNING: This only works on a few FFmpeg builds, and it will not raise error on failure!\n"
@@ -111,8 +111,10 @@ class HEVC(SettingPanel):
         )
         icon = self.style().standardIcon(QtWidgets.QStyle.SP_MessageBoxWarning)
         label.setPixmap(icon.pixmap(16))
-        # label.style().standardIcon(QtWidgets.QStyle.SP_MessageBoxWarning)
-        return label
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(label)
+        layout.addLayout(self.init_dhdr10_opt())
+        return layout
 
     def init_hdr10(self):
         return self._add_check_box(
@@ -136,6 +138,18 @@ class HEVC(SettingPanel):
                 "It is recommended that AQ-mode be enabled along with this feature"
             ),
             opt="x265_hdr10_opt",
+        )
+
+    def init_dhdr10_opt(self):
+        return self._add_check_box(
+            label="| HDR10+ Optimizations",
+            widget_name="dhdr10_opt",
+            tooltip=(
+                "dhdr10-opt: Reduces SEI overhead\n"
+                "Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.\n"
+                "It saves a few bits and can help performance in the client's tonemapper."
+            ),
+            opt="x265_dhdr10_opt",
         )
 
     def init_repeat_headers(self):
@@ -423,13 +437,14 @@ class HEVC(SettingPanel):
             profile=self.widgets.profile.currentText(),
             hdr10=self.widgets.hdr10.isChecked(),
             hdr10_opt=self.widgets.hdr10_opt.isChecked(),
+            dhdr10_opt=self.widgets.dhdr10_opt.isChecked(),
             repeat_headers=self.widgets.repeat_headers.isChecked(),
             aq_mode=self.widgets.aq_mode.currentIndex(),
             tune=tune if tune.lower() != "default" else None,
             x265_params=x265_params_text.split(":") if x265_params_text else [],
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
         )
-        print(settings)
+
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
             settings.crf = int(crf.split(" ", 1)[0]) if crf != "Custom" else int(self.widgets.custom_crf.text())

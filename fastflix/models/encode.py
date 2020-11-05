@@ -46,6 +46,7 @@ class x265Settings(EncoderSettings):
     profile: str = ""
     hdr10: bool = False
     hdr10_opt: bool = False
+    dhdr10_opt: bool = False
     repeat_headers: bool = False
     aq_mode: int = 2
     hdr10plus_metadata: str = ""

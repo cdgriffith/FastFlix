@@ -203,5 +203,4 @@ if __name__ == "__main__":
     )
     # import time
     # time.sleep(1)
-    # print(br.process_two.stdout.read(100))
     # br.read_output()

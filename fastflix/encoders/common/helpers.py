@@ -57,7 +57,7 @@ def generate_ffmpeg_start(
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = str(source).replace("\\", "/")
     ffmpeg = str(ffmpeg).replace("\\", "/")
-    print(pix_fmt)
+
     return (
         f'"{ffmpeg}" -y '
         f" {time_one} "

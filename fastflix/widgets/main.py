@@ -1237,7 +1237,6 @@ class Main(QtWidgets.QWidget):
         self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
         # ("command", command.command, self.temp_dir_name, command.shell)
         # for command in self.app.fastflix.current_video.video_settings.conversion_commands:
-        print(self.app.fastflix.queue)
         self.app.fastflix.worker_queue.put("start")
         self.disable_all()
         self.video_options.setCurrentWidget(self.video_options.status)

@@ -6,6 +6,7 @@
 * Adding profiles
 * Adding |=====  | Progress Bars
 * Adding option to download newest FFmpeg on Windows
+* Adding #111 HDR10+ Optimization flag for x265 (thanks to SlashX)
 * Changing large internal re-write
 * Changing so it opens the file dialog for new video to last used directory
 * Fixing #116 how HDR10 options for x265 work (thanks to HannesJo0139)
