@@ -24,7 +24,7 @@ dispositions = [
 ]
 
 
-language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt3"] and v["pt1"]), key=lambda x: x.lower())
+language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 # TODO add fake empty subtitle track?
 
@@ -127,7 +127,7 @@ class Subtitle(QtWidgets.QTabWidget):
             self.widgets.language.setCurrentIndex(language_list.index(Lang(self.subtitle_lang).name))
         except Exception:
             self.widgets.language.setCurrentIndex(language_list.index("English"))
-
+        self.widgets.language.currentIndexChanged.connect(self.page_update)
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Language")))
         layout.addWidget(self.widgets.language)
@@ -150,7 +150,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
     @property
     def disposition(self):
-        return 0 if self.widgets.disposition.currentIndex() == 0 else self.widgets.disposition.currentText()
+        return "" if self.widgets.disposition.currentIndex() == 0 else self.widgets.disposition.currentText()
 
     @property
     def enabled(self):
@@ -158,7 +158,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
     @property
     def language(self):
-        return self.widgets.language.currentText()
+        return Lang(self.widgets.language.currentText()).pt2b
 
     @property
     def burn_in(self):

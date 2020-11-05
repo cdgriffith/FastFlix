@@ -1011,9 +1011,13 @@ class Main(QtWidgets.QWidget):
             return
 
         remove_hdr = False
-        if self.app.fastflix.current_video.video_settings.pix_fmt == "yuv420p10le" and self.pix_fmt in (
-            "yuv420p10le",
-            "yuv420p12le",
+        if (
+            self.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"
+            and self.pix_fmt
+            in (
+                "yuv420p10le",
+                "yuv420p12le",
+            )
         ):
             remove_hdr = True
         filters = helpers.generate_filters(
@@ -1087,7 +1091,6 @@ class Main(QtWidgets.QWidget):
             end_time=end_time,
             selected_track=self.original_video_track,
             # stream_track=self.video_track,
-            pix_fmt=self.pix_fmt,
             rotate=self.rotation_to_transpose(),
             vertical_flip=v_flip,
             horizontal_flip=h_flip,

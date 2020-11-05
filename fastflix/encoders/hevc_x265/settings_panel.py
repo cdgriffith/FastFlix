@@ -348,19 +348,30 @@ class HEVC(SettingPanel):
         self.main.page_update()
 
     def setting_change(self, update=True, pix_change=False):
+        def hdr_opts():
+            if not self.widgets.pix_fmt.currentText().startswith(
+                "8-bit"
+            ) and self.app.fastflix.current_video.color_space.startswith("bt2020"):
+                self.widgets.hdr10_opt.setDisabled(False)
+                if self.app.fastflix.current_video.master_display or self.app.fastflix.current_video.cll:
+                    self.widgets.hdr10.setDisabled(True)
+                    self.widgets.hdr10.setChecked(True)
+                    self.widgets.hdr10_opt.setChecked(True)
+                else:
+                    self.widgets.hdr10.setDisabled(False)
+                    self.widgets.hdr10.setChecked(False)
+                    self.widgets.hdr10_opt.setChecked(False)
+            else:
+                self.widgets.hdr10.setDisabled(True)
+                self.widgets.hdr10_opt.setDisabled(True)
+                self.widgets.hdr10.setChecked(False)
+                self.widgets.hdr10_opt.setChecked(False)
+
         if self.updating_settings or not self.main.input_video:
             return
         self.updating_settings = True
         if pix_change:
-            if self.widgets.pix_fmt.currentText().startswith("8-bit"):
-                self.widgets.hdr10_opt.setDisabled(True)
-                self.widgets.hdr10_opt.setChecked(False)
-                self.widgets.hdr10.setDisabled(True)
-                self.widgets.hdr10.setChecked(False)
-            else:
-                self.widgets.hdr10.setDisabled(False)
-                self.widgets.hdr10.setChecked(True)
-                self.widgets.hdr10_opt.setDisabled(False)
+            hdr_opts()
             self.main.page_update()
             self.updating_settings = False
             return
@@ -386,10 +397,9 @@ class HEVC(SettingPanel):
             else:
                 self.widgets.pix_fmt.addItems(pix_fmts)
                 self.widgets.pix_fmt.setCurrentIndex(1)
-            if not self.widgets.pix_fmt.currentText().startswith("8-bit"):
-                self.widgets.hdr10_opt.setDisabled(False)
-                self.widgets.hdr10.setDisabled(False)
-                self.widgets.hdr10.setChecked(True)
+
+            hdr_opts()
+
         if update:
             self.main.page_update()
         self.updating_settings = False
@@ -405,7 +415,7 @@ class HEVC(SettingPanel):
 
         settings = x265Settings(
             name=name,
-            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
             intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
             max_mux=self.widgets.max_mux.currentText(),
@@ -419,7 +429,7 @@ class HEVC(SettingPanel):
             x265_params=x265_params_text.split(":") if x265_params_text else [],
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
         )
-
+        print(settings)
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
             settings.crf = int(crf.split(" ", 1)[0]) if crf != "Custom" else int(self.widgets.custom_crf.text())

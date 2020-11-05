@@ -45,7 +45,7 @@ class Profile:
     x265_preset: str = "medium"
     x265_tune: str = "default"
     x265_profile: str = "default"
-    x265_hdr10_signaling: bool = True
+    x265_hdr10_signaling: bool = False
     x265_hdr10_opt: bool = True
     x265_dhdr10_opt: bool = False
     x265_repeat_headers: bool = True

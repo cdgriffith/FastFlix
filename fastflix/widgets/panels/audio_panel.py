@@ -12,7 +12,7 @@ from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.encode import AudioTrack
 from fastflix.language import t
 
-language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt3"] and v["pt1"]), key=lambda x: x.lower())
+language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 
 class Audio(QtWidgets.QTabWidget):
@@ -270,7 +270,7 @@ class Audio(QtWidgets.QTabWidget):
     def language(self):
         if self.widgets.language.currentIndex() == 0:
             return None
-        return Lang(self.widgets.language.currentText()).pt3
+        return Lang(self.widgets.language.currentText()).pt2b
 
     @property
     def title(self):

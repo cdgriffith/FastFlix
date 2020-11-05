@@ -324,10 +324,12 @@ def parse_hdr_details(app: FastFlixApp, **_):
                     logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
                 else:
                     if master_display:
-                        app.fastflix.current_video.pix_fmt = streams.video[video_track].get("pix_fmt")
-                        app.fastflix.current_video.color_space = streams.video[video_track].get("color_space")
-                        app.fastflix.current_video.color_primaries = streams.video[video_track].get("color_primaries")
-                        app.fastflix.current_video.color_transfer = streams.video[video_track].get("color_transfer")
+                        app.fastflix.current_video.pix_fmt = streams.video[video_track].get("pix_fmt", "")
+                        app.fastflix.current_video.color_space = streams.video[video_track].get("color_space", "")
+                        app.fastflix.current_video.color_primaries = streams.video[video_track].get(
+                            "color_primaries", ""
+                        )
+                        app.fastflix.current_video.color_transfer = streams.video[video_track].get("color_transfer", "")
                         app.fastflix.current_video.master_display = master_display
                         app.fastflix.current_video.cll = cll
                         return
@@ -349,7 +351,7 @@ def parse_hdr_details(app: FastFlixApp, **_):
     )
 
     try:
-        data = Box.from_json(result.stdout, default_box=True, default_box_attr=None)
+        data = Box.from_json(result.stdout, default_box=True, default_box_attr="")
     except BoxError:
         # Could not parse details
         logger.error(

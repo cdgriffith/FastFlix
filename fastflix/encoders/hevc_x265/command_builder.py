@@ -36,6 +36,7 @@ def build(fastflix: FastFlix):
         encoder="libx265",
         filters=filters,
         **asdict(fastflix.current_video.video_settings),
+        **asdict(settings),
     )
 
     beginning += f'{f"-tune {settings.tune}" if settings.tune else ""} '

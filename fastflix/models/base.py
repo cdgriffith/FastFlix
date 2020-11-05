@@ -7,6 +7,8 @@ logger = logging.getLogger("fastflix")
 
 ignore_list = [Queue]
 
+NO_OPTION = object()
+
 
 class BaseDataClass:
     def __setattr__(self, key, value):
@@ -27,3 +29,8 @@ class BaseDataClass:
             except TypeError as err:
                 logger.debug(f"Could not validate type for {key} with {annotation}: {err}")
         return super().__setattr__(key, value)
+
+    def get(self, item, default=NO_OPTION):
+        if default != NO_OPTION:
+            return getattr(self, item, default)
+        return getattr(self, item)

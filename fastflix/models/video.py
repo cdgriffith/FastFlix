@@ -26,7 +26,6 @@ class VideoSettings(BaseDataClass):
     video_title: str = ""
     selected_track: int = 0
     output_path: Path = None
-    pix_fmt: str = ""
     scale: Union[str, None] = None
     ffmpeg_extra: str = ""
     video_encoder_settings: Union[x265Settings] = None
@@ -51,7 +50,6 @@ class Video(BaseDataClass):
     height: int = 0
     duration: Union[float, int] = 0
     streams: Box = None
-    bit_depth: int = 8
 
     work_path: TemporaryDirectory = None
     pix_fmt: str = ""

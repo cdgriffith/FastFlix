@@ -37,14 +37,15 @@ def queue_worker(gui_proc, fastflix: FastFlix):
         logger.addHandler(new_file_handler)
         prevent_sleep_mode()
         runner.start_exec(
-            vid.video_settings.conversion_commands[vid.status.current_command].command, work_dir=vid.work_path.name
+            vid.video_settings.conversion_commands[vid.status.current_command].command.replace("\\", "/"),
+            work_dir=vid.work_path.name,
         )
 
     currently_encoding = False
     current_video = None
     while True:
         if currently_encoding and not runner.is_alive():
-            logger.info("here")
+            reusables.remove_file_handlers(logger)
             if runner.error_detected:
                 current_video.status.complete = True
                 current_video.status.error = True

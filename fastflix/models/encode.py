@@ -39,7 +39,6 @@ class EncoderSettings(BaseDataClass):
 
 @dataclass
 class x265Settings(EncoderSettings):
-    disable_hdr: bool = False
     preset: str = ""
     intra_encoding: bool = False
     max_mux: str = "1024"
