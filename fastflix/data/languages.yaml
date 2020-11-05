@@ -83,6 +83,10 @@ There is an existing burn-in track, only one can be enabled at a time:
   en: There is an existing burn-in track, only one can be enabled at a time
 Title:
   en: Title
+Width must be divisible by 2:
+  en: Width must be divisible by 2
+Width must be divisible by 2 - Source width:
+  en: Width must be divisible by 2 - Source width
 and add it to PATH:
   en: and add it to PATH
 attachment tracks found:
@@ -105,8 +109,6 @@ left:
   en: left
 none:
   en: none
-pix_fmt:
-  en: pix_fmt
 profile:
   en: profile
 right:

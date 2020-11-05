@@ -15,9 +15,7 @@ from fastflix.models.fastflix import FastFlix
 from fastflix.models.encode import x265Settings
 
 
-def build(
-    fastflix: FastFlix,
-):
+def build(fastflix: FastFlix):
     settings: x265Settings = fastflix.current_video.video_settings.video_encoder_settings
 
     audio = build_audio(fastflix.current_video.video_settings.audio_tracks)
@@ -36,9 +34,8 @@ def build(
         source=fastflix.current_video.source,
         ffmpeg=fastflix.config.ffmpeg,
         encoder="libx265",
-        video_track=fastflix.current_video.video_settings.selected_track,
         filters=filters,
-        pix_fmt=fastflix.current_video.video_settings.pix_fmt,
+        **asdict(fastflix.current_video.video_settings),
     )
 
     beginning += f'{f"-tune {settings.tune}" if settings.tune else ""} '
@@ -55,16 +52,10 @@ def build(
         x265_params.append(f"hdr10_opt={'1' if settings.hdr10_opt else '0'}")
 
         if fastflix.current_video.color_space == "bt2020":
-            x265_params.extend(
-                [
-                    "colorprim=bt2020",
-                    "transfer=smpte2084",
-                    "colormatrix=bt2020nc",
-                ]
-            )
+            x265_params.extend(["colorprim=bt2020", "transfer=smpte2084", "colormatrix=bt2020nc"])
 
         if fastflix.current_video.master_display:
-            hdr10 = True
+            settings.hdr10 = True
             x265_params.append(
                 "master-display="
                 f"G{fastflix.current_video.master_display.green}"
@@ -75,7 +66,7 @@ def build(
             )
 
         if fastflix.current_video.cll:
-            hdr10 = True
+            settings.hdr10 = True
             x265_params.append(f"max-cll={fastflix.current_video.cll}")
 
         x265_params.append(f"hdr10={'1' if settings.hdr10 else '0'}")
@@ -100,7 +91,8 @@ def build(
     if settings.bitrate:
         command_1 = (
             f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1"])} '
-            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset {settings.preset} -an -sn -dn -f mp4 {null}'
+            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset {settings.preset}'
+            f" -an -sn -dn -f mp4 {null}"
         )
         command_2 = (
             f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "{pass_log_file}" '

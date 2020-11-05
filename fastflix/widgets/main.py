@@ -908,7 +908,7 @@ class Main(QtWidgets.QWidget):
             self.clear_current_video()
 
         text_video_tracks = [
-            f'{x.index}: {t("codec")} {x.codec_name} - {t("pix_fmt")} {x.get("pix_fmt")} - {t("profile")} {x.get("profile")}'
+            f'{x.index}: {t("codec")} {x.codec_name} - {x.get("pix_fmt")} - {t("profile")} {x.get("profile")}'
             for x in self.app.fastflix.current_video.streams.video
         ]
         self.widgets.video_track.clear()
@@ -1133,6 +1133,7 @@ class Main(QtWidgets.QWidget):
         if after_done is not None:
             commands.append(after_done)
         self.video_options.commands.update_commands(commands)
+        self.app.fastflix.current_video.video_settings.conversion_commands = commands
         return True
 
     def page_update(self, build_thumbnail=True):
@@ -1226,8 +1227,8 @@ class Main(QtWidgets.QWidget):
         self.converting = True
 
         self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
-        # for command in self.app.fastflix.current_video.video_settings.conversion_commands:
-        #     self.app.fastflix.worker_queue.put(("command", command.command, self.temp_dir_name, command.shell))
+        for command in self.app.fastflix.current_video.video_settings.conversion_commands:
+            self.app.fastflix.worker_queue.put(("command", command.command, self.temp_dir_name, command.shell))
         self.disable_all()
         self.video_options.setCurrentWidget(self.video_options.status)
 

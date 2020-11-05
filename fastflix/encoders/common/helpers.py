@@ -40,7 +40,7 @@ def generate_ffmpeg_start(
     source,
     ffmpeg,
     encoder,
-    video_track,
+    selected_track,
     start_time=0,
     end_time=None,
     pix_fmt="yuv420p10le",
@@ -63,7 +63,7 @@ def generate_ffmpeg_start(
         f" {time_two} "
         f"{title} "
         f"{f'-max_muxing_queue_size {max_mux}' if max_mux != 'default' else ''} "
-        f'{f"-map 0:{video_track}" if not filters else ""} '
+        f'{f"-map 0:{selected_track}" if not filters else ""} '
         f'{filters if filters else ""} '
         f"-c:v {encoder} "
         f"-pix_fmt {pix_fmt} "
