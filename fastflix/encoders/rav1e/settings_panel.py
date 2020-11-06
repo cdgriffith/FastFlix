@@ -7,6 +7,8 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.encode import rav1eSettings
+from fastflix.encoders.rav1e.main import name
 
 logger = logging.getLogger("fastflix")
 
@@ -196,8 +198,9 @@ class RAV1E(SettingPanel):
         self.main.build_commands()
 
     def get_settings(self):
-        settings = Box(
-            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+        settings = rav1eSettings(
+            name=name,
+            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             speed=self.widgets.speed.currentText(),
             tile_columns=int(self.widgets.tile_columns.currentText()),
             tile_rows=int(self.widgets.tile_rows.currentText()),
@@ -215,7 +218,7 @@ class RAV1E(SettingPanel):
             settings.bitrate = (
                 bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.custom_bitrate.text()
             )
-        return settings
+        self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):
         self.mode = x.text()

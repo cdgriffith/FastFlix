@@ -64,3 +64,14 @@ class x264Settings(EncoderSettings):
     crf: Union[int, None] = None
     bitrate: Union[str, None] = None
     tune: Union[str, None] = None
+
+
+@dataclass
+class rav1eSettings(EncoderSettings):
+    speed: str = ""
+    tile_columns: int = 0
+    tile_rows: int = 0
+    tiles: int = 0
+    single_pass: bool = False
+    qp: Union[int, None] = None
+    bitrate: Union[str, None] = None
