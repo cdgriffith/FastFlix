@@ -60,6 +60,7 @@ class x265Settings(EncoderSettings):
 @dataclass
 class x264Settings(EncoderSettings):
     name = "AVC (x264)"
+
     preset: str = "medium"
     profile: str = "default"
     tune: str = "default"
@@ -77,4 +78,41 @@ class rav1eSettings(EncoderSettings):
     tiles: str = "0"
     single_pass: bool = False
     qp: Union[int, None] = None
+    bitrate: Union[str, None] = None
+
+
+@dataclass
+class SVTAV1Settings(EncoderSettings):
+    name = "AV1 (SVT AV1)"
+    tile_columns: str = "0"
+    tile_rows: str = "0"
+    tier: str = "main"
+    # scene_detection: str = "false"
+    single_pass: bool = False
+    speed: str = "7"
+    qp: Union[int, None] = None
+    bitrate: Union[str, None] = None
+
+
+@dataclass
+class VP9Settings(EncoderSettings):
+    name = "VP9"
+    profile: int = 2
+    quality: str = "good"
+    speed: str = "0"
+    row_mt: int = 0
+    single_pass: bool = False
+    crf: Union[int, None] = None
+    bitrate: Union[str, None] = None
+
+
+@dataclass
+class AOMAV1Settings(EncoderSettings):
+    name = "AV1 (AOM)"
+    tile_columns: str = "0"
+    tile_rows: str = "0"
+    usage: str = "good"
+    row_mt: str = "default"
+    cpu_used: str = "1"
+    crf: Union[int, None] = None
     bitrate: Union[str, None] = None

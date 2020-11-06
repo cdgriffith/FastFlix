@@ -7,6 +7,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.encode import SVTAV1Settings
 
 logger = logging.getLogger("fastflix")
 
@@ -46,6 +47,8 @@ pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
 
 
 class SVT_AV1(SettingPanel):
+    profile_name = "svt_av1"
+
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
         self.main = main
@@ -63,8 +66,8 @@ class SVT_AV1(SettingPanel):
         grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
         grid.addLayout(self.init_tier(), 5, 0, 1, 2)
-        grid.addLayout(self.init_sc_detection(), 6, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 7, 0, 1, 2)
+        # grid.addLayout(self.init_sc_detection(), 6, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
@@ -85,6 +88,7 @@ class SVT_AV1(SettingPanel):
             tooltip="Break the video into rows to encode faster (lesser quality)",
             options=[str(x) for x in range(0, 7)],
             widget_name="tile_rows",
+            opt="tile_rows",
         )
 
     def init_tile_columns(self):
@@ -93,6 +97,7 @@ class SVT_AV1(SettingPanel):
             tooltip="Break the video into columns to encode faster (lesser quality)",
             options=[str(x) for x in range(0, 5)],
             widget_name="tile_columns",
+            opt="tile_columns",
         )
 
     def init_pix_fmt(self):
@@ -101,22 +106,15 @@ class SVT_AV1(SettingPanel):
             tooltip="Pixel Format (requires at least 10-bit for HDR)",
             widget_name="pix_fmt",
             options=pix_fmts,
-            default=1,
+            opt="pix_fmt",
         )
 
     def init_tier(self):
-        return self._add_combo_box(label="Tier", options=["main", "high"], widget_name="tier")
+        return self._add_combo_box(label="Tier", options=["main", "high"], widget_name="tier", opt="tier")
 
     def init_sc_detection(self):
-        return self._add_combo_box(label="Scene Detection", options=["false", "true"], widget_name="sc_detection")
-
-    def init_max_mux(self):
         return self._add_combo_box(
-            label="Max Muxing Queue Size",
-            tooltip='Useful when you have the "Too many packets buffered for output stream" error',
-            widget_name="max_mux",
-            options=["default", "1024", "2048", "4096", "8192"],
-            default=1,
+            label="Scene Detection", options=["false", "true"], widget_name="sc_detection", opt="scene_detection"
         )
 
     def init_single_pass(self):
@@ -134,86 +132,28 @@ class SVT_AV1(SettingPanel):
             widget_name="speed",
             options=[str(x) for x in range(9)],
             tooltip="Quality/Speed ratio modifier",
-            default=7,
+            opt="speed",
         )
 
     def init_modes(self):
-        layout = QtWidgets.QGridLayout()
-        qp_group_box = QtWidgets.QGroupBox()
-        qp_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        qp_box_layout = QtWidgets.QHBoxLayout()
-
-        self.widgets.mode = QtWidgets.QButtonGroup()
-        self.widgets.mode.buttonClicked.connect(self.set_mode)
-
-        bitrate_group_box = QtWidgets.QGroupBox()
-        bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        bitrate_box_layout = QtWidgets.QHBoxLayout()
-        bitrate_radio = QtWidgets.QRadioButton("Bitrate")
-        bitrate_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(bitrate_radio)
-        self.widgets.bitrate = QtWidgets.QComboBox()
-        self.widgets.bitrate.setFixedWidth(250)
-        self.widgets.bitrate.addItems(recommended_bitrates)
-        self.widgets.bitrate.setCurrentIndex(6)
-        self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
-        self.widgets.custom_bitrate.setFixedWidth(100)
-        self.widgets.custom_bitrate.setDisabled(True)
-        self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
-        bitrate_box_layout.addWidget(bitrate_radio)
-        bitrate_box_layout.addWidget(self.widgets.bitrate)
-        bitrate_box_layout.addStretch()
-        bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
-
-        qp_radio = QtWidgets.QRadioButton("QP")
-        qp_radio.setChecked(True)
-        qp_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(qp_radio)
-
-        self.widgets.qp = QtWidgets.QComboBox()
-        self.widgets.qp.setFixedWidth(250)
-        self.widgets.qp.addItems(recommended_qp)
-        self.widgets.qp.setCurrentIndex(0)
-        self.widgets.qp.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_qp = QtWidgets.QLineEdit("30")
-        self.widgets.custom_qp.setFixedWidth(100)
-        self.widgets.custom_qp.setDisabled(True)
-        self.widgets.custom_qp.setValidator(self.only_int)
-        self.widgets.custom_qp.textChanged.connect(lambda: self.main.build_commands())
-        qp_box_layout.addWidget(qp_radio)
-        qp_box_layout.addWidget(self.widgets.qp)
-        qp_box_layout.addStretch()
-        qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        qp_box_layout.addWidget(self.widgets.custom_qp)
-
-        bitrate_group_box.setLayout(bitrate_box_layout)
-        qp_group_box.setLayout(qp_box_layout)
-
-        bitrate_group_box.setLayout(bitrate_box_layout)
-        qp_group_box.setLayout(qp_box_layout)
-
-        layout.addWidget(qp_group_box, 0, 0)
-        layout.addWidget(bitrate_group_box, 1, 0)
-        return layout
+        return self._add_modes(recommended_bitrates, recommended_qp, qp_name="qp")
 
     def mode_update(self):
         self.widgets.custom_qp.setDisabled(self.widgets.qp.currentText() != "Custom")
         self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
         self.main.build_commands()
 
-    def get_settings(self):
-        settings = Box(
-            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+    def update_video_encoder_settings(self):
+        settings = SVTAV1Settings(
+            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             speed=self.widgets.speed.currentText(),
-            tile_columns=int(self.widgets.tile_columns.currentText()),
-            tile_rows=int(self.widgets.tile_rows.currentText()),
+            tile_columns=self.widgets.tile_columns.currentText(),
+            tile_rows=self.widgets.tile_rows.currentText(),
             single_pass=self.widgets.single_pass.isChecked(),
-            tier=int(self.widgets.tier.currentIndex()),
-            sc_detection=int(self.widgets.sc_detection.currentIndex()),
+            tier=self.widgets.tier.currentText(),
+            # scene_detection=int(self.widgets.sc_detection.currentIndex()),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
-            max_mux=self.widgets.max_mux.currentText(),
+            max_muxing_queue_size=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
         )
         if self.mode == "QP":
@@ -224,7 +164,7 @@ class SVT_AV1(SettingPanel):
             settings.bitrate = (
                 bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.custom_bitrate.text()
             )
-        return settings
+        self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):
         self.mode = x.text()

@@ -8,7 +8,14 @@ from appdirs import user_data_dir
 from box import Box, BoxError
 
 from fastflix.version import __version__
-from fastflix.models.encode import x264Settings, x265Settings, rav1eSettings
+from fastflix.models.encode import (
+    x264Settings,
+    x265Settings,
+    rav1eSettings,
+    SVTAV1Settings,
+    VP9Settings,
+    AOMAV1Settings,
+)
 
 fastflix_folder = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
 ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
@@ -43,6 +50,9 @@ class Profile:
     x265: x265Settings = field(default_factory=x265Settings)
     x264: x264Settings = field(default_factory=x264Settings)
     rav1e: rav1eSettings = field(default_factory=rav1eSettings)
+    svt_av1: SVTAV1Settings = field(default_factory=SVTAV1Settings)
+    vp9: VP9Settings = field(default_factory=VP9Settings)
+    aom_av1: AOMAV1Settings = field(default_factory=AOMAV1Settings)
     # x265_mode: str = "crf"
     # x265_crf: int = 28
     # x265_bitrate: str = "28000k"

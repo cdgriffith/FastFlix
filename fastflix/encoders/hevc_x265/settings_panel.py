@@ -9,9 +9,10 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import x265Settings
-from fastflix.encoders.hevc_x265.main import name
 
 logger = logging.getLogger("fastflix")
+
+presets = ["ultrafast", "superfast", "veryfast", "faster", "fast", "medium", "slow", "slower", "veryslow", "placebo"]
 
 recommended_bitrates = [
     "150k     (320x240p @ 30fps)",
@@ -207,18 +208,7 @@ class HEVC(SettingPanel):
         layout = self._add_combo_box(
             label="Preset",
             widget_name="preset",
-            options=[
-                "ultrafast",
-                "superfast",
-                "veryfast",
-                "faster",
-                "fast",
-                "medium",
-                "slow",
-                "slower",
-                "veryslow",
-                "placebo",
-            ],
+            options=presets,
             tooltip=(
                 "preset: The slower the preset, the better the compression and quality\n"
                 "Slow is highest personal recommenced, as past that is much smaller gains"
@@ -268,69 +258,7 @@ class HEVC(SettingPanel):
         )
 
     def init_modes(self):
-        layout = QtWidgets.QGridLayout()
-        crf_group_box = QtWidgets.QGroupBox()
-        crf_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        crf_box_layout = QtWidgets.QHBoxLayout()
-        bitrate_group_box = QtWidgets.QGroupBox()
-        bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        bitrate_box_layout = QtWidgets.QHBoxLayout()
-        self.widgets.mode = QtWidgets.QButtonGroup()
-        self.widgets.mode.buttonClicked.connect(self.set_mode)
-
-        bitrate_radio = QtWidgets.QRadioButton("Bitrate")
-        bitrate_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(bitrate_radio)
-        self.widgets.bitrate = QtWidgets.QComboBox()
-        self.widgets.bitrate.setFixedWidth(250)
-        self.widgets.bitrate.addItems(recommended_bitrates)
-        self.widgets.bitrate.setCurrentIndex(6)
-        self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
-        self.widgets.custom_bitrate.setFixedWidth(100)
-        self.widgets.custom_bitrate.setDisabled(True)
-        self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
-        bitrate_box_layout.addWidget(bitrate_radio)
-        bitrate_box_layout.addWidget(self.widgets.bitrate)
-        bitrate_box_layout.addStretch()
-        bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
-
-        crf_help = (
-            "CRF is extremely source dependant,<br>"
-            "the resolution-to-crf are mere suggestions!<br><br>"
-            "Quality also depends on encoding speed.<br> "
-            "For example, SLOW CRF 22 will have a result near FAST CRF 20."
-        )
-        crf_radio = QtWidgets.QRadioButton("CRF")
-        crf_radio.setChecked(True)
-        crf_radio.setFixedWidth(80)
-        crf_radio.setToolTip(crf_help)
-        self.widgets.mode.addButton(crf_radio)
-
-        self.widgets.crf = QtWidgets.QComboBox()
-        self.widgets.crf.setToolTip(crf_help)
-        self.widgets.crf.setFixedWidth(250)
-        self.widgets.crf.addItems(recommended_crfs)
-        self.widgets.crf.setCurrentIndex(0)
-        self.widgets.crf.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_crf = QtWidgets.QLineEdit("30")
-        self.widgets.custom_crf.setFixedWidth(100)
-        self.widgets.custom_crf.setDisabled(True)
-        self.widgets.custom_crf.setValidator(self.only_int)
-        self.widgets.custom_crf.textChanged.connect(lambda: self.main.build_commands())
-        crf_box_layout.addWidget(crf_radio)
-        crf_box_layout.addWidget(self.widgets.crf)
-        crf_box_layout.addStretch()
-        crf_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        crf_box_layout.addWidget(self.widgets.custom_crf)
-
-        bitrate_group_box.setLayout(bitrate_box_layout)
-        crf_group_box.setLayout(crf_box_layout)
-
-        layout.addWidget(crf_group_box, 0, 0)
-        layout.addWidget(bitrate_group_box, 1, 0)
-        return layout
+        return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf")
 
     def mode_update(self):
         self.widgets.custom_crf.setDisabled(self.widgets.crf.currentText() != "Custom")

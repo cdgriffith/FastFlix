@@ -3,79 +3,47 @@ import re
 import secrets
 from pathlib import Path
 
-from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_ending, generate_ffmpeg_start, generate_filters, null
-from fastflix.encoders.common.subtitles import build_subtitle
+from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.models.fastflix import FastFlix
+from fastflix.models.encode import VP9Settings
 
 
-def build(
-    source,
-    video_track,
-    ffmpeg,
-    temp_dir,
-    output_video,
-    streams,
-    stream_track,
-    bitrate=None,
-    crf=None,
-    subtitle_tracks=(),
-    single_pass=False,
-    quality="good",
-    audio_tracks=(),
-    speed=1,
-    row_mt=0,
-    pix_fmt="yuv420p10le",
-    attachments="",
-    profile=1,
-    disable_hdr=False,
-    side_data=None,
-    **kwargs,
-):
-    audio = build_audio(audio_tracks)
-    subtitles, burn_in_track = build_subtitle(subtitle_tracks)
-    filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
-    ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
-    beginning = generate_ffmpeg_start(
-        source=source,
-        ffmpeg=ffmpeg,
-        encoder="libvpx-vp9",
-        video_track=video_track,
-        filters=filters,
-        pix_fmt=pix_fmt,
-        **kwargs,
-    )
+def build(fastflix: FastFlix):
+    settings: VP9Settings = fastflix.current_video.video_settings.video_encoder_settings
+    beginning, ending = generate_all(fastflix, "librav1e")
 
-    beginning += f'{"-row-mt 1" if row_mt else ""} '
+    beginning += f'{"-row-mt 1" if settings.row_mt else ""} '
 
-    if not single_pass:
-        pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
+    if not settings.single_pass:
+        pass_log_file = Path(fastflix.current_video.work_path.name) / f"pass_log_file_{secrets.token_hex(10)}.log"
         beginning += f'-passlogfile "{pass_log_file}" '
 
-    if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
-
-        if streams.video[stream_track].get("color_primaries") == "bt2020" or (
-            side_data and side_data.get("color_primaries") == "bt2020"
-        ):
+    if not settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+        if fastflix.current_video.color_space.startswith("bt2020"):
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc -color_range 1"
 
     beginning = re.sub("[ ]+", " ", beginning)
 
-    details = f"-quality {quality} -speed {speed} -profile {profile}"
+    details = f"-quality {settings.quality} -speed {settings.speed} -profile {settings.profile}"
 
-    if bitrate:
-        command_1 = f"{beginning} -b:v {bitrate} {details} -pass 1 -an -f webm {null}"
-        command_2 = f"{beginning} -b:v {bitrate} {details} -pass 2" + ending
+    if settings.bitrate:
+        command_1 = f"{beginning} -b:v {settings.bitrate} {details} -pass 1 -an -f webm {null}"
+        command_2 = f"{beginning} -b:v {settings.bitrate} {details} -pass 2 {ending}"
 
-    elif crf:
-        command_1 = f"{beginning} -b:v 0 -crf {crf} {details} -pass 1 -an -f webm {null}"
-        command_2 = (f"{beginning} -b:v 0 -crf {crf} {details} " f'{"-pass 2" if not single_pass else ""}') + ending
+    elif settings.crf:
+        command_1 = f"{beginning} -b:v 0 -crf {settings.crf} {details} -pass 1 -an -f webm {null}"
+        command_2 = (
+            f"{beginning} -b:v 0 -crf {settings.crf} {details} "
+            f'{"-pass 2" if not settings.single_pass else ""} {ending}'
+        )
 
     else:
         return []
 
-    if crf and single_pass:
+    if settings.crf and settings.single_pass:
         return [Command(command_2, ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")]
-    pass_type = "bitrate" if bitrate else "CRF"
+    pass_type = "bitrate" if settings.bitrate else "CRF"
+
     return [
         Command(command_1, ["ffmpeg", "output"], False, name=f"First pass {pass_type}", exe="ffmpeg"),
         Command(command_2, ["ffmpeg", "output"], False, name=f"Second pass {pass_type} ", exe="ffmpeg"),

@@ -12,7 +12,7 @@ from fastflix.models.encode import x265Settings
 def build(fastflix: FastFlix):
     settings: x265Settings = fastflix.current_video.video_settings.video_encoder_settings
 
-    beginning, ending = generate_all(fastflix)
+    beginning, ending = generate_all(fastflix, "libx265")
 
     if settings.tune and settings.tune != "default":
         beginning += f"-tune {settings.tune}"

@@ -11,7 +11,7 @@ from fastflix.models.fastflix import FastFlix
 def build(fastflix: FastFlix):
     settings: x264Settings = fastflix.current_video.video_settings.video_encoder_settings
 
-    beginning, ending = generate_all(fastflix)
+    beginning, ending = generate_all(fastflix, "libx264")
 
     beginning += f'{f"-tune {settings.tune}" if settings.tune else ""} '
 

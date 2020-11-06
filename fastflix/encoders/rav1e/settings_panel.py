@@ -123,77 +123,8 @@ class RAV1E(SettingPanel):
             opt="pix_fmt",
         )
 
-    def init_max_mux(self):
-        return self._add_combo_box(
-            label="Max Muxing Queue Size",
-            tooltip='Useful when you have the "Too many packets buffered for output stream" error',
-            widget_name="max_mux",
-            options=["default", "1024", "2048", "4096", "8192"],
-            opt="max_muxing_queue_size",
-        )
-
     def init_modes(self):
-        layout = QtWidgets.QGridLayout()
-        qp_group_box = QtWidgets.QGroupBox()
-        qp_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        qp_box_layout = QtWidgets.QHBoxLayout()
-
-        # rotation_dir = Path(base_path, 'data', 'rotations')
-        # group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-15px; padding-bottom:-5px}")
-        self.widgets.mode = QtWidgets.QButtonGroup()
-        self.widgets.mode.buttonClicked.connect(self.set_mode)
-
-        bitrate_group_box = QtWidgets.QGroupBox()
-        bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        bitrate_box_layout = QtWidgets.QHBoxLayout()
-        bitrate_radio = QtWidgets.QRadioButton("Bitrate")
-        bitrate_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(bitrate_radio)
-        self.widgets.bitrate = QtWidgets.QComboBox()
-        self.widgets.bitrate.setFixedWidth(250)
-        self.widgets.bitrate.addItems(recommended_bitrates)
-        self.widgets.bitrate.setCurrentIndex(6)
-        self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
-        self.widgets.custom_bitrate.setFixedWidth(100)
-        self.widgets.custom_bitrate.setDisabled(True)
-        self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
-        bitrate_box_layout.addWidget(bitrate_radio)
-        bitrate_box_layout.addWidget(self.widgets.bitrate)
-        bitrate_box_layout.addStretch()
-        bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
-
-        qp_radio = QtWidgets.QRadioButton("QP")
-        qp_radio.setChecked(True)
-        qp_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(qp_radio)
-
-        self.widgets.qp = QtWidgets.QComboBox()
-        self.widgets.qp.setFixedWidth(250)
-        self.widgets.qp.addItems(recommended_qp)
-        self.widgets.qp.setCurrentIndex(0)
-        self.widgets.qp.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_qp = QtWidgets.QLineEdit("30")
-        self.widgets.custom_qp.setFixedWidth(100)
-        self.widgets.custom_qp.setDisabled(True)
-        self.widgets.custom_qp.setValidator(self.only_int)
-        self.widgets.custom_qp.textChanged.connect(lambda: self.main.build_commands())
-        qp_box_layout.addWidget(qp_radio)
-        qp_box_layout.addWidget(self.widgets.qp)
-        qp_box_layout.addStretch()
-        qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        qp_box_layout.addWidget(self.widgets.custom_qp)
-
-        bitrate_group_box.setLayout(bitrate_box_layout)
-        qp_group_box.setLayout(qp_box_layout)
-
-        bitrate_group_box.setLayout(bitrate_box_layout)
-        qp_group_box.setLayout(qp_box_layout)
-
-        layout.addWidget(qp_group_box, 0, 0)
-        layout.addWidget(bitrate_group_box, 1, 0)
-        return layout
+        return self._add_modes(recommended_bitrates, recommended_qp, qp_name="qp")
 
     def mode_update(self):
         self.widgets.custom_qp.setDisabled(self.widgets.qp.currentText() != "Custom")

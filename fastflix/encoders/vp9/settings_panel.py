@@ -6,6 +6,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.encode import VP9Settings
 
 logger = logging.getLogger("fastflix")
 
@@ -39,6 +40,8 @@ pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
 
 
 class VP9(SettingPanel):
+    profile_name = "vp9"
+
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
         self.main = main
@@ -84,7 +87,7 @@ class VP9(SettingPanel):
             tooltip="Pixel Format (requires at least 10-bit for HDR)",
             widget_name="pix_fmt",
             options=pix_fmts,
-            default=1,
+            opt="pix_fmt",
         )
 
     def init_profile(self):
@@ -98,7 +101,7 @@ class VP9(SettingPanel):
                 "2: 10 or 12-bit | 4:2:0",
                 "3: 10 or 12-bit | 4:2:2 or 4:4:4",
             ],
-            default=2,
+            opt="profile",
         )
 
     def init_quality(self):
@@ -110,7 +113,7 @@ class VP9(SettingPanel):
             ),
             widget_name="quality",
             options=["realtime", "good", "best"],
-            default=1,
+            opt="quality",
         )
 
     def init_speed(self):
@@ -123,7 +126,7 @@ class VP9(SettingPanel):
             ),
             widget_name="speed",
             options=[str(x) for x in range(-8, 9)],
-            default=9,
+            opt="speed",
         )
 
     def init_row_mt(self):
@@ -134,94 +137,29 @@ class VP9(SettingPanel):
                 "are otherwise underutilised when encoding VP9."
             ),
             widget_name="row_mt",
-            checked=False,
+            opt="row_mt",
         )
 
     def init_single_pass(self):
-        return self._add_check_box(label="Single Pass (CRF)", tooltip="", widget_name="single_pass", checked=False)
-
-    def init_max_mux(self):
-        return self._add_combo_box(
-            label="Max Muxing Queue Size",
-            tooltip='Useful when you have the "Too many packets buffered for output stream" error',
-            widget_name="max_mux",
-            options=["default", "1024", "2048", "4096", "8192"],
-            default=1,
-        )
+        return self._add_check_box(label="Single Pass (CRF)", tooltip="", widget_name="single_pass", opt="single_pass")
 
     def init_modes(self):
-        layout = QtWidgets.QGridLayout()
-        crf_group_box = QtWidgets.QGroupBox()
-        crf_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        crf_box_layout = QtWidgets.QHBoxLayout()
-        bitrate_group_box = QtWidgets.QGroupBox()
-        bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        bitrate_box_layout = QtWidgets.QHBoxLayout()
-        # rotation_dir = Path(base_path, 'data', 'rotations')
-        # group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-15px; padding-bottom:-5px}")
-        self.widgets.mode = QtWidgets.QButtonGroup()
-        self.widgets.mode.buttonClicked.connect(self.set_mode)
-
-        bitrate_radio = QtWidgets.QRadioButton("Bitrate")
-        bitrate_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(bitrate_radio)
-        self.widgets.bitrate = QtWidgets.QComboBox()
-        self.widgets.bitrate.setFixedWidth(250)
-        self.widgets.bitrate.addItems(recommended_bitrates)
-        self.widgets.bitrate.setCurrentIndex(6)
-        self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
-        self.widgets.custom_bitrate.setFixedWidth(100)
-        self.widgets.custom_bitrate.setDisabled(True)
-        self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
-        bitrate_box_layout.addWidget(bitrate_radio)
-        bitrate_box_layout.addWidget(self.widgets.bitrate)
-        bitrate_box_layout.addStretch()
-        bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
-
-        crf_radio = QtWidgets.QRadioButton("CRF")
-        crf_radio.setChecked(True)
-        crf_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(crf_radio)
-
-        self.widgets.crf = QtWidgets.QComboBox()
-        self.widgets.crf.setFixedWidth(250)
-        self.widgets.crf.addItems(recommended_crfs)
-        self.widgets.crf.setCurrentIndex(4)
-        self.widgets.crf.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_crf = QtWidgets.QLineEdit("30")
-        self.widgets.custom_crf.setFixedWidth(100)
-        self.widgets.custom_crf.setDisabled(True)
-        self.widgets.custom_crf.setValidator(self.only_int)
-        self.widgets.custom_crf.textChanged.connect(lambda: self.main.build_commands())
-        crf_box_layout.addWidget(crf_radio)
-        crf_box_layout.addWidget(self.widgets.crf)
-        crf_box_layout.addStretch()
-        crf_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        crf_box_layout.addWidget(self.widgets.custom_crf)
-
-        bitrate_group_box.setLayout(bitrate_box_layout)
-        crf_group_box.setLayout(crf_box_layout)
-
-        layout.addWidget(crf_group_box, 0, 0)
-        layout.addWidget(bitrate_group_box, 1, 0)
-        return layout
+        return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf")
 
     def mode_update(self):
         self.widgets.custom_crf.setDisabled(self.widgets.crf.currentText() != "Custom")
         self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
         self.main.build_commands()
 
-    def get_settings(self):
-        settings = Box(
-            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+    def update_video_encoder_settings(self):
+        settings = VP9Settings(
+            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             quality=self.widgets.quality.currentText(),
             speed=self.widgets.speed.currentText(),
             row_mt=int(self.widgets.row_mt.isChecked()),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             single_pass=self.widgets.single_pass.isChecked(),
-            max_mux=self.widgets.max_mux.currentText(),
+            max_muxing_queue_size=self.widgets.max_mux.currentText(),
             profile=self.widgets.profile.currentIndex(),
             extra=self.ffmpeg_extras,
         )
@@ -234,7 +172,7 @@ class VP9(SettingPanel):
                 settings.bitrate = self.widgets.custom_bitrate.text()
             else:
                 settings.bitrate = bitrate.split(" ", 1)[0]
-        return settings
+        self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):
         self.mode = x.text()

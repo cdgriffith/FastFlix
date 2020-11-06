@@ -164,7 +164,7 @@ def generate_filters(
     return f' -filter_complex "{filter_complex}" -map "[v]" '
 
 
-def generate_all(fastflix: FastFlix) -> Tuple[str, str]:
+def generate_all(fastflix: FastFlix, encoder: str) -> Tuple[str, str]:
     settings = fastflix.current_video.video_settings.video_encoder_settings
 
     audio = build_audio(fastflix.current_video.video_settings.audio_tracks)
@@ -182,7 +182,7 @@ def generate_all(fastflix: FastFlix) -> Tuple[str, str]:
     beginning = generate_ffmpeg_start(
         source=fastflix.current_video.source,
         ffmpeg=fastflix.config.ffmpeg,
-        encoder="librav1e",
+        encoder=encoder,
         filters=filters,
         **asdict(fastflix.current_video.video_settings),
         **asdict(settings),

@@ -1,3 +1,5 @@
+'':
+  en: ''
 Audio Tracks:
   en: Audio Tracks
 Autocrop tried to crop too much:
@@ -14,6 +16,8 @@ Break the video into rows to encode faster (lesser quality):
   en: Break the video into rows to encode faster (lesser quality)
 Burn In:
   en: Burn In
+CPU Used:
+  en: CPU Used
 Cancel Conversion:
   en: Cancel Conversion
 Close GUI Only:
@@ -37,6 +41,8 @@ Determine HDR details:
 Downloading FFmpeg:
   en: Downloading FFmpeg
   es: Descargando FFmpeg
+Enable row based multi-threading:
+  en: Enable row based multi-threading
 Enabled:
   en: Enabled
 Enforce an encode profile:
@@ -74,6 +80,10 @@ Keep FastFlix Open:
   en: Keep FastFlix Open
 Language:
   en: Language
+Log2 of number of tile columns to encode faster (lesser quality):
+  en: Log2 of number of tile columns to encode faster (lesser quality)
+Log2 of number of tile rows to encode faster (lesser quality):
+  en: Log2 of number of tile rows to encode faster (lesser quality)
 Max Muxing Queue Size:
   en: Max Muxing Queue Size
 More than one track selected to burn in:
@@ -95,14 +105,28 @@ Preset:
   en: Preset
 Profile:
   en: Profile
+Quality:
+  en: Quality
+Quality and compression efficiency vs speed trade-off:
+  en: Quality and compression efficiency vs speed trade-off
+Quality/Speed ratio modifier:
+  en: Quality/Speed ratio modifier
 Quality/Speed ratio modifier (defaults to -1):
   en: Quality/Speed ratio modifier (defaults to -1)
+Quality/Speed ratio modifier (defaults to 1):
+  en: Quality/Speed ratio modifier (defaults to 1)
 Remove HDR:
   en: Remove HDR
+Row Multi-Threading:
+  en: Row Multi-Threading
+Row multithreading:
+  en: Row multithreading
 Running command:
   en: Running command
 Single Pass (Bitrate):
   en: Single Pass (Bitrate)
+Single Pass (CRF):
+  en: Single Pass (CRF)
 Source height:
   en: Source height
 Source width:
@@ -117,6 +141,11 @@ There is a conversion in process!:
   en: There is a conversion in process!
 There is an existing burn-in track, only one can be enabled at a time:
   en: There is an existing burn-in track, only one can be enabled at a time
+This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.:
+  en: This improves encoding speed significantly on systems that are otherwise underutilised
+    when encoding VP9.
+Tier:
+  en: Tier
 Tile Columns:
   en: Tile Columns
 Tile Rows:
@@ -129,8 +158,16 @@ Tune:
   en: Tune
 Tune the settings for a particular type of source or situation:
   en: Tune the settings for a particular type of source or situation
+Usage:
+  en: Usage
 Useful when you have the "Too many packets buffered for output stream" error:
   en: Useful when you have the "Too many packets buffered for output stream" error
+? Using 1 or 2 will increase encoding speed at the expense of having some impact on
+  quality and rate control accuracy.<br> 4 or 5 will turn off rate distortion optimization,
+  having even more of an impact on quality.
+: en: Using 1 or 2 will increase encoding speed at the expense of having some impact
+    on quality and rate control accuracy.<br> 4 or 5 will turn off rate distortion
+    optimization, having even more of an impact on quality.
 Width must be divisible by 2:
   en: Width must be divisible by 2
 Width must be divisible by 2 - Source width:
@@ -163,6 +200,10 @@ codec:
   en: 'dhdr10_info: Path to HDR10+ JSON metadata file'
 download a static FFmpeg:
   en: download a static FFmpeg
+? good is the default and recommended for most applications <br> best is recommended
+  if you have lots of time and want the best compression efficiency.
+: en: good is the default and recommended for most applications <br> best is recommended
+    if you have lots of time and want the best compression efficiency.
 ? "hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.\n\
   It is recommended that AQ-mode be enabled along with this feature"
 : en: "hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.\n\
@@ -198,6 +239,8 @@ profile:
   en: profile
 'profile: Enforce an encode profile':
   en: 'profile: Enforce an encode profile'
+'profile: VP9 coding profile - must match bit depth':
+  en: 'profile: VP9 coding profile - must match bit depth'
 ? "repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every\
   \ keyframe.\nThis is intended for use when you do not have a container to keep the\
   \ stream headers for you\n and you want keyframes to be random access points."

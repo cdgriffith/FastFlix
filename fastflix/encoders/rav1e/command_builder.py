@@ -5,30 +5,17 @@ import logging
 import re
 import secrets
 from pathlib import Path
-from dataclasses import asdict
 
-import reusables
-
-from fastflix.encoders.common.audio import build_audio
 from fastflix.encoders.common.helpers import Command, generate_all, null
-from fastflix.encoders.common.subtitles import build_subtitle
-
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.encode import rav1eSettings
 
 logger = logging.getLogger("fastflix")
 
 
-class FlixError(Exception):
-    pass
-
-
-extension = "mkv"
-
-
 def build(fastflix: FastFlix):
     settings: rav1eSettings = fastflix.current_video.video_settings.video_encoder_settings
-    beginning, ending = generate_all(fastflix)
+    beginning, ending = generate_all(fastflix, "librav1e")
 
     beginning += (
         "-strict experimental "
@@ -39,7 +26,6 @@ def build(fastflix: FastFlix):
     )
 
     if not settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
-
         if fastflix.current_video.color_space.startswith("bt2020"):
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
