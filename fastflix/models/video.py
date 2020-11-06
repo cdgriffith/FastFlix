@@ -9,7 +9,7 @@ from box import Box
 
 from fastflix.models.base import BaseDataClass
 
-from fastflix.models.encode import AudioTrack, SubtitleTrack, x265Settings
+from fastflix.models.encode import AudioTrack, SubtitleTrack, x265Settings, x264Settings
 
 
 @dataclass
@@ -28,7 +28,7 @@ class VideoSettings(BaseDataClass):
     output_path: Path = None
     scale: Union[str, None] = None
     ffmpeg_extra: str = ""
-    video_encoder_settings: Union[x265Settings] = None
+    video_encoder_settings: Union[x265Settings, x264Settings] = None
     audio_tracks: List[AudioTrack] = field(default_factory=list)
     subtitle_tracks: List[SubtitleTrack] = field(default_factory=list)
     conversion_commands: List = field(default_factory=list)

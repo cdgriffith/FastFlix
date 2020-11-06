@@ -35,14 +35,15 @@ class SubtitleTrack(BaseDataClass):
 class EncoderSettings(BaseDataClass):
     name: str
     remove_hdr: bool = False
+    max_mux: str = "1024"
+    pix_fmt: str = ""
+    extra: str = ""
 
 
 @dataclass
 class x265Settings(EncoderSettings):
     preset: str = ""
     intra_encoding: bool = False
-    max_mux: str = "1024"
-    pix_fmt: str = ""
     profile: str = ""
     hdr10: bool = False
     hdr10_opt: bool = False
@@ -54,3 +55,12 @@ class x265Settings(EncoderSettings):
     bitrate: Union[str, None] = None
     tune: Union[str, None] = None
     x265_params: List[str] = field(default_factory=[])
+
+
+@dataclass
+class x264Settings(EncoderSettings):
+    preset: str = ""
+    profile: str = ""
+    crf: Union[int, None] = None
+    bitrate: Union[str, None] = None
+    tune: Union[str, None] = None

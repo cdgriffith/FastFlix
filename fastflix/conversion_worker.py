@@ -22,7 +22,7 @@ def get_next_item(fastflix: FastFlix):
             return item
 
 
-def queue_worker(gui_proc, fastflix: FastFlix):
+def queue_worker(fastflix: FastFlix):
     runner = BackgroundRunner(log_queue=fastflix.log_queue)
 
     def start_command(vid):

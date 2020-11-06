@@ -51,7 +51,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         conversion = conversion.strip()
         self.current_settings.close()
         # self.main.current_encoder = self.main.plugins[conversion]
-        self.current_settings = self.main.current_encoder.settings_panel(self, self.main, self.app)
+        self.current_settings = self.app.fastflix.encoders[conversion].settings_panel(self, self.main, self.app)
         self.current_settings.show()
         self.removeTab(0)
         self.insertTab(0, self.current_settings, "Quality")

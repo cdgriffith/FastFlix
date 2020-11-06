@@ -11,6 +11,7 @@ from datetime import timedelta
 from pathlib import Path
 from queue import Queue
 import copy
+import math
 from typing import Union, Tuple, List, Dict
 
 import pkg_resources
@@ -247,7 +248,7 @@ class Main(QtWidgets.QWidget):
 
         layout.addWidget(open_input_file)
         layout.addStretch()
-        layout.addLayout(self.init_output_type())
+        layout.addLayout(self.init_encoder_drop_down())
         layout.addStretch()
         layout.addWidget(self.widgets.pause_resume)
         layout.addWidget(convert)
@@ -361,11 +362,11 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_to.setFont(QtGui.QFont("helvetica", 10, weight=57))
         self.widgets.convert_to.setIconSize(QtCore.QSize(40, 40))
 
-    def init_output_type(self):
+    def init_encoder_drop_down(self):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
         self.change_output_types()
-        self.widgets.convert_to.currentTextChanged.connect(self.change_conversion)
+        self.widgets.convert_to.currentTextChanged.connect(self.change_encoder)
         # layout.addWidget(QtWidgets.QLabel("Encoder: "), stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=0)
         layout.addStretch()
@@ -373,12 +374,19 @@ class Main(QtWidgets.QWidget):
 
         return layout
 
-    def change_conversion(self):
-        if not self.output_video_path_widget.text().endswith(
-            self.app.fastflix.encoders[self.convert_to].video_extension
-        ):
+    def change_encoder(self):
+        if not self.output_video_path_widget.text().endswith(self.current_encoder.video_extension):
             self.output_video_path_widget.setText(self.generate_output_filename)
         self.video_options.change_conversion(self.widgets.convert_to.currentText())
+
+    @property
+    def current_encoder(self):
+        try:
+            return self.app.fastflix.encoders[
+                self.app.fastflix.current_video.video_settings.video_encoder_settings.name
+            ]
+        except AttributeError:
+            return self.app.fastflix.encoders[self.convert_to]
 
     def init_start_time(self):
         group_box = QtWidgets.QGroupBox()
@@ -593,7 +601,7 @@ class Main(QtWidgets.QWidget):
             if value is None:
                 return
         else:
-            modifier = getattr(self.app.fastflix.encoders[self.convert_to], "video_dimension_divisor", 1)
+            modifier = getattr(self.current_encoder, "video_dimension_divisor", 1)
             try:
                 value = int(widget.text())
                 value = int(value + (value % modifier))
@@ -632,8 +640,8 @@ class Main(QtWidgets.QWidget):
     @property
     def generate_output_filename(self):
         if self.input_video:
-            return f"{self.input_video.parent / self.input_video.stem}-fastflix-{secrets.token_hex(2)}.{self.app.fastflix.encoders[self.convert_to].video_extension}"
-        return f"{Path('~').expanduser()}{os.sep}fastflix-{secrets.token_hex(2)}.{self.app.fastflix.encoders[self.convert_to].video_extension}"
+            return f"{self.input_video.parent / self.input_video.stem}-fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
+        return f"{Path('~').expanduser()}{os.sep}fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
 
     @property
     def output_video(self):
@@ -652,7 +660,8 @@ class Main(QtWidgets.QWidget):
 
         start_pos = self.start_time or self.app.fastflix.current_video.duration // 10
 
-        blocks = int((self.app.fastflix.current_video.duration - start_pos) // 5)
+        blocks = math.ceil((self.app.fastflix.current_video.duration - start_pos) / 5)
+        print(blocks)
         times = [
             x
             for x in range(int(start_pos), int(self.app.fastflix.current_video.duration), blocks)
@@ -921,20 +930,14 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.width.setText(
             str(
                 self.app.fastflix.current_video.width
-                + (
-                    self.app.fastflix.current_video.width
-                    % self.app.fastflix.encoders[self.convert_to].video_dimension_divisor
-                )
+                + (self.app.fastflix.current_video.width % self.current_encoder.video_dimension_divisor)
             )
         )
         self.widgets.scale.width.setToolTip(f"{t('Source width')}: {self.app.fastflix.current_video.width}")
         self.widgets.scale.height.setText(
             str(
                 self.app.fastflix.current_video.height
-                + (
-                    self.app.fastflix.current_video.height
-                    % self.app.fastflix.encoders[self.convert_to].video_dimension_divisor
-                )
+                + (self.app.fastflix.current_video.height % self.current_encoder.video_dimension_divisor)
             )
         )
         self.widgets.scale.height.setToolTip(f"{t('Source height')}: {self.app.fastflix.current_video.height}")
@@ -1110,15 +1113,6 @@ class Main(QtWidgets.QWidget):
         )
 
         self.app.fastflix.current_video.video_settings.encoder_options = self.video_options.get_settings()
-
-    @property
-    def current_encoder(self):
-        try:
-            return self.app.fastflix.encoders[
-                self.app.fastflix.current_video.video_settings.video_encoder_settings.name
-            ]
-        except AttributeError:
-            return self.app.fastflix.encoders[self.convert_to]
 
     def build_commands(self) -> bool:
         if (

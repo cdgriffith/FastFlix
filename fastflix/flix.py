@@ -71,7 +71,7 @@ def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
     if pix_fmt in twelve:
         return 12
 
-    if color_primaries == "bt2020":
+    if color_primaries and color_primaries.startswith("bt2020"):
         return 10
     else:
         return 8

@@ -52,7 +52,7 @@ def build(fastflix: FastFlix):
     if not settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
         x265_params.append(f"hdr10_opt={'1' if settings.hdr10_opt else '0'}")
 
-        if fastflix.current_video.color_space == "bt2020":
+        if fastflix.current_video.color_space.startswith("bt2020"):
             x265_params.extend(["colorprim=bt2020", "transfer=smpte2084", "colormatrix=bt2020nc"])
 
         if fastflix.current_video.master_display:

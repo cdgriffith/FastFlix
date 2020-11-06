@@ -44,8 +44,9 @@ def separate_app_process(fastflix):
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger("fastflix-core")
+    logger.addHandler(reusables.get_stream_handler(level=logging.DEBUG))
+    logger.setLevel(logging.DEBUG)
     coloredlogs.install(level="DEBUG", logger=logger)
     logger.info(f"Starting FastFlix {__version__}")
 
@@ -59,6 +60,6 @@ def main():
     gui_proc = Thread(target=separate_app_process, args=(fastflix,))
     gui_proc.start()
     try:
-        queue_worker(gui_proc, fastflix)
+        queue_worker(fastflix)
     finally:
         gui_proc.join()

@@ -6,6 +6,8 @@ from qtpy import QtCore, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.encode import x264Settings
+from fastflix.encoders.avc_x264.main import name
 
 logger = logging.getLogger("fastflix")
 
@@ -216,18 +218,19 @@ class AVC(SettingPanel):
             self.main.page_update()
         self.updating_settings = False
 
-    def get_settings(self):
-        settings = Box(
-            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+    def update_video_encoder_settings(self):
+        tune = self.widgets.tune.currentText()
+
+        settings = x264Settings(
+            name=name,
+            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
             max_mux=self.widgets.max_mux.currentText(),
             profile=self.widgets.profile.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             extra=self.ffmpeg_extras,
+            tune=tune if tune.lower() != "default" else None,
         )
-
-        tune = self.widgets.tune.currentText()
-        settings.tune = tune if tune.lower() != "default" else None
 
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
@@ -238,7 +241,7 @@ class AVC(SettingPanel):
                 settings.bitrate = self.widgets.custom_bitrate.text()
             else:
                 settings.bitrate = bitrate.split(" ", 1)[0]
-        return settings
+        self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):
         self.mode = x.text()
