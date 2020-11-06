@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-from typing import List, Union
+from typing import Tuple
 from pathlib import Path
+from dataclasses import asdict
+
 import reusables
 
+from fastflix.encoders.common.audio import build_audio
+from fastflix.encoders.common.subtitles import build_subtitle
+
 from fastflix.models.fastflix import FastFlix
-from fastflix.models.encode import AudioTrack, SubtitleTrack
 
 null = "/dev/null"
 if reusables.win_based:
@@ -45,7 +49,7 @@ def generate_ffmpeg_start(
     end_time=None,
     pix_fmt="yuv420p10le",
     filters=None,
-    max_mux="default",
+    max_muxing_queue_size="default",
     fast_time=True,
     video_title="",
     custom_map=False,
@@ -64,7 +68,7 @@ def generate_ffmpeg_start(
         f'-i "{source}" '
         f" {time_two} "
         f"{title} "
-        f"{f'-max_muxing_queue_size {max_mux}' if max_mux != 'default' else ''} "
+        f"{f'-max_muxing_queue_size {max_muxing_queue_size}' if max_muxing_queue_size != 'default' else ''} "
         f'{f"-map 0:{selected_track}" if not filters else ""} '
         f'{filters if filters else ""} '
         f"-c:v {encoder} "
@@ -158,3 +162,30 @@ def generate_filters(
     if raw_filters:
         return filter_complex
     return f' -filter_complex "{filter_complex}" -map "[v]" '
+
+
+def generate_all(fastflix: FastFlix) -> Tuple[str, str]:
+    settings = fastflix.current_video.video_settings.video_encoder_settings
+
+    audio = build_audio(fastflix.current_video.video_settings.audio_tracks)
+    subtitles, burn_in_track = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
+    filters = generate_filters(
+        disable_hdr=settings.remove_hdr, burn_in_track=burn_in_track, **asdict(fastflix.current_video.video_settings)
+    )
+    ending = generate_ending(
+        audio=audio,
+        subtitles=subtitles,
+        # cover=attachments,
+        output_video=fastflix.current_video.video_settings.output_path,
+    )
+
+    beginning = generate_ffmpeg_start(
+        source=fastflix.current_video.source,
+        ffmpeg=fastflix.config.ffmpeg,
+        encoder="librav1e",
+        filters=filters,
+        **asdict(fastflix.current_video.video_settings),
+        **asdict(settings),
+    )
+
+    return beginning, ending

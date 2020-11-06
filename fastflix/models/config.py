@@ -8,6 +8,7 @@ from appdirs import user_data_dir
 from box import Box, BoxError
 
 from fastflix.version import __version__
+from fastflix.models.encode import x264Settings, x265Settings, rav1eSettings
 
 fastflix_folder = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
 ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
@@ -39,25 +40,28 @@ class Profile:
     subtitle_language: str = "en"
     subtitle_automatic_burn_in: bool = True
     subtitle_only_preferred_language: bool = True
-    x265_mode: str = "crf"
-    x265_crf: int = 28
-    x265_bitrate: str = "28000k"
-    x265_preset: str = "medium"
-    x265_tune: str = "default"
-    x265_profile: str = "default"
-    x265_hdr10_signaling: bool = False
-    x265_hdr10_opt: bool = True
-    x265_dhdr10_opt: bool = False
-    x265_repeat_headers: bool = True
-    x265_aq: int = 2
-    x265_params: str = ""
-    x265_intra_encoding: bool = False
+    x265: x265Settings = field(default_factory=x265Settings)
+    x264: x264Settings = field(default_factory=x264Settings)
+    rav1e: rav1eSettings = field(default_factory=rav1eSettings)
+    # x265_mode: str = "crf"
+    # x265_crf: int = 28
+    # x265_bitrate: str = "28000k"
+    # x265_preset: str = "medium"
+    # x265_tune: str = "default"
+    # x265_profile: str = "default"
+    # x265_hdr10_signaling: bool = False
+    # x265_hdr10_opt: bool = True
+    # x265_dhdr10_opt: bool = False
+    # x265_repeat_headers: bool = True
+    # x265_aq: int = 2
+    # x265_params: str = ""
+    # x265_intra_encoding: bool = False
 
 
 def get_preset_defaults():
     return {
         "standard": Profile(),
-        "film": Profile(auto_crop=True, x265_crf=20, x265_mode="crf", x265_preset="slow"),
+        "film": Profile(auto_crop=True),
         "test": Profile(
             keep_aspect_ratio=False,
             auto_crop=True,
@@ -106,6 +110,10 @@ class Config:
             "tta",
         ]
     )
+
+    def encoder_opt(self, profile_name, profile_option_name):
+        encoder_settings = getattr(self.profiles[self.default_profile], profile_name)
+        return getattr(encoder_settings, profile_option_name)
 
     def opt(self, profile_option_name, default=NO_OPT):
         if default != NO_OPT:

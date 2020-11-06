@@ -6,6 +6,7 @@ from box import Box
 from qtpy import QtGui, QtWidgets
 
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.language import t
 
 logger = logging.getLogger("fastflix")
 
@@ -22,9 +23,15 @@ class SettingPanel(QtWidgets.QWidget):
         self.opts = Box()
         self.only_int = QtGui.QIntValidator()
 
-    def determine_default(self, opt, items: List):
+    def determine_default(self, widget_name, opt, items: List):
+        if widget_name == "pix_fmt":
+            items = [x.split(":")[1].strip() for x in items]
         if isinstance(opt, str):
-            return items.index(opt)
+            try:
+                return items.index(opt)
+            except Exception:
+                logger.error(f"Could not set default for {widget_name} to {opt} as it's not in the list")
+                return 0
         if isinstance(opt, bool):
             return int(opt)
         return opt
@@ -33,18 +40,20 @@ class SettingPanel(QtWidgets.QWidget):
         self, label, options, widget_name, opt=None, connect="default", enabled=True, default=0, tooltip=""
     ):
         layout = QtWidgets.QHBoxLayout()
-        self.labels[widget_name] = QtWidgets.QLabel(label)
-        self.labels[widget_name].setToolTip(tooltip)
+        self.labels[widget_name] = QtWidgets.QLabel(t(label))
+        self.labels[widget_name].setToolTip(t(tooltip))
 
         self.widgets[widget_name] = QtWidgets.QComboBox()
         self.widgets[widget_name].addItems(options)
 
         if opt:
-            default = self.determine_default(self.app.fastflix.config.opt(opt), options)
+            default = self.determine_default(
+                widget_name, self.app.fastflix.config.encoder_opt(self.profile_name, opt), options
+            )
             self.opts[widget_name] = opt
         self.widgets[widget_name].setCurrentIndex(default)
         self.widgets[widget_name].setDisabled(not enabled)
-        self.widgets[widget_name].setToolTip(tooltip)
+        self.widgets[widget_name].setToolTip(t(tooltip))
         if connect:
             if connect == "default":
                 self.widgets[widget_name].currentIndexChanged.connect(lambda: self.main.page_update())
@@ -60,12 +69,12 @@ class SettingPanel(QtWidgets.QWidget):
 
     def _add_check_box(self, label, widget_name, opt, connect="default", enabled=True, checked=True, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
-        self.labels[widget_name] = QtWidgets.QLabel(label)
-        self.labels[widget_name].setToolTip(tooltip)
+        self.labels[widget_name] = QtWidgets.QLabel(t(label))
+        self.labels[widget_name].setToolTip(t(tooltip))
 
         self.widgets[widget_name] = QtWidgets.QCheckBox()
         self.opts[widget_name] = opt
-        self.widgets[widget_name].setChecked(self.app.fastflix.config.opt(opt))
+        self.widgets[widget_name].setChecked(self.app.fastflix.config.encoder_opt(self.profile_name, opt))
         self.widgets[widget_name].setDisabled(not enabled)
         if connect:
             if connect == "default":
@@ -82,8 +91,8 @@ class SettingPanel(QtWidgets.QWidget):
 
     def _add_custom(self, connect="default"):
         layout = QtWidgets.QHBoxLayout()
-        self.labels.ffmpeg_options = QtWidgets.QLabel("Custom ffmpeg options")
-        self.labels.ffmpeg_options.setToolTip("Extra flags or options, cannot modify existing settings")
+        self.labels.ffmpeg_options = QtWidgets.QLabel(t("Custom ffmpeg options"))
+        self.labels.ffmpeg_options.setToolTip(t("Extra flags or options, cannot modify existing settings"))
         layout.addWidget(self.labels.ffmpeg_options)
         self.ffmpeg_extras_widget = QtWidgets.QLineEdit()
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
@@ -99,12 +108,12 @@ class SettingPanel(QtWidgets.QWidget):
 
     def _add_file_select(self, label, widget_name, button_action, connect="default", enabled=True, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
-        self.labels[widget_name] = QtWidgets.QLabel(label)
-        self.labels[widget_name].setToolTip(tooltip)
+        self.labels[widget_name] = QtWidgets.QLabel(t(label))
+        self.labels[widget_name].setToolTip(t(tooltip))
 
         self.widgets[widget_name] = QtWidgets.QLineEdit()
         self.widgets[widget_name].setDisabled(not enabled)
-        self.widgets[widget_name].setToolTip(tooltip)
+        self.widgets[widget_name].setToolTip(t(tooltip))
 
         if connect:
             if connect == "default":
@@ -162,9 +171,10 @@ class SettingPanel(QtWidgets.QWidget):
         for widget_name, opt in self.opts.items():
             if isinstance(self.widgets[widget_name], QtWidgets.QComboBox):
                 default = self.determine_default(
-                    self.app.fastflix.config.opt(opt),
+                    widget_name,
+                    self.app.fastflix.config.encoder_opt(self.profile_name, opt),
                     [self.widgets[widget_name].itemText(i) for i in range(self.widgets[widget_name].count())],
                 )
                 self.widgets[widget_name].setCurrentIndex(default)
             elif isinstance(self.widgets[widget_name], QtWidgets.QCheckBox):
-                self.widgets[widget_name].setChecked(self.app.fastflix.config.opt(opt))
+                self.widgets[widget_name].setChecked(self.app.fastflix.config.encoder_opt(self.profile_name, opt))

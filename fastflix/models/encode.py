@@ -33,18 +33,19 @@ class SubtitleTrack(BaseDataClass):
 
 @dataclass
 class EncoderSettings(BaseDataClass):
-    name: str
     remove_hdr: bool = False
-    max_mux: str = "1024"
-    pix_fmt: str = ""
+    max_muxing_queue_size: str = "1024"
+    pix_fmt: str = "yuv420p10le"
     extra: str = ""
 
 
 @dataclass
 class x265Settings(EncoderSettings):
-    preset: str = ""
+    name = "HEVC (x265)"  # MUST match encoder main.name
+    preset: str = "medium"
     intra_encoding: bool = False
-    profile: str = ""
+    profile: str = "default"
+    tune: str = "default"
     hdr10: bool = False
     hdr10_opt: bool = False
     dhdr10_opt: bool = False
@@ -53,25 +54,27 @@ class x265Settings(EncoderSettings):
     hdr10plus_metadata: str = ""
     crf: Union[int, None] = None
     bitrate: Union[str, None] = None
-    tune: Union[str, None] = None
-    x265_params: List[str] = field(default_factory=[])
+    x265_params: List[str] = field(default_factory=list)
 
 
 @dataclass
 class x264Settings(EncoderSettings):
-    preset: str = ""
-    profile: str = ""
+    name = "AVC (x264)"
+    preset: str = "medium"
+    profile: str = "default"
+    tune: str = "default"
+    pix_fmt: str = "yuv420p"
     crf: Union[int, None] = None
     bitrate: Union[str, None] = None
-    tune: Union[str, None] = None
 
 
 @dataclass
 class rav1eSettings(EncoderSettings):
-    speed: str = ""
-    tile_columns: int = 0
-    tile_rows: int = 0
-    tiles: int = 0
+    name = "AV1 (rav1e)"
+    speed: str = "-1"
+    tile_columns: str = "-1"
+    tile_rows: str = "-1"
+    tiles: str = "0"
     single_pass: bool = False
     qp: Union[int, None] = None
     bitrate: Union[str, None] = None

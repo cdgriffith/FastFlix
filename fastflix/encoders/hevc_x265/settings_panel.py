@@ -51,6 +51,8 @@ pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
 
 
 class HEVC(SettingPanel):
+    profile_name = "x265"
+
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
         self.main = main
@@ -130,7 +132,7 @@ class HEVC(SettingPanel):
                 " Useful when there is a desire to signal 0 values for max-cll and max-fall.\n"
                 " Default disabled."
             ),
-            opt="x265_hdr10_signaling",
+            opt="hdr10",
         )
 
     def init_hdr10_opt(self):
@@ -141,7 +143,7 @@ class HEVC(SettingPanel):
                 "hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.\n"
                 "It is recommended that AQ-mode be enabled along with this feature"
             ),
-            opt="x265_hdr10_opt",
+            opt="hdr10_opt",
         )
 
     def init_dhdr10_opt(self):
@@ -153,7 +155,7 @@ class HEVC(SettingPanel):
                 "Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.\n"
                 "It saves a few bits and can help performance in the client's tonemapper."
             ),
-            opt="x265_dhdr10_opt",
+            opt="dhdr10_opt",
         )
 
     def init_repeat_headers(self):
@@ -165,7 +167,7 @@ class HEVC(SettingPanel):
                 "This is intended for use when you do not have a container to keep the stream headers for you\n"
                 " and you want keyframes to be random access points."
             ),
-            opt="x265_repeat_headers",
+            opt="repeat_headers",
         )
 
     def init_aq_mode(self):
@@ -185,7 +187,7 @@ class HEVC(SettingPanel):
                 "The more complex the block, the more quantization is used.\n"
                 "Default: AQ enabled with auto-variance"
             ),
-            opt="x265_aq",
+            opt="aq_mode",
         )
 
     def init_intra_encoding(self):
@@ -198,7 +200,7 @@ class HEVC(SettingPanel):
                 "This option is not recommenced unless you need to conform "
                 "to Blu-ray standards to burn to a physical disk"
             ),
-            opt="x265_intra_encoding",
+            opt="intra_encoding",
         )
 
     def init_preset(self):
@@ -222,7 +224,7 @@ class HEVC(SettingPanel):
                 "Slow is highest personal recommenced, as past that is much smaller gains"
             ),
             connect="default",
-            opt="x265_preset",
+            opt="preset",
         )
         self.labels["preset"].setMinimumWidth(200)
         self.widgets["preset"].setMinimumWidth(200)
@@ -235,7 +237,7 @@ class HEVC(SettingPanel):
             options=["default", "psnr", "ssim", "grain", "zerolatency", "fastdecode", "animation"],
             tooltip="tune: Tune the settings for a particular type of source or situation",
             connect="default",
-            opt="x265_tune",
+            opt="tune",
         )
 
     def init_profile(self):
@@ -244,7 +246,7 @@ class HEVC(SettingPanel):
             tooltip="profile: Enforce an encode profile",
             widget_name="profile",
             options=["default", "main", "main10", "mainstillpicture"],
-            opt="x265_profile",
+            opt="profile",
         )
 
     def init_pix_fmt(self):
@@ -259,9 +261,7 @@ class HEVC(SettingPanel):
     def init_max_mux(self):
         return self._add_combo_box(
             label="Max Muxing Queue Size",
-            tooltip=(
-                "max_muxing_queue_size: " 'Useful when you have the "Too many packets buffered for output stream" error'
-            ),
+            tooltip='max_muxing_queue_size: Use when you have the "Too many packets buffered for output stream" error',
             widget_name="max_mux",
             options=["default", "1024", "2048", "4096", "8192"],
             opt="max_muxing_queue_size",
@@ -432,11 +432,10 @@ class HEVC(SettingPanel):
         tune = self.widgets.tune.currentText()
 
         settings = x265Settings(
-            name=name,
             remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
             intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
-            max_mux=self.widgets.max_mux.currentText(),
+            max_muxing_queue_size=self.widgets.max_mux.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             profile=self.widgets.profile.currentText(),
             hdr10=self.widgets.hdr10.isChecked(),

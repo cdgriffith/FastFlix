@@ -7,7 +7,6 @@ from qtpy import QtCore, QtWidgets
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import x264Settings
-from fastflix.encoders.avc_x264.main import name
 
 logger = logging.getLogger("fastflix")
 
@@ -50,6 +49,8 @@ pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
 
 # TODO change inits and add opts
 class AVC(SettingPanel):
+    profile_name = "x264"
+
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
         self.main = main
@@ -103,42 +104,41 @@ class AVC(SettingPanel):
         return layout
 
     def init_tune(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Tune")
-        label.setToolTip("Tune the settings for a particular type of source or situation")
-        layout.addWidget(label)
-        self.widgets.tune = QtWidgets.QComboBox()
-        self.widgets.tune.addItems(
-            ["default", "film", "animation", "grain", "stillimage", "psnr", "ssim", "zerolatency", "fastdecode"]
+        return self._add_combo_box(
+            label="Tune",
+            widget_name="tune",
+            tooltip="Tune the settings for a particular type of source or situation",
+            options=[
+                "default",
+                "film",
+                "animation",
+                "grain",
+                "stillimage",
+                "psnr",
+                "ssim",
+                "zerolatency",
+                "fastdecode",
+            ],
+            opt="tune",
         )
-        self.widgets.tune.setCurrentIndex(0)
-        self.widgets.tune.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.tune)
-        return layout
 
     def init_profile(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Profile")
-        label.setToolTip("Enforce an encode profile")
-        layout.addWidget(label)
-        self.widgets.profile = QtWidgets.QComboBox()
-        self.widgets.profile.addItems(["default", "baseline", "main", "high", "high10", "high422", "high444"])
-        self.widgets.profile.setCurrentIndex(0)
-        self.widgets.profile.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.profile)
-        return layout
+        return self._add_combo_box(
+            label="Profile",
+            widget_name="profile",
+            tooltip="Enforce an encode profile",
+            options=["default", "baseline", "main", "high", "high10", "high422", "high444"],
+            opt="profile",
+        )
 
     def init_max_mux(self):
-        layout = QtWidgets.QHBoxLayout()
-        label = QtWidgets.QLabel("Max Muxing Queue Size")
-        label.setToolTip('Only change this if you are getting the error "Too many packets buffered for output stream"')
-        layout.addWidget(label)
-        self.widgets.max_mux = QtWidgets.QComboBox()
-        self.widgets.max_mux.addItems(["default", "1024", "2048", "4096", "8192"])
-        self.widgets.max_mux.setCurrentIndex(0)
-        self.widgets.max_mux.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.max_mux)
-        return layout
+        return self._add_combo_box(
+            label="Max Muxing Queue Size",
+            tooltip='max_muxing_queue_size: Use when you have the "Too many packets buffered for output stream" error',
+            widget_name="max_mux",
+            options=["default", "1024", "2048", "4096", "8192"],
+            opt="max_muxing_queue_size",
+        )
 
     def init_pix_fmt(self):
         return self._add_combo_box(
@@ -146,7 +146,7 @@ class AVC(SettingPanel):
             tooltip="Pixel Format (requires at least 10-bit for HDR)",
             widget_name="pix_fmt",
             options=pix_fmts,
-            default=0,
+            opt="pix_fmt",
         )
 
     def init_modes(self):
@@ -227,10 +227,9 @@ class AVC(SettingPanel):
         tune = self.widgets.tune.currentText()
 
         settings = x264Settings(
-            name=name,
             remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
-            max_mux=self.widgets.max_mux.currentText(),
+            max_muxing_queue_size=self.widgets.max_mux.currentText(),
             profile=self.widgets.profile.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             extra=self.ffmpeg_extras,

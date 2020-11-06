@@ -4,8 +4,14 @@ Autocrop tried to crop too much:
   en: Autocrop tried to crop too much
 Automatically download FFmpeg?:
   en: Automatically download FFmpeg?
+Bit Depth:
+  en: Bit Depth
 Bitrate:
   en: Bitrate
+Break the video into columns to encode faster (lesser quality):
+  en: Break the video into columns to encode faster (lesser quality)
+Break the video into rows to encode faster (lesser quality):
+  en: Break the video into rows to encode faster (lesser quality)
 Burn In:
   en: Burn In
 Cancel Conversion:
@@ -14,12 +20,18 @@ Close GUI Only:
   en: Close GUI Only
 Conversion:
   en: Conversion
+? "Convert BT2020 colorspace into bt709\n WARNING: This will take much longer and\
+  \ result in a larger file"
+: en: "Convert BT2020 colorspace into bt709\n WARNING: This will take much longer\
+    \ and result in a larger file"
 Could not connect to github to check for newer versions.:
   en: Could not connect to github to check for newer versions.
 Could not extract FFmpeg files from:
   en: Could not extract FFmpeg files from
 Could not find any matching FFmpeg ending with 'win64-gpl.zip' with:
   en: Could not find any matching FFmpeg ending with 'win64-gpl.zip' with
+Custom ffmpeg options:
+  en: Custom ffmpeg options
 Determine HDR details:
   en: Determine HDR details
 Downloading FFmpeg:
@@ -27,16 +39,22 @@ Downloading FFmpeg:
   es: Descargando FFmpeg
 Enabled:
   en: Enabled
+Enforce an encode profile:
+  en: Enforce an encode profile
 Error Updating Thumbnail:
   en: Error Updating Thumbnail
 Error while moving files in:
   en: Error while moving files in
+Extra flags or options, cannot modify existing settings:
+  en: Extra flags or options, cannot modify existing settings
 Extract covers:
   en: Extract covers
 FFmpeg not found!:
   en: FFmpeg not found!
 FFmpeg was not properly downloaded as the file size is too small:
   en: FFmpeg was not properly downloaded as the file size is too small
+Force HDR10 signaling:
+  en: Force HDR10 signaling
 Gather FFmpeg audio encoders:
   en: Gather FFmpeg audio encoders
   fr: Rassemblez les encodeurs audio FFmpeg
@@ -44,14 +62,20 @@ Gather FFmpeg version:
   en: Gather FFmpeg version
   es: "Re\xFAna la versi\xF3n de FFmpeg"
   fr: Rassemblez la version FFmpeg
+HDR10+ Metadata:
+  en: HDR10+ Metadata
 Initialize Encoders:
   en: Initialize Encoders
   es: Inicializar Codificadores
   fr: Initialiser les Encodeurs
+Intra-encoding:
+  en: Intra-encoding
 Keep FastFlix Open:
   en: Keep FastFlix Open
 Language:
   en: Language
+Max Muxing Queue Size:
+  en: Max Muxing Queue Size
 More than one track selected to burn in:
   en: More than one track selected to burn in
 No Downmix:
@@ -61,18 +85,30 @@ Overlay this subtitle track onto the video during conversion. Cannot remove afte
     afterwards.
 Parse Video details:
   en: Parse Video details
+Pixel Format (requires at least 10-bit for HDR):
+  en: Pixel Format (requires at least 10-bit for HDR)
 Please:
   en: Please
 Preserve:
   en: Preserve
+Preset:
+  en: Preset
 Profile:
   en: Profile
+Quality/Speed ratio modifier (defaults to -1):
+  en: Quality/Speed ratio modifier (defaults to -1)
+Remove HDR:
+  en: Remove HDR
 Running command:
   en: Running command
+Single Pass (Bitrate):
+  en: Single Pass (Bitrate)
 Source height:
   en: Source height
 Source width:
   en: Source width
+Speed:
+  en: Speed
 Starting:
   en: Starting
   es: Lanzamiento
@@ -81,14 +117,32 @@ There is a conversion in process!:
   en: There is a conversion in process!
 There is an existing burn-in track, only one can be enabled at a time:
   en: There is an existing burn-in track, only one can be enabled at a time
+Tile Columns:
+  en: Tile Columns
+Tile Rows:
+  en: Tile Rows
+Tiles:
+  en: Tiles
 Title:
   en: Title
+Tune:
+  en: Tune
+Tune the settings for a particular type of source or situation:
+  en: Tune the settings for a particular type of source or situation
+Useful when you have the "Too many packets buffered for output stream" error:
+  en: Useful when you have the "Too many packets buffered for output stream" error
 Width must be divisible by 2:
   en: Width must be divisible by 2
 Width must be divisible by 2 - Source width:
   en: Width must be divisible by 2 - Source width
 and add it to PATH:
   en: and add it to PATH
+? "aq-mode: Adaptive Quantization operating mode.\nRaise or lower per-block quantization\
+  \ based on complexity analysis of the source image.\nThe more complex the block,\
+  \ the more quantization is used.\nDefault: AQ enabled with auto-variance"
+: en: "aq-mode: Adaptive Quantization operating mode.\nRaise or lower per-block quantization\
+    \ based on complexity analysis of the source image.\nThe more complex the block,\
+    \ the more quantization is used.\nDefault: AQ enabled with auto-variance"
 attachment tracks found:
   en: attachment tracks found
 audio tracks found:
@@ -99,23 +153,72 @@ channels:
   en: channels
 codec:
   en: codec
+? "dhdr10-opt: Reduces SEI overhead\nOnly put the HDR10+ dynamic metadata in the IDR\
+  \ and frames where the values have changed.\nIt saves a few bits and can help performance\
+  \ in the client's tonemapper."
+: en: "dhdr10-opt: Reduces SEI overhead\nOnly put the HDR10+ dynamic metadata in the\
+    \ IDR and frames where the values have changed.\nIt saves a few bits and can help\
+    \ performance in the client's tonemapper."
+'dhdr10_info: Path to HDR10+ JSON metadata file':
+  en: 'dhdr10_info: Path to HDR10+ JSON metadata file'
 download a static FFmpeg:
   en: download a static FFmpeg
+? "hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.\n\
+  It is recommended that AQ-mode be enabled along with this feature"
+: en: "hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.\n\
+    It is recommended that AQ-mode be enabled along with this feature"
+? "hdr10: Force signaling of HDR10 parameters in SEI packets.\n Enabled automatically\
+  \ when --master-display or --max-cll is specified.\n Useful when there is a desire\
+  \ to signal 0 values for max-cll and max-fall.\n Default disabled."
+: en: "hdr10: Force signaling of HDR10 parameters in SEI packets.\n Enabled automatically\
+    \ when --master-display or --max-cll is specified.\n Useful when there is a desire\
+    \ to signal 0 values for max-cll and max-fall.\n Default disabled."
 ignoring:
   en: ignoring
+? "keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n\
+  This option is not recommenced unless you need to conform to Blu-ray standards to\
+  \ burn to a physical disk"
+: en: "keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray\
+    \ spec)\nThis option is not recommenced unless you need to conform to Blu-ray\
+    \ standards to burn to a physical disk"
 latest release from:
   en: latest release from
 left:
   en: left
+'max_muxing_queue_size: Use when you have the "Too many packets buffered for output stream" error':
+  en: 'max_muxing_queue_size: Use when you have the "Too many packets buffered for
+    output stream" error'
 none:
   en: none
+? "preset: The slower the preset, the better the compression and quality\nSlow is\
+  \ highest personal recommenced, as past that is much smaller gains"
+: en: "preset: The slower the preset, the better the compression and quality\nSlow\
+    \ is highest personal recommenced, as past that is much smaller gains"
 profile:
   en: profile
+'profile: Enforce an encode profile':
+  en: 'profile: Enforce an encode profile'
+? "repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every\
+  \ keyframe.\nThis is intended for use when you do not have a container to keep the\
+  \ stream headers for you\n and you want keyframes to be random access points."
+: en: "repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every\
+    \ keyframe.\nThis is intended for use when you do not have a container to keep\
+    \ the stream headers for you\n and you want keyframes to be random access points."
 right:
   en: right
 subtitle tracks found:
   en: subtitle tracks found
 top:
   en: top
+'tune: Tune the settings for a particular type of source or situation':
+  en: 'tune: Tune the settings for a particular type of source or situation'
 video tracks found:
   en: video tracks found
+'| Adaptive Quantization':
+  en: '| Adaptive Quantization'
+'| HDR10 Optimizations':
+  en: '| HDR10 Optimizations'
+'| HDR10+ Optimizations':
+  en: '| HDR10+ Optimizations'
+'| Repeat Headers':
+  en: '| Repeat Headers'

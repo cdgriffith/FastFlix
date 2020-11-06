@@ -48,6 +48,8 @@ pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
 
 
 class RAV1E(SettingPanel):
+    profile_name = "rav1e"
+
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
         self.main = main
@@ -85,6 +87,7 @@ class RAV1E(SettingPanel):
             tooltip="Quality/Speed ratio modifier (defaults to -1)",
             options=[str(x) for x in range(-1, 11)],
             widget_name="speed",
+            opt="speed",
         )
 
     def init_tile_rows(self):
@@ -93,7 +96,7 @@ class RAV1E(SettingPanel):
             tooltip="Break the video into rows to encode faster (lesser quality)",
             options=[str(x) for x in range(-1, 17)],
             widget_name="tile_rows",
-            default=1,
+            opt="tile_rows",
         )
 
     def init_tile_columns(self):
@@ -102,14 +105,14 @@ class RAV1E(SettingPanel):
             tooltip="Break the video into columns to encode faster (lesser quality)",
             options=[str(x) for x in range(-1, 17)],
             widget_name="tile_columns",
-            default=1,
+            opt="tile_columns",
         )
 
     def init_tiles(self):
-        return self._add_combo_box("Tiles", [str(x) for x in range(-1, 17)], "tiles", default=1)
+        return self._add_combo_box("Tiles", [str(x) for x in range(-1, 17)], "tiles", opt="tiles")
 
     def init_single_pass(self):
-        return self._add_check_box("Single Pass (Bitrate)", "single_pass", checked=True)
+        return self._add_check_box("Single Pass (Bitrate)", "single_pass", opt="single_pass")
 
     def init_pix_fmt(self):
         return self._add_combo_box(
@@ -117,7 +120,7 @@ class RAV1E(SettingPanel):
             tooltip="Pixel Format (requires at least 10-bit for HDR)",
             widget_name="pix_fmt",
             options=pix_fmts,
-            default=1,
+            opt="pix_fmt",
         )
 
     def init_max_mux(self):
@@ -126,7 +129,7 @@ class RAV1E(SettingPanel):
             tooltip='Useful when you have the "Too many packets buffered for output stream" error',
             widget_name="max_mux",
             options=["default", "1024", "2048", "4096", "8192"],
-            default=1,
+            opt="max_muxing_queue_size",
         )
 
     def init_modes(self):
@@ -197,16 +200,15 @@ class RAV1E(SettingPanel):
         self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
         self.main.build_commands()
 
-    def get_settings(self):
+    def update_video_encoder_settings(self):
         settings = rav1eSettings(
-            name=name,
             remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             speed=self.widgets.speed.currentText(),
-            tile_columns=int(self.widgets.tile_columns.currentText()),
-            tile_rows=int(self.widgets.tile_rows.currentText()),
-            tiles=int(self.widgets.tiles.currentText()),
+            tile_columns=self.widgets.tile_columns.currentText(),
+            tile_rows=self.widgets.tile_rows.currentText(),
+            tiles=self.widgets.tiles.currentText(),
             single_pass=self.widgets.single_pass.isChecked(),
-            max_mux=self.widgets.max_mux.currentText(),
+            max_muxing_queue_size=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
         )

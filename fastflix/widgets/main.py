@@ -376,6 +376,7 @@ class Main(QtWidgets.QWidget):
 
     def change_encoder(self):
         if not self.output_video_path_widget.text().endswith(self.current_encoder.video_extension):
+            # Make sure it's using the right file extension
             self.output_video_path_widget.setText(self.generate_output_filename)
         self.video_options.change_conversion(self.widgets.convert_to.currentText())
 
