@@ -27,7 +27,12 @@ recommended_bitrates = [
 ]
 
 recommended_crfs = [
-    "23 (x264 default - lower quality)",
+    "28 (lower quality)",
+    "27",
+    "26",
+    "25",
+    "24",
+    "23 (x264 default)",
     "22",
     "21",
     "20",
@@ -36,14 +41,14 @@ recommended_crfs = [
     "17 (1080p)",
     "16 (1440p)",
     "15 (2160p)",
-    "14 (high quality)",
+    "14 (higher quality)",
     "Custom",
 ]
 
 
 pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
 
-
+# TODO change inits and add opts
 class AVC(SettingPanel):
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
@@ -184,7 +189,7 @@ class AVC(SettingPanel):
         self.widgets.crf.setToolTip(crf_help)
         self.widgets.crf.setFixedWidth(250)
         self.widgets.crf.addItems(recommended_crfs)
-        self.widgets.crf.setCurrentIndex(0)
+        self.widgets.crf.setCurrentIndex(5)
         self.widgets.crf.currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets.custom_crf = QtWidgets.QLineEdit("30")
         self.widgets.custom_crf.setFixedWidth(100)

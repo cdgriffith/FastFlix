@@ -67,8 +67,6 @@ class Audio(QtWidgets.QTabWidget):
             convert_bitrate=None,
         )
 
-        self.widgets.title.setMaximumWidth(150)
-
         if all_info:
             self.widgets.audio_info.setToolTip(all_info.to_yaml())
 
@@ -94,8 +92,9 @@ class Audio(QtWidgets.QTabWidget):
                 if lang in language_list:
                     self.widgets.language.setCurrentText(lang)
 
-        self.widgets.language.currentIndexChanged.connect(lambda: self.page_update())
-        self.widgets.title.setFixedWidth(200)
+        self.widgets.language.currentIndexChanged.connect(self.page_update)
+        self.widgets.title.setFixedWidth(150)
+        self.widgets.title.textChanged.connect(self.page_update)
         self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
         self.widgets.downmix.addItems([t("No Downmix")] + downmix_options[: channels - 2])
@@ -113,11 +112,14 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.track_number.setFixedWidth(20)
 
+        label = QtWidgets.QLabel(f"{t('Title')}: ")
+        label.setFixedWidth(150)
+
         grid = QtWidgets.QGridLayout()
         grid.addLayout(self.init_move_buttons(), 0, 0)
         grid.addWidget(self.widgets.track_number, 0, 1)
         grid.addWidget(self.widgets.audio_info, 0, 2)
-        grid.addWidget(QtWidgets.QLabel(f"{t('Title')}: "), 0, 3)
+        grid.addWidget(label, 0, 3)
         grid.addWidget(self.widgets.title, 0, 4)
         grid.addLayout(self.init_conversion(), 0, 5)
         grid.addWidget(self.widgets.downmix, 0, 6)

@@ -10,6 +10,7 @@
 * Changing large internal re-write
 * Changing so it opens the file dialog for new video to last used directory
 * Fixing #116 how HDR10 options for x265 work (thanks to HannesJo0139)
+* Fixing thumbnails not being generated properly on 10-bit non bt2020 files
 
 ## Version  3.4.3
 

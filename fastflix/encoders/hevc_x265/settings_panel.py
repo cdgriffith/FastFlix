@@ -39,7 +39,11 @@ recommended_crfs = [
     "21 (1440p)",
     "20 (2160p)",
     "19",
-    "18 (very high quality)",
+    "18",
+    "17",
+    "16",
+    "15",
+    "14 (higher quality)",
     "Custom",
 ]
 

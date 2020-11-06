@@ -1016,13 +1016,10 @@ class Main(QtWidgets.QWidget):
         remove_hdr = False
         if (
             self.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"
-            and self.pix_fmt
-            in (
-                "yuv420p10le",
-                "yuv420p12le",
-            )
+            and self.app.fastflix.current_video.color_space.startswith("bt2020")
         ):
             remove_hdr = True
+
         filters = helpers.generate_filters(
             custom_filters="scale='min(320\\,iw):-1'",
             remove_hdr=remove_hdr,
