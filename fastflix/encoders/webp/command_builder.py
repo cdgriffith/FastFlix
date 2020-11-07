@@ -1,36 +1,18 @@
 # -*- coding: utf-8 -*-
-import secrets
-from pathlib import Path
-
-from fastflix.encoders.common.helpers import Command, generate_ending, generate_ffmpeg_start, generate_filters
-
-extension = "gif"
+from fastflix.encoders.common.helpers import Command, generate_all
+from fastflix.models.fastflix import FastFlix
+from fastflix.models.encode import WebPSettings
 
 
-def build(
-    source,
-    video_track,
-    ffmpeg,
-    temp_dir,
-    output_video,
-    lossless=True,
-    compression=6,
-    extra="",
-    preset="default",
-    start_time=0,
-    qscale="75",
-    **kwargs,
-):
-    filters = generate_filters(video_track=video_track, **kwargs)
-    beginning = generate_ffmpeg_start(
-        source, ffmpeg, encoder="libwebp", video_track=video_track, start_time=start_time, filters=filters, **kwargs
-    )
-    ending = generate_ending("", "", "", output_video=output_video, **kwargs)
+def build(fastflix: FastFlix):
+    settings: WebPSettings = fastflix.current_video.video_settings.video_encoder_settings
+
+    beginning, ending = generate_all(fastflix, "libwebp", audio=False, subs=False)
 
     return [
         Command(
-            f"{beginning}  -lossless {lossless} -compression_level {compression} "
-            f"-qscale {qscale} -preset {preset} {extra} {ending}",
+            f"{beginning}  -lossless {settings.lossless} -compression_level {settings.compression} "
+            f"-qscale {settings.qscale} -preset {settings.preset} {settings.extra} {ending}",
             ["ffmpeg", "output"],
             False,
             name="WebP",

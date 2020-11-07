@@ -116,3 +116,19 @@ class AOMAV1Settings(EncoderSettings):
     cpu_used: str = "1"
     crf: Union[int, None] = None
     bitrate: Union[str, None] = None
+
+
+@dataclass
+class WebPSettings(EncoderSettings):
+    name = "WebP"
+    lossless: str = "0"
+    compression: str = "3"
+    preset: str = "none"
+    qscale: int = 15
+
+
+@dataclass
+class GIFSettings(EncoderSettings):
+    name = "GIF"
+    fps: int = 15
+    dither: str = "sierra2_4a"

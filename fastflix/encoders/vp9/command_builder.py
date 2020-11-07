@@ -10,7 +10,7 @@ from fastflix.models.encode import VP9Settings
 
 def build(fastflix: FastFlix):
     settings: VP9Settings = fastflix.current_video.video_settings.video_encoder_settings
-    beginning, ending = generate_all(fastflix, "librav1e")
+    beginning, ending = generate_all(fastflix, "libvpx-vp9")
 
     beginning += f'{"-row-mt 1" if settings.row_mt else ""} '
 

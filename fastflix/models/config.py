@@ -15,6 +15,8 @@ from fastflix.models.encode import (
     SVTAV1Settings,
     VP9Settings,
     AOMAV1Settings,
+    GIFSettings,
+    WebPSettings,
 )
 
 fastflix_folder = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
@@ -53,6 +55,8 @@ class Profile:
     svt_av1: SVTAV1Settings = field(default_factory=SVTAV1Settings)
     vp9: VP9Settings = field(default_factory=VP9Settings)
     aom_av1: AOMAV1Settings = field(default_factory=AOMAV1Settings)
+    gif: GIFSettings = field(default_factory=GIFSettings)
+    webp: WebPSettings = field(default_factory=WebPSettings)
     # x265_mode: str = "crf"
     # x265_crf: int = 28
     # x265_bitrate: str = "28000k"

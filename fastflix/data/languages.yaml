@@ -38,6 +38,12 @@ Custom ffmpeg options:
   en: Custom ffmpeg options
 Determine HDR details:
   en: Determine HDR details
+Dither:
+  en: Dither
+? Dither is an intentionally applied form of noise used to randomize quantization
+  error, <br> preventing large-scale patterns such as color banding in images.
+: en: Dither is an intentionally applied form of noise used to randomize quantization
+    error, <br> preventing large-scale patterns such as color banding in images.
 Downloading FFmpeg:
   en: Downloading FFmpeg
   es: Descargando FFmpeg
@@ -59,8 +65,16 @@ FFmpeg not found!:
   en: FFmpeg not found!
 FFmpeg was not properly downloaded as the file size is too small:
   en: FFmpeg was not properly downloaded as the file size is too small
+FPS:
+  en: FPS
+? "For lossy, this is a quality/speed tradeoff.\nFor lossless, this is a size/speed\
+  \ tradeoff."
+: en: "For lossy, this is a quality/speed tradeoff.\nFor lossless, this is a size/speed\
+    \ tradeoff."
 Force HDR10 signaling:
   en: Force HDR10 signaling
+Frames Per Second:
+  en: Frames Per Second
 Gather FFmpeg audio encoders:
   en: Gather FFmpeg audio encoders
   fr: Rassemblez les encodeurs audio FFmpeg
@@ -190,6 +204,8 @@ channels:
   en: channels
 codec:
   en: codec
+compression level:
+  en: compression level
 ? "dhdr10-opt: Reduces SEI overhead\nOnly put the HDR10+ dynamic metadata in the IDR\
   \ and frames where the values have changed.\nIt saves a few bits and can help performance\
   \ in the client's tonemapper."
@@ -226,11 +242,15 @@ latest release from:
   en: latest release from
 left:
   en: left
+lossless:
+  en: lossless
 'max_muxing_queue_size: Use when you have the "Too many packets buffered for output stream" error':
   en: 'max_muxing_queue_size: Use when you have the "Too many packets buffered for
     output stream" error'
 none:
   en: none
+preset:
+  en: preset
 ? "preset: The slower the preset, the better the compression and quality\nSlow is\
   \ highest personal recommenced, as past that is much smaller gains"
 : en: "preset: The slower the preset, the better the compression and quality\nSlow\

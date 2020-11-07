@@ -18,6 +18,8 @@ from fastflix.models.encode import (
     SVTAV1Settings,
     AOMAV1Settings,
     VP9Settings,
+    GIFSettings,
+    WebPSettings,
 )
 
 
@@ -38,7 +40,14 @@ class VideoSettings(BaseDataClass):
     scale: Union[str, None] = None
     ffmpeg_extra: str = ""
     video_encoder_settings: Union[
-        x265Settings, x264Settings, rav1eSettings, SVTAV1Settings, AOMAV1Settings, VP9Settings
+        x265Settings,
+        x264Settings,
+        rav1eSettings,
+        SVTAV1Settings,
+        AOMAV1Settings,
+        VP9Settings,
+        GIFSettings,
+        WebPSettings,
     ] = None
     audio_tracks: List[AudioTrack] = field(default_factory=list)
     subtitle_tracks: List[SubtitleTrack] = field(default_factory=list)

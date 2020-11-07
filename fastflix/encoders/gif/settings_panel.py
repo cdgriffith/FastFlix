@@ -4,17 +4,18 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.encode import GIFSettings
 
 
 class GIF(SettingPanel):
+    profile_name = "gif"
+
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
         self.main = main
         self.app = app
 
         grid = QtWidgets.QGridLayout()
-
-        # grid.addWidget(QtWidgets.QLabel("GIF"), 0, 0)
 
         self.widgets = Box(fps=None, remove_hdr=None, dither=None)
 
@@ -28,28 +29,23 @@ class GIF(SettingPanel):
         self.setLayout(grid)
 
     def init_fps(self):
-        layout = QtWidgets.QHBoxLayout()
-        fps_label = QtWidgets.QLabel("FPS")
-        fps_label.setToolTip("Frames Per Second")
-        layout.addWidget(fps_label)
-        self.widgets.fps = QtWidgets.QComboBox()
-        self.widgets.fps.addItems([str(x) for x in range(1, 31)])
-        self.widgets.fps.setCurrentIndex(14)
-        self.widgets.fps.currentIndexChanged.connect(lambda: self.main.build_commands())
-        layout.addWidget(self.widgets.fps)
-        return layout
+        return self._add_combo_box(
+            label="FPS",
+            widget_name="fps",
+            tooltip="Frames Per Second",
+            options=[str(x) for x in range(1, 31)],
+            opt="fps",
+        )
 
     def init_dither(self):
-        layout = QtWidgets.QHBoxLayout()
-        dither_label = QtWidgets.QLabel("Dither")
-        dither_label.setToolTip(
-            "Dither is an intentionally applied form of noise used to randomize quantization error, <br> "
-            "preventing large-scale patterns such as color banding in images."
-        )
-        layout.addWidget(dither_label)
-        self.widgets.dither = QtWidgets.QComboBox()
-        self.widgets.dither.addItems(
-            [
+        return self._add_combo_box(
+            label="Dither",
+            widget_name="dither",
+            tooltip=(
+                "Dither is an intentionally applied form of noise used to randomize quantization error, <br> "
+                "preventing large-scale patterns such as color banding in images."
+            ),
+            options=[
                 "sierra2_4a",
                 "floyd_steinberg",
                 "sierra2",
@@ -57,17 +53,13 @@ class GIF(SettingPanel):
                 "bayer:bayer_scale=2",
                 "bayer:bayer_scale=3",
                 "none",
-            ]
+            ],
         )
-        self.widgets.dither.setCurrentIndex(0)
-        self.widgets.dither.currentIndexChanged.connect(lambda: self.main.build_commands())
-        layout.addWidget(self.widgets.dither)
-        return layout
 
-    def get_settings(self):
-        return Box(
+    def update_video_encoder_settings(self):
+        self.app.fastflix.current_video.video_settings.video_encoder_settings = GIFSettings(
             fps=int(self.widgets.fps.currentText()),
-            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             dither=self.widgets.dither.currentText(),
             extra=self.ffmpeg_extras,
             pix_fmt="yuv420p",  # hack for thumbnails to show properly

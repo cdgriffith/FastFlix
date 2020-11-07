@@ -164,11 +164,14 @@ def generate_filters(
     return f' -filter_complex "{filter_complex}" -map "[v]" '
 
 
-def generate_all(fastflix: FastFlix, encoder: str) -> Tuple[str, str]:
+def generate_all(fastflix: FastFlix, encoder: str, audio=True, subs=True) -> Tuple[str, str]:
     settings = fastflix.current_video.video_settings.video_encoder_settings
 
-    audio = build_audio(fastflix.current_video.video_settings.audio_tracks)
-    subtitles, burn_in_track = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
+    audio = build_audio(fastflix.current_video.video_settings.audio_tracks) if audio else ""
+    subtitles, burn_in_track = (
+        build_subtitle(fastflix.current_video.video_settings.subtitle_tracks) if subs else "",
+        None,
+    )
     filters = generate_filters(
         disable_hdr=settings.remove_hdr, burn_in_track=burn_in_track, **asdict(fastflix.current_video.video_settings)
     )
