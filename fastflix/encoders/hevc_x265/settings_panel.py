@@ -72,19 +72,21 @@ class HEVC(SettingPanel):
         grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 1)
         grid.addLayout(self.init_profile(), 7, 0, 1, 1)
 
-        grid.addLayout(self.init_modes(), 0, 1, 5, 5)
-        grid.addLayout(self.init_hdr10(), 5, 1, 1, 1)
-        grid.addLayout(self.init_hdr10_opt(), 5, 2, 1, 1)
-        grid.addLayout(self.init_repeat_headers(), 5, 3, 1, 1)
-        grid.addLayout(self.init_aq_mode(), 5, 4, 1, 2)
-        grid.addLayout(self.init_x265_params(), 6, 1, 1, 5)
+        grid.addLayout(self.init_modes(), 0, 1, 5, 4)
 
-        grid.addLayout(self.init_dhdr10_info(), 7, 1, 1, 4)
-        grid.addLayout(self.init_dhdr10_warning_and_opt(), 7, 5, 1, 1)
+        grid.addLayout(self.init_x265_row(), 5, 1, 1, 4)
+        # grid.addLayout(self.init_hdr10_opt(), 5, 2, 1, 1)
+        # grid.addLayout(self.init_repeat_headers(), 5, 3, 1, 1)
+        # grid.addLayout(self.init_aq_mode(), 5, 4, 1, 2)
+
+        grid.addLayout(self.init_x265_params(), 6, 1, 1, 4)
+
+        grid.addLayout(self.init_dhdr10_info(), 7, 1, 1, 3)
+        grid.addLayout(self.init_dhdr10_warning_and_opt(), 7, 4, 1, 1)
 
         grid.setRowStretch(9, True)
 
-        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
+        grid.addLayout(self._add_custom(), 10, 0, 1, 5)
 
         guide_label = QtWidgets.QLabel(
             "<a href='https://trac.ffmpeg.org/wiki/Encode/H.265'>FFMPEG HEVC / H.265 Encoding Guide</a>"
@@ -95,7 +97,13 @@ class HEVC(SettingPanel):
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, 1, 6)
+
+        label = QtWidgets.QLabel("<a href='https://example.com> My Link </a>'")
+        label.setStyleSheet("color: #ffffff")
+        label.setStyleSheet("a{color: #ffffff}")
+        label.setStyleSheet("QUrl{color: #ffffff}")
+
+        grid.addWidget(guide_label, 11, 0, 1, 5)
 
         self.setLayout(grid)
         self.hide()
@@ -123,6 +131,17 @@ class HEVC(SettingPanel):
         layout.addLayout(self.init_dhdr10_opt())
         return layout
 
+    def init_x265_row(self):
+        layout = QtWidgets.QHBoxLayout()
+        layout.addLayout(self.init_hdr10())
+        layout.addStretch(1)
+        layout.addLayout(self.init_hdr10_opt())
+        layout.addStretch(1)
+        layout.addLayout(self.init_repeat_headers())
+        layout.addStretch(1)
+        layout.addLayout(self.init_aq_mode())
+        return layout
+
     def init_hdr10(self):
         return self._add_check_box(
             label="Force HDR10 signaling",
@@ -138,7 +157,7 @@ class HEVC(SettingPanel):
 
     def init_hdr10_opt(self):
         return self._add_check_box(
-            label="| HDR10 Optimizations",
+            label="HDR10 Optimizations",
             widget_name="hdr10_opt",
             tooltip=(
                 "hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.\n"
@@ -149,7 +168,7 @@ class HEVC(SettingPanel):
 
     def init_dhdr10_opt(self):
         return self._add_check_box(
-            label="| HDR10+ Optimizations",
+            label="HDR10+ Optimizations",
             widget_name="dhdr10_opt",
             tooltip=(
                 "dhdr10-opt: Reduces SEI overhead\n"
@@ -161,7 +180,7 @@ class HEVC(SettingPanel):
 
     def init_repeat_headers(self):
         return self._add_check_box(
-            label="| Repeat Headers",
+            label="Repeat Headers",
             widget_name="repeat_headers",
             tooltip=(
                 "repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.\n"
@@ -173,7 +192,7 @@ class HEVC(SettingPanel):
 
     def init_aq_mode(self):
         return self._add_combo_box(
-            label="| Adaptive Quantization",
+            label="Adaptive Quantization",
             widget_name="aq_mode",
             options=[
                 "disabled",
@@ -216,8 +235,8 @@ class HEVC(SettingPanel):
             connect="default",
             opt="preset",
         )
-        self.labels["preset"].setMinimumWidth(200)
-        self.widgets["preset"].setMinimumWidth(200)
+        self.labels["preset"].setMinimumWidth(190)
+        self.widgets["preset"].setMinimumWidth(190)
         return layout
 
     def init_tune(self):

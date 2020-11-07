@@ -1,5 +1,7 @@
 '':
   en: ''
+Adaptive Quantization:
+  en: Adaptive Quantization
 Audio Tracks:
   en: Audio Tracks
 Autocrop tried to crop too much:
@@ -28,6 +30,9 @@ Conversion:
   \ result in a larger file"
 : en: "Convert BT2020 colorspace into bt709\n WARNING: This will take much longer\
     \ and result in a larger file"
+'Convert BT2020 colorspace into bt709{\n} WARNING: This will take much longer and result in a larger file':
+  en: 'Convert BT2020 colorspace into bt709{\n} WARNING: This will take much longer
+    and result in a larger file'
 Could not connect to github to check for newer versions.:
   en: Could not connect to github to check for newer versions.
 Could not extract FFmpeg files from:
@@ -82,8 +87,12 @@ Gather FFmpeg version:
   en: Gather FFmpeg version
   es: "Re\xFAna la versi\xF3n de FFmpeg"
   fr: Rassemblez la version FFmpeg
+HDR10 Optimizations:
+  en: HDR10 Optimizations
 HDR10+ Metadata:
   en: HDR10+ Metadata
+HDR10+ Optimizations:
+  en: HDR10+ Optimizations
 Initialize Encoders:
   en: Initialize Encoders
   es: Inicializar Codificadores
@@ -131,6 +140,8 @@ Quality/Speed ratio modifier (defaults to 1):
   en: Quality/Speed ratio modifier (defaults to 1)
 Remove HDR:
   en: Remove HDR
+Repeat Headers:
+  en: Repeat Headers
 Row Multi-Threading:
   en: Row Multi-Threading
 Row multithreading:
@@ -194,6 +205,12 @@ and add it to PATH:
 : en: "aq-mode: Adaptive Quantization operating mode.\nRaise or lower per-block quantization\
     \ based on complexity analysis of the source image.\nThe more complex the block,\
     \ the more quantization is used.\nDefault: AQ enabled with auto-variance"
+? 'aq-mode: Adaptive Quantization operating mode.{\n}Raise or lower per-block quantization
+  based on complexity analysis of the source image.{\n}The more complex the block,
+  the more quantization is used.{\n}Default: AQ enabled with auto-variance'
+: en: 'aq-mode: Adaptive Quantization operating mode.{\n}Raise or lower per-block
+    quantization based on complexity analysis of the source image.{\n}The more complex
+    the block, the more quantization is used.{\n}Default: AQ enabled with auto-variance'
 attachment tracks found:
   en: attachment tracks found
 audio tracks found:
@@ -212,6 +229,12 @@ compression level:
 : en: "dhdr10-opt: Reduces SEI overhead\nOnly put the HDR10+ dynamic metadata in the\
     \ IDR and frames where the values have changed.\nIt saves a few bits and can help\
     \ performance in the client's tonemapper."
+? "dhdr10-opt: Reduces SEI overhead{\\n}Only put the HDR10+ dynamic metadata in the\
+  \ IDR and frames where the values have changed.{\\n}It saves a few bits and can\
+  \ help performance in the client's tonemapper."
+: en: "dhdr10-opt: Reduces SEI overhead{\\n}Only put the HDR10+ dynamic metadata in\
+    \ the IDR and frames where the values have changed.{\\n}It saves a few bits and\
+    \ can help performance in the client's tonemapper."
 'dhdr10_info: Path to HDR10+ JSON metadata file':
   en: 'dhdr10_info: Path to HDR10+ JSON metadata file'
 download a static FFmpeg:
@@ -224,12 +247,22 @@ download a static FFmpeg:
   It is recommended that AQ-mode be enabled along with this feature"
 : en: "hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.\n\
     It is recommended that AQ-mode be enabled along with this feature"
+? 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.{\n}It
+  is recommended that AQ-mode be enabled along with this feature'
+: en: 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.{\n}It
+    is recommended that AQ-mode be enabled along with this feature'
 ? "hdr10: Force signaling of HDR10 parameters in SEI packets.\n Enabled automatically\
   \ when --master-display or --max-cll is specified.\n Useful when there is a desire\
   \ to signal 0 values for max-cll and max-fall.\n Default disabled."
 : en: "hdr10: Force signaling of HDR10 parameters in SEI packets.\n Enabled automatically\
     \ when --master-display or --max-cll is specified.\n Useful when there is a desire\
     \ to signal 0 values for max-cll and max-fall.\n Default disabled."
+? 'hdr10: Force signaling of HDR10 parameters in SEI packets.{\n} Enabled automatically
+  when --master-display or --max-cll is specified.{\n} Useful when there is a desire
+  to signal 0 values for max-cll and max-fall.{\n} Default disabled.'
+: en: 'hdr10: Force signaling of HDR10 parameters in SEI packets.{\n} Enabled automatically
+    when --master-display or --max-cll is specified.{\n} Useful when there is a desire
+    to signal 0 values for max-cll and max-fall.{\n} Default disabled.'
 ignoring:
   en: ignoring
 ? "keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n\
@@ -238,6 +271,12 @@ ignoring:
 : en: "keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray\
     \ spec)\nThis option is not recommenced unless you need to conform to Blu-ray\
     \ standards to burn to a physical disk"
+? 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec){\n}This
+  option is not recommenced unless you need to conform to Blu-ray standards to burn
+  to a physical disk'
+: en: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray
+    spec){\n}This option is not recommenced unless you need to conform to Blu-ray
+    standards to burn to a physical disk'
 latest release from:
   en: latest release from
 left:
@@ -255,6 +294,10 @@ preset:
   \ highest personal recommenced, as past that is much smaller gains"
 : en: "preset: The slower the preset, the better the compression and quality\nSlow\
     \ is highest personal recommenced, as past that is much smaller gains"
+? 'preset: The slower the preset, the better the compression and quality{\n}Slow is
+  highest personal recommenced, as past that is much smaller gains'
+: en: 'preset: The slower the preset, the better the compression and quality{\n}Slow
+    is highest personal recommenced, as past that is much smaller gains'
 profile:
   en: profile
 'profile: Enforce an encode profile':
@@ -267,6 +310,12 @@ profile:
 : en: "repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every\
     \ keyframe.\nThis is intended for use when you do not have a container to keep\
     \ the stream headers for you\n and you want keyframes to be random access points."
+? 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every
+  keyframe.{\n}This is intended for use when you do not have a container to keep the
+  stream headers for you{\n} and you want keyframes to be random access points.'
+: en: 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every
+    keyframe.{\n}This is intended for use when you do not have a container to keep
+    the stream headers for you{\n} and you want keyframes to be random access points.'
 right:
   en: right
 subtitle tracks found:

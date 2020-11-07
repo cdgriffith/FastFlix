@@ -69,13 +69,14 @@ class SettingPanel(QtWidgets.QWidget):
 
     def _add_check_box(self, label, widget_name, opt, connect="default", enabled=True, checked=True, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
-        self.labels[widget_name] = QtWidgets.QLabel(t(label))
-        self.labels[widget_name].setToolTip(t(tooltip))
+        # self.labels[widget_name] = QtWidgets.QLabel()
+        # self.labels[widget_name].setToolTip()
 
-        self.widgets[widget_name] = QtWidgets.QCheckBox()
+        self.widgets[widget_name] = QtWidgets.QCheckBox(t(label))
         self.opts[widget_name] = opt
         self.widgets[widget_name].setChecked(self.app.fastflix.config.encoder_opt(self.profile_name, opt))
         self.widgets[widget_name].setDisabled(not enabled)
+        self.widgets[widget_name].setToolTip(t(tooltip))
         if connect:
             if connect == "default":
                 self.widgets[widget_name].toggled.connect(lambda: self.main.page_update())
@@ -84,7 +85,7 @@ class SettingPanel(QtWidgets.QWidget):
             else:
                 self.widgets[widget_name].toggled.connect(connect)
 
-        layout.addWidget(self.labels[widget_name])
+        # layout.addWidget(self.labels[widget_name])
         layout.addWidget(self.widgets[widget_name])
 
         return layout
@@ -197,6 +198,7 @@ class SettingPanel(QtWidgets.QWidget):
 
         layout.addWidget(qp_group_box, 0, 0)
         layout.addWidget(bitrate_group_box, 1, 0)
+
         return layout
 
     def _add_remove_hdr(self, connect="default"):

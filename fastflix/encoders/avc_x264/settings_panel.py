@@ -64,7 +64,7 @@ class AVC(SettingPanel):
         self.mode = "CRF"
         self.updating_settings = False
 
-        grid.addLayout(self.init_modes(), 0, 2, 6, 4)
+        grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)

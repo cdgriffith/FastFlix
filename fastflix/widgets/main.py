@@ -76,8 +76,6 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget.setDisabled(True)
         self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
         self.video_path_widget.setEnabled(False)
-        self.video_path_widget.setStyleSheet("QLineEdit{color:#222}")
-        self.output_video_path_widget.setStyleSheet("QLineEdit{color:#222}")
 
         self.widgets = Box(
             start_time=None,
@@ -118,11 +116,19 @@ class Main(QtWidgets.QWidget):
 
         self.grid = QtWidgets.QGridLayout()
 
-        self.init_video_area()
-        self.init_scale_and_crop()
-        self.init_preview_image()
+        # top_bar = QtWidgets.QHBoxLayout()
+        # top_bar.addWidget(QtWidgets.QPushButton("Source"))
+        # top_bar.addWidget(QtWidgets.QPushButton("Add to Queue"))
+        # top_bar.addWidget(QtWidgets.QPushButton("Convert"))
+        # top_bar.addWidget(QtWidgets.QPushButton("Pause Queue"))
+        # top_bar.addWidget(QtWidgets.QPushButton("Pause Encode"))
+        # self.grid.addLayout(top_bar, 0, 0, 1, 14)
 
-        self.grid.addWidget(self.video_options, 5, 0, 10, 14)
+        self.grid.addLayout(self.init_video_area(), 1, 0, 6, 6)
+        self.grid.addLayout(self.init_scale_and_crop(), 1, 6, 5, 4)
+        self.grid.addWidget(self.init_preview_image(), 1, 10, 5, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
+        self.grid.addWidget(self.video_options, 6, 0, 10, 14)
+
         self.grid.setSpacing(5)
         self.paused = False
 
@@ -216,7 +222,7 @@ class Main(QtWidgets.QWidget):
 
         layout.addLayout(self.init_profile())
         layout.addStretch()
-        self.grid.addLayout(layout, 0, 0, 6, 6)
+        return layout
 
     def init_scale_and_crop(self):
         layout = QtWidgets.QVBoxLayout()
@@ -224,7 +230,7 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(self.init_crop())
         layout.addWidget(self.init_start_time())
         layout.addStretch()
-        self.grid.addLayout(layout, 0, 6, 5, 4)
+        return layout
 
     def init_button_menu(self):
         layout = QtWidgets.QHBoxLayout()
@@ -232,7 +238,7 @@ class Main(QtWidgets.QWidget):
         open_input_file.setFixedSize(95, 50)
         open_input_file.setDefault(True)
         open_input_file.clicked.connect(lambda: self.open_file())
-        open_input_file.setStyleSheet("background: blue")
+        # open_input_file.setStyleSheet("background: blue")
         convert = QtWidgets.QPushButton("Convert 🎥")
         convert.setFixedSize(95, 50)
         convert.setStyleSheet("background: green")
@@ -573,7 +579,7 @@ class Main(QtWidgets.QWidget):
 
         # buttons = self.init_preview_buttons()
 
-        self.grid.addWidget(self.widgets.preview, 0, 10, 5, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
+        return self.widgets.preview
 
     def init_preview_buttons(self):
         layout = QtWidgets.QVBoxLayout()
@@ -828,7 +834,8 @@ class Main(QtWidgets.QWidget):
 
         if scale_width % 2:
             self.scale_updating = False
-            self.widgets.scale.width.setStyleSheet("background-color: red;")
+            # TODO add better colors / way
+            # self.widgets.scale.width.setStyleSheet("background-color: red;")
             self.widgets.scale.width.setToolTip(
                 f"{t('Width must be divisible by 2 - Source width')}: {self.app.fastflix.current_video.width}"
             )
@@ -839,8 +846,8 @@ class Main(QtWidgets.QWidget):
 
         if keep_aspect:
             self.widgets.scale.height.setText("Auto")
-            self.widgets.scale.width.setStyleSheet("background-color: white;")
-            self.widgets.scale.height.setStyleSheet("background-color: white;")
+            # self.widgets.scale.width.setStyleSheet("background-color: white;")
+            # self.widgets.scale.height.setStyleSheet("background-color: white;")
             self.page_update()
             self.scale_updating = False
             return
@@ -870,7 +877,7 @@ class Main(QtWidgets.QWidget):
             # return self.scale_warning_message.setText("Invalid height")
 
         if scale_height != -1 and scale_height % 2:
-            self.widgets.scale.height.setStyleSheet("background-color: red;")
+            # self.widgets.scale.height.setStyleSheet("background-color: red;")
             self.widgets.scale.height.setToolTip(
                 f"{t('Height must be divisible by 2 - Source height')}: {self.app.fastflix.current_video.height}"
             )
@@ -882,8 +889,8 @@ class Main(QtWidgets.QWidget):
             self.widgets.scale.height.setToolTip(f"{t('Source height')}: {self.app.fastflix.current_video.height}")
             # return self.scale_warning_message.setText("Height must be divisible by 8")
         # self.scale_warning_message.setText("")
-        self.widgets.scale.width.setStyleSheet("background-color: white;")
-        self.widgets.scale.height.setStyleSheet("background-color: white;")
+        # self.widgets.scale.width.setStyleSheet("background-color: white;")
+        # self.widgets.scale.height.setStyleSheet("background-color: white;")
         self.page_update()
         self.scale_updating = False
 

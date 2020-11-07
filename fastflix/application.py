@@ -22,7 +22,12 @@ logger = logging.getLogger("fastflix")
 
 def create_app():
     main_app = FastFlixApp(sys.argv)
+    from pathlib import Path  # TODO remove
+
+    print(Path(__file__).parent.absolute())
+    main_app.setStyleSheet((Path(__file__).parent / "data" / "style.qss").read_text())
     main_app.setStyle("fusion")
+    # main_app.setStyleSheet("")
     main_app.setApplicationDisplayName("FastFlix")
     my_font = QtGui.QFont("helvetica", 9, weight=57)
     main_app.setFont(my_font)
