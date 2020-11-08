@@ -41,7 +41,7 @@ class SettingPanel(QtWidgets.QWidget):
     ):
         layout = QtWidgets.QHBoxLayout()
         self.labels[widget_name] = QtWidgets.QLabel(t(label))
-        self.labels[widget_name].setToolTip(t(tooltip))
+        self.labels[widget_name].setToolTip(tooltip)
 
         self.widgets[widget_name] = QtWidgets.QComboBox()
         self.widgets[widget_name].addItems(options)
@@ -53,7 +53,7 @@ class SettingPanel(QtWidgets.QWidget):
             self.opts[widget_name] = opt
         self.widgets[widget_name].setCurrentIndex(default)
         self.widgets[widget_name].setDisabled(not enabled)
-        self.widgets[widget_name].setToolTip(t(tooltip))
+        self.widgets[widget_name].setToolTip(tooltip)
         if connect:
             if connect == "default":
                 self.widgets[widget_name].currentIndexChanged.connect(lambda: self.main.page_update())
@@ -76,7 +76,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.opts[widget_name] = opt
         self.widgets[widget_name].setChecked(self.app.fastflix.config.encoder_opt(self.profile_name, opt))
         self.widgets[widget_name].setDisabled(not enabled)
-        self.widgets[widget_name].setToolTip(t(tooltip))
+        self.widgets[widget_name].setToolTip(tooltip)
         if connect:
             if connect == "default":
                 self.widgets[widget_name].toggled.connect(lambda: self.main.page_update())
@@ -110,11 +110,11 @@ class SettingPanel(QtWidgets.QWidget):
     def _add_file_select(self, label, widget_name, button_action, connect="default", enabled=True, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
         self.labels[widget_name] = QtWidgets.QLabel(t(label))
-        self.labels[widget_name].setToolTip(t(tooltip))
+        self.labels[widget_name].setToolTip(tooltip)
 
         self.widgets[widget_name] = QtWidgets.QLineEdit()
         self.widgets[widget_name].setDisabled(not enabled)
-        self.widgets[widget_name].setToolTip(t(tooltip))
+        self.widgets[widget_name].setToolTip(tooltip)
 
         if connect:
             if connect == "default":

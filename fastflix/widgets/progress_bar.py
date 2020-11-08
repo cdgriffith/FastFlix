@@ -63,3 +63,4 @@ class ProgressBar(QtWidgets.QWidget):
 
     def update_progress(self, value):
         self.progress_bar.setValue(value)
+        self.app.processEvents()

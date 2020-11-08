@@ -242,7 +242,7 @@ class Main(QtWidgets.QWidget):
         convert = QtWidgets.QPushButton("Convert 🎥")
         convert.setFixedSize(95, 50)
         convert.setStyleSheet("background: green")
-        convert.clicked.connect(lambda: self.create_video())
+        convert.clicked.connect(lambda: self.encode_video())
         convert.setDisabled(True)
         self.widgets.convert_button = convert
         self.widgets.convert_button.setStyleSheet("background-color:grey;")
@@ -1177,7 +1177,7 @@ class Main(QtWidgets.QWidget):
     #     return self.app.fastflix.encoders[self.convert_to]
 
     @reusables.log_exception("fastflix", show_traceback=False)
-    def create_video(self):
+    def encode_video(self):
         if self.converting:
             self.app.fastflix.worker_queue.put("cancel")
             return
@@ -1234,11 +1234,12 @@ class Main(QtWidgets.QWidget):
         self.converting = True
 
         self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
+        self.video_options.queue.new_source()
         # ("command", command.command, self.temp_dir_name, command.shell)
         # for command in self.app.fastflix.current_video.video_settings.conversion_commands:
-        self.app.fastflix.worker_queue.put("start")
-        self.disable_all()
-        self.video_options.setCurrentWidget(self.video_options.status)
+        # self.app.fastflix.worker_queue.put("start")
+        # self.disable_all()
+        # self.video_options.setCurrentWidget(self.video_options.status)
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_complete(self, return_code):

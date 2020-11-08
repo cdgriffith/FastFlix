@@ -186,3 +186,7 @@ class FastFlixError(Exception):
 
 class FastFlixInternalException(FastFlixError):
     """This should always be caught and never seen by user"""
+
+
+def link(url, text):
+    return f'<a href="{url}" style="color: white" >{text}</a>'

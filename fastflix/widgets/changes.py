@@ -35,7 +35,7 @@ class Changes(QtWidgets.QScrollArea):
             content = local_changes_file.read_text()
 
         linked_content = issues.sub(
-            " <a href='https://github.com/cdgriffith/FastFlix/issues/\\1' >\\1</a> ", content
+            " <a href='https://github.com/cdgriffith/FastFlix/issues/\\1' style='color: white' >\\1</a> ", content
         ).replace("issues/#", "issues/")
 
         self.label = QtWidgets.QLabel(markdown(linked_content))
