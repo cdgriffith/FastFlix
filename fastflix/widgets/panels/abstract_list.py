@@ -10,7 +10,7 @@ class FlixList(QtWidgets.QWidget):
     Children widgets must have "set_first", "set_last", and "set_outdex" methods and "enabled" property.
     """
 
-    def __init__(self, app: FastFlixApp, parent, list_name, list_type):
+    def __init__(self, app: FastFlixApp, parent, list_name, list_type, top_row_layout=None):
         super().__init__(parent)
         self.app = app
         self.main = parent.main
@@ -18,7 +18,10 @@ class FlixList(QtWidgets.QWidget):
         self.list_type = list_type
 
         layout = QtWidgets.QGridLayout()
-        layout.addWidget(QtWidgets.QLabel(list_name))
+        if top_row_layout:
+            layout.addLayout(top_row_layout, 0, 0)
+        else:
+            layout.addWidget(QtWidgets.QLabel(list_name))
 
         self.inner_widget = QtWidgets.QWidget()
 
@@ -60,6 +63,8 @@ class FlixList(QtWidgets.QWidget):
         raise NotImplementedError()
 
     def reorder(self, update=True):
+        if not self.inner_layout:
+            return
         for widget in self.tracks:
             self.inner_layout.removeWidget(widget)
         self.inner_layout.takeAt(0)

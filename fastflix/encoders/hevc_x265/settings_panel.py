@@ -54,7 +54,7 @@ pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
 
 
 def ml(*items):
-    return "".join(items)
+    return "\n".join(items)
 
 
 class HEVC(SettingPanel):

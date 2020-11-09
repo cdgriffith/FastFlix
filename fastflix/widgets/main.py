@@ -36,6 +36,7 @@ from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
 from fastflix.language import t
 from fastflix.widgets.progress_bar import ProgressBar, Task
+from fastflix.resources import video_add_icon, play_round_icon, video_playlist_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -116,14 +117,7 @@ class Main(QtWidgets.QWidget):
 
         self.grid = QtWidgets.QGridLayout()
 
-        # top_bar = QtWidgets.QHBoxLayout()
-        # top_bar.addWidget(QtWidgets.QPushButton("Source"))
-        # top_bar.addWidget(QtWidgets.QPushButton("Add to Queue"))
-        # top_bar.addWidget(QtWidgets.QPushButton("Convert"))
-        # top_bar.addWidget(QtWidgets.QPushButton("Pause Queue"))
-        # top_bar.addWidget(QtWidgets.QPushButton("Pause Encode"))
-        # self.grid.addLayout(top_bar, 0, 0, 1, 14)
-
+        self.grid.addLayout(self.init_top_bar(), 0, 0, 1, 14)
         self.grid.addLayout(self.init_video_area(), 1, 0, 6, 6)
         self.grid.addLayout(self.init_scale_and_crop(), 1, 6, 5, 4)
         self.grid.addWidget(self.init_preview_image(), 1, 10, 5, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
@@ -137,6 +131,49 @@ class Main(QtWidgets.QWidget):
         self.show()
         self.initialized = True
         self.last_page_update = time.time()
+
+    def init_top_bar(self):
+        top_bar = QtWidgets.QHBoxLayout()
+
+        self.widgets.convert_button = QtWidgets.QPushButton(QtGui.QIcon(video_add_icon), f"  {t('Source')}")
+        self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
+        self.widgets.convert_button.setFixedHeight(40)
+        self.widgets.convert_button.setDefault(True)
+        self.widgets.convert_button.clicked.connect(lambda: self.open_file())
+        self.widgets.convert_button.setStyleSheet("padding: 0 10px; border: 1px solid #aaa")
+        # self.button.setStyleSheet("font-size:40px;background-color:#333333;")
+        # Add splitter
+
+        queue = QtWidgets.QPushButton(QtGui.QIcon(video_playlist_icon), f"{t('Add to Queue')}  ")
+        queue.setIconSize(QtCore.QSize(22, 20))
+        queue.setFixedHeight(40)
+        queue.setStyleSheet("padding: 0 10px;")
+        queue.setLayoutDirection(QtCore.Qt.RightToLeft)
+
+        convert = QtWidgets.QPushButton(QtGui.QIcon(play_round_icon), f"{t('Convert')}  ")
+        convert.setIconSize(QtCore.QSize(22, 20))
+        convert.setFixedHeight(40)
+        convert.setStyleSheet("padding: 0 10px;")
+        convert.setLayoutDirection(QtCore.Qt.RightToLeft)
+
+        top_bar.addWidget(self.widgets.convert_button)
+        top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
+        top_bar.addWidget(queue)
+        top_bar.addWidget(convert)
+
+        self.widgets.profile_box = QtWidgets.QComboBox()
+        self.widgets.profile_box.setStyleSheet("text-align: center;")
+        self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
+        self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
+        self.widgets.profile_box.setMinimumWidth(150)
+        self.widgets.profile_box.setFixedHeight(40)
+
+        top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
+        top_bar.addStretch(1)
+        top_bar.addWidget(self.widgets.profile_box)
+
+        # top_bar.addStretch(1)
+        return top_bar
 
     def get_temp_work_path(self):
         return tempfile.TemporaryDirectory(prefix="temp_", dir=self.app.fastflix.config.work_path)
@@ -165,8 +202,12 @@ class Main(QtWidgets.QWidget):
 
     def init_video_area(self):
         layout = QtWidgets.QVBoxLayout()
-        layout.addLayout(self.init_button_menu())
+        spacer = QtWidgets.QLabel()
+        spacer.setFixedHeight(10)
+        layout.addWidget(spacer)
+        # layout.addLayout(self.init_button_menu())
         # layout.addWidget(self.video_path_widget)
+        layout.addLayout(self.init_encoder_drop_down())
 
         output_layout = QtWidgets.QHBoxLayout()
 
@@ -220,7 +261,11 @@ class Main(QtWidgets.QWidget):
 
         layout.addLayout(transform_layout)
 
-        layout.addLayout(self.init_profile())
+        self.widgets.profile_box = QtWidgets.QComboBox()
+        self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
+        self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
+
+        # layout.addLayout(self.init_profile())
         layout.addStretch()
         return layout
 
@@ -290,9 +335,7 @@ class Main(QtWidgets.QWidget):
 
     def init_profile(self):
         layout = QtWidgets.QHBoxLayout()
-        self.widgets.profile_box = QtWidgets.QComboBox()
-        self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
-        self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
+
         layout.addWidget(QtWidgets.QLabel(t("Profile")))
         layout.addWidget(self.widgets.profile_box)
         layout.addStretch()
@@ -373,7 +416,10 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_to = QtWidgets.QComboBox()
         self.change_output_types()
         self.widgets.convert_to.currentTextChanged.connect(self.change_encoder)
-        # layout.addWidget(QtWidgets.QLabel("Encoder: "), stretch=0)
+
+        encoder_label = QtWidgets.QLabel(f"{t('Encoder')}: ")
+        encoder_label.setFixedWidth(65)
+        layout.addWidget(encoder_label, stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=0)
         layout.addStretch()
         layout.setSpacing(10)
@@ -668,7 +714,7 @@ class Main(QtWidgets.QWidget):
         start_pos = self.start_time or self.app.fastflix.current_video.duration // 10
 
         blocks = math.ceil((self.app.fastflix.current_video.duration - start_pos) / 5)
-        print(blocks)
+
         times = [
             x
             for x in range(int(start_pos), int(self.app.fastflix.current_video.duration), blocks)
@@ -976,8 +1022,8 @@ class Main(QtWidgets.QWidget):
         if self.app.fastflix.config.opt("auto_crop"):
             self.get_auto_crop()
         self.enable_all()
-        self.widgets.convert_button.setDisabled(False)
-        self.widgets.convert_button.setStyleSheet("background-color:green;")
+        # self.widgets.convert_button.setDisabled(False)
+        # self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.loading_video = False
 
     @property
@@ -1233,13 +1279,28 @@ class Main(QtWidgets.QWidget):
         self.widgets.pause_resume.setStyleSheet("background-color:orange;")
         self.converting = True
 
-        self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
-        self.video_options.queue.new_source()
+        self.add_to_queue()
         # ("command", command.command, self.temp_dir_name, command.shell)
         # for command in self.app.fastflix.current_video.video_settings.conversion_commands:
         # self.app.fastflix.worker_queue.put("start")
         # self.disable_all()
         # self.video_options.setCurrentWidget(self.video_options.status)
+
+    def add_to_queue(self):
+        source_in_queue = False
+        for video in self.app.fastflix.queue:
+            if self.app.fastflix.current_video.source == video.source:
+                source_in_queue = True
+            if self.app.fastflix.current_video.video_settings.output_path == video.video_settings.output_path:
+                logger.error("Item already in queue")
+                return
+
+        if source_in_queue:
+            # TODO ask if ok
+            return
+
+        self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
+        self.video_options.queue.new_source()
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_complete(self, return_code):

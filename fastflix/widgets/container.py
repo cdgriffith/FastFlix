@@ -40,7 +40,7 @@ class Container(QtWidgets.QMainWindow):
         self.main = Main(self, app)
 
         self.setCentralWidget(self.main)
-        self.setMinimumSize(QtCore.QSize(1100, 600))
+        self.setMinimumSize(QtCore.QSize(1100, 650))
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
 
@@ -145,7 +145,7 @@ class Container(QtWidgets.QMainWindow):
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("https://github.com/cdgriffith/FastFlix/issues"))
 
     def show_log_dir(self):
-        OpenFolder(self, self.log_dir).run()
+        OpenFolder(self, str(self.app.fastflix.log_path)).run()
 
     def download_ffmpeg(self):
         ProgressBar(self.app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)

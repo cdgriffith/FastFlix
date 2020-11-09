@@ -1,5 +1,9 @@
+'  Source':
+  en: '  Source'
 Adaptive Quantization:
   en: Adaptive Quantization
+Add to Queue:
+  en: Add to Queue
 Audio:
   en: Audio
 Audio Tracks:
@@ -28,6 +32,8 @@ CodeCalamity UHD HDR Encoding Guide:
   en: CodeCalamity UHD HDR Encoding Guide
 Conversion:
   en: Conversion
+Convert:
+  en: Convert
 Could not connect to github to check for newer versions.:
   en: Could not connect to github to check for newer versions.
 Could not extract FFmpeg files from:
@@ -55,6 +61,8 @@ Enabled:
   en: Enabled
 Enabled automatically when --master-display or --max-cll is specified.:
   en: Enabled automatically when --master-display or --max-cll is specified.
+Encoder:
+  en: Encoder
 Encoding Queue:
   en: Encoding Queue
 Encoding Status:
@@ -159,6 +167,10 @@ Raise or lower per-block quantization based on complexity analysis of the source
     image.
 Raw Commands:
   en: Raw Commands
+Ready:
+  en: Ready
+Ready to encode:
+  en: Ready to encode
 Remove HDR:
   en: Remove HDR
 Repeat Headers:
@@ -175,6 +187,8 @@ Single Pass (CRF):
   en: Single Pass (CRF)
 Slow is highest personal recommenced, as past that is much smaller gains:
   en: Slow is highest personal recommenced, as past that is much smaller gains
+Source:
+  en: Source
 Source height:
   en: Source height
 Source width:

@@ -74,7 +74,7 @@ class Profile:
 
 def get_preset_defaults():
     return {
-        "standard": Profile(),
+        "Standard Profile": Profile(),
         "film": Profile(auto_crop=True),
         "test": Profile(
             keep_aspect_ratio=False,
@@ -98,7 +98,7 @@ class Config:
     continue_on_failure: bool = True
     work_path: Path = fastflix_folder
     use_sane_audio: bool = True
-    default_profile: str = "standard"
+    default_profile: str = "Standard Profile"
     disable_version_check: bool = False
     disable_update_check: bool = False
     disable_automatic_subtitle_burn_in: bool = False
@@ -169,7 +169,7 @@ class Config:
         paths = ("work_path", "ffmpeg", "ffprobe")
         for key, value in data.items():
             if key == "defaults":
-                self.profiles = {k: Profile(**v) for k, v in value.items() if k != "standard"}
+                self.profiles = {k: Profile(**v) for k, v in value.items() if k != "Standard Profile"}
                 continue
             if key in self and key not in ("config_path", "version"):
                 setattr(self, key, Path(value) if key in paths and value else value)
