@@ -41,7 +41,7 @@ class BackgroundRunner:
         self.error_message = errors
         self.success_message = successes
 
-        self.process = psutil.Popen(
+        self.process = Popen(
             shlex.split(command) if not shell else command,
             shell=shell,
             cwd=work_dir,

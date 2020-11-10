@@ -3,9 +3,10 @@ import logging
 import sys
 import traceback
 
-# from multiprocessing import Process, Queue
-from threading import Thread
-from queue import Queue
+from multiprocessing import Process, Queue
+
+# from threading import Thread
+# from queue import Queue
 
 try:
     import coloredlogs
@@ -36,11 +37,11 @@ except ImportError as err:
     sys.exit(1)
 
 
-def separate_app_process(fastflix):
+def separate_app_process(worker_queue, status_queue, log_queue):
     """ This prevents any QT components being imported in the main process"""
     from fastflix.application import start_app
 
-    start_app(fastflix)
+    start_app(worker_queue, status_queue, log_queue)
 
 
 def main():
@@ -50,16 +51,20 @@ def main():
     coloredlogs.install(level="DEBUG", logger=logger)
     logger.info(f"Starting FastFlix {__version__}")
 
-    fastflix = FastFlix()
-    fastflix.config = Config()
+    worker_queue = Queue()
+    status_queue = Queue()
+    log_queue = Queue()
 
-    fastflix.worker_queue = Queue()
-    fastflix.status_queue = Queue()
-    fastflix.log_queue = Queue()
-
-    gui_proc = Thread(target=separate_app_process, args=(fastflix,))
+    gui_proc = Process(
+        target=separate_app_process,
+        args=(
+            worker_queue,
+            status_queue,
+            log_queue,
+        ),
+    )
     gui_proc.start()
     try:
-        queue_worker(fastflix)
+        queue_worker(worker_queue, status_queue, log_queue)
     finally:
         gui_proc.join()

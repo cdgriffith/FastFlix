@@ -10,6 +10,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import FastFlixInternalException, error_message, main_width
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.encode import SubtitleTrack
+from fastflix.resources import up_arrow_icon, down_arrow_icon
 
 dispositions = [
     "none",
@@ -44,13 +45,16 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{self.index}:{self.outdex}" if enabled else "❌"),
             title=QtWidgets.QLabel(f"  {self.subtitle.codec_long_name}"),
-            up_button=QtWidgets.QPushButton("^"),
-            down_button=QtWidgets.QPushButton("v"),
+            up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
+            down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
             enable_check=QtWidgets.QCheckBox(t("Preserve")),
             disposition=QtWidgets.QComboBox(),
             language=QtWidgets.QComboBox(),
             burn_in=QtWidgets.QCheckBox(t("Burn In")),
         )
+
+        self.widgets.up_button.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
+        self.widgets.down_button.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
 
         self.widgets.disposition.addItems(dispositions)
         self.widgets.enable_check.setChecked(enabled)

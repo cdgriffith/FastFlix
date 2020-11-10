@@ -19,7 +19,7 @@ logger = logging.getLogger("fastflix")
 
 
 class VideoOptions(QtWidgets.QTabWidget):
-    def __init__(self, parent, app: FastFlixApp, available_audio_encoders, log_queue):
+    def __init__(self, parent, app: FastFlixApp, available_audio_encoders):
         super().__init__(parent)
         self.main = parent
         self.app = app
@@ -30,7 +30,7 @@ class VideoOptions(QtWidgets.QTabWidget):
 
         self.audio = AudioList(self, self.app)
         self.subtitles = SubtitleList(self, self.app)
-        self.status = StatusPanel(self, self.app, log_queue)
+        self.status = StatusPanel(self, self.app)
         self.attachments = CoverPanel(self, self.app)
         self.queue = EncodingQueue(self, self.app)
         # self.subtitles.hide()
@@ -97,3 +97,12 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     def update_profile(self):
         self.current_settings.update_profile()
+
+    def update_queue(self):
+        self.queue.new_source()
+
+    def show_queue(self):
+        self.setCurrentWidget(self.queue)
+
+    def show_status(self):
+        self.setCurrentWidget(self.status)

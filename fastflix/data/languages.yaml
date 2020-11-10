@@ -24,12 +24,16 @@ Burn In:
   en: Burn In
 CPU Used:
   en: CPU Used
+Cancel:
+  en: Cancel
 Cancel Conversion:
   en: Cancel Conversion
 Close GUI Only:
   en: Close GUI Only
 CodeCalamity UHD HDR Encoding Guide:
   en: CodeCalamity UHD HDR Encoding Guide
+Command has completed:
+  en: Command has completed
 Conversion:
   en: Conversion
 Convert:
@@ -67,12 +71,22 @@ Encoding Queue:
   en: Encoding Queue
 Encoding Status:
   en: Encoding Status
+Encoding command 0 of 1:
+  en: Encoding command 0 of 1
+Encoding command 1 of 1:
+  en: Encoding command 1 of 1
+Encoding complete:
+  en: Encoding complete
 Enforce an encode profile:
   en: Enforce an encode profile
 Error Updating Thumbnail:
   en: Error Updating Thumbnail
 Error while moving files in:
   en: Error while moving files in
+Estimated file size based on bitrate:
+  en: Estimated file size based on bitrate
+Estimated time left for current command:
+  en: Estimated time left for current command
 Extra flags or options, cannot modify existing settings:
   en: Extra flags or options, cannot modify existing settings
 Extra x265 params in opt=1:opt2=0 format,:
@@ -106,6 +120,8 @@ HDR10+ Metadata Extraction:
   en: HDR10+ Metadata Extraction
 HDR10+ Optimizations:
   en: HDR10+ Optimizations
+Have to select a video first:
+  en: Have to select a video first
 I do not know of any public Linux/Mac ones that do.:
   en: I do not know of any public Linux/Mac ones that do.
 Initialize Encoders:
@@ -132,6 +148,12 @@ More than one track selected to burn in:
   en: More than one track selected to burn in
 No Downmix:
   en: No Downmix
+No Source Selected:
+  en: No Source Selected
+No Video File:
+  en: No Video File
+Not a video file:
+  en: Not a video file
 Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.:
   en: Only put the HDR10+ dynamic metadata in the IDR and frames where the values
     have changed.
@@ -185,6 +207,8 @@ Single Pass (Bitrate):
   en: Single Pass (Bitrate)
 Single Pass (CRF):
   en: Single Pass (CRF)
+Size Estimate:
+  en: Size Estimate
 Slow is highest personal recommenced, as past that is much smaller gains:
   en: Slow is highest personal recommenced, as past that is much smaller gains
 Source:
@@ -227,6 +251,8 @@ Tile Rows:
   en: Tile Rows
 Tiles:
   en: Tiles
+Time Left:
+  en: Time Left
 Title:
   en: Title
 Tune:
@@ -280,6 +306,8 @@ download a static FFmpeg:
   en: 'hdr10: Force signaling of HDR10 parameters in SEI packets.'
 ignoring:
   en: ignoring
+is already in queue:
+  en: is already in queue
 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)':
   en: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray
     spec)'
@@ -294,6 +322,8 @@ lossless:
     error'
 none:
   en: none
+out file is already in queue:
+  en: out file is already in queue
 preset:
   en: preset
 'preset: The slower the preset, the better the compression and quality':
@@ -304,6 +334,8 @@ profile:
   en: 'profile: Enforce an encode profile'
 'profile: VP9 coding profile - must match bit depth':
   en: 'profile: VP9 coding profile - must match bit depth'
+queue complete:
+  en: queue complete
 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.':
   en: 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every
     keyframe.'
@@ -317,5 +349,7 @@ top:
   en: top
 'tune: Tune the settings for a particular type of source or situation':
   en: 'tune: Tune the settings for a particular type of source or situation'
+video complete:
+  en: video complete
 video tracks found:
   en: video tracks found

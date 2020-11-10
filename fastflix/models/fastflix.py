@@ -27,4 +27,5 @@ class FastFlix(BaseDataClass):
     log_queue: Queue = None
 
     current_video: Union[Video, None] = None
+    current_encoding: Union[Video, None] = None
     queue: List[Video] = field(default_factory=list)

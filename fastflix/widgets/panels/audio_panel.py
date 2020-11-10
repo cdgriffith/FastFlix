@@ -11,6 +11,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.encode import AudioTrack
 from fastflix.language import t
+from fastflix.resources import up_arrow_icon, down_arrow_icon
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
@@ -56,8 +57,8 @@ class Audio(QtWidgets.QTabWidget):
             track_number=QtWidgets.QLabel(f"{index}:{self.outdex}" if enabled else "❌"),
             title=QtWidgets.QLineEdit(title),
             audio_info=QtWidgets.QLabel(audio),
-            up_button=QtWidgets.QPushButton("^"),
-            down_button=QtWidgets.QPushButton("v"),
+            up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
+            down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
             enable_check=QtWidgets.QCheckBox(t("Enabled")),
             dup_button=QtWidgets.QPushButton("➕"),
             delete_button=QtWidgets.QPushButton("⛔"),
@@ -66,6 +67,9 @@ class Audio(QtWidgets.QTabWidget):
             convert_to=None,
             convert_bitrate=None,
         )
+
+        self.widgets.up_button.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
+        self.widgets.down_button.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
 
         if all_info:
             self.widgets.audio_info.setToolTip(all_info.to_yaml())

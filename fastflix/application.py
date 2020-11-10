@@ -10,6 +10,8 @@ from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration
 from fastflix.language import change_language, t
 from fastflix.models.config import MissingFF
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.fastflix import FastFlix
+from fastflix.models.config import Config
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
 from fastflix.resources import main_icon, dark_mode, video_add_icon
 from fastflix.shared import file_date
@@ -131,9 +133,14 @@ def register_app():
             logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
 
 
-def start_app(fastflix):
+def start_app(worker_queue, status_queue, log_queue):
     app = create_app()
-    app.fastflix = fastflix
+    app.fastflix = FastFlix()
+    app.fastflix.log_queue = log_queue
+    app.fastflix.status_queue = status_queue
+    app.fastflix.worker_queue = worker_queue
+
+    app.fastflix.config = Config()
     init_fastflix_directories(app)
     init_logging(app)
     register_app()

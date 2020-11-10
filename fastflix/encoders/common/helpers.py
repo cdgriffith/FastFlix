@@ -168,10 +168,11 @@ def generate_all(fastflix: FastFlix, encoder: str, audio=True, subs=True) -> Tup
     settings = fastflix.current_video.video_settings.video_encoder_settings
 
     audio = build_audio(fastflix.current_video.video_settings.audio_tracks) if audio else ""
-    subtitles, burn_in_track = (
-        build_subtitle(fastflix.current_video.video_settings.subtitle_tracks) if subs else "",
-        None,
-    )
+
+    subtitles, burn_in_track = "", None
+    if subs:
+        subtitles, burn_in_track = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
+
     filters = generate_filters(
         disable_hdr=settings.remove_hdr, burn_in_track=burn_in_track, **asdict(fastflix.current_video.video_settings)
     )

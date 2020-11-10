@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Union, List
 from tempfile import TemporaryDirectory
+import uuid
 
 from appdirs import user_data_dir
 from box import Box
@@ -66,6 +67,7 @@ class Status(BaseDataClass):
 @dataclass
 class Video(BaseDataClass):
     source: Path
+    uuid: int = field(default_factory=uuid.uuid4)
     width: int = 0
     height: int = 0
     duration: Union[float, int] = 0

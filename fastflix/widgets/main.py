@@ -36,7 +36,7 @@ from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
 from fastflix.language import t
 from fastflix.widgets.progress_bar import ProgressBar, Task
-from fastflix.resources import video_add_icon, play_round_icon, video_playlist_icon
+from fastflix.resources import video_add_icon, play_round_icon, video_playlist_icon, black_x_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -102,7 +102,6 @@ class Main(QtWidgets.QWidget):
             self,
             app=self.app,
             available_audio_encoders=self.app.fastflix.audio_encoders,
-            log_queue=self.app.fastflix.log_queue,
         )
 
         self.completed.connect(self.conversion_complete)
@@ -135,12 +134,12 @@ class Main(QtWidgets.QWidget):
     def init_top_bar(self):
         top_bar = QtWidgets.QHBoxLayout()
 
-        self.widgets.convert_button = QtWidgets.QPushButton(QtGui.QIcon(video_add_icon), f"  {t('Source')}")
-        self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
-        self.widgets.convert_button.setFixedHeight(40)
-        self.widgets.convert_button.setDefault(True)
-        self.widgets.convert_button.clicked.connect(lambda: self.open_file())
-        self.widgets.convert_button.setStyleSheet("padding: 0 10px; border: 1px solid #aaa")
+        source = QtWidgets.QPushButton(QtGui.QIcon(video_add_icon), f"  {t('Source')}")
+        source.setIconSize(QtCore.QSize(22, 20))
+        source.setFixedHeight(40)
+        source.setDefault(True)
+        source.clicked.connect(lambda: self.open_file())
+        # source.setStyleSheet("padding: 0 10px; border: 1px solid #aaa")
         # self.button.setStyleSheet("font-size:40px;background-color:#333333;")
         # Add splitter
 
@@ -149,17 +148,19 @@ class Main(QtWidgets.QWidget):
         queue.setFixedHeight(40)
         queue.setStyleSheet("padding: 0 10px;")
         queue.setLayoutDirection(QtCore.Qt.RightToLeft)
+        queue.clicked.connect(lambda: self.add_to_queue())
 
-        convert = QtWidgets.QPushButton(QtGui.QIcon(play_round_icon), f"{t('Convert')}  ")
-        convert.setIconSize(QtCore.QSize(22, 20))
-        convert.setFixedHeight(40)
-        convert.setStyleSheet("padding: 0 10px;")
-        convert.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.widgets.convert_button = QtWidgets.QPushButton(QtGui.QIcon(play_round_icon), f"{t('Convert')}  ")
+        self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
+        self.widgets.convert_button.setFixedHeight(40)
+        self.widgets.convert_button.setStyleSheet("padding: 0 10px;")
+        self.widgets.convert_button.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.widgets.convert_button.clicked.connect(lambda: self.encode_video())
 
-        top_bar.addWidget(self.widgets.convert_button)
+        top_bar.addWidget(source)
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
         top_bar.addWidget(queue)
-        top_bar.addWidget(convert)
+        top_bar.addWidget(self.widgets.convert_button)
 
         self.widgets.profile_box = QtWidgets.QComboBox()
         self.widgets.profile_box.setStyleSheet("text-align: center;")
@@ -277,33 +278,31 @@ class Main(QtWidgets.QWidget):
         layout.addStretch()
         return layout
 
-    def init_button_menu(self):
-        layout = QtWidgets.QHBoxLayout()
-        open_input_file = QtWidgets.QPushButton("🎞 Source")
-        open_input_file.setFixedSize(95, 50)
-        open_input_file.setDefault(True)
-        open_input_file.clicked.connect(lambda: self.open_file())
-        # open_input_file.setStyleSheet("background: blue")
-        convert = QtWidgets.QPushButton("Convert 🎥")
-        convert.setFixedSize(95, 50)
-        convert.setStyleSheet("background: green")
-        convert.clicked.connect(lambda: self.encode_video())
-        convert.setDisabled(True)
-        self.widgets.convert_button = convert
-        self.widgets.convert_button.setStyleSheet("background-color:grey;")
-
-        self.widgets.pause_resume.setDisabled(True)
-        self.widgets.pause_resume.setStyleSheet("background-color: gray;")
-        self.widgets.pause_resume.clicked.connect(self.pause_resume)
-        self.widgets.pause_resume.setFixedSize(60, 50)
-
-        layout.addWidget(open_input_file)
-        layout.addStretch()
-        layout.addLayout(self.init_encoder_drop_down())
-        layout.addStretch()
-        layout.addWidget(self.widgets.pause_resume)
-        layout.addWidget(convert)
-        return layout
+    # def init_button_menu(self):
+    #     layout = QtWidgets.QHBoxLayout()
+    #     open_input_file = QtWidgets.QPushButton("🎞 Source")
+    #     open_input_file.setFixedSize(95, 50)
+    #     open_input_file.setDefault(True)
+    #     open_input_file.clicked.connect(lambda: self.open_file())
+    #     # open_input_file.setStyleSheet("background: blue")
+    #     convert = QtWidgets.QPushButton("Convert 🎥")
+    #     convert.setFixedSize(95, 50)
+    #     convert.setStyleSheet("background: green")
+    #     convert.clicked.connect(lambda: self.encode_video())
+    #     convert.setDisabled(True)
+    #
+    #     self.widgets.pause_resume.setDisabled(True)
+    #     self.widgets.pause_resume.setStyleSheet("background-color: gray;")
+    #     self.widgets.pause_resume.clicked.connect(self.pause_resume)
+    #     self.widgets.pause_resume.setFixedSize(60, 50)
+    #
+    #     layout.addWidget(open_input_file)
+    #     layout.addStretch()
+    #     layout.addLayout(self.init_encoder_drop_down())
+    #     layout.addStretch()
+    #     layout.addWidget(self.widgets.pause_resume)
+    #     layout.addWidget(convert)
+    #     return layout
 
     # def init_input_file(self):
     #     layout = QtWidgets.QHBoxLayout()
@@ -969,6 +968,7 @@ class Main(QtWidgets.QWidget):
         except FlixError:
             error_message(f"{t('Not a video file')}<br>{self.input_video}")
             self.clear_current_video()
+            return
 
         text_video_tracks = [
             f'{x.index}: {t("codec")} {x.codec_name} - {x.get("pix_fmt")} - {t("profile")} {x.get("profile")}'
@@ -1222,25 +1222,25 @@ class Main(QtWidgets.QWidget):
     # def current_encoder(self):
     #     return self.app.fastflix.encoders[self.convert_to]
 
-    @reusables.log_exception("fastflix", show_traceback=False)
-    def encode_video(self):
-        if self.converting:
-            self.app.fastflix.worker_queue.put("cancel")
-            return
-
+    def encoding_checks(self):
         if not self.input_video:
-            return error_message(t("Have to select a video first"))
+            error_message(t("Have to select a video first"))
+            return False
         if self.encoding_worker and self.encoding_worker.is_alive():
-            return error_message(t("Still encoding something else"))
+            error_message(t("Still encoding something else"))
+            return False
         if not self.output_video:
-            return error_message(t("Please specify output video"))
+            error_message(t("Please specify output video"))
+            return False
         if self.input_video.resolve().absolute() == Path(self.output_video).resolve().absolute():
-            return error_message(t("Output video path is same as source!"))
+            error_message(t("Output video path is same as source!"))
+            return False
 
         if not self.output_video.lower().endswith(self.current_encoder.video_extension):
             sm = QtWidgets.QMessageBox()
             sm.setText(
-                f"Output video file does not have expected extension ({self.current_encoder.video_extension}), which can case issues."
+                f"{t('Output video file does not have expected extension')} ({self.current_encoder.video_extension}), "
+                f"{t('which can case issues')}."
             )
             sm.addButton("Continue anyways", QtWidgets.QMessageBox.DestructiveRole)
             sm.addButton(f"Append ({self.current_encoder.video_extension}) for me", QtWidgets.QMessageBox.YesRole)
@@ -1256,7 +1256,7 @@ class Main(QtWidgets.QWidget):
                 self.output_video_path_widget.setDisabled(False)
                 self.output_path_button.setDisabled(False)
             elif not sm.clickedButton().text().startswith("Continue"):
-                return
+                return False
 
         Path(self.temp_dir_name).mkdir(parents=True, exist_ok=True)
 
@@ -1268,50 +1268,74 @@ class Main(QtWidgets.QWidget):
             sm.addButton("Overwrite", QtWidgets.QMessageBox.RejectRole)
             sm.exec_()
             if sm.clickedButton().text() == "Cancel":
-                return
+                return False
+        return True
 
-        if not self.build_commands():
+    def set_convert_button(self, convert=True):
+        if convert:
+            self.widgets.convert_button.setText(f"{t('Convert')}  ")
+            self.widgets.convert_button.setIcon(QtGui.QIcon(play_round_icon))
+            self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
+
+        else:
+            self.widgets.convert_button.setText(f"{t('Cancel')}  ")
+            self.widgets.convert_button.setIcon(QtGui.QIcon(black_x_icon))
+            self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
+
+    @reusables.log_exception("fastflix", show_traceback=False)
+    def encode_video(self):
+
+        if self.converting:
+            self.app.fastflix.worker_queue.put("cancel")
             return
 
-        self.widgets.convert_button.setText("⛔ Cancel")
-        self.widgets.convert_button.setStyleSheet("background-color:red;")
-        self.widgets.pause_resume.setDisabled(False)
-        self.widgets.pause_resume.setStyleSheet("background-color:orange;")
-        self.converting = True
+        if not self.app.fastflix.queue:
 
-        self.add_to_queue()
-        # ("command", command.command, self.temp_dir_name, command.shell)
-        # for command in self.app.fastflix.current_video.video_settings.conversion_commands:
-        # self.app.fastflix.worker_queue.put("start")
-        # self.disable_all()
-        # self.video_options.setCurrentWidget(self.video_options.status)
+            if not self.add_to_queue():
+                return
+
+        self.converting = True
+        self.set_convert_button(False)
+
+        # TODO flatten the queue to
+        # Command looks like (video_uuid, command_uuid, command, work_dir)
+        # Request looks like (queue command, log_dir, (commands))
+        self.app.fastflix.worker_queue.put()
+        self.disable_all()
+        self.video_options.show_status()
 
     def add_to_queue(self):
+        if not self.encoding_checks():
+            return False
+
+        if not self.build_commands():
+            return False
+
         source_in_queue = False
         for video in self.app.fastflix.queue:
+            if video.status.complete:
+                continue
             if self.app.fastflix.current_video.source == video.source:
                 source_in_queue = True
             if self.app.fastflix.current_video.video_settings.output_path == video.video_settings.output_path:
-                logger.error("Item already in queue")
-                return
+                error_message(f"{video.video_settings.output_path} {t('out file is already in queue')}")
+                return False
 
-        if source_in_queue:
-            # TODO ask if ok
-            return
+        # if source_in_queue:
+        # TODO ask if ok
+        # return
 
         self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
-        self.video_options.queue.new_source()
+        self.video_options.update_queue()
+        self.video_options.show_queue()
+        return True
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_complete(self, return_code):
-        self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
         self.paused = False
         self.enable_all()
-        self.widgets.convert_button.setText("Convert 🎥")
-        self.widgets.pause_resume.setDisabled(True)
-        self.widgets.pause_resume.setText("Pause")
-        self.widgets.pause_resume.setStyleSheet("background-color:gray;")
+        self.set_convert_button()
         output = Path(self.output_video)
 
         if return_code or not output.exists() or output.stat().st_size <= 500:
@@ -1327,14 +1351,10 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_cancelled(self):
-        self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.converting = False
         self.paused = False
         self.enable_all()
-        self.widgets.convert_button.setText("Convert 🎥")
-        self.widgets.pause_resume.setDisabled(True)
-        self.widgets.pause_resume.setText("Pause")
-        self.widgets.pause_resume.setStyleSheet("background-color:gray;")
+        self.set_convert_button()
 
         sm = QtWidgets.QMessageBox()
         sm.setText("Conversion cancelled, delete incomplete file?")
@@ -1384,13 +1404,14 @@ class Notifier(QtCore.QThread):
 
     def run(self):
         while True:
+            # TODO update to accept and handle multiple options
             status = self.status_queue.get()
-            if status == "complete":
+            if status[0] == "complete":
                 self.main.completed.emit(0)
-            if status == "error":
+            if status[0] == "error":
                 self.main.completed.emit(1)
-            elif status == "cancelled":
+            elif status[0] == "cancelled":
                 self.main.cancelled.emit()
-            elif status == "exit":
+            elif status[0] == "exit":
                 self.main.close_event.emit()
                 return

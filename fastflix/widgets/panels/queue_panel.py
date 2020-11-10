@@ -13,6 +13,7 @@ from fastflix.models.video import Video
 from fastflix.shared import FastFlixInternalException, error_message, main_width
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.encode import SubtitleTrack
+from fastflix.resources import black_x_icon, up_arrow_icon, down_arrow_icon
 from fastflix.language import t
 
 
@@ -26,9 +27,13 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.last = False
 
         self.widgets = Box(
-            up_button=QtWidgets.QPushButton("^"),
-            down_button=QtWidgets.QPushButton("v"),
+            up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
+            down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
+            cancel_button=QtWidgets.QPushButton(QtGui.QIcon(black_x_icon), ""),
         )
+
+        for widget in self.widgets.values():
+            widget.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
 
         self.setFixedHeight(50)
 
@@ -50,6 +55,10 @@ class EncodeItem(QtWidgets.QTabWidget):
                 f"Encoding command {video.status.current_command} of {len(video.video_settings.conversion_commands)}"
             )
 
+        self.video = video
+        self.widgets.cancel_button.clicked.connect(lambda: self.parent.remove_item(self.video))
+        self.widgets.cancel_button.setFixedWidth(25)
+
         grid = QtWidgets.QGridLayout()
         grid.addLayout(self.init_move_buttons(), 0, 0)
         # grid.addWidget(self.widgets.track_number, 0, 1)
@@ -58,6 +67,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         grid.addWidget(QtWidgets.QLabel(f"{t('Audio Tracks')}: {len(video.video_settings.audio_tracks)}"), 0, 3)
         grid.addWidget(QtWidgets.QLabel(f"{t('Subtitles')}: {len(video.video_settings.subtitle_tracks)}"), 0, 4)
         grid.addWidget(QtWidgets.QLabel(status), 0, 5)
+        grid.addWidget(self.widgets.cancel_button, 0, 6)
         # grid.addLayout(disposition_layout, 0, 4)
         # grid.addWidget(self.widgets.burn_in, 0, 5)
         # grid.addLayout(self.init_language(), 0, 6)
@@ -131,7 +141,13 @@ class EncodingQueue(FlixList):
         super().__init__(app, parent, t("Queue"), "queue", top_row_layout=top_layout)
 
     def new_source(self):
+        print("called")
         self.tracks = []
         for i, video in enumerate(self.app.fastflix.queue, start=1):
             self.tracks.append(EncodeItem(self, video, i))
         super()._new_source(self.tracks)
+        self.app.processEvents()
+
+    def remove_item(self, video):
+        self.app.fastflix.queue.remove(video)
+        self.new_source()
