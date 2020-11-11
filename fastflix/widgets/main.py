@@ -36,7 +36,7 @@ from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
 from fastflix.language import t
 from fastflix.widgets.progress_bar import ProgressBar, Task
-from fastflix.resources import video_add_icon, play_round_icon, video_playlist_icon, black_x_icon
+from fastflix.resources import video_add_icon, play_round_icon, video_playlist_icon, black_x_icon, settings_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -55,6 +55,7 @@ class Main(QtWidgets.QWidget):
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
         self.app: FastFlixApp = app
+        self.container = parent
         self.video: Video = Video(Path(), 0, 0, 0)
 
         self.initialized = False
@@ -122,13 +123,18 @@ class Main(QtWidgets.QWidget):
         self.grid.addLayout(self.init_video_area(), 1, 0, 6, 6)
         self.grid.addLayout(self.init_scale_and_crop(), 1, 6, 5, 4)
         self.grid.addWidget(self.init_preview_image(), 1, 10, 5, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
-        self.grid.addWidget(self.video_options, 6, 0, 10, 14)
+
+        spacer = QtWidgets.QLabel()
+        spacer.setFixedHeight(5)
+        self.grid.addWidget(spacer, 6, 0, 1, 14)
+        self.grid.addWidget(self.video_options, 7, 0, 10, 14)
 
         self.grid.setSpacing(5)
         self.paused = False
 
         self.disable_all()
         self.setLayout(self.grid)
+        self.set_profile()
         self.show()
         self.initialized = True
         self.last_page_update = time.time()
@@ -172,8 +178,15 @@ class Main(QtWidgets.QWidget):
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
         top_bar.addWidget(queue)
         top_bar.addWidget(self.widgets.convert_button)
-
         top_bar.addStretch(1)
+
+        options = QtWidgets.QPushButton(QtGui.QIcon(settings_icon), "")
+        options.setFixedSize(QtCore.QSize(40, 40))
+        options.setIconSize(QtCore.QSize(22, 22))
+        options.setToolTip(t("Settings"))
+        options.clicked.connect(lambda: self.container.show_setting())
+
+        top_bar.addWidget(options)
 
         return top_bar
 
@@ -205,7 +218,7 @@ class Main(QtWidgets.QWidget):
     def init_video_area(self):
         layout = QtWidgets.QVBoxLayout()
         spacer = QtWidgets.QLabel()
-        spacer.setFixedHeight(10)
+        spacer.setFixedHeight(2)
         layout.addWidget(spacer)
         # layout.addLayout(self.init_button_menu())
         # layout.addWidget(self.video_path_widget)
@@ -262,6 +275,7 @@ class Main(QtWidgets.QWidget):
         transform_layout.addLayout(metadata_layout)
 
         layout.addLayout(transform_layout)
+        layout.addWidget(self.init_start_time())
 
         # self.widgets.profile_box = QtWidgets.QComboBox()
         # self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
@@ -275,7 +289,7 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.init_scale())
         layout.addWidget(self.init_crop())
-        layout.addWidget(self.init_start_time())
+        # layout.addWidget(self.init_start_time())
         layout.addStretch()
         return layout
 
@@ -424,6 +438,8 @@ class Main(QtWidgets.QWidget):
         return layout
 
     def change_encoder(self):
+        if not self.initialized:
+            return
         if not self.output_video_path_widget.text().endswith(self.current_encoder.video_extension):
             # Make sure it's using the right file extension
             self.output_video_path_widget.setText(self.generate_output_filename)
@@ -445,7 +461,7 @@ class Main(QtWidgets.QWidget):
             "Start  ", right_stretch=False, left_stretch=True, time_field=True
         )
         self.widgets.end_time, layout = self.build_hoz_int_field(
-            "  End  ", left_stretch=False, right_stretch=True, layout=layout, time_field=True
+            "  End  ", left_stretch=True, right_stretch=True, layout=layout, time_field=True
         )
         self.widgets.start_time.textChanged.connect(lambda: self.page_update())
         self.widgets.end_time.textChanged.connect(lambda: self.page_update())
@@ -457,7 +473,7 @@ class Main(QtWidgets.QWidget):
             "vs a specific [exact] frame lookup. (GIF encodings use [fast])"
         )
         self.widgets.fast_time.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
-        self.widgets.fast_time.setFixedWidth(55)
+        self.widgets.fast_time.setFixedWidth(75)
         layout.addWidget(QtWidgets.QLabel(" "))
         layout.addWidget(self.widgets.fast_time, QtCore.Qt.AlignRight)
         group_box.setLayout(layout)
@@ -615,7 +631,7 @@ class Main(QtWidgets.QWidget):
     def init_preview_image(self):
         self.widgets.preview = QtWidgets.QLabel()
         self.widgets.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.widgets.preview.setFixedSize(320, 213)
+        self.widgets.preview.setFixedSize(320, 190)
         self.widgets.preview.setAlignment(QtCore.Qt.AlignCenter)
         self.widgets.preview.setStyleSheet("border: 2px solid #dddddd;")  # background-color:#f0f0f0
 
@@ -762,6 +778,8 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.bottom.setText(str(b))
 
     def build_crop(self) -> Union[str, None]:
+        if not self.initialized:
+            return None
         try:
             top = int(self.widgets.crop.top.text())
             left = int(self.widgets.crop.left.text())
@@ -1016,12 +1034,12 @@ class Main(QtWidgets.QWidget):
             self.widgets.video_title.setText("")
 
         self.video_options.new_source()
-        if self.app.fastflix.config.opt("auto_crop"):
-            self.get_auto_crop()
         self.enable_all()
         # self.widgets.convert_button.setDisabled(False)
         # self.widgets.convert_button.setStyleSheet("background-color:green;")
         self.loading_video = False
+        if self.app.fastflix.config.opt("auto_crop"):
+            self.get_auto_crop()
 
     @property
     def video_track(self) -> int:

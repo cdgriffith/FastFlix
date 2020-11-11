@@ -21,3 +21,4 @@ video_delete_icon = str(Path(pkg_resources.resource_filename(__name__, "data/ico
 black_x_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/black-x.png")).resolve())
 up_arrow_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/up-arrow.png")).resolve())
 down_arrow_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/down-arrow.png")).resolve())
+settings_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/setting.png")).resolve())

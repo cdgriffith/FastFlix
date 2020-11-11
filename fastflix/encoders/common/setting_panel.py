@@ -163,11 +163,10 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.bitrate = QtWidgets.QComboBox()
         self.widgets.bitrate.setFixedWidth(250)
         self.widgets.bitrate.addItems(recommended_bitrates)
-        self.widgets.bitrate.setCurrentIndex(
-            self.determine_default(
-                "bitrate", self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate"), recommended_bitrates
-            )
-        )
+        config_opt = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
+        if config_opt:
+            self.mode = "Bitrate"
+        self.widgets.bitrate.setCurrentIndex(self.determine_default("bitrate", config_opt, recommended_bitrates))
         self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
         self.widgets.custom_bitrate.setFixedWidth(100)

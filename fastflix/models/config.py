@@ -42,9 +42,6 @@ class Profile:
     flip: int = 0
     copy_chapters: bool = True
     remove_metadata: bool = True
-    remove_hdr: bool = False
-    max_muxing_queue_size: str = "1024"
-    custom_ffmpeg: str = ""
     encoder: str = "HEVC (x265)"
     subtitle_language: str = "en"
     subtitle_automatic_burn_in: bool = True
