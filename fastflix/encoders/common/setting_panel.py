@@ -26,6 +26,15 @@ class SettingPanel(QtWidgets.QWidget):
     def determine_default(self, widget_name, opt, items: List):
         if widget_name == "pix_fmt":
             items = [x.split(":")[1].strip() for x in items]
+        elif widget_name in ("crf", "qp"):
+            if not opt:
+                return 6
+            items = [x.split("(")[0].strip() for x in items]
+            opt = str(opt)
+        elif widget_name == "bitrate":
+            if not opt:
+                return 5
+            items = [x.split("(")[0].strip() for x in items]
         if isinstance(opt, str):
             try:
                 return items.index(opt)
@@ -154,7 +163,11 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.bitrate = QtWidgets.QComboBox()
         self.widgets.bitrate.setFixedWidth(250)
         self.widgets.bitrate.addItems(recommended_bitrates)
-        self.widgets.bitrate.setCurrentIndex(6)
+        self.widgets.bitrate.setCurrentIndex(
+            self.determine_default(
+                "bitrate", self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate"), recommended_bitrates
+            )
+        )
         self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
         self.widgets.custom_bitrate.setFixedWidth(100)
@@ -180,7 +193,11 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets[qp_name].setToolTip(qp_help)
         self.widgets[qp_name].setFixedWidth(250)
         self.widgets[qp_name].addItems(recommended_qps)
-        self.widgets[qp_name].setCurrentIndex(5)
+        self.widgets[qp_name].setCurrentIndex(
+            self.determine_default(
+                qp_name, self.app.fastflix.config.encoder_opt(self.profile_name, qp_name), recommended_qps
+            )
+        )
         self.widgets[qp_name].currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30")
         self.widgets[f"custom_{qp_name}"].setFixedWidth(100)

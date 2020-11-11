@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-from typing import Tuple
+from typing import Tuple, Union, List
 from pathlib import Path
-from dataclasses import asdict
+from dataclasses import asdict, dataclass, field
+import uuid
 
 import reusables
 
 from fastflix.encoders.common.audio import build_audio
 from fastflix.encoders.common.subtitles import build_subtitle
-
+from fastflix.models.base import BaseDataClass
 from fastflix.models.fastflix import FastFlix
 
 null = "/dev/null"
@@ -27,17 +28,17 @@ class Loop:
         self.files = files
 
 
-class Command:
+@dataclass
+class Command(BaseDataClass):
+    command: str
+    variables: List
+    internal: bool
     item = "command"
-
-    def __init__(self, command, variables, internal, name="", ensure_paths=(), exe=None, shell=False):
-        self.name = name
-        self.command = command
-        self.variables = variables
-        self.internal = internal
-        self.ensure_paths = ensure_paths
-        self.exe = exe
-        self.shell = shell
+    name: str = ""
+    ensure_paths: List = ()
+    exe: str = None
+    shell: bool = False
+    uuid: str = field(default_factory=lambda: str(uuid.uuid4()))
 
 
 def generate_ffmpeg_start(
@@ -123,9 +124,9 @@ def generate_filters(
     if scale:
         filter_list.append(f"scale={scale}:flags={scale_filter}")
     elif scale_width:
-        filter_list.append(f"scale={scale_width}:-1:flags={scale_filter}")
+        filter_list.append(f"scale={scale_width}:-8:flags={scale_filter}")
     elif scale_height:
-        filter_list.append(f"scale=-1:{scale_height}:flags={scale_filter}")
+        filter_list.append(f"scale=-8:{scale_height}:flags={scale_filter}")
     if rotate is not None:
         if rotate < 3:
             filter_list.append(f"transpose={rotate}")

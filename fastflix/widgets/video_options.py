@@ -98,8 +98,8 @@ class VideoOptions(QtWidgets.QTabWidget):
     def update_profile(self):
         self.current_settings.update_profile()
 
-    def update_queue(self):
-        self.queue.new_source()
+    def update_queue(self, currently_encoding=False):
+        self.queue.new_source(currently_encoding)
 
     def show_queue(self):
         self.setCurrentWidget(self.queue)

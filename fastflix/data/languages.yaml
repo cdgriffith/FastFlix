@@ -4,6 +4,8 @@ Adaptive Quantization:
   en: Adaptive Quantization
 Add to Queue:
   en: Add to Queue
+All queue items have completed:
+  en: All queue items have completed
 Audio:
   en: Audio
 Audio Tracks:
@@ -75,12 +77,18 @@ Encoding command 0 of 1:
   en: Encoding command 0 of 1
 Encoding command 1 of 1:
   en: Encoding command 1 of 1
+Encoding command 1 of 2:
+  en: Encoding command 1 of 2
+Encoding command 2 of 2:
+  en: Encoding command 2 of 2
 Encoding complete:
   en: Encoding complete
 Enforce an encode profile:
   en: Enforce an encode profile
 Error Updating Thumbnail:
   en: Error Updating Thumbnail
+Error detected while converting:
+  en: Error detected while converting
 Error while moving files in:
   en: Error while moving files in
 Estimated file size based on bitrate:
@@ -152,6 +160,8 @@ No Source Selected:
   en: No Source Selected
 No Video File:
   en: No Video File
+No new items in queue to convert:
+  en: No new items in queue to convert
 Not a video file:
   en: Not a video file
 Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.:
@@ -227,6 +237,8 @@ Starting:
   fr: Aller
 Subtitles:
   en: Subtitles
+Success:
+  en: Success
 The latest windows builds from BtbN should have this feature.:
   en: The latest windows builds from BtbN should have this feature.
 The more complex the block, the more quantization is used.:
@@ -272,6 +284,8 @@ Width must be divisible by 2:
   en: Width must be divisible by 2
 Width must be divisible by 2 - Source width:
   en: Width must be divisible by 2 - Source width
+all conversions complete:
+  en: all conversions complete
 and add it to PATH:
   en: and add it to PATH
 and you want keyframes to be random access points.:
@@ -341,6 +355,8 @@ queue complete:
     keyframe.'
 right:
   en: right
+starting next command:
+  en: starting next command
 subtitle tracks found:
   en: subtitle tracks found
 to Blu-ray standards to burn to a physical disk:

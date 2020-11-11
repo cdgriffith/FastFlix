@@ -67,7 +67,6 @@ class Status(BaseDataClass):
 @dataclass
 class Video(BaseDataClass):
     source: Path
-    uuid: int = field(default_factory=uuid.uuid4)
     width: int = 0
     height: int = 0
     duration: Union[float, int] = 0
@@ -88,3 +87,4 @@ class Video(BaseDataClass):
 
     video_settings: VideoSettings = field(default_factory=VideoSettings)
     status: Status = field(default_factory=Status)
+    uuid: str = field(default_factory=lambda: str(uuid.uuid4()))

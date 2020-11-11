@@ -18,13 +18,15 @@ from fastflix.language import t
 
 
 class EncodeItem(QtWidgets.QTabWidget):
-    def __init__(self, parent, video: Video, index, first=False):
+    def __init__(self, parent, video: Video, index, first=False, currently_encoding=False):
         self.loading = True
         super().__init__(parent)
         self.parent = parent
         self.index = index
         self.first = first
         self.last = False
+        self.video = video
+        self.currently_encoding = currently_encoding
 
         self.widgets = Box(
             up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
@@ -34,6 +36,8 @@ class EncodeItem(QtWidgets.QTabWidget):
 
         for widget in self.widgets.values():
             widget.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
+            if self.currently_encoding:
+                widget.setDisabled(True)
 
         self.setFixedHeight(50)
 
@@ -46,17 +50,17 @@ class EncodeItem(QtWidgets.QTabWidget):
         title.setToolTip(settings.to_yaml())
 
         status = t("Ready to encode")
-        if video.status.complete:
-            status = t("Encoding complete")
         if video.status.error:
             status = t("Encoding errored")
-        if video.status.running:
+        elif video.status.complete:
+            status = t("Encoding complete")
+        elif video.status.running:
             status = t(
                 f"Encoding command {video.status.current_command} of {len(video.video_settings.conversion_commands)}"
             )
 
-        self.video = video
-        self.widgets.cancel_button.clicked.connect(lambda: self.parent.remove_item(self.video))
+        if not self.currently_encoding:
+            self.widgets.cancel_button.clicked.connect(lambda: self.parent.remove_item(self.video))
         self.widgets.cancel_button.setFixedWidth(25)
 
         grid = QtWidgets.QGridLayout()
@@ -140,11 +144,14 @@ class EncodingQueue(FlixList):
 
         super().__init__(app, parent, t("Queue"), "queue", top_row_layout=top_layout)
 
-    def new_source(self):
-        print("called")
+    def reorder(self, update=True):
+        super().reorder(update=update)
+        self.app.fastflix.queue = [track.video for track in self.tracks]
+
+    def new_source(self, currently_encoding=False):
         self.tracks = []
         for i, video in enumerate(self.app.fastflix.queue, start=1):
-            self.tracks.append(EncodeItem(self, video, i))
+            self.tracks.append(EncodeItem(self, video, i, currently_encoding=currently_encoding))
         super()._new_source(self.tracks)
         self.app.processEvents()
 

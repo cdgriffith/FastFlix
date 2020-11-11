@@ -75,16 +75,10 @@ class Profile:
 def get_preset_defaults():
     return {
         "Standard Profile": Profile(),
-        "film": Profile(auto_crop=True),
-        "test": Profile(
-            keep_aspect_ratio=False,
-            auto_crop=True,
-            rotate=180,
-            flip=2,
-            copy_chapters=False,
-            remove_metadata=True,
-            remove_hdr=True,
+        "UHD HDR10 Film": Profile(
+            auto_crop=True, x265=x265Settings(crf=18, hdr10=True, hdr10_opt=True, repeat_headers=True, preset="slow")
         ),
+        "1080p Film": Profile(auto_crop=True, encoder="AVC (x264)", x264=x264Settings(crf=17, preset="slow")),
     }
 
 

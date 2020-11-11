@@ -13,7 +13,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.config import Config
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
-from fastflix.resources import main_icon, dark_mode, video_add_icon
+from fastflix.resources import main_icon, dark_mode, video_add_icon, default_mode
 from fastflix.shared import file_date
 from fastflix.version import __version__
 from fastflix.widgets.container import Container
@@ -26,53 +26,7 @@ def create_app():
     main_app = FastFlixApp(sys.argv)
     # main_app.setStyleSheet(dark_mode)
     main_app.setStyle("fusion")
-    main_app.setStyleSheet(
-        """
-    QPushButton
-    {
-        border: 1px solid #bbb;
-        border-radius: 0;
-        padding: 3px;
-        font-size: 12px;
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-
-    QComboBox
-{
-    selection-background-color: #bbb;
-    border-style: solid;
-    border: 1px solid #bbb;
-    border-radius: 2px;
-    padding-top 5px;
-    padding-bottom 5px;
-    min-height: 20px;
-    background-color: #eee;
-}
-QComboBox:hover,QPushButton:hover
-{
-    border: 2px solid #aaa;
-    color: #000000;
-}
-
-QComboBox:drop-down
-{
-    background-color: #eee;
-    color: #000000;
-}
-
-QComboBox:on
-{
-    padding-top: 3px;
-    padding-left: 4px;
-    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #2d2d2d, stop: 0.1 #2b2b2b, stop: 0.5 #292929, stop: 0.9 #282828, stop: 1 #252525);
-    selection-background-color: #00c3ff;
-    color: #222222;
-
-}
-
-    """
-    )
+    main_app.setStyleSheet(default_mode)
     main_app.setApplicationDisplayName("FastFlix")
     my_font = QtGui.QFont("helvetica", 9, weight=57)
     main_app.setFont(my_font)

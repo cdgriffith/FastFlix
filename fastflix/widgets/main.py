@@ -50,6 +50,7 @@ class Main(QtWidgets.QWidget):
     thumbnail_complete = QtCore.Signal(int)
     cancelled = QtCore.Signal()
     close_event = QtCore.Signal()
+    status_update_signal = QtCore.Signal(str)
 
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
@@ -60,7 +61,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         self.scale_updating = False
 
-        self.notifier = Notifier(self, self.app.fastflix.status_queue)
+        self.notifier = Notifier(self, self.app, self.app.fastflix.status_queue)
         self.notifier.start()
 
         self.input_defaults = Box(scale=None, crop=None)
@@ -108,6 +109,7 @@ class Main(QtWidgets.QWidget):
         self.cancelled.connect(self.conversion_cancelled)
         self.close_event.connect(self.close)
         self.thumbnail_complete.connect(self.thumbnail_generated)
+        self.status_update_signal.connect(self.status_update)
         self.encoding_worker = None
         self.command_runner = None
         self.converting = False
@@ -139,9 +141,6 @@ class Main(QtWidgets.QWidget):
         source.setFixedHeight(40)
         source.setDefault(True)
         source.clicked.connect(lambda: self.open_file())
-        # source.setStyleSheet("padding: 0 10px; border: 1px solid #aaa")
-        # self.button.setStyleSheet("font-size:40px;background-color:#333333;")
-        # Add splitter
 
         queue = QtWidgets.QPushButton(QtGui.QIcon(video_playlist_icon), f"{t('Add to Queue')}  ")
         queue.setIconSize(QtCore.QSize(22, 20))
@@ -157,23 +156,25 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.widgets.convert_button.clicked.connect(lambda: self.encode_video())
 
-        top_bar.addWidget(source)
-        top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
-        top_bar.addWidget(queue)
-        top_bar.addWidget(self.widgets.convert_button)
-
         self.widgets.profile_box = QtWidgets.QComboBox()
         self.widgets.profile_box.setStyleSheet("text-align: center;")
         self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
+        self.widgets.profile_box.setCurrentText(self.app.fastflix.config.default_profile)
         self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
         self.widgets.profile_box.setMinimumWidth(150)
         self.widgets.profile_box.setFixedHeight(40)
 
+        top_bar.addWidget(source)
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
-        top_bar.addStretch(1)
+        top_bar.addLayout(self.init_encoder_drop_down())
+        top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
         top_bar.addWidget(self.widgets.profile_box)
+        top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
+        top_bar.addWidget(queue)
+        top_bar.addWidget(self.widgets.convert_button)
 
-        # top_bar.addStretch(1)
+        top_bar.addStretch(1)
+
         return top_bar
 
     def get_temp_work_path(self):
@@ -208,7 +209,7 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(spacer)
         # layout.addLayout(self.init_button_menu())
         # layout.addWidget(self.video_path_widget)
-        layout.addLayout(self.init_encoder_drop_down())
+        # layout.addLayout(self.init_encoder_drop_down())
 
         output_layout = QtWidgets.QHBoxLayout()
 
@@ -262,9 +263,9 @@ class Main(QtWidgets.QWidget):
 
         layout.addLayout(transform_layout)
 
-        self.widgets.profile_box = QtWidgets.QComboBox()
-        self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
-        self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
+        # self.widgets.profile_box = QtWidgets.QComboBox()
+        # self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
+        # self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
 
         # layout.addLayout(self.init_profile())
         layout.addStretch()
@@ -332,30 +333,27 @@ class Main(QtWidgets.QWidget):
         layout.setSpacing(10)
         return layout
 
-    def init_profile(self):
-        layout = QtWidgets.QHBoxLayout()
-
-        layout.addWidget(QtWidgets.QLabel(t("Profile")))
-        layout.addWidget(self.widgets.profile_box)
-        layout.addStretch()
-        return layout
-
     def set_profile(self):
         # TODO Have to update all the defaults
         # self.video_options.new_source()
-        previous_auto_crop = self.app.fastflix.config.opt("auto_crop")
+        # previous_auto_crop = self.app.fastflix.config.opt("auto_crop")
         self.app.fastflix.config.default_profile = self.widgets.profile_box.currentText()
         self.app.fastflix.config.save()
-        if not previous_auto_crop and self.app.fastflix.config.opt("auto_crop"):
+        self.widgets.convert_to.setCurrentText(f"   {self.app.fastflix.config.opt('encoder')}")
+        if self.app.fastflix.config.opt("auto_crop") and not self.build_crop():
             self.get_auto_crop()
         self.loading_video = True
         self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
         self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") // 90)
         self.widgets.flip.setCurrentIndex(self.app.fastflix.config.opt("flip"))
-        self.video_options.update_profile()
+        # self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
+        # self.video_options.update_profile()
         # Hack to prevent a lot of thumbnail generation
         self.loading_video = False
         self.page_update()
+
+    def save_profile(self):
+        self.video_options.get_settings()
 
     def init_flip(self):
         self.widgets.flip = QtWidgets.QComboBox()
@@ -418,9 +416,9 @@ class Main(QtWidgets.QWidget):
 
         encoder_label = QtWidgets.QLabel(f"{t('Encoder')}: ")
         encoder_label.setFixedWidth(65)
-        layout.addWidget(encoder_label, stretch=0)
+        # layout.addWidget(encoder_label, stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=0)
-        layout.addStretch()
+        # layout.addStretch()
         layout.setSpacing(10)
 
         return layout
@@ -507,7 +505,6 @@ class Main(QtWidgets.QWidget):
         return scale_area
 
     def init_crop(self):
-        # TODO don't let people put in letters to boxes
         crop_box = QtWidgets.QGroupBox()
         crop_box.setStyleSheet("QGroupBox{padding-top:17px; margin-top:-18px}")
         crop_layout = QtWidgets.QVBoxLayout()
@@ -770,7 +767,7 @@ class Main(QtWidgets.QWidget):
             left = int(self.widgets.crop.left.text())
             right = int(self.widgets.crop.right.text())
             bottom = int(self.widgets.crop.bottom.text())
-        except ValueError:
+        except (ValueError, AttributeError):
             logger.error("Invalid crop")
             return None
         width = self.app.fastflix.current_video.width - right - left
@@ -802,7 +799,7 @@ class Main(QtWidgets.QWidget):
             except (ValueError, AssertionError):
                 self.scale_updating = False
                 if self.widgets.scale.height.text() == "Auto":
-                    self.widgets.scale.height.setText("-1")
+                    self.widgets.scale.height.setText("-8")
                 return logger.warning("Invalid width")
 
             if self.app.fastflix.current_video.height == 0 or self.app.fastflix.current_video.width == 0:
@@ -914,14 +911,14 @@ class Main(QtWidgets.QWidget):
 
         scale_height = self.widgets.scale.height.text()
         try:
-            scale_height = -1 if scale_height == "Auto" else int(scale_height)
-            assert scale_height == -1 or scale_height > 0
+            scale_height = -8 if scale_height == "Auto" else int(scale_height)
+            assert scale_height == -8 or scale_height > 0
         except (ValueError, AssertionError):
             self.scale_updating = False
             return logger.warning(t("Invalid height"))
             # return self.scale_warning_message.setText("Invalid height")
 
-        if scale_height != -1 and scale_height % 2:
+        if scale_height != -8 and scale_height % 2:
             # self.widgets.scale.height.setStyleSheet("background-color: red;")
             self.widgets.scale.height.setToolTip(
                 f"{t('Height must be divisible by 2 - Source height')}: {self.app.fastflix.current_video.height}"
@@ -1075,7 +1072,7 @@ class Main(QtWidgets.QWidget):
             remove_hdr = True
 
         filters = helpers.generate_filters(
-            custom_filters="scale='min(320\\,iw):-1'",
+            custom_filters="scale='min(320\\,iw):-8'",
             remove_hdr=remove_hdr,
             **asdict(self.app.fastflix.current_video.video_settings),
         )
@@ -1115,7 +1112,7 @@ class Main(QtWidgets.QWidget):
         width = self.widgets.scale.width.text()
         height = self.widgets.scale.height.text()
         if height == "Auto":
-            height = -1
+            height = -8
         return f"{width}:{height}"
 
     def get_all_settings(self):
@@ -1131,8 +1128,8 @@ class Main(QtWidgets.QWidget):
 
         scale = self.build_scale()
         if scale in (
-            f"{stream_info.width}:-1",
-            f"-1:{stream_info.height}",
+            f"{stream_info.width}:-8",
+            f"-8:{stream_info.height}",
             f"{stream_info.width}:{stream_info.height}",
         ):
             scale = None
@@ -1226,9 +1223,6 @@ class Main(QtWidgets.QWidget):
         if not self.input_video:
             error_message(t("Have to select a video first"))
             return False
-        if self.encoding_worker and self.encoding_worker.is_alive():
-            error_message(t("Still encoding something else"))
-            return False
         if not self.output_video:
             error_message(t("Please specify output video"))
             return False
@@ -1242,6 +1236,7 @@ class Main(QtWidgets.QWidget):
                 f"{t('Output video file does not have expected extension')} ({self.current_encoder.video_extension}), "
                 f"{t('which can case issues')}."
             )
+            # TODO translate
             sm.addButton("Continue anyways", QtWidgets.QMessageBox.DestructiveRole)
             sm.addButton(f"Append ({self.current_encoder.video_extension}) for me", QtWidgets.QMessageBox.YesRole)
             sm.setStandardButtons(QtWidgets.QMessageBox.Close)
@@ -1258,7 +1253,7 @@ class Main(QtWidgets.QWidget):
             elif not sm.clickedButton().text().startswith("Continue"):
                 return False
 
-        Path(self.temp_dir_name).mkdir(parents=True, exist_ok=True)
+        # Path(self.temp_dir_name).mkdir(parents=True, exist_ok=True)
 
         out_file_path = Path(self.output_video)
         if out_file_path.exists() and out_file_path.stat().st_size > 0:
@@ -1294,13 +1289,25 @@ class Main(QtWidgets.QWidget):
             if not self.add_to_queue():
                 return
 
-        self.converting = True
-        self.set_convert_button(False)
-
-        # TODO flatten the queue to
         # Command looks like (video_uuid, command_uuid, command, work_dir)
         # Request looks like (queue command, log_dir, (commands))
-        self.app.fastflix.worker_queue.put()
+        requests = ["add_items", str(self.app.fastflix.log_path)]
+        commands = []
+        for video in self.app.fastflix.queue:
+            if video.status.complete or video.status.error:
+                continue
+            for command in video.video_settings.conversion_commands:
+                commands.append((video.uuid, command.uuid, command.command, str(video.work_path.name)))
+
+        if not commands:
+            error_message(t("No new items in queue to convert"))
+            return
+
+        requests.append(tuple(commands))
+
+        self.converting = True
+        self.set_convert_button(False)
+        self.app.fastflix.worker_queue.put(tuple(requests))
         self.disable_all()
         self.video_options.show_status()
 
@@ -1336,18 +1343,23 @@ class Main(QtWidgets.QWidget):
         self.paused = False
         self.enable_all()
         self.set_convert_button()
-        output = Path(self.output_video)
+        # output = Path(self.output_video)
 
-        if return_code or not output.exists() or output.stat().st_size <= 500:
-            error_message("Could not encode video due to an error, please view the logs for more details!")
+        if return_code:
+            error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
         else:
-            sm = QtWidgets.QMessageBox()
-            sm.setText("Encoded successfully, view now?")
-            sm.addButton("View", QtWidgets.QMessageBox.YesRole)
-            sm.setStandardButtons(QtWidgets.QMessageBox.Close)
-            sm.exec_()
-            if sm.clickedButton().text() == "View":
-                QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(self.output_video))
+            error_message(t("All queue items have completed"), title=t("Success"))
+
+        # if return_code or not output.exists() or output.stat().st_size <= 500:
+        #     error_message("Could not encode video due to an error, please view the logs for more details!")
+        # else:
+        #     sm = QtWidgets.QMessageBox()
+        #     sm.setText("Encoded successfully, view now?")
+        #     sm.addButton("View", QtWidgets.QMessageBox.YesRole)
+        #     sm.setStandardButtons(QtWidgets.QMessageBox.Close)
+        #     sm.exec_()
+        #     if sm.clickedButton().text() == "View":
+        #         QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(self.output_video))
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_cancelled(self):
@@ -1357,11 +1369,12 @@ class Main(QtWidgets.QWidget):
         self.set_convert_button()
 
         sm = QtWidgets.QMessageBox()
-        sm.setText("Conversion cancelled, delete incomplete file?")
-        sm.addButton("Delete", QtWidgets.QMessageBox.YesRole)
-        sm.addButton("Keep", QtWidgets.QMessageBox.NoRole)
+        sm.setWindowTitle(t("Cancelled"))
+        sm.setText(t("Conversion cancelled, delete incomplete file?"))
+        sm.addButton(t("Delete"), QtWidgets.QMessageBox.YesRole)
+        sm.addButton(t("Keep"), QtWidgets.QMessageBox.NoRole)
         sm.exec_()
-        if sm.clickedButton().text() == "Delete":
+        if sm.clickedButton().text() == t("Delete"):
             try:
                 os.remove(self.output_video)
             except OSError:
@@ -1390,13 +1403,52 @@ class Main(QtWidgets.QWidget):
         event.accept() if event.mimeData().hasUrls else event.ignore()
 
     def dragMoveEvent(self, event):
-        event.accept() if event.mimeData().hasUrls else event.ignore()
+        event.accept() if event.mimeData().hasUrls else event.ignoreAF()
+
+    def status_update(self, status):
+        command, video_uuid, command_uuid = status.split(":")
+        try:
+            video = self.find_video(video_uuid)
+            command_index = self.find_command(video, command_uuid)
+        except FlixError as err:
+            logger.error(str(err))
+            return
+
+        if command == "converted":
+            if command_index == len(video.video_settings.conversion_commands):
+                video.status.complete = True
+                video.status.success = True
+                video.status.running = False
+                self.video_options.update_queue()
+
+        elif command == "running":
+            video.status.current_command = self.find_command(video, command_uuid)
+            video.status.running = True
+            self.video_options.update_queue(currently_encoding=True)
+
+        elif command == "error":
+            video.status.error = True
+            video.status.running = False
+            self.video_options.update_queue()
+
+    def find_video(self, uuid) -> Video:
+        for video in self.app.fastflix.queue:
+            if uuid == video.uuid:
+                return video
+        raise FlixError(f'{t("No video found for")} {uuid}')
+
+    def find_command(self, video: Video, uuid) -> int:
+        for i, command in enumerate(video.video_settings.conversion_commands, start=1):
+            if uuid == command.uuid:
+                return i
+        raise FlixError(f'{t("No command found for")} {uuid}')
 
 
 class Notifier(QtCore.QThread):
-    def __init__(self, parent, status_queue):
+    def __init__(self, parent, app, status_queue):
         super().__init__(parent)
-        self.main = parent
+        self.app = app
+        self.main: Main = parent
         self.status_queue = status_queue
 
     def __del__(self):
@@ -1404,14 +1456,17 @@ class Notifier(QtCore.QThread):
 
     def run(self):
         while True:
-            # TODO update to accept and handle multiple options
+            # Message looks like (command, video_uuid, command_uuid)
             status = self.status_queue.get()
             if status[0] == "complete":
                 self.main.completed.emit(0)
-            if status[0] == "error":
+            elif status[0] == "error":
+                self.main.status_update_signal.emit(":".join(status))
                 self.main.completed.emit(1)
             elif status[0] == "cancelled":
                 self.main.cancelled.emit()
             elif status[0] == "exit":
                 self.main.close_event.emit()
                 return
+            else:
+                self.main.status_update_signal.emit(":".join(status))

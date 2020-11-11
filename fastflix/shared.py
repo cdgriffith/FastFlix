@@ -189,4 +189,4 @@ class FastFlixInternalException(FastFlixError):
 
 
 def link(url, text):
-    return f'<a href="{url}" style="color: white" >{text}</a>'
+    return f'<a href="{url}" style="color: black" >{text}</a>'

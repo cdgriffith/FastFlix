@@ -40,7 +40,8 @@ class Container(QtWidgets.QMainWindow):
         self.main = Main(self, app)
 
         self.setCentralWidget(self.main)
-        self.setMinimumSize(QtCore.QSize(1100, 650))
+        # self.setMinimumSize(QtCore.QSize(1150, 650))
+        self.setFixedSize(QtCore.QSize(1150, 650))
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
 
@@ -53,7 +54,7 @@ class Container(QtWidgets.QMainWindow):
             sm.addButton(t("Keep FastFlix Open"), QtWidgets.QMessageBox.AcceptRole)
             sm.exec_()
             if sm.clickedButton().text() == "Cancel Conversion":
-                self.main.worker_queue.put(["cancel"])
+                self.app.fastflix.worker_queue.put(["cancel"])
                 self.main.close()
             elif sm.clickedButton().text() == "Close GUI Only":
                 self.main.close(no_cleanup=True)
