@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
 from iso639 import Lang
+from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
+from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.resources import down_arrow_icon, up_arrow_icon
 from fastflix.shared import FastFlixInternalException, error_message, main_width
 from fastflix.widgets.panels.abstract_list import FlixList
-from fastflix.models.encode import SubtitleTrack
-from fastflix.resources import up_arrow_icon, down_arrow_icon
 
 dispositions = [
     "none",
@@ -154,7 +154,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
     @property
     def disposition(self):
-        return "" if self.widgets.disposition.currentIndex() == 0 else self.widgets.disposition.currentText()
+        return None if self.widgets.disposition.currentIndex() == 0 else self.widgets.disposition.currentText()
 
     @property
     def enabled(self):

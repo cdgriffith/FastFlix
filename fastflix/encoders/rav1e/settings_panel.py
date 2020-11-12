@@ -6,9 +6,11 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
-from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.encode import rav1eSettings
 from fastflix.encoders.rav1e.main import name
+from fastflix.language import t
+from fastflix.models.encode import rav1eSettings
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 
@@ -72,9 +74,7 @@ class RAV1E(SettingPanel):
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.setRowStretch(9, 1)
-        guide_label = QtWidgets.QLabel(
-            f"<a href='https://github.com/xiph/rav1e/blob/master/README.md'>rav1e github</a>"
-        )
+        guide_label = QtWidgets.QLabel(link("https://github.com/xiph/rav1e/blob/master/README.md", t("rav1e github")))
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, -1, 1)

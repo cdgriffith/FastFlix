@@ -1,26 +1,25 @@
 # -*- coding: utf-8 -*-
+import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Union, List
 from tempfile import TemporaryDirectory
-import uuid
+from typing import Any, List, Union
 
 from appdirs import user_data_dir
 from box import Box
 
 from fastflix.models.base import BaseDataClass
-
 from fastflix.models.encode import (
-    AudioTrack,
-    SubtitleTrack,
-    x265Settings,
-    x264Settings,
-    rav1eSettings,
-    SVTAV1Settings,
     AOMAV1Settings,
-    VP9Settings,
+    AudioTrack,
     GIFSettings,
+    SubtitleTrack,
+    SVTAV1Settings,
+    VP9Settings,
     WebPSettings,
+    rav1eSettings,
+    x264Settings,
+    x265Settings,
 )
 
 
@@ -61,6 +60,7 @@ class Status(BaseDataClass):
     error: bool = False
     complete: bool = False
     running: bool = False
+    cancelled: bool = False
     current_command: int = 0
 
 

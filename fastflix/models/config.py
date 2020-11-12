@@ -7,17 +7,17 @@ from typing import Dict, List, Union
 from appdirs import user_data_dir
 from box import Box, BoxError
 
-from fastflix.version import __version__
 from fastflix.models.encode import (
-    x264Settings,
-    x265Settings,
-    rav1eSettings,
-    SVTAV1Settings,
-    VP9Settings,
     AOMAV1Settings,
     GIFSettings,
+    SVTAV1Settings,
+    VP9Settings,
     WebPSettings,
+    rav1eSettings,
+    x264Settings,
+    x265Settings,
 )
+from fastflix.version import __version__
 
 fastflix_folder = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
 ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))

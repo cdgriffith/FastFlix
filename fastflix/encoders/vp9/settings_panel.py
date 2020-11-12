@@ -5,8 +5,10 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
-from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.language import t
 from fastflix.models.encode import VP9Settings
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 
@@ -72,10 +74,11 @@ class VP9(SettingPanel):
 
         grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
-        guide_label = QtWidgets.QLabel(
-            "<a href='https://trac.ffmpeg.org/wiki/Encode/VP9'>FFMPEG VP9 Encoding Guide</a> "
-            "| <a href='https://developers.google.com/media/vp9/hdr-encoding/'>Google's VP9 HDR Encoding Guide</a>"
-        )
+
+        link_1 = link("https://trac.ffmpeg.org/wiki/Encode/VP9", t("FFMPEG VP9 Encoding Guide"))
+        link_2 = link("https://developers.google.com/media/vp9/hdr-encoding/", t("Google's VP9 HDR Encoding Guide"))
+
+        guide_label = QtWidgets.QLabel(f"{link_1} | {link_2}")
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 10, 0, -1, 1)

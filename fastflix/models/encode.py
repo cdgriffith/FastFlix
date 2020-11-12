@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Union, List
 from tempfile import TemporaryDirectory
+from typing import Any, List, Union
 
 from appdirs import user_data_dir
 from box import Box

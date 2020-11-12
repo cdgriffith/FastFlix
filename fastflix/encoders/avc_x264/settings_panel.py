@@ -5,8 +5,10 @@ from box import Box
 from qtpy import QtCore, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
-from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.language import t
 from fastflix.models.encode import x264Settings
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 
@@ -78,7 +80,7 @@ class AVC(SettingPanel):
         grid.setRowStretch(9, 1)
 
         guide_label = QtWidgets.QLabel(
-            "<a href='https://trac.ffmpeg.org/wiki/Encode/H.264'>FFMPEG AVC / H.264 Encoding Guide</a>"
+            link("https://trac.ffmpeg.org/wiki/Encode/H.264", t("FFMPEG AVC / H.264 Encoding Guide"))
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
@@ -93,7 +95,7 @@ class AVC(SettingPanel):
             widget_name="preset",
             options=presets,
             tooltip=(
-                "preset: The slower the preset, the better the compression and quality\n"
+                "preset: The slower the preset, the better the compression and quality"
                 "Slow is highest personal recommenced, as past that is much smaller gains"
             ),
             connect="default",

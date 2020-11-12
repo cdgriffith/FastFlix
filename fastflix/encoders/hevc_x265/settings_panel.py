@@ -6,11 +6,11 @@ from pathlib import Path
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.shared import link
 from fastflix.encoders.common.setting_panel import SettingPanel
-from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.encode import x265Settings
 from fastflix.language import t
+from fastflix.models.encode import x265Settings
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 
@@ -51,10 +51,6 @@ recommended_crfs = [
 ]
 
 pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
-
-
-def ml(*items):
-    return "\n".join(items)
 
 
 class HEVC(SettingPanel):
@@ -127,12 +123,10 @@ class HEVC(SettingPanel):
     def init_dhdr10_warning_and_opt(self):
         label = QtWidgets.QLabel()
         label.setToolTip(
-            ml(
-                t("WARNING: This only works on a few FFmpeg builds, and it will not raise error on failure!"),
-                t("Specifically, FFmpeg needs the x265 ENABLE_HDR10_PLUS option enabled on compile."),
-                t("The latest windows builds from BtbN should have this feature."),
-                t("I do not know of any public Linux/Mac ones that do."),
-            )
+            "WARNING: This only works on a few FFmpeg builds, and it will not raise error on failure!\n"
+            "Specifically, FFmpeg needs the x265 ENABLE_HDR10_PLUS option enabled on compile.\n"
+            "The latest windows builds from BtbN should have this feature.\n"
+            "I do not know of any public Linux/Mac ones that do."
         )
         icon = self.style().standardIcon(QtWidgets.QStyle.SP_MessageBoxWarning)
         label.setPixmap(icon.pixmap(16))
@@ -157,12 +151,10 @@ class HEVC(SettingPanel):
             label="Force HDR10 signaling",
             widget_name="hdr10",
             tooltip=(
-                ml(
-                    t("hdr10: Force signaling of HDR10 parameters in SEI packets."),
-                    t("Enabled automatically when --master-display or --max-cll is specified."),
-                    t("Useful when there is a desire to signal 0 values for max-cll and max-fall."),
-                    t("Default disabled."),
-                )
+                "hdr10: Force signaling of HDR10 parameters in SEI packets.\n"
+                "Enabled automatically when --master-display or --max-cll is specified.\n"
+                "Useful when there is a desire to signal 0 values for max-cll and max-fall.\n"
+                "Default disabled."
             ),
             opt="hdr10",
         )
@@ -172,10 +164,8 @@ class HEVC(SettingPanel):
             label="HDR10 Optimizations",
             widget_name="hdr10_opt",
             tooltip=(
-                ml(
-                    t("hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content."),
-                    t("It is recommended that AQ-mode be enabled along with this feature"),
-                )
+                "hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.\n"
+                "It is recommended that AQ-mode be enabled along with this feature"
             ),
             opt="hdr10_opt",
         )
@@ -185,11 +175,9 @@ class HEVC(SettingPanel):
             label="HDR10+ Optimizations",
             widget_name="dhdr10_opt",
             tooltip=(
-                ml(
-                    t("dhdr10-opt: Reduces SEI overhead"),
-                    t("Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed."),
-                    t("It saves a few bits and can help performance in the client's tonemapper."),
-                )
+                "dhdr10-opt: Reduces SEI overhead\n"
+                "Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.\n"
+                "It saves a few bits and can help performance in the client's tonemapper."
             ),
             opt="dhdr10_opt",
         )
@@ -199,11 +187,9 @@ class HEVC(SettingPanel):
             label="Repeat Headers",
             widget_name="repeat_headers",
             tooltip=(
-                ml(
-                    t("repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe."),
-                    t("This is intended for use when you do not have a container to keep the stream headers for you"),
-                    t("and you want keyframes to be random access points."),
-                )
+                "repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.\n"
+                "This is intended for use when you do not have a container to keep the stream headers for you\n"
+                "and you want keyframes to be random access points."
             ),
             opt="repeat_headers",
         )
@@ -220,12 +206,10 @@ class HEVC(SettingPanel):
                 "enabled + av + edge",
             ],
             tooltip=(
-                ml(
-                    t("aq-mode: Adaptive Quantization operating mode."),
-                    t("Raise or lower per-block quantization based on complexity analysis of the source image."),
-                    t("The more complex the block, the more quantization is used."),
-                    t("Default: AQ enabled with auto-variance"),
-                )
+                "aq-mode: Adaptive Quantization operating mode.\n"
+                "Raise or lower per-block quantization based on complexity analysis of the source image.\n"
+                "The more complex the block, the more quantization is used.\n"
+                "Default: AQ enabled with auto-variance"
             ),
             opt="aq_mode",
         )
@@ -236,11 +220,9 @@ class HEVC(SettingPanel):
             widget_name="intra_encoding",
             options=["No", "Yes"],
             tooltip=(
-                ml(
-                    t("keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)"),
-                    t("This option is not recommenced unless you need to conform "),
-                    t("to Blu-ray standards to burn to a physical disk"),
-                )
+                "keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
+                "This option is not recommenced unless you need to conform \n"
+                "to Blu-ray standards to burn to a physical disk"
             ),
             opt="intra_encoding",
         )
@@ -251,10 +233,8 @@ class HEVC(SettingPanel):
             widget_name="preset",
             options=presets,
             tooltip=(
-                ml(
-                    t("preset: The slower the preset, the better the compression and quality"),
-                    t("Slow is highest personal recommenced, as past that is much smaller gains"),
-                )
+                "preset: The slower the preset, the better the compression and quality\n"
+                "Slow is highest personal recommenced, as past that is much smaller gains"
             ),
             connect="default",
             opt="preset",
@@ -268,7 +248,7 @@ class HEVC(SettingPanel):
             label="Tune",
             widget_name="tune",
             options=["default", "psnr", "ssim", "grain", "zerolatency", "fastdecode", "animation"],
-            tooltip=t("tune: Tune the settings for a particular type of source or situation"),
+            tooltip="tune: Tune the settings for a particular type of source or situation",
             connect="default",
             opt="tune",
         )
@@ -276,7 +256,7 @@ class HEVC(SettingPanel):
     def init_profile(self):
         return self._add_combo_box(
             label="Profile",
-            tooltip=t("profile: Enforce an encode profile"),
+            tooltip="profile: Enforce an encode profile",
             widget_name="profile",
             options=["default", "main", "main10", "mainstillpicture"],
             opt="profile",
@@ -285,7 +265,7 @@ class HEVC(SettingPanel):
     def init_pix_fmt(self):
         return self._add_combo_box(
             label="Bit Depth",
-            tooltip=t("Pixel Format (requires at least 10-bit for HDR)"),
+            tooltip="Pixel Format (requires at least 10-bit for HDR)",
             widget_name="pix_fmt",
             options=pix_fmts,
             connect=lambda: self.setting_change(pix_change=True),
@@ -294,7 +274,7 @@ class HEVC(SettingPanel):
     def init_max_mux(self):
         return self._add_combo_box(
             label="Max Muxing Queue Size",
-            tooltip=t('max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error'),
+            tooltip='max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error',
             widget_name="max_mux",
             options=["default", "1024", "2048", "4096", "8192"],
             opt="max_muxing_queue_size",
@@ -311,10 +291,10 @@ class HEVC(SettingPanel):
     def init_x265_params(self):
         layout = QtWidgets.QHBoxLayout()
         self.labels.x265_params = QtWidgets.QLabel("Additional x265 params")
-        tool_tip = ml(
-            t("Extra x265 params in opt=1:opt2=0 format,"),
-            t("cannot modify generated settings"),
-            t("examples: level-idc=4.1:rc-lookahead=10 "),
+        tool_tip = (
+            "Extra x265 params in opt=1:opt2=0 format,\n"
+            "cannot modify generated settings\n"
+            "examples: level-idc=4.1:rc-lookahead=10 \n"
         )
         self.labels.x265_params.setToolTip(tool_tip)
         layout.addWidget(self.labels.x265_params)

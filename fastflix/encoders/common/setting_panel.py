@@ -5,8 +5,8 @@ from typing import List
 from box import Box
 from qtpy import QtGui, QtWidgets
 
-from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.language import t
+from fastflix.models.fastflix_app import FastFlixApp
 
 logger = logging.getLogger("fastflix")
 
@@ -22,6 +22,10 @@ class SettingPanel(QtWidgets.QWidget):
         self.labels = Box()
         self.opts = Box()
         self.only_int = QtGui.QIntValidator()
+
+    @staticmethod
+    def ml(*items):
+        return "\n".join(items)
 
     def determine_default(self, widget_name, opt, items: List):
         if widget_name == "pix_fmt":
@@ -62,7 +66,7 @@ class SettingPanel(QtWidgets.QWidget):
             self.opts[widget_name] = opt
         self.widgets[widget_name].setCurrentIndex(default)
         self.widgets[widget_name].setDisabled(not enabled)
-        self.widgets[widget_name].setToolTip(tooltip)
+        self.widgets[widget_name].setToolTip("\n".join([t(x) for x in tooltip.split("\n")]))
         if connect:
             if connect == "default":
                 self.widgets[widget_name].currentIndexChanged.connect(lambda: self.main.page_update())
@@ -85,7 +89,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.opts[widget_name] = opt
         self.widgets[widget_name].setChecked(self.app.fastflix.config.encoder_opt(self.profile_name, opt))
         self.widgets[widget_name].setDisabled(not enabled)
-        self.widgets[widget_name].setToolTip(tooltip)
+        self.widgets[widget_name].setToolTip("\n".join([t(x) for x in tooltip.split("\n")]))
         if connect:
             if connect == "default":
                 self.widgets[widget_name].toggled.connect(lambda: self.main.page_update())

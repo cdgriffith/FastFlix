@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 import logging
-from queue import Empty
 from pathlib import Path
+from queue import Empty
 
 import reusables
 from appdirs import user_data_dir
 
-from fastflix.shared import allow_sleep_mode, file_date, prevent_sleep_mode
 from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
-
+from fastflix.shared import allow_sleep_mode, file_date, prevent_sleep_mode
 
 logger = logging.getLogger("fastflix-core")
 
@@ -20,18 +19,19 @@ logger = logging.getLogger("fastflix-core")
 #             return item
 
 
-def queue_worker(worker_queue, status_queue, log_queue):
+def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
     runner = BackgroundRunner(log_queue=log_queue)
 
     # Command looks like (video_uuid, command_uuid, command, work_dir)
 
     commands_to_run = []
+    gui_died = False
     currently_encoding = False
     log_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "logs"
 
     def start_command():
         nonlocal currently_encoding
-        log_queue.put("CLEAR_WINDOW")
+        log_queue.put(f"CLEAR_WINDOW:{commands_to_run[0][0]}:{commands_to_run[0][1]}")
         reusables.remove_file_handlers(logger)
         new_file_handler = reusables.get_file_handler(
             log_path / f"flix_conversion_{file_date()}.log",
@@ -63,6 +63,8 @@ def queue_worker(worker_queue, status_queue, log_queue):
                 currently_encoding = False
                 status_queue.put(("error", commands_to_run[0][0], commands_to_run[0][1]))
                 allow_sleep_mode()
+                if gui_died:
+                    return
                 continue
 
             # Successfully encoded, do next one if it exists
@@ -80,7 +82,9 @@ def queue_worker(worker_queue, status_queue, log_queue):
                 currently_encoding = False
                 status_queue.put(("complete",))
                 allow_sleep_mode()
-                continue
+
+            if gui_died:
+                return
 
         try:
             request = worker_queue.get(block=True, timeout=0.05)
@@ -105,3 +109,11 @@ def queue_worker(worker_queue, status_queue, log_queue):
                 status_queue.put(("cancelled", commands_to_run[0][0], commands_to_run[0][1]))
                 commands_to_run = []
                 currently_encoding = False
+
+        if not gui_died and not gui_proc.is_alive():
+            gui_proc.join()
+            gui_died = True
+            if runner.is_alive() or currently_encoding:
+                logger.info(t("The GUI might have died, but I'm going to keep converting!"))
+            else:
+                break

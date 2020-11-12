@@ -1,5 +1,7 @@
 '  Source':
   en: '  Source'
+' WARNING: This will take much longer and result in a larger file':
+  en: ' WARNING: This will take much longer and result in a larger file'
 Adaptive Quantization:
   en: Adaptive Quantization
 Add to Queue:
@@ -10,6 +12,8 @@ Audio:
   en: Audio
 Audio Tracks:
   en: Audio Tracks
+Author:
+  en: Author
 Autocrop tried to crop too much:
   en: Autocrop tried to crop too much
 Automatically download FFmpeg?:
@@ -22,6 +26,8 @@ Break the video into columns to encode faster (lesser quality):
   en: Break the video into columns to encode faster (lesser quality)
 Break the video into rows to encode faster (lesser quality):
   en: Break the video into rows to encode faster (lesser quality)
+Build:
+  en: Build
 Burn In:
   en: Burn In
 CPU Used:
@@ -30,6 +36,10 @@ Cancel:
   en: Cancel
 Cancel Conversion:
   en: Cancel Conversion
+Cancelled:
+  en: Cancelled
+Cancelled - Ready to try again:
+  en: Cancelled - Ready to try again
 Close GUI Only:
   en: Close GUI Only
 CodeCalamity UHD HDR Encoding Guide:
@@ -38,8 +48,14 @@ Command has completed:
   en: Command has completed
 Conversion:
   en: Conversion
+Conversion cancelled, delete incomplete file:
+  en: Conversion cancelled, delete incomplete file
+Conversion cancelled, delete incomplete file?:
+  en: Conversion cancelled, delete incomplete file?
 Convert:
   en: Convert
+Convert BT2020 colorspace into bt709:
+  en: Convert BT2020 colorspace into bt709
 Could not connect to github to check for newer versions.:
   en: Could not connect to github to check for newer versions.
 Could not extract FFmpeg files from:
@@ -54,13 +70,21 @@ Default disabled.:
   en: Default disabled.
 'Default: AQ enabled with auto-variance':
   en: 'Default: AQ enabled with auto-variance'
+Delete:
+  en: Delete
 Determine HDR details:
   en: Determine HDR details
 Dither:
   en: Dither
+? Dither is an intentionally applied form of noise used to randomize quantization
+  error, <br> preventing large-scale patterns such as color banding in images.
+: en: Dither is an intentionally applied form of noise used to randomize quantization
+    error, <br> preventing large-scale patterns such as color banding in images.
 Downloading FFmpeg:
   en: Downloading FFmpeg
   es: Descargando FFmpeg
+Dual License:
+  en: Dual License
 Enable row based multi-threading:
   en: Enable row based multi-threading
 Enabled:
@@ -73,6 +97,8 @@ Encoding Queue:
   en: Encoding Queue
 Encoding Status:
   en: Encoding Status
+Encoding cancelled:
+  en: Encoding cancelled
 Encoding command 0 of 1:
   en: Encoding command 0 of 1
 Encoding command 1 of 1:
@@ -101,8 +127,14 @@ Extra x265 params in opt=1:opt2=0 format,:
   en: Extra x265 params in opt=1:opt2=0 format,
 Extract covers:
   en: Extract covers
+FFMPEG AV1 Encoding Guide:
+  en: FFMPEG AV1 Encoding Guide
+FFMPEG AVC / H.264 Encoding Guide:
+  en: FFMPEG AVC / H.264 Encoding Guide
 FFMPEG HEVC / H.265 Encoding Guide:
   en: FFMPEG HEVC / H.265 Encoding Guide
+FFMPEG VP9 Encoding Guide:
+  en: FFMPEG VP9 Encoding Guide
 FFmpeg not found!:
   en: FFmpeg not found!
 FFmpeg was not properly downloaded as the file size is too small:
@@ -120,6 +152,8 @@ Gather FFmpeg version:
   en: Gather FFmpeg version
   es: "Re\xFAna la versi\xF3n de FFmpeg"
   fr: Rassemblez la version FFmpeg
+Google's VP9 HDR Encoding Guide:
+  en: Google's VP9 HDR Encoding Guide
 HDR10 Optimizations:
   en: HDR10 Optimizations
 HDR10+ Metadata:
@@ -142,8 +176,12 @@ It is recommended that AQ-mode be enabled along with this feature:
   en: It is recommended that AQ-mode be enabled along with this feature
 It saves a few bits and can help performance in the client's tonemapper.:
   en: It saves a few bits and can help performance in the client's tonemapper.
+Keep:
+  en: Keep
 Keep FastFlix Open:
   en: Keep FastFlix Open
+LICENSES:
+  en: LICENSES
 Language:
   en: Language
 Log2 of number of tile columns to encode faster (lesser quality):
@@ -160,6 +198,8 @@ No Source Selected:
   en: No Source Selected
 No Video File:
   en: No Video File
+No command found for:
+  en: No command found for
 No new items in queue to convert:
   en: No new items in queue to convert
 Not a video file:
@@ -182,6 +222,8 @@ Preset:
   en: Preset
 Profile:
   en: Profile
+Python:
+  en: Python
 Quality:
   en: Quality
 Quality and compression efficiency vs speed trade-off:
@@ -207,12 +249,16 @@ Remove HDR:
   en: Remove HDR
 Repeat Headers:
   en: Repeat Headers
+Reusables:
+  en: Reusables
 Row Multi-Threading:
   en: Row Multi-Threading
 Row multithreading:
   en: Row multithreading
 Running command:
   en: Running command
+SVT-AV1 Encoding Guide:
+  en: SVT-AV1 Encoding Guide
 Settings:
   en: Settings
 Single Pass (Bitrate):
@@ -279,6 +325,8 @@ Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   en: Useful when there is a desire to signal 0 values for max-cll and max-fall.
 Useful when you have the "Too many packets buffered for output stream" error:
   en: Useful when you have the "Too many packets buffered for output stream" error
+Various:
+  en: Various
 'WARNING: This only works on a few FFmpeg builds, and it will not raise error on failure!':
   en: 'WARNING: This only works on a few FFmpeg builds, and it will not raise error
     on failure!'
@@ -344,14 +392,22 @@ preset:
   en: preset
 'preset: The slower the preset, the better the compression and quality':
   en: 'preset: The slower the preset, the better the compression and quality'
+? 'preset: The slower the preset, the better the compression and qualitySlow is highest
+  personal recommenced, as past that is much smaller gains'
+: en: 'preset: The slower the preset, the better the compression and qualitySlow is
+    highest personal recommenced, as past that is much smaller gains'
 profile:
   en: profile
 'profile: Enforce an encode profile':
   en: 'profile: Enforce an encode profile'
 'profile: VP9 coding profile - must match bit depth':
   en: 'profile: VP9 coding profile - must match bit depth'
+python-box:
+  en: python-box
 queue complete:
   en: queue complete
+rav1e github:
+  en: rav1e github
 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.':
   en: 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every
     keyframe.'

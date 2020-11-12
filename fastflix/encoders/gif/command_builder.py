@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import secrets
-from pathlib import Path
 from dataclasses import asdict
+from pathlib import Path
 
 from fastflix.encoders.common.helpers import Command, generate_filters
-from fastflix.models.fastflix import FastFlix
 from fastflix.models.encode import GIFSettings
+from fastflix.models.fastflix import FastFlix
 
 
 def build(fastflix: FastFlix):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from fastflix.encoders.common.helpers import Command, generate_all
-from fastflix.models.fastflix import FastFlix
 from fastflix.models.encode import WebPSettings
+from fastflix.models.fastflix import FastFlix
 
 
 def build(fastflix: FastFlix):

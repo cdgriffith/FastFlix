@@ -7,8 +7,8 @@ import secrets
 from pathlib import Path
 
 from fastflix.encoders.common.helpers import Command, generate_all, null
-from fastflix.models.fastflix import FastFlix
 from fastflix.models.encode import rav1eSettings
+from fastflix.models.fastflix import FastFlix
 
 logger = logging.getLogger("fastflix")
 

@@ -1,42 +1,42 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import copy
 import importlib.machinery  # Needed for pyinstaller
-from dataclasses import asdict
 import logging
+import math
 import os
 import secrets
 import tempfile
 import time
+from dataclasses import asdict
 from datetime import timedelta
 from pathlib import Path
 from queue import Queue
-import copy
-import math
-from typing import Union, Tuple, List, Dict
+from typing import Dict, List, Tuple, Union
 
 import pkg_resources
 import reusables
+from appdirs import user_data_dir
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
-from appdirs import user_data_dir
 
 from fastflix.encoders.common import helpers
 from fastflix.flix import (
     FlixError,
+    extract_attachments,
     generate_thumbnail_command,
+    get_auto_crop,
     parse,
     parse_hdr_details,
-    get_auto_crop,
-    extract_attachments,
 )
+from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video, VideoSettings
+from fastflix.resources import black_x_icon, play_round_icon, settings_icon, video_add_icon, video_playlist_icon
 from fastflix.shared import FastFlixInternalException, error_message, file_date, time_to_number
+from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
-from fastflix.language import t
-from fastflix.widgets.progress_bar import ProgressBar, Task
-from fastflix.resources import video_add_icon, play_round_icon, video_playlist_icon, black_x_icon, settings_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -48,7 +48,7 @@ only_int = QtGui.QIntValidator()
 class Main(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal(int)
-    cancelled = QtCore.Signal()
+    cancelled = QtCore.Signal(str)
     close_event = QtCore.Signal()
     status_update_signal = QtCore.Signal(str)
 
@@ -196,13 +196,13 @@ class Main(QtWidgets.QWidget):
     def pause_resume(self):
         if not self.paused:
             self.paused = True
-            self.app.fastflix.worker_queue.put("pause")
+            self.app.fastflix.worker_queue.put(["pause"])
             self.widgets.pause_resume.setText("Resume")
             self.widgets.pause_resume.setStyleSheet("background-color: green;")
             logger.info("Pausing FFmpeg conversion via pustils")
         else:
             self.paused = False
-            self.app.fastflix.worker_queue.put("resume")
+            self.app.fastflix.worker_queue.put(["resume"])
             self.widgets.pause_resume.setText("Pause")
             self.widgets.pause_resume.setStyleSheet("background-color: orange;")
             logger.info("Resuming FFmpeg conversion")
@@ -440,10 +440,10 @@ class Main(QtWidgets.QWidget):
     def change_encoder(self):
         if not self.initialized:
             return
+        self.video_options.change_conversion(self.widgets.convert_to.currentText())
         if not self.output_video_path_widget.text().endswith(self.current_encoder.video_extension):
             # Make sure it's using the right file extension
             self.output_video_path_widget.setText(self.generate_output_filename)
-        self.video_options.change_conversion(self.widgets.convert_to.currentText())
 
     @property
     def current_encoder(self):
@@ -1140,9 +1140,9 @@ class Main(QtWidgets.QWidget):
 
         end_time = self.end_time
         if self.end_time == float(self.app.fastflix.current_video.format.get("duration", 0)):
-            end_time = None
+            end_time = 0
         if self.end_time and self.end_time - 0.1 <= self.app.fastflix.current_video.duration <= self.end_time + 0.1:
-            end_time = None
+            end_time = 0
 
         scale = self.build_scale()
         if scale in (
@@ -1299,7 +1299,7 @@ class Main(QtWidgets.QWidget):
     def encode_video(self):
 
         if self.converting:
-            self.app.fastflix.worker_queue.put("cancel")
+            self.app.fastflix.worker_queue.put(["cancel"])
             return
 
         if not self.app.fastflix.queue:
@@ -1380,21 +1380,31 @@ class Main(QtWidgets.QWidget):
         #         QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(self.output_video))
 
     @reusables.log_exception("fastflix", show_traceback=False)
-    def conversion_cancelled(self):
+    def conversion_cancelled(self, data):
         self.converting = False
         self.paused = False
         self.enable_all()
         self.set_convert_button()
 
+        try:
+            video_uuid, command_uuid = data.split(":")
+            cancelled_video = self.find_video(video_uuid)
+        except Exception:
+            return
+
         sm = QtWidgets.QMessageBox()
         sm.setWindowTitle(t("Cancelled"))
-        sm.setText(t("Conversion cancelled, delete incomplete file?"))
+        sm.setText(
+            f"{t('Conversion cancelled, delete incomplete file')}\n" f"{cancelled_video.video_settings.output_path}?"
+        )
         sm.addButton(t("Delete"), QtWidgets.QMessageBox.YesRole)
         sm.addButton(t("Keep"), QtWidgets.QMessageBox.NoRole)
         sm.exec_()
         if sm.clickedButton().text() == t("Delete"):
             try:
-                os.remove(self.output_video)
+                video_uuid, command_uuid = data.split(":")
+                cancelled_video = self.find_video(video_uuid)
+                cancelled_video.video_settings.output_path.unlink(missing_ok=True)
             except OSError:
                 pass
 
@@ -1449,6 +1459,11 @@ class Main(QtWidgets.QWidget):
             video.status.running = False
             self.video_options.update_queue()
 
+        elif command == "cancelled":
+            video.status.cancelled = True
+            video.status.running = False
+            self.video_options.update_queue()
+
     def find_video(self, uuid) -> Video:
         for video in self.app.fastflix.queue:
             if uuid == video.uuid:
@@ -1482,7 +1497,8 @@ class Notifier(QtCore.QThread):
                 self.main.status_update_signal.emit(":".join(status))
                 self.main.completed.emit(1)
             elif status[0] == "cancelled":
-                self.main.cancelled.emit()
+                self.main.cancelled.emit(":".join(status[1:]))
+                self.main.status_update_signal.emit(":".join(status))
             elif status[0] == "exit":
                 self.main.close_event.emit()
                 return

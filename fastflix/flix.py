@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-from multiprocessing.pool import Pool
+import time
+from functools import partial
+from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from subprocess import PIPE, CompletedProcess, TimeoutExpired, run
-from typing import List, Tuple, Union
 from tempfile import TemporaryDirectory
+from typing import List, Tuple, Union
 
 import reusables
 from box import Box, BoxError
@@ -13,9 +15,6 @@ from box import Box, BoxError
 from fastflix.language import t
 from fastflix.models.config import Config
 from fastflix.models.fastflix_app import FastFlixApp
-from functools import partial
-import time
-from multiprocessing.pool import ThreadPool
 
 # __all__ = ["FlixError", "ff_version", "Flix", "guess_bit_depth"]
 

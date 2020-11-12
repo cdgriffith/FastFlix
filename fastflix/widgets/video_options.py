@@ -5,15 +5,14 @@ import logging
 from box import Box, BoxList
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.widgets.panels.audio_panel import AudioList
 from fastflix.widgets.panels.command_panel import CommandList
 from fastflix.widgets.panels.cover_panel import CoverPanel
+from fastflix.widgets.panels.queue_panel import EncodingQueue
 from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
-from fastflix.widgets.panels.queue_panel import EncodingQueue
-
-from fastflix.language import t
 
 logger = logging.getLogger("fastflix")
 
@@ -64,7 +63,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.selected = conversion
         self.audio.allowed_formats(self.audio_formats)
         self.current_settings.new_source()
-        self.main.page_update()
+        self.main.page_update(build_thumbnail=False)
 
     def get_settings(self):
         settings = Box()

@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
+from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.audio import lossless
-from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.widgets.panels.abstract_list import FlixList
-from fastflix.models.encode import AudioTrack
 from fastflix.language import t
-from fastflix.resources import up_arrow_icon, down_arrow_icon
+from fastflix.models.encode import AudioTrack
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.resources import down_arrow_icon, up_arrow_icon
+from fastflix.widgets.panels.abstract_list import FlixList
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 

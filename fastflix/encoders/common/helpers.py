@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from typing import Tuple, Union, List
-from pathlib import Path
-from dataclasses import asdict, dataclass, field
 import uuid
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import List, Tuple, Union
 
 import reusables
 

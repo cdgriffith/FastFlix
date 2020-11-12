@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
-from iso639 import Lang
-from dataclasses import asdict
 import copy
+from dataclasses import asdict
+
+from box import Box
+from iso639 import Lang
+from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
+from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
+from fastflix.resources import black_x_icon, down_arrow_icon, up_arrow_icon
 from fastflix.shared import FastFlixInternalException, error_message, main_width
 from fastflix.widgets.panels.abstract_list import FlixList
-from fastflix.models.encode import SubtitleTrack
-from fastflix.resources import black_x_icon, up_arrow_icon, down_arrow_icon
-from fastflix.language import t
 
 
 class EncodeItem(QtWidgets.QTabWidget):
@@ -58,6 +58,8 @@ class EncodeItem(QtWidgets.QTabWidget):
             status = t(
                 f"Encoding command {video.status.current_command} of {len(video.video_settings.conversion_commands)}"
             )
+        elif video.status.cancelled:
+            status = t("Cancelled - Ready to try again")
 
         if not self.currently_encoding:
             self.widgets.cancel_button.clicked.connect(lambda: self.parent.remove_item(self.video))

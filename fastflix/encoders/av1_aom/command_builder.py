@@ -4,8 +4,8 @@ import secrets
 from pathlib import Path
 
 from fastflix.encoders.common.helpers import Command, generate_all, null
-from fastflix.models.fastflix import FastFlix
 from fastflix.models.encode import AOMAV1Settings
+from fastflix.models.fastflix import FastFlix
 
 
 def build(fastflix: FastFlix):

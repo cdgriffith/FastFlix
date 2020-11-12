@@ -6,8 +6,10 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
-from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.language import t
 from fastflix.models.encode import SVTAV1Settings
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 
@@ -74,7 +76,10 @@ class SVT_AV1(SettingPanel):
         grid.addLayout(self.init_single_pass(), 4, 2, 1, 1)
         grid.setRowStretch(8, 1)
         guide_label = QtWidgets.QLabel(
-            f"<a href='https://github.com/AOMediaCodec/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md'>SVT-AV1 Encoding Guide</a>"
+            link(
+                "https://github.com/AOMediaCodec/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
+                t("SVT-AV1 Encoding Guide"),
+            )
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)

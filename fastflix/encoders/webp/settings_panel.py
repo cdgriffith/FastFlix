@@ -3,8 +3,9 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
-from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import WebPSettings
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import link
 
 
 class WEBP(SettingPanel):

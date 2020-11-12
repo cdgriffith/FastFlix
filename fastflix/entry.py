@@ -2,7 +2,6 @@
 import logging
 import sys
 import traceback
-
 from multiprocessing import Process, Queue
 
 # from threading import Thread
@@ -65,6 +64,6 @@ def main():
     )
     gui_proc.start()
     try:
-        queue_worker(worker_queue, status_queue, log_queue)
+        queue_worker(gui_proc, worker_queue, status_queue, log_queue)
     finally:
         gui_proc.join()

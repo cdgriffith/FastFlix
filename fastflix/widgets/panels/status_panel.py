@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
 import re
 from datetime import timedelta
 
 from qtpy import QtCore, QtWidgets
 
-from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.language import t
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.video import Video
+from fastflix.shared import time_to_number
 
 splitter = re.compile(r"\s+[a-zA-Z]")
+
+logger = logging.getLogger("fastflix")
 
 
 class StatusPanel(QtWidgets.QWidget):
@@ -19,6 +24,7 @@ class StatusPanel(QtWidgets.QWidget):
         super().__init__(parent)
         self.app = app
         self.main = parent.main
+        self.current_video: Video = None
 
         layout = QtWidgets.QGridLayout()
 
@@ -41,7 +47,7 @@ class StatusPanel(QtWidgets.QWidget):
 
         layout.addLayout(h_box, 0, 0)
 
-        self.inner_widget = Logs(self, self.app.fastflix.log_queue)
+        self.inner_widget = Logs(self, self.app, self.main, self.app.fastflix.log_queue)
         layout.addWidget(self.inner_widget, 1, 0)
         self.setLayout(layout)
 
@@ -49,19 +55,18 @@ class StatusPanel(QtWidgets.QWidget):
         self.bitrate.connect(self.update_bitrate)
 
     def get_movie_length(self):
-        if not self.app.fastflix.current_encoding:
+        if not self.current_video:
             return
         return (
-            self.app.fastflix.current_encoding.video_settings.end_time
-            - self.app.fastflix.current_encoding.video_settings.start_time
-        )
+            self.current_video.video_settings.end_time or self.current_video.duration
+        ) - self.current_video.video_settings.start_time
 
     def update_speed(self, combined):
         if not combined:
             self.eta_label.setText(f"{t('Time Left')}: N/A")
         try:
             time_passed, speed = combined.split("|")
-            time_passed = self.main.time_to_number(time_passed)
+            time_passed = time_to_number(time_passed)
             speed = float(speed)
             assert speed > 0.0001
             length = self.get_movie_length()
@@ -69,6 +74,7 @@ class StatusPanel(QtWidgets.QWidget):
                 return
             data = timedelta(seconds=(length - time_passed) // speed)
         except Exception:
+            logger.exception("can't update size ETA")
             self.eta_label.setText(f"{t('Time Left')}: N/A")
         else:
             if not speed:
@@ -76,13 +82,17 @@ class StatusPanel(QtWidgets.QWidget):
             self.eta_label.setText(f"{t('Time Left')}: {data}")
 
     def update_bitrate(self, bitrate):
-        if not bitrate:
+        if not bitrate or bitrate.strip() == "N/A":
             self.size_label.setText(f"{t('Size Estimate')}: N/A")
+            return
         try:
             bitrate, _ = bitrate.split("k", 1)
             bitrate = float(bitrate)
             size_eta = (self.get_movie_length() * bitrate) / 8000
+        except AttributeError:
+            self.size_label.setText(f"{t('Size Estimate')}: N/A")
         except Exception:
+            logger.exception(f"can't update bitrate: {bitrate}")
             self.size_label.setText(f"{t('Size Estimate')}: N/A")
         else:
             if not size_eta:
@@ -90,16 +100,24 @@ class StatusPanel(QtWidgets.QWidget):
 
             self.size_label.setText(f"{t('Size Estimate')}: {size_eta:.2f}MB")
 
+    def update_title_bar(self):
+        pass
+
 
 class Logs(QtWidgets.QTextBrowser):
     log_signal = QtCore.Signal(str)
-    clear_window = QtCore.Signal()
+    clear_window = QtCore.Signal(str)
 
-    def __init__(self, parent, log_queue):
+    def __init__(self, parent, app: FastFlixApp, main, log_queue):
         super(Logs, self).__init__(parent)
+        self.parent = parent
+        self.app = app
+        self.main = main
         self.status_panel = parent
+        self.current_video = None
+        self.current_command = None
         self.log_signal.connect(self.update_text)
-        self.clear_window.connect(self.clear)
+        self.clear_window.connect(self.blank)
 
         LogUpdater(self, log_queue).start()
 
@@ -117,8 +135,12 @@ class Logs(QtWidgets.QTextBrowser):
                 pass
         self.append(msg)
 
-    def clear(self):
+    def blank(self, data):
+        _, video_uuid, command_uuid = data.split(":")
+        self.parent.current_video = self.main.find_video(video_uuid)
+        self.current_command = self.main.find_command(self.parent.current_video, command_uuid)
         self.setText("")
+        self.parent.update_title_bar()
 
     def closeEvent(self, event):
         self.hide()
@@ -136,8 +158,8 @@ class LogUpdater(QtCore.QThread):
     def run(self):
         while True:
             msg = self.log_queue.get()
-            if msg == "CLEAR_WINDOW":
-                self.parent.clear_window.emit()
+            if msg.startswith("CLEAR_WINDOW"):
+                self.parent.clear_window.emit(msg)
             elif msg == "UPDATE_QUEUE":
                 self.parent.status_panel.main.video_options.update_queue()
             else:

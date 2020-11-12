@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from multiprocessing import Queue
 from pathlib import Path
-from typing import List, Union, Dict
+from typing import Dict, List, Union
 
 from appdirs import user_data_dir
 

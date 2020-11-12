@@ -8,12 +8,11 @@ from qtpy import QtGui
 
 from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration
 from fastflix.language import change_language, t
-from fastflix.models.config import MissingFF
-from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
-from fastflix.models.config import Config
+from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
-from fastflix.resources import main_icon, dark_mode, video_add_icon, default_mode
+from fastflix.resources import dark_mode, default_mode, main_icon, video_add_icon
 from fastflix.shared import file_date
 from fastflix.version import __version__
 from fastflix.widgets.container import Container
