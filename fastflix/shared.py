@@ -8,6 +8,7 @@ from datetime import datetime
 from distutils.version import StrictVersion
 from pathlib import Path
 from threading import Thread
+from subprocess import run
 
 import pkg_resources
 import requests
@@ -151,35 +152,6 @@ def time_to_number(string_time: str) -> float:
     return total
 
 
-CONTINUOUS = 0x80000000
-SYSTEM_REQUIRED = 0x00000001
-
-
-def prevent_sleep_mode():
-    """https://msdn.microsoft.com/en-us/library/windows/desktop/aa373208(v=vs.85).aspx"""
-    if reusables.win_based:
-        import ctypes
-
-        try:
-            ctypes.windll.kernel32.SetThreadExecutionState(CONTINUOUS | SYSTEM_REQUIRED)
-        except Exception:
-            logger.exception("Could not prevent system from possibly going to sleep during conversion")
-        else:
-            logger.debug("System has been asked to not sleep")
-
-
-def allow_sleep_mode():
-    if reusables.win_based:
-        import ctypes
-
-        try:
-            ctypes.windll.kernel32.SetThreadExecutionState(CONTINUOUS)
-        except Exception:
-            logger.exception("Could not allow system to resume sleep mode")
-        else:
-            logger.debug("System has been allowed to enter sleep mode again")
-
-
 class FastFlixError(Exception):
     """Generic FastFlixError"""
 
@@ -190,3 +162,20 @@ class FastFlixInternalException(FastFlixError):
 
 def link(url, text):
     return f'<a href="{url}" style="color: black" >{text}</a>'
+
+
+def open_folder(path):
+    if reusables.win_based:
+        run(["explorer", path])
+        # Also possible through ctypes shell extension
+        # import ctypes
+        #
+        # ctypes.windll.ole32.CoInitialize(None)
+        # pidl = ctypes.windll.shell32.ILCreateFromPathW(self.path)
+        # ctypes.windll.shell32.SHOpenFolderAndSelectItems(pidl, 0, None, 0)
+        # ctypes.windll.shell32.ILFree(pidl)
+        # ctypes.windll.ole32.CoUninitialize()
+    elif sys.platform == "darwin":
+        run(["open", path])
+    else:
+        run(["xdg-open", path])

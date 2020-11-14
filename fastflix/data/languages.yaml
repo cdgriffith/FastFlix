@@ -1,7 +1,5 @@
-'  Source':
-  en: '  Source'
-' WARNING: This will take much longer and result in a larger file':
-  en: ' WARNING: This will take much longer and result in a larger file'
+4 or 5 will turn off rate distortion optimization, having even more of an impact on quality.:
+  en: 4 or 5 will turn off rate distortion optimization, having even more of an impact on quality.
 Adaptive Quantization:
   en: Adaptive Quantization
 Add to Queue:
@@ -12,12 +10,6 @@ Audio:
   en: Audio
 Audio Tracks:
   en: Audio Tracks
-Author:
-  en: Author
-Autocrop tried to crop too much:
-  en: Autocrop tried to crop too much
-Automatically download FFmpeg?:
-  en: Automatically download FFmpeg?
 Bit Depth:
   en: Bit Depth
 Bitrate:
@@ -26,22 +18,16 @@ Break the video into columns to encode faster (lesser quality):
   en: Break the video into columns to encode faster (lesser quality)
 Break the video into rows to encode faster (lesser quality):
   en: Break the video into rows to encode faster (lesser quality)
-Build:
-  en: Build
 Burn In:
   en: Burn In
 CPU Used:
   en: CPU Used
 Cancel:
   en: Cancel
-Cancel Conversion:
-  en: Cancel Conversion
 Cancelled:
   en: Cancelled
 Cancelled - Ready to try again:
   en: Cancelled - Ready to try again
-Close GUI Only:
-  en: Close GUI Only
 CodeCalamity UHD HDR Encoding Guide:
   en: CodeCalamity UHD HDR Encoding Guide
 Command has completed:
@@ -50,18 +36,10 @@ Conversion:
   en: Conversion
 Conversion cancelled, delete incomplete file:
   en: Conversion cancelled, delete incomplete file
-Conversion cancelled, delete incomplete file?:
-  en: Conversion cancelled, delete incomplete file?
 Convert:
   en: Convert
 Convert BT2020 colorspace into bt709:
   en: Convert BT2020 colorspace into bt709
-Could not connect to github to check for newer versions.:
-  en: Could not connect to github to check for newer versions.
-Could not extract FFmpeg files from:
-  en: Could not extract FFmpeg files from
-Could not find any matching FFmpeg ending with 'win64-gpl.zip' with:
-  en: Could not find any matching FFmpeg ending with 'win64-gpl.zip' with
 Cover:
   en: Cover
 Custom ffmpeg options:
@@ -76,15 +54,8 @@ Determine HDR details:
   en: Determine HDR details
 Dither:
   en: Dither
-? Dither is an intentionally applied form of noise used to randomize quantization
-  error, <br> preventing large-scale patterns such as color banding in images.
-: en: Dither is an intentionally applied form of noise used to randomize quantization
-    error, <br> preventing large-scale patterns such as color banding in images.
-Downloading FFmpeg:
-  en: Downloading FFmpeg
-  es: Descargando FFmpeg
-Dual License:
-  en: Dual License
+Dither is an intentionally applied form of noise used to randomize quantization error,:
+  en: Dither is an intentionally applied form of noise used to randomize quantization error,
 Enable row based multi-threading:
   en: Enable row based multi-threading
 Enabled:
@@ -97,34 +68,18 @@ Encoding Queue:
   en: Encoding Queue
 Encoding Status:
   en: Encoding Status
-Encoding cancelled:
-  en: Encoding cancelled
-Encoding command 0 of 1:
-  en: Encoding command 0 of 1
-Encoding command 1 of 1:
-  en: Encoding command 1 of 1
-Encoding command 1 of 2:
-  en: Encoding command 1 of 2
-Encoding command 2 of 2:
-  en: Encoding command 2 of 2
+Encoding command:
+  en: Encoding command
 Encoding complete:
   en: Encoding complete
 Enforce an encode profile:
   en: Enforce an encode profile
-Error Updating Thumbnail:
-  en: Error Updating Thumbnail
-Error detected while converting:
-  en: Error detected while converting
-Error while moving files in:
-  en: Error while moving files in
 Estimated file size based on bitrate:
   en: Estimated file size based on bitrate
 Estimated time left for current command:
   en: Estimated time left for current command
 Extra flags or options, cannot modify existing settings:
   en: Extra flags or options, cannot modify existing settings
-Extra x265 params in opt=1:opt2=0 format,:
-  en: Extra x265 params in opt=1:opt2=0 format,
 Extract covers:
   en: Extract covers
 FFMPEG AV1 Encoding Guide:
@@ -135,23 +90,20 @@ FFMPEG HEVC / H.265 Encoding Guide:
   en: FFMPEG HEVC / H.265 Encoding Guide
 FFMPEG VP9 Encoding Guide:
   en: FFMPEG VP9 Encoding Guide
-FFmpeg not found!:
-  en: FFmpeg not found!
-FFmpeg was not properly downloaded as the file size is too small:
-  en: FFmpeg was not properly downloaded as the file size is too small
 FPS:
   en: FPS
+For lossless, this is a size/speed tradeoff.:
+  en: For lossless, this is a size/speed tradeoff.
+For lossy, this is a quality/speed tradeoff.:
+  en: For lossy, this is a quality/speed tradeoff.
 Force HDR10 signaling:
   en: Force HDR10 signaling
 Frames Per Second:
   en: Frames Per Second
 Gather FFmpeg audio encoders:
   en: Gather FFmpeg audio encoders
-  fr: Rassemblez les encodeurs audio FFmpeg
 Gather FFmpeg version:
   en: Gather FFmpeg version
-  es: "Re\xFAna la versi\xF3n de FFmpeg"
-  fr: Rassemblez la version FFmpeg
 Google's VP9 HDR Encoding Guide:
   en: Google's VP9 HDR Encoding Guide
 HDR10 Optimizations:
@@ -162,14 +114,8 @@ HDR10+ Metadata Extraction:
   en: HDR10+ Metadata Extraction
 HDR10+ Optimizations:
   en: HDR10+ Optimizations
-Have to select a video first:
-  en: Have to select a video first
-I do not know of any public Linux/Mac ones that do.:
-  en: I do not know of any public Linux/Mac ones that do.
 Initialize Encoders:
   en: Initialize Encoders
-  es: Inicializar Codificadores
-  fr: Initialiser les Encodeurs
 Intra-encoding:
   en: Intra-encoding
 It is recommended that AQ-mode be enabled along with this feature:
@@ -178,10 +124,6 @@ It saves a few bits and can help performance in the client's tonemapper.:
   en: It saves a few bits and can help performance in the client's tonemapper.
 Keep:
   en: Keep
-Keep FastFlix Open:
-  en: Keep FastFlix Open
-LICENSES:
-  en: LICENSES
 Language:
   en: Language
 Log2 of number of tile columns to encode faster (lesser quality):
@@ -190,40 +132,24 @@ Log2 of number of tile rows to encode faster (lesser quality):
   en: Log2 of number of tile rows to encode faster (lesser quality)
 Max Muxing Queue Size:
   en: Max Muxing Queue Size
-More than one track selected to burn in:
-  en: More than one track selected to burn in
 No Downmix:
   en: No Downmix
-No Source Selected:
-  en: No Source Selected
-No Video File:
-  en: No Video File
-No command found for:
-  en: No command found for
-No new items in queue to convert:
-  en: No new items in queue to convert
-Not a video file:
-  en: Not a video file
 Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.:
-  en: Only put the HDR10+ dynamic metadata in the IDR and frames where the values
-    have changed.
+  en: Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.
+Open Directory:
+  en: Open Directory
 Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.:
-  en: Overlay this subtitle track onto the video during conversion. Cannot remove
-    afterwards.
+  en: Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.
 Parse Video details:
   en: Parse Video details
 Pixel Format (requires at least 10-bit for HDR):
   en: Pixel Format (requires at least 10-bit for HDR)
-Please:
-  en: Please
 Preserve:
   en: Preserve
 Preset:
   en: Preset
 Profile:
   en: Profile
-Python:
-  en: Python
 Quality:
   en: Quality
 Quality and compression efficiency vs speed trade-off:
@@ -237,20 +163,15 @@ Quality/Speed ratio modifier (defaults to 1):
 Queue:
   en: Queue
 Raise or lower per-block quantization based on complexity analysis of the source image.:
-  en: Raise or lower per-block quantization based on complexity analysis of the source
-    image.
+  en: Raise or lower per-block quantization based on complexity analysis of the source image.
 Raw Commands:
   en: Raw Commands
-Ready:
-  en: Ready
 Ready to encode:
   en: Ready to encode
 Remove HDR:
   en: Remove HDR
 Repeat Headers:
   en: Repeat Headers
-Reusables:
-  en: Reusables
 Row Multi-Threading:
   en: Row Multi-Threading
 Row multithreading:
@@ -275,32 +196,18 @@ Source height:
   en: Source height
 Source width:
   en: Source width
-Specifically, FFmpeg needs the x265 ENABLE_HDR10_PLUS option enabled on compile.:
-  en: Specifically, FFmpeg needs the x265 ENABLE_HDR10_PLUS option enabled on compile.
 Speed:
   en: Speed
-Starting:
-  en: Starting
-  es: Lanzamiento
-  fr: Aller
 Subtitles:
   en: Subtitles
 Success:
   en: Success
-The latest windows builds from BtbN should have this feature.:
-  en: The latest windows builds from BtbN should have this feature.
 The more complex the block, the more quantization is used.:
   en: The more complex the block, the more quantization is used.
-There is a conversion in process!:
-  en: There is a conversion in process!
-There is an existing burn-in track, only one can be enabled at a time:
-  en: There is an existing burn-in track, only one can be enabled at a time
 This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.:
-  en: This improves encoding speed significantly on systems that are otherwise underutilised
-    when encoding VP9.
+  en: This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.
 This is intended for use when you do not have a container to keep the stream headers for you:
-  en: This is intended for use when you do not have a container to keep the stream
-    headers for you
+  en: This is intended for use when you do not have a container to keep the stream headers for you
 'This option is not recommenced unless you need to conform ':
   en: 'This option is not recommenced unless you need to conform '
 Tier:
@@ -325,31 +232,30 @@ Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   en: Useful when there is a desire to signal 0 values for max-cll and max-fall.
 Useful when you have the "Too many packets buffered for output stream" error:
   en: Useful when you have the "Too many packets buffered for output stream" error
-Various:
-  en: Various
-'WARNING: This only works on a few FFmpeg builds, and it will not raise error on failure!':
-  en: 'WARNING: This only works on a few FFmpeg builds, and it will not raise error
-    on failure!'
+Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.:
+  en: Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.
+'WARNING: This will take much longer and result in a larger file':
+  en: 'WARNING: This will take much longer and result in a larger file'
+Watch:
+  en: Watch
 Width must be divisible by 2:
   en: Width must be divisible by 2
 Width must be divisible by 2 - Source width:
   en: Width must be divisible by 2 - Source width
 all conversions complete:
   en: all conversions complete
-and add it to PATH:
-  en: and add it to PATH
 and you want keyframes to be random access points.:
   en: and you want keyframes to be random access points.
 'aq-mode: Adaptive Quantization operating mode.':
   en: 'aq-mode: Adaptive Quantization operating mode.'
+are mere suggestions!:
+  en: are mere suggestions!
 attachment tracks found:
   en: attachment tracks found
 audio tracks found:
   en: audio tracks found
-bottom:
-  en: bottom
-cannot modify generated settings:
-  en: cannot modify generated settings
+best is recommended if you have lots of time and want the best compression efficiency.:
+  en: best is recommended if you have lots of time and want the best compression efficiency.
 channels:
   en: channels
 codec:
@@ -358,72 +264,47 @@ compression level:
   en: compression level
 'dhdr10-opt: Reduces SEI overhead':
   en: 'dhdr10-opt: Reduces SEI overhead'
-'dhdr10_info: Path to HDR10+ JSON metadata file':
-  en: 'dhdr10_info: Path to HDR10+ JSON metadata file'
-download a static FFmpeg:
-  en: download a static FFmpeg
-'examples: level-idc=4.1:rc-lookahead=10 ':
-  en: 'examples: level-idc=4.1:rc-lookahead=10 '
+good is the default and recommended for most applications:
+  en: good is the default and recommended for most applications
 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.':
   en: 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.'
 'hdr10: Force signaling of HDR10 parameters in SEI packets.':
   en: 'hdr10: Force signaling of HDR10 parameters in SEI packets.'
-ignoring:
-  en: ignoring
-is already in queue:
-  en: is already in queue
+is extremely source dependant:
+  en: is extremely source dependant
 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)':
-  en: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray
-    spec)'
-latest release from:
-  en: latest release from
-left:
-  en: left
+  en: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)'
 lossless:
   en: lossless
 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error':
-  en: 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream"
-    error'
+  en: 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error'
 none:
   en: none
-out file is already in queue:
-  en: out file is already in queue
+of:
+  en: of
 preset:
   en: preset
 'preset: The slower the preset, the better the compression and quality':
   en: 'preset: The slower the preset, the better the compression and quality'
-? 'preset: The slower the preset, the better the compression and qualitySlow is highest
-  personal recommenced, as past that is much smaller gains'
-: en: 'preset: The slower the preset, the better the compression and qualitySlow is
-    highest personal recommenced, as past that is much smaller gains'
+preventing large-scale patterns such as color banding in images.:
+  en: preventing large-scale patterns such as color banding in images.
 profile:
   en: profile
 'profile: Enforce an encode profile':
   en: 'profile: Enforce an encode profile'
 'profile: VP9 coding profile - must match bit depth':
   en: 'profile: VP9 coding profile - must match bit depth'
-python-box:
-  en: python-box
-queue complete:
-  en: queue complete
 rav1e github:
   en: rav1e github
 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.':
-  en: 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every
-    keyframe.'
-right:
-  en: right
-starting next command:
-  en: starting next command
+  en: 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.'
 subtitle tracks found:
   en: subtitle tracks found
+the resolution-to-:
+  en: the resolution-to-
 to Blu-ray standards to burn to a physical disk:
   en: to Blu-ray standards to burn to a physical disk
-top:
-  en: top
 'tune: Tune the settings for a particular type of source or situation':
   en: 'tune: Tune the settings for a particular type of source or situation'
-video complete:
-  en: video complete
 video tracks found:
   en: video tracks found

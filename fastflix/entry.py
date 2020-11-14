@@ -19,13 +19,11 @@ try:
     from fastflix.models.fastflix import FastFlix
     from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
     from fastflix.shared import (
-        allow_sleep_mode,
         base_path,
         error_message,
         file_date,
         latest_fastflix,
         message,
-        prevent_sleep_mode,
     )
     from fastflix.version import __version__
 

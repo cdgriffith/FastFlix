@@ -22,3 +22,5 @@ black_x_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/bl
 up_arrow_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/up-arrow.png")).resolve())
 down_arrow_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/down-arrow.png")).resolve())
 settings_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/setting.png")).resolve())
+folder_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/folder.png")).resolve())
+play_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/play.png")).resolve())

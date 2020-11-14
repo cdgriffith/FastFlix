@@ -112,7 +112,7 @@ class VP9(SettingPanel):
         return self._add_combo_box(
             label="Quality",
             tooltip=(
-                "good is the default and recommended for most applications <br> "
+                "good is the default and recommended for most applications\n"
                 "best is recommended if you have lots of time and want the best compression efficiency."
             ),
             widget_name="quality",
@@ -125,7 +125,7 @@ class VP9(SettingPanel):
             label="Speed",
             tooltip=(
                 "Using 1 or 2 will increase encoding speed at the expense of having some impact on "
-                "quality and rate control accuracy.<br> 4 or 5 will turn off rate distortion optimization, "
+                "quality and rate control accuracy.\n4 or 5 will turn off rate distortion optimization, "
                 "having even more of an impact on quality."
             ),
             widget_name="speed",

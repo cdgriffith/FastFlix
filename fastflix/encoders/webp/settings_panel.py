@@ -5,7 +5,6 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.encode import WebPSettings
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.shared import link
 
 
 class WEBP(SettingPanel):
@@ -40,7 +39,7 @@ class WEBP(SettingPanel):
             "compression level",
             ["0", "1", "2", "3", "4", "5", "6"],
             "compression",
-            tooltip="For lossy, this is a quality/speed tradeoff.\n" "For lossless, this is a size/speed tradeoff.",
+            tooltip="For lossy, this is a quality/speed tradeoff.\nFor lossless, this is a size/speed tradeoff.",
             default=4,
         )
 

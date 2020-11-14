@@ -8,7 +8,7 @@ from appdirs import user_data_dir
 
 from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
-from fastflix.shared import allow_sleep_mode, file_date, prevent_sleep_mode
+from fastflix.shared import file_date
 
 logger = logging.getLogger("fastflix-core")
 
@@ -17,6 +17,34 @@ logger = logging.getLogger("fastflix-core")
 #     for i, item in enumerate(fastflix.queue):
 #         if not item.status.complete and not item.status.running:
 #             return item
+
+CONTINUOUS = 0x80000000
+SYSTEM_REQUIRED = 0x00000001
+
+
+def prevent_sleep_mode():
+    """https://msdn.microsoft.com/en-us/library/windows/desktop/aa373208(v=vs.85).aspx"""
+    if reusables.win_based:
+        import ctypes
+
+        try:
+            ctypes.windll.kernel32.SetThreadExecutionState(CONTINUOUS | SYSTEM_REQUIRED)
+        except Exception:
+            logger.exception("Could not prevent system from possibly going to sleep during conversion")
+        else:
+            logger.debug("System has been asked to not sleep")
+
+
+def allow_sleep_mode():
+    if reusables.win_based:
+        import ctypes
+
+        try:
+            ctypes.windll.kernel32.SetThreadExecutionState(CONTINUOUS)
+        except Exception:
+            logger.exception("Could not allow system to resume sleep mode")
+        else:
+            logger.debug("System has been allowed to enter sleep mode again")
 
 
 def queue_worker(gui_proc, worker_queue, status_queue, log_queue):

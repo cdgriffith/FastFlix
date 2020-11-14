@@ -64,10 +64,13 @@ class StatusPanel(QtWidgets.QWidget):
     def update_speed(self, combined):
         if not combined:
             self.eta_label.setText(f"{t('Time Left')}: N/A")
+            return
         try:
             time_passed, speed = combined.split("|")
             time_passed = time_to_number(time_passed)
             speed = float(speed)
+            if not speed:
+                return
             assert speed > 0.0001
             length = self.get_movie_length()
             if not length:

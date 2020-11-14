@@ -42,7 +42,7 @@ class GIF(SettingPanel):
             label="Dither",
             widget_name="dither",
             tooltip=(
-                "Dither is an intentionally applied form of noise used to randomize quantization error, <br> "
+                "Dither is an intentionally applied form of noise used to randomize quantization error,\n"
                 "preventing large-scale patterns such as color banding in images."
             ),
             options=[

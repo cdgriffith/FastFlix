@@ -24,8 +24,8 @@ class SettingPanel(QtWidgets.QWidget):
         self.only_int = QtGui.QIntValidator()
 
     @staticmethod
-    def ml(*items):
-        return "\n".join(items)
+    def translate_tip(tooltip):
+        return "\n".join([t(x) for x in tooltip.split("\n") if x.strip()])
 
     def determine_default(self, widget_name, opt, items: List):
         if widget_name == "pix_fmt":
@@ -54,7 +54,8 @@ class SettingPanel(QtWidgets.QWidget):
     ):
         layout = QtWidgets.QHBoxLayout()
         self.labels[widget_name] = QtWidgets.QLabel(t(label))
-        self.labels[widget_name].setToolTip(tooltip)
+        if tooltip:
+            self.labels[widget_name].setToolTip(self.translate_tip(tooltip))
 
         self.widgets[widget_name] = QtWidgets.QComboBox()
         self.widgets[widget_name].addItems(options)
@@ -66,7 +67,8 @@ class SettingPanel(QtWidgets.QWidget):
             self.opts[widget_name] = opt
         self.widgets[widget_name].setCurrentIndex(default)
         self.widgets[widget_name].setDisabled(not enabled)
-        self.widgets[widget_name].setToolTip("\n".join([t(x) for x in tooltip.split("\n")]))
+        if tooltip:
+            self.widgets[widget_name].setToolTip(self.translate_tip(tooltip))
         if connect:
             if connect == "default":
                 self.widgets[widget_name].currentIndexChanged.connect(lambda: self.main.page_update())
@@ -89,7 +91,8 @@ class SettingPanel(QtWidgets.QWidget):
         self.opts[widget_name] = opt
         self.widgets[widget_name].setChecked(self.app.fastflix.config.encoder_opt(self.profile_name, opt))
         self.widgets[widget_name].setDisabled(not enabled)
-        self.widgets[widget_name].setToolTip("\n".join([t(x) for x in tooltip.split("\n")]))
+        if tooltip:
+            self.widgets[widget_name].setToolTip(self.translate_tip(tooltip))
         if connect:
             if connect == "default":
                 self.widgets[widget_name].toggled.connect(lambda: self.main.page_update())
@@ -183,8 +186,8 @@ class SettingPanel(QtWidgets.QWidget):
         bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
 
         qp_help = (
-            f"{qp_name.upper()} is extremely source dependant,<br>"
-            f"the resolution-to-{qp_name.upper()} are mere suggestions!<br>"
+            f"{qp_name.upper()} {t('is extremely source dependant')},\n"
+            f"{t('the resolution-to-')}{qp_name.upper()}{t('are mere suggestions!')}"
         )
         qp_radio = QtWidgets.QRadioButton(qp_name.upper())
         qp_radio.setChecked(True)
@@ -227,7 +230,7 @@ class SettingPanel(QtWidgets.QWidget):
             widget_name="remove_hdr",
             options=["No", "Yes"],
             tooltip=(
-                "Convert BT2020 colorspace into bt709\n "
+                "Convert BT2020 colorspace into bt709\n"
                 "WARNING: This will take much longer and result in a larger file"
             ),
             opt="remove_hdr",

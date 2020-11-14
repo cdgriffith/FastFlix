@@ -95,7 +95,7 @@ class AVC(SettingPanel):
             widget_name="preset",
             options=presets,
             tooltip=(
-                "preset: The slower the preset, the better the compression and quality"
+                "preset: The slower the preset, the better the compression and quality\n"
                 "Slow is highest personal recommenced, as past that is much smaller gains"
             ),
             connect="default",

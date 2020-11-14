@@ -25,7 +25,7 @@ def translate(text):
     else:
         # TODO remove this before release
         language_data[text] = {"en": text}
-        language_data.to_yaml(filename=language_file, encoding="utf-8")
+        language_data.to_yaml(filename=language_file, encoding="utf-8", width=200)
     return text
 
 

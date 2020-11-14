@@ -32,7 +32,14 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video, VideoSettings
-from fastflix.resources import black_x_icon, play_round_icon, settings_icon, video_add_icon, video_playlist_icon
+from fastflix.resources import (
+    black_x_icon,
+    play_round_icon,
+    settings_icon,
+    video_add_icon,
+    video_playlist_icon,
+    folder_icon,
+)
 from fastflix.shared import FastFlixInternalException, error_message, file_date, time_to_number
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
@@ -230,7 +237,7 @@ class Main(QtWidgets.QWidget):
         output_label.setFixedWidth(70)
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
-        self.output_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirHomeIcon))
+        self.output_path_button = QtWidgets.QPushButton(icon=QtGui.QIcon(folder_icon))
         self.output_path_button.clicked.connect(lambda: self.save_file())
         self.output_path_button.setDisabled(True)
 
@@ -717,7 +724,8 @@ class Main(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getSaveFileName(
             self, caption="Save Video As", directory=self.generate_output_filename, filter=f"Save File (*.{extension})"
         )
-        self.output_video_path_widget.setText(filename[0] if filename else "")
+        if filename and filename[0]:
+            self.output_video_path_widget.setText(filename[0])
 
     def get_auto_crop(self):
         if not self.input_video or not self.initialized or self.loading_video:
@@ -1366,6 +1374,7 @@ class Main(QtWidgets.QWidget):
         if return_code:
             error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
         else:
+            self.video_options.show_queue()
             error_message(t("All queue items have completed"), title=t("Success"))
 
         # if return_code or not output.exists() or output.stat().st_size <= 500:

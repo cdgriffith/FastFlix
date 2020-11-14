@@ -9,11 +9,12 @@ from iso639 import Lang
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
+from fastflix.shared import link
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
-from fastflix.resources import black_x_icon, down_arrow_icon, up_arrow_icon
-from fastflix.shared import FastFlixInternalException, error_message, main_width
+from fastflix.resources import black_x_icon, down_arrow_icon, up_arrow_icon, play_icon, folder_icon
+from fastflix.shared import FastFlixInternalException, error_message, main_width, open_folder
 from fastflix.widgets.panels.abstract_list import FlixList
 
 
@@ -41,7 +42,7 @@ class EncodeItem(QtWidgets.QTabWidget):
 
         self.setFixedHeight(50)
 
-        title = QtWidgets.QLabel(f"{video.video_settings.output_path.name}")
+        title = QtWidgets.QLabel(f"{video.source.name} -> {video.video_settings.output_path.name}")
 
         settings = Box(copy.deepcopy(asdict(video.video_settings)))
         settings.output_path = str(settings.output_path)
@@ -49,14 +50,40 @@ class EncodeItem(QtWidgets.QTabWidget):
 
         title.setToolTip(settings.to_yaml())
 
+        open_button = QtWidgets.QPushButton(QtGui.QIcon(folder_icon), t("Open Directory"))
+        open_button.setLayoutDirection(QtCore.Qt.RightToLeft)
+        open_button.setIconSize(QtCore.QSize(14, 14))
+        open_button.clicked.connect(lambda: open_folder(video.video_settings.output_path.parent))
+
+        view_button = QtWidgets.QPushButton(QtGui.QIcon(play_icon), t("Watch"))
+        view_button.setLayoutDirection(QtCore.Qt.RightToLeft)
+        view_button.setIconSize(QtCore.QSize(14, 14))
+        view_button.clicked.connect(
+            lambda: QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(video.video_settings.output_path)))
+        )
+
+        open_button.setStyleSheet(
+            """
+        QPushButton { border: 0; }
+        QPushButton:hover { border: 0; text-decoration: underline; }
+        """
+        )
+        view_button.setStyleSheet(
+            """
+        QPushButton { border: 0; }
+        QPushButton:hover { border: 0; text-decoration: underline; }
+        """
+        )
+
         status = t("Ready to encode")
         if video.status.error:
             status = t("Encoding errored")
         elif video.status.complete:
-            status = t("Encoding complete")
+            status = f"{t('Encoding complete')}"
         elif video.status.running:
-            status = t(
-                f"Encoding command {video.status.current_command} of {len(video.video_settings.conversion_commands)}"
+            status = (
+                f"{t('Encoding command')} {video.status.current_command} {t('of')} "
+                f"{len(video.video_settings.conversion_commands)}"
             )
         elif video.status.cancelled:
             status = t("Cancelled - Ready to try again")
@@ -68,12 +95,16 @@ class EncodeItem(QtWidgets.QTabWidget):
         grid = QtWidgets.QGridLayout()
         grid.addLayout(self.init_move_buttons(), 0, 0)
         # grid.addWidget(self.widgets.track_number, 0, 1)
-        grid.addWidget(title, 0, 1)
-        grid.addWidget(QtWidgets.QLabel(f"{video.video_settings.video_encoder_settings.name}"), 0, 2)
-        grid.addWidget(QtWidgets.QLabel(f"{t('Audio Tracks')}: {len(video.video_settings.audio_tracks)}"), 0, 3)
-        grid.addWidget(QtWidgets.QLabel(f"{t('Subtitles')}: {len(video.video_settings.subtitle_tracks)}"), 0, 4)
-        grid.addWidget(QtWidgets.QLabel(status), 0, 5)
-        grid.addWidget(self.widgets.cancel_button, 0, 6)
+        grid.addWidget(title, 0, 1, 1, 3)
+        grid.addWidget(QtWidgets.QLabel(f"{video.video_settings.video_encoder_settings.name}"), 0, 4)
+        grid.addWidget(QtWidgets.QLabel(f"{t('Audio Tracks')}: {len(video.video_settings.audio_tracks)}"), 0, 5)
+        grid.addWidget(QtWidgets.QLabel(f"{t('Subtitles')}: {len(video.video_settings.subtitle_tracks)}"), 0, 6)
+        grid.addWidget(QtWidgets.QLabel(status), 0, 7)
+        if video.status.complete:
+            grid.addWidget(view_button, 0, 8)
+            grid.addWidget(open_button, 0, 9)
+
+        grid.addWidget(self.widgets.cancel_button, 0, 10, alignment=QtCore.Qt.AlignRight)
         # grid.addLayout(disposition_layout, 0, 4)
         # grid.addWidget(self.widgets.burn_in, 0, 5)
         # grid.addLayout(self.init_language(), 0, 6)
