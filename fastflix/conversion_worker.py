@@ -114,6 +114,14 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             if gui_died:
                 return
 
+        if not gui_died and not gui_proc.is_alive():
+            gui_proc.join()
+            gui_died = True
+            if runner.is_alive() or currently_encoding:
+                logger.info(t("The GUI might have died, but I'm going to keep converting!"))
+            else:
+                break
+
         try:
             request = worker_queue.get(block=True, timeout=0.05)
         except Empty:
@@ -137,11 +145,3 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 status_queue.put(("cancelled", commands_to_run[0][0], commands_to_run[0][1]))
                 commands_to_run = []
                 currently_encoding = False
-
-        if not gui_died and not gui_proc.is_alive():
-            gui_proc.join()
-            gui_died = True
-            if runner.is_alive() or currently_encoding:
-                logger.info(t("The GUI might have died, but I'm going to keep converting!"))
-            else:
-                break
