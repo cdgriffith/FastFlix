@@ -2,6 +2,7 @@
 import logging
 import os
 import time
+import re
 from functools import partial
 from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
@@ -19,6 +20,9 @@ from fastflix.models.fastflix_app import FastFlixApp
 # __all__ = ["FlixError", "ff_version", "Flix", "guess_bit_depth"]
 
 here = os.path.abspath(os.path.dirname(__file__))
+re_tff = re.compile(r"TFF:\s+(\d+)")
+re_bff = re.compile(r"BFF:\s+(\d+)")
+re_progressive = re.compile(r"Progressive:\s+(\d+)")
 
 logger = logging.getLogger("fastflix")
 
@@ -271,18 +275,18 @@ def get_auto_crop(
     result_list.append([video_width - width - x_crop, video_height - height - y_crop, x_crop, y_crop])
 
 
-def detect_interlaced(app: FastFlixApp, config: Config, source: Path):
+def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
     """ http://www.aktau.be/2013/09/22/detecting-interlaced-video-with-ffmpeg/ """
 
     # Interlaced
-    # [Parsed_idet_0 @ 0000021fd1b78f00] Repeated Fields: Neither:   815 Top:    88 Bottom:    98
-    # [Parsed_idet_0 @ 0000021fd1b78f00] Single frame detection: TFF:   693 BFF:     0 Progressive:    39 Undetermined:   269
-    # [Parsed_idet_0 @ 0000021fd1b78f00] Multi frame detection: TFF:   911 BFF:     0 Progressive:    41 Undetermined:    49
+    # [Parsed_idet_0 @ 00000] Repeated Fields: Neither:   815 Top:    88 Bottom:    98
+    # [Parsed_idet_0 @ 00000] Single frame detection: TFF:   693 BFF:     0 Progressive:    39 Undetermined:   269
+    # [Parsed_idet_0 @ 00000] Multi frame detection: TFF:   911 BFF:     0 Progressive:    41 Undetermined:    49
 
     # Progressive
-    # [Parsed_idet_0 @ 000002b58c42d480] Repeated Fields: Neither:  1000 Top:     0 Bottom:     0
-    # [Parsed_idet_0 @ 000002b58c42d480] Single frame detection: TFF:     0 BFF:     0 Progressive:   641 Undetermined:   359
-    # [Parsed_idet_0 @ 000002b58c42d480] Multi frame detection: TFF:     0 BFF:     0 Progressive:   953 Undetermined:    47
+    # [Parsed_idet_0 @ 00000] Repeated Fields: Neither:  1000 Top:     0 Bottom:     0
+    # [Parsed_idet_0 @ 00000] Single frame detection: TFF:     0 BFF:     0 Progressive:   641 Undetermined:   359
+    # [Parsed_idet_0 @ 00000] Multi frame detection: TFF:     0 BFF:     0 Progressive:   953 Undetermined:    47
 
     output = execute(
         [
@@ -299,10 +303,26 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path):
             "-dn",
             "-f",
             "rawvideo",
-            "NUL",
+            f"{'NUL' if reusables.win_based else '/dev/null'}",
             "-y",
         ]
     )
+
+    for line in output.stderr.splitlines():
+        if "Single frame detection" in line:
+            try:
+                tffs = re_tff.findall(line)[0]
+                bffs = re_bff.findall(line)[0]
+                progressive = re_progressive.findall(line)[0]
+            except IndexError:
+                logger.error(f"Could not extract interlaced information via regex: {line}")
+            else:
+                if int(tffs) + int(bffs) > int(progressive):
+                    app.fastflix.current_video.video_settings.deinterlace = True
+                    app.fastflix.current_video.interlaced = True
+                    return
+    app.fastflix.current_video.video_settings.deinterlace = False
+    app.fastflix.current_video.interlaced = False
 
 
 def ffmpeg_audio_encoders(app, config: Config) -> List:

@@ -224,19 +224,6 @@ class SettingPanel(QtWidgets.QWidget):
 
         return layout
 
-    def _add_remove_hdr(self, connect="default"):
-        return self._add_combo_box(
-            label="Remove HDR",
-            widget_name="remove_hdr",
-            options=["No", "Yes"],
-            tooltip=(
-                "Convert BT2020 colorspace into bt709\n"
-                "WARNING: This will take much longer and result in a larger file"
-            ),
-            opt="remove_hdr",
-            connect=connect,
-        )
-
     @property
     def ffmpeg_extras(self):
         return ffmpeg_extra_command
@@ -249,16 +236,16 @@ class SettingPanel(QtWidgets.QWidget):
     def new_source(self):
         if not self.app.fastflix.current_video.streams:
             return
-        elif (
-            self.app.fastflix.current_video.streams["video"][self.main.video_track]
-            .get("color_space", "")
-            .startswith("bt2020")
-        ):
-            self.widgets.remove_hdr.setDisabled(False)
-            self.labels.remove_hdr.setStyleSheet("QLabel{color:#000}")
-        else:
-            self.widgets.remove_hdr.setDisabled(True)
-            self.labels.remove_hdr.setStyleSheet("QLabel{color:#000}")
+        # elif (
+        #     self.app.fastflix.current_video.streams["video"][self.main.video_track]
+        #     .get("color_space", "")
+        #     .startswith("bt2020")
+        # ):
+        #     self.widgets.remove_hdr.setDisabled(False)
+        #     self.labels.remove_hdr.setStyleSheet("QLabel{color:#000}")
+        # else:
+        #     self.widgets.remove_hdr.setDisabled(True)
+        #     self.labels.remove_hdr.setStyleSheet("QLabel{color:#000}")
 
     def update_profile(self):
         for widget_name, opt in self.opts.items():

@@ -47,3 +47,11 @@ QComboBox:on {
     color: #222222;
 
 }
+
+QGroupBox {
+    border: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 2px;
+    border-bottom: 2px solid #ddd;
+}

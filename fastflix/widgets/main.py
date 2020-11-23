@@ -28,6 +28,7 @@ from fastflix.flix import (
     get_auto_crop,
     parse,
     parse_hdr_details,
+    detect_interlaced,
 )
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
@@ -279,12 +280,12 @@ class Main(QtWidgets.QWidget):
         self.widgets.remove_metadata.setChecked(True)
         self.widgets.remove_metadata.toggled.connect(self.page_update)
         self.widgets.remove_metadata.setToolTip(
-            "Scrub away all incoming metadata, like video titles, unique markings and so on."
+            t("Scrub away all incoming metadata, like video titles, unique markings and so on.")
         )
-        self.widgets.chapters = QtWidgets.QCheckBox("Copy Chapters")
+        self.widgets.chapters = QtWidgets.QCheckBox(t("Copy Chapters"))
         self.widgets.chapters.setChecked(True)
         self.widgets.chapters.toggled.connect(self.page_update)
-        self.widgets.chapters.setToolTip("Copy the chapter markers as is from incoming source.")
+        self.widgets.chapters.setToolTip(t("Copy the chapter markers as is from incoming source."))
 
         metadata_layout.addWidget(self.widgets.remove_metadata)
         metadata_layout.addWidget(self.widgets.chapters)
@@ -293,13 +294,18 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.deinterlace = QtWidgets.QCheckBox(t("Deinterlace"))
         self.widgets.deinterlace.setChecked(False)
-        self.widgets.deinterlace.toggled.connect(self.page_update)
-        self.widgets.deinterlace.setToolTip(t("Enable the yadif filter"))
+        self.widgets.deinterlace.toggled.connect(self.interlace_update)
+        self.widgets.deinterlace.setToolTip(
+            f'{t("Enables the yadif filter.")}\n' f'{t("Automatically enabled when an interlaced video is detected")}'
+        )
 
         self.widgets.remove_hdr = QtWidgets.QCheckBox(t("Remove HDR"))
         self.widgets.remove_hdr.setChecked(False)
         self.widgets.remove_hdr.toggled.connect(self.page_update)
-        self.widgets.remove_hdr.setToolTip("")
+        self.widgets.remove_hdr.setToolTip(
+            f"{t('Convert BT2020 colorspace into bt709')}\n"
+            f"{t('WARNING: This will take much longer and result in a larger file')}"
+        )
 
         extra_details_layout = QtWidgets.QVBoxLayout()
         extra_details_layout.addWidget(self.widgets.deinterlace)
@@ -310,11 +316,6 @@ class Main(QtWidgets.QWidget):
         layout.addLayout(transform_layout)
         layout.addWidget(self.init_start_time())
 
-        # self.widgets.profile_box = QtWidgets.QComboBox()
-        # self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
-        # self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
-
-        # layout.addLayout(self.init_profile())
         layout.addStretch()
         return layout
 
@@ -322,50 +323,8 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.init_scale())
         layout.addWidget(self.init_crop())
-        # layout.addWidget(self.init_start_time())
         layout.addStretch()
         return layout
-
-    # def init_button_menu(self):
-    #     layout = QtWidgets.QHBoxLayout()
-    #     open_input_file = QtWidgets.QPushButton("🎞 Source")
-    #     open_input_file.setFixedSize(95, 50)
-    #     open_input_file.setDefault(True)
-    #     open_input_file.clicked.connect(lambda: self.open_file())
-    #     # open_input_file.setStyleSheet("background: blue")
-    #     convert = QtWidgets.QPushButton("Convert 🎥")
-    #     convert.setFixedSize(95, 50)
-    #     convert.setStyleSheet("background: green")
-    #     convert.clicked.connect(lambda: self.encode_video())
-    #     convert.setDisabled(True)
-    #
-    #     self.widgets.pause_resume.setDisabled(True)
-    #     self.widgets.pause_resume.setStyleSheet("background-color: gray;")
-    #     self.widgets.pause_resume.clicked.connect(self.pause_resume)
-    #     self.widgets.pause_resume.setFixedSize(60, 50)
-    #
-    #     layout.addWidget(open_input_file)
-    #     layout.addStretch()
-    #     layout.addLayout(self.init_encoder_drop_down())
-    #     layout.addStretch()
-    #     layout.addWidget(self.widgets.pause_resume)
-    #     layout.addWidget(convert)
-    #     return layout
-
-    # def init_input_file(self):
-    #     layout = QtWidgets.QHBoxLayout()
-    #     self.widgets.input_file = QtWidgets.QLineEdit("")
-    #     self.widgets.input_file.setReadOnly(True)
-    #     open_input_file = QtWidgets.QPushButton("...")
-    #     open_input_file.setFixedWidth(50)
-    #     open_input_file.setMaximumHeight(22)
-    #     open_input_file.setDefault(True)
-    #     layout.addWidget(QtWidgets.QLabel("Source File:"))
-    #     layout.addWidget(self.widgets.input_file)
-    #     layout.addWidget(open_input_file)
-    #     layout.setSpacing(10)
-    #     open_input_file.clicked.connect(lambda: self.open_file())
-    #     return layout
 
     def init_video_track_select(self):
         layout = QtWidgets.QHBoxLayout()
@@ -418,6 +377,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.flip.setItemIcon(3, QtGui.QIcon(rot_180_file))
         self.widgets.flip.setIconSize(QtCore.QSize(35, 35))
         self.widgets.flip.currentIndexChanged.connect(lambda: self.page_update())
+        self.widgets.flip.setFixedWidth(110)
         return self.widgets.flip
 
     def get_flips(self) -> Tuple[bool, bool]:
@@ -440,11 +400,16 @@ class Main(QtWidgets.QWidget):
         self.widgets.rotate.setItemIcon(3, QtGui.QIcon(rot_270_file))
         self.widgets.rotate.setIconSize(QtCore.QSize(35, 35))
         self.widgets.rotate.currentIndexChanged.connect(lambda: self.page_update())
+        self.widgets.rotate.setFixedWidth(130)
         return self.widgets.rotate
 
     def rotation_to_transpose(self):
         mapping = {0: None, 1: 1, 2: 4, 3: 2}
         return mapping[self.widgets.rotate.currentIndex()]
+
+    def transpose_to_rotation(self, transpose):
+        mapping = {None: 0, 1: 1, 4: 2, 2: 3}
+        return mapping[int(transpose) if transpose else None]
 
     def change_output_types(self):
         self.widgets.convert_to.clear()
@@ -771,7 +736,7 @@ class Main(QtWidgets.QWidget):
         result_list = []
         tasks = [
             Task(
-                f"Finding black bars at {timedelta(seconds=x)}",
+                f"Finding black bars at {self.number_to_time(x)}",
                 get_auto_crop,
                 dict(
                     source=self.input_video,
@@ -900,7 +865,7 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def scale_update(self):
-        if self.scale_updating:
+        if self.scale_updating or self.loading_video:
             return False
 
         self.scale_updating = True
@@ -989,6 +954,7 @@ class Main(QtWidgets.QWidget):
         self.scale_updating = False
 
     def clear_current_video(self):
+        self.loading_video = True
         self.app.fastflix.current_video = None
         self.input_video = None
         self.video_path_widget.setText(t("No Source Selected"))
@@ -997,9 +963,83 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget.setDisabled(True)
         for i in range(self.widgets.video_track.count()):
             self.widgets.video_track.removeItem(0)
-        self.widgets.convert_button.setDisabled(True)
-        self.widgets.convert_button.setStyleSheet("background-color:gray;")
         self.widgets.preview.setText(t("No Video File"))
+
+        self.widgets.deinterlace.setChecked(False)
+        self.widgets.remove_hdr.setChecked(False)
+        self.widgets.remove_metadata.setChecked(True)
+        self.widgets.chapters.setChecked(True)
+
+        self.widgets.flip.setCurrentIndex(0)
+        self.widgets.rotate.setCurrentIndex(0)
+
+        self.widgets.crop.top.setText("0")
+        self.widgets.crop.left.setText("0")
+        self.widgets.crop.right.setText("0")
+        self.widgets.crop.bottom.setText("0")
+        self.widgets.start_time.setText(self.number_to_time(0))
+        self.widgets.end_time.setText(self.number_to_time(0))
+        self.widgets.scale.width.setText("0")
+        self.widgets.scale.height.setText("Auto")
+        self.widgets.preview.setPixmap(QtGui.QPixmap())
+        self.loading_video = False
+
+    @reusables.log_exception("fastflix", show_traceback=True)
+    def reload_video_from_queue(self, video: Video):
+        self.loading_video = True
+
+        self.app.fastflix.current_video = video
+        self.input_video = video.source
+
+        text_video_tracks = [
+            f'{x.index}: {t("codec")} {x.codec_name} - {x.get("pix_fmt")} - {t("profile")} {x.get("profile")}'
+            for x in self.app.fastflix.current_video.streams.video
+        ]
+        self.widgets.video_track.clear()
+        self.widgets.video_track.addItems(text_video_tracks)
+
+        if self.app.fastflix.current_video.video_settings.crop:
+            width, height, left, top = self.app.fastflix.current_video.video_settings.crop.split(":")
+            right = str(self.app.fastflix.current_video.width - (int(width) + int(left)))
+            bottom = str(self.app.fastflix.current_video.height - (int(height) + int(top)))
+        else:
+            top, left, right, bottom = "0", "0", "0", "0"
+
+        end_time = self.app.fastflix.current_video.video_settings.end_time or video.duration
+
+        self.widgets.crop.top.setText(top)
+        self.widgets.crop.left.setText(left)
+        self.widgets.crop.right.setText(right)
+        self.widgets.crop.bottom.setText(bottom)
+        self.widgets.start_time.setText(self.number_to_time(video.video_settings.start_time))
+        self.widgets.end_time.setText(self.number_to_time(end_time))
+        self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
+        self.widgets.scale.height.setText(str(self.app.fastflix.current_video.height))
+        self.widgets.video_title.setText(self.app.fastflix.current_video.video_settings.video_title)
+        self.output_video_path_widget.setText(str(video.video_settings.output_path))
+        self.widgets.deinterlace.setChecked(self.app.fastflix.current_video.video_settings.deinterlace)
+        self.widgets.remove_metadata.setChecked(self.app.fastflix.current_video.video_settings.remove_metadata)
+        self.widgets.chapters.setChecked(self.app.fastflix.current_video.video_settings.copy_chapters)
+        self.widgets.remove_hdr.setChecked(self.app.fastflix.current_video.video_settings.remove_hdr)
+        self.widgets.rotate.setCurrentIndex(self.transpose_to_rotation(video.video_settings.rotate))
+        self.widgets.fast_time.setCurrentIndex(0 if video.video_settings.fast_seek else 1)
+
+        if video.video_settings.vertical_flip:
+            self.widgets.flip.setCurrentIndex(1)
+        if video.video_settings.horizontal_flip:
+            self.widgets.flip.setCurrentIndex(2)
+        if video.video_settings.vertical_flip and video.video_settings.horizontal_flip:
+            self.widgets.flip.setCurrentIndex(3)
+
+        self.video_options.new_source()
+        self.enable_all()
+
+        # TODO add encoder
+        # TODO add subtitles
+        # TODO add cover
+        # TODO add audio
+
+        self.loading_video = False
         self.page_update()
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -1010,6 +1050,7 @@ class Main(QtWidgets.QWidget):
             Task(t("Parse Video details"), parse),
             Task(t("Extract covers"), extract_attachments),
             Task(t("Determine HDR details"), parse_hdr_details),
+            Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.input_video)),
         ]
 
         try:
@@ -1067,6 +1108,8 @@ class Main(QtWidgets.QWidget):
         else:
             self.widgets.video_title.setText("")
 
+        self.widgets.deinterlace.setChecked(self.app.fastflix.current_video.video_settings.deinterlace)
+
         self.video_options.new_source()
         self.enable_all()
         # self.widgets.convert_button.setDisabled(False)
@@ -1089,7 +1132,7 @@ class Main(QtWidgets.QWidget):
 
     @staticmethod
     def number_to_time(number) -> str:
-        return str(timedelta(seconds=float(number)))[:10]
+        return str(timedelta(seconds=round(number, 2)))[:10]
 
     @property
     def start_time(self) -> float:
@@ -1111,23 +1154,24 @@ class Main(QtWidgets.QWidget):
     def copy_chapters(self) -> bool:
         return self.widgets.chapters.isChecked()
 
+    @property
+    def remove_hdr(self) -> bool:
+        return self.widgets.remove_hdr.isChecked()
+
     @reusables.log_exception("fastflix", show_traceback=False)
     def generate_thumbnail(self):
         if not self.input_video or self.loading_video:
             return
 
-        remove_hdr = False
+        settings = asdict(self.app.fastflix.current_video.video_settings)
+
         if (
             self.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"
             and self.app.fastflix.current_video.color_space.startswith("bt2020")
         ):
-            remove_hdr = True
+            settings["remove_hdr"] = True
 
-        filters = helpers.generate_filters(
-            custom_filters="scale='min(320\\,iw):-8'",
-            remove_hdr=remove_hdr,
-            **asdict(self.app.fastflix.current_video.video_settings),
-        )
+        filters = helpers.generate_filters(custom_filters="scale='min(320\\,iw):-8'", **settings)
 
         preview_place = (
             self.app.fastflix.current_video.duration // 10
@@ -1194,6 +1238,7 @@ class Main(QtWidgets.QWidget):
             end_time=end_time,
             selected_track=self.original_video_track,
             # stream_track=self.video_track,
+            fast_seek=self.fast_time,
             rotate=self.rotation_to_transpose(),
             vertical_flip=v_flip,
             horizontal_flip=h_flip,
@@ -1207,9 +1252,8 @@ class Main(QtWidgets.QWidget):
             # ffprobe=self.app.fastflix.config.ffprobe,
             # temp_dir=self.temp_dir_name,
             # output_video=self.output_video,
-            # remove_metadata=self.remove_metadata,
-            # copy_chapters=self.copy_chapters,
-            # fast_time=self.fast_time,
+            remove_metadata=self.remove_metadata,
+            copy_chapters=self.copy_chapters,
             video_title=self.title,
         )
 
@@ -1239,8 +1283,20 @@ class Main(QtWidgets.QWidget):
         self.app.fastflix.current_video.video_settings.conversion_commands = commands
         return True
 
+    def interlace_update(self):
+        if self.loading_video:
+            return
+        deinterlace = self.widgets.deinterlace.isChecked()
+        if not deinterlace and self.app.fastflix.current_video.interlaced:
+            error_message(
+                f"{t('This video has been detected to have an interlaced video.')}\n"
+                f"{t('Not deinterlacing will result in banding after encoding.')}",
+                title="Warning",
+            )
+        self.page_update()
+
     def page_update(self, build_thumbnail=True):
-        if not self.initialized or self.loading_video:
+        if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
             return
         self.last_page_update = time.time()
         self.video_options.refresh()
@@ -1385,9 +1441,20 @@ class Main(QtWidgets.QWidget):
         # TODO ask if ok
         # return
 
-        self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
+        video = self.app.fastflix.current_video
+
+        self.app.fastflix.queue.append(copy.deepcopy(video))
         self.video_options.update_queue()
         self.video_options.show_queue()
+
+        if self.converting:
+            commands = []
+            for command in video.video_settings.conversion_commands:
+                commands.append((video.uuid, command.uuid, command.command, str(video.work_path.name)))
+            requests = ["add_items", str(self.app.fastflix.log_path), tuple(commands)]
+            self.app.fastflix.worker_queue.put(tuple(requests))
+
+        self.clear_current_video()
         return True
 
     @reusables.log_exception("fastflix", show_traceback=False)

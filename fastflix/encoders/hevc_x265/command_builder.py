@@ -24,7 +24,7 @@ def build(fastflix: FastFlix):
     x265_params.append(f"aq-mode={settings.aq_mode}")
     x265_params.append(f"repeat-headers={'1' if settings.repeat_headers else '0'}")
 
-    if not settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
         x265_params.append(f"hdr10_opt={'1' if settings.hdr10_opt else '0'}")
 
         if fastflix.current_video.color_space.startswith("bt2020"):

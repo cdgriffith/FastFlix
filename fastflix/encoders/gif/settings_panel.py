@@ -17,11 +17,10 @@ class GIF(SettingPanel):
 
         grid = QtWidgets.QGridLayout()
 
-        self.widgets = Box(fps=None, remove_hdr=None, dither=None)
+        self.widgets = Box(fps=None, dither=None)
 
         grid.addLayout(self.init_dither(), 0, 0, 1, 2)
         grid.addLayout(self.init_fps(), 1, 0, 1, 2)
-        grid.addLayout(self._add_remove_hdr(), 2, 0, 1, 2)
         grid.addLayout(self._add_custom(), 11, 0, 1, 6)
 
         grid.addWidget(QtWidgets.QWidget(), 5, 0, 5, 6)
@@ -59,7 +58,6 @@ class GIF(SettingPanel):
     def update_video_encoder_settings(self):
         self.app.fastflix.current_video.video_settings.video_encoder_settings = GIFSettings(
             fps=int(self.widgets.fps.currentText()),
-            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             dither=self.widgets.dither.currentText(),
             extra=self.ffmpeg_extras,
             pix_fmt="yuv420p",  # hack for thumbnails to show properly

@@ -53,11 +53,10 @@ class VP9(SettingPanel):
 
         # grid.addWidget(QtWidgets.QLabel("VP9"), 0, 0)
 
-        self.widgets = Box(fps=None, remove_hdr=None, mode=None)
+        self.widgets = Box(fps=None, mode=None)
 
         self.mode = "CRF"
 
-        grid.addLayout(self._add_remove_hdr(), 2, 0, 1, 1)
         grid.addLayout(self.init_modes(), 0, 1, 4, 4)
         grid.addLayout(self.init_single_pass(), 6, 2, 1, 1)
 
@@ -157,7 +156,6 @@ class VP9(SettingPanel):
 
     def update_video_encoder_settings(self):
         settings = VP9Settings(
-            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             quality=self.widgets.quality.currentText(),
             speed=self.widgets.speed.currentText(),
             row_mt=int(self.widgets.row_mt.isChecked()),

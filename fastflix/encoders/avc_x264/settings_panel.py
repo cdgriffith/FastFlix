@@ -61,7 +61,7 @@ class AVC(SettingPanel):
 
         grid = QtWidgets.QGridLayout()
 
-        self.widgets = Box(remove_hdr=None, mode=None)
+        self.widgets = Box(mode=None)
 
         self.mode = "CRF"
         self.updating_settings = False
@@ -70,7 +70,6 @@ class AVC(SettingPanel):
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 2)
-        grid.addLayout(self._add_remove_hdr(), 2, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
         grid.addLayout(self.init_tune(), 4, 0, 1, 2)
         grid.addLayout(self.init_profile(), 5, 0, 1, 2)
@@ -163,7 +162,6 @@ class AVC(SettingPanel):
         tune = self.widgets.tune.currentText()
 
         settings = x264Settings(
-            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             profile=self.widgets.profile.currentText(),

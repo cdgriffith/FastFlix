@@ -17,12 +17,11 @@ class WEBP(SettingPanel):
 
         grid = QtWidgets.QGridLayout()
 
-        self.widgets = Box(fps=None, remove_hdr=None, dither=None)
+        self.widgets = Box(fps=None, dither=None)
 
         grid.addLayout(self.init_lossless(), 0, 0, 1, 2)
         grid.addLayout(self.init_compression(), 1, 0, 1, 2)
         grid.addLayout(self.init_preset(), 2, 0, 1, 2)
-        grid.addLayout(self._add_remove_hdr(), 3, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 2, 4)
 
@@ -89,7 +88,6 @@ class WEBP(SettingPanel):
         settings = WebPSettings(
             lossless="1" if lossless == "yes" else "0",
             compression=self.widgets.compression.currentText(),
-            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
             extra=self.ffmpeg_extras,
             pix_fmt="yuv420p",  # hack for thumbnails to show properly

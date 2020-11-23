@@ -13,7 +13,7 @@ from fastflix.shared import link
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
-from fastflix.resources import black_x_icon, down_arrow_icon, up_arrow_icon, play_icon, folder_icon
+from fastflix.resources import black_x_icon, down_arrow_icon, up_arrow_icon, play_icon, folder_icon, edit_box_icon
 from fastflix.shared import FastFlixInternalException, error_message, main_width, open_folder
 from fastflix.widgets.panels.abstract_list import FlixList
 
@@ -33,6 +33,7 @@ class EncodeItem(QtWidgets.QTabWidget):
             up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
             down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
             cancel_button=QtWidgets.QPushButton(QtGui.QIcon(black_x_icon), ""),
+            reload_buttom=QtWidgets.QPushButton(QtGui.QIcon(edit_box_icon), ""),
         )
 
         for widget in self.widgets.values():
@@ -90,7 +91,9 @@ class EncodeItem(QtWidgets.QTabWidget):
 
         if not self.currently_encoding:
             self.widgets.cancel_button.clicked.connect(lambda: self.parent.remove_item(self.video))
+            self.widgets.reload_buttom.clicked.connect(lambda: self.parent.reload_from_queue(self.video))
         self.widgets.cancel_button.setFixedWidth(25)
+        self.widgets.reload_buttom.setFixedWidth(25)
 
         grid = QtWidgets.QGridLayout()
         grid.addLayout(self.init_move_buttons(), 0, 0)
@@ -104,7 +107,11 @@ class EncodeItem(QtWidgets.QTabWidget):
             grid.addWidget(view_button, 0, 8)
             grid.addWidget(open_button, 0, 9)
 
-        grid.addWidget(self.widgets.cancel_button, 0, 10, alignment=QtCore.Qt.AlignRight)
+        right_buttons = QtWidgets.QHBoxLayout()
+        right_buttons.addWidget(self.widgets.reload_buttom)
+        right_buttons.addWidget(self.widgets.cancel_button)
+
+        grid.addLayout(right_buttons, 0, 10, alignment=QtCore.Qt.AlignRight)
         # grid.addLayout(disposition_layout, 0, 4)
         # grid.addWidget(self.widgets.burn_in, 0, 5)
         # grid.addLayout(self.init_language(), 0, 6)
@@ -189,5 +196,10 @@ class EncodingQueue(FlixList):
         self.app.processEvents()
 
     def remove_item(self, video):
+        self.app.fastflix.queue.remove(video)
+        self.new_source()
+
+    def reload_from_queue(self, video):
+        self.main.reload_video_from_queue(video)
         self.app.fastflix.queue.remove(video)
         self.new_source()

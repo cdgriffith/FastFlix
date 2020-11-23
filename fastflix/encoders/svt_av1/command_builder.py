@@ -20,7 +20,7 @@ def build(fastflix: FastFlix):
     settings: SVTAV1Settings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending = generate_all(fastflix, "libsvtav1")
 
-    if not settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
         if fastflix.current_video.color_space.startswith("bt2020"):
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"

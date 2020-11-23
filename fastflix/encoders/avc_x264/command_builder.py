@@ -18,7 +18,7 @@ def build(fastflix: FastFlix):
     if settings.profile and settings.profile != "default":
         beginning += f"-profile {settings.profile} "
 
-    if not settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
         if fastflix.current_video.color_space.startswith("bt2020"):
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"

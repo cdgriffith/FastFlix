@@ -67,7 +67,6 @@ class HEVC(SettingPanel):
         self.updating_settings = False
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 1)
-        grid.addLayout(self._add_remove_hdr(connect=lambda: self.setting_change()), 2, 0, 1, 1)
         grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 1)
         grid.addLayout(self.init_max_mux(), 4, 0, 1, 1)
         grid.addLayout(self.init_tune(), 5, 0, 1, 1)
@@ -345,9 +344,8 @@ class HEVC(SettingPanel):
             self.updating_settings = False
             return
 
-        remove_hdr = self.widgets.remove_hdr.currentIndex()
         bit_depth = self.app.fastflix.current_video.streams["video"][self.main.video_track].bit_depth
-        if remove_hdr == 1:
+        if self.main.remove_hdr == 1:
             self.widgets.pix_fmt.clear()
             self.widgets.pix_fmt.addItems([pix_fmts[0]])
             self.widgets.pix_fmt.setCurrentIndex(0)
@@ -383,7 +381,6 @@ class HEVC(SettingPanel):
         tune = self.widgets.tune.currentText()
 
         settings = x265Settings(
-            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
             intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
             max_muxing_queue_size=self.widgets.max_mux.currentText(),

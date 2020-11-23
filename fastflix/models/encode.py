@@ -33,7 +33,6 @@ class SubtitleTrack(BaseDataClass):
 
 @dataclass
 class EncoderSettings(BaseDataClass):
-    remove_hdr: bool = False
     max_muxing_queue_size: str = "1024"
     pix_fmt: str = "yuv420p10le"
     extra: str = ""

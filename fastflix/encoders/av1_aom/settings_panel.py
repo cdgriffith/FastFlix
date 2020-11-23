@@ -44,11 +44,10 @@ class AV1(SettingPanel):
 
         # grid.addWidget(QtWidgets.QLabel("FFMPEG libaom-av1_aom"), 0, 0)
 
-        self.widgets = Box(fps=None, remove_hdr=None, mode=None)
+        self.widgets = Box(fps=None, mode=None)
 
         self.mode = "CRF"
 
-        grid.addLayout(self._add_remove_hdr(), 0, 0, 1, 2)
         grid.addLayout(self.init_cpu_used(), 1, 0, 1, 2)
         grid.addLayout(self.init_row_mt(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 3, 0, 1, 2)
@@ -143,7 +142,6 @@ class AV1(SettingPanel):
     def update_video_encoder_settings(self):
 
         settings = AOMAV1Settings(
-            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             usage=self.widgets.usage.currentText(),
             cpu_used=self.widgets.cpu_used.currentText(),
             row_mt=self.widgets.row_mt.currentText(),

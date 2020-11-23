@@ -58,12 +58,11 @@ class SVT_AV1(SettingPanel):
 
         grid = QtWidgets.QGridLayout()
 
-        self.widgets = Box(fps=None, remove_hdr=None, mode=None, segment_size=None)
+        self.widgets = Box(fps=None, mode=None, segment_size=None)
 
         self.mode = "QP"
 
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
-        grid.addLayout(self._add_remove_hdr(), 1, 0, 1, 2)
         grid.addLayout(self.init_pix_fmt(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
@@ -150,7 +149,6 @@ class SVT_AV1(SettingPanel):
 
     def update_video_encoder_settings(self):
         settings = SVTAV1Settings(
-            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             speed=self.widgets.speed.currentText(),
             tile_columns=self.widgets.tile_columns.currentText(),
             tile_rows=self.widgets.tile_rows.currentText(),

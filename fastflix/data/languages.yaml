@@ -18,6 +18,8 @@ Auto Burn-in first forced or default subtitle track:
   en: Auto Burn-in first forced or default subtitle track
 Auto Crop:
   en: Auto Crop
+Automatically enabled when an interlaced video is detected:
+  en: Automatically enabled when an interlaced video is detected
 Bit Depth:
   en: Bit Depth
 Bitrate:
@@ -48,6 +50,10 @@ Convert:
   en: Convert
 Convert BT2020 colorspace into bt709:
   en: Convert BT2020 colorspace into bt709
+Copy Chapters:
+  en: Copy Chapters
+Copy the chapter markers as is from incoming source.:
+  en: Copy the chapter markers as is from incoming source.
 Cover:
   en: Cover
 Create Profile:
@@ -62,6 +68,8 @@ Deinterlace:
   en: Deinterlace
 Delete:
   en: Delete
+Detecting Interlace:
+  en: Detecting Interlace
 Determine HDR details:
   en: Determine HDR details
 Dither:
@@ -78,6 +86,8 @@ Enabled:
   en: Enabled
 Enabled automatically when --master-display or --max-cll is specified.:
   en: Enabled automatically when --master-display or --max-cll is specified.
+Enables the yadif filter.:
+  en: Enables the yadif filter.
 Encoder:
   en: Encoder
 Encoding Queue:
@@ -132,10 +142,14 @@ HDR10+ Metadata Extraction:
   en: HDR10+ Metadata Extraction
 HDR10+ Optimizations:
   en: HDR10+ Optimizations
+Have to select a video first:
+  en: Have to select a video first
 Initialize Encoders:
   en: Initialize Encoders
 Intra-encoding:
   en: Intra-encoding
+Invalid Crop:
+  en: Invalid Crop
 It is recommended that AQ-mode be enabled along with this feature:
   en: It is recommended that AQ-mode be enabled along with this feature
 It saves a few bits and can help performance in the client's tonemapper.:
@@ -154,6 +168,10 @@ New Profile:
   en: New Profile
 No Downmix:
   en: No Downmix
+No Source Selected:
+  en: No Source Selected
+No Video File:
+  en: No Video File
 No new items in queue to convert:
   en: No new items in queue to convert
 None:
@@ -208,6 +226,8 @@ Running command:
   en: Running command
 SVT-AV1 Encoding Guide:
   en: SVT-AV1 Encoding Guide
+Scrub away all incoming metadata, like video titles, unique markings and so on.:
+  en: Scrub away all incoming metadata, like video titles, unique markings and so on.
 Settings:
   en: Settings
 Single Pass (Bitrate):
@@ -252,6 +272,8 @@ Time Left:
   en: Time Left
 Title:
   en: Title
+Total video height must be greater than 0:
+  en: Total video height must be greater than 0
 Tune:
   en: Tune
 Tune the settings for a particular type of source or situation:

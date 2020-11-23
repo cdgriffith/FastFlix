@@ -62,7 +62,6 @@ class RAV1E(SettingPanel):
         self.mode = "QP"
 
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
-        grid.addLayout(self._add_remove_hdr(), 1, 0, 1, 2)
         grid.addLayout(self.init_tiles(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
@@ -133,7 +132,6 @@ class RAV1E(SettingPanel):
 
     def update_video_encoder_settings(self):
         settings = rav1eSettings(
-            remove_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             speed=self.widgets.speed.currentText(),
             tile_columns=self.widgets.tile_columns.currentText(),
             tile_rows=self.widgets.tile_rows.currentText(),

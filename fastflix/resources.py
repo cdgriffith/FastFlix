@@ -25,3 +25,4 @@ settings_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/s
 folder_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/folder.png")).resolve())
 play_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/play.png")).resolve())
 profile_add_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/text-document-add.png")).resolve())
+edit_box_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/edit-box.png")).resolve())

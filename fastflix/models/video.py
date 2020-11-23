@@ -32,6 +32,7 @@ class VideoSettings(BaseDataClass):
     rotate: Union[str, None] = None
     vertical_flip: bool = False
     horizontal_flip: bool = False
+    remove_hdr: bool = False
     remove_metadata: bool = True
     copy_chapters: bool = True
     video_title: str = ""
@@ -76,6 +77,7 @@ class Video(BaseDataClass):
     work_path: TemporaryDirectory = None
     pix_fmt: str = ""
     format: Box = None
+    interlaced: bool = True
 
     # Color Range Details
     color_space: str = ""
