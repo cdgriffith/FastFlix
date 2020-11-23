@@ -115,10 +115,13 @@ def generate_filters(
     burn_in_subtitle_track=None,
     custom_filters=None,
     raw_filters=False,
+    deinterlace=False,
     **_,
 ):
 
     filter_list = []
+    if deinterlace:
+        filter_list.append(f"yadif")
     if crop:
         filter_list.append(f"crop={crop}")
     if scale:

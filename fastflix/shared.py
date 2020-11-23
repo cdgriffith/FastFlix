@@ -27,6 +27,7 @@ except AttributeError:
 from qtpy import QtCore, QtGui, QtWidgets
 
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
 main_width = 800
 

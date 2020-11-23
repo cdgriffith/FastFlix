@@ -76,6 +76,8 @@ class VideoOptions(QtWidgets.QTabWidget):
             settings.update(subtitle_settings)
         if getattr(self.main.current_encoder, "enable_attachments", False):
             settings.update(self.attachments.get_settings())
+
+        self.main.container.profile.update_settings()
         return settings
 
     def new_source(self):
@@ -87,12 +89,14 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
         self.current_settings.new_source()
         self.queue.new_source()
+        self.main.container.profile.update_settings()
 
     def refresh(self):
         if getattr(self.main.current_encoder, "enable_audio", False):
             self.audio.refresh()
         if getattr(self.main.current_encoder, "enable_subtitles", False):
             self.subtitles.refresh()
+        self.main.container.profile.update_settings()
 
     def update_profile(self):
         self.current_settings.update_profile()

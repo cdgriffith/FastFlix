@@ -4,12 +4,20 @@ Adaptive Quantization:
   en: Adaptive Quantization
 Add to Queue:
   en: Add to Queue
+All:
+  en: All
 All queue items have completed:
   en: All queue items have completed
 Audio:
   en: Audio
 Audio Tracks:
   en: Audio Tracks
+Audio select language:
+  en: Audio select language
+Auto Burn-in first forced or default subtitle track:
+  en: Auto Burn-in first forced or default subtitle track
+Auto Crop:
+  en: Auto Crop
 Bit Depth:
   en: Bit Depth
 Bitrate:
@@ -42,12 +50,16 @@ Convert BT2020 colorspace into bt709:
   en: Convert BT2020 colorspace into bt709
 Cover:
   en: Cover
+Create Profile:
+  en: Create Profile
 Custom ffmpeg options:
   en: Custom ffmpeg options
 Default disabled.:
   en: Default disabled.
 'Default: AQ enabled with auto-variance':
   en: 'Default: AQ enabled with auto-variance'
+Deinterlace:
+  en: Deinterlace
 Delete:
   en: Delete
 Determine HDR details:
@@ -56,8 +68,12 @@ Dither:
   en: Dither
 Dither is an intentionally applied form of noise used to randomize quantization error,:
   en: Dither is an intentionally applied form of noise used to randomize quantization error,
+Downloading FFmpeg:
+  en: Downloading FFmpeg
 Enable row based multi-threading:
   en: Enable row based multi-threading
+Enable the yadif filter:
+  en: Enable the yadif filter
 Enabled:
   en: Enabled
 Enabled automatically when --master-display or --max-cll is specified.:
@@ -74,6 +90,8 @@ Encoding complete:
   en: Encoding complete
 Enforce an encode profile:
   en: Enforce an encode profile
+Error Updating Thumbnail:
+  en: Error Updating Thumbnail
 Estimated file size based on bitrate:
   en: Estimated file size based on bitrate
 Estimated time left for current command:
@@ -132,8 +150,14 @@ Log2 of number of tile rows to encode faster (lesser quality):
   en: Log2 of number of tile rows to encode faster (lesser quality)
 Max Muxing Queue Size:
   en: Max Muxing Queue Size
+New Profile:
+  en: New Profile
 No Downmix:
   en: No Downmix
+No new items in queue to convert:
+  en: No new items in queue to convert
+None:
+  en: None
 Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.:
   en: Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.
 Open Directory:
@@ -150,6 +174,8 @@ Preset:
   en: Preset
 Profile:
   en: Profile
+Profile Name:
+  en: Profile Name
 Quality:
   en: Quality
 Quality and compression efficiency vs speed trade-off:
@@ -170,6 +196,8 @@ Ready to encode:
   en: Ready to encode
 Remove HDR:
   en: Remove HDR
+Remove Metadata:
+  en: Remove Metadata
 Repeat Headers:
   en: Repeat Headers
 Row Multi-Threading:
@@ -198,6 +226,8 @@ Source width:
   en: Source width
 Speed:
   en: Speed
+Subtitle select language:
+  en: Subtitle select language
 Subtitles:
   en: Subtitles
 Success:
@@ -242,6 +272,8 @@ Width must be divisible by 2:
   en: Width must be divisible by 2
 Width must be divisible by 2 - Source width:
   en: Width must be divisible by 2 - Source width
+Work Directory:
+  en: Work Directory
 all conversions complete:
   en: all conversions complete
 and you want keyframes to be random access points.:
@@ -282,6 +314,8 @@ none:
   en: none
 of:
   en: of
+out file is already in queue:
+  en: out file is already in queue
 preset:
   en: preset
 'preset: The slower the preset, the better the compression and quality':
@@ -298,6 +332,8 @@ rav1e github:
   en: rav1e github
 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.':
   en: 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.'
+starting next command:
+  en: starting next command
 subtitle tracks found:
   en: subtitle tracks found
 the resolution-to-:

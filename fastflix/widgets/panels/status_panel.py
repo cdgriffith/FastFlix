@@ -11,8 +11,6 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.shared import time_to_number
 
-splitter = re.compile(r"\s+[a-zA-Z]")
-
 logger = logging.getLogger("fastflix")
 
 
@@ -131,9 +129,14 @@ class Logs(QtWidgets.QTextBrowser):
             return
         if msg.startswith("frame="):
             try:
-                details = [x.split("=") for x in splitter.split(msg)]
-                self.status_panel.speed.emit(f"{details[-3][1].strip()}|{details[-1][1].strip().rstrip('x')}")
-                self.status_panel.bitrate.emit(details[-2][1])
+                output = []
+                for i in (x.strip().split() for x in msg.split("=")):
+                    output.extend(i)
+
+                frame = dict(zip(output[0::2], output[1::2]))
+
+                self.status_panel.speed.emit(f"{frame.get('time', '')}|{frame.get('speed', '').rstrip('x')}")
+                self.status_panel.bitrate.emit(frame.get("bitrate", ""))
             except Exception:
                 pass
         self.append(msg)

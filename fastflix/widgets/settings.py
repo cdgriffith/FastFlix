@@ -4,10 +4,15 @@ import shutil
 from pathlib import Path
 
 from box import Box
+from iso639 import Lang
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import FastFlixInternalException, error_message
+from fastflix.language import t
+
+
+language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 
 class Settings(QtWidgets.QWidget):
@@ -15,7 +20,7 @@ class Settings(QtWidgets.QWidget):
         super().__init__(None, *args, **kwargs)
         self.app = app
         self.config_file = self.app.fastflix.config.config_path
-        self.setWindowTitle("Settings")
+        self.setWindowTitle(t("Settings"))
         self.setMinimumSize(600, 200)
         layout = QtWidgets.QGridLayout()
 
@@ -37,7 +42,7 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.ffprobe_path, 1, 1)
         layout.addWidget(ffprobe_path_button, 1, 2)
 
-        work_dir_label = QtWidgets.QLabel("Work Directory")
+        work_dir_label = QtWidgets.QLabel(t("Work Directory"))
         self.work_dir = QtWidgets.QLineEdit()
         self.work_dir.setText(str(self.app.fastflix.config.work_path))
         work_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
@@ -48,6 +53,12 @@ class Settings(QtWidgets.QWidget):
 
         layout.addWidget(QtWidgets.QLabel("Config File"), 4, 0)
         layout.addWidget(QtWidgets.QLabel(str(self.config_file)), 4, 1)
+
+        language_combo = QtWidgets.QComboBox(self)
+        language_combo.addItems(language_list)
+
+        layout.addWidget(QtWidgets.QLabel(t("Language")), 5, 0)
+        layout.addWidget(language_combo, 5, 1)
 
         config_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileIcon))
         config_button.pressed.connect(
@@ -78,16 +89,16 @@ class Settings(QtWidgets.QWidget):
         else:
             self.disable_burn_in.setChecked(False)
 
-        layout.addWidget(self.use_sane_audio, 5, 0, 1, 2)
-        layout.addWidget(self.disable_version_check, 6, 0, 1, 2)
-        layout.addWidget(self.disable_burn_in, 7, 0, 1, 2)
+        layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
+        layout.addWidget(self.disable_version_check, 8, 0, 1, 2)
+        layout.addWidget(self.disable_burn_in, 9, 0, 1, 2)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
         button_layout.addWidget(cancel)
         button_layout.addWidget(save)
 
-        layout.addLayout(button_layout, 10, 0, 1, 3)
+        layout.addLayout(button_layout, 11, 0, 1, 3)
 
         self.setLayout(layout)
 

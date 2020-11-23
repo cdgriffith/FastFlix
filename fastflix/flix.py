@@ -271,6 +271,40 @@ def get_auto_crop(
     result_list.append([video_width - width - x_crop, video_height - height - y_crop, x_crop, y_crop])
 
 
+def detect_interlaced(app: FastFlixApp, config: Config, source: Path):
+    """ http://www.aktau.be/2013/09/22/detecting-interlaced-video-with-ffmpeg/ """
+
+    # Interlaced
+    # [Parsed_idet_0 @ 0000021fd1b78f00] Repeated Fields: Neither:   815 Top:    88 Bottom:    98
+    # [Parsed_idet_0 @ 0000021fd1b78f00] Single frame detection: TFF:   693 BFF:     0 Progressive:    39 Undetermined:   269
+    # [Parsed_idet_0 @ 0000021fd1b78f00] Multi frame detection: TFF:   911 BFF:     0 Progressive:    41 Undetermined:    49
+
+    # Progressive
+    # [Parsed_idet_0 @ 000002b58c42d480] Repeated Fields: Neither:  1000 Top:     0 Bottom:     0
+    # [Parsed_idet_0 @ 000002b58c42d480] Single frame detection: TFF:     0 BFF:     0 Progressive:   641 Undetermined:   359
+    # [Parsed_idet_0 @ 000002b58c42d480] Multi frame detection: TFF:     0 BFF:     0 Progressive:   953 Undetermined:    47
+
+    output = execute(
+        [
+            f'"{config.ffmpeg}"',
+            "-hide_banner",
+            "-i",
+            f'"{source}"',
+            "-vf",
+            "idet",
+            "-frames:v",
+            "1000",
+            "-an",
+            "-sn",
+            "-dn",
+            "-f",
+            "rawvideo",
+            "NUL",
+            "-y",
+        ]
+    )
+
+
 def ffmpeg_audio_encoders(app, config: Config) -> List:
     cmd = execute([f'"{config.ffmpeg}"', "-hide_banner", "-encoders"])
     encoders = []

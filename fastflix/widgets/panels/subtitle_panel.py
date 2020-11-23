@@ -199,7 +199,7 @@ class SubtitleList(FlixList):
         self.tracks = []
         for index, track in enumerate(self.app.fastflix.current_video.streams.subtitle):
             enabled = True
-            if self.app.fastflix.config.opt("subtitle_only_preferred_language"):
+            if self.app.fastflix.config.opt("subtitle_select_preferred_language"):
                 enabled = False
                 if Lang(self.app.fastflix.config.opt("subtitle_language")) == Lang(
                     track.get("tags", {}).get("language")

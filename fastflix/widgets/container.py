@@ -22,6 +22,7 @@ from fastflix.widgets.logs import Logs
 from fastflix.widgets.main import Main
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
+from fastflix.widgets.profile_window import ProfileWindow
 
 logger = logging.getLogger("fastflix")
 
@@ -38,6 +39,7 @@ class Container(QtWidgets.QMainWindow):
         self.init_menu()
 
         self.main = Main(self, app)
+        self.profile = ProfileWindow(self.app, self.main)
 
         self.setCentralWidget(self.main)
         # self.setMinimumSize(QtCore.QSize(1000, 650))
@@ -135,6 +137,10 @@ class Container(QtWidgets.QMainWindow):
     def show_setting(self):
         self.setting = Settings(self.app)
         self.setting.show()
+
+    def show_profile(self):
+
+        self.profile.show()
 
     def show_logs(self):
         self.logs.show()

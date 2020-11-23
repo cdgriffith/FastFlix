@@ -39,6 +39,7 @@ class VideoSettings(BaseDataClass):
     output_path: Path = None
     scale: Union[str, None] = None
     ffmpeg_extra: str = ""
+    deinterlace: bool = False
     video_encoder_settings: Union[
         x265Settings,
         x264Settings,

@@ -43,9 +43,16 @@ class Profile:
     copy_chapters: bool = True
     remove_metadata: bool = True
     encoder: str = "HEVC (x265)"
+
+    audio_language: str = "en"
+    audio_select: bool = True
+    audio_select_preferred_language: bool = True
+
     subtitle_language: str = "en"
+    subtitle_select: bool = False
+    subtitle_select_preferred_language: bool = True
     subtitle_automatic_burn_in: bool = True
-    subtitle_only_preferred_language: bool = True
+
     x265: x265Settings = field(default_factory=x265Settings)
     x264: x264Settings = field(default_factory=x264Settings)
     rav1e: rav1eSettings = field(default_factory=rav1eSettings)

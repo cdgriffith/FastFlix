@@ -39,6 +39,7 @@ from fastflix.resources import (
     video_add_icon,
     video_playlist_icon,
     folder_icon,
+    profile_add_icon,
 )
 from fastflix.shared import FastFlixInternalException, error_message, file_date, time_to_number
 from fastflix.widgets.progress_bar import ProgressBar, Task
@@ -187,12 +188,21 @@ class Main(QtWidgets.QWidget):
         top_bar.addWidget(self.widgets.convert_button)
         top_bar.addStretch(1)
 
+        add_profile = QtWidgets.QPushButton(QtGui.QIcon(profile_add_icon), t("New Profile"))
+        # add_profile.setFixedSize(QtCore.QSize(40, 40))
+        add_profile.setFixedHeight(40)
+        add_profile.setIconSize(QtCore.QSize(22, 22))
+        add_profile.setToolTip(t("Profile"))
+        add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
+        add_profile.clicked.connect(lambda: self.container.show_profile())
+
         options = QtWidgets.QPushButton(QtGui.QIcon(settings_icon), "")
         options.setFixedSize(QtCore.QSize(40, 40))
         options.setIconSize(QtCore.QSize(22, 22))
         options.setToolTip(t("Settings"))
         options.clicked.connect(lambda: self.container.show_setting())
 
+        top_bar.addWidget(add_profile)
         top_bar.addWidget(options)
 
         return top_bar
@@ -265,7 +275,7 @@ class Main(QtWidgets.QWidget):
         transform_layout.addWidget(self.init_flip(), stretch=True)
 
         metadata_layout = QtWidgets.QVBoxLayout()
-        self.widgets.remove_metadata = QtWidgets.QCheckBox("Remove Metadata")
+        self.widgets.remove_metadata = QtWidgets.QCheckBox(t("Remove Metadata"))
         self.widgets.remove_metadata.setChecked(True)
         self.widgets.remove_metadata.toggled.connect(self.page_update)
         self.widgets.remove_metadata.setToolTip(
@@ -280,6 +290,22 @@ class Main(QtWidgets.QWidget):
         metadata_layout.addWidget(self.widgets.chapters)
 
         transform_layout.addLayout(metadata_layout)
+
+        self.widgets.deinterlace = QtWidgets.QCheckBox(t("Deinterlace"))
+        self.widgets.deinterlace.setChecked(False)
+        self.widgets.deinterlace.toggled.connect(self.page_update)
+        self.widgets.deinterlace.setToolTip(t("Enable the yadif filter"))
+
+        self.widgets.remove_hdr = QtWidgets.QCheckBox(t("Remove HDR"))
+        self.widgets.remove_hdr.setChecked(False)
+        self.widgets.remove_hdr.toggled.connect(self.page_update)
+        self.widgets.remove_hdr.setToolTip("")
+
+        extra_details_layout = QtWidgets.QVBoxLayout()
+        extra_details_layout.addWidget(self.widgets.deinterlace)
+        extra_details_layout.addWidget(self.widgets.remove_hdr)
+
+        transform_layout.addLayout(extra_details_layout)
 
         layout.addLayout(transform_layout)
         layout.addWidget(self.init_start_time())
@@ -1172,6 +1198,7 @@ class Main(QtWidgets.QWidget):
             vertical_flip=v_flip,
             horizontal_flip=h_flip,
             output_path=Path(self.output_video),
+            deinterlace=self.widgets.deinterlace.isChecked(),
             # streams=self.app.fastflix.current_video.streams,
             # format_info=self.app.fastflix.current_video.format,
             # work_dir=self.app.fastflix.current_video.work_path,
