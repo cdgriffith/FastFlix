@@ -93,6 +93,15 @@ class Container(QtWidgets.QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction(exit_action)
 
+        profile_menu = menubar.addMenu("&Profiles")
+        new_profile_action = QtWidgets.QAction("New Profile", self)
+        new_profile_action.triggered.connect(self.show_profile)
+
+        delete_profile_action = QtWidgets.QAction("Delete Current Profile", self)
+        delete_profile_action.triggered.connect(self.delete_profile)
+        profile_menu.addAction(new_profile_action)
+        profile_menu.addAction(delete_profile_action)
+
         about_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), "&About", self)
         about_action.triggered.connect(self.show_about)
 
@@ -139,8 +148,10 @@ class Container(QtWidgets.QMainWindow):
         self.setting.show()
 
     def show_profile(self):
-
         self.profile.show()
+
+    def delete_profile(self):
+        self.profile.delete_current_profile()
 
     def show_logs(self):
         self.logs.show()

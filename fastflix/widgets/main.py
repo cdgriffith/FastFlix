@@ -13,6 +13,7 @@ from datetime import timedelta
 from pathlib import Path
 from queue import Queue
 from typing import Dict, List, Tuple, Union
+from dataclasses import dataclass, field
 
 import pkg_resources
 import reusables
@@ -54,6 +55,55 @@ root = os.path.abspath(os.path.dirname(__file__))
 only_int = QtGui.QIntValidator()
 
 
+@dataclass
+class CropWidgets:
+    top: QtWidgets.QLineEdit = None
+    bottom: QtWidgets.QLineEdit = None
+    left: QtWidgets.QLineEdit = None
+    right: QtWidgets.QLineEdit = None
+
+
+@dataclass
+class ScaleWidgets:
+    width: QtWidgets.QLineEdit = None
+    height: QtWidgets.QLineEdit = None
+    keep_aspect: QtWidgets.QCheckBox = None
+
+
+@dataclass
+class MainWidgets:
+    start_time: QtWidgets.QLineEdit = None
+    end_time: QtWidgets.QLineEdit = None
+    video_track: QtWidgets.QComboBox = None
+    rotate: QtWidgets.QComboBox = None
+    flip: QtWidgets.QComboBox = None
+    crop: CropWidgets = field(default_factory=CropWidgets)
+    scale: ScaleWidgets = field(default_factory=ScaleWidgets)
+    remove_metadata: QtWidgets.QCheckBox = None
+    chapters: QtWidgets.QCheckBox = None
+    fast_time: QtWidgets.QComboBox = None
+    preview: QtWidgets.QLabel = None
+    convert_to: QtWidgets.QComboBox = None
+    convert_button: QtWidgets.QPushButton = None
+    deinterlace: QtWidgets.QCheckBox = None
+    remove_hdr: QtWidgets.QCheckBox = None
+    video_title: QtWidgets.QLineEdit = None
+    profile_box: QtWidgets.QComboBox = None
+    # pause_resume=QtWidgets.QPushButton("Pause")
+
+    def items(self):
+        for field in dir(self):
+            if field.startswith("_"):
+                pass
+            if field in ("crop", "scale"):
+                for sub_field in dir(getattr(self, field)):
+                    if sub_field.startswith("_"):
+                        pass
+                    yield sub_field, getattr(getattr(self, field), sub_field)
+            else:
+                yield field, getattr(self, field)
+
+
 class Main(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal(int)
@@ -89,22 +139,8 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
         self.video_path_widget.setEnabled(False)
 
-        self.widgets = Box(
-            start_time=None,
-            end_time=None,
-            video_track=None,
-            rotate=None,
-            flip=None,
-            crop=Box(top=None, bottom=None, left=None, right=None),
-            scale=Box(width=None, height=None, keep_aspect=None),
-            remove_metadata=None,
-            chapters=None,
-            fast_time=None,
-            preview=None,
-            convert_to=None,
-            convert_button=None,
-            pause_resume=QtWidgets.QPushButton("Pause"),
-        )
+        self.widgets: MainWidgets = MainWidgets()
+
         self.buttons = []
 
         self.thumb_file = Path(self.app.fastflix.config.work_path, "thumbnail_preview.png")
@@ -174,7 +210,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.profile_box = QtWidgets.QComboBox()
         self.widgets.profile_box.setStyleSheet("text-align: center;")
         self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
-        self.widgets.profile_box.setCurrentText(self.app.fastflix.config.default_profile)
+        self.widgets.profile_box.setCurrentText(self.app.fastflix.config.selected_profile)
         self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
         self.widgets.profile_box.setMinimumWidth(150)
         self.widgets.profile_box.setFixedHeight(40)
@@ -340,18 +376,24 @@ class Main(QtWidgets.QWidget):
         return layout
 
     def set_profile(self):
+        if self.loading_video:
+            return
         # TODO Have to update all the defaults
         # self.video_options.new_source()
         # previous_auto_crop = self.app.fastflix.config.opt("auto_crop")
-        self.app.fastflix.config.default_profile = self.widgets.profile_box.currentText()
+        self.app.fastflix.config.selected_profile = self.widgets.profile_box.currentText()
         self.app.fastflix.config.save()
         self.widgets.convert_to.setCurrentText(f"   {self.app.fastflix.config.opt('encoder')}")
         if self.app.fastflix.config.opt("auto_crop") and not self.build_crop():
             self.get_auto_crop()
         self.loading_video = True
         self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
-        self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") // 90)
-        self.widgets.flip.setCurrentIndex(self.app.fastflix.config.opt("flip"))
+        self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") or 0 // 90)
+
+        v_flip = self.app.fastflix.config.opt("vertical_flip")
+        h_flip = self.app.fastflix.config.opt("horizontal_flip")
+
+        self.widgets.flip.setCurrentIndex(self.flip_to_int(v_flip, h_flip))
         # self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
         # self.video_options.update_profile()
         # Hack to prevent a lot of thumbnail generation
@@ -383,6 +425,10 @@ class Main(QtWidgets.QWidget):
     def get_flips(self) -> Tuple[bool, bool]:
         mapping = {0: (False, False), 1: (True, False), 2: (False, True), 3: (True, True)}
         return mapping[self.widgets.flip.currentIndex()]
+
+    def flip_to_int(self, vertical_flip: bool, horizontal_flip: bool) -> int:
+        mapping = {(False, False): 0, (True, False): 1, (False, True): 2, (True, True): 3}
+        return mapping[(vertical_flip, horizontal_flip)]
 
     def init_rotate(self):
         self.widgets.rotate = QtWidgets.QComboBox()

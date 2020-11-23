@@ -65,7 +65,7 @@ class SettingPanel(QtWidgets.QWidget):
                 widget_name, self.app.fastflix.config.encoder_opt(self.profile_name, opt), options
             )
             self.opts[widget_name] = opt
-        self.widgets[widget_name].setCurrentIndex(default)
+        self.widgets[widget_name].setCurrentIndex(default or 0)
         self.widgets[widget_name].setDisabled(not enabled)
         if tooltip:
             self.widgets[widget_name].setToolTip(self.translate_tip(tooltip))

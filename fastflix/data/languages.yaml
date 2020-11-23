@@ -54,6 +54,8 @@ Copy Chapters:
   en: Copy Chapters
 Copy the chapter markers as is from incoming source.:
   en: Copy the chapter markers as is from incoming source.
+Could not load config file!:
+  en: Could not load config file!
 Cover:
   en: Cover
 Create Profile:
@@ -298,6 +300,8 @@ Work Directory:
   en: Work Directory
 all conversions complete:
   en: all conversions complete
+already exists:
+  en: already exists
 and you want keyframes to be random access points.:
   en: and you want keyframes to be random access points.
 'aq-mode: Adaptive Quantization operating mode.':
@@ -324,6 +328,8 @@ good is the default and recommended for most applications:
   en: 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.'
 'hdr10: Force signaling of HDR10 parameters in SEI packets.':
   en: 'hdr10: Force signaling of HDR10 parameters in SEI packets.'
+is a default profile and will not be removed:
+  en: is a default profile and will not be removed
 is extremely source dependant:
   en: is extremely source dependant
 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)':

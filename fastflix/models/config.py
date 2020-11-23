@@ -39,9 +39,11 @@ class Profile:
     keep_aspect_ratio: bool = True
     fast_seek: bool = True
     rotate: int = 0
-    flip: int = 0
+    vertical_flip: bool = False
+    horizontal_flip: bool = False
     copy_chapters: bool = True
     remove_metadata: bool = True
+    remove_hdr: bool = False
     encoder: str = "HEVC (x265)"
 
     audio_language: str = "en"
@@ -61,19 +63,6 @@ class Profile:
     aom_av1: AOMAV1Settings = field(default_factory=AOMAV1Settings)
     gif: GIFSettings = field(default_factory=GIFSettings)
     webp: WebPSettings = field(default_factory=WebPSettings)
-    # x265_mode: str = "crf"
-    # x265_crf: int = 28
-    # x265_bitrate: str = "28000k"
-    # x265_preset: str = "medium"
-    # x265_tune: str = "default"
-    # x265_profile: str = "default"
-    # x265_hdr10_signaling: bool = False
-    # x265_hdr10_opt: bool = True
-    # x265_dhdr10_opt: bool = False
-    # x265_repeat_headers: bool = True
-    # x265_aq: int = 2
-    # x265_params: str = ""
-    # x265_intra_encoding: bool = False
 
 
 def get_preset_defaults():
@@ -96,7 +85,7 @@ class Config:
     continue_on_failure: bool = True
     work_path: Path = fastflix_folder
     use_sane_audio: bool = True
-    default_profile: str = "Standard Profile"
+    selected_profile: str = "Standard Profile"
     disable_version_check: bool = False
     disable_update_check: bool = False
     disable_automatic_subtitle_burn_in: bool = False
@@ -124,13 +113,13 @@ class Config:
     )
 
     def encoder_opt(self, profile_name, profile_option_name):
-        encoder_settings = getattr(self.profiles[self.default_profile], profile_name)
+        encoder_settings = getattr(self.profiles[self.selected_profile], profile_name)
         return getattr(encoder_settings, profile_option_name)
 
     def opt(self, profile_option_name, default=NO_OPT):
         if default != NO_OPT:
-            return getattr(self.profiles[self.default_profile], profile_option_name, default)
-        return getattr(self.profiles[self.default_profile], profile_option_name)
+            return getattr(self.profiles[self.selected_profile], profile_option_name, default)
+        return getattr(self.profiles[self.selected_profile], profile_option_name)
 
     def find_ffmpeg_file(self, name):
         if ff_location := shutil.which(name):
@@ -166,7 +155,7 @@ class Config:
             raise ConfigError(f"{self.config_path}: {err}")
         paths = ("work_path", "ffmpeg", "ffprobe")
         for key, value in data.items():
-            if key == "defaults":
+            if key == "profiles":
                 self.profiles = {k: Profile(**v) for k, v in value.items() if k != "Standard Profile"}
                 continue
             if key in self and key not in ("config_path", "version"):
@@ -177,7 +166,10 @@ class Config:
         if not self.ffprobe or not self.ffprobe.exists():
             self.find_ffmpeg_file("ffprobe")
 
-        self.profiles = get_preset_defaults()
+        self.profiles.update(get_preset_defaults())
+
+        if self.selected_profile not in self.profiles:
+            self.selected_profile = "Standard Profile"
 
     def save(self):
         items = asdict(self)

@@ -61,7 +61,7 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(language_combo, 5, 1)
 
         config_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileIcon))
-        config_button.pressed.connect(
+        config_button.clicked.connect(
             lambda: QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(self.config_file)))
         )
         layout.addWidget(config_button, 4, 2)
