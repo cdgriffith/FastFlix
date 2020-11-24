@@ -12,6 +12,7 @@ from fastflix.models.encode import AudioTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import down_arrow_icon, up_arrow_icon
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.resources import copy_icon, black_x_icon
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
@@ -60,8 +61,8 @@ class Audio(QtWidgets.QTabWidget):
             up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
             down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
             enable_check=QtWidgets.QCheckBox(t("Enabled")),
-            dup_button=QtWidgets.QPushButton("➕"),
-            delete_button=QtWidgets.QPushButton("⛔"),
+            dup_button=QtWidgets.QPushButton(QtGui.QIcon(copy_icon), ""),
+            delete_button=QtWidgets.QPushButton(QtGui.QIcon(black_x_icon), ""),
             language=QtWidgets.QComboBox(),
             downmix=QtWidgets.QComboBox(),
             convert_to=None,
@@ -328,6 +329,13 @@ class AudioList(FlixList):
         self.available_audio_encoders = app.fastflix.audio_encoders
         self.app = app
 
+    def lang_match(self, track):
+        if not self.app.fastflix.config.opt("audio_select_preferred_language"):
+            return True
+        if Lang(self.app.fastflix.config.opt("audio_language")) == Lang(track.get("tags", {}).get("language")):
+            return True
+        return False
+
     def new_source(self, codecs):
         self.tracks = []
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
@@ -356,6 +364,7 @@ class AudioList(FlixList):
                 codecs=codecs,
                 channels=x.channels,
                 available_audio_encoders=self.available_audio_encoders,
+                enabled=self.lang_match(x),
                 all_info=x,
             )
             self.tracks.append(new_item)
@@ -365,6 +374,7 @@ class AudioList(FlixList):
             self.tracks[-1].set_last()
 
         super()._new_source(self.tracks)
+        self.app.fastflix.current_video.video_settings.audio_tracks = self.tracks
 
     def allowed_formats(self, allowed_formats=None):
         if not allowed_formats:

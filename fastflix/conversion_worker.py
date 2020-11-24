@@ -103,6 +103,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             if commands_to_run:
                 logger.info(t("starting next command"))
                 start_command()
+                continue
             else:
                 logger.info(t("all conversions complete"))
                 # Finished the queue

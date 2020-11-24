@@ -54,12 +54,17 @@ class x265Settings(EncoderSettings):
     crf: Union[int, None] = None
     bitrate: Union[str, None] = None
     x265_params: List[str] = field(default_factory=list)
+    bframes: int = 4
+    lossless: bool = False
+    b_adapt: int = 2
+    intra_refresh: bool = False
+    intra_smoothing: bool = True
+    frame_threads: int = 0
 
 
 @dataclass
 class x264Settings(EncoderSettings):
     name = "AVC (x264)"
-
     preset: str = "medium"
     profile: str = "default"
     tune: str = "default"

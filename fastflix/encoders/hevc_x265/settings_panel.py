@@ -11,6 +11,7 @@ from fastflix.language import t
 from fastflix.models.encode import x265Settings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
+from fastflix.resources import warning_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -67,23 +68,24 @@ class HEVC(SettingPanel):
         self.updating_settings = False
 
         grid.addLayout(self.init_preset(), 1, 0, 1, 1)
-        grid.addLayout(self.init_intra_encoding(), 3, 0, 1, 1)
-        grid.addLayout(self.init_max_mux(), 4, 0, 1, 1)
-        grid.addLayout(self.init_tune(), 5, 0, 1, 1)
-        grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 1)
-        grid.addLayout(self.init_profile(), 7, 0, 1, 1)
+        grid.addLayout(self.init_tune(), 2, 0, 1, 1)
+        grid.addLayout(self.init_profile(), 3, 0, 1, 1)
+        grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 1)
+        grid.addLayout(self.init_max_mux(), 5, 0, 1, 1)
+        grid.addLayout(self.init_frame_threads(), 6, 0, 1, 1)
 
         grid.addLayout(self.init_modes(), 0, 1, 5, 4)
 
         grid.addLayout(self.init_x265_row(), 5, 1, 1, 4)
+        grid.addLayout(self.init_x265_row_two(), 6, 1, 1, 4)
         # grid.addLayout(self.init_hdr10_opt(), 5, 2, 1, 1)
         # grid.addLayout(self.init_repeat_headers(), 5, 3, 1, 1)
         # grid.addLayout(self.init_aq_mode(), 5, 4, 1, 2)
 
-        grid.addLayout(self.init_x265_params(), 6, 1, 1, 4)
+        grid.addLayout(self.init_x265_params(), 7, 1, 1, 4)
 
-        grid.addLayout(self.init_dhdr10_info(), 7, 1, 1, 3)
-        grid.addLayout(self.init_dhdr10_warning_and_opt(), 7, 4, 1, 1)
+        grid.addLayout(self.init_dhdr10_info(), 8, 1, 1, 3)
+        grid.addLayout(self.init_dhdr10_warning_and_opt(), 8, 4, 1, 1)
 
         grid.setRowStretch(9, True)
 
@@ -127,8 +129,8 @@ class HEVC(SettingPanel):
             "The latest windows builds from BtbN should have this feature.\n"
             "I do not know of any public Linux/Mac ones that do."
         )
-        icon = self.style().standardIcon(QtWidgets.QStyle.SP_MessageBoxWarning)
-        label.setPixmap(icon.pixmap(16))
+        icon = QtGui.QIcon(warning_icon)
+        label.setPixmap(icon.pixmap(22))
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(label)
         layout.addLayout(self.init_dhdr10_opt())
@@ -143,6 +145,21 @@ class HEVC(SettingPanel):
         layout.addLayout(self.init_repeat_headers())
         layout.addStretch(1)
         layout.addLayout(self.init_aq_mode())
+        return layout
+
+    def init_x265_row_two(self):
+        layout = QtWidgets.QHBoxLayout()
+        layout.addLayout(self.init_intra_encoding())
+        layout.addStretch(1)
+        layout.addLayout(self.init_intra_refresh())
+        layout.addStretch(1)
+        layout.addLayout(self.init_lossless())
+        layout.addStretch(1)
+        layout.addLayout(self.init_intra_smoothing())
+        layout.addStretch(1)
+        layout.addLayout(self.init_bframes())
+        layout.addStretch(1)
+        layout.addLayout(self.init_b_adapt())
         return layout
 
     def init_hdr10(self):
@@ -213,17 +230,106 @@ class HEVC(SettingPanel):
             opt="aq_mode",
         )
 
-    def init_intra_encoding(self):
+    def init_frame_threads(self):
         return self._add_combo_box(
+            label="Frame Threads",
+            widget_name="frame_threads",
+            options=["Auto"] + [str(x) for x in range(1, 17)],
+            default=0,
+            tooltip=(
+                "frame-threads: Number of concurrently encoded frames.\n"
+                "Using a single frame thread gives a slight improvement in compression,\n"
+                "since the entire reference frames are always available for motion compensation,\n"
+                "but it has severe performance implications.\n"
+                "Default is an autodetected count based on the number of CPU cores and whether WPP is enabled or not.\n"
+                "Over-allocation of frame threads will not improve performance,\n"
+                "it will generally just increase memory use."
+            ),
+            opt="frame_threads",
+        )
+
+    def init_bframes(self):
+        return self._add_combo_box(
+            label="Maximum B frames",
+            widget_name="bframes",
+            options=[str(x) for x in range(17)],
+            default=4,
+            tooltip=(
+                "bframes: Maximum number of consecutive b-frames. \n"
+                "Use --bframes 0 to force all P/I low-latency encodes.\n"
+                "Default 4. This parameter has a quadratic effect on the amount of memory allocated\n"
+                "and the amount of work performed by the full trellis version of --b-adapt lookahead."
+            ),
+            opt="bframes",
+        )
+
+    def init_b_adapt(self):
+        return self._add_combo_box(
+            label="B Adapt",
+            widget_name="b_adapt",
+            options=["none", "fast", "full"],
+            default=2,
+            tooltip=(
+                "b-adapt: Set the level of effort in determining B frame placement.\n"
+                "With b-adapt 0, the GOP structure is fixed based on the values of --keyint and --bframes.\n"
+                "With b-adapt 1 a light lookahead is used to choose B frame placement.\n"
+                "With b-adapt 2 (trellis) a viterbi B path selection is performed\n"
+                "Values: 0:none; 1:fast; 2:full(trellis) default\n"
+            ),
+            opt="b_adapt",
+        )
+
+    def init_intra_encoding(self):
+        return self._add_check_box(
             label="Intra-encoding",
             widget_name="intra_encoding",
-            options=["No", "Yes"],
             tooltip=(
                 "keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
                 "This option is not recommenced unless you need to conform \n"
                 "to Blu-ray standards to burn to a physical disk"
             ),
             opt="intra_encoding",
+        )
+
+    def init_intra_smoothing(self):
+        return self._add_check_box(
+            label="Intra Smoothing",
+            widget_name="intra_smoothing",
+            tooltip=(
+                "Enable strong intra smoothing for 32x32 intra blocks.\n"
+                "This flag performs bi-linear interpolation of the corner reference "
+                "samples for a strong smoothing effect.\n"
+                "The purpose is to prevent blocking or banding artifacts in regions with few/zero AC coefficients.\n"
+                "Default enabled."
+            ),
+            opt="intra_smoothing",
+        )
+
+    def init_intra_refresh(self):
+        return self._add_check_box(
+            label="Intra-refresh",
+            widget_name="intra_refresh",
+            tooltip=(
+                "intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.\n"
+                "PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,\n"
+                "that move across the video from one side to the other and thereby refresh the image\n"
+                "but over a period of multiple frames instead of a single keyframe."
+            ),
+            opt="intra_refresh",
+        )
+
+    def init_lossless(self):
+        return self._add_check_box(
+            label="lossless",
+            widget_name="lossless",
+            tooltip=(
+                "Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.\n"
+                "This is used for ultra-high bitrates with zero loss of quality.\n"
+                "Reconstructed output pictures are bit-exact to the input pictures.\n"
+                "Lossless encodes implicitly have no rate control, all rate control options are ignored.\n"
+                "Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams)."
+            ),
+            opt="lossless",
         )
 
     def init_preset(self):
@@ -382,7 +488,8 @@ class HEVC(SettingPanel):
 
         settings = x265Settings(
             preset=self.widgets.preset.currentText(),
-            intra_encoding=bool(self.widgets.intra_encoding.currentIndex()),
+            intra_encoding=self.widgets.intra_encoding.isChecked(),
+            intra_refresh=self.widgets.intra_refresh.isChecked(),
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             profile=self.widgets.profile.currentText(),
@@ -391,6 +498,10 @@ class HEVC(SettingPanel):
             dhdr10_opt=self.widgets.dhdr10_opt.isChecked(),
             repeat_headers=self.widgets.repeat_headers.isChecked(),
             aq_mode=self.widgets.aq_mode.currentIndex(),
+            bframes=self.widgets.bframes.currentIndex(),
+            b_adapt=self.widgets.b_adapt.currentIndex(),
+            intra_smoothing=self.widgets.intra_smoothing.isChecked(),
+            frame_threads=self.widgets.frame_threads.currentIndex(),
             tune=tune if tune.lower() != "default" else None,
             x265_params=x265_params_text.split(":") if x265_params_text else [],
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),

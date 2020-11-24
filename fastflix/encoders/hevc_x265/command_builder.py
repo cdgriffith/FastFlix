@@ -23,6 +23,10 @@ def build(fastflix: FastFlix):
 
     x265_params.append(f"aq-mode={settings.aq_mode}")
     x265_params.append(f"repeat-headers={'1' if settings.repeat_headers else '0'}")
+    x265_params.append(f"{'' if settings.intra_smoothing else 'no-'}strong-intra-smoothing=1")
+    x265_params.append(f"bframes={settings.bframes}")
+    x265_params.append(f"b-adapt={settings.b_adapt}")
+    x265_params.append(f"frame-threads={settings.frame_threads}")
 
     if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
         x265_params.append(f"hdr10_opt={'1' if settings.hdr10_opt else '0'}")
@@ -52,6 +56,12 @@ def build(fastflix: FastFlix):
 
     if settings.intra_encoding:
         x265_params.append("keyint=1")
+
+    if settings.intra_refresh:
+        x265_params.append("intra-refresh=1")
+
+    if settings.lossless:
+        x265_params.append("lossless=1")
 
     if fastflix.current_video.cll:
         pass

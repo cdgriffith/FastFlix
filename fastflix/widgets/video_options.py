@@ -66,19 +66,16 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.main.page_update(build_thumbnail=False)
 
     def get_settings(self):
-        settings = Box()
         self.current_settings.update_video_encoder_settings()
 
         if getattr(self.main.current_encoder, "enable_audio", False):
             self.audio.update_audio_settings()
         if getattr(self.main.current_encoder, "enable_subtitles", False):
-            subtitle_settings = self.subtitles.get_settings()
-            settings.update(subtitle_settings)
+            self.subtitles.get_settings()
         if getattr(self.main.current_encoder, "enable_attachments", False):
-            settings.update(self.attachments.get_settings())
+            self.attachments.get_settings()
 
         self.main.container.profile.update_settings()
-        return settings
 
     def new_source(self):
         if getattr(self.main.current_encoder, "enable_audio", False):

@@ -297,7 +297,7 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
             "-vf",
             "idet",
             "-frames:v",
-            "1000",
+            "100",
             "-an",
             "-sn",
             "-dn",

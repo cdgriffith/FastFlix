@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from typing import Union
 
 from box import Box
 from iso639 import Lang
@@ -195,16 +196,18 @@ class SubtitleList(FlixList):
         self.main = parent.main
         self.app = app
 
+    def lang_match(self, track: Union[Subtitle, dict]):
+        language = track.language if isinstance(track, Subtitle) else track.get("tags", {}).get("language")
+        if not self.app.fastflix.config.opt("subtitle_select_preferred_language"):
+            return True
+        if Lang(self.app.fastflix.config.opt("subtitle_language")) == Lang(language):
+            return True
+        return False
+
     def new_source(self):
         self.tracks = []
         for index, track in enumerate(self.app.fastflix.current_video.streams.subtitle):
-            enabled = True
-            if self.app.fastflix.config.opt("subtitle_select_preferred_language"):
-                enabled = False
-                if Lang(self.app.fastflix.config.opt("subtitle_language")) == Lang(
-                    track.get("tags", {}).get("language")
-                ):
-                    enabled = True
+            enabled = self.lang_match(track)
             new_item = Subtitle(self, track, index=track.index, first=True if index == 0 else False, enabled=enabled)
             self.tracks.append(new_item)
         if self.tracks:
@@ -214,10 +217,12 @@ class SubtitleList(FlixList):
         if self.app.fastflix.config.opt("subtitle_automatic_burn_in"):
             first_default, first_forced = None, None
             for track in self.tracks:
-                if not first_default and track.disposition == "default":
+                if not first_default and track.disposition == "default" and self.lang_match(track):
                     first_default = track
-                if not first_forced and track.disposition == "forced":
+                    break
+                if not first_forced and track.disposition == "forced" and self.lang_match(track):
                     first_forced = track
+                    break
             if not self.app.fastflix.config.disable_automatic_subtitle_burn_in:
                 if first_forced is not None:
                     first_forced.widgets.burn_in.setChecked(True)
@@ -225,6 +230,7 @@ class SubtitleList(FlixList):
                     first_default.widgets.burn_in.setChecked(True)
 
         super()._new_source(self.tracks)
+        self.app.fastflix.current_video.video_settings.subtitle_tracks = self.tracks
 
     def get_settings(self):
         tracks = []

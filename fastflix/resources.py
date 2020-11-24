@@ -26,3 +26,5 @@ folder_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/fol
 play_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/play.png")).resolve())
 profile_add_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/text-document-add.png")).resolve())
 edit_box_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/edit-box.png")).resolve())
+copy_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/copy.png")).resolve())
+warning_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/warning-triangle.png")).resolve())

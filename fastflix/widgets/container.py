@@ -43,7 +43,7 @@ class Container(QtWidgets.QMainWindow):
 
         self.setCentralWidget(self.main)
         # self.setMinimumSize(QtCore.QSize(1000, 650))
-        self.setFixedSize(QtCore.QSize(1150, 600))
+        self.setFixedSize(QtCore.QSize(1150, 620))
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
 

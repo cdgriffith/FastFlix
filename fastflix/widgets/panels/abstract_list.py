@@ -85,7 +85,10 @@ class FlixList(QtWidgets.QWidget):
             self.tracks[0].set_first(True)
             self.tracks[-1].set_last(True)
         self.inner_layout.addStretch()
-        self.inner_widget.setFixedHeight(len(self.tracks) * 70)
+        new_height = len(self.tracks) * 65
+        if len(self.tracks) < 3:
+            new_height += 15
+        self.inner_widget.setFixedHeight(new_height)
         self.inner_widget.setLayout(self.inner_layout)
         if update:
             self.main.page_update(build_thumbnail=False)

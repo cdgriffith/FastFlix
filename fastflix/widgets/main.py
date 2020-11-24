@@ -89,19 +89,18 @@ class MainWidgets:
     remove_hdr: QtWidgets.QCheckBox = None
     video_title: QtWidgets.QLineEdit = None
     profile_box: QtWidgets.QComboBox = None
-    # pause_resume=QtWidgets.QPushButton("Pause")
 
     def items(self):
-        for field in dir(self):
-            if field.startswith("_"):
-                pass
-            if field in ("crop", "scale"):
-                for sub_field in dir(getattr(self, field)):
+        for key in dir(self):
+            if key.startswith("_"):
+                continue
+            if key in ("crop", "scale"):
+                for sub_field in dir(getattr(self, key)):
                     if sub_field.startswith("_"):
-                        pass
-                    yield sub_field, getattr(getattr(self, field), sub_field)
+                        continue
+                    yield sub_field, getattr(getattr(self, key), sub_field)
             else:
-                yield field, getattr(self, field)
+                yield key, getattr(self, key)
 
 
 class Main(QtWidgets.QWidget):
@@ -881,6 +880,7 @@ class Main(QtWidgets.QWidget):
         for name, widget in self.widgets.items():
             if name in ("preview", "convert_button", "pause_resume"):
                 continue
+            print(name)
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
                     if isinstance(sub_widget, QtWidgets.QWidget):
@@ -1303,7 +1303,7 @@ class Main(QtWidgets.QWidget):
             video_title=self.title,
         )
 
-        self.app.fastflix.current_video.video_settings.encoder_options = self.video_options.get_settings()
+        self.video_options.get_settings()
 
     def build_commands(self) -> bool:
         if (
@@ -1643,7 +1643,7 @@ class Notifier(QtCore.QThread):
             if status[0] == "complete":
                 self.main.completed.emit(0)
             elif status[0] == "error":
-                self.main.status_update_signal.emit(":".join(status))
+                self.main.status_update_signal.emit("exit::")
                 self.main.completed.emit(1)
             elif status[0] == "cancelled":
                 self.main.cancelled.emit(":".join(status[1:]))
