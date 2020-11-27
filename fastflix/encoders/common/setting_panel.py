@@ -234,7 +234,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.main.page_update()
 
     def new_source(self):
-        if not self.app.fastflix.current_video.streams:
+        if not self.app.fastflix.current_video or not self.app.fastflix.current_video.streams:
             return
         # elif (
         #     self.app.fastflix.current_video.streams["video"][self.main.video_track]

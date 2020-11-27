@@ -10,6 +10,7 @@ from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.shared import time_to_number
+from fastflix.exceptions import FlixError
 
 logger = logging.getLogger("fastflix")
 
@@ -144,7 +145,10 @@ class Logs(QtWidgets.QTextBrowser):
     def blank(self, data):
         _, video_uuid, command_uuid = data.split(":")
         self.parent.current_video = self.main.find_video(video_uuid)
-        self.current_command = self.main.find_command(self.parent.current_video, command_uuid)
+        try:
+            self.current_command = self.main.find_command(self.parent.current_video, command_uuid)
+        except FlixError:
+            self.current_command = None
         self.setText("")
         self.parent.update_title_bar()
 

@@ -17,20 +17,13 @@ from fastflix.models.encode import (
     x264Settings,
     x265Settings,
 )
+from fastflix.exceptions import MissingFF, ConfigError
 from fastflix.version import __version__
 
 fastflix_folder = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
 ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
 
 NO_OPT = object()
-
-
-class MissingFF(Exception):
-    """Required files not found"""
-
-
-class ConfigError(Exception):
-    pass
 
 
 @dataclass

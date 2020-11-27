@@ -14,7 +14,8 @@ from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.resources import black_x_icon, down_arrow_icon, up_arrow_icon, play_icon, folder_icon, edit_box_icon
-from fastflix.shared import FastFlixInternalException, error_message, main_width, open_folder
+from fastflix.shared import error_message, main_width, open_folder, no_border
+from fastflix.exceptions import FastFlixInternalException
 from fastflix.widgets.panels.abstract_list import FlixList
 
 
@@ -28,6 +29,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.last = False
         self.video = video
         self.currently_encoding = currently_encoding
+        self.setFixedHeight(60)
 
         self.widgets = Box(
             up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
@@ -37,13 +39,16 @@ class EncodeItem(QtWidgets.QTabWidget):
         )
 
         for widget in self.widgets.values():
-            widget.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
+            widget.setStyleSheet(no_border)
             if self.currently_encoding:
                 widget.setDisabled(True)
 
-        self.setFixedHeight(50)
-
-        title = QtWidgets.QLabel(f"{video.source.name} -> {video.video_settings.output_path.name}")
+        title = QtWidgets.QLabel(
+            video.video_settings.video_title
+            if video.video_settings.video_title
+            else video.video_settings.output_path.name
+        )
+        title.setFixedWidth(300)
 
         settings = Box(copy.deepcopy(asdict(video.video_settings)))
         settings.output_path = str(settings.output_path)
@@ -63,18 +68,8 @@ class EncodeItem(QtWidgets.QTabWidget):
             lambda: QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(video.video_settings.output_path)))
         )
 
-        open_button.setStyleSheet(
-            """
-        QPushButton { border: 0; }
-        QPushButton:hover { border: 0; text-decoration: underline; }
-        """
-        )
-        view_button.setStyleSheet(
-            """
-        QPushButton { border: 0; }
-        QPushButton:hover { border: 0; text-decoration: underline; }
-        """
-        )
+        open_button.setStyleSheet(no_border)
+        view_button.setStyleSheet(no_border)
 
         status = t("Ready to encode")
         if video.status.error:

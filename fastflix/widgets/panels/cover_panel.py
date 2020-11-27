@@ -9,6 +9,8 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import link
+from fastflix.language import t
 
 logger = logging.getLogger("fastflix")
 
@@ -30,8 +32,7 @@ class CoverPanel(QtWidgets.QWidget):
         layout.addWidget(QtWidgets.QLabel("Poster Cover"), 0, 0, 1, 5)
         layout.addWidget(QtWidgets.QLabel("Landscape Cover"), 0, 6, 1, 4)
         info_label = QtWidgets.QLabel(
-            "<a href='https://codecalamity.com/guides/video-thumbnails/'>"
-            "Enabling cover thumbnails on your system</a>"
+            link("https://codecalamity.com/guides/video-thumbnails/", t("Enabling cover thumbnails on your system"))
         )
         info_label.setOpenExternalLinks(True)
         layout.addWidget(info_label, 10, 0, 1, 9, QtCore.Qt.AlignLeft)

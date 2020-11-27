@@ -13,6 +13,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import down_arrow_icon, up_arrow_icon
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.resources import copy_icon, black_x_icon
+from fastflix.shared import no_border
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
@@ -69,8 +70,10 @@ class Audio(QtWidgets.QTabWidget):
             convert_bitrate=None,
         )
 
-        self.widgets.up_button.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
-        self.widgets.down_button.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
+        self.widgets.up_button.setStyleSheet(no_border)
+        self.widgets.down_button.setStyleSheet(no_border)
+        self.widgets.dup_button.setStyleSheet(no_border)
+        self.widgets.delete_button.setStyleSheet(no_border)
 
         if all_info:
             self.widgets.audio_info.setToolTip(all_info.to_yaml())
@@ -332,8 +335,13 @@ class AudioList(FlixList):
     def lang_match(self, track):
         if not self.app.fastflix.config.opt("audio_select_preferred_language"):
             return True
-        if Lang(self.app.fastflix.config.opt("audio_language")) == Lang(track.get("tags", {}).get("language")):
+        try:
+            track_lang = Lang(track.get("tags", {}).get("language", ""))
+        except InvalidLanguageValue:
             return True
+        else:
+            if Lang(self.app.fastflix.config.opt("audio_language")) == track_lang:
+                return True
         return False
 
     def new_source(self, codecs):
@@ -374,7 +382,7 @@ class AudioList(FlixList):
             self.tracks[-1].set_last()
 
         super()._new_source(self.tracks)
-        self.app.fastflix.current_video.video_settings.audio_tracks = self.tracks
+        self.update_audio_settings()
 
     def allowed_formats(self, allowed_formats=None):
         if not allowed_formats:

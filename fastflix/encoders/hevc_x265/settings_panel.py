@@ -281,7 +281,7 @@ class HEVC(SettingPanel):
 
     def init_intra_encoding(self):
         return self._add_check_box(
-            label="Intra-encoding",
+            label="Intra-Encoding",
             widget_name="intra_encoding",
             tooltip=(
                 "keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
@@ -293,7 +293,7 @@ class HEVC(SettingPanel):
 
     def init_intra_smoothing(self):
         return self._add_check_box(
-            label="Intra Smoothing",
+            label="Intra-Smoothing",
             widget_name="intra_smoothing",
             tooltip=(
                 "Enable strong intra smoothing for 32x32 intra blocks.\n"

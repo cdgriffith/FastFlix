@@ -35,6 +35,10 @@ my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico"
 icon = QtGui.QIcon(my_data)
 
 logger = logging.getLogger("fastflix")
+no_border = (
+    "QPushButton, QPushButton:hover, QPushButton:pressed {border-width: 0;} "
+    "QPushButton:hover {border-bottom: 1px solid #aaa}"
+)
 
 
 class MyMessageBox(QtWidgets.QMessageBox):
@@ -151,14 +155,6 @@ def time_to_number(string_time: str) -> float:
         else:
             total += v * (60 ** i)
     return total
-
-
-class FastFlixError(Exception):
-    """Generic FastFlixError"""
-
-
-class FastFlixInternalException(FastFlixError):
-    """This should always be caught and never seen by user"""
 
 
 def link(url, text):

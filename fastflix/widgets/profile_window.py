@@ -20,7 +20,8 @@ from fastflix.models.video import (
     WebPSettings,
 )
 from fastflix.models.config import Profile, get_preset_defaults
-from fastflix.shared import FastFlixInternalException, error_message
+from fastflix.shared import error_message
+from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())

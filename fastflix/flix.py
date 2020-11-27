@@ -27,10 +27,6 @@ re_progressive = re.compile(r"Progressive:\s+(\d+)")
 logger = logging.getLogger("fastflix")
 
 
-class FlixError(Exception):
-    """This fastflix won't fly"""
-
-
 def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
     eight = (
         "bgr0",

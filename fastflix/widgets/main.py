@@ -23,7 +23,6 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
 from fastflix.flix import (
-    FlixError,
     extract_attachments,
     generate_thumbnail_command,
     get_auto_crop,
@@ -31,7 +30,6 @@ from fastflix.flix import (
     parse_hdr_details,
     detect_interlaced,
 )
-from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video, VideoSettings
 from fastflix.resources import (
@@ -43,10 +41,12 @@ from fastflix.resources import (
     folder_icon,
     profile_add_icon,
 )
-from fastflix.shared import FastFlixInternalException, error_message, file_date, time_to_number
+from fastflix.exceptions import FastFlixInternalException, FlixError
+from fastflix.shared import error_message, time_to_number
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
+from fastflix.language import t
 
 logger = logging.getLogger("fastflix")
 
@@ -132,7 +132,7 @@ class Main(QtWidgets.QWidget):
         self.setAcceptDrops(True)
 
         self.input_video = None
-        self.video_path_widget = QtWidgets.QLineEdit("No Source Selected")
+        self.video_path_widget = QtWidgets.QLineEdit(t("No Source Selected"))
         self.output_video_path_widget = QtWidgets.QLineEdit("")
         self.output_video_path_widget.setDisabled(True)
         self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
@@ -781,7 +781,7 @@ class Main(QtWidgets.QWidget):
         result_list = []
         tasks = [
             Task(
-                f"Finding black bars at {self.number_to_time(x)}",
+                f"{t('Auto Crop - Finding black bars at')} {self.number_to_time(x)}",
                 get_auto_crop,
                 dict(
                     source=self.input_video,
@@ -804,18 +804,18 @@ class Main(QtWidgets.QWidget):
                 selected = result
                 smallest = total
 
-        r, b, l, t = selected
+        r, b, l, tp = selected
 
-        if t + b > self.app.fastflix.current_video.height * 0.9 or r + l > self.app.fastflix.current_video.width * 0.9:
+        if tp + b > self.app.fastflix.current_video.height * 0.9 or r + l > self.app.fastflix.current_video.width * 0.9:
             logger.warning(
                 f"{t('Autocrop tried to crop too much')}"
-                f" ({t('left')} {l}, {t('top')} {t}, {t('right')} {r}, {t('bottom')} {b}), {t('ignoring')}"
+                f" ({t('left')} {l}, {t('top')} {tp}, {t('right')} {r}, {t('bottom')} {b}), {t('ignoring')}"
             )
             return
 
         # Hack to stop thumb gen
         self.loading_video = True
-        self.widgets.crop.top.setText(str(t))
+        self.widgets.crop.top.setText(str(tp))
         self.widgets.crop.left.setText(str(l))
         self.widgets.crop.right.setText(str(r))
         self.loading_video = False
@@ -880,7 +880,6 @@ class Main(QtWidgets.QWidget):
         for name, widget in self.widgets.items():
             if name in ("preview", "convert_button", "pause_resume"):
                 continue
-            print(name)
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
                     if isinstance(sub_widget, QtWidgets.QWidget):

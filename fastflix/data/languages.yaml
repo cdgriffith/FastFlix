@@ -14,10 +14,14 @@ Audio Tracks:
   en: Audio Tracks
 Audio select language:
   en: Audio select language
+Author:
+  en: Author
 Auto Burn-in first forced or default subtitle track:
   en: Auto Burn-in first forced or default subtitle track
 Auto Crop:
   en: Auto Crop
+Auto Crop - Finding black bars at:
+  en: Auto Crop - Finding black bars at
 Automatically enabled when an interlaced video is detected:
   en: Automatically enabled when an interlaced video is detected
 B Adapt:
@@ -30,6 +34,8 @@ Break the video into columns to encode faster (lesser quality):
   en: Break the video into columns to encode faster (lesser quality)
 Break the video into rows to encode faster (lesser quality):
   en: Break the video into rows to encode faster (lesser quality)
+Build:
+  en: Build
 Burn In:
   en: Burn In
 CPU Used:
@@ -92,6 +98,8 @@ Dither is an intentionally applied form of noise used to randomize quantization 
   en: Dither is an intentionally applied form of noise used to randomize quantization error,
 Downloading FFmpeg:
   en: Downloading FFmpeg
+Dual License:
+  en: Dual License
 Enable row based multi-threading:
   en: Enable row based multi-threading
 Enable strong intra smoothing for 32x32 intra blocks.:
@@ -106,6 +114,8 @@ Enables the yadif filter.:
   en: Enables the yadif filter.
 Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.:
   en: Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.
+Enabling cover thumbnails on your system:
+  en: Enabling cover thumbnails on your system
 Encoder:
   en: Encoder
 Encoding Queue:
@@ -182,6 +192,8 @@ Keep:
   en: Keep
 Keep FastFlix Open:
   en: Keep FastFlix Open
+LICENSES:
+  en: LICENSES
 Language:
   en: Language
 Log2 of number of tile columns to encode faster (lesser quality):
@@ -204,6 +216,8 @@ No Source Selected:
   en: No Source Selected
 No Video File:
   en: No Video File
+No command found for:
+  en: No command found for
 No new items in queue to convert:
   en: No new items in queue to convert
 No video found for:
@@ -232,6 +246,8 @@ Profile:
   en: Profile
 Profile Name:
   en: Profile Name
+Python:
+  en: Python
 Quality:
   en: Quality
 Quality and compression efficiency vs speed trade-off:
@@ -258,6 +274,8 @@ Remove Metadata:
   en: Remove Metadata
 Repeat Headers:
   en: Repeat Headers
+Reusables:
+  en: Reusables
 Row Multi-Threading:
   en: Row Multi-Threading
 Row multithreading:
@@ -346,6 +364,8 @@ Using a single frame thread gives a slight improvement in compression,:
   en: Using a single frame thread gives a slight improvement in compression,
 'Values: 0:none; 1:fast; 2:full(trellis) default':
   en: 'Values: 0:none; 1:fast; 2:full(trellis) default'
+Various:
+  en: Various
 'WARNING: This will take much longer and result in a larger file':
   en: 'WARNING: This will take much longer and result in a larger file'
 Watch:
@@ -398,6 +418,8 @@ codec:
   en: codec
 compression level:
   en: compression level
+data tracks found:
+  en: data tracks found
 'dhdr10-opt: Reduces SEI overhead':
   en: 'dhdr10-opt: Reduces SEI overhead'
 'frame-threads: Number of concurrently encoded frames.':
@@ -440,6 +462,8 @@ profile:
   en: 'profile: Enforce an encode profile'
 'profile: VP9 coding profile - must match bit depth':
   en: 'profile: VP9 coding profile - must match bit depth'
+python-box:
+  en: python-box
 rav1e github:
   en: rav1e github
 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.':

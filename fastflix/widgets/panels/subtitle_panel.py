@@ -4,13 +4,15 @@ from typing import Union
 
 from box import Box
 from iso639 import Lang
+from iso639.exceptions import InvalidLanguageValue
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import down_arrow_icon, up_arrow_icon
-from fastflix.shared import FastFlixInternalException, error_message, main_width
+from fastflix.exceptions import FastFlixInternalException
+from fastflix.shared import error_message, main_width, no_border
 from fastflix.widgets.panels.abstract_list import FlixList
 
 dispositions = [
@@ -42,6 +44,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.first = first
         self.last = False
         self.subtitle_lang = subtitle.get("tags", {}).get("language")
+        self.setFixedHeight(60)
 
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{self.index}:{self.outdex}" if enabled else "❌"),
@@ -54,8 +57,8 @@ class Subtitle(QtWidgets.QTabWidget):
             burn_in=QtWidgets.QCheckBox(t("Burn In")),
         )
 
-        self.widgets.up_button.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
-        self.widgets.down_button.setStyleSheet("""QPushButton, QPushButton:hover{border-width: 0;}""")
+        self.widgets.up_button.setStyleSheet(no_border)
+        self.widgets.down_button.setStyleSheet(no_border)
 
         self.widgets.disposition.addItems(dispositions)
         self.widgets.enable_check.setChecked(enabled)
@@ -197,11 +200,16 @@ class SubtitleList(FlixList):
         self.app = app
 
     def lang_match(self, track: Union[Subtitle, dict]):
-        language = track.language if isinstance(track, Subtitle) else track.get("tags", {}).get("language")
+        language = track.language if isinstance(track, Subtitle) else track.get("tags", {}).get("language", "")
         if not self.app.fastflix.config.opt("subtitle_select_preferred_language"):
             return True
-        if Lang(self.app.fastflix.config.opt("subtitle_language")) == Lang(language):
+        try:
+            track_lang = Lang(language)
+        except InvalidLanguageValue:
             return True
+        else:
+            if Lang(self.app.fastflix.config.opt("subtitle_language")) == track_lang:
+                return True
         return False
 
     def new_source(self):
@@ -230,7 +238,7 @@ class SubtitleList(FlixList):
                     first_default.widgets.burn_in.setChecked(True)
 
         super()._new_source(self.tracks)
-        self.app.fastflix.current_video.video_settings.subtitle_tracks = self.tracks
+        self.get_settings()
 
     def get_settings(self):
         tracks = []

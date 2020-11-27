@@ -8,7 +8,8 @@ from iso639 import Lang
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.shared import FastFlixInternalException, error_message
+from fastflix.shared import error_message
+from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 
 
