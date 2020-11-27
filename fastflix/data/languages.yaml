@@ -176,10 +176,10 @@ Have to select a video first:
   en: Have to select a video first
 Initialize Encoders:
   en: Initialize Encoders
-Intra Smoothing:
-  en: Intra Smoothing
-Intra-encoding:
-  en: Intra-encoding
+Intra-Encoding:
+  en: Intra-Encoding
+Intra-Smoothing:
+  en: Intra-Smoothing
 Intra-refresh:
   en: Intra-refresh
 Invalid Crop:

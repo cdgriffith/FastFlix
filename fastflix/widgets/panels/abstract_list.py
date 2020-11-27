@@ -92,6 +92,7 @@ class FlixList(QtWidgets.QWidget):
         self.inner_widget.setLayout(self.inner_layout)
         if update:
             self.main.page_update(build_thumbnail=False)
+        self.main.video_options.get_settings()
 
     def move_up(self, widget):
         index = self.tracks.index(widget)
