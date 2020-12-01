@@ -47,12 +47,14 @@ class ProfileWindow(QtWidgets.QWidget):
         self.audio_language.addItems([t("All"), t("None")] + language_list)
         self.audio_language.insertSeparator(1)
         self.audio_language.insertSeparator(3)
+        self.audio_first_only = QtWidgets.QCheckBox(t("Only select first matching Audio Track"))
 
         sub_language_label = QtWidgets.QLabel(t("Subtitle select language"))
         self.sub_language = QtWidgets.QComboBox()
         self.sub_language.addItems([t("All"), t("None")] + language_list)
         self.sub_language.insertSeparator(1)
         self.sub_language.insertSeparator(3)
+        self.sub_first_only = QtWidgets.QCheckBox(t("Only select first matching Subtitle Track"))
 
         self.sub_burn_in = QtWidgets.QCheckBox(t("Auto Burn-in first forced or default subtitle track"))
 
@@ -63,17 +65,20 @@ class ProfileWindow(QtWidgets.QWidget):
 
         save_button = QtWidgets.QPushButton(t("Create Profile"))
         save_button.clicked.connect(self.save)
+        save_button.setMaximumWidth(80)
 
         layout.addWidget(profile_name_label, 0, 0)
         layout.addWidget(self.profile_name, 0, 1)
         layout.addWidget(self.auto_crop, 1, 0)
         layout.addWidget(audio_language_label, 2, 0)
         layout.addWidget(self.audio_language, 2, 1)
-        layout.addWidget(sub_language_label, 3, 0)
-        layout.addWidget(self.sub_language, 3, 1)
-        layout.addWidget(self.sub_burn_in, 4, 0, 1, 2)
-        layout.addWidget(self.encoder_label, 5, 0, 1, 2)
-        layout.addWidget(self.encoder_settings, 6, 0, 10, 2)
+        layout.addWidget(self.audio_first_only, 3, 1)
+        layout.addWidget(sub_language_label, 4, 0)
+        layout.addWidget(self.sub_language, 4, 1)
+        layout.addWidget(self.sub_first_only, 5, 1)
+        layout.addWidget(self.sub_burn_in, 6, 0, 1, 2)
+        layout.addWidget(self.encoder_label, 7, 0, 1, 2)
+        layout.addWidget(self.encoder_settings, 8, 0, 10, 2)
         layout.addWidget(save_button, 20, 1)
 
         self.update_settings()
@@ -134,10 +139,12 @@ class ProfileWindow(QtWidgets.QWidget):
             audio_language=audio_lang,
             audio_select=audio_select,
             audio_select_preferred_language=audio_select_preferred_language,
+            audio_select_first_matching=self.audio_first_only.isChecked(),
             subtitle_language=sub_lang,
             subtitle_select=subtitle_select,
             subtitle_automatic_burn_in=self.sub_burn_in.isChecked(),
             subtitle_select_preferred_language=subtitle_select_preferred_language,
+            subtitle_select_first_matching=self.sub_first_only.isChecked(),
             encoder=self.encoder.name,
         )
 

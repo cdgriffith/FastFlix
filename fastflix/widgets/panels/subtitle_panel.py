@@ -27,8 +27,8 @@ dispositions = [
     "hearing_impaired",
 ]
 
-
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
+
 
 # TODO add fake empty subtitle track?
 
@@ -198,8 +198,9 @@ class SubtitleList(FlixList):
         super().__init__(app, parent, "Subtitle Tracks", "subtitle")
         self.main = parent.main
         self.app = app
+        self._first_selected = False
 
-    def lang_match(self, track: Union[Subtitle, dict]):
+    def lang_match(self, track: Union[Subtitle, dict], ignore_first=False):
         language = track.language if isinstance(track, Subtitle) else track.get("tags", {}).get("language", "")
         if not self.app.fastflix.config.opt("subtitle_select_preferred_language"):
             return True
@@ -209,11 +210,19 @@ class SubtitleList(FlixList):
             return True
         else:
             if Lang(self.app.fastflix.config.opt("subtitle_language")) == track_lang:
+                if (
+                    not ignore_first
+                    and self.app.fastflix.config.opt("subtitle_select_first_matching")
+                    and self._first_selected
+                ):
+                    return False
+                self._first_selected = True
                 return True
         return False
 
     def new_source(self):
         self.tracks = []
+        self._first_selected = False
         for index, track in enumerate(self.app.fastflix.current_video.streams.subtitle):
             enabled = self.lang_match(track)
             new_item = Subtitle(self, track, index=track.index, first=True if index == 0 else False, enabled=enabled)
@@ -225,10 +234,10 @@ class SubtitleList(FlixList):
         if self.app.fastflix.config.opt("subtitle_automatic_burn_in"):
             first_default, first_forced = None, None
             for track in self.tracks:
-                if not first_default and track.disposition == "default" and self.lang_match(track):
+                if not first_default and track.disposition == "default" and self.lang_match(track, ignore_first=True):
                     first_default = track
                     break
-                if not first_forced and track.disposition == "forced" and self.lang_match(track):
+                if not first_forced and track.disposition == "forced" and self.lang_match(track, ignore_first=True):
                     first_forced = track
                     break
             if not self.app.fastflix.config.disable_automatic_subtitle_burn_in:

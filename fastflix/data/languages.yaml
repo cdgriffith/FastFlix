@@ -228,6 +228,10 @@ None:
   en: None
 Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.:
   en: Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.
+Only select first matching Audio Track:
+  en: Only select first matching Audio Track
+Only select first matching Subtitle Track:
+  en: Only select first matching Subtitle Track
 Open Directory:
   en: Open Directory
 Over-allocation of frame threads will not improve performance,:

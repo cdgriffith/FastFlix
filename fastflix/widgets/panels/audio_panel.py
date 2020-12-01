@@ -331,6 +331,7 @@ class AudioList(FlixList):
         super(AudioList, self).__init__(app, parent, t("Audio Tracks"), "audio")
         self.available_audio_encoders = app.fastflix.audio_encoders
         self.app = app
+        self._first_selected = False
 
     def lang_match(self, track):
         if not self.app.fastflix.config.opt("audio_select_preferred_language"):
@@ -341,11 +342,15 @@ class AudioList(FlixList):
             return True
         else:
             if Lang(self.app.fastflix.config.opt("audio_language")) == track_lang:
+                if self.app.fastflix.config.opt("audio_select_first_matching") and self._first_selected:
+                    return False
+                self._first_selected = True
                 return True
         return False
 
     def new_source(self, codecs):
         self.tracks = []
+        self._first_selected = False
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
             track_info = ""
             tags = x.get("tags", {})

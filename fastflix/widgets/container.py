@@ -221,8 +221,9 @@ class ProfileDetails(QtWidgets.QWidget):
 
     def __init__(self, profile):
         super().__init__(None)
-        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout = QtWidgets.QHBoxLayout(self)
 
+        main_section = QtWidgets.QVBoxLayout(self)
         for k, v in asdict(profile).items():
             if k not in profile.setting_types.keys():
                 item_1 = QtWidgets.QLabel(str(k))
@@ -230,13 +231,13 @@ class ProfileDetails(QtWidgets.QWidget):
                 inner_layout = QtWidgets.QHBoxLayout()
                 inner_layout.addWidget(item_1)
                 inner_layout.addWidget(item_2)
-                self.layout.addLayout(inner_layout)
+                main_section.addLayout(inner_layout)
+        self.layout.addLayout(main_section)
 
-        # Initialize tab screen
-        self.tabs = QtWidgets.QTabWidget()
-        # for setting_name in profile.setting_types.keys():
-        #     setting = getattr(profile, setting_name)
-        #     self.tabs.addTab(self.profile_widget(setting), setting.name)
+        for setting_name in profile.setting_types.keys():
+            setting = getattr(profile, setting_name)
+            if setting:
+                self.layout.addWidget(self.profile_widget(setting))
         # self.tab2 = QtWidgets.QWidget()
         # self.tabs.resize(300, 200)
 
@@ -250,6 +251,4 @@ class ProfileDetails(QtWidgets.QWidget):
         # self.tab1.layout.addWidget(self.pushButton1)
         # self.tab1.setLayout(self.tab1.layout)
 
-        # Add tabs to widget
-        self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
