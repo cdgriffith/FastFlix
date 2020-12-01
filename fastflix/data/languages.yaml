@@ -130,6 +130,8 @@ Enforce an encode profile:
   en: Enforce an encode profile
 Error Updating Thumbnail:
   en: Error Updating Thumbnail
+Error detected while converting:
+  en: Error detected while converting
 Estimated file size based on bitrate:
   en: Estimated file size based on bitrate
 Estimated time left for current command:

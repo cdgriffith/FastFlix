@@ -42,25 +42,49 @@ class Profile:
     audio_language: str = "en"
     audio_select: bool = True
     audio_select_preferred_language: bool = True
+    audio_select_first_matching: bool = False
 
     subtitle_language: str = "en"
     subtitle_select: bool = False
     subtitle_select_preferred_language: bool = True
     subtitle_automatic_burn_in: bool = True
+    subtitle_select_first_matching: bool = False
 
-    x265: x265Settings = field(default_factory=x265Settings)
-    x264: x264Settings = field(default_factory=x264Settings)
-    rav1e: rav1eSettings = field(default_factory=rav1eSettings)
-    svt_av1: SVTAV1Settings = field(default_factory=SVTAV1Settings)
-    vp9: VP9Settings = field(default_factory=VP9Settings)
-    aom_av1: AOMAV1Settings = field(default_factory=AOMAV1Settings)
-    gif: GIFSettings = field(default_factory=GIFSettings)
-    webp: WebPSettings = field(default_factory=WebPSettings)
+    x265: Union[x265Settings, None] = None
+    x264: Union[x264Settings, None] = None
+    rav1e: Union[rav1eSettings, None] = None
+    svt_av1: Union[SVTAV1Settings, None] = None
+    vp9: Union[VP9Settings, None] = None
+    aom_av1: Union[AOMAV1Settings, None] = None
+    gif: Union[GIFSettings, None] = None
+    webp: Union[WebPSettings, None] = None
+
+    setting_types = {
+        "x265": x265Settings,
+        "x264": x264Settings,
+        "rav1e": rav1eSettings,
+        "svt_av1": SVTAV1Settings,
+        "vp9": VP9Settings,
+        "aom_av1": AOMAV1Settings,
+        "gif": GIFSettings,
+        "webp": WebPSettings,
+    }
+
+    def to_dict(self):
+        output = {}
+        for k, v in asdict(self).items():
+            if k in self.setting_types.keys():
+                output[k] = asdict(v)
+            else:
+                output[k] = v
+
+
+empty_profile = Profile()
 
 
 def get_preset_defaults():
     return {
-        "Standard Profile": Profile(),
+        "Standard Profile": Profile(x265=x265Settings()),
         "UHD HDR10 Film": Profile(
             auto_crop=True, x265=x265Settings(crf=18, hdr10=True, hdr10_opt=True, repeat_headers=True, preset="slow")
         ),
@@ -107,7 +131,10 @@ class Config:
 
     def encoder_opt(self, profile_name, profile_option_name):
         encoder_settings = getattr(self.profiles[self.selected_profile], profile_name)
-        return getattr(encoder_settings, profile_option_name)
+        if encoder_settings:
+            return getattr(encoder_settings, profile_option_name)
+        else:
+            return getattr(empty_profile.setting_types[profile_name], profile_option_name)
 
     def opt(self, profile_option_name, default=NO_OPT):
         if default != NO_OPT:
@@ -149,7 +176,18 @@ class Config:
         paths = ("work_path", "ffmpeg", "ffprobe")
         for key, value in data.items():
             if key == "profiles":
-                self.profiles = {k: Profile(**v) for k, v in value.items() if k != "Standard Profile"}
+                self.profiles = {}
+                for k, v in value.items():
+                    if k in ("Standard Profile",):
+                        continue
+                    profile = Profile()
+                    for setting_name, setting in v.items():
+                        if setting_name in profile.setting_types.keys() and setting is not None:
+                            setattr(profile, setting_name, profile.setting_types[setting_name](**setting))
+                        else:
+                            setattr(profile, setting_name, setting)
+
+                    self.profiles[k] = profile
                 continue
             if key in self and key not in ("config_path", "version"):
                 setattr(self, key, Path(value) if key in paths and value else value)
@@ -172,6 +210,10 @@ class Config:
                 items[k] = str(v.absolute())
         items["profiles"] = {k: asdict(v) for k, v in self.profiles.items() if k not in get_preset_defaults().keys()}
         return Box(items).to_yaml(filename=self.config_path, default_flow_style=False)
+
+    @property
+    def profile(self):
+        return self.profiles[self.selected_profile]
 
     def __iter__(self):
         return (x for x in dir(self) if not x.startswith("_"))

@@ -66,6 +66,8 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.main.page_update(build_thumbnail=False)
 
     def get_settings(self):
+        if not self.app.fastflix.current_video:
+            return
         self.current_settings.update_video_encoder_settings()
 
         if getattr(self.main.current_encoder, "enable_audio", False):

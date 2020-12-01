@@ -5,6 +5,7 @@ import shutil
 import sys
 from pathlib import Path
 from subprocess import run
+from dataclasses import asdict
 
 import pkg_resources
 import reusables
@@ -35,6 +36,7 @@ class Container(QtWidgets.QMainWindow):
         self.logs = Logs()
         self.changes = Changes()
         self.about = None
+        self.profile_details = None
 
         self.init_menu()
 
@@ -95,11 +97,15 @@ class Container(QtWidgets.QMainWindow):
 
         profile_menu = menubar.addMenu("&Profiles")
         new_profile_action = QtWidgets.QAction("New Profile", self)
-        new_profile_action.triggered.connect(self.show_profile)
+        new_profile_action.triggered.connect(self.new_profile)
+
+        show_profile_action = QtWidgets.QAction("Current Profile Settings", self)
+        show_profile_action.triggered.connect(self.show_profile)
 
         delete_profile_action = QtWidgets.QAction("Delete Current Profile", self)
         delete_profile_action.triggered.connect(self.delete_profile)
         profile_menu.addAction(new_profile_action)
+        profile_menu.addAction(show_profile_action)
         profile_menu.addAction(delete_profile_action)
 
         about_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), "&About", self)
@@ -147,8 +153,12 @@ class Container(QtWidgets.QMainWindow):
         self.setting = Settings(self.app)
         self.setting.show()
 
-    def show_profile(self):
+    def new_profile(self):
         self.profile.show()
+
+    def show_profile(self):
+        self.profile_details = ProfileDetails(self.app.fastflix.config.profile)
+        self.profile_details.show()
 
     def delete_profile(self):
         self.profile.delete_current_profile()
@@ -193,3 +203,53 @@ class OpenFolder(QtCore.QThread):
             run(["open", self.path])
         else:
             run(["xdg-open", self.path])
+
+
+class ProfileDetails(QtWidgets.QWidget):
+    def profile_widget(self, settings):
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QVBoxLayout()
+        for k, v in asdict(settings).items():
+            item_1 = QtWidgets.QLabel(str(k))
+            item_2 = QtWidgets.QLabel(str(v))
+            inner_layout = QtWidgets.QHBoxLayout()
+            inner_layout.addWidget(item_1)
+            inner_layout.addWidget(item_2)
+            layout.addLayout(inner_layout)
+        widget.setLayout(layout)
+        return widget
+
+    def __init__(self, profile):
+        super().__init__(None)
+        self.layout = QtWidgets.QVBoxLayout(self)
+
+        for k, v in asdict(profile).items():
+            if k not in profile.setting_types.keys():
+                item_1 = QtWidgets.QLabel(str(k))
+                item_2 = QtWidgets.QLabel(str(v))
+                inner_layout = QtWidgets.QHBoxLayout()
+                inner_layout.addWidget(item_1)
+                inner_layout.addWidget(item_2)
+                self.layout.addLayout(inner_layout)
+
+        # Initialize tab screen
+        self.tabs = QtWidgets.QTabWidget()
+        # for setting_name in profile.setting_types.keys():
+        #     setting = getattr(profile, setting_name)
+        #     self.tabs.addTab(self.profile_widget(setting), setting.name)
+        # self.tab2 = QtWidgets.QWidget()
+        # self.tabs.resize(300, 200)
+
+        # Add tabs
+
+        # self.tabs.addTab(self.tab2, "Tab 2")
+
+        # # Create first tab
+        # self.tab1.layout = QVBoxLayout(self)
+        # self.pushButton1 = QPushButton("PyQt5 button")
+        # self.tab1.layout.addWidget(self.pushButton1)
+        # self.tab1.setLayout(self.tab1.layout)
+
+        # Add tabs to widget
+        self.layout.addWidget(self.tabs)
+        self.setLayout(self.layout)

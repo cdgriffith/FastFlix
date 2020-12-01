@@ -482,6 +482,8 @@ class HEVC(SettingPanel):
         self.setting_change()
 
     def update_video_encoder_settings(self):
+        if not self.app.fastflix.current_video:
+            return
 
         x265_params_text = self.widgets.x265_params.text().strip()
         tune = self.widgets.tune.currentText()

@@ -230,7 +230,7 @@ class Main(QtWidgets.QWidget):
         add_profile.setIconSize(QtCore.QSize(22, 22))
         add_profile.setToolTip(t("Profile"))
         add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
-        add_profile.clicked.connect(lambda: self.container.show_profile())
+        add_profile.clicked.connect(lambda: self.container.new_profile())
 
         options = QtWidgets.QPushButton(QtGui.QIcon(settings_icon), "")
         options.setFixedSize(QtCore.QSize(40, 40))
@@ -1587,7 +1587,7 @@ class Main(QtWidgets.QWidget):
             video = self.find_video(video_uuid)
             command_index = self.find_command(video, command_uuid)
         except FlixError as err:
-            logger.error(str(err))
+            logger.error(f"Could not update queue status due to not found video/command - {err}")
             return
 
         if command == "converted":
@@ -1596,9 +1596,11 @@ class Main(QtWidgets.QWidget):
                 video.status.success = True
                 video.status.running = False
                 self.video_options.update_queue()
+            else:
+                logger.error(f"This should not happen? {status} - {video}")
 
         elif command == "running":
-            video.status.current_command = self.find_command(video, command_uuid)
+            video.status.current_command = command_index
             video.status.running = True
             self.video_options.update_queue(currently_encoding=True)
 
