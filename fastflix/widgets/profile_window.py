@@ -58,7 +58,7 @@ class ProfileWindow(QtWidgets.QWidget):
 
         self.sub_burn_in = QtWidgets.QCheckBox(t("Auto Burn-in first forced or default subtitle track"))
 
-        self.encoder = x265Settings()
+        self.encoder = x265Settings(crf=18)
         self.encoder_settings = QtWidgets.QLabel()
         self.encoder_settings.setStyleSheet("font-family: monospace;")
         self.encoder_label = QtWidgets.QLabel(f"{t('Encoder')}: {self.encoder.name}")

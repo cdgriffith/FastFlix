@@ -10,6 +10,7 @@ from dataclasses import asdict
 import pkg_resources
 import reusables
 from box import Box
+from appdirs import user_data_dir
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
@@ -24,6 +25,7 @@ from fastflix.widgets.main import Main
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
 from fastflix.widgets.profile_window import ProfileWindow
+from fastflix.exceptions import FastFlixInternalException
 
 logger = logging.getLogger("fastflix")
 
@@ -150,7 +152,7 @@ class Container(QtWidgets.QMainWindow):
         self.about.show()
 
     def show_setting(self):
-        self.setting = Settings(self.app)
+        self.setting = Settings(self.app, self.main)
         self.setting.show()
 
     def new_profile(self):
@@ -176,7 +178,22 @@ class Container(QtWidgets.QMainWindow):
         OpenFolder(self, str(self.app.fastflix.log_path)).run()
 
     def download_ffmpeg(self):
-        ProgressBar(self.app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
+        ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True)) / "bin"
+        ffmpeg = ffmpeg_folder / "ffmpeg.exe"
+        ffprobe = ffmpeg_folder / "ffprobe.exe"
+        try:
+            ProgressBar(self.app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True, can_cancel=True)
+        except FastFlixInternalException:
+            print("Caught")
+            pass
+        except Exception as err:
+            message(f"Could not download the newest FFmpeg: {err}")
+        else:
+            if not ffmpeg.exists() or not ffprobe.exists():
+                message(f"Could not locate the downloaded files at {ffmpeg_folder}!")
+            else:
+                self.app.fastflix.config.ffmpeg = ffmpeg
+                self.app.fastflix.config.ffprobe = ffprobe
 
 
 class OpenFolder(QtCore.QThread):

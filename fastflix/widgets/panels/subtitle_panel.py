@@ -201,8 +201,17 @@ class SubtitleList(FlixList):
         self._first_selected = False
 
     def lang_match(self, track: Union[Subtitle, dict], ignore_first=False):
+        if not self.app.fastflix.config.opt("subtitle_select"):
+            return False
         language = track.language if isinstance(track, Subtitle) else track.get("tags", {}).get("language", "")
         if not self.app.fastflix.config.opt("subtitle_select_preferred_language"):
+            if (
+                not ignore_first
+                and self.app.fastflix.config.opt("subtitle_select_first_matching")
+                and self._first_selected
+            ):
+                return False
+            self._first_selected = True
             return True
         try:
             track_lang = Lang(language)

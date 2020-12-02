@@ -148,6 +148,8 @@ FFMPEG HEVC / H.265 Encoding Guide:
   en: FFMPEG HEVC / H.265 Encoding Guide
 FFMPEG VP9 Encoding Guide:
   en: FFMPEG VP9 Encoding Guide
+FFmpeg updated - Please restart FastFlix:
+  en: FFmpeg updated - Please restart FastFlix
 FPS:
   en: FPS
 For lossless, this is a size/speed tradeoff.:
@@ -244,6 +246,8 @@ Parse Video details:
   en: Parse Video details
 Pixel Format (requires at least 10-bit for HDR):
   en: Pixel Format (requires at least 10-bit for HDR)
+Please provide a profile name:
+  en: Please provide a profile name
 Preserve:
   en: Preserve
 Preset:

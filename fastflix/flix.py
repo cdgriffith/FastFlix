@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-import time
 import re
-from functools import partial
-from multiprocessing.pool import Pool, ThreadPool
 from pathlib import Path
 from subprocess import PIPE, CompletedProcess, TimeoutExpired, run
 from tempfile import TemporaryDirectory
@@ -16,8 +13,8 @@ from box import Box, BoxError
 from fastflix.language import t
 from fastflix.models.config import Config
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.exceptions import FlixError
 
-# __all__ = ["FlixError", "ff_version", "Flix", "guess_bit_depth"]
 
 here = os.path.abspath(os.path.dirname(__file__))
 re_tff = re.compile(r"TFF:\s+(\d+)")

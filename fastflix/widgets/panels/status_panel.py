@@ -66,6 +66,9 @@ class StatusPanel(QtWidgets.QWidget):
             return
         try:
             time_passed, speed = combined.split("|")
+            if speed == "N/A":
+                self.eta_label.setText(f"{t('Time Left')}: N/A")
+                return
             time_passed = time_to_number(time_passed)
             speed = float(speed)
             if not speed:

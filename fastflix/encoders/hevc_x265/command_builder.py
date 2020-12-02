@@ -19,7 +19,7 @@ def build(fastflix: FastFlix):
     if settings.profile and settings.profile != "default":
         beginning += f"-profile {settings.profile} "
 
-    x265_params = settings.x265_params or []
+    x265_params = settings.x265_params.copy() or []
 
     x265_params.append(f"aq-mode={settings.aq_mode}")
     x265_params.append(f"repeat-headers={'1' if settings.repeat_headers else '0'}")

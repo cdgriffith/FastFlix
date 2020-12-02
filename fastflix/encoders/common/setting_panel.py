@@ -255,9 +255,17 @@ class SettingPanel(QtWidgets.QWidget):
                     self.app.fastflix.config.encoder_opt(self.profile_name, opt),
                     [self.widgets[widget_name].itemText(i) for i in range(self.widgets[widget_name].count())],
                 )
-                self.widgets[widget_name].setCurrentIndex(default)
+                if default is not None:
+                    self.widgets[widget_name].setCurrentIndex(default)
             elif isinstance(self.widgets[widget_name], QtWidgets.QCheckBox):
-                self.widgets[widget_name].setChecked(self.app.fastflix.config.encoder_opt(self.profile_name, opt))
+                checked = self.app.fastflix.config.encoder_opt(self.profile_name, opt)
+                if checked is not None:
+                    self.widgets[widget_name].setChecked(checked)
+            elif isinstance(self.widgets[widget_name], QtWidgets.QLineEdit):
+                data = self.app.fastflix.config.encoder_opt(self.profile_name, opt)
+                if widget_name == "x265_params":
+                    data = ":".join(data)
+                self.widgets[widget_name].setText(data or "")
 
     def init_max_mux(self):
         return self._add_combo_box(

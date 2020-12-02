@@ -3,7 +3,9 @@ from dataclasses import dataclass, field
 from typing import Callable, Dict, List
 
 import reusables
-from qtpy import QtCore, QtWidgets
+from qtpy import QtCore, QtWidgets, QtGui
+
+from fastflix.language import t
 
 
 @dataclass
@@ -13,8 +15,9 @@ class Task:
     kwargs: Dict = field(default_factory=dict)
 
 
-class ProgressBar(QtWidgets.QWidget):
+class ProgressBar(QtWidgets.QFrame):
     progress_signal = QtCore.Signal(int)
+    stop_signal = QtCore.Signal()
 
     def __init__(
         self,
@@ -22,11 +25,16 @@ class ProgressBar(QtWidgets.QWidget):
         tasks: List[Task],
         signal_task: bool = False,
         auto_run: bool = True,
+        can_cancel: bool = False,
     ):
         super().__init__(None)
         self.app = app
+
         self.tasks = tasks
         self.signal_task = signal_task
+
+        self.setObjectName("ProgressBar")
+        self.setStyleSheet("#ProgressBar{border: 1px solid #aaa}")
 
         self.setMinimumWidth(400)
         self.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
@@ -38,11 +46,19 @@ class ProgressBar(QtWidgets.QWidget):
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.addWidget(self.status)
         self.layout.addWidget(self.progress_bar)
+        if can_cancel:
+            cancel_button = QtWidgets.QPushButton(t("Cancel"))
+            cancel_button.clicked.connect(self.cancel)
+            self.layout.addWidget(cancel_button)
         self.setLayout(self.layout)
 
         self.show()
         if auto_run:
             self.run()
+
+    def cancel(self):
+        self.stop_signal.emit()
+        self.close()
 
     @reusables.log_exception("fastflix")
     def run(self):
@@ -53,7 +69,9 @@ class ProgressBar(QtWidgets.QWidget):
             self.status.setText(self.tasks[0].name)
             self.progress_signal.connect(self.update_progress)
             self.tasks[0].kwargs["signal"] = self.progress_signal
+            self.tasks[0].kwargs["stop_signal"] = self.stop_signal
             self.tasks[0].command(config=self.app.fastflix.config, app=self.app, **self.tasks[0].kwargs)
+
         else:
             for i, task in enumerate(self.tasks, start=1):
                 self.status.setText(task.name)

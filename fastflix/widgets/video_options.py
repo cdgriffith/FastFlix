@@ -32,7 +32,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.status = StatusPanel(self, self.app)
         self.attachments = CoverPanel(self, self.app)
         self.queue = EncodingQueue(self, self.app)
-        # self.subtitles.hide()
+
         self.addTab(self.current_settings, t("Quality"))
         self.addTab(self.audio, t("Audio"))
         self.addTab(self.subtitles, t("Subtitles"))

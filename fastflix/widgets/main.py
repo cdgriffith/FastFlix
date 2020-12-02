@@ -176,7 +176,7 @@ class Main(QtWidgets.QWidget):
         self.grid.setSpacing(5)
         self.paused = False
 
-        self.disable_all()
+        # self.disable_all()
         self.setLayout(self.grid)
         self.set_profile()
         self.show()
@@ -260,10 +260,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.pause_resume.setStyleSheet("background-color: orange;")
             logger.info("Resuming FFmpeg conversion")
 
-    def config_update(self, ffmpeg, ffprobe):
-        # TODO change to full app restart
-        # self.flix.update(ffmpeg, ffprobe)
-        # self.app.fastflix.encoders = load_plugins(self.flix.config)
+    def config_update(self):
         self.thumb_file = Path(self.app.fastflix.config.work_path, "thumbnail_preview.png")
         self.change_output_types()
         self.page_update(build_thumbnail=True)
@@ -393,8 +390,9 @@ class Main(QtWidgets.QWidget):
         h_flip = self.app.fastflix.config.opt("horizontal_flip")
 
         self.widgets.flip.setCurrentIndex(self.flip_to_int(v_flip, h_flip))
-        # self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
-        # self.video_options.update_profile()
+        self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
+        self.video_options.update_profile()
+        self.video_options.new_source()
         # Hack to prevent a lot of thumbnail generation
         self.loading_video = False
         self.page_update()
@@ -483,7 +481,7 @@ class Main(QtWidgets.QWidget):
     def change_encoder(self):
         if not self.initialized:
             return
-        self.video_options.change_conversion(self.widgets.convert_to.currentText())
+        self.video_options.change_conversion(self.convert_to)
         if not self.output_video_path_widget.text().endswith(self.current_encoder.video_extension):
             # Make sure it's using the right file extension
             self.output_video_path_widget.setText(self.generate_output_filename)
@@ -1462,7 +1460,7 @@ class Main(QtWidgets.QWidget):
         self.converting = True
         self.set_convert_button(False)
         self.app.fastflix.worker_queue.put(tuple(requests))
-        self.disable_all()
+        # self.disable_all()
         self.video_options.show_status()
 
     def add_to_queue(self):

@@ -405,6 +405,10 @@ class HEVC(SettingPanel):
         layout.addWidget(self.labels.x265_params)
         self.widgets.x265_params = QtWidgets.QLineEdit()
         self.widgets.x265_params.setToolTip(tool_tip)
+        self.widgets.x265_params.setText(
+            ":".join(self.app.fastflix.config.encoder_opt(self.profile_name, "x265_params"))
+        )
+        self.opts["x265_params"] = "x265_params"
         self.widgets.x265_params.textChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.x265_params)
         return layout
@@ -486,7 +490,6 @@ class HEVC(SettingPanel):
             return
 
         x265_params_text = self.widgets.x265_params.text().strip()
-        tune = self.widgets.tune.currentText()
 
         settings = x265Settings(
             preset=self.widgets.preset.currentText(),
@@ -504,7 +507,7 @@ class HEVC(SettingPanel):
             b_adapt=self.widgets.b_adapt.currentIndex(),
             intra_smoothing=self.widgets.intra_smoothing.isChecked(),
             frame_threads=self.widgets.frame_threads.currentIndex(),
-            tune=tune if tune.lower() != "default" else None,
+            tune=self.widgets.tune.currentText(),
             x265_params=x265_params_text.split(":") if x265_params_text else [],
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
         )

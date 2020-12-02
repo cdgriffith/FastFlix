@@ -42,7 +42,14 @@ def ask_for_ffmpeg():
         sys.exit(1)
 
 
-def latest_ffmpeg(signal, **_):
+def latest_ffmpeg(signal, stop_signal, **_):
+    stop = False
+
+    def stop_me():
+        nonlocal stop
+        stop = True
+
+    stop_signal.connect(stop_me)
     ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
     ffmpeg_folder.mkdir(exist_ok=True)
     url = "https://api.github.com/repos/BtbN/FFmpeg-Builds/releases/latest"
@@ -52,6 +59,9 @@ def latest_ffmpeg(signal, **_):
     except Exception:
         message(t("Could not connect to github to check for newer versions."))
         raise
+
+    if stop:
+        return
 
     gpl_ffmpeg = [asset for asset in data["assets"] if asset["name"].endswith("win64-gpl.zip")]
     if not gpl_ffmpeg:
@@ -71,6 +81,8 @@ def latest_ffmpeg(signal, **_):
                 # logger.debug(f"Downloaded {i // 1000}MB")
                 signal.emit(int(((i * 1024) / gpl_ffmpeg[0]["size"]) * 90))
             f.write(block)
+            if stop:
+                return
 
     if filename.stat().st_size < 1000:
         message(t("FFmpeg was not properly downloaded as the file size is too small"))
@@ -85,6 +97,9 @@ def latest_ffmpeg(signal, **_):
     except Exception:
         message(f"{t('Could not extract FFmpeg files from')} {filename}!")
         raise
+
+    if stop:
+        return
 
     signal.emit(95)
 

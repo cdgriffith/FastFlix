@@ -45,7 +45,7 @@ class Profile:
     audio_select_first_matching: bool = False
 
     subtitle_language: str = "en"
-    subtitle_select: bool = False
+    subtitle_select: bool = True
     subtitle_select_preferred_language: bool = True
     subtitle_automatic_burn_in: bool = True
     subtitle_select_first_matching: bool = False

@@ -334,7 +334,12 @@ class AudioList(FlixList):
         self._first_selected = False
 
     def lang_match(self, track):
+        if not self.app.fastflix.config.opt("audio_select"):
+            return False
         if not self.app.fastflix.config.opt("audio_select_preferred_language"):
+            if self.app.fastflix.config.opt("audio_select_first_matching") and self._first_selected:
+                return False
+            self._first_selected = True
             return True
         try:
             track_lang = Lang(track.get("tags", {}).get("language", ""))

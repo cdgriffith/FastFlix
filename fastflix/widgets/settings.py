@@ -2,24 +2,27 @@
 
 import shutil
 from pathlib import Path
+import logging
 
 from box import Box
 from iso639 import Lang
+from iso639.exceptions import InvalidLanguageValue
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import error_message
 from fastflix.exceptions import FastFlixInternalException
-from fastflix.language import t
+from fastflix.language import t, change_language
 
-
+logger = logging.getLogger("fastflix")
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 
 class Settings(QtWidgets.QWidget):
-    def __init__(self, app: FastFlixApp, *args, **kwargs):
+    def __init__(self, app: FastFlixApp, main, *args, **kwargs):
         super().__init__(None, *args, **kwargs)
         self.app = app
+        self.main = main
         self.config_file = self.app.fastflix.config.config_path
         self.setWindowTitle(t("Settings"))
         self.setMinimumSize(600, 200)
@@ -55,11 +58,17 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(QtWidgets.QLabel("Config File"), 4, 0)
         layout.addWidget(QtWidgets.QLabel(str(self.config_file)), 4, 1)
 
-        language_combo = QtWidgets.QComboBox(self)
-        language_combo.addItems(language_list)
+        self.language_combo = QtWidgets.QComboBox(self)
+        self.language_combo.addItems(language_list)
+        try:
+            index = language_list.index(Lang(self.app.fastflix.config.language).name)
+        except (IndexError, InvalidLanguageValue):
+            logger.exception(f"Could not find language for {self.app.fastflix.config.language}")
+            index = language_list.index("English")
+        self.language_combo.setCurrentIndex(index)
 
         layout.addWidget(QtWidgets.QLabel(t("Language")), 5, 0)
-        layout.addWidget(language_combo, 5, 1)
+        layout.addWidget(self.language_combo, 5, 1)
 
         config_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileIcon))
         config_button.clicked.connect(
@@ -84,15 +93,8 @@ class Settings(QtWidgets.QWidget):
         elif self.app.fastflix.config.disable_version_check:
             self.disable_version_check.setChecked(True)
 
-        self.disable_burn_in = QtWidgets.QCheckBox("Disable automatic subtitle Burn-In")
-        if self.app.fastflix.config.disable_automatic_subtitle_burn_in:
-            self.disable_burn_in.setChecked(True)
-        else:
-            self.disable_burn_in.setChecked(False)
-
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
         layout.addWidget(self.disable_version_check, 8, 0, 1, 2)
-        layout.addWidget(self.disable_burn_in, 9, 0, 1, 2)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
@@ -108,7 +110,7 @@ class Settings(QtWidgets.QWidget):
         new_ffprobe = Path(self.ffprobe_path.text())
         new_work_dir = Path(self.work_dir.text())
         try:
-            self.update_ffmpeg(new_ffmpeg)
+            updated_ffmpeg = self.update_ffmpeg(new_ffmpeg)
             self.update_ffprobe(new_ffprobe)
         except FastFlixInternalException:
             return
@@ -118,15 +120,20 @@ class Settings(QtWidgets.QWidget):
         except OSError:
             error_message(f'Could not create / access work directory "{new_work_dir}"')
         else:
-            self.update_setting("work_dir", new_work_dir)
-            self.main_app.path.work = new_work_dir
+            self.app.fastflix.config.work_path = new_work_dir
+        self.app.fastflix.config.use_sane_audio = self.use_sane_audio.isChecked()
+        try:
+            self.app.fastflix.config.language = Lang(self.language_combo.currentText()).pt2b
+        except InvalidLanguageValue:
+            error_message(f"Could not set language to {self.language_combo.currentText()}\n Please report this issue")
+        else:
+            change_language(self.app.fastflix.config.language)
+        self.app.fastflix.config.disable_version_check = self.disable_version_check.isChecked()
 
-        self.update_setting("use_sane_audio", self.use_sane_audio.isChecked())
-        self.update_setting("disable_version_check", self.disable_version_check.isChecked())
-        self.update_setting("disable_automatic_subtitle_burn_in", self.disable_burn_in.isChecked())
-
-        self.app.fastflix.config.load()
-        # TODO self.main_app.config_update(new_ffmpeg, new_ffprobe)
+        self.main.config_update()
+        self.app.fastflix.config.save()
+        if updated_ffmpeg:
+            error_message(t("FFmpeg updated - Please restart FastFlix"))
         self.close()
 
     def select_ffmpeg(self):
@@ -152,11 +159,11 @@ class Settings(QtWidgets.QWidget):
         return new_path
 
     def update_ffmpeg(self, new_path):
-        if self.main_app.flix.ffmpeg == new_path:
+        if self.app.fastflix.config.ffmpeg == new_path:
             return False
         new_path = self.path_check("FFmpeg", new_path)
-        self.update_setting("ffmpeg", str(new_path), delete=True)
-        self.main_app.flix.ffmpeg = new_path
+        self.app.fastflix.config.ffmpeg = new_path
+        self.update_setting("ffmpeg", str(new_path))
         return True
 
     def select_ffprobe(self):
@@ -169,11 +176,11 @@ class Settings(QtWidgets.QWidget):
         self.ffprobe_path.setText(filename[0])
 
     def update_ffprobe(self, new_path):
-        if self.main_app.flix.ffprobe == new_path:
+        if self.app.fastflix.config.ffprobe == new_path:
             return False
         new_path = self.path_check("FFprobe", new_path)
-        self.update_setting("ffprobe", str(new_path), delete=True)
-        self.main_app.flix.ffprobe = new_path
+        self.app.fastflix.config.ffprobe = new_path
+        self.update_setting("ffprobe", str(new_path))
         return True
 
     def select_work_path(self):
@@ -188,28 +195,5 @@ class Settings(QtWidgets.QWidget):
             return
         self.work_dir.setText(work_path)
 
-    def update_setting(self, name, value, delete=False):
-        # TODO change work dir in main and create new temp folder
-        mappings = {
-            "work_dir": "work_dir",
-            "ffmpeg": "ffmpeg",
-            "ffprobe": "ffprobe",
-            "use_sane_audio": "use_sane_audio",
-            "disable_version_check": "disable_version_check",
-            "disable_automatic_subtitle_burn_in": "disable_automatic_subtitle_burn_in",
-        }
-
-        settings = Box(box_dots=True).from_json(filename=self.config_file)
-        old_settings = settings.copy()
-        if isinstance(value, Path):
-            value = str(value)
-        if value == "" and delete:
-            del settings[mappings[name]]
-        else:
-            settings[mappings[name]] = value
-
-        try:
-            settings.to_json(filename=self.config_file, indent=2)
-        except Exception:
-            old_settings.to_json(filename=self.config_file, indent=2)
-            error_message("Could not update settings", traceback=True)
+    def update_setting(self, name, value):
+        setattr(self.app.fastflix.config, name, value)
