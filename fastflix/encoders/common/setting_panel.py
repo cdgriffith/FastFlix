@@ -269,9 +269,24 @@ class SettingPanel(QtWidgets.QWidget):
 
     def init_max_mux(self):
         return self._add_combo_box(
-            label="Max Muxing Queue Size",
-            tooltip='Useful when you have the "Too many packets buffered for output stream" error',
+            label=t("Max Muxing Queue Size"),
+            tooltip=t('Useful when you have the "Too many packets buffered for output stream" error'),
             widget_name="max_mux",
             options=["default", "1024", "2048", "4096", "8192"],
             opt="max_muxing_queue_size",
         )
+
+    def reload(self):
+        for widget_name, opt in self.opts.items():
+            data = getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, opt)
+            if isinstance(self.widgets[widget_name], QtWidgets.QComboBox):
+                if isinstance(data, int):
+                    self.widgets[widget_name].setCurrentIndex(data)
+                else:
+                    self.widgets[widget_name].setCurrentText(data)
+            elif isinstance(self.widgets[widget_name], QtWidgets.QCheckBox):
+                self.widgets[widget_name].setChecked(data)
+            elif isinstance(self.widgets[widget_name], QtWidgets.QLineEdit):
+                if widget_name == "x265_params":
+                    data = ":".join(data)
+                self.widgets[widget_name].setText(data or "")

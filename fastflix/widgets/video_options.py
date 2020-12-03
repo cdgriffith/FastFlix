@@ -99,6 +99,20 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     def update_profile(self):
         self.current_settings.update_profile()
+        if self.app.fastflix.current_video:
+            if getattr(self.main.current_encoder, "enable_audio", False):
+                self.audio.update_audio_settings()
+            if getattr(self.main.current_encoder, "enable_subtitles", False):
+                self.subtitles.get_settings()
+            if getattr(self.main.current_encoder, "enable_attachments", False):
+                self.attachments.get_settings()
+        self.main.container.profile.update_settings()
+
+    def reload(self):
+        self.current_settings.reload()
+        if self.app.fastflix.current_video:
+            if getattr(self.main.current_encoder, "enable_audio", False):
+                self.audio.reload(self.audio_formats)
 
     def update_queue(self, currently_encoding=False):
         self.queue.new_source(currently_encoding)

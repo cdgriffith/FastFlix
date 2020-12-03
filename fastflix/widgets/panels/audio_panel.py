@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from typing import List
 
 from box import Box
 from iso639 import Lang
@@ -354,7 +355,7 @@ class AudioList(FlixList):
         return False
 
     def new_source(self, codecs):
-        self.tracks = []
+        self.tracks: List[AudioTrack] = []
         self._first_selected = False
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
             track_info = ""
@@ -417,3 +418,13 @@ class AudioList(FlixList):
                     )
                 )
         self.app.fastflix.current_video.video_settings.audio_tracks = tracks
+
+    def reload(self, audio_formats):
+        pass
+        # self.new_source(audio_formats)
+        # enabled_tracks = [x.index for x in self.app.fastflix.current_video.video_settings.audio_tracks]
+        # for track in self.tracks:
+        #     track.widgets.enable_check.setChecked(track not in enabled_tracks)
+        #     track.widgets.enable_check.setChecked(track not in enabled_tracks)
+        #
+        # super()._new_source(self.tracks)

@@ -79,7 +79,7 @@ class Profile:
                 output[k] = v
 
 
-empty_profile = Profile()
+empty_profile = Profile(x265=x265Settings())
 
 
 def get_preset_defaults():
@@ -134,7 +134,11 @@ class Config:
         if encoder_settings:
             return getattr(encoder_settings, profile_option_name)
         else:
-            return getattr(empty_profile.setting_types[profile_name], profile_option_name)
+            try:
+                return getattr(empty_profile.setting_types[profile_name](), profile_option_name)
+            except Exception:
+                print(dir(empty_profile.setting_types[profile_name]()))
+                raise
 
     def opt(self, profile_option_name, default=NO_OPT):
         if default != NO_OPT:

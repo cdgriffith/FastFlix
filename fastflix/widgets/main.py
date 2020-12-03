@@ -31,7 +31,7 @@ from fastflix.flix import (
     detect_interlaced,
 )
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import Video, VideoSettings
+from fastflix.models.video import Video, VideoSettings, Status
 from fastflix.resources import (
     black_x_icon,
     play_round_icon,
@@ -392,7 +392,8 @@ class Main(QtWidgets.QWidget):
         self.widgets.flip.setCurrentIndex(self.flip_to_int(v_flip, h_flip))
         self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
         self.video_options.update_profile()
-        self.video_options.new_source()
+        if self.app.fastflix.current_video:
+            self.video_options.new_source()
         # Hack to prevent a lot of thumbnail generation
         self.loading_video = False
         self.page_update()
@@ -820,7 +821,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.bottom.setText(str(b))
 
     def build_crop(self) -> Union[str, None]:
-        if not self.initialized:
+        if not self.initialized or not self.app.fastflix.current_video:
             return None
         try:
             top = int(self.widgets.crop.top.text())
@@ -1074,10 +1075,12 @@ class Main(QtWidgets.QWidget):
         if video.video_settings.vertical_flip and video.video_settings.horizontal_flip:
             self.widgets.flip.setCurrentIndex(3)
 
-        self.video_options.new_source()
+        # self.video_options.new_source()
+        self.video_options.reload()
         self.enable_all()
 
-        # TODO add encoder
+        self.app.fastflix.current_video.status = Status()
+
         # TODO add subtitles
         # TODO add cover
         # TODO add audio

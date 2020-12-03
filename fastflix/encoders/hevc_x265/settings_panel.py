@@ -510,6 +510,7 @@ class HEVC(SettingPanel):
             tune=self.widgets.tune.currentText(),
             x265_params=x265_params_text.split(":") if x265_params_text else [],
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
+            lossless=self.widgets.lossless.isChecked(),
         )
 
         if self.mode == "CRF":
