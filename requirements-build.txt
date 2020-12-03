@@ -4,11 +4,11 @@ coloredlogs
 iso639-lang
 mistune
 psutil
-pyinstaller
+pyinstaller==4.0
 pypiwin32
 pyqt5
 python-box
 qtpy
 requests
 reusables
-ruamel.yaml
+ruamel.yaml<0.16
