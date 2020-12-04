@@ -1081,9 +1081,7 @@ class Main(QtWidgets.QWidget):
 
         self.app.fastflix.current_video.status = Status()
 
-        # TODO add subtitles
         # TODO add cover
-        # TODO add audio
 
         self.loading_video = False
         self.page_update()
