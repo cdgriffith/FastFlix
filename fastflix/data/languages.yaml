@@ -222,6 +222,8 @@ No Video File:
   en: No Video File
 No command found for:
   en: No command found for
+No crop, scale, rotation,flip nor any other filters will be applied.:
+  en: No crop, scale, rotation,flip nor any other filters will be applied.
 No new items in queue to convert:
   en: No new items in queue to convert
 No video found for:
@@ -342,6 +344,8 @@ This is used for ultra-high bitrates with zero loss of quality.:
   en: This is used for ultra-high bitrates with zero loss of quality.
 'This option is not recommenced unless you need to conform ':
   en: 'This option is not recommenced unless you need to conform '
+This will just copy the video track as is.:
+  en: This will just copy the video track as is.
 Tier:
   en: Tier
 Tile Columns:

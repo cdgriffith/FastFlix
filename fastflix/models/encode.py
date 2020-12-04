@@ -136,3 +136,8 @@ class GIFSettings(EncoderSettings):
     name = "GIF"
     fps: int = 15
     dither: str = "sierra2_4a"
+
+
+@dataclass
+class CopySettings(EncoderSettings):
+    name = "Copy"

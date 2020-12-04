@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from typing import List
+import copy
 
 from box import Box
 from iso639 import Lang
@@ -274,6 +275,8 @@ class Audio(QtWidgets.QTabWidget):
 
     @property
     def conversion(self):
+        if self.widgets.convert_to.currentIndex() == 0:
+            return {"codec": "", "bitrate": ""}
         return {"codec": self.widgets.convert_to.currentText(), "bitrate": self.widgets.convert_bitrate.currentText()}
 
     @property
@@ -355,7 +358,7 @@ class AudioList(FlixList):
         return False
 
     def new_source(self, codecs):
-        self.tracks: List[AudioTrack] = []
+        self.tracks: List[Audio] = []
         self._first_selected = False
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
             track_info = ""
@@ -420,11 +423,16 @@ class AudioList(FlixList):
         self.app.fastflix.current_video.video_settings.audio_tracks = tracks
 
     def reload(self, audio_formats):
-        pass
-        # self.new_source(audio_formats)
-        # enabled_tracks = [x.index for x in self.app.fastflix.current_video.video_settings.audio_tracks]
-        # for track in self.tracks:
-        #     track.widgets.enable_check.setChecked(track not in enabled_tracks)
-        #     track.widgets.enable_check.setChecked(track not in enabled_tracks)
-        #
-        # super()._new_source(self.tracks)
+        og_tracks = copy.deepcopy(self.app.fastflix.current_video.video_settings.audio_tracks)
+        enabled_tracks = [x.index for x in og_tracks]
+        self.new_source(audio_formats)
+        for track in self.tracks:
+            enabled = track.index in enabled_tracks
+            track.widgets.enable_check.setChecked(enabled)
+            if enabled:
+                existing_track = [x for x in og_tracks if x.index == track.index][0]
+                track.widgets.downmix.setCurrentIndex(existing_track.downmix)
+                track.widgets.convert_to.setCurrentText(existing_track.conversion_codec)
+                track.widgets.convert_bitrate.setCurrentText(existing_track.conversion_bitrate)
+
+        super()._new_source(self.tracks)

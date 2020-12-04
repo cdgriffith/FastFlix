@@ -16,6 +16,7 @@ from fastflix.models.encode import (
     rav1eSettings,
     x264Settings,
     x265Settings,
+    CopySettings,
 )
 from fastflix.exceptions import MissingFF, ConfigError
 from fastflix.version import __version__
@@ -58,6 +59,7 @@ class Profile:
     aom_av1: Union[AOMAV1Settings, None] = None
     gif: Union[GIFSettings, None] = None
     webp: Union[WebPSettings, None] = None
+    copy: Union[CopySettings, None] = None
 
     setting_types = {
         "x265": x265Settings,
@@ -68,6 +70,7 @@ class Profile:
         "aom_av1": AOMAV1Settings,
         "gif": GIFSettings,
         "webp": WebPSettings,
+        "copy": CopySettings,
     }
 
     def to_dict(self):

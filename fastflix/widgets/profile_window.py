@@ -18,6 +18,7 @@ from fastflix.models.video import (
     AOMAV1Settings,
     GIFSettings,
     WebPSettings,
+    CopySettings,
 )
 from fastflix.models.config import Profile, get_preset_defaults
 from fastflix.shared import error_message
@@ -164,6 +165,8 @@ class ProfileWindow(QtWidgets.QWidget):
             new_profile.gif = self.encoder
         if isinstance(self.encoder, WebPSettings):
             new_profile.webp = self.encoder
+        if isinstance(self.encoder, CopySettings):
+            new_profile.copy = self.encoder
 
         self.app.fastflix.config.profiles[profile_name] = new_profile
         self.app.fastflix.config.selected_profile = profile_name

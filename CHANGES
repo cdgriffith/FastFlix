@@ -8,6 +8,7 @@
 * Adding multi-lingual support (thanks to leonardyan)
 * Adding #111 HDR10+ Optimization flag for x265 (thanks to SlashX)
 * Adding support for interlaced videos
+* Adding #113 copy video track option (thanks to leonardyan)
 * Changing large internal re-write
 * Changing so it opens the file dialog for new video to last used directory
 * Fixing #116 how HDR10 options for x265 work (thanks to HannesJo0139)

@@ -17,7 +17,7 @@ def build_audio(audio_tracks, audio_file_index=0):
             command_list.append(f"-metadata:s:{track.outdex} language={track.language}")
         if track.conversion_codec == "none":
             command_list.append(f"-c:{track.outdex} copy")
-        elif "conversion" in track:
+        elif track.conversion_codec:
             bitrate = ""
             if track.conversion_codec not in lossless:
                 bitrate = f"-b:{track.outdex} {track.conversion_bitrate} "
