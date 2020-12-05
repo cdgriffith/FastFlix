@@ -41,6 +41,14 @@ jobs:
       shell: cmd
       run: pyinstaller FastFlix_Windows_OneFile.spec
 
+    - name: Build installer executable
+      shell: cmd
+      run: pyinstaller FastFlix_Windows_Installer.spec
+
+#    - name: Package installer
+#      shell: cmd
+#      run: |
+#
     - name: Package single executable
       shell: cmd
       run: |
@@ -54,15 +62,6 @@ jobs:
         path: |
           FastFlix.exe
           LICENSE
-
-    - name: Build installer executable
-      shell: cmd
-      run: pyinstaller FastFlix_Windows_Installer.spec
-
-#    - name: Package installer
-#      shell: cmd
-#      run: |
-#
 
     - name: Upload installer artifact
       uses: actions/upload-artifact@v2

@@ -2,10 +2,17 @@
 
 block_cipher = None
 
+all_fastflix_files = []
+
+for root, dirs, files in os.walk('fastflix'):
+	if "__pycache__" in root:
+	    continue
+	for file in files:
+		all_fastflix_files.append((os.path.join(root,file), root))
 
 a = Analysis(['fastflix\\__main__.py'],
              binaries=[],
-             datas=[('iso-639-3.tab', 'iso639'), ('fastflix\\data\\languages.yaml', 'fastflix\\data'), ('fastflix\\data\\styles\\*', 'fastflix\\data\\styles'), ('fastflix\\data\\icons\\*', 'fastflix\\data\\icons'), ('fastflix\\data\\encoders\\*', 'fastflix\\data\\encoders'), ('fastflix\\data\\rotations\\*', 'fastflix\\data\\rotations'), ('fastflix\\data\\icon.ico', 'fastflix\\data'), ('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')],
+             datas=[('iso-639-3.tab', 'iso639'), ('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files,
              hiddenimports=['pyqt5', 'requests', 'python-box', 'reusables', 'pkg_resources.py2_warn', 'psutil', 'iso639', 'fastflix.models.config'],
              hookspath=[],
              runtime_hooks=[],
