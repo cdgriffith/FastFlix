@@ -136,6 +136,8 @@ Encoding complete:
   en: Encoding complete
 Enforce an encode profile:
   en: Enforce an encode profile
+Error:
+  en: Error
 Error Updating Thumbnail:
   en: Error Updating Thumbnail
 Error detected while converting:
@@ -356,6 +358,8 @@ The purpose is to prevent blocking or banding artifacts in regions with few/zero
   en: The purpose is to prevent blocking or banding artifacts in regions with few/zero AC coefficients.
 There is a conversion in process!:
   en: There is a conversion in process!
+There was an error during conversion and the queue has stopped:
+  en: There was an error during conversion and the queue has stopped
 This flag performs bi-linear interpolation of the corner reference samples for a strong smoothing effect.:
   en: This flag performs bi-linear interpolation of the corner reference samples for a strong smoothing effect.
 This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.:

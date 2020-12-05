@@ -10,6 +10,8 @@
 * Adding |=====  | Progress Bars
 * Adding support for interlaced videos
 * Adding option to download newest FFmpeg on Windows
+* Adding builds for MacOS and Linux
+* Adding --test (imports only) and --version startup options
 * Changing to a model based dataclass setup with a large internal re-write
 * Changing so it opens the file dialog for new video to last used directory
 * Fixing #116 how HDR10 options for x265 work (thanks to HannesJo0139)
