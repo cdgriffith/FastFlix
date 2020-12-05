@@ -39,7 +39,6 @@ jobs:
       run: pyinstaller FastFlix_Nix_OneFile.spec
 
     - name: Package single executable
-      shell: cmd
       run: |
         mv dist/FastFlix .
         mv docs/build-licenses.txt LICENSE
