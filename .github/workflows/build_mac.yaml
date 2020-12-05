@@ -36,21 +36,20 @@ jobs:
     - name: Build executable
       run: pyinstaller FastFlix_Nix_OneFile.spec
 
-    - name: Package single executable
+    - name: Copy license to dist
       run: |
-        mv dist/FastFlix .
-        mv docs/build-licenses.txt LICENSE
+        cp docs/build-licenses.txt dist/LICENSE
 
     - name: Test executable
       run: |
-        chmod +x ./FastFlix
-        ./FastFlix --version
-        ./FastFlix --test
+        chmod +x dist/FastFlix
+        dist/FastFlix --version
+        dist/FastFlix --test
 
     - name: Upload standalone executable artifact
       uses: actions/upload-artifact@v2
       with:
         name: FastFlix_${{ env.VERSION }}_linux_x86_64
         path: |
-          FastFlix
-          LICENSE
+          dist/FastFlix
+          dist/LICENSE
