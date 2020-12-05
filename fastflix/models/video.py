@@ -2,7 +2,7 @@
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
-from tempfile import TemporaryDirectory
+from tempfile import TemporaryDirectory  # TODO remove TemporaryDirectory, do manual mangement
 from typing import Any, List, Union
 
 from appdirs import user_data_dir

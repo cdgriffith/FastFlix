@@ -1,0 +1,52 @@
+name: Build executables for Windows
+on:
+  push:
+    branches: [ master, develop, build, re-org ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  build:
+
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+
+    - name: Insatll requirements
+      shell: cmd
+      run: |
+        python -m pip install --upgrade pip setuptools --ignore-installed
+        python -m pip install -r requirements-build.txt
+
+    - name: Gather build version
+      shell: poewrshell
+      run: |
+        mkdir dist
+        New-Item -Path Env: -Name VERSION -Value $(C:\Python38-x64\python.exe scripts\get_version.py)
+        echo %VERSION% > build_version
+        'echo "Building branch $env:APPVEYOR_REPO_BRANCH - version $env:VERSION"'
+
+    - name: Grab language list iso-639-3
+      shell: powershell
+      run: Invoke-WebRequest https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab -O iso-639-3.tab
+
+    - name: Build executable
+      shell: cmd
+      run: pyinstaller --add-data "iso-639-3.tab;iso639" --add-data "fastflix\data\languages.yaml;fastflix\data" --add-data "fastflix\data\styles\*;fastflix\data\styles" --add-data "fastflix\data\icons\*;fastflix\data\icons" --add-data "fastflix\data\encoders\*;fastflix\data\encoders" --add-data "fastflix\data\rotations\*;fastflix\data\rotations" --add-data "fastflix\data\icon.ico;fastflix\data" --add-data "CHANGES;fastflix\." --add-data "docs\build-licenses.txt;docs" --hidden-import=pyqt5 --hidden-import=requests --hidden-import="python-box" --hidden-import=reusables --hidden-import="pkg_resources.py2_warn"  --hidden-import="psutil" --hidden-import="iso639"  fastflix\__main__.py  --icon fastflix\data\icon.ico --name FastFlix --clean --onefile
+
+    - name: Package
+      shell: cmd
+      run: |
+        move dist\*.exe .
+        move docs\build-licenses.txt LICENSE
+        7z a FastFlix_%VERSION%_win64.zip FastFlix.exe LICENSE
+
+    - name: Save executables
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'FastFlix_%VERSION%_win64.zip'
+        path: 'FastFlix_%VERSION%_win64.zip'
