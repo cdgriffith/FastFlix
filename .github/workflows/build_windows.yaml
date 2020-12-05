@@ -24,6 +24,8 @@ jobs:
         echo %VERSION% > build_version
         echo "Building branch $env:GITHUB_REF - version $env:VERSION"
         echo "::set-env name=VERSION::%VERSION%"
+      with:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
     - name: Print ${{ env.VERSION }}
       shell: powershell
