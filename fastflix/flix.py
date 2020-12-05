@@ -117,7 +117,6 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         f"{file}",
     ]
     result = execute(command)
-    print(result)
     try:
         return Box.from_json(result.stdout)
     except BoxError:

@@ -22,7 +22,7 @@ def build_attachments(attachments: List[AttachmentTrack]) -> str:
             mime_type, ext_type = image_type(attachment.file_path)
             unixy_path = str(attachment.file_path).replace("\\", "/")
             commands.append(
-                f' -attach "{unixy_path}" -metadata:s:{attachment.outdex} mimetype={mime_type} '
+                f' -attach "{unixy_path}" -metadata:s:{attachment.outdex} mimetype="{mime_type}" '
                 f'-metadata:s:{attachment.outdex}  filename="{attachment.filename}.{ext_type}" '
             )
     return " ".join(commands)
