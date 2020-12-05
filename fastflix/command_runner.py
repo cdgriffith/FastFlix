@@ -8,8 +8,6 @@ from pathlib import Path
 from subprocess import PIPE, Popen
 from threading import Thread
 
-import psutil
-
 logger = logging.getLogger("fastflix-core")
 
 __all__ = ["BackgroundRunner"]
@@ -64,7 +62,7 @@ class BackgroundRunner:
         self.error_message = errors
         self.success_message = successes
 
-        self.process = psutil.Popen(
+        self.process = Popen(
             command_one,
             cwd=work_dir,
             stdout=PIPE,
@@ -72,7 +70,7 @@ class BackgroundRunner:
             stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc on linux
         )
 
-        self.process_two = psutil.Popen(
+        self.process_two = Popen(
             command_two,
             cwd=work_dir,
             stdout=open(self.output_file, "w"),
@@ -171,19 +169,19 @@ class BackgroundRunner:
                     logger.exception(f"Couldn't terminate process: {err}")
         self.killed = True
 
-    def pause(self):
-        if self.process_two:
-            return False
-        if not self.process:
-            return False
-        self.process.suspend()
-
-    def resume(self):
-        if self.process_two:
-            return False
-        if not self.process:
-            return False
-        self.process.resume()
+    # def pause(self):
+    #     if self.process_two:
+    #         return False
+    #     if not self.process:
+    #         return False
+    #     self.process.suspend()
+    #
+    # def resume(self):
+    #     if self.process_two:
+    #         return False
+    #     if not self.process:
+    #         return False
+    #     self.process.resume()
 
 
 if __name__ == "__main__":

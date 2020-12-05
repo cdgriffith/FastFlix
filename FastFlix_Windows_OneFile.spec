@@ -10,10 +10,17 @@ for root, dirs, files in os.walk('fastflix'):
 	for file in files:
 		all_fastflix_files.append((os.path.join(root,file), root))
 
+all_imports = []
+with open("requirements-build.txt", "r") as reqs:
+    for line in reqs:
+        package = line.split("=")[0].split(">")[0].split("<")[0].replace('"', '').replace("'", '').strip()
+        if package not in ("pyinstaller", "pypiwin32"):
+            all_imports.append(package)
+
 a = Analysis(['fastflix\\__main__.py'],
              binaries=[],
              datas=[('iso-639-3.tab', 'iso639'), ('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files,
-             hiddenimports=['ruamel.yaml.SafeLoader', 'pyqt5', 'requests', 'python-box', 'reusables', 'pkg_resources.py2_warn', 'psutil', 'iso639', 'fastflix.models.config'],
+             hiddenimports=all_imports,
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
