@@ -18,7 +18,7 @@ jobs:
 
     - name: Find sitepackages
       shell: cmd
-      run: python -c 'import site; print(site.getsitepackages())'
+      run: python -c "import site; print(site.getsitepackages())"
 
 #    - name: Cache Python Packages
 #      id: cache-primes
