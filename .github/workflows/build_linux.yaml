@@ -19,9 +19,8 @@ jobs:
     - name: Gather build version
       run: |
         mkdir dist
-        VERSION=$(python scripts/get_version.py)
-        echo "Building branch $env:GITHUB_REF - version $env:VERSION"
-        echo "::set-env name=VERSION::$env:VERSION"
+        echo "::set-env name=VERSION::$(python scripts/get_version.py)"
+        echo "Building branch ${env.GITHUB_REF} - version ${env.VERSION}"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
