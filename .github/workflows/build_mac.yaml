@@ -40,4 +40,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: FastFlix_${{ env.VERSION }}_macos
-        path: dist\FastFlix\
+        path: dist\
