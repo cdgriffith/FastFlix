@@ -30,6 +30,13 @@ class SubtitleTrack(BaseDataClass):
     burn_in: bool = False
     language: str = ""
 
+@dataclass
+class AttachmentTrack(BaseDataClass):
+    outdex: int
+    index: Union[int, None] = None
+    attachment_type: str = "cover"
+    file_path: Union[Path, None] = None
+
 
 @dataclass
 class EncoderSettings(BaseDataClass):

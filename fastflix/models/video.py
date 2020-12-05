@@ -12,6 +12,7 @@ from fastflix.models.base import BaseDataClass
 from fastflix.models.encode import (
     AOMAV1Settings,
     AudioTrack,
+    AttachmentTrack,
     GIFSettings,
     SubtitleTrack,
     SVTAV1Settings,
@@ -55,6 +56,7 @@ class VideoSettings(BaseDataClass):
     ] = None
     audio_tracks: List[AudioTrack] = field(default_factory=list)
     subtitle_tracks: List[SubtitleTrack] = field(default_factory=list)
+    attachment_tracks: List[AttachmentTrack] = field(default_factory=list)
     conversion_commands: List = field(default_factory=list)
 
 

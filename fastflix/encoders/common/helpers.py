@@ -185,7 +185,7 @@ def generate_all(
     ending = generate_ending(
         audio=audio,
         subtitles=subtitles,
-        # cover=attachments,
+        cover=attachments,
         output_video=fastflix.current_video.video_settings.output_path,
     )
 

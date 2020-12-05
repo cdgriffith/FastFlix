@@ -9,6 +9,7 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.video import AttachmentTrack
 from fastflix.shared import link
 from fastflix.language import t
 
@@ -197,20 +198,22 @@ class CoverPanel(QtWidgets.QWidget):
                 f'-metadata:s:{track_index}  filename="{filename}.{ext_type}" '
             )
 
-    def get_settings(self, out_stream_start_index=0):
-        track_index = out_stream_start_index
-        commands = []
+    def update_cover_settings(self):
+        start_oudex = (1 +
+                       len(self.app.fastflix.current_video.video_settings.audio_tracks) +
+                       len(self.app.fastflix.current_video.video_settings.subtitle_tracks)
+                       )
+        attachments = []
 
         for filename in ("cover", "cover_land", "small_cover", "small_cover_land"):
-            command = self.generate_attachment(filename, track_index=track_index)
-            if command:
-                track_index += 1
-                commands.append(command)
+            # do stuff
+            pass
+            #command = self.generate_attachment(filename, track_index=track_index)
+            #if command:
+            #    track_index += 1
+            #    commands.append(command)
+        self.app.fastflix.current_video.video_settings.attachment_tracks = []
 
-        return Box(
-            attachments=re.sub("[ ]+", " ", " ".join(commands)),
-            attachments_track_count=track_index - out_stream_start_index,
-        )
 
     def cover_passthrough_check(self):
         checked = self.cover_passthrough_checkbox.isChecked()

@@ -2,14 +2,15 @@
 
 ## Version 4.0.0
 
-* Adding profiles
-* Adding |=====  | Progress Bars
-* Adding option to download newest FFmpeg on Windows
-* Adding multi-lingual support (thanks to leonardyan)
+* Adding #59 Queue system
+* Adding #94 profiles (thanks to robchap79)
+* Adding #98 multi-lingual support (thanks to leonardyan)
 * Adding #111 HDR10+ Optimization flag for x265 (thanks to SlashX)
-* Adding support for interlaced videos
 * Adding #113 copy video track option (thanks to leonardyan)
-* Changing large internal re-write
+* Adding |=====  | Progress Bars
+* Adding support for interlaced videos
+* Adding option to download newest FFmpeg on Windows
+* Changing to a model based dataclass setup with a large internal re-write
 * Changing so it opens the file dialog for new video to last used directory
 * Fixing #116 how HDR10 options for x265 work (thanks to HannesJo0139)
 * Fixing thumbnails not being generated properly on 10-bit non bt2020 files
