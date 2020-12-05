@@ -16,17 +16,6 @@ jobs:
       with:
         python-version: 3.6
 
-    - name: Find sitepackages
-      shell: cmd
-      run: python -c "import site; print(site.getsitepackages())"
-
-#    - name: Cache Python Packages
-#      id: cache-primes
-#      uses: actions/cache@v2
-#      with:
-#        path: prime-numbers
-#        key: ${{ runner.os }}-primes
-
     - name: Gather build version
       shell: powershell
       run: |
@@ -34,9 +23,10 @@ jobs:
         New-Item -Path Env: -Name VERSION -Value $(python.exe scripts\get_version.py)
         echo %VERSION% > build_version
         echo "Building branch $env:GITHUB_REF - version $env:VERSION"
+        echo "::set-env name=VERSION::%VERSION%"
 
     - name: Print ${{ env.VERSION }}
-      shell: cmd
+      shell: powershell
       run: echo %VERSION%
 
     - name: Insatll requirements
