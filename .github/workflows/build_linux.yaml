@@ -19,7 +19,7 @@ jobs:
     - name: Gather build version
       run: |
         mkdir dist
-        VERSION=$(python.exe scripts\get_version.py)
+        VERSION=$(python scripts\get_version.py)
         echo $VERSION > build_version
         echo "Building branch $env:GITHUB_REF - version $env:VERSION"
         echo "::set-env name=VERSION::$env:VERSION"
