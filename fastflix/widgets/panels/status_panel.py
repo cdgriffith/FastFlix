@@ -53,6 +53,9 @@ class StatusPanel(QtWidgets.QWidget):
         self.speed.connect(self.update_speed)
         self.bitrate.connect(self.update_bitrate)
 
+    def cleanup(self):
+        self.inner_widget.log_updater.terminate()
+
     def get_movie_length(self):
         if not self.current_video:
             return
@@ -124,7 +127,8 @@ class Logs(QtWidgets.QTextBrowser):
         self.log_signal.connect(self.update_text)
         self.clear_window.connect(self.blank)
 
-        LogUpdater(self, log_queue).start()
+        self.log_updater = LogUpdater(self, log_queue)
+        self.log_updater.start()
 
     def update_text(self, msg):
         if self.status_panel.hide_nal.isChecked() and msg.endswith(("NAL unit 62", "NAL unit 63")):

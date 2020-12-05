@@ -74,6 +74,7 @@ class Container(QtWidgets.QMainWindow):
                 shutil.rmtree(item, ignore_errors=True)
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
                 item.unlink()
+        self.main.close(from_container=True)
         super(Container, self).closeEvent(a0)
 
     def si(self, widget):

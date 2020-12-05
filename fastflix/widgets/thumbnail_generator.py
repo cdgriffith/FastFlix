@@ -33,3 +33,4 @@ class ThumbnailCreator(QtCore.QThread):
             self.app.thumbnail_complete.emit(0)
         else:
             self.app.thumbnail_complete.emit(1)
+        self.exit(0)

@@ -36,7 +36,7 @@ jobs:
 
     - name: Build executable
       shell: cmd
-      run: pyinstaller --add-data "iso-639-3.tab;iso639" --add-data "fastflix\data\languages.yaml;fastflix\data" --add-data "fastflix\data\styles\*;fastflix\data\styles" --add-data "fastflix\data\icons\*;fastflix\data\icons" --add-data "fastflix\data\encoders\*;fastflix\data\encoders" --add-data "fastflix\data\rotations\*;fastflix\data\rotations" --add-data "fastflix\data\icon.ico;fastflix\data" --add-data "CHANGES;fastflix\." --add-data "docs\build-licenses.txt;docs" --hidden-import=pyqt5 --hidden-import=requests --hidden-import="python-box" --hidden-import=reusables --hidden-import="pkg_resources.py2_warn"  --hidden-import="psutil" --hidden-import="iso639"  fastflix\__main__.py  --icon fastflix\data\icon.ico --name FastFlix --clean --onefile
+      run: pyinstaller FastFlix_Windows_OneFile.spec
 
     - name: Package
       shell: cmd

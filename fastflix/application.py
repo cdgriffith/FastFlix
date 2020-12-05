@@ -12,7 +12,7 @@ from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
-from fastflix.resources import dark_mode, default_mode, main_icon, video_add_icon
+from fastflix.resources import default_mode, main_icon, video_add_icon
 from fastflix.shared import file_date
 from fastflix.version import __version__
 from fastflix.widgets.container import Container
@@ -23,7 +23,6 @@ logger = logging.getLogger("fastflix")
 
 def create_app():
     main_app = FastFlixApp(sys.argv)
-    # main_app.setStyleSheet(dark_mode)
     main_app.setStyle("fusion")
     main_app.setStyleSheet(default_mode)
     main_app.setApplicationDisplayName("FastFlix")

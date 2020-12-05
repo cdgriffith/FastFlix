@@ -5,7 +5,6 @@ import pkg_resources
 
 main_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icon.ico")).resolve())
 language_file = str(Path(pkg_resources.resource_filename(__name__, "data/languages.yaml")).resolve())
-dark_mode = Path(pkg_resources.resource_filename(__name__, "data/styles/dark_mode.qss")).resolve().read_text()
 default_mode = Path(pkg_resources.resource_filename(__name__, "data/styles/default.qss")).resolve().read_text()
 
 

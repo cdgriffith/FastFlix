@@ -1345,19 +1345,17 @@ class Main(QtWidgets.QWidget):
         if build_thumbnail:
             self.generate_thumbnail()
 
-    def close(self, no_cleanup=False):
-        try:
-            self.app.fastflix.status_queue.put("exit")
-        except KeyboardInterrupt:
-            if not no_cleanup:
-                try:
-                    self.temp_dir.cleanup()
-                except Exception:
-                    pass
-            self.notifier.terminate()
-            super().close()
+    def close(self, no_cleanup=False, from_container=False):
+        if not no_cleanup:
+            try:
+                self.temp_dir.cleanup()
+            except Exception:
+                pass
+        self.video_options.cleanup()
+        self.notifier.terminate()
+        super().close()
+        if not from_container:
             self.container.close()
-            raise
 
     @property
     def convert_to(self):
@@ -1649,7 +1647,10 @@ class Notifier(QtCore.QThread):
                 self.main.cancelled.emit(":".join(status[1:]))
                 self.main.status_update_signal.emit(":".join(status))
             elif status[0] == "exit":
-                self.main.close_event.emit()
+                try:
+                    self.terminate()
+                finally:
+                    self.main.close_event.emit()
                 return
             else:
                 self.main.status_update_signal.emit(":".join(status))

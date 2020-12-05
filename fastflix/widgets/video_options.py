@@ -124,3 +124,6 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     def show_status(self):
         self.setCurrentWidget(self.status)
+
+    def cleanup(self):
+        self.status.cleanup()
