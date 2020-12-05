@@ -45,8 +45,8 @@ jobs:
         move docs\build-licenses.txt LICENSE
         7z a FastFlix_%VERSION%_win64.zip FastFlix.exe LICENSE
 
-    - name: Save executables
+    - name: Save standalone executable
       uses: actions/upload-artifact@v2
       with:
-        name: 'FastFlix_%VERSION%_win64.zip'
-        path: 'FastFlix_%VERSION%_win64.zip'
+        name: FastFlix_win64.zip
+        path: FastFlix_*_win64.zip

@@ -18,7 +18,7 @@ def write_and_exit(msg):
 
 
 if os.getenv("GITHUB_ACTIONS"):
-    branch = os.getenv("GITHUB_REF")
+    branch = os.getenv("GITHUB_REF").rsplit("/", 1)[1]
 
     if branch == "master":
         write_and_exit(__version__)
