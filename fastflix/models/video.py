@@ -2,7 +2,6 @@
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
-from tempfile import TemporaryDirectory  # TODO remove TemporaryDirectory, do manual mangement
 from typing import Any, List, Union
 
 from appdirs import user_data_dir
@@ -80,7 +79,7 @@ class Video(BaseDataClass):
     duration: Union[float, int] = 0
     streams: Box = None
 
-    work_path: TemporaryDirectory = None
+    work_path: Path = None
     pix_fmt: str = ""
     format: Box = None
     interlaced: bool = True

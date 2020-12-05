@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass, field
 from pathlib import Path
-from tempfile import TemporaryDirectory
-from typing import Any, List, Union
+from typing import List, Union
 
-from appdirs import user_data_dir
-from box import Box
 
 from fastflix.models.base import BaseDataClass
 

@@ -66,7 +66,7 @@ def build(fastflix: FastFlix):
     if fastflix.current_video.cll:
         pass
 
-    pass_log_file = Path(fastflix.current_video.work_path.name) / f"pass_log_file_{secrets.token_hex(10)}.log"
+    pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
 
     def get_x265_params(params=()):
         if not isinstance(params, (list, tuple)):

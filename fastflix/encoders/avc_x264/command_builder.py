@@ -23,7 +23,7 @@ def build(fastflix: FastFlix):
         if fastflix.current_video.color_space.startswith("bt2020"):
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
-    pass_log_file = Path(fastflix.current_video.work_path.name) / f"pass_log_file_{secrets.token_hex(10)}.log"
+    pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
 
     if settings.bitrate:
         command_1 = (

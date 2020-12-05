@@ -4,7 +4,6 @@ import os
 import re
 from pathlib import Path
 from subprocess import PIPE, CompletedProcess, TimeoutExpired, run
-from tempfile import TemporaryDirectory
 from typing import List, Tuple, Union
 
 import reusables
@@ -186,7 +185,7 @@ def extract_attachments(app: FastFlixApp, **_):
             )
 
 
-def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: TemporaryDirectory, file_name: str):
+def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, file_name: str):
     try:
         execute(
             [
@@ -202,7 +201,7 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Tempor
                 "1",
                 f"{file_name}",
             ],
-            work_dir=work_dir.name,
+            work_dir=work_dir,
             timeout=5,
         )
     except TimeoutExpired:

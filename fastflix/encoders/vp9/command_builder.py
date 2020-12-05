@@ -15,7 +15,7 @@ def build(fastflix: FastFlix):
     beginning += f'{"-row-mt 1" if settings.row_mt else ""} '
 
     if not settings.single_pass:
-        pass_log_file = Path(fastflix.current_video.work_path.name) / f"pass_log_file_{secrets.token_hex(10)}.log"
+        pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
         beginning += f'-passlogfile "{pass_log_file}" '
 
     if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):

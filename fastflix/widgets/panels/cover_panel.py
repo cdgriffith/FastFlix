@@ -182,7 +182,7 @@ class CoverPanel(QtWidgets.QWidget):
         if attr and attr.text().strip():
             cover_image = Path(attr.text().strip())
         if getattr(self, f"{filename}_passthrough_checkbox").isChecked():
-            cover_image = Path(self.app.fastflix.current_video.work_path.name) / self.attachments[filename].name
+            cover_image = self.app.fastflix.current_video.work_path / self.attachments[filename].name
         return cover_image if cover_image else None
 
     def update_cover_settings(self):
@@ -209,9 +209,7 @@ class CoverPanel(QtWidgets.QWidget):
         if checked:
             self.cover_path.setDisabled(True)
             self.cover_button.setDisabled(True)
-            pixmap = QtGui.QPixmap(
-                str(Path(self.app.fastflix.current_video.work_path.name) / self.attachments.cover.name)
-            )
+            pixmap = QtGui.QPixmap(str(self.app.fastflix.current_video.work_path / self.attachments.cover.name))
             pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.poster.setPixmap(pixmap)
         else:
@@ -234,9 +232,7 @@ class CoverPanel(QtWidgets.QWidget):
         if checked:
             self.cover_land.setDisabled(True)
             self.landscape_button.setDisabled(True)
-            pixmap = QtGui.QPixmap(
-                str(Path(self.app.fastflix.current_video.work_path.name) / self.attachments.cover_land.name)
-            )
+            pixmap = QtGui.QPixmap(str(self.app.fastflix.current_video.work_path / self.attachments.cover_land.name))
             pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.landscape.setPixmap(pixmap)
         else:
@@ -285,7 +281,7 @@ class CoverPanel(QtWidgets.QWidget):
         for attachment in attachments:
             filename = attachment.get("tags", {}).get("filename", "")
             base_name = filename.rsplit(".", 1)[0]
-            file_path = Path(self.app.fastflix.current_video.work_path.name) / filename
+            file_path = self.app.fastflix.current_video.work_path / filename
             if base_name == "cover" and file_path.exists():
                 self.cover_passthrough_checkbox.setChecked(True)
                 self.cover_passthrough_checkbox.setDisabled(False)

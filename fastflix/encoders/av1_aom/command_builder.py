@@ -30,7 +30,7 @@ def build(fastflix: FastFlix):
     beginning = re.sub("[ ]+", " ", beginning)
 
     if settings.bitrate:
-        pass_log_file = Path(fastflix.current_video.work_path.name) / f"pass_log_file_{secrets.token_hex(10)}.log"
+        pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
         command_1 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 1 -an -f matroska {null}'
         command_2 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 2' + ending
         return [

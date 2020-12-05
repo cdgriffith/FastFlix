@@ -6,7 +6,7 @@ import logging
 import math
 import os
 import secrets
-import tempfile
+import shutil
 import time
 from dataclasses import asdict
 from datetime import timedelta
@@ -126,8 +126,7 @@ class Main(QtWidgets.QWidget):
         self.input_defaults = Box(scale=None, crop=None)
         self.initial_duration = 0
 
-        self.temp_dir = tempfile.TemporaryDirectory(prefix="temp_", dir=app.fastflix.config.work_path)
-        self.temp_dir_name = self.temp_dir.name
+        self.temp_dir = self.get_temp_work_path()
 
         self.setAcceptDrops(True)
 
@@ -244,7 +243,11 @@ class Main(QtWidgets.QWidget):
         return top_bar
 
     def get_temp_work_path(self):
-        return tempfile.TemporaryDirectory(prefix="temp_", dir=self.app.fastflix.config.work_path)
+        new_temp = self.app.fastflix.config.work_path / f"temp_{secrets.token_hex(12)}"
+        if new_temp.exists():
+            return self.get_temp_work_path()
+        new_temp.mkdir()
+        return new_temp
 
     def pause_resume(self):
         if not self.paused:
@@ -1288,14 +1291,6 @@ class Main(QtWidgets.QWidget):
             horizontal_flip=h_flip,
             output_path=Path(self.output_video),
             deinterlace=self.widgets.deinterlace.isChecked(),
-            # streams=self.app.fastflix.current_video.streams,
-            # format_info=self.app.fastflix.current_video.format,
-            # work_dir=self.app.fastflix.current_video.work_path,
-            # side_data=self.side_data,
-            # ffmpeg=self.app.fastflix.config.ffmpeg,
-            # ffprobe=self.app.fastflix.config.ffprobe,
-            # temp_dir=self.temp_dir_name,
-            # output_video=self.output_video,
             remove_metadata=self.remove_metadata,
             copy_chapters=self.copy_chapters,
             video_title=self.title,
@@ -1348,7 +1343,7 @@ class Main(QtWidgets.QWidget):
     def close(self, no_cleanup=False, from_container=False):
         if not no_cleanup:
             try:
-                self.temp_dir.cleanup()
+                shutil.rmtree(self.temp_dir, ignore_errors=True)
             except Exception:
                 pass
         self.video_options.cleanup()
@@ -1401,8 +1396,6 @@ class Main(QtWidgets.QWidget):
             elif not sm.clickedButton().text().startswith("Continue"):
                 return False
 
-        # Path(self.temp_dir_name).mkdir(parents=True, exist_ok=True)
-
         out_file_path = Path(self.output_video)
         if out_file_path.exists() and out_file_path.stat().st_size > 0:
             sm = QtWidgets.QMessageBox()
@@ -1448,7 +1441,7 @@ class Main(QtWidgets.QWidget):
             if video.status.complete or video.status.error:
                 continue
             for command in video.video_settings.conversion_commands:
-                commands.append((video.uuid, command.uuid, command.command, str(video.work_path.name)))
+                commands.append((video.uuid, command.uuid, command.command, str(video.work_path)))
 
         if not commands:
             error_message(t("No new items in queue to convert"))
@@ -1492,7 +1485,7 @@ class Main(QtWidgets.QWidget):
         if self.converting:
             commands = []
             for command in video.video_settings.conversion_commands:
-                commands.append((video.uuid, command.uuid, command.command, str(video.work_path.name)))
+                commands.append((video.uuid, command.uuid, command.command, str(video.work_path)))
             requests = ["add_items", str(self.app.fastflix.log_path), tuple(commands)]
             self.app.fastflix.worker_queue.put(tuple(requests))
 

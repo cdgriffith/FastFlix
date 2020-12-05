@@ -27,7 +27,7 @@ def build(fastflix: FastFlix):
     if settings.extra:
         beginning += f" {settings.extra} "
 
-    temp_palette = Path(fastflix.current_video.work_path.name) / f"temp_palette_{secrets.token_hex(10)}.png"
+    temp_palette = fastflix.current_video.work_path / f"temp_palette_{secrets.token_hex(10)}.png"
 
     command_1 = f'{beginning} {palletgen_filters}  -y "{temp_palette}"'
 
