@@ -47,15 +47,18 @@ def allow_sleep_mode():
             logger.debug("System has been allowed to enter sleep mode again")
 
 
+@reusables.log_exception(log="fastflix-core")
 def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
     runner = BackgroundRunner(log_queue=log_queue)
 
     # Command looks like (video_uuid, command_uuid, command, work_dir)
-
+    after_done_command = ""
     commands_to_run = []
     gui_died = False
     currently_encoding = False
+    paused = False
     log_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "logs"
+    after_done_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "after_done_logs"
 
     def start_command():
         nonlocal currently_encoding
@@ -101,8 +104,11 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             status_queue.put(("converted", commands_to_run[0][0], commands_to_run[0][1]))
             commands_to_run.pop(0)
             if commands_to_run:
-                logger.info(t("starting next command"))
-                start_command()
+                if not paused:
+                    logger.info(t("starting next command"))
+                    start_command()
+                else:
+                    logger.debug(t("Queue has been paused"))
                 continue
             else:
                 logger.info(t("all conversions complete"))
@@ -111,7 +117,13 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 currently_encoding = False
                 status_queue.put(("complete",))
                 allow_sleep_mode()
-
+                if after_done_command:
+                    logger.info(f"{t('Running after done command:')} {after_done_command}")
+                    try:
+                        runner.start_exec(after_done_command, str(after_done_path))
+                    except Exception:
+                        logger.exception("Error occurred while running after done command")
+                        continue
             if gui_died:
                 return
 
@@ -132,17 +144,35 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             allow_sleep_mode()
             return
         else:
-            # Request looks like (queue command, log_dir, (commands))
+
             # TODO don't open "view new" dialog if not single video
             # TODO disable queue window change when converting
             if request[0] == "add_items":
+                logger.debug(t("Adding commands to the queue"))
+                # Request looks like (queue command, log_dir, (commands))
                 log_path = Path(request[1])
                 commands_to_run.extend(request[2])
-                if not runner.is_alive():
+                if not runner.is_alive() and not paused:
+                    logger.debug(t("No encoding is currently in process, starting encode"))
                     start_command()
             if request[0] == "cancel":
+                logger.debug(t("Cancel has been requested, killing encoding"))
                 runner.kill()
                 allow_sleep_mode()
                 status_queue.put(("cancelled", commands_to_run[0][0], commands_to_run[0][1]))
                 commands_to_run = []
                 currently_encoding = False
+            if request[0] == "pause queue":
+                logger.debug(t("Command worker received request to pause encoding after the current item completes"))
+                paused = True
+            if request[0] == "resume queue":
+                paused = False
+                logger.debug(t("Command worker received request to resume encoding"))
+                if commands_to_run and not runner.is_alive():
+                    start_command()
+            if request[0] == "set after done":
+                after_done_command = request[1]
+                if after_done_command:
+                    logger.debug(f'{t("Setting after done command to:")} {after_done_command}')
+                else:
+                    logger.debug(t("Removing after done command"))

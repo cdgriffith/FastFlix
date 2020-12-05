@@ -1320,9 +1320,6 @@ class Main(QtWidgets.QWidget):
         commands = self.current_encoder.build(fastflix=self.app.fastflix)
         if not commands:
             return False
-        after_done = self.video_options.commands.after_done(builder=True)
-        if after_done is not None:
-            commands.append(after_done)
         self.video_options.commands.update_commands(commands)
         self.app.fastflix.current_video.video_settings.conversion_commands = commands
         return True
@@ -1434,8 +1431,11 @@ class Main(QtWidgets.QWidget):
     def encode_video(self):
 
         if self.converting:
+            logger.debug("Canceling current encode")
             self.app.fastflix.worker_queue.put(["cancel"])
             return
+        else:
+            logger.debug("Adding new items to the command worker to encode")
 
         if not self.app.fastflix.queue:
 

@@ -3,10 +3,12 @@
 
 import copy
 from dataclasses import asdict
+import sys
 
 from box import Box
 from iso639 import Lang
 from qtpy import QtCore, QtGui, QtWidgets
+import reusables
 
 from fastflix.language import t
 from fastflix.shared import link
@@ -17,6 +19,23 @@ from fastflix.resources import black_x_icon, down_arrow_icon, up_arrow_icon, pla
 from fastflix.shared import error_message, main_width, open_folder, no_border
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.widgets.panels.abstract_list import FlixList
+
+
+done_actions = {
+    "linux": {
+        "shutdown": 'shutdown -h 1 "FastFlix conversion complete, shutting down"',
+        "restart": 'shutdown -r 1 "FastFlix conversion complete, rebooting"',
+        "logout": "logout",
+        "sleep": "pm-suspend",
+        "hibernate": "pm-hibernate",
+    },
+    "windows": {
+        "shutdown": "shutdown /s",
+        "restart": "shutdown /r",
+        "logout": "shutdown /l",
+        "hibernate": "shutdown /h",
+    },
+}
 
 
 class EncodeItem(QtWidgets.QTabWidget):
@@ -157,25 +176,49 @@ class EncodingQueue(FlixList):
     def __init__(self, parent, app: FastFlixApp):
         self.main = parent.main
         self.app = app
+        self.paused = False
 
         top_layout = QtWidgets.QHBoxLayout()
 
         top_layout.addWidget(QtWidgets.QLabel(t("Queue")))
         top_layout.addStretch(1)
 
-        pause_queue = QtWidgets.QPushButton(
-            self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), "Pause Queue"
+        self.pause_queue = QtWidgets.QPushButton(
+            self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), t("Pause Queue")
         )
+        self.pause_queue.clicked.connect(self.pause_resume_queue)
         # pause_queue.setFixedHeight(40)
-        pause_queue.setFixedWidth(120)
-        top_layout.addWidget(pause_queue, QtCore.Qt.AlignRight)
-
-        pause_encode = QtWidgets.QPushButton(
-            self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), "Pause Encode"
+        self.pause_queue.setFixedWidth(120)
+        self.pause_queue.setToolTip(
+            t("Wait for the current command to finish," " and stop the next command from processing")
         )
-        # pause_encode.setFixedHeight(40)
-        pause_encode.setFixedWidth(120)
-        top_layout.addWidget(pause_encode, QtCore.Qt.AlignRight)
+
+        self.after_done_combo = QtWidgets.QComboBox()
+        self.after_done_combo.addItem("None")
+        actions = set()
+        if reusables.win_based:
+            actions.update(done_actions["windows"].keys())
+
+        elif sys.platform == "darwin":
+            actions.update(["shutdown", "restart"])
+        else:
+            actions.update(done_actions["linux"].keys())
+        if self.app.fastflix.config.custom_after_run_scripts:
+            actions.update(self.app.fastflix.config.custom_after_run_scripts)
+
+        self.after_done_combo.addItems(sorted(actions))
+        self.after_done_combo.setToolTip("Run a command after conversion completes")
+        self.after_done_combo.currentIndexChanged.connect(lambda: self.set_after_done())
+        self.after_done_combo.setMaximumWidth(150)
+        top_layout.addWidget(QtWidgets.QLabel(t("After Conversion")))
+        top_layout.addWidget(self.after_done_combo, QtCore.Qt.AlignRight)
+        top_layout.addWidget(self.pause_queue, QtCore.Qt.AlignRight)
+        # pause_encode = QtWidgets.QPushButton(
+        #     self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), "Pause Encode"
+        # )
+        # # pause_encode.setFixedHeight(40)
+        # pause_encode.setFixedWidth(120)
+        # top_layout.addWidget(pause_encode, QtCore.Qt.AlignRight)
 
         super().__init__(app, parent, t("Queue"), "queue", top_row_layout=top_layout)
 
@@ -198,3 +241,29 @@ class EncodingQueue(FlixList):
         self.main.reload_video_from_queue(video)
         self.app.fastflix.queue.remove(video)
         self.new_source()
+
+    def pause_resume_queue(self):
+        if self.paused:
+            self.pause_queue.setText(t("Pause Queue"))
+            self.pause_queue.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause))
+            self.app.fastflix.worker_queue.put(["resume queue"])
+        else:
+            self.pause_queue.setText(t("Resume Queue"))
+            self.pause_queue.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay))
+            self.app.fastflix.worker_queue.put(["pause queue"])
+        self.paused = not self.paused
+
+    @reusables.log_exception("fastflix", show_traceback=False)
+    def set_after_done(self):
+        option = self.after_done_combo.currentText()
+
+        if option == "None":
+            command = ""
+        elif option in self.app.fastflix.config.custom_after_run_scripts:
+            command = self.app.fastflix.config.custom_after_run_scripts[option]
+        elif reusables.win_based:
+            command = done_actions["windows"][option]
+        else:
+            command = done_actions["linux"][option]
+
+        self.app.fastflix.worker_queue.put(["set after done", command])

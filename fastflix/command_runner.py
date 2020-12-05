@@ -30,7 +30,7 @@ class BackgroundRunner:
         self.error_message = []
         self.success_message = []
 
-    def start_exec(self, command, work_dir: str, shell: bool = False, errors=(), successes=()):
+    def start_exec(self, command, work_dir: str = None, shell: bool = False, errors=(), successes=()):
         self.clean()
         logger.info(f"Running command: {command}")
         Path(work_dir).mkdir(exist_ok=True, parents=True)
@@ -42,7 +42,7 @@ class BackgroundRunner:
         self.success_message = successes
 
         self.process = Popen(
-            shlex.split(command) if not shell else command,
+            shlex.split(command) if not shell and isinstance(command, str) else command,
             shell=shell,
             cwd=work_dir,
             stdout=open(self.output_file, "w"),

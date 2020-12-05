@@ -4,6 +4,10 @@ Adaptive Quantization:
   en: Adaptive Quantization
 Add to Queue:
   en: Add to Queue
+Adding commands to the queue:
+  en: Adding commands to the queue
+After Conversion:
+  en: After Conversion
 All:
   en: All
 All queue items have completed:
@@ -54,6 +58,10 @@ CodeCalamity UHD HDR Encoding Guide:
   en: CodeCalamity UHD HDR Encoding Guide
 Command has completed:
   en: Command has completed
+Command worker received request to pause encoding after the current item completes:
+  en: Command worker received request to pause encoding after the current item completes
+Command worker received request to resume encoding:
+  en: Command worker received request to resume encoding
 Conversion:
   en: Conversion
 Conversion cancelled, delete incomplete file:
@@ -224,6 +232,8 @@ No command found for:
   en: No command found for
 No crop, scale, rotation,flip nor any other filters will be applied.:
   en: No crop, scale, rotation,flip nor any other filters will be applied.
+No encoding is currently in process, starting encode:
+  en: No encoding is currently in process, starting encode
 No new items in queue to convert:
   en: No new items in queue to convert
 No video found for:
@@ -246,6 +256,8 @@ PIR can replace keyframes by inserting a column of intra blocks in non-keyframes
   en: PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,
 Parse Video details:
   en: Parse Video details
+Pause Queue:
+  en: Pause Queue
 Pixel Format (requires at least 10-bit for HDR):
   en: Pixel Format (requires at least 10-bit for HDR)
 Please provide a profile name:
@@ -284,14 +296,20 @@ Remove HDR:
   en: Remove HDR
 Remove Metadata:
   en: Remove Metadata
+Removing after done command:
+  en: Removing after done command
 Repeat Headers:
   en: Repeat Headers
+Resume Queue:
+  en: Resume Queue
 Reusables:
   en: Reusables
 Row Multi-Threading:
   en: Row Multi-Threading
 Row multithreading:
   en: Row multithreading
+'Running after done command:':
+  en: 'Running after done command:'
 Running command:
   en: Running command
 SVT-AV1 Encoding Guide:
@@ -300,6 +318,8 @@ Scrub away all incoming metadata, like video titles, unique markings and so on.:
   en: Scrub away all incoming metadata, like video titles, unique markings and so on.
 Set the level of effort in determining B frame placement.:
   en: Set the level of effort in determining B frame placement.
+'Setting after done command to:':
+  en: 'Setting after done command to:'
 Settings:
   en: Settings
 Single Pass (Bitrate):
@@ -382,6 +402,8 @@ Various:
   en: Various
 'WARNING: This will take much longer and result in a larger file':
   en: 'WARNING: This will take much longer and result in a larger file'
+Wait for the current command to finish, and stop the next command from processing:
+  en: Wait for the current command to finish, and stop the next command from processing
 Watch:
   en: Watch
 Width must be divisible by 2:
