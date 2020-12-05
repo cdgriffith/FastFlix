@@ -23,13 +23,9 @@ jobs:
         New-Item -Path Env: -Name VERSION -Value $(python.exe scripts\get_version.py)
         echo %VERSION% > build_version
         echo "Building branch $env:GITHUB_REF - version $env:VERSION"
-        echo "::set-env name=VERSION::%VERSION%"
+        echo "::set-env name=VERSION::$env:VERSION"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - name: Print ${{ env.VERSION }}
-      shell: powershell
-      run: echo %VERSION%
 
     - name: Insatll requirements
       shell: cmd
@@ -41,21 +37,35 @@ jobs:
       shell: powershell
       run: Invoke-WebRequest https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab -O iso-639-3.tab
 
-    - name: Build executable
+    - name: Build single executable
       shell: cmd
       run: pyinstaller FastFlix_Windows_OneFile.spec
 
-    - name: Package
+    - name: Package single executable
       shell: cmd
       run: |
         move dist\*.exe .
         move docs\build-licenses.txt LICENSE
-#        7z a FastFlix_%VERSION%_win64.zip FastFlix.exe
 
-    - name: Save standalone executable
+    - name: Upload standalone executable artifact
       uses: actions/upload-artifact@v2
       with:
         name: FastFlix_${{ env.VERSION }}_win64
         path: |
           FastFlix.exe
           LICENSE
+
+    - name: Build installer executable
+      shell: cmd
+      run: pyinstaller FastFlix_Windows_Installer.spec
+
+#    - name: Package installer
+#      shell: cmd
+#      run: |
+#
+
+    - name: Upload installer artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: FastFlix_${{ env.VERSION }}_win64
+        path: dist\FastFlix\
