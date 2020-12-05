@@ -8,6 +8,7 @@ import reusables
 
 from fastflix.encoders.common.audio import build_audio
 from fastflix.encoders.common.subtitles import build_subtitle
+from fastflix.encoders.common.attachments import build_attachments
 from fastflix.models.base import BaseDataClass
 from fastflix.models.fastflix import FastFlix
 
@@ -177,6 +178,8 @@ def generate_all(
     subtitles, burn_in_track = "", None
     if subs:
         subtitles, burn_in_track = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
+
+    attachments = build_attachments(fastflix.current_video.video_settings.attachment_tracks)
 
     filters = None
     if not disable_filters:

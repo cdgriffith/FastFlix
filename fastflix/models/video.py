@@ -24,6 +24,8 @@ from fastflix.models.encode import (
     CopySettings,
 )
 
+__all__ = ["VideoSettings", "Status", "Video"]
+
 
 @dataclass
 class VideoSettings(BaseDataClass):

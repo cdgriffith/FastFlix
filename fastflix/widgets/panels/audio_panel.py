@@ -435,6 +435,9 @@ class AudioList(FlixList):
                 track.widgets.convert_to.setCurrentText(existing_track.conversion_codec)
                 track.widgets.convert_bitrate.setCurrentText(existing_track.conversion_bitrate)
                 track.widgets.title.setText(existing_track.title)
-                track.widgets.language.setCurrentText(Lang(existing_track.language).name)
+                if existing_track.language:
+                    track.widgets.language.setCurrentText(Lang(existing_track.language).name)
+                else:
+                    track.widgets.language.setCurrentIndex(0)
 
         super()._new_source(self.tracks)
