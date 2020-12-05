@@ -35,6 +35,10 @@ jobs:
         echo %VERSION% > build_version
         echo "Building branch $env:GITHUB_REF - version $env:VERSION"
 
+    - name: Print ${{ env.VERSION }}
+      shell: cmd
+      run: echo %VERSION%
+
     - name: Insatll requirements
       shell: cmd
       run: |
@@ -59,7 +63,7 @@ jobs:
     - name: Save standalone executable
       uses: actions/upload-artifact@v2
       with:
-        name: FastFlix_${{ VERSION }}_win64
+        name: FastFlix_${{ env.VERSION }}_win64
         path: |
           FastFlix.exe
           LICENSE
