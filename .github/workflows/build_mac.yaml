@@ -1,4 +1,4 @@
-name: Build executables for Linux
+name: Build executables for Mac
 on:
   push:
     branches: [ master, develop, build, re-org ]
@@ -29,7 +29,6 @@ jobs:
         python -m pip install --upgrade pip setuptools --ignore-installed
         python -m pip install --upgrade wheel
         python -m pip install -r requirements-build.txt
-        python -m pip install --upgrade pyqt5-tools
 
     - name: Grab language list iso-639-3
       run: curl -o iso-639-3.tab https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab
