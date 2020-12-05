@@ -4,7 +4,6 @@ coloredlogs
 iso639-lang
 mistune
 pyinstaller==4.0
-pypiwin32
 pyqt5
 python-box
 qtpy

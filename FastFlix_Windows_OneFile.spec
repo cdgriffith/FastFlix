@@ -14,7 +14,7 @@ all_imports = []
 with open("requirements-build.txt", "r") as reqs:
     for line in reqs:
         package = line.split("=")[0].split(">")[0].split("<")[0].replace('"', '').replace("'", '').strip()
-        if package not in ("pyinstaller", "pypiwin32"):
+        if package not in ("pyinstaller"):
             all_imports.append(package)
 
 a = Analysis(['fastflix\\__main__.py'],

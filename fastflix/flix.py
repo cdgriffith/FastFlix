@@ -76,7 +76,7 @@ def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
 def execute(command: List, work_dir: Union[Path, str] = None, timeout: int = None) -> CompletedProcess:
     logger.info(f"{t('Running command')}: {' '.join(command)}")
     return run(
-        " ".join(command) if reusables.win_based else command,
+        command,
         stdout=PIPE,
         stderr=PIPE,
         stdin=PIPE,
@@ -88,7 +88,7 @@ def execute(command: List, work_dir: Union[Path, str] = None, timeout: int = Non
 
 def ffmpeg_configuration(app, config: Config, **_):
     """ Extract the version and libraries available from the specified version of FFmpeg """
-    res = execute([f'"{config.ffmpeg}"', "-version"])
+    res = execute([f"{config.ffmpeg}", "-version"])
     if res.returncode != 0:
         raise FlixError(f'"{config.ffmpeg}" file not found')
     config = []
@@ -108,16 +108,17 @@ def ffmpeg_configuration(app, config: Config, **_):
 def probe(app: FastFlixApp, file: Path) -> Box:
     """ Run FFprobe on a file """
     command = [
-        f'"{app.fastflix.config.ffprobe}"',
+        f"{app.fastflix.config.ffprobe}",
         "-v",
         "quiet",
         "-print_format",
         "json",
         "-show_format",
         "-show_streams",
-        f'"{file}"',
+        f"{file}",
     ]
     result = execute(command)
+    print(result)
     try:
         return Box.from_json(result.stdout)
     except BoxError:
@@ -189,17 +190,17 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Tempor
     try:
         execute(
             [
-                f'"{ffmpeg}"',
+                f"{ffmpeg}",
                 "-y",
                 "-i",
-                f'"{source}"',
+                f"{source}",
                 "-map",
                 f"0:{stream}",
                 "-c",
                 "copy",
                 "-vframes",
                 "1",
-                f'"{file_name}"',
+                f"{file_name}",
             ],
             work_dir=work_dir.name,
             timeout=5,
@@ -233,12 +234,12 @@ def get_auto_crop(
 ):
     output = execute(
         [
-            f'"{config.ffmpeg}"',
+            f"{config.ffmpeg}",
             "-hide_banner",
             "-ss",
             f"{start_time}",
             "-i",
-            f'"{source}"',
+            f"{source}",
             "-map",
             f"0:{input_track}",
             "-vf",
@@ -283,10 +284,10 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
 
     output = execute(
         [
-            f'"{config.ffmpeg}"',
+            f"{config.ffmpeg}",
             "-hide_banner",
             "-i",
-            f'"{source}"',
+            f"{source}",
             "-vf",
             "idet",
             "-frames:v",
@@ -319,7 +320,7 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
 
 
 def ffmpeg_audio_encoders(app, config: Config) -> List:
-    cmd = execute([f'"{config.ffmpeg}"', "-hide_banner", "-encoders"])
+    cmd = execute([f"{config.ffmpeg}", "-hide_banner", "-encoders"])
     encoders = []
     start_line = " ------"
     started = False
@@ -381,18 +382,18 @@ def parse_hdr_details(app: FastFlixApp, **_):
                         return
     result = execute(
         [
-            f'"{app.fastflix.config.ffprobe}"',
+            f"{app.fastflix.config.ffprobe}",
             "-select_streams",
             f"v:{video_track}",
             "-print_format",
             "json",
             "-show_frames",
             "-read_intervals",
-            '"%+#1"',
+            "%+#1",
             "-show_entries",
-            '"frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt"',
+            "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt",
             "-i",
-            f'"{app.fastflix.current_video.source}"',
+            f"{app.fastflix.current_video.source}",
         ]
     )
 

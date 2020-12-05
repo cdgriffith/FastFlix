@@ -240,6 +240,8 @@ No video found for:
   en: No video found for
 None:
   en: None
+Not a video file:
+  en: Not a video file
 Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.:
   en: Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.
 Only select first matching Audio Track:

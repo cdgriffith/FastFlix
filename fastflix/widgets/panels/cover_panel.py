@@ -179,8 +179,8 @@ class CoverPanel(QtWidgets.QWidget):
     def get_attachment(self, filename) -> Union[Path, None]:
         attr = getattr(self, f"{filename}_path", None)
         cover_image = None
-        if attr:
-            cover_image = Path(attr.text())
+        if attr and attr.text().strip():
+            cover_image = Path(attr.text().strip())
         if getattr(self, f"{filename}_passthrough_checkbox").isChecked():
             cover_image = Path(self.app.fastflix.current_video.work_path.name) / self.attachments[filename].name
         return cover_image if cover_image else None
