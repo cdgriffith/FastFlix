@@ -16,19 +16,19 @@ jobs:
       with:
         python-version: 3.6
 
+    - name: Gather build version
+      shell: powershell
+      run: |
+        mkdir dist
+        New-Item -Path Env: -Name VERSION -Value $(python.exe scripts\get_version.py)
+        echo %VERSION% > build_version
+        echo "Building branch $env:GITHUB_REF - version $env:VERSION"
+
     - name: Insatll requirements
       shell: cmd
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
         python -m pip install -r requirements-build.txt
-
-    - name: Gather build version
-      shell: powershell
-      run: |
-        mkdir dist
-        New-Item -Path Env: -Name VERSION -Value $(C:\Python38-x64\python.exe scripts\get_version.py)
-        echo %VERSION% > build_version
-        'echo "Building branch $env:APPVEYOR_REPO_BRANCH - version $env:VERSION"'
 
     - name: Grab language list iso-639-3
       shell: powershell
