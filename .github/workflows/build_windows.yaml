@@ -16,6 +16,17 @@ jobs:
       with:
         python-version: 3.6
 
+    - name: Find sitepackages
+      shell: cmd
+      run: python -c 'import site; print(site.getsitepackages())'
+
+#    - name: Cache Python Packages
+#      id: cache-primes
+#      uses: actions/cache@v2
+#      with:
+#        path: prime-numbers
+#        key: ${{ runner.os }}-primes
+
     - name: Gather build version
       shell: powershell
       run: |
@@ -43,10 +54,12 @@ jobs:
       run: |
         move dist\*.exe .
         move docs\build-licenses.txt LICENSE
-        7z a FastFlix_%VERSION%_win64.zip FastFlix.exe LICENSE
+#        7z a FastFlix_%VERSION%_win64.zip FastFlix.exe
 
     - name: Save standalone executable
       uses: actions/upload-artifact@v2
       with:
-        name: FastFlix_win64.zip
-        path: FastFlix_*_win64.zip
+        name: FastFlix_${{ VERSION }}_win64
+        path: |
+          FastFlix.exe
+          LICENSE

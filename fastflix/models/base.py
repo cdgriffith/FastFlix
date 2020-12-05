@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-import json
 import logging
-from dataclasses import asdict
 from multiprocessing import Queue
-from pathlib import Path
 
 logger = logging.getLogger("fastflix")
 
