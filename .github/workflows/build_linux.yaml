@@ -36,7 +36,7 @@ jobs:
       run: wget https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab
 
     - name: Build single executable
-      run: pyinstaller FastFlix_Windows_OneFile.spec
+      run: pyinstaller FastFlix_Nix_OneFile.spec
 
     - name: Package single executable
       shell: cmd
