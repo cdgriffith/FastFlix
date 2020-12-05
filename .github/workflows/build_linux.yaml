@@ -8,7 +8,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -19,8 +19,7 @@ jobs:
     - name: Gather build version
       run: |
         mkdir dist
-        VERSION=$(python scripts\get_version.py)
-        echo $VERSION > build_version
+        VERSION=$(python scripts/get_version.py)
         echo "Building branch $env:GITHUB_REF - version $env:VERSION"
         echo "::set-env name=VERSION::$env:VERSION"
       env:
@@ -42,8 +41,8 @@ jobs:
     - name: Package single executable
       shell: cmd
       run: |
-        mv dist\FastFlix .
-        mv docs\build-licenses.txt LICENSE
+        mv dist/FastFlix .
+        mv docs/build-licenses.txt LICENSE
 
     - name: Upload standalone executable artifact
       uses: actions/upload-artifact@v2
