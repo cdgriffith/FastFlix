@@ -3,6 +3,7 @@ colorama
 coloredlogs
 iso639-lang
 mistune
+psutil
 pyinstaller==4.0
 pyqt5
 python-box

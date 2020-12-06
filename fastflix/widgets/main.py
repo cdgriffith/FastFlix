@@ -420,7 +420,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.flip.setItemIcon(3, QtGui.QIcon(rot_180_file))
         self.widgets.flip.setIconSize(QtCore.QSize(35, 35))
         self.widgets.flip.currentIndexChanged.connect(lambda: self.page_update())
-        self.widgets.flip.setFixedWidth(110)
+        self.widgets.flip.setFixedWidth(130)
         return self.widgets.flip
 
     def get_flips(self) -> Tuple[bool, bool]:
@@ -447,7 +447,8 @@ class Main(QtWidgets.QWidget):
         self.widgets.rotate.setItemIcon(3, QtGui.QIcon(rot_270_file))
         self.widgets.rotate.setIconSize(QtCore.QSize(35, 35))
         self.widgets.rotate.currentIndexChanged.connect(lambda: self.page_update())
-        self.widgets.rotate.setFixedWidth(130)
+        self.widgets.rotate.setFixedWidth(140)
+
         return self.widgets.rotate
 
     def rotation_to_transpose(self):

@@ -37,28 +37,14 @@ Most other builds do not have all these encoders available by default and may re
 
 # Releases
 
-## Windows
-[![Build status](https://ci.appveyor.com/api/projects/status/208k29cvoq8xwf8j/branch/master?svg=true)](https://ci.appveyor.com/project/cdgriffith/fastflix/branch/master)
-
-View the [releases](https://github.com/cdgriffith/FastFlix/releases) for 64 bit Windows binaries (Generated via Appveyor and also [available there](https://ci.appveyor.com/project/cdgriffith/fastflix)).
-
-## MacOS and Linux
-
-Due to a recent library addition there have been unexpected dependencies on *nix systems that will try to be removed in future versions.
-
-**MacOS** You will need to have Xcode installed  
-**Linux** Please install `gcc` and python3 development files (`python3-dev` on Ubuntu, `python3-devel` on RedHat)
-
-Then please use [pipx](https://pipxproject.github.io/pipx/installation/) to install as a properly virtualized app
-
-```
-pipx install fastflix
-```
+View the [releases](https://github.com/cdgriffith/FastFlix/releases) for binaries for Windows, MacOS or Linux
 
 You will need to have `ffmpeg` and `ffprobe` executables on your PATH and they must be executable. Version 4.3 or greater is required. The one in your in your package manager system may not support all encoders or options.
 Check out the [FFmpeg download page for static builds](https://ffmpeg.org/download.html) for Linux and Mac.
 
 ## Running from source code
+
+Requires python3.9+
 
 ```
 git clone https://github.com/cdgriffith/FastFlix.git
