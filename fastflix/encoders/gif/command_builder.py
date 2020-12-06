@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import secrets
 from dataclasses import asdict
-from pathlib import Path
 
 from fastflix.encoders.common.helpers import Command, generate_filters
 from fastflix.models.encode import GIFSettings

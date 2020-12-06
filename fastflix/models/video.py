@@ -2,16 +2,16 @@
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, List, Union
+from typing import List, Union
 
-from appdirs import user_data_dir
 from box import Box
 
 from fastflix.models.base import BaseDataClass
 from fastflix.models.encode import (
     AOMAV1Settings,
-    AudioTrack,
     AttachmentTrack,
+    AudioTrack,
+    CopySettings,
     GIFSettings,
     SubtitleTrack,
     SVTAV1Settings,
@@ -20,7 +20,6 @@ from fastflix.models.encode import (
     rav1eSettings,
     x264Settings,
     x265Settings,
-    CopySettings,
 )
 
 __all__ = ["VideoSettings", "Status", "Video"]

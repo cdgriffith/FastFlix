@@ -12,12 +12,6 @@ from fastflix.shared import file_date
 
 logger = logging.getLogger("fastflix-core")
 
-
-# def get_next_item(fastflix: FastFlix):
-#     for i, item in enumerate(fastflix.queue):
-#         if not item.status.complete and not item.status.running:
-#             return item
-
 CONTINUOUS = 0x80000000
 SYSTEM_REQUIRED = 0x00000001
 
@@ -84,11 +78,6 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             reusables.remove_file_handlers(logger)
             if runner.error_detected:
                 logger.info(t("Error detected while converting"))
-                # if fastflix.config.continue_on_failure:
-                #     # do next one
-                #     currently_encoding = False
-                #     continue
-                # else:
 
                 # Stop working!
                 currently_encoding = False
@@ -158,10 +147,10 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             if request[0] == "cancel":
                 logger.debug(t("Cancel has been requested, killing encoding"))
                 runner.kill()
+                currently_encoding = False
                 allow_sleep_mode()
                 status_queue.put(("cancelled", commands_to_run[0][0], commands_to_run[0][1]))
                 commands_to_run = []
-                currently_encoding = False
             if request[0] == "pause queue":
                 logger.debug(t("Command worker received request to pause encoding after the current item completes"))
                 paused = True

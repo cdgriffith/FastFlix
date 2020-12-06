@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from typing import List
 from pathlib import Path
+from typing import List
 
 from fastflix.models.encode import AttachmentTrack
 

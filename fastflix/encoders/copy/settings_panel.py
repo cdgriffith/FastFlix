@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from qtpy import QtCore, QtWidgets
+from qtpy import QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t

@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from box import Box, BoxList
-from qtpy import QtCore, QtGui, QtWidgets
+from qtpy import QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp

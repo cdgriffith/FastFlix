@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __author__ = "Chris Griffith"
-from pathlib import Path
-
-import pkg_resources
-
 from fastflix.resources import copy_icon
 
 name = "Copy"

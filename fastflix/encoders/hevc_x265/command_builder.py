@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 import secrets
-from pathlib import Path
 
 from fastflix.encoders.common.helpers import Command, generate_all, null
 from fastflix.models.encode import x265Settings

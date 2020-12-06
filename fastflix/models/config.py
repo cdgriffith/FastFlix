@@ -7,8 +7,10 @@ from typing import Dict, List, Union
 from appdirs import user_data_dir
 from box import Box, BoxError
 
+from fastflix.exceptions import ConfigError, MissingFF
 from fastflix.models.encode import (
     AOMAV1Settings,
+    CopySettings,
     GIFSettings,
     SVTAV1Settings,
     VP9Settings,
@@ -16,9 +18,7 @@ from fastflix.models.encode import (
     rav1eSettings,
     x264Settings,
     x265Settings,
-    CopySettings,
 )
-from fastflix.exceptions import MissingFF, ConfigError
 from fastflix.version import __version__
 
 fastflix_folder = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))

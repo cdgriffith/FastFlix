@@ -4,7 +4,6 @@
 import logging
 import re
 import secrets
-from pathlib import Path
 
 from fastflix.encoders.common.helpers import Command, generate_all, null
 from fastflix.models.encode import rav1eSettings

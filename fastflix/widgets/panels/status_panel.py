@@ -6,11 +6,11 @@ from datetime import timedelta
 
 from qtpy import QtCore, QtWidgets
 
+from fastflix.exceptions import FlixError
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.shared import time_to_number
-from fastflix.exceptions import FlixError
 
 logger = logging.getLogger("fastflix")
 

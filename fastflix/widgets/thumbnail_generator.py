@@ -3,8 +3,7 @@
 import logging
 from subprocess import PIPE, STDOUT, run
 
-import reusables
-from qtpy import QtCore, QtGui, QtWidgets
+from qtpy import QtCore
 
 logger = logging.getLogger("fastflix")
 

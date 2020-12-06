@@ -5,9 +5,10 @@ import re
 import secrets
 import shlex
 from pathlib import Path
-from psutil import Popen
 from subprocess import PIPE
 from threading import Thread
+
+from psutil import Popen
 
 logger = logging.getLogger("fastflix-core")
 
@@ -185,21 +186,21 @@ class BackgroundRunner:
         self.process.resume()
 
 
-if __name__ == "__main__":
-    from queue import Queue
-
-    logging.basicConfig(level=logging.DEBUG)
-    br = BackgroundRunner(Queue())
-    import shutil
-
-    ffmpeg = shutil.which("ffmpeg")
-    br.start_piped_exec(
-        command_one=shlex.split(
-            rf'"{ffmpeg}" -loglevel panic -i C:\\Users\\Chris\\scoob_short.mkv -c:v copy -vbsf hevc_mp4toannexb -f hevc -'
-        ),
-        command_two=shlex.split(r'"C:\\Users\\Chris\\ffmpeg\\hdr10plus_parser.exe" --verify -'),
-        work_dir=r"C:\Users\Chris",
-    )
-    # import time
-    # time.sleep(1)
-    # br.read_output()
+# if __name__ == "__main__":
+#     from queue import Queue
+#
+#     logging.basicConfig(level=logging.DEBUG)
+#     br = BackgroundRunner(Queue())
+#     import shutil
+#
+#     ffmpeg = shutil.which("ffmpeg")
+#     br.start_piped_exec(
+#         command_one=shlex.split(
+#             rf'"{ffmpeg}" -loglevel panic -i C:\\Users\\Chris\\scoob_short.mkv -c:v copy -vbsf hevc_mp4toannexb -f hevc -'
+#         ),
+#         command_two=shlex.split(r'"C:\\Users\\Chris\\ffmpeg\\hdr10plus_parser.exe" --verify -'),
+#         work_dir=r"C:\Users\Chris",
+#     )
+# import time
+# time.sleep(1)
+# br.read_output()

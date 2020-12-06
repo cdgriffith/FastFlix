@@ -2,13 +2,13 @@
 import uuid
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 import reusables
 
+from fastflix.encoders.common.attachments import build_attachments
 from fastflix.encoders.common.audio import build_audio
 from fastflix.encoders.common.subtitles import build_subtitle
-from fastflix.encoders.common.attachments import build_attachments
 from fastflix.models.base import BaseDataClass
 from fastflix.models.fastflix import FastFlix
 

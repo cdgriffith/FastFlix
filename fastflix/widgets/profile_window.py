@@ -1,29 +1,29 @@
 # -*- coding: utf-8 -*-
 
 import shutil
-from pathlib import Path
 from dataclasses import asdict
+from pathlib import Path
 
-from iso639 import Lang
 from box import Box
+from iso639 import Lang
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import (
-    x265Settings,
-    x264Settings,
-    rav1eSettings,
-    SVTAV1Settings,
-    VP9Settings,
-    AOMAV1Settings,
-    GIFSettings,
-    WebPSettings,
-    CopySettings,
-)
-from fastflix.models.config import Profile, get_preset_defaults
-from fastflix.shared import error_message
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
+from fastflix.models.config import Profile, get_preset_defaults
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.video import (
+    AOMAV1Settings,
+    CopySettings,
+    GIFSettings,
+    SVTAV1Settings,
+    VP9Settings,
+    WebPSettings,
+    rav1eSettings,
+    x264Settings,
+    x265Settings,
+)
+from fastflix.shared import error_message
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 

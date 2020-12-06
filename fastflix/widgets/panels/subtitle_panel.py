@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from typing import Union
 import copy
+from typing import Union
 
 from box import Box
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import down_arrow_icon, up_arrow_icon
-from fastflix.exceptions import FastFlixInternalException
 from fastflix.shared import error_message, main_width, no_border
 from fastflix.widgets.panels.abstract_list import FlixList
 

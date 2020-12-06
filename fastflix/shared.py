@@ -2,18 +2,15 @@
 import importlib.machinery
 import logging
 import os
-import shutil
 import sys
 from datetime import datetime
 from distutils.version import StrictVersion
 from pathlib import Path
-from threading import Thread
 from subprocess import run
 
 import pkg_resources
 import requests
 import reusables
-from appdirs import user_data_dir
 
 try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS

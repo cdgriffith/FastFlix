@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from typing import List
 import copy
+from typing import List
 
 from box import Box
 from iso639 import Lang
@@ -12,10 +12,9 @@ from fastflix.encoders.common.audio import lossless
 from fastflix.language import t
 from fastflix.models.encode import AudioTrack
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import down_arrow_icon, up_arrow_icon
-from fastflix.widgets.panels.abstract_list import FlixList
-from fastflix.resources import copy_icon, black_x_icon
+from fastflix.resources import black_x_icon, copy_icon, down_arrow_icon, up_arrow_icon
 from fastflix.shared import no_border
+from fastflix.widgets.panels.abstract_list import FlixList
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 

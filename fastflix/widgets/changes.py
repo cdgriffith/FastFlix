@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
 import re
-from pathlib import Path
 
 import mistune
-from qtpy import QtCore, QtGui, QtWidgets
+from qtpy import QtCore, QtWidgets
 
 from fastflix.resources import changes_file, local_changes_file
 

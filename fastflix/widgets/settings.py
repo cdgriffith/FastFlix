@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import shutil
 from pathlib import Path
-import logging
 
-from box import Box
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.exceptions import FastFlixInternalException
+from fastflix.language import change_language, t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import error_message
-from fastflix.exceptions import FastFlixInternalException
-from fastflix.language import t, change_language
 
 logger = logging.getLogger("fastflix")
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())

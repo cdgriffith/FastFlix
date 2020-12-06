@@ -33,22 +33,3 @@ class BaseDataClass:
         if default != NO_OPTION:
             return getattr(self, item, default)
         return getattr(self, item)
-
-    #
-    # def to_dict(self):
-    #     out = {}
-    #     for k in dir(self):
-    #         if k.startswith("_"):
-    #             continue
-    #         v = getattr(self, k)
-    #         if isinstance(v, BaseDataClass):
-    #             out[k] = v.to_dict()
-    #         elif isinstance(v, Path):
-    #             out[k] = str(Path)
-    #         # TODO handle datetime
-    #         else:
-    #             out[k] = v
-    #     return out
-    #
-    # def to_json(self):
-    #     return json.dump(self.to_dict())

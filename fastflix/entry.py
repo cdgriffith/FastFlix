@@ -4,9 +4,6 @@ import sys
 import traceback
 from multiprocessing import Process, Queue
 
-# from threading import Thread
-# from queue import Queue
-
 try:
     import coloredlogs
     import requests
@@ -18,13 +15,7 @@ try:
     from fastflix.models.config import Config
     from fastflix.models.fastflix import FastFlix
     from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
-    from fastflix.shared import (
-        base_path,
-        error_message,
-        file_date,
-        latest_fastflix,
-        message,
-    )
+    from fastflix.shared import base_path, error_message, file_date, latest_fastflix, message
     from fastflix.version import __version__
 
 except ImportError as err:
@@ -47,47 +38,23 @@ def startup_options():
     if "--test" in options:
         try:
             import appdirs
+            import box
             import colorama
             import coloredlogs
             import iso639
             import mistune
-            import box
             import qtpy
             import requests
             import reusables
             import ruamel.yaml
 
-            import fastflix.flix
-            import fastflix.language
-            import fastflix.program_downloads
-            import fastflix.resources
-            import fastflix.shared
-            import fastflix.version
-            import fastflix.models.config
-            import fastflix.models.fastflix
-            import fastflix.models.fastflix_app
-            import fastflix.models.base
-            import fastflix.models.encode
-            import fastflix.models.video
-            import fastflix.widgets.container
-            import fastflix.widgets.progress_bar
-            import fastflix.widgets.about
-            import fastflix.widgets.changes
-            import fastflix.widgets.logs
-            import fastflix.widgets.main
-            import fastflix.widgets.profile_window
-            import fastflix.widgets.settings
-            import fastflix.widgets.thumbnail_generator
-            import fastflix.widgets.video_options
-            import fastflix.widgets.panels.abstract_list
-            import fastflix.widgets.panels.audio_panel
-            import fastflix.widgets.panels.cover_panel
-            import fastflix.widgets.panels.command_panel
-            import fastflix.widgets.panels.queue_panel
-            import fastflix.widgets.panels.status_panel
-            import fastflix.widgets.panels.subtitle_panel
             import fastflix.encoders.av1_aom.main
             import fastflix.encoders.avc_x264.main
+            import fastflix.encoders.common.attachments
+            import fastflix.encoders.common.audio
+            import fastflix.encoders.common.helpers
+            import fastflix.encoders.common.setting_panel
+            import fastflix.encoders.common.subtitles
             import fastflix.encoders.copy.main
             import fastflix.encoders.gif.main
             import fastflix.encoders.hevc_x265.main
@@ -95,11 +62,35 @@ def startup_options():
             import fastflix.encoders.svt_av1.main
             import fastflix.encoders.vp9.main
             import fastflix.encoders.webp.main
-            import fastflix.encoders.common.attachments
-            import fastflix.encoders.common.audio
-            import fastflix.encoders.common.helpers
-            import fastflix.encoders.common.setting_panel
-            import fastflix.encoders.common.subtitles
+            import fastflix.flix
+            import fastflix.language
+            import fastflix.models.base
+            import fastflix.models.config
+            import fastflix.models.encode
+            import fastflix.models.fastflix
+            import fastflix.models.fastflix_app
+            import fastflix.models.video
+            import fastflix.program_downloads
+            import fastflix.resources
+            import fastflix.shared
+            import fastflix.version
+            import fastflix.widgets.about
+            import fastflix.widgets.changes
+            import fastflix.widgets.container
+            import fastflix.widgets.logs
+            import fastflix.widgets.main
+            import fastflix.widgets.panels.abstract_list
+            import fastflix.widgets.panels.audio_panel
+            import fastflix.widgets.panels.command_panel
+            import fastflix.widgets.panels.cover_panel
+            import fastflix.widgets.panels.queue_panel
+            import fastflix.widgets.panels.status_panel
+            import fastflix.widgets.panels.subtitle_panel
+            import fastflix.widgets.profile_window
+            import fastflix.widgets.progress_bar
+            import fastflix.widgets.settings
+            import fastflix.widgets.thumbnail_generator
+            import fastflix.widgets.video_options
         except Exception as err:
             print(f"Error: {err}")
             sys.exit(1)

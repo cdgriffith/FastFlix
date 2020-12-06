@@ -8,45 +8,42 @@ import os
 import secrets
 import shutil
 import time
-from dataclasses import asdict
+from dataclasses import asdict, dataclass, field
 from datetime import timedelta
 from pathlib import Path
-from queue import Queue
-from typing import Dict, List, Tuple, Union
-from dataclasses import dataclass, field
+from typing import Tuple, Union
 
 import pkg_resources
 import reusables
-from appdirs import user_data_dir
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
+from fastflix.exceptions import FastFlixInternalException, FlixError
 from fastflix.flix import (
+    detect_interlaced,
     extract_attachments,
     generate_thumbnail_command,
     get_auto_crop,
     parse,
     parse_hdr_details,
-    detect_interlaced,
 )
+from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import Video, VideoSettings, Status
+from fastflix.models.video import Status, Video, VideoSettings
 from fastflix.resources import (
     black_x_icon,
+    folder_icon,
     play_round_icon,
+    profile_add_icon,
     settings_icon,
     video_add_icon,
     video_playlist_icon,
-    folder_icon,
-    profile_add_icon,
 )
-from fastflix.exceptions import FastFlixInternalException, FlixError
 from fastflix.shared import error_message, time_to_number
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
-from fastflix.language import t
 
 logger = logging.getLogger("fastflix")
 
@@ -476,9 +473,7 @@ class Main(QtWidgets.QWidget):
 
         encoder_label = QtWidgets.QLabel(f"{t('Encoder')}: ")
         encoder_label.setFixedWidth(65)
-        # layout.addWidget(encoder_label, stretch=0)
         layout.addWidget(self.widgets.convert_to, stretch=0)
-        # layout.addStretch()
         layout.setSpacing(10)
 
         return layout
@@ -1020,6 +1015,7 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.flip.setCurrentIndex(0)
         self.widgets.rotate.setCurrentIndex(0)
+        self.widgets.video_title.setText("")
 
         self.widgets.crop.top.setText("0")
         self.widgets.crop.left.setText("0")
@@ -1500,24 +1496,12 @@ class Main(QtWidgets.QWidget):
         self.paused = False
         self.enable_all()
         self.set_convert_button()
-        # output = Path(self.output_video)
 
         if return_code:
             error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
         else:
             self.video_options.show_queue()
             error_message(t("All queue items have completed"), title=t("Success"))
-
-        # if return_code or not output.exists() or output.stat().st_size <= 500:
-        #     error_message("Could not encode video due to an error, please view the logs for more details!")
-        # else:
-        #     sm = QtWidgets.QMessageBox()
-        #     sm.setText("Encoded successfully, view now?")
-        #     sm.addButton("View", QtWidgets.QMessageBox.YesRole)
-        #     sm.setStandardButtons(QtWidgets.QMessageBox.Close)
-        #     sm.exec_()
-        #     if sm.clickedButton().text() == "View":
-        #         QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(self.output_video))
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_cancelled(self, data):

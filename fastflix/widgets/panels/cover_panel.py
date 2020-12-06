@@ -9,10 +9,10 @@ from typing import List, Union
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.encode import AttachmentTrack
-from fastflix.shared import link
 from fastflix.language import t
+from fastflix.models.encode import AttachmentTrack
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 

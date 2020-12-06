@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
+from qtpy import QtCore, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
-from fastflix.encoders.rav1e.main import name
 from fastflix.language import t
 from fastflix.models.encode import rav1eSettings
 from fastflix.models.fastflix_app import FastFlixApp

@@ -9,11 +9,10 @@ from typing import List, Tuple, Union
 import reusables
 from box import Box, BoxError
 
+from fastflix.exceptions import FlixError
 from fastflix.language import t
 from fastflix.models.config import Config
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.exceptions import FlixError
-
 
 here = os.path.abspath(os.path.dirname(__file__))
 re_tff = re.compile(r"TFF:\s+(\d+)")

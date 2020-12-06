@@ -2,24 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import copy
-from dataclasses import asdict
 import sys
+from dataclasses import asdict
 
-from box import Box
-from iso639 import Lang
-from qtpy import QtCore, QtGui, QtWidgets
 import reusables
+from box import Box
+from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
-from fastflix.shared import link
-from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
-from fastflix.resources import black_x_icon, down_arrow_icon, up_arrow_icon, play_icon, folder_icon, edit_box_icon
-from fastflix.shared import error_message, main_width, open_folder, no_border
-from fastflix.exceptions import FastFlixInternalException
+from fastflix.resources import black_x_icon, down_arrow_icon, edit_box_icon, folder_icon, play_icon, up_arrow_icon
+from fastflix.shared import no_border, open_folder
 from fastflix.widgets.panels.abstract_list import FlixList
-
 
 done_actions = {
     "linux": {

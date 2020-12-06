@@ -3,16 +3,16 @@
 import logging
 import shutil
 import sys
+import time
+from dataclasses import asdict
 from pathlib import Path
 from subprocess import run
-from dataclasses import asdict
 
-import pkg_resources
 import reusables
-from box import Box
 from appdirs import user_data_dir
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
@@ -22,10 +22,9 @@ from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
 from fastflix.widgets.main import Main
+from fastflix.widgets.profile_window import ProfileWindow
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
-from fastflix.widgets.profile_window import ProfileWindow
-from fastflix.exceptions import FastFlixInternalException
 
 logger = logging.getLogger("fastflix")
 
@@ -61,6 +60,7 @@ class Container(QtWidgets.QMainWindow):
             sm.exec_()
             if sm.clickedButton().text() == "Cancel Conversion":
                 self.app.fastflix.worker_queue.put(["cancel"])
+                time.sleep(0.5)
                 self.main.close()
             elif sm.clickedButton().text() == "Close GUI Only":
                 self.main.close(no_cleanup=True)

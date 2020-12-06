@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
+from qtpy import QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.encode import GIFSettings
