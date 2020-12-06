@@ -1,23 +1,27 @@
 # -*- coding: utf-8 -*-
 from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
+from qtpy import QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
+from fastflix.models.encode import WebPSettings
+from fastflix.models.fastflix_app import FastFlixApp
 
 
 class WEBP(SettingPanel):
-    def __init__(self, parent, main):
-        super().__init__(parent, main)
+    profile_name = "webp"
+
+    def __init__(self, parent, main, app: FastFlixApp):
+        super().__init__(parent, main, app)
         self.main = main
+        self.app = app
 
         grid = QtWidgets.QGridLayout()
 
-        self.widgets = Box(fps=None, remove_hdr=None, dither=None)
+        self.widgets = Box(fps=None, dither=None)
 
         grid.addLayout(self.init_lossless(), 0, 0, 1, 2)
         grid.addLayout(self.init_compression(), 1, 0, 1, 2)
         grid.addLayout(self.init_preset(), 2, 0, 1, 2)
-        grid.addLayout(self._add_remove_hdr(), 3, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 2, 4)
 
@@ -34,7 +38,7 @@ class WEBP(SettingPanel):
             "compression level",
             ["0", "1", "2", "3", "4", "5", "6"],
             "compression",
-            tooltip="For lossy, this is a quality/speed tradeoff.\n" "For lossless, this is a size/speed tradeoff.",
+            tooltip="For lossy, this is a quality/speed tradeoff.\nFor lossless, this is a size/speed tradeoff.",
             default=4,
         )
 
@@ -78,20 +82,19 @@ class WEBP(SettingPanel):
         layout.addWidget(qscale_group_box, 0, 0)
         return layout
 
-    def get_settings(self):
+    def update_video_encoder_settings(self):
         lossless = self.widgets.lossless.currentText()
 
-        settings = Box(
+        settings = WebPSettings(
             lossless="1" if lossless == "yes" else "0",
             compression=self.widgets.compression.currentText(),
-            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
             preset=self.widgets.preset.currentText(),
             extra=self.ffmpeg_extras,
             pix_fmt="yuv420p",  # hack for thumbnails to show properly
         )
         qscale = self.widgets.qscale.currentText()
-        settings.qscale = int(qscale) if qscale.lower() != "custom" else self.widgets.custom_qscale.text()
-        return settings
+        settings.qscale = int(qscale) if qscale.lower() != "custom" else int(self.widgets.custom_qscale.text())
+        self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def new_source(self):
         super().new_source()

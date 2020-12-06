@@ -4,105 +4,51 @@
 import logging
 import re
 import secrets
-from pathlib import Path
 
 import reusables
 
-from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_ending, generate_ffmpeg_start, generate_filters, null
-from fastflix.encoders.common.subtitles import build_subtitle
+from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.models.encode import SVTAV1Settings
+from fastflix.models.fastflix import FastFlix
 
 logger = logging.getLogger("fastflix")
 
 
-class FlixError(Exception):
-    pass
-
-
-extension = "mkv"
-
-
 @reusables.log_exception("fastflix", show_traceback=True)
-def build(
-    source,
-    video_track,
-    ffmpeg,
-    temp_dir,
-    output_video,
-    streams,
-    stream_track,
-    tier="main",
-    tile_columns=0,
-    tile_rows=0,
-    speed=7,
-    qp=25,
-    sc_detection=0,
-    disable_hdr=False,
-    pix_fmt="yuv420p10le",
-    bitrate=None,
-    audio_tracks=(),
-    subtitle_tracks=(),
-    side_data=None,
-    single_pass=False,
-    attachments="",
-    **kwargs,
-):
-    audio = build_audio(audio_tracks)
-    subtitles, burn_in_track = build_subtitle(subtitle_tracks)
-    filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
-    ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
+def build(fastflix: FastFlix):
+    settings: SVTAV1Settings = fastflix.current_video.video_settings.video_encoder_settings
+    beginning, ending = generate_all(fastflix, "libsvtav1")
 
-    beginning = generate_ffmpeg_start(
-        source=source,
-        ffmpeg=ffmpeg,
-        encoder="libsvtav1",
-        video_track=video_track,
-        filters=filters,
-        pix_fmt=pix_fmt,
-        **kwargs,
-    )
+    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
-    beginning += (
-        f"-strict experimental "
-        f"-preset {speed} "
-        f"-tile_columns {tile_columns} "
-        f"-tile_rows {tile_rows} "
-        f"-tier {tier} "
-        f"-sc_detection {sc_detection} "
-    )
-
-    if not single_pass:
-        pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
-        beginning += f'-passlogfile "{pass_log_file}" '
-
-    if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
-
-        if streams.video[stream_track].get("color_primaries") == "bt2020" or (
-            side_data and side_data.get("color_primaries") == "bt2020"
-        ):
+        if fastflix.current_video.color_space.startswith("bt2020"):
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
     beginning = re.sub("[ ]+", " ", beginning)
 
-    pass_type = "bitrate" if bitrate else "QP"
+    if not settings.single_pass:
+        pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
+        beginning += f'-passlogfile "{pass_log_file}" '
 
-    if single_pass:
-        if bitrate:
-            command_1 = f"{beginning} -b:v {bitrate} -rc 1" + ending
+    pass_type = "bitrate" if settings.bitrate else "QP"
 
-        elif qp is not None:
-            command_1 = f"{beginning} -qp {qp} -rc 0" + ending
+    if settings.single_pass:
+        if settings.bitrate:
+            command_1 = f"{beginning} -b:v {settings.bitrate} -rc 1" + ending
+
+        elif settings.qp is not None:
+            command_1 = f"{beginning} -qp {settings.qp} -rc 0" + ending
         else:
             return []
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
     else:
-        if bitrate:
-            command_1 = f"{beginning} -b:v {bitrate} -rc 1 -pass 1 -an -f matroska {null}"
-            command_2 = f"{beginning} -b:v {bitrate} -rc 1 -pass 2" + ending
+        if settings.bitrate:
+            command_1 = f"{beginning} -b:v {settings.bitrate} -rc 1 -pass 1 -an -f matroska {null}"
+            command_2 = f"{beginning} -b:v {settings.bitrate} -rc 1 -pass 2" + ending
 
-        elif qp is not None:
-            command_1 = f"{beginning} -qp {qp} -rc 0 -pass 1 -an -f matroska {null}"
-            command_2 = f"{beginning} -qp {qp} -rc 0 -pass 2" + ending
+        elif settings.qp is not None:
+            command_1 = f"{beginning} -qp {settings.qp} -rc 0 -pass 1 -an -f matroska {null}"
+            command_2 = f"{beginning} -qp {settings.qp} -rc 0 -pass 2" + ending
         else:
             return []
         return [

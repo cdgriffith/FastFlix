@@ -1,113 +1,71 @@
 # -*- coding: utf-8 -*-
 import re
 import secrets
-from pathlib import Path
 
-from box import Box
-
-from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_ending, generate_ffmpeg_start, generate_filters, null
-from fastflix.encoders.common.subtitles import build_subtitle
+from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.models.encode import x265Settings
+from fastflix.models.fastflix import FastFlix
 
 
-def build(
-    source,
-    video_track,
-    ffmpeg,
-    temp_dir,
-    output_video,
-    streams,
-    stream_track,
-    bitrate=None,
-    crf=None,
-    preset="fast",
-    audio_tracks=(),
-    subtitle_tracks=(),
-    disable_hdr=False,
-    side_data=None,
-    x265_params=None,
-    intra_encoding=False,
-    pix_fmt="yuv420p10le",
-    tune=None,
-    profile="default",
-    attachments="",
-    hdr10=False,
-    hdr10_opt=False,
-    repeat_headers=False,
-    hdr10plus_metadata="",
-    aq_mode=2,
-    **kwargs,
-):
-    audio = build_audio(audio_tracks)
-    subtitles, burn_in_track = build_subtitle(subtitle_tracks)
-    filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
-    ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
+def build(fastflix: FastFlix):
+    settings: x265Settings = fastflix.current_video.video_settings.video_encoder_settings
 
-    if not side_data:
-        side_data = Box(default_box=True)
+    beginning, ending = generate_all(fastflix, "libx265")
 
-    beginning = generate_ffmpeg_start(
-        source=source,
-        ffmpeg=ffmpeg,
-        encoder="libx265",
-        video_track=video_track,
-        filters=filters,
-        pix_fmt=pix_fmt,
-        **kwargs,
-    )
+    if settings.tune and settings.tune != "default":
+        beginning += f"-tune {settings.tune}"
 
-    beginning += f'{f"-tune {tune}" if tune else ""} '
+    if settings.profile and settings.profile != "default":
+        beginning += f"-profile {settings.profile} "
 
-    if profile and profile != "default":
-        beginning += f"-profile {profile} "
+    x265_params = settings.x265_params.copy() or []
 
-    if not x265_params:
-        x265_params = []
+    x265_params.append(f"aq-mode={settings.aq_mode}")
+    x265_params.append(f"repeat-headers={'1' if settings.repeat_headers else '0'}")
+    x265_params.append(f"{'' if settings.intra_smoothing else 'no-'}strong-intra-smoothing=1")
+    x265_params.append(f"bframes={settings.bframes}")
+    x265_params.append(f"b-adapt={settings.b_adapt}")
+    x265_params.append(f"frame-threads={settings.frame_threads}")
 
-    x265_params.append(f"aq-mode={aq_mode}")
-    x265_params.append(f"repeat-headers={'1' if repeat_headers else '0'}")
+    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+        x265_params.append(f"hdr10_opt={'1' if settings.hdr10_opt else '0'}")
 
-    if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
-        x265_params.append(f"hdr10_opt={'1' if hdr10_opt else '0'}")
+        if fastflix.current_video.color_space.startswith("bt2020"):
+            x265_params.extend(["colorprim=bt2020", "transfer=smpte2084", "colormatrix=bt2020nc"])
 
-        if streams.video[stream_track].get("color_primaries") == "bt2020" or (
-            side_data and side_data.get("color_primaries") == "bt2020"
-        ):
-            x265_params.extend(
-                [
-                    "colorprim=bt2020",
-                    "transfer=smpte2084",
-                    "colormatrix=bt2020nc",
-                ]
-            )
-
-        if side_data.master_display:
-            hdr10 = True
+        if fastflix.current_video.master_display:
+            settings.hdr10 = True
             x265_params.append(
                 "master-display="
-                f"G{side_data.master_display.green}"
-                f"B{side_data.master_display.blue}"
-                f"R{side_data.master_display.red}"
-                f"WP{side_data.master_display.white}"
-                f"L{side_data.master_display.luminance}"
+                f"G{fastflix.current_video.master_display.green}"
+                f"B{fastflix.current_video.master_display.blue}"
+                f"R{fastflix.current_video.master_display.red}"
+                f"WP{fastflix.current_video.master_display.white}"
+                f"L{fastflix.current_video.master_display.luminance}"
             )
 
-        if side_data.cll:
-            hdr10 = True
-            x265_params.append(f"max-cll={side_data.cll}")
+        if fastflix.current_video.cll:
+            settings.hdr10 = True
+            x265_params.append(f"max-cll={fastflix.current_video.cll}")
 
-        x265_params.append(f"hdr10={'1' if hdr10 else '0'}")
+        x265_params.append(f"hdr10={'1' if settings.hdr10 else '0'}")
 
-    if hdr10plus_metadata:
-        x265_params.append(f"dhdr10-info='{hdr10plus_metadata}'")
+    if settings.hdr10plus_metadata:
+        x265_params.append(f"dhdr10-info='{settings.hdr10plus_metadata}'")
 
-    if intra_encoding:
+    if settings.intra_encoding:
         x265_params.append("keyint=1")
 
-    if side_data.cll:
+    if settings.intra_refresh:
+        x265_params.append("intra-refresh=1")
+
+    if settings.lossless:
+        x265_params.append("lossless=1")
+
+    if fastflix.current_video.cll:
         pass
 
-    pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
+    pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
 
     def get_x265_params(params=()):
         if not isinstance(params, (list, tuple)):
@@ -115,14 +73,15 @@ def build(
         all_params = x265_params + list(params)
         return '-x265-params "{}" '.format(":".join(all_params)) if all_params else ""
 
-    if bitrate:
+    if settings.bitrate:
         command_1 = (
             f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1"])} '
-            f'-passlogfile "{pass_log_file}" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {null}'
+            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset {settings.preset}'
+            f" -an -sn -dn -f mp4 {null}"
         )
         command_2 = (
             f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "{pass_log_file}" '
-            f"-b:v {bitrate} -preset {preset} "
+            f"-b:v {settings.bitrate} -preset {settings.preset} "
         ) + ending
         return [
             Command(
@@ -133,8 +92,8 @@ def build(
             ),
         ]
 
-    elif crf:
-        command = (f"{beginning} {get_x265_params()}  -crf {crf} " f"-preset {preset} ") + ending
+    elif settings.crf:
+        command = (f"{beginning} {get_x265_params()}  -crf {settings.crf} " f"-preset {settings.preset} ") + ending
         return [
             Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")
         ]

@@ -1,12 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import copy
+from typing import List
 
 from box import Box
+from iso639 import Lang
+from iso639.exceptions import InvalidLanguageValue
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.audio import lossless
+from fastflix.language import t
+from fastflix.models.encode import AudioTrack
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.resources import black_x_icon, copy_icon, down_arrow_icon, up_arrow_icon
+from fastflix.shared import no_border
 from fastflix.widgets.panels.abstract_list import FlixList
-from fastflix.widgets.panels.subtitle_panel import language_list
+
+language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 
 class Audio(QtWidgets.QTabWidget):
@@ -50,16 +60,21 @@ class Audio(QtWidgets.QTabWidget):
             track_number=QtWidgets.QLabel(f"{index}:{self.outdex}" if enabled else "❌"),
             title=QtWidgets.QLineEdit(title),
             audio_info=QtWidgets.QLabel(audio),
-            up_button=QtWidgets.QPushButton("^"),
-            down_button=QtWidgets.QPushButton("v"),
-            enable_check=QtWidgets.QCheckBox("Enabled"),
-            dup_button=QtWidgets.QPushButton("➕"),
-            delete_button=QtWidgets.QPushButton("⛔"),
+            up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
+            down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
+            enable_check=QtWidgets.QCheckBox(t("Enabled")),
+            dup_button=QtWidgets.QPushButton(QtGui.QIcon(copy_icon), ""),
+            delete_button=QtWidgets.QPushButton(QtGui.QIcon(black_x_icon), ""),
             language=QtWidgets.QComboBox(),
             downmix=QtWidgets.QComboBox(),
             convert_to=None,
             convert_bitrate=None,
         )
+
+        self.widgets.up_button.setStyleSheet(no_border)
+        self.widgets.down_button.setStyleSheet(no_border)
+        self.widgets.dup_button.setStyleSheet(no_border)
+        self.widgets.delete_button.setStyleSheet(no_border)
 
         if all_info:
             self.widgets.audio_info.setToolTip(all_info.to_yaml())
@@ -75,15 +90,23 @@ class Audio(QtWidgets.QTabWidget):
             "7.1 / 8.0",
         ]
 
-        self.widgets.language.addItems(["None"] + language_list)
+        self.widgets.language.addItems(["No Language Set"] + language_list)
+        self.widgets.language.setMaximumWidth(110)
         if language:
-            self.widgets.language.setCurrentText(language)
+            try:
+                lang = Lang(language).name
+            except InvalidLanguageValue:
+                pass
+            else:
+                if lang in language_list:
+                    self.widgets.language.setCurrentText(lang)
 
-        self.widgets.language.currentIndexChanged.connect(lambda: self.page_update())
-        self.widgets.title.setFixedWidth(200)
+        self.widgets.language.currentIndexChanged.connect(self.page_update)
+        self.widgets.title.setFixedWidth(150)
+        self.widgets.title.textChanged.connect(self.page_update)
         self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
-        self.widgets.downmix.addItems(["No Downmix"] + downmix_options[: channels - 2])
+        self.widgets.downmix.addItems([t("No Downmix")] + downmix_options[: channels - 2])
         self.widgets.downmix.currentIndexChanged.connect(self.update_downmix)
         self.widgets.downmix.setCurrentIndex(0)
         self.widgets.downmix.setDisabled(True)
@@ -98,12 +121,18 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.track_number.setFixedWidth(20)
 
+        label = QtWidgets.QLabel(f"{t('Title')}: ")
+        self.widgets.title.setFixedWidth(150)
+        title_layout = QtWidgets.QHBoxLayout()
+        title_layout.addWidget(label)
+        title_layout.addWidget(self.widgets.title)
+
         grid = QtWidgets.QGridLayout()
         grid.addLayout(self.init_move_buttons(), 0, 0)
         grid.addWidget(self.widgets.track_number, 0, 1)
         grid.addWidget(self.widgets.audio_info, 0, 2)
-        grid.addWidget(QtWidgets.QLabel("Title: "), 0, 3)
-        grid.addWidget(self.widgets.title, 0, 4)
+        grid.addLayout(title_layout, 0, 3)
+        # grid.addWidget(self.widgets.title, 0, 4)
         grid.addLayout(self.init_conversion(), 0, 5)
         grid.addWidget(self.widgets.downmix, 0, 6)
         grid.addWidget(self.widgets.language, 0, 7)
@@ -177,10 +206,10 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.convert_bitrate.currentIndexChanged.connect(lambda: self.page_update())
         self.widgets.convert_to.currentIndexChanged.connect(self.update_conversion)
-        layout.addWidget(QtWidgets.QLabel("Conversion: "))
+        layout.addWidget(QtWidgets.QLabel(f"{t('Conversion')}: "))
         layout.addWidget(self.widgets.convert_to)
 
-        layout.addWidget(QtWidgets.QLabel("Bitrate: "))
+        layout.addWidget(QtWidgets.QLabel(f"{t('Bitrate')}: "))
         layout.addWidget(self.widgets.convert_bitrate)
 
         return layout
@@ -227,7 +256,7 @@ class Audio(QtWidgets.QTabWidget):
         # passthrough_available = False
         # if self.codec in codec_list:
         passthrough_available = True
-        self.widgets.convert_to.addItem("none")
+        self.widgets.convert_to.addItem(t("none"))
         self.widgets.convert_to.addItems(sorted(set(self.available_audio_encoders) & set(codec_list)))
         if current in codec_list:
             index = codec_list.index(current)
@@ -245,6 +274,8 @@ class Audio(QtWidgets.QTabWidget):
 
     @property
     def conversion(self):
+        if self.widgets.convert_to.currentIndex() == 0:
+            return {"codec": "", "bitrate": ""}
         return {"codec": self.widgets.convert_to.currentText(), "bitrate": self.widgets.convert_bitrate.currentText()}
 
     @property
@@ -253,8 +284,9 @@ class Audio(QtWidgets.QTabWidget):
 
     @property
     def language(self):
-        text = self.widgets.language.currentText()
-        return None if text == "None" else text
+        if self.widgets.language.currentIndex() == 0:
+            return None
+        return Lang(self.widgets.language.currentText()).pt2b
 
     @property
     def title(self):
@@ -298,24 +330,46 @@ class Audio(QtWidgets.QTabWidget):
 
 
 class AudioList(FlixList):
-    def __init__(self, parent, available_audio_encoders, starting_pos=0):
-        super(AudioList, self).__init__(parent, "Audio Tracks", starting_pos)
-        self.available_audio_encoders = available_audio_encoders
+    def __init__(self, parent, app: FastFlixApp):
+        super(AudioList, self).__init__(app, parent, t("Audio Tracks"), "audio")
+        self.available_audio_encoders = app.fastflix.audio_encoders
+        self.app = app
+        self._first_selected = False
 
-    def new_source(self, codecs, starting_pos=0):
-        self.starting_pos = starting_pos
-        self.tracks = []
-        for i, x in enumerate(self.main.streams.audio):
+    def lang_match(self, track):
+        if not self.app.fastflix.config.opt("audio_select"):
+            return False
+        if not self.app.fastflix.config.opt("audio_select_preferred_language"):
+            if self.app.fastflix.config.opt("audio_select_first_matching") and self._first_selected:
+                return False
+            self._first_selected = True
+            return True
+        try:
+            track_lang = Lang(track.get("tags", {}).get("language", ""))
+        except InvalidLanguageValue:
+            return True
+        else:
+            if Lang(self.app.fastflix.config.opt("audio_language")) == track_lang:
+                if self.app.fastflix.config.opt("audio_select_first_matching") and self._first_selected:
+                    return False
+                self._first_selected = True
+                return True
+        return False
+
+    def new_source(self, codecs):
+        self.tracks: List[Audio] = []
+        self._first_selected = False
+        for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
             track_info = ""
             tags = x.get("tags", {})
             if tags:
                 track_info += tags.get("title", "")
-                if "language" in tags:
-                    track_info += f" {tags.language}"
+                # if "language" in tags:
+                #     track_info += f" {tags.language}"
             track_info += f" - {x.codec_name}"
             if "profile" in x:
                 track_info += f" ({x.profile})"
-            track_info += f" - {x.channels} channels"
+            track_info += f" - {x.channels} {t('channels')}"
 
             new_item = Audio(
                 self,
@@ -326,10 +380,12 @@ class AudioList(FlixList):
                 original=True,
                 first=True if i == 0 else False,
                 index=x.index,
+                outdex=i,
                 codec=x.codec_name,
                 codecs=codecs,
                 channels=x.channels,
                 available_audio_encoders=self.available_audio_encoders,
+                enabled=self.lang_match(x),
                 all_info=x,
             )
             self.tracks.append(new_item)
@@ -339,26 +395,48 @@ class AudioList(FlixList):
             self.tracks[-1].set_last()
 
         super()._new_source(self.tracks)
+        self.update_audio_settings()
 
     def allowed_formats(self, allowed_formats=None):
         if not allowed_formats:
             return
         for track in self.tracks:
-            track.update_codecs(allowed_formats)
+            track.update_codecs(allowed_formats or set())
 
-    def get_settings(self):
+    def update_audio_settings(self):
         tracks = []
         for track in self.tracks:
             if track.enabled:
                 tracks.append(
-                    {
-                        "index": track.index,
-                        "outdex": track.outdex,
-                        "conversion": track.conversion,
-                        "codec": track.codec,
-                        "downmix": track.downmix,
-                        "title": track.title,
-                        "language": track.language,
-                    }
+                    AudioTrack(
+                        index=track.index,
+                        outdex=track.outdex,
+                        conversion_bitrate=track.conversion["bitrate"],
+                        conversion_codec=track.conversion["codec"],
+                        codec=track.codec,
+                        downmix=track.downmix,
+                        title=track.title,
+                        language=track.language,
+                    )
                 )
-        return Box(audio_tracks=tracks, audio_track_count=len(tracks))
+        self.app.fastflix.current_video.video_settings.audio_tracks = tracks
+
+    def reload(self, audio_formats):
+        og_tracks = copy.deepcopy(self.app.fastflix.current_video.video_settings.audio_tracks)
+        enabled_tracks = [x.index for x in og_tracks]
+        self.new_source(audio_formats)
+        for track in self.tracks:
+            enabled = track.index in enabled_tracks
+            track.widgets.enable_check.setChecked(enabled)
+            if enabled:
+                existing_track = [x for x in og_tracks if x.index == track.index][0]
+                track.widgets.downmix.setCurrentIndex(existing_track.downmix)
+                track.widgets.convert_to.setCurrentText(existing_track.conversion_codec)
+                track.widgets.convert_bitrate.setCurrentText(existing_track.conversion_bitrate)
+                track.widgets.title.setText(existing_track.title)
+                if existing_track.language:
+                    track.widgets.language.setCurrentText(Lang(existing_track.language).name)
+                else:
+                    track.widgets.language.setCurrentIndex(0)
+
+        super()._new_source(self.tracks)

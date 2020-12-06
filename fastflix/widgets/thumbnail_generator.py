@@ -3,8 +3,7 @@
 import logging
 from subprocess import PIPE, STDOUT, run
 
-import reusables
-from qtpy import QtCore, QtGui, QtWidgets
+from qtpy import QtCore
 
 logger = logging.getLogger("fastflix")
 
@@ -33,3 +32,4 @@ class ThumbnailCreator(QtCore.QThread):
             self.app.thumbnail_complete.emit(0)
         else:
             self.app.thumbnail_complete.emit(1)
+        self.exit(0)

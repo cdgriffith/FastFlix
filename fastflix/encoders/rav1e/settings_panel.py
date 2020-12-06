@@ -2,10 +2,13 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
+from qtpy import QtCore, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
+from fastflix.language import t
+from fastflix.models.encode import rav1eSettings
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 
@@ -45,15 +48,18 @@ pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
 
 
 class RAV1E(SettingPanel):
-    def __init__(self, parent, main):
-        super().__init__(parent, main)
+    profile_name = "rav1e"
+
+    def __init__(self, parent, main, app: FastFlixApp):
+        super().__init__(parent, main, app)
         self.main = main
+        self.app = app
+
         grid = QtWidgets.QGridLayout()
 
         self.mode = "QP"
 
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
-        grid.addLayout(self._add_remove_hdr(), 1, 0, 1, 2)
         grid.addLayout(self.init_tiles(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
@@ -65,9 +71,7 @@ class RAV1E(SettingPanel):
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.setRowStretch(9, 1)
-        guide_label = QtWidgets.QLabel(
-            f"<a href='https://github.com/xiph/rav1e/blob/master/README.md'>rav1e github</a>"
-        )
+        guide_label = QtWidgets.QLabel(link("https://github.com/xiph/rav1e/blob/master/README.md", t("rav1e github")))
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, -1, 1)
@@ -80,6 +84,7 @@ class RAV1E(SettingPanel):
             tooltip="Quality/Speed ratio modifier (defaults to -1)",
             options=[str(x) for x in range(-1, 11)],
             widget_name="speed",
+            opt="speed",
         )
 
     def init_tile_rows(self):
@@ -88,7 +93,7 @@ class RAV1E(SettingPanel):
             tooltip="Break the video into rows to encode faster (lesser quality)",
             options=[str(x) for x in range(-1, 17)],
             widget_name="tile_rows",
-            default=1,
+            opt="tile_rows",
         )
 
     def init_tile_columns(self):
@@ -97,14 +102,14 @@ class RAV1E(SettingPanel):
             tooltip="Break the video into columns to encode faster (lesser quality)",
             options=[str(x) for x in range(-1, 17)],
             widget_name="tile_columns",
-            default=1,
+            opt="tile_columns",
         )
 
     def init_tiles(self):
-        return self._add_combo_box("Tiles", [str(x) for x in range(-1, 17)], "tiles", default=1)
+        return self._add_combo_box("Tiles", [str(x) for x in range(-1, 17)], "tiles", opt="tiles")
 
     def init_single_pass(self):
-        return self._add_check_box("Single Pass (Bitrate)", "single_pass", checked=True)
+        return self._add_check_box("Single Pass (Bitrate)", "single_pass", opt="single_pass")
 
     def init_pix_fmt(self):
         return self._add_combo_box(
@@ -112,95 +117,25 @@ class RAV1E(SettingPanel):
             tooltip="Pixel Format (requires at least 10-bit for HDR)",
             widget_name="pix_fmt",
             options=pix_fmts,
-            default=1,
-        )
-
-    def init_max_mux(self):
-        return self._add_combo_box(
-            label="Max Muxing Queue Size",
-            tooltip='Useful when you have the "Too many packets buffered for output stream" error',
-            widget_name="max_mux",
-            options=["default", "1024", "2048", "4096", "8192"],
-            default=1,
+            opt="pix_fmt",
         )
 
     def init_modes(self):
-        layout = QtWidgets.QGridLayout()
-        qp_group_box = QtWidgets.QGroupBox()
-        qp_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        qp_box_layout = QtWidgets.QHBoxLayout()
-
-        # rotation_dir = Path(base_path, 'data', 'rotations')
-        # group_box.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-15px; padding-bottom:-5px}")
-        self.widgets.mode = QtWidgets.QButtonGroup()
-        self.widgets.mode.buttonClicked.connect(self.set_mode)
-
-        bitrate_group_box = QtWidgets.QGroupBox()
-        bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        bitrate_box_layout = QtWidgets.QHBoxLayout()
-        bitrate_radio = QtWidgets.QRadioButton("Bitrate")
-        bitrate_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(bitrate_radio)
-        self.widgets.bitrate = QtWidgets.QComboBox()
-        self.widgets.bitrate.setFixedWidth(250)
-        self.widgets.bitrate.addItems(recommended_bitrates)
-        self.widgets.bitrate.setCurrentIndex(6)
-        self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
-        self.widgets.custom_bitrate.setFixedWidth(100)
-        self.widgets.custom_bitrate.setDisabled(True)
-        self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
-        bitrate_box_layout.addWidget(bitrate_radio)
-        bitrate_box_layout.addWidget(self.widgets.bitrate)
-        bitrate_box_layout.addStretch()
-        bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
-
-        qp_radio = QtWidgets.QRadioButton("QP")
-        qp_radio.setChecked(True)
-        qp_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(qp_radio)
-
-        self.widgets.qp = QtWidgets.QComboBox()
-        self.widgets.qp.setFixedWidth(250)
-        self.widgets.qp.addItems(recommended_qp)
-        self.widgets.qp.setCurrentIndex(0)
-        self.widgets.qp.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_qp = QtWidgets.QLineEdit("30")
-        self.widgets.custom_qp.setFixedWidth(100)
-        self.widgets.custom_qp.setDisabled(True)
-        self.widgets.custom_qp.setValidator(self.only_int)
-        self.widgets.custom_qp.textChanged.connect(lambda: self.main.build_commands())
-        qp_box_layout.addWidget(qp_radio)
-        qp_box_layout.addWidget(self.widgets.qp)
-        qp_box_layout.addStretch()
-        qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        qp_box_layout.addWidget(self.widgets.custom_qp)
-
-        bitrate_group_box.setLayout(bitrate_box_layout)
-        qp_group_box.setLayout(qp_box_layout)
-
-        bitrate_group_box.setLayout(bitrate_box_layout)
-        qp_group_box.setLayout(qp_box_layout)
-
-        layout.addWidget(qp_group_box, 0, 0)
-        layout.addWidget(bitrate_group_box, 1, 0)
-        return layout
+        return self._add_modes(recommended_bitrates, recommended_qp, qp_name="qp")
 
     def mode_update(self):
         self.widgets.custom_qp.setDisabled(self.widgets.qp.currentText() != "Custom")
         self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
         self.main.build_commands()
 
-    def get_settings(self):
-        settings = Box(
-            disable_hdr=bool(self.widgets.remove_hdr.currentIndex()),
+    def update_video_encoder_settings(self):
+        settings = rav1eSettings(
             speed=self.widgets.speed.currentText(),
-            tile_columns=int(self.widgets.tile_columns.currentText()),
-            tile_rows=int(self.widgets.tile_rows.currentText()),
-            tiles=int(self.widgets.tiles.currentText()),
+            tile_columns=self.widgets.tile_columns.currentText(),
+            tile_rows=self.widgets.tile_rows.currentText(),
+            tiles=self.widgets.tiles.currentText(),
             single_pass=self.widgets.single_pass.isChecked(),
-            max_mux=self.widgets.max_mux.currentText(),
+            max_muxing_queue_size=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
         )
@@ -212,7 +147,7 @@ class RAV1E(SettingPanel):
             settings.bitrate = (
                 bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.custom_bitrate.text()
             )
-        return settings
+        self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):
         self.mode = x.text()
