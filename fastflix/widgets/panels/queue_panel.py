@@ -177,6 +177,7 @@ class EncodingQueue(FlixList):
         self.main = parent.main
         self.app = app
         self.paused = False
+        self.encode_paused = False
 
         top_layout = QtWidgets.QHBoxLayout()
 
@@ -192,6 +193,14 @@ class EncodingQueue(FlixList):
         self.pause_queue.setToolTip(
             t("Wait for the current command to finish," " and stop the next command from processing")
         )
+
+        self.pause_encode = QtWidgets.QPushButton(
+            self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), t("Pause Encode")
+        )
+        self.pause_encode.clicked.connect(self.pause_resume_encode)
+        # pause_queue.setFixedHeight(40)
+        self.pause_encode.setFixedWidth(120)
+        self.pause_encode.setToolTip(t("Pause / Resume the current command"))
 
         self.after_done_combo = QtWidgets.QComboBox()
         self.after_done_combo.addItem("None")
@@ -212,6 +221,7 @@ class EncodingQueue(FlixList):
         self.after_done_combo.setMaximumWidth(150)
         top_layout.addWidget(QtWidgets.QLabel(t("After Conversion")))
         top_layout.addWidget(self.after_done_combo, QtCore.Qt.AlignRight)
+        top_layout.addWidget(self.pause_encode, QtCore.Qt.AlignRight)
         top_layout.addWidget(self.pause_queue, QtCore.Qt.AlignRight)
         # pause_encode = QtWidgets.QPushButton(
         #     self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), "Pause Encode"
@@ -242,6 +252,11 @@ class EncodingQueue(FlixList):
         self.app.fastflix.queue.remove(video)
         self.new_source()
 
+    def reset_pause_encode(self):
+        self.pause_encode.setText(t("Pause Encode"))
+        self.pause_encode.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause))
+        self.encode_paused = False
+
     def pause_resume_queue(self):
         if self.paused:
             self.pause_queue.setText(t("Pause Queue"))
@@ -252,6 +267,17 @@ class EncodingQueue(FlixList):
             self.pause_queue.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay))
             self.app.fastflix.worker_queue.put(["pause queue"])
         self.paused = not self.paused
+
+    def pause_resume_encode(self):
+        if self.encode_paused:
+            self.pause_encode.setText(t("Pause Encode"))
+            self.pause_encode.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause))
+            self.app.fastflix.worker_queue.put(["resume encode"])
+        else:
+            self.pause_encode.setText(t("Resume Encode"))
+            self.pause_encode.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay))
+            self.app.fastflix.worker_queue.put(["pause encode"])
+        self.encode_paused = not self.encode_paused
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def set_after_done(self):

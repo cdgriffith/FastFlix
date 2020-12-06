@@ -5,7 +5,8 @@ import re
 import secrets
 import shlex
 from pathlib import Path
-from subprocess import PIPE, Popen
+from psutil import Popen
+from subprocess import PIPE
 from threading import Thread
 
 logger = logging.getLogger("fastflix-core")
@@ -169,19 +170,19 @@ class BackgroundRunner:
                     logger.exception(f"Couldn't terminate process: {err}")
         self.killed = True
 
-    # def pause(self):
-    #     if self.process_two:
-    #         return False
-    #     if not self.process:
-    #         return False
-    #     self.process.suspend()
-    #
-    # def resume(self):
-    #     if self.process_two:
-    #         return False
-    #     if not self.process:
-    #         return False
-    #     self.process.resume()
+    def pause(self):
+        if self.process_two:
+            return False
+        if not self.process:
+            return False
+        self.process.suspend()
+
+    def resume(self):
+        if self.process_two:
+            return False
+        if not self.process:
+            return False
+        self.process.resume()
 
 
 if __name__ == "__main__":

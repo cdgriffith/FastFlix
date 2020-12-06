@@ -48,6 +48,8 @@ Cancel:
   en: Cancel
 Cancel Conversion:
   en: Cancel Conversion
+Cancel has been requested, killing encoding:
+  en: Cancel has been requested, killing encoding
 Cancelled:
   en: Cancelled
 Cancelled - Ready to try again:
@@ -58,10 +60,14 @@ CodeCalamity UHD HDR Encoding Guide:
   en: CodeCalamity UHD HDR Encoding Guide
 Command has completed:
   en: Command has completed
+Command worker received request to pause current encode:
+  en: Command worker received request to pause current encode
 Command worker received request to pause encoding after the current item completes:
   en: Command worker received request to pause encoding after the current item completes
 Command worker received request to resume encoding:
   en: Command worker received request to resume encoding
+Command worker received request to resume paused encode:
+  en: Command worker received request to resume paused encode
 Conversion:
   en: Conversion
 Conversion cancelled, delete incomplete file:
@@ -260,6 +266,10 @@ PIR can replace keyframes by inserting a column of intra blocks in non-keyframes
   en: PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,
 Parse Video details:
   en: Parse Video details
+Pause / Resume the current command:
+  en: Pause / Resume the current command
+Pause Encode:
+  en: Pause Encode
 Pause Queue:
   en: Pause Queue
 Pixel Format (requires at least 10-bit for HDR):
@@ -304,6 +314,8 @@ Removing after done command:
   en: Removing after done command
 Repeat Headers:
   en: Repeat Headers
+Resume Encode:
+  en: Resume Encode
 Resume Queue:
   en: Resume Queue
 Reusables:

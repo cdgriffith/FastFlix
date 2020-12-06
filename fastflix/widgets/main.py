@@ -1425,9 +1425,10 @@ class Main(QtWidgets.QWidget):
         if self.converting:
             logger.debug("Canceling current encode")
             self.app.fastflix.worker_queue.put(["cancel"])
+            self.video_options.queue.reset_pause_encode()
             return
         else:
-            logger.debug("Adding new items to the command worker to encode")
+            logger.debug("Starting conversion process")
 
         if not self.app.fastflix.queue:
 
@@ -1573,7 +1574,12 @@ class Main(QtWidgets.QWidget):
         event.accept() if event.mimeData().hasUrls else event.ignoreAF()
 
     def status_update(self, status):
-        command, video_uuid, command_uuid = status.split(":")
+        try:
+            command, video_uuid, command_uuid = status.split(":")
+        except ValueError:
+            logger.exception(f"Could not process status update from the command worker: {status}")
+            return
+
         try:
             video = self.find_video(video_uuid)
             command_index = self.find_command(video, command_uuid)
@@ -1604,6 +1610,11 @@ class Main(QtWidgets.QWidget):
             video.status.cancelled = True
             video.status.running = False
             self.video_options.update_queue()
+
+        elif command in ("paused encode", "resumed encode"):
+            pass
+        else:
+            logger.warning(f"status worker received unknown command: {command}")
 
     def find_video(self, uuid) -> Video:
         for video in self.app.fastflix.queue:

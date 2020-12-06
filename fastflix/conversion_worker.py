@@ -176,3 +176,19 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                     logger.debug(f'{t("Setting after done command to:")} {after_done_command}')
                 else:
                     logger.debug(t("Removing after done command"))
+            if request[0] == "pause encode":
+                logger.debug(t("Command worker received request to pause current encode"))
+                try:
+                    runner.pause()
+                except Exception:
+                    logger.exception("Could not pause command")
+                else:
+                    status_queue.put(("paused encode", commands_to_run[0][0], commands_to_run[0][1]))
+            if request[0] == "resume encode":
+                logger.debug(t("Command worker received request to resume paused encode"))
+                try:
+                    runner.resume()
+                except Exception:
+                    logger.exception("Could not resume command")
+                else:
+                    status_queue.put(("resumed encode", commands_to_run[0][0], commands_to_run[0][1]))
