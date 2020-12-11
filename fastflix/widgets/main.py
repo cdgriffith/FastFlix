@@ -479,7 +479,7 @@ class Main(QtWidgets.QWidget):
         return layout
 
     def change_encoder(self):
-        if not self.initialized:
+        if not self.initialized or not self.app.fastflix.current_video or not self.convert_to:
             return
         self.video_options.change_conversion(self.convert_to)
         if not self.output_video_path_widget.text().endswith(self.current_encoder.video_extension):
@@ -526,7 +526,7 @@ class Main(QtWidgets.QWidget):
         scale_area.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
         scale_layout = QtWidgets.QVBoxLayout()
 
-        self.widgets.scale.width, new_scale_layout = self.build_hoz_int_field("Width  ", right_stretch=False)
+        self.widgets.scale.width, new_scale_layout = self.build_hoz_int_field(f"Width  ", right_stretch=False)
         self.widgets.scale.height, new_scale_layout, lb, rb = self.build_hoz_int_field(
             "  Height  ", left_stretch=False, layout=new_scale_layout, return_buttons=True
         )

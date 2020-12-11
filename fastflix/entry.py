@@ -11,6 +11,7 @@ try:
     from appdirs import user_data_dir
     from box import Box
 
+    import fastflix.language  # Have to set language first thing
     from fastflix.conversion_worker import queue_worker
     from fastflix.models.config import Config
     from fastflix.models.fastflix import FastFlix

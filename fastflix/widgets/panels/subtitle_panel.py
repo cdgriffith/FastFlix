@@ -78,7 +78,10 @@ class Subtitle(QtWidgets.QTabWidget):
         self.setFixedHeight(60)
         self.widgets.title.setToolTip(self.subtitle.to_yaml())
         self.widgets.burn_in.setToolTip(
-            t("Overlay this subtitle track onto the video during conversion. Cannot remove afterwards.")
+            f"""{t("Overlay this subtitle track onto the video during conversion.")}\n
+            {t("Currently only works for image based subtitles.")}\n
+            {t("Cannot remove afterwards!")}
+            """
         )
 
         disposition_layout = QtWidgets.QHBoxLayout()

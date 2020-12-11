@@ -6,8 +6,8 @@ import coloredlogs
 import reusables
 from qtpy import QtGui
 
+from fastflix.language import t
 from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration
-from fastflix.language import change_language, t
 from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
@@ -110,15 +110,12 @@ def start_app(worker_queue, status_queue, log_queue):
     try:
         app.fastflix.config.load()
     except MissingFF:
-        change_language(app.fastflix.config.language)
         if reusables.win_based and ask_for_ffmpeg():
             ProgressBar(app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
     except Exception as err:
         # TODO give edit / delete options
         logger.exception(t("Could not load config file!"))
         sys.exit(1)
-    else:
-        change_language(app.fastflix.config.language)
 
     startup_tasks = [
         Task(t("Gather FFmpeg version"), ffmpeg_configuration),
