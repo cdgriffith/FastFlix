@@ -164,8 +164,7 @@ class Config:
                     if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
                         setattr(self, name, file)
                         break
-                else:
-                    raise MissingFF(name)
+        raise MissingFF(name)
 
     def load(self):
         if not self.config_path.exists():
