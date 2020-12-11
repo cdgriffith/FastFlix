@@ -72,7 +72,12 @@ class FlixList(QtWidgets.QWidget):
         start = 1  # Audio starts after video
         if self.list_type == "subtitle":
             # After audio + video
-            start = len(self.app.fastflix.current_video.video_settings.audio_tracks) + 1
+            if (
+                self.app.fastflix.current_video
+                and self.app.fastflix.current_video.video_settings
+                and isinstance(self.app.fastflix.current_video.video_settings.audio_tracks, list)
+            ):
+                start = len(self.app.fastflix.current_video.video_settings.audio_tracks) + 1
 
         for index, widget in enumerate(self.tracks, start):
             self.inner_layout.addWidget(widget)
@@ -112,6 +117,12 @@ class FlixList(QtWidgets.QWidget):
         self.tracks.pop(self.tracks.index(track))
         track.close()
         self.reorder()
+
+    def remove_all(self):
+        for widget in self.tracks:
+            self.inner_layout.removeWidget(widget)
+            widget.close()
+        self.tracks = []
 
     def __len__(self):
         return len([x for x in self.tracks if x.enabled])

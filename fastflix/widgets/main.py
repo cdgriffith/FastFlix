@@ -1026,6 +1026,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.width.setText("0")
         self.widgets.scale.height.setText("Auto")
         self.widgets.preview.setPixmap(QtGui.QPixmap())
+        self.video_options.clear_tracks()
         self.loading_video = False
 
     @reusables.log_exception("fastflix", show_traceback=True)
@@ -1416,14 +1417,14 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
 
     @reusables.log_exception("fastflix", show_traceback=False)
-    def encode_video(self):
+    def encode_video(self, try_add=False):
 
         if self.converting:
             logger.debug("Canceling current encode")
             self.app.fastflix.worker_queue.put(["cancel"])
             self.video_options.queue.reset_pause_encode()
             return
-        else:
+        elif not try_add:
             logger.debug("Starting conversion process")
 
         if not self.app.fastflix.queue:
@@ -1431,19 +1432,16 @@ class Main(QtWidgets.QWidget):
             if not self.add_to_queue():
                 return
 
-        # Command looks like (video_uuid, command_uuid, command, work_dir)
+        # Command looks like (video_uuid, command_uuid, command, work_dir, filename)
         # Request looks like (queue command, log_dir, (commands))
         requests = ["add_items", str(self.app.fastflix.log_path)]
-        commands = []
-        for video in self.app.fastflix.queue:
-            if video.status.complete or video.status.error:
-                continue
-            for command in video.video_settings.conversion_commands:
-                commands.append((video.uuid, command.uuid, command.command, str(video.work_path)))
+        commands = self.get_commands()
 
-        if not commands:
-            error_message(t("No new items in queue to convert"))
-            return
+        if not commands and not try_add and self.app.fastflix.current_video:
+            # TODO ask if they want to add
+            return self.encode_video(try_add=True)
+        elif not commands:
+            return error_message(t("No new items in queue to convert"))
 
         requests.append(tuple(commands))
 
@@ -1452,6 +1450,23 @@ class Main(QtWidgets.QWidget):
         self.app.fastflix.worker_queue.put(tuple(requests))
         # self.disable_all()
         self.video_options.show_status()
+
+    def get_commands(self):
+        commands = []
+        for video in self.app.fastflix.queue:
+            if video.status.complete or video.status.error:
+                continue
+            for command in video.video_settings.conversion_commands:
+                commands.append(
+                    (
+                        video.uuid,
+                        command.uuid,
+                        command.command,
+                        str(video.work_path),
+                        str(video.video_settings.output_path.stem),
+                    )
+                )
+        return commands
 
     def add_to_queue(self):
         if not self.encoding_checks():
@@ -1481,9 +1496,7 @@ class Main(QtWidgets.QWidget):
         self.video_options.show_queue()
 
         if self.converting:
-            commands = []
-            for command in video.video_settings.conversion_commands:
-                commands.append((video.uuid, command.uuid, command.command, str(video.work_path)))
+            commands = self.get_commands()
             requests = ["add_items", str(self.app.fastflix.log_path), tuple(commands)]
             self.app.fastflix.worker_queue.put(tuple(requests))
 
