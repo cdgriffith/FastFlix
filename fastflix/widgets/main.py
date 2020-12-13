@@ -276,7 +276,7 @@ class Main(QtWidgets.QWidget):
 
         output_layout = QtWidgets.QHBoxLayout()
 
-        output_label = QtWidgets.QLabel("Output")
+        output_label = QtWidgets.QLabel(t("Output"))
         output_label.setFixedWidth(70)
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
@@ -291,11 +291,11 @@ class Main(QtWidgets.QWidget):
 
         title_layout = QtWidgets.QHBoxLayout()
 
-        title_label = QtWidgets.QLabel("Title")
+        title_label = QtWidgets.QLabel(t("Title"))
         title_label.setFixedWidth(70)
-        title_label.setToolTip('Set the "title" tag, sometimes shown as "Movie Name"')
+        title_label.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
         self.widgets.video_title = QtWidgets.QLineEdit()
-        self.widgets.video_title.setToolTip('Set the "title" tag, sometimes shown as "Movie Name"')
+        self.widgets.video_title.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
         self.widgets.video_title.textChanged.connect(lambda: self.page_update(build_thumbnail=False))
 
         title_layout.addWidget(title_label)
@@ -364,7 +364,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.video_track.addItems([])
         self.widgets.video_track.currentIndexChanged.connect(lambda: self.page_update())
 
-        track_label = QtWidgets.QLabel("Video Track")
+        track_label = QtWidgets.QLabel(t("Video Track"))
         track_label.setFixedWidth(65)
         layout.addWidget(track_label)
         layout.addWidget(self.widgets.video_track, stretch=1)
@@ -410,7 +410,7 @@ class Main(QtWidgets.QWidget):
         hoz_flip_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} HF.png")).resolve())
         rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
 
-        self.widgets.flip.addItems(["No Flip", "Vertical Flip", "Horizontal Flip", "Vert + Hoz Flip"])
+        self.widgets.flip.addItems([t("No Flip"), t("Vertical Flip"), t("Horizontal Flip"), t("Vert + Hoz Flip")])
         self.widgets.flip.setItemIcon(0, QtGui.QIcon(no_rot_file))
         self.widgets.flip.setItemIcon(1, QtGui.QIcon(vert_flip_file))
         self.widgets.flip.setItemIcon(2, QtGui.QIcon(hoz_flip_file))
@@ -437,7 +437,7 @@ class Main(QtWidgets.QWidget):
         rot_270_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} CC90.png")).resolve())
         rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
 
-        self.widgets.rotate.addItems(["No Rotation", "90°", "180°", "270°"])
+        self.widgets.rotate.addItems([t("No Rotation"), "90°", "180°", "270°"])
         self.widgets.rotate.setItemIcon(0, QtGui.QIcon(no_rot_file))
         self.widgets.rotate.setItemIcon(1, QtGui.QIcon(rot_90_file))
         self.widgets.rotate.setItemIcon(2, QtGui.QIcon(rot_180_file))
@@ -499,10 +499,10 @@ class Main(QtWidgets.QWidget):
         group_box = QtWidgets.QGroupBox()
         group_box.setStyleSheet("QGroupBox{padding-top:18px; margin-top:-18px}")
         self.widgets.start_time, layout = self.build_hoz_int_field(
-            "Start  ", right_stretch=False, left_stretch=True, time_field=True
+            f"{t('Start')}  ", right_stretch=False, left_stretch=True, time_field=True
         )
         self.widgets.end_time, layout = self.build_hoz_int_field(
-            "  End  ", left_stretch=True, right_stretch=True, layout=layout, time_field=True
+            f"  {t('End')}  ", left_stretch=True, right_stretch=True, layout=layout, time_field=True
         )
         self.widgets.start_time.textChanged.connect(lambda: self.page_update())
         self.widgets.end_time.textChanged.connect(lambda: self.page_update())
@@ -526,9 +526,9 @@ class Main(QtWidgets.QWidget):
         scale_area.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
         scale_layout = QtWidgets.QVBoxLayout()
 
-        self.widgets.scale.width, new_scale_layout = self.build_hoz_int_field(f"Width  ", right_stretch=False)
+        self.widgets.scale.width, new_scale_layout = self.build_hoz_int_field(f"{t('Width')}  ", right_stretch=False)
         self.widgets.scale.height, new_scale_layout, lb, rb = self.build_hoz_int_field(
-            "  Height  ", left_stretch=False, layout=new_scale_layout, return_buttons=True
+            f"  {t('Height')}  ", left_stretch=False, layout=new_scale_layout, return_buttons=True
         )
         self.widgets.scale.height.setDisabled(True)
         self.widgets.scale.height.setText("Auto")
@@ -542,13 +542,13 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.height.textChanged.connect(lambda: self.scale_update())
 
         bottom_row = QtWidgets.QHBoxLayout()
-        self.widgets.scale.keep_aspect = QtWidgets.QCheckBox("Keep aspect ratio")
+        self.widgets.scale.keep_aspect = QtWidgets.QCheckBox(t("Keep aspect ratio"))
         self.widgets.scale.keep_aspect.setMaximumHeight(40)
         self.widgets.scale.keep_aspect.setChecked(True)
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.keep_aspect_update())
 
-        label = QtWidgets.QLabel("Scale", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
+        label = QtWidgets.QLabel(t("Scale"), alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
         label.setMaximumHeight(40)
         bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=QtCore.Qt.AlignCenter)
@@ -565,27 +565,27 @@ class Main(QtWidgets.QWidget):
         crop_box = QtWidgets.QGroupBox()
         crop_box.setStyleSheet("QGroupBox{padding-top:17px; margin-top:-18px}")
         crop_layout = QtWidgets.QVBoxLayout()
-        self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field("       Top  ")
-        self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field("Left  ", right_stretch=False)
+        self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field(f"       {t('Top')}  ")
+        self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field(f"{t('Left')}  ", right_stretch=False)
         self.widgets.crop.right, crop_hz_layout = self.build_hoz_int_field(
-            "    Right  ", left_stretch=False, layout=crop_hz_layout
+            f"    {t('Right')}  ", left_stretch=False, layout=crop_hz_layout
         )
-        self.widgets.crop.bottom, crop_bottom_layout = self.build_hoz_int_field("Bottom  ", right_stretch=True)
+        self.widgets.crop.bottom, crop_bottom_layout = self.build_hoz_int_field(f"{t('Bottom')}  ", right_stretch=True)
 
         self.widgets.crop.top.textChanged.connect(lambda: self.page_update())
         self.widgets.crop.left.textChanged.connect(lambda: self.page_update())
         self.widgets.crop.right.textChanged.connect(lambda: self.page_update())
         self.widgets.crop.bottom.textChanged.connect(lambda: self.page_update())
 
-        label = QtWidgets.QLabel("Crop", alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
+        label = QtWidgets.QLabel(t("Crop"), alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         label.setStyleSheet("QLabel{color:#777}")
         label.setMaximumHeight(40)
 
-        auto_crop = QtWidgets.QPushButton("Auto")
+        auto_crop = QtWidgets.QPushButton(t("Auto"))
         auto_crop.setMaximumHeight(40)
         auto_crop.setFixedWidth(50)
         auto_crop.setToolTip(
-            "Automatically detect black borders at current start time (or at 10% in if start time is 0)"
+            t("Automatically detect black borders at current start time (or at 10% in if start time is 0)")
         )
         auto_crop.clicked.connect(self.get_auto_crop)
         self.buttons.append(auto_crop)
@@ -1420,12 +1420,12 @@ class Main(QtWidgets.QWidget):
     def encode_video(self, try_add=False):
 
         if self.converting:
-            logger.debug("Canceling current encode")
+            logger.debug(t("Canceling current encode"))
             self.app.fastflix.worker_queue.put(["cancel"])
             self.video_options.queue.reset_pause_encode()
             return
         elif not try_add:
-            logger.debug("Starting conversion process")
+            logger.debug(t("Starting conversion process"))
 
         if not self.app.fastflix.queue:
 
@@ -1571,6 +1571,7 @@ class Main(QtWidgets.QWidget):
         event.accept() if event.mimeData().hasUrls else event.ignoreAF()
 
     def status_update(self, status):
+        logger.debug(f"Updating status from command worker: {status}")
         try:
             command, video_uuid, command_uuid = status.split(":")
         except ValueError:

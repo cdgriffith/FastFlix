@@ -118,6 +118,7 @@ class VideoOptions(QtWidgets.QTabWidget):
     def clear_tracks(self):
         self.audio.remove_all()
         self.subtitles.remove_all()
+        self.attachments.clear_covers()
 
     def update_queue(self, currently_encoding=False):
         self.queue.new_source(currently_encoding)

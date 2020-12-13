@@ -26,15 +26,15 @@ except Exception:
 
 language_data = Box.from_yaml(filename=language_file, encoding="utf-8")
 
-# @lru_cache(maxsize=512)  # This little trick makes re-calls 10x faster
+
+@lru_cache(maxsize=512)  # This little trick makes re-calls 10x faster
 def translate(text):
     if text in language_data:
         if language in language_data[text]:
             return language_data[text][language]
-    else:
-        # TODO remove this before release
-        language_data[text] = {"en": text}
-        language_data.to_yaml(filename=language_file, encoding="utf-8", width=200)
+    # else:
+    #     language_data[text] = {"eng": text}
+    #     language_data.to_yaml(filename=language_file, encoding="utf-8", width=400)
     return text
 
 

@@ -97,6 +97,8 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                     logger.info(t("starting next command"))
                     start_command()
                 else:
+                    currently_encoding = False
+                    allow_sleep_mode()
                     logger.debug(t("Queue has been paused"))
                 continue
             else:

@@ -86,7 +86,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
         disposition_layout = QtWidgets.QHBoxLayout()
         disposition_layout.addStretch()
-        disposition_layout.addWidget(QtWidgets.QLabel("Disposition"))
+        disposition_layout.addWidget(QtWidgets.QLabel(t("Disposition")))
         disposition_layout.addWidget(self.widgets.disposition)
 
         grid = QtWidgets.QGridLayout()

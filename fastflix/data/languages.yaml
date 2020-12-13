@@ -1,2236 +1,2303 @@
 4 or 5 will turn off rate distortion optimization, having even more of an impact on quality.:
-  zho: "4\u62165\u5C06\u5173\u95ED\u901F\u7387\u5931\u771F\u4F18\u5316\uFF0C\u5BF9\
-    \u8D28\u91CF\u7684\u5F71\u54CD\u66F4\u5927\u3002"
-  deu: "Mit 4 oder 5 wird die Optimierung der Ratenverzerrung ausgeschaltet, was sich\
-    \ noch st\xC3\xA4rker auf die Qualit\xC3\xA4t auswirkt."
-  eng: 4 or 5 will turn off rate distortion optimization, having even more of an impact
-    on quality.
-  fra: "4 ou 5 d\xC3\xA9sactiveront l'optimisation de la distorsion du taux, ce qui\
-    \ aura un impact encore plus important sur la qualit\xC3\xA9."
-  ita: "4 o 5 disattiveranno l'ottimizzazione della distorsione del tasso, con un\
-    \ impatto ancora maggiore sulla qualit\xC3\_."
-  spa: "4 o 5 desactivar\xE1n la optimizaci\xF3n de la tasa de distorsi\xF3n, lo que\
-    \ tendr\xE1 un impacto a\xFAn mayor en la calidad."
+  deu: Mit 4 oder 5 wird die Optimierung der Ratenverzerrung ausgeschaltet, was sich noch stärker auf die Qualität auswirkt.
+  eng: 4 or 5 will turn off rate distortion optimization, having even more of an impact on quality.
+  fra: 4 ou 5 désactiveront l'optimisation de la distorsion du taux, ce qui aura un impact encore plus important sur la qualité.
+  ita: 4 o 5 disattiveranno l'ottimizzazione della distorsione del tasso, con un impatto ancora maggiore sulla qualità.
+  spa: 4 o 5 desactivarán la optimización de la tasa de distorsión, lo que tendrá un impacto aún mayor en la calidad.
+  zho: 4或5将关闭速率失真优化，对质量的影响更大。
+About:
+  deu: Über
+  eng: About
+  fra: À propos de
+  ita: Informazioni su
+  spa: Acerca de
+  zho: 关于我们
 Adaptive Quantization:
-  zho: "\u81EA\u9002\u5E94\u91CF\u5316"
   deu: Adaptive Quantisierung
   eng: Adaptive Quantization
   fra: Quantification adaptative
   ita: Quantizzazione adattiva
-  spa: "Cuantificaci\xF3n adaptativa"
+  spa: Cuantificación adaptativa
+  zho: 自适应量化
 Add to Queue:
-  zho: "\u6DFB\u52A0\u5230\u961F\u5217"
-  deu: "Zur Warteschlange hinzuf\xC3\xBCgen"
+  deu: Zur Warteschlange hinzufügen
   eng: Add to Queue
-  fra: "Ajouter \xC3\_ la file d'attente"
+  fra: Ajouter à la file d'attente
   ita: Aggiungi alla coda
-  spa: "A\xF1adir a la cola"
+  spa: Añadir a la cola
+  zho: 添加到队列
 Adding commands to the queue:
-  zho: "\u5C06\u547D\u4EE4\u6DFB\u52A0\u5230\u961F\u5217\u4E2D"
-  deu: "Hinzuf\xC3\xBCgen von Befehlen zur Warteschlange"
+  deu: Hinzufügen von Befehlen zur Warteschlange
   eng: Adding commands to the queue
-  fra: "Ajout de commandes \xC3\_ la file d'attente"
+  fra: Ajout de commandes à la file d'attente
   ita: Aggiungere comandi alla coda
-  spa: "A\xF1adiendo comandos a la cola"
+  spa: Añadiendo comandos a la cola
+  zho: 将命令添加到队列中
+Additional x265 params:
+  deu: Zusätzliche x265-Parameter
+  eng: Additional x265 params
+  fra: Paramètres x265 supplémentaires
+  ita: Parametri aggiuntivi x265
+  spa: Parámetros adicionales x265
+  zho: 额外的x265参数
 After Conversion:
-  zho: "\u8F6C\u6362\u540E"
   deu: Nach der Konvertierung
   eng: After Conversion
-  fra: "Apr\xC3\xA8s la conversion"
+  fra: Après la conversion
   ita: Dopo la conversione
-  spa: "Despu\xE9s de la conversi\xF3n"
+  spa: Después de la conversión
+  zho: 转换后
 All:
-  zho: "\u5168\u90E8"
   deu: Alle
   eng: All
   fra: Tous
   ita: Tutti
   spa: Todos
+  zho: 全部
 All queue items have completed:
-  zho: "\u6240\u6709\u961F\u5217\u9879\u76EE\u5DF2\u5B8C\u6210"
   deu: Alle Elemente der Warteschlange sind abgeschlossen
   eng: All queue items have completed
-  fra: "Tous les \xC3\xA9l\xC3\xA9ments de la file d'attente sont termin\xC3\xA9s"
+  fra: Tous les éléments de la file d'attente sont terminés
   ita: Tutte le voci della coda sono state completate
-  spa: "Todos los art\xEDculos de la cola se han completado"
+  spa: Todos los artículos de la cola se han completado
+  zho: 所有队列项目已完成
 Audio:
-  zho: "\u97F3\u9891"
   deu: Audio
   eng: Audio
   fra: Audio
   ita: Audio
   spa: Audio
+  zho: 音频
 Audio Tracks:
-  zho: "\u97F3\u8F68"
   deu: Audio-Spuren
   eng: Audio Tracks
   fra: Pistes audio
   ita: Tracce audio
   spa: Pistas de audio
+  zho: 音轨
 Audio select language:
-  zho: "\u97F3\u9891\u9009\u62E9\u8BED\u8A00"
-  deu: "Audio Sprache ausw\xC3\xA4hlen"
+  deu: Audio Sprache auswählen
   eng: Audio select language
   fra: Audio choisir la langue
   ita: Audio seleziona la lingua
   spa: Audio seleccionar idioma
+  zho: 音频选择语言
 Author:
-  zho: "\u64B0\u7A3F\u4EBA"
   deu: Autor
   eng: Author
   fra: Auteur
   ita: Autore
   spa: Autor
+  zho: 撰稿人
+Auto:
+  deu: Auto
+  eng: Auto
+  fra: Auto
+  ita: Auto
+  spa: Auto
+  zho: 自动
 Auto Burn-in first forced or default subtitle track:
-  zho: "\u81EA\u52A8\u523B\u5F55\u7B2C\u4E00\u4E2A\u5F3A\u5236\u6216\u9ED8\u8BA4\u7684\
-    \u5B57\u5E55\u8F68\u3002"
   deu: Auto Burn-in erste erzwungene oder Standard-Untertitelspur
   eng: Auto Burn-in first forced or default subtitle track
-  fra: "Auto Burn-in premi\xC3\xA8re piste de sous-titres forc\xC3\xA9e ou par d\xC3\
-    \xA9faut"
+  fra: Auto Burn-in première piste de sous-titres forcée ou par défaut
   ita: Auto Burn-in prima traccia sottotitoli forzata o predefinita
-  spa: "Auto Burn-in primera pista de subt\xEDtulos forzados o por defecto"
+  spa: Auto Burn-in primera pista de subtítulos forzados o por defecto
+  zho: 自动刻录第一个强制或默认的字幕轨。
 Auto Crop:
-  zho: "\u81EA\u52A8\u88C1\u526A"
   deu: Automatisch beschneiden
   eng: Auto Crop
   fra: Auto Crop
   ita: Auto Crop
   spa: Auto Crop
+  zho: 自动裁剪
 Auto Crop - Finding black bars at:
-  zho: "\u81EA\u52A8\u88C1\u526A - \u5BFB\u627E\u9ED1\u6761"
   deu: Auto Crop - Finden von schwarzen Balken bei
   eng: Auto Crop - Finding black bars at
-  fra: "Auto Crop - Trouver des barres noires \xC3\_"
+  fra: Auto Crop - Trouver des barres noires à
   ita: Auto Crop - Trovare barre nere a
   spa: Auto Crop - Encontrar barras negras en
+  zho: 自动裁剪 - 寻找黑条
+Automatically detect black borders at current start time (or at 10% in if start time is 0):
+  deu: Automatische Erkennung von schwarzen Rändern bei der aktuellen Startzeit (oder bei 10% in, wenn die Startzeit 0 ist)
+  eng: Automatically detect black borders at current start time (or at 10% in if start time is 0)
+  fra: Detectar automáticamente los bordes negros a la hora de inicio actual (o al 10% in si la hora de inicio es 0)
+  ita: Rilevamento automatico dei bordi neri all'ora di inizio corrente (o al 10% se l'ora di inizio è 0)
+  spa: Detectar automáticamente los bordes negros a la hora de inicio actual (o al 10% in si la hora de inicio es 0)
+  zho: 自动检测当前启动时间的黑色边框（如果启动时间为0，则检测10%）。
 Automatically enabled when an interlaced video is detected:
-  zho: "\u68C0\u6D4B\u5230\u9694\u884C\u626B\u63CF\u89C6\u9891\u65F6\u81EA\u52A8\u542F\
-    \u7528\u3002"
   deu: Automatisch aktiviert, wenn ein Interlaced-Video erkannt wird
   eng: Automatically enabled when an interlaced video is detected
-  fra: "Automatiquement activ\xC3\xA9 lorsqu'une vid\xC3\xA9o entrelac\xC3\xA9e est\
-    \ d\xC3\xA9tect\xC3\xA9e"
+  fra: Automatiquement activé lorsqu'une vidéo entrelacée est détectée
   ita: Abilitato automaticamente quando viene rilevato un video interlacciato
-  spa: "Se activa autom\xE1ticamente cuando se detecta un v\xEDdeo entrelazado"
+  spa: Se activa automáticamente cuando se detecta un vídeo entrelazado
+  zho: 检测到隔行扫描视频时自动启用。
 B Adapt:
-  zho: "B \u9002\u5E94"
   deu: B Anpassen
   eng: B Adapt
   fra: B Adapter
   ita: B Adattare
   spa: B Adaptar
+  zho: B 适应
 Bit Depth:
-  zho: "\u6BD4\u7279\u6DF1\u5EA6"
   deu: Bit-Tiefe
   eng: Bit Depth
   fra: Profondeur de bit
-  ita: "Profondit\xC3\_ della punta"
+  ita: Profondità della punta
   spa: Profundidad de bits
+  zho: 比特深度
 Bitrate:
-  zho: "\u6BD4\u7279\u7387"
   deu: Bitrate
   eng: Bitrate
   fra: Bitrate
   ita: Bitrate
   spa: Bitrate
+  zho: 比特率
+Bottom:
+  deu: Unten
+  eng: Bottom
+  fra: Abajo
+  ita: In basso
+  spa: Abajo
+  zho: 底部
 Break the video into columns to encode faster (lesser quality):
-  zho: "\u5C06\u89C6\u9891\u5206\u6210\u51E0\u5217\uFF0C\u4EE5\u4FBF\u66F4\u5FEB\u5730\
-    \u8FDB\u884C\u7F16\u7801\uFF08\u8D28\u91CF\u8F83\u5DEE\uFF09\u3002"
-  deu: "Das Video in Spalten aufteilen, um schneller zu kodieren (geringere Qualit\xC3\
-    \xA4t)"
+  deu: Das Video in Spalten aufteilen, um schneller zu kodieren (geringere Qualität)
   eng: Break the video into columns to encode faster (lesser quality)
-  fra: "Diviser la vid\xC3\xA9o en colonnes pour un encodage plus rapide (qualit\xC3\
-    \xA9 moindre)"
-  ita: "Rompere il video in colonne per codificare pi\xC3\xB9 velocemente (qualit\xC3\
-    \_ inferiore)"
-  spa: "Dividir el video en columnas para codificar m\xE1s r\xE1pido (menor calidad)"
+  fra: Diviser la vidéo en colonnes pour un encodage plus rapide (qualité moindre)
+  ita: Rompere il video in colonne per codificare più velocemente (qualità inferiore)
+  spa: Dividir el video en columnas para codificar más rápido (menor calidad)
+  zho: 将视频分成几列，以便更快地进行编码（质量较差）。
 Break the video into rows to encode faster (lesser quality):
-  zho: "\u5C06\u89C6\u9891\u5206\u6210\u51E0\u884C\uFF0C\u4EE5\u4FBF\u66F4\u5FEB\u5730\
-    \u8FDB\u884C\u7F16\u7801\uFF08\u8D28\u91CF\u8F83\u5DEE\uFF09\u3002"
-  deu: "Das Video in Zeilen aufteilen, um schneller zu kodieren (geringere Qualit\xC3\
-    \xA4t)"
+  deu: Das Video in Zeilen aufteilen, um schneller zu kodieren (geringere Qualität)
   eng: Break the video into rows to encode faster (lesser quality)
-  fra: "Diviser la vid\xC3\xA9o en lignes pour un encodage plus rapide (qualit\xC3\
-    \xA9 moindre)"
-  ita: "Suddividere il video in righe per codificare pi\xC3\xB9 velocemente (qualit\xC3\
-    \_ inferiore)"
-  spa: "Dividir el video en filas para codificar m\xE1s r\xE1pido (menor calidad)"
+  fra: Diviser la vidéo en lignes pour un encodage plus rapide (qualité moindre)
+  ita: Suddividere il video in righe per codificare più velocemente (qualità inferiore)
+  spa: Dividir el video en filas para codificar más rápido (menor calidad)
+  zho: 将视频分成几行，以便更快地进行编码（质量较差）。
 Build:
-  zho: "\u6784\u5EFA"
   deu: Erstellen
   eng: Build
   fra: Construire
   ita: Costruire
   spa: Construye
+  zho: 构建
 Burn In:
-  zho: "\u70E7\u4F24"
   deu: Einbrennen
   eng: Burn In
   fra: Burn In
   ita: Bruciare in
   spa: Quemar en
+  zho: 烧伤
 CPU Used:
-  zho: "\u4F7F\u7528\u7684CPU"
   deu: Verwendete CPU
   eng: CPU Used
-  fra: "CPU utilis\xC3\xA9"
+  fra: CPU utilisé
   ita: CPU usata
   spa: CPU utilizado
+  zho: 使用的CPU
 Cancel:
-  zho: "\u53D6\u6D88"
   deu: Abbrechen
   eng: Cancel
   fra: Annuler
   ita: Annulla
   spa: Cancelar
+  zho: 取消
 Cancel Conversion:
-  zho: "\u53D6\u6D88\u8F6C\u6362"
   deu: Konvertierung abbrechen
   eng: Cancel Conversion
   fra: Annuler la conversion
   ita: Annullare la conversione
-  spa: "Cancelar la conversi\xF3n"
+  spa: Cancelar la conversión
+  zho: 取消转换
 Cancel has been requested, killing encoding:
-  zho: "\u5DF2\u7533\u8BF7\u53D6\u6D88\uFF0C\u53D6\u6D88\u7F16\u7801"
   deu: Abbrechen wurde angefordert, Kodierung wird abgebrochen
   eng: Cancel has been requested, killing encoding
-  fra: "L'annulation a \xC3\xA9t\xC3\xA9 demand\xC3\xA9e, tuant l'encodage"
-  ita: "\xC3\u02C6 stata richiesta la cancellazione, uccidendo la codifica"
-  spa: "Se ha solicitado la cancelaci\xF3n, matando la codificaci\xF3n"
+  fra: L'annulation a été demandée, tuant l'encodage
+  ita: È stata richiesta la cancellazione, uccidendo la codifica
+  spa: Se ha solicitado la cancelación, matando la codificación
+  zho: 已申请取消，取消编码
+Canceling current encode:
+  deu: Abbrechen der aktuellen Kodierung
+  eng: Canceling current encode
+  fra: Cancelar la codificación actual
+  ita: Annullamento della corrente di codifica
+  spa: Cancelar la codificación actual
+  zho: 取消当前编码
 Cancelled:
-  zho: "\u5DF2\u53D6\u6D88"
   deu: Abgebrochen
   eng: Cancelled
-  fra: "Annul\xC3\xA9"
+  fra: Annulé
   ita: Cancellato
   spa: Cancelado
+  zho: 已取消
 Cancelled - Ready to try again:
-  zho: "\u5DF2\u53D6\u6D88 - \u51C6\u5907\u518D\u8BD5"
   deu: Abgebrochen - Bereit zum erneuten Versuch
   eng: Cancelled - Ready to try again
-  fra: "Annul\xC3\xA9 - Pr\xC3\xAAt \xC3\_ r\xC3\xA9essayer"
+  fra: Annulé - Prêt à réessayer
   ita: Annullato - Pronto a riprovare
   spa: Cancelado - Listo para intentarlo de nuevo
+  zho: 已取消 - 准备再试
 Cannot remove afterwards!:
-  zho: "\u4E8B\u540E\u65E0\u6CD5\u5220\u9664"
-  deu: "Kann nicht nachtr\xC3\xA4glich entfernt werden!"
+  deu: Kann nicht nachträglich entfernt werden!
   eng: Cannot remove afterwards!
-  fra: "Ne peut pas \xC3\xAAtre retir\xC3\xA9 par la suite !"
-  ita: "Non pu\xC3\xB2 essere rimosso dopo!"
-  spa: "No se puede quitar despu\xE9s!"
+  fra: Ne peut pas être retiré par la suite !
+  ita: Non può essere rimosso dopo!
+  spa: No se puede quitar después!
+  zho: 事后无法删除
+Check for Newer Version of FastFlix:
+  deu: Prüfen auf neuere Version von FastFlix
+  eng: Check for Newer Version of FastFlix
+  fra: Consultez la nouvelle version de FastFlix
+  ita: Verifica la presenza di una versione più recente di FastFlix
+  spa: Busca la nueva versión de FastFlix
+  zho: 检查FastFlix的较新版本
+Clear Completed:
+  deu: Erledigt löschen
+  eng: Clear Completed
+  fra: Clair Terminé
+  ita: Chiaro Completato
+  spa: Claro Completado
+  zho: 清理完毕
 Close GUI Only:
-  zho: "\u53EA\u5173\u95EDGUI"
-  deu: "Nur GUI schlie\xC3\u0178en"
+  deu: Nur GUI schließen
   eng: Close GUI Only
   fra: Fermer uniquement l'interface graphique
   ita: Chiudi solo GUI
-  spa: "Cerrar s\xF3lo el GUI"
+  spa: Cerrar sólo el GUI
+  zho: 只关闭GUI
 CodeCalamity UHD HDR Encoding Guide:
-  zho: "CodeCalamity\u8D85\u9AD8\u6E05HDR\u7F16\u7801\u6307\u5357"
   deu: CodeCalamity UHD HDR-Codierungsanleitung
   eng: CodeCalamity UHD HDR Encoding Guide
   fra: Guide d'encodage CodeCalamity UHD HDR
   ita: Guida alla codifica CodeCalamity UHD HDR
-  spa: "CodeCalamity UHD Gu\xEDa de codificaci\xF3n HDR"
+  spa: CodeCalamity UHD Guía de codificación HDR
+  zho: CodeCalamity超高清HDR编码指南
 Command has completed:
-  zho: "\u6307\u6325\u90E8\u5DF2\u5B8C\u6210"
   deu: Befehl wurde beendet
   eng: Command has completed
-  fra: "Le commandement a termin\xC3\xA9"
+  fra: Le commandement a terminé
   ita: Il comando ha completato
   spa: El comando ha completado
+  zho: 指挥部已完成
 Command worker received request to pause current encode:
-  zho: "\u547D\u4EE4\u5DE5\u4F5C\u8005\u6536\u5230\u6682\u505C\u5F53\u524D\u7F16\u7801\
-    \u7684\u8BF7\u6C42\u3002"
   deu: Command Worker hat Anforderung erhalten, die aktuelle Codierung zu pausieren
   eng: Command worker received request to pause current encode
-  fra: "Un employ\xC3\xA9 du commandement a re\xC3\xA7u une demande de pause de l'encodage\
-    \ en cours"
-  ita: Operatore di comando ha ricevuto la richiesta di mettere in pausa la codifica
-    corrente
-  spa: "El trabajador del comando recibi\xF3 una solicitud para pausar la codificaci\xF3\
-    n actual"
+  fra: Un employé du commandement a reçu une demande de pause de l'encodage en cours
+  ita: Operatore di comando ha ricevuto la richiesta di mettere in pausa la codifica corrente
+  spa: El trabajador del comando recibió una solicitud para pausar la codificación actual
+  zho: 命令工作者收到暂停当前编码的请求。
 Command worker received request to pause encoding after the current item completes:
-  zho: "\u547D\u4EE4\u5DE5\u4F5C\u8005\u6536\u5230\u8BF7\u6C42\uFF0C\u8981\u6C42\u5728\
-    \u5F53\u524D\u9879\u76EE\u5B8C\u6210\u540E\u6682\u505C\u7F16\u7801\u3002"
-  deu: Command-Worker hat Anforderung erhalten, das Encoding nach Abschluss des aktuellen
-    Elements zu pausieren
+  deu: Command-Worker hat Anforderung erhalten, das Encoding nach Abschluss des aktuellen Elements zu pausieren
   eng: Command worker received request to pause encoding after the current item completes
-  fra: "Un membre du personnel de commandement a re\xC3\xA7u une demande de pause\
-    \ d'encodage apr\xC3\xA8s la fin de l'\xC3\xA9l\xC3\xA9ment en cours"
-  ita: L'operatore di comando ha ricevuto la richiesta di mettere in pausa la codifica
-    dopo il completamento della voce corrente
-  spa: "El trabajador del comando recibi\xF3 la solicitud de pausar la codificaci\xF3\
-    n despu\xE9s de que el elemento actual complete"
+  fra: Un membre du personnel de commandement a reçu une demande de pause d'encodage après la fin de l'élément en cours
+  ita: L'operatore di comando ha ricevuto la richiesta di mettere in pausa la codifica dopo il completamento della voce corrente
+  spa: El trabajador del comando recibió la solicitud de pausar la codificación después de que el elemento actual complete
+  zho: 命令工作者收到请求，要求在当前项目完成后暂停编码。
 Command worker received request to resume encoding:
-  zho: "\u6307\u6325\u5458\u6536\u5230\u6062\u590D\u7F16\u7801\u7684\u8BF7\u6C42"
   deu: Befehls-Worker hat Anforderung erhalten, die Kodierung fortzusetzen
   eng: Command worker received request to resume encoding
-  fra: "Le commandant a re\xC3\xA7u une demande de reprise de l'encodage"
+  fra: Le commandant a reçu une demande de reprise de l'encodage
   ita: L'operatore di comando ha ricevuto la richiesta di riprendere la codifica
-  spa: "El comandante recibi\xF3 la solicitud de reanudar la codificaci\xF3n"
+  spa: El comandante recibió la solicitud de reanudar la codificación
+  zho: 指挥员收到恢复编码的请求
 Command worker received request to resume paused encode:
-  zho: "\u6307\u4EE4\u5458\u6536\u5230\u6062\u590D\u6682\u505C\u7F16\u7801\u7684\u8BF7\
-    \u6C42"
   deu: Befehls-Worker hat Anforderung erhalten, die pausierte Codierung fortzusetzen
   eng: Command worker received request to resume paused encode
-  fra: "Un officier de commandement a re\xC3\xA7u une demande de reprise de l'encodage\
-    \ en pause"
+  fra: Un officier de commandement a reçu une demande de reprise de l'encodage en pause
   ita: Operatore di comando ha ricevuto la richiesta di riprendere la pausa codificare
-  spa: "El trabajador del comando recibi\xF3 la solicitud de reanudar la codificaci\xF3\
-    n en pausa"
+  spa: El trabajador del comando recibió la solicitud de reanudar la codificación en pausa
+  zho: 指令员收到恢复暂停编码的请求
+Commands to execute:
+  deu: Befehle zum Ausführen
+  eng: Commands to execute
+  fra: Commandes à exécuter
+  ita: Comandi da eseguire
+  spa: Comandos para ejecutar
+  zho: 要执行的命令
 Conversion:
-  zho: "\u6362\u7B97"
   deu: Konvertierung
   eng: Conversion
   fra: Conversion
   ita: Conversione
-  spa: "Conversi\xF3n"
+  spa: Conversión
+  zho: 换算
 Conversion cancelled, delete incomplete file:
-  zho: "\u53D6\u6D88\u8F6C\u6362\uFF0C\u5220\u9664\u4E0D\u5B8C\u6574\u7684\u6587\u4EF6"
-  deu: "Konvertierung abgebrochen, unvollst\xC3\xA4ndige Datei l\xC3\xB6schen"
+  deu: Konvertierung abgebrochen, unvollständige Datei löschen
   eng: Conversion cancelled, delete incomplete file
-  fra: "Conversion annul\xC3\xA9e, suppression du dossier incomplet"
+  fra: Conversion annulée, suppression du dossier incomplet
   ita: Conversione annullata, cancellare il file incompleto
-  spa: "Conversi\xF3n cancelada, borrar archivo incompleto"
+  spa: Conversión cancelada, borrar archivo incompleto
+  zho: 取消转换，删除不完整的文件
 Convert:
-  zho: "\u8F6C\u6362"
   deu: Konvertieren
   eng: Convert
   fra: Convertir
   ita: Convertire
   spa: Convierte
+  zho: 转换
 Convert BT2020 colorspace into bt709:
-  zho: "\u5C06BT2020\u8272\u5F69\u7A7A\u95F4\u8F6C\u6362\u4E3Abt709\u3002"
   deu: BT2020-Farbraum in bt709 konvertieren
   eng: Convert BT2020 colorspace into bt709
-  fra: "Convertir l'espace colorim\xC3\xA9trique BT2020 en bt709"
+  fra: Convertir l'espace colorimétrique BT2020 en bt709
   ita: Convertire lo spazio di colore BT2020 in bt709
   spa: Convierte el espacio de color BT2020 en bt709
+  zho: 将BT2020色彩空间转换为bt709。
 Copy Chapters:
-  zho: "\u62F7\u8D1D\u7AE0\u8282"
   deu: Kapitel kopieren
   eng: Copy Chapters
   fra: Copier les chapitres
   ita: Copiare i capitoli
-  spa: "Copiar cap\xEDtulos"
+  spa: Copiar capítulos
+  zho: 拷贝章节
+Copy Commands:
+  deu: Befehle kopieren
+  eng: Copy Commands
+  fra: Commandes de copie
+  ita: Comandi di copia
+  spa: Copiar comandos
+  zho: 复制命令
+Copy Cover:
+  deu: Cover kopieren
+  eng: Copy Cover
+  fra: Copie de la couverture
+  ita: Copia di copertina
+  spa: Copia de la portada
+  zho: 封面
+Copy Landscape Cover:
+  deu: Querformatiges Cover kopieren
+  eng: Copy Landscape Cover
+  fra: Copie de la couverture paysage
+  ita: Copiare la copertura del paesaggio
+  spa: Copia de la portada del paisaje
+  zho: 复制景观封面
+Copy Small Cover (no preview):
+  deu: Kleines Cover kopieren (keine Vorschau)
+  eng: Copy Small Cover (no preview)
+  fra: Copie de la petite couverture (pas de prévisualisation)
+  ita: Copia copertina piccola (nessuna anteprima)
+  spa: Copia de la portada pequeña (sin vista previa)
+  zho: 复印小封面（无预览
+Copy Small Landscape Cover  (no preview):
+  deu: Kleines Querformat-Cover kopieren (keine Vorschau)
+  eng: Copy Small Landscape Cover  (no preview)
+  fra: Copie de la petite couverture paysagère (pas de prévisualisation)
+  ita: Copia piccola copertura del paesaggio (nessuna anteprima)
+  spa: Copia de la cubierta de un pequeño paisaje (sin vista previa)
+  zho: 复印小景观封面（无预览
+Copy all commands to the clipboard:
+  deu: Kopiert alle Befehle in die Zwischenablage
+  eng: Copy all commands to the clipboard
+  fra: Copier toutes les commandes dans le presse-papiers
+  ita: Copiare tutti i comandi negli appunti
+  spa: Copia todos los comandos al portapapeles
+  zho: 将所有命令复制到剪贴板
 Copy the chapter markers as is from incoming source.:
-  zho: "\u5C06\u7AE0\u8282\u6807\u8BB0\u6309\u539F\u6837\u4ECE\u8F93\u5165\u6E90\u590D\
-    \u5236\u3002"
   deu: Kopieren Sie die Kapitelmarkierungen so wie sie sind aus der eingehenden Quelle.
   eng: Copy the chapter markers as is from incoming source.
-  fra: "Copiez les marqueurs de chapitre tels quels \xC3\_ partir de la source entrante."
+  fra: Copiez les marqueurs de chapitre tels quels à partir de la source entrante.
   ita: Copiare i marcatori dei capitoli come da sorgente in entrata.
-  spa: "Copie los marcadores de cap\xEDtulo tal como est\xE1n de la fuente entrante."
+  spa: Copie los marcadores de capítulo tal como están de la fuente entrante.
+  zho: 将章节标记按原样从输入源复制。
 Could not load config file!:
-  zho: "\u65E0\u6CD5\u52A0\u8F7D\u914D\u7F6E\u6587\u4EF6!"
   deu: Konnte Konfigurationsdatei nicht laden!
   eng: Could not load config file!
   fra: Impossible de charger le fichier de configuration !
   ita: Impossibile caricare il file di configurazione!
-  spa: "\xA1No pude cargar el archivo de configuraci\xF3n!"
+  spa: ¡No pude cargar el archivo de configuración!
+  zho: 无法加载配置文件!
 Cover:
-  zho: "\u8986\u76D6"
   deu: Cover
   eng: Cover
   fra: Couverture
   ita: Coprire
   spa: Cubre
+  zho: 覆盖
 Create Profile:
-  zho: "\u521B\u5EFA\u6863\u6848"
   deu: Profil erstellen
   eng: Create Profile
-  fra: "Cr\xC3\xA9er un profil"
+  fra: Créer un profil
   ita: Crea profilo
   spa: Crear el perfil
+  zho: 创建档案
+Crop:
+  deu: Zuschneiden
+  eng: Crop
+  fra: Culture
+  ita: Ritaglio
+  spa: Crop
+  zho: 农作物
+Current Profile Settings:
+  deu: Aktuelle Profileinstellungen
+  eng: Current Profile Settings
+  fra: Paramètres du profil actuel
+  ita: Impostazioni del profilo corrente
+  spa: Configuración del perfil actual
+  zho: 当前配置文件设置
 Currently only works for image based subtitles.:
-  zho: "\u76EE\u524D\u53EA\u9002\u7528\u4E8E\u57FA\u4E8E\u56FE\u50CF\u7684\u5B57\u5E55\
-    \u3002"
   deu: Funktioniert derzeit nur bei bildbasierten Untertiteln.
   eng: Currently only works for image based subtitles.
-  fra: "Actuellement, il ne fonctionne que pour les sous-titres bas\xC3\xA9s sur l'image."
+  fra: Actuellement, il ne fonctionne que pour les sous-titres basés sur l'image.
   ita: Attualmente funziona solo per i sottotitoli basati su immagini.
-  spa: "Actualmente s\xF3lo funciona para subt\xEDtulos basados en im\xE1genes."
+  spa: Actualmente sólo funciona para subtítulos basados en imágenes.
+  zho: 目前只适用于基于图像的字幕。
 Custom ffmpeg options:
-  zho: "\u81EA\u5B9A\u4E49ffmpeg\u9009\u9879"
   deu: Benutzerdefinierte ffmpeg-Optionen
   eng: Custom ffmpeg options
-  fra: "Options ffmpeg personnalis\xC3\xA9es"
+  fra: Options ffmpeg personnalisées
   ita: Opzioni ffmpeg personalizzate
   spa: Opciones personalizadas de ffmpeg
+  zho: 自定义ffmpeg选项
 Default 4. This parameter has a quadratic effect on the amount of memory allocated:
-  zho: "\u9ED8\u8BA4\u503C\u4E3A4\u3002\u8FD9\u4E2A\u53C2\u6570\u5BF9\u5206\u914D\u7684\
-    \u5185\u5B58\u91CF\u6709\u4E8C\u6B21\u65B9\u7684\u5F71\u54CD\u3002"
-  deu: Voreinstellung 4. Dieser Parameter hat einen quadratischen Effekt auf die Menge
-    des zugewiesenen Speichers
+  deu: Voreinstellung 4. Dieser Parameter hat einen quadratischen Effekt auf die Menge des zugewiesenen Speichers
   eng: Default 4. This parameter has a quadratic effect on the amount of memory allocated
-  fra: "D\xC3\xA9faut 4. Ce param\xC3\xA8tre a un effet quadratique sur la quantit\xC3\
-    \xA9 de m\xC3\xA9moire allou\xC3\xA9e"
-  ita: "Predefinito 4. Questo parametro ha un effetto quadratico sulla quantit\xC3\
-    \_ di memoria allocata"
-  spa: "Por defecto 4. Este par\xE1metro tiene un efecto cuadr\xE1tico en la cantidad\
-    \ de memoria asignada"
+  fra: Défaut 4. Ce paramètre a un effet quadratique sur la quantité de mémoire allouée
+  ita: Predefinito 4. Questo parametro ha un effetto quadratico sulla quantità di memoria allocata
+  spa: Por defecto 4. Este parámetro tiene un efecto cuadrático en la cantidad de memoria asignada
+  zho: 默认值为4。这个参数对分配的内存量有二次方的影响。
 Default disabled.:
-  zho: "\u9ED8\u8BA4\u7981\u7528\u3002"
-  deu: "Standardm\xC3\xA4\xC3\u0178ig deaktiviert."
+  deu: Standardmäßig deaktiviert.
   eng: Default disabled.
-  fra: "D\xC3\xA9sactiv\xC3\xA9 par d\xC3\xA9faut."
+  fra: Désactivé par défaut.
   ita: Predefinito disabilitato.
   spa: Desactivado por defecto.
+  zho: 默认禁用。
 Default enabled.:
-  zho: "\u9ED8\u8BA4\u542F\u7528\u3002"
-  deu: "Standardm\xC3\xA4\xC3\u0178ig aktiviert."
+  deu: Standardmäßig aktiviert.
   eng: Default enabled.
-  fra: "Activ\xC3\xA9 par d\xC3\xA9faut."
+  fra: Activé par défaut.
   ita: Predefinito abilitato.
   spa: Por defecto habilitado.
+  zho: 默认启用。
 Default is an autodetected count based on the number of CPU cores and whether WPP is enabled or not.:
-  zho: "\u9ED8\u8BA4\u662F\u6839\u636ECPU\u6838\u6570\u548C\u662F\u5426\u542F\u7528\
-    WPP\u800C\u81EA\u52A8\u68C0\u6D4B\u7684\u8BA1\u6570\u3002"
-  deu: Standard ist eine automatisch ermittelte Anzahl basierend auf der Anzahl der
-    CPU-Kerne und ob WPP aktiviert ist oder nicht.
-  eng: Default is an autodetected count based on the number of CPU cores and whether
-    WPP is enabled or not.
-  fra: "La valeur par d\xC3\xA9faut est un comptage autod\xC3\xA9tect\xC3\xA9 bas\xC3\
-    \xA9 sur le nombre de c\xC5\u201Curs CPU et sur l'activation ou non du WPP."
-  ita: "Default \xC3\xA8 un conteggio automatico basato sul numero di core della CPU\
-    \ e sul fatto che WPP sia abilitato o meno."
-  spa: "Por defecto es un conteo autodetectado basado en el n\xFAmero de n\xFAcleos\
-    \ de la CPU y si WPP est\xE1 habilitado o no."
+  deu: Standard ist eine automatisch ermittelte Anzahl basierend auf der Anzahl der CPU-Kerne und ob WPP aktiviert ist oder nicht.
+  eng: Default is an autodetected count based on the number of CPU cores and whether WPP is enabled or not.
+  fra: La valeur par défaut est un comptage autodétecté basé sur le nombre de cœurs CPU et sur l'activation ou non du WPP.
+  ita: Default è un conteggio automatico basato sul numero di core della CPU e sul fatto che WPP sia abilitato o meno.
+  spa: Por defecto es un conteo autodetectado basado en el número de núcleos de la CPU y si WPP está habilitado o no.
+  zho: 默认是根据CPU核数和是否启用WPP而自动检测的计数。
 'Default: AQ enabled with auto-variance':
-  zho: "\u9ED8\u8BA4\u542F\u7528\u3002AQ enabled with auto-variance"
   deu: 'Voreinstellung: AQ aktiviert mit Auto-Varianz'
   eng: 'Default: AQ enabled with auto-variance'
-  fra: "Par d\xC3\xA9faut : AQ activ\xC3\xA9 avec auto-variance"
+  fra: 'Par défaut : AQ activé avec auto-variance'
   ita: 'Default: AQ abilitato con auto-varianza'
   spa: 'Por defecto: AQ habilitado con auto-varianza'
+  zho: 默认启用。AQ enabled with auto-variance
 Deinterlace:
-  zho: "\u975E\u4EA4\u9519\u5F0F"
   deu: Deinterlace
   eng: Deinterlace
   fra: Deinterlace
   ita: Deinterlace
   spa: Deinterlace
+  zho: 非交错式
 Delete:
-  zho: "\u5220\u9664"
-  deu: "L\xC3\xB6schen"
+  deu: Löschen
   eng: Delete
   fra: Supprimer
   ita: Cancellare
   spa: Eliminar
+  zho: 删除
+Delete Current Profile:
+  deu: Aktuelles Profil löschen
+  eng: Delete Current Profile
+  fra: Supprimer le profil actuel
+  ita: Cancellare il profilo corrente
+  spa: Borrar el perfil actual
+  zho: 删除当前资料
 Detecting Interlace:
-  zho: "\u68C0\u6D4B\u9694\u884C\u626B\u63CF"
   deu: Erkennen von Interlace
   eng: Detecting Interlace
-  fra: "D\xC3\xA9tection d'entrelacs"
+  fra: Détection d'entrelacs
   ita: Rilevamento dell'interlacciamento
-  spa: "Detecci\xF3n del entrelazado"
+  spa: Detección del entrelazado
+  zho: 检测隔行扫描
 Determine HDR details:
-  zho: "\u786E\u5B9AHDR\u7EC6\u8282"
   deu: HDR-Details ermitteln
   eng: Determine HDR details
-  fra: "D\xC3\xA9terminer les d\xC3\xA9tails du RDH"
+  fra: Déterminer les détails du RDH
   ita: Determinare i dettagli HDR
   spa: Determinar los detalles del HDR
+  zho: 确定HDR细节
+Disposition:
+  deu: Disposition
+  eng: Disposition
+  fra: Disposition
+  ita: Disposizione
+  spa: Disposición
+  zho: 处置
 Dither:
-  zho: "\u6296\u52A8"
   deu: Dithern
   eng: Dither
   fra: Soit
   ita: Dither
   spa: Dither
+  zho: 抖动
 Dither is an intentionally applied form of noise used to randomize quantization error,:
-  zho: "\u6296\u52A8\u662F\u4E00\u79CD\u6709\u610F\u5E94\u7528\u7684\u566A\u58F0\u5F62\
-    \u5F0F\uFF0C\u7528\u4E8E\u968F\u673A\u91CF\u5316\u8BEF\u5DEE\u3002"
-  deu: Dither ist eine absichtlich angewandte Form des Rauschens, die dazu dient,
-    Quantisierungsfehler zu randomisieren,
-  eng: Dither is an intentionally applied form of noise used to randomize quantization
-    error,
-  fra: "Dither est une forme de bruit appliqu\xC3\xA9e intentionnellement et utilis\xC3\
-    \xA9e pour randomiser l'erreur de quantification,"
-  ita: "Il dither \xC3\xA8 una forma di rumore applicata intenzionalmente usata per\
-    \ randomizzare l'errore di quantizzazione,"
-  spa: "El Dither es una forma de ruido aplicada intencionalmente que se utiliza para\
-    \ aleatorizar el error de cuantificaci\xF3n,"
+  deu: Dither ist eine absichtlich angewandte Form des Rauschens, die dazu dient, Quantisierungsfehler zu randomisieren,
+  eng: Dither is an intentionally applied form of noise used to randomize quantization error,
+  fra: Dither est une forme de bruit appliquée intentionnellement et utilisée pour randomiser l'erreur de quantification,
+  ita: Il dither è una forma di rumore applicata intenzionalmente usata per randomizzare l'errore di quantizzazione,
+  spa: El Dither es una forma de ruido aplicada intencionalmente que se utiliza para aleatorizar el error de cuantificación,
+  zho: 抖动是一种有意应用的噪声形式，用于随机量化误差。
+Download Newest FFmpeg:
+  deu: Neuestes FFmpeg herunterladen
+  eng: Download Newest FFmpeg
+  fra: Télécharger le dernier FFmpeg
+  ita: Scarica il nuovo FFmpeg
+  spa: Descargar el nuevo FFmpeg
+  zho: 下载最新的FFmpeg
 Downloading FFmpeg:
-  zho: "\u4E0B\u8F7DFFmpeg"
   deu: Herunterladen von FFmpeg
   eng: Downloading FFmpeg
-  fra: "T\xC3\xA9l\xC3\xA9charger FFmpeg"
+  fra: Télécharger FFmpeg
   ita: Scaricare FFmpeg
   spa: Descargar FFmpeg
+  zho: 下载FFmpeg
 Dual License:
-  zho: "\u53CC\u8BC1"
   deu: Doppellizenz
   eng: Dual License
   fra: Double licence
   ita: Doppia Licenza
   spa: Licencia doble
+  zho: 双证
 Enable row based multi-threading:
-  zho: "\u542F\u7528\u57FA\u4E8E\u884C\u7684\u591A\u7EBF\u7A0B"
   deu: Zeilenbasiertes Multithreading aktivieren
   eng: Enable row based multi-threading
-  fra: "Activer le multi-threading bas\xC3\xA9 sur les lignes"
+  fra: Activer le multi-threading basé sur les lignes
   ita: Abilita il multi-threading basato sulle righe
   spa: Habilitar el multihilo basado en filas
+  zho: 启用基于行的多线程
 Enable strong intra smoothing for 32x32 intra blocks.:
-  zho: "\u542F\u752832x32\u5185\u90E8\u5757\u7684\u5F3A\u5185\u90E8\u5E73\u6ED1\u3002"
-  deu: "Aktivieren Sie die starke Intra-Gl\xC3\xA4ttung f\xC3\xBCr 32x32-Intra-Bl\xC3\
-    \xB6cke."
+  deu: Aktivieren Sie die starke Intra-Glättung für 32x32-Intra-Blöcke.
   eng: Enable strong intra smoothing for 32x32 intra blocks.
   fra: Permettre un lissage intra fort pour les blocs intra 32x32.
   ita: Abilita una forte lisciatura intra per gli intrablocchi 32x32.
   spa: Habilitar un fuerte alisamiento interno para los bloqueos internos de 32x32.
+  zho: 启用32x32内部块的强内部平滑。
 Enable the yadif filter:
-  zho: "\u542F\u7528yadif\u8FC7\u6EE4\u5668"
   deu: Aktivieren Sie den Yadif-Filter
   eng: Enable the yadif filter
   fra: Activer le filtre yadif
   ita: Attivare il filtro yadif
   spa: Habilitar el filtro yadif
+  zho: 启用yadif过滤器
 Enabled:
-  zho: "\u5DF2\u542F\u7528"
   deu: Aktiviert
   eng: Enabled
-  fra: "Activ\xC3\xA9"
+  fra: Activé
   ita: Abilitato
   spa: Habilitado
+  zho: 已启用
 Enabled automatically when --master-display or --max-cll is specified.:
-  zho: "\u5F53\u6307\u5B9A--master-display\u6216--max-cll\u65F6\u81EA\u52A8\u542F\u7528\
-    \u3002"
-  deu: Wird automatisch aktiviert, wenn --master-display oder --max-cll angegeben
-    wird.
+  deu: Wird automatisch aktiviert, wenn --master-display oder --max-cll angegeben wird.
   eng: Enabled automatically when --master-display or --max-cll is specified.
-  fra: "Activ\xC3\xA9 automatiquement lorsque --master-display ou --max-cll est sp\xC3\
-    \xA9cifi\xC3\xA9."
+  fra: Activé automatiquement lorsque --master-display ou --max-cll est spécifié.
   ita: Abilitato automaticamente quando viene specificato --master-display o --max-cll.
-  spa: "Se activa autom\xE1ticamente cuando se especifica --master-display o --max-cll."
+  spa: Se activa automáticamente cuando se especifica --master-display o --max-cll.
+  zho: 当指定--master-display或--max-cll时自动启用。
 Enables the yadif filter.:
-  zho: "\u542F\u7528yadif\u8FC7\u6EE4\u5668\u3002"
   deu: Aktiviert den Yadif-Filter.
   eng: Enables the yadif filter.
   fra: Active le filtre yadif.
   ita: Abilita il filtro yadif.
   spa: Habilita el filtro yadif.
+  zho: 启用yadif过滤器。
 Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.:
-  zho: "\u7ED5\u8FC7\u7F29\u653E\u3001\u53D8\u6362\u3001\u91CF\u5316\u548C\u73AF\u5185\
-    \u8FC7\u6EE4\uFF0C\u542F\u7528\u771F\u6B63\u7684\u65E0\u635F\u7F16\u7801\u3002"
-  deu: "Erm\xC3\xB6glicht echte verlustfreie Kodierung unter Umgehung von Skalierung,\
-    \ Transformation, Quantisierung und In-Loop-Filterung."
-  eng: Enables true lossless coding by bypassing scaling, transform, quantization
-    and in-loop filtering.
-  fra: "Active le v\xC3\xA9ritable codage sans perte en contournant la mise \xC3\_\
-    \ l'\xC3\xA9chelle, la transformation, la quantification et le filtrage en boucle."
-  ita: Abilita la vera codifica senza perdita di dati bypassando la scalatura, la
-    trasformazione, la quantizzazione e il filtraggio in loop.
-  spa: "Habilita la verdadera codificaci\xF3n sin p\xE9rdidas evitando el escalado,\
-    \ la transformaci\xF3n, la cuantificaci\xF3n y el filtrado en bucle."
+  deu: Ermöglicht echte verlustfreie Kodierung unter Umgehung von Skalierung, Transformation, Quantisierung und In-Loop-Filterung.
+  eng: Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.
+  fra: Active le véritable codage sans perte en contournant la mise à l'échelle, la transformation, la quantification et le filtrage en boucle.
+  ita: Abilita la vera codifica senza perdita di dati bypassando la scalatura, la trasformazione, la quantizzazione e il filtraggio in loop.
+  spa: Habilita la verdadera codificación sin pérdidas evitando el escalado, la transformación, la cuantificación y el filtrado en bucle.
+  zho: 绕过缩放、变换、量化和环内过滤，启用真正的无损编码。
 Enabling cover thumbnails on your system:
-  zho: "\u5728\u4F60\u7684\u7CFB\u7EDF\u4E0A\u542F\u7528\u5C01\u9762\u7F29\u7565\u56FE\
-    \u3002"
   deu: Aktivieren von Cover-Miniaturansichten auf Ihrem System
   eng: Enabling cover thumbnails on your system
-  fra: "Activation des vignettes de couverture sur votre syst\xC3\xA8me"
+  fra: Activation des vignettes de couverture sur votre système
   ita: Abilita le miniature del coperchio del sistema
   spa: Habilitando las miniaturas de la cubierta en su sistema
+  zho: 在你的系统上启用封面缩略图。
 Encoder:
-  zho: "\u7F16\u7801\u5668"
   deu: Codierer
   eng: Encoder
   fra: Encodeur
   ita: Encoder
   spa: Codificador
+  zho: 编码器
+Encoder Output:
+  deu: Encoder-Ausgabe
+  eng: Encoder Output
+  fra: Sortie de l'encodeur
+  ita: Uscita encoder
+  spa: Salida del codificador
+  zho: 编码器输出
 Encoding Queue:
-  zho: "\u7F16\u7801\u961F\u5217"
   deu: Kodierungswarteschlange
   eng: Encoding Queue
   fra: File d'attente d'encodage
   ita: Coda di codifica
-  spa: "Cola de codificaci\xF3n"
+  spa: Cola de codificación
+  zho: 编码队列
 Encoding Status:
-  zho: "\u7F16\u7801\u72B6\u6001"
   deu: Kodierungsstatus
   eng: Encoding Status
   fra: Statut d'encodage
   ita: Stato di codifica
-  spa: "Estado de la codificaci\xF3n"
+  spa: Estado de la codificación
+  zho: 编码状态
 Encoding command:
-  zho: "\u7F16\u7801\u547D\u4EE4"
   deu: Kodierungsbefehl
   eng: Encoding command
   fra: Commande d'encodage
   ita: Comando di codifica
-  spa: "Comando de codificaci\xF3n"
+  spa: Comando de codificación
+  zho: 编码命令
 Encoding complete:
-  zho: "\u7F16\u7801\u5B8C\u6210"
   deu: Kodierung abgeschlossen
   eng: Encoding complete
   fra: Encodage complet
   ita: Codifica completa
-  spa: "Codificaci\xF3n completa"
+  spa: Codificación completa
+  zho: 编码完成
+End:
+  deu: Beenden
+  eng: End
+  fra: Fin
+  ita: Fine
+  spa: Fin
+  zho: 结束
 Enforce an encode profile:
-  zho: "\u6267\u884C\u7F16\u7801\u914D\u7F6E\u6587\u4EF6"
   deu: Erzwingen eines Kodierprofils
   eng: Enforce an encode profile
-  fra: "Faire appliquer un profil cod\xC3\xA9"
+  fra: Faire appliquer un profil codé
   ita: Applicare un profilo di codifica
-  spa: "Hacer cumplir un perfil de codificaci\xF3n"
+  spa: Hacer cumplir un perfil de codificación
+  zho: 执行编码配置文件
 Error:
-  zho: "\u9519\u8BEF"
   deu: Fehler
   eng: Error
   fra: Erreur
   ita: Errore
   spa: Error
+  zho: 错误
 Error Updating Thumbnail:
-  zho: "\u7F29\u7565\u56FE\u66F4\u65B0\u9519\u8BEF"
   deu: Fehler beim Aktualisieren des Vorschaubildes
   eng: Error Updating Thumbnail
-  fra: "Erreur de mise \xC3\_ jour de la vignette"
+  fra: Erreur de mise à jour de la vignette
   ita: Errore aggiornamento miniatura
-  spa: "Error de actualizaci\xF3n de la miniatura"
+  spa: Error de actualización de la miniatura
+  zho: 缩略图更新错误
 Error detected while converting:
-  zho: "\u8F6C\u6362\u65F6\u68C0\u6D4B\u5230\u9519\u8BEF"
   deu: Fehler beim Konvertieren erkannt
   eng: Error detected while converting
-  fra: "Erreur d\xC3\xA9tect\xC3\xA9e lors de la conversion"
+  fra: Erreur détectée lors de la conversion
   ita: Errore rilevato durante la conversione
-  spa: "Error detectado durante la conversi\xF3n"
+  spa: Error detectado durante la conversión
+  zho: 转换时检测到错误
 Estimated file size based on bitrate:
-  zho: "\u57FA\u4E8E\u6BD4\u7279\u7387\u7684\u4F30\u8BA1\u6587\u4EF6\u5927\u5C0F"
-  deu: "Gesch\xC3\xA4tzte Dateigr\xC3\xB6\xC3\u0178e basierend auf der Bitrate"
+  deu: Geschätzte Dateigröße basierend auf der Bitrate
   eng: Estimated file size based on bitrate
-  fra: "Estimation de la taille du fichier en fonction du d\xC3\xA9bit binaire"
+  fra: Estimation de la taille du fichier en fonction du débit binaire
   ita: Dimensione stimata del file in base al bitrate
-  spa: "Tama\xF1o estimado del archivo basado en la tasa de bits"
+  spa: Tamaño estimado del archivo basado en la tasa de bits
+  zho: 基于比特率的估计文件大小
 Estimated time left for current command:
-  zho: "\u5F53\u524D\u547D\u4EE4\u7684\u4F30\u8BA1\u5269\u4F59\u65F6\u95F4"
-  deu: "Gesch\xC3\xA4tzte verbleibende Zeit f\xC3\xBCr den aktuellen Befehl"
+  deu: Geschätzte verbleibende Zeit für den aktuellen Befehl
   eng: Estimated time left for current command
   fra: Estimation du temps restant pour le commandement en cours
   ita: Tempo stimato rimasto per il comando corrente
   spa: Tiempo estimado para el comando actual
+  zho: 当前命令的估计剩余时间
+Exit:
+  deu: Beenden
+  eng: Exit
+  fra: Sortie
+  ita: Uscita
+  spa: Salga de
+  zho: 退出
+Exit application:
+  deu: Anwendung beenden
+  eng: Exit application
+  fra: Demande de sortie
+  ita: Applicazione di uscita
+  spa: Aplicación de salida
+  zho: 退出应用
 Extra flags or options, cannot modify existing settings:
-  zho: "\u989D\u5916\u7684\u6807\u5FD7\u6216\u9009\u9879\uFF0C\u4E0D\u80FD\u4FEE\u6539\
-    \u73B0\u6709\u7684\u8BBE\u7F6E\u3002"
-  deu: "Zus\xC3\xA4tzliche Flags oder Optionen, kann bestehende Einstellungen nicht\
-    \ \xC3\xA4ndern"
+  deu: Zusätzliche Flags oder Optionen, kann bestehende Einstellungen nicht ändern
   eng: Extra flags or options, cannot modify existing settings
-  fra: "Drapeaux ou options suppl\xC3\xA9mentaires, ne peuvent pas modifier les param\xC3\
-    \xA8tres existants"
+  fra: Drapeaux ou options supplémentaires, ne peuvent pas modifier les paramètres existants
   ita: I flag o le opzioni extra, non possono modificare le impostazioni esistenti
   spa: Las banderas u opciones adicionales, no pueden modificar los ajustes existentes
+  zho: 额外的标志或选项，不能修改现有的设置。
 Extract covers:
-  zho: "\u6458\u5F55\u5185\u5BB9"
   deu: Extrahieren deckt ab
   eng: Extract covers
   fra: Extrait couvre
   ita: Coperture per l'estrazione
   spa: Extraer las cubiertas
+  zho: 摘录内容
 FFMPEG AV1 Encoding Guide:
-  zho: "FFMPEG AV1\u7F16\u7801\u6307\u5357"
   deu: FFMPEG AV1-Kodierungsleitfaden
   eng: FFMPEG AV1 Encoding Guide
   fra: Guide d'encodage FFMPEG AV1
   ita: Guida alla codifica FFMPEG AV1
-  spa: "Gu\xEDa de codificaci\xF3n del FFMPEG AV1"
+  spa: Guía de codificación del FFMPEG AV1
+  zho: FFMPEG AV1编码指南
 FFMPEG AVC / H.264 Encoding Guide:
-  zho: "FFMPEG AVC / H.264 \u7F16\u7801\u6307\u5357"
   deu: FFMPEG AVC / H.264 Kodierungsleitfaden
   eng: FFMPEG AVC / H.264 Encoding Guide
   fra: FFMPEG AVC / Guide d'encodage H.264
   ita: Guida alla codifica FFMPEG AVC / H.264
-  spa: "Gu\xEDa de codificaci\xF3n FFMPEG AVC / H.264"
+  spa: Guía de codificación FFMPEG AVC / H.264
+  zho: FFMPEG AVC / H.264 编码指南
 FFMPEG HEVC / H.265 Encoding Guide:
-  zho: "FFMPEG HEVC / H.265\u7F16\u7801\u6307\u5357"
   deu: FFMPEG HEVC / H.265 Kodierungsleitfaden
   eng: FFMPEG HEVC / H.265 Encoding Guide
   fra: FFMPEG HEVC / Guide d'encodage H.265
   ita: Guida alla codifica FFMPEG HEVC / H.265
-  spa: "Gu\xEDa de codificaci\xF3n FFMPEG HEVC / H.265"
+  spa: Guía de codificación FFMPEG HEVC / H.265
+  zho: FFMPEG HEVC / H.265编码指南
 FFMPEG VP9 Encoding Guide:
-  zho: "FFMPEG VP9\u7F16\u7801\u6307\u5357"
   deu: FFMPEG VP9-Encoding-Anleitung
   eng: FFMPEG VP9 Encoding Guide
   fra: FFMPEG Guide d'encodage VP9
   ita: Guida alla codifica FFMPEG VP9
-  spa: "Gu\xEDa de codificaci\xF3n del FFMPEG VP9"
+  spa: Guía de codificación del FFMPEG VP9
+  zho: FFMPEG VP9编码指南
 FFmpeg updated - Please restart FastFlix:
-  zho: "FFmpeg\u66F4\u65B0--\u8BF7\u91CD\u65B0\u542F\u52A8FastFlix\u3002"
   deu: FFmpeg aktualisiert - Bitte starten Sie FastFlix neu
   eng: FFmpeg updated - Please restart FastFlix
-  fra: "FFmpeg mis \xC3\_ jour - Veuillez red\xC3\xA9marrer FastFlix"
+  fra: FFmpeg mis à jour - Veuillez redémarrer FastFlix
   ita: FFmpeg aggiornato - Si prega di riavviare FastFlix
   spa: FFmpeg actualizado - Por favor, reinicie FastFlix
+  zho: FFmpeg更新--请重新启动FastFlix。
 FPS:
-  zho: FPS
   deu: FPS
   eng: FPS
   fra: FPS
   ita: FPS
   spa: FPS
+  zho: FPS
 For lossless, this is a size/speed tradeoff.:
-  zho: "\u5BF9\u4E8E\u65E0\u635F\uFF0C\u8FD9\u662F\u4E00\u4E2A\u5927\u5C0F/\u901F\u5EA6\
-    \u7684\u6743\u8861\u3002"
-  deu: "Bei verlustfreier Encodierung ist dies ein Kompromiss zwischen Gr\xC3\xB6\xC3\
-    \u0178e und Geschwindigkeit."
+  deu: Bei verlustfreier Encodierung ist dies ein Kompromiss zwischen Größe und Geschwindigkeit.
   eng: For lossless, this is a size/speed tradeoff.
-  fra: "Pour les moins fortun\xC3\xA9s, il s'agit d'un compromis taille/vitesse."
-  ita: "Per i lossless, questo \xC3\xA8 un compromesso tra dimensioni e velocit\xC3\
-    \_."
-  spa: "Para los que no tienen p\xE9rdidas, esto es un intercambio de tama\xF1o/velocidad."
+  fra: Pour les moins fortunés, il s'agit d'un compromis taille/vitesse.
+  ita: Per i lossless, questo è un compromesso tra dimensioni e velocità.
+  spa: Para los que no tienen pérdidas, esto es un intercambio de tamaño/velocidad.
+  zho: 对于无损，这是一个大小/速度的权衡。
 For lossy, this is a quality/speed tradeoff.:
-  zho: "\u5BF9\u4E8E\u65E0\u635F\uFF0C\u8FD9\u662F\u4E00\u4E2A\u8D28\u91CF/\u901F\u5EA6\
-    \u7684\u6743\u8861\u3002"
-  deu: "F\xC3\xBCr verlustbehaftet ist dies ein Kompromiss zwischen Qualit\xC3\xA4\
-    t und Geschwindigkeit."
+  deu: Für verlustbehaftet ist dies ein Kompromiss zwischen Qualität und Geschwindigkeit.
   eng: For lossy, this is a quality/speed tradeoff.
-  fra: "Pour les perdants, il s'agit d'un compromis qualit\xC3\xA9/vitesse."
-  ita: "Per le perdite, si tratta di un compromesso qualit\xC3\_/velocit\xC3\_."
-  spa: "Para los que tienen p\xE9rdidas, es una compensaci\xF3n de calidad/velocidad."
+  fra: Pour les perdants, il s'agit d'un compromis qualité/vitesse.
+  ita: Per le perdite, si tratta di un compromesso qualità/velocità.
+  spa: Para los que tienen pérdidas, es una compensación de calidad/velocidad.
+  zho: 对于无损，这是一个质量/速度的权衡。
 Force HDR10 signaling:
-  zho: "\u5F3A\u5236HDR10\u4FE1\u53F7\u4F20\u8F93"
   deu: HDR10-Signalisierung erzwingen
   eng: Force HDR10 signaling
   fra: Forcer la signalisation HDR10
   ita: Forza segnalazione HDR10
-  spa: "Se\xF1alizaci\xF3n de la fuerza HDR10"
+  spa: Señalización de la fuerza HDR10
+  zho: 强制HDR10信号传输
 Frame Threads:
-  zho: "\u6846\u7EBF"
   deu: Frame-Threads
   eng: Frame Threads
   fra: Fils de trame
   ita: Filettature del telaio
   spa: Hilos del marco
+  zho: 框线
 Frames Per Second:
-  zho: "\u6BCF\u79D2\u5E27\u6570"
   deu: Frames pro Sekunde
   eng: Frames Per Second
   fra: Images par seconde
   ita: Cornici al secondo
   spa: Cuadros por segundo
+  zho: 每秒帧数
 Gather FFmpeg audio encoders:
-  zho: "\u6536\u96C6FFmpeg\u97F3\u9891\u7F16\u7801\u5668"
   deu: Sammeln von FFmpeg-Audio-Encodern
   eng: Gather FFmpeg audio encoders
   fra: Rassembler les encodeurs audio FFmpeg
   ita: Raccogliere gli encoder audio FFmpeg
-  spa: "Re\xFAne los codificadores de audio FFmpeg"
+  spa: Reúne los codificadores de audio FFmpeg
+  zho: 收集FFmpeg音频编码器
 Gather FFmpeg version:
-  zho: "\u6536\u96C6FFmpeg\u7248\u672C"
   deu: Sammeln Sie FFmpeg-Version
   eng: Gather FFmpeg version
   fra: Rassembler la version FFmpeg
   ita: Raccogliere la versione FFmpeg
-  spa: "Reunir la versi\xF3n FFmpeg"
+  spa: Reunir la versión FFmpeg
+  zho: 收集FFmpeg版本
 Google's VP9 HDR Encoding Guide:
-  zho: "\u8C37\u6B4C\u7684VP9 HDR\u7F16\u7801\u6307\u5357"
   deu: VP9-HDR-Kodierungsanleitung von Google
   eng: Google's VP9 HDR Encoding Guide
   fra: Guide d'encodage HDR VP9 de Google
   ita: Guida alla codifica HDR VP9 di Google
-  spa: "Gu\xEDa de codificaci\xF3n HDR VP9 de Google"
+  spa: Guía de codificación HDR VP9 de Google
+  zho: 谷歌的VP9 HDR编码指南
 HDR10 Optimizations:
-  zho: "HDR10\u4F18\u5316"
   deu: HDR10-Optimierungen
   eng: HDR10 Optimizations
   fra: Optimisations du HDR10
   ita: Ottimizzazioni HDR10
   spa: Optimizaciones del HDR10
+  zho: HDR10优化
 HDR10+ Metadata:
-  zho: "HDR10+\u5143\u6570\u636E"
   deu: HDR10+-Metadaten
   eng: HDR10+ Metadata
-  fra: "M\xC3\xA9tadonn\xC3\xA9es HDR10"
+  fra: Métadonnées HDR10
   ita: HDR10+ Metadati
   spa: Metadatos HDR10+
+  zho: HDR10+元数据
 HDR10+ Metadata Extraction:
-  zho: "HDR10+\u5143\u6570\u636E\u63D0\u53D6"
   deu: HDR10+-Metadaten-Extraktion
   eng: HDR10+ Metadata Extraction
-  fra: "Extraction de m\xC3\xA9tadonn\xC3\xA9es HDR10+."
+  fra: Extraction de métadonnées HDR10+.
   ita: Estrazione di metadati HDR10+
-  spa: "Extracci\xF3n de metadatos HDR10+"
+  spa: Extracción de metadatos HDR10+
+  zho: HDR10+元数据提取
 HDR10+ Optimizations:
-  zho: "HDR10+\u4F18\u5316"
   deu: HDR10+-Optimierungen
   eng: HDR10+ Optimizations
   fra: Optimisations du HDR10
   ita: Ottimizzazioni HDR10+
   spa: Optimizaciones del HDR10+
+  zho: HDR10+优化
 Have to select a video first:
-  zho: "\u8981\u5148\u9009\u62E9\u4E00\u4E2A\u89C6\u9891"
-  deu: "Sie m\xC3\xBCssen zuerst ein Video ausw\xC3\xA4hlen"
+  deu: Sie müssen zuerst ein Video auswählen
   eng: Have to select a video first
-  fra: "Il faut d'abord s\xC3\xA9lectionner une vid\xC3\xA9o"
+  fra: Il faut d'abord sélectionner une vidéo
   ita: Devi prima selezionare un video
   spa: Primero hay que seleccionar un video.
+  zho: 要先选择一个视频
+Height:
+  deu: Höhe
+  eng: Height
+  fra: Hauteur
+  ita: Altezza
+  spa: Altura
+  zho: 高度
+Help:
+  deu: Hilfe
+  eng: Help
+  fra: Aide
+  ita: Aiuto
+  spa: Ayuda
+  zho: 帮忙
+Hide NAL unit messages:
+  deu: NAL-Geräte-Meldungen ausblenden
+  eng: Hide NAL unit messages
+  fra: Cacher les messages de l'unité NAL
+  ita: Nascondere i messaggi delle unità NAL
+  spa: Ocultar los mensajes de la unidad NAL
+  zho: 隐藏NAL单元信息
+Horizontal Flip:
+  deu: Horizontal Flip
+  eng: Horizontal Flip
+  fra: Renvoi horizontal
+  ita: Capovolgimento orizzontale
+  spa: Volteo horizontal
+  zho: 水平翻转
 Initialize Encoders:
-  zho: "\u521D\u59CB\u5316\u7F16\u7801\u5668"
   deu: Kodierer initialisieren
   eng: Initialize Encoders
   fra: Initialiser les codeurs
   ita: Inizializzare gli encoder
   spa: Iniciar los codificadores
+  zho: 初始化编码器
 Intra-Encoding:
-  zho: "\u5185\u90E8\u7F16\u7801"
   deu: Intra-Encoding
   eng: Intra-Encoding
   fra: Intra-encodage
   ita: Intra-Encoding
-  spa: "Intracodificaci\xF3n"
+  spa: Intracodificación
+  zho: 内部编码
 Intra-Smoothing:
-  zho: "\u5185\u90E8\u5E73\u6ED1"
-  deu: "Intra-Gl\xC3\xA4ttung"
+  deu: Intra-Glättung
   eng: Intra-Smoothing
   fra: Intra-Lissage
   ita: Intra-Smoothing
   spa: Intra-Smoothing
+  zho: 内部平滑
 Intra-refresh:
-  zho: "\u5237\u65B0\u4E2D"
   deu: Intra-Auffrischung
   eng: Intra-refresh
   fra: Intra-refresh
   ita: Intra-refresh
   spa: Intra-refresco
+  zho: 刷新中
 Invalid Crop:
-  zho: "\u65E0\u6548\u4F5C\u7269"
-  deu: "Ung\xC3\xBCltiger Zuschnitt"
+  deu: Ungültiger Zuschnitt
   eng: Invalid Crop
-  fra: "R\xC3\xA9colte non valable"
+  fra: Récolte non valable
   ita: Raccolto non valido
-  spa: "Cultivo inv\xE1lido"
+  spa: Cultivo inválido
+  zho: 无效作物
 It is recommended that AQ-mode be enabled along with this feature:
-  zho: "\u5EFA\u8BAE\u5C06AQ\u6A21\u5F0F\u4E0E\u8BE5\u529F\u80FD\u4E00\u8D77\u542F\
-    \u7528\u3002"
-  deu: Es wird empfohlen, dass der AQ-Modus zusammen mit dieser Funktion aktiviert
-    wird
+  deu: Es wird empfohlen, dass der AQ-Modus zusammen mit dieser Funktion aktiviert wird
   eng: It is recommended that AQ-mode be enabled along with this feature
-  fra: "Il est recommand\xC3\xA9 d'activer le mode AQ en m\xC3\xAAme temps que cette\
-    \ fonction"
-  ita: "Si raccomanda di abilitare la modalit\xC3\_ AQ insieme a questa funzione"
-  spa: "Se recomienda que el modo AQ se active junto con esta funci\xF3n"
+  fra: Il est recommandé d'activer le mode AQ en même temps que cette fonction
+  ita: Si raccomanda di abilitare la modalità AQ insieme a questa funzione
+  spa: Se recomienda que el modo AQ se active junto con esta función
+  zho: 建议将AQ模式与该功能一起启用。
 It saves a few bits and can help performance in the client's tonemapper.:
-  zho: "\u5B83\u53EF\u4EE5\u8282\u7701\u4E00\u4E9B\u4F4D\uFF0C\u5E76\u4E14\u53EF\u4EE5\
-    \u5E2E\u52A9\u5BA2\u6237\u673A\u7684tonemapper\u7684\u6027\u80FD\u3002"
   deu: Er spart ein paar Bits und kann die Leistung im Tonemapper des Clients verbessern.
   eng: It saves a few bits and can help performance in the client's tonemapper.
-  fra: "Il permet d'\xC3\xA9conomiser quelques bits et peut aider \xC3\_ am\xC3\xA9\
-    liorer les performances de la machine \xC3\_ caf\xC3\xA9 du client."
-  ita: "Consente di risparmiare qualche bit e pu\xC3\xB2 aiutare le prestazioni nel\
-    \ tonemapper del cliente."
-  spa: Ahorra unos pocos bits y puede ayudar al rendimiento en el mapa de tonos del
-    cliente.
+  fra: Il permet d'économiser quelques bits et peut aider à améliorer les performances de la machine à café du client.
+  ita: Consente di risparmiare qualche bit e può aiutare le prestazioni nel tonemapper del cliente.
+  spa: Ahorra unos pocos bits y puede ayudar al rendimiento en el mapa de tonos del cliente.
+  zho: 它可以节省一些位，并且可以帮助客户机的tonemapper的性能。
 Keep:
-  zho: "\u4FDD\u6301"
   deu: beibehalten
   eng: Keep
   fra: Conservez
   ita: Conservare
-  spa: "Mant\xE9ngase en"
+  spa: Manténgase en
+  zho: 保持
 Keep FastFlix Open:
-  zho: "\u4FDD\u6301FastFlix\u5F00\u653E"
   deu: FastFlix offen halten
   eng: Keep FastFlix Open
   fra: Gardez FastFlix ouvert
   ita: Tenere aperto FastFlix
   spa: Mantener FastFlix abierto
+  zho: 保持FastFlix开放
+Keep aspect ratio:
+  deu: Seitenverhältnis beibehalten
+  eng: Keep aspect ratio
+  fra: Conserver le rapport d'aspect
+  ita: Mantenere il rapporto di aspetto
+  spa: Mantener la relación de aspecto
+  zho: 保持长宽比
 LICENSES:
-  zho: "\u8BB8\u53EF\u8BC1"
   deu: LIZENZEN
   eng: LICENSES
   fra: LICENCES
   ita: LICENZE
   spa: LICENCIAS
+  zho: 许可证
+Landscape Cover:
+  deu: Abdeckung im Querformat
+  eng: Landscape Cover
+  fra: Couverture du paysage
+  ita: Copertura del paesaggio
+  spa: Cubierta del paisaje
+  zho: 景观覆盖
 Language:
-  zho: "\u8BED\u79CD"
   deu: Sprache
   eng: Language
   fra: Langue
   ita: Lingua
   spa: Idioma
+  zho: 语种
+Left:
+  deu: Links
+  eng: Left
+  fra: Gauche
+  ita: Sinistra
+  spa: Izquierda
+  zho: 左边
 Log2 of number of tile columns to encode faster (lesser quality):
-  zho: "\u74F7\u7816\u5217\u6570\u7684\u5BF9\u65702\uFF0C\u4EE5\u4FBF\u66F4\u5FEB\u5730\
-    \u8FDB\u884C\u7F16\u7801\uFF08\u8D28\u91CF\u8F83\u4F4E\uFF09\u3002"
-  deu: "Log2 der Anzahl der Kachelspalten, um schneller zu kodieren (geringere Qualit\xC3\
-    \xA4t)"
+  deu: Log2 der Anzahl der Kachelspalten, um schneller zu kodieren (geringere Qualität)
   eng: Log2 of number of tile columns to encode faster (lesser quality)
-  fra: "Log2 du nombre de colonnes de tuiles pour un encodage plus rapide (qualit\xC3\
-    \xA9 moindre)"
-  ita: "Log2 del numero di colonne di tegole da codificare pi\xC3\xB9 velocemente\
-    \ (qualit\xC3\_ inferiore)"
-  spa: "Log2 del n\xFAmero de columnas de azulejos para codificar m\xE1s r\xE1pido\
-    \ (menor calidad)"
+  fra: Log2 du nombre de colonnes de tuiles pour un encodage plus rapide (qualité moindre)
+  ita: Log2 del numero di colonne di tegole da codificare più velocemente (qualità inferiore)
+  spa: Log2 del número de columnas de azulejos para codificar más rápido (menor calidad)
+  zho: 瓷砖列数的对数2，以便更快地进行编码（质量较低）。
 Log2 of number of tile rows to encode faster (lesser quality):
-  zho: "\u74F7\u7816\u884C\u6570\u7684\u5BF9\u65702\uFF0C\u4EE5\u4FBF\u66F4\u5FEB\u5730\
-    \u8FDB\u884C\u7F16\u7801\uFF08\u8D28\u91CF\u8F83\u4F4E\uFF09\u3002"
-  deu: "Log2 der Anzahl der Kachelzeilen, um schneller zu kodieren (geringere Qualit\xC3\
-    \xA4t)"
+  deu: Log2 der Anzahl der Kachelzeilen, um schneller zu kodieren (geringere Qualität)
   eng: Log2 of number of tile rows to encode faster (lesser quality)
-  fra: "Log2 du nombre de rang\xC3\xA9es de tuiles pour un encodage plus rapide (qualit\xC3\
-    \xA9 moindre)"
-  ita: "Log2 del numero di file di tegole da codificare pi\xC3\xB9 velocemente (qualit\xC3\
-    \_ inferiore)"
-  spa: "Log2 del n\xFAmero de filas de azulejos para codificar m\xE1s r\xE1pido (menor\
-    \ calidad)"
+  fra: Log2 du nombre de rangées de tuiles pour un encodage plus rapide (qualité moindre)
+  ita: Log2 del numero di file di tegole da codificare più velocemente (qualità inferiore)
+  spa: Log2 del número de filas de azulejos para codificar más rápido (menor calidad)
+  zho: 瓷砖行数的对数2，以便更快地进行编码（质量较低）。
 Lossless encodes implicitly have no rate control, all rate control options are ignored.:
-  zho: "\u65E0\u635F\u7F16\u7801\u9690\u5F0F\u5730\u6CA1\u6709\u901F\u7387\u63A7\u5236\
-    \uFF0C\u6240\u6709\u901F\u7387\u63A7\u5236\u9009\u9879\u90FD\u88AB\u5FFD\u7565\
-    \u3002"
-  deu: Verlustfreie Kodierungen haben implizit keine Ratenkontrolle, alle Optionen
-    zur Ratenkontrolle werden ignoriert.
-  eng: Lossless encodes implicitly have no rate control, all rate control options
-    are ignored.
-  fra: "Les codes sans perte n'ont implicitement aucun contr\xC3\xB4le de taux, toutes\
-    \ les options de contr\xC3\xB4le de taux sont ignor\xC3\xA9es."
-  ita: Le codifiche lossless non hanno implicitamente alcun controllo del tasso, tutte
-    le opzioni di controllo del tasso sono ignorate.
-  spa: "Los c\xF3digos sin p\xE9rdidas impl\xEDcitamente no tienen control de la tasa,\
-    \ todas las opciones de control de la tasa son ignoradas."
+  deu: Verlustfreie Kodierungen haben implizit keine Ratenkontrolle, alle Optionen zur Ratenkontrolle werden ignoriert.
+  eng: Lossless encodes implicitly have no rate control, all rate control options are ignored.
+  fra: Les codes sans perte n'ont implicitement aucun contrôle de taux, toutes les options de contrôle de taux sont ignorées.
+  ita: Le codifiche lossless non hanno implicitamente alcun controllo del tasso, tutte le opzioni di controllo del tasso sono ignorate.
+  spa: Los códigos sin pérdidas implícitamente no tienen control de la tasa, todas las opciones de control de la tasa son ignoradas.
+  zho: 无损编码隐式地没有速率控制，所有速率控制选项都被忽略。
 Max Muxing Queue Size:
-  zho: "\u6700\u5927\u6DF7\u53E0\u961F\u5217\u5927\u5C0F"
-  deu: "Max. Gr\xC3\xB6\xC3\u0178e der Muxing-Warteschlange"
+  deu: Max. Größe der Muxing-Warteschlange
   eng: Max Muxing Queue Size
   fra: Taille maximale de la file d'attente
   ita: Dimensione massima della coda di Muxing
-  spa: "Tama\xF1o m\xE1ximo de la cola Muxing"
+  spa: Tamaño máximo de la cola Muxing
+  zho: 最大混叠队列大小
 Maximum B frames:
-  zho: "\u6700\u5927B\u5E27"
   deu: Maximale B-Frames
   eng: Maximum B frames
   fra: Cadres B maximum
   ita: Telaio massimo B
-  spa: "M\xE1ximo de cuadros B"
+  spa: Máximo de cuadros B
+  zho: 最大B帧
 'Maximum number of consecutive b-frames. ':
-  zho: "\u8FDE\u7EEDb\u5E27\u7684\u6700\u5927\u6570\u91CF\u3002"
   deu: 'Maximale Anzahl von aufeinanderfolgenden B-Frames. '
   eng: 'Maximum number of consecutive b-frames. '
-  fra: "Nombre maximum d'images B cons\xC3\xA9cutives. "
+  fra: "Nombre maximum d'images B consécutives. "
   ita: 'Numero massimo di b-frame consecutivi. '
-  spa: "N\xFAmero m\xE1ximo de fotogramas B consecutivos. "
+  spa: 'Número máximo de fotogramas B consecutivos. '
+  zho: 连续b帧的最大数量。
 New Profile:
-  zho: "\u65B0\u6863\u6848"
   deu: Neues Profil
   eng: New Profile
   fra: Nouveau profil
   ita: Nuovo profilo
   spa: Nuevo perfil
+  zho: 新档案
 No Downmix:
-  zho: "\u6CA1\u6709\u6DF7\u97F3"
   deu: Kein Downmix
   eng: No Downmix
   fra: Pas de Downmix
   ita: No Downmix
   spa: No hay Downmix
+  zho: 没有混音
+No Flip:
+  deu: Kein Flip
+  eng: No Flip
+  fra: Pas de retournement
+  ita: Senza capovolgere
+  spa: No hay vuelta atrás
+  zho: 不翻转
+No Rotation:
+  deu: Keine Drehung
+  eng: No Rotation
+  fra: Pas de rotation
+  ita: Nessuna rotazione
+  spa: No hay rotación
+  zho: 无旋转
 No Source Selected:
-  zho: "\u672A\u9009\u62E9\u6765\u6E90"
-  deu: "Keine Quelle ausgew\xC3\xA4hlt"
+  deu: Keine Quelle ausgewählt
   eng: No Source Selected
-  fra: "Aucune source s\xC3\xA9lectionn\xC3\xA9e"
+  fra: Aucune source sélectionnée
   ita: Nessuna fonte selezionata
   spa: No se ha seleccionado ninguna fuente
+  zho: 未选择来源
 No Video File:
-  zho: "\u6CA1\u6709\u89C6\u9891\u6587\u4EF6"
   deu: Keine Videodatei
   eng: No Video File
-  fra: "Pas de fichier vid\xC3\xA9o"
+  fra: Pas de fichier vidéo
   ita: Nessun file video
   spa: No hay archivo de video
+  zho: 没有视频文件
 No command found for:
-  zho: "\u6CA1\u6709\u627E\u5230\u547D\u4EE4"
-  deu: "Kein Befehl gefunden f\xC3\xBCr"
+  deu: Kein Befehl gefunden für
   eng: No command found for
-  fra: "Aucune commande trouv\xC3\xA9e pour"
+  fra: Aucune commande trouvée pour
   ita: Nessun comando trovato per
-  spa: "No se encontr\xF3 ning\xFAn comando para"
+  spa: No se encontró ningún comando para
+  zho: 没有找到命令
 No crop, scale, rotation,flip nor any other filters will be applied.:
-  zho: "\u4E0D\u4F1A\u5E94\u7528\u88C1\u526A\u3001\u7F29\u653E\u3001\u65CB\u8F6C\u3001\
-    \u7FFB\u8F6C\u6216\u4EFB\u4F55\u5176\u4ED6\u8FC7\u6EE4\u5668\u3002"
-  deu: Es werden weder Zuschneiden, Skalieren, Drehen, Spiegeln noch andere Filter
-    angewendet.
+  deu: Es werden weder Zuschneiden, Skalieren, Drehen, Spiegeln noch andere Filter angewendet.
   eng: No crop, scale, rotation,flip nor any other filters will be applied.
-  fra: "Aucun filtre ne sera appliqu\xC3\xA9 sur les cultures, les \xC3\xA9cailles,\
-    \ la rotation, le retournement ou autre."
-  ita: Non verranno applicati filtri per il raccolto, la scala, la rotazione, il capovolgimento
-    o altri filtri.
-  spa: "No se aplicar\xE1 ning\xFAn filtro de cultivo, de escala, de rotaci\xF3n,\
-    \ de volteo ni ning\xFAn otro."
+  fra: Aucun filtre ne sera appliqué sur les cultures, les écailles, la rotation, le retournement ou autre.
+  ita: Non verranno applicati filtri per il raccolto, la scala, la rotazione, il capovolgimento o altri filtri.
+  spa: No se aplicará ningún filtro de cultivo, de escala, de rotación, de volteo ni ningún otro.
+  zho: 不会应用裁剪、缩放、旋转、翻转或任何其他过滤器。
 No encoding is currently in process, starting encode:
-  zho: "\u76EE\u524D\u6CA1\u6709\u8FDB\u884C\u7F16\u7801\uFF0C\u5F00\u59CB\u7F16\u7801\
-    \u3002"
-  deu: "Es wird gerade keine Kodierung durchgef\xC3\xBChrt, Kodierung wird gestartet"
+  deu: Es wird gerade keine Kodierung durchgeführt, Kodierung wird gestartet
   eng: No encoding is currently in process, starting encode
-  fra: "Aucun codage n'est actuellement en cours, le codage de d\xC3\xA9part"
-  ita: "Nessuna codifica \xC3\xA8 attualmente in corso, iniziando a codificare"
-  spa: "Ninguna codificaci\xF3n est\xE1 actualmente en proceso, comenzando a codificar"
+  fra: Aucun codage n'est actuellement en cours, le codage de départ
+  ita: Nessuna codifica è attualmente in corso, iniziando a codificare
+  spa: Ninguna codificación está actualmente en proceso, comenzando a codificar
+  zho: 目前没有进行编码，开始编码。
 No new items in queue to convert:
-  zho: "\u961F\u5217\u4E2D\u6CA1\u6709\u65B0\u9879\u76EE\u8981\u8F6C\u6362"
   deu: Keine neuen Elemente in der Warteschlange zum Konvertieren
   eng: No new items in queue to convert
-  fra: "Pas de nouveaux \xC3\xA9l\xC3\xA9ments \xC3\_ convertir dans la file d'attente"
+  fra: Pas de nouveaux éléments à convertir dans la file d'attente
   ita: Nessun nuovo elemento in coda per la conversione
   spa: No hay nuevos elementos en la cola para convertir
+  zho: 队列中没有新项目要转换
 No video found for:
-  zho: "\u6CA1\u6709\u627E\u5230\u89C6\u9891"
-  deu: "Kein Video gefunden f\xC3\xBCr"
+  deu: Kein Video gefunden für
   eng: No video found for
-  fra: "Aucune vid\xC3\xA9o trouv\xC3\xA9e pour"
+  fra: Aucune vidéo trouvée pour
   ita: Nessun video trovato per
-  spa: "No se ha encontrado ning\xFAn v\xEDdeo para"
+  spa: No se ha encontrado ningún vídeo para
+  zho: 没有找到视频
 None:
-  zho: "\u65E0"
   deu: Keines
   eng: None
   fra: Aucune
   ita: Nessuno
   spa: Ninguno
+  zho: 无
 Not a video file:
-  zho: "\u4E0D\u662F\u89C6\u9891\u6587\u4EF6"
   deu: Keine Videodatei
   eng: Not a video file
-  fra: "Pas un fichier vid\xC3\xA9o"
+  fra: Pas un fichier vidéo
   ita: Non un file video
   spa: No es un archivo de video
+  zho: 不是视频文件
 Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.:
-  zho: "\u53EA\u5C06HDR10+\u52A8\u6001\u5143\u6570\u636E\u653E\u5728IDR\u548C\u6570\
-    \u503C\u6539\u53D8\u7684\u5E27\u4E2D\u3002"
-  deu: "Setzen Sie die dynamischen HDR10+-Metadaten nur in die IDR und Frames, bei\
-    \ denen sich die Werte ge\xC3\xA4ndert haben."
-  eng: Only put the HDR10+ dynamic metadata in the IDR and frames where the values
-    have changed.
-  fra: "Ne placez les m\xC3\xA9tadonn\xC3\xA9es dynamiques HDR10+ que dans l'IDR et\
-    \ les cadres dont les valeurs ont chang\xC3\xA9."
-  ita: Mettete i metadati dinamici HDR10+ solo nell'IDR e nei frame in cui i valori
-    sono cambiati.
-  spa: "S\xF3lo pon los metadatos din\xE1micos HDR10+ en el IDR y los cuadros donde\
-    \ los valores han cambiado."
+  deu: Setzen Sie die dynamischen HDR10+-Metadaten nur in die IDR und Frames, bei denen sich die Werte geändert haben.
+  eng: Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.
+  fra: Ne placez les métadonnées dynamiques HDR10+ que dans l'IDR et les cadres dont les valeurs ont changé.
+  ita: Mettete i metadati dinamici HDR10+ solo nell'IDR e nei frame in cui i valori sono cambiati.
+  spa: Sólo pon los metadatos dinámicos HDR10+ en el IDR y los cuadros donde los valores han cambiado.
+  zho: 只将HDR10+动态元数据放在IDR和数值改变的帧中。
 Only select first matching Audio Track:
-  zho: "\u53EA\u9009\u62E9\u7B2C\u4E00\u4E2A\u5339\u914D\u7684\u97F3\u8F68"
-  deu: "Nur die erste passende Audiospur ausw\xC3\xA4hlen"
+  deu: Nur die erste passende Audiospur auswählen
   eng: Only select first matching Audio Track
-  fra: "Ne s\xC3\xA9lectionnez que la premi\xC3\xA8re piste audio correspondante"
+  fra: Ne sélectionnez que la première piste audio correspondante
   ita: Selezionare solo la prima traccia audio corrispondente
-  spa: "S\xF3lo seleccione la primera pista de audio que coincida"
+  spa: Sólo seleccione la primera pista de audio que coincida
+  zho: 只选择第一个匹配的音轨
 Only select first matching Subtitle Track:
-  zho: "\u53EA\u9009\u62E9\u7B2C\u4E00\u4E2A\u5339\u914D\u7684\u5B57\u5E55\u8F68"
-  deu: "Nur die erste passende Untertitelspur ausw\xC3\xA4hlen"
+  deu: Nur die erste passende Untertitelspur auswählen
   eng: Only select first matching Subtitle Track
-  fra: "Ne s\xC3\xA9lectionnez que la premi\xC3\xA8re piste de sous-titres correspondante"
+  fra: Ne sélectionnez que la première piste de sous-titres correspondante
   ita: Selezionare solo la prima traccia di sottotitoli corrispondente
-  spa: "S\xF3lo seleccione la primera pista de subt\xEDtulos que coincida"
+  spa: Sólo seleccione la primera pista de subtítulos que coincida
+  zho: 只选择第一个匹配的字幕轨
 Open Directory:
-  zho: "\u5F00\u653E\u76EE\u5F55"
-  deu: "Verzeichnis \xC3\xB6ffnen"
+  deu: Verzeichnis öffnen
   eng: Open Directory
   fra: Open Directory
   ita: Elenco aperto
   spa: Directorio Abierto
+  zho: 开放目录
+Open Log Directory:
+  deu: Log-Verzeichnis öffnen
+  eng: Open Log Directory
+  fra: Répertoire des journaux ouverts
+  ita: Aprire l'elenco dei log
+  spa: Directorio abierto de registros
+  zho: 打开日志目录
+Output:
+  deu: Ausgang
+  eng: Output
+  fra: Sortie
+  ita: Uscita
+  spa: Salida
+  zho: 产量
 Over-allocation of frame threads will not improve performance,:
-  zho: "\u8FC7\u5EA6\u5206\u914D\u5E27\u7EBF\u7A0B\u4E0D\u4F1A\u63D0\u9AD8\u6027\u80FD\
-    \u3002"
-  deu: "Eine \xC3\u0153berbelegung von Frame-Threads wird die Leistung nicht verbessern,"
+  deu: Eine Überbelegung von Frame-Threads wird die Leistung nicht verbessern,
   eng: Over-allocation of frame threads will not improve performance,
-  fra: "Une allocation excessive des fils de trame n'am\xC3\xA9liorera pas les performances,"
-  ita: "La sovra-assegnazione delle filettature del telaio non migliorer\xC3\_ le\
-    \ prestazioni,"
-  spa: "La sobreasignaci\xF3n de hilos del marco no mejorar\xE1 el rendimiento,"
+  fra: Une allocation excessive des fils de trame n'améliorera pas les performances,
+  ita: La sovra-assegnazione delle filettature del telaio non migliorerà le prestazioni,
+  spa: La sobreasignación de hilos del marco no mejorará el rendimiento,
+  zho: 过度分配帧线程不会提高性能。
 Overlay this subtitle track onto the video during conversion.:
-  zho: "\u5728\u8F6C\u6362\u8FC7\u7A0B\u4E2D\uFF0C\u5C06\u6B64\u5B57\u5E55\u8F68\u9053\
-    \u53E0\u52A0\u5230\u89C6\u9891\u4E0A\u3002"
-  deu: "\xC3\u0153berlagern Sie diese Untertitelspur w\xC3\xA4hrend der Konvertierung\
-    \ mit dem Video."
+  deu: Überlagern Sie diese Untertitelspur während der Konvertierung mit dem Video.
   eng: Overlay this subtitle track onto the video during conversion.
-  fra: "Superposez cette piste de sous-titres sur la vid\xC3\xA9o pendant la conversion."
+  fra: Superposez cette piste de sous-titres sur la vidéo pendant la conversion.
   ita: Sovrapponete questa traccia di sottotitoli al video durante la conversione.
-  spa: "Superponga esta pista de subt\xEDtulos en el v\xEDdeo durante la conversi\xF3\
-    n."
+  spa: Superponga esta pista de subtítulos en el vídeo durante la conversión.
+  zho: 在转换过程中，将此字幕轨道叠加到视频上。
 PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,:
-  zho: "PIR\u53EF\u4EE5\u901A\u8FC7\u5728\u975E\u5173\u952E\u5E27\u4E2D\u63D2\u5165\
-    \u4E00\u5217\u5185\u5757\u6765\u66FF\u6362\u5173\u952E\u5E27\u3002"
-  deu: "PIR kann Keyframes durch Einf\xC3\xBCgen einer Spalte von Intrabl\xC3\xB6\
-    cken in Nicht-Keyframes ersetzen,"
+  deu: PIR kann Keyframes durch Einfügen einer Spalte von Intrablöcken in Nicht-Keyframes ersetzen,
   eng: PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,
-  fra: "Le PIR peut remplacer les images cl\xC3\xA9s en ins\xC3\xA9rant une colonne\
-    \ de blocs intra dans les images non cl\xC3\xA9s,"
-  ita: "Il PIR pu\xC3\xB2 sostituire i keyframe inserendo una colonna di blocchi interni\
-    \ nei non-keyframe,"
-  spa: PIR puede reemplazar los fotogramas clave insertando una columna de intrabloques
-    en los fotogramas no clave,
+  fra: Le PIR peut remplacer les images clés en insérant une colonne de blocs intra dans les images non clés,
+  ita: Il PIR può sostituire i keyframe inserendo una colonna di blocchi interni nei non-keyframe,
+  spa: PIR puede reemplazar los fotogramas clave insertando una columna de intrabloques en los fotogramas no clave,
+  zho: PIR可以通过在非关键帧中插入一列内块来替换关键帧。
 Parse Video details:
-  zho: "\u89E3\u6790\u89C6\u9891\u7EC6\u8282"
   deu: Video-Details parsen
   eng: Parse Video details
-  fra: "D\xC3\xA9tails de la vid\xC3\xA9o de Parse"
+  fra: Détails de la vidéo de Parse
   ita: Dettagli Parse Video
-  spa: "Detalles del video de an\xE1lisis"
+  spa: Detalles del video de análisis
+  zho: 解析视频细节
 Pause / Resume the current command:
-  zho: "\u6682\u505C/\u6062\u590D\u5F53\u524D\u547D\u4EE4"
   deu: Pause / Fortsetzen des aktuellen Befehls
   eng: Pause / Resume the current command
   fra: Pause / Reprise de la commande en cours
   ita: Pausa / Riprendere il comando corrente
   spa: Pausa / Reanudar el comando actual
+  zho: 暂停/恢复当前命令
 Pause Encode:
-  zho: "\u6682\u505C \u7F16\u7801"
   deu: Pause Encode
   eng: Pause Encode
   fra: Pause Encode
   ita: Pausa Codificare
   spa: Codificar la pausa
+  zho: 暂停 编码
 Pause Queue:
-  zho: "\u6682\u505C\u961F\u5217"
   deu: Warteschlange anhalten
   eng: Pause Queue
   fra: Pause
   ita: Coda di pausa
   spa: Pausa de la cola
+  zho: 暂停队列
 Pixel Format (requires at least 10-bit for HDR):
-  zho: "\u50CF\u7D20\u683C\u5F0F(HDR\u8981\u6C42\u81F3\u5C1110\u4F4D)"
-  deu: "Pixelformat (erfordert mindestens 10-Bit f\xC3\xBCr HDR)"
+  deu: Pixelformat (erfordert mindestens 10-Bit für HDR)
   eng: Pixel Format (requires at least 10-bit for HDR)
-  fra: "Format Pixel (n\xC3\xA9cessite au moins 10 bits pour le HDR)"
+  fra: Format Pixel (nécessite au moins 10 bits pour le HDR)
   ita: Formato pixel (richiede almeno 10 bit per HDR)
-  spa: "Formato de p\xEDxeles (requiere al menos 10 bits para el HDR)"
+  spa: Formato de píxeles (requiere al menos 10 bits para el HDR)
+  zho: 像素格式(HDR要求至少10位)
 Please provide a profile name:
-  zho: "\u8BF7\u63D0\u4F9B\u4E2A\u4EBA\u8D44\u6599\u540D\u79F0"
   deu: Bitte geben Sie einen Profilnamen an
   eng: Please provide a profile name
   fra: Veuillez fournir un nom de profil
   ita: Si prega di fornire un nome di profilo
   spa: Por favor, proporcione un nombre de perfil
+  zho: 请提供个人资料名称
+Please restart FastFlix to apply settings:
+  deu: Bitte starten Sie FastFlix neu, um die Einstellungen zu übernehmen
+  eng: Please restart FastFlix to apply settings
+  fra: Por favor, reinicie FastFlix para aplicar la configuración
+  ita: Riavviare FastFlix per applicare le impostazioni
+  spa: Por favor, reinicie FastFlix para aplicar la configuración
+  zho: 请重新启动FastFlix以应用设置
+Poster Cover:
+  deu: Poster-Cover
+  eng: Poster Cover
+  fra: Couverture de l'affiche
+  ita: Copertina per poster
+  spa: Cubierta del cartel
+  zho: 海报封面
 Preserve:
-  zho: "\u4FDD\u5B58"
   deu: Beibehalten
   eng: Preserve
-  fra: "Pr\xC3\xA9server"
+  fra: Préserver
   ita: Conservare
   spa: Preservar
+  zho: 保存
 Preset:
-  zho: "\u9884\u8BBE"
   deu: Voreinstellung
   eng: Preset
-  fra: "Pr\xC3\xA9r\xC3\xA9glage"
+  fra: Préréglage
   ita: Preset
   spa: Preset
+  zho: 预设
 Profile:
-  zho: "\u7B80\u4ECB"
   deu: Profil
   eng: Profile
   fra: Profil
   ita: Profilo
   spa: Perfil
+  zho: 简介
 Profile Name:
-  zho: "\u8D44\u6599\u540D\u79F0"
   deu: Profil-Name
   eng: Profile Name
   fra: Nom du profil
   ita: Nome del profilo
   spa: Nombre del perfil
+  zho: 资料名称
+Profiles:
+  deu: Profile
+  eng: Profiles
+  fra: Profils
+  ita: Profili
+  spa: Perfiles
+  zho: 概况
 Python:
-  zho: "\u87D2\u86C7"
   deu: Python
   eng: Python
   fra: Python
   ita: Python
   spa: Python
+  zho: 蟒蛇
 Quality:
-  zho: "\u8D28\u91CF\u7BA1\u7406"
-  deu: "Qualit\xC3\xA4t"
+  deu: Qualität
   eng: Quality
-  fra: "Qualit\xC3\xA9"
-  ita: "Qualit\xC3\_"
+  fra: Qualité
+  ita: Qualità
   spa: Calidad
+  zho: 质量管理
 Quality and compression efficiency vs speed trade-off:
-  zho: "\u8D28\u91CF\u548C\u538B\u7F29\u6548\u7387\u4E0E\u901F\u5EA6\u7684\u6743\u8861"
-  deu: "Kompromiss zwischen Qualit\xC3\xA4t und Kompressionseffizienz und Geschwindigkeit"
+  deu: Kompromiss zwischen Qualität und Kompressionseffizienz und Geschwindigkeit
   eng: Quality and compression efficiency vs speed trade-off
-  fra: "Le compromis entre la qualit\xC3\xA9 et l'efficacit\xC3\xA9 de la compression\
-    \ et la vitesse"
-  ita: "Qualit\xC3\_ ed efficienza di compressione rispetto al compromesso velocit\xC3\
-    \_"
-  spa: "La calidad y la eficiencia de la compresi\xF3n frente a la compensaci\xF3\
-    n de la velocidad"
+  fra: Le compromis entre la qualité et l'efficacité de la compression et la vitesse
+  ita: Qualità ed efficienza di compressione rispetto al compromesso velocità
+  spa: La calidad y la eficiencia de la compresión frente a la compensación de la velocidad
+  zho: 质量和压缩效率与速度的权衡
 Quality/Speed ratio modifier:
-  zho: "\u8D28\u91CF/\u901F\u5EA6\u6BD4\u4FEE\u6539\u5668"
-  deu: "Qualit\xC3\xA4t/Geschwindigkeitsverh\xC3\xA4ltnis-Modifikator"
+  deu: Qualität/Geschwindigkeitsverhältnis-Modifikator
   eng: Quality/Speed ratio modifier
-  fra: "Modificateur du rapport qualit\xC3\xA9/vitesse"
-  ita: "Modificatore rapporto qualit\xC3\_/velocit\xC3\_"
-  spa: "Modificador de la relaci\xF3n calidad/velocidad"
+  fra: Modificateur du rapport qualité/vitesse
+  ita: Modificatore rapporto qualità/velocità
+  spa: Modificador de la relación calidad/velocidad
+  zho: 质量/速度比修改器
 Quality/Speed ratio modifier (defaults to -1):
-  zho: "\u8D28\u91CF/\u901F\u5EA6\u6BD4\u4FEE\u6539\u5668\uFF08\u9ED8\u8BA4\u503C\u4E3A\
-    -1)"
-  deu: "Qualit\xC3\xA4ts-/Geschwindigkeitsverh\xC3\xA4ltnis-Modifikator (Standardwert:\
-    \ -1)"
+  deu: 'Qualitäts-/Geschwindigkeitsverhältnis-Modifikator (Standardwert: -1)'
   eng: Quality/Speed ratio modifier (defaults to -1)
-  fra: "Modificateur du rapport qualit\xC3\xA9/vitesse (par d\xC3\xA9faut \xC3\_ -1)"
-  ita: "Modificatore del rapporto qualit\xC3\_/velocit\xC3\_ (valori predefiniti a\
-    \ -1)"
-  spa: "Modificador de la relaci\xF3n calidad/velocidad (por defecto a -1)"
+  fra: Modificateur du rapport qualité/vitesse (par défaut à -1)
+  ita: Modificatore del rapporto qualità/velocità (valori predefiniti a -1)
+  spa: Modificador de la relación calidad/velocidad (por defecto a -1)
+  zho: 质量/速度比修改器（默认值为-1)
 Quality/Speed ratio modifier (defaults to 1):
-  zho: "\u8D28\u91CF/\u901F\u5EA6\u6BD4\u4FEE\u6539\u5668\uFF08\u9ED8\u8BA4\u503C\u4E3A\
-    1\u3002"
-  deu: "Modifikator f\xC3\xBCr das Verh\xC3\xA4ltnis Qualit\xC3\xA4t/Geschwindigkeit\
-    \ (Standardwert: 1)"
+  deu: 'Modifikator für das Verhältnis Qualität/Geschwindigkeit (Standardwert: 1)'
   eng: Quality/Speed ratio modifier (defaults to 1)
-  fra: "Modificateur du rapport qualit\xC3\xA9/vitesse (par d\xC3\xA9faut \xC3\_ 1)"
-  ita: "Modificatore del rapporto qualit\xC3\_/velocit\xC3\_ (valori predefiniti a\
-    \ 1)"
-  spa: "Modificador de la relaci\xF3n calidad/velocidad (por defecto a 1)"
+  fra: Modificateur du rapport qualité/vitesse (par défaut à 1)
+  ita: Modificatore del rapporto qualità/velocità (valori predefiniti a 1)
+  spa: Modificador de la relación calidad/velocidad (por defecto a 1)
+  zho: 质量/速度比修改器（默认值为1。
 Queue:
-  zho: "\u961F\u5217"
   deu: Warteschlange
   eng: Queue
   fra: Queue
   ita: Coda
   spa: Cola
+  zho: 队列
+Queue has been paused:
+  deu: Die Warteschlange wurde pausiert
+  eng: Queue has been paused
+  fra: La cola se ha detenido
+  ita: La coda è stata messa in pausa
+  spa: La cola se ha detenido
+  zho: 队列已暂停
 Raise or lower per-block quantization based on complexity analysis of the source image.:
-  zho: "\u6839\u636E\u5BF9\u6E90\u56FE\u50CF\u7684\u590D\u6742\u5EA6\u5206\u6790\uFF0C\
-    \u63D0\u9AD8\u6216\u964D\u4F4E\u6BCF\u5757\u7684\u91CF\u5316\u7A0B\u5EA6\u3002"
-  deu: "Erh\xC3\xB6hen oder verringern Sie die Quantisierung pro Block basierend auf\
-    \ der Komplexit\xC3\xA4tsanalyse des Quellbilds."
-  eng: Raise or lower per-block quantization based on complexity analysis of the source
-    image.
-  fra: "Augmenter ou diminuer la quantification par bloc en fonction de l'analyse\
-    \ de la complexit\xC3\xA9 de l'image source."
-  ita: "Aumentare o diminuire la quantizzazione per blocco in base all'analisi della\
-    \ complessit\xC3\_ dell'immagine sorgente."
-  spa: "Aumentar o disminuir la cuantificaci\xF3n por bloque basada en el an\xE1lisis\
-    \ de la complejidad de la imagen de origen."
+  deu: Erhöhen oder verringern Sie die Quantisierung pro Block basierend auf der Komplexitätsanalyse des Quellbilds.
+  eng: Raise or lower per-block quantization based on complexity analysis of the source image.
+  fra: Augmenter ou diminuer la quantification par bloc en fonction de l'analyse de la complexité de l'image source.
+  ita: Aumentare o diminuire la quantizzazione per blocco in base all'analisi della complessità dell'immagine sorgente.
+  spa: Aumentar o disminuir la cuantificación por bloque basada en el análisis de la complejidad de la imagen de origen.
+  zho: 根据对源图像的复杂度分析，提高或降低每块的量化程度。
 Raw Commands:
-  zho: "\u539F\u59CB\u547D\u4EE4"
   deu: Raw-Befehle
   eng: Raw Commands
   fra: Commandes brutes
   ita: Comandi grezzi
   spa: Comandos en bruto
+  zho: 原始命令
 Ready to encode:
-  zho: "\u51C6\u5907\u7F16\u7801"
   deu: Bereit zum Kodieren
   eng: Ready to encode
-  fra: "Pr\xC3\xAAt \xC3\_ encoder"
+  fra: Prêt à encoder
   ita: Pronto a codificare
   spa: Listo para codificar
+  zho: 准备编码
 Reconstructed output pictures are bit-exact to the input pictures.:
-  zho: "\u91CD\u6784\u540E\u7684\u8F93\u51FA\u56FE\u7247\u4E0E\u8F93\u5165\u56FE\u7247\
-    \u7684\u4F4D\u7CBE\u786E\u3002"
   deu: Rekonstruierte Ausgangsbilder sind bit-genau zu den Eingangsbildern.
   eng: Reconstructed output pictures are bit-exact to the input pictures.
-  fra: "Les images de sortie reconstruites sont exactes au niveau des bits par rapport\
-    \ aux images d'entr\xC3\xA9e."
+  fra: Les images de sortie reconstruites sont exactes au niveau des bits par rapport aux images d'entrée.
   ita: Le immagini di uscita ricostruite sono bit-esatte alle immagini di ingresso.
-  spa: "Las im\xE1genes de salida reconstruidas son un poco exactas a las im\xE1genes\
-    \ de entrada."
+  spa: Las imágenes de salida reconstruidas son un poco exactas a las imágenes de entrada.
+  zho: 重构后的输出图片与输入图片的位精确。
 Remove HDR:
-  zho: "\u79FB\u9664HDR"
   deu: HDR entfernen
   eng: Remove HDR
   fra: Supprimer le HDR
   ita: Rimuovere HDR
   spa: Eliminar HDR
+  zho: 移除HDR
 Remove Metadata:
-  zho: "\u79FB\u9664\u5143\u6570\u636E"
   deu: Metadaten entfernen
   eng: Remove Metadata
-  fra: "Supprimer les m\xC3\xA9tadonn\xC3\xA9es"
+  fra: Supprimer les métadonnées
   ita: Rimuovere i metadati
   spa: Eliminar los metadatos
+  zho: 移除元数据
+Remove completed tasks:
+  deu: Erledigte Aufgaben entfernen
+  eng: Remove completed tasks
+  fra: Supprimer les tâches terminées
+  ita: Rimuovere i compiti completati
+  spa: Eliminar las tareas completadas
+  zho: 删除已完成的任务
 Removing after done command:
-  zho: "\u5728\u5B8C\u6210\u547D\u4EE4\u540E\u5220\u9664"
   deu: Entfernen nach erfolgtem Befehl
   eng: Removing after done command
-  fra: "Suppression apr\xC3\xA8s commande"
+  fra: Suppression après commande
   ita: Rimozione dopo aver eseguito il comando
-  spa: "Retirar despu\xE9s de la orden hecha"
+  spa: Retirar después de la orden hecha
+  zho: 在完成命令后删除
 Repeat Headers:
-  zho: "\u91CD\u590D\u6807\u9898"
   deu: Kopfzeilen wiederholen
   eng: Repeat Headers
-  fra: "R\xC3\xA9p\xC3\xA9ter les en-t\xC3\xAAtes"
+  fra: Répéter les en-têtes
   ita: Ripetere le intestazioni
-  spa: "Repetici\xF3n de los encabezados"
+  spa: Repetición de los encabezados
+  zho: 重复标题
+Report Issue:
+  deu: Ausgabe melden
+  eng: Report Issue
+  fra: Numéro du rapport
+  ita: Segnala il problema
+  spa: Informe
+  zho: 报告问题
 Resume Encode:
-  zho: "\u7B80\u5386\u7F16\u7801"
   deu: Kodierung fortsetzen
   eng: Resume Encode
   fra: Encodage des CV
   ita: Riprendi Codifica
-  spa: "Reanudar la codificaci\xF3n"
+  spa: Reanudar la codificación
+  zho: 简历编码
 Resume Queue:
-  zho: "\u6062\u590D\u961F\u5217"
   deu: Warteschlange fortsetzen
   eng: Resume Queue
   fra: File d'attente pour les CV
   ita: Coda di ripresa
-  spa: "Cola de reanudaci\xF3n"
+  spa: Cola de reanudación
+  zho: 恢复队列
 Reusables:
-  zho: "\u53EF\u91CD\u590D\u4F7F\u7528"
   deu: Wiederverwendbare Daten
   eng: Reusables
-  fra: "R\xC3\xA9utilisables"
+  fra: Réutilisables
   ita: Riutilizzabili
   spa: Reutilizables
+  zho: 可重复使用
+Right:
+  deu: Rechts
+  eng: Right
+  fra: Droit
+  ita: Destra
+  spa: Derecho
+  zho: 右边
 Row Multi-Threading:
-  zho: "\u884C\u591A\u7EBF\u7A0B"
   deu: Zeilen-Multi-Threading
   eng: Row Multi-Threading
-  fra: "Rang\xC3\xA9e Multi-Threading"
+  fra: Rangée Multi-Threading
   ita: Filettatura multi-filettatura
   spa: Fila Multi-Hilo
+  zho: 行多线程
 Row multithreading:
-  zho: "\u884C\u591A\u7EBF\u7A0B"
   deu: Zeilen-Multithreading
   eng: Row multithreading
-  fra: "Rang\xC3\xA9e de fils multiples"
+  fra: Rangée de fils multiples
   ita: Fila multifilettatura
   spa: Fila multihilo
+  zho: 行多线程
 'Running after done command:':
-  zho: "\u5728\u5B8C\u6210\u547D\u4EE4\u540E\u8FD0\u884C\u3002"
-  deu: "L\xC3\xA4uft nach erledigtem Befehl:"
+  deu: 'Läuft nach erledigtem Befehl:'
   eng: 'Running after done command:'
-  fra: "Courir apr\xC3\xA8s le commandement fait :"
+  fra: 'Courir après le commandement fait :'
   ita: 'Esecuzione dopo aver eseguito il comando:'
   spa: 'Corriendo tras el mando hecho:'
+  zho: 在完成命令后运行。
 Running command:
-  zho: "\u8FD0\u884C\u547D\u4EE4\uFF1A"
   deu: Laufendes Kommando
   eng: Running command
-  fra: "Commande en cours d'ex\xC3\xA9cution"
+  fra: Commande en cours d'exécution
   ita: Comando in esecuzione
-  spa: "Comando de ejecuci\xF3n"
+  spa: Comando de ejecución
+  zho: 运行命令：
 SVT-AV1 Encoding Guide:
-  zho: "SVT-AV1\u7F16\u7801\u6307\u5357"
   deu: SVT-AV1 Kodierungsanleitung
   eng: SVT-AV1 Encoding Guide
   fra: Guide d'encodage SVT-AV1
   ita: Guida alla codifica SVT-AV1
-  spa: "Gu\xEDa de codificaci\xF3n del SVT-AV1"
+  spa: Guía de codificación del SVT-AV1
+  zho: SVT-AV1编码指南
+Save Commands:
+  deu: Befehle speichern
+  eng: Save Commands
+  fra: Commandes de sauvegarde
+  ita: Comandi di salvataggio
+  spa: Salvar los comandos
+  zho: 保存命令
+Save commands to file:
+  deu: Befehle in Datei speichern
+  eng: Save commands to file
+  fra: Enregistrer les commandes dans un fichier
+  ita: Salvare i comandi su file
+  spa: Guardar los comandos en un archivo
+  zho: 保存命令到文件
+Scale:
+  deu: Skala
+  eng: Scale
+  fra: Échelle
+  ita: Scala
+  spa: Escala
+  zho: 规模
 Scrub away all incoming metadata, like video titles, unique markings and so on.:
-  zho: "\u64E6\u9664\u6240\u6709\u4F20\u5165\u7684\u5143\u6570\u636E\uFF0C\u5982\u89C6\
-    \u9891\u6807\u9898\u3001\u552F\u4E00\u6807\u8BB0\u7B49\u3002"
-  deu: Entfernen Sie alle eingehenden Metadaten, wie Videotitel, eindeutige Markierungen
-    und so weiter.
-  eng: Scrub away all incoming metadata, like video titles, unique markings and so
-    on.
-  fra: "Supprimez toutes les m\xC3\xA9tadonn\xC3\xA9es entrantes, comme les titres\
-    \ des vid\xC3\xA9os, les marquages uniques, etc."
-  ita: "Cancella tutti i metadati in arrivo, come i titoli dei video, le marcature\
-    \ uniche e cos\xC3\xAC via."
-  spa: "Borra todos los metadatos entrantes, como t\xEDtulos de video, marcas \xFA\
-    nicas y dem\xE1s."
+  deu: Entfernen Sie alle eingehenden Metadaten, wie Videotitel, eindeutige Markierungen und so weiter.
+  eng: Scrub away all incoming metadata, like video titles, unique markings and so on.
+  fra: Supprimez toutes les métadonnées entrantes, comme les titres des vidéos, les marquages uniques, etc.
+  ita: Cancella tutti i metadati in arrivo, come i titoli dei video, le marcature uniche e così via.
+  spa: Borra todos los metadatos entrantes, como títulos de video, marcas únicas y demás.
+  zho: 擦除所有传入的元数据，如视频标题、唯一标记等。
+Set the "title" tag, sometimes shown as "Movie Name":
+  deu: Setzen Sie den "Titel"-Tag, der manchmal als "Filmname" angezeigt wird
+  eng: Set the "title" tag, sometimes shown as "Movie Name"
+  fra: Poner la etiqueta "título", a veces se muestra como "Nombre de la película"
+  ita: Impostare il tag "title", a volte mostrato come "Movie Name" (nome del film)
+  spa: Poner la etiqueta "título", a veces se muestra como "Nombre de la película"
+  zho: 设置 "标题 "标签，有时显示为 "电影名称"
 Set the level of effort in determining B frame placement.:
-  zho: "\u8BBE\u7F6E\u786E\u5B9AB\u5E27\u4F4D\u7F6E\u7684\u52AA\u529B\u7A0B\u5EA6\u3002"
-  deu: Legen Sie den Grad des Aufwands bei der Bestimmung der B-Frame-Platzierung
-    fest.
+  deu: Legen Sie den Grad des Aufwands bei der Bestimmung der B-Frame-Platzierung fest.
   eng: Set the level of effort in determining B frame placement.
-  fra: "D\xC3\xA9finir le niveau d'effort pour d\xC3\xA9terminer le placement des\
-    \ images B."
-  ita: Impostare il livello di sforzo nel determinare il posizionamento del fotogramma
-    B.
-  spa: "Establezca el nivel de esfuerzo para determinar la ubicaci\xF3n del cuadro\
-    \ B."
+  fra: Définir le niveau d'effort pour déterminer le placement des images B.
+  ita: Impostare il livello di sforzo nel determinare il posizionamento del fotogramma B.
+  spa: Establezca el nivel de esfuerzo para determinar la ubicación del cuadro B.
+  zho: 设置确定B帧位置的努力程度。
 'Setting after done command to:':
-  zho: "\u8BBE\u7F6E\u5B8C\u6210\u540E\u547D\u4EE4\u4E3A\u3002"
   deu: 'Einstellung nach dem Befehl done auf:'
   eng: 'Setting after done command to:'
-  fra: "R\xC3\xA9gler apr\xC3\xA8s avoir fait la commande \xC3\_ :"
+  fra: 'Régler après avoir fait la commande à :'
   ita: 'Impostare dopo il comando su:'
-  spa: "Estableciendo despu\xE9s de hacer el comando para:"
+  spa: 'Estableciendo después de hacer el comando para:'
+  zho: 设置完成后命令为。
 Settings:
-  zho: "\u8BBE\u7F6E"
   deu: Einstellungen
   eng: Settings
-  fra: "Param\xC3\xA8tres"
+  fra: Paramètres
   ita: Impostazioni
   spa: Ajustes
+  zho: 设置
 Single Pass (Bitrate):
-  zho: "\u5355\u901A\u9053\uFF08\u6BD4\u7279\u7387"
   deu: Einzelner Durchlauf (Bitrate)
   eng: Single Pass (Bitrate)
   fra: Passage unique (Bitrate)
   ita: Passaggio singolo (Bitrato)
-  spa: "Pase \xFAnico (Bitrate)"
+  spa: Pase único (Bitrate)
+  zho: 单通道（比特率
 Single Pass (CRF):
-  zho: "\u5355\u901A\u9053(CRF)"
   deu: Einzelner Durchlauf (CRF)
   eng: Single Pass (CRF)
   fra: Laissez-passer unique (CRF)
   ita: Passaggio singolo (CRF)
-  spa: "Pase \xFAnico (CRF)"
+  spa: Pase único (CRF)
+  zho: 单通道(CRF)
 Size Estimate:
-  zho: "\u5C3A\u5BF8\u4F30\u8BA1"
-  deu: "Gr\xC3\xB6\xC3\u0178e Sch\xC3\xA4tzung"
+  deu: Größe Schätzung
   eng: Size Estimate
   fra: Estimation de la taille
   ita: Stima delle dimensioni
-  spa: "Estimaci\xF3n del tama\xF1o"
+  spa: Estimación del tamaño
+  zho: 尺寸估计
 Slow is highest personal recommenced, as past that is much smaller gains:
-  zho: "\u6162\u662F\u6700\u9AD8\u7684\u4E2A\u4EBA\u91CD\u65B0\u5F00\u59CB\uFF0C\u56E0\
-    \u4E3A\u8FC7\u53BB\u7684\u662F\u5C0F\u5F97\u591A\u7684\u589E\u76CA"
-  deu: "Langsam ist die h\xC3\xB6chste pers\xC3\xB6nliche Empfehlung, da danach viel\
-    \ kleinere Gewinne"
+  deu: Langsam ist die höchste persönliche Empfehlung, da danach viel kleinere Gewinne
   eng: Slow is highest personal recommenced, as past that is much smaller gains
-  fra: "La lenteur est la plus haute personnelle recommenc\xC3\xA9e, comme pass\xC3\
-    \xA9 c'est des gains beaucoup plus petits"
-  ita: "Lento \xC3\xA8 pi\xC3\xB9 alto personale \xC3\xA8 ricominciato, come passato\
-    \ che \xC3\xA8 molto pi\xC3\xB9 piccolo guadagni"
-  spa: "La lentitud es la mayor recomenzada personal, ya que el pasado que es mucho\
-    \ m\xE1s peque\xF1o gana"
+  fra: La lenteur est la plus haute personnelle recommencée, comme passé c'est des gains beaucoup plus petits
+  ita: Lento è più alto personale è ricominciato, come passato che è molto più piccolo guadagni
+  spa: La lentitud es la mayor recomenzada personal, ya que el pasado que es mucho más pequeño gana
+  zho: 慢是最高的个人重新开始，因为过去的是小得多的增益
 Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams).:
-  zho: "\u8F83\u6162\u7684\u9884\u8BBE\u901A\u5E38\u4F1A\u8FBE\u5230\u66F4\u597D\u7684\
-    \u538B\u7F29\u6548\u7387\uFF08\u5E76\u751F\u6210\u8F83\u5C0F\u7684\u6BD4\u7279\
-    \u6D41\uFF09\u3002"
-  deu: "Langsamere Voreinstellungen erzielen im Allgemeinen eine bessere Komprimierungseffizienz\
-    \ (und erzeugen kleinere Bitstr\xC3\xB6me)."
-  eng: Slower presets will generally achieve better compression efficiency (and generate
-    smaller bitstreams).
-  fra: "Des pr\xC3\xA9r\xC3\xA9glages plus lents permettent g\xC3\xA9n\xC3\xA9ralement\
-    \ d'obtenir une meilleure efficacit\xC3\xA9 de compression (et de g\xC3\xA9n\xC3\
-    \xA9rer des flux binaires plus petits)."
-  ita: "Le preimpostazioni pi\xC3\xB9 lente in genere raggiungono una migliore efficienza\
-    \ di compressione (e generano flussi di bit pi\xC3\xB9 piccoli)."
-  spa: "Los preajustes m\xE1s lentos generalmente lograr\xE1n una mejor eficiencia\
-    \ de compresi\xF3n (y generar\xE1n flujos de bits m\xE1s peque\xF1os)."
+  deu: Langsamere Voreinstellungen erzielen im Allgemeinen eine bessere Komprimierungseffizienz (und erzeugen kleinere Bitströme).
+  eng: Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams).
+  fra: Des préréglages plus lents permettent généralement d'obtenir une meilleure efficacité de compression (et de générer des flux binaires plus petits).
+  ita: Le preimpostazioni più lente in genere raggiungono una migliore efficienza di compressione (e generano flussi di bit più piccoli).
+  spa: Los preajustes más lentos generalmente lograrán una mejor eficiencia de compresión (y generarán flujos de bits más pequeños).
+  zho: 较慢的预设通常会达到更好的压缩效率（并生成较小的比特流）。
 Source:
-  zho: "\u6765\u6E90"
   deu: Quelle
   eng: Source
   fra: Source
   ita: Fonte
   spa: Fuente
+  zho: 来源
 Source height:
-  zho: "\u6765\u6E90\u9AD8\u5EA6"
-  deu: "H\xC3\xB6he der Quelle"
+  deu: Höhe der Quelle
   eng: Source height
   fra: Hauteur de la source
   ita: Altezza della sorgente
   spa: Altura de la fuente
+  zho: 来源高度
 Source width:
-  zho: "\u6765\u6E90\u5BBD\u5EA6"
   deu: Breite der Quelle
   eng: Source width
   fra: Largeur de la source
   ita: Larghezza della fonte
   spa: Ancho de la fuente
+  zho: 来源宽度
 Speed:
-  zho: "\u901F\u5EA6"
   deu: Geschwindigkeit
   eng: Speed
   fra: Vitesse
-  ita: "Velocit\xC3\_"
+  ita: Velocità
   spa: Velocidad
+  zho: 速度
+Start:
+  deu: Beginn
+  eng: Start
+  fra: Démarrer
+  ita: Iniziare
+  spa: Comienza
+  zho: 开始
+Starting conversion process:
+  deu: Konvertierungsprozess starten
+  eng: Starting conversion process
+  fra: Iniciando el proceso de conversión
+  ita: Avvio del processo di conversione
+  spa: Iniciando el proceso de conversión
+  zho: 开始转换过程
+Subtitle Tracks:
+  deu: Untertitelspuren
+  eng: Subtitle Tracks
+  fra: Pistes de sous-titres
+  ita: Tracce dei sottotitoli
+  spa: Pistas de subtítulos
+  zho: 字幕轨
 Subtitle select language:
-  zho: "\u526F\u6807\u9898\u9009\u62E9\u8BED\u8A00"
-  deu: "Untertitel Sprache w\xC3\xA4hlen"
+  deu: Untertitel Sprache wählen
   eng: Subtitle select language
   fra: Sous-titre choisir la langue
   ita: Sottotitolo selezionare la lingua
-  spa: "Subt\xEDtulo seleccionar idioma"
+  spa: Subtítulo seleccionar idioma
+  zho: 副标题选择语言
 Subtitles:
-  zho: "\u5B57\u5E55"
   deu: Untertitel
   eng: Subtitles
   fra: Sous-titres
   ita: Sottotitoli
-  spa: "Subt\xEDtulos:"
+  spa: 'Subtítulos:'
+  zho: 字幕
 Success:
-  zho: "\u6210\u529F\u6848\u4F8B"
   deu: Erfolg
   eng: Success
-  fra: "Succ\xC3\xA8s"
+  fra: Succès
   ita: Successo
-  spa: "\xC9xito"
+  spa: Éxito
+  zho: 成功案例
+Supported Image Files:
+  deu: Unterstützte Bilddateien
+  eng: Supported Image Files
+  fra: Fichiers d'images pris en charge
+  ita: File immagine supportati
+  spa: Archivos de imagen soportados
+  zho: 支持的图像文件
 The GUI might have died, but I'm going to keep converting!:
-  zho: "GUI\u53EF\u80FD\u5DF2\u7ECF\u6B7B\u6389\u4E86\uFF0C\u4F46\u6211\u8981\u7EE7\
-    \u7EED\u8F6C\u6362!"
   deu: Die GUI mag gestorben sein, aber ich werde weiter konvertieren!
   eng: The GUI might have died, but I'm going to keep converting!
-  fra: "L'interface graphique est peut-\xC3\xAAtre morte, mais je vais continuer \xC3\
-    \_ me convertir !"
-  ita: "L'interfaccia grafica sar\xC3\_ anche morta, ma continuer\xC3\xB2 a convertirmi!"
-  spa: "\xA1El GUI puede haber muerto, pero voy a seguir convirtiendo!"
+  fra: L'interface graphique est peut-être morte, mais je vais continuer à me convertir !
+  ita: L'interfaccia grafica sarà anche morta, ma continuerò a convertirmi!
+  spa: ¡El GUI puede haber muerto, pero voy a seguir convirtiendo!
+  zho: GUI可能已经死掉了，但我要继续转换!
 The more complex the block, the more quantization is used.:
-  zho: "\u5757\u8D8A\u590D\u6742\uFF0C\u4F7F\u7528\u7684\u91CF\u5316\u8D8A\u591A\u3002"
   deu: Je komplexer der Block ist, desto mehr Quantisierung wird verwendet.
   eng: The more complex the block, the more quantization is used.
   fra: Plus le bloc est complexe, plus on utilise la quantification.
-  ita: "Pi\xC3\xB9 complesso \xC3\xA8 il blocco, pi\xC3\xB9 si usa la quantizzazione."
-  spa: "Cuanto m\xE1s complejo es el bloque, m\xE1s cuantificaci\xF3n se utiliza."
+  ita: Più complesso è il blocco, più si usa la quantizzazione.
+  spa: Cuanto más complejo es el bloque, más cuantificación se utiliza.
+  zho: 块越复杂，使用的量化越多。
 The purpose is to prevent blocking or banding artifacts in regions with few/zero AC coefficients.:
-  zho: "\u76EE\u7684\u662F\u4E3A\u4E86\u9632\u6B62\u5728\u4EA4\u6D41\u7CFB\u6570\u8F83\
-    \u5C11/\u4E3A\u96F6\u7684\u533A\u57DF\u51FA\u73B0\u963B\u585E\u6216\u5E26\u72B6\
-    \u4F2A\u5F71\u3002"
-  deu: Der Zweck ist, Blocking- oder Banding-Artefakte in Regionen mit wenigen/null
-    AC-Koeffizienten zu verhindern.
-  eng: The purpose is to prevent blocking or banding artifacts in regions with few/zero
-    AC coefficients.
-  fra: "L'objectif est d'\xC3\xA9viter de bloquer ou de banderoler des artefacts dans\
-    \ des r\xC3\xA9gions o\xC3\xB9 les coefficients AC sont faibles ou nuls."
-  ita: "Lo scopo \xC3\xA8 quello di prevenire il blocco o il banding di artefatti\
-    \ in regioni con pochi/zeri coefficienti AC."
-  spa: "El prop\xF3sito es prevenir el bloqueo o los artefactos de bandas en regiones\
-    \ con coeficientes de CA bajos/cero."
+  deu: Der Zweck ist, Blocking- oder Banding-Artefakte in Regionen mit wenigen/null AC-Koeffizienten zu verhindern.
+  eng: The purpose is to prevent blocking or banding artifacts in regions with few/zero AC coefficients.
+  fra: L'objectif est d'éviter de bloquer ou de banderoler des artefacts dans des régions où les coefficients AC sont faibles ou nuls.
+  ita: Lo scopo è quello di prevenire il blocco o il banding di artefatti in regioni con pochi/zeri coefficienti AC.
+  spa: El propósito es prevenir el bloqueo o los artefactos de bandas en regiones con coeficientes de CA bajos/cero.
+  zho: 目的是为了防止在交流系数较少/为零的区域出现阻塞或带状伪影。
 There is a conversion in process!:
-  zho: "\u6709\u4E00\u4E2A\u8F6C\u6362\u8FC7\u7A0B!"
   deu: Es ist eine Konvertierung im Gange!
   eng: There is a conversion in process!
   fra: Il y a une conversion en cours !
-  ita: "C'\xC3\xA8 una conversione in corso!"
-  spa: "\xA1Hay una conversi\xF3n en proceso!"
+  ita: C'è una conversione in corso!
+  spa: ¡Hay una conversión en proceso!
+  zho: 有一个转换过程!
 There was an error during conversion and the queue has stopped:
-  zho: "\u8F6C\u6362\u8FC7\u7A0B\u4E2D\u51FA\u73B0\u9519\u8BEF\uFF0C\u961F\u5217\u5DF2\
-    \u7ECF\u505C\u6B62"
-  deu: "Es gab einen Fehler w\xC3\xA4hrend der Konvertierung und die Warteschlange\
-    \ wurde angehalten"
+  deu: Es gab einen Fehler während der Konvertierung und die Warteschlange wurde angehalten
   eng: There was an error during conversion and the queue has stopped
-  fra: "Il y a eu une erreur lors de la conversion et la file d'attente s'est arr\xC3\
-    \xAAt\xC3\xA9e"
-  ita: "C'\xC3\xA8 stato un errore durante la conversione e la coda si \xC3\xA8 fermata"
-  spa: "Hubo un error durante la conversi\xF3n y la cola se ha detenido"
+  fra: Il y a eu une erreur lors de la conversion et la file d'attente s'est arrêtée
+  ita: C'è stato un errore durante la conversione e la coda si è fermata
+  spa: Hubo un error durante la conversión y la cola se ha detenido
+  zho: 转换过程中出现错误，队列已经停止
 This flag performs bi-linear interpolation of the corner reference samples for a strong smoothing effect.:
-  zho: "\u8FD9\u4E2A\u6807\u5FD7\u53EF\u4EE5\u5BF9\u89D2\u53C2\u8003\u6837\u672C\u8FDB\
-    \u884C\u53CC\u7EBF\u6027\u63D2\u503C\uFF0C\u4EE5\u83B7\u5F97\u5F3A\u5927\u7684\
-    \u5E73\u6ED1\u6548\u679C\u3002"
-  deu: "Dieses Flag f\xC3\xBChrt eine bi-lineare Interpolation der Eckreferenzsamples\
-    \ durch, um einen starken Gl\xC3\xA4ttungseffekt zu erzielen."
-  eng: This flag performs bi-linear interpolation of the corner reference samples
-    for a strong smoothing effect.
-  fra: "Ce drapeau effectue une interpolation bi-lin\xC3\xA9aire des \xC3\xA9chantillons\
-    \ de r\xC3\xA9f\xC3\xA9rence des coins pour un fort effet de lissage."
-  ita: Questa bandierina esegue l'interpolazione bi-lineare dei campioni di riferimento
-    d'angolo per un forte effetto levigante.
-  spa: "Este bander\xEDn realiza una interpolaci\xF3n bi-l\xEDnea de las muestras\
-    \ de referencia de las esquinas para un fuerte efecto de suavizado."
+  deu: Dieses Flag führt eine bi-lineare Interpolation der Eckreferenzsamples durch, um einen starken Glättungseffekt zu erzielen.
+  eng: This flag performs bi-linear interpolation of the corner reference samples for a strong smoothing effect.
+  fra: Ce drapeau effectue une interpolation bi-linéaire des échantillons de référence des coins pour un fort effet de lissage.
+  ita: Questa bandierina esegue l'interpolazione bi-lineare dei campioni di riferimento d'angolo per un forte effetto levigante.
+  spa: Este banderín realiza una interpolación bi-línea de las muestras de referencia de las esquinas para un fuerte efecto de suavizado.
+  zho: 这个标志可以对角参考样本进行双线性插值，以获得强大的平滑效果。
 This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.:
-  zho: "\u8FD9\u663E\u8457\u63D0\u9AD8\u4E86\u7CFB\u7EDF\u7684\u7F16\u7801\u901F\u5EA6\
-    \uFF0C\u5426\u5219\u5728\u5BF9VP9\u8FDB\u884C\u7F16\u7801\u65F6\uFF0C\u8FD9\u4E9B\
-    \u7CFB\u7EDF\u5C06\u5F97\u4E0D\u5230\u5145\u5206\u5229\u7528\u3002"
-  deu: Dies verbessert die Kodiergeschwindigkeit auf Systemen, die sonst bei der Kodierung
-    von VP9 nicht ausgelastet sind, erheblich.
-  eng: This improves encoding speed significantly on systems that are otherwise underutilised
-    when encoding VP9.
-  fra: "Cela am\xC3\xA9liore consid\xC3\xA9rablement la vitesse de codage sur des\
-    \ syst\xC3\xA8mes qui sont autrement sous-utilis\xC3\xA9s lors du codage VP9."
-  ita: "Questo migliora la velocit\xC3\_ di codifica in modo significativo su sistemi\
-    \ che sono altrimenti sottoutilizzati durante la codifica VP9."
-  spa: "Esto mejora significativamente la velocidad de codificaci\xF3n en los sistemas\
-    \ que de otra manera son subutilizados al codificar el VP9."
+  deu: Dies verbessert die Kodiergeschwindigkeit auf Systemen, die sonst bei der Kodierung von VP9 nicht ausgelastet sind, erheblich.
+  eng: This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.
+  fra: Cela améliore considérablement la vitesse de codage sur des systèmes qui sont autrement sous-utilisés lors du codage VP9.
+  ita: Questo migliora la velocità di codifica in modo significativo su sistemi che sono altrimenti sottoutilizzati durante la codifica VP9.
+  spa: Esto mejora significativamente la velocidad de codificación en los sistemas que de otra manera son subutilizados al codificar el VP9.
+  zho: 这显著提高了系统的编码速度，否则在对VP9进行编码时，这些系统将得不到充分利用。
 This is intended for use when you do not have a container to keep the stream headers for you:
-  zho: "\u5F53\u60A8\u6CA1\u6709\u5BB9\u5668\u4E3A\u60A8\u4FDD\u5B58\u6D41\u5934\u65F6\
-    \uFF0C\u53EF\u4EE5\u4F7F\u7528\u8FD9\u4E2A\u6807\u5FD7\u3002"
-  deu: "Dies ist f\xC3\xBCr die Verwendung vorgesehen, wenn Sie keinen Container haben,\
-    \ der die Stream-Header f\xC3\xBCr Sie aufbewahrt"
-  eng: This is intended for use when you do not have a container to keep the stream
-    headers for you
-  fra: "Il est destin\xC3\xA9 \xC3\_ \xC3\xAAtre utilis\xC3\xA9 lorsque vous ne disposez\
-    \ pas d'un conteneur pour conserver les en-t\xC3\xAAtes de flux"
-  ita: "Questo \xC3\xA8 destinato all'uso quando non si dispone di un contenitore\
-    \ per mantenere le intestazioni dello stream per voi"
-  spa: "Est\xE1 pensado para ser utilizado cuando no se dispone de un contenedor para\
-    \ guardar los encabezados de la corriente para usted"
+  deu: Dies ist für die Verwendung vorgesehen, wenn Sie keinen Container haben, der die Stream-Header für Sie aufbewahrt
+  eng: This is intended for use when you do not have a container to keep the stream headers for you
+  fra: Il est destiné à être utilisé lorsque vous ne disposez pas d'un conteneur pour conserver les en-têtes de flux
+  ita: Questo è destinato all'uso quando non si dispone di un contenitore per mantenere le intestazioni dello stream per voi
+  spa: Está pensado para ser utilizado cuando no se dispone de un contenedor para guardar los encabezados de la corriente para usted
+  zho: 当您没有容器为您保存流头时，可以使用这个标志。
 This is used for ultra-high bitrates with zero loss of quality.:
-  zho: "\u8FD9\u7528\u4E8E\u8D85\u9AD8\u6BD4\u7279\u7387\u4E14\u8D28\u91CF\u96F6\u635F\
-    \u5931\u7684\u60C5\u51B5\u4E0B\u3002"
-  deu: "Dies wird f\xC3\xBCr ultrahohe Bitraten ohne Qualit\xC3\xA4tsverluste verwendet."
+  deu: Dies wird für ultrahohe Bitraten ohne Qualitätsverluste verwendet.
   eng: This is used for ultra-high bitrates with zero loss of quality.
-  fra: "Il est utilis\xC3\xA9 pour les d\xC3\xA9bits binaires ultra-\xC3\xA9lev\xC3\
-    \xA9s sans perte de qualit\xC3\xA9."
-  ita: "Questo viene utilizzato per bitrate elevatissimi con perdita di qualit\xC3\
-    \_ pari a zero."
-  spa: "Se utiliza para velocidades de transmisi\xF3n ultra altas con cero p\xE9rdida\
-    \ de calidad."
+  fra: Il est utilisé pour les débits binaires ultra-élevés sans perte de qualité.
+  ita: Questo viene utilizzato per bitrate elevatissimi con perdita di qualità pari a zero.
+  spa: Se utiliza para velocidades de transmisión ultra altas con cero pérdida de calidad.
+  zho: 这用于超高比特率且质量零损失的情况下。
 'This option is not recommenced unless you need to conform ':
-  zho: "\u9664\u975E\u60A8\u9700\u8981\u7B26\u5408\u4EE5\u4E0B\u8981\u6C42\uFF0C\u5426\
-    \u5219\u4E0D\u5EFA\u8BAE\u4F7F\u7528\u8BE5\u9009\u9879\u3002"
-  deu: "Diese Option wird nicht empfohlen, es sei denn, Sie m\xC3\xBCssen konform\
-    \ sein "
+  deu: 'Diese Option wird nicht empfohlen, es sei denn, Sie müssen konform sein '
   eng: 'This option is not recommenced unless you need to conform '
-  fra: "Cette option n'est pas renouvel\xC3\xA9e, sauf si vous devez vous conformer "
+  fra: "Cette option n'est pas renouvelée, sauf si vous devez vous conformer "
   ita: 'Questa opzione non viene riavviata a meno che non sia necessario conformarsi '
-  spa: "Esta opci\xF3n no se reinicia a menos que se necesite conformar "
+  spa: 'Esta opción no se reinicia a menos que se necesite conformar '
+  zho: 除非您需要符合以下要求，否则不建议使用该选项。
 This will just copy the video track as is.:
-  zho: "\u8FD9\u5C06\u53EA\u662F\u590D\u5236\u89C6\u9891\u8F68\u9053\u7684\u539F\u6837\
-    \u3002"
   deu: Damit wird der Videotrack einfach so kopiert, wie er ist.
   eng: This will just copy the video track as is.
-  fra: "Il suffit de copier la piste vid\xC3\xA9o telle quelle."
-  ita: "Questo si limiter\xC3\_ a copiare la traccia video cos\xC3\xAC com'\xC3\xA8\
-    ."
-  spa: "Esto s\xF3lo copiar\xE1 la pista del video tal como est\xE1."
+  fra: Il suffit de copier la piste vidéo telle quelle.
+  ita: Questo si limiterà a copiare la traccia video così com'è.
+  spa: Esto sólo copiará la pista del video tal como está.
+  zho: 这将只是复制视频轨道的原样。
 Tier:
-  zho: "\u5C42\u7EA7"
   deu: Ebene
   eng: Tier
   fra: Tier
   ita: Livello
   spa: Tier
+  zho: 层级
 Tile Columns:
-  zho: "\u74F7\u7816\u67F1\u5B50"
   deu: Kachel-Spalten
   eng: Tile Columns
   fra: Colonnes de tuiles
   ita: Colonne di piastrelle
   spa: Columnas de azulejos
+  zho: 瓷砖柱子
 Tile Rows:
-  zho: "\u74F7\u7816\u6392\u6570"
   deu: Kachelzeilen
   eng: Tile Rows
-  fra: "Les rang\xC3\xA9es de carreaux"
+  fra: Les rangées de carreaux
   ita: File di piastrelle
   spa: Filas de azulejos
+  zho: 瓷砖排数
 Tiles:
-  zho: "\u74F7\u7816"
   deu: Kacheln
   eng: Tiles
   fra: Carreaux
   ita: Piastrelle
   spa: Baldosas
+  zho: 瓷砖
 Time Left:
-  zho: "\u5269\u4F59\u65F6\u95F4"
   deu: Linke Zeit
   eng: Time Left
   fra: Temps restant
   ita: Tempo rimanente
   spa: Tiempo restante
+  zho: 剩余时间
 Title:
-  zho: "\u6807\u9898"
   deu: Titel
   eng: Title
   fra: Titre
   ita: Titolo
-  spa: "T\xEDtulo"
+  spa: Título
+  zho: 标题
+Top:
+  deu: Oben
+  eng: Top
+  fra: Top
+  ita: Top
+  spa: Top
+  zho: 顶端
 Total video height must be greater than 0:
-  zho: "\u89C6\u9891\u603B\u9AD8\u5EA6\u5FC5\u987B\u5927\u4E8E0"
-  deu: "Gesamth\xC3\xB6he des Videos muss gr\xC3\xB6\xC3\u0178er als 0 sein"
+  deu: Gesamthöhe des Videos muss größer als 0 sein
   eng: Total video height must be greater than 0
-  fra: "La hauteur totale de la vid\xC3\xA9o doit \xC3\xAAtre sup\xC3\xA9rieure \xC3\
-    \_ 0"
+  fra: La hauteur totale de la vidéo doit être supérieure à 0
   ita: L'altezza totale del video deve essere superiore a 0
   spa: La altura total del video debe ser mayor que 0
+  zho: 视频总高度必须大于0
 Tune:
-  zho: "\u8C03\u97F3"
   deu: Abstimmen
   eng: Tune
   fra: Tune
   ita: Tune
   spa: Sintoniza
+  zho: 调音
 Tune the settings for a particular type of source or situation:
-  zho: "\u9488\u5BF9\u7279\u5B9A\u7C7B\u578B\u7684\u4FE1\u53F7\u6E90\u6216\u60C5\u51B5\
-    \u8C03\u6574\u8BBE\u7F6E\u3002"
-  deu: "Abstimmen der Einstellungen f\xC3\xBCr einen bestimmten Quellentyp oder eine\
-    \ bestimmte Situation"
+  deu: Abstimmen der Einstellungen für einen bestimmten Quellentyp oder eine bestimmte Situation
   eng: Tune the settings for a particular type of source or situation
-  fra: "R\xC3\xA9gler les param\xC3\xA8tres pour un type de source ou une situation\
-    \ particuli\xC3\xA8re"
+  fra: Régler les paramètres pour un type de source ou une situation particulière
   ita: Sintonizzare le impostazioni per un particolare tipo di sorgente o situazione
-  spa: "Sintonizar los ajustes para un tipo de fuente o situaci\xF3n particular"
+  spa: Sintonizar los ajustes para un tipo de fuente o situación particular
+  zho: 针对特定类型的信号源或情况调整设置。
 Usage:
-  zho: "\u4F7F\u7528\u65B9\u6CD5"
   deu: Verwendung
   eng: Usage
   fra: Utilisation
   ita: Utilizzo
   spa: Uso
+  zho: 使用方法
 Use --bframes 0 to force all P/I low-latency encodes.:
-  zho: "\u4F7F\u7528--bframes 0\u5F3A\u5236\u6240\u6709P/I\u4F4E\u5EF6\u8FDF\u7F16\
-    \u7801\u3002"
-  deu: Verwenden Sie --bframes 0, um alle P/I-Codierungen mit niedriger Latenz zu
-    erzwingen.
+  deu: Verwenden Sie --bframes 0, um alle P/I-Codierungen mit niedriger Latenz zu erzwingen.
   eng: Use --bframes 0 to force all P/I low-latency encodes.
-  fra: "Utilisez --bframes 0 pour forcer tous les codes P/I \xC3\_ faible latence."
+  fra: Utilisez --bframes 0 pour forcer tous les codes P/I à faible latence.
   ita: Utilizzare --bframes 0 per forzare tutte le codifiche P/I a bassa latenza.
-  spa: "Use --bframes 0 para forzar todos los c\xF3digos de baja latencia P/I."
+  spa: Use --bframes 0 para forzar todos los códigos de baja latencia P/I.
+  zho: 使用--bframes 0强制所有P/I低延迟编码。
 Useful when there is a desire to signal 0 values for max-cll and max-fall.:
-  zho: "\u5F53\u5E0C\u671B\u5BF9 max-cll \u548C max-fall \u53D1\u51FA 0 \u503C\u4FE1\
-    \u53F7\u65F6\u5F88\u6709\u7528\u3002"
-  deu: "N\xC3\xBCtzlich, wenn der Wunsch besteht, 0-Werte f\xC3\xBCr max-cll und max-fall\
-    \ zu signalisieren."
+  deu: Nützlich, wenn der Wunsch besteht, 0-Werte für max-cll und max-fall zu signalisieren.
   eng: Useful when there is a desire to signal 0 values for max-cll and max-fall.
   fra: Utile lorsqu'on souhaite signaler des valeurs 0 pour max-cll et max-fall.
   ita: Utile quando si desidera segnalare i valori 0 per max-cll e max-fall.
-  spa: "Es \xFAtil cuando se desea se\xF1alar los valores 0 para max-cll y max-fall."
+  spa: Es útil cuando se desea señalar los valores 0 para max-cll y max-fall.
+  zho: 当希望对 max-cll 和 max-fall 发出 0 值信号时很有用。
 Useful when you have the "Too many packets buffered for output stream" error:
-  zho: "\u5F53\u51FA\u73B0 \"\u8F93\u51FA\u6D41\u7F13\u51B2\u7684\u6570\u636E\u5305\
-    \u592A\u591A \"\u9519\u8BEF\u65F6\u5F88\u6709\u7528\u3002"
-  deu: "N\xC3\xBCtzlich, wenn Sie den Fehler \"Too many packets buffered for output\
-    \ stream\" haben"
+  deu: Nützlich, wenn Sie den Fehler "Too many packets buffered for output stream" haben
   eng: Useful when you have the "Too many packets buffered for output stream" error
   fra: Utile lorsque vous avez l'erreur "Too many packets buffered for output stream
-  ita: Utile quando si ha l'errore "Troppi pacchetti bufferizzati per il flusso di
-    uscita".
-  spa: "\xDAtil cuando se tiene el error \"Demasiados paquetes almacenados en la memoria\
-    \ intermedia para el flujo de salida\"."
+  ita: Utile quando si ha l'errore "Troppi pacchetti bufferizzati per il flusso di uscita".
+  spa: Útil cuando se tiene el error "Demasiados paquetes almacenados en la memoria intermedia para el flujo de salida".
+  zho: 当出现 "输出流缓冲的数据包太多 "错误时很有用。
 Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.:
-  zho: "\u4F7F\u75281\u62162\u4F1A\u63D0\u9AD8\u7F16\u7801\u901F\u5EA6\uFF0C\u4F46\
-    \u4EE3\u4EF7\u662F\u5BF9\u8D28\u91CF\u548C\u901F\u7387\u63A7\u5236\u7CBE\u5EA6\
-    \u6709\u4E00\u5B9A\u5F71\u54CD\u3002"
-  deu: "Die Verwendung von 1 oder 2 erh\xC3\xB6ht die Kodiergeschwindigkeit auf Kosten\
-    \ einer gewissen Auswirkung auf die Qualit\xC3\xA4t und die Genauigkeit der Ratenkontrolle."
-  eng: Using 1 or 2 will increase encoding speed at the expense of having some impact
-    on quality and rate control accuracy.
-  fra: "L'utilisation de 1 ou 2 augmentera la vitesse d'encodage au d\xC3\xA9triment\
-    \ d'un certain impact sur la qualit\xC3\xA9 et la pr\xC3\xA9cision du contr\xC3\
-    \xB4le des taux."
-  ita: "L'uso di 1 o 2 aumenter\xC3\_ la velocit\xC3\_ di codifica a scapito di un\
-    \ certo impatto sulla qualit\xC3\_ e sulla precisione del controllo del tasso."
-  spa: "El uso de 1 o 2 aumentar\xE1 la velocidad de codificaci\xF3n a expensas de\
-    \ tener alg\xFAn impacto en la calidad y la precisi\xF3n del control de la tasa."
+  deu: Die Verwendung von 1 oder 2 erhöht die Kodiergeschwindigkeit auf Kosten einer gewissen Auswirkung auf die Qualität und die Genauigkeit der Ratenkontrolle.
+  eng: Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.
+  fra: L'utilisation de 1 ou 2 augmentera la vitesse d'encodage au détriment d'un certain impact sur la qualité et la précision du contrôle des taux.
+  ita: L'uso di 1 o 2 aumenterà la velocità di codifica a scapito di un certo impatto sulla qualità e sulla precisione del controllo del tasso.
+  spa: El uso de 1 o 2 aumentará la velocidad de codificación a expensas de tener algún impacto en la calidad y la precisión del control de la tasa.
+  zho: 使用1或2会提高编码速度，但代价是对质量和速率控制精度有一定影响。
 Using a single frame thread gives a slight improvement in compression,:
-  zho: "\u4F7F\u7528\u5355\u5E27\u7EBF\u7A0B\u4F1A\u4F7F\u538B\u7F29\u7387\u7565\u6709\
-    \u63D0\u9AD8\u3002"
-  deu: "Die Verwendung eines einzelnen Frame-Threads f\xC3\xBChrt zu einer leichten\
-    \ Verbesserung der Komprimierung,"
+  deu: Die Verwendung eines einzelnen Frame-Threads führt zu einer leichten Verbesserung der Komprimierung,
   eng: Using a single frame thread gives a slight improvement in compression,
-  fra: "L'utilisation d'un seul fil de trame donne une l\xC3\xA9g\xC3\xA8re am\xC3\
-    \xA9lioration de la compression,"
-  ita: L'utilizzo di una filettatura a telaio singolo offre un leggero miglioramento
-    della compressione,
-  spa: "Usar un solo hilo de cuadro da una ligera mejora en la compresi\xF3n,"
+  fra: L'utilisation d'un seul fil de trame donne une légère amélioration de la compression,
+  ita: L'utilizzo di una filettatura a telaio singolo offre un leggero miglioramento della compressione,
+  spa: Usar un solo hilo de cuadro da una ligera mejora en la compresión,
+  zho: 使用单帧线程会使压缩率略有提高。
 'Values: 0:none; 1:fast; 2:full(trellis) default':
-  zho: "\u503C\u30020:none; 1:fast; 2:full(trellis) \u9ED8\u8BA4\u503C"
   deu: 'Werte: 0:keine; 1:schnell; 2:voll(trellis) Standard'
   eng: 'Values: 0:none; 1:fast; 2:full(trellis) default'
-  fra: "Les valeurs : 0:aucun ; 1:rapide ; 2:plein(treillis) par d\xC3\xA9faut"
+  fra: 'Les valeurs : 0:aucun ; 1:rapide ; 2:plein(treillis) par défaut'
   ita: 'Valori: 0:nessuno; 1:veloce; 2:pieno (traliccio) predefinito'
-  spa: "Valores: 0:ninguno; 1:r\xE1pido; 2:completo (enrejado) por defecto"
+  spa: 'Valores: 0:ninguno; 1:rápido; 2:completo (enrejado) por defecto'
+  zho: 值。0:none; 1:fast; 2:full(trellis) 默认值
 Various:
-  zho: "\u5404\u7C7B"
   deu: Verschiedene
   eng: Various
   fra: Divers
   ita: Varie
   spa: Varios
+  zho: 各类
+Vert + Hoz Flip:
+  deu: Vert + Hoz Flip
+  eng: Vert + Hoz Flip
+  fra: Vert + Hoz Flip
+  ita: Vert + Hoz Flip
+  spa: Vert + Hoz Flip
+  zho: Vert + Hoz Flip
+Vertical Flip:
+  deu: Vertikaler Flip
+  eng: Vertical Flip
+  fra: Volteo vertical
+  ita: Capovolgimento verticale
+  spa: Volteo vertical
+  zho: 垂直翻转
+Video Track:
+  deu: Video-Spur
+  eng: Video Track
+  fra: Piste vidéo
+  ita: Traccia video
+  spa: Pista de video
+  zho: 视频追踪
+View Changes:
+  deu: Änderungen anzeigen
+  eng: View Changes
+  fra: Voir les changements
+  ita: Visualizza le modifiche
+  spa: Ver cambios
+  zho: 查看变化
+View GUI Debug Logs:
+  deu: GUI-Debug-Protokolle anzeigen
+  eng: View GUI Debug Logs
+  fra: Voir les journaux de débogage de l'interface graphique
+  ita: Visualizza i registri di debug GUI
+  spa: Ver los registros de depuración del GUI
+  zho: 查看GUI调试日志
 'WARNING: This will take much longer and result in a larger file':
-  zho: "\u8B66\u544A\uFF1A\u8FD9\u5C06\u9700\u8981\u66F4\u957F\u7684\u65F6\u95F4\uFF0C\
-    \u5E76\u5BFC\u81F4\u4E00\u4E2A\u66F4\u5927\u7684\u6587\u4EF6\u3002"
-  deu: "WARNUNG: Dies dauert viel l\xC3\xA4nger und f\xC3\xBChrt zu einer gr\xC3\xB6\
-    \xC3\u0178eren Datei"
+  deu: 'WARNUNG: Dies dauert viel länger und führt zu einer größeren Datei'
   eng: 'WARNING: This will take much longer and result in a larger file'
-  fra: "AVERTISSEMENT : Cela prendra beaucoup plus de temps et entra\xC3\xAEnera un\
-    \ dossier plus volumineux"
-  ita: "ATTENZIONE: Ci vorr\xC3\_ molto pi\xC3\xB9 tempo e il risultato sar\xC3\_\
-    \ un file pi\xC3\xB9 grande"
-  spa: "ADVERTENCIA: Esto tomar\xE1 mucho m\xE1s tiempo y resultar\xE1 en un archivo\
-    \ m\xE1s grande"
+  fra: 'AVERTISSEMENT : Cela prendra beaucoup plus de temps et entraînera un dossier plus volumineux'
+  ita: 'ATTENZIONE: Ci vorrà molto più tempo e il risultato sarà un file più grande'
+  spa: 'ADVERTENCIA: Esto tomará mucho más tiempo y resultará en un archivo más grande'
+  zho: 警告：这将需要更长的时间，并导致一个更大的文件。
 Wait for the current command to finish, and stop the next command from processing:
-  zho: "\u7B49\u5F85\u5F53\u524D\u547D\u4EE4\u5B8C\u6210\uFF0C\u5E76\u505C\u6B62\u4E0B\
-    \u4E00\u6761\u547D\u4EE4\u7684\u5904\u7406\u3002"
-  deu: "Warten, bis der aktuelle Befehl beendet ist, und die Verarbeitung des n\xC3\
-    \xA4chsten Befehls stoppen"
+  deu: Warten, bis der aktuelle Befehl beendet ist, und die Verarbeitung des nächsten Befehls stoppen
   eng: Wait for the current command to finish, and stop the next command from processing
-  fra: "Attendre la fin de la commande en cours et arr\xC3\xAAter le traitement de\
-    \ la commande suivante"
-  ita: Attendere che il comando corrente finisca e interrompere l'elaborazione del
-    comando successivo
-  spa: Espere a que termine el comando actual y detenga el procesamiento del siguiente
-    comando...
+  fra: Attendre la fin de la commande en cours et arrêter le traitement de la commande suivante
+  ita: Attendere che il comando corrente finisca e interrompere l'elaborazione del comando successivo
+  spa: Espere a que termine el comando actual y detenga el procesamiento del siguiente comando...
+  zho: 等待当前命令完成，并停止下一条命令的处理。
 Watch:
-  zho: "\u89C2\u5BDF"
   deu: Beobachten
   eng: Watch
   fra: Voir
   ita: Guarda
   spa: Mira
+  zho: 观察
+Width:
+  deu: Breite
+  eng: Width
+  fra: Ancho
+  ita: Larghezza
+  spa: Ancho
+  zho: 宽度
 Width must be divisible by 2:
-  zho: "\u5BBD\u5EA6\u5FC5\u987B\u9664\u4EE52"
   deu: Breite muss durch 2 teilbar sein
   eng: Width must be divisible by 2
-  fra: "La largeur doit \xC3\xAAtre divisible par 2"
+  fra: La largeur doit être divisible par 2
   ita: La larghezza deve essere divisibile per 2
   spa: El ancho debe ser divisible por 2
+  zho: 宽度必须除以2
 Width must be divisible by 2 - Source width:
-  zho: "\u5BBD\u5EA6\u5FC5\u987B\u9664\u4EE52---------------------------------------------------\u6E90\
-    \u5BBD\u5EA6"
   deu: Breite muss durch 2 teilbar sein - Quellbreite
   eng: Width must be divisible by 2 - Source width
-  fra: "La largeur doit \xC3\xAAtre divisible par 2 - Largeur de la source"
+  fra: La largeur doit être divisible par 2 - Largeur de la source
   ita: La larghezza deve essere divisibile per 2 - Larghezza della sorgente
   spa: El ancho debe ser divisible por 2 - Ancho de la fuente
+  zho: 宽度必须除以2--源宽度
 With b-adapt 0, the GOP structure is fixed based on the values of --keyint and --bframes.:
-  zho: "\u5F53b-adapt\u4E3A0\u65F6\uFF0CGOP\u7ED3\u6784\u6839\u636E--keyint\u548C\
-    --bframes\u7684\u503C\u56FA\u5B9A\u3002"
-  deu: Bei b-adapt 0 wird die GOP-Struktur anhand der Werte von --keyint und --bframes
-    festgelegt.
-  eng: With b-adapt 0, the GOP structure is fixed based on the values of --keyint
-    and --bframes.
-  fra: "Avec l'adaptateur b 0, la structure du GOP est fix\xC3\xA9e sur la base des\
-    \ valeurs de --keyint et --bframes."
-  ita: "Con b-adapt 0, la struttura GOP \xC3\xA8 fissa in base ai valori di --keyint\
-    \ e --bframes."
-  spa: Con b-adaptado 0, la estructura del GOP se fija en base a los valores de --keyint
-    y --bframes.
+  deu: Bei b-adapt 0 wird die GOP-Struktur anhand der Werte von --keyint und --bframes festgelegt.
+  eng: With b-adapt 0, the GOP structure is fixed based on the values of --keyint and --bframes.
+  fra: Avec l'adaptateur b 0, la structure du GOP est fixée sur la base des valeurs de --keyint et --bframes.
+  ita: Con b-adapt 0, la struttura GOP è fissa in base ai valori di --keyint e --bframes.
+  spa: Con b-adaptado 0, la estructura del GOP se fija en base a los valores de --keyint y --bframes.
+  zho: 当b-adapt为0时，GOP结构根据--keyint和--bframes的值固定。
 With b-adapt 1 a light lookahead is used to choose B frame placement.:
-  zho: "\u4F7F\u7528b-adapt 1\u65F6\uFF0C\u4F7F\u7528\u8F7B\u91CF\u7EA7\u7684lookahead\u6765\
-    \u9009\u62E9B\u5E27\u7684\u4F4D\u7F6E\u3002"
-  deu: "Mit b-adapt 1 wird ein leichter Lookahead verwendet, um die B-Frame-Platzierung\
-    \ zu w\xC3\xA4hlen."
+  deu: Mit b-adapt 1 wird ein leichter Lookahead verwendet, um die B-Frame-Platzierung zu wählen.
   eng: With b-adapt 1 a light lookahead is used to choose B frame placement.
-  fra: "Avec l'adaptateur b 1, un l\xC3\xA9ger regard est utilis\xC3\xA9 pour choisir\
-    \ le placement des images B."
-  ita: Con b-adapt 1 si usa un leggero lookahead per scegliere il posizionamento del
-    telaio B.
-  spa: "Con b-adapt 1 se utiliza un lookahead ligero para elegir la colocaci\xF3n\
-    \ del marco B."
+  fra: Avec l'adaptateur b 1, un léger regard est utilisé pour choisir le placement des images B.
+  ita: Con b-adapt 1 si usa un leggero lookahead per scegliere il posizionamento del telaio B.
+  spa: Con b-adapt 1 se utiliza un lookahead ligero para elegir la colocación del marco B.
+  zho: 使用b-adapt 1时，使用轻量级的lookahead来选择B帧的位置。
 With b-adapt 2 (trellis) a viterbi B path selection is performed:
-  zho: "\u5BF9\u4E8Eb-adapt 2\uFF08\u68DA\u67B6\uFF09\uFF0C\u5219\u6267\u884Cviterbi\
-    \ B\u8DEF\u5F84\u9009\u62E9\u3002"
-  deu: "Bei b-adapt 2 (Trellis) wird eine Viterbi-B-Pfadauswahl durchgef\xC3\xBChrt"
+  deu: Bei b-adapt 2 (Trellis) wird eine Viterbi-B-Pfadauswahl durchgeführt
   eng: With b-adapt 2 (trellis) a viterbi B path selection is performed
-  fra: "Avec l'adaptateur b 2 (treillis), une s\xC3\xA9lection du chemin B de Viterbi\
-    \ est effectu\xC3\xA9e"
-  ita: Con b-adapt 2 (traliccio) viene eseguita una selezione del percorso viterbi
-    B
-  spa: "Con b-adapt 2 (espaldera) se realiza una selecci\xF3n de trayectoria B viterbi"
+  fra: Avec l'adaptateur b 2 (treillis), une sélection du chemin B de Viterbi est effectuée
+  ita: Con b-adapt 2 (traliccio) viene eseguita una selezione del percorso viterbi B
+  spa: Con b-adapt 2 (espaldera) se realiza una selección de trayectoria B viterbi
+  zho: 对于b-adapt 2（棚架），则执行viterbi B路径选择。
 Work Directory:
-  zho: "\u5DE5\u4F5C\u76EE\u5F55"
   deu: Arbeitsverzeichnis
   eng: Work Directory
-  fra: "R\xC3\xA9pertoire des travaux"
+  fra: Répertoire des travaux
   ita: Elenco dei lavori
   spa: Directorio de trabajo
+  zho: 工作目录
 all conversions complete:
-  zho: "\u5168\u90E8\u8F6C\u6362\u5B8C\u6210"
   deu: alle Konvertierungen abgeschlossen
   eng: all conversions complete
-  fra: "toutes les conversions sont termin\xC3\xA9es"
+  fra: toutes les conversions sont terminées
   ita: tutte le conversioni completate
   spa: todas las conversiones se han completado
+  zho: 全部转换完成
 already exists:
-  zho: "\u5DF2\u6709"
   deu: bereits vorhanden
   eng: already exists
-  fra: "existe d\xC3\xA9j\xC3\_"
-  ita: "esiste gi\xC3\_"
+  fra: existe déjà
+  ita: esiste già
   spa: ya existe
+  zho: 已有
 and the amount of work performed by the full trellis version of --b-adapt lookahead.:
-  zho: "\u548C-b-adapt lookahead\u7684\u5168\u68DA\u67B6\u7248\u672C\u6240\u6267\u884C\
-    \u7684\u5DE5\u4F5C\u91CF\u3002"
-  deu: "und der Arbeitsaufwand, der von der Full Trellis-Version von --b-adapt lookahead\
-    \ durchgef\xC3\xBChrt wird."
+  deu: und der Arbeitsaufwand, der von der Full Trellis-Version von --b-adapt lookahead durchgeführt wird.
   eng: and the amount of work performed by the full trellis version of --b-adapt lookahead.
-  fra: "et la quantit\xC3\xA9 de travail effectu\xC3\xA9e par la version compl\xC3\
-    \xA8te en treillis de --b-adapt lookahead."
-  ita: "e la quantit\xC3\_ di lavoro svolto dalla versione completa della versione\
-    \ a traliccio di --b-adattate lookahead."
-  spa: "y la cantidad de trabajo realizado por la versi\xF3n completa de la espaldera\
-    \ de --b-adaptado lookahead."
+  fra: et la quantité de travail effectuée par la version complète en treillis de --b-adapt lookahead.
+  ita: e la quantità di lavoro svolto dalla versione completa della versione a traliccio di --b-adattate lookahead.
+  spa: y la cantidad de trabajo realizado por la versión completa de la espaldera de --b-adaptado lookahead.
+  zho: 和-b-adapt lookahead的全棚架版本所执行的工作量。
 and you want keyframes to be random access points.:
-  zho: "\u5E76\u4E14\u4F60\u5E0C\u671B\u5173\u952E\u5E27\u662F\u968F\u673A\u8BBF\u95EE\
-    \u70B9\u3002"
-  deu: "und Sie wollen, dass Keyframes zuf\xC3\xA4llige Zugriffspunkte sind."
+  deu: und Sie wollen, dass Keyframes zufällige Zugriffspunkte sind.
   eng: and you want keyframes to be random access points.
-  fra: "et vous voulez que les images cl\xC3\xA9s soient des points d'acc\xC3\xA8\
-    s al\xC3\xA9atoires."
+  fra: et vous voulez que les images clés soient des points d'accès aléatoires.
   ita: e si desidera che i fotogrammi chiave siano punti di accesso casuali.
   spa: y quieres que los fotogramas clave sean puntos de acceso aleatorios.
+  zho: 并且你希望关键帧是随机访问点。
 'aq-mode: Adaptive Quantization operating mode.':
-  zho: "aq-mode.\u81EA\u9002\u5E94\u91CF\u5316\u5DE5\u4F5C\u6A21\u5F0F\u3002\u81EA\
-    \u9002\u5E94\u91CF\u5316\u5DE5\u4F5C\u6A21\u5F0F."
   deu: 'aq-mode: Betriebsart "Adaptive Quantisierung".'
   eng: 'aq-mode: Adaptive Quantization operating mode.'
   fra: 'aq-mode : Mode de fonctionnement de la quantification adaptative.'
-  ita: "aq-mode: Modalit\xC3\_ operativa di quantizzazione adattiva."
-  spa: "aq-mode: Modo de operaci\xF3n de Cuantificaci\xF3n Adaptativa."
+  ita: 'aq-mode: Modalità operativa di quantizzazione adattiva.'
+  spa: 'aq-mode: Modo de operación de Cuantificación Adaptativa.'
+  zho: aq-mode.自适应量化工作模式。自适应量化工作模式.
 are mere suggestions!:
-  zho: "\u8FD9\u4E9B\u90FD\u53EA\u662F\u5EFA\u8BAE"
-  deu: "sind lediglich Vorschl\xC3\xA4ge!"
+  deu: sind lediglich Vorschläge!
   eng: are mere suggestions!
   fra: ne sont que des suggestions !
   ita: sono semplici suggerimenti!
   spa: son meras sugerencias!
+  zho: 这些都只是建议
 attachment tracks found:
-  zho: "\u53D1\u73B0\u9644\u4EF6\u8F68\u8FF9"
   deu: Anhangspuren gefunden
   eng: attachment tracks found
-  fra: "pistes d'attache trouv\xC3\xA9es"
+  fra: pistes d'attache trouvées
   ita: tracce di attacco trovate
   spa: pistas de adjuntos encontradas
+  zho: 发现附件轨迹
 audio tracks found:
-  zho: "\u53D1\u73B0\u97F3\u8F68"
   deu: Audiospuren gefunden
   eng: audio tracks found
-  fra: "pistes audio trouv\xC3\xA9es"
+  fra: pistes audio trouvées
   ita: tracce audio trovate
   spa: pistas de audio encontradas
+  zho: 发现音轨
 b-adapt:
-  zho: "\u9002\u5E94\u6027"
   deu: b-adapt
   eng: b-adapt
   fra: b-adapt
   ita: b-adatta
   spa: b-adapt
+  zho: 适应性
 'b-adapt: Set the level of effort in determining B frame placement.':
-  zho: "b-adapt\u3002\u8BBE\u7F6E\u786E\u5B9AB\u5E27\u4F4D\u7F6E\u7684\u52AA\u529B\
-    \u7A0B\u5EA6\u3002"
-  deu: 'b-adapt: Legen Sie den Grad des Aufwands bei der Bestimmung der B-Frame-Platzierung
-    fest.'
+  deu: 'b-adapt: Legen Sie den Grad des Aufwands bei der Bestimmung der B-Frame-Platzierung fest.'
   eng: 'b-adapt: Set the level of effort in determining B frame placement.'
-  fra: "b-adapt : Fixe le niveau d'effort pour d\xC3\xA9terminer le placement de l'image\
-    \ B."
-  ita: 'b-adatta: Impostare il livello di sforzo nel determinare il posizionamento
-    del telaio B.'
-  spa: "b-adaptado: Establece el nivel de esfuerzo para determinar la colocaci\xF3\
-    n del marco B."
+  fra: "b-adapt : Fixe le niveau d'effort pour déterminer le placement de l'image B."
+  ita: 'b-adatta: Impostare il livello di sforzo nel determinare il posizionamento del telaio B.'
+  spa: 'b-adaptado: Establece el nivel de esfuerzo para determinar la colocación del marco B.'
+  zho: b-adapt。设置确定B帧位置的努力程度。
 best is recommended if you have lots of time and want the best compression efficiency.:
-  zho: "\u5982\u679C\u4F60\u6709\u5F88\u591A\u65F6\u95F4\uFF0C\u5E76\u4E14\u60F3\u8981\
-    \u6700\u597D\u7684\u538B\u7F29\u6548\u7387\uFF0C\u5EFA\u8BAE\u4F7F\u7528best\u3002"
-  deu: "best wird empfohlen, wenn Sie viel Zeit haben und die beste Komprimierungseffizienz\
-    \ w\xC3\xBCnschen."
-  eng: best is recommended if you have lots of time and want the best compression
-    efficiency.
-  fra: "Le meilleur est recommand\xC3\xA9 si vous avez beaucoup de temps et si vous\
-    \ voulez obtenir la meilleure efficacit\xC3\xA9 de compression."
-  ita: "Il migliore \xC3\xA8 consigliato se si ha molto tempo a disposizione e si\
-    \ desidera la migliore efficienza di compressione."
-  spa: "Se recomienda el mejor si tienes mucho tiempo y quieres la mejor eficiencia\
-    \ de compresi\xF3n."
+  deu: best wird empfohlen, wenn Sie viel Zeit haben und die beste Komprimierungseffizienz wünschen.
+  eng: best is recommended if you have lots of time and want the best compression efficiency.
+  fra: Le meilleur est recommandé si vous avez beaucoup de temps et si vous voulez obtenir la meilleure efficacité de compression.
+  ita: Il migliore è consigliato se si ha molto tempo a disposizione e si desidera la migliore efficienza di compressione.
+  spa: Se recomienda el mejor si tienes mucho tiempo y quieres la mejor eficiencia de compresión.
+  zho: 如果你有很多时间，并且想要最好的压缩效率，建议使用best。
 bframes:
-  zho: "b\u5E27"
   deu: bframes
   eng: bframes
   fra: bframes
   ita: telai b
   spa: bframes
+  zho: b帧
 'bframes: Maximum number of consecutive b-frames. ':
-  zho: "b\u5E27\u3002\u8FDE\u7EEDb\u5E27\u7684\u6700\u5927\u6570\u91CF\u3002"
   deu: 'bframes: Maximale Anzahl von aufeinanderfolgenden b-Frames. '
   eng: 'bframes: Maximum number of consecutive b-frames. '
-  fra: "bframes : Nombre maximum de b-frames cons\xC3\xA9cutives. "
+  fra: 'bframes : Nombre maximum de b-frames consécutives. '
   ita: 'bframes: Numero massimo di b-frame consecutivi. '
-  spa: "bframes: N\xFAmero m\xE1ximo de b-frames consecutivos. "
+  spa: 'bframes: Número máximo de b-frames consecutivos. '
+  zho: b帧。连续b帧的最大数量。
 but it has severe performance implications.:
-  zho: "\u4F46\u5B83\u5BF9\u6027\u80FD\u6709\u4E25\u91CD\u5F71\u54CD\u3002"
   deu: aber es hat schwerwiegende Auswirkungen auf die Leistung.
   eng: but it has severe performance implications.
   fra: mais elle a de graves implications en termes de performances.
   ita: ma ha gravi implicazioni in termini di prestazioni.
   spa: pero tiene severas implicaciones de rendimiento.
+  zho: 但它对性能有严重影响。
 but over a period of multiple frames instead of a single keyframe.:
-  zho: "\u4F46\u5728\u591A\u4E2A\u5E27\u7684\u65F6\u95F4\u5185\uFF0C\u800C\u4E0D\u662F\
-    \u5355\u4E2A\u5173\u952E\u5E27\u3002"
-  deu: "aber \xC3\xBCber einen Zeitraum von mehreren Frames anstelle eines einzelnen\
-    \ Keyframes."
+  deu: aber über einen Zeitraum von mehreren Frames anstelle eines einzelnen Keyframes.
   eng: but over a period of multiple frames instead of a single keyframe.
-  fra: "mais sur une p\xC3\xA9riode de plusieurs images au lieu d'une seule image\
-    \ cl\xC3\xA9."
+  fra: mais sur une période de plusieurs images au lieu d'une seule image clé.
   ita: ma su un periodo di frame multipli invece di un singolo keyframe.
-  spa: "pero en un per\xEDodo de m\xFAltiples fotogramas en lugar de un solo fotograma\
-    \ clave."
+  spa: pero en un período de múltiples fotogramas en lugar de un solo fotograma clave.
+  zho: 但在多个帧的时间内，而不是单个关键帧。
 channels:
-  zho: "\u901A\u9053"
-  deu: "Kan\xC3\xA4le"
+  deu: Kanäle
   eng: channels
   fra: canaux
   ita: canali
   spa: canales
+  zho: 通道
 codec:
-  zho: "\u7F16\u89E3\u7801\u5668"
   deu: Codec
   eng: codec
   fra: codec
   ita: codec
-  spa: "c\xF3dec"
+  spa: códec
+  zho: 编解码器
 compression level:
-  zho: "\u538B\u7F29\u5EA6"
   deu: Komprimierungsstufe
   eng: compression level
   fra: niveau de compression
   ita: livello di compressione
-  spa: "nivel de compresi\xF3n"
+  spa: nivel de compresión
+  zho: 压缩度
 data tracks found:
-  zho: "\u8F68\u8FF9\u53D1\u73B0"
   deu: gefundene Datenspuren
   eng: data tracks found
-  fra: "pistes de donn\xC3\xA9es trouv\xC3\xA9es"
+  fra: pistes de données trouvées
   ita: tracce di dati trovati
   spa: pistas de datos encontradas
+  zho: 轨迹发现
 'dhdr10-opt: Reduces SEI overhead':
-  zho: "dhdr10-opt: \u51CF\u5C11SEI\u8D39\u7528"
   deu: 'dhdr10-opt: Reduziert SEI-Overhead'
   eng: 'dhdr10-opt: Reduces SEI overhead'
-  fra: "dhdr10-opt : R\xC3\xA9duire les frais g\xC3\xA9n\xC3\xA9raux du SEI"
+  fra: 'dhdr10-opt : Réduire les frais généraux du SEI'
   ita: 'dhdr10-opt: Riduce le spese generali SEI'
   spa: 'dhdr10-opt: Reduce los gastos de SEI'
+  zho: 'dhdr10-opt: 减少SEI费用'
 'frame-threads: Number of concurrently encoded frames.':
-  zho: "frame-threads: \u540C\u65F6\u7F16\u7801\u7684\u5E27\u6570\u3002"
   deu: 'Frame-Threads: Anzahl der gleichzeitig kodierten Frames.'
   eng: 'frame-threads: Number of concurrently encoded frames.'
-  fra: "des fils de trame : Nombre de trames cod\xC3\xA9es simultan\xC3\xA9ment."
+  fra: 'des fils de trame : Nombre de trames codées simultanément.'
   ita: 'telaio-filettature: Numero di frame codificati simultaneamente.'
-  spa: "Hilos de marcos: N\xFAmero de cuadros codificados simult\xE1neamente."
+  spa: 'Hilos de marcos: Número de cuadros codificados simultáneamente.'
+  zho: 'frame-threads: 同时编码的帧数。'
 good is the default and recommended for most applications:
-  zho: "good\u662F\u9ED8\u8BA4\u503C\uFF0C\u5EFA\u8BAE\u7528\u4E8E\u5927\u591A\u6570\
-    \u5E94\u7528\u3002"
-  deu: "good ist der Standard und wird f\xC3\xBCr die meisten Anwendungen empfohlen"
+  deu: good ist der Standard und wird für die meisten Anwendungen empfohlen
   eng: good is the default and recommended for most applications
-  fra: "good est la valeur par d\xC3\xA9faut et est recommand\xC3\xA9 pour la plupart\
-    \ des applications"
-  ita: "buono \xC3\xA8 il valore predefinito e raccomandato per la maggior parte delle\
-    \ applicazioni"
-  spa: "bueno es el predeterminado y recomendado para la mayor\xEDa de las aplicaciones"
+  fra: good est la valeur par défaut et est recommandé pour la plupart des applications
+  ita: buono è il valore predefinito e raccomandato per la maggior parte delle applicazioni
+  spa: bueno es el predeterminado y recomendado para la mayoría de las aplicaciones
+  zho: good是默认值，建议用于大多数应用。
 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.':
-  zho: "hdr10-opt: \u542F\u7528HDR10\u5185\u5BB9\u7684\u5757\u7EA7\u4EAE\u5EA6\u548C\
-    \u8272\u5EA6QP\u4F18\u5316\u3002"
-  deu: "hdr10-opt: Aktiviert die Luma- und Chroma-QP-Optimierung auf Blockebene f\xC3\
-    \xBCr HDR10-Inhalte."
+  deu: 'hdr10-opt: Aktiviert die Luma- und Chroma-QP-Optimierung auf Blockebene für HDR10-Inhalte.'
   eng: 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.'
-  fra: "hdr10-opt : Activer l'optimisation QP luma et chroma au niveau des blocs pour\
-    \ le contenu HDR10."
-  ita: "hdr10-opt: Attivare l'ottimizzazione a livello di blocco luma e chroma QP\
-    \ per i contenuti HDR10."
-  spa: "hdr10-opt: Habilitar la optimizaci\xF3n de la luma a nivel de bloque y la\
-    \ QP crom\xE1tica para el contenido de HDR10."
+  fra: "hdr10-opt : Activer l'optimisation QP luma et chroma au niveau des blocs pour le contenu HDR10."
+  ita: "hdr10-opt: Attivare l'ottimizzazione a livello di blocco luma e chroma QP per i contenuti HDR10."
+  spa: 'hdr10-opt: Habilitar la optimización de la luma a nivel de bloque y la QP cromática para el contenido de HDR10.'
+  zho: 'hdr10-opt: 启用HDR10内容的块级亮度和色度QP优化。'
 'hdr10: Force signaling of HDR10 parameters in SEI packets.':
-  zho: "hdr10\uFF1A\u5728SEI\u6570\u636E\u5305\u4E2D\u5F3A\u5236\u53D1\u9001HDR10\u53C2\
-    \u6570\u4FE1\u53F7\u3002"
   deu: 'hdr10: Erzwingt die Signalisierung von HDR10-Parametern in SEI-Paketen.'
   eng: 'hdr10: Force signaling of HDR10 parameters in SEI packets.'
-  fra: "hdr10 : Forcer la signalisation des param\xC3\xA8tres HDR10 dans les paquets\
-    \ SEI."
+  fra: 'hdr10 : Forcer la signalisation des paramètres HDR10 dans les paquets SEI.'
   ita: 'hdr10: Forza la segnalazione dei parametri HDR10 nei pacchetti SEI.'
-  spa: "hdr10: Forzar la se\xF1alizaci\xF3n de los par\xE1metros HDR10 en los paquetes\
-    \ SEI."
+  spa: 'hdr10: Forzar la señalización de los parámetros HDR10 en los paquetes SEI.'
+  zho: hdr10：在SEI数据包中强制发送HDR10参数信号。
 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.':
-  zho: "intra-refresh: \u542F\u7528\u5468\u671F\u6027\u5185\u90E8\u5237\u65B0(PIR)\u4EE3\
-    \u66FF\u5173\u952E\u5E27\u63D2\u5165\u3002"
   deu: 'intra-refresh: Aktiviert Periodic Intra Refresh(PIR) anstelle der Keyframe-Einblendung.'
   eng: 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.'
-  fra: "intra-refresh : Active le rafra\xC3\xAEchissement p\xC3\xA9riodique intra\
-    \ (PIR) au lieu de l'insertion d'images cl\xC3\xA9s."
-  ita: "intra-refresh: Abilita l'Intra Refresh(PIR) periodico invece dell'inserimento\
-    \ del keyframe."
-  spa: "intra-refresco: Habilita el Refresco Intra Peri\xF3dico (PIR) en lugar de\
-    \ la inserci\xF3n de fotogramas clave."
+  fra: "intra-refresh : Active le rafraîchissement périodique intra (PIR) au lieu de l'insertion d'images clés."
+  ita: "intra-refresh: Abilita l'Intra Refresh(PIR) periodico invece dell'inserimento del keyframe."
+  spa: 'intra-refresco: Habilita el Refresco Intra Periódico (PIR) en lugar de la inserción de fotogramas clave.'
+  zho: 'intra-refresh: 启用周期性内部刷新(PIR)代替关键帧插入。'
 is a default profile and will not be removed:
-  zho: "\u662F\u9ED8\u8BA4\u914D\u7F6E\u6587\u4EF6\uFF0C\u4E0D\u4F1A\u88AB\u5220\u9664\
-    \u3002"
   deu: ist ein Standardprofil und wird nicht entfernt
   eng: is a default profile and will not be removed
-  fra: "est un profil par d\xC3\xA9faut et ne sera pas supprim\xC3\xA9"
-  ita: "\xC3\xA8 un profilo predefinito e non verr\xC3\_ rimosso"
-  spa: "es un perfil predeterminado y no se eliminar\xE1"
+  fra: est un profil par défaut et ne sera pas supprimé
+  ita: è un profilo predefinito e non verrà rimosso
+  spa: es un perfil predeterminado y no se eliminará
+  zho: 是默认配置文件，不会被删除。
 is extremely source dependant:
-  zho: "\u6781\u5176\u4F9D\u8D56\u6765\u6E90"
-  deu: "ist extrem quellenabh\xC3\xA4ngig"
+  deu: ist extrem quellenabhängig
   eng: is extremely source dependant
-  fra: "est extr\xC3\xAAmement d\xC3\xA9pendante de la source"
-  ita: "\xC3\xA8 estremamente dipendente dalla fonte"
+  fra: est extrêmement dépendante de la source
+  ita: è estremamente dipendente dalla fonte
   spa: es extremadamente dependiente de la fuente
+  zho: 极其依赖来源
 it will generally just increase memory use.:
-  zho: "\u5B83\u901A\u5E38\u53EA\u4F1A\u589E\u52A0\u5185\u5B58\u4F7F\u7528\u3002"
-  deu: "erh\xC3\xB6ht im Allgemeinen nur den Speicherverbrauch."
+  deu: erhöht im Allgemeinen nur den Speicherverbrauch.
   eng: it will generally just increase memory use.
-  fra: "elle ne fera g\xC3\xA9n\xC3\xA9ralement qu'augmenter l'utilisation de la m\xC3\
-    \xA9moire."
+  fra: elle ne fera généralement qu'augmenter l'utilisation de la mémoire.
   ita: in genere aumenta solo l'uso della memoria.
-  spa: "generalmente s\xF3lo aumentar\xE1 el uso de la memoria."
+  spa: generalmente sólo aumentará el uso de la memoria.
+  zho: 它通常只会增加内存使用。
 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)':
-  zho: "keyint: \u542F\u7528\u5185\u90E8\u7F16\u7801\uFF0C\u6BCF1\u79D2\u5F3A\u5236\
-    \u5173\u952E\u5E27\uFF08\u84DD\u5149\u89C4\u683C\uFF09\u3002"
-  deu: 'keyint: Aktiviert Intra-Encoding durch Erzwingen von Keyframes alle 1 Sekunde
-    (Blu-ray-Spec)'
-  eng: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray
-    spec)'
-  fra: "keyint : Activer l'intra-encodage en for\xC3\xA7ant les images cl\xC3\xA9\
-    s toutes les 1 seconde (sp\xC3\xA9cification Blu-ray)"
-  ita: "keyint: Attivare l'Intra-Encoding forzando i keyframe ogni 1 secondo (Blu-ray\
-    \ spec)"
-  spa: "keyint: Habilitar la intracodificaci\xF3n forzando los fotogramas clave cada\
-    \ 1 segundo (Blu-ray spec)"
+  deu: 'keyint: Aktiviert Intra-Encoding durch Erzwingen von Keyframes alle 1 Sekunde (Blu-ray-Spec)'
+  eng: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)'
+  fra: "keyint : Activer l'intra-encodage en forçant les images clés toutes les 1 seconde (spécification Blu-ray)"
+  ita: "keyint: Attivare l'Intra-Encoding forzando i keyframe ogni 1 secondo (Blu-ray spec)"
+  spa: 'keyint: Habilitar la intracodificación forzando los fotogramas clave cada 1 segundo (Blu-ray spec)'
+  zho: 'keyint: 启用内部编码，每1秒强制关键帧（蓝光规格）。'
 lossless:
-  zho: "\u65E0\u635F"
   deu: verlustfrei
   eng: lossless
   fra: sans perte
   ita: senza perdite
   spa: Lossless
+  zho: 无损
 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error':
-  zho: "max_muxing_queue_size\u3002\u63D0\u9AD8\u4EE5\u89E3\u51B3 \"\u8F93\u51FA\u6D41\
-    \u7F13\u51B2\u7684\u6570\u636E\u5305\u592A\u591A \"\u7684\u9519\u8BEF\u3002"
-  deu: "max_muxing_queue_size: Erh\xC3\xB6hen, um den Fehler \"Zu viele Pakete f\xC3\
-    \xBCr den Ausgabestrom gepuffert\" zu beheben"
-  eng: 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output
-    stream" error'
-  fra: "max_muxing_queue_size : Augmenter pour corriger l'erreur \"Too many packets\
-    \ buffered for output stream"
-  ita: "max_muxing_queue_size: Alzare per correggere l'errore \"Troppi pacchetti bufferizzati\
-    \ per il flusso di uscita"
-  spa: "tama\xF1o_muxing_queue_size: Subir para corregir el error \"Demasiados paquetes\
-    \ almacenados en la memoria intermedia para el flujo de salida\"."
+  deu: 'max_muxing_queue_size: Erhöhen, um den Fehler "Zu viele Pakete für den Ausgabestrom gepuffert" zu beheben'
+  eng: 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error'
+  fra: "max_muxing_queue_size : Augmenter pour corriger l'erreur \"Too many packets buffered for output stream"
+  ita: "max_muxing_queue_size: Alzare per correggere l'errore \"Troppi pacchetti bufferizzati per il flusso di uscita"
+  spa: 'tamaño_muxing_queue_size: Subir para corregir el error "Demasiados paquetes almacenados en la memoria intermedia para el flujo de salida".'
+  zho: max_muxing_queue_size。提高以解决 "输出流缓冲的数据包太多 "的错误。
 none:
-  zho: "\u65E0"
   deu: keine
   eng: none
   fra: aucun
   ita: nessuno
   spa: ninguno
+  zho: 无
 of:
-  zho: "\u7684"
   deu: von
   eng: of
   fra: de
   ita: di
   spa: de
+  zho: 的
 out file is already in queue:
-  zho: "\u5916\u6863\u5DF2\u5728\u961F\u5217\u4E2D"
   deu: out-Datei ist bereits in der Warteschlange
   eng: out file is already in queue
-  fra: "notre dossier est d\xC3\xA9j\xC3\_ dans la file d'attente"
-  ita: "il file in uscita \xC3\xA8 gi\xC3\_ in coda"
-  spa: "nuestro archivo ya est\xE1 en la cola"
+  fra: notre dossier est déjà dans la file d'attente
+  ita: il file in uscita è già in coda
+  spa: nuestro archivo ya está en la cola
+  zho: 外档已在队列中
 preset:
-  zho: "\u9884\u8BBE"
   deu: Voreinstellung
   eng: preset
-  fra: "pr\xC3\xA9r\xC3\xA9glage"
+  fra: préréglage
   ita: preimpostato
   spa: preestablecido
+  zho: 预设
 'preset: The slower the preset, the better the compression and quality':
-  zho: "\u9884\u8BBE\u7684\u901F\u5EA6\u8D8A\u6162\uFF0C\u538B\u7F29\u548C\u8D28\u91CF\
-    \u8D8A\u597D\u3002\u9884\u8BBE\u8D8A\u6162\uFF0C\u538B\u7F29\u548C\u8D28\u91CF\
-    \u5C31\u8D8A\u597D\u3002"
-  deu: "voreingestellt: Je langsamer die Voreinstellung, desto besser die Komprimierung\
-    \ und Qualit\xC3\xA4t"
+  deu: 'voreingestellt: Je langsamer die Voreinstellung, desto besser die Komprimierung und Qualität'
   eng: 'preset: The slower the preset, the better the compression and quality'
-  fra: "pr\xC3\xA9r\xC3\xA9gl\xC3\xA9 : Plus le pr\xC3\xA9r\xC3\xA9glage est lent,\
-    \ meilleure est la compression et la qualit\xC3\xA9"
-  ita: "preimpostata: Pi\xC3\xB9 lento \xC3\xA8 il preset, migliore \xC3\xA8 la compressione\
-    \ e la qualit\xC3\_"
-  spa: "preestablecido: Cuanto m\xE1s lento el preajuste, mejor ser\xE1 la compresi\xF3\
-    n y la calidad"
+  fra: 'préréglé : Plus le préréglage est lent, meilleure est la compression et la qualité'
+  ita: 'preimpostata: Più lento è il preset, migliore è la compressione e la qualità'
+  spa: 'preestablecido: Cuanto más lento el preajuste, mejor será la compresión y la calidad'
+  zho: 预设的速度越慢，压缩和质量越好。预设越慢，压缩和质量就越好。
 preventing large-scale patterns such as color banding in images.:
-  zho: "\u9632\u6B62\u56FE\u50CF\u4E2D\u51FA\u73B0\u8272\u5E26\u7B49\u5927\u9762\u79EF\
-    \u56FE\u6848\u3002"
-  deu: "verhindert gro\xC3\u0178fl\xC3\xA4chige Muster wie z. B. Color Banding in\
-    \ Bildern."
+  deu: verhindert großflächige Muster wie z. B. Color Banding in Bildern.
   eng: preventing large-scale patterns such as color banding in images.
-  fra: "emp\xC3\xAAcher les motifs \xC3\_ grande \xC3\xA9chelle comme les bandes de\
-    \ couleur dans les images."
+  fra: empêcher les motifs à grande échelle comme les bandes de couleur dans les images.
   ita: impedendo modelli su larga scala come le bande di colore nelle immagini.
-  spa: "evitando patrones a gran escala como las bandas de color en las im\xE1genes."
+  spa: evitando patrones a gran escala como las bandas de color en las imágenes.
+  zho: 防止图像中出现色带等大面积图案。
 profile:
-  zho: "\u8F6E\u5ED3"
   deu: Profil
   eng: profile
   fra: profil
   ita: profilo
   spa: perfil
+  zho: 轮廓
 'profile: Enforce an encode profile':
-  zho: "\u914D\u7F6E\u6587\u4EF6\u3002\u6267\u884C\u4E00\u4E2A\u7F16\u7801\u914D\u7F6E\
-    \u6587\u4EF6"
   deu: 'Profil: Erzwingt ein Kodierprofil'
   eng: 'profile: Enforce an encode profile'
   fra: 'profil : Appliquer un profil de codage'
   ita: 'profilo: Applicare un profilo di codifica'
   spa: 'perfil: Hacer cumplir un perfil codificado'
+  zho: 配置文件。执行一个编码配置文件
 'profile: VP9 coding profile - must match bit depth':
-  zho: "\u914D\u7F6E\u6587\u4EF6\u3002VP9\u7F16\u7801\u89C4\u8303--\u5FC5\u987B\u4E0E\
-    \u6BD4\u7279\u6DF1\u5EA6\u76F8\u5339\u914D\u3002"
-  deu: "Profil: VP9-Kodierungsprofil - muss mit der Bittiefe \xC3\xBCbereinstimmen"
+  deu: 'Profil: VP9-Kodierungsprofil - muss mit der Bittiefe übereinstimmen'
   eng: 'profile: VP9 coding profile - must match bit depth'
-  fra: "profil : Profil de codage VP9 - doit correspondre \xC3\_ la profondeur de\
-    \ bit"
-  ita: "profilo: Profilo di codifica VP9 - deve corrispondere alla profondit\xC3\_\
-    \ della punta"
-  spa: "perfil: Perfil de codificaci\xF3n del VP9 - debe coincidir con la profundidad\
-    \ del bit"
+  fra: 'profil : Profil de codage VP9 - doit correspondre à la profondeur de bit'
+  ita: 'profilo: Profilo di codifica VP9 - deve corrispondere alla profondità della punta'
+  spa: 'perfil: Perfil de codificación del VP9 - debe coincidir con la profundidad del bit'
+  zho: 配置文件。VP9编码规范--必须与比特深度相匹配。
 python-box:
-  zho: "\u87D2\u86C7\u76D2"
   deu: python-box
   eng: python-box
   fra: python-box
   ita: python-box
   spa: python-box
+  zho: 蟒蛇盒
 rav1e github:
-  zho: rav1e github
   deu: rav1e github
   eng: rav1e github
   fra: rav1e github
   ita: github rav1e
   spa: rav1e github
+  zho: rav1e github
 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.':
-  zho: "repeat-headers.\u5982\u679C\u542F\u7528\uFF0Cx265\u5C06\u5728\u6BCF\u4E2A\u5173\
-    \u952E\u5E27\u4E2D\u53D1\u5C04VPS\uFF0CSPS\u548CPPS\u5934\u3002\u5982\u679C\u542F\
-    \u7528\uFF0Cx265\u5C06\u5728\u6BCF\u4E00\u4E2A\u5173\u952E\u5E27\u53D1\u51FAVPS\uFF0C\
-    SPS\u548CPPS\u5934\u3002"
-  deu: 'Kopfzeilen wiederholen: Wenn aktiviert, gibt x265 mit jedem Keyframe VPS-,
-    SPS- und PPS-Header aus.'
-  eng: 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with
-    every keyframe.'
-  fra: "des en-t\xC3\xAAtes r\xC3\xA9p\xC3\xA9titifs : Si elle est activ\xC3\xA9e,\
-    \ x265 \xC3\xA9mettra des en-t\xC3\xAAtes VPS, SPS et PPS avec chaque image cl\xC3\
-    \xA9."
-  ita: "ripeti-intestazioni: Se abilitato, x265 emetter\xC3\_ testate VPS, SPS e PPS\
-    \ con ogni fotogramma chiave."
-  spa: "repetici\xF3n de los encabezamientos: Si se activa, x265 emitir\xE1 encabezados\
-    \ VPS, SPS y PPS con cada fotograma clave."
+  deu: 'Kopfzeilen wiederholeng: Wenn aktiviert, gibt x265 mit jedem Keyframe VPS-, SPS- und PPS-Header aus.'
+  eng: 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.'
+  fra: 'des en-têtes répétitifs : Si elle est activée, x265 émettra des en-têtes VPS, SPS et PPS avec chaque image clé.'
+  ita: 'ripeti-intestazioni: Se abilitato, x265 emetterà testate VPS, SPS e PPS con ogni fotogramma chiave.'
+  spa: 'repetición de los encabezamientos: Si se activa, x265 emitirá encabezados VPS, SPS y PPS con cada fotograma clave.'
+  zho: repeat-headers.如果启用，x265将在每个关键帧中发射VPS，SPS和PPS头。如果启用，x265将在每一个关键帧发出VPS，SPS和PPS头。
 since the entire reference frames are always available for motion compensation,:
-  zho: "\u56E0\u4E3A\u6574\u4E2A\u53C2\u8003\u5E27\u603B\u662F\u53EF\u7528\u4E8E\u8FD0\
-    \u52A8\u8865\u507F\u3002"
-  deu: "da immer die gesamten Referenzframes f\xC3\xBCr die Bewegungskompensation\
-    \ zur Verf\xC3\xBCgung stehen,"
+  deu: da immer die gesamten Referenzframes für die Bewegungskompensation zur Verfügung stehen,
   eng: since the entire reference frames are always available for motion compensation,
-  fra: "puisque les images de r\xC3\xA9f\xC3\xA9rence enti\xC3\xA8res sont toujours\
-    \ disponibles pour la compensation de mouvement,"
-  ita: "poich\xC3\xA9 l'intero frame di riferimento \xC3\xA8 sempre disponibile per\
-    \ la compensazione del movimento,"
-  spa: "ya que todos los fotogramas de referencia est\xE1n siempre disponibles para\
-    \ la compensaci\xF3n de movimiento,"
+  fra: puisque les images de référence entières sont toujours disponibles pour la compensation de mouvement,
+  ita: poiché l'intero frame di riferimento è sempre disponibile per la compensazione del movimento,
+  spa: ya que todos los fotogramas de referencia están siempre disponibles para la compensación de movimiento,
+  zho: 因为整个参考帧总是可用于运动补偿。
 starting next command:
-  zho: "\u4E0B\u4EE4"
-  deu: "n\xC3\xA4chsten Befehl starten"
+  deu: nächsten Befehl starten
   eng: starting next command
-  fra: "d\xC3\xA9marrage de la commande suivante"
+  fra: démarrage de la commande suivante
   ita: avvio del prossimo comando
   spa: comenzando el siguiente comando
+  zho: 下令
 subtitle tracks found:
-  zho: "\u627E\u5230\u5B57\u5E55\u66F2\u76EE"
   deu: Untertitelspuren gefunden
   eng: subtitle tracks found
-  fra: "Les pistes de sous-titres trouv\xC3\xA9es"
+  fra: Les pistes de sous-titres trouvées
   ita: tracce sottotitoli trovati
-  spa: "pistas de subt\xEDtulos encontradas"
+  spa: pistas de subtítulos encontradas
+  zho: 找到字幕曲目
 that move across the video from one side to the other and thereby refresh the image:
-  zho: "\u4ECE\u4E00\u4FA7\u79FB\u52A8\u5230\u53E6\u4E00\u4FA7\u7684\u89C6\u9891\uFF0C\
-    \u4ECE\u800C\u5237\u65B0\u56FE\u50CF\u3002"
-  deu: "die sich \xC3\xBCber das Video von einer Seite zur anderen bewegen und dabei\
-    \ das Bild aktualisieren"
-  eng: that move across the video from one side to the other and thereby refresh the
-    image
-  fra: "qui passent d'un c\xC3\xB4t\xC3\xA9 \xC3\_ l'autre de la vid\xC3\xA9o et rafra\xC3\
-    \xAEchissent ainsi l'image"
-  ita: che si muovono attraverso il video da un lato all'altro e quindi rinfrescano
-    l'immagine
-  spa: "que se mueven a trav\xE9s del video de un lado a otro y as\xED refrescan la\
-    \ imagen"
+  deu: die sich über das Video von einer Seite zur anderen bewegen und dabei das Bild aktualisieren
+  eng: that move across the video from one side to the other and thereby refresh the image
+  fra: qui passent d'un côté à l'autre de la vidéo et rafraîchissent ainsi l'image
+  ita: che si muovono attraverso il video da un lato all'altro e quindi rinfrescano l'immagine
+  spa: que se mueven a través del video de un lado a otro y así refrescan la imagen
+  zho: 从一侧移动到另一侧的视频，从而刷新图像。
 the resolution-to-:
-  zho: "\u51B3\u5FC3"
   deu: die Reso
   eng: the resolution-to-
   fra: la reso
   ita: il risuonare
   spa: la reso
+  zho: 决心
 to Blu-ray standards to burn to a physical disk:
-  zho: "\u4EE5\u84DD\u5149\u6807\u51C6\u523B\u5F55\u5230\u7269\u7406\u78C1\u76D8\u4E0A"
+  deu: in Blu-ray-Standards zum Brennen auf einen physischen Datenträger
   eng: to Blu-ray standards to burn to a physical disk
-  fra: "pr\xC3\xA9r\xC3\xA9glage"
-  ita: preimpostato
-  spa: preestablecido
+  fra: a los estándares de Blu-ray para grabar en un disco físico
+  ita: agli standard Blu-ray per masterizzare su un disco fisico
+  spa: a los estándares de Blu-ray para grabar en un disco físico
+  zho: 以蓝光标准刻录到物理磁盘上
 'tune: Tune the settings for a particular type of source or situation':
-  zho: "\u8C03\u6574\u3002\u8C03\u6574\u7279\u5B9A\u7C7B\u578B\u7684\u6765\u6E90\u6216\
-    \u60C5\u51B5\u7684\u8BBE\u7F6E\u3002"
+  deu: 'abstimmen: Die Einstellungen für eine bestimmte Art von Quelle oder Situation abstimmen'
   eng: 'tune: Tune the settings for a particular type of source or situation'
-  fra: "pr\xC3\xA9r\xC3\xA9gl\xC3\xA9 : Plus le pr\xC3\xA9r\xC3\xA9glage est lent,\
-    \ meilleure est la compression et la qualit\xC3\xA9"
-  ita: "preimpostata: Pi\xC3\xB9 lento \xC3\xA8 il preset, migliore \xC3\xA8 la compressione\
-    \ e la qualit\xC3\_"
-  spa: "...preestablecido: Cuanto m\xE1s lento el preajuste, mejor ser\xE1 la compresi\xF3\
-    n y la calidad"
+  fra: 'afinar: Sintonizar los ajustes para un tipo de fuente o situación particular'
+  ita: 'sintonizzarsi: Sintonizzare le impostazioni per un particolare tipo di sorgente o situazione'
+  spa: 'afinar: Sintonizar los ajustes para un tipo de fuente o situación particular'
+  zho: 调整。调整特定类型的来源或情况的设置。
 video tracks found:
-  zho: "\u53D1\u73B0\u89C6\u9891\u8F68\u8FF9"
+  deu: Videospuren gefunden
   eng: video tracks found
-  fra: "emp\xC3\xAAcher les motifs \xC3\_ grande \xC3\xA9chelle comme les bandes de\
-    \ couleur dans les images."
-  ita: impedendo modelli su larga scala come le bande di colore nelle immagini.
-  spa: "evitando patrones a gran escala como las bandas de color en las im\xE1genes."
+  fra: pistas de vídeo encontradas
+  ita: tracce video trovate
+  spa: pistas de vídeo encontradas
+  zho: 发现视频轨迹

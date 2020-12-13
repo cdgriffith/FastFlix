@@ -85,58 +85,60 @@ class Container(QtWidgets.QMainWindow):
 
         file_menu = menubar.addMenu("&File")
 
-        setting_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogListView), "&Settings", self)
+        setting_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogListView), t("Settings"), self)
         setting_action.setShortcut("Ctrl+S")
         setting_action.triggered.connect(self.show_setting)
 
-        exit_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogCancelButton), "&Exit", self)
+        exit_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogCancelButton), t("Exit"), self)
         exit_action.setShortcut(QtGui.QKeySequence("Ctrl+Q"))
-        exit_action.setStatusTip("Exit application")
+        exit_action.setStatusTip(t("Exit application"))
         exit_action.triggered.connect(self.close)
 
         file_menu.addAction(setting_action)
         file_menu.addSeparator()
         file_menu.addAction(exit_action)
 
-        profile_menu = menubar.addMenu("&Profiles")
-        new_profile_action = QtWidgets.QAction("New Profile", self)
+        profile_menu = menubar.addMenu(t("Profiles"))
+        new_profile_action = QtWidgets.QAction(t("New Profile"), self)
         new_profile_action.triggered.connect(self.new_profile)
 
-        show_profile_action = QtWidgets.QAction("Current Profile Settings", self)
+        show_profile_action = QtWidgets.QAction(t("Current Profile Settings"), self)
         show_profile_action.triggered.connect(self.show_profile)
 
-        delete_profile_action = QtWidgets.QAction("Delete Current Profile", self)
+        delete_profile_action = QtWidgets.QAction(t("Delete Current Profile"), self)
         delete_profile_action.triggered.connect(self.delete_profile)
         profile_menu.addAction(new_profile_action)
         profile_menu.addAction(show_profile_action)
         profile_menu.addAction(delete_profile_action)
 
-        about_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), "&About", self)
+        about_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("About"), self)
         about_action.triggered.connect(self.show_about)
 
-        changes_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), "View &Changes", self)
+        changes_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), t("View Changes"), self)
         changes_action.triggered.connect(self.show_changes)
 
-        log_dir_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogOpenButton), "Open Log Directory", self)
+        log_dir_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogOpenButton), t("Open Log Directory"), self)
         log_dir_action.triggered.connect(self.show_log_dir)
 
         log_action = QtWidgets.QAction(
-            self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), "View GUI Debug &Logs", self
+            self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), t("View GUI Debug Logs"), self
         )
         log_action.triggered.connect(self.show_logs)
 
-        report_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogHelpButton), "Report &Issue", self)
+        report_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogHelpButton), t("Report Issue"), self)
         report_action.triggered.connect(self.open_issues)
 
         version_action = QtWidgets.QAction(
-            self.si(QtWidgets.QStyle.SP_BrowserReload), "Check for Newer Version of FastFlix", self
+            self.si(QtWidgets.QStyle.SP_BrowserReload), t("Check for Newer Version of FastFlix"), self
         )
         version_action.triggered.connect(lambda: latest_fastflix(no_new_dialog=True))
 
-        ffmpeg_update_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), "Download Newest FFmpeg", self)
+        ffmpeg_update_action = QtWidgets.QAction(
+            self.si(QtWidgets.QStyle.SP_ArrowDown), t("Download Newest FFmpeg"), self
+        )
         ffmpeg_update_action.triggered.connect(self.download_ffmpeg)
 
-        help_menu = menubar.addMenu("&Help")
+        help_menu = menubar.addMenu(t("Help"))
         help_menu.addAction(changes_action)
         help_menu.addAction(report_action)
         help_menu.addAction(log_dir_action)
@@ -188,10 +190,10 @@ class Container(QtWidgets.QMainWindow):
             print("Caught")
             pass
         except Exception as err:
-            message(f"Could not download the newest FFmpeg: {err}")
+            message(f"{t('Could not download the newest FFmpeg')}: {err}")
         else:
             if not ffmpeg.exists() or not ffprobe.exists():
-                message(f"Could not locate the downloaded files at {ffmpeg_folder}!")
+                message(f"{t('Could not locate the downloaded files at')} {ffmpeg_folder}!")
             else:
                 self.app.fastflix.config.ffmpeg = ffmpeg
                 self.app.fastflix.config.ffprobe = ffprobe

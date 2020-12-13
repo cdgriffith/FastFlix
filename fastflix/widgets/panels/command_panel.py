@@ -9,6 +9,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.helpers import Command as BuilderCommand
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.language import t
 
 
 class Loop(QtWidgets.QGroupBox):
@@ -40,13 +41,13 @@ class Command(QtWidgets.QTabWidget):
             self.setMinimumHeight(height)
         self.number = number
         self.name = name
-        self.label = QtWidgets.QLabel(f"Command {self.number}" if not self.name else self.name)
+        self.label = QtWidgets.QLabel(f"{t('Command')} {self.number}" if not self.name else self.name)
         self.update_grid()
         self.widget.setDisabled(not enabled)
 
     def update_grid(self):
         grid = QtWidgets.QVBoxLayout()
-        self.label.setText(f"Command {self.number}" if not self.name else self.name)
+        self.label.setText(f"{t('Command')} {self.number}" if not self.name else self.name)
         grid.addWidget(self.label)
         grid.addWidget(self.widget)
         grid.addStretch()
@@ -62,18 +63,18 @@ class CommandList(QtWidgets.QWidget):
         layout = QtWidgets.QGridLayout()
 
         top_row = QtWidgets.QHBoxLayout()
-        top_row.addWidget(QtWidgets.QLabel("Commands to execute"))
+        top_row.addWidget(QtWidgets.QLabel(t("Commands to execute")))
 
         copy_commands_button = QtWidgets.QPushButton(
-            self.style().standardIcon(QtWidgets.QStyle.SP_ToolBarVerticalExtensionButton), "Copy Commands"
+            self.style().standardIcon(QtWidgets.QStyle.SP_ToolBarVerticalExtensionButton), t("Copy Commands")
         )
-        copy_commands_button.setToolTip("Copy all commands to the clipboard")
+        copy_commands_button.setToolTip(t("Copy all commands to the clipboard"))
         copy_commands_button.clicked.connect(lambda: self.copy_commands_to_clipboard())
 
         save_commands_button = QtWidgets.QPushButton(
-            self.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton), "Save Commands"
+            self.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton), t("Save Commands")
         )
-        save_commands_button.setToolTip("Save commands to file")
+        save_commands_button.setToolTip(t("Save commands to file"))
         save_commands_button.clicked.connect(lambda: self.save_commands_to_file())
 
         top_row.addStretch()
@@ -104,7 +105,7 @@ class CommandList(QtWidgets.QWidget):
     def save_commands_to_file(self):
         ext = ".bat" if reusables.win_based else ".sh"
         filename = QtWidgets.QFileDialog.getSaveFileName(
-            self, caption="Save Video As", directory=str(Path("~").expanduser()), filter=f"Save File (*{ext})"
+            self, caption=t("Save Commands"), directory=str(Path("~").expanduser()), filter=f"{t('Save File')} (*{ext})"
         )
         if filename and filename[0]:
             Path(filename[0]).write_text(self._prep_commands())

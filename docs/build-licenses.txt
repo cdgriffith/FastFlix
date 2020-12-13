@@ -1,6 +1,6 @@
 This document contains ours and third party licenses included in FastFlix.
 
-FastFlix's code is MIT licenced.  When bundled into a Window's exe it is GPL licenced.
+FastFlix's code is MIT licenced.  When bundled into an executable FastFlix is GPL licenced.
 
 * FastFlix (MIT)
 * Box (MIT)

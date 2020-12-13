@@ -3,6 +3,7 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.language import t
 
 
 class FlixList(QtWidgets.QWidget):
@@ -21,7 +22,7 @@ class FlixList(QtWidgets.QWidget):
         if top_row_layout:
             layout.addLayout(top_row_layout, 0, 0)
         else:
-            layout.addWidget(QtWidgets.QLabel(list_name))
+            layout.addWidget(QtWidgets.QLabel(t(list_name)))
 
         self.inner_widget = QtWidgets.QWidget()
 

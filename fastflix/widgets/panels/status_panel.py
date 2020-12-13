@@ -27,7 +27,7 @@ class StatusPanel(QtWidgets.QWidget):
 
         layout = QtWidgets.QGridLayout()
 
-        self.hide_nal = QtWidgets.QCheckBox("Hide NAL unit messages")
+        self.hide_nal = QtWidgets.QCheckBox(t("Hide NAL unit messages"))
         self.hide_nal.setChecked(True)
 
         self.eta_label = QtWidgets.QLabel(f"{t('Time Left')}: N/A")
@@ -37,7 +37,7 @@ class StatusPanel(QtWidgets.QWidget):
         self.size_label.setToolTip(t("Estimated file size based on bitrate"))
 
         h_box = QtWidgets.QHBoxLayout()
-        h_box.addWidget(QtWidgets.QLabel("Encoder Output"), alignment=QtCore.Qt.AlignLeft)
+        h_box.addWidget(QtWidgets.QLabel(t("Encoder Output")), alignment=QtCore.Qt.AlignLeft)
         h_box.addStretch(1)
         h_box.addWidget(self.eta_label)
         h_box.addWidget(self.size_label)

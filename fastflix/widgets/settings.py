@@ -125,6 +125,8 @@ class Settings(QtWidgets.QWidget):
         else:
             self.app.fastflix.config.work_path = new_work_dir
         self.app.fastflix.config.use_sane_audio = self.use_sane_audio.isChecked()
+
+        old_lang = self.app.fastflix.config.language
         try:
             self.app.fastflix.config.language = Lang(self.language_combo.currentText()).pt3
         except InvalidLanguageValue:
@@ -133,8 +135,8 @@ class Settings(QtWidgets.QWidget):
 
         self.main.config_update()
         self.app.fastflix.config.save()
-        if updated_ffmpeg:
-            error_message(t("FFmpeg updated - Please restart FastFlix"))
+        if updated_ffmpeg or old_lang != self.app.fastflix.config.language:
+            error_message(t("Please restart FastFlix to apply settings"))
         self.close()
 
     def select_ffmpeg(self):
