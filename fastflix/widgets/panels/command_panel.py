@@ -59,6 +59,7 @@ class CommandList(QtWidgets.QWidget):
     def __init__(self, parent, app: FastFlixApp):
         super(CommandList, self).__init__(parent)
         self.app = app
+        self.video_options = parent
 
         layout = QtWidgets.QGridLayout()
 
@@ -111,8 +112,6 @@ class CommandList(QtWidgets.QWidget):
             Path(filename[0]).write_text(self._prep_commands())
 
     def update_commands(self, commands):
-        if not commands:
-            return
         self.inner_widget = QtWidgets.QWidget()
         sp = QtWidgets.QSizePolicy()
         sp.setHorizontalPolicy(QtWidgets.QSizePolicy.Policy.Maximum)
