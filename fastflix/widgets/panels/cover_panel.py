@@ -256,7 +256,7 @@ class CoverPanel(QtWidgets.QWidget):
     def small_cover_land_passthrough_check(self):
         self.main.page_update(build_thumbnail=False)
 
-    def clear_covers(self):
+    def clear_covers(self, reconnect=True):
         self.cover_passthrough_checkbox.toggled.disconnect()
         self.small_cover_passthrough_checkbox.toggled.disconnect()
         self.cover_land_passthrough_checkbox.toggled.disconnect()
@@ -283,9 +283,17 @@ class CoverPanel(QtWidgets.QWidget):
         self.cover_land.setText("")
         self.landscape_button.setDisabled(False)
 
+        if reconnect:
+            self.cover_passthrough_checkbox.toggled.connect(lambda: self.cover_passthrough_check())
+            self.small_cover_passthrough_checkbox.toggled.connect(lambda: self.small_cover_passthrough_check())
+            self.cover_land_passthrough_checkbox.toggled.connect(lambda: self.cover_land_passthrough_check())
+            self.small_cover_land_passthrough_checkbox.toggled.connect(
+                lambda: self.small_cover_land_passthrough_check()
+            )
+
     def new_source(self, attachments):
 
-        self.clear_covers()
+        self.clear_covers(reconnect=False)
 
         for attachment in attachments:
             filename = attachment.get("tags", {}).get("filename", "")
