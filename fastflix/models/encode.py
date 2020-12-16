@@ -121,8 +121,8 @@ class AOMAV1Settings(EncoderSettings):
     tile_columns: str = "0"
     tile_rows: str = "0"
     usage: str = "good"
-    row_mt: str = "default"
-    cpu_used: str = "1"
+    row_mt: str = "enabled"
+    cpu_used: str = "4"
     crf: Union[int, None] = None
     bitrate: Union[str, None] = None
 

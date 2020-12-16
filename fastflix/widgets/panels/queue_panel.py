@@ -179,6 +179,13 @@ class EncodingQueue(FlixList):
         top_layout.addWidget(QtWidgets.QLabel(t("Queue")))
         top_layout.addStretch(1)
 
+        self.clear_queue = QtWidgets.QPushButton(
+            self.app.style().standardIcon(QtWidgets.QStyle.SP_LineEditClearButton), t("Clear Completed")
+        )
+        self.clear_queue.clicked.connect(self.clear_complete)
+        self.clear_queue.setFixedWidth(120)
+        self.clear_queue.setToolTip(t("Remove completed tasks"))
+
         self.pause_queue = QtWidgets.QPushButton(
             self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), t("Pause Queue")
         )
@@ -218,6 +225,7 @@ class EncodingQueue(FlixList):
         top_layout.addWidget(self.after_done_combo, QtCore.Qt.AlignRight)
         top_layout.addWidget(self.pause_encode, QtCore.Qt.AlignRight)
         top_layout.addWidget(self.pause_queue, QtCore.Qt.AlignRight)
+        top_layout.addWidget(self.clear_queue, QtCore.Qt.AlignRight)
         # pause_encode = QtWidgets.QPushButton(
         #     self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), "Pause Encode"
         # )
@@ -237,6 +245,11 @@ class EncodingQueue(FlixList):
             self.tracks.append(EncodeItem(self, video, i, currently_encoding=currently_encoding))
         super()._new_source(self.tracks)
         self.app.processEvents()
+
+    def clear_complete(self):
+        for queued_item in self.tracks:
+            if queued_item.video.status.complete:
+                self.remove_item(queued_item.video)
 
     def remove_item(self, video):
         self.app.fastflix.queue.remove(video)

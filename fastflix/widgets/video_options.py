@@ -115,6 +115,12 @@ class VideoOptions(QtWidgets.QTabWidget):
             if getattr(self.main.current_encoder, "enable_subtitles", False):
                 self.subtitles.reload()
 
+    def clear_tracks(self):
+        self.audio.remove_all()
+        self.subtitles.remove_all()
+        self.attachments.clear_covers()
+        self.commands.update_commands([])
+
     def update_queue(self, currently_encoding=False):
         self.queue.new_source(currently_encoding)
 

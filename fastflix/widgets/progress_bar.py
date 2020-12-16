@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass, field
 from typing import Callable, Dict, List
+import logging
 
 import reusables
 from qtpy import QtCore, QtWidgets
 
 from fastflix.language import t
+
+logger = logging.getLogger("fastflix")
 
 
 @dataclass
@@ -76,7 +79,11 @@ class ProgressBar(QtWidgets.QFrame):
             for i, task in enumerate(self.tasks, start=1):
                 self.status.setText(task.name)
                 self.app.processEvents()
-                task.command(config=self.app.fastflix.config, app=self.app, **task.kwargs)
+                try:
+                    task.command(config=self.app.fastflix.config, app=self.app, **task.kwargs)
+                except Exception:
+                    logger.exception(f"Could not run task {task.name} with config {self.app.fastflix.config}")
+                    raise
                 self.progress_bar.setValue(int(i * ratio))
 
     def update_progress(self, value):

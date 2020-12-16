@@ -59,7 +59,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
         log_queue.put(f"CLEAR_WINDOW:{commands_to_run[0][0]}:{commands_to_run[0][1]}")
         reusables.remove_file_handlers(logger)
         new_file_handler = reusables.get_file_handler(
-            log_path / f"flix_conversion_{file_date()}.log",
+            log_path / f"flix_conversion_{commands_to_run[0][4]}_{file_date()}.log",
             level=logging.DEBUG,
             log_format="%(asctime)s - %(message)s",
             encoding="utf-8",
@@ -97,6 +97,8 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                     logger.info(t("starting next command"))
                     start_command()
                 else:
+                    currently_encoding = False
+                    allow_sleep_mode()
                     logger.debug(t("Queue has been paused"))
                 continue
             else:

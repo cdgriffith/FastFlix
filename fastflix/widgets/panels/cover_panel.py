@@ -31,8 +31,8 @@ class CoverPanel(QtWidgets.QWidget):
         sp.setHorizontalPolicy(QtWidgets.QSizePolicy.Policy.Maximum)
 
         # row, column, row span, column span
-        layout.addWidget(QtWidgets.QLabel("Poster Cover"), 0, 0, 1, 5)
-        layout.addWidget(QtWidgets.QLabel("Landscape Cover"), 0, 6, 1, 4)
+        layout.addWidget(QtWidgets.QLabel(t("Poster Cover")), 0, 0, 1, 5)
+        layout.addWidget(QtWidgets.QLabel(t("Landscape Cover")), 0, 6, 1, 4)
         info_label = QtWidgets.QLabel(
             link("https://codecalamity.com/guides/video-thumbnails/", t("Enabling cover thumbnails on your system"))
         )
@@ -40,15 +40,15 @@ class CoverPanel(QtWidgets.QWidget):
         layout.addWidget(info_label, 10, 0, 1, 9, QtCore.Qt.AlignLeft)
 
         poster_options_layout = QtWidgets.QHBoxLayout()
-        self.cover_passthrough_checkbox = QtWidgets.QCheckBox("Copy Cover")
-        self.small_cover_passthrough_checkbox = QtWidgets.QCheckBox("Copy Small Cover (no preview)")
+        self.cover_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Cover"))
+        self.small_cover_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Small Cover (no preview)"))
 
         poster_options_layout.addWidget(self.cover_passthrough_checkbox)
         poster_options_layout.addWidget(self.small_cover_passthrough_checkbox)
 
         land_options_layout = QtWidgets.QHBoxLayout()
-        self.cover_land_passthrough_checkbox = QtWidgets.QCheckBox("Copy Landscape Cover")
-        self.small_cover_land_passthrough_checkbox = QtWidgets.QCheckBox("Copy Small Landscape Cover  (no preview)")
+        self.cover_land_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Landscape Cover"))
+        self.small_cover_land_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Small Landscape Cover  (no preview)"))
 
         land_options_layout.addWidget(self.cover_land_passthrough_checkbox)
         land_options_layout.addWidget(self.small_cover_land_passthrough_checkbox)
@@ -94,7 +94,10 @@ class CoverPanel(QtWidgets.QWidget):
         if not dirname.exists():
             dirname = Path()
         filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="cover", directory=str(dirname), filter="Supported Image Files (*.png;*.jpeg;*.jpg)"
+            self,
+            caption=t("Cover"),
+            directory=str(dirname),
+            filter=f"{t('Supported Image Files')} (*.png;*.jpeg;*.jpg)",
         )
         if not filename or not filename[0]:
             return
@@ -121,7 +124,7 @@ class CoverPanel(QtWidgets.QWidget):
             pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.poster.setPixmap(pixmap)
         except Exception:
-            logger.exception("Bad image")
+            logger.exception(t("Bad image"))
             self.cover_path.setText("")
         else:
             self.main.page_update()
@@ -144,7 +147,10 @@ class CoverPanel(QtWidgets.QWidget):
         if not dirname.exists():
             dirname = Path()
         filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="cover", directory=str(dirname), filter="Supported Image Files (*.png;*.jpeg;*.jpg)"
+            self,
+            caption=t("Landscape Cover"),
+            directory=str(dirname),
+            filter=f"{t('Supported Image Files')} (*.png;*.jpeg;*.jpg)",
         )
         if not filename or not filename[0]:
             return
@@ -171,7 +177,7 @@ class CoverPanel(QtWidgets.QWidget):
             pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.landscape.setPixmap(pixmap)
         except Exception:
-            logger.exception("Bad image")
+            logger.exception(t("Bad image"))
             self.cover_land.setText("")
         else:
             self.main.page_update()
@@ -250,8 +256,7 @@ class CoverPanel(QtWidgets.QWidget):
     def small_cover_land_passthrough_check(self):
         self.main.page_update(build_thumbnail=False)
 
-    def new_source(self, attachments):
-
+    def clear_covers(self, reconnect=True):
         self.cover_passthrough_checkbox.toggled.disconnect()
         self.small_cover_passthrough_checkbox.toggled.disconnect()
         self.cover_land_passthrough_checkbox.toggled.disconnect()
@@ -277,6 +282,18 @@ class CoverPanel(QtWidgets.QWidget):
         self.cover_land.setDisabled(False)
         self.cover_land.setText("")
         self.landscape_button.setDisabled(False)
+
+        if reconnect:
+            self.cover_passthrough_checkbox.toggled.connect(lambda: self.cover_passthrough_check())
+            self.small_cover_passthrough_checkbox.toggled.connect(lambda: self.small_cover_passthrough_check())
+            self.cover_land_passthrough_checkbox.toggled.connect(lambda: self.cover_land_passthrough_check())
+            self.small_cover_land_passthrough_checkbox.toggled.connect(
+                lambda: self.small_cover_land_passthrough_check()
+            )
+
+    def new_source(self, attachments):
+
+        self.clear_covers(reconnect=False)
 
         for attachment in attachments:
             filename = attachment.get("tags", {}).get("filename", "")

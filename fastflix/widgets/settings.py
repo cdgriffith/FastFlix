@@ -9,12 +9,16 @@ from iso639.exceptions import InvalidLanguageValue
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
-from fastflix.language import change_language, t
+from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import error_message
 
 logger = logging.getLogger("fastflix")
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
+
+known_language_list = ["English", "Chinese", "Italian", "French", "Spanish", "German"]
+
+# "Japanese", "Korean", "Hindi", "Russian",  "Portuguese"
 
 
 class Settings(QtWidgets.QWidget):
@@ -58,12 +62,12 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(QtWidgets.QLabel(str(self.config_file)), 4, 1)
 
         self.language_combo = QtWidgets.QComboBox(self)
-        self.language_combo.addItems(language_list)
+        self.language_combo.addItems(known_language_list)
         try:
-            index = language_list.index(Lang(self.app.fastflix.config.language).name)
+            index = known_language_list.index(Lang(self.app.fastflix.config.language).name)
         except (IndexError, InvalidLanguageValue):
             logger.exception(f"Could not find language for {self.app.fastflix.config.language}")
-            index = language_list.index("English")
+            index = known_language_list.index("English")
         self.language_combo.setCurrentIndex(index)
 
         layout.addWidget(QtWidgets.QLabel(t("Language")), 5, 0)
@@ -121,18 +125,18 @@ class Settings(QtWidgets.QWidget):
         else:
             self.app.fastflix.config.work_path = new_work_dir
         self.app.fastflix.config.use_sane_audio = self.use_sane_audio.isChecked()
+
+        old_lang = self.app.fastflix.config.language
         try:
-            self.app.fastflix.config.language = Lang(self.language_combo.currentText()).pt2b
+            self.app.fastflix.config.language = Lang(self.language_combo.currentText()).pt3
         except InvalidLanguageValue:
             error_message(f"Could not set language to {self.language_combo.currentText()}\n Please report this issue")
-        else:
-            change_language(self.app.fastflix.config.language)
         self.app.fastflix.config.disable_version_check = self.disable_version_check.isChecked()
 
         self.main.config_update()
         self.app.fastflix.config.save()
-        if updated_ffmpeg:
-            error_message(t("FFmpeg updated - Please restart FastFlix"))
+        if updated_ffmpeg or old_lang != self.app.fastflix.config.language:
+            error_message(t("Please restart FastFlix to apply settings"))
         self.close()
 
     def select_ffmpeg(self):

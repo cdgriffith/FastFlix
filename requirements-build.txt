@@ -5,7 +5,7 @@ iso639-lang
 mistune
 psutil
 pyinstaller==4.0
-pyqt5
+pyside2
 python-box
 qtpy
 requests
