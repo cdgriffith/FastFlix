@@ -40,7 +40,7 @@ from fastflix.resources import (
     video_add_icon,
     video_playlist_icon,
 )
-from fastflix.shared import error_message, time_to_number
+from fastflix.shared import error_message, time_to_number, yes_no_message
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
@@ -1427,20 +1427,20 @@ class Main(QtWidgets.QWidget):
         elif not try_add:
             logger.debug(t("Starting conversion process"))
 
-        if not self.app.fastflix.queue:
-
-            if not self.add_to_queue():
-                return
+        if not self.app.fastflix.queue or self.app.fastflix.current_video:
+            add_current = True
+            if self.app.fastflix.queue and self.app.fastflix.current_video:
+                add_current = yes_no_message(t("Add current video to queue?"), yes_text=t("Yes"), no_text=t("No"))
+            if add_current:
+                if not self.add_to_queue():
+                    return
 
         # Command looks like (video_uuid, command_uuid, command, work_dir, filename)
         # Request looks like (queue command, log_dir, (commands))
         requests = ["add_items", str(self.app.fastflix.log_path)]
         commands = self.get_commands()
 
-        if not commands and not try_add and self.app.fastflix.current_video:
-            # TODO ask if they want to add
-            return self.encode_video(try_add=True)
-        elif not commands:
+        if not commands:
             return error_message(t("No new items in queue to convert"))
 
         requests.append(tuple(commands))

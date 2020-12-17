@@ -89,6 +89,24 @@ def error_message(msg, details=None, traceback=False, title=None):
     em.exec_()
 
 
+def yes_no_message(msg, title=None, yes_text="Yes", no_text="No", yes_action=None, no_action=None):
+    sm = QtWidgets.QMessageBox()
+    sm.setWindowTitle(title)
+    sm.setText(msg)
+    sm.addButton(yes_text, QtWidgets.QMessageBox.YesRole)
+    sm.addButton(no_text, QtWidgets.QMessageBox.NoRole)
+    sm.exec_()
+    if sm.clickedButton().text() == yes_text:
+        if yes_action:
+            return yes_action()
+        return True
+    elif sm.clickedButton().text() == no_text:
+        if no_action:
+            no_action()
+        return False
+    return None
+
+
 def latest_fastflix(no_new_dialog=False):
     from fastflix.version import __version__
 
