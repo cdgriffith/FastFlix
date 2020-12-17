@@ -162,7 +162,9 @@ class Container(QtWidgets.QMainWindow):
         self.profile.show()
 
     def show_profile(self):
-        self.profile_details = ProfileDetails(self.app.fastflix.config.profile)
+        self.profile_details = ProfileDetails(
+            self.app.fastflix.config.selected_profile, self.app.fastflix.config.profile
+        )
         self.profile_details.show()
 
     def delete_profile(self):
@@ -229,9 +231,13 @@ class ProfileDetails(QtWidgets.QWidget):
     def profile_widget(self, settings):
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QVBoxLayout()
+        title = QtWidgets.QLabel(t("Encoder Settings"))
+        title.setFont(QtGui.QFont("helvetica", 9, weight=70))
+        layout.addWidget(title)
         for k, v in asdict(settings).items():
-            item_1 = QtWidgets.QLabel(str(k))
+            item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
             item_2 = QtWidgets.QLabel(str(v))
+            item_2.setMaximumWidth(150)
             inner_layout = QtWidgets.QHBoxLayout()
             inner_layout.addWidget(item_1)
             inner_layout.addWidget(item_2)
@@ -239,27 +245,36 @@ class ProfileDetails(QtWidgets.QWidget):
         widget.setLayout(layout)
         return widget
 
-    def __init__(self, profile):
+    def __init__(self, profile_name, profile):
         super().__init__(None)
         self.layout = QtWidgets.QHBoxLayout(self)
 
         main_section = QtWidgets.QVBoxLayout(self)
+        profile_title = QtWidgets.QLabel(f"{t('Profile')}: {profile_name}")
+        profile_title.setFont(QtGui.QFont("helvetica", 10, weight=70))
+        main_section.addWidget(profile_title)
         for k, v in asdict(profile).items():
             if k not in profile.setting_types.keys():
-                item_1 = QtWidgets.QLabel(str(k))
+                item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
                 item_2 = QtWidgets.QLabel(str(v))
+                item_2.setMaximumWidth(150)
                 inner_layout = QtWidgets.QHBoxLayout()
                 inner_layout.addWidget(item_1)
                 inner_layout.addWidget(item_2)
                 main_section.addLayout(inner_layout)
         self.layout.addLayout(main_section)
 
+        splitter = QtWidgets.QWidget()
+        splitter.setMaximumWidth(1)
+        splitter.setStyleSheet("background-color: #999999")
+        self.layout.addWidget(splitter)
+
         for setting_name in profile.setting_types.keys():
             setting = getattr(profile, setting_name)
             if setting:
                 self.layout.addWidget(self.profile_widget(setting))
         # self.tab2 = QtWidgets.QWidget()
-        # self.tabs.resize(300, 200)
+        self.setMinimumWidth(780)
 
         # Add tabs
 
