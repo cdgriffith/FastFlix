@@ -1684,7 +1684,7 @@ This improves encoding speed significantly on systems that are otherwise underut
   fra: Cela améliore considérablement la vitesse de codage sur des systèmes qui sont autrement sous-utilisés lors du codage VP9.
   ita: Questo migliora la velocità di codifica in modo significativo su sistemi che sono altrimenti sottoutilizzati durante la codifica VP9.
   spa: Esto mejora significativamente la velocidad de codificación en los sistemas que de otra manera son subutilizados al codificar el VP9.
-  zho: 在编码VP9时占用率不足的系统上，此选项能够显著提升编码速度。
+  zho: 在编码VP9时资源利用不足的系统上，此选项能够显著提升编码速度。
 This is intended for use when you do not have a container to keep the stream headers for you:
   deu: Dies ist für die Verwendung vorgesehen, wenn Sie keinen Container haben, der die Stream-Header für Sie aufbewahrt
   eng: This is intended for use when you do not have a container to keep the stream headers for you
@@ -1712,7 +1712,7 @@ This will just copy the video track as is.:
   fra: Il suffit de copier la piste vidéo telle quelle.
   ita: Questo si limiterà a copiare la traccia video così com'è.
   spa: Esto sólo copiará la pista del video tal como está.
-  zho: 这将只是复制视频轨道的原样。
+  zho: 只会原样复制视频轨道。
 Tier:
   deu: Ebene
   eng: Tier
@@ -1782,7 +1782,7 @@ Tune the settings for a particular type of source or situation:
   fra: Régler les paramètres pour un type de source ou une situation particulière
   ita: Sintonizzare le impostazioni per un particolare tipo di sorgente o situazione
   spa: Sintonizar los ajustes para un tipo de fuente o situación particular
-  zho: 针对特定类型的信号源或情况调整设置。
+  zho: 针对特定类型的源文件或情形调整设置。
 Usage:
   deu: Verwendung
   eng: Usage
@@ -1796,7 +1796,7 @@ Use --bframes 0 to force all P/I low-latency encodes.:
   fra: Utilisez --bframes 0 pour forcer tous les codes P/I à faible latence.
   ita: Utilizzare --bframes 0 per forzare tutte le codifiche P/I a bassa latenza.
   spa: Use --bframes 0 para forzar todos los códigos de baja latencia P/I.
-  zho: 使用--bframes 0强制所有P/I低延迟编码。
+  zho: 使用--bframes 0强制进行全P/I帧的低延迟编码。
 Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   deu: Nützlich, wenn der Wunsch besteht, 0-Werte für max-cll und max-fall zu signalisieren.
   eng: Useful when there is a desire to signal 0 values for max-cll and max-fall.
@@ -1810,21 +1810,21 @@ Useful when you have the "Too many packets buffered for output stream" error:
   fra: Utile lorsque vous avez l'erreur "Too many packets buffered for output stream
   ita: Utile quando si ha l'errore "Troppi pacchetti bufferizzati per il flusso di uscita".
   spa: Útil cuando se tiene el error "Demasiados paquetes almacenados en la memoria intermedia para el flujo de salida".
-  zho: 当出现 "输出流缓冲的数据包太多 "错误时很有用。
+  zho: 当出现“输出流缓冲的数据包太多（Too many packets buffered for output stream）”错误时有用。
 Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.:
   deu: Die Verwendung von 1 oder 2 erhöht die Kodiergeschwindigkeit auf Kosten einer gewissen Auswirkung auf die Qualität und die Genauigkeit der Ratenkontrolle.
   eng: Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.
   fra: L'utilisation de 1 ou 2 augmentera la vitesse d'encodage au détriment d'un certain impact sur la qualité et la précision du contrôle des taux.
   ita: L'uso di 1 o 2 aumenterà la velocità di codifica a scapito di un certo impatto sulla qualità e sulla precisione del controllo del tasso.
   spa: El uso de 1 o 2 aumentará la velocidad de codificación a expensas de tener algún impacto en la calidad y la precisión del control de la tasa.
-  zho: 使用1或2会提高编码速度，但代价是对质量和速率控制精度有一定影响。
+  zho: 使用1或2会提高编码速度，但代价是对质量和码率控制精度有一定影响。
 Using a single frame thread gives a slight improvement in compression,:
   deu: Die Verwendung eines einzelnen Frame-Threads führt zu einer leichten Verbesserung der Komprimierung,
   eng: Using a single frame thread gives a slight improvement in compression,
   fra: L'utilisation d'un seul fil de trame donne une légère amélioration de la compression,
   ita: L'utilizzo di una filettatura a telaio singolo offre un leggero miglioramento della compressione,
   spa: Usar un solo hilo de cuadro da una ligera mejora en la compresión,
-  zho: 使用单帧线程会使压缩率略有提高。
+  zho: 使用单帧线程会使压缩率略有提高，
 'Values: 0:none; 1:fast; 2:full(trellis) default':
   deu: 'Werte: 0:keine; 1:schnell; 2:voll(trellis) Standard'
   eng: 'Values: 0:none; 1:fast; 2:full(trellis) default'
@@ -1845,7 +1845,7 @@ Vert + Hoz Flip:
   fra: Vert + Hoz Flip
   ita: Vert + Hoz Flip
   spa: Vert + Hoz Flip
-  zho: Vert + Hoz Flip
+  zho: 垂直+水平翻转
 Vertical Flip:
   deu: Vertikaler Flip
   eng: Vertical Flip
@@ -1859,7 +1859,7 @@ Video Track:
   fra: Piste vidéo
   ita: Traccia video
   spa: Pista de video
-  zho: 视频追踪
+  zho: 视频轨
 View Changes:
   deu: Änderungen anzeigen
   eng: View Changes
@@ -1880,14 +1880,14 @@ View GUI Debug Logs:
   fra: 'AVERTISSEMENT : Cela prendra beaucoup plus de temps et entraînera un dossier plus volumineux'
   ita: 'ATTENZIONE: Ci vorrà molto più tempo e il risultato sarà un file più grande'
   spa: 'ADVERTENCIA: Esto tomará mucho más tiempo y resultará en un archivo más grande'
-  zho: 警告：这将需要更长的时间，并导致一个更大的文件。
+  zho: 警告：这将导致转换用时延长，输出文件体积增大。
 Wait for the current command to finish, and stop the next command from processing:
   deu: Warten, bis der aktuelle Befehl beendet ist, und die Verarbeitung des nächsten Befehls stoppen
   eng: Wait for the current command to finish, and stop the next command from processing
   fra: Attendre la fin de la commande en cours et arrêter le traitement de la commande suivante
   ita: Attendere che il comando corrente finisca e interrompere l'elaborazione del comando successivo
   spa: Espere a que termine el comando actual y detenga el procesamiento del siguiente comando...
-  zho: 等待当前命令完成，并停止下一条命令的处理。
+  zho: 等待当前命令完成，暂不处理后面的命令
 Watch:
   deu: Beobachten
   eng: Watch
@@ -1908,14 +1908,14 @@ Width must be divisible by 2:
   fra: La largeur doit être divisible par 2
   ita: La larghezza deve essere divisibile per 2
   spa: El ancho debe ser divisible por 2
-  zho: 宽度必须除以2
+  zho: 宽度必须能被2整除
 Width must be divisible by 2 - Source width:
   deu: Breite muss durch 2 teilbar sein - Quellbreite
   eng: Width must be divisible by 2 - Source width
   fra: La largeur doit être divisible par 2 - Largeur de la source
   ita: La larghezza deve essere divisibile per 2 - Larghezza della sorgente
   spa: El ancho debe ser divisible por 2 - Ancho de la fuente
-  zho: 宽度必须除以2--源宽度
+  zho: 宽度必须除以2--源文件宽度
 With b-adapt 0, the GOP structure is fixed based on the values of --keyint and --bframes.:
   deu: Bei b-adapt 0 wird die GOP-Struktur anhand der Werte von --keyint und --bframes festgelegt.
   eng: With b-adapt 0, the GOP structure is fixed based on the values of --keyint and --bframes.
@@ -1978,7 +1978,7 @@ and you want keyframes to be random access points.:
   fra: 'aq-mode : Mode de fonctionnement de la quantification adaptative.'
   ita: 'aq-mode: Modalità operativa di quantizzazione adattiva.'
   spa: 'aq-mode: Modo de operación de Cuantificación Adaptativa.'
-  zho: aq-mode.自适应量化工作模式。自适应量化工作模式.
+  zho: aq-mode：自适应量化工作模式。
 are mere suggestions!:
   deu: sind lediglich Vorschläge!
   eng: are mere suggestions!
