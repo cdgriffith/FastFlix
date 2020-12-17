@@ -1417,19 +1417,20 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
 
     @reusables.log_exception("fastflix", show_traceback=False)
-    def encode_video(self, try_add=False):
+    def encode_video(self):
 
         if self.converting:
             logger.debug(t("Canceling current encode"))
             self.app.fastflix.worker_queue.put(["cancel"])
             self.video_options.queue.reset_pause_encode()
             return
-        elif not try_add:
+        else:
             logger.debug(t("Starting conversion process"))
 
         if not self.app.fastflix.queue or self.app.fastflix.current_video:
             add_current = True
             if self.app.fastflix.queue and self.app.fastflix.current_video:
+                # TODO this adds existing queue items to the track again??
                 add_current = yes_no_message(t("Add current video to queue?"), yes_text=t("Yes"), no_text=t("No"))
             if add_current:
                 if not self.add_to_queue():
