@@ -11,7 +11,7 @@ About:
   fra: À propos de
   ita: Informazioni su
   spa: Acerca de
-  zho: 关于我们
+  zho: 关于
 Adaptive Quantization:
   deu: Adaptive Quantisierung
   eng: Adaptive Quantization
@@ -88,7 +88,7 @@ Author:
   fra: Auteur
   ita: Autore
   spa: Autor
-  zho: 撰稿人
+  zho: 作者
 Auto:
   deu: Auto
   eng: Auto
@@ -144,7 +144,7 @@ Bit Depth:
   fra: Profondeur de bit
   ita: Profondità della punta
   spa: Profundidad de bits
-  zho: 比特深度
+  zho: 位深度
 Bitrate:
   deu: Bitrate
   eng: Bitrate
@@ -319,14 +319,14 @@ Conversion:
   fra: Conversion
   ita: Conversione
   spa: Conversión
-  zho: 换算
+  zho: 转换
 Conversion cancelled, delete incomplete file:
   deu: Konvertierung abgebrochen, unvollständige Datei löschen
   eng: Conversion cancelled, delete incomplete file
   fra: Conversion annulée, suppression du dossier incomplet
   ita: Conversione annullata, cancellare il file incompleto
   spa: Conversión cancelada, borrar archivo incompleto
-  zho: 取消转换，删除不完整的文件
+  zho: 取消转换，删除未完成输出的文件
 Convert:
   deu: Konvertieren
   eng: Convert
@@ -340,7 +340,7 @@ Convert BT2020 colorspace into bt709:
   fra: Convertir l'espace colorimétrique BT2020 en bt709
   ita: Convertire lo spazio di colore BT2020 in bt709
   spa: Convierte el espacio de color BT2020 en bt709
-  zho: 将BT2020色彩空间转换为bt709。
+  zho: 将BT2020色彩空间转换为bt709
 Copy Chapters:
   deu: Kapitel kopieren
   eng: Copy Chapters
@@ -368,21 +368,21 @@ Copy Landscape Cover:
   fra: Copie de la couverture paysage
   ita: Copiare la copertura del paesaggio
   spa: Copia de la portada del paisaje
-  zho: 复制景观封面
+  zho: 复制横向封面
 Copy Small Cover (no preview):
   deu: Kleines Cover kopieren (keine Vorschau)
   eng: Copy Small Cover (no preview)
   fra: Copie de la petite couverture (pas de prévisualisation)
   ita: Copia copertina piccola (nessuna anteprima)
   spa: Copia de la portada pequeña (sin vista previa)
-  zho: 复印小封面（无预览
+  zho: 复制小封面（无预览）
 Copy Small Landscape Cover  (no preview):
   deu: Kleines Querformat-Cover kopieren (keine Vorschau)
   eng: Copy Small Landscape Cover  (no preview)
   fra: Copie de la petite couverture paysagère (pas de prévisualisation)
   ita: Copia piccola copertura del paesaggio (nessuna anteprima)
   spa: Copia de la cubierta de un pequeño paisaje (sin vista previa)
-  zho: 复印小景观封面（无预览
+  zho: 复制横向小封面（无预览）
 Copy all commands to the clipboard:
   deu: Kopiert alle Befehle in die Zwischenablage
   eng: Copy all commands to the clipboard
@@ -396,7 +396,7 @@ Copy the chapter markers as is from incoming source.:
   fra: Copiez les marqueurs de chapitre tels quels à partir de la source entrante.
   ita: Copiare i marcatori dei capitoli come da sorgente in entrata.
   spa: Copie los marcadores de capítulo tal como están de la fuente entrante.
-  zho: 将章节标记按原样从输入源复制。
+  zho: 将章节标记按原样从源文件复制。
 Could not load config file!:
   deu: Konnte Konfigurationsdatei nicht laden!
   eng: Could not load config file!
@@ -410,7 +410,7 @@ Cover:
   fra: Couverture
   ita: Coprire
   spa: Cubre
-  zho: 覆盖
+  zho: 封面
 Create Profile:
   deu: Profil erstellen
   eng: Create Profile
@@ -424,7 +424,7 @@ Crop:
   fra: Culture
   ita: Ritaglio
   spa: Crop
-  zho: 农作物
+  zho: 裁剪
 Current Profile Settings:
   deu: Aktuelle Profileinstellungen
   eng: Current Profile Settings
@@ -557,7 +557,7 @@ Dual License:
   fra: Double licence
   ita: Doppia Licenza
   spa: Licencia doble
-  zho: 双证
+  zho: 双重许可
 Enable row based multi-threading:
   deu: Zeilenbasiertes Multithreading aktivieren
   eng: Enable row based multi-threading
@@ -977,14 +977,14 @@ Landscape Cover:
   fra: Couverture du paysage
   ita: Copertura del paesaggio
   spa: Cubierta del paisaje
-  zho: 景观覆盖
+  zho: 横向封面
 Language:
   deu: Sprache
   eng: Language
   fra: Langue
   ita: Lingua
   spa: Idioma
-  zho: 语种
+  zho: 语言
 Left:
   deu: Links
   eng: Left
@@ -1012,7 +1012,7 @@ Lossless encodes implicitly have no rate control, all rate control options are i
   fra: Les codes sans perte n'ont implicitement aucun contrôle de taux, toutes les options de contrôle de taux sont ignorées.
   ita: Le codifiche lossless non hanno implicitamente alcun controllo del tasso, tutte le opzioni di controllo del tasso sono ignorate.
   spa: Los códigos sin pérdidas implícitamente no tienen control de la tasa, todas las opciones de control de la tasa son ignoradas.
-  zho: 无损编码隐式地没有速率控制，所有速率控制选项都被忽略。
+  zho: 无损编码意味着没有速率控制，会忽略所有速率控制选项。
 Max Muxing Queue Size:
   deu: Max. Größe der Muxing-Warteschlange
   eng: Max Muxing Queue Size
@@ -1047,7 +1047,7 @@ No Downmix:
   fra: Pas de Downmix
   ita: No Downmix
   spa: No hay Downmix
-  zho: 没有混音
+  zho: 没有缩混
 No Flip:
   deu: Kein Flip
   eng: No Flip
@@ -1061,7 +1061,7 @@ No Rotation:
   fra: Pas de rotation
   ita: Nessuna rotazione
   spa: No hay rotación
-  zho: 无旋转
+  zho: 不旋转
 No Source Selected:
   deu: Keine Quelle ausgewählt
   eng: No Source Selected
@@ -1096,7 +1096,7 @@ No encoding is currently in process, starting encode:
   fra: Aucun codage n'est actuellement en cours, le codage de départ
   ita: Nessuna codifica è attualmente in corso, iniziando a codificare
   spa: Ninguna codificación está actualmente en proceso, comenzando a codificar
-  zho: 目前没有进行编码，开始编码。
+  zho: 目前没有正在进行的编码，编码开始。
 No new items in queue to convert:
   deu: Keine neuen Elemente in der Warteschlange zum Konvertieren
   eng: No new items in queue to convert
@@ -1166,7 +1166,7 @@ Output:
   fra: Sortie
   ita: Uscita
   spa: Salida
-  zho: 产量
+  zho: 输出文件
 Over-allocation of frame threads will not improve performance,:
   deu: Eine Überbelegung von Frame-Threads wird die Leistung nicht verbessern,
   eng: Over-allocation of frame threads will not improve performance,
@@ -1208,7 +1208,7 @@ Pause Encode:
   fra: Pause Encode
   ita: Pausa Codificare
   spa: Codificar la pausa
-  zho: 暂停 编码
+  zho: 暂停编码
 Pause Queue:
   deu: Warteschlange anhalten
   eng: Pause Queue
@@ -1222,7 +1222,7 @@ Pixel Format (requires at least 10-bit for HDR):
   fra: Format Pixel (nécessite au moins 10 bits pour le HDR)
   ita: Formato pixel (richiede almeno 10 bit per HDR)
   spa: Formato de píxeles (requiere al menos 10 bits para el HDR)
-  zho: 像素格式(HDR要求至少10位)
+  zho: 像素格式（HDR要求至少10-bit）
 Please provide a profile name:
   deu: Bitte geben Sie einen Profilnamen an
   eng: Please provide a profile name
@@ -1243,7 +1243,7 @@ Poster Cover:
   fra: Couverture de l'affiche
   ita: Copertina per poster
   spa: Cubierta del cartel
-  zho: 海报封面
+  zho: 纵向封面
 Preserve:
   deu: Beibehalten
   eng: Preserve
@@ -1285,21 +1285,21 @@ Python:
   fra: Python
   ita: Python
   spa: Python
-  zho: 蟒蛇
+  zho: Python
 Quality:
   deu: Qualität
   eng: Quality
   fra: Qualité
   ita: Qualità
   spa: Calidad
-  zho: 质量管理
+  zho: 质量
 Quality and compression efficiency vs speed trade-off:
   deu: Kompromiss zwischen Qualität und Kompressionseffizienz und Geschwindigkeit
   eng: Quality and compression efficiency vs speed trade-off
   fra: Le compromis entre la qualité et l'efficacité de la compression et la vitesse
   ita: Qualità ed efficienza di compressione rispetto al compromesso velocità
   spa: La calidad y la eficiencia de la compresión frente a la compensación de la velocidad
-  zho: 质量和压缩效率与速度的权衡
+  zho: 质量及压缩效率与速度之间的权衡
 Quality/Speed ratio modifier:
   deu: Qualität/Geschwindigkeitsverhältnis-Modifikator
   eng: Quality/Speed ratio modifier
@@ -1565,21 +1565,21 @@ Source:
   fra: Source
   ita: Fonte
   spa: Fuente
-  zho: 来源
+  zho: 源文件
 Source height:
   deu: Höhe der Quelle
   eng: Source height
   fra: Hauteur de la source
   ita: Altezza della sorgente
   spa: Altura de la fuente
-  zho: 来源高度
+  zho: 源文件高度
 Source width:
   deu: Breite der Quelle
   eng: Source width
   fra: Largeur de la source
   ita: Larghezza della fonte
   spa: Ancho de la fuente
-  zho: 来源宽度
+  zho: 源文件宽度
 Speed:
   deu: Geschwindigkeit
   eng: Speed
@@ -1642,7 +1642,7 @@ The GUI might have died, but I'm going to keep converting!:
   fra: L'interface graphique est peut-être morte, mais je vais continuer à me convertir !
   ita: L'interfaccia grafica sarà anche morta, ma continuerò a convertirmi!
   spa: ¡El GUI puede haber muerto, pero voy a seguir convirtiendo!
-  zho: GUI可能已经死掉了，但我要继续转换!
+  zho: 图形界面可能已经崩溃，但转换将继续进行！
 The more complex the block, the more quantization is used.:
   deu: Je komplexer der Block ist, desto mehr Quantisierung wird verwendet.
   eng: The more complex the block, the more quantization is used.
@@ -1663,7 +1663,7 @@ There is a conversion in process!:
   fra: Il y a une conversion en cours !
   ita: C'è una conversione in corso!
   spa: ¡Hay una conversión en proceso!
-  zho: 有一个转换过程!
+  zho: 有一个转换任务正在进行！
 There was an error during conversion and the queue has stopped:
   deu: Es gab einen Fehler während der Konvertierung und die Warteschlange wurde angehalten
   eng: There was an error during conversion and the queue has stopped
@@ -1677,14 +1677,14 @@ This flag performs bi-linear interpolation of the corner reference samples for a
   fra: Ce drapeau effectue une interpolation bi-linéaire des échantillons de référence des coins pour un fort effet de lissage.
   ita: Questa bandierina esegue l'interpolazione bi-lineare dei campioni di riferimento d'angolo per un forte effetto levigante.
   spa: Este banderín realiza una interpolación bi-línea de las muestras de referencia de las esquinas para un fuerte efecto de suavizado.
-  zho: 这个标志可以对角参考样本进行双线性插值，以获得强大的平滑效果。
+  zho: 这个选项可以对角参考样本进行双线性插值，以获得强大的平滑效果。
 This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.:
   deu: Dies verbessert die Kodiergeschwindigkeit auf Systemen, die sonst bei der Kodierung von VP9 nicht ausgelastet sind, erheblich.
   eng: This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.
   fra: Cela améliore considérablement la vitesse de codage sur des systèmes qui sont autrement sous-utilisés lors du codage VP9.
   ita: Questo migliora la velocità di codifica in modo significativo su sistemi che sono altrimenti sottoutilizzati durante la codifica VP9.
   spa: Esto mejora significativamente la velocidad de codificación en los sistemas que de otra manera son subutilizados al codificar el VP9.
-  zho: 这显著提高了系统的编码速度，否则在对VP9进行编码时，这些系统将得不到充分利用。
+  zho: 在编码VP9时占用率不足的系统上，此选项能够显著提升编码速度。
 This is intended for use when you do not have a container to keep the stream headers for you:
   deu: Dies ist für die Verwendung vorgesehen, wenn Sie keinen Container haben, der die Stream-Header für Sie aufbewahrt
   eng: This is intended for use when you do not have a container to keep the stream headers for you
@@ -1838,7 +1838,7 @@ Various:
   fra: Divers
   ita: Varie
   spa: Varios
-  zho: 各类
+  zho: 多种许可
 Vert + Hoz Flip:
   deu: Vert + Hoz Flip
   eng: Vert + Hoz Flip
