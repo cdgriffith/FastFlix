@@ -135,7 +135,6 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             allow_sleep_mode()
             return
         else:
-            # TODO disable queue window change when converting
             if request[0] == "add_items":
 
                 # Request looks like (queue command, log_dir, (commands))

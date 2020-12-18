@@ -374,7 +374,6 @@ class Main(QtWidgets.QWidget):
     def set_profile(self):
         if self.loading_video:
             return
-        # TODO Have to update all the defaults
         # self.video_options.new_source()
         # previous_auto_crop = self.app.fastflix.config.opt("auto_crop")
         self.app.fastflix.config.selected_profile = self.widgets.profile_box.currentText()
@@ -1076,13 +1075,10 @@ class Main(QtWidgets.QWidget):
         if video.video_settings.vertical_flip and video.video_settings.horizontal_flip:
             self.widgets.flip.setCurrentIndex(3)
 
-        # self.video_options.new_source()
         self.video_options.reload()
         self.enable_all()
 
         self.app.fastflix.current_video.status = Status()
-
-        # TODO add cover
 
         self.loading_video = False
         self.page_update()
@@ -1430,7 +1426,6 @@ class Main(QtWidgets.QWidget):
         if not self.app.fastflix.queue or self.app.fastflix.current_video:
             add_current = True
             if self.app.fastflix.queue and self.app.fastflix.current_video:
-                # TODO this adds existing queue items to the track again??
                 add_current = yes_no_message(t("Add current video to queue?"), yes_text=t("Yes"), no_text=t("No"))
             if add_current:
                 if not self.add_to_queue():
