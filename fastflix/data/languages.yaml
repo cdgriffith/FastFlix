@@ -1054,14 +1054,14 @@ No Flip:
   fra: Pas de retournement
   ita: Senza capovolgere
   spa: No hay vuelta atrás
-  zho: 不翻转
+  zho: 无翻转
 No Rotation:
   deu: Keine Drehung
   eng: No Rotation
   fra: Pas de rotation
   ita: Nessuna rotazione
   spa: No hay rotación
-  zho: 不旋转
+  zho: 无旋转
 No Source Selected:
   deu: Keine Quelle ausgewählt
   eng: No Source Selected
@@ -1985,7 +1985,7 @@ are mere suggestions!:
   fra: ne sont que des suggestions !
   ita: sono semplici suggerimenti!
   spa: son meras sugerencias!
-  zho: 这些都只是建议
+  zho: 的对应关系仅供参考
 attachment tracks found:
   deu: Anhangspuren gefunden
   eng: attachment tracks found
@@ -2279,7 +2279,7 @@ the resolution-to-:
   fra: la reso
   ita: il risuonare
   spa: la reso
-  zho: 决心
+  zho: 分辨率与
 to Blu-ray standards to burn to a physical disk:
   deu: in Blu-ray-Standards zum Brennen auf einen physischen Datenträger
   eng: to Blu-ray standards to burn to a physical disk
