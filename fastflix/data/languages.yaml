@@ -235,7 +235,7 @@ Cancelled - Ready to try again:
   fra: Annulé - Prêt à réessayer
   ita: Annullato - Pronto a riprovare
   spa: Cancelado - Listo para intentarlo de nuevo
-  zho: 已取消 - 准备再试
+  zho: 已取消 - 准备重试
 Cannot remove afterwards!:
   deu: Kann nicht nachträglich entfernt werden!
   eng: Cannot remove afterwards!
@@ -361,7 +361,7 @@ Copy Cover:
   fra: Copie de la couverture
   ita: Copia di copertina
   spa: Copia de la portada
-  zho: 封面
+  zho: 复制封面
 Copy Landscape Cover:
   deu: Querformatiges Cover kopieren
   eng: Copy Landscape Cover
@@ -508,7 +508,7 @@ Detecting Interlace:
   fra: Détection d'entrelacs
   ita: Rilevamento dell'interlacciamento
   spa: Detección del entrelazado
-  zho: 检测隔行扫描
+  zho: 正在检测隔行扫描
 Determine HDR details:
   deu: HDR-Details ermitteln
   eng: Determine HDR details
@@ -550,7 +550,7 @@ Downloading FFmpeg:
   fra: Télécharger FFmpeg
   ita: Scaricare FFmpeg
   spa: Descargar FFmpeg
-  zho: 下载FFmpeg
+  zho: 正在下载FFmpeg
 Dual License:
   deu: Doppellizenz
   eng: Dual License
@@ -606,14 +606,14 @@ Enables true lossless coding by bypassing scaling, transform, quantization and i
   fra: Active le véritable codage sans perte en contournant la mise à l'échelle, la transformation, la quantification et le filtrage en boucle.
   ita: Abilita la vera codifica senza perdita di dati bypassando la scalatura, la trasformazione, la quantizzazione e il filtraggio in loop.
   spa: Habilita la verdadera codificación sin pérdidas evitando el escalado, la transformación, la cuantificación y el filtrado en bucle.
-  zho: 绕过缩放、变换、量化和环内过滤，启用真正的无损编码。
+  zho: 绕开缩放、变换、量化和环内过滤（in-loop filtering），从而实现真正的无损编码。
 Enabling cover thumbnails on your system:
   deu: Aktivieren von Cover-Miniaturansichten auf Ihrem System
   eng: Enabling cover thumbnails on your system
   fra: Activation des vignettes de couverture sur votre système
   ita: Abilita le miniature del coperchio del sistema
   spa: Habilitando las miniaturas de la cubierta en su sistema
-  zho: 在你的系统上启用封面缩略图。
+  zho: 在你的系统上启用封面缩略图（英文）
 Encoder:
   deu: Codierer
   eng: Encoder
@@ -753,7 +753,7 @@ FFMPEG HEVC / H.265 Encoding Guide:
   fra: FFMPEG HEVC / Guide d'encodage H.265
   ita: Guida alla codifica FFMPEG HEVC / H.265
   spa: Guía de codificación FFMPEG HEVC / H.265
-  zho: FFMPEG HEVC / H.265编码指南
+  zho: FFMPEG HEVC / H.265编码指南（英文）
 FFMPEG VP9 Encoding Guide:
   deu: FFMPEG VP9-Encoding-Anleitung
   eng: FFMPEG VP9 Encoding Guide
@@ -802,7 +802,7 @@ Frame Threads:
   fra: Fils de trame
   ita: Filettature del telaio
   spa: Hilos del marco
-  zho: 框线
+  zho: 帧线程
 Frames Per Second:
   deu: Frames pro Sekunde
   eng: Frames Per Second
