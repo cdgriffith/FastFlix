@@ -116,14 +116,14 @@ Auto Crop - Finding black bars at:
   fra: Auto Crop - Trouver des barres noires à
   ita: Auto Crop - Trovare barre nere a
   spa: Auto Crop - Encontrar barras negras en
-  zho: 自动裁剪 - 寻找黑条
+  zho: 自动裁剪 - 寻找黑边框
 Automatically detect black borders at current start time (or at 10% in if start time is 0):
   deu: Automatische Erkennung von schwarzen Rändern bei der aktuellen Startzeit (oder bei 10% in, wenn die Startzeit 0 ist)
   eng: Automatically detect black borders at current start time (or at 10% in if start time is 0)
   fra: Detectar automáticamente los bordes negros a la hora de inicio actual (o al 10% in si la hora de inicio es 0)
   ita: Rilevamento automatico dei bordi neri all'ora di inizio corrente (o al 10% se l'ora di inizio è 0)
   spa: Detectar automáticamente los bordes negros a la hora de inicio actual (o al 10% in si la hora de inicio es 0)
-  zho: 自动检测当前启动时间的黑色边框（如果启动时间为0，则检测10%）。
+  zho: 自动检测当前开始时刻的黑色边框（如果启动时间为0，则检测10%）。
 Automatically enabled when an interlaced video is detected:
   deu: Automatisch aktiviert, wenn ein Interlaced-Video erkannt wird
   eng: Automatically enabled when an interlaced video is detected
@@ -165,14 +165,14 @@ Break the video into columns to encode faster (lesser quality):
   fra: Diviser la vidéo en colonnes pour un encodage plus rapide (qualité moindre)
   ita: Rompere il video in colonne per codificare più velocemente (qualità inferiore)
   spa: Dividir el video en columnas para codificar más rápido (menor calidad)
-  zho: 将视频分成几列，以便更快地进行编码（质量较差）。
+  zho: 将视频按列分割，以便更快地进行编码（质量较差）。
 Break the video into rows to encode faster (lesser quality):
   deu: Das Video in Zeilen aufteilen, um schneller zu kodieren (geringere Qualität)
   eng: Break the video into rows to encode faster (lesser quality)
   fra: Diviser la vidéo en lignes pour un encodage plus rapide (qualité moindre)
   ita: Suddividere il video in righe per codificare più velocemente (qualità inferiore)
   spa: Dividir el video en filas para codificar más rápido (menor calidad)
-  zho: 将视频分成几行，以便更快地进行编码（质量较差）。
+  zho: 将视频按行分割，以便更快地进行编码（质量较差）。
 Build:
   deu: Erstellen
   eng: Build
@@ -186,14 +186,14 @@ Burn In:
   fra: Burn In
   ita: Bruciare in
   spa: Quemar en
-  zho: 烧伤
+  zho: 
 CPU Used:
   deu: Verwendete CPU
   eng: CPU Used
   fra: CPU utilisé
   ita: CPU usata
   spa: CPU utilizado
-  zho: 使用的CPU
+  zho: CPU用量
 Cancel:
   deu: Abbrechen
   eng: Cancel
@@ -214,14 +214,14 @@ Cancel has been requested, killing encoding:
   fra: L'annulation a été demandée, tuant l'encodage
   ita: È stata richiesta la cancellazione, uccidendo la codifica
   spa: Se ha solicitado la cancelación, matando la codificación
-  zho: 已申请取消，取消编码
+  zho: 已请求取消，正在终止编码
 Canceling current encode:
   deu: Abbrechen der aktuellen Kodierung
   eng: Canceling current encode
   fra: Cancelar la codificación actual
   ita: Annullamento della corrente di codifica
   spa: Cancelar la codificación actual
-  zho: 取消当前编码
+  zho: 正在取消当前编码
 Cancelled:
   deu: Abgebrochen
   eng: Cancelled
@@ -249,7 +249,7 @@ Check for Newer Version of FastFlix:
   fra: Consultez la nouvelle version de FastFlix
   ita: Verifica la presenza di una versione più recente di FastFlix
   spa: Busca la nueva versión de FastFlix
-  zho: 检查FastFlix的较新版本
+  zho: 检查FastFlix更新
 Clear Completed:
   deu: Erledigt löschen
   eng: Clear Completed
@@ -270,14 +270,14 @@ CodeCalamity UHD HDR Encoding Guide:
   fra: Guide d'encodage CodeCalamity UHD HDR
   ita: Guida alla codifica CodeCalamity UHD HDR
   spa: CodeCalamity UHD Guía de codificación HDR
-  zho: CodeCalamity超高清HDR编码指南
+  zho: CodeCalamity的UHD HDR编码指南（英文）
 Command has completed:
   deu: Befehl wurde beendet
   eng: Command has completed
   fra: Le commandement a terminé
   ita: Il comando ha completato
   spa: El comando ha completado
-  zho: 指挥部已完成
+  zho: 命令已完成
 Command worker received request to pause current encode:
   deu: Command Worker hat Anforderung erhalten, die aktuelle Codierung zu pausieren
   eng: Command worker received request to pause current encode
@@ -347,7 +347,7 @@ Copy Chapters:
   fra: Copier les chapitres
   ita: Copiare i capitoli
   spa: Copiar capítulos
-  zho: 拷贝章节
+  zho: 复制章节
 Copy Commands:
   deu: Befehle kopieren
   eng: Copy Commands
@@ -515,7 +515,7 @@ Determine HDR details:
   fra: Déterminer les détails du RDH
   ita: Determinare i dettagli HDR
   spa: Determinar los detalles del HDR
-  zho: 确定HDR细节
+  zho: 探测HDR详情
 Disposition:
   deu: Disposition
   eng: Disposition
@@ -536,14 +536,14 @@ Dither is an intentionally applied form of noise used to randomize quantization 
   fra: Dither est une forme de bruit appliquée intentionnellement et utilisée pour randomiser l'erreur de quantification,
   ita: Il dither è una forma di rumore applicata intenzionalmente usata per randomizzare l'errore di quantizzazione,
   spa: El Dither es una forma de ruido aplicada intencionalmente que se utiliza para aleatorizar el error de cuantificación,
-  zho: 抖动是一种有意应用的噪声形式，用于随机量化误差。
+  zho: 抖动（Dither）是一种为了随机化量化误差而特意添加的噪声，
 Download Newest FFmpeg:
   deu: Neuestes FFmpeg herunterladen
   eng: Download Newest FFmpeg
   fra: Télécharger le dernier FFmpeg
   ita: Scarica il nuovo FFmpeg
   spa: Descargar el nuevo FFmpeg
-  zho: 下载最新的FFmpeg
+  zho: 下载最新版FFmpeg
 Downloading FFmpeg:
   deu: Herunterladen von FFmpeg
   eng: Downloading FFmpeg
@@ -781,14 +781,14 @@ For lossless, this is a size/speed tradeoff.:
   fra: Pour les moins fortunés, il s'agit d'un compromis taille/vitesse.
   ita: Per i lossless, questo è un compromesso tra dimensioni e velocità.
   spa: Para los que no tienen pérdidas, esto es un intercambio de tamaño/velocidad.
-  zho: 对于无损，这是一个大小/速度的权衡。
+  zho: 对于无损编码，这是一个大小/速度的权衡。
 For lossy, this is a quality/speed tradeoff.:
   deu: Für verlustbehaftet ist dies ein Kompromiss zwischen Qualität und Geschwindigkeit.
   eng: For lossy, this is a quality/speed tradeoff.
   fra: Pour les perdants, il s'agit d'un compromis qualité/vitesse.
   ita: Per le perdite, si tratta di un compromesso qualità/velocità.
   spa: Para los que tienen pérdidas, es una compensación de calidad/velocidad.
-  zho: 对于无损，这是一个质量/速度的权衡。
+  zho: 对于有损编码，这是一个质量/速度的权衡。
 Force HDR10 signaling:
   deu: HDR10-Signalisierung erzwingen
   eng: Force HDR10 signaling
@@ -949,14 +949,14 @@ Keep:
   fra: Conservez
   ita: Conservare
   spa: Manténgase en
-  zho: 保持
+  zho: 保留
 Keep FastFlix Open:
   deu: FastFlix offen halten
   eng: Keep FastFlix Open
   fra: Gardez FastFlix ouvert
   ita: Tenere aperto FastFlix
   spa: Mantener FastFlix abierto
-  zho: 保持FastFlix开放
+  zho: 保持FastFlix运行
 Keep aspect ratio:
   deu: Seitenverhältnis beibehalten
   eng: Keep aspect ratio
@@ -970,7 +970,7 @@ LICENSES:
   fra: LICENCES
   ita: LICENZE
   spa: LICENCIAS
-  zho: 许可证
+  zho: 许可
 Landscape Cover:
   deu: Abdeckung im Querformat
   eng: Landscape Cover
@@ -1544,14 +1544,14 @@ Size Estimate:
   fra: Estimation de la taille
   ita: Stima delle dimensioni
   spa: Estimación del tamaño
-  zho: 尺寸估计
+  zho: 预计文件大小
 Slow is highest personal recommenced, as past that is much smaller gains:
   deu: Langsam ist die höchste persönliche Empfehlung, da danach viel kleinere Gewinne
   eng: Slow is highest personal recommenced, as past that is much smaller gains
   fra: La lenteur est la plus haute personnelle recommencée, comme passé c'est des gains beaucoup plus petits
   ita: Lento è più alto personale è ricominciato, come passato che è molto più piccolo guadagni
   spa: La lentitud es la mayor recomenzada personal, ya que el pasado que es mucho más pequeño gana
-  zho: 慢是最高的个人重新开始，因为过去的是小得多的增益
+  zho: 个人建议不要用比slow更慢的档位，因为获得的收益会小得多
 Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams).:
   deu: Langsamere Voreinstellungen erzielen im Allgemeinen eine bessere Komprimierungseffizienz (und erzeugen kleinere Bitströme).
   eng: Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams).
