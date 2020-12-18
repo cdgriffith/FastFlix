@@ -81,7 +81,7 @@ Audio select language:
   fra: Audio choisir la langue
   ita: Audio seleziona la lingua
   spa: Audio seleccionar idioma
-  zho: 音频选择语言
+  zho: 选择音频语言
 Author:
   deu: Autor
   eng: Author
@@ -431,7 +431,7 @@ Current Profile Settings:
   fra: Paramètres du profil actuel
   ita: Impostazioni del profilo corrente
   spa: Configuración del perfil actual
-  zho: 当前配置文件设置
+  zho: 当前方案设置
 Currently only works for image based subtitles.:
   deu: Funktioniert derzeit nur bei bildbasierten Untertiteln.
   eng: Currently only works for image based subtitles.
@@ -501,7 +501,7 @@ Delete Current Profile:
   fra: Supprimer le profil actuel
   ita: Cancellare il profilo corrente
   spa: Borrar el perfil actual
-  zho: 删除当前资料
+  zho: 删除当前方案
 Detecting Interlace:
   deu: Erkennen von Interlace
   eng: Detecting Interlace
@@ -669,7 +669,7 @@ Enforce an encode profile:
   fra: Faire appliquer un profil codé
   ita: Applicare un profilo di codifica
   spa: Hacer cumplir un perfil de codificación
-  zho: 执行编码配置文件
+  zho: 强制以指定规格进行编码
 Error:
   deu: Fehler
   eng: Error
@@ -1040,7 +1040,7 @@ New Profile:
   fra: Nouveau profil
   ita: Nuovo profilo
   spa: Nuevo perfil
-  zho: 新档案
+  zho: 新建方案
 No Downmix:
   deu: Kein Downmix
   eng: No Downmix
@@ -1271,14 +1271,14 @@ Profile Name:
   fra: Nom du profil
   ita: Nome del profilo
   spa: Nombre del perfil
-  zho: 资料名称
+  zho: 方案名称
 Profiles:
   deu: Profile
   eng: Profiles
   fra: Profils
   ita: Profili
   spa: Perfiles
-  zho: 概况
+  zho: 方案
 Python:
   deu: Python
   eng: Python
@@ -1369,14 +1369,14 @@ Remove HDR:
   fra: Supprimer le HDR
   ita: Rimuovere HDR
   spa: Eliminar HDR
-  zho: 移除HDR
+  zho: 去除HDR
 Remove Metadata:
   deu: Metadaten entfernen
   eng: Remove Metadata
   fra: Supprimer les métadonnées
   ita: Rimuovere i metadati
   spa: Eliminar los metadatos
-  zho: 移除元数据
+  zho: 去除元数据
 Remove completed tasks:
   deu: Erledigte Aufgaben entfernen
   eng: Remove completed tasks
@@ -1411,7 +1411,7 @@ Resume Encode:
   fra: Encodage des CV
   ita: Riprendi Codifica
   spa: Reanudar la codificación
-  zho: 简历编码
+  zho: 恢复编码
 Resume Queue:
   deu: Warteschlange fortsetzen
   eng: Resume Queue
@@ -1425,7 +1425,7 @@ Reusables:
   fra: Réutilisables
   ita: Riutilizzabili
   spa: Reutilizables
-  zho: 可重复使用
+  zho: Reusables
 Right:
   deu: Rechts
   eng: Right
@@ -1614,7 +1614,7 @@ Subtitle select language:
   fra: Sous-titre choisir la langue
   ita: Sottotitolo selezionare la lingua
   spa: Subtítulo seleccionar idioma
-  zho: 副标题选择语言
+  zho: 选择字幕语言
 Subtitles:
   deu: Untertitel
   eng: Subtitles
@@ -1628,7 +1628,7 @@ Success:
   fra: Succès
   ita: Successo
   spa: Éxito
-  zho: 成功案例
+  zho: 成功
 Supported Image Files:
   deu: Unterstützte Bilddateien
   eng: Supported Image Files
@@ -1866,7 +1866,7 @@ View Changes:
   fra: Voir les changements
   ita: Visualizza le modifiche
   spa: Ver cambios
-  zho: 查看变化
+  zho: 查看更新记录
 View GUI Debug Logs:
   deu: GUI-Debug-Protokolle anzeigen
   eng: View GUI Debug Logs
@@ -1880,7 +1880,7 @@ View GUI Debug Logs:
   fra: 'AVERTISSEMENT : Cela prendra beaucoup plus de temps et entraînera un dossier plus volumineux'
   ita: 'ATTENZIONE: Ci vorrà molto più tempo e il risultato sarà un file più grande'
   spa: 'ADVERTENCIA: Esto tomará mucho más tiempo y resultará en un archivo más grande'
-  zho: 警告：这将导致转换用时延长，输出文件体积增大。
+  zho: 警告：这将导致转换用时大幅延长，输出文件体积增大。
 Wait for the current command to finish, and stop the next command from processing:
   deu: Warten, bis der aktuelle Befehl beendet ist, und die Verarbeitung des nächsten Befehls stoppen
   eng: Wait for the current command to finish, and stop the next command from processing
@@ -2153,7 +2153,7 @@ lossless:
   fra: sans perte
   ita: senza perdite
   spa: Lossless
-  zho: 无损
+  zho: 无损编码
 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error':
   deu: 'max_muxing_queue_size: Erhöhen, um den Fehler "Zu viele Pakete für den Ausgabestrom gepuffert" zu beheben'
   eng: 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error'
