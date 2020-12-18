@@ -452,7 +452,7 @@ Default 4. This parameter has a quadratic effect on the amount of memory allocat
   fra: Défaut 4. Ce paramètre a un effet quadratique sur la quantité de mémoire allouée
   ita: Predefinito 4. Questo parametro ha un effetto quadratico sulla quantità di memoria allocata
   spa: Por defecto 4. Este parámetro tiene un efecto cuadrático en la cantidad de memoria asignada
-  zho: 默认值为4。这个参数对分配的内存量有二次方的影响。
+  zho: 默认值为4。分配的内存量与此参数的平方成比例。
 Default disabled.:
   deu: Standardmäßig deaktiviert.
   eng: Default disabled.
@@ -480,14 +480,14 @@ Default is an autodetected count based on the number of CPU cores and whether WP
   fra: 'Par défaut : AQ activé avec auto-variance'
   ita: 'Default: AQ abilitato con auto-varianza'
   spa: 'Por defecto: AQ habilitado con auto-varianza'
-  zho: 默认启用。AQ enabled with auto-variance
+  zho: 默认值为enabled + auto-variance
 Deinterlace:
   deu: Deinterlace
   eng: Deinterlace
   fra: Deinterlace
   ita: Deinterlace
   spa: Deinterlace
-  zho: 非交错式
+  zho: 反交错
 Delete:
   deu: Löschen
   eng: Delete
@@ -851,7 +851,7 @@ HDR10+ Metadata Extraction:
   fra: Extraction de métadonnées HDR10+.
   ita: Estrazione di metadati HDR10+
   spa: Extracción de metadatos HDR10+
-  zho: HDR10+元数据提取
+  zho: HDR10+元数据提取指南（英文）
 HDR10+ Optimizations:
   deu: HDR10+-Optimierungen
   eng: HDR10+ Optimizations
@@ -865,7 +865,7 @@ Have to select a video first:
   fra: Il faut d'abord sélectionner une vidéo
   ita: Devi prima selezionare un video
   spa: Primero hay que seleccionar un video.
-  zho: 要先选择一个视频
+  zho: 需要先选择一个视频
 Height:
   deu: Höhe
   eng: Height
@@ -879,7 +879,7 @@ Help:
   fra: Aide
   ita: Aiuto
   spa: Ayuda
-  zho: 帮忙
+  zho: 帮助
 Hide NAL unit messages:
   deu: NAL-Geräte-Meldungen ausblenden
   eng: Hide NAL unit messages
@@ -928,7 +928,7 @@ Invalid Crop:
   fra: Récolte non valable
   ita: Raccolto non valido
   spa: Cultivo inválido
-  zho: 无效作物
+  zho: 无效裁剪
 It is recommended that AQ-mode be enabled along with this feature:
   deu: Es wird empfohlen, dass der AQ-Modus zusammen mit dieser Funktion aktiviert wird
   eng: It is recommended that AQ-mode be enabled along with this feature
@@ -1264,7 +1264,7 @@ Profile:
   fra: Profil
   ita: Profilo
   spa: Perfil
-  zho: 简介
+  zho: 规格
 Profile Name:
   deu: Profil-Name
   eng: Profile Name
@@ -1488,14 +1488,14 @@ Scale:
   fra: Échelle
   ita: Scala
   spa: Escala
-  zho: 规模
+  zho: 缩放
 Scrub away all incoming metadata, like video titles, unique markings and so on.:
   deu: Entfernen Sie alle eingehenden Metadaten, wie Videotitel, eindeutige Markierungen und so weiter.
   eng: Scrub away all incoming metadata, like video titles, unique markings and so on.
   fra: Supprimez toutes les métadonnées entrantes, comme les titres des vidéos, les marquages uniques, etc.
   ita: Cancella tutti i metadati in arrivo, come i titoli dei video, le marcature uniche e così via.
   spa: Borra todos los metadatos entrantes, como títulos de video, marcas únicas y demás.
-  zho: 擦除所有传入的元数据，如视频标题、唯一标记等。
+  zho: 擦除输入文件中所有的元数据，如视频标题、唯一标记等。
 Set the "title" tag, sometimes shown as "Movie Name":
   deu: Setzen Sie den "Titel"-Tag, der manchmal als "Filmname" angezeigt wird
   eng: Set the "title" tag, sometimes shown as "Movie Name"
@@ -1712,7 +1712,7 @@ This will just copy the video track as is.:
   fra: Il suffit de copier la piste vidéo telle quelle.
   ita: Questo si limiterà a copiare la traccia video così com'è.
   spa: Esto sólo copiará la pista del video tal como está.
-  zho: 只会原样复制视频轨道。
+  zho: 仅原样复制视频轨道。
 Tier:
   deu: Ebene
   eng: Tier
@@ -1775,7 +1775,7 @@ Tune:
   fra: Tune
   ita: Tune
   spa: Sintoniza
-  zho: 调音
+  zho: 微调
 Tune the settings for a particular type of source or situation:
   deu: Abstimmen der Einstellungen für einen bestimmten Quellentyp oder eine bestimmte Situation
   eng: Tune the settings for a particular type of source or situation
@@ -2230,7 +2230,7 @@ python-box:
   fra: python-box
   ita: python-box
   spa: python-box
-  zho: 蟒蛇盒
+  zho: python-box
 rav1e github:
   deu: rav1e github
   eng: rav1e github
