@@ -1426,7 +1426,7 @@ class Main(QtWidgets.QWidget):
         if not self.app.fastflix.queue or self.app.fastflix.current_video:
             add_current = True
             if self.app.fastflix.queue and self.app.fastflix.current_video:
-                add_current = yes_no_message(t("Add current video to queue?"), yes_text=t("Yes"), no_text=t("No"))
+                add_current = yes_no_message("Add current video to queue?", yes_text="Yes", no_text="No")
             if add_current:
                 if not self.add_to_queue():
                     return

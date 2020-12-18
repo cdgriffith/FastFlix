@@ -2301,3 +2301,94 @@ video tracks found:
   ita: tracce video trovate
   spa: pistas de vídeo encontradas
   zho: 发现视频轨迹
+Could not connect to github to check for newer versions:
+  eng: Could not connect to github to check for newer versions
+  deu: Konnte keine Verbindung zu Github herstellen, um nach neueren Versionen zu suchen
+  fra: Impossible de se connecter à github pour vérifier les nouvelles versions
+  ita: Impossibile connettersi a github per verificare la presenza di versioni più recenti
+  spa: No se pudo conectar a github para comprobar las nuevas versiones
+  zho: 无法连接到github以检查更新的版本。
+Download:
+  eng: Download
+  deu: herunterladen
+  fra: Télécharger
+  ita: Scaricare
+  spa: Descargar
+  zho: 下载中心
+installer:
+  eng: installer
+  deu: Installationsprogramm
+  fra: installateur
+  ita: installatore
+  spa: instalador
+  zho: 安装器
+portable:
+  eng: portable
+  deu: portable
+  fra: portable
+  ita: portatile
+  spa: portátil
+  zho: 手提
+View:
+  eng: View
+  deu: Ansicht
+  fra: Voir
+  ita: Visualizza
+  spa: Ver
+  zho: 查看。
+There is a newer version of FastFlix available!:
+  eng: There is a newer version of FastFlix available!
+  deu: Es ist eine neuere Version von FastFlix verfügbar!
+  fra: Une nouvelle version de FastFlix est disponible!
+  ita: C'è una versione più recente di FastFlix disponibile!
+  spa: ¡Hay una nueva versión de FastFlix disponible!
+  zho: 有一个较新的版本的FastFlix可用!
+New Version:
+  eng: New Version
+  deu: Neue Version
+  fra: Nouvelle version
+  ita: Nuova versione
+  spa: Nueva versión
+  zho: 新版本
+You are using the latest version of FastFlix:
+  eng: You are using the latest version of FastFlix
+  deu: Sie verwenden die neueste Version von FastFlix
+  fra: Vous utilisez la dernière version de FastFlix
+  ita: State utilizzando l'ultima versione di FastFlix
+  spa: Está usando la última versión de FastFlix
+  zho: 你使用的是FastFlix的最新版本。
+bad micro value:
+  eng: bad micro value
+  deu: schlechter Micro-Wert
+  fra: mauvaise micro valeur
+  ita: micro valore negativo
+  spa: mal valor micro
+  zho: 劣币驱逐良币
+Not a valid int for time conversion:
+  eng: Not a valid int for time conversion
+  deu: Kein gültiger int für Zeitkonvertierung
+  fra: Pas d'int valable pour la conversion du temps
+  ita: Non è un int valido per la conversione del tempo
+  spa: No es un int válido para la conversión de tiempo
+  zho: 不是一个有效的时间转换的int
+Yes:
+  eng: Yes
+  deu: Ja
+  fra: Oui
+  ita: Sì
+  spa: Sì
+  zho: 是的，是的
+No:
+  eng: No
+  deu: Nein
+  fra: Non
+  ita: No
+  spa: No
+  zho: 没有
+'Add current video to queue?':
+  eng: 'Add current video to queue?'
+  deu: 'Aktuelles Video zur Warteschlange hinzufügen?'
+  fra: "Ajouter la vidéo actuelle à la file d'attente?"
+  ita: 'Aggiungere il video corrente alla coda?'
+  spa: '¿Añadir el vídeo actual a la cola?'
+  zho: '将当前视频添加到队列中？'

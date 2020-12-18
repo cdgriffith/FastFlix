@@ -35,7 +35,7 @@ class ProfileWindow(QtWidgets.QWidget):
         self.main = main
         self.config_file = self.app.fastflix.config.config_path
         self.setWindowTitle(t("New Profile"))
-        self.setMinimumSize(600, 200)
+        self.setMinimumSize(500, 150)
         layout = QtWidgets.QGridLayout()
 
         profile_name_label = QtWidgets.QLabel(t("Profile Name"))
