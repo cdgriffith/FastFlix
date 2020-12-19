@@ -333,7 +333,7 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.remove_hdr = QtWidgets.QCheckBox(t("Remove HDR"))
         self.widgets.remove_hdr.setChecked(False)
-        self.widgets.remove_hdr.toggled.connect(self.page_update)
+        self.widgets.remove_hdr.toggled.connect(self.encoder_settings_update)
         self.widgets.remove_hdr.setToolTip(
             f"{t('Convert BT2020 colorspace into bt709')}\n"
             f"{t('WARNING: This will take much longer and result in a larger file')}"
@@ -1324,6 +1324,9 @@ class Main(QtWidgets.QWidget):
                 title="Warning",
             )
         self.page_update()
+
+    def encoder_settings_update(self):
+        self.video_options.settings_update()
 
     def page_update(self, build_thumbnail=True):
         if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
