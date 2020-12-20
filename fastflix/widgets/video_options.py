@@ -134,3 +134,7 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     def cleanup(self):
         self.status.cleanup()
+
+    def settings_update(self):
+        if getattr(self.current_settings, "setting_change", False):
+            self.current_settings.setting_change()

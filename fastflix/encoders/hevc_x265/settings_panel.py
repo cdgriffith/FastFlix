@@ -435,15 +435,21 @@ class HEVC(SettingPanel):
                     self.widgets.hdr10.setDisabled(True)
                     self.widgets.hdr10.setChecked(True)
                     self.widgets.hdr10_opt.setChecked(True)
+                    self.widgets.repeat_headers.setChecked(True)
+                    self.widgets.repeat_headers.setDisabled(True)
                 else:
                     self.widgets.hdr10.setDisabled(False)
                     self.widgets.hdr10.setChecked(False)
                     self.widgets.hdr10_opt.setChecked(False)
+                    self.widgets.repeat_headers.setChecked(False)
+                    self.widgets.repeat_headers.setDisabled(False)
             else:
                 self.widgets.hdr10.setDisabled(True)
                 self.widgets.hdr10_opt.setDisabled(True)
                 self.widgets.hdr10.setChecked(False)
                 self.widgets.hdr10_opt.setChecked(False)
+                self.widgets.repeat_headers.setChecked(False)
+                self.widgets.repeat_headers.setDisabled(False)
 
         if self.updating_settings or not self.main.input_video:
             return
@@ -463,6 +469,8 @@ class HEVC(SettingPanel):
             self.widgets.hdr10_opt.setChecked(False)
             self.widgets.hdr10.setDisabled(True)
             self.widgets.hdr10.setChecked(False)
+            self.widgets.repeat_headers.setChecked(False)
+            self.widgets.repeat_headers.setDisabled(False)
         else:
             self.widgets.pix_fmt.clear()
             if bit_depth == 12:
