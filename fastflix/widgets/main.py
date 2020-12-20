@@ -583,9 +583,7 @@ class Main(QtWidgets.QWidget):
         auto_crop = QtWidgets.QPushButton(t("Auto"))
         auto_crop.setMaximumHeight(40)
         auto_crop.setFixedWidth(50)
-        auto_crop.setToolTip(
-            t("Automatically detect black borders at current start time (or at 10% in if start time is 0)")
-        )
+        auto_crop.setToolTip(t("Automatically detect black borders"))
         auto_crop.clicked.connect(self.get_auto_crop)
         self.buttons.append(auto_crop)
 
