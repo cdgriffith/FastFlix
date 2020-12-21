@@ -19,6 +19,14 @@ def build(fastflix: FastFlix):
     settings: SVTAV1Settings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending = generate_all(fastflix, "libsvtav1")
 
+    beginning += (
+        f"-strict experimental "
+        f"-preset {settings.speed} "
+        f"-tile_columns {settings.tile_columns} "
+        f"-tile_rows {settings.tile_rows} "
+        f"-tier {settings.tier} "
+    )
+
     if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
         if fastflix.current_video.color_space.startswith("bt2020"):
