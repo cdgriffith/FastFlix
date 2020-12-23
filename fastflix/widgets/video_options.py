@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+import copy
 
 from qtpy import QtWidgets
 
@@ -110,10 +111,12 @@ class VideoOptions(QtWidgets.QTabWidget):
     def reload(self):
         self.current_settings.reload()
         if self.app.fastflix.current_video:
+            audio_tracks = copy.deepcopy(self.app.fastflix.current_video.video_settings.audio_tracks)
+            subtitle_tracks = copy.deepcopy(self.app.fastflix.current_video.video_settings.subtitle_tracks)
             if getattr(self.main.current_encoder, "enable_audio", False):
-                self.audio.reload(self.audio_formats)
+                self.audio.reload(audio_tracks, self.audio_formats)
             if getattr(self.main.current_encoder, "enable_subtitles", False):
-                self.subtitles.reload()
+                self.subtitles.reload(subtitle_tracks)
             if getattr(self.main.current_encoder, "enable_attachments", False):
                 self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
 
