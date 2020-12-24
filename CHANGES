@@ -12,6 +12,7 @@
 * Adding option to download newest FFmpeg on Windows
 * Adding builds for MacOS and Linux
 * Adding --test (imports only) and --version startup options
+* Adding option to clean old (over2 weeks) logs by compressing them
 * Changing to a model based dataclass setup with a large internal re-write
 * Changing so it opens the file dialog for new video to last used directory
 * Changing log names, including file output stem in conversion log

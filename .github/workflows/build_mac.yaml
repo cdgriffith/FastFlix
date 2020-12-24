@@ -32,8 +32,8 @@ jobs:
 
     - name: Grab iso-639 lists
       run: |
-        cp $(python.exe -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
-        cp $(python.exe -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
+        cp $(python -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
+        cp $(python -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
 
     - name: Build executable
       run: pyinstaller FastFlix_Nix_OneFile.spec
