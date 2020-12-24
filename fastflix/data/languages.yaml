@@ -19,6 +19,13 @@ Adaptive Quantization:
   ita: Quantizzazione adattiva
   spa: Cuantificación adaptativa
   zho: 自适应量化
+Advanced:
+  deu: Erweitert
+  eng: Advanced
+  fra: Avancé
+  ita: Avanzato
+  spa: Avanzado
+  zho: 高级
 Add to Queue:
   deu: Zur Warteschlange hinzufügen
   eng: Add to Queue
@@ -250,6 +257,13 @@ Check for Newer Version of FastFlix:
   ita: Verifica la presenza di una versione più recente di FastFlix
   spa: Busca la nueva versión de FastFlix
   zho: 检查FastFlix的较新版本
+Clean Old Logs:
+  deu: Alte Stämme reinigen
+  eng: Clean Old Logs
+  fra: Nettoyer les vieilles bûches
+  ita: Pulire i vecchi tronchi
+  spa: Limpiar los viejos troncos
+  zho: 清理旧木头
 Clear Completed:
   deu: Erledigt löschen
   eng: Clear Completed
@@ -397,6 +411,13 @@ Copy the chapter markers as is from incoming source.:
   ita: Copiare i marcatori dei capitoli come da sorgente in entrata.
   spa: Copie los marcadores de capítulo tal como están de la fuente entrante.
   zho: 将章节标记按原样从输入源复制。
+Could not compress old logs:
+  deu: Konnte alte Protokolle nicht komprimieren
+  eng: Could not compress old logs
+  fra: Impossible de comprimer les vieilles bûches
+  ita: Non riusciva a comprimere i vecchi tronchi
+  spa: No podía comprimir los troncos viejos
+  zho: 无法压缩旧日志
 Could not load config file!:
   deu: Konnte Konfigurationsdatei nicht laden!
   eng: Could not load config file!

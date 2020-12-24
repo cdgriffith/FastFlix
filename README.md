@@ -75,6 +75,10 @@ FastFlix supports using generated or [extracted JSON HDR10+ Metadata](https://gi
 dependant on a FFmpeg version that has been compiled with x265 that has HDR10+ support. [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) 
 have this support as of 10/23/2020 and may require a [manual upgrade](https://github.com/cdgriffith/FastFlix/wiki/Updating-FFmpeg).
 
+## HLG 
+
+Currently, HLG is broken with FastFlix (will use the wrong color transfers) so please don't rely on it for HLG until [#135](https://github.com/cdgriffith/FastFlix/issues/135) is resolved.
+
 ## Dolby Vision
 
 FastFlix does not plan to support Dolby Visions proprietary format, as it requires royalties.
@@ -88,4 +92,5 @@ The code itself is licensed under the MIT which you can read in the `LICENSE` fi
 Read more about the release licensing in the [docs](docs/README.md) folder. <br>
 
 Encoder icons for [VP9](https://commons.wikimedia.org/wiki/File:Vp9-logo-for-mediawiki.svg) and [AOM AV1](https://commons.wikimedia.org/wiki/File:AV1_logo_2018.svg) are from Wikimedia Commons all others are self created.
-Various button icons from https://uxwing.com
+Various button icons from [https://uxwing.com](https://uxwing.com)
+Sample videos and thumbnail for preview image provided by [Jessica Payne](http://iamjessicapayne.com/)
