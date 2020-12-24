@@ -18,7 +18,7 @@ Adaptive Quantization:
   fra: Quantification adaptative
   ita: Quantizzazione adattiva
   spa: Cuantificación adaptativa
-  zho: Adaptive Quantization
+  zho: 自适应量化
 Add to Queue:
   deu: Zur Warteschlange hinzufügen
   eng: Add to Queue
@@ -116,14 +116,14 @@ Auto Crop - Finding black bars at:
   fra: Auto Crop - Trouver des barres noires à
   ita: Auto Crop - Trovare barre nere a
   spa: Auto Crop - Encontrar barras negras en
-  zho: 自动裁剪 - 寻找位于此时刻的黑边框：
+  zho: 自动裁剪 - 寻找位于此时刻的黑边：
 Automatically detect black borders at current start time (or at 10% in if start time is 0):
   deu: Automatische Erkennung von schwarzen Rändern bei der aktuellen Startzeit (oder bei 10% in, wenn die Startzeit 0 ist)
   eng: Automatically detect black borders at current start time (or at 10% in if start time is 0)
   fra: Detectar automáticamente los bordes negros a la hora de inicio actual (o al 10% in si la hora de inicio es 0)
   ita: Rilevamento automatico dei bordi neri all'ora di inizio corrente (o al 10% se l'ora di inizio è 0)
   spa: Detectar automáticamente los bordes negros a la hora de inicio actual (o al 10% in si la hora de inicio es 0)
-  zho: 自动检测当前开始时刻的黑色边框（如果启动时间为0，则检测10%）。
+  zho: 自动检测当前开始时刻的黑边（如果启动时间为0，则检测10%）。
 Automatically enabled when an interlaced video is detected:
   deu: Automatisch aktiviert, wenn ein Interlaced-Video erkannt wird
   eng: Automatically enabled when an interlaced video is detected
@@ -417,7 +417,7 @@ Create Profile:
   fra: Créer un profil
   ita: Crea profilo
   spa: Crear el perfil
-  zho: 创建档案
+  zho: 创建方案
 Crop:
   deu: Zuschneiden
   eng: Crop
@@ -452,7 +452,7 @@ Default 4. This parameter has a quadratic effect on the amount of memory allocat
   fra: Défaut 4. Ce paramètre a un effet quadratique sur la quantité de mémoire allouée
   ita: Predefinito 4. Questo parametro ha un effetto quadratico sulla quantità di memoria allocata
   spa: Por defecto 4. Este parámetro tiene un efecto cuadrático en la cantidad de memoria asignada
-  zho: 默认值为4。分配的内存量与此参数的平方成比例。
+  zho: 默认值为4。分配的内存量和--b-adapt lookahead在
 Default disabled.:
   deu: Standardmäßig deaktiviert.
   eng: Default disabled.
@@ -473,7 +473,7 @@ Default is an autodetected count based on the number of CPU cores and whether WP
   fra: La valeur par défaut est un comptage autodétecté basé sur le nombre de cœurs CPU et sur l'activation ou non du WPP.
   ita: Default è un conteggio automatico basato sul numero di core della CPU e sul fatto che WPP sia abilitato o meno.
   spa: Por defecto es un conteo autodetectado basado en el número de núcleos de la CPU y si WPP está habilitado o no.
-  zho: 默认值是根据CPU核数和是否启用WPP（Wavefront Parallel Processing）而自动确定的。
+  zho: 默认为根据CPU核数和是否启用WPP（Wavefront Parallel Processing）自动确定。
 'Default: AQ enabled with auto-variance':
   deu: 'Voreinstellung: AQ aktiviert mit Auto-Varianz'
   eng: 'Default: AQ enabled with auto-variance'
@@ -585,7 +585,7 @@ Enabled:
   fra: Activé
   ita: Abilitato
   spa: Habilitado
-  zho: 已启用
+  zho: 启用
 Enabled automatically when --master-display or --max-cll is specified.:
   deu: Wird automatisch aktiviert, wenn --master-display oder --max-cll angegeben wird.
   eng: Enabled automatically when --master-display or --max-cll is specified.
@@ -606,7 +606,7 @@ Enables true lossless coding by bypassing scaling, transform, quantization and i
   fra: Active le véritable codage sans perte en contournant la mise à l'échelle, la transformation, la quantification et le filtrage en boucle.
   ita: Abilita la vera codifica senza perdita di dati bypassando la scalatura, la trasformazione, la quantizzazione e il filtraggio in loop.
   spa: Habilita la verdadera codificación sin pérdidas evitando el escalado, la transformación, la cuantificación y el filtrado en bucle.
-  zho: 绕开缩放、变换、量化和环内过滤（in-loop filtering），从而实现真正的无损编码。
+  zho: 绕过缩放、变换、量化和in-loop filtering，从而实现真正的无损编码。
 Enabling cover thumbnails on your system:
   deu: Aktivieren von Cover-Miniaturansichten auf Ihrem System
   eng: Enabling cover thumbnails on your system
@@ -795,7 +795,7 @@ Force HDR10 signaling:
   fra: Forcer la signalisation HDR10
   ita: Forza segnalazione HDR10
   spa: Señalización de la fuerza HDR10
-  zho: 强制HDR10信号传输
+  zho: Force HDR10 signaling
 Frame Threads:
   deu: Frame-Threads
   eng: Frame Threads
@@ -935,7 +935,7 @@ It is recommended that AQ-mode be enabled along with this feature:
   fra: Il est recommandé d'activer le mode AQ en même temps que cette fonction
   ita: Si raccomanda di abilitare la modalità AQ insieme a questa funzione
   spa: Se recomienda que el modo AQ se active junto con esta función
-  zho: 使用该功能时建议同时启用Adaptive Quantization。
+  zho: 使用该功能时建议同时启用自适应量化。
 It saves a few bits and can help performance in the client's tonemapper.:
   deu: Er spart ein paar Bits und kann die Leistung im Tonemapper des Clients verbessern.
   eng: It saves a few bits and can help performance in the client's tonemapper.
@@ -1187,7 +1187,7 @@ PIR can replace keyframes by inserting a column of intra blocks in non-keyframes
   fra: Le PIR peut remplacer les images clés en insérant une colonne de blocs intra dans les images non clés,
   ita: Il PIR può sostituire i keyframe inserendo una colonna di blocchi interni nei non-keyframe,
   spa: PIR puede reemplazar los fotogramas clave insertando una columna de intrabloques en los fotogramas no clave,
-  zho: PIR可以通过在非关键帧中插入一列内块来替换关键帧。
+  zho: PIR可以在非关键帧中插入一列intra blocks，从而替代关键帧。
 Parse Video details:
   deu: Video-Details parsen
   eng: Parse Video details
@@ -1341,7 +1341,7 @@ Raise or lower per-block quantization based on complexity analysis of the source
   fra: Augmenter ou diminuer la quantification par bloc en fonction de l'analyse de la complexité de l'image source.
   ita: Aumentare o diminuire la quantizzazione per blocco in base all'analisi della complessità dell'immagine sorgente.
   spa: Aumentar o disminuir la cuantificación por bloque basada en el análisis de la complejidad de la imagen de origen.
-  zho: 根据对源图像的复杂度分析，提高或降低每块的量化程度。
+  zho: 根据对源图像的复杂度分析，提升或降低各个块的量化。
 Raw Commands:
   deu: Raw-Befehle
   eng: Raw Commands
@@ -1362,7 +1362,7 @@ Reconstructed output pictures are bit-exact to the input pictures.:
   fra: Les images de sortie reconstruites sont exactes au niveau des bits par rapport aux images d'entrée.
   ita: Le immagini di uscita ricostruite sono bit-esatte alle immagini di ingresso.
   spa: Las imágenes de salida reconstruidas son un poco exactas a las imágenes de entrada.
-  zho: 重构后的输出图片与输入图片的位精确。
+  zho: 重建后的输出图像与输入图像是逐位一致（bit-exact）的。
 Remove HDR:
   deu: HDR entfernen
   eng: Remove HDR
@@ -1397,7 +1397,7 @@ Repeat Headers:
   fra: Répéter les en-têtes
   ita: Ripetere le intestazioni
   spa: Repetición de los encabezados
-  zho: 重复标题
+  zho: Repeat Headers
 Report Issue:
   deu: Ausgabe melden
   eng: Report Issue
@@ -1558,7 +1558,7 @@ Slower presets will generally achieve better compression efficiency (and generat
   fra: Des préréglages plus lents permettent généralement d'obtenir une meilleure efficacité de compression (et de générer des flux binaires plus petits).
   ita: Le preimpostazioni più lente in genere raggiungono una migliore efficienza di compressione (e generano flussi di bit più piccoli).
   spa: Los preajustes más lentos generalmente lograrán una mejor eficiencia de compresión (y generarán flujos de bits más pequeños).
-  zho: 较慢的预设通常会达到更好的压缩效率（并生成较小的码流）。
+  zho: 较慢的预设通常会达成更好的压缩效率（并生成较小的码流）。
 Source:
   deu: Quelle
   eng: Source
@@ -1649,14 +1649,14 @@ The more complex the block, the more quantization is used.:
   fra: Plus le bloc est complexe, plus on utilise la quantification.
   ita: Più complesso è il blocco, più si usa la quantizzazione.
   spa: Cuanto más complejo es el bloque, más cuantificación se utiliza.
-  zho: 块越复杂，使用的量化越多。
+  zho: 越复杂的块，使用的量化也越高。
 The purpose is to prevent blocking or banding artifacts in regions with few/zero AC coefficients.:
   deu: Der Zweck ist, Blocking- oder Banding-Artefakte in Regionen mit wenigen/null AC-Koeffizienten zu verhindern.
   eng: The purpose is to prevent blocking or banding artifacts in regions with few/zero AC coefficients.
   fra: L'objectif est d'éviter de bloquer ou de banderoler des artefacts dans des régions où les coefficients AC sont faibles ou nuls.
   ita: Lo scopo è quello di prevenire il blocco o il banding di artefatti in regioni con pochi/zeri coefficienti AC.
   spa: El propósito es prevenir el bloqueo o los artefactos de bandas en regiones con coeficientes de CA bajos/cero.
-  zho: 目的是为了防止在交流系数较少/为零的区域出现阻塞或带状伪影。
+  zho: 目的是为了防止在AC coefficients较少或为零的区域出现blocking或banding artifacts。
 There is a conversion in process!:
   deu: Es ist eine Konvertierung im Gange!
   eng: There is a conversion in process!
@@ -1677,7 +1677,7 @@ This flag performs bi-linear interpolation of the corner reference samples for a
   fra: Ce drapeau effectue une interpolation bi-linéaire des échantillons de référence des coins pour un fort effet de lissage.
   ita: Questa bandierina esegue l'interpolazione bi-lineare dei campioni di riferimento d'angolo per un forte effetto levigante.
   spa: Este banderín realiza una interpolación bi-línea de las muestras de referencia de las esquinas para un fuerte efecto de suavizado.
-  zho: 这个选项可以对角参考样本进行双线性插值，以获得强大的平滑效果。
+  zho: 这个选项对corner reference samples进行双线性插值，以获得强平滑效果。
 This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.:
   deu: Dies verbessert die Kodiergeschwindigkeit auf Systemen, die sonst bei der Kodierung von VP9 nicht ausgelastet sind, erheblich.
   eng: This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.
@@ -1691,21 +1691,21 @@ This is intended for use when you do not have a container to keep the stream hea
   fra: Il est destiné à être utilisé lorsque vous ne disposez pas d'un conteneur pour conserver les en-têtes de flux
   ita: Questo è destinato all'uso quando non si dispone di un contenitore per mantenere le intestazioni dello stream per voi
   spa: Está pensado para ser utilizado cuando no se dispone de un contenedor para guardar los encabezados de la corriente para usted
-  zho: 当您没有容器为您保存流头时，可以使用这个标志。
+  zho: This is intended for use when you do not have a container to keep the stream headers for you.
 This is used for ultra-high bitrates with zero loss of quality.:
   deu: Dies wird für ultrahohe Bitraten ohne Qualitätsverluste verwendet.
   eng: This is used for ultra-high bitrates with zero loss of quality.
   fra: Il est utilisé pour les débits binaires ultra-élevés sans perte de qualité.
   ita: Questo viene utilizzato per bitrate elevatissimi con perdita di qualità pari a zero.
   spa: Se utiliza para velocidades de transmisión ultra altas con cero pérdida de calidad.
-  zho: 这用于超高比特率且质量零损失的情况下。
+  zho: 用于实现无质量损失的超高比特率编码。
 'This option is not recommenced unless you need to conform ':
   deu: 'Diese Option wird nicht empfohlen, es sei denn, Sie müssen konform sein '
   eng: 'This option is not recommenced unless you need to conform '
   fra: "Cette option n'est pas renouvelée, sauf si vous devez vous conformer "
   ita: 'Questa opzione non viene riavviata a meno che non sia necessario conformarsi '
   spa: 'Esta opción no se reinicia a menos que se necesite conformar '
-  zho: 除非您需要符合以下要求，否则不建议使用该选项。
+  zho: 除非您需要为了刻录到物理光盘而遵守蓝光标准，
 This will just copy the video track as is.:
   deu: Damit wird der Videotrack einfach so kopiert, wie er ist.
   eng: This will just copy the video track as is.
@@ -1803,7 +1803,7 @@ Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   fra: Utile lorsqu'on souhaite signaler des valeurs 0 pour max-cll et max-fall.
   ita: Utile quando si desidera segnalare i valori 0 per max-cll e max-fall.
   spa: Es útil cuando se desea señalar los valores 0 para max-cll y max-fall.
-  zho: 当希望对 max-cll 和 max-fall 发出 0 值信号时很有用。
+  zho: 当希望对 max-cll 和 max-fall 置 0 值时有用。
 Useful when you have the "Too many packets buffered for output stream" error:
   deu: Nützlich, wenn Sie den Fehler "Too many packets buffered for output stream" haben
   eng: Useful when you have the "Too many packets buffered for output stream" error
@@ -1887,7 +1887,7 @@ Wait for the current command to finish, and stop the next command from processin
   fra: Attendre la fin de la commande en cours et arrêter le traitement de la commande suivante
   ita: Attendere che il comando corrente finisca e interrompere l'elaborazione del comando successivo
   spa: Espere a que termine el comando actual y detenga el procesamiento del siguiente comando...
-  zho: 等待当前命令完成，暂不处理后面的命令
+  zho: 等待当前命令完成，之后暂不处理后面的命令
 Watch:
   deu: Beobachten
   eng: Watch
@@ -1964,21 +1964,21 @@ and the amount of work performed by the full trellis version of --b-adapt lookah
   fra: et la quantité de travail effectuée par la version complète en treillis de --b-adapt lookahead.
   ita: e la quantità di lavoro svolto dalla versione completa della versione a traliccio di --b-adattate lookahead.
   spa: y la cantidad de trabajo realizado por la versión completa de la espaldera de --b-adaptado lookahead.
-  zho: 和-b-adapt lookahead的全棚架版本所执行的工作量。
+  zho: full(trellis)模式下执行的工作量与此参数的平方成比例。
 and you want keyframes to be random access points.:
   deu: und Sie wollen, dass Keyframes zufällige Zugriffspunkte sind.
   eng: and you want keyframes to be random access points.
   fra: et vous voulez que les images clés soient des points d'accès aléatoires.
   ita: e si desidera che i fotogrammi chiave siano punti di accesso casuali.
   spa: y quieres que los fotogramas clave sean puntos de acceso aleatorios.
-  zho: 并且你希望关键帧是随机访问点。
+  zho: and you want keyframes to be random access points.
 'aq-mode: Adaptive Quantization operating mode.':
   deu: 'aq-mode: Betriebsart "Adaptive Quantisierung".'
   eng: 'aq-mode: Adaptive Quantization operating mode.'
   fra: 'aq-mode : Mode de fonctionnement de la quantification adaptative.'
   ita: 'aq-mode: Modalità operativa di quantizzazione adattiva.'
   spa: 'aq-mode: Modo de operación de Cuantificación Adaptativa.'
-  zho: aq-mode：自适应量化工作模式。
+  zho: aq-mode：自适应量化（Adaptive Quantization）工作模式。
 are mere suggestions!:
   deu: sind lediglich Vorschläge!
   eng: are mere suggestions!
@@ -2034,7 +2034,7 @@ bframes:
   fra: 'bframes : Nombre maximum de b-frames consécutives. '
   ita: 'bframes: Numero massimo di b-frame consecutivi. '
   spa: 'bframes: Número máximo de b-frames consecutivos. '
-  zho: b帧。连续b帧的最大数量。
+  zho: 'bframes：连续B帧的最大数量。'
 but it has severe performance implications.:
   deu: aber es hat schwerwiegende Auswirkungen auf die Leistung.
   eng: but it has severe performance implications.
@@ -2048,7 +2048,7 @@ but over a period of multiple frames instead of a single keyframe.:
   fra: mais sur une période de plusieurs images au lieu d'une seule image clé.
   ita: ma su un periodo di frame multipli invece di un singolo keyframe.
   spa: pero en un período de múltiples fotogramas en lugar de un solo fotograma clave.
-  zho: 但在多个帧的时间内，而不是单个关键帧。
+  zho: 从而刷新图像，而不使用单个关键帧。
 channels:
   deu: Kanäle
   eng: channels
@@ -2111,28 +2111,28 @@ good is the default and recommended for most applications:
   fra: 'hdr10 : Forcer la signalisation des paramètres HDR10 dans les paquets SEI.'
   ita: 'hdr10: Forza la segnalazione dei parametri HDR10 nei pacchetti SEI.'
   spa: 'hdr10: Forzar la señalización de los parámetros HDR10 en los paquetes SEI.'
-  zho: hdr10：在SEI数据包中强制发送HDR10参数信号。
+  zho: 'hdr10: Force signaling of HDR10 parameters in SEI packets.'
 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.':
   deu: 'intra-refresh: Aktiviert Periodic Intra Refresh(PIR) anstelle der Keyframe-Einblendung.'
   eng: 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.'
   fra: "intra-refresh : Active le rafraîchissement périodique intra (PIR) au lieu de l'insertion d'images clés."
   ita: "intra-refresh: Abilita l'Intra Refresh(PIR) periodico invece dell'inserimento del keyframe."
   spa: 'intra-refresco: Habilita el Refresco Intra Periódico (PIR) en lugar de la inserción de fotogramas clave.'
-  zho: 'intra-refresh: 启用周期性内部刷新(PIR)代替关键帧插入。'
+  zho: 'intra-refresh: 启用Periodic Intra Refresh（PIR）代替关键帧插入。'
 is a default profile and will not be removed:
   deu: ist ein Standardprofil und wird nicht entfernt
   eng: is a default profile and will not be removed
   fra: est un profil par défaut et ne sera pas supprimé
   ita: è un profilo predefinito e non verrà rimosso
   spa: es un perfil predeterminado y no se eliminará
-  zho: 是默认配置文件，不会被删除。
+  zho: 是默认方案，不会被删除。
 is extremely source dependant:
   deu: ist extrem quellenabhängig
   eng: is extremely source dependant
   fra: est extrêmement dépendante de la source
   ita: è estremamente dipendente dalla fonte
   spa: es extremadamente dependiente de la fuente
-  zho: 极其依赖来源
+  zho: 与源文件有很大关系
 it will generally just increase memory use.:
   deu: erhöht im Allgemeinen nur den Speicherverbrauch.
   eng: it will generally just increase memory use.
@@ -2146,7 +2146,7 @@ it will generally just increase memory use.:
   fra: "keyint : Activer l'intra-encodage en forçant les images clés toutes les 1 seconde (spécification Blu-ray)"
   ita: "keyint: Attivare l'Intra-Encoding forzando i keyframe ogni 1 secondo (Blu-ray spec)"
   spa: 'keyint: Habilitar la intracodificación forzando los fotogramas clave cada 1 segundo (Blu-ray spec)'
-  zho: 'keyint: 启用内部编码，每1秒强制关键帧（蓝光规格）。'
+  zho: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)'
 lossless:
   deu: verlustfrei
   eng: lossless
@@ -2160,7 +2160,7 @@ lossless:
   fra: "max_muxing_queue_size : Augmenter pour corriger l'erreur \"Too many packets buffered for output stream"
   ita: "max_muxing_queue_size: Alzare per correggere l'errore \"Troppi pacchetti bufferizzati per il flusso di uscita"
   spa: 'tamaño_muxing_queue_size: Subir para corregir el error "Demasiados paquetes almacenados en la memoria intermedia para el flujo de salida".'
-  zho: max_muxing_queue_size。提高以解决 "输出流缓冲的数据包太多 "的错误。
+  zho: max_muxing_queue_size：提高以解决 "输出流缓冲的数据包太多（Too many packets buffered for output stream）"的错误。
 none:
   deu: keine
   eng: none
@@ -2216,7 +2216,7 @@ profile:
   fra: 'profil : Appliquer un profil de codage'
   ita: 'profilo: Applicare un profilo di codifica'
   spa: 'perfil: Hacer cumplir un perfil codificado'
-  zho: 配置文件。执行一个编码配置文件
+  zho: profile：应用一个编码规格
 'profile: VP9 coding profile - must match bit depth':
   deu: 'Profil: VP9-Kodierungsprofil - muss mit der Bittiefe übereinstimmen'
   eng: 'profile: VP9 coding profile - must match bit depth'
@@ -2244,7 +2244,7 @@ rav1e github:
   fra: 'des en-têtes répétitifs : Si elle est activée, x265 émettra des en-têtes VPS, SPS et PPS avec chaque image clé.'
   ita: 'ripeti-intestazioni: Se abilitato, x265 emetterà testate VPS, SPS e PPS con ogni fotogramma chiave.'
   spa: 'repetición de los encabezamientos: Si se activa, x265 emitirá encabezados VPS, SPS y PPS con cada fotograma clave.'
-  zho: repeat-headers.如果启用，x265将在每个关键帧中发射VPS，SPS和PPS头。如果启用，x265将在每一个关键帧发出VPS，SPS和PPS头。
+  zho: repeat-headers.如果启用，x265将在每一个关键帧加入VPS，SPS和PPS头。
 since the entire reference frames are always available for motion compensation,:
   deu: da immer die gesamten Referenzframes für die Bewegungskompensation zur Verfügung stehen,
   eng: since the entire reference frames are always available for motion compensation,
@@ -2272,7 +2272,7 @@ that move across the video from one side to the other and thereby refresh the im
   fra: qui passent d'un côté à l'autre de la vidéo et rafraîchissent ainsi l'image
   ita: che si muovono attraverso il video da un lato all'altro e quindi rinfrescano l'immagine
   spa: que se mueven a través del video de un lado a otro y así refrescan la imagen
-  zho: 从一侧移动到另一侧的视频，从而刷新图像。
+  zho: 这些intra blocks的位置在若干帧的时间内从视频一侧移动到另一侧，
 the resolution-to-:
   deu: die Reso
   eng: the resolution-to-
@@ -2286,14 +2286,14 @@ to Blu-ray standards to burn to a physical disk:
   fra: a los estándares de Blu-ray para grabar en un disco físico
   ita: agli standard Blu-ray per masterizzare su un disco fisico
   spa: a los estándares de Blu-ray para grabar en un disco físico
-  zho: 以蓝光标准刻录到物理磁盘上
+  zho: 否则不建议启用该选项。
 'tune: Tune the settings for a particular type of source or situation':
   deu: 'abstimmen: Die Einstellungen für eine bestimmte Art von Quelle oder Situation abstimmen'
   eng: 'tune: Tune the settings for a particular type of source or situation'
   fra: 'afinar: Sintonizar los ajustes para un tipo de fuente o situación particular'
   ita: 'sintonizzarsi: Sintonizzare le impostazioni per un particolare tipo di sorgente o situazione'
   spa: 'afinar: Sintonizar los ajustes para un tipo de fuente o situación particular'
-  zho: 调整。调整特定类型的来源或情况的设置。
+  zho: tune：调整特定类型的来源或情况的设置。
 video tracks found:
   deu: Videospuren gefunden
   eng: video tracks found
