@@ -45,10 +45,12 @@ jobs:
       shell: cmd
       run: pyinstaller FastFlix_Windows_Installer.spec
 
-#    - name: Package installer
-#      shell: cmd
-#      run: |
-#
+    - name: Package installer
+      shell: cmd
+      run: |
+        makensis.exe FastFlix.nsi
+        move FastFlix_installer.exe FastFlix_${{ env.VERSION }}_installer.exe
+
     - name: Package single executable
       shell: cmd
       run: |
@@ -67,4 +69,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: FastFlix_${{ env.VERSION }}_installer
-        path: dist\FastFlix\
+        path: FastFlix_${{ env.VERSION }}_installer.exe
