@@ -30,8 +30,10 @@ jobs:
         python -m pip install --upgrade wheel
         python -m pip install -r requirements-build.txt
 
-    - name: Grab language list iso-639-3
-      run: curl -o iso-639-3.tab https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab
+    - name: Grab iso-639 lists
+      run: |
+        cp $(python.exe -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
+        cp $(python.exe -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
 
     - name: Build executable
       run: pyinstaller FastFlix_Nix_OneFile.spec

@@ -31,8 +31,10 @@ jobs:
         python -m pip install -r requirements-build.txt
         python -m pip install --upgrade pyqt5-tools
 
-    - name: Grab language list iso-639-3
-      run: wget https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab
+    - name: Grab iso-639 lists
+      run: |
+        cp $(python.exe -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
+        cp $(python.exe -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
 
     - name: Build single executable
       run: pyinstaller FastFlix_Nix_OneFile.spec
