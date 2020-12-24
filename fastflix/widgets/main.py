@@ -40,7 +40,7 @@ from fastflix.resources import (
     video_add_icon,
     video_playlist_icon,
 )
-from fastflix.shared import error_message, time_to_number
+from fastflix.shared import error_message, time_to_number, yes_no_message
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.thumbnail_generator import ThumbnailCreator
 from fastflix.widgets.video_options import VideoOptions
@@ -333,7 +333,7 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.remove_hdr = QtWidgets.QCheckBox(t("Remove HDR"))
         self.widgets.remove_hdr.setChecked(False)
-        self.widgets.remove_hdr.toggled.connect(self.page_update)
+        self.widgets.remove_hdr.toggled.connect(self.encoder_settings_update)
         self.widgets.remove_hdr.setToolTip(
             f"{t('Convert BT2020 colorspace into bt709')}\n"
             f"{t('WARNING: This will take much longer and result in a larger file')}"
@@ -374,7 +374,6 @@ class Main(QtWidgets.QWidget):
     def set_profile(self):
         if self.loading_video:
             return
-        # TODO Have to update all the defaults
         # self.video_options.new_source()
         # previous_auto_crop = self.app.fastflix.config.opt("auto_crop")
         self.app.fastflix.config.selected_profile = self.widgets.profile_box.currentText()
@@ -584,9 +583,7 @@ class Main(QtWidgets.QWidget):
         auto_crop = QtWidgets.QPushButton(t("Auto"))
         auto_crop.setMaximumHeight(40)
         auto_crop.setFixedWidth(50)
-        auto_crop.setToolTip(
-            t("Automatically detect black borders at current start time (or at 10% in if start time is 0)")
-        )
+        auto_crop.setToolTip(t("Automatically detect black borders"))
         auto_crop.clicked.connect(self.get_auto_crop)
         self.buttons.append(auto_crop)
 
@@ -1076,13 +1073,10 @@ class Main(QtWidgets.QWidget):
         if video.video_settings.vertical_flip and video.video_settings.horizontal_flip:
             self.widgets.flip.setCurrentIndex(3)
 
-        # self.video_options.new_source()
         self.video_options.reload()
         self.enable_all()
 
         self.app.fastflix.current_video.status = Status()
-
-        # TODO add cover
 
         self.loading_video = False
         self.page_update()
@@ -1329,6 +1323,9 @@ class Main(QtWidgets.QWidget):
             )
         self.page_update()
 
+    def encoder_settings_update(self):
+        self.video_options.settings_update()
+
     def page_update(self, build_thumbnail=True):
         if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
             return
@@ -1417,30 +1414,30 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
 
     @reusables.log_exception("fastflix", show_traceback=False)
-    def encode_video(self, try_add=False):
+    def encode_video(self):
 
         if self.converting:
             logger.debug(t("Canceling current encode"))
             self.app.fastflix.worker_queue.put(["cancel"])
             self.video_options.queue.reset_pause_encode()
             return
-        elif not try_add:
+        else:
             logger.debug(t("Starting conversion process"))
 
-        if not self.app.fastflix.queue:
-
-            if not self.add_to_queue():
-                return
+        if not self.app.fastflix.queue or self.app.fastflix.current_video:
+            add_current = True
+            if self.app.fastflix.queue and self.app.fastflix.current_video:
+                add_current = yes_no_message("Add current video to queue?", yes_text="Yes", no_text="No")
+            if add_current:
+                if not self.add_to_queue():
+                    return
 
         # Command looks like (video_uuid, command_uuid, command, work_dir, filename)
         # Request looks like (queue command, log_dir, (commands))
         requests = ["add_items", str(self.app.fastflix.log_path)]
         commands = self.get_commands()
 
-        if not commands and not try_add and self.app.fastflix.current_video:
-            # TODO ask if they want to add
-            return self.encode_video(try_add=True)
-        elif not commands:
+        if not commands:
             return error_message(t("No new items in queue to convert"))
 
         requests.append(tuple(commands))

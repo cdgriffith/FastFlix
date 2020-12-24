@@ -35,7 +35,7 @@ class ProfileWindow(QtWidgets.QWidget):
         self.main = main
         self.config_file = self.app.fastflix.config.config_path
         self.setWindowTitle(t("New Profile"))
-        self.setMinimumSize(600, 200)
+        self.setMinimumSize(500, 150)
         layout = QtWidgets.QGridLayout()
 
         profile_name_label = QtWidgets.QLabel(t("Profile Name"))
@@ -66,7 +66,7 @@ class ProfileWindow(QtWidgets.QWidget):
 
         save_button = QtWidgets.QPushButton(t("Create Profile"))
         save_button.clicked.connect(self.save)
-        save_button.setMaximumWidth(80)
+        save_button.setMaximumWidth(150)
 
         layout.addWidget(profile_name_label, 0, 0)
         layout.addWidget(self.profile_name, 0, 1)
@@ -80,7 +80,7 @@ class ProfileWindow(QtWidgets.QWidget):
         layout.addWidget(self.sub_burn_in, 6, 0, 1, 2)
         layout.addWidget(self.encoder_label, 7, 0, 1, 2)
         layout.addWidget(self.encoder_settings, 8, 0, 10, 2)
-        layout.addWidget(save_button, 20, 1)
+        layout.addWidget(save_button, 20, 1, alignment=QtCore.Qt.AlignRight)
 
         self.update_settings()
 

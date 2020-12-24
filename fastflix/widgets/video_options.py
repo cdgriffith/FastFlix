@@ -114,6 +114,8 @@ class VideoOptions(QtWidgets.QTabWidget):
                 self.audio.reload(self.audio_formats)
             if getattr(self.main.current_encoder, "enable_subtitles", False):
                 self.subtitles.reload()
+            if getattr(self.main.current_encoder, "enable_attachments", False):
+                self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
 
     def clear_tracks(self):
         self.audio.remove_all()
@@ -132,3 +134,7 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     def cleanup(self):
         self.status.cleanup()
+
+    def settings_update(self):
+        if getattr(self.current_settings, "setting_change", False):
+            self.current_settings.setting_change()

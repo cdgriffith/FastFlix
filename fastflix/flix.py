@@ -339,7 +339,10 @@ def convert_mastering_display(data: Box) -> Tuple[Box, str]:
         upper, lower = [int(x) for x in a.get(v, "0/0").split("/")]
         if lower != base:
             upper *= base / lower
-        return int(upper)
+        value = int(upper)
+        if value < 0 or value > 4_294_967_295:  # 32-bit unsigned int max size
+            raise FlixError("HDR value outside expected range")
+        return value
 
     for item in data["side_data_list"]:
         if item.side_data_type == "Mastering display metadata":
@@ -364,6 +367,8 @@ def parse_hdr_details(app: FastFlixApp, **_):
             if video_stream["index"] == video_track and video_stream.get("side_data_list"):
                 try:
                     master_display, cll = convert_mastering_display(streams.video[0])
+                except FlixError as err:
+                    logger.error(str(err))
                 except Exception:
                     logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
                 else:
@@ -411,6 +416,8 @@ def parse_hdr_details(app: FastFlixApp, **_):
 
     try:
         master_display, cll = convert_mastering_display(data)
+    except FlixError as err:
+        logger.error(str(err))
     except Exception:
         logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
     else:

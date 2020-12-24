@@ -135,14 +135,16 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             allow_sleep_mode()
             return
         else:
-
-            # TODO don't open "view new" dialog if not single video
-            # TODO disable queue window change when converting
             if request[0] == "add_items":
-                logger.debug(t("Adding commands to the queue"))
+
                 # Request looks like (queue command, log_dir, (commands))
                 log_path = Path(request[1])
-                commands_to_run.extend(request[2])
+                for command in request[2]:
+                    if command not in commands_to_run:
+                        logger.debug(t(f"Adding command to the queue for {command[4]}"))
+                        commands_to_run.append(command)
+                    # else:
+                    #     logger.debug(t(f"Command already in queue: {command[1]}"))
                 if not runner.is_alive() and not paused:
                     logger.debug(t("No encoding is currently in process, starting encode"))
                     start_command()

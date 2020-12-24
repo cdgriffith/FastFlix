@@ -16,6 +16,7 @@
 * Changing so it opens the file dialog for new video to last used directory
 * Changing log names, including file output stem in conversion log
 * Fixing #116 how HDR10 options for x265 work (thanks to HannesJo0139)
+* Fixing dispositions being set for wrong tracks (thanks to ftpmorph)
 * Fixing thumbnails not being generated properly on 10-bit non bt2020 files
 * Fixing QThread destroyed message on close
 

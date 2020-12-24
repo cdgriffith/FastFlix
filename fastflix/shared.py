@@ -23,6 +23,8 @@ except AttributeError:
 
 from qtpy import QtCore, QtGui, QtWidgets
 
+from fastflix.language import t
+
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
@@ -52,13 +54,13 @@ class MyMessageBox(QtWidgets.QMessageBox):
         self.setMaximumWidth(16777215)
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
-        textEdit = self.findChild(QtWidgets.QTextEdit)
-        if textEdit is not None:
-            textEdit.setMinimumHeight(0)
-            textEdit.setMaximumHeight(16777215)
-            textEdit.setMinimumWidth(0)
-            textEdit.setMaximumWidth(16777215)
-            textEdit.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        text_edit = self.findChild(QtWidgets.QTextEdit)
+        if text_edit is not None:
+            text_edit.setMinimumHeight(0)
+            text_edit.setMaximumHeight(16777215)
+            text_edit.setMinimumWidth(0)
+            text_edit.setMaximumWidth(16777215)
+            text_edit.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
         return result
 
@@ -89,6 +91,24 @@ def error_message(msg, details=None, traceback=False, title=None):
     em.exec_()
 
 
+def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_action=None, no_action=None):
+    sm = QtWidgets.QMessageBox()
+    sm.setWindowTitle(t(title))
+    sm.setText(msg)
+    sm.addButton(yes_text, QtWidgets.QMessageBox.YesRole)
+    sm.addButton(no_text, QtWidgets.QMessageBox.NoRole)
+    sm.exec_()
+    if sm.clickedButton().text() == yes_text:
+        if yes_action:
+            return yes_action()
+        return True
+    elif sm.clickedButton().text() == no_text:
+        if no_action:
+            return no_action()
+        return False
+    return None
+
+
 def latest_fastflix(no_new_dialog=False):
     from fastflix.version import __version__
 
@@ -96,9 +116,9 @@ def latest_fastflix(no_new_dialog=False):
     try:
         data = requests.get(url, timeout=15 if no_new_dialog else 3).json()
     except Exception:
-        logger.warning("Could not connect to github to check for newer versions.")
+        logger.warning(t("Could not connect to github to check for newer versions"))
         if no_new_dialog:
-            message("Could not connect to github to check for newer versions.")
+            message(t("Could not connect to github to check for newer versions"))
         return
 
     if data["tag_name"] != __version__ and StrictVersion(data["tag_name"]) > StrictVersion(__version__):
@@ -111,19 +131,21 @@ def latest_fastflix(no_new_dialog=False):
 
         download_link = ""
         if installer:
-            download_link += f"<a href='{installer}'>Download FastFlix installer {data['tag_name']}</a><br>"
+            download_link += (
+                f"<a href='{installer}'>{t('Download')} FastFlix {t('installer')} {data['tag_name']}</a><br>"
+            )
         if portable:
-            download_link += f"<a href='{portable}'>Download FastFlix portable {data['tag_name']}</a><br>"
+            download_link += f"<a href='{portable}'>{t('Download')} FastFlix {t('portable')} {data['tag_name']}</a><br>"
         if (not portable and not installer) or not reusables.win_based:
             html_link = data["html_url"]
-            download_link = f"<a href='{html_link}'>View FastFlix {data['tag_name']} now</a>"
+            download_link = f"<a href='{html_link}'>{t('View')} FastFlix {data['tag_name']} now</a>"
         message(
-            f"There is a newer version of FastFlix available! <br> {download_link}",
-            title="New Version",
+            f"{t('There is a newer version of FastFlix available!')} <br> {download_link}",
+            title=t("New Version"),
         )
         return
     if no_new_dialog:
-        message("You are using the latest version of FastFlix")
+        message(t("You are using the latest version of FastFlix"))
 
 
 def file_date():
@@ -141,14 +163,14 @@ def time_to_number(string_time: str) -> float:
         try:
             micro = int(extra[0])
         except ValueError:
-            logger.info("bad micro value")
+            logger.info(t("bad micro value"))
             return
     total = float(f".{micro}")
     for i, v in enumerate(reversed(base.split(":"))):
         try:
             v = int(v)
         except ValueError:
-            logger.info(f"Not a valid int for time conversion: {v}")
+            logger.info(f"{t('Not a valid int for time conversion')}: {v}")
         else:
             total += v * (60 ** i)
     return total
