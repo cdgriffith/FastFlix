@@ -13,7 +13,7 @@ from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
 from fastflix.resources import default_mode, main_icon, video_add_icon
-from fastflix.shared import file_date
+from fastflix.shared import file_date, message
 from fastflix.version import __version__
 from fastflix.widgets.container import Container
 from fastflix.widgets.progress_bar import ProgressBar, Task
@@ -107,6 +107,14 @@ def start_app(worker_queue, status_queue, log_queue):
     init_fastflix_directories(app)
     init_logging(app)
     register_app()
+    upgraded = app.fastflix.config.upgrade_check()
+    if upgraded:
+        # No translation will be possible in this case
+        message(
+            f"Your config file has been upgraded to FastFlix's new YAML config format\n"
+            f"{app.fastflix.config.config_path}",
+            title="Upgraded",
+        )
     try:
         app.fastflix.config.load()
     except MissingFF:

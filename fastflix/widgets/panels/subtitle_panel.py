@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import copy
 from typing import Union
 
 from box import Box
@@ -282,15 +281,14 @@ class SubtitleList(FlixList):
             raise FastFlixInternalException(t("More than one track selected to burn in"))
         self.app.fastflix.current_video.video_settings.subtitle_tracks = tracks
 
-    def reload(self):
-        og_tracks = copy.deepcopy(self.app.fastflix.current_video.video_settings.subtitle_tracks)
-        enabled_tracks = [x.index for x in og_tracks]
+    def reload(self, original_tracks):
+        enabled_tracks = [x.index for x in original_tracks]
         self.new_source()
         for track in self.tracks:
             enabled = track.index in enabled_tracks
             track.widgets.enable_check.setChecked(enabled)
             if enabled:
-                existing_track = [x for x in og_tracks if x.index == track.index][0]
+                existing_track = [x for x in original_tracks if x.index == track.index][0]
                 if existing_track.disposition:
                     track.widgets.disposition.setCurrentText(existing_track.disposition)
                 else:

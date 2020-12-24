@@ -224,7 +224,23 @@ class Config:
     def __iter__(self):
         return (x for x in dir(self) if not x.startswith("_"))
 
-    # def upgrade_check(self):
-    #     old_config_path = self.config_path.parent / "fastflix.json"
-    #     if not self.config_path.exists() and old_config_path.exists():
-    #         data = Box.from_yaml(filename=self.config_path)
+    def upgrade_check(self):
+        old_config_path = self.config_path.parent / "fastflix.json"
+        if not self.config_path.exists() and old_config_path.exists():
+            data = Box.from_json(filename=old_config_path)
+            if data.get("work_dir"):
+                self.work_path = Path(data.work_dir)
+            if data.get("ffmpeg"):
+                self.ffmpeg = Path(data.ffmpeg)
+            if data.get("ffprobe"):
+                self.ffmpeg = Path(data.ffprobe)
+            self.disable_automatic_subtitle_burn_in = data.get("disable_automatic_subtitle_burn_in")
+            self.disable_update_check = data.get("disable_update_check")
+            self.use_sane_audio = data.get("use_sane_audio")
+            for audio_type in data.get("sane_audio_selection", []):
+                if audio_type not in self.sane_audio_selection:
+                    self.sane_audio_selection.append(audio_type)
+            self.save()
+            old_config_path.unlink(missing_ok=True)
+            return True
+        return False

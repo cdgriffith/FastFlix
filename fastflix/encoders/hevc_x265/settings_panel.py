@@ -54,6 +54,13 @@ recommended_crfs = [
 pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
 
 
+def get_breaker():
+    breaker_line = QtWidgets.QWidget()
+    breaker_line.setMaximumHeight(2)
+    breaker_line.setStyleSheet("background-color: #ccc; margin: auto 0; padding: auto 0;")
+    return breaker_line
+
+
 class HEVC(SettingPanel):
     profile_name = "x265"
 
@@ -67,29 +74,38 @@ class HEVC(SettingPanel):
         self.mode = "CRF"
         self.updating_settings = False
 
-        grid.addLayout(self.init_preset(), 1, 0, 1, 1)
-        grid.addLayout(self.init_tune(), 2, 0, 1, 1)
-        grid.addLayout(self.init_profile(), 3, 0, 1, 1)
-        grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 1)
-        grid.addLayout(self.init_max_mux(), 5, 0, 1, 1)
-        grid.addLayout(self.init_frame_threads(), 6, 0, 1, 1)
+        grid.addLayout(self.init_preset(), 1, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 2, 0, 1, 2)
+        grid.addLayout(self.init_profile(), 3, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 2)
+        grid.addLayout(self.init_modes(), 0, 2, 5, 4)
 
-        grid.addLayout(self.init_modes(), 0, 1, 5, 4)
+        breaker = QtWidgets.QHBoxLayout()
+        breaker_label = QtWidgets.QLabel(t("Advanced"))
+        breaker_label.setFont(QtGui.QFont("helvetica", 8, weight=55))
 
-        grid.addLayout(self.init_x265_row(), 5, 1, 1, 4)
-        grid.addLayout(self.init_x265_row_two(), 6, 1, 1, 4)
+        breaker.addWidget(get_breaker(), stretch=1)
+        breaker.addWidget(breaker_label, alignment=QtCore.Qt.AlignHCenter)
+        breaker.addWidget(get_breaker(), stretch=1)
+
+        grid.addLayout(breaker, 5, 0, 1, 6)
+
+        grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
+        grid.addLayout(self.init_frame_threads(), 7, 0, 1, 2)
+        grid.addLayout(self.init_x265_row(), 6, 2, 1, 4)
+        grid.addLayout(self.init_x265_row_two(), 7, 2, 1, 4)
         # grid.addLayout(self.init_hdr10_opt(), 5, 2, 1, 1)
         # grid.addLayout(self.init_repeat_headers(), 5, 3, 1, 1)
         # grid.addLayout(self.init_aq_mode(), 5, 4, 1, 2)
 
-        grid.addLayout(self.init_x265_params(), 7, 1, 1, 4)
+        grid.addLayout(self.init_x265_params(), 8, 2, 1, 4)
 
-        grid.addLayout(self.init_dhdr10_info(), 8, 1, 1, 3)
-        grid.addLayout(self.init_dhdr10_warning_and_opt(), 8, 4, 1, 1)
+        grid.addLayout(self.init_dhdr10_info(), 9, 2, 1, 3)
+        grid.addLayout(self.init_dhdr10_warning_and_opt(), 9, 5, 1, 1)
 
-        grid.setRowStretch(9, True)
+        grid.setRowStretch(10, True)
 
-        grid.addLayout(self._add_custom(), 10, 0, 1, 5)
+        grid.addLayout(self._add_custom(), 11, 0, 1, 6)
 
         link_1 = link(
             "https://trac.ffmpeg.org/wiki/Encode/H.265",
@@ -108,7 +124,7 @@ class HEVC(SettingPanel):
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
 
-        grid.addWidget(guide_label, 11, 0, 1, 5)
+        grid.addWidget(guide_label, 12, 0, 1, 6)
 
         self.setLayout(grid)
         self.hide()
@@ -344,8 +360,6 @@ class HEVC(SettingPanel):
             connect="default",
             opt="preset",
         )
-        self.labels["preset"].setMinimumWidth(190)
-        self.widgets["preset"].setMinimumWidth(190)
         return layout
 
     def init_tune(self):
