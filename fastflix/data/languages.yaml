@@ -116,14 +116,14 @@ Auto Crop - Finding black bars at:
   fra: Auto Crop - Trouver des barres noires à
   ita: Auto Crop - Trovare barre nere a
   spa: Auto Crop - Encontrar barras negras en
-  zho: 自动裁剪 - 寻找位于此时刻的黑边：
-Automatically detect black borders at current start time (or at 10% in if start time is 0):
-  deu: Automatische Erkennung von schwarzen Rändern bei der aktuellen Startzeit (oder bei 10% in, wenn die Startzeit 0 ist)
-  eng: Automatically detect black borders at current start time (or at 10% in if start time is 0)
-  fra: Detectar automáticamente los bordes negros a la hora de inicio actual (o al 10% in si la hora de inicio es 0)
-  ita: Rilevamento automatico dei bordi neri all'ora di inizio corrente (o al 10% se l'ora di inizio è 0)
-  spa: Detectar automáticamente los bordes negros a la hora de inicio actual (o al 10% in si la hora de inicio es 0)
-  zho: 自动检测当前开始时刻的黑边（如果启动时间为0，则检测10%）。
+  zho: 自动裁剪 - 寻找黑条
+Automatically detect black borders:
+  deu: Automatische Erkennung von schwarzen Rändern
+  eng: Automatically detect black borders
+  fra: Detectar automáticamente los bordes negros
+  ita: Rilevamento automatico dei bordi neri
+  spa: Detectar automáticamente los bordes negros
+  zho: 自动检测黑边
 Automatically enabled when an interlaced video is detected:
   deu: Automatisch aktiviert, wenn ein Interlaced-Video erkannt wird
   eng: Automatically enabled when an interlaced video is detected
