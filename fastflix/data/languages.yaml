@@ -165,7 +165,7 @@ Bottom:
   fra: Abajo
   ita: In basso
   spa: Abajo
-  zho: 底部
+  zho: 下端
 Break the video into columns to encode faster (lesser quality):
   deu: Das Video in Spalten aufteilen, um schneller zu kodieren (geringere Qualität)
   eng: Break the video into columns to encode faster (lesser quality)
@@ -263,7 +263,7 @@ Clean Old Logs:
   fra: Nettoyer les vieilles bûches
   ita: Pulire i vecchi tronchi
   spa: Limpiar los viejos troncos
-  zho: 清理旧木头
+  zho: 清理旧日志
 Clear Completed:
   deu: Erledigt löschen
   eng: Clear Completed
@@ -340,7 +340,7 @@ Conversion cancelled, delete incomplete file:
   fra: Conversion annulée, suppression du dossier incomplet
   ita: Conversione annullata, cancellare il file incompleto
   spa: Conversión cancelada, borrar archivo incompleto
-  zho: 取消转换，删除未完成的文件
+  zho: 转换已取消，删除不完整的文件
 Convert:
   deu: Konvertieren
   eng: Convert
@@ -816,7 +816,7 @@ Force HDR10 signaling:
   fra: Forcer la signalisation HDR10
   ita: Forza segnalazione HDR10
   spa: Señalización de la fuerza HDR10
-  zho: Force HDR10 signaling
+  zho: 强制发送HDR10信号
 Frame Threads:
   deu: Frame-Threads
   eng: Frame Threads
@@ -942,7 +942,7 @@ Intra-refresh:
   fra: Intra-refresh
   ita: Intra-refresh
   spa: Intra-refresco
-  zho: Intra-refresh
+  zho: 帧内刷新
 Invalid Crop:
   deu: Ungültiger Zuschnitt
   eng: Invalid Crop
@@ -1012,7 +1012,7 @@ Left:
   fra: Gauche
   ita: Sinistra
   spa: Izquierda
-  zho: 左边
+  zho: 左侧
 Log2 of number of tile columns to encode faster (lesser quality):
   deu: Log2 der Anzahl der Kachelspalten, um schneller zu kodieren (geringere Qualität)
   eng: Log2 of number of tile columns to encode faster (lesser quality)
@@ -1334,14 +1334,14 @@ Quality/Speed ratio modifier (defaults to -1):
   fra: Modificateur du rapport qualité/vitesse (par défaut à -1)
   ita: Modificatore del rapporto qualità/velocità (valori predefiniti a -1)
   spa: Modificador de la relación calidad/velocidad (por defecto a -1)
-  zho: 质量/速度比修改器（默认值为-1)
+  zho: 调整质量与速度之比（默认值为-1)
 Quality/Speed ratio modifier (defaults to 4):
   deu: 'Modifikator für das Verhältnis Qualität/Geschwindigkeit (Standardwert: 4)'
   eng: Quality/Speed ratio modifier (defaults to 4)
   fra: Modificateur du rapport qualité/vitesse (par défaut à 4)
   ita: Modificatore del rapporto qualità/velocità (valori predefiniti a 4)
   spa: Modificador de la relación calidad/velocidad (por defecto a 4)
-  zho: 质量/速度比修改器（默认值为4。
+  zho: 调整质量与速度之比（默认值为4）
 Queue:
   deu: Warteschlange
   eng: Queue
@@ -1418,7 +1418,7 @@ Repeat Headers:
   fra: Répéter les en-têtes
   ita: Ripetere le intestazioni
   spa: Repetición de los encabezados
-  zho: Repeat Headers
+  zho: 重复标头
 Report Issue:
   deu: Ausgabe melden
   eng: Report Issue
@@ -1453,7 +1453,7 @@ Right:
   fra: Droit
   ita: Destra
   spa: Derecho
-  zho: 右边
+  zho: 右侧
 Row Multi-Threading:
   deu: Zeilen-Multi-Threading
   eng: Row Multi-Threading
@@ -1782,7 +1782,7 @@ Top:
   fra: Top
   ita: Top
   spa: Top
-  zho: 顶端
+  zho: 上端
 Total video height must be greater than 0:
   deu: Gesamthöhe des Videos muss größer als 0 sein
   eng: Total video height must be greater than 0
@@ -1824,7 +1824,7 @@ Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   fra: Utile lorsqu'on souhaite signaler des valeurs 0 pour max-cll et max-fall.
   ita: Utile quando si desidera segnalare i valori 0 per max-cll e max-fall.
   spa: Es útil cuando se desea señalar los valores 0 para max-cll y max-fall.
-  zho: Useful when there is a desire to signal 0 values for max-cll and max-fall.
+  zho: 当需要将max-cll及max-fall置0值时有用。
 Useful when you have the "Too many packets buffered for output stream" error:
   deu: Nützlich, wenn Sie den Fehler "Too many packets buffered for output stream" haben
   eng: Useful when you have the "Too many packets buffered for output stream" error
@@ -2132,14 +2132,14 @@ good is the default and recommended for most applications:
   fra: 'hdr10 : Forcer la signalisation des paramètres HDR10 dans les paquets SEI.'
   ita: 'hdr10: Forza la segnalazione dei parametri HDR10 nei pacchetti SEI.'
   spa: 'hdr10: Forzar la señalización de los parámetros HDR10 en los paquetes SEI.'
-  zho: 'hdr10: Force signaling of HDR10 parameters in SEI packets.'
+  zho: 'hdr10：强制在SEI包中发送HDR10参数。'
 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.':
   deu: 'intra-refresh: Aktiviert Periodic Intra Refresh(PIR) anstelle der Keyframe-Einblendung.'
   eng: 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.'
   fra: "intra-refresh : Active le rafraîchissement périodique intra (PIR) au lieu de l'insertion d'images clés."
   ita: "intra-refresh: Abilita l'Intra Refresh(PIR) periodico invece dell'inserimento del keyframe."
   spa: 'intra-refresco: Habilita el Refresco Intra Periódico (PIR) en lugar de la inserción de fotogramas clave.'
-  zho: 'intra-refresh：启用Periodic Intra Refresh（PIR）代替关键帧插入。'
+  zho: 'intra-refresh：启用周期性帧内刷新（Periodic Intra Refresh, PIR）代替关键帧插入。'
 is a default profile and will not be removed:
   deu: ist ein Standardprofil und wird nicht entfernt
   eng: is a default profile and will not be removed
@@ -2167,7 +2167,7 @@ it will generally just increase memory use.:
   fra: "keyint : Activer l'intra-encodage en forçant les images clés toutes les 1 seconde (spécification Blu-ray)"
   ita: "keyint: Attivare l'Intra-Encoding forzando i keyframe ogni 1 secondo (Blu-ray spec)"
   spa: 'keyint: Habilitar la intracodificación forzando los fotogramas clave cada 1 segundo (Blu-ray spec)'
-  zho: 'keyint: 启用内部编码，每1秒强制关键帧（蓝光规格）。'
+  zho: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)'
 Lossless:
   deu: Verlustfrei
   eng: Lossless
@@ -2265,7 +2265,7 @@ rav1e github:
   fra: 'des en-têtes répétitifs : Si elle est activée, x265 émettra des en-têtes VPS, SPS et PPS avec chaque image clé.'
   ita: 'ripeti-intestazioni: Se abilitato, x265 emetterà testate VPS, SPS e PPS con ogni fotogramma chiave.'
   spa: 'repetición de los encabezamientos: Si se activa, x265 emitirá encabezados VPS, SPS y PPS con cada fotograma clave.'
-  zho: repeat-headers：如果启用，x265将在每一个关键帧加入VPS，SPS和PPS头。
+  zho: repeat-headers：如果启用，x265将随每个关键帧加入VPS，SPS和PPS标头。
 since the entire reference frames are always available for motion compensation,:
   deu: da immer die gesamten Referenzframes für die Bewegungskompensation zur Verfügung stehen,
   eng: since the entire reference frames are always available for motion compensation,
@@ -2419,14 +2419,14 @@ Will fix first subtitle track to not be default:
   fra: Fixera la première piste de sous-titres pour qu'elle ne soit pas par défaut
   ita: Correggerà la prima traccia dei sottotitoli per non essere predefinita
   spa: Arreglará que la primera pista de subtítulos no sea la predeterminada
-  zho: 将修正第一条字幕轨道不是默认的。
+  zho: Will fix first subtitle track to not be default
 Could not fix first subtitle track:
   eng: Could not fix first subtitle track
   deu: Konnte die erste Untertitelspur nicht fixieren
   fra: Impossible de réparer la première piste de sous-titres
   ita: Impossibile fissare la prima traccia dei sottotitoli
   spa: No se pudo arreglar la primera pista del subtítulo
-  zho: 无法修复第一个字幕音轨
+  zho: Could not fix first subtitle track
 Could not generate thumbnail:
   eng: Could not generate thumbnail
   deu: Konnte kein Miniaturbild erzeugen
@@ -2440,4 +2440,4 @@ Generating thumbnail:
   fra: Générer une vignette
   ita: Generazione di miniature
   spa: Generando la miniatura
-  zho: 生成缩略图
+  zho: 正在生成缩略图
