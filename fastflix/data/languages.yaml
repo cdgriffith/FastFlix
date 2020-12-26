@@ -19,13 +19,6 @@ Adaptive Quantization:
   ita: Quantizzazione adattiva
   spa: Cuantificación adaptativa
   zho: 自适应量化
-Advanced:
-  deu: Erweitert
-  eng: Advanced
-  fra: Avancé
-  ita: Avanzato
-  spa: Avanzado
-  zho: 高级
 Add to Queue:
   deu: Zur Warteschlange hinzufügen
   eng: Add to Queue
@@ -257,13 +250,6 @@ Check for Newer Version of FastFlix:
   ita: Verifica la presenza di una versione più recente di FastFlix
   spa: Busca la nueva versión de FastFlix
   zho: 检查FastFlix更新
-Clean Old Logs:
-  deu: Alte Stämme reinigen
-  eng: Clean Old Logs
-  fra: Nettoyer les vieilles bûches
-  ita: Pulire i vecchi tronchi
-  spa: Limpiar los viejos troncos
-  zho: 清理旧木头
 Clear Completed:
   deu: Erledigt löschen
   eng: Clear Completed
@@ -411,13 +397,6 @@ Copy the chapter markers as is from incoming source.:
   ita: Copiare i marcatori dei capitoli come da sorgente in entrata.
   spa: Copie los marcadores de capítulo tal como están de la fuente entrante.
   zho: 将章节标记按原样从源文件复制。
-Could not compress old logs:
-  deu: Konnte alte Protokolle nicht komprimieren
-  eng: Could not compress old logs
-  fra: Impossible de comprimer les vieilles bûches
-  ita: Non riusciva a comprimere i vecchi tronchi
-  spa: No podía comprimir los troncos viejos
-  zho: 无法压缩旧日志
 Could not load config file!:
   deu: Konnte Konfigurationsdatei nicht laden!
   eng: Could not load config file!
@@ -1335,13 +1314,13 @@ Quality/Speed ratio modifier (defaults to -1):
   ita: Modificatore del rapporto qualità/velocità (valori predefiniti a -1)
   spa: Modificador de la relación calidad/velocidad (por defecto a -1)
   zho: 调整质量与速度之比（默认值为-1)
-Quality/Speed ratio modifier (defaults to 4):
-  deu: 'Modifikator für das Verhältnis Qualität/Geschwindigkeit (Standardwert: 4)'
-  eng: Quality/Speed ratio modifier (defaults to 4)
-  fra: Modificateur du rapport qualité/vitesse (par défaut à 4)
-  ita: Modificatore del rapporto qualità/velocità (valori predefiniti a 4)
-  spa: Modificador de la relación calidad/velocidad (por defecto a 4)
-  zho: 质量/速度比修改器（默认值为4。
+Quality/Speed ratio modifier (defaults to 1):
+  deu: 'Modifikator für das Verhältnis Qualität/Geschwindigkeit (Standardwert: 1)'
+  eng: Quality/Speed ratio modifier (defaults to 1)
+  fra: Modificateur du rapport qualité/vitesse (par défaut à 1)
+  ita: Modificatore del rapporto qualità/velocità (valori predefiniti a 1)
+  spa: Modificador de la relación calidad/velocidad (por defecto a 1)
+  zho: 调整质量与速度之比（默认值为1）
 Queue:
   deu: Warteschlange
   eng: Queue
@@ -2168,11 +2147,11 @@ it will generally just increase memory use.:
   ita: "keyint: Attivare l'Intra-Encoding forzando i keyframe ogni 1 secondo (Blu-ray spec)"
   spa: 'keyint: Habilitar la intracodificación forzando los fotogramas clave cada 1 segundo (Blu-ray spec)'
   zho: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)'
-Lossless:
-  deu: Verlustfrei
-  eng: Lossless
-  fra: Sans Perte
-  ita: Senza Perdite
+lossless:
+  deu: verlustfrei
+  eng: lossless
+  fra: sans perte
+  ita: senza perdite
   spa: Lossless
   zho: 无损编码
 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error':
@@ -2413,31 +2392,3 @@ No:
   ita: 'Aggiungere il video corrente alla coda?'
   spa: '¿Añadir el vídeo actual a la cola?'
   zho: '将当前视频添加到队列中？'
-Will fix first subtitle track to not be default:
-  eng: Will fix first subtitle track to not be default
-  deu: Repariert die erste Untertitelspur so, dass sie nicht standardmäßig ist
-  fra: Fixera la première piste de sous-titres pour qu'elle ne soit pas par défaut
-  ita: Correggerà la prima traccia dei sottotitoli per non essere predefinita
-  spa: Arreglará que la primera pista de subtítulos no sea la predeterminada
-  zho: 将修正第一条字幕轨道不是默认的。
-Could not fix first subtitle track:
-  eng: Could not fix first subtitle track
-  deu: Konnte die erste Untertitelspur nicht fixieren
-  fra: Impossible de réparer la première piste de sous-titres
-  ita: Impossibile fissare la prima traccia dei sottotitoli
-  spa: No se pudo arreglar la primera pista del subtítulo
-  zho: 无法修复第一个字幕音轨
-Could not generate thumbnail:
-  eng: Could not generate thumbnail
-  deu: Konnte kein Miniaturbild erzeugen
-  fra: N'a pas pu générer de vignette
-  ita: Impossibile generare un'immagine in miniatura
-  spa: No pudo generar la miniatura
-  zho: 无法生成缩略图
-Generating thumbnail:
-  eng: Generating thumbnail
-  deu: Miniaturansicht generieren
-  fra: Générer une vignette
-  ita: Generazione di miniature
-  spa: Generando la miniatura
-  zho: 生成缩略图
