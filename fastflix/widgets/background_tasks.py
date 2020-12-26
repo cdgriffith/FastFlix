@@ -5,6 +5,8 @@ from subprocess import PIPE, STDOUT, run
 
 from qtpy import QtCore
 
+from fastflix.language import t
+
 logger = logging.getLogger("fastflix")
 
 __all__ = ["ThumbnailCreator"]
@@ -17,7 +19,7 @@ class ThumbnailCreator(QtCore.QThread):
         self.command = command
 
     def run(self):
-        logger.debug(f"Generating thumbnail: {self.command}")
+        logger.debug(f"{t('Generating thumbnail')}: {self.command}")
         result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, shell=True)
         if result.returncode > 0:
             if "No such filter: 'zscale'" in result.stdout.decode(encoding="utf-8", errors="ignore"):
@@ -28,8 +30,31 @@ class ThumbnailCreator(QtCore.QThread):
                     "(Linux distributions are often slow to update)"
                 )
             else:
-                logger.error(f"Could not generate thumbnail: {result.stdout}")
+                logger.error(f"{t('Could not generate thumbnail')}: {result.stdout}")
             self.app.thumbnail_complete.emit(0)
         else:
             self.app.thumbnail_complete.emit(1)
         self.exit(0)
+
+
+class SubtitleFix(QtCore.QThread):
+    def __init__(self, app, mkv_prop_edit, video_path):
+        super().__init__(app)
+        self.app = app
+        self.mkv_prop_edit = mkv_prop_edit
+        self.video_path = video_path
+
+    def run(self):
+        output_file = str(self.video_path).replace("\\", "/")
+        logger.info(t("Will fix first subtitle track to not be default"))
+        try:
+            result = run(
+                [self.mkv_prop_edit, output_file, "--edit", "track:s1", "--set", "flag-default=0"],
+                stdout=PIPE,
+                stderr=STDOUT,
+            )
+        except Exception:
+            logger.exception(t("Could not fix first subtitle track"))
+        else:
+            if result.returncode != 0:
+                logger.warning(f'{t("Could not fix first subtitle track")}: {result.stdout}')

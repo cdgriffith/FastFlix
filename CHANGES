@@ -13,6 +13,7 @@
 * Adding builds for MacOS and Linux
 * Adding --test (imports only) and --version startup options
 * Adding option to clean old (over2 weeks) logs by compressing them
+* Adding background fix for first subtitle track to not be default if mkvpropedit is detected (thanks to ftpmorph)
 * Changing to a model based dataclass setup with a large internal re-write
 * Changing so it opens the file dialog for new video to last used directory
 * Changing log names, including file output stem in conversion log
