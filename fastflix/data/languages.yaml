@@ -2413,3 +2413,31 @@ No:
   ita: 'Aggiungere il video corrente alla coda?'
   spa: '¿Añadir el vídeo actual a la cola?'
   zho: '将当前视频添加到队列中？'
+Will fix first subtitle track to not be default:
+  eng: Will fix first subtitle track to not be default
+  deu: Repariert die erste Untertitelspur so, dass sie nicht standardmäßig ist
+  fra: Fixera la première piste de sous-titres pour qu'elle ne soit pas par défaut
+  ita: Correggerà la prima traccia dei sottotitoli per non essere predefinita
+  spa: Arreglará que la primera pista de subtítulos no sea la predeterminada
+  zho: 将修正第一条字幕轨道不是默认的。
+Could not fix first subtitle track:
+  eng: Could not fix first subtitle track
+  deu: Konnte die erste Untertitelspur nicht fixieren
+  fra: Impossible de réparer la première piste de sous-titres
+  ita: Impossibile fissare la prima traccia dei sottotitoli
+  spa: No se pudo arreglar la primera pista del subtítulo
+  zho: 无法修复第一个字幕音轨
+Could not generate thumbnail:
+  eng: Could not generate thumbnail
+  deu: Konnte kein Miniaturbild erzeugen
+  fra: N'a pas pu générer de vignette
+  ita: Impossibile generare un'immagine in miniatura
+  spa: No pudo generar la miniatura
+  zho: 无法生成缩略图
+Generating thumbnail:
+  eng: Generating thumbnail
+  deu: Miniaturansicht generieren
+  fra: Générer une vignette
+  ita: Generazione di miniature
+  spa: Generando la miniatura
+  zho: 生成缩略图
