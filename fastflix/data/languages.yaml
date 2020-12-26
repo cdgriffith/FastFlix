@@ -4,7 +4,7 @@
   fra: 4 ou 5 désactiveront l'optimisation de la distorsion du taux, ce qui aura un impact encore plus important sur la qualité.
   ita: 4 o 5 disattiveranno l'ottimizzazione della distorsione del tasso, con un impatto ancora maggiore sulla qualità.
   spa: 4 o 5 desactivarán la optimización de la tasa de distorsión, lo que tendrá un impacto aún mayor en la calidad.
-  zho: 4 or 5 will turn off rate distortion optimization, having even more of an impact on quality.
+  zho: 4或5会关闭rate distortion optimization，对质量的影响会更大。
 About:
   deu: Über
   eng: About
@@ -116,7 +116,7 @@ Auto Crop - Finding black bars at:
   fra: Auto Crop - Trouver des barres noires à
   ita: Auto Crop - Trovare barre nere a
   spa: Auto Crop - Encontrar barras negras en
-  zho: 自动裁剪 - 寻找黑条
+  zho: 自动裁剪 - 寻找位于此时刻的黑边：
 Automatically detect black borders:
   deu: Automatische Erkennung von schwarzen Rändern
   eng: Automatically detect black borders
@@ -452,7 +452,7 @@ Default 4. This parameter has a quadratic effect on the amount of memory allocat
   fra: Défaut 4. Ce paramètre a un effet quadratique sur la quantité de mémoire allouée
   ita: Predefinito 4. Questo parametro ha un effetto quadratico sulla quantità di memoria allocata
   spa: Por defecto 4. Este parámetro tiene un efecto cuadrático en la cantidad de memoria asignada
-  zho: 默认值为4。分配的内存量和--b-adapt lookahead在
+  zho: 默认值为4。此参数对于所分配的内存量和--b-adapt 
 Default disabled.:
   deu: Standardmäßig deaktiviert.
   eng: Default disabled.
@@ -536,7 +536,7 @@ Dither is an intentionally applied form of noise used to randomize quantization 
   fra: Dither est une forme de bruit appliquée intentionnellement et utilisée pour randomiser l'erreur de quantification,
   ita: Il dither è una forma di rumore applicata intenzionalmente usata per randomizzare l'errore di quantizzazione,
   spa: El Dither es una forma de ruido aplicada intencionalmente que se utiliza para aleatorizar el error de cuantificación,
-  zho: 抖动（Dither）是一种为了随机化量化误差（quantization error）而特意添加的噪声，
+  zho: 抖动（Dither）是一种为了随机化量化误差（quantization error）而有意添加的噪声，
 Download Newest FFmpeg:
   deu: Neuestes FFmpeg herunterladen
   eng: Download Newest FFmpeg
@@ -613,7 +613,7 @@ Enabling cover thumbnails on your system:
   fra: Activation des vignettes de couverture sur votre système
   ita: Abilita le miniature del coperchio del sistema
   spa: Habilitando las miniaturas de la cubierta en su sistema
-  zho: 在你的系统上启用封面缩略图（英文）
+  zho: 在系统上启用封面缩略图（英文）
 Encoder:
   deu: Codierer
   eng: Encoder
@@ -669,7 +669,7 @@ Enforce an encode profile:
   fra: Faire appliquer un profil codé
   ita: Applicare un profilo di codifica
   spa: Hacer cumplir un perfil de codificación
-  zho: 强制以指定规格进行编码
+  zho: 应用一个编码规格
 Error:
   deu: Fehler
   eng: Error
@@ -725,28 +725,28 @@ Extra flags or options, cannot modify existing settings:
   fra: Drapeaux ou options supplémentaires, ne peuvent pas modifier les paramètres existants
   ita: I flag o le opzioni extra, non possono modificare le impostazioni esistenti
   spa: Las banderas u opciones adicionales, no pueden modificar los ajustes existentes
-  zho: 额外的标志或选项，不能修改现有的设置。
+  zho: 额外的标志或选项，无法修改已有设置。
 Extract covers:
   deu: Extrahieren deckt ab
   eng: Extract covers
   fra: Extrait couvre
   ita: Coperture per l'estrazione
   spa: Extraer las cubiertas
-  zho: 摘录内容
+  zho: 提取封面
 FFMPEG AV1 Encoding Guide:
   deu: FFMPEG AV1-Kodierungsleitfaden
   eng: FFMPEG AV1 Encoding Guide
   fra: Guide d'encodage FFMPEG AV1
   ita: Guida alla codifica FFMPEG AV1
   spa: Guía de codificación del FFMPEG AV1
-  zho: FFMPEG AV1编码指南
+  zho: FFMPEG AV1编码指南（英文）
 FFMPEG AVC / H.264 Encoding Guide:
   deu: FFMPEG AVC / H.264 Kodierungsleitfaden
   eng: FFMPEG AVC / H.264 Encoding Guide
   fra: FFMPEG AVC / Guide d'encodage H.264
   ita: Guida alla codifica FFMPEG AVC / H.264
   spa: Guía de codificación FFMPEG AVC / H.264
-  zho: FFMPEG AVC / H.264 编码指南
+  zho: FFMPEG AVC / H.264 编码指南（英文）
 FFMPEG HEVC / H.265 Encoding Guide:
   deu: FFMPEG HEVC / H.265 Kodierungsleitfaden
   eng: FFMPEG HEVC / H.265 Encoding Guide
@@ -760,7 +760,7 @@ FFMPEG VP9 Encoding Guide:
   fra: FFMPEG Guide d'encodage VP9
   ita: Guida alla codifica FFMPEG VP9
   spa: Guía de codificación del FFMPEG VP9
-  zho: FFMPEG VP9编码指南
+  zho: FFMPEG VP9编码指南（英文）
 FFmpeg updated - Please restart FastFlix:
   deu: FFmpeg aktualisiert - Bitte starten Sie FastFlix neu
   eng: FFmpeg updated - Please restart FastFlix
@@ -830,7 +830,7 @@ Google's VP9 HDR Encoding Guide:
   fra: Guide d'encodage HDR VP9 de Google
   ita: Guida alla codifica HDR VP9 di Google
   spa: Guía de codificación HDR VP9 de Google
-  zho: 谷歌VP9 HDR编码指南
+  zho: 谷歌VP9 HDR编码指南（英文）
 HDR10 Optimizations:
   deu: HDR10-Optimierungen
   eng: HDR10 Optimizations
@@ -998,14 +998,14 @@ Log2 of number of tile columns to encode faster (lesser quality):
   fra: Log2 du nombre de colonnes de tuiles pour un encodage plus rapide (qualité moindre)
   ita: Log2 del numero di colonne di tegole da codificare più velocemente (qualità inferiore)
   spa: Log2 del número de columnas de azulejos para codificar más rápido (menor calidad)
-  zho: Log2 of number of tile columns to encode faster (lesser quality)。
+  zho: Log2 of number of tile columns to encode faster (lesser quality)
 Log2 of number of tile rows to encode faster (lesser quality):
   deu: Log2 der Anzahl der Kachelzeilen, um schneller zu kodieren (geringere Qualität)
   eng: Log2 of number of tile rows to encode faster (lesser quality)
   fra: Log2 du nombre de rangées de tuiles pour un encodage plus rapide (qualité moindre)
   ita: Log2 del numero di file di tegole da codificare più velocemente (qualità inferiore)
   spa: Log2 del número de filas de azulejos para codificar más rápido (menor calidad)
-  zho: Log2 of number of tile rows to encode faster (lesser quality)。
+  zho: Log2 of number of tile rows to encode faster (lesser quality)
 Lossless encodes implicitly have no rate control, all rate control options are ignored.:
   deu: Verlustfreie Kodierungen haben implizit keine Ratenkontrolle, alle Optionen zur Ratenkontrolle werden ignoriert.
   eng: Lossless encodes implicitly have no rate control, all rate control options are ignored.
@@ -1019,7 +1019,7 @@ Max Muxing Queue Size:
   fra: Taille maximale de la file d'attente
   ita: Dimensione massima della coda di Muxing
   spa: Tamaño máximo de la cola Muxing
-  zho: Max Muxing Queue Size
+  zho: 最大混流队列大小
 Maximum B frames:
   deu: Maximale B-Frames
   eng: Maximum B frames
@@ -1131,7 +1131,7 @@ Only put the HDR10+ dynamic metadata in the IDR and frames where the values have
   fra: Ne placez les métadonnées dynamiques HDR10+ que dans l'IDR et les cadres dont les valeurs ont changé.
   ita: Mettete i metadati dinamici HDR10+ solo nell'IDR e nei frame in cui i valori sono cambiati.
   spa: Sólo pon los metadatos dinámicos HDR10+ en el IDR y los cuadros donde los valores han cambiado.
-  zho: 只将HDR10+动态元数据放在IDR和数值改变的帧中。
+  zho: Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.
 Only select first matching Audio Track:
   deu: Nur die erste passende Audiospur auswählen
   eng: Only select first matching Audio Track
@@ -1299,28 +1299,28 @@ Quality and compression efficiency vs speed trade-off:
   fra: Le compromis entre la qualité et l'efficacité de la compression et la vitesse
   ita: Qualità ed efficienza di compressione rispetto al compromesso velocità
   spa: La calidad y la eficiencia de la compresión frente a la compensación de la velocidad
-  zho: 质量及压缩效率与速度之间的权衡
+  zho: 在质量及压缩效率与速度之间进行权衡
 Quality/Speed ratio modifier:
   deu: Qualität/Geschwindigkeitsverhältnis-Modifikator
   eng: Quality/Speed ratio modifier
   fra: Modificateur du rapport qualité/vitesse
   ita: Modificatore rapporto qualità/velocità
   spa: Modificador de la relación calidad/velocidad
-  zho: 质量/速度比修改器
+  zho: 调整质量与速度之比
 Quality/Speed ratio modifier (defaults to -1):
   deu: 'Qualitäts-/Geschwindigkeitsverhältnis-Modifikator (Standardwert: -1)'
   eng: Quality/Speed ratio modifier (defaults to -1)
   fra: Modificateur du rapport qualité/vitesse (par défaut à -1)
   ita: Modificatore del rapporto qualità/velocità (valori predefiniti a -1)
   spa: Modificador de la relación calidad/velocidad (por defecto a -1)
-  zho: 质量/速度比修改器（默认值为-1)
+  zho: 调整质量与速度之比（默认值为-1)
 Quality/Speed ratio modifier (defaults to 1):
   deu: 'Modifikator für das Verhältnis Qualität/Geschwindigkeit (Standardwert: 1)'
   eng: Quality/Speed ratio modifier (defaults to 1)
   fra: Modificateur du rapport qualité/vitesse (par défaut à 1)
   ita: Modificatore del rapporto qualità/velocità (valori predefiniti a 1)
   spa: Modificador de la relación calidad/velocidad (por defecto a 1)
-  zho: 质量/速度比修改器（默认值为1。
+  zho: 调整质量与速度之比（默认值为1）
 Queue:
   deu: Warteschlange
   eng: Queue
@@ -1460,7 +1460,7 @@ Running command:
   fra: Commande en cours d'exécution
   ita: Comando in esecuzione
   spa: Comando de ejecución
-  zho: 运行命令：
+  zho: 运行命令
 SVT-AV1 Encoding Guide:
   deu: SVT-AV1 Kodierungsanleitung
   eng: SVT-AV1 Encoding Guide
@@ -1502,14 +1502,14 @@ Set the "title" tag, sometimes shown as "Movie Name":
   fra: Poner la etiqueta "título", a veces se muestra como "Nombre de la película"
   ita: Impostare il tag "title", a volte mostrato come "Movie Name" (nome del film)
   spa: Poner la etiqueta "título", a veces se muestra como "Nombre de la película"
-  zho: 设置 "标题 "标签，有时显示为 "电影名称"
+  zho: 设置“标题”（title，有时显示为“电影名称”（Movie Name））标签
 Set the level of effort in determining B frame placement.:
   deu: Legen Sie den Grad des Aufwands bei der Bestimmung der B-Frame-Platzierung fest.
   eng: Set the level of effort in determining B frame placement.
   fra: Définir le niveau d'effort pour déterminer le placement des images B.
   ita: Impostare il livello di sforzo nel determinare il posizionamento del fotogramma B.
   spa: Establezca el nivel de esfuerzo para determinar la ubicación del cuadro B.
-  zho: 设置确定B帧位置的努力程度。
+  zho: 对决定B帧位置时的工作量水平进行调整。
 'Setting after done command to:':
   deu: 'Einstellung nach dem Befehl done auf:'
   eng: 'Setting after done command to:'
@@ -1530,14 +1530,14 @@ Single Pass (Bitrate):
   fra: Passage unique (Bitrate)
   ita: Passaggio singolo (Bitrato)
   spa: Pase único (Bitrate)
-  zho: 单通道（比特率
+  zho: 一遍编码（比特率）
 Single Pass (CRF):
   deu: Einzelner Durchlauf (CRF)
   eng: Single Pass (CRF)
   fra: Laissez-passer unique (CRF)
   ita: Passaggio singolo (CRF)
   spa: Pase único (CRF)
-  zho: 单通道(CRF)
+  zho: 一遍编码（CRF）
 Size Estimate:
   deu: Größe Schätzung
   eng: Size Estimate
@@ -1551,7 +1551,7 @@ Slow is highest personal recommenced, as past that is much smaller gains:
   fra: La lenteur est la plus haute personnelle recommencée, comme passé c'est des gains beaucoup plus petits
   ita: Lento è più alto personale è ricominciato, come passato che è molto più piccolo guadagni
   spa: La lentitud es la mayor recomenzada personal, ya que el pasado que es mucho más pequeño gana
-  zho: 个人建议不要用比slow更慢的档位，因为获得的收益会小得多
+  zho: 不建议使用比slow更慢的档位，因为获得的收益会小得多。
 Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams).:
   deu: Langsamere Voreinstellungen erzielen im Allgemeinen eine bessere Komprimierungseffizienz (und erzeugen kleinere Bitströme).
   eng: Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams).
@@ -1726,14 +1726,14 @@ Tile Columns:
   fra: Colonnes de tuiles
   ita: Colonne di piastrelle
   spa: Columnas de azulejos
-  zho: 瓷砖柱子
+  zho: Tile列数量
 Tile Rows:
   deu: Kachelzeilen
   eng: Tile Rows
   fra: Les rangées de carreaux
   ita: File di piastrelle
   spa: Filas de azulejos
-  zho: 瓷砖排数
+  zho: Tile行数量
 Tiles:
   deu: Kacheln
   eng: Tiles
@@ -1789,7 +1789,7 @@ Usage:
   fra: Utilisation
   ita: Utilizzo
   spa: Uso
-  zho: 使用方法
+  zho: 用法
 Use --bframes 0 to force all P/I low-latency encodes.:
   deu: Verwenden Sie --bframes 0, um alle P/I-Codierungen mit niedriger Latenz zu erzwingen.
   eng: Use --bframes 0 to force all P/I low-latency encodes.
@@ -1803,14 +1803,14 @@ Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   fra: Utile lorsqu'on souhaite signaler des valeurs 0 pour max-cll et max-fall.
   ita: Utile quando si desidera segnalare i valori 0 per max-cll e max-fall.
   spa: Es útil cuando se desea señalar los valores 0 para max-cll y max-fall.
-  zho: 当希望对 max-cll 和 max-fall 置 0 值时有用。
+  zho: Useful when there is a desire to signal 0 values for max-cll and max-fall.
 Useful when you have the "Too many packets buffered for output stream" error:
   deu: Nützlich, wenn Sie den Fehler "Too many packets buffered for output stream" haben
   eng: Useful when you have the "Too many packets buffered for output stream" error
   fra: Utile lorsque vous avez l'erreur "Too many packets buffered for output stream
   ita: Utile quando si ha l'errore "Troppi pacchetti bufferizzati per il flusso di uscita".
   spa: Útil cuando se tiene el error "Demasiados paquetes almacenados en la memoria intermedia para el flujo de salida".
-  zho: 当出现“输出流缓冲的数据包太多（Too many packets buffered for output stream）”错误时有用。
+  zho: 当出现“输出流缓冲的数据包太多”（Too many packets buffered for output stream）错误时有用。
 Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.:
   deu: Die Verwendung von 1 oder 2 erhöht die Kodiergeschwindigkeit auf Kosten einer gewissen Auswirkung auf die Qualität und die Genauigkeit der Ratenkontrolle.
   eng: Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.
@@ -1831,7 +1831,7 @@ Using a single frame thread gives a slight improvement in compression,:
   fra: 'Les valeurs : 0:aucun ; 1:rapide ; 2:plein(treillis) par défaut'
   ita: 'Valori: 0:nessuno; 1:veloce; 2:pieno (traliccio) predefinito'
   spa: 'Valores: 0:ninguno; 1:rápido; 2:completo (enrejado) por defecto'
-  zho: 值。0:none; 1:fast; 2:full(trellis) 默认值
+  zho: 取值：0:none；1:fast；2:full(trellis)（默认）
 Various:
   deu: Verschiedene
   eng: Various
@@ -1922,21 +1922,21 @@ With b-adapt 0, the GOP structure is fixed based on the values of --keyint and -
   fra: Avec l'adaptateur b 0, la structure du GOP est fixée sur la base des valeurs de --keyint et --bframes.
   ita: Con b-adapt 0, la struttura GOP è fissa in base ai valori di --keyint e --bframes.
   spa: Con b-adaptado 0, la estructura del GOP se fija en base a los valores de --keyint y --bframes.
-  zho: 当b-adapt为0时，GOP结构根据--keyint和--bframes的值固定。
+  zho: 当b-adapt为0时，图像组（Group Of Pictures, GOP）结构是根据--keyint和--bframes的值确定并固定的。
 With b-adapt 1 a light lookahead is used to choose B frame placement.:
   deu: Mit b-adapt 1 wird ein leichter Lookahead verwendet, um die B-Frame-Platzierung zu wählen.
   eng: With b-adapt 1 a light lookahead is used to choose B frame placement.
   fra: Avec l'adaptateur b 1, un léger regard est utilisé pour choisir le placement des images B.
   ita: Con b-adapt 1 si usa un leggero lookahead per scegliere il posizionamento del telaio B.
   spa: Con b-adapt 1 se utiliza un lookahead ligero para elegir la colocación del marco B.
-  zho: 使用b-adapt 1时，使用轻量级的lookahead来选择B帧的位置。
+  zho: 当b-adapt为1时，通过轻量级的lookahead来选择B帧的位置。
 With b-adapt 2 (trellis) a viterbi B path selection is performed:
   deu: Bei b-adapt 2 (Trellis) wird eine Viterbi-B-Pfadauswahl durchgeführt
   eng: With b-adapt 2 (trellis) a viterbi B path selection is performed
   fra: Avec l'adaptateur b 2 (treillis), une sélection du chemin B de Viterbi est effectuée
   ita: Con b-adapt 2 (traliccio) viene eseguita una selezione del percorso viterbi B
   spa: Con b-adapt 2 (espaldera) se realiza una selección de trayectoria B viterbi
-  zho: 对于b-adapt 2（棚架），则执行viterbi B路径选择。
+  zho: 对于b-adapt 2 (trellis)，则执行viterbi B path selection。
 Work Directory:
   deu: Arbeitsverzeichnis
   eng: Work Directory
@@ -1964,7 +1964,7 @@ and the amount of work performed by the full trellis version of --b-adapt lookah
   fra: et la quantité de travail effectuée par la version complète en treillis de --b-adapt lookahead.
   ita: e la quantità di lavoro svolto dalla versione completa della versione a traliccio di --b-adattate lookahead.
   spa: y la cantidad de trabajo realizado por la versión completa de la espaldera de --b-adaptado lookahead.
-  zho: full(trellis)模式下执行的工作量与此参数的平方成比例。
+  zho: lookahead在full(trellis)模式下执行的工作量有二次方的影响。
 and you want keyframes to be random access points.:
   deu: und Sie wollen, dass Keyframes zufällige Zugriffspunkte sind.
   eng: and you want keyframes to be random access points.
@@ -2013,14 +2013,14 @@ b-adapt:
   fra: "b-adapt : Fixe le niveau d'effort pour déterminer le placement de l'image B."
   ita: 'b-adatta: Impostare il livello di sforzo nel determinare il posizionamento del telaio B.'
   spa: 'b-adaptado: Establece el nivel de esfuerzo para determinar la colocación del marco B.'
-  zho: b-adapt。设置确定B帧位置的努力程度。
+  zho: b-adapt：对决定B帧位置时的工作量水平进行调整。
 best is recommended if you have lots of time and want the best compression efficiency.:
   deu: best wird empfohlen, wenn Sie viel Zeit haben und die beste Komprimierungseffizienz wünschen.
   eng: best is recommended if you have lots of time and want the best compression efficiency.
   fra: Le meilleur est recommandé si vous avez beaucoup de temps et si vous voulez obtenir la meilleure efficacité de compression.
   ita: Il migliore è consigliato se si ha molto tempo a disposizione e si desidera la migliore efficienza di compressione.
   spa: Se recomienda el mejor si tienes mucho tiempo y quieres la mejor eficiencia de compresión.
-  zho: 如果你有很多时间，并且想要最好的压缩效率，建议使用best。
+  zho: 在时间充裕且希望获得最佳压缩效率的情况下，建议使用best。
 bframes:
   deu: bframes
   eng: bframes
@@ -2069,7 +2069,7 @@ compression level:
   fra: niveau de compression
   ita: livello di compressione
   spa: nivel de compresión
-  zho: 压缩度
+  zho: 压缩级别
 data tracks found:
   deu: gefundene Datenspuren
   eng: data tracks found
@@ -2083,14 +2083,14 @@ data tracks found:
   fra: 'dhdr10-opt : Réduire les frais généraux du SEI'
   ita: 'dhdr10-opt: Riduce le spese generali SEI'
   spa: 'dhdr10-opt: Reduce los gastos de SEI'
-  zho: 'dhdr10-opt: 减少SEI费用'
+  zho: 'dhdr10-opt：减少SEI开销'
 'frame-threads: Number of concurrently encoded frames.':
   deu: 'Frame-Threads: Anzahl der gleichzeitig kodierten Frames.'
   eng: 'frame-threads: Number of concurrently encoded frames.'
   fra: 'des fils de trame : Nombre de trames codées simultanément.'
   ita: 'telaio-filettature: Numero di frame codificati simultaneamente.'
   spa: 'Hilos de marcos: Número de cuadros codificados simultáneamente.'
-  zho: 'frame-threads: 同时编码的帧数。'
+  zho: 'frame-threads：同时编码的帧数。'
 good is the default and recommended for most applications:
   deu: good ist der Standard und wird für die meisten Anwendungen empfohlen
   eng: good is the default and recommended for most applications
@@ -2104,7 +2104,7 @@ good is the default and recommended for most applications:
   fra: "hdr10-opt : Activer l'optimisation QP luma et chroma au niveau des blocs pour le contenu HDR10."
   ita: "hdr10-opt: Attivare l'ottimizzazione a livello di blocco luma e chroma QP per i contenuti HDR10."
   spa: 'hdr10-opt: Habilitar la optimización de la luma a nivel de bloque y la QP cromática para el contenido de HDR10.'
-  zho: 'hdr10-opt: 启用HDR10内容的块级亮度和色度QP优化。'
+  zho: 'hdr10-opt：启用HDR10内容的块级亮度和色度量化参数（Quantization Parameter, QP）优化。'
 'hdr10: Force signaling of HDR10 parameters in SEI packets.':
   deu: 'hdr10: Erzwingt die Signalisierung von HDR10-Parametern in SEI-Paketen.'
   eng: 'hdr10: Force signaling of HDR10 parameters in SEI packets.'
@@ -2118,7 +2118,7 @@ good is the default and recommended for most applications:
   fra: "intra-refresh : Active le rafraîchissement périodique intra (PIR) au lieu de l'insertion d'images clés."
   ita: "intra-refresh: Abilita l'Intra Refresh(PIR) periodico invece dell'inserimento del keyframe."
   spa: 'intra-refresco: Habilita el Refresco Intra Periódico (PIR) en lugar de la inserción de fotogramas clave.'
-  zho: 'intra-refresh: 启用Periodic Intra Refresh（PIR）代替关键帧插入。'
+  zho: 'intra-refresh：启用Periodic Intra Refresh（PIR）代替关键帧插入。'
 is a default profile and will not be removed:
   deu: ist ein Standardprofil und wird nicht entfernt
   eng: is a default profile and will not be removed
@@ -2195,14 +2195,14 @@ preset:
   fra: 'préréglé : Plus le préréglage est lent, meilleure est la compression et la qualité'
   ita: 'preimpostata: Più lento è il preset, migliore è la compressione e la qualità'
   spa: 'preestablecido: Cuanto más lento el preajuste, mejor será la compresión y la calidad'
-  zho: 预设的速度越慢，压缩和质量越好。预设越慢，压缩和质量就越好。
+  zho: preset：较慢的预设能提供更好的压缩比和质量。
 preventing large-scale patterns such as color banding in images.:
   deu: verhindert großflächige Muster wie z. B. Color Banding in Bildern.
   eng: preventing large-scale patterns such as color banding in images.
   fra: empêcher les motifs à grande échelle comme les bandes de couleur dans les images.
   ita: impedendo modelli su larga scala come le bande di colore nelle immagini.
   spa: evitando patrones a gran escala como las bandas de color en las imágenes.
-  zho: 防止图像中出现色带等大面积图案。
+  zho: 用以防止图像中出现色带等大面积图案。
 profile:
   deu: Profil
   eng: profile
@@ -2223,7 +2223,7 @@ profile:
   fra: 'profil : Profil de codage VP9 - doit correspondre à la profondeur de bit'
   ita: 'profilo: Profilo di codifica VP9 - deve corrispondere alla profondità della punta'
   spa: 'perfil: Perfil de codificación del VP9 - debe coincidir con la profundidad del bit'
-  zho: 配置文件。VP9编码规范--必须与比特深度相匹配。
+  zho: profile：VP9编码规格——必须与位深度相匹配。
 python-box:
   deu: python-box
   eng: python-box
@@ -2244,7 +2244,7 @@ rav1e github:
   fra: 'des en-têtes répétitifs : Si elle est activée, x265 émettra des en-têtes VPS, SPS et PPS avec chaque image clé.'
   ita: 'ripeti-intestazioni: Se abilitato, x265 emetterà testate VPS, SPS e PPS con ogni fotogramma chiave.'
   spa: 'repetición de los encabezamientos: Si se activa, x265 emitirá encabezados VPS, SPS y PPS con cada fotograma clave.'
-  zho: repeat-headers.如果启用，x265将在每一个关键帧加入VPS，SPS和PPS头。
+  zho: repeat-headers：如果启用，x265将在每一个关键帧加入VPS，SPS和PPS头。
 since the entire reference frames are always available for motion compensation,:
   deu: da immer die gesamten Referenzframes für die Bewegungskompensation zur Verfügung stehen,
   eng: since the entire reference frames are always available for motion compensation,
@@ -2293,28 +2293,28 @@ to Blu-ray standards to burn to a physical disk:
   fra: 'afinar: Sintonizar los ajustes para un tipo de fuente o situación particular'
   ita: 'sintonizzarsi: Sintonizzare le impostazioni per un particolare tipo di sorgente o situazione'
   spa: 'afinar: Sintonizar los ajustes para un tipo de fuente o situación particular'
-  zho: tune：调整特定类型的来源或情况的设置。
+  zho: tune：针对特定类型的来源或情况调整设置。
 video tracks found:
   deu: Videospuren gefunden
   eng: video tracks found
   fra: pistas de vídeo encontradas
   ita: tracce video trovate
   spa: pistas de vídeo encontradas
-  zho: 发现视频轨迹
+  zho: 发现视频轨
 Could not connect to github to check for newer versions:
   eng: Could not connect to github to check for newer versions
   deu: Konnte keine Verbindung zu Github herstellen, um nach neueren Versionen zu suchen
   fra: Impossible de se connecter à github pour vérifier les nouvelles versions
   ita: Impossibile connettersi a github per verificare la presenza di versioni più recenti
   spa: No se pudo conectar a github para comprobar las nuevas versiones
-  zho: 无法连接到github以检查更新的版本。
+  zho: 无法连接到github检查更新
 Download:
   eng: Download
   deu: herunterladen
   fra: Télécharger
   ita: Scaricare
   spa: Descargar
-  zho: 下载中心
+  zho: 下载
 installer:
   eng: installer
   deu: Installationsprogramm
@@ -2328,21 +2328,21 @@ portable:
   fra: portable
   ita: portatile
   spa: portátil
-  zho: 手提
+  zho: 可移动
 View:
   eng: View
   deu: Ansicht
   fra: Voir
   ita: Visualizza
   spa: Ver
-  zho: 查看。
+  zho: 查看
 There is a newer version of FastFlix available!:
   eng: There is a newer version of FastFlix available!
   deu: Es ist eine neuere Version von FastFlix verfügbar!
   fra: Une nouvelle version de FastFlix est disponible!
   ita: C'è una versione più recente di FastFlix disponibile!
   spa: ¡Hay una nueva versión de FastFlix disponible!
-  zho: 有一个较新的版本的FastFlix可用!
+  zho: FastFlix有更新可用
 New Version:
   eng: New Version
   deu: Neue Version
@@ -2356,35 +2356,35 @@ You are using the latest version of FastFlix:
   fra: Vous utilisez la dernière version de FastFlix
   ita: State utilizzando l'ultima versione di FastFlix
   spa: Está usando la última versión de FastFlix
-  zho: 你使用的是FastFlix的最新版本。
+  zho: 当前FastFlix为最新版本
 bad micro value:
   eng: bad micro value
   deu: schlechter Micro-Wert
   fra: mauvaise micro valeur
   ita: micro valore negativo
   spa: mal valor micro
-  zho: 劣币驱逐良币
+  zho: bad micro value
 Not a valid int for time conversion:
   eng: Not a valid int for time conversion
   deu: Kein gültiger int für Zeitkonvertierung
   fra: Pas d'int valable pour la conversion du temps
   ita: Non è un int valido per la conversione del tempo
   spa: No es un int válido para la conversión de tiempo
-  zho: 不是一个有效的时间转换的int
+  zho: 不是可用于时间转换的有效整数
 Yes:
   eng: Yes
   deu: Ja
   fra: Oui
   ita: Sì
   spa: Sì
-  zho: 是的，是的
+  zho: 是
 No:
   eng: No
   deu: Nein
   fra: Non
   ita: No
   spa: No
-  zho: 没有
+  zho: 否
 'Add current video to queue?':
   eng: 'Add current video to queue?'
   deu: 'Aktuelles Video zur Warteschlange hinzufügen?'
