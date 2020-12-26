@@ -211,21 +211,26 @@ def clean_logs(signal, app, **_):
             is_old = True
         if file.name.startswith("flix_gui"):
             if is_old:
+                logger.debug(f"Deleting {file.name}")
                 file.unlink(missing_ok=True)
         if file.name.startswith("flix_conversion") or file.name.startswith("flix_2"):
+            original = file.read_text(encoding="utf-8")
             try:
                 condensed = "\n".join(
                     (
                         line
-                        for line in file.read_text(encoding="utf-8").splitlines()
+                        for line in original.splitlines()
                         if "Skipping NAL unit" not in line and "Last message repeated" not in line
                     )
                 )
             except UnicodeDecodeError:
                 pass
             else:
-                file.write_text(condensed, encoding="utf-8")
+                if len(condensed) < len(original):
+                    logger.debug(f"Compressed {file.name} from {len(original)} characters to {len(condensed)}")
+                    file.write_text(condensed, encoding="utf-8")
             if is_old:
+                logger.debug(f"Adding {file.name} to be compress")
                 compress.append(file)
     if compress:
         reusables.pushd(app.fastflix.log_path)

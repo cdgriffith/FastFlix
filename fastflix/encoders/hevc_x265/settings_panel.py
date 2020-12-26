@@ -90,8 +90,9 @@ class HEVC(SettingPanel):
 
         grid.addLayout(breaker, 5, 0, 1, 6)
 
-        grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
+        grid.addLayout(self.init_aq_mode(), 6, 0, 1, 2)
         grid.addLayout(self.init_frame_threads(), 7, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 8, 0, 1, 2)
         grid.addLayout(self.init_x265_row(), 6, 2, 1, 4)
         grid.addLayout(self.init_x265_row_two(), 7, 2, 1, 4)
         # grid.addLayout(self.init_hdr10_opt(), 5, 2, 1, 1)
@@ -130,12 +131,14 @@ class HEVC(SettingPanel):
         self.hide()
 
     def init_dhdr10_info(self):
-        return self._add_file_select(
+        layout = self._add_file_select(
             label="HDR10+ Metadata",
             widget_name="hdr10plus_metadata",
             button_action=lambda: self.dhdr10_update(),
             tooltip="dhdr10_info: Path to HDR10+ JSON metadata file",
         )
+        self.labels["hdr10plus_metadata"].setFixedWidth(200)
+        return layout
 
     def init_dhdr10_warning_and_opt(self):
         label = QtWidgets.QLabel()
@@ -160,20 +163,20 @@ class HEVC(SettingPanel):
         layout.addStretch(1)
         layout.addLayout(self.init_repeat_headers())
         layout.addStretch(1)
-        layout.addLayout(self.init_aq_mode())
+        layout.addLayout(self.init_bframes())
+
         return layout
 
     def init_x265_row_two(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addLayout(self.init_intra_encoding())
-        layout.addStretch(1)
+        # layout.addLayout(self.init_intra_encoding())
+        # layout.addStretch(1)
         layout.addLayout(self.init_intra_refresh())
         layout.addStretch(1)
-        layout.addLayout(self.init_lossless())
-        layout.addStretch(1)
+
         layout.addLayout(self.init_intra_smoothing())
         layout.addStretch(1)
-        layout.addLayout(self.init_bframes())
+        layout.addLayout(self.init_lossless())
         layout.addStretch(1)
         layout.addLayout(self.init_b_adapt())
         return layout
@@ -336,7 +339,7 @@ class HEVC(SettingPanel):
 
     def init_lossless(self):
         return self._add_check_box(
-            label="lossless",
+            label="Lossless",
             widget_name="lossless",
             tooltip=(
                 "Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.\n"
@@ -410,6 +413,7 @@ class HEVC(SettingPanel):
     def init_x265_params(self):
         layout = QtWidgets.QHBoxLayout()
         self.labels.x265_params = QtWidgets.QLabel(t("Additional x265 params"))
+        self.labels.x265_params.setFixedWidth(200)
         tool_tip = (
             f"{t('Extra x265 params in opt=1:opt2=0 format')},\n"
             f"{t('cannot modify generated settings')}\n"
@@ -515,7 +519,7 @@ class HEVC(SettingPanel):
 
         settings = x265Settings(
             preset=self.widgets.preset.currentText(),
-            intra_encoding=self.widgets.intra_encoding.isChecked(),
+            # intra_encoding=self.widgets.intra_encoding.isChecked(),
             intra_refresh=self.widgets.intra_refresh.isChecked(),
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),

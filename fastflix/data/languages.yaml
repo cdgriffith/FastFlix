@@ -1335,13 +1335,13 @@ Quality/Speed ratio modifier (defaults to -1):
   ita: Modificatore del rapporto qualità/velocità (valori predefiniti a -1)
   spa: Modificador de la relación calidad/velocidad (por defecto a -1)
   zho: 质量/速度比修改器（默认值为-1)
-Quality/Speed ratio modifier (defaults to 1):
-  deu: 'Modifikator für das Verhältnis Qualität/Geschwindigkeit (Standardwert: 1)'
-  eng: Quality/Speed ratio modifier (defaults to 1)
-  fra: Modificateur du rapport qualité/vitesse (par défaut à 1)
-  ita: Modificatore del rapporto qualità/velocità (valori predefiniti a 1)
-  spa: Modificador de la relación calidad/velocidad (por defecto a 1)
-  zho: 质量/速度比修改器（默认值为1。
+Quality/Speed ratio modifier (defaults to 4):
+  deu: 'Modifikator für das Verhältnis Qualität/Geschwindigkeit (Standardwert: 4)'
+  eng: Quality/Speed ratio modifier (defaults to 4)
+  fra: Modificateur du rapport qualité/vitesse (par défaut à 4)
+  ita: Modificatore del rapporto qualità/velocità (valori predefiniti a 4)
+  spa: Modificador de la relación calidad/velocidad (por defecto a 4)
+  zho: 质量/速度比修改器（默认值为4。
 Queue:
   deu: Warteschlange
   eng: Queue
@@ -2168,11 +2168,11 @@ it will generally just increase memory use.:
   ita: "keyint: Attivare l'Intra-Encoding forzando i keyframe ogni 1 secondo (Blu-ray spec)"
   spa: 'keyint: Habilitar la intracodificación forzando los fotogramas clave cada 1 segundo (Blu-ray spec)'
   zho: 'keyint: 启用内部编码，每1秒强制关键帧（蓝光规格）。'
-lossless:
-  deu: verlustfrei
-  eng: lossless
-  fra: sans perte
-  ita: senza perdite
+Lossless:
+  deu: Verlustfrei
+  eng: Lossless
+  fra: Sans Perte
+  ita: Senza Perdite
   spa: Lossless
   zho: 无损
 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error':
