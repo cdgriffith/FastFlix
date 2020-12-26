@@ -71,7 +71,7 @@ class AV1(SettingPanel):
     def init_cpu_used(self):
         return self._add_combo_box(
             label="CPU Used",
-            tooltip="Quality/Speed ratio modifier (defaults to 1)",
+            tooltip="Quality/Speed ratio modifier (defaults to 4)",
             widget_name="cpu_used",
             options=[str(x) for x in range(0, 9)],
             opt="cpu_used",
