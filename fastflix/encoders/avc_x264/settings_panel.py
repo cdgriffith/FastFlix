@@ -100,8 +100,6 @@ class AVC(SettingPanel):
             connect="default",
             opt="preset",
         )
-        self.labels["preset"].setMinimumWidth(200)
-        self.widgets["preset"].setMinimumWidth(200)
         return layout
 
     def init_tune(self):

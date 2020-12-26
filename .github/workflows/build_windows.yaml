@@ -33,9 +33,11 @@ jobs:
         python -m pip install --upgrade pypiwin32 wheel
         python -m pip install -r requirements-build.txt
 
-    - name: Grab language list iso-639-3
+    - name: Grab iso-639 lists
       shell: powershell
-      run: Invoke-WebRequest https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab -O iso-639-3.tab
+      run: |
+        copy $(python -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
+        copy $(python -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
 
     - name: Build single executable
       shell: cmd
@@ -45,10 +47,17 @@ jobs:
       shell: cmd
       run: pyinstaller FastFlix_Windows_Installer.spec
 
-#    - name: Package installer
-#      shell: cmd
-#      run: |
-#
+    - name: Package installer
+      shell: cmd
+      run: |
+        makensis.exe FastFlix.nsi
+        move FastFlix_installer.exe FastFlix_${{ env.VERSION }}_installer.exe
+
+    - name: Test executable
+      run: |
+        dist\FastFlix.exe --version
+        dist\FastFlix.exe --test
+
     - name: Package single executable
       shell: cmd
       run: |
@@ -67,4 +76,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: FastFlix_${{ env.VERSION }}_installer
-        path: dist\FastFlix\
+        path: FastFlix_${{ env.VERSION }}_installer.exe

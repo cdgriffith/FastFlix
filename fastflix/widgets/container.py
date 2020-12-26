@@ -17,7 +17,7 @@ from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
 from fastflix.resources import main_icon
-from fastflix.shared import latest_fastflix, message
+from fastflix.shared import latest_fastflix, message, clean_logs, error_message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -46,7 +46,7 @@ class Container(QtWidgets.QMainWindow):
 
         self.setCentralWidget(self.main)
         # self.setMinimumSize(QtCore.QSize(1000, 650))
-        self.setFixedSize(QtCore.QSize(1200, 620))
+        self.setFixedSize(QtCore.QSize(1200, 650))
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
 
@@ -138,11 +138,15 @@ class Container(QtWidgets.QMainWindow):
         )
         ffmpeg_update_action.triggered.connect(self.download_ffmpeg)
 
+        clean_logs_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogResetButton), t("Clean Old Logs"), self)
+        clean_logs_action.triggered.connect(self.clean_old_logs)
+
         help_menu = menubar.addMenu(t("Help"))
         help_menu.addAction(changes_action)
         help_menu.addAction(report_action)
         help_menu.addAction(log_dir_action)
         help_menu.addAction(log_action)
+        help_menu.addAction(clean_logs_action)
         help_menu.addSeparator()
         help_menu.addAction(version_action)
         if reusables.win_based:
@@ -199,6 +203,12 @@ class Container(QtWidgets.QMainWindow):
             else:
                 self.app.fastflix.config.ffmpeg = ffmpeg
                 self.app.fastflix.config.ffprobe = ffprobe
+
+    def clean_old_logs(self):
+        try:
+            ProgressBar(self.app, [Task(t("Clean Old Logs"), clean_logs)], signal_task=True, can_cancel=False)
+        except Exception:
+            error_message(t("Could not compress old logs"), traceback=True)
 
 
 class OpenFolder(QtCore.QThread):
@@ -273,17 +283,5 @@ class ProfileDetails(QtWidgets.QWidget):
             setting = getattr(profile, setting_name)
             if setting:
                 self.layout.addWidget(self.profile_widget(setting))
-        # self.tab2 = QtWidgets.QWidget()
         self.setMinimumWidth(780)
-
-        # Add tabs
-
-        # self.tabs.addTab(self.tab2, "Tab 2")
-
-        # # Create first tab
-        # self.tab1.layout = QVBoxLayout(self)
-        # self.pushButton1 = QPushButton("PyQt5 button")
-        # self.tab1.layout.addWidget(self.pushButton1)
-        # self.tab1.setLayout(self.tab1.layout)
-
         self.setLayout(self.layout)
