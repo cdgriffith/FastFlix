@@ -3,7 +3,7 @@ import importlib.machinery
 import logging
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from distutils.version import StrictVersion
 from pathlib import Path
 from subprocess import run
@@ -195,3 +195,53 @@ def open_folder(path):
         run(["open", path])
     else:
         run(["xdg-open", path])
+
+
+def clean_logs(signal, app, **_):
+    compress = []
+    total_files = len(list(app.fastflix.log_path.iterdir()))
+    for i, file in enumerate(app.fastflix.log_path.iterdir()):
+        signal.emit(int((i / total_files) * 75))
+        app.processEvents()
+        if not file.name.endswith(".log"):
+            continue
+        try:
+            is_old = (datetime.now() - datetime.fromisoformat(file.stem[-19:].replace(".", ":"))) > timedelta(days=14)
+        except ValueError:
+            is_old = True
+        if file.name.startswith("flix_gui"):
+            if is_old:
+                logger.debug(f"Deleting {file.name}")
+                file.unlink(missing_ok=True)
+        if file.name.startswith("flix_conversion") or file.name.startswith("flix_2"):
+            original = file.read_text(encoding="utf-8")
+            try:
+                condensed = "\n".join(
+                    (
+                        line
+                        for line in original.splitlines()
+                        if "Skipping NAL unit" not in line and "Last message repeated" not in line
+                    )
+                )
+            except UnicodeDecodeError:
+                pass
+            else:
+                if len(condensed) < len(original):
+                    logger.debug(f"Compressed {file.name} from {len(original)} characters to {len(condensed)}")
+                    file.write_text(condensed, encoding="utf-8")
+            if is_old:
+                logger.debug(f"Adding {file.name} to be compress")
+                compress.append(file)
+    if compress:
+        reusables.pushd(app.fastflix.log_path)
+        try:
+            reusables.archive(
+                [str(name.name) for name in compress],
+                name=str(app.fastflix.log_path / f"flix_conversion_logs_{file_date()}.zip"),
+            )
+        finally:
+            reusables.popd()
+        signal.emit(95)
+        for file in compress:
+            file.unlink(missing_ok=True)
+    signal.emit(100)

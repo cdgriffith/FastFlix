@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+import copy
 
-from qtpy import QtWidgets
+from qtpy import QtWidgets, QtGui
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
@@ -12,6 +13,8 @@ from fastflix.widgets.panels.cover_panel import CoverPanel
 from fastflix.widgets.panels.queue_panel import EncodingQueue
 from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
+
+from fastflix.resources import editing_icon, cc_icon, music_icon, photo_icon, poll_icon, text_left_icon, working_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -32,13 +35,13 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.attachments = CoverPanel(self, self.app)
         self.queue = EncodingQueue(self, self.app)
 
-        self.addTab(self.current_settings, t("Quality"))
-        self.addTab(self.audio, t("Audio"))
-        self.addTab(self.subtitles, t("Subtitles"))
-        self.addTab(self.attachments, t("Cover"))
-        self.addTab(self.commands, t("Raw Commands"))
-        self.addTab(self.status, t("Encoding Status"))
-        self.addTab(self.queue, t("Encoding Queue"))
+        self.addTab(self.current_settings, QtGui.QIcon(editing_icon), t("Quality"))
+        self.addTab(self.audio, QtGui.QIcon(music_icon), t("Audio"))
+        self.addTab(self.subtitles, QtGui.QIcon(cc_icon), t("Subtitles"))
+        self.addTab(self.attachments, QtGui.QIcon(photo_icon), t("Cover"))
+        self.addTab(self.commands, QtGui.QIcon(text_left_icon), t("Raw Commands"))
+        self.addTab(self.status, QtGui.QIcon(working_icon), t("Encoding Status"))
+        self.addTab(self.queue, QtGui.QIcon(poll_icon), t("Encoding Queue"))
 
     @property
     def audio_formats(self):
@@ -110,10 +113,12 @@ class VideoOptions(QtWidgets.QTabWidget):
     def reload(self):
         self.current_settings.reload()
         if self.app.fastflix.current_video:
+            audio_tracks = copy.deepcopy(self.app.fastflix.current_video.video_settings.audio_tracks)
+            subtitle_tracks = copy.deepcopy(self.app.fastflix.current_video.video_settings.subtitle_tracks)
             if getattr(self.main.current_encoder, "enable_audio", False):
-                self.audio.reload(self.audio_formats)
+                self.audio.reload(audio_tracks, self.audio_formats)
             if getattr(self.main.current_encoder, "enable_subtitles", False):
-                self.subtitles.reload()
+                self.subtitles.reload(subtitle_tracks)
             if getattr(self.main.current_encoder, "enable_attachments", False):
                 self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
 

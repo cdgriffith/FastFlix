@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import copy
 from typing import List
 
 from box import Box
@@ -421,15 +420,14 @@ class AudioList(FlixList):
                 )
         self.app.fastflix.current_video.video_settings.audio_tracks = tracks
 
-    def reload(self, audio_formats):
-        og_tracks = copy.deepcopy(self.app.fastflix.current_video.video_settings.audio_tracks)
-        enabled_tracks = [x.index for x in og_tracks]
+    def reload(self, original_tracks, audio_formats):
+        enabled_tracks = [x.index for x in original_tracks]
         self.new_source(audio_formats)
         for track in self.tracks:
             enabled = track.index in enabled_tracks
             track.widgets.enable_check.setChecked(enabled)
             if enabled:
-                existing_track = [x for x in og_tracks if x.index == track.index][0]
+                existing_track = [x for x in original_tracks if x.index == track.index][0]
                 track.widgets.downmix.setCurrentIndex(existing_track.downmix)
                 track.widgets.convert_to.setCurrentText(existing_track.conversion_codec)
                 track.widgets.convert_bitrate.setCurrentText(existing_track.conversion_bitrate)

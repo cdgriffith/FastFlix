@@ -90,7 +90,7 @@ def startup_options():
             import fastflix.widgets.profile_window
             import fastflix.widgets.progress_bar
             import fastflix.widgets.settings
-            import fastflix.widgets.thumbnail_generator
+            import fastflix.widgets.background_tasks
             import fastflix.widgets.video_options
         except Exception as err:
             print(f"Error: {err}")

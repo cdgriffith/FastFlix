@@ -18,14 +18,14 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 
  FastFlix supports the following encoders when their required libraries are found in FFmpeg:
 
-* HEVC (libx265) &nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_x265.png" height="30" alt="x265" >
-* AVC (libx264) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_x264.png" height="30" alt="x264" >
-* AV1 (librav1e) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_rav1e.png" height="30" alt="rav1e" >
-* AV1 (libaom-av1) &nbsp; <img src="./fastflix/data/encoders/icon_av1_aom.png" height="30" alt="av1_aom" >
-* AV1 (libsvtav1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_svt_av1.png" height="30" alt="svt_av1" >
-* VP9 (libvpx) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_vp9.png" height="30" alt="vpg" >
-* WEBP (libwebp) &nbsp;&nbsp;&nbsp;<img src="./fastflix/data/encoders/icon_webp.png" height="30" alt="vpg" >
-* GIF (gif) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_gif.png" height="30" alt="gif" >
+* HEVC (libx265) &nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_x265.png" height="30" alt="x265" style="background-color: #fff" >
+* AVC (libx264) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_x264.png" height="30" alt="x264" style="background-color: #fff" >
+* AV1 (librav1e) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_rav1e.png" height="30" alt="rav1e" style="background-color: #fff" >
+* AV1 (libaom-av1) &nbsp; <img src="./fastflix/data/encoders/icon_av1_aom.png" height="30" alt="av1_aom" style="background-color: #fff" >
+* AV1 (libsvtav1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_svt_av1.png" height="30" alt="svt_av1" style="background-color: #fff" >
+* VP9 (libvpx) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_vp9.png" height="30" alt="vpg" style="background-color: #fff" >
+* WEBP (libwebp) &nbsp;&nbsp;&nbsp;<img src="./fastflix/data/encoders/icon_webp.png" height="30" alt="vpg" style="background-color: #fff" >
+* GIF (gif) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_gif.png" height="30" alt="gif" style="background-color: #fff" >
 
 All of these are currently supported by [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) which is the default FFmpeg downloaded.
 
@@ -75,6 +75,10 @@ FastFlix supports using generated or [extracted JSON HDR10+ Metadata](https://gi
 dependant on a FFmpeg version that has been compiled with x265 that has HDR10+ support. [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) 
 have this support as of 10/23/2020 and may require a [manual upgrade](https://github.com/cdgriffith/FastFlix/wiki/Updating-FFmpeg).
 
+## HLG 
+
+Currently, HLG is broken with FastFlix (will use the wrong color transfers) so please don't rely on it for HLG until [#135](https://github.com/cdgriffith/FastFlix/issues/135) is resolved.
+
 ## Dolby Vision
 
 FastFlix does not plan to support Dolby Visions proprietary format, as it requires royalties.
@@ -88,4 +92,7 @@ The code itself is licensed under the MIT which you can read in the `LICENSE` fi
 Read more about the release licensing in the [docs](docs/README.md) folder. <br>
 
 Encoder icons for [VP9](https://commons.wikimedia.org/wiki/File:Vp9-logo-for-mediawiki.svg) and [AOM AV1](https://commons.wikimedia.org/wiki/File:AV1_logo_2018.svg) are from Wikimedia Commons all others are self created.
-Various button icons from https://uxwing.com
+
+Various button icons from [https://uxwing.com](https://uxwing.com)
+
+Sample videos and thumbnail for preview image provided by [Jessica Payne](http://iamjessicapayne.com/)

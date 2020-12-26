@@ -42,7 +42,7 @@ from fastflix.resources import (
 )
 from fastflix.shared import error_message, time_to_number, yes_no_message
 from fastflix.widgets.progress_bar import ProgressBar, Task
-from fastflix.widgets.thumbnail_generator import ThumbnailCreator
+from fastflix.widgets.background_tasks import ThumbnailCreator, SubtitleFix
 from fastflix.widgets.video_options import VideoOptions
 
 logger = logging.getLogger("fastflix")
@@ -1587,6 +1587,10 @@ class Main(QtWidgets.QWidget):
                 video.status.complete = True
                 video.status.success = True
                 video.status.running = False
+                if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
+                    if mkv_prop_edit := shutil.which("mkvpropedit"):
+                        worker = SubtitleFix(self.app, mkv_prop_edit, video.video_settings.output_path)
+                        worker.start()
                 self.video_options.update_queue()
             else:
                 logger.error(f"This should not happen? {status} - {video}")
