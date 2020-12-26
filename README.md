@@ -81,7 +81,7 @@ Currently, HLG is broken with FastFlix (will use the wrong color transfers) so p
 
 ## Dolby Vision
 
-FastFlix does not plan to support Dolby Visions proprietary format, as it requires royalties.
+FastFlix does not plan to support Dolby Vision's proprietary format, as it requires royalties.
 
 
 # License
