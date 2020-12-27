@@ -1,5 +1,28 @@
 # Changelog
 
+## Version 4.0.0
+
+* Adding #59 Queue system
+* Adding #94 profiles (thanks to robchap79)
+* Adding #98 multi-lingual support (thanks to leonardyan)
+* Adding #111 HDR10+ Optimization flag for x265 (thanks to SlashX)
+* Adding #113 copy video track option (thanks to leonardyan)
+* Adding |=====  | Progress Bars
+* Adding support for interlaced videos
+* Adding option to download newest FFmpeg on Windows
+* Adding builds for MacOS and Linux
+* Adding --test (imports only) and --version startup options
+* Adding option to clean old (over two weeks) logs by compressing them
+* Adding background fix for first subtitle track to not be default if mkvpropedit is detected (thanks to ftpmorph)
+* Changing to a model based dataclass setup with a large internal re-write
+* Changing so it opens the file dialog for new video to last used directory
+* Changing log names, including file output stem in conversion log
+* Fixing #116 how HDR10 options for x265 work (thanks to HannesJo0139)
+* Fixing dispositions being set for wrong tracks (thanks to ftpmorph)
+* Fixing thumbnails not being generated properly on 10-bit non bt2020 files
+* Fixing QThread destroyed message on close
+* Fixing Cannot queue arguments of type 'QTextCursor' warning messages
+
 ## Version  3.4.3
 
 * Fixing #110 (multi) no warning for those updating about automatic burn-in subtitles (thanks to loungebob)

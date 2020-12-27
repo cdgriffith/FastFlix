@@ -1,0 +1,57 @@
+QPushButton {
+    border: 1px solid #bbb;
+    border-radius: 0;
+    padding: 3px;
+    font-size: 12px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+QPushButton:pressed {
+    background-color: #ccc;
+}
+
+QComboBox {
+    selection-background-color: #bbb;
+    border-style: solid;
+    border: 1px solid #bbb;
+    /*border-radius: 2px;*/
+    border-right: 2px solid #999;
+    min-height: 20px;
+    background-color: #eee;
+}
+
+QComboBox:hover, QPushButton:hover {
+    border: 2px solid #aaa;
+    color: #000000;
+}
+
+QComboBox:drop-down {
+    background-color: #eee;
+    color: #000000;
+}
+
+QComboBox:on {
+    padding-top: 3px;
+    padding-left: 4px;
+    background-color: QLinearGradient(x1:0,
+    y1: 0,
+    x2: 0,
+    y2: 1,
+    stop: 0 #2d2d2d,
+    stop: 0.1 #2b2b2b,
+    stop: 0.5 #292929,
+    stop: 0.9 #282828,
+    stop: 1 #252525);
+    selection-background-color: #bbb;
+    color: #222222;
+
+}
+
+QGroupBox {
+    border: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 2px;
+    border-bottom: 2px solid #ddd;
+}

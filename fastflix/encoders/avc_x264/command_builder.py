@@ -1,73 +1,37 @@
 # -*- coding: utf-8 -*-
 import re
 import secrets
-from pathlib import Path
 
-from box import Box
-
-from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_ending, generate_ffmpeg_start, generate_filters, null
-from fastflix.encoders.common.subtitles import build_subtitle
+from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.models.encode import x264Settings
+from fastflix.models.fastflix import FastFlix
 
 
-def build(
-    source,
-    video_track,
-    ffmpeg,
-    temp_dir,
-    output_video,
-    bitrate=None,
-    crf=None,
-    preset="fast",
-    audio_tracks=(),
-    subtitle_tracks=(),
-    disable_hdr=False,
-    side_data=None,
-    pix_fmt="yuv420p",
-    tune=None,
-    profile="default",
-    attachments="",
-    **kwargs,
-):
-    audio = build_audio(audio_tracks)
-    subtitles, burn_in_track = build_subtitle(subtitle_tracks)
-    filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
-    ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
+def build(fastflix: FastFlix):
+    settings: x264Settings = fastflix.current_video.video_settings.video_encoder_settings
 
-    if not side_data:
-        side_data = Box(default_box=True)
+    beginning, ending = generate_all(fastflix, "libx264")
 
-    beginning = generate_ffmpeg_start(
-        source=source,
-        ffmpeg=ffmpeg,
-        encoder="libx264",
-        video_track=video_track,
-        filters=filters,
-        pix_fmt=pix_fmt,
-        **kwargs,
-    )
+    beginning += f'{f"-tune {settings.tune}" if settings.tune else ""} '
 
-    beginning += f'{f"-tune {tune}" if tune else ""} '
+    if settings.profile and settings.profile != "default":
+        beginning += f"-profile {settings.profile} "
 
-    if profile and profile != "default":
-        beginning += f"-profile {profile} "
+    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
-    if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
-
-        if side_data and side_data.get("color_primaries") == "bt2020":
+        if fastflix.current_video.color_space.startswith("bt2020"):
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
-    if side_data.cll:
-        pass
+    pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
 
-    pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
-
-    if bitrate:
+    if settings.bitrate:
         command_1 = (
             f"{beginning} -pass 1 "
-            f'-passlogfile "{pass_log_file}" -b:v {bitrate} -preset {preset} -an -sn -dn -f mp4 {null}'
+            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset {settings.preset} -an -sn -dn -f mp4 {null}'
         )
-        command_2 = (f'{beginning} -pass 2 -passlogfile "{pass_log_file}" ' f"-b:v {bitrate} -preset {preset}") + ending
+        command_2 = (
+            f'{beginning} -pass 2 -passlogfile "{pass_log_file}" ' f"-b:v {settings.bitrate} -preset {settings.preset}"
+        ) + ending
         return [
             Command(
                 re.sub("[ ]+", " ", command_1), ["ffmpeg", "output"], False, name="First pass bitrate", exe="ffmpeg"
@@ -77,8 +41,8 @@ def build(
             ),
         ]
 
-    elif crf:
-        command = (f"{beginning} -crf {crf} " f"-preset {preset} ") + ending
+    elif settings.crf:
+        command = (f"{beginning} -crf {settings.crf} " f"-preset {settings.preset} ") + ending
         return [
             Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")
         ]

@@ -4,16 +4,23 @@
 import logging
 import re
 from pathlib import Path
+from typing import List, Union
 
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
+
+from fastflix.language import t
+from fastflix.models.encode import AttachmentTrack
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 
 
 class CoverPanel(QtWidgets.QWidget):
-    def __init__(self, parent):
+    def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
+        self.app = app
         self.main = parent.main
         self.attachments = Box()
 
@@ -24,25 +31,24 @@ class CoverPanel(QtWidgets.QWidget):
         sp.setHorizontalPolicy(QtWidgets.QSizePolicy.Policy.Maximum)
 
         # row, column, row span, column span
-        layout.addWidget(QtWidgets.QLabel("Poster Cover"), 0, 0, 1, 5)
-        layout.addWidget(QtWidgets.QLabel("Landscape Cover"), 0, 6, 1, 4)
+        layout.addWidget(QtWidgets.QLabel(t("Poster Cover")), 0, 0, 1, 5)
+        layout.addWidget(QtWidgets.QLabel(t("Landscape Cover")), 0, 6, 1, 4)
         info_label = QtWidgets.QLabel(
-            "<a href='https://codecalamity.com/guides/video-thumbnails/'>"
-            "Enabling cover thumbnails on your system</a>"
+            link("https://codecalamity.com/guides/video-thumbnails/", t("Enabling cover thumbnails on your system"))
         )
         info_label.setOpenExternalLinks(True)
         layout.addWidget(info_label, 10, 0, 1, 9, QtCore.Qt.AlignLeft)
 
         poster_options_layout = QtWidgets.QHBoxLayout()
-        self.cover_passthrough_checkbox = QtWidgets.QCheckBox("Copy Cover")
-        self.small_cover_passthrough_checkbox = QtWidgets.QCheckBox("Copy Small Cover (no preview)")
+        self.cover_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Cover"))
+        self.small_cover_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Small Cover (no preview)"))
 
         poster_options_layout.addWidget(self.cover_passthrough_checkbox)
         poster_options_layout.addWidget(self.small_cover_passthrough_checkbox)
 
         land_options_layout = QtWidgets.QHBoxLayout()
-        self.cover_land_passthrough_checkbox = QtWidgets.QCheckBox("Copy Landscape Cover")
-        self.small_cover_land_passthrough_checkbox = QtWidgets.QCheckBox("Copy Small Landscape Cover  (no preview)")
+        self.cover_land_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Landscape Cover"))
+        self.small_cover_land_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Small Landscape Cover  (no preview)"))
 
         land_options_layout.addWidget(self.cover_land_passthrough_checkbox)
         land_options_layout.addWidget(self.small_cover_land_passthrough_checkbox)
@@ -88,7 +94,10 @@ class CoverPanel(QtWidgets.QWidget):
         if not dirname.exists():
             dirname = Path()
         filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="cover", directory=str(dirname), filter="Supported Image Files (*.png;*.jpeg;*.jpg)"
+            self,
+            caption=t("Cover"),
+            directory=str(dirname),
+            filter=f"{t('Supported Image Files')} (*.png;*.jpeg;*.jpg)",
         )
         if not filename or not filename[0]:
             return
@@ -115,7 +124,7 @@ class CoverPanel(QtWidgets.QWidget):
             pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.poster.setPixmap(pixmap)
         except Exception:
-            logger.exception("Bad image")
+            logger.exception(t("Bad image"))
             self.cover_path.setText("")
         else:
             self.main.page_update()
@@ -138,7 +147,10 @@ class CoverPanel(QtWidgets.QWidget):
         if not dirname.exists():
             dirname = Path()
         filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="cover", directory=str(dirname), filter="Supported Image Files (*.png;*.jpeg;*.jpg)"
+            self,
+            caption=t("Landscape Cover"),
+            directory=str(dirname),
+            filter=f"{t('Supported Image Files')} (*.png;*.jpeg;*.jpg)",
         )
         if not filename or not filename[0]:
             return
@@ -165,55 +177,45 @@ class CoverPanel(QtWidgets.QWidget):
             pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.landscape.setPixmap(pixmap)
         except Exception:
-            logger.exception("Bad image")
+            logger.exception(t("Bad image"))
             self.cover_land.setText("")
         else:
             self.main.page_update()
 
-    @staticmethod
-    def image_type(file):
-        mime_type = "image/jpeg"
-        ext_type = "jpg"
-        if file.lower().endswith("png"):
-            mime_type = "image/png"
-            ext_type = "png"
-        return mime_type, ext_type
-
-    def generate_attachment(self, filename, track_index=0):
+    def get_attachment(self, filename) -> Union[Path, None]:
         attr = getattr(self, f"{filename}_path", None)
         cover_image = None
-        if attr:
-            cover_image = attr.text()
+        if attr and attr.text().strip():
+            cover_image = Path(attr.text().strip())
         if getattr(self, f"{filename}_passthrough_checkbox").isChecked():
-            cover_image = str(Path(self.main.path.temp_dir) / self.attachments[filename].name)
-        if cover_image:
-            mime_type, ext_type = self.image_type(cover_image)
-            return (
-                f' -attach "{cover_image}" -metadata:s:{track_index} mimetype={mime_type} '
-                f'-metadata:s:{track_index}  filename="{filename}.{ext_type}" '
-            )
+            cover_image = self.app.fastflix.current_video.work_path / self.attachments[filename].name
+        return cover_image if cover_image else None
 
-    def get_settings(self, out_stream_start_index=0):
-        track_index = out_stream_start_index
-        commands = []
+    def update_cover_settings(self):
+        start_outdex = (
+            1  # Video Track
+            + len(self.app.fastflix.current_video.video_settings.audio_tracks)
+            + len(self.app.fastflix.current_video.video_settings.subtitle_tracks)
+        )
+        attachments: List[AttachmentTrack] = []
 
         for filename in ("cover", "cover_land", "small_cover", "small_cover_land"):
-            command = self.generate_attachment(filename, track_index=track_index)
-            if command:
-                track_index += 1
-                commands.append(command)
-
-        return Box(
-            attachments=re.sub("[ ]+", " ", " ".join(commands)),
-            attachments_track_count=track_index - out_stream_start_index,
-        )
+            attachment = self.get_attachment(filename)
+            if attachment:
+                attachments.append(
+                    AttachmentTrack(
+                        outdex=start_outdex, file_path=attachment, filename=filename, attachment_type="cover"
+                    )
+                )
+                start_outdex += 1
+        self.app.fastflix.current_video.video_settings.attachment_tracks = attachments
 
     def cover_passthrough_check(self):
         checked = self.cover_passthrough_checkbox.isChecked()
         if checked:
             self.cover_path.setDisabled(True)
             self.cover_button.setDisabled(True)
-            pixmap = QtGui.QPixmap(str(Path(self.main.path.temp_dir) / self.attachments.cover.name))
+            pixmap = QtGui.QPixmap(str(self.app.fastflix.current_video.work_path / self.attachments.cover.name))
             pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.poster.setPixmap(pixmap)
         else:
@@ -236,7 +238,7 @@ class CoverPanel(QtWidgets.QWidget):
         if checked:
             self.cover_land.setDisabled(True)
             self.landscape_button.setDisabled(True)
-            pixmap = QtGui.QPixmap(str(Path(self.main.path.temp_dir) / self.attachments.cover_land.name))
+            pixmap = QtGui.QPixmap(str(self.app.fastflix.current_video.work_path / self.attachments.cover_land.name))
             pixmap = pixmap.scaled(230, 230, QtCore.Qt.KeepAspectRatio)
             self.landscape.setPixmap(pixmap)
         else:
@@ -254,8 +256,7 @@ class CoverPanel(QtWidgets.QWidget):
     def small_cover_land_passthrough_check(self):
         self.main.page_update(build_thumbnail=False)
 
-    def new_source(self, attachments):
-
+    def clear_covers(self, reconnect=True):
         self.cover_passthrough_checkbox.toggled.disconnect()
         self.small_cover_passthrough_checkbox.toggled.disconnect()
         self.cover_land_passthrough_checkbox.toggled.disconnect()
@@ -282,10 +283,22 @@ class CoverPanel(QtWidgets.QWidget):
         self.cover_land.setText("")
         self.landscape_button.setDisabled(False)
 
+        if reconnect:
+            self.cover_passthrough_checkbox.toggled.connect(lambda: self.cover_passthrough_check())
+            self.small_cover_passthrough_checkbox.toggled.connect(lambda: self.small_cover_passthrough_check())
+            self.cover_land_passthrough_checkbox.toggled.connect(lambda: self.cover_land_passthrough_check())
+            self.small_cover_land_passthrough_checkbox.toggled.connect(
+                lambda: self.small_cover_land_passthrough_check()
+            )
+
+    def new_source(self, attachments):
+
+        self.clear_covers(reconnect=False)
+
         for attachment in attachments:
             filename = attachment.get("tags", {}).get("filename", "")
             base_name = filename.rsplit(".", 1)[0]
-            file_path = Path(self.main.path.temp_dir) / filename
+            file_path = self.app.fastflix.current_video.work_path / filename
             if base_name == "cover" and file_path.exists():
                 self.cover_passthrough_checkbox.setChecked(True)
                 self.cover_passthrough_checkbox.setDisabled(False)

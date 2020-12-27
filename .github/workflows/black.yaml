@@ -2,7 +2,7 @@ name: Run code linter "black"
 
 on:
   push:
-    branches: [ master, develop, build, 3.0 ]
+    branches: [ master, develop, build ]
   pull_request:
     branches: [ master, develop ]
 

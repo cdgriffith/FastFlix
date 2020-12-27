@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastflix"
-version = "3.4.3"
+version = "4.0.0"
 description = "Easy to use video encoder GUI"
 authors = ["Chris Griffith <chris@cdgriffith.com>"]
 license = "MIT"
@@ -8,10 +8,9 @@ include = ["fastflix/data/rotations/*.png", "fastflix/data/encoders/*.png", "fas
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = ">=3.6,<3.10"
 appdirs = "^1.4.4"
 qtpy = "^1.9.0"
-pyside2 = "^5.15.0"
 python-box = {version = "^5.1.1", extras = ["all"]}
 requests = "^2.24.0"
 reusables = "^0.9.5"
@@ -19,6 +18,9 @@ reusables = "^0.9.5"
 mistune = "^0.8.4"
 coloredlogs = "^14.0"
 psutil = "^5.7.2"
+PySide2 = "^5.15.1"
+colorama = "^0.4.4"
+iso639-lang = "^0.0.8"
 
 [tool.poetry.dev-dependencies]
 

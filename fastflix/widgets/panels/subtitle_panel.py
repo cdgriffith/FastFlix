@@ -1,10 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from typing import Union
 
 from box import Box
+from iso639 import Lang
+from iso639.exceptions import InvalidLanguageValue
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.shared import error_message, main_width, FastFlixInternalException
+from fastflix.exceptions import FastFlixInternalException
+from fastflix.language import t
+from fastflix.models.encode import SubtitleTrack
+from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.resources import down_arrow_icon, up_arrow_icon
+from fastflix.shared import error_message, main_width, no_border
 from fastflix.widgets.panels.abstract_list import FlixList
 
 dispositions = [
@@ -19,30 +27,7 @@ dispositions = [
     "hearing_impaired",
 ]
 
-languages = (
-    "aar,abk,ace,ach,ada,ady,afh,afr,ain,aka,akk,ale,alt,amh,ang,anp,ara,arc,arg,arn,arp,arw,asm,ast,ava,ave,"
-    "awa,aym,aze,bak,bal,bam,ban,bas,bej,bel,bem,ben,bho,bik,bin,bis,bla,bod,bos,bra,bre,bua,bug,bul,byn,cad,"
-    "car,cat,ceb,ces,cha,chb,che,chg,chk,chm,chn,cho,chp,chr,chu,chv,chy,cop,cor,cos,cre,crh,csb,cym,dak,dan,"
-    "dar,del,den,deu,dgr,din,div,doi,dsb,dua,dum,dyu,dzo,efi,egy,eka,ell,elx,eng,enm,epo,est,eus,ewe,ewo,fan,"
-    "fao,fas,fat,fij,fil,fin,fon,fra,fre,frm,fro,frr,frs,fry,ful,fur,gaa,gay,gba,gez,gil,gla,gle,glg,glv,gmh,goh,"
-    "gon,gor,got,grb,grc,grn,gsw,guj,gwi,hai,hat,hau,haw,heb,her,hil,hin,hit,hmn,hmo,hrv,hsb,hun,hup,hye,iba,"
-    "ibo,ido,iii,iku,ile,ilo,ina,ind,inh,ipk,isl,ita,jav,jbo,jpn,jpr,jrb,kaa,kab,kac,kal,kam,kan,kas,kat,kau,"
-    "kaw,kaz,kbd,kha,khm,kho,kik,kin,kir,kmb,kok,kom,kon,kor,kos,kpe,krc,krl,kru,kua,kum,kur,kut,lad,lah,lam,"
-    "lao,lat,lav,lez,lim,lin,lit,lol,loz,ltz,lua,lub,lug,lui,lun,luo,lus,mad,mag,mah,mai,mak,mal,man,mar,mas,"
-    "mdf,mdr,men,mga,mic,min,mis,mkd,mlg,mlt,mnc,mni,moh,mon,mos,mri,msa,mul,mus,mwl,mwr,mya,myv,nap,nau,nav,"
-    "nbl,nde,ndo,nds,nep,new,nia,niu,nld,nno,nob,nog,non,nor,nqo,nso,nwc,nya,nym,nyn,nyo,nzi,oci,oji,ori,orm,"
-    "osa,oss,ota,pag,pal,pam,pan,pap,pau,peo,phn,pli,pol,pon,por,pro,pus,que,raj,rap,rar,roh,rom,ron,run,rup,"
-    "rus,sad,sag,sah,sam,san,sas,sat,scn,sco,sel,sga,shn,sid,sin,slk,slv,sma,sme,smj,smn,smo,sms,sna,snd,snk,"
-    "sog,som,sot,spa,sqi,srd,srn,srp,srr,ssw,suk,sun,sus,sux,swa,swe,syc,syr,tah,tam,tat,tel,tem,ter,tet,tgk,"
-    "tgl,tha,tig,tir,tiv,tkl,tlh,tli,tmh,tog,ton,tpi,tsi,tsn,tso,tuk,tum,tur,tvl,twi,tyv,udm,uga,uig,ukr,umb,"
-    "und,urd,uzb,vai,ven,vie,vol,vot,wal,war,was,wln,wol,xal,xho,yao,yap,yid,yor,zap,zbl,zen,zgh,zha,zho,zul,"
-    "zun,zxx,zza"
-)
-
-language_list = languages.split(",")
-
-
-# TODO add fake empty subtitle track?
+language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 
 class Subtitle(QtWidgets.QTabWidget):
@@ -56,17 +41,21 @@ class Subtitle(QtWidgets.QTabWidget):
         self.first = first
         self.last = False
         self.subtitle_lang = subtitle.get("tags", {}).get("language")
+        self.setFixedHeight(60)
 
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{self.index}:{self.outdex}" if enabled else "❌"),
             title=QtWidgets.QLabel(f"  {self.subtitle.codec_long_name}"),
-            up_button=QtWidgets.QPushButton("^"),
-            down_button=QtWidgets.QPushButton("v"),
-            enable_check=QtWidgets.QCheckBox("Preserve"),
+            up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
+            down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
+            enable_check=QtWidgets.QCheckBox(t("Preserve")),
             disposition=QtWidgets.QComboBox(),
             language=QtWidgets.QComboBox(),
-            burn_in=QtWidgets.QCheckBox("Burn In"),
+            burn_in=QtWidgets.QCheckBox(t("Burn In")),
         )
+
+        self.widgets.up_button.setStyleSheet(no_border)
+        self.widgets.down_button.setStyleSheet(no_border)
 
         self.widgets.disposition.addItems(dispositions)
         self.widgets.enable_check.setChecked(enabled)
@@ -85,12 +74,15 @@ class Subtitle(QtWidgets.QTabWidget):
         self.setFixedHeight(60)
         self.widgets.title.setToolTip(self.subtitle.to_yaml())
         self.widgets.burn_in.setToolTip(
-            "Overlay this subtitle track onto the video during conversion. " "Cannot remove afterwards."
+            f"""{t("Overlay this subtitle track onto the video during conversion.")}\n
+            {t("Currently only works for image based subtitles.")}\n
+            {t("Cannot remove afterwards!")}
+            """
         )
 
         disposition_layout = QtWidgets.QHBoxLayout()
         disposition_layout.addStretch()
-        disposition_layout.addWidget(QtWidgets.QLabel("Disposition"))
+        disposition_layout.addWidget(QtWidgets.QLabel(t("Disposition")))
         disposition_layout.addWidget(self.widgets.disposition)
 
         grid = QtWidgets.QGridLayout()
@@ -138,13 +130,14 @@ class Subtitle(QtWidgets.QTabWidget):
 
     def init_language(self):
         self.widgets.language.addItems(language_list)
+        self.widgets.language.setMaximumWidth(110)
         try:
-            self.widgets.language.setCurrentIndex(language_list.index(self.subtitle_lang))
+            self.widgets.language.setCurrentIndex(language_list.index(Lang(self.subtitle_lang).name))
         except Exception:
-            self.widgets.language.setCurrentIndex(language_list.index("eng"))
-
+            self.widgets.language.setCurrentIndex(language_list.index("English"))
+        self.widgets.language.currentIndexChanged.connect(self.page_update)
         layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Language"))
+        layout.addWidget(QtWidgets.QLabel(t("Language")))
         layout.addWidget(self.widgets.language)
         return layout
 
@@ -165,8 +158,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
     @property
     def disposition(self):
-        text = self.widgets.disposition.currentText()
-        return 0 if text == "none" else text
+        return None if self.widgets.disposition.currentIndex() == 0 else self.widgets.disposition.currentText()
 
     @property
     def enabled(self):
@@ -174,7 +166,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
     @property
     def language(self):
-        return self.widgets.language.currentText()
+        return Lang(self.widgets.language.currentText()).pt2b
 
     @property
     def burn_in(self):
@@ -192,7 +184,7 @@ class Subtitle(QtWidgets.QTabWidget):
         enable = self.widgets.burn_in.isChecked()
         if enable and [1 for track in self.parent.tracks if track.enabled and track.burn_in and track is not self]:
             self.widgets.burn_in.setChecked(False)
-            error_message("There is an existing burn-in track, only one can be enabled at a time")
+            error_message(t("There is an existing burn-in track, only one can be enabled at a time"))
         self.updating_burn = False
         self.page_update()
 
@@ -202,33 +194,69 @@ class Subtitle(QtWidgets.QTabWidget):
 
 
 class SubtitleList(FlixList):
-    def __init__(self, parent, starting_pos=0):
-        super().__init__(parent, "Subtitle Tracks", starting_pos)
+    def __init__(self, parent, app: FastFlixApp):
+        super().__init__(app, parent, "Subtitle Tracks", "subtitle")
         self.main = parent.main
+        self.app = app
+        self._first_selected = False
 
-    def new_source(self, starting_pos=0):
-        self.starting_pos = starting_pos
+    def lang_match(self, track: Union[Subtitle, dict], ignore_first=False):
+        if not self.app.fastflix.config.opt("subtitle_select"):
+            return False
+        language = track.language if isinstance(track, Subtitle) else track.get("tags", {}).get("language", "")
+        if not self.app.fastflix.config.opt("subtitle_select_preferred_language"):
+            if (
+                not ignore_first
+                and self.app.fastflix.config.opt("subtitle_select_first_matching")
+                and self._first_selected
+            ):
+                return False
+            self._first_selected = True
+            return True
+        try:
+            track_lang = Lang(language)
+        except InvalidLanguageValue:
+            return True
+        else:
+            if Lang(self.app.fastflix.config.opt("subtitle_language")) == track_lang:
+                if (
+                    not ignore_first
+                    and self.app.fastflix.config.opt("subtitle_select_first_matching")
+                    and self._first_selected
+                ):
+                    return False
+                self._first_selected = True
+                return True
+        return False
+
+    def new_source(self):
         self.tracks = []
-        for index, track in enumerate(self.main.streams.subtitle):
-            new_item = Subtitle(self, track, index=track.index, first=True if index == 0 else False)
+        self._first_selected = False
+        for index, track in enumerate(self.app.fastflix.current_video.streams.subtitle):
+            enabled = self.lang_match(track)
+            new_item = Subtitle(self, track, index=track.index, first=True if index == 0 else False, enabled=enabled)
             self.tracks.append(new_item)
         if self.tracks:
             self.tracks[0].set_first()
             self.tracks[-1].set_last()
 
-        first_default, first_forced = None, None
-        for track in self.tracks:
-            if not first_default and track.disposition == "default":
-                first_default = track
-            if not first_forced and track.disposition == "forced":
-                first_forced = track
-        if not self.main.config.disable_automatic_subtitle_burn_in:
-            if first_forced is not None:
-                first_forced.widgets.burn_in.setChecked(True)
-            elif first_default is not None:
-                first_default.widgets.burn_in.setChecked(True)
+        if self.app.fastflix.config.opt("subtitle_automatic_burn_in"):
+            first_default, first_forced = None, None
+            for track in self.tracks:
+                if not first_default and track.disposition == "default" and self.lang_match(track, ignore_first=True):
+                    first_default = track
+                    break
+                if not first_forced and track.disposition == "forced" and self.lang_match(track, ignore_first=True):
+                    first_forced = track
+                    break
+            if not self.app.fastflix.config.disable_automatic_subtitle_burn_in:
+                if first_forced is not None:
+                    first_forced.widgets.burn_in.setChecked(True)
+                elif first_default is not None:
+                    first_default.widgets.burn_in.setChecked(True)
 
         super()._new_source(self.tracks)
+        self.get_settings()
 
     def get_settings(self):
         tracks = []
@@ -236,16 +264,33 @@ class SubtitleList(FlixList):
         for track in self.tracks:
             if track.enabled:
                 tracks.append(
-                    {
-                        "index": track.index,
-                        "outdex": track.outdex,
-                        "disposition": track.disposition,
-                        "language": track.language,
-                        "burn_in": track.burn_in,
-                    }
+                    SubtitleTrack(
+                        index=track.index,
+                        outdex=track.outdex,
+                        disposition=track.disposition,
+                        language=track.language,
+                        burn_in=track.burn_in,
+                    )
                 )
                 if track.burn_in:
                     burn_in_count += 1
         if burn_in_count > 1:
-            raise FastFlixInternalException("More than one track selected to burn in")
-        return Box(subtitle_tracks=tracks, subtitle_track_count=len(tracks))
+            raise FastFlixInternalException(t("More than one track selected to burn in"))
+        self.app.fastflix.current_video.video_settings.subtitle_tracks = tracks
+
+    def reload(self, original_tracks):
+        enabled_tracks = [x.index for x in original_tracks]
+        self.new_source()
+        for track in self.tracks:
+            enabled = track.index in enabled_tracks
+            track.widgets.enable_check.setChecked(enabled)
+            if enabled:
+                existing_track = [x for x in original_tracks if x.index == track.index][0]
+                if existing_track.disposition:
+                    track.widgets.disposition.setCurrentText(existing_track.disposition)
+                else:
+                    track.widgets.disposition.setCurrentIndex(0)
+                track.widgets.burn_in.setChecked(existing_track.burn_in)
+                track.widgets.language.setCurrentText(Lang(existing_track.language).name)
+
+        super()._new_source(self.tracks)

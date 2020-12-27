@@ -4,80 +4,28 @@
 import logging
 import re
 import secrets
-from pathlib import Path
 
-import reusables
-
-from fastflix.encoders.common.audio import build_audio
-from fastflix.encoders.common.helpers import Command, generate_ending, generate_ffmpeg_start, generate_filters, null
-from fastflix.encoders.common.subtitles import build_subtitle
+from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.models.encode import rav1eSettings
+from fastflix.models.fastflix import FastFlix
 
 logger = logging.getLogger("fastflix")
 
 
-class FlixError(Exception):
-    pass
-
-
-extension = "mkv"
-
-
-@reusables.log_exception("fastflix", show_traceback=True)
-def build(
-    source,
-    video_track,
-    ffmpeg,
-    temp_dir,
-    output_video,
-    streams,
-    stream_track,
-    tiles=0,
-    tile_columns=0,
-    tile_rows=0,
-    speed=7,
-    qp=-1,
-    pix_fmt="yuv420p10le",
-    bitrate=None,
-    audio_tracks=(),
-    subtitle_tracks=(),
-    disable_hdr=False,
-    side_data=None,
-    single_pass=False,
-    attachments="",
-    **kwargs,
-):
-    audio = build_audio(audio_tracks)
-    subtitles, burn_in_track = build_subtitle(subtitle_tracks)
-    filters = generate_filters(video_track=video_track, disable_hdr=disable_hdr, burn_in_track=burn_in_track, **kwargs)
-    ending = generate_ending(audio=audio, subtitles=subtitles, cover=attachments, output_video=output_video, **kwargs)
-
-    beginning = generate_ffmpeg_start(
-        source=source,
-        ffmpeg=ffmpeg,
-        encoder="librav1e",
-        video_track=video_track,
-        filters=filters,
-        pix_fmt=pix_fmt,
-        **kwargs,
-    )
+def build(fastflix: FastFlix):
+    settings: rav1eSettings = fastflix.current_video.video_settings.video_encoder_settings
+    beginning, ending = generate_all(fastflix, "librav1e")
 
     beginning += (
         "-strict experimental "
-        f"-speed {speed} "
-        f"-tile-columns {tile_columns} "
-        f"-tile-rows {tile_rows} "
-        f"-tiles {tiles} "
+        f"-speed {settings.speed} "
+        f"-tile-columns {settings.tile_columns} "
+        f"-tile-rows {settings.tile_rows} "
+        f"-tiles {settings.tiles} "
     )
 
-    if not single_pass:
-        pass_log_file = Path(temp_dir) / f"pass_log_file_{secrets.token_hex(10)}.log"
-        beginning += f'-passlogfile "{pass_log_file}" '
-
-    if not disable_hdr and pix_fmt in ("yuv420p10le", "yuv420p12le"):
-
-        if streams.video[stream_track].get("color_primaries") == "bt2020" or (
-            side_data and side_data.get("color_primaries") == "bt2020"
-        ):
+    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+        if fastflix.current_video.color_space.startswith("bt2020"):
             beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
         # Currently unsupported https://github.com/xiph/rav1e/issues/2554
@@ -100,18 +48,22 @@ def build(
 
     beginning = re.sub("[ ]+", " ", beginning)
 
-    pass_type = "bitrate" if bitrate else "QP"
+    if not settings.single_pass:
+        pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
+        beginning += f'-passlogfile "{pass_log_file}" '
 
-    if not bitrate:
-        command_1 = f"{beginning} -qp {qp}" + ending
+    pass_type = "bitrate" if settings.bitrate else "QP"
+
+    if not settings.bitrate:
+        command_1 = f"{beginning} -qp {settings.qp}" + ending
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
 
-    if single_pass:
-        command_1 = f'{beginning} -b:v {bitrate} {audio} {subtitles} {attachments} "{output_video}"'
+    if settings.single_pass:
+        command_1 = f"{beginning} -b:v {settings.bitrate} {ending}"
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
     else:
-        command_1 = f"{beginning} -b:v {bitrate} -pass 1 -an -f matroska {null}"
-        command_2 = f"{beginning} -b:v {bitrate} -pass 2" + ending
+        command_1 = f"{beginning} -b:v {settings.bitrate} -pass 1 -an -f matroska {null}"
+        command_2 = f"{beginning} -b:v {settings.bitrate} -pass 2 {ending}"
         return [
             Command(command_1, ["ffmpeg", "output"], False, name=f"First pass {pass_type}", exe="ffmpeg"),
             Command(command_2, ["ffmpeg", "output"], False, name=f"Second pass {pass_type} ", exe="ffmpeg"),
