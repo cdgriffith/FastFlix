@@ -473,7 +473,7 @@ Default 4. This parameter has a quadratic effect on the amount of memory allocat
   fra: Défaut 4. Ce paramètre a un effet quadratique sur la quantité de mémoire allouée
   ita: Predefinito 4. Questo parametro ha un effetto quadratico sulla quantità di memoria allocata
   spa: Por defecto 4. Este parámetro tiene un efecto cuadrático en la cantidad de memoria asignada
-  zho: 默认值为4。此参数对于所分配的内存量和--b-adapt 
+  zho: 默认值为4。此参数对于所分配的内存量和--b-adapt
 Default disabled.:
   deu: Standardmäßig deaktiviert.
   eng: Default disabled.

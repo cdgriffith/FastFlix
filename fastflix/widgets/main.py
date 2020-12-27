@@ -106,6 +106,7 @@ class Main(QtWidgets.QWidget):
     cancelled = QtCore.Signal(str)
     close_event = QtCore.Signal()
     status_update_signal = QtCore.Signal(str)
+    thread_logging_signal = QtCore.Signal(str)
 
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
@@ -151,6 +152,7 @@ class Main(QtWidgets.QWidget):
         self.close_event.connect(self.close)
         self.thumbnail_complete.connect(self.thumbnail_generated)
         self.status_update_signal.connect(self.status_update)
+        self.thread_logging_signal.connect(self.thread_logger)
         self.encoding_worker = None
         self.command_runner = None
         self.converting = False
@@ -1233,12 +1235,19 @@ class Main(QtWidgets.QWidget):
         worker = ThumbnailCreator(self, thumb_command)
         worker.start()
 
+    @staticmethod
+    def thread_logger(text):
+        try:
+            level, message = text.split(":", 1)
+            logger.log(["", "debug", "info", "warning", "error", "critical"].index(level.lower()) * 10, message)
+        except Exception:
+            logger.warning(text)
+
     @reusables.log_exception("fastflix", show_traceback=False)
     def thumbnail_generated(self, success=False):
         if not success or not self.thumb_file.exists():
             self.widgets.preview.setText(t("Error Updating Thumbnail"))
             return
-
         pixmap = QtGui.QPixmap(str(self.thumb_file))
         pixmap = pixmap.scaled(320, 213, QtCore.Qt.KeepAspectRatio)
         self.widgets.preview.setPixmap(pixmap)
@@ -1589,7 +1598,7 @@ class Main(QtWidgets.QWidget):
                 video.status.running = False
                 if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
                     if mkv_prop_edit := shutil.which("mkvpropedit"):
-                        worker = SubtitleFix(self.app, mkv_prop_edit, video.video_settings.output_path)
+                        worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
                         worker.start()
                 self.video_options.update_queue()
             else:

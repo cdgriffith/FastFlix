@@ -21,6 +21,7 @@
 * Fixing dispositions being set for wrong tracks (thanks to ftpmorph)
 * Fixing thumbnails not being generated properly on 10-bit non bt2020 files
 * Fixing QThread destroyed message on close
+* Fixing Cannot queue arguments of type 'QTextCursor' warning messages
 
 ## Version  3.4.3
 

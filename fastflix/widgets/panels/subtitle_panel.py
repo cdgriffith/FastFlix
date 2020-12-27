@@ -30,9 +30,6 @@ dispositions = [
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 
-# TODO add fake empty subtitle track?
-
-
 class Subtitle(QtWidgets.QTabWidget):
     def __init__(self, parent, subtitle, index, enabled=True, first=False):
         self.loading = True
