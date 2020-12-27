@@ -156,14 +156,12 @@ class Config:
             raise MissingFF(name)
         for file in ffmpeg_folder.iterdir():
             if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
-                setattr(self, name, file)
-                break
+                return setattr(self, name, file)
         else:
             if (ffmpeg_folder / "bin").exists():
                 for file in (ffmpeg_folder / "bin").iterdir():
                     if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
-                        setattr(self, name, file)
-                        break
+                        return setattr(self, name, file)
         raise MissingFF(name)
 
     def load(self):

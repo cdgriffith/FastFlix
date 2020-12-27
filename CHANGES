@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.0.1
+
+* Fixing #141 FastFlix v4.0.0 Windows Installer - Unable to launch (thanks to pcf1)
+
 ## Version 4.0.0
 
 * Adding #59 Queue system
