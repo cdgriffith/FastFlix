@@ -122,14 +122,12 @@ def start_app(worker_queue, status_queue, log_queue):
             try:
                 ProgressBar(app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
                 app.fastflix.config.load()
-            except Exception:
-                logger.exception("Could not download and use FFmpeg")
-                input("Press any key to exit...")
+            except Exception as err:
+                logger.exception(str(err))
                 sys.exit(1)
     except Exception:
         # TODO give edit / delete options
         logger.exception(t("Could not load config file!"))
-        input("Press any key to exit...")
         sys.exit(1)
 
     startup_tasks = [
@@ -141,8 +139,7 @@ def start_app(worker_queue, status_queue, log_queue):
     try:
         ProgressBar(app, startup_tasks)
     except Exception:
-        logger.exception("Could not start FastFlix!")
-        input("Press any key to exit...")
+        logger.exception(f'{t("Could not start FastFlix")}!')
         sys.exit(1)
 
     container = Container(app)
