@@ -1236,7 +1236,11 @@ class Main(QtWidgets.QWidget):
         ):
             settings["remove_hdr"] = True
 
-        filters = helpers.generate_filters(custom_filters="scale='min(320\\,iw):-8'", **settings)
+        custom_filters = "scale='min(320\\,iw):-8'"
+        if self.app.fastflix.current_video.color_transfer == "arib-std-b67":
+            custom_filters += ",select=eq(pict_type\\,I)"
+
+        filters = helpers.generate_filters(custom_filters=custom_filters, **settings)
 
         preview_place = (
             self.app.fastflix.current_video.duration // 10
