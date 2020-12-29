@@ -479,7 +479,7 @@ class HEVC(SettingPanel):
             return
 
         bit_depth = self.app.fastflix.current_video.streams["video"][self.main.video_track].bit_depth
-        if self.main.remove_hdr == 1:
+        if self.main.remove_hdr:
             self.widgets.pix_fmt.clear()
             self.widgets.pix_fmt.addItems([pix_fmts[0]])
             self.widgets.pix_fmt.setCurrentIndex(0)

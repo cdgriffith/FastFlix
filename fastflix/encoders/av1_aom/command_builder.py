@@ -2,7 +2,7 @@
 import re
 import secrets
 
-from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.encoders.common.helpers import Command, generate_all, null, generate_color_details
 from fastflix.models.encode import AOMAV1Settings
 from fastflix.models.fastflix import FastFlix
 
@@ -17,14 +17,11 @@ def build(fastflix: FastFlix):
         f"-tile-rows {settings.tile_rows} "
         f"-tile-columns {settings.tile_columns} "
         f"-usage {settings.usage} "
+        f"{generate_color_details(fastflix)} "
     )
 
     if settings.row_mt.lower() == "enabled":
         beginning += f"-row-mt 1 "
-
-    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
-        if fastflix.current_video.color_space.startswith("bt2020"):
-            beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
     beginning = re.sub("[ ]+", " ", beginning)
 

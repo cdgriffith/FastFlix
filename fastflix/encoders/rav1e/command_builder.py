@@ -5,7 +5,7 @@ import logging
 import re
 import secrets
 
-from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.encoders.common.helpers import Command, generate_all, null, generate_color_details
 from fastflix.models.encode import rav1eSettings
 from fastflix.models.fastflix import FastFlix
 
@@ -22,29 +22,28 @@ def build(fastflix: FastFlix):
         f"-tile-columns {settings.tile_columns} "
         f"-tile-rows {settings.tile_rows} "
         f"-tiles {settings.tiles} "
+        f"{generate_color_details(fastflix)} "
     )
 
-    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
-        if fastflix.current_video.color_space.startswith("bt2020"):
-            beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
+    # if not fastflix.current_video.video_settings.remove_hdr:
 
-        # Currently unsupported https://github.com/xiph/rav1e/issues/2554
-        #         rav1e_options = []
-        # if side_data.master_display:
-        #     rav1e_options.append(
-        #         "mastering-display="
-        #         f"G{side_data.master_display.green}"
-        #         f"B{side_data.master_display.blue}"
-        #         f"R{side_data.master_display.red}"
-        #         f"WP{side_data.master_display.white}"
-        #         f"L{side_data.master_display.luminance}"
-        #     )
-        #
-        # if side_data.cll:
-        #     rav1e_options.append(f"content-light={side_data.cll}")
-        # if rav1e_options:
-        #     opts = ":".join(rav1e_options)
-        #     beginning += f'-rav1e-params "{opts}"'
+    # Currently unsupported https://github.com/xiph/rav1e/issues/2554
+    #         rav1e_options = []
+    # if side_data.master_display:
+    #     rav1e_options.append(
+    #         "mastering-display="
+    #         f"G{side_data.master_display.green}"
+    #         f"B{side_data.master_display.blue}"
+    #         f"R{side_data.master_display.red}"
+    #         f"WP{side_data.master_display.white}"
+    #         f"L{side_data.master_display.luminance}"
+    #     )
+    #
+    # if side_data.cll:
+    #     rav1e_options.append(f"content-light={side_data.cll}")
+    # if rav1e_options:
+    #     opts = ":".join(rav1e_options)
+    #     beginning += f'-rav1e-params "{opts}"'
 
     beginning = re.sub("[ ]+", " ", beginning)
 

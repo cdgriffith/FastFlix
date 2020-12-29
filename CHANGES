@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 4.0.2
+
+* Fixing #135 color information wasn't passed through correctly
+* Fixing #143 by adding legacy windows builds with Python 3.8 for time being
+* Fixing queue breaks if there is an error during conversion
+* Fixing Remove HDR doesn't stay selected when returning item from queue
+* Fixing resolution doesn't stay after returning from queue
+
 ## Version 4.0.1
 
 * Fixing #141 FastFlix v4.0.0 Windows Installer - Unable to launch (thanks to pcf1)

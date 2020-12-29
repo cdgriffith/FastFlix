@@ -77,7 +77,7 @@ have this support as of 10/23/2020 and may require a [manual upgrade](https://gi
 
 ## HLG 
 
-Currently, HLG is broken with FastFlix (will use the wrong color transfers) so please don't rely on it for HLG until [#135](https://github.com/cdgriffith/FastFlix/issues/135) is resolved.
+FastFlix (v4.0.2+) should pass through HLG colorspace information correctly, but there does seem to be color issues with AOM AV1.  
 
 ## Dolby Vision
 

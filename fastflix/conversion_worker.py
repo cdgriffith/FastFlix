@@ -82,6 +82,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 # Stop working!
                 currently_encoding = False
                 status_queue.put(("error", commands_to_run[0][0], commands_to_run[0][1]))
+                commands_to_run = []
                 allow_sleep_mode()
                 if gui_died:
                     return
@@ -141,7 +142,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 log_path = Path(request[1])
                 for command in request[2]:
                     if command not in commands_to_run:
-                        logger.debug(t(f"Adding command to the queue for {command[4]}"))
+                        logger.debug(t(f"Adding command to the queue for {command[4]} - {command[2]}"))
                         commands_to_run.append(command)
                     # else:
                     #     logger.debug(t(f"Command already in queue: {command[1]}"))

@@ -236,16 +236,6 @@ class SettingPanel(QtWidgets.QWidget):
     def new_source(self):
         if not self.app.fastflix.current_video or not self.app.fastflix.current_video.streams:
             return
-        # elif (
-        #     self.app.fastflix.current_video.streams["video"][self.main.video_track]
-        #     .get("color_space", "")
-        #     .startswith("bt2020")
-        # ):
-        #     self.widgets.remove_hdr.setDisabled(False)
-        #     self.labels.remove_hdr.setStyleSheet("QLabel{color:#000}")
-        # else:
-        #     self.widgets.remove_hdr.setDisabled(True)
-        #     self.labels.remove_hdr.setStyleSheet("QLabel{color:#000}")
 
     def update_profile(self):
         for widget_name, opt in self.opts.items():

@@ -34,3 +34,4 @@ music_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/musi
 text_left_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/text-align-left.png")).resolve())
 poll_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/poll.png")).resolve())
 working_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/pending-work.png")).resolve())
+advanced_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/advanced.png")).resolve())

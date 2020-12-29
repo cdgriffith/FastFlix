@@ -6,6 +6,74 @@ from fastflix.encoders.common.helpers import Command, generate_all, null
 from fastflix.models.encode import x265Settings
 from fastflix.models.fastflix import FastFlix
 
+x265_valid_color_primaries = [
+    "bt709",
+    "unknown",
+    "reserved",
+    "bt470m",
+    "bt470bg",
+    "smpte170m",
+    "smpte240m",
+    "film",
+    "bt2020",
+    "smpte428",
+    "smpte431",
+    "smpte432",
+]
+
+x265_valid_color_transfers = [
+    "bt709",
+    "unknown",
+    "reserved",
+    "bt470m",
+    "bt470bg",
+    "smpte170m",
+    "smpte240m",
+    "linear",
+    "log100",
+    "log316",
+    "iec61966-2-4",
+    "bt1361e",
+    "iec61966-2-1",
+    "bt2020-10",
+    "bt2020-12",
+    "smpte2084",
+    "smpte428",
+    "arib-std-b67",
+]
+
+x265_valid_color_matrix = [
+    "gbr",
+    "bt709",
+    "unknown",
+    "reserved",
+    "fcc",
+    "bt470bg",
+    "smpte170m",
+    "smpte240m",
+    "ycgco",
+    "bt2020nc",
+    "bt2020c",
+    "smpte2085",
+    "chroma-derived-nc",
+    "chroma-derived-c",
+    "ictcp",
+]
+
+color_primaries_mapping = {"smpte428_1": "smpte428"}
+
+color_transfer_mapping = {
+    "iec61966_2_4": "iec61966-2-4",
+    "iec61966_2_1": "iec61966-2-1",
+    "bt2020_10": "bt2020-10",
+    "bt2020_10bit": "bt2020-10",
+    "bt2020_12": "bt2020-12",
+    "bt2020_12bit": "bt2020-12",
+    "smpte428_1": "smpte428",
+}
+
+color_matrix_mapping = {"bt2020_ncl": "bt2020nc", "bt2020_cl": "bt2020c"}
+
 
 def build(fastflix: FastFlix):
     settings: x265Settings = fastflix.current_video.video_settings.video_encoder_settings
@@ -27,28 +95,44 @@ def build(fastflix: FastFlix):
     x265_params.append(f"b-adapt={settings.b_adapt}")
     x265_params.append(f"frame-threads={settings.frame_threads}")
 
-    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
-        x265_params.append(f"hdr10_opt={'1' if settings.hdr10_opt else '0'}")
+    if not fastflix.current_video.video_settings.remove_hdr:
+        if fastflix.current_video.color_primaries:
+            if fastflix.current_video.color_primaries in x265_valid_color_primaries:
+                x265_params.append(f"colorprim={fastflix.current_video.color_primaries}")
+            elif fastflix.current_video.color_primaries in color_primaries_mapping:
+                x265_params.append(f"colorprim={color_primaries_mapping[fastflix.current_video.color_primaries]}")
 
-        if fastflix.current_video.color_space.startswith("bt2020"):
-            x265_params.extend(["colorprim=bt2020", "transfer=smpte2084", "colormatrix=bt2020nc"])
+        if fastflix.current_video.color_transfer:
+            if fastflix.current_video.color_transfer in x265_valid_color_transfers:
+                x265_params.append(f"transfer={fastflix.current_video.color_transfer}")
+            elif fastflix.current_video.color_transfer in color_transfer_mapping:
+                x265_params.append(f"transfer={color_transfer_mapping[fastflix.current_video.color_transfer]}")
 
-        if fastflix.current_video.master_display:
-            settings.hdr10 = True
-            x265_params.append(
-                "master-display="
-                f"G{fastflix.current_video.master_display.green}"
-                f"B{fastflix.current_video.master_display.blue}"
-                f"R{fastflix.current_video.master_display.red}"
-                f"WP{fastflix.current_video.master_display.white}"
-                f"L{fastflix.current_video.master_display.luminance}"
-            )
+        if fastflix.current_video.color_space:
+            if fastflix.current_video.color_space in x265_valid_color_matrix:
+                x265_params.append(f"colormatrix={fastflix.current_video.color_space}")
+            elif fastflix.current_video.color_space in color_matrix_mapping:
+                x265_params.append(f"colormatrix={color_matrix_mapping[fastflix.current_video.color_space]}")
 
-        if fastflix.current_video.cll:
-            settings.hdr10 = True
-            x265_params.append(f"max-cll={fastflix.current_video.cll}")
+        if settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+            x265_params.append(f"hdr10_opt={'1' if settings.hdr10_opt else '0'}")
 
-        x265_params.append(f"hdr10={'1' if settings.hdr10 else '0'}")
+            if fastflix.current_video.master_display:
+                settings.hdr10 = True
+                x265_params.append(
+                    "master-display="
+                    f"G{fastflix.current_video.master_display.green}"
+                    f"B{fastflix.current_video.master_display.blue}"
+                    f"R{fastflix.current_video.master_display.red}"
+                    f"WP{fastflix.current_video.master_display.white}"
+                    f"L{fastflix.current_video.master_display.luminance}"
+                )
+
+            if fastflix.current_video.cll:
+                settings.hdr10 = True
+                x265_params.append(f"max-cll={fastflix.current_video.cll}")
+
+            x265_params.append(f"hdr10={'1' if settings.hdr10 else '0'}")
 
     if settings.hdr10plus_metadata:
         x265_params.append(f"dhdr10-info='{settings.hdr10plus_metadata}'")

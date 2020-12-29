@@ -14,7 +14,18 @@ from fastflix.widgets.panels.queue_panel import EncodingQueue
 from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
 
-from fastflix.resources import editing_icon, cc_icon, music_icon, photo_icon, poll_icon, text_left_icon, working_icon
+# from fastflix.widgets.panels.advanced_panel import AdvancedPanel
+
+from fastflix.resources import (
+    editing_icon,
+    cc_icon,
+    music_icon,
+    photo_icon,
+    poll_icon,
+    text_left_icon,
+    working_icon,
+    advanced_icon,
+)
 
 logger = logging.getLogger("fastflix")
 
@@ -34,11 +45,13 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.status = StatusPanel(self, self.app)
         self.attachments = CoverPanel(self, self.app)
         self.queue = EncodingQueue(self, self.app)
+        # self.advanced = AdvancedPanel(self, self.app)
 
         self.addTab(self.current_settings, QtGui.QIcon(editing_icon), t("Quality"))
         self.addTab(self.audio, QtGui.QIcon(music_icon), t("Audio"))
         self.addTab(self.subtitles, QtGui.QIcon(cc_icon), t("Subtitles"))
         self.addTab(self.attachments, QtGui.QIcon(photo_icon), t("Cover"))
+        # self.addTab(self.advanced, QtGui.QIcon(advanced_icon), t("Advanced"))
         self.addTab(self.commands, QtGui.QIcon(text_left_icon), t("Raw Commands"))
         self.addTab(self.status, QtGui.QIcon(working_icon), t("Encoding Status"))
         self.addTab(self.queue, QtGui.QIcon(poll_icon), t("Encoding Queue"))
