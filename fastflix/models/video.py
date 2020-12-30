@@ -137,4 +137,4 @@ class Video(BaseDataClass):
         stream = self.current_video_stream
         if not stream:
             return ""
-        return stream.get("r_frame_rate", "")
+        return stream.get("avg_frame_rate", stream.get("r_frame_rate", ""))
