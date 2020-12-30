@@ -170,7 +170,6 @@ def generate_filters(
         if filters:
             # You have to overlay first for it to work when scaled
             filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[subbed];[subbed]{filters}[v]"
-
         else:
             filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
     elif filters:

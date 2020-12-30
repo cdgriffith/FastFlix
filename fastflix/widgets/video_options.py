@@ -14,6 +14,7 @@ from fastflix.widgets.panels.queue_panel import EncodingQueue
 from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
 from fastflix.widgets.panels.advanced_panel import AdvancedPanel
+from fastflix.widgets.panels.info_panel import InfoPanel
 
 from fastflix.resources import (
     editing_icon,
@@ -45,6 +46,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.attachments = CoverPanel(self, self.app)
         self.queue = EncodingQueue(self, self.app)
         self.advanced = AdvancedPanel(self, self.app)
+        self.info = InfoPanel(self, self.app)
 
         self.addTab(self.current_settings, QtGui.QIcon(editing_icon), t("Quality"))
         self.addTab(self.audio, QtGui.QIcon(music_icon), t("Audio"))
@@ -54,6 +56,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.addTab(self.commands, QtGui.QIcon(text_left_icon), t("Raw Commands"))
         self.addTab(self.status, QtGui.QIcon(working_icon), t("Encoding Status"))
         self.addTab(self.queue, QtGui.QIcon(poll_icon), t("Encoding Queue"))
+        self.addTab(self.info, QtGui.QIcon(poll_icon), t("Source Info"))
 
     @property
     def audio_formats(self):
@@ -105,6 +108,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.queue.new_source()
         self.advanced.reset(reload=True)
         self.main.container.profile.update_settings()
+        self.info.reset()
 
     def refresh(self):
         if getattr(self.main.current_encoder, "enable_audio", False):
