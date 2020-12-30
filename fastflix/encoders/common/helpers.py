@@ -2,7 +2,7 @@
 import uuid
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import reusables
 
@@ -54,12 +54,13 @@ def generate_ffmpeg_start(
     max_muxing_queue_size="default",
     fast_time=True,
     video_title="",
-    custom_map=False,
+    source_fps: Union[str, None] = None,
     **_,
-):
+) -> str:
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
     time_one = time_settings if fast_time else ""
     time_two = time_settings if not fast_time else ""
+    incoming_fps = f"-r {source_fps}" if source_fps else ""
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = str(source).replace("\\", "/")
     ffmpeg = str(ffmpeg).replace("\\", "/")
@@ -67,6 +68,7 @@ def generate_ffmpeg_start(
     return (
         f'"{ffmpeg}" -y '
         f" {time_one} "
+        f" {incoming_fps} "
         f'-i "{source}" '
         f" {time_two} "
         f"{title} "
@@ -87,11 +89,13 @@ def generate_ending(
     remove_metadata=True,
     null_ending=False,
     extra="",
+    output_fps: Union[str, None] = None,
     **_,
-):
+) -> str:
     ending = (
         f" {'-map_metadata -1' if remove_metadata else ''} "
         f"{'-map_chapters 0' if copy_chapters else ''} "
+        f"{f'-r {output_fps}' if output_fps else ''} "
         f"{audio} {subtitles} {cover} {extra} "
     )
     if output_video and not null_ending:
@@ -117,6 +121,11 @@ def generate_filters(
     custom_filters=None,
     raw_filters=False,
     deinterlace=False,
+    tone_map: str = "hable",
+    speed: Union[float, int] = 1,
+    deblock: Union[str, None] = None,
+    deblock_size: int = 4,
+    denoise: Union[str, None] = None,
     **_,
 ):
 
@@ -140,10 +149,15 @@ def generate_filters(
         filter_list.append("vflip")
     if horizontal_flip:
         filter_list.append("hflip")
-
+    if speed and speed != 1:
+        filter_list.append(f"setpts={speed}*PTS")
+    if deblock:
+        filter_list.append(f"deblock=filter={deblock}:block={deblock_size}")
+    if denoise:
+        filter_list.append(denoise)
     if remove_hdr:
         filter_list.append(
-            "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
+            f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
         )
 
     filters = ",".join(filter_list)
@@ -190,6 +204,7 @@ def generate_all(
         subtitles=subtitles,
         cover=attachments,
         output_video=fastflix.current_video.video_settings.output_path,
+        **asdict(fastflix.current_video.video_settings),
     )
 
     beginning = generate_ffmpeg_start(
@@ -204,7 +219,7 @@ def generate_all(
     return beginning, ending
 
 
-def generate_color_details(fastflix: FastFlix):
+def generate_color_details(fastflix: FastFlix) -> str:
     if fastflix.current_video.video_settings.remove_hdr:
         return ""
 
@@ -216,3 +231,6 @@ def generate_color_details(fastflix: FastFlix):
     if fastflix.current_video.color_space:
         details.append(f"-colorspace {fastflix.current_video.color_space}")
     return " ".join(details)
+
+
+# def generate_advanced(fastflix: FastFlix) -> str:

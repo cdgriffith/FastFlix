@@ -76,7 +76,7 @@ class StatusPanel(QtWidgets.QWidget):
             speed = float(speed)
             if not speed:
                 return
-            assert speed > 0.0001
+            assert speed > 0.0001, speed
             length = self.get_movie_length()
             if not length:
                 return

@@ -43,6 +43,13 @@ class VideoSettings(BaseDataClass):
     scale: Union[str, None] = None
     ffmpeg_extra: str = ""
     deinterlace: bool = False
+    speed: Union[float, int] = 1
+    tone_map: Union[str, None] = None
+    denoise: Union[str, None] = None
+    deblock: Union[str, None] = None
+    deblock_size: int = 4
+    source_fps: Union[str, None] = None
+    output_fps: Union[str, None] = None
     video_encoder_settings: Union[
         x265Settings,
         x264Settings,
@@ -124,3 +131,10 @@ class Video(BaseDataClass):
         if not stream:
             return ""
         return stream.get("pix_fmt", "")
+
+    @property
+    def frame_rate(self):
+        stream = self.current_video_stream
+        if not stream:
+            return ""
+        return stream.get("r_frame_rate", "")

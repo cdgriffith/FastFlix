@@ -13,8 +13,7 @@ from fastflix.widgets.panels.cover_panel import CoverPanel
 from fastflix.widgets.panels.queue_panel import EncodingQueue
 from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
-
-# from fastflix.widgets.panels.advanced_panel import AdvancedPanel
+from fastflix.widgets.panels.advanced_panel import AdvancedPanel
 
 from fastflix.resources import (
     editing_icon,
@@ -45,13 +44,13 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.status = StatusPanel(self, self.app)
         self.attachments = CoverPanel(self, self.app)
         self.queue = EncodingQueue(self, self.app)
-        # self.advanced = AdvancedPanel(self, self.app)
+        self.advanced = AdvancedPanel(self, self.app)
 
         self.addTab(self.current_settings, QtGui.QIcon(editing_icon), t("Quality"))
         self.addTab(self.audio, QtGui.QIcon(music_icon), t("Audio"))
         self.addTab(self.subtitles, QtGui.QIcon(cc_icon), t("Subtitles"))
         self.addTab(self.attachments, QtGui.QIcon(photo_icon), t("Cover"))
-        # self.addTab(self.advanced, QtGui.QIcon(advanced_icon), t("Advanced"))
+        self.addTab(self.advanced, QtGui.QIcon(advanced_icon), t("Advanced"))
         self.addTab(self.commands, QtGui.QIcon(text_left_icon), t("Raw Commands"))
         self.addTab(self.status, QtGui.QIcon(working_icon), t("Encoding Status"))
         self.addTab(self.queue, QtGui.QIcon(poll_icon), t("Encoding Queue"))
@@ -92,6 +91,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         if getattr(self.main.current_encoder, "enable_attachments", False):
             self.attachments.update_cover_settings()
 
+        self.advanced.update_settings()
         self.main.container.profile.update_settings()
 
     def new_source(self):
@@ -103,6 +103,7 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
         self.current_settings.new_source()
         self.queue.new_source()
+        self.advanced.reset(reload=True)
         self.main.container.profile.update_settings()
 
     def refresh(self):
@@ -110,6 +111,7 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.audio.refresh()
         if getattr(self.main.current_encoder, "enable_subtitles", False):
             self.subtitles.refresh()
+        self.advanced.update_settings()
         self.main.container.profile.update_settings()
 
     def update_profile(self):
@@ -121,6 +123,7 @@ class VideoOptions(QtWidgets.QTabWidget):
                 self.subtitles.get_settings()
             if getattr(self.main.current_encoder, "enable_attachments", False):
                 self.attachments.update_cover_settings()
+        self.advanced.update_settings()
         self.main.container.profile.update_settings()
 
     def reload(self):
@@ -134,12 +137,14 @@ class VideoOptions(QtWidgets.QTabWidget):
                 self.subtitles.reload(subtitle_tracks)
             if getattr(self.main.current_encoder, "enable_attachments", False):
                 self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
+            self.advanced.reset(reload=True)
 
     def clear_tracks(self):
         self.audio.remove_all()
         self.subtitles.remove_all()
         self.attachments.clear_covers()
         self.commands.update_commands([])
+        self.advanced.reset()
 
     def update_queue(self, currently_encoding=False):
         self.queue.new_source(currently_encoding)
