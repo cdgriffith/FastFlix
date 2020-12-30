@@ -77,11 +77,11 @@ have this support as of 10/23/2020 and may require a [manual upgrade](https://gi
 
 ## HLG 
 
-FastFlix (v4.0.2+) should pass through HLG colorspace information correctly, but there does seem to be color issues with AOM AV1.  
+FastFlix (v4.0.2+) passes through HLG color transfer information to everything except webp and GIF. 
 
 ## Dolby Vision
 
-FastFlix does not plan to support Dolby Vision's proprietary format, as it requires royalties.
+FastFlix does not plan to support Dolby Vision's proprietary format at this time.
 
 
 # License
