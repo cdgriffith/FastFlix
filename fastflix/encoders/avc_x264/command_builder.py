@@ -2,7 +2,7 @@
 import re
 import secrets
 
-from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.encoders.common.helpers import Command, generate_all, null, generate_color_details
 from fastflix.models.encode import x264Settings
 from fastflix.models.fastflix import FastFlix
 
@@ -12,15 +12,10 @@ def build(fastflix: FastFlix):
 
     beginning, ending = generate_all(fastflix, "libx264")
 
-    beginning += f'{f"-tune {settings.tune}" if settings.tune else ""} '
+    beginning += f'{f"-tune {settings.tune}" if settings.tune else ""} ' f"{generate_color_details(fastflix)} "
 
     if settings.profile and settings.profile != "default":
         beginning += f"-profile {settings.profile} "
-
-    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
-
-        if fastflix.current_video.color_space.startswith("bt2020"):
-            beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
 
     pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
 

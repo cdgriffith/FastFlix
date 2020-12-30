@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 4.0.2
+
+* Fixing #144 Remove HDR not working (thanks to Chad Johnson)
+* Fixing #135 color information wasn't passed through correctly (thanks to leonardyan)
+* Fixing #143 by adding legacy windows builds with Python 3.8 for time being (thanks to odignal)
+* Fixing queue breaks if there is an error during conversion
+* Fixing Remove HDR doesn't stay selected when returning item from queue
+* Fixing resolution doesn't stay after returning from queue
+* Fixing thumbnail generation preview for videos with arib-std-b67 color transfer
+
 ## Version 4.0.1
 
 * Fixing #141 FastFlix v4.0.0 Windows Installer - Unable to launch (thanks to pcf1)

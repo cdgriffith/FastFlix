@@ -1057,8 +1057,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.bottom.setText(bottom)
         self.widgets.start_time.setText(self.number_to_time(video.video_settings.start_time))
         self.widgets.end_time.setText(self.number_to_time(end_time))
-        self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
-        self.widgets.scale.height.setText(str(self.app.fastflix.current_video.height))
         self.widgets.video_title.setText(self.app.fastflix.current_video.video_settings.video_title)
         self.output_video_path_widget.setText(str(video.video_settings.output_path))
         self.widgets.deinterlace.setChecked(self.app.fastflix.current_video.video_settings.deinterlace)
@@ -1074,6 +1072,20 @@ class Main(QtWidgets.QWidget):
             self.widgets.flip.setCurrentIndex(2)
         if video.video_settings.vertical_flip and video.video_settings.horizontal_flip:
             self.widgets.flip.setCurrentIndex(3)
+
+        if self.app.fastflix.current_video.video_settings.scale:
+            w, h = self.app.fastflix.current_video.video_settings.scale.split(":")
+
+            self.widgets.scale.width.setText(w)
+            if h.startswith("-"):
+                self.widgets.scale.height.setText("Auto")
+                self.widgets.scale.keep_aspect.setChecked(True)
+            else:
+                self.widgets.scale.height.setText(h)
+        else:
+            self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
+            self.widgets.scale.height.setText("Auto")
+            self.widgets.scale.keep_aspect.setChecked(True)
 
         self.video_options.reload()
         self.enable_all()
@@ -1100,6 +1112,18 @@ class Main(QtWidgets.QWidget):
             error_message(f"{t('Not a video file')}<br>{self.input_video}")
             self.clear_current_video()
             return
+
+        # if self.app.fastflix.current_video.color_space and self.app.fastflix.current_video.color_space not in ffmpeg_valid_color_space:
+        #     logger.warning(f'Unknown color space "{self.app.fastflix.current_video.color_space}", removing')
+        #     self.app.fastflix.current_video.color_space = ""
+        #
+        # if self.app.fastflix.current_video.color_transfer and self.app.fastflix.current_video.color_transfer not in ffmpeg_valid_color_transfers:
+        #     logger.warning(f'Unknown color transfer "{self.app.fastflix.current_video.color_transfer}", removing')
+        #     self.app.fastflix.current_video.color_transfer = ""
+        #
+        # if self.app.fastflix.current_video.color_primaries and self.app.fastflix.current_video.color_primaries not in ffmpeg_valid_color_primaries:
+        #     logger.warning(f'Unknown color primaries "{self.app.fastflix.current_video.color_primaries}", removing')
+        #     self.app.fastflix.current_video.ffmpeg_valid_color_primaries = ""
 
         text_video_tracks = [
             f'{x.index}: {t("codec")} {x.codec_name} - {x.get("pix_fmt")} - {t("profile")} {x.get("profile")}'
@@ -1212,7 +1236,11 @@ class Main(QtWidgets.QWidget):
         ):
             settings["remove_hdr"] = True
 
-        filters = helpers.generate_filters(custom_filters="scale='min(320\\,iw):-8'", **settings)
+        custom_filters = "scale='min(320\\,iw):-8'"
+        if self.app.fastflix.current_video.color_transfer == "arib-std-b67":
+            custom_filters += ",select=eq(pict_type\\,I)"
+
+        filters = helpers.generate_filters(custom_filters=custom_filters, **settings)
 
         preview_place = (
             self.app.fastflix.current_video.duration // 10
@@ -1295,6 +1323,7 @@ class Main(QtWidgets.QWidget):
             remove_metadata=self.remove_metadata,
             copy_chapters=self.copy_chapters,
             video_title=self.title,
+            remove_hdr=self.remove_hdr,
         )
 
         self.video_options.get_settings()
@@ -1654,7 +1683,7 @@ class Notifier(QtCore.QThread):
             if status[0] == "complete":
                 self.main.completed.emit(0)
             elif status[0] == "error":
-                self.main.status_update_signal.emit("exit::")
+                self.main.status_update_signal.emit(":".join(status))
                 self.main.completed.emit(1)
             elif status[0] == "cancelled":
                 self.main.cancelled.emit(":".join(status[1:]))

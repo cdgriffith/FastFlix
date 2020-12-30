@@ -79,14 +79,8 @@ class Video(BaseDataClass):
     streams: Box = None
 
     work_path: Path = None
-    pix_fmt: str = ""
     format: Box = None
     interlaced: bool = True
-
-    # Color Range Details
-    color_space: str = ""
-    color_primaries: str = ""
-    color_transfer: str = ""
 
     # HDR10 Details
     master_display: Box = None
@@ -95,3 +89,38 @@ class Video(BaseDataClass):
     video_settings: VideoSettings = field(default_factory=VideoSettings)
     status: Status = field(default_factory=Status)
     uuid: str = field(default_factory=lambda: str(uuid.uuid4()))
+
+    @property
+    def current_video_stream(self):
+        try:
+            return [x for x in self.streams.video if x.index == self.video_settings.selected_track][0]
+        except IndexError:
+            return None
+
+    @property
+    def color_space(self):
+        stream = self.current_video_stream
+        if not stream:
+            return ""
+        return stream.get("color_space", "")
+
+    @property
+    def color_primaries(self):
+        stream = self.current_video_stream
+        if not stream:
+            return ""
+        return stream.get("color_primaries", "")
+
+    @property
+    def color_transfer(self):
+        stream = self.current_video_stream
+        if not stream:
+            return ""
+        return stream.get("color_transfer", "")
+
+    @property
+    def pix_fmt(self):
+        stream = self.current_video_stream
+        if not stream:
+            return ""
+        return stream.get("pix_fmt", "")

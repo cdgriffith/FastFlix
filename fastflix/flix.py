@@ -22,6 +22,10 @@ re_progressive = re.compile(r"Progressive:\s+(\d+)")
 logger = logging.getLogger("fastflix")
 
 
+def x265_color_matrix(color_space):
+    pass
+
+
 def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
     eight = (
         "bgr0",
@@ -109,6 +113,8 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         f"{app.fastflix.config.ffprobe}",
         "-v",
         "quiet",
+        "-loglevel",
+        "panic",
         "-print_format",
         "json",
         "-show_format",
@@ -373,18 +379,15 @@ def parse_hdr_details(app: FastFlixApp, **_):
                     logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
                 else:
                     if master_display:
-                        app.fastflix.current_video.pix_fmt = streams.video[video_track].get("pix_fmt", "")
-                        app.fastflix.current_video.color_space = streams.video[video_track].get("color_space", "")
-                        app.fastflix.current_video.color_primaries = streams.video[video_track].get(
-                            "color_primaries", ""
-                        )
-                        app.fastflix.current_video.color_transfer = streams.video[video_track].get("color_transfer", "")
                         app.fastflix.current_video.master_display = master_display
                         app.fastflix.current_video.cll = cll
                         return
+
     result = execute(
         [
             f"{app.fastflix.config.ffprobe}",
+            "-loglevel",
+            "panic",
             "-select_streams",
             f"v:{video_track}",
             "-print_format",
@@ -421,9 +424,5 @@ def parse_hdr_details(app: FastFlixApp, **_):
     except Exception:
         logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
     else:
-        app.fastflix.current_video.pix_fmt = data.pix_fmt
-        app.fastflix.current_video.color_space = data.color_space
-        app.fastflix.current_video.color_primaries = data.color_primaries
-        app.fastflix.current_video.color_transfer = data.color_transfer
         app.fastflix.current_video.master_display = master_display
         app.fastflix.current_video.cll = cll

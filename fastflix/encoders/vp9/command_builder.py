@@ -2,7 +2,7 @@
 import re
 import secrets
 
-from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.encoders.common.helpers import Command, generate_all, null, generate_color_details
 from fastflix.models.encode import VP9Settings
 from fastflix.models.fastflix import FastFlix
 
@@ -11,15 +11,16 @@ def build(fastflix: FastFlix):
     settings: VP9Settings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending = generate_all(fastflix, "libvpx-vp9")
 
-    beginning += f'{"-row-mt 1" if settings.row_mt else ""} '
+    beginning += f'{"-row-mt 1" if settings.row_mt else ""} ' f"{generate_color_details(fastflix)} "
 
     if not settings.single_pass:
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
         beginning += f'-passlogfile "{pass_log_file}" '
 
-    if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
-        if fastflix.current_video.color_space.startswith("bt2020"):
-            beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc -color_range 1"
+    # TODO color_range 1
+    # if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+    #     if fastflix.current_video.color_space.startswith("bt2020"):
+    #         beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc -color_range 1"
 
     beginning = re.sub("[ ]+", " ", beginning)
 
