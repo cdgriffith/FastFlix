@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.0.4
+
+* Fixing #149 Cannot set subtitle disposition in 4.0+ (thanks to Zeid164)
+
 ## Version 4.0.3
 
 * Fixing #146 Extraneous "None" when remove HDR is selected (thanks to Chad Johnson)

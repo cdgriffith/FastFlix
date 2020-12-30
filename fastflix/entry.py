@@ -126,4 +126,4 @@ def main():
     try:
         queue_worker(gui_proc, worker_queue, status_queue, log_queue)
     finally:
-        gui_proc.join()
+        gui_proc.terminate()
