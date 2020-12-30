@@ -206,7 +206,7 @@ def generate_all(
 
 def generate_color_details(fastflix: FastFlix):
     if fastflix.current_video.video_settings.remove_hdr:
-        return
+        return ""
 
     details = []
     if fastflix.current_video.color_primaries:

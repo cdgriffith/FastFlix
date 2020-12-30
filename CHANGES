@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.0.3
+
+* Fixing #146 Extraneous "None" when remove HDR is selected (thanks to Chad Johnson)
+
 ## Version 4.0.2
 
 * Fixing #144 Remove HDR not working (thanks to Chad Johnson)
