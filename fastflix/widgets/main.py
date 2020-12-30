@@ -1113,18 +1113,6 @@ class Main(QtWidgets.QWidget):
             self.clear_current_video()
             return
 
-        # if self.app.fastflix.current_video.color_space and self.app.fastflix.current_video.color_space not in ffmpeg_valid_color_space:
-        #     logger.warning(f'Unknown color space "{self.app.fastflix.current_video.color_space}", removing')
-        #     self.app.fastflix.current_video.color_space = ""
-        #
-        # if self.app.fastflix.current_video.color_transfer and self.app.fastflix.current_video.color_transfer not in ffmpeg_valid_color_transfers:
-        #     logger.warning(f'Unknown color transfer "{self.app.fastflix.current_video.color_transfer}", removing')
-        #     self.app.fastflix.current_video.color_transfer = ""
-        #
-        # if self.app.fastflix.current_video.color_primaries and self.app.fastflix.current_video.color_primaries not in ffmpeg_valid_color_primaries:
-        #     logger.warning(f'Unknown color primaries "{self.app.fastflix.current_video.color_primaries}", removing')
-        #     self.app.fastflix.current_video.ffmpeg_valid_color_primaries = ""
-
         text_video_tracks = [
             f'{x.index}: {t("codec")} {x.codec_name} - {x.get("pix_fmt")} - {t("profile")} {x.get("profile")}'
             for x in self.app.fastflix.current_video.streams.video
