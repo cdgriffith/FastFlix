@@ -48,7 +48,7 @@ class Profile:
     subtitle_language: str = "en"
     subtitle_select: bool = True
     subtitle_select_preferred_language: bool = True
-    subtitle_automatic_burn_in: bool = True
+    subtitle_automatic_burn_in: bool = False
     subtitle_select_first_matching: bool = False
 
     x265: Union[x265Settings, None] = None

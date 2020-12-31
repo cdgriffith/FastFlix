@@ -27,6 +27,18 @@ dispositions = [
     "hearing_impaired",
 ]
 
+subtitle_types = {
+    "dvd_subtitle": "picture",
+    "hdmv_pgs_subtitle": "picture",
+    "dvdsub": "picture",
+    "subrip": "text",
+    "ssa": "text",
+    "ass": "text",
+    "mov_text": "text",
+    "webvtt": "text",
+    "xsub": "text",
+}
+
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 
@@ -41,6 +53,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.first = first
         self.last = False
         self.subtitle_lang = subtitle.get("tags", {}).get("language")
+        self.subtitle_type = subtitle_types.get(subtitle["codec_name"], "text")
         self.setFixedHeight(60)
 
         self.widgets = Box(
@@ -98,6 +111,9 @@ class Subtitle(QtWidgets.QTabWidget):
         self.setLayout(grid)
         self.loading = False
         self.updating_burn = False
+        if self.subtitle_type == "text":
+            self.widgets.burn_in.setChecked(False)
+            self.widgets.burn_in.setDisabled(True)
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
