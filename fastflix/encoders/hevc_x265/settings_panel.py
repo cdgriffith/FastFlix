@@ -74,10 +74,10 @@ class HEVC(SettingPanel):
         self.mode = "CRF"
         self.updating_settings = False
 
-        grid.addLayout(self.init_preset(), 1, 0, 1, 2)
-        grid.addLayout(self.init_tune(), 2, 0, 1, 2)
-        grid.addLayout(self.init_profile(), 3, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 2)
+        grid.addLayout(self.init_preset(), 0, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 1, 0, 1, 2)
+        grid.addLayout(self.init_profile(), 2, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 3, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
 
         breaker = QtWidgets.QHBoxLayout()

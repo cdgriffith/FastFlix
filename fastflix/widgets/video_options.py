@@ -136,6 +136,7 @@ class VideoOptions(QtWidgets.QTabWidget):
                 self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
 
     def clear_tracks(self):
+        self.current_settings.update_profile()
         self.audio.remove_all()
         self.subtitles.remove_all()
         self.attachments.clear_covers()

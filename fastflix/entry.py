@@ -2,7 +2,7 @@
 import logging
 import sys
 import traceback
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, freeze_support
 
 try:
     import coloredlogs
@@ -30,6 +30,7 @@ def separate_app_process(worker_queue, status_queue, log_queue):
     """ This prevents any QT components being imported in the main process"""
     from fastflix.application import start_app
 
+    freeze_support()
     start_app(worker_queue, status_queue, log_queue)
 
 
@@ -123,7 +124,10 @@ def main():
         ),
     )
     gui_proc.start()
+    exit_status = 1
     try:
         queue_worker(gui_proc, worker_queue, status_queue, log_queue)
+        exit_status = 0
     finally:
-        gui_proc.terminate()
+        gui_proc.kill()
+        return exit_status
