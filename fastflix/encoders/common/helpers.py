@@ -187,7 +187,6 @@ def generate_all(
             burn_in_subtitle_track=burn_in_track, **asdict(fastflix.current_video.video_settings)
         )
 
-    print(fastflix.current_video.video_settings.video_encoder_settings.extra)
     ending = generate_ending(
         audio=audio,
         subtitles=subtitles,
