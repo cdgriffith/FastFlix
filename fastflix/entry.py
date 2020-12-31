@@ -95,16 +95,18 @@ def startup_options():
             import fastflix.widgets.video_options
         except Exception as err:
             print(f"Error: {err}")
-            sys.exit(1)
+            return 1
         print("Success")
-        sys.exit(0)
+        return 0
     if "--version" in options:
         print(__version__)
-        sys.exit(0)
+        return 0
 
 
 def main():
-    startup_options()
+    exit_code = startup_options()
+    if exit_code is not None:
+        return exit_code
     logger = logging.getLogger("fastflix-core")
     logger.addHandler(reusables.get_stream_handler(level=logging.DEBUG))
     logger.setLevel(logging.DEBUG)
