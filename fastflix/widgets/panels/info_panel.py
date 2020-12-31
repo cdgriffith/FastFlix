@@ -5,6 +5,7 @@ import logging
 import re
 from pathlib import Path
 from typing import List, Union
+from itertools import chain
 
 from box import Box, BoxList
 from qtpy import QtCore, QtGui, QtWidgets
@@ -25,18 +26,26 @@ class InfoPanel(QtWidgets.QTabWidget):
         self.main = parent.main
         self.attachments = Box()
 
-        self.video_tab = QtWidgets.QTextBrowser(parent)
-        self.video_tab.setReadOnly(True)
-        self.video_tab.setDisabled(False)
-
-        self.addTab(self.video_tab, "Video")
 
     def reset(self):
+        for i in range(self.count() -1, -1, -1):
+            self.removeTab(i)
+
+        all_stream = []
+        for x in self.app.fastflix.current_video.streams.values():
+            all_stream.extend(x)
+
 
         if not self.app.fastflix.current_video:
             return
         # self.text_area.setText(Box(self.app.fastflix.current_video.streams).to_yaml(default_flow_style=False))
-        self.video_tab.setText(BoxList(self.app.fastflix.current_video.streams.video).to_yaml(default_flow_style=False))
+
+        for stream in sorted(all_stream, key=lambda z: z['index']):
+            widget = QtWidgets.QTextBrowser(self)
+            widget.setReadOnly(True)
+            widget.setDisabled(False)
+            widget.setText(Box(stream).to_yaml(default_flow_style=False))
+            self.addTab(widget, f"{stream['index']}: {stream['codec_type'].title()} ({stream.get('codec_name', '')})")
 
         #
         #     if not self.incoming_same_as_source.isChecked():

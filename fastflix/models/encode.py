@@ -25,6 +25,7 @@ class SubtitleTrack(BaseDataClass):
     disposition: str = ""
     burn_in: bool = False
     language: str = ""
+    subtitle_type: str = ""
 
 
 @dataclass

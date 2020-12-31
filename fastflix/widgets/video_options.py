@@ -25,6 +25,7 @@ from fastflix.resources import (
     text_left_icon,
     working_icon,
     advanced_icon,
+    info_icon
 )
 
 logger = logging.getLogger("fastflix")
@@ -53,10 +54,11 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.addTab(self.subtitles, QtGui.QIcon(cc_icon), t("Subtitles"))
         self.addTab(self.attachments, QtGui.QIcon(photo_icon), t("Cover"))
         self.addTab(self.advanced, QtGui.QIcon(advanced_icon), t("Advanced"))
+        self.addTab(self.info, QtGui.QIcon(info_icon), t("Source Details"))
         self.addTab(self.commands, QtGui.QIcon(text_left_icon), t("Raw Commands"))
         self.addTab(self.status, QtGui.QIcon(working_icon), t("Encoding Status"))
         self.addTab(self.queue, QtGui.QIcon(poll_icon), t("Encoding Queue"))
-        self.addTab(self.info, QtGui.QIcon(poll_icon), t("Source Info"))
+
 
     @property
     def audio_formats(self):

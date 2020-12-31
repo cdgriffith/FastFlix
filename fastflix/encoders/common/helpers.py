@@ -52,14 +52,14 @@ def generate_ffmpeg_start(
     pix_fmt="yuv420p10le",
     filters=None,
     max_muxing_queue_size="default",
-    fast_time=True,
+    fast_seek=True,
     video_title="",
     source_fps: Union[str, None] = None,
     **_,
 ) -> str:
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
-    time_one = time_settings if fast_time else ""
-    time_two = time_settings if not fast_time else ""
+    time_one = time_settings if fast_seek else ""
+    time_two = time_settings if not fast_seek else ""
     incoming_fps = f"-r {source_fps}" if source_fps else ""
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = str(source).replace("\\", "/")
@@ -108,6 +108,7 @@ def generate_ending(
 
 def generate_filters(
     selected_track,
+    source=None,
     crop=None,
     scale=None,
     scale_filter="lanczos",
@@ -118,6 +119,7 @@ def generate_filters(
     vertical_flip=None,
     horizontal_flip=None,
     burn_in_subtitle_track=None,
+    burn_in_subtitle_type=None,
     custom_filters=None,
     raw_filters=False,
     deinterlace=False,
@@ -167,11 +169,15 @@ def generate_filters(
         filters = custom_filters
 
     if burn_in_subtitle_track is not None:
-        if filters:
-            # You have to overlay first for it to work when scaled
-            filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[subbed];[subbed]{filters}[v]"
+        if burn_in_subtitle_type == "picture":
+            if filters:
+                # You have to overlay first for it to work when scaled
+                filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[subbed];[subbed]{filters}[v]"
+            else:
+                filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
         else:
-            filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
+            unixy = str(source).replace("\\", "/")
+            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles='{unixy}':si={burn_in_subtitle_track}[v]"
     elif filters:
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:
@@ -188,15 +194,25 @@ def generate_all(
 
     audio = build_audio(fastflix.current_video.video_settings.audio_tracks) if audio else ""
 
-    subtitles, burn_in_track = "", None
+    subtitles, burn_in_track, burn_in_type = "", None, None
     if subs:
-        subtitles, burn_in_track = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
+        subtitles, burn_in_track, burn_in_type = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
+        if burn_in_type == "text":
+            for i, x in enumerate(fastflix.current_video.streams['subtitle']):
+                if x['index'] == burn_in_track:
+                    burn_in_track = i
+                    break
 
     attachments = build_attachments(fastflix.current_video.video_settings.attachment_tracks)
 
     filters = None
     if not disable_filters:
-        filters = generate_filters(burn_in_track=burn_in_track, **asdict(fastflix.current_video.video_settings))
+        filters = generate_filters(
+            source=fastflix.current_video.source,
+            burn_in_subtitle_track=burn_in_track,
+            burn_in_subtitle_type=burn_in_type,
+            **asdict(fastflix.current_video.video_settings)
+        )
 
     ending = generate_ending(
         audio=audio,

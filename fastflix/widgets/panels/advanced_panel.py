@@ -66,6 +66,10 @@ def non(value):
     return value
 
 
+# TODO align the things
+# TODO disable fps boxes if same as source
+# TODO reset from queue
+
 class AdvancedPanel(QtWidgets.QWidget):
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
@@ -76,7 +80,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         layout = QtWidgets.QGridLayout()
 
         layout.addLayout(self.init_fps(), 0, 0, 1, 6)
-        layout.addLayout(self.init_concat(), 1, 0, 1, 6)
+        # layout.addLayout(self.init_concat(), 1, 0, 1, 6)
         layout.addLayout(self.init_video_speed(), 2, 0, 1, 6)
         layout.addLayout(self.init_tone_map(), 3, 0, 1, 6)
         layout.addLayout(self.init_denoise(), 4, 0, 1, 6)
@@ -145,7 +149,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.denoise_strength_widget.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(QtWidgets.QLabel(t("Strength")))
         layout.addWidget(self.denoise_strength_widget)
-
+        layout.addStretch(True)
         return layout
 
     def init_fps(self):
@@ -166,10 +170,12 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.source_frame_rate = QtWidgets.QLabel("")
         layout.addWidget(QtWidgets.QLabel(t("Source Frame Rate:")))
         layout.addWidget(self.source_frame_rate)
+        layout.addStretch(True)
         layout.addWidget(QtWidgets.QLabel(t("Override Source FPS")))
         layout.addWidget(self.incoming_fps_widget)
         layout.addWidget(self.incoming_same_as_source)
         # layout.addWidget(self.incoming_fps_widget) spacer
+        layout.addStretch(True)
         layout.addWidget(QtWidgets.QLabel(t("Output FPS")))
         layout.addWidget(self.outgoing_fps_widget)
         layout.addWidget(self.outgoing_same_as_source)
@@ -195,7 +201,8 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.video_Speed_widget.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(QtWidgets.QLabel(t("Video Speed")))
         layout.addWidget(self.video_Speed_widget)
-        layout.addWidget(QtWidgets.QLabel(t("Requires audio to be removed")))
+        layout.addWidget(QtWidgets.QLabel(t("Warning: Audio will not be modified")))
+        layout.addStretch()
         return layout
 
     def init_tone_map(self):
@@ -207,6 +214,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.tone_map_widget.currentIndexChanged.connect(lambda: self.main.page_update())
         layout.addWidget(QtWidgets.QLabel(t("HDR -> SDR Tone Map")))
         layout.addWidget(self.tone_map_widget)
+        layout.addStretch(True)
         return layout
 
     def init_deblock(self):
@@ -228,6 +236,7 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         layout.addWidget(QtWidgets.QLabel(t("Block Size")))
         layout.addWidget(self.deblock_size_widget)
+        layout.addStretch(True)
 
         return layout
 

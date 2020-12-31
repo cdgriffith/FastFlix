@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 4.1.0
+
+* Adding "advanced" panel
+* Adding info panel
+* Adding support for text based burn in subtitles
+* Fixing fast / exact time to work
+* Fixing burn in subtitles
+
 ## Version 4.0.4
 
 * Fixing #149 Cannot set subtitle disposition in 4.0+ (thanks to Zeid164)
