@@ -298,28 +298,28 @@ Command worker received request to pause current encode:
   fra: Un employé du commandement a reçu une demande de pause de l'encodage en cours
   ita: Operatore di comando ha ricevuto la richiesta di mettere in pausa la codifica corrente
   spa: El trabajador del comando recibió una solicitud para pausar la codificación actual
-  zho: Command worker received request to pause current encode
+  zho: 命令执行程序收到了暂停当前编码的请求
 Command worker received request to pause encoding after the current item completes:
   deu: Command-Worker hat Anforderung erhalten, das Encoding nach Abschluss des aktuellen Elements zu pausieren
   eng: Command worker received request to pause encoding after the current item completes
   fra: Un membre du personnel de commandement a reçu une demande de pause d'encodage après la fin de l'élément en cours
   ita: L'operatore di comando ha ricevuto la richiesta di mettere in pausa la codifica dopo il completamento della voce corrente
   spa: El trabajador del comando recibió la solicitud de pausar la codificación después de que el elemento actual complete
-  zho: Command worker received request to pause encoding after the current item completes
+  zho: 命令执行程序收到了在当前项目完成后暂停编码的请求
 Command worker received request to resume encoding:
   deu: Befehls-Worker hat Anforderung erhalten, die Kodierung fortzusetzen
   eng: Command worker received request to resume encoding
   fra: Le commandant a reçu une demande de reprise de l'encodage
   ita: L'operatore di comando ha ricevuto la richiesta di riprendere la codifica
   spa: El comandante recibió la solicitud de reanudar la codificación
-  zho: Command worker received request to resume encoding
+  zho: 命令执行程序收到了恢复编码的请求
 Command worker received request to resume paused encode:
   deu: Befehls-Worker hat Anforderung erhalten, die pausierte Codierung fortzusetzen
   eng: Command worker received request to resume paused encode
   fra: Un officier de commandement a reçu une demande de reprise de l'encodage en pause
   ita: Operatore di comando ha ricevuto la richiesta di riprendere la pausa codificare
   spa: El trabajador del comando recibió la solicitud de reanudar la codificación en pausa
-  zho: Command worker received request to resume paused encode
+  zho: 命令执行程序收到了恢复已暂停编码的请求
 Commands to execute:
   deu: Befehle zum Ausführen
   eng: Commands to execute
@@ -984,7 +984,7 @@ Keep aspect ratio:
   fra: Conserver le rapport d'aspect
   ita: Mantenere il rapporto di aspetto
   spa: Mantener la relación de aspecto
-  zho: 保持长宽比
+  zho: 保持纵横比
 LICENSES:
   deu: LIZENZEN
   eng: LICENSES
@@ -1761,7 +1761,7 @@ Tiles:
   fra: Carreaux
   ita: Piastrelle
   spa: Baldosas
-  zho: 瓷砖
+  zho: Tiles
 Time Left:
   deu: Linke Zeit
   eng: Time Left
@@ -1796,7 +1796,7 @@ Tune:
   fra: Tune
   ita: Tune
   spa: Sintoniza
-  zho: 微调
+  zho: 调校
 Tune the settings for a particular type of source or situation:
   deu: Abstimmen der Einstellungen für einen bestimmten Quellentyp oder eine bestimmte Situation
   eng: Tune the settings for a particular type of source or situation
@@ -1936,7 +1936,7 @@ Width must be divisible by 2 - Source width:
   fra: La largeur doit être divisible par 2 - Largeur de la source
   ita: La larghezza deve essere divisibile per 2 - Larghezza della sorgente
   spa: El ancho debe ser divisible por 2 - Ancho de la fuente
-  zho: 宽度必须除以2--源文件宽度
+  zho: 宽度必须能被2整除--源文件宽度
 With b-adapt 0, the GOP structure is fixed based on the values of --keyint and --bframes.:
   deu: Bei b-adapt 0 wird die GOP-Struktur anhand der Werte von --keyint und --bframes festgelegt.
   eng: With b-adapt 0, the GOP structure is fixed based on the values of --keyint and --bframes.
@@ -2013,21 +2013,21 @@ attachment tracks found:
   fra: pistes d'attache trouvées
   ita: tracce di attacco trovate
   spa: pistas de adjuntos encontradas
-  zho: 发现附件轨迹
+  zho: 发现附件轨
 audio tracks found:
   deu: Audiospuren gefunden
   eng: audio tracks found
   fra: pistes audio trouvées
   ita: tracce audio trovate
   spa: pistas de audio encontradas
-  zho: 发现音轨
+  zho: 发现音频轨
 b-adapt:
   deu: b-adapt
   eng: b-adapt
   fra: b-adapt
   ita: b-adatta
   spa: b-adapt
-  zho: 适应性
+  zho: b-adapt
 'b-adapt: Set the level of effort in determining B frame placement.':
   deu: 'b-adapt: Legen Sie den Grad des Aufwands bei der Bestimmung der B-Frame-Platzierung fest.'
   eng: 'b-adapt: Set the level of effort in determining B frame placement.'
@@ -2097,7 +2097,7 @@ data tracks found:
   fra: pistes de données trouvées
   ita: tracce di dati trovati
   spa: pistas de datos encontradas
-  zho: 轨迹发现
+  zho: 找到数据轨
 'dhdr10-opt: Reduces SEI overhead':
   deu: 'dhdr10-opt: Reduziert SEI-Overhead'
   eng: 'dhdr10-opt: Reduces SEI overhead'
@@ -2202,7 +2202,7 @@ out file is already in queue:
   fra: notre dossier est déjà dans la file d'attente
   ita: il file in uscita è già in coda
   spa: nuestro archivo ya está en la cola
-  zho: 外档已在队列中
+  zho: out file is already in queue
 preset:
   deu: Voreinstellung
   eng: preset
@@ -2279,14 +2279,14 @@ starting next command:
   fra: démarrage de la commande suivante
   ita: avvio del prossimo comando
   spa: comenzando el siguiente comando
-  zho: 下令
+  zho: 正在启动下一条命令
 subtitle tracks found:
   deu: Untertitelspuren gefunden
   eng: subtitle tracks found
   fra: Les pistes de sous-titres trouvées
   ita: tracce sottotitoli trovati
   spa: pistas de subtítulos encontradas
-  zho: 找到字幕曲目
+  zho: 找到字幕轨
 that move across the video from one side to the other and thereby refresh the image:
   deu: die sich über das Video von einer Seite zur anderen bewegen und dabei das Bild aktualisieren
   eng: that move across the video from one side to the other and thereby refresh the image
@@ -2454,4 +2454,4 @@ Conversion worker shutting down:
   fra: Fermeture d'une entreprise de reconversion
   ita: Operaio di conversione in chiusura
   spa: El cierre del trabajador de conversión
-  zho: 转化工人正在关闭
+  zho: 正在关闭转换程序
