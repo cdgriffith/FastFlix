@@ -26,21 +26,19 @@ class InfoPanel(QtWidgets.QTabWidget):
         self.main = parent.main
         self.attachments = Box()
 
-
     def reset(self):
-        for i in range(self.count() -1, -1, -1):
+        for i in range(self.count() - 1, -1, -1):
             self.removeTab(i)
 
         all_stream = []
         for x in self.app.fastflix.current_video.streams.values():
             all_stream.extend(x)
 
-
         if not self.app.fastflix.current_video:
             return
         # self.text_area.setText(Box(self.app.fastflix.current_video.streams).to_yaml(default_flow_style=False))
 
-        for stream in sorted(all_stream, key=lambda z: z['index']):
+        for stream in sorted(all_stream, key=lambda z: z["index"]):
             widget = QtWidgets.QTextBrowser(self)
             widget.setReadOnly(True)
             widget.setDisabled(False)

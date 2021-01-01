@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 import traceback
+import sys
 from multiprocessing import freeze_support
 
 from fastflix.entry import main
 
 
 def start_fastflix():
-    freeze_support()
+    exit_code = 2
     try:
-        main()
+        exit_code = main()
     except Exception:
         traceback.print_exc()
         input(
@@ -17,7 +18,10 @@ def start_fastflix():
         )
     except KeyboardInterrupt:
         pass
+    finally:
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":
+    freeze_support()
     start_fastflix()

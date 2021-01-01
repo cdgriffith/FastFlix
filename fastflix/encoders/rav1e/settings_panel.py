@@ -60,14 +60,14 @@ class RAV1E(SettingPanel):
         self.mode = "QP"
 
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
-        grid.addLayout(self.init_tiles(), 2, 0, 1, 2)
-        grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
-        grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 5, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
+        grid.addLayout(self.init_tiles(), 1, 0, 1, 2)
+        grid.addLayout(self.init_tile_rows(), 2, 0, 1, 2)
+        grid.addLayout(self.init_tile_columns(), 3, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 5, 0, 1, 2)
 
-        grid.addLayout(self.init_modes(), 0, 2, 4, 4)
-        grid.addLayout(self.init_single_pass(), 4, 2, 1, 1)
+        grid.addLayout(self.init_modes(), 0, 2, 5, 4)
+        grid.addLayout(self.init_single_pass(), 5, 2, 1, 1)
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.setRowStretch(9, 1)

@@ -5,12 +5,16 @@
 * Adding "advanced" panel
 * Adding info panel
 * Adding support for text based burn in subtitles
-* Fixing fast / exact time to work
-* Fixing burn in subtitles
 
 ## Version 4.0.4
 
+* Fixing #137 Should not be able to try and switch between encoders without a video (thanks to leonardyan)
 * Fixing #149 Cannot set subtitle disposition in 4.0+ (thanks to Zeid164)
+* Fixing #150 FFmpeg extras not able to be set (thanks to kipperdawn)
+* Fixing exact / fast time selector not working
+* Fixing subtitle burn in not working (for picture images)
+* Fixing that text based subtitles could show as being burned-in-able
+* Fixing HEVC tune did not put space after itself in command
 
 ## Version 4.0.3
 

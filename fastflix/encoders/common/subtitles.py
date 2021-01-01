@@ -4,7 +4,10 @@
 from typing import List, Tuple, Union
 from fastflix.models.video import SubtitleTrack
 
-def build_subtitle(subtitle_tracks: List[SubtitleTrack], subtitle_file_index=0) -> Tuple[str, Union[int, None], Union[str, None]]:
+
+def build_subtitle(
+    subtitle_tracks: List[SubtitleTrack], subtitle_file_index=0
+) -> Tuple[str, Union[int, None], Union[str, None]]:
     command_list = []
     burn_in_track = None
     burn_in_type = None

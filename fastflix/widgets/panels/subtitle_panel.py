@@ -36,12 +36,13 @@ subtitle_types = {
     "ass": "text",
     "mov_text": "text",
     "webvtt": "text",
-    "xsub": "text"
+    "xsub": "text",
 }
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 # TODO give warning about exact time needed for text based subtitles
+
 
 class Subtitle(QtWidgets.QTabWidget):
     def __init__(self, parent, subtitle, index, enabled=True, first=False):
@@ -54,7 +55,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.first = first
         self.last = False
         self.subtitle_lang = subtitle.get("tags", {}).get("language")
-        self.subtitle_type = subtitle_types.get(subtitle['codec_name'], "text")
+        self.subtitle_type = subtitle_types.get(subtitle["codec_name"], "text")
         self.setFixedHeight(60)
 
         self.widgets = Box(
@@ -284,7 +285,7 @@ class SubtitleList(FlixList):
                         disposition=track.disposition,
                         language=track.language,
                         burn_in=track.burn_in,
-                        subtitle_type=track.subtitle_type
+                        subtitle_type=track.subtitle_type,
                     )
                 )
                 if track.burn_in:

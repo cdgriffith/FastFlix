@@ -137,11 +137,7 @@ class Config:
         if encoder_settings:
             return getattr(encoder_settings, profile_option_name)
         else:
-            try:
-                return getattr(empty_profile.setting_types[profile_name](), profile_option_name)
-            except Exception:
-                print(dir(empty_profile.setting_types[profile_name]()))
-                raise
+            return getattr(empty_profile.setting_types[profile_name](), profile_option_name)
 
     def opt(self, profile_option_name, default=NO_OPT):
         if default != NO_OPT:

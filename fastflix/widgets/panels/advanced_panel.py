@@ -70,6 +70,7 @@ def non(value):
 # TODO disable fps boxes if same as source
 # TODO reset from queue
 
+
 class AdvancedPanel(QtWidgets.QWidget):
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)

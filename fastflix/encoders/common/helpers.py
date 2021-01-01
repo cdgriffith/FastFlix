@@ -198,8 +198,8 @@ def generate_all(
     if subs:
         subtitles, burn_in_track, burn_in_type = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
         if burn_in_type == "text":
-            for i, x in enumerate(fastflix.current_video.streams['subtitle']):
-                if x['index'] == burn_in_track:
+            for i, x in enumerate(fastflix.current_video.streams["subtitle"]):
+                if x["index"] == burn_in_track:
                     burn_in_track = i
                     break
 
@@ -211,7 +211,7 @@ def generate_all(
             source=fastflix.current_video.source,
             burn_in_subtitle_track=burn_in_track,
             burn_in_subtitle_type=burn_in_type,
-            **asdict(fastflix.current_video.video_settings)
+            **asdict(fastflix.current_video.video_settings),
         )
 
     ending = generate_ending(
@@ -219,6 +219,7 @@ def generate_all(
         subtitles=subtitles,
         cover=attachments,
         output_video=fastflix.current_video.video_settings.output_path,
+        extra=fastflix.current_video.video_settings.video_encoder_settings.extra,
         **asdict(fastflix.current_video.video_settings),
     )
 
@@ -246,6 +247,3 @@ def generate_color_details(fastflix: FastFlix) -> str:
     if fastflix.current_video.color_space:
         details.append(f"-colorspace {fastflix.current_video.color_space}")
     return " ".join(details)
-
-
-# def generate_advanced(fastflix: FastFlix) -> str:

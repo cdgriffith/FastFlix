@@ -41,7 +41,6 @@ class VideoSettings(BaseDataClass):
     selected_track: int = 0
     output_path: Path = None
     scale: Union[str, None] = None
-    ffmpeg_extra: str = ""
     deinterlace: bool = False
     speed: Union[float, int] = 1
     tone_map: Union[str, None] = None

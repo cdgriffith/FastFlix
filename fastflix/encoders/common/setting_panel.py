@@ -71,7 +71,9 @@ class SettingPanel(QtWidgets.QWidget):
             self.widgets[widget_name].setToolTip(self.translate_tip(tooltip))
         if connect:
             if connect == "default":
-                self.widgets[widget_name].currentIndexChanged.connect(lambda: self.main.page_update())
+                self.widgets[widget_name].currentIndexChanged.connect(
+                    lambda: self.main.page_update(build_thumbnail=False)
+                )
             elif connect == "self":
                 self.widgets[widget_name].currentIndexChanged.connect(lambda: self.page_update())
             else:
@@ -95,7 +97,7 @@ class SettingPanel(QtWidgets.QWidget):
             self.widgets[widget_name].setToolTip(self.translate_tip(tooltip))
         if connect:
             if connect == "default":
-                self.widgets[widget_name].toggled.connect(lambda: self.main.page_update())
+                self.widgets[widget_name].toggled.connect(lambda: self.main.page_update(build_thumbnail=False))
             elif connect == "self":
                 self.widgets[widget_name].toggled.connect(lambda: self.page_update())
             else:
@@ -132,9 +134,11 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets[widget_name].setDisabled(not enabled)
         self.widgets[widget_name].setToolTip(tooltip)
 
+        self.opts[widget_name] = widget_name
+
         if connect:
             if connect == "default":
-                self.widgets[widget_name].textChanged.connect(lambda: self.main.page_update())
+                self.widgets[widget_name].textChanged.connect(lambda: self.main.page_update(build_thumbnail=False))
             elif connect == "self":
                 self.widgets[widget_name].textChanged.connect(lambda: self.page_update())
             else:
@@ -164,9 +168,9 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.mode = QtWidgets.QButtonGroup()
         self.widgets.mode.buttonClicked.connect(self.set_mode)
 
-        bitrate_radio = QtWidgets.QRadioButton("Bitrate")
-        bitrate_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(bitrate_radio)
+        self.bitrate_radio = QtWidgets.QRadioButton("Bitrate")
+        self.bitrate_radio.setFixedWidth(80)
+        self.widgets.mode.addButton(self.bitrate_radio)
         self.widgets.bitrate = QtWidgets.QComboBox()
         self.widgets.bitrate.setFixedWidth(250)
         self.widgets.bitrate.addItems(recommended_bitrates)
@@ -179,7 +183,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.custom_bitrate.setFixedWidth(100)
         self.widgets.custom_bitrate.setDisabled(True)
         self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
-        bitrate_box_layout.addWidget(bitrate_radio)
+        bitrate_box_layout.addWidget(self.bitrate_radio)
         bitrate_box_layout.addWidget(self.widgets.bitrate)
         bitrate_box_layout.addStretch()
         bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
@@ -189,11 +193,11 @@ class SettingPanel(QtWidgets.QWidget):
             f"{qp_name.upper()} {t('is extremely source dependant')},\n"
             f"{t('the resolution-to-')}{qp_name.upper()}{t('are mere suggestions!')}"
         )
-        qp_radio = QtWidgets.QRadioButton(qp_name.upper())
-        qp_radio.setChecked(True)
-        qp_radio.setFixedWidth(80)
-        qp_radio.setToolTip(qp_help)
-        self.widgets.mode.addButton(qp_radio)
+        self.qp_radio = QtWidgets.QRadioButton(qp_name.upper())
+        self.qp_radio.setChecked(True)
+        self.qp_radio.setFixedWidth(80)
+        self.qp_radio.setToolTip(qp_help)
+        self.widgets.mode.addButton(self.qp_radio)
 
         self.widgets[qp_name] = QtWidgets.QComboBox()
         self.widgets[qp_name].setToolTip(qp_help)
@@ -210,7 +214,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets[f"custom_{qp_name}"].setDisabled(True)
         self.widgets[f"custom_{qp_name}"].setValidator(self.only_int)
         self.widgets[f"custom_{qp_name}"].textChanged.connect(lambda: self.main.build_commands())
-        qp_box_layout.addWidget(qp_radio)
+        qp_box_layout.addWidget(self.qp_radio)
         qp_box_layout.addWidget(self.widgets[qp_name])
         qp_box_layout.addStretch()
         qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
@@ -238,6 +242,7 @@ class SettingPanel(QtWidgets.QWidget):
             return
 
     def update_profile(self):
+        global ffmpeg_extra_command
         for widget_name, opt in self.opts.items():
             if isinstance(self.widgets[widget_name], QtWidgets.QComboBox):
                 default = self.determine_default(
@@ -256,6 +261,19 @@ class SettingPanel(QtWidgets.QWidget):
                 if widget_name == "x265_params":
                     data = ":".join(data)
                 self.widgets[widget_name].setText(data or "")
+        try:
+            bitrate = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
+        except AttributeError:
+            pass
+        else:
+            if bitrate:
+                self.qp_radio.setChecked(False)
+                self.bitrate_radio.setChecked(True)
+            else:
+                self.qp_radio.setChecked(True)
+                self.bitrate_radio.setChecked(False)
+        ffmpeg_extra_command = self.app.fastflix.config.encoder_opt(self.profile_name, "extra")
+        self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
 
     def init_max_mux(self):
         return self._add_combo_box(
@@ -267,6 +285,7 @@ class SettingPanel(QtWidgets.QWidget):
         )
 
     def reload(self):
+        global ffmpeg_extra_command
         for widget_name, opt in self.opts.items():
             data = getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, opt)
             if isinstance(self.widgets[widget_name], QtWidgets.QComboBox):
@@ -280,3 +299,12 @@ class SettingPanel(QtWidgets.QWidget):
                 if widget_name == "x265_params":
                     data = ":".join(data)
                 self.widgets[widget_name].setText(data or "")
+        if getattr(self, "qp_radio", None):
+            if getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, "bitrate", None):
+                self.qp_radio.setChecked(False)
+                self.bitrate_radio.setChecked(True)
+            else:
+                self.qp_radio.setChecked(True)
+                self.bitrate_radio.setChecked(False)
+        ffmpeg_extra_command = self.app.fastflix.current_video.video_settings.video_encoder_settings.extra
+        self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)

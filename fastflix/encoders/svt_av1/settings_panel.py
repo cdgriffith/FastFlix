@@ -63,16 +63,15 @@ class SVT_AV1(SettingPanel):
         self.mode = "QP"
 
         grid.addLayout(self.init_speed(), 0, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 2, 0, 1, 2)
-        grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
-        grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
-        grid.addLayout(self.init_tier(), 5, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 1, 0, 1, 2)
+        grid.addLayout(self.init_tile_rows(), 2, 0, 1, 2)
+        grid.addLayout(self.init_tile_columns(), 3, 0, 1, 2)
+        grid.addLayout(self.init_tier(), 4, 0, 1, 2)
         # grid.addLayout(self.init_sc_detection(), 6, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
-        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
+        grid.addLayout(self.init_max_mux(), 5, 0, 1, 2)
+        grid.addLayout(self.init_modes(), 0, 2, 5, 4)
+        grid.addLayout(self.init_single_pass(), 5, 2, 1, 1)
 
-        grid.addLayout(self.init_modes(), 0, 2, 4, 4)
-        grid.addLayout(self.init_single_pass(), 4, 2, 1, 1)
         grid.setRowStretch(8, 1)
         guide_label = QtWidgets.QLabel(
             link(
@@ -82,6 +81,7 @@ class SVT_AV1(SettingPanel):
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
+        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
         grid.addWidget(guide_label, 11, 0, -1, 1)
         self.setLayout(grid)
         self.hide()
