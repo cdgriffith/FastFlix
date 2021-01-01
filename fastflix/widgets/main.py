@@ -1531,7 +1531,6 @@ class Main(QtWidgets.QWidget):
     def conversion_complete(self, return_code):
         self.converting = False
         self.paused = False
-        self.enable_all()
         self.set_convert_button()
 
         if return_code:
@@ -1544,7 +1543,6 @@ class Main(QtWidgets.QWidget):
     def conversion_cancelled(self, data):
         self.converting = False
         self.paused = False
-        self.enable_all()
         self.set_convert_button()
 
         try:

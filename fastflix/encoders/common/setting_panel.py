@@ -261,12 +261,17 @@ class SettingPanel(QtWidgets.QWidget):
                 if widget_name == "x265_params":
                     data = ":".join(data)
                 self.widgets[widget_name].setText(data or "")
-        if self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate"):
-            self.qp_radio.setChecked(False)
-            self.bitrate_radio.setChecked(True)
+        try:
+            bitrate = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
+        except AttributeError:
+            pass
         else:
-            self.qp_radio.setChecked(True)
-            self.bitrate_radio.setChecked(False)
+            if bitrate:
+                self.qp_radio.setChecked(False)
+                self.bitrate_radio.setChecked(True)
+            else:
+                self.qp_radio.setChecked(True)
+                self.bitrate_radio.setChecked(False)
         ffmpeg_extra_command = self.app.fastflix.config.encoder_opt(self.profile_name, "extra")
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
 
@@ -294,11 +299,12 @@ class SettingPanel(QtWidgets.QWidget):
                 if widget_name == "x265_params":
                     data = ":".join(data)
                 self.widgets[widget_name].setText(data or "")
-        if getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, "bitrate"):
-            self.qp_radio.setChecked(False)
-            self.bitrate_radio.setChecked(True)
-        else:
-            self.qp_radio.setChecked(True)
-            self.bitrate_radio.setChecked(False)
+        if getattr(self, "qp_radio", None):
+            if getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, "bitrate", None):
+                self.qp_radio.setChecked(False)
+                self.bitrate_radio.setChecked(True)
+            else:
+                self.qp_radio.setChecked(True)
+                self.bitrate_radio.setChecked(False)
         ffmpeg_extra_command = self.app.fastflix.current_video.video_settings.video_encoder_settings.extra
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)

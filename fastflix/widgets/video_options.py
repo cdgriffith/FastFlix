@@ -65,16 +65,16 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     def change_conversion(self, conversion):
         conversion = conversion.strip()
+        encoder = self.app.fastflix.encoders[conversion]
         self.current_settings.close()
-        # self.main.current_encoder = self.main.plugins[conversion]
-        self.current_settings = self.app.fastflix.encoders[conversion].settings_panel(self, self.main, self.app)
+        self.current_settings = encoder.settings_panel(self, self.main, self.app)
         self.current_settings.show()
         self.removeTab(0)
         self.insertTab(0, self.current_settings, "Quality")
         self.setCurrentIndex(0)
-        self.setTabEnabled(1, getattr(self.main.current_encoder, "enable_audio", True))
-        self.setTabEnabled(2, getattr(self.main.current_encoder, "enable_subtitles", True))
-        self.setTabEnabled(3, getattr(self.main.current_encoder, "enable_attachments", True))
+        self.setTabEnabled(1, getattr(encoder, "enable_audio", True))
+        self.setTabEnabled(2, getattr(encoder, "enable_subtitles", True))
+        self.setTabEnabled(3, getattr(encoder, "enable_attachments", True))
         self.selected = conversion
         self.audio.allowed_formats(self.audio_formats)
         self.current_settings.new_source()
