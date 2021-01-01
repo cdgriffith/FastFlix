@@ -107,7 +107,7 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
         self.current_settings.new_source()
         self.queue.new_source()
-        self.advanced.reset(reload=True)
+        self.advanced.new_source()
         self.main.container.profile.update_settings()
         self.info.reset()
 

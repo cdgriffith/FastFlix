@@ -59,6 +59,66 @@ denoise_presets = {
     },
 }
 
+ffmpeg_valid_color_primaries = [
+    "bt709",
+    "bt470m",
+    "bt470bg",
+    "smpte170m",
+    "smpte240m",
+    "film",
+    "bt2020",
+    "smpte428",
+    "smpte428_1",
+    "smpte431",
+    "smpte432",
+    "jedec-p22",
+]
+
+ffmpeg_valid_color_transfers = [
+    "bt709",
+    "gamma22",
+    "gamma28",
+    "smpte170m",
+    "smpte240m",
+    "linear",
+    "log",
+    "log100",
+    "log_sqrt",
+    "log316",
+    "iec61966_2_4",
+    "iec61966-2-4",
+    "bt1361",
+    "bt1361e",
+    "iec61966_2_1",
+    "iec61966-2-1",
+    "bt2020_10",
+    "bt2020_10bit",
+    "bt2020_12",
+    "bt2020_12bit",
+    "smpte2084",
+    "smpte428",
+    "smpte428_1",
+    "arib-std-b67",
+]
+
+ffmpeg_valid_color_space = [
+    "rgb",
+    "bt709",
+    "fcc",
+    "bt470bg",
+    "smpte170m",
+    "smpte240m",
+    "ycocg",
+    "bt2020nc",
+    "bt2020_ncl",
+    "bt2020c",
+    "bt2020_cl",
+    "smpte2085",
+    "chroma-derived-nc",
+    "chroma-derived-c",
+    "ictcp",
+]
+
 
 def non(value):
     if value == "none":
@@ -78,16 +138,22 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.main = parent.main
         self.attachments = Box()
 
-        layout = QtWidgets.QGridLayout()
+        self.layout = QtWidgets.QGridLayout()
+        # self.layout.addLayout(self.init_fps(), 0, 0, 1, 6)
+        # self.layout.addLayout(self.init_video_speed(), 2, 0, 1, 6)
+        # self.layout.addLayout(self.init_tone_map(), 3, 0, 1, 6)
+        # self.layout.addLayout(self.init_denoise(), 4, 0, 1, 6)
+        # self.layout.addLayout(self.init_deblock(), 5, 0, 1, 6)
+        # self.layout.addLayout(self.init_color_info(), 6, 0, 1, 6)
 
-        layout.addLayout(self.init_fps(), 0, 0, 1, 6)
-        # layout.addLayout(self.init_concat(), 1, 0, 1, 6)
-        layout.addLayout(self.init_video_speed(), 2, 0, 1, 6)
-        layout.addLayout(self.init_tone_map(), 3, 0, 1, 6)
-        layout.addLayout(self.init_denoise(), 4, 0, 1, 6)
-        layout.addLayout(self.init_deblock(), 5, 0, 1, 6)
-        layout.addLayout(QtWidgets.QHBoxLayout(), 6, 0, 5, 6, stretch=True)
-
+        self.init_fps()
+        self.init_video_speed()
+        self.init_tone_map()
+        self.init_denoise()
+        self.init_deblock()
+        self.init_color_info()
+        self.layout.addLayout(QtWidgets.QHBoxLayout(), 7, 0, 5, 6, stretch=True)
+        self.layout.addLayout(QtWidgets.QVBoxLayout(), 0, 7, 0, 1, stretch=True)
         # row, column, row span, column span
         # layout.addWidget(QtWidgets.QLabel(t("Poster Cover")), 0, 0, 1, 5)
         # layout.addWidget(QtWidgets.QLabel(t("Landscape Cover")), 0, 6, 1, 4)
@@ -132,33 +198,15 @@ class AdvancedPanel(QtWidgets.QWidget):
         # layout.addLayout(self.init_landscape_cover(), 9, 6, 1, 4)
         # layout.rowStretch(10)
 
-        self.setLayout(layout)
-
-    def init_denoise(self):
-        layout = QtWidgets.QHBoxLayout()
-
-        self.denoise_type_widget = QtWidgets.QComboBox()
-        self.denoise_type_widget.addItems(["none", "nlmeans", "atadenoise", "hqdn3d", "vaguedenoiser"])
-        self.denoise_type_widget.setCurrentIndex(0)
-        self.denoise_type_widget.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(QtWidgets.QLabel(t("Denoise")))
-        layout.addWidget(self.denoise_type_widget)
-
-        self.denoise_strength_widget = QtWidgets.QComboBox()
-        self.denoise_strength_widget.addItems(["weak", "moderate", "strong"])
-        self.denoise_strength_widget.setCurrentIndex(0)
-        self.denoise_strength_widget.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(QtWidgets.QLabel(t("Strength")))
-        layout.addWidget(self.denoise_strength_widget)
-        layout.addStretch(True)
-        return layout
+        self.setLayout(self.layout)
 
     def init_fps(self):
-        layout = QtWidgets.QHBoxLayout()
         self.incoming_fps_widget = QtWidgets.QLineEdit()
+        self.incoming_fps_widget.setFixedWidth(100)
         self.incoming_fps_widget.setDisabled(False)
         self.incoming_fps_widget.textChanged.connect(lambda: self.main.page_update())
         self.outgoing_fps_widget = QtWidgets.QLineEdit()
+        self.outgoing_fps_widget.setFixedWidth(100)
         self.outgoing_fps_widget.setDisabled(False)
         self.outgoing_fps_widget.textChanged.connect(lambda: self.main.page_update())
         self.incoming_same_as_source = QtWidgets.QCheckBox(t("Same as Source"))
@@ -169,21 +217,18 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.outgoing_same_as_source.toggled.connect(lambda: self.main.page_update())
 
         self.source_frame_rate = QtWidgets.QLabel("")
-        layout.addWidget(QtWidgets.QLabel(t("Source Frame Rate:")))
-        layout.addWidget(self.source_frame_rate)
-        layout.addStretch(True)
-        layout.addWidget(QtWidgets.QLabel(t("Override Source FPS")))
-        layout.addWidget(self.incoming_fps_widget)
-        layout.addWidget(self.incoming_same_as_source)
-        # layout.addWidget(self.incoming_fps_widget) spacer
-        layout.addStretch(True)
-        layout.addWidget(QtWidgets.QLabel(t("Output FPS")))
-        layout.addWidget(self.outgoing_fps_widget)
-        layout.addWidget(self.outgoing_same_as_source)
+
+        self.layout.addWidget(QtWidgets.QLabel(t("Override Source FPS")), 0, 0)
+        self.layout.addWidget(self.incoming_fps_widget, 0, 1)
+        self.layout.addWidget(self.incoming_same_as_source, 0, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Source Frame Rate:")), 0, 3)
+        self.layout.addWidget(self.source_frame_rate, 0, 4)
+
+        self.layout.addWidget(QtWidgets.QLabel(t("Output FPS")), 1, 0)
+        self.layout.addWidget(self.outgoing_fps_widget, 1, 1)
+        self.layout.addWidget(self.outgoing_same_as_source, 1, 2)
 
         # TODO add connects and page updates
-
-        return layout
 
     def init_concat(self):
         layout = QtWidgets.QHBoxLayout()
@@ -194,39 +239,43 @@ class AdvancedPanel(QtWidgets.QWidget):
         return layout
 
     def init_video_speed(self):
-        layout = QtWidgets.QHBoxLayout()
-
         self.video_Speed_widget = QtWidgets.QComboBox()
         self.video_Speed_widget.addItem(t("Same as Source"))
         self.video_Speed_widget.addItems(video_speeds.keys())
         self.video_Speed_widget.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(QtWidgets.QLabel(t("Video Speed")))
-        layout.addWidget(self.video_Speed_widget)
-        layout.addWidget(QtWidgets.QLabel(t("Warning: Audio will not be modified")))
-        layout.addStretch()
-        return layout
+        self.layout.addWidget(QtWidgets.QLabel(t("Video Speed")), 2, 0)
+        self.layout.addWidget(self.video_Speed_widget, 2, 1)
+        self.layout.addWidget(QtWidgets.QLabel(t("Warning: Audio will not be modified")), 2, 2)
 
     def init_tone_map(self):
-        layout = QtWidgets.QHBoxLayout()
-
         self.tone_map_widget = QtWidgets.QComboBox()
         self.tone_map_widget.addItems(["none", "clip", "linear", "gamma", "reinhard", "hable", "mobius"])
         self.tone_map_widget.setCurrentIndex(5)
         self.tone_map_widget.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(QtWidgets.QLabel(t("HDR -> SDR Tone Map")))
-        layout.addWidget(self.tone_map_widget)
-        layout.addStretch(True)
-        return layout
+        self.layout.addWidget(QtWidgets.QLabel(t("HDR -> SDR Tone Map")), 3, 0)
+        self.layout.addWidget(self.tone_map_widget, 3, 1)
+
+    def init_denoise(self):
+        self.denoise_type_widget = QtWidgets.QComboBox()
+        self.denoise_type_widget.addItems(["none", "nlmeans", "atadenoise", "hqdn3d", "vaguedenoiser"])
+        self.denoise_type_widget.setCurrentIndex(0)
+        self.denoise_type_widget.currentIndexChanged.connect(lambda: self.main.page_update())
+
+        self.denoise_strength_widget = QtWidgets.QComboBox()
+        self.denoise_strength_widget.addItems(["weak", "moderate", "strong"])
+        self.denoise_strength_widget.setCurrentIndex(0)
+        self.denoise_strength_widget.currentIndexChanged.connect(lambda: self.main.page_update())
+
+        self.layout.addWidget(QtWidgets.QLabel(t("Denoise")), 4, 0)
+        self.layout.addWidget(self.denoise_type_widget, 4, 1)
+        self.layout.addWidget(QtWidgets.QLabel(t("Strength")), 4, 3)
+        self.layout.addWidget(self.denoise_strength_widget, 4, 4)
 
     def init_deblock(self):
-        layout = QtWidgets.QHBoxLayout()
-
         self.deblock_widget = QtWidgets.QComboBox()
         self.deblock_widget.addItems(["none", "weak", "strong"])
         self.deblock_widget.setCurrentIndex(0)
         self.deblock_widget.currentIndexChanged.connect(lambda: self.main.page_update())
-        layout.addWidget(QtWidgets.QLabel(t("Deblock")))
-        layout.addWidget(self.deblock_widget)
 
         self.deblock_size_widget = QtWidgets.QComboBox()
         self.deblock_size_widget.addItem("4")
@@ -235,11 +284,30 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.deblock_size_widget.currentIndexChanged.connect(lambda: self.main.page_update())
         self.deblock_size_widget.setCurrentIndex(2)
 
-        layout.addWidget(QtWidgets.QLabel(t("Block Size")))
-        layout.addWidget(self.deblock_size_widget)
-        layout.addStretch(True)
+        self.layout.addWidget(QtWidgets.QLabel(t("Deblock")), 5, 0)
+        self.layout.addWidget(self.deblock_widget, 5, 1)
+        self.layout.addWidget(QtWidgets.QLabel(t("Block Size")), 5, 2)
+        self.layout.addWidget(self.deblock_size_widget, 5, 3)
 
-        return layout
+    def init_color_info(self):
+        self.color_primaries_widget = QtWidgets.QComboBox()
+        self.color_primaries_widget.addItem(t("Unspecified"))
+        self.color_primaries_widget.addItems(ffmpeg_valid_color_primaries)
+
+        self.color_transfer_widget = QtWidgets.QComboBox()
+        self.color_transfer_widget.addItem(t("Unspecified"))
+        self.color_transfer_widget.addItems(ffmpeg_valid_color_transfers)
+
+        self.color_space_widget = QtWidgets.QComboBox()
+        self.color_space_widget.addItem(t("Unspecified"))
+        self.color_space_widget.addItems(ffmpeg_valid_color_space)
+
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Primaries")), 6, 0)
+        self.layout.addWidget(self.color_primaries_widget, 6, 1)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Transfer")), 6, 2)
+        self.layout.addWidget(self.color_transfer_widget, 6, 3)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Space")), 6, 4)
+        self.layout.addWidget(self.color_space_widget, 6, 5)
 
     def update_settings(self):
         self.app.fastflix.current_video.video_settings.speed = video_speeds[self.video_Speed_widget.currentText()]
@@ -250,6 +318,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.app.fastflix.current_video.video_settings.source_fps = self.incoming_fps_widget.text()
         if not self.outgoing_same_as_source.isChecked():
             self.app.fastflix.current_video.video_settings.output_fps = self.outgoing_fps_widget.text()
+
         if self.denoise_type_widget.currentIndex() == 0:
             self.app.fastflix.current_video.video_settings.denoise = None
         else:
@@ -257,8 +326,26 @@ class AdvancedPanel(QtWidgets.QWidget):
                 self.denoise_type_widget.currentText()
             ][self.denoise_strength_widget.currentText()]
 
+        if self.color_primaries_widget.currentIndex() == 0:
+            self.app.fastflix.current_video.video_settings.color_primaries = None
+        else:
+            self.app.fastflix.current_video.video_settings.color_primaries = self.color_primaries_widget.currentText()
+
+        if self.color_transfer_widget.currentIndex() == 0:
+            self.app.fastflix.current_video.video_settings.color_transfer = None
+        else:
+            self.app.fastflix.current_video.video_settings.color_transfer = self.color_transfer_widget.currentText()
+
+        if self.color_space_widget.currentIndex() == 0:
+            self.app.fastflix.current_video.video_settings.color_space = None
+        else:
+            self.app.fastflix.current_video.video_settings.color_space = self.color_space_widget.currentText()
+
     def reset(self, reload=False):
-        if not reload:
+        if reload:
+            vs = self.app.fastflix.current_video.video_settings
+            # TODO reload from queue
+        else:
             self.video_Speed_widget.setCurrentIndex(0)
             self.deblock_widget.setCurrentIndex(0)
             self.deblock_size_widget.setCurrentIndex(0)
@@ -269,8 +356,6 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.outgoing_fps_widget.setText("")
             self.denoise_type_widget.setCurrentIndex(0)
             self.denoise_strength_widget.setCurrentIndex(0)
-        else:
-            vs = self.app.fastflix.current_video.video_settings
 
         if self.app.fastflix.current_video:
             if "/" in self.app.fastflix.current_video.frame_rate:
@@ -294,21 +379,26 @@ class AdvancedPanel(QtWidgets.QWidget):
         #     if not self.outgoing_same_as_source.isChecked():
         #         self.app.fastflix.current_video.video_settings.output_fps = self.outgoing_fps_widget.text()
 
-    # def init_cover(self):
-    #     layout = QtWidgets.QHBoxLayout()
-    #     self.cover_path = QtWidgets.QLineEdit()
-    #     self.cover_path.textChanged.connect(lambda: self.update_cover())
-    #     self.cover_button = QtWidgets.QPushButton(
-    #         icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogContentsView)
-    #     )
-    #     self.cover_button.clicked.connect(lambda: self.select_cover())
-    #
-    #     layout.addWidget(self.cover_path)
-    #     layout.addWidget(self.cover_button)
-    #     return layout
-
-    # def update_filter_settings(self):
-    #     self.app.fastflix.current_video.video_settings.attachment_tracks = attachments
-
     def new_source(self):
-        pass
+        self.reset(reload=False)
+
+        if self.app.fastflix.current_video.color_primaries in ffmpeg_valid_color_primaries:
+            self.color_primaries_widget.setCurrentIndex(
+                ffmpeg_valid_color_primaries.index(self.app.fastflix.current_video.color_primaries) + 1
+            )
+        else:
+            self.color_primaries_widget.setCurrentIndex(0)
+
+        if self.app.fastflix.current_video.color_transfer in ffmpeg_valid_color_transfers:
+            self.color_transfer_widget.setCurrentIndex(
+                ffmpeg_valid_color_transfers.index(self.app.fastflix.current_video.color_transfer) + 1
+            )
+        else:
+            self.color_transfer_widget.setCurrentIndex(0)
+
+        if self.app.fastflix.current_video.color_space in ffmpeg_valid_color_space:
+            self.color_space_widget.setCurrentIndex(
+                ffmpeg_valid_color_space.index(self.app.fastflix.current_video.color_space) + 1
+            )
+        else:
+            self.color_space_widget.setCurrentIndex(0)

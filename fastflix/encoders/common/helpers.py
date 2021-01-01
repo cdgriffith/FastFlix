@@ -240,10 +240,10 @@ def generate_color_details(fastflix: FastFlix) -> str:
         return ""
 
     details = []
-    if fastflix.current_video.color_primaries:
-        details.append(f"-color_primaries {fastflix.current_video.color_primaries}")
-    if fastflix.current_video.color_transfer:
-        details.append(f"-color_trc {fastflix.current_video.color_transfer}")
-    if fastflix.current_video.color_space:
-        details.append(f"-colorspace {fastflix.current_video.color_space}")
+    if fastflix.current_video.video_settings.color_primaries:
+        details.append(f"-color_primaries {fastflix.current_video.video_settings.color_primaries}")
+    if fastflix.current_video.video_settings.color_transfer:
+        details.append(f"-color_trc {fastflix.current_video.video_settings.color_transfer}")
+    if fastflix.current_video.video_settings.color_space:
+        details.append(f"-colorspace {fastflix.current_video.video_settings.color_space}")
     return " ".join(details)

@@ -47,6 +47,9 @@ class VideoSettings(BaseDataClass):
     denoise: Union[str, None] = None
     deblock: Union[str, None] = None
     deblock_size: int = 4
+    color_space: Union[str, None] = None
+    color_transfer: Union[str, None] = None
+    color_primaries: Union[str, None] = None
     source_fps: Union[str, None] = None
     output_fps: Union[str, None] = None
     video_encoder_settings: Union[
