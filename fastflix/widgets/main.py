@@ -464,7 +464,9 @@ class Main(QtWidgets.QWidget):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
         self.widgets.convert_to.setFont(QtGui.QFont("helvetica", 10, weight=57))
-        self.widgets.convert_to.setIconSize(QtCore.QSize(40, 40))
+        self.widgets.convert_to.setIconSize(
+            QtCore.QSize(40, 40) if self.app.fastflix.config.flat_ui else QtCore.QSize(35, 35)
+        )
 
     def init_encoder_drop_down(self):
         layout = QtWidgets.QHBoxLayout()

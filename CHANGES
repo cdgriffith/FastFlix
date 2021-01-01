@@ -2,9 +2,12 @@
 
 ## Version 4.1.0
 
-* Adding "advanced" panel
-* Adding info panel
-* Adding support for text based burn in subtitles
+* Adding #118 #126 advanced panel with FFmpeg filters (thanks to Marco Ravich and remlap)
+* Adding #114 info panel that shows source details (thanks to leonardyan)
+* Adding #117 support for text based burn in subtitles
+* Adding #152 option to switch back to old bubbly buttons (thanks to GitKike98)
+* Fixing #156 Copy was broken due to ffmpeg extras not being passed (thanks to leonardyan)
+* Fixing #158 Translation of tab name "Quality" lost when output codec switched (thanks to leonardyan)
 
 ## Version 4.0.4
 
