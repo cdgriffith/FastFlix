@@ -2448,3 +2448,10 @@ Could not start FastFlix:
   ita: Impossibile avviare FastFlix
   spa: No pudo iniciar FastFlix
   zho: 无法启动FastFlix
+Conversion worker shutting down:
+  eng: Conversion worker shutting down
+  deu: Konvertierungsarbeiter beim Herunterfahren
+  fra: Fermeture d'une entreprise de reconversion
+  ita: Operaio di conversione in chiusura
+  spa: El cierre del trabajador de conversión
+  zho: 转化工人正在关闭
