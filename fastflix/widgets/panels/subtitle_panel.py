@@ -113,6 +113,9 @@ class Subtitle(QtWidgets.QTabWidget):
         self.setLayout(grid)
         self.loading = False
         self.updating_burn = False
+        if self.subtitle_type == "text":
+            self.widgets.burn_in.setChecked(False)
+            self.widgets.burn_in.setDisabled(True)
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
