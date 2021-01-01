@@ -101,6 +101,7 @@ class Config:
     config_path: Path = fastflix_folder / "fastflix.yaml"
     ffmpeg: Path = None
     ffprobe: Path = None
+    flat_ui: bool = True
     language: str = "en"
     continue_on_failure: bool = True
     work_path: Path = fastflix_folder

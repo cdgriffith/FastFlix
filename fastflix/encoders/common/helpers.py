@@ -55,28 +55,34 @@ def generate_ffmpeg_start(
     fast_seek=True,
     video_title="",
     source_fps: Union[str, None] = None,
+    vsync: Union[str, None] = None,
     **_,
 ) -> str:
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
     time_one = time_settings if fast_seek else ""
     time_two = time_settings if not fast_seek else ""
     incoming_fps = f"-r {source_fps}" if source_fps else ""
+    vsync_text = f"-vsync {vsync}" if vsync else ""
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = str(source).replace("\\", "/")
     ffmpeg = str(ffmpeg).replace("\\", "/")
 
-    return (
-        f'"{ffmpeg}" -y '
-        f" {time_one} "
-        f" {incoming_fps} "
-        f'-i "{source}" '
-        f" {time_two} "
-        f"{title} "
-        f"{f'-max_muxing_queue_size {max_muxing_queue_size}' if max_muxing_queue_size != 'default' else ''} "
-        f'{f"-map 0:{selected_track}" if not filters else ""} '
-        f'{filters if filters else ""} '
-        f"-c:v {encoder} "
-        f"-pix_fmt {pix_fmt} "
+    return " ".join(
+        [
+            f'"{ffmpeg}"',
+            "-y",
+            time_one,
+            incoming_fps,
+            f'-i "{source}"',
+            time_two,
+            title,
+            f"{f'-max_muxing_queue_size {max_muxing_queue_size}' if max_muxing_queue_size != 'default' else ''}",
+            f'{f"-map 0:{selected_track}" if not filters else ""}',
+            vsync_text,
+            f'{filters if filters else ""}',
+            f"-c:v {encoder}",
+            f"-pix_fmt {pix_fmt}",
+        ]
     )
 
 

@@ -24,7 +24,6 @@ logger = logging.getLogger("fastflix")
 def create_app():
     main_app = FastFlixApp(sys.argv)
     main_app.setStyle("fusion")
-    main_app.setStyleSheet(default_mode)
     main_app.setApplicationDisplayName("FastFlix")
     my_font = QtGui.QFont("helvetica", 9, weight=57)
     main_app.setFont(my_font)
@@ -129,6 +128,9 @@ def start_app(worker_queue, status_queue, log_queue):
         # TODO give edit / delete options
         logger.exception(t("Could not load config file!"))
         sys.exit(1)
+
+    if app.fastflix.config.flat_ui:
+        app.setStyleSheet(default_mode)
 
     startup_tasks = [
         Task(t("Gather FFmpeg version"), ffmpeg_configuration),

@@ -52,6 +52,7 @@ class VideoSettings(BaseDataClass):
     color_primaries: Union[str, None] = None
     source_fps: Union[str, None] = None
     output_fps: Union[str, None] = None
+    vsync: Union[str, None] = None
     video_encoder_settings: Union[
         x265Settings,
         x264Settings,

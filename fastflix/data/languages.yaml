@@ -2455,3 +2455,23 @@ Conversion worker shutting down:
   ita: Operaio di conversione in chiusura
   spa: El cierre del trabajador de conversión
   zho: 转化工人正在关闭
+Could not create / access work directory:
+  eng: Could not create / access work directory
+
+Could not set language to:
+  eng: Could not set language to
+
+Please report this issue:
+  eng: Please report this issue
+
+Use Sane Audio Selection (updatable in config file):
+  eng: Use Sane Audio Selection (updatable in config file)
+
+Disable update check on startup:
+  eng: Disable update check on startup
+
+Flat UI:
+  eng: Flat UI
+
+Save:
+  eng: Save

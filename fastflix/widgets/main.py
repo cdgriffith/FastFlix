@@ -739,7 +739,14 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget.setText(self.generate_output_filename)
         self.output_video_path_widget.setDisabled(False)
         self.output_path_button.setDisabled(False)
-        self.update_video_info()
+        try:
+            self.update_video_info()
+        except Exception:
+            logger.exception(f"Could not load video {self.input_video}")
+            self.video_path_widget.setText("")
+            self.output_video_path_widget.setText("")
+            self.output_video_path_widget.setDisabled(True)
+            self.output_path_button.setDisabled(True)
         self.page_update()
 
     @property
@@ -767,12 +774,17 @@ class Main(QtWidgets.QWidget):
         start_pos = self.start_time or self.app.fastflix.current_video.duration // 10
 
         blocks = math.ceil((self.app.fastflix.current_video.duration - start_pos) / 5)
+        if blocks < 1:
+            blocks = 1
 
         times = [
             x
             for x in range(int(start_pos), int(self.app.fastflix.current_video.duration), blocks)
             if x < self.app.fastflix.current_video.duration
         ][:4]
+
+        if not times:
+            return
 
         self.app.processEvents()
         result_list = []
@@ -1578,13 +1590,20 @@ class Main(QtWidgets.QWidget):
             self.input_video = Path(event.mimeData().urls()[0].toLocalFile())
         except (ValueError, IndexError):
             return event.ignore()
-        else:
-            self.video_path_widget.setText(str(self.input_video))
-            self.output_video_path_widget.setText(self.generate_output_filename)
-            self.output_video_path_widget.setDisabled(False)
-            self.output_path_button.setDisabled(False)
+
+        self.video_path_widget.setText(str(self.input_video))
+        self.output_video_path_widget.setText(self.generate_output_filename)
+        self.output_video_path_widget.setDisabled(False)
+        self.output_path_button.setDisabled(False)
+        try:
             self.update_video_info()
-            self.page_update()
+        except Exception:
+            logger.exception(f"Could not load video {self.input_video}")
+            self.video_path_widget.setText("")
+            self.output_video_path_widget.setText("")
+            self.output_video_path_widget.setDisabled(True)
+            self.output_path_button.setDisabled(True)
+        self.page_update()
 
     def dragEnterEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()

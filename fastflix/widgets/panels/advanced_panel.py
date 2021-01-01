@@ -21,17 +21,17 @@ video_speeds = {
     t("Same as Source"): 1,
     "1/100": 100,
     "1/10": 10,
-    "1/5": 5,
+    # "1/5": 5,
     "1/4": 4,
-    "1/3": 3,
+    # "1/3": 3,
     "1/2": 2,
-    "2/3": 1.67,
-    "3/4": 1.5,
-    "1.5x": 0.75,
+    # "2/3": 1.67,
+    # "3/4": 1.5,
+    # "1.5x": 0.75,
     "2x": 0.5,
-    "3x": 0.34,
+    # "3x": 0.34,
     "4x": 0.25,
-    "5x": 0.2,
+    # "5x": 0.2,
     "10x": 0.1,
     "100x": 0.01,
 }
@@ -119,6 +119,8 @@ ffmpeg_valid_color_space = [
     "ictcp",
 ]
 
+vsync = ["auto", "passthrough", "cfr", "vfr", "drop"]
+
 
 def non(value):
     if value == "none":
@@ -126,7 +128,6 @@ def non(value):
     return value
 
 
-# TODO align the things
 # TODO disable fps boxes if same as source
 # TODO reset from queue
 
@@ -139,12 +140,6 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.attachments = Box()
 
         self.layout = QtWidgets.QGridLayout()
-        # self.layout.addLayout(self.init_fps(), 0, 0, 1, 6)
-        # self.layout.addLayout(self.init_video_speed(), 2, 0, 1, 6)
-        # self.layout.addLayout(self.init_tone_map(), 3, 0, 1, 6)
-        # self.layout.addLayout(self.init_denoise(), 4, 0, 1, 6)
-        # self.layout.addLayout(self.init_deblock(), 5, 0, 1, 6)
-        # self.layout.addLayout(self.init_color_info(), 6, 0, 1, 6)
 
         self.init_fps()
         self.init_video_speed()
@@ -152,83 +147,45 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.init_denoise()
         self.init_deblock()
         self.init_color_info()
-        self.layout.addLayout(QtWidgets.QHBoxLayout(), 7, 0, 5, 6, stretch=True)
-        self.layout.addLayout(QtWidgets.QVBoxLayout(), 0, 7, 0, 1, stretch=True)
-        # row, column, row span, column span
-        # layout.addWidget(QtWidgets.QLabel(t("Poster Cover")), 0, 0, 1, 5)
-        # layout.addWidget(QtWidgets.QLabel(t("Landscape Cover")), 0, 6, 1, 4)
-        # info_label = QtWidgets.QLabel(
-        #     link("https://codecalamity.com/guides/video-thumbnails/", t("Enabling cover thumbnails on your system"))
-        # )
-        # info_label.setOpenExternalLinks(True)
-        # layout.addWidget(info_label, 10, 0, 1, 9, QtCore.Qt.AlignLeft)
-        #
-        # poster_options_layout = QtWidgets.QHBoxLayout()
-        # self.cover_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Cover"))
-        # self.small_cover_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Small Cover (no preview)"))
-        #
-        # poster_options_layout.addWidget(self.cover_passthrough_checkbox)
-        # poster_options_layout.addWidget(self.small_cover_passthrough_checkbox)
-        #
-        # land_options_layout = QtWidgets.QHBoxLayout()
-        # self.cover_land_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Landscape Cover"))
-        # self.small_cover_land_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Small Landscape Cover  (no preview)"))
-        #
-        # land_options_layout.addWidget(self.cover_land_passthrough_checkbox)
-        # land_options_layout.addWidget(self.small_cover_land_passthrough_checkbox)
-        #
-        # self.cover_passthrough_checkbox.toggled.connect(lambda: self.cover_passthrough_check())
-        # self.small_cover_passthrough_checkbox.toggled.connect(lambda: self.small_cover_passthrough_check())
-        # self.cover_land_passthrough_checkbox.toggled.connect(lambda: self.cover_land_passthrough_check())
-        # self.small_cover_land_passthrough_checkbox.toggled.connect(lambda: self.small_cover_land_passthrough_check())
-        #
-        # self.poster = QtWidgets.QLabel()
-        # self.poster.setSizePolicy(sp)
-        #
-        # self.landscape = QtWidgets.QLabel()
-        # self.landscape.setSizePolicy(sp)
-        #
-        # layout.addLayout(poster_options_layout, 1, 0, 1, 4)
-        # layout.addLayout(land_options_layout, 1, 6, 1, 4)
-        #
-        # layout.addWidget(self.poster, 2, 0, 8, 4)
-        # layout.addWidget(self.landscape, 2, 6, 8, 4)
-        #
-        # layout.addLayout(self.init_cover(), 9, 0, 1, 4)
-        # layout.addLayout(self.init_landscape_cover(), 9, 6, 1, 4)
-        # layout.rowStretch(10)
-
+        self.init_vsync()
+        self.layout.setRowStretch(8, True)
         self.setLayout(self.layout)
 
     def init_fps(self):
         self.incoming_fps_widget = QtWidgets.QLineEdit()
-        self.incoming_fps_widget.setFixedWidth(100)
-        self.incoming_fps_widget.setDisabled(False)
-        self.incoming_fps_widget.textChanged.connect(lambda: self.main.page_update())
+        self.incoming_fps_widget.setFixedWidth(150)
+        self.incoming_fps_widget.setDisabled(True)
+        self.incoming_fps_widget.textChanged.connect(self.page_update)
         self.outgoing_fps_widget = QtWidgets.QLineEdit()
-        self.outgoing_fps_widget.setFixedWidth(100)
-        self.outgoing_fps_widget.setDisabled(False)
-        self.outgoing_fps_widget.textChanged.connect(lambda: self.main.page_update())
+        self.outgoing_fps_widget.setFixedWidth(150)
+        self.outgoing_fps_widget.setDisabled(True)
+        self.outgoing_fps_widget.textChanged.connect(self.page_update)
         self.incoming_same_as_source = QtWidgets.QCheckBox(t("Same as Source"))
         self.incoming_same_as_source.setChecked(True)
-        self.incoming_same_as_source.toggled.connect(lambda: self.main.page_update())
+        self.incoming_same_as_source.toggled.connect(
+            lambda: self.fps_update(self.incoming_same_as_source, self.incoming_fps_widget)
+        )
         self.outgoing_same_as_source = QtWidgets.QCheckBox(t("Same as Source"))
         self.outgoing_same_as_source.setChecked(True)
-        self.outgoing_same_as_source.toggled.connect(lambda: self.main.page_update())
+        self.outgoing_same_as_source.toggled.connect(
+            lambda: self.fps_update(self.outgoing_same_as_source, self.outgoing_fps_widget)
+        )
 
         self.source_frame_rate = QtWidgets.QLabel("")
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Override Source FPS")), 0, 0)
+        self.layout.addWidget(QtWidgets.QLabel(t("Override Source FPS")), 0, 0, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.incoming_fps_widget, 0, 1)
         self.layout.addWidget(self.incoming_same_as_source, 0, 2)
-        self.layout.addWidget(QtWidgets.QLabel(t("Source Frame Rate:")), 0, 3)
+        self.layout.addWidget(QtWidgets.QLabel(t("Source Frame Rate:")), 0, 3, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.source_frame_rate, 0, 4)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Output FPS")), 1, 0)
+        self.layout.addWidget(QtWidgets.QLabel(t("Output FPS")), 1, 0, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.outgoing_fps_widget, 1, 1)
         self.layout.addWidget(self.outgoing_same_as_source, 1, 2)
 
-        # TODO add connects and page updates
+    def fps_update(self, myself, widget):
+        widget.setDisabled(myself.isChecked())
+        self.page_update()
 
     def init_concat(self):
         layout = QtWidgets.QHBoxLayout()
@@ -240,80 +197,92 @@ class AdvancedPanel(QtWidgets.QWidget):
 
     def init_video_speed(self):
         self.video_Speed_widget = QtWidgets.QComboBox()
-        self.video_Speed_widget.addItem(t("Same as Source"))
         self.video_Speed_widget.addItems(video_speeds.keys())
-        self.video_Speed_widget.currentIndexChanged.connect(lambda: self.main.page_update())
-        self.layout.addWidget(QtWidgets.QLabel(t("Video Speed")), 2, 0)
+        self.video_Speed_widget.currentIndexChanged.connect(self.page_update)
+        self.layout.addWidget(QtWidgets.QLabel(t("Video Speed")), 2, 0, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.video_Speed_widget, 2, 1)
         self.layout.addWidget(QtWidgets.QLabel(t("Warning: Audio will not be modified")), 2, 2)
 
     def init_tone_map(self):
         self.tone_map_widget = QtWidgets.QComboBox()
-        self.tone_map_widget.addItems(["none", "clip", "linear", "gamma", "reinhard", "hable", "mobius"])
+        self.tone_map_widget.addItems(["None", "clip", "linear", "gamma", "reinhard", "hable", "mobius"])
         self.tone_map_widget.setCurrentIndex(5)
-        self.tone_map_widget.currentIndexChanged.connect(lambda: self.main.page_update())
-        self.layout.addWidget(QtWidgets.QLabel(t("HDR -> SDR Tone Map")), 3, 0)
+        self.tone_map_widget.currentIndexChanged.connect(self.page_update)
+        self.layout.addWidget(QtWidgets.QLabel(t("HDR -> SDR Tone Map")), 3, 0, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.tone_map_widget, 3, 1)
 
     def init_denoise(self):
         self.denoise_type_widget = QtWidgets.QComboBox()
-        self.denoise_type_widget.addItems(["none", "nlmeans", "atadenoise", "hqdn3d", "vaguedenoiser"])
+        self.denoise_type_widget.addItems(["None", "nlmeans", "atadenoise", "hqdn3d", "vaguedenoiser"])
         self.denoise_type_widget.setCurrentIndex(0)
-        self.denoise_type_widget.currentIndexChanged.connect(lambda: self.main.page_update())
+        self.denoise_type_widget.currentIndexChanged.connect(self.page_update)
 
         self.denoise_strength_widget = QtWidgets.QComboBox()
         self.denoise_strength_widget.addItems(["weak", "moderate", "strong"])
         self.denoise_strength_widget.setCurrentIndex(0)
-        self.denoise_strength_widget.currentIndexChanged.connect(lambda: self.main.page_update())
+        self.denoise_strength_widget.currentIndexChanged.connect(self.page_update)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Denoise")), 4, 0)
+        self.layout.addWidget(QtWidgets.QLabel(t("Denoise")), 4, 0, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.denoise_type_widget, 4, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Strength")), 4, 3)
-        self.layout.addWidget(self.denoise_strength_widget, 4, 4)
+        self.layout.addWidget(QtWidgets.QLabel(t("Strength")), 4, 2, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.denoise_strength_widget, 4, 3)
 
     def init_deblock(self):
         self.deblock_widget = QtWidgets.QComboBox()
         self.deblock_widget.addItems(["none", "weak", "strong"])
         self.deblock_widget.setCurrentIndex(0)
-        self.deblock_widget.currentIndexChanged.connect(lambda: self.main.page_update())
+        self.deblock_widget.currentIndexChanged.connect(self.page_update)
 
         self.deblock_size_widget = QtWidgets.QComboBox()
         self.deblock_size_widget.addItem("4")
         self.deblock_size_widget.addItems([str(x * 4) for x in range(2, 33, 2)])
         self.deblock_size_widget.addItems(["256", "512"])
-        self.deblock_size_widget.currentIndexChanged.connect(lambda: self.main.page_update())
+        self.deblock_size_widget.currentIndexChanged.connect(self.page_update)
         self.deblock_size_widget.setCurrentIndex(2)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Deblock")), 5, 0)
+        self.layout.addWidget(QtWidgets.QLabel(t("Deblock")), 5, 0, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.deblock_widget, 5, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Block Size")), 5, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Block Size")), 5, 2, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.deblock_size_widget, 5, 3)
 
     def init_color_info(self):
         self.color_primaries_widget = QtWidgets.QComboBox()
         self.color_primaries_widget.addItem(t("Unspecified"))
         self.color_primaries_widget.addItems(ffmpeg_valid_color_primaries)
+        self.color_primaries_widget.currentIndexChanged.connect(self.page_update)
 
         self.color_transfer_widget = QtWidgets.QComboBox()
         self.color_transfer_widget.addItem(t("Unspecified"))
         self.color_transfer_widget.addItems(ffmpeg_valid_color_transfers)
+        self.color_transfer_widget.currentIndexChanged.connect(self.page_update)
 
         self.color_space_widget = QtWidgets.QComboBox()
         self.color_space_widget.addItem(t("Unspecified"))
         self.color_space_widget.addItems(ffmpeg_valid_color_space)
+        self.color_space_widget.currentIndexChanged.connect(self.page_update)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Color Primaries")), 6, 0)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Primaries")), 6, 0, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.color_primaries_widget, 6, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Color Transfer")), 6, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Transfer")), 6, 2, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.color_transfer_widget, 6, 3)
-        self.layout.addWidget(QtWidgets.QLabel(t("Color Space")), 6, 4)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Space")), 6, 4, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.color_space_widget, 6, 5)
+
+    def init_vsync(self):
+        self.vsync_widget = QtWidgets.QComboBox()
+        self.vsync_widget.addItem(t("Unspecified"))
+        self.vsync_widget.addItems(vsync)
+        self.vsync_widget.currentIndexChanged.connect(self.page_update)
+        self.layout.addWidget(QtWidgets.QLabel(t("vsync")), 7, 0, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.vsync_widget, 7, 1)
 
     def update_settings(self):
         self.app.fastflix.current_video.video_settings.speed = video_speeds[self.video_Speed_widget.currentText()]
         self.app.fastflix.current_video.video_settings.deblock = non(self.deblock_widget.currentText())
         self.app.fastflix.current_video.video_settings.deblock_size = int(self.deblock_size_widget.currentText())
         self.app.fastflix.current_video.video_settings.tone_map = non(self.tone_map_widget.currentText())
+        self.app.fastflix.current_video.video_settings.vsync = non(self.vsync_widget.currentText())
+
         if not self.incoming_same_as_source.isChecked():
             self.app.fastflix.current_video.video_settings.source_fps = self.incoming_fps_widget.text()
         if not self.outgoing_same_as_source.isChecked():
@@ -341,6 +310,9 @@ class AdvancedPanel(QtWidgets.QWidget):
         else:
             self.app.fastflix.current_video.video_settings.color_space = self.color_space_widget.currentText()
 
+    def page_update(self):
+        self.main.page_update(build_thumbnail=False)
+
     def reset(self, reload=False):
         if reload:
             vs = self.app.fastflix.current_video.video_settings
@@ -352,22 +324,30 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.tone_map_widget.setCurrentIndex(5)
             self.incoming_same_as_source.setChecked(True)
             self.outgoing_same_as_source.setChecked(True)
+            self.incoming_fps_widget.setDisabled(True)
+            self.outgoing_fps_widget.setDisabled(True)
             self.incoming_fps_widget.setText("")
             self.outgoing_fps_widget.setText("")
             self.denoise_type_widget.setCurrentIndex(0)
             self.denoise_strength_widget.setCurrentIndex(0)
+            self.vsync_widget.setCurrentIndex(0)
 
         if self.app.fastflix.current_video:
+            dont_set = False
             if "/" in self.app.fastflix.current_video.frame_rate:
                 try:
                     over, under = self.app.fastflix.current_video.frame_rate.split("/")
+                    if under == "1":
+                        self.source_frame_rate.setText(over)
+                        dont_set = True
                     readable_rate = int(over) / int(under)
                 except Exception:
                     self.source_frame_rate.setText(self.app.fastflix.current_video.frame_rate)
                 else:
-                    self.source_frame_rate.setText(
-                        f"{self.app.fastflix.current_video.frame_rate} (~{readable_rate:.3f})"
-                    )
+                    if not dont_set:
+                        self.source_frame_rate.setText(
+                            f"{self.app.fastflix.current_video.frame_rate} (~{readable_rate:.3f})"
+                        )
             else:
                 self.source_frame_rate.setText(self.app.fastflix.current_video.frame_rate)
 
