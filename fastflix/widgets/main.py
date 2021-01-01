@@ -174,7 +174,7 @@ class Main(QtWidgets.QWidget):
         self.grid.setSpacing(5)
         self.paused = False
 
-        # self.disable_all()
+        self.disable_all()
         self.setLayout(self.grid)
         self.set_profile()
         self.show()
@@ -1026,6 +1026,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.height.setText("Auto")
         self.widgets.preview.setPixmap(QtGui.QPixmap())
         self.video_options.clear_tracks()
+        self.disable_all()
         self.loading_video = False
 
     @reusables.log_exception("fastflix", show_traceback=True)
@@ -1471,7 +1472,7 @@ class Main(QtWidgets.QWidget):
         self.converting = True
         self.set_convert_button(False)
         self.app.fastflix.worker_queue.put(tuple(requests))
-        # self.disable_all()
+        self.disable_all()
         self.video_options.show_status()
 
     def get_commands(self):
@@ -1530,7 +1531,6 @@ class Main(QtWidgets.QWidget):
     def conversion_complete(self, return_code):
         self.converting = False
         self.paused = False
-        self.enable_all()
         self.set_convert_button()
 
         if return_code:
@@ -1543,7 +1543,6 @@ class Main(QtWidgets.QWidget):
     def conversion_cancelled(self, data):
         self.converting = False
         self.paused = False
-        self.enable_all()
         self.set_convert_button()
 
         try:

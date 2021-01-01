@@ -81,7 +81,7 @@ def build(fastflix: FastFlix):
     beginning, ending = generate_all(fastflix, "libx265")
 
     if settings.tune and settings.tune != "default":
-        beginning += f"-tune {settings.tune}"
+        beginning += f"-tune {settings.tune} "
 
     if settings.profile and settings.profile != "default":
         beginning += f"-profile {settings.profile} "

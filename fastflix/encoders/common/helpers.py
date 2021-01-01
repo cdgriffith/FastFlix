@@ -52,14 +52,14 @@ def generate_ffmpeg_start(
     pix_fmt="yuv420p10le",
     filters=None,
     max_muxing_queue_size="default",
-    fast_time=True,
+    fast_seek=True,
     video_title="",
     custom_map=False,
     **_,
 ):
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
-    time_one = time_settings if fast_time else ""
-    time_two = time_settings if not fast_time else ""
+    time_one = time_settings if fast_seek else ""
+    time_two = time_settings if not fast_seek else ""
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = str(source).replace("\\", "/")
     ffmpeg = str(ffmpeg).replace("\\", "/")
@@ -183,13 +183,17 @@ def generate_all(
 
     filters = None
     if not disable_filters:
-        filters = generate_filters(burn_in_track=burn_in_track, **asdict(fastflix.current_video.video_settings))
+        filters = generate_filters(
+            burn_in_subtitle_track=burn_in_track, **asdict(fastflix.current_video.video_settings)
+        )
 
     ending = generate_ending(
         audio=audio,
         subtitles=subtitles,
         cover=attachments,
         output_video=fastflix.current_video.video_settings.output_path,
+        extra=fastflix.current_video.video_settings.video_encoder_settings.extra,
+        **asdict(fastflix.current_video.video_settings),
     )
 
     beginning = generate_ffmpeg_start(

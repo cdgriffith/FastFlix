@@ -125,7 +125,8 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             if runner.is_alive() or currently_encoding:
                 logger.info(t("The GUI might have died, but I'm going to keep converting!"))
             else:
-                break
+                logger.debug(t("Conversion worker shutting down"))
+                return
 
         try:
             request = worker_queue.get(block=True, timeout=0.05)

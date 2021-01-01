@@ -48,7 +48,7 @@ class Profile:
     subtitle_language: str = "en"
     subtitle_select: bool = True
     subtitle_select_preferred_language: bool = True
-    subtitle_automatic_burn_in: bool = True
+    subtitle_automatic_burn_in: bool = False
     subtitle_select_first_matching: bool = False
 
     x265: Union[x265Settings, None] = None
@@ -137,11 +137,7 @@ class Config:
         if encoder_settings:
             return getattr(encoder_settings, profile_option_name)
         else:
-            try:
-                return getattr(empty_profile.setting_types[profile_name](), profile_option_name)
-            except Exception:
-                print(dir(empty_profile.setting_types[profile_name]()))
-                raise
+            return getattr(empty_profile.setting_types[profile_name](), profile_option_name)
 
     def opt(self, profile_option_name, default=NO_OPT):
         if default != NO_OPT:
