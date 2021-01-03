@@ -130,7 +130,7 @@ def generate_filters(
     raw_filters=False,
     deinterlace=False,
     tone_map: str = "hable",
-    speed: Union[float, int] = 1,
+    video_speed: Union[float, int] = 1,
     deblock: Union[str, None] = None,
     deblock_size: int = 4,
     denoise: Union[str, None] = None,
@@ -157,8 +157,8 @@ def generate_filters(
         filter_list.append("vflip")
     if horizontal_flip:
         filter_list.append("hflip")
-    if speed and speed != 1:
-        filter_list.append(f"setpts={speed}*PTS")
+    if video_speed and video_speed != 1:
+        filter_list.append(f"setpts={video_speed}*PTS")
     if deblock:
         filter_list.append(f"deblock=filter={deblock}:block={deblock_size}")
     if denoise:

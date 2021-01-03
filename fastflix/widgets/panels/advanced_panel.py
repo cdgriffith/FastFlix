@@ -10,9 +10,8 @@ from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
-from fastflix.models.encode import AttachmentTrack
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import Video
+from fastflix.models.video import Video, VideoSettings
 from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
@@ -128,8 +127,11 @@ def non(value):
     return value
 
 
-# TODO disable fps boxes if same as source
-# TODO reset from queue
+def get_key(my_dict, val):
+    for key, value in my_dict.items():
+        if val == value:
+            return key
+    return None
 
 
 class AdvancedPanel(QtWidgets.QWidget):
@@ -141,15 +143,34 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         self.layout = QtWidgets.QGridLayout()
 
+        self.last_row = 0
+
         self.init_fps()
+        self.add_spacer()
         self.init_video_speed()
+        self.add_spacer()
         self.init_tone_map()
+        self.add_spacer()
         self.init_denoise()
+        self.add_spacer()
         self.init_deblock()
+        self.add_spacer()
         self.init_color_info()
-        self.init_vsync()
-        self.layout.setRowStretch(8, True)
+
+        self.last_row += 1
+
+        self.layout.setRowStretch(self.last_row, True)
+        self.layout.setColumnStretch(8, True)
+        for i in range(7):
+            self.layout.setColumnMinimumWidth(i, 155)
         self.setLayout(self.layout)
+
+    def add_spacer(self):
+        self.last_row += 1
+        spacer_widget = QtWidgets.QWidget(self)
+        spacer_widget.setFixedHeight(1)
+        spacer_widget.setStyleSheet("background-color: #ddd")
+        self.layout.addWidget(spacer_widget, self.last_row, 0, 1, 8)
 
     def init_fps(self):
         self.incoming_fps_widget = QtWidgets.QLineEdit()
@@ -172,46 +193,67 @@ class AdvancedPanel(QtWidgets.QWidget):
         )
 
         self.source_frame_rate = QtWidgets.QLabel("")
+        self.source_frame_rate_type = QtWidgets.QLabel("")
+        self.vsync_widget = QtWidgets.QComboBox()
+        self.vsync_widget.addItem(t("Unspecified"))
+        self.vsync_widget.addItems(vsync)
+        self.vsync_widget.currentIndexChanged.connect(self.page_update)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Override Source FPS")), 0, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.incoming_fps_widget, 0, 1)
-        self.layout.addWidget(self.incoming_same_as_source, 0, 2)
-        self.layout.addWidget(QtWidgets.QLabel(t("Source Frame Rate:")), 0, 3, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.source_frame_rate, 0, 4)
+        self.layout.addWidget(
+            QtWidgets.QLabel(t("Override Source FPS")), self.last_row, 0, alignment=QtCore.Qt.AlignRight
+        )
+        self.layout.addWidget(self.incoming_fps_widget, self.last_row, 1)
+        self.layout.addWidget(self.incoming_same_as_source, self.last_row, 2)
+        self.layout.addWidget(
+            QtWidgets.QLabel(t("Source Frame Rate")), self.last_row, 4, alignment=QtCore.Qt.AlignRight
+        )
+        self.layout.addWidget(self.source_frame_rate, self.last_row, 5)
+        self.layout.addWidget(self.source_frame_rate_type, self.last_row, 6)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Output FPS")), 1, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.outgoing_fps_widget, 1, 1)
-        self.layout.addWidget(self.outgoing_same_as_source, 1, 2)
+        self.last_row += 1
+        self.layout.addWidget(QtWidgets.QLabel(t("Output FPS")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.outgoing_fps_widget, self.last_row, 1)
+        self.layout.addWidget(self.outgoing_same_as_source, self.last_row, 2)
+
+        self.layout.addWidget(QtWidgets.QLabel(t("vsync")), self.last_row, 4, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.vsync_widget, self.last_row, 5)
+
+        self.last_row += 1
 
     def fps_update(self, myself, widget):
         widget.setDisabled(myself.isChecked())
         self.page_update()
 
-    def init_concat(self):
-        layout = QtWidgets.QHBoxLayout()
-        self.concat_widget = QtWidgets.QCheckBox(t("Combine Files"))
-        # TODO add "learn more" link
-
-        layout.addWidget(self.concat_widget)
-        return layout
+    # def init_concat(self):
+    #     layout = QtWidgets.QHBoxLayout()
+    #     self.concat_widget = QtWidgets.QCheckBox(t("Combine Files"))
+    #     # TODO add "learn more" link
+    #
+    #     layout.addWidget(self.concat_widget)
+    #     return layout
 
     def init_video_speed(self):
-        self.video_Speed_widget = QtWidgets.QComboBox()
-        self.video_Speed_widget.addItems(video_speeds.keys())
-        self.video_Speed_widget.currentIndexChanged.connect(self.page_update)
-        self.layout.addWidget(QtWidgets.QLabel(t("Video Speed")), 2, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.video_Speed_widget, 2, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Warning: Audio will not be modified")), 2, 2)
+        self.last_row += 1
+        self.video_speed_widget = QtWidgets.QComboBox()
+        self.video_speed_widget.addItems(video_speeds.keys())
+        self.video_speed_widget.currentIndexChanged.connect(self.page_update)
+        self.layout.addWidget(QtWidgets.QLabel(t("Video Speed")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.video_speed_widget, self.last_row, 1)
+        self.layout.addWidget(QtWidgets.QLabel(t("Warning: Audio will not be modified")), self.last_row, 2, 1, 3)
 
     def init_tone_map(self):
+        self.last_row += 1
         self.tone_map_widget = QtWidgets.QComboBox()
         self.tone_map_widget.addItems(["None", "clip", "linear", "gamma", "reinhard", "hable", "mobius"])
         self.tone_map_widget.setCurrentIndex(5)
         self.tone_map_widget.currentIndexChanged.connect(self.page_update)
-        self.layout.addWidget(QtWidgets.QLabel(t("HDR -> SDR Tone Map")), 3, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.tone_map_widget, 3, 1)
+        self.layout.addWidget(
+            QtWidgets.QLabel(t("HDR -> SDR Tone Map")), self.last_row, 0, alignment=QtCore.Qt.AlignRight
+        )
+        self.layout.addWidget(self.tone_map_widget, self.last_row, 1)
 
     def init_denoise(self):
+        self.last_row += 1
         self.denoise_type_widget = QtWidgets.QComboBox()
         self.denoise_type_widget.addItems(["None", "nlmeans", "atadenoise", "hqdn3d", "vaguedenoiser"])
         self.denoise_type_widget.setCurrentIndex(0)
@@ -222,12 +264,13 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.denoise_strength_widget.setCurrentIndex(0)
         self.denoise_strength_widget.currentIndexChanged.connect(self.page_update)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Denoise")), 4, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.denoise_type_widget, 4, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Strength")), 4, 2, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.denoise_strength_widget, 4, 3)
+        self.layout.addWidget(QtWidgets.QLabel(t("Denoise")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.denoise_type_widget, self.last_row, 1)
+        self.layout.addWidget(QtWidgets.QLabel(t("Strength")), self.last_row, 2, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.denoise_strength_widget, self.last_row, 3)
 
     def init_deblock(self):
+        self.last_row += 1
         self.deblock_widget = QtWidgets.QComboBox()
         self.deblock_widget.addItems(["none", "weak", "strong"])
         self.deblock_widget.setCurrentIndex(0)
@@ -240,12 +283,13 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.deblock_size_widget.currentIndexChanged.connect(self.page_update)
         self.deblock_size_widget.setCurrentIndex(2)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Deblock")), 5, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.deblock_widget, 5, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Block Size")), 5, 2, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.deblock_size_widget, 5, 3)
+        self.layout.addWidget(QtWidgets.QLabel(t("Deblock")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.deblock_widget, self.last_row, 1)
+        self.layout.addWidget(QtWidgets.QLabel(t("Block Size")), self.last_row, 2, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.deblock_size_widget, self.last_row, 3)
 
     def init_color_info(self):
+        self.last_row += 1
         self.color_primaries_widget = QtWidgets.QComboBox()
         self.color_primaries_widget.addItem(t("Unspecified"))
         self.color_primaries_widget.addItems(ffmpeg_valid_color_primaries)
@@ -261,26 +305,18 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.color_space_widget.addItems(ffmpeg_valid_color_space)
         self.color_space_widget.currentIndexChanged.connect(self.page_update)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Color Primaries")), 6, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.color_primaries_widget, 6, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Color Transfer")), 6, 2, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.color_transfer_widget, 6, 3)
-        self.layout.addWidget(QtWidgets.QLabel(t("Color Space")), 6, 4, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.color_space_widget, 6, 5)
-
-    def init_vsync(self):
-        self.vsync_widget = QtWidgets.QComboBox()
-        self.vsync_widget.addItem(t("Unspecified"))
-        self.vsync_widget.addItems(vsync)
-        self.vsync_widget.currentIndexChanged.connect(self.page_update)
-        self.layout.addWidget(QtWidgets.QLabel(t("vsync")), 7, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.vsync_widget, 7, 1)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Primaries")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.color_primaries_widget, self.last_row, 1)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Transfer")), self.last_row, 2, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.color_transfer_widget, self.last_row, 3)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Space")), self.last_row, 4, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.color_space_widget, self.last_row, 5)
 
     def update_settings(self):
-        self.app.fastflix.current_video.video_settings.speed = video_speeds[self.video_Speed_widget.currentText()]
+        self.app.fastflix.current_video.video_settings.video_speed = video_speeds[self.video_speed_widget.currentText()]
         self.app.fastflix.current_video.video_settings.deblock = non(self.deblock_widget.currentText())
         self.app.fastflix.current_video.video_settings.deblock_size = int(self.deblock_size_widget.currentText())
-        self.app.fastflix.current_video.video_settings.tone_map = non(self.tone_map_widget.currentText())
+        self.app.fastflix.current_video.video_settings.tone_map = self.tone_map_widget.currentText()
         self.app.fastflix.current_video.video_settings.vsync = non(self.vsync_widget.currentText())
 
         if not self.incoming_same_as_source.isChecked():
@@ -313,12 +349,56 @@ class AdvancedPanel(QtWidgets.QWidget):
     def page_update(self):
         self.main.page_update(build_thumbnail=False)
 
-    def reset(self, reload=False):
-        if reload:
-            vs = self.app.fastflix.current_video.video_settings
-            # TODO reload from queue
+    def reset(self, settings: VideoSettings = None):
+        if settings:
+            self.video_speed_widget.setCurrentText(get_key(video_speeds, settings.video_speed))
+            if settings.deblock:
+                self.deblock_widget.setCurrentText(settings.deblock)
+            self.deblock_size_widget.setCurrentText(str(settings.deblock_size))
+            self.tone_map_widget.setCurrentText(settings.tone_map)
+
+            if not settings.source_fps:
+                self.incoming_same_as_source.setChecked(True)
+                self.incoming_fps_widget.setText("")
+            else:
+                self.incoming_same_as_source.setChecked(False)
+                self.incoming_fps_widget.setText(settings.source_fps)
+
+            if not settings.output_fps:
+                self.outgoing_same_as_source.setChecked(True)
+                self.outgoing_fps_widget.setText("")
+            else:
+                self.outgoing_same_as_source.setChecked(False)
+                self.outgoing_fps_widget.setText(settings.output_fps)
+
+            if settings.denoise:
+                for denoise_type, preset in denoise_presets.items():
+                    for preset_name, value in preset.items():
+                        if settings.denoise == value:
+                            self.denoise_type_widget.setCurrentText(denoise_type)
+                            self.denoise_strength_widget.setCurrentText(preset_name)
+            if settings.vsync:
+                self.vsync_widget.setCurrentText(settings.vsync)
+            else:
+                self.vsync_widget.setCurrentIndex(0)
+
+            if settings.color_space:
+                self.color_space_widget.setCurrentText(settings.color_space)
+            else:
+                self.color_space_widget.setCurrentIndex(0)
+
+            if settings.color_transfer:
+                self.color_transfer_widget.setCurrentText(settings.color_transfer)
+            else:
+                self.color_transfer_widget.setCurrentIndex(0)
+
+            if settings.color_primaries:
+                self.color_primaries_widget.setCurrentText(settings.color_primaries)
+            else:
+                self.color_primaries_widget.setCurrentIndex(0)
+
         else:
-            self.video_Speed_widget.setCurrentIndex(0)
+            self.video_speed_widget.setCurrentIndex(0)
             self.deblock_widget.setCurrentIndex(0)
             self.deblock_size_widget.setCurrentIndex(0)
             self.tone_map_widget.setCurrentIndex(5)
@@ -331,7 +411,11 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.denoise_type_widget.setCurrentIndex(0)
             self.denoise_strength_widget.setCurrentIndex(0)
             self.vsync_widget.setCurrentIndex(0)
+            self.color_space_widget.setCurrentIndex(0)
+            self.color_transfer_widget.setCurrentIndex(0)
+            self.color_primaries_widget.setCurrentIndex(0)
 
+        # Set the frame rate
         if self.app.fastflix.current_video:
             dont_set = False
             if "/" in self.app.fastflix.current_video.frame_rate:
@@ -346,21 +430,18 @@ class AdvancedPanel(QtWidgets.QWidget):
                 else:
                     if not dont_set:
                         self.source_frame_rate.setText(
-                            f"{self.app.fastflix.current_video.frame_rate} (~{readable_rate:.3f})"
+                            f"{self.app.fastflix.current_video.frame_rate}   [ ~{readable_rate:.3f} ]"
                         )
             else:
                 self.source_frame_rate.setText(self.app.fastflix.current_video.frame_rate)
-
-        # "r_frame_rate"
-
-        #
-        #     if not self.incoming_same_as_source.isChecked():
-        #         self.app.fastflix.current_video.video_settings.source_fps = self.incoming_fps_widget.text()
-        #     if not self.outgoing_same_as_source.isChecked():
-        #         self.app.fastflix.current_video.video_settings.output_fps = self.outgoing_fps_widget.text()
+            self.source_frame_rate_type.setText(
+                t("Constant")
+                if self.app.fastflix.current_video.frame_rate == self.app.fastflix.current_video.average_frame_rate
+                else t("Variable")
+            )
 
     def new_source(self):
-        self.reset(reload=False)
+        self.reset()
 
         if self.app.fastflix.current_video.color_primaries in ffmpeg_valid_color_primaries:
             self.color_primaries_widget.setCurrentIndex(

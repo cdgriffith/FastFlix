@@ -7,7 +7,8 @@
 * Adding #117 support for text based burn in subtitles
 * Adding #152 option to switch back to old bubbly buttons (thanks to GitKike98)
 * Fixing #156 Copy was broken due to ffmpeg extras not being passed (thanks to leonardyan)
-* Fixing #158 Translation of tab name "Quality" lost when output codec switched (thanks to leonardyan)
+* Fixing #158 Translation and icon of tab name "Quality" lost when output codec switched (thanks to leonardyan)
+* Fixing loading video could encounter a bug and crash fastflix (thanks to Jan)
 
 ## Version 4.0.4
 

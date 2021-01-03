@@ -83,7 +83,7 @@ class Container(QtWidgets.QMainWindow):
     def init_menu(self):
         menubar = self.menuBar()
 
-        file_menu = menubar.addMenu("&File")
+        file_menu = menubar.addMenu(t("File"))
 
         setting_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogListView), t("Settings"), self)
         setting_action.setShortcut("Ctrl+S")

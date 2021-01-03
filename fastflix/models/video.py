@@ -42,8 +42,8 @@ class VideoSettings(BaseDataClass):
     output_path: Path = None
     scale: Union[str, None] = None
     deinterlace: bool = False
-    speed: Union[float, int] = 1
-    tone_map: Union[str, None] = None
+    video_speed: Union[float, int] = 1
+    tone_map: str = "hable"
     denoise: Union[str, None] = None
     deblock: Union[str, None] = None
     deblock_size: int = 4
@@ -140,4 +140,11 @@ class Video(BaseDataClass):
         stream = self.current_video_stream
         if not stream:
             return ""
-        return stream.get("avg_frame_rate", stream.get("r_frame_rate", ""))
+        return stream.get("r_frame_rate", "")
+
+    @property
+    def average_frame_rate(self):
+        stream = self.current_video_stream
+        if not stream:
+            return ""
+        return stream.get("avg_frame_rate", "")
