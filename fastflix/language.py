@@ -20,8 +20,9 @@ config = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastf
 
 try:
     language = Box.from_yaml(filename=config).language
-except Exception:
-    print("WARNING: Could not get language from config file")
+except Exception as err:
+    if not str(err).endswith("does not exist"):
+        print("WARNING: Could not get language from config file")
     language = "eng"
 
 language_data = Box.from_yaml(filename=language_file, encoding="utf-8")
