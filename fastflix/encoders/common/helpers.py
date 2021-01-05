@@ -82,6 +82,7 @@ def generate_ffmpeg_start(
             f'{filters if filters else ""}',
             f"-c:v {encoder}",
             f"-pix_fmt {pix_fmt}",
+            " ",  # Leave space after commands
         ]
     )
 

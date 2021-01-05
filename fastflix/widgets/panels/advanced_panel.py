@@ -13,6 +13,7 @@ from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video, VideoSettings
 from fastflix.shared import link
+from fastflix.resources import warning_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -122,7 +123,14 @@ vsync = ["auto", "passthrough", "cfr", "vfr", "drop"]
 
 
 def non(value):
-    if value == "none":
+    if value.lower() in (
+        t("none").lower(),
+        "none",
+        t("Unspecified").lower(),
+        "unspecified",
+        t("Same as Source").lower(),
+        "same as source",
+    ):
         return None
     return value
 
@@ -140,6 +148,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.app = app
         self.main = parent.main
         self.attachments = Box()
+        self.updating = False
 
         self.layout = QtWidgets.QGridLayout()
 
@@ -161,6 +170,16 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         self.layout.setRowStretch(self.last_row, True)
         self.layout.setColumnStretch(8, True)
+        self.last_row += 1
+
+        warning_label = QtWidgets.QLabel()
+        icon = QtGui.QIcon(warning_icon)
+        warning_label.setPixmap(icon.pixmap(22))
+
+        self.layout.addWidget(warning_label, self.last_row, 0, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(
+            QtWidgets.QLabel(t("Advanced settings are currently not saved in Profiles")), self.last_row, 1, 1, 4
+        )
         for i in range(7):
             self.layout.setColumnMinimumWidth(i, 155)
         self.setLayout(self.layout)
@@ -272,7 +291,7 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_deblock(self):
         self.last_row += 1
         self.deblock_widget = QtWidgets.QComboBox()
-        self.deblock_widget.addItems(["none", "weak", "strong"])
+        self.deblock_widget.addItems(["None", "weak", "strong"])
         self.deblock_widget.setCurrentIndex(0)
         self.deblock_widget.currentIndexChanged.connect(self.page_update)
 
@@ -313,6 +332,9 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.layout.addWidget(self.color_space_widget, self.last_row, 5)
 
     def update_settings(self):
+        if self.updating:
+            return False
+        self.updating = True
         self.app.fastflix.current_video.video_settings.video_speed = video_speeds[self.video_speed_widget.currentText()]
         self.app.fastflix.current_video.video_settings.deblock = non(self.deblock_widget.currentText())
         self.app.fastflix.current_video.video_settings.deblock_size = int(self.deblock_size_widget.currentText())
@@ -345,6 +367,36 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.app.fastflix.current_video.video_settings.color_space = None
         else:
             self.app.fastflix.current_video.video_settings.color_space = self.color_space_widget.currentText()
+        self.updating = False
+
+    def hdr_settings(self):
+        if self.main.remove_hdr:
+            self.color_primaries_widget.setCurrentText("bt709")
+            self.app.fastflix.current_video.video_settings.color_primaries = "bt709"
+            self.app.fastflix.current_video.video_settings.color_transfer = None
+            self.app.fastflix.current_video.video_settings.color_space = None
+            self.color_transfer_widget.setCurrentIndex(0)
+            self.color_space_widget.setCurrentIndex(0)
+        else:
+            if self.app.fastflix.current_video:
+                if self.app.fastflix.current_video.color_space:
+                    self.color_space_widget.setCurrentText(self.app.fastflix.current_video.color_space)
+                else:
+                    self.color_space_widget.setCurrentIndex(0)
+
+                if self.app.fastflix.current_video.color_transfer:
+                    self.color_transfer_widget.setCurrentText(self.app.fastflix.current_video.color_transfer)
+                else:
+                    self.color_transfer_widget.setCurrentIndex(0)
+
+                if self.app.fastflix.current_video.color_primaries:
+                    self.color_primaries_widget.setCurrentText(self.app.fastflix.current_video.color_primaries)
+                else:
+                    self.color_primaries_widget.setCurrentIndex(0)
+            else:
+                self.color_space_widget.setCurrentIndex(0)
+                self.color_transfer_widget.setCurrentIndex(0)
+                self.color_primaries_widget.setCurrentIndex(0)
 
     def page_update(self):
         self.main.page_update(build_thumbnail=False)
@@ -381,22 +433,6 @@ class AdvancedPanel(QtWidgets.QWidget):
                 self.vsync_widget.setCurrentText(settings.vsync)
             else:
                 self.vsync_widget.setCurrentIndex(0)
-
-            if settings.color_space:
-                self.color_space_widget.setCurrentText(settings.color_space)
-            else:
-                self.color_space_widget.setCurrentIndex(0)
-
-            if settings.color_transfer:
-                self.color_transfer_widget.setCurrentText(settings.color_transfer)
-            else:
-                self.color_transfer_widget.setCurrentIndex(0)
-
-            if settings.color_primaries:
-                self.color_primaries_widget.setCurrentText(settings.color_primaries)
-            else:
-                self.color_primaries_widget.setCurrentIndex(0)
-
         else:
             self.video_speed_widget.setCurrentIndex(0)
             self.deblock_widget.setCurrentIndex(0)
@@ -411,9 +447,8 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.denoise_type_widget.setCurrentIndex(0)
             self.denoise_strength_widget.setCurrentIndex(0)
             self.vsync_widget.setCurrentIndex(0)
-            self.color_space_widget.setCurrentIndex(0)
-            self.color_transfer_widget.setCurrentIndex(0)
-            self.color_primaries_widget.setCurrentIndex(0)
+
+        self.hdr_settings()
 
         # Set the frame rate
         if self.app.fastflix.current_video:
@@ -439,6 +474,9 @@ class AdvancedPanel(QtWidgets.QWidget):
                 if self.app.fastflix.current_video.frame_rate == self.app.fastflix.current_video.average_frame_rate
                 else t("Variable")
             )
+        else:
+            self.source_frame_rate.setText("")
+            self.source_frame_rate_type.setText("")
 
     def new_source(self):
         self.reset()

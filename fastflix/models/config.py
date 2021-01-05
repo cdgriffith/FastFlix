@@ -103,6 +103,7 @@ class Config:
     ffprobe: Path = None
     flat_ui: bool = True
     language: str = "en"
+    logging_level: int = 10
     continue_on_failure: bool = True
     work_path: Path = fastflix_folder
     use_sane_audio: bool = True

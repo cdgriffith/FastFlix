@@ -66,6 +66,9 @@ class EncodeItem(QtWidgets.QTabWidget):
 
         settings = Box(copy.deepcopy(asdict(video.video_settings)))
         settings.output_path = str(settings.output_path)
+        for i, o in enumerate(settings.attachment_tracks):
+            if o.get("file_path"):
+                o["file_path"] = str(o["file_path"])
         del settings.conversion_commands
 
         title.setToolTip(settings.to_yaml())

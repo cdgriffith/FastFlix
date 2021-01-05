@@ -153,6 +153,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.attachments.clear_covers()
         self.commands.update_commands([])
         self.advanced.reset()
+        self.info.reset()
 
     def update_queue(self, currently_encoding=False):
         self.queue.new_source(currently_encoding)

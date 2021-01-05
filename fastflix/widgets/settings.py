@@ -98,12 +98,18 @@ class Settings(QtWidgets.QWidget):
         elif self.app.fastflix.config.disable_version_check:
             self.disable_version_check.setChecked(True)
 
+        self.logger_level_widget = QtWidgets.QComboBox()
+        self.logger_level_widget.addItems(["Debug", "Info", "Warning", "Error"])
+        self.logger_level_widget.setCurrentIndex(int(self.app.fastflix.config.logging_level // 10) - 1)
+
         self.flat_ui = QtWidgets.QCheckBox(t("Flat UI"))
         self.flat_ui.setChecked(self.app.fastflix.config.flat_ui)
 
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
         layout.addWidget(self.disable_version_check, 8, 0, 1, 2)
-        layout.addWidget(self.flat_ui, 9, 0, 1, 2)
+        layout.addWidget(QtWidgets.QLabel(t("GUI Logging Level")), 9, 0)
+        layout.addWidget(self.logger_level_widget, 9, 1)
+        layout.addWidget(self.flat_ui, 10, 0, 1, 2)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
@@ -144,6 +150,9 @@ class Settings(QtWidgets.QWidget):
                 f"{t('Could not set language to')} {self.language_combo.currentText()}\n {t('Please report this issue')}"
             )
         self.app.fastflix.config.disable_version_check = self.disable_version_check.isChecked()
+        log_level = (self.logger_level_widget.currentIndex() + 1) * 10
+        self.app.fastflix.config.logging_level = log_level
+        logger.setLevel(log_level)
 
         self.main.config_update()
         self.app.fastflix.config.save()

@@ -32,17 +32,16 @@ def create_app():
 
 
 def init_logging(app: FastFlixApp):
-    gui_logger = logging.getLogger("fastflix")
     stream_handler = reusables.get_stream_handler(level=logging.DEBUG)
     file_handler = reusables.get_file_handler(
         app.fastflix.log_path / f"flix_gui_{file_date()}.log",
         level=logging.DEBUG,
         encoding="utf-8",
     )
-    gui_logger.setLevel(logging.DEBUG)
-    gui_logger.addHandler(stream_handler)
-    gui_logger.addHandler(file_handler)
-    coloredlogs.install(level="DEBUG", logger=gui_logger)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(stream_handler)
+    logger.addHandler(file_handler)
+    coloredlogs.install(level="DEBUG", logger=logger)
 
 
 def init_encoders(app: FastFlixApp, **_):
@@ -131,6 +130,7 @@ def start_app(worker_queue, status_queue, log_queue):
 
     if app.fastflix.config.flat_ui:
         app.setStyleSheet(default_mode)
+    logger.setLevel(app.fastflix.config.logging_level)
 
     startup_tasks = [
         Task(t("Gather FFmpeg version"), ffmpeg_configuration),
