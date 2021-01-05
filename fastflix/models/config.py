@@ -171,6 +171,11 @@ class Config:
         if not self.config_path.exists():
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
             self.save()
+            if not self.ffmpeg:
+                raise MissingFF("ffmpeg")
+            if not self.ffprobe:
+                # Try one last time to find snap packaged versions
+                self.ffprobe = find_ffmpeg_file("ffmpeg.ffprobe", raise_on_missing=True)
             return
 
         try:
