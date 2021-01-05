@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 import logging
 from subprocess import PIPE, STDOUT, run
+from pathlib import Path
 
 from qtpy import QtCore
 
 from fastflix.language import t
+from fastflix.models.fastflix_app import FastFlixApp
 
 logger = logging.getLogger("fastflix")
 
@@ -60,3 +62,43 @@ class SubtitleFix(QtCore.QThread):
                 self.main.thread_logging_signal.emit(
                     f'WARNING:{t("Could not fix first subtitle track")}: {result.stdout}'
                 )
+
+
+class ExtractSubtitleSRT(QtCore.QThread):
+    def __init__(self, app: FastFlixApp, main, index):
+        super().__init__(main)
+        self.main = main
+        self.app = app
+        self.index = index
+
+    def run(self):
+        filename = Path(self.main.output_video).parent / f"{self.main.output_video}.{self.index}.srt"
+        self.main.thread_logging_signal.emit(f'INFO:{t("Extracting subtitles to")} {filename}')
+
+        try:
+            result = run(
+                [
+                    self.app.fastflix.config.ffmpeg,
+                    "-y",
+                    "-i",
+                    self.main.input_video,
+                    "-map",
+                    f"0:{self.index}",
+                    "-c",
+                    "srt",
+                    "-f",
+                    "srt",
+                    filename,
+                ],
+                stdout=PIPE,
+                stderr=STDOUT,
+            )
+        except Exception as err:
+            self.main.thread_logging_signal.emit(f'ERROR:{t("Could not extract subtitle track")} {self.index} - {err}')
+        else:
+            if result.returncode != 0:
+                self.main.thread_logging_signal.emit(
+                    f'WARNING:{t("Could not extract subtitle track")} {self.index}: {result.stdout}'
+                )
+            else:
+                self.main.thread_logging_signal.emit(f'INFO:{t("Extracted subtitles successfully")}')

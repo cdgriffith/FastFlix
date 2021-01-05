@@ -331,6 +331,13 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.layout.addWidget(QtWidgets.QLabel(t("Color Space")), self.last_row, 4, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.color_space_widget, self.last_row, 5)
 
+    # def init_subtitle_overlay_fix(self):
+    #     self.last_row += 1
+    # TODO figure out overlay for subtitles move up
+    # overlay=y=-140
+    # crop=1904:800:6:140
+    # (800 + 140) - 1080 == -140
+
     def update_settings(self):
         if self.updating:
             return False

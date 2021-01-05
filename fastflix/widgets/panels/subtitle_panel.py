@@ -107,7 +107,8 @@ class Subtitle(QtWidgets.QTabWidget):
         grid.addLayout(disposition_layout, 0, 4)
         grid.addWidget(self.widgets.burn_in, 0, 5)
         grid.addLayout(self.init_language(), 0, 6)
-        # grid.addWidget(self.init_extract_button(), 0, 6)
+        if self.subtitle_type == "text":
+            grid.addWidget(self.init_extract_button(), 0, 7)
         grid.addWidget(self.widgets.enable_check, 0, 8)
 
         self.setLayout(grid)
@@ -133,18 +134,16 @@ class Subtitle(QtWidgets.QTabWidget):
         layout.addWidget(self.widgets.down_button)
         return layout
 
-    #
-    # def init_extract_button(self):
-    #     self.widgets.extract = QtWidgets.QPushButton("Extract")
-    #     self.widgets.extract.clicked.connect(self.extract)
-    #     return self.widgets.extract
-    #
-    # def extract(self):
-    #     from fastflix.widgets.command_runner import BackgroundRunner
-    #     self.parent.main.flix.execute(
-    #         f'"{self.parent.main.flix.ffmpeg}" -i "{self.parent.main.input_video}" -map 0:{self.index} -c srt -f srt "{self.parent.main.input_video}.{self.index}.srt"',
-    #         work_dir=self.parent.main.path.work
-    #     )
+    def init_extract_button(self):
+        self.widgets.extract = QtWidgets.QPushButton("Extract")
+        self.widgets.extract.clicked.connect(self.extract)
+        return self.widgets.extract
+
+    def extract(self):
+        from fastflix.widgets.background_tasks import ExtractSubtitleSRT
+
+        worker = ExtractSubtitleSRT(self.parent.app, self.parent.main, self.index)
+        worker.start()
 
     def init_language(self):
         self.widgets.language.addItems(language_list)

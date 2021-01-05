@@ -147,7 +147,7 @@ class Config:
         return getattr(self.profiles[self.selected_profile], profile_option_name)
 
     def find_ffmpeg_file(self, name):
-        if ff_location := shutil.which(name):
+        if (ff_location := shutil.which(name)) is not None:
             return setattr(self, name, Path(ff_location).absolute())
 
         if not ffmpeg_folder.exists():
@@ -197,7 +197,13 @@ class Config:
             self.find_ffmpeg_file("ffmpeg")
 
         if not self.ffprobe or not self.ffprobe.exists():
-            self.find_ffmpeg_file("ffprobe")
+            try:
+                self.find_ffmpeg_file("ffprobe")
+            except MissingFF as err:
+                try:
+                    self.find_ffmpeg_file("ffmpeg.ffprobe")
+                except MissingFF:
+                    raise err from None
 
         self.profiles.update(get_preset_defaults())
 
