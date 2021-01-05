@@ -120,8 +120,8 @@ def find_ffmpeg_file(name, raise_on_missing=False):
 class Config:
     version: str = __version__
     config_path: Path = fastflix_folder / "fastflix.yaml"
-    ffmpeg: Path = field(default=lambda: find_ffmpeg_file("ffmpeg"))
-    ffprobe: Path = field(default=lambda: find_ffmpeg_file("ffprobe"))
+    ffmpeg: Path = field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
+    ffprobe: Path = field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
