@@ -148,7 +148,7 @@ class Config:
 
     def find_ffmpeg_file(self, name):
         if ff_location := shutil.which(name):
-            return setattr(self, name, Path(ff_location).resolve())
+            return setattr(self, name, Path(ff_location).absolute())
 
         if not ffmpeg_folder.exists():
             raise MissingFF(name)
