@@ -11,9 +11,10 @@ from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import down_arrow_icon, up_arrow_icon
+from fastflix.resources import down_arrow_icon, up_arrow_icon, loading_movie
 from fastflix.shared import error_message, main_width, no_border
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.widgets.background_tasks import ExtractSubtitleSRT
 
 dispositions = [
     "none",
@@ -45,6 +46,8 @@ language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] an
 
 
 class Subtitle(QtWidgets.QTabWidget):
+    extract_completed_signal = QtCore.Signal()
+
     def __init__(self, parent, subtitle, index, enabled=True, first=False):
         self.loading = True
         super(Subtitle, self).__init__(parent)
@@ -83,7 +86,7 @@ class Subtitle(QtWidgets.QTabWidget):
                 try:
                     self.widgets.disposition.setCurrentIndex(dispositions.index(disposition))
                 except ValueError:
-                    pass  # TODO figure out all possible dispositions for subtitles / log if issue
+                    pass
                 break
 
         self.setFixedHeight(60)
@@ -94,39 +97,55 @@ class Subtitle(QtWidgets.QTabWidget):
             {t("Cannot remove afterwards!")}
             """
         )
+        self.widgets.extract = QtWidgets.QPushButton(t("Extract"))
+        self.widgets.extract.clicked.connect(self.extract)
+
+        self.gif_label = QtWidgets.QLabel(self)
+        self.movie = QtGui.QMovie(loading_movie)
+        self.movie.setScaledSize(QtCore.QSize(25, 25))
+        self.gif_label.setMovie(self.movie)
+        # self.movie.start()
 
         disposition_layout = QtWidgets.QHBoxLayout()
-        disposition_layout.addStretch()
         disposition_layout.addWidget(QtWidgets.QLabel(t("Disposition")))
         disposition_layout.addWidget(self.widgets.disposition)
 
-        grid = QtWidgets.QGridLayout()
-        grid.addLayout(self.init_move_buttons(), 0, 0)
-        grid.addWidget(self.widgets.track_number, 0, 1)
-        grid.addWidget(self.widgets.title, 0, 2)
-        grid.addLayout(disposition_layout, 0, 4)
-        grid.addWidget(self.widgets.burn_in, 0, 5)
-        grid.addLayout(self.init_language(), 0, 6)
+        self.grid = QtWidgets.QGridLayout()
+        self.grid.addLayout(self.init_move_buttons(), 0, 0)
+        self.grid.addWidget(self.widgets.track_number, 0, 1)
+        self.grid.addWidget(self.widgets.title, 0, 2)
+        self.grid.setColumnStretch(2, True)
         if self.subtitle_type == "text":
-            grid.addWidget(self.init_extract_button(), 0, 7)
-        grid.addWidget(self.widgets.enable_check, 0, 8)
+            self.grid.addWidget(self.widgets.extract, 0, 3)
+            self.grid.addWidget(self.gif_label, 0, 3)
+            self.gif_label.hide()
 
-        self.setLayout(grid)
+        self.grid.addLayout(disposition_layout, 0, 4)
+        self.grid.addWidget(self.widgets.burn_in, 0, 5)
+        self.grid.addLayout(self.init_language(), 0, 6)
+
+        self.grid.addWidget(self.widgets.enable_check, 0, 8)
+
+        self.setLayout(self.grid)
         self.loading = False
         self.updating_burn = False
         if self.subtitle_type == "text":
             self.widgets.burn_in.setChecked(False)
             self.widgets.burn_in.setDisabled(True)
+        self.extract_completed_signal.connect(self.extraction_complete)
+
+    def extraction_complete(self):
+        self.grid.addWidget(self.widgets.extract, 0, 3)
+        self.movie.stop()
+        self.gif_label.hide()
+        self.widgets.extract.show()
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(0)
-        # layout.setMargin(0)
-        # self.widgets.up_button = QtWidgets.QPushButton("^")
         self.widgets.up_button.setDisabled(self.first)
         self.widgets.up_button.setFixedWidth(20)
         self.widgets.up_button.clicked.connect(lambda: self.parent.move_up(self))
-        # self.widgets.down_button = QtWidgets.QPushButton("v")
         self.widgets.down_button.setDisabled(self.last)
         self.widgets.down_button.setFixedWidth(20)
         self.widgets.down_button.clicked.connect(lambda: self.parent.move_down(self))
@@ -134,16 +153,12 @@ class Subtitle(QtWidgets.QTabWidget):
         layout.addWidget(self.widgets.down_button)
         return layout
 
-    def init_extract_button(self):
-        self.widgets.extract = QtWidgets.QPushButton("Extract")
-        self.widgets.extract.clicked.connect(self.extract)
-        return self.widgets.extract
-
     def extract(self):
-        from fastflix.widgets.background_tasks import ExtractSubtitleSRT
-
-        worker = ExtractSubtitleSRT(self.parent.app, self.parent.main, self.index)
+        worker = ExtractSubtitleSRT(self.parent.app, self.parent.main, self.index, self.extract_completed_signal)
         worker.start()
+        self.gif_label.show()
+        self.widgets.extract.hide()
+        self.movie.start()
 
     def init_language(self):
         self.widgets.language.addItems(language_list)

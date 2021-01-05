@@ -985,6 +985,13 @@ Gather FFmpeg version:
   ita: Raccogliere la versione FFmpeg
   spa: Reunir la versión FFmpeg
   zho: 获取FFmpeg版本
+Gather FFprobe version:
+  deu: Sammeln Sie FFprobe-Version
+  eng: Gather FFprobe version
+  fra: Rassembler la version FFprobe
+  ita: Raccogliere la versione FFprobe
+  spa: Reunir la versión FFprobe
+  zho: 获取FFprobe版本
 Generating thumbnail:
   deu: Miniaturansicht generieren
   eng: Generating thumbnail

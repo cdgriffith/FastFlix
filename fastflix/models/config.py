@@ -99,8 +99,8 @@ def get_preset_defaults():
 class Config:
     version: str = __version__
     config_path: Path = fastflix_folder / "fastflix.yaml"
-    ffmpeg: Path = None
-    ffprobe: Path = None
+    ffmpeg: Path = Path("ffmpeg")
+    ffprobe: Path = Path("ffprobe")
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
@@ -167,7 +167,13 @@ class Config:
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
             try:
                 self.find_ffmpeg_file("ffmpeg")
-                self.find_ffmpeg_file("ffprobe")
+                try:
+                    self.find_ffmpeg_file("ffprobe")
+                except MissingFF as err:
+                    try:
+                        self.find_ffmpeg_file("ffmpeg.ffprobe")
+                    except MissingFF:
+                        raise err from None
             finally:
                 self.save()
             return

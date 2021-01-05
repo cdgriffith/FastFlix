@@ -20,6 +20,7 @@ class FastFlix(BaseDataClass):
     log_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "logs"
     ffmpeg_version: str = ""
     ffmpeg_config: List[str] = ""
+    ffprobe_version: str = ""
 
     # Queues
     worker_queue: Queue = None

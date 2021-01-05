@@ -36,3 +36,4 @@ poll_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/poll.
 working_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/pending-work.png")).resolve())
 advanced_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/advanced.png")).resolve())
 info_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/info.png")).resolve())
+loading_movie = str(Path(pkg_resources.resource_filename(__name__, "data/icons/loading.gif")).resolve())

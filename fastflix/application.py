@@ -7,7 +7,7 @@ import reusables
 from qtpy import QtGui
 
 from fastflix.language import t
-from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration
+from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration, ffprobe_configuration
 from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
@@ -115,7 +115,7 @@ def start_app(worker_queue, status_queue, log_queue):
         )
     try:
         app.fastflix.config.load()
-    except MissingFF:
+    except MissingFF as err:
         if reusables.win_based and ask_for_ffmpeg():
             try:
                 ProgressBar(app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
@@ -123,6 +123,9 @@ def start_app(worker_queue, status_queue, log_queue):
             except Exception as err:
                 logger.exception(str(err))
                 sys.exit(1)
+        else:
+            logger.error(f"Could not find {err} location, please manually set in {app.fastflix.config.config_path}")
+            sys.exit(1)
     except Exception:
         # TODO give edit / delete options
         logger.exception(t("Could not load config file!"))
@@ -134,6 +137,7 @@ def start_app(worker_queue, status_queue, log_queue):
 
     startup_tasks = [
         Task(t("Gather FFmpeg version"), ffmpeg_configuration),
+        Task(t("Gather FFprobe version"), ffprobe_configuration),
         Task(t("Gather FFmpeg audio encoders"), ffmpeg_audio_encoders),
         Task(t("Initialize Encoders"), init_encoders),
     ]

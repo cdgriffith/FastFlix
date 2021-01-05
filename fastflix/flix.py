@@ -107,6 +107,18 @@ def ffmpeg_configuration(app, config: Config, **_):
     # return version, config
 
 
+def ffprobe_configuration(app, config: Config, **_):
+    """ Extract the version of ffprobe """
+    res = execute([f"{config.ffprobe}", "-version"])
+    if res.returncode != 0:
+        raise FlixError(f'"{config.ffprobe}" file not found')
+    try:
+        version = res.stdout.split(" ", 4)[2]
+    except (ValueError, IndexError):
+        raise FlixError(f'Cannot parse version of ffprobe from "{res.stdout}"')
+    app.fastflix.ffprobe_version = version
+
+
 def probe(app: FastFlixApp, file: Path) -> Box:
     """ Run FFprobe on a file """
     command = [
