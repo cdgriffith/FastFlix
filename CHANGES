@@ -12,6 +12,8 @@
 * Fixing #158 Translation and icon of tab name "Quality" lost when output codec switched (thanks to leonardyan)
 * Fixing snap packaged, and other symlinked FFmpeg installs were not linked correctly (thanks to Catatau)
 * Fixing loading video could encounter a bug and crash fastflix (thanks to Jan)
+* Fixing being able to set landscape cover
+* Fixing resetting covers from queue
 
 ## Version 4.0.4
 

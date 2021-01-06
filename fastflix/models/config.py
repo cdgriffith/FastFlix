@@ -203,8 +203,6 @@ class Config:
 
         if not self.ffmpeg or not self.ffmpeg.exists():
             self.ffmpeg = find_ffmpeg_file("ffmpeg", raise_on_missing=True)
-            print(f"FFmpeg path has been set to {self.ffmpeg}")
-
         if not self.ffprobe or not self.ffprobe.exists():
             try:
                 self.ffprobe = find_ffmpeg_file("ffprobe", raise_on_missing=True)
@@ -213,8 +211,6 @@ class Config:
                     self.ffprobe = find_ffmpeg_file("ffmpeg.ffprobe", raise_on_missing=True)
                 except MissingFF:
                     raise err from None
-            print(f"FFprobe path has been set to {self.ffprobe}")
-
         self.profiles.update(get_preset_defaults())
 
         if self.selected_profile not in self.profiles:
