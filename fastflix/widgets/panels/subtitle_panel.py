@@ -93,7 +93,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets.title.setToolTip(self.subtitle.to_yaml())
         self.widgets.burn_in.setToolTip(
             f"""{t("Overlay this subtitle track onto the video during conversion.")}\n
-            {t("Currently only works for image based subtitles.")}\n
+            {t("Please make sure seek method is set to exact.")}\n
             {t("Cannot remove afterwards!")}
             """
         )
@@ -129,9 +129,6 @@ class Subtitle(QtWidgets.QTabWidget):
         self.setLayout(self.grid)
         self.loading = False
         self.updating_burn = False
-        if self.subtitle_type == "text":
-            self.widgets.burn_in.setChecked(False)
-            self.widgets.burn_in.setDisabled(True)
         self.extract_completed_signal.connect(self.extraction_complete)
 
     def extraction_complete(self):
@@ -217,6 +214,8 @@ class Subtitle(QtWidgets.QTabWidget):
         if enable and [1 for track in self.parent.tracks if track.enabled and track.burn_in and track is not self]:
             self.widgets.burn_in.setChecked(False)
             error_message(t("There is an existing burn-in track, only one can be enabled at a time"))
+        if enable and self.parent.main.fast_time:
+            self.parent.main.widgets.fast_time.setCurrentText("exact")
         self.updating_burn = False
         self.page_update()
 
