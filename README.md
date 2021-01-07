@@ -44,7 +44,7 @@ Check out the [FFmpeg download page for static builds](https://ffmpeg.org/downlo
 
 ## Running from source code
 
-Requires python3.9+
+Requires python3.8+
 
 ```
 git clone https://github.com/cdgriffith/FastFlix.git
@@ -86,7 +86,7 @@ FastFlix does not plan to support Dolby Vision's proprietary format at this time
 
 # License
 
-Copyright (C) 2019-2020 Chris Griffith
+Copyright (C) 2019-2021 Chris Griffith
 
 The code itself is licensed under the MIT which you can read in the `LICENSE` file. <br>
 Read more about the release licensing in the [docs](docs/README.md) folder. <br>

@@ -170,7 +170,7 @@ class CoverPanel(QtWidgets.QWidget):
             self.update_cover_settings()
             self.main.page_update(build_thumbnail=False)
             return
-        
+
         if (
             not Path(cover).exists()
             or not Path(cover).is_file()
@@ -194,9 +194,11 @@ class CoverPanel(QtWidgets.QWidget):
         index = None
         if attr and attr.text().strip():
             cover_image = Path(attr.text().strip())
-        if (self.app.fastflix.current_video and
-                getattr(self, f"{filename}_passthrough_checkbox").isChecked() and
-                filename in self.attachments):
+        if (
+            self.app.fastflix.current_video
+            and getattr(self, f"{filename}_passthrough_checkbox").isChecked()
+            and filename in self.attachments
+        ):
             cover_image = self.app.fastflix.current_video.work_path / self.attachments[filename].name
             index = self.attachments[filename].stream
         return cover_image if cover_image else None, index
@@ -216,7 +218,11 @@ class CoverPanel(QtWidgets.QWidget):
             if attachment:
                 attachments.append(
                     AttachmentTrack(
-                        index=index, outdex=start_outdex, file_path=attachment, filename=filename, attachment_type="cover"
+                        index=index,
+                        outdex=start_outdex,
+                        file_path=attachment,
+                        filename=filename,
+                        attachment_type="cover",
                     )
                 )
                 start_outdex += 1
