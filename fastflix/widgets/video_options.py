@@ -107,7 +107,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         if getattr(self.main.current_encoder, "enable_attachments", False):
             self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
         self.current_settings.new_source()
-        self.queue.new_source()
+        self.queue.new_source(currently_encoding=self.main.converting)
         self.advanced.new_source()
         self.main.container.profile.update_settings()
         self.info.reset()

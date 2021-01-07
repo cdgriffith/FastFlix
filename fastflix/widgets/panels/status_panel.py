@@ -178,6 +178,6 @@ class LogUpdater(QtCore.QThread):
             if msg.startswith("CLEAR_WINDOW"):
                 self.parent.clear_window.emit(msg)
             elif msg == "UPDATE_QUEUE":
-                self.parent.status_panel.main.video_options.update_queue()
+                self.parent.status_panel.main.video_options.update_queue(currently_encoding=self.parent.converting)
             else:
                 self.parent.log_signal.emit(msg)

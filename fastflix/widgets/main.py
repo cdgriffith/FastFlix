@@ -1534,7 +1534,7 @@ class Main(QtWidgets.QWidget):
         video = self.app.fastflix.current_video
 
         self.app.fastflix.queue.append(copy.deepcopy(video))
-        self.video_options.update_queue()
+        self.video_options.update_queue(currently_encoding=self.converting)
         self.video_options.show_queue()
 
         if self.converting:
@@ -1641,24 +1641,24 @@ class Main(QtWidgets.QWidget):
                     if mkv_prop_edit := shutil.which("mkvpropedit"):
                         worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
                         worker.start()
-                self.video_options.update_queue()
+                self.video_options.update_queue(currently_encoding=self.converting)
             else:
                 logger.error(f"This should not happen? {status} - {video}")
 
         elif command == "running":
             video.status.current_command = command_index
             video.status.running = True
-            self.video_options.update_queue(currently_encoding=True)
+            self.video_options.update_queue(currently_encoding=self.converting)
 
         elif command == "error":
             video.status.error = True
             video.status.running = False
-            self.video_options.update_queue()
+            self.video_options.update_queue(currently_encoding=self.converting)
 
         elif command == "cancelled":
             video.status.cancelled = True
             video.status.running = False
-            self.video_options.update_queue()
+            self.video_options.update_queue(currently_encoding=self.converting)
 
         elif command in ("paused encode", "resumed encode"):
             pass
