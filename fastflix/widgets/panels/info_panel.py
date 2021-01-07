@@ -45,28 +45,3 @@ class InfoPanel(QtWidgets.QTabWidget):
             widget.setDisabled(False)
             widget.setText(Box(stream).to_yaml(default_flow_style=False))
             self.addTab(widget, f"{stream['index']}: {stream['codec_type'].title()} ({stream.get('codec_name', '')})")
-
-        #
-        #     if not self.incoming_same_as_source.isChecked():
-        #         self.app.fastflix.current_video.video_settings.source_fps = self.incoming_fps_widget.text()
-        #     if not self.outgoing_same_as_source.isChecked():
-        #         self.app.fastflix.current_video.video_settings.output_fps = self.outgoing_fps_widget.text()
-
-    # def init_cover(self):
-    #     layout = QtWidgets.QHBoxLayout()
-    #     self.cover_path = QtWidgets.QLineEdit()
-    #     self.cover_path.textChanged.connect(lambda: self.update_cover())
-    #     self.cover_button = QtWidgets.QPushButton(
-    #         icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogContentsView)
-    #     )
-    #     self.cover_button.clicked.connect(lambda: self.select_cover())
-    #
-    #     layout.addWidget(self.cover_path)
-    #     layout.addWidget(self.cover_button)
-    #     return layout
-
-    # def update_filter_settings(self):
-    #     self.app.fastflix.current_video.video_settings.attachment_tracks = attachments
-
-    def new_source(self):
-        pass

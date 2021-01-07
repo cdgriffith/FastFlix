@@ -146,6 +146,7 @@ class VideoOptions(QtWidgets.QTabWidget):
             if getattr(self.main.current_encoder, "enable_attachments", False):
                 self.attachments.reload_from_queue(streams, settings)
             self.advanced.reset(settings=settings)
+            self.info.reset()
 
     def clear_tracks(self):
         self.current_settings.update_profile()
