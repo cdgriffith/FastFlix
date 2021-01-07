@@ -335,7 +335,7 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.remove_hdr = QtWidgets.QCheckBox(t("Remove HDR"))
         self.widgets.remove_hdr.setChecked(False)
-        self.widgets.remove_hdr.toggled.connect(self.encoder_settings_update)
+        self.widgets.remove_hdr.toggled.connect(self.hdr_update)
         self.widgets.remove_hdr.setToolTip(
             f"{t('Convert BT2020 colorspace into bt709')}\n"
             f"{t('WARNING: This will take much longer and result in a larger file')}"
@@ -464,7 +464,9 @@ class Main(QtWidgets.QWidget):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
         self.widgets.convert_to.setFont(QtGui.QFont("helvetica", 10, weight=57))
-        self.widgets.convert_to.setIconSize(QtCore.QSize(40, 40))
+        self.widgets.convert_to.setIconSize(
+            QtCore.QSize(40, 40) if self.app.fastflix.config.flat_ui else QtCore.QSize(35, 35)
+        )
 
     def init_encoder_drop_down(self):
         layout = QtWidgets.QHBoxLayout()
@@ -739,7 +741,14 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget.setText(self.generate_output_filename)
         self.output_video_path_widget.setDisabled(False)
         self.output_path_button.setDisabled(False)
-        self.update_video_info()
+        try:
+            self.update_video_info()
+        except Exception:
+            logger.exception(f"Could not load video {self.input_video}")
+            self.video_path_widget.setText("")
+            self.output_video_path_widget.setText("")
+            self.output_video_path_widget.setDisabled(True)
+            self.output_path_button.setDisabled(True)
         self.page_update()
 
     @property
@@ -767,12 +776,17 @@ class Main(QtWidgets.QWidget):
         start_pos = self.start_time or self.app.fastflix.current_video.duration // 10
 
         blocks = math.ceil((self.app.fastflix.current_video.duration - start_pos) / 5)
+        if blocks < 1:
+            blocks = 1
 
         times = [
             x
             for x in range(int(start_pos), int(self.app.fastflix.current_video.duration), blocks)
             if x < self.app.fastflix.current_video.duration
         ][:4]
+
+        if not times:
+            return
 
         self.app.processEvents()
         result_list = []
@@ -1353,6 +1367,10 @@ class Main(QtWidgets.QWidget):
     def encoder_settings_update(self):
         self.video_options.settings_update()
 
+    def hdr_update(self):
+        self.video_options.advanced.hdr_settings()
+        self.encoder_settings_update()
+
     def page_update(self, build_thumbnail=True):
         if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
             return
@@ -1578,13 +1596,20 @@ class Main(QtWidgets.QWidget):
             self.input_video = Path(event.mimeData().urls()[0].toLocalFile())
         except (ValueError, IndexError):
             return event.ignore()
-        else:
-            self.video_path_widget.setText(str(self.input_video))
-            self.output_video_path_widget.setText(self.generate_output_filename)
-            self.output_video_path_widget.setDisabled(False)
-            self.output_path_button.setDisabled(False)
+
+        self.video_path_widget.setText(str(self.input_video))
+        self.output_video_path_widget.setText(self.generate_output_filename)
+        self.output_video_path_widget.setDisabled(False)
+        self.output_path_button.setDisabled(False)
+        try:
             self.update_video_info()
-            self.page_update()
+        except Exception:
+            logger.exception(f"Could not load video {self.input_video}")
+            self.video_path_widget.setText("")
+            self.output_video_path_widget.setText("")
+            self.output_video_path_widget.setDisabled(True)
+            self.output_path_button.setDisabled(True)
+        self.page_update()
 
     def dragEnterEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()

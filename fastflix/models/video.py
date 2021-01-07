@@ -42,6 +42,17 @@ class VideoSettings(BaseDataClass):
     output_path: Path = None
     scale: Union[str, None] = None
     deinterlace: bool = False
+    video_speed: Union[float, int] = 1
+    tone_map: str = "hable"
+    denoise: Union[str, None] = None
+    deblock: Union[str, None] = None
+    deblock_size: int = 4
+    color_space: Union[str, None] = None
+    color_transfer: Union[str, None] = None
+    color_primaries: Union[str, None] = None
+    source_fps: Union[str, None] = None
+    output_fps: Union[str, None] = None
+    vsync: Union[str, None] = None
     video_encoder_settings: Union[
         x265Settings,
         x264Settings,
@@ -123,3 +134,17 @@ class Video(BaseDataClass):
         if not stream:
             return ""
         return stream.get("pix_fmt", "")
+
+    @property
+    def frame_rate(self):
+        stream = self.current_video_stream
+        if not stream:
+            return ""
+        return stream.get("r_frame_rate", "")
+
+    @property
+    def average_frame_rate(self):
+        stream = self.current_video_stream
+        if not stream:
+            return ""
+        return stream.get("avg_frame_rate", "")

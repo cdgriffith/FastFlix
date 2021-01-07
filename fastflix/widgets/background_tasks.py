@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
-from subprocess import PIPE, STDOUT, run
+from subprocess import PIPE, STDOUT, run, Popen
+from pathlib import Path
 
 from qtpy import QtCore
 
 from fastflix.language import t
+from fastflix.models.fastflix_app import FastFlixApp
 
 logger = logging.getLogger("fastflix")
 
-__all__ = ["ThumbnailCreator"]
+__all__ = ["ThumbnailCreator", "ExtractSubtitleSRT", "SubtitleFix"]
 
 
 class ThumbnailCreator(QtCore.QThread):
@@ -60,3 +62,95 @@ class SubtitleFix(QtCore.QThread):
                 self.main.thread_logging_signal.emit(
                     f'WARNING:{t("Could not fix first subtitle track")}: {result.stdout}'
                 )
+
+
+class ExtractSubtitleSRT(QtCore.QThread):
+    def __init__(self, app: FastFlixApp, main, index, signal):
+        super().__init__(main)
+        self.main = main
+        self.app = app
+        self.index = index
+        self.signal = signal
+
+    def run(self):
+        filename = str(Path(self.main.output_video).parent / f"{self.main.output_video}.{self.index}.srt").replace(
+            "\\", "/"
+        )
+        self.main.thread_logging_signal.emit(f'INFO:{t("Extracting subtitles to")} {filename}')
+
+        try:
+            result = run(
+                [
+                    self.app.fastflix.config.ffmpeg,
+                    "-y",
+                    "-i",
+                    self.main.input_video,
+                    "-map",
+                    f"0:{self.index}",
+                    "-c",
+                    "srt",
+                    "-f",
+                    "srt",
+                    filename,
+                ],
+                stdout=PIPE,
+                stderr=STDOUT,
+            )
+        except Exception as err:
+            self.main.thread_logging_signal.emit(f'ERROR:{t("Could not extract subtitle track")} {self.index} - {err}')
+        else:
+            if result.returncode != 0:
+                self.main.thread_logging_signal.emit(
+                    f'WARNING:{t("Could not extract subtitle track")} {self.index}: {result.stdout}'
+                )
+            else:
+                self.main.thread_logging_signal.emit(f'INFO:{t("Extracted subtitles successfully")}')
+        self.signal.emit()
+
+
+# class ExtractHDR10(QtCore.QThread):
+#     def __init__(self, app: FastFlixApp, main, index, signal):
+#         super().__init__(main)
+#         self.main = main
+#         self.app = app
+#         self.index = index
+#         self.signal = signal
+#
+#     def run(self):
+#         # VERIFY ffmpeg -loglevel panic -i input.mkv -c:v copy -vbsf hevc_mp4toannexb -f hevc - | hdr10plus_parser --verify -
+#
+#         self.main.thread_logging_signal.emit(f'INFO:{t("Extracting HDR10+ metadata")}')
+#
+#         process = Popen(
+#             [
+#                 self.app.fastflix.config.ffmpeg,
+#                 "-y",
+#                 "-i",
+#                 self.main.input_video,
+#                 "-map",
+#                 f"0:{self.index}",
+#                 "-loglevel",
+#                 "panic",
+#                 "-c:v",
+#                 "copy",
+#                 "-vbsf",
+#                 "hevc_mp4toannexb",
+#                 "-f",
+#                 "hevc",
+#                 "-"
+#                 ],
+#             stdout=PIPE,
+#             stderr=PIPE,
+#             stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
+#         )
+#
+#         process_two = Popen(
+#             ["hdr10plus_parser", "--verify", "-"],
+#             stdout=PIPE,
+#             stderr=PIPE,
+#             stdin=self.process.stdout,
+#             encoding="utf-8",
+#         )
+#
+#         stdout, stderr = process_two.communicate()
+#

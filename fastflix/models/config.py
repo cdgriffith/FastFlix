@@ -95,13 +95,36 @@ def get_preset_defaults():
     }
 
 
+def find_ffmpeg_file(name, raise_on_missing=False):
+    if (ff_location := shutil.which(name)) is not None:
+        return Path(ff_location).absolute()
+
+    if not ffmpeg_folder.exists():
+        if raise_on_missing:
+            raise MissingFF(name)
+        return None
+    for file in ffmpeg_folder.iterdir():
+        if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
+            return file
+    else:
+        if (ffmpeg_folder / "bin").exists():
+            for file in (ffmpeg_folder / "bin").iterdir():
+                if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
+                    return file
+    if raise_on_missing:
+        raise MissingFF(name)
+    return None
+
+
 @dataclass
 class Config:
     version: str = __version__
     config_path: Path = fastflix_folder / "fastflix.yaml"
-    ffmpeg: Path = None
-    ffprobe: Path = None
+    ffmpeg: Path = field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
+    ffprobe: Path = field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
+    flat_ui: bool = True
     language: str = "en"
+    logging_level: int = 10
     continue_on_failure: bool = True
     work_path: Path = fastflix_folder
     use_sane_audio: bool = True
@@ -144,31 +167,17 @@ class Config:
             return getattr(self.profiles[self.selected_profile], profile_option_name, default)
         return getattr(self.profiles[self.selected_profile], profile_option_name)
 
-    def find_ffmpeg_file(self, name):
-        if ff_location := shutil.which(name):
-            return setattr(self, name, Path(ff_location).resolve())
-
-        if not ffmpeg_folder.exists():
-            raise MissingFF(name)
-        for file in ffmpeg_folder.iterdir():
-            if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
-                return setattr(self, name, file)
-        else:
-            if (ffmpeg_folder / "bin").exists():
-                for file in (ffmpeg_folder / "bin").iterdir():
-                    if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
-                        return setattr(self, name, file)
-        raise MissingFF(name)
-
     def load(self):
         if not self.config_path.exists():
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
-            try:
-                self.find_ffmpeg_file("ffmpeg")
-                self.find_ffmpeg_file("ffprobe")
-            finally:
-                self.save()
+            self.save()
+            if not self.ffmpeg:
+                raise MissingFF("ffmpeg")
+            if not self.ffprobe:
+                # Try one last time to find snap packaged versions
+                self.ffprobe = find_ffmpeg_file("ffmpeg.ffprobe", raise_on_missing=True)
             return
+
         try:
             data = Box.from_yaml(filename=self.config_path)
         except BoxError as err:
@@ -191,12 +200,17 @@ class Config:
                 continue
             if key in self and key not in ("config_path", "version"):
                 setattr(self, key, Path(value) if key in paths and value else value)
+
         if not self.ffmpeg or not self.ffmpeg.exists():
-            self.find_ffmpeg_file("ffmpeg")
-
+            self.ffmpeg = find_ffmpeg_file("ffmpeg", raise_on_missing=True)
         if not self.ffprobe or not self.ffprobe.exists():
-            self.find_ffmpeg_file("ffprobe")
-
+            try:
+                self.ffprobe = find_ffmpeg_file("ffprobe", raise_on_missing=True)
+            except MissingFF as err:
+                try:
+                    self.ffprobe = find_ffmpeg_file("ffmpeg.ffprobe", raise_on_missing=True)
+                except MissingFF:
+                    raise err from None
         self.profiles.update(get_preset_defaults())
 
         if self.selected_profile not in self.profiles:

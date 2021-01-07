@@ -107,6 +107,18 @@ def ffmpeg_configuration(app, config: Config, **_):
     # return version, config
 
 
+def ffprobe_configuration(app, config: Config, **_):
+    """ Extract the version of ffprobe """
+    res = execute([f"{config.ffprobe}", "-version"])
+    if res.returncode != 0:
+        raise FlixError(f'"{config.ffprobe}" file not found')
+    try:
+        version = res.stdout.split(" ", 4)[2]
+    except (ValueError, IndexError):
+        raise FlixError(f'Cannot parse version of ffprobe from "{res.stdout}"')
+    app.fastflix.ffprobe_version = version
+
+
 def probe(app: FastFlixApp, file: Path) -> Box:
     """ Run FFprobe on a file """
     command = [
@@ -122,6 +134,12 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         f"{file}",
     ]
     result = execute(command)
+    if result.returncode != 0:
+        raise FlixError(f"Error code returned running FFprobe: {result.stdout} - {result.stderr}")
+
+    if result.stdout.strip() == "{}":
+        raise FlixError(f"No output from FFprobe, not a known video type. stderr: {result.stderr}")
+
     try:
         return Box.from_json(result.stdout)
     except BoxError:
@@ -149,9 +167,8 @@ def determine_rotation(streams) -> Tuple[int, int]:
 def parse(app: FastFlixApp, **_):
     data = probe(app, app.fastflix.current_video.source)
     if "streams" not in data:
-        raise FlixError("Not a video file")
+        raise FlixError(f"Not a video file, FFprobe output: {data}")
     streams = Box({"video": [], "audio": [], "subtitle": [], "attachment": [], "data": []})
-    covers = []
     for track in data.streams:
         if track.codec_type == "video" and track.get("disposition", {}).get("attached_pic"):
             streams.attachment.append(track)
@@ -161,7 +178,7 @@ def parse(app: FastFlixApp, **_):
             logger.error(f"Unknown codec: {track.codec_type}")
 
     if not streams.video:
-        raise FlixError("There were no video streams detected")
+        raise FlixError(f"There were no video streams detected: {data}")
 
     for stream in streams.video:
         if "bits_per_raw_sample" in stream:
