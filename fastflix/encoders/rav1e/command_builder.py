@@ -54,15 +54,15 @@ def build(fastflix: FastFlix):
     pass_type = "bitrate" if settings.bitrate else "QP"
 
     if not settings.bitrate:
-        command_1 = f"{beginning} -qp {settings.qp}" + ending
+        command_1 = f"{beginning} -qp {settings.qp} {settings.extra} {ending}"
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
 
     if settings.single_pass:
-        command_1 = f"{beginning} -b:v {settings.bitrate} {ending}"
+        command_1 = f"{beginning} -b:v {settings.bitrate} {settings.extra} {ending}"
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
     else:
-        command_1 = f"{beginning} -b:v {settings.bitrate} -pass 1 -an -f matroska {null}"
-        command_2 = f"{beginning} -b:v {settings.bitrate} -pass 2 {ending}"
+        command_1 = f"{beginning} -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f matroska {null}"
+        command_2 = f"{beginning} -b:v {settings.bitrate} -pass 2 {settings.extra} {ending}"
         return [
             Command(command_1, ["ffmpeg", "output"], False, name=f"First pass {pass_type}", exe="ffmpeg"),
             Command(command_2, ["ffmpeg", "output"], False, name=f"Second pass {pass_type} ", exe="ffmpeg"),

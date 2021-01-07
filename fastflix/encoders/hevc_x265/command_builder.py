@@ -160,13 +160,13 @@ def build(fastflix: FastFlix):
     if settings.bitrate:
         command_1 = (
             f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1"])} '
-            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset {settings.preset}'
+            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
             f" -an -sn -dn -f mp4 {null}"
         )
         command_2 = (
             f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "{pass_log_file}" '
-            f"-b:v {settings.bitrate} -preset {settings.preset} "
-        ) + ending
+            f"-b:v {settings.bitrate} -preset {settings.preset} {settings.extra} {ending}"
+        )
         return [
             Command(
                 re.sub("[ ]+", " ", command_1), ["ffmpeg", "output"], False, name="First pass bitrate", exe="ffmpeg"
@@ -177,7 +177,10 @@ def build(fastflix: FastFlix):
         ]
 
     elif settings.crf:
-        command = (f"{beginning} {get_x265_params()}  -crf {settings.crf} " f"-preset {settings.preset} ") + ending
+        command = (
+            f"{beginning} {get_x265_params()}  -crf {settings.crf} "
+            f"-preset {settings.preset} {settings.extra} {ending}"
+        )
         return [
             Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")
         ]

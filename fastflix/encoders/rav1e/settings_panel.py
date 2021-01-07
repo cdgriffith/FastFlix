@@ -137,6 +137,7 @@ class RAV1E(SettingPanel):
             single_pass=self.widgets.single_pass.isChecked(),
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
+            extra_both_passes=self.widgets.extra_both_passes.isChecked(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
         )
         if self.mode == "QP":
@@ -144,9 +145,11 @@ class RAV1E(SettingPanel):
             settings.qp = int(qp.split(" ", 1)[0]) if qp.lower() != "custom" else self.widgets.custom_qp.text()
         else:
             bitrate = self.widgets.bitrate.currentText()
-            settings.bitrate = (
-                bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.custom_bitrate.text()
-            )
+            if bitrate.lower() == "custom":
+                settings.bitrate = self.widgets.custom_bitrate.text().lower().rstrip("k")
+                settings.bitrate += "k"
+            else:
+                settings.bitrate = bitrate.split(" ", 1)[0]
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):

@@ -538,6 +538,7 @@ class HEVC(SettingPanel):
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
             lossless=self.widgets.lossless.isChecked(),
             extra=self.ffmpeg_extras,
+            extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
 
         if self.mode == "CRF":
@@ -546,7 +547,8 @@ class HEVC(SettingPanel):
         else:
             bitrate = self.widgets.bitrate.currentText()
             if bitrate.lower() == "custom":
-                settings.bitrate = self.widgets.custom_bitrate.text()
+                settings.bitrate = self.widgets.custom_bitrate.text().lower().rstrip("k")
+                settings.bitrate += "k"
             else:
                 settings.bitrate = bitrate.split(" ", 1)[0]
 

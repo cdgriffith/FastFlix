@@ -61,6 +61,7 @@ class GIF(SettingPanel):
             dither=self.widgets.dither.currentText(),
             extra=self.ffmpeg_extras,
             pix_fmt="yuv420p",  # hack for thumbnails to show properly
+            extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
 
     def new_source(self):
