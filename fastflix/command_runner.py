@@ -4,6 +4,7 @@ import logging
 import re
 import secrets
 import shlex
+import datetime
 from pathlib import Path
 from subprocess import PIPE
 from threading import Thread
@@ -29,6 +30,7 @@ class BackgroundRunner:
         self.success_detected = False
         self.error_message = []
         self.success_message = []
+        self.started_at = None
 
     def start_exec(self, command, work_dir: str = None, shell: bool = False, errors=(), successes=()):
         self.clean()
@@ -50,6 +52,8 @@ class BackgroundRunner:
             stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc on linux
             encoding="utf-8",
         )
+
+        self.started_at = datetime.datetime.now(datetime.timezone.utc)
 
         Thread(target=self.read_output).start()
 
@@ -82,6 +86,7 @@ class BackgroundRunner:
         )
 
         self.error_detected = False
+        self.started_at = datetime.datetime.now(datetime.timezone.utc)
 
         Thread(target=self.read_output).start()
 
@@ -145,6 +150,7 @@ class BackgroundRunner:
         self.error_detected = False
         self.success_detected = False
         self.killed = False
+        self.started_at = None
 
     def kill(self, log=True):
         if self.process_two:

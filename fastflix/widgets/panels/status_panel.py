@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import time
 import logging
-import re
+import datetime
+import threading
 from datetime import timedelta
 
 from qtpy import QtCore, QtWidgets
@@ -10,7 +12,7 @@ from fastflix.exceptions import FlixError
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
-from fastflix.shared import time_to_number
+from fastflix.shared import time_to_number, timedelta_to_str
 
 logger = logging.getLogger("fastflix")
 
@@ -25,6 +27,10 @@ class StatusPanel(QtWidgets.QWidget):
         self.main = parent.main
         self.current_video: Video = None
 
+        self.started_at = None
+        self.time_elapsed_ticker_running = False
+        self.time_elapsed_ticker_thread = threading.Thread(target=self.tick_elapsed_time)
+
         layout = QtWidgets.QGridLayout()
 
         self.hide_nal = QtWidgets.QCheckBox(t("Hide NAL unit messages"))
@@ -33,6 +39,8 @@ class StatusPanel(QtWidgets.QWidget):
         self.eta_label = QtWidgets.QLabel(f"{t('Time Left')}: N/A")
         self.eta_label.setToolTip(t("Estimated time left for current command"))
         self.eta_label.setStyleSheet("QLabel{margin-right:50px}")
+        self.time_elapsed_label = QtWidgets.QLabel(f"{t('Time Elapsed')}: N/A")
+        self.time_elapsed_label.setStyleSheet("QLabel{margin-right:50px}")
         self.size_label = QtWidgets.QLabel(f"{t('Size Estimate')}: N/A")
         self.size_label.setToolTip(t("Estimated file size based on bitrate"))
 
@@ -40,6 +48,7 @@ class StatusPanel(QtWidgets.QWidget):
         h_box.addWidget(QtWidgets.QLabel(t("Encoder Output")), alignment=QtCore.Qt.AlignLeft)
         h_box.addStretch(1)
         h_box.addWidget(self.eta_label)
+        h_box.addWidget(self.time_elapsed_label)
         h_box.addWidget(self.size_label)
         h_box.addStretch(1)
         h_box.addWidget(self.hide_nal, alignment=QtCore.Qt.AlignRight)
@@ -52,6 +61,7 @@ class StatusPanel(QtWidgets.QWidget):
 
         self.speed.connect(self.update_speed)
         self.bitrate.connect(self.update_bitrate)
+        self.main.status_update_signal.connect(self.on_status_update)
 
     def cleanup(self):
         self.inner_widget.log_updater.terminate()
@@ -87,7 +97,7 @@ class StatusPanel(QtWidgets.QWidget):
         else:
             if not speed:
                 self.eta_label.setText(f"{t('Time Left')}: N/A")
-            self.eta_label.setText(f"{t('Time Left')}: {data}")
+            self.eta_label.setText(f"{t('Time Left')}: {timedelta_to_str(data)}")
 
     def update_bitrate(self, bitrate):
         if not bitrate or bitrate.strip() == "N/A":
@@ -110,6 +120,48 @@ class StatusPanel(QtWidgets.QWidget):
 
     def update_title_bar(self):
         pass
+
+    def set_started_at(self, msg):
+        try:
+            started_at = datetime.datetime.fromisoformat(msg.split("__")[-1])
+        except Exception as e:
+            logger.warning(f"Unable to parse start time - {str(e)}")
+            return
+
+        self.started_at = started_at
+
+    def update_time_elapsed(self):
+        now = datetime.datetime.now(datetime.timezone.utc)
+
+        if not self.started_at:
+            logger.warning("Unable to update time elapsed because start time isn't set")
+            return
+
+        try:
+            time_elapsed = now - self.started_at
+        except Exception as e:
+            logger.warning(f"Unable to calculate elapsed time - {str(e)}")
+            return
+
+        self.time_elapsed_label.setText(f"{t('Time Elapsed')}: {timedelta_to_str(time_elapsed)}")
+
+    def tick_elapsed_time(self):
+        while self.time_elapsed_ticker_running:
+            self.update_time_elapsed()
+            time.sleep(0.3)
+
+        logger.debug("Time elapsed ticker exited")
+
+    def on_status_update(self, msg):
+        update_type = msg.split("__")[0]
+
+        if update_type in ["complete", "cancelled", "error"]:
+            self.time_elapsed_ticker_running = False
+            self.time_elapsed_ticker_thread = threading.Thread(target=self.tick_elapsed_time)
+        elif update_type == "running":
+            self.set_started_at(msg)
+            self.time_elapsed_ticker_running = True
+            self.time_elapsed_ticker_thread.start()
 
 
 class Logs(QtWidgets.QTextBrowser):

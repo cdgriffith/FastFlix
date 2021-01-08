@@ -67,11 +67,12 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
         logger.addHandler(new_file_handler)
         prevent_sleep_mode()
         currently_encoding = True
-        status_queue.put(("running", commands_to_run[0][0], commands_to_run[0][1]))
         runner.start_exec(
             commands_to_run[0][2],
             work_dir=commands_to_run[0][3],
         )
+
+        status_queue.put(("running", commands_to_run[0][0], commands_to_run[0][1], runner.started_at.isoformat()))
 
     while True:
         if currently_encoding and not runner.is_alive():
