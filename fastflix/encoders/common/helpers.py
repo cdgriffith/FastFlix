@@ -95,7 +95,6 @@ def generate_ending(
     copy_chapters=True,
     remove_metadata=True,
     null_ending=False,
-    extra="",
     output_fps: Union[str, None] = None,
     **_,
 ) -> str:
@@ -103,7 +102,7 @@ def generate_ending(
         f" {'-map_metadata -1' if remove_metadata else ''} "
         f"{'-map_chapters 0' if copy_chapters else ''} "
         f"{f'-r {output_fps}' if output_fps else ''} "
-        f"{audio} {subtitles} {cover} {extra} "
+        f"{audio} {subtitles} {cover} "
     )
     if output_video and not null_ending:
         output_video = str(output_video).replace("\\", "/")
@@ -226,7 +225,6 @@ def generate_all(
         subtitles=subtitles,
         cover=attachments,
         output_video=fastflix.current_video.video_settings.output_path,
-        extra=fastflix.current_video.video_settings.video_encoder_settings.extra,
         **asdict(fastflix.current_video.video_settings),
     )
 

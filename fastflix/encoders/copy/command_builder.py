@@ -11,7 +11,11 @@ def build(fastflix: FastFlix):
 
     return [
         Command(
-            re.sub("[ ]+", " ", f"{beginning} {ending}"),
+            re.sub(
+                "[ ]+",
+                " ",
+                f"{beginning} {fastflix.current_video.video_settings.video_encoder_settings.extra} {ending}",
+            ),
             ["ffmpeg", "output"],
             False,
             name="No Video Encoding",

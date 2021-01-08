@@ -42,6 +42,7 @@ class EncoderSettings(BaseDataClass):
     max_muxing_queue_size: str = "1024"
     pix_fmt: str = "yuv420p10le"
     extra: str = ""
+    extra_both_passes: bool = False
 
 
 @dataclass

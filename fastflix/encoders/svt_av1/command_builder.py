@@ -38,21 +38,21 @@ def build(fastflix: FastFlix):
 
     if settings.single_pass:
         if settings.bitrate:
-            command_1 = f"{beginning} -b:v {settings.bitrate} -rc 1" + ending
+            command_1 = f"{beginning} -b:v {settings.bitrate} -rc 1 {settings.extra} {ending}"
 
         elif settings.qp is not None:
-            command_1 = f"{beginning} -qp {settings.qp} -rc 0" + ending
+            command_1 = f"{beginning} -qp {settings.qp} -rc 0 {settings.extra} {ending}"
         else:
             return []
         return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
     else:
         if settings.bitrate:
-            command_1 = f"{beginning} -b:v {settings.bitrate} -rc 1 -pass 1 -an -f matroska {null}"
-            command_2 = f"{beginning} -b:v {settings.bitrate} -rc 1 -pass 2" + ending
+            command_1 = f"{beginning} -b:v {settings.bitrate} -rc 1 -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f matroska {null}"
+            command_2 = f"{beginning} -b:v {settings.bitrate} -rc 1 -pass 2 {settings.extra} {ending}"
 
         elif settings.qp is not None:
-            command_1 = f"{beginning} -qp {settings.qp} -rc 0 -pass 1 -an -f matroska {null}"
-            command_2 = f"{beginning} -qp {settings.qp} -rc 0 -pass 2" + ending
+            command_1 = f"{beginning} -qp {settings.qp} -rc 0 -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f matroska {null}"
+            command_2 = f"{beginning} -qp {settings.qp} -rc 0 -pass 2 {settings.extra} {ending}"
         else:
             return []
         return [

@@ -27,14 +27,14 @@ def build(fastflix: FastFlix):
     details = f"-quality {settings.quality} -speed {settings.speed} -profile {settings.profile}"
 
     if settings.bitrate:
-        command_1 = f"{beginning} -b:v {settings.bitrate} {details} -pass 1 -an -f webm {null}"
-        command_2 = f"{beginning} -b:v {settings.bitrate} {details} -pass 2 {ending}"
+        command_1 = f"{beginning} -b:v {settings.bitrate} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f webm {null}"
+        command_2 = f"{beginning} -b:v {settings.bitrate} {details} -pass 2 {settings.extra} {ending}"
 
     elif settings.crf:
-        command_1 = f"{beginning} -b:v 0 -crf {settings.crf} {details} -pass 1 -an -f webm {null}"
+        command_1 = f"{beginning} -b:v 0 -crf {settings.crf} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f webm {null}"
         command_2 = (
             f"{beginning} -b:v 0 -crf {settings.crf} {details} "
-            f'{"-pass 2" if not settings.single_pass else ""} {ending}'
+            f'{"-pass 2" if not settings.single_pass else ""} {settings.extra} {ending}'
         )
 
     else:

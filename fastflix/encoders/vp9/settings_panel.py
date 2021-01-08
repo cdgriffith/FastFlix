@@ -161,6 +161,7 @@ class VP9(SettingPanel):
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             profile=self.widgets.profile.currentIndex(),
             extra=self.ffmpeg_extras,
+            extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
@@ -168,7 +169,8 @@ class VP9(SettingPanel):
         else:
             bitrate = self.widgets.bitrate.currentText()
             if bitrate.lower() == "custom":
-                settings.bitrate = self.widgets.custom_bitrate.text()
+                settings.bitrate = self.widgets.custom_bitrate.text().lower().rstrip("k")
+                settings.bitrate += "k"
             else:
                 settings.bitrate = bitrate.split(" ", 1)[0]
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings

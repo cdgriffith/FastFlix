@@ -108,21 +108,28 @@ class SettingPanel(QtWidgets.QWidget):
 
         return layout
 
-    def _add_custom(self, connect="default"):
+    def _add_custom(self, connect="default", disable_both_passes=False):
         layout = QtWidgets.QHBoxLayout()
         self.labels.ffmpeg_options = QtWidgets.QLabel(t("Custom ffmpeg options"))
         self.labels.ffmpeg_options.setToolTip(t("Extra flags or options, cannot modify existing settings"))
         layout.addWidget(self.labels.ffmpeg_options)
         self.ffmpeg_extras_widget = QtWidgets.QLineEdit()
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
+        self.widgets["extra_both_passes"] = QtWidgets.QCheckBox(t("Both Passes"))
+        self.opts["extra_both_passes"] = "extra_both_passes"
+
         if connect and connect != "default":
             self.ffmpeg_extras_widget.disconnect()
             if connect == "self":
                 connect = lambda: self.page_update()
             self.ffmpeg_extras_widget.textChanged.connect(connect)
+            self.widgets["extra_both_passes"].toggled.connect(connect)
         else:
             self.ffmpeg_extras_widget.textChanged.connect(lambda: self.ffmpeg_extra_update())
+            self.widgets["extra_both_passes"].toggled.connect(lambda: self.main.page_update(build_thumbnail=False))
         layout.addWidget(self.ffmpeg_extras_widget)
+        if not disable_both_passes:
+            layout.addWidget(self.widgets["extra_both_passes"])
         return layout
 
     def _add_file_select(self, label, widget_name, button_action, connect="default", enabled=True, tooltip=""):
@@ -183,11 +190,13 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.custom_bitrate.setFixedWidth(100)
         self.widgets.custom_bitrate.setDisabled(True)
         self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
+        self.widgets.custom_bitrate.setValidator(self.only_int)
         bitrate_box_layout.addWidget(self.bitrate_radio)
         bitrate_box_layout.addWidget(self.widgets.bitrate)
         bitrate_box_layout.addStretch()
         bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
         bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
+        bitrate_box_layout.addWidget(QtWidgets.QLabel("k"))
 
         qp_help = (
             f"{qp_name.upper()} {t('is extremely source dependant')},\n"
@@ -219,6 +228,7 @@ class SettingPanel(QtWidgets.QWidget):
         qp_box_layout.addStretch()
         qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
         qp_box_layout.addWidget(self.widgets[f"custom_{qp_name}"])
+        qp_box_layout.addWidget(QtWidgets.QLabel("  "))
 
         bitrate_group_box.setLayout(bitrate_box_layout)
         qp_group_box.setLayout(qp_box_layout)

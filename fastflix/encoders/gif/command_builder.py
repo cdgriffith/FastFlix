@@ -24,11 +24,13 @@ def build(fastflix: FastFlix):
         f'-i "{fastflix.current_video.source}" '
     )
     if settings.extra:
-        beginning += f" {settings.extra} "
+        beginning += f"  "
 
     temp_palette = fastflix.current_video.work_path / f"temp_palette_{secrets.token_hex(10)}.png"
 
-    command_1 = f'{beginning} {palletgen_filters}  -y "{temp_palette}"'
+    command_1 = (
+        f'{beginning} {palletgen_filters} {settings.extra if settings.extra_both_passes else ""} -y "{temp_palette}"'
+    )
 
     gif_filters = f"fps={settings.fps:.2f}"
     if filters:
@@ -36,7 +38,7 @@ def build(fastflix: FastFlix):
 
     command_2 = (
         f'{beginning} -i "{temp_palette}" '
-        f'-filter_complex "{filters};[v][1:v]paletteuse=dither={settings.dither}[o]" -map "[o]" -y "{output_video}" '
+        f'-filter_complex "{filters};[v][1:v]paletteuse=dither={settings.dither}[o]" -map "[o]" {settings.extra} -y "{output_video}" '
     )
 
     return [

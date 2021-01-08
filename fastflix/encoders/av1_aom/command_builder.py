@@ -27,12 +27,14 @@ def build(fastflix: FastFlix):
 
     if settings.bitrate:
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
-        command_1 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 1 -an -f matroska {null}'
-        command_2 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 2' + ending
+        command_1 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ""} -an -f matroska {null}'
+        command_2 = (
+            f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 2 {settings.extra} {ending}'
+        )
         return [
             Command(command_1, ["ffmpeg", "output"], False, name="First Pass bitrate"),
             Command(command_2, ["ffmpeg", "output"], False, name="Second Pass bitrate"),
         ]
     elif settings.crf:
-        command_1 = f"{beginning} -b:v 0 -crf {settings.crf}" + ending
+        command_1 = f"{beginning} -b:v 0 -crf {settings.crf} {settings.extra} {ending}"
         return [Command(command_1, ["ffmpeg", "output"], False, name="Single Pass CRF")]
