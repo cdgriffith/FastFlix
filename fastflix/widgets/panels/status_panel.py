@@ -3,7 +3,6 @@
 import time
 import logging
 import datetime
-import threading
 from datetime import timedelta
 
 from qtpy import QtCore, QtWidgets
@@ -20,6 +19,7 @@ logger = logging.getLogger("fastflix")
 class StatusPanel(QtWidgets.QWidget):
     speed = QtCore.Signal(str)
     bitrate = QtCore.Signal(str)
+    signal_elapsed_time = QtCore.Signal(str)
 
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
@@ -28,8 +28,7 @@ class StatusPanel(QtWidgets.QWidget):
         self.current_video: Video = None
 
         self.started_at = None
-        self.time_elapsed_ticker_running = False
-        self.time_elapsed_ticker_thread = threading.Thread(target=self.tick_elapsed_time)
+        self.time_elapsed_ticker_thread = ElapsedTimeTicker(self)
 
         layout = QtWidgets.QGridLayout()
 
@@ -61,6 +60,7 @@ class StatusPanel(QtWidgets.QWidget):
 
         self.speed.connect(self.update_speed)
         self.bitrate.connect(self.update_bitrate)
+        self.signal_elapsed_time.connect(self.update_time_elapsed)
         self.main.status_update_signal.connect(self.on_status_update)
 
     def cleanup(self):
@@ -145,22 +145,14 @@ class StatusPanel(QtWidgets.QWidget):
 
         self.time_elapsed_label.setText(f"{t('Time Elapsed')}: {timedelta_to_str(time_elapsed)}")
 
-    def tick_elapsed_time(self):
-        while self.time_elapsed_ticker_running:
-            self.update_time_elapsed()
-            time.sleep(0.3)
-
-        logger.debug("Time elapsed ticker exited")
-
     def on_status_update(self, msg):
         update_type = msg.split("__")[0]
 
         if update_type in ["complete", "cancelled", "error"]:
-            self.time_elapsed_ticker_running = False
-            self.time_elapsed_ticker_thread = threading.Thread(target=self.tick_elapsed_time)
+            self.time_elapsed_ticker_thread.running = False
+            self.time_elapsed_ticker_thread = ElapsedTimeTicker(self)
         elif update_type == "running":
             self.set_started_at(msg)
-            self.time_elapsed_ticker_running = True
             self.time_elapsed_ticker_thread.start()
 
 
@@ -213,6 +205,23 @@ class Logs(QtWidgets.QTextBrowser):
 
     def closeEvent(self, event):
         self.hide()
+
+
+class ElapsedTimeTicker(QtCore.QThread):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.running = True
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        while self.running:
+            self.parent.signal_elapsed_time.emit("tick")
+            time.sleep(0.3)
+
+        logger.debug("Time elapsed ticker exited")
 
 
 class LogUpdater(QtCore.QThread):
