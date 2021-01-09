@@ -7,6 +7,7 @@ from qtpy import QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.exceptions import FastFlixInternalException
 
 logger = logging.getLogger("fastflix")
 
@@ -27,7 +28,7 @@ class SettingPanel(QtWidgets.QWidget):
     def translate_tip(tooltip):
         return "\n".join([t(x) for x in tooltip.split("\n") if x.strip()])
 
-    def determine_default(self, widget_name, opt, items: List):
+    def determine_default(self, widget_name, opt, items: List, raise_error: bool = False):
         if widget_name == "pix_fmt":
             items = [x.split(":")[1].strip() for x in items]
         elif widget_name in ("crf", "qp"):
@@ -43,7 +44,10 @@ class SettingPanel(QtWidgets.QWidget):
             try:
                 return items.index(opt)
             except Exception:
-                logger.error(f"Could not set default for {widget_name} to {opt} as it's not in the list")
+                if raise_error:
+                    raise FastFlixInternalException
+                else:
+                    logger.error(f"Could not set default for {widget_name} to {opt} as it's not in the list")
                 return 0
         if isinstance(opt, bool):
             return int(opt)
@@ -185,13 +189,20 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.bitrate.setFixedWidth(250)
         self.widgets.bitrate.addItems(recommended_bitrates)
         config_opt = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
-        if config_opt:
-            self.mode = "Bitrate"
-        self.widgets.bitrate.setCurrentIndex(self.determine_default("bitrate", config_opt, recommended_bitrates))
+        custom_bitrate = False
+        try:
+            default_bitrate_index = self.determine_default(
+                "bitrate", config_opt, recommended_bitrates, raise_error=True
+            )
+        except FastFlixInternalException:
+            custom_bitrate = True
+            self.widgets.bitrate.setCurrentText("Custom")
+        else:
+            self.widgets.bitrate.setCurrentIndex(default_bitrate_index)
         self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
+        self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000" if not custom_bitrate else config_opt)
         self.widgets.custom_bitrate.setFixedWidth(100)
-        self.widgets.custom_bitrate.setDisabled(True)
+        self.widgets.custom_bitrate.setEnabled(custom_bitrate)
         self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
         self.widgets.custom_bitrate.setValidator(self.only_int)
         bitrate_box_layout.addWidget(self.bitrate_radio)
@@ -215,17 +226,28 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets[qp_name].setToolTip(qp_help)
         self.widgets[qp_name].setFixedWidth(250)
         self.widgets[qp_name].addItems(recommended_qps)
-        self.widgets[qp_name].setCurrentIndex(
-            self.determine_default(
-                qp_name, self.app.fastflix.config.encoder_opt(self.profile_name, qp_name), recommended_qps
-            )
-        )
+        custom_qp = False
+        qp_value = self.app.fastflix.config.encoder_opt(self.profile_name, qp_name)
+        try:
+            default_qp_index = self.determine_default(qp_name, qp_value, recommended_qps, raise_error=True)
+        except FastFlixInternalException:
+            custom_qp = True
+            self.widgets[qp_name].setCurrentText("Custom")
+        else:
+            self.widgets[qp_name].setCurrentIndex(default_qp_index)
+
         self.widgets[qp_name].currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30")
+        self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
         self.widgets[f"custom_{qp_name}"].setFixedWidth(100)
-        self.widgets[f"custom_{qp_name}"].setDisabled(True)
+        self.widgets[f"custom_{qp_name}"].setEnabled(custom_qp)
         self.widgets[f"custom_{qp_name}"].setValidator(self.only_int)
         self.widgets[f"custom_{qp_name}"].textChanged.connect(lambda: self.main.build_commands())
+
+        if config_opt:
+            self.mode = "Bitrate"
+            self.qp_radio.setChecked(False)
+            self.bitrate_radio.setChecked(True)
+
         qp_box_layout.addWidget(self.qp_radio)
         qp_box_layout.addWidget(self.widgets[qp_name])
         qp_box_layout.addStretch()

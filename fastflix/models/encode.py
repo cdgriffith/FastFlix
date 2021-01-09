@@ -20,7 +20,7 @@ class AudioTrack(BaseModel):
 class SubtitleTrack(BaseModel):
     index: int
     outdex: int
-    disposition: str = ""
+    disposition: Optional[str] = ""
     burn_in: bool = False
     language: str = ""
     subtitle_type: str = ""
@@ -28,10 +28,10 @@ class SubtitleTrack(BaseModel):
 
 class AttachmentTrack(BaseModel):
     outdex: int
-    index: Union[int, None] = None
+    index: Optional[int] = None
     attachment_type: str = "cover"
-    file_path: Union[Path, None] = None
-    filename: Union[str, None] = None
+    file_path: Optional[Path] = None
+    filename: Optional[str] = None
 
 
 class EncoderSettings(BaseModel):
