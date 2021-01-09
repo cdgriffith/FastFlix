@@ -118,7 +118,7 @@ def generate_filters(
     scale_width=None,
     scale_height=None,
     remove_hdr=False,
-    rotate=None,
+    rotate=0,
     vertical_flip=None,
     horizontal_flip=None,
     burn_in_subtitle_track=None,
@@ -145,7 +145,7 @@ def generate_filters(
         filter_list.append(f"scale={scale_width}:-8:flags={scale_filter}")
     elif scale_height:
         filter_list.append(f"scale=-8:{scale_height}:flags={scale_filter}")
-    if rotate is not None:
+    if rotate:
         if rotate < 3:
             filter_list.append(f"transpose={rotate}")
         if rotate == 4:

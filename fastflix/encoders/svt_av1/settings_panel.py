@@ -162,7 +162,10 @@ class SVT_AV1(SettingPanel):
         )
         if self.mode == "QP":
             qp = self.widgets.qp.currentText()
-            settings.qp = int(qp.split(" ", 1)[0]) if qp.lower() != "custom" else self.widgets.custom_qp.text()
+            if self.widgets.custom_qp.isEnabled():
+                settings.qp = int(self.widgets.custom_qp.text())
+            else:
+                settings.qp = int(qp.split(" ", 1)[0])
         else:
             bitrate = self.widgets.bitrate.currentText()
             if bitrate.lower() == "custom":

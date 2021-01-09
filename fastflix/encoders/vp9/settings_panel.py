@@ -165,7 +165,10 @@ class VP9(SettingPanel):
         )
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
-            settings.crf = int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_crf.text()
+            if self.widgets.custom_crf.isEnabled():
+                settings.crf = int(self.widgets.custom_crf.text())
+            else:
+                settings.crf = int(crf.split(" ", 1)[0])
         else:
             bitrate = self.widgets.bitrate.currentText()
             if bitrate.lower() == "custom":

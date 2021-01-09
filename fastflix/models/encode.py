@@ -53,8 +53,8 @@ class x265Settings(EncoderSettings):
     repeat_headers: bool = False
     aq_mode: int = 2
     hdr10plus_metadata: str = ""
-    crf: Union[int, None] = None
-    bitrate: Union[str, None] = None
+    crf: Optional[int] = 22
+    bitrate: Optional[str] = None
     x265_params: List[str] = Field(default_factory=list)
     bframes: int = 4
     lossless: bool = False
@@ -70,8 +70,8 @@ class x264Settings(EncoderSettings):
     profile: str = "default"
     tune: Optional[str] = None
     pix_fmt: str = "yuv420p"
-    crf: Union[int, None] = None
-    bitrate: Union[str, None] = None
+    crf: Optional[int] = 23
+    bitrate: Optional[str] = None
 
 
 class rav1eSettings(EncoderSettings):
@@ -81,8 +81,8 @@ class rav1eSettings(EncoderSettings):
     tile_rows: str = "-1"
     tiles: str = "0"
     single_pass: bool = False
-    qp: Union[int, None] = None
-    bitrate: Union[str, None] = None
+    qp: Optional[int] = 24
+    bitrate: Optional[str] = None
 
 
 class SVTAV1Settings(EncoderSettings):
@@ -93,8 +93,8 @@ class SVTAV1Settings(EncoderSettings):
     # scene_detection: str = "false"
     single_pass: bool = False
     speed: str = "7"
-    qp: Union[int, None] = None
-    bitrate: Union[str, None] = None
+    qp: Optional[int] = 24
+    bitrate: Optional[str] = None
 
 
 class VP9Settings(EncoderSettings):
@@ -104,8 +104,8 @@ class VP9Settings(EncoderSettings):
     speed: str = "0"
     row_mt: int = 0
     single_pass: bool = False
-    crf: Union[int, None] = None
-    bitrate: Union[str, None] = None
+    crf: Optional[int] = 31
+    bitrate: Optional[str] = None
 
 
 class AOMAV1Settings(EncoderSettings):
@@ -115,8 +115,8 @@ class AOMAV1Settings(EncoderSettings):
     usage: str = "good"
     row_mt: str = "enabled"
     cpu_used: str = "4"
-    crf: Union[int, None] = None
-    bitrate: Union[str, None] = None
+    crf: Optional[int] = 26
+    bitrate: Optional[str] = None
 
 
 class WebPSettings(EncoderSettings):

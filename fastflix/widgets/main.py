@@ -456,12 +456,12 @@ class Main(QtWidgets.QWidget):
         return self.widgets.rotate
 
     def rotation_to_transpose(self):
-        mapping = {0: None, 1: 1, 2: 4, 3: 2}
+        mapping = {0: 0, 1: 1, 2: 4, 3: 2}
         return mapping[self.widgets.rotate.currentIndex()]
 
     def transpose_to_rotation(self, transpose):
-        mapping = {None: 0, 1: 1, 4: 2, 2: 3}
-        return mapping[int(transpose) if transpose else None]
+        mapping = {0: 0, 1: 1, 4: 2, 2: 3}
+        return mapping[int(transpose)]
 
     def change_output_types(self):
         self.widgets.convert_to.clear()

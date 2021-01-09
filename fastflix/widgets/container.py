@@ -24,6 +24,7 @@ from fastflix.widgets.main import Main
 from fastflix.widgets.profile_window import ProfileWindow
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
+from fastflix.models.config import setting_types
 
 logger = logging.getLogger("fastflix")
 
@@ -262,7 +263,7 @@ class ProfileDetails(QtWidgets.QWidget):
         profile_title.setFont(QtGui.QFont("helvetica", 10, weight=70))
         main_section.addWidget(profile_title)
         for k, v in profile.dict().items():
-            if k not in profile.setting_types.keys():
+            if k not in setting_types.keys():
                 item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
                 item_2 = QtWidgets.QLabel(str(v))
                 item_2.setMaximumWidth(150)
@@ -277,7 +278,7 @@ class ProfileDetails(QtWidgets.QWidget):
         splitter.setStyleSheet("background-color: #999999")
         self.layout.addWidget(splitter)
 
-        for setting_name in profile.setting_types.keys():
+        for setting_name in setting_types.keys():
             setting = getattr(profile, setting_name)
             if setting:
                 self.layout.addWidget(self.profile_widget(setting))

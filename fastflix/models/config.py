@@ -26,6 +26,18 @@ ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
 
 NO_OPT = object()
 
+setting_types = {
+    "x265": x265Settings,
+    "x264": x264Settings,
+    "rav1e": rav1eSettings,
+    "svt_av1": SVTAV1Settings,
+    "vp9": VP9Settings,
+    "aom_av1": AOMAV1Settings,
+    "gif": GIFSettings,
+    "webp": WebPSettings,
+    "copy_settings": CopySettings,
+}
+
 
 class Profile(BaseModel):
     auto_crop: bool = False
@@ -59,26 +71,6 @@ class Profile(BaseModel):
     gif: Optional[GIFSettings] = None
     webp: Optional[WebPSettings] = None
     copy_settings: Optional[CopySettings] = None
-
-    setting_types = {
-        "x265": x265Settings,
-        "x264": x264Settings,
-        "rav1e": rav1eSettings,
-        "svt_av1": SVTAV1Settings,
-        "vp9": VP9Settings,
-        "aom_av1": AOMAV1Settings,
-        "gif": GIFSettings,
-        "webp": WebPSettings,
-        "copy_settings": CopySettings,
-    }
-
-    def to_dict(self):
-        output = {}
-        for k, v in self.dict().items():
-            if k in self.setting_types.keys():
-                output[k] = v.dict()
-            else:
-                output[k] = v
 
 
 empty_profile = Profile(x265=x265Settings())
@@ -158,7 +150,7 @@ class Config(BaseModel):
         if encoder_settings:
             return getattr(encoder_settings, profile_option_name)
         else:
-            return getattr(empty_profile.setting_types[profile_name](), profile_option_name)
+            return getattr(setting_types[profile_name](), profile_option_name)
 
     def opt(self, profile_option_name, default=NO_OPT):
         if default != NO_OPT:
@@ -189,10 +181,13 @@ class Config(BaseModel):
                         continue
                     profile = Profile()
                     for setting_name, setting in v.items():
-                        if setting_name in profile.setting_types.keys() and setting is not None:
-                            setattr(profile, setting_name, profile.setting_types[setting_name](**setting))
+                        if setting_name in setting_types.keys() and setting is not None:
+                            setattr(profile, setting_name, setting_types[setting_name](**setting))
                         else:
-                            setattr(profile, setting_name, setting)
+                            try:
+                                setattr(profile, setting_name, setting)
+                            except ValueError:
+                                pass  # This field is no longer supported
 
                     self.profiles[k] = profile
                 continue

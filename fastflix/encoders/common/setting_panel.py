@@ -165,6 +165,9 @@ class SettingPanel(QtWidgets.QWidget):
         recommended_qps,
         qp_name="crf",
     ):
+        self.recommended_bitrates = recommended_bitrates
+        self.recommended_qps = recommended_qps
+        self.qp_name = qp_name
         layout = QtWidgets.QGridLayout()
         qp_group_box = QtWidgets.QGroupBox()
         qp_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
@@ -279,9 +282,24 @@ class SettingPanel(QtWidgets.QWidget):
             if bitrate:
                 self.qp_radio.setChecked(False)
                 self.bitrate_radio.setChecked(True)
+                for i, rec in enumerate(self.recommended_bitrates):
+                    if rec.startswith(bitrate):
+                        self.widgets.bitrate.setCurrentIndex(i)
+                        break
+                else:
+                    self.widgets.bitrate.setCurrentText("Custom")
+                    self.widgets.custom_bitrate.setText(bitrate.rstrip("kKmMgGbB"))
             else:
                 self.qp_radio.setChecked(True)
                 self.bitrate_radio.setChecked(False)
+                qp = str(self.app.fastflix.config.encoder_opt(self.profile_name, self.qp_name))
+                for i, rec in enumerate(self.recommended_qps):
+                    if rec.startswith(qp):
+                        self.widgets[self.qp_name].setCurrentIndex(i)
+                        break
+                else:
+                    self.widgets[self.qp_name].setCurrentText("Custom")
+                    self.widgets[f"custom_{self.qp_name}"].setText(qp)
         ffmpeg_extra_command = self.app.fastflix.config.encoder_opt(self.profile_name, "extra")
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
 
