@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import shutil
-from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Optional
 
 from appdirs import user_data_dir
 from box import Box, BoxError
+from pydantic import BaseModel, Field
 
 from fastflix.exceptions import ConfigError, MissingFF
 from fastflix.models.encode import (
@@ -27,8 +27,7 @@ ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
 NO_OPT = object()
 
 
-@dataclass
-class Profile:
+class Profile(BaseModel):
     auto_crop: bool = False
     keep_aspect_ratio: bool = True
     fast_seek: bool = True
@@ -51,15 +50,15 @@ class Profile:
     subtitle_automatic_burn_in: bool = False
     subtitle_select_first_matching: bool = False
 
-    x265: Union[x265Settings, None] = None
-    x264: Union[x264Settings, None] = None
-    rav1e: Union[rav1eSettings, None] = None
-    svt_av1: Union[SVTAV1Settings, None] = None
-    vp9: Union[VP9Settings, None] = None
-    aom_av1: Union[AOMAV1Settings, None] = None
-    gif: Union[GIFSettings, None] = None
-    webp: Union[WebPSettings, None] = None
-    copy: Union[CopySettings, None] = None
+    x265: Optional[x265Settings] = None
+    x264: Optional[x264Settings] = None
+    rav1e: Optional[rav1eSettings] = None
+    svt_av1: Optional[SVTAV1Settings] = None
+    vp9: Optional[VP9Settings] = None
+    aom_av1: Optional[AOMAV1Settings] = None
+    gif: Optional[GIFSettings] = None
+    webp: Optional[WebPSettings] = None
+    copy_settings: Optional[CopySettings] = None
 
     setting_types = {
         "x265": x265Settings,
@@ -70,14 +69,14 @@ class Profile:
         "aom_av1": AOMAV1Settings,
         "gif": GIFSettings,
         "webp": WebPSettings,
-        "copy": CopySettings,
+        "copy_settings": CopySettings,
     }
 
     def to_dict(self):
         output = {}
-        for k, v in asdict(self).items():
+        for k, v in self.dict().items():
             if k in self.setting_types.keys():
-                output[k] = asdict(v)
+                output[k] = v.dict()
             else:
                 output[k] = v
 
@@ -116,12 +115,11 @@ def find_ffmpeg_file(name, raise_on_missing=False):
     return None
 
 
-@dataclass
-class Config:
+class Config(BaseModel):
     version: str = __version__
     config_path: Path = fastflix_folder / "fastflix.yaml"
-    ffmpeg: Path = field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
-    ffprobe: Path = field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
+    ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
+    ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
@@ -132,9 +130,9 @@ class Config:
     disable_version_check: bool = False
     disable_update_check: bool = False
     disable_automatic_subtitle_burn_in: bool = False
-    custom_after_run_scripts: Dict = field(default_factory=dict)
-    profiles: Dict[str, Profile] = field(default_factory=get_preset_defaults)
-    sane_audio_selection: List = field(
+    custom_after_run_scripts: Dict = Field(default_factory=dict)
+    profiles: Dict[str, Profile] = Field(default_factory=get_preset_defaults)
+    sane_audio_selection: List = Field(
         default_factory=lambda: [
             "aac",
             "ac3",
@@ -217,12 +215,12 @@ class Config:
             self.selected_profile = "Standard Profile"
 
     def save(self):
-        items = asdict(self)
+        items = self.dict()
         del items["config_path"]
         for k, v in items.items():
             if isinstance(v, Path):
                 items[k] = str(v.absolute())
-        items["profiles"] = {k: asdict(v) for k, v in self.profiles.items() if k not in get_preset_defaults().keys()}
+        items["profiles"] = {k: v.dict() for k, v in self.profiles.items() if k not in get_preset_defaults().keys()}
         return Box(items).to_yaml(filename=self.config_path, default_flow_style=False)
 
     @property

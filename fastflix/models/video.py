@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 import uuid
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Union
 
 from box import Box
+from pydantic import BaseModel, Field
 
-from fastflix.models.base import BaseDataClass
 from fastflix.models.encode import (
     AOMAV1Settings,
     AttachmentTrack,
@@ -25,8 +24,7 @@ from fastflix.models.encode import (
 __all__ = ["VideoSettings", "Status", "Video"]
 
 
-@dataclass
-class VideoSettings(BaseDataClass):
+class VideoSettings(BaseModel):
     crop: Union[str, None] = None
     start_time: Union[float, int] = 0
     end_time: Union[float, int] = 0
@@ -64,14 +62,13 @@ class VideoSettings(BaseDataClass):
         WebPSettings,
         CopySettings,
     ] = None
-    audio_tracks: List[AudioTrack] = field(default_factory=list)
-    subtitle_tracks: List[SubtitleTrack] = field(default_factory=list)
-    attachment_tracks: List[AttachmentTrack] = field(default_factory=list)
-    conversion_commands: List = field(default_factory=list)
+    audio_tracks: List[AudioTrack] = Field(default_factory=list)
+    subtitle_tracks: List[SubtitleTrack] = Field(default_factory=list)
+    attachment_tracks: List[AttachmentTrack] = Field(default_factory=list)
+    conversion_commands: List = Field(default_factory=list)
 
 
-@dataclass
-class Status(BaseDataClass):
+class Status(BaseModel):
     success: bool = False
     error: bool = False
     complete: bool = False
@@ -80,8 +77,7 @@ class Status(BaseDataClass):
     current_command: int = 0
 
 
-@dataclass
-class Video(BaseDataClass):
+class Video(BaseModel):
     source: Path
     width: int = 0
     height: int = 0
@@ -96,9 +92,9 @@ class Video(BaseDataClass):
     master_display: Box = None
     cll: str = ""
 
-    video_settings: VideoSettings = field(default_factory=VideoSettings)
-    status: Status = field(default_factory=Status)
-    uuid: str = field(default_factory=lambda: str(uuid.uuid4()))
+    video_settings: VideoSettings = Field(default_factory=VideoSettings)
+    status: Status = Field(default_factory=Status)
+    uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))
 
     @property
     def current_video_stream(self):

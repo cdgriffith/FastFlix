@@ -4,6 +4,7 @@ coloredlogs
 iso639-lang
 mistune
 psutil
+pydantic
 pyside2
 python-box
 qtpy

@@ -4,7 +4,6 @@ import logging
 import shutil
 import sys
 import time
-from dataclasses import asdict
 from pathlib import Path
 from subprocess import run
 
@@ -243,7 +242,7 @@ class ProfileDetails(QtWidgets.QWidget):
         title = QtWidgets.QLabel(t("Encoder Settings"))
         title.setFont(QtGui.QFont("helvetica", 9, weight=70))
         layout.addWidget(title)
-        for k, v in asdict(settings).items():
+        for k, v in settings.dict().items():
             item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
             item_2 = QtWidgets.QLabel(str(v))
             item_2.setMaximumWidth(150)
@@ -262,7 +261,7 @@ class ProfileDetails(QtWidgets.QWidget):
         profile_title = QtWidgets.QLabel(f"{t('Profile')}: {profile_name}")
         profile_title.setFont(QtGui.QFont("helvetica", 10, weight=70))
         main_section.addWidget(profile_title)
-        for k, v in asdict(profile).items():
+        for k, v in profile.dict().items():
             if k not in profile.setting_types.keys():
                 item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
                 item_2 = QtWidgets.QLabel(str(v))

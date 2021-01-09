@@ -8,7 +8,6 @@ import os
 import secrets
 import shutil
 import time
-from dataclasses import asdict, dataclass, field
 from datetime import timedelta
 from pathlib import Path
 from typing import Tuple, Union
@@ -17,6 +16,7 @@ import pkg_resources
 import reusables
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
+from pydantic import BaseModel, Field
 
 from fastflix.encoders.common import helpers
 from fastflix.exceptions import FastFlixInternalException, FlixError
@@ -52,30 +52,33 @@ root = os.path.abspath(os.path.dirname(__file__))
 only_int = QtGui.QIntValidator()
 
 
-@dataclass
-class CropWidgets:
+class CropWidgets(BaseModel):
     top: QtWidgets.QLineEdit = None
     bottom: QtWidgets.QLineEdit = None
     left: QtWidgets.QLineEdit = None
     right: QtWidgets.QLineEdit = None
 
+    class Config:
+        arbitrary_types_allowed = True
 
-@dataclass
-class ScaleWidgets:
+
+class ScaleWidgets(BaseModel):
     width: QtWidgets.QLineEdit = None
     height: QtWidgets.QLineEdit = None
     keep_aspect: QtWidgets.QCheckBox = None
 
+    class Config:
+        arbitrary_types_allowed = True
 
-@dataclass
-class MainWidgets:
+
+class MainWidgets(BaseModel):
     start_time: QtWidgets.QLineEdit = None
     end_time: QtWidgets.QLineEdit = None
     video_track: QtWidgets.QComboBox = None
     rotate: QtWidgets.QComboBox = None
     flip: QtWidgets.QComboBox = None
-    crop: CropWidgets = field(default_factory=CropWidgets)
-    scale: ScaleWidgets = field(default_factory=ScaleWidgets)
+    crop: CropWidgets = Field(default_factory=CropWidgets)
+    scale: ScaleWidgets = Field(default_factory=ScaleWidgets)
     remove_metadata: QtWidgets.QCheckBox = None
     chapters: QtWidgets.QCheckBox = None
     fast_time: QtWidgets.QComboBox = None
@@ -86,6 +89,9 @@ class MainWidgets:
     remove_hdr: QtWidgets.QCheckBox = None
     video_title: QtWidgets.QLineEdit = None
     profile_box: QtWidgets.QComboBox = None
+
+    class Config:
+        arbitrary_types_allowed = True
 
     def items(self):
         for key in dir(self):
@@ -112,7 +118,7 @@ class Main(QtWidgets.QWidget):
         super().__init__(parent)
         self.app: FastFlixApp = app
         self.container = parent
-        self.video: Video = Video(Path(), 0, 0, 0)
+        self.video: Video = Video(source=Path(), width=0, height=0, duration=0)
 
         self.initialized = False
         self.loading_video = True
@@ -1231,7 +1237,7 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or self.loading_video:
             return
 
-        settings = asdict(self.app.fastflix.current_video.video_settings)
+        settings = self.app.fastflix.current_video.video_settings.dict()
 
         if (
             self.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"

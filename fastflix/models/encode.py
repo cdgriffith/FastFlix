@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-from dataclasses import dataclass, field
+# from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Union
+from typing import List, Union, Optional
 
-from fastflix.models.base import BaseDataClass
+from pydantic import BaseModel, Field
 
 
-@dataclass
-class AudioTrack(BaseDataClass):
+class AudioTrack(BaseModel):
     index: int
     outdex: int
     codec: str = ""
@@ -18,8 +17,7 @@ class AudioTrack(BaseDataClass):
     conversion_codec: str = ""
 
 
-@dataclass
-class SubtitleTrack(BaseDataClass):
+class SubtitleTrack(BaseModel):
     index: int
     outdex: int
     disposition: str = ""
@@ -28,8 +26,7 @@ class SubtitleTrack(BaseDataClass):
     subtitle_type: str = ""
 
 
-@dataclass
-class AttachmentTrack(BaseDataClass):
+class AttachmentTrack(BaseModel):
     outdex: int
     index: Union[int, None] = None
     attachment_type: str = "cover"
@@ -37,15 +34,13 @@ class AttachmentTrack(BaseDataClass):
     filename: Union[str, None] = None
 
 
-@dataclass
-class EncoderSettings(BaseDataClass):
+class EncoderSettings(BaseModel):
     max_muxing_queue_size: str = "1024"
     pix_fmt: str = "yuv420p10le"
     extra: str = ""
     extra_both_passes: bool = False
 
 
-@dataclass
 class x265Settings(EncoderSettings):
     name = "HEVC (x265)"  # MUST match encoder main.name
     preset: str = "medium"
@@ -60,7 +55,7 @@ class x265Settings(EncoderSettings):
     hdr10plus_metadata: str = ""
     crf: Union[int, None] = None
     bitrate: Union[str, None] = None
-    x265_params: List[str] = field(default_factory=list)
+    x265_params: List[str] = Field(default_factory=list)
     bframes: int = 4
     lossless: bool = False
     b_adapt: int = 2
@@ -69,18 +64,16 @@ class x265Settings(EncoderSettings):
     frame_threads: int = 0
 
 
-@dataclass
 class x264Settings(EncoderSettings):
     name = "AVC (x264)"
     preset: str = "medium"
     profile: str = "default"
-    tune: str = "default"
+    tune: Optional[str] = None
     pix_fmt: str = "yuv420p"
     crf: Union[int, None] = None
     bitrate: Union[str, None] = None
 
 
-@dataclass
 class rav1eSettings(EncoderSettings):
     name = "AV1 (rav1e)"
     speed: str = "-1"
@@ -92,7 +85,6 @@ class rav1eSettings(EncoderSettings):
     bitrate: Union[str, None] = None
 
 
-@dataclass
 class SVTAV1Settings(EncoderSettings):
     name = "AV1 (SVT AV1)"
     tile_columns: str = "0"
@@ -105,7 +97,6 @@ class SVTAV1Settings(EncoderSettings):
     bitrate: Union[str, None] = None
 
 
-@dataclass
 class VP9Settings(EncoderSettings):
     name = "VP9"
     profile: int = 2
@@ -117,7 +108,6 @@ class VP9Settings(EncoderSettings):
     bitrate: Union[str, None] = None
 
 
-@dataclass
 class AOMAV1Settings(EncoderSettings):
     name = "AV1 (AOM)"
     tile_columns: str = "0"
@@ -129,7 +119,6 @@ class AOMAV1Settings(EncoderSettings):
     bitrate: Union[str, None] = None
 
 
-@dataclass
 class WebPSettings(EncoderSettings):
     name = "WebP"
     lossless: str = "0"
@@ -138,13 +127,11 @@ class WebPSettings(EncoderSettings):
     qscale: int = 15
 
 
-@dataclass
 class GIFSettings(EncoderSettings):
     name = "GIF"
     fps: int = 15
     dither: str = "sierra2_4a"
 
 
-@dataclass
 class CopySettings(EncoderSettings):
     name = "Copy"

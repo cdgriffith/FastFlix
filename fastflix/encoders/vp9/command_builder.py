@@ -41,10 +41,10 @@ def build(fastflix: FastFlix):
         return []
 
     if settings.crf and settings.single_pass:
-        return [Command(command_2, ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")]
+        return [Command(command=command_2, name="Single pass CRF", exe="ffmpeg")]
     pass_type = "bitrate" if settings.bitrate else "CRF"
 
     return [
-        Command(command_1, ["ffmpeg", "output"], False, name=f"First pass {pass_type}", exe="ffmpeg"),
-        Command(command_2, ["ffmpeg", "output"], False, name=f"Second pass {pass_type} ", exe="ffmpeg"),
+        Command(command=command_1, name=f"First pass {pass_type}", exe="ffmpeg"),
+        Command(command=command_2, name=f"Second pass {pass_type} ", exe="ffmpeg"),
     ]

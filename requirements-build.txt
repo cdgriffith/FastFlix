@@ -4,6 +4,7 @@ coloredlogs
 iso639-lang
 mistune
 psutil
+pydantic
 pyinstaller==4.0
 pyqt5
 python-box

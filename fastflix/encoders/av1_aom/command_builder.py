@@ -32,9 +32,9 @@ def build(fastflix: FastFlix):
             f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 2 {settings.extra} {ending}'
         )
         return [
-            Command(command_1, ["ffmpeg", "output"], False, name="First Pass bitrate"),
-            Command(command_2, ["ffmpeg", "output"], False, name="Second Pass bitrate"),
+            Command(command=command_1, name="First Pass bitrate"),
+            Command(command=command_2, name="Second Pass bitrate"),
         ]
     elif settings.crf:
         command_1 = f"{beginning} -b:v 0 -crf {settings.crf} {settings.extra} {ending}"
-        return [Command(command_1, ["ffmpeg", "output"], False, name="Single Pass CRF")]
+        return [Command(command=command_1, name="Single Pass CRF")]

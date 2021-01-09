@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import secrets
-from dataclasses import asdict
 
 from fastflix.encoders.common.helpers import Command, generate_filters
 from fastflix.models.encode import GIFSettings
@@ -10,10 +9,10 @@ from fastflix.models.fastflix import FastFlix
 def build(fastflix: FastFlix):
     settings: GIFSettings = fastflix.current_video.video_settings.video_encoder_settings
 
-    palletgen_filters = generate_filters(custom_filters="palettegen", **asdict(fastflix.current_video.video_settings))
+    palletgen_filters = generate_filters(custom_filters="palettegen", **fastflix.current_video.video_settings.dict())
 
     filters = generate_filters(
-        custom_filters=f"fps={settings.fps:.2f}", raw_filters=True, **asdict(fastflix.current_video.video_settings)
+        custom_filters=f"fps={settings.fps:.2f}", raw_filters=True, **fastflix.current_video.video_settings.dict()
     )
 
     output_video = str(fastflix.current_video.video_settings.output_path).replace("\\", "/")
@@ -42,6 +41,6 @@ def build(fastflix: FastFlix):
     )
 
     return [
-        Command(command_1, ["ffmpeg", "pallet_file", "output"], False, name="Pallet generation", exe="ffmpeg"),
-        Command(command_2, ["ffmpeg", "pallet_file", "output"], False, name="GIF creation", exe="ffmpeg"),
+        Command(command=command_1, name="Pallet generation", exe="ffmpeg"),
+        Command(command=command_2, name="GIF creation", exe="ffmpeg"),
     ]

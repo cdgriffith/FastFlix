@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import shutil
-from dataclasses import asdict
 from pathlib import Path
 
 from box import Box
@@ -94,7 +93,7 @@ class ProfileWindow(QtWidgets.QWidget):
         else:
             if encoder:
                 self.encoder = encoder
-        settings = "\n".join(f"{k:<30} {v}" for k, v in asdict(self.encoder).items())
+        settings = "\n".join(f"{k:<30} {v}" for k, v in self.encoder.dict().items())
         self.encoder_label.setText(f"{t('Encoder')}: {self.encoder.name}")
         self.encoder_settings.setText(f"<pre>{settings}</pre>")
 
@@ -166,7 +165,7 @@ class ProfileWindow(QtWidgets.QWidget):
         if isinstance(self.encoder, WebPSettings):
             new_profile.webp = self.encoder
         if isinstance(self.encoder, CopySettings):
-            new_profile.copy = self.encoder
+            new_profile.copy_settings = self.encoder
 
         self.app.fastflix.config.profiles[profile_name] = new_profile
         self.app.fastflix.config.selected_profile = profile_name

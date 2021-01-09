@@ -3,7 +3,6 @@
 
 import copy
 import sys
-from dataclasses import asdict
 
 import reusables
 from box import Box
@@ -64,7 +63,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         )
         title.setFixedWidth(300)
 
-        settings = Box(copy.deepcopy(asdict(video.video_settings)))
+        settings = Box(copy.deepcopy(video.video_settings.dict()))
         settings.output_path = str(settings.output_path)
         for i, o in enumerate(settings.attachment_tracks):
             if o.get("file_path"):

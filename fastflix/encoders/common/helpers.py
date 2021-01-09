@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import uuid
-from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import List, Tuple, Union
 
 import reusables
+from pydantic import BaseModel, Field
 
 from fastflix.encoders.common.attachments import build_attachments
 from fastflix.encoders.common.audio import build_audio
@@ -29,17 +29,14 @@ class Loop:
         self.files = files
 
 
-@dataclass
-class Command(BaseDataClass):
+class Command(BaseModel):
     command: str
-    variables: List
-    internal: bool
     item = "command"
     name: str = ""
     ensure_paths: List = ()
     exe: str = None
     shell: bool = False
-    uuid: str = field(default_factory=lambda: str(uuid.uuid4()))
+    uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))
 
 
 def generate_ffmpeg_start(
@@ -217,7 +214,7 @@ def generate_all(
             source=fastflix.current_video.source,
             burn_in_subtitle_track=burn_in_track,
             burn_in_subtitle_type=burn_in_type,
-            **asdict(fastflix.current_video.video_settings),
+            **fastflix.current_video.video_settings.dict(),
         )
 
     ending = generate_ending(
@@ -225,7 +222,7 @@ def generate_all(
         subtitles=subtitles,
         cover=attachments,
         output_video=fastflix.current_video.video_settings.output_path,
-        **asdict(fastflix.current_video.video_settings),
+        **fastflix.current_video.video_settings.dict(),
     )
 
     beginning = generate_ffmpeg_start(
@@ -233,8 +230,8 @@ def generate_all(
         ffmpeg=fastflix.config.ffmpeg,
         encoder=encoder,
         filters=filters,
-        **asdict(fastflix.current_video.video_settings),
-        **asdict(settings),
+        **fastflix.current_video.video_settings.dict(),
+        **settings.dict(),
     )
 
     return beginning, ending
