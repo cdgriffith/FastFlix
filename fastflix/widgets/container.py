@@ -259,7 +259,7 @@ class ProfileDetails(QtWidgets.QWidget):
         self.layout = QtWidgets.QHBoxLayout(self)
 
         main_section = QtWidgets.QVBoxLayout(self)
-        profile_title = QtWidgets.QLabel(f"{t('Profile')}: {profile_name}")
+        profile_title = QtWidgets.QLabel(f"{t('Profile_window')}: {profile_name}")
         profile_title.setFont(QtGui.QFont("helvetica", 10, weight=70))
         main_section.addWidget(profile_title)
         for k, v in profile.dict().items():

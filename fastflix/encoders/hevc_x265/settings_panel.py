@@ -377,7 +377,7 @@ class HEVC(SettingPanel):
 
     def init_profile(self):
         return self._add_combo_box(
-            label="Profile",
+            label="Profile_encoderopt",
             tooltip="profile: Enforce an encode profile",
             widget_name="profile",
             options=["default", "main", "main10", "mainstillpicture"],

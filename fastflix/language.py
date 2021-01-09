@@ -7,6 +7,7 @@ So here is an easy stand-in that is better in ways I care about.
 """
 from functools import lru_cache
 from pathlib import Path
+import os
 
 from box import Box
 from iso639 import Lang
@@ -33,8 +34,9 @@ def translate(text):
     if text in language_data:
         if language in language_data[text]:
             return language_data[text][language]
-    # else:
-    #     print(f'Cannot find translation for: "{text}"')
+    else:
+        if os.getenv("DEVMODE", None).lower() in ("1", "true"):
+            print(f'Cannot find translation for: "{text}"')
     return text
 
 

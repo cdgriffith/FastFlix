@@ -1489,7 +1489,21 @@ Preset:
   ita: Preset
   spa: Preset
   zho: 预设
-Profile:
+Profile_encoderopt:
+  deu: Profil
+  eng: Profile
+  fra: Profil
+  ita: Profilo
+  spa: Perfil
+  zho: 规格
+Profile_newprofiletooltip:
+  deu: Profil
+  eng: Profile
+  fra: Profil
+  ita: Profilo
+  spa: Perfil
+  zho: 规格
+Profile_window:
   deu: Profil
   eng: Profile
   fra: Profil
@@ -2714,3 +2728,17 @@ Constant:
   ita: Costante
   spa: Constante
   zho: 恒定
+Please make sure seek method is set to exact:
+  deu: Bitte stellen Sie sicher, dass die Suchmethode auf exakt eingestellt ist
+  eng: Please make sure seek method is set to exact
+  fra: Veuillez vous assurer que la méthode de recherche est réglée sur l'exacte
+  ita: Si prega di assicurarsi che il metodo di ricerca sia impostato su
+  spa: Por favor, asegúrese de que el método de búsqueda se establece con exactitud
+  zho: 请确认寻找方法被设置为精确
+Extract:
+  deu: Auszug
+  eng: Extract
+  fra: Extrait
+  ita: Estratto
+  spa: Extracto
+  zho: 萃取

@@ -16,6 +16,7 @@
 * Fixing #120 Custom bitrate forgets to add a "k" (thanks to seighail3)
 * Fixing #162 Main window was not resizeable (thanks to bmcassagne)
 * Fixing #165 Custom Bitrate loaded from Profile (thanks to Etz)
+* Fixing #154 Overloading the term "Profile" for languages (thanks to leonardyan)
 * Fixing snap packaged, and other symlinked FFmpeg installs were not linked correctly (thanks to Catatau)
 * Fixing loading video could encounter a bug and crash fastflix (thanks to Jan)
 * Fixing being able to set landscape cover

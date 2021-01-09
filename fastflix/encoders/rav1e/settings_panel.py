@@ -74,7 +74,7 @@ class RAV1E(SettingPanel):
         guide_label = QtWidgets.QLabel(link("https://github.com/xiph/rav1e/blob/master/README.md", t("rav1e github")))
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, -1, 1)
+        grid.addWidget(guide_label, 11, 0, 1, 6)
         self.setLayout(grid)
         self.hide()
 

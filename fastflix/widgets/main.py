@@ -232,7 +232,7 @@ class Main(QtWidgets.QWidget):
         # add_profile.setFixedSize(QtCore.QSize(40, 40))
         add_profile.setFixedHeight(40)
         add_profile.setIconSize(QtCore.QSize(22, 22))
-        add_profile.setToolTip(t("Profile"))
+        add_profile.setToolTip(t("Profile_newprofiletooltip"))
         add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
         add_profile.clicked.connect(lambda: self.container.new_profile())
 

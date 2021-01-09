@@ -93,7 +93,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets.title.setToolTip(self.subtitle.to_yaml())
         self.widgets.burn_in.setToolTip(
             f"""{t("Overlay this subtitle track onto the video during conversion.")}\n
-            {t("Please make sure seek method is set to exact.")}\n
+            {t("Please make sure seek method is set to exact")}.\n
             {t("Cannot remove afterwards!")}
             """
         )
