@@ -19,16 +19,17 @@ logger = logging.getLogger("fastflix")
 class StatusPanel(QtWidgets.QWidget):
     speed = QtCore.Signal(str)
     bitrate = QtCore.Signal(str)
-    signal_elapsed_time = QtCore.Signal(str)
+    tick_signal = QtCore.Signal()
 
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
         self.app = app
         self.main = parent.main
         self.current_video: Video = None
-
         self.started_at = None
-        self.time_elapsed_ticker_thread = ElapsedTimeTicker(self)
+
+        self.ticker_thread = ElapsedTimeTicker(self, self.main.status_update_signal, self.tick_signal)
+        self.ticker_thread.start()
 
         layout = QtWidgets.QGridLayout()
 
@@ -60,11 +61,12 @@ class StatusPanel(QtWidgets.QWidget):
 
         self.speed.connect(self.update_speed)
         self.bitrate.connect(self.update_bitrate)
-        self.signal_elapsed_time.connect(self.update_time_elapsed)
         self.main.status_update_signal.connect(self.on_status_update)
+        self.tick_signal.connect(self.update_time_elapsed)
 
     def cleanup(self):
         self.inner_widget.log_updater.terminate()
+        self.ticker_thread.stop_signal.emit()
 
     def get_movie_length(self):
         if not self.current_video:
@@ -148,12 +150,8 @@ class StatusPanel(QtWidgets.QWidget):
     def on_status_update(self, msg):
         update_type = msg.split("__")[0]
 
-        if update_type in ["complete", "cancelled", "error"]:
-            self.time_elapsed_ticker_thread.running = False
-            self.time_elapsed_ticker_thread = ElapsedTimeTicker(self)
-        elif update_type == "running":
+        if update_type == "running":
             self.set_started_at(msg)
-            self.time_elapsed_ticker_thread.start()
 
 
 class Logs(QtWidgets.QTextBrowser):
@@ -208,20 +206,43 @@ class Logs(QtWidgets.QTextBrowser):
 
 
 class ElapsedTimeTicker(QtCore.QThread):
-    def __init__(self, parent):
+    stop_signal = QtCore.Signal()
+
+    def __init__(self, parent, status_update_signal, tick_signal):
         super().__init__(parent)
         self.parent = parent
-        self.running = True
+        self.tick_signal = tick_signal
+
+        self.send_tick_signal = False
+        self.stop_received = False
+
+        status_update_signal.connect(self.on_status_update)
+        self.stop_signal.connect(self.on_stop)
 
     def __del__(self):
         self.wait()
 
     def run(self):
-        while self.running:
-            self.parent.signal_elapsed_time.emit("tick")
-            time.sleep(0.3)
+        while not self.stop_received:
+            time.sleep(0.2)
 
-        logger.debug("Time elapsed ticker exited")
+            if not self.send_tick_signal:
+                continue
+
+            self.tick_signal.emit()
+
+        logger.debug("Ticker thread stopped")
+
+    def on_status_update(self, msg):
+        update_type = msg.split("__")[0]
+
+        if update_type in ["complete", "cancelled", "error"]:
+            self.send_tick_signal = False
+        elif update_type == "running":
+            self.send_tick_signal = True
+
+    def on_stop(self):
+        self.stop_received = True
 
 
 class LogUpdater(QtCore.QThread):
