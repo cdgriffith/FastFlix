@@ -328,11 +328,27 @@ class SettingPanel(QtWidgets.QWidget):
                     data = ":".join(data)
                 self.widgets[widget_name].setText(data or "")
         if getattr(self, "qp_radio", None):
-            if getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, "bitrate", None):
+            bitrate = getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, "bitrate", None)
+            if bitrate:
                 self.qp_radio.setChecked(False)
                 self.bitrate_radio.setChecked(True)
+                for i, rec in enumerate(self.recommended_bitrates):
+                    if rec.startswith(bitrate):
+                        self.widgets.bitrate.setCurrentIndex(i)
+                        break
+                else:
+                    self.widgets.bitrate.setCurrentText("Custom")
+                    self.widgets.custom_bitrate.setText(bitrate)
             else:
                 self.qp_radio.setChecked(True)
                 self.bitrate_radio.setChecked(False)
+                qp = str(getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, self.qp_name))
+                for i, rec in enumerate(self.recommended_qps):
+                    if rec.startswith(qp):
+                        self.widgets[self.qp_name].setCurrentIndex(i)
+                        break
+                else:
+                    self.widgets[self.qp_name].setCurrentText("Custom")
+                    self.widgets[f"custom_{self.qp_name}"].setText(qp)
         ffmpeg_extra_command = self.app.fastflix.current_video.video_settings.video_encoder_settings.extra
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
