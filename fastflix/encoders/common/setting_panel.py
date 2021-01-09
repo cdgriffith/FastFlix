@@ -34,12 +34,12 @@ class SettingPanel(QtWidgets.QWidget):
         elif widget_name in ("crf", "qp"):
             if not opt:
                 return 6
-            items = [x.split("(")[0].strip() for x in items]
+            items = [x.split("(")[0].split("-")[0].strip() for x in items]
             opt = str(opt)
         elif widget_name == "bitrate":
             if not opt:
                 return 5
-            items = [x.split("(")[0].strip() for x in items]
+            items = [x.split("(")[0].split("-")[0].strip() for x in items]
         if isinstance(opt, str):
             try:
                 return items.index(opt)
