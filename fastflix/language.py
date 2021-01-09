@@ -34,8 +34,7 @@ def translate(text):
         if language in language_data[text]:
             return language_data[text][language]
     # else:
-    # language_data[text] = {"eng": text}
-    # language_data.to_yaml(filename=language_file, encoding="utf-8", width=400)
+    #     print(f'Cannot find translation for: "{text}"')
     return text
 
 
