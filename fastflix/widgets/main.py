@@ -1570,7 +1570,7 @@ class Main(QtWidgets.QWidget):
         self.set_convert_button()
 
         try:
-            video_uuid, command_uuid = data.split(":")
+            video_uuid, command_uuid, *_ = data.split("__")
             cancelled_video = self.find_video(video_uuid)
         except Exception:
             return
@@ -1585,7 +1585,6 @@ class Main(QtWidgets.QWidget):
         sm.exec_()
         if sm.clickedButton().text() == t("Delete"):
             try:
-                video_uuid, command_uuid = data.split(":")
                 cancelled_video = self.find_video(video_uuid)
                 cancelled_video.video_settings.output_path.unlink(missing_ok=True)
             except OSError:
@@ -1626,7 +1625,7 @@ class Main(QtWidgets.QWidget):
     def status_update(self, status):
         logger.debug(f"Updating status from command worker: {status}")
         try:
-            command, video_uuid, command_uuid = status.split(":")
+            command, video_uuid, command_uuid, *_ = status.split("__")
         except ValueError:
             logger.exception(f"Could not process status update from the command worker: {status}")
             return
@@ -1701,11 +1700,11 @@ class Notifier(QtCore.QThread):
             if status[0] == "complete":
                 self.main.completed.emit(0)
             elif status[0] == "error":
-                self.main.status_update_signal.emit(":".join(status))
+                self.main.status_update_signal.emit("__".join(status))
                 self.main.completed.emit(1)
             elif status[0] == "cancelled":
-                self.main.cancelled.emit(":".join(status[1:]))
-                self.main.status_update_signal.emit(":".join(status))
+                self.main.cancelled.emit("__".join(status[1:]))
+                self.main.status_update_signal.emit("__".join(status))
             elif status[0] == "exit":
                 try:
                     self.terminate()
@@ -1713,4 +1712,4 @@ class Notifier(QtCore.QThread):
                     self.main.close_event.emit()
                 return
             else:
-                self.main.status_update_signal.emit(":".join(status))
+                self.main.status_update_signal.emit("__".join(status))
