@@ -126,8 +126,9 @@ class StatusPanel(QtWidgets.QWidget):
     def set_started_at(self, msg):
         try:
             started_at = datetime.datetime.fromisoformat(msg.split("__")[-1])
-        except Exception as e:
-            logger.warning(f"Unable to parse start time - {str(e)}")
+        except Exception:
+            logger.exception("Unable to parse start time, assuming it was now")
+            self.started_at = datetime.datetime.now(datetime.timezone.utc)
             return
 
         self.started_at = started_at
@@ -141,8 +142,8 @@ class StatusPanel(QtWidgets.QWidget):
 
         try:
             time_elapsed = now - self.started_at
-        except Exception as e:
-            logger.warning(f"Unable to calculate elapsed time - {str(e)}")
+        except Exception:
+            logger.exception("Unable to calculate elapsed time")
             return
 
         self.time_elapsed_label.setText(f"{t('Time Elapsed')}: {timedelta_to_str(time_elapsed)}")
