@@ -245,3 +245,14 @@ def clean_logs(signal, app, **_):
         for file in compress:
             file.unlink(missing_ok=True)
     signal.emit(100)
+
+
+def timedelta_to_str(delta):
+    if not isinstance(delta, (timedelta,)):
+        logger.warning(f"Wanted timedelta found but found {type(delta)}")
+        return "N/A"
+
+    output_string = str(delta)
+    output_string = output_string.split(".")[0]  # Remove .XXX microseconds
+
+    return output_string
