@@ -5,9 +5,9 @@ from typing import List
 from box import Box
 from qtpy import QtGui, QtWidgets
 
+from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.exceptions import FastFlixInternalException
 
 logger = logging.getLogger("fastflix")
 

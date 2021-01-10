@@ -3,9 +3,9 @@
 
 import logging
 import re
+from itertools import chain
 from pathlib import Path
 from typing import List, Union
-from itertools import chain
 
 from box import Box, BoxList
 from qtpy import QtCore, QtGui, QtWidgets

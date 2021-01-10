@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import datetime
 import logging
 import re
 import secrets
 import shlex
-import datetime
 from pathlib import Path
 from subprocess import PIPE
 from threading import Thread

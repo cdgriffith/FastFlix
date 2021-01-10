@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import logging
 from dataclasses import dataclass, field
 from typing import Callable, Dict, List
-import logging
 
 import reusables
 from qtpy import QtCore, QtWidgets

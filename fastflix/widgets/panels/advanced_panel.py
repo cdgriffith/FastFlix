@@ -2,17 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import re
-from pathlib import Path
-from typing import List, Union
 
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import Video, VideoSettings
-from fastflix.shared import link
+from fastflix.models.video import VideoSettings
 from fastflix.resources import warning_icon
 
 logger = logging.getLogger("fastflix")

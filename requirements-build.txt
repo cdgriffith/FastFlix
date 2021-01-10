@@ -5,7 +5,7 @@ iso639-lang
 mistune
 psutil
 pydantic
-pyinstaller==4.0
+pyinstaller==4.1
 pyqt5
 python-box
 qtpy

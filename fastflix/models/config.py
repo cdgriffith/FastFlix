@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-import shutil
-from pathlib import Path
-from typing import Dict, List, Union, Optional
 import logging
+import shutil
 from distutils.version import StrictVersion
+from pathlib import Path
+from typing import Dict, List, Optional, Union
 
 from appdirs import user_data_dir
 from box import Box, BoxError

@@ -13,10 +13,11 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
+from fastflix.models.config import setting_types
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
 from fastflix.resources import main_icon
-from fastflix.shared import latest_fastflix, message, clean_logs, error_message
+from fastflix.shared import clean_logs, error_message, latest_fastflix, message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -24,7 +25,6 @@ from fastflix.widgets.main import Main
 from fastflix.widgets.profile_window import ProfileWindow
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
-from fastflix.models.config import setting_types
 
 logger = logging.getLogger("fastflix")
 

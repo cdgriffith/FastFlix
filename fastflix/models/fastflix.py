@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 # from multiprocessing import Queue
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 from appdirs import user_data_dir
 from pydantic import BaseModel, Field

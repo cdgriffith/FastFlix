@@ -1,34 +1,33 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import logging
 import copy
+import logging
 
-from qtpy import QtWidgets, QtGui
+from qtpy import QtGui, QtWidgets
 
 from fastflix.language import t
-from fastflix.shared import DEVMODE
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.widgets.panels.audio_panel import AudioList
-from fastflix.widgets.panels.command_panel import CommandList
-from fastflix.widgets.panels.cover_panel import CoverPanel
-from fastflix.widgets.panels.queue_panel import EncodingQueue
-from fastflix.widgets.panels.status_panel import StatusPanel
-from fastflix.widgets.panels.subtitle_panel import SubtitleList
-from fastflix.widgets.panels.advanced_panel import AdvancedPanel
-from fastflix.widgets.panels.info_panel import InfoPanel
-from fastflix.widgets.panels.debug_panel import DebugPanel
-
 from fastflix.resources import (
-    editing_icon,
+    advanced_icon,
     cc_icon,
+    editing_icon,
+    info_icon,
     music_icon,
     photo_icon,
     poll_icon,
     text_left_icon,
     working_icon,
-    advanced_icon,
-    info_icon,
 )
+from fastflix.shared import DEVMODE
+from fastflix.widgets.panels.advanced_panel import AdvancedPanel
+from fastflix.widgets.panels.audio_panel import AudioList
+from fastflix.widgets.panels.command_panel import CommandList
+from fastflix.widgets.panels.cover_panel import CoverPanel
+from fastflix.widgets.panels.debug_panel import DebugPanel
+from fastflix.widgets.panels.info_panel import InfoPanel
+from fastflix.widgets.panels.queue_panel import EncodingQueue
+from fastflix.widgets.panels.status_panel import StatusPanel
+from fastflix.widgets.panels.subtitle_panel import SubtitleList
 
 logger = logging.getLogger("fastflix")
 

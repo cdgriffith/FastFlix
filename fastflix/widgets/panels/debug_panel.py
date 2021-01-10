@@ -2,19 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import re
-from pathlib import Path
-from typing import List, Union
-from itertools import chain
+from typing import Union
 
 from box import Box, BoxList
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.language import t
-from fastflix.models.encode import AttachmentTrack
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import Video
-from fastflix.shared import link
+from fastflix.shared import DEVMODE
 
 logger = logging.getLogger("fastflix")
 
@@ -24,6 +18,9 @@ class DebugPanel(QtWidgets.QTabWidget):
         super().__init__(parent)
         self.app = app
         self.main = parent.main
+        if not DEVMODE:
+            self.hide()
+            return
         self.reset()
 
     def get_textbox(self, obj: Union["Box", "BoxList"]) -> "QtWidgets.QTextBrowser":
@@ -42,6 +39,8 @@ class DebugPanel(QtWidgets.QTabWidget):
         return data
 
     def reset(self):
+        if not DEVMODE:
+            return
         for i in range(self.count() - 1, -1, -1):
             self.removeTab(i)
 

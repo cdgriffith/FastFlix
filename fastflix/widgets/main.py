@@ -15,8 +15,8 @@ from typing import Tuple, Union
 import pkg_resources
 import reusables
 from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
 from pydantic import BaseModel, Field
+from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
 from fastflix.exceptions import FastFlixInternalException, FlixError
@@ -41,8 +41,8 @@ from fastflix.resources import (
     video_playlist_icon,
 )
 from fastflix.shared import error_message, time_to_number, yes_no_message
+from fastflix.widgets.background_tasks import SubtitleFix, ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
-from fastflix.widgets.background_tasks import ThumbnailCreator, SubtitleFix
 from fastflix.widgets.video_options import VideoOptions
 
 logger = logging.getLogger("fastflix")

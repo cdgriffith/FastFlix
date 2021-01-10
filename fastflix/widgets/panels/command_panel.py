@@ -8,8 +8,8 @@ import reusables
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.helpers import Command as BuilderCommand
-from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.language import t
+from fastflix.models.fastflix_app import FastFlixApp
 
 
 class Loop(QtWidgets.QGroupBox):

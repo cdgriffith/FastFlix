@@ -4,7 +4,7 @@
 import logging
 import re
 from pathlib import Path
-from typing import List, Union, Tuple
+from typing import List, Tuple, Union
 
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
@@ -12,8 +12,8 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.encode import AttachmentTrack
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.shared import link
 from fastflix.models.video import VideoSettings
+from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 

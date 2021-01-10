@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import time
-import logging
 import datetime
+import logging
+import time
 from datetime import timedelta
 from typing import Optional
 
