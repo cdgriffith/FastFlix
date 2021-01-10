@@ -27,8 +27,7 @@ from fastflix.language import t
 
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
-
-main_width = 800
+DEVMODE = os.getenv("DEVMODE", "").lower() in ("1", "true")
 
 my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
 icon = QtGui.QIcon(my_data)

@@ -35,7 +35,7 @@ def translate(text):
         if language in language_data[text]:
             return language_data[text][language]
     else:
-        if os.getenv("DEVMODE", None).lower() in ("1", "true"):
+        if os.getenv("DEVMODE", "").lower() in ("1", "true"):
             print(f'Cannot find translation for: "{text}"')
     return text
 

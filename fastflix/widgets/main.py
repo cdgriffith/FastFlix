@@ -951,7 +951,6 @@ class Main(QtWidgets.QWidget):
         except (ValueError, AssertionError):
             self.scale_updating = False
             return logger.warning(t("Invalid width"))
-            # return self.scale_warning_message.setText("Invalid main_width")
 
         if scale_width % 2:
             self.scale_updating = False
@@ -1570,7 +1569,7 @@ class Main(QtWidgets.QWidget):
         self.set_convert_button()
 
         try:
-            video_uuid, command_uuid, *_ = data.split("__")
+            video_uuid, command_uuid, *_ = data.split("|")
             cancelled_video = self.find_video(video_uuid)
         except Exception:
             return
@@ -1630,7 +1629,7 @@ class Main(QtWidgets.QWidget):
     def status_update(self, status):
         logger.debug(f"Updating status from command worker: {status}")
         try:
-            command, video_uuid, command_uuid, *_ = status.split("__")
+            command, video_uuid, command_uuid, *_ = status.split("|")
         except ValueError:
             logger.exception(f"Could not process status update from the command worker: {status}")
             return
@@ -1705,11 +1704,11 @@ class Notifier(QtCore.QThread):
             if status[0] == "complete":
                 self.main.completed.emit(0)
             elif status[0] == "error":
-                self.main.status_update_signal.emit("__".join(status))
+                self.main.status_update_signal.emit("|".join(status))
                 self.main.completed.emit(1)
             elif status[0] == "cancelled":
-                self.main.cancelled.emit("__".join(status[1:]))
-                self.main.status_update_signal.emit("__".join(status))
+                self.main.cancelled.emit("|".join(status[1:]))
+                self.main.status_update_signal.emit("|".join(status))
             elif status[0] == "exit":
                 try:
                     self.terminate()
@@ -1717,4 +1716,4 @@ class Notifier(QtCore.QThread):
                     self.main.close_event.emit()
                 return
             else:
-                self.main.status_update_signal.emit("__".join(status))
+                self.main.status_update_signal.emit("|".join(status))

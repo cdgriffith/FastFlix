@@ -126,7 +126,7 @@ class StatusPanel(QtWidgets.QWidget):
 
     def set_started_at(self, msg):
         try:
-            started_at = datetime.datetime.fromisoformat(msg.split("__")[-1])
+            started_at = datetime.datetime.fromisoformat(msg.split("|")[-1])
         except Exception:
             logger.exception("Unable to parse start time, assuming it was now")
             self.started_at = datetime.datetime.now(datetime.timezone.utc)
@@ -150,7 +150,7 @@ class StatusPanel(QtWidgets.QWidget):
         self.time_elapsed_label.setText(f"{t('Time Elapsed')}: {timedelta_to_str(time_elapsed)}")
 
     def on_status_update(self, msg):
-        update_type = msg.split("__")[0]
+        update_type = msg.split("|")[0]
 
         if update_type == "running":
             self.set_started_at(msg)
@@ -236,7 +236,7 @@ class ElapsedTimeTicker(QtCore.QThread):
         logger.debug("Ticker thread stopped")
 
     def on_status_update(self, msg):
-        update_type = msg.split("__")[0]
+        update_type = msg.split("|")[0]
 
         if update_type in ["complete", "cancelled", "error"]:
             self.send_tick_signal = False

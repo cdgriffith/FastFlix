@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 # from multiprocessing import Queue
 from pathlib import Path
-from typing import Dict, List, Union, Optional, Any
+from typing import Dict, List, Optional, Any
 
 from appdirs import user_data_dir
 from pydantic import BaseModel, Field
@@ -27,6 +27,5 @@ class FastFlix(BaseModel):
     status_queue: Any = None
     log_queue: Any = None
 
-    current_video: Union[Video, None] = None
-    current_encoding: Union[Video, None] = None
+    current_video: Optional[Video] = None
     queue: List[Video] = Field(default_factory=list)

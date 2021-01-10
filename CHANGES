@@ -10,6 +10,7 @@
 * Adding button to extract text based subtitles
 * Adding dual pass option for ffmpeg options (thanks to Catatau)
 * Adding #163 elapsed time in encoding panel (thanks to Benedicte Emilie Brækken)
+* Adding super secret DEVMODE environment variable
 * Changing all builds to use Python 3.8, removing idea of "legacy" windows until later time
 * Fixing #156 Copy was broken due to ffmpeg extras not being passed (thanks to leonardyan)
 * Fixing #158 Translation and icon of tab name "Quality" lost when output codec switched (thanks to leonardyan)

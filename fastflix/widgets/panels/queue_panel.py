@@ -43,6 +43,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.video = video
         self.currently_encoding = currently_encoding
         self.setFixedHeight(60)
+        self.parent.main.status_update_signal.connect(self.update_status)
 
         self.widgets = Box(
             up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
@@ -50,11 +51,6 @@ class EncodeItem(QtWidgets.QTabWidget):
             cancel_button=QtWidgets.QPushButton(QtGui.QIcon(black_x_icon), ""),
             reload_buttom=QtWidgets.QPushButton(QtGui.QIcon(edit_box_icon), ""),
         )
-
-        for widget in self.widgets.values():
-            widget.setStyleSheet(no_border)
-            if self.currently_encoding:
-                widget.setDisabled(True)
 
         title = QtWidgets.QLabel(
             video.video_settings.video_title
@@ -133,6 +129,12 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.loading = False
         self.updating_burn = False
 
+    def update_status(self, status: str):
+        command, *_ = status.split("|")
+        print("called", command)
+        for widget in self.widgets.values():
+            widget.setEnabled(command in ("complete", "error", "cancelled"))
+
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(0)
@@ -167,6 +169,10 @@ class EncodeItem(QtWidgets.QTabWidget):
     def page_update(self):
         if not self.loading:
             return self.parent.main.page_update(build_thumbnail=False)
+
+    def close(self) -> bool:
+        self.parent.main.status_update_signal.disconnect(self.update_status)
+        return super(EncodeItem, self).close()
 
 
 class EncodingQueue(FlixList):
@@ -242,11 +248,13 @@ class EncodingQueue(FlixList):
         self.app.fastflix.queue = [track.video for track in self.tracks]
 
     def new_source(self, currently_encoding=False):
+        for track in self.tracks:
+            track.close()
         self.tracks = []
         for i, video in enumerate(self.app.fastflix.queue, start=1):
-            self.tracks.append(EncodeItem(self, video, i, currently_encoding=currently_encoding))
+            self.tracks.append(EncodeItem(self, video, index=i, currently_encoding=currently_encoding))
         super()._new_source(self.tracks)
-        self.app.processEvents()
+        self.app.fastflix.queue = [track.video for track in self.tracks]
 
     def clear_complete(self):
         for queued_item in self.tracks:
