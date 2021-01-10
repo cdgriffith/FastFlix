@@ -8,7 +8,6 @@ import os
 import secrets
 import shutil
 import time
-from dataclasses import asdict, dataclass, field
 from datetime import timedelta
 from pathlib import Path
 from typing import Tuple, Union
@@ -16,6 +15,7 @@ from typing import Tuple, Union
 import pkg_resources
 import reusables
 from box import Box
+from pydantic import BaseModel, Field
 from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
@@ -41,8 +41,8 @@ from fastflix.resources import (
     video_playlist_icon,
 )
 from fastflix.shared import error_message, time_to_number, yes_no_message
+from fastflix.widgets.background_tasks import SubtitleFix, ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
-from fastflix.widgets.background_tasks import ThumbnailCreator, SubtitleFix
 from fastflix.widgets.video_options import VideoOptions
 
 logger = logging.getLogger("fastflix")
@@ -52,30 +52,33 @@ root = os.path.abspath(os.path.dirname(__file__))
 only_int = QtGui.QIntValidator()
 
 
-@dataclass
-class CropWidgets:
+class CropWidgets(BaseModel):
     top: QtWidgets.QLineEdit = None
     bottom: QtWidgets.QLineEdit = None
     left: QtWidgets.QLineEdit = None
     right: QtWidgets.QLineEdit = None
 
+    class Config:
+        arbitrary_types_allowed = True
 
-@dataclass
-class ScaleWidgets:
+
+class ScaleWidgets(BaseModel):
     width: QtWidgets.QLineEdit = None
     height: QtWidgets.QLineEdit = None
     keep_aspect: QtWidgets.QCheckBox = None
 
+    class Config:
+        arbitrary_types_allowed = True
 
-@dataclass
-class MainWidgets:
+
+class MainWidgets(BaseModel):
     start_time: QtWidgets.QLineEdit = None
     end_time: QtWidgets.QLineEdit = None
     video_track: QtWidgets.QComboBox = None
     rotate: QtWidgets.QComboBox = None
     flip: QtWidgets.QComboBox = None
-    crop: CropWidgets = field(default_factory=CropWidgets)
-    scale: ScaleWidgets = field(default_factory=ScaleWidgets)
+    crop: CropWidgets = Field(default_factory=CropWidgets)
+    scale: ScaleWidgets = Field(default_factory=ScaleWidgets)
     remove_metadata: QtWidgets.QCheckBox = None
     chapters: QtWidgets.QCheckBox = None
     fast_time: QtWidgets.QComboBox = None
@@ -86,6 +89,9 @@ class MainWidgets:
     remove_hdr: QtWidgets.QCheckBox = None
     video_title: QtWidgets.QLineEdit = None
     profile_box: QtWidgets.QComboBox = None
+
+    class Config:
+        arbitrary_types_allowed = True
 
     def items(self):
         for key in dir(self):
@@ -112,7 +118,7 @@ class Main(QtWidgets.QWidget):
         super().__init__(parent)
         self.app: FastFlixApp = app
         self.container = parent
-        self.video: Video = Video(Path(), 0, 0, 0)
+        self.video: Video = Video(source=Path(), width=0, height=0, duration=0)
 
         self.initialized = False
         self.loading_video = True
@@ -226,7 +232,7 @@ class Main(QtWidgets.QWidget):
         # add_profile.setFixedSize(QtCore.QSize(40, 40))
         add_profile.setFixedHeight(40)
         add_profile.setIconSize(QtCore.QSize(22, 22))
-        add_profile.setToolTip(t("Profile"))
+        add_profile.setToolTip(t("Profile_newprofiletooltip"))
         add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
         add_profile.clicked.connect(lambda: self.container.new_profile())
 
@@ -450,12 +456,12 @@ class Main(QtWidgets.QWidget):
         return self.widgets.rotate
 
     def rotation_to_transpose(self):
-        mapping = {0: None, 1: 1, 2: 4, 3: 2}
+        mapping = {0: 0, 1: 1, 2: 4, 3: 2}
         return mapping[self.widgets.rotate.currentIndex()]
 
     def transpose_to_rotation(self, transpose):
-        mapping = {None: 0, 1: 1, 4: 2, 2: 3}
-        return mapping[int(transpose) if transpose else None]
+        mapping = {0: 0, 1: 1, 4: 2, 2: 3}
+        return mapping[int(transpose)]
 
     def change_output_types(self):
         self.widgets.convert_to.clear()
@@ -945,7 +951,6 @@ class Main(QtWidgets.QWidget):
         except (ValueError, AssertionError):
             self.scale_updating = False
             return logger.warning(t("Invalid width"))
-            # return self.scale_warning_message.setText("Invalid main_width")
 
         if scale_width % 2:
             self.scale_updating = False
@@ -1231,7 +1236,7 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or self.loading_video:
             return
 
-        settings = asdict(self.app.fastflix.current_video.video_settings)
+        settings = self.app.fastflix.current_video.video_settings.dict()
 
         if (
             self.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"
@@ -1564,25 +1569,30 @@ class Main(QtWidgets.QWidget):
         self.set_convert_button()
 
         try:
-            video_uuid, command_uuid, *_ = data.split("__")
+            video_uuid, command_uuid, *_ = data.split("|")
             cancelled_video = self.find_video(video_uuid)
         except Exception:
             return
 
-        sm = QtWidgets.QMessageBox()
-        sm.setWindowTitle(t("Cancelled"))
-        sm.setText(
-            f"{t('Conversion cancelled, delete incomplete file')}\n" f"{cancelled_video.video_settings.output_path}?"
-        )
-        sm.addButton(t("Delete"), QtWidgets.QMessageBox.YesRole)
-        sm.addButton(t("Keep"), QtWidgets.QMessageBox.NoRole)
-        sm.exec_()
-        if sm.clickedButton().text() == t("Delete"):
-            try:
-                cancelled_video = self.find_video(video_uuid)
-                cancelled_video.video_settings.output_path.unlink(missing_ok=True)
-            except OSError:
-                pass
+        if self.video_options.queue.paused:
+            self.video_options.queue.pause_resume_queue()
+
+        if cancelled_video.video_settings.output_path.exists():
+            sm = QtWidgets.QMessageBox()
+            sm.setWindowTitle(t("Cancelled"))
+            sm.setText(
+                f"{t('Conversion cancelled, delete incomplete file')}\n"
+                f"{cancelled_video.video_settings.output_path}?"
+            )
+            sm.addButton(t("Delete"), QtWidgets.QMessageBox.YesRole)
+            sm.addButton(t("Keep"), QtWidgets.QMessageBox.NoRole)
+            sm.exec_()
+            if sm.clickedButton().text() == t("Delete"):
+                try:
+                    cancelled_video = self.find_video(video_uuid)
+                    cancelled_video.video_settings.output_path.unlink(missing_ok=True)
+                except OSError:
+                    pass
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def dropEvent(self, event):
@@ -1619,7 +1629,7 @@ class Main(QtWidgets.QWidget):
     def status_update(self, status):
         logger.debug(f"Updating status from command worker: {status}")
         try:
-            command, video_uuid, command_uuid, *_ = status.split("__")
+            command, video_uuid, command_uuid, *_ = status.split("|")
         except ValueError:
             logger.exception(f"Could not process status update from the command worker: {status}")
             return
@@ -1694,11 +1704,11 @@ class Notifier(QtCore.QThread):
             if status[0] == "complete":
                 self.main.completed.emit(0)
             elif status[0] == "error":
-                self.main.status_update_signal.emit("__".join(status))
+                self.main.status_update_signal.emit("|".join(status))
                 self.main.completed.emit(1)
             elif status[0] == "cancelled":
-                self.main.cancelled.emit("__".join(status[1:]))
-                self.main.status_update_signal.emit("__".join(status))
+                self.main.cancelled.emit("|".join(status[1:]))
+                self.main.status_update_signal.emit("|".join(status))
             elif status[0] == "exit":
                 try:
                     self.terminate()
@@ -1706,4 +1716,4 @@ class Notifier(QtCore.QThread):
                     self.main.close_event.emit()
                 return
             else:
-                self.main.status_update_signal.emit("__".join(status))
+                self.main.status_update_signal.emit("|".join(status))

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import List, Tuple, Union
+
 from fastflix.models.video import SubtitleTrack
 
 

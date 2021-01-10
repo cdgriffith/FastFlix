@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import traceback
 import sys
+import traceback
 from multiprocessing import freeze_support
 
 from fastflix.entry import main

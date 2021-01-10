@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import uuid
-from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import List, Tuple, Union
 
 import reusables
+from pydantic import BaseModel, Field
 
 from fastflix.encoders.common.attachments import build_attachments
 from fastflix.encoders.common.audio import build_audio
@@ -29,17 +29,14 @@ class Loop:
         self.files = files
 
 
-@dataclass
-class Command(BaseDataClass):
+class Command(BaseModel):
     command: str
-    variables: List
-    internal: bool
     item = "command"
     name: str = ""
     ensure_paths: List = ()
     exe: str = None
     shell: bool = False
-    uuid: str = field(default_factory=lambda: str(uuid.uuid4()))
+    uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))
 
 
 def generate_ffmpeg_start(
@@ -54,6 +51,8 @@ def generate_ffmpeg_start(
     max_muxing_queue_size="default",
     fast_seek=True,
     video_title="",
+    maxrate=None,
+    bufsize=None,
     source_fps: Union[str, None] = None,
     vsync: Union[str, None] = None,
     **_,
@@ -82,6 +81,8 @@ def generate_ffmpeg_start(
             f'{filters if filters else ""}',
             f"-c:v {encoder}",
             f"-pix_fmt {pix_fmt}",
+            f"{f'-maxrate:v {maxrate}' if maxrate else ''}",
+            f"{f'-bufsize:v {bufsize}' if bufsize else ''}",
             " ",  # Leave space after commands
         ]
     )
@@ -121,7 +122,7 @@ def generate_filters(
     scale_width=None,
     scale_height=None,
     remove_hdr=False,
-    rotate=None,
+    rotate=0,
     vertical_flip=None,
     horizontal_flip=None,
     burn_in_subtitle_track=None,
@@ -148,7 +149,7 @@ def generate_filters(
         filter_list.append(f"scale={scale_width}:-8:flags={scale_filter}")
     elif scale_height:
         filter_list.append(f"scale=-8:{scale_height}:flags={scale_filter}")
-    if rotate is not None:
+    if rotate:
         if rotate < 3:
             filter_list.append(f"transpose={rotate}")
         if rotate == 4:
@@ -217,7 +218,7 @@ def generate_all(
             source=fastflix.current_video.source,
             burn_in_subtitle_track=burn_in_track,
             burn_in_subtitle_type=burn_in_type,
-            **asdict(fastflix.current_video.video_settings),
+            **fastflix.current_video.video_settings.dict(),
         )
 
     ending = generate_ending(
@@ -225,7 +226,7 @@ def generate_all(
         subtitles=subtitles,
         cover=attachments,
         output_video=fastflix.current_video.video_settings.output_path,
-        **asdict(fastflix.current_video.video_settings),
+        **fastflix.current_video.video_settings.dict(),
     )
 
     beginning = generate_ffmpeg_start(
@@ -233,8 +234,8 @@ def generate_all(
         ffmpeg=fastflix.config.ffmpeg,
         encoder=encoder,
         filters=filters,
-        **asdict(fastflix.current_video.video_settings),
-        **asdict(settings),
+        **fastflix.current_video.video_settings.dict(),
+        **settings.dict(),
     )
 
     return beginning, ending

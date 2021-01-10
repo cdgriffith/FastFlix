@@ -278,17 +278,17 @@ class Audio(QtWidgets.QTabWidget):
         return {"codec": self.widgets.convert_to.currentText(), "bitrate": self.widgets.convert_bitrate.currentText()}
 
     @property
-    def downmix(self):
+    def downmix(self) -> int:
         return self.widgets.downmix.currentIndex()
 
     @property
-    def language(self):
+    def language(self) -> str:
         if self.widgets.language.currentIndex() == 0:
-            return None
+            return ""
         return Lang(self.widgets.language.currentText()).pt2b
 
     @property
-    def title(self):
+    def title(self) -> str:
         return self.widgets.title.text()
 
     def set_first(self, first=True):

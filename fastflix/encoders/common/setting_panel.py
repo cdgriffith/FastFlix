@@ -5,6 +5,7 @@ from typing import List
 from box import Box
 from qtpy import QtGui, QtWidgets
 
+from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 
@@ -27,23 +28,26 @@ class SettingPanel(QtWidgets.QWidget):
     def translate_tip(tooltip):
         return "\n".join([t(x) for x in tooltip.split("\n") if x.strip()])
 
-    def determine_default(self, widget_name, opt, items: List):
+    def determine_default(self, widget_name, opt, items: List, raise_error: bool = False):
         if widget_name == "pix_fmt":
             items = [x.split(":")[1].strip() for x in items]
         elif widget_name in ("crf", "qp"):
             if not opt:
                 return 6
-            items = [x.split("(")[0].strip() for x in items]
+            items = [x.split("(")[0].split("-")[0].strip() for x in items]
             opt = str(opt)
         elif widget_name == "bitrate":
             if not opt:
                 return 5
-            items = [x.split("(")[0].strip() for x in items]
+            items = [x.split("(")[0].split("-")[0].strip() for x in items]
         if isinstance(opt, str):
             try:
                 return items.index(opt)
             except Exception:
-                logger.error(f"Could not set default for {widget_name} to {opt} as it's not in the list")
+                if raise_error:
+                    raise FastFlixInternalException
+                else:
+                    logger.error(f"Could not set default for {widget_name} to {opt} as it's not in the list")
                 return 0
         if isinstance(opt, bool):
             return int(opt)
@@ -165,6 +169,9 @@ class SettingPanel(QtWidgets.QWidget):
         recommended_qps,
         qp_name="crf",
     ):
+        self.recommended_bitrates = recommended_bitrates
+        self.recommended_qps = recommended_qps
+        self.qp_name = qp_name
         layout = QtWidgets.QGridLayout()
         qp_group_box = QtWidgets.QGroupBox()
         qp_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
@@ -182,13 +189,20 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.bitrate.setFixedWidth(250)
         self.widgets.bitrate.addItems(recommended_bitrates)
         config_opt = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
-        if config_opt:
-            self.mode = "Bitrate"
-        self.widgets.bitrate.setCurrentIndex(self.determine_default("bitrate", config_opt, recommended_bitrates))
+        custom_bitrate = False
+        try:
+            default_bitrate_index = self.determine_default(
+                "bitrate", config_opt, recommended_bitrates, raise_error=True
+            )
+        except FastFlixInternalException:
+            custom_bitrate = True
+            self.widgets.bitrate.setCurrentText("Custom")
+        else:
+            self.widgets.bitrate.setCurrentIndex(default_bitrate_index)
         self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000")
+        self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000" if not custom_bitrate else config_opt)
         self.widgets.custom_bitrate.setFixedWidth(100)
-        self.widgets.custom_bitrate.setDisabled(True)
+        self.widgets.custom_bitrate.setEnabled(custom_bitrate)
         self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
         self.widgets.custom_bitrate.setValidator(self.only_int)
         bitrate_box_layout.addWidget(self.bitrate_radio)
@@ -212,17 +226,28 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets[qp_name].setToolTip(qp_help)
         self.widgets[qp_name].setFixedWidth(250)
         self.widgets[qp_name].addItems(recommended_qps)
-        self.widgets[qp_name].setCurrentIndex(
-            self.determine_default(
-                qp_name, self.app.fastflix.config.encoder_opt(self.profile_name, qp_name), recommended_qps
-            )
-        )
+        custom_qp = False
+        qp_value = self.app.fastflix.config.encoder_opt(self.profile_name, qp_name)
+        try:
+            default_qp_index = self.determine_default(qp_name, qp_value, recommended_qps, raise_error=True)
+        except FastFlixInternalException:
+            custom_qp = True
+            self.widgets[qp_name].setCurrentText("Custom")
+        else:
+            self.widgets[qp_name].setCurrentIndex(default_qp_index)
+
         self.widgets[qp_name].currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30")
+        self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
         self.widgets[f"custom_{qp_name}"].setFixedWidth(100)
-        self.widgets[f"custom_{qp_name}"].setDisabled(True)
+        self.widgets[f"custom_{qp_name}"].setEnabled(custom_qp)
         self.widgets[f"custom_{qp_name}"].setValidator(self.only_int)
         self.widgets[f"custom_{qp_name}"].textChanged.connect(lambda: self.main.build_commands())
+
+        if config_opt:
+            self.mode = "Bitrate"
+            self.qp_radio.setChecked(False)
+            self.bitrate_radio.setChecked(True)
+
         qp_box_layout.addWidget(self.qp_radio)
         qp_box_layout.addWidget(self.widgets[qp_name])
         qp_box_layout.addStretch()
@@ -279,9 +304,24 @@ class SettingPanel(QtWidgets.QWidget):
             if bitrate:
                 self.qp_radio.setChecked(False)
                 self.bitrate_radio.setChecked(True)
+                for i, rec in enumerate(self.recommended_bitrates):
+                    if rec.startswith(bitrate):
+                        self.widgets.bitrate.setCurrentIndex(i)
+                        break
+                else:
+                    self.widgets.bitrate.setCurrentText("Custom")
+                    self.widgets.custom_bitrate.setText(bitrate.rstrip("kKmMgGbB"))
             else:
                 self.qp_radio.setChecked(True)
                 self.bitrate_radio.setChecked(False)
+                qp = str(self.app.fastflix.config.encoder_opt(self.profile_name, self.qp_name))
+                for i, rec in enumerate(self.recommended_qps):
+                    if rec.startswith(qp):
+                        self.widgets[self.qp_name].setCurrentIndex(i)
+                        break
+                else:
+                    self.widgets[self.qp_name].setCurrentText("Custom")
+                    self.widgets[f"custom_{self.qp_name}"].setText(qp)
         ffmpeg_extra_command = self.app.fastflix.config.encoder_opt(self.profile_name, "extra")
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
 
@@ -310,11 +350,27 @@ class SettingPanel(QtWidgets.QWidget):
                     data = ":".join(data)
                 self.widgets[widget_name].setText(data or "")
         if getattr(self, "qp_radio", None):
-            if getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, "bitrate", None):
+            bitrate = getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, "bitrate", None)
+            if bitrate:
                 self.qp_radio.setChecked(False)
                 self.bitrate_radio.setChecked(True)
+                for i, rec in enumerate(self.recommended_bitrates):
+                    if rec.startswith(bitrate):
+                        self.widgets.bitrate.setCurrentIndex(i)
+                        break
+                else:
+                    self.widgets.bitrate.setCurrentText("Custom")
+                    self.widgets.custom_bitrate.setText(bitrate)
             else:
                 self.qp_radio.setChecked(True)
                 self.bitrate_radio.setChecked(False)
+                qp = str(getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, self.qp_name))
+                for i, rec in enumerate(self.recommended_qps):
+                    if rec.startswith(qp):
+                        self.widgets[self.qp_name].setCurrentIndex(i)
+                        break
+                else:
+                    self.widgets[self.qp_name].setCurrentText("Custom")
+                    self.widgets[f"custom_{self.qp_name}"].setText(qp)
         ffmpeg_extra_command = self.app.fastflix.current_video.video_settings.video_encoder_settings.extra
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)

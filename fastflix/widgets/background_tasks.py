@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
-from subprocess import PIPE, STDOUT, run, Popen
 from pathlib import Path
+from subprocess import PIPE, STDOUT, Popen, run
 
 from qtpy import QtCore
 

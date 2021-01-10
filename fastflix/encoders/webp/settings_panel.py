@@ -94,7 +94,10 @@ class WEBP(SettingPanel):
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
         qscale = self.widgets.qscale.currentText()
-        settings.qscale = int(qscale) if qscale.lower() != "custom" else int(self.widgets.custom_qscale.text())
+        if self.widgets.custom_qscale.isEnabled():
+            settings.qscale = int(self.widgets.custom_qscale.text())
+        else:
+            settings.qscale = int(qscale.split(" ", 1)[0])
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def new_source(self):

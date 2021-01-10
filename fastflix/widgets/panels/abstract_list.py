@@ -2,8 +2,8 @@
 from box import Box
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.language import t
+from fastflix.models.fastflix_app import FastFlixApp
 
 
 class FlixList(QtWidgets.QWidget):

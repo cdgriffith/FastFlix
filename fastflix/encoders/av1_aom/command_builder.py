@@ -2,7 +2,7 @@
 import re
 import secrets
 
-from fastflix.encoders.common.helpers import Command, generate_all, null, generate_color_details
+from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
 from fastflix.models.encode import AOMAV1Settings
 from fastflix.models.fastflix import FastFlix
 
@@ -32,9 +32,9 @@ def build(fastflix: FastFlix):
             f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 2 {settings.extra} {ending}'
         )
         return [
-            Command(command_1, ["ffmpeg", "output"], False, name="First Pass bitrate"),
-            Command(command_2, ["ffmpeg", "output"], False, name="Second Pass bitrate"),
+            Command(command=command_1, name="First Pass bitrate"),
+            Command(command=command_2, name="Second Pass bitrate"),
         ]
     elif settings.crf:
         command_1 = f"{beginning} -b:v 0 -crf {settings.crf} {settings.extra} {ending}"
-        return [Command(command_1, ["ffmpeg", "output"], False, name="Single Pass CRF")]
+        return [Command(command=command_1, name="Single Pass CRF")]

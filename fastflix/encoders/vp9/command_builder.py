@@ -2,7 +2,7 @@
 import re
 import secrets
 
-from fastflix.encoders.common.helpers import Command, generate_all, null, generate_color_details
+from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
 from fastflix.models.encode import VP9Settings
 from fastflix.models.fastflix import FastFlix
 
@@ -41,10 +41,10 @@ def build(fastflix: FastFlix):
         return []
 
     if settings.crf and settings.single_pass:
-        return [Command(command_2, ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")]
+        return [Command(command=command_2, name="Single pass CRF", exe="ffmpeg")]
     pass_type = "bitrate" if settings.bitrate else "CRF"
 
     return [
-        Command(command_1, ["ffmpeg", "output"], False, name=f"First pass {pass_type}", exe="ffmpeg"),
-        Command(command_2, ["ffmpeg", "output"], False, name=f"Second pass {pass_type} ", exe="ffmpeg"),
+        Command(command=command_1, name=f"First pass {pass_type}", exe="ffmpeg"),
+        Command(command=command_2, name=f"Second pass {pass_type} ", exe="ffmpeg"),
     ]

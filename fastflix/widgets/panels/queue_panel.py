@@ -3,7 +3,6 @@
 
 import copy
 import sys
-from dataclasses import asdict
 
 import reusables
 from box import Box
@@ -64,7 +63,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         )
         title.setFixedWidth(300)
 
-        settings = Box(copy.deepcopy(asdict(video.video_settings)))
+        settings = Box(copy.deepcopy(video.video_settings.dict()))
         settings.output_path = str(settings.output_path)
         for i, o in enumerate(settings.attachment_tracks):
             if o.get("file_path"):
@@ -137,10 +136,10 @@ class EncodeItem(QtWidgets.QTabWidget):
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(0)
-        self.widgets.up_button.setDisabled(self.first)
+        self.widgets.up_button.setDisabled(True if self.currently_encoding else self.first)
         self.widgets.up_button.setFixedWidth(20)
         self.widgets.up_button.clicked.connect(lambda: self.parent.move_up(self))
-        self.widgets.down_button.setDisabled(self.last)
+        self.widgets.down_button.setDisabled(True if self.currently_encoding else self.last)
         self.widgets.down_button.setFixedWidth(20)
         self.widgets.down_button.clicked.connect(lambda: self.parent.move_down(self))
         layout.addWidget(self.widgets.up_button)
@@ -149,11 +148,11 @@ class EncodeItem(QtWidgets.QTabWidget):
 
     def set_first(self, first=True):
         self.first = first
-        self.widgets.up_button.setDisabled(self.first)
+        self.widgets.up_button.setDisabled(True if self.currently_encoding else self.first)
 
     def set_last(self, last=True):
         self.last = last
-        self.widgets.down_button.setDisabled(self.last)
+        self.widgets.down_button.setDisabled(True if self.currently_encoding else self.last)
 
     def set_outdex(self, outdex):
         pass
@@ -176,7 +175,8 @@ class EncodingQueue(FlixList):
         self.app = app
         self.paused = False
         self.encode_paused = False
-
+        self.encoding = False
+        self.main.status_update_signal.connect(self.update_status)
         top_layout = QtWidgets.QHBoxLayout()
 
         top_layout.addWidget(QtWidgets.QLabel(t("Queue")))
@@ -229,12 +229,6 @@ class EncodingQueue(FlixList):
         top_layout.addWidget(self.pause_encode, QtCore.Qt.AlignRight)
         top_layout.addWidget(self.pause_queue, QtCore.Qt.AlignRight)
         top_layout.addWidget(self.clear_queue, QtCore.Qt.AlignRight)
-        # pause_encode = QtWidgets.QPushButton(
-        #     self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), "Pause Encode"
-        # )
-        # # pause_encode.setFixedHeight(40)
-        # pause_encode.setFixedWidth(120)
-        # top_layout.addWidget(pause_encode, QtCore.Qt.AlignRight)
 
         super().__init__(app, parent, t("Queue"), "queue", top_row_layout=top_layout)
 
@@ -242,12 +236,13 @@ class EncodingQueue(FlixList):
         super().reorder(update=update)
         self.app.fastflix.queue = [track.video for track in self.tracks]
 
-    def new_source(self, currently_encoding=False):
+    def new_source(self):
+        for track in self.tracks:
+            track.close()
         self.tracks = []
         for i, video in enumerate(self.app.fastflix.queue, start=1):
-            self.tracks.append(EncodeItem(self, video, i, currently_encoding=currently_encoding))
+            self.tracks.append(EncodeItem(self, video, index=i, currently_encoding=self.encoding))
         super()._new_source(self.tracks)
-        self.app.processEvents()
 
     def clear_complete(self):
         for queued_item in self.tracks:
@@ -304,3 +299,15 @@ class EncodingQueue(FlixList):
             command = done_actions["linux"][option]
 
         self.app.fastflix.worker_queue.put(["set after done", command])
+
+    def update_status(self, status: str):
+        command, *_ = status.split("|")
+        self.encoding = command not in ("complete", "error", "cancelled", "converted")
+        for track in self.tracks:
+            for widget in track.widgets.values():
+                widget.setDisabled(self.encoding)
+        if self.tracks:
+            self.tracks[0].set_first(True)
+            self.tracks[-1].set_last(True)
+        if self.encoding and self.paused:
+            self.pause_resume_queue()

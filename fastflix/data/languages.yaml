@@ -1489,7 +1489,21 @@ Preset:
   ita: Preset
   spa: Preset
   zho: 预设
-Profile:
+Profile_encoderopt:
+  deu: Profil
+  eng: Profile
+  fra: Profil
+  ita: Profilo
+  spa: Perfil
+  zho: 规格
+Profile_newprofiletooltip:
+  deu: Profil
+  eng: Profile
+  fra: Profil
+  ita: Profilo
+  spa: Perfil
+  zho: 规格
+Profile_window:
   deu: Profil
   eng: Profile
   fra: Profil
@@ -2023,7 +2037,7 @@ Time Left:
   zho: 剩余时间
 Time Elapsed:
   deu: Verstrichene Zeit
-  eng: Time elapsed
+  eng: Time Elapsed
   fra: Temps écoulé
   ita: Tempo trascorso
   spa: Tiempo transcurrido
@@ -2693,3 +2707,52 @@ File:
   ita: Archivio
   spa: Archivo
   zho: 文件
+Both Passes:
+  deu: Beide Durchgänge
+  eng: Both Passes
+  fra: Les deux passages
+  ita: Entrambi i Pass
+  spa: Ambos pases
+  zho: 两次通过
+Advanced settings are currently not saved in Profiles:
+  deu: Erweiterte Einstellungen werden derzeit nicht in Profilen gespeichert
+  eng: Advanced settings are currently not saved in Profiles
+  fra: Les paramètres avancés ne sont actuellement pas enregistrés dans les Profils
+  ita: Le impostazioni avanzate non sono attualmente salvate in Profili
+  spa: Los ajustes avanzados no se guardan actualmente en Perfiles
+  zho: 高级设置目前没有保存在配置文件中
+Constant:
+  deu: Konstant
+  eng: Constant
+  fra: Constant
+  ita: Costante
+  spa: Constante
+  zho: 恒定
+Please make sure seek method is set to exact:
+  deu: Bitte stellen Sie sicher, dass die Suchmethode auf exakt eingestellt ist
+  eng: Please make sure seek method is set to exact
+  fra: Veuillez vous assurer que la méthode de recherche est réglée sur l'exacte
+  ita: Si prega di assicurarsi che il metodo di ricerca sia impostato su
+  spa: Por favor, asegúrese de que el método de búsqueda se establece con exactitud
+  zho: 请确认寻找方法被设置为精确
+Extract:
+  deu: Auszug
+  eng: Extract
+  fra: Extrait
+  ita: Estratto
+  spa: Extracto
+  zho: 萃取
+Save File:
+  deu: Datei speichern
+  eng: Save File
+  fra: Enregistrer le fichier
+  ita: Salva file
+  spa: Guardar archivo
+  zho: 保存文件
+GUI Logging Level:
+  deu: GUI-Protokollierungsebene
+  eng: GUI Logging Level
+  fra: Niveau d'exploitation forestière
+  ita: Livello di registrazione GUI
+  spa: Nivel de registro GUI
+  zho: GUI日志级别

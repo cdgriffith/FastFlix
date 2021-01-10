@@ -3,9 +3,9 @@
 
 import logging
 import re
+from itertools import chain
 from pathlib import Path
 from typing import List, Union
-from itertools import chain
 
 from box import Box, BoxList
 from qtpy import QtCore, QtGui, QtWidgets
@@ -36,8 +36,6 @@ class InfoPanel(QtWidgets.QTabWidget):
         all_stream = []
         for x in self.app.fastflix.current_video.streams.values():
             all_stream.extend(x)
-
-        # self.text_area.setText(Box(self.app.fastflix.current_video.streams).to_yaml(default_flow_style=False))
 
         for stream in sorted(all_stream, key=lambda z: z["index"]):
             widget = QtWidgets.QTextBrowser(self)

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import time
-import logging
 import datetime
+import logging
+import time
 from datetime import timedelta
+from typing import Optional
 
 from qtpy import QtCore, QtWidgets
 
@@ -25,7 +26,7 @@ class StatusPanel(QtWidgets.QWidget):
         super().__init__(parent)
         self.app = app
         self.main = parent.main
-        self.current_video: Video = None
+        self.current_video: Optional[Video] = None
         self.started_at = None
 
         self.ticker_thread = ElapsedTimeTicker(self, self.main.status_update_signal, self.tick_signal)
@@ -125,7 +126,7 @@ class StatusPanel(QtWidgets.QWidget):
 
     def set_started_at(self, msg):
         try:
-            started_at = datetime.datetime.fromisoformat(msg.split("__")[-1])
+            started_at = datetime.datetime.fromisoformat(msg.split("|")[-1])
         except Exception:
             logger.exception("Unable to parse start time, assuming it was now")
             self.started_at = datetime.datetime.now(datetime.timezone.utc)
@@ -149,7 +150,7 @@ class StatusPanel(QtWidgets.QWidget):
         self.time_elapsed_label.setText(f"{t('Time Elapsed')}: {timedelta_to_str(time_elapsed)}")
 
     def on_status_update(self, msg):
-        update_type = msg.split("__")[0]
+        update_type = msg.split("|")[0]
 
         if update_type == "running":
             self.set_started_at(msg)
@@ -225,7 +226,7 @@ class ElapsedTimeTicker(QtCore.QThread):
 
     def run(self):
         while not self.stop_received:
-            time.sleep(0.2)
+            time.sleep(0.5)
 
             if not self.send_tick_signal:
                 continue
@@ -235,11 +236,11 @@ class ElapsedTimeTicker(QtCore.QThread):
         logger.debug("Ticker thread stopped")
 
     def on_status_update(self, msg):
-        update_type = msg.split("__")[0]
+        update_type = msg.split("|")[0]
 
-        if update_type in ["complete", "cancelled", "error"]:
+        if update_type in ("complete", "error", "cancelled", "converted"):
             self.send_tick_signal = False
-        elif update_type == "running":
+        else:
             self.send_tick_signal = True
 
     def on_stop(self):

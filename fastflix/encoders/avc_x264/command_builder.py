@@ -2,7 +2,7 @@
 import re
 import secrets
 
-from fastflix.encoders.common.helpers import Command, generate_all, null, generate_color_details
+from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
 from fastflix.models.encode import x264Settings
 from fastflix.models.fastflix import FastFlix
 
@@ -29,19 +29,13 @@ def build(fastflix: FastFlix):
             f"-b:v {settings.bitrate} -preset {settings.preset} {settings.extra} "
         ) + ending
         return [
-            Command(
-                re.sub("[ ]+", " ", command_1), ["ffmpeg", "output"], False, name="First pass bitrate", exe="ffmpeg"
-            ),
-            Command(
-                re.sub("[ ]+", " ", command_2), ["ffmpeg", "output"], False, name="Second pass bitrate", exe="ffmpeg"
-            ),
+            Command(command=re.sub("[ ]+", " ", command_1), name="First pass bitrate", exe="ffmpeg"),
+            Command(command=re.sub("[ ]+", " ", command_2), name="Second pass bitrate", exe="ffmpeg"),
         ]
 
     elif settings.crf:
         command = f"{beginning} -crf {settings.crf} " f"-preset {settings.preset} {settings.extra} {ending}"
-        return [
-            Command(re.sub("[ ]+", " ", command), ["ffmpeg", "output"], False, name="Single pass CRF", exe="ffmpeg")
-        ]
+        return [Command(command=re.sub("[ ]+", " ", command), name="Single pass CRF", exe="ffmpeg")]
 
     else:
         return []

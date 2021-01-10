@@ -377,7 +377,7 @@ class HEVC(SettingPanel):
 
     def init_profile(self):
         return self._add_combo_box(
-            label="Profile",
+            label="Profile_encoderopt",
             tooltip="profile: Enforce an encode profile",
             widget_name="profile",
             options=["default", "main", "main10", "mainstillpicture"],
@@ -543,7 +543,10 @@ class HEVC(SettingPanel):
 
         if self.mode == "CRF":
             crf = self.widgets.crf.currentText()
-            settings.crf = int(crf.split(" ", 1)[0]) if crf != "Custom" else int(self.widgets.custom_crf.text())
+            if self.widgets.custom_crf.isEnabled() and self.widgets.custom_crf.text():
+                settings.crf = int(self.widgets.custom_crf.text())
+            else:
+                settings.crf = int(crf.split(" ", 1)[0])
         else:
             bitrate = self.widgets.bitrate.currentText()
             if bitrate.lower() == "custom":

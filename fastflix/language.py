@@ -5,12 +5,13 @@ proprietary format, and requires checking in binary files to git.
 
 So here is an easy stand-in that is better in ways I care about.
 """
+import os
 from functools import lru_cache
 from pathlib import Path
 
+from appdirs import user_data_dir
 from box import Box
 from iso639 import Lang
-from appdirs import user_data_dir
 
 from fastflix.resources import language_file
 
@@ -33,9 +34,9 @@ def translate(text):
     if text in language_data:
         if language in language_data[text]:
             return language_data[text][language]
-    # else:
-    # language_data[text] = {"eng": text}
-    # language_data.to_yaml(filename=language_file, encoding="utf-8", width=400)
+    else:
+        if os.getenv("DEVMODE", "").lower() in ("1", "true"):
+            print(f'Cannot find translation for: "{text}"')
     return text
 
 

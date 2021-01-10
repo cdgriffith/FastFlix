@@ -11,10 +11,10 @@ from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import down_arrow_icon, up_arrow_icon, loading_movie
-from fastflix.shared import error_message, main_width, no_border
-from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.resources import down_arrow_icon, loading_movie, up_arrow_icon
+from fastflix.shared import error_message, no_border
 from fastflix.widgets.background_tasks import ExtractSubtitleSRT
+from fastflix.widgets.panels.abstract_list import FlixList
 
 dispositions = [
     "none",
@@ -93,7 +93,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets.title.setToolTip(self.subtitle.to_yaml())
         self.widgets.burn_in.setToolTip(
             f"""{t("Overlay this subtitle track onto the video during conversion.")}\n
-            {t("Please make sure seek method is set to exact.")}\n
+            {t("Please make sure seek method is set to exact")}.\n
             {t("Cannot remove afterwards!")}
             """
         )

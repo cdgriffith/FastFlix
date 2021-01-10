@@ -1,4 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import collect_submodules
 
 block_cipher = None
 
@@ -11,7 +12,7 @@ for root, dirs, files in os.walk('fastflix'):
 		all_fastflix_files.append((os.path.join(root,file), root))
 
 
-all_imports = []
+all_imports = collect_submodules('pydantic') + ['dataclasses', 'colorsys']
 with open("requirements-build.txt", "r") as reqs:
     for line in reqs:
         package = line.split("=")[0].split(">")[0].split("<")[0].replace('"', '').replace("'", '').strip()

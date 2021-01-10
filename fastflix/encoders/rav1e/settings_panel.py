@@ -74,7 +74,7 @@ class RAV1E(SettingPanel):
         guide_label = QtWidgets.QLabel(link("https://github.com/xiph/rav1e/blob/master/README.md", t("rav1e github")))
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, -1, 1)
+        grid.addWidget(guide_label, 11, 0, 1, 6)
         self.setLayout(grid)
         self.hide()
 
@@ -142,7 +142,10 @@ class RAV1E(SettingPanel):
         )
         if self.mode == "QP":
             qp = self.widgets.qp.currentText()
-            settings.qp = int(qp.split(" ", 1)[0]) if qp.lower() != "custom" else self.widgets.custom_qp.text()
+            if self.widgets.custom_qp.isEnabled():
+                settings.qp = int(self.widgets.custom_qp.text())
+            else:
+                settings.qp = int(qp.split(" ", 1)[0])
         else:
             bitrate = self.widgets.bitrate.currentText()
             if bitrate.lower() == "custom":

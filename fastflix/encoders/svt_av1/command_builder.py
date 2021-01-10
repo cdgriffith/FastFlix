@@ -7,7 +7,7 @@ import secrets
 
 import reusables
 
-from fastflix.encoders.common.helpers import Command, generate_all, null, generate_color_details
+from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
 from fastflix.models.encode import SVTAV1Settings
 from fastflix.models.fastflix import FastFlix
 
@@ -44,7 +44,7 @@ def build(fastflix: FastFlix):
             command_1 = f"{beginning} -qp {settings.qp} -rc 0 {settings.extra} {ending}"
         else:
             return []
-        return [Command(command_1, ["ffmpeg", "output"], False, name=f"{pass_type}", exe="ffmpeg")]
+        return [Command(command=command_1, name=f"{pass_type}", exe="ffmpeg")]
     else:
         if settings.bitrate:
             command_1 = f"{beginning} -b:v {settings.bitrate} -rc 1 -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f matroska {null}"
@@ -56,6 +56,6 @@ def build(fastflix: FastFlix):
         else:
             return []
         return [
-            Command(command_1, ["ffmpeg", "output"], False, name=f"First pass {pass_type}", exe="ffmpeg"),
-            Command(command_2, ["ffmpeg", "output"], False, name=f"Second pass {pass_type} ", exe="ffmpeg"),
+            Command(command=command_1, name=f"First pass {pass_type}", exe="ffmpeg"),
+            Command(command=command_2, name=f"Second pass {pass_type} ", exe="ffmpeg"),
         ]
