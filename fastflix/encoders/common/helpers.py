@@ -51,6 +51,8 @@ def generate_ffmpeg_start(
     max_muxing_queue_size="default",
     fast_seek=True,
     video_title="",
+    maxrate=None,
+    bufsize=None,
     source_fps: Union[str, None] = None,
     vsync: Union[str, None] = None,
     **_,
@@ -79,6 +81,8 @@ def generate_ffmpeg_start(
             f'{filters if filters else ""}',
             f"-c:v {encoder}",
             f"-pix_fmt {pix_fmt}",
+            f"{f'-maxrate:v {maxrate}' if maxrate else ''}",
+            f"{f'-bufsize:v {bufsize}' if bufsize else ''}",
             " ",  # Leave space after commands
         ]
     )
