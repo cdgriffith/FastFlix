@@ -37,8 +37,6 @@ class InfoPanel(QtWidgets.QTabWidget):
         for x in self.app.fastflix.current_video.streams.values():
             all_stream.extend(x)
 
-        # self.text_area.setText(Box(self.app.fastflix.current_video.streams).to_yaml(default_flow_style=False))
-
         for stream in sorted(all_stream, key=lambda z: z["index"]):
             widget = QtWidgets.QTextBrowser(self)
             widget.setReadOnly(True)

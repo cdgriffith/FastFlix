@@ -1575,20 +1575,25 @@ class Main(QtWidgets.QWidget):
         except Exception:
             return
 
-        sm = QtWidgets.QMessageBox()
-        sm.setWindowTitle(t("Cancelled"))
-        sm.setText(
-            f"{t('Conversion cancelled, delete incomplete file')}\n" f"{cancelled_video.video_settings.output_path}?"
-        )
-        sm.addButton(t("Delete"), QtWidgets.QMessageBox.YesRole)
-        sm.addButton(t("Keep"), QtWidgets.QMessageBox.NoRole)
-        sm.exec_()
-        if sm.clickedButton().text() == t("Delete"):
-            try:
-                cancelled_video = self.find_video(video_uuid)
-                cancelled_video.video_settings.output_path.unlink(missing_ok=True)
-            except OSError:
-                pass
+        if self.video_options.queue.paused:
+            self.video_options.queue.pause_resume_queue()
+
+        if cancelled_video.video_settings.output_path.exists():
+            sm = QtWidgets.QMessageBox()
+            sm.setWindowTitle(t("Cancelled"))
+            sm.setText(
+                f"{t('Conversion cancelled, delete incomplete file')}\n"
+                f"{cancelled_video.video_settings.output_path}?"
+            )
+            sm.addButton(t("Delete"), QtWidgets.QMessageBox.YesRole)
+            sm.addButton(t("Keep"), QtWidgets.QMessageBox.NoRole)
+            sm.exec_()
+            if sm.clickedButton().text() == t("Delete"):
+                try:
+                    cancelled_video = self.find_video(video_uuid)
+                    cancelled_video.video_settings.output_path.unlink(missing_ok=True)
+                except OSError:
+                    pass
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def dropEvent(self, event):

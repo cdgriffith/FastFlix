@@ -4,6 +4,7 @@ import time
 import logging
 import datetime
 from datetime import timedelta
+from typing import Optional
 
 from qtpy import QtCore, QtWidgets
 
@@ -25,7 +26,7 @@ class StatusPanel(QtWidgets.QWidget):
         super().__init__(parent)
         self.app = app
         self.main = parent.main
-        self.current_video: Video = None
+        self.current_video: Optional[Video] = None
         self.started_at = None
 
         self.ticker_thread = ElapsedTimeTicker(self, self.main.status_update_signal, self.tick_signal)
@@ -225,7 +226,7 @@ class ElapsedTimeTicker(QtCore.QThread):
 
     def run(self):
         while not self.stop_received:
-            time.sleep(0.2)
+            time.sleep(0.5)
 
             if not self.send_tick_signal:
                 continue

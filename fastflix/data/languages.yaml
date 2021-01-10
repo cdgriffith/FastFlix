@@ -2037,7 +2037,7 @@ Time Left:
   zho: 剩余时间
 Time Elapsed:
   deu: Verstrichene Zeit
-  eng: Time elapsed
+  eng: Time Elapsed
   fra: Temps écoulé
   ita: Tempo trascorso
   spa: Tiempo transcurrido
@@ -2742,3 +2742,17 @@ Extract:
   ita: Estratto
   spa: Extracto
   zho: 萃取
+Save File:
+  deu: Datei speichern
+  eng: Save File
+  fra: Enregistrer le fichier
+  ita: Salva file
+  spa: Guardar archivo
+  zho: 保存文件
+GUI Logging Level:
+  deu: GUI-Protokollierungsebene
+  eng: GUI Logging Level
+  fra: Niveau d'exploitation forestière
+  ita: Livello di registrazione GUI
+  spa: Nivel de registro GUI
+  zho: GUI日志级别

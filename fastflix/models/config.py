@@ -2,6 +2,8 @@
 import shutil
 from pathlib import Path
 from typing import Dict, List, Union, Optional
+import logging
+from distutils.version import StrictVersion
 
 from appdirs import user_data_dir
 from box import Box, BoxError
@@ -20,6 +22,8 @@ from fastflix.models.encode import (
     x265Settings,
 )
 from fastflix.version import __version__
+
+logger = logging.getLogger("fastflix")
 
 fastflix_folder = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
 ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
@@ -172,22 +176,32 @@ class Config(BaseModel):
             data = Box.from_yaml(filename=self.config_path)
         except BoxError as err:
             raise ConfigError(f"{self.config_path}: {err}")
+        if StrictVersion(__version__) < StrictVersion(data.version):
+            logger.warning(
+                f"This FastFlix version ({__version__}) is older "
+                f"than the one that generated the config file ({data.version}), "
+                "there may be non-recoverable errors while loading it."
+            )
+
         paths = ("work_path", "ffmpeg", "ffprobe")
         for key, value in data.items():
             if key == "profiles":
                 self.profiles = {}
                 for k, v in value.items():
-                    if k in ("Standard Profile",):
+                    if k in get_preset_defaults().keys():
                         continue
                     profile = Profile()
                     for setting_name, setting in v.items():
                         if setting_name in setting_types.keys() and setting is not None:
-                            setattr(profile, setting_name, setting_types[setting_name](**setting))
+                            try:
+                                setattr(profile, setting_name, setting_types[setting_name](**setting))
+                            except (ValueError, TypeError):
+                                logger.exception(f"Could not set profile setting {setting_name}")
                         else:
                             try:
                                 setattr(profile, setting_name, setting)
-                            except ValueError:
-                                pass  # This field is no longer supported
+                            except (ValueError, TypeError):
+                                logger.exception(f"Could not set profile setting {setting_name}")
 
                     self.profiles[k] = profile
                 continue
