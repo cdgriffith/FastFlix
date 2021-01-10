@@ -192,7 +192,6 @@ class Container(QtWidgets.QMainWindow):
         try:
             ProgressBar(self.app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True, can_cancel=True)
         except FastFlixInternalException:
-            print("Caught")
             pass
         except Exception as err:
             message(f"{t('Could not download the newest FFmpeg')}: {err}")

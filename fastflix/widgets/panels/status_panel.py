@@ -238,9 +238,9 @@ class ElapsedTimeTicker(QtCore.QThread):
     def on_status_update(self, msg):
         update_type = msg.split("|")[0]
 
-        if update_type in ["complete", "cancelled", "error"]:
+        if update_type in ("complete", "error", "cancelled", "converted"):
             self.send_tick_signal = False
-        elif update_type == "running":
+        else:
             self.send_tick_signal = True
 
     def on_stop(self):
