@@ -95,7 +95,10 @@ class WEBP(SettingPanel):
         )
         qscale = self.widgets.qscale.currentText()
         if self.widgets.custom_qscale.isEnabled():
-            settings.qscale = int(self.widgets.custom_qscale.text())
+            if not self.widgets.custom_qscale.text():
+                settings.qscale = 75
+            else:
+                settings.qscale = int(self.widgets.custom_qscale.text())
         else:
             settings.qscale = int(qscale.split(" ", 1)[0])
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings

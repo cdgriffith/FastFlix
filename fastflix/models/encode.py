@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -52,7 +52,7 @@ class x265Settings(EncoderSettings):
     repeat_headers: bool = False
     aq_mode: int = 2
     hdr10plus_metadata: str = ""
-    crf: Optional[int] = 22
+    crf: Optional[Union[int, float]] = 22
     bitrate: Optional[str] = None
     x265_params: List[str] = Field(default_factory=list)
     bframes: int = 4
@@ -69,7 +69,7 @@ class x264Settings(EncoderSettings):
     profile: str = "default"
     tune: Optional[str] = None
     pix_fmt: str = "yuv420p"
-    crf: Optional[int] = 23
+    crf: Optional[Union[int, float]] = 23
     bitrate: Optional[str] = None
 
 
@@ -80,7 +80,7 @@ class rav1eSettings(EncoderSettings):
     tile_rows: str = "-1"
     tiles: str = "0"
     single_pass: bool = False
-    qp: Optional[int] = 24
+    qp: Optional[Union[int, float]] = 24
     bitrate: Optional[str] = None
 
 
@@ -92,7 +92,7 @@ class SVTAV1Settings(EncoderSettings):
     # scene_detection: str = "false"
     single_pass: bool = False
     speed: str = "7"
-    qp: Optional[int] = 24
+    qp: Optional[Union[int, float]] = 24
     bitrate: Optional[str] = None
 
 
@@ -103,7 +103,7 @@ class VP9Settings(EncoderSettings):
     speed: str = "0"
     row_mt: int = 0
     single_pass: bool = False
-    crf: Optional[int] = 31
+    crf: Optional[Union[int, float]] = 31
     bitrate: Optional[str] = None
 
 
@@ -114,7 +114,7 @@ class AOMAV1Settings(EncoderSettings):
     usage: str = "good"
     row_mt: str = "enabled"
     cpu_used: str = "4"
-    crf: Optional[int] = 26
+    crf: Optional[Union[int, float]] = 26
     bitrate: Optional[str] = None
 
 
@@ -123,7 +123,7 @@ class WebPSettings(EncoderSettings):
     lossless: str = "0"
     compression: str = "3"
     preset: str = "none"
-    qscale: int = 15
+    qscale: Union[int, float] = 15
 
 
 class GIFSettings(EncoderSettings):

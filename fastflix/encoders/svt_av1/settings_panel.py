@@ -160,19 +160,9 @@ class SVT_AV1(SettingPanel):
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
-        if self.mode == "QP":
-            qp = self.widgets.qp.currentText()
-            if self.widgets.custom_qp.isEnabled():
-                settings.qp = int(self.widgets.custom_qp.text())
-            else:
-                settings.qp = int(qp.split(" ", 1)[0])
-        else:
-            bitrate = self.widgets.bitrate.currentText()
-            if bitrate.lower() == "custom":
-                settings.bitrate = self.widgets.custom_bitrate.text().lower().rstrip("k")
-                settings.bitrate += "k"
-            else:
-                settings.bitrate = bitrate.split(" ", 1)[0]
+        encode_type, q_value = self.get_mode_settings()
+        settings.qp = q_value if encode_type == "qp" else None
+        settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):

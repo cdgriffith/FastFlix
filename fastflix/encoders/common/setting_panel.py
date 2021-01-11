@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-from typing import List
+from typing import List, Tuple, Union
 
 from box import Box
 from qtpy import QtGui, QtWidgets
@@ -23,6 +23,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.labels = Box()
         self.opts = Box()
         self.only_int = QtGui.QIntValidator()
+        self.only_float = QtGui.QDoubleValidator()
 
     @staticmethod
     def translate_tip(tooltip):
@@ -240,7 +241,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
         self.widgets[f"custom_{qp_name}"].setFixedWidth(100)
         self.widgets[f"custom_{qp_name}"].setEnabled(custom_qp)
-        self.widgets[f"custom_{qp_name}"].setValidator(self.only_int)
+        self.widgets[f"custom_{qp_name}"].setValidator(self.only_float)
         self.widgets[f"custom_{qp_name}"].textChanged.connect(lambda: self.main.build_commands())
 
         if config_opt:
@@ -374,3 +375,29 @@ class SettingPanel(QtWidgets.QWidget):
                     self.widgets[f"custom_{self.qp_name}"].setText(qp)
         ffmpeg_extra_command = self.app.fastflix.current_video.video_settings.video_encoder_settings.extra
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
+
+    def get_mode_settings(self) -> Tuple[str, Union[float, int, str]]:
+        if self.mode.lower() == "bitrate":
+            bitrate = self.widgets.bitrate.currentText()
+            if bitrate.lower() == "custom":
+                if not bitrate:
+                    logger.error("No custom bitrate provided, defaulting to 3000k")
+                    return "bitrate", "3000k"
+                bitrate = self.widgets.custom_bitrate.text().lower().rstrip("k")
+                bitrate += "k"
+            else:
+                bitrate = bitrate.split(" ", 1)[0]
+            return "bitrate", bitrate
+        else:
+            qp_text = self.widgets[self.qp_name].currentText()
+            if qp_text.lower() == "custom":
+                custom_value = self.widgets[f"custom_{self.qp_name}"].text()
+                if not custom_value:
+                    logger.error("No value provided for custom QP/CRF value, defaulting to 30")
+                    return "qp", 30
+                custom_value = float(self.widgets.custom_crf.text().rstrip("."))
+                if custom_value.is_integer():
+                    custom_value = int(custom_value)
+                return "qp", custom_value
+            else:
+                return "qp", int(qp_text.split(" ", 1)[0])

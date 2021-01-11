@@ -167,20 +167,9 @@ class AVC(SettingPanel):
             tune=tune if tune.lower() != "default" else None,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
-
-        if self.mode == "CRF":
-            crf = self.widgets.crf.currentText()
-            if self.widgets.custom_crf.isEnabled():
-                settings.crf = int(self.widgets.custom_crf.text())
-            else:
-                settings.crf = int(crf.split(" ", 1)[0])
-        else:
-            bitrate = self.widgets.bitrate.currentText()
-            if bitrate.lower() == "custom":
-                settings.bitrate = self.widgets.custom_bitrate.text().lower().rstrip("k")
-                settings.bitrate += "k"
-            else:
-                settings.bitrate = bitrate.split(" ", 1)[0]
+        encode_type, q_value = self.get_mode_settings()
+        settings.crf = q_value if encode_type == "qp" else None
+        settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):

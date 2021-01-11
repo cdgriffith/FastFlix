@@ -2694,12 +2694,7 @@ video tracks found:
   spa: pistas de vídeo encontradas
   zho: 发现视频轨
 vsync:
-  deu: vsync
   eng: vsync
-  fra: vsync
-  ita: vsync
-  spa: vsync
-  zho: vsync
 File:
   deu: Datei
   eng: File
@@ -2756,3 +2751,24 @@ GUI Logging Level:
   ita: Livello di registrazione GUI
   spa: Nivel de registro GUI
   zho: GUI日志级别
+Enable VBV:
+  deu: VBV freigeben
+  eng: Enable VBV
+  fra: Activer la VBV
+  ita: Attivare VBV
+  spa: Activar VBV
+  zho: 启用VBV
+Maxrate:
+  deu: Maxrate
+  eng: Maxrate
+  fra: Maxrate
+  ita: Maxrate
+  spa: Maxrate
+  zho: Maxrate
+Bufsize:
+  deu: Bufsize
+  eng: Bufsize
+  fra: Bufsize
+  ita: Bufsize
+  spa: Bufsize
+  zho: Bufsize
