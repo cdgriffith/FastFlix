@@ -35,9 +35,11 @@ class BackgroundRunner:
     def start_exec(self, command, work_dir: str = None, shell: bool = False, errors=(), successes=()):
         self.clean()
         logger.info(f"Running command: {command}")
-        Path(work_dir).mkdir(exist_ok=True, parents=True)
-        self.output_file = Path(work_dir) / f"encoder_output_{secrets.token_hex(6)}.log"
-        self.error_output_file = Path(work_dir) / f"encoder_error_output_{secrets.token_hex(6)}.log"
+        work_path = Path(work_dir)
+        work_path.mkdir(exist_ok=True, parents=True)
+        work_path.chmod(0o777)
+        self.output_file = work_path / f"encoder_output_{secrets.token_hex(6)}.log"
+        self.error_output_file = work_path / f"encoder_error_output_{secrets.token_hex(6)}.log"
         self.output_file.touch(exist_ok=True)
         self.error_output_file.touch(exist_ok=True)
         self.error_message = errors
