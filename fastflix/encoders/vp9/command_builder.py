@@ -15,7 +15,7 @@ def build(fastflix: FastFlix):
 
     if not settings.single_pass:
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
-        beginning += f'-passlogfile "{pass_log_file}" '
+        # beginning += f'-passlogfile "{pass_log_file}" '
 
     # TODO color_range 1
     # if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
