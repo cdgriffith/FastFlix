@@ -15,9 +15,9 @@ def build(fastflix: FastFlix):
     beginning += f'{f"-tune {settings.tune}" if settings.tune else ""} ' f"{generate_color_details(fastflix)} "
 
     if settings.profile and settings.profile != "default":
-        beginning += f"-profile {settings.profile} "
+        beginning += f"-profile:v {settings.profile} "
 
-    pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
+    pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
 
     if settings.bitrate:
         command_1 = (

@@ -84,7 +84,7 @@ def build(fastflix: FastFlix):
         beginning += f"-tune {settings.tune} "
 
     if settings.profile and settings.profile != "default":
-        beginning += f"-profile {settings.profile} "
+        beginning += f"-profile:v {settings.profile} "
 
     x265_params = settings.x265_params.copy() or []
 
@@ -149,7 +149,7 @@ def build(fastflix: FastFlix):
     if fastflix.current_video.cll:
         pass
 
-    pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
+    pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
 
     def get_x265_params(params=()):
         if not isinstance(params, (list, tuple)):

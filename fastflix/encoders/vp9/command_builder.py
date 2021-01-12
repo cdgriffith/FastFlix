@@ -14,8 +14,8 @@ def build(fastflix: FastFlix):
     beginning += f'{"-row-mt 1" if settings.row_mt else ""} ' f"{generate_color_details(fastflix)} "
 
     if not settings.single_pass:
-        pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log"
-        # beginning += f'-passlogfile "{pass_log_file}" '
+        pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
+        beginning += f'-passlogfile "{pass_log_file}" '
 
     # TODO color_range 1
     # if not fastflix.current_video.video_settings.remove_hdr and settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
@@ -24,7 +24,7 @@ def build(fastflix: FastFlix):
 
     beginning = re.sub("[ ]+", " ", beginning)
 
-    details = f"-quality {settings.quality} -speed {settings.speed} -profile {settings.profile}"
+    details = f"-quality {settings.quality} -speed {settings.speed} -profile:v {settings.profile}"
 
     if settings.bitrate:
         command_1 = f"{beginning} -b:v {settings.bitrate} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f webm {null}"
