@@ -163,6 +163,7 @@ class Config(BaseModel):
 
     def load(self):
         if not self.config_path.exists():
+            logger.debug(f"Creating new config file {self.config_path}")
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
             self.save()
             if not self.ffmpeg:
@@ -171,7 +172,7 @@ class Config(BaseModel):
                 # Try one last time to find snap packaged versions
                 self.ffprobe = find_ffmpeg_file("ffmpeg.ffprobe", raise_on_missing=True)
             return
-
+        logger.debug(f"Using config file {self.config_path}")
         try:
             data = Box.from_yaml(filename=self.config_path)
         except BoxError as err:
