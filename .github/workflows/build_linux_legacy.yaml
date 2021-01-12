@@ -1,4 +1,4 @@
-name: Build executables for Linux
+name: Build executables for Linux Legacy
 on:
   push:
     branches: [ master, develop, build ]
@@ -52,7 +52,7 @@ jobs:
     - name: Upload standalone executable artifact
       uses: actions/upload-artifact@v2
       with:
-        name: FastFlix_${{ env.VERSION }}_linux_x86_64
+        name: FastFlix_${{ env.VERSION }}_linux_legacy_x86_64
         path: |
           dist/FastFlix
           dist/LICENSE
