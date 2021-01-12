@@ -146,6 +146,10 @@ def build(fastflix: FastFlix):
     if settings.lossless:
         x265_params.append("lossless=1")
 
+    if fastflix.current_video.video_settings.maxrate:
+        x265_params.append(f"vbv-maxrate={fastflix.current_video.video_settings.maxrate}")
+        x265_params.append(f"vbv-bufsize={fastflix.current_video.video_settings.bufsize}")
+
     if fastflix.current_video.cll:
         pass
 

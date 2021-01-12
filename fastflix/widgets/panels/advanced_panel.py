@@ -145,6 +145,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.main = parent.main
         self.attachments = Box()
         self.updating = False
+        self.only_int = QtGui.QIntValidator()
 
         self.layout = QtWidgets.QGridLayout()
 
@@ -332,21 +333,27 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_vbv(self):
         self.last_row += 1
         self.maxrate_widget = QtWidgets.QLineEdit()
-        self.maxrate_widget.setPlaceholderText("3000k")
+        self.maxrate_widget.setPlaceholderText("3000")
         self.maxrate_widget.setDisabled(True)
+        self.maxrate_widget.setValidator(self.only_int)
         self.maxrate_widget.textChanged.connect(self.page_update)
 
         self.bufsize_widget = QtWidgets.QLineEdit()
-        self.bufsize_widget.setPlaceholderText("3M")
+        self.bufsize_widget.setPlaceholderText("3000")
         self.bufsize_widget.setDisabled(True)
+        self.bufsize_widget.setValidator(self.only_int)
         self.bufsize_widget.textChanged.connect(self.page_update)
 
         self.vbv_checkbox = QtWidgets.QCheckBox(t("Enable VBV"))
         self.vbv_checkbox.toggled.connect(self.vbv_check_changed)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Maxrate")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(
+            QtWidgets.QLabel(f'{t("Maxrate")} (kbps)'), self.last_row, 0, alignment=QtCore.Qt.AlignRight
+        )
         self.layout.addWidget(self.maxrate_widget, self.last_row, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Bufsize")), self.last_row, 2, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(
+            QtWidgets.QLabel(f'{t("Bufsize")} (kbps)'), self.last_row, 2, alignment=QtCore.Qt.AlignRight
+        )
         self.layout.addWidget(self.bufsize_widget, self.last_row, 3)
         self.layout.addWidget(self.vbv_checkbox, self.last_row, 4)
 
@@ -399,9 +406,9 @@ class AdvancedPanel(QtWidgets.QWidget):
         else:
             self.app.fastflix.current_video.video_settings.color_space = self.color_space_widget.currentText()
 
-        if self.vbv_checkbox.isChecked():
-            self.app.fastflix.current_video.video_settings.maxrate = self.maxrate_widget.text()
-            self.app.fastflix.current_video.video_settings.bufsize = self.bufsize_widget.text()
+        if self.vbv_checkbox.isChecked() and self.maxrate_widget.text() and self.bufsize_widget.text():
+            self.app.fastflix.current_video.video_settings.maxrate = int(self.maxrate_widget.text())
+            self.app.fastflix.current_video.video_settings.bufsize = int(self.bufsize_widget.text())
         else:
             self.app.fastflix.current_video.video_settings.maxrate = None
             self.app.fastflix.current_video.video_settings.bufsize = None
@@ -475,8 +482,8 @@ class AdvancedPanel(QtWidgets.QWidget):
 
             if settings.maxrate:
                 self.vbv_checkbox.setChecked(True)
-                self.maxrate_widget.setText(settings.maxrate)
-                self.bufsize_widget.setText(settings.bufsize)
+                self.maxrate_widget.setText(str(settings.maxrate))
+                self.bufsize_widget.setText(str(settings.bufsize))
                 self.maxrate_widget.setEnabled(True)
                 self.bufsize_widget.setEnabled(True)
             else:

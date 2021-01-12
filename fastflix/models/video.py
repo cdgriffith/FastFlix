@@ -51,8 +51,8 @@ class VideoSettings(BaseModel):
     source_fps: Optional[str] = None
     output_fps: Optional[str] = None
     vsync: Optional[str] = None
-    maxrate: Optional[str] = None
-    bufsize: Optional[str] = None
+    maxrate: Optional[int] = None
+    bufsize: Optional[int] = None
     video_encoder_settings: Union[
         x265Settings,
         x264Settings,

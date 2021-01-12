@@ -7,7 +7,7 @@ QPushButton {
     padding-right: 5px;
 }
 
-QPushButton:pressed {
+QPushButton:pressed, QPushButton:clicked {
     background-color: #ccc;
 }
 

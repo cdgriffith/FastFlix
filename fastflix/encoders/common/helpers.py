@@ -81,8 +81,8 @@ def generate_ffmpeg_start(
             f'{filters if filters else ""}',
             f"-c:v {encoder}",
             f"-pix_fmt {pix_fmt}",
-            f"{f'-maxrate:v {maxrate}' if maxrate else ''}",
-            f"{f'-bufsize:v {bufsize}' if bufsize else ''}",
+            f"{f'-maxrate:v {maxrate}k' if maxrate else ''}",
+            f"{f'-bufsize:v {bufsize}k' if bufsize else ''}",
             " ",  # Leave space after commands
         ]
     )
