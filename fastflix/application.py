@@ -151,4 +151,8 @@ def start_app(worker_queue, status_queue, log_queue):
     container = Container(app)
     container.show()
 
-    app.exec_()
+    try:
+        app.exec_()
+    except Exception:
+        logger.exception("Error while running FastFlix")
+        raise

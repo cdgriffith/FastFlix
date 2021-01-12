@@ -68,6 +68,7 @@ class StatusPanel(QtWidgets.QWidget):
     def cleanup(self):
         self.inner_widget.log_updater.terminate()
         self.ticker_thread.stop_signal.emit()
+        self.ticker_thread.terminate()
 
     def get_movie_length(self):
         if not self.current_video:
@@ -154,6 +155,10 @@ class StatusPanel(QtWidgets.QWidget):
 
         if update_type == "running":
             self.set_started_at(msg)
+
+    def close(self):
+        self.ticker_thread.terminate()
+        super().close()
 
 
 class Logs(QtWidgets.QTextBrowser):

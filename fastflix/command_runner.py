@@ -153,7 +153,7 @@ class BackgroundRunner:
         self.started_at = None
 
     def kill(self, log=True):
-        if self.process_two:
+        if self.process_two and self.process.poll() is None:
             if log:
                 logger.info(f"Killing worker process {self.process_two.pid}")
             try:
@@ -162,7 +162,7 @@ class BackgroundRunner:
             except Exception as err:
                 if log:
                     logger.exception(f"Couldn't terminate process: {err}")
-        if self.process:
+        if self.process and self.process.poll() is None:
             if log:
                 logger.info(f"Killing worker process {self.process.pid}")
             try:
