@@ -34,20 +34,18 @@ class BackgroundRunner:
 
     def start_exec(self, command, work_dir: str = None, shell: bool = False, errors=(), successes=()):
         self.clean()
-        logger.info(f"Running command: {command}")
         logger.debug(f"Using work dir: {work_dir}")
         work_path = Path(work_dir)
         work_path.mkdir(exist_ok=True, parents=True)
-        work_path.chmod(0o777)
         self.output_file = work_path / f"encoder_output_{secrets.token_hex(6)}.log"
         self.error_output_file = work_path / f"encoder_error_output_{secrets.token_hex(6)}.log"
-        logger.debug(f"output file set to: {self.output_file}")
-        logger.debug(f"error output file set to: {self.error_output_file}")
+        logger.debug(f"command output file set to: {self.output_file}")
+        logger.debug(f"command error output file set to: {self.error_output_file}")
         self.output_file.touch(exist_ok=True)
         self.error_output_file.touch(exist_ok=True)
         self.error_message = errors
         self.success_message = successes
-
+        logger.info(f"Running command: {command}")
         self.process = Popen(
             shlex.split(command) if not shell and isinstance(command, str) else command,
             shell=shell,

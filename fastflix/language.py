@@ -28,8 +28,12 @@ except Exception as err:
 
 language_data = Box.from_yaml(filename=language_file, encoding="utf-8")
 
+if language not in ("deu", "eng", "fra", "ita", "spa", "zho"):
+    print(f"WARNING: {language} is not a supported language, defaulting to eng")
+    language = "eng"
 
-@lru_cache(maxsize=512)  # This little trick makes re-calls 10x faster
+
+@lru_cache(maxsize=2048)  # This little trick makes re-calls 10x faster
 def translate(text):
     if text in language_data:
         if language in language_data[text]:

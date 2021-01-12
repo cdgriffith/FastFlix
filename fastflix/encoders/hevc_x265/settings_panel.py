@@ -391,6 +391,7 @@ class HEVC(SettingPanel):
             widget_name="pix_fmt",
             options=pix_fmts,
             connect=lambda: self.setting_change(pix_change=True),
+            opt="pix_fmt",
         )
 
     def init_max_mux(self):

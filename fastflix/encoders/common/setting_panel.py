@@ -13,6 +13,8 @@ logger = logging.getLogger("fastflix")
 
 ffmpeg_extra_command = ""
 
+pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
+
 
 class SettingPanel(QtWidgets.QWidget):
     def __init__(self, parent, main, app: FastFlixApp, *args, **kwargs):
@@ -336,10 +338,16 @@ class SettingPanel(QtWidgets.QWidget):
         )
 
     def reload(self):
+        """This will reset the current settings to what is set in "current_video", useful for return from queue"""
         global ffmpeg_extra_command
+        self.updating_settings = True
         for widget_name, opt in self.opts.items():
             data = getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, opt)
             if isinstance(self.widgets[widget_name], QtWidgets.QComboBox):
+                if widget_name == "pix_fmt":
+                    for fmt in pix_fmts:
+                        if fmt.endswith(data):
+                            self.widgets[widget_name].setCurrentText(fmt)
                 if isinstance(data, int):
                     self.widgets[widget_name].setCurrentIndex(data)
                 else:
@@ -375,6 +383,7 @@ class SettingPanel(QtWidgets.QWidget):
                     self.widgets[f"custom_{self.qp_name}"].setText(qp)
         ffmpeg_extra_command = self.app.fastflix.current_video.video_settings.video_encoder_settings.extra
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
+        self.updating_settings = False
 
     def get_mode_settings(self) -> Tuple[str, Union[float, int, str]]:
         if self.mode.lower() == "bitrate":
