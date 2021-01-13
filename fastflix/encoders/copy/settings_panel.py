@@ -26,8 +26,11 @@ class Copy(SettingPanel):
             QtWidgets.QLabel(t("No crop, scale, rotation,flip nor any other filters will be applied.")), 1, 0
         )
         grid.addWidget(QtWidgets.QWidget(), 2, 0, 10, 1)
+        grid.addLayout(self._add_custom(disable_both_passes=True), 11, 0, 1, 6)
         self.setLayout(grid)
         self.hide()
 
     def update_video_encoder_settings(self):
         self.app.fastflix.current_video.video_settings.video_encoder_settings = CopySettings()
+        self.app.fastflix.current_video.video_settings.video_encoder_settings.extra = self.ffmpeg_extras
+        self.app.fastflix.current_video.video_settings.video_encoder_settings.extra_both_passes = False

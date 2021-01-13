@@ -29,7 +29,7 @@ class BaseDataClass:
                 logger.debug(f"Could not validate type for {key} with {annotation}: {err}")
         return super().__setattr__(key, value)
 
-    def get(self, item, default=NO_OPTION):
-        if default != NO_OPTION:
-            return getattr(self, item, default)
-        return getattr(self, item)
+    # def get(self, item, default=NO_OPTION):
+    #     if default != NO_OPTION:
+    #         return getattr(self, item, default)
+    #     return getattr(self, item)

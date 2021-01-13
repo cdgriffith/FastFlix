@@ -11,8 +11,9 @@ from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import down_arrow_icon, up_arrow_icon
-from fastflix.shared import error_message, main_width, no_border
+from fastflix.resources import down_arrow_icon, loading_movie, up_arrow_icon
+from fastflix.shared import error_message, no_border
+from fastflix.widgets.background_tasks import ExtractSubtitleSRT
 from fastflix.widgets.panels.abstract_list import FlixList
 
 dispositions = [
@@ -41,8 +42,12 @@ subtitle_types = {
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
+# TODO give warning about exact time needed for text based subtitles
+
 
 class Subtitle(QtWidgets.QTabWidget):
+    extract_completed_signal = QtCore.Signal()
+
     def __init__(self, parent, subtitle, index, enabled=True, first=False):
         self.loading = True
         super(Subtitle, self).__init__(parent)
@@ -81,49 +86,63 @@ class Subtitle(QtWidgets.QTabWidget):
                 try:
                     self.widgets.disposition.setCurrentIndex(dispositions.index(disposition))
                 except ValueError:
-                    pass  # TODO figure out all possible dispositions for subtitles / log if issue
+                    pass
                 break
 
         self.setFixedHeight(60)
         self.widgets.title.setToolTip(self.subtitle.to_yaml())
         self.widgets.burn_in.setToolTip(
             f"""{t("Overlay this subtitle track onto the video during conversion.")}\n
-            {t("Currently only works for image based subtitles.")}\n
+            {t("Please make sure seek method is set to exact")}.\n
             {t("Cannot remove afterwards!")}
             """
         )
+        self.widgets.extract = QtWidgets.QPushButton(t("Extract"))
+        self.widgets.extract.clicked.connect(self.extract)
+
+        self.gif_label = QtWidgets.QLabel(self)
+        self.movie = QtGui.QMovie(loading_movie)
+        self.movie.setScaledSize(QtCore.QSize(25, 25))
+        self.gif_label.setMovie(self.movie)
+        # self.movie.start()
 
         disposition_layout = QtWidgets.QHBoxLayout()
-        disposition_layout.addStretch()
         disposition_layout.addWidget(QtWidgets.QLabel(t("Disposition")))
         disposition_layout.addWidget(self.widgets.disposition)
 
-        grid = QtWidgets.QGridLayout()
-        grid.addLayout(self.init_move_buttons(), 0, 0)
-        grid.addWidget(self.widgets.track_number, 0, 1)
-        grid.addWidget(self.widgets.title, 0, 2)
-        grid.addLayout(disposition_layout, 0, 4)
-        grid.addWidget(self.widgets.burn_in, 0, 5)
-        grid.addLayout(self.init_language(), 0, 6)
-        # grid.addWidget(self.init_extract_button(), 0, 6)
-        grid.addWidget(self.widgets.enable_check, 0, 8)
+        self.grid = QtWidgets.QGridLayout()
+        self.grid.addLayout(self.init_move_buttons(), 0, 0)
+        self.grid.addWidget(self.widgets.track_number, 0, 1)
+        self.grid.addWidget(self.widgets.title, 0, 2)
+        self.grid.setColumnStretch(2, True)
+        if self.subtitle_type == "text":
+            self.grid.addWidget(self.widgets.extract, 0, 3)
+            self.grid.addWidget(self.gif_label, 0, 3)
+            self.gif_label.hide()
 
-        self.setLayout(grid)
+        self.grid.addLayout(disposition_layout, 0, 4)
+        self.grid.addWidget(self.widgets.burn_in, 0, 5)
+        self.grid.addLayout(self.init_language(), 0, 6)
+
+        self.grid.addWidget(self.widgets.enable_check, 0, 8)
+
+        self.setLayout(self.grid)
         self.loading = False
         self.updating_burn = False
-        if self.subtitle_type == "text":
-            self.widgets.burn_in.setChecked(False)
-            self.widgets.burn_in.setDisabled(True)
+        self.extract_completed_signal.connect(self.extraction_complete)
+
+    def extraction_complete(self):
+        self.grid.addWidget(self.widgets.extract, 0, 3)
+        self.movie.stop()
+        self.gif_label.hide()
+        self.widgets.extract.show()
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(0)
-        # layout.setMargin(0)
-        # self.widgets.up_button = QtWidgets.QPushButton("^")
         self.widgets.up_button.setDisabled(self.first)
         self.widgets.up_button.setFixedWidth(20)
         self.widgets.up_button.clicked.connect(lambda: self.parent.move_up(self))
-        # self.widgets.down_button = QtWidgets.QPushButton("v")
         self.widgets.down_button.setDisabled(self.last)
         self.widgets.down_button.setFixedWidth(20)
         self.widgets.down_button.clicked.connect(lambda: self.parent.move_down(self))
@@ -131,18 +150,12 @@ class Subtitle(QtWidgets.QTabWidget):
         layout.addWidget(self.widgets.down_button)
         return layout
 
-    #
-    # def init_extract_button(self):
-    #     self.widgets.extract = QtWidgets.QPushButton("Extract")
-    #     self.widgets.extract.clicked.connect(self.extract)
-    #     return self.widgets.extract
-    #
-    # def extract(self):
-    #     from fastflix.widgets.command_runner import BackgroundRunner
-    #     self.parent.main.flix.execute(
-    #         f'"{self.parent.main.flix.ffmpeg}" -i "{self.parent.main.input_video}" -map 0:{self.index} -c srt -f srt "{self.parent.main.input_video}.{self.index}.srt"',
-    #         work_dir=self.parent.main.path.work
-    #     )
+    def extract(self):
+        worker = ExtractSubtitleSRT(self.parent.app, self.parent.main, self.index, self.extract_completed_signal)
+        worker.start()
+        self.gif_label.show()
+        self.widgets.extract.hide()
+        self.movie.start()
 
     def init_language(self):
         self.widgets.language.addItems(language_list)
@@ -201,6 +214,8 @@ class Subtitle(QtWidgets.QTabWidget):
         if enable and [1 for track in self.parent.tracks if track.enabled and track.burn_in and track is not self]:
             self.widgets.burn_in.setChecked(False)
             error_message(t("There is an existing burn-in track, only one can be enabled at a time"))
+        if enable and self.parent.main.fast_time:
+            self.parent.main.widgets.fast_time.setCurrentText("exact")
         self.updating_burn = False
         self.page_update()
 
@@ -286,6 +301,7 @@ class SubtitleList(FlixList):
                         disposition=track.disposition,
                         language=track.language,
                         burn_in=track.burn_in,
+                        subtitle_type=track.subtitle_type,
                     )
                 )
                 if track.burn_in:

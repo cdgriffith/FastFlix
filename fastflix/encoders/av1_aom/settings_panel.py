@@ -150,16 +150,11 @@ class AV1(SettingPanel):
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             extra=self.ffmpeg_extras,
+            extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
-
-        if self.mode == "CRF":
-            crf = self.widgets.crf.currentText()
-            settings.crf = int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_crf.text()
-        else:
-            bitrate = self.widgets.bitrate.currentText()
-            settings.bitrate = (
-                bitrate.split(" ", 1)[0] if bitrate.lower() != "custom" else self.widgets.custom_bitrate.text()
-            )
+        encode_type, q_value = self.get_mode_settings()
+        settings.crf = q_value if encode_type == "qp" else None
+        settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):

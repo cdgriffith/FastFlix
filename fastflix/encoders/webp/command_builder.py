@@ -11,10 +11,8 @@ def build(fastflix: FastFlix):
 
     return [
         Command(
-            f"{beginning}  -lossless {settings.lossless} -compression_level {settings.compression} "
-            f"-qscale {settings.qscale} -preset {settings.preset} {ending}",
-            ["ffmpeg", "output"],
-            False,
+            command=f"{beginning}  -lossless {settings.lossless} -compression_level {settings.compression} "
+            f"-qscale {settings.qscale} -preset {settings.preset} {settings.extra} {ending}",
             name="WebP",
             exe="ffmpeg",
         ),

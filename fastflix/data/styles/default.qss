@@ -1,13 +1,14 @@
 QPushButton {
     border: 1px solid #bbb;
     border-radius: 0;
-    padding: 3px;
+    /*margin: 3px;*/
     font-size: 12px;
     padding-left: 5px;
     padding-right: 5px;
+    min-height: 20px;
 }
 
-QPushButton:pressed {
+QPushButton:pressed, QPushButton:clicked {
     background-color: #ccc;
 }
 

@@ -69,13 +69,12 @@ class AVC(SettingPanel):
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
-        grid.addLayout(self.init_preset(), 1, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
-        grid.addLayout(self.init_tune(), 4, 0, 1, 2)
-        grid.addLayout(self.init_profile(), 5, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 6, 0, 1, 2)
+        grid.addLayout(self.init_preset(), 0, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 1, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 2, 0, 1, 2)
+        grid.addLayout(self.init_profile(), 3, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 2)
 
-        # grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(9, 1)
 
         guide_label = QtWidgets.QLabel(
@@ -83,7 +82,7 @@ class AVC(SettingPanel):
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, -1, 1)
+        grid.addWidget(guide_label, 11, 0, 1, 6)
 
         self.setLayout(grid)
         self.hide()
@@ -123,7 +122,7 @@ class AVC(SettingPanel):
 
     def init_profile(self):
         return self._add_combo_box(
-            label="Profile",
+            label="Profile_encoderopt",
             widget_name="profile",
             tooltip="Enforce an encode profile",
             options=["default", "baseline", "main", "high", "high10", "high422", "high444"],
@@ -166,17 +165,11 @@ class AVC(SettingPanel):
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             extra=self.ffmpeg_extras,
             tune=tune if tune.lower() != "default" else None,
+            extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
-
-        if self.mode == "CRF":
-            crf = self.widgets.crf.currentText()
-            settings.crf = int(crf.split(" ", 1)[0]) if crf != "Custom" else int(self.widgets.custom_crf.text())
-        else:
-            bitrate = self.widgets.bitrate.currentText()
-            if bitrate.lower() == "custom":
-                settings.bitrate = self.widgets.custom_bitrate.text()
-            else:
-                settings.bitrate = bitrate.split(" ", 1)[0]
+        encode_type, q_value = self.get_mode_settings()
+        settings.crf = q_value if encode_type == "qp" else None
+        settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import logging
 from dataclasses import dataclass, field
 from typing import Callable, Dict, List
-import logging
 
 import reusables
 from qtpy import QtCore, QtWidgets
@@ -65,6 +65,9 @@ class ProgressBar(QtWidgets.QFrame):
 
     @reusables.log_exception("fastflix")
     def run(self):
+        if not self.tasks:
+            logger.error("Progress bar RUN called without any tasks")
+            return
         ratio = 100 // len(self.tasks)
         self.progress_bar.setValue(0)
 

@@ -58,7 +58,7 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.work_dir, 2, 1)
         layout.addWidget(work_path_button, 2, 2)
 
-        layout.addWidget(QtWidgets.QLabel("Config File"), 4, 0)
+        layout.addWidget(QtWidgets.QLabel(t("Config File")), 4, 0)
         layout.addWidget(QtWidgets.QLabel(str(self.config_file)), 4, 1)
 
         self.language_combo = QtWidgets.QComboBox(self)
@@ -66,7 +66,7 @@ class Settings(QtWidgets.QWidget):
         try:
             index = known_language_list.index(Lang(self.app.fastflix.config.language).name)
         except (IndexError, InvalidLanguageValue):
-            logger.exception(f"Could not find language for {self.app.fastflix.config.language}")
+            logger.exception(f"{t('Could not find language for')} {self.app.fastflix.config.language}")
             index = known_language_list.index("English")
         self.language_combo.setCurrentIndex(index)
 
@@ -79,25 +79,37 @@ class Settings(QtWidgets.QWidget):
         )
         layout.addWidget(config_button, 4, 2)
 
-        save = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DialogApplyButton), text="Save")
+        save = QtWidgets.QPushButton(
+            icon=self.style().standardIcon(QtWidgets.QStyle.SP_DialogApplyButton), text=t("Save")
+        )
         save.clicked.connect(lambda: self.save())
 
         cancel = QtWidgets.QPushButton(
-            icon=self.style().standardIcon(QtWidgets.QStyle.SP_DialogCancelButton), text="Cancel"
+            icon=self.style().standardIcon(QtWidgets.QStyle.SP_DialogCancelButton), text=t("Cancel")
         )
         cancel.clicked.connect(lambda: self.close())
 
-        self.use_sane_audio = QtWidgets.QCheckBox("Use Sane Audio Selection (updatable in config file)")
+        self.use_sane_audio = QtWidgets.QCheckBox(t("Use Sane Audio Selection (updatable in config file)"))
         if self.app.fastflix.config.use_sane_audio:
             self.use_sane_audio.setChecked(True)
-        self.disable_version_check = QtWidgets.QCheckBox("Disable update check on startup")
+        self.disable_version_check = QtWidgets.QCheckBox(t("Disable update check on startup"))
         if not self.app.fastflix.config.disable_version_check:
             self.disable_version_check.setChecked(False)
         elif self.app.fastflix.config.disable_version_check:
             self.disable_version_check.setChecked(True)
 
+        self.logger_level_widget = QtWidgets.QComboBox()
+        self.logger_level_widget.addItems(["Debug", "Info", "Warning", "Error"])
+        self.logger_level_widget.setCurrentIndex(int(self.app.fastflix.config.logging_level // 10) - 1)
+
+        self.flat_ui = QtWidgets.QCheckBox(t("Flat UI"))
+        self.flat_ui.setChecked(self.app.fastflix.config.flat_ui)
+
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
         layout.addWidget(self.disable_version_check, 8, 0, 1, 2)
+        layout.addWidget(QtWidgets.QLabel(t("GUI Logging Level")), 9, 0)
+        layout.addWidget(self.logger_level_widget, 9, 1)
+        layout.addWidget(self.flat_ui, 10, 0, 1, 2)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
@@ -112,6 +124,7 @@ class Settings(QtWidgets.QWidget):
         new_ffmpeg = Path(self.ffmpeg_path.text())
         new_ffprobe = Path(self.ffprobe_path.text())
         new_work_dir = Path(self.work_dir.text())
+        restart_needed = False
         try:
             updated_ffmpeg = self.update_ffmpeg(new_ffmpeg)
             self.update_ffprobe(new_ffprobe)
@@ -121,21 +134,29 @@ class Settings(QtWidgets.QWidget):
         try:
             new_work_dir.mkdir(exist_ok=True, parents=True)
         except OSError:
-            error_message(f'Could not create / access work directory "{new_work_dir}"')
+            error_message(f'{t("Could not create / access work directory")} "{new_work_dir}"')
         else:
             self.app.fastflix.config.work_path = new_work_dir
         self.app.fastflix.config.use_sane_audio = self.use_sane_audio.isChecked()
+        if self.flat_ui.isChecked() != self.app.fastflix.config.flat_ui:
+            restart_needed = True
+        self.app.fastflix.config.flat_ui = self.flat_ui.isChecked()
 
         old_lang = self.app.fastflix.config.language
         try:
             self.app.fastflix.config.language = Lang(self.language_combo.currentText()).pt3
         except InvalidLanguageValue:
-            error_message(f"Could not set language to {self.language_combo.currentText()}\n Please report this issue")
+            error_message(
+                f"{t('Could not set language to')} {self.language_combo.currentText()}\n {t('Please report this issue')}"
+            )
         self.app.fastflix.config.disable_version_check = self.disable_version_check.isChecked()
+        log_level = (self.logger_level_widget.currentIndex() + 1) * 10
+        self.app.fastflix.config.logging_level = log_level
+        logger.setLevel(log_level)
 
         self.main.config_update()
         self.app.fastflix.config.save()
-        if updated_ffmpeg or old_lang != self.app.fastflix.config.language:
+        if updated_ffmpeg or old_lang != self.app.fastflix.config.language or restart_needed:
             error_message(t("Please restart FastFlix to apply settings"))
         self.close()
 

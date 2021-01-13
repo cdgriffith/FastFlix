@@ -51,25 +51,23 @@ class VP9(SettingPanel):
 
         grid = QtWidgets.QGridLayout()
 
-        # grid.addWidget(QtWidgets.QLabel("VP9"), 0, 0)
-
         self.widgets = Box(fps=None, mode=None)
 
         self.mode = "CRF"
 
-        grid.addLayout(self.init_speed(), 0, 0, 1, 1)
-        grid.addLayout(self.init_quality(), 1, 0, 1, 1)
-        grid.addLayout(self.init_pix_fmt(), 2, 0, 1, 1)
-        grid.addLayout(self.init_max_mux(), 3, 0, 1, 1)
-        grid.addLayout(self.init_profile(), 4, 0, 1, 1)
+        grid.addLayout(self.init_speed(), 0, 0, 1, 2)
+        grid.addLayout(self.init_quality(), 1, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 2, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
+        grid.addLayout(self.init_profile(), 4, 0, 1, 2)
 
-        grid.addLayout(self.init_modes(), 0, 1, 5, 4)
-        grid.addLayout(self.init_single_pass(), 6, 1, 1, 1)
-        grid.addLayout(self.init_row_mt(), 6, 3, 1, 1)
+        grid.addLayout(self.init_modes(), 0, 2, 5, 4)
+        grid.addLayout(self.init_single_pass(), 5, 2, 1, 2)
+        grid.addLayout(self.init_row_mt(), 5, 4, 1, 2)
 
-        grid.addWidget(QtWidgets.QWidget(), 8, 0)
+        # grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
-        grid.addLayout(self._add_custom(), 9, 0, 1, 5)
+        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         link_1 = link("https://trac.ffmpeg.org/wiki/Encode/VP9", t("FFMPEG VP9 Encoding Guide"))
         link_2 = link("https://developers.google.com/media/vp9/hdr-encoding/", t("Google's VP9 HDR Encoding Guide"))
@@ -77,7 +75,7 @@ class VP9(SettingPanel):
         guide_label = QtWidgets.QLabel(f"{link_1} | {link_2}")
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 10, 0, -1, 1)
+        grid.addWidget(guide_label, 11, 0, 1, 6)
         self.setLayout(grid)
         self.hide()
 
@@ -92,7 +90,7 @@ class VP9(SettingPanel):
 
     def init_profile(self):
         return self._add_combo_box(
-            label="Profile",
+            label="Profile_encoderopt",
             tooltip="profile: VP9 coding profile - must match bit depth",
             widget_name="profile",
             options=[
@@ -161,16 +159,11 @@ class VP9(SettingPanel):
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             profile=self.widgets.profile.currentIndex(),
             extra=self.ffmpeg_extras,
+            extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
-        if self.mode == "CRF":
-            crf = self.widgets.crf.currentText()
-            settings.crf = int(crf.split(" ", 1)[0]) if crf.lower() != "custom" else self.widgets.custom_crf.text()
-        else:
-            bitrate = self.widgets.bitrate.currentText()
-            if bitrate.lower() == "custom":
-                settings.bitrate = self.widgets.custom_bitrate.text()
-            else:
-                settings.bitrate = bitrate.split(" ", 1)[0]
+        encode_type, q_value = self.get_mode_settings()
+        settings.crf = q_value if encode_type == "qp" else None
+        settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):

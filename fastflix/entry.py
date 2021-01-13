@@ -77,6 +77,7 @@ def startup_options():
             import fastflix.shared
             import fastflix.version
             import fastflix.widgets.about
+            import fastflix.widgets.background_tasks
             import fastflix.widgets.changes
             import fastflix.widgets.container
             import fastflix.widgets.logs
@@ -91,7 +92,6 @@ def startup_options():
             import fastflix.widgets.profile_window
             import fastflix.widgets.progress_bar
             import fastflix.widgets.settings
-            import fastflix.widgets.background_tasks
             import fastflix.widgets.video_options
         except Exception as err:
             print(f"Error: {err}")

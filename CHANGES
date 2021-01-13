@@ -1,5 +1,29 @@
 # Changelog
 
+## Version 4.1.0
+
+* Adding #118 #126 advanced panel with FFmpeg filters (thanks to Marco Ravich and remlap)
+* Adding #114 info panel that shows source details (thanks to leonardyan)
+* Adding #117 support for text based burn in subtitles
+* Adding #152 option to switch back to old bubbly buttons (thanks to GitKike98)
+* Adding logging level selector in settings for GUI
+* Adding button to extract text based subtitles
+* Adding dual pass option for ffmpeg options (thanks to Catatau)
+* Adding #163 elapsed time in encoding panel (thanks to Benedicte Emilie Brækken)
+* Adding super secret DEVMODE environment variable
+* Adding #168 Allow decimal CRF values as Custom values (thanks to Etz)
+* Changing all builds to use Python 3.8, removing idea of "legacy" windows until later time
+* Fixing #156 Copy was broken due to ffmpeg extras not being passed (thanks to leonardyan)
+* Fixing #158 Translation and icon of tab name "Quality" lost when output codec switched (thanks to leonardyan)
+* Fixing #120 Custom bitrate forgets to add a "k" (thanks to seighail3)
+* Fixing #162 Main window was not resizeable (thanks to bmcassagne)
+* Fixing #165 Custom Bitrate loaded from Profile (thanks to Etz)
+* Fixing #154 Overloading the term "Profile" for languages (thanks to leonardyan)
+* Fixing snap packaged, and other symlinked FFmpeg installs were not linked correctly (thanks to Catatau)
+* Fixing loading video could encounter a bug and crash fastflix (thanks to Jan)
+* Fixing being able to set landscape cover
+* Fixing resetting covers from queue
+
 ## Version 4.0.4
 
 * Fixing #137 Should not be able to try and switch between encoders without a video (thanks to leonardyan)

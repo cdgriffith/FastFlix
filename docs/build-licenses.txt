@@ -31,7 +31,7 @@ Any embedded fonts have their own licenses each found in the "fastflix/data/font
 
 The MIT License
 
-Copyright (c) 2019-2020 Chris Griffith
+Copyright (c) 2019-2021 Chris Griffith
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

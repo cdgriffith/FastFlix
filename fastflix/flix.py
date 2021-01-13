@@ -22,8 +22,8 @@ re_progressive = re.compile(r"Progressive:\s+(\d+)")
 logger = logging.getLogger("fastflix")
 
 
-def x265_color_matrix(color_space):
-    pass
+def unixy(source):
+    return str(source).replace("\\", "/")
 
 
 def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
@@ -107,6 +107,18 @@ def ffmpeg_configuration(app, config: Config, **_):
     # return version, config
 
 
+def ffprobe_configuration(app, config: Config, **_):
+    """ Extract the version of ffprobe """
+    res = execute([f"{config.ffprobe}", "-version"])
+    if res.returncode != 0:
+        raise FlixError(f'"{config.ffprobe}" file not found')
+    try:
+        version = res.stdout.split(" ", 4)[2]
+    except (ValueError, IndexError):
+        raise FlixError(f'Cannot parse version of ffprobe from "{res.stdout}"')
+    app.fastflix.ffprobe_version = version
+
+
 def probe(app: FastFlixApp, file: Path) -> Box:
     """ Run FFprobe on a file """
     command = [
@@ -119,9 +131,15 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         "json",
         "-show_format",
         "-show_streams",
-        f"{file}",
+        f"{unixy(file)}",
     ]
     result = execute(command)
+    if result.returncode != 0:
+        raise FlixError(f"Error code returned running FFprobe: {result.stdout} - {result.stderr}")
+
+    if result.stdout.strip() == "{}":
+        raise FlixError(f"No output from FFprobe, not a known video type. stderr: {result.stderr}")
+
     try:
         return Box.from_json(result.stdout)
     except BoxError:
@@ -149,9 +167,8 @@ def determine_rotation(streams) -> Tuple[int, int]:
 def parse(app: FastFlixApp, **_):
     data = probe(app, app.fastflix.current_video.source)
     if "streams" not in data:
-        raise FlixError("Not a video file")
+        raise FlixError(f"Not a video file, FFprobe output: {data}")
     streams = Box({"video": [], "audio": [], "subtitle": [], "attachment": [], "data": []})
-    covers = []
     for track in data.streams:
         if track.codec_type == "video" and track.get("disposition", {}).get("attached_pic"):
             streams.attachment.append(track)
@@ -161,7 +178,7 @@ def parse(app: FastFlixApp, **_):
             logger.error(f"Unknown codec: {track.codec_type}")
 
     if not streams.video:
-        raise FlixError("There were no video streams detected")
+        raise FlixError(f"There were no video streams detected: {data}")
 
     for stream in streams.video:
         if "bits_per_raw_sample" in stream:
@@ -196,14 +213,14 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
                 f"{ffmpeg}",
                 "-y",
                 "-i",
-                f"{source}",
+                f"{unixy(source)}",
                 "-map",
                 f"0:{stream}",
                 "-c",
                 "copy",
                 "-vframes",
                 "1",
-                f"{file_name}",
+                f"{unixy(file_name)}",
             ],
             work_dir=work_dir,
             timeout=5,
@@ -219,9 +236,9 @@ def generate_thumbnail_command(
     if start_time:
         start = f"-ss {start_time}"
     return (
-        f'"{config.ffmpeg}" {start} -loglevel error -i "{source}" '
+        f'"{config.ffmpeg}" {start} -loglevel error -i "{unixy(source)}" '
         f" {filters} -an -y -map_metadata -1 -map 0:{input_track} "
-        f'-vframes 1 "{output}" '
+        f'-vframes 1 "{unixy(output)}" '
     )
 
 
@@ -238,11 +255,12 @@ def get_auto_crop(
     output = execute(
         [
             f"{config.ffmpeg}",
+            "-y",
             "-hide_banner",
             "-ss",
             f"{start_time}",
             "-i",
-            f"{source}",
+            f"{unixy(source)}",
             "-map",
             f"0:{input_track}",
             "-vf",
@@ -290,7 +308,7 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
             f"{config.ffmpeg}",
             "-hide_banner",
             "-i",
-            f"{source}",
+            f"{unixy(source)}",
             "-vf",
             "idet",
             "-frames:v",
@@ -397,8 +415,7 @@ def parse_hdr_details(app: FastFlixApp, **_):
             "%+#1",
             "-show_entries",
             "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt",
-            "-i",
-            f"{app.fastflix.current_video.source}",
+            f"{unixy(app.fastflix.current_video.source)}",
         ]
     )
 

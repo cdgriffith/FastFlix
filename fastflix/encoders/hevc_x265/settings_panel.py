@@ -377,7 +377,7 @@ class HEVC(SettingPanel):
 
     def init_profile(self):
         return self._add_combo_box(
-            label="Profile",
+            label="Profile_encoderopt",
             tooltip="profile: Enforce an encode profile",
             widget_name="profile",
             options=["default", "main", "main10", "mainstillpicture"],
@@ -391,6 +391,7 @@ class HEVC(SettingPanel):
             widget_name="pix_fmt",
             options=pix_fmts,
             connect=lambda: self.setting_change(pix_change=True),
+            opt="pix_fmt",
         )
 
     def init_max_mux(self):
@@ -538,18 +539,12 @@ class HEVC(SettingPanel):
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
             lossless=self.widgets.lossless.isChecked(),
             extra=self.ffmpeg_extras,
+            extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
 
-        if self.mode == "CRF":
-            crf = self.widgets.crf.currentText()
-            settings.crf = int(crf.split(" ", 1)[0]) if crf != "Custom" else int(self.widgets.custom_crf.text())
-        else:
-            bitrate = self.widgets.bitrate.currentText()
-            if bitrate.lower() == "custom":
-                settings.bitrate = self.widgets.custom_bitrate.text()
-            else:
-                settings.bitrate = bitrate.split(" ", 1)[0]
-
+        encode_type, q_value = self.get_mode_settings()
+        settings.crf = q_value if encode_type == "qp" else None
+        settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):

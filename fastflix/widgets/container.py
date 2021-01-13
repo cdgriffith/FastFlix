@@ -4,7 +4,6 @@ import logging
 import shutil
 import sys
 import time
-from dataclasses import asdict
 from pathlib import Path
 from subprocess import run
 
@@ -14,10 +13,11 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
+from fastflix.models.config import setting_types
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
 from fastflix.resources import main_icon
-from fastflix.shared import latest_fastflix, message, clean_logs, error_message
+from fastflix.shared import clean_logs, error_message, latest_fastflix, message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -45,8 +45,7 @@ class Container(QtWidgets.QMainWindow):
         self.profile = ProfileWindow(self.app, self.main)
 
         self.setCentralWidget(self.main)
-        # self.setMinimumSize(QtCore.QSize(1000, 650))
-        self.setFixedSize(QtCore.QSize(1200, 650))
+        self.setMinimumSize(QtCore.QSize(1200, 650))
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
 
@@ -83,7 +82,7 @@ class Container(QtWidgets.QMainWindow):
     def init_menu(self):
         menubar = self.menuBar()
 
-        file_menu = menubar.addMenu("&File")
+        file_menu = menubar.addMenu(t("File"))
 
         setting_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogListView), t("Settings"), self)
         setting_action.setShortcut("Ctrl+S")
@@ -193,7 +192,6 @@ class Container(QtWidgets.QMainWindow):
         try:
             ProgressBar(self.app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True, can_cancel=True)
         except FastFlixInternalException:
-            print("Caught")
             pass
         except Exception as err:
             message(f"{t('Could not download the newest FFmpeg')}: {err}")
@@ -244,7 +242,7 @@ class ProfileDetails(QtWidgets.QWidget):
         title = QtWidgets.QLabel(t("Encoder Settings"))
         title.setFont(QtGui.QFont("helvetica", 9, weight=70))
         layout.addWidget(title)
-        for k, v in asdict(settings).items():
+        for k, v in settings.dict().items():
             item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
             item_2 = QtWidgets.QLabel(str(v))
             item_2.setMaximumWidth(150)
@@ -260,11 +258,11 @@ class ProfileDetails(QtWidgets.QWidget):
         self.layout = QtWidgets.QHBoxLayout(self)
 
         main_section = QtWidgets.QVBoxLayout(self)
-        profile_title = QtWidgets.QLabel(f"{t('Profile')}: {profile_name}")
+        profile_title = QtWidgets.QLabel(f"{t('Profile_window')}: {profile_name}")
         profile_title.setFont(QtGui.QFont("helvetica", 10, weight=70))
         main_section.addWidget(profile_title)
-        for k, v in asdict(profile).items():
-            if k not in profile.setting_types.keys():
+        for k, v in profile.dict().items():
+            if k not in setting_types.keys():
                 item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
                 item_2 = QtWidgets.QLabel(str(v))
                 item_2.setMaximumWidth(150)
@@ -279,7 +277,7 @@ class ProfileDetails(QtWidgets.QWidget):
         splitter.setStyleSheet("background-color: #999999")
         self.layout.addWidget(splitter)
 
-        for setting_name in profile.setting_types.keys():
+        for setting_name in setting_types.keys():
             setting = getattr(profile, setting_name)
             if setting:
                 self.layout.addWidget(self.profile_widget(setting))

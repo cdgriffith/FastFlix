@@ -25,7 +25,7 @@ class WEBP(SettingPanel):
 
         grid.addLayout(self.init_modes(), 0, 2, 2, 4)
 
-        grid.addLayout(self._add_custom(), 11, 0, 1, 6)
+        grid.addLayout(self._add_custom(disable_both_passes=True), 11, 0, 1, 6)
         grid.addWidget(QtWidgets.QWidget(), 5, 0, 5, 6)
         grid.rowStretch(5)
         self.setLayout(grid)
@@ -91,9 +91,16 @@ class WEBP(SettingPanel):
             preset=self.widgets.preset.currentText(),
             extra=self.ffmpeg_extras,
             pix_fmt="yuv420p",  # hack for thumbnails to show properly
+            extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
         qscale = self.widgets.qscale.currentText()
-        settings.qscale = int(qscale) if qscale.lower() != "custom" else int(self.widgets.custom_qscale.text())
+        if self.widgets.custom_qscale.isEnabled():
+            if not self.widgets.custom_qscale.text():
+                settings.qscale = 75
+            else:
+                settings.qscale = int(self.widgets.custom_qscale.text())
+        else:
+            settings.qscale = int(qscale.split(" ", 1)[0])
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def new_source(self):

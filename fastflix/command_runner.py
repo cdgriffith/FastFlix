@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import datetime
 import logging
 import re
 import secrets
@@ -29,18 +30,22 @@ class BackgroundRunner:
         self.success_detected = False
         self.error_message = []
         self.success_message = []
+        self.started_at = None
 
     def start_exec(self, command, work_dir: str = None, shell: bool = False, errors=(), successes=()):
         self.clean()
-        logger.info(f"Running command: {command}")
-        Path(work_dir).mkdir(exist_ok=True, parents=True)
-        self.output_file = Path(work_dir) / f"encoder_output_{secrets.token_hex(6)}.log"
-        self.error_output_file = Path(work_dir) / f"encoder_error_output_{secrets.token_hex(6)}.log"
+        logger.debug(f"Using work dir: {work_dir}")
+        work_path = Path(work_dir)
+        work_path.mkdir(exist_ok=True, parents=True)
+        self.output_file = work_path / f"encoder_output_{secrets.token_hex(6)}.log"
+        self.error_output_file = work_path / f"encoder_error_output_{secrets.token_hex(6)}.log"
+        logger.debug(f"command output file set to: {self.output_file}")
+        logger.debug(f"command error output file set to: {self.error_output_file}")
         self.output_file.touch(exist_ok=True)
         self.error_output_file.touch(exist_ok=True)
         self.error_message = errors
         self.success_message = successes
-
+        logger.info(f"Running command: {command}")
         self.process = Popen(
             shlex.split(command) if not shell and isinstance(command, str) else command,
             shell=shell,
@@ -50,6 +55,8 @@ class BackgroundRunner:
             stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc on linux
             encoding="utf-8",
         )
+
+        self.started_at = datetime.datetime.now(datetime.timezone.utc)
 
         Thread(target=self.read_output).start()
 
@@ -82,6 +89,7 @@ class BackgroundRunner:
         )
 
         self.error_detected = False
+        self.started_at = datetime.datetime.now(datetime.timezone.utc)
 
         Thread(target=self.read_output).start()
 
@@ -145,9 +153,10 @@ class BackgroundRunner:
         self.error_detected = False
         self.success_detected = False
         self.killed = False
+        self.started_at = None
 
     def kill(self, log=True):
-        if self.process_two:
+        if self.process_two and self.process.poll() is None:
             if log:
                 logger.info(f"Killing worker process {self.process_two.pid}")
             try:
@@ -156,7 +165,7 @@ class BackgroundRunner:
             except Exception as err:
                 if log:
                     logger.exception(f"Couldn't terminate process: {err}")
-        if self.process:
+        if self.process and self.process.poll() is None:
             if log:
                 logger.info(f"Killing worker process {self.process.pid}")
             try:

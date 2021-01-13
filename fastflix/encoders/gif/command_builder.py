@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import secrets
-from dataclasses import asdict
 
 from fastflix.encoders.common.helpers import Command, generate_filters
 from fastflix.models.encode import GIFSettings
@@ -10,10 +9,10 @@ from fastflix.models.fastflix import FastFlix
 def build(fastflix: FastFlix):
     settings: GIFSettings = fastflix.current_video.video_settings.video_encoder_settings
 
-    palletgen_filters = generate_filters(custom_filters="palettegen", **asdict(fastflix.current_video.video_settings))
+    palletgen_filters = generate_filters(custom_filters="palettegen", **fastflix.current_video.video_settings.dict())
 
     filters = generate_filters(
-        custom_filters=f"fps={settings.fps:.2f}", raw_filters=True, **asdict(fastflix.current_video.video_settings)
+        custom_filters=f"fps={settings.fps:.2f}", raw_filters=True, **fastflix.current_video.video_settings.dict()
     )
 
     output_video = str(fastflix.current_video.video_settings.output_path).replace("\\", "/")
@@ -24,11 +23,13 @@ def build(fastflix: FastFlix):
         f'-i "{fastflix.current_video.source}" '
     )
     if settings.extra:
-        beginning += f" {settings.extra} "
+        beginning += f"  "
 
     temp_palette = fastflix.current_video.work_path / f"temp_palette_{secrets.token_hex(10)}.png"
 
-    command_1 = f'{beginning} {palletgen_filters}  -y "{temp_palette}"'
+    command_1 = (
+        f'{beginning} {palletgen_filters} {settings.extra if settings.extra_both_passes else ""} -y "{temp_palette}"'
+    )
 
     gif_filters = f"fps={settings.fps:.2f}"
     if filters:
@@ -36,10 +37,10 @@ def build(fastflix: FastFlix):
 
     command_2 = (
         f'{beginning} -i "{temp_palette}" '
-        f'-filter_complex "{filters};[v][1:v]paletteuse=dither={settings.dither}[o]" -map "[o]" -y "{output_video}" '
+        f'-filter_complex "{filters};[v][1:v]paletteuse=dither={settings.dither}[o]" -map "[o]" {settings.extra} -y "{output_video}" '
     )
 
     return [
-        Command(command_1, ["ffmpeg", "pallet_file", "output"], False, name="Pallet generation", exe="ffmpeg"),
-        Command(command_2, ["ffmpeg", "pallet_file", "output"], False, name="GIF creation", exe="ffmpeg"),
+        Command(command=command_1, name="Pallet generation", exe="ffmpeg"),
+        Command(command=command_2, name="GIF creation", exe="ffmpeg"),
     ]

@@ -6,13 +6,13 @@ import coloredlogs
 import reusables
 from qtpy import QtGui
 
+from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration, ffprobe_configuration
 from fastflix.language import t
-from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration
 from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
-from fastflix.resources import default_mode, main_icon, video_add_icon
+from fastflix.resources import default_mode, main_icon
 from fastflix.shared import file_date, message
 from fastflix.version import __version__
 from fastflix.widgets.container import Container
@@ -24,7 +24,6 @@ logger = logging.getLogger("fastflix")
 def create_app():
     main_app = FastFlixApp(sys.argv)
     main_app.setStyle("fusion")
-    main_app.setStyleSheet(default_mode)
     main_app.setApplicationDisplayName("FastFlix")
     my_font = QtGui.QFont("helvetica", 9, weight=57)
     main_app.setFont(my_font)
@@ -33,17 +32,16 @@ def create_app():
 
 
 def init_logging(app: FastFlixApp):
-    gui_logger = logging.getLogger("fastflix")
     stream_handler = reusables.get_stream_handler(level=logging.DEBUG)
     file_handler = reusables.get_file_handler(
         app.fastflix.log_path / f"flix_gui_{file_date()}.log",
         level=logging.DEBUG,
         encoding="utf-8",
     )
-    gui_logger.setLevel(logging.DEBUG)
-    gui_logger.addHandler(stream_handler)
-    gui_logger.addHandler(file_handler)
-    coloredlogs.install(level="DEBUG", logger=gui_logger)
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(stream_handler)
+    logger.addHandler(file_handler)
+    coloredlogs.install(level="DEBUG", logger=logger)
 
 
 def init_encoders(app: FastFlixApp, **_):
@@ -117,7 +115,7 @@ def start_app(worker_queue, status_queue, log_queue):
         )
     try:
         app.fastflix.config.load()
-    except MissingFF:
+    except MissingFF as err:
         if reusables.win_based and ask_for_ffmpeg():
             try:
                 ProgressBar(app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
@@ -125,13 +123,21 @@ def start_app(worker_queue, status_queue, log_queue):
             except Exception as err:
                 logger.exception(str(err))
                 sys.exit(1)
+        else:
+            logger.error(f"Could not find {err} location, please manually set in {app.fastflix.config.config_path}")
+            sys.exit(1)
     except Exception:
         # TODO give edit / delete options
         logger.exception(t("Could not load config file!"))
         sys.exit(1)
 
+    if app.fastflix.config.flat_ui:
+        app.setStyleSheet(default_mode)
+    logger.setLevel(app.fastflix.config.logging_level)
+
     startup_tasks = [
         Task(t("Gather FFmpeg version"), ffmpeg_configuration),
+        Task(t("Gather FFprobe version"), ffprobe_configuration),
         Task(t("Gather FFmpeg audio encoders"), ffmpeg_audio_encoders),
         Task(t("Initialize Encoders"), init_encoders),
     ]
@@ -145,4 +151,8 @@ def start_app(worker_queue, status_queue, log_queue):
     container = Container(app)
     container.show()
 
-    app.exec_()
+    try:
+        app.exec_()
+    except Exception:
+        logger.exception("Error while running FastFlix")
+        raise

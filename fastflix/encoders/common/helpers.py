@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import uuid
-from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import reusables
+from pydantic import BaseModel, Field
 
 from fastflix.encoders.common.attachments import build_attachments
 from fastflix.encoders.common.audio import build_audio
@@ -29,17 +29,14 @@ class Loop:
         self.files = files
 
 
-@dataclass
-class Command(BaseDataClass):
+class Command(BaseModel):
     command: str
-    variables: List
-    internal: bool
     item = "command"
     name: str = ""
     ensure_paths: List = ()
     exe: str = None
     shell: bool = False
-    uuid: str = field(default_factory=lambda: str(uuid.uuid4()))
+    uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))
 
 
 def generate_ffmpeg_start(
@@ -54,27 +51,40 @@ def generate_ffmpeg_start(
     max_muxing_queue_size="default",
     fast_seek=True,
     video_title="",
-    custom_map=False,
+    maxrate=None,
+    bufsize=None,
+    source_fps: Union[str, None] = None,
+    vsync: Union[str, None] = None,
     **_,
-):
+) -> str:
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
     time_one = time_settings if fast_seek else ""
     time_two = time_settings if not fast_seek else ""
+    incoming_fps = f"-r {source_fps}" if source_fps else ""
+    vsync_text = f"-vsync {vsync}" if vsync else ""
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = str(source).replace("\\", "/")
     ffmpeg = str(ffmpeg).replace("\\", "/")
 
-    return (
-        f'"{ffmpeg}" -y '
-        f" {time_one} "
-        f'-i "{source}" '
-        f" {time_two} "
-        f"{title} "
-        f"{f'-max_muxing_queue_size {max_muxing_queue_size}' if max_muxing_queue_size != 'default' else ''} "
-        f'{f"-map 0:{selected_track}" if not filters else ""} '
-        f'{filters if filters else ""} '
-        f"-c:v {encoder} "
-        f"-pix_fmt {pix_fmt} "
+    return " ".join(
+        [
+            f'"{ffmpeg}"',
+            "-y",
+            time_one,
+            incoming_fps,
+            f'-i "{source}"',
+            time_two,
+            title,
+            f"{f'-max_muxing_queue_size {max_muxing_queue_size}' if max_muxing_queue_size != 'default' else ''}",
+            f'{f"-map 0:{selected_track}" if not filters else ""}',
+            vsync_text,
+            f'{filters if filters else ""}',
+            f"-c:v {encoder}",
+            f"-pix_fmt {pix_fmt}",
+            f"{f'-maxrate:v {maxrate}k' if maxrate else ''}",
+            f"{f'-bufsize:v {bufsize}k' if bufsize else ''}",
+            " ",  # Leave space after commands
+        ]
     )
 
 
@@ -86,13 +96,14 @@ def generate_ending(
     copy_chapters=True,
     remove_metadata=True,
     null_ending=False,
-    extra="",
+    output_fps: Union[str, None] = None,
     **_,
-):
+) -> str:
     ending = (
         f" {'-map_metadata -1' if remove_metadata else ''} "
         f"{'-map_chapters 0' if copy_chapters else ''} "
-        f"{audio} {subtitles} {cover} {extra} "
+        f"{f'-r {output_fps}' if output_fps else ''} "
+        f"{audio} {subtitles} {cover} "
     )
     if output_video and not null_ending:
         output_video = str(output_video).replace("\\", "/")
@@ -104,19 +115,26 @@ def generate_ending(
 
 def generate_filters(
     selected_track,
+    source=None,
     crop=None,
     scale=None,
     scale_filter="lanczos",
     scale_width=None,
     scale_height=None,
     remove_hdr=False,
-    rotate=None,
+    rotate=0,
     vertical_flip=None,
     horizontal_flip=None,
     burn_in_subtitle_track=None,
+    burn_in_subtitle_type=None,
     custom_filters=None,
     raw_filters=False,
     deinterlace=False,
+    tone_map: str = "hable",
+    video_speed: Union[float, int] = 1,
+    deblock: Union[str, None] = None,
+    deblock_size: int = 4,
+    denoise: Union[str, None] = None,
     **_,
 ):
 
@@ -131,7 +149,7 @@ def generate_filters(
         filter_list.append(f"scale={scale_width}:-8:flags={scale_filter}")
     elif scale_height:
         filter_list.append(f"scale=-8:{scale_height}:flags={scale_filter}")
-    if rotate is not None:
+    if rotate:
         if rotate < 3:
             filter_list.append(f"transpose={rotate}")
         if rotate == 4:
@@ -140,10 +158,15 @@ def generate_filters(
         filter_list.append("vflip")
     if horizontal_flip:
         filter_list.append("hflip")
-
+    if video_speed and video_speed != 1:
+        filter_list.append(f"setpts={video_speed}*PTS")
+    if deblock:
+        filter_list.append(f"deblock=filter={deblock}:block={deblock_size}")
+    if denoise:
+        filter_list.append(denoise)
     if remove_hdr:
         filter_list.append(
-            "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
+            f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
         )
 
     filters = ",".join(filter_list)
@@ -153,12 +176,15 @@ def generate_filters(
         filters = custom_filters
 
     if burn_in_subtitle_track is not None:
-        if filters:
-            # You have to overlay first for it to work when scaled
-            filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[subbed];[subbed]{filters}[v]"
-
+        if burn_in_subtitle_type == "picture":
+            if filters:
+                # You have to overlay first for it to work when scaled
+                filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[subbed];[subbed]{filters}[v]"
+            else:
+                filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
         else:
-            filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
+            unixy = str(source).replace("\\", "/")
+            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles='{unixy}':si={burn_in_subtitle_track}[v]"
     elif filters:
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:
@@ -175,16 +201,24 @@ def generate_all(
 
     audio = build_audio(fastflix.current_video.video_settings.audio_tracks) if audio else ""
 
-    subtitles, burn_in_track = "", None
+    subtitles, burn_in_track, burn_in_type = "", None, None
     if subs:
-        subtitles, burn_in_track = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
+        subtitles, burn_in_track, burn_in_type = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
+        if burn_in_type == "text":
+            for i, x in enumerate(fastflix.current_video.streams["subtitle"]):
+                if x["index"] == burn_in_track:
+                    burn_in_track = i
+                    break
 
     attachments = build_attachments(fastflix.current_video.video_settings.attachment_tracks)
 
     filters = None
     if not disable_filters:
         filters = generate_filters(
-            burn_in_subtitle_track=burn_in_track, **asdict(fastflix.current_video.video_settings)
+            source=fastflix.current_video.source,
+            burn_in_subtitle_track=burn_in_track,
+            burn_in_subtitle_type=burn_in_type,
+            **fastflix.current_video.video_settings.dict(),
         )
 
     ending = generate_ending(
@@ -192,8 +226,7 @@ def generate_all(
         subtitles=subtitles,
         cover=attachments,
         output_video=fastflix.current_video.video_settings.output_path,
-        extra=fastflix.current_video.video_settings.video_encoder_settings.extra,
-        **asdict(fastflix.current_video.video_settings),
+        **fastflix.current_video.video_settings.dict(),
     )
 
     beginning = generate_ffmpeg_start(
@@ -201,22 +234,22 @@ def generate_all(
         ffmpeg=fastflix.config.ffmpeg,
         encoder=encoder,
         filters=filters,
-        **asdict(fastflix.current_video.video_settings),
-        **asdict(settings),
+        **fastflix.current_video.video_settings.dict(),
+        **settings.dict(),
     )
 
     return beginning, ending
 
 
-def generate_color_details(fastflix: FastFlix):
+def generate_color_details(fastflix: FastFlix) -> str:
     if fastflix.current_video.video_settings.remove_hdr:
         return ""
 
     details = []
-    if fastflix.current_video.color_primaries:
-        details.append(f"-color_primaries {fastflix.current_video.color_primaries}")
-    if fastflix.current_video.color_transfer:
-        details.append(f"-color_trc {fastflix.current_video.color_transfer}")
-    if fastflix.current_video.color_space:
-        details.append(f"-colorspace {fastflix.current_video.color_space}")
+    if fastflix.current_video.video_settings.color_primaries:
+        details.append(f"-color_primaries {fastflix.current_video.video_settings.color_primaries}")
+    if fastflix.current_video.video_settings.color_transfer:
+        details.append(f"-color_trc {fastflix.current_video.video_settings.color_transfer}")
+    if fastflix.current_video.video_settings.color_space:
+        details.append(f"-colorspace {fastflix.current_video.video_settings.color_space}")
     return " ".join(details)
