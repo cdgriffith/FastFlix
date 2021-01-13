@@ -3,7 +3,7 @@ import logging
 import shutil
 from distutils.version import StrictVersion
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 from appdirs import user_data_dir
 from box import Box, BoxError
@@ -152,6 +152,10 @@ class Config(BaseModel):
     def encoder_opt(self, profile_name, profile_option_name):
         encoder_settings = getattr(self.profiles[self.selected_profile], profile_name)
         if encoder_settings:
+
+            print(encoder_settings)
+            print(profile_option_name)
+            print(profile_name)
             return getattr(encoder_settings, profile_option_name)
         else:
             return getattr(setting_types[profile_name](), profile_option_name)
