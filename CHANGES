@@ -3,6 +3,7 @@
 ## Version 4.1.1
 
 * Fixing #156 Copy was broken due to copy settings being renamed due to library update (thanks to leonardyan)
+* Fixing #172 FastFlix could not set profile setting copy (thanks to Etz)
 
 ## Version 4.1.0
 

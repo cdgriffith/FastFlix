@@ -42,6 +42,8 @@ setting_types = {
     "copy_settings": CopySettings,
 }
 
+outdated_settings = ("copy",)
+
 
 class Profile(BaseModel):
     auto_crop: bool = False
@@ -197,6 +199,8 @@ class Config(BaseModel):
                         continue
                     profile = Profile()
                     for setting_name, setting in v.items():
+                        if setting_name in outdated_settings:
+                            continue
                         if setting_name in setting_types.keys() and setting is not None:
                             try:
                                 setattr(profile, setting_name, setting_types[setting_name](**setting))
