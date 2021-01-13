@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 4.1.1
+
+* Fixing #156 Copy was broken due to copy settings being renamed due to library update (thanks to leonardyan)
+* Fixing #172 FastFlix could not set profile setting copy (thanks to Etz)
+* Fixing calling delete on a profile without a source video could crash FastFlix
+
 ## Version 4.1.0
 
 * Adding #118 #126 advanced panel with FFmpeg filters (thanks to Marco Ravich and remlap)
