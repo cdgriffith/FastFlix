@@ -3,7 +3,7 @@ import logging
 import shutil
 from distutils.version import StrictVersion
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 from appdirs import user_data_dir
 from box import Box, BoxError
@@ -41,6 +41,8 @@ setting_types = {
     "webp": WebPSettings,
     "copy_settings": CopySettings,
 }
+
+outdated_settings = ("copy",)
 
 
 class Profile(BaseModel):
@@ -193,6 +195,8 @@ class Config(BaseModel):
                         continue
                     profile = Profile()
                     for setting_name, setting in v.items():
+                        if setting_name in outdated_settings:
+                            continue
                         if setting_name in setting_types.keys() and setting is not None:
                             try:
                                 setattr(profile, setting_name, setting_types[setting_name](**setting))

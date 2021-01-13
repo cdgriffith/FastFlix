@@ -370,7 +370,7 @@ class AdvancedPanel(QtWidgets.QWidget):
     # (800 + 140) - 1080 == -140
 
     def update_settings(self):
-        if self.updating:
+        if self.updating or not self.app.fastflix.current_video:
             return False
         self.updating = True
         self.app.fastflix.current_video.video_settings.video_speed = video_speeds[self.video_speed_widget.currentText()]

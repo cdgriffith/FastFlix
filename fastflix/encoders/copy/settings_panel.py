@@ -12,7 +12,7 @@ logger = logging.getLogger("fastflix")
 
 
 class Copy(SettingPanel):
-    profile_name = "copy"
+    profile_name = "copy_settings"
 
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
