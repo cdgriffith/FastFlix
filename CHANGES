@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.2.0
+
+* Adding #178 selector for number of autocrop positions throughout video (thanks to bmcassagne)
+
 ## Version 4.1.1
 
 * Fixing #156 Copy was broken due to copy settings being renamed due to library update (thanks to leonardyan)

@@ -781,7 +781,9 @@ class Main(QtWidgets.QWidget):
 
         start_pos = self.start_time or self.app.fastflix.current_video.duration // 10
 
-        blocks = math.ceil((self.app.fastflix.current_video.duration - start_pos) / 5)
+        blocks = math.ceil(
+            (self.app.fastflix.current_video.duration - start_pos) / (self.app.fastflix.config.crop_detect_points + 1)
+        )
         if blocks < 1:
             blocks = 1
 
@@ -789,7 +791,7 @@ class Main(QtWidgets.QWidget):
             x
             for x in range(int(start_pos), int(self.app.fastflix.current_video.duration), blocks)
             if x < self.app.fastflix.current_video.duration
-        ][:4]
+        ][: self.app.fastflix.config.crop_detect_points]
 
         if not times:
             return
