@@ -60,7 +60,7 @@ After Conversion:
   fra: Après la conversion
   ita: Dopo la conversione
   spa: Después de la conversión
-  zho: 转换后操作
+  zho: 转换后
 All:
   deu: Alle
   eng: All
@@ -116,7 +116,7 @@ Auto Burn-in first forced or default subtitle track:
   fra: Auto Burn-in première piste de sous-titres forcée ou par défaut
   ita: Auto Burn-in prima traccia sottotitoli forzata o predefinita
   spa: Auto Burn-in primera pista de subtítulos forzados o por defecto
-  zho: Auto Burn-in first forced or default subtitle track
+  zho: 自动内嵌第一条分配为forced或default的字幕轨
 Auto Crop:
   deu: Automatisch beschneiden
   eng: Auto Crop
@@ -263,7 +263,7 @@ Cannot remove afterwards!:
   fra: Ne peut pas être retiré par la suite !
   ita: Non può essere rimosso dopo!
   spa: No se puede quitar después!
-  zho: Cannot remove afterwards!
+  zho: 字幕内嵌之后无法去除！
 Check for Newer Version of FastFlix:
   deu: Prüfen auf neuere Version von FastFlix
   eng: Check for Newer Version of FastFlix
@@ -305,7 +305,7 @@ Color Primaries:
   fra: Les couleurs primaires
   ita: Primarie di colore
   spa: Primarias de color
-  zho: 彩色原色
+  zho: 原色
 Color Space:
   deu: Farbraum
   eng: Color Space
@@ -319,7 +319,7 @@ Color Transfer:
   fra: Transfert de couleur
   ita: Trasferimento del colore
   spa: Transferencia de color
-  zho: 彩色转印
+  zho: 色彩转换
 Command has completed:
   deu: Befehl wurde beendet
   eng: Command has completed
@@ -564,7 +564,7 @@ Deblock:
   fra: Deblock
   ita: Deblock
   spa: Deblock
-  zho: 解锁
+  zho: 去块
 Default 4. This parameter has a quadratic effect on the amount of memory allocated:
   deu: Voreinstellung 4. Dieser Parameter hat einen quadratischen Effekt auf die Menge des zugewiesenen Speichers
   eng: Default 4. This parameter has a quadratic effect on the amount of memory allocated
@@ -627,7 +627,7 @@ Denoise:
   fra: Denoise
   ita: Denoise
   spa: Denoise
-  zho: 德诺伊丝
+  zho: 降噪
 Detecting Interlace:
   deu: Erkennen von Interlace
   eng: Detecting Interlace
@@ -655,7 +655,7 @@ Disposition:
   fra: Disposition
   ita: Disposizione
   spa: Disposición
-  zho: 处置
+  zho: 分配
 Dither:
   deu: Dithern
   eng: Dither
@@ -879,7 +879,7 @@ Extra x265 params in opt=1:opt2=0 format:
   fra: Paramètres x265 supplémentaires au format opt=1:opt2=0
   ita: Parametri extra x265 nel formato opt=1:opt2=0
   spa: Parámetros extra x265 en formato opt=1:opt2=0
-  zho: 额外的x265参数，格式为opt=1:opt2=0。
+  zho: 额外的x265参数，格式为opt=1:opt2=0
 Extract covers:
   deu: Extrahieren deckt ab
   eng: Extract covers
@@ -1012,7 +1012,7 @@ HDR -> SDR Tone Map:
   fra: HDR -> SDR Carte des tons
   ita: HDR -> Mappa dei toni SDR
   spa: HDR -> Mapa de tonos SDR
-  zho: HDR -> SDR色调图
+  zho: HDR -> SDR色调映射
 HDR10 Optimizations:
   deu: HDR10-Optimierungen
   eng: HDR10 Optimizations
@@ -1124,7 +1124,7 @@ It saves a few bits and can help performance in the client's tonemapper.:
   fra: Il permet d'économiser quelques bits et peut aider à améliorer les performances de la machine à café du client.
   ita: Consente di risparmiare qualche bit e può aiutare le prestazioni nel tonemapper del cliente.
   spa: Ahorra unos pocos bits y puede ayudar al rendimiento en el mapa de tonos del cliente.
-  zho: It saves a few bits and can help performance in the client's tonemapper.
+  zho: 能够节省一些数据量，并有益于播放端色调映射的性能。
 Keep:
   deu: beibehalten
   eng: Keep
@@ -1341,7 +1341,7 @@ Only put the HDR10+ dynamic metadata in the IDR and frames where the values have
   fra: Ne placez les métadonnées dynamiques HDR10+ que dans l'IDR et les cadres dont les valeurs ont changé.
   ita: Mettete i metadati dinamici HDR10+ solo nell'IDR e nei frame in cui i valori sono cambiati.
   spa: Sólo pon los metadatos dinámicos HDR10+ en el IDR y los cuadros donde los valores han cambiado.
-  zho: Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.
+  zho: 仅将HDR10+动态元数据置于其值发生改变的帧及IDR帧。
 Only select first matching Audio Track:
   deu: Nur die erste passende Audiospur auswählen
   eng: Only select first matching Audio Track
@@ -1362,7 +1362,7 @@ Open Directory:
   fra: Open Directory
   ita: Elenco aperto
   spa: Directorio Abierto
-  zho: 开放目录
+  zho: 打开目录
 Open Log Directory:
   deu: Log-Verzeichnis öffnen
   eng: Open Log Directory
@@ -1397,14 +1397,14 @@ Overlay this subtitle track onto the video during conversion.:
   fra: Superposez cette piste de sous-titres sur la vidéo pendant la conversion.
   ita: Sovrapponete questa traccia di sottotitoli al video durante la conversione.
   spa: Superponga esta pista de subtítulos en el vídeo durante la conversión.
-  zho: 在转换过程中，将此字幕轨道叠加到视频上。
+  zho: 在转换时将此字幕轨叠加到视频上。
 Override Source FPS:
   deu: Überschreiben Quell-FPS
   eng: Override Source FPS
   fra: Annuler la source FPS
   ita: Annullare la sorgente FPS
   spa: Anular el FPS de la fuente
-  zho: 覆盖源 FPS
+  zho: 覆盖来源 FPS
 PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,:
   deu: PIR kann Keyframes durch Einfügen einer Spalte von Intrablöcken in Nicht-Keyframes ersetzen,
   eng: PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,
@@ -1418,7 +1418,7 @@ Parse Video details:
   fra: Détails de la vidéo de Parse
   ita: Dettagli Parse Video
   spa: Detalles del video de análisis
-  zho: 解析视频细节
+  zho: 解析视频详情
 Pause / Resume the current command:
   deu: Pause / Fortsetzen des aktuellen Befehls
   eng: Pause / Resume the current command
@@ -1453,7 +1453,7 @@ Please provide a profile name:
   fra: Veuillez fournir un nom de profil
   ita: Si prega di fornire un nome di profilo
   spa: Por favor, proporcione un nombre de perfil
-  zho: 请提供个人资料名称
+  zho: 请提供方案名称
 Please report this issue:
   deu: Bitte melden Sie dieses Problem
   eng: Please report this issue
@@ -1481,7 +1481,7 @@ Preserve:
   fra: Préserver
   ita: Conservare
   spa: Preservar
-  zho: 保存
+  zho: 保留
 Preset:
   deu: Voreinstellung
   eng: Preset
@@ -1502,14 +1502,14 @@ Profile_newprofiletooltip:
   fra: Profil
   ita: Profilo
   spa: Perfil
-  zho: 规格
+  zho: 方案
 Profile_window:
   deu: Profil
   eng: Profile
   fra: Profil
   ita: Profilo
   spa: Perfil
-  zho: 规格
+  zho: 方案
 Profile Name:
   deu: Profil-Name
   eng: Profile Name
@@ -2041,7 +2041,7 @@ Time Elapsed:
   fra: Temps écoulé
   ita: Tempo trascorso
   spa: Tiempo transcurrido
-  zho: 时间流逝
+  zho: 已用时间
 Title:
   deu: Titel
   eng: Title
@@ -2083,7 +2083,7 @@ Unspecified:
   fra: Non spécifié
   ita: Non specificato
   spa: Sin especificar
-  zho: 不详
+  zho: 未指定
 Usage:
   deu: Verwendung
   eng: Usage
@@ -2104,7 +2104,7 @@ Use Sane Audio Selection (updatable in config file):
   fra: Utiliser la sélection audio Sane (actualisable dans le fichier de configuration)
   ita: Utilizzare Sane Audio Selection (aggiornabile nel file di configurazione)
   spa: Usar la Selección de Audio Sane (actualizable en el archivo de configuración)
-  zho: 使用Sane Audio Selection（可在配置文件中更新）。
+  zho: 使用合理音频编码选择（可在配置文件中更改）
 Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   deu: Nützlich, wenn der Wunsch besteht, 0-Werte für max-cll und max-fall zu signalisieren.
   eng: Useful when there is a desire to signal 0 values for max-cll and max-fall.
@@ -2230,7 +2230,7 @@ Watch:
   fra: Voir
   ita: Guarda
   spa: Mira
-  zho: 观察
+  zho: 观看
 Width:
   deu: Breite
   eng: Width
@@ -2694,7 +2694,12 @@ video tracks found:
   spa: pistas de vídeo encontradas
   zho: 发现视频轨
 vsync:
+  deu: vsync
   eng: vsync
+  fra: vsync
+  ita: vsync
+  spa: vsync
+  zho: vsync
 File:
   deu: Datei
   eng: File
@@ -2708,14 +2713,14 @@ Both Passes:
   fra: Les deux passages
   ita: Entrambi i Pass
   spa: Ambos pases
-  zho: 两次通过
+  zho: 两遍均应用
 Advanced settings are currently not saved in Profiles:
   deu: Erweiterte Einstellungen werden derzeit nicht in Profilen gespeichert
   eng: Advanced settings are currently not saved in Profiles
   fra: Les paramètres avancés ne sont actuellement pas enregistrés dans les Profils
   ita: Le impostazioni avanzate non sono attualmente salvate in Profili
   spa: Los ajustes avanzados no se guardan actualmente en Perfiles
-  zho: 高级设置目前没有保存在配置文件中
+  zho: 高级设置目前不会保存到方案中
 Constant:
   deu: Konstant
   eng: Constant
@@ -2729,14 +2734,14 @@ Please make sure seek method is set to exact:
   fra: Veuillez vous assurer que la méthode de recherche est réglée sur l'exacte
   ita: Si prega di assicurarsi che il metodo di ricerca sia impostato su
   spa: Por favor, asegúrese de que el método de búsqueda se establece con exactitud
-  zho: 请确认寻找方法被设置为精确
+  zho: 请确保检索方式已设置为exact
 Extract:
   deu: Auszug
   eng: Extract
   fra: Extrait
   ita: Estratto
   spa: Extracto
-  zho: 萃取
+  zho: 提取
 Save File:
   deu: Datei speichern
   eng: Save File

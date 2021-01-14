@@ -42,6 +42,10 @@ recommended_qp = [
     "30 - standard",
     "31",
     "32",
+    "33",
+    "34",
+    "35",
+    "36",
     '50 - "I\'m just testing to see if this works"',
     "Custom",
 ]
