@@ -5,6 +5,7 @@
 * Fixing #180 Minor UI glitch, custom bitrate retains "k" when edited from queue (thanks to Etz)
 * Fixing custom QP crashes FastFlix (thanks to J-mas)
 * Fixing adding a dot for microseconds in time fields would crash FastFlix (thanks to remlap)
+* Fixing Chinese translations (thanks to leonardyan)
 
 ## Version 4.1.1
 
