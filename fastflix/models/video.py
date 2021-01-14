@@ -93,6 +93,7 @@ class Video(BaseModel):
     # HDR10 Details
     master_display: Box = None
     cll: str = ""
+    hdr10_plus: bool = False
 
     video_settings: VideoSettings = Field(default_factory=VideoSettings)
     status: Status = Field(default_factory=Status)

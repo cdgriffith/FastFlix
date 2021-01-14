@@ -27,6 +27,7 @@ from fastflix.flix import (
     get_auto_crop,
     parse,
     parse_hdr_details,
+    detect_hdr10_plus,
 )
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
@@ -1124,8 +1125,9 @@ class Main(QtWidgets.QWidget):
         tasks = [
             Task(t("Parse Video details"), parse),
             Task(t("Extract covers"), extract_attachments),
-            Task(t("Determine HDR details"), parse_hdr_details),
             Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.input_video)),
+            Task(t("Determine HDR details"), parse_hdr_details),
+            Task(t("Detect HDR10+"), detect_hdr10_plus),
         ]
 
         try:

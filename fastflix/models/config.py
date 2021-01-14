@@ -118,6 +118,8 @@ class Config(BaseModel):
     config_path: Path = fastflix_folder / "fastflix.yaml"
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
+    hdr10plus_parser: Path = Field(default_factory=lambda: Path(shutil.which("hdr10plus_parser")))
+    mkvpropedit: Path = Field(default_factory=lambda: Path(shutil.which("mkvpropedit")))
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
