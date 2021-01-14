@@ -152,6 +152,7 @@ def file_date():
 
 
 def time_to_number(string_time: str) -> float:
+    string_time = string_time.rstrip(".")
     try:
         return float(string_time)
     except ValueError:
@@ -163,7 +164,7 @@ def time_to_number(string_time: str) -> float:
             micro = int(extra[0])
         except ValueError:
             logger.info(t("bad micro value"))
-            return
+            return 0
     total = float(f".{micro}")
     for i, v in enumerate(reversed(base.split(":"))):
         try:
