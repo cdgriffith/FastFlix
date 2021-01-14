@@ -369,7 +369,7 @@ class SettingPanel(QtWidgets.QWidget):
                         break
                 else:
                     self.widgets.bitrate.setCurrentText("Custom")
-                    self.widgets.custom_bitrate.setText(bitrate)
+                    self.widgets.custom_bitrate.setText(bitrate.rstrip("k"))
             else:
                 self.qp_radio.setChecked(True)
                 self.bitrate_radio.setChecked(False)

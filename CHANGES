@@ -3,6 +3,7 @@
 ## Version 4.2.0
 
 * Adding #178 selector for number of autocrop positions throughout video (thanks to bmcassagne)
+* Fixing #180 Minor UI glitch, custom bitrate retains "k" when edited from queue (thanks to Etz)
 
 ## Version 4.1.1
 
