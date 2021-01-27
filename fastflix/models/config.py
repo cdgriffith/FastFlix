@@ -116,15 +116,19 @@ def find_ffmpeg_file(name, raise_on_missing=False):
     return None
 
 
+def where(filename: str) -> Optional[Path]:
+    if location := shutil.which(filename):
+        return Path(location)
+    return None
+
+
 class Config(BaseModel):
     version: str = __version__
     config_path: Path = fastflix_folder / "fastflix.yaml"
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
-    hdr10plus_parser: Optional[Path] = Field(
-        default_factory=lambda: Path(shutil.which("hdr10plus_parser") or "") or None
-    )
-    mkvpropedit: Optional[Path] = Field(default_factory=lambda: Path(shutil.which("mkvpropedit") or "") or None)
+    hdr10plus_parser: Optional[Path] = Field(default_factory=lambda: where("hdr10plus_parser"))
+    mkvpropedit: Optional[Path] = Field(default_factory=lambda: where("mkvpropedit"))
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
@@ -231,6 +235,10 @@ class Config(BaseModel):
                     self.ffprobe = find_ffmpeg_file("ffmpeg.ffprobe", raise_on_missing=True)
                 except MissingFF:
                     raise err from None
+        if not self.hdr10plus_parser:
+            self.hdr10plus_parser = where("hdr10plus_parser")
+        if not self.mkvpropedit:
+            self.mkvpropedit = where("mkvpropedit")
         self.profiles.update(get_preset_defaults())
 
         if self.selected_profile not in self.profiles:
