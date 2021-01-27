@@ -12,6 +12,7 @@ from fastflix.models.encode import (
     AudioTrack,
     CopySettings,
     GIFSettings,
+    NVENCSettings,
     SubtitleTrack,
     SVTAV1Settings,
     VP9Settings,
@@ -19,7 +20,6 @@ from fastflix.models.encode import (
     rav1eSettings,
     x264Settings,
     x265Settings,
-    NVENCSettings,
 )
 
 __all__ = ["VideoSettings", "Status", "Video"]

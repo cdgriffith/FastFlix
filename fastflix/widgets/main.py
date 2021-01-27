@@ -18,21 +18,16 @@ from box import Box
 from pydantic import BaseModel, Field
 from qtpy import QtCore, QtGui, QtWidgets
 
-try:
-    from win10toast import ToastNotifier
-except ImportError:
-    ToastNotifier = None
-
 from fastflix.encoders.common import helpers
 from fastflix.exceptions import FastFlixInternalException, FlixError
 from fastflix.flix import (
+    detect_hdr10_plus,
     detect_interlaced,
     extract_attachments,
     generate_thumbnail_command,
     get_auto_crop,
     parse,
     parse_hdr_details,
-    detect_hdr10_plus,
 )
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
@@ -40,14 +35,14 @@ from fastflix.models.video import Status, Video, VideoSettings
 from fastflix.resources import (
     black_x_icon,
     folder_icon,
+    main_icon,
     play_round_icon,
     profile_add_icon,
     settings_icon,
     video_add_icon,
     video_playlist_icon,
-    main_icon,
 )
-from fastflix.shared import error_message, time_to_number, yes_no_message, message
+from fastflix.shared import error_message, message, time_to_number, yes_no_message, show_windows_notification
 from fastflix.widgets.background_tasks import SubtitleFix, ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.video_options import VideoOptions
@@ -1570,10 +1565,8 @@ class Main(QtWidgets.QWidget):
             error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
         else:
             self.video_options.show_queue()
-            if ToastNotifier is not None:
-                ToastNotifier().show_toast(
-                    "FastFlix", t("All queue items have completed"), icon_path=main_icon, threaded=True
-                )
+            if reusables.win_based:
+                show_windows_notification("FastFlix", t("All queue items have completed"), icon_path=main_icon)
             else:
                 message(t("All queue items have completed"), title=t("Success"))
 

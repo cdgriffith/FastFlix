@@ -10,7 +10,7 @@ from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
 from fastflix.models.encode import x265Settings
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import warning_icon, loading_movie
+from fastflix.resources import loading_movie, warning_icon
 from fastflix.shared import link
 from fastflix.widgets.background_tasks import ExtractHDR10
 

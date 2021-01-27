@@ -3,7 +3,7 @@ import logging
 import os
 import re
 from pathlib import Path
-from subprocess import PIPE, CompletedProcess, TimeoutExpired, run, Popen
+from subprocess import PIPE, CompletedProcess, Popen, TimeoutExpired, run
 from typing import List, Tuple, Union
 
 import reusables

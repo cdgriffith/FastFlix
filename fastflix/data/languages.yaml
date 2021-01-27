@@ -2779,3 +2779,9 @@ Bufsize:
   zho: Bufsize
 Encoding errored:
   eng: Encoding errored
+Download Cancelled:
+  eng: Download Cancelled
+Extract HDR10+:
+  eng: Extract HDR10+
+Detect HDR10+:
+  eng: Detect HDR10+

@@ -4,8 +4,8 @@
 
 * Adding ability to extract HDR10+ metadata
 * Adding #178 selector for number of autocrop positions throughout video (thanks to bmcassagne)
-* Adding Windows 10 toast style notification for queue complete success
-* Adding canceled message and cleaning up partial download of FFmpeg (thanks to Todd Wilkinson)
+* Adding Windows 10 notification for queue complete success
+* Fixing #187 cleaning up partial download of FFmpeg (thanks to Todd Wilkinson)
 
 ## Version 4.1.2
 

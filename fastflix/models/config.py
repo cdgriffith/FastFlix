@@ -14,13 +14,13 @@ from fastflix.models.encode import (
     AOMAV1Settings,
     CopySettings,
     GIFSettings,
+    NVENCSettings,
     SVTAV1Settings,
     VP9Settings,
     WebPSettings,
     rav1eSettings,
     x264Settings,
     x265Settings,
-    NVENCSettings,
 )
 from fastflix.version import __version__
 
