@@ -6,6 +6,7 @@
 * Adding #178 selector for number of autocrop positions throughout video (thanks to bmcassagne)
 * Adding Windows 10 notification for queue complete success
 * Fixing #187 cleaning up partial download of FFmpeg (thanks to Todd Wilkinson)
+* Fixing #190 add missing chromaloc parameter for x265 (thanks to Etz)
 
 ## Version 4.1.2
 

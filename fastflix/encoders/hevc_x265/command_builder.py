@@ -74,6 +74,8 @@ color_transfer_mapping = {
 
 color_matrix_mapping = {"bt2020_ncl": "bt2020nc", "bt2020_cl": "bt2020c"}
 
+chromaloc_mapping = {"left": 0, "center": 1, "topleft": 2, "top": 3, "bottomleft": 4, "bottom": 5}
+
 
 def build(fastflix: FastFlix):
     settings: x265Settings = fastflix.current_video.video_settings.video_encoder_settings
@@ -133,6 +135,10 @@ def build(fastflix: FastFlix):
                 x265_params.append(f"max-cll={fastflix.current_video.cll}")
 
             x265_params.append(f"hdr10={'1' if settings.hdr10 else '0'}")
+
+        current_chroma_loc = fastflix.current_video.current_video_stream.get("chroma_location")
+        if current_chroma_loc in chromaloc_mapping:
+            x265_params.append(f"chromaloc={chromaloc_mapping[current_chroma_loc]}")
 
     if settings.hdr10plus_metadata:
         x265_params.append(f"dhdr10-info='{settings.hdr10plus_metadata}'")

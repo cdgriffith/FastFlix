@@ -121,8 +121,10 @@ class Config(BaseModel):
     config_path: Path = fastflix_folder / "fastflix.yaml"
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
-    hdr10plus_parser: Path = Field(default_factory=lambda: Path(shutil.which("hdr10plus_parser") or "") or None)
-    mkvpropedit: Path = Field(default_factory=lambda: Path(shutil.which("mkvpropedit") or "") or None)
+    hdr10plus_parser: Optional[Path] = Field(
+        default_factory=lambda: Path(shutil.which("hdr10plus_parser") or "") or None
+    )
+    mkvpropedit: Optional[Path] = Field(default_factory=lambda: Path(shutil.which("mkvpropedit") or "") or None)
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
@@ -192,7 +194,7 @@ class Config(BaseModel):
                 "there may be non-recoverable errors while loading it."
             )
 
-        paths = ("work_path", "ffmpeg", "ffprobe")
+        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "mkvpropedit")
         for key, value in data.items():
             if key == "profiles":
                 self.profiles = {}
