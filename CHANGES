@@ -2,11 +2,13 @@
 
 ## Version 4.2.0
 
-* Adding ability to extract HDR10+ metadata
+* Adding #109 NVENC HEVC support based on FFmpeg
+* Adding ability to extract HDR10+ metadata if hdr10plus_parser is detected on path
 * Adding #178 selector for number of autocrop positions throughout video (thanks to bmcassagne)
 * Adding Windows 10 notification for queue complete success
 * Fixing #187 cleaning up partial download of FFmpeg (thanks to Todd Wilkinson)
 * Fixing #190 add missing chromaloc parameter for x265 (thanks to Etz)
+* Fixing that returning item back from queue of a different encoder type would crash Fastflix
 
 ## Version 4.1.2
 

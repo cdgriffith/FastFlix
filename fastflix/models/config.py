@@ -14,7 +14,7 @@ from fastflix.models.encode import (
     AOMAV1Settings,
     CopySettings,
     GIFSettings,
-    NVENCSettings,
+    FFmpegNVENCSettings,
     SVTAV1Settings,
     VP9Settings,
     WebPSettings,
@@ -41,7 +41,7 @@ setting_types = {
     "gif": GIFSettings,
     "webp": WebPSettings,
     "copy_settings": CopySettings,
-    "hevc_nvenc": NVENCSettings,
+    "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
 }
 
 outdated_settings = ("copy",)
@@ -79,7 +79,7 @@ class Profile(BaseModel):
     gif: Optional[GIFSettings] = None
     webp: Optional[WebPSettings] = None
     copy_settings: Optional[CopySettings] = None
-    hevc_nvenc: Optional[NVENCSettings] = None
+    ffmpeg_hevc_nvenc: Optional[FFmpegNVENCSettings] = None
 
 
 empty_profile = Profile(x265=x265Settings())

@@ -17,7 +17,7 @@ from fastflix.models.config import setting_types
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
 from fastflix.resources import main_icon
-from fastflix.shared import clean_logs, error_message, latest_fastflix, message
+from fastflix.shared import clean_logs, error_message, latest_fastflix, message, cleanup_windows_notification
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -79,6 +79,7 @@ class Container(QtWidgets.QMainWindow):
                 shutil.rmtree(item, ignore_errors=True)
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
                 item.unlink()
+        cleanup_windows_notification()
         self.main.close(from_container=True)
         super(Container, self).closeEvent(a0)
 

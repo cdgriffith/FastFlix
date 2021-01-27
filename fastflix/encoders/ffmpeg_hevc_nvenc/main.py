@@ -5,12 +5,12 @@ from pathlib import Path
 
 import pkg_resources
 
-name = "HEVC (nvenc)"
+name = "HEVC (NVENC)"
 requires = "cuda-llvm"
 
 video_extension = "mkv"
 video_dimension_divisor = 1
-icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_x265.png")).resolve())
+icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_nvenc.png")).resolve())
 
 enable_subtitles = True
 enable_audio = True
@@ -101,5 +101,5 @@ audio_formats = [
     "wmav2",
 ]
 
-from fastflix.encoders.hevc_nvenc.command_builder import build
-from fastflix.encoders.hevc_nvenc.settings_panel import NVENC as settings_panel
+from fastflix.encoders.ffmpeg_hevc_nvenc.command_builder import build
+from fastflix.encoders.ffmpeg_hevc_nvenc.settings_panel import NVENC as settings_panel

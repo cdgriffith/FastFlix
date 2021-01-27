@@ -467,7 +467,7 @@ class Main(QtWidgets.QWidget):
 
     def change_output_types(self):
         self.widgets.convert_to.clear()
-        self.widgets.convert_to.addItems([f"   {x}" for x in self.app.fastflix.encoders.keys()])
+        self.widgets.convert_to.addItems([f" {x}" for x in self.app.fastflix.encoders.keys()])
         for i, plugin in enumerate(self.app.fastflix.encoders.values()):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
@@ -1566,7 +1566,10 @@ class Main(QtWidgets.QWidget):
         else:
             self.video_options.show_queue()
             if reusables.win_based:
-                show_windows_notification("FastFlix", t("All queue items have completed"), icon_path=main_icon)
+                try:
+                    show_windows_notification("FastFlix", t("All queue items have completed"), icon_path=main_icon)
+                except Exception:
+                    message(t("All queue items have completed"), title=t("Success"))
             else:
                 message(t("All queue items have completed"), title=t("Success"))
 

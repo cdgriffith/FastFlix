@@ -73,14 +73,22 @@ class x264Settings(EncoderSettings):
     bitrate: Optional[str] = None
 
 
-class NVENCSettings(EncoderSettings):
-    name = "HEVC (nvenc)"
-    preset: str = "p7"
-    profile: str = "default"
-    tune: Optional[str] = None
-    pix_fmt: str = "yuv420p"
-    cqp: Optional[Union[int, float]] = None
+class FFmpegNVENCSettings(EncoderSettings):
+    name = "HEVC (NVENC)"
+    preset: str = "slow"
+    profile: str = "main"
+    tune: str = "hq"
+    pix_fmt: str = "p010le"
     bitrate: Optional[str] = "6000k"
+    qp: Optional[str] = None
+    cq: int = 0
+    spatial_aq: int = 0
+    rc_lookahead: int = 0
+    rc: Optional[str] = None
+    tier: str = "main"
+    level: Optional[str] = None
+    gpu: int = -1
+    b_ref_mode: str = "disabled"
 
 
 class rav1eSettings(EncoderSettings):

@@ -12,7 +12,7 @@ from fastflix.models.encode import (
     AudioTrack,
     CopySettings,
     GIFSettings,
-    NVENCSettings,
+    FFmpegNVENCSettings,
     SubtitleTrack,
     SVTAV1Settings,
     VP9Settings,
@@ -64,7 +64,7 @@ class VideoSettings(BaseModel):
         GIFSettings,
         WebPSettings,
         CopySettings,
-        NVENCSettings,
+        FFmpegNVENCSettings,
     ] = None
     audio_tracks: List[AudioTrack] = Field(default_factory=list)
     subtitle_tracks: List[SubtitleTrack] = Field(default_factory=list)
