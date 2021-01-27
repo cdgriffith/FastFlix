@@ -18,6 +18,11 @@ from box import Box
 from pydantic import BaseModel, Field
 from qtpy import QtCore, QtGui, QtWidgets
 
+try:
+    from win10toast import ToastNotifier
+except ImportError:
+    ToastNotifier = None
+
 from fastflix.encoders.common import helpers
 from fastflix.exceptions import FastFlixInternalException, FlixError
 from fastflix.flix import (
@@ -40,8 +45,9 @@ from fastflix.resources import (
     settings_icon,
     video_add_icon,
     video_playlist_icon,
+    main_icon,
 )
-from fastflix.shared import error_message, time_to_number, yes_no_message
+from fastflix.shared import error_message, time_to_number, yes_no_message, message
 from fastflix.widgets.background_tasks import SubtitleFix, ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.video_options import VideoOptions
@@ -1564,7 +1570,12 @@ class Main(QtWidgets.QWidget):
             error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
         else:
             self.video_options.show_queue()
-            error_message(t("All queue items have completed"), title=t("Success"))
+            if ToastNotifier is not None:
+                ToastNotifier().show_toast(
+                    "FastFlix", t("All queue items have completed"), icon_path=main_icon, threaded=True
+                )
+            else:
+                message(t("All queue items have completed"), title=t("Success"))
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_cancelled(self, data):

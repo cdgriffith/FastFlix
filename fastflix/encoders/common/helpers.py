@@ -9,7 +9,6 @@ from pydantic import BaseModel, Field
 from fastflix.encoders.common.attachments import build_attachments
 from fastflix.encoders.common.audio import build_audio
 from fastflix.encoders.common.subtitles import build_subtitle
-from fastflix.models.base import BaseDataClass
 from fastflix.models.fastflix import FastFlix
 
 null = "/dev/null"

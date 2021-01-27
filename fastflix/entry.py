@@ -66,7 +66,6 @@ def startup_options():
             import fastflix.encoders.webp.main
             import fastflix.flix
             import fastflix.language
-            import fastflix.models.base
             import fastflix.models.config
             import fastflix.models.encode
             import fastflix.models.fastflix
