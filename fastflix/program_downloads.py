@@ -47,6 +47,7 @@ def latest_ffmpeg(signal, stop_signal, **_):
 
     def stop_me():
         nonlocal stop
+        message("Download Canceled")
         stop = True
 
     stop_signal.connect(stop_me)
@@ -82,6 +83,8 @@ def latest_ffmpeg(signal, stop_signal, **_):
                 signal.emit(int(((i * 1024) / gpl_ffmpeg[0]["size"]) * 90))
             f.write(block)
             if stop:
+                f.close()
+                Path(filename).unlink()
                 return
 
     if filename.stat().st_size < 1000:
