@@ -20,6 +20,7 @@ from fastflix.models.encode import (
     rav1eSettings,
     x264Settings,
     x265Settings,
+    NVENCSettings,
 )
 from fastflix.version import __version__
 
@@ -40,6 +41,7 @@ setting_types = {
     "gif": GIFSettings,
     "webp": WebPSettings,
     "copy_settings": CopySettings,
+    "hevc_nvenc": NVENCSettings,
 }
 
 outdated_settings = ("copy",)
@@ -77,6 +79,7 @@ class Profile(BaseModel):
     gif: Optional[GIFSettings] = None
     webp: Optional[WebPSettings] = None
     copy_settings: Optional[CopySettings] = None
+    hevc_nvenc: Optional[NVENCSettings] = None
 
 
 empty_profile = Profile(x265=x265Settings())
@@ -118,8 +121,8 @@ class Config(BaseModel):
     config_path: Path = fastflix_folder / "fastflix.yaml"
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
-    hdr10plus_parser: Path = Field(default_factory=lambda: Path(shutil.which("hdr10plus_parser")))
-    mkvpropedit: Path = Field(default_factory=lambda: Path(shutil.which("mkvpropedit")))
+    hdr10plus_parser: Path = Field(default_factory=lambda: Path(shutil.which("hdr10plus_parser") or "") or None)
+    mkvpropedit: Path = Field(default_factory=lambda: Path(shutil.which("mkvpropedit") or "") or None)
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10

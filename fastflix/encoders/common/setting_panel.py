@@ -237,7 +237,8 @@ class SettingPanel(QtWidgets.QWidget):
             custom_qp = True
             self.widgets[qp_name].setCurrentText("Custom")
         else:
-            self.widgets[qp_name].setCurrentIndex(default_qp_index)
+            if default_qp_index is not None:
+                self.widgets[qp_name].setCurrentIndex(default_qp_index)
 
         self.widgets[qp_name].currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))

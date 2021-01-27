@@ -73,6 +73,16 @@ class x264Settings(EncoderSettings):
     bitrate: Optional[str] = None
 
 
+class NVENCSettings(EncoderSettings):
+    name = "HEVC (nvenc)"
+    preset: str = "p7"
+    profile: str = "default"
+    tune: Optional[str] = None
+    pix_fmt: str = "yuv420p"
+    cqp: Optional[Union[int, float]] = None
+    bitrate: Optional[str] = "6000k"
+
+
 class rav1eSettings(EncoderSettings):
     name = "AV1 (rav1e)"
     speed: str = "-1"
