@@ -10,7 +10,7 @@ from fastflix.models.encode import NVEncCSettings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
 from fastflix.exceptions import FastFlixInternalException
-from fastflix.resources import loading_movie
+from fastflix.resources import loading_movie, warning_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -71,7 +71,7 @@ class NVENCC(SettingPanel):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 3, 4)
-        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
+        grid.addLayout(self._add_custom(title="Custom NVEncC options", disable_both_passes=True), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         # grid.addLayout(self.init_max_mux(), 1, 0, 1, 2)
@@ -82,6 +82,8 @@ class NVENCC(SettingPanel):
 
         grid.addLayout(self.init_spatial_aq(), 3, 0, 1, 2)
         grid.addLayout(self.init_lookahead(), 4, 0, 1, 2)
+        grid.addLayout(self.init_mv_precision(), 5, 0, 1, 2)
+        grid.addLayout(self.init_multipass(), 6, 0, 1, 2)
 
         grid.addLayout(self.init_dhdr10_info(), 4, 2, 1, 3)
         grid.addLayout(self.init_dhdr10_warning_and_opt(), 4, 5, 1, 1)
@@ -98,12 +100,18 @@ class NVENCC(SettingPanel):
 
         grid.setRowStretch(9, 1)
 
-        # guide_label = QtWidgets.QLabel(
-        #     link("https://trac.ffmpeg.org/wiki/Encode/H.264", t("FFMPEG AVC / H.264 Encoding Guide"))
-        # )
-        # guide_label.setAlignment(QtCore.Qt.AlignBottom)
-        # guide_label.setOpenExternalLinks(True)
-        # grid.addWidget(guide_label, 11, 0, 1, 6)
+        guide_label = QtWidgets.QLabel(
+            link("https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md", t("NVEncC Options"))
+        )
+
+        warning_label = QtWidgets.QLabel()
+        warning_label.setPixmap(QtGui.QIcon(warning_icon).pixmap(22))
+
+        guide_label.setAlignment(QtCore.Qt.AlignBottom)
+        guide_label.setOpenExternalLinks(True)
+        grid.addWidget(guide_label, 11, 0, 1, 4)
+        grid.addWidget(warning_label, 11, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
+        grid.addWidget(QtWidgets.QLabel(t("NVEncC Encoder support is still experimental!")), 11, 5, 1, 1)
 
         self.setLayout(grid)
         self.hide()
@@ -137,14 +145,14 @@ class NVENCC(SettingPanel):
             opt="profile",
         )
 
-    def init_pix_fmt(self):
-        return self._add_combo_box(
-            label="Bit Depth",
-            tooltip="Pixel Format (requires at least 10-bit for HDR)",
-            widget_name="pix_fmt",
-            options=pix_fmts,
-            opt="pix_fmt",
-        )
+    # def init_pix_fmt(self):
+    #     return self._add_combo_box(
+    #         label="Bit Depth",
+    #         tooltip="Pixel Format (requires at least 10-bit for HDR)",
+    #         widget_name="pix_fmt",
+    #         options=pix_fmts,
+    #         opt="pix_fmt",
+    #     )
 
     def init_tier(self):
         return self._add_combo_box(
@@ -155,26 +163,6 @@ class NVENCC(SettingPanel):
             opt="tier",
         )
 
-    def init_rc(self):
-        return self._add_combo_box(
-            label="Rate Control",
-            tooltip="Override the preset rate-control",
-            widget_name="rc",
-            options=[
-                "default",
-                "vbr",
-                "cbr",
-                "vbr_minqp",
-                "ll_2pass_quality",
-                "ll_2pass_size",
-                "vbr_2pass",
-                "cbr_ld_hq",
-                "cbr_hq",
-                "vbr_hq",
-            ],
-            opt="rc",
-        )
-
     def init_spatial_aq(self):
         return self._add_combo_box(
             label="Spatial AQ",
@@ -182,6 +170,24 @@ class NVENCC(SettingPanel):
             widget_name="spatial_aq",
             options=["off", "on"],
             opt="spatial_aq",
+        )
+
+    def init_multipass(self):
+        return self._add_combo_box(
+            label="Multipass",
+            tooltip="",
+            widget_name="multipass",
+            options=["none", "2pass-quarter", "2pass-full"],
+            opt="multipass",
+        )
+
+    def init_mv_precision(self):
+        return self._add_combo_box(
+            label="Motion vector accuracy",
+            tooltip="Q-pel is highest precision",
+            widget_name="mv_precision",
+            options=["auto", "Q-pel", "half-pel", "full-pel"],
+            opt="mv_precision",
         )
 
     def init_lookahead(self):
@@ -283,6 +289,8 @@ class NVENCC(SettingPanel):
             lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
             spatial_aq=bool(self.widgets.spatial_aq.currentIndex()),
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
+            multipass=self.widgets.multipass.currentText(),
+            mv_precision=self.widgets.mv_precision.currentText(),
             # pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             # extra=self.ffmpeg_extras,
             # tune=tune.split("-")[0].strip(),

@@ -26,8 +26,17 @@ from fastflix.models.encode import (
 __all__ = ["VideoSettings", "Status", "Video"]
 
 
+class Crop(BaseModel):
+    top: int = 0
+    right: int = 0
+    bottom: int = 0
+    left: int = 0
+    width: int = 0
+    height: int = 0
+
+
 class VideoSettings(BaseModel):
-    crop: Optional[str] = None
+    crop: Optional[Crop] = None
     start_time: Union[float, int] = 0
     end_time: Union[float, int] = 0
     fast_seek: bool = True

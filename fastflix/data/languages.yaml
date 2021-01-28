@@ -2785,3 +2785,21 @@ Extract HDR10+:
   eng: Extract HDR10+
 Detect HDR10+:
   eng: Detect HDR10+
+Custom NVEncC options:
+  eng: Custom NVEncC options
+Set the encoding tier:
+  eng: Set the encoding tier
+Spatial AQ:
+  eng: Spatial AQ
+Lookahead:
+  eng: Lookahead
+Motion vector accuracy:
+  eng: Motion vector accuracy
+Q-pel is highest precision:
+  eng: Q-pel is highest precision
+Multipass:
+  eng: Multipass
+NVEncC Options:
+  eng: NVEncC Options
+'NVEncC Encoder support is still experimental!':
+  eng: 'NVEncC Encoder support is still experimental!'

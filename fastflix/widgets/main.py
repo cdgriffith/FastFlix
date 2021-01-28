@@ -31,7 +31,7 @@ from fastflix.flix import (
 )
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import Status, Video, VideoSettings
+from fastflix.models.video import Status, Video, VideoSettings, Crop
 from fastflix.resources import (
     black_x_icon,
     folder_icon,
@@ -479,6 +479,7 @@ class Main(QtWidgets.QWidget):
     def init_encoder_drop_down(self):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
+        self.widgets.convert_to.setMinimumWidth(180)
         self.change_output_types()
         self.widgets.convert_to.currentTextChanged.connect(self.change_encoder)
 
@@ -842,32 +843,37 @@ class Main(QtWidgets.QWidget):
         self.loading_video = False
         self.widgets.crop.bottom.setText(str(b))
 
-    def build_crop(self) -> Union[str, None]:
+    def build_crop(self) -> Union[Crop, None]:
         if not self.initialized or not self.app.fastflix.current_video:
             return None
         try:
-            top = int(self.widgets.crop.top.text())
-            left = int(self.widgets.crop.left.text())
-            right = int(self.widgets.crop.right.text())
-            bottom = int(self.widgets.crop.bottom.text())
+            crop = Crop(
+                top=int(self.widgets.crop.top.text()),
+                left=int(self.widgets.crop.left.text()),
+                right=int(self.widgets.crop.right.text()),
+                bottom=int(self.widgets.crop.bottom.text()),
+            )
         except (ValueError, AttributeError):
             logger.error("Invalid crop")
             return None
-        width = self.app.fastflix.current_video.width - right - left
-        height = self.app.fastflix.current_video.height - bottom - top
-        if (top + left + right + bottom) == 0:
-            return None
-        try:
-            assert top >= 0, t("Top must be positive number")
-            assert left >= 0, t("Left must be positive number")
-            assert width > 0, t("Total video width must be greater than 0")
-            assert height > 0, t("Total video height must be greater than 0")
-            assert width <= self.app.fastflix.current_video.width, t("Width must be smaller than video width")
-            assert height <= self.app.fastflix.current_video.height, t("Height must be smaller than video height")
-        except AssertionError as err:
-            error_message(f"{t('Invalid Crop')}: {err}")
-            return
-        return f"{width}:{height}:{left}:{top}"
+        else:
+            crop.width = self.app.fastflix.current_video.width - crop.right - crop.left
+            crop.height = self.app.fastflix.current_video.height - crop.bottom - crop.top
+            if (crop.top + crop.left + crop.right + crop.bottom) == 0:
+                return None
+            try:
+                assert crop.top >= 0, t("Top must be positive number")
+                assert crop.left >= 0, t("Left must be positive number")
+                assert crop.width > 0, t("Total video width must be greater than 0")
+                assert crop.height > 0, t("Total video height must be greater than 0")
+                assert crop.width <= self.app.fastflix.current_video.width, t("Width must be smaller than video width")
+                assert crop.height <= self.app.fastflix.current_video.height, t(
+                    "Height must be smaller than video height"
+                )
+            except AssertionError as err:
+                error_message(f"{t('Invalid Crop')}: {err}")
+                return
+            return crop
 
     def keep_aspect_update(self) -> None:
         keep_aspect = self.widgets.scale.keep_aspect.isChecked()
@@ -941,8 +947,9 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.height.setDisabled(keep_aspect)
         height = self.app.fastflix.current_video.height
         width = self.app.fastflix.current_video.width
-        if self.build_crop():
-            width, height, *_ = (int(x) for x in self.build_crop().split(":"))
+        if crop := self.build_crop():
+            width = crop.width
+            height = crop.height
 
         if keep_aspect and (not height or not width):
             self.scale_updating = False

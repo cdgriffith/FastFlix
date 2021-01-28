@@ -13,7 +13,7 @@ icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/
 
 enable_subtitles = True
 enable_audio = True
-enable_attachments = True
+enable_attachments = False
 
 audio_formats = [
     "aac",

@@ -334,7 +334,7 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
             else:
                 if int(tffs) + int(bffs) > int(progressive):
                     app.fastflix.current_video.video_settings.deinterlace = True
-                    app.fastflix.current_video.interlaced = True
+                    app.fastflix.current_video.interlaced = "tff" if int(tffs) > int(bffs) else "bff"
                     return
     app.fastflix.current_video.video_settings.deinterlace = False
     app.fastflix.current_video.interlaced = False

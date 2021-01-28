@@ -9,7 +9,7 @@ class AudioTrack(BaseModel):
     index: int
     outdex: int
     codec: str = ""
-    downmix: int = 0
+    downmix: Optional[str] = None
     title: str = ""
     language: str = ""
     conversion_bitrate: str = ""
@@ -98,11 +98,13 @@ class NVEncCSettings(EncoderSettings):
     bitrate: Optional[str] = "6000k"
     qp: Optional[str] = None
     cq: int = 0
-    spatial_aq: bool = False
+    spatial_aq: bool = True
     lookahead: Optional[int] = None
-    tier: str = "main"
+    tier: str = "high"
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
+    multipass: str = "2pass-full"
+    mv_precision: str = "auto"
 
 
 class rav1eSettings(EncoderSettings):

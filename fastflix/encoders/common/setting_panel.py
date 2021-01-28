@@ -40,13 +40,14 @@ class SettingPanel(QtWidgets.QWidget):
             if not opt:
                 return 6
             opt = str(opt)
+            items = [x.split("(")[0].split("-")[0].strip() for x in items]
         elif widget_name == "bitrate":
             if not opt:
                 return 5
+            items = [x.split("(")[0].split("-")[0].strip() for x in items]
         elif widget_name == "gpu":
             if opt == -1:
                 return 0
-        items = [x.split("(")[0].split("-")[0].strip() if x != "-1" else "-1" for x in items]
         if isinstance(opt, str):
             try:
                 return items.index(opt)
@@ -165,9 +166,9 @@ class SettingPanel(QtWidgets.QWidget):
 
         return layout
 
-    def _add_custom(self, connect="default", disable_both_passes=False):
+    def _add_custom(self, title="Custom ffmpeg options", connect="default", disable_both_passes=False):
         layout = QtWidgets.QHBoxLayout()
-        self.labels.ffmpeg_options = QtWidgets.QLabel(t("Custom ffmpeg options"))
+        self.labels.ffmpeg_options = QtWidgets.QLabel(t(title))
         self.labels.ffmpeg_options.setToolTip(t("Extra flags or options, cannot modify existing settings"))
         layout.addWidget(self.labels.ffmpeg_options)
         self.ffmpeg_extras_widget = QtWidgets.QLineEdit()

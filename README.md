@@ -20,15 +20,16 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 
  FastFlix supports the following encoders when their required libraries are found in FFmpeg:
 
-| Encoder   | x265 | NVENC HEVC | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | WEBP | GIF |
-| --------- | ---- | ---------- | ---- | ----- | ------- | ------- | --- | ---- | --- |
-| HDR10     |   ✓  |            |      |       |         |         |  ✓* |      |     |
-| HDR10+    |   ✓  |            |      |       |         |         |     |      |     |
-| Audio     |   ✓  |      ✓     |  ✓   |   ✓  |    ✓    |    ✓   |  ✓   |      |     |
-| Subtitles |   ✓  |      ✓     |  ✓   |   ✓  |    ✓    |    ✓   |      |      |     |
-| Covers    |   ✓  |      ✓     |  ✓   |   ✓  |    ✓    |    ✓   |      |      |     |
-| bt.2020   |   ✓  |     ✓      |   ✓  |  ✓    |   ✓    |   ✓    |  ✓   |      |     |
+| Encoder   | x265 |  NVENC HEVC |NVEncC HEVC | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | WEBP | GIF |
+| --------- | ---- | ---------- | ----------- | ---- | ----- | ------- | ------- | --- | ---- | --- |
+| HDR10     |   ✓  |            |      ✓     |      |       |         |         |  ✓* |      |     |
+| HDR10+    |   ✓  |            |      ✓     |      |       |         |         |     |      |     |
+| Audio     |   ✓  |      ✓     |      ✓*    |  ✓   |   ✓  |    ✓    |    ✓   |  ✓   |      |     |
+| Subtitles |   ✓  |      ✓     |      ✓     |  ✓   |   ✓  |    ✓    |    ✓   |      |      |     |
+| Covers    |   ✓  |      ✓     |            |  ✓   |   ✓  |    ✓    |    ✓   |      |      |     |
+| bt.2020   |   ✓  |     ✓      |     ✓      |   ✓  |  ✓    |   ✓    |   ✓    |  ✓   |      |     |
 
+`✓ - Full support   |   ✓* - Limited support`
 
 All of these are currently supported by [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) which is the default FFmpeg downloaded.
 

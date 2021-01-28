@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from typing import List
+from typing import List, Optional
 
 from box import Box
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
 from qtpy import QtCore, QtGui, QtWidgets
 
-from fastflix.encoders.common.audio import lossless
+from fastflix.encoders.common.audio import lossless, channel_list
 from fastflix.language import t
 from fastflix.models.encode import AudioTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import black_x_icon, copy_icon, down_arrow_icon, up_arrow_icon
-from fastflix.shared import no_border
+from fastflix.shared import no_border, error_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
@@ -78,17 +78,6 @@ class Audio(QtWidgets.QTabWidget):
         if all_info:
             self.widgets.audio_info.setToolTip(all_info.to_yaml())
 
-        downmix_options = [
-            "mono",
-            "stereo",
-            "2.1 / 3.0",
-            "3.1 / 4.0",
-            "4.1 / 5.0",
-            "5.1 / 6.0",
-            "6.1 / 7.0",
-            "7.1 / 8.0",
-        ]
-
         self.widgets.language.addItems(["No Language Set"] + language_list)
         self.widgets.language.setMaximumWidth(110)
         if language:
@@ -105,7 +94,7 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.title.textChanged.connect(self.page_update)
         self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
 
-        self.widgets.downmix.addItems([t("No Downmix")] + downmix_options[: channels - 2])
+        self.widgets.downmix.addItems([t("No Downmix")] + [k for k, v in channel_list.items() if v <= channels])
         self.widgets.downmix.currentIndexChanged.connect(self.update_downmix)
         self.widgets.downmix.setCurrentIndex(0)
         self.widgets.downmix.setDisabled(True)
@@ -219,15 +208,19 @@ class Audio(QtWidgets.QTabWidget):
         self.parent.reorder(update=True)
 
     def update_downmix(self):
-        channels = self.widgets.downmix.currentIndex()
+        channels = (
+            channel_list[self.widgets.downmix.currentText()]
+            if self.widgets.downmix.currentIndex() > 0
+            else self.channels
+        )
         self.widgets.convert_bitrate.clear()
         if channels > 0:
             self.widgets.convert_bitrate.addItems(
-                [f"{x}k" for x in range(32 * channels, (256 * channels) + 1, 32 * channels)]
+                [f"{x}k" for x in range(16 * channels, (256 * channels) + 1, 16 * channels)]
             )
         else:
             self.widgets.convert_bitrate.addItems(
-                [f"{x}k" for x in range(32 * self.channels, (256 * self.channels) + 1, 32 * self.channels)]
+                [f"{x}k" for x in range(16 * self.channels, (256 * self.channels) + 1, 16 * self.channels)]
             )
         self.widgets.convert_bitrate.setCurrentIndex(3)
         self.page_update()
@@ -278,8 +271,8 @@ class Audio(QtWidgets.QTabWidget):
         return {"codec": self.widgets.convert_to.currentText(), "bitrate": self.widgets.convert_bitrate.currentText()}
 
     @property
-    def downmix(self) -> int:
-        return self.widgets.downmix.currentIndex()
+    def downmix(self) -> Optional[str]:
+        return self.widgets.downmix.currentText() if self.widgets.downmix.currentIndex() > 0 else None
 
     @property
     def language(self) -> str:
@@ -397,6 +390,20 @@ class AudioList(FlixList):
         self.update_audio_settings()
 
     def allowed_formats(self, allowed_formats=None):
+        disable_dups = "nvencc" in self.main.convert_to.lower()
+        tracks_need_removed = False
+        for track in self.tracks:
+            track.widgets.dup_button.setDisabled(disable_dups)
+            if not track.original:
+                if disable_dups:
+                    tracks_need_removed = True
+            else:
+                if disable_dups:
+                    track.widgets.dup_button.hide()
+                else:
+                    track.widgets.dup_button.show()
+        if tracks_need_removed:
+            error_message(t("This encoder does not support duplicating audio tracks, please remove copied tracks!"))
         if not allowed_formats:
             return
         for track in self.tracks:

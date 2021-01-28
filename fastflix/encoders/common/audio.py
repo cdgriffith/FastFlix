@@ -1,6 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+channel_list = {
+    "mono": 1,
+    "stereo": 2,
+    "2.1": 3,
+    "3.0": 3,
+    "3.0(back)": 3,
+    "3.1": 4,
+    "4.0": 4,
+    "quad": 4,
+    "quad(side)": 4,
+    "5.0": 5,
+    "5.1": 6,
+    "6.0": 6,
+    "6.0(front)": 6,
+    "hexagonal": 6,
+    "6.1": 7,
+    "6.1(front)": 7,
+    "7.0": 7,
+    "7.0(front)": 7,
+    "7.1": 8,
+    "7.1(wide)": 8,
+}
+
 lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
 
 
@@ -17,7 +40,11 @@ def build_audio(audio_tracks, audio_file_index=0):
         if not track.conversion_codec or track.conversion_codec == "none":
             command_list.append(f"-c:{track.outdex} copy")
         elif track.conversion_codec:
-            downmix = f"-ac:{track.outdex} {track.downmix}" if track.downmix > 0 else ""
+            downmix = (
+                f"-ac:{track.outdex} {channel_list[track.downmix]} -filter:{track.outdex} aformat=channel_layouts={track.downmix}"
+                if track.downmix
+                else ""
+            )
             bitrate = ""
             if track.conversion_codec not in lossless:
                 bitrate = f"-b:{track.outdex} {track.conversion_bitrate} "
