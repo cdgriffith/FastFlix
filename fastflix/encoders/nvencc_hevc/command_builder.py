@@ -7,6 +7,33 @@ from fastflix.models.encode import NVEncCSettings
 from fastflix.models.fastflix import FastFlix
 from fastflix.flix import unixy
 
+lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
+
+
+def build_audio(audio_tracks, audio_file_index=0):
+    # TODO figure out copy and downmix
+    # https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md#--audio-stream-intorstringstring1string2
+    command_list = []
+    copies = []
+
+    for track in audio_tracks:
+        command_list.append(
+            f'--audio-metadata {track.outdex}?title="{track.title}" '
+            f'--audio-metadata {track.outdex}?handler="{track.title}" '
+        )
+        if track.language:
+            command_list.append(f"--audio-metadata {track.outdex}?language={track.language}")
+        if not track.conversion_codec or track.conversion_codec == "none":
+            copies.append(str(track.outdex))
+        elif track.conversion_codec:
+            # downmix = f"-ac:{track.outdex} {track.downmix}" if track.downmix > 0 else ""
+            bitrate = ""
+            if track.conversion_codec not in lossless:
+                bitrate = f"--audio-bitrate {track.outdex}?{track.conversion_bitrate.rstrip('k')} "
+            command_list.append(f"--audio-codec {track.outdex}?{track.conversion_codec} {bitrate}")
+
+    return f" --audio-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
+
 
 def build(fastflix: FastFlix):
     settings: NVEncCSettings = fastflix.current_video.video_settings.video_encoder_settings
@@ -34,6 +61,11 @@ def build(fastflix: FastFlix):
     if settings.hdr10plus_metadata:
         dhdr = f'--dhdr10-info "{settings.hdr10plus_metadata}"'
 
+    # TODO output-res, crop, remove hdr, time, rotate, flip, seek
+    res = ""
+    if fastflix.current_video.video_settings.scale:
+        res = "--output-res "
+
     command = [
         f'"{unixy(fastflix.config.nvencc)}"',
         "-i",
@@ -60,7 +92,16 @@ def build(fastflix: FastFlix):
         f'{max_cll if max_cll else ""}',
         f'{dhdr if dhdr else ""}',
         "--output-depth",
-        str(fastflix.current_video.current_video_stream.bit_depth),
+        "10" if fastflix.current_video.current_video_stream.bit_depth > 8 else "8",
+        build_audio(fastflix.current_video.video_settings.audio_tracks),
+        "--multipass",
+        "2pass-full",
+        "--mv-precision",
+        "Q-pel",
+        "--chromaloc",
+        "auto",
+        "--colorrange",
+        "auto",
         "-o",
         f'"{unixy(fastflix.current_video.video_settings.output_path)}"',
     ]
