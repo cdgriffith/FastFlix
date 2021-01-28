@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 import logging
 from typing import List, Tuple, Union
+from pathlib import Path
 
 from box import Box
-from qtpy import QtGui, QtWidgets
+from qtpy import QtGui, QtWidgets, QtCore
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.widgets.background_tasks import ExtractHDR10
 
 logger = logging.getLogger("fastflix")
 
@@ -213,6 +215,33 @@ class SettingPanel(QtWidgets.QWidget):
         layout.addWidget(self.widgets[widget_name])
         layout.addWidget(button)
         return layout
+
+    def extract_hdr10plus(self):
+        self.extract_button.hide()
+        self.extract_label.show()
+        self.movie.start()
+        # self.extracting_hdr10 = True
+        self.extract_thrad = ExtractHDR10(self.app, self.main, signal=self.hdr10plus_signal)
+        self.extract_thrad.start()
+
+    def done_hdr10plus_extract(self, metadata: str):
+        self.extract_button.show()
+        self.extract_label.hide()
+        self.movie.stop()
+        if Path(metadata).exists():
+            self.widgets.hdr10plus_metadata.setText(metadata)
+
+    def dhdr10_update(self):
+        dirname = Path(self.widgets.hdr10plus_metadata.text()).parent
+        if not dirname.exists():
+            dirname = Path()
+        filename = QtWidgets.QFileDialog.getOpenFileName(
+            self, caption="hdr10_metadata", directory=str(dirname), filter="HDR10+ Metadata (*.json)"
+        )
+        if not filename or not filename[0]:
+            return
+        self.widgets.hdr10plus_metadata.setText(filename[0])
+        self.main.page_update()
 
     def _add_modes(
         self,

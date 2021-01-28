@@ -21,6 +21,7 @@ from fastflix.models.encode import (
     rav1eSettings,
     x264Settings,
     x265Settings,
+    NVEncCSettings,
 )
 from fastflix.version import __version__
 
@@ -42,6 +43,7 @@ setting_types = {
     "webp": WebPSettings,
     "copy_settings": CopySettings,
     "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
+    "nvencc_hevc": NVEncCSettings,
 }
 
 outdated_settings = ("copy",)
@@ -80,6 +82,7 @@ class Profile(BaseModel):
     webp: Optional[WebPSettings] = None
     copy_settings: Optional[CopySettings] = None
     ffmpeg_hevc_nvenc: Optional[FFmpegNVENCSettings] = None
+    nvencc_hevc: Optional[NVEncCSettings] = None
 
 
 empty_profile = Profile(x265=x265Settings())
@@ -129,6 +132,7 @@ class Config(BaseModel):
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
     hdr10plus_parser: Optional[Path] = Field(default_factory=lambda: where("hdr10plus_parser"))
     mkvpropedit: Optional[Path] = Field(default_factory=lambda: where("mkvpropedit"))
+    nvencc: Optional[Path] = Field(default_factory=lambda: where("NVEncC"))
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
@@ -198,7 +202,7 @@ class Config(BaseModel):
                 "there may be non-recoverable errors while loading it."
             )
 
-        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "mkvpropedit")
+        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "mkvpropedit", "nvencc")
         for key, value in data.items():
             if key == "profiles":
                 self.profiles = {}
@@ -239,6 +243,8 @@ class Config(BaseModel):
             self.hdr10plus_parser = where("hdr10plus_parser")
         if not self.mkvpropedit:
             self.mkvpropedit = where("mkvpropedit")
+        if not self.nvencc:
+            self.mkvpropedit = where("NVEncC")
         self.profiles.update(get_preset_defaults())
 
         if self.selected_profile not in self.profiles:

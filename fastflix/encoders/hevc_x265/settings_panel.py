@@ -173,21 +173,6 @@ class HEVC(SettingPanel):
         layout.addLayout(self.init_dhdr10_opt())
         return layout
 
-    def extract_hdr10plus(self):
-        self.extract_button.hide()
-        self.extract_label.show()
-        self.movie.start()
-        # self.extracting_hdr10 = True
-        self.extract_thrad = ExtractHDR10(self.app, self.main, signal=self.hdr10plus_signal)
-        self.extract_thrad.start()
-
-    def done_hdr10plus_extract(self, metadata: str):
-        self.extract_button.show()
-        self.extract_label.hide()
-        self.movie.stop()
-        if Path(metadata).exists():
-            self.widgets.hdr10plus_metadata.setText(metadata)
-
     def init_x265_row(self):
         layout = QtWidgets.QHBoxLayout()
         layout.addLayout(self.init_hdr10())
@@ -464,18 +449,6 @@ class HEVC(SettingPanel):
         self.widgets.x265_params.textChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.x265_params)
         return layout
-
-    def dhdr10_update(self):
-        dirname = Path(self.widgets.hdr10plus_metadata.text()).parent
-        if not dirname.exists():
-            dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="hdr10_metadata", directory=str(dirname), filter="HDR10+ Metadata (*.json)"
-        )
-        if not filename or not filename[0]:
-            return
-        self.widgets.hdr10plus_metadata.setText(filename[0])
-        self.main.page_update()
 
     def setting_change(self, update=True, pix_change=False):
         def hdr_opts():

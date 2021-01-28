@@ -3,6 +3,7 @@
 ## Version 4.2.0
 
 * Adding #109 NVENC HEVC support based on FFmpeg
+* Adding NVEenC initial trial for HEVC
 * Adding ability to extract HDR10+ metadata if hdr10plus_parser is detected on path
 * Adding #178 selector for number of autocrop positions throughout video (thanks to bmcassagne)
 * Adding Windows 10 notification for queue complete success

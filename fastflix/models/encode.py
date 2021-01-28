@@ -91,6 +91,20 @@ class FFmpegNVENCSettings(EncoderSettings):
     b_ref_mode: str = "disabled"
 
 
+class NVEncCSettings(EncoderSettings):
+    name = "HEVC (NVEncC)"
+    preset: str = "quality"
+    profile: str = "main"
+    bitrate: Optional[str] = "6000k"
+    qp: Optional[str] = None
+    cq: int = 0
+    spatial_aq: bool = False
+    lookahead: Optional[int] = None
+    tier: str = "main"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+
+
 class rav1eSettings(EncoderSettings):
     name = "AV1 (rav1e)"
     speed: str = "-1"

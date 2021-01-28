@@ -2,38 +2,20 @@
 import logging
 
 from box import Box
-from qtpy import QtCore, QtWidgets
+from qtpy import QtCore, QtWidgets, QtGui
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
-from fastflix.models.encode import FFmpegNVENCSettings
+from fastflix.models.encode import NVEncCSettings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
 from fastflix.exceptions import FastFlixInternalException
+from fastflix.resources import loading_movie
 
 logger = logging.getLogger("fastflix")
 
 
-presets = [
-    "slow",
-    "medium",
-    "fast",
-    "hp",
-    "hq",
-    "bd",
-    "ll",
-    "llhq",
-    "llhp",
-    "lossless",
-    "losslesshp",
-    "p1",
-    "p2",
-    "p3",
-    "p4",
-    "p5",
-    "p6",
-    "p7",
-]
+presets = ["default", "performance", "quality"]
 
 recommended_bitrates = [
     "800k   (320x240p @ 30fps)",
@@ -72,8 +54,9 @@ recommended_crfs = [
 pix_fmts = ["8-bit: yuv420p", "10-bit: p010le"]
 
 
-class NVENC(SettingPanel):
-    profile_name = "ffmpeg_hevc_nvenc"
+class NVENCC(SettingPanel):
+    profile_name = "nvencc_hevc"
+    hdr10plus_signal = QtCore.Signal(str)
 
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
@@ -91,23 +74,27 @@ class NVENC(SettingPanel):
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 1, 0, 1, 2)
-        grid.addLayout(self.init_tune(), 2, 0, 1, 2)
-        grid.addLayout(self.init_profile(), 3, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 2)
-        grid.addLayout(self.init_tier(), 5, 0, 1, 2)
-        grid.addLayout(self.init_rc(), 6, 0, 1, 2)
-        grid.addLayout(self.init_spatial_aq(), 7, 0, 1, 2)
+        # grid.addLayout(self.init_max_mux(), 1, 0, 1, 2)
+        # grid.addLayout(self.init_tune(), 2, 0, 1, 2)
+        grid.addLayout(self.init_profile(), 1, 0, 1, 2)
+        # grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 2)
+        grid.addLayout(self.init_tier(), 2, 0, 1, 2)
 
-        a = QtWidgets.QHBoxLayout()
-        a.addLayout(self.init_rc_lookahead())
-        a.addStretch(1)
-        a.addLayout(self.init_level())
-        a.addStretch(1)
-        a.addLayout(self.init_gpu())
-        a.addStretch(1)
-        a.addLayout(self.init_b_ref_mode())
-        grid.addLayout(a, 3, 2, 1, 4)
+        grid.addLayout(self.init_spatial_aq(), 3, 0, 1, 2)
+        grid.addLayout(self.init_lookahead(), 4, 0, 1, 2)
+
+        grid.addLayout(self.init_dhdr10_info(), 4, 2, 1, 3)
+        grid.addLayout(self.init_dhdr10_warning_and_opt(), 4, 5, 1, 1)
+
+        # a = QtWidgets.QHBoxLayout()
+        # a.addLayout(self.init_rc_lookahead())
+        # a.addStretch(1)
+        # a.addLayout(self.init_level())
+        # a.addStretch(1)
+        # a.addLayout(self.init_gpu())
+        # a.addStretch(1)
+        # a.addLayout(self.init_b_ref_mode())
+        # grid.addLayout(a, 3, 2, 1, 4)
 
         grid.setRowStretch(9, 1)
 
@@ -120,6 +107,7 @@ class NVENC(SettingPanel):
 
         self.setLayout(grid)
         self.hide()
+        self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
 
     def init_preset(self):
         return self._add_combo_box(
@@ -145,7 +133,7 @@ class NVENC(SettingPanel):
             label="Profile_encoderopt",
             widget_name="profile",
             tooltip="Enforce an encode profile",
-            options=["main", "main10", "rext"],
+            options=["main", "main10", "main444"],
             opt="profile",
         )
 
@@ -196,15 +184,13 @@ class NVENC(SettingPanel):
             opt="spatial_aq",
         )
 
-    def init_rc_lookahead(self):
-        return self._add_text_box(
-            label="RC Lookahead",
+    def init_lookahead(self):
+        return self._add_combo_box(
+            label="Lookahead",
             tooltip="",
-            widget_name="rc_lookahead",
-            opt="rc_lookahead",
-            validator="int",
-            default="0",
-            width=30,
+            widget_name="lookahead",
+            opt="lookahead",
+            options=["off"] + [str(x) for x in range(1, 33)],
         )
 
     def init_level(self):
@@ -240,6 +226,33 @@ class NVENC(SettingPanel):
         self.widgets.gpu.setMinimumWidth(50)
         return layout
 
+    def init_dhdr10_info(self):
+        layout = self._add_file_select(
+            label="HDR10+ Metadata",
+            widget_name="hdr10plus_metadata",
+            button_action=lambda: self.dhdr10_update(),
+            tooltip="dhdr10_info: Path to HDR10+ JSON metadata file",
+        )
+        self.labels["hdr10plus_metadata"].setFixedWidth(200)
+        return layout
+
+    def init_dhdr10_warning_and_opt(self):
+        layout = QtWidgets.QHBoxLayout()
+
+        self.extract_button = QtWidgets.QPushButton(t("Extract HDR10+"))
+        self.extract_button.hide()
+        self.extract_button.clicked.connect(self.extract_hdr10plus)
+
+        self.extract_label = QtWidgets.QLabel(self)
+        self.extract_label.hide()
+        self.movie = QtGui.QMovie(loading_movie)
+        self.movie.setScaledSize(QtCore.QSize(25, 25))
+        self.extract_label.setMovie(self.movie)
+
+        layout.addWidget(self.extract_button)
+        layout.addWidget(self.extract_label)
+        return layout
+
     def init_modes(self):
         layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="qp", add_qp=False)
         self.qp_radio.setChecked(False)
@@ -262,23 +275,24 @@ class NVENC(SettingPanel):
         self.updating_settings = False
 
     def update_video_encoder_settings(self):
-        tune = self.widgets.tune.currentText()
 
-        settings = FFmpegNVENCSettings(
+        settings = NVEncCSettings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
-            max_muxing_queue_size=self.widgets.max_mux.currentText(),
             profile=self.widgets.profile.currentText(),
-            pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
-            extra=self.ffmpeg_extras,
-            tune=tune.split("-")[0].strip(),
-            extra_both_passes=self.widgets.extra_both_passes.isChecked(),
-            rc=self.widgets.rc.currentText() if self.widgets.rc.currentIndex() != 0 else None,
-            spatial_aq=self.widgets.spatial_aq.currentIndex(),
-            rc_lookahead=int(self.widgets.rc_lookahead.text() or 0),
-            level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
-            gpu=int(self.widgets.gpu.currentText() or -1) if self.widgets.gpu.currentIndex() != 0 else -1,
-            b_ref_mode=self.widgets.b_ref_mode.currentText(),
             tier=self.widgets.tier.currentText(),
+            lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
+            spatial_aq=bool(self.widgets.spatial_aq.currentIndex()),
+            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
+            # pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
+            # extra=self.ffmpeg_extras,
+            # tune=tune.split("-")[0].strip(),
+            # extra_both_passes=self.widgets.extra_both_passes.isChecked(),
+            # rc=self.widgets.rc.currentText() if self.widgets.rc.currentIndex() != 0 else None,
+            # spatial_aq=self.widgets.spatial_aq.currentIndex(),
+            # rc_lookahead=int(self.widgets.rc_lookahead.text() or 0),
+            # level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
+            # gpu=int(self.widgets.gpu.currentText() or -1) if self.widgets.gpu.currentIndex() != 0 else -1,
+            # b_ref_mode=self.widgets.b_ref_mode.currentText(),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.qp = q_value if encode_type == "qp" else None
@@ -288,3 +302,10 @@ class NVENC(SettingPanel):
     def set_mode(self, x):
         self.mode = x.text()
         self.main.build_commands()
+
+    def new_source(self):
+        super().new_source()
+        if self.app.fastflix.current_video.hdr10_plus:
+            self.extract_button.show()
+        else:
+            self.extract_button.hide()
