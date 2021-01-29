@@ -1,30 +1,5 @@
 # -*- coding: utf-8 -*-
-from win32api import GetModuleHandle
-from win32con import (
-    CW_USEDEFAULT,
-    IMAGE_ICON,
-    LR_DEFAULTSIZE,
-    LR_LOADFROMFILE,
-    WM_USER,
-    WS_OVERLAPPED,
-    WS_SYSMENU,
-)
-from win32gui import (
-    NIF_ICON,
-    NIF_INFO,
-    NIF_MESSAGE,
-    NIF_TIP,
-    NIM_ADD,
-    NIM_MODIFY,
-    WNDCLASS,
-    CreateWindow,
-    DestroyWindow,
-    LoadImage,
-    RegisterClass,
-    Shell_NotifyIcon,
-    UnregisterClass,
-    UpdateWindow,
-)
+
 
 tool_window = None
 tool_icon = None
@@ -32,6 +7,30 @@ tool_icon = None
 
 def show_windows_notification(title, msg, icon_path):
     global tool_window, tool_icon
+    from win32api import GetModuleHandle
+    from win32con import (
+        CW_USEDEFAULT,
+        IMAGE_ICON,
+        LR_DEFAULTSIZE,
+        LR_LOADFROMFILE,
+        WM_USER,
+        WS_OVERLAPPED,
+        WS_SYSMENU,
+    )
+    from win32gui import (
+        NIF_ICON,
+        NIF_INFO,
+        NIF_MESSAGE,
+        NIF_TIP,
+        NIM_ADD,
+        NIM_MODIFY,
+        WNDCLASS,
+        CreateWindow,
+        LoadImage,
+        RegisterClass,
+        Shell_NotifyIcon,
+        UpdateWindow,
+    )
 
     wc = WNDCLASS()
     hinst = wc.hInstance = GetModuleHandle(None)
@@ -65,6 +64,8 @@ def show_windows_notification(title, msg, icon_path):
 
 
 def cleanup_windows_notification():
+    from win32gui import DestroyWindow, UnregisterClass
+
     if tool_window:
         DestroyWindow(tool_window)
         UnregisterClass("FastFlix", None)
