@@ -18,6 +18,7 @@ class FastFlix(BaseModel):
     config: Config = None
     data_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
     log_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "logs"
+    queue_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "queue.yaml"
     ffmpeg_version: str = ""
     ffmpeg_config: List[str] = ""
     ffprobe_version: str = ""

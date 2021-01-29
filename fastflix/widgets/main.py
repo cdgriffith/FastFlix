@@ -21,6 +21,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.encoders.common import helpers
 from fastflix.exceptions import FastFlixInternalException, FlixError
 from fastflix.flix import (
+    detect_hdr10_plus,
     detect_interlaced,
     extract_attachments,
     generate_thumbnail_command,
@@ -30,17 +31,19 @@ from fastflix.flix import (
 )
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import Status, Video, VideoSettings
+from fastflix.models.video import Status, Video, VideoSettings, Crop
 from fastflix.resources import (
     black_x_icon,
     folder_icon,
+    main_icon,
     play_round_icon,
     profile_add_icon,
     settings_icon,
     video_add_icon,
     video_playlist_icon,
 )
-from fastflix.shared import error_message, time_to_number, yes_no_message
+from fastflix.shared import error_message, message, time_to_number, yes_no_message
+from fastflix.windows_tools import show_windows_notification
 from fastflix.widgets.background_tasks import SubtitleFix, ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.video_options import VideoOptions
@@ -465,7 +468,7 @@ class Main(QtWidgets.QWidget):
 
     def change_output_types(self):
         self.widgets.convert_to.clear()
-        self.widgets.convert_to.addItems([f"   {x}" for x in self.app.fastflix.encoders.keys()])
+        self.widgets.convert_to.addItems([f" {x}" for x in self.app.fastflix.encoders.keys()])
         for i, plugin in enumerate(self.app.fastflix.encoders.values()):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
@@ -477,6 +480,7 @@ class Main(QtWidgets.QWidget):
     def init_encoder_drop_down(self):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
+        self.widgets.convert_to.setMinimumWidth(180)
         self.change_output_types()
         self.widgets.convert_to.currentTextChanged.connect(self.change_encoder)
 
@@ -781,7 +785,9 @@ class Main(QtWidgets.QWidget):
 
         start_pos = self.start_time or self.app.fastflix.current_video.duration // 10
 
-        blocks = math.ceil((self.app.fastflix.current_video.duration - start_pos) / 5)
+        blocks = math.ceil(
+            (self.app.fastflix.current_video.duration - start_pos) / (self.app.fastflix.config.crop_detect_points + 1)
+        )
         if blocks < 1:
             blocks = 1
 
@@ -789,7 +795,7 @@ class Main(QtWidgets.QWidget):
             x
             for x in range(int(start_pos), int(self.app.fastflix.current_video.duration), blocks)
             if x < self.app.fastflix.current_video.duration
-        ][:4]
+        ][: self.app.fastflix.config.crop_detect_points]
 
         if not times:
             return
@@ -838,32 +844,37 @@ class Main(QtWidgets.QWidget):
         self.loading_video = False
         self.widgets.crop.bottom.setText(str(b))
 
-    def build_crop(self) -> Union[str, None]:
+    def build_crop(self) -> Union[Crop, None]:
         if not self.initialized or not self.app.fastflix.current_video:
             return None
         try:
-            top = int(self.widgets.crop.top.text())
-            left = int(self.widgets.crop.left.text())
-            right = int(self.widgets.crop.right.text())
-            bottom = int(self.widgets.crop.bottom.text())
+            crop = Crop(
+                top=int(self.widgets.crop.top.text()),
+                left=int(self.widgets.crop.left.text()),
+                right=int(self.widgets.crop.right.text()),
+                bottom=int(self.widgets.crop.bottom.text()),
+            )
         except (ValueError, AttributeError):
             logger.error("Invalid crop")
             return None
-        width = self.app.fastflix.current_video.width - right - left
-        height = self.app.fastflix.current_video.height - bottom - top
-        if (top + left + right + bottom) == 0:
-            return None
-        try:
-            assert top >= 0, t("Top must be positive number")
-            assert left >= 0, t("Left must be positive number")
-            assert width > 0, t("Total video width must be greater than 0")
-            assert height > 0, t("Total video height must be greater than 0")
-            assert width <= self.app.fastflix.current_video.width, t("Width must be smaller than video width")
-            assert height <= self.app.fastflix.current_video.height, t("Height must be smaller than video height")
-        except AssertionError as err:
-            error_message(f"{t('Invalid Crop')}: {err}")
-            return
-        return f"{width}:{height}:{left}:{top}"
+        else:
+            crop.width = self.app.fastflix.current_video.width - crop.right - crop.left
+            crop.height = self.app.fastflix.current_video.height - crop.bottom - crop.top
+            if (crop.top + crop.left + crop.right + crop.bottom) == 0:
+                return None
+            try:
+                assert crop.top >= 0, t("Top must be positive number")
+                assert crop.left >= 0, t("Left must be positive number")
+                assert crop.width > 0, t("Total video width must be greater than 0")
+                assert crop.height > 0, t("Total video height must be greater than 0")
+                assert crop.width <= self.app.fastflix.current_video.width, t("Width must be smaller than video width")
+                assert crop.height <= self.app.fastflix.current_video.height, t(
+                    "Height must be smaller than video height"
+                )
+            except AssertionError as err:
+                error_message(f"{t('Invalid Crop')}: {err}")
+                return
+            return crop
 
     def keep_aspect_update(self) -> None:
         keep_aspect = self.widgets.scale.keep_aspect.isChecked()
@@ -937,8 +948,9 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.height.setDisabled(keep_aspect)
         height = self.app.fastflix.current_video.height
         width = self.app.fastflix.current_video.width
-        if self.build_crop():
-            width, height, *_ = (int(x) for x in self.build_crop().split(":"))
+        if crop := self.build_crop():
+            width = crop.width
+            height = crop.height
 
         if keep_aspect and (not height or not width):
             self.scale_updating = False
@@ -1122,8 +1134,9 @@ class Main(QtWidgets.QWidget):
         tasks = [
             Task(t("Parse Video details"), parse),
             Task(t("Extract covers"), extract_attachments),
-            Task(t("Determine HDR details"), parse_hdr_details),
             Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.input_video)),
+            Task(t("Determine HDR details"), parse_hdr_details),
+            Task(t("Detect HDR10+"), detect_hdr10_plus),
         ]
 
         try:
@@ -1560,7 +1573,13 @@ class Main(QtWidgets.QWidget):
             error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
         else:
             self.video_options.show_queue()
-            error_message(t("All queue items have completed"), title=t("Success"))
+            if reusables.win_based:
+                try:
+                    show_windows_notification("FastFlix", t("All queue items have completed"), icon_path=main_icon)
+                except Exception:
+                    message(t("All queue items have completed"), title=t("Success"))
+            else:
+                message(t("All queue items have completed"), title=t("Success"))
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_cancelled(self, data):

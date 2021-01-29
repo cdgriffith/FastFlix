@@ -156,7 +156,7 @@ class BackgroundRunner:
         self.started_at = None
 
     def kill(self, log=True):
-        if self.process_two and self.process.poll() is None:
+        if self.process_two and self.process_two.poll() is None:
             if log:
                 logger.info(f"Killing worker process {self.process_two.pid}")
             try:
@@ -165,6 +165,7 @@ class BackgroundRunner:
             except Exception as err:
                 if log:
                     logger.exception(f"Couldn't terminate process: {err}")
+
         if self.process and self.process.poll() is None:
             if log:
                 logger.info(f"Killing worker process {self.process.pid}")
@@ -193,23 +194,3 @@ class BackgroundRunner:
         if not self.process:
             return False
         self.process.resume()
-
-
-# if __name__ == "__main__":
-#     from queue import Queue
-#
-#     logging.basicConfig(level=logging.DEBUG)
-#     br = BackgroundRunner(Queue())
-#     import shutil
-#
-#     ffmpeg = shutil.which("ffmpeg")
-#     br.start_piped_exec(
-#         command_one=shlex.split(
-#             rf'"{ffmpeg}" -loglevel panic -i C:\\Users\\Chris\\scoob_short.mkv -c:v copy -vbsf hevc_mp4toannexb -f hevc -'
-#         ),
-#         command_two=shlex.split(r'"C:\\Users\\Chris\\ffmpeg\\hdr10plus_parser.exe" --verify -'),
-#         work_dir=r"C:\Users\Chris",
-#     )
-# import time
-# time.sleep(1)
-# br.read_output()

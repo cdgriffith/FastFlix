@@ -9,7 +9,7 @@ class AudioTrack(BaseModel):
     index: int
     outdex: int
     codec: str = ""
-    downmix: int = 0
+    downmix: Optional[str] = None
     title: str = ""
     language: str = ""
     conversion_bitrate: str = ""
@@ -71,6 +71,40 @@ class x264Settings(EncoderSettings):
     pix_fmt: str = "yuv420p"
     crf: Optional[Union[int, float]] = 23
     bitrate: Optional[str] = None
+
+
+class FFmpegNVENCSettings(EncoderSettings):
+    name = "HEVC (NVENC)"
+    preset: str = "slow"
+    profile: str = "main"
+    tune: str = "hq"
+    pix_fmt: str = "p010le"
+    bitrate: Optional[str] = "6000k"
+    qp: Optional[str] = None
+    cq: int = 0
+    spatial_aq: int = 0
+    rc_lookahead: int = 0
+    rc: Optional[str] = None
+    tier: str = "main"
+    level: Optional[str] = None
+    gpu: int = -1
+    b_ref_mode: str = "disabled"
+
+
+class NVEncCSettings(EncoderSettings):
+    name = "HEVC (NVEncC)"
+    preset: str = "quality"
+    profile: str = "main"
+    bitrate: Optional[str] = "6000k"
+    qp: Optional[str] = None
+    cq: int = 0
+    spatial_aq: bool = True
+    lookahead: Optional[int] = None
+    tier: str = "high"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    multipass: str = "2pass-full"
+    mv_precision: str = "auto"
 
 
 class rav1eSettings(EncoderSettings):

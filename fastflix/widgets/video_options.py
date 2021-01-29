@@ -139,7 +139,17 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.main.container.profile.update_settings()
 
     def reload(self):
-        self.current_settings.reload()
+        self.change_conversion(self.app.fastflix.current_video.video_settings.video_encoder_settings.name)
+        self.main.widgets.convert_to.setCurrentIndex(
+            list(self.app.fastflix.encoders.keys()).index(
+                self.app.fastflix.current_video.video_settings.video_encoder_settings.name
+            )
+        )
+        try:
+            self.current_settings.reload()
+        except Exception:
+            logger.exception("Should not have happened, could not reload from queue")
+            return
         if self.app.fastflix.current_video:
             streams = copy.deepcopy(self.app.fastflix.current_video.streams)
             settings = copy.deepcopy(self.app.fastflix.current_video.video_settings)

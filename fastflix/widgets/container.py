@@ -18,6 +18,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
 from fastflix.resources import main_icon
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message
+from fastflix.windows_tools import cleanup_windows_notification
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -33,6 +34,7 @@ class Container(QtWidgets.QMainWindow):
     def __init__(self, app: FastFlixApp, **kwargs):
         super().__init__(None)
         self.app = app
+        self.pb = None
 
         self.logs = Logs()
         self.changes = Changes()
@@ -50,6 +52,11 @@ class Container(QtWidgets.QMainWindow):
         self.setWindowIcon(self.icon)
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+        if self.pb:
+            try:
+                self.pb.stop_signal.emit()
+            except Exception:
+                pass
         if self.main.converting:
             sm = QtWidgets.QMessageBox()
             sm.setText(f"<h2>{t('There is a conversion in process!')}</h2>")
@@ -73,6 +80,7 @@ class Container(QtWidgets.QMainWindow):
                 shutil.rmtree(item, ignore_errors=True)
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
                 item.unlink()
+        cleanup_windows_notification()
         self.main.close(from_container=True)
         super(Container, self).closeEvent(a0)
 
@@ -190,7 +198,9 @@ class Container(QtWidgets.QMainWindow):
         ffmpeg = ffmpeg_folder / "ffmpeg.exe"
         ffprobe = ffmpeg_folder / "ffprobe.exe"
         try:
-            ProgressBar(self.app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True, can_cancel=True)
+            self.pb = ProgressBar(
+                self.app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True, can_cancel=True
+            )
         except FastFlixInternalException:
             pass
         except Exception as err:
@@ -201,12 +211,14 @@ class Container(QtWidgets.QMainWindow):
             else:
                 self.app.fastflix.config.ffmpeg = ffmpeg
                 self.app.fastflix.config.ffprobe = ffprobe
+        self.pb = None
 
     def clean_old_logs(self):
         try:
-            ProgressBar(self.app, [Task(t("Clean Old Logs"), clean_logs)], signal_task=True, can_cancel=False)
+            self.pb = ProgressBar(self.app, [Task(t("Clean Old Logs"), clean_logs)], signal_task=True, can_cancel=False)
         except Exception:
             error_message(t("Could not compress old logs"), traceback=True)
+        self.pb = None
 
 
 class OpenFolder(QtCore.QThread):

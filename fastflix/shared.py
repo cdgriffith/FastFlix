@@ -12,6 +12,7 @@ import pkg_resources
 import requests
 import reusables
 
+
 try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
     # noinspection PyUnresolvedReferences

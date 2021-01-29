@@ -12,6 +12,7 @@ from fastflix.models.encode import (
     AudioTrack,
     CopySettings,
     GIFSettings,
+    FFmpegNVENCSettings,
     SubtitleTrack,
     SVTAV1Settings,
     VP9Settings,
@@ -19,13 +20,23 @@ from fastflix.models.encode import (
     rav1eSettings,
     x264Settings,
     x265Settings,
+    NVEncCSettings,
 )
 
 __all__ = ["VideoSettings", "Status", "Video"]
 
 
+class Crop(BaseModel):
+    top: int = 0
+    right: int = 0
+    bottom: int = 0
+    left: int = 0
+    width: int = 0
+    height: int = 0
+
+
 class VideoSettings(BaseModel):
-    crop: Optional[str] = None
+    crop: Optional[Crop] = None
     start_time: Union[float, int] = 0
     end_time: Union[float, int] = 0
     fast_seek: bool = True
@@ -63,6 +74,8 @@ class VideoSettings(BaseModel):
         GIFSettings,
         WebPSettings,
         CopySettings,
+        FFmpegNVENCSettings,
+        NVEncCSettings,
     ] = None
     audio_tracks: List[AudioTrack] = Field(default_factory=list)
     subtitle_tracks: List[SubtitleTrack] = Field(default_factory=list)
@@ -93,6 +106,7 @@ class Video(BaseModel):
     # HDR10 Details
     master_display: Box = None
     cll: str = ""
+    hdr10_plus: bool = False
 
     video_settings: VideoSettings = Field(default_factory=VideoSettings)
     status: Status = Field(default_factory=Status)

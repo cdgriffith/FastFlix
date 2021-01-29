@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import uuid
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional
 
 import reusables
 from pydantic import BaseModel, Field
@@ -9,8 +9,8 @@ from pydantic import BaseModel, Field
 from fastflix.encoders.common.attachments import build_attachments
 from fastflix.encoders.common.audio import build_audio
 from fastflix.encoders.common.subtitles import build_subtitle
-from fastflix.models.base import BaseDataClass
 from fastflix.models.fastflix import FastFlix
+from fastflix.models.video import Crop
 
 null = "/dev/null"
 if reusables.win_based:
@@ -116,7 +116,7 @@ def generate_ending(
 def generate_filters(
     selected_track,
     source=None,
-    crop=None,
+    crop: Optional[Crop] = None,
     scale=None,
     scale_filter="lanczos",
     scale_width=None,
@@ -142,7 +142,7 @@ def generate_filters(
     if deinterlace:
         filter_list.append(f"yadif")
     if crop:
-        filter_list.append(f"crop={crop}")
+        filter_list.append(f"crop={crop.width}:{crop.height}:{crop.left}:{crop.right}")
     if scale:
         filter_list.append(f"scale={scale}:flags={scale_filter}")
     elif scale_width:

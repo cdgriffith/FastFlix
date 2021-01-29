@@ -12,7 +12,7 @@ def build(fastflix: FastFlix):
 
     beginning, ending = generate_all(fastflix, "libx264")
 
-    beginning += f'{f"-tune {settings.tune}" if settings.tune else ""} ' f"{generate_color_details(fastflix)} "
+    beginning += f'{f"-tune:v {settings.tune}" if settings.tune else ""} {generate_color_details(fastflix)} '
 
     if settings.profile and settings.profile != "default":
         beginning += f"-profile:v {settings.profile} "
@@ -22,11 +22,11 @@ def build(fastflix: FastFlix):
     if settings.bitrate:
         command_1 = (
             f"{beginning} -pass 1 "
-            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset {settings.preset} {settings.extra if settings.extra_both_passes else ""} -an -sn -dn -f mp4 {null}'
+            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} -an -sn -dn -f mp4 {null}'
         )
         command_2 = (
             f'{beginning} -pass 2 -passlogfile "{pass_log_file}" '
-            f"-b:v {settings.bitrate} -preset {settings.preset} {settings.extra} "
+            f"-b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} "
         ) + ending
         return [
             Command(command=re.sub("[ ]+", " ", command_1), name="First pass bitrate", exe="ffmpeg"),
@@ -34,7 +34,7 @@ def build(fastflix: FastFlix):
         ]
 
     elif settings.crf:
-        command = f"{beginning} -crf {settings.crf} " f"-preset {settings.preset} {settings.extra} {ending}"
+        command = f"{beginning} -crf:v {settings.crf} " f"-preset:v {settings.preset} {settings.extra} {ending}"
         return [Command(command=re.sub("[ ]+", " ", command), name="Single pass CRF", exe="ffmpeg")]
 
     else:

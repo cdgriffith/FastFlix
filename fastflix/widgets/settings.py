@@ -17,6 +17,7 @@ logger = logging.getLogger("fastflix")
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 known_language_list = ["English", "Chinese", "Italian", "French", "Spanish", "German"]
+possible_detect_points = ["1", "2", "4", "6", "8", "10", "15", "20", "25", "50", "100"]
 
 # "Japanese", "Korean", "Hindi", "Russian",  "Portuguese"
 
@@ -105,18 +106,30 @@ class Settings(QtWidgets.QWidget):
         self.flat_ui = QtWidgets.QCheckBox(t("Flat UI"))
         self.flat_ui.setChecked(self.app.fastflix.config.flat_ui)
 
+        self.crop_detect_points_widget = QtWidgets.QComboBox()
+        self.crop_detect_points_widget.addItems(possible_detect_points)
+
+        try:
+            self.crop_detect_points_widget.setCurrentIndex(
+                possible_detect_points.index(str(self.app.fastflix.config.crop_detect_points))
+            )
+        except ValueError:
+            self.crop_detect_points_widget.setCurrentIndex(5)
+
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
         layout.addWidget(self.disable_version_check, 8, 0, 1, 2)
         layout.addWidget(QtWidgets.QLabel(t("GUI Logging Level")), 9, 0)
         layout.addWidget(self.logger_level_widget, 9, 1)
         layout.addWidget(self.flat_ui, 10, 0, 1, 2)
+        layout.addWidget(QtWidgets.QLabel(t("Crop Detect Points")), 11, 0, 1, 1)
+        layout.addWidget(self.crop_detect_points_widget, 11, 1, 1, 1)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
         button_layout.addWidget(cancel)
         button_layout.addWidget(save)
 
-        layout.addLayout(button_layout, 11, 0, 1, 3)
+        layout.addLayout(button_layout, 12, 0, 1, 3)
 
         self.setLayout(layout)
 
@@ -153,6 +166,7 @@ class Settings(QtWidgets.QWidget):
         log_level = (self.logger_level_widget.currentIndex() + 1) * 10
         self.app.fastflix.config.logging_level = log_level
         logger.setLevel(log_level)
+        self.app.fastflix.config.crop_detect_points = int(self.crop_detect_points_widget.currentText())
 
         self.main.config_update()
         self.app.fastflix.config.save()
