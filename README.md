@@ -10,17 +10,15 @@ FastFlix keeps HDR10 metadata for x265, which will be expanded to AV1 libraries 
 
 It needs `FFmpeg` (version 4.3 or greater) under the hood for the heavy lifting, and can work with a variety of encoders.
 
-Please also grab [hdr10plus_parser](https://github.com/quietvoid/hdr10plus_parser/releases) and [mkvpropedit](https://mkvtoolnix.download/downloads.html) and make sure they are on the system path for full feature set. 
-
 **NEW**: Join us on [discord](https://discord.gg/GUBFP6f) or [reddit](https://www.reddit.com/r/FastFlix/)!
 
 Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki) for help or more details, and please report bugs or ideas in the [github issue tracker](https://github.com/cdgriffith/FastFlix/issues)!
 
 #  Encoders
 
- FastFlix supports the following encoders when their required libraries are found in FFmpeg:
+ FastFlix supports the following encoders if available:
 
-| Encoder   | x265 |  NVENC HEVC |NVEncC HEVC | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | WEBP | GIF |
+| Encoder   | x265 |  NVENC HEVC | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | WEBP | GIF |
 | --------- | ---- | ---------- | ----------- | ---- | ----- | ------- | ------- | --- | ---- | --- |
 | HDR10     |   ✓  |            |      ✓     |      |       |         |         |  ✓* |      |     |
 | HDR10+    |   ✓  |            |      ✓     |      |       |         |         |     |      |     |
@@ -30,14 +28,6 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 | bt.2020   |   ✓  |     ✓      |     ✓      |   ✓  |  ✓    |   ✓    |   ✓    |  ✓   |      |     |
 
 `✓ - Full support   |   ✓* - Limited support`
-
-All of these are currently supported by [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) which is the default FFmpeg downloaded.
-
-Most other builds do not have all these encoders available by default and may require custom compiling FFmpeg for a specific encoder.
-
-* [Windows FFmpeg (and more) auto builder](https://github.com/m-ab-s/media-autobuild_suite)
-* [Windows cross compile FFmpeg (build on linux)](https://github.com/rdp/ffmpeg-windows-build-helpers)
-* [FFmpeg compilation guide](https://trac.ffmpeg.org/wiki/CompilationGuide)
 
 # Releases
 

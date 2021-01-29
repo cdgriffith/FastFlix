@@ -17,7 +17,8 @@ from fastflix.models.config import setting_types
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
 from fastflix.resources import main_icon
-from fastflix.shared import clean_logs, error_message, latest_fastflix, message, cleanup_windows_notification
+from fastflix.shared import clean_logs, error_message, latest_fastflix, message
+from fastflix.windows_tools import cleanup_windows_notification
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs

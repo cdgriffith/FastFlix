@@ -42,7 +42,8 @@ from fastflix.resources import (
     video_add_icon,
     video_playlist_icon,
 )
-from fastflix.shared import error_message, message, time_to_number, yes_no_message, show_windows_notification
+from fastflix.shared import error_message, message, time_to_number, yes_no_message
+from fastflix.windows_tools import show_windows_notification
 from fastflix.widgets.background_tasks import SubtitleFix, ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.video_options import VideoOptions
