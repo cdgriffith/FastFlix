@@ -2809,3 +2809,23 @@ Min Q:
   eng: Min Q
 Max Q:
   eng: Max Q
+Crop Detect Points:
+  eng: Crop Detect Points
+VBR Target:
+  eng: VBR Target
+Level:
+  eng: Level
+Set the encoding level restriction:
+  eng: Set the encoding level restriction
+B Frames:
+  eng: B Frames
+Ref Frames:
+  eng: Ref Frames
+B Ref Mode:
+  eng: B Ref Mode
+Use B frames as references:
+  eng: Use B frames as references
+Metrics:
+  eng: Metrics
+Calculate PSNR and SSIM and show in the encoder output:
+  eng: Calculate PSNR and SSIM and show in the encoder output

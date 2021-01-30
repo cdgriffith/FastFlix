@@ -85,6 +85,8 @@ class NVENCC(SettingPanel):
         grid.addLayout(self.init_multipass(), 6, 0, 1, 2)
 
         qp_line = QtWidgets.QHBoxLayout()
+        qp_line.addLayout(self.init_vbr_target())
+        qp_line.addStretch(1)
         qp_line.addLayout(self.init_init_q())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_min_q())
@@ -94,11 +96,16 @@ class NVENCC(SettingPanel):
         grid.addLayout(qp_line, 4, 2, 1, 4)
 
         advanced = QtWidgets.QHBoxLayout()
-        advanced.addLayout(self.init_level())
+        advanced.addLayout(self.init_ref())
         advanced.addStretch(1)
+        advanced.addLayout(self.init_b_frames())
+        advanced.addStretch(1)
+        advanced.addLayout(self.init_level())
         # a.addLayout(self.init_gpu())
-        # a.addStretch(1)
-        # a.addLayout(self.init_b_ref_mode())
+        advanced.addStretch(1)
+        advanced.addLayout(self.init_b_ref_mode())
+        advanced.addStretch(1)
+        advanced.addLayout(self.init_metrics())
         grid.addLayout(advanced, 5, 2, 1, 4)
 
         grid.addLayout(self.init_dhdr10_info(), 6, 2, 1, 3)
@@ -183,7 +190,7 @@ class NVENCC(SettingPanel):
             label="Multipass",
             tooltip="",
             widget_name="multipass",
-            options=["none", "2pass-quarter", "2pass-full"],
+            options=["None", "2pass-quarter", "2pass-full"],
             opt="multipass",
         )
 
@@ -192,7 +199,7 @@ class NVENCC(SettingPanel):
             label="Motion vector accuracy",
             tooltip="Q-pel is highest precision",
             widget_name="mv_precision",
-            options=["auto", "Q-pel", "half-pel", "full-pel"],
+            options=[t("Auto"), "Q-pel", "half-pel", "full-pel"],
             opt="mv_precision",
         )
 
@@ -210,7 +217,22 @@ class NVENCC(SettingPanel):
             label="Level",
             tooltip="Set the encoding level restriction",
             widget_name="level",
-            options=["auto", "1.0", "2.0", "2.1", "3.0", "3.1", "4.0", "4.1", "5.0", "5.1", "5.2", "6.0", "6.1", "6.2"],
+            options=[
+                t("Auto"),
+                "1.0",
+                "2.0",
+                "2.1",
+                "3.0",
+                "3.1",
+                "4.0",
+                "4.1",
+                "5.0",
+                "5.1",
+                "5.2",
+                "6.0",
+                "6.1",
+                "6.2",
+            ],
             opt="level",
         )
         self.widgets.level.setMinimumWidth(60)
@@ -234,8 +256,8 @@ class NVENCC(SettingPanel):
             widget_name="b_ref_mode",
             opt="b_ref_mode",
             options=["disabled", "each", "middle"],
+            min_width=60,
         )
-        self.widgets.gpu.setMinimumWidth(50)
         return layout
 
     @staticmethod
@@ -245,26 +267,61 @@ class NVENCC(SettingPanel):
     def init_min_q(self):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Min Q")))
-        layout.addWidget(self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), min_width=40))
-        layout.addWidget(self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), min_width=40))
-        layout.addWidget(self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), min_width=40))
+        layout.addWidget(self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), min_width=45))
+        layout.addWidget(self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), min_width=45))
+        layout.addWidget(self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), min_width=45))
         return layout
 
     def init_init_q(self):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Init Q")))
-        layout.addWidget(self._add_combo_box(widget_name="init_q_i", options=["I"] + self._qp_range(), min_width=40))
-        layout.addWidget(self._add_combo_box(widget_name="init_q_p", options=["P"] + self._qp_range(), min_width=40))
-        layout.addWidget(self._add_combo_box(widget_name="init_q_b", options=["B"] + self._qp_range(), min_width=40))
+        layout.addWidget(self._add_combo_box(widget_name="init_q_i", options=["I"] + self._qp_range(), min_width=45))
+        layout.addWidget(self._add_combo_box(widget_name="init_q_p", options=["P"] + self._qp_range(), min_width=45))
+        layout.addWidget(self._add_combo_box(widget_name="init_q_b", options=["B"] + self._qp_range(), min_width=45))
         return layout
 
     def init_max_q(self):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Max Q")))
-        layout.addWidget(self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), min_width=40))
-        layout.addWidget(self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), min_width=40))
-        layout.addWidget(self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), min_width=40))
+        layout.addWidget(self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), min_width=45))
+        layout.addWidget(self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), min_width=45))
+        layout.addWidget(self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), min_width=45))
         return layout
+
+    def init_vbr_target(self):
+        return self._add_combo_box(
+            widget_name="vbr_target",
+            label="VBR Target",
+            options=[t("Auto")] + self._qp_range(),
+            opt="vbr_target",
+            min_width=60,
+        )
+
+    def init_b_frames(self):
+        return self._add_combo_box(
+            widget_name="b_frames",
+            label="B Frames",
+            options=[t("Auto"), "0", "1", "2", "3", "4", "5", "6"],
+            opt="b_frames",
+            min_width=60,
+        )
+
+    def init_ref(self):
+        return self._add_combo_box(
+            widget_name="ref",
+            label="Ref Frames",
+            options=[t("Auto"), "0", "1", "2", "3", "4", "5", "6"],
+            opt="ref",
+            min_width=60,
+        )
+
+    def init_metrics(self):
+        return self._add_check_box(
+            widget_name="metrics",
+            opt="metrics",
+            label="Metrics",
+            tooltip="Calculate PSNR and SSIM and show in the encoder output",
+        )
 
     def init_dhdr10_info(self):
         layout = self._add_file_select(
@@ -343,7 +400,12 @@ class NVENCC(SettingPanel):
             # rc=self.widgets.rc.currentText() if self.widgets.rc.currentIndex() != 0 else None,
             # spatial_aq=self.widgets.spatial_aq.currentIndex(),
             # rc_lookahead=int(self.widgets.rc_lookahead.text() or 0),
+            metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
+            b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
+            ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
+            vbr_target=self.widgets.vbr_target.currentText() if self.widgets.vbr_target.currentIndex() > 0 else None,
+            b_ref_mode=self.widgets.b_ref_mode.currentText(),
             # gpu=int(self.widgets.gpu.currentText() or -1) if self.widgets.gpu.currentIndex() != 0 else -1,
             # b_ref_mode=self.widgets.b_ref_mode.currentText(),
         )
@@ -357,7 +419,7 @@ class NVENCC(SettingPanel):
         for group in ("init", "max", "min"):
             for frame_type in ("i", "p", "b"):
                 self.widgets[f"{group}_q_{frame_type}"].setEnabled(self.mode.lower() == "bitrate")
-
+        self.widgets.vbr_target.setEnabled(self.mode.lower() == "bitrate")
         self.main.build_commands()
 
     def new_source(self):

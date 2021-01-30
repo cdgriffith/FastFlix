@@ -123,6 +123,10 @@ def build(fastflix: FastFlix):
     if video.video_settings.crop:
         crop = f"--crop {video.video_settings.crop.left},{video.video_settings.crop.top},{video.video_settings.crop.right},{video.video_settings.crop.bottom}"
 
+    vbv = ""
+    if video.video_settings.maxrate:
+        vbv = f"--max-bitrate {video.video_settings.maxrate} --vbv-bufsize {video.video_settings.bufsize}"
+
     command = [
         f'"{unixy(fastflix.config.nvencc)}"',
         "-i",
@@ -138,10 +142,15 @@ def build(fastflix: FastFlix):
         ("--chapter-copy" if video.video_settings.copy_chapters else ""),
         "-c",
         "hevc",
-        (f"--vbr {settings.bitrate}" if settings.bitrate else f"--cqp {settings.cqp}"),
+        (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
+        vbv,
+        (f"--vbr-target {settings.vbr_target}" if settings.vbr_target is not None else ""),
         (f"--qp-init {settings.init_q}" if settings.init_q else ""),
         (f"--qp-min {settings.min_q}" if settings.min_q else ""),
         (f"--qp-max {settings.max_q}" if settings.max_q else ""),
+        (f"--bframes {settings.b_frames}" if settings.b_frames else ""),
+        (f"--ref {settings.ref}" if settings.ref else ""),
+        f"--bref-mode {settings.b_ref_mode}",
         "--preset",
         settings.preset,
         "--profile",
@@ -175,6 +184,7 @@ def build(fastflix: FastFlix):
         (f"--output-res {video.video_settings.scale}" if video.video_settings.scale else ""),
         (f"--vpp-colorspace hdr2sdr=mobius" if video.video_settings.remove_hdr else ""),
         remove_hdr,
+        "--psnr --ssim" if settings.metrics else "",
         build_audio(video.video_settings.audio_tracks),
         build_subtitle(video.video_settings.subtitle_tracks),
         settings.extra,

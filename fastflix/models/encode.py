@@ -108,6 +108,11 @@ class NVEncCSettings(EncoderSettings):
     init_q: Optional[str] = None
     min_q: Optional[str] = None
     max_q: Optional[str] = None
+    vbr_target: Optional[str] = None
+    b_frames: Optional[str] = None
+    b_ref_mode: str = "disabled"
+    ref: Optional[str] = None
+    metrics: bool = True
 
 
 class rav1eSettings(EncoderSettings):
