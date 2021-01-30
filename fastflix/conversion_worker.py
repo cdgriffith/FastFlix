@@ -5,12 +5,22 @@ from queue import Empty
 
 import reusables
 from appdirs import user_data_dir
+from filelock import FileLock
+from box import Box
 
 from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
 from fastflix.shared import file_date
+from fastflix.models.queue import STATUS, REQUEST, QueueItem, Queue
 
 logger = logging.getLogger("fastflix-core")
+
+log_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "logs"
+after_done_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "after_done_logs"
+
+queue_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "queue.yaml"
+queue_lock_file = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "queue.lock"
+
 
 CONTINUOUS = 0x80000000
 SYSTEM_REQUIRED = 0x00000001
@@ -51,8 +61,6 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
     gui_died = False
     currently_encoding = False
     paused = False
-    log_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "logs"
-    after_done_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "after_done_logs"
 
     def start_command():
         nonlocal currently_encoding

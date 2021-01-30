@@ -1,11 +1,12 @@
 appdirs
 colorama
 coloredlogs
+filelock
 iso639-lang
 mistune
 psutil
 pydantic
-pyside2
+pyqt5
 python-box
 qtpy
 requests

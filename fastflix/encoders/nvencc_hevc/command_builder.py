@@ -2,6 +2,7 @@
 import re
 import secrets
 from typing import List, Tuple, Union
+import logging
 
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
 from fastflix.models.encode import NVEncCSettings
@@ -10,6 +11,8 @@ from fastflix.models.fastflix import FastFlix
 from fastflix.flix import unixy
 
 lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
+
+logger = logging.getLogger("fastflix")
 
 
 def build_audio(audio_tracks):
@@ -59,6 +62,12 @@ def build(fastflix: FastFlix):
     # beginning += f'{f"-tune:v {settings.tune}" if settings.tune else ""} {generate_color_details(fastflix)} -spatial_aq:v {settings.spatial_aq} -tier:v {settings.tier} -rc-lookahead:v {settings.rc_lookahead} -gpu {settings.gpu} -b_ref_mode {settings.b_ref_mode} '
 
     # --profile main10 --tier main
+
+    video_track = 0
+    for i, track in enumerate(video.streams.video):
+        if int(track.index) == video.video_settings.selected_track:
+            video_track = i
+
     master_display = None
     if fastflix.current_video.master_display:
         master_display = (
@@ -77,7 +86,25 @@ def build(fastflix: FastFlix):
     if settings.hdr10plus_metadata:
         dhdr = f'--dhdr10-info "{settings.hdr10plus_metadata}"'
 
-    # TODO trim
+    trim = ""
+    try:
+        rate = video.average_frame_rate or video.frame_rate
+        if "/" in rate:
+            over, under = [int(x) for x in rate.split("/")]
+            rate = over / under
+        else:
+            rate = float(rate)
+    except Exception:
+        logger.exception("Could not get framerate of this movie!")
+    else:
+        if video.video_settings.end_time:
+            end_frame = int(video.video_settings.end_time * rate)
+            start_frame = 0
+            if video.video_settings.start_time:
+                start_frame = int(video.video_settings.start_time * rate)
+            trim = f"--trim {start_frame}:{end_frame}"
+        elif video.video_settings.start_time:
+            trim = f"--seek {video.video_settings.start_time}"
 
     transform = ""
     if video.video_settings.vertical_flip or video.video_settings.horizontal_flip:
@@ -100,23 +127,29 @@ def build(fastflix: FastFlix):
         f'"{unixy(fastflix.config.nvencc)}"',
         "-i",
         f'"{unixy(video.source)}"',
-        (f"--seek {video.video_settings.start_time}" if video.video_settings.start_time else ""),
+        f"--video-streamid {video_track}",
+        trim,
         (f"--vpp-rotate {video.video_settings.rotate}" if video.video_settings.rotate else ""),
         transform,
-        (f'--scale {video.video_settings.scale.replace(":", "x")}' if video.video_settings.scale else ""),
+        (f'--output-res {video.video_settings.scale.replace(":", "x")}' if video.video_settings.scale else ""),
         crop,
+        (f"--video-metadata 1?clear" if video.video_settings.remove_metadata else "--video-metadata 1?copy"),
+        (f'--video-metadata 1?title="{video.video_settings.video_title}"' if video.video_settings.video_title else ""),
+        ("--chapter-copy" if video.video_settings.copy_chapters else ""),
         "-c",
         "hevc",
-        "--vbr",
-        settings.bitrate,
+        (f"--vbr {settings.bitrate}" if settings.bitrate else f"--cqp {settings.cqp}"),
+        (f"--qp-init {settings.init_q}" if settings.init_q else ""),
+        (f"--qp-min {settings.min_q}" if settings.min_q else ""),
+        (f"--qp-max {settings.max_q}" if settings.max_q else ""),
         "--preset",
         settings.preset,
         "--profile",
         settings.profile,
         "--tier",
         settings.tier,
-        f'{f"--lookahead {settings.lookahead}" if settings.lookahead else ""}',
-        f'{"--aq" if settings.spatial_aq else "--no-aq"}',
+        (f"--lookahead {settings.lookahead}" if settings.lookahead else ""),
+        ("--aq" if settings.spatial_aq else "--no-aq"),
         "--colormatrix",
         (video.video_settings.color_space or "auto"),
         "--transfer",
@@ -127,7 +160,7 @@ def build(fastflix: FastFlix):
         (max_cll if max_cll else ""),
         (dhdr if dhdr else ""),
         "--output-depth",
-        ("10" if video.current_video_stream.bit_depth > 8 else "8"),
+        ("10" if video.current_video_stream.bit_depth > 8 and not video.video_settings.remove_hdr else "8"),
         "--multipass",
         settings.multipass,
         "--mv-precision",
@@ -137,8 +170,8 @@ def build(fastflix: FastFlix):
         "--colorrange",
         "auto",
         f"--avsync {'cfr' if video.frame_rate == video.average_frame_rate else 'vfr'}",
-        f'{f"--interlace {video.interlaced}" if video.interlaced else ""}',
-        f'{"--vpp-yadif" if video.video_settings.deinterlace else ""}',
+        (f"--interlace {video.interlaced}" if video.interlaced else ""),
+        ("--vpp-yadif" if video.video_settings.deinterlace else ""),
         (f"--output-res {video.video_settings.scale}" if video.video_settings.scale else ""),
         (f"--vpp-colorspace hdr2sdr=mobius" if video.video_settings.remove_hdr else ""),
         remove_hdr,

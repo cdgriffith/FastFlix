@@ -24,16 +24,18 @@ def build(fastflix: FastFlix):
 
     beginning = re.sub("[ ]+", " ", beginning)
 
-    details = f"-quality {settings.quality} -speed {settings.speed} -profile:v {settings.profile}"
+    details = f"-quality:v {settings.quality} -profile:v {settings.profile} -tile-columns:v {settings.tile_columns} -tile-rows:v {settings.tile_rows} "
 
     if settings.bitrate:
-        command_1 = f"{beginning} -b:v {settings.bitrate} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f webm {null}"
-        command_2 = f"{beginning} -b:v {settings.bitrate} {details} -pass 2 {settings.extra} {ending}"
+        command_1 = f"{beginning} -speed:v {'4' if settings.fast_first_pass else settings.speed} -b:v {settings.bitrate} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f webm {null}"
+        command_2 = (
+            f"{beginning} -speed:v {settings.speed} -b:v {settings.bitrate} {details} -pass 2 {settings.extra} {ending}"
+        )
 
     elif settings.crf:
-        command_1 = f"{beginning} -b:v 0 -crf {settings.crf} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f webm {null}"
+        command_1 = f"{beginning} -b:v 0 -crf:v {settings.crf} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f webm {null}"
         command_2 = (
-            f"{beginning} -b:v 0 -crf {settings.crf} {details} "
+            f"{beginning} -b:v 0 -crf:v {settings.crf} {details} "
             f'{"-pass 2" if not settings.single_pass else ""} {settings.extra} {ending}'
         )
 

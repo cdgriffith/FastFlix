@@ -62,15 +62,27 @@ class SettingPanel(QtWidgets.QWidget):
         return opt
 
     def _add_combo_box(
-        self, label, options, widget_name, opt=None, connect="default", enabled=True, default=0, tooltip=""
+        self,
+        options,
+        widget_name,
+        label=None,
+        opt=None,
+        connect="default",
+        enabled=True,
+        default=0,
+        tooltip="",
+        min_width=None,
     ):
         layout = QtWidgets.QHBoxLayout()
-        self.labels[widget_name] = QtWidgets.QLabel(t(label))
-        if tooltip:
-            self.labels[widget_name].setToolTip(self.translate_tip(tooltip))
+        if label:
+            self.labels[widget_name] = QtWidgets.QLabel(t(label))
+            if tooltip:
+                self.labels[widget_name].setToolTip(self.translate_tip(tooltip))
 
         self.widgets[widget_name] = QtWidgets.QComboBox()
         self.widgets[widget_name].addItems(options)
+        if min_width:
+            self.widgets[widget_name].setMinimumWidth(min_width)
 
         if opt:
             default = self.determine_default(
@@ -90,6 +102,9 @@ class SettingPanel(QtWidgets.QWidget):
                 self.widgets[widget_name].currentIndexChanged.connect(lambda: self.page_update())
             else:
                 self.widgets[widget_name].currentIndexChanged.connect(connect)
+
+        if not label:
+            return self.widgets[widget_name]
 
         layout.addWidget(self.labels[widget_name])
         layout.addWidget(self.widgets[widget_name])

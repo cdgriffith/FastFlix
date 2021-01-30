@@ -435,7 +435,7 @@ class AudioList(FlixList):
             track.widgets.enable_check.setChecked(enabled)
             if enabled:
                 existing_track = [x for x in original_tracks if x.index == track.index][0]
-                track.widgets.downmix.setCurrentIndex(existing_track.downmix)
+                track.widgets.downmix.setCurrentText(existing_track.downmix)
                 track.widgets.convert_to.setCurrentText(existing_track.conversion_codec)
                 track.widgets.convert_bitrate.setCurrentText(existing_track.conversion_bitrate)
                 track.widgets.title.setText(existing_track.title)

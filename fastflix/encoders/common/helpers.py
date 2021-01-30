@@ -119,8 +119,6 @@ def generate_filters(
     crop: Optional[Crop] = None,
     scale=None,
     scale_filter="lanczos",
-    scale_width=None,
-    scale_height=None,
     remove_hdr=False,
     rotate=0,
     vertical_flip=None,
@@ -142,13 +140,9 @@ def generate_filters(
     if deinterlace:
         filter_list.append(f"yadif")
     if crop:
-        filter_list.append(f"crop={crop.width}:{crop.height}:{crop.left}:{crop.right}")
+        filter_list.append(f"crop={crop['width']}:{crop['height']}:{crop['left']}:{crop['top']}")
     if scale:
         filter_list.append(f"scale={scale}:flags={scale_filter}")
-    elif scale_width:
-        filter_list.append(f"scale={scale_width}:-8:flags={scale_filter}")
-    elif scale_height:
-        filter_list.append(f"scale=-8:{scale_height}:flags={scale_filter}")
     if rotate:
         if rotate < 3:
             filter_list.append(f"transpose={rotate}")

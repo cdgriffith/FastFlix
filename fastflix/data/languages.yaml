@@ -2803,3 +2803,9 @@ NVEncC Options:
   eng: NVEncC Options
 'NVEncC Encoder support is still experimental!':
   eng: 'NVEncC Encoder support is still experimental!'
+Init Q:
+  eng: Init Q
+Min Q:
+  eng: Min Q
+Max Q:
+  eng: Max Q

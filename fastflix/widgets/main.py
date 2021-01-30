@@ -1074,19 +1074,18 @@ class Main(QtWidgets.QWidget):
         self.widgets.video_track.clear()
         self.widgets.video_track.addItems(text_video_tracks)
 
-        if self.app.fastflix.current_video.video_settings.crop:
-            width, height, left, top = self.app.fastflix.current_video.video_settings.crop.split(":")
-            right = str(self.app.fastflix.current_video.width - (int(width) + int(left)))
-            bottom = str(self.app.fastflix.current_video.height - (int(height) + int(top)))
-        else:
-            top, left, right, bottom = "0", "0", "0", "0"
-
         end_time = self.app.fastflix.current_video.video_settings.end_time or video.duration
 
-        self.widgets.crop.top.setText(top)
-        self.widgets.crop.left.setText(left)
-        self.widgets.crop.right.setText(right)
-        self.widgets.crop.bottom.setText(bottom)
+        if self.app.fastflix.current_video.video_settings.crop:
+            self.widgets.crop.top.setText(str(self.app.fastflix.current_video.video_settings.crop.top))
+            self.widgets.crop.left.setText(str(self.app.fastflix.current_video.video_settings.crop.left))
+            self.widgets.crop.right.setText(str(self.app.fastflix.current_video.video_settings.crop.right))
+            self.widgets.crop.bottom.setText(str(self.app.fastflix.current_video.video_settings.crop.bottom))
+        else:
+            self.widgets.crop.top.setText("0")
+            self.widgets.crop.left.setText("0")
+            self.widgets.crop.right.setText("0")
+            self.widgets.crop.bottom.setText("0")
         self.widgets.start_time.setText(self.number_to_time(video.video_settings.start_time))
         self.widgets.end_time.setText(self.number_to_time(end_time))
         self.widgets.video_title.setText(self.app.fastflix.current_video.video_settings.video_title)
@@ -1298,7 +1297,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.preview.setText(t("Error Updating Thumbnail"))
             return
         pixmap = QtGui.QPixmap(str(self.thumb_file))
-        pixmap = pixmap.scaled(320, 213, QtCore.Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(320, 190, QtCore.Qt.KeepAspectRatio)
         self.widgets.preview.setPixmap(pixmap)
 
     def build_scale(self):

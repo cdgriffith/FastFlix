@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+from typing import List, Optional
 
 from box import Box
 from qtpy import QtCore, QtWidgets, QtGui
@@ -18,17 +19,17 @@ logger = logging.getLogger("fastflix")
 presets = ["default", "performance", "quality"]
 
 recommended_bitrates = [
-    "800k   (320x240p @ 30fps)",
-    "1000k  (640x360p @ 30fps)",
-    "1500k  (640x480p @ 30fps)",
-    "2000k  (1280x720p @ 30fps)",
-    "5000k  (1280x720p @ 60fps)",
-    "6000k  (1080p @ 30fps)",
-    "9000k  (1080p @ 60fps)",
-    "15000k (1440p @ 30fps)",
-    "25000k (1440p @ 60fps)",
-    "35000k (2160p @ 30fps)",
-    "50000k (2160p @ 60fps)",
+    "200k     (320x240p @ 30fps)",
+    "300k     (640x360p @ 30fps)",
+    "1000k   (640x480p @ 30fps)",
+    "1750k   (1280x720p @ 30fps)",
+    "2500k   (1280x720p @ 60fps)",
+    "4000k   (1920x1080p @ 30fps)",
+    "5000k   (1920x1080p @ 60fps)",
+    "7000k   (2560x1440p @ 30fps)",
+    "10000k (2560x1440p @ 60fps)",
+    "15000k (3840x2160p @ 30fps)",
+    "20000k (3840x2160p @ 60fps)",
     "Custom",
 ]
 
@@ -51,8 +52,6 @@ recommended_crfs = [
     "Custom",
 ]
 
-pix_fmts = ["8-bit: yuv420p", "10-bit: p010le"]
-
 
 class NVENCC(SettingPanel):
     profile_name = "nvencc_hevc"
@@ -67,10 +66,10 @@ class NVENCC(SettingPanel):
 
         self.widgets = Box(mode=None)
 
-        self.mode = "CRF"
+        self.mode = "Bitrate"
         self.updating_settings = False
 
-        grid.addLayout(self.init_modes(), 0, 2, 3, 4)
+        grid.addLayout(self.init_modes(), 0, 2, 4, 4)
         grid.addLayout(self._add_custom(title="Custom NVEncC options", disable_both_passes=True), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
@@ -85,18 +84,25 @@ class NVENCC(SettingPanel):
         grid.addLayout(self.init_mv_precision(), 5, 0, 1, 2)
         grid.addLayout(self.init_multipass(), 6, 0, 1, 2)
 
-        grid.addLayout(self.init_dhdr10_info(), 4, 2, 1, 3)
-        grid.addLayout(self.init_dhdr10_warning_and_opt(), 4, 5, 1, 1)
+        qp_line = QtWidgets.QHBoxLayout()
+        qp_line.addLayout(self.init_init_q())
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_min_q())
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_max_q())
 
-        # a = QtWidgets.QHBoxLayout()
-        # a.addLayout(self.init_rc_lookahead())
-        # a.addStretch(1)
-        # a.addLayout(self.init_level())
-        # a.addStretch(1)
+        grid.addLayout(qp_line, 4, 2, 1, 4)
+
+        advanced = QtWidgets.QHBoxLayout()
+        advanced.addLayout(self.init_level())
+        advanced.addStretch(1)
         # a.addLayout(self.init_gpu())
         # a.addStretch(1)
         # a.addLayout(self.init_b_ref_mode())
-        # grid.addLayout(a, 3, 2, 1, 4)
+        grid.addLayout(advanced, 5, 2, 1, 4)
+
+        grid.addLayout(self.init_dhdr10_info(), 6, 2, 1, 3)
+        grid.addLayout(self.init_dhdr10_warning_and_opt(), 6, 5, 1, 1)
 
         grid.setRowStretch(9, 1)
 
@@ -232,6 +238,34 @@ class NVENCC(SettingPanel):
         self.widgets.gpu.setMinimumWidth(50)
         return layout
 
+    @staticmethod
+    def _qp_range():
+        return [str(x) for x in range(0, 52)]
+
+    def init_min_q(self):
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(QtWidgets.QLabel(t("Min Q")))
+        layout.addWidget(self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), min_width=40))
+        layout.addWidget(self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), min_width=40))
+        layout.addWidget(self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), min_width=40))
+        return layout
+
+    def init_init_q(self):
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(QtWidgets.QLabel(t("Init Q")))
+        layout.addWidget(self._add_combo_box(widget_name="init_q_i", options=["I"] + self._qp_range(), min_width=40))
+        layout.addWidget(self._add_combo_box(widget_name="init_q_p", options=["P"] + self._qp_range(), min_width=40))
+        layout.addWidget(self._add_combo_box(widget_name="init_q_b", options=["B"] + self._qp_range(), min_width=40))
+        return layout
+
+    def init_max_q(self):
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(QtWidgets.QLabel(t("Max Q")))
+        layout.addWidget(self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), min_width=40))
+        layout.addWidget(self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), min_width=40))
+        layout.addWidget(self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), min_width=40))
+        return layout
+
     def init_dhdr10_info(self):
         layout = self._add_file_select(
             label="HDR10+ Metadata",
@@ -260,14 +294,14 @@ class NVENCC(SettingPanel):
         return layout
 
     def init_modes(self):
-        layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="qp", add_qp=False)
-        self.qp_radio.setChecked(False)
-        self.bitrate_radio.setChecked(True)
-        self.qp_radio.setDisabled(True)
+        layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="cqp")
+        # self.qp_radio.setChecked(False)
+        # self.bitrate_radio.setChecked(True)
+        # self.qp_radio.setDisabled(True)
         return layout
 
     def mode_update(self):
-        self.widgets.custom_qp.setDisabled(self.widgets.qp.currentText() != "Custom")
+        self.widgets.custom_cqp.setDisabled(self.widgets.cqp.currentText() != "Custom")
         self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
         self.main.build_commands()
 
@@ -280,6 +314,14 @@ class NVENCC(SettingPanel):
             self.main.page_update()
         self.updating_settings = False
 
+    def gather_q(self, group) -> Optional[str]:
+        if self.mode.lower() != "bitrate":
+            return None
+        if self.widgets[f"{group}_q_i"].currentIndex() > 0:
+            if self.widgets[f"{group}_q_p"].currentIndex() > 0 and self.widgets[f"{group}_q_b"].currentIndex() > 0:
+                return f'{self.widgets[f"{group}_q_i"].currentText()}:{self.widgets[f"{group}_q_p"].currentText()}:{self.widgets[f"{group}_q_b"].currentText()}'
+            return self.widgets[f"{group}_q_i"].currentText()
+
     def update_video_encoder_settings(self):
 
         settings = NVEncCSettings(
@@ -291,24 +333,31 @@ class NVENCC(SettingPanel):
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
             multipass=self.widgets.multipass.currentText(),
             mv_precision=self.widgets.mv_precision.currentText(),
+            init_q=self.gather_q("init"),
+            min_q=self.gather_q("min"),
+            max_q=self.gather_q("max"),
             # pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
-            # extra=self.ffmpeg_extras,
+            extra=self.ffmpeg_extras,
             # tune=tune.split("-")[0].strip(),
             # extra_both_passes=self.widgets.extra_both_passes.isChecked(),
             # rc=self.widgets.rc.currentText() if self.widgets.rc.currentIndex() != 0 else None,
             # spatial_aq=self.widgets.spatial_aq.currentIndex(),
             # rc_lookahead=int(self.widgets.rc_lookahead.text() or 0),
-            # level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
+            level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             # gpu=int(self.widgets.gpu.currentText() or -1) if self.widgets.gpu.currentIndex() != 0 else -1,
             # b_ref_mode=self.widgets.b_ref_mode.currentText(),
         )
         encode_type, q_value = self.get_mode_settings()
-        settings.qp = q_value if encode_type == "qp" else None
+        settings.cqp = q_value if encode_type == "qp" else None
         settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def set_mode(self, x):
         self.mode = x.text()
+        for group in ("init", "max", "min"):
+            for frame_type in ("i", "p", "b"):
+                self.widgets[f"{group}_q_{frame_type}"].setEnabled(self.mode.lower() == "bitrate")
+
         self.main.build_commands()
 
     def new_source(self):

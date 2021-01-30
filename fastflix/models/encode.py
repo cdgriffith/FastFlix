@@ -96,7 +96,7 @@ class NVEncCSettings(EncoderSettings):
     preset: str = "quality"
     profile: str = "main"
     bitrate: Optional[str] = "6000k"
-    qp: Optional[str] = None
+    cqp: Optional[str] = None
     cq: int = 0
     spatial_aq: bool = True
     lookahead: Optional[int] = None
@@ -105,6 +105,9 @@ class NVEncCSettings(EncoderSettings):
     hdr10plus_metadata: str = ""
     multipass: str = "2pass-full"
     mv_precision: str = "auto"
+    init_q: Optional[str] = None
+    min_q: Optional[str] = None
+    max_q: Optional[str] = None
 
 
 class rav1eSettings(EncoderSettings):
@@ -139,6 +142,9 @@ class VP9Settings(EncoderSettings):
     single_pass: bool = False
     crf: Optional[Union[int, float]] = 31
     bitrate: Optional[str] = None
+    fast_first_pass: Optional[bool] = True
+    tile_columns: str = "-1"
+    tile_rows: str = "-1"
 
 
 class AOMAV1Settings(EncoderSettings):
