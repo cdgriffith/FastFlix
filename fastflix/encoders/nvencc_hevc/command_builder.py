@@ -18,8 +18,12 @@ logger = logging.getLogger("fastflix")
 def build_audio(audio_tracks):
     command_list = []
     copies = []
+    track_ids = set()
 
     for track in audio_tracks:
+        if track.index in track_ids:
+            logger.warning("NVEncC does not support copy and duplicate of audio tracks!")
+        track_ids.add(track.index)
         if track.language:
             command_list.append(f"--audio-metadata {track.outdex}?language={track.language}")
         if not track.conversion_codec or track.conversion_codec == "none":
@@ -147,7 +151,7 @@ def build(fastflix: FastFlix):
         "hevc",
         (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
         vbv,
-        (f"--vbr-target {settings.vbr_target}" if settings.vbr_target is not None else ""),
+        (f"--vbr-quality {settings.vbr_target}" if settings.vbr_target is not None else ""),
         (f"--qp-init {settings.init_q}" if settings.init_q else ""),
         (f"--qp-min {settings.min_q}" if settings.min_q else ""),
         (f"--qp-max {settings.max_q}" if settings.max_q else ""),
