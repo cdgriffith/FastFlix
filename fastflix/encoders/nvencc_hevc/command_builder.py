@@ -88,12 +88,11 @@ def build(fastflix: FastFlix):
 
     trim = ""
     try:
-        rate = video.average_frame_rate or video.frame_rate
-        if "/" in rate:
-            over, under = [int(x) for x in rate.split("/")]
+        if "/" in video.frame_rate:
+            over, under = [int(x) for x in video.frame_rate.split("/")]
             rate = over / under
         else:
-            rate = float(rate)
+            rate = float(video.frame_rate)
     except Exception:
         logger.exception("Could not get framerate of this movie!")
     else:
@@ -105,6 +104,10 @@ def build(fastflix: FastFlix):
             trim = f"--trim {start_frame}:{end_frame}"
         elif video.video_settings.start_time:
             trim = f"--seek {video.video_settings.start_time}"
+
+    if (video.frame_rate != video.average_frame_rate) and trim:
+        logger.warning("Cannot use 'trim' when working with variable frame rate videos")
+        trim = ""
 
     transform = ""
     if video.video_settings.vertical_flip or video.video_settings.horizontal_flip:

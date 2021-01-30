@@ -1315,7 +1315,7 @@ class Main(QtWidgets.QWidget):
         end_time = self.end_time
         if self.end_time == float(self.app.fastflix.current_video.format.get("duration", 0)):
             end_time = 0
-        if self.end_time and self.end_time - 0.1 <= self.app.fastflix.current_video.duration <= self.end_time + 0.1:
+        if self.end_time and (self.end_time - 0.1 <= self.app.fastflix.current_video.duration <= self.end_time + 0.1):
             end_time = 0
 
         scale = self.build_scale()
