@@ -15,7 +15,6 @@ from fastflix.resources import loading_movie, warning_icon
 
 logger = logging.getLogger("fastflix")
 
-
 presets = ["default", "performance", "quality"]
 
 recommended_bitrates = [
@@ -267,25 +266,43 @@ class NVENCC(SettingPanel):
     def init_min_q(self):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Min Q")))
-        layout.addWidget(self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), min_width=45))
-        layout.addWidget(self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), min_width=45))
-        layout.addWidget(self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), min_width=45))
+        layout.addWidget(
+            self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), min_width=45, opt="min_q_i")
+        )
+        layout.addWidget(
+            self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), min_width=45, opt="min_q_p")
+        )
+        layout.addWidget(
+            self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), min_width=45, opt="min_q_b")
+        )
         return layout
 
     def init_init_q(self):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Init Q")))
-        layout.addWidget(self._add_combo_box(widget_name="init_q_i", options=["I"] + self._qp_range(), min_width=45))
-        layout.addWidget(self._add_combo_box(widget_name="init_q_p", options=["P"] + self._qp_range(), min_width=45))
-        layout.addWidget(self._add_combo_box(widget_name="init_q_b", options=["B"] + self._qp_range(), min_width=45))
+        layout.addWidget(
+            self._add_combo_box(widget_name="init_q_i", options=["I"] + self._qp_range(), min_width=45, opt="init_q_i")
+        )
+        layout.addWidget(
+            self._add_combo_box(widget_name="init_q_p", options=["P"] + self._qp_range(), min_width=45, opt="init_q_p")
+        )
+        layout.addWidget(
+            self._add_combo_box(widget_name="init_q_b", options=["B"] + self._qp_range(), min_width=45, opt="init_q_b")
+        )
         return layout
 
     def init_max_q(self):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Max Q")))
-        layout.addWidget(self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), min_width=45))
-        layout.addWidget(self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), min_width=45))
-        layout.addWidget(self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), min_width=45))
+        layout.addWidget(
+            self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), min_width=45, opt="max_q_i")
+        )
+        layout.addWidget(
+            self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), min_width=45, opt="max_q_p")
+        )
+        layout.addWidget(
+            self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), min_width=45, opt="max_q_b")
+        )
         return layout
 
     def init_vbr_target(self):
@@ -352,9 +369,6 @@ class NVENCC(SettingPanel):
 
     def init_modes(self):
         layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="cqp")
-        # self.qp_radio.setChecked(False)
-        # self.bitrate_radio.setChecked(True)
-        # self.qp_radio.setDisabled(True)
         return layout
 
     def mode_update(self):
@@ -393,21 +407,13 @@ class NVENCC(SettingPanel):
             init_q=self.gather_q("init"),
             min_q=self.gather_q("min"),
             max_q=self.gather_q("max"),
-            # pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             extra=self.ffmpeg_extras,
-            # tune=tune.split("-")[0].strip(),
-            # extra_both_passes=self.widgets.extra_both_passes.isChecked(),
-            # rc=self.widgets.rc.currentText() if self.widgets.rc.currentIndex() != 0 else None,
-            # spatial_aq=self.widgets.spatial_aq.currentIndex(),
-            # rc_lookahead=int(self.widgets.rc_lookahead.text() or 0),
             metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
             vbr_target=self.widgets.vbr_target.currentText() if self.widgets.vbr_target.currentIndex() > 0 else None,
             b_ref_mode=self.widgets.b_ref_mode.currentText(),
-            # gpu=int(self.widgets.gpu.currentText() or -1) if self.widgets.gpu.currentIndex() != 0 else -1,
-            # b_ref_mode=self.widgets.b_ref_mode.currentText(),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.cqp = q_value if encode_type == "qp" else None

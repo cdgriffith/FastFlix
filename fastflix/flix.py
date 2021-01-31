@@ -446,13 +446,15 @@ def parse_hdr_details(app: FastFlixApp, **_):
 
 
 def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
+    # TODO run this on video stream change
     if (
         not app.fastflix.current_video.master_display
         or not config.hdr10plus_parser
         or not config.hdr10plus_parser.exists()
     ):
-        return
 
+        return
+    logger.debug("checking for hdr10+")
     process = Popen(
         [
             config.ffmpeg,
@@ -460,7 +462,7 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
             "-i",
             unixy(app.fastflix.current_video.source),
             "-map",
-            f"0:v",
+            f"0:v:0",
             "-loglevel",
             "panic",
             "-c:v",

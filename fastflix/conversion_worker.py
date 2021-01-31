@@ -5,13 +5,12 @@ from queue import Empty
 
 import reusables
 from appdirs import user_data_dir
-from filelock import FileLock
 from box import Box
 
 from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
 from fastflix.shared import file_date
-from fastflix.models.queue import STATUS, REQUEST, Queue
+from fastflix.models.queue import get_queue, save_queue
 
 logger = logging.getLogger("fastflix-core")
 
@@ -49,6 +48,32 @@ def allow_sleep_mode():
             logger.exception("Could not allow system to resume sleep mode")
         else:
             logger.debug("System has been allowed to enter sleep mode again")
+
+
+def get_next_command_to_run():
+    queue = get_queue()
+    for video in queue:
+        if video.status.ready:
+            return video
+
+
+def set_status(current_video, completed=True, success=False, cancelled=False, errored=False):
+    queue = get_queue()
+    for video in queue:
+        if video.uuid == current_video.uuid:
+            if completed:
+                video.status.complete = True
+            if cancelled:
+                video.status.cancelled = True
+            if errored:
+                video.status.error = True
+            if success:
+                video.status.success = True
+            break
+    else:
+        logger.error(f"Could not find video in queue to update status of!\n {current_video}")
+        return
+    save_queue(queue)
 
 
 @reusables.log_exception(log="fastflix-core")

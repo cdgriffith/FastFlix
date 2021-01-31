@@ -23,7 +23,7 @@ from fastflix.models.encode import (
     NVEncCSettings,
 )
 
-__all__ = ["VideoSettings", "Status", "Video"]
+__all__ = ["VideoSettings", "Status", "Video", "Crop", "Status"]
 
 
 class Crop(BaseModel):
@@ -90,6 +90,10 @@ class Status(BaseModel):
     running: bool = False
     cancelled: bool = False
     current_command: int = 0
+
+    @property
+    def ready(self) -> bool:
+        return not self.success and not self.error and not self.complete and not self.running and not self.cancelled
 
 
 class Video(BaseModel):
