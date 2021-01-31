@@ -2829,3 +2829,5 @@ Metrics:
   eng: Metrics
 Calculate PSNR and SSIM and show in the encoder output:
   eng: Calculate PSNR and SSIM and show in the encoder output
+Extracting HDR10+ metadata:
+  eng: Extracting HDR10+ metadata

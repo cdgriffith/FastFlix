@@ -128,7 +128,7 @@ class ExtractHDR10(QtCore.QThread):
                 "-i",
                 str(self.app.fastflix.current_video.source).replace("\\", "/"),
                 "-map",
-                f"0:{self.app.fastflix.current_video.video_settings.selected_track}",
+                f"0:{self.app.fastflix.current_video.hdr10_plus}",
                 "-loglevel",
                 "panic",
                 "-c:v",
@@ -145,7 +145,7 @@ class ExtractHDR10(QtCore.QThread):
         )
 
         process_two = Popen(
-            ["hdr10plus_parser", "-o", str(output).replace("\\", "/"), "-"],
+            [self.app.fastflix.config.hdr10plus_parser, "-o", str(output).replace("\\", "/"), "-"],
             stdout=PIPE,
             stderr=PIPE,
             stdin=process.stdout,

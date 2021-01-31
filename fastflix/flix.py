@@ -446,7 +446,6 @@ def parse_hdr_details(app: FastFlixApp, **_):
 
 
 def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
-    # TODO run this on video stream change
     if (
         not app.fastflix.current_video.master_display
         or not config.hdr10plus_parser
@@ -454,42 +453,44 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
     ):
 
         return
-    logger.debug("checking for hdr10+")
-    process = Popen(
-        [
-            config.ffmpeg,
-            "-y",
-            "-i",
-            unixy(app.fastflix.current_video.source),
-            "-map",
-            f"0:v:0",
-            "-loglevel",
-            "panic",
-            "-c:v",
-            "copy",
-            "-vbsf",
-            "hevc_mp4toannexb",
-            "-f",
-            "hevc",
-            "-",
-        ],
-        stdout=PIPE,
-        stderr=PIPE,
-        stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
-    )
 
-    process_two = Popen(
-        [config.hdr10plus_parser, "--verify", "-"],
-        stdout=PIPE,
-        stderr=PIPE,
-        stdin=process.stdout,
-        encoding="utf-8",
-    )
+    for stream in app.fastflix.current_video.streams.video:
+        logger.debug(f"Checking for hdr10+ in stream {stream.index}")
+        process = Popen(
+            [
+                config.ffmpeg,
+                "-y",
+                "-i",
+                unixy(app.fastflix.current_video.source),
+                "-map",
+                f"0:{stream.index}",
+                "-loglevel",
+                "panic",
+                "-c:v",
+                "copy",
+                "-vbsf",
+                "hevc_mp4toannexb",
+                "-f",
+                "hevc",
+                "-",
+            ],
+            stdout=PIPE,
+            stderr=PIPE,
+            stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
+        )
 
-    try:
-        stdout, stderr = process_two.communicate()
-    except Exception:
-        logger.exception("Unexpected error while trying to detect HDR10+ metdata")
-    else:
-        if "Dynamic HDR10+ metadata detected." in stdout:
-            app.fastflix.current_video.hdr10_plus = True
+        process_two = Popen(
+            [config.hdr10plus_parser, "--verify", "-"],
+            stdout=PIPE,
+            stderr=PIPE,
+            stdin=process.stdout,
+            encoding="utf-8",
+        )
+
+        try:
+            stdout, stderr = process_two.communicate()
+        except Exception:
+            logger.exception(f"Unexpected error while trying to detect HDR10+ metadata in stream {stream.index}")
+        else:
+            if "Dynamic HDR10+ metadata detected." in stdout:
+                app.fastflix.current_video.hdr10_plus = stream.index

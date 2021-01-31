@@ -517,7 +517,7 @@ class HEVC(SettingPanel):
     def new_source(self):
         super().new_source()
         self.setting_change()
-        if self.app.fastflix.current_video.hdr10_plus:
+        if self.app.fastflix.current_video.hdr10_plus is not None:
             self.extract_button.show()
         else:
             self.extract_button.hide()
