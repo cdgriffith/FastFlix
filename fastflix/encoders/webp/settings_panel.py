@@ -31,20 +31,23 @@ class WEBP(SettingPanel):
         self.setLayout(grid)
 
     def init_lossless(self):
-        return self._add_combo_box("lossless", ["yes", "no"], "lossless", default=1)
+        return self._add_combo_box(label="lossless", options=["yes", "no"], widget_name="lossless", default=1)
 
     def init_compression(self):
         return self._add_combo_box(
-            "compression level",
-            ["0", "1", "2", "3", "4", "5", "6"],
-            "compression",
+            label="compression level",
+            options=["0", "1", "2", "3", "4", "5", "6"],
+            widget_name="compression",
             tooltip="For lossy, this is a quality/speed tradeoff.\nFor lossless, this is a size/speed tradeoff.",
             default=4,
         )
 
     def init_preset(self):
         return self._add_combo_box(
-            "preset", ["none", "default", "picture", "photo", "drawing", "icon", "text"], "preset", default=1
+            label="preset",
+            options=["none", "default", "picture", "photo", "drawing", "icon", "text"],
+            widget_name="preset",
+            default=1,
         )
 
     def init_modes(self):

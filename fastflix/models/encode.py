@@ -104,7 +104,7 @@ class NVEncCSettings(EncoderSettings):
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
     multipass: str = "2pass-full"
-    mv_precision: str = "auto"
+    mv_precision: str = "Auto"
     init_q: Optional[str] = None
     min_q: Optional[str] = None
     max_q: Optional[str] = None
@@ -179,3 +179,18 @@ class GIFSettings(EncoderSettings):
 
 class CopySettings(EncoderSettings):
     name = "Copy"
+
+
+setting_types = {
+    "x265": x265Settings,
+    "x264": x264Settings,
+    "rav1e": rav1eSettings,
+    "svt_av1": SVTAV1Settings,
+    "vp9": VP9Settings,
+    "aom_av1": AOMAV1Settings,
+    "gif": GIFSettings,
+    "webp": WebPSettings,
+    "copy_settings": CopySettings,
+    "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
+    "nvencc_hevc": NVEncCSettings,
+}

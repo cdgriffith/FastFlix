@@ -199,7 +199,7 @@ class NVENCC(SettingPanel):
             label="Motion vector accuracy",
             tooltip="Q-pel is highest precision",
             widget_name="mv_precision",
-            options=[t("Auto"), "Q-pel", "half-pel", "full-pel"],
+            options=["Auto", "Q-pel", "half-pel", "full-pel"],
             opt="mv_precision",
         )
 

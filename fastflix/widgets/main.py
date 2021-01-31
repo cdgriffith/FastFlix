@@ -1477,6 +1477,7 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def encode_video(self):
+        # from fastflix.models.queue import save_queue
 
         if self.converting:
             logger.debug(t("Canceling current encode"))
@@ -1493,7 +1494,7 @@ class Main(QtWidgets.QWidget):
             if add_current:
                 if not self.add_to_queue():
                     return
-
+        # save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
         # Command looks like (video_uuid, command_uuid, command, work_dir, filename)
         # Request looks like (queue command, log_dir, (commands))
         requests = ["add_items", str(self.app.fastflix.log_path)]
@@ -1560,6 +1561,8 @@ class Main(QtWidgets.QWidget):
             self.app.fastflix.worker_queue.put(tuple(requests))
 
         self.clear_current_video()
+        # from fastflix.models.queue import save_queue
+        # save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
         return True
 
     @reusables.log_exception("fastflix", show_traceback=False)

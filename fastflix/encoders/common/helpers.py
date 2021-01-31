@@ -17,23 +17,10 @@ if reusables.win_based:
     null = "NUL"
 
 
-class Loop:
-    item = "loop"
-
-    def __init__(self, condition, commands, dirs=(), files=(), name="", ensure_paths=()):
-        self.name = name
-        self.condition = condition
-        self.commands = commands
-        self.ensure_paths = ensure_paths
-        self.dirs = dirs
-        self.files = files
-
-
 class Command(BaseModel):
     command: str
     item = "command"
     name: str = ""
-    ensure_paths: List = ()
     exe: str = None
     shell: bool = False
     uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))

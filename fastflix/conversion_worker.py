@@ -11,7 +11,7 @@ from box import Box
 from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
 from fastflix.shared import file_date
-from fastflix.models.queue import STATUS, REQUEST, QueueItem, Queue
+from fastflix.models.queue import STATUS, REQUEST, Queue
 
 logger = logging.getLogger("fastflix-core")
 
