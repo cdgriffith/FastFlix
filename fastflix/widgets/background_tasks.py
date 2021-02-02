@@ -109,17 +109,20 @@ class ExtractSubtitleSRT(QtCore.QThread):
 
 
 class ExtractHDR10(QtCore.QThread):
-    def __init__(self, app: FastFlixApp, main, signal):
+    def __init__(self, app: FastFlixApp, main, signal, ffmpeg_signal):
         super().__init__(main)
         self.main = main
         self.app = app
         self.signal = signal
+        self.ffmpeg_signal = ffmpeg_signal
 
     def run(self):
 
         output = self.app.fastflix.current_video.work_path / "metadata.json"
 
         self.main.thread_logging_signal.emit(f'INFO:{t("Extracting HDR10+ metadata")} to {output}')
+
+        self.ffmpeg_signal.emit("Extracting HDR10+ metadata")
 
         process = Popen(
             [
@@ -129,8 +132,6 @@ class ExtractHDR10(QtCore.QThread):
                 str(self.app.fastflix.current_video.source).replace("\\", "/"),
                 "-map",
                 f"0:{self.app.fastflix.current_video.hdr10_plus}",
-                "-loglevel",
-                "panic",
                 "-c:v",
                 "copy",
                 "-vbsf",
@@ -140,8 +141,8 @@ class ExtractHDR10(QtCore.QThread):
                 "-",
             ],
             stdout=PIPE,
-            stderr=PIPE,
-            stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
+            stderr=open(self.app.fastflix.current_video.work_path / "out.txt", "wb"),
+            # stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
         )
 
         process_two = Popen(
@@ -152,6 +153,14 @@ class ExtractHDR10(QtCore.QThread):
             encoding="utf-8",
             cwd=str(self.app.fastflix.current_video.work_path),
         )
+
+        with open(self.app.fastflix.current_video.work_path / "out.txt", "r", encoding="utf-8") as f:
+            while True:
+                if process.poll() is not None or process_two.poll() is not None:
+                    break
+                if line := f.readline().rstrip():
+                    if line.startswith("frame"):
+                        self.ffmpeg_signal.emit(line)
 
         stdout, stderr = process_two.communicate()
         self.main.thread_logging_signal.emit(f"DEBUG: HDR10+ Extract: {stdout}")

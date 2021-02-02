@@ -55,6 +55,7 @@ recommended_crfs = [
 class NVENCC(SettingPanel):
     profile_name = "nvencc_hevc"
     hdr10plus_signal = QtCore.Signal(str)
+    hdr10plus_ffmpeg_signal = QtCore.Signal(str)
 
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
@@ -107,8 +108,10 @@ class NVENCC(SettingPanel):
         advanced.addLayout(self.init_metrics())
         grid.addLayout(advanced, 5, 2, 1, 4)
 
-        grid.addLayout(self.init_dhdr10_info(), 6, 2, 1, 3)
-        grid.addLayout(self.init_dhdr10_warning_and_opt(), 6, 5, 1, 1)
+        grid.addLayout(self.init_dhdr10_info(), 6, 2, 1, 4)
+
+        self.ffmpeg_level = QtWidgets.QLabel()
+        grid.addWidget(self.ffmpeg_level, 7, 2, 1, 4)
 
         grid.setRowStretch(9, 1)
 
@@ -128,6 +131,7 @@ class NVENCC(SettingPanel):
         self.setLayout(grid)
         self.hide()
         self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
+        self.hdr10plus_ffmpeg_signal.connect(lambda x: self.ffmpeg_level.setText(x))
 
     def init_preset(self):
         return self._add_combo_box(
@@ -348,11 +352,6 @@ class NVENCC(SettingPanel):
             tooltip="dhdr10_info: Path to HDR10+ JSON metadata file",
         )
         self.labels["hdr10plus_metadata"].setFixedWidth(200)
-        return layout
-
-    def init_dhdr10_warning_and_opt(self):
-        layout = QtWidgets.QHBoxLayout()
-
         self.extract_button = QtWidgets.QPushButton(t("Extract HDR10+"))
         self.extract_button.hide()
         self.extract_button.clicked.connect(self.extract_hdr10plus)
@@ -365,6 +364,7 @@ class NVENCC(SettingPanel):
 
         layout.addWidget(self.extract_button)
         layout.addWidget(self.extract_label)
+
         return layout
 
     def init_modes(self):
@@ -385,13 +385,13 @@ class NVENCC(SettingPanel):
             self.main.page_update()
         self.updating_settings = False
 
-    def gather_q(self, group) -> Optional[str]:
-        if self.mode.lower() != "bitrate":
-            return None
-        if self.widgets[f"{group}_q_i"].currentIndex() > 0:
-            if self.widgets[f"{group}_q_p"].currentIndex() > 0 and self.widgets[f"{group}_q_b"].currentIndex() > 0:
-                return f'{self.widgets[f"{group}_q_i"].currentText()}:{self.widgets[f"{group}_q_p"].currentText()}:{self.widgets[f"{group}_q_b"].currentText()}'
-            return self.widgets[f"{group}_q_i"].currentText()
+    # def gather_q(self, group) -> Optional[str]:
+    #     if self.mode.lower() != "bitrate":
+    #         return None
+    #     if self.widgets[f"{group}_q_i"].currentIndex() > 0:
+    #         if self.widgets[f"{group}_q_p"].currentIndex() > 0 and self.widgets[f"{group}_q_b"].currentIndex() > 0:
+    #             return f'{self.widgets[f"{group}_q_i"].currentText()}:{self.widgets[f"{group}_q_p"].currentText()}:{self.widgets[f"{group}_q_b"].currentText()}'
+    #         return self.widgets[f"{group}_q_i"].currentText()
 
     def update_video_encoder_settings(self):
 
@@ -404,9 +404,15 @@ class NVENCC(SettingPanel):
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
             multipass=self.widgets.multipass.currentText(),
             mv_precision=self.widgets.mv_precision.currentText(),
-            init_q=self.gather_q("init"),
-            min_q=self.gather_q("min"),
-            max_q=self.gather_q("max"),
+            init_q_i=self.widgets.init_q_i.currentText() if self.widgets.init_q_i.currentIndex() != 0 else None,
+            init_q_p=self.widgets.init_q_p.currentText() if self.widgets.init_q_p.currentIndex() != 0 else None,
+            init_q_b=self.widgets.init_q_b.currentText() if self.widgets.init_q_b.currentIndex() != 0 else None,
+            max_q_i=self.widgets.max_q_i.currentText() if self.widgets.max_q_i.currentIndex() != 0 else None,
+            max_q_p=self.widgets.max_q_p.currentText() if self.widgets.max_q_p.currentIndex() != 0 else None,
+            max_q_b=self.widgets.max_q_b.currentText() if self.widgets.max_q_b.currentIndex() != 0 else None,
+            min_q_i=self.widgets.min_q_i.currentText() if self.widgets.min_q_i.currentIndex() != 0 else None,
+            min_q_p=self.widgets.min_q_p.currentText() if self.widgets.min_q_p.currentIndex() != 0 else None,
+            min_q_b=self.widgets.min_q_b.currentText() if self.widgets.min_q_b.currentIndex() != 0 else None,
             extra=self.ffmpeg_extras,
             metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,

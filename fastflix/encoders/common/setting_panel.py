@@ -237,7 +237,9 @@ class SettingPanel(QtWidgets.QWidget):
         self.extract_label.show()
         self.movie.start()
         # self.extracting_hdr10 = True
-        self.extract_thrad = ExtractHDR10(self.app, self.main, signal=self.hdr10plus_signal)
+        self.extract_thrad = ExtractHDR10(
+            self.app, self.main, signal=self.hdr10plus_signal, ffmpeg_signal=self.hdr10plus_ffmpeg_signal
+        )
         self.extract_thrad.start()
 
     def done_hdr10plus_extract(self, metadata: str):
@@ -246,6 +248,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.movie.stop()
         if Path(metadata).exists():
             self.widgets.hdr10plus_metadata.setText(metadata)
+        self.ffmpeg_level.setText("")
 
     def dhdr10_update(self):
         dirname = Path(self.widgets.hdr10plus_metadata.text()).parent

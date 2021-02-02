@@ -134,6 +134,18 @@ def build(fastflix: FastFlix):
     if video.video_settings.maxrate:
         vbv = f"--max-bitrate {video.video_settings.maxrate} --vbv-bufsize {video.video_settings.bufsize}"
 
+    init_q = settings.init_q_i
+    if settings.init_q_i and settings.init_q_p and settings.init_q_b:
+        init_q = f"{settings.init_q_i}:{settings.init_q_p}:{settings.init_q_b}"
+
+    min_q = settings.min_q_i
+    if settings.min_q_i and settings.min_q_p and settings.min_q_b:
+        min_q = f"{settings.min_q_i}:{settings.min_q_p}:{settings.min_q_b}"
+
+    max_q = settings.max_q_i
+    if settings.max_q_i and settings.max_q_p and settings.max_q_b:
+        max_q = f"{settings.max_q_i}:{settings.max_q_p}:{settings.max_q_b}"
+
     command = [
         f'"{unixy(fastflix.config.nvencc)}"',
         "-i",
@@ -152,9 +164,9 @@ def build(fastflix: FastFlix):
         (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
         vbv,
         (f"--vbr-quality {settings.vbr_target}" if settings.vbr_target is not None else ""),
-        (f"--qp-init {settings.init_q}" if settings.init_q else ""),
-        (f"--qp-min {settings.min_q}" if settings.min_q else ""),
-        (f"--qp-max {settings.max_q}" if settings.max_q else ""),
+        (f"--qp-init {init_q}" if init_q else ""),
+        (f"--qp-min {min_q}" if min_q else ""),
+        (f"--qp-max {max_q}" if max_q else ""),
         (f"--bframes {settings.b_frames}" if settings.b_frames else ""),
         (f"--ref {settings.ref}" if settings.ref else ""),
         f"--bref-mode {settings.b_ref_mode}",

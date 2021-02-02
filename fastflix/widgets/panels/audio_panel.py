@@ -164,7 +164,7 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.convert_bitrate.setFixedWidth(70)
 
         self.widgets.convert_bitrate.addItems(
-            [f"{x}k" for x in range(32 * self.channels, (256 * self.channels) + 1, 32 * self.channels)]
+            [f"{x}k" for x in range(16 * self.channels, (256 * self.channels) + 1, 16 * self.channels)]
             if self.channels
             else [
                 "32k",
