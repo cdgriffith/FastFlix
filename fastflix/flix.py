@@ -454,6 +454,8 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
 
         return
 
+    hdr10plus_streams = []
+
     for stream in app.fastflix.current_video.streams.video:
         logger.debug(f"Checking for hdr10+ in stream {stream.index}")
         process = Popen(
@@ -493,4 +495,7 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
             logger.exception(f"Unexpected error while trying to detect HDR10+ metadata in stream {stream.index}")
         else:
             if "Dynamic HDR10+ metadata detected." in stdout:
-                app.fastflix.current_video.hdr10_plus = stream.index
+                hdr10plus_streams.append(stream.index)
+
+    if hdr10plus_streams:
+        app.fastflix.current_video.hdr10_plus = hdr10plus_streams

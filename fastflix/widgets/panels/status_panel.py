@@ -125,16 +125,6 @@ class StatusPanel(QtWidgets.QWidget):
     def update_title_bar(self):
         pass
 
-    def set_started_at(self, msg):
-        try:
-            started_at = datetime.datetime.fromisoformat(msg.split("|")[-1])
-        except Exception:
-            logger.exception("Unable to parse start time, assuming it was now")
-            self.started_at = datetime.datetime.now(datetime.timezone.utc)
-            return
-
-        self.started_at = started_at
-
     def update_time_elapsed(self):
         now = datetime.datetime.now(datetime.timezone.utc)
 
@@ -150,11 +140,9 @@ class StatusPanel(QtWidgets.QWidget):
 
         self.time_elapsed_label.setText(f"{t('Time Elapsed')}: {timedelta_to_str(time_elapsed)}")
 
-    def on_status_update(self, msg):
-        update_type = msg.split("|")[0]
-
-        if update_type == "running":
-            self.set_started_at(msg)
+    def on_status_update(self):
+        # If there was a status change, we need to restart ticker no matter what
+        self.started_at = datetime.datetime.now(datetime.timezone.utc)
 
     def close(self):
         self.ticker_thread.terminate()
@@ -240,13 +228,18 @@ class ElapsedTimeTicker(QtCore.QThread):
 
         logger.debug("Ticker thread stopped")
 
-    def on_status_update(self, msg):
-        update_type = msg.split("|")[0]
+    def on_status_update(self):
+        # update_type = msg.split("|")[0]
+        #
+        # if update_type in ("complete", "error", "cancelled", "converted"):
+        #     self.send_tick_signal = False
+        # else:
+        #     self.send_tick_signal = True
 
-        if update_type in ("complete", "error", "cancelled", "converted"):
-            self.send_tick_signal = False
-        else:
+        if self.parent.main.converting:
             self.send_tick_signal = True
+        else:
+            self.send_tick_signal = False
 
     def on_stop(self):
         self.stop_received = True

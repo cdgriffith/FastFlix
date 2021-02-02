@@ -89,6 +89,7 @@ class Status(BaseModel):
     complete: bool = False
     running: bool = False
     cancelled: bool = False
+    subtitle_fixed: bool = False
     current_command: int = 0
 
     @property
@@ -108,9 +109,9 @@ class Video(BaseModel):
     interlaced: bool = True
 
     # HDR10 Details
-    master_display: Box = None
-    cll: str = ""
-    hdr10_plus: Optional[int] = None
+    master_display: Optional[Box] = None
+    cll: Optional[str] = None
+    hdr10_plus: Optional[List[int]] = None
 
     video_settings: VideoSettings = Field(default_factory=VideoSettings)
     status: Status = Field(default_factory=Status)

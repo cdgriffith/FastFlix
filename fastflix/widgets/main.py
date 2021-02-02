@@ -32,6 +32,7 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
+from fastflix.models.queue import get_queue
 from fastflix.resources import (
     black_x_icon,
     folder_icon,
@@ -114,7 +115,7 @@ class Main(QtWidgets.QWidget):
     thumbnail_complete = QtCore.Signal(int)
     cancelled = QtCore.Signal(str)
     close_event = QtCore.Signal()
-    status_update_signal = QtCore.Signal(str)
+    status_update_signal = QtCore.Signal()
     thread_logging_signal = QtCore.Signal(str)
 
     def __init__(self, parent, app: FastFlixApp):
@@ -1552,7 +1553,7 @@ class Main(QtWidgets.QWidget):
         video = self.app.fastflix.current_video
 
         self.app.fastflix.queue.append(copy.deepcopy(video))
-        self.video_options.update_queue(currently_encoding=self.converting)
+        self.video_options.update_queue()
         self.video_options.show_queue()
 
         if self.converting:
@@ -1570,6 +1571,8 @@ class Main(QtWidgets.QWidget):
         self.converting = False
         self.paused = False
         self.set_convert_button()
+
+        self.video_options.update_queue()
 
         if return_code:
             error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
@@ -1589,11 +1592,15 @@ class Main(QtWidgets.QWidget):
         self.paused = False
         self.set_convert_button()
 
+        self.app.fastflix.queue = get_queue()
+
         try:
-            video_uuid, command_uuid, *_ = data.split("|")
+            video_uuid, *_ = data.split("|")
             cancelled_video = self.find_video(video_uuid)
         except Exception:
             return
+
+        self.video_options.update_queue()
 
         if self.video_options.queue.paused:
             self.video_options.queue.pause_resume_queue()
@@ -1647,53 +1654,64 @@ class Main(QtWidgets.QWidget):
     def dragMoveEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignoreAF()
 
-    def status_update(self, status):
-        logger.debug(f"Updating status from command worker: {status}")
-        try:
-            command, video_uuid, command_uuid, *_ = status.split("|")
-        except ValueError:
-            logger.exception(f"Could not process status update from the command worker: {status}")
-            return
+    def status_update(self):
+        logger.debug(f"Updating queue from command worker")
 
-        try:
-            video = self.find_video(video_uuid)
-            command_index = self.find_command(video, command_uuid)
-        except FlixError as err:
-            logger.error(f"Could not update queue status due to not found video/command - {err}")
-            return
-
-        if command == "converted":
-            if command_index == len(video.video_settings.conversion_commands):
-                video.status.complete = True
-                video.status.success = True
-                video.status.running = False
+        self.app.fastflix.queue = get_queue()
+        for video in self.app.fastflix.queue:
+            if video.status.complete and not video.status.subtitle_fixed:
                 if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
                     if mkv_prop_edit := shutil.which("mkvpropedit"):
                         worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
                         worker.start()
-                self.video_options.update_queue(currently_encoding=self.converting)
-            else:
-                logger.error(f"This should not happen? {status} - {video}")
 
-        elif command == "running":
-            video.status.current_command = command_index
-            video.status.running = True
-            self.video_options.update_queue(currently_encoding=self.converting)
+        self.video_options.update_queue()
 
-        elif command == "error":
-            video.status.error = True
-            video.status.running = False
-            self.video_options.update_queue(currently_encoding=self.converting)
-
-        elif command == "cancelled":
-            video.status.cancelled = True
-            video.status.running = False
-            self.video_options.update_queue(currently_encoding=self.converting)
-
-        elif command in ("paused encode", "resumed encode"):
-            pass
-        else:
-            logger.warning(f"status worker received unknown command: {command}")
+        # try:
+        #     command, video_uuid, command_uuid, *_ = status.split("|")
+        # except ValueError:
+        #     logger.exception(f"Could not process status update from the command worker: {status}")
+        #     return
+        # #
+        # try:
+        #     video = self.find_video(video_uuid)
+        #     command_index = self.find_command(video, command_uuid)
+        # except FlixError as err:
+        #     logger.error(f"Could not update queue status due to not found video/command - {err}")
+        #     return
+        #
+        # if command == "converted":
+        #     if command_index == len(video.video_settings.conversion_commands):
+        #         video.status.complete = True
+        #         video.status.success = True
+        #         video.status.running = False
+        #         if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
+        #             if mkv_prop_edit := shutil.which("mkvpropedit"):
+        #                 worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
+        #                 worker.start()
+        #         self.video_options.update_queue(currently_encoding=self.converting)
+        #     else:
+        #         logger.error(f"This should not happen? {status} - {video}")
+        #
+        # elif command == "running":
+        #     video.status.current_command = command_index
+        #     video.status.running = True
+        #     self.video_options.update_queue(currently_encoding=self.converting)
+        #
+        # elif command == "error":
+        #     video.status.error = True
+        #     video.status.running = False
+        #     self.video_options.update_queue(currently_encoding=self.converting)
+        #
+        # elif command == "cancelled":
+        #     video.status.cancelled = True
+        #     video.status.running = False
+        #     self.video_options.update_queue(currently_encoding=self.converting)
+        #
+        # elif command in ("paused encode", "resumed encode"):
+        #     pass
+        # else:
+        #     logger.warning(f"status worker received unknown command: {command}")
 
     def find_video(self, uuid) -> Video:
         for video in self.app.fastflix.queue:
@@ -1722,19 +1740,21 @@ class Notifier(QtCore.QThread):
         while True:
             # Message looks like (command, video_uuid, command_uuid)
             status = self.status_queue.get()
+            if status[0] == "queue":
+                self.main.status_update_signal.emit()
             if status[0] == "complete":
                 self.main.completed.emit(0)
             elif status[0] == "error":
-                self.main.status_update_signal.emit("|".join(status))
+                # self.main.status_update_signal.emit("|".join(status))
                 self.main.completed.emit(1)
             elif status[0] == "cancelled":
                 self.main.cancelled.emit("|".join(status[1:]))
-                self.main.status_update_signal.emit("|".join(status))
+                # self.main.status_update_signal.emit("|".join(status))
             elif status[0] == "exit":
                 try:
                     self.terminate()
                 finally:
                     self.main.close_event.emit()
                 return
-            else:
-                self.main.status_update_signal.emit("|".join(status))
+            # else:
+            # self.main.status_update_signal.emit("|".join(status))

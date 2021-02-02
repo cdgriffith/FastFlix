@@ -175,7 +175,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.info.reset()
         self.debug.reset()
 
-    def update_queue(self, currently_encoding=False):
+    def update_queue(self):
         self.queue.new_source()
 
     def show_queue(self):

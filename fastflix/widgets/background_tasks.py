@@ -117,8 +117,19 @@ class ExtractHDR10(QtCore.QThread):
         self.ffmpeg_signal = ffmpeg_signal
 
     def run(self):
+        if not self.app.fastflix.current_video.hdr10_plus:
+            self.main.thread_logging_signal.emit("ERROR:No tracks have HDR10+ data to extract")
+            return
 
         output = self.app.fastflix.current_video.work_path / "metadata.json"
+
+        if (
+            self.app.fastflix.current_video.video_settings.selected_track
+            not in self.app.fastflix.current_video.hdr10_plus
+        ):
+            self.main.thread_logging_signal.emit(
+                "WARNING:Selected video track not detected to have HDR10+ data, trying anyways"
+            )
 
         self.main.thread_logging_signal.emit(f'INFO:{t("Extracting HDR10+ metadata")} to {output}')
 
@@ -131,7 +142,7 @@ class ExtractHDR10(QtCore.QThread):
                 "-i",
                 str(self.app.fastflix.current_video.source).replace("\\", "/"),
                 "-map",
-                f"0:{self.app.fastflix.current_video.hdr10_plus}",
+                f"0:{self.app.fastflix.current_video.video_settings.selected_track}",
                 "-c:v",
                 "copy",
                 "-vbsf",
@@ -141,7 +152,7 @@ class ExtractHDR10(QtCore.QThread):
                 "-",
             ],
             stdout=PIPE,
-            stderr=open(self.app.fastflix.current_video.work_path / "out.txt", "wb"),
+            stderr=open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "wb"),
             # stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
         )
 
@@ -154,7 +165,7 @@ class ExtractHDR10(QtCore.QThread):
             cwd=str(self.app.fastflix.current_video.work_path),
         )
 
-        with open(self.app.fastflix.current_video.work_path / "out.txt", "r", encoding="utf-8") as f:
+        with open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "r", encoding="utf-8") as f:
             while True:
                 if process.poll() is not None or process_two.poll() is not None:
                     break
