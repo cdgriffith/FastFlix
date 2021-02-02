@@ -1479,7 +1479,7 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def encode_video(self):
         # from fastflix.models.queue import save_queue
-
+        # TODO make sure there is a video that can be encoded
         if self.converting:
             logger.debug(t("Canceling current encode"))
             self.app.fastflix.worker_queue.put(["cancel"])
@@ -1499,12 +1499,8 @@ class Main(QtWidgets.QWidget):
         # Command looks like (video_uuid, command_uuid, command, work_dir, filename)
         # Request looks like (queue command, log_dir, (commands))
         requests = ["add_items", str(self.app.fastflix.log_path)]
-        commands = self.get_commands()
 
-        if not commands:
-            return error_message(t("No new items in queue to convert"))
-
-        requests.append(tuple(commands))
+        # TODO here check for videos if ready. Make shared function for ready?
 
         self.converting = True
         self.set_convert_button(False)
@@ -1594,16 +1590,19 @@ class Main(QtWidgets.QWidget):
 
         self.app.fastflix.queue = get_queue()
 
+        self.video_options.update_queue()
+
+        if self.video_options.queue.paused:
+            self.video_options.queue.pause_resume_queue()
+
+        if not data:
+            return
+
         try:
             video_uuid, *_ = data.split("|")
             cancelled_video = self.find_video(video_uuid)
         except Exception:
             return
-
-        self.video_options.update_queue()
-
-        if self.video_options.queue.paused:
-            self.video_options.queue.pause_resume_queue()
 
         if cancelled_video.video_settings.output_path.exists():
             sm = QtWidgets.QMessageBox()

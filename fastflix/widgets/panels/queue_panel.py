@@ -12,7 +12,15 @@ from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.models.queue import get_queue, save_queue
-from fastflix.resources import black_x_icon, down_arrow_icon, edit_box_icon, folder_icon, play_icon, up_arrow_icon
+from fastflix.resources import (
+    black_x_icon,
+    down_arrow_icon,
+    edit_box_icon,
+    folder_icon,
+    play_icon,
+    up_arrow_icon,
+    undo_icon,
+)
 from fastflix.shared import no_border, open_folder
 from fastflix.widgets.panels.abstract_list import FlixList
 
@@ -50,6 +58,7 @@ class EncodeItem(QtWidgets.QTabWidget):
             down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
             cancel_button=QtWidgets.QPushButton(QtGui.QIcon(black_x_icon), ""),
             reload_button=QtWidgets.QPushButton(QtGui.QIcon(edit_box_icon), ""),
+            retry_button=QtWidgets.QPushButton(QtGui.QIcon(undo_icon), ""),
         )
 
         for widget in self.widgets.values():
@@ -88,6 +97,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         open_button.setStyleSheet(no_border)
         view_button.setStyleSheet(no_border)
 
+        add_retry = False
         status = t("Ready to encode")
         if video.status.error:
             status = t("Encoding errored")
@@ -100,7 +110,7 @@ class EncodeItem(QtWidgets.QTabWidget):
             )
         elif video.status.cancelled:
             status = t("Cancelled")
-            # TODO add retry button
+            add_retry = True
 
         if not self.video.status.running:
             self.widgets.cancel_button.clicked.connect(lambda: self.parent.remove_item(self.video))
@@ -122,6 +132,10 @@ class EncodeItem(QtWidgets.QTabWidget):
         if video.status.complete:
             grid.addWidget(view_button, 0, 8)
             grid.addWidget(open_button, 0, 9)
+        elif add_retry:
+            grid.addWidget(self.widgets.retry_button, 0, 8)
+            self.widgets.retry_button.setFixedWidth(25)
+            self.widgets.retry_button.clicked.connect(lambda: self.parent.retry_video(self.video))
 
         right_buttons = QtWidgets.QHBoxLayout()
         right_buttons.addWidget(self.widgets.reload_button)
@@ -305,3 +319,12 @@ class EncodingQueue(FlixList):
             command = done_actions["linux"][option]
 
         self.app.fastflix.worker_queue.put(["set after done", command])
+
+    def retry_video(self, video):
+        for vid in self.app.fastflix.queue:
+            if vid.uuid == video.uuid:
+                vid.status.cancelled = False
+                vid.status.current_command = 0
+                break
+        save_queue(self.app.fastflix.queue)
+        self.new_source()

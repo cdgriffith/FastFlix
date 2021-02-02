@@ -75,6 +75,8 @@ def set_status(
     next_command=False,
     reset_commands=False,
 ):
+    if not current_video:
+        return
     queue = get_queue()
     for video in queue:
         if video.uuid == current_video.uuid:
@@ -235,10 +237,11 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             if request[0] == "cancel":
                 logger.debug(t("Cancel has been requested, killing encoding"))
                 runner.kill()
-                set_status(video, reset_commands=True, cancelled=True)
+                if video:
+                    set_status(video, reset_commands=True, cancelled=True)
                 currently_encoding = False
                 allow_sleep_mode()
-                status_queue.put(("cancelled", video.uuid))
+                status_queue.put(("cancelled", video.uuid if video else ""))
 
             if request[0] == "pause queue":
                 logger.debug(t("Command worker received request to pause encoding after the current item completes"))
