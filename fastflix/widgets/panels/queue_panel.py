@@ -42,7 +42,7 @@ done_actions = {
 
 
 class EncodeItem(QtWidgets.QTabWidget):
-    def __init__(self, parent, video: Video, index, first=False, currently_encoding=False):
+    def __init__(self, parent, video: Video, index, first=False):
         self.loading = True
         super().__init__(parent)
         self.parent = parent
@@ -50,7 +50,6 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.first = first
         self.last = False
         self.video = video
-        self.currently_encoding = currently_encoding
         self.setFixedHeight(60)
 
         self.widgets = Box(
@@ -63,8 +62,6 @@ class EncodeItem(QtWidgets.QTabWidget):
 
         for widget in self.widgets.values():
             widget.setStyleSheet(no_border)
-            # if self.currently_encoding:
-            #     widget.setDisabled(True)
 
         title = QtWidgets.QLabel(
             video.video_settings.video_title
@@ -165,11 +162,9 @@ class EncodeItem(QtWidgets.QTabWidget):
 
     def set_first(self, first=True):
         self.first = first
-        self.widgets.up_button.setDisabled(True if self.currently_encoding else self.first)
 
     def set_last(self, last=True):
         self.last = last
-        self.widgets.down_button.setDisabled(True if self.currently_encoding else self.last)
 
     def set_outdex(self, outdex):
         pass
@@ -258,7 +253,7 @@ class EncodingQueue(FlixList):
             track.close()
         self.tracks = []
         for i, video in enumerate(self.app.fastflix.queue, start=1):
-            self.tracks.append(EncodeItem(self, video, index=i, currently_encoding=self.encoding))
+            self.tracks.append(EncodeItem(self, video, index=i))
         super()._new_source(self.tracks)
 
     def clear_complete(self):

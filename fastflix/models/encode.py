@@ -95,7 +95,7 @@ class NVEncCSettings(EncoderSettings):
     name = "HEVC (NVEncC)"
     preset: str = "quality"
     profile: str = "main"
-    bitrate: Optional[str] = "6000k"
+    bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
     cq: int = 0
     spatial_aq: bool = True

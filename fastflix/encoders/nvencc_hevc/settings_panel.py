@@ -153,6 +153,7 @@ class NVENCC(SettingPanel):
         )
 
     def init_profile(self):
+        # TODO auto
         return self._add_combo_box(
             label="Profile_encoderopt",
             widget_name="profile",
@@ -177,6 +178,16 @@ class NVENCC(SettingPanel):
             widget_name="tier",
             options=["main", "high"],
             opt="tier",
+        )
+
+    def init_aq(self):
+        # TODO change to spatial or temporal
+        return self._add_combo_box(
+            label="Spatial AQ",
+            tooltip="",
+            widget_name="spatial_aq",
+            options=["off", "on"],
+            opt="spatial_aq",
         )
 
     def init_spatial_aq(self):
@@ -239,17 +250,6 @@ class NVENCC(SettingPanel):
             opt="level",
         )
         self.widgets.level.setMinimumWidth(60)
-        return layout
-
-    def init_gpu(self):
-        layout = self._add_combo_box(
-            label="GPU",
-            tooltip="Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on",
-            widget_name="gpu",
-            opt="gpu",
-            options=["any"] + [str(x) for x in range(8)],
-        )
-        self.widgets.gpu.setMinimumWidth(50)
         return layout
 
     def init_b_ref_mode(self):

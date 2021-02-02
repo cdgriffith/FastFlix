@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import re
-import secrets
-from typing import List, Tuple, Union
+from typing import List
 import logging
 
-from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
+from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import NVEncCSettings
 from fastflix.models.video import SubtitleTrack, Video
 from fastflix.models.fastflix import FastFlix
@@ -64,12 +62,6 @@ def build_subtitle(subtitle_tracks: List[SubtitleTrack]) -> str:
 def build(fastflix: FastFlix):
     video: Video = fastflix.current_video
     settings: NVEncCSettings = fastflix.current_video.video_settings.video_encoder_settings
-
-    # beginning, ending = generate_all(fastflix, "hevc_nvenc")
-
-    # beginning += f'{f"-tune:v {settings.tune}" if settings.tune else ""} {generate_color_details(fastflix)} -spatial_aq:v {settings.spatial_aq} -tier:v {settings.tier} -rc-lookahead:v {settings.rc_lookahead} -gpu {settings.gpu} -b_ref_mode {settings.b_ref_mode} '
-
-    # --profile main10 --tier main
 
     master_display = None
     if fastflix.current_video.master_display:
@@ -145,11 +137,21 @@ def build(fastflix: FastFlix):
     if settings.max_q_i and settings.max_q_p and settings.max_q_b:
         max_q = f"{settings.max_q_i}:{settings.max_q_p}:{settings.max_q_b}"
 
+    try:
+        stream_id = int(video.current_video_stream["id"], 16)
+    except Exception:
+        if len(video.streams.video) > 1:
+            logger.warning("Could not get stream ID from source, the proper video track may not be selected!")
+        stream_id = None
+
+    if video.current_video_stream.bit_depth > 8 and settings.profile != "main":
+        logger.warning("Profile should be set to 'main' for 8 bit videos")
+
     command = [
         f'"{unixy(fastflix.config.nvencc)}"',
         "-i",
         f'"{unixy(video.source)}"',
-        f"--video-streamid {int(video.current_video_stream['id'], 16)}",
+        (f"--video-streamid {stream_id}" if stream_id else ""),
         trim,
         (f"--vpp-rotate {video.video_settings.rotate}" if video.video_settings.rotate else ""),
         transform,
@@ -210,32 +212,3 @@ def build(fastflix: FastFlix):
     ]
 
     return [Command(command=" ".join(x for x in command if x), name="NVEncC Encode", exe="NVEncE")]
-
-
-# -i "Beverly Hills Duck Pond - HDR10plus - Jessica Payne.mp4" -c hevc --profile main10 --tier main --output-depth 10 --vbr 6000k --preset quality --multipass 2pass-full --aq --repeat-headers --colormatrix bt2020nc --transfer smpte2084 --colorprim bt2020 --lookahead 16 -o "nvenc-6000k.mkv"
-
-#
-# if settings.profile:
-#     beginning += f"-profile:v {settings.profile} "
-#
-# if settings.rc:
-#     beginning += f"-rc:v {settings.rc} "
-#
-# if settings.level:
-#     beginning += f"-level:v {settings.level} "
-#
-# pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
-#
-# command_1 = (
-#     f"{beginning} -pass 1 "
-#     f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} -2pass 1 '
-#     f'{settings.extra if settings.extra_both_passes else ""} -an -sn -dn -f mp4 {null}'
-# )
-# command_2 = (
-#     f'{beginning} -pass 2 -passlogfile "{pass_log_file}" -2pass 1 '
-#     f"-b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} "
-# ) + ending
-# return [
-#     Command(command=re.sub("[ ]+", " ", command_1), name="First pass bitrate", exe="ffmpeg"),
-#     Command(command=re.sub("[ ]+", " ", command_2), name="Second pass bitrate", exe="ffmpeg"),
-# ]
