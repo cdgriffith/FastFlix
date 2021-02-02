@@ -33,11 +33,15 @@ def build_audio(audio_tracks):
             bitrate = ""
             if track.conversion_codec not in lossless:
                 bitrate = f"--audio-bitrate {track.outdex}?{track.conversion_bitrate.rstrip('k')} "
-            command_list.append(f"{downmix} --audio-codec {track.outdex}?{track.conversion_codec} {bitrate}")
-        command_list.append(
-            f'--audio-metadata {track.outdex}?title="{track.title}" '
-            f'--audio-metadata {track.outdex}?handler="{track.title}" '
-        )
+            command_list.append(
+                f"{downmix} --audio-codec {track.outdex}?{track.conversion_codec} {bitrate} --audio-metadata {track.outdex}?clear"
+            )
+
+        if track.title:
+            command_list.append(
+                f'--audio-metadata {track.outdex}?title="{track.title}" '
+                f'--audio-metadata {track.outdex}?handler="{track.title}" '
+            )
 
     return f" --audio-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
 
@@ -66,11 +70,6 @@ def build(fastflix: FastFlix):
     # beginning += f'{f"-tune:v {settings.tune}" if settings.tune else ""} {generate_color_details(fastflix)} -spatial_aq:v {settings.spatial_aq} -tier:v {settings.tier} -rc-lookahead:v {settings.rc_lookahead} -gpu {settings.gpu} -b_ref_mode {settings.b_ref_mode} '
 
     # --profile main10 --tier main
-
-    video_track = 0
-    for i, track in enumerate(video.streams.video):
-        if int(track.index) == video.video_settings.selected_track:
-            video_track = i
 
     master_display = None
     if fastflix.current_video.master_display:
@@ -150,14 +149,14 @@ def build(fastflix: FastFlix):
         f'"{unixy(fastflix.config.nvencc)}"',
         "-i",
         f'"{unixy(video.source)}"',
-        f"--video-streamid {video_track}",
+        f"--video-streamid {int(video.current_video_stream['id'], 16)}",
         trim,
         (f"--vpp-rotate {video.video_settings.rotate}" if video.video_settings.rotate else ""),
         transform,
         (f'--output-res {video.video_settings.scale.replace(":", "x")}' if video.video_settings.scale else ""),
         crop,
-        (f"--video-metadata 1?clear" if video.video_settings.remove_metadata else "--video-metadata 1?copy"),
-        (f'--video-metadata 1?title="{video.video_settings.video_title}"' if video.video_settings.video_title else ""),
+        (f"--video-metadata clear" if video.video_settings.remove_metadata else "--video-metadata copy"),
+        (f'--video-metadata title="{video.video_settings.video_title}"' if video.video_settings.video_title else ""),
         ("--chapter-copy" if video.video_settings.copy_chapters else ""),
         "-c",
         "hevc",
@@ -200,7 +199,6 @@ def build(fastflix: FastFlix):
         f"--avsync {'cfr' if video.frame_rate == video.average_frame_rate else 'vfr'}",
         (f"--interlace {video.interlaced}" if video.interlaced else ""),
         ("--vpp-yadif" if video.video_settings.deinterlace else ""),
-        (f"--output-res {video.video_settings.scale}" if video.video_settings.scale else ""),
         (f"--vpp-colorspace hdr2sdr=mobius" if video.video_settings.remove_hdr else ""),
         remove_hdr,
         "--psnr --ssim" if settings.metrics else "",
@@ -211,7 +209,7 @@ def build(fastflix: FastFlix):
         f'"{unixy(video.video_settings.output_path)}"',
     ]
 
-    return [Command(command=" ".join(command), name="NVEncC Encode", exe="NVEncE")]
+    return [Command(command=" ".join(x for x in command if x), name="NVEncC Encode", exe="NVEncE")]
 
 
 # -i "Beverly Hills Duck Pond - HDR10plus - Jessica Payne.mp4" -c hevc --profile main10 --tier main --output-depth 10 --vbr 6000k --preset quality --multipass 2pass-full --aq --repeat-headers --colormatrix bt2020nc --transfer smpte2084 --colorprim bt2020 --lookahead 16 -o "nvenc-6000k.mkv"

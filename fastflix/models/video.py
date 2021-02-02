@@ -108,14 +108,26 @@ class Video(BaseModel):
     format: Box = None
     interlaced: bool = True
 
-    # HDR10 Details
-    master_display: Optional[Box] = None
-    cll: Optional[str] = None
+    hdr10_streams: List[Box] = Field(default_factory=list)
     hdr10_plus: Optional[List[int]] = None
 
     video_settings: VideoSettings = Field(default_factory=VideoSettings)
     status: Status = Field(default_factory=Status)
     uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
+    @property
+    def master_display(self) -> Optional[Box]:
+        for track in self.hdr10_streams:
+            if track.index == self.video_settings.selected_track:
+                return track["master_display"]
+        return None
+
+    @property
+    def cll(self) -> Optional[str]:
+        for track in self.hdr10_streams:
+            if track.index == self.video_settings.selected_track:
+                return track["cll"]
+        return None
 
     @property
     def current_video_stream(self):

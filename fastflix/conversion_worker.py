@@ -188,6 +188,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 currently_encoding = False
                 allow_sleep_mode()
                 logger.info(t("all conversions complete"))
+                status_queue.put(("complete",))
                 if after_done_command:
                     logger.info(f"{t('Running after done command:')} {after_done_command}")
                     try:

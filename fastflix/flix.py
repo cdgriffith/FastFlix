@@ -397,52 +397,54 @@ def parse_hdr_details(app: FastFlixApp, **_):
                     logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
                 else:
                     if master_display:
-                        app.fastflix.current_video.master_display = master_display
-                        app.fastflix.current_video.cll = cll
-                        return
+                        app.fastflix.current_video.hdr10_streams.append(
+                            Box(index=video_stream.index, master_display=master_display, cll=cll)
+                        )
+                        continue
 
-    result = execute(
-        [
-            f"{app.fastflix.config.ffprobe}",
-            "-loglevel",
-            "panic",
-            "-select_streams",
-            f"v:{video_track}",
-            "-print_format",
-            "json",
-            "-show_frames",
-            "-read_intervals",
-            "%+#1",
-            "-show_entries",
-            "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt",
-            f"{unixy(app.fastflix.current_video.source)}",
-        ]
-    )
+            result = execute(
+                [
+                    f"{app.fastflix.config.ffprobe}",
+                    "-loglevel",
+                    "panic",
+                    "-select_streams",
+                    f"v:{video_stream.index}",
+                    "-print_format",
+                    "json",
+                    "-show_frames",
+                    "-read_intervals",
+                    "%+#1",
+                    "-show_entries",
+                    "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt",
+                    f"{unixy(app.fastflix.current_video.source)}",
+                ]
+            )
 
-    try:
-        data = Box.from_json(result.stdout, default_box=True, default_box_attr="")
-    except BoxError:
-        # Could not parse details
-        logger.error(
-            "COULD NOT PARSE FFPROBE HDR METADATA, PLEASE OPEN ISSUE WITH THESE DETAILS:"
-            f"\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
-        )
-        return
-    if "frames" not in data or not len(data.frames):
-        return
-    data = data.frames[0]
-    if not data.get("side_data_list"):
-        return
+            try:
+                data = Box.from_json(result.stdout, default_box=True, default_box_attr="")
+            except BoxError:
+                # Could not parse details
+                logger.error(
+                    "COULD NOT PARSE FFPROBE HDR METADATA, PLEASE OPEN ISSUE WITH THESE DETAILS:"
+                    f"\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
+                )
+                continue
+            if "frames" not in data or not len(data.frames):
+                continue
+            data = data.frames[0]
+            if not data.get("side_data_list"):
+                continue
 
-    try:
-        master_display, cll = convert_mastering_display(data)
-    except FlixError as err:
-        logger.error(str(err))
-    except Exception:
-        logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
-    else:
-        app.fastflix.current_video.master_display = master_display
-        app.fastflix.current_video.cll = cll
+            try:
+                master_display, cll = convert_mastering_display(data)
+            except FlixError as err:
+                logger.error(str(err))
+            except Exception:
+                logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
+            else:
+                app.fastflix.current_video.hdr10_streams.append(
+                    Box(index=video_stream.index, master_display=master_display, cll=cll)
+                )
 
 
 def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
