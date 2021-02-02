@@ -421,6 +421,7 @@ class NVENCC(SettingPanel):
             vbr_target=self.widgets.vbr_target.currentText() if self.widgets.vbr_target.currentIndex() > 0 else None,
             b_ref_mode=self.widgets.b_ref_mode.currentText(),
         )
+
         encode_type, q_value = self.get_mode_settings()
         settings.cqp = q_value if encode_type == "qp" else None
         settings.bitrate = q_value if encode_type == "bitrate" else None

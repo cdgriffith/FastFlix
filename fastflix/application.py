@@ -59,19 +59,19 @@ def init_encoders(app: FastFlixApp, **_):
 
     encoders = [
         hevc_plugin,
-        avc_plugin,
-        gif_plugin,
-        vp9_plugin,
-        webp_plugin,
+        nvenc_plugin,
         av1_plugin,
         rav1e_plugin,
         svt_av1_plugin,
-        nvenc_plugin,
+        avc_plugin,
+        vp9_plugin,
+        gif_plugin,
+        webp_plugin,
         copy_plugin,
     ]
 
     if app.fastflix.config.nvencc:
-        encoders.insert(len(encoders) - 1, nvencc_plugin)
+        encoders.insert(1, nvencc_plugin)
 
     app.fastflix.encoders = {
         encoder.name: encoder

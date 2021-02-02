@@ -37,6 +37,7 @@ class Audio(QtWidgets.QTabWidget):
         codecs=(),
         channels=2,
         all_info=None,
+        disable_dup=False,
     ):
         self.loading = True
         super(Audio, self).__init__(parent)
@@ -104,6 +105,10 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.dup_button.clicked.connect(lambda: self.dup_me())
         self.widgets.dup_button.setFixedWidth(20)
+        if disable_dup:
+            self.widgets.dup_button.hide()
+            self.widgets.dup_button.setDisabled(True)
+
         self.widgets.delete_button.clicked.connect(lambda: self.del_me())
         self.widgets.delete_button.setFixedWidth(20)
 
@@ -351,6 +356,7 @@ class AudioList(FlixList):
     def new_source(self, codecs):
         self.tracks: List[Audio] = []
         self._first_selected = False
+        disable_dup = "nvencc" in self.main.convert_to.lower()
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
             track_info = ""
             tags = x.get("tags", {})
@@ -379,6 +385,7 @@ class AudioList(FlixList):
                 available_audio_encoders=self.available_audio_encoders,
                 enabled=self.lang_match(x),
                 all_info=x,
+                disable_dup=disable_dup,
             )
             self.tracks.append(new_item)
 
