@@ -3,6 +3,7 @@
 
 import copy
 import sys
+import logging
 
 import reusables
 from box import Box
@@ -23,6 +24,8 @@ from fastflix.resources import (
 )
 from fastflix.shared import no_border, open_folder
 from fastflix.widgets.panels.abstract_list import FlixList
+
+logger = logging.getLogger("fastflix")
 
 done_actions = {
     "linux": {
@@ -139,11 +142,6 @@ class EncodeItem(QtWidgets.QTabWidget):
         right_buttons.addWidget(self.widgets.cancel_button)
 
         grid.addLayout(right_buttons, 0, 10, alignment=QtCore.Qt.AlignRight)
-        # grid.addLayout(disposition_layout, 0, 4)
-        # grid.addWidget(self.widgets.burn_in, 0, 5)
-        # grid.addLayout(self.init_language(), 0, 6)
-        # # grid.addWidget(self.init_extract_button(), 0, 6)
-        # grid.addWidget(self.widgets.enable_check, 0, 8)
 
         self.setLayout(grid)
         self.loading = False

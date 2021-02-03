@@ -123,13 +123,12 @@ class ExtractHDR10(QtCore.QThread):
 
         output = self.app.fastflix.current_video.work_path / "metadata.json"
 
-        if (
-            self.app.fastflix.current_video.video_settings.selected_track
-            not in self.app.fastflix.current_video.hdr10_plus
-        ):
+        track = self.app.fastflix.current_video.video_settings.selected_track
+        if track not in self.app.fastflix.current_video.hdr10_plus:
             self.main.thread_logging_signal.emit(
-                "WARNING:Selected video track not detected to have HDR10+ data, trying anyways"
+                "WARNING:Selected video track not detected to have HDR10+ data, selecting first track that does"
             )
+            track = self.app.fastflix.current_video.hdr10_plus[0]
 
         self.main.thread_logging_signal.emit(f'INFO:{t("Extracting HDR10+ metadata")} to {output}')
 
@@ -142,7 +141,7 @@ class ExtractHDR10(QtCore.QThread):
                 "-i",
                 str(self.app.fastflix.current_video.source).replace("\\", "/"),
                 "-map",
-                f"0:{self.app.fastflix.current_video.video_settings.selected_track}",
+                f"0:{track}",
                 "-c:v",
                 "copy",
                 "-vbsf",

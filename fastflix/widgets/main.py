@@ -1207,11 +1207,17 @@ class Main(QtWidgets.QWidget):
 
     @property
     def video_track(self) -> int:
-        return int(self.widgets.video_track.currentIndex())
+        return self.widgets.video_track.currentIndex()
 
     @property
     def original_video_track(self) -> int:
-        return int(self.widgets.video_track.currentText().split(":", 1)[0])
+        if not self.app.fastflix.current_video or not self.widgets.video_track.currentText():
+            return 0
+        try:
+            return int(self.widgets.video_track.currentText().split(":", 1)[0])
+        except Exception:
+            logger.exception("Could not get original_video_track")
+            return 0
 
     @property
     def pix_fmt(self) -> str:
@@ -1258,9 +1264,9 @@ class Main(QtWidgets.QWidget):
         ):
             settings["remove_hdr"] = True
 
-        custom_filters = "scale='min(320\\,iw):-8'"
-        # if self.app.fastflix.current_video.color_transfer == "arib-std-b67":
-        custom_filters += ",select=eq(pict_type\\,I)"
+        custom_filters = "scale='min(720\\,iw):-8'"
+        if self.app.fastflix.current_video.color_transfer == "arib-std-b67":
+            custom_filters += ",select=eq(pict_type\\,I)"
 
         filters = helpers.generate_filters(custom_filters=custom_filters, **settings)
 
@@ -1335,7 +1341,6 @@ class Main(QtWidgets.QWidget):
             start_time=self.start_time,
             end_time=end_time,
             selected_track=self.original_video_track,
-            # stream_track=self.video_track,
             fast_seek=self.fast_time,
             rotate=self.rotation_to_transpose(),
             vertical_flip=v_flip,
@@ -1394,9 +1399,7 @@ class Main(QtWidgets.QWidget):
         if not self.app.fastflix.current_video:
             return
         self.loading_video = True
-        self.app.fastflix.current_video.video_settings.selected_track = self.widgets.video_track.currentText().split(
-            ":"
-        )[0]
+        self.app.fastflix.current_video.video_settings.selected_track = self.original_video_track
         self.widgets.crop.top.setText("0")
         self.widgets.crop.left.setText("0")
         self.widgets.crop.right.setText("0")
@@ -1409,14 +1412,12 @@ class Main(QtWidgets.QWidget):
     def page_update(self, build_thumbnail=True):
         if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
             return
-        logger.debug(f"page update {build_thumbnail}")
         self.last_page_update = time.time()
         self.video_options.refresh()
         self.build_commands()
         if build_thumbnail:
             new_hash = f"{self.build_crop()}:{self.build_scale()}:{self.start_time}:{self.end_time}:{self.app.fastflix.current_video.video_settings.selected_track}:{int(self.remove_hdr)}"
             if new_hash == self.last_thumb_hash:
-                logger.debug("No thumb change, not updating")
                 return
             self.last_thumb_hash = new_hash
             self.generate_thumbnail()

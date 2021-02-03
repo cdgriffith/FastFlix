@@ -430,12 +430,7 @@ def parse_hdr_details(app: FastFlixApp, **_):
 
 
 def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
-    if (
-        not app.fastflix.current_video.master_display
-        or not config.hdr10plus_parser
-        or not config.hdr10plus_parser.exists()
-    ):
-
+    if not config.hdr10plus_parser or not config.hdr10plus_parser.exists():
         return
 
     hdr10plus_streams = []
