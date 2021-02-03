@@ -124,7 +124,6 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.subtitles.refresh()
         self.advanced.update_settings()
         self.main.container.profile.update_settings()
-        self.debug.reset()
 
     def update_profile(self):
         self.current_settings.update_profile()

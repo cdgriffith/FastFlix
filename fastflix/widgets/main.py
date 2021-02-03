@@ -127,6 +127,7 @@ class Main(QtWidgets.QWidget):
         self.initialized = False
         self.loading_video = True
         self.scale_updating = False
+        self.last_thumb_hash = ""
 
         self.notifier = Notifier(self, self.app, self.app.fastflix.status_queue)
         self.notifier.start()
@@ -1258,8 +1259,8 @@ class Main(QtWidgets.QWidget):
             settings["remove_hdr"] = True
 
         custom_filters = "scale='min(320\\,iw):-8'"
-        if self.app.fastflix.current_video.color_transfer == "arib-std-b67":
-            custom_filters += ",select=eq(pict_type\\,I)"
+        # if self.app.fastflix.current_video.color_transfer == "arib-std-b67":
+        custom_filters += ",select=eq(pict_type\\,I)"
 
         filters = helpers.generate_filters(custom_filters=custom_filters, **settings)
 
@@ -1390,6 +1391,8 @@ class Main(QtWidgets.QWidget):
         self.encoder_settings_update()
 
     def video_track_update(self):
+        if not self.app.fastflix.current_video:
+            return
         self.loading_video = True
         self.app.fastflix.current_video.video_settings.selected_track = self.widgets.video_track.currentText().split(
             ":"
@@ -1406,10 +1409,16 @@ class Main(QtWidgets.QWidget):
     def page_update(self, build_thumbnail=True):
         if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
             return
+        logger.debug(f"page update {build_thumbnail}")
         self.last_page_update = time.time()
         self.video_options.refresh()
         self.build_commands()
         if build_thumbnail:
+            new_hash = f"{self.build_crop()}:{self.build_scale()}:{self.start_time}:{self.end_time}:{self.app.fastflix.current_video.video_settings.selected_track}:{int(self.remove_hdr)}"
+            if new_hash == self.last_thumb_hash:
+                logger.debug("No thumb change, not updating")
+                return
+            self.last_thumb_hash = new_hash
             self.generate_thumbnail()
 
     def close(self, no_cleanup=False, from_container=False):
@@ -1429,10 +1438,6 @@ class Main(QtWidgets.QWidget):
         if self.widgets.convert_to:
             return self.widgets.convert_to.currentText().strip()
         return list(self.app.fastflix.encoders.keys())[0]
-
-    # @property
-    # def current_encoder(self):
-    #     return self.app.fastflix.encoders[self.convert_to]
 
     def encoding_checks(self):
         if not self.input_video:
@@ -1492,7 +1497,6 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def encode_video(self):
-        # from fastflix.models.queue import save_queue
         # TODO make sure there is a video that can be encoded
         if self.converting:
             logger.debug(t("Canceling current encode"))
@@ -1509,9 +1513,6 @@ class Main(QtWidgets.QWidget):
             if add_current:
                 if not self.add_to_queue():
                     return
-        # save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
-        # Command looks like (video_uuid, command_uuid, command, work_dir, filename)
-        # Request looks like (queue command, log_dir, (commands))
         requests = ["add_items", str(self.app.fastflix.log_path)]
 
         # TODO here check for videos if ready. Make shared function for ready?
@@ -1707,21 +1708,15 @@ class Notifier(QtCore.QThread):
             # Message looks like (command, video_uuid, command_uuid)
             status = self.status_queue.get()
             self.main.status_update_signal.emit()
-            # if status[0] == "queue":
-            #     self.main.status_update_signal.emit()
             if status[0] == "complete":
                 self.main.completed.emit(0)
             elif status[0] == "error":
-                # self.main.status_update_signal.emit("|".join(status))
                 self.main.completed.emit(1)
             elif status[0] == "cancelled":
                 self.main.cancelled.emit("|".join(status[1:]))
-                # self.main.status_update_signal.emit("|".join(status))
             elif status[0] == "exit":
                 try:
                     self.terminate()
                 finally:
                     self.main.close_event.emit()
                 return
-            # else:
-            # self.main.status_update_signal.emit("|".join(status))

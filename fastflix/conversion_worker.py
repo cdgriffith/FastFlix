@@ -116,9 +116,6 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
     paused = False
     video: Optional[Video] = None
 
-    def current_command():
-        nonlocal video
-
     def start_command():
         nonlocal currently_encoding
         log_queue.put(
@@ -154,7 +151,6 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 currently_encoding = False
                 set_status(video, errored=True)
                 status_queue.put(("error",))
-                commands_to_run = []
                 allow_sleep_mode()
                 if gui_died:
                     return
@@ -226,15 +222,6 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                     if video:
                         start_command()
 
-                # for command in request[2]:
-                #     if command not in commands_to_run:
-                #         logger.debug(t(f"Adding command to the queue for {command[4]} - {command[2]}"))
-                #         commands_to_run.append(command)
-                #     # else:
-                #     #     logger.debug(t(f"Command already in queue: {command[1]}"))
-                # if not runner.is_alive() and not paused:
-                #     logger.debug(t("No encoding is currently in process, starting encode"))
-                #     start_command()
             if request[0] == "cancel":
                 logger.debug(t("Cancel has been requested, killing encoding"))
                 runner.kill()
