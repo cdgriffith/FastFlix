@@ -32,7 +32,7 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
-from fastflix.models.queue import get_queue
+from fastflix.models.queue import get_queue, save_queue
 from fastflix.resources import (
     black_x_icon,
     folder_icon,
@@ -374,7 +374,7 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.video_track = QtWidgets.QComboBox()
         self.widgets.video_track.addItems([])
-        self.widgets.video_track.currentIndexChanged.connect(lambda: self.page_update())
+        self.widgets.video_track.currentIndexChanged.connect(self.video_track_update)
 
         track_label = QtWidgets.QLabel(t("Video Track"))
         track_label.setFixedWidth(65)
@@ -1389,6 +1389,20 @@ class Main(QtWidgets.QWidget):
         self.video_options.advanced.hdr_settings()
         self.encoder_settings_update()
 
+    def video_track_update(self):
+        self.loading_video = True
+        self.app.fastflix.current_video.video_settings.selected_track = self.widgets.video_track.currentText().split(
+            ":"
+        )[0]
+        self.widgets.crop.top.setText("0")
+        self.widgets.crop.left.setText("0")
+        self.widgets.crop.right.setText("0")
+        self.widgets.crop.bottom.setText("0")
+        self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
+        self.widgets.scale.height.setText(str(self.app.fastflix.current_video.height))
+        self.loading_video = False
+        self.page_update(build_thumbnail=True)
+
     def page_update(self, build_thumbnail=True):
         if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
             return
@@ -1568,8 +1582,6 @@ class Main(QtWidgets.QWidget):
         self.paused = False
         self.set_convert_button()
 
-        self.video_options.update_queue()
-
         if return_code:
             error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
         else:
@@ -1587,10 +1599,6 @@ class Main(QtWidgets.QWidget):
         self.converting = False
         self.paused = False
         self.set_convert_button()
-
-        self.app.fastflix.queue = get_queue()
-
-        self.video_options.update_queue()
 
         if self.video_options.queue.paused:
             self.video_options.queue.pause_resume_queue()
@@ -1657,6 +1665,7 @@ class Main(QtWidgets.QWidget):
         logger.debug(f"Updating queue from command worker")
 
         self.app.fastflix.queue = get_queue()
+        updated = False
         for video in self.app.fastflix.queue:
             if video.status.complete and not video.status.subtitle_fixed:
                 if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
@@ -1664,7 +1673,9 @@ class Main(QtWidgets.QWidget):
                         worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
                         worker.start()
                 video.status.subtitle_fixed = True
-                # TODO Save
+                updated = True
+        if updated:
+            save_queue(self.app.fastflix.queue)
 
         self.video_options.update_queue()
 
@@ -1695,8 +1706,9 @@ class Notifier(QtCore.QThread):
         while True:
             # Message looks like (command, video_uuid, command_uuid)
             status = self.status_queue.get()
-            if status[0] == "queue":
-                self.main.status_update_signal.emit()
+            self.main.status_update_signal.emit()
+            # if status[0] == "queue":
+            #     self.main.status_update_signal.emit()
             if status[0] == "complete":
                 self.main.completed.emit(0)
             elif status[0] == "error":

@@ -98,7 +98,8 @@ class NVEncCSettings(EncoderSettings):
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
     cq: int = 0
-    spatial_aq: bool = True
+    aq: str = "off"
+    aq_strength: int = 0
     lookahead: Optional[int] = None
     tier: str = "high"
     level: Optional[str] = None

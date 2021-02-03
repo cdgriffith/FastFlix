@@ -52,6 +52,13 @@ recommended_crfs = [
 ]
 
 
+def get_breaker():
+    breaker_line = QtWidgets.QWidget()
+    breaker_line.setMaximumHeight(2)
+    breaker_line.setStyleSheet("background-color: #ccc; margin: auto 0; padding: auto 0;")
+    return breaker_line
+
+
 class NVENCC(SettingPanel):
     profile_name = "nvencc_hevc"
     hdr10plus_signal = QtCore.Signal(str)
@@ -73,16 +80,24 @@ class NVENCC(SettingPanel):
         grid.addLayout(self._add_custom(title="Custom NVEncC options", disable_both_passes=True), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        # grid.addLayout(self.init_max_mux(), 1, 0, 1, 2)
-        # grid.addLayout(self.init_tune(), 2, 0, 1, 2)
         grid.addLayout(self.init_profile(), 1, 0, 1, 2)
-        # grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 2)
         grid.addLayout(self.init_tier(), 2, 0, 1, 2)
+        grid.addLayout(self.init_multipass(), 3, 0, 1, 2)
 
-        grid.addLayout(self.init_spatial_aq(), 3, 0, 1, 2)
-        grid.addLayout(self.init_lookahead(), 4, 0, 1, 2)
-        grid.addLayout(self.init_mv_precision(), 5, 0, 1, 2)
-        grid.addLayout(self.init_multipass(), 6, 0, 1, 2)
+        breaker = QtWidgets.QHBoxLayout()
+        breaker_label = QtWidgets.QLabel(t("Advanced"))
+        breaker_label.setFont(QtGui.QFont("helvetica", 8, weight=55))
+
+        breaker.addWidget(get_breaker(), stretch=1)
+        breaker.addWidget(breaker_label, alignment=QtCore.Qt.AlignHCenter)
+        breaker.addWidget(get_breaker(), stretch=1)
+
+        grid.addLayout(breaker, 4, 0, 1, 6)
+
+        grid.addLayout(self.init_aq(), 5, 0, 1, 2)
+        grid.addLayout(self.init_aq_strength(), 6, 0, 1, 2)
+        grid.addLayout(self.init_lookahead(), 7, 0, 1, 2)
+        grid.addLayout(self.init_mv_precision(), 8, 0, 1, 2)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_vbr_target())
@@ -93,7 +108,7 @@ class NVENCC(SettingPanel):
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_max_q())
 
-        grid.addLayout(qp_line, 4, 2, 1, 4)
+        grid.addLayout(qp_line, 5, 2, 1, 4)
 
         advanced = QtWidgets.QHBoxLayout()
         advanced.addLayout(self.init_ref())
@@ -101,17 +116,16 @@ class NVENCC(SettingPanel):
         advanced.addLayout(self.init_b_frames())
         advanced.addStretch(1)
         advanced.addLayout(self.init_level())
-        # a.addLayout(self.init_gpu())
         advanced.addStretch(1)
         advanced.addLayout(self.init_b_ref_mode())
         advanced.addStretch(1)
         advanced.addLayout(self.init_metrics())
-        grid.addLayout(advanced, 5, 2, 1, 4)
+        grid.addLayout(advanced, 6, 2, 1, 4)
 
-        grid.addLayout(self.init_dhdr10_info(), 6, 2, 1, 4)
+        grid.addLayout(self.init_dhdr10_info(), 7, 2, 1, 4)
 
         self.ffmpeg_level = QtWidgets.QLabel()
-        grid.addWidget(self.ffmpeg_level, 7, 2, 1, 4)
+        grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
 
         grid.setRowStretch(9, 1)
 
@@ -138,7 +152,7 @@ class NVENCC(SettingPanel):
             label="Preset",
             widget_name="preset",
             options=presets,
-            tooltip=("preset: The slower the preset, the better the compression and quality"),
+            tooltip="preset: The slower the preset, the better the compression and quality",
             connect="default",
             opt="preset",
         )
@@ -162,15 +176,6 @@ class NVENCC(SettingPanel):
             opt="profile",
         )
 
-    # def init_pix_fmt(self):
-    #     return self._add_combo_box(
-    #         label="Bit Depth",
-    #         tooltip="Pixel Format (requires at least 10-bit for HDR)",
-    #         widget_name="pix_fmt",
-    #         options=pix_fmts,
-    #         opt="pix_fmt",
-    #     )
-
     def init_tier(self):
         return self._add_combo_box(
             label="Tier",
@@ -181,22 +186,21 @@ class NVENCC(SettingPanel):
         )
 
     def init_aq(self):
-        # TODO change to spatial or temporal
         return self._add_combo_box(
-            label="Spatial AQ",
+            label="Adaptive Quantization",
             tooltip="",
-            widget_name="spatial_aq",
-            options=["off", "on"],
-            opt="spatial_aq",
+            widget_name="aq",
+            options=["off", "spatial", "temporal"],
+            opt="aq",
         )
 
-    def init_spatial_aq(self):
+    def init_aq_strength(self):
         return self._add_combo_box(
-            label="Spatial AQ",
+            label="AQ Strength",
             tooltip="",
-            widget_name="spatial_aq",
-            options=["off", "on"],
-            opt="spatial_aq",
+            widget_name="aq_strength",
+            options=["Auto"] + [str(x) for x in range(1, 16)],
+            opt="aq_strength",
         )
 
     def init_multipass(self):
@@ -385,14 +389,6 @@ class NVENCC(SettingPanel):
             self.main.page_update()
         self.updating_settings = False
 
-    # def gather_q(self, group) -> Optional[str]:
-    #     if self.mode.lower() != "bitrate":
-    #         return None
-    #     if self.widgets[f"{group}_q_i"].currentIndex() > 0:
-    #         if self.widgets[f"{group}_q_p"].currentIndex() > 0 and self.widgets[f"{group}_q_b"].currentIndex() > 0:
-    #             return f'{self.widgets[f"{group}_q_i"].currentText()}:{self.widgets[f"{group}_q_p"].currentText()}:{self.widgets[f"{group}_q_b"].currentText()}'
-    #         return self.widgets[f"{group}_q_i"].currentText()
-
     def update_video_encoder_settings(self):
 
         settings = NVEncCSettings(
@@ -400,7 +396,8 @@ class NVENCC(SettingPanel):
             profile=self.widgets.profile.currentText(),
             tier=self.widgets.tier.currentText(),
             lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
-            spatial_aq=bool(self.widgets.spatial_aq.currentIndex()),
+            aq=self.widgets.aq.currentIndex(),
+            aq_strength=self.widgets.aq_strength.currentIndex(),
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
             multipass=self.widgets.multipass.currentText(),
             mv_precision=self.widgets.mv_precision.currentText(),

@@ -199,3 +199,4 @@ class ProfileWindow(QtWidgets.QWidget):
         self.main.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
         self.main.loading_video = False
         self.main.widgets.profile_box.setCurrentText("Standard Profile")
+        self.main.widgets.convert_to.setCurrentIndex(0)

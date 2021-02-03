@@ -262,13 +262,11 @@ class EncodingQueue(FlixList):
                 self.remove_item(queued_item.video)
 
     def remove_item(self, video):
-        # TODO Make sure this one not currently running
         self.app.fastflix.queue.remove(video)
         save_queue(self.app.fastflix.queue)
         self.new_source()
 
     def reload_from_queue(self, video):
-        # TODO Make sure this one not currently running
         self.main.reload_video_from_queue(video)
         self.app.fastflix.queue.remove(video)
         self.new_source()

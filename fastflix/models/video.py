@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import uuid
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Tuple
 
 from box import Box
 from pydantic import BaseModel, Field
@@ -24,6 +24,27 @@ from fastflix.models.encode import (
 )
 
 __all__ = ["VideoSettings", "Status", "Video", "Crop", "Status"]
+
+
+def determine_rotation(streams, track: int = 0) -> Tuple[int, int]:
+    for stream in streams.video:
+        if int(track) == stream["index"]:
+            video_stream = stream
+            break
+    else:
+        return 0, 0
+
+    rotation = 0
+    if "rotate" in streams.video[0].get("tags", {}):
+        rotation = abs(int(video_stream.tags.rotate))
+
+    if rotation in (90, 270):
+        video_width = video_stream.height
+        video_height = video_stream.width
+    else:
+        video_width = video_stream.width
+        video_height = video_stream.height
+    return video_width, video_height
 
 
 class Crop(BaseModel):
@@ -99,8 +120,6 @@ class Status(BaseModel):
 
 class Video(BaseModel):
     source: Path
-    width: int = 0
-    height: int = 0
     duration: Union[float, int] = 0
     streams: Box = None
 
@@ -114,6 +133,16 @@ class Video(BaseModel):
     video_settings: VideoSettings = Field(default_factory=VideoSettings)
     status: Status = Field(default_factory=Status)
     uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
+    @property
+    def width(self):
+        w, _ = determine_rotation(self.streams, self.video_settings.selected_track)
+        return w
+
+    @property
+    def height(self):
+        _, h = determine_rotation(self.streams, self.video_settings.selected_track)
+        return h
 
     @property
     def master_display(self) -> Optional[Box]:

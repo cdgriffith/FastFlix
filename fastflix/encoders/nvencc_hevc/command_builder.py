@@ -147,6 +147,12 @@ def build(fastflix: FastFlix):
     if video.current_video_stream.bit_depth > 8 and settings.profile != "main":
         logger.warning("Profile should be set to 'main' for 8 bit videos")
 
+    aq = "--no-aq"
+    if settings.aq.lower() == "spatial":
+        aq = f"--aq --aq-strength {settings.aq_strength}"
+    elif settings.aq.lower() == "temporal":
+        aq = f"--aq-temporal --aq-strength {settings.aq_strength}"
+
     command = [
         f'"{unixy(fastflix.config.nvencc)}"',
         "-i",
@@ -178,7 +184,7 @@ def build(fastflix: FastFlix):
         "--tier",
         settings.tier,
         (f"--lookahead {settings.lookahead}" if settings.lookahead else ""),
-        ("--aq" if settings.spatial_aq else "--no-aq"),
+        aq,
         "--colormatrix",
         (video.video_settings.color_space or "auto"),
         "--transfer",

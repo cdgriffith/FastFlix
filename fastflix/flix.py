@@ -147,23 +147,6 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         raise FlixError(result.stderr)
 
 
-def determine_rotation(streams) -> Tuple[int, int]:
-    rotation = 0
-    if "rotate" in streams.video[0].get("tags", {}):
-        rotation = abs(int(streams.video[0].tags.rotate))
-    # elif 'side_data_list' in self.streams.video[0]:
-    #     rots = [abs(int(x.rotation)) for x in self.streams.video[0].side_data_list if 'rotation' in x]
-    #     rotation = rots[0] if rots else 0
-
-    if rotation in (90, 270):
-        video_width = streams.video[0].height
-        video_height = streams.video[0].width
-    else:
-        video_width = streams.video[0].width
-        video_height = streams.video[0].height
-    return video_width, video_height
-
-
 def parse(app: FastFlixApp, **_):
     data = probe(app, app.fastflix.current_video.source)
     if "streams" not in data:
@@ -188,7 +171,6 @@ def parse(app: FastFlixApp, **_):
 
     app.fastflix.current_video.streams = streams
     app.fastflix.current_video.video_settings.selected_track = streams.video[0].index
-    app.fastflix.current_video.width, app.fastflix.current_video.height = determine_rotation(streams)
     app.fastflix.current_video.format = data.format
     app.fastflix.current_video.duration = float(data.format.get("duration", 0))
 
