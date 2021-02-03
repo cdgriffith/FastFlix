@@ -17,6 +17,8 @@ lock_file = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "qu
 
 
 def get_queue(lockless=False) -> List[Video]:
+    if not queue_file.exists():
+        return []
 
     if lockless:
         loaded = Box.from_yaml(filename=queue_file)

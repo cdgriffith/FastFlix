@@ -283,9 +283,6 @@ class Main(QtWidgets.QWidget):
         spacer = QtWidgets.QLabel()
         spacer.setFixedHeight(2)
         layout.addWidget(spacer)
-        # layout.addLayout(self.init_button_menu())
-        # layout.addWidget(self.video_path_widget)
-        # layout.addLayout(self.init_encoder_drop_down())
 
         output_layout = QtWidgets.QHBoxLayout()
 

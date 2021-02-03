@@ -22,7 +22,7 @@ from fastflix.resources import (
     up_arrow_icon,
     undo_icon,
 )
-from fastflix.shared import no_border, open_folder
+from fastflix.shared import no_border, open_folder, message
 from fastflix.widgets.panels.abstract_list import FlixList
 
 logger = logging.getLogger("fastflix")
@@ -240,6 +240,26 @@ class EncodingQueue(FlixList):
         top_layout.addWidget(self.clear_queue, QtCore.Qt.AlignRight)
 
         super().__init__(app, parent, t("Queue"), "queue", top_row_layout=top_layout)
+        self.queue_startup_check()
+
+    def queue_startup_check(self):
+        self.app.fastflix.queue = get_queue()
+        remove_vids = []
+        for video in self.app.fastflix.queue:
+            if video.status.running:
+                video.status.clear()
+            if video.status.complete:
+                remove_vids.append(video)
+
+        for video in remove_vids:
+            self.app.fastflix.queue.remove(video)
+
+        if self.app.fastflix.queue:
+            message(
+                "Not all items in the queue were completed\n"
+                "They have been added back into the queue for your convenience"
+            )
+            self.new_source()
 
     def reorder(self, update=True):
         super().reorder(update=update)

@@ -117,6 +117,15 @@ class Status(BaseModel):
     def ready(self) -> bool:
         return not self.success and not self.error and not self.complete and not self.running and not self.cancelled
 
+    def clear(self):
+        self.success = False
+        self.error = False
+        self.complete = False
+        self.running = False
+        self.cancelled = False
+        self.subtitle_fixed = False
+        self.current_command = 0
+
 
 class Video(BaseModel):
     source: Path
