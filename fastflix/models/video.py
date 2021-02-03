@@ -137,7 +137,7 @@ class Video(BaseModel):
     interlaced: bool = True
 
     hdr10_streams: List[Box] = Field(default_factory=list)
-    hdr10_plus: Optional[List[int]] = None
+    hdr10_plus: List[int] = Field(default_factory=list)
 
     video_settings: VideoSettings = Field(default_factory=VideoSettings)
     status: Status = Field(default_factory=Status)

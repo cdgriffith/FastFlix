@@ -214,11 +214,8 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
 def generate_thumbnail_command(
     config: Config, source: Path, output: Path, filters: str, start_time: float = 0, input_track: int = 0
 ) -> str:
-    start = ""
-    if start_time:
-        start = f"-ss {start_time}"
     return (
-        f'"{config.ffmpeg}" {start} -loglevel error -i "{unixy(source)}" '
+        f'"{config.ffmpeg}" -ss {start_time} -loglevel error -i "{unixy(source)}" '
         f" {filters} -an -y -map_metadata -1 -map 0:{input_track} "
         f'-vframes 1 "{unixy(output)}" '
     )

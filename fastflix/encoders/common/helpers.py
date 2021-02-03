@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import uuid
 from pathlib import Path
-from typing import List, Tuple, Union, Optional
+from typing import List, Tuple, Union, Optional, Dict
 
 import reusables
 from pydantic import BaseModel, Field
@@ -103,7 +103,7 @@ def generate_ending(
 def generate_filters(
     selected_track,
     source=None,
-    crop: Optional[Crop] = None,
+    crop: Optional[Dict] = None,
     scale=None,
     scale_filter="lanczos",
     remove_hdr=False,
@@ -113,6 +113,7 @@ def generate_filters(
     burn_in_subtitle_track=None,
     burn_in_subtitle_type=None,
     custom_filters=None,
+    start_filters=None,
     raw_filters=False,
     deinterlace=False,
     tone_map: str = "hable",
@@ -124,6 +125,8 @@ def generate_filters(
 ):
 
     filter_list = []
+    if start_filters:
+        filter_list.append(start_filters)
     if deinterlace:
         filter_list.append(f"yadif")
     if crop:
