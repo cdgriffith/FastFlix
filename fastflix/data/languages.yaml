@@ -2831,3 +2831,15 @@ Calculate PSNR and SSIM and show in the encoder output:
   eng: Calculate PSNR and SSIM and show in the encoder output
 Extracting HDR10+ metadata:
   eng: Extracting HDR10+ metadata
+hq - High Quality, ll - Low Latency, ull - Ultra Low Latency:
+  eng: hq - High Quality, ll - Low Latency, ull - Ultra Low Latency
+Rate Control:
+  eng: Rate Control
+Override the preset rate-control:
+  eng: Override the preset rate-control
+RC Lookahead:
+  eng: RC Lookahead
+GPU:
+  eng: GPU
+Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on:
+  eng: Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on
