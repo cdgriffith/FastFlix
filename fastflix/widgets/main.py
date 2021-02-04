@@ -1147,7 +1147,6 @@ class Main(QtWidgets.QWidget):
         self.input_video = video.source
 
         hdr10_indexes = (x.index for x in self.app.fastflix.current_video.hdr10_streams)
-
         text_video_tracks = [
             (
                 f'{x.index}: {x.codec_name} {x.get("bit_depth", "8")}-bit {x.get("color_primaries")}'
@@ -1158,6 +1157,12 @@ class Main(QtWidgets.QWidget):
         ]
         self.widgets.video_track.clear()
         self.widgets.video_track.addItems(text_video_tracks)
+
+        selected_track = 0
+        for track in self.app.fastflix.current_video.streams.video:
+            if track.index == self.app.fastflix.current_video.video_settings.selected_track:
+                selected_track = track.index
+        self.widgets.video_track.setCurrentIndex(selected_track)
 
         end_time = self.app.fastflix.current_video.video_settings.end_time or video.duration
 
@@ -1488,7 +1493,7 @@ class Main(QtWidgets.QWidget):
         self.encoder_settings_update()
 
     def video_track_update(self):
-        if not self.app.fastflix.current_video:
+        if not self.app.fastflix.current_video or self.loading_video:
             return
         self.loading_video = True
         self.app.fastflix.current_video.video_settings.selected_track = self.original_video_track
