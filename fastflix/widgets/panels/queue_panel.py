@@ -264,6 +264,12 @@ class EncodingQueue(FlixList):
     def reorder(self, update=True):
         super().reorder(update=update)
         self.app.fastflix.queue = [track.video for track in self.tracks]
+        for track in self.tracks:
+            track.widgets.up_button.setDisabled(False)
+            track.widgets.down_button.setDisabled(False)
+        if self.tracks:
+            self.tracks[0].widgets.up_button.setDisabled(True)
+            self.tracks[-1].widgets.down_button.setDisabled(True)
         save_queue(self.app.fastflix.queue)
 
     def new_source(self):
@@ -272,6 +278,9 @@ class EncodingQueue(FlixList):
         self.tracks = []
         for i, video in enumerate(self.app.fastflix.queue, start=1):
             self.tracks.append(EncodeItem(self, video, index=i))
+        if self.tracks:
+            self.tracks[0].widgets.up_button.setDisabled(True)
+            self.tracks[-1].widgets.down_button.setDisabled(True)
         super()._new_source(self.tracks)
 
     def clear_complete(self):

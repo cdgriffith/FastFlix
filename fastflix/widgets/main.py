@@ -1150,7 +1150,7 @@ class Main(QtWidgets.QWidget):
 
         text_video_tracks = [
             (
-                f'{x.index}: {t("codec")} {x.codec_name} - {x.get("pix_fmt")} - {t("profile")} {x.get("profile")}'
+                f'{x.index}: {x.codec_name} {x.get("bit_depth", "8")}-bit {x.get("color_primaries")}'
                 f'{" - HDR10" if x.index in hdr10_indexes else ""}'
                 f'{" | HDR10+" if x.index in self.app.fastflix.current_video.hdr10_plus else ""}'
             )
@@ -1234,7 +1234,7 @@ class Main(QtWidgets.QWidget):
 
         text_video_tracks = [
             (
-                f'{x.index}: {t("codec")} {x.codec_name} - {x.get("pix_fmt")} - {t("profile")} {x.get("profile")}'
+                f'{x.index}: {x.codec_name} {x.get("bit_depth", "8")}-bit {x.get("color_primaries")}'
                 f'{" - HDR10" if x.index in hdr10_indexes else ""}'
                 f'{" | HDR10+" if x.index in self.app.fastflix.current_video.hdr10_plus else ""}'
             )
