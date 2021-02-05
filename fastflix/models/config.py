@@ -22,6 +22,7 @@ from fastflix.models.encode import (
     x264Settings,
     x265Settings,
     NVEncCSettings,
+    setting_types,
 )
 from fastflix.version import __version__
 
@@ -32,19 +33,6 @@ ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
 
 NO_OPT = object()
 
-setting_types = {
-    "x265": x265Settings,
-    "x264": x264Settings,
-    "rav1e": rav1eSettings,
-    "svt_av1": SVTAV1Settings,
-    "vp9": VP9Settings,
-    "aom_av1": AOMAV1Settings,
-    "gif": GIFSettings,
-    "webp": WebPSettings,
-    "copy_settings": CopySettings,
-    "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
-    "nvencc_hevc": NVEncCSettings,
-}
 
 outdated_settings = ("copy",)
 

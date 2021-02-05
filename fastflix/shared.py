@@ -227,7 +227,7 @@ def clean_logs(signal, app, **_):
             except UnicodeDecodeError:
                 pass
             else:
-                if len(condensed) < len(original):
+                if (len(condensed) + 100) < len(original):
                     logger.debug(f"Compressed {file.name} from {len(original)} characters to {len(condensed)}")
                     file.write_text(condensed, encoding="utf-8")
             if is_old:

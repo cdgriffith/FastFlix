@@ -2803,3 +2803,49 @@ NVEncC Options:
   eng: NVEncC Options
 'NVEncC Encoder support is still experimental!':
   eng: 'NVEncC Encoder support is still experimental!'
+Init Q:
+  eng: Init Q
+Min Q:
+  eng: Min Q
+Max Q:
+  eng: Max Q
+Crop Detect Points:
+  eng: Crop Detect Points
+VBR Target:
+  eng: VBR Target
+Level:
+  eng: Level
+Set the encoding level restriction:
+  eng: Set the encoding level restriction
+B Frames:
+  eng: B Frames
+Ref Frames:
+  eng: Ref Frames
+B Ref Mode:
+  eng: B Ref Mode
+Use B frames as references:
+  eng: Use B frames as references
+Metrics:
+  eng: Metrics
+Calculate PSNR and SSIM and show in the encoder output:
+  eng: Calculate PSNR and SSIM and show in the encoder output
+Extracting HDR10+ metadata:
+  eng: Extracting HDR10+ metadata
+hq - High Quality, ll - Low Latency, ull - Ultra Low Latency:
+  eng: hq - High Quality, ll - Low Latency, ull - Ultra Low Latency
+Rate Control:
+  eng: Rate Control
+Override the preset rate-control:
+  eng: Override the preset rate-control
+RC Lookahead:
+  eng: RC Lookahead
+GPU:
+  eng: GPU
+Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on:
+  eng: Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on
+Fast first pass:
+  eng: Fast first pass
+Set speed to 4 for first pass:
+  eng: Set speed to 4 for first pass
+AQ Strength:
+  eng: AQ Strength

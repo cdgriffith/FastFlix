@@ -124,7 +124,6 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.subtitles.refresh()
         self.advanced.update_settings()
         self.main.container.profile.update_settings()
-        self.debug.reset()
 
     def update_profile(self):
         self.current_settings.update_profile()
@@ -175,7 +174,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.info.reset()
         self.debug.reset()
 
-    def update_queue(self, currently_encoding=False):
+    def update_queue(self):
         self.queue.new_source()
 
     def show_queue(self):

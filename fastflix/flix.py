@@ -147,23 +147,6 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         raise FlixError(result.stderr)
 
 
-def determine_rotation(streams) -> Tuple[int, int]:
-    rotation = 0
-    if "rotate" in streams.video[0].get("tags", {}):
-        rotation = abs(int(streams.video[0].tags.rotate))
-    # elif 'side_data_list' in self.streams.video[0]:
-    #     rots = [abs(int(x.rotation)) for x in self.streams.video[0].side_data_list if 'rotation' in x]
-    #     rotation = rots[0] if rots else 0
-
-    if rotation in (90, 270):
-        video_width = streams.video[0].height
-        video_height = streams.video[0].width
-    else:
-        video_width = streams.video[0].width
-        video_height = streams.video[0].height
-    return video_width, video_height
-
-
 def parse(app: FastFlixApp, **_):
     data = probe(app, app.fastflix.current_video.source)
     if "streams" not in data:
@@ -188,7 +171,6 @@ def parse(app: FastFlixApp, **_):
 
     app.fastflix.current_video.streams = streams
     app.fastflix.current_video.video_settings.selected_track = streams.video[0].index
-    app.fastflix.current_video.width, app.fastflix.current_video.height = determine_rotation(streams)
     app.fastflix.current_video.format = data.format
     app.fastflix.current_video.duration = float(data.format.get("duration", 0))
 
@@ -232,11 +214,8 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
 def generate_thumbnail_command(
     config: Config, source: Path, output: Path, filters: str, start_time: float = 0, input_track: int = 0
 ) -> str:
-    start = ""
-    if start_time:
-        start = f"-ss {start_time}"
     return (
-        f'"{config.ffmpeg}" {start} -loglevel error -i "{unixy(source)}" '
+        f'"{config.ffmpeg}" -ss {start_time} -loglevel error -i "{unixy(source)}" '
         f" {filters} -an -y -map_metadata -1 -map 0:{input_track} "
         f'-vframes 1 "{unixy(output)}" '
     )
@@ -397,97 +376,103 @@ def parse_hdr_details(app: FastFlixApp, **_):
                     logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
                 else:
                     if master_display:
-                        app.fastflix.current_video.master_display = master_display
-                        app.fastflix.current_video.cll = cll
-                        return
+                        app.fastflix.current_video.hdr10_streams.append(
+                            Box(index=video_stream.index, master_display=master_display, cll=cll)
+                        )
+                        continue
 
-    result = execute(
-        [
-            f"{app.fastflix.config.ffprobe}",
-            "-loglevel",
-            "panic",
-            "-select_streams",
-            f"v:{video_track}",
-            "-print_format",
-            "json",
-            "-show_frames",
-            "-read_intervals",
-            "%+#1",
-            "-show_entries",
-            "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt",
-            f"{unixy(app.fastflix.current_video.source)}",
-        ]
-    )
+            result = execute(
+                [
+                    f"{app.fastflix.config.ffprobe}",
+                    "-loglevel",
+                    "panic",
+                    "-select_streams",
+                    f"v:{video_stream.index}",
+                    "-print_format",
+                    "json",
+                    "-show_frames",
+                    "-read_intervals",
+                    "%+#1",
+                    "-show_entries",
+                    "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt",
+                    f"{unixy(app.fastflix.current_video.source)}",
+                ]
+            )
 
-    try:
-        data = Box.from_json(result.stdout, default_box=True, default_box_attr="")
-    except BoxError:
-        # Could not parse details
-        logger.error(
-            "COULD NOT PARSE FFPROBE HDR METADATA, PLEASE OPEN ISSUE WITH THESE DETAILS:"
-            f"\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
-        )
-        return
-    if "frames" not in data or not len(data.frames):
-        return
-    data = data.frames[0]
-    if not data.get("side_data_list"):
-        return
+            try:
+                data = Box.from_json(result.stdout, default_box=True, default_box_attr="")
+            except BoxError:
+                # Could not parse details
+                logger.error(
+                    "COULD NOT PARSE FFPROBE HDR METADATA, PLEASE OPEN ISSUE WITH THESE DETAILS:"
+                    f"\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}"
+                )
+                continue
+            if "frames" not in data or not len(data.frames):
+                continue
+            data = data.frames[0]
+            if not data.get("side_data_list"):
+                continue
 
-    try:
-        master_display, cll = convert_mastering_display(data)
-    except FlixError as err:
-        logger.error(str(err))
-    except Exception:
-        logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
-    else:
-        app.fastflix.current_video.master_display = master_display
-        app.fastflix.current_video.cll = cll
+            try:
+                master_display, cll = convert_mastering_display(data)
+            except FlixError as err:
+                logger.error(str(err))
+            except Exception:
+                logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
+            else:
+                if master_display:
+                    app.fastflix.current_video.hdr10_streams.append(
+                        Box(index=video_stream.index, master_display=master_display, cll=cll)
+                    )
 
 
 def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
-    if (
-        not app.fastflix.current_video.master_display
-        or not config.hdr10plus_parser
-        or not config.hdr10plus_parser.exists()
-    ):
+    if not config.hdr10plus_parser or not config.hdr10plus_parser.exists():
         return
 
-    process = Popen(
-        [
-            config.ffmpeg,
-            "-y",
-            "-i",
-            unixy(app.fastflix.current_video.source),
-            "-map",
-            f"0:v",
-            "-loglevel",
-            "panic",
-            "-c:v",
-            "copy",
-            "-vbsf",
-            "hevc_mp4toannexb",
-            "-f",
-            "hevc",
-            "-",
-        ],
-        stdout=PIPE,
-        stderr=PIPE,
-        stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
-    )
+    hdr10plus_streams = []
 
-    process_two = Popen(
-        [config.hdr10plus_parser, "--verify", "-"],
-        stdout=PIPE,
-        stderr=PIPE,
-        stdin=process.stdout,
-        encoding="utf-8",
-    )
+    for stream in app.fastflix.current_video.streams.video:
+        logger.debug(f"Checking for hdr10+ in stream {stream.index}")
+        process = Popen(
+            [
+                config.ffmpeg,
+                "-y",
+                "-i",
+                unixy(app.fastflix.current_video.source),
+                "-map",
+                f"0:{stream.index}",
+                "-loglevel",
+                "panic",
+                "-c:v",
+                "copy",
+                "-vbsf",
+                "hevc_mp4toannexb",
+                "-f",
+                "hevc",
+                "-",
+            ],
+            stdout=PIPE,
+            stderr=PIPE,
+            stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
+        )
 
-    try:
-        stdout, stderr = process_two.communicate()
-    except Exception:
-        logger.exception("Unexpected error while trying to detect HDR10+ metdata")
-    else:
-        if "Dynamic HDR10+ metadata detected." in stdout:
-            app.fastflix.current_video.hdr10_plus = True
+        process_two = Popen(
+            [config.hdr10plus_parser, "--verify", "-"],
+            stdout=PIPE,
+            stderr=PIPE,
+            stdin=process.stdout,
+            encoding="utf-8",
+        )
+
+        try:
+            stdout, stderr = process_two.communicate()
+        except Exception:
+            logger.exception(f"Unexpected error while trying to detect HDR10+ metadata in stream {stream.index}")
+        else:
+            if "Dynamic HDR10+ metadata detected." in stdout:
+                hdr10plus_streams.append(stream.index)
+
+    if hdr10plus_streams:
+        app.fastflix.current_video.hdr10_plus = hdr10plus_streams

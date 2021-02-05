@@ -109,17 +109,30 @@ class ExtractSubtitleSRT(QtCore.QThread):
 
 
 class ExtractHDR10(QtCore.QThread):
-    def __init__(self, app: FastFlixApp, main, signal):
+    def __init__(self, app: FastFlixApp, main, signal, ffmpeg_signal):
         super().__init__(main)
         self.main = main
         self.app = app
         self.signal = signal
+        self.ffmpeg_signal = ffmpeg_signal
 
     def run(self):
+        if not self.app.fastflix.current_video.hdr10_plus:
+            self.main.thread_logging_signal.emit("ERROR:No tracks have HDR10+ data to extract")
+            return
 
         output = self.app.fastflix.current_video.work_path / "metadata.json"
 
+        track = self.app.fastflix.current_video.video_settings.selected_track
+        if track not in self.app.fastflix.current_video.hdr10_plus:
+            self.main.thread_logging_signal.emit(
+                "WARNING:Selected video track not detected to have HDR10+ data, selecting first track that does"
+            )
+            track = self.app.fastflix.current_video.hdr10_plus[0]
+
         self.main.thread_logging_signal.emit(f'INFO:{t("Extracting HDR10+ metadata")} to {output}')
+
+        self.ffmpeg_signal.emit("Extracting HDR10+ metadata")
 
         process = Popen(
             [
@@ -128,9 +141,7 @@ class ExtractHDR10(QtCore.QThread):
                 "-i",
                 str(self.app.fastflix.current_video.source).replace("\\", "/"),
                 "-map",
-                f"0:{self.app.fastflix.current_video.video_settings.selected_track}",
-                "-loglevel",
-                "panic",
+                f"0:{track}",
                 "-c:v",
                 "copy",
                 "-vbsf",
@@ -140,18 +151,26 @@ class ExtractHDR10(QtCore.QThread):
                 "-",
             ],
             stdout=PIPE,
-            stderr=PIPE,
-            stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
+            stderr=open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "wb"),
+            # stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
         )
 
         process_two = Popen(
-            ["hdr10plus_parser", "-o", str(output).replace("\\", "/"), "-"],
+            [self.app.fastflix.config.hdr10plus_parser, "-o", str(output).replace("\\", "/"), "-"],
             stdout=PIPE,
             stderr=PIPE,
             stdin=process.stdout,
             encoding="utf-8",
             cwd=str(self.app.fastflix.current_video.work_path),
         )
+
+        with open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "r", encoding="utf-8") as f:
+            while True:
+                if process.poll() is not None or process_two.poll() is not None:
+                    break
+                if line := f.readline().rstrip():
+                    if line.startswith("frame"):
+                        self.ffmpeg_signal.emit(line)
 
         stdout, stderr = process_two.communicate()
         self.main.thread_logging_signal.emit(f"DEBUG: HDR10+ Extract: {stdout}")

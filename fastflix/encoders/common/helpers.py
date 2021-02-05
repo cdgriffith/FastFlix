@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import uuid
 from pathlib import Path
-from typing import List, Tuple, Union, Optional
+from typing import List, Tuple, Union, Optional, Dict
 
 import reusables
 from pydantic import BaseModel, Field
@@ -17,23 +17,10 @@ if reusables.win_based:
     null = "NUL"
 
 
-class Loop:
-    item = "loop"
-
-    def __init__(self, condition, commands, dirs=(), files=(), name="", ensure_paths=()):
-        self.name = name
-        self.condition = condition
-        self.commands = commands
-        self.ensure_paths = ensure_paths
-        self.dirs = dirs
-        self.files = files
-
-
 class Command(BaseModel):
     command: str
     item = "command"
     name: str = ""
-    ensure_paths: List = ()
     exe: str = None
     shell: bool = False
     uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -116,11 +103,9 @@ def generate_ending(
 def generate_filters(
     selected_track,
     source=None,
-    crop: Optional[Crop] = None,
+    crop: Optional[Dict] = None,
     scale=None,
     scale_filter="lanczos",
-    scale_width=None,
-    scale_height=None,
     remove_hdr=False,
     rotate=0,
     vertical_flip=None,
@@ -128,6 +113,7 @@ def generate_filters(
     burn_in_subtitle_track=None,
     burn_in_subtitle_type=None,
     custom_filters=None,
+    start_filters=None,
     raw_filters=False,
     deinterlace=False,
     tone_map: str = "hable",
@@ -139,16 +125,14 @@ def generate_filters(
 ):
 
     filter_list = []
+    if start_filters:
+        filter_list.append(start_filters)
     if deinterlace:
         filter_list.append(f"yadif")
     if crop:
-        filter_list.append(f"crop={crop.width}:{crop.height}:{crop.left}:{crop.right}")
+        filter_list.append(f"crop={crop['width']}:{crop['height']}:{crop['left']}:{crop['top']}")
     if scale:
         filter_list.append(f"scale={scale}:flags={scale_filter}")
-    elif scale_width:
-        filter_list.append(f"scale={scale_width}:-8:flags={scale_filter}")
-    elif scale_height:
-        filter_list.append(f"scale=-8:{scale_height}:flags={scale_filter}")
     if rotate:
         if rotate < 3:
             filter_list.append(f"transpose={rotate}")

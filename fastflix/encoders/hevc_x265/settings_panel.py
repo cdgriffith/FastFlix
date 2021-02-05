@@ -65,6 +65,7 @@ def get_breaker():
 class HEVC(SettingPanel):
     profile_name = "x265"
     hdr10plus_signal = QtCore.Signal(str)
+    hdr10plus_ffmpeg_signal = QtCore.Signal(str)
 
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
@@ -106,10 +107,12 @@ class HEVC(SettingPanel):
 
         grid.addLayout(self.init_dhdr10_info(), 9, 2, 1, 3)
         grid.addLayout(self.init_dhdr10_warning_and_opt(), 9, 5, 1, 1)
+        self.ffmpeg_level = QtWidgets.QLabel()
+        grid.addWidget(self.ffmpeg_level, 10, 2, 1, 4)
 
-        grid.setRowStretch(10, True)
+        grid.setRowStretch(11, True)
 
-        grid.addLayout(self._add_custom(), 11, 0, 1, 6)
+        grid.addLayout(self._add_custom(), 12, 0, 1, 6)
 
         link_1 = link(
             "https://trac.ffmpeg.org/wiki/Encode/H.265",
@@ -128,9 +131,10 @@ class HEVC(SettingPanel):
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
 
-        grid.addWidget(guide_label, 12, 0, 1, 6)
+        grid.addWidget(guide_label, 13, 0, 1, 6)
 
         self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
+        self.hdr10plus_ffmpeg_signal.connect(lambda x: self.ffmpeg_level.setText(x))
         self.setLayout(grid)
         self.hide()
 

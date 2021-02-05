@@ -3,6 +3,7 @@
 
 import copy
 import sys
+import logging
 
 import reusables
 from box import Box
@@ -11,9 +12,20 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
-from fastflix.resources import black_x_icon, down_arrow_icon, edit_box_icon, folder_icon, play_icon, up_arrow_icon
-from fastflix.shared import no_border, open_folder
+from fastflix.models.queue import get_queue, save_queue
+from fastflix.resources import (
+    black_x_icon,
+    down_arrow_icon,
+    edit_box_icon,
+    folder_icon,
+    play_icon,
+    up_arrow_icon,
+    undo_icon,
+)
+from fastflix.shared import no_border, open_folder, message
 from fastflix.widgets.panels.abstract_list import FlixList
+
+logger = logging.getLogger("fastflix")
 
 done_actions = {
     "linux": {
@@ -33,28 +45,26 @@ done_actions = {
 
 
 class EncodeItem(QtWidgets.QTabWidget):
-    def __init__(self, parent, video: Video, index, first=False, currently_encoding=False):
+    def __init__(self, parent, video: Video, index, first=False):
         self.loading = True
         super().__init__(parent)
         self.parent = parent
         self.index = index
         self.first = first
         self.last = False
-        self.video = video
-        self.currently_encoding = currently_encoding
+        self.video = video.copy()
         self.setFixedHeight(60)
 
         self.widgets = Box(
             up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
             down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
             cancel_button=QtWidgets.QPushButton(QtGui.QIcon(black_x_icon), ""),
-            reload_buttom=QtWidgets.QPushButton(QtGui.QIcon(edit_box_icon), ""),
+            reload_button=QtWidgets.QPushButton(QtGui.QIcon(edit_box_icon), ""),
+            retry_button=QtWidgets.QPushButton(QtGui.QIcon(undo_icon), ""),
         )
 
         for widget in self.widgets.values():
             widget.setStyleSheet(no_border)
-            if self.currently_encoding:
-                widget.setDisabled(True)
 
         title = QtWidgets.QLabel(
             video.video_settings.video_title
@@ -87,6 +97,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         open_button.setStyleSheet(no_border)
         view_button.setStyleSheet(no_border)
 
+        add_retry = False
         status = t("Ready to encode")
         if video.status.error:
             status = t("Encoding errored")
@@ -94,17 +105,21 @@ class EncodeItem(QtWidgets.QTabWidget):
             status = f"{t('Encoding complete')}"
         elif video.status.running:
             status = (
-                f"{t('Encoding command')} {video.status.current_command} {t('of')} "
+                f"{t('Encoding command')} {video.status.current_command + 1} {t('of')} "
                 f"{len(video.video_settings.conversion_commands)}"
             )
         elif video.status.cancelled:
-            status = t("Cancelled - Ready to try again")
+            status = t("Cancelled")
+            add_retry = True
 
-        if not self.currently_encoding:
+        if not self.video.status.running:
             self.widgets.cancel_button.clicked.connect(lambda: self.parent.remove_item(self.video))
-            self.widgets.reload_buttom.clicked.connect(lambda: self.parent.reload_from_queue(self.video))
-        self.widgets.cancel_button.setFixedWidth(25)
-        self.widgets.reload_buttom.setFixedWidth(25)
+            self.widgets.reload_button.clicked.connect(lambda: self.parent.reload_from_queue(self.video))
+            self.widgets.cancel_button.setFixedWidth(25)
+            self.widgets.reload_button.setFixedWidth(25)
+        else:
+            self.widgets.cancel_button.hide()
+            self.widgets.reload_button.hide()
 
         grid = QtWidgets.QGridLayout()
         grid.addLayout(self.init_move_buttons(), 0, 0)
@@ -117,17 +132,16 @@ class EncodeItem(QtWidgets.QTabWidget):
         if video.status.complete:
             grid.addWidget(view_button, 0, 8)
             grid.addWidget(open_button, 0, 9)
+        elif add_retry:
+            grid.addWidget(self.widgets.retry_button, 0, 8)
+            self.widgets.retry_button.setFixedWidth(25)
+            self.widgets.retry_button.clicked.connect(lambda: self.parent.retry_video(self.video))
 
         right_buttons = QtWidgets.QHBoxLayout()
-        right_buttons.addWidget(self.widgets.reload_buttom)
+        right_buttons.addWidget(self.widgets.reload_button)
         right_buttons.addWidget(self.widgets.cancel_button)
 
         grid.addLayout(right_buttons, 0, 10, alignment=QtCore.Qt.AlignRight)
-        # grid.addLayout(disposition_layout, 0, 4)
-        # grid.addWidget(self.widgets.burn_in, 0, 5)
-        # grid.addLayout(self.init_language(), 0, 6)
-        # # grid.addWidget(self.init_extract_button(), 0, 6)
-        # grid.addWidget(self.widgets.enable_check, 0, 8)
 
         self.setLayout(grid)
         self.loading = False
@@ -136,10 +150,8 @@ class EncodeItem(QtWidgets.QTabWidget):
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(0)
-        self.widgets.up_button.setDisabled(True if self.currently_encoding else self.first)
         self.widgets.up_button.setFixedWidth(20)
         self.widgets.up_button.clicked.connect(lambda: self.parent.move_up(self))
-        self.widgets.down_button.setDisabled(True if self.currently_encoding else self.last)
         self.widgets.down_button.setFixedWidth(20)
         self.widgets.down_button.clicked.connect(lambda: self.parent.move_down(self))
         layout.addWidget(self.widgets.up_button)
@@ -148,11 +160,9 @@ class EncodeItem(QtWidgets.QTabWidget):
 
     def set_first(self, first=True):
         self.first = first
-        self.widgets.up_button.setDisabled(True if self.currently_encoding else self.first)
 
     def set_last(self, last=True):
         self.last = last
-        self.widgets.down_button.setDisabled(True if self.currently_encoding else self.last)
 
     def set_outdex(self, outdex):
         pass
@@ -176,7 +186,6 @@ class EncodingQueue(FlixList):
         self.paused = False
         self.encode_paused = False
         self.encoding = False
-        self.main.status_update_signal.connect(self.update_status)
         top_layout = QtWidgets.QHBoxLayout()
 
         top_layout.addWidget(QtWidgets.QLabel(t("Queue")))
@@ -231,17 +240,47 @@ class EncodingQueue(FlixList):
         top_layout.addWidget(self.clear_queue, QtCore.Qt.AlignRight)
 
         super().__init__(app, parent, t("Queue"), "queue", top_row_layout=top_layout)
+        self.queue_startup_check()
+
+    def queue_startup_check(self):
+        self.app.fastflix.queue = get_queue()
+        remove_vids = []
+        for video in self.app.fastflix.queue:
+            if video.status.running:
+                video.status.clear()
+            if video.status.complete:
+                remove_vids.append(video)
+
+        for video in remove_vids:
+            self.app.fastflix.queue.remove(video)
+
+        if self.app.fastflix.queue:
+            message(
+                "Not all items in the queue were completed\n"
+                "They have been added back into the queue for your convenience"
+            )
+            self.new_source()
 
     def reorder(self, update=True):
         super().reorder(update=update)
         self.app.fastflix.queue = [track.video for track in self.tracks]
+        for track in self.tracks:
+            track.widgets.up_button.setDisabled(False)
+            track.widgets.down_button.setDisabled(False)
+        if self.tracks:
+            self.tracks[0].widgets.up_button.setDisabled(True)
+            self.tracks[-1].widgets.down_button.setDisabled(True)
+        save_queue(self.app.fastflix.queue)
 
     def new_source(self):
         for track in self.tracks:
             track.close()
         self.tracks = []
         for i, video in enumerate(self.app.fastflix.queue, start=1):
-            self.tracks.append(EncodeItem(self, video, index=i, currently_encoding=self.encoding))
+            self.tracks.append(EncodeItem(self, video, index=i))
+        if self.tracks:
+            self.tracks[0].widgets.up_button.setDisabled(True)
+            self.tracks[-1].widgets.down_button.setDisabled(True)
         super()._new_source(self.tracks)
 
     def clear_complete(self):
@@ -251,6 +290,7 @@ class EncodingQueue(FlixList):
 
     def remove_item(self, video):
         self.app.fastflix.queue.remove(video)
+        save_queue(self.app.fastflix.queue)
         self.new_source()
 
     def reload_from_queue(self, video):
@@ -300,14 +340,11 @@ class EncodingQueue(FlixList):
 
         self.app.fastflix.worker_queue.put(["set after done", command])
 
-    def update_status(self, status: str):
-        command, *_ = status.split("|")
-        self.encoding = command not in ("complete", "error", "cancelled", "converted")
-        for track in self.tracks:
-            for widget in track.widgets.values():
-                widget.setDisabled(self.encoding)
-        if self.tracks:
-            self.tracks[0].set_first(True)
-            self.tracks[-1].set_last(True)
-        if self.encoding and self.paused:
-            self.pause_resume_queue()
+    def retry_video(self, video):
+        for vid in self.app.fastflix.queue:
+            if vid.uuid == video.uuid:
+                vid.status.cancelled = False
+                vid.status.current_command = 0
+                break
+        save_queue(self.app.fastflix.queue)
+        self.new_source()
