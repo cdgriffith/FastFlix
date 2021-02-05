@@ -94,7 +94,7 @@ class FFmpegNVENCSettings(EncoderSettings):
 class NVEncCSettings(EncoderSettings):
     name = "HEVC (NVEncC)"
     preset: str = "quality"
-    profile: str = "main"
+    profile: str = "auto"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
     cq: int = 0

@@ -52,7 +52,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.index = index
         self.first = first
         self.last = False
-        self.video = video
+        self.video = video.copy()
         self.setFixedHeight(60)
 
         self.widgets = Box(

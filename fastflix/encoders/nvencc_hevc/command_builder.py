@@ -144,8 +144,7 @@ def build(fastflix: FastFlix):
             logger.warning("Could not get stream ID from source, the proper video track may not be selected!")
         stream_id = None
 
-    if video.current_video_stream.bit_depth > 8 and settings.profile != "main":
-        logger.warning("Profile should be set to 'main' for 8 bit videos")
+    profile = "main" if video.current_video_stream.bit_depth == 8 else "main10"
 
     aq = "--no-aq"
     if settings.aq.lower() == "spatial":
@@ -180,7 +179,7 @@ def build(fastflix: FastFlix):
         "--preset",
         settings.preset,
         "--profile",
-        settings.profile,
+        profile,
         "--tier",
         settings.tier,
         (f"--lookahead {settings.lookahead}" if settings.lookahead else ""),

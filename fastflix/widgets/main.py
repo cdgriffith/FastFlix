@@ -1145,11 +1145,11 @@ class Main(QtWidgets.QWidget):
 
         self.app.fastflix.current_video = video
         self.input_video = video.source
-
-        hdr10_indexes = (x.index for x in self.app.fastflix.current_video.hdr10_streams)
+        hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
         text_video_tracks = [
             (
-                f'{x.index}: {x.codec_name} {x.get("bit_depth", "8")}-bit {x.get("color_primaries")}'
+                f'{x.index}: {x.codec_name} {x.get("bit_depth", "8")}-bit '
+                f'{x["color_primaries"] if x.get("color_primaries") else ""}'
                 f'{" - HDR10" if x.index in hdr10_indexes else ""}'
                 f'{" | HDR10+" if x.index in self.app.fastflix.current_video.hdr10_plus else ""}'
             )
@@ -1157,7 +1157,6 @@ class Main(QtWidgets.QWidget):
         ]
         self.widgets.video_track.clear()
         self.widgets.video_track.addItems(text_video_tracks)
-
         selected_track = 0
         for track in self.app.fastflix.current_video.streams.video:
             if track.index == self.app.fastflix.current_video.video_settings.selected_track:
@@ -1165,7 +1164,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.video_track.setCurrentIndex(selected_track)
 
         end_time = self.app.fastflix.current_video.video_settings.end_time or video.duration
-
         if self.app.fastflix.current_video.video_settings.crop:
             self.widgets.crop.top.setText(str(self.app.fastflix.current_video.video_settings.crop.top))
             self.widgets.crop.left.setText(str(self.app.fastflix.current_video.video_settings.crop.left))
@@ -1186,7 +1184,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.remove_hdr.setChecked(self.app.fastflix.current_video.video_settings.remove_hdr)
         self.widgets.rotate.setCurrentIndex(self.transpose_to_rotation(video.video_settings.rotate))
         self.widgets.fast_time.setCurrentIndex(0 if video.video_settings.fast_seek else 1)
-
         if video.video_settings.vertical_flip:
             self.widgets.flip.setCurrentIndex(1)
         if video.video_settings.horizontal_flip:
@@ -1207,7 +1204,6 @@ class Main(QtWidgets.QWidget):
             self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
             self.widgets.scale.height.setText("Auto")
             self.widgets.scale.keep_aspect.setChecked(True)
-
         self.video_options.reload()
         self.enable_all()
 
@@ -1235,11 +1231,11 @@ class Main(QtWidgets.QWidget):
             self.clear_current_video()
             return
 
-        hdr10_indexes = (x.index for x in self.app.fastflix.current_video.hdr10_streams)
-
+        hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
         text_video_tracks = [
             (
-                f'{x.index}: {x.codec_name} {x.get("bit_depth", "8")}-bit {x.get("color_primaries")}'
+                f'{x.index}: {x.codec_name} {x.get("bit_depth", "8")}-bit '
+                f'{x["color_primaries"] if x.get("color_primaries") else ""}'
                 f'{" - HDR10" if x.index in hdr10_indexes else ""}'
                 f'{" | HDR10+" if x.index in self.app.fastflix.current_video.hdr10_plus else ""}'
             )

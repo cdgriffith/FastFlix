@@ -51,9 +51,9 @@ def get_queue(lockless=False) -> List[Video]:
             audio_tracks=audio,
             subtitle_tracks=subtitles,
             attachment_tracks=attachments,
-            video_encoder_settings=ves,
             crop=crop,
         )
+        vs.video_encoder_settings = ves  # No idea why this has to be called after, otherwise reset to x265
         del video["video_settings"]
         queue.append(Video(**video, video_settings=vs, status=status))
     return queue

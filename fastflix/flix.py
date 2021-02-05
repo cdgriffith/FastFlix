@@ -421,9 +421,10 @@ def parse_hdr_details(app: FastFlixApp, **_):
             except Exception:
                 logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
             else:
-                app.fastflix.current_video.hdr10_streams.append(
-                    Box(index=video_stream.index, master_display=master_display, cll=cll)
-                )
+                if master_display:
+                    app.fastflix.current_video.hdr10_streams.append(
+                        Box(index=video_stream.index, master_display=master_display, cll=cll)
+                    )
 
 
 def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):

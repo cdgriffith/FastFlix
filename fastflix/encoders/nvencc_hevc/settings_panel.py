@@ -80,9 +80,10 @@ class NVENCC(SettingPanel):
         grid.addLayout(self._add_custom(title="Custom NVEncC options", disable_both_passes=True), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        grid.addLayout(self.init_profile(), 1, 0, 1, 2)
-        grid.addLayout(self.init_tier(), 2, 0, 1, 2)
-        grid.addLayout(self.init_multipass(), 3, 0, 1, 2)
+        # grid.addLayout(self.init_profile(), 1, 0, 1, 2)
+        grid.addLayout(self.init_tier(), 1, 0, 1, 2)
+        grid.addLayout(self.init_multipass(), 2, 0, 1, 2)
+        grid.addLayout(self.init_lookahead(), 3, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -96,8 +97,7 @@ class NVENCC(SettingPanel):
 
         grid.addLayout(self.init_aq(), 5, 0, 1, 2)
         grid.addLayout(self.init_aq_strength(), 6, 0, 1, 2)
-        grid.addLayout(self.init_lookahead(), 7, 0, 1, 2)
-        grid.addLayout(self.init_mv_precision(), 8, 0, 1, 2)
+        grid.addLayout(self.init_mv_precision(), 7, 0, 1, 2)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_vbr_target())
@@ -166,15 +166,15 @@ class NVENCC(SettingPanel):
             opt="tune",
         )
 
-    def init_profile(self):
-        # TODO auto
-        return self._add_combo_box(
-            label="Profile_encoderopt",
-            widget_name="profile",
-            tooltip="Enforce an encode profile",
-            options=["main", "main10", "main444"],
-            opt="profile",
-        )
+    # def init_profile(self):
+    #     # TODO auto
+    #     return self._add_combo_box(
+    #         label="Profile_encoderopt",
+    #         widget_name="profile",
+    #         tooltip="Enforce an encode profile",
+    #         options=["main", "main10"],
+    #         opt="profile",
+    #     )
 
     def init_tier(self):
         return self._add_combo_box(
@@ -393,10 +393,10 @@ class NVENCC(SettingPanel):
 
         settings = NVEncCSettings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
-            profile=self.widgets.profile.currentText(),
+            # profile=self.widgets.profile.currentText(),
             tier=self.widgets.tier.currentText(),
             lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
-            aq=self.widgets.aq.currentIndex(),
+            aq=self.widgets.aq.currentText(),
             aq_strength=self.widgets.aq_strength.currentIndex(),
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
             multipass=self.widgets.multipass.currentText(),
