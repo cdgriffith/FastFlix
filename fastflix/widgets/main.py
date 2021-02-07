@@ -12,7 +12,6 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Tuple, Union
 
-from filelock import FileLock
 import pkg_resources
 import reusables
 from box import Box
@@ -33,7 +32,7 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
-from fastflix.models.queue import get_queue, save_queue, lock_file
+from fastflix.models.queue import save_queue
 from fastflix.resources import (
     black_x_icon,
     folder_icon,
@@ -1656,9 +1655,7 @@ class Main(QtWidgets.QWidget):
         # TODO ask if ok
         # return
 
-        video = self.app.fastflix.current_video
-
-        self.app.fastflix.queue.append(copy.deepcopy(video))
+        self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
         self.video_options.update_queue()
         self.video_options.show_queue()
 
@@ -1668,7 +1665,7 @@ class Main(QtWidgets.QWidget):
             self.app.fastflix.worker_queue.put(tuple(requests))
 
         self.clear_current_video()
-        save_queue(self.app.fastflix.queue)
+        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
         return True
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -1767,7 +1764,7 @@ class Main(QtWidgets.QWidget):
                             worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
                             worker.start()
                     video.status.subtitle_fixed = True
-        save_queue(self.app.fastflix.queue)
+        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
         self.video_options.update_queue()
 
     def find_video(self, uuid) -> Video:

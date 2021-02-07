@@ -8,12 +8,11 @@ from multiprocessing import Manager, Lock
 import reusables
 from appdirs import user_data_dir
 from box import Box
-from filelock import FileLock
 
 from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
 from fastflix.shared import file_date
-from fastflix.models.queue import get_queue, save_queue, lock_file
+from fastflix.models.queue import get_queue, save_queue
 from fastflix.models.video import Video
 
 
@@ -85,18 +84,15 @@ def set_status(
         return
 
     with queue_lock:
-        video_copy = None
-        video_pos = 0
         for i, video in enumerate(queue_list):
             if video.uuid == current_video.uuid:
-                video_copy = video.copy()
                 video_pos = i
                 break
         else:
             logger.error(f"Can't find video {current_video.uuid} in queue to update its status: {queue_list}")
             return
 
-        queue_list.pop(video_pos)
+        video_copy = queue_list.pop(video_pos)
 
         if complete is not None:
             video_copy.status.complete = complete

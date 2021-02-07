@@ -243,7 +243,7 @@ class EncodingQueue(FlixList):
         self.queue_startup_check()
 
     def queue_startup_check(self):
-        for item in get_queue():
+        for item in get_queue(self.app.fastflix.queue_path):
             self.app.fastflix.queue.append(item)
         remove_vids = []
         for video in self.app.fastflix.queue:
@@ -296,14 +296,20 @@ class EncodingQueue(FlixList):
 
     def remove_item(self, video):
         with self.app.fastflix.queue_lock:
-            self.app.fastflix.queue.remove(video)
+            for i, vid in enumerate(self.app.fastflix.queue):
+                if vid.uuid == video.uuid:
+                    pos = i
+                    break
+            else:
+                logger.error("No matching video found to remove from queue")
+                return
+            self.app.fastflix.queue.pop(pos)
+            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
         self.new_source()
 
     def reload_from_queue(self, video):
-        with self.app.fastflix.queue_lock:
-            self.main.reload_video_from_queue(video)
-            self.app.fastflix.queue.remove(video)
-        self.new_source()
+        self.main.reload_video_from_queue(video)
+        self.remove_item(video)
 
     def reset_pause_encode(self):
         self.pause_encode.setText(t("Pause Encode"))
@@ -348,23 +354,20 @@ class EncodingQueue(FlixList):
         self.app.fastflix.worker_queue.put(["set after done", command])
 
     def retry_video(self, current_video):
-        # TODO pop / insert
         with self.app.fastflix.queue_lock:
-            video_copy = None
-            video_pos = 0
             for i, video in enumerate(self.app.fastflix.queue):
                 if video.uuid == current_video.uuid:
-                    video_copy = video.copy()
                     video_pos = i
                     break
             else:
-                logger.error(f"Can't find video {current_video.uuid} in queue to update its status: {queue_list}")
+                logger.error(f"Can't find video {current_video.uuid} in queue to update its status")
                 return
 
-            video_copy.status.cancelled = False
-            video_copy.status.current_command = 0
+            video = self.app.fastflix.queue.pop(video_pos)
+            video.status.cancelled = False
+            video.status.current_command = 0
 
-            self.app.fastflix.queue.pop(video_pos)
-            self.app.fastflix.queue.insert(video_pos, video_copy)
+            self.app.fastflix.queue.insert(video_pos, video)
+            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
 
         self.new_source()
