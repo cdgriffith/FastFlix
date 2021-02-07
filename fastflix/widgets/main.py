@@ -410,11 +410,9 @@ class Main(QtWidgets.QWidget):
     def set_profile(self):
         if self.loading_video:
             return
-        # self.video_options.new_source()
-        # previous_auto_crop = self.app.fastflix.config.opt("auto_crop")
         self.app.fastflix.config.selected_profile = self.widgets.profile_box.currentText()
         self.app.fastflix.config.save()
-        self.widgets.convert_to.setCurrentText(f"   {self.app.fastflix.config.opt('encoder')}")
+        self.widgets.convert_to.setCurrentText(f" {self.app.fastflix.config.opt('encoder')}")
         if self.app.fastflix.config.opt("auto_crop") and not self.build_crop():
             self.get_auto_crop()
         self.loading_video = True
