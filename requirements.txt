@@ -1,7 +1,6 @@
 appdirs
 colorama
 coloredlogs
-filelock
 iso639-lang
 mistune
 psutil

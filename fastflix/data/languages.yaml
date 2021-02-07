@@ -5,6 +5,13 @@
   ita: 4 o 5 disattiveranno l'ottimizzazione della distorsione del tasso, con un impatto ancora maggiore sulla qualità.
   spa: 4 o 5 desactivarán la optimización de la tasa de distorsión, lo que tendrá un impacto aún mayor en la calidad.
   zho: 4或5会关闭rate distortion optimization，对质量的影响会更大。
+AQ Strength:
+  deu: AQ-Stärke
+  eng: AQ Strength
+  fra: AQ Force
+  ita: Forza AQ
+  spa: Fuerza de AQ
+  zho: AQ强度
 About:
   deu: Über
   eng: About
@@ -54,6 +61,13 @@ Advanced:
   ita: Avanzato
   spa: Avanzado
   zho: 高级
+Advanced settings are currently not saved in Profiles:
+  deu: Erweiterte Einstellungen werden derzeit nicht in Profilen gespeichert
+  eng: Advanced settings are currently not saved in Profiles
+  fra: Les paramètres avancés ne sont actuellement pas enregistrés dans les Profils
+  ita: Le impostazioni avanzate non sono attualmente salvate in Profili
+  spa: Los ajustes avanzados no se guardan actualmente en Perfiles
+  zho: 高级设置目前不会保存到方案中
 After Conversion:
   deu: Nach der Konvertierung
   eng: After Conversion
@@ -152,6 +166,20 @@ B Adapt:
   ita: B Adattare
   spa: B Adaptar
   zho: B Adapt
+B Frames:
+  deu: B-Frames
+  eng: B Frames
+  fra: B Cadres
+  ita: B Frames
+  spa: Fotogramas B
+  zho: B型框架
+B Ref Mode:
+  deu: B-Ref-Modus
+  eng: B Ref Mode
+  fra: B Mode Ref
+  ita: Modalità B Ref
+  spa: Modo B Ref
+  zho: B参考模式
 Bit Depth:
   deu: Bit-Tiefe
   eng: Bit Depth
@@ -173,6 +201,13 @@ Block Size:
   ita: Dimensione del blocco
   spa: Tamaño del bloque
   zho: 块大小
+Both Passes:
+  deu: Beide Durchgänge
+  eng: Both Passes
+  fra: Les deux passages
+  ita: Entrambi i Pass
+  spa: Ambos pases
+  zho: 两遍均应用
 Bottom:
   deu: Unten
   eng: Bottom
@@ -194,6 +229,13 @@ Break the video into rows to encode faster (lesser quality):
   ita: Suddividere il video in righe per codificare più velocemente (qualità inferiore)
   spa: Dividir el video en filas para codificar más rápido (menor calidad)
   zho: 将视频按行分割，以更快地进行编码（质量较差）。
+Bufsize:
+  deu: Bufsize
+  eng: Bufsize
+  fra: Bufsize
+  ita: Bufsize
+  spa: Bufsize
+  zho: Bufsize
 Build:
   deu: Erstellen
   eng: Build
@@ -215,6 +257,13 @@ CPU Used:
   ita: CPU usata
   spa: CPU utilizado
   zho: CPU用量
+Calculate PSNR and SSIM and show in the encoder output:
+  deu: PSNR und SSIM berechnen und in der Encoder-Ausgabe anzeigen
+  eng: Calculate PSNR and SSIM and show in the encoder output
+  fra: Calculer PSNR et SSIM et afficher dans la sortie du codeur
+  ita: Calcolare PSNR e SSIM e mostrare nell'output del codificatore
+  spa: Calcular PSNR y SSIM y mostrar en la salida del codificador
+  zho: 计算PSNR和SSIM，并显示在编码器输出中。
 Cancel:
   deu: Abbrechen
   eng: Cancel
@@ -369,6 +418,13 @@ Config File:
   ita: File di configurazione
   spa: Archivo de configuración
   zho: 配置文件
+Constant:
+  deu: Konstant
+  eng: Constant
+  fra: Constant
+  ita: Costante
+  spa: Constante
+  zho: 恒定
 Conversion:
   deu: Konvertierung
   eng: Conversion
@@ -537,6 +593,13 @@ Crop:
   ita: Ritaglio
   spa: Crop
   zho: 裁剪
+Crop Detect Points:
+  deu: Crop-Erkennungspunkte
+  eng: Crop Detect Points
+  fra: Points de détection des cultures
+  ita: Ritagliare i punti di rilevamento
+  spa: Puntos de detección de cultivos
+  zho: 作物检测点
 Current Profile Settings:
   deu: Aktuelle Profileinstellungen
   eng: Current Profile Settings
@@ -551,6 +614,13 @@ Currently only works for image based subtitles.:
   ita: Attualmente funziona solo per i sottotitoli basati su immagini.
   spa: Actualmente sólo funciona para subtítulos basados en imágenes.
   zho: 目前只适用于基于图像的字幕。
+Custom NVEncC options:
+  deu: Benutzerdefinierte NVEncC-Optionen
+  eng: Custom NVEncC options
+  fra: Options NVEncC personnalisées
+  ita: Opzioni NVEncC personalizzate
+  spa: Opciones personalizadas de NVEncC
+  zho: 自定义NVEncC选项
 Custom ffmpeg options:
   deu: Benutzerdefinierte ffmpeg-Optionen
   eng: Custom ffmpeg options
@@ -628,6 +698,13 @@ Denoise:
   ita: Denoise
   spa: Denoise
   zho: 降噪
+Detect HDR10+:
+  deu: HDR10+ erkennen
+  eng: Detect HDR10+
+  fra: Détecter le HDR10+
+  ita: Rileva HDR10
+  spa: Detectar HDR10+
+  zho: 检测HDR10+
 Detecting Interlace:
   deu: Erkennen von Interlace
   eng: Detecting Interlace
@@ -677,6 +754,13 @@ Download:
   ita: Scaricare
   spa: Descargar
   zho: 下载
+Download Cancelled:
+  deu: Download abgebrochen
+  eng: Download Cancelled
+  fra: Téléchargement annulé
+  ita: Scaricamento annullato
+  spa: Descarga cancelada
+  zho: 下载取消
 Download Newest FFmpeg:
   deu: Neuestes FFmpeg herunterladen
   eng: Download Newest FFmpeg
@@ -698,6 +782,13 @@ Dual License:
   ita: Doppia Licenza
   spa: Licencia doble
   zho: 双重许可
+Enable VBV:
+  deu: VBV freigeben
+  eng: Enable VBV
+  fra: Activer la VBV
+  ita: Attivare VBV
+  spa: Activar VBV
+  zho: 启用VBV
 Enable row based multi-threading:
   deu: Zeilenbasiertes Multithreading aktivieren
   eng: Enable row based multi-threading
@@ -803,6 +894,13 @@ Encoding complete:
   ita: Codifica completa
   spa: Codificación completa
   zho: 编码完成
+Encoding errored:
+  deu: Kodierung fehlgeschlagen
+  eng: Encoding errored
+  fra: Encodage erroné
+  ita: Codifica errata
+  spa: ''
+  zho: 编码错误
 End:
   deu: Beenden
   eng: End
@@ -880,6 +978,20 @@ Extra x265 params in opt=1:opt2=0 format:
   ita: Parametri extra x265 nel formato opt=1:opt2=0
   spa: Parámetros extra x265 en formato opt=1:opt2=0
   zho: 额外的x265参数，格式为opt=1:opt2=0
+Extract:
+  deu: Auszug
+  eng: Extract
+  fra: Extrait
+  ita: Estratto
+  spa: Extracto
+  zho: 提取
+Extract HDR10+:
+  deu: HDR10+ extrahieren
+  eng: Extract HDR10+
+  fra: Extrait HDR10+
+  ita: Estrarre HDR10
+  spa: Extraer HDR10+
+  zho: 提取HDR10+
 Extract covers:
   deu: Extrahieren deckt ab
   eng: Extract covers
@@ -887,6 +999,27 @@ Extract covers:
   ita: Coperture per l'estrazione
   spa: Extraer las cubiertas
   zho: 提取封面
+Extracted subtitles successfully:
+  deu: Untertitel erfolgreich extrahiert
+  eng: Extracted subtitles successfully
+  fra: Sous-titres extraits avec succès
+  ita: Sottotitoli estratti con successo
+  spa: Subtítulos extraídos con éxito
+  zho: 成功提取字幕
+Extracting HDR10+ metadata:
+  deu: Extrahieren von HDR10+-Metadaten
+  eng: Extracting HDR10+ metadata
+  fra: Extraction des métadonnées HDR10+.
+  ita: Estrarre i metadati HDR10
+  spa: Extracción de metadatos HDR10+
+  zho: 提取HDR10+元数据
+Extracting subtitles to:
+  deu: Extrahieren von Untertiteln auf
+  eng: Extracting subtitles to
+  fra: Extraction des sous-titres de
+  ita: Estrazione dei sottotitoli a
+  spa: Extracción de subtítulos a
+  zho: 提取字幕到
 FFMPEG AV1 Encoding Guide:
   deu: FFMPEG AV1-Kodierungsleitfaden
   eng: FFMPEG AV1 Encoding Guide
@@ -929,6 +1062,20 @@ FPS:
   ita: FPS
   spa: FPS
   zho: FPS
+Fast first pass:
+  deu: Schneller erster Durchlauf
+  eng: Fast first pass
+  fra: Première passe rapide
+  ita: Primo passaggio veloce
+  spa: Primera pasada rápida
+  zho: 快速的第一道
+File:
+  deu: Datei
+  eng: File
+  fra: Fichier
+  ita: Archivio
+  spa: Archivo
+  zho: 文件
 Flat UI:
   deu: Flaches UI
   eng: Flat UI
@@ -971,6 +1118,20 @@ Frames Per Second:
   ita: Cornici al secondo
   spa: Cuadros por segundo
   zho: 每秒帧数
+GPU:
+  deu: GPU
+  eng: GPU
+  fra: GPU
+  ita: GPU
+  spa: GPU
+  zho: GPU
+GUI Logging Level:
+  deu: GUI-Protokollierungsebene
+  eng: GUI Logging Level
+  fra: Niveau d'exploitation forestière
+  ita: Livello di registrazione GUI
+  spa: Nivel de registro GUI
+  zho: GUI日志级别
 Gather FFmpeg audio encoders:
   deu: Sammeln von FFmpeg-Audio-Encodern
   eng: Gather FFmpeg audio encoders
@@ -1076,6 +1237,13 @@ Horizontal Flip:
   ita: Capovolgimento orizzontale
   spa: Volteo horizontal
   zho: 水平翻转
+Init Q:
+  deu: Init Q
+  eng: Init Q
+  fra: Init Q
+  ita: Init Q
+  spa: Init Q
+  zho: 启动Q
 Initialize Encoders:
   deu: Kodierer initialisieren
   eng: Initialize Encoders
@@ -1174,6 +1342,13 @@ Left:
   ita: Sinistra
   spa: Izquierda
   zho: 左侧
+Level:
+  deu: Pegel
+  eng: Level
+  fra: Niveau
+  ita: Livello
+  spa: Nivel
+  zho: 级别
 Log2 of number of tile columns to encode faster (lesser quality):
   deu: Log2 der Anzahl der Kachelspalten, um schneller zu kodieren (geringere Qualität)
   eng: Log2 of number of tile columns to encode faster (lesser quality)
@@ -1188,6 +1363,13 @@ Log2 of number of tile rows to encode faster (lesser quality):
   ita: Log2 del numero di file di tegole da codificare più velocemente (qualità inferiore)
   spa: Log2 del número de filas de azulejos para codificar más rápido (menor calidad)
   zho: Log2 of number of tile rows to encode faster (lesser quality)
+Lookahead:
+  deu: Vorausschauende Betrachtung
+  eng: Lookahead
+  fra: Lookahead
+  ita: Lookahead
+  spa: Lookahead
+  zho: 瞻前顾后
 Lossless:
   deu: Verlustfrei
   eng: Lossless
@@ -1209,6 +1391,13 @@ Max Muxing Queue Size:
   ita: Dimensione massima della coda di Muxing
   spa: Tamaño máximo de la cola Muxing
   zho: 最大混流队列大小
+Max Q:
+  deu: Max Q
+  eng: Max Q
+  fra: Max Q
+  ita: Q massimo
+  spa: Max Q
+  zho: 最大Q值
 Maximum B frames:
   deu: Maximale B-Frames
   eng: Maximum B frames
@@ -1223,6 +1412,55 @@ Maximum B frames:
   ita: 'Numero massimo di b-frame consecutivi. '
   spa: 'Número máximo de fotogramas B consecutivos. '
   zho: 连续b帧的最大数量。
+Maxrate:
+  deu: Maxrate
+  eng: Maxrate
+  fra: Maxrate
+  ita: Maxrate
+  spa: Maxrate
+  zho: Maxrate
+Metrics:
+  deu: Metriken
+  eng: Metrics
+  fra: Métriques
+  ita: Metriche
+  spa: Métricas
+  zho: 衡量标准
+Min Q:
+  deu: Min Q
+  eng: Min Q
+  fra: Min Q
+  ita: Min Q
+  spa: Q mínimo
+  zho: 最小Q
+Motion vector accuracy:
+  deu: Bewegungsvektor-Genauigkeit
+  eng: Motion vector accuracy
+  fra: Précision du vecteur de mouvement
+  ita: Precisione del vettore di movimento
+  spa: Precisión del vector de movimiento
+  zho: 运动矢量精度
+Multipass:
+  deu: Multipass
+  eng: Multipass
+  fra: Multipass
+  ita: Multipass
+  spa: Multipass
+  zho: 多通道
+NVEncC Encoder support is still experimental!:
+  deu: NVEncC Encoder-Unterstützung ist noch experimentell!
+  eng: NVEncC Encoder support is still experimental!
+  fra: Le support des encodeurs NVEncC est encore expérimental !
+  ita: Il supporto NVEncC Encoder è ancora sperimentale!
+  spa: La compatibilidad con el codificador NVEncC es todavía experimental.
+  zho: NVEncC编码器支持仍然是实验性的!
+NVEncC Options:
+  deu: NVEncC-Optionen
+  eng: NVEncC Options
+  fra: Options NVEncC
+  ita: Opzioni NVEncC
+  spa: Opciones de NVEncC
+  zho: NVEncC选项
 New Profile:
   deu: Neues Profil
   eng: New Profile
@@ -1405,6 +1643,13 @@ Override Source FPS:
   ita: Annullare la sorgente FPS
   spa: Anular el FPS de la fuente
   zho: 覆盖来源 FPS
+Override the preset rate-control:
+  deu: Überschreibt die voreingestellte Ratensteuerung
+  eng: Override the preset rate-control
+  fra: Annuler le contrôle des taux préétablis
+  ita: Sovrascrivere il controllo del tasso preimpostato
+  spa: Anula el control de velocidad preestablecido
+  zho: 覆盖预设的速率控制
 PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,:
   deu: PIR kann Keyframes durch Einfügen einer Spalte von Intrablöcken in Nicht-Keyframes ersetzen,
   eng: PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,
@@ -1447,6 +1692,13 @@ Pixel Format (requires at least 10-bit for HDR):
   ita: Formato pixel (richiede almeno 10 bit per HDR)
   spa: Formato de píxeles (requiere al menos 10 bits para el HDR)
   zho: 像素格式（HDR要求至少10-bit）
+Please make sure seek method is set to exact:
+  deu: Bitte stellen Sie sicher, dass die Suchmethode auf exakt eingestellt ist
+  eng: Please make sure seek method is set to exact
+  fra: Veuillez vous assurer que la méthode de recherche est réglée sur l'exacte
+  ita: Si prega di assicurarsi che il metodo di ricerca sia impostato su
+  spa: Por favor, asegúrese de que el método de búsqueda se establece con exactitud
+  zho: 请确保检索方式已设置为exact
 Please provide a profile name:
   deu: Bitte geben Sie einen Profilnamen an
   eng: Please provide a profile name
@@ -1489,6 +1741,13 @@ Preset:
   ita: Preset
   spa: Preset
   zho: 预设
+Profile Name:
+  deu: Profil-Name
+  eng: Profile Name
+  fra: Nom du profil
+  ita: Nome del profilo
+  spa: Nombre del perfil
+  zho: 方案名称
 Profile_encoderopt:
   deu: Profil
   eng: Profile
@@ -1510,13 +1769,6 @@ Profile_window:
   ita: Profilo
   spa: Perfil
   zho: 方案
-Profile Name:
-  deu: Profil-Name
-  eng: Profile Name
-  fra: Nom du profil
-  ita: Nome del profilo
-  spa: Nombre del perfil
-  zho: 方案名称
 Profiles:
   deu: Profile
   eng: Profiles
@@ -1531,6 +1783,13 @@ Python:
   ita: Python
   spa: Python
   zho: Python
+Q-pel is highest precision:
+  deu: Q-pel ist höchste Genauigkeit
+  eng: Q-pel is highest precision
+  fra: Le Q-pel est de la plus haute précision
+  ita: Q-pel è la massima precisione
+  spa: Q-pel es la máxima precisión
+  zho: Q-pel是最高精度
 Quality:
   deu: Qualität
   eng: Quality
@@ -1580,6 +1839,13 @@ Queue has been paused:
   ita: La coda è stata messa in pausa
   spa: La cola se ha detenido
   zho: 队列已暂停
+RC Lookahead:
+  deu: RC Lookahead
+  eng: RC Lookahead
+  fra: RC Lookahead
+  ita: RC Lookahead
+  spa: RC Lookahead
+  zho: RC Lookahead
 Raise or lower per-block quantization based on complexity analysis of the source image.:
   deu: Erhöhen oder verringern Sie die Quantisierung pro Block basierend auf der Komplexitätsanalyse des Quellbilds.
   eng: Raise or lower per-block quantization based on complexity analysis of the source image.
@@ -1587,6 +1853,13 @@ Raise or lower per-block quantization based on complexity analysis of the source
   ita: Aumentare o diminuire la quantizzazione per blocco in base all'analisi della complessità dell'immagine sorgente.
   spa: Aumentar o disminuir la cuantificación por bloque basada en el análisis de la complejidad de la imagen de origen.
   zho: 根据对源图像的复杂度分析，提升或降低各个块的量化。
+Rate Control:
+  deu: Ratensteuerung
+  eng: Rate Control
+  fra: Contrôle des tarifs
+  ita: Controllo della velocità
+  spa: Control de velocidad
+  zho: 速率控制
 Raw Commands:
   deu: Raw-Befehle
   eng: Raw Commands
@@ -1608,6 +1881,13 @@ Reconstructed output pictures are bit-exact to the input pictures.:
   ita: Le immagini di uscita ricostruite sono bit-esatte alle immagini di ingresso.
   spa: Las imágenes de salida reconstruidas son un poco exactas a las imágenes de entrada.
   zho: 重建后的输出图像与输入图像是逐位一致（bit-exact）的。
+Ref Frames:
+  deu: Ref-Frames
+  eng: Ref Frames
+  fra: Ref Frames
+  ita: Fotogrammi di rif.
+  spa: Fotogramas de referencia
+  zho: 参考框架
 Remove HDR:
   deu: HDR entfernen
   eng: Remove HDR
@@ -1734,6 +2014,13 @@ Save Commands:
   ita: Comandi di salvataggio
   spa: Salvar los comandos
   zho: 保存命令
+Save File:
+  deu: Datei speichern
+  eng: Save File
+  fra: Enregistrer le fichier
+  ita: Salva file
+  spa: Guardar archivo
+  zho: 保存文件
 Save commands to file:
   deu: Befehle in Datei speichern
   eng: Save commands to file
@@ -1755,6 +2042,20 @@ Scrub away all incoming metadata, like video titles, unique markings and so on.:
   ita: Cancella tutti i metadati in arrivo, come i titoli dei video, le marcature uniche e così via.
   spa: Borra todos los metadatos entrantes, como títulos de video, marcas únicas y demás.
   zho: 擦除输入文件中所有的元数据，如视频标题、唯一标记等。
+Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on:
+  deu: Wählt aus, welcher NVENC-fähige Grafikprozessor verwendet werden soll. Die erste GPU ist 0, die zweite ist 1, und so weiter
+  eng: Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on
+  fra: Sélectionne le GPU compatible NVENC à utiliser. Le premier GPU est 0, le second est 1, et ainsi de suite
+  ita: Seleziona quale GPU con capacità NVENC utilizzare. La prima GPU è 0, la seconda è 1, e così via
+  spa: Selecciona qué GPU con capacidad NVENC se va a utilizar. La primera GPU es 0, la segunda es 1, y así sucesivamente
+  zho: 选择使用哪个NVENC功能的GPU。第一个GPU为0，第二个为1，以此类推。
+Set speed to 4 for first pass:
+  deu: Setzen Sie die Geschwindigkeit für den ersten Durchlauf auf 4
+  eng: Set speed to 4 for first pass
+  fra: Régler la vitesse à 4 pour le premier passage
+  ita: Imposta la velocità a 4 per il primo passaggio
+  spa: Establece la velocidad en 4 para la primera pasada
+  zho: 第一遍速度设置为4
 Set the "title" tag, sometimes shown as "Movie Name":
   deu: Setzen Sie den "Titel"-Tag, der manchmal als "Filmname" angezeigt wird
   eng: Set the "title" tag, sometimes shown as "Movie Name"
@@ -1762,6 +2063,20 @@ Set the "title" tag, sometimes shown as "Movie Name":
   ita: Impostare il tag "title", a volte mostrato come "Movie Name" (nome del film)
   spa: Poner la etiqueta "título", a veces se muestra como "Nombre de la película"
   zho: 设置“标题”（title，有时显示为“电影名称”（Movie Name））标签
+Set the encoding level restriction:
+  deu: Legen Sie die Einschränkung des Kodierungspegels fest
+  eng: Set the encoding level restriction
+  fra: Définir la restriction du niveau d'encodage
+  ita: Imposta la restrizione del livello di codifica
+  spa: Establezca la restricción del nivel de codificación
+  zho: 设置编码级别限制
+Set the encoding tier:
+  deu: Einstellen der Kodierungsebene
+  eng: Set the encoding tier
+  fra: Définir le niveau d'encodage
+  ita: Imposta il livello di codifica
+  spa: Establecer el nivel de codificación
+  zho: 设置编码层
 Set the level of effort in determining B frame placement.:
   deu: Legen Sie den Grad des Aufwands bei der Bestimmung der B-Frame-Platzierung fest.
   eng: Set the level of effort in determining B frame placement.
@@ -1853,6 +2168,13 @@ Source width:
   ita: Larghezza della fonte
   spa: Ancho de la fuente
   zho: 源文件宽度
+Spatial AQ:
+  deu: Spatial AQ
+  eng: Spatial AQ
+  fra: QA spatiale
+  ita: AQ spaziale
+  spa: AQ espacial
+  zho: 空间空气质量
 Speed:
   deu: Geschwindigkeit
   eng: Speed
@@ -1909,6 +2231,13 @@ Success:
   ita: Successo
   spa: Éxito
   zho: 成功
+Support FastFlix:
+  deu: Unterstützt FastFlix
+  eng: Support FastFlix
+  fra: Soutenez FastFlix
+  ita: Supporto FastFlix
+  spa: Soporta FastFlix
+  zho: 支持FastFlix
 Supported Image Files:
   deu: Unterstützte Bilddateien
   eng: Supported Image Files
@@ -2028,13 +2357,6 @@ Tiles:
   ita: Piastrelle
   spa: Baldosas
   zho: Tiles
-Time Left:
-  deu: Linke Zeit
-  eng: Time Left
-  fra: Temps restant
-  ita: Tempo rimanente
-  spa: Tiempo restante
-  zho: 剩余时间
 Time Elapsed:
   deu: Verstrichene Zeit
   eng: Time Elapsed
@@ -2042,6 +2364,13 @@ Time Elapsed:
   ita: Tempo trascorso
   spa: Tiempo transcurrido
   zho: 已用时间
+Time Left:
+  deu: Linke Zeit
+  eng: Time Left
+  fra: Temps restant
+  ita: Tempo rimanente
+  spa: Tiempo restante
+  zho: 剩余时间
 Title:
   deu: Titel
   eng: Title
@@ -2098,6 +2427,13 @@ Use --bframes 0 to force all P/I low-latency encodes.:
   ita: Utilizzare --bframes 0 per forzare tutte le codifiche P/I a bassa latenza.
   spa: Use --bframes 0 para forzar todos los códigos de baja latencia P/I.
   zho: 使用--bframes 0强制进行全P/I帧的低延迟编码。
+Use B frames as references:
+  deu: B-Frames als Referenzen verwenden
+  eng: Use B frames as references
+  fra: Utiliser les cadres B comme références
+  ita: Usa i fotogrammi B come riferimenti
+  spa: Utilizar los fotogramas B como referencia
+  zho: 用B帧作为参考
 Use Sane Audio Selection (updatable in config file):
   deu: Sane Audio Selection verwenden (aktualisierbar in der Konfigurationsdatei)
   eng: Use Sane Audio Selection (updatable in config file)
@@ -2133,6 +2469,13 @@ Using a single frame thread gives a slight improvement in compression,:
   ita: L'utilizzo di una filettatura a telaio singolo offre un leggero miglioramento della compressione,
   spa: Usar un solo hilo de cuadro da una ligera mejora en la compresión,
   zho: 使用单帧线程会使压缩率略有提高，
+VBR Target:
+  deu: VBR-Ziel
+  eng: VBR Target
+  fra: Cible VBR
+  ita: Obiettivo VBR
+  spa: Objetivo VBR
+  zho: VBR目标
 'Values: 0:none; 1:fast; 2:full(trellis) default':
   deu: 'Werte: 0:keine; 1:schnell; 2:voll(trellis) Standard'
   eng: 'Values: 0:none; 1:fast; 2:full(trellis) default'
@@ -2490,6 +2833,13 @@ good is the default and recommended for most applications:
   ita: 'hdr10: Forza la segnalazione dei parametri HDR10 nei pacchetti SEI.'
   spa: 'hdr10: Forzar la señalización de los parámetros HDR10 en los paquetes SEI.'
   zho: hdr10：强制在SEI包中发送HDR10参数。
+hq - High Quality, ll - Low Latency, ull - Ultra Low Latency:
+  deu: hq - Hohe Qualität, ll - Niedrige Latenz, ull - Ultra niedrige Latenz
+  eng: hq - High Quality, ll - Low Latency, ull - Ultra Low Latency
+  fra: hq - Haute qualité, ll - Latence faible, ull - Latence ultra faible
+  ita: hq - Alta qualità, ll - Bassa latenza, ull - Ultra bassa latenza
+  spa: hq - Alta calidad, ll - Baja latencia, ull - Ultra baja latencia
+  zho: hq - 高质量，ll - 低延迟，ull - 超低延迟。
 installer:
   deu: Installationsprogramm
   eng: installer
@@ -2700,156 +3050,3 @@ vsync:
   ita: vsync
   spa: vsync
   zho: vsync
-File:
-  deu: Datei
-  eng: File
-  fra: Fichier
-  ita: Archivio
-  spa: Archivo
-  zho: 文件
-Both Passes:
-  deu: Beide Durchgänge
-  eng: Both Passes
-  fra: Les deux passages
-  ita: Entrambi i Pass
-  spa: Ambos pases
-  zho: 两遍均应用
-Advanced settings are currently not saved in Profiles:
-  deu: Erweiterte Einstellungen werden derzeit nicht in Profilen gespeichert
-  eng: Advanced settings are currently not saved in Profiles
-  fra: Les paramètres avancés ne sont actuellement pas enregistrés dans les Profils
-  ita: Le impostazioni avanzate non sono attualmente salvate in Profili
-  spa: Los ajustes avanzados no se guardan actualmente en Perfiles
-  zho: 高级设置目前不会保存到方案中
-Constant:
-  deu: Konstant
-  eng: Constant
-  fra: Constant
-  ita: Costante
-  spa: Constante
-  zho: 恒定
-Please make sure seek method is set to exact:
-  deu: Bitte stellen Sie sicher, dass die Suchmethode auf exakt eingestellt ist
-  eng: Please make sure seek method is set to exact
-  fra: Veuillez vous assurer que la méthode de recherche est réglée sur l'exacte
-  ita: Si prega di assicurarsi che il metodo di ricerca sia impostato su
-  spa: Por favor, asegúrese de que el método de búsqueda se establece con exactitud
-  zho: 请确保检索方式已设置为exact
-Extract:
-  deu: Auszug
-  eng: Extract
-  fra: Extrait
-  ita: Estratto
-  spa: Extracto
-  zho: 提取
-Save File:
-  deu: Datei speichern
-  eng: Save File
-  fra: Enregistrer le fichier
-  ita: Salva file
-  spa: Guardar archivo
-  zho: 保存文件
-GUI Logging Level:
-  deu: GUI-Protokollierungsebene
-  eng: GUI Logging Level
-  fra: Niveau d'exploitation forestière
-  ita: Livello di registrazione GUI
-  spa: Nivel de registro GUI
-  zho: GUI日志级别
-Enable VBV:
-  deu: VBV freigeben
-  eng: Enable VBV
-  fra: Activer la VBV
-  ita: Attivare VBV
-  spa: Activar VBV
-  zho: 启用VBV
-Maxrate:
-  deu: Maxrate
-  eng: Maxrate
-  fra: Maxrate
-  ita: Maxrate
-  spa: Maxrate
-  zho: Maxrate
-Bufsize:
-  deu: Bufsize
-  eng: Bufsize
-  fra: Bufsize
-  ita: Bufsize
-  spa: Bufsize
-  zho: Bufsize
-Encoding errored:
-  eng: Encoding errored
-Download Cancelled:
-  eng: Download Cancelled
-Extract HDR10+:
-  eng: Extract HDR10+
-Detect HDR10+:
-  eng: Detect HDR10+
-Custom NVEncC options:
-  eng: Custom NVEncC options
-Set the encoding tier:
-  eng: Set the encoding tier
-Spatial AQ:
-  eng: Spatial AQ
-Lookahead:
-  eng: Lookahead
-Motion vector accuracy:
-  eng: Motion vector accuracy
-Q-pel is highest precision:
-  eng: Q-pel is highest precision
-Multipass:
-  eng: Multipass
-NVEncC Options:
-  eng: NVEncC Options
-'NVEncC Encoder support is still experimental!':
-  eng: 'NVEncC Encoder support is still experimental!'
-Init Q:
-  eng: Init Q
-Min Q:
-  eng: Min Q
-Max Q:
-  eng: Max Q
-Crop Detect Points:
-  eng: Crop Detect Points
-VBR Target:
-  eng: VBR Target
-Level:
-  eng: Level
-Set the encoding level restriction:
-  eng: Set the encoding level restriction
-B Frames:
-  eng: B Frames
-Ref Frames:
-  eng: Ref Frames
-B Ref Mode:
-  eng: B Ref Mode
-Use B frames as references:
-  eng: Use B frames as references
-Metrics:
-  eng: Metrics
-Calculate PSNR and SSIM and show in the encoder output:
-  eng: Calculate PSNR and SSIM and show in the encoder output
-Extracting HDR10+ metadata:
-  eng: Extracting HDR10+ metadata
-hq - High Quality, ll - Low Latency, ull - Ultra Low Latency:
-  eng: hq - High Quality, ll - Low Latency, ull - Ultra Low Latency
-Rate Control:
-  eng: Rate Control
-Override the preset rate-control:
-  eng: Override the preset rate-control
-RC Lookahead:
-  eng: RC Lookahead
-GPU:
-  eng: GPU
-Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on:
-  eng: Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on
-Fast first pass:
-  eng: Fast first pass
-Set speed to 4 for first pass:
-  eng: Set speed to 4 for first pass
-AQ Strength:
-  eng: AQ Strength
-Extracting subtitles to:
-  eng: Extracting subtitles to
-Extracted subtitles successfully:
-  eng: Extracted subtitles successfully
