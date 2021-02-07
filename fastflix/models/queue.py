@@ -3,7 +3,7 @@ from typing import List, Optional, Union
 import os
 from pathlib import Path
 
-from box import Box
+from box import Box, BoxError
 from pydantic import BaseModel, Field
 from filelock import FileLock
 from appdirs import user_data_dir
@@ -20,11 +20,15 @@ def get_queue(lockless=False) -> List[Video]:
     if not queue_file.exists():
         return []
 
-    if lockless:
-        loaded = Box.from_yaml(filename=queue_file)
-    else:
-        with FileLock(lock_file):
+    try:
+        if lockless:
             loaded = Box.from_yaml(filename=queue_file)
+        else:
+            with FileLock(lock_file):
+                loaded = Box.from_yaml(filename=queue_file)
+    except BoxError:
+        # TODO log
+        return []
 
     queue = []
     for video in loaded["queue"]:

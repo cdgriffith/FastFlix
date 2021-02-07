@@ -12,6 +12,7 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Tuple, Union
 
+from filelock import FileLock
 import pkg_resources
 import reusables
 from box import Box
@@ -32,7 +33,7 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
-from fastflix.models.queue import get_queue, save_queue
+from fastflix.models.queue import get_queue, save_queue, lock_file
 from fastflix.resources import (
     black_x_icon,
     folder_icon,
@@ -1667,8 +1668,7 @@ class Main(QtWidgets.QWidget):
             self.app.fastflix.worker_queue.put(tuple(requests))
 
         self.clear_current_video()
-        # from fastflix.models.queue import save_queue
-        # save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
+        save_queue(self.app.fastflix.queue)
         return True
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -1759,19 +1759,15 @@ class Main(QtWidgets.QWidget):
     def status_update(self):
         logger.debug(f"Updating queue from command worker")
 
-        self.app.fastflix.queue = get_queue()
-        updated = False
-        for video in self.app.fastflix.queue:
-            if video.status.complete and not video.status.subtitle_fixed:
-                if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
-                    if mkv_prop_edit := shutil.which("mkvpropedit"):
-                        worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
-                        worker.start()
-                video.status.subtitle_fixed = True
-                updated = True
-        if updated:
-            save_queue(self.app.fastflix.queue)
-
+        with self.app.fastflix.queue_lock:
+            for video in self.app.fastflix.queue:
+                if video.status.complete and not video.status.subtitle_fixed:
+                    if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
+                        if mkv_prop_edit := shutil.which("mkvpropedit"):
+                            worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
+                            worker.start()
+                    video.status.subtitle_fixed = True
+        save_queue(self.app.fastflix.queue)
         self.video_options.update_queue()
 
     def find_video(self, uuid) -> Video:
@@ -1801,7 +1797,9 @@ class Notifier(QtCore.QThread):
         while True:
             # Message looks like (command, video_uuid, command_uuid)
             status = self.status_queue.get()
+            self.app.processEvents()
             self.main.status_update_signal.emit()
+            self.app.processEvents()
             if status[0] == "complete":
                 self.main.completed.emit(0)
             elif status[0] == "error":

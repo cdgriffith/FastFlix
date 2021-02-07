@@ -243,11 +243,12 @@ class EncodingQueue(FlixList):
         self.queue_startup_check()
 
     def queue_startup_check(self):
-        self.app.fastflix.queue = get_queue()
+        for item in get_queue():
+            self.app.fastflix.queue.append(item)
         remove_vids = []
         for video in self.app.fastflix.queue:
-            if video.status.running:
-                video.status.clear()
+            # if video.status.running:
+            #     video.status.clear()
             if video.status.complete:
                 remove_vids.append(video)
 
@@ -263,14 +264,19 @@ class EncodingQueue(FlixList):
 
     def reorder(self, update=True):
         super().reorder(update=update)
-        self.app.fastflix.queue = [track.video for track in self.tracks]
+
+        with self.app.fastflix.queue_lock:
+            for i in range(len(self.app.fastflix.queue)):
+                self.app.fastflix.queue.pop()
+            for track in self.tracks:
+                self.app.fastflix.queue.append(track.video)
+
         for track in self.tracks:
             track.widgets.up_button.setDisabled(False)
             track.widgets.down_button.setDisabled(False)
         if self.tracks:
             self.tracks[0].widgets.up_button.setDisabled(True)
             self.tracks[-1].widgets.down_button.setDisabled(True)
-        save_queue(self.app.fastflix.queue)
 
     def new_source(self):
         for track in self.tracks:
@@ -289,13 +295,14 @@ class EncodingQueue(FlixList):
                 self.remove_item(queued_item.video)
 
     def remove_item(self, video):
-        self.app.fastflix.queue.remove(video)
-        save_queue(self.app.fastflix.queue)
+        with self.app.fastflix.queue_lock:
+            self.app.fastflix.queue.remove(video)
         self.new_source()
 
     def reload_from_queue(self, video):
-        self.main.reload_video_from_queue(video)
-        self.app.fastflix.queue.remove(video)
+        with self.app.fastflix.queue_lock:
+            self.main.reload_video_from_queue(video)
+            self.app.fastflix.queue.remove(video)
         self.new_source()
 
     def reset_pause_encode(self):
@@ -340,11 +347,24 @@ class EncodingQueue(FlixList):
 
         self.app.fastflix.worker_queue.put(["set after done", command])
 
-    def retry_video(self, video):
-        for vid in self.app.fastflix.queue:
-            if vid.uuid == video.uuid:
-                vid.status.cancelled = False
-                vid.status.current_command = 0
-                break
-        save_queue(self.app.fastflix.queue)
+    def retry_video(self, current_video):
+        # TODO pop / insert
+        with self.app.fastflix.queue_lock:
+            video_copy = None
+            video_pos = 0
+            for i, video in enumerate(self.app.fastflix.queue):
+                if video.uuid == current_video.uuid:
+                    video_copy = video.copy()
+                    video_pos = i
+                    break
+            else:
+                logger.error(f"Can't find video {current_video.uuid} in queue to update its status: {queue_list}")
+                return
+
+            video_copy.status.cancelled = False
+            video_copy.status.current_command = 0
+
+            self.app.fastflix.queue.pop(video_pos)
+            self.app.fastflix.queue.insert(video_pos, video_copy)
+
         self.new_source()
