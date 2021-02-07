@@ -18,7 +18,7 @@ class About(QtWidgets.QWidget):
         super(About, self).__init__(parent)
         layout = QtWidgets.QGridLayout()
 
-        self.setMinimumSize(400, 400)
+        self.setMinimumSize(QtCore.QSize(400, 400))
 
         build_file = Path(base_path, "build_version")
 

@@ -1206,7 +1206,6 @@ class Main(QtWidgets.QWidget):
         self.enable_all()
 
         self.app.fastflix.current_video.status = Status()
-
         self.loading_video = False
         self.page_update()
 

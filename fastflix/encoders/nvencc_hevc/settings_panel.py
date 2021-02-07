@@ -390,7 +390,7 @@ class NVENCC(SettingPanel):
         self.updating_settings = False
 
     def update_video_encoder_settings(self):
-
+        logger.debug("Updating video settings")
         settings = NVEncCSettings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
             # profile=self.widgets.profile.currentText(),
@@ -423,6 +423,7 @@ class NVENCC(SettingPanel):
         settings.cqp = q_value if encode_type == "qp" else None
         settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
+        logger.debug(settings)
 
     def set_mode(self, x):
         self.mode = x.text()

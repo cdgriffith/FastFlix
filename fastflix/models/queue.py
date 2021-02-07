@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-from typing import List, Optional, Union
+from typing import List
 import os
 from pathlib import Path
 import logging
 
 from box import Box, BoxError
-from pydantic import BaseModel, Field
-from appdirs import user_data_dir
 
 from fastflix.models.video import Video, VideoSettings, Status, Crop
 from fastflix.models.encode import AudioTrack, SubtitleTrack, AttachmentTrack

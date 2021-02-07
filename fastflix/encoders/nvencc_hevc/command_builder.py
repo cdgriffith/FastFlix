@@ -32,7 +32,8 @@ def build_audio(audio_tracks):
             if track.conversion_codec not in lossless:
                 bitrate = f"--audio-bitrate {track.outdex}?{track.conversion_bitrate.rstrip('k')} "
             command_list.append(
-                f"{downmix} --audio-codec {track.outdex}?{track.conversion_codec} {bitrate} --audio-metadata {track.outdex}?clear"
+                f"{downmix} --audio-codec {track.outdex}?{track.conversion_codec} {bitrate} "
+                f"--audio-metadata {track.outdex}?clear"
             )
 
         if track.title:
@@ -169,10 +170,10 @@ def build(fastflix: FastFlix):
         "hevc",
         (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
         vbv,
-        (f"--vbr-quality {settings.vbr_target}" if settings.vbr_target is not None else ""),
-        (f"--qp-init {init_q}" if init_q else ""),
-        (f"--qp-min {min_q}" if min_q else ""),
-        (f"--qp-max {max_q}" if max_q else ""),
+        (f"--vbr-quality {settings.vbr_target}" if settings.vbr_target is not None and settings.bitrate else ""),
+        (f"--qp-init {init_q}" if init_q and settings.bitrate else ""),
+        (f"--qp-min {min_q}" if min_q and settings.bitrate else ""),
+        (f"--qp-max {max_q}" if max_q and settings.bitrate else ""),
         (f"--bframes {settings.b_frames}" if settings.b_frames else ""),
         (f"--ref {settings.ref}" if settings.ref else ""),
         f"--bref-mode {settings.b_ref_mode}",

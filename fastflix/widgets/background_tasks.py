@@ -11,7 +11,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 
 logger = logging.getLogger("fastflix")
 
-__all__ = ["ThumbnailCreator", "ExtractSubtitleSRT", "SubtitleFix"]
+__all__ = ["ThumbnailCreator", "ExtractSubtitleSRT", "SubtitleFix", "ExtractHDR10"]
 
 
 class ThumbnailCreator(QtCore.QThread):

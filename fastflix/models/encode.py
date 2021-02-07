@@ -97,7 +97,6 @@ class NVEncCSettings(EncoderSettings):
     profile: str = "auto"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
-    cq: int = 0
     aq: str = "off"
     aq_strength: int = 0
     lookahead: Optional[int] = None
