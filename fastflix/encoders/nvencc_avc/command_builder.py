@@ -3,7 +3,7 @@ from typing import List
 import logging
 
 from fastflix.encoders.common.helpers import Command
-from fastflix.models.encode import NVEncCSettings
+from fastflix.models.encode import NVEncCAVCSettings
 from fastflix.models.video import SubtitleTrack, Video
 from fastflix.models.fastflix import FastFlix
 from fastflix.flix import unixy
@@ -62,7 +62,7 @@ def build_subtitle(subtitle_tracks: List[SubtitleTrack]) -> str:
 
 def build(fastflix: FastFlix):
     video: Video = fastflix.current_video
-    settings: NVEncCSettings = fastflix.current_video.video_settings.video_encoder_settings
+    settings: NVEncCAVCSettings = fastflix.current_video.video_settings.video_encoder_settings
 
     master_display = None
     if fastflix.current_video.master_display:
@@ -165,7 +165,7 @@ def build(fastflix: FastFlix):
         (f'--video-metadata title="{video.video_settings.video_title}"' if video.video_settings.video_title else ""),
         ("--chapter-copy" if video.video_settings.copy_chapters else ""),
         "-c",
-        "hevc",
+        "avc",
         (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
         vbv,
         (f"--vbr-quality {settings.vbr_target}" if settings.vbr_target is not None and settings.bitrate else ""),
@@ -177,8 +177,6 @@ def build(fastflix: FastFlix):
         f"--bref-mode {settings.b_ref_mode}",
         "--preset",
         settings.preset,
-        "--tier",
-        settings.tier,
         (f"--lookahead {settings.lookahead}" if settings.lookahead else ""),
         aq,
         "--colormatrix",
@@ -187,11 +185,6 @@ def build(fastflix: FastFlix):
         (video.video_settings.color_transfer or "auto"),
         "--colorprim",
         (video.video_settings.color_primaries or "auto"),
-        (master_display if master_display else ""),
-        (max_cll if max_cll else ""),
-        (dhdr if dhdr else ""),
-        "--output-depth",
-        ("10" if video.current_video_stream.bit_depth > 8 and not video.video_settings.remove_hdr else "8"),
         "--multipass",
         settings.multipass,
         "--mv-precision",

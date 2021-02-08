@@ -7,7 +7,7 @@ from qtpy import QtCore, QtWidgets, QtGui
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
-from fastflix.models.encode import NVEncCSettings
+from fastflix.models.encode import NVEncCAVCSettings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
 from fastflix.exceptions import FastFlixInternalException
@@ -59,8 +59,8 @@ def get_breaker():
     return breaker_line
 
 
-class NVENCC(SettingPanel):
-    profile_name = "nvencc_hevc"
+class NVENCCAVC(SettingPanel):
+    profile_name = "nvencc_avc"
     hdr10plus_signal = QtCore.Signal(str)
     hdr10plus_ffmpeg_signal = QtCore.Signal(str)
 
@@ -81,7 +81,7 @@ class NVENCC(SettingPanel):
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         # grid.addLayout(self.init_profile(), 1, 0, 1, 2)
-        grid.addLayout(self.init_tier(), 1, 0, 1, 2)
+        # grid.addLayout(self.init_tier(), 1, 0, 1, 2)
         grid.addLayout(self.init_multipass(), 2, 0, 1, 2)
         grid.addLayout(self.init_lookahead(), 3, 0, 1, 2)
 
@@ -176,14 +176,14 @@ class NVENCC(SettingPanel):
     #         opt="profile",
     #     )
 
-    def init_tier(self):
-        return self._add_combo_box(
-            label="Tier",
-            tooltip="Set the encoding tier",
-            widget_name="tier",
-            options=["main", "high"],
-            opt="tier",
-        )
+    # def init_tier(self):
+    #     return self._add_combo_box(
+    #         label="Tier",
+    #         tooltip="Set the encoding tier",
+    #         widget_name="tier",
+    #         options=["main", "high"],
+    #         opt="tier",
+    #     )
 
     def init_aq(self):
         return self._add_combo_box(
@@ -390,11 +390,10 @@ class NVENCC(SettingPanel):
         self.updating_settings = False
 
     def update_video_encoder_settings(self):
-        logger.debug("Updating video settings")
-        settings = NVEncCSettings(
+        settings = NVEncCAVCSettings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
             # profile=self.widgets.profile.currentText(),
-            tier=self.widgets.tier.currentText(),
+            # tier=self.widgets.tier.currentText(),
             lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
             aq=self.widgets.aq.currentText(),
             aq_strength=self.widgets.aq_strength.currentIndex(),

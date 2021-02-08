@@ -23,6 +23,7 @@ from fastflix.models.video import (
     x264Settings,
     x265Settings,
     NVEncCSettings,
+    NVEncCAVCSettings,
     FFmpegNVENCSettings,
 )
 from fastflix.shared import error_message
@@ -173,6 +174,8 @@ class ProfileWindow(QtWidgets.QWidget):
             new_profile.copy_settings = self.encoder
         elif isinstance(self.encoder, NVEncCSettings):
             new_profile.nvencc_hevc = self.encoder
+        elif isinstance(self.encoder, NVEncCAVCSettings):
+            new_profile.nvencc_avc = self.encoder
         elif isinstance(self.encoder, FFmpegNVENCSettings):
             new_profile.ffmpeg_hevc_nvenc = self.encoder
         else:

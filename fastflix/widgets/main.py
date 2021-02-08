@@ -565,7 +565,7 @@ class Main(QtWidgets.QWidget):
             "vs a specific [exact] frame lookup. (GIF encodings use [fast])"
         )
         self.widgets.fast_time.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
-        self.widgets.fast_time.setFixedWidth(75)
+        self.widgets.fast_time.setFixedWidth(65)
         layout.addWidget(QtWidgets.QLabel(" "))
         layout.addWidget(self.widgets.fast_time, QtCore.Qt.AlignRight)
         group_box.setLayout(layout)

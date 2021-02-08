@@ -22,6 +22,7 @@ from fastflix.models.encode import (
     x264Settings,
     x265Settings,
     NVEncCSettings,
+    NVEncCAVCSettings,
     setting_types,
 )
 from fastflix.version import __version__
@@ -71,6 +72,7 @@ class Profile(BaseModel):
     copy_settings: Optional[CopySettings] = None
     ffmpeg_hevc_nvenc: Optional[FFmpegNVENCSettings] = None
     nvencc_hevc: Optional[NVEncCSettings] = None
+    nvencc_avc: Optional[NVEncCAVCSettings] = None
 
 
 empty_profile = Profile(x265=x265Settings())
