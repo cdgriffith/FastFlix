@@ -136,7 +136,7 @@ class Video(BaseModel):
 
     work_path: Path = None
     format: Box = None
-    interlaced: bool = True
+    interlaced: Union[str, bool] = False
 
     hdr10_streams: List[Box] = Field(default_factory=list)
     hdr10_plus: List[int] = Field(default_factory=list)

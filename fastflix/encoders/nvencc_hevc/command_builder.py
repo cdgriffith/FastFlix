@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from typing import List
+from typing import List, Dict
 import logging
 
 from fastflix.encoders.common.helpers import Command
@@ -13,49 +13,58 @@ lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
 logger = logging.getLogger("fastflix")
 
 
-def build_audio(audio_tracks):
+def get_stream_pos(streams) -> Dict:
+    return {x.index: i for i, x in enumerate(streams, start=1)}
+
+
+def build_audio(audio_tracks, audio_streams):
     command_list = []
     copies = []
     track_ids = set()
+    stream_ids = get_stream_pos(audio_streams)
 
-    for track in audio_tracks:
+    for track in sorted(audio_tracks, key=lambda x: x.outdex):
         if track.index in track_ids:
             logger.warning("NVEncC does not support copy and duplicate of audio tracks!")
         track_ids.add(track.index)
+        audio_id = stream_ids[track.index]
         if track.language:
-            command_list.append(f"--audio-metadata {track.outdex}?language={track.language}")
+            command_list.append(f"--audio-metadata {audio_id}?language={track.language}")
         if not track.conversion_codec or track.conversion_codec == "none":
-            copies.append(str(track.outdex))
+            copies.append(str(audio_id))
         elif track.conversion_codec:
-            downmix = f"--audio-stream {track.outdex}?:{track.downmix}" if track.downmix else ""
+            downmix = f"--audio-stream {audio_id}?:{track.downmix}" if track.downmix else ""
             bitrate = ""
             if track.conversion_codec not in lossless:
-                bitrate = f"--audio-bitrate {track.outdex}?{track.conversion_bitrate.rstrip('k')} "
+                bitrate = f"--audio-bitrate {audio_id}?{track.conversion_bitrate.rstrip('k')} "
             command_list.append(
-                f"{downmix} --audio-codec {track.outdex}?{track.conversion_codec} {bitrate} "
-                f"--audio-metadata {track.outdex}?clear"
+                f"{downmix} --audio-codec {audio_id}?{track.conversion_codec} {bitrate} "
+                f"--audio-metadata {audio_id}?clear"
             )
 
         if track.title:
             command_list.append(
-                f'--audio-metadata {track.outdex}?title="{track.title}" '
-                f'--audio-metadata {track.outdex}?handler="{track.title}" '
+                f'--audio-metadata {audio_id}?title="{track.title}" '
+                f'--audio-metadata {audio_id}?handler="{track.title}" '
             )
 
     return f" --audio-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
 
 
-def build_subtitle(subtitle_tracks: List[SubtitleTrack]) -> str:
+def build_subtitle(subtitle_tracks: List[SubtitleTrack], subtitle_streams) -> str:
     command_list = []
     copies = []
-    for i, track in enumerate(subtitle_tracks, start=1):
+    stream_ids = get_stream_pos(subtitle_streams)
+
+    for track in sorted(subtitle_tracks, key=lambda x: x.outdex):
+        sub_id = stream_ids[track.index]
         if track.burn_in:
-            command_list.append(f"--vpp-subburn track={i}")
+            command_list.append(f"--vpp-subburn track={sub_id}")
         else:
-            copies.append(str(i))
+            copies.append(str(sub_id))
             if track.disposition:
-                command_list.append(f"--sub-disposition {i}?{track.disposition}")
-            command_list.append(f"--sub-metadata  {i}?language='{track.language}'")
+                command_list.append(f"--sub-disposition {sub_id}?{track.disposition}")
+            command_list.append(f"--sub-metadata  {sub_id}?language='{track.language}'")
 
     return f" --sub-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
 
@@ -206,8 +215,8 @@ def build(fastflix: FastFlix):
         (f"--vpp-colorspace hdr2sdr=mobius" if video.video_settings.remove_hdr else ""),
         remove_hdr,
         "--psnr --ssim" if settings.metrics else "",
-        build_audio(video.video_settings.audio_tracks),
-        build_subtitle(video.video_settings.subtitle_tracks),
+        build_audio(video.video_settings.audio_tracks, video.streams.audio),
+        build_subtitle(video.video_settings.subtitle_tracks, video.streams.subtitle),
         settings.extra,
         "-o",
         f'"{unixy(video.video_settings.output_path)}"',

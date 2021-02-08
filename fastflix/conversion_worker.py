@@ -170,6 +170,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, qu
             # Successfully encoded, do next one if it exists
             # First check if the current video has more commands
             video.status.current_command += 1
+            log_queue.put("STOP_TIMER")
 
             if len(video.video_settings.conversion_commands) > video.status.current_command:
                 logger.debug("About to run next command for this video")

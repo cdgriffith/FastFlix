@@ -71,8 +71,7 @@ def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
 
     if color_primaries and color_primaries.startswith("bt2020"):
         return 10
-    else:
-        return 8
+    return 8
 
 
 def execute(command: List, work_dir: Union[Path, str] = None, timeout: int = None) -> CompletedProcess:
@@ -153,7 +152,10 @@ def parse(app: FastFlixApp, **_):
         raise FlixError(f"Not a video file, FFprobe output: {data}")
     streams = Box({"video": [], "audio": [], "subtitle": [], "attachment": [], "data": []})
     for track in data.streams:
-        if track.codec_type == "video" and track.get("disposition", {}).get("attached_pic"):
+        if track.codec_type == "video" and (
+            track.get("disposition", {}).get("attached_pic")
+            or track.get("tags", {}).get("MIMETYPE", "").startswith("image")
+        ):
             streams.attachment.append(track)
         elif track.codec_type in streams:
             streams[track.codec_type].append(track)

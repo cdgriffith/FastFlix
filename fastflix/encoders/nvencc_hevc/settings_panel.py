@@ -390,7 +390,6 @@ class NVENCC(SettingPanel):
         self.updating_settings = False
 
     def update_video_encoder_settings(self):
-        logger.debug("Updating video settings")
         settings = NVEncCSettings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
             # profile=self.widgets.profile.currentText(),

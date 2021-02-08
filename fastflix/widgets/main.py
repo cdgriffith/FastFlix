@@ -1588,14 +1588,11 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def encode_video(self):
-        # TODO make sure there is a video that can be encoded
         if self.converting:
             logger.debug(t("Canceling current encode"))
             self.app.fastflix.worker_queue.put(["cancel"])
             self.video_options.queue.reset_pause_encode()
             return
-        else:
-            logger.debug(t("Starting conversion process"))
 
         if not self.app.fastflix.queue or self.app.fastflix.current_video:
             add_current = True
@@ -1606,7 +1603,14 @@ class Main(QtWidgets.QWidget):
                     return
         requests = ["add_items", str(self.app.fastflix.log_path)]
 
-        # TODO here check for videos if ready. Make shared function for ready?
+        for video in self.app.fastflix.queue:
+            if video.status.ready:
+                break
+        else:
+            error_message(t("There are no videos to start converting"))
+            return
+
+        logger.debug(t("Starting conversion process"))
 
         self.converting = True
         self.set_convert_button(False)
