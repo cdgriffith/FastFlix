@@ -11,6 +11,7 @@ from subprocess import run
 import pkg_resources
 import requests
 import reusables
+from pathvalidate import sanitize_filepath
 
 
 try:
@@ -257,3 +258,7 @@ def timedelta_to_str(delta):
     output_string = output_string.split(".")[0]  # Remove .XXX microseconds
 
     return output_string
+
+
+def unixy(source):
+    return str(sanitize_filepath(source, platform="Windows" if reusables.win_based else "Linux")).replace("\\", "/")

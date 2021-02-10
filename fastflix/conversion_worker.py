@@ -8,6 +8,7 @@ from multiprocessing import Manager, Lock
 import reusables
 from appdirs import user_data_dir
 from box import Box
+from pathvalidate import sanitize_filename
 
 from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
@@ -135,7 +136,9 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, qu
         reusables.remove_file_handlers(logger)
         new_file_handler = reusables.get_file_handler(
             log_path
-            / f"flix_conversion_{video.video_settings.video_title or video.video_settings.output_path.stem}_{file_date()}.log",
+            / sanitize_filename(
+                f"flix_conversion_{video.video_settings.video_title or video.video_settings.output_path.stem}_{file_date()}.log"
+            ),
             level=logging.DEBUG,
             log_format="%(asctime)s - %(message)s",
             encoding="utf-8",

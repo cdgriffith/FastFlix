@@ -6,7 +6,7 @@ from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import NVEncCAVCSettings
 from fastflix.models.video import SubtitleTrack, Video
 from fastflix.models.fastflix import FastFlix
-from fastflix.flix import unixy
+from fastflix.shared import unixy
 
 lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
 

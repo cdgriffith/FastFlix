@@ -240,17 +240,27 @@ class EncodingQueue(FlixList):
         top_layout.addWidget(self.clear_queue, QtCore.Qt.AlignRight)
 
         super().__init__(app, parent, t("Queue"), "queue", top_row_layout=top_layout)
-        self.queue_startup_check()
+        try:
+            self.queue_startup_check()
+        except Exception:
+            logger.exception("Could not load queue as it is outdated or malformed. Deleting for safety.")
+            save_queue([], queue_file=self.app.fastflix.queue_path)
 
     def queue_startup_check(self):
         for item in get_queue(self.app.fastflix.queue_path):
             self.app.fastflix.queue.append(item)
+        reset_vids = []
         remove_vids = []
-        for video in self.app.fastflix.queue:
-            # if video.status.running:
-            #     video.status.clear()
+        for i, video in enumerate(self.app.fastflix.queue):
+            if video.status.running:
+                reset_vids.append(i)
             if video.status.complete:
                 remove_vids.append(video)
+
+        for index in reset_vids:
+            vid = self.app.fastflix.queue.pop(index)
+            vid.status.reset()
+            self.app.fastflix.queue.insert(index, vid)
 
         for video in remove_vids:
             self.app.fastflix.queue.remove(video)

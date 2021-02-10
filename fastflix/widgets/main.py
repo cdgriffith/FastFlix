@@ -840,6 +840,8 @@ class Main(QtWidgets.QWidget):
 
     @property
     def generate_output_filename(self):
+        if self.app.fastflix.config.output_directory:
+            return f"{self.app.fastflix.config.output_directory / self.input_video.stem}-fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
         if self.input_video:
             return f"{self.input_video.parent / self.input_video.stem}-fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
         return f"{Path('~').expanduser()}{os.sep}fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
@@ -1758,13 +1760,18 @@ class Main(QtWidgets.QWidget):
         logger.debug(f"Updating queue from command worker")
 
         with self.app.fastflix.queue_lock:
-            for video in self.app.fastflix.queue:
+            fixed_vids = []
+            for i, video in enumerate(self.app.fastflix.queue):
                 if video.status.complete and not video.status.subtitle_fixed:
                     if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
                         if mkv_prop_edit := shutil.which("mkvpropedit"):
                             worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
                             worker.start()
-                    video.status.subtitle_fixed = True
+                    fixed_vids.append(i)
+            for index in fixed_vids:
+                video = self.app.fastflix.queue.pop(index)
+                video.status.subtitle_fixed = True
+                self.app.fastflix.queue.insert(index, video)
         save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
         self.video_options.update_queue()
 

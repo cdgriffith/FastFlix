@@ -8,6 +8,7 @@ from typing import List, Tuple, Union
 
 import reusables
 from box import Box, BoxError
+from pathvalidate import sanitize_filepath
 
 from fastflix.exceptions import FlixError
 from fastflix.language import t
@@ -23,7 +24,7 @@ logger = logging.getLogger("fastflix")
 
 
 def unixy(source):
-    return str(source).replace("\\", "/")
+    return str(sanitize_filepath(source, platform="Windows" if reusables.win_based else "Linux")).replace("\\", "/")
 
 
 def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:

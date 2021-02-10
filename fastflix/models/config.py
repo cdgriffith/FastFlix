@@ -123,6 +123,7 @@ class Config(BaseModel):
     hdr10plus_parser: Optional[Path] = Field(default_factory=lambda: where("hdr10plus_parser"))
     mkvpropedit: Optional[Path] = Field(default_factory=lambda: where("mkvpropedit"))
     nvencc: Optional[Path] = Field(default_factory=lambda: where("NVEncC"))
+    output_directory: Optional[Path] = False
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
@@ -192,7 +193,7 @@ class Config(BaseModel):
                 "there may be non-recoverable errors while loading it."
             )
 
-        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "mkvpropedit", "nvencc")
+        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "mkvpropedit", "nvencc", "output_directory")
         for key, value in data.items():
             if key == "profiles":
                 self.profiles = {}

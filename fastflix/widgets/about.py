@@ -59,7 +59,7 @@ class About(QtWidgets.QWidget):
             f"{link('https://github.com/cdgriffith/Box', t('python-box'))} {box_version} (MIT), "
             f"{link('https://github.com/cdgriffith/Reusables', t('Reusables'))} {reusables.__version__} (MIT)<br>"
             "mistune (BSD), colorama (BSD), coloredlogs (MIT), Requests (Apache 2.0)<br>"
-            "appdirs (MIT), iso639-lang (MIT), psutil (BSD), qtpy (MIT)<br>"
+            "appdirs (MIT), iso639-lang (MIT), psutil (BSD), qtpy (MIT), pathvalidate (MIT) <br>"
         )
         supporting_libraries_label.setAlignment(QtCore.Qt.AlignCenter)
         supporting_libraries_label.setOpenExternalLinks(True)

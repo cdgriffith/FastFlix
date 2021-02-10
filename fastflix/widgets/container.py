@@ -228,7 +228,10 @@ class OpenFolder(QtCore.QThread):
         self.path = str(path)
 
     def __del__(self):
-        self.wait()
+        try:
+            self.wait()
+        except BaseException:
+            pass
 
     def run(self):
         if reusables.win_based:
