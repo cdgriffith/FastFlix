@@ -134,10 +134,12 @@ def generate_filters(
     if scale:
         filter_list.append(f"scale={scale}:flags={scale_filter}")
     if rotate:
-        if rotate < 3:
-            filter_list.append(f"transpose={rotate}")
-        if rotate == 4:
+        if rotate == 1:
+            filter_list.append(f"transpose=1")
+        if rotate == 2:
             filter_list.append(f"transpose=2,transpose=2")
+        if rotate == 3:
+            filter_list.append(f"transpose=2")
     if vertical_flip:
         filter_list.append("vflip")
     if horizontal_flip:

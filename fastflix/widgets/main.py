@@ -481,14 +481,6 @@ class Main(QtWidgets.QWidget):
 
         return self.widgets.rotate
 
-    def rotation_to_transpose(self):
-        mapping = {0: 0, 1: 1, 2: 4, 3: 2}
-        return mapping[self.widgets.rotate.currentIndex()]
-
-    def transpose_to_rotation(self, transpose):
-        mapping = {0: 0, 1: 1, 4: 2, 2: 3}
-        return mapping[int(transpose)]
-
     def change_output_types(self):
         self.widgets.convert_to.clear()
         self.widgets.convert_to.addItems([f" {x}" for x in self.app.fastflix.encoders.keys()])
@@ -1182,7 +1174,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.remove_metadata.setChecked(self.app.fastflix.current_video.video_settings.remove_metadata)
         self.widgets.chapters.setChecked(self.app.fastflix.current_video.video_settings.copy_chapters)
         self.widgets.remove_hdr.setChecked(self.app.fastflix.current_video.video_settings.remove_hdr)
-        self.widgets.rotate.setCurrentIndex(self.transpose_to_rotation(video.video_settings.rotate))
+        self.widgets.rotate.setCurrentIndex(video.video_settings.rotate)
         self.widgets.fast_time.setCurrentIndex(0 if video.video_settings.fast_seek else 1)
         if video.video_settings.vertical_flip:
             self.widgets.flip.setCurrentIndex(1)
@@ -1434,7 +1426,7 @@ class Main(QtWidgets.QWidget):
             end_time=end_time,
             selected_track=self.original_video_track,
             fast_seek=self.fast_time,
-            rotate=self.rotation_to_transpose(),
+            rotate=self.widgets.rotate.currentIndex(),
             vertical_flip=v_flip,
             horizontal_flip=h_flip,
             output_path=Path(self.output_video),
@@ -1508,7 +1500,12 @@ class Main(QtWidgets.QWidget):
         self.video_options.refresh()
         self.build_commands()
         if build_thumbnail:
-            new_hash = f"{self.build_crop()}:{self.build_scale()}:{self.start_time}:{self.end_time}:{self.app.fastflix.current_video.video_settings.selected_track}:{int(self.remove_hdr)}:{self.preview_place}"
+            new_hash = (
+                f"{self.build_crop()}:{self.build_scale()}:{self.start_time}:{self.end_time}:"
+                f"{self.app.fastflix.current_video.video_settings.selected_track}:"
+                f"{int(self.remove_hdr)}:{self.preview_place}:{self.widgets.rotate.currentIndex()}:"
+                f"{self.widgets.flip.currentIndex()}"
+            )
             if new_hash == self.last_thumb_hash:
                 return
             self.last_thumb_hash = new_hash

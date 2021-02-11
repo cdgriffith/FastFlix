@@ -166,7 +166,7 @@ def build(fastflix: FastFlix):
         f'"{unixy(video.source)}"',
         (f"--video-streamid {stream_id}" if stream_id else ""),
         trim,
-        (f"--vpp-rotate {video.video_settings.rotate}" if video.video_settings.rotate else ""),
+        (f"--vpp-rotate {video.video_settings.rotate * 90}" if video.video_settings.rotate else ""),
         transform,
         (f'--output-res {video.video_settings.scale.replace(":", "x")}' if video.video_settings.scale else ""),
         crop,

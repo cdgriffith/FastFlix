@@ -64,24 +64,6 @@ def build(fastflix: FastFlix):
     video: Video = fastflix.current_video
     settings: NVEncCAVCSettings = fastflix.current_video.video_settings.video_encoder_settings
 
-    master_display = None
-    if fastflix.current_video.master_display:
-        master_display = (
-            f'--master-display "G{fastflix.current_video.master_display.green}'
-            f"B{fastflix.current_video.master_display.blue}"
-            f"R{fastflix.current_video.master_display.red}"
-            f"WP{fastflix.current_video.master_display.white}"
-            f'L{fastflix.current_video.master_display.luminance}"'
-        )
-
-    max_cll = None
-    if fastflix.current_video.cll:
-        max_cll = f'--max-cll "{fastflix.current_video.cll}"'
-
-    dhdr = None
-    if settings.hdr10plus_metadata:
-        dhdr = f'--dhdr10-info "{settings.hdr10plus_metadata}"'
-
     trim = ""
     try:
         if "/" in video.frame_rate:
@@ -157,7 +139,7 @@ def build(fastflix: FastFlix):
         f'"{unixy(video.source)}"',
         (f"--video-streamid {stream_id}" if stream_id else ""),
         trim,
-        (f"--vpp-rotate {video.video_settings.rotate}" if video.video_settings.rotate else ""),
+        (f"--vpp-rotate {video.video_settings.rotate * 90}" if video.video_settings.rotate else ""),
         transform,
         (f'--output-res {video.video_settings.scale.replace(":", "x")}' if video.video_settings.scale else ""),
         crop,

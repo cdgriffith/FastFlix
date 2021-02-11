@@ -136,7 +136,7 @@ class ProfileWindow(QtWidgets.QWidget):
             auto_crop=self.auto_crop.isChecked(),
             keep_aspect_ratio=self.main.widgets.scale.keep_aspect.isChecked(),
             fast_seek=self.main.fast_time,
-            rotate=self.main.rotation_to_transpose(),
+            rotate=self.main.widgets.rotate.currentIndex(),
             vertical_flip=v_flip,
             horizontal_flip=h_flip,
             copy_chapters=self.main.copy_chapters,
