@@ -3051,6 +3051,16 @@ vsync:
   spa: vsync
   zho: vsync
 There are no videos to start converting:
+  deu: Es sind keine Videos vorhanden, die konvertiert werden können
   eng: There are no videos to start converting
+  fra: Il n'y a pas de vidéos à convertir
+  ita: Non ci sono video da convertire
+  spa: No hay vídeos para empezar a convertir
+  zho: 没有视频可以开始转换
 No crop, scale, rotation,flip nor any other filters will be applied.:
+  deu: Es werden weder Beschneiden, Skalieren, Drehen, Spiegeln noch andere Filter angewendet.
   eng: No crop, scale, rotation,flip nor any other filters will be applied.
+  fra: Aucun filtre de culture, d'échelle, de rotation, de retournement ou autre ne sera appliqué.
+  ita: Nessun ritaglio, scala, rotazione, flip o qualsiasi altro filtro sarà applicato.
+  spa: No se aplicará ningún filtro de recorte, escala, rotación, volteo ni ningún otro.
+  zho: 不会应用裁剪、缩放、旋转、翻转或任何其他滤镜。
