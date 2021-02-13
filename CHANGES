@@ -10,6 +10,7 @@
 * Adding Windows 10 notification for queue complete success
 * Adding #194 fast two pass encoding (thanks to Ugurtan)
 * Fixing German translations (thanks to SMESH)
+* Fixing #171 Be able to select encoder before selecting video
 * Fixing #176 Unable to change queue order or delete task from queue since 4.1.0 (thanks to Etz)
 * Fixing #185 need to specify channel layout when downmixing (thanks to Ugurtan)
 * Fixing #187 cleaning up partial download of FFmpeg (thanks to Todd Wilkinson)

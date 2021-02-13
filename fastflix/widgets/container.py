@@ -50,6 +50,7 @@ class Container(QtWidgets.QMainWindow):
         self.setMinimumSize(QtCore.QSize(1280, 650))
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
+        self.main.set_profile()
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         if self.pb:

@@ -432,6 +432,8 @@ class NVENCCAVC(SettingPanel):
         self.main.build_commands()
 
     def new_source(self):
+        if not self.app.fastflix.current_video:
+            return
         super().new_source()
         if self.app.fastflix.current_video.hdr10_plus:
             self.extract_button.show()

@@ -1,63 +1,14 @@
 # -*- coding: utf-8 -*-
-from typing import List
 import logging
 
 from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import NVEncCAVCSettings
-from fastflix.models.video import SubtitleTrack, Video
+from fastflix.models.video import Video
 from fastflix.models.fastflix import FastFlix
 from fastflix.shared import unixy
-
-lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
+from fastflix.encoders.common.nvencc_helpers import build_subtitle, build_audio
 
 logger = logging.getLogger("fastflix")
-
-
-def build_audio(audio_tracks):
-    command_list = []
-    copies = []
-    track_ids = set()
-
-    for track in audio_tracks:
-        if track.index in track_ids:
-            logger.warning("NVEncC does not support copy and duplicate of audio tracks!")
-        track_ids.add(track.index)
-        if track.language:
-            command_list.append(f"--audio-metadata {track.outdex}?language={track.language}")
-        if not track.conversion_codec or track.conversion_codec == "none":
-            copies.append(str(track.outdex))
-        elif track.conversion_codec:
-            downmix = f"--audio-stream {track.outdex}?:{track.downmix}" if track.downmix else ""
-            bitrate = ""
-            if track.conversion_codec not in lossless:
-                bitrate = f"--audio-bitrate {track.outdex}?{track.conversion_bitrate.rstrip('k')} "
-            command_list.append(
-                f"{downmix} --audio-codec {track.outdex}?{track.conversion_codec} {bitrate} "
-                f"--audio-metadata {track.outdex}?clear"
-            )
-
-        if track.title:
-            command_list.append(
-                f'--audio-metadata {track.outdex}?title="{track.title}" '
-                f'--audio-metadata {track.outdex}?handler="{track.title}" '
-            )
-
-    return f" --audio-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
-
-
-def build_subtitle(subtitle_tracks: List[SubtitleTrack]) -> str:
-    command_list = []
-    copies = []
-    for i, track in enumerate(subtitle_tracks, start=1):
-        if track.burn_in:
-            command_list.append(f"--vpp-subburn track={i}")
-        else:
-            copies.append(str(i))
-            if track.disposition:
-                command_list.append(f"--sub-disposition {i}?{track.disposition}")
-            command_list.append(f"--sub-metadata  {i}?language='{track.language}'")
-
-    return f" --sub-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
 
 
 def build(fastflix: FastFlix):

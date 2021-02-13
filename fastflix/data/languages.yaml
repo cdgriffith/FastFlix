@@ -3052,3 +3052,5 @@ vsync:
   zho: vsync
 There are no videos to start converting:
   eng: There are no videos to start converting
+No crop, scale, rotation,flip nor any other filters will be applied.:
+  eng: No crop, scale, rotation,flip nor any other filters will be applied.

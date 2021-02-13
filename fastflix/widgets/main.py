@@ -191,9 +191,9 @@ class Main(QtWidgets.QWidget):
 
         self.disable_all()
         self.setLayout(self.grid)
-        self.set_profile()
         self.show()
         self.initialized = True
+        self.loading_video = False
         self.last_page_update = time.time()
 
     def init_top_bar(self):
@@ -412,23 +412,25 @@ class Main(QtWidgets.QWidget):
             return
         self.app.fastflix.config.selected_profile = self.widgets.profile_box.currentText()
         self.app.fastflix.config.save()
-        self.widgets.convert_to.setCurrentText(f" {self.app.fastflix.config.opt('encoder')}")
+        self.widgets.convert_to.setCurrentText(self.app.fastflix.config.opt("encoder"))
         if self.app.fastflix.config.opt("auto_crop") and not self.build_crop():
             self.get_auto_crop()
         self.loading_video = True
-        self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
-        self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") or 0 // 90)
+        try:
+            self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
+            self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") or 0 // 90)
 
-        v_flip = self.app.fastflix.config.opt("vertical_flip")
-        h_flip = self.app.fastflix.config.opt("horizontal_flip")
+            v_flip = self.app.fastflix.config.opt("vertical_flip")
+            h_flip = self.app.fastflix.config.opt("horizontal_flip")
 
-        self.widgets.flip.setCurrentIndex(self.flip_to_int(v_flip, h_flip))
-        self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
-        self.video_options.update_profile()
-        if self.app.fastflix.current_video:
-            self.video_options.new_source()
-        # Hack to prevent a lot of thumbnail generation
-        self.loading_video = False
+            self.widgets.flip.setCurrentIndex(self.flip_to_int(v_flip, h_flip))
+            self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
+            self.video_options.update_profile()
+            if self.app.fastflix.current_video:
+                self.video_options.new_source()
+        finally:
+            # Hack to prevent a lot of thumbnail generation
+            self.loading_video = False
         self.page_update()
 
     def save_profile(self):
@@ -483,7 +485,7 @@ class Main(QtWidgets.QWidget):
 
     def change_output_types(self):
         self.widgets.convert_to.clear()
-        self.widgets.convert_to.addItems([f" {x}" for x in self.app.fastflix.encoders.keys()])
+        self.widgets.convert_to.addItems(self.app.fastflix.encoders.keys())
         for i, plugin in enumerate(self.app.fastflix.encoders.values()):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
@@ -507,9 +509,11 @@ class Main(QtWidgets.QWidget):
         return layout
 
     def change_encoder(self):
-        if not self.initialized or not self.app.fastflix.current_video or not self.convert_to:
+        if not self.initialized or not self.convert_to:
             return
         self.video_options.change_conversion(self.convert_to)
+        if not self.app.fastflix.current_video:
+            return
         if not self.output_video_path_widget.text().endswith(self.current_encoder.video_extension):
             # Make sure it's using the right file extension
             self.output_video_path_widget.setText(self.generate_output_filename)
@@ -977,7 +981,7 @@ class Main(QtWidgets.QWidget):
 
     def disable_all(self):
         for name, widget in self.widgets.items():
-            if name in ("preview", "convert_button", "pause_resume"):
+            if name in ("preview", "convert_button", "pause_resume", "convert_to", "profile_box"):
                 continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
@@ -992,7 +996,7 @@ class Main(QtWidgets.QWidget):
 
     def enable_all(self):
         for name, widget in self.widgets.items():
-            if name in ("preview", "convert_button", "pause_resume"):
+            if name in ("preview", "convert_button", "pause_resume", "convert_to", "profile_box"):
                 continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():

@@ -104,6 +104,8 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.main.container.profile.update_settings()
 
     def new_source(self):
+        if not self.app.fastflix.current_video:
+            return
         if getattr(self.main.current_encoder, "enable_audio", False):
             self.audio.new_source(self.audio_formats)
         if getattr(self.main.current_encoder, "enable_subtitles", False):
