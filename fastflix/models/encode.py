@@ -97,7 +97,36 @@ class NVEncCSettings(EncoderSettings):
     profile: str = "auto"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
-    cq: int = 0
+    aq: str = "off"
+    aq_strength: int = 0
+    lookahead: Optional[int] = None
+    tier: str = "high"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    multipass: str = "2pass-full"
+    mv_precision: str = "Auto"
+    init_q_i: Optional[str] = None
+    init_q_p: Optional[str] = None
+    init_q_b: Optional[str] = None
+    min_q_i: Optional[str] = None
+    min_q_p: Optional[str] = None
+    min_q_b: Optional[str] = None
+    max_q_i: Optional[str] = None
+    max_q_p: Optional[str] = None
+    max_q_b: Optional[str] = None
+    vbr_target: Optional[str] = None
+    b_frames: Optional[str] = None
+    b_ref_mode: str = "disabled"
+    ref: Optional[str] = None
+    metrics: bool = True
+
+
+class NVEncCAVCSettings(EncoderSettings):
+    name = "AVC (NVEncC)"
+    preset: str = "quality"
+    profile: str = "auto"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
     aq: str = "off"
     aq_strength: int = 0
     lookahead: Optional[int] = None
@@ -200,4 +229,5 @@ setting_types = {
     "copy_settings": CopySettings,
     "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
     "nvencc_hevc": NVEncCSettings,
+    "nvencc_avc": NVEncCAVCSettings,
 }

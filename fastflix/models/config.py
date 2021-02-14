@@ -22,6 +22,7 @@ from fastflix.models.encode import (
     x264Settings,
     x265Settings,
     NVEncCSettings,
+    NVEncCAVCSettings,
     setting_types,
 )
 from fastflix.version import __version__
@@ -71,6 +72,7 @@ class Profile(BaseModel):
     copy_settings: Optional[CopySettings] = None
     ffmpeg_hevc_nvenc: Optional[FFmpegNVENCSettings] = None
     nvencc_hevc: Optional[NVEncCSettings] = None
+    nvencc_avc: Optional[NVEncCAVCSettings] = None
 
 
 empty_profile = Profile(x265=x265Settings())
@@ -121,6 +123,7 @@ class Config(BaseModel):
     hdr10plus_parser: Optional[Path] = Field(default_factory=lambda: where("hdr10plus_parser"))
     mkvpropedit: Optional[Path] = Field(default_factory=lambda: where("mkvpropedit"))
     nvencc: Optional[Path] = Field(default_factory=lambda: where("NVEncC"))
+    output_directory: Optional[Path] = False
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
@@ -190,7 +193,7 @@ class Config(BaseModel):
                 "there may be non-recoverable errors while loading it."
             )
 
-        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "mkvpropedit", "nvencc")
+        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "mkvpropedit", "nvencc", "output_directory")
         for key, value in data.items():
             if key == "profiles":
                 self.profiles = {}

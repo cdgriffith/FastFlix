@@ -21,6 +21,7 @@ from fastflix.models.encode import (
     x264Settings,
     x265Settings,
     NVEncCSettings,
+    NVEncCAVCSettings,
 )
 
 __all__ = ["VideoSettings", "Status", "Video", "Crop", "Status"]
@@ -97,6 +98,7 @@ class VideoSettings(BaseModel):
         CopySettings,
         FFmpegNVENCSettings,
         NVEncCSettings,
+        NVEncCAVCSettings,
     ] = None
     audio_tracks: List[AudioTrack] = Field(default_factory=list)
     subtitle_tracks: List[SubtitleTrack] = Field(default_factory=list)
@@ -134,7 +136,7 @@ class Video(BaseModel):
 
     work_path: Path = None
     format: Box = None
-    interlaced: bool = True
+    interlaced: Union[str, bool] = False
 
     hdr10_streams: List[Box] = Field(default_factory=list)
     hdr10_plus: List[int] = Field(default_factory=list)

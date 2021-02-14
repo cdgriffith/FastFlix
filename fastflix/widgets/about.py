@@ -18,7 +18,7 @@ class About(QtWidgets.QWidget):
         super(About, self).__init__(parent)
         layout = QtWidgets.QGridLayout()
 
-        self.setMinimumSize(400, 400)
+        self.setMinimumSize(QtCore.QSize(400, 400))
 
         build_file = Path(base_path, "build_version")
 
@@ -33,27 +33,37 @@ class About(QtWidgets.QWidget):
         label.setAlignment(QtCore.Qt.AlignCenter)
         label.setOpenExternalLinks(True)
         label.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        layout.addWidget(label)
+
+        support_label = QtWidgets.QLabel(
+            f'{link("https://github.com/cdgriffith/FastFlix/wiki/Support-FastFlix", t("Support FastFlix"))}<br><br>'
+        )
+        support_label.setOpenExternalLinks(True)
+        support_label.setFont(QtGui.QFont("Arial", 12))
+        support_label.setAlignment((QtCore.Qt.AlignCenter | QtCore.Qt.AlignTop))
+        layout.addWidget(support_label)
+
+        bundle_label = QtWidgets.QLabel(
+            f"Conversion suites: {link('https://www.ffmpeg.org/download.html', 'FFmpeg')} ({t('Various')}), "
+            f"{link('https://github.com/rigaya/NVEnc', 'NVEncC')} (MIT)<br><br>"
+            f"Encoders: <br> {link('https://github.com/rigaya/NVEnc', 'NVEncC')} (MIT), "
+            f"SVT AV1 (MIT), rav1e (MIT), aom (MIT), x265 (GPL), x264 (GPL), libvpx (BSD)"
+        )
+        bundle_label.setAlignment(QtCore.Qt.AlignCenter)
+        bundle_label.setOpenExternalLinks(True)
+        layout.addWidget(bundle_label)
 
         supporting_libraries_label = QtWidgets.QLabel(
             "Supporting libraries<br>"
             f"{link('https://www.python.org/', t('Python'))}{reusables.version_string} (PSF LICENSE), "
             f"{link('https://github.com/cdgriffith/Box', t('python-box'))} {box_version} (MIT), "
             f"{link('https://github.com/cdgriffith/Reusables', t('Reusables'))} {reusables.__version__} (MIT)<br>"
-            "mistune (BSD), colorama (BSD), coloredlogs (MIT), Requests (Apache 2.0)"
+            "mistune (BSD), colorama (BSD), coloredlogs (MIT), Requests (Apache 2.0)<br>"
+            "appdirs (MIT), iso639-lang (MIT), psutil (BSD), qtpy (MIT), pathvalidate (MIT) <br>"
         )
         supporting_libraries_label.setAlignment(QtCore.Qt.AlignCenter)
         supporting_libraries_label.setOpenExternalLinks(True)
-
-        layout.addWidget(label)
         layout.addWidget(supporting_libraries_label)
-
-        bundle_label = QtWidgets.QLabel(
-            f"Conversion suite: {link('https://www.ffmpeg.org/download.html', 'FFmpeg')} ({t('Various')})<br><br>"
-            "Encoders: <br> SVT AV1 (MIT), rav1e (MIT), aom (MIT), x265 (GPL), x264 (GPL), libvpx (BSD)"
-        )
-        bundle_label.setAlignment(QtCore.Qt.AlignCenter)
-        bundle_label.setOpenExternalLinks(True)
-        layout.addWidget(bundle_label)
 
         if pyinstaller:
             pyinstaller_label = QtWidgets.QLabel(

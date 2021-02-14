@@ -32,7 +32,7 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
-from fastflix.models.queue import get_queue, save_queue
+from fastflix.models.queue import save_queue
 from fastflix.resources import (
     black_x_icon,
     folder_icon,
@@ -191,9 +191,9 @@ class Main(QtWidgets.QWidget):
 
         self.disable_all()
         self.setLayout(self.grid)
-        self.set_profile()
         self.show()
         self.initialized = True
+        self.loading_video = False
         self.last_page_update = time.time()
 
     def init_top_bar(self):
@@ -410,27 +410,27 @@ class Main(QtWidgets.QWidget):
     def set_profile(self):
         if self.loading_video:
             return
-        # self.video_options.new_source()
-        # previous_auto_crop = self.app.fastflix.config.opt("auto_crop")
         self.app.fastflix.config.selected_profile = self.widgets.profile_box.currentText()
         self.app.fastflix.config.save()
-        self.widgets.convert_to.setCurrentText(f"   {self.app.fastflix.config.opt('encoder')}")
+        self.widgets.convert_to.setCurrentText(self.app.fastflix.config.opt("encoder"))
         if self.app.fastflix.config.opt("auto_crop") and not self.build_crop():
             self.get_auto_crop()
         self.loading_video = True
-        self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
-        self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") or 0 // 90)
+        try:
+            self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
+            self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") or 0 // 90)
 
-        v_flip = self.app.fastflix.config.opt("vertical_flip")
-        h_flip = self.app.fastflix.config.opt("horizontal_flip")
+            v_flip = self.app.fastflix.config.opt("vertical_flip")
+            h_flip = self.app.fastflix.config.opt("horizontal_flip")
 
-        self.widgets.flip.setCurrentIndex(self.flip_to_int(v_flip, h_flip))
-        self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
-        self.video_options.update_profile()
-        if self.app.fastflix.current_video:
-            self.video_options.new_source()
-        # Hack to prevent a lot of thumbnail generation
-        self.loading_video = False
+            self.widgets.flip.setCurrentIndex(self.flip_to_int(v_flip, h_flip))
+            self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
+            self.video_options.update_profile()
+            if self.app.fastflix.current_video:
+                self.video_options.new_source()
+        finally:
+            # Hack to prevent a lot of thumbnail generation
+            self.loading_video = False
         self.page_update()
 
     def save_profile(self):
@@ -483,17 +483,9 @@ class Main(QtWidgets.QWidget):
 
         return self.widgets.rotate
 
-    def rotation_to_transpose(self):
-        mapping = {0: 0, 1: 1, 2: 4, 3: 2}
-        return mapping[self.widgets.rotate.currentIndex()]
-
-    def transpose_to_rotation(self, transpose):
-        mapping = {0: 0, 1: 1, 4: 2, 2: 3}
-        return mapping[int(transpose)]
-
     def change_output_types(self):
         self.widgets.convert_to.clear()
-        self.widgets.convert_to.addItems([f" {x}" for x in self.app.fastflix.encoders.keys()])
+        self.widgets.convert_to.addItems(self.app.fastflix.encoders.keys())
         for i, plugin in enumerate(self.app.fastflix.encoders.values()):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
@@ -517,9 +509,11 @@ class Main(QtWidgets.QWidget):
         return layout
 
     def change_encoder(self):
-        if not self.initialized or not self.app.fastflix.current_video or not self.convert_to:
+        if not self.initialized or not self.convert_to:
             return
         self.video_options.change_conversion(self.convert_to)
+        if not self.app.fastflix.current_video:
+            return
         if not self.output_video_path_widget.text().endswith(self.current_encoder.video_extension):
             # Make sure it's using the right file extension
             self.output_video_path_widget.setText(self.generate_output_filename)
@@ -567,7 +561,7 @@ class Main(QtWidgets.QWidget):
             "vs a specific [exact] frame lookup. (GIF encodings use [fast])"
         )
         self.widgets.fast_time.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
-        self.widgets.fast_time.setFixedWidth(75)
+        self.widgets.fast_time.setFixedWidth(65)
         layout.addWidget(QtWidgets.QLabel(" "))
         layout.addWidget(self.widgets.fast_time, QtCore.Qt.AlignRight)
         group_box.setLayout(layout)
@@ -842,6 +836,8 @@ class Main(QtWidgets.QWidget):
 
     @property
     def generate_output_filename(self):
+        if self.app.fastflix.config.output_directory:
+            return f"{self.app.fastflix.config.output_directory / self.input_video.stem}-fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
         if self.input_video:
             return f"{self.input_video.parent / self.input_video.stem}-fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
         return f"{Path('~').expanduser()}{os.sep}fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
@@ -985,7 +981,7 @@ class Main(QtWidgets.QWidget):
 
     def disable_all(self):
         for name, widget in self.widgets.items():
-            if name in ("preview", "convert_button", "pause_resume"):
+            if name in ("preview", "convert_button", "pause_resume", "convert_to", "profile_box"):
                 continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
@@ -1000,7 +996,7 @@ class Main(QtWidgets.QWidget):
 
     def enable_all(self):
         for name, widget in self.widgets.items():
-            if name in ("preview", "convert_button", "pause_resume"):
+            if name in ("preview", "convert_button", "pause_resume", "convert_to", "profile_box"):
                 continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
@@ -1182,7 +1178,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.remove_metadata.setChecked(self.app.fastflix.current_video.video_settings.remove_metadata)
         self.widgets.chapters.setChecked(self.app.fastflix.current_video.video_settings.copy_chapters)
         self.widgets.remove_hdr.setChecked(self.app.fastflix.current_video.video_settings.remove_hdr)
-        self.widgets.rotate.setCurrentIndex(self.transpose_to_rotation(video.video_settings.rotate))
+        self.widgets.rotate.setCurrentIndex(video.video_settings.rotate)
         self.widgets.fast_time.setCurrentIndex(0 if video.video_settings.fast_seek else 1)
         if video.video_settings.vertical_flip:
             self.widgets.flip.setCurrentIndex(1)
@@ -1208,7 +1204,6 @@ class Main(QtWidgets.QWidget):
         self.enable_all()
 
         self.app.fastflix.current_video.status = Status()
-
         self.loading_video = False
         self.page_update()
 
@@ -1435,7 +1430,7 @@ class Main(QtWidgets.QWidget):
             end_time=end_time,
             selected_track=self.original_video_track,
             fast_seek=self.fast_time,
-            rotate=self.rotation_to_transpose(),
+            rotate=self.widgets.rotate.currentIndex(),
             vertical_flip=v_flip,
             horizontal_flip=h_flip,
             output_path=Path(self.output_video),
@@ -1509,7 +1504,12 @@ class Main(QtWidgets.QWidget):
         self.video_options.refresh()
         self.build_commands()
         if build_thumbnail:
-            new_hash = f"{self.build_crop()}:{self.build_scale()}:{self.start_time}:{self.end_time}:{self.app.fastflix.current_video.video_settings.selected_track}:{int(self.remove_hdr)}:{self.preview_place}"
+            new_hash = (
+                f"{self.build_crop()}:{self.build_scale()}:{self.start_time}:{self.end_time}:"
+                f"{self.app.fastflix.current_video.video_settings.selected_track}:"
+                f"{int(self.remove_hdr)}:{self.preview_place}:{self.widgets.rotate.currentIndex()}:"
+                f"{self.widgets.flip.currentIndex()}"
+            )
             if new_hash == self.last_thumb_hash:
                 return
             self.last_thumb_hash = new_hash
@@ -1591,14 +1591,11 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def encode_video(self):
-        # TODO make sure there is a video that can be encoded
         if self.converting:
             logger.debug(t("Canceling current encode"))
             self.app.fastflix.worker_queue.put(["cancel"])
             self.video_options.queue.reset_pause_encode()
             return
-        else:
-            logger.debug(t("Starting conversion process"))
 
         if not self.app.fastflix.queue or self.app.fastflix.current_video:
             add_current = True
@@ -1609,7 +1606,14 @@ class Main(QtWidgets.QWidget):
                     return
         requests = ["add_items", str(self.app.fastflix.log_path)]
 
-        # TODO here check for videos if ready. Make shared function for ready?
+        for video in self.app.fastflix.queue:
+            if video.status.ready:
+                break
+        else:
+            error_message(t("There are no videos to start converting"))
+            return
+
+        logger.debug(t("Starting conversion process"))
 
         self.converting = True
         self.set_convert_button(False)
@@ -1655,9 +1659,7 @@ class Main(QtWidgets.QWidget):
         # TODO ask if ok
         # return
 
-        video = self.app.fastflix.current_video
-
-        self.app.fastflix.queue.append(copy.deepcopy(video))
+        self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
         self.video_options.update_queue()
         self.video_options.show_queue()
 
@@ -1667,8 +1669,7 @@ class Main(QtWidgets.QWidget):
             self.app.fastflix.worker_queue.put(tuple(requests))
 
         self.clear_current_video()
-        # from fastflix.models.queue import save_queue
-        # save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
+        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
         return True
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -1759,19 +1760,20 @@ class Main(QtWidgets.QWidget):
     def status_update(self):
         logger.debug(f"Updating queue from command worker")
 
-        self.app.fastflix.queue = get_queue()
-        updated = False
-        for video in self.app.fastflix.queue:
-            if video.status.complete and not video.status.subtitle_fixed:
-                if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
-                    if mkv_prop_edit := shutil.which("mkvpropedit"):
-                        worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
-                        worker.start()
+        with self.app.fastflix.queue_lock:
+            fixed_vids = []
+            for i, video in enumerate(self.app.fastflix.queue):
+                if video.status.complete and not video.status.subtitle_fixed:
+                    if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
+                        if mkv_prop_edit := shutil.which("mkvpropedit"):
+                            worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
+                            worker.start()
+                    fixed_vids.append(i)
+            for index in fixed_vids:
+                video = self.app.fastflix.queue.pop(index)
                 video.status.subtitle_fixed = True
-                updated = True
-        if updated:
-            save_queue(self.app.fastflix.queue)
-
+                self.app.fastflix.queue.insert(index, video)
+        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
         self.video_options.update_queue()
 
     def find_video(self, uuid) -> Video:
@@ -1801,7 +1803,9 @@ class Notifier(QtCore.QThread):
         while True:
             # Message looks like (command, video_uuid, command_uuid)
             status = self.status_queue.get()
+            self.app.processEvents()
             self.main.status_update_signal.emit()
+            self.app.processEvents()
             if status[0] == "complete":
                 self.main.completed.emit(0)
             elif status[0] == "error":

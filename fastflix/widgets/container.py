@@ -47,9 +47,10 @@ class Container(QtWidgets.QMainWindow):
         self.profile = ProfileWindow(self.app, self.main)
 
         self.setCentralWidget(self.main)
-        self.setMinimumSize(QtCore.QSize(1200, 650))
+        self.setMinimumSize(QtCore.QSize(1280, 650))
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
+        self.main.set_profile()
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         if self.pb:
@@ -228,7 +229,10 @@ class OpenFolder(QtCore.QThread):
         self.path = str(path)
 
     def __del__(self):
-        self.wait()
+        try:
+            self.wait()
+        except BaseException:
+            pass
 
     def run(self):
         if reusables.win_based:

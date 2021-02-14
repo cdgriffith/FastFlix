@@ -1,30 +1,27 @@
 # -*- coding: utf-8 -*-
-from typing import List, Optional, Union
+from typing import List
 import os
 from pathlib import Path
+import logging
 
-from box import Box
-from pydantic import BaseModel, Field
-from filelock import FileLock
-from appdirs import user_data_dir
+from box import Box, BoxError
 
 from fastflix.models.video import Video, VideoSettings, Status, Crop
 from fastflix.models.encode import AudioTrack, SubtitleTrack, AttachmentTrack
 from fastflix.models.encode import setting_types
 
-queue_file = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "queue.yaml"
-lock_file = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "queue.lock"
+logger = logging.getLogger("fastflix")
 
 
-def get_queue(lockless=False) -> List[Video]:
+def get_queue(queue_file: Path) -> List[Video]:
     if not queue_file.exists():
         return []
 
-    if lockless:
+    try:
         loaded = Box.from_yaml(filename=queue_file)
-    else:
-        with FileLock(lock_file):
-            loaded = Box.from_yaml(filename=queue_file)
+    except BoxError:
+        # TODO log
+        return []
 
     queue = []
     for video in loaded["queue"]:
@@ -59,7 +56,7 @@ def get_queue(lockless=False) -> List[Video]:
     return queue
 
 
-def save_queue(queue: List[Video], lockless=False):
+def save_queue(queue: List[Video], queue_file: Path):
     items = []
     for video in queue:
         video = video.dict()
@@ -67,8 +64,5 @@ def save_queue(queue: List[Video], lockless=False):
         video["work_path"] = os.fspath(video["work_path"])
         video["video_settings"]["output_path"] = os.fspath(video["video_settings"]["output_path"])
         items.append(video)
-    if lockless:
-        Box(queue=items).to_yaml(filename=queue_file)
-    else:
-        with FileLock(lock_file):
-            Box(queue=items).to_yaml(filename=queue_file)
+    Box(queue=items).to_yaml(filename=queue_file)
+    logger.debug(f"queue saved to recovery file {queue_file}")

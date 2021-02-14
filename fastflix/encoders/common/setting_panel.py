@@ -382,6 +382,7 @@ class SettingPanel(QtWidgets.QWidget):
 
     def update_profile(self):
         global ffmpeg_extra_command
+        logger.debug("Update profile called")
         for widget_name, opt in self.opts.items():
             if isinstance(self.widgets[widget_name], QtWidgets.QComboBox):
                 default = self.determine_default(
@@ -406,6 +407,7 @@ class SettingPanel(QtWidgets.QWidget):
             pass
         else:
             if bitrate:
+                self.mode = "Bitrate"
                 self.qp_radio.setChecked(False)
                 self.bitrate_radio.setChecked(True)
                 for i, rec in enumerate(self.recommended_bitrates):
@@ -416,6 +418,7 @@ class SettingPanel(QtWidgets.QWidget):
                     self.widgets.bitrate.setCurrentText("Custom")
                     self.widgets.custom_bitrate.setText(bitrate.rstrip("kKmMgGbB"))
             else:
+                self.mode = self.qp_name
                 self.qp_radio.setChecked(True)
                 self.bitrate_radio.setChecked(False)
                 qp = str(self.app.fastflix.config.encoder_opt(self.profile_name, self.qp_name))
@@ -441,6 +444,7 @@ class SettingPanel(QtWidgets.QWidget):
     def reload(self):
         """This will reset the current settings to what is set in "current_video", useful for return from queue"""
         global ffmpeg_extra_command
+        logger.debug("Update reload called")
         self.updating_settings = True
         for widget_name, opt in self.opts.items():
             data = getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, opt)
@@ -464,6 +468,7 @@ class SettingPanel(QtWidgets.QWidget):
         if getattr(self, "qp_radio", None):
             bitrate = getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, "bitrate", None)
             if bitrate:
+                self.mode = "Bitrate"
                 self.qp_radio.setChecked(False)
                 self.bitrate_radio.setChecked(True)
                 for i, rec in enumerate(self.recommended_bitrates):
@@ -474,6 +479,7 @@ class SettingPanel(QtWidgets.QWidget):
                     self.widgets.bitrate.setCurrentText("Custom")
                     self.widgets.custom_bitrate.setText(bitrate.rstrip("k"))
             else:
+                self.mode = self.qp_name
                 self.qp_radio.setChecked(True)
                 self.bitrate_radio.setChecked(False)
                 qp = str(getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, self.qp_name))

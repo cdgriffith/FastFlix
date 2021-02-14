@@ -23,6 +23,7 @@ from fastflix.models.video import (
     x264Settings,
     x265Settings,
     NVEncCSettings,
+    NVEncCAVCSettings,
     FFmpegNVENCSettings,
 )
 from fastflix.shared import error_message
@@ -135,7 +136,7 @@ class ProfileWindow(QtWidgets.QWidget):
             auto_crop=self.auto_crop.isChecked(),
             keep_aspect_ratio=self.main.widgets.scale.keep_aspect.isChecked(),
             fast_seek=self.main.fast_time,
-            rotate=self.main.rotation_to_transpose(),
+            rotate=self.main.widgets.rotate.currentIndex(),
             vertical_flip=v_flip,
             horizontal_flip=h_flip,
             copy_chapters=self.main.copy_chapters,
@@ -173,6 +174,8 @@ class ProfileWindow(QtWidgets.QWidget):
             new_profile.copy_settings = self.encoder
         elif isinstance(self.encoder, NVEncCSettings):
             new_profile.nvencc_hevc = self.encoder
+        elif isinstance(self.encoder, NVEncCAVCSettings):
+            new_profile.nvencc_avc = self.encoder
         elif isinstance(self.encoder, FFmpegNVENCSettings):
             new_profile.ffmpeg_hevc_nvenc = self.encoder
         else:

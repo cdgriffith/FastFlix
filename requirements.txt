@@ -1,9 +1,9 @@
 appdirs
 colorama
 coloredlogs
-filelock
 iso639-lang
 mistune
+pathvalidate
 psutil
 pydantic
 pyqt5

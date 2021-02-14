@@ -8,10 +8,11 @@ from qtpy import QtCore
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import unixy
 
 logger = logging.getLogger("fastflix")
 
-__all__ = ["ThumbnailCreator", "ExtractSubtitleSRT", "SubtitleFix"]
+__all__ = ["ThumbnailCreator", "ExtractSubtitleSRT", "SubtitleFix", "ExtractHDR10"]
 
 
 class ThumbnailCreator(QtCore.QThread):
@@ -47,7 +48,7 @@ class SubtitleFix(QtCore.QThread):
         self.video_path = video_path
 
     def run(self):
-        output_file = str(self.video_path).replace("\\", "/")
+        output_file = unixy(self.video_path)
         self.main.thread_logging_signal.emit(f'INFO:{t("Will fix first subtitle track to not be default")}')
         try:
             result = run(
@@ -139,7 +140,7 @@ class ExtractHDR10(QtCore.QThread):
                 self.app.fastflix.config.ffmpeg,
                 "-y",
                 "-i",
-                str(self.app.fastflix.current_video.source).replace("\\", "/"),
+                unixy(self.app.fastflix.current_video.source),
                 "-map",
                 f"0:{track}",
                 "-c:v",
@@ -156,7 +157,7 @@ class ExtractHDR10(QtCore.QThread):
         )
 
         process_two = Popen(
-            [self.app.fastflix.config.hdr10plus_parser, "-o", str(output).replace("\\", "/"), "-"],
+            [self.app.fastflix.config.hdr10plus_parser, "-o", unixy(output), "-"],
             stdout=PIPE,
             stderr=PIPE,
             stdin=process.stdout,

@@ -56,6 +56,7 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.vp9 import main as vp9_plugin
     from fastflix.encoders.webp import main as webp_plugin
     from fastflix.encoders.nvencc_hevc import main as nvencc_plugin
+    from fastflix.encoders.nvencc_avc import main as nvencc_avc_plugin
 
     encoders = [
         hevc_plugin,
@@ -72,6 +73,7 @@ def init_encoders(app: FastFlixApp, **_):
 
     if app.fastflix.config.nvencc:
         encoders.insert(1, nvencc_plugin)
+        encoders.insert(7, nvencc_avc_plugin)
 
     app.fastflix.encoders = {
         encoder.name: encoder
@@ -100,9 +102,9 @@ def register_app():
             logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
 
 
-def start_app(worker_queue, status_queue, log_queue):
+def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
     app = create_app()
-    app.fastflix = FastFlix()
+    app.fastflix = FastFlix(queue=queue_list, queue_lock=queue_lock)
     app.fastflix.log_queue = log_queue
     app.fastflix.status_queue = status_queue
     app.fastflix.worker_queue = worker_queue

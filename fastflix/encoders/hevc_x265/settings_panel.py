@@ -519,6 +519,8 @@ class HEVC(SettingPanel):
         self.updating_settings = False
 
     def new_source(self):
+        if not self.app.fastflix.current_video:
+            return
         super().new_source()
         self.setting_change()
         if self.app.fastflix.current_video.hdr10_plus:
