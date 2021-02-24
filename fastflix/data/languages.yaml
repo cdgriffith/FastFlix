@@ -3092,3 +3092,24 @@ HDR10+ Parser:
   ita: HDR10+ Parser
   spa: Analizador HDR10+
   zho: HDR10+解析器
+Not all items in the queue were completed:
+  deu: Nicht alle Elemente in der Warteschlange wurden abgeschlossen
+  eng: Not all items in the queue were completed
+  fra: Tous les articles dans la file d'attente n'ont pas été complétés
+  ita: Non tutti gli elementi in coda sono stati completati
+  spa: No se han completado todos los elementos de la cola
+  zho: 并非队列中的所有项目都已完成
+Would you like to keep them in the queue?:
+  deu: Möchten Sie sie in der Warteschlange behalten?
+  eng: Would you like to keep them in the queue?
+  fra: Souhaitez-vous les garder dans la file d'attente?
+  ita: Volete tenerli in coda?
+  spa: ¿Quiere mantenerlos en la cola?
+  zho: 你想把他们留在队列中吗？
+Recover Queue Items:
+  deu: Warteschlangenelemente wiederherstellen
+  eng: Recover Queue Items
+  fra: Récupérer les articles en file d'attente
+  ita: Recuperare elementi della coda
+  spa: Recuperar elementos de la cola
+  zho: 恢复队列中的项目

@@ -22,7 +22,7 @@ from fastflix.resources import (
     up_arrow_icon,
     undo_icon,
 )
-from fastflix.shared import no_border, open_folder, message
+from fastflix.shared import no_border, open_folder, message, yes_no_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
 logger = logging.getLogger("fastflix")
@@ -266,10 +266,15 @@ class EncodingQueue(FlixList):
             self.app.fastflix.queue.remove(video)
 
         if self.app.fastflix.queue:
-            message(
-                "Not all items in the queue were completed\n"
-                "They have been added back into the queue for your convenience"
-            )
+            if not yes_no_message(
+                f"{t('Not all items in the queue were completed')}\n"
+                f"{t('Would you like to keep them in the queue?')}",
+                title="Recover Queue Items",
+            ):
+                with self.app.fastflix.queue_lock:
+                    self.app.fastflix.queue = []
+            with self.app.fastflix.queue_lock:
+                save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
             self.new_source()
 
     def reorder(self, update=True):

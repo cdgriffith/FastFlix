@@ -382,6 +382,7 @@ class Main(QtWidgets.QWidget):
         transform_layout.addLayout(extra_details_layout)
 
         layout.addLayout(transform_layout)
+        layout.addWidget(self.init_start_time())
 
         layout.addStretch()
         return layout
@@ -390,7 +391,6 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.init_scale())
         layout.addWidget(self.init_crop())
-        layout.addWidget(self.init_start_time())
         layout.addStretch()
         return layout
 
