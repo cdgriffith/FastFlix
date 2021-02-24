@@ -9,6 +9,8 @@
 * Adding #178 selector for number of autocrop positions throughout video (thanks to bmcassagne)
 * Adding Windows 10 notification for queue complete success
 * Adding #194 fast two pass encoding (thanks to Ugurtan)
+* Adding Confirm dialogue for cancel encode
+* Changing AVC defaults and recommendations for CRF to higher values
 * Fixing German translations (thanks to SMESH)
 * Fixing #171 Be able to select encoder before selecting video
 * Fixing #176 Unable to change queue order or delete task from queue since 4.1.0 (thanks to Etz)

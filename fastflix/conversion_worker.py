@@ -247,6 +247,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, qu
                 allow_sleep_mode()
                 status_queue.put(("cancelled", video.uuid if video else ""))
                 log_queue.put("STOP_TIMER")
+                video = None
 
             if request[0] == "pause queue":
                 logger.debug(t("Command worker received request to pause encoding after the current item completes"))

@@ -84,7 +84,7 @@ def get_preset_defaults():
         "UHD HDR10 Film": Profile(
             auto_crop=True, x265=x265Settings(crf=18, hdr10=True, hdr10_opt=True, repeat_headers=True, preset="slow")
         ),
-        "1080p Film": Profile(auto_crop=True, encoder="AVC (x264)", x264=x264Settings(crf=17, preset="slow")),
+        "1080p Film": Profile(auto_crop=True, encoder="AVC (x264)", x264=x264Settings(crf=22, preset="slow")),
     }
 
 

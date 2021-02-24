@@ -258,8 +258,8 @@ class EncodingQueue(FlixList):
                 remove_vids.append(video)
 
         for index in reset_vids:
-            vid = self.app.fastflix.queue.pop(index)
-            vid.status.reset()
+            vid: Video = self.app.fastflix.queue.pop(index)
+            vid.status.clear()
             self.app.fastflix.queue.insert(index, vid)
 
         for video in remove_vids:
@@ -330,6 +330,11 @@ class EncodingQueue(FlixList):
         if self.paused:
             self.pause_queue.setText(t("Pause Queue"))
             self.pause_queue.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause))
+            for i, video in enumerate(self.app.fastflix.queue):
+                if video.status.ready:
+                    self.main.converting = True
+                    self.main.set_convert_button(False)
+                    break
             self.app.fastflix.worker_queue.put(["resume queue"])
         else:
             self.pause_queue.setText(t("Resume Queue"))

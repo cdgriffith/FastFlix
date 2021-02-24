@@ -3064,3 +3064,17 @@ No crop, scale, rotation,flip nor any other filters will be applied.:
   ita: Nessun ritaglio, scala, rotazione, flip o qualsiasi altro filtro sarà applicato.
   spa: No se aplicará ningún filtro de recorte, escala, rotación, volteo ni ningún otro.
   zho: 不会应用裁剪、缩放、旋转、翻转或任何其他滤镜。
+Are you sure you want to stop the current encode?:
+  deu: Sind Sie sicher, dass Sie die aktuelle Kodierung stoppen wollen?
+  eng: Are you sure you want to stop the current encode?
+  fra: Êtes-vous sûr de vouloir arrêter le codage actuel?
+  ita: Sei sicuro di voler fermare la codifica in corso?
+  spa: ¿Está seguro de que quiere detener la codificación actual?
+  zho: 你确定要停止当前的编码吗？
+Confirm Stop Encode:
+  deu: Bestätigen Sie Stop Encode
+  eng: Confirm Stop Encode
+  fra: Confirmer le code d'arrêt
+  ita: Confermare Stop Encode
+  spa: Confirmar parada de codificación
+  zho: 确认 停止 编码
