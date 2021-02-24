@@ -3078,3 +3078,17 @@ Confirm Stop Encode:
   ita: Confermare Stop Encode
   spa: Confirmar parada de codificación
   zho: 确认 停止 编码
+Use Sane Audio Selection (updatable in config file):
+  deu: Audioauswahl verwenden (aktualisierbar in der Konfigurationsdatei)
+  eng: Use Sane Audio Selection (updatable in config file)
+  fra: Utiliser la sélection audio (mise à jour dans le fichier de configuration)
+  ita: Usa la selezione audio (aggiornabile nel file di configurazione)
+  spa: Utilizar la selección de audio (actualizable en el archivo de configuración)
+  zho: 使用音频选择(可在配置文件中更新)
+HDR10+ Parser:
+  deu: HDR10+ Parser
+  eng: HDR10+ Parser
+  fra: HDR10+ Parser
+  ita: HDR10+ Parser
+  spa: Analizador HDR10+
+  zho: HDR10+解析器
