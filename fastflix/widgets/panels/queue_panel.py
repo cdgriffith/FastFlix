@@ -22,7 +22,7 @@ from fastflix.resources import (
     up_arrow_icon,
     undo_icon,
 )
-from fastflix.shared import no_border, open_folder, message
+from fastflix.shared import no_border, open_folder, message, yes_no_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
 logger = logging.getLogger("fastflix")
@@ -258,18 +258,23 @@ class EncodingQueue(FlixList):
                 remove_vids.append(video)
 
         for index in reset_vids:
-            vid = self.app.fastflix.queue.pop(index)
-            vid.status.reset()
+            vid: Video = self.app.fastflix.queue.pop(index)
+            vid.status.clear()
             self.app.fastflix.queue.insert(index, vid)
 
         for video in remove_vids:
             self.app.fastflix.queue.remove(video)
 
         if self.app.fastflix.queue:
-            message(
-                "Not all items in the queue were completed\n"
-                "They have been added back into the queue for your convenience"
-            )
+            if not yes_no_message(
+                f"{t('Not all items in the queue were completed')}\n"
+                f"{t('Would you like to keep them in the queue?')}",
+                title="Recover Queue Items",
+            ):
+                with self.app.fastflix.queue_lock:
+                    self.app.fastflix.queue = []
+            with self.app.fastflix.queue_lock:
+                save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
             self.new_source()
 
     def reorder(self, update=True):
@@ -330,6 +335,11 @@ class EncodingQueue(FlixList):
         if self.paused:
             self.pause_queue.setText(t("Pause Queue"))
             self.pause_queue.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause))
+            for i, video in enumerate(self.app.fastflix.queue):
+                if video.status.ready:
+                    self.main.converting = True
+                    self.main.set_convert_button(False)
+                    break
             self.app.fastflix.worker_queue.put(["resume queue"])
         else:
             self.pause_queue.setText(t("Resume Queue"))

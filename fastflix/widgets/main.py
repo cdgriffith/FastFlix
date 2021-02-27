@@ -382,6 +382,7 @@ class Main(QtWidgets.QWidget):
         transform_layout.addLayout(extra_details_layout)
 
         layout.addLayout(transform_layout)
+        layout.addWidget(self.init_start_time())
 
         layout.addStretch()
         return layout
@@ -390,7 +391,6 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.init_scale())
         layout.addWidget(self.init_crop())
-        layout.addWidget(self.init_start_time())
         layout.addStretch()
         return layout
 
@@ -1592,6 +1592,9 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def encode_video(self):
         if self.converting:
+            sure = yes_no_message(t("Are you sure you want to stop the current encode?"), title="Confirm Stop Encode")
+            if not sure:
+                return
             logger.debug(t("Canceling current encode"))
             self.app.fastflix.worker_queue.put(["cancel"])
             self.video_options.queue.reset_pause_encode()
@@ -1692,13 +1695,6 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_cancelled(self, data):
-        self.converting = False
-        self.paused = False
-        self.set_convert_button()
-
-        if self.video_options.queue.paused:
-            self.video_options.queue.pause_resume_queue()
-
         if not data:
             return
 
@@ -1724,6 +1720,9 @@ class Main(QtWidgets.QWidget):
                     cancelled_video.video_settings.output_path.unlink(missing_ok=True)
                 except OSError:
                     pass
+
+        self.converting = False
+        self.set_convert_button()
 
     @reusables.log_exception("fastflix", show_traceback=True)
     def dropEvent(self, event):

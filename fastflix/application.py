@@ -4,7 +4,7 @@ import sys
 
 import coloredlogs
 import reusables
-from qtpy import QtGui
+from qtpy import QtGui, QtWidgets, QtCore
 
 from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration, ffprobe_configuration
 from fastflix.language import t
@@ -22,6 +22,10 @@ logger = logging.getLogger("fastflix")
 
 
 def create_app():
+    if hasattr(QtCore.Qt, "AA_EnableHighDpiScaling"):
+        QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+    if hasattr(QtCore.Qt, "AA_UseHighDpiPixmaps"):
+        QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     main_app = FastFlixApp(sys.argv)
     main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")

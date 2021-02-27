@@ -136,9 +136,6 @@ class StatusPanel(QtWidgets.QWidget):
             elif section.startswith("est out size"):
                 self.size_label.setText(f"{t('Size Estimate')}: {section.rsplit(maxsplit=1)[1]}")
 
-    def update_title_bar(self):
-        pass
-
     def update_time_elapsed(self):
         now = datetime.datetime.now(datetime.timezone.utc)
 
@@ -175,7 +172,6 @@ class Logs(QtWidgets.QTextBrowser):
         self.main = main
         self.status_panel = parent
         self.current_video = None
-        self.current_command = None
         self.log_signal.connect(self.update_text)
         self.clear_window.connect(self.blank)
         self.timer_signal.connect(self.timer_update)
@@ -206,13 +202,14 @@ class Logs(QtWidgets.QTextBrowser):
 
     def blank(self, data):
         _, video_uuid, command_uuid = data.split(":")
-        self.parent.current_video = self.main.find_video(video_uuid)
         try:
+            self.parent.current_video = self.main.find_video(video_uuid)
             self.current_command = self.main.find_command(self.parent.current_video, command_uuid)
         except FlixError:
+            logger.error(f"Couldn't find video or command for UUID {video_uuid}:{command_uuid}")
+            self.parent.current_video = None
             self.current_command = None
         self.setText("")
-        self.parent.update_title_bar()
         self.parent.started_at = datetime.datetime.now(datetime.timezone.utc)
 
     def timer_update(self, cmd):
