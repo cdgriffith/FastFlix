@@ -278,7 +278,7 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_denoise(self):
         self.last_row += 1
         self.denoise_type_widget = QtWidgets.QComboBox()
-        self.denoise_type_widget.addItems(["None", "nlmeans", "atadenoise", "hqdn3d", "vaguedenoiser"])
+        self.denoise_type_widget.addItems(["None", "nlmeans", "nlmeans_opencl", "atadenoise", "hqdn3d", "vaguedenoiser"])
         self.denoise_type_widget.setCurrentIndex(0)
         self.denoise_type_widget.currentIndexChanged.connect(self.page_update)
 
