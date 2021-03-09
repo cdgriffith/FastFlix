@@ -81,7 +81,8 @@ class Container(QtWidgets.QMainWindow):
                 shutil.rmtree(item, ignore_errors=True)
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
                 item.unlink()
-        cleanup_windows_notification()
+        if reusables.win_based:
+            cleanup_windows_notification()
         self.main.close(from_container=True)
         super(Container, self).closeEvent(a0)
 
