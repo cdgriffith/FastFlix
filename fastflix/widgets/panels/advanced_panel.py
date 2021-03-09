@@ -39,9 +39,9 @@ denoise_presets = {
         "strong": "nlmeans=s=10.0:p=13:r=25",
     },
     "nlmeans_opencl": {
-        "weak": "nlmeans=s=1.0:p=3:r=9",
-        "moderate": "nlmeans=s=1.0:p=7:r=15",
-        "strong": "nlmeans=s=10.0:p=13:r=25",
+        "weak": "nlmeans_opencl=s=1.0:p=3:r=9",
+        "moderate": "nlmeans_opencl=s=1.0:p=7:r=15",
+        "strong": "nlmeans_opencl=s=10.0:p=13:r=25",
     },
     "atadenoise": {
         "weak": "atadenoise=0a=0.01:0b=0.02:1a=0.01:1b=0.02:2a=0.01:2b=0.02:s=9",
