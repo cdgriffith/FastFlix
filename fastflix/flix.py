@@ -285,25 +285,29 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
     # [Parsed_idet_0 @ 00000] Single frame detection: TFF:     0 BFF:     0 Progressive:   641 Undetermined:   359
     # [Parsed_idet_0 @ 00000] Multi frame detection: TFF:     0 BFF:     0 Progressive:   953 Undetermined:    47
 
-    output = execute(
-        [
-            f"{config.ffmpeg}",
-            "-hide_banner",
-            "-i",
-            f"{unixy(source)}",
-            "-vf",
-            "idet",
-            "-frames:v",
-            "100",
-            "-an",
-            "-sn",
-            "-dn",
-            "-f",
-            "rawvideo",
-            f"{'NUL' if reusables.win_based else '/dev/null'}",
-            "-y",
-        ]
-    )
+    try:
+        output = execute(
+            [
+                f"{config.ffmpeg}",
+                "-hide_banner",
+                "-i",
+                f"{unixy(source)}",
+                "-vf",
+                "idet",
+                "-frames:v",
+                "100",
+                "-an",
+                "-sn",
+                "-dn",
+                "-f",
+                "rawvideo",
+                f"{'NUL' if reusables.win_based else '/dev/null'}",
+                "-y",
+            ]
+        )
+    except Exception:
+        logger.exception("Error while running the interlace detection command")
+        return
 
     for line in output.stderr.splitlines():
         if "Single frame detection" in line:

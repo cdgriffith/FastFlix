@@ -1225,6 +1225,11 @@ class Main(QtWidgets.QWidget):
             error_message(f"{t('Not a video file')}<br>{self.input_video}")
             self.clear_current_video()
             return
+        except Exception:
+            logger.exception(f"Could not properly read the files {self.input_video}")
+            self.clear_current_video()
+            error_message(f"Could not properly read the file {self.input_video}")
+            return
 
         hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
         text_video_tracks = [

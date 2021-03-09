@@ -10,8 +10,8 @@ requires = "libvpx"
 icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_vp9.png")).resolve())
 
 
-video_extension = "webm"
-video_dimension_divisor = 1
+video_extension = "mkv"
+video_dimension_divisor = 2
 
 enable_subtitles = False
 enable_audio = True
