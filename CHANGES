@@ -17,6 +17,7 @@
 * Fixing #185 need to specify channel layout when downmixing (thanks to Ugurtan)
 * Fixing #187 cleaning up partial download of FFmpeg (thanks to Todd Wilkinson)
 * Fixing #190 add missing chromaloc parameter for x265 (thanks to Etz)
+* Fixing that deinterlace detection could crash program due to CPython bug issue #43423 (thanks to macx)
 * Fixing that returning item back from queue of a different encoder type would crash Fastflix
 * Fixing HDR10 details to be track specific (thanks to Harybo)
 
