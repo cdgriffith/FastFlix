@@ -230,7 +230,7 @@ class CoverPanel(QtWidgets.QWidget):
 
     def cover_passthrough_check(self):
         checked = self.cover_passthrough_checkbox.isChecked()
-        if checked:
+        if checked and "cover" in self.attachments:
             self.cover_path.setDisabled(True)
             self.cover_button.setDisabled(True)
             pixmap = QtGui.QPixmap(str(self.app.fastflix.current_video.work_path / self.attachments.cover.name))
@@ -253,7 +253,7 @@ class CoverPanel(QtWidgets.QWidget):
 
     def cover_land_passthrough_check(self):
         checked = self.cover_land_passthrough_checkbox.isChecked()
-        if checked:
+        if checked and "cover_land" in self.attachments:
             self.cover_land_path.setDisabled(True)
             self.landscape_button.setDisabled(True)
             pixmap = QtGui.QPixmap(str(self.app.fastflix.current_video.work_path / self.attachments.cover_land.name))
