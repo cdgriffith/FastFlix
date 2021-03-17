@@ -1701,16 +1701,20 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_cancelled(self, data):
+        self.converting = False
+        self.set_convert_button()
+
         if not data:
             return
 
         try:
             video_uuid, *_ = data.split("|")
             cancelled_video = self.find_video(video_uuid)
+            exists = cancelled_video.video_settings.output_path.exists()
         except Exception:
             return
 
-        if cancelled_video.video_settings.output_path.exists():
+        if exists:
             sm = QtWidgets.QMessageBox()
             sm.setWindowTitle(t("Cancelled"))
             sm.setText(
@@ -1726,9 +1730,6 @@ class Main(QtWidgets.QWidget):
                     cancelled_video.video_settings.output_path.unlink(missing_ok=True)
                 except OSError:
                     pass
-
-        self.converting = False
-        self.set_convert_button()
 
     @reusables.log_exception("fastflix", show_traceback=True)
     def dropEvent(self, event):
