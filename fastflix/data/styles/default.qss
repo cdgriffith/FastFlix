@@ -8,7 +8,7 @@ QPushButton {
     min-height: 20px;
 }
 
-QPushButton:pressed, QPushButton:clicked {
+QPushButton:pressed, QPushButton:clicked, QPushButton:checked {
     background-color: #ccc;
 }
 
