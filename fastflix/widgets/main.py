@@ -176,15 +176,15 @@ class Main(QtWidgets.QWidget):
         self.grid = QtWidgets.QGridLayout()
 
         self.grid.addLayout(self.init_top_bar(), 0, 0, 1, 14)
-        self.grid.addLayout(self.init_video_area(), 1, 0, 6, 6)
-        self.grid.addLayout(self.init_scale_and_crop(), 1, 6, 6, 4)
-        self.grid.addWidget(self.init_preview_image(), 1, 10, 5, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
-        self.grid.addLayout(self.init_thumb_time_selector(), 6, 10, 1, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
+        self.grid.addLayout(self.init_video_area(), 2, 0, 6, 6)
+        self.grid.addLayout(self.init_scale_and_crop(), 2, 6, 6, 4)
+        self.grid.addWidget(self.init_preview_image(), 2, 10, 5, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
+        self.grid.addLayout(self.init_thumb_time_selector(), 7, 10, 1, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
 
         spacer = QtWidgets.QLabel()
         spacer.setFixedHeight(5)
-        self.grid.addWidget(spacer, 7, 0, 1, 14)
-        self.grid.addWidget(self.video_options, 8, 0, 10, 14)
+        self.grid.addWidget(spacer, 8, 0, 1, 14)
+        self.grid.addWidget(self.video_options, 9, 0, 10, 14)
 
         self.grid.setSpacing(5)
         self.paused = False
@@ -498,6 +498,7 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
         self.widgets.convert_to.setMinimumWidth(180)
+        self.widgets.convert_to.setFixedHeight(40)
         self.change_output_types()
         self.widgets.convert_to.currentTextChanged.connect(self.change_encoder)
 
