@@ -156,14 +156,18 @@ class VideoOptions(QtWidgets.QTabWidget):
             settings = copy.deepcopy(self.app.fastflix.current_video.video_settings)
             audio_tracks = settings.audio_tracks
             subtitle_tracks = settings.subtitle_tracks
-            if getattr(self.main.current_encoder, "enable_audio", False):
-                self.audio.reload(audio_tracks, self.audio_formats)
-            if getattr(self.main.current_encoder, "enable_subtitles", False):
-                self.subtitles.reload(subtitle_tracks)
-            if getattr(self.main.current_encoder, "enable_attachments", False):
-                self.attachments.reload_from_queue(streams, settings)
-            self.advanced.reset(settings=settings)
-            self.info.reset()
+            try:
+                if getattr(self.main.current_encoder, "enable_audio", False):
+                    self.audio.reload(audio_tracks, self.audio_formats)
+                if getattr(self.main.current_encoder, "enable_subtitles", False):
+                    self.subtitles.reload(subtitle_tracks)
+                if getattr(self.main.current_encoder, "enable_attachments", False):
+                    self.attachments.reload_from_queue(streams, settings)
+                self.advanced.reset(settings=settings)
+                self.info.reset()
+            except Exception:
+                logger.exception("Should not have happened, could not reload from queue")
+                return
         self.debug.reset()
 
     def clear_tracks(self):
