@@ -21,6 +21,7 @@
 * Fixing that deinterlace detection could crash program due to CPython bug issue #43423 (thanks to macx)
 * Fixing that returning item back from queue of a different encoder type would crash Fastflix
 * Fixing HDR10 details to be track specific (thanks to Harybo)
+* Fixing returning from queue works with duplicated audio tracks
 
 ## Version 4.1.2
 
