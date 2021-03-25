@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from pathlib import Path
 from typing import List, Optional, Union, Dict
@@ -21,24 +22,6 @@ class AudioTrack(BaseModel):
     channels: int = 2
     friendly_info: str = ""
     raw_info: Optional[Union[Dict, Box]] = None
-
-
-#         audio,
-#         index,
-#         codec,
-#         available_audio_encoders,
-#         title="",
-#         language="",
-#         profile="",
-#         outdex=None,
-#         enabled=True,
-#         original=False,
-#         first=False,
-#         last=False,
-#         codecs=(),
-#         channels=2,
-#         all_info=None,
-#         disable_dup=False,
 
 
 class SubtitleTrack(BaseModel):
