@@ -47,7 +47,7 @@ class Container(QtWidgets.QMainWindow):
         self.profile = ProfileWindow(self.app, self.main)
 
         self.setCentralWidget(self.main)
-        self.setMinimumSize(QtCore.QSize(1280, 650))
+        self.setMinimumSize(QtCore.QSize(1280, 700))
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
         self.main.set_profile()

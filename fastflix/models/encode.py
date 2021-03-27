@@ -1,8 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict
 
 from pydantic import BaseModel, Field
+from box import Box
 
 
 class AudioTrack(BaseModel):
@@ -14,6 +16,12 @@ class AudioTrack(BaseModel):
     language: str = ""
     conversion_bitrate: str = ""
     conversion_codec: str = ""
+    profile: Optional[str] = None
+    enabled: bool = True
+    original: bool = False
+    channels: int = 2
+    friendly_info: str = ""
+    raw_info: Optional[Union[Dict, Box]] = None
 
 
 class SubtitleTrack(BaseModel):
