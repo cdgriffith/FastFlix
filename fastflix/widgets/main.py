@@ -1141,6 +1141,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
 
         self.app.fastflix.current_video = video
+        extract_attachments(app=self.app)
         self.input_video = video.source
         hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
         text_video_tracks = [
