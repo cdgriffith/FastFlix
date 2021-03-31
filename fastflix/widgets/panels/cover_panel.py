@@ -98,7 +98,7 @@ class CoverPanel(QtWidgets.QWidget):
             self,
             caption=t("Cover"),
             directory=str(dirname),
-            filter=f"{t('Supported Image Files')} (*.png;*.jpeg;*.jpg)",
+            filter=f"{t('Supported Image Files')} (*.png *.jpeg *.jpg)",
         )
         if not filename or not filename[0]:
             return
@@ -153,7 +153,7 @@ class CoverPanel(QtWidgets.QWidget):
             self,
             caption=t("Landscape Cover"),
             directory=str(dirname),
-            filter=f"{t('Supported Image Files')} (*.png;*.jpeg;*.jpg)",
+            filter=f"{t('Supported Image Files')} (*.png *.jpeg *.jpg)",
         )
         if not filename or not filename[0]:
             return
