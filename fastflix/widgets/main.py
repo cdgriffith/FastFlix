@@ -32,7 +32,7 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
-from fastflix.models.queue import save_queue
+from fastflix.queue import save_queue
 from fastflix.resources import (
     black_x_icon,
     folder_icon,
@@ -1595,7 +1595,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setIcon(QtGui.QIcon(black_x_icon))
             self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
 
-    @reusables.log_exception("fastflix", show_traceback=False)
+    @reusables.log_exception("fastflix", show_traceback=True)
     def encode_video(self):
         if self.converting:
             sure = yes_no_message(t("Are you sure you want to stop the current encode?"), title="Confirm Stop Encode")
@@ -1678,7 +1678,7 @@ class Main(QtWidgets.QWidget):
             self.app.fastflix.worker_queue.put(tuple(requests))
 
         self.clear_current_video()
-        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
+        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         return True
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -1779,7 +1779,7 @@ class Main(QtWidgets.QWidget):
                 video = self.app.fastflix.queue.pop(index)
                 video.status.subtitle_fixed = True
                 self.app.fastflix.queue.insert(index, video)
-        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
+        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         self.video_options.update_queue()
 
     def find_video(self, uuid) -> Video:

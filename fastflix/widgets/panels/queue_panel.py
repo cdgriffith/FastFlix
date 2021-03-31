@@ -12,7 +12,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
-from fastflix.models.queue import get_queue, save_queue
+from fastflix.queue import get_queue, save_queue
 from fastflix.resources import (
     black_x_icon,
     down_arrow_icon,
@@ -22,7 +22,7 @@ from fastflix.resources import (
     up_arrow_icon,
     undo_icon,
 )
-from fastflix.shared import no_border, open_folder, message, yes_no_message
+from fastflix.shared import no_border, open_folder, yes_no_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
 logger = logging.getLogger("fastflix")
@@ -244,10 +244,10 @@ class EncodingQueue(FlixList):
             self.queue_startup_check()
         except Exception:
             logger.exception("Could not load queue as it is outdated or malformed. Deleting for safety.")
-            save_queue([], queue_file=self.app.fastflix.queue_path)
+            save_queue([], queue_file=self.app.fastflix.queue_path, config=self.app.fastflix.config)
 
     def queue_startup_check(self):
-        for item in get_queue(self.app.fastflix.queue_path):
+        for item in get_queue(self.app.fastflix.queue_path, self.app.fastflix.config):
             self.app.fastflix.queue.append(item)
         reset_vids = []
         remove_vids = []
@@ -274,7 +274,7 @@ class EncodingQueue(FlixList):
                 with self.app.fastflix.queue_lock:
                     self.app.fastflix.queue = []
             with self.app.fastflix.queue_lock:
-                save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
+                save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
             self.new_source()
 
     def reorder(self, update=True):
@@ -319,7 +319,7 @@ class EncodingQueue(FlixList):
                 logger.error("No matching video found to remove from queue")
                 return
             self.app.fastflix.queue.pop(pos)
-            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
+            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         self.new_source()
 
     def reload_from_queue(self, video):
@@ -388,6 +388,6 @@ class EncodingQueue(FlixList):
             video.status.current_command = 0
 
             self.app.fastflix.queue.insert(video_pos, video)
-            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
+            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
 
         self.new_source()

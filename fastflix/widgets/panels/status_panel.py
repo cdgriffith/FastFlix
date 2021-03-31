@@ -74,7 +74,7 @@ class StatusPanel(QtWidgets.QWidget):
 
     def get_movie_length(self):
         if not self.current_video:
-            return
+            return 0
         return (
             self.current_video.video_settings.end_time or self.current_video.duration
         ) - self.current_video.video_settings.start_time
@@ -116,7 +116,7 @@ class StatusPanel(QtWidgets.QWidget):
         except AttributeError:
             self.size_label.setText(f"{t('Size Estimate')}: N/A")
         except Exception:
-            logger.exception(f"can't update bitrate: {bitrate}")
+            logger.exception(f"can't update bitrate: {bitrate} - length {self.get_movie_length()}")
             self.size_label.setText(f"{t('Size Estimate')}: N/A")
         else:
             if not size_eta:
