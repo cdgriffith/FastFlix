@@ -557,7 +557,7 @@ class HEVC(SettingPanel):
             frame_threads=self.widgets.frame_threads.currentIndex(),
             tune=self.widgets.tune.currentText(),
             x265_params=x265_params_text.split(":") if x265_params_text else [],
-            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
+            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),  # .replace("\\", "/"),
             lossless=self.widgets.lossless.isChecked(),
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),

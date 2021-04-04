@@ -23,8 +23,8 @@ re_progressive = re.compile(r"Progressive:\s+(\d+)")
 logger = logging.getLogger("fastflix")
 
 
-def unixy(source):
-    return str(sanitize_filepath(source, platform="Windows" if reusables.win_based else "Linux")).replace("\\", "/")
+def clean_file_string(source):
+    return str(source).strip()
 
 
 def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
@@ -131,7 +131,7 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         "json",
         "-show_format",
         "-show_streams",
-        f"{unixy(file)}",
+        f"{clean_file_string(file)}",
     ]
     result = execute(command)
     if result.returncode != 0:
@@ -198,14 +198,14 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
                 f"{ffmpeg}",
                 "-y",
                 "-i",
-                f"{unixy(source)}",
+                f"{clean_file_string(source)}",
                 "-map",
                 f"0:{stream}",
                 "-c",
                 "copy",
                 "-vframes",
                 "1",
-                f"{unixy(file_name)}",
+                f"{clean_file_string(file_name)}",
             ],
             work_dir=work_dir,
             timeout=5,
@@ -218,9 +218,9 @@ def generate_thumbnail_command(
     config: Config, source: Path, output: Path, filters: str, start_time: float = 0, input_track: int = 0
 ) -> str:
     return (
-        f'"{config.ffmpeg}" -ss {start_time} -loglevel error -i "{unixy(source)}" '
+        f'"{config.ffmpeg}" -ss {start_time} -loglevel error -i "{clean_file_string(source)}" '
         f" {filters} -an -y -map_metadata -1 -map 0:{input_track} "
-        f'-vframes 1 "{unixy(output)}" '
+        f'-vframes 1 "{clean_file_string(output)}" '
     )
 
 
@@ -242,7 +242,7 @@ def get_auto_crop(
             "-ss",
             f"{start_time}",
             "-i",
-            f"{unixy(source)}",
+            f"{clean_file_string(source)}",
             "-map",
             f"0:{input_track}",
             "-vf",
@@ -291,7 +291,7 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
                 f"{config.ffmpeg}",
                 "-hide_banner",
                 "-i",
-                f"{unixy(source)}",
+                f"{clean_file_string(source)}",
                 "-vf",
                 "idet",
                 "-frames:v",
@@ -402,7 +402,7 @@ def parse_hdr_details(app: FastFlixApp, **_):
                     "%+#1",
                     "-show_entries",
                     "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt",
-                    f"{unixy(app.fastflix.current_video.source)}",
+                    f"{clean_file_string(app.fastflix.current_video.source)}",
                 ]
             )
 
@@ -447,7 +447,7 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
                 config.ffmpeg,
                 "-y",
                 "-i",
-                unixy(app.fastflix.current_video.source),
+                clean_file_string(app.fastflix.current_video.source),
                 "-map",
                 f"0:{stream.index}",
                 "-loglevel",

@@ -820,6 +820,15 @@ class Main(QtWidgets.QWidget):
         )
         if not filename or not filename[0]:
             return
+
+        if self.app.fastflix.current_video:
+            discard = yes_no_message(
+                f'{t("There is already a video being processed.")}<br>' f'{t("Are you sure you want to discard it?")}',
+                title="Discard current video",
+            )
+            if not discard:
+                return
+
         self.input_video = Path(filename[0])
         self.video_path_widget.setText(str(self.input_video))
         self.output_video_path_widget.setText(self.generate_output_filename)
@@ -1740,6 +1749,15 @@ class Main(QtWidgets.QWidget):
 
         event.setDropAction(QtCore.Qt.CopyAction)
         event.accept()
+
+        if self.app.fastflix.current_video:
+            discard = yes_no_message(
+                f'{t("There is already a video being processed")}<br>' f'{t("Are you sure you want to discard it?")}',
+                title="Discard current video",
+            )
+            if not discard:
+                return
+
         try:
             self.input_video = Path(event.mimeData().urls()[0].toLocalFile())
         except (ValueError, IndexError):

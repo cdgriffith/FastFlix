@@ -4,7 +4,7 @@ import secrets
 from fastflix.encoders.common.helpers import Command, generate_filters
 from fastflix.models.encode import GIFSettings
 from fastflix.models.fastflix import FastFlix
-from fastflix.shared import unixy
+from fastflix.shared import clean_file_string
 
 
 def build(fastflix: FastFlix):
@@ -16,7 +16,7 @@ def build(fastflix: FastFlix):
         custom_filters=f"fps={settings.fps:.2f}", raw_filters=True, **fastflix.current_video.video_settings.dict()
     )
 
-    output_video = unixy(fastflix.current_video.video_settings.output_path)
+    output_video = clean_file_string(fastflix.current_video.video_settings.output_path)
     beginning = (
         f'"{fastflix.config.ffmpeg}" -y '
         f'{f"-ss {fastflix.current_video.video_settings.start_time}" if fastflix.current_video.video_settings.start_time else ""} '

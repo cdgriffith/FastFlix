@@ -9,7 +9,7 @@
 * Adding #178 selector for number of autocrop positions throughout video (thanks to bmcassagne)
 * Adding Windows 10 notification for queue complete success
 * Adding #194 fast two pass encoding (thanks to Ugurtan)
-* Adding Confirm dialogue for cancel encode
+* Adding Confirm dialogue for cancel encode and replace currently working on video
 * Changing AVC defaults and recommendations for CRF to higher values
 * Changing VP9 to default to mkv instead of webm format to support more audio codecs
 * Fixing German translations (thanks to SMESH)
@@ -18,6 +18,7 @@
 * Fixing #185 need to specify channel layout when downmixing (thanks to Ugurtan)
 * Fixing #187 cleaning up partial download of FFmpeg (thanks to Todd Wilkinson)
 * Fixing #190 add missing chromaloc parameter for x265 (thanks to Etz)
+* Fixing #209 Windows paths were saved as unix paths and could cause issues (thanks to stilicrafter)
 * Fixing that deinterlace detection could crash program due to CPython bug issue #43423 (thanks to macx)
 * Fixing that returning item back from queue of a different encoder type would crash Fastflix
 * Fixing HDR10 details to be track specific (thanks to Harybo)

@@ -72,17 +72,44 @@ def save_queue(queue: List[Video], queue_file: Path, config: Config):
     items = []
     queue_covers = config.work_path / "covers"
     queue_covers.mkdir(parents=True, exist_ok=True)
+    queue_data = config.work_path / "queue_extras"
+    queue_data.mkdir(parents=True, exist_ok=True)
+
+    def update_conversion_command(vid, old_path: str, new_path: str):
+        for command in vid["video_settings"]["conversion_commands"]:
+            new_command = command["command"].replace(old_path, new_path)
+            if new_command == command["command"]:
+                logger.error(f'Could not replace "{old_path}" with "{new_path}" in {command["command"]}')
+            command["command"] = new_command
 
     for video in queue:
         video = video.dict()
         video["source"] = os.fspath(video["source"])
         video["work_path"] = os.fspath(video["work_path"])
         video["video_settings"]["output_path"] = os.fspath(video["video_settings"]["output_path"])
+        if "hdr10plus_metadata" in video["video_settings"]["video_encoder_settings"]:
+            new_metadata_file = queue_data / f"{uuid.uuid4().hex}_metadata.json"
+            try:
+                shutil.copy(video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"], new_metadata_file)
+            except OSError:
+                logger.exception("Could not save HDR10+ metadata file to queue recovery location, removing HDR10+")
+
+            update_conversion_command(
+                video,
+                str(video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"]),
+                str(new_metadata_file),
+            )
+            video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"] = str(new_metadata_file)
         for track in video["video_settings"]["attachment_tracks"]:
             if track.get("file_path"):
                 new_file = queue_covers / f'{uuid.uuid4().hex}_{track["file_path"].name}'
-                shutil.copy(track["file_path"], new_file)
+                try:
+                    shutil.copy(track["file_path"], new_file)
+                except OSError:
+                    logger.exception("Could not save cover to queue recovery location, removing cover")
+                update_conversion_command(video, str(track["file_path"]), str(new_file))
                 track["file_path"] = str(new_file)
+
         items.append(video)
     Box(queue=items).to_yaml(filename=queue_file)
     logger.debug(f"queue saved to recovery file {queue_file}")

@@ -247,32 +247,34 @@ class EncodingQueue(FlixList):
             save_queue([], queue_file=self.app.fastflix.queue_path, config=self.app.fastflix.config)
 
     def queue_startup_check(self):
-        for item in get_queue(self.app.fastflix.queue_path, self.app.fastflix.config):
-            self.app.fastflix.queue.append(item)
+        new_queue = get_queue(self.app.fastflix.queue_path, self.app.fastflix.config)
+        # self.app.fastflix.queue.append(item)
         reset_vids = []
         remove_vids = []
-        for i, video in enumerate(self.app.fastflix.queue):
+        for i, video in enumerate(new_queue):
             if video.status.running:
                 reset_vids.append(i)
             if video.status.complete:
                 remove_vids.append(video)
 
         for index in reset_vids:
-            vid: Video = self.app.fastflix.queue.pop(index)
+            vid: Video = new_queue.pop(index)
             vid.status.clear()
-            self.app.fastflix.queue.insert(index, vid)
+            new_queue.insert(index, vid)
 
         for video in remove_vids:
-            self.app.fastflix.queue.remove(video)
+            new_queue.remove(video)
 
-        if self.app.fastflix.queue:
-            if not yes_no_message(
+        if new_queue:
+            if yes_no_message(
                 f"{t('Not all items in the queue were completed')}\n"
                 f"{t('Would you like to keep them in the queue?')}",
                 title="Recover Queue Items",
             ):
                 with self.app.fastflix.queue_lock:
-                    self.app.fastflix.queue = []
+                    for item in new_queue:
+                        self.app.fastflix.queue.append(item)
+                    # self.app.fastflix.queue = []
             with self.app.fastflix.queue_lock:
                 save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
             self.new_source()
