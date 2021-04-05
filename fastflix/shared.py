@@ -259,7 +259,7 @@ def timedelta_to_str(delta):
 
 
 def clean_file_string(source):
-    return str(source).strip()
+    return str(source).strip().strip("'\"")
 
 
 def sanitize(source):
