@@ -44,7 +44,7 @@ from fastflix.resources import (
     video_playlist_icon,
     undo_icon,
 )
-from fastflix.shared import error_message, message, time_to_number, yes_no_message
+from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
 from fastflix.windows_tools import show_windows_notification
 from fastflix.widgets.background_tasks import SubtitleFix, ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
@@ -829,7 +829,7 @@ class Main(QtWidgets.QWidget):
             if not discard:
                 return
 
-        self.input_video = Path(filename[0])
+        self.input_video = Path(clean_file_string(filename[0]))
         self.video_path_widget.setText(str(self.input_video))
         self.output_video_path_widget.setText(self.generate_output_filename)
         self.output_video_path_widget.setDisabled(False)
@@ -854,7 +854,7 @@ class Main(QtWidgets.QWidget):
 
     @property
     def output_video(self):
-        return self.output_video_path_widget.text()
+        return clean_file_string(self.output_video_path_widget.text().strip("'\""))
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def save_file(self, extension="mkv"):
@@ -1450,7 +1450,7 @@ class Main(QtWidgets.QWidget):
             rotate=self.widgets.rotate.currentIndex(),
             vertical_flip=v_flip,
             horizontal_flip=h_flip,
-            output_path=Path(self.output_video),
+            output_path=Path(clean_file_string(self.output_video)),
             deinterlace=self.widgets.deinterlace.isChecked(),
             remove_metadata=self.remove_metadata,
             copy_chapters=self.copy_chapters,
@@ -1759,7 +1759,7 @@ class Main(QtWidgets.QWidget):
                 return
 
         try:
-            self.input_video = Path(event.mimeData().urls()[0].toLocalFile())
+            self.input_video = Path(clean_file_string(event.mimeData().urls()[0].toLocalFile()))
         except (ValueError, IndexError):
             return event.ignore()
 

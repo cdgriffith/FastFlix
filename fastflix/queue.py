@@ -87,16 +87,16 @@ def save_queue(queue: List[Video], queue_file: Path, config: Config):
         video["source"] = os.fspath(video["source"])
         video["work_path"] = os.fspath(video["work_path"])
         video["video_settings"]["output_path"] = os.fspath(video["video_settings"]["output_path"])
-        if "hdr10plus_metadata" in video["video_settings"]["video_encoder_settings"]:
+        if metadata := video["video_settings"]["video_encoder_settings"].get("hdr10plus_metadata"):
             new_metadata_file = queue_data / f"{uuid.uuid4().hex}_metadata.json"
             try:
-                shutil.copy(video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"], new_metadata_file)
+                shutil.copy(metadata, new_metadata_file)
             except OSError:
                 logger.exception("Could not save HDR10+ metadata file to queue recovery location, removing HDR10+")
 
             update_conversion_command(
                 video,
-                str(video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"]),
+                str(metadata),
                 str(new_metadata_file),
             )
             video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"] = str(new_metadata_file)
