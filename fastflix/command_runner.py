@@ -15,8 +15,6 @@ logger = logging.getLogger("fastflix-core")
 
 __all__ = ["BackgroundRunner"]
 
-white_detect = re.compile(r"^\s+")
-
 
 class BackgroundRunner:
     def __init__(self, log_queue):
