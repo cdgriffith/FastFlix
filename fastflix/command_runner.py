@@ -106,6 +106,8 @@ class BackgroundRunner:
                     err_excess = err_file.read()
                     logger.info(err_excess)
                     self.log_queue.put(err_excess)
+                    if self.process.returncode is not None and self.process.returncode > 0:
+                        self.error_detected = True
                     break
                 line = out_file.readline().rstrip()
                 if line:
