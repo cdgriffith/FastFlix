@@ -309,9 +309,12 @@ class EncodingQueue(FlixList):
     def clear_complete(self):
         for queued_item in self.tracks:
             if queued_item.video.status.complete:
-                self.remove_item(queued_item.video)
+                self.remove_item(queued_item.video, part_of_clear=True)
+        with self.app.fastflix.queue_lock:
+            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
+        self.new_source()
 
-    def remove_item(self, video):
+    def remove_item(self, video, part_of_clear=False):
         with self.app.fastflix.queue_lock:
             for i, vid in enumerate(self.app.fastflix.queue):
                 if vid.uuid == video.uuid:
@@ -321,8 +324,10 @@ class EncodingQueue(FlixList):
                 logger.error("No matching video found to remove from queue")
                 return
             self.app.fastflix.queue.pop(pos)
-            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
-        self.new_source()
+            if not part_of_clear:
+                save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
+        if not part_of_clear:
+            self.new_source()
 
     def reload_from_queue(self, video):
         self.main.reload_video_from_queue(video)
