@@ -3,17 +3,15 @@ import logging
 from pathlib import Path
 from queue import Empty
 from typing import Optional
-from multiprocessing import Manager, Lock
+from multiprocessing import Lock
 
 import reusables
 from appdirs import user_data_dir
-from box import Box
 from pathvalidate import sanitize_filename
 
 from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
 from fastflix.shared import file_date
-from fastflix.models.queue import get_queue, save_queue
 from fastflix.models.video import Video
 
 
@@ -57,6 +55,7 @@ def allow_sleep_mode():
 
 def get_next_video(queue_list, queue_lock) -> Optional[Video]:
     with queue_lock:
+        logger.debug(f"Retrieving next video from {queue_list}")
         for video in queue_list:
             if (
                 not video.status.complete
@@ -259,7 +258,8 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, qu
                 if not currently_encoding:
                     if not video:
                         video = get_next_video(queue_list=queue_list, queue_lock=queue_lock)
-                    start_command()
+                    if video:
+                        start_command()
 
             if request[0] == "set after done":
                 after_done_command = request[1]

@@ -32,7 +32,7 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
-from fastflix.models.queue import save_queue
+from fastflix.queue import save_queue
 from fastflix.resources import (
     black_x_icon,
     folder_icon,
@@ -44,7 +44,7 @@ from fastflix.resources import (
     video_playlist_icon,
     undo_icon,
 )
-from fastflix.shared import error_message, message, time_to_number, yes_no_message
+from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
 from fastflix.windows_tools import show_windows_notification
 from fastflix.widgets.background_tasks import SubtitleFix, ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
@@ -820,7 +820,16 @@ class Main(QtWidgets.QWidget):
         )
         if not filename or not filename[0]:
             return
-        self.input_video = Path(filename[0])
+
+        if self.app.fastflix.current_video:
+            discard = yes_no_message(
+                f'{t("There is already a video being processed.")}<br>' f'{t("Are you sure you want to discard it?")}',
+                title="Discard current video",
+            )
+            if not discard:
+                return
+
+        self.input_video = Path(clean_file_string(filename[0]))
         self.video_path_widget.setText(str(self.input_video))
         self.output_video_path_widget.setText(self.generate_output_filename)
         self.output_video_path_widget.setDisabled(False)
@@ -845,7 +854,7 @@ class Main(QtWidgets.QWidget):
 
     @property
     def output_video(self):
-        return self.output_video_path_widget.text()
+        return clean_file_string(self.output_video_path_widget.text().strip("'\""))
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def save_file(self, extension="mkv"):
@@ -1141,6 +1150,8 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
 
         self.app.fastflix.current_video = video
+        self.app.fastflix.current_video.work_path.mkdir(parents=True, exist_ok=True)
+        extract_attachments(app=self.app)
         self.input_video = video.source
         hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
         text_video_tracks = [
@@ -1439,7 +1450,7 @@ class Main(QtWidgets.QWidget):
             rotate=self.widgets.rotate.currentIndex(),
             vertical_flip=v_flip,
             horizontal_flip=h_flip,
-            output_path=Path(self.output_video),
+            output_path=Path(clean_file_string(self.output_video)),
             deinterlace=self.widgets.deinterlace.isChecked(),
             remove_metadata=self.remove_metadata,
             copy_chapters=self.copy_chapters,
@@ -1595,7 +1606,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.convert_button.setIcon(QtGui.QIcon(black_x_icon))
             self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
 
-    @reusables.log_exception("fastflix", show_traceback=False)
+    @reusables.log_exception("fastflix", show_traceback=True)
     def encode_video(self):
         if self.converting:
             sure = yes_no_message(t("Are you sure you want to stop the current encode?"), title="Confirm Stop Encode")
@@ -1678,7 +1689,7 @@ class Main(QtWidgets.QWidget):
             self.app.fastflix.worker_queue.put(tuple(requests))
 
         self.clear_current_video()
-        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
+        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         return True
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -1738,8 +1749,17 @@ class Main(QtWidgets.QWidget):
 
         event.setDropAction(QtCore.Qt.CopyAction)
         event.accept()
+
+        if self.app.fastflix.current_video:
+            discard = yes_no_message(
+                f'{t("There is already a video being processed")}<br>' f'{t("Are you sure you want to discard it?")}',
+                title="Discard current video",
+            )
+            if not discard:
+                return
+
         try:
-            self.input_video = Path(event.mimeData().urls()[0].toLocalFile())
+            self.input_video = Path(clean_file_string(event.mimeData().urls()[0].toLocalFile()))
         except (ValueError, IndexError):
             return event.ignore()
 
@@ -1779,7 +1799,7 @@ class Main(QtWidgets.QWidget):
                 video = self.app.fastflix.queue.pop(index)
                 video.status.subtitle_fixed = True
                 self.app.fastflix.queue.insert(index, video)
-        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path)
+        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         self.video_options.update_queue()
 
     def find_video(self, uuid) -> Video:

@@ -258,5 +258,10 @@ def timedelta_to_str(delta):
     return output_string
 
 
-def unixy(source):
-    return str(sanitize_filepath(source, platform="Windows" if reusables.win_based else "Linux")).replace("\\", "/")
+def clean_file_string(source):
+    return str(source).strip().strip("'\"")
+
+
+def sanitize(source):
+    return str(sanitize_filepath(source, platform="Windows" if reusables.win_based else "Linux"))
+    # return str().replace("\\", "/")

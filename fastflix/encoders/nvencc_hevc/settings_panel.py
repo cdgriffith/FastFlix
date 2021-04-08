@@ -397,7 +397,7 @@ class NVENCC(SettingPanel):
             lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
             aq=self.widgets.aq.currentText(),
             aq_strength=self.widgets.aq_strength.currentIndex(),
-            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
+            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),  # .replace("\\", "/"),
             multipass=self.widgets.multipass.currentText(),
             mv_precision=self.widgets.mv_precision.currentText(),
             init_q_i=self.widgets.init_q_i.currentText() if self.widgets.init_q_i.currentIndex() != 0 else None,

@@ -23,8 +23,6 @@ def build(fastflix: FastFlix):
     if settings.row_mt.lower() == "enabled":
         beginning += f"-row-mt 1 "
 
-    beginning = re.sub("[ ]+", " ", beginning)
-
     if settings.bitrate:
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
         command_1 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ""} -an -f matroska {null}'

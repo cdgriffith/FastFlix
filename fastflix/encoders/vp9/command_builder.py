@@ -22,8 +22,6 @@ def build(fastflix: FastFlix):
     #     if fastflix.current_video.color_space.startswith("bt2020"):
     #         beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc -color_range 1"
 
-    beginning = re.sub("[ ]+", " ", beginning)
-
     details = f"-quality:v {settings.quality} -profile:v {settings.profile} -tile-columns:v {settings.tile_columns} -tile-rows:v {settings.tile_rows} "
 
     if settings.bitrate:

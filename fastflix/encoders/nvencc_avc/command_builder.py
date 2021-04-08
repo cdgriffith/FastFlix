@@ -5,7 +5,7 @@ from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import NVEncCAVCSettings
 from fastflix.models.video import Video
 from fastflix.models.fastflix import FastFlix
-from fastflix.shared import unixy
+from fastflix.shared import clean_file_string
 from fastflix.encoders.common.nvencc_helpers import build_subtitle, build_audio
 
 logger = logging.getLogger("fastflix")
@@ -85,9 +85,9 @@ def build(fastflix: FastFlix):
         aq = f"--aq-temporal --aq-strength {settings.aq_strength}"
 
     command = [
-        f'"{unixy(fastflix.config.nvencc)}"',
+        f'"{clean_file_string(fastflix.config.nvencc)}"',
         "-i",
-        f'"{unixy(video.source)}"',
+        f'"{clean_file_string(video.source)}"',
         (f"--video-streamid {stream_id}" if stream_id else ""),
         trim,
         (f"--vpp-rotate {video.video_settings.rotate * 90}" if video.video_settings.rotate else ""),
@@ -136,7 +136,7 @@ def build(fastflix: FastFlix):
         build_subtitle(video.video_settings.subtitle_tracks, video.streams.subtitle),
         settings.extra,
         "-o",
-        f'"{unixy(video.video_settings.output_path)}"',
+        f'"{clean_file_string(video.video_settings.output_path)}"',
     ]
 
     return [Command(command=" ".join(x for x in command if x), name="NVEncC Encode", exe="NVEncE")]

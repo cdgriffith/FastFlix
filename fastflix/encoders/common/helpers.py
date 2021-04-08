@@ -10,7 +10,7 @@ from fastflix.encoders.common.attachments import build_attachments
 from fastflix.encoders.common.audio import build_audio
 from fastflix.encoders.common.subtitles import build_subtitle
 from fastflix.models.fastflix import FastFlix
-from fastflix.shared import unixy
+from fastflix.shared import clean_file_string, sanitize
 
 null = "/dev/null"
 if reusables.win_based:
@@ -50,8 +50,8 @@ def generate_ffmpeg_start(
     incoming_fps = f"-r {source_fps}" if source_fps else ""
     vsync_text = f"-vsync {vsync}" if vsync else ""
     title = f'-metadata title="{video_title}"' if video_title else ""
-    source = unixy(source)
-    ffmpeg = unixy(ffmpeg)
+    source = clean_file_string(source)
+    ffmpeg = clean_file_string(ffmpeg)
 
     return " ".join(
         [
@@ -93,8 +93,7 @@ def generate_ending(
         f"{audio} {subtitles} {cover} "
     )
     if output_video and not null_ending:
-        output_video = unixy(output_video)
-        ending += f'"{output_video}"'
+        ending += f'"{clean_file_string(sanitize(output_video))}"'
     else:
         ending += null
     return ending
@@ -169,7 +168,7 @@ def generate_filters(
             else:
                 filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
         else:
-            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles='{unixy(source)}':si={burn_in_subtitle_track}[v]"
+            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles='{clean_file_string(source)}':si={burn_in_subtitle_track}[v]"
     elif filters:
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:

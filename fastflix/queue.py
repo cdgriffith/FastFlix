@@ -3,6 +3,8 @@ from typing import List
 import os
 from pathlib import Path
 import logging
+import shutil
+import uuid
 
 from box import Box, BoxError
 from ruamel.yaml import YAMLError
@@ -10,11 +12,12 @@ from ruamel.yaml import YAMLError
 from fastflix.models.video import Video, VideoSettings, Status, Crop
 from fastflix.models.encode import AudioTrack, SubtitleTrack, AttachmentTrack
 from fastflix.models.encode import setting_types
+from fastflix.models.config import Config
 
 logger = logging.getLogger("fastflix")
 
 
-def get_queue(queue_file: Path) -> List[Video]:
+def get_queue(queue_file: Path, config: Config) -> List[Video]:
     if not queue_file.exists():
         return []
 
@@ -40,7 +43,7 @@ def get_queue(queue_file: Path) -> List[Video]:
             except KeyError:
                 attachment_path = None
             attachment = AttachmentTrack(**x)
-            attachment.file_path = attachment_path
+            attachment.file_path = Path(attachment_path)
             attachments.append(attachment)
         status = Status(**video["status"])
         crop = None
@@ -65,16 +68,48 @@ def get_queue(queue_file: Path) -> List[Video]:
     return queue
 
 
-def save_queue(queue: List[Video], queue_file: Path):
+def save_queue(queue: List[Video], queue_file: Path, config: Config):
     items = []
+    queue_covers = config.work_path / "covers"
+    queue_covers.mkdir(parents=True, exist_ok=True)
+    queue_data = config.work_path / "queue_extras"
+    queue_data.mkdir(parents=True, exist_ok=True)
+
+    def update_conversion_command(vid, old_path: str, new_path: str):
+        for command in vid["video_settings"]["conversion_commands"]:
+            new_command = command["command"].replace(old_path, new_path)
+            if new_command == command["command"]:
+                logger.error(f'Could not replace "{old_path}" with "{new_path}" in {command["command"]}')
+            command["command"] = new_command
+
     for video in queue:
         video = video.dict()
         video["source"] = os.fspath(video["source"])
         video["work_path"] = os.fspath(video["work_path"])
         video["video_settings"]["output_path"] = os.fspath(video["video_settings"]["output_path"])
+        if metadata := video["video_settings"]["video_encoder_settings"].get("hdr10plus_metadata"):
+            new_metadata_file = queue_data / f"{uuid.uuid4().hex}_metadata.json"
+            try:
+                shutil.copy(metadata, new_metadata_file)
+            except OSError:
+                logger.exception("Could not save HDR10+ metadata file to queue recovery location, removing HDR10+")
+
+            update_conversion_command(
+                video,
+                str(metadata),
+                str(new_metadata_file),
+            )
+            video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"] = str(new_metadata_file)
         for track in video["video_settings"]["attachment_tracks"]:
             if track.get("file_path"):
-                track["file_path"] = str(track["file_path"])
+                new_file = queue_covers / f'{uuid.uuid4().hex}_{track["file_path"].name}'
+                try:
+                    shutil.copy(track["file_path"], new_file)
+                except OSError:
+                    logger.exception("Could not save cover to queue recovery location, removing cover")
+                update_conversion_command(video, str(track["file_path"]), str(new_file))
+                track["file_path"] = str(new_file)
+
         items.append(video)
     Box(queue=items).to_yaml(filename=queue_file)
     logger.debug(f"queue saved to recovery file {queue_file}")
