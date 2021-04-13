@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import uuid
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional, Dict
 
 import reusables
 from pydantic import BaseModel, Field
@@ -9,31 +9,18 @@ from pydantic import BaseModel, Field
 from fastflix.encoders.common.attachments import build_attachments
 from fastflix.encoders.common.audio import build_audio
 from fastflix.encoders.common.subtitles import build_subtitle
-from fastflix.models.base import BaseDataClass
 from fastflix.models.fastflix import FastFlix
+from fastflix.shared import clean_file_string, sanitize
 
 null = "/dev/null"
 if reusables.win_based:
     null = "NUL"
 
 
-class Loop:
-    item = "loop"
-
-    def __init__(self, condition, commands, dirs=(), files=(), name="", ensure_paths=()):
-        self.name = name
-        self.condition = condition
-        self.commands = commands
-        self.ensure_paths = ensure_paths
-        self.dirs = dirs
-        self.files = files
-
-
 class Command(BaseModel):
     command: str
     item = "command"
     name: str = ""
-    ensure_paths: List = ()
     exe: str = None
     shell: bool = False
     uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -63,8 +50,8 @@ def generate_ffmpeg_start(
     incoming_fps = f"-r {source_fps}" if source_fps else ""
     vsync_text = f"-vsync {vsync}" if vsync else ""
     title = f'-metadata title="{video_title}"' if video_title else ""
-    source = str(source).replace("\\", "/")
-    ffmpeg = str(ffmpeg).replace("\\", "/")
+    source = clean_file_string(source)
+    ffmpeg = clean_file_string(ffmpeg)
 
     return " ".join(
         [
@@ -106,8 +93,7 @@ def generate_ending(
         f"{audio} {subtitles} {cover} "
     )
     if output_video and not null_ending:
-        output_video = str(output_video).replace("\\", "/")
-        ending += f'"{output_video}"'
+        ending += f'"{clean_file_string(sanitize(output_video))}"'
     else:
         ending += null
     return ending
@@ -116,11 +102,9 @@ def generate_ending(
 def generate_filters(
     selected_track,
     source=None,
-    crop=None,
+    crop: Optional[Dict] = None,
     scale=None,
     scale_filter="lanczos",
-    scale_width=None,
-    scale_height=None,
     remove_hdr=False,
     rotate=0,
     vertical_flip=None,
@@ -128,6 +112,7 @@ def generate_filters(
     burn_in_subtitle_track=None,
     burn_in_subtitle_type=None,
     custom_filters=None,
+    start_filters=None,
     raw_filters=False,
     deinterlace=False,
     tone_map: str = "hable",
@@ -139,21 +124,21 @@ def generate_filters(
 ):
 
     filter_list = []
+    if start_filters:
+        filter_list.append(start_filters)
     if deinterlace:
         filter_list.append(f"yadif")
     if crop:
-        filter_list.append(f"crop={crop}")
+        filter_list.append(f"crop={crop['width']}:{crop['height']}:{crop['left']}:{crop['top']}")
     if scale:
         filter_list.append(f"scale={scale}:flags={scale_filter}")
-    elif scale_width:
-        filter_list.append(f"scale={scale_width}:-8:flags={scale_filter}")
-    elif scale_height:
-        filter_list.append(f"scale=-8:{scale_height}:flags={scale_filter}")
     if rotate:
-        if rotate < 3:
-            filter_list.append(f"transpose={rotate}")
-        if rotate == 4:
+        if rotate == 1:
+            filter_list.append(f"transpose=1")
+        if rotate == 2:
             filter_list.append(f"transpose=2,transpose=2")
+        if rotate == 3:
+            filter_list.append(f"transpose=2")
     if vertical_flip:
         filter_list.append("vflip")
     if horizontal_flip:
@@ -183,8 +168,7 @@ def generate_filters(
             else:
                 filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
         else:
-            unixy = str(source).replace("\\", "/")
-            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles='{unixy}':si={burn_in_subtitle_track}[v]"
+            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles='{clean_file_string(source)}':si={burn_in_subtitle_track}[v]"
     elif filters:
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:

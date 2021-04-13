@@ -20,6 +20,7 @@ logger = logging.getLogger("fastflix")
 class StatusPanel(QtWidgets.QWidget):
     speed = QtCore.Signal(str)
     bitrate = QtCore.Signal(str)
+    nvencc_signal = QtCore.Signal(str)
     tick_signal = QtCore.Signal()
 
     def __init__(self, parent, app: FastFlixApp):
@@ -29,7 +30,7 @@ class StatusPanel(QtWidgets.QWidget):
         self.current_video: Optional[Video] = None
         self.started_at = None
 
-        self.ticker_thread = ElapsedTimeTicker(self, self.main.status_update_signal, self.tick_signal)
+        self.ticker_thread = ElapsedTimeTicker(self, self.tick_signal)
         self.ticker_thread.start()
 
         layout = QtWidgets.QGridLayout()
@@ -62,6 +63,7 @@ class StatusPanel(QtWidgets.QWidget):
 
         self.speed.connect(self.update_speed)
         self.bitrate.connect(self.update_bitrate)
+        self.nvencc_signal.connect(self.update_nvencc)
         self.main.status_update_signal.connect(self.on_status_update)
         self.tick_signal.connect(self.update_time_elapsed)
 
@@ -72,7 +74,7 @@ class StatusPanel(QtWidgets.QWidget):
 
     def get_movie_length(self):
         if not self.current_video:
-            return
+            return 0
         return (
             self.current_video.video_settings.end_time or self.current_video.duration
         ) - self.current_video.video_settings.start_time
@@ -114,7 +116,7 @@ class StatusPanel(QtWidgets.QWidget):
         except AttributeError:
             self.size_label.setText(f"{t('Size Estimate')}: N/A")
         except Exception:
-            logger.exception(f"can't update bitrate: {bitrate}")
+            logger.exception(f"can't update bitrate: {bitrate} - length {self.get_movie_length()}")
             self.size_label.setText(f"{t('Size Estimate')}: N/A")
         else:
             if not size_eta:
@@ -122,18 +124,17 @@ class StatusPanel(QtWidgets.QWidget):
 
             self.size_label.setText(f"{t('Size Estimate')}: {size_eta:.2f}MB")
 
-    def update_title_bar(self):
-        pass
-
-    def set_started_at(self, msg):
-        try:
-            started_at = datetime.datetime.fromisoformat(msg.split("|")[-1])
-        except Exception:
-            logger.exception("Unable to parse start time, assuming it was now")
-            self.started_at = datetime.datetime.now(datetime.timezone.utc)
-            return
-
-        self.started_at = started_at
+    def update_nvencc(self, raw_line):
+        """
+        Example line:
+        [53.1%] 19/35 frames: 150.57 fps, 5010 kb/s, remain 0:01:55, GPU 10%, VE 96%, VD 42%, est out size 920.6MB
+        """
+        for section in raw_line.split(","):
+            section = section.strip()
+            if section.startswith("remain"):
+                self.eta_label.setText(f"{t('Time Left')}: {section.rsplit(maxsplit=1)[1]}")
+            elif section.startswith("est out size"):
+                self.size_label.setText(f"{t('Size Estimate')}: {section.rsplit(maxsplit=1)[1]}")
 
     def update_time_elapsed(self):
         now = datetime.datetime.now(datetime.timezone.utc)
@@ -150,11 +151,9 @@ class StatusPanel(QtWidgets.QWidget):
 
         self.time_elapsed_label.setText(f"{t('Time Elapsed')}: {timedelta_to_str(time_elapsed)}")
 
-    def on_status_update(self, msg):
-        update_type = msg.split("|")[0]
-
-        if update_type == "running":
-            self.set_started_at(msg)
+    def on_status_update(self):
+        # If there was a status change, we need to restart ticker no matter what
+        self.started_at = datetime.datetime.now(datetime.timezone.utc)
 
     def close(self):
         self.ticker_thread.terminate()
@@ -164,6 +163,7 @@ class StatusPanel(QtWidgets.QWidget):
 class Logs(QtWidgets.QTextBrowser):
     log_signal = QtCore.Signal(str)
     clear_window = QtCore.Signal(str)
+    timer_signal = QtCore.Signal(str)
 
     def __init__(self, parent, app: FastFlixApp, main, log_queue):
         super(Logs, self).__init__(parent)
@@ -172,9 +172,9 @@ class Logs(QtWidgets.QTextBrowser):
         self.main = main
         self.status_panel = parent
         self.current_video = None
-        self.current_command = None
         self.log_signal.connect(self.update_text)
         self.clear_window.connect(self.blank)
+        self.timer_signal.connect(self.timer_update)
 
         self.log_updater = LogUpdater(self, log_queue)
         self.log_updater.start()
@@ -196,26 +196,34 @@ class Logs(QtWidgets.QTextBrowser):
                 self.status_panel.bitrate.emit(frame.get("bitrate", ""))
             except Exception:
                 pass
+        elif "remain" in msg:
+            self.status_panel.nvencc_signal.emit(msg)
         self.append(msg)
 
     def blank(self, data):
         _, video_uuid, command_uuid = data.split(":")
-        self.parent.current_video = self.main.find_video(video_uuid)
         try:
+            self.parent.current_video = self.main.find_video(video_uuid)
             self.current_command = self.main.find_command(self.parent.current_video, command_uuid)
         except FlixError:
+            logger.error(f"Couldn't find video or command for UUID {video_uuid}:{command_uuid}")
+            self.parent.current_video = None
             self.current_command = None
         self.setText("")
-        self.parent.update_title_bar()
+        self.parent.started_at = datetime.datetime.now(datetime.timezone.utc)
+
+    def timer_update(self, cmd):
+        self.parent.ticker_thread.state_signal.emit(cmd == "START")
 
     def closeEvent(self, event):
         self.hide()
 
 
 class ElapsedTimeTicker(QtCore.QThread):
-    stop_signal = QtCore.Signal()
+    state_signal = QtCore.Signal(bool)
+    stop_signal = QtCore.Signal()  # Clean exit of program
 
-    def __init__(self, parent, status_update_signal, tick_signal):
+    def __init__(self, parent, tick_signal):
         super().__init__(parent)
         self.parent = parent
         self.tick_signal = tick_signal
@@ -223,7 +231,7 @@ class ElapsedTimeTicker(QtCore.QThread):
         self.send_tick_signal = False
         self.stop_received = False
 
-        status_update_signal.connect(self.on_status_update)
+        self.state_signal.connect(self.set_state)
         self.stop_signal.connect(self.on_stop)
 
     def __del__(self):
@@ -240,13 +248,8 @@ class ElapsedTimeTicker(QtCore.QThread):
 
         logger.debug("Ticker thread stopped")
 
-    def on_status_update(self, msg):
-        update_type = msg.split("|")[0]
-
-        if update_type in ("complete", "error", "cancelled", "converted"):
-            self.send_tick_signal = False
-        else:
-            self.send_tick_signal = True
+    def set_state(self, state):
+        self.send_tick_signal = state
 
     def on_stop(self):
         self.stop_received = True
@@ -266,6 +269,9 @@ class LogUpdater(QtCore.QThread):
             msg = self.log_queue.get()
             if msg.startswith("CLEAR_WINDOW"):
                 self.parent.clear_window.emit(msg)
+                self.parent.timer_signal.emit("START")
+            elif msg == "STOP_TIMER":
+                self.parent.timer_signal.emit("STOP")
             elif msg == "UPDATE_QUEUE":
                 self.parent.status_panel.main.video_options.update_queue(currently_encoding=self.parent.converting)
             else:

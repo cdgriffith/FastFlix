@@ -106,10 +106,12 @@ class RAV1E(SettingPanel):
         )
 
     def init_tiles(self):
-        return self._add_combo_box("Tiles", [str(x) for x in range(-1, 17)], "tiles", opt="tiles")
+        return self._add_combo_box(
+            label="Tiles", options=[str(x) for x in range(-1, 17)], widget_name="tiles", opt="tiles"
+        )
 
     def init_single_pass(self):
-        return self._add_check_box("Single Pass (Bitrate)", "single_pass", opt="single_pass")
+        return self._add_check_box(label="Single Pass (Bitrate)", widget_name="single_pass", opt="single_pass")
 
     def init_pix_fmt(self):
         return self._add_combo_box(

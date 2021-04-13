@@ -61,6 +61,7 @@ def latest_ffmpeg(signal, stop_signal, **_):
         raise
 
     if stop:
+        message(t("Download Cancelled"))
         return
 
     gpl_ffmpeg = [asset for asset in data["assets"] if asset["name"].endswith("win64-gpl.zip")]
@@ -82,6 +83,9 @@ def latest_ffmpeg(signal, stop_signal, **_):
                 signal.emit(int(((i * 1024) / gpl_ffmpeg[0]["size"]) * 90))
             f.write(block)
             if stop:
+                f.close()
+                Path(filename).unlink()
+                message(t("Download Cancelled"))
                 return
 
     if filename.stat().st_size < 1000:
@@ -99,6 +103,8 @@ def latest_ffmpeg(signal, stop_signal, **_):
         raise
 
     if stop:
+        Path(filename).unlink()
+        message(t("Download Cancelled"))
         return
 
     signal.emit(95)

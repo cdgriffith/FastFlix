@@ -4,7 +4,7 @@ import sys
 
 import coloredlogs
 import reusables
-from qtpy import QtGui
+from qtpy import QtGui, QtWidgets, QtCore
 
 from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration, ffprobe_configuration
 from fastflix.language import t
@@ -22,6 +22,10 @@ logger = logging.getLogger("fastflix")
 
 
 def create_app():
+    if hasattr(QtCore.Qt, "AA_EnableHighDpiScaling"):
+        QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+    if hasattr(QtCore.Qt, "AA_UseHighDpiPixmaps"):
+        QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     main_app = FastFlixApp(sys.argv)
     main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
@@ -49,23 +53,31 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.avc_x264 import main as avc_plugin
     from fastflix.encoders.copy import main as copy_plugin
     from fastflix.encoders.gif import main as gif_plugin
+    from fastflix.encoders.ffmpeg_hevc_nvenc import main as nvenc_plugin
     from fastflix.encoders.hevc_x265 import main as hevc_plugin
     from fastflix.encoders.rav1e import main as rav1e_plugin
     from fastflix.encoders.svt_av1 import main as svt_av1_plugin
     from fastflix.encoders.vp9 import main as vp9_plugin
     from fastflix.encoders.webp import main as webp_plugin
+    from fastflix.encoders.nvencc_hevc import main as nvencc_plugin
+    from fastflix.encoders.nvencc_avc import main as nvencc_avc_plugin
 
     encoders = [
         hevc_plugin,
-        avc_plugin,
-        gif_plugin,
-        vp9_plugin,
-        webp_plugin,
+        nvenc_plugin,
         av1_plugin,
         rav1e_plugin,
         svt_av1_plugin,
+        avc_plugin,
+        vp9_plugin,
+        gif_plugin,
+        webp_plugin,
         copy_plugin,
     ]
+
+    if app.fastflix.config.nvencc:
+        encoders.insert(1, nvencc_plugin)
+        encoders.insert(7, nvencc_avc_plugin)
 
     app.fastflix.encoders = {
         encoder.name: encoder
@@ -94,9 +106,9 @@ def register_app():
             logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
 
 
-def start_app(worker_queue, status_queue, log_queue):
+def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
     app = create_app()
-    app.fastflix = FastFlix()
+    app.fastflix = FastFlix(queue=queue_list, queue_lock=queue_lock)
     app.fastflix.log_queue = log_queue
     app.fastflix.status_queue = status_queue
     app.fastflix.worker_queue = worker_queue

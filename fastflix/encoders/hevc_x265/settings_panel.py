@@ -10,8 +10,9 @@ from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
 from fastflix.models.encode import x265Settings
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import warning_icon
+from fastflix.resources import loading_movie, warning_icon
 from fastflix.shared import link
+from fastflix.widgets.background_tasks import ExtractHDR10
 
 logger = logging.getLogger("fastflix")
 
@@ -63,6 +64,8 @@ def get_breaker():
 
 class HEVC(SettingPanel):
     profile_name = "x265"
+    hdr10plus_signal = QtCore.Signal(str)
+    hdr10plus_ffmpeg_signal = QtCore.Signal(str)
 
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
@@ -73,6 +76,7 @@ class HEVC(SettingPanel):
 
         self.mode = "CRF"
         self.updating_settings = False
+        self.extract_thread = None
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_tune(), 1, 0, 1, 2)
@@ -103,10 +107,12 @@ class HEVC(SettingPanel):
 
         grid.addLayout(self.init_dhdr10_info(), 9, 2, 1, 3)
         grid.addLayout(self.init_dhdr10_warning_and_opt(), 9, 5, 1, 1)
+        self.ffmpeg_level = QtWidgets.QLabel()
+        grid.addWidget(self.ffmpeg_level, 10, 2, 1, 4)
 
-        grid.setRowStretch(10, True)
+        grid.setRowStretch(11, True)
 
-        grid.addLayout(self._add_custom(), 11, 0, 1, 6)
+        grid.addLayout(self._add_custom(), 12, 0, 1, 6)
 
         link_1 = link(
             "https://trac.ffmpeg.org/wiki/Encode/H.265",
@@ -125,8 +131,10 @@ class HEVC(SettingPanel):
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
 
-        grid.addWidget(guide_label, 12, 0, 1, 6)
+        grid.addWidget(guide_label, 13, 0, 1, 6)
 
+        self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
+        self.hdr10plus_ffmpeg_signal.connect(lambda x: self.ffmpeg_level.setText(x))
         self.setLayout(grid)
         self.hide()
 
@@ -151,6 +159,20 @@ class HEVC(SettingPanel):
         icon = QtGui.QIcon(warning_icon)
         label.setPixmap(icon.pixmap(22))
         layout = QtWidgets.QHBoxLayout()
+
+        self.extract_button = QtWidgets.QPushButton(t("Extract HDR10+"))
+        self.extract_button.hide()
+        self.extract_button.clicked.connect(self.extract_hdr10plus)
+
+        self.extract_label = QtWidgets.QLabel(self)
+        self.extract_label.hide()
+        self.movie = QtGui.QMovie(loading_movie)
+        self.movie.setScaledSize(QtCore.QSize(25, 25))
+        self.extract_label.setMovie(self.movie)
+
+        layout.addWidget(self.extract_button)
+        layout.addWidget(self.extract_label)
+
         layout.addWidget(label)
         layout.addLayout(self.init_dhdr10_opt())
         return layout
@@ -432,18 +454,6 @@ class HEVC(SettingPanel):
         layout.addWidget(self.widgets.x265_params)
         return layout
 
-    def dhdr10_update(self):
-        dirname = Path(self.widgets.hdr10plus_metadata.text()).parent
-        if not dirname.exists():
-            dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="hdr10_metadata", directory=str(dirname), filter="HDR10+ Metadata (*.json)"
-        )
-        if not filename or not filename[0]:
-            return
-        self.widgets.hdr10plus_metadata.setText(filename[0])
-        self.main.page_update()
-
     def setting_change(self, update=True, pix_change=False):
         def hdr_opts():
             if not self.widgets.pix_fmt.currentText().startswith(
@@ -509,8 +519,19 @@ class HEVC(SettingPanel):
         self.updating_settings = False
 
     def new_source(self):
+        if not self.app.fastflix.current_video:
+            return
         super().new_source()
         self.setting_change()
+        if self.app.fastflix.current_video.hdr10_plus:
+            self.extract_button.show()
+        else:
+            self.extract_button.hide()
+        if self.extract_thread:
+            try:
+                self.extract_thread.terminate()
+            except Exception:
+                pass
 
     def update_video_encoder_settings(self):
         if not self.app.fastflix.current_video:
@@ -536,7 +557,7 @@ class HEVC(SettingPanel):
             frame_threads=self.widgets.frame_threads.currentIndex(),
             tune=self.widgets.tune.currentText(),
             x265_params=x265_params_text.split(":") if x265_params_text else [],
-            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip().replace("\\", "/"),
+            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),  # .replace("\\", "/"),
             lossless=self.widgets.lossless.isChecked(),
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),

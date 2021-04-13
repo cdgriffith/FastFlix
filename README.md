@@ -16,24 +16,18 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 
 #  Encoders
 
- FastFlix supports the following encoders when their required libraries are found in FFmpeg:
+ FastFlix supports the following encoders if available:
 
-* HEVC (libx265) &nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_x265.png" height="30" alt="x265" style="background-color: #fff" >
-* AVC (libx264) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_x264.png" height="30" alt="x264" style="background-color: #fff" >
-* AV1 (librav1e) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_rav1e.png" height="30" alt="rav1e" style="background-color: #fff" >
-* AV1 (libaom-av1) &nbsp; <img src="./fastflix/data/encoders/icon_av1_aom.png" height="30" alt="av1_aom" style="background-color: #fff" >
-* AV1 (libsvtav1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_svt_av1.png" height="30" alt="svt_av1" style="background-color: #fff" >
-* VP9 (libvpx) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_vp9.png" height="30" alt="vpg" style="background-color: #fff" >
-* WEBP (libwebp) &nbsp;&nbsp;&nbsp;<img src="./fastflix/data/encoders/icon_webp.png" height="30" alt="vpg" style="background-color: #fff" >
-* GIF (gif) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="./fastflix/data/encoders/icon_gif.png" height="30" alt="gif" style="background-color: #fff" >
+| Encoder   | x265 |  NVENC HEVC | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | WEBP | GIF |
+| --------- | ---- | ---------- | ----------- | ---- | ----- | ------- | ------- | --- | ---- | --- |
+| HDR10     |   ✓  |            |      ✓     |      |       |         |         |  ✓* |      |     |
+| HDR10+    |   ✓  |            |      ✓     |      |       |         |         |     |      |     |
+| Audio     |   ✓  |      ✓     |      ✓*    |  ✓   |   ✓  |    ✓    |    ✓   |  ✓   |      |     |
+| Subtitles |   ✓  |      ✓     |      ✓     |  ✓   |   ✓  |    ✓    |    ✓   |      |      |     |
+| Covers    |   ✓  |      ✓     |            |  ✓   |   ✓  |    ✓    |    ✓   |      |      |     |
+| bt.2020   |   ✓  |     ✓      |     ✓      |   ✓  |  ✓    |   ✓    |   ✓    |  ✓   |      |     |
 
-All of these are currently supported by [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) which is the default FFmpeg downloaded.
-
-Most other builds do not have all these encoders available by default and may require custom compiling FFmpeg for a specific encoder.
-
-* [Windows FFmpeg (and more) auto builder](https://github.com/m-ab-s/media-autobuild_suite)
-* [Windows cross compile FFmpeg (build on linux)](https://github.com/rdp/ffmpeg-windows-build-helpers)
-* [FFmpeg compilation guide](https://trac.ffmpeg.org/wiki/CompilationGuide)
+`✓ - Full support   |   ✓* - Limited support`
 
 # Releases
 
@@ -71,9 +65,11 @@ VP9 has limited support to copy some existing HDR10 metadata, usually from other
 
 ## HDR10+
 
-FastFlix supports using generated or [extracted JSON HDR10+ Metadata](https://github.com/cdgriffith/FastFlix/wiki/HDR10-Plus-Metadata-Extraction) with HEVC encodes via x265. However that is highly
-dependant on a FFmpeg version that has been compiled with x265 that has HDR10+ support. [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) 
+FastFlix supports using generated or [extracted JSON HDR10+ Metadata](https://github.com/cdgriffith/FastFlix/wiki/HDR10-Plus-Metadata-Extraction) with HEVC encodes via x265. However, that is highly
+dependent on a FFmpeg version that has been compiled with x265 that has HDR10+ support. [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) 
 have this support as of 10/23/2020 and may require a [manual upgrade](https://github.com/cdgriffith/FastFlix/wiki/Updating-FFmpeg).
+
+If you add HDR10+ metadata file, make sure the encoding log does NOT contain the line `x265 [warning]: –dhdr10-info disabled. Enable HDR10_PLUS in cmake` or else it is unsupported. 
 
 ## HLG 
 
@@ -83,6 +79,9 @@ FastFlix (v4.0.2+) passes through HLG color transfer information to everything e
 
 FastFlix does not plan to support Dolby Vision's proprietary format at this time.
 
+# Support FastFlix
+
+Check out the different ways you can help [support FastFlix](https://github.com/cdgriffith/FastFlix/wiki/Support-FastFlix)!
 
 # License
 

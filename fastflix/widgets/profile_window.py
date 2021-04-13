@@ -2,6 +2,7 @@
 
 import shutil
 from pathlib import Path
+import logging
 
 from box import Box
 from iso639 import Lang
@@ -21,10 +22,15 @@ from fastflix.models.video import (
     rav1eSettings,
     x264Settings,
     x265Settings,
+    NVEncCSettings,
+    NVEncCAVCSettings,
+    FFmpegNVENCSettings,
 )
 from fastflix.shared import error_message
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
+
+logger = logging.getLogger("fastflix")
 
 
 class ProfileWindow(QtWidgets.QWidget):
@@ -130,7 +136,7 @@ class ProfileWindow(QtWidgets.QWidget):
             auto_crop=self.auto_crop.isChecked(),
             keep_aspect_ratio=self.main.widgets.scale.keep_aspect.isChecked(),
             fast_seek=self.main.fast_time,
-            rotate=self.main.rotation_to_transpose(),
+            rotate=self.main.widgets.rotate.currentIndex(),
             vertical_flip=v_flip,
             horizontal_flip=h_flip,
             copy_chapters=self.main.copy_chapters,
@@ -150,22 +156,31 @@ class ProfileWindow(QtWidgets.QWidget):
 
         if isinstance(self.encoder, x265Settings):
             new_profile.x265 = self.encoder
-        if isinstance(self.encoder, x264Settings):
+        elif isinstance(self.encoder, x264Settings):
             new_profile.x264 = self.encoder
-        if isinstance(self.encoder, rav1eSettings):
+        elif isinstance(self.encoder, rav1eSettings):
             new_profile.rav1e = self.encoder
-        if isinstance(self.encoder, SVTAV1Settings):
+        elif isinstance(self.encoder, SVTAV1Settings):
             new_profile.svt_av1 = self.encoder
-        if isinstance(self.encoder, VP9Settings):
+        elif isinstance(self.encoder, VP9Settings):
             new_profile.vp9 = self.encoder
-        if isinstance(self.encoder, AOMAV1Settings):
+        elif isinstance(self.encoder, AOMAV1Settings):
             new_profile.aom_av1 = self.encoder
-        if isinstance(self.encoder, GIFSettings):
+        elif isinstance(self.encoder, GIFSettings):
             new_profile.gif = self.encoder
-        if isinstance(self.encoder, WebPSettings):
+        elif isinstance(self.encoder, WebPSettings):
             new_profile.webp = self.encoder
-        if isinstance(self.encoder, CopySettings):
+        elif isinstance(self.encoder, CopySettings):
             new_profile.copy_settings = self.encoder
+        elif isinstance(self.encoder, NVEncCSettings):
+            new_profile.nvencc_hevc = self.encoder
+        elif isinstance(self.encoder, NVEncCAVCSettings):
+            new_profile.nvencc_avc = self.encoder
+        elif isinstance(self.encoder, FFmpegNVENCSettings):
+            new_profile.ffmpeg_hevc_nvenc = self.encoder
+        else:
+            logger.error("Profile cannot be saved! Unknown encoder type.")
+            return
 
         self.app.fastflix.config.profiles[profile_name] = new_profile
         self.app.fastflix.config.selected_profile = profile_name
@@ -187,3 +202,4 @@ class ProfileWindow(QtWidgets.QWidget):
         self.main.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
         self.main.loading_video = False
         self.main.widgets.profile_box.setCurrentText("Standard Profile")
+        self.main.widgets.convert_to.setCurrentIndex(0)

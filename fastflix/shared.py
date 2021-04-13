@@ -11,6 +11,8 @@ from subprocess import run
 import pkg_resources
 import requests
 import reusables
+from pathvalidate import sanitize_filepath
+
 
 try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -25,8 +27,6 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 
-QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 DEVMODE = os.getenv("DEVMODE", "").lower() in ("1", "true")
 
 my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
@@ -226,7 +226,7 @@ def clean_logs(signal, app, **_):
             except UnicodeDecodeError:
                 pass
             else:
-                if len(condensed) < len(original):
+                if (len(condensed) + 100) < len(original):
                     logger.debug(f"Compressed {file.name} from {len(original)} characters to {len(condensed)}")
                     file.write_text(condensed, encoding="utf-8")
             if is_old:
@@ -256,3 +256,12 @@ def timedelta_to_str(delta):
     output_string = output_string.split(".")[0]  # Remove .XXX microseconds
 
     return output_string
+
+
+def clean_file_string(source):
+    return str(source).strip().strip("'\"")
+
+
+def sanitize(source):
+    return str(sanitize_filepath(source, platform="Windows" if reusables.win_based else "Linux"))
+    # return str().replace("\\", "/")

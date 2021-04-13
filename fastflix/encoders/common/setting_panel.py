@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 import logging
 from typing import List, Tuple, Union
+from pathlib import Path
 
 from box import Box
-from qtpy import QtGui, QtWidgets
+from qtpy import QtGui, QtWidgets, QtCore
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.widgets.background_tasks import ExtractHDR10
 
 logger = logging.getLogger("fastflix")
 
@@ -37,12 +39,15 @@ class SettingPanel(QtWidgets.QWidget):
         elif widget_name in ("crf", "qp"):
             if not opt:
                 return 6
-            items = [x.split("(")[0].split("-")[0].strip() for x in items]
             opt = str(opt)
+            items = [x.split("(")[0].split("-")[0].strip() for x in items]
         elif widget_name == "bitrate":
             if not opt:
                 return 5
             items = [x.split("(")[0].split("-")[0].strip() for x in items]
+        elif widget_name == "gpu":
+            if opt == -1:
+                return 0
         if isinstance(opt, str):
             try:
                 return items.index(opt)
@@ -50,22 +55,34 @@ class SettingPanel(QtWidgets.QWidget):
                 if raise_error:
                     raise FastFlixInternalException
                 else:
-                    logger.error(f"Could not set default for {widget_name} to {opt} as it's not in the list")
+                    logger.error(f"Could not set default for {widget_name} to {opt} as it's not in the list: {items}")
                 return 0
         if isinstance(opt, bool):
             return int(opt)
         return opt
 
     def _add_combo_box(
-        self, label, options, widget_name, opt=None, connect="default", enabled=True, default=0, tooltip=""
+        self,
+        options,
+        widget_name,
+        label=None,
+        opt=None,
+        connect="default",
+        enabled=True,
+        default=0,
+        tooltip="",
+        min_width=None,
     ):
         layout = QtWidgets.QHBoxLayout()
-        self.labels[widget_name] = QtWidgets.QLabel(t(label))
-        if tooltip:
-            self.labels[widget_name].setToolTip(self.translate_tip(tooltip))
+        if label:
+            self.labels[widget_name] = QtWidgets.QLabel(t(label))
+            if tooltip:
+                self.labels[widget_name].setToolTip(self.translate_tip(tooltip))
 
         self.widgets[widget_name] = QtWidgets.QComboBox()
         self.widgets[widget_name].addItems(options)
+        if min_width:
+            self.widgets[widget_name].setMinimumWidth(min_width)
 
         if opt:
             default = self.determine_default(
@@ -86,6 +103,57 @@ class SettingPanel(QtWidgets.QWidget):
             else:
                 self.widgets[widget_name].currentIndexChanged.connect(connect)
 
+        if not label:
+            return self.widgets[widget_name]
+
+        layout.addWidget(self.labels[widget_name])
+        layout.addWidget(self.widgets[widget_name])
+
+        return layout
+
+    def _add_text_box(
+        self,
+        label,
+        widget_name,
+        opt=None,
+        connect="default",
+        enabled=True,
+        default="",
+        tooltip="",
+        validator=None,
+        width=None,
+    ):
+        layout = QtWidgets.QHBoxLayout()
+        self.labels[widget_name] = QtWidgets.QLabel(t(label))
+        if tooltip:
+            self.labels[widget_name].setToolTip(self.translate_tip(tooltip))
+
+        self.widgets[widget_name] = QtWidgets.QLineEdit()
+
+        if opt:
+            default = str(self.app.fastflix.config.encoder_opt(self.profile_name, opt)) or default
+            self.opts[widget_name] = opt
+        self.widgets[widget_name].setText(default)
+        self.widgets[widget_name].setDisabled(not enabled)
+        if tooltip:
+            self.widgets[widget_name].setToolTip(self.translate_tip(tooltip))
+        if connect:
+            if connect == "default":
+                self.widgets[widget_name].textChanged.connect(lambda: self.main.page_update(build_thumbnail=False))
+            elif connect == "self":
+                self.widgets[widget_name].textChanged.connect(lambda: self.page_update())
+            else:
+                self.widgets[widget_name].textChanged.connect(connect)
+
+        if validator:
+            if validator == "int":
+                self.widgets[widget_name].setValidator(self.only_int)
+            if validator == "float":
+                self.widgets[widget_name].setValidator(self.only_int)
+
+        if width:
+            self.widgets[widget_name].setFixedWidth(width)
+
         layout.addWidget(self.labels[widget_name])
         layout.addWidget(self.widgets[widget_name])
 
@@ -93,8 +161,6 @@ class SettingPanel(QtWidgets.QWidget):
 
     def _add_check_box(self, label, widget_name, opt, connect="default", enabled=True, checked=True, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
-        # self.labels[widget_name] = QtWidgets.QLabel()
-        # self.labels[widget_name].setToolTip()
 
         self.widgets[widget_name] = QtWidgets.QCheckBox(t(label))
         self.opts[widget_name] = opt
@@ -115,9 +181,9 @@ class SettingPanel(QtWidgets.QWidget):
 
         return layout
 
-    def _add_custom(self, connect="default", disable_both_passes=False):
+    def _add_custom(self, title="Custom ffmpeg options", connect="default", disable_both_passes=False):
         layout = QtWidgets.QHBoxLayout()
-        self.labels.ffmpeg_options = QtWidgets.QLabel(t("Custom ffmpeg options"))
+        self.labels.ffmpeg_options = QtWidgets.QLabel(t(title))
         self.labels.ffmpeg_options.setToolTip(t("Extra flags or options, cannot modify existing settings"))
         layout.addWidget(self.labels.ffmpeg_options)
         self.ffmpeg_extras_widget = QtWidgets.QLineEdit()
@@ -166,11 +232,42 @@ class SettingPanel(QtWidgets.QWidget):
         layout.addWidget(button)
         return layout
 
+    def extract_hdr10plus(self):
+        self.extract_button.hide()
+        self.extract_label.show()
+        self.movie.start()
+        # self.extracting_hdr10 = True
+        self.extract_thrad = ExtractHDR10(
+            self.app, self.main, signal=self.hdr10plus_signal, ffmpeg_signal=self.hdr10plus_ffmpeg_signal
+        )
+        self.extract_thrad.start()
+
+    def done_hdr10plus_extract(self, metadata: str):
+        self.extract_button.show()
+        self.extract_label.hide()
+        self.movie.stop()
+        if Path(metadata).exists():
+            self.widgets.hdr10plus_metadata.setText(metadata)
+        self.ffmpeg_level.setText("")
+
+    def dhdr10_update(self):
+        dirname = Path(self.widgets.hdr10plus_metadata.text()).parent
+        if not dirname.exists():
+            dirname = Path()
+        filename = QtWidgets.QFileDialog.getOpenFileName(
+            self, caption="hdr10_metadata", directory=str(dirname), filter="HDR10+ Metadata (*.json)"
+        )
+        if not filename or not filename[0]:
+            return
+        self.widgets.hdr10plus_metadata.setText(filename[0])
+        self.main.page_update()
+
     def _add_modes(
         self,
         recommended_bitrates,
         recommended_qps,
         qp_name="crf",
+        add_qp=True,
     ):
         self.recommended_bitrates = recommended_bitrates
         self.recommended_qps = recommended_qps
@@ -237,7 +334,8 @@ class SettingPanel(QtWidgets.QWidget):
             custom_qp = True
             self.widgets[qp_name].setCurrentText("Custom")
         else:
-            self.widgets[qp_name].setCurrentIndex(default_qp_index)
+            if default_qp_index is not None:
+                self.widgets[qp_name].setCurrentIndex(default_qp_index)
 
         self.widgets[qp_name].currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
@@ -264,6 +362,9 @@ class SettingPanel(QtWidgets.QWidget):
         layout.addWidget(qp_group_box, 0, 0)
         layout.addWidget(bitrate_group_box, 1, 0)
 
+        if not add_qp:
+            qp_group_box.hide()
+
         return layout
 
     @property
@@ -273,7 +374,7 @@ class SettingPanel(QtWidgets.QWidget):
     def ffmpeg_extra_update(self):
         global ffmpeg_extra_command
         ffmpeg_extra_command = self.ffmpeg_extras_widget.text().strip()
-        self.main.page_update()
+        self.main.page_update(build_thumbnail=False)
 
     def new_source(self):
         if not self.app.fastflix.current_video or not self.app.fastflix.current_video.streams:
@@ -281,6 +382,7 @@ class SettingPanel(QtWidgets.QWidget):
 
     def update_profile(self):
         global ffmpeg_extra_command
+        logger.debug("Update profile called")
         for widget_name, opt in self.opts.items():
             if isinstance(self.widgets[widget_name], QtWidgets.QComboBox):
                 default = self.determine_default(
@@ -305,6 +407,7 @@ class SettingPanel(QtWidgets.QWidget):
             pass
         else:
             if bitrate:
+                self.mode = "Bitrate"
                 self.qp_radio.setChecked(False)
                 self.bitrate_radio.setChecked(True)
                 for i, rec in enumerate(self.recommended_bitrates):
@@ -315,6 +418,7 @@ class SettingPanel(QtWidgets.QWidget):
                     self.widgets.bitrate.setCurrentText("Custom")
                     self.widgets.custom_bitrate.setText(bitrate.rstrip("kKmMgGbB"))
             else:
+                self.mode = self.qp_name
                 self.qp_radio.setChecked(True)
                 self.bitrate_radio.setChecked(False)
                 qp = str(self.app.fastflix.config.encoder_opt(self.profile_name, self.qp_name))
@@ -340,6 +444,7 @@ class SettingPanel(QtWidgets.QWidget):
     def reload(self):
         """This will reset the current settings to what is set in "current_video", useful for return from queue"""
         global ffmpeg_extra_command
+        logger.debug("Update reload called")
         self.updating_settings = True
         for widget_name, opt in self.opts.items():
             data = getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, opt)
@@ -352,15 +457,18 @@ class SettingPanel(QtWidgets.QWidget):
                     self.widgets[widget_name].setCurrentIndex(data)
                 else:
                     self.widgets[widget_name].setCurrentText(data)
+                    # Do smart check for cleaning up stuff
+
             elif isinstance(self.widgets[widget_name], QtWidgets.QCheckBox):
                 self.widgets[widget_name].setChecked(data)
             elif isinstance(self.widgets[widget_name], QtWidgets.QLineEdit):
                 if widget_name == "x265_params":
                     data = ":".join(data)
-                self.widgets[widget_name].setText(data or "")
+                self.widgets[widget_name].setText(str(data) or "")
         if getattr(self, "qp_radio", None):
             bitrate = getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, "bitrate", None)
             if bitrate:
+                self.mode = "Bitrate"
                 self.qp_radio.setChecked(False)
                 self.bitrate_radio.setChecked(True)
                 for i, rec in enumerate(self.recommended_bitrates):
@@ -371,6 +479,7 @@ class SettingPanel(QtWidgets.QWidget):
                     self.widgets.bitrate.setCurrentText("Custom")
                     self.widgets.custom_bitrate.setText(bitrate.rstrip("k"))
             else:
+                self.mode = self.qp_name
                 self.qp_radio.setChecked(True)
                 self.bitrate_radio.setChecked(False)
                 qp = str(getattr(self.app.fastflix.current_video.video_settings.video_encoder_settings, self.qp_name))

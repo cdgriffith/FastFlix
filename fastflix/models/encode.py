@@ -1,19 +1,27 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict
 
 from pydantic import BaseModel, Field
+from box import Box
 
 
 class AudioTrack(BaseModel):
     index: int
     outdex: int
     codec: str = ""
-    downmix: int = 0
+    downmix: Optional[str] = None
     title: str = ""
     language: str = ""
     conversion_bitrate: str = ""
     conversion_codec: str = ""
+    profile: Optional[str] = None
+    enabled: bool = True
+    original: bool = False
+    channels: int = 2
+    friendly_info: str = ""
+    raw_info: Optional[Union[Dict, Box]] = None
 
 
 class SubtitleTrack(BaseModel):
@@ -73,6 +81,84 @@ class x264Settings(EncoderSettings):
     bitrate: Optional[str] = None
 
 
+class FFmpegNVENCSettings(EncoderSettings):
+    name = "HEVC (NVENC)"
+    preset: str = "slow"
+    profile: str = "main"
+    tune: str = "hq"
+    pix_fmt: str = "p010le"
+    bitrate: Optional[str] = "6000k"
+    qp: Optional[str] = None
+    cq: int = 0
+    spatial_aq: int = 0
+    rc_lookahead: int = 0
+    rc: Optional[str] = None
+    tier: str = "main"
+    level: Optional[str] = None
+    gpu: int = -1
+    b_ref_mode: str = "disabled"
+
+
+class NVEncCSettings(EncoderSettings):
+    name = "HEVC (NVEncC)"
+    preset: str = "quality"
+    profile: str = "auto"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    aq: str = "off"
+    aq_strength: int = 0
+    lookahead: Optional[int] = None
+    tier: str = "high"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    multipass: str = "2pass-full"
+    mv_precision: str = "Auto"
+    init_q_i: Optional[str] = None
+    init_q_p: Optional[str] = None
+    init_q_b: Optional[str] = None
+    min_q_i: Optional[str] = None
+    min_q_p: Optional[str] = None
+    min_q_b: Optional[str] = None
+    max_q_i: Optional[str] = None
+    max_q_p: Optional[str] = None
+    max_q_b: Optional[str] = None
+    vbr_target: Optional[str] = None
+    b_frames: Optional[str] = None
+    b_ref_mode: str = "disabled"
+    ref: Optional[str] = None
+    metrics: bool = True
+
+
+class NVEncCAVCSettings(EncoderSettings):
+    name = "AVC (NVEncC)"
+    preset: str = "quality"
+    profile: str = "auto"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    aq: str = "off"
+    aq_strength: int = 0
+    lookahead: Optional[int] = None
+    tier: str = "high"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    multipass: str = "2pass-full"
+    mv_precision: str = "Auto"
+    init_q_i: Optional[str] = None
+    init_q_p: Optional[str] = None
+    init_q_b: Optional[str] = None
+    min_q_i: Optional[str] = None
+    min_q_p: Optional[str] = None
+    min_q_b: Optional[str] = None
+    max_q_i: Optional[str] = None
+    max_q_p: Optional[str] = None
+    max_q_b: Optional[str] = None
+    vbr_target: Optional[str] = None
+    b_frames: Optional[str] = None
+    b_ref_mode: str = "disabled"
+    ref: Optional[str] = None
+    metrics: bool = True
+
+
 class rav1eSettings(EncoderSettings):
     name = "AV1 (rav1e)"
     speed: str = "-1"
@@ -105,6 +191,9 @@ class VP9Settings(EncoderSettings):
     single_pass: bool = False
     crf: Optional[Union[int, float]] = 31
     bitrate: Optional[str] = None
+    fast_first_pass: Optional[bool] = True
+    tile_columns: str = "-1"
+    tile_rows: str = "-1"
 
 
 class AOMAV1Settings(EncoderSettings):
@@ -134,3 +223,19 @@ class GIFSettings(EncoderSettings):
 
 class CopySettings(EncoderSettings):
     name = "Copy"
+
+
+setting_types = {
+    "x265": x265Settings,
+    "x264": x264Settings,
+    "rav1e": rav1eSettings,
+    "svt_av1": SVTAV1Settings,
+    "vp9": VP9Settings,
+    "aom_av1": AOMAV1Settings,
+    "gif": GIFSettings,
+    "webp": WebPSettings,
+    "copy_settings": CopySettings,
+    "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
+    "nvencc_hevc": NVEncCSettings,
+    "nvencc_avc": NVEncCAVCSettings,
+}

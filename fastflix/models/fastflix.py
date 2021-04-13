@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass, field
 
-# from multiprocessing import Queue
+from multiprocessing import Lock
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -18,6 +18,7 @@ class FastFlix(BaseModel):
     config: Config = None
     data_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
     log_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "logs"
+    queue_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "queue.yaml"
     ffmpeg_version: str = ""
     ffmpeg_config: List[str] = ""
     ffprobe_version: str = ""
@@ -28,4 +29,5 @@ class FastFlix(BaseModel):
     log_queue: Any = None
 
     current_video: Optional[Video] = None
-    queue: List[Video] = Field(default_factory=list)
+    queue: Any = None
+    queue_lock: Any = None

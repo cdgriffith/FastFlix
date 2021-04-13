@@ -74,6 +74,8 @@ color_transfer_mapping = {
 
 color_matrix_mapping = {"bt2020_ncl": "bt2020nc", "bt2020_cl": "bt2020c"}
 
+chromaloc_mapping = {"left": 0, "center": 1, "topleft": 2, "top": 3, "bottomleft": 4, "bottom": 5}
+
 
 def build(fastflix: FastFlix):
     settings: x265Settings = fastflix.current_video.video_settings.video_encoder_settings
@@ -81,7 +83,7 @@ def build(fastflix: FastFlix):
     beginning, ending = generate_all(fastflix, "libx265")
 
     if settings.tune and settings.tune != "default":
-        beginning += f"-tune {settings.tune} "
+        beginning += f"-tune:v {settings.tune} "
 
     if settings.profile and settings.profile != "default":
         beginning += f"-profile:v {settings.profile} "
@@ -134,6 +136,10 @@ def build(fastflix: FastFlix):
 
             x265_params.append(f"hdr10={'1' if settings.hdr10 else '0'}")
 
+        current_chroma_loc = fastflix.current_video.current_video_stream.get("chroma_location")
+        if current_chroma_loc in chromaloc_mapping:
+            x265_params.append(f"chromaloc={chromaloc_mapping[current_chroma_loc]}")
+
     if settings.hdr10plus_metadata:
         x265_params.append(f"dhdr10-info='{settings.hdr10plus_metadata}'")
 
@@ -164,24 +170,24 @@ def build(fastflix: FastFlix):
     if settings.bitrate:
         command_1 = (
             f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1"])} '
-            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
+            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
             f" -an -sn -dn -f mp4 {null}"
         )
         command_2 = (
             f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "{pass_log_file}" '
-            f"-b:v {settings.bitrate} -preset {settings.preset} {settings.extra} {ending}"
+            f"-b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} {ending}"
         )
         return [
-            Command(command=re.sub("[ ]+", " ", command_1), name="First pass bitrate", exe="ffmpeg"),
-            Command(command=re.sub("[ ]+", " ", command_2), name="Second pass bitrate", exe="ffmpeg"),
+            Command(command=command_1, name="First pass bitrate", exe="ffmpeg"),
+            Command(command=command_2, name="Second pass bitrate", exe="ffmpeg"),
         ]
 
     elif settings.crf:
         command = (
-            f"{beginning} {get_x265_params()}  -crf {settings.crf} "
-            f"-preset {settings.preset} {settings.extra} {ending}"
+            f"{beginning} {get_x265_params()}  -crf:v {settings.crf} "
+            f"-preset:v {settings.preset} {settings.extra} {ending}"
         )
-        return [Command(command=re.sub("[ ]+", " ", command), name="Single pass CRF", exe="ffmpeg")]
+        return [Command(command=command, name="Single pass CRF", exe="ffmpeg")]
 
     else:
         return []

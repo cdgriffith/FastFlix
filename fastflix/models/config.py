@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
 import shutil
@@ -14,12 +15,16 @@ from fastflix.models.encode import (
     AOMAV1Settings,
     CopySettings,
     GIFSettings,
+    FFmpegNVENCSettings,
     SVTAV1Settings,
     VP9Settings,
     WebPSettings,
     rav1eSettings,
     x264Settings,
     x265Settings,
+    NVEncCSettings,
+    NVEncCAVCSettings,
+    setting_types,
 )
 from fastflix.version import __version__
 
@@ -30,17 +35,6 @@ ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
 
 NO_OPT = object()
 
-setting_types = {
-    "x265": x265Settings,
-    "x264": x264Settings,
-    "rav1e": rav1eSettings,
-    "svt_av1": SVTAV1Settings,
-    "vp9": VP9Settings,
-    "aom_av1": AOMAV1Settings,
-    "gif": GIFSettings,
-    "webp": WebPSettings,
-    "copy_settings": CopySettings,
-}
 
 outdated_settings = ("copy",)
 
@@ -77,6 +71,9 @@ class Profile(BaseModel):
     gif: Optional[GIFSettings] = None
     webp: Optional[WebPSettings] = None
     copy_settings: Optional[CopySettings] = None
+    ffmpeg_hevc_nvenc: Optional[FFmpegNVENCSettings] = None
+    nvencc_hevc: Optional[NVEncCSettings] = None
+    nvencc_avc: Optional[NVEncCAVCSettings] = None
 
 
 empty_profile = Profile(x265=x265Settings())
@@ -88,7 +85,7 @@ def get_preset_defaults():
         "UHD HDR10 Film": Profile(
             auto_crop=True, x265=x265Settings(crf=18, hdr10=True, hdr10_opt=True, repeat_headers=True, preset="slow")
         ),
-        "1080p Film": Profile(auto_crop=True, encoder="AVC (x264)", x264=x264Settings(crf=17, preset="slow")),
+        "1080p Film": Profile(auto_crop=True, encoder="AVC (x264)", x264=x264Settings(crf=22, preset="slow")),
     }
 
 
@@ -113,14 +110,25 @@ def find_ffmpeg_file(name, raise_on_missing=False):
     return None
 
 
+def where(filename: str) -> Optional[Path]:
+    if location := shutil.which(filename):
+        return Path(location)
+    return None
+
+
 class Config(BaseModel):
     version: str = __version__
     config_path: Path = fastflix_folder / "fastflix.yaml"
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
+    hdr10plus_parser: Optional[Path] = Field(default_factory=lambda: where("hdr10plus_parser"))
+    mkvpropedit: Optional[Path] = Field(default_factory=lambda: where("mkvpropedit"))
+    nvencc: Optional[Path] = Field(default_factory=lambda: where("NVEncC"))
+    output_directory: Optional[Path] = False
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
+    crop_detect_points: int = 10
     continue_on_failure: bool = True
     work_path: Path = fastflix_folder
     use_sane_audio: bool = True
@@ -186,7 +194,7 @@ class Config(BaseModel):
                 "there may be non-recoverable errors while loading it."
             )
 
-        paths = ("work_path", "ffmpeg", "ffprobe")
+        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "mkvpropedit", "nvencc", "output_directory")
         for key, value in data.items():
             if key == "profiles":
                 self.profiles = {}
@@ -223,6 +231,12 @@ class Config(BaseModel):
                     self.ffprobe = find_ffmpeg_file("ffmpeg.ffprobe", raise_on_missing=True)
                 except MissingFF:
                     raise err from None
+        if not self.hdr10plus_parser:
+            self.hdr10plus_parser = where("hdr10plus_parser")
+        if not self.mkvpropedit:
+            self.mkvpropedit = where("mkvpropedit")
+        if not self.nvencc:
+            self.mkvpropedit = where("NVEncC")
         self.profiles.update(get_preset_defaults())
 
         if self.selected_profile not in self.profiles:

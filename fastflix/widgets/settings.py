@@ -17,6 +17,7 @@ logger = logging.getLogger("fastflix")
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 known_language_list = ["English", "Chinese", "Italian", "French", "Spanish", "German"]
+possible_detect_points = ["1", "2", "4", "6", "8", "10", "15", "20", "25", "50", "100"]
 
 # "Japanese", "Korean", "Hindi", "Russian",  "Portuguese"
 
@@ -105,18 +106,50 @@ class Settings(QtWidgets.QWidget):
         self.flat_ui = QtWidgets.QCheckBox(t("Flat UI"))
         self.flat_ui.setChecked(self.app.fastflix.config.flat_ui)
 
+        self.crop_detect_points_widget = QtWidgets.QComboBox()
+        self.crop_detect_points_widget.addItems(possible_detect_points)
+
+        try:
+            self.crop_detect_points_widget.setCurrentIndex(
+                possible_detect_points.index(str(self.app.fastflix.config.crop_detect_points))
+            )
+        except ValueError:
+            self.crop_detect_points_widget.setCurrentIndex(5)
+
+        nvencc_label = QtWidgets.QLabel("NVEncC")
+        self.nvencc_path = QtWidgets.QLineEdit()
+        if self.app.fastflix.config.nvencc:
+            self.nvencc_path.setText(str(self.app.fastflix.config.nvencc))
+        nvenc_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        nvenc_path_button.clicked.connect(lambda: self.select_nvencc())
+        layout.addWidget(nvencc_label, 12, 0)
+        layout.addWidget(self.nvencc_path, 12, 1)
+        layout.addWidget(nvenc_path_button, 12, 2)
+
+        hdr10_parser_label = QtWidgets.QLabel(t("HDR10+ Parser"))
+        self.hdr10_parser_path = QtWidgets.QLineEdit()
+        if self.app.fastflix.config.hdr10plus_parser:
+            self.hdr10_parser_path.setText(str(self.app.fastflix.config.hdr10plus_parser))
+        nvenc_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        nvenc_path_button.clicked.connect(lambda: self.select_hdr10_parser())
+        layout.addWidget(hdr10_parser_label, 13, 0)
+        layout.addWidget(self.hdr10_parser_path, 13, 1)
+        layout.addWidget(nvenc_path_button, 13, 2)
+
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
         layout.addWidget(self.disable_version_check, 8, 0, 1, 2)
         layout.addWidget(QtWidgets.QLabel(t("GUI Logging Level")), 9, 0)
         layout.addWidget(self.logger_level_widget, 9, 1)
         layout.addWidget(self.flat_ui, 10, 0, 1, 2)
+        layout.addWidget(QtWidgets.QLabel(t("Crop Detect Points")), 11, 0, 1, 1)
+        layout.addWidget(self.crop_detect_points_widget, 11, 1, 1, 1)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
         button_layout.addWidget(cancel)
         button_layout.addWidget(save)
 
-        layout.addLayout(button_layout, 11, 0, 1, 3)
+        layout.addLayout(button_layout, 15, 0, 1, 3)
 
         self.setLayout(layout)
 
@@ -153,6 +186,17 @@ class Settings(QtWidgets.QWidget):
         log_level = (self.logger_level_widget.currentIndex() + 1) * 10
         self.app.fastflix.config.logging_level = log_level
         logger.setLevel(log_level)
+        self.app.fastflix.config.crop_detect_points = int(self.crop_detect_points_widget.currentText())
+
+        new_nvencc = Path(self.nvencc_path.text()) if self.nvencc_path.text() else None
+        if self.app.fastflix.config.nvencc != new_nvencc:
+            restart_needed = True
+        self.app.fastflix.config.nvencc = new_nvencc
+
+        new_hdr10_parser = Path(self.hdr10_parser_path.text()) if self.hdr10_parser_path.text() else None
+        if self.app.fastflix.config.hdr10plus_parser != new_hdr10_parser:
+            restart_needed = True
+        self.app.fastflix.config.hdr10plus_parser = new_hdr10_parser
 
         self.main.config_update()
         self.app.fastflix.config.save()
@@ -168,6 +212,24 @@ class Settings(QtWidgets.QWidget):
         if not filename or not filename[0]:
             return
         self.ffmpeg_path.setText(filename[0])
+
+    def select_nvencc(self):
+        dirname = Path(self.nvencc_path.text()).parent
+        if not dirname.exists():
+            dirname = Path()
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="NVEncC location", directory=str(dirname))
+        if not filename or not filename[0]:
+            return
+        self.nvencc_path.setText(filename[0])
+
+    def select_hdr10_parser(self):
+        dirname = Path(self.hdr10_parser_path.text()).parent
+        if not dirname.exists():
+            dirname = Path()
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="hdr10+ parser", directory=str(dirname))
+        if not filename or not filename[0]:
+            return
+        self.hdr10_parser_path.setText(filename[0])
 
     @staticmethod
     def path_check(name, new_path):

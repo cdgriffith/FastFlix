@@ -61,9 +61,19 @@ class VP9(SettingPanel):
         grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
         grid.addLayout(self.init_profile(), 4, 0, 1, 2)
 
+        grid.addLayout(self.init_tile_columns(), 5, 0, 1, 2)
+        grid.addLayout(self.init_tile_rows(), 6, 0, 1, 2)
+
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
-        grid.addLayout(self.init_single_pass(), 5, 2, 1, 2)
-        grid.addLayout(self.init_row_mt(), 5, 4, 1, 2)
+
+        checkboxes = QtWidgets.QHBoxLayout()
+        checkboxes.addLayout(self.init_single_pass())
+        checkboxes.addStretch(1)
+        checkboxes.addLayout(self.init_row_mt())
+        checkboxes.addStretch(1)
+        checkboxes.addLayout(self.init_fast_first_pass())
+
+        grid.addLayout(checkboxes, 5, 2, 1, 4)
 
         # grid.addWidget(QtWidgets.QWidget(), 8, 0)
         grid.setRowStretch(8, 1)
@@ -138,6 +148,32 @@ class VP9(SettingPanel):
             opt="row_mt",
         )
 
+    def init_tile_columns(self):
+        return self._add_combo_box(
+            label="Tile Columns",
+            tooltip="Log2 of number of tile columns to encode faster (lesser quality)",
+            widget_name="tile_columns",
+            options=[str(x) for x in range(-1, 7)],
+            opt="tile_columns",
+        )
+
+    def init_tile_rows(self):
+        return self._add_combo_box(
+            label="Tile Rows",
+            tooltip="Log2 of number of tile rows to encode faster (lesser quality)",
+            widget_name="tile_rows",
+            options=[str(x) for x in range(-1, 3)],
+            opt="tile_rows",
+        )
+
+    def init_fast_first_pass(self):
+        return self._add_check_box(
+            label="Fast first pass",
+            tooltip="Set speed to 4 for first pass",
+            widget_name="fast_first_pass",
+            opt="fast_first_pass",
+        )
+
     def init_single_pass(self):
         return self._add_check_box(label="Single Pass (CRF)", tooltip="", widget_name="single_pass", opt="single_pass")
 
@@ -160,6 +196,11 @@ class VP9(SettingPanel):
             profile=self.widgets.profile.currentIndex(),
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
+            fast_first_pass=self.widgets.fast_first_pass.isChecked(),
+            tile_columns=self.widgets.tile_columns.currentText()
+            if self.widgets.tile_columns.currentIndex() > 0
+            else "-1",
+            tile_rows=self.widgets.tile_rows.currentText() if self.widgets.tile_rows.currentIndex() > 0 else "-1",
         )
         encode_type, q_value = self.get_mode_settings()
         settings.crf = q_value if encode_type == "qp" else None

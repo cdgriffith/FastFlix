@@ -15,8 +15,6 @@ logger = logging.getLogger("fastflix-core")
 
 __all__ = ["BackgroundRunner"]
 
-white_detect = re.compile(r"^\s+")
-
 
 class BackgroundRunner:
     def __init__(self, log_queue):
@@ -106,6 +104,8 @@ class BackgroundRunner:
                     err_excess = err_file.read()
                     logger.info(err_excess)
                     self.log_queue.put(err_excess)
+                    if self.process.returncode is not None and self.process.returncode > 0:
+                        self.error_detected = True
                     break
                 line = out_file.readline().rstrip()
                 if line:
@@ -156,7 +156,7 @@ class BackgroundRunner:
         self.started_at = None
 
     def kill(self, log=True):
-        if self.process_two and self.process.poll() is None:
+        if self.process_two and self.process_two.poll() is None:
             if log:
                 logger.info(f"Killing worker process {self.process_two.pid}")
             try:
@@ -165,6 +165,7 @@ class BackgroundRunner:
             except Exception as err:
                 if log:
                     logger.exception(f"Couldn't terminate process: {err}")
+
         if self.process and self.process.poll() is None:
             if log:
                 logger.info(f"Killing worker process {self.process.pid}")
@@ -193,23 +194,3 @@ class BackgroundRunner:
         if not self.process:
             return False
         self.process.resume()
-
-
-# if __name__ == "__main__":
-#     from queue import Queue
-#
-#     logging.basicConfig(level=logging.DEBUG)
-#     br = BackgroundRunner(Queue())
-#     import shutil
-#
-#     ffmpeg = shutil.which("ffmpeg")
-#     br.start_piped_exec(
-#         command_one=shlex.split(
-#             rf'"{ffmpeg}" -loglevel panic -i C:\\Users\\Chris\\scoob_short.mkv -c:v copy -vbsf hevc_mp4toannexb -f hevc -'
-#         ),
-#         command_two=shlex.split(r'"C:\\Users\\Chris\\ffmpeg\\hdr10plus_parser.exe" --verify -'),
-#         work_dir=r"C:\Users\Chris",
-#     )
-# import time
-# time.sleep(1)
-# br.read_output()

@@ -2,7 +2,7 @@
 import logging
 import sys
 import traceback
-from multiprocessing import Process, Queue, freeze_support
+from multiprocessing import Process, Queue, freeze_support, Manager, Lock
 
 try:
     import coloredlogs
@@ -26,12 +26,12 @@ except ImportError as err:
     sys.exit(1)
 
 
-def separate_app_process(worker_queue, status_queue, log_queue):
+def separate_app_process(worker_queue, status_queue, log_queue, queue_list, queue_lock):
     """ This prevents any QT components being imported in the main process"""
     from fastflix.application import start_app
 
     freeze_support()
-    start_app(worker_queue, status_queue, log_queue)
+    start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock)
 
 
 def startup_options():
@@ -66,7 +66,6 @@ def startup_options():
             import fastflix.encoders.webp.main
             import fastflix.flix
             import fastflix.language
-            import fastflix.models.base
             import fastflix.models.config
             import fastflix.models.encode
             import fastflix.models.fastflix
@@ -117,19 +116,18 @@ def main():
     status_queue = Queue()
     log_queue = Queue()
 
-    gui_proc = Process(
-        target=separate_app_process,
-        args=(
-            worker_queue,
-            status_queue,
-            log_queue,
-        ),
-    )
-    gui_proc.start()
-    exit_status = 1
-    try:
-        queue_worker(gui_proc, worker_queue, status_queue, log_queue)
-        exit_status = 0
-    finally:
-        gui_proc.kill()
-        return exit_status
+    queue_lock = Lock()
+    with Manager() as manager:
+        queue_list = manager.list()
+        gui_proc = Process(
+            target=separate_app_process,
+            args=(worker_queue, status_queue, log_queue, queue_list, queue_lock),
+        )
+        gui_proc.start()
+        exit_status = 1
+        try:
+            queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, queue_lock)
+            exit_status = 0
+        finally:
+            gui_proc.kill()
+            return exit_status

@@ -104,6 +104,8 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.main.container.profile.update_settings()
 
     def new_source(self):
+        if not self.app.fastflix.current_video:
+            return
         if getattr(self.main.current_encoder, "enable_audio", False):
             self.audio.new_source(self.audio_formats)
         if getattr(self.main.current_encoder, "enable_subtitles", False):
@@ -124,7 +126,6 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.subtitles.refresh()
         self.advanced.update_settings()
         self.main.container.profile.update_settings()
-        self.debug.reset()
 
     def update_profile(self):
         self.current_settings.update_profile()
@@ -139,20 +140,34 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.main.container.profile.update_settings()
 
     def reload(self):
-        self.current_settings.reload()
+        self.change_conversion(self.app.fastflix.current_video.video_settings.video_encoder_settings.name)
+        self.main.widgets.convert_to.setCurrentIndex(
+            list(self.app.fastflix.encoders.keys()).index(
+                self.app.fastflix.current_video.video_settings.video_encoder_settings.name
+            )
+        )
+        try:
+            self.current_settings.reload()
+        except Exception:
+            logger.exception("Should not have happened, could not reload from queue")
+            return
         if self.app.fastflix.current_video:
             streams = copy.deepcopy(self.app.fastflix.current_video.streams)
             settings = copy.deepcopy(self.app.fastflix.current_video.video_settings)
             audio_tracks = settings.audio_tracks
             subtitle_tracks = settings.subtitle_tracks
-            if getattr(self.main.current_encoder, "enable_audio", False):
-                self.audio.reload(audio_tracks, self.audio_formats)
-            if getattr(self.main.current_encoder, "enable_subtitles", False):
-                self.subtitles.reload(subtitle_tracks)
-            if getattr(self.main.current_encoder, "enable_attachments", False):
-                self.attachments.reload_from_queue(streams, settings)
-            self.advanced.reset(settings=settings)
-            self.info.reset()
+            try:
+                if getattr(self.main.current_encoder, "enable_audio", False):
+                    self.audio.reload(audio_tracks, self.audio_formats)
+                if getattr(self.main.current_encoder, "enable_subtitles", False):
+                    self.subtitles.reload(subtitle_tracks)
+                if getattr(self.main.current_encoder, "enable_attachments", False):
+                    self.attachments.reload_from_queue(streams, settings)
+                self.advanced.reset(settings=settings)
+                self.info.reset()
+            except Exception:
+                logger.exception("Should not have happened, could not reload from queue")
+                return
         self.debug.reset()
 
     def clear_tracks(self):
@@ -165,7 +180,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.info.reset()
         self.debug.reset()
 
-    def update_queue(self, currently_encoding=False):
+    def update_queue(self):
         self.queue.new_source()
 
     def show_queue(self):
