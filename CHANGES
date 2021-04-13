@@ -2,7 +2,7 @@
 
 ## Version 4.2.0
 
-* Adding #109 NVENC HEVC support based on FFmpeg
+* Adding #109 NVENC HEVC support based on FFmpeg (thanks to Zeid164)
 * Adding NVEenC encoder for HEVC and AVC
 * Adding #166 More robust queue that is recoverable
 * Adding ability to extract HDR10+ metadata if hdr10plus_parser is detected on path
