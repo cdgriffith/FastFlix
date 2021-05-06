@@ -46,7 +46,7 @@ from fastflix.resources import (
 )
 from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
 from fastflix.windows_tools import show_windows_notification
-from fastflix.widgets.background_tasks import SubtitleFix, ThumbnailCreator
+from fastflix.widgets.background_tasks import ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.video_options import VideoOptions
 
@@ -1785,20 +1785,6 @@ class Main(QtWidgets.QWidget):
 
     def status_update(self):
         logger.debug(f"Updating queue from command worker")
-
-        with self.app.fastflix.queue_lock:
-            fixed_vids = []
-            for i, video in enumerate(self.app.fastflix.queue):
-                if video.status.complete and not video.status.subtitle_fixed:
-                    if video.video_settings.subtitle_tracks and not video.video_settings.subtitle_tracks[0].disposition:
-                        if mkv_prop_edit := shutil.which("mkvpropedit"):
-                            worker = SubtitleFix(self, mkv_prop_edit, video.video_settings.output_path)
-                            worker.start()
-                    fixed_vids.append(i)
-            for index in fixed_vids:
-                video = self.app.fastflix.queue.pop(index)
-                video.status.subtitle_fixed = True
-                self.app.fastflix.queue.insert(index, video)
         save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         self.video_options.update_queue()
 

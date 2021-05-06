@@ -1,7 +1,7 @@
 appdirs
 colorama
 coloredlogs
-iso639-lang
+iso639-lang==0.0.9
 mistune
 pathvalidate
 psutil
