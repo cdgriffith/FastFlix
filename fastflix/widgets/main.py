@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import copy
+import datetime
 import importlib.machinery  # Needed for pyinstaller
 import logging
 import math
@@ -815,7 +816,8 @@ class Main(QtWidgets.QWidget):
             filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx *.webm *.mpg *.mp2 *.mpeg *.mpe *.mpv *.ogg *.m4p"
             " *.wmv *.mov *.qt *.flv *.hevc *.gif *.webp *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2)",
             directory=str(
-                self.app.fastflix.current_video.source.parent if self.app.fastflix.current_video else Path.home()
+                self.app.fastflix.config.source_directory
+                or (self.app.fastflix.current_video.source.parent if self.app.fastflix.current_video else Path.home())
             ),
         )
         if not filename or not filename[0]:
@@ -846,11 +848,20 @@ class Main(QtWidgets.QWidget):
 
     @property
     def generate_output_filename(self):
+        source = self.input_video.stem
+        iso_datetime = datetime.datetime.now().isoformat().replace(":", "-").split(".")[0]
+        rand_4 = secrets.token_hex(2)
+        rand_8 = secrets.token_hex(4)
+        ext = self.current_encoder.video_extension
+        out_loc = f"{Path('~').expanduser()}{os.sep}"
         if self.app.fastflix.config.output_directory:
-            return f"{self.app.fastflix.config.output_directory / self.input_video.stem}-fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
+            out_loc = f"{self.app.fastflix.config.output_directory}{os.sep}"
         if self.input_video:
-            return f"{self.input_video.parent / self.input_video.stem}-fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
-        return f"{Path('~').expanduser()}{os.sep}fastflix-{secrets.token_hex(2)}.{self.current_encoder.video_extension}"
+            out_loc = f"{self.input_video.parent}{os.sep}"
+
+        gen_string = self.app.fastflix.config.output_name_format or "{source}-fastflix-{rand_4}.{ext}"
+
+        return out_loc + gen_string.format(source=source, datetime=iso_datetime, rand_4=rand_4, rand_8=rand_8, ext=ext)
 
     @property
     def output_video(self):

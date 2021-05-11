@@ -124,6 +124,8 @@ class Config(BaseModel):
     hdr10plus_parser: Optional[Path] = Field(default_factory=lambda: where("hdr10plus_parser"))
     nvencc: Optional[Path] = Field(default_factory=lambda: where("NVEncC"))
     output_directory: Optional[Path] = False
+    source_directory: Optional[Path] = False
+    output_name_format: str = "{source}-fastflix-{rand_4}.{ext}"
     flat_ui: bool = True
     language: str = "en"
     logging_level: int = 10
@@ -193,7 +195,7 @@ class Config(BaseModel):
                 "there may be non-recoverable errors while loading it."
             )
 
-        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "nvencc", "output_directory")
+        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "nvencc", "output_directory", "source_directory")
         for key, value in data.items():
             if key == "profiles":
                 self.profiles = {}
