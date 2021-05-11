@@ -127,7 +127,7 @@ class Config(BaseModel):
     source_directory: Optional[Path] = False
     output_name_format: str = "{source}-fastflix-{rand_4}.{ext}"
     flat_ui: bool = True
-    language: str = "en"
+    language: str = "eng"
     logging_level: int = 10
     crop_detect_points: int = 10
     continue_on_failure: bool = True
