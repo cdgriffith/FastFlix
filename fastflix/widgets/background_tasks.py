@@ -12,7 +12,7 @@ from fastflix.shared import clean_file_string
 
 logger = logging.getLogger("fastflix")
 
-__all__ = ["ThumbnailCreator", "ExtractSubtitleSRT", "SubtitleFix", "ExtractHDR10"]
+__all__ = ["ThumbnailCreator", "ExtractSubtitleSRT", "ExtractHDR10"]
 
 
 class ThumbnailCreator(QtCore.QThread):
@@ -38,31 +38,6 @@ class ThumbnailCreator(QtCore.QThread):
             self.main.thumbnail_complete.emit(0)
         else:
             self.main.thumbnail_complete.emit(1)
-
-
-class SubtitleFix(QtCore.QThread):
-    def __init__(self, main, mkv_prop_edit, video_path):
-        super().__init__(main)
-        self.main = main
-        self.mkv_prop_edit = mkv_prop_edit
-        self.video_path = video_path
-
-    def run(self):
-        output_file = clean_file_string(self.video_path)
-        self.main.thread_logging_signal.emit(f'INFO:{t("Will fix first subtitle track to not be default")}')
-        try:
-            result = run(
-                [self.mkv_prop_edit, output_file, "--edit", "track:s1", "--set", "flag-default=0"],
-                stdout=PIPE,
-                stderr=STDOUT,
-            )
-        except Exception as err:
-            self.main.thread_logging_signal.emit(f'ERROR:{t("Could not fix first subtitle track")} - {err}')
-        else:
-            if result.returncode != 0:
-                self.main.thread_logging_signal.emit(
-                    f'WARNING:{t("Could not fix first subtitle track")}: {result.stdout}'
-                )
 
 
 class ExtractSubtitleSRT(QtCore.QThread):

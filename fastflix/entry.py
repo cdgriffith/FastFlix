@@ -27,7 +27,7 @@ except ImportError as err:
 
 
 def separate_app_process(worker_queue, status_queue, log_queue, queue_list, queue_lock):
-    """ This prevents any QT components being imported in the main process"""
+    """This prevents any QT components being imported in the main process"""
     from fastflix.application import start_app
 
     freeze_support()

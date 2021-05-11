@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 4.2.1
+
+* Adding support for source_directory and output_name_format in config file (thanks to cwills75)
+* Fixing #129 no subtitles should be enabled, removing need for mkvpropedit (thanks to wiedemanu)
+* Fixing network paths not working on Windows
+* Changing difference between requirements and requirements-build and removing the build version
+
 ## Version 4.2.0
 
 * Adding #109 NVENC HEVC support based on FFmpeg (thanks to Zeid164)

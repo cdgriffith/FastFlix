@@ -89,7 +89,7 @@ def execute(command: List, work_dir: Union[Path, str] = None, timeout: int = Non
 
 
 def ffmpeg_configuration(app, config: Config, **_):
-    """ Extract the version and libraries available from the specified version of FFmpeg """
+    """Extract the version and libraries available from the specified version of FFmpeg"""
     res = execute([f"{config.ffmpeg}", "-version"])
     if res.returncode != 0:
         raise FlixError(f'"{config.ffmpeg}" file not found')
@@ -108,7 +108,7 @@ def ffmpeg_configuration(app, config: Config, **_):
 
 
 def ffprobe_configuration(app, config: Config, **_):
-    """ Extract the version of ffprobe """
+    """Extract the version of ffprobe"""
     res = execute([f"{config.ffprobe}", "-version"])
     if res.returncode != 0:
         raise FlixError(f'"{config.ffprobe}" file not found')
@@ -120,7 +120,7 @@ def ffprobe_configuration(app, config: Config, **_):
 
 
 def probe(app: FastFlixApp, file: Path) -> Box:
-    """ Run FFprobe on a file """
+    """Run FFprobe on a file"""
     command = [
         f"{app.fastflix.config.ffprobe}",
         "-v",
@@ -273,7 +273,7 @@ def get_auto_crop(
 
 
 def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
-    """ http://www.aktau.be/2013/09/22/detecting-interlaced-video-with-ffmpeg/ """
+    """http://www.aktau.be/2013/09/22/detecting-interlaced-video-with-ffmpeg/"""
 
     # Interlaced
     # [Parsed_idet_0 @ 00000] Repeated Fields: Neither:   815 Top:    88 Bottom:    98
