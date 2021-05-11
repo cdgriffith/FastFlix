@@ -854,10 +854,10 @@ class Main(QtWidgets.QWidget):
         rand_8 = secrets.token_hex(4)
         ext = self.current_encoder.video_extension
         out_loc = f"{Path('~').expanduser()}{os.sep}"
-        if self.app.fastflix.config.output_directory:
-            out_loc = f"{self.app.fastflix.config.output_directory}{os.sep}"
         if self.input_video:
             out_loc = f"{self.input_video.parent}{os.sep}"
+        if self.app.fastflix.config.output_directory:
+            out_loc = f"{self.app.fastflix.config.output_directory}{os.sep}"
 
         gen_string = self.app.fastflix.config.output_name_format or "{source}-fastflix-{rand_4}.{ext}"
 
