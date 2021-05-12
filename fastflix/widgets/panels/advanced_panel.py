@@ -262,7 +262,7 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_tone_map(self):
         self.last_row += 1
         self.tone_map_widget = QtWidgets.QComboBox()
-        self.tone_map_widget.addItems(["None", "clip", "linear", "gamma", "reinhard", "hable", "mobius"])
+        self.tone_map_widget.addItems(["none", "clip", "linear", "gamma", "reinhard", "hable", "mobius"])
         self.tone_map_widget.setCurrentIndex(5)
         self.tone_map_widget.currentIndexChanged.connect(self.page_update)
         self.layout.addWidget(
@@ -273,7 +273,7 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_denoise(self):
         self.last_row += 1
         self.denoise_type_widget = QtWidgets.QComboBox()
-        self.denoise_type_widget.addItems(["None", "nlmeans", "atadenoise", "hqdn3d", "vaguedenoiser"])
+        self.denoise_type_widget.addItems(["none", "nlmeans", "atadenoise", "hqdn3d", "vaguedenoiser"])
         self.denoise_type_widget.setCurrentIndex(0)
         self.denoise_type_widget.currentIndexChanged.connect(self.page_update)
 
@@ -290,7 +290,7 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_deblock(self):
         self.last_row += 1
         self.deblock_widget = QtWidgets.QComboBox()
-        self.deblock_widget.addItems(["None", "weak", "strong"])
+        self.deblock_widget.addItems(["none", "weak", "strong"])
         self.deblock_widget.setCurrentIndex(0)
         self.deblock_widget.currentIndexChanged.connect(self.page_update)
 
