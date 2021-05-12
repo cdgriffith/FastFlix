@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.2.2
+
+* Fixing output_directory not highest priority (thanks to cwills75)
+
 ## Version 4.2.1
 
 * Adding support for source_directory and output_name_format in config file (thanks to cwills75)
