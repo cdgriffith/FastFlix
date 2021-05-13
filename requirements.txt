@@ -5,7 +5,7 @@ iso639-lang==0.0.9
 mistune==0.8.4
 pathvalidate==2.3.2
 psutil==5.8.0
-pydantic==1.8.1
+pydantic==1.8.2
 pyqt5==5.15.3
 python-box==5.3.0
 qtpy==1.9.0
