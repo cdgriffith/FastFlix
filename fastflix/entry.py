@@ -31,7 +31,11 @@ def separate_app_process(worker_queue, status_queue, log_queue, queue_list, queu
     from fastflix.application import start_app
 
     freeze_support()
-    start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock)
+    try:
+        start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock)
+    except Exception as err:
+        print(f"Could not start GUI process: {err}", file=sys.stderr)
+        raise err
 
 
 def startup_options():
@@ -119,15 +123,23 @@ def main():
     queue_lock = Lock()
     with Manager() as manager:
         queue_list = manager.list()
-        gui_proc = Process(
-            target=separate_app_process,
-            args=(worker_queue, status_queue, log_queue, queue_list, queue_lock),
-        )
-        gui_proc.start()
         exit_status = 1
+
+        try:
+            gui_proc = Process(
+                target=separate_app_process,
+                args=(worker_queue, status_queue, log_queue, queue_list, queue_lock),
+            )
+            gui_proc.start()
+        except Exception:
+            logger.exception("Could not create GUI Process, please report this error!")
+            return exit_status
+
         try:
             queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, queue_lock)
             exit_status = 0
+        except Exception:
+            logger.exception("Exception occurred while running FastFlix core")
         finally:
             gui_proc.kill()
             return exit_status
