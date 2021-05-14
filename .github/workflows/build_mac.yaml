@@ -29,6 +29,7 @@ jobs:
         python -m pip install --upgrade pip setuptools --ignore-installed
         python -m pip install --upgrade wheel typing_extensions pyinstaller==4.3
         python -m pip install -r requirements.txt
+        python -m pip install pyqt5==5.15.3 --force-reinstall --upgrade
 
     - name: Grab iso-639 lists
       run: |
