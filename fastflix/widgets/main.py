@@ -1711,6 +1711,7 @@ class Main(QtWidgets.QWidget):
 
         if return_code:
             error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
+            self.video_options.queue.new_source()
         else:
             self.video_options.show_queue()
             if reusables.win_based:

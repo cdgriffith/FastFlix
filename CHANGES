@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 4.2.3
+
+* Fixing that the queue would not update errored films correctly
+* Fixing "None" option for HDR -> SDR tonemap had to be lowercase
+
 ## Version 4.2.2
 
 * Fixing output_directory not highest priority (thanks to cwills75)
