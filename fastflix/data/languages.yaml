@@ -886,7 +886,7 @@ Encoding command:
   fra: Commande d'encodage
   ita: Comando di codifica
   spa: Comando de codificación
-  zho: 编码命令
+  zho: 编码命令第
 Encoding complete:
   deu: Kodierung abgeschlossen
   eng: Encoding complete
@@ -2909,7 +2909,7 @@ of:
   fra: de
   ita: di
   spa: de
-  zho: 的
+  zho: 条，总计
 out file is already in queue:
   deu: Ausgabedatei ist bereits in der Warteschlange
   eng: out file is already in queue
@@ -3000,7 +3000,7 @@ starting next command:
   fra: démarrage de la commande suivante
   ita: avvio del prossimo comando
   spa: comenzando el siguiente comando
-  zho: 正在启动下一条命令
+  zho: 正在开始下一条命令
 subtitle tracks found:
   deu: Untertitelspuren gefunden
   eng: subtitle tracks found
