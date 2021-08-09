@@ -3077,7 +3077,7 @@ Confirm Stop Encode:
   fra: Confirmer le code d'arrêt
   ita: Confermare Stop Encode
   spa: Confirmar parada de codificación
-  zho: 确认 停止 编码
+  zho: 确认停止编码
 Use Sane Audio Selection (updatable in config file):
   deu: Audioauswahl verwenden (aktualisierbar in der Konfigurationsdatei)
   eng: Use Sane Audio Selection (updatable in config file)
