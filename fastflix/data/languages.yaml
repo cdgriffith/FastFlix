@@ -1138,7 +1138,7 @@ Gather FFmpeg audio encoders:
   fra: Rassembler les encodeurs audio FFmpeg
   ita: Raccogliere gli encoder audio FFmpeg
   spa: Reúne los codificadores de audio FFmpeg
-  zho: Gather FFmpeg audio encoders
+  zho: 获取FFmpeg音频编码器
 Gather FFmpeg version:
   deu: FFmpeg-Version abfragen
   eng: Gather FFmpeg version
