@@ -137,14 +137,14 @@ Auto Crop:
   fra: Auto Crop
   ita: Auto Crop
   spa: Auto Crop
-  zho: 自动裁剪
+  zho: 自动裁切
 Auto Crop - Finding black bars at:
   deu: Auto Crop - Finden von schwarzen Balken bei
   eng: Auto Crop - Finding black bars at
   fra: Auto Crop - Trouver des barres noires à
   ita: Auto Crop - Trovare barre nere a
   spa: Auto Crop - Encontrar barras negras en
-  zho: 自动裁剪 - 寻找位于此时刻的黑边：
+  zho: 自动裁切 - 寻找位于此时刻的黑边：
 Automatically detect black borders:
   deu: Automatische Erkennung von schwarzen Rändern
   eng: Automatically detect black borders
@@ -172,14 +172,14 @@ B Frames:
   fra: B Cadres
   ita: B Frames
   spa: Fotogramas B
-  zho: B型框架
+  zho: B帧
 B Ref Mode:
   deu: B-Ref-Modus
   eng: B Ref Mode
   fra: B Mode Ref
   ita: Modalità B Ref
   spa: Modo B Ref
-  zho: B参考模式
+  zho: B Ref模式
 Bit Depth:
   deu: Bit-Tiefe
   eng: Bit Depth
@@ -592,14 +592,14 @@ Crop:
   fra: Culture
   ita: Ritaglio
   spa: Crop
-  zho: 裁剪
+  zho: 裁切
 Crop Detect Points:
   deu: Feststellungspunkte fürs Cropping
   eng: Crop Detect Points
   fra: Points de détection des cultures
   ita: Ritagliare i punti di rilevamento
   spa: Puntos de detección de cultivos
-  zho: 作物检测点
+  zho: 裁切检测点
 Current Profile Settings:
   deu: Aktuelle Profileinstellungen
   eng: Current Profile Settings
@@ -662,7 +662,7 @@ Default is an autodetected count based on the number of CPU cores and whether WP
   fra: La valeur par défaut est un comptage autodétecté basé sur le nombre de cœurs CPU et sur l'activation ou non du WPP.
   ita: Default è un conteggio automatico basato sul numero di core della CPU e sul fatto che WPP sia abilitato o meno.
   spa: Por defecto es un conteo autodetectado basado en el número de núcleos de la CPU y si WPP está habilitado o no.
-  zho: 默认为根据CPU核数和是否启用WPP（Wavefront Parallel Processing）自动确定。
+  zho: 默认为根据CPU内核数和是否启用WPP（Wavefront Parallel Processing）自动确定。
 'Default: AQ enabled with auto-variance':
   deu: 'Voreinstellung: AQ aktiviert mit Auto-Varianz'
   eng: 'Default: AQ enabled with auto-variance'
@@ -809,7 +809,7 @@ Enable the yadif filter:
   fra: Activer le filtre yadif
   ita: Attivare il filtro yadif
   spa: Habilitar el filtro yadif
-  zho: 启用yadif过滤器
+  zho: 启用yadif滤镜
 Enabled:
   deu: Aktiviert
   eng: Enabled
@@ -830,7 +830,7 @@ Enables the yadif filter.:
   fra: Active le filtre yadif.
   ita: Abilita il filtro yadif.
   spa: Habilita el filtro yadif.
-  zho: 启用yadif过滤器。
+  zho: 启用yadif滤镜。
 Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.:
   deu: Ermöglicht echte verlustfreie Kodierung unter Umgehung von Skalierung, Transformation, Quantisierung und In-Loop-Filterung.
   eng: Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.
@@ -886,7 +886,7 @@ Encoding command:
   fra: Commande d'encodage
   ita: Comando di codifica
   spa: Comando de codificación
-  zho: 编码命令
+  zho: 编码命令第
 Encoding complete:
   deu: Kodierung abgeschlossen
   eng: Encoding complete
@@ -1068,7 +1068,7 @@ Fast first pass:
   fra: Première passe rapide
   ita: Primo passaggio veloce
   spa: Primera pasada rápida
-  zho: 快速的第一道
+  zho: 快速第一遍编码
 File:
   deu: Datei
   eng: File
@@ -1138,7 +1138,7 @@ Gather FFmpeg audio encoders:
   fra: Rassembler les encodeurs audio FFmpeg
   ita: Raccogliere gli encoder audio FFmpeg
   spa: Reúne los codificadores de audio FFmpeg
-  zho: Gather FFmpeg audio encoders
+  zho: 获取FFmpeg音频编码器
 Gather FFmpeg version:
   deu: FFmpeg-Version abfragen
   eng: Gather FFmpeg version
@@ -1229,7 +1229,7 @@ Hide NAL unit messages:
   fra: Cacher les messages de l'unité NAL (AVC/HEVC Network Abstraction Layer)
   ita: Nascondere i messaggi delle unità NAL (AVC/HEVC Network Abstraction Layer)
   spa: Ocultar los mensajes de la unidad NAL (AVC/HEVC Network Abstraction Layer)
-  zho: 隐藏NAL unit信息 (AVC/HEVC 網路抽象層)
+  zho: 隐藏NAL unit（AVC/HEVC网络抽象层）消息
 Horizontal Flip:
   deu: Horizontal spiegeln
   eng: Horizontal Flip
@@ -1278,7 +1278,7 @@ Invalid Crop:
   fra: Récolte non valable
   ita: Raccolto non valido
   spa: Cultivo inválido
-  zho: 无效裁剪
+  zho: 无效裁切
 It is recommended that AQ-mode be enabled along with this feature:
   deu: Es wird empfohlen, dass zusammen mit dieser Funktion auch der AQ-Mode aktiviert wird
   eng: It is recommended that AQ-mode be enabled along with this feature
@@ -1509,7 +1509,7 @@ No Source Selected:
   fra: Aucune source sélectionnée
   ita: Nessuna fonte selezionata
   spa: No se ha seleccionado ninguna fuente
-  zho: 未选择来源
+  zho: 未选择源文件
 No Video File:
   deu: Keine Videodatei
   eng: No Video File
@@ -1530,7 +1530,7 @@ No crop, scale, rotation, flip nor any other filters will be applied.:
   fra: Aucun filtre ne sera appliqué sur les cultures, les écailles, la rotation, le retournement ou autre.
   ita: Non verranno applicati filtri per il raccolto, la scala, la rotazione, il capovolgimento o altri filtri.
   spa: No se aplicará ningún filtro de cultivo, de escala, de rotación, de volteo ni ningún otro.
-  zho: 不会应用裁剪、缩放、旋转、翻转或任何其他过滤器。
+  zho: 不会应用裁切、缩放、旋转、翻转或任何其他滤镜。
 No encoding is currently in process, starting encode:
   deu: Es wird momentan keine Kodierung durchgeführt, Kodierung wird gestartet
   eng: No encoding is currently in process, starting encode
@@ -1586,14 +1586,14 @@ Only select first matching Audio Track:
   fra: Ne sélectionnez que la première piste audio correspondante
   ita: Selezionare solo la prima traccia audio corrispondente
   spa: Sólo seleccione la primera pista de audio que coincida
-  zho: 只选择第一个匹配的音轨
+  zho: 只选择第一条匹配的音轨
 Only select first matching Subtitle Track:
   deu: Nur die erste passende Untertitelspur auswählen
   eng: Only select first matching Subtitle Track
   fra: Ne sélectionnez que la première piste de sous-titres correspondante
   ita: Selezionare solo la prima traccia di sottotitoli corrispondente
   spa: Sólo seleccione la primera pista de subtítulos que coincida
-  zho: 只选择第一个匹配的字幕轨
+  zho: 只选择第一条匹配的字幕轨
 Open Directory:
   deu: Verzeichnis öffnen
   eng: Open Directory
@@ -1621,7 +1621,7 @@ Output FPS:
   fra: Sortie SPF
   ita: Uscita FPS
   spa: Salida FPS
-  zho: 输出FPS
+  zho: 输出帧率
 Over-allocation of frame threads will not improve performance,:
   deu: Die Auswahl von mehr als der verfügbaren Frame-Threads verbessert nicht die Leistung,
   eng: Over-allocation of frame threads will not improve performance,
@@ -1642,7 +1642,7 @@ Override Source FPS:
   fra: Annuler la source FPS
   ita: Annullare la sorgente FPS
   spa: Anular el FPS de la fuente
-  zho: 覆盖来源 FPS
+  zho: 覆盖源文件帧率
 Override the preset rate-control:
   deu: voreingestelle Rate Control überschreiben
   eng: Override the preset rate-control
@@ -1999,7 +1999,7 @@ Same as Source:
   fra: Même que la source
   ita: Uguale alla fonte
   spa: Igual que la fuente
-  zho: 与来源相同
+  zho: 与源文件相同
 Save:
   deu: speichern
   eng: Save
@@ -2146,7 +2146,7 @@ Source Details:
   fra: Détails de la source
   ita: Dettagli della fonte
   spa: Detalles de la fuente
-  zho: 来源详情
+  zho: 源文件详情
 Source Frame Rate:
   deu: Bildrate der Quelle
   eng: Source Frame Rate
@@ -2174,7 +2174,7 @@ Spatial AQ:
   fra: QA spatiale
   ita: AQ spaziale
   spa: AQ espacial
-  zho: 空间空气质量
+  zho: 空间自适应量化
 Speed:
   deu: Geschwindigkeit
   eng: Speed
@@ -2475,7 +2475,7 @@ VBR Target:
   fra: Cible VBR
   ita: Obiettivo VBR
   spa: Objetivo VBR
-  zho: VBR目标
+  zho: 目标VBR
 'Values: 0:none; 1:fast; 2:full(trellis) default':
   deu: 'Werte: 0:keine; 1:schnell; 2:voll(trellis) Standard'
   eng: 'Values: 0:none; 1:fast; 2:full(trellis) default'
@@ -2909,7 +2909,7 @@ of:
   fra: de
   ita: di
   spa: de
-  zho: 的
+  zho: 条，总计
 out file is already in queue:
   deu: Ausgabedatei ist bereits in der Warteschlange
   eng: out file is already in queue
@@ -2993,14 +2993,14 @@ since the entire reference frames are always available for motion compensation,:
   fra: puisque les images de référence entières sont toujours disponibles pour la compensation de mouvement,
   ita: poiché l'intero frame di riferimento è sempre disponibile per la compensazione del movimento,
   spa: ya que todos los fotogramas de referencia están siempre disponibles para la compensación de movimiento,
-  zho: 因为一直都可以获取完整的参考帧来进行运动补偿，
+  zho: 因为总是可以获取完整的参考帧来进行运动补偿，
 starting next command:
   deu: nächsten Befehl starten
   eng: starting next command
   fra: démarrage de la commande suivante
   ita: avvio del prossimo comando
   spa: comenzando el siguiente comando
-  zho: 正在启动下一条命令
+  zho: 正在开始下一条命令
 subtitle tracks found:
   deu: Untertitelspuren gefunden
   eng: subtitle tracks found
@@ -3063,7 +3063,7 @@ No crop, scale, rotation,flip nor any other filters will be applied.:
   fra: Aucun filtre de culture, d'échelle, de rotation, de retournement ou autre ne sera appliqué.
   ita: Nessun ritaglio, scala, rotazione, flip o qualsiasi altro filtro sarà applicato.
   spa: No se aplicará ningún filtro de recorte, escala, rotación, volteo ni ningún otro.
-  zho: 不会应用裁剪、缩放、旋转、翻转或任何其他滤镜。
+  zho: 不会应用裁切、缩放、旋转、翻转或任何其他滤镜。
 Are you sure you want to stop the current encode?:
   deu: Sind Sie sicher, dass Sie die aktuelle Kodierung stoppen wollen?
   eng: Are you sure you want to stop the current encode?
@@ -3077,14 +3077,14 @@ Confirm Stop Encode:
   fra: Confirmer le code d'arrêt
   ita: Confermare Stop Encode
   spa: Confirmar parada de codificación
-  zho: 确认 停止 编码
+  zho: 确认停止编码
 Use Sane Audio Selection (updatable in config file):
   deu: Audioauswahl verwenden (aktualisierbar in der Konfigurationsdatei)
   eng: Use Sane Audio Selection (updatable in config file)
   fra: Utiliser la sélection audio (mise à jour dans le fichier de configuration)
   ita: Usa la selezione audio (aggiornabile nel file di configurazione)
   spa: Utilizar la selección de audio (actualizable en el archivo de configuración)
-  zho: 使用音频选择(可在配置文件中更新)
+  zho: 使用音频合理选择（可在配置文件中更改）
 HDR10+ Parser:
   deu: HDR10+ Parser
   eng: HDR10+ Parser
