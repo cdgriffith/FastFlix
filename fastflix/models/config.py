@@ -24,6 +24,8 @@ from fastflix.models.encode import (
     x265Settings,
     NVEncCSettings,
     NVEncCAVCSettings,
+    VCEEncCAVCSettings,
+    VCEEncCSettings,
     setting_types,
 )
 from fastflix.version import __version__
@@ -74,6 +76,8 @@ class Profile(BaseModel):
     ffmpeg_hevc_nvenc: Optional[FFmpegNVENCSettings] = None
     nvencc_hevc: Optional[NVEncCSettings] = None
     nvencc_avc: Optional[NVEncCAVCSettings] = None
+    vceencc_hevc: Optional[VCEEncCSettings] = None
+    vceencc_avc: Optional[VCEEncCAVCSettings] = None
 
 
 empty_profile = Profile(x265=x265Settings())
@@ -122,7 +126,8 @@ class Config(BaseModel):
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
     hdr10plus_parser: Optional[Path] = Field(default_factory=lambda: where("hdr10plus_parser"))
-    nvencc: Optional[Path] = Field(default_factory=lambda: where("NVEncC"))
+    nvencc: Optional[Path] = Field(default_factory=lambda: where("NVEncC64") or where("NVEncC"))
+    vceencc: Optional[Path] = Field(default_factory=lambda: where("VCEEncC64") or where("VCEEncC"))
     output_directory: Optional[Path] = False
     source_directory: Optional[Path] = False
     output_name_format: str = "{source}-fastflix-{rand_4}.{ext}"
@@ -235,7 +240,9 @@ class Config(BaseModel):
         if not self.hdr10plus_parser:
             self.hdr10plus_parser = where("hdr10plus_parser")
         if not self.nvencc:
-            self.nvencc = where("NVEncC")
+            self.nvencc = where("NVEncC64") or where("NVEncC")
+        if not self.vceencc:
+            self.vceencc = where("VCEEncC64") or where("VCEEncC")
         self.profiles.update(get_preset_defaults())
 
         if self.selected_profile not in self.profiles:

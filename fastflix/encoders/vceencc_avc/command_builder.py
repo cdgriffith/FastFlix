@@ -2,7 +2,7 @@
 import logging
 
 from fastflix.encoders.common.helpers import Command
-from fastflix.models.encode import NVEncCAVCSettings
+from fastflix.models.encode import VCEEncCAVCSettings
 from fastflix.models.video import Video
 from fastflix.models.fastflix import FastFlix
 from fastflix.shared import clean_file_string
@@ -13,7 +13,7 @@ logger = logging.getLogger("fastflix")
 
 def build(fastflix: FastFlix):
     video: Video = fastflix.current_video
-    settings: NVEncCAVCSettings = fastflix.current_video.video_settings.video_encoder_settings
+    settings: VCEEncCAVCSettings = fastflix.current_video.video_settings.video_encoder_settings
 
     trim = ""
     try:
@@ -78,14 +78,8 @@ def build(fastflix: FastFlix):
             logger.warning("Could not get stream ID from source, the proper video track may not be selected!")
         stream_id = None
 
-    aq = "--no-aq"
-    if settings.aq.lower() == "spatial":
-        aq = f"--aq --aq-strength {settings.aq_strength}"
-    elif settings.aq.lower() == "temporal":
-        aq = f"--aq-temporal --aq-strength {settings.aq_strength}"
-
     command = [
-        f'"{clean_file_string(fastflix.config.nvencc)}"',
+        f'"{clean_file_string(fastflix.config.vceencc)}"',
         "-i",
         f'"{clean_file_string(video.source)}"',
         (f"--video-streamid {stream_id}" if stream_id else ""),
@@ -107,20 +101,15 @@ def build(fastflix: FastFlix):
         (f"--qp-max {max_q}" if max_q and settings.bitrate else ""),
         (f"--bframes {settings.b_frames}" if settings.b_frames else ""),
         (f"--ref {settings.ref}" if settings.ref else ""),
-        f"--bref-mode {settings.b_ref_mode}",
         "--preset",
         settings.preset,
-        (f"--lookahead {settings.lookahead}" if settings.lookahead else ""),
-        aq,
         "--colormatrix",
         (video.video_settings.color_space or "auto"),
         "--transfer",
         (video.video_settings.color_transfer or "auto"),
         "--colorprim",
         (video.video_settings.color_primaries or "auto"),
-        "--multipass",
-        settings.multipass,
-        "--mv-precision",
+        "--motion-est",
         settings.mv_precision,
         "--chromaloc",
         "auto",

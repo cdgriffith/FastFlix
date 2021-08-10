@@ -12,7 +12,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
-from fastflix.queue import get_queue, save_queue
+from fastflix.ff_queue import get_queue, save_queue
 from fastflix.resources import (
     black_x_icon,
     down_arrow_icon,

@@ -159,6 +159,56 @@ class NVEncCAVCSettings(EncoderSettings):
     metrics: bool = True
 
 
+class VCEEncCSettings(EncoderSettings):
+    name = "HEVC (VCEEncC)"
+    preset: str = "quality"
+    profile: str = "auto"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    tier: str = "high"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    mv_precision: str = "Auto"
+    init_q_i: Optional[str] = None
+    init_q_p: Optional[str] = None
+    init_q_b: Optional[str] = None
+    min_q_i: Optional[str] = None
+    min_q_p: Optional[str] = None
+    min_q_b: Optional[str] = None
+    max_q_i: Optional[str] = None
+    max_q_p: Optional[str] = None
+    max_q_b: Optional[str] = None
+    vbr_target: Optional[str] = None
+    b_frames: Optional[str] = None
+    ref: Optional[str] = None
+    metrics: bool = True
+
+
+class VCEEncCAVCSettings(EncoderSettings):
+    name = "AVC (VCEEncC)"
+    preset: str = "quality"
+    profile: str = "auto"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    tier: str = "high"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    mv_precision: str = "Auto"
+    init_q_i: Optional[str] = None
+    init_q_p: Optional[str] = None
+    init_q_b: Optional[str] = None
+    min_q_i: Optional[str] = None
+    min_q_p: Optional[str] = None
+    min_q_b: Optional[str] = None
+    max_q_i: Optional[str] = None
+    max_q_p: Optional[str] = None
+    max_q_b: Optional[str] = None
+    vbr_target: Optional[str] = None
+    b_frames: Optional[str] = None
+    ref: Optional[str] = None
+    metrics: bool = True
+
+
 class rav1eSettings(EncoderSettings):
     name = "AV1 (rav1e)"
     speed: str = "-1"
@@ -238,4 +288,6 @@ setting_types = {
     "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
     "nvencc_hevc": NVEncCSettings,
     "nvencc_avc": NVEncCAVCSettings,
+    "vceencc_hevc": VCEEncCSettings,
+    "vceencc_avc": VCEEncCAVCSettings,
 }
