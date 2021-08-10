@@ -2475,7 +2475,7 @@ VBR Target:
   fra: Cible VBR
   ita: Obiettivo VBR
   spa: Objetivo VBR
-  zho: VBR目标
+  zho: 目标VBR
 'Values: 0:none; 1:fast; 2:full(trellis) default':
   deu: 'Werte: 0:keine; 1:schnell; 2:voll(trellis) Standard'
   eng: 'Values: 0:none; 1:fast; 2:full(trellis) default'
