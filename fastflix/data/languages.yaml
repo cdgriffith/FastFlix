@@ -137,14 +137,14 @@ Auto Crop:
   fra: Auto Crop
   ita: Auto Crop
   spa: Auto Crop
-  zho: 自动裁剪
+  zho: 自动裁切
 Auto Crop - Finding black bars at:
   deu: Auto Crop - Finden von schwarzen Balken bei
   eng: Auto Crop - Finding black bars at
   fra: Auto Crop - Trouver des barres noires à
   ita: Auto Crop - Trovare barre nere a
   spa: Auto Crop - Encontrar barras negras en
-  zho: 自动裁剪 - 寻找位于此时刻的黑边：
+  zho: 自动裁切 - 寻找位于此时刻的黑边：
 Automatically detect black borders:
   deu: Automatische Erkennung von schwarzen Rändern
   eng: Automatically detect black borders
@@ -592,14 +592,14 @@ Crop:
   fra: Culture
   ita: Ritaglio
   spa: Crop
-  zho: 裁剪
+  zho: 裁切
 Crop Detect Points:
   deu: Feststellungspunkte fürs Cropping
   eng: Crop Detect Points
   fra: Points de détection des cultures
   ita: Ritagliare i punti di rilevamento
   spa: Puntos de detección de cultivos
-  zho: 裁剪检测点
+  zho: 裁切检测点
 Current Profile Settings:
   deu: Aktuelle Profileinstellungen
   eng: Current Profile Settings
@@ -809,7 +809,7 @@ Enable the yadif filter:
   fra: Activer le filtre yadif
   ita: Attivare il filtro yadif
   spa: Habilitar el filtro yadif
-  zho: 启用yadif过滤器
+  zho: 启用yadif滤镜
 Enabled:
   deu: Aktiviert
   eng: Enabled
@@ -830,7 +830,7 @@ Enables the yadif filter.:
   fra: Active le filtre yadif.
   ita: Abilita il filtro yadif.
   spa: Habilita el filtro yadif.
-  zho: 启用yadif过滤器。
+  zho: 启用yadif滤镜。
 Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.:
   deu: Ermöglicht echte verlustfreie Kodierung unter Umgehung von Skalierung, Transformation, Quantisierung und In-Loop-Filterung.
   eng: Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.
@@ -1278,7 +1278,7 @@ Invalid Crop:
   fra: Récolte non valable
   ita: Raccolto non valido
   spa: Cultivo inválido
-  zho: 无效裁剪
+  zho: 无效裁切
 It is recommended that AQ-mode be enabled along with this feature:
   deu: Es wird empfohlen, dass zusammen mit dieser Funktion auch der AQ-Mode aktiviert wird
   eng: It is recommended that AQ-mode be enabled along with this feature
@@ -1530,7 +1530,7 @@ No crop, scale, rotation, flip nor any other filters will be applied.:
   fra: Aucun filtre ne sera appliqué sur les cultures, les écailles, la rotation, le retournement ou autre.
   ita: Non verranno applicati filtri per il raccolto, la scala, la rotazione, il capovolgimento o altri filtri.
   spa: No se aplicará ningún filtro de cultivo, de escala, de rotación, de volteo ni ningún otro.
-  zho: 不会应用裁剪、缩放、旋转、翻转或任何其他过滤器。
+  zho: 不会应用裁切、缩放、旋转、翻转或任何其他滤镜。
 No encoding is currently in process, starting encode:
   deu: Es wird momentan keine Kodierung durchgeführt, Kodierung wird gestartet
   eng: No encoding is currently in process, starting encode
@@ -3063,7 +3063,7 @@ No crop, scale, rotation,flip nor any other filters will be applied.:
   fra: Aucun filtre de culture, d'échelle, de rotation, de retournement ou autre ne sera appliqué.
   ita: Nessun ritaglio, scala, rotazione, flip o qualsiasi altro filtro sarà applicato.
   spa: No se aplicará ningún filtro de recorte, escala, rotación, volteo ni ningún otro.
-  zho: 不会应用裁剪、缩放、旋转、翻转或任何其他滤镜。
+  zho: 不会应用裁切、缩放、旋转、翻转或任何其他滤镜。
 Are you sure you want to stop the current encode?:
   deu: Sind Sie sicher, dass Sie die aktuelle Kodierung stoppen wollen?
   eng: Are you sure you want to stop the current encode?
