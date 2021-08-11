@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-from typing import List, Optional
 
 from box import Box
 from qtpy import QtCore, QtWidgets, QtGui
@@ -10,8 +9,7 @@ from fastflix.language import t
 from fastflix.models.encode import VCEEncCSettings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
-from fastflix.exceptions import FastFlixInternalException
-from fastflix.resources import loading_movie, warning_icon
+from fastflix.resources import warning_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -77,11 +75,13 @@ class VCEENCC(SettingPanel):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
-        grid.addLayout(self._add_custom(title="Custom NVEncC options", disable_both_passes=True), 10, 0, 1, 6)
+        grid.addLayout(self._add_custom(title="Custom VCEEncC options", disable_both_passes=True), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        # grid.addLayout(self.init_profile(), 1, 0, 1, 2)
+
         grid.addLayout(self.init_tier(), 1, 0, 1, 2)
+        grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
+        grid.addLayout(self.init_pre(), 3, 0, 1, 2)
         # grid.addLayout(self.init_multipass(), 2, 0, 1, 2)
         # grid.addLayout(self.init_lookahead(), 3, 0, 1, 2)
 
@@ -97,12 +97,9 @@ class VCEENCC(SettingPanel):
 
         # grid.addLayout(self.init_aq(), 5, 0, 1, 2)
         # grid.addLayout(self.init_aq_strength(), 6, 0, 1, 2)
-        grid.addLayout(self.init_mv_precision(), 7, 0, 1, 2)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_vbr_target())
-        qp_line.addStretch(1)
-        qp_line.addLayout(self.init_init_q())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_min_q())
         qp_line.addStretch(1)
@@ -126,7 +123,7 @@ class VCEENCC(SettingPanel):
         grid.setRowStretch(9, 1)
 
         guide_label = QtWidgets.QLabel(
-            link("https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md", t("NVEncC Options"))
+            link("https://github.com/rigaya/VCEEnc/blob/master/VCEEncC_Options.en.md", t("VCEEncC Options"))
         )
 
         warning_label = QtWidgets.QLabel()
@@ -136,7 +133,7 @@ class VCEENCC(SettingPanel):
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, 1, 4)
         grid.addWidget(warning_label, 11, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
-        grid.addWidget(QtWidgets.QLabel(t("NVEncC Encoder support is still experimental!")), 11, 5, 1, 1)
+        grid.addWidget(QtWidgets.QLabel(t("VCEEncC Encoder support is still experimental!")), 11, 5, 1, 1)
 
         self.setLayout(grid)
         self.hide()
@@ -152,6 +149,13 @@ class VCEENCC(SettingPanel):
             connect="default",
             opt="preset",
         )
+
+    def init_pre(self):
+        layout = QtWidgets.QHBoxLayout()
+        layout.addLayout(self._add_check_box(label="VBAQ", widget_name="vbaq", opt="vbaq"))
+        layout.addLayout(self._add_check_box(label="Pre Encode", widget_name="pre_encode", opt="pre_encode"))
+        layout.addLayout(self._add_check_box(label="Pre Analysis", widget_name="pre_analysis", opt="pre_analysis"))
+        return layout
 
     def init_tune(self):
         return self._add_combo_box(
@@ -214,27 +218,7 @@ class VCEENCC(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Min Q")))
         layout.addWidget(
-            self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), min_width=45, opt="min_q_i")
-        )
-        layout.addWidget(
-            self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), min_width=45, opt="min_q_p")
-        )
-        layout.addWidget(
-            self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), min_width=45, opt="min_q_b")
-        )
-        return layout
-
-    def init_init_q(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel(t("Init Q")))
-        layout.addWidget(
-            self._add_combo_box(widget_name="init_q_i", options=["I"] + self._qp_range(), min_width=45, opt="init_q_i")
-        )
-        layout.addWidget(
-            self._add_combo_box(widget_name="init_q_p", options=["P"] + self._qp_range(), min_width=45, opt="init_q_p")
-        )
-        layout.addWidget(
-            self._add_combo_box(widget_name="init_q_b", options=["B"] + self._qp_range(), min_width=45, opt="init_q_b")
+            self._add_combo_box(widget_name="min_q", options=["I"] + self._qp_range(), min_width=45, opt="min_q")
         )
         return layout
 
@@ -242,13 +226,7 @@ class VCEENCC(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Max Q")))
         layout.addWidget(
-            self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), min_width=45, opt="max_q_i")
-        )
-        layout.addWidget(
-            self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), min_width=45, opt="max_q_p")
-        )
-        layout.addWidget(
-            self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), min_width=45, opt="max_q_b")
+            self._add_combo_box(widget_name="max_q", options=["I"] + self._qp_range(), min_width=45, opt="max_q")
         )
         return layout
 
@@ -311,21 +289,17 @@ class VCEENCC(SettingPanel):
             # profile=self.widgets.profile.currentText(),
             tier=self.widgets.tier.currentText(),
             mv_precision=self.widgets.mv_precision.currentText(),
-            init_q_i=self.widgets.init_q_i.currentText() if self.widgets.init_q_i.currentIndex() != 0 else None,
-            init_q_p=self.widgets.init_q_p.currentText() if self.widgets.init_q_p.currentIndex() != 0 else None,
-            init_q_b=self.widgets.init_q_b.currentText() if self.widgets.init_q_b.currentIndex() != 0 else None,
-            max_q_i=self.widgets.max_q_i.currentText() if self.widgets.max_q_i.currentIndex() != 0 else None,
-            max_q_p=self.widgets.max_q_p.currentText() if self.widgets.max_q_p.currentIndex() != 0 else None,
-            max_q_b=self.widgets.max_q_b.currentText() if self.widgets.max_q_b.currentIndex() != 0 else None,
-            min_q_i=self.widgets.min_q_i.currentText() if self.widgets.min_q_i.currentIndex() != 0 else None,
-            min_q_p=self.widgets.min_q_p.currentText() if self.widgets.min_q_p.currentIndex() != 0 else None,
-            min_q_b=self.widgets.min_q_b.currentText() if self.widgets.min_q_b.currentIndex() != 0 else None,
+            max_q=self.widgets.max_q.currentText() if self.widgets.max_q.currentIndex() != 0 else None,
+            min_q=self.widgets.min_q.currentText() if self.widgets.min_q.currentIndex() != 0 else None,
             extra=self.ffmpeg_extras,
             metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
             vbr_target=self.widgets.vbr_target.currentText() if self.widgets.vbr_target.currentIndex() > 0 else None,
+            pre_encode=self.widgets.pre_encode.isChecked(),
+            pre_analysis=self.widgets.pre_analysis.isChecked(),
+            vbaq=self.widgets.vbaq.isChecked(),
         )
 
         encode_type, q_value = self.get_mode_settings()
@@ -335,9 +309,8 @@ class VCEENCC(SettingPanel):
 
     def set_mode(self, x):
         self.mode = x.text()
-        for group in ("init", "max", "min"):
-            for frame_type in ("i", "p", "b"):
-                self.widgets[f"{group}_q_{frame_type}"].setEnabled(self.mode.lower() == "bitrate")
+        self.widgets.min_q.setEnabled(self.mode.lower() == "bitrate")
+        self.widgets.max_q.setEnabled(self.mode.lower() == "bitrate")
         self.widgets.vbr_target.setEnabled(self.mode.lower() == "bitrate")
         self.main.build_commands()
 

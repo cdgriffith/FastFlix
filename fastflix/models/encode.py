@@ -161,52 +161,44 @@ class NVEncCAVCSettings(EncoderSettings):
 
 class VCEEncCSettings(EncoderSettings):
     name = "HEVC (VCEEncC)"
-    preset: str = "quality"
-    profile: str = "auto"
+    preset: str = "slow"
+    profile: str = "main"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
     tier: str = "high"
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
-    mv_precision: str = "Auto"
-    init_q_i: Optional[str] = None
-    init_q_p: Optional[str] = None
-    init_q_b: Optional[str] = None
-    min_q_i: Optional[str] = None
-    min_q_p: Optional[str] = None
-    min_q_b: Optional[str] = None
-    max_q_i: Optional[str] = None
-    max_q_p: Optional[str] = None
-    max_q_b: Optional[str] = None
+    mv_precision: str = "q-pel"
+    min_q: Optional[str] = None
+    max_q: Optional[str] = None
     vbr_target: Optional[str] = None
     b_frames: Optional[str] = None
     ref: Optional[str] = None
     metrics: bool = True
+    pre_encode: bool = False
+    pre_analysis: bool = False
+    vbaq: bool = False
 
 
 class VCEEncCAVCSettings(EncoderSettings):
     name = "AVC (VCEEncC)"
-    preset: str = "quality"
-    profile: str = "auto"
+    preset: str = "slow"
+    profile: str = "Baseline"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
     tier: str = "high"
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
-    mv_precision: str = "Auto"
-    init_q_i: Optional[str] = None
-    init_q_p: Optional[str] = None
-    init_q_b: Optional[str] = None
-    min_q_i: Optional[str] = None
-    min_q_p: Optional[str] = None
-    min_q_b: Optional[str] = None
-    max_q_i: Optional[str] = None
-    max_q_p: Optional[str] = None
-    max_q_b: Optional[str] = None
+    mv_precision: str = "q-pel"
+    min_q: Optional[str] = None
+    max_q: Optional[str] = None
     vbr_target: Optional[str] = None
     b_frames: Optional[str] = None
     ref: Optional[str] = None
     metrics: bool = True
+    pre_encode: bool = False
+    pre_analysis: bool = False
+    vbaq: bool = False
 
 
 class rav1eSettings(EncoderSettings):
