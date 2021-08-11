@@ -662,7 +662,7 @@ Default is an autodetected count based on the number of CPU cores and whether WP
   fra: La valeur par défaut est un comptage autodétecté basé sur le nombre de cœurs CPU et sur l'activation ou non du WPP.
   ita: Default è un conteggio automatico basato sul numero di core della CPU e sul fatto che WPP sia abilitato o meno.
   spa: Por defecto es un conteo autodetectado basado en el número de núcleos de la CPU y si WPP está habilitado o no.
-  zho: 默认为根据CPU内核数和是否启用WPP（Wavefront Parallel Processing）自动确定。
+  zho: WPP（Wavefront Parallel Processing）自动确定。
 'Default: AQ enabled with auto-variance':
   deu: 'Voreinstellung: AQ aktiviert mit Auto-Varianz'
   eng: 'Default: AQ enabled with auto-variance'
@@ -2748,7 +2748,7 @@ but it has severe performance implications.:
   fra: mais elle a de graves implications en termes de performances.
   ita: ma ha gravi implicazioni in termini di prestazioni.
   spa: pero tiene severas implicaciones de rendimiento.
-  zho: 但对性能有严重影响。
+  zho: 但对性能有严重影响。默认为根据CPU内核数和是否启用
 but over a period of multiple frames instead of a single keyframe.:
   deu: aber über eine Dauer von mehreren Frames anstatt eines einzelnen Keyframes.
   eng: but over a period of multiple frames instead of a single keyframe.
