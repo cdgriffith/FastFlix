@@ -400,7 +400,7 @@ class SettingPanel(QtWidgets.QWidget):
                 data = self.app.fastflix.config.encoder_opt(self.profile_name, opt)
                 if widget_name == "x265_params":
                     data = ":".join(data)
-                self.widgets[widget_name].setText(data or "")
+                self.widgets[widget_name].setText(str(data) or "")
         try:
             bitrate = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
         except AttributeError:
