@@ -126,7 +126,7 @@ class NVEncCSettings(EncoderSettings):
     b_frames: Optional[str] = None
     b_ref_mode: str = "disabled"
     ref: Optional[str] = None
-    metrics: bool = True
+    metrics: bool = False
 
 
 class NVEncCAVCSettings(EncoderSettings):
@@ -153,10 +153,8 @@ class NVEncCAVCSettings(EncoderSettings):
     max_q_p: Optional[str] = None
     max_q_b: Optional[str] = None
     vbr_target: Optional[str] = None
-    b_frames: Optional[str] = None
-    b_ref_mode: str = "disabled"
     ref: Optional[str] = None
-    metrics: bool = True
+    metrics: bool = False
 
 
 class VCEEncCSettings(EncoderSettings):
@@ -174,7 +172,7 @@ class VCEEncCSettings(EncoderSettings):
     vbr_target: Optional[str] = None
     b_frames: Optional[str] = None
     ref: Optional[str] = None
-    metrics: bool = True
+    metrics: bool = False
     pre_encode: bool = False
     pre_analysis: bool = False
     vbaq: bool = False
@@ -192,10 +190,9 @@ class VCEEncCAVCSettings(EncoderSettings):
     mv_precision: str = "q-pel"
     min_q: Optional[str] = None
     max_q: Optional[str] = None
-    vbr_target: Optional[str] = None
     b_frames: Optional[str] = None
     ref: Optional[str] = None
-    metrics: bool = True
+    metrics: bool = False
     pre_encode: bool = False
     pre_analysis: bool = False
     vbaq: bool = False

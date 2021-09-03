@@ -76,14 +76,10 @@ class VCEENCCAVC(SettingPanel):
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
         grid.addLayout(self._add_custom(title="Custom VCEEncC options", disable_both_passes=True), 10, 0, 1, 6)
-
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_profile(), 1, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
         grid.addLayout(self.init_pre(), 3, 0, 1, 2)
-        # grid.addLayout(self.init_tier(), 1, 0, 1, 2)
-        # grid.addLayout(self.init_multipass(), 2, 0, 1, 2)
-        # grid.addLayout(self.init_lookahead(), 3, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -95,27 +91,19 @@ class VCEENCCAVC(SettingPanel):
 
         grid.addLayout(breaker, 4, 0, 1, 6)
 
-        # grid.addLayout(self.init_aq(), 5, 0, 1, 2)
-        # grid.addLayout(self.init_aq_strength(), 6, 0, 1, 2)
-
         qp_line = QtWidgets.QHBoxLayout()
-        qp_line.addLayout(self.init_vbr_target())
-        qp_line.addStretch(1)
         qp_line.addLayout(self.init_min_q())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_max_q())
-
-        grid.addLayout(qp_line, 5, 2, 1, 4)
-
-        advanced = QtWidgets.QHBoxLayout()
-        advanced.addLayout(self.init_ref())
-        advanced.addStretch(1)
-        advanced.addLayout(self.init_b_frames())
-        advanced.addStretch(1)
-        advanced.addLayout(self.init_level())
-        advanced.addStretch(1)
-        advanced.addLayout(self.init_metrics())
-        grid.addLayout(advanced, 6, 2, 1, 4)
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_ref())
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_b_frames())
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_level())
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_metrics())
+        grid.addLayout(qp_line, 5, 0, 1, 6)
 
         self.ffmpeg_level = QtWidgets.QLabel()
         grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
@@ -157,15 +145,6 @@ class VCEENCCAVC(SettingPanel):
             options=["Baseline", "Main", "High"],
             connect="default",
             opt="profile",
-        )
-
-    def init_tune(self):
-        return self._add_combo_box(
-            label="Tune",
-            widget_name="tune",
-            tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, ll - Low Latency, ull - Ultra Low Latency",
-            options=["hq", "ll", "ull", "lossless"],
-            opt="tune",
         )
 
     def init_mv_precision(self):
@@ -210,9 +189,6 @@ class VCEENCCAVC(SettingPanel):
                 "5.0",
                 "5.1",
                 "5.2",
-                "6.0",
-                "6.1",
-                "6.2",
             ],
             opt="level",
         )
@@ -239,20 +215,11 @@ class VCEENCCAVC(SettingPanel):
         )
         return layout
 
-    def init_vbr_target(self):
-        return self._add_combo_box(
-            widget_name="vbr_target",
-            label="VBR Target",
-            options=[t("Auto")] + self._qp_range(),
-            opt="vbr_target",
-            min_width=60,
-        )
-
     def init_b_frames(self):
         return self._add_combo_box(
             widget_name="b_frames",
             label="B Frames",
-            options=[t("Auto"), "0", "1", "2", "3", "4", "5", "6"],
+            options=[t("Auto")] + [str(x) for x in range(3)],
             opt="b_frames",
             min_width=60,
         )
@@ -261,7 +228,7 @@ class VCEENCCAVC(SettingPanel):
         return self._add_combo_box(
             widget_name="ref",
             label="Ref Frames",
-            options=[t("Auto"), "0", "1", "2", "3", "4", "5", "6"],
+            options=[t("Auto")] + [str(x) for x in range(17)],
             opt="ref",
             min_width=60,
         )
@@ -295,8 +262,6 @@ class VCEENCCAVC(SettingPanel):
     def update_video_encoder_settings(self):
         settings = VCEEncCAVCSettings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
-            # profile=self.widgets.profile.currentText(),
-            # tier=self.widgets.tier.currentText(),
             mv_precision=self.widgets.mv_precision.currentText(),
             max_q=self.widgets.max_q.currentText() if self.widgets.max_q.currentIndex() != 0 else None,
             min_q=self.widgets.min_q.currentText() if self.widgets.min_q.currentIndex() != 0 else None,
@@ -305,7 +270,6 @@ class VCEENCCAVC(SettingPanel):
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
-            vbr_target=self.widgets.vbr_target.currentText() if self.widgets.vbr_target.currentIndex() > 0 else None,
             pre_encode=self.widgets.pre_encode.isChecked(),
             pre_analysis=self.widgets.pre_analysis.isChecked(),
             vbaq=self.widgets.vbaq.isChecked(),

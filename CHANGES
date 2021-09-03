@@ -2,7 +2,7 @@
 
 ## Version 4.3.0
 
-* Adding VCEEncC encoder support for HEVC and AVCE
+* Adding VCEEncC encoder support for HEVC and AVC
 * Fixing Chinese translations (thanks to leonardyan)
 
 ## Version 4.2.3

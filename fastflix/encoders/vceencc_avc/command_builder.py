@@ -83,7 +83,6 @@ def build(fastflix: FastFlix):
         "avc",
         (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
         vbv,
-        (f"--vbr-quality {settings.vbr_target}" if settings.vbr_target is not None and settings.bitrate else ""),
         (f"--qp-min {settings.min_q}" if settings.min_q and settings.bitrate else ""),
         (f"--qp-max {settings.max_q}" if settings.max_q and settings.bitrate else ""),
         (f"--bframes {settings.b_frames}" if settings.b_frames else ""),
