@@ -2,7 +2,7 @@
 import logging
 
 from fastflix.encoders.common.helpers import Command
-from fastflix.models.encode import NVEncCAVCSettings
+from fastflix.models.encode import VCEEncCAVCSettings
 from fastflix.models.video import Video
 from fastflix.models.fastflix import FastFlix
 from fastflix.shared import clean_file_string
@@ -13,7 +13,7 @@ logger = logging.getLogger("fastflix")
 
 def build(fastflix: FastFlix):
     video: Video = fastflix.current_video
-    settings: NVEncCAVCSettings = fastflix.current_video.video_settings.video_encoder_settings
+    settings: VCEEncCAVCSettings = fastflix.current_video.video_settings.video_encoder_settings
 
     trim = ""
     try:
@@ -59,18 +59,6 @@ def build(fastflix: FastFlix):
     if video.video_settings.maxrate:
         vbv = f"--max-bitrate {video.video_settings.maxrate} --vbv-bufsize {video.video_settings.bufsize}"
 
-    init_q = settings.init_q_i
-    if settings.init_q_i and settings.init_q_p and settings.init_q_b:
-        init_q = f"{settings.init_q_i}:{settings.init_q_p}:{settings.init_q_b}"
-
-    min_q = settings.min_q_i
-    if settings.min_q_i and settings.min_q_p and settings.min_q_b:
-        min_q = f"{settings.min_q_i}:{settings.min_q_p}:{settings.min_q_b}"
-
-    max_q = settings.max_q_i
-    if settings.max_q_i and settings.max_q_p and settings.max_q_b:
-        max_q = f"{settings.max_q_i}:{settings.max_q_p}:{settings.max_q_b}"
-
     try:
         stream_id = int(video.current_video_stream["id"], 16)
     except Exception:
@@ -78,14 +66,8 @@ def build(fastflix: FastFlix):
             logger.warning("Could not get stream ID from source, the proper video track may not be selected!")
         stream_id = None
 
-    aq = "--no-aq"
-    if settings.aq.lower() == "spatial":
-        aq = f"--aq --aq-strength {settings.aq_strength}"
-    elif settings.aq.lower() == "temporal":
-        aq = f"--aq-temporal --aq-strength {settings.aq_strength}"
-
     command = [
-        f'"{clean_file_string(fastflix.config.nvencc)}"',
+        f'"{clean_file_string(fastflix.config.vceencc)}"',
         "-i",
         f'"{clean_file_string(video.source)}"',
         (f"--video-streamid {stream_id}" if stream_id else ""),
@@ -101,27 +83,23 @@ def build(fastflix: FastFlix):
         "avc",
         (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
         vbv,
-        (f"--vbr-quality {settings.vbr_target}" if settings.vbr_target is not None and settings.bitrate else ""),
-        (f"--qp-init {init_q}" if init_q and settings.bitrate else ""),
-        (f"--qp-min {min_q}" if min_q and settings.bitrate else ""),
-        (f"--qp-max {max_q}" if max_q and settings.bitrate else ""),
+        (f"--qp-min {settings.min_q}" if settings.min_q and settings.bitrate else ""),
+        (f"--qp-max {settings.max_q}" if settings.max_q and settings.bitrate else ""),
         (f"--bframes {settings.b_frames}" if settings.b_frames else ""),
         (f"--ref {settings.ref}" if settings.ref else ""),
-        f"--bref-mode {settings.b_ref_mode}",
         "--preset",
         settings.preset,
-        (f"--lookahead {settings.lookahead}" if settings.lookahead else ""),
-        aq,
         "--colormatrix",
         (video.video_settings.color_space or "auto"),
         "--transfer",
         (video.video_settings.color_transfer or "auto"),
         "--colorprim",
         (video.video_settings.color_primaries or "auto"),
-        "--multipass",
-        settings.multipass,
-        "--mv-precision",
+        "--motion-est",
         settings.mv_precision,
+        ("--vbaq" if settings.vbaq else ""),
+        ("--pe" if settings.pre_encode else ""),
+        ("--pa" if settings.pre_analysis else ""),
         "--chromaloc",
         "auto",
         "--colorrange",
