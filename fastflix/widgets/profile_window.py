@@ -25,6 +25,8 @@ from fastflix.models.video import (
     NVEncCSettings,
     NVEncCAVCSettings,
     FFmpegNVENCSettings,
+    VCEEncCAVCSettings,
+    VCEEncCSettings,
 )
 from fastflix.shared import error_message
 
@@ -178,6 +180,10 @@ class ProfileWindow(QtWidgets.QWidget):
             new_profile.nvencc_avc = self.encoder
         elif isinstance(self.encoder, FFmpegNVENCSettings):
             new_profile.ffmpeg_hevc_nvenc = self.encoder
+        elif isinstance(self.encoder, VCEEncCSettings):
+            new_profile.vceencc_hevc = self.encoder
+        elif isinstance(self.encoder, VCEEncCAVCSettings):
+            new_profile.vceencc_avc = self.encoder
         else:
             logger.error("Profile cannot be saved! Unknown encoder type.")
             return
