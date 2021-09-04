@@ -150,7 +150,7 @@ class VCEENCCAVC(SettingPanel):
     def init_mv_precision(self):
         return self._add_combo_box(
             label="Motion vector accuracy",
-            tooltip="q-pel is highest precision",
+            tooltip="Q-pel is highest precision",
             widget_name="mv_precision",
             options=["q-pel", "half-pel", "full-pel"],
             opt="mv_precision",

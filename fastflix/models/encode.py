@@ -155,6 +155,8 @@ class NVEncCAVCSettings(EncoderSettings):
     vbr_target: Optional[str] = None
     ref: Optional[str] = None
     metrics: bool = False
+    b_frames: Optional[str] = None
+    b_ref_mode: str = "disabled"
 
 
 class VCEEncCSettings(EncoderSettings):

@@ -3134,3 +3134,66 @@ Discard current video:
   ita: Scartare il video corrente
   spa: Descartar el vídeo actual
   zho: 丢弃当前视频
+FastFlix Wiki:
+  deu: FastFlix Wiki
+  eng: FastFlix Wiki
+  fra: FastFlix Wiki
+  ita: FastFlix Wiki
+  spa: FastFlix Wiki
+  zho: FastFlix 维基百科
+Custom VCEEncC options:
+  deu: angepasste VCEEncC-Optionen
+  eng: Custom VCEEncC options
+  fra: Options VCEEncC personnalisées
+  ita: Opzioni VCEEncC personalizzate
+  spa: Opciones personalizadas de VCEEncC
+  zho: 自定义VCEEncC选项
+VBAQ:
+  deu: VBAQ
+  eng: VBAQ
+  fra: VBAQ
+  ita: VBAQ
+  spa: VBAQ
+  zho: VBAQ
+Variance Based Adaptive Quantization:
+  deu: Varianzbasierte adaptive Quantisierung
+  eng: Variance Based Adaptive Quantization
+  fra: Quantification adaptative basée sur la variance
+  ita: Quantizzazione adattiva basata sulla varianza
+  spa: Cuantización adaptativa basada en la varianza
+  zho: 基于方差的自适应量化
+Pre Encode:
+  deu: Vor-Kodierung
+  eng: Pre Encode
+  fra: Précodage
+  ita: Pre-codifica
+  spa: Precodificación
+  zho: 预编码
+Pre Analysis:
+  deu: Vor-Analyse
+  eng: Pre Analysis
+  fra: Préanalyse
+  ita: Pre analisi
+  spa: Análisis previo
+  zho: 预分析
+VCEEncC Options:
+  deu: VCEEncC-Optionen
+  eng: VCEEncC Options
+  fra: Options VCEEncC
+  ita: Opzioni VCEEncC
+  spa: Opciones de VCEEncC
+  zho: VCEEncC选项
+VCEEncC Encoder support is still experimental!:
+  deu: VCEEncC-Encoder-Unterstützung ist immer noch experimentell!
+  eng: VCEEncC Encoder support is still experimental!
+  fra: Le support des encodeurs VCEEncC est encore expérimental !
+  ita: Il supporto VCEEncC Encoder è ancora sperimentale!
+  spa: La compatibilidad con el codificador VCEEncC es todavía experimental.
+  zho: VCEEncC编码器支持仍然是实验性的!
+Profile:
+  deu: Profil
+  eng: Profile
+  fra: profil
+  ita: profilo
+  spa: perfil
+  zho: 方案
