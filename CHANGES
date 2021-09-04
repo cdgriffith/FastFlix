@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 4.3.0
+
+* Adding VCEEncC encoder support for HEVC and AVC
+* Fixing Chinese translations (thanks to leonardyan)
+* Fixing #256 Cannot load NVENC profiles because RC Lookahead is stored as int (thanks to Jan Hellwig)
+
 ## Version 4.2.3
 
 * Fixing that the queue would not update errored films correctly

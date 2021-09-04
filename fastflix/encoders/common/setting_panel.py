@@ -159,7 +159,7 @@ class SettingPanel(QtWidgets.QWidget):
 
         return layout
 
-    def _add_check_box(self, label, widget_name, opt, connect="default", enabled=True, checked=True, tooltip=""):
+    def _add_check_box(self, label, widget_name, opt, connect="default", enabled=True, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
 
         self.widgets[widget_name] = QtWidgets.QCheckBox(t(label))
@@ -400,7 +400,7 @@ class SettingPanel(QtWidgets.QWidget):
                 data = self.app.fastflix.config.encoder_opt(self.profile_name, opt)
                 if widget_name == "x265_params":
                     data = ":".join(data)
-                self.widgets[widget_name].setText(data or "")
+                self.widgets[widget_name].setText(str(data) or "")
         try:
             bitrate = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
         except AttributeError:

@@ -126,7 +126,7 @@ class NVEncCSettings(EncoderSettings):
     b_frames: Optional[str] = None
     b_ref_mode: str = "disabled"
     ref: Optional[str] = None
-    metrics: bool = True
+    metrics: bool = False
 
 
 class NVEncCAVCSettings(EncoderSettings):
@@ -153,10 +153,51 @@ class NVEncCAVCSettings(EncoderSettings):
     max_q_p: Optional[str] = None
     max_q_b: Optional[str] = None
     vbr_target: Optional[str] = None
+    ref: Optional[str] = None
+    metrics: bool = False
     b_frames: Optional[str] = None
     b_ref_mode: str = "disabled"
+
+
+class VCEEncCSettings(EncoderSettings):
+    name = "HEVC (VCEEncC)"
+    preset: str = "slow"
+    profile: str = "main"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    tier: str = "high"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    mv_precision: str = "q-pel"
+    min_q: Optional[str] = None
+    max_q: Optional[str] = None
+    vbr_target: Optional[str] = None
+    b_frames: Optional[str] = None
     ref: Optional[str] = None
-    metrics: bool = True
+    metrics: bool = False
+    pre_encode: bool = False
+    pre_analysis: bool = False
+    vbaq: bool = False
+
+
+class VCEEncCAVCSettings(EncoderSettings):
+    name = "AVC (VCEEncC)"
+    preset: str = "slow"
+    profile: str = "Baseline"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    tier: str = "high"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    mv_precision: str = "q-pel"
+    min_q: Optional[str] = None
+    max_q: Optional[str] = None
+    b_frames: Optional[str] = None
+    ref: Optional[str] = None
+    metrics: bool = False
+    pre_encode: bool = False
+    pre_analysis: bool = False
+    vbaq: bool = False
 
 
 class rav1eSettings(EncoderSettings):
@@ -238,4 +279,6 @@ setting_types = {
     "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
     "nvencc_hevc": NVEncCSettings,
     "nvencc_avc": NVEncCAVCSettings,
+    "vceencc_hevc": VCEEncCSettings,
+    "vceencc_avc": VCEEncCAVCSettings,
 }

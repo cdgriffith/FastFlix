@@ -33,7 +33,7 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
-from fastflix.queue import save_queue
+from fastflix.ff_queue import save_queue
 from fastflix.resources import (
     black_x_icon,
     folder_icon,

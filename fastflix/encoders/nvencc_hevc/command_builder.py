@@ -5,7 +5,7 @@ from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import NVEncCSettings
 from fastflix.models.video import Video
 from fastflix.models.fastflix import FastFlix
-from fastflix.encoders.common.nvencc_helpers import build_subtitle, build_audio
+from fastflix.encoders.common.encc_helpers import build_subtitle, build_audio
 from fastflix.flix import clean_file_string
 
 logger = logging.getLogger("fastflix")

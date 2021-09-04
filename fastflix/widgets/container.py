@@ -120,6 +120,9 @@ class Container(QtWidgets.QMainWindow):
         profile_menu.addAction(show_profile_action)
         profile_menu.addAction(delete_profile_action)
 
+        wiki_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("FastFlix Wiki"), self)
+        wiki_action.triggered.connect(self.show_wiki)
+
         about_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("About"), self)
         about_action.triggered.connect(self.show_about)
 
@@ -151,6 +154,8 @@ class Container(QtWidgets.QMainWindow):
         clean_logs_action.triggered.connect(self.clean_old_logs)
 
         help_menu = menubar.addMenu(t("Help"))
+        help_menu.addAction(wiki_action)
+        help_menu.addSeparator()
         help_menu.addAction(changes_action)
         help_menu.addAction(report_action)
         help_menu.addAction(log_dir_action)
@@ -162,6 +167,9 @@ class Container(QtWidgets.QMainWindow):
             help_menu.addAction(ffmpeg_update_action)
         help_menu.addSeparator()
         help_menu.addAction(about_action)
+
+    def show_wiki(self):
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl("https://github.com/cdgriffith/FastFlix/wiki"))
 
     def show_about(self):
         self.about = About()

@@ -21,7 +21,7 @@ def build_audio(audio_tracks: List[AudioTrack], audio_streams):
 
     for track in sorted(audio_tracks, key=lambda x: x.outdex):
         if track.index in track_ids:
-            logger.warning("NVEncC does not support copy and duplicate of audio tracks!")
+            logger.warning("*EncC does not support copy and duplicate of audio tracks!")
         track_ids.add(track.index)
         audio_id = stream_ids[track.index]
         if track.language:
