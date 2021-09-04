@@ -284,7 +284,6 @@ class VCEENCCAVC(SettingPanel):
         self.mode = x.text()
         self.widgets.min_q.setEnabled(self.mode.lower() == "bitrate")
         self.widgets.max_q.setEnabled(self.mode.lower() == "bitrate")
-        self.widgets.vbr_target.setEnabled(self.mode.lower() == "bitrate")
         self.main.build_commands()
 
     def new_source(self):
