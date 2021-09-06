@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 import logging
 from pathlib import Path
-from subprocess import PIPE, STDOUT, Popen, run
+from subprocess import PIPE, STDOUT, Popen, run, check_output
+from distutils.version import LooseVersion
 
 from qtpy import QtCore
 
@@ -110,9 +111,13 @@ class ExtractHDR10(QtCore.QThread):
 
         self.ffmpeg_signal.emit("Extracting HDR10+ metadata")
 
-        process = Popen(
-            [
-                self.app.fastflix.config.ffmpeg,
+        hdr10_parser_version_output = check_output([str(self.app.fastflix.config.hdr10plus_parser), "--version"], encoding="utf-8")
+        _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
+        hdr10_parser_version = LooseVersion(version_string)
+        self.main.thread_logging_signal.emit(f"Using HDR10 parser version {hdr10_parser_version}")
+
+        ffmpeg_command =             [
+                str(self.app.fastflix.config.ffmpeg),
                 "-y",
                 "-i",
                 clean_file_string(self.app.fastflix.current_video.source),
@@ -125,14 +130,23 @@ class ExtractHDR10(QtCore.QThread):
                 "-f",
                 "hevc",
                 "-",
-            ],
+            ]
+
+        hdr10_parser_command = [str(self.app.fastflix.config.hdr10plus_parser), "-o", clean_file_string(output), "-"]
+        if hdr10_parser_version >= LooseVersion("1.0.0"):
+            hdr10_parser_command.insert(1, "extract")
+
+        self.main.thread_logging_signal.emit(f"Running command: {' '.join(ffmpeg_command)} | {' '.join(hdr10_parser_command)}")
+
+        process = Popen(
+            ffmpeg_command,
             stdout=PIPE,
             stderr=open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "wb"),
             # stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
         )
 
         process_two = Popen(
-            [self.app.fastflix.config.hdr10plus_parser, "-o", clean_file_string(output), "-"],
+            hdr10_parser_command,
             stdout=PIPE,
             stderr=PIPE,
             stdin=process.stdout,
@@ -145,8 +159,8 @@ class ExtractHDR10(QtCore.QThread):
                 if process.poll() is not None or process_two.poll() is not None:
                     break
                 if line := f.readline().rstrip():
-                    if line.startswith("frame"):
-                        self.ffmpeg_signal.emit(line)
+                    #if line.startswith("frame"):
+                    self.ffmpeg_signal.emit(line)
 
         stdout, stderr = process_two.communicate()
         self.main.thread_logging_signal.emit(f"DEBUG: HDR10+ Extract: {stdout}")

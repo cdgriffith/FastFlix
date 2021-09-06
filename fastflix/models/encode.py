@@ -199,7 +199,7 @@ class VCEEncCAVCSettings(EncoderSettings):
     pre_encode: bool = False
     pre_analysis: bool = False
     vbaq: bool = False
-    decoder: str = "avhw"
+    decoder: str = "Hardware"
 
 
 class rav1eSettings(EncoderSettings):
