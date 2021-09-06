@@ -228,6 +228,7 @@ class VCEENCC(SettingPanel):
             label="Decoder",
             options=["Hardware", "Software"],
             opt="decoder",
+            tooltip="Hardware: use libavformat + hardware decoder for input\nSoftware: use avcodec + software decoder",
             min_width=80,
         )
 
