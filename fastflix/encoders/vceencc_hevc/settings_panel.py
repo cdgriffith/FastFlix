@@ -100,6 +100,8 @@ class VCEENCC(SettingPanel):
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_level())
         qp_line.addStretch(1)
+        qp_line.addLayout(self.init_decoder())
+        qp_line.addStretch(1)
         qp_line.addLayout(self.init_metrics())
         grid.addLayout(qp_line, 5, 0, 1, 6)
 
@@ -220,6 +222,15 @@ class VCEENCC(SettingPanel):
             min_width=60,
         )
 
+    def init_decoder(self):
+        return self._add_combo_box(
+            widget_name="decoder",
+            label="Decoder",
+            options=["Hardware", "Software"],
+            opt="decoder",
+            min_width=80,
+        )
+
     def init_metrics(self):
         return self._add_check_box(
             widget_name="metrics",
@@ -260,6 +271,7 @@ class VCEENCC(SettingPanel):
             pre_encode=self.widgets.pre_encode.isChecked(),
             pre_analysis=self.widgets.pre_analysis.isChecked(),
             vbaq=self.widgets.vbaq.isChecked(),
+            decoder=self.widgets.decoder.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

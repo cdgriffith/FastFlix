@@ -156,7 +156,7 @@ class NVEncCAVCSettings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     b_frames: Optional[str] = None
-    b_ref_mode: str = "disabled"
+    b_ref_mode: str = "Hardware"
 
 
 class VCEEncCSettings(EncoderSettings):
@@ -178,6 +178,7 @@ class VCEEncCSettings(EncoderSettings):
     pre_encode: bool = False
     pre_analysis: bool = False
     vbaq: bool = False
+    decoder: str = "Hardware"
 
 
 class VCEEncCAVCSettings(EncoderSettings):
@@ -198,6 +199,7 @@ class VCEEncCAVCSettings(EncoderSettings):
     pre_encode: bool = False
     pre_analysis: bool = False
     vbaq: bool = False
+    decoder: str = "avhw"
 
 
 class rav1eSettings(EncoderSettings):
