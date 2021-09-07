@@ -15,5 +15,5 @@ jobs:
     - uses: actions/checkout@v2
 
     - run: sudo apt install python3-pip python3-setuptools -y
-    - run: pip3 install black
+    - run: pip3 install black==21.8b0
     - run: python3 -m black --check .

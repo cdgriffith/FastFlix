@@ -156,13 +156,12 @@ class NVEncCAVCSettings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     b_frames: Optional[str] = None
-    b_ref_mode: str = "disabled"
+    b_ref_mode: str = "Hardware"
 
 
 class VCEEncCSettings(EncoderSettings):
     name = "HEVC (VCEEncC)"
     preset: str = "slow"
-    profile: str = "main"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
     tier: str = "high"
@@ -178,6 +177,7 @@ class VCEEncCSettings(EncoderSettings):
     pre_encode: bool = False
     pre_analysis: bool = False
     vbaq: bool = False
+    decoder: str = "Hardware"
 
 
 class VCEEncCAVCSettings(EncoderSettings):
@@ -198,6 +198,7 @@ class VCEEncCAVCSettings(EncoderSettings):
     pre_encode: bool = False
     pre_analysis: bool = False
     vbaq: bool = False
+    decoder: str = "Hardware"
 
 
 class rav1eSettings(EncoderSettings):

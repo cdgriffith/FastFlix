@@ -68,6 +68,7 @@ def build(fastflix: FastFlix):
 
     command = [
         f'"{clean_file_string(fastflix.config.vceencc)}"',
+        ("--avhw" if settings.decoder == "Hardware" else "--avsw"),
         "-i",
         f'"{clean_file_string(video.source)}"',
         (f"--video-streamid {stream_id}" if stream_id else ""),
@@ -89,6 +90,8 @@ def build(fastflix: FastFlix):
         (f"--ref {settings.ref}" if settings.ref else ""),
         "--preset",
         settings.preset,
+        "--profile",
+        settings.profile,
         "--colormatrix",
         (video.video_settings.color_space or "auto"),
         "--transfer",
@@ -105,7 +108,7 @@ def build(fastflix: FastFlix):
         "--colorrange",
         "auto",
         f"--avsync {'cfr' if video.frame_rate == video.average_frame_rate else 'vfr'}",
-        (f"--interlace {video.interlaced}" if video.interlaced else ""),
+        (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
         ("--vpp-yadif" if video.video_settings.deinterlace else ""),
         (f"--vpp-colorspace hdr2sdr=mobius" if video.video_settings.remove_hdr else ""),
         remove_hdr,

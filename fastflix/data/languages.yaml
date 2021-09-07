@@ -3197,3 +3197,24 @@ Profile:
   ita: profilo
   spa: perfil
   zho: 方案
+Decoder:
+  deu: Decoder
+  eng: Decoder
+  fra: Décodeur
+  ita: Decoder
+  spa: Decodificador
+  zho: 解码器
+'Hardware: use libavformat + hardware decoder for input':
+  deu: 'Hardware: Verwendung von libavformat + Hardware-Decoder für die Eingabe'
+  eng: 'Hardware: use libavformat + hardware decoder for input'
+  fra: "Hardware : utiliser libavformat + décodeur matériel pour l'entrée"
+  ita: "Hardware: usa libavformat + decoder hardware per l'ingresso"
+  spa: 'Hardware: utilizar libavformat + decodificador de hardware para la entrada'
+  zho: 'Hardware：使用libavformat+硬件解码器进行输入'
+'Software: use avcodec + software decoder':
+  deu: 'Software: Verwendung von avcodec + Software-Decoder'
+  eng: 'Software: use avcodec + software decoder'
+  fra: 'Software : utiliser avcodec + décodeur logiciel'
+  ita: 'Software: usa avcodec + decoder software'
+  spa: 'Software: utilizar avcodec + decodificador de software'
+  zho: 'Software：使用avcodec + 软件解码器'

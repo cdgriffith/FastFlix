@@ -86,7 +86,7 @@ class BackgroundRunner:
                 if err_line:
                     logger.info(err_line)
                     self.log_queue.put(err_line)
-                    if "Conversion failed!" in err_line:
+                    if "Conversion failed!" in err_line or "Error during output" in err_line:
                         self.error_detected = True
                     if not self.error_detected:
                         for error in self.error_message:

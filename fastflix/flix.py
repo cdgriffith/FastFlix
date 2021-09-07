@@ -3,8 +3,9 @@ import logging
 import os
 import re
 from pathlib import Path
-from subprocess import PIPE, CompletedProcess, Popen, TimeoutExpired, run
+from subprocess import PIPE, CompletedProcess, Popen, TimeoutExpired, run, check_output
 from typing import List, Tuple, Union
+from distutils.version import LooseVersion
 
 import reusables
 from box import Box, BoxError
@@ -440,11 +441,16 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
 
     hdr10plus_streams = []
 
+    hdr10_parser_version_output = check_output([str(config.hdr10plus_parser), "--version"], encoding="utf-8")
+    _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
+    hdr10_parser_version = LooseVersion(version_string)
+    logger.debug(f"Using HDR10 parser version {hdr10_parser_version}")
+
     for stream in app.fastflix.current_video.streams.video:
         logger.debug(f"Checking for hdr10+ in stream {stream.index}")
         process = Popen(
             [
-                config.ffmpeg,
+                str(config.ffmpeg),
                 "-y",
                 "-i",
                 clean_file_string(app.fastflix.current_video.source),
@@ -465,8 +471,12 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
             stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
         )
 
+        hdr10_parser_command = [str(config.hdr10plus_parser), "--verify", "-"]
+        if hdr10_parser_version >= LooseVersion("1.0.0"):
+            hdr10_parser_command.insert(-1, "extract")
+
         process_two = Popen(
-            [config.hdr10plus_parser, "--verify", "-"],
+            hdr10_parser_command,
             stdout=PIPE,
             stderr=PIPE,
             stdin=process.stdout,
