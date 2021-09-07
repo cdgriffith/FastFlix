@@ -162,7 +162,6 @@ class NVEncCAVCSettings(EncoderSettings):
 class VCEEncCSettings(EncoderSettings):
     name = "HEVC (VCEEncC)"
     preset: str = "slow"
-    profile: str = "main"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
     tier: str = "high"

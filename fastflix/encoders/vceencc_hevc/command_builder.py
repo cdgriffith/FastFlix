@@ -107,8 +107,6 @@ def build(fastflix: FastFlix):
         (f"--ref {settings.ref}" if settings.ref else ""),
         "--preset",
         settings.preset,
-        "--profile",
-        settings.profile,
         "--tier",
         settings.tier,
         "--colormatrix",

@@ -6,6 +6,7 @@
 * Adding support for HDR10+ parser version 1.0.0 and above
 * Fixing VCEEncC interlace being passed "False" string
 * Fixing VCEEncC was not being passed profile option
+* Fixing keep / remove chapters and metadata were not explicit in both cases
 
 ## Version 4.3.0
 

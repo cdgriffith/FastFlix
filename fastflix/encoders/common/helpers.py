@@ -87,8 +87,8 @@ def generate_ending(
     **_,
 ) -> str:
     ending = (
-        f" {'-map_metadata -1' if remove_metadata else ''} "
-        f"{'-map_chapters 0' if copy_chapters else ''} "
+        f" {'-map_metadata -1' if remove_metadata else '-map_metadata 0'} "
+        f"{'-map_chapters 0' if copy_chapters else '-map_chapters -1'} "
         f"{f'-r {output_fps}' if output_fps else ''} "
         f"{audio} {subtitles} {cover} "
     )
