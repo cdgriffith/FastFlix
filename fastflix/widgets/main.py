@@ -425,8 +425,11 @@ class Main(QtWidgets.QWidget):
             h_flip = self.app.fastflix.config.opt("horizontal_flip")
 
             self.widgets.flip.setCurrentIndex(self.flip_to_int(v_flip, h_flip))
-            self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
-            self.video_options.update_profile()
+            try:
+                self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
+                self.video_options.update_profile()
+            except KeyError:
+                logger.error(f"Profile not set properly as we don't have encoder: {self.app.fastflix.config.opt('encoder')}")
             if self.app.fastflix.current_video:
                 self.video_options.new_source()
         finally:

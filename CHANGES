@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.3.2
+
+* Fixing FastFlix could not start if setting profile could not find needed encoder
+
 ## Version 4.3.1
 
 * Adding VCEEncC decoder option
