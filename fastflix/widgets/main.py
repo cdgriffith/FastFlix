@@ -116,8 +116,6 @@ class MainWidgets(BaseModel):
                 yield key, getattr(self, key)
 
 
-
-
 class Main(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal(int)
@@ -435,7 +433,9 @@ class Main(QtWidgets.QWidget):
                 self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
                 self.video_options.update_profile()
             except KeyError:
-                logger.error(f"Profile not set properly as we don't have encoder: {self.app.fastflix.config.opt('encoder')}")
+                logger.error(
+                    f"Profile not set properly as we don't have encoder: {self.app.fastflix.config.opt('encoder')}"
+                )
             if self.app.fastflix.current_video:
                 self.video_options.new_source()
         finally:
@@ -776,7 +776,11 @@ class Main(QtWidgets.QWidget):
                 self.setStyleSheet("border: 2px solid #dddddd;")
 
             def mousePressEvent(self, QMouseEvent):
-                if not self.main.initialized or not self.main.app.fastflix.current_video or self.main.large_preview.isVisible():
+                if (
+                    not self.main.initialized
+                    or not self.main.app.fastflix.current_video
+                    or self.main.large_preview.isVisible()
+                ):
                     return
                 self.main.large_preview.generate_image()
                 self.main.large_preview.show()

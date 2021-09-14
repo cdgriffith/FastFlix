@@ -17,14 +17,14 @@ __all__ = ["LargePreview"]
 
 logger = logging.getLogger("fastflix")
 
+
 class ImageLabel(QtWidgets.QLabel):
-    
     def __init__(self, parent):
         super(ImageLabel, self).__init__(parent)
         self.lp = parent
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setAlignment(QtCore.Qt.AlignHCenter)
-        
+
     def resizeEvent(self, QResizeEvent):
         self.resize(self.lp.width(), self.lp.height())
         self.setPixmap(self.lp.current_image.scaled(self.lp.width(), self.lp.height(), QtCore.Qt.KeepAspectRatio))
@@ -32,7 +32,6 @@ class ImageLabel(QtWidgets.QLabel):
 
 
 class LargePreview(QtWidgets.QWidget):
-
     def __init__(self, parent):
         super().__init__()
         self.main = parent
@@ -51,8 +50,8 @@ class LargePreview(QtWidgets.QWidget):
         settings = self.main.app.fastflix.current_video.video_settings.dict()
 
         if (
-                self.main.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"
-                and self.main.app.fastflix.current_video.color_space.startswith("bt2020")
+            self.main.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"
+            and self.main.app.fastflix.current_video.color_space.startswith("bt2020")
         ):
             settings["remove_hdr"] = True
 
@@ -69,7 +68,7 @@ class LargePreview(QtWidgets.QWidget):
             output=output,
             filters=filters,
             start_time=self.main.preview_place,
-            input_track=self.main.app.fastflix.current_video.video_settings.selected_track
+            input_track=self.main.app.fastflix.current_video.video_settings.selected_track,
         )
         if thumb_command == self.last_command:
             return
