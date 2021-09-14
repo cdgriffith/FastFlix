@@ -44,12 +44,14 @@ from fastflix.resources import (
     video_add_icon,
     video_playlist_icon,
     undo_icon,
+    magnifier_icon,
 )
 from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
 from fastflix.windows_tools import show_windows_notification
 from fastflix.widgets.background_tasks import ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.video_options import VideoOptions
+from fastflix.widgets.large_preview import LargePreview
 
 logger = logging.getLogger("fastflix")
 
@@ -114,6 +116,8 @@ class MainWidgets(BaseModel):
                 yield key, getattr(self, key)
 
 
+
+
 class Main(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal(int)
@@ -132,6 +136,8 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         self.scale_updating = False
         self.last_thumb_hash = ""
+
+        self.large_preview = LargePreview(self)
 
         self.notifier = Notifier(self, self.app, self.app.fastflix.status_queue)
         self.notifier.start()
@@ -759,13 +765,24 @@ class Main(QtWidgets.QWidget):
         return widget, layout
 
     def init_preview_image(self):
-        self.widgets.preview = QtWidgets.QLabel()
-        self.widgets.preview.setBackgroundRole(QtGui.QPalette.Base)
-        self.widgets.preview.setFixedSize(320, 190)
-        self.widgets.preview.setAlignment(QtCore.Qt.AlignCenter)
-        self.widgets.preview.setStyleSheet("border: 2px solid #dddddd;")  # background-color:#f0f0f0
+        class PreviewImage(QtWidgets.QLabel):
+            def __init__(self, parent):
+                super().__init__()
+                self.main = parent
+                self.setBackgroundRole(QtGui.QPalette.Base)
+                self.setFixedSize(320, 190)
+                self.setAlignment(QtCore.Qt.AlignCenter)
+                self.setCursor(QtGui.QCursor(QtGui.QPixmap(magnifier_icon).scaledToWidth(32)))
+                self.setStyleSheet("border: 2px solid #dddddd;")
 
-        # buttons = self.init_preview_buttons()
+            def mousePressEvent(self, QMouseEvent):
+                if not self.main.initialized or not self.main.app.fastflix.current_video or self.main.large_preview.isVisible():
+                    return
+                self.main.large_preview.generate_image()
+                self.main.large_preview.show()
+                super(PreviewImage, self).mousePressEvent(QMouseEvent)
+
+        self.widgets.preview = PreviewImage(self)
 
         return self.widgets.preview
 

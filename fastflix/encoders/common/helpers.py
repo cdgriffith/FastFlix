@@ -172,7 +172,7 @@ def generate_filters(
     elif filters:
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:
-        return None
+        return ""
     if raw_filters:
         return filter_complex
     return f' -filter_complex "{filter_complex}" -map "[v]" '

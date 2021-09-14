@@ -3113,12 +3113,12 @@ Recover Queue Items:
   ita: Recuperare elementi della coda
   spa: Recuperar elementos de la cola
   zho: 恢复队列中的项目
-There is already a video being processed:
-  deu: Es ist bereits ein Video in Bearbeitung
-  eng: There is already a video being processed
-  fra: Il y a déjà une vidéo en cours de traitement
-  ita: C'è già un video in elaborazione
-  spa: Ya hay un vídeo en proceso
+There is already a video being processed.:
+  deu: Es ist bereits ein Video in Bearbeitung.
+  eng: There is already a video being processed.
+  fra: Il y a déjà une vidéo en cours de traitement.
+  ita: C'è già un video in elaborazione.
+  spa: Ya hay un vídeo en proceso.
   zho: 已经有一个视频正在处理中
 Are you sure you want to discard it?:
   deu: Sind Sie sicher, dass Sie es verwerfen wollen?

@@ -80,7 +80,7 @@ class Container(QtWidgets.QMainWindow):
         for item in self.app.fastflix.config.work_path.iterdir():
             if item.is_dir() and item.stem.startswith("temp_"):
                 shutil.rmtree(item, ignore_errors=True)
-            if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
+            if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".tiff", ".tif")):
                 item.unlink()
         if reusables.win_based:
             cleanup_windows_notification()
@@ -104,9 +104,8 @@ class Container(QtWidgets.QMainWindow):
         exit_action.setStatusTip(t("Exit application"))
         exit_action.triggered.connect(self.close)
 
-        if not os.getenv("DOCKERMODE"):
-            file_menu.addAction(setting_action)
-            file_menu.addSeparator()
+        file_menu.addAction(setting_action)
+        file_menu.addSeparator()
         file_menu.addAction(exit_action)
 
         profile_menu = menubar.addMenu(t("Profiles"))

@@ -130,7 +130,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         grid.addWidget(QtWidgets.QLabel(f"{t('Audio Tracks')}: {len(video.video_settings.audio_tracks)}"), 0, 5)
         grid.addWidget(QtWidgets.QLabel(f"{t('Subtitles')}: {len(video.video_settings.subtitle_tracks)}"), 0, 6)
         grid.addWidget(QtWidgets.QLabel(status), 0, 7)
-        if video.status.complete and not os.getenv("DOCKERMODE"):
+        if video.status.complete and not os.getenv("FF_DOCKERMODE"):
             grid.addWidget(view_button, 0, 8)
             grid.addWidget(open_button, 0, 9)
         elif add_retry:

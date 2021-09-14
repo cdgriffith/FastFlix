@@ -38,3 +38,4 @@ advanced_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/a
 info_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/info.png")).resolve())
 undo_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/undo-arrow.png")).resolve())
 loading_movie = str(Path(pkg_resources.resource_filename(__name__, "data/icons/loading.gif")).resolve())
+magnifier_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/magnifier-glass-zoom.png")).resolve())
