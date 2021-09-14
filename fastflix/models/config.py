@@ -29,6 +29,7 @@ from fastflix.models.encode import (
     setting_types,
 )
 from fastflix.version import __version__
+from fastflix.shared import get_config
 
 logger = logging.getLogger("fastflix")
 
@@ -122,7 +123,7 @@ def where(filename: str) -> Optional[Path]:
 
 class Config(BaseModel):
     version: str = __version__
-    config_path: Path = fastflix_folder / "fastflix.yaml"
+    config_path: Path = Field(default_factory=get_config)
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
     hdr10plus_parser: Optional[Path] = Field(default_factory=lambda: where("hdr10plus_parser"))

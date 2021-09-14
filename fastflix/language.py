@@ -17,14 +17,23 @@ from fastflix.resources import language_file
 
 __all__ = ["t", "translate"]
 
-config = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"
+config = os.getenv("FF_CONFIG")
+if config:
+    config = Path(config)
+elif Path("fastflix.yaml").exists():
+    config = Path("fastflix.yaml")
+else:
+    config = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"
 
-try:
-    language = Box.from_yaml(filename=config).language
-except Exception as err:
-    if not str(err).endswith("does not exist"):
-        print("WARNING: Could not get language from config file")
-    language = "eng"
+language = os.getenv("FF_LANG")
+
+if not language:
+    try:
+        language = Box.from_yaml(filename=config).language
+    except Exception as err:
+        if not str(err).endswith("does not exist"):
+            print("WARNING: Could not get language from config file")
+        language = "eng"
 
 language_data = Box.from_yaml(filename=language_file, encoding="utf-8")
 

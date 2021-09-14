@@ -8,6 +8,7 @@ from distutils.version import StrictVersion
 from pathlib import Path
 from subprocess import run
 
+from appdirs import user_data_dir
 import pkg_resources
 import requests
 import reusables
@@ -265,3 +266,12 @@ def clean_file_string(source):
 def sanitize(source):
     return str(sanitize_filepath(source, platform="Windows" if reusables.win_based else "Linux"))
     # return str().replace("\\", "/")
+
+
+def get_config():
+    config = os.getenv("FF_CONFIG")
+    if config:
+        return Path(config)
+    if Path("fastflix.yaml").exists():
+        return Path("fastflix.yaml")
+    return Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+import os
 import shutil
 import sys
 import time
@@ -103,8 +104,9 @@ class Container(QtWidgets.QMainWindow):
         exit_action.setStatusTip(t("Exit application"))
         exit_action.triggered.connect(self.close)
 
-        file_menu.addAction(setting_action)
-        file_menu.addSeparator()
+        if not os.getenv("DOCKERMODE"):
+            file_menu.addAction(setting_action)
+            file_menu.addSeparator()
         file_menu.addAction(exit_action)
 
         profile_menu = menubar.addMenu(t("Profiles"))
@@ -244,20 +246,15 @@ class OpenFolder(QtCore.QThread):
             pass
 
     def run(self):
-        if reusables.win_based:
-            run(["explorer", self.path])
-            # Also possible through ctypes shell extension
-            # import ctypes
-            #
-            # ctypes.windll.ole32.CoInitialize(None)
-            # pidl = ctypes.windll.shell32.ILCreateFromPathW(self.path)
-            # ctypes.windll.shell32.SHOpenFolderAndSelectItems(pidl, 0, None, 0)
-            # ctypes.windll.shell32.ILFree(pidl)
-            # ctypes.windll.ole32.CoUninitialize()
-        elif sys.platform == "darwin":
-            run(["open", self.path])
-        else:
-            run(["xdg-open", self.path])
+        try:
+            if reusables.win_based:
+                run(["explorer", self.path])
+            elif sys.platform == "darwin":
+                run(["open", self.path])
+            else:
+                run(["xdg-open", self.path])
+        except FileNotFoundError:
+            logger.error(f"Do not know which command to use to open: {self.path}")
 
 
 class ProfileDetails(QtWidgets.QWidget):

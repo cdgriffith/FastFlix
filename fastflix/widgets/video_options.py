@@ -65,10 +65,13 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     @property
     def audio_formats(self):
-        plugin_formats = set(self.main.current_encoder.audio_formats)
+        if getattr(self.main.current_encoder, "audio_formats", None):
+            encoders = set(self.main.current_encoder.audio_formats)
+        else:
+            encoders = set(self.app.fastflix.audio_encoders)
         if self.app.fastflix.config.use_sane_audio and self.app.fastflix.config.sane_audio_selection:
-            return list(plugin_formats & set(self.app.fastflix.config.sane_audio_selection))
-        return list(plugin_formats)
+            return list(encoders & set(self.app.fastflix.config.sane_audio_selection))
+        return list(encoders)
 
     def change_conversion(self, conversion):
         conversion = conversion.strip()
