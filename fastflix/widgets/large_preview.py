@@ -12,6 +12,7 @@ from fastflix.flix import (
 )
 from fastflix.encoders.common import helpers
 from fastflix.resources import photo_icon
+from fastflix.language import t
 
 __all__ = ["LargePreview"]
 
@@ -45,6 +46,12 @@ class LargePreview(QtWidgets.QWidget):
         self.current_image = QtGui.QPixmap(photo_icon)
         self.last_path: Optional[Path] = None
         self.last_command = "NOPE"
+        self.setWindowTitle(t("Preview - Press Q to Exit"))
+
+    def keyPressEvent(self, a0: QtGui.QKeyEvent) -> None:
+        if a0.key() == QtCore.Qt.Key_Q:
+            self.hide()
+        super(LargePreview, self).keyPressEvent(a0)
 
     def generate_image(self):
         settings = self.main.app.fastflix.current_video.video_settings.dict()

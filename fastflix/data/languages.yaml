@@ -3218,3 +3218,10 @@ Decoder:
   ita: 'Software: usa avcodec + decoder software'
   spa: 'Software: utilizar avcodec + decodificador de software'
   zho: 'Software：使用avcodec + 软件解码器'
+Preview - Press Q to Exit:
+  deu: Vorschau - Drücken Sie Q zum Beenden
+  eng: Preview - Press Q to Exit
+  fra: Aperçu - Appuyez sur Q pour quitter
+  ita: Anteprima - Premere Q per uscire
+  spa: Vista previa - Pulse Q para salir
+  zho: 预览 - 按Q键退出
