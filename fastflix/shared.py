@@ -182,20 +182,15 @@ def link(url, text):
 
 
 def open_folder(path):
-    if reusables.win_based:
-        run(["explorer", path])
-        # Also possible through ctypes shell extension
-        # import ctypes
-        #
-        # ctypes.windll.ole32.CoInitialize(None)
-        # pidl = ctypes.windll.shell32.ILCreateFromPathW(self.path)
-        # ctypes.windll.shell32.SHOpenFolderAndSelectItems(pidl, 0, None, 0)
-        # ctypes.windll.shell32.ILFree(pidl)
-        # ctypes.windll.ole32.CoUninitialize()
-    elif sys.platform == "darwin":
-        run(["open", path])
-    else:
-        run(["xdg-open", path])
+    try:
+        if reusables.win_based:
+            run(["explorer", path])
+        elif sys.platform == "darwin":
+            run(["open", path])
+        else:
+            run(["xdg-open", path])
+    except FileNotFoundError:
+        logger.error(f"Do not know which command to use to open: {path}")
 
 
 def clean_logs(signal, app, **_):
