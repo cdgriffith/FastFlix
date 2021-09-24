@@ -63,15 +63,22 @@ class VideoOptions(QtWidgets.QTabWidget):
         if DEVMODE:
             self.addTab(self.debug, QtGui.QIcon(info_icon), "Debug")
 
-    @property
-    def audio_formats(self):
-        if getattr(self.main.current_encoder, "audio_formats", None):
+    def _get_audio_formats(self, encoder=None):
+        encoders = None
+        if encoder:
+            if getattr(self.main.current_encoder, "audio_formats", None):
+                encoders = set(self.main.current_encoder.audio_formats)
+        elif getattr(self.main.current_encoder, "audio_formats", None):
             encoders = set(self.main.current_encoder.audio_formats)
-        else:
+        if encoders is None:
             encoders = set(self.app.fastflix.audio_encoders)
         if self.app.fastflix.config.use_sane_audio and self.app.fastflix.config.sane_audio_selection:
             return list(encoders & set(self.app.fastflix.config.sane_audio_selection))
         return list(encoders)
+
+    @property
+    def audio_formats(self):
+        return self._get_audio_formats()
 
     def change_conversion(self, conversion):
         conversion = conversion.strip()
@@ -87,9 +94,10 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.setTabEnabled(2, getattr(encoder, "enable_subtitles", True))
         self.setTabEnabled(3, getattr(encoder, "enable_attachments", True))
         self.selected = conversion
-        self.audio.allowed_formats(self.audio_formats)
         self.current_settings.new_source()
         self.main.page_update(build_thumbnail=False)
+        # Page update does a reload which bases itself off the current encoder so we have to do audio formats after
+        self.audio.allowed_formats(self._get_audio_formats(encoder))
 
     def get_settings(self):
         if not self.app.fastflix.current_video:

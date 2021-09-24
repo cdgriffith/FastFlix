@@ -849,7 +849,7 @@ class Main(QtWidgets.QWidget):
 
         if self.app.fastflix.current_video:
             discard = yes_no_message(
-                f'{t("There is already a video being processed.")}<br>' f'{t("Are you sure you want to discard it?")}',
+                f'{t("There is already a video being processed")}<br>' f'{t("Are you sure you want to discard it?")}',
                 title="Discard current video",
             )
             if not discard:

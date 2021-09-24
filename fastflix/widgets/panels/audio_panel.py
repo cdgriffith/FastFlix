@@ -442,7 +442,7 @@ class AudioList(FlixList):
         self.app.fastflix.current_video.video_settings.audio_tracks = tracks
 
     def reload(self, original_tracks: List[AudioTrack], audio_formats):
-        disable_dups = "nvencc" in self.main.convert_to.lower()
+        disable_dups = "nvencc" in self.main.convert_to.lower() or "vcenc" in self.main.convert_to.lower()
 
         repopulated_tracks = set()
         for track in original_tracks:

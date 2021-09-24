@@ -3,6 +3,7 @@
 ## Version 4.4.0
 
 * Adding #237 zoom option for thumbnail (thanks to Lev Abashkin)
+* Adding #259 support for all available audio format per encoder (thanks to alpha-0)
 * Adding support for ENV variables - FF_CONFIG, FF_LANG, FF_HDR10PLUS, FF_WORKDIR
 * Fixing FastFlix could not start if setting profile could not find x265 encoder
 * Fixing that downloading latest FFmpeg can fail to extract files if previous ones exist (thanks to ProFire)
