@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+import os
 import shutil
 from distutils.version import StrictVersion
 from pathlib import Path
@@ -29,10 +30,11 @@ from fastflix.models.encode import (
     setting_types,
 )
 from fastflix.version import __version__
+from fastflix.shared import get_config
 
 logger = logging.getLogger("fastflix")
 
-fastflix_folder = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
+fastflix_folder = Path(os.getenv("FF_WORKDIR", user_data_dir("FastFlix", appauthor=False, roaming=True)))
 ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
 
 NO_OPT = object()
@@ -114,6 +116,16 @@ def find_ffmpeg_file(name, raise_on_missing=False):
     return None
 
 
+def find_hdr10plus_tool():
+    if location := os.getenv("FF_HDR10PLUS"):
+        return Path(location)
+    if location := shutil.which("hdr10plus_tool"):
+        return Path(location)
+    if location := shutil.which("hdr10plus_parser"):
+        return Path(location)
+    return None
+
+
 def where(filename: str) -> Optional[Path]:
     if location := shutil.which(filename):
         return Path(location)
@@ -122,10 +134,10 @@ def where(filename: str) -> Optional[Path]:
 
 class Config(BaseModel):
     version: str = __version__
-    config_path: Path = fastflix_folder / "fastflix.yaml"
+    config_path: Path = Field(default_factory=get_config)
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
-    hdr10plus_parser: Optional[Path] = Field(default_factory=lambda: where("hdr10plus_parser"))
+    hdr10plus_parser: Optional[Path] = Field(default_factory=find_hdr10plus_tool)
     nvencc: Optional[Path] = Field(default_factory=lambda: where("NVEncC64") or where("NVEncC"))
     vceencc: Optional[Path] = Field(default_factory=lambda: where("VCEEncC64") or where("VCEEncC"))
     output_directory: Optional[Path] = False

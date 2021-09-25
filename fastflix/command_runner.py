@@ -43,15 +43,28 @@ class BackgroundRunner:
         self.error_message = errors
         self.success_message = successes
         logger.info(f"Running command: {command}")
-        self.process = Popen(
-            shlex.split(command.replace("\\", "\\\\")) if not shell and isinstance(command, str) else command,
-            shell=shell,
-            cwd=work_dir,
-            stdout=open(self.output_file, "w"),
-            stderr=open(self.error_output_file, "w"),
-            stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc on linux
-            encoding="utf-8",
-        )
+        try:
+            self.process = Popen(
+                shlex.split(command.replace("\\", "\\\\")) if not shell and isinstance(command, str) else command,
+                shell=shell,
+                cwd=work_dir,
+                stdout=open(self.output_file, "w"),
+                stderr=open(self.error_output_file, "w"),
+                stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc on linux
+                encoding="utf-8",
+            )
+        except PermissionError:
+            logger.error(
+                "Could not encode video due to permissions error."
+                "Please make sure encoder is executable and you have permissions to run it."
+                "Otherwise try running FastFlix as an administrator."
+            )
+            self.error_detected = True
+            return
+        except Exception:
+            logger.exception("Could not start worker process")
+            self.error_detected = True
+            return
 
         self.started_at = datetime.datetime.now(datetime.timezone.utc)
 

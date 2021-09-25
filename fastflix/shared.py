@@ -8,6 +8,7 @@ from distutils.version import StrictVersion
 from pathlib import Path
 from subprocess import run
 
+from appdirs import user_data_dir
 import pkg_resources
 import requests
 import reusables
@@ -181,20 +182,15 @@ def link(url, text):
 
 
 def open_folder(path):
-    if reusables.win_based:
-        run(["explorer", path])
-        # Also possible through ctypes shell extension
-        # import ctypes
-        #
-        # ctypes.windll.ole32.CoInitialize(None)
-        # pidl = ctypes.windll.shell32.ILCreateFromPathW(self.path)
-        # ctypes.windll.shell32.SHOpenFolderAndSelectItems(pidl, 0, None, 0)
-        # ctypes.windll.shell32.ILFree(pidl)
-        # ctypes.windll.ole32.CoUninitialize()
-    elif sys.platform == "darwin":
-        run(["open", path])
-    else:
-        run(["xdg-open", path])
+    try:
+        if reusables.win_based:
+            run(["explorer", path])
+        elif sys.platform == "darwin":
+            run(["open", path])
+        else:
+            run(["xdg-open", path])
+    except FileNotFoundError:
+        logger.error(f"Do not know which command to use to open: {path}")
 
 
 def clean_logs(signal, app, **_):
@@ -265,3 +261,12 @@ def clean_file_string(source):
 def sanitize(source):
     return str(sanitize_filepath(source, platform="Windows" if reusables.win_based else "Linux"))
     # return str().replace("\\", "/")
+
+
+def get_config():
+    config = os.getenv("FF_CONFIG")
+    if config:
+        return Path(config)
+    if Path("fastflix.yaml").exists():
+        return Path("fastflix.yaml")
+    return Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"

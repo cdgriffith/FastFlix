@@ -13,6 +13,7 @@ from qtpy import QtWidgets
 
 from fastflix.language import t
 from fastflix.shared import message
+from fastflix.exceptions import FastFlixError
 
 logger = logging.getLogger("fastflix")
 
@@ -52,20 +53,31 @@ def latest_ffmpeg(signal, stop_signal, **_):
     stop_signal.connect(stop_me)
     ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
     ffmpeg_folder.mkdir(exist_ok=True)
+
+    extract_folder = ffmpeg_folder / "temp_download"
+    if extract_folder.exists():
+        shutil.rmtree(extract_folder, ignore_errors=True)
+    if extract_folder.exists():
+        message(t("Could not delete previous temp extract directory: ") + str(extract_folder))
+        raise FastFlixError("Could not delete previous temp extract directory")
+
     url = "https://api.github.com/repos/BtbN/FFmpeg-Builds/releases/latest"
 
     try:
         data = requests.get(url, timeout=15).json()
     except Exception:
+        shutil.rmtree(extract_folder, ignore_errors=True)
         message(t("Could not connect to github to check for newer versions."))
         raise
 
     if stop:
+        shutil.rmtree(extract_folder, ignore_errors=True)
         message(t("Download Cancelled"))
         return
 
     gpl_ffmpeg = [asset for asset in data["assets"] if asset["name"].endswith("win64-gpl.zip")]
     if not gpl_ffmpeg:
+        shutil.rmtree(extract_folder, ignore_errors=True)
         message(
             t("Could not find any matching FFmpeg ending with 'win64-gpl.zip' with")
             + f" {t('latest release from')} <a href='https://github.com/BtbN/FFmpeg-Builds/releases/'>"
@@ -85,6 +97,7 @@ def latest_ffmpeg(signal, stop_signal, **_):
             if stop:
                 f.close()
                 Path(filename).unlink()
+                shutil.rmtree(extract_folder, ignore_errors=True)
                 message(t("Download Cancelled"))
                 return
 
@@ -97,13 +110,14 @@ def latest_ffmpeg(signal, stop_signal, **_):
         raise
 
     try:
-        reusables.extract(filename, path=ffmpeg_folder)
+        reusables.extract(filename, path=extract_folder)
     except Exception:
         message(f"{t('Could not extract FFmpeg files from')} {filename}!")
         raise
 
     if stop:
         Path(filename).unlink()
+        shutil.rmtree(extract_folder, ignore_errors=True)
         message(t("Download Cancelled"))
         return
 
@@ -112,12 +126,13 @@ def latest_ffmpeg(signal, stop_signal, **_):
     try:
         shutil.rmtree(str(ffmpeg_folder / "bin"), ignore_errors=True)
         shutil.rmtree(str(ffmpeg_folder / "doc"), ignore_errors=True)
+        (ffmpeg_folder / "LICENSE.txt").unlink(missing_ok=True)
         Path(filename).unlink()
     except OSError:
         pass
 
     signal.emit(96)
-    sub_dir = next(Path(ffmpeg_folder).glob("ffmpeg-*"))
+    sub_dir = next(Path(extract_folder).glob("ffmpeg-*"))
 
     for item in os.listdir(sub_dir):
         try:

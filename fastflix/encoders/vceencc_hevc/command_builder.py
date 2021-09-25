@@ -131,7 +131,7 @@ def build(fastflix: FastFlix):
         "auto",
         f"--avsync {'cfr' if video.frame_rate == video.average_frame_rate else 'vfr'}",
         (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
-        ("--vpp-yadif" if video.video_settings.deinterlace else ""),
+        ("--vpp-nnedi" if video.video_settings.deinterlace else ""),
         (f"--vpp-colorspace hdr2sdr=mobius" if video.video_settings.remove_hdr else ""),
         remove_hdr,
         "--psnr --ssim" if settings.metrics else "",

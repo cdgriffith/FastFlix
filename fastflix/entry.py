@@ -34,7 +34,7 @@ def separate_app_process(worker_queue, status_queue, log_queue, queue_list, queu
     try:
         start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock)
     except Exception as err:
-        print(f"Could not start GUI process: {err}", file=sys.stderr)
+        print(f"Could not start GUI process - Error: {err}", file=sys.stderr)
         raise err
 
 
