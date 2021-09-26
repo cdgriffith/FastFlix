@@ -14,6 +14,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}
+
     - run: sudo apt install python3-pip python3-setuptools -y
     - run: pip3 install black==21.8b0
     - run: python3 -m black --check .
