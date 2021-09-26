@@ -210,7 +210,7 @@ def clean_logs(signal, app, **_):
                 logger.debug(f"Deleting {file.name}")
                 file.unlink(missing_ok=True)
         if file.name.startswith("flix_conversion") or file.name.startswith("flix_2"):
-            original = file.read_text(encoding="utf-8")
+            original = file.read_text(encoding="utf-8", errors="ignore")
             try:
                 condensed = "\n".join(
                     (
