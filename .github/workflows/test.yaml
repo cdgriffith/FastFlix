@@ -16,20 +16,20 @@ jobs:
     - uses: actions/cache@v2
       id: ffmpeg-cache
       with:
-        path: /usr/bin/ffmpeg
-        key: /usr/bin/ffmpeg
+        path: /opt/ff
+        key: ${{ runner.os }}-ffmpeg
 
-    - uses: actions/cache@v2
-      id: ffprobe-cache
-      with:
-        path: /usr/bin/ffprobe
-        key: /usr/bin/ffprobe
-
-    - name: Install ffmpeg
-      if: steps.ffmpeg-cache.outputs.cache-hit != 'true' || steps.ffprobe-cache.outputs.cache-hit != 'true'
+    - name: Download FFmpeg
+      if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
       run: |
-        sudo apt-get update
-        sudo apt-get install ffmpeg
+        wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+        mkdir -p /opt/ff
+        tar --strip-components=1 -xJvf ffmpeg-release-amd64-static.tar.xz -C ff
+
+    - name: Link FFmpeg to usr/bin
+      run: |
+        sudo ln -s /opt/ff/ffmpeg /usr/bin/ffmpeg
+        sudo ln -s /opt/ff/ffprobe /usr/bin/ffprobe
 
     - uses: actions/cache@v2
       with:

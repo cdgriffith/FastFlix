@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from box import Box
-from qtpy.QtWidgets import QApplication
 
 from fastflix.application import init_encoders
 from fastflix.flix import ffmpeg_configuration
 from fastflix.models.config import Config
 
-fake_app = QApplication([])
-fake_app.fastflix = Box(default_box=True)
+fake_app = Box(default_box=True)
 config = Config()
 
 
