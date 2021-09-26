@@ -16,8 +16,8 @@ jobs:
     - uses: actions/cache@v2
       id: ffmpeg-cache
       with:
-        path: /opt/ff/ffmpeg
-        key: ${{ runner.os }}-ffmpeg
+        path: /opt/ff/
+        key: ${{ runner.os }}-ff
 
     - name: Download FFmpeg
       if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
