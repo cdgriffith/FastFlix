@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.4.2
+
+* Fixing #264 changelog encoding was causing crashes on non utf-8 systems (thanks to lobofoot)
+
 ## Version 4.4.1
 
 * Fixing colorspace details from advanced page not applied to x265 (thanks to Tình Em Là Đại Dương)

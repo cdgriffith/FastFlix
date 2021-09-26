@@ -27,11 +27,11 @@ class Changes(QtWidgets.QScrollArea):
         lay = QtWidgets.QVBoxLayout(content)
 
         if changes_file.exists():
-            content = changes_file.read_text()
+            content = changes_file.read_text(encoding="utf-8", errors="ignore")
         else:
             if not local_changes_file.exists():
                 raise Exception("Could not locate changlog file")
-            content = local_changes_file.read_text()
+            content = local_changes_file.read_text(encoding="utf-8", errors="ignore")
 
         linked_content = issues.sub(
             " <a href='https://github.com/cdgriffith/FastFlix/issues/\\1' style='color: black' >\\1</a> ", content
