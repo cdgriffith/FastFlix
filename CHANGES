@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.4.1
+
+* Fixing colorspace details from advanced page not applied to x265 (thanks to Tình Em Là Đại Dương)
+
 ## Version 4.4.0
 
 * Adding #237 zoom option for thumbnail (thanks to Lev Abashkin)
