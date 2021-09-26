@@ -2,7 +2,7 @@
 from box import Box
 
 from fastflix.application import init_encoders
-from fastflix.flix import ffmpeg_configuration
+from fastflix.flix import ffmpeg_configuration, ffprobe_configuration, ffmpeg_audio_encoders
 from fastflix.models.config import Config
 
 fake_app = Box(default_box=True)
@@ -18,3 +18,13 @@ def test_get_ffmpeg_version():
     ffmpeg_configuration(fake_app, config)
     assert getattr(fake_app.fastflix, "ffmpeg_version")
     assert getattr(fake_app.fastflix, "ffmpeg_config")
+
+
+def test_get_ffprobe_version():
+    ffprobe_configuration(fake_app, config)
+    assert getattr(fake_app.fastflix, "ffprobe_version")
+
+
+def test_get_audio_encoders():
+    ffmpeg_audio_encoders(fake_app, config)
+    assert len(getattr(fake_app.fastflix, "audio_encoders", [])) > 0
