@@ -16,7 +16,7 @@ jobs:
     - uses: actions/cache@v2
       id: ffmpeg-cache
       with:
-        path: /opt/ff
+        path: /opt/ff/ffmpeg
         key: ${{ runner.os }}-ffmpeg
 
     - name: Download FFmpeg
@@ -24,7 +24,7 @@ jobs:
       run: |
         wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
         mkdir -p /opt/ff
-        tar --strip-components=1 -xJvf ffmpeg-release-amd64-static.tar.xz -C ff
+        tar --strip-components=1 -xJvf ffmpeg-release-amd64-static.tar.xz -C /opt/ff
 
     - name: Link FFmpeg to usr/bin
       run: |
