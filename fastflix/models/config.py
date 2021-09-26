@@ -96,6 +96,9 @@ def get_preset_defaults():
 
 
 def find_ffmpeg_file(name, raise_on_missing=False):
+    if ff_location := os.getenv(f"FF_{name.upper()}"):
+        return Path(ff_location).absolute()
+
     if (ff_location := shutil.which(name)) is not None:
         return Path(ff_location).absolute()
 
