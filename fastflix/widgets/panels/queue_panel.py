@@ -49,11 +49,21 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.setFixedHeight(60)
 
         self.widgets = Box(
-            up_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("up-arrow", self.app.fastflix.config.theme)), ""),
-            down_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("down-arrow", self.app.fastflix.config.theme)), ""),
-            cancel_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("black-x", self.app.fastflix.config.theme)), ""),
-            reload_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("edit-box", self.app.fastflix.config.theme)), ""),
-            retry_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("undo", self.app.fastflix.config.theme)), ""),
+            up_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("up-arrow", self.parent.app.fastflix.config.theme)), ""
+            ),
+            down_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
+            ),
+            cancel_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("black-x", self.parent.app.fastflix.config.theme)), ""
+            ),
+            reload_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("edit-box", self.parent.app.fastflix.config.theme)), ""
+            ),
+            retry_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("undo", self.parent.app.fastflix.config.theme)), ""
+            ),
         )
 
         for widget in self.widgets.values():
@@ -75,12 +85,16 @@ class EncodeItem(QtWidgets.QTabWidget):
 
         title.setToolTip(settings.to_yaml())
 
-        open_button = QtWidgets.QPushButton(QtGui.QIcon(folder_icon), t("Open Directory"))
+        open_button = QtWidgets.QPushButton(
+            QtGui.QIcon(get_icon("play", self.parent.app.fastflix.config.theme)), t("Open Directory")
+        )
         open_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         open_button.setIconSize(QtCore.QSize(14, 14))
         open_button.clicked.connect(lambda: open_folder(video.video_settings.output_path.parent))
 
-        view_button = QtWidgets.QPushButton(QtGui.QIcon(play_icon), t("Watch"))
+        view_button = QtWidgets.QPushButton(
+            QtGui.QIcon(get_icon("play", self.parent.app.fastflix.config.theme)), t("Watch")
+        )
         view_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         view_button.setIconSize(QtCore.QSize(14, 14))
         view_button.clicked.connect(

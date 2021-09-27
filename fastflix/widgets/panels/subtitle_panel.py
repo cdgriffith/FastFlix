@@ -64,8 +64,12 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{self.index}:{self.outdex}" if enabled else "❌"),
             title=QtWidgets.QLabel(f"  {self.subtitle.codec_long_name}"),
-            up_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("up-arrow", self.app.fastflix.config.theme)), ""),
-            down_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("down-arrow", self.app.fastflix.config.theme)), ""),
+            up_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("up-arrow", self.parent.app.fastflix.config.theme)), ""
+            ),
+            down_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
+            ),
             enable_check=QtWidgets.QCheckBox(t("Preserve")),
             disposition=QtWidgets.QComboBox(),
             language=QtWidgets.QComboBox(),
