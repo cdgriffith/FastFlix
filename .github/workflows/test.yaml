@@ -3,6 +3,24 @@ name: Build executables
 on: [push, pull_request]
 
 jobs:
+  lint:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}-black
+
+    - run: pip install black==21.8b0
+    - run: python -m black --check .
+
   test:
     runs-on: ubuntu-20.04
 
