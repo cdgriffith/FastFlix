@@ -79,8 +79,14 @@ class VP9(SettingPanel):
         grid.setRowStretch(8, 1)
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
-        link_1 = link("https://trac.ffmpeg.org/wiki/Encode/VP9", t("FFMPEG VP9 Encoding Guide"))
-        link_2 = link("https://developers.google.com/media/vp9/hdr-encoding/", t("Google's VP9 HDR Encoding Guide"))
+        link_1 = link(
+            "https://trac.ffmpeg.org/wiki/Encode/VP9", t("FFMPEG VP9 Encoding Guide"), app.fastflix.config.theme
+        )
+        link_2 = link(
+            "https://developers.google.com/media/vp9/hdr-encoding/",
+            t("Google's VP9 HDR Encoding Guide"),
+            app.fastflix.config.theme,
+        )
 
         guide_label = QtWidgets.QLabel(f"{link_1} | {link_2}")
         guide_label.setAlignment(QtCore.Qt.AlignBottom)

@@ -8,12 +8,13 @@ So here is an easy stand-in that is better in ways I care about.
 import os
 from functools import lru_cache
 from pathlib import Path
+import pkg_resources
 
 from appdirs import user_data_dir
 from box import Box
 from iso639 import Lang
 
-from fastflix.resources import language_file
+language_file = str(Path(pkg_resources.resource_filename(__name__, "data/languages.yaml")).resolve())
 
 __all__ = ["t", "translate"]
 

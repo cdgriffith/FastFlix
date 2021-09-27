@@ -11,7 +11,7 @@ from fastflix.models.encode import NVEncCSettings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
 from fastflix.exceptions import FastFlixInternalException
-from fastflix.resources import loading_movie, warning_icon
+from fastflix.resources import loading_movie, get_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -130,11 +130,15 @@ class NVENCC(SettingPanel):
         grid.setRowStretch(9, 1)
 
         guide_label = QtWidgets.QLabel(
-            link("https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md", t("NVEncC Options"))
+            link(
+                "https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md",
+                t("NVEncC Options"),
+                app.fastflix.config.theme,
+            )
         )
 
         warning_label = QtWidgets.QLabel()
-        warning_label.setPixmap(QtGui.QIcon(warning_icon).pixmap(22))
+        warning_label.setPixmap(QtGui.QIcon(get_icon("warning", self.app.fastflix.config.theme)).pixmap(22))
 
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)

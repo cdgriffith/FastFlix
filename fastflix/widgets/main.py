@@ -35,16 +35,9 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
 from fastflix.ff_queue import save_queue
 from fastflix.resources import (
-    black_x_icon,
-    folder_icon,
+    get_icon,
     main_icon,
-    play_round_icon,
-    profile_add_icon,
-    settings_icon,
-    video_add_icon,
-    video_playlist_icon,
-    undo_icon,
-    magnifier_icon,
+    group_box_style,
 )
 from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
 from fastflix.windows_tools import show_windows_notification
@@ -204,20 +197,22 @@ class Main(QtWidgets.QWidget):
     def init_top_bar(self):
         top_bar = QtWidgets.QHBoxLayout()
 
-        source = QtWidgets.QPushButton(QtGui.QIcon(video_add_icon), f"  {t('Source')}")
+        source = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("video-add")), f"  {t('Source')}")
         source.setIconSize(QtCore.QSize(22, 20))
         source.setFixedHeight(40)
         source.setDefault(True)
         source.clicked.connect(lambda: self.open_file())
 
-        queue = QtWidgets.QPushButton(QtGui.QIcon(video_playlist_icon), f"{t('Add to Queue')}  ")
+        queue = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("video-playlist")), f"{t('Add to Queue')}  ")
         queue.setIconSize(QtCore.QSize(22, 20))
         queue.setFixedHeight(40)
         queue.setStyleSheet("padding: 0 10px;")
         queue.setLayoutDirection(QtCore.Qt.RightToLeft)
         queue.clicked.connect(lambda: self.add_to_queue())
 
-        self.widgets.convert_button = QtWidgets.QPushButton(QtGui.QIcon(play_round_icon), f"{t('Convert')}  ")
+        self.widgets.convert_button = QtWidgets.QPushButton(
+            QtGui.QIcon(self.get_icon("play-round")), f"{t('Convert')}  "
+        )
         self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
         self.widgets.convert_button.setFixedHeight(40)
         self.widgets.convert_button.setStyleSheet("padding: 0 10px;")
@@ -242,7 +237,7 @@ class Main(QtWidgets.QWidget):
         top_bar.addWidget(self.widgets.convert_button)
         top_bar.addStretch(1)
 
-        add_profile = QtWidgets.QPushButton(QtGui.QIcon(profile_add_icon), t("New Profile"))
+        add_profile = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("profile-add")), t("New Profile"))
         # add_profile.setFixedSize(QtCore.QSize(40, 40))
         add_profile.setFixedHeight(40)
         add_profile.setIconSize(QtCore.QSize(22, 22))
@@ -250,7 +245,7 @@ class Main(QtWidgets.QWidget):
         add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
         add_profile.clicked.connect(lambda: self.container.new_profile())
 
-        options = QtWidgets.QPushButton(QtGui.QIcon(settings_icon), "")
+        options = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("settings")), "")
         options.setFixedSize(QtCore.QSize(40, 40))
         options.setIconSize(QtCore.QSize(22, 22))
         options.setToolTip(t("Settings"))
@@ -276,6 +271,8 @@ class Main(QtWidgets.QWidget):
         self.widgets.thumb_time.setTickInterval(1)
         self.widgets.thumb_time.setAutoFillBackground(False)
         self.widgets.thumb_time.sliderReleased.connect(self.thumb_time_change)
+
+        layout.insertSpacing(0, 14)
         layout.addWidget(self.widgets.thumb_key)
         layout.addWidget(self.widgets.thumb_time)
         return layout
@@ -321,7 +318,7 @@ class Main(QtWidgets.QWidget):
         output_label.setFixedWidth(70)
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
-        self.output_path_button = QtWidgets.QPushButton(icon=QtGui.QIcon(folder_icon))
+        self.output_path_button = QtWidgets.QPushButton(icon=QtGui.QIcon(self.get_icon("folder")))
         self.output_path_button.clicked.connect(lambda: self.save_file())
         self.output_path_button.setDisabled(True)
 
@@ -343,7 +340,7 @@ class Main(QtWidgets.QWidget):
         title_layout.addWidget(self.widgets.video_title)
 
         layout.addLayout(title_layout)
-
+        layout.addStretch(1)
         transform_layout = QtWidgets.QHBoxLayout()
         transform_layout.addWidget(self.init_rotate(), stretch=True)
         transform_layout.addWidget(self.init_flip(), stretch=True)
@@ -387,16 +384,18 @@ class Main(QtWidgets.QWidget):
         transform_layout.addLayout(extra_details_layout)
 
         layout.addLayout(transform_layout)
+        layout.addStretch(1)
         layout.addWidget(self.init_start_time())
 
-        layout.addStretch()
+        layout.addStretch(1)
         return layout
 
     def init_scale_and_crop(self):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.init_scale())
+        layout.addStretch(1)
         layout.addWidget(self.init_crop())
-        layout.addStretch()
+        layout.addStretch(1)
         return layout
 
     def init_video_track_select(self):
@@ -540,15 +539,16 @@ class Main(QtWidgets.QWidget):
 
     def init_start_time(self):
         group_box = QtWidgets.QGroupBox()
-        group_box.setStyleSheet("QGroupBox{padding-top:18px; margin-top:-18px}")
+        group_box.setStyleSheet(group_box_style())
 
         layout = QtWidgets.QHBoxLayout()
 
-        reset = QtWidgets.QPushButton(QtGui.QIcon(undo_icon), "")
+        reset = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("undo")), "")
         reset.setIconSize(QtCore.QSize(10, 10))
         reset.clicked.connect(self.reset_time)
         self.buttons.append(reset)
         layout.addWidget(reset)
+        layout.addStretch(1)
 
         self.widgets.start_time, start_layout = self.build_hoz_int_field(
             f"{t('Start')}  ",
@@ -575,6 +575,13 @@ class Main(QtWidgets.QWidget):
         self.widgets.fast_time.setFixedWidth(65)
         layout.addWidget(QtWidgets.QLabel(" "))
         layout.addWidget(self.widgets.fast_time, QtCore.Qt.AlignRight)
+        layout.addStretch(1)
+        label = QtWidgets.QLabel(t("Trim"))
+        label.setStyleSheet("QLabel{color:#777}")
+        label.setMaximumHeight(40)
+        # bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignLeft))
+        layout.addWidget(label, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
+
         group_box.setLayout(layout)
         return group_box
 
@@ -585,12 +592,12 @@ class Main(QtWidgets.QWidget):
     def init_scale(self):
         scale_area = QtWidgets.QGroupBox(self)
         scale_area.setFont(self.app.font())
-        scale_area.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
+        scale_area.setStyleSheet(group_box_style())
         scale_layout = QtWidgets.QVBoxLayout()
 
         main_row = QtWidgets.QHBoxLayout()
 
-        reset = QtWidgets.QPushButton(QtGui.QIcon(undo_icon), "")
+        reset = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("undo")), "")
         reset.setIconSize(QtCore.QSize(10, 10))
         reset.clicked.connect(self.reset_scales)
         self.buttons.append(reset)
@@ -643,7 +650,7 @@ class Main(QtWidgets.QWidget):
 
     def init_crop(self):
         crop_box = QtWidgets.QGroupBox()
-        crop_box.setStyleSheet("QGroupBox{padding-top:17px; margin-top:-18px}")
+        crop_box.setStyleSheet(group_box_style(pt="0", pb="12px"))
         crop_layout = QtWidgets.QVBoxLayout()
         self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field(f"       {t('Top')}  ")
         self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field(f"{t('Left')}  ", right_stretch=False)
@@ -668,7 +675,7 @@ class Main(QtWidgets.QWidget):
         auto_crop.clicked.connect(self.get_auto_crop)
         self.buttons.append(auto_crop)
 
-        reset = QtWidgets.QPushButton(QtGui.QIcon(undo_icon), "")
+        reset = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("undo")), "")
         reset.setIconSize(QtCore.QSize(10, 10))
         reset.clicked.connect(self.reset_crop)
         self.buttons.append(reset)
@@ -733,7 +740,8 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(QtWidgets.QLabel(name))
         minus_button = QtWidgets.QPushButton("-")
         minus_button.setAutoRepeat(True)
-        minus_button.setFixedSize(button_size, button_size)
+        minus_button.setFixedSize(QtCore.QSize(button_size, button_size))
+        minus_button.setStyleSheet("padding: 0;")
         minus_button.clicked.connect(
             lambda: [
                 self.modify_int(widget, "minus", time_field),
@@ -743,6 +751,7 @@ class Main(QtWidgets.QWidget):
         plus_button = QtWidgets.QPushButton("+")
         plus_button.setAutoRepeat(True)
         plus_button.setFixedSize(button_size, button_size)
+        plus_button.setStyleSheet("padding: 0;")
         plus_button.clicked.connect(
             lambda: [
                 self.modify_int(widget, "add", time_field),
@@ -754,7 +763,7 @@ class Main(QtWidgets.QWidget):
         if not time_field:
             widget.setFixedWidth(45)
         else:
-            widget.setFixedWidth(65)
+            widget.setFixedWidth(75)
         layout.addWidget(minus_button)
         layout.addWidget(widget)
         layout.addWidget(plus_button)
@@ -770,9 +779,13 @@ class Main(QtWidgets.QWidget):
                 super().__init__()
                 self.main = parent
                 self.setBackgroundRole(QtGui.QPalette.Base)
-                self.setFixedSize(320, 190)
+                self.setFixedSize(340, 202)
                 self.setAlignment(QtCore.Qt.AlignCenter)
-                self.setCursor(QtGui.QCursor(QtGui.QPixmap(magnifier_icon).scaledToWidth(32)))
+                self.setCursor(
+                    QtGui.QCursor(
+                        QtGui.QPixmap(get_icon("magnifier", self.main.app.fastflix.config.theme)).scaledToWidth(32)
+                    )
+                )
                 self.setStyleSheet("border: 2px solid #dddddd;")
 
             def mousePressEvent(self, QMouseEvent):
@@ -789,26 +802,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.preview = PreviewImage(self)
 
         return self.widgets.preview
-
-    def init_preview_buttons(self):
-        layout = QtWidgets.QVBoxLayout()
-        refresh = QtWidgets.QPushButton("R")
-        refresh.setFixedWidth(20)
-        preview = QtWidgets.QPushButton("P")
-        preview.setFixedWidth(20)
-        one = QtWidgets.QPushButton("1")
-        one.setFixedWidth(20)
-        two = QtWidgets.QPushButton("2")
-        two.setFixedWidth(20)
-
-        refresh.clicked.connect(lambda: self.page_update())
-
-        layout.addWidget(refresh)
-        layout.addWidget(preview)
-        layout.addWidget(one)
-        layout.addWidget(two)
-        layout.addStretch()
-        return layout
 
     def modify_int(self, widget, method="add", time_field=False):
         modifier = 1
@@ -1406,7 +1399,7 @@ class Main(QtWidgets.QWidget):
         ):
             settings["remove_hdr"] = True
 
-        custom_filters = "scale='min(720\\,iw):-8'"
+        custom_filters = "scale='min(340\\,iw):-8'"
         # if self.app.fastflix.current_video.color_transfer == "arib-std-b67":
         #     custom_filters += ",select=eq(pict_type\\,I)"
 
@@ -1445,7 +1438,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.preview.setText(t("Error Updating Thumbnail"))
             return
         pixmap = QtGui.QPixmap(str(self.thumb_file))
-        pixmap = pixmap.scaled(320, 190, QtCore.Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(340, 202, QtCore.Qt.KeepAspectRatio)
         self.widgets.preview.setPixmap(pixmap)
 
     def build_scale(self):
@@ -1633,13 +1626,16 @@ class Main(QtWidgets.QWidget):
     def set_convert_button(self, convert=True):
         if convert:
             self.widgets.convert_button.setText(f"{t('Convert')}  ")
-            self.widgets.convert_button.setIcon(QtGui.QIcon(play_round_icon))
+            self.widgets.convert_button.setIcon(QtGui.QIcon(self.get_icon("play-round")))
             self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
 
         else:
             self.widgets.convert_button.setText(f"{t('Cancel')}  ")
-            self.widgets.convert_button.setIcon(QtGui.QIcon(black_x_icon))
+            self.widgets.convert_button.setIcon(QtGui.QIcon(self.get_icon("black-x")))
             self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
+
+    def get_icon(self, name):
+        return get_icon(name, self.app.fastflix.config.theme)
 
     @reusables.log_exception("fastflix", show_traceback=True)
     def encode_video(self):

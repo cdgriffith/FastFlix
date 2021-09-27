@@ -154,6 +154,7 @@ class Config(BaseModel):
     work_path: Path = fastflix_folder
     use_sane_audio: bool = True
     selected_profile: str = "Standard Profile"
+    theme: str = "light"
     disable_version_check: bool = False
     disable_update_check: bool = False
     disable_automatic_subtitle_burn_in: bool = False

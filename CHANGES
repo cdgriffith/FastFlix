@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.5.0
+
+* Adding #267 new themes (thanks to Onyx)
+
 ## Version 4.4.2
 
 * Fixing #264 changelog encoding was causing crashes on non utf-8 systems (thanks to lobofoot)

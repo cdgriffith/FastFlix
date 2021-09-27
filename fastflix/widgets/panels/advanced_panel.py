@@ -9,7 +9,7 @@ from qtpy import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import VideoSettings
-from fastflix.resources import warning_icon
+from fastflix.resources import get_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -172,8 +172,8 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.last_row += 1
 
         warning_label = QtWidgets.QLabel()
-        icon = QtGui.QIcon(warning_icon)
-        warning_label.setPixmap(icon.pixmap(22))
+        ico = QtGui.QIcon(get_icon("warning", app.fastflix.config.theme))
+        warning_label.setPixmap(ico.pixmap(22))
 
         self.layout.addWidget(warning_label, self.last_row, 0, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(

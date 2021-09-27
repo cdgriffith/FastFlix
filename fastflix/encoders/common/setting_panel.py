@@ -10,6 +10,7 @@ from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.widgets.background_tasks import ExtractHDR10
+from fastflix.resources import group_box_style
 
 logger = logging.getLogger("fastflix")
 
@@ -274,10 +275,10 @@ class SettingPanel(QtWidgets.QWidget):
         self.qp_name = qp_name
         layout = QtWidgets.QGridLayout()
         qp_group_box = QtWidgets.QGroupBox()
-        qp_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
+        qp_group_box.setStyleSheet(group_box_style())
         qp_box_layout = QtWidgets.QHBoxLayout()
         bitrate_group_box = QtWidgets.QGroupBox()
-        bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
+        bitrate_group_box.setStyleSheet(group_box_style())
         bitrate_box_layout = QtWidgets.QHBoxLayout()
         self.widgets.mode = QtWidgets.QButtonGroup()
         self.widgets.mode.buttonClicked.connect(self.set_mode)

@@ -1,4 +1,4 @@
-name: Build executables
+name: Lint and Tests
 
 on: [push, pull_request]
 

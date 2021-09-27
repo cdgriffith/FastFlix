@@ -173,7 +173,7 @@ class Container(QtWidgets.QMainWindow):
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("https://github.com/cdgriffith/FastFlix/wiki"))
 
     def show_about(self):
-        self.about = About()
+        self.about = About(app=self.app)
         self.about.show()
 
     def show_setting(self):

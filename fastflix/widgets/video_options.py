@@ -7,17 +7,7 @@ from qtpy import QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import (
-    advanced_icon,
-    cc_icon,
-    editing_icon,
-    info_icon,
-    music_icon,
-    photo_icon,
-    poll_icon,
-    text_left_icon,
-    working_icon,
-)
+from fastflix.resources import get_icon
 from fastflix.shared import DEVMODE
 from fastflix.widgets.panels.advanced_panel import AdvancedPanel
 from fastflix.widgets.panels.audio_panel import AudioList
@@ -51,17 +41,17 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.info = InfoPanel(self, self.app)
         self.debug = DebugPanel(self, self.app)
 
-        self.addTab(self.current_settings, QtGui.QIcon(editing_icon), t("Quality"))
-        self.addTab(self.audio, QtGui.QIcon(music_icon), t("Audio"))
-        self.addTab(self.subtitles, QtGui.QIcon(cc_icon), t("Subtitles"))
-        self.addTab(self.attachments, QtGui.QIcon(photo_icon), t("Cover"))
-        self.addTab(self.advanced, QtGui.QIcon(advanced_icon), t("Advanced"))
-        self.addTab(self.info, QtGui.QIcon(info_icon), t("Source Details"))
-        self.addTab(self.commands, QtGui.QIcon(text_left_icon), t("Raw Commands"))
-        self.addTab(self.status, QtGui.QIcon(working_icon), t("Encoding Status"))
-        self.addTab(self.queue, QtGui.QIcon(poll_icon), t("Encoding Queue"))
+        self.addTab(self.current_settings, QtGui.QIcon(get_icon("editing", app.fastflix.config.theme)), t("Quality"))
+        self.addTab(self.audio, QtGui.QIcon(get_icon("music", app.fastflix.config.theme)), t("Audio"))
+        self.addTab(self.subtitles, QtGui.QIcon(get_icon("cc", app.fastflix.config.theme)), t("Subtitles"))
+        self.addTab(self.attachments, QtGui.QIcon(get_icon("photo", app.fastflix.config.theme)), t("Cover"))
+        self.addTab(self.advanced, QtGui.QIcon(get_icon("advanced", app.fastflix.config.theme)), t("Advanced"))
+        self.addTab(self.info, QtGui.QIcon(get_icon("info", app.fastflix.config.theme)), t("Source Details"))
+        self.addTab(self.commands, QtGui.QIcon(get_icon("text-left", app.fastflix.config.theme)), t("Raw Commands"))
+        self.addTab(self.status, QtGui.QIcon(get_icon("working", app.fastflix.config.theme)), t("Encoding Status"))
+        self.addTab(self.queue, QtGui.QIcon(get_icon("poll", app.fastflix.config.theme)), t("Encoding Queue"))
         if DEVMODE:
-            self.addTab(self.debug, QtGui.QIcon(info_icon), "Debug")
+            self.addTab(self.debug, QtGui.QIcon(get_icon("info", app.fastflix.config.theme)), "Debug")
 
     def _get_audio_formats(self, encoder=None):
         encoders = None
@@ -88,7 +78,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.current_settings.show()
         self.removeTab(0)
         self.insertTab(0, self.current_settings, t("Quality"))
-        self.setTabIcon(0, QtGui.QIcon(editing_icon))
+        self.setTabIcon(0, QtGui.QIcon(get_icon("editing", self.app.fastflix.config.theme)))
         self.setCurrentIndex(0)
         self.setTabEnabled(1, getattr(encoder, "enable_audio", True))
         self.setTabEnabled(2, getattr(encoder, "enable_subtitles", True))

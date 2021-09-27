@@ -10,7 +10,7 @@ from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
 from fastflix.models.encode import x265Settings
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import loading_movie, warning_icon
+from fastflix.resources import loading_movie, get_icon
 from fastflix.shared import link
 from fastflix.widgets.background_tasks import ExtractHDR10
 
@@ -117,14 +117,17 @@ class HEVC(SettingPanel):
         link_1 = link(
             "https://trac.ffmpeg.org/wiki/Encode/H.265",
             t("FFMPEG HEVC / H.265 Encoding Guide"),
+            app.fastflix.config.theme,
         )
         link_2 = link(
             "https://codecalamity.com/encoding-uhd-4k-hdr10-videos-with-ffmpeg",
             t("CodeCalamity UHD HDR Encoding Guide"),
+            app.fastflix.config.theme,
         )
         link_3 = link(
             "https://github.com/cdgriffith/FastFlix/wiki/HDR10-Plus-Metadata-Extraction",
             t("HDR10+ Metadata Extraction"),
+            app.fastflix.config.theme,
         )
 
         guide_label = QtWidgets.QLabel(f"{link_1} | {link_2} | {link_3}")
@@ -156,7 +159,7 @@ class HEVC(SettingPanel):
             "The latest windows builds from BtbN should have this feature.\n"
             "I do not know of any public Linux/Mac ones that do."
         )
-        icon = QtGui.QIcon(warning_icon)
+        icon = QtGui.QIcon(get_icon("warning", self.app.fastflix.config.theme))
         label.setPixmap(icon.pixmap(22))
         layout = QtWidgets.QHBoxLayout()
 

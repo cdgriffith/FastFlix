@@ -11,7 +11,7 @@ from fastflix.flix import (
     generate_thumbnail_command,
 )
 from fastflix.encoders.common import helpers
-from fastflix.resources import photo_icon
+from fastflix.resources import get_icon
 from fastflix.language import t
 
 __all__ = ["LargePreview"]
@@ -43,7 +43,7 @@ class LargePreview(QtWidgets.QWidget):
         self.setMaximumWidth(size.width())
         self.setMaximumHeight(size.height())
         self.setMinimumSize(400, 400)
-        self.current_image = QtGui.QPixmap(photo_icon)
+        self.current_image = QtGui.QPixmap(get_icon("photo", self.main.app.fastflix.config.theme))
         self.last_path: Optional[Path] = None
         self.last_command = "NOPE"
         self.setWindowTitle(t("Preview - Press Q to Exit"))

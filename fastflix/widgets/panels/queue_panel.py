@@ -14,15 +14,7 @@ from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.ff_queue import get_queue, save_queue
-from fastflix.resources import (
-    black_x_icon,
-    down_arrow_icon,
-    edit_box_icon,
-    folder_icon,
-    play_icon,
-    up_arrow_icon,
-    undo_icon,
-)
+from fastflix.resources import get_icon
 from fastflix.shared import no_border, open_folder, yes_no_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
@@ -57,11 +49,11 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.setFixedHeight(60)
 
         self.widgets = Box(
-            up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
-            down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
-            cancel_button=QtWidgets.QPushButton(QtGui.QIcon(black_x_icon), ""),
-            reload_button=QtWidgets.QPushButton(QtGui.QIcon(edit_box_icon), ""),
-            retry_button=QtWidgets.QPushButton(QtGui.QIcon(undo_icon), ""),
+            up_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("up-arrow", self.app.fastflix.config.theme)), ""),
+            down_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("down-arrow", self.app.fastflix.config.theme)), ""),
+            cancel_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("black-x", self.app.fastflix.config.theme)), ""),
+            reload_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("edit-box", self.app.fastflix.config.theme)), ""),
+            retry_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("undo", self.app.fastflix.config.theme)), ""),
         )
 
         for widget in self.widgets.values():
