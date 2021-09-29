@@ -8,7 +8,7 @@ from qtpy import QtGui, QtWidgets, QtCore
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
-from fastflix.shared import DEVMODE
+from fastflix.shared import DEVMODE, error_message
 from fastflix.widgets.panels.advanced_panel import AdvancedPanel
 from fastflix.widgets.panels.audio_panel import AudioList
 from fastflix.widgets.panels.command_panel import CommandList
@@ -94,6 +94,14 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.selected = conversion
         self.current_settings.new_source()
         self.main.page_update(build_thumbnail=False)
+        if (
+            self.app.fastflix.current_video
+            and not getattr(self.main.current_encoder, "enable_concat", False)
+            and self.app.fastflix.current_video.concat
+        ):
+            error_message(
+                f"This encoder, {self.main.current_encoder.name} does not support concatenating files together"
+            )
         # Page update does a reload which bases itself off the current encoder so we have to do audio formats after
         self.audio.allowed_formats(self._get_audio_formats(encoder))
 

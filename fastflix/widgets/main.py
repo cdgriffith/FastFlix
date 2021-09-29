@@ -29,6 +29,7 @@ from fastflix.flix import (
     get_auto_crop,
     parse,
     parse_hdr_details,
+    get_first_concat_item,
 )
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
@@ -952,7 +953,7 @@ class Main(QtWidgets.QWidget):
                 f"{t('Auto Crop - Finding black bars at')} {self.number_to_time(x)}",
                 get_auto_crop,
                 dict(
-                    source=self.input_video,
+                    source=self.source_material,
                     video_width=self.app.fastflix.current_video.width,
                     video_height=self.app.fastflix.current_video.height,
                     input_track=self.original_video_track,
@@ -1286,7 +1287,7 @@ class Main(QtWidgets.QWidget):
         tasks = [
             Task(t("Parse Video details"), parse),
             Task(t("Extract covers"), extract_attachments),
-            Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.input_video)),
+            Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.source_material)),
             Task(t("Determine HDR details"), parse_hdr_details),
             Task(t("Detect HDR10+"), detect_hdr10_plus),
         ]
@@ -1367,6 +1368,9 @@ class Main(QtWidgets.QWidget):
         if self.app.fastflix.config.opt("auto_crop"):
             self.get_auto_crop()
 
+        if not getattr(self.current_encoder, "enable_concat", False) and self.app.fastflix.current_video.concat:
+            error_message(f"This encoder, {self.current_encoder.name} does not support concatenating files together")
+
     @property
     def video_track(self) -> int:
         return self.widgets.video_track.currentIndex()
@@ -1443,7 +1447,7 @@ class Main(QtWidgets.QWidget):
 
         thumb_command = generate_thumbnail_command(
             config=self.app.fastflix.config,
-            source=self.input_video,
+            source=self.source_material,
             output=self.thumb_file,
             filters=filters,
             start_time=self.preview_place,
@@ -1455,6 +1459,10 @@ class Main(QtWidgets.QWidget):
             pass
         worker = ThumbnailCreator(self, thumb_command)
         worker.start()
+
+    @property
+    def source_material(self):
+        return get_first_concat_item(self.input_video) if self.app.fastflix.current_video.concat else self.input_video
 
     @staticmethod
     def thread_logger(text):

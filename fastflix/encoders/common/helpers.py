@@ -42,6 +42,7 @@ def generate_ffmpeg_start(
     bufsize=None,
     source_fps: Union[str, None] = None,
     vsync: Union[str, None] = None,
+    concat: bool = False,
     **_,
 ) -> str:
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
@@ -59,7 +60,7 @@ def generate_ffmpeg_start(
             "-y",
             time_one,
             incoming_fps,
-            f'-i "{source}"',
+            f"{'-f concat ' if concat else ''}" f'-i "{source}"',
             time_two,
             title,
             f"{f'-max_muxing_queue_size {max_muxing_queue_size}' if max_muxing_queue_size != 'default' else ''}",
@@ -218,6 +219,7 @@ def generate_all(
         ffmpeg=fastflix.config.ffmpeg,
         encoder=encoder,
         filters=filters,
+        concat=fastflix.current_video.concat,
         **fastflix.current_video.video_settings.dict(),
         **settings.dict(),
     )
