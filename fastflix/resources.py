@@ -14,7 +14,7 @@ loading_movie = str(Path(pkg_resources.resource_filename(__name__, "data/icons/l
 
 
 def get_icon(name: str, theme: str):
-    icon_path = f"data/icons/{'white' if theme == 'dark' else 'black'}"
+    icon_path = f"data/icons/{'white' if theme.lower() in ('dark', 'onyx') else 'black'}"
     location = Path(pkg_resources.resource_filename(__name__, f"{icon_path}/{name}.png")).resolve()
     if not location.exists():
         raise Exception(f"Cannot find: {location}")
@@ -22,4 +22,7 @@ def get_icon(name: str, theme: str):
 
 
 def group_box_style(pt="-10px", pb="5px", mt="5px", mb="0", bb="1px solid #bab9b8"):
-    return f"QGroupBox{{padding-top: {pt}; padding-bottom: {pb}; margin-bottom: {mb}; margin-top: {mt}; border: none; border-bottom: {bb}; border-radius: 0;}}"
+    return f"QGroupBox{{padding-top: {pt}; padding-bottom: {pb}; margin-bottom: {mb}; margin-top: {mt}; border: none; border-bottom: {bb}; border-radius: 0; }}"
+
+
+reset_button_style = "QPushButton{border: none; margin-left: 0; padding-left: 0; margin-top: 0;}"

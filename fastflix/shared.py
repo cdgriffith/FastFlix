@@ -178,7 +178,7 @@ def time_to_number(string_time: str) -> float:
 
 
 def link(url, text, theme):
-    color = "#58d3ff" if theme == "dark" else "black"
+    color = "#afccd5" if theme.lower() in ("dark", "onyx") else "black"
     return f'<a href="{url}" style="color: {color}" >{text}</a>'
 
 

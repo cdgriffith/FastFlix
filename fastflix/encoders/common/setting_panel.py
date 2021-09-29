@@ -30,6 +30,12 @@ class SettingPanel(QtWidgets.QWidget):
         self.only_int = QtGui.QIntValidator()
         self.only_float = QtGui.QDoubleValidator()
 
+    def paintEvent(self, event):
+        o = QtWidgets.QStyleOption()
+        o.initFrom(self)
+        p = QtGui.QPainter(self)
+        self.style().drawPrimitive(QtWidgets.QStyle.PE_Widget, o, p, self)
+
     @staticmethod
     def translate_tip(tooltip):
         return "\n".join([t(x) for x in tooltip.split("\n") if x.strip()])

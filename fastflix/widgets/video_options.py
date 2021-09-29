@@ -3,7 +3,7 @@
 import copy
 import logging
 
-from qtpy import QtGui, QtWidgets
+from qtpy import QtGui, QtWidgets, QtCore
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
@@ -40,6 +40,8 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.advanced = AdvancedPanel(self, self.app)
         self.info = InfoPanel(self, self.app)
         self.debug = DebugPanel(self, self.app)
+        if self.app.fastflix.config.theme == "onyx":
+            self.setStyleSheet("background-color: #4b5054; color: white;")
 
         self.addTab(self.current_settings, QtGui.QIcon(get_icon("editing", app.fastflix.config.theme)), t("Quality"))
         self.addTab(self.audio, QtGui.QIcon(get_icon("music", app.fastflix.config.theme)), t("Audio"))
@@ -52,6 +54,12 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.addTab(self.queue, QtGui.QIcon(get_icon("poll", app.fastflix.config.theme)), t("Encoding Queue"))
         if DEVMODE:
             self.addTab(self.debug, QtGui.QIcon(get_icon("info", app.fastflix.config.theme)), "Debug")
+
+    def paintEvent(self, event):
+        o = QtWidgets.QStyleOption()
+        o.initFrom(self)
+        p = QtGui.QPainter(self)
+        self.style().drawPrimitive(QtWidgets.QStyle.PE_Widget, o, p, self)
 
     def _get_audio_formats(self, encoder=None):
         encoders = None

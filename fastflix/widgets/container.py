@@ -53,6 +53,18 @@ class Container(QtWidgets.QMainWindow):
         self.setWindowIcon(self.icon)
         self.main.set_profile()
 
+        if self.app.fastflix.config.theme == "onyx":
+            self.setStyleSheet(
+                """
+            QPushButton { border-radius:10px }
+            QLineEdit{background-color: #707070; color: black; border-radius: 10px}
+            QTextEdit{background-color: #707070; color: black}
+            QMainWindow{margin: 0; padding: 0}
+            QTabBar::tab {background-color: #4b5054}
+            QComboBox{border-radius:10px}
+            """
+            )
+
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         if self.pb:
             try:

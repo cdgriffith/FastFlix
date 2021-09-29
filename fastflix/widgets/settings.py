@@ -104,7 +104,7 @@ class Settings(QtWidgets.QWidget):
         self.logger_level_widget.setCurrentIndex(int(self.app.fastflix.config.logging_level // 10) - 1)
 
         self.theme = QtWidgets.QComboBox()
-        self.theme.addItems(["light", "dark", "system"])
+        self.theme.addItems(["onyx", "light", "dark", "system"])
         self.theme.setCurrentText(self.app.fastflix.config.theme)
 
         self.crop_detect_points_widget = QtWidgets.QComboBox()
