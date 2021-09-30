@@ -14,7 +14,7 @@ icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/
 enable_subtitles = False
 enable_audio = False
 enable_attachments = False
-enable_concat = True
+enable_concat = False
 
 audio_formats = []
 

@@ -155,7 +155,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.add_spacer()
         self.init_video_speed()
         self.add_spacer()
-        self.init_tone_map()
+        self.init_eq()
         self.add_spacer()
         self.init_denoise()
         self.add_spacer()
@@ -168,7 +168,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.last_row += 1
 
         self.layout.setRowStretch(self.last_row, True)
-        self.layout.setColumnStretch(8, True)
+        # self.layout.setColumnStretch(6, True)
         self.last_row += 1
 
         warning_label = QtWidgets.QLabel()
@@ -179,7 +179,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.layout.addWidget(
             QtWidgets.QLabel(t("Advanced settings are currently not saved in Profiles")), self.last_row, 1, 1, 4
         )
-        for i in range(7):
+        for i in range(6):
             self.layout.setColumnMinimumWidth(i, 155)
         self.setLayout(self.layout)
 
@@ -188,7 +188,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         spacer_widget = QtWidgets.QWidget(self)
         spacer_widget.setFixedHeight(1)
         spacer_widget.setStyleSheet("background-color: #ddd")
-        self.layout.addWidget(spacer_widget, self.last_row, 0, 1, 8)
+        self.layout.addWidget(spacer_widget, self.last_row, 0, 1, 6)
 
     def init_fps(self):
         self.incoming_fps_widget = QtWidgets.QLineEdit()
@@ -211,7 +211,6 @@ class AdvancedPanel(QtWidgets.QWidget):
         )
 
         self.source_frame_rate = QtWidgets.QLabel("")
-        self.source_frame_rate_type = QtWidgets.QLabel("")
         self.vsync_widget = QtWidgets.QComboBox()
         self.vsync_widget.addItem(t("Unspecified"))
         self.vsync_widget.addItems(vsync)
@@ -226,7 +225,6 @@ class AdvancedPanel(QtWidgets.QWidget):
             QtWidgets.QLabel(t("Source Frame Rate")), self.last_row, 4, alignment=QtCore.Qt.AlignRight
         )
         self.layout.addWidget(self.source_frame_rate, self.last_row, 5)
-        self.layout.addWidget(self.source_frame_rate_type, self.last_row, 6)
 
         self.last_row += 1
         self.layout.addWidget(QtWidgets.QLabel(t("Output FPS")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
@@ -259,16 +257,37 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.layout.addWidget(self.video_speed_widget, self.last_row, 1)
         self.layout.addWidget(QtWidgets.QLabel(t("Warning: Audio will not be modified")), self.last_row, 2, 1, 3)
 
-    def init_tone_map(self):
-        self.last_row += 1
+        # def init_tone_map(self):
+        #     self.last_row += 1
         self.tone_map_widget = QtWidgets.QComboBox()
         self.tone_map_widget.addItems(["none", "clip", "linear", "gamma", "reinhard", "hable", "mobius"])
         self.tone_map_widget.setCurrentIndex(5)
         self.tone_map_widget.currentIndexChanged.connect(self.page_update)
         self.layout.addWidget(
-            QtWidgets.QLabel(t("HDR -> SDR Tone Map")), self.last_row, 0, alignment=QtCore.Qt.AlignRight
+            QtWidgets.QLabel(t("HDR -> SDR Tone Map")), self.last_row, 4, alignment=QtCore.Qt.AlignRight
         )
-        self.layout.addWidget(self.tone_map_widget, self.last_row, 1)
+        self.layout.addWidget(self.tone_map_widget, self.last_row, 5)
+
+    def init_eq(self):
+        self.last_row += 1
+        self.brightness_widget = QtWidgets.QLineEdit()
+        self.brightness_widget.setPlaceholderText("0")
+        self.brightness_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        self.contrast_widget = QtWidgets.QLineEdit()
+        self.contrast_widget.setPlaceholderText("1")
+        self.contrast_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        self.saturation_widget = QtWidgets.QLineEdit()
+        self.saturation_widget.setPlaceholderText("1")
+        self.saturation_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        self.layout.addWidget(QtWidgets.QLabel(t("Brightness")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.brightness_widget, self.last_row, 1)
+        self.layout.addWidget(QtWidgets.QLabel(t("Contrast")), self.last_row, 2, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.contrast_widget, self.last_row, 3)
+        self.layout.addWidget(QtWidgets.QLabel(t("Saturation")), self.last_row, 4, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.saturation_widget, self.last_row, 5)
 
     def init_denoise(self):
         self.last_row += 1
@@ -379,6 +398,10 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.app.fastflix.current_video.video_settings.tone_map = self.tone_map_widget.currentText()
         self.app.fastflix.current_video.video_settings.vsync = non(self.vsync_widget.currentText())
 
+        self.app.fastflix.current_video.video_settings.brightness = self.brightness_widget.text() or None
+        self.app.fastflix.current_video.video_settings.saturation = self.saturation_widget.text() or None
+        self.app.fastflix.current_video.video_settings.contrast = self.contrast_widget.text() or None
+
         if not self.incoming_same_as_source.isChecked():
             self.app.fastflix.current_video.video_settings.source_fps = self.incoming_fps_widget.text()
         if not self.outgoing_same_as_source.isChecked():
@@ -444,12 +467,16 @@ class AdvancedPanel(QtWidgets.QWidget):
                 self.color_transfer_widget.setCurrentIndex(0)
                 self.color_primaries_widget.setCurrentIndex(0)
 
-    def page_update(self):
-        self.main.page_update(build_thumbnail=False)
+    def page_update(self, build_thumbnail=False):
+        self.main.page_update(build_thumbnail=build_thumbnail)
 
     def reset(self, settings: VideoSettings = None):
         if settings:
             self.video_speed_widget.setCurrentText(get_key(video_speeds, settings.video_speed))
+            self.brightness_widget.setText(settings.brightness or "")
+            self.saturation_widget.setText(settings.saturation or "")
+            self.contrast_widget.setText(settings.contrast or "")
+
             if settings.deblock:
                 self.deblock_widget.setCurrentText(settings.deblock)
             self.deblock_size_widget.setCurrentText(str(settings.deblock_size))
@@ -512,36 +539,42 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.bufsize_widget.setText("")
             self.maxrate_widget.setDisabled(True)
             self.bufsize_widget.setDisabled(True)
+            self.brightness_widget.setText("")
+            self.saturation_widget.setText("")
+            self.contrast_widget.setText("")
 
         self.hdr_settings()
 
         # Set the frame rate
         if self.app.fastflix.current_video:
             dont_set = False
-            if "/" in self.app.fastflix.current_video.frame_rate:
-                try:
-                    over, under = self.app.fastflix.current_video.frame_rate.split("/")
-                    if under == "1":
-                        self.source_frame_rate.setText(over)
-                        dont_set = True
-                    readable_rate = int(over) / int(under)
-                except Exception:
-                    self.source_frame_rate.setText(self.app.fastflix.current_video.frame_rate)
-                else:
-                    if not dont_set:
-                        self.source_frame_rate.setText(
-                            f"{self.app.fastflix.current_video.frame_rate}   [ ~{readable_rate:.3f} ]"
-                        )
-            else:
-                self.source_frame_rate.setText(self.app.fastflix.current_video.frame_rate)
-            self.source_frame_rate_type.setText(
+            frame_rate_type = (
                 t("Constant")
                 if self.app.fastflix.current_video.frame_rate == self.app.fastflix.current_video.average_frame_rate
                 else t("Variable")
             )
+            if "/" in self.app.fastflix.current_video.frame_rate:
+                try:
+                    over, under = self.app.fastflix.current_video.frame_rate.split("/")
+                    if under == "1":
+                        self.source_frame_rate.setText(f"{over}     ( {frame_rate_type} )")
+                        dont_set = True
+                    readable_rate = int(over) / int(under)
+                except Exception:
+                    self.source_frame_rate.setText(
+                        f"{self.app.fastflix.current_video.frame_rate}      ( {frame_rate_type} )"
+                    )
+                else:
+                    if not dont_set:
+                        self.source_frame_rate.setText(
+                            f"{self.app.fastflix.current_video.frame_rate}   [ ~{readable_rate:.3f} ]      ( {frame_rate_type} )"
+                        )
+            else:
+                self.source_frame_rate.setText(
+                    f"{self.app.fastflix.current_video.frame_rate}     ( {frame_rate_type} )"
+                )
         else:
             self.source_frame_rate.setText("")
-            self.source_frame_rate_type.setText("")
 
     def new_source(self):
         self.reset()

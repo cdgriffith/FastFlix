@@ -2,8 +2,9 @@
 
 ## Version 4.5.0
 
-* Adding #267 new themes (thanks to Onyx)
+* Adding #267 new themes (thanks to Joey Catt | Onyx Studios)
 * Adding #115 ability to provide concat file (thanks to Marco Ravich)
+* Adding support for brightness, contrast and saturation filters
 
 ## Version 4.4.2
 

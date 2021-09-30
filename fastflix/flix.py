@@ -148,7 +148,8 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         raise FlixError(result.stderr)
 
 
-def get_first_concat_item(file):
+def get_all_concat_items(file):
+    items = []
     with open(file) as f:
         for line in f:
             if line.strip().startswith("#"):
@@ -159,9 +160,15 @@ def get_first_concat_item(file):
                     filename = file.parent / filename
                 if not filename.exists():
                     raise FlixError(f'No file "{filename}" exists')
-                return filename
-            else:
-                raise FlixError("concat file must start with `file` on each line.")
+                items.append(filename)
+    return items
+
+
+def get_first_concat_item(file):
+    all_items = get_all_concat_items(file)
+    if not all_items:
+        raise FlixError("concat file must start with `file` on each line.")
+    return all_items[0]
 
 
 def parse(app: FastFlixApp, **_):

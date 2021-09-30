@@ -27,6 +27,7 @@ from fastflix.widgets.main import Main
 from fastflix.widgets.profile_window import ProfileWindow
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
+from fastflix.widgets.concat import ConcatWindow
 
 logger = logging.getLogger("fastflix")
 
@@ -133,6 +134,13 @@ class Container(QtWidgets.QMainWindow):
         profile_menu.addAction(show_profile_action)
         profile_menu.addAction(delete_profile_action)
 
+        tools_menu = menubar.addMenu(t("Tools"))
+        concat_action = QtWidgets.QAction(
+            self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("Concatenation Builder"), self
+        )
+        concat_action.triggered.connect(self.show_concat)
+        tools_menu.addAction(concat_action)
+
         wiki_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("FastFlix Wiki"), self)
         wiki_action.triggered.connect(self.show_wiki)
 
@@ -183,6 +191,10 @@ class Container(QtWidgets.QMainWindow):
 
     def show_wiki(self):
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("https://github.com/cdgriffith/FastFlix/wiki"))
+
+    def show_concat(self):
+        self.concat = ConcatWindow(app=self.app, main=self.main)
+        self.concat.show()
 
     def show_about(self):
         self.about = About(app=self.app)

@@ -21,6 +21,19 @@ from fastflix.widgets.panels.subtitle_panel import SubtitleList
 
 logger = logging.getLogger("fastflix")
 
+icons = {
+    0: "onyx-quality",
+    1: "onyx-audio",
+    2: "onyx-cc",
+    3: "onyx-cover",
+    4: "onyx-advanced",
+    5: "onyx-source-details",
+    6: "onyx-raw-commands",
+    7: "onyx-status",
+    8: "onyx-queue",
+    9: "info",
+}
+
 
 class VideoOptions(QtWidgets.QTabWidget):
     def __init__(self, parent, app: FastFlixApp, available_audio_encoders):
@@ -31,6 +44,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.selected = 0
         self.commands = CommandList(self, self.app)
         self.current_settings = self.main.current_encoder.settings_panel(self, self.main, self.app)
+        self.tabBar().tabBarClicked.connect(self.change_tab)
 
         self.audio = AudioList(self, self.app)
         self.subtitles = SubtitleList(self, self.app)
@@ -41,19 +55,36 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.info = InfoPanel(self, self.app)
         self.debug = DebugPanel(self, self.app)
         if self.app.fastflix.config.theme == "onyx":
-            self.setStyleSheet("background-color: #4b5054; color: white;")
+            self.setStyleSheet(
+                "*{ background-color: #4b5054; color: white} QTabWidget{margin-top: 34px; background-color: #4b5054;} QTabBar{font-size: 13px; background-color: #4f5962}"
+            )
 
-        self.addTab(self.current_settings, QtGui.QIcon(get_icon("editing", app.fastflix.config.theme)), t("Quality"))
-        self.addTab(self.audio, QtGui.QIcon(get_icon("music", app.fastflix.config.theme)), t("Audio"))
-        self.addTab(self.subtitles, QtGui.QIcon(get_icon("cc", app.fastflix.config.theme)), t("Subtitles"))
-        self.addTab(self.attachments, QtGui.QIcon(get_icon("photo", app.fastflix.config.theme)), t("Cover"))
-        self.addTab(self.advanced, QtGui.QIcon(get_icon("advanced", app.fastflix.config.theme)), t("Advanced"))
-        self.addTab(self.info, QtGui.QIcon(get_icon("info", app.fastflix.config.theme)), t("Source Details"))
-        self.addTab(self.commands, QtGui.QIcon(get_icon("text-left", app.fastflix.config.theme)), t("Raw Commands"))
-        self.addTab(self.status, QtGui.QIcon(get_icon("working", app.fastflix.config.theme)), t("Encoding Status"))
-        self.addTab(self.queue, QtGui.QIcon(get_icon("poll", app.fastflix.config.theme)), t("Encoding Queue"))
+        self.setIconSize(QtCore.QSize(24, 24))
+        self.addTab(
+            self.current_settings, QtGui.QIcon(get_icon("onyx-quality", app.fastflix.config.theme)), t("Quality")
+        )
+        self.addTab(self.audio, QtGui.QIcon(get_icon("onyx-audio", app.fastflix.config.theme)), t("Audio"))
+        self.addTab(self.subtitles, QtGui.QIcon(get_icon("onyx-cc", app.fastflix.config.theme)), t("Subtitles"))
+        self.addTab(self.attachments, QtGui.QIcon(get_icon("onyx-cover", app.fastflix.config.theme)), t("Cover"))
+        self.addTab(self.advanced, QtGui.QIcon(get_icon("onyx-advanced", app.fastflix.config.theme)), t("Advanced"))
+        self.addTab(
+            self.info, QtGui.QIcon(get_icon("onyx-source-details", app.fastflix.config.theme)), t("Source Details")
+        )
+        self.addTab(
+            self.commands, QtGui.QIcon(get_icon("onyx-raw-commands", app.fastflix.config.theme)), t("Raw Commands")
+        )
+        self.addTab(self.status, QtGui.QIcon(get_icon("onyx-status", app.fastflix.config.theme)), t("Encoding Status"))
+        self.addTab(self.queue, QtGui.QIcon(get_icon("onyx-queue", app.fastflix.config.theme)), t("Encoding Queue"))
         if DEVMODE:
             self.addTab(self.debug, QtGui.QIcon(get_icon("info", app.fastflix.config.theme)), "Debug")
+
+    def resetTabIcons(self):
+        for index, icon_name in icons.items():
+            self.setTabIcon(index, QtGui.QIcon(get_icon(icon_name, self.app.fastflix.config.theme)))
+
+    def change_tab(self, index):
+        self.resetTabIcons()
+        self.setTabIcon(index, QtGui.QIcon(get_icon(icons[index], "selected")))
 
     def paintEvent(self, event):
         o = QtWidgets.QStyleOption()
@@ -86,8 +117,10 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.current_settings.show()
         self.removeTab(0)
         self.insertTab(0, self.current_settings, t("Quality"))
-        self.setTabIcon(0, QtGui.QIcon(get_icon("editing", self.app.fastflix.config.theme)))
+        self.setTabIcon(0, QtGui.QIcon(get_icon("onyx-quality", self.app.fastflix.config.theme)))
+
         self.setCurrentIndex(0)
+        self.change_tab(0)
         self.setTabEnabled(1, getattr(encoder, "enable_audio", True))
         self.setTabEnabled(2, getattr(encoder, "enable_subtitles", True))
         self.setTabEnabled(3, getattr(encoder, "enable_attachments", True))

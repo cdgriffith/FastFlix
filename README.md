@@ -94,8 +94,10 @@ Copyright (C) 2019-2021 Chris Griffith
 The code itself is licensed under the MIT which you can read in the `LICENSE` file. <br>
 Read more about the release licensing in the [docs](docs/README.md) folder. <br>
 
+Custom icons designed by Joey Catt | Onyx Studios
+
 Encoder icons for [VP9](https://commons.wikimedia.org/wiki/File:Vp9-logo-for-mediawiki.svg) and [AOM AV1](https://commons.wikimedia.org/wiki/File:AV1_logo_2018.svg) are from Wikimedia Commons all others are self created.
 
-Various button icons from [https://uxwing.com](https://uxwing.com)
+Additional button icons from [https://uxwing.com](https://uxwing.com)
 
 Sample videos and thumbnail for preview image provided by [Jessica Payne](http://iamjessicapayne.com/)

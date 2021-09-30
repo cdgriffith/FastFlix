@@ -88,6 +88,9 @@ class VideoSettings(BaseModel):
     vsync: Optional[str] = None
     maxrate: Optional[int] = None
     bufsize: Optional[int] = None
+    brightness: Optional[float] = None
+    contrast: Optional[float] = None
+    saturation: Optional[float] = None
     video_encoder_settings: Union[
         x265Settings,
         x264Settings,

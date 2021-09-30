@@ -14,8 +14,12 @@ loading_movie = str(Path(pkg_resources.resource_filename(__name__, "data/icons/l
 
 
 def get_icon(name: str, theme: str):
-    icon_path = f"data/icons/{'white' if theme.lower() in ('dark', 'onyx') else 'black'}"
-    location = Path(pkg_resources.resource_filename(__name__, f"{icon_path}/{name}.png")).resolve()
+    folder = "black"
+    if theme.lower() in ("dark", "onyx"):
+        folder = "white"
+    if theme == "selected":
+        folder = "selected"
+    location = Path(pkg_resources.resource_filename(__name__, f"data/icons/{folder}/{name}.png")).resolve()
     if not location.exists():
         raise Exception(f"Cannot find: {location}")
     return str(location)

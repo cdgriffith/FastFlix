@@ -122,6 +122,7 @@ class Main(QtWidgets.QWidget):
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
         self.app: FastFlixApp = app
+        self.setObjectName("Main")
         self.container = parent
         self.video: Video = Video(source=Path(), width=0, height=0, duration=0)
 
@@ -144,8 +145,12 @@ class Main(QtWidgets.QWidget):
 
         self.input_video = None
         self.video_path_widget = QtWidgets.QLineEdit(t("No Source Selected"))
+        self.source_video_path_widget = QtWidgets.QLineEdit("")
+        self.source_video_path_widget.setDisabled(True)
+        self.source_video_path_widget.setFixedHeight(20)
         self.output_video_path_widget = QtWidgets.QLineEdit("")
         self.output_video_path_widget.setDisabled(True)
+        self.output_video_path_widget.setFixedHeight(20)
         self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
         self.video_path_widget.setEnabled(False)
 
@@ -208,8 +213,8 @@ class Main(QtWidgets.QWidget):
     def init_top_bar(self):
         top_bar = QtWidgets.QHBoxLayout()
 
-        source = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("video-add")), f"  {t('Source')}")
-        source.setIconSize(QtCore.QSize(22, 20))
+        source = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-source")), f"  {t('Source')}")
+        source.setIconSize(QtCore.QSize(22, 22))
         source.setFixedHeight(40)
         source.setDefault(True)
         source.clicked.connect(lambda: self.open_file())
@@ -229,12 +234,12 @@ class Main(QtWidgets.QWidget):
         top_bar.addWidget(self.widgets.profile_box)
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
 
-        add_profile = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("profile-add")), t("New Profile"))
+        add_profile = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-new-profile")), f'  {t("New Profile")}')
         # add_profile.setFixedSize(QtCore.QSize(40, 40))
         add_profile.setFixedHeight(40)
-        add_profile.setIconSize(QtCore.QSize(22, 22))
+        add_profile.setIconSize(QtCore.QSize(20, 20))
         add_profile.setToolTip(t("Profile_newprofiletooltip"))
-        add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
+        # add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
         add_profile.clicked.connect(lambda: self.container.new_profile())
 
         # options = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("settings")), "")
@@ -252,19 +257,19 @@ class Main(QtWidgets.QWidget):
     def init_top_bar_right(self):
         top_bar_right = QtWidgets.QHBoxLayout()
 
-        queue = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("video-playlist")), f"{t('Add to Queue')}  ")
-        queue.setIconSize(QtCore.QSize(22, 20))
+        queue = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-add-queue")), f"{t('Add to Queue')}  ")
+        queue.setIconSize(QtCore.QSize(26, 26))
         queue.setFixedHeight(40)
-        queue.setStyleSheet("padding: 0 10px;")
+        queue.setStyleSheet("padding: 0 10px; font-size: 14px;")
         queue.setLayoutDirection(QtCore.Qt.RightToLeft)
         queue.clicked.connect(lambda: self.add_to_queue())
 
         self.widgets.convert_button = QtWidgets.QPushButton(
-            QtGui.QIcon(self.get_icon("play-round")), f"{t('Convert')}  "
+            QtGui.QIcon(self.get_icon("onyx-convert")), f"{t('Convert')}  "
         )
-        self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
+        self.widgets.convert_button.setIconSize(QtCore.QSize(26, 26))
         self.widgets.convert_button.setFixedHeight(40)
-        self.widgets.convert_button.setStyleSheet("padding: 0 10px;")
+        self.widgets.convert_button.setStyleSheet("padding: 0 10px; font-size: 14px;")
         self.widgets.convert_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.widgets.convert_button.clicked.connect(lambda: self.encode_video())
         top_bar_right.addStretch(1)
@@ -332,17 +337,27 @@ class Main(QtWidgets.QWidget):
         spacer.setFixedHeight(2)
         layout.addWidget(spacer)
 
-        output_layout = QtWidgets.QHBoxLayout()
+        source_layout = QtWidgets.QHBoxLayout()
+        source_label = QtWidgets.QLabel(t("Source"))
+        source_label.setFixedWidth(70)
+        source_layout.addWidget(source_label)
+        source_layout.addWidget(self.source_video_path_widget, stretch=True)
 
+        output_layout = QtWidgets.QHBoxLayout()
         output_label = QtWidgets.QLabel(t("Output"))
         output_label.setFixedWidth(70)
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
-        self.output_path_button = QtWidgets.QPushButton(icon=QtGui.QIcon(self.get_icon("folder")))
+        self.output_path_button = QtWidgets.QPushButton(icon=QtGui.QIcon(self.get_icon("onyx-output")))
         self.output_path_button.clicked.connect(lambda: self.save_file())
         self.output_path_button.setDisabled(True)
+        # self.output_path_button.setFixedHeight(12)
+        self.output_path_button.setIconSize(QtCore.QSize(16, 16))
+        self.output_path_button.setFixedSize(QtCore.QSize(16, 16))
+        self.output_path_button.setStyleSheet("border: none; padding: 0; margin: 0")
 
         output_layout.addWidget(self.output_path_button)
+        layout.addLayout(source_layout)
         layout.addLayout(output_layout)
 
         layout.addLayout(self.init_video_track_select())
@@ -353,6 +368,7 @@ class Main(QtWidgets.QWidget):
         title_label.setFixedWidth(70)
         title_label.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
         self.widgets.video_title = QtWidgets.QLineEdit()
+        self.widgets.video_title.setFixedHeight(20)
         self.widgets.video_title.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
         self.widgets.video_title.textChanged.connect(lambda: self.page_update(build_thumbnail=False))
 
@@ -360,9 +376,7 @@ class Main(QtWidgets.QWidget):
         title_layout.addWidget(self.widgets.video_title)
 
         layout.addLayout(title_layout)
-        layout.addStretch(1)
         layout.addWidget(self.init_start_time())
-        layout.addStretch(1)
         layout.addWidget(self.init_scale())
         layout.addStretch(1)
         return layout
@@ -370,22 +384,28 @@ class Main(QtWidgets.QWidget):
     def init_right_col(self):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.init_crop())
-        layout.addStretch(1)
-        layout.addLayout(self.init_transforms())
-        layout.addStretch(1)
+        layout.addWidget(self.init_transforms())
 
-        custom_options = QtWidgets.QTextEdit()
-        # custom_options.setWidt
-        custom_options.setPlaceholderText(t("Custom Encoder Options"))
-        custom_options.setMaximumHeight(90)
-        layout.addWidget(custom_options)
+        layout.addLayout(self.init_checkboxes())
+        layout.addStretch(1)
+        # custom_options = QtWidgets.QTextEdit()
+        # # custom_options.setWidt
+        # custom_options.setPlaceholderText(t("Custom Encoder Options"))
+        # custom_options.setMaximumHeight(90)
+        # layout.addWidget(custom_options)
         return layout
 
     def init_transforms(self):
+        group_box = QtWidgets.QGroupBox()
+        group_box.setStyleSheet(group_box_style(pt="0", mt="0"))
         transform_layout = QtWidgets.QHBoxLayout()
         transform_layout.addWidget(self.init_rotate(), stretch=True)
         transform_layout.addWidget(self.init_flip(), stretch=True)
+        group_box.setLayout(transform_layout)
+        return group_box
 
+    def init_checkboxes(self):
+        transform_layout = QtWidgets.QHBoxLayout()
         metadata_layout = QtWidgets.QVBoxLayout()
         self.widgets.remove_metadata = QtWidgets.QCheckBox(t("Remove Metadata"))
         self.widgets.remove_metadata.setChecked(True)
@@ -429,6 +449,7 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.video_track = QtWidgets.QComboBox()
         self.widgets.video_track.addItems([])
+        self.widgets.video_track.setFixedHeight(20)
         self.widgets.video_track.currentIndexChanged.connect(self.video_track_update)
         if self.app.fastflix.config.theme == "onyx":
             self.widgets.video_track.setStyleSheet("background-color: #707070; border-radius: 10px; color: black")
@@ -882,10 +903,8 @@ class Main(QtWidgets.QWidget):
                 return
 
         self.input_video = Path(clean_file_string(filename[0]))
+        self.source_video_path_widget.setText(str(self.input_video))
         self.video_path_widget.setText(str(self.input_video))
-        self.output_video_path_widget.setText(self.generate_output_filename)
-        self.output_video_path_widget.setDisabled(False)
-        self.output_path_button.setDisabled(False)
         try:
             self.update_video_info()
         except Exception:
@@ -1176,6 +1195,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         self.app.fastflix.current_video = None
         self.input_video = None
+        self.source_video_path_widget.setText("")
         self.video_path_widget.setText(t("No Source Selected"))
         self.output_video_path_widget.setText("")
         self.output_path_button.setDisabled(True)
@@ -1214,6 +1234,7 @@ class Main(QtWidgets.QWidget):
         self.app.fastflix.current_video.work_path.mkdir(parents=True, exist_ok=True)
         extract_attachments(app=self.app)
         self.input_video = video.source
+        self.source_video_path_widget.setText(str(self.input_video))
         hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
         text_video_tracks = [
             (
@@ -1283,6 +1304,9 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
         self.loading_video = True
+        self.output_video_path_widget.setText(self.generate_output_filename)
+        self.output_video_path_widget.setDisabled(False)
+        self.output_path_button.setDisabled(False)
         self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())
         tasks = [
             Task(t("Parse Video details"), parse),
@@ -1834,11 +1858,8 @@ class Main(QtWidgets.QWidget):
             self.input_video = Path(clean_file_string(event.mimeData().urls()[0].toLocalFile()))
         except (ValueError, IndexError):
             return event.ignore()
-
+        self.source_video_path_widget.setText(str(self.input_video))
         self.video_path_widget.setText(str(self.input_video))
-        self.output_video_path_widget.setText(self.generate_output_filename)
-        self.output_video_path_widget.setDisabled(False)
-        self.output_path_button.setDisabled(False)
         try:
             self.update_video_info()
         except Exception:

@@ -116,6 +116,9 @@ def generate_filters(
     start_filters=None,
     raw_filters=False,
     deinterlace=False,
+    contrast=None,
+    brightness=None,
+    saturation=None,
     tone_map: str = "hable",
     video_speed: Union[float, int] = 1,
     deblock: Union[str, None] = None,
@@ -154,6 +157,17 @@ def generate_filters(
         filter_list.append(
             f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
         )
+
+    eq_filters = []
+    if brightness:
+        eq_filters.append(f"brightness={brightness}")
+    if saturation:
+        eq_filters.append(f"saturation={saturation}")
+    if contrast:
+        eq_filters.append(f"contrast={contrast}")
+    if eq_filters:
+        eq_filters.insert(0, "eq=eval=frame")
+        filter_list.append(":".join(eq_filters))
 
     filters = ",".join(filter_list)
     if filters and custom_filters:
