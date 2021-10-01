@@ -34,7 +34,7 @@ class ConcatTable(QtWidgets.QTableView):
     def __init__(self, parent):
         super().__init__(parent)
         self.verticalHeader().hide()
-        self.horizontalHeader().hide()
+        # self.horizontalHeader().hide()
         self.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.setSelectionBehavior(self.SelectRows)
         self.setSelectionMode(self.SingleSelection)
@@ -44,11 +44,14 @@ class ConcatTable(QtWidgets.QTableView):
 
         # Set our custom model - this prevents row "shifting"
         self.model = MyModel()
+        self.model.setHorizontalHeaderLabels(["Filename", "Resolution", "Codec", "Remove"])
+
         self.setModel(self.model)
         self.buttons = []
 
     def update_items(self, items):
         self.model.clear()
+        self.model.setHorizontalHeaderLabels(["Filename", "Resolution", "Codec", "Remove"])
         self.buttons = []
         for item in items:
             self.add_item(*item)
@@ -146,7 +149,7 @@ class ConcatWindow(QtWidgets.QWidget):
         layout.addLayout(top_bar)
 
         layout.addWidget(self.concat_area)
-        # layout.addLayout(manual_layout)
+        layout.addWidget(QtWidgets.QLabel(t("Drag and Drop to reorder - All items need to be same dimensions")))
         self.setLayout(layout)
 
     def set_folder_name(self, name):
@@ -161,9 +164,9 @@ class ConcatWindow(QtWidgets.QWidget):
     def select_folder(self):
         if self.concat_area.table.model.rowCount() > 0:
             if not yes_no_message(
-                "There are already items in this list,\n"
-                "if you open a new directory, they will all be removed.\n\n"
-                "Continue?",
+                f"{t('There are already items in this list')},\n"
+                f"{t('if you open a new directory, they will all be removed.')}\n\n"
+                f"{t('Continue')}?",
                 "Confirm Change Folder",
             ):
                 return
@@ -188,12 +191,13 @@ class ConcatWindow(QtWidgets.QWidget):
         self.concat_area.table.update_items(items)
         if skipped:
             error_message(
-                "The following items were excluded\n"
-                "as they could not be identified as image or video files:\n\n"
-                + "\n".join(skipped[:20])
-                + f"\n\nand {len(skipped[20:])} more..."
-                if len(skipped) > 20
-                else ""
+                "".join(
+                    [
+                        f"{t('The following items were excluded as they could not be identified as image or video files')}:\n",
+                        "\n".join(skipped[:20]),
+                        f"\n\n+ {len(skipped[20:])} {t('more')}..." if len(skipped) > 20 else "",
+                    ]
+                )
             )
 
     def save(self):
@@ -203,6 +207,7 @@ class ConcatWindow(QtWidgets.QWidget):
                 "\n".join([f"file '{self.folder_name}{os.sep}{item}'" for item in self.concat_area.table.get_items()])
             )
         self.main.input_video = concat_file
+        self.main.source_video_path_widget.setText(str(self.main.input_video))
         self.main.update_video_info()
         self.concat_area.table.model.clear()
         self.concat_area.table.buttons = []

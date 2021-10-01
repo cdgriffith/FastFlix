@@ -71,7 +71,7 @@ class LargePreview(QtWidgets.QWidget):
 
         thumb_command = generate_thumbnail_command(
             config=self.main.app.fastflix.config,
-            source=self.main.input_video,
+            source=self.main.source_material,
             output=output,
             filters=filters,
             start_time=self.main.preview_place,

@@ -3225,12 +3225,122 @@ Preview - Press Q to Exit:
   ita: Anteprima - Premere Q per uscire
   spa: Vista previa - Pulse Q para salir
   zho: 预览 - 按Q键退出
-#Tools:
-#Concatenation Builder:
-#Brightness:
-#Contrast:
-#Saturation:
-#Trim:
-#Resolution:
-#Theme:
-#Base Folder:
+Tools:
+  deu: Werkzeuge
+  eng: Tools
+  fra: Outils
+  ita: Strumenti
+  spa: Herramientas
+  zho: 工具
+Concatenation Builder:
+  deu: Verkettung Builder
+  eng: Concatenation Builder
+  fra: Créateur de concaténation
+  ita: Costruttore di concatenazioni
+  spa: Constructor de Concatenación
+  zho: 串联生成器
+Brightness:
+  deu: Helligkeit
+  eng: Brightness
+  fra: Luminosité
+  ita: Luminosità
+  spa: Brillo
+  zho: 亮度
+Contrast:
+  deu: Kontrast
+  eng: Contrast
+  fra: Contraste
+  ita: Contrasto
+  spa: Contraste
+  zho: 对比度
+Saturation:
+  deu: Sättigung
+  eng: Saturation
+  fra: Saturation
+  ita: Saturazione
+  spa: Saturación
+  zho: 饱和度
+Trim:
+  deu: Zuschneiden
+  eng: Trim
+  fra: Découpage
+  ita: Trim
+  spa: Recorte
+  zho: 修剪
+Resolution:
+  deu: Auflösung
+  eng: Resolution
+  fra: Résolution
+  ita: Risoluzione
+  spa: Resolución
+  zho: 分辨率
+Theme:
+  deu: Thema
+  eng: Theme
+  fra: Thème
+  ita: Tema
+  spa: Tema
+  zho: 主题
+Base Folder:
+  deu: Basis-Ordner
+  eng: Base Folder
+  fra: Dossier de base
+  ita: Cartella base
+  spa: Carpeta base
+  zho: 基本文件夹
+Open Folder:
+  deu: Ordner öffnen
+  eng: Open Folder
+  fra: Ouvrir le dossier
+  ita: Aprire la cartella
+  spa: Abrir carpeta
+  zho: 打开文件夹
+Load:
+  deu: laden
+  eng: Load
+  fra: Charger
+  ita: Carica
+  spa: Cargar
+  zho: 装载
+Drag and Drop to reorder - All items need to be same dimensions:
+  deu: Ziehen und Ablegen zum Neuordnen - Alle Elemente müssen die gleichen Abmessungen haben
+  eng: Drag and Drop to reorder - All items need to be same dimensions
+  fra: Glissez et déposez pour réorganiser - Tous les éléments doivent avoir les mêmes dimensions.
+  ita: Drag and Drop per riordinare - Tutti gli elementi devono avere le stesse dimensioni
+  spa: Arrastrar y soltar para reordenar - Todos los elementos deben tener las mismas dimensiones
+  zho: 拖放来重新排序 - 所有项目都需要相同的尺寸
+The following items were excluded as they could not be identified as image or video files:
+  deu: Die folgenden Elemente wurden ausgeschlossen, da sie nicht als Bild- oder Videodateien identifiziert werden konnten
+  eng: The following items were excluded as they could not be identified as image or video files
+  fra: Les éléments suivants ont été exclus car ils n'ont pas pu être identifiés comme des fichiers image ou vidéo.
+  ita: I seguenti elementi sono stati esclusi perché non potevano essere identificati come file immagine o video
+  spa: Se han excluido los siguientes elementos por no poder ser identificados como archivos de imagen o vídeo
+  zho: 以下项目被排除在外，因为它们无法被识别为图像或视频文件
+There are already items in this list:
+  deu: Es gibt bereits Objekte in dieser Liste
+  eng: There are already items in this list
+  fra: Il y a déjà des éléments dans cette liste
+  ita: Ci sono già elementi in questa lista
+  spa: Ya hay elementos en esta lista
+  zho: 此列表中已经有项目
+if you open a new directory, they will all be removed.:
+  deu: Wenn Sie ein neues Verzeichnis öffnen, werden sie alle entfernt.
+  eng: if you open a new directory, they will all be removed.
+  fra: si vous ouvrez un nouveau répertoire, ils seront tous supprimés.
+  ita: se si apre una nuova directory, saranno tutti rimossi.
+  spa: si abre un nuevo directorio, se eliminarán todos.
+  zho: 如果你打开一个新的目录，它们将被全部删除。
+Continue:
+  deu: Weiter
+  eng: Continue
+  fra: Continuer
+  ita: Continua
+  spa: Continuar
+  zho: 继续
+Confirm Change Folder:
+  deu: Bestätigen Sie Ordner wechseln
+  eng: Confirm Change Folder
+  fra: Confirmer le changement de dossier
+  ita: Conferma il cambio di cartella
+  spa: Confirmar cambio de carpeta
+  zho: 确认更改文件夹
