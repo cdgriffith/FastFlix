@@ -156,8 +156,6 @@ def get_all_concat_items(file):
                 continue
             elif line.strip().startswith("file"):
                 filename = Path(line.strip()[5:].strip("'\""))
-                if not filename.is_absolute():
-                    filename = file.parent / filename
                 if not filename.exists():
                     raise FlixError(f'No file "{filename}" exists')
                 items.append(filename)

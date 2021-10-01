@@ -40,6 +40,8 @@ from fastflix.resources import (
     main_icon,
     group_box_style,
     reset_button_style,
+    onyx_convert_icon,
+    onyx_queue_add_icon,
 )
 from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
 from fastflix.windows_tools import show_windows_notification
@@ -256,20 +258,21 @@ class Main(QtWidgets.QWidget):
 
     def init_top_bar_right(self):
         top_bar_right = QtWidgets.QHBoxLayout()
+        theme = "padding: 0 10px; font-size: 14px;"
+        if self.app.fastflix.config.theme in ("dark", "onyx"):
+            theme = "padding: 0 10px; font-size: 14px;  background-color: #4f4f4f; border: none; color: white;"
 
-        queue = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-add-queue")), f"{t('Add to Queue')}  ")
+        queue = QtWidgets.QPushButton(QtGui.QIcon(onyx_queue_add_icon), f"{t('Add to Queue')}  ")
         queue.setIconSize(QtCore.QSize(26, 26))
         queue.setFixedHeight(40)
-        queue.setStyleSheet("padding: 0 10px; font-size: 14px;")
+        queue.setStyleSheet(theme)
         queue.setLayoutDirection(QtCore.Qt.RightToLeft)
         queue.clicked.connect(lambda: self.add_to_queue())
 
-        self.widgets.convert_button = QtWidgets.QPushButton(
-            QtGui.QIcon(self.get_icon("onyx-convert")), f"{t('Convert')}  "
-        )
+        self.widgets.convert_button = QtWidgets.QPushButton(QtGui.QIcon(onyx_convert_icon), f"{t('Convert')}  ")
         self.widgets.convert_button.setIconSize(QtCore.QSize(26, 26))
         self.widgets.convert_button.setFixedHeight(40)
-        self.widgets.convert_button.setStyleSheet("padding: 0 10px; font-size: 14px;")
+        self.widgets.convert_button.setStyleSheet(theme)
         self.widgets.convert_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.widgets.convert_button.clicked.connect(lambda: self.encode_video())
         top_bar_right.addStretch(1)
@@ -399,8 +402,9 @@ class Main(QtWidgets.QWidget):
         group_box = QtWidgets.QGroupBox()
         group_box.setStyleSheet(group_box_style(pt="0", mt="0"))
         transform_layout = QtWidgets.QHBoxLayout()
-        transform_layout.addWidget(self.init_rotate(), stretch=True)
-        transform_layout.addWidget(self.init_flip(), stretch=True)
+        transform_layout.addWidget(self.init_rotate())
+        transform_layout.addStretch(1)
+        transform_layout.addWidget(self.init_flip())
         group_box.setLayout(transform_layout)
         return group_box
 
@@ -531,7 +535,7 @@ class Main(QtWidgets.QWidget):
         rot_270_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} CC90.png")).resolve())
         rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
 
-        self.widgets.rotate.addItems([t("No Rotation"), "90°", "180°", "270°"])
+        self.widgets.rotate.addItems([t("No Rotation") + "   ", "90°", "180°", "270°"])
         self.widgets.rotate.setItemIcon(0, QtGui.QIcon(no_rot_file))
         self.widgets.rotate.setItemIcon(1, QtGui.QIcon(rot_90_file))
         self.widgets.rotate.setItemIcon(2, QtGui.QIcon(rot_180_file))
@@ -683,6 +687,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.keep_aspect = QtWidgets.QCheckBox(t("Keep aspect ratio"))
         self.widgets.scale.keep_aspect.setMaximumHeight(40)
         self.widgets.scale.keep_aspect.setChecked(True)
+        # self.widgets.scale.keep_aspect.setSty
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.keep_aspect_update())
 
@@ -885,7 +890,8 @@ class Main(QtWidgets.QWidget):
             self,
             caption="Open Video",
             filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx *.webm *.mpg *.mp2 *.mpeg *.mpe *.mpv *.ogg *.m4p"
-            " *.wmv *.mov *.qt *.flv *.hevc *.gif *.webp *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2)",
+            " *.wmv *.mov *.qt *.flv *.hevc *.gif *.webp *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2);;"
+            "Concatenation Text File (*.txt *.concat);; All Files (*)",
             directory=str(
                 self.app.fastflix.config.source_directory
                 or (self.app.fastflix.current_video.source.parent if self.app.fastflix.current_video else Path.home())

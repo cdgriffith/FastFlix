@@ -15,6 +15,7 @@ class FlixList(QtWidgets.QWidget):
         super().__init__(parent)
         self.app = app
         self.main = parent.main
+        self.setObjectName("FlixList")
         self.inner_layout = None
         self.list_type = list_type
 

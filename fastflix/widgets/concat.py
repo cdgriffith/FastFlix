@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
 import os
+import logging
 
 from qtpy import QtWidgets, QtGui, QtCore
+
+from fastflix.language import t
+from fastflix.flix import probe
+from fastflix.shared import yes_no_message, error_message
+
+logger = logging.getLogger("fastflix")
 
 
 class MyModel(QtGui.QStandardItemModel):
@@ -24,7 +31,7 @@ class CloseButton(QtWidgets.QPushButton):
 
 
 class ConcatTable(QtWidgets.QTableView):
-    def __init__(self, parent, items):
+    def __init__(self, parent):
         super().__init__(parent)
         self.verticalHeader().hide()
         self.horizontalHeader().hide()
@@ -40,30 +47,35 @@ class ConcatTable(QtWidgets.QTableView):
         self.setModel(self.model)
         self.buttons = []
 
-        if items:
-            self.update_items(items)
-
     def update_items(self, items):
         self.model.clear()
         self.buttons = []
         for item in items:
-            self.add_item(item.name)
+            self.add_item(*item)
 
-    def add_item(self, name):
-        item_1 = QtGui.QStandardItem(name)
-        item_1.setEditable(False)
-        item_1.setDropEnabled(False)
+    def add_item(self, name, resolution, codec):
+        filename = QtGui.QStandardItem(name)
+        filename.setEditable(False)
+        filename.setDropEnabled(False)
 
-        item_2 = QtGui.QStandardItem("X")
-        item_2.setEditable(False)
-        item_2.setDropEnabled(False)
-        item_2.option_name = name
+        res = QtGui.QStandardItem(resolution)
+        res.setEditable(False)
+        res.setDropEnabled(False)
 
-        self.model.appendRow([item_1, item_2])
+        form = QtGui.QStandardItem(codec)
+        form.setEditable(False)
+        form.setDropEnabled(False)
+
+        remove = QtGui.QStandardItem("X")
+        remove.setEditable(False)
+        remove.setDropEnabled(False)
+        remove.option_name = name
+
+        self.model.appendRow([filename, res, form, remove])
 
         x_button = CloseButton(self, "X", name)
         x_button.clicked.connect(x_button.close_item)
-        self.setIndexWidget(item_2.index(), x_button)
+        self.setIndexWidget(remove.index(), x_button)
         self.buttons.append(x_button)
 
     def get_items(self):
@@ -86,16 +98,16 @@ class ConcatTable(QtWidgets.QTableView):
         for i, text in enumerate(self.get_items()):
             for item in self.buttons:
                 if item.text_name == text:
-                    self.setIndexWidget(self.model.index(i, 1), item)
+                    self.setIndexWidget(self.model.index(i, 3), item)
 
 
 class ConcatScroll(QtWidgets.QScrollArea):
-    def __init__(self, parent, items=None):
+    def __init__(self, parent):
         super().__init__(parent)
         self.setWidgetResizable(True)
         self.setMinimumWidth(500)
         self.setMinimumHeight(500)
-        self.table = ConcatTable(None, items)
+        self.table = ConcatTable(None)
         self.setWidget(self.table)
 
 
@@ -105,21 +117,23 @@ class ConcatWindow(QtWidgets.QWidget):
         self.app = app
         self.main = main
         self.folder_name = str(Path.home())
+        self.setWindowTitle(t("Concatenation Builder"))
 
         self.concat_area = ConcatScroll(self)
-        self.base_folder_label = QtWidgets.QLabel(self.folder_name)
+        self.base_folder_label = QtWidgets.QLabel()
+        self.set_folder_name(self.folder_name)
         layout = QtWidgets.QVBoxLayout()
-        folder_button = QtWidgets.QPushButton("Open Folder")
+        folder_button = QtWidgets.QPushButton(t("Open Folder"))
         folder_button.clicked.connect(self.select_folder)
 
-        manual_layout = QtWidgets.QHBoxLayout()
-        manual_text = QtWidgets.QLineEdit()
-        manual_button = QtWidgets.QPushButton("+")
-        manual_button.clicked.connect(lambda: self.concat_area.table.add_item(manual_text.text()))
-        manual_layout.addWidget(manual_text)
-        manual_layout.addWidget(manual_button)
+        # manual_layout = QtWidgets.QHBoxLayout()
+        # manual_text = QtWidgets.QLineEdit()
+        # manual_button = QtWidgets.QPushButton("+")
+        # manual_button.clicked.connect(lambda: self.concat_area.table.add_item(manual_text.text()))
+        # manual_layout.addWidget(manual_text)
+        # manual_layout.addWidget(manual_button)
 
-        save_buttom = QtWidgets.QPushButton("Save")
+        save_buttom = QtWidgets.QPushButton(t("Load"))
         save_buttom.clicked.connect(self.save)
 
         top_bar = QtWidgets.QHBoxLayout()
@@ -132,26 +146,61 @@ class ConcatWindow(QtWidgets.QWidget):
         layout.addLayout(top_bar)
 
         layout.addWidget(self.concat_area)
-        layout.addLayout(manual_layout)
+        # layout.addLayout(manual_layout)
         self.setLayout(layout)
 
+    def set_folder_name(self, name):
+        self.base_folder_label.setText(f'{t("Base Folder")}: {name}')
+
+    def get_video_details(self, file):
+        details = probe(self.app, file)
+        for stream in details.streams:
+            if stream.codec_type == "video":
+                return file.name, f"{stream.width}x{stream.height}", stream.codec_name
+
     def select_folder(self):
+        if self.concat_area.table.model.rowCount() > 0:
+            if not yes_no_message(
+                "There are already items in this list,\n"
+                "if you open a new directory, they will all be removed.\n\n"
+                "Continue?",
+                "Confirm Change Folder",
+            ):
+                return
         folder_name = QtWidgets.QFileDialog.getExistingDirectory(self, directory=self.folder_name)
         if not folder_name:
             return
         self.folder_name = folder_name
-        self.base_folder_label.setText(folder_name)
+        self.set_folder_name(folder_name)
         items = []
+        skipped = []
         for file in Path(folder_name).glob("*"):
             if file.is_file():
-                items.append(file)
+                try:
+                    details = self.get_video_details(file)
+                    if not details:
+                        raise Exception()
+                except Exception:
+                    logger.warning(f"Skipping {file.name} as it is not a video/image file")
+                    skipped.append(file.name)
+                else:
+                    items.append(details)
         self.concat_area.table.update_items(items)
+        if skipped:
+            error_message(
+                "The following items were excluded\n"
+                "as they could not be identified as image or video files:\n\n"
+                + "\n".join(skipped[:20])
+                + f"\n\nand {len(skipped[20:])} more..."
+                if len(skipped) > 20
+                else ""
+            )
 
     def save(self):
         concat_file = self.app.fastflix.config.work_path / "concat.txt"
         with open(concat_file, "w") as f:
             f.write(
-                "\n".join([f'file "{self.folder_name}{os.sep}{item}"' for item in self.concat_area.table.get_items()])
+                "\n".join([f"file '{self.folder_name}{os.sep}{item}'" for item in self.concat_area.table.get_items()])
             )
         self.main.input_video = concat_file
         self.main.update_video_info()

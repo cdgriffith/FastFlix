@@ -11,6 +11,9 @@ changes_file = Path(pkg_resources.resource_filename(__name__, "CHANGES")).resolv
 local_changes_file = Path(__file__).parent.parent / "CHANGES"
 
 loading_movie = str(Path(pkg_resources.resource_filename(__name__, "data/icons/loading.gif")).resolve())
+checkmark_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/checkmark.png")).resolve())
+onyx_convert_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-convert.png")).resolve())
+onyx_queue_add_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-add-queue.png")).resolve())
 
 
 def get_icon(name: str, theme: str):

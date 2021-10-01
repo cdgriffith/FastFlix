@@ -17,7 +17,7 @@ from fastflix.language import t
 from fastflix.models.config import setting_types
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
-from fastflix.resources import main_icon
+from fastflix.resources import main_icon, checkmark_icon
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message
 from fastflix.windows_tools import cleanup_windows_notification
 from fastflix.widgets.about import About
@@ -57,13 +57,14 @@ class Container(QtWidgets.QMainWindow):
         if self.app.fastflix.config.theme == "onyx":
             self.setStyleSheet(
                 """
-            QPushButton { border-radius:10px }
-            QLineEdit{background-color: #707070; color: black; border-radius: 10px}
-            QTextEdit{background-color: #707070; color: black}
-            QMainWindow{margin: 0; padding: 0}
-            QTabBar::tab {background-color: #4b5054}
-            QComboBox{border-radius:10px}
-            """
+                QAbstractItemView{ background-color: #707070}
+                QPushButton { border-radius:10px }
+                QLineEdit{background-color: #707070; color: black; border-radius: 10px}
+                QTextEdit{background-color: #707070; color: black}
+                QTabBar::tab {background-color: #4b5054}
+                QComboBox{border-radius:10px;}
+                QScrollArea{border: 1px solid #919191;}
+                """
             )
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
@@ -95,6 +96,7 @@ class Container(QtWidgets.QMainWindow):
                 shutil.rmtree(item, ignore_errors=True)
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".tiff", ".tif")):
                 item.unlink()
+        shutil.rmtree(self.app.fastflix.config.work_path / "covers", ignore_errors=True)
         if reusables.win_based:
             cleanup_windows_notification()
         self.main.close(from_container=True)
