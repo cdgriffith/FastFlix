@@ -17,7 +17,7 @@ from fastflix.language import t
 from fastflix.models.config import setting_types
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
-from fastflix.resources import main_icon, checkmark_icon
+from fastflix.resources import main_icon, get_icon
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message
 from fastflix.windows_tools import cleanup_windows_notification
 from fastflix.widgets.about import About
@@ -57,13 +57,13 @@ class Container(QtWidgets.QMainWindow):
         if self.app.fastflix.config.theme == "onyx":
             self.setStyleSheet(
                 """
-                QAbstractItemView{ background-color: #707070}
-                QPushButton { border-radius:10px }
-                QLineEdit{background-color: #707070; color: black; border-radius: 10px}
-                QTextEdit{background-color: #707070; color: black}
-                QTabBar::tab {background-color: #4b5054}
-                QComboBox{border-radius:10px;}
-                QScrollArea{border: 1px solid #919191;}
+                QAbstractItemView{ background-color: #707070; }
+                QPushButton{ border-radius:10px; }
+                QLineEdit{ background-color: #707070; color: black; border-radius: 10px; }
+                QTextEdit{ background-color: #707070; color: black; }
+                QTabBar::tab{ background-color: #4b5054; }
+                QComboBox{ border-radius:10px; }
+                QScrollArea{ border: 1px solid #919191; }
                 """
             )
 
@@ -138,7 +138,7 @@ class Container(QtWidgets.QMainWindow):
 
         tools_menu = menubar.addMenu(t("Tools"))
         concat_action = QtWidgets.QAction(
-            self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("Concatenation Builder"), self
+            QtGui.QIcon(get_icon("onyx-queue", self.app.fastflix.config.theme)), t("Concatenation Builder"), self
         )
         concat_action.triggered.connect(self.show_concat)
         tools_menu.addAction(concat_action)

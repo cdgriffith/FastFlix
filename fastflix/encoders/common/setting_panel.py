@@ -10,7 +10,7 @@ from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.widgets.background_tasks import ExtractHDR10
-from fastflix.resources import group_box_style
+from fastflix.resources import group_box_style, get_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -231,7 +231,7 @@ class SettingPanel(QtWidgets.QWidget):
             else:
                 self.widgets[widget_name].textChanged.connect(connect)
 
-        button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogContentsView))
+        button = QtWidgets.QPushButton(icon=QtGui.QIcon(get_icon("onyx-file-search", self.app.fastflix.config.theme)))
         button.clicked.connect(button_action)
 
         layout.addWidget(self.labels[widget_name])

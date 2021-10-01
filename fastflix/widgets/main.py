@@ -258,9 +258,17 @@ class Main(QtWidgets.QWidget):
 
     def init_top_bar_right(self):
         top_bar_right = QtWidgets.QHBoxLayout()
-        theme = "padding: 0 10px; font-size: 14px;"
+        theme = "QPushButton{ padding: 0 10px; font-size: 14px; }"
         if self.app.fastflix.config.theme in ("dark", "onyx"):
-            theme = "padding: 0 10px; font-size: 14px;  background-color: #4f4f4f; border: none; color: white;"
+            theme = """
+            QPushButton {
+              padding: 0 10px;
+              font-size: 14px;
+              background-color: #4f4f4f;
+              border: none;
+              color: white; }
+            QPushButton:hover {
+              background-color: #6b6b6b; }"""
 
         queue = QtWidgets.QPushButton(QtGui.QIcon(onyx_queue_add_icon), f"{t('Add to Queue')}  ")
         queue.setIconSize(QtCore.QSize(26, 26))
@@ -1399,7 +1407,7 @@ class Main(QtWidgets.QWidget):
             self.get_auto_crop()
 
         if not getattr(self.current_encoder, "enable_concat", False) and self.app.fastflix.current_video.concat:
-            error_message(f"This encoder, {self.current_encoder.name} does not support concatenating files together")
+            error_message(f"{self.current_encoder.name} {t('does not support concatenating files together')}")
 
     @property
     def video_track(self) -> int:

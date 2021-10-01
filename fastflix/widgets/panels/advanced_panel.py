@@ -172,7 +172,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.last_row += 1
 
         warning_label = QtWidgets.QLabel()
-        ico = QtGui.QIcon(get_icon("warning", app.fastflix.config.theme))
+        ico = QtGui.QIcon(get_icon("onyx-warning", app.fastflix.config.theme))
         warning_label.setPixmap(ico.pixmap(22))
 
         self.layout.addWidget(warning_label, self.last_row, 0, alignment=QtCore.Qt.AlignRight)

@@ -3344,3 +3344,10 @@ Confirm Change Folder:
   ita: Conferma il cambio di cartella
   spa: Confirmar cambio de carpeta
   zho: 确认更改文件夹
+does not support concatenating files together:
+  deu: unterstützt nicht die Verkettung von Dateien
+  eng: does not support concatenating files together
+  fra: ne supporte pas la concaténation de fichiers ensemble
+  ita: non supporta la concatenazione di file
+  spa: no admite la concatenación de archivos
+  zho: 不支持将文件串联起来

@@ -56,7 +56,8 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.debug = DebugPanel(self, self.app)
         if self.app.fastflix.config.theme == "onyx":
             self.setStyleSheet(
-                "*{ background-color: #4b5054; color: white} QTabWidget{margin-top: 34px; background-color: #4b5054;} QTabBar{font-size: 13px; background-color: #4f5962}"
+                "*{ background-color: #4b5054; color: white} QTabWidget{margin-top: 34px; background-color: #4b5054;} "
+                "QTabBar{font-size: 13px; background-color: #4f5962}"
             )
 
         self.setIconSize(QtCore.QSize(24, 24))
@@ -83,6 +84,8 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.setTabIcon(index, QtGui.QIcon(get_icon(icon_name, self.app.fastflix.config.theme)))
 
     def change_tab(self, index):
+        if index == -1:
+            return
         self.resetTabIcons()
         self.setTabIcon(index, QtGui.QIcon(get_icon(icons[index], "selected")))
 

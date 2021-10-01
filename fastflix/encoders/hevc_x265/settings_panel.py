@@ -159,7 +159,7 @@ class HEVC(SettingPanel):
             "The latest windows builds from BtbN should have this feature.\n"
             "I do not know of any public Linux/Mac ones that do."
         )
-        icon = QtGui.QIcon(get_icon("warning", self.app.fastflix.config.theme))
+        icon = QtGui.QIcon(get_icon("onyx-warning", self.app.fastflix.config.theme))
         label.setPixmap(icon.pixmap(22))
         layout = QtWidgets.QHBoxLayout()
 
