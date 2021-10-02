@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
 import sys
+import pkg_resources
+from pathlib import Path
 
 import coloredlogs
 import reusables
@@ -12,11 +14,12 @@ from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
-from fastflix.resources import default_mode, main_icon
+from fastflix.resources import main_icon
 from fastflix.shared import file_date, message
 from fastflix.version import __version__
 from fastflix.widgets.container import Container
 from fastflix.widgets.progress_bar import ProgressBar, Task
+import fastflix.breeze_resources
 
 logger = logging.getLogger("fastflix")
 
@@ -27,7 +30,7 @@ def create_app():
     if hasattr(QtCore.Qt, "AA_UseHighDpiPixmaps"):
         QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     main_app = FastFlixApp(sys.argv)
-    main_app.setStyle("fusion")
+    # main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
     my_font = QtGui.QFont("helvetica", 9, weight=57)
     main_app.setFont(my_font)
@@ -151,8 +154,12 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
         logger.exception(t("Could not load config file!"))
         sys.exit(1)
 
-    if app.fastflix.config.flat_ui:
-        app.setStyleSheet(default_mode)
+    if app.fastflix.config.theme != "system":
+        file = QtCore.QFile(f":/{app.fastflix.config.theme}/stylesheet.qss")
+        file.open(QtCore.QFile.ReadOnly | QtCore.QFile.Text)
+        stream = QtCore.QTextStream(file)
+        app.setStyleSheet(stream.readAll())
+
     logger.setLevel(app.fastflix.config.logging_level)
 
     startup_tasks = [

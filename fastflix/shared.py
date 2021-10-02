@@ -177,8 +177,9 @@ def time_to_number(string_time: str) -> float:
     return total
 
 
-def link(url, text):
-    return f'<a href="{url}" style="color: black" >{text}</a>'
+def link(url, text, theme):
+    color = "#afccd5" if theme.lower() in ("dark", "onyx") else "black"
+    return f'<a href="{url}" style="color: {color}" >{text}</a>'
 
 
 def open_folder(path):

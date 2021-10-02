@@ -11,7 +11,7 @@ from fastflix.encoders.common.audio import lossless, channel_list
 from fastflix.language import t
 from fastflix.models.encode import AudioTrack
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import black_x_icon, copy_icon, down_arrow_icon, up_arrow_icon
+from fastflix.resources import get_icon
 from fastflix.shared import no_border, error_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
@@ -61,11 +61,17 @@ class Audio(QtWidgets.QTabWidget):
             track_number=QtWidgets.QLabel(f"{index}:{self.outdex}" if enabled else "❌"),
             title=QtWidgets.QLineEdit(title),
             audio_info=QtWidgets.QLabel(audio),
-            up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
-            down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
+            up_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("up-arrow", self.parent.app.fastflix.config.theme)), ""
+            ),
+            down_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
+            ),
             enable_check=QtWidgets.QCheckBox(t("Enabled")),
-            dup_button=QtWidgets.QPushButton(QtGui.QIcon(copy_icon), ""),
-            delete_button=QtWidgets.QPushButton(QtGui.QIcon(black_x_icon), ""),
+            dup_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("copy", self.parent.app.fastflix.config.theme)), ""),
+            delete_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("black-x", self.parent.app.fastflix.config.theme)), ""
+            ),
             language=QtWidgets.QComboBox(),
             downmix=QtWidgets.QComboBox(),
             convert_to=None,

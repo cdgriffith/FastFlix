@@ -4,38 +4,32 @@ from pathlib import Path
 import pkg_resources
 
 main_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icon.ico")).resolve())
-language_file = str(Path(pkg_resources.resource_filename(__name__, "data/languages.yaml")).resolve())
 default_mode = Path(pkg_resources.resource_filename(__name__, "data/styles/default.qss")).resolve().read_text()
 
 
 changes_file = Path(pkg_resources.resource_filename(__name__, "CHANGES")).resolve()
 local_changes_file = Path(__file__).parent.parent / "CHANGES"
 
-
-video_add_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/video-add.png")).resolve())
-video_playlist_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/video-playlist.png")).resolve())
-play_round_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/play-round.png")).resolve())
-cinema_film_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/cinema-film.png")).resolve())
-video_delete_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/video-delete.png")).resolve())
-black_x_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/black-x.png")).resolve())
-up_arrow_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/up-arrow.png")).resolve())
-down_arrow_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/down-arrow.png")).resolve())
-settings_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/setting.png")).resolve())
-folder_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/folder.png")).resolve())
-play_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/play.png")).resolve())
-profile_add_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/text-document-add.png")).resolve())
-edit_box_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/edit-box.png")).resolve())
-copy_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/copy.png")).resolve())
-warning_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/warning-triangle.png")).resolve())
-editing_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/video-editing.png")).resolve())
-photo_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/photo.png")).resolve())
-cc_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/closed-caption-subtitles.png")).resolve())
-music_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/music.png")).resolve())
-text_left_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/text-align-left.png")).resolve())
-poll_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/poll.png")).resolve())
-working_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/pending-work.png")).resolve())
-advanced_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/advanced.png")).resolve())
-info_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/info.png")).resolve())
-undo_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/undo-arrow.png")).resolve())
 loading_movie = str(Path(pkg_resources.resource_filename(__name__, "data/icons/loading.gif")).resolve())
-magnifier_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/magnifier-glass-zoom.png")).resolve())
+checkmark_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/checkmark.png")).resolve())
+onyx_convert_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-convert.png")).resolve())
+onyx_queue_add_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-add-queue.png")).resolve())
+
+
+def get_icon(name: str, theme: str):
+    folder = "black"
+    if theme.lower() in ("dark", "onyx"):
+        folder = "white"
+    if theme == "selected":
+        folder = "selected"
+    location = Path(pkg_resources.resource_filename(__name__, f"data/icons/{folder}/{name}.png")).resolve()
+    if not location.exists():
+        raise Exception(f"Cannot find: {location}")
+    return str(location)
+
+
+def group_box_style(pt="-10px", pb="5px", mt="5px", mb="0", bb="1px solid #bab9b8"):
+    return f"QGroupBox{{padding-top: {pt}; padding-bottom: {pb}; margin-bottom: {mb}; margin-top: {mt}; border: none; border-bottom: {bb}; border-radius: 0; }}"
+
+
+reset_button_style = "QPushButton{border: none; margin-left: 0; padding-left: 0; margin-top: 0;}"

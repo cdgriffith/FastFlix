@@ -60,7 +60,9 @@ class AV1(SettingPanel):
 
         grid.addLayout(self._add_custom(), 10, 0, 1, 6)
         grid.setRowStretch(8, 1)
-        guide_label = QtWidgets.QLabel(link("https://trac.ffmpeg.org/wiki/Encode/AV1", t("FFMPEG AV1 Encoding Guide")))
+        guide_label = QtWidgets.QLabel(
+            link("https://trac.ffmpeg.org/wiki/Encode/AV1", t("FFMPEG AV1 Encoding Guide"), app.fastflix.config.theme)
+        )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, -1, 1)

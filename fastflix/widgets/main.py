@@ -29,22 +29,19 @@ from fastflix.flix import (
     get_auto_crop,
     parse,
     parse_hdr_details,
+    get_first_concat_item,
 )
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
 from fastflix.ff_queue import save_queue
 from fastflix.resources import (
-    black_x_icon,
-    folder_icon,
+    get_icon,
     main_icon,
-    play_round_icon,
-    profile_add_icon,
-    settings_icon,
-    video_add_icon,
-    video_playlist_icon,
-    undo_icon,
-    magnifier_icon,
+    group_box_style,
+    reset_button_style,
+    onyx_convert_icon,
+    onyx_queue_add_icon,
 )
 from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
 from fastflix.windows_tools import show_windows_notification
@@ -127,6 +124,7 @@ class Main(QtWidgets.QWidget):
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
         self.app: FastFlixApp = app
+        self.setObjectName("Main")
         self.container = parent
         self.video: Video = Video(source=Path(), width=0, height=0, duration=0)
 
@@ -149,8 +147,12 @@ class Main(QtWidgets.QWidget):
 
         self.input_video = None
         self.video_path_widget = QtWidgets.QLineEdit(t("No Source Selected"))
+        self.source_video_path_widget = QtWidgets.QLineEdit("")
+        self.source_video_path_widget.setDisabled(True)
+        self.source_video_path_widget.setFixedHeight(20)
         self.output_video_path_widget = QtWidgets.QLineEdit("")
         self.output_video_path_widget.setDisabled(True)
+        self.output_video_path_widget.setFixedHeight(20)
         self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
         self.video_path_widget.setEnabled(False)
 
@@ -180,11 +182,20 @@ class Main(QtWidgets.QWidget):
 
         self.grid = QtWidgets.QGridLayout()
 
-        self.grid.addLayout(self.init_top_bar(), 0, 0, 1, 14)
-        self.grid.addLayout(self.init_video_area(), 2, 0, 6, 6)
-        self.grid.addLayout(self.init_scale_and_crop(), 2, 6, 6, 4)
-        self.grid.addWidget(self.init_preview_image(), 2, 10, 5, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
-        self.grid.addLayout(self.init_thumb_time_selector(), 7, 10, 1, 4, (QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
+        # row: int, column: int, rowSpan: int, columnSpan: int
+
+        self.grid.addLayout(self.init_top_bar(), 0, 0, 1, 6)
+        self.grid.addLayout(self.init_top_bar_right(), 0, 11, 1, 3)
+        self.grid.addLayout(self.init_video_area(), 1, 0, 6, 6)
+        self.grid.addLayout(self.init_right_col(), 1, 11, 6, 3)
+
+        # pi = QtWidgets.QVBoxLayout()
+        # pi.addWidget(self.init_preview_image())
+        # pi.addLayout(self.())
+
+        self.grid.addWidget(self.init_preview_image(), 0, 6, 6, 5, (QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter))
+        self.grid.addLayout(self.init_thumb_time_selector(), 6, 6, 1, 5, (QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter))
+        # self.grid.addLayout(pi, 0, 6, 7, 5)
 
         spacer = QtWidgets.QLabel()
         spacer.setFixedHeight(5)
@@ -204,25 +215,11 @@ class Main(QtWidgets.QWidget):
     def init_top_bar(self):
         top_bar = QtWidgets.QHBoxLayout()
 
-        source = QtWidgets.QPushButton(QtGui.QIcon(video_add_icon), f"  {t('Source')}")
-        source.setIconSize(QtCore.QSize(22, 20))
+        source = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-source")), f"  {t('Source')}")
+        source.setIconSize(QtCore.QSize(22, 22))
         source.setFixedHeight(40)
         source.setDefault(True)
         source.clicked.connect(lambda: self.open_file())
-
-        queue = QtWidgets.QPushButton(QtGui.QIcon(video_playlist_icon), f"{t('Add to Queue')}  ")
-        queue.setIconSize(QtCore.QSize(22, 20))
-        queue.setFixedHeight(40)
-        queue.setStyleSheet("padding: 0 10px;")
-        queue.setLayoutDirection(QtCore.Qt.RightToLeft)
-        queue.clicked.connect(lambda: self.add_to_queue())
-
-        self.widgets.convert_button = QtWidgets.QPushButton(QtGui.QIcon(play_round_icon), f"{t('Convert')}  ")
-        self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
-        self.widgets.convert_button.setFixedHeight(40)
-        self.widgets.convert_button.setStyleSheet("padding: 0 10px;")
-        self.widgets.convert_button.setLayoutDirection(QtCore.Qt.RightToLeft)
-        self.widgets.convert_button.clicked.connect(lambda: self.encode_video())
 
         self.widgets.profile_box = QtWidgets.QComboBox()
         self.widgets.profile_box.setStyleSheet("text-align: center;")
@@ -238,28 +235,58 @@ class Main(QtWidgets.QWidget):
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
         top_bar.addWidget(self.widgets.profile_box)
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
-        top_bar.addWidget(queue)
-        top_bar.addWidget(self.widgets.convert_button)
-        top_bar.addStretch(1)
 
-        add_profile = QtWidgets.QPushButton(QtGui.QIcon(profile_add_icon), t("New Profile"))
+        add_profile = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-new-profile")), f'  {t("New Profile")}')
         # add_profile.setFixedSize(QtCore.QSize(40, 40))
         add_profile.setFixedHeight(40)
-        add_profile.setIconSize(QtCore.QSize(22, 22))
+        add_profile.setIconSize(QtCore.QSize(20, 20))
         add_profile.setToolTip(t("Profile_newprofiletooltip"))
-        add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
+        # add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
         add_profile.clicked.connect(lambda: self.container.new_profile())
 
-        options = QtWidgets.QPushButton(QtGui.QIcon(settings_icon), "")
-        options.setFixedSize(QtCore.QSize(40, 40))
-        options.setIconSize(QtCore.QSize(22, 22))
-        options.setToolTip(t("Settings"))
-        options.clicked.connect(lambda: self.container.show_setting())
+        # options = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("settings")), "")
+        # options.setFixedSize(QtCore.QSize(40, 40))
+        # options.setIconSize(QtCore.QSize(22, 22))
+        # options.setToolTip(t("Settings"))
+        # options.clicked.connect(lambda: self.container.show_setting())
 
         top_bar.addWidget(add_profile)
-        top_bar.addWidget(options)
+        top_bar.addStretch(1)
+        # top_bar.addWidget(options)
 
         return top_bar
+
+    def init_top_bar_right(self):
+        top_bar_right = QtWidgets.QHBoxLayout()
+        theme = "QPushButton{ padding: 0 10px; font-size: 14px; }"
+        if self.app.fastflix.config.theme in ("dark", "onyx"):
+            theme = """
+            QPushButton {
+              padding: 0 10px;
+              font-size: 14px;
+              background-color: #4f4f4f;
+              border: none;
+              color: white; }
+            QPushButton:hover {
+              background-color: #6b6b6b; }"""
+
+        queue = QtWidgets.QPushButton(QtGui.QIcon(onyx_queue_add_icon), f"{t('Add to Queue')}  ")
+        queue.setIconSize(QtCore.QSize(26, 26))
+        queue.setFixedHeight(40)
+        queue.setStyleSheet(theme)
+        queue.setLayoutDirection(QtCore.Qt.RightToLeft)
+        queue.clicked.connect(lambda: self.add_to_queue())
+
+        self.widgets.convert_button = QtWidgets.QPushButton(QtGui.QIcon(onyx_convert_icon), f"{t('Convert')}  ")
+        self.widgets.convert_button.setIconSize(QtCore.QSize(26, 26))
+        self.widgets.convert_button.setFixedHeight(40)
+        self.widgets.convert_button.setStyleSheet(theme)
+        self.widgets.convert_button.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.widgets.convert_button.clicked.connect(lambda: self.encode_video())
+        top_bar_right.addStretch(1)
+        top_bar_right.addWidget(queue)
+        top_bar_right.addWidget(self.widgets.convert_button)
+        return top_bar_right
 
     def init_thumb_time_selector(self):
         layout = QtWidgets.QHBoxLayout()
@@ -276,8 +303,14 @@ class Main(QtWidgets.QWidget):
         self.widgets.thumb_time.setTickInterval(1)
         self.widgets.thumb_time.setAutoFillBackground(False)
         self.widgets.thumb_time.sliderReleased.connect(self.thumb_time_change)
+
+        spacer = QtWidgets.QLabel()
+        spacer.setFixedWidth(4)
+        layout.addWidget(spacer)
         layout.addWidget(self.widgets.thumb_key)
+        layout.addWidget(spacer)
         layout.addWidget(self.widgets.thumb_time)
+        layout.addWidget(spacer)
         return layout
 
     def thumb_time_change(self):
@@ -315,17 +348,27 @@ class Main(QtWidgets.QWidget):
         spacer.setFixedHeight(2)
         layout.addWidget(spacer)
 
-        output_layout = QtWidgets.QHBoxLayout()
+        source_layout = QtWidgets.QHBoxLayout()
+        source_label = QtWidgets.QLabel(t("Source"))
+        source_label.setFixedWidth(70)
+        source_layout.addWidget(source_label)
+        source_layout.addWidget(self.source_video_path_widget, stretch=True)
 
+        output_layout = QtWidgets.QHBoxLayout()
         output_label = QtWidgets.QLabel(t("Output"))
         output_label.setFixedWidth(70)
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
-        self.output_path_button = QtWidgets.QPushButton(icon=QtGui.QIcon(folder_icon))
+        self.output_path_button = QtWidgets.QPushButton(icon=QtGui.QIcon(self.get_icon("onyx-output")))
         self.output_path_button.clicked.connect(lambda: self.save_file())
         self.output_path_button.setDisabled(True)
+        # self.output_path_button.setFixedHeight(12)
+        self.output_path_button.setIconSize(QtCore.QSize(16, 16))
+        self.output_path_button.setFixedSize(QtCore.QSize(16, 16))
+        self.output_path_button.setStyleSheet("border: none; padding: 0; margin: 0")
 
         output_layout.addWidget(self.output_path_button)
+        layout.addLayout(source_layout)
         layout.addLayout(output_layout)
 
         layout.addLayout(self.init_video_track_select())
@@ -336,6 +379,7 @@ class Main(QtWidgets.QWidget):
         title_label.setFixedWidth(70)
         title_label.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
         self.widgets.video_title = QtWidgets.QLineEdit()
+        self.widgets.video_title.setFixedHeight(20)
         self.widgets.video_title.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
         self.widgets.video_title.textChanged.connect(lambda: self.page_update(build_thumbnail=False))
 
@@ -343,11 +387,37 @@ class Main(QtWidgets.QWidget):
         title_layout.addWidget(self.widgets.video_title)
 
         layout.addLayout(title_layout)
+        layout.addWidget(self.init_start_time())
+        layout.addWidget(self.init_scale())
+        layout.addStretch(1)
+        return layout
 
+    def init_right_col(self):
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.init_crop())
+        layout.addWidget(self.init_transforms())
+
+        layout.addLayout(self.init_checkboxes())
+        layout.addStretch(1)
+        # custom_options = QtWidgets.QTextEdit()
+        # # custom_options.setWidt
+        # custom_options.setPlaceholderText(t("Custom Encoder Options"))
+        # custom_options.setMaximumHeight(90)
+        # layout.addWidget(custom_options)
+        return layout
+
+    def init_transforms(self):
+        group_box = QtWidgets.QGroupBox()
+        group_box.setStyleSheet(group_box_style(pt="0", mt="0"))
         transform_layout = QtWidgets.QHBoxLayout()
-        transform_layout.addWidget(self.init_rotate(), stretch=True)
-        transform_layout.addWidget(self.init_flip(), stretch=True)
+        transform_layout.addWidget(self.init_rotate())
+        transform_layout.addStretch(1)
+        transform_layout.addWidget(self.init_flip())
+        group_box.setLayout(transform_layout)
+        return group_box
 
+    def init_checkboxes(self):
+        transform_layout = QtWidgets.QHBoxLayout()
         metadata_layout = QtWidgets.QVBoxLayout()
         self.widgets.remove_metadata = QtWidgets.QCheckBox(t("Remove Metadata"))
         self.widgets.remove_metadata.setChecked(True)
@@ -385,25 +455,16 @@ class Main(QtWidgets.QWidget):
         extra_details_layout.addWidget(self.widgets.remove_hdr)
 
         transform_layout.addLayout(extra_details_layout)
-
-        layout.addLayout(transform_layout)
-        layout.addWidget(self.init_start_time())
-
-        layout.addStretch()
-        return layout
-
-    def init_scale_and_crop(self):
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self.init_scale())
-        layout.addWidget(self.init_crop())
-        layout.addStretch()
-        return layout
+        return transform_layout
 
     def init_video_track_select(self):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.video_track = QtWidgets.QComboBox()
         self.widgets.video_track.addItems([])
+        self.widgets.video_track.setFixedHeight(20)
         self.widgets.video_track.currentIndexChanged.connect(self.video_track_update)
+        if self.app.fastflix.config.theme == "onyx":
+            self.widgets.video_track.setStyleSheet("background-color: #707070; border-radius: 10px; color: black")
 
         track_label = QtWidgets.QLabel(t("Video Track"))
         track_label.setFixedWidth(65)
@@ -482,7 +543,7 @@ class Main(QtWidgets.QWidget):
         rot_270_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} CC90.png")).resolve())
         rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
 
-        self.widgets.rotate.addItems([t("No Rotation"), "90°", "180°", "270°"])
+        self.widgets.rotate.addItems([t("No Rotation") + "   ", "90°", "180°", "270°"])
         self.widgets.rotate.setItemIcon(0, QtGui.QIcon(no_rot_file))
         self.widgets.rotate.setItemIcon(1, QtGui.QIcon(rot_90_file))
         self.widgets.rotate.setItemIcon(2, QtGui.QIcon(rot_180_file))
@@ -540,27 +601,26 @@ class Main(QtWidgets.QWidget):
 
     def init_start_time(self):
         group_box = QtWidgets.QGroupBox()
-        group_box.setStyleSheet("QGroupBox{padding-top:18px; margin-top:-18px}")
+        group_box.setStyleSheet(group_box_style())
 
         layout = QtWidgets.QHBoxLayout()
 
-        reset = QtWidgets.QPushButton(QtGui.QIcon(undo_icon), "")
+        reset = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("undo")), "")
         reset.setIconSize(QtCore.QSize(10, 10))
         reset.clicked.connect(self.reset_time)
+        reset.setFixedWidth(15)
+        reset.setStyleSheet(reset_button_style)
         self.buttons.append(reset)
-        layout.addWidget(reset)
 
         self.widgets.start_time, start_layout = self.build_hoz_int_field(
-            f"{t('Start')}  ",
+            f"{t('Start')} ",
             right_stretch=False,
             left_stretch=True,
             time_field=True,
         )
         self.widgets.end_time, end_layout = self.build_hoz_int_field(
-            f"  {t('End')}  ", left_stretch=True, right_stretch=True, time_field=True
+            f"  {t('End')} ", left_stretch=True, right_stretch=True, time_field=True
         )
-        layout.addLayout(start_layout)
-        layout.addLayout(end_layout)
 
         self.widgets.start_time.textChanged.connect(lambda: self.page_update())
         self.widgets.end_time.textChanged.connect(lambda: self.page_update())
@@ -573,8 +633,19 @@ class Main(QtWidgets.QWidget):
         )
         self.widgets.fast_time.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
         self.widgets.fast_time.setFixedWidth(65)
+
+        label = QtWidgets.QLabel(t("Trim"))
+        # label.setStyleSheet("QLabel{color:#777}")
+        # label.setMaximumHeight(40)
+        # bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignLeft))
+        layout.addWidget(label, alignment=QtCore.Qt.AlignLeft)
+        layout.addWidget(reset, alignment=QtCore.Qt.AlignTop)
+        layout.addStretch(1)
+        layout.addLayout(start_layout)
+        layout.addLayout(end_layout)
         layout.addWidget(QtWidgets.QLabel(" "))
         layout.addWidget(self.widgets.fast_time, QtCore.Qt.AlignRight)
+
         group_box.setLayout(layout)
         return group_box
 
@@ -583,23 +654,30 @@ class Main(QtWidgets.QWidget):
         self.widgets.end_time.setText(self.number_to_time(self.app.fastflix.current_video.duration))
 
     def init_scale(self):
-        scale_area = QtWidgets.QGroupBox(self)
+        scale_area = QtWidgets.QGroupBox()
         scale_area.setFont(self.app.font())
-        scale_area.setStyleSheet("QGroupBox{padding-top:15px; margin-top:-18px}")
+        # scale_area.setMaximumHeight(55)
+        scale_area.setStyleSheet(group_box_style())
+        # scale_area.setStyleSheet("QGroupBox{margin-top: -5px; padding-top: -5px;}")
         scale_layout = QtWidgets.QVBoxLayout()
 
         main_row = QtWidgets.QHBoxLayout()
 
-        reset = QtWidgets.QPushButton(QtGui.QIcon(undo_icon), "")
+        label = QtWidgets.QLabel(t("Resolution"))
+        main_row.addWidget(label, alignment=QtCore.Qt.AlignLeft)
+
+        reset = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("undo")), "")
         reset.setIconSize(QtCore.QSize(10, 10))
         reset.clicked.connect(self.reset_scales)
+        reset.setFixedWidth(15)
+        reset.setStyleSheet(reset_button_style)
         self.buttons.append(reset)
         main_row.addWidget(reset, alignment=(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft))
         main_row.addStretch(1)
 
-        self.widgets.scale.width, width_layout = self.build_hoz_int_field(f"{t('Width')}  ")
+        self.widgets.scale.width, width_layout = self.build_hoz_int_field(f"{t('Width')} ")
         self.widgets.scale.height, height_layout, lb, rb = self.build_hoz_int_field(
-            f"  {t('Height')}  ", return_buttons=True
+            f"  {t('Height')} ", return_buttons=True
         )
         self.widgets.scale.height.setDisabled(True)
         self.widgets.scale.height.setText("Auto")
@@ -608,31 +686,21 @@ class Main(QtWidgets.QWidget):
 
         main_row.addLayout(width_layout)
         main_row.addLayout(height_layout)
-        main_row.addWidget(QtWidgets.QLabel("     "))
-        main_row.addStretch(1)
 
         # TODO scale 0 error
 
         self.widgets.scale.width.textChanged.connect(lambda: self.scale_update())
         self.widgets.scale.height.textChanged.connect(lambda: self.scale_update())
 
-        bottom_row = QtWidgets.QHBoxLayout()
         self.widgets.scale.keep_aspect = QtWidgets.QCheckBox(t("Keep aspect ratio"))
-        # self.widgets.scale.keep_aspect.setMaximumHeight(40)
+        self.widgets.scale.keep_aspect.setMaximumHeight(40)
         self.widgets.scale.keep_aspect.setChecked(True)
+        # self.widgets.scale.keep_aspect.setSty
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.keep_aspect_update())
 
-        label = QtWidgets.QLabel(t("Scale"))
-        label.setStyleSheet("QLabel{color:#777}")
-        label.setMaximumHeight(40)
-        bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignLeft))
-        bottom_row.addWidget(label, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
-
-        scale_layout.addLayout(main_row)
-        scale_layout.addLayout(bottom_row)
-
-        scale_area.setLayout(scale_layout)
+        main_row.addWidget(self.widgets.scale.keep_aspect, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
+        scale_area.setLayout(main_row)
         return scale_area
 
     def reset_scales(self):
@@ -643,14 +711,14 @@ class Main(QtWidgets.QWidget):
 
     def init_crop(self):
         crop_box = QtWidgets.QGroupBox()
-        crop_box.setStyleSheet("QGroupBox{padding-top:17px; margin-top:-18px}")
+        crop_box.setStyleSheet(group_box_style(pt="0", pb="12px"))
         crop_layout = QtWidgets.QVBoxLayout()
-        self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field(f"       {t('Top')}  ")
-        self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field(f"{t('Left')}  ", right_stretch=False)
+        self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field(f"       {t('Top')} ")
+        self.widgets.crop.left, crop_hz_layout = self.build_hoz_int_field(f"{t('Left')} ", right_stretch=False)
         self.widgets.crop.right, crop_hz_layout = self.build_hoz_int_field(
-            f"    {t('Right')}  ", left_stretch=False, layout=crop_hz_layout
+            f"    {t('Right')} ", left_stretch=True, layout=crop_hz_layout
         )
-        self.widgets.crop.bottom, crop_bottom_layout = self.build_hoz_int_field(f"{t('Bottom')}  ", right_stretch=True)
+        self.widgets.crop.bottom, crop_bottom_layout = self.build_hoz_int_field(f"{t('Bottom')} ", right_stretch=True)
 
         self.widgets.crop.top.textChanged.connect(lambda: self.page_update())
         self.widgets.crop.left.textChanged.connect(lambda: self.page_update())
@@ -658,8 +726,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.bottom.textChanged.connect(lambda: self.page_update())
 
         label = QtWidgets.QLabel(t("Crop"), alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
-        label.setStyleSheet("QLabel{color:#777}")
-        label.setMaximumHeight(40)
 
         auto_crop = QtWidgets.QPushButton(t("Auto"))
         auto_crop.setMaximumHeight(40)
@@ -668,18 +734,25 @@ class Main(QtWidgets.QWidget):
         auto_crop.clicked.connect(self.get_auto_crop)
         self.buttons.append(auto_crop)
 
-        reset = QtWidgets.QPushButton(QtGui.QIcon(undo_icon), "")
+        reset = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("undo")), "")
         reset.setIconSize(QtCore.QSize(10, 10))
+        reset.setStyleSheet(reset_button_style)
+        reset.setFixedWidth(15)
         reset.clicked.connect(self.reset_crop)
         self.buttons.append(reset)
 
-        # crop_bottom_layout.addWidget(label)
         l1 = QtWidgets.QVBoxLayout()
-        l1.addWidget(reset, alignment=(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft))
+        l1.addWidget(label, alignment=(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft))
 
         l2 = QtWidgets.QVBoxLayout()
         l2.addWidget(auto_crop, alignment=(QtCore.Qt.AlignTop | QtCore.Qt.AlignRight))
-        l2.addWidget(label, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
+
+        reset_layout = QtWidgets.QHBoxLayout()
+        reset_layout.addWidget(QtWidgets.QLabel("Reset"))
+        reset_layout.addWidget(reset)
+
+        l2.addLayout(reset_layout)
+        l2.addStretch(1)
 
         crop_layout.addLayout(crop_top_layout)
         crop_layout.addLayout(crop_hz_layout)
@@ -733,7 +806,8 @@ class Main(QtWidgets.QWidget):
         layout.addWidget(QtWidgets.QLabel(name))
         minus_button = QtWidgets.QPushButton("-")
         minus_button.setAutoRepeat(True)
-        minus_button.setFixedSize(button_size, button_size)
+        minus_button.setFixedSize(QtCore.QSize(button_size - 5, button_size))
+        minus_button.setStyleSheet("padding: 0; border: none;")
         minus_button.clicked.connect(
             lambda: [
                 self.modify_int(widget, "minus", time_field),
@@ -743,6 +817,7 @@ class Main(QtWidgets.QWidget):
         plus_button = QtWidgets.QPushButton("+")
         plus_button.setAutoRepeat(True)
         plus_button.setFixedSize(button_size, button_size)
+        plus_button.setStyleSheet("padding: 0; border: none;")
         plus_button.clicked.connect(
             lambda: [
                 self.modify_int(widget, "add", time_field),
@@ -754,7 +829,8 @@ class Main(QtWidgets.QWidget):
         if not time_field:
             widget.setFixedWidth(45)
         else:
-            widget.setFixedWidth(65)
+            widget.setFixedWidth(75)
+        widget.setStyleSheet("text-align: center")
         layout.addWidget(minus_button)
         layout.addWidget(widget)
         layout.addWidget(plus_button)
@@ -770,10 +846,14 @@ class Main(QtWidgets.QWidget):
                 super().__init__()
                 self.main = parent
                 self.setBackgroundRole(QtGui.QPalette.Base)
-                self.setFixedSize(320, 190)
+                self.setMinimumSize(440, 260)
                 self.setAlignment(QtCore.Qt.AlignCenter)
-                self.setCursor(QtGui.QCursor(QtGui.QPixmap(magnifier_icon).scaledToWidth(32)))
-                self.setStyleSheet("border: 2px solid #dddddd;")
+                self.setCursor(
+                    QtGui.QCursor(
+                        QtGui.QPixmap(get_icon("magnifier", self.main.app.fastflix.config.theme)).scaledToWidth(32)
+                    )
+                )
+                self.setStyleSheet("border: 2px solid #567781; margin: 8px;")
 
             def mousePressEvent(self, QMouseEvent):
                 if (
@@ -789,26 +869,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.preview = PreviewImage(self)
 
         return self.widgets.preview
-
-    def init_preview_buttons(self):
-        layout = QtWidgets.QVBoxLayout()
-        refresh = QtWidgets.QPushButton("R")
-        refresh.setFixedWidth(20)
-        preview = QtWidgets.QPushButton("P")
-        preview.setFixedWidth(20)
-        one = QtWidgets.QPushButton("1")
-        one.setFixedWidth(20)
-        two = QtWidgets.QPushButton("2")
-        two.setFixedWidth(20)
-
-        refresh.clicked.connect(lambda: self.page_update())
-
-        layout.addWidget(refresh)
-        layout.addWidget(preview)
-        layout.addWidget(one)
-        layout.addWidget(two)
-        layout.addStretch()
-        return layout
 
     def modify_int(self, widget, method="add", time_field=False):
         modifier = 1
@@ -838,7 +898,8 @@ class Main(QtWidgets.QWidget):
             self,
             caption="Open Video",
             filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx *.webm *.mpg *.mp2 *.mpeg *.mpe *.mpv *.ogg *.m4p"
-            " *.wmv *.mov *.qt *.flv *.hevc *.gif *.webp *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2)",
+            " *.wmv *.mov *.qt *.flv *.hevc *.gif *.webp *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2);;"
+            "Concatenation Text File (*.txt *.concat);; All Files (*)",
             directory=str(
                 self.app.fastflix.config.source_directory
                 or (self.app.fastflix.current_video.source.parent if self.app.fastflix.current_video else Path.home())
@@ -856,10 +917,8 @@ class Main(QtWidgets.QWidget):
                 return
 
         self.input_video = Path(clean_file_string(filename[0]))
+        self.source_video_path_widget.setText(str(self.input_video))
         self.video_path_widget.setText(str(self.input_video))
-        self.output_video_path_widget.setText(self.generate_output_filename)
-        self.output_video_path_widget.setDisabled(False)
-        self.output_path_button.setDisabled(False)
         try:
             self.update_video_info()
         except Exception:
@@ -927,7 +986,7 @@ class Main(QtWidgets.QWidget):
                 f"{t('Auto Crop - Finding black bars at')} {self.number_to_time(x)}",
                 get_auto_crop,
                 dict(
-                    source=self.input_video,
+                    source=self.source_material,
                     video_width=self.app.fastflix.current_video.width,
                     video_height=self.app.fastflix.current_video.height,
                     input_track=self.original_video_track,
@@ -1150,6 +1209,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         self.app.fastflix.current_video = None
         self.input_video = None
+        self.source_video_path_widget.setText("")
         self.video_path_widget.setText(t("No Source Selected"))
         self.output_video_path_widget.setText("")
         self.output_path_button.setDisabled(True)
@@ -1188,6 +1248,7 @@ class Main(QtWidgets.QWidget):
         self.app.fastflix.current_video.work_path.mkdir(parents=True, exist_ok=True)
         extract_attachments(app=self.app)
         self.input_video = video.source
+        self.source_video_path_widget.setText(str(self.input_video))
         hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
         text_video_tracks = [
             (
@@ -1257,11 +1318,14 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self):
         self.loading_video = True
+        self.output_video_path_widget.setText(self.generate_output_filename)
+        self.output_video_path_widget.setDisabled(False)
+        self.output_path_button.setDisabled(False)
         self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())
         tasks = [
             Task(t("Parse Video details"), parse),
             Task(t("Extract covers"), extract_attachments),
-            Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.input_video)),
+            Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.source_material)),
             Task(t("Determine HDR details"), parse_hdr_details),
             Task(t("Detect HDR10+"), detect_hdr10_plus),
         ]
@@ -1342,6 +1406,9 @@ class Main(QtWidgets.QWidget):
         if self.app.fastflix.config.opt("auto_crop"):
             self.get_auto_crop()
 
+        if not getattr(self.current_encoder, "enable_concat", False) and self.app.fastflix.current_video.concat:
+            error_message(f"{self.current_encoder.name} {t('does not support concatenating files together')}")
+
     @property
     def video_track(self) -> int:
         return self.widgets.video_track.currentIndex()
@@ -1406,7 +1473,7 @@ class Main(QtWidgets.QWidget):
         ):
             settings["remove_hdr"] = True
 
-        custom_filters = "scale='min(720\\,iw):-8'"
+        custom_filters = "scale='min(440\\,iw):-8'"
         # if self.app.fastflix.current_video.color_transfer == "arib-std-b67":
         #     custom_filters += ",select=eq(pict_type\\,I)"
 
@@ -1418,7 +1485,7 @@ class Main(QtWidgets.QWidget):
 
         thumb_command = generate_thumbnail_command(
             config=self.app.fastflix.config,
-            source=self.input_video,
+            source=self.source_material,
             output=self.thumb_file,
             filters=filters,
             start_time=self.preview_place,
@@ -1430,6 +1497,10 @@ class Main(QtWidgets.QWidget):
             pass
         worker = ThumbnailCreator(self, thumb_command)
         worker.start()
+
+    @property
+    def source_material(self):
+        return get_first_concat_item(self.input_video) if self.app.fastflix.current_video.concat else self.input_video
 
     @staticmethod
     def thread_logger(text):
@@ -1445,7 +1516,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.preview.setText(t("Error Updating Thumbnail"))
             return
         pixmap = QtGui.QPixmap(str(self.thumb_file))
-        pixmap = pixmap.scaled(320, 190, QtCore.Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(420, 260, QtCore.Qt.KeepAspectRatio)
         self.widgets.preview.setPixmap(pixmap)
 
     def build_scale(self):
@@ -1633,13 +1704,16 @@ class Main(QtWidgets.QWidget):
     def set_convert_button(self, convert=True):
         if convert:
             self.widgets.convert_button.setText(f"{t('Convert')}  ")
-            self.widgets.convert_button.setIcon(QtGui.QIcon(play_round_icon))
+            self.widgets.convert_button.setIcon(QtGui.QIcon(self.get_icon("play-round")))
             self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
 
         else:
             self.widgets.convert_button.setText(f"{t('Cancel')}  ")
-            self.widgets.convert_button.setIcon(QtGui.QIcon(black_x_icon))
+            self.widgets.convert_button.setIcon(QtGui.QIcon(self.get_icon("black-x")))
             self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
+
+    def get_icon(self, name):
+        return get_icon(name, self.app.fastflix.config.theme)
 
     @reusables.log_exception("fastflix", show_traceback=True)
     def encode_video(self):
@@ -1798,11 +1872,8 @@ class Main(QtWidgets.QWidget):
             self.input_video = Path(clean_file_string(event.mimeData().urls()[0].toLocalFile()))
         except (ValueError, IndexError):
             return event.ignore()
-
+        self.source_video_path_widget.setText(str(self.input_video))
         self.video_path_widget.setText(str(self.input_video))
-        self.output_video_path_widget.setText(self.generate_output_filename)
-        self.output_video_path_widget.setDisabled(False)
-        self.output_path_button.setDisabled(False)
         try:
             self.update_video_info()
         except Exception:

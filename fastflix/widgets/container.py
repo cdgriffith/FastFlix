@@ -17,7 +17,7 @@ from fastflix.language import t
 from fastflix.models.config import setting_types
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
-from fastflix.resources import main_icon
+from fastflix.resources import main_icon, get_icon
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message
 from fastflix.windows_tools import cleanup_windows_notification
 from fastflix.widgets.about import About
@@ -27,6 +27,7 @@ from fastflix.widgets.main import Main
 from fastflix.widgets.profile_window import ProfileWindow
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
+from fastflix.widgets.concat import ConcatWindow
 
 logger = logging.getLogger("fastflix")
 
@@ -52,6 +53,19 @@ class Container(QtWidgets.QMainWindow):
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
         self.main.set_profile()
+
+        if self.app.fastflix.config.theme == "onyx":
+            self.setStyleSheet(
+                """
+                QAbstractItemView{ background-color: #707070; }
+                QPushButton{ border-radius:10px; }
+                QLineEdit{ background-color: #707070; color: black; border-radius: 10px; }
+                QTextEdit{ background-color: #707070; color: black; }
+                QTabBar::tab{ background-color: #4b5054; }
+                QComboBox{ border-radius:10px; }
+                QScrollArea{ border: 1px solid #919191; }
+                """
+            )
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         if self.pb:
@@ -82,6 +96,7 @@ class Container(QtWidgets.QMainWindow):
                 shutil.rmtree(item, ignore_errors=True)
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".tiff", ".tif")):
                 item.unlink()
+        shutil.rmtree(self.app.fastflix.config.work_path / "covers", ignore_errors=True)
         if reusables.win_based:
             cleanup_windows_notification()
         self.main.close(from_container=True)
@@ -120,6 +135,13 @@ class Container(QtWidgets.QMainWindow):
         profile_menu.addAction(new_profile_action)
         profile_menu.addAction(show_profile_action)
         profile_menu.addAction(delete_profile_action)
+
+        tools_menu = menubar.addMenu(t("Tools"))
+        concat_action = QtWidgets.QAction(
+            QtGui.QIcon(get_icon("onyx-queue", self.app.fastflix.config.theme)), t("Concatenation Builder"), self
+        )
+        concat_action.triggered.connect(self.show_concat)
+        tools_menu.addAction(concat_action)
 
         wiki_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("FastFlix Wiki"), self)
         wiki_action.triggered.connect(self.show_wiki)
@@ -172,8 +194,12 @@ class Container(QtWidgets.QMainWindow):
     def show_wiki(self):
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("https://github.com/cdgriffith/FastFlix/wiki"))
 
+    def show_concat(self):
+        self.concat = ConcatWindow(app=self.app, main=self.main)
+        self.concat.show()
+
     def show_about(self):
-        self.about = About()
+        self.about = About(app=self.app)
         self.about.show()
 
     def show_setting(self):

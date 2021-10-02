@@ -35,7 +35,11 @@ class CoverPanel(QtWidgets.QWidget):
         layout.addWidget(QtWidgets.QLabel(t("Poster Cover")), 0, 0, 1, 5)
         layout.addWidget(QtWidgets.QLabel(t("Landscape Cover")), 0, 6, 1, 4)
         info_label = QtWidgets.QLabel(
-            link("https://codecalamity.com/guides/video-thumbnails/", t("Enabling cover thumbnails on your system"))
+            link(
+                "https://codecalamity.com/guides/video-thumbnails/",
+                t("Enabling cover thumbnails on your system"),
+                app.fastflix.config.theme,
+            )
         )
         info_label.setOpenExternalLinks(True)
         layout.addWidget(info_label, 10, 0, 1, 9, QtCore.Qt.AlignLeft)

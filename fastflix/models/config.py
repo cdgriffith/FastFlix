@@ -96,6 +96,9 @@ def get_preset_defaults():
 
 
 def find_ffmpeg_file(name, raise_on_missing=False):
+    if ff_location := os.getenv(f"FF_{name.upper()}"):
+        return Path(ff_location).absolute()
+
     if (ff_location := shutil.which(name)) is not None:
         return Path(ff_location).absolute()
 
@@ -151,6 +154,7 @@ class Config(BaseModel):
     work_path: Path = fastflix_folder
     use_sane_audio: bool = True
     selected_profile: str = "Standard Profile"
+    theme: str = "light"
     disable_version_check: bool = False
     disable_update_check: bool = False
     disable_automatic_subtitle_burn_in: bool = False

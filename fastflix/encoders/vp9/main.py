@@ -16,6 +16,7 @@ video_dimension_divisor = 2
 enable_subtitles = False
 enable_audio = True
 enable_attachments = False
+enable_concat = True
 
 from fastflix.encoders.vp9.command_builder import build
 from fastflix.encoders.vp9.settings_panel import VP9 as settings_panel

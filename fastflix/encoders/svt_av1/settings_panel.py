@@ -81,6 +81,7 @@ class SVT_AV1(SettingPanel):
             link(
                 "https://github.com/AOMediaCodec/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
                 t("SVT-AV1 Encoding Guide"),
+                app.fastflix.config.theme,
             )
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)

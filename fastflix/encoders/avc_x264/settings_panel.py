@@ -78,7 +78,11 @@ class AVC(SettingPanel):
         grid.setRowStretch(9, 1)
 
         guide_label = QtWidgets.QLabel(
-            link("https://trac.ffmpeg.org/wiki/Encode/H.264", t("FFMPEG AVC / H.264 Encoding Guide"))
+            link(
+                "https://trac.ffmpeg.org/wiki/Encode/H.264",
+                t("FFMPEG AVC / H.264 Encoding Guide"),
+                app.fastflix.config.theme,
+            )
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
