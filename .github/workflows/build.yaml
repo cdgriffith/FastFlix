@@ -24,11 +24,6 @@ jobs:
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-    - uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
-
     - name: Install requirements
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
@@ -79,11 +74,6 @@ jobs:
         echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
 
     - name: Install requirements
       run: |
@@ -137,11 +127,6 @@ jobs:
         echo "::set-env name=VERSION::$env:VERSION"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
 
     - name: Insatll requirements
       shell: cmd
@@ -213,11 +198,6 @@ jobs:
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-    - uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
-
     - name: Insatll requirements
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
@@ -268,11 +248,6 @@ jobs:
         echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
 
     - name: Insatll requirements
       run: |
