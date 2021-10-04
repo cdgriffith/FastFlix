@@ -55,7 +55,7 @@ jobs:
 #        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-test.txt') }}
 
     - name: Install PySide6 requirements
-      run: sudo apt install libopengl0 -y
+      run: sudo apt install libopengl0 freeglut3 freeglut3-dev -y
 
     - name: Install requirements
       run: |
