@@ -705,6 +705,7 @@ class Main(QtWidgets.QWidget):
 
     def init_crop(self):
         crop_box = QtWidgets.QGroupBox()
+        crop_box.setMinimumWidth(400)
         crop_box.setStyleSheet(group_box_style(pt="0", pb="12px"))
         crop_layout = QtWidgets.QVBoxLayout()
         self.widgets.crop.top, crop_top_layout = self.build_hoz_int_field(f"       {t('Top')} ")

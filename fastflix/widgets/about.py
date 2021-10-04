@@ -27,7 +27,7 @@ class About(QtWidgets.QWidget):
             f"<b>FastFlix</b> v{__version__}<br>"
             f"{f'{build}: {build_file.read_text().strip()}<br>' if build_file.exists() else ''}"
             f"<br>{t('Author')}: {link('https://github.com/cdgriffith', 'Chris Griffith', app.fastflix.config.theme)}"
-            f"<br>{t('License')}: MIT (Code)"
+            f"<br>{t('License')}: MIT"
         )
         label.setFont(QtGui.QFont("Arial", 14))
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -45,8 +45,10 @@ class About(QtWidgets.QWidget):
 
         bundle_label = QtWidgets.QLabel(
             f"Conversion suites: {link('https://www.ffmpeg.org/download.html', 'FFmpeg', app.fastflix.config.theme)} ({t('Various')}), "
-            f"{link('https://github.com/rigaya/NVEnc', 'NVEncC', app.fastflix.config.theme)} (MIT)<br><br>"
+            f"{link('https://github.com/rigaya/NVEnc', 'NVEncC', app.fastflix.config.theme)} (MIT) "
+            f"{link('https://github.com/rigaya/VCEEnc', 'VCEEnc', app.fastflix.config.theme)} (MIT)<br><br>"
             f"Encoders: <br> {link('https://github.com/rigaya/NVEnc', 'NVEncC', app.fastflix.config.theme)} (MIT), "
+            f"{link('https://github.com/rigaya/VCEEnc', 'VCEEnc', app.fastflix.config.theme)} (MIT), "
             f"SVT AV1 (MIT), rav1e (MIT), aom (MIT), x265 (GPL), x264 (GPL), libvpx (BSD)"
         )
         bundle_label.setAlignment(QtCore.Qt.AlignCenter)

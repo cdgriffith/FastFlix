@@ -413,7 +413,7 @@ QLineEdit
     background-color: #1d2023;
     padding: 0.23em;
     border-style: solid;
-    border: 0.04em solid #76797c;
+    border: 0.05em solid #76797c;
     border-radius: 0.09em;
     color: #eff0f1;
 }
@@ -605,7 +605,7 @@ QTextEdit
 {
     background-color: #1d2023;
     color: #eff0f1;
-    border: 0.04em solid #76797c;
+    border: 0.05em solid #76797c;
 }
 
 QPlainTextEdit
@@ -613,7 +613,7 @@ QPlainTextEdit
     background-color: #1d2023;
     color: #eff0f1;
     border-radius: 0.09em;
-    border: 0.04em solid #76797c;
+    border: 0.05em solid #76797c;
 }
 
 QSizeGrip
@@ -650,7 +650,7 @@ QFrame[frameShape="4"], /* QFrame::HLine == 0x0004 */
 QFrame[frameShape="5"], /* QFrame::VLine == 0x0005 */
 QFrame[frameShape="6"]  /* QFrame::StyledPanel == 0x0006 */
 {
-    border-width: 0.04em;
+    border-width: 0.05em;
     padding: 0.09em;
     border-style: solid;
     border-color: #4f5962;
@@ -665,7 +665,7 @@ QFrame[frameShape="4"]:hover,
 QFrame[frameShape="5"]:hover,
 QFrame[frameShape="6"]:hover
 {
-    border: 0.04em solid #3daee9;
+    border: 0.05em solid #3daee9;
 }
 
 /* Don't provide an outline if we have a widget that takes up the space. */
@@ -721,19 +721,19 @@ QToolBar QToolButton
     font-weight: bold;
     min-height: 1em;
     min-width: 2em;
-    border: 0.04em transparent black;
+    border: 0.05em transparent black;
     padding-left: 0.2em;
     padding-right: 0.3em;
 }
 
 QToolBar QToolButton:hover
 {
-    border: 0.04em solid #3daee9;
+    border: 0.05em solid #3daee9;
 }
 
 QToolBar QToolButton:pressed
 {
-    border: 0.04em solid #3daee9;
+    border: 0.05em solid #3daee9;
     /* The padding doesn't inherit from `QToolBar QToolButton`, so leave it in. */
     padding-left: 0.2em;
     padding-right: 0.3em;
@@ -743,7 +743,7 @@ QPushButton
 {
     color: #eff0f1;
     background-color: #4f5962;
-    border: 0.04em solid #76797c;
+    border: 0.05em solid #76797c;
     padding: 0.23em;
     border-radius: 0.09em;
     outline: none;
@@ -753,28 +753,28 @@ QPushButton
 QComboBox:open,
 QPushButton:open
 {
-    border-width: 0.04em;
+    border-width: 0.05em;
     border-color: #919191;
 }
 
 QComboBox:closed,
 QPushButton:closed
 {
-    border-width: 0.04em;
+    border-width: 0.05em;
     border-color: #919191;
 }
 
 QPushButton:disabled
 {
     background-color: #4f5962;
-    border-width: 0.04em;
+    border-width: 0.05em;
     border-color: #919191;
     border-style: solid;
     padding-top: 0.23em;
     padding-bottom: 0.23em;
     padding-left: 1ex;
     padding-right: 1ex;
-    border-radius: 0.04em;
+    border-radius: 0.05em;
     color: #454545;
 }
 
@@ -793,7 +793,7 @@ QPushButton:pressed
 
 QComboBox
 {
-    border: 0.04em solid #76797c;
+    border: 0.05em solid #76797c;
     border-radius: 0.09em;
     padding: 0.23em;
     min-width: 2.5em;
@@ -807,21 +807,21 @@ QComboBox:editable
 QPushButton:checked
 {
     background-color: #626568;
-    border: 0.04em solid #919191;
+    border: 0.05em solid #919191;
     color: #eff0f1;
 }
 
 QPushButton:hover
 {
     background-color: #4f5962;
-    border: 0.04em solid #3daee9;
+    border: 0.05em solid #3daee9;
     color: #eff0f1;
 }
 
 QPushButton:checked:hover
 {
     background-color: #626568;
-    border: 0.04em solid #3daee9;
+    border: 0.05em solid #3daee9;
     color: #eff0f1;
 }
 

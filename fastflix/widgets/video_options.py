@@ -45,7 +45,6 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.commands = CommandList(self, self.app)
         self.current_settings = self.main.current_encoder.settings_panel(self, self.main, self.app)
         self.tabBar().tabBarClicked.connect(self.change_tab)
-
         self.audio = AudioList(self, self.app)
         self.subtitles = SubtitleList(self, self.app)
         self.status = StatusPanel(self, self.app)

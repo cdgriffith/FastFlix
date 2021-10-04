@@ -108,6 +108,7 @@ class Container(QtWidgets.QMainWindow):
 
     def init_menu(self):
         menubar = self.menuBar()
+        menubar.setNativeMenuBar(False)
 
         file_menu = menubar.addMenu(t("File"))
 
