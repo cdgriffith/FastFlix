@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List, Tuple, Union
 
 from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.encode import AttachmentTrack
@@ -101,7 +101,7 @@ class CoverPanel(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(
             self,
             caption=t("Cover"),
-            directory=str(dirname),
+            dir=str(dirname),
             filter=f"{t('Supported Image Files')} (*.png *.jpeg *.jpg)",
         )
         if not filename or not filename[0]:
@@ -156,7 +156,7 @@ class CoverPanel(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(
             self,
             caption=t("Landscape Cover"),
-            directory=str(dirname),
+            dir=str(dirname),
             filter=f"{t('Supported Image Files')} (*.png *.jpeg *.jpg)",
         )
         if not filename or not filename[0]:

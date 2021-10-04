@@ -3,7 +3,7 @@
 import copy
 import logging
 
-from qtpy import QtGui, QtWidgets, QtCore
+from PySide6 import QtGui, QtWidgets, QtCore
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp

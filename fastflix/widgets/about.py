@@ -4,7 +4,7 @@ from pathlib import Path
 
 import reusables
 from box import __version__ as box_version
-from qtpy import API, QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.shared import base_path, link, pyinstaller
@@ -27,7 +27,7 @@ class About(QtWidgets.QWidget):
             f"<b>FastFlix</b> v{__version__}<br>"
             f"{f'{build}: {build_file.read_text().strip()}<br>' if build_file.exists() else ''}"
             f"<br>{t('Author')}: {link('https://github.com/cdgriffith', 'Chris Griffith', app.fastflix.config.theme)}"
-            f"<br>{t('Dual License')}: MIT (Code) / {'L' if API == 'pyside2' else ''}GPL (Release)"
+            f"<br>{t('License')}: MIT (Code)"
         )
         label.setFont(QtGui.QFont("Arial", 14))
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -59,8 +59,8 @@ class About(QtWidgets.QWidget):
             f"{link('https://github.com/cdgriffith/Box', t('python-box'), app.fastflix.config.theme)} {box_version} (MIT), "
             f"{link('https://github.com/cdgriffith/Reusables', t('Reusables'), app.fastflix.config.theme)} {reusables.__version__} (MIT)<br>"
             "mistune (BSD), colorama (BSD), coloredlogs (MIT), Requests (Apache 2.0)<br>"
-            "appdirs (MIT), iso639-lang (MIT), psutil (BSD), qtpy (MIT), pathvalidate (MIT) <br>"
-            "BreezeStyleSheets (MIT)"
+            "appdirs (MIT), iso639-lang (MIT), psutil (BSD), pathvalidate (MIT) <br>"
+            "BreezeStyleSheets (MIT), PySide6 (LGPL)"
         )
         supporting_libraries_label.setAlignment(QtCore.Qt.AlignCenter)
         supporting_libraries_label.setOpenExternalLinks(True)

@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 import reusables
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.helpers import Command as BuilderCommand
 from fastflix.language import t
@@ -106,7 +106,7 @@ class CommandList(QtWidgets.QWidget):
     def save_commands_to_file(self):
         ext = ".bat" if reusables.win_based else ".sh"
         filename = QtWidgets.QFileDialog.getSaveFileName(
-            self, caption=t("Save Commands"), directory=str(Path("~").expanduser()), filter=f"{t('Save File')} (*{ext})"
+            self, caption=t("Save Commands"), dir=str(Path("~").expanduser()), filter=f"{t('Save File')} (*{ext})"
         )
         if filename and filename[0]:
             Path(filename[0]).write_text(self._prep_commands())

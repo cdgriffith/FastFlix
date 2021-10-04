@@ -5,7 +5,7 @@ from pathlib import Path
 from subprocess import PIPE, STDOUT, Popen, run, check_output
 from distutils.version import LooseVersion
 
-from qtpy import QtCore
+from PySide6 import QtCore
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp

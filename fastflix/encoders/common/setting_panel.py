@@ -4,7 +4,7 @@ from typing import List, Tuple, Union
 from pathlib import Path
 
 from box import Box
-from qtpy import QtGui, QtWidgets, QtCore
+from PySide6 import QtGui, QtWidgets, QtCore
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
@@ -262,7 +262,7 @@ class SettingPanel(QtWidgets.QWidget):
         if not dirname.exists():
             dirname = Path()
         filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="hdr10_metadata", directory=str(dirname), filter="HDR10+ Metadata (*.json)"
+            self, caption="hdr10_metadata", dir=str(dirname), filter="HDR10+ Metadata (*.json)"
         )
         if not filename or not filename[0]:
             return

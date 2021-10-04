@@ -5,7 +5,7 @@ from typing import List, Optional
 from box import Box
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.audio import lossless, channel_list
 from fastflix.language import t

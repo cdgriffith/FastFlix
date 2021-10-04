@@ -2,7 +2,7 @@
 import logging
 
 from box import Box
-from qtpy import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t

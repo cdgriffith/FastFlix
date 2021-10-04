@@ -6,7 +6,7 @@ import logging
 
 from box import Box
 from iso639 import Lang
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t

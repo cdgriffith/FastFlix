@@ -6,7 +6,7 @@ from pathlib import Path
 
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
@@ -225,7 +225,7 @@ class Settings(QtWidgets.QWidget):
         dirname = Path(self.ffmpeg_path.text()).parent
         if not dirname.exists():
             dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="FFmepg location", directory=str(dirname))
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="FFmepg location", dir=str(dirname))
         if not filename or not filename[0]:
             return
         self.ffmpeg_path.setText(filename[0])
@@ -234,7 +234,7 @@ class Settings(QtWidgets.QWidget):
         dirname = Path(self.nvencc_path.text()).parent
         if not dirname.exists():
             dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="NVEncC location", directory=str(dirname))
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="NVEncC location", dir=str(dirname))
         if not filename or not filename[0]:
             return
         self.nvencc_path.setText(filename[0])
@@ -243,7 +243,7 @@ class Settings(QtWidgets.QWidget):
         dirname = Path(self.vceenc_path.text()).parent
         if not dirname.exists():
             dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="VCEEncC location", directory=str(dirname))
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="VCEEncC location", dir=str(dirname))
         if not filename or not filename[0]:
             return
         self.vceenc_path.setText(filename[0])
@@ -252,7 +252,7 @@ class Settings(QtWidgets.QWidget):
         dirname = Path(self.hdr10_parser_path.text()).parent
         if not dirname.exists():
             dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="hdr10+ parser", directory=str(dirname))
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="hdr10+ parser", dir=str(dirname))
         if not filename or not filename[0]:
             return
         self.hdr10_parser_path.setText(filename[0])
@@ -282,7 +282,7 @@ class Settings(QtWidgets.QWidget):
         dirname = Path(self.ffprobe_path.text()).parent
         if not dirname.exists():
             dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="FFprobe location", directory=str(dirname))
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="FFprobe location", dir=str(dirname))
         if not filename or not filename[0]:
             return
         self.ffprobe_path.setText(filename[0])
@@ -302,7 +302,7 @@ class Settings(QtWidgets.QWidget):
         dialog = QtWidgets.QFileDialog()
         dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
         dialog.setOption(QtWidgets.QFileDialog.ShowDirsOnly)
-        work_path = dialog.getExistingDirectory(directory=str(dirname), caption="Work directory")
+        work_path = dialog.getExistingDirectory(dir=str(dirname), caption="Work directory")
         if not work_path:
             return
         self.work_dir.setText(work_path)

@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 import logging
 
-from qtpy import QtWidgets, QtGui, QtCore
+from PySide6 import QtWidgets, QtGui, QtCore
 
 from fastflix.language import t
 from fastflix.flix import probe
@@ -170,7 +170,7 @@ class ConcatWindow(QtWidgets.QWidget):
                 "Confirm Change Folder",
             ):
                 return
-        folder_name = QtWidgets.QFileDialog.getExistingDirectory(self, directory=self.folder_name)
+        folder_name = QtWidgets.QFileDialog.getExistingDirectory(self, dir=self.folder_name)
         if not folder_name:
             return
         self.folder_name = folder_name

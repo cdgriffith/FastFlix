@@ -10,7 +10,8 @@ from subprocess import run
 
 import reusables
 from appdirs import user_data_dir
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtGui import QAction
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
@@ -110,11 +111,11 @@ class Container(QtWidgets.QMainWindow):
 
         file_menu = menubar.addMenu(t("File"))
 
-        setting_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogListView), t("Settings"), self)
+        setting_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogListView), t("Settings"), self)
         setting_action.setShortcut("Ctrl+S")
         setting_action.triggered.connect(self.show_setting)
 
-        exit_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogCancelButton), t("Exit"), self)
+        exit_action = QAction(self.si(QtWidgets.QStyle.SP_DialogCancelButton), t("Exit"), self)
         exit_action.setShortcut(QtGui.QKeySequence("Ctrl+Q"))
         exit_action.setStatusTip(t("Exit application"))
         exit_action.triggered.connect(self.close)
@@ -124,56 +125,52 @@ class Container(QtWidgets.QMainWindow):
         file_menu.addAction(exit_action)
 
         profile_menu = menubar.addMenu(t("Profiles"))
-        new_profile_action = QtWidgets.QAction(t("New Profile"), self)
+        new_profile_action = QAction(t("New Profile"), self)
         new_profile_action.triggered.connect(self.new_profile)
 
-        show_profile_action = QtWidgets.QAction(t("Current Profile Settings"), self)
+        show_profile_action = QAction(t("Current Profile Settings"), self)
         show_profile_action.triggered.connect(self.show_profile)
 
-        delete_profile_action = QtWidgets.QAction(t("Delete Current Profile"), self)
+        delete_profile_action = QAction(t("Delete Current Profile"), self)
         delete_profile_action.triggered.connect(self.delete_profile)
         profile_menu.addAction(new_profile_action)
         profile_menu.addAction(show_profile_action)
         profile_menu.addAction(delete_profile_action)
 
         tools_menu = menubar.addMenu(t("Tools"))
-        concat_action = QtWidgets.QAction(
+        concat_action = QAction(
             QtGui.QIcon(get_icon("onyx-queue", self.app.fastflix.config.theme)), t("Concatenation Builder"), self
         )
         concat_action.triggered.connect(self.show_concat)
         tools_menu.addAction(concat_action)
 
-        wiki_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("FastFlix Wiki"), self)
+        wiki_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("FastFlix Wiki"), self)
         wiki_action.triggered.connect(self.show_wiki)
 
-        about_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("About"), self)
+        about_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("About"), self)
         about_action.triggered.connect(self.show_about)
 
-        changes_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), t("View Changes"), self)
+        changes_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), t("View Changes"), self)
         changes_action.triggered.connect(self.show_changes)
 
-        log_dir_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogOpenButton), t("Open Log Directory"), self)
+        log_dir_action = QAction(self.si(QtWidgets.QStyle.SP_DialogOpenButton), t("Open Log Directory"), self)
         log_dir_action.triggered.connect(self.show_log_dir)
 
-        log_action = QtWidgets.QAction(
-            self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), t("View GUI Debug Logs"), self
-        )
+        log_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), t("View GUI Debug Logs"), self)
         log_action.triggered.connect(self.show_logs)
 
-        report_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogHelpButton), t("Report Issue"), self)
+        report_action = QAction(self.si(QtWidgets.QStyle.SP_DialogHelpButton), t("Report Issue"), self)
         report_action.triggered.connect(self.open_issues)
 
-        version_action = QtWidgets.QAction(
+        version_action = QAction(
             self.si(QtWidgets.QStyle.SP_BrowserReload), t("Check for Newer Version of FastFlix"), self
         )
         version_action.triggered.connect(lambda: latest_fastflix(no_new_dialog=True))
 
-        ffmpeg_update_action = QtWidgets.QAction(
-            self.si(QtWidgets.QStyle.SP_ArrowDown), t("Download Newest FFmpeg"), self
-        )
+        ffmpeg_update_action = QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), t("Download Newest FFmpeg"), self)
         ffmpeg_update_action.triggered.connect(self.download_ffmpeg)
 
-        clean_logs_action = QtWidgets.QAction(self.si(QtWidgets.QStyle.SP_DialogResetButton), t("Clean Old Logs"), self)
+        clean_logs_action = QAction(self.si(QtWidgets.QStyle.SP_DialogResetButton), t("Clean Old Logs"), self)
         clean_logs_action.triggered.connect(self.clean_old_logs)
 
         help_menu = menubar.addMenu(t("Help"))

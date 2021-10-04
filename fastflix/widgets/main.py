@@ -17,7 +17,7 @@ import pkg_resources
 import reusables
 from box import Box
 from pydantic import BaseModel, Field
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
 from fastflix.exceptions import FastFlixInternalException, FlixError
@@ -635,9 +635,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.fast_time.setFixedWidth(65)
 
         label = QtWidgets.QLabel(t("Trim"))
-        # label.setStyleSheet("QLabel{color:#777}")
-        # label.setMaximumHeight(40)
-        # bottom_row.addWidget(self.widgets.scale.keep_aspect, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignLeft))
+        label.setMaximumHeight(40)
         layout.addWidget(label, alignment=QtCore.Qt.AlignLeft)
         layout.addWidget(reset, alignment=QtCore.Qt.AlignTop)
         layout.addStretch(1)
@@ -656,10 +654,7 @@ class Main(QtWidgets.QWidget):
     def init_scale(self):
         scale_area = QtWidgets.QGroupBox()
         scale_area.setFont(self.app.font())
-        # scale_area.setMaximumHeight(55)
         scale_area.setStyleSheet(group_box_style())
-        # scale_area.setStyleSheet("QGroupBox{margin-top: -5px; padding-top: -5px;}")
-        scale_layout = QtWidgets.QVBoxLayout()
 
         main_row = QtWidgets.QHBoxLayout()
 
@@ -695,7 +690,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.scale.keep_aspect = QtWidgets.QCheckBox(t("Keep aspect ratio"))
         self.widgets.scale.keep_aspect.setMaximumHeight(40)
         self.widgets.scale.keep_aspect.setChecked(True)
-        # self.widgets.scale.keep_aspect.setSty
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
         self.widgets.scale.keep_aspect.toggled.connect(lambda: self.keep_aspect_update())
 
@@ -900,7 +894,7 @@ class Main(QtWidgets.QWidget):
             filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx *.webm *.mpg *.mp2 *.mpeg *.mpe *.mpv *.ogg *.m4p"
             " *.wmv *.mov *.qt *.flv *.hevc *.gif *.webp *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2);;"
             "Concatenation Text File (*.txt *.concat);; All Files (*)",
-            directory=str(
+            dir=str(
                 self.app.fastflix.config.source_directory
                 or (self.app.fastflix.current_video.source.parent if self.app.fastflix.current_video else Path.home())
             ),
@@ -953,7 +947,7 @@ class Main(QtWidgets.QWidget):
     @reusables.log_exception("fastflix", show_traceback=False)
     def save_file(self, extension="mkv"):
         filename = QtWidgets.QFileDialog.getSaveFileName(
-            self, caption="Save Video As", directory=self.generate_output_filename, filter=f"Save File (*.{extension})"
+            self, caption="Save Video As", dir=self.generate_output_filename, filter=f"Save File (*.{extension})"
         )
         if filename and filename[0]:
             self.output_video_path_widget.setText(filename[0])
@@ -1105,15 +1099,15 @@ class Main(QtWidgets.QWidget):
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
                     if isinstance(sub_widget, QtWidgets.QWidget):
-                        sub_widget.setDisabled(False)
+                        sub_widget.setEnabled(True)
             elif isinstance(widget, QtWidgets.QWidget):
-                widget.setDisabled(False)
+                widget.setEnabled(True)
         for button in self.buttons:
-            button.setDisabled(False)
+            button.setEnabled(True)
         if self.widgets.scale.keep_aspect.isChecked():
             self.widgets.scale.height.setDisabled(True)
-        self.output_path_button.setDisabled(False)
-        self.output_video_path_widget.setDisabled(False)
+        self.output_path_button.setEnabled(True)
+        self.output_video_path_widget.setEnabled(True)
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def scale_update(self):

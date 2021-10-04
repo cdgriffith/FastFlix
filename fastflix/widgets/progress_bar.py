@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Dict, List
 
 import reusables
-from qtpy import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from fastflix.language import t
 
