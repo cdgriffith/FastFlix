@@ -27,9 +27,8 @@ jobs:
     - name: Install requirements
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade wheel typing_extensions pyinstaller==4.3
+        python -m pip install --upgrade wheel typing_extensions pyinstaller
         python -m pip install -r requirements.txt
-        python -m pip install --upgrade pyqt5-tools
 
     - name: Grab iso-639 lists
       run: |
@@ -78,9 +77,8 @@ jobs:
     - name: Install requirements
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade wheel typing_extensions  pyinstaller==4.3
+        python -m pip install --upgrade wheel typing_extensions pyinstaller
         python -m pip install -r requirements.txt
-        python -m pip install --upgrade pyqt5-tools
 
     - name: Grab iso-639 lists
       run: |
@@ -132,7 +130,7 @@ jobs:
       shell: cmd
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade pypiwin32 wheel typing_extensions pyinstaller==4.3
+        python -m pip install --upgrade pypiwin32 wheel typing_extensions pyinstaller
         python -m pip install -r requirements.txt
 
     - name: Grab iso-639 lists
@@ -201,9 +199,8 @@ jobs:
     - name: Insatll requirements
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade wheel typing_extensions pyinstaller==4.3
+        python -m pip install --upgrade wheel typing_extensions pyinstaller
         python -m pip install -r requirements.txt
-        python -m pip install pyqt5==5.15.3 --force-reinstall --upgrade
 
     - name: Grab iso-639 lists
       run: |
@@ -252,9 +249,8 @@ jobs:
     - name: Insatll requirements
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade wheel typing_extensions pyinstaller==4.3
+        python -m pip install --upgrade wheel typing_extensions pyinstaller
         python -m pip install -r requirements.txt
-        python -m pip install pyqt5==5.15.3 --force-reinstall --upgrade
 
     - name: Grab iso-639 lists
       run: |
