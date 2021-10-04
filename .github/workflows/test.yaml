@@ -54,6 +54,9 @@ jobs:
 #        path: ${{ env.pythonLocation }}
 #        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-test.txt') }}
 
+    - name: Install PySide6 requirements
+      run: sudo apt install libopengl0 -y
+
     - name: Install requirements
       run: |
         python -m pip install --upgrade pip setuptools
