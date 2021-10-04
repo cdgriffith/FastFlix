@@ -59,59 +59,6 @@ jobs:
           dist/FastFlix
           dist/LICENSE
 
-  build-linux-legacy:
-
-    runs-on: ubuntu-18.04
-
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-
-    - name: Gather build version
-      run: |
-        mkdir dist
-        echo "::set-env name=VERSION::$(python scripts/get_version.py)"
-        echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - name: Install PySide6 apt requirements
-      run: sudo apt install libopengl0 freeglut3 freeglut3-dev -y
-
-    - name: Install pip requirements
-      run: |
-        python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade wheel typing_extensions pyinstaller
-        python -m pip install -r requirements.txt
-
-    - name: Grab iso-639 lists
-      run: |
-        cp $(python -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
-        cp $(python -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
-
-    - name: Build single executable
-      run: pyinstaller FastFlix_Nix_OneFile.spec
-
-    - name: Copy license to dist
-      run: |
-        cp docs/build-licenses.txt dist/LICENSE
-
-    - name: Test executable
-      run: |
-        chmod +x dist/FastFlix
-        dist/FastFlix --version
-        dist/FastFlix --test
-
-    - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: FastFlix_${{ env.VERSION }}_linux_legacy_x86_64
-        path: |
-          dist/FastFlix
-          dist/LICENSE
-
   build-windows-2019:
 
     runs-on: windows-2019
