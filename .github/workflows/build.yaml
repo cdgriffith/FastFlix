@@ -24,7 +24,10 @@ jobs:
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-    - name: Install requirements
+    - name: Install PySide6 apt requirements
+      run: sudo apt install libopengl0 freeglut3 freeglut3-dev -y
+
+    - name: Install pip requirements
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
         python -m pip install --upgrade wheel typing_extensions pyinstaller
@@ -74,7 +77,10 @@ jobs:
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-    - name: Install requirements
+    - name: Install PySide6 apt requirements
+      run: sudo apt install libopengl0 freeglut3 freeglut3-dev -y
+
+    - name: Install pip requirements
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
         python -m pip install --upgrade wheel typing_extensions pyinstaller
