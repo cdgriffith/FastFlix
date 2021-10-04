@@ -371,8 +371,6 @@ class Main(QtWidgets.QWidget):
         layout.addLayout(source_layout)
         layout.addLayout(output_layout)
 
-        layout.addLayout(self.init_video_track_select())
-
         title_layout = QtWidgets.QHBoxLayout()
 
         title_label = QtWidgets.QLabel(t("Title"))
@@ -387,8 +385,10 @@ class Main(QtWidgets.QWidget):
         title_layout.addWidget(self.widgets.video_title)
 
         layout.addLayout(title_layout)
+
         layout.addWidget(self.init_start_time())
         layout.addWidget(self.init_scale())
+        layout.addLayout(self.init_video_track_select())
         layout.addStretch(1)
         return layout
 
@@ -463,6 +463,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.video_track.addItems([])
         self.widgets.video_track.setFixedHeight(20)
         self.widgets.video_track.currentIndexChanged.connect(self.video_track_update)
+        self.widgets.video_track.setStyleSheet("QComboBox{max-height: 1em; padding: 0; margin: 0}")
         if self.app.fastflix.config.theme == "onyx":
             self.widgets.video_track.setStyleSheet("background-color: #707070; border-radius: 10px; color: black")
 
