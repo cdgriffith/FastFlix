@@ -27,6 +27,8 @@ jobs:
     - name: Install PySide6 apt requirements
       run: sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 -y
 
+    - uses: syphar/restore-pip-download-cache@v1
+
     - name: Install pip requirements
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
@@ -78,6 +80,8 @@ jobs:
         echo "::set-env name=VERSION::$env:VERSION"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    - uses: syphar/restore-pip-download-cache@v1
 
     - name: Insatll requirements
       shell: cmd
@@ -149,6 +153,8 @@ jobs:
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
+    - uses: syphar/restore-pip-download-cache@v1
+
     - name: Insatll requirements
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
@@ -198,6 +204,8 @@ jobs:
         echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    - uses: syphar/restore-pip-download-cache@v1
 
     - name: Insatll requirements
       run: |
