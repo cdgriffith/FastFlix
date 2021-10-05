@@ -31,7 +31,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
         python -m pip install --upgrade wheel typing_extensions pyinstaller
-        python -m pip install -r requirements.txt
+        python -m pip install -r requirements.txt --extra-index-url=https://download.qt.io/official_releases/QtForPython  --trusted-host=download.qt.io --upgrade
 
     - name: Grab iso-639 lists
       run: |
@@ -153,7 +153,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
         python -m pip install --upgrade wheel typing_extensions pyinstaller
-        python -m pip install -r requirements.txt
+        python -m pip install -r requirements.txt --extra-index-url=https://download.qt.io/official_releases/QtForPython  --trusted-host=download.qt.io --upgrade
 
     - name: Grab iso-639 lists
       run: |
@@ -203,7 +203,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools --ignore-installed
         python -m pip install --upgrade wheel typing_extensions pyinstaller
-        python -m pip install -r requirements.txt
+        python -m pip install -r requirements.txt --extra-index-url=https://download.qt.io/official_releases/QtForPython  --trusted-host=download.qt.io --upgrade
 
     - name: Grab iso-639 lists
       run: |

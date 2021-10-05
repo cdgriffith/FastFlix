@@ -350,13 +350,13 @@ class Main(QtWidgets.QWidget):
 
         source_layout = QtWidgets.QHBoxLayout()
         source_label = QtWidgets.QLabel(t("Source"))
-        source_label.setFixedWidth(70)
+        source_label.setFixedWidth(75)
         source_layout.addWidget(source_label)
         source_layout.addWidget(self.source_video_path_widget, stretch=True)
 
         output_layout = QtWidgets.QHBoxLayout()
         output_label = QtWidgets.QLabel(t("Output"))
-        output_label.setFixedWidth(70)
+        output_label.setFixedWidth(75)
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
         self.output_path_button = QtWidgets.QPushButton(icon=QtGui.QIcon(self.get_icon("onyx-output")))
@@ -374,7 +374,7 @@ class Main(QtWidgets.QWidget):
         title_layout = QtWidgets.QHBoxLayout()
 
         title_label = QtWidgets.QLabel(t("Title"))
-        title_label.setFixedWidth(70)
+        title_label.setFixedWidth(75)
         title_label.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
         self.widgets.video_title = QtWidgets.QLineEdit()
         self.widgets.video_title.setFixedHeight(20)
@@ -385,10 +385,10 @@ class Main(QtWidgets.QWidget):
         title_layout.addWidget(self.widgets.video_title)
 
         layout.addLayout(title_layout)
-
+        layout.addLayout(self.init_video_track_select())
         layout.addWidget(self.init_start_time())
         layout.addWidget(self.init_scale())
-        layout.addLayout(self.init_video_track_select())
+
         layout.addStretch(1)
         return layout
 
@@ -463,12 +463,12 @@ class Main(QtWidgets.QWidget):
         self.widgets.video_track.addItems([])
         self.widgets.video_track.setFixedHeight(20)
         self.widgets.video_track.currentIndexChanged.connect(self.video_track_update)
-        self.widgets.video_track.setStyleSheet("QComboBox{max-height: 1em; padding: 0; margin: 0}")
+        self.widgets.video_track.setStyleSheet("height: 5px")
         if self.app.fastflix.config.theme == "onyx":
             self.widgets.video_track.setStyleSheet("background-color: #707070; border-radius: 10px; color: black")
 
         track_label = QtWidgets.QLabel(t("Video Track"))
-        track_label.setFixedWidth(65)
+        track_label.setFixedWidth(70)
         layout.addWidget(track_label)
         layout.addWidget(self.widgets.video_track, stretch=1)
         layout.setSpacing(10)
@@ -561,7 +561,6 @@ class Main(QtWidgets.QWidget):
         for i, plugin in enumerate(self.app.fastflix.encoders.values()):
             if getattr(plugin, "icon", False):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
-        self.widgets.convert_to.setFont(QtGui.QFont("helvetica", 10, weight=57))
         self.widgets.convert_to.setIconSize(
             QtCore.QSize(40, 40) if self.app.fastflix.config.flat_ui else QtCore.QSize(35, 35)
         )
@@ -787,6 +786,7 @@ class Main(QtWidgets.QWidget):
         layout=None,
         return_buttons=False,
         time_field=False,
+        right_side_label=False,
     ):
 
         widget = QtWidgets.QLineEdit(self.number_to_time(0) if time_field else "0")
