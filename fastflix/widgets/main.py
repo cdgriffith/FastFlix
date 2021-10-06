@@ -43,6 +43,7 @@ from fastflix.resources import (
     reset_button_style,
     onyx_convert_icon,
     onyx_queue_add_icon,
+    get_text_color,
 )
 from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
 from fastflix.windows_tools import show_windows_notification
@@ -148,8 +149,9 @@ class Main(QtWidgets.QWidget):
 
         self.input_video = None
         self.video_path_widget = QtWidgets.QLineEdit(t("No Source Selected"))
-        self.source_video_path_widget = QtWidgets.QLineEdit(
-            random.choice(
+        motto = ""
+        if self.app.fastflix.config.language == "eng":
+            motto = random.choice(
                 [
                     "Welcome to FastFlix!",
                     "Hope your encoding goes well!",
@@ -158,23 +160,41 @@ class Main(QtWidgets.QWidget):
                     "4K HDR is important. Good content is importanter",
                     "Water is wet, the sky is blue, FastFlix is Free",
                     "Grab onto your trousers, it's time for an encode!",
-                    "It's cold in here, lets warm up the room with a nice encode",
+                    "It's cold in here, lets warm up the room with a nice encoding",
                     "It's a good day to encode",
                     "Encode Hard",
+                    "Where there's an encode, there's a way",
+                    "start your day off right with a nice encode",
+                    "Encoding, encoding, always with the encoding!",
+                    "Try VP9 this time, no wait, HEVC, or maybe a GIF?",
+                    "Something, Something, Dark Theme",
+                    "Where we're going, we don't need transcodes",
+                    "May the FastFlix be with you",
+                    "Handbrake didn't do it for ya?",
+                    "Did you select the right audio track?",
+                    "FastFlix? In this economy?",
+                    "The name's Flix. FastFlix",
+                    "I'm not trying to convert you, just your video",
+                    "I <3 Billionaires (Sponsor link on Github)",
                 ]
             )
-        )
-        self.source_video_path_widget.setDisabled(True)
+        self.source_video_path_widget = QtWidgets.QLineEdit(motto)
         self.source_video_path_widget.setFixedHeight(20)
-        self.source_video_path_widget.setFont(QtGui.QFont("helvetica", 9, weight=55))
-        self.source_video_path_widget.setStyleSheet("padding: 0 0 -1px 5px")
+        self.source_video_path_widget.setFont(QtGui.QFont("helvetica", 9))
+        self.source_video_path_widget.setDisabled(True)
+        self.source_video_path_widget.setStyleSheet(
+            f"padding: 0 0 -1px 5px; color: rgb({get_text_color(self.app.fastflix.config.theme)})"
+        )
+
         self.output_video_path_widget = QtWidgets.QLineEdit("")
         self.output_video_path_widget.setDisabled(True)
         self.output_video_path_widget.setFixedHeight(20)
-        self.output_video_path_widget.setFont(QtGui.QFont("helvetica", 9, weight=55))
+        self.output_video_path_widget.setFont(QtGui.QFont("helvetica", 9))
         self.output_video_path_widget.setStyleSheet("padding: 0 0 -1px 5px")
         self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
         self.video_path_widget.setEnabled(False)
+
+        QtCore.QTimer.singleShot(6_000, self.fade_loop)
 
         self.widgets: MainWidgets = MainWidgets()
 
@@ -231,6 +251,26 @@ class Main(QtWidgets.QWidget):
         self.initialized = True
         self.loading_video = False
         self.last_page_update = time.time()
+
+    def fade_loop(self, percent=90):
+        if self.input_video:
+            self.source_video_path_widget.setStyleSheet(
+                f"color: rgb({get_text_color(self.app.fastflix.config.theme)}); padding: 0 0 -1px 5px;"
+            )
+            return
+        if percent > 0:
+            op = QtWidgets.QGraphicsOpacityEffect()
+            op.setOpacity(percent)
+            self.source_video_path_widget.setStyleSheet(
+                f"color: rgba({get_text_color(self.app.fastflix.config.theme)}, {percent/100}); padding: 0 0 -1px 5px;"
+            )
+            self.source_video_path_widget.setGraphicsEffect(op)
+            QtCore.QTimer.singleShot(200, lambda: self.fade_loop(percent - 10))
+        else:
+            self.source_video_path_widget.setStyleSheet(
+                f"color: rgb({get_text_color(self.app.fastflix.config.theme)}); padding: 0 0 -1px 5px;"
+            )
+            self.source_video_path_widget.setText("")
 
     def init_top_bar(self):
         top_bar = QtWidgets.QHBoxLayout()

@@ -22,12 +22,18 @@ def get_icon(name: str, theme: str):
     folder = "black"
     if theme.lower() in ("dark", "onyx"):
         folder = "white"
-    if theme == "selected":
+    if theme == "selected":  # Used for bright tab colors
         folder = "selected"
     location = Path(pkg_resources.resource_filename(__name__, f"data/icons/{folder}/{name}.png")).resolve()
     if not location.exists():
         raise Exception(f"Cannot find: {location}")
     return str(location)
+
+
+def get_text_color(theme: str):
+    if theme.lower() == "dark":
+        return "255, 255, 255"
+    return "0, 0, 0"
 
 
 def group_box_style(pt="-10px", pb="5px", mt="5px", mb="0", bb="1px solid #bab9b8"):
