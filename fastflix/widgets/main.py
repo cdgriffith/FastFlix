@@ -6,6 +6,7 @@ import importlib.machinery  # Needed for pyinstaller
 import logging
 import math
 import os
+import random
 import secrets
 import shutil
 import time
@@ -147,12 +148,31 @@ class Main(QtWidgets.QWidget):
 
         self.input_video = None
         self.video_path_widget = QtWidgets.QLineEdit(t("No Source Selected"))
-        self.source_video_path_widget = QtWidgets.QLineEdit("")
+        self.source_video_path_widget = QtWidgets.QLineEdit(
+            random.choice(
+                [
+                    "Welcome to FastFlix!",
+                    "Hope your encoding goes well!",
+                    "<Drag and drop your vid here>",
+                    "Encoding faster than the speed of light is against the law",
+                    "4K HDR is important. Good content is importanter",
+                    "Water is wet, the sky is blue, FastFlix is Free",
+                    "Grab onto your trousers, it's time for an encode!",
+                    "It's cold in here, lets warm up the room with a nice encode",
+                    "It's a good day to encode",
+                    "Encode Hard",
+                ]
+            )
+        )
         self.source_video_path_widget.setDisabled(True)
         self.source_video_path_widget.setFixedHeight(20)
+        self.source_video_path_widget.setFont(QtGui.QFont("helvetica", 9, weight=55))
+        self.source_video_path_widget.setStyleSheet("padding: 0 0 -1px 5px")
         self.output_video_path_widget = QtWidgets.QLineEdit("")
         self.output_video_path_widget.setDisabled(True)
         self.output_video_path_widget.setFixedHeight(20)
+        self.output_video_path_widget.setFont(QtGui.QFont("helvetica", 9, weight=55))
+        self.output_video_path_widget.setStyleSheet("padding: 0 0 -1px 5px")
         self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
         self.video_path_widget.setEnabled(False)
 

@@ -130,7 +130,7 @@ QCheckBox::indicator:unchecked:focus,
 QTreeView::indicator:unchecked,
 QTreeView::indicator:unchecked:focus
 {
-    border-image: url({{base_dir}}/light/checkbox_unchecked_disabled.svg);
+    border-image: url(light:checkbox_unchecked_disabled.svg);
 }
 
 QCheckBox::indicator:unchecked:hover,
@@ -143,14 +143,14 @@ QGroupBox::indicator:unchecked:focus,
 QGroupBox::indicator:unchecked:pressed
 {
     border: none;
-    border-image: url({{base_dir}}/light/checkbox_unchecked.svg);
+    border-image: url(light:checkbox_unchecked.svg);
 }
 
 QCheckBox::indicator:checked,
 QTreeView::indicator:checked,
 QGroupBox::indicator:checked
 {
-    border-image: url({{base_dir}}/light/checkbox_checked.svg);
+    border-image: url(light:checkbox_checked.svg);
 }
 
 QCheckBox::indicator:checked:hover,
@@ -164,13 +164,13 @@ QGroupBox::indicator:checked:focus,
 QGroupBox::indicator:checked:pressed
 {
     border: none;
-    border-image: url({{base_dir}}/light/checkbox_checked.svg);
+    border-image: url(light:checkbox_checked.svg);
 }
 
 QCheckBox::indicator:indeterminate,
 QTreeView::indicator:indeterminate
 {
-    border-image: url({{base_dir}}/light/checkbox_indeterminate.svg);
+    border-image: url(light:checkbox_indeterminate.svg);
 }
 
 QCheckBox::indicator:indeterminate:focus,
@@ -180,27 +180,27 @@ QTreeView::indicator:indeterminate:focus,
 QTreeView::indicator:indeterminate:hover,
 QTreeView::indicator:indeterminate:pressed
 {
-    border-image: url({{base_dir}}/light/checkbox_indeterminate.svg);
+    border-image: url(light:checkbox_indeterminate.svg);
 }
 
 QCheckBox::indicator:indeterminate:disabled,
 QTreeView::indicator:indeterminate:disabled
 {
-    border-image: url({{base_dir}}/light/checkbox_indeterminate_disabled.svg);
+    border-image: url(light:checkbox_indeterminate_disabled.svg);
 }
 
 QCheckBox::indicator:checked:disabled,
 QTreeView::indicator:checked:disabled,
 QGroupBox::indicator:checked:disabled
 {
-    border-image: url({{base_dir}}/light/checkbox_checked_disabled.svg);
+    border-image: url(light:checkbox_checked_disabled.svg);
 }
 
 QCheckBox::indicator:unchecked:disabled,
 QTreeView::indicator:unchecked:disabled,
 QGroupBox::indicator:unchecked:disabled
 {
-    border-image: url({{base_dir}}/light/checkbox_unchecked_disabled.svg);
+    border-image: url(light:checkbox_unchecked_disabled.svg);
 }
 
 QRadioButton
@@ -225,7 +225,7 @@ QRadioButton::indicator
 QRadioButton::indicator:unchecked,
 QRadioButton::indicator:unchecked:focus
 {
-    border-image: url({{base_dir}}/light/radio_unchecked_disabled.svg);
+    border-image: url(light:radio_unchecked_disabled.svg);
 }
 
 QRadioButton::indicator:unchecked:hover,
@@ -233,14 +233,14 @@ QRadioButton::indicator:unchecked:pressed
 {
     border: none;
     outline: none;
-    border-image: url({{base_dir}}/light/radio_unchecked.svg);
+    border-image: url(light:radio_unchecked.svg);
 }
 
 QRadioButton::indicator:checked
 {
     border: none;
     outline: none;
-    border-image: url({{base_dir}}/light/radio_checked.svg);
+    border-image: url(light:radio_checked.svg);
 }
 
 QRadioButton::indicator:checked:hover,
@@ -249,18 +249,18 @@ QRadioButton::indicator:checked:pressed
 {
     border: none;
     outline: none;
-    border-image: url({{base_dir}}/light/radio_checked.svg);
+    border-image: url(light:radio_checked.svg);
 }
 
 QRadioButton::indicator:checked:disabled
 {
     outline: none;
-    border-image: url({{base_dir}}/light/radio_checked_disabled.svg);
+    border-image: url(light:radio_checked_disabled.svg);
 }
 
 QRadioButton::indicator:unchecked:disabled
 {
-    border-image: url({{base_dir}}/light/radio_unchecked_disabled.svg);
+    border-image: url(light:radio_unchecked_disabled.svg);
 }
 
 QMenuBar
@@ -335,55 +335,55 @@ QMenu::indicator
 
 QMenu::indicator:non-exclusive:unchecked
 {
-    border-image: url({{base_dir}}/light/checkbox_unchecked_disabled.svg);
+    border-image: url(light:checkbox_unchecked_disabled.svg);
 }
 
 QMenu::indicator:non-exclusive:unchecked:selected
 {
-    border-image: url({{base_dir}}/light/checkbox_unchecked_disabled.svg);
+    border-image: url(light:checkbox_unchecked_disabled.svg);
 }
 
 QMenu::indicator:non-exclusive:checked
 {
-    border-image: url({{base_dir}}/light/checkbox_checked.svg);
+    border-image: url(light:checkbox_checked.svg);
 }
 
 QMenu::indicator:non-exclusive:checked:selected
 {
-    border-image: url({{base_dir}}/light/checkbox_checked.svg);
+    border-image: url(light:checkbox_checked.svg);
 }
 
 QMenu::indicator:exclusive:unchecked
 {
-    border-image: url({{base_dir}}/light/radio_unchecked_disabled.svg);
+    border-image: url(light:radio_unchecked_disabled.svg);
 }
 
 QMenu::indicator:exclusive:unchecked:selected
 {
-    border-image: url({{base_dir}}/light/radio_unchecked_disabled.svg);
+    border-image: url(light:radio_unchecked_disabled.svg);
 }
 
 QMenu::indicator:exclusive:checked
 {
-    border-image: url({{base_dir}}/light/radio_checked.svg);
+    border-image: url(light:radio_checked.svg);
 }
 
 QMenu::indicator:exclusive:checked:selected
 {
-    border-image: url({{base_dir}}/light/radio_checked.svg);
+    border-image: url(light:radio_checked.svg);
 }
 
 QMenu::right-arrow
 {
     margin: 0.23em;
-    border-image: url({{base_dir}}/light/right_arrow.svg);
+    border-image: url(light:right_arrow.svg);
     width: 0.5em;
     height: 0.8em;
 }
 
 QMenu::right-arrow:disabled
 {
-    border-image: url({{base_dir}}/light/right_arrow_disabled.svg);
+    border-image: url(light:right_arrow_disabled.svg);
 }
 
 QAbstractItemView
@@ -471,7 +471,7 @@ QScrollBar::handle:horizontal:hover
 QScrollBar::add-line:horizontal
 {
     margin: 0em 0.13em 0em 0.13em;
-    border-image: url({{base_dir}}/light/transparent.svg);
+    border-image: url(light:transparent.svg);
     width: 0.41em;
     height: 0.41em;
     subcontrol-position: right;
@@ -481,7 +481,7 @@ QScrollBar::add-line:horizontal
 QScrollBar::sub-line:horizontal
 {
     margin: 0em 0.13em 0em 0.13em;
-    border-image: url({{base_dir}}/light/transparent.svg);
+    border-image: url(light:transparent.svg);
     width: 0.41em;
     height: 0.41em;
     subcontrol-position: left;
@@ -491,7 +491,7 @@ QScrollBar::sub-line:horizontal
 QScrollBar::add-line:horizontal:hover,
 QScrollBar::add-line:horizontal:on
 {
-    border-image: url({{base_dir}}/light/transparent.svg);
+    border-image: url(light:transparent.svg);
     width: 0.41em;
     height: 0.41em;
     subcontrol-position: right;
@@ -501,7 +501,7 @@ QScrollBar::add-line:horizontal:on
 QScrollBar::sub-line:horizontal:hover,
 QScrollBar::sub-line:horizontal:on
 {
-    border-image: url({{base_dir}}/light/transparent.svg);
+    border-image: url(light:transparent.svg);
     width: 0.41em;
     height: 0.41em;
     subcontrol-position: left;
@@ -551,7 +551,7 @@ QScrollBar::handle:vertical:hover
 QScrollBar::sub-line:vertical
 {
     margin: 0.13em 0em 0.13em 0em;
-    border-image: url({{base_dir}}/light/transparent.svg);
+    border-image: url(light:transparent.svg);
     height: 0.41em;
     width: 0.41em;
     subcontrol-position: top;
@@ -561,7 +561,7 @@ QScrollBar::sub-line:vertical
 QScrollBar::add-line:vertical
 {
     margin: 0.13em 0em 0.13em 0em;
-    border-image: url({{base_dir}}/light/transparent.svg);
+    border-image: url(light:transparent.svg);
     height: 0.41em;
     width: 0.41em;
     subcontrol-position: bottom;
@@ -571,7 +571,7 @@ QScrollBar::add-line:vertical
 QScrollBar::sub-line:vertical:hover,
 QScrollBar::sub-line:vertical:on
 {
-    border-image: url({{base_dir}}/light/transparent.svg);
+    border-image: url(light:transparent.svg);
     height: 0.41em;
     width: 0.41em;
     subcontrol-position: top;
@@ -581,7 +581,7 @@ QScrollBar::sub-line:vertical:on
 QScrollBar::add-line:vertical:hover,
 QScrollBar::add-line:vertical:on
 {
-    border-image: url({{base_dir}}/light/transparent.svg);
+    border-image: url(light:transparent.svg);
     height: 0.41em;
     width: 0.41em;
     subcontrol-position: bottom;
@@ -617,7 +617,7 @@ QPlainTextEdit
 
 QSizeGrip
 {
-    border-image: url({{base_dir}}/light/sizegrip.svg);
+    border-image: url(light:sizegrip.svg);
     width: 0.5em;
     height: 0.5em;
 }
@@ -697,22 +697,22 @@ QToolBar:vertical
 
 QToolBar::handle:horizontal
 {
-    border-image: url({{base_dir}}/light/hmovetoolbar.svg);
+    border-image: url(light:hmovetoolbar.svg);
 }
 
 QToolBar::handle:vertical
 {
-    border-image: url({{base_dir}}/light/vmovetoolbar.svg);
+    border-image: url(light:vmovetoolbar.svg);
 }
 
 QToolBar::separator:horizontal
 {
-    border-image: url({{base_dir}}/light/hseptoolbar.svg);
+    border-image: url(light:hseptoolbar.svg);
 }
 
 QToolBar::separator:vertical
 {
-    border-image: url({{base_dir}}/light/vseptoolbar.svg);
+    border-image: url(light:vseptoolbar.svg);
 }
 
 QToolBar QToolButton
@@ -882,7 +882,7 @@ QComboBox::drop-down
 
 QComboBox::down-arrow
 {
-    border-image: url({{base_dir}}/light/down_arrow_disabled.svg);
+    border-image: url(light:down_arrow_disabled.svg);
     width: 0.8em;
     height: 0.5em;
     margin-right: 0.41em;
@@ -892,7 +892,7 @@ QComboBox::down-arrow:on,
 QComboBox::down-arrow:hover,
 QComboBox::down-arrow:focus
 {
-    border-image: url({{base_dir}}/light/down_arrow.svg);
+    border-image: url(light:down_arrow.svg);
     width: 0.8em;
     height: 0.5em;
     margin-right: 0.41em;
@@ -938,34 +938,34 @@ QAbstractSpinBox:down-button:hover
 
 QAbstractSpinBox::up-arrow
 {
-    border-image: url({{base_dir}}/light/up_arrow.svg);
+    border-image: url(light:up_arrow.svg);
 }
 
 QAbstractSpinBox::up-arrow:disabled,
 QAbstractSpinBox::up-arrow:off
 {
-    border-image: url({{base_dir}}/light/up_arrow_disabled.svg);
+    border-image: url(light:up_arrow_disabled.svg);
 }
 
 QAbstractSpinBox::up-arrow:hover
 {
-    border-image: url({{base_dir}}/light/up_arrow_hover.svg);
+    border-image: url(light:up_arrow_hover.svg);
 }
 
 QAbstractSpinBox::down-arrow
 {
-    border-image: url({{base_dir}}/light/down_arrow.svg);
+    border-image: url(light:down_arrow.svg);
 }
 
 QAbstractSpinBox::down-arrow:disabled,
 QAbstractSpinBox::down-arrow:off
 {
-    border-image: url({{base_dir}}/light/down_arrow_disabled.svg);
+    border-image: url(light:down_arrow_disabled.svg);
 }
 
 QAbstractSpinBox::down-arrow:!off:!disabled:hover
 {
-    border-image: url({{base_dir}}/light/down_arrow_hover.svg);
+    border-image: url(light:down_arrow_hover.svg);
 }
 
 QDoubleSpinBox
@@ -988,7 +988,7 @@ QCalendarWidget QAbstractItemView:enabled
 /* Won't take hover events. */
 QCalendarWidget QToolButton#qt_calendar_nextmonth
 {
-    border-image: url({{base_dir}}/light/calendar_next.svg);
+    border-image: url(light:calendar_next.svg);
     width: 0.5em;
     height: 0.8em;
     icon-size: 0px;
@@ -996,7 +996,7 @@ QCalendarWidget QToolButton#qt_calendar_nextmonth
 
 QCalendarWidget QToolButton#qt_calendar_prevmonth
 {
-    border-image: url({{base_dir}}/light/calendar_previous.svg);
+    border-image: url(light:calendar_previous.svg);
     width: 0.5em;
     height: 0.8em;
     icon-size: 0px;
@@ -1071,19 +1071,19 @@ QTabBar:focus
 QTabBar::close-button
 {
     /* Doesn't seem possible to resize these buttons */
-    border-image: url({{base_dir}}/light/transparent.svg);
-    image: url({{base_dir}}/light/close.svg);
+    border-image: url(light:transparent.svg);
+    image: url(light:close.svg);
     background: transparent;
 }
 
 QTabBar::close-button:hover
 {
-    image: url({{base_dir}}/light/close_hover.svg);
+    image: url(light:close_hover.svg);
 }
 
 QTabBar::close-button:pressed
 {
-    image: url({{base_dir}}/light/close_pressed.svg);
+    image: url(light:close_pressed.svg);
 }
 
 /* TOP TABS */
@@ -1300,28 +1300,28 @@ QTabBar::tab:right:!selected:first:hover
 
 QTabBar QToolButton::right-arrow:enabled
 {
-    border-image: url({{base_dir}}/light/right_arrow.svg);
+    border-image: url(light:right_arrow.svg);
     width: 0.5em;
     height: 0.8em;
 }
 
 QTabBar QToolButton::left-arrow:enabled
 {
-    border-image: url({{base_dir}}/light/left_arrow.svg);
+    border-image: url(light:left_arrow.svg);
     width: 0.5em;
     height: 0.8em;
 }
 
 QTabBar QToolButton::right-arrow:disabled
 {
-    border-image: url({{base_dir}}/light/right_arrow_disabled.svg);
+    border-image: url(light:right_arrow_disabled.svg);
     width: 0.5em;
     height: 0.8em;
 }
 
 QTabBar QToolButton::left-arrow:disabled
 {
-    border-image: url({{base_dir}}/light/left_arrow_disabled.svg);
+    border-image: url(light:left_arrow_disabled.svg);
     width: 0.5em;
     height: 0.8em;
 }
@@ -1337,8 +1337,8 @@ QDockWidget
      *  This is a bug fix so we can handle hover, pressed, and other events.
      *  Reference: https://stackoverflow.com/questions/32145080/qdockwidget-float-close-button-hover-images
      */
-    titlebar-close-icon: url({{base_dir}}/light/transparent.svg);
-    titlebar-normal-icon: url({{base_dir}}/light/transparent.svg);
+    titlebar-close-icon: url(light:transparent.svg);
+    titlebar-normal-icon: url(light:transparent.svg);
 }
 
 /**
@@ -1363,36 +1363,36 @@ QDockWidget::float-button
 
 QDockWidget::float-button
 {
-    border-image: url({{base_dir}}/light/transparent.svg);
-    image: url({{base_dir}}/light/undock.svg);
+    border-image: url(light:transparent.svg);
+    image: url(light:undock.svg);
 }
 
 QDockWidget::float-button:hover
 {
-    image: url({{base_dir}}/light/undock_hover.svg);
+    image: url(light:undock_hover.svg);
 }
 
 /* The :pressed events don't register, seems to be a Qt bug. */
 QDockWidget::float-button:pressed
 {
-    image: url({{base_dir}}/light/undock_hover.svg);
+    image: url(light:undock_hover.svg);
 }
 
 QDockWidget::close-button
 {
-    border-image: url({{base_dir}}/light/transparent.svg);
-    image: url({{base_dir}}/light/close.svg);
+    border-image: url(light:transparent.svg);
+    image: url(light:close.svg);
 }
 
 QDockWidget::close-button:hover
 {
-    image: url({{base_dir}}/light/close_hover.svg);
+    image: url(light:close_hover.svg);
 }
 
 /* The :pressed events don't register, seems to be a Qt bug. */
 QDockWidget::close-button:pressed
 {
-    image: url({{base_dir}}/light/close_pressed.svg);
+    image: url(light:close_pressed.svg);
 }
 
 QTreeView,
@@ -1412,7 +1412,7 @@ QListView:!selected
 
 QTreeView::branch:has-siblings
 {
-    border-image: url({{base_dir}}/light/vline.svg);
+    border-image: url(light:vline.svg);
     image: none;
 }
 
@@ -1425,48 +1425,48 @@ TreeView::branch:!has-siblings
 
 QTreeView::branch:has-siblings:adjoins-item
 {
-    border-image: url({{base_dir}}/light/branch_more.svg);
+    border-image: url(light:branch_more.svg);
 }
 
 QTreeView::branch:!has-children:!has-siblings:adjoins-item
 {
-    border-image: url({{base_dir}}/light/branch_end.svg);
+    border-image: url(light:branch_end.svg);
 }
 
 QTreeView::branch:has-children:!has-siblings:closed,
 QTreeView::branch:closed:has-children:has-siblings
 {
-    image: url({{base_dir}}/light/branch_closed.svg);
+    image: url(light:branch_closed.svg);
 }
 
 QTreeView::branch:has-children:!has-siblings:closed:hover,
 QTreeView::branch:closed:has-children:has-siblings:hover
 {
-    image: url({{base_dir}}/light/branch_closed_hover.svg);
+    image: url(light:branch_closed_hover.svg);
 }
 
 QTreeView::branch:has-children:!has-siblings:closed,
 QTreeView::branch:open:has-children:!has-siblings
 {
-    border-image: url({{base_dir}}/light/branch_end_arrow.svg);
+    border-image: url(light:branch_end_arrow.svg);
 }
 
 QTreeView::branch:closed:has-children:has-siblings,
 QTreeView::branch:open:has-children:has-siblings
 {
-    border-image: url({{base_dir}}/light/branch_more_arrow.svg);
+    border-image: url(light:branch_more_arrow.svg);
 }
 
 QTreeView::branch:open:has-children:!has-siblings,
 QTreeView::branch:open:has-children:has-siblings
 {
-    image: url({{base_dir}}/light/branch_open.svg);
+    image: url(light:branch_open.svg);
 }
 
 QTreeView::branch:open:has-children:!has-siblings:hover,
 QTreeView::branch:open:has-children:has-siblings:hover
 {
-    image: url({{base_dir}}/light/branch_open_hover.svg);
+    image: url(light:branch_open_hover.svg);
 }
 
 QListView
@@ -1592,22 +1592,22 @@ QToolButton::down-arrow
 
 QToolButton::right-arrow
 {
-    image: url({{base_dir}}/light/right_arrow.svg);
+    image: url(light:right_arrow.svg);
 }
 
 QToolButton::left-arrow
 {
-    image: url({{base_dir}}/light/left_arrow.svg);
+    image: url(light:left_arrow.svg);
 }
 
 QToolButton::up-arrow
 {
-    image: url({{base_dir}}/light/up_arrow.svg);
+    image: url(light:up_arrow.svg);
 }
 
 QToolButton::down-arrow
 {
-    image: url({{base_dir}}/light/down_arrow.svg);
+    image: url(light:down_arrow.svg);
 }
 
 QToolButton:hover
@@ -1618,7 +1618,7 @@ QToolButton:hover
 QToolButton::menu-indicator
 {
     border-image: none;
-    image: url({{base_dir}}/light/down_arrow.svg);
+    image: url(light:down_arrow.svg);
     width: 0.8em;
     height: 0.5em;
     top: -0.7ex;
@@ -1629,7 +1629,7 @@ QToolButton::menu-indicator
 QToolButton::menu-arrow
 {
     border-image: none;
-    image: url({{base_dir}}/light/down_arrow.svg);
+    image: url(light:down_arrow.svg);
     width: 0.8em;
     height: 0.5em;
     subcontrol-position: bottom right;
@@ -1790,7 +1790,7 @@ QHeaderView::section::vertical::only-one:hover
 
 QHeaderView::down-arrow
 {
-    image: url({{base_dir}}/light/down_arrow.svg);
+    image: url(light:down_arrow.svg);
     subcontrol-origin: margin;
     subcontrol-position: top center;
     padding-top: 0.2em;
@@ -1800,7 +1800,7 @@ QHeaderView::down-arrow
 
 QHeaderView::up-arrow
 {
-    image: url({{base_dir}}/light/up_arrow.svg);
+    image: url(light:up_arrow.svg);
     subcontrol-origin: margin;
     subcontrol-position: top center;
     padding-top: 0.2em;
@@ -1929,29 +1929,29 @@ QDialogButtonBox
 {
     dialogbuttonbox-buttons-have-icons: true;
 
-    dialog-cancel-icon: url({{base_dir}}/light/dialog_cancel.svg);
-    dialog-close-icon: url({{base_dir}}/light/dialog_close.svg);
-    dialog-ok-icon: url({{base_dir}}/light/dialog_ok.svg);
-    dialog-open-icon: url({{base_dir}}/light/dialog_open.svg);
-    dialog-reset-icon: url({{base_dir}}/light/dialog_reset.svg);
-    dialog-save-icon: url({{base_dir}}/light/dialog_save.svg);
+    dialog-cancel-icon: url(light:dialog_cancel.svg);
+    dialog-close-icon: url(light:dialog_close.svg);
+    dialog-ok-icon: url(light:dialog_ok.svg);
+    dialog-open-icon: url(light:dialog_open.svg);
+    dialog-reset-icon: url(light:dialog_reset.svg);
+    dialog-save-icon: url(light:dialog_save.svg);
     /**
      *  No support yet for overriding saveall.
-     *  dialog-saveall-icon: url({{base_dir}}/light/dialog_saveall.svg);
+     *  dialog-saveall-icon: url(light:dialog_saveall.svg);
      */
-    dialog-yes-icon: url({{base_dir}}/light/dialog_ok.svg);
-    dialog-help-icon: url({{base_dir}}/light/dialog_help.svg);
-    dialog-no-icon: url({{base_dir}}/light/dialog_no.svg);
-    dialog-apply-icon: url({{base_dir}}/light/dialog_ok.svg);
-    dialog-discard-icon: url({{base_dir}}/light/dialog_discard.svg);
+    dialog-yes-icon: url(light:dialog_ok.svg);
+    dialog-help-icon: url(light:dialog_help.svg);
+    dialog-no-icon: url(light:dialog_no.svg);
+    dialog-apply-icon: url(light:dialog_ok.svg);
+    dialog-discard-icon: url(light:dialog_discard.svg);
 }
 
 QMessageBox
 {
-    messagebox-critical-icon: url({{base_dir}}/light/message_critical.svg);
-    messagebox-information-icon: url({{base_dir}}/light/message_information.svg);
-    messagebox-question-icon: url({{base_dir}}/light/message_question.svg);
-    messagebox-warning-icon: url({{base_dir}}/light/message_warning.svg);
+    messagebox-critical-icon: url(light:message_critical.svg);
+    messagebox-information-icon: url(light:message_information.svg);
+    messagebox-question-icon: url(light:message_question.svg);
+    messagebox-warning-icon: url(light:message_warning.svg);
 }
 
 /* Set some styles for these custom dialog buttons */
