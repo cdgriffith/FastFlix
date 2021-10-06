@@ -31,29 +31,6 @@ jobs:
       with:
         python-version: 3.8
 
-#    - uses: actions/cache@v2
-#      id: ffmpeg-cache
-#      with:
-#        path: /opt/ff/
-#        key: ${{ runner.os }}-ff
-#
-#    - name: Download FFmpeg
-#      if: steps.ffmpeg-cache.outputs.cache-hit != 'true'
-#      run: |
-#        wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
-#        mkdir -p /opt/ff
-#        tar --strip-components=1 -xJvf ffmpeg-release-amd64-static.tar.xz -C /opt/ff
-#
-#    - name: Link FFmpeg to usr/bin
-#      run: |
-#        sudo ln -s /opt/ff/ffmpeg /usr/bin/ffmpeg
-#        sudo ln -s /opt/ff/ffprobe /usr/bin/ffprobe
-#
-#    - uses: actions/cache@v2
-#      with:
-#        path: ${{ env.pythonLocation }}
-#        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-test.txt') }}
-
     - name: Install PySide6 requirements
       run: sudo apt install libopengl0 freeglut3 freeglut3-dev -y
 

@@ -6,11 +6,11 @@ FastFlix is a simple and friendly GUI for encoding videos.
 
 [Download latest release from Github](https://github.com/cdgriffith/FastFlix/releases/latest)
 
-FastFlix keeps HDR10 metadata for x265, which will be expanded to AV1 libraries when available.
+FastFlix keeps HDR10 metadata for x265, NVEncC HEVC, and VCEEncC HEVC, which will also be expanded to AV1 libraries when available.
 
 It needs `FFmpeg` (version 4.3 or greater) under the hood for the heavy lifting, and can work with a variety of encoders.
 
-**NEW**: Join us on [discord](https://discord.gg/GUBFP6f) or [reddit](https://www.reddit.com/r/FastFlix/)!
+Join us on [discord](https://discord.gg/GUBFP6f)!
 
 Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki) for help or more details, and please report bugs or ideas in the [github issue tracker](https://github.com/cdgriffith/FastFlix/issues)!
 
