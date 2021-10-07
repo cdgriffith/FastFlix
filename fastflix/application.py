@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
 import sys
-import pkg_resources
 from pathlib import Path
+import os
 
-# import importlib_resources
 
 import coloredlogs
 import reusables
@@ -22,7 +21,6 @@ from fastflix.version import __version__
 from fastflix.widgets.container import Container
 from fastflix.widgets.progress_bar import ProgressBar, Task
 
-# import fastflix.breeze_resources
 
 logger = logging.getLogger("fastflix")
 
@@ -35,8 +33,8 @@ def create_app():
     main_app = FastFlixApp(sys.argv)
     # main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
-    # my_font = QtGui.QFont("helvetica", 9, weight=57)
-    # main_app.setFont(my_font)
+    my_font = QtGui.QFont("helvetica", 9)
+    main_app.setFont(my_font)
     main_app.setWindowIcon(QtGui.QIcon(main_icon))
     return main_app
 
@@ -159,6 +157,7 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
 
     if app.fastflix.config.theme != "system":
         # breeze_theme = importlib_resources.files(f'breeze_theme.{app.fastflix.config.theme}')
+        os.chdir(Path(__file__).parent)
         QtCore.QDir.addSearchPath(app.fastflix.config.theme, str(breeze_styles_path / app.fastflix.config.theme))
         file = QtCore.QFile(f"{app.fastflix.config.theme}:stylesheet.qss")
         file.open(QtCore.QFile.OpenModeFlag.ReadOnly | QtCore.QFile.OpenModeFlag.Text)
