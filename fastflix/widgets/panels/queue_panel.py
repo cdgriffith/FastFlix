@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import copy
-import os
 import sys
 import logging
 
@@ -14,7 +13,7 @@ from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.ff_queue import get_queue, save_queue
-from fastflix.resources import get_icon
+from fastflix.resources import get_icon, get_bool_env
 from fastflix.shared import no_border, open_folder, yes_no_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
@@ -136,7 +135,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         grid.addWidget(QtWidgets.QLabel(f"{t('Audio Tracks')}: {len(video.video_settings.audio_tracks)}"), 0, 5)
         grid.addWidget(QtWidgets.QLabel(f"{t('Subtitles')}: {len(video.video_settings.subtitle_tracks)}"), 0, 6)
         grid.addWidget(QtWidgets.QLabel(status), 0, 7)
-        if video.status.complete and not os.getenv("FF_DOCKERMODE"):
+        if video.status.complete and not get_bool_env("FF_DOCKERMODE"):
             grid.addWidget(view_button, 0, 8)
             grid.addWidget(open_button, 0, 9)
         elif add_retry:

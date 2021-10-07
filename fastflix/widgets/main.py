@@ -164,7 +164,7 @@ class Main(QtWidgets.QWidget):
                     "It's a good day to encode",
                     "Encode Hard",
                     "Where there's an encode, there's a way",
-                    "start your day off right with a nice encode",
+                    "Start your day off right with a nice encode",
                     "Encoding, encoding, always with the encoding!",
                     "Try VP9 this time, no wait, HEVC, or maybe a GIF?",
                     "Something, Something, Dark Theme",
@@ -174,8 +174,10 @@ class Main(QtWidgets.QWidget):
                     "Did you select the right audio track?",
                     "FastFlix? In this economy?",
                     "The name's Flix. FastFlix",
+                    "It's pronounced gif",
                     "I'm not trying to convert you, just your video",
                     "I <3 Billionaires (Sponsor link on Github)",
+                    "I'm going to make you an encode you can't refuse",
                 ]
             )
         self.source_video_path_widget = QtWidgets.QLineEdit(motto)

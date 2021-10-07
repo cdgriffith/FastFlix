@@ -2,9 +2,11 @@
 
 ## Version 4.5.0
 
-* Adding #267 new themes (thanks to Joey Catt | Onyx Studios)
+* Adding #267 new onyx theme with custom icons (thanks to Joey Catt | Onyx Studios)
+* Adding new light and dark theme using BreezeStyles
 * Adding #115 ability to provide concat file (thanks to Marco Ravich)
 * Adding support for brightness, contrast and saturation filters
+* Adding PySide6 as main GUI provider, now MIT licensed frontend!
 
 ## Version 4.4.2
 
