@@ -27,8 +27,9 @@ except AttributeError:
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
+from fastflix.resources import get_bool_env
 
-DEVMODE = os.getenv("DEVMODE", "").lower() in ("1", "true")
+DEVMODE = get_bool_env("DEVMODE")
 
 my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
 icon = QtGui.QIcon(my_data)
