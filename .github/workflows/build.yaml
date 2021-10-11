@@ -104,26 +104,21 @@ jobs:
       shell: cmd
       run: pyinstaller FastFlix_Windows_Installer.spec
 
-    - name: Sign executables
-      shell: powershell
-      run: |
-        echo "${{ secrets.CODE_CERT_B64 }}" > code-cert.pfx.b64
-        certutil -decode code-cert.pfx.b64 code-cert.pfx
-        signtool sign /fd SHA256 /f code-cert.pfx /p ${{ secrets.CODE_CERT_PASS }} /td SHA256 /tr http://timestamp.sectigo.com dist\FastFlix.exe
-        signtool sign /fd SHA256 /f code-cert.pfx /p ${{ secrets.CODE_CERT_PASS }} /td SHA256 /tr http://timestamp.sectigo.com FastFlix_installer.exe
-
-    - name: cleanup pfx
-      shell: powershell
-      run: |
-        rm .\code-cert.pfx.b64
-        rm .\code-cert.pfx
-
-
     - name: Package installer
       shell: cmd
       run: |
         makensis.exe FastFlix.nsi
-        move FastFlix_installer.exe FastFlix_${{ env.VERSION }}_installer.exe
+        move FastFlix_installer.exe dist\FastFlix_${{ env.VERSION }}_installer.exe
+
+    - uses: skymatic/code-sign-action@v1
+      with:
+        certificate: '${{ secrets.CODE_CERT_B64 }}'
+        password: '${{ secrets.CODE_CERT_PASS }}'
+        certificatesha1: '${{ secrets.CODE_CERT_THUMB }}'
+        description: 'FastFlix'
+        timestampUrl: 'http://timestamp.sectigo.com'
+        folder: 'dist'
+        recursive: false
 
     - name: Test executable
       run: |
