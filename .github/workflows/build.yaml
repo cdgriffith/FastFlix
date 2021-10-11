@@ -104,6 +104,14 @@ jobs:
       shell: cmd
       run: pyinstaller FastFlix_Windows_Installer.spec
 
+    - name: Sign executables
+      shell: powershell
+      run: |
+        ${{ secrets.CODE_CERT_B64 }} | Out-File -FilePath .\code-cert.pfx.b64
+        certutil -decode code-cert.pfx.b64 code-cert.pfx
+        signtool sign /fd SHA256 /f code-cert.pfx /p ${{ secrets.CODE_CERT_PASS }} /tr http://timestamp.sectigo.com dist\FastFlix.exe
+        signtool sign /fd SHA256 /f code-cert.pfx /p ${{ secrets.CODE_CERT_PASS }} /tr http://timestamp.sectigo.com FastFlix_installer.exe
+
     - name: Package installer
       shell: cmd
       run: |
