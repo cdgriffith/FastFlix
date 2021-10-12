@@ -157,7 +157,13 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
         file = QtCore.QFile(f"{app.fastflix.config.theme}:stylesheet.qss")
         file.open(QtCore.QFile.OpenModeFlag.ReadOnly | QtCore.QFile.OpenModeFlag.Text)
         stream = QtCore.QTextStream(file)
-        app.setStyleSheet(stream.readAll().replace("{{base_dir}}", str(breeze_styles_path)))
+        data = stream.readAll()
+        if not reusables.win_based:
+            data = data.replace("url(dark:", f"url({str(breeze_styles_path / 'dark')}/")
+            data = data.replace("url(light:", f"url({str(breeze_styles_path / 'light')}/")
+            data = data.replace("url(onyx:", f"url({str(breeze_styles_path / 'onyx')}/")
+
+        app.setStyleSheet(data)
 
     logger.setLevel(app.fastflix.config.logging_level)
 
