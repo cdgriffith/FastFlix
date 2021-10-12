@@ -198,14 +198,14 @@ class EncodingQueue(FlixList):
         top_layout.addStretch(1)
 
         self.clear_queue = QtWidgets.QPushButton(
-            self.app.style().standardIcon(QtWidgets.QStyle.SP_LineEditClearButton), t("Clear Completed")
+            QtGui.QIcon(get_icon("onyx-clear-queue", self.app.fastflix.config.theme)), t("Clear Completed")
         )
         self.clear_queue.clicked.connect(self.clear_complete)
         self.clear_queue.setFixedWidth(120)
         self.clear_queue.setToolTip(t("Remove completed tasks"))
 
         self.pause_queue = QtWidgets.QPushButton(
-            self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), t("Pause Queue")
+            QtGui.QIcon(get_icon("onyx-pause", self.app.fastflix.config.theme)), t("Pause Queue")
         )
         self.pause_queue.clicked.connect(self.pause_resume_queue)
         # pause_queue.setFixedHeight(40)
@@ -215,7 +215,7 @@ class EncodingQueue(FlixList):
         )
 
         self.pause_encode = QtWidgets.QPushButton(
-            self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), t("Pause Encode")
+            QtGui.QIcon(get_icon("onyx-pause", self.app.fastflix.config.theme)), t("Pause Encode")
         )
         self.pause_encode.clicked.connect(self.pause_resume_encode)
         # pause_queue.setFixedHeight(40)

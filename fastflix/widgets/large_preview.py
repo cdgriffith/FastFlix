@@ -43,7 +43,7 @@ class LargePreview(QtWidgets.QWidget):
         self.setMaximumWidth(size.width())
         self.setMaximumHeight(size.height())
         self.setMinimumSize(400, 400)
-        self.current_image = QtGui.QPixmap(get_icon("photo", self.main.app.fastflix.config.theme))
+        self.current_image = QtGui.QPixmap(get_icon("onyx-cover", self.main.app.fastflix.config.theme))
         self.last_path: Optional[Path] = None
         self.last_command = "NOPE"
         self.setWindowTitle(t("Preview - Press Q to Exit"))

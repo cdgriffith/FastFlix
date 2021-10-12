@@ -9,7 +9,7 @@ name = "Copy"
 
 video_extension = "mkv"
 video_dimension_divisor = 1
-icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/icons/black/copy.png")).resolve())
+icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/icons/black/onyx-copy.svg")).resolve())
 
 enable_subtitles = True
 enable_audio = True

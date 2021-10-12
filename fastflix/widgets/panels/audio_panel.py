@@ -68,7 +68,9 @@ class Audio(QtWidgets.QTabWidget):
                 QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
             enable_check=QtWidgets.QCheckBox(t("Enabled")),
-            dup_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("copy", self.parent.app.fastflix.config.theme)), ""),
+            dup_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("onyx-copy", self.parent.app.fastflix.config.theme)), ""
+            ),
             delete_button=QtWidgets.QPushButton(
                 QtGui.QIcon(get_icon("black-x", self.parent.app.fastflix.config.theme)), ""
             ),

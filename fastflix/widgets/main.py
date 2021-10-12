@@ -908,7 +908,7 @@ class Main(QtWidgets.QWidget):
                 self.setAlignment(QtCore.Qt.AlignCenter)
                 self.setCursor(
                     QtGui.QCursor(
-                        QtGui.QPixmap(get_icon("magnifier", self.main.app.fastflix.config.theme)).scaledToWidth(32)
+                        QtGui.QPixmap(get_icon("onyx-magnifier", self.main.app.fastflix.config.theme)).scaledToWidth(32)
                     )
                 )
                 self.setStyleSheet("border: 2px solid #567781; margin: 8px;")

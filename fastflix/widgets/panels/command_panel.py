@@ -7,9 +7,9 @@ from pathlib import Path
 import reusables
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from fastflix.encoders.common.helpers import Command as BuilderCommand
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.resources import get_icon
 
 
 class Loop(QtWidgets.QGroupBox):
@@ -67,13 +67,13 @@ class CommandList(QtWidgets.QWidget):
         top_row.addWidget(QtWidgets.QLabel(t("Commands to execute")))
 
         copy_commands_button = QtWidgets.QPushButton(
-            self.style().standardIcon(QtWidgets.QStyle.SP_ToolBarVerticalExtensionButton), t("Copy Commands")
+            QtGui.QIcon(get_icon("onyx-copy", self.app.fastflix.config.theme)), t("Copy Commands")
         )
         copy_commands_button.setToolTip(t("Copy all commands to the clipboard"))
         copy_commands_button.clicked.connect(lambda: self.copy_commands_to_clipboard())
 
         save_commands_button = QtWidgets.QPushButton(
-            self.style().standardIcon(QtWidgets.QStyle.SP_DialogSaveButton), t("Save Commands")
+            QtGui.QIcon(get_icon("onyx-save", self.app.fastflix.config.theme)), t("Save Commands")
         )
         save_commands_button.setToolTip(t("Save commands to file"))
         save_commands_button.clicked.connect(lambda: self.save_commands_to_file())

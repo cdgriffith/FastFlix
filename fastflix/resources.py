@@ -1,29 +1,35 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
 import os
+from functools import lru_cache
 
 import pkg_resources
 
 main_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icon.ico")).resolve())
-default_mode = Path(pkg_resources.resource_filename(__name__, "data/styles/default.qss")).resolve().read_text()
 
 changes_file = Path(pkg_resources.resource_filename(__name__, "CHANGES")).resolve()
 local_changes_file = Path(__file__).parent.parent / "CHANGES"
 
 loading_movie = str(Path(pkg_resources.resource_filename(__name__, "data/icons/loading.gif")).resolve())
-onyx_convert_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-convert.png")).resolve())
-onyx_queue_add_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-add-queue.png")).resolve())
+onyx_convert_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-convert.svg")).resolve())
+onyx_queue_add_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-add-queue.svg")).resolve())
 
 breeze_styles_path = Path(pkg_resources.resource_filename(__name__, "data/styles/breeze_styles")).resolve()
 
 
+@lru_cache()
 def get_icon(name: str, theme: str):
     folder = "black"
     if theme.lower() in ("dark", "onyx"):
         folder = "white"
     if theme == "selected":  # Used for bright tab colors
         folder = "selected"
-    location = Path(pkg_resources.resource_filename(__name__, f"data/icons/{folder}/{name}.png")).resolve()
+
+    location = Path(pkg_resources.resource_filename(__name__, f"data/icons/{folder}/{name}.svg"))
+    if not location.exists():
+        location = Path(pkg_resources.resource_filename(__name__, f"data/icons/{folder}/{name}.png"))
+
+    location = location.resolve()
     if not location.exists():
         raise Exception(f"Cannot find: {location}")
     return str(location)
