@@ -42,6 +42,7 @@ def generate_ffmpeg_start(
     bufsize=None,
     source_fps: Union[str, None] = None,
     vsync: Union[str, None] = None,
+    concat: bool = False,
     **_,
 ) -> str:
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
@@ -59,6 +60,7 @@ def generate_ffmpeg_start(
             "-y",
             time_one,
             incoming_fps,
+            f"{'-f concat -safe 0' if concat else ''}",
             f'-i "{source}"',
             time_two,
             title,
@@ -115,6 +117,9 @@ def generate_filters(
     start_filters=None,
     raw_filters=False,
     deinterlace=False,
+    contrast=None,
+    brightness=None,
+    saturation=None,
     tone_map: str = "hable",
     video_speed: Union[float, int] = 1,
     deblock: Union[str, None] = None,
@@ -153,6 +158,17 @@ def generate_filters(
         filter_list.append(
             f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
         )
+
+    eq_filters = []
+    if brightness:
+        eq_filters.append(f"brightness={brightness}")
+    if saturation:
+        eq_filters.append(f"saturation={saturation}")
+    if contrast:
+        eq_filters.append(f"contrast={contrast}")
+    if eq_filters:
+        eq_filters.insert(0, "eq=eval=frame")
+        filter_list.append(":".join(eq_filters))
 
     filters = ",".join(filter_list)
     if filters and custom_filters:
@@ -218,6 +234,7 @@ def generate_all(
         ffmpeg=fastflix.config.ffmpeg,
         encoder=encoder,
         filters=filters,
+        concat=fastflix.current_video.concat,
         **fastflix.current_video.video_settings.dict(),
         **settings.dict(),
     )

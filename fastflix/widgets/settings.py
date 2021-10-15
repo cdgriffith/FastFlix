@@ -6,7 +6,7 @@ from pathlib import Path
 
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
@@ -103,8 +103,9 @@ class Settings(QtWidgets.QWidget):
         self.logger_level_widget.addItems(["Debug", "Info", "Warning", "Error"])
         self.logger_level_widget.setCurrentIndex(int(self.app.fastflix.config.logging_level // 10) - 1)
 
-        self.flat_ui = QtWidgets.QCheckBox(t("Flat UI"))
-        self.flat_ui.setChecked(self.app.fastflix.config.flat_ui)
+        self.theme = QtWidgets.QComboBox()
+        self.theme.addItems(["onyx", "light", "dark", "system"])
+        self.theme.setCurrentText(self.app.fastflix.config.theme)
 
         self.crop_detect_points_widget = QtWidgets.QComboBox()
         self.crop_detect_points_widget.addItems(possible_detect_points)
@@ -150,7 +151,8 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.disable_version_check, 8, 0, 1, 2)
         layout.addWidget(QtWidgets.QLabel(t("GUI Logging Level")), 9, 0)
         layout.addWidget(self.logger_level_widget, 9, 1)
-        layout.addWidget(self.flat_ui, 10, 0, 1, 2)
+        layout.addWidget(QtWidgets.QLabel(t("Theme")), 10, 0)
+        layout.addWidget(self.theme, 10, 1)
         layout.addWidget(QtWidgets.QLabel(t("Crop Detect Points")), 11, 0, 1, 1)
         layout.addWidget(self.crop_detect_points_widget, 11, 1, 1, 1)
 
@@ -181,9 +183,9 @@ class Settings(QtWidgets.QWidget):
         else:
             self.app.fastflix.config.work_path = new_work_dir
         self.app.fastflix.config.use_sane_audio = self.use_sane_audio.isChecked()
-        if self.flat_ui.isChecked() != self.app.fastflix.config.flat_ui:
+        if self.theme.currentText() != self.app.fastflix.config.theme:
             restart_needed = True
-        self.app.fastflix.config.flat_ui = self.flat_ui.isChecked()
+        self.app.fastflix.config.theme = self.theme.currentText()
 
         old_lang = self.app.fastflix.config.language
         try:
@@ -223,7 +225,7 @@ class Settings(QtWidgets.QWidget):
         dirname = Path(self.ffmpeg_path.text()).parent
         if not dirname.exists():
             dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="FFmepg location", directory=str(dirname))
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="FFmepg location", dir=str(dirname))
         if not filename or not filename[0]:
             return
         self.ffmpeg_path.setText(filename[0])
@@ -232,7 +234,7 @@ class Settings(QtWidgets.QWidget):
         dirname = Path(self.nvencc_path.text()).parent
         if not dirname.exists():
             dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="NVEncC location", directory=str(dirname))
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="NVEncC location", dir=str(dirname))
         if not filename or not filename[0]:
             return
         self.nvencc_path.setText(filename[0])
@@ -241,7 +243,7 @@ class Settings(QtWidgets.QWidget):
         dirname = Path(self.vceenc_path.text()).parent
         if not dirname.exists():
             dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="VCEEncC location", directory=str(dirname))
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="VCEEncC location", dir=str(dirname))
         if not filename or not filename[0]:
             return
         self.vceenc_path.setText(filename[0])
@@ -250,7 +252,7 @@ class Settings(QtWidgets.QWidget):
         dirname = Path(self.hdr10_parser_path.text()).parent
         if not dirname.exists():
             dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="hdr10+ parser", directory=str(dirname))
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="hdr10+ parser", dir=str(dirname))
         if not filename or not filename[0]:
             return
         self.hdr10_parser_path.setText(filename[0])
@@ -280,7 +282,7 @@ class Settings(QtWidgets.QWidget):
         dirname = Path(self.ffprobe_path.text()).parent
         if not dirname.exists():
             dirname = Path()
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="FFprobe location", directory=str(dirname))
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="FFprobe location", dir=str(dirname))
         if not filename or not filename[0]:
             return
         self.ffprobe_path.setText(filename[0])
@@ -300,7 +302,7 @@ class Settings(QtWidgets.QWidget):
         dialog = QtWidgets.QFileDialog()
         dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
         dialog.setOption(QtWidgets.QFileDialog.ShowDirsOnly)
-        work_path = dialog.getExistingDirectory(directory=str(dirname), caption="Work directory")
+        work_path = dialog.getExistingDirectory(dir=str(dirname), caption="Work directory")
         if not work_path:
             return
         self.work_dir.setText(work_path)

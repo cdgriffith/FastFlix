@@ -15,6 +15,7 @@ icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/
 enable_subtitles = True
 enable_audio = True
 enable_attachments = True
+enable_concat = True
 
 from fastflix.encoders.ffmpeg_hevc_nvenc.command_builder import build
 from fastflix.encoders.ffmpeg_hevc_nvenc.settings_panel import NVENC as settings_panel

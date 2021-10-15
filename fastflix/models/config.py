@@ -10,6 +10,7 @@ from typing import Dict, List, Optional
 from appdirs import user_data_dir
 from box import Box, BoxError
 from pydantic import BaseModel, Field
+from reusables import win_based
 
 from fastflix.exceptions import ConfigError, MissingFF
 from fastflix.models.encode import (
@@ -96,6 +97,14 @@ def get_preset_defaults():
 
 
 def find_ffmpeg_file(name, raise_on_missing=False):
+    if ff_location := os.getenv(f"FF_{name.upper()}"):
+        return Path(ff_location).absolute()
+
+    if not win_based and Path(name).exists() and Path(name).is_file():
+        return Path(name).absolute()
+    elif win_based and Path(f"{name}.exe").exists() and Path(f"{name}.exe").is_file():
+        return Path(f"{name}.exe").absolute()
+
     if (ff_location := shutil.which(name)) is not None:
         return Path(ff_location).absolute()
 
@@ -151,6 +160,7 @@ class Config(BaseModel):
     work_path: Path = fastflix_folder
     use_sane_audio: bool = True
     selected_profile: str = "Standard Profile"
+    theme: str = "onyx"
     disable_version_check: bool = False
     disable_update_check: bool = False
     disable_automatic_subtitle_burn_in: bool = False

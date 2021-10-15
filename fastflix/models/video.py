@@ -88,6 +88,9 @@ class VideoSettings(BaseModel):
     vsync: Optional[str] = None
     maxrate: Optional[int] = None
     bufsize: Optional[int] = None
+    brightness: Optional[float] = None
+    contrast: Optional[float] = None
+    saturation: Optional[float] = None
     video_encoder_settings: Union[
         x265Settings,
         x264Settings,
@@ -141,6 +144,7 @@ class Video(BaseModel):
     work_path: Path = None
     format: Box = None
     interlaced: Union[str, bool] = False
+    concat: bool = False
 
     hdr10_streams: List[Box] = Field(default_factory=list)
     hdr10_plus: List[int] = Field(default_factory=list)

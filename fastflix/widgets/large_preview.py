@@ -5,13 +5,13 @@ from subprocess import run, PIPE
 from typing import Optional
 import secrets
 
-from qtpy import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 
 from fastflix.flix import (
     generate_thumbnail_command,
 )
 from fastflix.encoders.common import helpers
-from fastflix.resources import photo_icon
+from fastflix.resources import get_icon
 from fastflix.language import t
 
 __all__ = ["LargePreview"]
@@ -43,7 +43,7 @@ class LargePreview(QtWidgets.QWidget):
         self.setMaximumWidth(size.width())
         self.setMaximumHeight(size.height())
         self.setMinimumSize(400, 400)
-        self.current_image = QtGui.QPixmap(photo_icon)
+        self.current_image = QtGui.QPixmap(get_icon("onyx-cover", self.main.app.fastflix.config.theme))
         self.last_path: Optional[Path] = None
         self.last_command = "NOPE"
         self.setWindowTitle(t("Preview - Press Q to Exit"))
@@ -71,7 +71,7 @@ class LargePreview(QtWidgets.QWidget):
 
         thumb_command = generate_thumbnail_command(
             config=self.main.app.fastflix.config,
-            source=self.main.input_video,
+            source=self.main.source_material,
             output=output,
             filters=filters,
             start_time=self.main.preview_place,

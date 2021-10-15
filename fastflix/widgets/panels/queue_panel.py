@@ -2,27 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import copy
-import os
 import sys
 import logging
 
 import reusables
 from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.ff_queue import get_queue, save_queue
-from fastflix.resources import (
-    black_x_icon,
-    down_arrow_icon,
-    edit_box_icon,
-    folder_icon,
-    play_icon,
-    up_arrow_icon,
-    undo_icon,
-)
+from fastflix.resources import get_icon, get_bool_env
 from fastflix.shared import no_border, open_folder, yes_no_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
@@ -57,11 +48,21 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.setFixedHeight(60)
 
         self.widgets = Box(
-            up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
-            down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
-            cancel_button=QtWidgets.QPushButton(QtGui.QIcon(black_x_icon), ""),
-            reload_button=QtWidgets.QPushButton(QtGui.QIcon(edit_box_icon), ""),
-            retry_button=QtWidgets.QPushButton(QtGui.QIcon(undo_icon), ""),
+            up_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("up-arrow", self.parent.app.fastflix.config.theme)), ""
+            ),
+            down_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
+            ),
+            cancel_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("black-x", self.parent.app.fastflix.config.theme)), ""
+            ),
+            reload_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("edit-box", self.parent.app.fastflix.config.theme)), ""
+            ),
+            retry_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("undo", self.parent.app.fastflix.config.theme)), ""
+            ),
         )
 
         for widget in self.widgets.values():
@@ -83,12 +84,16 @@ class EncodeItem(QtWidgets.QTabWidget):
 
         title.setToolTip(settings.to_yaml())
 
-        open_button = QtWidgets.QPushButton(QtGui.QIcon(folder_icon), t("Open Directory"))
+        open_button = QtWidgets.QPushButton(
+            QtGui.QIcon(get_icon("play", self.parent.app.fastflix.config.theme)), t("Open Directory")
+        )
         open_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         open_button.setIconSize(QtCore.QSize(14, 14))
         open_button.clicked.connect(lambda: open_folder(video.video_settings.output_path.parent))
 
-        view_button = QtWidgets.QPushButton(QtGui.QIcon(play_icon), t("Watch"))
+        view_button = QtWidgets.QPushButton(
+            QtGui.QIcon(get_icon("play", self.parent.app.fastflix.config.theme)), t("Watch")
+        )
         view_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         view_button.setIconSize(QtCore.QSize(14, 14))
         view_button.clicked.connect(
@@ -130,7 +135,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         grid.addWidget(QtWidgets.QLabel(f"{t('Audio Tracks')}: {len(video.video_settings.audio_tracks)}"), 0, 5)
         grid.addWidget(QtWidgets.QLabel(f"{t('Subtitles')}: {len(video.video_settings.subtitle_tracks)}"), 0, 6)
         grid.addWidget(QtWidgets.QLabel(status), 0, 7)
-        if video.status.complete and not os.getenv("FF_DOCKERMODE"):
+        if video.status.complete and not get_bool_env("FF_DOCKERMODE"):
             grid.addWidget(view_button, 0, 8)
             grid.addWidget(open_button, 0, 9)
         elif add_retry:
@@ -193,14 +198,14 @@ class EncodingQueue(FlixList):
         top_layout.addStretch(1)
 
         self.clear_queue = QtWidgets.QPushButton(
-            self.app.style().standardIcon(QtWidgets.QStyle.SP_LineEditClearButton), t("Clear Completed")
+            QtGui.QIcon(get_icon("onyx-clear-queue", self.app.fastflix.config.theme)), t("Clear Completed")
         )
         self.clear_queue.clicked.connect(self.clear_complete)
         self.clear_queue.setFixedWidth(120)
         self.clear_queue.setToolTip(t("Remove completed tasks"))
 
         self.pause_queue = QtWidgets.QPushButton(
-            self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), t("Pause Queue")
+            QtGui.QIcon(get_icon("onyx-pause", self.app.fastflix.config.theme)), t("Pause Queue")
         )
         self.pause_queue.clicked.connect(self.pause_resume_queue)
         # pause_queue.setFixedHeight(40)
@@ -210,7 +215,7 @@ class EncodingQueue(FlixList):
         )
 
         self.pause_encode = QtWidgets.QPushButton(
-            self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause), t("Pause Encode")
+            QtGui.QIcon(get_icon("onyx-pause", self.app.fastflix.config.theme)), t("Pause Encode")
         )
         self.pause_encode.clicked.connect(self.pause_resume_encode)
         # pause_queue.setFixedHeight(40)

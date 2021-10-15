@@ -5,13 +5,13 @@ from typing import Union
 from box import Box
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import down_arrow_icon, loading_movie, up_arrow_icon
+from fastflix.resources import loading_movie, get_icon
 from fastflix.shared import error_message, no_border
 from fastflix.widgets.background_tasks import ExtractSubtitleSRT
 from fastflix.widgets.panels.abstract_list import FlixList
@@ -64,8 +64,12 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{self.index}:{self.outdex}" if enabled else "❌"),
             title=QtWidgets.QLabel(f"  {self.subtitle.codec_long_name}"),
-            up_button=QtWidgets.QPushButton(QtGui.QIcon(up_arrow_icon), ""),
-            down_button=QtWidgets.QPushButton(QtGui.QIcon(down_arrow_icon), ""),
+            up_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("up-arrow", self.parent.app.fastflix.config.theme)), ""
+            ),
+            down_button=QtWidgets.QPushButton(
+                QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
+            ),
             enable_check=QtWidgets.QCheckBox(t("Preserve")),
             disposition=QtWidgets.QComboBox(),
             language=QtWidgets.QComboBox(),

@@ -148,8 +148,33 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         raise FlixError(result.stderr)
 
 
+def get_all_concat_items(file):
+    items = []
+    with open(file) as f:
+        for line in f:
+            if line.strip().startswith("#"):
+                continue
+            elif line.strip().startswith("file"):
+                filename = Path(line.strip()[5:].strip("'\""))
+                if not filename.exists():
+                    raise FlixError(f'No file "{filename}" exists')
+                items.append(filename)
+    return items
+
+
+def get_first_concat_item(file):
+    all_items = get_all_concat_items(file)
+    if not all_items:
+        raise FlixError("concat file must start with `file` on each line.")
+    return all_items[0]
+
+
 def parse(app: FastFlixApp, **_):
-    data = probe(app, app.fastflix.current_video.source)
+    source = app.fastflix.current_video.source
+    if source.name.lower().endswith("txt"):
+        source = get_first_concat_item(source)
+        app.fastflix.current_video.concat = True
+    data = probe(app, source)
     if "streams" not in data:
         raise FlixError(f"Not a video file, FFprobe output: {data}")
     streams = Box({"video": [], "audio": [], "subtitle": [], "attachment": [], "data": []})

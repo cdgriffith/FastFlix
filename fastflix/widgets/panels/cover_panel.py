@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List, Tuple, Union
 
 from box import Box
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.encode import AttachmentTrack
@@ -35,7 +35,11 @@ class CoverPanel(QtWidgets.QWidget):
         layout.addWidget(QtWidgets.QLabel(t("Poster Cover")), 0, 0, 1, 5)
         layout.addWidget(QtWidgets.QLabel(t("Landscape Cover")), 0, 6, 1, 4)
         info_label = QtWidgets.QLabel(
-            link("https://codecalamity.com/guides/video-thumbnails/", t("Enabling cover thumbnails on your system"))
+            link(
+                "https://codecalamity.com/guides/video-thumbnails/",
+                t("Enabling cover thumbnails on your system"),
+                app.fastflix.config.theme,
+            )
         )
         info_label.setOpenExternalLinks(True)
         layout.addWidget(info_label, 10, 0, 1, 9, QtCore.Qt.AlignLeft)
@@ -97,7 +101,7 @@ class CoverPanel(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(
             self,
             caption=t("Cover"),
-            directory=str(dirname),
+            dir=str(dirname),
             filter=f"{t('Supported Image Files')} (*.png *.jpeg *.jpg)",
         )
         if not filename or not filename[0]:
@@ -152,7 +156,7 @@ class CoverPanel(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(
             self,
             caption=t("Landscape Cover"),
-            directory=str(dirname),
+            dir=str(dirname),
             filter=f"{t('Supported Image Files')} (*.png *.jpeg *.jpg)",
         )
         if not filename or not filename[0]:

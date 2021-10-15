@@ -15,6 +15,7 @@ video_dimension_divisor = 8
 enable_subtitles = True
 enable_audio = True
 enable_attachments = True
+enable_concat = True
 
 from fastflix.encoders.av1_aom.command_builder import build
 from fastflix.encoders.av1_aom.settings_panel import AV1 as settings_panel

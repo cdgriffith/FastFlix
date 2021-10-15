@@ -24,11 +24,12 @@ except AttributeError:
     base_path = os.path.abspath(".")
     pyinstaller = False
 
-from qtpy import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
+from fastflix.resources import get_bool_env
 
-DEVMODE = os.getenv("DEVMODE", "").lower() in ("1", "true")
+DEVMODE = get_bool_env("DEVMODE")
 
 my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
 icon = QtGui.QIcon(my_data)
@@ -177,8 +178,9 @@ def time_to_number(string_time: str) -> float:
     return total
 
 
-def link(url, text):
-    return f'<a href="{url}" style="color: black" >{text}</a>'
+def link(url, text, theme):
+    color = "#afccd5" if theme.lower() in ("dark", "onyx") else "black"
+    return f'<a href="{url}" style="color: {color}" >{text}</a>'
 
 
 def open_folder(path):

@@ -4,12 +4,13 @@ from typing import List, Tuple, Union
 from pathlib import Path
 
 from box import Box
-from qtpy import QtGui, QtWidgets, QtCore
+from PySide6 import QtGui, QtWidgets, QtCore
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.widgets.background_tasks import ExtractHDR10
+from fastflix.resources import group_box_style, get_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -28,6 +29,12 @@ class SettingPanel(QtWidgets.QWidget):
         self.opts = Box()
         self.only_int = QtGui.QIntValidator()
         self.only_float = QtGui.QDoubleValidator()
+
+    def paintEvent(self, event):
+        o = QtWidgets.QStyleOption()
+        o.initFrom(self)
+        p = QtGui.QPainter(self)
+        self.style().drawPrimitive(QtWidgets.QStyle.PE_Widget, o, p, self)
 
     @staticmethod
     def translate_tip(tooltip):
@@ -224,7 +231,7 @@ class SettingPanel(QtWidgets.QWidget):
             else:
                 self.widgets[widget_name].textChanged.connect(connect)
 
-        button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileDialogContentsView))
+        button = QtWidgets.QPushButton(icon=QtGui.QIcon(get_icon("onyx-file-search", self.app.fastflix.config.theme)))
         button.clicked.connect(button_action)
 
         layout.addWidget(self.labels[widget_name])
@@ -255,7 +262,7 @@ class SettingPanel(QtWidgets.QWidget):
         if not dirname.exists():
             dirname = Path()
         filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="hdr10_metadata", directory=str(dirname), filter="HDR10+ Metadata (*.json)"
+            self, caption="hdr10_metadata", dir=str(dirname), filter="HDR10+ Metadata (*.json)"
         )
         if not filename or not filename[0]:
             return
@@ -274,10 +281,10 @@ class SettingPanel(QtWidgets.QWidget):
         self.qp_name = qp_name
         layout = QtWidgets.QGridLayout()
         qp_group_box = QtWidgets.QGroupBox()
-        qp_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
+        qp_group_box.setStyleSheet(group_box_style())
         qp_box_layout = QtWidgets.QHBoxLayout()
         bitrate_group_box = QtWidgets.QGroupBox()
-        bitrate_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
+        bitrate_group_box.setStyleSheet(group_box_style())
         bitrate_box_layout = QtWidgets.QHBoxLayout()
         self.widgets.mode = QtWidgets.QButtonGroup()
         self.widgets.mode.buttonClicked.connect(self.set_mode)

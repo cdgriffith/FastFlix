@@ -9,7 +9,7 @@ from pathlib import Path
 import requests
 import reusables
 from appdirs import user_data_dir
-from qtpy import QtWidgets
+from PySide6 import QtWidgets
 
 from fastflix.language import t
 from fastflix.shared import message

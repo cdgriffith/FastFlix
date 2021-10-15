@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
 import sys
 
 import coloredlogs
 import reusables
-from qtpy import QtGui, QtWidgets, QtCore
+from PySide6 import QtGui, QtWidgets, QtCore
 
 from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration, ffprobe_configuration
 from fastflix.language import t
@@ -12,7 +13,7 @@ from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
-from fastflix.resources import default_mode, main_icon
+from fastflix.resources import main_icon, breeze_styles_path, get_bool_env
 from fastflix.shared import file_date, message
 from fastflix.version import __version__
 from fastflix.widgets.container import Container
@@ -22,14 +23,14 @@ logger = logging.getLogger("fastflix")
 
 
 def create_app():
-    if hasattr(QtCore.Qt, "AA_EnableHighDpiScaling"):
-        QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-    if hasattr(QtCore.Qt, "AA_UseHighDpiPixmaps"):
-        QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+    if not get_bool_env("FF_DPI_OFF"):
+        if hasattr(QtCore.Qt, "AA_EnableHighDpiScaling"):
+            QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+        if hasattr(QtCore.Qt, "AA_UseHighDpiPixmaps"):
+            QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     main_app = FastFlixApp(sys.argv)
-    main_app.setStyle("fusion")
     main_app.setApplicationDisplayName("FastFlix")
-    my_font = QtGui.QFont("helvetica", 9, weight=57)
+    my_font = QtGui.QFont("helvetica", 9)
     main_app.setFont(my_font)
     main_app.setWindowIcon(QtGui.QIcon(main_icon))
     return main_app
@@ -151,8 +152,19 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
         logger.exception(t("Could not load config file!"))
         sys.exit(1)
 
-    if app.fastflix.config.flat_ui:
-        app.setStyleSheet(default_mode)
+    if app.fastflix.config.theme != "system":
+        QtCore.QDir.addSearchPath(app.fastflix.config.theme, str(breeze_styles_path / app.fastflix.config.theme))
+        file = QtCore.QFile(f"{app.fastflix.config.theme}:stylesheet.qss")
+        file.open(QtCore.QFile.OpenModeFlag.ReadOnly | QtCore.QFile.OpenModeFlag.Text)
+        stream = QtCore.QTextStream(file)
+        data = stream.readAll()
+        if not reusables.win_based:
+            data = data.replace("url(dark:", f"url({str(breeze_styles_path / 'dark')}/")
+            data = data.replace("url(light:", f"url({str(breeze_styles_path / 'light')}/")
+            data = data.replace("url(onyx:", f"url({str(breeze_styles_path / 'onyx')}/")
+
+        app.setStyleSheet(data)
+
     logger.setLevel(app.fastflix.config.logging_level)
 
     startup_tasks = [
