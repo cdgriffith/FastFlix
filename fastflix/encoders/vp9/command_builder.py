@@ -25,6 +25,14 @@ def build(fastflix: FastFlix):
     details = f"-quality:v {settings.quality} -profile:v {settings.profile} -tile-columns:v {settings.tile_columns} -tile-rows:v {settings.tile_rows} "
 
     if settings.bitrate:
+        if settings.quality == "realtime":
+            return [
+                Command(
+                    command=f"{beginning} -speed:v {settings.speed} -b:v {settings.bitrate} {details} {settings.extra} {ending} ",
+                    name="Single pass realtime bitrate",
+                    exe="ffmpeg",
+                )
+            ]
         command_1 = f"{beginning} -speed:v {'4' if settings.fast_first_pass else settings.speed} -b:v {settings.bitrate} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f webm {null}"
         command_2 = (
             f"{beginning} -speed:v {settings.speed} -b:v {settings.bitrate} {details} -pass 2 {settings.extra} {ending}"

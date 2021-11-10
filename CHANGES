@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.5.1
+
+* Fixing #273 Realtime VP9 bitrate mode must be single pass (thanks to Owen Quinlan)
+
 ## Version 4.5.0
 
 * Adding #267 new onyx theme with custom icons (thanks to Joey Catt | Onyx Studios)
