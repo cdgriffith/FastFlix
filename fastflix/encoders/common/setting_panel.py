@@ -293,7 +293,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.bitrate_radio.setFixedWidth(80)
         self.widgets.mode.addButton(self.bitrate_radio)
         self.widgets.bitrate = QtWidgets.QComboBox()
-        self.widgets.bitrate.setFixedWidth(250)
+        # self.widgets.bitrate.setFixedWidth(250)
         self.widgets.bitrate.addItems(recommended_bitrates)
         config_opt = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
         custom_bitrate = False
@@ -313,8 +313,9 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
         self.widgets.custom_bitrate.setValidator(self.only_int)
         bitrate_box_layout.addWidget(self.bitrate_radio)
-        bitrate_box_layout.addWidget(self.widgets.bitrate)
-        bitrate_box_layout.addStretch()
+        bitrate_box_layout.addWidget(self.widgets.bitrate, 1)
+        bitrate_box_layout.addStretch(1)
+        bitrate_box_layout.addStretch(1)
         bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
         bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
         bitrate_box_layout.addWidget(QtWidgets.QLabel("k"))
@@ -331,7 +332,6 @@ class SettingPanel(QtWidgets.QWidget):
 
         self.widgets[qp_name] = QtWidgets.QComboBox()
         self.widgets[qp_name].setToolTip(qp_help)
-        self.widgets[qp_name].setFixedWidth(250)
         self.widgets[qp_name].addItems(recommended_qps)
         custom_qp = False
         qp_value = self.app.fastflix.config.encoder_opt(self.profile_name, qp_name)
@@ -355,10 +355,10 @@ class SettingPanel(QtWidgets.QWidget):
             self.mode = "Bitrate"
             self.qp_radio.setChecked(False)
             self.bitrate_radio.setChecked(True)
-
         qp_box_layout.addWidget(self.qp_radio)
-        qp_box_layout.addWidget(self.widgets[qp_name])
-        qp_box_layout.addStretch()
+        qp_box_layout.addWidget(self.widgets[qp_name], 1)
+        qp_box_layout.addStretch(1)
+        qp_box_layout.addStretch(1)
         qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
         qp_box_layout.addWidget(self.widgets[f"custom_{qp_name}"])
         qp_box_layout.addWidget(QtWidgets.QLabel("  "))

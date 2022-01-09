@@ -246,6 +246,7 @@ class VCEENCC(SettingPanel):
 
     def init_modes(self):
         layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="cqp")
+        self.widgets.cqp.setFixedWidth(250)
         return layout
 
     def mode_update(self):

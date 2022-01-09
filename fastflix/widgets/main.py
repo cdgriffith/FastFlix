@@ -286,6 +286,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.profile_box = QtWidgets.QComboBox()
         self.widgets.profile_box.setStyleSheet("text-align: center;")
         self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
+        self.widgets.profile_box.view().setFixedWidth(self.widgets.profile_box.minimumSizeHint().width() + 50)
         self.widgets.profile_box.setCurrentText(self.app.fastflix.config.selected_profile)
         self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
         self.widgets.profile_box.setMinimumWidth(150)
@@ -633,6 +634,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_to.setMinimumWidth(180)
         self.widgets.convert_to.setFixedHeight(40)
         self.change_output_types()
+        self.widgets.convert_to.view().setFixedWidth(self.widgets.convert_to.minimumSizeHint().width() + 50)
         self.widgets.convert_to.currentTextChanged.connect(self.change_encoder)
 
         encoder_label = QtWidgets.QLabel(f"{t('Encoder')}: ")

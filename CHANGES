@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 4.5.2
+
+* Fixing #272 Codec drop down size fix (thanks to kachijs)
+* Fixing build for 3.10 by updating to PySide6 6.2.2.1 (thanks to Nhunz)
+
 ## Version 4.5.1
 
 * Fixing #273 Realtime VP9 bitrate mode must be single pass (thanks to Owen Quinlan)
