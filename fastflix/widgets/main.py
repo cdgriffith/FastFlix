@@ -1848,7 +1848,8 @@ class Main(QtWidgets.QWidget):
         # TODO ask if ok
         # return
 
-        self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
+        with self.app.fastflix.queue_lock:
+            self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
         self.video_options.update_queue()
         self.video_options.show_queue()
 
@@ -1858,7 +1859,8 @@ class Main(QtWidgets.QWidget):
             self.app.fastflix.worker_queue.put(tuple(requests))
 
         self.clear_current_video()
-        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
+        with self.app.fastflix.queue_lock:
+            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         return True
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -1952,7 +1954,8 @@ class Main(QtWidgets.QWidget):
 
     def status_update(self):
         logger.debug(f"Updating queue from command worker")
-        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
+        with self.app.fastflix.queue_lock:
+            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         self.video_options.update_queue()
 
     def find_video(self, uuid) -> Video:

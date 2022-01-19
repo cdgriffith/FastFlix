@@ -64,8 +64,11 @@ def show_windows_notification(title, msg, icon_path):
 
 
 def cleanup_windows_notification():
-    from win32gui import DestroyWindow, UnregisterClass
-
-    if tool_window:
-        DestroyWindow(tool_window)
-        UnregisterClass("FastFlix", None)
+    try:
+        from win32gui import DestroyWindow, UnregisterClass
+    except ImportError:
+        return
+    else:
+        if tool_window:
+            DestroyWindow(tool_window)
+            UnregisterClass("FastFlix", None)

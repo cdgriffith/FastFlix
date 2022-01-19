@@ -98,6 +98,9 @@ class SettingPanel(QtWidgets.QWidget):
             self.opts[widget_name] = opt
         self.widgets[widget_name].setCurrentIndex(default or 0)
         self.widgets[widget_name].setDisabled(not enabled)
+        new_width = self.widgets[widget_name].minimumSizeHint().width() + 50
+        if new_width > self.widgets[widget_name].view().width():
+            self.widgets[widget_name].view().setFixedWidth(new_width)
         if tooltip:
             self.widgets[widget_name].setToolTip(self.translate_tip(tooltip))
         if connect:

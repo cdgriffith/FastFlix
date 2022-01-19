@@ -3,6 +3,7 @@
 ## Version 4.5.2
 
 * Fixing #272 Codec drop down size fix (thanks to kachijs)
+* Fixing #278 FastFlix occasionally getting stuck on a single video in a queue (thanks to kamild_)
 * Fixing build for 3.10 by updating to PySide6 6.2.2.1 (thanks to Nhunz)
 
 ## Version 4.5.1

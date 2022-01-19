@@ -250,7 +250,8 @@ class EncodingQueue(FlixList):
             self.queue_startup_check()
         except Exception:
             logger.exception("Could not load queue as it is outdated or malformed. Deleting for safety.")
-            save_queue([], queue_file=self.app.fastflix.queue_path, config=self.app.fastflix.config)
+            with self.app.fastflix.queue_lock:
+                save_queue([], queue_file=self.app.fastflix.queue_path, config=self.app.fastflix.config)
 
     def queue_startup_check(self):
         new_queue = get_queue(self.app.fastflix.queue_path, self.app.fastflix.config)
