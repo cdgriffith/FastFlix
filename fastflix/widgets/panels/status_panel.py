@@ -186,14 +186,14 @@ class Logs(QtWidgets.QTextBrowser):
             return
         if msg.startswith("frame="):
             try:
-                frame={}
-                output=[i for i in (x.strip().split() for x in msg.split("="))]
-                output[-1].append([]) #no final value
-                for i in range(0,len(output)-1):
-                    frame[output[i][-1]]=output[i+1][:-1]
+                frame = {}
+                output = [i for i in (x.strip().split() for x in msg.split("="))]
+                output[-1].append([])  # no final value
+                for i in range(0, len(output) - 1):
+                    frame[output[i][-1]] = output[i + 1][:-1]
                 for k in frame:
-                    if len(frame[k])==1:
-                        frame[k]=frame[k][0]
+                    if len(frame[k]) == 1:
+                        frame[k] = frame[k][0]
                 self.status_panel.speed.emit(f"{frame.get('time', '')}|{frame.get('speed', '').rstrip('x')}")
                 self.status_panel.bitrate.emit(frame.get("bitrate", ""))
             except Exception:
