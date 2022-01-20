@@ -176,32 +176,15 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.convert_bitrate = QtWidgets.QComboBox()
         self.widgets.convert_bitrate.setFixedWidth(70)
-
+        br=[]
+        channels=self.channels
+        if not channels:
+            channels=2
+        br=[x for x in range(16 * self.channels, (256 * self.channels) + 1, 16 * self.channels)]
+        br.append(640) #required standard Blu-Ray rate, max for AC-3
+        br.sort()
         self.widgets.convert_bitrate.addItems(
-            [f"{x}k" for x in range(16 * self.channels, (256 * self.channels) + 1, 16 * self.channels)]
-            if self.channels
-            else [
-                "32k",
-                "64k",
-                "96k",
-                "128k",
-                "160k",
-                "192k",
-                "224k",
-                "256k",
-                "320k",
-                "512K",
-                "768k",
-                "896k",
-                "1024k",
-                "1152k",
-                "1280k",
-                "1408k",
-                "1536k",
-                "1664k",
-                "1792k",
-                "1920k",
-            ]
+            [f"{x}k" for x in br]
         )
         self.widgets.convert_bitrate.setCurrentIndex(3)
         self.widgets.convert_bitrate.setDisabled(True)
