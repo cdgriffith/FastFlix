@@ -2,9 +2,11 @@
 
 ## Version 4.5.2
 
+* Adding #195 640kbps audio (thanks to ObviousInRetrospect and Harybo)
 * Fixing #272 Codec drop down size fix (thanks to kachijs)
 * Fixing #278 FastFlix occasionally getting stuck on a single video in a queue (thanks to kamild_)
 * Fixing build for 3.10 by updating to PySide6 6.2.2.1 (thanks to Nhunz)
+* Fixing status parser when using -psnr (thanks to ObviousInRetrospect)
 
 ## Version 4.5.1
 

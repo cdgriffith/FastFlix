@@ -176,14 +176,7 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.convert_bitrate = QtWidgets.QComboBox()
         self.widgets.convert_bitrate.setFixedWidth(70)
-        br = []
-        channels = self.channels
-        if not channels:
-            channels = 2
-        br = [x for x in range(16 * self.channels, (256 * self.channels) + 1, 16 * self.channels)]
-        br.append(640)  # required standard Blu-Ray rate, max for AC-3
-        br.sort()
-        self.widgets.convert_bitrate.addItems([f"{x}k" for x in br])
+        self.widgets.convert_bitrate.addItems(self.get_conversion_bitrates())
         self.widgets.convert_bitrate.setCurrentIndex(3)
         self.widgets.convert_bitrate.setDisabled(True)
 
@@ -197,6 +190,14 @@ class Audio(QtWidgets.QTabWidget):
 
         return layout
 
+    def get_conversion_bitrates(self, channels=None):
+        if not channels:
+            channels = self.channels or 2
+        bitrates = [x for x in range(16 * channels, (256 * channels) + 1, 16 * channels)]
+        if channels > 1:
+            bitrates.append(640)
+        return [f"{x}k" for x in sorted(set(bitrates))]
+
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()
         self.widgets.track_number.setText(f"{self.index}:{self.outdex}" if enabled else "❌")
@@ -209,14 +210,7 @@ class Audio(QtWidgets.QTabWidget):
             else self.channels
         )
         self.widgets.convert_bitrate.clear()
-        if channels > 0:
-            self.widgets.convert_bitrate.addItems(
-                [f"{x}k" for x in range(16 * channels, (256 * channels) + 1, 16 * channels)]
-            )
-        else:
-            self.widgets.convert_bitrate.addItems(
-                [f"{x}k" for x in range(16 * self.channels, (256 * self.channels) + 1, 16 * self.channels)]
-            )
+        self.widgets.convert_bitrate.addItems(self.get_conversion_bitrates(channels))
         self.widgets.convert_bitrate.setCurrentIndex(3)
         self.page_update()
 
