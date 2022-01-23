@@ -444,8 +444,8 @@ class SettingPanel(QtWidgets.QWidget):
 
     def init_max_mux(self):
         return self._add_combo_box(
-            label=t("Max Muxing Queue Size"),
-            tooltip=t('Useful when you have the "Too many packets buffered for output stream" error'),
+            label="Max Muxing Queue Size",
+            tooltip='Useful when you have the "Too many packets buffered for output stream" error',
             widget_name="max_mux",
             options=["default", "1024", "2048", "4096", "8192"],
             opt="max_muxing_queue_size",

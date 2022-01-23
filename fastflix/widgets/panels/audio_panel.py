@@ -312,7 +312,7 @@ class Audio(QtWidgets.QTabWidget):
 
 class AudioList(FlixList):
     def __init__(self, parent, app: FastFlixApp):
-        super(AudioList, self).__init__(app, parent, t("Audio Tracks"), "audio")
+        super(AudioList, self).__init__(app, parent, "Audio Tracks", "audio")
         self.available_audio_encoders = app.fastflix.audio_encoders
         self.app = app
         self._first_selected = False

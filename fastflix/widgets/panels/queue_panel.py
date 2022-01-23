@@ -367,6 +367,15 @@ class EncodingQueue(FlixList):
             self.pause_encode.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause))
             self.app.fastflix.worker_queue.put(["resume encode"])
         else:
+            if not yes_no_message(
+                t("WARNING: This feature is not provided by the encoder software directly")
+                + "<br><br>"
+                + t("It is NOT supported by VCE or NVENC encoders, it will break the encoding")
+                + "<br><br>"
+                + t("Are you sure you want to continue?"),
+                "Pause Warning",
+            ):
+                return
             self.pause_encode.setText(t("Resume Encode"))
             self.pause_encode.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay))
             self.app.fastflix.worker_queue.put(["pause encode"])
