@@ -7,6 +7,6 @@ pathvalidate==2.4.1
 psutil==5.8.0
 pydantic==1.8.2
 PySide6==6.2.2.1
-python-box[all]==6.0.0rc2
+python-box[all]==6.0.0rc3
 requests==2.25.1
 reusables==0.9.6
