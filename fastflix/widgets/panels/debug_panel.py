@@ -27,7 +27,7 @@ class DebugPanel(QtWidgets.QTabWidget):
         widget = QtWidgets.QTextBrowser(self)
         widget.setReadOnly(True)
         widget.setDisabled(False)
-        widget.setText(obj.to_yaml(default_flow_style=False))
+        widget.setText(obj.to_yaml(default_flow_style=False, ruamel_typ="unsafe"))
         return widget
 
     def get_ffmpeg_details(self):

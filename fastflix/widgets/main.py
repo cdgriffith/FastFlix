@@ -286,6 +286,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.profile_box = QtWidgets.QComboBox()
         self.widgets.profile_box.setStyleSheet("text-align: center;")
         self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
+        self.widgets.profile_box.view().setFixedWidth(self.widgets.profile_box.minimumSizeHint().width() + 50)
         self.widgets.profile_box.setCurrentText(self.app.fastflix.config.selected_profile)
         self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
         self.widgets.profile_box.setMinimumWidth(150)
@@ -633,6 +634,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_to.setMinimumWidth(180)
         self.widgets.convert_to.setFixedHeight(40)
         self.change_output_types()
+        self.widgets.convert_to.view().setFixedWidth(self.widgets.convert_to.minimumSizeHint().width() + 50)
         self.widgets.convert_to.currentTextChanged.connect(self.change_encoder)
 
         encoder_label = QtWidgets.QLabel(f"{t('Encoder')}: ")
@@ -1846,7 +1848,8 @@ class Main(QtWidgets.QWidget):
         # TODO ask if ok
         # return
 
-        self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
+        with self.app.fastflix.queue_lock:
+            self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
         self.video_options.update_queue()
         self.video_options.show_queue()
 
@@ -1856,7 +1859,8 @@ class Main(QtWidgets.QWidget):
             self.app.fastflix.worker_queue.put(tuple(requests))
 
         self.clear_current_video()
-        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
+        with self.app.fastflix.queue_lock:
+            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         return True
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -1950,7 +1954,8 @@ class Main(QtWidgets.QWidget):
 
     def status_update(self):
         logger.debug(f"Updating queue from command worker")
-        save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
+        with self.app.fastflix.queue_lock:
+            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         self.video_options.update_queue()
 
     def find_video(self, uuid) -> Video:

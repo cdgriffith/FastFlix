@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 4.6.0
+
+* Adding #195 640kbps audio (thanks to ObviousInRetrospect and Harybo)
+* Adding Japanese, Portuguese, Russian, Swedish, and Polish translations
+* Fixing #272 Codec drop down size fix (thanks to kachijs)
+* Fixing #278 FastFlix occasionally getting stuck on a single video in a queue (thanks to kamild_)
+* Fixing build for 3.10 by updating to PySide6 6.2.2.1 (thanks to Nhunz)
+* Fixing status parser when using -psnr (thanks to ObviousInRetrospect)
+* Fixing VCE and NVENC encoders would set first subtitle track to default
+
 ## Version 4.5.1
 
 * Fixing #273 Realtime VP9 bitrate mode must be single pass (thanks to Owen Quinlan)

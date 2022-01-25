@@ -60,6 +60,11 @@ def build_subtitle(subtitle_tracks: List[SubtitleTrack], subtitle_streams) -> st
             copies.append(str(sub_id))
             if track.disposition:
                 command_list.append(f"--sub-disposition {sub_id}?{track.disposition}")
+            else:
+                command_list.append(f"--sub-disposition {sub_id}?unset")
             command_list.append(f"--sub-metadata  {sub_id}?language='{track.language}'")
 
-    return f" --sub-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
+    commands = f" --sub-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
+    if commands:
+        return f"{commands} -m default_mode:infer_no_subs"
+    return ""

@@ -176,33 +176,7 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.convert_bitrate = QtWidgets.QComboBox()
         self.widgets.convert_bitrate.setFixedWidth(70)
-
-        self.widgets.convert_bitrate.addItems(
-            [f"{x}k" for x in range(16 * self.channels, (256 * self.channels) + 1, 16 * self.channels)]
-            if self.channels
-            else [
-                "32k",
-                "64k",
-                "96k",
-                "128k",
-                "160k",
-                "192k",
-                "224k",
-                "256k",
-                "320k",
-                "512K",
-                "768k",
-                "896k",
-                "1024k",
-                "1152k",
-                "1280k",
-                "1408k",
-                "1536k",
-                "1664k",
-                "1792k",
-                "1920k",
-            ]
-        )
+        self.widgets.convert_bitrate.addItems(self.get_conversion_bitrates())
         self.widgets.convert_bitrate.setCurrentIndex(3)
         self.widgets.convert_bitrate.setDisabled(True)
 
@@ -216,6 +190,14 @@ class Audio(QtWidgets.QTabWidget):
 
         return layout
 
+    def get_conversion_bitrates(self, channels=None):
+        if not channels:
+            channels = self.channels or 2
+        bitrates = [x for x in range(16 * channels, (256 * channels) + 1, 16 * channels)]
+        if channels > 1:
+            bitrates.append(640)
+        return [f"{x}k" for x in sorted(set(bitrates))]
+
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()
         self.widgets.track_number.setText(f"{self.index}:{self.outdex}" if enabled else "❌")
@@ -228,14 +210,7 @@ class Audio(QtWidgets.QTabWidget):
             else self.channels
         )
         self.widgets.convert_bitrate.clear()
-        if channels > 0:
-            self.widgets.convert_bitrate.addItems(
-                [f"{x}k" for x in range(16 * channels, (256 * channels) + 1, 16 * channels)]
-            )
-        else:
-            self.widgets.convert_bitrate.addItems(
-                [f"{x}k" for x in range(16 * self.channels, (256 * self.channels) + 1, 16 * self.channels)]
-            )
+        self.widgets.convert_bitrate.addItems(self.get_conversion_bitrates(channels))
         self.widgets.convert_bitrate.setCurrentIndex(3)
         self.page_update()
 
@@ -337,7 +312,7 @@ class Audio(QtWidgets.QTabWidget):
 
 class AudioList(FlixList):
     def __init__(self, parent, app: FastFlixApp):
-        super(AudioList, self).__init__(app, parent, t("Audio Tracks"), "audio")
+        super(AudioList, self).__init__(app, parent, "Audio Tracks", "audio")
         self.available_audio_encoders = app.fastflix.audio_encoders
         self.app = app
         self._first_selected = False

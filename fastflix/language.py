@@ -38,7 +38,7 @@ if not language:
 
 language_data = Box.from_yaml(filename=language_file, encoding="utf-8")
 
-if language not in ("deu", "eng", "fra", "ita", "spa", "zho"):
+if language not in ("deu", "eng", "fra", "ita", "spa", "zho", "rus", "jpn", "pol", "swe", "por"):
     print(f"WARNING: {language} is not a supported language, defaulting to eng")
     language = "eng"
 

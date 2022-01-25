@@ -16,7 +16,19 @@ from fastflix.shared import error_message
 logger = logging.getLogger("fastflix")
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
-known_language_list = ["English", "Chinese", "Italian", "French", "Spanish", "German"]
+known_language_list = [
+    "English",
+    "Chinese",
+    "Italian",
+    "French",
+    "Spanish",
+    "German",
+    "Japanese",
+    "Russian",
+    "Portuguese",
+    "Swedish",
+    "Polish",
+]
 possible_detect_points = ["1", "2", "4", "6", "8", "10", "15", "20", "25", "50", "100"]
 
 # "Japanese", "Korean", "Hindi", "Russian",  "Portuguese"
