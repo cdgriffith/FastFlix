@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
-import os
 import shutil
 import sys
 import time
@@ -25,10 +24,10 @@ from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
 from fastflix.widgets.main import Main
-from fastflix.widgets.profile_window import ProfileWindow
+from fastflix.widgets.windows.profile_window import ProfileWindow
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
-from fastflix.widgets.concat import ConcatWindow
+from fastflix.widgets.windows.concat import ConcatWindow
 
 logger = logging.getLogger("fastflix")
 

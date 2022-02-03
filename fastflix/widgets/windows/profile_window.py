@@ -10,6 +10,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
+from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.config import Profile, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import (
@@ -33,6 +34,149 @@ from fastflix.shared import error_message
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
 logger = logging.getLogger("fastflix")
+
+
+class AudioProfile(QtWidgets.QTabWidget):
+    def __init__(self, parent_list, parent, index):
+        super(AudioProfile, self).__init__(parent)
+        self.enabled = True
+        self.index = index
+        self.parent = parent
+        self.parent_list = parent_list
+        self.match_type = QtWidgets.QComboBox()
+        self.match_type.addItems(["All", "First", "Last"])
+        self.match_type.currentIndexChanged.connect(self.update_combos)
+        self.setFixedHeight(120)
+
+        self.match_item = QtWidgets.QComboBox()
+        self.match_item.addItems(["All", "Title", "Track Number", "Language", "Channels"])
+        self.match_item.currentIndexChanged.connect(self.update_combos)
+
+        self.match_input_boxes = [
+            QtWidgets.QLineEdit("*"),
+            QtWidgets.QLineEdit(""),
+            QtWidgets.QComboBox(),
+            QtWidgets.QComboBox(),
+            QtWidgets.QComboBox(),
+        ]
+        self.match_input = self.match_input_boxes[0]
+        self.match_input_boxes[0].setDisabled(True)
+        self.match_input_boxes[1].setPlaceholderText(t("contains"))
+        self.match_input_boxes[2].addItems([str(x) for x in range(1, 24)])
+        self.match_input_boxes[3].addItems(["English", "Other"])
+        self.match_input_boxes[4].addItems([str(x) for x in range(1, 16)])
+
+        self.kill_myself = QtWidgets.QPushButton("X")
+        self.kill_myself.clicked.connect(lambda: self.parent_list.remove_track(self.index))
+
+        # First Row
+        self.grid = QtWidgets.QGridLayout()
+        self.grid.addWidget(QtWidgets.QLabel(t("Match")), 0, 0)
+        self.grid.addWidget(self.match_type, 0, 1)
+        self.grid.addWidget(QtWidgets.QLabel(t("Select By")), 0, 2)
+        self.grid.addWidget(self.match_item, 0, 3)
+        self.grid.addWidget(self.match_input, 0, 4)
+        self.grid.addWidget(self.kill_myself, 0, 5)
+
+        self.downmix = QtWidgets.QComboBox()
+        self.downmix.addItems([str(x) for x in range(1, 16)])
+        self.downmix.setCurrentIndex(0)
+
+        self.convert_to = QtWidgets.QComboBox()
+        self.convert_to.addItems(["converters"])
+
+        self.bitrate = QtWidgets.QComboBox()
+        self.bitrate.addItems([str(x) for x in range(32, 1024, 32)])
+
+        self.grid.addWidget(QtWidgets.QLabel(t("Conversion")), 1, 0)
+        self.grid.addWidget(self.convert_to, 1, 1)
+        self.grid.addWidget(QtWidgets.QLabel(t("Bitrate")), 1, 2)
+        self.grid.addWidget(self.bitrate, 1, 3)
+        self.grid.addWidget(self.downmix, 1, 4)
+
+        self.setLayout(self.grid)
+
+    def update_combos(self):
+        # index = self.grid.indexOf(self.match_input)
+        # print(index)
+        # self.grid.removeWidget(self.match_input)
+        self.match_input.hide()
+        self.match_input = self.match_input_boxes[self.match_item.currentIndex()]
+
+        self.grid.addWidget(self.match_input, 0, 4)
+        self.match_input.show()
+
+        # self.grid.replaceWidget(self.match_input, self.match_input_boxes[self.match_item.currentIndex()])
+        #
+        # self.match_input =
+        # self.match_input.show()
+
+    def set_outdex(self, pos):
+        pass
+
+    def set_first(self, pos):
+        pass
+
+    def set_last(self, pos):
+        pass
+
+
+class AudioSelect(FlixList):
+    def __init__(self, app, parent):
+        super().__init__(app, parent, "Audio Select", "audio")
+        self.tracks = []
+
+        self.passthrough_checkbox = QtWidgets.QCheckBox(t("Passthrough All"))
+        self.add_button = QtWidgets.QPushButton(t("Add Pattern Match"))
+
+        self.passthrough_checkbox.toggled.connect(self.passthrough_check)
+
+        self.add_button.clicked.connect(self.add_track)
+
+        layout = self.layout()
+        # self.scroll_area = super().scroll_area
+        layout.removeWidget(self.scroll_area)
+        layout.addWidget(self.scroll_area, 3, 0, 4, 3)
+
+        layout.addWidget(self.passthrough_checkbox, 0, 0)
+        layout.addWidget(self.add_button, 0, 1)
+        # self.passthrough_checkbox.setChecked(True)
+
+        super()._new_source(self.tracks)
+
+    def add_track(self):
+        self.tracks.append(AudioProfile(self, self.inner_widget, len(self.tracks)))
+        self.reorder(height=126)
+
+    def remove_track(self, index):
+        self.tracks.pop(index).close()
+        for i, track in enumerate(self.tracks):
+            track.index = i
+        self.reorder(height=126)
+
+    def passthrough_check(self):
+        if self.passthrough_checkbox.isChecked():
+            self.scroll_area.hide()
+        else:
+            self.scroll_area.show()
+
+    def get_settings(self):
+        if self.passthrough_checkbox.isChecked():
+            return "PASSTHROUGH"
+        filters = []
+        for track in self.tracks:
+            filters.append(
+                {
+                    "match_type": track.match_type.currentText(),
+                    "match_item": track.match_item.currentText(),
+                    "match_input": track.match_input.text(),
+                }
+            )
+        return filters
+
+
+class SubtitleSelect(FlixList):
+    pass
 
 
 class ProfileWindow(QtWidgets.QWidget):
@@ -75,6 +219,11 @@ class ProfileWindow(QtWidgets.QWidget):
         save_button.clicked.connect(self.save)
         save_button.setMaximumWidth(150)
 
+        self.tab_area = QtWidgets.QTabWidget()
+        self.tab_area.setMinimumWidth(500)
+        self.tab_area.addTab(AudioSelect(self.app, self), "Audio Select")
+        self.tab_area.addTab(SubtitleSelect(self.app, self, "Subtitle Select", "subtitles"), "Subtitle Select")
+
         layout.addWidget(profile_name_label, 0, 0)
         layout.addWidget(self.profile_name, 0, 1)
         layout.addWidget(self.auto_crop, 1, 0)
@@ -88,6 +237,7 @@ class ProfileWindow(QtWidgets.QWidget):
         layout.addWidget(self.encoder_label, 7, 0, 1, 2)
         layout.addWidget(self.encoder_settings, 8, 0, 10, 2)
         layout.addWidget(save_button, 20, 1, alignment=QtCore.Qt.AlignRight)
+        layout.addWidget(self.tab_area, 0, 2, 20, 5)
 
         self.update_settings()
 

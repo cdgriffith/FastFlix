@@ -41,6 +41,7 @@ class Audio(QtWidgets.QTabWidget):
     ):
         self.loading = True
         super(Audio, self).__init__(parent)
+        self.setObjectName("Audio")
         self.parent = parent
         self.audio = audio
         self.setFixedHeight(60)
@@ -89,7 +90,7 @@ class Audio(QtWidgets.QTabWidget):
             self.widgets.audio_info.setToolTip(all_info.to_yaml())
 
         self.widgets.language.addItems(["No Language Set"] + language_list)
-        self.widgets.language.setMaximumWidth(110)
+        self.widgets.language.setMaximumWidth(150)
         if language:
             try:
                 lang = Lang(language).name
@@ -102,12 +103,13 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.language.currentIndexChanged.connect(self.page_update)
         self.widgets.title.setFixedWidth(150)
         self.widgets.title.textChanged.connect(self.page_update)
-        self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-
+        # self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.widgets.audio_info.setFixedWidth(350)
         self.widgets.downmix.addItems([t("No Downmix")] + [k for k, v in channel_list.items() if v <= channels])
         self.widgets.downmix.currentIndexChanged.connect(self.update_downmix)
         self.widgets.downmix.setCurrentIndex(0)
         self.widgets.downmix.setDisabled(True)
+        self.widgets.downmix.hide()
 
         self.widgets.enable_check.setChecked(enabled)
         self.widgets.enable_check.toggled.connect(self.update_enable)
@@ -126,8 +128,10 @@ class Audio(QtWidgets.QTabWidget):
         label = QtWidgets.QLabel(f"{t('Title')}: ")
         self.widgets.title.setFixedWidth(150)
         title_layout = QtWidgets.QHBoxLayout()
-        title_layout.addWidget(label)
-        title_layout.addWidget(self.widgets.title)
+        title_layout.addStretch(False)
+        title_layout.addWidget(label, stretch=False)
+        title_layout.addWidget(self.widgets.title, stretch=False)
+        title_layout.addStretch(True)
 
         grid = QtWidgets.QGridLayout()
         grid.addLayout(self.init_move_buttons(), 0, 0)
@@ -179,13 +183,16 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.convert_bitrate.addItems(self.get_conversion_bitrates())
         self.widgets.convert_bitrate.setCurrentIndex(3)
         self.widgets.convert_bitrate.setDisabled(True)
+        self.widgets.bitrate_label = QtWidgets.QLabel(f"{t('Bitrate')}: ")
+        self.widgets.convert_bitrate.hide()
+        self.widgets.bitrate_label.hide()
 
         self.widgets.convert_bitrate.currentIndexChanged.connect(lambda: self.page_update())
         self.widgets.convert_to.currentIndexChanged.connect(self.update_conversion)
         layout.addWidget(QtWidgets.QLabel(f"{t('Conversion')}: "))
         layout.addWidget(self.widgets.convert_to)
 
-        layout.addWidget(QtWidgets.QLabel(f"{t('Bitrate')}: "))
+        layout.addWidget(self.widgets.bitrate_label)
         layout.addWidget(self.widgets.convert_bitrate)
 
         return layout
@@ -218,8 +225,14 @@ class Audio(QtWidgets.QTabWidget):
         if self.widgets.convert_to.currentIndex() == 0:
             self.widgets.downmix.setDisabled(True)
             self.widgets.convert_bitrate.setDisabled(True)
+            self.widgets.convert_bitrate.hide()
+            self.widgets.bitrate_label.hide()
+            self.widgets.downmix.hide()
         else:
             self.widgets.downmix.setDisabled(False)
+            self.widgets.convert_bitrate.show()
+            self.widgets.bitrate_label.show()
+            self.widgets.downmix.show()
             if self.widgets.convert_to.currentText() in lossless:
                 self.widgets.convert_bitrate.setDisabled(True)
             else:
@@ -377,7 +390,6 @@ class AudioList(FlixList):
             self.tracks[0].set_first()
             self.tracks[-1].set_last()
 
-        super()._new_source(self.tracks)
         self.update_audio_settings()
 
     def allowed_formats(self, allowed_formats=None):

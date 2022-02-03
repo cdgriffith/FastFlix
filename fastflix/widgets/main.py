@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import copy
 import datetime
-import importlib.machinery  # Needed for pyinstaller
 import logging
 import math
 import os
@@ -50,7 +49,7 @@ from fastflix.windows_tools import show_windows_notification
 from fastflix.widgets.background_tasks import ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.video_options import VideoOptions
-from fastflix.widgets.large_preview import LargePreview
+from fastflix.widgets.windows.large_preview import LargePreview
 
 logger = logging.getLogger("fastflix")
 
