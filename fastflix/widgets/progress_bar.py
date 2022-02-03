@@ -35,6 +35,7 @@ class ProgressBar(QtWidgets.QFrame):
 
         self.tasks = tasks
         self.signal_task = signal_task
+        self.cancelled = False
 
         self.setObjectName("ProgressBar")
         self.setStyleSheet("#ProgressBar{border: 1px solid #aaa}")
@@ -60,7 +61,10 @@ class ProgressBar(QtWidgets.QFrame):
             self.run()
 
     def cancel(self):
-        self.stop_signal.emit()
+        if self.signal_task:
+            self.stop_signal.emit()
+        else:
+            self.cancelled = True
         self.close()
 
     @reusables.log_exception("fastflix")
@@ -68,7 +72,7 @@ class ProgressBar(QtWidgets.QFrame):
         if not self.tasks:
             logger.error("Progress bar RUN called without any tasks")
             return
-        ratio = 100 // len(self.tasks)
+        ratio = 100 / len(self.tasks)
         self.progress_bar.setValue(0)
 
         if self.signal_task:
@@ -88,6 +92,8 @@ class ProgressBar(QtWidgets.QFrame):
                     logger.exception(f"Could not run task {task.name} with config {self.app.fastflix.config}")
                     raise
                 self.progress_bar.setValue(int(i * ratio))
+                if self.cancelled:
+                    return
 
     def update_progress(self, value):
         self.progress_bar.setValue(value)

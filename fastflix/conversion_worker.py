@@ -17,11 +17,11 @@ from fastflix.models.video import Video
 
 logger = logging.getLogger("fastflix-core")
 
-log_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "logs"
-after_done_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "after_done_logs"
+log_path = Path(user_data_dir("FastFlix", appauthor=None, roaming=True)) / "logs"
+after_done_path = Path(user_data_dir("FastFlix", appauthor=None, roaming=True)) / "after_done_logs"
 
-queue_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "queue.yaml"
-queue_lock_file = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "queue.lock"
+queue_path = Path(user_data_dir("FastFlix", appauthor=None, roaming=True)) / "queue.yaml"
+queue_lock_file = Path(user_data_dir("FastFlix", appauthor=None, roaming=True)) / "queue.lock"
 
 
 CONTINUOUS = 0x80000000

@@ -35,8 +35,8 @@ from fastflix.shared import get_config
 
 logger = logging.getLogger("fastflix")
 
-fastflix_folder = Path(os.getenv("FF_WORKDIR", user_data_dir("FastFlix", appauthor=False, roaming=True)))
-ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
+fastflix_folder = Path(os.getenv("FF_WORKDIR", user_data_dir("FastFlix", appauthor=None, roaming=True)))
+ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=None, roaming=True))
 
 NO_OPT = object()
 

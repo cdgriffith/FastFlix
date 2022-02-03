@@ -24,7 +24,7 @@ if config:
 elif Path("fastflix.yaml").exists():
     config = Path("fastflix.yaml")
 else:
-    config = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"
+    config = Path(user_data_dir("FastFlix", appauthor=None, roaming=True)) / "fastflix.yaml"
 
 language = os.getenv("FF_LANG")
 

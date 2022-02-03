@@ -30,7 +30,7 @@ from fastflix.flix import (
     get_auto_crop,
     parse,
     parse_hdr_details,
-    get_first_concat_item,
+    get_concat_item,
 )
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
@@ -1548,7 +1548,7 @@ class Main(QtWidgets.QWidget):
             source=self.source_material,
             output=self.thumb_file,
             filters=filters,
-            start_time=self.preview_place,
+            start_time=self.preview_place if not self.app.fastflix.current_video.concat else None,
             input_track=self.app.fastflix.current_video.video_settings.selected_track,
         )
         try:
@@ -1560,7 +1560,9 @@ class Main(QtWidgets.QWidget):
 
     @property
     def source_material(self):
-        return get_first_concat_item(self.input_video) if self.app.fastflix.current_video.concat else self.input_video
+        if self.app.fastflix.current_video.concat:
+            return get_concat_item(self.input_video, self.widgets.thumb_time.value())
+        return self.input_video
 
     @staticmethod
     def thread_logger(text):

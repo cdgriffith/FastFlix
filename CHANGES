@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 4.6.1
+
+* Fixing concat builder behavior to work smoother
+* Fixing thumbnail generation for concat images
+* Fixing FFmpeg download to look for 5.x GPL build now that names have changed
+
 ## Version 4.6.0
 
 * Adding #195 640kbps audio (thanks to ObviousInRetrospect and Harybo)

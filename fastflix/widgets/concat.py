@@ -8,6 +8,7 @@ from PySide6 import QtWidgets, QtGui, QtCore
 from fastflix.language import t
 from fastflix.flix import probe
 from fastflix.shared import yes_no_message, error_message
+from fastflix.widgets.progress_bar import ProgressBar, Task
 
 logger = logging.getLogger("fastflix")
 
@@ -155,12 +156,6 @@ class ConcatWindow(QtWidgets.QWidget):
     def set_folder_name(self, name):
         self.base_folder_label.setText(f'{t("Base Folder")}: {name}')
 
-    def get_video_details(self, file):
-        details = probe(self.app, file)
-        for stream in details.streams:
-            if stream.codec_type == "video":
-                return file.name, f"{stream.width}x{stream.height}", stream.codec_name
-
     def select_folder(self):
         if self.concat_area.table.model.rowCount() > 0:
             if not yes_no_message(
@@ -175,19 +170,37 @@ class ConcatWindow(QtWidgets.QWidget):
             return
         self.folder_name = folder_name
         self.set_folder_name(folder_name)
+
+        def check_to_add(file, list_of_items, bad_items, **_):
+            try:
+                data = None
+                details = probe(self.app, file)
+                for stream in details.streams:
+                    if stream.codec_type == "video":
+                        data = (file.name, f"{stream.width}x{stream.height}", stream.codec_name)
+                if not data:
+                    raise Exception()
+            except Exception:
+                logger.warning(f"Skipping {file.name} as it is not a video/image file")
+                bad_items.append(file.name)
+            else:
+                list_of_items.append(data)
+
         items = []
         skipped = []
+        tasks = []
         for file in Path(folder_name).glob("*"):
             if file.is_file():
-                try:
-                    details = self.get_video_details(file)
-                    if not details:
-                        raise Exception()
-                except Exception:
-                    logger.warning(f"Skipping {file.name} as it is not a video/image file")
-                    skipped.append(file.name)
-                else:
-                    items.append(details)
+                tasks.append(
+                    Task(
+                        f"Evaluating {file.name}",
+                        command=check_to_add,
+                        kwargs={"file": file, "list_of_items": items, "bad_items": skipped},
+                    )
+                )
+
+        ProgressBar(self.app, tasks, can_cancel=True, auto_run=True)
+
         self.concat_area.table.update_items(items)
         if skipped:
             error_message(
@@ -211,5 +224,14 @@ class ConcatWindow(QtWidgets.QWidget):
         self.main.update_video_info()
         self.concat_area.table.model.clear()
         self.concat_area.table.buttons = []
+        self.main.widgets.end_time.setText("0")
+        self.main.widgets.start_time.setText("0")
+        self.main.app.fastflix.current_video.interlaced = False
+        self.main.widgets.deinterlace.setChecked(False)
         self.hide()
         self.main.page_update(build_thumbnail=True)
+        error_message(
+            "Make sure to manually supply the frame rate in the Advanced tab "
+            "(usually want to set both input and output to the same thing.)",
+            title="Set FPS in Advanced Tab",
+        )

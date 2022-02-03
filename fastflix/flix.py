@@ -162,17 +162,23 @@ def get_all_concat_items(file):
     return items
 
 
-def get_first_concat_item(file):
+def get_concat_item(file, location=0):
     all_items = get_all_concat_items(file)
     if not all_items:
         raise FlixError("concat file must start with `file` on each line.")
-    return all_items[0]
+    if location == 0:
+        return all_items[0]
+    section = len(all_items) // 10
+    item_num = int((location * section)) - 1
+    if item_num >= len(all_items):
+        return all_items[-1]
+    return all_items[item_num]
 
 
 def parse(app: FastFlixApp, **_):
     source = app.fastflix.current_video.source
     if source.name.lower().endswith("txt"):
-        source = get_first_concat_item(source)
+        source = get_concat_item(source)
         app.fastflix.current_video.concat = True
     data = probe(app, source)
     if "streams" not in data:
@@ -243,11 +249,20 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
 def generate_thumbnail_command(
     config: Config, source: Path, output: Path, filters: str, start_time: float = 0, input_track: int = 0
 ) -> str:
-    return (
-        f'"{config.ffmpeg}" -ss {start_time} -loglevel error -i "{clean_file_string(source)}" '
-        f" {filters} -an -y -map_metadata -1 -map 0:{input_track} "
-        f'-vframes 1 "{clean_file_string(output)}" '
-    )
+    command_options = [
+        f"{config.ffmpeg}",
+        f"-ss {start_time}" if start_time else "",
+        "-loglevel error",
+        f'-i "{clean_file_string(source)}"',
+        filters,
+        f"-map 0:{input_track}" if "-map" not in filters else "",
+        "-an",
+        "-y",
+        "-map_metadata -1",
+        "-frames:v 1",
+        f'"{clean_file_string(output)}"',
+    ]
+    return " ".join(command_options)
 
 
 def get_auto_crop(
