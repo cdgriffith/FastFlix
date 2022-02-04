@@ -63,8 +63,11 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.match_input_boxes[0].setDisabled(True)
         self.match_input_boxes[1].setPlaceholderText(t("contains"))
         self.match_input_boxes[2].addItems([str(x) for x in range(1, 24)])
-        self.match_input_boxes[3].addItems(["English", "Other"])
-        self.match_input_boxes[4].addItems([str(x) for x in range(1, 16)])
+        self.match_input_boxes[3].addItems(language_list)
+        self.match_input_boxes[3].setCurrentText("English")
+        self.match_input_boxes[4].addItems(
+            ["none | unknown", "mono", "stereo", "3 | 2.1", "4", "5", "6 | 5.1", "7", "8 | 7.1", "9", "10"]
+        )
 
         self.kill_myself = QtWidgets.QPushButton("X")
         self.kill_myself.clicked.connect(lambda: self.parent_list.remove_track(self.index))
@@ -76,7 +79,7 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.grid.addWidget(QtWidgets.QLabel(t("Select By")), 0, 2)
         self.grid.addWidget(self.match_item, 0, 3)
         self.grid.addWidget(self.match_input, 0, 4)
-        self.grid.addWidget(self.kill_myself, 0, 5)
+        self.grid.addWidget(self.kill_myself, 0, 5, 1, 5)
 
         self.downmix = QtWidgets.QComboBox()
         self.downmix.addItems([str(x) for x in range(1, 16)])
