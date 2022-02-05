@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from typing import List, Optional
+import logging
 
 from box import Box
 from iso639 import Lang
@@ -10,12 +11,14 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.encoders.common.audio import lossless, channel_list
 from fastflix.language import t
 from fastflix.models.encode import AudioTrack
+from fastflix.models.profiles import Profile, MatchType, MatchItem
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
 from fastflix.shared import no_border, error_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
+logger = logging.getLogger("fastflix")
 
 
 class Audio(QtWidgets.QTabWidget):
@@ -350,22 +353,25 @@ class AudioList(FlixList):
                 return True
         return False
 
+    def _get_track_info(self, track):
+        track_info = ""
+        tags = track.get("tags", {})
+        if tags:
+            track_info += tags.get("title", "")
+            # if "language" in tags:
+            #     track_info += f" {tags.language}"
+        track_info += f" - {track.codec_name}"
+        if "profile" in track:
+            track_info += f" ({track.profile})"
+        track_info += f" - {track.channels} {t('channels')}"
+        return track_info, tags
+
     def new_source(self, codecs):
         self.tracks: List[Audio] = []
         self._first_selected = False
         disable_dup = "nvencc" in self.main.convert_to.lower()
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
-            track_info = ""
-            tags = x.get("tags", {})
-            if tags:
-                track_info += tags.get("title", "")
-                # if "language" in tags:
-                #     track_info += f" {tags.language}"
-            track_info += f" - {x.codec_name}"
-            if "profile" in x:
-                track_info += f" ({x.profile})"
-            track_info += f" - {x.channels} {t('channels')}"
-
+            track_info, tags = self._get_track_info(x)
             new_item = Audio(
                 self,
                 track_info,
@@ -389,7 +395,7 @@ class AudioList(FlixList):
         if self.tracks:
             self.tracks[0].set_first()
             self.tracks[-1].set_last()
-
+        super()._new_source(self.tracks)
         self.update_audio_settings()
 
     def allowed_formats(self, allowed_formats=None):
@@ -411,6 +417,105 @@ class AudioList(FlixList):
             return
         for track in self.tracks:
             track.update_codecs(allowed_formats or set())
+
+    def apply_profile_settings(self, profile: Profile, original_tracks: List[Box], audio_formats):
+        disable_dups = "nvencc" in self.main.convert_to.lower() or "vcenc" in self.main.convert_to.lower()
+        self.tracks = []
+
+        def gen_track(
+            parent, audio_track, outdex, og=False, enabled=True, downmix=None, conversion=None, bitrate=None
+        ) -> Audio:
+            track_info, tags = self._get_track_info(audio_track)
+            new_track = Audio(
+                parent,
+                track_info,
+                title=tags.get("title"),
+                language=tags.get("language"),
+                profile=audio_track.get("profile"),
+                original=og,
+                index=audio_track.index,
+                outdex=outdex,
+                codec=audio_track.codec_name,
+                codecs=audio_formats,
+                channels=audio_track.channels,
+                available_audio_encoders=self.available_audio_encoders,
+                enabled=enabled,
+                all_info=audio_track,
+                disable_dup=disable_dups,
+            )
+
+            if conversion:
+                new_track.widgets.convert_to.setCurrentText(conversion)
+                new_track.widgets.convert_bitrate.setCurrentText(bitrate)
+            if downmix:
+                new_track.widgets.downmix.setCurrentIndex(downmix)
+            return new_track
+
+        # First populate all original tracks and disable them
+        for i, track in enumerate(original_tracks, start=1):
+            self.tracks.append(gen_track(self, track, outdex=i, og=True, enabled=False))
+
+        tracks = []
+        for audio_match in profile.audio_filters:
+            if audio_match.match_item == MatchItem.ALL:
+                track_select = original_tracks.copy()
+                if track_select:
+                    if audio_match.match_type == MatchType.FIRST:
+                        track_select = [track_select[0]]
+                    elif audio_match.match_type == MatchType.LAST:
+                        track_select = [track_select[-1]]
+                    for track in track_select:
+                        tracks.append(track)
+
+            elif audio_match.match_item == MatchItem.TITLE:
+                subset_tracks = []
+                for track in original_tracks:
+                    if audio_match.match_input.lower() in track.title.casefold():
+                        subset_tracks.append(track)
+                if subset_tracks:
+                    if audio_match.match_type == MatchType.FIRST:
+                        tracks.append(subset_tracks[0])
+                    elif audio_match.match_type == MatchType.LAST:
+                        tracks.append(subset_tracks[-1])
+                    else:
+                        tracks.extend(subset_tracks)
+
+            elif audio_match.match_item == MatchItem.TRACK:
+                for track in original_tracks:
+                    if track.index == int(audio_match.match_input):
+                        tracks.append(track)
+
+            elif audio_match.match_item == MatchItem.LANGUAGE:
+                subset_tracks = []
+                for track in original_tracks:
+                    if audio_match.match_input == track.language:
+                        subset_tracks.append(track)
+                if subset_tracks:
+                    if audio_match.match_type == MatchType.FIRST:
+                        tracks.append(subset_tracks[0])
+                    elif audio_match.match_type == MatchType.LAST:
+                        tracks.append(subset_tracks[-1])
+                    else:
+                        tracks.extend(subset_tracks)
+
+            elif audio_match.match_item == MatchItem.CHANNELS:
+                subset_tracks = []
+                for track in original_tracks:
+                    if int(audio_match.match_input) == track.channels:
+                        subset_tracks.append(track)
+                if subset_tracks:
+                    if audio_match.match_type == MatchType.FIRST:
+                        tracks.append(subset_tracks[0])
+                    elif audio_match.match_type == MatchType.LAST:
+                        tracks.append(subset_tracks[-1])
+                    else:
+                        tracks.extend(subset_tracks)
+        self.tracks.extend(
+            gen_track(self, track, i, enabled=True, og=False)
+            for i, track in enumerate(tracks, start=len(self.tracks) + 1)
+        )
+        logger.info(f"Profile Tracks: {self.tracks}")
+        super()._new_source(self.tracks)
 
     def update_audio_settings(self):
         tracks = []
@@ -476,17 +581,7 @@ class AudioList(FlixList):
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
             if x.index in repopulated_tracks:
                 continue
-            track_info = ""
-            tags = x.get("tags", {})
-            if tags:
-                track_info += tags.get("title", "")
-                # if "language" in tags:
-                #     track_info += f" {tags.language}"
-            track_info += f" - {x.codec_name}"
-            if "profile" in x:
-                track_info += f" ({x.profile})"
-            track_info += f" - {x.channels} {t('channels')}"
-
+            track_info, tags = self._get_track_info(x)
             new_item = Audio(
                 self,
                 track_info,

@@ -16,9 +16,9 @@ class FastFlix(BaseModel):
     audio_encoders: List[str] = None
     encoders: Dict = None
     config: Config = None
-    data_path: Path = Path(user_data_dir("FastFlix", appauthor=None, roaming=True))
-    log_path: Path = Path(user_data_dir("FastFlix", appauthor=None, roaming=True)) / "logs"
-    queue_path: Path = Path(user_data_dir("FastFlix", appauthor=None, roaming=True)) / "queue.yaml"
+    data_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
+    log_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "logs"
+    queue_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "queue.yaml"
     ffmpeg_version: str = ""
     ffmpeg_config: List[str] = ""
     ffprobe_version: str = ""

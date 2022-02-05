@@ -228,7 +228,7 @@ class Container(QtWidgets.QMainWindow):
         OpenFolder(self, str(self.app.fastflix.log_path)).run()
 
     def download_ffmpeg(self):
-        ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=None, roaming=True)) / "bin"
+        ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True)) / "bin"
         ffmpeg = ffmpeg_folder / "ffmpeg.exe"
         ffprobe = ffmpeg_folder / "ffprobe.exe"
         try:
