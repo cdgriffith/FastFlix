@@ -287,7 +287,7 @@ def get_auto_crop(
             "-map",
             f"0:{input_track}",
             "-vf",
-            "cropdetect",
+            "cropdetect=round=2",
             "-vframes",
             "10",
             "-f",
