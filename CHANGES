@@ -2,8 +2,8 @@
 
 ## Version 4.7.0
 
-* Adding #163 audio matching in profiles
-* Fixing #296 low quality auto-crop due to high rounding, increasing accuracy from 16 to 2 pixels
+* Adding #163 audio matching in profiles (thanks to bmcassagne)
+* Fixing #296 low quality auto-crop due to high rounding, increasing accuracy from 16 to 2 pixels (thanks to Rayman24365)
 * Fixing concat builder behavior to work smoother
 * Fixing thumbnail generation for concat images
 * Fixing FFmpeg download to look for 5.x GPL build now that names have changed
