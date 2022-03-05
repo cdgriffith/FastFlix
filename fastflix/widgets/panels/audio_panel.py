@@ -487,8 +487,11 @@ class AudioList(FlixList):
             elif audio_match.match_item == MatchItem.LANGUAGE:
                 subset_tracks = []
                 for track in original_tracks:
-                    if audio_match.match_input == track.language:
-                        subset_tracks.append((track, audio_match))
+                    try:
+                        if Lang(audio_match.match_input) == Lang(track.tags["language"]):
+                            subset_tracks.append((track, audio_match))
+                    except (InvalidLanguageValue, KeyError):
+                        pass
                 if subset_tracks:
                     if audio_match.match_type == MatchType.FIRST:
                         tracks.append(subset_tracks[0])
@@ -523,7 +526,6 @@ class AudioList(FlixList):
             )
             for i, track in enumerate(tracks, start=len(self.tracks) + 1)
         )
-        logger.info(f"Profile Tracks: {self.tracks}")
         super()._new_source(self.tracks)
 
     def update_audio_settings(self):

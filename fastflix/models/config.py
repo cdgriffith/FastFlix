@@ -19,7 +19,7 @@ from fastflix.models.encode import (
     x265Settings,
     setting_types,
 )
-from fastflix.models.profiles import Profile
+from fastflix.models.profiles import Profile, AudioMatch, MatchItem, MatchType
 from fastflix.version import __version__
 from fastflix.shared import get_config
 
@@ -153,6 +153,48 @@ class Config(BaseModel):
             return getattr(advanced_settings, profile_option_name, default)
         return getattr(advanced_settings, profile_option_name)
 
+    def profile_v1_to_v2(self, name, raw_profile):
+        logger.info(f'Upgrading profile "{name}" to version 2')
+        try:
+            audio_language = raw_profile.pop("audio_language")
+        except KeyError:
+            audio_language = "en"
+
+        try:
+            audio_select = raw_profile.pop("audio_select")
+        except KeyError:
+            audio_select = False
+
+        try:
+            audio_select_preferred_language = raw_profile.pop("audio_select_preferred_language")
+        except KeyError:
+            audio_select_preferred_language = False
+
+        try:
+            audio_select_first_matching = raw_profile.pop("audio_select_first_matching")
+        except KeyError:
+            audio_select_first_matching = False
+
+        try:
+            del raw_profile["profile_version"]
+        except KeyError:
+            pass
+
+        try:
+            del raw_profile["audio_filters"]
+        except KeyError:
+            pass
+
+        if audio_select:
+            new_match = AudioMatch(
+                match_type=MatchType.FIRST if audio_select_first_matching else MatchType.ALL,
+                match_item=MatchItem.LANGUAGE if audio_select_preferred_language else MatchItem.ALL,
+                match_input=audio_language if audio_select_preferred_language else "*",
+            )
+
+            return Profile(profile_version=2, audio_filters=[new_match], **raw_profile)
+        return Profile(profile_version=2, **raw_profile)
+
     def load(self):
         if not self.config_path.exists() or self.config_path.stat().st_size < 10:
             logger.debug(f"Creating new config file {self.config_path}")
@@ -184,29 +226,10 @@ class Config(BaseModel):
             if key == "profiles":
                 self.profiles = {}
                 for k, v in value.items():
-                    # if k in get_preset_defaults().keys():
-                    #     continue
-                    # profile =
-                    # for setting_name, setting in v.items():
-                    #     if setting_name in outdated_settings:
-                    #         continue
-                    #     if setting_name in setting_types.keys() and setting is not None:
-                    #         try:
-                    #             setattr(profile, setting_name, setting_types[setting_name](**setting))
-                    #         except (ValueError, TypeError):
-                    #             logger.exception(f"Could not set profile setting {setting_name}")
-                    #     if setting_name in profile_setting_types.keys() and setting is not None:
-                    #         try:
-                    #             setattr(profile, setting_name, profile_setting_types[setting_name](**setting))
-                    #         except (ValueError, TypeError):
-                    #             logger.exception(f"Could not set profile setting {setting_name}")
-                    #     else:
-                    #         try:
-                    #             setattr(profile, setting_name, setting)
-                    #         except (ValueError, TypeError):
-                    #             logger.exception(f"Could not set profile setting {setting_name}")
-
-                    self.profiles[k] = Profile(**v)
+                    if v.get("profile_version", 1) == 1:
+                        self.profiles[k] = self.profile_v1_to_v2(k, v)
+                    else:
+                        self.profiles[k] = Profile(**v)
                 continue
             if key in self and key not in ("config_path", "version"):
                 setattr(self, key, Path(value) if key in paths and value else value)

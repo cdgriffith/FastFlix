@@ -44,10 +44,10 @@ class MatchType(Enum):
 class AudioMatch(BaseModel):
     match_type: Union[MatchType, List[MatchType]]  # TODO figure out why when saved becomes list in yaml
     match_item: Union[MatchItem, List[MatchType]]
-    match_input: str
+    match_input: str = "*"
     conversion: Optional[str] = None
-    bitrate: str
-    downmix: int
+    bitrate: Optional[str] = None
+    downmix: Optional[int] = None
 
     @validator("match_type")
     def match_type_must_be_enum(cls, v):
