@@ -443,11 +443,10 @@ class AudioList(FlixList):
                 all_info=audio_track,
                 disable_dup=disable_dups,
             )
-
             if conversion:
                 new_track.widgets.convert_to.setCurrentText(conversion)
                 new_track.widgets.convert_bitrate.setCurrentText(bitrate)
-            if downmix:
+            if downmix and downmix < audio_track.channels:
                 new_track.widgets.downmix.setCurrentIndex(downmix)
             return new_track
 
@@ -465,13 +464,13 @@ class AudioList(FlixList):
                     elif audio_match.match_type == MatchType.LAST:
                         track_select = [track_select[-1]]
                     for track in track_select:
-                        tracks.append(track)
+                        tracks.append((track, audio_match))
 
             elif audio_match.match_item == MatchItem.TITLE:
                 subset_tracks = []
                 for track in original_tracks:
                     if audio_match.match_input.lower() in track.title.casefold():
-                        subset_tracks.append(track)
+                        subset_tracks.append((track, audio_match))
                 if subset_tracks:
                     if audio_match.match_type == MatchType.FIRST:
                         tracks.append(subset_tracks[0])
@@ -483,13 +482,13 @@ class AudioList(FlixList):
             elif audio_match.match_item == MatchItem.TRACK:
                 for track in original_tracks:
                     if track.index == int(audio_match.match_input):
-                        tracks.append(track)
+                        tracks.append((track, audio_match))
 
             elif audio_match.match_item == MatchItem.LANGUAGE:
                 subset_tracks = []
                 for track in original_tracks:
                     if audio_match.match_input == track.language:
-                        subset_tracks.append(track)
+                        subset_tracks.append((track, audio_match))
                 if subset_tracks:
                     if audio_match.match_type == MatchType.FIRST:
                         tracks.append(subset_tracks[0])
@@ -502,7 +501,7 @@ class AudioList(FlixList):
                 subset_tracks = []
                 for track in original_tracks:
                     if int(audio_match.match_input) == track.channels:
-                        subset_tracks.append(track)
+                        subset_tracks.append((track, audio_match))
                 if subset_tracks:
                     if audio_match.match_type == MatchType.FIRST:
                         tracks.append(subset_tracks[0])
@@ -510,8 +509,18 @@ class AudioList(FlixList):
                         tracks.append(subset_tracks[-1])
                     else:
                         tracks.extend(subset_tracks)
+
         self.tracks.extend(
-            gen_track(self, track, i, enabled=True, og=False)
+            gen_track(
+                self,
+                track[0],
+                i,
+                enabled=True,
+                og=False,
+                conversion=track[1].conversion,
+                bitrate=track[1].bitrate,
+                downmix=track[1].downmix,
+            )
             for i, track in enumerate(tracks, start=len(self.tracks) + 1)
         )
         logger.info(f"Profile Tracks: {self.tracks}")

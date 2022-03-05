@@ -66,6 +66,24 @@ class Container(QtWidgets.QMainWindow):
                 QScrollArea{ border: 1px solid #919191; }
                 """
             )
+        # self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
+        self.moveFlag = False
+
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self.moveFlag = True
+            self.movePosition = event.globalPos() - self.pos()
+            self.setCursor(QtGui.QCursor(QtCore.Qt.OpenHandCursor))
+            event.accept()
+
+    def mouseMoveEvent(self, event):
+        if QtCore.Qt.LeftButton and self.moveFlag:
+            self.move(event.globalPos() - self.movePosition)
+            event.accept()
+
+    def mouseReleaseEvent(self, event):
+        self.moveFlag = False
+        self.setCursor(QtCore.Qt.ArrowCursor)
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         if self.pb:
@@ -108,6 +126,7 @@ class Container(QtWidgets.QMainWindow):
     def init_menu(self):
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False)
+        menubar.setFixedWidth(260)
 
         file_menu = menubar.addMenu(t("File"))
 
@@ -306,6 +325,8 @@ class ProfileDetails(QtWidgets.QWidget):
         profile_title.setFont(QtGui.QFont("helvetica", 10, weight=70))
         main_section.addWidget(profile_title)
         for k, v in profile.dict().items():
+            if k == "advanced_options":
+                continue
             if k not in setting_types.keys():
                 item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
                 item_2 = QtWidgets.QLabel(str(v))
@@ -325,5 +346,25 @@ class ProfileDetails(QtWidgets.QWidget):
             setting = getattr(profile, setting_name)
             if setting:
                 self.layout.addWidget(self.profile_widget(setting))
+
+        splitter = QtWidgets.QWidget()
+        splitter.setMaximumWidth(1)
+        splitter.setStyleSheet("background-color: #999999")
+        self.layout.addWidget(splitter)
+
+        advanced_section = QtWidgets.QVBoxLayout(self)
+        advanced_section.addWidget(QtWidgets.QLabel(t("Advanced Options")))
+        for k, v in profile.advanced_options.dict().items():
+            if k.endswith("_index"):
+                continue
+            item_1 = QtWidgets.QLabel(k)
+            item_2 = QtWidgets.QLabel(str(v))
+            item_2.setMaximumWidth(150)
+            inner_layout = QtWidgets.QHBoxLayout()
+            inner_layout.addWidget(item_1)
+            inner_layout.addWidget(item_2)
+            advanced_section.addLayout(inner_layout)
+        self.layout.addLayout(advanced_section)
+
         self.setMinimumWidth(780)
         self.setLayout(self.layout)

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import shutil
-from pathlib import Path
 import logging
 
 from box import Box
 from iso639 import Lang
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from fastflix.exceptions import FastFlixInternalException
+from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
 from fastflix.language import t
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.config import get_preset_defaults
@@ -29,7 +27,7 @@ from fastflix.models.encode import (
     VCEEncCAVCSettings,
     VCEEncCSettings,
 )
-from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, SubtitleMatch
+from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, AdvancedOptions
 from fastflix.shared import error_message
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
@@ -165,11 +163,13 @@ class AudioProfile(QtWidgets.QTabWidget):
 
 class AudioSelect(FlixList):
     def __init__(self, app, parent):
-        super().__init__(app, parent, "Audio Select", "audio")
+        super().__init__(app, parent, "Audio Select", "Audio")
         self.tracks = []
 
         self.passthrough_checkbox = QtWidgets.QCheckBox(t("Passthrough All"))
-        self.add_button = QtWidgets.QPushButton(t("Add Pattern Match"))
+        self.add_button = QtWidgets.QPushButton(f'  {t("Add Pattern Match")}  ')
+        if self.app.fastflix.config.theme == "onyx":
+            self.add_button.setStyleSheet("border-radius: 10px;")
 
         self.passthrough_checkbox.toggled.connect(self.passthrough_check)
 
@@ -213,6 +213,118 @@ class AudioSelect(FlixList):
         return filters
 
 
+class SubtitleSelect(QtWidgets.QWidget):
+    def __init__(self, app, parent):
+        super().__init__()
+
+        self.app = app
+        self.parent = parent
+
+        sub_language_label = QtWidgets.QLabel(t("Subtitle select language"))
+        self.sub_language = QtWidgets.QComboBox()
+        self.sub_language.addItems([t("All"), t("None")] + language_list)
+        self.sub_language.insertSeparator(1)
+        self.sub_language.insertSeparator(3)
+        self.sub_language.setFixedWidth(250)
+        self.sub_first_only = QtWidgets.QCheckBox(t("Only select first matching Subtitle Track"))
+
+        self.sub_burn_in = QtWidgets.QCheckBox(t("Auto Burn-in first forced or default subtitle track"))
+
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(sub_language_label, 0, 0)
+        layout.addWidget(self.sub_language, 0, 1)
+        layout.addWidget(self.sub_first_only, 1, 0)
+        layout.addWidget(self.sub_burn_in, 2, 0, 1, 2)
+        layout.addWidget(QtWidgets.QWidget(), 3, 0, 1, 2)
+        layout.setRowStretch(3, True)
+        self.setLayout(layout)
+
+
+class AdvancedTab(QtWidgets.QTabWidget):
+    def __init__(self, advanced_settings):
+        super().__init__()
+
+        layout = QtWidgets.QVBoxLayout()
+        self.label = QtWidgets.QLabel()
+
+        self.color_primaries_widget = QtWidgets.QComboBox()
+        self.color_primaries_widget.addItem(t("Unspecified"))
+        self.color_primaries_widget.addItems(ffmpeg_valid_color_primaries)
+
+        self.color_transfer_widget = QtWidgets.QComboBox()
+        self.color_transfer_widget.addItem(t("Unspecified"))
+        self.color_transfer_widget.addItems(ffmpeg_valid_color_transfers)
+
+        self.color_space_widget = QtWidgets.QComboBox()
+        self.color_space_widget.addItem(t("Unspecified"))
+        self.color_space_widget.addItems(ffmpeg_valid_color_space)
+
+        primaries_layout = QtWidgets.QHBoxLayout()
+        primaries_layout.addWidget(QtWidgets.QLabel(t("Color Primaries")))
+        primaries_layout.addWidget(self.color_primaries_widget)
+
+        transfer_layout = QtWidgets.QHBoxLayout()
+        transfer_layout.addWidget(QtWidgets.QLabel(t("Color Transfer")))
+        transfer_layout.addWidget(self.color_transfer_widget)
+
+        space_layout = QtWidgets.QHBoxLayout()
+        space_layout.addWidget(QtWidgets.QLabel(t("Color Space")))
+        space_layout.addWidget(self.color_space_widget)
+
+        layout.addLayout(primaries_layout)
+        layout.addLayout(transfer_layout)
+        layout.addLayout(space_layout)
+        layout.addStretch(1)
+        layout.addWidget(self.label)
+        layout.addStretch(1)
+        self.text_update(advanced_settings)
+        self.setLayout(layout)
+
+    def text_update(self, advanced_settings):
+        ignored = ("color_primaries", "color_transfer", "color_space", "denoise_type_index", "denoise_strength_index")
+        settings = "\n".join(f"{k:<30} {v}" for k, v in advanced_settings.dict().items() if k not in ignored)
+        self.label.setText(f"<pre>{settings}</pre>")
+
+
+class PrimaryOptions(QtWidgets.QTabWidget):
+    def __init__(self, main_options):
+        super().__init__()
+
+        layout = QtWidgets.QVBoxLayout()
+        self.label = QtWidgets.QLabel()
+        settings = "\n".join(f"{k:<30} {v}" for k, v in main_options.items())
+        self.label.setText(f"<pre>{settings}</pre>")
+
+        self.auto_crop = QtWidgets.QCheckBox(t("Auto Crop"))
+
+        layout.addWidget(self.auto_crop)
+        layout.addStretch(1)
+        layout.addWidget(self.label)
+        layout.addStretch(1)
+        self.setLayout(layout)
+
+
+class EncoderOptions(QtWidgets.QTabWidget):
+    def __init__(self, app, main):
+        super().__init__()
+        self.main = main
+        self.app = app
+        self.label = QtWidgets.QLabel()
+
+        layout = QtWidgets.QVBoxLayout()
+
+        layout.addWidget(self.label)
+        layout.addStretch(1)
+
+        self.update_settings()
+
+        self.setLayout(layout)
+
+    def update_settings(self):
+        settings = "\n".join(f"{k:<30} {v}" for k, v in self.main.encoder.dict().items())
+        self.label.setText(f"<pre>{settings}</pre>")
+
+
 class ProfileWindow(QtWidgets.QWidget):
     def __init__(self, app: FastFlixApp, main, *args, **kwargs):
         super().__init__(None, *args, **kwargs)
@@ -220,62 +332,77 @@ class ProfileWindow(QtWidgets.QWidget):
         self.main = main
         self.config_file = self.app.fastflix.config.config_path
         self.setWindowTitle(t("New Profile"))
-        self.setMinimumSize(500, 150)
+        self.setMinimumSize(500, 450)
         layout = QtWidgets.QGridLayout()
 
         profile_name_label = QtWidgets.QLabel(t("Profile Name"))
+        profile_name_label.setFixedHeight(40)
         self.profile_name = QtWidgets.QLineEdit()
+        if self.app.fastflix.config.theme == "onyx":
+            self.profile_name.setStyleSheet("background-color: #707070; border-radius: 10px; color: black")
+        self.profile_name.setFixedWidth(300)
 
-        self.auto_crop = QtWidgets.QCheckBox(t("Auto Crop"))
-
-        # audio_language_label = QtWidgets.QLabel(t("Audio select language"))
-        # self.audio_language = QtWidgets.QComboBox()
-        # self.audio_language.addItems([t("All"), t("None")] + language_list)
-        # self.audio_language.insertSeparator(1)
-        # self.audio_language.insertSeparator(3)
-        # self.audio_first_only = QtWidgets.QCheckBox(t("Only select first matching Audio Track"))
-
-        sub_language_label = QtWidgets.QLabel(t("Subtitle select language"))
-        self.sub_language = QtWidgets.QComboBox()
-        self.sub_language.addItems([t("All"), t("None")] + language_list)
-        self.sub_language.insertSeparator(1)
-        self.sub_language.insertSeparator(3)
-        self.sub_first_only = QtWidgets.QCheckBox(t("Only select first matching Subtitle Track"))
-
-        self.sub_burn_in = QtWidgets.QCheckBox(t("Auto Burn-in first forced or default subtitle track"))
+        self.advanced_options: AdvancedOptions = main.video_options.advanced.get_settings()
 
         self.encoder = x265Settings(crf=18)
-        self.encoder_settings = QtWidgets.QLabel()
-        self.encoder_settings.setStyleSheet("font-family: monospace;")
-        self.encoder_label = QtWidgets.QLabel(f"{t('Encoder')}: {self.encoder.name}")
+
+        theme = "QPushButton{ padding: 0 10px; font-size: 14px;  }"
+        if self.app.fastflix.config.theme in ("dark", "onyx"):
+            theme = """
+            QPushButton {
+              padding: 0 10px;
+              font-size: 14px;
+              background-color: #4f4f4f;
+              border: none;
+              border-radius: 10px;
+              color: white; }
+            QPushButton:hover {
+              background-color: #6b6b6b; }"""
 
         save_button = QtWidgets.QPushButton(t("Create Profile"))
+        save_button.setStyleSheet(theme)
         save_button.clicked.connect(self.save)
         save_button.setMaximumWidth(150)
-        save_button.setStyleSheet("background-color: green")
+        save_button.setFixedHeight(60)
+
+        v_flip, h_flip = self.main.get_flips()
+        self.main_settings = Box(
+            keep_aspect_ratio=self.main.widgets.scale.keep_aspect.isChecked(),
+            fast_seek=self.main.fast_time,
+            rotate=self.main.widgets.rotate.currentIndex(),
+            vertical_flip=v_flip,
+            horizontal_flip=h_flip,
+            copy_chapters=self.main.copy_chapters,
+            remove_metadata=self.main.remove_metadata,
+            remove_hdr=self.main.remove_hdr,
+        )
 
         self.tab_area = QtWidgets.QTabWidget()
-        self.tab_area.setMinimumWidth(600)
+        self.tab_area.setMinimumWidth(500)
         self.audio_select = AudioSelect(self.app, self)
+        self.subtitle_select = SubtitleSelect(self.app, self)
+        self.advanced_tab = AdvancedTab(self.advanced_options)
+        self.primary_tab = PrimaryOptions(self.main_settings)
+        self.encoder_tab = EncoderOptions(self.app, self)
+        self.tab_area.addTab(self.primary_tab, "Primary Settings")
+        self.tab_area.addTab(self.encoder_tab, "Video")
         self.tab_area.addTab(self.audio_select, "Audio")
+        self.tab_area.addTab(self.subtitle_select, "Subtitles")
+        self.tab_area.addTab(self.advanced_tab, "Advanced Options")
         # self.tab_area.addTab(self.subtitle_select, "Subtitles")
         # self.tab_area.addTab(SubtitleSelect(self.app, self, "Subtitle Select", "subtitles"), "Subtitle Select")
 
         layout.addWidget(profile_name_label, 0, 0)
-        layout.addWidget(self.profile_name, 0, 1)
-        layout.addWidget(self.auto_crop, 1, 0)
+        layout.addWidget(self.profile_name, 0, 1, 1, 2, alignment=QtCore.Qt.AlignCenter)
+        # layout.addWidget(self.auto_crop, 1, 0)
         # layout.addWidget(audio_language_label, 2, 0)
         # layout.addWidget(self.audio_language, 2, 1)
         # layout.addWidget(self.audio_first_only, 3, 1)
-        layout.addWidget(sub_language_label, 4, 0)
-        layout.addWidget(self.sub_language, 4, 1)
-        layout.addWidget(self.sub_first_only, 5, 1)
-        layout.addWidget(self.sub_burn_in, 6, 0, 1, 2)
-        layout.addWidget(self.encoder_label, 7, 0, 1, 2)
-        layout.addWidget(self.encoder_settings, 8, 0, 10, 2)
+        # layout.addWidget(self.encoder_label, 7, 0, 1, 2)
+        # layout.addWidget(self.encoder_settings, 8, 0, 10, 2)
         layout.addWidget(save_button, 0, 5, alignment=QtCore.Qt.AlignRight)
 
-        layout.addWidget(self.tab_area, 1, 2, 20, 5)
+        layout.addWidget(self.tab_area, 1, 0, 20, 6)
 
         layout.setColumnStretch(0, 0)
         layout.setColumnStretch(1, 0)
@@ -292,9 +419,9 @@ class ProfileWindow(QtWidgets.QWidget):
         else:
             if encoder:
                 self.encoder = encoder
-        settings = "\n".join(f"{k:<30} {v}" for k, v in self.encoder.dict().items())
-        self.encoder_label.setText(f"{t('Encoder')}: {self.encoder.name}")
-        self.encoder_settings.setText(f"<pre>{settings}</pre>")
+        self.encoder_tab.update_settings()
+        self.advanced_options = self.main.video_options.advanced.get_settings()
+        self.advanced_tab.text_update(self.advanced_options)
 
     def save(self):
         profile_name = self.profile_name.text().strip()
@@ -304,36 +431,51 @@ class ProfileWindow(QtWidgets.QWidget):
             return error_message(f'{t("Profile")} {self.profile_name.text().strip()} {t("already exists")}')
 
         sub_lang = "en"
-        subtitle_select = True
+        subtitle_enabled = True
         subtitle_select_preferred_language = False
-        if self.sub_language.currentIndex() == 2:  # None
+        if self.subtitle_select.sub_language.currentIndex() == 2:  # None
             subtitle_select_preferred_language = False
-            subtitle_select = False
-        elif self.sub_language.currentIndex() != 0:
+            subtitle_enabled = False
+        elif self.subtitle_select.sub_language.currentIndex() != 0:
             subtitle_select_preferred_language = True
-            sub_lang = Lang(self.sub_language.currentText()).pt2b
+            sub_lang = Lang(self.subtitle_select.sub_language.currentText()).pt2b
 
-        v_flip, h_flip = self.main.get_flips()
+        self.advanced_options.color_space = (
+            None
+            if self.advanced_tab.color_space_widget.currentIndex() == 0
+            else self.advanced_tab.color_space_widget.currentText()
+        )
+        self.advanced_options.color_transfer = (
+            None
+            if self.advanced_tab.color_transfer_widget.currentIndex() == 0
+            else self.advanced_tab.color_transfer_widget.currentText()
+        )
+        self.advanced_options.color_primaries = (
+            None
+            if self.advanced_tab.color_primaries_widget.currentIndex() == 0
+            else self.advanced_tab.color_primaries_widget.currentText()
+        )
 
         new_profile = Profile(
             profile_version=2,
-            auto_crop=self.auto_crop.isChecked(),
-            keep_aspect_ratio=self.main.widgets.scale.keep_aspect.isChecked(),
-            fast_seek=self.main.fast_time,
-            rotate=self.main.widgets.rotate.currentIndex(),
-            vertical_flip=v_flip,
-            horizontal_flip=h_flip,
-            copy_chapters=self.main.copy_chapters,
-            remove_metadata=self.main.remove_metadata,
-            remove_hdr=self.main.remove_hdr,
+            auto_crop=self.primary_tab.auto_crop.isChecked(),
+            keep_aspect_ratio=self.main_settings.keep_aspect_ratio,
+            fast_seek=self.main_settings.fast_seek,
+            rotate=self.main_settings.rotate,
+            vertical_flip=self.main_settings.vertical_flip,
+            horizontal_flip=self.main_settings.horizontal_flip,
+            copy_chapters=self.main_settings.copy_chapters,
+            remove_metadata=self.main_settings.remove_metadata,
+            remove_hdr=self.main_settings.remove_hdr,
             audio_filters=self.audio_select.get_settings(),
-            subtitle_filters=self.subtitle_select.get_settings(),
+            # subtitle_filters=self.subtitle_select.get_settings(),
             subtitle_language=sub_lang,
-            subtitle_select=subtitle_select,
-            subtitle_automatic_burn_in=self.sub_burn_in.isChecked(),
+            subtitle_select=subtitle_enabled,
+            subtitle_automatic_burn_in=self.subtitle_select.sub_burn_in.isChecked(),
             subtitle_select_preferred_language=subtitle_select_preferred_language,
-            subtitle_select_first_matching=self.sub_first_only.isChecked(),
+            subtitle_select_first_matching=self.subtitle_select.sub_first_only.isChecked(),
             encoder=self.encoder.name,
+            advanced_options=self.advanced_options,
         )
 
         if isinstance(self.encoder, x265Settings):

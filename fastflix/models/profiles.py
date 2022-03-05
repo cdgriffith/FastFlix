@@ -24,7 +24,7 @@ from fastflix.models.encode import (
     VCEEncCSettings,
 )
 
-__all__ = ["MatchItem", "MatchType", "AudioMatch", "Profile", "SubtitleMatch"]
+__all__ = ["MatchItem", "MatchType", "AudioMatch", "Profile", "SubtitleMatch", "AdvancedOptions"]
 
 
 class MatchItem(Enum):
@@ -71,6 +71,27 @@ class SubtitleMatch(BaseModel):
 # TODO upgrade path from old profile to new profile
 
 
+class AdvancedOptions(BaseModel):
+    video_speed: float = 1
+    deblock: Optional[str] = None
+    deblock_size: int = 16
+    tone_map: Optional[str] = None
+    vsync: Optional[str] = None
+    brightness: Optional[str] = None
+    saturation: Optional[str] = None
+    contrast: Optional[str] = None
+    maxrate: Optional[int] = None
+    bufsize: Optional[int] = None
+    source_fps: Optional[str] = None
+    output_fps: Optional[str] = None
+    color_space: Optional[str] = None
+    color_transfer: Optional[str] = None
+    color_primaries: Optional[str] = None
+    denoise: Optional[str] = None
+    denoise_type_index: int = 0
+    denoise_strength_index: int = 0
+
+
 class Profile(BaseModel):
     profile_version: Optional[int] = 1
     auto_crop: bool = False
@@ -85,7 +106,7 @@ class Profile(BaseModel):
     encoder: str = "HEVC (x265)"
 
     audio_filters: Optional[List[AudioMatch]] = None
-    subtitle_filters: Optional[List[SubtitleMatch]] = None
+    # subtitle_filters: Optional[List[SubtitleMatch]] = None
 
     # Legacy Audio, here to properly import old profiles
     audio_language: Optional[str] = None
@@ -93,12 +114,13 @@ class Profile(BaseModel):
     audio_select_preferred_language: Optional[bool] = None
     audio_select_first_matching: Optional[bool] = None
 
-    # Legacy Subtitles, here to properly import old profiles
     subtitle_language: Optional[str] = None
     subtitle_select: Optional[bool] = None
     subtitle_select_preferred_language: Optional[bool] = None
     subtitle_automatic_burn_in: Optional[bool] = None
     subtitle_select_first_matching: Optional[bool] = None
+
+    advanced_options: AdvancedOptions = Field(default_factory=AdvancedOptions)
 
     x265: Optional[x265Settings] = None
     x264: Optional[x264Settings] = None

@@ -298,21 +298,23 @@ class Main(QtWidgets.QWidget):
         top_bar.addWidget(self.widgets.profile_box)
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
 
-        add_profile = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-new-profile")), f'  {t("New Profile")}')
+        self.add_profile = QtWidgets.QPushButton(
+            QtGui.QIcon(self.get_icon("onyx-new-profile")), f'  {t("New Profile")}'
+        )
         # add_profile.setFixedSize(QtCore.QSize(40, 40))
-        add_profile.setFixedHeight(40)
-        add_profile.setIconSize(QtCore.QSize(20, 20))
-        add_profile.setToolTip(t("Profile_newprofiletooltip"))
+        self.add_profile.setFixedHeight(40)
+        self.add_profile.setIconSize(QtCore.QSize(20, 20))
+        self.add_profile.setToolTip(t("Profile_newprofiletooltip"))
         # add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
-        add_profile.clicked.connect(lambda: self.container.new_profile())
-
+        self.add_profile.clicked.connect(lambda: self.container.new_profile())
+        self.add_profile.setDisabled(True)
         # options = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("settings")), "")
         # options.setFixedSize(QtCore.QSize(40, 40))
         # options.setIconSize(QtCore.QSize(22, 22))
         # options.setToolTip(t("Settings"))
         # options.clicked.connect(lambda: self.container.show_setting())
 
-        top_bar.addWidget(add_profile)
+        top_bar.addWidget(self.add_profile)
         top_bar.addStretch(1)
         # top_bar.addWidget(options)
 
@@ -1156,6 +1158,7 @@ class Main(QtWidgets.QWidget):
             button.setDisabled(True)
         self.output_path_button.setDisabled(True)
         self.output_video_path_widget.setDisabled(True)
+        self.add_profile.setDisabled(True)
 
     def enable_all(self):
         for name, widget in self.widgets.items():
@@ -1173,6 +1176,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.scale.height.setDisabled(True)
         self.output_path_button.setEnabled(True)
         self.output_video_path_widget.setEnabled(True)
+        self.add_profile.setEnabled(True)
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def scale_update(self):

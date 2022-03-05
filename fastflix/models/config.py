@@ -147,6 +147,12 @@ class Config(BaseModel):
             return getattr(self.profiles[self.selected_profile], profile_option_name, default)
         return getattr(self.profiles[self.selected_profile], profile_option_name)
 
+    def advanced_opt(self, profile_option_name, default=NO_OPT):
+        advanced_settings = getattr(self.profiles[self.selected_profile], "advanced_options")
+        if default != NO_OPT:
+            return getattr(advanced_settings, profile_option_name, default)
+        return getattr(advanced_settings, profile_option_name)
+
     def load(self):
         if not self.config_path.exists() or self.config_path.stat().st_size < 10:
             logger.debug(f"Creating new config file {self.config_path}")
