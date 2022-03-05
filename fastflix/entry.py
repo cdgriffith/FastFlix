@@ -92,7 +92,7 @@ def startup_options():
             import fastflix.widgets.panels.queue_panel
             import fastflix.widgets.panels.status_panel
             import fastflix.widgets.panels.subtitle_panel
-            import fastflix.widgets.profile_window
+            import fastflix.widgets.windows.profile_window
             import fastflix.widgets.progress_bar
             import fastflix.widgets.settings
             import fastflix.widgets.video_options

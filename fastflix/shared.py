@@ -271,4 +271,4 @@ def get_config():
         return Path(config)
     if Path("fastflix.yaml").exists():
         return Path("fastflix.yaml")
-    return Path(user_data_dir("FastFlix", appauthor=None, roaming=True)) / "fastflix.yaml"
+    return Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"

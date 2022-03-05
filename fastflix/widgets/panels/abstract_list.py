@@ -64,7 +64,7 @@ class FlixList(QtWidgets.QWidget):
     def new_source(self, *args, **kwargs):
         raise NotImplementedError()
 
-    def reorder(self, update=True):
+    def reorder(self, update=True, height=66):
         if not self.inner_layout:
             return
         for widget in self.tracks:
@@ -92,7 +92,7 @@ class FlixList(QtWidgets.QWidget):
             self.tracks[0].set_first(True)
             self.tracks[-1].set_last(True)
         self.inner_layout.addStretch()
-        new_height = len(self.tracks) * 66
+        new_height = len(self.tracks) * height
         if len(self.tracks) <= 4:
             new_height += 30
         self.inner_widget.setFixedHeight(new_height)

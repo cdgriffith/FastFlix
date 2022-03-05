@@ -23,6 +23,66 @@ re_progressive = re.compile(r"Progressive:\s+(\d+)")
 
 logger = logging.getLogger("fastflix")
 
+ffmpeg_valid_color_primaries = [
+    "bt709",
+    "bt470m",
+    "bt470bg",
+    "smpte170m",
+    "smpte240m",
+    "film",
+    "bt2020",
+    "smpte428",
+    "smpte428_1",
+    "smpte431",
+    "smpte432",
+    "jedec-p22",
+]
+
+ffmpeg_valid_color_transfers = [
+    "bt709",
+    "gamma22",
+    "gamma28",
+    "smpte170m",
+    "smpte240m",
+    "linear",
+    "log",
+    "log100",
+    "log_sqrt",
+    "log316",
+    "iec61966_2_4",
+    "iec61966-2-4",
+    "bt1361",
+    "bt1361e",
+    "iec61966_2_1",
+    "iec61966-2-1",
+    "bt2020_10",
+    "bt2020_10bit",
+    "bt2020_12",
+    "bt2020_12bit",
+    "smpte2084",
+    "smpte428",
+    "smpte428_1",
+    "arib-std-b67",
+]
+
+ffmpeg_valid_color_space = [
+    "rgb",
+    "bt709",
+    "fcc",
+    "bt470bg",
+    "smpte170m",
+    "smpte240m",
+    "ycocg",
+    "bt2020nc",
+    "bt2020_ncl",
+    "bt2020c",
+    "bt2020_cl",
+    "smpte2085",
+    "chroma-derived-nc",
+    "chroma-derived-c",
+    "ictcp",
+]
+
 
 def clean_file_string(source):
     return str(source).strip()
@@ -287,7 +347,7 @@ def get_auto_crop(
             "-map",
             f"0:{input_track}",
             "-vf",
-            "cropdetect",
+            "cropdetect=round=2",
             "-vframes",
             "10",
             "-f",
@@ -484,7 +544,7 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
     hdr10_parser_version_output = check_output([str(config.hdr10plus_parser), "--version"], encoding="utf-8")
     _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
     hdr10_parser_version = LooseVersion(version_string)
-    logger.debug(f"Using HDR10 parser version {hdr10_parser_version}")
+    logger.debug(f"Using HDR10 parser version {str(hdr10_parser_version).strip()}")
 
     for stream in app.fastflix.current_video.streams.video:
         logger.debug(f"Checking for hdr10+ in stream {stream.index}")

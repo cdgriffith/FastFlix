@@ -116,7 +116,7 @@ class ExtractHDR10(QtCore.QThread):
         )
         _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
         hdr10_parser_version = LooseVersion(version_string)
-        self.main.thread_logging_signal.emit(f"Using HDR10 parser version {hdr10_parser_version}")
+        self.main.thread_logging_signal.emit(f"Using HDR10 parser version {str(hdr10_parser_version).strip()}")
 
         ffmpeg_command = [
             str(self.app.fastflix.config.ffmpeg),

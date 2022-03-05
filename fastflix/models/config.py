@@ -6,6 +6,7 @@ import shutil
 from distutils.version import StrictVersion
 from pathlib import Path
 from typing import Dict, List, Optional
+import json
 
 from appdirs import user_data_dir
 from box import Box, BoxError
@@ -14,76 +15,23 @@ from reusables import win_based
 
 from fastflix.exceptions import ConfigError, MissingFF
 from fastflix.models.encode import (
-    AOMAV1Settings,
-    CopySettings,
-    GIFSettings,
-    FFmpegNVENCSettings,
-    SVTAV1Settings,
-    VP9Settings,
-    WebPSettings,
-    rav1eSettings,
     x264Settings,
     x265Settings,
-    NVEncCSettings,
-    NVEncCAVCSettings,
-    VCEEncCAVCSettings,
-    VCEEncCSettings,
     setting_types,
 )
+from fastflix.models.profiles import Profile, AudioMatch, MatchItem, MatchType
 from fastflix.version import __version__
 from fastflix.shared import get_config
 
 logger = logging.getLogger("fastflix")
 
-fastflix_folder = Path(os.getenv("FF_WORKDIR", user_data_dir("FastFlix", appauthor=None, roaming=True)))
-ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=None, roaming=True))
+fastflix_folder = Path(os.getenv("FF_WORKDIR", user_data_dir("FastFlix", appauthor=False, roaming=True)))
+ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
 
 NO_OPT = object()
 
 
 outdated_settings = ("copy",)
-
-
-class Profile(BaseModel):
-    auto_crop: bool = False
-    keep_aspect_ratio: bool = True
-    fast_seek: bool = True
-    rotate: int = 0
-    vertical_flip: bool = False
-    horizontal_flip: bool = False
-    copy_chapters: bool = True
-    remove_metadata: bool = True
-    remove_hdr: bool = False
-    encoder: str = "HEVC (x265)"
-
-    audio_language: str = "en"
-    audio_select: bool = True
-    audio_select_preferred_language: bool = True
-    audio_select_first_matching: bool = False
-
-    subtitle_language: str = "en"
-    subtitle_select: bool = True
-    subtitle_select_preferred_language: bool = True
-    subtitle_automatic_burn_in: bool = False
-    subtitle_select_first_matching: bool = False
-
-    x265: Optional[x265Settings] = None
-    x264: Optional[x264Settings] = None
-    rav1e: Optional[rav1eSettings] = None
-    svt_av1: Optional[SVTAV1Settings] = None
-    vp9: Optional[VP9Settings] = None
-    aom_av1: Optional[AOMAV1Settings] = None
-    gif: Optional[GIFSettings] = None
-    webp: Optional[WebPSettings] = None
-    copy_settings: Optional[CopySettings] = None
-    ffmpeg_hevc_nvenc: Optional[FFmpegNVENCSettings] = None
-    nvencc_hevc: Optional[NVEncCSettings] = None
-    nvencc_avc: Optional[NVEncCAVCSettings] = None
-    vceencc_hevc: Optional[VCEEncCSettings] = None
-    vceencc_avc: Optional[VCEEncCAVCSettings] = None
-
-
-empty_profile = Profile(x265=x265Settings())
 
 
 def get_preset_defaults():
@@ -199,8 +147,56 @@ class Config(BaseModel):
             return getattr(self.profiles[self.selected_profile], profile_option_name, default)
         return getattr(self.profiles[self.selected_profile], profile_option_name)
 
+    def advanced_opt(self, profile_option_name, default=NO_OPT):
+        advanced_settings = getattr(self.profiles[self.selected_profile], "advanced_options")
+        if default != NO_OPT:
+            return getattr(advanced_settings, profile_option_name, default)
+        return getattr(advanced_settings, profile_option_name)
+
+    def profile_v1_to_v2(self, name, raw_profile):
+        logger.info(f'Upgrading profile "{name}" to version 2')
+        try:
+            audio_language = raw_profile.pop("audio_language")
+        except KeyError:
+            audio_language = "en"
+
+        try:
+            audio_select = raw_profile.pop("audio_select")
+        except KeyError:
+            audio_select = False
+
+        try:
+            audio_select_preferred_language = raw_profile.pop("audio_select_preferred_language")
+        except KeyError:
+            audio_select_preferred_language = False
+
+        try:
+            audio_select_first_matching = raw_profile.pop("audio_select_first_matching")
+        except KeyError:
+            audio_select_first_matching = False
+
+        try:
+            del raw_profile["profile_version"]
+        except KeyError:
+            pass
+
+        try:
+            del raw_profile["audio_filters"]
+        except KeyError:
+            pass
+
+        if audio_select:
+            new_match = AudioMatch(
+                match_type=MatchType.FIRST if audio_select_first_matching else MatchType.ALL,
+                match_item=MatchItem.LANGUAGE if audio_select_preferred_language else MatchItem.ALL,
+                match_input=audio_language if audio_select_preferred_language else "*",
+            )
+
+            return Profile(profile_version=2, audio_filters=[new_match], **raw_profile)
+        return Profile(profile_version=2, **raw_profile)
+
     def load(self):
-        if not self.config_path.exists():
+        if not self.config_path.exists() or self.config_path.stat().st_size < 10:
             logger.debug(f"Creating new config file {self.config_path}")
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
             self.save()
@@ -215,6 +211,9 @@ class Config(BaseModel):
             data = Box.from_yaml(filename=self.config_path)
         except BoxError as err:
             raise ConfigError(f"{self.config_path}: {err}")
+        if "version" not in data:
+            raise ConfigError(f"Corrupt config file. Please fix or remove {self.config_path}")
+
         if StrictVersion(__version__) < StrictVersion(data.version):
             logger.warning(
                 f"This FastFlix version ({__version__}) is older "
@@ -227,24 +226,10 @@ class Config(BaseModel):
             if key == "profiles":
                 self.profiles = {}
                 for k, v in value.items():
-                    if k in get_preset_defaults().keys():
-                        continue
-                    profile = Profile()
-                    for setting_name, setting in v.items():
-                        if setting_name in outdated_settings:
-                            continue
-                        if setting_name in setting_types.keys() and setting is not None:
-                            try:
-                                setattr(profile, setting_name, setting_types[setting_name](**setting))
-                            except (ValueError, TypeError):
-                                logger.exception(f"Could not set profile setting {setting_name}")
-                        else:
-                            try:
-                                setattr(profile, setting_name, setting)
-                            except (ValueError, TypeError):
-                                logger.exception(f"Could not set profile setting {setting_name}")
-
-                    self.profiles[k] = profile
+                    if v.get("profile_version", 1) == 1:
+                        self.profiles[k] = self.profile_v1_to_v2(k, v)
+                    else:
+                        self.profiles[k] = Profile(**v)
                 continue
             if key in self and key not in ("config_path", "version"):
                 setattr(self, key, Path(value) if key in paths and value else value)
@@ -276,7 +261,10 @@ class Config(BaseModel):
         for k, v in items.items():
             if isinstance(v, Path):
                 items[k] = str(v.absolute())
-        items["profiles"] = {k: v.dict() for k, v in self.profiles.items() if k not in get_preset_defaults().keys()}
+        # Need to use pydantics converters, but those only run with `.json` and not `.dict`
+        items["profiles"] = {
+            k: json.loads(v.json()) for k, v in self.profiles.items() if k not in get_preset_defaults().keys()
+        }
         return Box(items).to_yaml(filename=self.config_path, default_flow_style=False)
 
     @property

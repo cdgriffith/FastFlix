@@ -5794,3 +5794,124 @@ Pause Warning:
   por: Aviso de Pausa
   swe: Varning för paus
   pol: Pauza Ostrzeżenie
+First:
+  eng: First
+  pol: Pierwszy
+  deu: Erste
+  fra: Premier
+  ita: Prima
+  spa: Primero
+  zho: 首先
+  jpn: ファースト
+  rus: Первый
+  por: Primeiro
+Last:
+  eng: Last
+  pol: Ostatnio
+  deu: Zuletzt
+  fra: Dernier site
+  ita: Ultimo
+  spa: Última
+  zho: 最后一次
+  jpn: 最後
+  rus: Последний
+  por: Último
+Track Number:
+  eng: Track Number
+  pol: Numer ścieżki
+  deu: Titel Nummer
+  fra: Numéro de piste
+  ita: Numero di traccia
+  spa: Número de pista
+  zho: 轨道编号
+  jpn: トラックナンバー
+  rus: Номер дорожки
+  por: Número da faixa
+Channels:
+  eng: Channels
+  pol: Kanały
+  deu: Kanäle
+  fra: Chaînes
+  ita: Canali
+  spa: Canales
+  zho: 渠道
+  jpn: チャンネル
+  rus: Каналы
+  por: Canais
+Audio Select:
+  eng: Audio Select
+  pol: Wybór dźwięku
+  deu: Audio-Auswahl
+  fra: Sélection audio
+  ita: Selezione audio
+  spa: Selección de audio
+  zho: 音频选择
+  jpn: オーディオセレクト
+  rus: Выбор аудио
+  por: Selecione o áudio
+Passthrough All:
+  eng: Passthrough All
+  pol: Passthrough Wszystkie
+  deu: Durchleitung Alle
+  fra: Passthrough Tous
+  ita: Passthrough Tutti
+  spa: Transferencia Todos
+  zho: 穿透式所有
+  jpn: パススルー 全て
+  rus: Пропускная способность Все
+  por: Passagem de tudo
+Add Pattern Match:
+  eng: Add Pattern Match
+  pol: Dodaj dopasowanie wzoru
+  deu: Mustervergleich hinzufügen
+  fra: Ajouter une correspondance de motifs
+  ita: Aggiungere la corrispondenza del modello
+  spa: Añadir coincidencia de patrones
+  zho: 添加模式匹配
+  jpn: パターンマッチの追加
+  rus: Добавить сопоставление шаблонов
+  por: Adicionar Padrão de Combinação
+contains:
+  eng: contains
+  pol: zawiera
+  deu: enthält
+  fra: contient
+  ita: contiene
+  spa: contiene
+  zho: 包含
+  jpn: を含む
+  rus: содержит
+  por: contém
+Match:
+  eng: Match
+  pol: Mecz
+  deu: Spiel
+  fra: Match
+  ita: Partita
+  spa: Partido
+  zho: 匹配
+  jpn: マッチ
+  rus: Матч
+  por: Combinar
+Select By:
+  eng: Select By
+  pol: Wybierz według
+  deu: Auswählen nach
+  fra: Sélectionner par
+  ita: Seleziona per
+  spa: Seleccionar por
+  zho: 选择方式
+  jpn: セレクト・バイ
+  rus: Выберите по
+  por: Selecione por
+Advanced Options:
+  eng: Advanced Options
+  pol: Opcje zaawansowane
+  deu: Erweiterte Optionen
+  fra: Options avancées
+  ita: Opzioni avanzate
+  spa: Opciones avanzadas
+  zho: 高级选项
+  jpn: 詳細オプション
+  rus: Дополнительные параметры
+  por: Opções avançadas

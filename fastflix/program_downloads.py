@@ -51,7 +51,7 @@ def latest_ffmpeg(signal, stop_signal, **_):
         stop = True
 
     stop_signal.connect(stop_me)
-    ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=None, roaming=True))
+    ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
     ffmpeg_folder.mkdir(exist_ok=True)
 
     extract_folder = ffmpeg_folder / "temp_download"
