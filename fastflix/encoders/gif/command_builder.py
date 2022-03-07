@@ -11,7 +11,13 @@ from fastflix.flix import get_all_concat_items
 def build(fastflix: FastFlix):
     settings: GIFSettings = fastflix.current_video.video_settings.video_encoder_settings
 
-    palletgen_filters = generate_filters(custom_filters="palettegen", **fastflix.current_video.video_settings.dict())
+    args = f"=stats_mode={settings.stats_mode}"
+    if settings.max_colors != "256":
+        args += f":max_colors={settings.max_colors}"
+
+    palletgen_filters = generate_filters(
+        custom_filters=f"palettegen{args}", **fastflix.current_video.video_settings.dict()
+    )
 
     filters = generate_filters(
         custom_filters=f"fps={settings.fps:.2f}", raw_filters=True, **fastflix.current_video.video_settings.dict()

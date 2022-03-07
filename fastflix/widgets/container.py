@@ -69,21 +69,21 @@ class Container(QtWidgets.QMainWindow):
         # self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         self.moveFlag = False
 
-    def mousePressEvent(self, event):
-        if event.button() == QtCore.Qt.LeftButton:
-            self.moveFlag = True
-            self.movePosition = event.globalPos() - self.pos()
-            self.setCursor(QtGui.QCursor(QtCore.Qt.OpenHandCursor))
-            event.accept()
-
-    def mouseMoveEvent(self, event):
-        if QtCore.Qt.LeftButton and self.moveFlag:
-            self.move(event.globalPos() - self.movePosition)
-            event.accept()
-
-    def mouseReleaseEvent(self, event):
-        self.moveFlag = False
-        self.setCursor(QtCore.Qt.ArrowCursor)
+    # def mousePressEvent(self, event):
+    #     if event.button() == QtCore.Qt.LeftButton:
+    #         self.moveFlag = True
+    #         self.movePosition = event.globalPos() - self.pos()
+    #         self.setCursor(QtGui.QCursor(QtCore.Qt.OpenHandCursor))
+    #         event.accept()
+    #
+    # def mouseMoveEvent(self, event):
+    #     if QtCore.Qt.LeftButton and self.moveFlag:
+    #         self.move(event.globalPos() - self.movePosition)
+    #         event.accept()
+    #
+    # def mouseReleaseEvent(self, event):
+    #     self.moveFlag = False
+    #     self.setCursor(QtCore.Qt.ArrowCursor)
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         if self.pb:

@@ -54,11 +54,13 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.match_type = QtWidgets.QComboBox()
         self.match_type.addItems(match_type_locale)
         self.match_type.currentIndexChanged.connect(self.update_combos)
+        self.match_type.view().setFixedWidth(self.match_type.minimumSizeHint().width() + 50)
         self.setFixedHeight(120)
 
         self.match_item = QtWidgets.QComboBox()
         self.match_item.addItems(match_item_locale)
         self.match_item.currentIndexChanged.connect(self.update_combos)
+        self.match_item.view().setFixedWidth(self.match_item.minimumSizeHint().width() + 50)
 
         self.match_input_boxes = [
             QtWidgets.QLineEdit("*"),
@@ -77,6 +79,10 @@ class AudioProfile(QtWidgets.QTabWidget):
             ["none | unknown", "mono", "stereo", "3 | 2.1", "4", "5", "6 | 5.1", "7", "8 | 7.1", "9", "10"]
         )
 
+        self.match_input_boxes[2].view().setFixedWidth(self.match_input_boxes[2].minimumSizeHint().width() + 50)
+        self.match_input_boxes[3].view().setFixedWidth(self.match_input_boxes[3].minimumSizeHint().width() + 50)
+        self.match_input_boxes[4].view().setFixedWidth(self.match_input_boxes[4].minimumSizeHint().width() + 50)
+
         self.kill_myself = QtWidgets.QPushButton("X")
         self.kill_myself.clicked.connect(lambda: self.parent_list.remove_track(self.index))
 
@@ -92,13 +98,16 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.downmix = QtWidgets.QComboBox()
         self.downmix.addItems(["No Downmix"] + [str(x) for x in range(1, 16)])
         self.downmix.setCurrentIndex(0)
+        self.downmix.view().setFixedWidth(self.downmix.minimumSizeHint().width() + 50)
 
         self.convert_to = QtWidgets.QComboBox()
         self.convert_to.addItems(["None | Passthrough"] + app.fastflix.audio_encoders)
         self.convert_to.currentIndexChanged.connect(self.update_conversion)
+        self.convert_to.view().setFixedWidth(self.convert_to.minimumSizeHint().width() + 50)
 
         self.bitrate = QtWidgets.QComboBox()
         self.bitrate.addItems([str(x) for x in range(32, 1024, 32)])
+        self.bitrate.view().setFixedWidth(self.bitrate.minimumSizeHint().width() + 50)
 
         self.bitrate.setDisabled(True)
         self.downmix.setDisabled(True)
@@ -227,6 +236,7 @@ class SubtitleSelect(QtWidgets.QWidget):
         self.sub_language.insertSeparator(3)
         self.sub_language.setFixedWidth(250)
         self.sub_first_only = QtWidgets.QCheckBox(t("Only select first matching Subtitle Track"))
+        self.sub_language.view().setFixedWidth(self.sub_language.minimumSizeHint().width() + 50)
 
         self.sub_burn_in = QtWidgets.QCheckBox(t("Auto Burn-in first forced or default subtitle track"))
 

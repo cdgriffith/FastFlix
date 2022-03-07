@@ -28,6 +28,9 @@ def build(fastflix: FastFlix):
         f"{generate_color_details(fastflix)} "
     )
 
+    if settings.svtav1_params:
+        beginning += f" -svtav1-params {':'.join(settings.svtav1_params)} "
+
     if not settings.single_pass:
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
         beginning += f'-passlogfile "{pass_log_file}" '
@@ -39,7 +42,7 @@ def build(fastflix: FastFlix):
             command_1 = f"{beginning} -b:v {settings.bitrate} -rc 1 {settings.extra} {ending}"
 
         elif settings.qp is not None:
-            command_1 = f"{beginning} -qp {settings.qp} -rc 0 {settings.extra} {ending}"
+            command_1 = f"{beginning} -{settings.qp_mode} {settings.qp} -rc 0 {settings.extra} {ending}"
         else:
             return []
         return [Command(command=command_1, name=f"{pass_type}", exe="ffmpeg")]

@@ -29,6 +29,12 @@ recommended_bitrates = [
 ]
 
 recommended_qp = [
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
     "20",
     "21",
     "22",
@@ -66,15 +72,17 @@ class SVT_AV1(SettingPanel):
 
         self.mode = "QP"
 
-        grid.addLayout(self.init_speed(), 0, 0, 1, 2)
+        grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_pix_fmt(), 1, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 3, 0, 1, 2)
         grid.addLayout(self.init_tier(), 4, 0, 1, 2)
+        grid.addLayout(self.init_qp_or_crf(), 5, 0, 1, 2)
         # grid.addLayout(self.init_sc_detection(), 6, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 5, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
-        grid.addLayout(self.init_single_pass(), 5, 2, 1, 1)
+        grid.addLayout(self.init_single_pass(), 6, 2, 1, 1)
+        grid.addLayout(self.init_svtav1_params(), 5, 2, 1, 4)
 
         grid.setRowStretch(8, 1)
         guide_label = QtWidgets.QLabel(
@@ -135,14 +143,40 @@ class SVT_AV1(SettingPanel):
         layout.addWidget(self.widgets.single_pass)
         return layout
 
-    def init_speed(self):
+    def init_preset(self):
         return self._add_combo_box(
-            label="Speed",
+            label="Preset",
             widget_name="speed",
-            options=[str(x) for x in range(9)],
+            options=[str(x) for x in range(14)],
             tooltip="Quality/Speed ratio modifier",
             opt="speed",
         )
+
+    def init_qp_or_crf(self):
+        return self._add_combo_box(
+            label="Quantization Mode",
+            widget_name="qp_mode",
+            options=["qp", "crf"],
+            tooltip="Use CRF or QP",
+            opt="qp_mode",
+        )
+
+    def init_svtav1_params(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.labels.svtav1_params = QtWidgets.QLabel(t("Additional svt av1 params"))
+        self.labels.svtav1_params.setFixedWidth(200)
+        tool_tip = f"{t('Extra svt av1 params in opt=1:opt2=0 format')},\n" f"{t('cannot modify generated settings')}"
+        self.labels.svtav1_params.setToolTip(tool_tip)
+        layout.addWidget(self.labels.svtav1_params)
+        self.widgets.svtav1_params = QtWidgets.QLineEdit()
+        self.widgets.svtav1_params.setToolTip(tool_tip)
+        self.widgets.svtav1_params.setText(
+            ":".join(self.app.fastflix.config.encoder_opt(self.profile_name, "svtav1_params"))
+        )
+        self.opts["svtav1_params"] = "svtav1_params"
+        self.widgets.svtav1_params.textChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.svtav1_params)
+        return layout
 
     def init_modes(self):
         return self._add_modes(recommended_bitrates, recommended_qp, qp_name="qp")
@@ -153,6 +187,8 @@ class SVT_AV1(SettingPanel):
         self.main.build_commands()
 
     def update_video_encoder_settings(self):
+        svtav1_params_text = self.widgets.svtav1_params.text().strip()
+
         settings = SVTAV1Settings(
             speed=self.widgets.speed.currentText(),
             tile_columns=self.widgets.tile_columns.currentText(),
@@ -160,10 +196,12 @@ class SVT_AV1(SettingPanel):
             single_pass=self.widgets.single_pass.isChecked(),
             tier=self.widgets.tier.currentText(),
             # scene_detection=int(self.widgets.sc_detection.currentIndex()),
+            qp_mode=self.widgets.qp_mode.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
+            svtav1_params=svtav1_params_text.split(":") if svtav1_params_text else [],
         )
         encode_type, q_value = self.get_mode_settings()
         settings.qp = q_value if encode_type == "qp" else None

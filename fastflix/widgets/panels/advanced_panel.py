@@ -89,6 +89,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.attachments = Box()
         self.updating = False
         self.only_int = QtGui.QIntValidator()
+        self.only_float = QtGui.QDoubleValidator()
 
         self.layout = QtWidgets.QGridLayout()
 
@@ -107,6 +108,8 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.init_color_info()
         self.add_spacer()
         self.init_vbv()
+        # self.add_spacer()
+        # self.init_custom_filters()
 
         self.last_row += 1
 
@@ -118,11 +121,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         ico = QtGui.QIcon(get_icon("onyx-warning", app.fastflix.config.theme))
         warning_label.setPixmap(ico.pixmap(22))
 
-        self.layout.addWidget(warning_label, self.last_row, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(
-            QtWidgets.QLabel(t("Advanced settings are currently not saved in Profiles")), self.last_row, 1, 1, 4
-        )
-        for i in range(6):
+        for i in range(1, 7):
             self.layout.setColumnMinimumWidth(i, 155)
         self.setLayout(self.layout)
 
@@ -131,7 +130,14 @@ class AdvancedPanel(QtWidgets.QWidget):
         spacer_widget = QtWidgets.QWidget(self)
         spacer_widget.setFixedHeight(1)
         spacer_widget.setStyleSheet("background-color: #ddd")
-        self.layout.addWidget(spacer_widget, self.last_row, 0, 1, 6)
+        self.layout.addWidget(spacer_widget, self.last_row, 0, 1, 7)
+
+    def add_row_label(self, label, row_number):
+        label = QtWidgets.QLabel(label)
+        label.setFixedWidth(100)
+        if self.app.fastflix.config.theme == "onyx":
+            label.setStyleSheet("color: #b5b5b5")
+        self.layout.addWidget(label, row_number, 0, alignment=QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
     def init_fps(self):
         self.incoming_fps_widget = QtWidgets.QLineEdit()
@@ -159,23 +165,25 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.vsync_widget.addItems(vsync)
         self.vsync_widget.currentIndexChanged.connect(self.page_update)
 
+        self.add_row_label(t("Frame Rate"), self.last_row)
+
         self.layout.addWidget(
-            QtWidgets.QLabel(t("Override Source FPS")), self.last_row, 0, alignment=QtCore.Qt.AlignRight
+            QtWidgets.QLabel(t("Override Source FPS")), self.last_row, 1, alignment=QtCore.Qt.AlignRight
         )
-        self.layout.addWidget(self.incoming_fps_widget, self.last_row, 1)
-        self.layout.addWidget(self.incoming_same_as_source, self.last_row, 2)
+        self.layout.addWidget(self.incoming_fps_widget, self.last_row, 2)
+        self.layout.addWidget(self.incoming_same_as_source, self.last_row, 3)
         self.layout.addWidget(
-            QtWidgets.QLabel(t("Source Frame Rate")), self.last_row, 4, alignment=QtCore.Qt.AlignRight
+            QtWidgets.QLabel(t("Source Frame Rate")), self.last_row, 5, alignment=QtCore.Qt.AlignRight
         )
-        self.layout.addWidget(self.source_frame_rate, self.last_row, 5)
+        self.layout.addWidget(self.source_frame_rate, self.last_row, 6)
 
         self.last_row += 1
-        self.layout.addWidget(QtWidgets.QLabel(t("Output FPS")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.outgoing_fps_widget, self.last_row, 1)
-        self.layout.addWidget(self.outgoing_same_as_source, self.last_row, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Output FPS")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.outgoing_fps_widget, self.last_row, 2)
+        self.layout.addWidget(self.outgoing_same_as_source, self.last_row, 3)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("vsync")), self.last_row, 4, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.vsync_widget, self.last_row, 5)
+        self.layout.addWidget(QtWidgets.QLabel(t("vsync")), self.last_row, 5, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.vsync_widget, self.last_row, 6)
 
         self.last_row += 1
 
@@ -196,9 +204,9 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.video_speed_widget = QtWidgets.QComboBox()
         self.video_speed_widget.addItems(video_speeds.keys())
         self.video_speed_widget.currentIndexChanged.connect(self.page_update)
-        self.layout.addWidget(QtWidgets.QLabel(t("Video Speed")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.video_speed_widget, self.last_row, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Warning: Audio will not be modified")), self.last_row, 2, 1, 3)
+        self.layout.addWidget(QtWidgets.QLabel(t("Video Speed")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.video_speed_widget, self.last_row, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Warning: Audio will not be modified")), self.last_row, 3, 1, 3)
 
         # def init_tone_map(self):
         #     self.last_row += 1
@@ -207,30 +215,35 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.tone_map_widget.setCurrentIndex(5)
         self.tone_map_widget.currentIndexChanged.connect(self.page_update)
         self.layout.addWidget(
-            QtWidgets.QLabel(t("HDR -> SDR Tone Map")), self.last_row, 4, alignment=QtCore.Qt.AlignRight
+            QtWidgets.QLabel(t("HDR -> SDR Tone Map")), self.last_row, 5, alignment=QtCore.Qt.AlignRight
         )
-        self.layout.addWidget(self.tone_map_widget, self.last_row, 5)
+        self.layout.addWidget(self.tone_map_widget, self.last_row, 6)
 
     def init_eq(self):
         self.last_row += 1
         self.brightness_widget = QtWidgets.QLineEdit()
         self.brightness_widget.setToolTip("Default is: 0")
+        self.brightness_widget.setValidator(self.only_float)
         self.brightness_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.contrast_widget = QtWidgets.QLineEdit()
         self.contrast_widget.setToolTip("Default is: 1")
+        self.contrast_widget.setValidator(self.only_float)
         self.contrast_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.saturation_widget = QtWidgets.QLineEdit()
         self.saturation_widget.setToolTip("Default is: 1")
+        self.saturation_widget.setValidator(self.only_float)
         self.saturation_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Brightness")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.brightness_widget, self.last_row, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Contrast")), self.last_row, 2, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.contrast_widget, self.last_row, 3)
-        self.layout.addWidget(QtWidgets.QLabel(t("Saturation")), self.last_row, 4, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.saturation_widget, self.last_row, 5)
+        self.add_row_label(t("Equalizer"), self.last_row)
+
+        self.layout.addWidget(QtWidgets.QLabel(t("Brightness")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.brightness_widget, self.last_row, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Contrast")), self.last_row, 3, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.contrast_widget, self.last_row, 4)
+        self.layout.addWidget(QtWidgets.QLabel(t("Saturation")), self.last_row, 5, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.saturation_widget, self.last_row, 6)
 
     def init_denoise(self):
         self.last_row += 1
@@ -244,10 +257,11 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.denoise_strength_widget.setCurrentIndex(0)
         self.denoise_strength_widget.currentIndexChanged.connect(self.page_update)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Denoise")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.denoise_type_widget, self.last_row, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Strength")), self.last_row, 2, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.denoise_strength_widget, self.last_row, 3)
+        self.add_row_label(t("Denoise"), self.last_row)
+        self.layout.addWidget(QtWidgets.QLabel(t("Method")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.denoise_type_widget, self.last_row, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Strength")), self.last_row, 3, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.denoise_strength_widget, self.last_row, 4)
 
     def init_deblock(self):
         self.last_row += 1
@@ -263,10 +277,11 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.deblock_size_widget.currentIndexChanged.connect(self.page_update)
         self.deblock_size_widget.setCurrentIndex(2)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Deblock")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.deblock_widget, self.last_row, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Block Size")), self.last_row, 2, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.deblock_size_widget, self.last_row, 3)
+        self.add_row_label(t("Deblock"), self.last_row)
+        self.layout.addWidget(QtWidgets.QLabel(t("Strength")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.deblock_widget, self.last_row, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Block Size")), self.last_row, 3, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.deblock_size_widget, self.last_row, 4)
 
     def init_color_info(self):
         self.last_row += 1
@@ -285,44 +300,44 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.color_space_widget.addItems(ffmpeg_valid_color_space)
         self.color_space_widget.currentIndexChanged.connect(self.page_update)
 
-        self.layout.addWidget(QtWidgets.QLabel(t("Color Primaries")), self.last_row, 0, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.color_primaries_widget, self.last_row, 1)
-        self.layout.addWidget(QtWidgets.QLabel(t("Color Transfer")), self.last_row, 2, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.color_transfer_widget, self.last_row, 3)
-        self.layout.addWidget(QtWidgets.QLabel(t("Color Space")), self.last_row, 4, alignment=QtCore.Qt.AlignRight)
-        self.layout.addWidget(self.color_space_widget, self.last_row, 5)
+        self.add_row_label(t("Color Formats"), self.last_row)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Primaries")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.color_primaries_widget, self.last_row, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Transfer")), self.last_row, 3, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.color_transfer_widget, self.last_row, 4)
+        self.layout.addWidget(QtWidgets.QLabel(t("Color Space")), self.last_row, 5, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.color_space_widget, self.last_row, 6)
 
     def init_vbv(self):
         self.last_row += 1
         self.maxrate_widget = QtWidgets.QLineEdit()
         # self.maxrate_widget.setPlaceholderText("3000")
-        self.maxrate_widget.setDisabled(True)
         self.maxrate_widget.setValidator(self.only_int)
         self.maxrate_widget.textChanged.connect(self.page_update)
 
         self.bufsize_widget = QtWidgets.QLineEdit()
         # self.bufsize_widget.setPlaceholderText("3000")
-        self.bufsize_widget.setDisabled(True)
         self.bufsize_widget.setValidator(self.only_int)
         self.bufsize_widget.textChanged.connect(self.page_update)
 
-        self.vbv_checkbox = QtWidgets.QCheckBox(t("Enable VBV"))
-        self.vbv_checkbox.toggled.connect(self.vbv_check_changed)
+        # self.vbv_checkbox = QtWidgets.QCheckBox(t("Enable VBV"))
+        # self.vbv_checkbox.toggled.connect(self.vbv_check_changed)
 
+        self.add_row_label(f'{t("Video Buffering")}\n{t("Verifier")} (VBV)', self.last_row)
         self.layout.addWidget(
-            QtWidgets.QLabel(f'{t("Maxrate")} (kbps)'), self.last_row, 0, alignment=QtCore.Qt.AlignRight
+            QtWidgets.QLabel(f'{t("Maxrate")} (kbps)'), self.last_row, 1, alignment=QtCore.Qt.AlignRight
         )
-        self.layout.addWidget(self.maxrate_widget, self.last_row, 1)
+        self.layout.addWidget(self.maxrate_widget, self.last_row, 2)
         self.layout.addWidget(
-            QtWidgets.QLabel(f'{t("Bufsize")} (kbps)'), self.last_row, 2, alignment=QtCore.Qt.AlignRight
+            QtWidgets.QLabel(f'{t("Bufsize")} (kbps)'), self.last_row, 3, alignment=QtCore.Qt.AlignRight
         )
-        self.layout.addWidget(self.bufsize_widget, self.last_row, 3)
-        self.layout.addWidget(self.vbv_checkbox, self.last_row, 4)
+        self.layout.addWidget(self.bufsize_widget, self.last_row, 4)
+        self.layout.addWidget(QtWidgets.QLabel("Both must have values to be enabled"), self.last_row, 5, 1, 2)
 
-    def vbv_check_changed(self):
-        self.bufsize_widget.setEnabled(self.vbv_checkbox.isChecked())
-        self.maxrate_widget.setEnabled(self.vbv_checkbox.isChecked())
-        self.page_update()
+    # def vbv_check_changed(self):
+    #     self.bufsize_widget.setEnabled(self.vbv_checkbox.isChecked())
+    #     self.maxrate_widget.setEnabled(self.vbv_checkbox.isChecked())
+    #     self.page_update()
 
     # def init_subtitle_overlay_fix(self):
     #     self.last_row += 1
@@ -330,6 +345,21 @@ class AdvancedPanel(QtWidgets.QWidget):
     # overlay=y=-140
     # crop=1904:800:6:140
     # (800 + 140) - 1080 == -140
+
+    def init_custom_filters(self):
+        self.last_row += 1
+
+        self.first_filters = QtWidgets.QLineEdit()
+        self.first_filters.textChanged.connect(self.page_update)
+
+        self.second_filters = QtWidgets.QLineEdit()
+        self.second_filters.textChanged.connect(self.page_update)
+
+        self.add_row_label(t("Custom Filters"), self.last_row)
+        self.layout.addWidget(QtWidgets.QLabel(t("First Pass")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.first_filters, self.last_row, 2, 1, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Second Pass")), self.last_row, 4, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.second_filters, self.last_row, 5, 1, 2)
 
     def update_settings(self):
         if self.updating or not self.app.fastflix.current_video:
@@ -344,6 +374,9 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.app.fastflix.current_video.video_settings.brightness = self.brightness_widget.text() or None
         self.app.fastflix.current_video.video_settings.saturation = self.saturation_widget.text() or None
         self.app.fastflix.current_video.video_settings.contrast = self.contrast_widget.text() or None
+
+        # self.app.fastflix.current_video.video_settings.first_pass_filters = self.first_filters.text() or None
+        # self.app.fastflix.current_video.video_settings.second_filters = self.second_filters.text() or None
 
         if not self.incoming_same_as_source.isChecked():
             self.app.fastflix.current_video.video_settings.source_fps = self.incoming_fps_widget.text()
@@ -372,7 +405,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         else:
             self.app.fastflix.current_video.video_settings.color_space = self.color_space_widget.currentText()
 
-        if self.vbv_checkbox.isChecked() and self.maxrate_widget.text() and self.bufsize_widget.text():
+        if self.maxrate_widget.text() and self.bufsize_widget.text():
             self.app.fastflix.current_video.video_settings.maxrate = int(self.maxrate_widget.text())
             self.app.fastflix.current_video.video_settings.bufsize = int(self.bufsize_widget.text())
         else:
@@ -390,7 +423,7 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         maxrate = None
         bufsize = None
-        if self.vbv_checkbox.isChecked() and self.maxrate_widget.text() and self.bufsize_widget.text():
+        if self.maxrate_widget.text() and self.bufsize_widget.text():
             maxrate = int(self.maxrate_widget.text())
             bufsize = int(self.bufsize_widget.text())
 
@@ -419,6 +452,8 @@ class AdvancedPanel(QtWidgets.QWidget):
             denoise=denoise,
             denoise_type_index=self.denoise_type_widget.currentIndex(),
             denoise_strength_index=self.denoise_strength_widget.currentIndex(),
+            # first_pass_filters=self.first_filters.text() or None,
+            # second_pass_filters=self.second_filters.text() or None,
         )
 
     def hdr_settings(self):
@@ -506,17 +541,11 @@ class AdvancedPanel(QtWidgets.QWidget):
                 self.vsync_widget.setCurrentIndex(0)
 
             if settings.maxrate:
-                self.vbv_checkbox.setChecked(True)
                 self.maxrate_widget.setText(str(settings.maxrate))
                 self.bufsize_widget.setText(str(settings.bufsize))
-                self.maxrate_widget.setEnabled(True)
-                self.bufsize_widget.setEnabled(True)
             else:
-                self.vbv_checkbox.setChecked(False)
                 self.maxrate_widget.setText("")
                 self.bufsize_widget.setText("")
-                self.maxrate_widget.setDisabled(True)
-                self.bufsize_widget.setDisabled(True)
 
             if settings.color_space:
                 self.color_space_widget.setCurrentText(settings.color_space)
@@ -570,11 +599,8 @@ class AdvancedPanel(QtWidgets.QWidget):
             maxrate = self.app.fastflix.config.advanced_opt("maxrate")
             bufsize = self.app.fastflix.config.advanced_opt("bufsize")
             vbv = bool(maxrate and bufsize)
-            self.vbv_checkbox.setChecked(vbv)
             self.maxrate_widget.setText(str(maxrate) if maxrate and vbv else "")
             self.bufsize_widget.setText(str(bufsize) if maxrate and vbv else "")
-            self.maxrate_widget.setDisabled(True if not vbv else False)
-            self.bufsize_widget.setDisabled(True if not vbv else False)
 
             # Equalizer
             self.brightness_widget.setText(self.app.fastflix.config.advanced_opt("brightness") or "")

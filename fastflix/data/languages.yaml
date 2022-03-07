@@ -106,18 +106,6 @@ Advanced:
   por: Avançado
   swe: Avancerad
   pol: Zaawansowane
-Advanced settings are currently not saved in Profiles:
-  deu: Erweiterte Einstellungen werden derzeit nicht in Profilen gespeichert
-  eng: Advanced settings are currently not saved in Profiles
-  fra: Les paramètres avancés ne sont actuellement pas enregistrés dans les Profils
-  ita: Le impostazioni avanzate non sono attualmente salvate in Profili
-  spa: Los ajustes avanzados no se guardan actualmente en Perfiles
-  zho: 高级设置目前不会保存到方案中
-  jpn: 現在、詳細設定はプロファイルに保存されていません。
-  rus: Расширенные настройки в настоящее время не сохраняются в профилях
-  por: As definições avançadas não são actualmente guardadas em Perfis
-  swe: Avancerade inställningar sparas för närvarande inte i profiler
-  pol: Ustawienia zaawansowane nie są obecnie zapisywane w profilach
 After Conversion:
   deu: Nach der Konvertierung
   eng: After Conversion
@@ -5805,6 +5793,7 @@ First:
   jpn: ファースト
   rus: Первый
   por: Primeiro
+  swe: Första
 Last:
   eng: Last
   pol: Ostatnio
@@ -5816,6 +5805,7 @@ Last:
   jpn: 最後
   rus: Последний
   por: Último
+  swe: Senast
 Track Number:
   eng: Track Number
   pol: Numer ścieżki
@@ -5827,6 +5817,7 @@ Track Number:
   jpn: トラックナンバー
   rus: Номер дорожки
   por: Número da faixa
+  swe: Spårnummer
 Channels:
   eng: Channels
   pol: Kanały
@@ -5838,9 +5829,10 @@ Channels:
   jpn: チャンネル
   rus: Каналы
   por: Canais
+  swe: Kanaler
 Audio Select:
   eng: Audio Select
-  pol: Wybór dźwięku
+  pol: Audio Select (Wybór dźwięku)
   deu: Audio-Auswahl
   fra: Sélection audio
   ita: Selezione audio
@@ -5849,6 +5841,7 @@ Audio Select:
   jpn: オーディオセレクト
   rus: Выбор аудио
   por: Selecione o áudio
+  swe: Ljudval
 Passthrough All:
   eng: Passthrough All
   pol: Passthrough Wszystkie
@@ -5860,6 +5853,7 @@ Passthrough All:
   jpn: パススルー 全て
   rus: Пропускная способность Все
   por: Passagem de tudo
+  swe: Genomströmning Alla
 Add Pattern Match:
   eng: Add Pattern Match
   pol: Dodaj dopasowanie wzoru
@@ -5871,6 +5865,7 @@ Add Pattern Match:
   jpn: パターンマッチの追加
   rus: Добавить сопоставление шаблонов
   por: Adicionar Padrão de Combinação
+  swe: Lägg till mönstermatchning
 contains:
   eng: contains
   pol: zawiera
@@ -5882,6 +5877,7 @@ contains:
   jpn: を含む
   rus: содержит
   por: contém
+  swe: innehåller
 Match:
   eng: Match
   pol: Mecz
@@ -5893,6 +5889,7 @@ Match:
   jpn: マッチ
   rus: Матч
   por: Combinar
+  swe: Match
 Select By:
   eng: Select By
   pol: Wybierz według
@@ -5904,6 +5901,7 @@ Select By:
   jpn: セレクト・バイ
   rus: Выберите по
   por: Selecione por
+  swe: Välj efter
 Advanced Options:
   eng: Advanced Options
   pol: Opcje zaawansowane
@@ -5915,3 +5913,160 @@ Advanced Options:
   jpn: 詳細オプション
   rus: Дополнительные параметры
   por: Opções avançadas
+  swe: Avancerade alternativ
+License:
+  eng: License
+  deu: Lizenz
+  fra: Licence
+  ita: Licenza
+  spa: Licencia
+  zho: 许可证
+  jpn: ライセンス
+  rus: Лицензия
+  por: Licença
+  swe: Licens
+  pol: Licencja
+Quantization Mode:
+  eng: Quantization Mode
+  deu: Quantisierungsmodus
+  fra: Mode de quantification
+  ita: Modalità di quantizzazione
+  spa: Modo de cuantificación
+  zho: 量化模式
+  jpn: 量子化モード
+  rus: Режим квантования
+  por: Modo de quantificação
+  swe: Kvantiseringsläge
+  pol: Tryb kwantyzacji
+Use CRF or QP:
+  eng: Use CRF or QP
+  deu: CRF oder QP verwenden
+  fra: Utiliser le CRF ou le QP
+  ita: Utilizzare CRF o QP
+  spa: Utilizar CRF o QP
+  zho: 使用CRF或QP
+  jpn: CRFまたはQPを使用する
+  rus: Используйте CRF или QP
+  por: Use CRF ou QP
+  swe: Använd CRF eller QP
+  pol: Użyj CRF lub QP
+Additional svt av1 params:
+  eng: Additional svt av1 params
+  deu: Zusätzliche svt av1-Parameter
+  fra: Paramètres supplémentaires de svt av1
+  ita: Parametri svt av1 aggiuntivi
+  spa: Parámetros adicionales de svt av1
+  zho: 额外的svt av1参数
+  jpn: svt av1 の追加パラメータ
+  rus: Дополнительные параметры svt av1
+  por: Parâmetros adicionais svt av1
+  swe: Ytterligare parametrar för svt av1
+  pol: Dodatkowe parametry svt av1
+Extra svt av1 params in opt=1:opt2=0 format:
+  eng: Extra svt av1 params in opt=1:opt2=0 format
+  deu: Zusätzliche svt av1-Parameter im Format opt=1:opt2=0
+  fra: Paramètres supplémentaires de svt av1 au format opt=1:opt2=0
+  ita: Parametri extra svt av1 nel formato opt=1:opt2=0
+  spa: Parámetros extra svt av1 en formato opt=1:opt2=0
+  zho: 额外的svt av1参数为opt=1:opt2=0格式
+  jpn: opt=1:opt2=0のフォーマットでの余分なsvt av1パラメータ
+  rus: Дополнительные параметры svt av1 в формате opt=1:opt2=0
+  por: Parâmetros av1 extra svt no formato opt=1:opt2=0
+  swe: Extra svt av1-parametrar i formatet opt=1:opt2=0
+  pol: Dodatkowe parametry svt av1 w formacie opt=1:opt2=0
+Max Colors:
+  eng: Max Colors
+  deu: Maximale Farben
+  fra: Couleurs maximales
+  ita: Colori massimi
+  spa: Colores máximos
+  zho: 最大颜色
+  jpn: 最大色数
+  rus: Максимальные цвета
+  por: Cores máximas
+  swe: Max färger
+  pol: Maks. kolory
+Frame Rate:
+  eng: Frame Rate
+  deu: Bildfrequenz
+  fra: Fréquence d'images
+  ita: Frame Rate
+  spa: Velocidad de fotogramas
+  zho: 帧速率
+  jpn: フレームレート
+  rus: Частота кадров
+  por: Taxa de quadros
+  swe: Bildfrekvens
+  pol: Liczba klatek na sekundę
+Equalizer:
+  eng: Equalizer
+  deu: Equalizer
+  fra: Égaliseur
+  ita: Equalizzatore
+  spa: Ecualizador
+  zho: 平衡器
+  jpn: イコライザー
+  rus: Эквалайзер
+  por: Equalizador
+  swe: Equalizer
+  pol: Equalizer
+Method:
+  eng: Method
+  deu: Methode
+  fra: Méthode
+  ita: Metodo
+  spa: Método
+  zho: 方法
+  jpn: 方法
+  rus: Метод
+  por: Método
+  swe: Metod
+  pol: Metoda
+Color Formats:
+  eng: Color Formats
+  deu: Farbige Formate
+  fra: Formats de couleur
+  ita: Formati di colore
+  spa: Formatos de color
+  zho: 彩色格式
+  jpn: カラーフォーマット
+  rus: Форматы цветов
+  por: Formatos de cores
+  swe: Färgformat
+  pol: Formaty kolorów
+Video Buffering:
+  eng: Video Buffering
+  deu: Video-Pufferung
+  fra: Mise en mémoire tampon des vidéos
+  ita: Buffering video
+  spa: Buffering de vídeo
+  zho: 视频缓冲
+  jpn: ビデオバッファリング
+  rus: Буферизация видео
+  por: Buffer de vídeo
+  swe: Videobuffring
+  pol: Buforowanie wideo
+Verifier:
+  eng: Verifier
+  deu: Überprüfer
+  fra: Vérificateur
+  ita: Verificatore
+  spa: Verificador
+  zho: 验证人
+  jpn: ベリファイア
+  rus: Верификатор
+  por: Verificador
+  swe: Kontrollör
+  pol: Weryfikator
+Statistics Mode:
+  eng: Statistics Mode
+  deu: Statistik-Modus
+  fra: Mode statistiques
+  ita: Modalità statistiche
+  spa: Modo de estadísticas
+  zho: 统计模式
+  jpn: 統計モード
+  rus: Режим статистики
+  por: Modo Estatísticas
+  swe: Statistikläge
+  pol: Tryb statystyk

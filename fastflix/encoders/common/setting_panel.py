@@ -408,7 +408,7 @@ class SettingPanel(QtWidgets.QWidget):
                     self.widgets[widget_name].setChecked(checked)
             elif isinstance(self.widgets[widget_name], QtWidgets.QLineEdit):
                 data = self.app.fastflix.config.encoder_opt(self.profile_name, opt)
-                if widget_name == "x265_params":
+                if widget_name in ("x265_params", "svtav1_params"):
                     data = ":".join(data)
                 self.widgets[widget_name].setText(str(data) or "")
         try:
@@ -472,7 +472,7 @@ class SettingPanel(QtWidgets.QWidget):
             elif isinstance(self.widgets[widget_name], QtWidgets.QCheckBox):
                 self.widgets[widget_name].setChecked(data)
             elif isinstance(self.widgets[widget_name], QtWidgets.QLineEdit):
-                if widget_name == "x265_params":
+                if widget_name in ("x265_params", "svtav1_params"):
                     data = ":".join(data)
                 self.widgets[widget_name].setText(str(data) or "")
         if getattr(self, "qp_radio", None):
