@@ -19,13 +19,13 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
  FastFlix supports the following encoders if available:
 
 | Encoder   | x265 |  NVENC HEVC | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | [VCEEncC HEVC](https://github.com/rigaya/VCEEnc/releases) | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | WEBP | GIF |
-| --------- | ---- | ---------- | ----------- | ----------- | ---- | ----- | ------- | ------- | --- | ---- | --- |
-| HDR10     |   ✓  |            |      ✓     |      ✓     |     |       |         |         |  ✓* |      |     |
-| HDR10+    |   ✓  |            |      ✓     |            |     |       |         |         |     |      |     |
-| Audio     |   ✓  |      ✓     |      ✓*    |      ✓*    | ✓   |   ✓  |    ✓    |    ✓   |  ✓   |      |     |
-| Subtitles |   ✓  |      ✓     |      ✓     |      ✓     | ✓   |   ✓  |    ✓    |    ✓   |      |      |     |
-| Covers    |   ✓  |      ✓     |            |            | ✓   |   ✓  |    ✓    |    ✓   |      |      |     |
-| bt.2020   |   ✓  |     ✓      |     ✓      |     ✓      |  ✓  |  ✓    |   ✓    |   ✓    |  ✓   |      |     |
+| --------- | ---- | ---------- | ----------- | ----------- | ---- | ----- | ------- |-----| --- | ---- | --- |
+| HDR10     |   ✓  |            |      ✓     |      ✓     |     |       |         | ✓   |  ✓* |      |     |
+| HDR10+    |   ✓  |            |      ✓     |            |     |       |         |     |     |      |     |
+| Audio     |   ✓  |      ✓     |      ✓*    |      ✓*    | ✓   |   ✓  |    ✓    | ✓   |  ✓   |      |     |
+| Subtitles |   ✓  |      ✓     |      ✓     |      ✓     | ✓   |   ✓  |    ✓    | ✓   |      |      |     |
+| Covers    |   ✓  |      ✓     |            |            | ✓   |   ✓  |    ✓    | ✓   |      |      |     |
+| bt.2020   |   ✓  |     ✓      |     ✓      |     ✓      |  ✓  |  ✓    |   ✓    | ✓   |  ✓   |      |     |
 
 `✓ - Full support   |   ✓* - Limited support`
 
@@ -33,7 +33,7 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 
 View the [releases](https://github.com/cdgriffith/FastFlix/releases) for binaries for Windows, MacOS or Linux
 
-You will need to have `ffmpeg` and `ffprobe` executables on your PATH and they must be executable. Version 4.3 or greater is required. The one in your in your package manager system may not support all encoders or options.
+You will need to have `ffmpeg` and `ffprobe` executables on your PATH and they must be executable. Version 4.3 or greater is required for most usage, latest master build is recommended and required for some features. The one in your package manager system may not support all encoders or options.
 Check out the [FFmpeg download page for static builds](https://ffmpeg.org/download.html) for Linux and Mac.
 
 ## Running from source code
@@ -59,10 +59,10 @@ FastFlix was created to easily extract / copy HDR10 data, which it can do with t
 
 VP9 has limited support to copy some existing HDR10 metadata, usually from other VP9 files. Will have the line "Mastering Display Metadata, has_primaries:1 has_luminance:1 ..." when it works.
 
-AV1 is still in development, and as such none of them currently support setting mastering-display data through FFmpeg (aka not supported with FastFlix), but some do if you use them directly.
+AV1 is still in development, and hopefully all encoder will support it in the future, but only SVT AV1 works through ffmpeg as of now.
 
 * rav1e -  can set mastering data and CLL via their CLI but [not through ffmpeg](https://github.com/xiph/rav1e/issues/2554).
-* SVT AV1 - accepts a "--enable-hdr" flag that is [not well documented](https://github.com/AOMediaCodec/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md), not supported through FFmpeg.
+* SVT AV1 - Now supports HDR10 with latest master ffmpeg build, make sure to update before trying!
 * aomenc (libaom-av1) - does not look to support HDR10
 
 ## HDR10+

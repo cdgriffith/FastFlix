@@ -217,7 +217,7 @@ class SVTAV1Settings(EncoderSettings):
     tile_columns: str = "0"
     tile_rows: str = "0"
     tier: str = "main"
-    # scene_detection: str = "false"
+    scene_detection: bool = False
     single_pass: bool = False
     speed: str = "7"  # Renamed preset in svtav1 encoder
     qp: Optional[Union[int, float]] = 24

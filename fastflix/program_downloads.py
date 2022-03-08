@@ -75,7 +75,7 @@ def latest_ffmpeg(signal, stop_signal, **_):
         message(t("Download Cancelled"))
         return
 
-    gpl_ffmpeg = [asset for asset in data["assets"] if "win64-gpl-5" in asset["name"]]
+    gpl_ffmpeg = [asset for asset in data["assets"] if "master-latest-win64-gpl.zip" in asset["name"]]
     if not gpl_ffmpeg:
         shutil.rmtree(extract_folder, ignore_errors=True)
         message(

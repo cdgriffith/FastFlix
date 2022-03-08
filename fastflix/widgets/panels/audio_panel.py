@@ -469,7 +469,7 @@ class AudioList(FlixList):
             elif audio_match.match_item == MatchItem.TITLE:
                 subset_tracks = []
                 for track in original_tracks:
-                    if audio_match.match_input.lower() in track.title.casefold():
+                    if audio_match.match_input.lower() in track.tags.get("title", "").casefold():
                         subset_tracks.append((track, audio_match))
                 if subset_tracks:
                     if audio_match.match_type == MatchType.FIRST:
