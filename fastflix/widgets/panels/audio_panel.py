@@ -333,26 +333,6 @@ class AudioList(FlixList):
         self.app = app
         self._first_selected = False
 
-    def lang_match(self, track):
-        if not self.app.fastflix.config.opt("audio_select"):
-            return False
-        if not self.app.fastflix.config.opt("audio_select_preferred_language"):
-            if self.app.fastflix.config.opt("audio_select_first_matching") and self._first_selected:
-                return False
-            self._first_selected = True
-            return True
-        try:
-            track_lang = Lang(track.get("tags", {}).get("language", ""))
-        except InvalidLanguageValue:
-            return True
-        else:
-            if Lang(self.app.fastflix.config.opt("audio_language")) == track_lang:
-                if self.app.fastflix.config.opt("audio_select_first_matching") and self._first_selected:
-                    return False
-                self._first_selected = True
-                return True
-        return False
-
     def _get_track_info(self, track):
         track_info = ""
         tags = track.get("tags", {})
@@ -365,6 +345,14 @@ class AudioList(FlixList):
             track_info += f" ({track.profile})"
         track_info += f" - {track.channels} {t('channels')}"
         return track_info, tags
+
+    def enable_all(self):
+        for track in self.tracks:
+            track.widgets.enable_check.setChecked(True)
+
+    def disable_all(self):
+        for track in self.tracks:
+            track.widgets.enable_check.setChecked(False)
 
     def new_source(self, codecs):
         self.tracks: List[Audio] = []
@@ -386,7 +374,7 @@ class AudioList(FlixList):
                 codecs=codecs,
                 channels=x.channels,
                 available_audio_encoders=self.available_audio_encoders,
-                enabled=self.lang_match(x),
+                enabled=True,
                 all_info=x,
                 disable_dup=disable_dup,
             )
@@ -419,6 +407,12 @@ class AudioList(FlixList):
             track.update_codecs(allowed_formats or set())
 
     def apply_profile_settings(self, profile: Profile, original_tracks: List[Box], audio_formats):
+        if profile.audio_filters:
+            self.disable_all()
+        else:
+            self.enable_all()
+            return
+
         disable_dups = "nvencc" in self.main.convert_to.lower() or "vcenc" in self.main.convert_to.lower()
         self.tracks = []
 
