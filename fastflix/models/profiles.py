@@ -75,7 +75,7 @@ class AdvancedOptions(BaseModel):
     video_speed: float = 1
     deblock: Optional[str] = None
     deblock_size: int = 16
-    tone_map: Optional[str] = None
+    tone_map: str = "hable"
     vsync: Optional[str] = None
     brightness: Optional[str] = None
     saturation: Optional[str] = None

@@ -431,7 +431,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             video_speed=video_speeds[self.video_speed_widget.currentText()],
             deblock=non(self.deblock_widget.currentText()),
             deblock_size=int(self.deblock_size_widget.currentText()),
-            tone_map=non(self.tone_map_widget.currentText()),
+            tone_map=self.tone_map_widget.currentText(),
             vsync=non(self.vsync_widget.currentText()),
             brightness=(self.brightness_widget.text() or None),
             saturation=(self.saturation_widget.text() or None),

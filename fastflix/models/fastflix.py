@@ -22,6 +22,7 @@ class FastFlix(BaseModel):
     ffmpeg_version: str = ""
     ffmpeg_config: List[str] = ""
     ffprobe_version: str = ""
+    opencl_support: bool = False
 
     # Queues
     worker_queue: Any = None

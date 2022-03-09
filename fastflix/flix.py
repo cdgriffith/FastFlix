@@ -307,13 +307,20 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
 
 
 def generate_thumbnail_command(
-    config: Config, source: Path, output: Path, filters: str, start_time: float = 0, input_track: int = 0
+    config: Config,
+    source: Path,
+    output: Path,
+    filters: str,
+    start_time: float = 0,
+    input_track: int = 0,
+    enable_opencl: bool = False,
 ) -> str:
     command_options = [
         f"{config.ffmpeg}",
         f"-ss {start_time}" if start_time else "",
-        "-loglevel error",
+        "-loglevel warning",
         f'-i "{clean_file_string(source)}"',
+        ("-init_hw_device opencl=ocl -filter_hw_device ocl" if enable_opencl else ""),
         filters,
         f"-map 0:{input_track}" if "-map" not in filters else "",
         "-an",
@@ -440,6 +447,12 @@ def ffmpeg_audio_encoders(app, config: Config) -> List:
             started = True
     app.fastflix.audio_encoders = encoders
     return encoders
+
+
+def ffmpeg_opencl_support(app, config: Config) -> bool:
+    cmd = execute([f"{config.ffmpeg}", "-hide_banner", "-log_level", "error", "-init_hw_device", "opencl", "-h"])
+    app.fastflix.opencl_support = cmd.returncode == 0
+    return app.fastflix.opencl_support
 
 
 def convert_mastering_display(data: Box) -> Tuple[Box, str]:

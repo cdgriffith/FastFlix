@@ -1543,6 +1543,7 @@ class Main(QtWidgets.QWidget):
         filters = helpers.generate_filters(
             start_filters="select=eq(pict_type\\,I)" if self.widgets.thumb_key.isChecked() else None,
             custom_filters=custom_filters,
+            enable_opencl=self.app.fastflix.opencl_support,
             **settings,
         )
 
@@ -1551,6 +1552,7 @@ class Main(QtWidgets.QWidget):
             source=self.source_material,
             output=self.thumb_file,
             filters=filters,
+            enable_opencl=self.app.fastflix.opencl_support,
             start_time=self.preview_place if not self.app.fastflix.current_video.concat else None,
             input_track=self.app.fastflix.current_video.video_settings.selected_track,
         )

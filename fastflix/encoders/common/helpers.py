@@ -43,6 +43,8 @@ def generate_ffmpeg_start(
     source_fps: Union[str, None] = None,
     vsync: Union[str, None] = None,
     concat: bool = False,
+    enable_opencl: bool = False,
+    remove_hdr: bool = True,
     **_,
 ) -> str:
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
@@ -72,6 +74,7 @@ def generate_ffmpeg_start(
             f"-pix_fmt {pix_fmt}",
             f"{f'-maxrate:v {maxrate}k' if maxrate else ''}",
             f"{f'-bufsize:v {bufsize}k' if bufsize else ''}",
+            ("-init_hw_device opencl=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
             " ",  # Leave space after commands
         ]
     )
@@ -120,6 +123,7 @@ def generate_filters(
     contrast=None,
     brightness=None,
     saturation=None,
+    enable_opencl: bool = False,
     tone_map: str = "hable",
     video_speed: Union[float, int] = 1,
     deblock: Union[str, None] = None,
@@ -155,9 +159,14 @@ def generate_filters(
     if denoise:
         filter_list.append(denoise)
     if remove_hdr:
-        filter_list.append(
-            f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
-        )
+        if enable_opencl:
+            filter_list.append(
+                f"format=p010,hwupload,tonemap_opencl=tonemap={tone_map}:desat=0:r=tv:p=bt709:t=bt709:m=bt709:format=nv12,hwdownload,format=nv12"
+            )
+        else:
+            filter_list.append(
+                f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
+            )
 
     eq_filters = []
     if brightness:
@@ -218,6 +227,7 @@ def generate_all(
             source=fastflix.current_video.source,
             burn_in_subtitle_track=burn_in_track,
             burn_in_subtitle_type=burn_in_type,
+            enable_opencl=fastflix.opencl_support,
             **fastflix.current_video.video_settings.dict(),
         )
 
@@ -235,6 +245,7 @@ def generate_all(
         encoder=encoder,
         filters=filters,
         concat=fastflix.current_video.concat,
+        enable_opencl=fastflix.opencl_support,
         **fastflix.current_video.video_settings.dict(),
         **settings.dict(),
     )
