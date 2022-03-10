@@ -46,9 +46,9 @@ def build(fastflix: FastFlix):
             svtav1_params.append(f"transfer-characteristics=16")
 
         if (
-            "bt2020" in fastflix.current_video.video_settings.color_space
-            or "bt2020" in fastflix.current_video.color_space
-        ):
+            fastflix.current_video.video_settings.color_space
+            and "bt2020" in fastflix.current_video.video_settings.color_space
+        ) or (fastflix.current_video.color_space and "bt2020" in fastflix.current_video.color_space):
             svtav1_params.append(f"matrix-coefficients=9")
 
         enable_hdr = False
