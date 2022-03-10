@@ -223,7 +223,10 @@ class Container(QtWidgets.QMainWindow):
         self.setting.show()
 
     def new_profile(self):
-        self.profile.show()
+        if not self.app.fastflix.current_video:
+            error_message(t("Please load in a video to configure a new profile"))
+        else:
+            self.profile.show()
 
     def show_profile(self):
         self.profile_details = ProfileDetails(
@@ -326,6 +329,8 @@ class ProfileDetails(QtWidgets.QWidget):
         main_section.addWidget(profile_title)
         for k, v in profile.dict().items():
             if k == "advanced_options":
+                continue
+            if k.lower().startswith("audio") or k.lower() == "profile_version":
                 continue
             if k not in setting_types.keys():
                 item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())

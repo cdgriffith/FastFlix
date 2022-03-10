@@ -45,7 +45,7 @@ sub_match_item_locale = [t("All"), t("Track Number"), t("Language")]
 
 
 class AudioProfile(QtWidgets.QTabWidget):
-    def __init__(self, parent_list, app, parent, index):
+    def __init__(self, parent_list, app, main, parent, index):
         super(AudioProfile, self).__init__(parent)
         self.enabled = True
         self.index = index
@@ -101,7 +101,7 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.downmix.view().setFixedWidth(self.downmix.minimumSizeHint().width() + 50)
 
         self.convert_to = QtWidgets.QComboBox()
-        self.convert_to.addItems(["None | Passthrough"] + app.fastflix.audio_encoders)
+        self.convert_to.addItems(["None | Passthrough"] + main.video_options.audio_formats)
         self.convert_to.currentIndexChanged.connect(self.update_conversion)
         self.convert_to.view().setFixedWidth(self.convert_to.minimumSizeHint().width() + 50)
 
@@ -166,14 +166,15 @@ class AudioProfile(QtWidgets.QTabWidget):
             match_input=match_input_value,
             conversion=self.convert_to.currentText() if self.convert_to.currentIndex() > 0 else None,
             bitrate=self.bitrate.currentText(),
-            downmix=self.bitrate.currentIndex(),
+            downmix=self.downmix.currentIndex(),
         )
 
 
 class AudioSelect(FlixList):
-    def __init__(self, app, parent):
+    def __init__(self, app, parent, main):
         super().__init__(app, parent, "Audio Select", "Audio")
         self.tracks = []
+        self.main = main
 
         self.passthrough_checkbox = QtWidgets.QCheckBox(t("Passthrough All"))
         self.add_button = QtWidgets.QPushButton(f'  {t("Add Pattern Match")}  ')
@@ -196,7 +197,7 @@ class AudioSelect(FlixList):
         super()._new_source(self.tracks)
 
     def add_track(self):
-        self.tracks.append(AudioProfile(self, self.app, self.inner_widget, len(self.tracks)))
+        self.tracks.append(AudioProfile(self, self.app, self.main, self.inner_widget, len(self.tracks)))
         self.reorder(height=126)
 
     def remove_track(self, index):
@@ -389,7 +390,7 @@ class ProfileWindow(QtWidgets.QWidget):
 
         self.tab_area = QtWidgets.QTabWidget()
         self.tab_area.setMinimumWidth(500)
-        self.audio_select = AudioSelect(self.app, self)
+        self.audio_select = AudioSelect(self.app, self, self.main)
         self.subtitle_select = SubtitleSelect(self.app, self)
         self.advanced_tab = AdvancedTab(self.advanced_options)
         self.primary_tab = PrimaryOptions(self.main_settings)
