@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import copy
 import datetime
-import importlib.machinery  # Needed for pyinstaller
 import logging
 import math
 import os
@@ -30,7 +29,7 @@ from fastflix.flix import (
     get_auto_crop,
     parse,
     parse_hdr_details,
-    get_first_concat_item,
+    get_concat_item,
 )
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
@@ -50,7 +49,7 @@ from fastflix.windows_tools import show_windows_notification
 from fastflix.widgets.background_tasks import ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.video_options import VideoOptions
-from fastflix.widgets.large_preview import LargePreview
+from fastflix.widgets.windows.large_preview import LargePreview
 
 logger = logging.getLogger("fastflix")
 
@@ -299,21 +298,23 @@ class Main(QtWidgets.QWidget):
         top_bar.addWidget(self.widgets.profile_box)
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
 
-        add_profile = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-new-profile")), f'  {t("New Profile")}')
+        self.add_profile = QtWidgets.QPushButton(
+            QtGui.QIcon(self.get_icon("onyx-new-profile")), f'  {t("New Profile")}'
+        )
         # add_profile.setFixedSize(QtCore.QSize(40, 40))
-        add_profile.setFixedHeight(40)
-        add_profile.setIconSize(QtCore.QSize(20, 20))
-        add_profile.setToolTip(t("Profile_newprofiletooltip"))
+        self.add_profile.setFixedHeight(40)
+        self.add_profile.setIconSize(QtCore.QSize(20, 20))
+        self.add_profile.setToolTip(t("Profile_newprofiletooltip"))
         # add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
-        add_profile.clicked.connect(lambda: self.container.new_profile())
-
+        self.add_profile.clicked.connect(lambda: self.container.new_profile())
+        self.add_profile.setDisabled(True)
         # options = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("settings")), "")
         # options.setFixedSize(QtCore.QSize(40, 40))
         # options.setIconSize(QtCore.QSize(22, 22))
         # options.setToolTip(t("Settings"))
         # options.clicked.connect(lambda: self.container.show_setting())
 
-        top_bar.addWidget(add_profile)
+        top_bar.addWidget(self.add_profile)
         top_bar.addStretch(1)
         # top_bar.addWidget(options)
 
@@ -1157,6 +1158,7 @@ class Main(QtWidgets.QWidget):
             button.setDisabled(True)
         self.output_path_button.setDisabled(True)
         self.output_video_path_widget.setDisabled(True)
+        self.add_profile.setDisabled(True)
 
     def enable_all(self):
         for name, widget in self.widgets.items():
@@ -1174,6 +1176,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.scale.height.setDisabled(True)
         self.output_path_button.setEnabled(True)
         self.output_video_path_widget.setEnabled(True)
+        self.add_profile.setEnabled(True)
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def scale_update(self):
@@ -1540,6 +1543,7 @@ class Main(QtWidgets.QWidget):
         filters = helpers.generate_filters(
             start_filters="select=eq(pict_type\\,I)" if self.widgets.thumb_key.isChecked() else None,
             custom_filters=custom_filters,
+            enable_opencl=self.app.fastflix.opencl_support,
             **settings,
         )
 
@@ -1548,7 +1552,8 @@ class Main(QtWidgets.QWidget):
             source=self.source_material,
             output=self.thumb_file,
             filters=filters,
-            start_time=self.preview_place,
+            enable_opencl=self.app.fastflix.opencl_support,
+            start_time=self.preview_place if not self.app.fastflix.current_video.concat else None,
             input_track=self.app.fastflix.current_video.video_settings.selected_track,
         )
         try:
@@ -1560,7 +1565,9 @@ class Main(QtWidgets.QWidget):
 
     @property
     def source_material(self):
-        return get_first_concat_item(self.input_video) if self.app.fastflix.current_video.concat else self.input_video
+        if self.app.fastflix.current_video.concat:
+            return get_concat_item(self.input_video, self.widgets.thumb_time.value())
+        return self.input_video
 
     @staticmethod
     def thread_logger(text):

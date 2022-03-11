@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from typing import List, Optional
+import logging
 
 from box import Box
 from iso639 import Lang
@@ -10,12 +11,14 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.encoders.common.audio import lossless, channel_list
 from fastflix.language import t
 from fastflix.models.encode import AudioTrack
+from fastflix.models.profiles import Profile, MatchType, MatchItem
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
 from fastflix.shared import no_border, error_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
+logger = logging.getLogger("fastflix")
 
 
 class Audio(QtWidgets.QTabWidget):
@@ -41,6 +44,7 @@ class Audio(QtWidgets.QTabWidget):
     ):
         self.loading = True
         super(Audio, self).__init__(parent)
+        self.setObjectName("Audio")
         self.parent = parent
         self.audio = audio
         self.setFixedHeight(60)
@@ -89,7 +93,7 @@ class Audio(QtWidgets.QTabWidget):
             self.widgets.audio_info.setToolTip(all_info.to_yaml())
 
         self.widgets.language.addItems(["No Language Set"] + language_list)
-        self.widgets.language.setMaximumWidth(110)
+        self.widgets.language.setMaximumWidth(150)
         if language:
             try:
                 lang = Lang(language).name
@@ -102,12 +106,13 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.language.currentIndexChanged.connect(self.page_update)
         self.widgets.title.setFixedWidth(150)
         self.widgets.title.textChanged.connect(self.page_update)
-        self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-
+        # self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.widgets.audio_info.setFixedWidth(350)
         self.widgets.downmix.addItems([t("No Downmix")] + [k for k, v in channel_list.items() if v <= channels])
         self.widgets.downmix.currentIndexChanged.connect(self.update_downmix)
         self.widgets.downmix.setCurrentIndex(0)
         self.widgets.downmix.setDisabled(True)
+        self.widgets.downmix.hide()
 
         self.widgets.enable_check.setChecked(enabled)
         self.widgets.enable_check.toggled.connect(self.update_enable)
@@ -126,8 +131,10 @@ class Audio(QtWidgets.QTabWidget):
         label = QtWidgets.QLabel(f"{t('Title')}: ")
         self.widgets.title.setFixedWidth(150)
         title_layout = QtWidgets.QHBoxLayout()
-        title_layout.addWidget(label)
-        title_layout.addWidget(self.widgets.title)
+        title_layout.addStretch(False)
+        title_layout.addWidget(label, stretch=False)
+        title_layout.addWidget(self.widgets.title, stretch=False)
+        title_layout.addStretch(True)
 
         grid = QtWidgets.QGridLayout()
         grid.addLayout(self.init_move_buttons(), 0, 0)
@@ -179,13 +186,16 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.convert_bitrate.addItems(self.get_conversion_bitrates())
         self.widgets.convert_bitrate.setCurrentIndex(3)
         self.widgets.convert_bitrate.setDisabled(True)
+        self.widgets.bitrate_label = QtWidgets.QLabel(f"{t('Bitrate')}: ")
+        self.widgets.convert_bitrate.hide()
+        self.widgets.bitrate_label.hide()
 
         self.widgets.convert_bitrate.currentIndexChanged.connect(lambda: self.page_update())
         self.widgets.convert_to.currentIndexChanged.connect(self.update_conversion)
         layout.addWidget(QtWidgets.QLabel(f"{t('Conversion')}: "))
         layout.addWidget(self.widgets.convert_to)
 
-        layout.addWidget(QtWidgets.QLabel(f"{t('Bitrate')}: "))
+        layout.addWidget(self.widgets.bitrate_label)
         layout.addWidget(self.widgets.convert_bitrate)
 
         return layout
@@ -218,8 +228,14 @@ class Audio(QtWidgets.QTabWidget):
         if self.widgets.convert_to.currentIndex() == 0:
             self.widgets.downmix.setDisabled(True)
             self.widgets.convert_bitrate.setDisabled(True)
+            self.widgets.convert_bitrate.hide()
+            self.widgets.bitrate_label.hide()
+            self.widgets.downmix.hide()
         else:
             self.widgets.downmix.setDisabled(False)
+            self.widgets.convert_bitrate.show()
+            self.widgets.bitrate_label.show()
+            self.widgets.downmix.show()
             if self.widgets.convert_to.currentText() in lossless:
                 self.widgets.convert_bitrate.setDisabled(True)
             else:
@@ -317,42 +333,33 @@ class AudioList(FlixList):
         self.app = app
         self._first_selected = False
 
-    def lang_match(self, track):
-        if not self.app.fastflix.config.opt("audio_select"):
-            return False
-        if not self.app.fastflix.config.opt("audio_select_preferred_language"):
-            if self.app.fastflix.config.opt("audio_select_first_matching") and self._first_selected:
-                return False
-            self._first_selected = True
-            return True
-        try:
-            track_lang = Lang(track.get("tags", {}).get("language", ""))
-        except InvalidLanguageValue:
-            return True
-        else:
-            if Lang(self.app.fastflix.config.opt("audio_language")) == track_lang:
-                if self.app.fastflix.config.opt("audio_select_first_matching") and self._first_selected:
-                    return False
-                self._first_selected = True
-                return True
-        return False
+    def _get_track_info(self, track):
+        track_info = ""
+        tags = track.get("tags", {})
+        if tags:
+            track_info += tags.get("title", "")
+            # if "language" in tags:
+            #     track_info += f" {tags.language}"
+        track_info += f" - {track.codec_name}"
+        if "profile" in track:
+            track_info += f" ({track.profile})"
+        track_info += f" - {track.channels} {t('channels')}"
+        return track_info, tags
+
+    def enable_all(self):
+        for track in self.tracks:
+            track.widgets.enable_check.setChecked(True)
+
+    def disable_all(self):
+        for track in self.tracks:
+            track.widgets.enable_check.setChecked(False)
 
     def new_source(self, codecs):
         self.tracks: List[Audio] = []
         self._first_selected = False
         disable_dup = "nvencc" in self.main.convert_to.lower()
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
-            track_info = ""
-            tags = x.get("tags", {})
-            if tags:
-                track_info += tags.get("title", "")
-                # if "language" in tags:
-                #     track_info += f" {tags.language}"
-            track_info += f" - {x.codec_name}"
-            if "profile" in x:
-                track_info += f" ({x.profile})"
-            track_info += f" - {x.channels} {t('channels')}"
-
+            track_info, tags = self._get_track_info(x)
             new_item = Audio(
                 self,
                 track_info,
@@ -367,7 +374,7 @@ class AudioList(FlixList):
                 codecs=codecs,
                 channels=x.channels,
                 available_audio_encoders=self.available_audio_encoders,
-                enabled=self.lang_match(x),
+                enabled=True,
                 all_info=x,
                 disable_dup=disable_dup,
             )
@@ -376,7 +383,6 @@ class AudioList(FlixList):
         if self.tracks:
             self.tracks[0].set_first()
             self.tracks[-1].set_last()
-
         super()._new_source(self.tracks)
         self.update_audio_settings()
 
@@ -399,6 +405,122 @@ class AudioList(FlixList):
             return
         for track in self.tracks:
             track.update_codecs(allowed_formats or set())
+
+    def apply_profile_settings(self, profile: Profile, original_tracks: List[Box], audio_formats):
+        if profile.audio_filters:
+            self.disable_all()
+        else:
+            self.enable_all()
+            return
+
+        disable_dups = "nvencc" in self.main.convert_to.lower() or "vcenc" in self.main.convert_to.lower()
+        self.tracks = []
+
+        def gen_track(
+            parent, audio_track, outdex, og=False, enabled=True, downmix=None, conversion=None, bitrate=None
+        ) -> Audio:
+            track_info, tags = self._get_track_info(audio_track)
+            new_track = Audio(
+                parent,
+                track_info,
+                title=tags.get("title"),
+                language=tags.get("language"),
+                profile=audio_track.get("profile"),
+                original=og,
+                index=audio_track.index,
+                outdex=outdex,
+                codec=audio_track.codec_name,
+                codecs=audio_formats,
+                channels=audio_track.channels,
+                available_audio_encoders=self.available_audio_encoders,
+                enabled=enabled,
+                all_info=audio_track,
+                disable_dup=disable_dups,
+            )
+            if conversion:
+                new_track.widgets.convert_to.setCurrentText(conversion)
+                new_track.widgets.convert_bitrate.setCurrentText(bitrate)
+            if downmix and downmix < audio_track.channels:
+                new_track.widgets.downmix.setCurrentIndex(downmix)
+            return new_track
+
+        # First populate all original tracks and disable them
+        for i, track in enumerate(original_tracks, start=1):
+            self.tracks.append(gen_track(self, track, outdex=i, og=True, enabled=False))
+
+        tracks = []
+        for audio_match in profile.audio_filters:
+            if audio_match.match_item == MatchItem.ALL:
+                track_select = original_tracks.copy()
+                if track_select:
+                    if audio_match.match_type == MatchType.FIRST:
+                        track_select = [track_select[0]]
+                    elif audio_match.match_type == MatchType.LAST:
+                        track_select = [track_select[-1]]
+                    for track in track_select:
+                        tracks.append((track, audio_match))
+
+            elif audio_match.match_item == MatchItem.TITLE:
+                subset_tracks = []
+                for track in original_tracks:
+                    if audio_match.match_input.lower() in track.tags.get("title", "").casefold():
+                        subset_tracks.append((track, audio_match))
+                if subset_tracks:
+                    if audio_match.match_type == MatchType.FIRST:
+                        tracks.append(subset_tracks[0])
+                    elif audio_match.match_type == MatchType.LAST:
+                        tracks.append(subset_tracks[-1])
+                    else:
+                        tracks.extend(subset_tracks)
+
+            elif audio_match.match_item == MatchItem.TRACK:
+                for track in original_tracks:
+                    if track.index == int(audio_match.match_input):
+                        tracks.append((track, audio_match))
+
+            elif audio_match.match_item == MatchItem.LANGUAGE:
+                subset_tracks = []
+                for track in original_tracks:
+                    try:
+                        if Lang(audio_match.match_input) == Lang(track.tags["language"]):
+                            subset_tracks.append((track, audio_match))
+                    except (InvalidLanguageValue, KeyError):
+                        pass
+                if subset_tracks:
+                    if audio_match.match_type == MatchType.FIRST:
+                        tracks.append(subset_tracks[0])
+                    elif audio_match.match_type == MatchType.LAST:
+                        tracks.append(subset_tracks[-1])
+                    else:
+                        tracks.extend(subset_tracks)
+
+            elif audio_match.match_item == MatchItem.CHANNELS:
+                subset_tracks = []
+                for track in original_tracks:
+                    if int(audio_match.match_input) == track.channels:
+                        subset_tracks.append((track, audio_match))
+                if subset_tracks:
+                    if audio_match.match_type == MatchType.FIRST:
+                        tracks.append(subset_tracks[0])
+                    elif audio_match.match_type == MatchType.LAST:
+                        tracks.append(subset_tracks[-1])
+                    else:
+                        tracks.extend(subset_tracks)
+
+        self.tracks.extend(
+            gen_track(
+                self,
+                track[0],
+                i,
+                enabled=True,
+                og=False,
+                conversion=track[1].conversion,
+                bitrate=track[1].bitrate,
+                downmix=track[1].downmix,
+            )
+            for i, track in enumerate(tracks, start=len(self.tracks) + 1)
+        )
+        super()._new_source(self.tracks)
 
     def update_audio_settings(self):
         tracks = []
@@ -464,17 +586,7 @@ class AudioList(FlixList):
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
             if x.index in repopulated_tracks:
                 continue
-            track_info = ""
-            tags = x.get("tags", {})
-            if tags:
-                track_info += tags.get("title", "")
-                # if "language" in tags:
-                #     track_info += f" {tags.language}"
-            track_info += f" - {x.codec_name}"
-            if "profile" in x:
-                track_info += f" ({x.profile})"
-            track_info += f" - {x.channels} {t('channels')}"
-
+            track_info, tags = self._get_track_info(x)
             new_item = Audio(
                 self,
                 track_info,

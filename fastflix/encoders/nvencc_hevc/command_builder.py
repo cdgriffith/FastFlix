@@ -102,6 +102,12 @@ def build(fastflix: FastFlix):
     elif settings.aq.lower() == "temporal":
         aq = f"--aq-temporal --aq-strength {settings.aq_strength}"
 
+    bit_depth = "8"
+    if video.current_video_stream.bit_depth > 8 and not video.video_settings.remove_hdr:
+        bit_depth = "10"
+    if settings.force_ten_bit:
+        bit_depth = "10"
+
     command = [
         f'"{clean_file_string(fastflix.config.nvencc)}"',
         "-i",
@@ -142,7 +148,7 @@ def build(fastflix: FastFlix):
         (max_cll if max_cll else ""),
         (dhdr if dhdr else ""),
         "--output-depth",
-        ("10" if video.current_video_stream.bit_depth > 8 and not video.video_settings.remove_hdr else "8"),
+        bit_depth,
         "--multipass",
         settings.multipass,
         "--mv-precision",

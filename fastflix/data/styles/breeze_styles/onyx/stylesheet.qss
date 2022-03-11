@@ -131,7 +131,7 @@ QCheckBox::indicator:unchecked:focus,
 QTreeView::indicator:unchecked,
 QTreeView::indicator:unchecked:focus
 {
-    border-image: url(onyx:checkbox_unchecked_disabled.svg);
+    border-image: url(onyx:checkbox_unchecked.png);
 }
 
 QCheckBox::indicator:unchecked:hover,
@@ -144,14 +144,14 @@ QGroupBox::indicator:unchecked:focus,
 QGroupBox::indicator:unchecked:pressed
 {
     border: none;
-    border-image: url(onyx:checkbox_unchecked.svg);
+    border-image: url(onyx:checkbox_unchecked.png);
 }
 
 QCheckBox::indicator:checked,
 QTreeView::indicator:checked,
 QGroupBox::indicator:checked
 {
-    border-image: url(onyx:checkbox_checked.svg);
+    border-image: url(onyx:checkbox_checked.png);
 }
 
 QCheckBox::indicator:checked:hover,
@@ -165,7 +165,7 @@ QGroupBox::indicator:checked:focus,
 QGroupBox::indicator:checked:pressed
 {
     border: none;
-    border-image: url(onyx:checkbox_checked.svg);
+    border-image: url(onyx:checkbox_checked.png);
 }
 
 QCheckBox::indicator:indeterminate,
@@ -194,14 +194,14 @@ QCheckBox::indicator:checked:disabled,
 QTreeView::indicator:checked:disabled,
 QGroupBox::indicator:checked:disabled
 {
-    border-image: url(onyx:checkbox_checked_disabled.svg);
+    border-image: url(onyx:checkbox_checked_disabled.png);
 }
 
 QCheckBox::indicator:unchecked:disabled,
 QTreeView::indicator:unchecked:disabled,
 QGroupBox::indicator:unchecked:disabled
 {
-    border-image: url(onyx:checkbox_unchecked_disabled.svg);
+    border-image: url(onyx:checkbox_unchecked_disabled.png);
 }
 
 QRadioButton
@@ -226,7 +226,7 @@ QRadioButton::indicator
 QRadioButton::indicator:unchecked,
 QRadioButton::indicator:unchecked:focus
 {
-    border-image: url(onyx:radio_unchecked_disabled.svg);
+    border-image: url(onyx:radio_unchecked_disabled.png);
 }
 
 QRadioButton::indicator:unchecked:hover,
@@ -234,14 +234,14 @@ QRadioButton::indicator:unchecked:pressed
 {
     border: none;
     outline: none;
-    border-image: url(onyx:radio_unchecked.svg);
+    border-image: url(onyx:radio_unchecked.png);
 }
 
 QRadioButton::indicator:checked
 {
     border: none;
     outline: none;
-    border-image: url(onyx:radio_checked.svg);
+    border-image: url(onyx:radio_checked.png);
 }
 
 QRadioButton::indicator:checked:hover,
@@ -250,18 +250,18 @@ QRadioButton::indicator:checked:pressed
 {
     border: none;
     outline: none;
-    border-image: url(onyx:radio_checked.svg);
+    border-image: url(onyx:radio_checked.png);
 }
 
 QRadioButton::indicator:checked:disabled
 {
     outline: none;
-    border-image: url(onyx:radio_checked_disabled.svg);
+    border-image: url(onyx:radio_checked_disabled.png);
 }
 
 QRadioButton::indicator:unchecked:disabled
 {
-    border-image: url(onyx:radio_unchecked_disabled.svg);
+    border-image: url(onyx:radio_unchecked_disabled.png);
 }
 
 QMenuBar
@@ -336,42 +336,42 @@ QMenu::indicator
 
 QMenu::indicator:non-exclusive:unchecked
 {
-    border-image: url(onyx:checkbox_unchecked_disabled.svg);
+    border-image: url(onyx:checkbox_unchecked_disabled.png);
 }
 
 QMenu::indicator:non-exclusive:unchecked:selected
 {
-    border-image: url(onyx:checkbox_unchecked_disabled.svg);
+    border-image: url(onyx:checkbox_unchecked_disabled.png);
 }
 
 QMenu::indicator:non-exclusive:checked
 {
-    border-image: url(onyx:checkbox_checked.svg);
+    border-image: url(onyx:checkbox_checked.png);
 }
 
 QMenu::indicator:non-exclusive:checked:selected
 {
-    border-image: url(onyx:checkbox_checked.svg);
+    border-image: url(onyx:checkbox_checked.png);
 }
 
 QMenu::indicator:exclusive:unchecked
 {
-    border-image: url(dark:radio_unchecked_disabled.svg);
+    border-image: url(dark:radio_unchecked_disabled.png);
 }
 
 QMenu::indicator:exclusive:unchecked:selected
 {
-    border-image: url(dark:radio_unchecked_disabled.svg);
+    border-image: url(dark:radio_unchecked_disabled.png);
 }
 
 QMenu::indicator:exclusive:checked
 {
-    border-image: url(dark:radio_checked.svg);
+    border-image: url(dark:radio_checked.png);
 }
 
 QMenu::indicator:exclusive:checked:selected
 {
-    border-image: url(dark:radio_checked.svg);
+    border-image: url(dark:radio_checked.png);
 }
 
 QMenu::right-arrow
@@ -1961,4 +1961,9 @@ QMessageBox QPushButton
 {
     min-height: 1.1em;
     min-width: 5em;
+}
+
+Audio
+{
+   background-color: #ffffff;
 }

@@ -127,6 +127,7 @@ class NVEncCSettings(EncoderSettings):
     b_ref_mode: str = "disabled"
     ref: Optional[str] = None
     metrics: bool = False
+    force_ten_bit: bool = False
 
 
 class NVEncCAVCSettings(EncoderSettings):
@@ -217,11 +218,13 @@ class SVTAV1Settings(EncoderSettings):
     tile_columns: str = "0"
     tile_rows: str = "0"
     tier: str = "main"
-    # scene_detection: str = "false"
+    scene_detection: bool = False
     single_pass: bool = False
-    speed: str = "7"
+    speed: str = "7"  # Renamed preset in svtav1 encoder
     qp: Optional[Union[int, float]] = 24
+    qp_mode: str = "qp"
     bitrate: Optional[str] = None
+    svtav1_params: List[str] = Field(default_factory=list)
 
 
 class VP9Settings(EncoderSettings):
@@ -261,6 +264,8 @@ class GIFSettings(EncoderSettings):
     name = "GIF"
     fps: int = 15
     dither: str = "sierra2_4a"
+    max_colors: str = "256"
+    stats_mode: str = "full"
 
 
 class CopySettings(EncoderSettings):

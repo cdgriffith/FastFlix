@@ -75,11 +75,11 @@ def latest_ffmpeg(signal, stop_signal, **_):
         message(t("Download Cancelled"))
         return
 
-    gpl_ffmpeg = [asset for asset in data["assets"] if asset["name"].endswith("win64-gpl.zip")]
+    gpl_ffmpeg = [asset for asset in data["assets"] if "master-latest-win64-gpl.zip" in asset["name"]]
     if not gpl_ffmpeg:
         shutil.rmtree(extract_folder, ignore_errors=True)
         message(
-            t("Could not find any matching FFmpeg ending with 'win64-gpl.zip' with")
+            t("Could not find any matching FFmpeg containing 'win64-gpl-5' with")
             + f" {t('latest release from')} <a href='https://github.com/BtbN/FFmpeg-Builds/releases/'>"
             "https://github.com/BtbN/FFmpeg-Builds/releases/</a> "
         )

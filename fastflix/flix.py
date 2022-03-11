@@ -23,6 +23,66 @@ re_progressive = re.compile(r"Progressive:\s+(\d+)")
 
 logger = logging.getLogger("fastflix")
 
+ffmpeg_valid_color_primaries = [
+    "bt709",
+    "bt470m",
+    "bt470bg",
+    "smpte170m",
+    "smpte240m",
+    "film",
+    "bt2020",
+    "smpte428",
+    "smpte428_1",
+    "smpte431",
+    "smpte432",
+    "jedec-p22",
+]
+
+ffmpeg_valid_color_transfers = [
+    "bt709",
+    "gamma22",
+    "gamma28",
+    "smpte170m",
+    "smpte240m",
+    "linear",
+    "log",
+    "log100",
+    "log_sqrt",
+    "log316",
+    "iec61966_2_4",
+    "iec61966-2-4",
+    "bt1361",
+    "bt1361e",
+    "iec61966_2_1",
+    "iec61966-2-1",
+    "bt2020_10",
+    "bt2020_10bit",
+    "bt2020_12",
+    "bt2020_12bit",
+    "smpte2084",
+    "smpte428",
+    "smpte428_1",
+    "arib-std-b67",
+]
+
+ffmpeg_valid_color_space = [
+    "rgb",
+    "bt709",
+    "fcc",
+    "bt470bg",
+    "smpte170m",
+    "smpte240m",
+    "ycocg",
+    "bt2020nc",
+    "bt2020_ncl",
+    "bt2020c",
+    "bt2020_cl",
+    "smpte2085",
+    "chroma-derived-nc",
+    "chroma-derived-c",
+    "ictcp",
+]
+
 
 def clean_file_string(source):
     return str(source).strip()
@@ -162,17 +222,23 @@ def get_all_concat_items(file):
     return items
 
 
-def get_first_concat_item(file):
+def get_concat_item(file, location=0):
     all_items = get_all_concat_items(file)
     if not all_items:
         raise FlixError("concat file must start with `file` on each line.")
-    return all_items[0]
+    if location == 0:
+        return all_items[0]
+    section = len(all_items) // 10
+    item_num = int((location * section)) - 1
+    if item_num >= len(all_items):
+        return all_items[-1]
+    return all_items[item_num]
 
 
 def parse(app: FastFlixApp, **_):
     source = app.fastflix.current_video.source
     if source.name.lower().endswith("txt"):
-        source = get_first_concat_item(source)
+        source = get_concat_item(source)
         app.fastflix.current_video.concat = True
     data = probe(app, source)
     if "streams" not in data:
@@ -241,13 +307,29 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
 
 
 def generate_thumbnail_command(
-    config: Config, source: Path, output: Path, filters: str, start_time: float = 0, input_track: int = 0
+    config: Config,
+    source: Path,
+    output: Path,
+    filters: str,
+    start_time: float = 0,
+    input_track: int = 0,
+    enable_opencl: bool = False,
 ) -> str:
-    return (
-        f'"{config.ffmpeg}" -ss {start_time} -loglevel error -i "{clean_file_string(source)}" '
-        f" {filters} -an -y -map_metadata -1 -map 0:{input_track} "
-        f'-vframes 1 "{clean_file_string(output)}" '
-    )
+    command_options = [
+        f"{config.ffmpeg}",
+        f"-ss {start_time}" if start_time else "",
+        "-loglevel warning",
+        f'-i "{clean_file_string(source)}"',
+        ("-init_hw_device opencl=ocl -filter_hw_device ocl" if enable_opencl else ""),
+        filters,
+        f"-map 0:{input_track}" if "-map" not in filters else "",
+        "-an",
+        "-y",
+        "-map_metadata -1",
+        "-frames:v 1",
+        f'"{clean_file_string(output)}"',
+    ]
+    return " ".join(command_options)
 
 
 def get_auto_crop(
@@ -272,7 +354,7 @@ def get_auto_crop(
             "-map",
             f"0:{input_track}",
             "-vf",
-            "cropdetect",
+            "cropdetect=round=2",
             "-vframes",
             "10",
             "-f",
@@ -365,6 +447,12 @@ def ffmpeg_audio_encoders(app, config: Config) -> List:
             started = True
     app.fastflix.audio_encoders = encoders
     return encoders
+
+
+def ffmpeg_opencl_support(app, config: Config) -> bool:
+    cmd = execute([f"{config.ffmpeg}", "-hide_banner", "-log_level", "error", "-init_hw_device", "opencl", "-h"])
+    app.fastflix.opencl_support = cmd.returncode == 0
+    return app.fastflix.opencl_support
 
 
 def convert_mastering_display(data: Box) -> Tuple[Box, str]:
@@ -469,7 +557,7 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
     hdr10_parser_version_output = check_output([str(config.hdr10plus_parser), "--version"], encoding="utf-8")
     _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
     hdr10_parser_version = LooseVersion(version_string)
-    logger.debug(f"Using HDR10 parser version {hdr10_parser_version}")
+    logger.debug(f"Using HDR10 parser version {str(hdr10_parser_version).strip()}")
 
     for stream in app.fastflix.current_video.streams.video:
         logger.debug(f"Checking for hdr10+ in stream {stream.index}")

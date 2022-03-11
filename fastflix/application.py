@@ -7,7 +7,7 @@ import coloredlogs
 import reusables
 from PySide6 import QtGui, QtWidgets, QtCore
 
-from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration, ffprobe_configuration
+from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration, ffprobe_configuration, ffmpeg_opencl_support
 from fastflix.language import t
 from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
@@ -171,6 +171,7 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
         Task(t("Gather FFmpeg version"), ffmpeg_configuration),
         Task(t("Gather FFprobe version"), ffprobe_configuration),
         Task(t("Gather FFmpeg audio encoders"), ffmpeg_audio_encoders),
+        Task(t("Determine OpenCL Support"), ffmpeg_opencl_support),
         Task(t("Initialize Encoders"), init_encoders),
     ]
 

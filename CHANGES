@@ -1,5 +1,18 @@
 # Changelog
 
+## Version 4.7.0
+
+* Adding #164 audio matching in profiles (thanks to bmcassagne)
+* Adding #261 Advanced settings are currently not saved on Profiles (thanks to georgesaumen)
+* Adding #294 NVEncC 10-bit encoding mode for 8-bit source (thanks to Don Gafford)
+* Adding HDR10 support, svtav1-params, scene detection, and crf option for SVT AV1
+* Adding max colors and stats mode to GIF
+* Adding OpenCL support for Remove HDR to speed it up
+* Changing FFmpeg download to look for latest master GPL builds
+* Fixing #296 low quality auto-crop due to high rounding, increasing accuracy from 16 to 2 pixels (thanks to Rayman24365)
+* Fixing concat builder behavior to work smoother
+* Fixing thumbnail generation for concat images
+
 ## Version 4.6.0
 
 * Adding #195 640kbps audio (thanks to ObviousInRetrospect and Harybo)
