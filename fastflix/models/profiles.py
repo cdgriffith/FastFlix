@@ -24,6 +24,8 @@ from fastflix.models.encode import (
     VCEEncCSettings,
 )
 
+from fastflix.encoders.common.audio import channel_list
+
 __all__ = ["MatchItem", "MatchType", "AudioMatch", "Profile", "SubtitleMatch", "AdvancedOptions"]
 
 
@@ -47,7 +49,7 @@ class AudioMatch(BaseModel):
     match_input: str = "*"
     conversion: Optional[str] = None
     bitrate: Optional[str] = None
-    downmix: Optional[int] = None
+    downmix: Optional[Union[str, int]] = None
 
     @validator("match_type")
     def match_type_must_be_enum(cls, v):
@@ -60,6 +62,23 @@ class AudioMatch(BaseModel):
         if isinstance(v, list):
             return MatchType(v[0])
         return MatchItem(v)
+
+    @validator("downmix")
+    def downmix_as_string(cls, v):
+        fixed = {1: "monoo", 2: "stereo", 3: "2.1", 4: "3.1", 5: "5.0", 6: "5.1", 7: "6.1", 8: "7.1"}
+        if isinstance(v, str) and v.isnumeric():
+            v = int(v)
+        if isinstance(v, int):
+            if v in fixed:
+                return fixed[v]
+            return None
+        return v
+
+    @validator("bitrate")
+    def bitrate_k_end(cls, v):
+        if v and not v.endswith("k"):
+            return f"{v}k"
+        return v
 
 
 class SubtitleMatch(BaseModel):

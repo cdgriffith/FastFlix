@@ -6106,3 +6106,27 @@ Please load in a video to configure a new profile:
   por: Por favor, carregue em um vídeo para configurar um novo perfil
   swe: Ladda in en video för att konfigurera en ny profil
   pol: Wczytaj film, jak skonfigurować nowy profil
+10-bit:
+  eng: 10-bit
+  deu: 10-bit
+  fra: 10-bit
+  ita: 10-bit
+  spa: 10-bit
+  zho: 10位
+  jpn: 10ビット
+  rus: 10-бит
+  por: 10 bit
+  swe: 10-bit
+  pol: 10-bit
+This encoder does not support duplicating audio tracks, please remove copied tracks!:
+  eng: This encoder does not support duplicating audio tracks, please remove copied tracks!
+  deu: Dieser Encoder unterstützt das Duplizieren von Audiospuren nicht, bitte entfernen Sie die kopierten Spuren!
+  fra: Cet encodeur ne prend pas en charge la duplication des pistes audio, veuillez supprimer les pistes copiées !
+  ita: Questo encoder non supporta la duplicazione di tracce audio, per favore rimuovi le tracce copiate!
+  spa: Este codificador no admite la duplicación de pistas de audio, por favor, elimine las pistas copiadas.
+  zho: 此编码器不支持复制音轨，请删除已复制的音轨!
+  jpn: このエンコーダーはオーディオトラックの複製をサポートしていません。コピーしたトラックを削除してください。
+  rus: Этот кодер не поддерживает дублирование звуковых дорожек, пожалуйста, удалите скопированные дорожки!
+  por: Este codificador não suporta a duplicação de faixas de áudio, por favor remova as faixas copiadas!
+  swe: Den här kodaren stöder inte duplicering av ljudspår, ta bort kopierade spår!
+  pol: Ten koder nie obsługuje duplikowania ścieżek audio, usuń skopiowane ścieżki!
