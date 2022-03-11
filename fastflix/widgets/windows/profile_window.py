@@ -29,6 +29,7 @@ from fastflix.models.encode import (
 )
 from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, AdvancedOptions
 from fastflix.shared import error_message
+from fastflix.encoders.common.audio import channel_list
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 
@@ -96,7 +97,7 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.grid.addWidget(self.kill_myself, 0, 5, 1, 5)
 
         self.downmix = QtWidgets.QComboBox()
-        self.downmix.addItems(["No Downmix"] + [str(x) for x in range(1, 16)])
+        self.downmix.addItems([t("No Downmix")] + list(channel_list.keys()))
         self.downmix.setCurrentIndex(0)
         self.downmix.view().setFixedWidth(self.downmix.minimumSizeHint().width() + 50)
 
@@ -106,7 +107,7 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.convert_to.view().setFixedWidth(self.convert_to.minimumSizeHint().width() + 50)
 
         self.bitrate = QtWidgets.QComboBox()
-        self.bitrate.addItems([str(x) for x in range(32, 1024, 32)])
+        self.bitrate.addItems([f"{x}k" for x in range(32, 1024, 32)])
         self.bitrate.view().setFixedWidth(self.bitrate.minimumSizeHint().width() + 50)
 
         self.bitrate.setDisabled(True)
@@ -166,7 +167,7 @@ class AudioProfile(QtWidgets.QTabWidget):
             match_input=match_input_value,
             conversion=self.convert_to.currentText() if self.convert_to.currentIndex() > 0 else None,
             bitrate=self.bitrate.currentText(),
-            downmix=self.downmix.currentIndex(),
+            downmix=self.downmix.currentText(),
         )
 
 

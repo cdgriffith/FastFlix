@@ -437,11 +437,21 @@ class AudioList(FlixList):
                 all_info=audio_track,
                 disable_dup=disable_dups,
             )
+
             if conversion:
                 new_track.widgets.convert_to.setCurrentText(conversion)
-                new_track.widgets.convert_bitrate.setCurrentText(bitrate)
-            if downmix and downmix < audio_track.channels:
-                new_track.widgets.downmix.setCurrentIndex(downmix)
+                # Downmix must come first
+                if downmix:
+                    new_track.widgets.downmix.setCurrentText(downmix)
+                if conversion in lossless:
+                    new_track.widgets.convert_bitrate.setDisabled(True)
+                else:
+                    if bitrate not in [
+                        new_track.widgets.convert_bitrate.itemText(i)
+                        for i in range(new_track.widgets.convert_bitrate.count())
+                    ]:
+                        new_track.widgets.convert_bitrate.addItem(bitrate)
+                    new_track.widgets.convert_bitrate.setCurrentText(bitrate)
             return new_track
 
         # First populate all original tracks and disable them
@@ -574,7 +584,15 @@ class AudioList(FlixList):
 
             new_track.widgets.downmix.setCurrentText(track.downmix)
             new_track.widgets.convert_to.setCurrentText(track.conversion_codec)
-            new_track.widgets.convert_bitrate.setCurrentText(track.conversion_bitrate)
+            if track.conversion_codec in lossless:
+                new_track.widgets.convert_bitrate.setDisabled(True)
+            else:
+                if track.conversion_bitrate not in [
+                    new_track.widgets.convert_bitrate.itemText(i)
+                    for i in range(new_track.widgets.convert_bitrate.count())
+                ]:
+                    new_track.widgets.convert_bitrate.addItem(track.conversion_bitrate)
+                new_track.widgets.convert_bitrate.setCurrentText(track.conversion_bitrate)
             new_track.widgets.title.setText(track.title)
             if track.language:
                 new_track.widgets.language.setCurrentText(Lang(track.language).name)
