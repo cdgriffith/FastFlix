@@ -392,7 +392,6 @@ class SettingPanel(QtWidgets.QWidget):
 
     def update_profile(self):
         global ffmpeg_extra_command
-        logger.debug("Update profile called")
         for widget_name, opt in self.opts.items():
             if isinstance(self.widgets[widget_name], QtWidgets.QComboBox):
                 default = self.determine_default(

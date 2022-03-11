@@ -111,6 +111,8 @@ class NVENCC(SettingPanel):
         grid.addLayout(qp_line, 5, 2, 1, 4)
 
         advanced = QtWidgets.QHBoxLayout()
+        advanced.addLayout(self.init_10_bit())
+        advanced.addStretch(1)
         advanced.addLayout(self.init_ref())
         advanced.addStretch(1)
         advanced.addLayout(self.init_b_frames())
@@ -344,6 +346,9 @@ class NVENCC(SettingPanel):
             min_width=60,
         )
 
+    def init_10_bit(self):
+        return self._add_check_box(label="10-bit", widget_name="ten_bit", opt="force_ten_bit")
+
     def init_metrics(self):
         return self._add_check_box(
             widget_name="metrics",
@@ -389,6 +394,13 @@ class NVENCC(SettingPanel):
             return
         self.updating_settings = True
 
+        if self.app.fastflix.current_video.current_video_stream.bit_depth > 8 and not self.main.remove_hdr:
+            self.widgets.ten_bit.setChecked(True)
+            self.widgets.ten_bit.setDisabled(True)
+        else:
+            self.widgets.ten_bit.setChecked(False)
+            self.widgets.ten_bit.setDisabled(False)
+
         if update:
             self.main.page_update()
         self.updating_settings = False
@@ -397,6 +409,7 @@ class NVENCC(SettingPanel):
         settings = NVEncCSettings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
             # profile=self.widgets.profile.currentText(),
+            force_ten_bit=self.widgets.ten_bit.isChecked(),
             tier=self.widgets.tier.currentText(),
             lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
             aq=self.widgets.aq.currentText(),
@@ -443,3 +456,9 @@ class NVENCC(SettingPanel):
             self.extract_button.show()
         else:
             self.extract_button.hide()
+        if self.app.fastflix.current_video.current_video_stream.bit_depth > 8 and not self.main.remove_hdr:
+            self.widgets.ten_bit.setChecked(True)
+            self.widgets.ten_bit.setDisabled(True)
+        else:
+            self.widgets.ten_bit.setChecked(False)
+            self.widgets.ten_bit.setDisabled(False)

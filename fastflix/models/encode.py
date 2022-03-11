@@ -127,6 +127,7 @@ class NVEncCSettings(EncoderSettings):
     b_ref_mode: str = "disabled"
     ref: Optional[str] = None
     metrics: bool = False
+    force_ten_bit: bool = False
 
 
 class NVEncCAVCSettings(EncoderSettings):

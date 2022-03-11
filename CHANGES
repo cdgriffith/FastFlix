@@ -2,8 +2,9 @@
 
 ## Version 4.7.0
 
-* Adding #163 audio matching in profiles (thanks to bmcassagne)
+* Adding #164 audio matching in profiles (thanks to bmcassagne)
 * Adding #261 Advanced settings are currently not saved on Profiles (thanks to georgesaumen)
+* Adding #294 NVEncC 10-bit encoding mode for 8-bit source (thanks to Don Gafford)
 * Adding HDR10 support, svtav1-params, scene detection, and crf option for SVT AV1
 * Adding max colors and stats mode to GIF
 * Adding OpenCL support for Remove HDR to speed it up
