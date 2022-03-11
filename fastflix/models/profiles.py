@@ -87,9 +87,6 @@ class SubtitleMatch(BaseModel):
     match_input: str
 
 
-# TODO upgrade path from old profile to new profile
-
-
 class AdvancedOptions(BaseModel):
     video_speed: float = 1
     deblock: Optional[str] = None

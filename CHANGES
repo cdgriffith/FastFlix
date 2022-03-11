@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.7.2
+
+* Fixing that force 10-bit encoding for NVEencC was not set from profiles properly (thanks to wynterca)
+
 ## Version 4.7.1
 
 * Fixing #304 New profile Audio conversion downmix and bitrate issues (thanks to wynterca)
