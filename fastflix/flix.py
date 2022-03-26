@@ -153,7 +153,9 @@ def ffmpeg_configuration(app, config: Config, **_):
     """Extract the version and libraries available from the specified version of FFmpeg"""
     res = execute([f"{config.ffmpeg}", "-version"])
     if res.returncode != 0:
-        raise FlixError(f'"{config.ffmpeg}" file not found')
+        logger.error(f"{config.ffmpeg} command stdout: {res.stdout}")
+        logger.error(f"{config.ffmpeg} command stderr: {res.stderr}")
+        raise FlixError(f'"{config.ffmpeg}" file not found or errored while executing. Return code {res.returncode}')
     config = []
     try:
         version = res.stdout.split(" ", 4)[2]
