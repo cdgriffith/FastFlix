@@ -3,7 +3,7 @@ import logging
 import re
 
 import mistune
-from PySide6 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets
 
 from fastflix.resources import changes_file, local_changes_file
 

@@ -49,7 +49,7 @@ def startup_options():
             import coloredlogs
             import iso639
             import mistune
-            import PySide6
+            import PySide2
             import requests
             import reusables
             import ruamel.yaml

@@ -6,7 +6,7 @@ from pathlib import Path
 
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t

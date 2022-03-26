@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 import logging
 
-from PySide6 import QtWidgets, QtGui, QtCore
+from PySide2 import QtWidgets, QtGui, QtCore
 
 from fastflix.language import t
 from fastflix.flix import probe

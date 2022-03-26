@@ -17,7 +17,7 @@ import pkg_resources
 import reusables
 from box import Box
 from pydantic import BaseModel, Field
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
 from fastflix.exceptions import FastFlixInternalException, FlixError

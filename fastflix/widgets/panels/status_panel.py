@@ -6,7 +6,7 @@ import time
 from datetime import timedelta
 from typing import Optional
 
-from PySide6 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets
 
 from fastflix.exceptions import FlixError
 from fastflix.language import t

@@ -5,7 +5,7 @@ import logging
 from typing import Union
 
 from box import Box, BoxList
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import DEVMODE
