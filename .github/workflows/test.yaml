@@ -31,7 +31,7 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: Install PySide6 requirements
+    - name: Install PySide2 requirements
       run: |
         sudo apt update
         sudo apt install libopengl0 freeglut3 freeglut3-dev -y
@@ -46,5 +46,5 @@ jobs:
 
     - name: Run tests
       env:
-        PYTEST_QT_API: pyside6
+        PYTEST_QT_API: pyside2
       run: pytest tests
