@@ -1,7 +1,10 @@
 # Changelog
 
-## Version 4.7.2
+## Version 4.8.0
 
+* Adding #313 basic vsync support for hardware encoders (thanks to Wontell)
+* Adding "Auto" profile for VCEncC
+* Fixing profile not being passed for AVC with VCEencC and stuck on Baseline
 * Fixing that force 10-bit encoding for NVEencC was not set from profiles properly (thanks to wynterca)
 
 ## Version 4.7.1

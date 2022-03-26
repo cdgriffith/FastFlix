@@ -148,7 +148,7 @@ class VCEENCCAVC(SettingPanel):
         return self._add_combo_box(
             label="Profile",
             widget_name="profile",
-            options=["Baseline", "Main", "High"],
+            options=["Auto", "Baseline", "Main", "High"],
             connect="default",
             opt="profile",
         )
@@ -290,6 +290,7 @@ class VCEENCCAVC(SettingPanel):
             pre_analysis=self.widgets.pre_analysis.isChecked(),
             vbaq=self.widgets.vbaq.isChecked(),
             decoder=self.widgets.decoder.currentText(),
+            profile=self.widgets.profile.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

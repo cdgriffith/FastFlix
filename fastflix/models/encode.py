@@ -184,7 +184,7 @@ class VCEEncCSettings(EncoderSettings):
 class VCEEncCAVCSettings(EncoderSettings):
     name = "AVC (VCEEncC)"
     preset: str = "slow"
-    profile: str = "Baseline"
+    profile: str = "Auto"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
     tier: str = "high"
