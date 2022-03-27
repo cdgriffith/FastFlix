@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from box import Box
-from PySide6 import QtWidgets
+from PySide2 import QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.encode import WebPSettings

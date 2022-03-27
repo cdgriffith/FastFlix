@@ -84,6 +84,12 @@ def build(fastflix: FastFlix):
     elif settings.aq.lower() == "temporal":
         aq = f"--aq-temporal --aq-strength {settings.aq_strength}"
 
+    vsync_setting = "cfr" if video.frame_rate == video.average_frame_rate else "vfr"
+    if video.video_settings.vsync == "cfr":
+        vsync_setting = "forcecfr"
+    elif video.video_settings.vsync == "vfr":
+        vsync_setting = "vfr"
+
     command = [
         f'"{clean_file_string(fastflix.config.nvencc)}"',
         "-i",
@@ -126,7 +132,7 @@ def build(fastflix: FastFlix):
         "auto",
         "--colorrange",
         "auto",
-        f"--avsync {'cfr' if video.frame_rate == video.average_frame_rate else 'vfr'}",
+        f"--avsync {vsync_setting}",
         (f"--interlace {video.interlaced}" if video.interlaced else ""),
         ("--vpp-yadif" if video.video_settings.deinterlace else ""),
         (f"--vpp-colorspace hdr2sdr=mobius" if video.video_settings.remove_hdr else ""),

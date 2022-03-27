@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PySide6 import QtWidgets
+from PySide2 import QtWidgets
 
 from fastflix.models.fastflix import FastFlix
 

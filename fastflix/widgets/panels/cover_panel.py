@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import List, Tuple, Union
 
 from box import Box
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.encode import AttachmentTrack

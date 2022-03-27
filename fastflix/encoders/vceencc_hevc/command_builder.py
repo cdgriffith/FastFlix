@@ -84,6 +84,12 @@ def build(fastflix: FastFlix):
             logger.warning("Could not get stream ID from source, the proper video track may not be selected!")
         stream_id = None
 
+    vsync_setting = "cfr" if video.frame_rate == video.average_frame_rate else "vfr"
+    if video.video_settings.vsync == "cfr":
+        vsync_setting = "forcecfr"
+    elif video.video_settings.vsync == "vfr":
+        vsync_setting = "vfr"
+
     command = [
         f'"{clean_file_string(fastflix.config.vceencc)}"',
         ("--avhw" if settings.decoder == "Hardware" else "--avsw"),
@@ -129,7 +135,7 @@ def build(fastflix: FastFlix):
         "auto",
         "--colorrange",
         "auto",
-        f"--avsync {'cfr' if video.frame_rate == video.average_frame_rate else 'vfr'}",
+        f"--avsync {vsync_setting}",
         (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
         ("--vpp-nnedi" if video.video_settings.deinterlace else ""),
         (f"--vpp-colorspace hdr2sdr=mobius" if video.video_settings.remove_hdr else ""),

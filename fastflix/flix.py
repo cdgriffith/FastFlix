@@ -153,7 +153,9 @@ def ffmpeg_configuration(app, config: Config, **_):
     """Extract the version and libraries available from the specified version of FFmpeg"""
     res = execute([f"{config.ffmpeg}", "-version"])
     if res.returncode != 0:
-        raise FlixError(f'"{config.ffmpeg}" file not found')
+        logger.error(f"{config.ffmpeg} command stdout: {res.stdout}")
+        logger.error(f"{config.ffmpeg} command stderr: {res.stderr}")
+        raise FlixError(f'"{config.ffmpeg}" file not found or errored while executing. Return code {res.returncode}')
     config = []
     try:
         version = res.stdout.split(" ", 4)[2]
@@ -490,11 +492,11 @@ def parse_hdr_details(app: FastFlixApp, **_):
         for video_stream in streams.video:
             if video_stream["index"] == video_track and video_stream.get("side_data_list"):
                 try:
-                    master_display, cll = convert_mastering_display(streams.video[0])
+                    master_display, cll = convert_mastering_display(video_stream)
                 except FlixError as err:
                     logger.error(str(err))
                 except Exception:
-                    logger.exception(f"Unexpected error while processing master-display from {streams.video[0]}")
+                    logger.exception(f"Unexpected error while processing master-display from {video_stream}")
                 else:
                     if master_display:
                         app.fastflix.current_video.hdr10_streams.append(

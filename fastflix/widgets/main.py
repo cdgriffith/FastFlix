@@ -17,7 +17,7 @@ import pkg_resources
 import reusables
 from box import Box
 from pydantic import BaseModel, Field
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
 from fastflix.exceptions import FastFlixInternalException, FlixError
@@ -288,7 +288,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.profile_box.view().setFixedWidth(self.widgets.profile_box.minimumSizeHint().width() + 50)
         self.widgets.profile_box.setCurrentText(self.app.fastflix.config.selected_profile)
         self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
-        self.widgets.profile_box.setMinimumWidth(150)
+        self.widgets.profile_box.setFixedWidth(250)
         self.widgets.profile_box.setFixedHeight(40)
 
         top_bar.addWidget(source)

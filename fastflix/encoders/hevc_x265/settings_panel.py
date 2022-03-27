@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 
 from box import Box
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
@@ -52,7 +52,17 @@ recommended_crfs = [
     "Custom",
 ]
 
-pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
+pix_fmts = [
+    "8-bit: yuv420p",
+    "10-bit: yuv420p10le",
+    "12-bit: yuv420p12le",
+    "8-bit 422: yuv422p",
+    "8-bit 444: yuv444p",
+    "10-bit 422: yuv422p10le",
+    "10-bit 444: yuv444p10le",
+    "12-bit 422: yuv422p12le",
+    "12-bit 444: yuv444p12le",
+]
 
 
 def get_breaker():
@@ -492,11 +502,10 @@ class HEVC(SettingPanel):
             self.updating_settings = False
             return
 
-        bit_depth = self.app.fastflix.current_video.streams["video"][self.main.video_track].bit_depth
         if self.main.remove_hdr:
-            self.widgets.pix_fmt.clear()
-            self.widgets.pix_fmt.addItems([pix_fmts[0]])
-            self.widgets.pix_fmt.setCurrentIndex(0)
+            # self.widgets.pix_fmt.clear()
+            # self.widgets.pix_fmt.addItems([pix_fmts[0]])
+            # self.widgets.pix_fmt.setCurrentIndex(0)
             self.widgets.hdr10_opt.setDisabled(True)
             self.widgets.hdr10_opt.setChecked(False)
             self.widgets.hdr10.setDisabled(True)
@@ -504,18 +513,18 @@ class HEVC(SettingPanel):
             self.widgets.repeat_headers.setChecked(False)
             self.widgets.repeat_headers.setDisabled(False)
         else:
-            self.widgets.pix_fmt.clear()
-            if bit_depth == 12:
-                self.widgets.pix_fmt.addItems(pix_fmts[2:])
-                self.widgets.pix_fmt.setCurrentIndex(0)
-            elif bit_depth == 10:
-                self.widgets.pix_fmt.addItems(pix_fmts[1:])
-                self.widgets.pix_fmt.setCurrentIndex(0)
-            else:
-                self.widgets.pix_fmt.addItems(pix_fmts)
-                self.widgets.pix_fmt.setCurrentIndex(1)
-
+            # bit_depth = self.app.fastflix.current_video.streams["video"][self.main.video_track].bit_depth
+            # self.widgets.pix_fmt.clear()
+            # # if bit_depth == 12:
+            # #     self.widgets.pix_fmt.addItems(pix_fmts[2:])
+            # #     self.widgets.pix_fmt.setCurrentIndex(0)
+            # if bit_depth >= 10:
+            #     self.widgets.pix_fmt.addItems(pix_fmts[1:])
+            #     self.widgets.pix_fmt.setCurrentIndex(0)
+            # else:
             hdr_opts()
+        # self.widgets.pix_fmt.addItems(pix_fmts)
+        # self.widgets.pix_fmt.setCurrentIndex(1)
 
         if update:
             self.main.page_update()
