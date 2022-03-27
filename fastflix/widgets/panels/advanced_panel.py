@@ -108,12 +108,14 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.init_color_info()
         self.add_spacer()
         self.init_vbv()
+        self.add_spacer()
+        self.layout.setRowStretch(self.last_row, True)
+        self.init_hw_message()
         # self.add_spacer()
         # self.init_custom_filters()
 
-        self.last_row += 1
+        # self.last_row += 1
 
-        self.layout.setRowStretch(self.last_row, True)
         # self.layout.setColumnStretch(6, True)
         self.last_row += 1
 
@@ -204,7 +206,9 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.video_speed_widget = QtWidgets.QComboBox()
         self.video_speed_widget.addItems(video_speeds.keys())
         self.video_speed_widget.currentIndexChanged.connect(self.page_update)
-        self.layout.addWidget(QtWidgets.QLabel(t("Video Speed")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(
+            QtWidgets.QLabel(t("Video Speed") + " ʘ"), self.last_row, 1, alignment=QtCore.Qt.AlignRight
+        )
         self.layout.addWidget(self.video_speed_widget, self.last_row, 2)
         self.layout.addWidget(QtWidgets.QLabel(t("Warning: Audio will not be modified")), self.last_row, 3, 1, 3)
 
@@ -236,7 +240,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.saturation_widget.setValidator(self.only_float)
         self.saturation_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
-        self.add_row_label(t("Equalizer"), self.last_row)
+        self.add_row_label(t("Equalizer") + " ʘ", self.last_row)
 
         self.layout.addWidget(QtWidgets.QLabel(t("Brightness")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.brightness_widget, self.last_row, 2)
@@ -257,7 +261,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.denoise_strength_widget.setCurrentIndex(0)
         self.denoise_strength_widget.currentIndexChanged.connect(self.page_update)
 
-        self.add_row_label(t("Denoise"), self.last_row)
+        self.add_row_label(t("Denoise") + " ʘ", self.last_row)
         self.layout.addWidget(QtWidgets.QLabel(t("Method")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.denoise_type_widget, self.last_row, 2)
         self.layout.addWidget(QtWidgets.QLabel(t("Strength")), self.last_row, 3, alignment=QtCore.Qt.AlignRight)
@@ -277,7 +281,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.deblock_size_widget.currentIndexChanged.connect(self.page_update)
         self.deblock_size_widget.setCurrentIndex(2)
 
-        self.add_row_label(t("Deblock"), self.last_row)
+        self.add_row_label(t("Deblock") + " ʘ", self.last_row)
         self.layout.addWidget(QtWidgets.QLabel(t("Strength")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.deblock_widget, self.last_row, 2)
         self.layout.addWidget(QtWidgets.QLabel(t("Block Size")), self.last_row, 3, alignment=QtCore.Qt.AlignRight)
@@ -345,6 +349,14 @@ class AdvancedPanel(QtWidgets.QWidget):
     # overlay=y=-140
     # crop=1904:800:6:140
     # (800 + 140) - 1080 == -140
+
+    def init_hw_message(self):
+        self.last_row += 1
+        label = QtWidgets.QLabel("ʘ " + t("Not supported by rigaya's hardware encoders"))
+        if self.app.fastflix.config.theme == "onyx":
+            label.setStyleSheet("color: #b5b5b5")
+
+        self.layout.addWidget(label, self.last_row, 0, 1, 2)
 
     def init_custom_filters(self):
         self.last_row += 1

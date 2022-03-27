@@ -6130,3 +6130,15 @@ This encoder does not support duplicating audio tracks, please remove copied tra
   por: Este codificador não suporta a duplicação de faixas de áudio, por favor remova as faixas copiadas!
   swe: Den här kodaren stöder inte duplicering av ljudspår, ta bort kopierade spår!
   pol: Ten koder nie obsługuje duplikowania ścieżek audio, usuń skopiowane ścieżki!
+Not supported by rigaya's hardware encoders:
+  eng: Not supported by rigaya's hardware encoders
+  deu: Wird von Rigayas Hardware-Encodern nicht unterstützt
+  fra: Non supporté par les encodeurs matériels de rigaya
+  ita: Non supportato dagli encoder hardware di rigaya
+  spa: No es compatible con los codificadores de hardware de Rigaya
+  zho: 不被Rigaya的硬件编码器所支持
+  jpn: リガヤのハードウェアエンコーダには対応していません。
+  rus: Не поддерживается аппаратными кодерами rigaya
+  por: Não suportado pelos codificadores de hardware da rigaya
+  swe: Stöds inte av Rigayas hårdvarukodare
+  pol: Nieobsługiwane przez nadajniki sprzętowe firmy rigaya
