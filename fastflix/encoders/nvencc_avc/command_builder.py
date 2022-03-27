@@ -84,7 +84,7 @@ def build(fastflix: FastFlix):
     elif settings.aq.lower() == "temporal":
         aq = f"--aq-temporal --aq-strength {settings.aq_strength}"
 
-    vsync_setting = "crf" if video.frame_rate == video.average_frame_rate else "vfr"
+    vsync_setting = "cfr" if video.frame_rate == video.average_frame_rate else "vfr"
     if video.video_settings.vsync == "cfr":
         vsync_setting = "forcecfr"
     elif video.video_settings.vsync == "vfr":

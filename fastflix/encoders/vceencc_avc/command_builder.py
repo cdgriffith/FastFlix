@@ -66,7 +66,7 @@ def build(fastflix: FastFlix):
             logger.warning("Could not get stream ID from source, the proper video track may not be selected!")
         stream_id = None
 
-    vsync_setting = "crf" if video.frame_rate == video.average_frame_rate else "vfr"
+    vsync_setting = "cfr" if video.frame_rate == video.average_frame_rate else "vfr"
     if video.video_settings.vsync == "cfr":
         vsync_setting = "forcecfr"
     elif video.video_settings.vsync == "vfr":
