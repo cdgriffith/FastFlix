@@ -3,6 +3,7 @@
 ## Version 4.8.0
 
 * Adding #313 basic vsync support for hardware encoders (thanks to Wontell)
+* Adding #312 additional pixel formats for most encoders (thanks to Owen Quinlan)
 * Adding "Auto" profile for VCEncC
 * Changing #292 back to PySide2 to be compatible with Windows 7 and 8 (thanks to Causemic)
 * Fixing #315 HDR10 info not parsed from subsequent video tracks than the first (thanks to msaintauret)

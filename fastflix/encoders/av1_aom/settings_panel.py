@@ -29,7 +29,17 @@ recommended_bitrates = [
 
 recommended_crfs = ["34", "32", "30", "28", "26", "24", "22", "20", "Custom"]
 
-pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
+pix_fmts = [
+    "8-bit: yuv420p",
+    "10-bit: yuv420p10le",
+    "12-bit: yuv420p12le",
+    "8-bit 422: yuv422p",
+    "8-bit 444: yuv444p",
+    "10-bit 422: yuv422p10le",
+    "10-bit 444: yuv444p10le",
+    "12-bit 422: yuv422p12le",
+    "12-bit 444: yuv444p12le",
+]
 
 
 class AV1(SettingPanel):
