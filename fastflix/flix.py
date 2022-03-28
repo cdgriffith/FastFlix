@@ -510,7 +510,7 @@ def parse_hdr_details(app: FastFlixApp, **_):
                     "-loglevel",
                     "panic",
                     "-select_streams",
-                    f"v:{video_stream.index}",
+                    f"{video_stream.index}",
                     "-print_format",
                     "json",
                     "-show_frames",
