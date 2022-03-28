@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.8.1
+
+* Fixing #315 HDR10 info not parsed from subsequent video tracks than the first, again (thanks to msaintauret)
+
 ## Version 4.8.0
 
 * Adding #313 basic vsync support for hardware encoders (thanks to Wontell)
