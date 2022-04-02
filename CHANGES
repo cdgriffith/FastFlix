@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 4.9.0
+
+* Adding #196 Support for HEVC Apple Silicon M1 encoder (thanks to Kay Singh)
+
 ## Version 4.8.1
 
 * Fixing #315 HDR10 info not parsed from subsequent video tracks than the first, again (thanks to msaintauret)

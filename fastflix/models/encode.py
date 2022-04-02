@@ -241,6 +241,19 @@ class VP9Settings(EncoderSettings):
     tile_rows: str = "-1"
 
 
+class HEVCVideoToolboxSettings(EncoderSettings):
+    name = "HEVC (Video Toolbox)"
+    profile: int = 0
+    allow_sw: bool = False
+    require_sw: bool = False
+    realtime: bool = False
+    frames_before: bool = False
+    frames_after: bool = False
+    q: Optional[int] = 50
+    bitrate: Optional[str] = None
+    pix_fmt: str = "p010le"
+
+
 class AOMAV1Settings(EncoderSettings):
     name = "AV1 (AOM)"
     tile_columns: str = "0"
@@ -287,4 +300,5 @@ setting_types = {
     "nvencc_avc": NVEncCAVCSettings,
     "vceencc_hevc": VCEEncCSettings,
     "vceencc_avc": VCEEncCAVCSettings,
+    "hevc_videotoolbox": HEVCVideoToolboxSettings,
 }

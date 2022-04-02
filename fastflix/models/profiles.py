@@ -22,6 +22,7 @@ from fastflix.models.encode import (
     NVEncCAVCSettings,
     VCEEncCAVCSettings,
     VCEEncCSettings,
+    HEVCVideoToolboxSettings,
 )
 
 from fastflix.encoders.common.audio import channel_list
@@ -152,3 +153,4 @@ class Profile(BaseModel):
     nvencc_avc: Optional[NVEncCAVCSettings] = None
     vceencc_hevc: Optional[VCEEncCSettings] = None
     vceencc_avc: Optional[VCEEncCAVCSettings] = None
+    hevc_videotoolbox: Optional[HEVCVideoToolboxSettings] = None
