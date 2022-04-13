@@ -111,5 +111,9 @@ def save_queue(queue: List[Video], queue_file: Path, config: Config):
                 track["file_path"] = str(new_file)
 
         items.append(video)
-    Box(queue=items).to_yaml(filename=queue_file)
-    logger.debug(f"queue saved to recovery file {queue_file}")
+    try:
+        Box(queue=items).to_yaml(filename=queue_file)
+    except Exception as err:
+        logger.warning(items)
+        logger.exception(f"Could not save queue! {err.__class__.__name__}: {err}")
+        raise err from None

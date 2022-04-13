@@ -5,10 +5,9 @@ from box import Box
 from PySide2 import QtCore, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
-from fastflix.language import t
-from fastflix.models.encode import HEVCVideoToolboxSettings
+from fastflix.models.encode import H264VideoToolboxSettings
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.shared import link
+
 
 logger = logging.getLogger("fastflix")
 
@@ -38,14 +37,11 @@ recommended_crfs = [
     "Custom",
 ]
 
-pix_fmts = [
-    "8-bit: yuv420p",
-    "10-bit: p010le",
-]
+pix_fmts = ["8-bit: yuv420p"]
 
 
-class HEVCVideoToolbox(SettingPanel):
-    profile_name = "hevc_videotoolbox"
+class H264VideoToolbox(SettingPanel):
+    profile_name = "h264_videotoolbox"
 
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
@@ -101,12 +97,14 @@ class HEVCVideoToolbox(SettingPanel):
     def init_profile(self):
         return self._add_combo_box(
             label="Profile",
-            tooltip="HEVC coding profile - must match bit depth",
+            tooltip="AVC coding profile",
             widget_name="profile",
             options=[
                 "Auto",
-                "Main",
-                "Main10",
+                "baseline",
+                "main",
+                "high",
+                "extended",
             ],
             opt="profile",
         )
@@ -160,7 +158,7 @@ class HEVCVideoToolbox(SettingPanel):
         self.main.build_commands()
 
     def update_video_encoder_settings(self):
-        settings = HEVCVideoToolboxSettings(
+        settings = H264VideoToolboxSettings(
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             profile=self.widgets.profile.currentIndex(),

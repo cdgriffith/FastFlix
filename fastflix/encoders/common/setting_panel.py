@@ -272,13 +272,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.hdr10plus_metadata.setText(filename[0])
         self.main.page_update()
 
-    def _add_modes(
-        self,
-        recommended_bitrates,
-        recommended_qps,
-        qp_name="crf",
-        add_qp=True,
-    ):
+    def _add_modes(self, recommended_bitrates, recommended_qps, qp_name="crf", add_qp=True, disable_custom_qp=False):
         self.recommended_bitrates = recommended_bitrates
         self.recommended_qps = recommended_qps
         self.qp_name = qp_name
@@ -341,18 +335,20 @@ class SettingPanel(QtWidgets.QWidget):
         try:
             default_qp_index = self.determine_default(qp_name, qp_value, recommended_qps, raise_error=True)
         except FastFlixInternalException:
-            custom_qp = True
-            self.widgets[qp_name].setCurrentText("Custom")
+            if not disable_custom_qp:
+                custom_qp = True
+                self.widgets[qp_name].setCurrentText("Custom")
         else:
             if default_qp_index is not None:
                 self.widgets[qp_name].setCurrentIndex(default_qp_index)
 
         self.widgets[qp_name].currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
-        self.widgets[f"custom_{qp_name}"].setFixedWidth(100)
-        self.widgets[f"custom_{qp_name}"].setEnabled(custom_qp)
-        self.widgets[f"custom_{qp_name}"].setValidator(self.only_float)
-        self.widgets[f"custom_{qp_name}"].textChanged.connect(lambda: self.main.build_commands())
+        if not disable_custom_qp:
+            self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
+            self.widgets[f"custom_{qp_name}"].setFixedWidth(100)
+            self.widgets[f"custom_{qp_name}"].setEnabled(custom_qp)
+            self.widgets[f"custom_{qp_name}"].setValidator(self.only_float)
+            self.widgets[f"custom_{qp_name}"].textChanged.connect(lambda: self.main.build_commands())
 
         if config_opt:
             self.mode = "Bitrate"
@@ -362,8 +358,11 @@ class SettingPanel(QtWidgets.QWidget):
         qp_box_layout.addWidget(self.widgets[qp_name], 1)
         qp_box_layout.addStretch(1)
         qp_box_layout.addStretch(1)
-        qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        qp_box_layout.addWidget(self.widgets[f"custom_{qp_name}"])
+        if disable_custom_qp:
+            qp_box_layout.addStretch(1)
+        else:
+            qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
+            qp_box_layout.addWidget(self.widgets[f"custom_{qp_name}"])
         qp_box_layout.addWidget(QtWidgets.QLabel("  "))
 
         bitrate_group_box.setLayout(bitrate_box_layout)

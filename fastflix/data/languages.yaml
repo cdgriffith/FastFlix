@@ -6142,3 +6142,123 @@ Not supported by rigaya's hardware encoders:
   por: Não suportado pelos codificadores de hardware da rigaya
   swe: Stöds inte av Rigayas hårdvarukodare
   pol: Nieobsługiwane przez nadajniki sprzętowe firmy rigaya
+AVC coding profile:
+  eng: AVC coding profile
+  deu: AVC-Codierungsprofil
+  fra: Profil de codage AVC
+  ita: Profilo di codifica AVC
+  spa: Perfil de codificación AVC
+  zho: AVC编码简介
+  jpn: AVC符号化プロファイル
+  rus: Профиль кодирования AVC
+  por: Perfil de codificação AVC
+  swe: AVC-kodningsprofil
+  pol: Profil kodowania AVC
+Allow Software Encoding:
+  eng: Allow Software Encoding
+  deu: Software-Kodierung zulassen
+  fra: Autoriser le codage logiciel
+  ita: Permettere la codifica del software
+  spa: Permitir la codificación del software
+  zho: 允许软件编码
+  jpn: ソフトウェアエンコードを許可する
+  rus: Разрешить программное кодирование
+  por: Permitir a codificação de software
+  swe: Tillåt kodning av programvara
+  pol: Zezwalaj na kodowanie oprogramowania
+Require Software Encoding:
+  eng: Require Software Encoding
+  deu: Software-Kodierung erforderlich
+  fra: Exiger le codage du logiciel
+  ita: Richiedere la codifica del software
+  spa: Requiere codificación de software
+  zho: 要求软件编码
+  jpn: ソフトウェアエンコードを要求する
+  rus: Требуется программное кодирование
+  por: Exigir codificação de software
+  swe: Kräver kodning av programvara
+  pol: Wymagane kodowanie oprogramowania
+Realtime Encoding:
+  eng: Realtime Encoding
+  deu: Kodierung in Echtzeit
+  fra: Encodage en temps réel
+  ita: Codifica in tempo reale
+  spa: Codificación en tiempo real
+  zho: 实时编码
+  jpn: リアルタイムエンコード
+  rus: Кодирование в реальном времени
+  por: Codificação em tempo real
+  swe: Kodning i realtid
+  pol: Kodowanie w czasie rzeczywistym
+Hint that encoding should happen in real-time if not faster:
+  eng: Hint that encoding should happen in real-time if not faster
+  deu: Hinweis, dass die Kodierung in Echtzeit oder sogar schneller erfolgen sollte
+  fra: Indiquez que l'encodage doit se faire en temps réel, sinon plus rapidement.
+  ita: 'Suggerimento: la codifica dovrebbe avvenire in tempo reale, se non più velocemente'
+  spa: Indicación de que la codificación debe realizarse en tiempo real, si no más rápido
+  zho: 提示编码应该实时发生，如果不是更快的话
+  jpn: エンコードをリアルタイムで行うことを推奨します。
+  rus: Намек на то, что кодирование должно происходить в реальном времени, если не быстрее
+  por: Dica de que a codificação deve acontecer em tempo real, se não mais rápido
+  swe: En antydan om att kodning bör ske i realtid, om inte snabbare.
+  pol: Wskazówka, że kodowanie powinno odbywać się w czasie rzeczywistym, jeśli nie szybciej
+Frames Before:
+  eng: Frames Before
+  deu: Frames Vorher
+  fra: Cadres avant
+  ita: Cornici Prima
+  spa: Marcos Antes
+  zho: 之前的帧数
+  jpn: フレーム数 前
+  rus: Кадры до
+  por: Quadros antes
+  swe: Frames före
+  pol: Ramki Przed
+Other frames will come before the frames in this session. This helps smooth concatenation issues.:
+  eng: Other frames will come before the frames in this session. This helps smooth concatenation issues.
+  deu: Andere Rahmen werden vor den Rahmen in dieser Sitzung angezeigt. Dies hilft, Verkettungsprobleme zu vermeiden.
+  fra: Les autres cadres viendront avant les cadres de cette session. Cela permet d'atténuer les problèmes de concaténation.
+  ita: Gli altri fotogrammi verranno prima dei fotogrammi di questa sessione. Questo aiuta a smussare i problemi di concatenazione.
+  spa: Los demás fotogramas vendrán antes que los fotogramas de esta sesión. Esto ayuda a suavizar los problemas de concatenación.
+  zho: 其他的帧会在这个会话中的帧之前出现。这有助于平滑串联问题。
+  jpn: 他のフレームは、このセッションのフレームより前に来ます。これは、連結の問題をスムーズにするのに役立ちます。
+  rus: Другие кадры будут идти перед кадрами в этой сессии. Это помогает сгладить проблемы конкатенации.
+  por: Outros quadros virão antes dos quadros nesta sessão. Isto ajuda a suavizar as questões de concatenação.
+  swe: Andra ramar kommer att komma före ramarna under denna session. Detta underlättar problem med sammanlänkning.
+  pol: Inne ramki będą się pojawiać przed ramkami w tej sesji. Ułatwia to rozwiązywanie problemów związanych z konkatenacją.
+Frames After:
+  eng: Frames After
+  deu: Frames nach
+  fra: Cadres après
+  ita: Fotogrammi dopo
+  spa: Fotogramas después
+  zho: 之后的帧数
+  jpn: フレーム数
+  rus: Кадры после
+  por: Quadros após
+  swe: Bilder efter
+  pol: Ramki Po
+Other frames will come after the frames in this session. This helps smooth concatenation issues.:
+  eng: Other frames will come after the frames in this session. This helps smooth concatenation issues.
+  deu: Andere Frames kommen nach den Frames in dieser Sitzung. Dies hilft, Verkettungsprobleme zu vermeiden.
+  fra: Les autres cadres viendront après les cadres de cette session. Cela permet d'atténuer les problèmes de concaténation.
+  ita: Gli altri fotogrammi verranno dopo i fotogrammi di questa sessione. Questo aiuta a smussare i problemi di concatenazione.
+  spa: Otros marcos vendrán después de los marcos de esta sesión. Esto ayuda a suavizar los problemas de concatenación.
+  zho: 其他的帧将在这个会话中的帧之后出现。这有助于平滑连接问题。
+  jpn: 他のフレームは、このセッションのフレームの後に来ます。これは、連結の問題をスムーズにするのに役立ちます。
+  rus: Другие кадры будут идти после кадров этой сессии. Это помогает сгладить проблемы с конкатенацией.
+  por: Outros quadros virão após os quadros nesta sessão. Isto ajuda a suavizar as questões de concatenação.
+  swe: Andra ramar kommer att följa efter ramarna i denna session. Detta bidrar till att underlätta problem med sammanlänkningar.
+  pol: Inne ramki będą pojawiać się po ramkach z tej sesji. Ułatwia to rozwiązywanie problemów związanych z konkatenacją.
+HEVC coding profile - must match bit depth:
+  eng: HEVC coding profile - must match bit depth
+  deu: HEVC-Codierungsprofil - muss der Bittiefe entsprechen
+  fra: Profil de codage HEVC - doit correspondre à la profondeur de bit
+  ita: Profilo di codifica HEVC - deve corrispondere alla profondità di bit
+  spa: 'Perfil de codificación HEVC: debe coincidir con la profundidad de bits'
+  zho: HEVC编码配置文件 - 必须与比特深度相匹配
+  jpn: HEVCコーディングプロファイル - ビット深度との一致が必要
+  rus: Профиль кодирования HEVC - должен соответствовать битовой глубине
+  por: Perfil de codificação HEVC - deve corresponder à profundidade do bit
+  swe: HEVC-kodningsprofil - måste matcha bitdjupet
+  pol: Profil kodowania HEVC - musi być zgodny z głębią bitową
