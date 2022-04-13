@@ -174,7 +174,7 @@ def time_to_number(string_time: str) -> float:
         except ValueError:
             logger.info(f"{t('Not a valid int for time conversion')}: {v}")
         else:
-            total += v * (60 ** i)
+            total += v * (60**i)
     return total
 
 
