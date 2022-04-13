@@ -18,12 +18,8 @@ repos:
     - id: check-toml
     - id: detect-private-key
     - id: end-of-file-fixer
-#  - repo: https://github.com/PyCQA/isort
-#    rev: master
-#    hooks:
-#    -   id: isort
   - repo: https://github.com/psf/black
-    rev: 21.8b0
+    rev: 22.3.0
     hooks:
       - id: black
 #  - repo: https://github.com/pre-commit/mirrors-mypy
