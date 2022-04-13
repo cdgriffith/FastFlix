@@ -6262,3 +6262,15 @@ HEVC coding profile - must match bit depth:
   por: Perfil de codificação HEVC - deve corresponder à profundidade do bit
   swe: HEVC-kodningsprofil - måste matcha bitdjupet
   pol: Profil kodowania HEVC - musi być zgodny z głębią bitową
+Ignore Errors:
+  eng: Ignore Errors
+  deu: Fehler ignorieren
+  fra: Ignorer les erreurs
+  ita: Ignorare gli errori
+  spa: Ignorar errores
+  zho: 忽略错误
+  jpn: エラーを無視する
+  rus: Игнорировать ошибки
+  por: Ignorar erros
+  swe: Ignorera fel
+  pol: Ignoruj błędy

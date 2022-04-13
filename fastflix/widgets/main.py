@@ -34,7 +34,7 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
-from fastflix.ff_queue import save_queue
+from fastflix.ff_queue import save_queue, get_queue
 from fastflix.resources import (
     get_icon,
     main_icon,
@@ -1793,16 +1793,18 @@ class Main(QtWidgets.QWidget):
             self.video_options.queue.reset_pause_encode()
             return
 
-        if not self.app.fastflix.queue or self.app.fastflix.current_video:
+        queue_list = self.get_queue_list()
+
+        if not queue_list or self.app.fastflix.current_video:
             add_current = True
-            if self.app.fastflix.queue and self.app.fastflix.current_video:
+            if queue_list and self.app.fastflix.current_video:
                 add_current = yes_no_message("Add current video to queue?", yes_text="Yes", no_text="No")
             if add_current:
                 if not self.add_to_queue():
                     return
         requests = ["add_items", str(self.app.fastflix.log_path)]
 
-        for video in self.app.fastflix.queue:
+        for video in queue_list:
             if video.status.ready:
                 break
         else:
@@ -1819,7 +1821,7 @@ class Main(QtWidgets.QWidget):
 
     def get_commands(self):
         commands = []
-        for video in self.app.fastflix.queue:
+        for video in self.get_queue_list():
             if video.status.complete or video.status.error:
                 continue
             for command in video.video_settings.conversion_commands:
@@ -1842,7 +1844,8 @@ class Main(QtWidgets.QWidget):
             return False
 
         source_in_queue = False
-        for video in self.app.fastflix.queue:
+        queue_list = self.get_queue_list()
+        for video in queue_list:
             if video.status.complete:
                 continue
             if self.app.fastflix.current_video.source == video.source:
@@ -1856,7 +1859,8 @@ class Main(QtWidgets.QWidget):
         # return
 
         with self.app.fastflix.queue_lock:
-            self.app.fastflix.queue.append(copy.deepcopy(self.app.fastflix.current_video))
+            queue_list.append(copy.deepcopy(self.app.fastflix.current_video))
+            save_queue(queue_list, self.app.fastflix.queue_path, self.app.fastflix.config)
         self.video_options.update_queue()
         self.video_options.show_queue()
 
@@ -1866,9 +1870,11 @@ class Main(QtWidgets.QWidget):
             self.app.fastflix.worker_queue.put(tuple(requests))
 
         self.clear_current_video()
-        with self.app.fastflix.queue_lock:
-            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         return True
+
+    def get_queue_list(self):
+        with self.app.fastflix.queue_lock:
+            return get_queue(self.app.fastflix.queue_path)
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_complete(self, return_code):
@@ -1961,12 +1967,12 @@ class Main(QtWidgets.QWidget):
 
     def status_update(self):
         logger.debug(f"Updating queue from command worker")
-        with self.app.fastflix.queue_lock:
-            save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
+        # with self.app.fastflix.queue_lock:
+        #     save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
         self.video_options.update_queue()
 
     def find_video(self, uuid) -> Video:
-        for video in self.app.fastflix.queue:
+        for video in self.get_queue_list():
             if uuid == video.uuid:
                 return video
         raise FlixError(f'{t("No video found for")} {uuid}')
@@ -1996,14 +2002,20 @@ class Notifier(QtCore.QThread):
             self.main.status_update_signal.emit()
             self.app.processEvents()
             if status[0] == "complete":
+                logger.debug("GUI received status queue complete")
                 self.main.completed.emit(0)
             elif status[0] == "error":
+                logger.debug("GUI received status queue errored")
                 self.main.completed.emit(1)
             elif status[0] == "cancelled":
+                logger.debug("GUI received status queue errored")
                 self.main.cancelled.emit("|".join(status[1:]))
             elif status[0] == "exit":
+                logger.debug("GUI received ask to exit")
                 try:
                     self.terminate()
                 finally:
                     self.main.close_event.emit()
                 return
+            else:
+                logger.debug(f"GUI received status {status[0]}")

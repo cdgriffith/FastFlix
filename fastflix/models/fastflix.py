@@ -30,5 +30,4 @@ class FastFlix(BaseModel):
     log_queue: Any = None
 
     current_video: Optional[Video] = None
-    queue: Any = None
     queue_lock: Any = None

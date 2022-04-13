@@ -119,9 +119,9 @@ def register_app():
             logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
 
 
-def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
+def start_app(worker_queue, status_queue, log_queue, queue_lock):
     app = create_app()
-    app.fastflix = FastFlix(queue=queue_list, queue_lock=queue_lock)
+    app.fastflix = FastFlix(queue_lock=queue_lock)
     app.fastflix.log_queue = log_queue
     app.fastflix.status_queue = status_queue
     app.fastflix.worker_queue = worker_queue

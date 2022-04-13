@@ -3,6 +3,7 @@
 ## Version 4.9.0
 
 * Adding #196 Support for HEVC Apple Silicon M1 encoder (thanks to Kay Singh)
+* Adding #323 ignore errors options options for queue (thanks to Don Gafford)
 
 ## Version 4.8.1
 

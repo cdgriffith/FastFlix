@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from typing import List
+from typing import List, Optional
 import os
 from pathlib import Path
 import logging
@@ -17,7 +17,7 @@ from fastflix.models.config import Config
 logger = logging.getLogger("fastflix")
 
 
-def get_queue(queue_file: Path, config: Config) -> List[Video]:
+def get_queue(queue_file: Path) -> List[Video]:
     if not queue_file.exists():
         return []
 
@@ -68,12 +68,17 @@ def get_queue(queue_file: Path, config: Config) -> List[Video]:
     return queue
 
 
-def save_queue(queue: List[Video], queue_file: Path, config: Config):
+def save_queue(queue: List[Video], queue_file: Path, config: Optional[Config] = None):
     items = []
-    queue_covers = config.work_path / "covers"
-    queue_covers.mkdir(parents=True, exist_ok=True)
-    queue_data = config.work_path / "queue_extras"
-    queue_data.mkdir(parents=True, exist_ok=True)
+
+    if config is not None:
+        queue_covers = config.work_path / "covers"
+        queue_covers.mkdir(parents=True, exist_ok=True)
+        queue_data = config.work_path / "queue_extras"
+        queue_data.mkdir(parents=True, exist_ok=True)
+    else:
+        queue_data = Path()
+        queue_covers = Path()
 
     def update_conversion_command(vid, old_path: str, new_path: str):
         for command in vid["video_settings"]["conversion_commands"]:
@@ -87,28 +92,29 @@ def save_queue(queue: List[Video], queue_file: Path, config: Config):
         video["source"] = os.fspath(video["source"])
         video["work_path"] = os.fspath(video["work_path"])
         video["video_settings"]["output_path"] = os.fspath(video["video_settings"]["output_path"])
-        if metadata := video["video_settings"]["video_encoder_settings"].get("hdr10plus_metadata"):
-            new_metadata_file = queue_data / f"{uuid.uuid4().hex}_metadata.json"
-            try:
-                shutil.copy(metadata, new_metadata_file)
-            except OSError:
-                logger.exception("Could not save HDR10+ metadata file to queue recovery location, removing HDR10+")
-
-            update_conversion_command(
-                video,
-                str(metadata),
-                str(new_metadata_file),
-            )
-            video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"] = str(new_metadata_file)
-        for track in video["video_settings"]["attachment_tracks"]:
-            if track.get("file_path"):
-                new_file = queue_covers / f'{uuid.uuid4().hex}_{track["file_path"].name}'
+        if config:
+            if metadata := video["video_settings"]["video_encoder_settings"].get("hdr10plus_metadata"):
+                new_metadata_file = queue_data / f"{uuid.uuid4().hex}_metadata.json"
                 try:
-                    shutil.copy(track["file_path"], new_file)
+                    shutil.copy(metadata, new_metadata_file)
                 except OSError:
-                    logger.exception("Could not save cover to queue recovery location, removing cover")
-                update_conversion_command(video, str(track["file_path"]), str(new_file))
-                track["file_path"] = str(new_file)
+                    logger.exception("Could not save HDR10+ metadata file to queue recovery location, removing HDR10+")
+
+                update_conversion_command(
+                    video,
+                    str(metadata),
+                    str(new_metadata_file),
+                )
+                video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"] = str(new_metadata_file)
+            for track in video["video_settings"]["attachment_tracks"]:
+                if track.get("file_path"):
+                    new_file = queue_covers / f'{uuid.uuid4().hex}_{track["file_path"].name}'
+                    try:
+                        shutil.copy(track["file_path"], new_file)
+                    except OSError:
+                        logger.exception("Could not save cover to queue recovery location, removing cover")
+                    update_conversion_command(video, str(track["file_path"]), str(new_file))
+                    track["file_path"] = str(new_file)
 
         items.append(video)
     try:

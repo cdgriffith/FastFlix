@@ -13,6 +13,7 @@ from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
 from fastflix.shared import file_date
 from fastflix.models.video import Video
+from fastflix.ff_queue import save_queue, get_queue
 
 
 logger = logging.getLogger("fastflix-core")
@@ -53,9 +54,11 @@ def allow_sleep_mode():
             logger.debug("System has been allowed to enter sleep mode again")
 
 
-def get_next_video(queue_list, queue_lock) -> Optional[Video]:
+def get_next_video(queue_lock) -> Optional[Video]:
     with queue_lock:
-        logger.debug(f"Retrieving next video from {queue_list}")
+        logger.debug(f"Retrieving next video from {queue_path}")
+        queue_list = get_queue(queue_file=queue_path)
+
         for video in queue_list:
             if (
                 not video.status.complete
@@ -70,7 +73,6 @@ def get_next_video(queue_list, queue_lock) -> Optional[Video]:
 
 def set_status(
     current_video: Video,
-    queue_list,
     queue_lock,
     complete=None,
     success=None,
@@ -84,6 +86,7 @@ def set_status(
         return
 
     with queue_lock:
+        queue_list = get_queue(queue_file=queue_path)
         for i, video in enumerate(queue_list):
             if video.uuid == current_video.uuid:
                 video_pos = i
@@ -113,11 +116,14 @@ def set_status(
         if reset_commands:
             video_copy.status.current_command = 0
 
+        logger.debug(f"Set status of {current_video.uuid} to {video_copy.status}")
         queue_list.insert(video_pos, video_copy)
+
+        save_queue(queue_list, queue_path)
 
 
 @reusables.log_exception(log="fastflix-core")
-def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, queue_lock: Lock):
+def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_lock: Lock):
     runner = BackgroundRunner(log_queue=log_queue)
 
     # Command looks like (video_uuid, command_uuid, command, work_dir)
@@ -126,6 +132,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, qu
     currently_encoding = False
     paused = False
     video: Optional[Video] = None
+    ignore_errors = False
 
     def start_command():
         nonlocal currently_encoding
@@ -149,7 +156,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, qu
             video.video_settings.conversion_commands[video.status.current_command].command,
             work_dir=str(video.work_path),
         )
-        set_status(video, queue_list=queue_list, queue_lock=queue_lock, running=True)
+        set_status(video, queue_lock=queue_lock, running=True)
         status_queue.put(("queue",))
 
         # status_queue.put(("running", commands_to_run[0][0], commands_to_run[0][1], runner.started_at.isoformat()))
@@ -157,32 +164,37 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, qu
     while True:
         if currently_encoding and not runner.is_alive():
             reusables.remove_file_handlers(logger)
+            log_queue.put("STOP_TIMER")
+            skip_commands = False
+
             if runner.error_detected:
                 logger.info(t("Error detected while converting"))
 
-                # Stop working!
                 currently_encoding = False
-                set_status(video, queue_list=queue_list, queue_lock=queue_lock, errored=True)
-                status_queue.put(("error",))
-                allow_sleep_mode()
-                if gui_died:
-                    return
-                continue
+                set_status(video, queue_lock=queue_lock, errored=True)
+                if ignore_errors:
+                    skip_commands = True
+                else:
+                    # Stop working!
+                    status_queue.put(("error",))
+                    allow_sleep_mode()
+                    if gui_died:
+                        return
+                    continue
 
             # Successfully encoded, do next one if it exists
             # First check if the current video has more commands
             video.status.current_command += 1
-            log_queue.put("STOP_TIMER")
 
-            if len(video.video_settings.conversion_commands) > video.status.current_command:
+            if not skip_commands and len(video.video_settings.conversion_commands) > video.status.current_command:
                 logger.debug("About to run next command for this video")
-                set_status(video, queue_list=queue_list, queue_lock=queue_lock, next_command=True)
+                set_status(video, queue_lock=queue_lock, next_command=True)
                 status_queue.put(("queue",))
                 start_command()
                 continue
             else:
                 logger.debug(f"{video.uuid} has been completed")
-                set_status(video, queue_list=queue_list, queue_lock=queue_lock, next_command=True, complete=True)
+                set_status(video, queue_lock=queue_lock, next_command=True, complete=True)
                 status_queue.put(("queue",))
                 video = None
 
@@ -192,7 +204,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, qu
                 logger.debug(t("Queue has been paused"))
                 continue
 
-            if video := get_next_video(queue_list=queue_list, queue_lock=queue_lock):
+            if video := get_next_video(queue_lock=queue_lock):
                 start_command()
                 continue
             else:
@@ -233,15 +245,22 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, qu
                 # Request looks like (queue command, log_dir, (commands))
                 log_path = Path(request[1])
                 if not currently_encoding and not paused:
-                    video = get_next_video(queue_list=queue_list, queue_lock=queue_lock)
+                    video = get_next_video(queue_lock=queue_lock)
                     if video:
                         start_command()
+
+            if request[0] == "ignore error":
+                logger.info("Have been told to ignore errors")
+                ignore_errors = True
+            if request[0] == "stop on error":
+                logger.info("Have been told to stop on errors")
+                ignore_errors = False
 
             if request[0] == "cancel":
                 logger.debug(t("Cancel has been requested, killing encoding"))
                 runner.kill()
                 if video:
-                    set_status(video, queue_list=queue_list, queue_lock=queue_lock, reset_commands=True, cancelled=True)
+                    set_status(video, queue_lock=queue_lock, reset_commands=True, cancelled=True)
                 currently_encoding = False
                 allow_sleep_mode()
                 status_queue.put(("cancelled", video.uuid if video else ""))
@@ -257,7 +276,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, qu
                 logger.debug(t("Command worker received request to resume encoding"))
                 if not currently_encoding:
                     if not video:
-                        video = get_next_video(queue_list=queue_list, queue_lock=queue_lock)
+                        video = get_next_video(queue_lock=queue_lock)
                     if video:
                         start_command()
 
