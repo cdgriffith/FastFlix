@@ -1804,6 +1804,7 @@ class Main(QtWidgets.QWidget):
                     return
         requests = ["add_items", str(self.app.fastflix.log_path)]
 
+        queue_list = self.get_queue_list()
         for video in queue_list:
             if video.status.ready:
                 break
