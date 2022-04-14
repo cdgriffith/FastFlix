@@ -133,7 +133,7 @@ def build(fastflix: FastFlix):
         "--colorrange",
         "auto",
         f"--avsync {vsync_setting}",
-        (f"--interlace {video.interlaced}" if video.interlaced else ""),
+        (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
         ("--vpp-yadif" if video.video_settings.deinterlace else ""),
         (f"--vpp-colorspace hdr2sdr=mobius" if video.video_settings.remove_hdr else ""),
         remove_hdr,
