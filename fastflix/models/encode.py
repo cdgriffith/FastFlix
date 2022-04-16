@@ -130,6 +130,28 @@ class NVEncCSettings(EncoderSettings):
     force_ten_bit: bool = False
 
 
+class QSVEncCSettings(EncoderSettings):
+    name = "HEVC (QSVEncC)"
+    preset: str = "best"
+    profile: str = "auto"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    lookahead: Optional[int] = None
+    tier: str = "high"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    min_q_i: Optional[str] = None
+    min_q_p: Optional[str] = None
+    min_q_b: Optional[str] = None
+    max_q_i: Optional[str] = None
+    max_q_p: Optional[str] = None
+    max_q_b: Optional[str] = None
+    b_frames: Optional[str] = None
+    ref: Optional[str] = None
+    metrics: bool = False
+    force_ten_bit: bool = False
+
+
 class NVEncCAVCSettings(EncoderSettings):
     name = "AVC (NVEncC)"
     preset: str = "quality"
@@ -309,6 +331,7 @@ setting_types = {
     "webp": WebPSettings,
     "copy_settings": CopySettings,
     "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
+    "qsvencc_hevc": QSVEncCSettings,
     "nvencc_hevc": NVEncCSettings,
     "nvencc_avc": NVEncCAVCSettings,
     "vceencc_hevc": VCEEncCSettings,

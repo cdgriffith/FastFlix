@@ -1113,7 +1113,7 @@ class Main(QtWidgets.QWidget):
                 )
             except AssertionError as err:
                 error_message(f"{t('Invalid Crop')}: {err}")
-                return
+                return None
             return crop
 
     def keep_aspect_update(self) -> None:

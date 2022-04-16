@@ -60,6 +60,7 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.svt_av1 import main as svt_av1_plugin
     from fastflix.encoders.vp9 import main as vp9_plugin
     from fastflix.encoders.webp import main as webp_plugin
+    from fastflix.encoders.qsvencc_hevc import main as qsvencc_plugin
     from fastflix.encoders.nvencc_hevc import main as nvencc_plugin
     from fastflix.encoders.nvencc_avc import main as nvencc_avc_plugin
     from fastflix.encoders.vceencc_hevc import main as vceencc_hevc_plugin
@@ -91,6 +92,9 @@ def init_encoders(app: FastFlixApp, **_):
             # HEVC AMF support only works on windows currently
             encoders.insert(1, vceencc_hevc_plugin)
         encoders.insert(7, vceencc_avc_plugin)
+
+    if app.fastflix.config.qsvencc:
+        encoders.insert(1, qsvencc_plugin)
 
     app.fastflix.encoders = {
         encoder.name: encoder

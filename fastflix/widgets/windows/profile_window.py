@@ -21,11 +21,14 @@ from fastflix.models.encode import (
     rav1eSettings,
     x264Settings,
     x265Settings,
+    QSVEncCSettings,
     NVEncCSettings,
     NVEncCAVCSettings,
     FFmpegNVENCSettings,
     VCEEncCAVCSettings,
     VCEEncCSettings,
+    H264VideoToolboxSettings,
+    HEVCVideoToolboxSettings,
 )
 from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, AdvancedOptions
 from fastflix.shared import error_message
@@ -510,6 +513,12 @@ class ProfileWindow(QtWidgets.QWidget):
             new_profile.copy_settings = self.encoder
         elif isinstance(self.encoder, NVEncCSettings):
             new_profile.nvencc_hevc = self.encoder
+        elif isinstance(self.encoder, QSVEncCSettings):
+            new_profile.qsvencc_hevc = self.encoder
+        elif isinstance(self.encoder, H264VideoToolboxSettings):
+            new_profile.h264_videotoolbox = self.encoder
+        elif isinstance(self.encoder, HEVCVideoToolboxSettings):
+            new_profile.hevc_videotoolbox = self.encoder
         elif isinstance(self.encoder, NVEncCAVCSettings):
             new_profile.nvencc_avc = self.encoder
         elif isinstance(self.encoder, FFmpegNVENCSettings):
