@@ -128,6 +128,8 @@ def build(fastflix: FastFlix):
         "--quality",
         settings.preset,
         (f"--la-depth {settings.lookahead}" if settings.lookahead else ""),
+        "--level",
+        (settings.level or "auto"),
         "--colormatrix",
         (video.video_settings.color_space or "auto"),
         "--transfer",

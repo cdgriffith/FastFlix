@@ -118,6 +118,8 @@ def build(fastflix: FastFlix):
         settings.preset,
         (f"--lookahead {settings.lookahead}" if settings.lookahead else ""),
         aq,
+        "--level",
+        (settings.level or "auto"),
         "--colormatrix",
         (video.video_settings.color_space or "auto"),
         "--transfer",

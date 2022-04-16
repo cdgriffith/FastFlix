@@ -2,12 +2,13 @@
 
 ## Version 4.9.0
 
-* Adding #109 Support for HEVC QSV encoding with rigaya's QSVEncC (thanks to msaintauret)
+* Adding #109 Support for AVC and HEVC QSV encoding with rigaya's QSVEncC (thanks to msaintauret)
 * Adding #196 Support for AVC and HEVC Apple Videotoolbox encoder (thanks to Kay Singh)
 * Adding #323 ignore errors options options for queue (thanks to Don Gafford)
 * Fixing #321 dhdr10_opt not added for x265 commands (thanks to GizmoDudex)
 * Fixing #327 FastFlix Duplicates encoding task and encodes same movie to infinity (thanks to Wontell)
 * Fixing #324 NVEncC wrong Interlace Value set by FastFlix (thanks to Wontell)
+* Fixing level was not being passed to hardware encoders
 
 ## Version 4.8.1
 

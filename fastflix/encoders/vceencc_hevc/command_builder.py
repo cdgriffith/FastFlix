@@ -115,6 +115,8 @@ def build(fastflix: FastFlix):
         settings.preset,
         "--tier",
         settings.tier,
+        "--level",
+        (settings.level or "auto"),
         "--colormatrix",
         (video.video_settings.color_space or "auto"),
         "--transfer",

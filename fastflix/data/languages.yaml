@@ -6276,5 +6276,37 @@ Ignore Errors:
   pol: Ignoruj błędy
 Custom QSVEncC options:
   eng: Custom QSVEncC options
+  deu: Benutzerdefinierte QSVEncC-Optionen
+  fra: Options personnalisées de QSVEncC
+  ita: Opzioni QSVEncC personalizzate
+  spa: Opciones personalizadas de QSVEncC
+  zho: 定制QSVEncC选项
+  jpn: QSVEncCのカスタムオプション
+  rus: Пользовательские опции QSVEncC
+  por: Opções personalizadas de QSVEncC
+  swe: Anpassade QSVEncC-alternativ
+  pol: Niestandardowe opcje QSVEncC
 QSVEncC Options:
   eng: QSVEncC Options
+  deu: QSVEncC-Optionen
+  fra: Options QSVEncC
+  ita: Opzioni QSVEncC
+  spa: Opciones de QSVEncC
+  zho: QSVEncC选项
+  jpn: QSVEncCオプション
+  rus: Опции QSVEncC
+  por: Opções QSVEncC
+  swe: QSVEncC-alternativ
+  pol: Opcje QSVEncC
+QSVEncC Encoder support is still experimental!:
+  eng: QSVEncC Encoder support is still experimental!
+  deu: QSVEncC Encoder Unterstützung ist noch experimentell!
+  fra: Le support de l'encodeur QSVEncC est encore expérimental !
+  ita: Il supporto di QSVEncC Encoder è ancora sperimentale!
+  spa: La compatibilidad con el codificador QSVEncC es todavía experimental.
+  zho: QSVEncC编码器的支持仍然是试验性的!
+  jpn: QSVEncC エンコーダのサポートはまだ実験的です。
+  rus: Поддержка кодировщика QSVEncC все еще является экспериментальной!
+  por: O suporte ao codificador QSVEncC ainda é experimental!
+  swe: Stödet för QSVEncC Encoder är fortfarande experimentellt!
+  pol: Obsługa kodera QSVEncC jest wciąż eksperymentalna!

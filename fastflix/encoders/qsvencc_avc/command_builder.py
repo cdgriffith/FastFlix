@@ -2,7 +2,7 @@
 import logging
 
 from fastflix.encoders.common.helpers import Command
-from fastflix.models.encode import NVEncCSettings
+from fastflix.models.encode import QSVEncCH264Settings
 from fastflix.models.video import Video
 from fastflix.models.fastflix import FastFlix
 from fastflix.encoders.common.encc_helpers import build_subtitle, build_audio
@@ -13,7 +13,7 @@ logger = logging.getLogger("fastflix")
 
 def build(fastflix: FastFlix):
     video: Video = fastflix.current_video
-    settings: NVEncCSettings = fastflix.current_video.video_settings.video_encoder_settings
+    settings: QSVEncCH264Settings = fastflix.current_video.video_settings.video_encoder_settings
 
     master_display = None
     if fastflix.current_video.master_display:
@@ -77,10 +77,6 @@ def build(fastflix: FastFlix):
     if video.video_settings.maxrate:
         vbv = f"--max-bitrate {video.video_settings.maxrate} --vbv-bufsize {video.video_settings.bufsize}"
 
-    init_q = settings.init_q_i
-    if settings.init_q_i and settings.init_q_p and settings.init_q_b:
-        init_q = f"{settings.init_q_i}:{settings.init_q_p}:{settings.init_q_b}"
-
     min_q = settings.min_q_i
     if settings.min_q_i and settings.min_q_p and settings.min_q_b:
         min_q = f"{settings.min_q_i}:{settings.min_q_p}:{settings.min_q_b}"
@@ -96,12 +92,6 @@ def build(fastflix: FastFlix):
             logger.warning("Could not get stream ID from source, the proper video track may not be selected!")
         stream_id = None
 
-    aq = "--no-aq"
-    if settings.aq.lower() == "spatial":
-        aq = f"--aq --aq-strength {settings.aq_strength}"
-    elif settings.aq.lower() == "temporal":
-        aq = f"--aq-temporal --aq-strength {settings.aq_strength}"
-
     bit_depth = "8"
     if video.current_video_stream.bit_depth > 8 and not video.video_settings.remove_hdr:
         bit_depth = "10"
@@ -115,7 +105,7 @@ def build(fastflix: FastFlix):
         vsync_setting = "vfr"
 
     command = [
-        f'"{clean_file_string(fastflix.config.nvencc)}"',
+        f'"{clean_file_string(fastflix.config.qsvencc)}"',
         "-i",
         f'"{clean_file_string(video.source)}"',
         (f"--video-streamid {stream_id}" if stream_id else ""),
@@ -128,22 +118,18 @@ def build(fastflix: FastFlix):
         (f'--video-metadata title="{video.video_settings.video_title}"' if video.video_settings.video_title else ""),
         ("--chapter-copy" if video.video_settings.copy_chapters else ""),
         "-c",
-        "hevc",
+        "h264",
         (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
         vbv,
-        (f"--vbr-quality {settings.vbr_target}" if settings.vbr_target is not None and settings.bitrate else ""),
-        (f"--qp-init {init_q}" if init_q and settings.bitrate else ""),
         (f"--qp-min {min_q}" if min_q and settings.bitrate else ""),
         (f"--qp-max {max_q}" if max_q and settings.bitrate else ""),
         (f"--bframes {settings.b_frames}" if settings.b_frames else ""),
         (f"--ref {settings.ref}" if settings.ref else ""),
-        f"--bref-mode {settings.b_ref_mode}",
-        "--preset",
+        "--quality",
         settings.preset,
-        "--tier",
-        settings.tier,
-        (f"--lookahead {settings.lookahead}" if settings.lookahead else ""),
-        aq,
+        "--profile",
+        settings.profile,
+        (f"--la-depth {settings.lookahead}" if settings.lookahead else ""),
         "--level",
         (settings.level or "auto"),
         "--colormatrix",
@@ -152,15 +138,8 @@ def build(fastflix: FastFlix):
         (video.video_settings.color_transfer or "auto"),
         "--colorprim",
         (video.video_settings.color_primaries or "auto"),
-        (master_display if master_display else ""),
-        (max_cll if max_cll else ""),
-        (dhdr if dhdr else ""),
         "--output-depth",
         bit_depth,
-        "--multipass",
-        settings.multipass,
-        "--mv-precision",
-        settings.mv_precision,
         "--chromaloc",
         "auto",
         "--colorrange",
@@ -178,4 +157,4 @@ def build(fastflix: FastFlix):
         f'"{clean_file_string(video.video_settings.output_path)}"',
     ]
 
-    return [Command(command=" ".join(x for x in command if x), name="NVEncC Encode", exe="NVEncE")]
+    return [Command(command=" ".join(x for x in command if x), name="QSVEncC Encode", exe="QSVEncC")]
