@@ -136,8 +136,7 @@ class QSVEncCSettings(EncoderSettings):
     profile: str = "auto"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
-    lookahead: Optional[int] = None
-    tier: str = "high"
+    lookahead: Optional[str] = None
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
     min_q_i: Optional[str] = None

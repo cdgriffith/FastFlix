@@ -89,8 +89,7 @@ class QSVEnc(SettingPanel):
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         # grid.addLayout(self.init_profile(), 1, 0, 1, 2)
-        grid.addLayout(self.init_tier(), 1, 0, 1, 2)
-        grid.addLayout(self.init_lookahead(), 2, 0, 1, 2)
+        grid.addLayout(self.init_lookahead(), 1, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -143,7 +142,7 @@ class QSVEnc(SettingPanel):
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, 1, 4)
         grid.addWidget(warning_label, 11, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
-        grid.addWidget(QtWidgets.QLabel(t("NVEncC Encoder support is still experimental!")), 11, 5, 1, 1)
+        grid.addWidget(QtWidgets.QLabel(t("QSVEncC Encoder support is still experimental!")), 11, 5, 1, 1)
 
         self.setLayout(grid)
         self.hide()
@@ -178,15 +177,6 @@ class QSVEnc(SettingPanel):
     #         options=["main", "main10"],
     #         opt="profile",
     #     )
-
-    def init_tier(self):
-        return self._add_combo_box(
-            label="Tier",
-            tooltip="Set the encoding tier",
-            widget_name="tier",
-            options=["main", "high"],
-            opt="tier",
-        )
 
     def init_lookahead(self):
         return self._add_combo_box(
@@ -334,10 +324,8 @@ class QSVEnc(SettingPanel):
     def update_video_encoder_settings(self):
         settings = QSVEncCSettings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
-            # profile=self.widgets.profile.currentText(),
             force_ten_bit=self.widgets.force_ten_bit.isChecked(),
-            tier=self.widgets.tier.currentText(),
-            lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
+            lookahead=self.widgets.lookahead.currentText() if self.widgets.lookahead.currentIndex() > 0 else None,
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),  # .replace("\\", "/"),
             max_q_i=self.widgets.max_q_i.currentText() if self.widgets.max_q_i.currentIndex() != 0 else None,
             max_q_p=self.widgets.max_q_p.currentText() if self.widgets.max_q_p.currentIndex() != 0 else None,

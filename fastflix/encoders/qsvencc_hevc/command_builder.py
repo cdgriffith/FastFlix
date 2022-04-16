@@ -125,10 +125,8 @@ def build(fastflix: FastFlix):
         (f"--qp-max {max_q}" if max_q and settings.bitrate else ""),
         (f"--bframes {settings.b_frames}" if settings.b_frames else ""),
         (f"--ref {settings.ref}" if settings.ref else ""),
-        "--preset",
+        "--quality",
         settings.preset,
-        "--tier",
-        settings.tier,
         (f"--la-depth {settings.lookahead}" if settings.lookahead else ""),
         "--colormatrix",
         (video.video_settings.color_space or "auto"),
@@ -158,4 +156,4 @@ def build(fastflix: FastFlix):
         f'"{clean_file_string(video.video_settings.output_path)}"',
     ]
 
-    return [Command(command=" ".join(x for x in command if x), name="NVEncC Encode", exe="NVEncE")]
+    return [Command(command=" ".join(x for x in command if x), name="QSVEncC Encode", exe="QSVEncC")]
