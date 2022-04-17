@@ -1838,30 +1838,14 @@ class Main(QtWidgets.QWidget):
         return commands
 
     def add_to_queue(self):
-        if not self.encoding_checks():
-            return False
-
-        if not self.build_commands():
-            return False
-
-        source_in_queue = False
-        queue_list = self.get_queue_list()
-        for video in queue_list:
-            if video.status.complete:
-                continue
-            if self.app.fastflix.current_video.source == video.source:
-                source_in_queue = True
-            if self.app.fastflix.current_video.video_settings.output_path == video.video_settings.output_path:
-                error_message(f"{video.video_settings.output_path} {t('out file is already in queue')}")
-                return False
-
-        # if source_in_queue:
-        # TODO ask if ok
-        # return
-
-        with self.app.fastflix.queue_lock:
-            queue_list.append(copy.deepcopy(self.app.fastflix.current_video))
-            save_queue(queue_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+        try:
+            code = self.video_options.queue.add_to_queue()
+        except FastFlixInternalException as err:
+            error_message(str(err))
+            return
+        else:
+            if code is not None:
+                return code
         self.video_options.update_queue()
         self.video_options.show_queue()
 
@@ -2018,5 +2002,3 @@ class Notifier(QtCore.QThread):
                 finally:
                     self.main.close_event.emit()
                 return
-            else:
-                logger.debug(f"GUI received status {status[0]}")
