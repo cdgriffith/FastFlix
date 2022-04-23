@@ -38,30 +38,6 @@ done_actions = {
 }
 
 
-@contextlib.contextmanager
-def queue_check(app: FastFlixApp, save: bool = True):
-    import inspect
-    from deepdiff import DeepDiff
-
-    logger.debug(f"Queue check enter: {inspect.stack()[2][3]}")
-    app.fastflix.queue_lock.acquire()
-    queue_list = get_queue(app.fastflix.queue_path)
-    if queue_list.copy() != list(app.fastflix.queue):
-        logger.warning(
-            "MISMATCH WARNING: The stored queue does not match the one in memory."
-            f"\nMemory: {app.fastflix.queue}"
-            f"\nFile:   {queue_list}"
-            f"\nDiff:   {DeepDiff(list(app.fastflix.queue), queue_list.copy())}"
-        )
-    try:
-        yield app.fastflix.queue
-    finally:
-        if save:
-            save_queue(app.fastflix.queue, queue_file=app.fastflix.queue_path, config=app.fastflix.config)
-        app.fastflix.queue_lock.release()
-    logger.debug(f"Queue check exit: {inspect.stack()[2][3]}")
-
-
 class EncodeItem(QtWidgets.QTabWidget):
     def __init__(self, parent, video: Video, index, first=False):
         self.loading = True
@@ -215,7 +191,6 @@ class EncodingQueue(FlixList):
     def __init__(self, parent, app: FastFlixApp):
         self.main = parent.main
         self.app = app
-        self.paused = False
         self.encode_paused = False
         self.encoding = False
         top_layout = QtWidgets.QHBoxLayout()
@@ -281,13 +256,12 @@ class EncodingQueue(FlixList):
             self.queue_startup_check()
         except Exception:
             logger.exception("Could not load queue as it is outdated or malformed. Deleting for safety.")
-            with self.app.fastflix.queue_lock:
-                save_queue([], queue_file=self.app.fastflix.queue_path, config=self.app.fastflix.config)
+            # with self.app.fastflix.queue_lock:
+            #     save_queue([], queue_file=self.app.fastflix.queue_path, config=self.app.fastflix.config)
 
     def queue_startup_check(self):
-        with self.app.fastflix.queue_lock:
-            new_queue = get_queue(self.app.fastflix.queue_path)
-        # self.app.fastflix.queue.append(item)
+        new_queue = get_queue(self.app.fastflix.queue_path)
+
         reset_vids = []
         remove_vids = []
         for i, video in enumerate(new_queue):
@@ -310,28 +284,20 @@ class EncodingQueue(FlixList):
                 f"{t('Would you like to keep them in the queue?')}",
                 title="Recover Queue Items",
             ):
-                with self.app.fastflix.queue_lock:
-                    save_queue(new_queue, self.app.fastflix.queue_path, self.app.fastflix.config)
-            else:
-                with self.app.fastflix.queue_lock:
-                    save_queue([], self.app.fastflix.queue_path, self.app.fastflix.config)
-            with self.app.fastflix.queue_lock:
-                for video in new_queue:
-                    self.app.fastflix.queue.append(video)
+                self.app.fastflix.conversion_list = new_queue
             self.new_source()
-        else:
-            with self.app.fastflix.queue_lock:
-                save_queue([], self.app.fastflix.queue_path, self.app.fastflix.config)
+        save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
 
     def reorder(self, update=True):
-        with queue_check(self.app) as queue_list:
-            super().reorder(update=update)
-            # queue_list = get_queue(self.app.fastflix.queue_path)
-            for i in range(len(queue_list)):
-                queue_list.pop()
-            for track in self.tracks:
-                queue_list.append(track.video)
-            # save_queue(queue_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+        if self.app.fastflix.currently_encoding:
+            # TODO error?
+            logger.warning("Reorder queue called while encoding")
+            return
+        super().reorder(update=update)
+        # TODO find better reorder method
+        self.app.fastflix.conversion_list = []
+        for track in self.tracks:
+            self.app.fastflix.conversion_list.append(track.video)
 
         for track in self.tracks:
             track.widgets.up_button.setDisabled(False)
@@ -339,18 +305,18 @@ class EncodingQueue(FlixList):
         if self.tracks:
             self.tracks[0].widgets.up_button.setDisabled(True)
             self.tracks[-1].widgets.down_button.setDisabled(True)
+        save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
 
     def new_source(self):
         for track in self.tracks:
             track.close()
         self.tracks = []
 
-        with queue_check(self.app) as queue_list:
-            for i, video in enumerate(queue_list, start=1):
-                self.tracks.append(EncodeItem(self, video, index=i))
-            if self.tracks:
-                self.tracks[0].widgets.up_button.setDisabled(True)
-                self.tracks[-1].widgets.down_button.setDisabled(True)
+        for i, video in enumerate(self.app.fastflix.conversion_list, start=1):
+            self.tracks.append(EncodeItem(self, video, index=i))
+        if self.tracks:
+            self.tracks[0].widgets.up_button.setDisabled(True)
+            self.tracks[-1].widgets.down_button.setDisabled(True)
         super()._new_source(self.tracks)
 
     def clear_complete(self):
@@ -360,20 +326,22 @@ class EncodingQueue(FlixList):
         self.new_source()
 
     def remove_item(self, video, part_of_clear=False):
-        with queue_check(self.app, save=not part_of_clear) as queue_list:
-            # queue_list = get_queue(self.app.fastflix.queue_path)
-            for i, vid in enumerate(queue_list):
-                if vid.uuid == video.uuid:
-                    pos = i
-                    break
-            else:
-                logger.error("No matching video found to remove from queue")
-                return
-            queue_list.pop(pos)
-            # if not part_of_clear:
-            #       save_queue(queue_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+        if self.app.fastflix.currently_encoding:
+            # TODO error
+            return
+
+        for i, vid in enumerate(self.app.fastflix.conversion_list):
+            if vid.uuid == video.uuid:
+                pos = i
+                break
+        else:
+            logger.error("No matching video found to remove from queue")
+            return
+        self.app.fastflix.conversion_list.pop(pos)
+
         if not part_of_clear:
             self.new_source()
+        save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
 
     def reload_from_queue(self, video):
         self.main.reload_video_from_queue(video)
@@ -385,21 +353,18 @@ class EncodingQueue(FlixList):
         self.encode_paused = False
 
     def pause_resume_queue(self):
-        if self.paused:
+        if self.app.fastflix.conversion_paused:
             self.pause_queue.setText(t("Pause Queue"))
-            self.pause_queue.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause))
-            with self.app.fastflix.queue_lock:
-                for i, video in enumerate(get_queue(self.app.fastflix.queue_path)):
-                    if video.status.ready:
-                        self.main.converting = True
-                        self.main.set_convert_button(False)
-                        break
-            self.app.fastflix.worker_queue.put(["resume queue"])
+            self.pause_queue.setIcon(QtGui.QIcon(get_icon("onyx-pause", self.app.fastflix.config.theme)))
+            send_next = self.main.send_next_video()
+            if send_next:
+                self.main.set_convert_button(False)
+            logger.debug(f"queue resumed, will I send next? {send_next}")
         else:
             self.pause_queue.setText(t("Resume Queue"))
-            self.pause_queue.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay))
-            self.app.fastflix.worker_queue.put(["pause queue"])
-        self.paused = not self.paused
+            self.pause_queue.setIcon(QtGui.QIcon(get_icon("play", self.app.fastflix.config.theme)))
+            # self.app.fastflix.worker_queue.put(["pause queue"])
+        self.app.fastflix.conversion_paused = not self.app.fastflix.conversion_paused
 
     def pause_resume_encode(self):
         if self.encode_paused:
@@ -443,24 +408,23 @@ class EncodingQueue(FlixList):
         self.app.fastflix.worker_queue.put(["set after done", command])
 
     def retry_video(self, current_video):
-        with queue_check(self.app) as queue_list:
-            # queue_list = get_queue(self.app.fastflix.queue_path)
-            for i, video in enumerate(queue_list):
-                if video.uuid == current_video.uuid:
-                    video_pos = i
-                    break
-            else:
-                logger.error(f"Can't find video {current_video.uuid} in queue to update its status")
-                return
 
-            video = queue_list.pop(video_pos)
-            video.status.cancelled = False
-            video.status.current_command = 0
-
-            queue_list.insert(video_pos, video)
-            # save_queue(queue_list, self.app.fastflix.queue_path, self.app.fastflix.config)
-
+        for i, video in enumerate(self.app.fastflix.conversion_list):
+            if video.uuid == current_video.uuid:
+                video.status.clear()
+                break
+        else:
+            logger.error(f"Can't find video {current_video.uuid} in queue to update its status")
+            return
         self.new_source()
+
+    def move_up(self, widget):
+        if not self.app.fastflix.currently_encoding:
+            super().move_up(widget)
+
+    def move_down(self, widget):
+        if not self.app.fastflix.currently_encoding:
+            super().move_down(widget)
 
     def add_to_queue(self):
         if not self.main.encoding_checks():
@@ -469,22 +433,20 @@ class EncodingQueue(FlixList):
         if not self.main.build_commands():
             return False
 
-        with queue_check(self.app) as queue_list:
-            source_in_queue = False
-            # queue_list = self.get_queue_list()
-            for video in queue_list:
-                if video.status.complete:
-                    continue
-                if self.app.fastflix.current_video.source == video.source:
-                    source_in_queue = True
-                if self.app.fastflix.current_video.video_settings.output_path == video.video_settings.output_path:
-                    raise FastFlixInternalException(
-                        f"{video.video_settings.output_path} {t('out file is already in queue')}"
-                    )
+        for video in self.app.fastflix.conversion_list:
+            if video.status.complete:
+                continue
+            if self.app.fastflix.current_video.source == video.source:
+                source_in_queue = True
+            if self.app.fastflix.current_video.video_settings.output_path == video.video_settings.output_path:
+                raise FastFlixInternalException(
+                    f"{video.video_settings.output_path} {t('out file is already in queue')}"
+                )
 
-            # if source_in_queue:
-            # TODO ask if ok
-            # return
+        # if source_in_queue:
+        # TODO ask if ok
+        # return
 
-            queue_list.append(copy.deepcopy(self.app.fastflix.current_video))
+        self.app.fastflix.conversion_list.append(copy.deepcopy(self.app.fastflix.current_video))
         self.new_source()
+        save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)

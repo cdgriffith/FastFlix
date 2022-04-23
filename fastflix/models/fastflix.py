@@ -30,5 +30,10 @@ class FastFlix(BaseModel):
     log_queue: Any = None
 
     current_video: Optional[Video] = None
-    queue: Any = None
-    queue_lock: Any = None
+
+    # Conversion
+    currently_encoding: bool = False
+    conversion_paused: bool = False
+    conversion_list: list[Video] = Field(default_factory=list)
+    current_video_encode_index = 0
+    current_command_encode_index = 0

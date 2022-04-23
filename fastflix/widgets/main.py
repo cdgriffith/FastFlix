@@ -11,7 +11,9 @@ import shutil
 import time
 from datetime import timedelta
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional
+from collections import namedtuple
+import inspect
 
 import pkg_resources
 import reusables
@@ -34,7 +36,6 @@ from fastflix.flix import (
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
-from fastflix.ff_queue import save_queue, get_queue
 from fastflix.resources import (
     get_icon,
     main_icon,
@@ -56,6 +57,14 @@ logger = logging.getLogger("fastflix")
 root = os.path.abspath(os.path.dirname(__file__))
 
 only_int = QtGui.QIntValidator()
+
+Request = namedtuple(
+    "Request",
+    ["request", "video_uuid", "command_uuid", "command", "work_dir", "log_name"],
+    defaults=[None, None, None, None, None],
+)
+
+Response = namedtuple("Response", ["status", "video_uuid", "command_uuid"])
 
 
 class CropWidgets(BaseModel):
@@ -117,9 +126,8 @@ class MainWidgets(BaseModel):
 class Main(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal(int)
-    cancelled = QtCore.Signal(str)
     close_event = QtCore.Signal()
-    status_update_signal = QtCore.Signal()
+    status_update_signal = QtCore.Signal(tuple)
     thread_logging_signal = QtCore.Signal(str)
 
     def __init__(self, parent, app: FastFlixApp):
@@ -209,15 +217,14 @@ class Main(QtWidgets.QWidget):
             available_audio_encoders=self.app.fastflix.audio_encoders,
         )
 
-        self.completed.connect(self.conversion_complete)
-        self.cancelled.connect(self.conversion_cancelled)
+        # self.completed.connect(self.conversion_complete)
+        # self.cancelled.connect(self.conversion_cancelled)
         self.close_event.connect(self.close)
         self.thumbnail_complete.connect(self.thumbnail_generated)
         self.status_update_signal.connect(self.status_update)
         self.thread_logging_signal.connect(self.thread_logger)
         self.encoding_worker = None
         self.command_runner = None
-        self.converting = False
         self.side_data = Box()
         self.default_options = Box()
 
@@ -263,7 +270,7 @@ class Main(QtWidgets.QWidget):
             op = QtWidgets.QGraphicsOpacityEffect()
             op.setOpacity(percent)
             self.source_video_path_widget.setStyleSheet(
-                f"color: rgba({get_text_color(self.app.fastflix.config.theme)}, {percent/100}); padding: 0 0 -1px 5px;"
+                f"color: rgba({get_text_color(self.app.fastflix.config.theme)}, {percent / 100}); padding: 0 0 -1px 5px;"
             )
             self.source_video_path_widget.setGraphicsEffect(op)
             QtCore.QTimer.singleShot(200, lambda: self.fade_loop(percent - 10))
@@ -1784,7 +1791,7 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=True)
     def encode_video(self):
-        if self.converting:
+        if self.app.fastflix.currently_encoding:
             sure = yes_no_message(t("Are you sure you want to stop the current encode?"), title="Confirm Stop Encode")
             if not sure:
                 return
@@ -1793,20 +1800,20 @@ class Main(QtWidgets.QWidget):
             self.video_options.queue.reset_pause_encode()
             return
 
-        queue_list = self.get_queue_list()
+        if self.app.fastflix.conversion_paused:
+            return error_message("Queue is currently paused")
 
-        if not queue_list or self.app.fastflix.current_video:
+        if not self.app.fastflix.conversion_list or self.app.fastflix.current_video:
             add_current = True
-            if queue_list and self.app.fastflix.current_video:
+            if self.app.fastflix.conversion_list and self.app.fastflix.current_video:
                 add_current = yes_no_message("Add current video to queue?", yes_text="Yes", no_text="No")
             if add_current:
                 if not self.add_to_queue():
                     return
-        requests = ["add_items", str(self.app.fastflix.log_path)]
 
-        queue_list = self.get_queue_list()
-        for video in queue_list:
+        for video in self.app.fastflix.conversion_list:
             if video.status.ready:
+                video_to_send: Video = video
                 break
         else:
             error_message(t("There are no videos to start converting"))
@@ -1814,28 +1821,28 @@ class Main(QtWidgets.QWidget):
 
         logger.debug(t("Starting conversion process"))
 
-        self.converting = True
+        self.app.fastflix.currently_encoding = True
         self.set_convert_button(False)
-        self.app.fastflix.worker_queue.put(tuple(requests))
+        self.send_video_request_to_worker_queue(video_to_send)
         self.disable_all()
         self.video_options.show_status()
 
-    def get_commands(self):
-        commands = []
-        for video in self.get_queue_list():
-            if video.status.complete or video.status.error:
-                continue
-            for command in video.video_settings.conversion_commands:
-                commands.append(
-                    (
-                        video.uuid,
-                        command.uuid,
-                        command.command,
-                        str(video.work_path),
-                        str(video.video_settings.output_path.stem),
-                    )
-                )
-        return commands
+    # def get_commands(self):
+    #     commands = []
+    #     for video in self.get_queue_list():
+    #         if video.status.complete or video.status.error:
+    #             continue
+    #         for command in video.video_settings.conversion_commands:
+    #             commands.append(
+    #                 (
+    #                     video.uuid,
+    #                     command.uuid,
+    #                     command.command,
+    #                     str(video.work_path),
+    #                     str(video.video_settings.output_path.stem),
+    #                 )
+    #             )
+    #     return commands
 
     def add_to_queue(self):
         try:
@@ -1849,25 +1856,20 @@ class Main(QtWidgets.QWidget):
         self.video_options.update_queue()
         self.video_options.show_queue()
 
-        if self.converting:
-            commands = self.get_commands()
-            requests = ["add_items", str(self.app.fastflix.log_path), tuple(commands)]
-            self.app.fastflix.worker_queue.put(tuple(requests))
+        # if self.converting:
+        #     commands = self.get_commands()
+        #     requests = ["add_items", str(self.app.fastflix.log_path), tuple(commands)]
+        #     self.app.fastflix.worker_queue.put(tuple(requests))
 
         self.clear_current_video()
         return True
 
-    def get_queue_list(self):
-        with self.app.fastflix.queue_lock:
-            return get_queue(self.app.fastflix.queue_path)
-
-    @reusables.log_exception("fastflix", show_traceback=False)
-    def conversion_complete(self, return_code):
-        self.converting = False
+    # @reusables.log_exception("fastflix", show_traceback=False)
+    def conversion_complete(self, success: bool):
         self.paused = False
         self.set_convert_button()
 
-        if return_code:
+        if not success:
             error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
             self.video_options.queue.new_source()
         else:
@@ -1880,35 +1882,25 @@ class Main(QtWidgets.QWidget):
             else:
                 message(t("All queue items have completed"), title=t("Success"))
 
-    @reusables.log_exception("fastflix", show_traceback=False)
-    def conversion_cancelled(self, data):
-        self.converting = False
+    #
+    # @reusables.log_exception("fastflix", show_traceback=False)
+    def conversion_cancelled(self, video: Video):
+        self.app.fastflix.worker_queue.put(Request("cancel"))
+        self.app.fastflix.currently_encoding = False
         self.set_convert_button()
 
-        if not data:
-            return
-
-        try:
-            video_uuid, *_ = data.split("|")
-            cancelled_video = self.find_video(video_uuid)
-            exists = cancelled_video.video_settings.output_path.exists()
-        except Exception:
-            return
+        exists = video.video_settings.output_path.exists()
 
         if exists:
             sm = QtWidgets.QMessageBox()
             sm.setWindowTitle(t("Cancelled"))
-            sm.setText(
-                f"{t('Conversion cancelled, delete incomplete file')}\n"
-                f"{cancelled_video.video_settings.output_path}?"
-            )
+            sm.setText(f"{t('Conversion cancelled, delete incomplete file')}\n" f"{video.video_settings.output_path}?")
             sm.addButton(t("Delete"), QtWidgets.QMessageBox.YesRole)
             sm.addButton(t("Keep"), QtWidgets.QMessageBox.NoRole)
             sm.exec_()
             if sm.clickedButton().text() == t("Delete"):
                 try:
-                    cancelled_video = self.find_video(video_uuid)
-                    cancelled_video.video_settings.output_path.unlink(missing_ok=True)
+                    video.video_settings.output_path.unlink(missing_ok=True)
                 except OSError:
                     pass
 
@@ -1950,14 +1942,92 @@ class Main(QtWidgets.QWidget):
     def dragMoveEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignoreAF()
 
-    def status_update(self):
-        logger.debug(f"Updating queue from command worker")
-        # with self.app.fastflix.queue_lock:
-        #     save_queue(self.app.fastflix.queue, self.app.fastflix.queue_path, self.app.fastflix.config)
+    def status_update(self, status_response):
+        response = Response(*status_response)
+        logger.debug(f"Updating queue from command worker: {response}")
+
+        video_to_send: Optional[Video] = None
+        errored = False
+        same_video = False
+        for video in self.app.fastflix.conversion_list:
+            if response.video_uuid == video.uuid:
+                video.status.running = False
+                if response.status == "cancelled":
+                    video.status.cancelled = True
+                    self.app.fastflix.currently_encoding = False
+                    self.video_options.update_queue()
+                    return
+                if response.status == "complete":
+                    video.status.current_command += 1
+                    if len(video.video_settings.conversion_commands) > video.status.current_command:
+                        same_video = True
+                        video_to_send = video
+                        break
+                    else:
+                        video.status.complete = True
+                if response.status == "error":
+                    video.status.error = True
+                    errored = True
+                break
+
+        if errored and not self.video_options.queue.ignore_errors.isChecked():
+            self.app.fastflix.currently_encoding = False
+            self.conversion_complete(success=False)
+            self.video_options.update_queue()
+            return
+
+        if not video_to_send:
+            for video in self.app.fastflix.conversion_list:
+                if video.status.ready:
+                    video_to_send = video
+                    # TODO ensure command int is in command list?
+                    break
+
+        if not video_to_send:
+            self.app.fastflix.currently_encoding = False
+            self.conversion_complete(success=True)
+            self.video_options.update_queue()
+            return
+
+        self.app.fastflix.currently_encoding = True
+        if not same_video and self.app.fastflix.conversion_paused:
+            self.app.fastflix.currently_encoding = False
+            self.video_options.update_queue()
+            return
+
+        self.send_video_request_to_worker_queue(video_to_send)
+
+    def send_next_video(self) -> bool:
+        if not self.app.fastflix.currently_encoding:
+            for video in self.app.fastflix.conversion_list:
+                if video.status.ready:
+                    video.status.running = True
+                    self.send_video_request_to_worker_queue(video)
+                    self.app.fastflix.currently_encoding = True
+                    return True
+        return False
+
+    def send_video_request_to_worker_queue(self, video: Video):
+        command = video.video_settings.conversion_commands[video.status.current_command]
+        self.app.fastflix.currently_encoding = True
+
+        # logger.info(f"Sending video {video.uuid} command {command.uuid} called from {inspect.stack()}")
+
+        self.app.fastflix.worker_queue.put(
+            Request(
+                request="execute",
+                video_uuid=video.uuid,
+                command_uuid=command.uuid,
+                command=command.command,
+                work_dir=str(video.work_path),
+                log_name=video.video_settings.video_title or video.video_settings.output_path.stem,
+            )
+        )
+        video.status.running = True
         self.video_options.update_queue()
 
     def find_video(self, uuid) -> Video:
-        for video in self.get_queue_list():
+        for video in self.app.fastflix.conversion_list:
             if uuid == video.uuid:
                 return video
         raise FlixError(f'{t("No video found for")} {uuid}')
@@ -1984,21 +2054,21 @@ class Notifier(QtCore.QThread):
             # Message looks like (command, video_uuid, command_uuid)
             status = self.status_queue.get()
             self.app.processEvents()
-            self.main.status_update_signal.emit()
-            self.app.processEvents()
-            if status[0] == "complete":
-                logger.debug("GUI received status queue complete")
-                self.main.completed.emit(0)
-            elif status[0] == "error":
-                logger.debug("GUI received status queue errored")
-                self.main.completed.emit(1)
-            elif status[0] == "cancelled":
-                logger.debug("GUI received status queue errored")
-                self.main.cancelled.emit("|".join(status[1:]))
-            elif status[0] == "exit":
+            if status[0] == "exit":
                 logger.debug("GUI received ask to exit")
                 try:
                     self.terminate()
                 finally:
                     self.main.close_event.emit()
                 return
+            self.main.status_update_signal.emit(status)
+            self.app.processEvents()
+            # if status[0] == "complete":
+            #     logger.debug("GUI received status queue complete")
+            #     self.main.completed.emit(0)
+            # elif status[0] == "error":
+            #     logger.debug("GUI received status queue errored")
+            #     self.main.completed.emit(1)
+            # elif status[0] == "cancelled":
+            #     logger.debug("GUI received status queue errored")
+            #     self.main.cancelled.emit("|".join(status[1:]))
