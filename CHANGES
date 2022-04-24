@@ -3,6 +3,7 @@
 ## Version 4.9.1
 
 * Fixing QSV AVC command builder not working (thanks to Marco Ravich)
+* Fixing missing details in readme on how to use additional encoders
 
 ## Version 4.9.0
 
