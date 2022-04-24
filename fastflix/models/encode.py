@@ -130,6 +130,46 @@ class NVEncCSettings(EncoderSettings):
     force_ten_bit: bool = False
 
 
+class QSVEncCSettings(EncoderSettings):
+    name = "HEVC (QSVEncC)"
+    preset: str = "best"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    lookahead: Optional[str] = None
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    min_q_i: Optional[str] = None
+    min_q_p: Optional[str] = None
+    min_q_b: Optional[str] = None
+    max_q_i: Optional[str] = None
+    max_q_p: Optional[str] = None
+    max_q_b: Optional[str] = None
+    b_frames: Optional[str] = None
+    ref: Optional[str] = None
+    metrics: bool = False
+    force_ten_bit: bool = False
+
+
+class QSVEncCH264Settings(EncoderSettings):
+    name = "AVC (QSVEncC)"
+    preset: str = "best"
+    profile: str = "auto"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    lookahead: Optional[str] = None
+    level: Optional[str] = None
+    min_q_i: Optional[str] = None
+    min_q_p: Optional[str] = None
+    min_q_b: Optional[str] = None
+    max_q_i: Optional[str] = None
+    max_q_p: Optional[str] = None
+    max_q_b: Optional[str] = None
+    b_frames: Optional[str] = None
+    ref: Optional[str] = None
+    metrics: bool = False
+    force_ten_bit: bool = False
+
+
 class NVEncCAVCSettings(EncoderSettings):
     name = "AVC (NVEncC)"
     preset: str = "quality"
@@ -157,7 +197,7 @@ class NVEncCAVCSettings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     b_frames: Optional[str] = None
-    b_ref_mode: str = "Hardware"
+    b_ref_mode: str = "disabled"
 
 
 class VCEEncCSettings(EncoderSettings):
@@ -241,6 +281,32 @@ class VP9Settings(EncoderSettings):
     tile_rows: str = "-1"
 
 
+class HEVCVideoToolboxSettings(EncoderSettings):
+    name = "HEVC (Video Toolbox)"
+    profile: int = 0
+    allow_sw: bool = False
+    require_sw: bool = False
+    realtime: bool = False
+    frames_before: bool = False
+    frames_after: bool = False
+    q: Optional[int] = 50
+    bitrate: Optional[str] = None
+    pix_fmt: str = "p010le"
+
+
+class H264VideoToolboxSettings(EncoderSettings):
+    name = "H264 (Video Toolbox)"
+    profile: int = 0
+    allow_sw: bool = False
+    require_sw: bool = False
+    realtime: bool = False
+    frames_before: bool = False
+    frames_after: bool = False
+    q: Optional[int] = 50
+    bitrate: Optional[str] = None
+    pix_fmt: str = "yuv420p"
+
+
 class AOMAV1Settings(EncoderSettings):
     name = "AV1 (AOM)"
     tile_columns: str = "0"
@@ -283,8 +349,12 @@ setting_types = {
     "webp": WebPSettings,
     "copy_settings": CopySettings,
     "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
+    "qsvencc_hevc": QSVEncCSettings,
+    "qsvencc_avc": QSVEncCH264Settings,
     "nvencc_hevc": NVEncCSettings,
     "nvencc_avc": NVEncCAVCSettings,
     "vceencc_hevc": VCEEncCSettings,
     "vceencc_avc": VCEEncCAVCSettings,
+    "hevc_videotoolbox": HEVCVideoToolboxSettings,
+    "h264_videotoolbox": H264VideoToolboxSettings,
 }

@@ -149,6 +149,8 @@ def build(fastflix: FastFlix):
 
     if settings.hdr10plus_metadata:
         x265_params.append(f"dhdr10-info='{settings.hdr10plus_metadata}'")
+        if settings.dhdr10_opt:
+            x265_params.append(f"dhdr10_opt=1")
 
     if settings.intra_encoding:
         x265_params.append("keyint=1")

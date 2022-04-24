@@ -91,7 +91,7 @@ class Container(QtWidgets.QMainWindow):
                 self.pb.stop_signal.emit()
             except Exception:
                 pass
-        if self.main.converting:
+        if self.app.fastflix.currently_encoding:
             sm = QtWidgets.QMessageBox()
             sm.setText(f"<h2>{t('There is a conversion in process!')}</h2>")
             sm.addButton(t("Cancel Conversion"), QtWidgets.QMessageBox.RejectRole)

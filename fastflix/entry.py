@@ -136,7 +136,7 @@ def main():
             return exit_status
 
         try:
-            queue_worker(gui_proc, worker_queue, status_queue, log_queue, queue_list, queue_lock)
+            queue_worker(gui_proc, worker_queue, status_queue, log_queue)
             exit_status = 0
         except Exception:
             logger.exception("Exception occurred while running FastFlix core")

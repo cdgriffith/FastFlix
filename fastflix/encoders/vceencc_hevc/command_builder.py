@@ -101,7 +101,11 @@ def build(fastflix: FastFlix):
         transform,
         (f'--output-res {video.video_settings.scale.replace(":", "x")}' if video.video_settings.scale else ""),
         crop,
-        (f"--video-metadata clear" if video.video_settings.remove_metadata else "--video-metadata copy"),
+        (
+            f"--video-metadata clear --metadata clear"
+            if video.video_settings.remove_metadata
+            else "--video-metadata copy  --metadata copy"
+        ),
         (f'--video-metadata title="{video.video_settings.video_title}"' if video.video_settings.video_title else ""),
         ("--chapter-copy" if video.video_settings.copy_chapters else ""),
         "-c",
@@ -115,6 +119,8 @@ def build(fastflix: FastFlix):
         settings.preset,
         "--tier",
         settings.tier,
+        "--level",
+        (settings.level or "auto"),
         "--colormatrix",
         (video.video_settings.color_space or "auto"),
         "--transfer",

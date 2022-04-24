@@ -97,6 +97,7 @@ class Config(BaseModel):
     hdr10plus_parser: Optional[Path] = Field(default_factory=find_hdr10plus_tool)
     nvencc: Optional[Path] = Field(default_factory=lambda: where("NVEncC64") or where("NVEncC"))
     vceencc: Optional[Path] = Field(default_factory=lambda: where("VCEEncC64") or where("VCEEncC"))
+    qsvencc: Optional[Path] = Field(default_factory=lambda: where("QSVEncC64") or where("QSVEncC"))
     output_directory: Optional[Path] = False
     source_directory: Optional[Path] = False
     output_name_format: str = "{source}-fastflix-{rand_4}.{ext}"

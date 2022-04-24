@@ -6142,3 +6142,291 @@ Not supported by rigaya's hardware encoders:
   por: Não suportado pelos codificadores de hardware da rigaya
   swe: Stöds inte av Rigayas hårdvarukodare
   pol: Nieobsługiwane przez nadajniki sprzętowe firmy rigaya
+AVC coding profile:
+  eng: AVC coding profile
+  deu: AVC-Codierungsprofil
+  fra: Profil de codage AVC
+  ita: Profilo di codifica AVC
+  spa: Perfil de codificación AVC
+  zho: AVC编码简介
+  jpn: AVC符号化プロファイル
+  rus: Профиль кодирования AVC
+  por: Perfil de codificação AVC
+  swe: AVC-kodningsprofil
+  pol: Profil kodowania AVC
+Allow Software Encoding:
+  eng: Allow Software Encoding
+  deu: Software-Kodierung zulassen
+  fra: Autoriser le codage logiciel
+  ita: Permettere la codifica del software
+  spa: Permitir la codificación del software
+  zho: 允许软件编码
+  jpn: ソフトウェアエンコードを許可する
+  rus: Разрешить программное кодирование
+  por: Permitir a codificação de software
+  swe: Tillåt kodning av programvara
+  pol: Zezwalaj na kodowanie oprogramowania
+Require Software Encoding:
+  eng: Require Software Encoding
+  deu: Software-Kodierung erforderlich
+  fra: Exiger le codage du logiciel
+  ita: Richiedere la codifica del software
+  spa: Requiere codificación de software
+  zho: 要求软件编码
+  jpn: ソフトウェアエンコードを要求する
+  rus: Требуется программное кодирование
+  por: Exigir codificação de software
+  swe: Kräver kodning av programvara
+  pol: Wymagane kodowanie oprogramowania
+Realtime Encoding:
+  eng: Realtime Encoding
+  deu: Kodierung in Echtzeit
+  fra: Encodage en temps réel
+  ita: Codifica in tempo reale
+  spa: Codificación en tiempo real
+  zho: 实时编码
+  jpn: リアルタイムエンコード
+  rus: Кодирование в реальном времени
+  por: Codificação em tempo real
+  swe: Kodning i realtid
+  pol: Kodowanie w czasie rzeczywistym
+Hint that encoding should happen in real-time if not faster:
+  eng: Hint that encoding should happen in real-time if not faster
+  deu: Hinweis, dass die Kodierung in Echtzeit oder sogar schneller erfolgen sollte
+  fra: Indiquez que l'encodage doit se faire en temps réel, sinon plus rapidement.
+  ita: 'Suggerimento: la codifica dovrebbe avvenire in tempo reale, se non più velocemente'
+  spa: Indicación de que la codificación debe realizarse en tiempo real, si no más rápido
+  zho: 提示编码应该实时发生，如果不是更快的话
+  jpn: エンコードをリアルタイムで行うことを推奨します。
+  rus: Намек на то, что кодирование должно происходить в реальном времени, если не быстрее
+  por: Dica de que a codificação deve acontecer em tempo real, se não mais rápido
+  swe: En antydan om att kodning bör ske i realtid, om inte snabbare.
+  pol: Wskazówka, że kodowanie powinno odbywać się w czasie rzeczywistym, jeśli nie szybciej
+Frames Before:
+  eng: Frames Before
+  deu: Frames Vorher
+  fra: Cadres avant
+  ita: Cornici Prima
+  spa: Marcos Antes
+  zho: 之前的帧数
+  jpn: フレーム数 前
+  rus: Кадры до
+  por: Quadros antes
+  swe: Frames före
+  pol: Ramki Przed
+Other frames will come before the frames in this session. This helps smooth concatenation issues.:
+  eng: Other frames will come before the frames in this session. This helps smooth concatenation issues.
+  deu: Andere Rahmen werden vor den Rahmen in dieser Sitzung angezeigt. Dies hilft, Verkettungsprobleme zu vermeiden.
+  fra: Les autres cadres viendront avant les cadres de cette session. Cela permet d'atténuer les problèmes de concaténation.
+  ita: Gli altri fotogrammi verranno prima dei fotogrammi di questa sessione. Questo aiuta a smussare i problemi di concatenazione.
+  spa: Los demás fotogramas vendrán antes que los fotogramas de esta sesión. Esto ayuda a suavizar los problemas de concatenación.
+  zho: 其他的帧会在这个会话中的帧之前出现。这有助于平滑串联问题。
+  jpn: 他のフレームは、このセッションのフレームより前に来ます。これは、連結の問題をスムーズにするのに役立ちます。
+  rus: Другие кадры будут идти перед кадрами в этой сессии. Это помогает сгладить проблемы конкатенации.
+  por: Outros quadros virão antes dos quadros nesta sessão. Isto ajuda a suavizar as questões de concatenação.
+  swe: Andra ramar kommer att komma före ramarna under denna session. Detta underlättar problem med sammanlänkning.
+  pol: Inne ramki będą się pojawiać przed ramkami w tej sesji. Ułatwia to rozwiązywanie problemów związanych z konkatenacją.
+Frames After:
+  eng: Frames After
+  deu: Frames nach
+  fra: Cadres après
+  ita: Fotogrammi dopo
+  spa: Fotogramas después
+  zho: 之后的帧数
+  jpn: フレーム数
+  rus: Кадры после
+  por: Quadros após
+  swe: Bilder efter
+  pol: Ramki Po
+Other frames will come after the frames in this session. This helps smooth concatenation issues.:
+  eng: Other frames will come after the frames in this session. This helps smooth concatenation issues.
+  deu: Andere Frames kommen nach den Frames in dieser Sitzung. Dies hilft, Verkettungsprobleme zu vermeiden.
+  fra: Les autres cadres viendront après les cadres de cette session. Cela permet d'atténuer les problèmes de concaténation.
+  ita: Gli altri fotogrammi verranno dopo i fotogrammi di questa sessione. Questo aiuta a smussare i problemi di concatenazione.
+  spa: Otros marcos vendrán después de los marcos de esta sesión. Esto ayuda a suavizar los problemas de concatenación.
+  zho: 其他的帧将在这个会话中的帧之后出现。这有助于平滑连接问题。
+  jpn: 他のフレームは、このセッションのフレームの後に来ます。これは、連結の問題をスムーズにするのに役立ちます。
+  rus: Другие кадры будут идти после кадров этой сессии. Это помогает сгладить проблемы с конкатенацией.
+  por: Outros quadros virão após os quadros nesta sessão. Isto ajuda a suavizar as questões de concatenação.
+  swe: Andra ramar kommer att följa efter ramarna i denna session. Detta bidrar till att underlätta problem med sammanlänkningar.
+  pol: Inne ramki będą pojawiać się po ramkach z tej sesji. Ułatwia to rozwiązywanie problemów związanych z konkatenacją.
+HEVC coding profile - must match bit depth:
+  eng: HEVC coding profile - must match bit depth
+  deu: HEVC-Codierungsprofil - muss der Bittiefe entsprechen
+  fra: Profil de codage HEVC - doit correspondre à la profondeur de bit
+  ita: Profilo di codifica HEVC - deve corrispondere alla profondità di bit
+  spa: 'Perfil de codificación HEVC: debe coincidir con la profundidad de bits'
+  zho: HEVC编码配置文件 - 必须与比特深度相匹配
+  jpn: HEVCコーディングプロファイル - ビット深度との一致が必要
+  rus: Профиль кодирования HEVC - должен соответствовать битовой глубине
+  por: Perfil de codificação HEVC - deve corresponder à profundidade do bit
+  swe: HEVC-kodningsprofil - måste matcha bitdjupet
+  pol: Profil kodowania HEVC - musi być zgodny z głębią bitową
+Ignore Errors:
+  eng: Ignore Errors
+  deu: Fehler ignorieren
+  fra: Ignorer les erreurs
+  ita: Ignorare gli errori
+  spa: Ignorar errores
+  zho: 忽略错误
+  jpn: エラーを無視する
+  rus: Игнорировать ошибки
+  por: Ignorar erros
+  swe: Ignorera fel
+  pol: Ignoruj błędy
+Custom QSVEncC options:
+  eng: Custom QSVEncC options
+  deu: Benutzerdefinierte QSVEncC-Optionen
+  fra: Options personnalisées de QSVEncC
+  ita: Opzioni QSVEncC personalizzate
+  spa: Opciones personalizadas de QSVEncC
+  zho: 定制QSVEncC选项
+  jpn: QSVEncCのカスタムオプション
+  rus: Пользовательские опции QSVEncC
+  por: Opções personalizadas de QSVEncC
+  swe: Anpassade QSVEncC-alternativ
+  pol: Niestandardowe opcje QSVEncC
+QSVEncC Options:
+  eng: QSVEncC Options
+  deu: QSVEncC-Optionen
+  fra: Options QSVEncC
+  ita: Opzioni QSVEncC
+  spa: Opciones de QSVEncC
+  zho: QSVEncC选项
+  jpn: QSVEncCオプション
+  rus: Опции QSVEncC
+  por: Opções QSVEncC
+  swe: QSVEncC-alternativ
+  pol: Opcje QSVEncC
+QSVEncC Encoder support is still experimental!:
+  eng: QSVEncC Encoder support is still experimental!
+  deu: QSVEncC Encoder Unterstützung ist noch experimentell!
+  fra: Le support de l'encodeur QSVEncC est encore expérimental !
+  ita: Il supporto di QSVEncC Encoder è ancora sperimentale!
+  spa: La compatibilidad con el codificador QSVEncC es todavía experimental.
+  zho: QSVEncC编码器的支持仍然是试验性的!
+  jpn: QSVEncC エンコーダのサポートはまだ実験的です。
+  rus: Поддержка кодировщика QSVEncC все еще является экспериментальной!
+  por: O suporte ao codificador QSVEncC ainda é experimental!
+  swe: Stödet för QSVEncC Encoder är fortfarande experimentellt!
+  pol: Obsługa kodera QSVEncC jest wciąż eksperymentalna!
+Save Queue to File:
+  eng: Save Queue to File
+  deu: Warteschlange in Datei speichern
+  fra: Enregistrer la file d'attente dans un fichier
+  ita: Salvare la coda su file
+  spa: Guardar la cola en un archivo
+  zho: 保存队列到文件
+  jpn: キューをファイルに保存する
+  rus: Сохранить очередь в файл
+  por: Salvar fila no arquivo
+  swe: Spara kö till en fil
+  pol: Zapisz kolejkę do pliku
+Load Queue from File:
+  eng: Load Queue from File
+  deu: Warteschlange aus Datei laden
+  fra: Chargement de la file d'attente à partir d'un fichier
+  ita: Caricare la coda da file
+  spa: Cargar la cola desde un archivo
+  zho: 从文件中加载队列
+  jpn: ファイルからキューを読み込む
+  rus: Загрузка очереди из файла
+  por: Fila de carga do arquivo
+  swe: Ladda kö från en fil
+  pol: Wczytaj kolejkę z pliku
+This will remove all items in the queue currently:
+  eng: This will remove all items in the queue currently
+  deu: Damit werden alle Einträge in der Warteschlange entfernt.
+  fra: Cela supprimera tous les éléments de la file d'attente actuellement
+  ita: Questo rimuoverà tutti gli elementi nella coda attualmente
+  spa: Esto eliminará todos los elementos en la cola actualmente
+  zho: 这将删除当前队列中的所有项目。
+  jpn: これにより、現在キューにあるすべてのアイテムが削除されます。
+  rus: Это приведет к удалению всех элементов в очереди в настоящее время
+  por: Isto removerá todos os itens da fila atualmente
+  swe: Detta kommer att ta bort alla objekt i kön för närvarande
+  pol: Spowoduje to usunięcie wszystkich elementów znajdujących się aktualnie w kolejce.
+It will update it with the contents of:
+  eng: It will update it with the contents of
+  deu: Er aktualisiert sie mit dem Inhalt von
+  fra: Il le mettra à jour avec le contenu de
+  ita: Lo aggiornerà con il contenuto di
+  spa: Lo actualizará con el contenido de
+  zho: 它将用以下内容更新它
+  jpn: の内容で更新されます。
+  rus: Он обновит его содержимым
+  por: Ele o atualizará com o conteúdo de
+  swe: Den kommer att uppdatera den med innehållet i
+  pol: Zostanie ona zaktualizowana o zawartość
+Are you sure you want to proceed?:
+  eng: Are you sure you want to proceed?
+  deu: Sind Sie sicher, dass Sie fortfahren wollen?
+  fra: Vous êtes sûr de vouloir continuer ?
+  ita: Sei sicuro di voler procedere?
+  spa: ¿Estás seguro de que quieres continuar?
+  zho: 你确定你要继续吗？
+  jpn: 本当に進めていいんですか？
+  rus: Вы уверены, что хотите продолжить?
+  por: Você tem certeza de que quer prosseguir?
+  swe: Är du säker på att du vill fortsätta?
+  pol: Czy jesteś pewien, że chcesz kontynuować?
+Overwrite existing queue?:
+  eng: Overwrite existing queue?
+  deu: Vorhandene Warteschlange überschreiben?
+  fra: Écraser la file d'attente existante ?
+  ita: Sovrascrivere la coda esistente?
+  spa: ¿Sobreescribir la cola existente?
+  zho: 覆盖现有队列？
+  jpn: 既存のキューを上書きしますか？
+  rus: Перезаписать существующую очередь?
+  por: Sobregravar a fila existente?
+  swe: Skriva över befintlig kö?
+  pol: Nadpisać istniejącą kolejkę?
+Save Queue:
+  eng: Save Queue
+  deu: Warteschlange speichern
+  fra: Sauvegarder la file d'attente
+  ita: Salvare la coda
+  spa: Guardar cola
+  zho: 保存队列
+  jpn: キューを保存する
+  rus: Сохранить очередь
+  por: Salvar fila
+  swe: Spara kö
+  pol: Zapisz kolejkę
+Load Queue:
+  eng: Load Queue
+  deu: Warteschlange laden
+  fra: File d'attente de chargement
+  ita: Coda di carico
+  spa: Cola de carga
+  zho: 加载队列
+  jpn: ロードキュー
+  rus: Очередь загрузки
+  por: Fila de carga
+  swe: Belastningskö
+  pol: Kolejka ładunkowa
+Queue saved to:
+  eng: Queue saved to
+  deu: Warteschlange gespeichert in
+  fra: File d'attente enregistrée dans
+  ita: Coda salvata in
+  spa: Cola guardada en
+  zho: 队列保存到
+  jpn: に保存されたキュー
+  rus: Очередь сохранена в
+  por: Fila salva para
+  swe: Kö sparad till
+  pol: Kolejka zapisana do
+That file doesn't exist:
+  eng: That file doesn't exist
+  deu: Diese Datei existiert nicht
+  fra: Ce fichier n'existe pas
+  ita: Quel file non esiste
+  spa: Ese archivo no existe
+  zho: 该文件不存在
+  jpn: そのファイルは存在しません
+  rus: Этот файл не существует
+  por: Esse arquivo não existe
+  swe: Den filen finns inte
+  pol: Ten plik nie istnieje

@@ -7,7 +7,7 @@ from PySide2 import QtCore, QtWidgets, QtGui
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
-from fastflix.models.encode import NVEncCSettings
+from fastflix.models.encode import QSVEncCH264Settings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
 from fastflix.exceptions import FastFlixInternalException
@@ -15,7 +15,15 @@ from fastflix.resources import loading_movie, get_icon
 
 logger = logging.getLogger("fastflix")
 
-presets = ["default", "performance", "quality", "P1", "P2", "P3", "P4", "P5", "P6", "P7"]
+presets = [
+    "best",
+    "higher",
+    "high",
+    "balanced",
+    "fast",
+    "faster",
+    "fastest",
+]
 
 recommended_bitrates = [
     "200k     (320x240p @ 30fps)",
@@ -59,10 +67,8 @@ def get_breaker():
     return breaker_line
 
 
-class NVENCC(SettingPanel):
-    profile_name = "nvencc_hevc"
-    hdr10plus_signal = QtCore.Signal(str)
-    hdr10plus_ffmpeg_signal = QtCore.Signal(str)
+class QSVEncH264(SettingPanel):
+    profile_name = "qsvencc_avc"
 
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
@@ -77,13 +83,11 @@ class NVENCC(SettingPanel):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
-        grid.addLayout(self._add_custom(title="Custom NVEncC options", disable_both_passes=True), 10, 0, 1, 6)
+        grid.addLayout(self._add_custom(title="Custom QSVEncC options", disable_both_passes=True), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        # grid.addLayout(self.init_profile(), 1, 0, 1, 2)
-        grid.addLayout(self.init_tier(), 1, 0, 1, 2)
-        grid.addLayout(self.init_multipass(), 2, 0, 1, 2)
-        grid.addLayout(self.init_lookahead(), 3, 0, 1, 2)
+        grid.addLayout(self.init_profile(), 1, 0, 1, 2)
+        grid.addLayout(self.init_lookahead(), 2, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -95,15 +99,7 @@ class NVENCC(SettingPanel):
 
         grid.addLayout(breaker, 4, 0, 1, 6)
 
-        grid.addLayout(self.init_aq(), 5, 0, 1, 2)
-        grid.addLayout(self.init_aq_strength(), 6, 0, 1, 2)
-        grid.addLayout(self.init_mv_precision(), 7, 0, 1, 2)
-
         qp_line = QtWidgets.QHBoxLayout()
-        qp_line.addLayout(self.init_vbr_target())
-        qp_line.addStretch(1)
-        qp_line.addLayout(self.init_init_q())
-        qp_line.addStretch(1)
         qp_line.addLayout(self.init_min_q())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_max_q())
@@ -119,12 +115,8 @@ class NVENCC(SettingPanel):
         advanced.addStretch(1)
         advanced.addLayout(self.init_level())
         advanced.addStretch(1)
-        advanced.addLayout(self.init_b_ref_mode())
-        advanced.addStretch(1)
         advanced.addLayout(self.init_metrics())
         grid.addLayout(advanced, 6, 2, 1, 4)
-
-        grid.addLayout(self.init_dhdr10_info(), 7, 2, 1, 4)
 
         self.ffmpeg_level = QtWidgets.QLabel()
         grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
@@ -133,8 +125,8 @@ class NVENCC(SettingPanel):
 
         guide_label = QtWidgets.QLabel(
             link(
-                "https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md",
-                t("NVEncC Options"),
+                "https://github.com/rigaya/QSVEnc/blob/master/QSVEncC_Options.en.md",
+                t("QSVEncC Options"),
                 app.fastflix.config.theme,
             )
         )
@@ -146,12 +138,10 @@ class NVENCC(SettingPanel):
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, 1, 4)
         grid.addWidget(warning_label, 11, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
-        grid.addWidget(QtWidgets.QLabel(t("NVEncC Encoder support is still experimental!")), 11, 5, 1, 1)
+        grid.addWidget(QtWidgets.QLabel(t("QSVEncC Encoder support is still experimental!")), 11, 5, 1, 1)
 
         self.setLayout(grid)
         self.hide()
-        self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
-        self.hdr10plus_ffmpeg_signal.connect(lambda x: self.ffmpeg_level.setText(x))
 
     def init_preset(self):
         return self._add_combo_box(
@@ -172,59 +162,13 @@ class NVENCC(SettingPanel):
             opt="tune",
         )
 
-    # def init_profile(self):
-    #
-    #     return self._add_combo_box(
-    #         label="Profile_encoderopt",
-    #         widget_name="profile",
-    #         tooltip="Enforce an encode profile",
-    #         options=["main", "main10"],
-    #         opt="profile",
-    #     )
-
-    def init_tier(self):
+    def init_profile(self):
         return self._add_combo_box(
-            label="Tier",
-            tooltip="Set the encoding tier",
-            widget_name="tier",
-            options=["main", "high"],
-            opt="tier",
-        )
-
-    def init_aq(self):
-        return self._add_combo_box(
-            label="Adaptive Quantization",
-            tooltip="",
-            widget_name="aq",
-            options=["off", "spatial", "temporal"],
-            opt="aq",
-        )
-
-    def init_aq_strength(self):
-        return self._add_combo_box(
-            label="AQ Strength",
-            tooltip="",
-            widget_name="aq_strength",
-            options=["Auto"] + [str(x) for x in range(1, 16)],
-            opt="aq_strength",
-        )
-
-    def init_multipass(self):
-        return self._add_combo_box(
-            label="Multipass",
-            tooltip="",
-            widget_name="multipass",
-            options=["None", "2pass-quarter", "2pass-full"],
-            opt="multipass",
-        )
-
-    def init_mv_precision(self):
-        return self._add_combo_box(
-            label="Motion vector accuracy",
-            tooltip="Q-pel is highest precision",
-            widget_name="mv_precision",
-            options=["Auto", "Q-pel", "half-pel", "full-pel"],
-            opt="mv_precision",
+            label="Profile_encoderopt",
+            widget_name="profile",
+            tooltip="Enforce an encode profile",
+            options=["auto", "baseline", "main", "high"],
+            opt="profile",
         )
 
     def init_lookahead(self):
@@ -233,7 +177,7 @@ class NVENCC(SettingPanel):
             tooltip="",
             widget_name="lookahead",
             opt="lookahead",
-            options=["off"] + [str(x) for x in range(1, 33)],
+            options=["off"] + [str(x) for x in range(10, 100)],
         )
 
     def init_level(self):
@@ -243,34 +187,29 @@ class NVENCC(SettingPanel):
             widget_name="level",
             options=[
                 t("Auto"),
-                "1.0",
-                "2.0",
+                "1",
+                "1.1",
+                "1.2",
+                "1.3",
+                "2",
                 "2.1",
+                "2.2",
                 "3.0",
                 "3.1",
-                "4.0",
+                "3.2",
+                "4",
                 "4.1",
-                "5.0",
+                "4.2",
+                "5",
                 "5.1",
                 "5.2",
-                "6.0",
+                "6",
                 "6.1",
                 "6.2",
             ],
             opt="level",
         )
         self.widgets.level.setMinimumWidth(60)
-        return layout
-
-    def init_b_ref_mode(self):
-        layout = self._add_combo_box(
-            label="B Ref Mode",
-            tooltip="Use B frames as references",
-            widget_name="b_ref_mode",
-            opt="b_ref_mode",
-            options=["disabled", "each", "middle"],
-            min_width=60,
-        )
         return layout
 
     @staticmethod
@@ -281,27 +220,13 @@ class NVENCC(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Min Q")))
         layout.addWidget(
-            self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), width=15, opt="min_q_i")
+            self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), min_width=45, opt="min_q_i")
         )
         layout.addWidget(
-            self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), width=15, opt="min_q_p")
+            self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), min_width=45, opt="min_q_p")
         )
         layout.addWidget(
-            self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), width=15, opt="min_q_b")
-        )
-        return layout
-
-    def init_init_q(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel(t("Init Q")))
-        layout.addWidget(
-            self._add_combo_box(widget_name="init_q_i", options=["I"] + self._qp_range(), width=15, opt="init_q_i")
-        )
-        layout.addWidget(
-            self._add_combo_box(widget_name="init_q_p", options=["P"] + self._qp_range(), width=15, opt="init_q_p")
-        )
-        layout.addWidget(
-            self._add_combo_box(widget_name="init_q_b", options=["B"] + self._qp_range(), width=15, opt="init_q_b")
+            self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), min_width=45, opt="min_q_b")
         )
         return layout
 
@@ -309,24 +234,15 @@ class NVENCC(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Max Q")))
         layout.addWidget(
-            self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), width=15, opt="max_q_i")
+            self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), min_width=45, opt="max_q_i")
         )
         layout.addWidget(
-            self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), width=15, opt="max_q_p")
+            self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), min_width=45, opt="max_q_p")
         )
         layout.addWidget(
-            self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), width=15, opt="max_q_b")
+            self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), min_width=45, opt="max_q_b")
         )
         return layout
-
-    def init_vbr_target(self):
-        return self._add_combo_box(
-            widget_name="vbr_target",
-            label="VBR Target",
-            options=[t("Auto")] + self._qp_range(),
-            opt="vbr_target",
-            min_width=60,
-        )
 
     def init_b_frames(self):
         return self._add_combo_box(
@@ -357,29 +273,6 @@ class NVENCC(SettingPanel):
             tooltip="Calculate PSNR and SSIM and show in the encoder output",
         )
 
-    def init_dhdr10_info(self):
-        layout = self._add_file_select(
-            label="HDR10+ Metadata",
-            widget_name="hdr10plus_metadata",
-            button_action=lambda: self.dhdr10_update(),
-            tooltip="dhdr10_info: Path to HDR10+ JSON metadata file",
-        )
-        self.labels["hdr10plus_metadata"].setFixedWidth(200)
-        self.extract_button = QtWidgets.QPushButton(t("Extract HDR10+"))
-        self.extract_button.hide()
-        self.extract_button.clicked.connect(self.extract_hdr10plus)
-
-        self.extract_label = QtWidgets.QLabel(self)
-        self.extract_label.hide()
-        self.movie = QtGui.QMovie(loading_movie)
-        self.movie.setScaledSize(QtCore.QSize(25, 25))
-        self.extract_label.setMovie(self.movie)
-
-        layout.addWidget(self.extract_button)
-        layout.addWidget(self.extract_label)
-
-        return layout
-
     def init_modes(self):
         layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="cqp")
         return layout
@@ -405,20 +298,11 @@ class NVENCC(SettingPanel):
         self.updating_settings = False
 
     def update_video_encoder_settings(self):
-        settings = NVEncCSettings(
+        settings = QSVEncCH264Settings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
-            # profile=self.widgets.profile.currentText(),
             force_ten_bit=self.widgets.force_ten_bit.isChecked(),
-            tier=self.widgets.tier.currentText(),
-            lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
-            aq=self.widgets.aq.currentText(),
-            aq_strength=self.widgets.aq_strength.currentIndex(),
-            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),  # .replace("\\", "/"),
-            multipass=self.widgets.multipass.currentText(),
-            mv_precision=self.widgets.mv_precision.currentText(),
-            init_q_i=self.widgets.init_q_i.currentText() if self.widgets.init_q_i.currentIndex() != 0 else None,
-            init_q_p=self.widgets.init_q_p.currentText() if self.widgets.init_q_p.currentIndex() != 0 else None,
-            init_q_b=self.widgets.init_q_b.currentText() if self.widgets.init_q_b.currentIndex() != 0 else None,
+            lookahead=self.widgets.lookahead.currentText() if self.widgets.lookahead.currentIndex() > 0 else None,
+            profile=self.widgets.profile.currentText(),
             max_q_i=self.widgets.max_q_i.currentText() if self.widgets.max_q_i.currentIndex() != 0 else None,
             max_q_p=self.widgets.max_q_p.currentText() if self.widgets.max_q_p.currentIndex() != 0 else None,
             max_q_b=self.widgets.max_q_b.currentText() if self.widgets.max_q_b.currentIndex() != 0 else None,
@@ -430,8 +314,6 @@ class NVENCC(SettingPanel):
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
-            vbr_target=self.widgets.vbr_target.currentText() if self.widgets.vbr_target.currentIndex() > 0 else None,
-            b_ref_mode=self.widgets.b_ref_mode.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()
@@ -451,10 +333,6 @@ class NVENCC(SettingPanel):
         if not self.app.fastflix.current_video:
             return
         super().new_source()
-        if self.app.fastflix.current_video.hdr10_plus:
-            self.extract_button.show()
-        else:
-            self.extract_button.hide()
         if self.app.fastflix.current_video.current_video_stream.bit_depth > 8 and not self.main.remove_hdr:
             self.widgets.force_ten_bit.setChecked(True)
             self.widgets.force_ten_bit.setDisabled(True)

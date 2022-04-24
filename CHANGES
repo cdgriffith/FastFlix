@@ -1,5 +1,18 @@
 # Changelog
 
+## Version 4.9.0
+
+* Adding #109 Support for AVC and HEVC QSV encoding with rigaya's QSVEncC (thanks to msaintauret)
+* Adding #196 Support for AVC and HEVC Apple Videotoolbox encoder (thanks to Kay Singh)
+* Adding #323 ignore errors options options for queue (thanks to Don Gafford)
+* Adding #331 NVEncC API v10 Quality presets: P1 to P7 (thanks to Wontell)
+* Fixing #321 dhdr10_opt not added for x265 commands (thanks to GizmoDudex)
+* Fixing #327 FastFlix Duplicates encoding task and encodes same movie to infinity (thanks to Wontell)
+* Fixing #324 NVEncC wrong Interlace Value set by FastFlix (thanks to Wontell)
+* Fixing #278 FastFlix occasionally getting stuck on a single video in a queue (thanks to kamild1996)
+* Fixing #330 "Remove Metadata" only removes video metadata for Rigaya's hardware encoders (thanks to wynterca)
+* Fixing level was not being passed to hardware encoders
+
 ## Version 4.8.1
 
 * Fixing #315 HDR10 info not parsed from subsequent video tracks than the first, again (thanks to msaintauret)

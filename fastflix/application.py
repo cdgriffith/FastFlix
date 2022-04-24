@@ -60,14 +60,20 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.svt_av1 import main as svt_av1_plugin
     from fastflix.encoders.vp9 import main as vp9_plugin
     from fastflix.encoders.webp import main as webp_plugin
+    from fastflix.encoders.qsvencc_hevc import main as qsvencc_plugin
+    from fastflix.encoders.qsvencc_avc import main as qsvencc_avc_plugin
     from fastflix.encoders.nvencc_hevc import main as nvencc_plugin
     from fastflix.encoders.nvencc_avc import main as nvencc_avc_plugin
     from fastflix.encoders.vceencc_hevc import main as vceencc_hevc_plugin
     from fastflix.encoders.vceencc_avc import main as vceencc_avc_plugin
+    from fastflix.encoders.hevc_videotoolbox import main as hevc_videotoolbox_plugin
+    from fastflix.encoders.h264_videotoolbox import main as h264_videotoolbox_plugin
 
     encoders = [
         hevc_plugin,
         nvenc_plugin,
+        hevc_videotoolbox_plugin,
+        h264_videotoolbox_plugin,
         av1_plugin,
         rav1e_plugin,
         svt_av1_plugin,
@@ -78,9 +84,13 @@ def init_encoders(app: FastFlixApp, **_):
         copy_plugin,
     ]
 
+    if app.fastflix.config.qsvencc:
+        encoders.insert(1, qsvencc_plugin)
+        encoders.insert(8, qsvencc_avc_plugin)
+
     if app.fastflix.config.nvencc:
         encoders.insert(1, nvencc_plugin)
-        encoders.insert(7, nvencc_avc_plugin)
+        encoders.insert(8, nvencc_avc_plugin)
 
     if app.fastflix.config.vceencc:
         if reusables.win_based:
