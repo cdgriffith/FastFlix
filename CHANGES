@@ -8,6 +8,7 @@
 * Fixing #321 dhdr10_opt not added for x265 commands (thanks to GizmoDudex)
 * Fixing #327 FastFlix Duplicates encoding task and encodes same movie to infinity (thanks to Wontell)
 * Fixing #324 NVEncC wrong Interlace Value set by FastFlix (thanks to Wontell)
+* Fixing #278 FastFlix occasionally getting stuck on a single video in a queue (thanks to kamild1996)
 * Fixing level was not being passed to hardware encoders
 
 ## Version 4.8.1

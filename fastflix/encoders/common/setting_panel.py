@@ -79,6 +79,7 @@ class SettingPanel(QtWidgets.QWidget):
         default=0,
         tooltip="",
         min_width=None,
+        width=None,
     ):
         layout = QtWidgets.QHBoxLayout()
         if label:
@@ -90,6 +91,8 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets[widget_name].addItems(options)
         if min_width:
             self.widgets[widget_name].setMinimumWidth(min_width)
+        if width:
+            self.widgets[widget_name].setFixedWidth(width)
 
         if opt:
             default = self.determine_default(
@@ -98,7 +101,7 @@ class SettingPanel(QtWidgets.QWidget):
             self.opts[widget_name] = opt
         self.widgets[widget_name].setCurrentIndex(default or 0)
         self.widgets[widget_name].setDisabled(not enabled)
-        new_width = self.widgets[widget_name].minimumSizeHint().width() + 50
+        new_width = self.widgets[widget_name].minimumSizeHint().width() + 20
         if new_width > self.widgets[widget_name].view().width():
             self.widgets[widget_name].view().setFixedWidth(new_width)
         if tooltip:

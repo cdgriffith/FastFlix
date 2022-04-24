@@ -4,7 +4,8 @@
 import copy
 import sys
 import logging
-import contextlib
+import os
+from pathlib import Path
 
 import reusables
 from box import Box
@@ -15,7 +16,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.ff_queue import get_queue, save_queue
 from fastflix.resources import get_icon, get_bool_env
-from fastflix.shared import no_border, open_folder, yes_no_message
+from fastflix.shared import no_border, open_folder, yes_no_message, message, error_message
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.exceptions import FastFlixInternalException
 
@@ -198,11 +199,19 @@ class EncodingQueue(FlixList):
         top_layout.addWidget(QtWidgets.QLabel(t("Queue")))
         top_layout.addStretch(1)
 
+        self.save_queue_button = QtWidgets.QPushButton(t("Save Queue to File"))
+        self.save_queue_button.clicked.connect(self.manually_save_queue)
+        self.save_queue_button.setFixedWidth(150)
+
+        self.load_queue_button = QtWidgets.QPushButton(t("Load Queue from File"))
+        self.load_queue_button.clicked.connect(self.manually_load_queue)
+        self.load_queue_button.setFixedWidth(160)
+
         self.clear_queue = QtWidgets.QPushButton(
             QtGui.QIcon(get_icon("onyx-clear-queue", self.app.fastflix.config.theme)), t("Clear Completed")
         )
         self.clear_queue.clicked.connect(self.clear_complete)
-        self.clear_queue.setFixedWidth(120)
+        self.clear_queue.setFixedWidth(150)
         self.clear_queue.setToolTip(t("Remove completed tasks"))
 
         self.pause_queue = QtWidgets.QPushButton(
@@ -210,7 +219,7 @@ class EncodingQueue(FlixList):
         )
         self.pause_queue.clicked.connect(self.pause_resume_queue)
         # pause_queue.setFixedHeight(40)
-        self.pause_queue.setFixedWidth(120)
+        self.pause_queue.setFixedWidth(130)
         self.pause_queue.setToolTip(
             t("Wait for the current command to finish," " and stop the next command from processing")
         )
@@ -220,12 +229,12 @@ class EncodingQueue(FlixList):
         )
         self.pause_encode.clicked.connect(self.pause_resume_encode)
         # pause_queue.setFixedHeight(40)
-        self.pause_encode.setFixedWidth(120)
+        self.pause_encode.setFixedWidth(130)
         self.pause_encode.setToolTip(t("Pause / Resume the current command"))
 
         self.ignore_errors = QtWidgets.QCheckBox(t("Ignore Errors"))
         self.ignore_errors.toggled.connect(self.ignore_failures)
-        self.ignore_errors.setFixedWidth(120)
+        self.ignore_errors.setFixedWidth(150)
 
         self.after_done_combo = QtWidgets.QComboBox()
         self.after_done_combo.addItem("None")
@@ -244,6 +253,10 @@ class EncodingQueue(FlixList):
         self.after_done_combo.setToolTip("Run a command after conversion completes")
         self.after_done_combo.currentIndexChanged.connect(lambda: self.set_after_done())
         self.after_done_combo.setMaximumWidth(150)
+
+        top_layout.addWidget(self.load_queue_button, QtCore.Qt.AlignRight)
+        top_layout.addWidget(self.save_queue_button, QtCore.Qt.AlignRight)
+        top_layout.addStretch(1)
         top_layout.addWidget(QtWidgets.QLabel(t("After Conversion")))
         top_layout.addWidget(self.after_done_combo, QtCore.Qt.AlignRight)
         top_layout.addWidget(self.ignore_errors, QtCore.Qt.AlignRight)
@@ -259,34 +272,65 @@ class EncodingQueue(FlixList):
             # with self.app.fastflix.queue_lock:
             #     save_queue([], queue_file=self.app.fastflix.queue_path, config=self.app.fastflix.config)
 
-    def queue_startup_check(self):
-        new_queue = get_queue(self.app.fastflix.queue_path)
+    def queue_startup_check(self, queue_file=None):
+        new_queue = get_queue(queue_file or self.app.fastflix.queue_path)
 
-        reset_vids = []
         remove_vids = []
         for i, video in enumerate(new_queue):
-            if video.status.running:
-                reset_vids.append(i)
             if video.status.complete:
                 remove_vids.append(video)
-
-        for index in reset_vids:
-            vid: Video = new_queue.pop(index)
-            vid.status.clear()
-            new_queue.insert(index, vid)
+            else:
+                video.status.clear()
 
         for video in remove_vids:
             new_queue.remove(video)
 
-        if new_queue:
+        if queue_file:
+            self.app.fastflix.conversion_list = new_queue
+        elif new_queue:
             if yes_no_message(
                 f"{t('Not all items in the queue were completed')}\n"
                 f"{t('Would you like to keep them in the queue?')}",
                 title="Recover Queue Items",
             ):
+
                 self.app.fastflix.conversion_list = new_queue
-            self.new_source()
+        self.new_source()
         save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+
+    def manually_save_queue(self):
+        filename = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            caption=t("Save Queue"),
+            dir=os.path.expanduser("~"),
+            filter=f"FastFlix Queue File (*.yaml)",
+        )
+        if filename and filename[0]:
+            save_queue(self.app.fastflix.conversion_list, filename[0], self.app.fastflix.config)
+            message(t("Queue saved to") + f"{filename[0]}")
+
+    def manually_load_queue(self):
+        filename = QtWidgets.QFileDialog.getOpenFileName(
+            self, caption=t("Load Queue"), dir=os.path.expanduser("~"), filter=f"FastFlix Queue File (*.yaml)"
+        )
+        if filename and filename[0]:
+            is_yes = True
+            if self.app.fastflix.conversion_list:
+                is_yes = yes_no_message(
+                    (
+                        t("This will remove all items in the queue currently")
+                        + "\n"
+                        + t(f"It will update it with the contents of")
+                        + f":\n\n {filename[0]}\n\n"
+                        + t("Are you sure you want to proceed?")
+                    ),
+                    title="Overwrite existing queue?",
+                )
+            filename = Path(filename[0])
+            if not filename.exists():
+                error_message(t("That file doesn't exist"))
+            if is_yes:
+                self.queue_startup_check(filename)
 
     def reorder(self, update=True):
         if self.app.fastflix.currently_encoding:

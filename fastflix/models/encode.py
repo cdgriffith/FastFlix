@@ -197,7 +197,7 @@ class NVEncCAVCSettings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     b_frames: Optional[str] = None
-    b_ref_mode: str = "Hardware"
+    b_ref_mode: str = "disabled"
 
 
 class VCEEncCSettings(EncoderSettings):

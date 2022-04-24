@@ -6310,3 +6310,123 @@ QSVEncC Encoder support is still experimental!:
   por: O suporte ao codificador QSVEncC ainda é experimental!
   swe: Stödet för QSVEncC Encoder är fortfarande experimentellt!
   pol: Obsługa kodera QSVEncC jest wciąż eksperymentalna!
+Save Queue to File:
+  eng: Save Queue to File
+  deu: Warteschlange in Datei speichern
+  fra: Enregistrer la file d'attente dans un fichier
+  ita: Salvare la coda su file
+  spa: Guardar la cola en un archivo
+  zho: 保存队列到文件
+  jpn: キューをファイルに保存する
+  rus: Сохранить очередь в файл
+  por: Salvar fila no arquivo
+  swe: Spara kö till en fil
+  pol: Zapisz kolejkę do pliku
+Load Queue from File:
+  eng: Load Queue from File
+  deu: Warteschlange aus Datei laden
+  fra: Chargement de la file d'attente à partir d'un fichier
+  ita: Caricare la coda da file
+  spa: Cargar la cola desde un archivo
+  zho: 从文件中加载队列
+  jpn: ファイルからキューを読み込む
+  rus: Загрузка очереди из файла
+  por: Fila de carga do arquivo
+  swe: Ladda kö från en fil
+  pol: Wczytaj kolejkę z pliku
+This will remove all items in the queue currently:
+  eng: This will remove all items in the queue currently
+  deu: Damit werden alle Einträge in der Warteschlange entfernt.
+  fra: Cela supprimera tous les éléments de la file d'attente actuellement
+  ita: Questo rimuoverà tutti gli elementi nella coda attualmente
+  spa: Esto eliminará todos los elementos en la cola actualmente
+  zho: 这将删除当前队列中的所有项目。
+  jpn: これにより、現在キューにあるすべてのアイテムが削除されます。
+  rus: Это приведет к удалению всех элементов в очереди в настоящее время
+  por: Isto removerá todos os itens da fila atualmente
+  swe: Detta kommer att ta bort alla objekt i kön för närvarande
+  pol: Spowoduje to usunięcie wszystkich elementów znajdujących się aktualnie w kolejce.
+It will update it with the contents of:
+  eng: It will update it with the contents of
+  deu: Er aktualisiert sie mit dem Inhalt von
+  fra: Il le mettra à jour avec le contenu de
+  ita: Lo aggiornerà con il contenuto di
+  spa: Lo actualizará con el contenido de
+  zho: 它将用以下内容更新它
+  jpn: の内容で更新されます。
+  rus: Он обновит его содержимым
+  por: Ele o atualizará com o conteúdo de
+  swe: Den kommer att uppdatera den med innehållet i
+  pol: Zostanie ona zaktualizowana o zawartość
+Are you sure you want to proceed?:
+  eng: Are you sure you want to proceed?
+  deu: Sind Sie sicher, dass Sie fortfahren wollen?
+  fra: Vous êtes sûr de vouloir continuer ?
+  ita: Sei sicuro di voler procedere?
+  spa: ¿Estás seguro de que quieres continuar?
+  zho: 你确定你要继续吗？
+  jpn: 本当に進めていいんですか？
+  rus: Вы уверены, что хотите продолжить?
+  por: Você tem certeza de que quer prosseguir?
+  swe: Är du säker på att du vill fortsätta?
+  pol: Czy jesteś pewien, że chcesz kontynuować?
+Overwrite existing queue?:
+  eng: Overwrite existing queue?
+  deu: Vorhandene Warteschlange überschreiben?
+  fra: Écraser la file d'attente existante ?
+  ita: Sovrascrivere la coda esistente?
+  spa: ¿Sobreescribir la cola existente?
+  zho: 覆盖现有队列？
+  jpn: 既存のキューを上書きしますか？
+  rus: Перезаписать существующую очередь?
+  por: Sobregravar a fila existente?
+  swe: Skriva över befintlig kö?
+  pol: Nadpisać istniejącą kolejkę?
+Save Queue:
+  eng: Save Queue
+  deu: Warteschlange speichern
+  fra: Sauvegarder la file d'attente
+  ita: Salvare la coda
+  spa: Guardar cola
+  zho: 保存队列
+  jpn: キューを保存する
+  rus: Сохранить очередь
+  por: Salvar fila
+  swe: Spara kö
+  pol: Zapisz kolejkę
+Load Queue:
+  eng: Load Queue
+  deu: Warteschlange laden
+  fra: File d'attente de chargement
+  ita: Coda di carico
+  spa: Cola de carga
+  zho: 加载队列
+  jpn: ロードキュー
+  rus: Очередь загрузки
+  por: Fila de carga
+  swe: Belastningskö
+  pol: Kolejka ładunkowa
+Queue saved to:
+  eng: Queue saved to
+  deu: Warteschlange gespeichert in
+  fra: File d'attente enregistrée dans
+  ita: Coda salvata in
+  spa: Cola guardada en
+  zho: 队列保存到
+  jpn: に保存されたキュー
+  rus: Очередь сохранена в
+  por: Fila salva para
+  swe: Kö sparad till
+  pol: Kolejka zapisana do
+That file doesn't exist:
+  eng: That file doesn't exist
+  deu: Diese Datei existiert nicht
+  fra: Ce fichier n'existe pas
+  ita: Quel file non esiste
+  spa: Ese archivo no existe
+  zho: 该文件不存在
+  jpn: そのファイルは存在しません
+  rus: Этот файл не существует
+  por: Esse arquivo não existe
+  swe: Den filen finns inte
+  pol: Ten plik nie istnieje

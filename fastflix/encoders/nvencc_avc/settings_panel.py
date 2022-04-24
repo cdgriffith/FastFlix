@@ -279,13 +279,13 @@ class NVENCCAVC(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Min Q")))
         layout.addWidget(
-            self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), min_width=45, opt="min_q_i")
+            self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), width=15, opt="min_q_i")
         )
         layout.addWidget(
-            self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), min_width=45, opt="min_q_p")
+            self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), width=15, opt="min_q_p")
         )
         layout.addWidget(
-            self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), min_width=45, opt="min_q_b")
+            self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), width=15, opt="min_q_b")
         )
         return layout
 
@@ -293,13 +293,13 @@ class NVENCCAVC(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Init Q")))
         layout.addWidget(
-            self._add_combo_box(widget_name="init_q_i", options=["I"] + self._qp_range(), min_width=45, opt="init_q_i")
+            self._add_combo_box(widget_name="init_q_i", options=["I"] + self._qp_range(), width=15, opt="init_q_i")
         )
         layout.addWidget(
-            self._add_combo_box(widget_name="init_q_p", options=["P"] + self._qp_range(), min_width=45, opt="init_q_p")
+            self._add_combo_box(widget_name="init_q_p", options=["P"] + self._qp_range(), width=15, opt="init_q_p")
         )
         layout.addWidget(
-            self._add_combo_box(widget_name="init_q_b", options=["B"] + self._qp_range(), min_width=45, opt="init_q_b")
+            self._add_combo_box(widget_name="init_q_b", options=["B"] + self._qp_range(), width=15, opt="init_q_b")
         )
         return layout
 
@@ -307,13 +307,13 @@ class NVENCCAVC(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Max Q")))
         layout.addWidget(
-            self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), min_width=45, opt="max_q_i")
+            self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), width=15, opt="max_q_i")
         )
         layout.addWidget(
-            self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), min_width=45, opt="max_q_p")
+            self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), width=15, opt="max_q_p")
         )
         layout.addWidget(
-            self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), min_width=45, opt="max_q_b")
+            self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), width=15, opt="max_q_b")
         )
         return layout
 

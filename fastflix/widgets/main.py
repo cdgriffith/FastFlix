@@ -285,7 +285,7 @@ class Main(QtWidgets.QWidget):
 
         source = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-source")), f"  {t('Source')}")
         source.setIconSize(QtCore.QSize(22, 22))
-        source.setFixedHeight(40)
+        source.setFixedHeight(50)
         source.setDefault(True)
         source.clicked.connect(lambda: self.open_file())
 
@@ -296,7 +296,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.profile_box.setCurrentText(self.app.fastflix.config.selected_profile)
         self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
         self.widgets.profile_box.setFixedWidth(250)
-        self.widgets.profile_box.setFixedHeight(40)
+        self.widgets.profile_box.setFixedHeight(50)
 
         top_bar.addWidget(source)
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
@@ -309,7 +309,7 @@ class Main(QtWidgets.QWidget):
             QtGui.QIcon(self.get_icon("onyx-new-profile")), f'  {t("New Profile")}'
         )
         # add_profile.setFixedSize(QtCore.QSize(40, 40))
-        self.add_profile.setFixedHeight(40)
+        self.add_profile.setFixedHeight(50)
         self.add_profile.setIconSize(QtCore.QSize(20, 20))
         self.add_profile.setToolTip(t("Profile_newprofiletooltip"))
         # add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
@@ -343,14 +343,14 @@ class Main(QtWidgets.QWidget):
 
         queue = QtWidgets.QPushButton(QtGui.QIcon(onyx_queue_add_icon), f"{t('Add to Queue')}  ")
         queue.setIconSize(QtCore.QSize(26, 26))
-        queue.setFixedHeight(40)
+        queue.setFixedHeight(50)
         queue.setStyleSheet(theme)
         queue.setLayoutDirection(QtCore.Qt.RightToLeft)
         queue.clicked.connect(lambda: self.add_to_queue())
 
         self.widgets.convert_button = QtWidgets.QPushButton(QtGui.QIcon(onyx_convert_icon), f"{t('Convert')}  ")
         self.widgets.convert_button.setIconSize(QtCore.QSize(26, 26))
-        self.widgets.convert_button.setFixedHeight(40)
+        self.widgets.convert_button.setFixedHeight(50)
         self.widgets.convert_button.setStyleSheet(theme)
         self.widgets.convert_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.widgets.convert_button.clicked.connect(lambda: self.encode_video())
@@ -421,18 +421,21 @@ class Main(QtWidgets.QWidget):
 
         source_layout = QtWidgets.QHBoxLayout()
         source_label = QtWidgets.QLabel(t("Source"))
-        source_label.setFixedWidth(75)
+        source_label.setFixedWidth(85)
+        self.source_video_path_widget.setFixedHeight(23)
         source_layout.addWidget(source_label)
         source_layout.addWidget(self.source_video_path_widget, stretch=True)
 
         output_layout = QtWidgets.QHBoxLayout()
         output_label = QtWidgets.QLabel(t("Output"))
-        output_label.setFixedWidth(75)
+        output_label.setFixedWidth(85)
+        self.output_video_path_widget.setFixedHeight(23)
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
         self.output_path_button = QtWidgets.QPushButton(icon=QtGui.QIcon(self.get_icon("onyx-output")))
         self.output_path_button.clicked.connect(lambda: self.save_file())
         self.output_path_button.setDisabled(True)
+        self.output_path_button.setFixedHeight(23)
         # self.output_path_button.setFixedHeight(12)
         self.output_path_button.setIconSize(QtCore.QSize(16, 16))
         self.output_path_button.setFixedSize(QtCore.QSize(16, 16))
@@ -445,10 +448,10 @@ class Main(QtWidgets.QWidget):
         title_layout = QtWidgets.QHBoxLayout()
 
         title_label = QtWidgets.QLabel(t("Title"))
-        title_label.setFixedWidth(75)
+        title_label.setFixedWidth(85)
         title_label.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
         self.widgets.video_title = QtWidgets.QLineEdit()
-        self.widgets.video_title.setFixedHeight(20)
+        self.widgets.video_title.setFixedHeight(23)
         self.widgets.video_title.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
         self.widgets.video_title.textChanged.connect(lambda: self.page_update(build_thumbnail=False))
 
@@ -532,14 +535,14 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.video_track = QtWidgets.QComboBox()
         self.widgets.video_track.addItems([])
-        self.widgets.video_track.setFixedHeight(20)
+        self.widgets.video_track.setFixedHeight(23)
         self.widgets.video_track.currentIndexChanged.connect(self.video_track_update)
         self.widgets.video_track.setStyleSheet("height: 5px")
         if self.app.fastflix.config.theme == "onyx":
             self.widgets.video_track.setStyleSheet("background-color: #707070; border-radius: 10px; color: black")
 
         track_label = QtWidgets.QLabel(t("Video Track"))
-        track_label.setFixedWidth(70)
+        track_label.setFixedWidth(80)
         layout.addWidget(track_label)
         layout.addWidget(self.widgets.video_track, stretch=1)
         layout.setSpacing(10)
@@ -640,7 +643,7 @@ class Main(QtWidgets.QWidget):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
         self.widgets.convert_to.setMinimumWidth(180)
-        self.widgets.convert_to.setFixedHeight(40)
+        self.widgets.convert_to.setFixedHeight(50)
         self.change_output_types()
         self.widgets.convert_to.view().setFixedWidth(self.widgets.convert_to.minimumSizeHint().width() + 50)
         self.widgets.convert_to.currentTextChanged.connect(self.change_encoder)
@@ -852,7 +855,7 @@ class Main(QtWidgets.QWidget):
     def build_hoz_int_field(
         self,
         name,
-        button_size=22,
+        button_size=28,
         left_stretch=True,
         right_stretch=True,
         layout=None,

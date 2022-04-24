@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-from dataclasses import dataclass, field
-
-from multiprocessing import Lock
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -34,6 +31,6 @@ class FastFlix(BaseModel):
     # Conversion
     currently_encoding: bool = False
     conversion_paused: bool = False
-    conversion_list: list[Video] = Field(default_factory=list)
+    conversion_list: List[Video] = Field(default_factory=list)
     current_video_encode_index = 0
     current_command_encode_index = 0
