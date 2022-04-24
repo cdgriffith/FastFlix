@@ -9,6 +9,7 @@
 * Fixing #327 FastFlix Duplicates encoding task and encodes same movie to infinity (thanks to Wontell)
 * Fixing #324 NVEncC wrong Interlace Value set by FastFlix (thanks to Wontell)
 * Fixing #278 FastFlix occasionally getting stuck on a single video in a queue (thanks to kamild1996)
+* Fixing #330 "Remove Metadata" only removes video metadata for Rigaya's hardware encoders (thanks to wynterca)
 * Fixing level was not being passed to hardware encoders
 
 ## Version 4.8.1
