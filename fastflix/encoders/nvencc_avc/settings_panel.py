@@ -15,7 +15,7 @@ from fastflix.resources import loading_movie, get_icon
 
 logger = logging.getLogger("fastflix")
 
-presets = ["default", "performance", "quality"]
+presets = ["default", "performance", "quality", "P1", "P2", "P3", "P4", "P5", "P6", "P7"]
 
 recommended_bitrates = [
     "200k     (320x240p @ 30fps)",
