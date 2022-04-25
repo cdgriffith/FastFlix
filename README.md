@@ -18,14 +18,14 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 
  FastFlix supports the following encoders if available:
 
-| Encoder   | x265 |  NVENC HEVC | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | [VCEEncC HEVC](https://github.com/rigaya/VCEEnc/releases) | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | WEBP | GIF |
-| --------- | ---- | ---------- | ----------- | ----------- | ---- | ----- | ------- |-----| --- | ---- | --- |
-| HDR10     |   ✓  |            |      ✓     |      ✓     |     |       |         | ✓   |  ✓* |      |     |
-| HDR10+    |   ✓  |            |      ✓     |            |     |       |         |     |     |      |     |
-| Audio     |   ✓  |      ✓     |      ✓*    |      ✓*    | ✓   |   ✓  |    ✓    | ✓   |  ✓   |      |     |
-| Subtitles |   ✓  |      ✓     |      ✓     |      ✓     | ✓   |   ✓  |    ✓    | ✓   |      |      |     |
-| Covers    |   ✓  |      ✓     |            |            | ✓   |   ✓  |    ✓    | ✓   |      |      |     |
-| bt.2020   |   ✓  |     ✓      |     ✓      |     ✓      |  ✓  |  ✓    |   ✓    | ✓   |  ✓   |      |     |
+| Encoder   | x265 |  NVENC HEVC | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | [VCEEncC HEVC](https://github.com/rigaya/VCEEnc/releases) | [QSVEncC HEVC](https://github.com/rigaya/QSVEnc/releases) | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | WEBP | GIF |
+| --------- | ---- | ---------- | ----------- | ----------- | ----------- |------| ----- | ------- |-----| --- | ---- | --- |
+| HDR10     |   ✓  |            |      ✓     |      ✓     |      ✓     |      |       |         | ✓   |  ✓* |      |     |
+| HDR10+    |   ✓  |            |      ✓     |            |            |      |       |         |     |     |      |     |
+| Audio     |   ✓  |      ✓     |      ✓*    |      ✓*    |      ✓*    |  ✓   |   ✓  |    ✓    | ✓   |  ✓   |      |     |
+| Subtitles |   ✓  |      ✓     |      ✓     |      ✓     |      ✓     |  ✓   |   ✓  |    ✓    | ✓   |      |      |     |
+| Covers    |   ✓  |      ✓     |            |            |            |  ✓   |   ✓  |    ✓    | ✓   |      |      |     |
+| bt.2020   |   ✓  |     ✓      |     ✓      |     ✓      |     ✓      |   ✓  |  ✓    |   ✓    | ✓   |  ✓   |      |     |
 
 `✓ - Full support   |   ✓* - Limited support`
 
@@ -35,6 +35,15 @@ View the [releases](https://github.com/cdgriffith/FastFlix/releases) for binarie
 
 You will need to have `ffmpeg` and `ffprobe` executables on your PATH and they must be executable. Version 4.3 or greater is required for most usage, latest master build is recommended and required for some features. The one in your package manager system may not support all encoders or options.
 Check out the [FFmpeg download page for static builds](https://ffmpeg.org/download.html) for Linux and Mac.
+
+# Additional Encoders
+
+To use rigaya's [Nvidia NVENC](https://github.com/rigaya/NVEnc/releases), [AMD VCE](https://github.com/rigaya/VCEEnc/releases), and [Intel QSV](https://github.com/rigaya/QSVEnc/releases) encoders, download them and extract them to folder on your hard drive. 
+
+Windows: Go into FastFlix's settings and select the corresponding EXE file for each of the encoders you want to use. 
+
+Linux: Install the rpm or deb and restart FastFlix
+
 
 ## Running from source code
 
