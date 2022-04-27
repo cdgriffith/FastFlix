@@ -7,6 +7,7 @@ import logging
 import os
 from pathlib import Path
 
+from appdirs import user_data_dir
 import reusables
 from box import Box
 from PySide2 import QtCore, QtGui, QtWidgets
@@ -19,6 +20,8 @@ from fastflix.resources import get_icon, get_bool_env
 from fastflix.shared import no_border, open_folder, yes_no_message, message, error_message
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.exceptions import FastFlixInternalException
+from fastflix.windows_tools import allow_sleep_mode, prevent_sleep_mode
+from fastflix.command_runner import BackgroundRunner
 
 logger = logging.getLogger("fastflix")
 
@@ -38,6 +41,8 @@ done_actions = {
     },
 }
 
+after_done_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "after_done_logs"
+
 
 class EncodeItem(QtWidgets.QTabWidget):
     def __init__(self, parent, video: Video, index, first=False):
@@ -49,6 +54,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.last = False
         self.video = video.copy()
         self.setFixedHeight(60)
+        self.after_done_action = None
 
         self.widgets = Box(
             up_button=QtWidgets.QPushButton(
@@ -412,6 +418,7 @@ class EncodingQueue(FlixList):
 
     def pause_resume_encode(self):
         if self.encode_paused:
+            allow_sleep_mode()
             self.pause_encode.setText(t("Pause Encode"))
             self.pause_encode.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPause))
             self.app.fastflix.worker_queue.put(["resume encode"])
@@ -425,6 +432,7 @@ class EncodingQueue(FlixList):
                 "Pause Warning",
             ):
                 return
+            prevent_sleep_mode()
             self.pause_encode.setText(t("Resume Encode"))
             self.pause_encode.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay))
             self.app.fastflix.worker_queue.put(["pause encode"])
@@ -441,7 +449,7 @@ class EncodingQueue(FlixList):
         option = self.after_done_combo.currentText()
 
         if option == "None":
-            command = ""
+            command = None
         elif option in self.app.fastflix.config.custom_after_run_scripts:
             command = self.app.fastflix.config.custom_after_run_scripts[option]
         elif reusables.win_based:
@@ -449,7 +457,7 @@ class EncodingQueue(FlixList):
         else:
             command = done_actions["linux"][option]
 
-        self.app.fastflix.worker_queue.put(["set after done", command])
+        self.after_done_action = command
 
     def retry_video(self, current_video):
 
@@ -494,3 +502,11 @@ class EncodingQueue(FlixList):
         self.app.fastflix.conversion_list.append(copy.deepcopy(self.app.fastflix.current_video))
         self.new_source()
         save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+
+    def run_after_done(self):
+        if not self.after_done_action:
+            return
+        logger.info(f"Running after done action: {self.after_done_action}")
+        BackgroundRunner(self.app.fastflix.log_queue).start_exec(
+            self.after_done_action, str(after_done_path), shell=True
+        )

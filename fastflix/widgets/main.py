@@ -46,7 +46,7 @@ from fastflix.resources import (
     get_text_color,
 )
 from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
-from fastflix.windows_tools import show_windows_notification
+from fastflix.windows_tools import show_windows_notification, prevent_sleep_mode, allow_sleep_mode
 from fastflix.widgets.background_tasks import ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.video_options import VideoOptions
@@ -1825,6 +1825,7 @@ class Main(QtWidgets.QWidget):
         logger.debug(t("Starting conversion process"))
 
         self.app.fastflix.currently_encoding = True
+        prevent_sleep_mode()
         self.set_convert_button(False)
         self.send_video_request_to_worker_queue(video_to_send)
         self.disable_all()
@@ -1870,6 +1871,7 @@ class Main(QtWidgets.QWidget):
     # @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_complete(self, success: bool):
         self.paused = False
+        allow_sleep_mode()
         self.set_convert_button()
 
         if not success:
@@ -1890,6 +1892,7 @@ class Main(QtWidgets.QWidget):
     def conversion_cancelled(self, video: Video):
         self.app.fastflix.worker_queue.put(Request("cancel"))
         self.app.fastflix.currently_encoding = False
+        allow_sleep_mode()
         self.set_convert_button()
 
         exists = video.video_settings.output_path.exists()
@@ -1952,14 +1955,18 @@ class Main(QtWidgets.QWidget):
         video_to_send: Optional[Video] = None
         errored = False
         same_video = False
+
         for video in self.app.fastflix.conversion_list:
             if response.video_uuid == video.uuid:
                 video.status.running = False
+
                 if response.status == "cancelled":
                     video.status.cancelled = True
                     self.app.fastflix.currently_encoding = False
+                    allow_sleep_mode()
                     self.video_options.update_queue()
                     return
+
                 if response.status == "complete":
                     video.status.current_command += 1
                     if len(video.video_settings.conversion_commands) > video.status.current_command:
@@ -1968,15 +1975,15 @@ class Main(QtWidgets.QWidget):
                         break
                     else:
                         video.status.complete = True
+
                 if response.status == "error":
                     video.status.error = True
                     errored = True
                 break
 
         if errored and not self.video_options.queue.ignore_errors.isChecked():
-            self.app.fastflix.currently_encoding = False
             self.conversion_complete(success=False)
-            self.video_options.update_queue()
+            self.end_encoding()
             return
 
         if not video_to_send:
@@ -1987,18 +1994,21 @@ class Main(QtWidgets.QWidget):
                     break
 
         if not video_to_send:
-            self.app.fastflix.currently_encoding = False
             self.conversion_complete(success=True)
-            self.video_options.update_queue()
+            self.end_encoding()
             return
 
         self.app.fastflix.currently_encoding = True
         if not same_video and self.app.fastflix.conversion_paused:
-            self.app.fastflix.currently_encoding = False
-            self.video_options.update_queue()
-            return
+            return self.end_encoding()
 
         self.send_video_request_to_worker_queue(video_to_send)
+
+    def end_encoding(self):
+        self.app.fastflix.currently_encoding = False
+        allow_sleep_mode()
+        self.video_options.queue.run_after_done()
+        self.video_options.update_queue()
 
     def send_next_video(self) -> bool:
         if not self.app.fastflix.currently_encoding:
@@ -2007,12 +2017,14 @@ class Main(QtWidgets.QWidget):
                     video.status.running = True
                     self.send_video_request_to_worker_queue(video)
                     self.app.fastflix.currently_encoding = True
+                    prevent_sleep_mode()
                     return True
         return False
 
     def send_video_request_to_worker_queue(self, video: Video):
         command = video.video_settings.conversion_commands[video.status.current_command]
         self.app.fastflix.currently_encoding = True
+        prevent_sleep_mode()
 
         # logger.info(f"Sending video {video.uuid} command {command.uuid} called from {inspect.stack()}")
 

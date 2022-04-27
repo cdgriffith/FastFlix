@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 4.9.2
+
+* Fixing #334 machine now sleeps during encoding (thanks to Don Gafford)
+* Fixing After Conversion command running after every encoding (thanks to Don Gafford)
+
 ## Version 4.9.1
 
 * Fixing QSV AVC command builder not working (thanks to Marco Ravich)
