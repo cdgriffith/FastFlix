@@ -38,7 +38,6 @@ done_actions = {
         "restart": "shutdown /r",
         "logout": "shutdown /l",
         "hibernate": "shutdown /h",
-        "test": "dir",
     },
 }
 
