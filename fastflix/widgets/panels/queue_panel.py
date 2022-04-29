@@ -407,8 +407,6 @@ class EncodingQueue(FlixList):
             self.pause_queue.setText(t("Pause Queue"))
             self.pause_queue.setIcon(QtGui.QIcon(get_icon("onyx-pause", self.app.fastflix.config.theme)))
             send_next = self.main.send_next_video()
-            if send_next:
-                self.main.set_convert_button(False)
             logger.debug(f"queue resumed, will I send next? {send_next}")
         else:
             self.pause_queue.setText(t("Resume Queue"))

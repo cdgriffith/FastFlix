@@ -2018,6 +2018,9 @@ class Main(QtWidgets.QWidget):
                     prevent_sleep_mode()
                     self.set_convert_button()
                     return True
+        self.app.fastflix.currently_encoding = False
+        allow_sleep_mode()
+        self.set_convert_button()
         return False
 
     def send_video_request_to_worker_queue(self, video: Video):
