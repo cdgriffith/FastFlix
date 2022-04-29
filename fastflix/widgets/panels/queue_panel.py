@@ -54,7 +54,6 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.last = False
         self.video = video.copy()
         self.setFixedHeight(60)
-        self.after_done_action = None
 
         self.widgets = Box(
             up_button=QtWidgets.QPushButton(
@@ -200,6 +199,7 @@ class EncodingQueue(FlixList):
         self.app = app
         self.encode_paused = False
         self.encoding = False
+        self.after_done_action = None
         top_layout = QtWidgets.QHBoxLayout()
 
         top_layout.addWidget(QtWidgets.QLabel(t("Queue")))

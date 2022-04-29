@@ -1778,8 +1778,8 @@ class Main(QtWidgets.QWidget):
                 return False
         return True
 
-    def set_convert_button(self, convert=True):
-        if convert:
+    def set_convert_button(self):
+        if not self.app.fastflix.currently_encoding:
             self.widgets.convert_button.setText(f"{t('Convert')}  ")
             self.widgets.convert_button.setIcon(QtGui.QIcon(self.get_icon("play-round")))
             self.widgets.convert_button.setIconSize(QtCore.QSize(22, 20))
@@ -1826,7 +1826,7 @@ class Main(QtWidgets.QWidget):
 
         self.app.fastflix.currently_encoding = True
         prevent_sleep_mode()
-        self.set_convert_button(False)
+        self.set_convert_button()
         self.send_video_request_to_worker_queue(video_to_send)
         self.disable_all()
         self.video_options.show_status()
@@ -1890,9 +1890,6 @@ class Main(QtWidgets.QWidget):
     #
     # @reusables.log_exception("fastflix", show_traceback=False)
     def conversion_cancelled(self, video: Video):
-        self.app.fastflix.worker_queue.put(Request("cancel"))
-        self.app.fastflix.currently_encoding = False
-        allow_sleep_mode()
         self.set_convert_button()
 
         exists = video.video_settings.output_path.exists()
@@ -1962,8 +1959,8 @@ class Main(QtWidgets.QWidget):
 
                 if response.status == "cancelled":
                     video.status.cancelled = True
-                    self.app.fastflix.currently_encoding = False
-                    allow_sleep_mode()
+                    self.end_encoding()
+                    self.conversion_cancelled(video)
                     self.video_options.update_queue()
                     return
 
@@ -2009,6 +2006,7 @@ class Main(QtWidgets.QWidget):
         allow_sleep_mode()
         self.video_options.queue.run_after_done()
         self.video_options.update_queue()
+        self.set_convert_button()
 
     def send_next_video(self) -> bool:
         if not self.app.fastflix.currently_encoding:
@@ -2018,6 +2016,7 @@ class Main(QtWidgets.QWidget):
                     self.send_video_request_to_worker_queue(video)
                     self.app.fastflix.currently_encoding = True
                     prevent_sleep_mode()
+                    self.set_convert_button()
                     return True
         return False
 
