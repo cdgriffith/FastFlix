@@ -1,6 +1,11 @@
 name: Lint and Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches-ignore:
+      - master
+      - main
+  pull_request:
 
 jobs:
   lint:

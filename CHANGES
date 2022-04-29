@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 4.9.3
+
+* Fixing #339 After cancelling queue button stay as cancel (thanks to wynterca)
+* Fixing internal error that after_done_action could not be set
+
 ## Version 4.9.2
 
 * Fixing #334 machine now sleeps during encoding (thanks to Don Gafford)

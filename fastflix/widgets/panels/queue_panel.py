@@ -54,7 +54,6 @@ class EncodeItem(QtWidgets.QTabWidget):
         self.last = False
         self.video = video.copy()
         self.setFixedHeight(60)
-        self.after_done_action = None
 
         self.widgets = Box(
             up_button=QtWidgets.QPushButton(
@@ -200,6 +199,7 @@ class EncodingQueue(FlixList):
         self.app = app
         self.encode_paused = False
         self.encoding = False
+        self.after_done_action = None
         top_layout = QtWidgets.QHBoxLayout()
 
         top_layout.addWidget(QtWidgets.QLabel(t("Queue")))
@@ -407,8 +407,6 @@ class EncodingQueue(FlixList):
             self.pause_queue.setText(t("Pause Queue"))
             self.pause_queue.setIcon(QtGui.QIcon(get_icon("onyx-pause", self.app.fastflix.config.theme)))
             send_next = self.main.send_next_video()
-            if send_next:
-                self.main.set_convert_button(False)
             logger.debug(f"queue resumed, will I send next? {send_next}")
         else:
             self.pause_queue.setText(t("Resume Queue"))
