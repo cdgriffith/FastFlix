@@ -6,7 +6,7 @@ from pathlib import Path
 import pkg_resources
 
 name = "H264 (Video Toolbox)"
-requires = "h264_videotoolbox"
+requires = "videotoolbox"
 icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_h264_toolbox.png")).resolve())
 
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 4.9.4
+
+* Fixing Apple videotoolbox were not being listed as options (thanks to sublimal)
+* Fixing concatenation of large amount of files could cause huge slowdowns to the app
+* Fixing thumbnails command did not work when ffmpeg was in a directory with a space in it's lineage (thanks to No Name)
+
 ## Version 4.9.3
 
 * Fixing #339 After cancelling queue button stay as cancel (thanks to wynterca)
