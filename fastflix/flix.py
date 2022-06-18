@@ -318,7 +318,7 @@ def generate_thumbnail_command(
     enable_opencl: bool = False,
 ) -> str:
     command_options = [
-        f"{config.ffmpeg}",
+        f'"{config.ffmpeg}"',
         f"-ss {start_time}" if start_time else "",
         "-loglevel warning",
         f'-i "{clean_file_string(source)}"',

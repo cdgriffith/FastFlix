@@ -1,15 +1,24 @@
 4 or 5 will turn off rate distortion optimization, having even more of an impact on quality.:
-  deu: Mit 4 oder 5 wird die Optimierung der Ratenverzerrung ausgeschaltet, was sich noch stärker auf die Qualität auswirkt.
-  eng: 4 or 5 will turn off rate distortion optimization, having even more of an impact on quality.
-  fra: 4 ou 5 désactiveront l'optimisation de la distorsion du taux, ce qui aura un impact encore plus important sur la qualité.
-  ita: 4 o 5 disattiveranno l'ottimizzazione della distorsione del tasso, con un impatto ancora maggiore sulla qualità.
-  spa: 4 o 5 desactivarán la optimización de la tasa de distorsión, lo que tendrá un impacto aún mayor en la calidad.
+  deu: Mit 4 oder 5 wird die Optimierung der Ratenverzerrung ausgeschaltet, was sich
+    noch stärker auf die Qualität auswirkt.
+  eng: 4 or 5 will turn off rate distortion optimization, having even more of an impact
+    on quality.
+  fra: 4 ou 5 désactiveront l'optimisation de la distorsion du taux, ce qui aura un
+    impact encore plus important sur la qualité.
+  ita: 4 o 5 disattiveranno l'ottimizzazione della distorsione del tasso, con un impatto
+    ancora maggiore sulla qualità.
+  spa: 4 o 5 desactivarán la optimización de la tasa de distorsión, lo que tendrá
+    un impacto aún mayor en la calidad.
   zho: 4或5会关闭rate distortion optimization，对质量的影响会更大。
   jpn: 4または5を選択すると、レート歪みの最適化がオフになり、画質への影響がさらに大きくなります。
-  rus: 4 или 5 отключает оптимизацию искажений скорости, что еще больше влияет на качество.
-  por: 4 ou 5 irá desligar a optimização da taxa de distorção, tendo um impacto ainda maior na qualidade.
-  swe: 4 eller 5 stänger av optimeringen av hastighetsförvrängning, vilket har ännu större inverkan på kvaliteten.
-  pol: 4 lub 5 spowoduje wyłączenie optymalizacji zniekształceń współczynnika, co jeszcze bardziej wpłynie na jakość.
+  rus: 4 или 5 отключает оптимизацию искажений скорости, что еще больше влияет на
+    качество.
+  por: 4 ou 5 irá desligar a optimização da taxa de distorção, tendo um impacto ainda
+    maior na qualidade.
+  swe: 4 eller 5 stänger av optimeringen av hastighetsförvrängning, vilket har ännu
+    större inverkan på kvaliteten.
+  pol: 4 lub 5 spowoduje wyłączenie optymalizacji zniekształceń współczynnika, co
+    jeszcze bardziej wpłynie na jakość.
 AQ Strength:
   deu: Strärke des AQ
   eng: AQ Strength
@@ -210,7 +219,8 @@ Auto Burn-in first forced or default subtitle track:
   spa: Auto Burn-in primera pista de subtítulos forzados o por defecto
   zho: 自动内嵌第一条分配为forced或default的字幕轨
   jpn: オートバーンイン最初の強制またはデフォルトの字幕トラック
-  rus: Автоматическое включение первой принудительной дорожки субтитров или дорожки субтитров по умолчанию
+  rus: Автоматическое включение первой принудительной дорожки субтитров или дорожки
+    субтитров по умолчанию
   por: Auto Burn-in primeira faixa de subtítulos forçada ou por defeito
   swe: Automatisk inbränning av första tvingade eller standard undertextspår
   pol: Auto Burn-in pierwsza wymuszona lub domyślna ścieżka napisów
@@ -638,8 +648,10 @@ Command worker received request to pause current encode:
   deu: Befehlsablauf hat Anfrage erhalten, die aktuelle Kodierung zu pausieren
   eng: Command worker received request to pause current encode
   fra: Un employé du commandement a reçu une demande de pause de l'encodage en cours
-  ita: Operatore di comando ha ricevuto la richiesta di mettere in pausa la codifica corrente
-  spa: El trabajador del comando recibió una solicitud para pausar la codificación actual
+  ita: Operatore di comando ha ricevuto la richiesta di mettere in pausa la codifica
+    corrente
+  spa: El trabajador del comando recibió una solicitud para pausar la codificación
+    actual
   zho: 命令执行程序收到了暂停当前编码的请求
   jpn: コマンドワーカーが現在のエンコードを一時停止するリクエストを受信
   rus: Командный работник получил запрос на приостановку текущего кодирования
@@ -647,17 +659,25 @@ Command worker received request to pause current encode:
   swe: Kommandotjänstemannen har mottagit en begäran om att pausa den pågående kodningen.
   pol: Command worker odebrał żądanie wstrzymania bieżącego kodowania
 Command worker received request to pause encoding after the current item completes:
-  deu: Befehlsablauf hat Anfrage erhalten, das Encoding nach Abschluss des aktuellen Elements zu pausieren
+  deu: Befehlsablauf hat Anfrage erhalten, das Encoding nach Abschluss des aktuellen
+    Elements zu pausieren
   eng: Command worker received request to pause encoding after the current item completes
-  fra: Un membre du personnel de commandement a reçu une demande de pause d'encodage après la fin de l'élément en cours
-  ita: L'operatore di comando ha ricevuto la richiesta di mettere in pausa la codifica dopo il completamento della voce corrente
-  spa: El trabajador del comando recibió la solicitud de pausar la codificación después de que el elemento actual complete
+  fra: Un membre du personnel de commandement a reçu une demande de pause d'encodage
+    après la fin de l'élément en cours
+  ita: L'operatore di comando ha ricevuto la richiesta di mettere in pausa la codifica
+    dopo il completamento della voce corrente
+  spa: El trabajador del comando recibió la solicitud de pausar la codificación después
+    de que el elemento actual complete
   zho: 命令执行程序收到了在当前项目完成后暂停编码的请求
   jpn: コマンドワーカーが、現在のアイテムが完了した後にエンコードを一時停止するリクエストを受信した
-  rus: Командный работник получил запрос на приостановку кодирования после завершения текущего элемента
-  por: O trabalhador de comando recebeu um pedido para pausar a codificação após a conclusão do artigo actual
-  swe: Kommandotjänstemannen har mottagit en begäran om att pausa kodningen efter det att det aktuella objektet har avslutats.
-  pol: Pracownik poleceń otrzymał żądanie wstrzymania kodowania po zakończeniu bieżącego elementu
+  rus: Командный работник получил запрос на приостановку кодирования после завершения
+    текущего элемента
+  por: O trabalhador de comando recebeu um pedido para pausar a codificação após a
+    conclusão do artigo actual
+  swe: Kommandotjänstemannen har mottagit en begäran om att pausa kodningen efter
+    det att det aktuella objektet har avslutats.
+  pol: Pracownik poleceń otrzymał żądanie wstrzymania kodowania po zakończeniu bieżącego
+    elementu
 Command worker received request to resume encoding:
   deu: Befehlsablauf hat Anfrage erhalten, die Kodierung fortzusetzen
   eng: Command worker received request to resume encoding
@@ -673,9 +693,11 @@ Command worker received request to resume encoding:
 Command worker received request to resume paused encode:
   deu: Befehlsablauf hat Anfrage erhalten, die pausierte Kodierung fortzusetzen
   eng: Command worker received request to resume paused encode
-  fra: Un officier de commandement a reçu une demande de reprise de l'encodage en pause
+  fra: Un officier de commandement a reçu une demande de reprise de l'encodage en
+    pause
   ita: Operatore di comando ha ricevuto la richiesta di riprendere la pausa codificare
-  spa: El trabajador del comando recibió la solicitud de reanudar la codificación en pausa
+  spa: El trabajador del comando recibió la solicitud de reanudar la codificación
+    en pausa
   zho: 命令执行程序收到了恢复已暂停编码的请求
   jpn: コマンドワーカーが一時停止したエンコードの再開要求を受信
   rus: Командный работник получил запрос на возобновление приостановленного кодирования
@@ -887,10 +909,12 @@ Could not compress old logs:
   swe: Kunde inte komprimera gamla loggar
   pol: Nie można skompresować starych logów
 Could not connect to github to check for newer versions:
-  deu: Konnte keine Verbindung zu Github herstellen, um nach neueren Versionen zu suchen
+  deu: Konnte keine Verbindung zu Github herstellen, um nach neueren Versionen zu
+    suchen
   eng: Could not connect to github to check for newer versions
   fra: Impossible de se connecter à github pour vérifier les nouvelles versions
-  ita: Impossibile connettersi a github per verificare la presenza di versioni più recenti
+  ita: Impossibile connettersi a github per verificare la presenza di versioni più
+    recenti
   spa: No se pudo conectar a github para comprobar las nuevas versiones
   zho: 无法连接到github检查更新
   jpn: 新しいバージョンを確認するためにgithubに接続できませんでした。
@@ -1079,16 +1103,22 @@ Deblock:
   swe: Deblockering
   pol: Deblock
 Default 4. This parameter has a quadratic effect on the amount of memory allocated:
-  deu: Voreinstellung 4. Die Menge des mit diesem Parameter zugewiesenen Speichers wächst quadratisch.
+  deu: Voreinstellung 4. Die Menge des mit diesem Parameter zugewiesenen Speichers
+    wächst quadratisch.
   eng: Default 4. This parameter has a quadratic effect on the amount of memory allocated
   fra: Défaut 4. Ce paramètre a un effet quadratique sur la quantité de mémoire allouée
-  ita: Predefinito 4. Questo parametro ha un effetto quadratico sulla quantità di memoria allocata
-  spa: Por defecto 4. Este parámetro tiene un efecto cuadrático en la cantidad de memoria asignada
+  ita: Predefinito 4. Questo parametro ha un effetto quadratico sulla quantità di
+    memoria allocata
+  spa: Por defecto 4. Este parámetro tiene un efecto cuadrático en la cantidad de
+    memoria asignada
   zho: 默认值为4。此参数对于所分配的内存量和--b-adapt
   jpn: デフォルトは4です。このパラメータは、割り当てられたメモリの量に二次的な影響を与えます。
-  rus: По умолчанию 4. Этот параметр оказывает квадратичное влияние на объем выделяемой памяти
-  por: Default 4. Este parâmetro tem um efeito quadrático sobre a quantidade de memória atribuída
-  swe: Standard 4. Den här parametern har en kvadratisk effekt på mängden minne som tilldelas.
+  rus: По умолчанию 4. Этот параметр оказывает квадратичное влияние на объем выделяемой
+    памяти
+  por: Default 4. Este parâmetro tem um efeito quadrático sobre a quantidade de memória
+    atribuída
+  swe: Standard 4. Den här parametern har en kvadratisk effekt på mängden minne som
+    tilldelas.
   pol: Domyślnie 4. Ten parametr ma kwadratowy wpływ na ilość przydzielonej pamięci.
 Default disabled.:
   deu: Standardmäßig deaktiviert.
@@ -1115,17 +1145,26 @@ Default enabled.:
   swe: Standard aktiverad.
   pol: Domyślnie włączone.
 Default is an autodetected count based on the number of CPU cores and whether WPP is enabled or not.:
-  deu: Standard ist eine automatisch ermittelte Anzahl basierend auf der Anzahl der CPU-Kerne und ob WPP aktiviert ist oder nicht.
-  eng: Default is an autodetected count based on the number of CPU cores and whether WPP is enabled or not.
-  fra: La valeur par défaut est un comptage autodétecté basé sur le nombre de cœurs CPU et sur l'activation ou non du WPP.
-  ita: Default è un conteggio automatico basato sul numero di core della CPU e sul fatto che WPP sia abilitato o meno.
-  spa: Por defecto es un conteo autodetectado basado en el número de núcleos de la CPU y si WPP está habilitado o no.
+  deu: Standard ist eine automatisch ermittelte Anzahl basierend auf der Anzahl der
+    CPU-Kerne und ob WPP aktiviert ist oder nicht.
+  eng: Default is an autodetected count based on the number of CPU cores and whether
+    WPP is enabled or not.
+  fra: La valeur par défaut est un comptage autodétecté basé sur le nombre de cœurs
+    CPU et sur l'activation ou non du WPP.
+  ita: Default è un conteggio automatico basato sul numero di core della CPU e sul
+    fatto che WPP sia abilitato o meno.
+  spa: Por defecto es un conteo autodetectado basado en el número de núcleos de la
+    CPU y si WPP está habilitado o no.
   zho: WPP（Wavefront Parallel Processing）自动确定。
   jpn: デフォルトでは、CPUコア数とWPPが有効かどうかに基づいて自動検出されたカウントです。
-  rus: По умолчанию это автоопределяемый подсчет, основанный на количестве ядер ЦП и на том, включен или нет WPP.
-  por: O valor por defeito é uma contagem autodetectada com base no número de núcleos de CPU e se o WPP está ou não activado.
-  swe: Standardvärdet är ett automatiskt registrerat antal baserat på antalet CPU-kärnor och om WPP är aktiverat eller inte.
-  pol: Domyślnie jest to automatycznie wykryta liczba na podstawie liczby rdzeni CPU i tego, czy WPP jest włączone czy nie.
+  rus: По умолчанию это автоопределяемый подсчет, основанный на количестве ядер ЦП
+    и на том, включен или нет WPP.
+  por: O valor por defeito é uma contagem autodetectada com base no número de núcleos
+    de CPU e se o WPP está ou não activado.
+  swe: Standardvärdet är ett automatiskt registrerat antal baserat på antalet CPU-kärnor
+    och om WPP är aktiverat eller inte.
+  pol: Domyślnie jest to automatycznie wykryta liczba na podstawie liczby rdzeni CPU
+    i tego, czy WPP jest włączone czy nie.
 'Default: AQ enabled with auto-variance':
   deu: 'Voreinstellung: AQ aktiviert mit Auto-Varianz'
   eng: 'Default: AQ enabled with auto-variance'
@@ -1259,15 +1298,22 @@ Dither:
   swe: Dither
   pol: Dither
 Dither is an intentionally applied form of noise used to randomize quantization error,:
-  deu: Dither dient dazu, sichtbare Quantisierungsfehler durch absichtliches Zufallsrauschen abzuschwächen.
-  eng: Dither is an intentionally applied form of noise used to randomize quantization error,
-  fra: Dither est une forme de bruit appliquée intentionnellement et utilisée pour randomiser l'erreur de quantification,
-  ita: Il dither è una forma di rumore applicata intenzionalmente usata per randomizzare l'errore di quantizzazione,
-  spa: El Dither es una forma de ruido aplicada intencionalmente que se utiliza para aleatorizar el error de cuantificación,
+  deu: Dither dient dazu, sichtbare Quantisierungsfehler durch absichtliches Zufallsrauschen
+    abzuschwächen.
+  eng: Dither is an intentionally applied form of noise used to randomize quantization
+    error,
+  fra: Dither est une forme de bruit appliquée intentionnellement et utilisée pour
+    randomiser l'erreur de quantification,
+  ita: Il dither è una forma di rumore applicata intenzionalmente usata per randomizzare
+    l'errore di quantizzazione,
+  spa: El Dither es una forma de ruido aplicada intencionalmente que se utiliza para
+    aleatorizar el error de cuantificación,
   zho: 抖动（Dither）是一种为了随机化量化误差（quantization error）而有意添加的噪声，
   jpn: ディザとは、量子化誤差をランダムにするために意図的にかけるノイズのことです。
-  rus: Dither - это намеренно применяемая форма шума, используемая для рандомизации ошибки квантования,
-  por: A dither é uma forma de ruído intencionalmente aplicada utilizada para aleatorizar o erro de quantização,
+  rus: Dither - это намеренно применяемая форма шума, используемая для рандомизации
+    ошибки квантования,
+  por: A dither é uma forma de ruído intencionalmente aplicada utilizada para aleatorizar
+    o erro de quantização,
   swe: Dither är en avsiktligt tillämpad form av brus som används för att slumpa kvantiseringsfel,
   pol: Dither to celowo zastosowana forma szumu używana do randomizacji błędu kwantyzacji,
 Download:
@@ -1391,7 +1437,8 @@ Enabled:
   swe: Aktiverad
   pol: Włączone
 Enabled automatically when --master-display or --max-cll is specified.:
-  deu: Wird automatisch aktiviert, wenn --master-display oder --max-cll angegeben wird.
+  deu: Wird automatisch aktiviert, wenn --master-display oder --max-cll angegeben
+    wird.
   eng: Enabled automatically when --master-display or --max-cll is specified.
   fra: Activé automatiquement lorsque --master-display ou --max-cll est spécifié.
   ita: Abilitato automaticamente quando viene specificato --master-display o --max-cll.
@@ -1415,17 +1462,26 @@ Enables the yadif filter.:
   swe: Aktiverar yadif-filtret.
   pol: Włącza filtr yadif.
 Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.:
-  deu: Ermöglicht echte verlustfreie Kodierung unter Umgehung von Skalierung, Transformation, Quantisierung und In-Loop-Filterung.
-  eng: Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.
-  fra: Active le véritable codage sans perte en contournant la mise à l'échelle, la transformation, la quantification et le filtrage en boucle.
-  ita: Abilita la vera codifica senza perdita di dati bypassando la scalatura, la trasformazione, la quantizzazione e il filtraggio in loop.
-  spa: Habilita la verdadera codificación sin pérdidas evitando el escalado, la transformación, la cuantificación y el filtrado en bucle.
+  deu: Ermöglicht echte verlustfreie Kodierung unter Umgehung von Skalierung, Transformation,
+    Quantisierung und In-Loop-Filterung.
+  eng: Enables true lossless coding by bypassing scaling, transform, quantization
+    and in-loop filtering.
+  fra: Active le véritable codage sans perte en contournant la mise à l'échelle, la
+    transformation, la quantification et le filtrage en boucle.
+  ita: Abilita la vera codifica senza perdita di dati bypassando la scalatura, la
+    trasformazione, la quantizzazione e il filtraggio in loop.
+  spa: Habilita la verdadera codificación sin pérdidas evitando el escalado, la transformación,
+    la cuantificación y el filtrado en bucle.
   zho: 绕过缩放、变换、量化和in-loop filtering，从而实现真正的无损编码。
   jpn: スケーリング、トランスフォーム、量子化、インループフィルタリングをバイパスすることで、真のロスレスコーディングを可能にします。
-  rus: Обеспечивает истинное кодирование без потерь, минуя масштабирование, преобразование, квантование и фильтрацию в контуре.
-  por: Permite uma verdadeira codificação sem perdas, contornando a escala, a transformação, a quantização e a filtragem em loop.
-  swe: Möjliggör verklig förlustfri kodning genom att kringgå skalning, omvandling, kvantisering och filtrering i loopen.
-  pol: Umożliwia prawdziwie bezstratne kodowanie poprzez ominięcie skalowania, transformacji, kwantyzacji i filtrowania w pętli.
+  rus: Обеспечивает истинное кодирование без потерь, минуя масштабирование, преобразование,
+    квантование и фильтрацию в контуре.
+  por: Permite uma verdadeira codificação sem perdas, contornando a escala, a transformação,
+    a quantização e a filtragem em loop.
+  swe: Möjliggör verklig förlustfri kodning genom att kringgå skalning, omvandling,
+    kvantisering och filtrering i loopen.
+  pol: Umożliwia prawdziwie bezstratne kodowanie poprzez ominięcie skalowania, transformacji,
+    kwantyzacji i filtrowania w pętli.
 Enabling cover thumbnails on your system:
   deu: Aktivieren von Cover-Miniaturansichten auf Ihrem System
   eng: Enabling cover thumbnails on your system
@@ -1645,7 +1701,8 @@ Exit application:
 Extra flags or options, cannot modify existing settings:
   deu: Zusätzliche Flags oder Optionen, kann bestehende Einstellungen nicht ändern
   eng: Extra flags or options, cannot modify existing settings
-  fra: Drapeaux ou options supplémentaires, ne peuvent pas modifier les paramètres existants
+  fra: Drapeaux ou options supplémentaires, ne peuvent pas modifier les paramètres
+    existants
   ita: I flag o le opzioni extra, non possono modificare le impostazioni esistenti
   spa: Las banderas u opciones adicionales, no pueden modificar los ajustes existentes
   zho: 额外的标志或选项，无法修改已有设置。
@@ -1859,7 +1916,8 @@ For lossless, this is a size/speed tradeoff.:
   swe: För lossless är detta en avvägning mellan storlek och hastighet.
   pol: W przypadku plików bezstratnych jest to kompromis między rozmiarem a szybkością.
 For lossy, this is a quality/speed tradeoff.:
-  deu: Für verlustbehafteter Kodierung ist dies ein Kompromiss zwischen Qualität und Geschwindigkeit.
+  deu: Für verlustbehafteter Kodierung ist dies ein Kompromiss zwischen Qualität und
+    Geschwindigkeit.
   eng: For lossy, this is a quality/speed tradeoff.
   fra: Pour les perdants, il s'agit d'un compromis qualité/vitesse.
   ita: Per le perdite, si tratta di un compromesso qualità/velocità.
@@ -2183,7 +2241,8 @@ Invalid Crop:
   swe: Ogiltig gröda
   pol: Nieprawidłowy zbiór
 It is recommended that AQ-mode be enabled along with this feature:
-  deu: Es wird empfohlen, dass zusammen mit dieser Funktion auch der AQ-Mode aktiviert wird
+  deu: Es wird empfohlen, dass zusammen mit dieser Funktion auch der AQ-Mode aktiviert
+    wird
   eng: It is recommended that AQ-mode be enabled along with this feature
   fra: Il est recommandé d'activer le mode AQ en même temps que cette fonction
   ita: Si raccomanda di abilitare la modalità AQ insieme a questa funzione
@@ -2197,12 +2256,16 @@ It is recommended that AQ-mode be enabled along with this feature:
 It saves a few bits and can help performance in the client's tonemapper.:
   deu: Er spart ein paar Bits und kann die Leistung im Tonemapper des Clients verbessern.
   eng: It saves a few bits and can help performance in the client's tonemapper.
-  fra: Il permet d'économiser quelques bits et peut aider à améliorer les performances de la machine à café du client.
-  ita: Consente di risparmiare qualche bit e può aiutare le prestazioni nel tonemapper del cliente.
-  spa: Ahorra unos pocos bits y puede ayudar al rendimiento en el mapa de tonos del cliente.
+  fra: Il permet d'économiser quelques bits et peut aider à améliorer les performances
+    de la machine à café du client.
+  ita: Consente di risparmiare qualche bit e può aiutare le prestazioni nel tonemapper
+    del cliente.
+  spa: Ahorra unos pocos bits y puede ayudar al rendimiento en el mapa de tonos del
+    cliente.
   zho: 能够节省一些数据量，并有益于播放端色调映射的性能。
   jpn: これにより数ビットが節約され、クライアントのトーンマッパーのパフォーマンスが向上します。
-  rus: Это экономит несколько битов и может повысить производительность клиентского тонального маппера.
+  rus: Это экономит несколько битов и может повысить производительность клиентского
+    тонального маппера.
   por: Poupa alguns bocados e pode ajudar o desempenho no tonemapper do cliente.
   swe: Det sparar några bitar och kan förbättra prestandan i klientens tonemapper.
   pol: Oszczędza to kilka bitów i może pomóc w wydajności tonemappera klienta.
@@ -2305,13 +2368,16 @@ Level:
 Log2 of number of tile columns to encode faster (lesser quality):
   deu: Log2 der Anzahl der Gitterspalten, um schneller zu kodieren (geringere Qualität)
   eng: Log2 of number of tile columns to encode faster (lesser quality)
-  fra: Log2 du nombre de colonnes de tuiles pour un encodage plus rapide (qualité moindre)
-  ita: Log2 del numero di colonne di tegole da codificare più velocemente (qualità inferiore)
+  fra: Log2 du nombre de colonnes de tuiles pour un encodage plus rapide (qualité
+    moindre)
+  ita: Log2 del numero di colonne di tegole da codificare più velocemente (qualità
+    inferiore)
   spa: Log2 del número de columnas de azulejos para codificar más rápido (menor calidad)
   zho: Log2 of number of tile columns to encode faster (lesser quality)
   jpn: タイルの列数のLog2で、より高速に（より低品質に）エンコードする。
   rus: Log2 количества столбцов плитки для более быстрого кодирования (меньшее качество)
-  por: Log2 de número de colunas de ladrilhos para codificar mais rapidamente (menor qualidade)
+  por: Log2 de número de colunas de ladrilhos para codificar mais rapidamente (menor
+    qualidade)
   swe: Log2 av antalet kakelkolumner för att koda snabbare (sämre kvalitet).
   pol: Log2 liczby kolumn kafelków do szybszego kodowania (gorsza jakość)
 Log2 of number of tile rows to encode faster (lesser quality):
@@ -2351,17 +2417,26 @@ Lossless:
   swe: Förlustfri
   pol: Bezstratna
 Lossless encodes implicitly have no rate control, all rate control options are ignored.:
-  deu: Verlustfreie Kodierungen haben implizit keine Ratenkontrolle, alle Optionen zur Ratenkontrolle werden ignoriert.
-  eng: Lossless encodes implicitly have no rate control, all rate control options are ignored.
-  fra: Les codes sans perte n'ont implicitement aucun contrôle de taux, toutes les options de contrôle de taux sont ignorées.
-  ita: Le codifiche lossless non hanno implicitamente alcun controllo del tasso, tutte le opzioni di controllo del tasso sono ignorate.
-  spa: Los códigos sin pérdidas implícitamente no tienen control de la tasa, todas las opciones de control de la tasa son ignoradas.
+  deu: Verlustfreie Kodierungen haben implizit keine Ratenkontrolle, alle Optionen
+    zur Ratenkontrolle werden ignoriert.
+  eng: Lossless encodes implicitly have no rate control, all rate control options
+    are ignored.
+  fra: Les codes sans perte n'ont implicitement aucun contrôle de taux, toutes les
+    options de contrôle de taux sont ignorées.
+  ita: Le codifiche lossless non hanno implicitamente alcun controllo del tasso, tutte
+    le opzioni di controllo del tasso sono ignorate.
+  spa: Los códigos sin pérdidas implícitamente no tienen control de la tasa, todas
+    las opciones de control de la tasa son ignoradas.
   zho: 无损编码意味着没有码率控制，会忽略所有码率控制选项。
   jpn: ロスレスエンコードでは、暗黙のうちにレートコントロールが行われず、すべてのレートコントロールオプションは無視されます。
-  rus: Кодирование без потерь неявно не имеет контроля скорости, все опции контроля скорости игнорируются.
-  por: Os códigos sem perdas não têm implicitamente qualquer controlo de taxa, todas as opções de controlo de taxa são ignoradas.
-  swe: Förlustfria kodningar har implicit ingen hastighetsreglering, alla alternativ för hastighetsreglering ignoreras.
-  pol: Kodowanie bezstratne domyślnie nie ma kontroli szybkości, wszystkie opcje kontroli szybkości są ignorowane.
+  rus: Кодирование без потерь неявно не имеет контроля скорости, все опции контроля
+    скорости игнорируются.
+  por: Os códigos sem perdas não têm implicitamente qualquer controlo de taxa, todas
+    as opções de controlo de taxa são ignoradas.
+  swe: Förlustfria kodningar har implicit ingen hastighetsreglering, alla alternativ
+    för hastighetsreglering ignoreras.
+  pol: Kodowanie bezstratne domyślnie nie ma kontroli szybkości, wszystkie opcje kontroli
+    szybkości są ignorowane.
 Max Muxing Queue Size:
   deu: Max. Größe der Muxing-Warteschlange
   eng: Max Muxing Queue Size
@@ -2603,17 +2678,23 @@ No command found for:
   swe: Inget kommando hittades för
   pol: Nie znaleziono polecenia dla
 No crop, scale, rotation, flip nor any other filters will be applied.:
-  deu: Es werden weder Zuschneiden, Skalieren, Drehen, Spiegeln noch andere Filter angewendet.
+  deu: Es werden weder Zuschneiden, Skalieren, Drehen, Spiegeln noch andere Filter
+    angewendet.
   eng: No crop, scale, rotation, flip nor any other filters will be applied.
-  fra: Aucun filtre ne sera appliqué sur les cultures, les écailles, la rotation, le retournement ou autre.
-  ita: Non verranno applicati filtri per il raccolto, la scala, la rotazione, il capovolgimento o altri filtri.
-  spa: No se aplicará ningún filtro de cultivo, de escala, de rotación, de volteo ni ningún otro.
+  fra: Aucun filtre ne sera appliqué sur les cultures, les écailles, la rotation,
+    le retournement ou autre.
+  ita: Non verranno applicati filtri per il raccolto, la scala, la rotazione, il capovolgimento
+    o altri filtri.
+  spa: No se aplicará ningún filtro de cultivo, de escala, de rotación, de volteo
+    ni ningún otro.
   zho: 不会应用裁切、缩放、旋转、翻转或任何其他滤镜。
   jpn: 切り抜き、拡大縮小、回転、反転などのフィルターはかけられません。
   rus: Обрезка, масштабирование, поворот, переворот и другие фильтры не применяются.
   por: Não se aplicarão culturas, escamas, rotação, flip nem quaisquer outros filtros.
-  swe: Ingen beskärning, skalning, rotation, vändning eller andra filter kommer att tillämpas.
-  pol: Nie zostaną zastosowane żadne filtry typu crop, scale, rotation, flip ani żadne inne.
+  swe: Ingen beskärning, skalning, rotation, vändning eller andra filter kommer att
+    tillämpas.
+  pol: Nie zostaną zastosowane żadne filtry typu crop, scale, rotation, flip ani żadne
+    inne.
 No encoding is currently in process, starting encode:
   deu: Es wird momentan keine Kodierung durchgeführt, Kodierung wird gestartet
   eng: No encoding is currently in process, starting encode
@@ -2687,17 +2768,25 @@ Not a video file:
   swe: Inte en videofil
   pol: Nie jest to plik wideo
 Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.:
-  deu: Setzen der dynamischen HDR10+-Metadaten nur in die IDR und Frames, bei denen sich die Werte geändert haben.
-  eng: Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.
-  fra: Ne placez les métadonnées dynamiques HDR10+ que dans l'IDR et les cadres dont les valeurs ont changé.
-  ita: Mettete i metadati dinamici HDR10+ solo nell'IDR e nei frame in cui i valori sono cambiati.
-  spa: Sólo pon los metadatos dinámicos HDR10+ en el IDR y los cuadros donde los valores han cambiado.
+  deu: Setzen der dynamischen HDR10+-Metadaten nur in die IDR und Frames, bei denen
+    sich die Werte geändert haben.
+  eng: Only put the HDR10+ dynamic metadata in the IDR and frames where the values
+    have changed.
+  fra: Ne placez les métadonnées dynamiques HDR10+ que dans l'IDR et les cadres dont
+    les valeurs ont changé.
+  ita: Mettete i metadati dinamici HDR10+ solo nell'IDR e nei frame in cui i valori
+    sono cambiati.
+  spa: Sólo pon los metadatos dinámicos HDR10+ en el IDR y los cuadros donde los valores
+    han cambiado.
   zho: 仅将HDR10+动态元数据置于其值发生改变的帧及IDR帧。
   jpn: HDR10+のダイナミックメタデータは、IDRと値が変化したフレームにのみ入れます。
-  rus: Поместите динамические метаданные HDR10+ только в IDR и кадры, где значения изменились.
-  por: Coloque apenas os metadados dinâmicos HDR10+ no IDR e nas molduras onde os valores mudaram.
+  rus: Поместите динамические метаданные HDR10+ только в IDR и кадры, где значения
+    изменились.
+  por: Coloque apenas os metadados dinâmicos HDR10+ no IDR e nas molduras onde os
+    valores mudaram.
   swe: Lägg endast in HDR10+ dynamiska metadata i IDR och ramar där värdena har ändrats.
-  pol: Umieszczaj metadane dynamiczne HDR10+ tylko w IDR i klatkach, w których wartości uległy zmianie.
+  pol: Umieszczaj metadane dynamiczne HDR10+ tylko w IDR i klatkach, w których wartości
+    uległy zmianie.
 Only select first matching Audio Track:
   deu: Nur die erste passende Audiospur auswählen
   eng: Only select first matching Audio Track
@@ -2771,7 +2860,8 @@ Output FPS:
   swe: Utgående FPS
   pol: Wyjście FPS
 Over-allocation of frame threads will not improve performance,:
-  deu: Die Auswahl von mehr als der verfügbaren Frame-Threads verbessert nicht die Leistung,
+  deu: Die Auswahl von mehr als der verfügbaren Frame-Threads verbessert nicht die
+    Leistung,
   eng: Over-allocation of frame threads will not improve performance,
   fra: Une allocation excessive des fils de trame n'améliorera pas les performances,
   ita: La sovra-assegnazione delle filettature del telaio non migliorerà le prestazioni,
@@ -2819,17 +2909,24 @@ Override the preset rate-control:
   swe: åsidosätta den förinställda hastighetsregleringen
   pol: Nadpisanie wstępnie ustawionej regulacji prędkości obrotowej
 PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,:
-  deu: PIR kann durch Einfügen einer Spalte von Intrablöcken in Nicht-Keyframes Keyframes ersetzen,
+  deu: PIR kann durch Einfügen einer Spalte von Intrablöcken in Nicht-Keyframes Keyframes
+    ersetzen,
   eng: PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,
-  fra: Le PIR peut remplacer les images clés en insérant une colonne de blocs intra dans les images non clés,
-  ita: Il PIR può sostituire i keyframe inserendo una colonna di blocchi interni nei non-keyframe,
-  spa: PIR puede reemplazar los fotogramas clave insertando una columna de intrabloques en los fotogramas no clave,
+  fra: Le PIR peut remplacer les images clés en insérant une colonne de blocs intra
+    dans les images non clés,
+  ita: Il PIR può sostituire i keyframe inserendo una colonna di blocchi interni nei
+    non-keyframe,
+  spa: PIR puede reemplazar los fotogramas clave insertando una columna de intrabloques
+    en los fotogramas no clave,
   zho: PIR可以在非关键帧中插入一列intra blocks，从而替代关键帧。
   jpn: PIRは、非キーフレームにイントラブロックの列を挿入することで、キーフレームを置き換えることができます。
-  rus: PIR может заменить ключевые кадры, вставляя колонку внутренних блоков в неключевые кадры,
-  por: O PIR pode substituir os quadros-chave, inserindo uma coluna de blocos intra-bloco em quadros não-chave,
+  rus: PIR может заменить ключевые кадры, вставляя колонку внутренних блоков в неключевые
+    кадры,
+  por: O PIR pode substituir os quadros-chave, inserindo uma coluna de blocos intra-bloco
+    em quadros não-chave,
   swe: PIR kan ersätta keyframes genom att infoga en kolumn med intrablock i icke-keyframes,
-  pol: PIR może zastąpić klatki kluczowe wstawiając kolumnę bloków intra do klatek nie będących klatkami kluczowymi,
+  pol: PIR może zastąpić klatki kluczowe wstawiając kolumnę bloków intra do klatek
+    nie będących klatkami kluczowymi,
 Parse Video details:
   deu: Video-Details analysieren
   eng: Parse Video details
@@ -3075,7 +3172,8 @@ Quality and compression efficiency vs speed trade-off:
   eng: Quality and compression efficiency vs speed trade-off
   fra: Le compromis entre la qualité et l'efficacité de la compression et la vitesse
   ita: Qualità ed efficienza di compressione rispetto al compromesso velocità
-  spa: La calidad y la eficiencia de la compresión frente a la compensación de la velocidad
+  spa: La calidad y la eficiencia de la compresión frente a la compensación de la
+    velocidad
   zho: 在质量及压缩效率与速度之间进行权衡
   jpn: 画質と圧縮効率と速度のトレードオフ
   rus: Компромисс между качеством и эффективностью сжатия и скоростью
@@ -3155,17 +3253,26 @@ RC Lookahead:
   swe: RC Lookahead
   pol: RC Lookahead
 Raise or lower per-block quantization based on complexity analysis of the source image.:
-  deu: Erhöhen oder verringern der Quantisierung pro Block basierend auf der Komplexitätsanalyse des Quellbildes.
-  eng: Raise or lower per-block quantization based on complexity analysis of the source image.
-  fra: Augmenter ou diminuer la quantification par bloc en fonction de l'analyse de la complexité de l'image source.
-  ita: Aumentare o diminuire la quantizzazione per blocco in base all'analisi della complessità dell'immagine sorgente.
-  spa: Aumentar o disminuir la cuantificación por bloque basada en el análisis de la complejidad de la imagen de origen.
+  deu: Erhöhen oder verringern der Quantisierung pro Block basierend auf der Komplexitätsanalyse
+    des Quellbildes.
+  eng: Raise or lower per-block quantization based on complexity analysis of the source
+    image.
+  fra: Augmenter ou diminuer la quantification par bloc en fonction de l'analyse de
+    la complexité de l'image source.
+  ita: Aumentare o diminuire la quantizzazione per blocco in base all'analisi della
+    complessità dell'immagine sorgente.
+  spa: Aumentar o disminuir la cuantificación por bloque basada en el análisis de
+    la complejidad de la imagen de origen.
   zho: 根据对源图像的复杂度分析，提升或降低各个块的量化。
   jpn: ソース画像の複雑さの分析に基づいて、ブロックごとの量子化率を上げたり下げたりします。
-  rus: Повышение или понижение блочного квантования на основе анализа сложности исходного изображения.
-  por: Quantificação por bloco, para cima ou para baixo, com base na análise da complexidade da imagem de origem.
-  swe: Öka eller sänka kvantiseringen per block baserat på en komplexitetsanalys av källbilden.
-  pol: Zwiększ lub zmniejsz kwantyzację per-block na podstawie analizy złożoności obrazu źródłowego.
+  rus: Повышение или понижение блочного квантования на основе анализа сложности исходного
+    изображения.
+  por: Quantificação por bloco, para cima ou para baixo, com base na análise da complexidade
+    da imagem de origem.
+  swe: Öka eller sänka kvantiseringen per block baserat på en komplexitetsanalys av
+    källbilden.
+  pol: Zwiększ lub zmniejsz kwantyzację per-block na podstawie analizy złożoności
+    obrazu źródłowego.
 Rate Control:
   deu: Ratensteuerung
   eng: Rate Control
@@ -3205,14 +3312,18 @@ Ready to encode:
 Reconstructed output pictures are bit-exact to the input pictures.:
   deu: Rekonstruierte Ausgabebilder entsprechen bit-genau den Eingangsbildern.
   eng: Reconstructed output pictures are bit-exact to the input pictures.
-  fra: Les images de sortie reconstruites sont exactes au niveau des bits par rapport aux images d'entrée.
+  fra: Les images de sortie reconstruites sont exactes au niveau des bits par rapport
+    aux images d'entrée.
   ita: Le immagini di uscita ricostruite sono bit-esatte alle immagini di ingresso.
-  spa: Las imágenes de salida reconstruidas son un poco exactas a las imágenes de entrada.
+  spa: Las imágenes de salida reconstruidas son un poco exactas a las imágenes de
+    entrada.
   zho: 重建后的输出图像与输入图像是逐位一致（bit-exact）的。
   jpn: 再構成された出力画像は、入力画像とビットが一致しています。
-  rus: Реконструированные выходные изображения являются битово-точными по отношению к входным изображениям.
+  rus: Реконструированные выходные изображения являются битово-точными по отношению
+    к входным изображениям.
   por: As imagens de saída reconstruídas são bit-exactas para as imagens de entrada.
-  swe: De rekonstruerade utdatabilderna är bit-exakta i förhållande till de ingående bilderna.
+  swe: De rekonstruerade utdatabilderna är bit-exakta i förhållande till de ingående
+    bilderna.
   pol: Zrekonstruowane obrazy wyjściowe są bitowo dokładne w stosunku do obrazów wejściowych.
 Ref Frames:
   deu: Ref-Frames
@@ -3479,29 +3590,47 @@ Scale:
   swe: Skala
   pol: Skala
 Scrub away all incoming metadata, like video titles, unique markings and so on.:
-  deu: Entfernen aller eingehenden Metadaten, wie Videotitel, eindeutige Markierungen usw.
-  eng: Scrub away all incoming metadata, like video titles, unique markings and so on.
-  fra: Supprimez toutes les métadonnées entrantes, comme les titres des vidéos, les marquages uniques, etc.
-  ita: Cancella tutti i metadati in arrivo, come i titoli dei video, le marcature uniche e così via.
-  spa: Borra todos los metadatos entrantes, como títulos de video, marcas únicas y demás.
+  deu: Entfernen aller eingehenden Metadaten, wie Videotitel, eindeutige Markierungen
+    usw.
+  eng: Scrub away all incoming metadata, like video titles, unique markings and so
+    on.
+  fra: Supprimez toutes les métadonnées entrantes, comme les titres des vidéos, les
+    marquages uniques, etc.
+  ita: Cancella tutti i metadati in arrivo, come i titoli dei video, le marcature
+    uniche e così via.
+  spa: Borra todos los metadatos entrantes, como títulos de video, marcas únicas y
+    demás.
   zho: 擦除输入文件中所有的元数据，如视频标题、唯一标记等。
   jpn: ビデオのタイトルやユニークなマークなど、入力されたメタデータをすべて消去します。
-  rus: Удалите все входящие метаданные, такие как названия видео, уникальные метки и так далее.
-  por: Eliminar todos os metadados recebidos, como títulos de vídeo, marcações únicas e assim por diante.
-  swe: Ta bort alla inkommande metadata, som videotitlar, unika markeringar och så vidare.
-  pol: Usuń wszystkie przychodzące metadane, takie jak tytuły wideo, unikalne oznaczenia i tak dalej.
+  rus: Удалите все входящие метаданные, такие как названия видео, уникальные метки
+    и так далее.
+  por: Eliminar todos os metadados recebidos, como títulos de vídeo, marcações únicas
+    e assim por diante.
+  swe: Ta bort alla inkommande metadata, som videotitlar, unika markeringar och så
+    vidare.
+  pol: Usuń wszystkie przychodzące metadane, takie jak tytuły wideo, unikalne oznaczenia
+    i tak dalej.
 Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on:
-  deu: Wählt aus, welche NVENC-fähige GPU genutzt werden soll. Die erste GPU ist 0, die zweite 1, usw
-  eng: Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on
-  fra: Sélectionne le GPU compatible NVENC à utiliser. Le premier GPU est 0, le second est 1, et ainsi de suite
-  ita: Seleziona quale GPU con capacità NVENC utilizzare. La prima GPU è 0, la seconda è 1, e così via
-  spa: Selecciona qué GPU con capacidad NVENC se va a utilizar. La primera GPU es 0, la segunda es 1, y así sucesivamente
+  deu: Wählt aus, welche NVENC-fähige GPU genutzt werden soll. Die erste GPU ist 0,
+    die zweite 1, usw
+  eng: Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so
+    on
+  fra: Sélectionne le GPU compatible NVENC à utiliser. Le premier GPU est 0, le second
+    est 1, et ainsi de suite
+  ita: Seleziona quale GPU con capacità NVENC utilizzare. La prima GPU è 0, la seconda
+    è 1, e così via
+  spa: Selecciona qué GPU con capacidad NVENC se va a utilizar. La primera GPU es
+    0, la segunda es 1, y así sucesivamente
   zho: 选择使用哪个NVENC功能的GPU。第一个GPU为0，第二个为1，以此类推。
   jpn: どのNVENC対応GPUを使用するかを選択します。最初のGPUは0、2番目は1、というように。
-  rus: Выбирает, какой GPU с поддержкой NVENC будет использоваться. Первый GPU - 0, второй - 1 и так далее.
-  por: Selecciona qual a GPU NVENC capaz de utilizar. A primeira GPU é 0, a segunda é 1, e assim por diante
-  swe: Väljer vilken NVENC-kompatibel GPU som ska användas. Den första GPU:n är 0, den andra är 1 osv.
-  pol: Wybiera, który z układów GPU obsługujących NVENC ma zostać użyty. Pierwszy układ GPU to 0, drugi to 1, i tak dalej.
+  rus: Выбирает, какой GPU с поддержкой NVENC будет использоваться. Первый GPU - 0,
+    второй - 1 и так далее.
+  por: Selecciona qual a GPU NVENC capaz de utilizar. A primeira GPU é 0, a segunda
+    é 1, e assim por diante
+  swe: Väljer vilken NVENC-kompatibel GPU som ska användas. Den första GPU:n är 0,
+    den andra är 1 osv.
+  pol: Wybiera, który z układów GPU obsługujących NVENC ma zostać użyty. Pierwszy
+    układ GPU to 0, drugi to 1, i tak dalej.
 Set speed to 4 for first pass:
   deu: Setze Geschwindigkeit des ersten Durchlaufs auf 4
   eng: Set speed to 4 for first pass
@@ -3554,7 +3683,8 @@ Set the level of effort in determining B frame placement.:
   deu: Grad des Aufwands bei der Bestimmung der B-Frame-Platzierung festlegen.
   eng: Set the level of effort in determining B frame placement.
   fra: Définir le niveau d'effort pour déterminer le placement des images B.
-  ita: Impostare il livello di sforzo nel determinare il posizionamento del fotogramma B.
+  ita: Impostare il livello di sforzo nel determinare il posizionamento del fotogramma
+    B.
   spa: Establezca el nivel de esfuerzo para determinar la ubicación del cuadro B.
   zho: 对决定B帧位置时的工作量水平进行调整。
   jpn: Bフレームの配置を決める際の努力の度合いを設定します。
@@ -3623,29 +3753,44 @@ Size Estimate:
   swe: Uppskattad storlek
   pol: Szacunkowa wielkość
 Slow is highest personal recommenced, as past that is much smaller gains:
-  deu: Slow ist die maximale persönliche Empfehlung, da die Zugewinne bei noch langsamerem deutlich kleiner sind.
+  deu: Slow ist die maximale persönliche Empfehlung, da die Zugewinne bei noch langsamerem
+    deutlich kleiner sind.
   eng: Slow is highest personal recommenced, as past that is much smaller gains
-  fra: La lenteur est la plus haute personnelle recommencée, comme passé c'est des gains beaucoup plus petits
-  ita: Lento è più alto personale è ricominciato, come passato che è molto più piccolo guadagni
-  spa: La lentitud es la mayor recomenzada personal, ya que el pasado que es mucho más pequeño gana
+  fra: La lenteur est la plus haute personnelle recommencée, comme passé c'est des
+    gains beaucoup plus petits
+  ita: Lento è più alto personale è ricominciato, come passato che è molto più piccolo
+    guadagni
+  spa: La lentitud es la mayor recomenzada personal, ya que el pasado que es mucho
+    más pequeño gana
   zho: 不建议使用比slow更慢的档位，因为获得的收益会小得多。
   jpn: スローは個人的には最高の再開で、過去にはもっと小さな利益がありました。
-  rus: Медленный - это наивысший личный возобновленный, так как в прошлом это гораздо меньший прирост
+  rus: Медленный - это наивысший личный возобновленный, так как в прошлом это гораздо
+    меньший прирост
   por: Lento é o reinício pessoal mais elevado, pois o passado é um ganho muito menor
   swe: Långsamt är högsta personliga återupptagen, som tidigare är mycket mindre vinster
-  pol: Slow jest najwyższym osobistym wznowieniem, jak minęło to jest znacznie mniejsze zyski.
+  pol: Slow jest najwyższym osobistym wznowieniem, jak minęło to jest znacznie mniejsze
+    zyski.
 Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams).:
-  deu: Langsamere Voreinstellungen erzielen im Allgemeinen eine bessere Komprimierungseffizienz (und erzeugen kleinere Bitströme).
-  eng: Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams).
-  fra: Des préréglages plus lents permettent généralement d'obtenir une meilleure efficacité de compression (et de générer des flux binaires plus petits).
-  ita: Le preimpostazioni più lente in genere raggiungono una migliore efficienza di compressione (e generano flussi di bit più piccoli).
-  spa: Los preajustes más lentos generalmente lograrán una mejor eficiencia de compresión (y generarán flujos de bits más pequeños).
+  deu: Langsamere Voreinstellungen erzielen im Allgemeinen eine bessere Komprimierungseffizienz
+    (und erzeugen kleinere Bitströme).
+  eng: Slower presets will generally achieve better compression efficiency (and generate
+    smaller bitstreams).
+  fra: Des préréglages plus lents permettent généralement d'obtenir une meilleure
+    efficacité de compression (et de générer des flux binaires plus petits).
+  ita: Le preimpostazioni più lente in genere raggiungono una migliore efficienza
+    di compressione (e generano flussi di bit più piccoli).
+  spa: Los preajustes más lentos generalmente lograrán una mejor eficiencia de compresión
+    (y generarán flujos de bits más pequeños).
   zho: 较慢的预设通常会达成更好的压缩效率（并生成较小的码流）。
   jpn: 一般的には、遅いプリセットの方が圧縮効率が良くなります（より小さなビットストリームを生成します）。
-  rus: Более медленные пресеты обычно обеспечивают лучшую эффективность сжатия (и генерируют меньшие битовые потоки).
-  por: Pré-definições mais lentas irão geralmente alcançar uma melhor eficiência de compressão (e gerar fluxos de bits mais pequenos).
-  swe: Långsammare förinställningar ger i allmänhet bättre kompressionseffektivitet (och genererar mindre bitströmmar).
-  pol: Wolniejsze presety generalnie osiągają lepszą wydajność kompresji (i generują mniejsze strumienie bitów).
+  rus: Более медленные пресеты обычно обеспечивают лучшую эффективность сжатия (и
+    генерируют меньшие битовые потоки).
+  por: Pré-definições mais lentas irão geralmente alcançar uma melhor eficiência de
+    compressão (e gerar fluxos de bits mais pequenos).
+  swe: Långsammare förinställningar ger i allmänhet bättre kompressionseffektivitet
+    (och genererar mindre bitströmmar).
+  pol: Wolniejsze presety generalnie osiągają lepszą wydajność kompresji (i generują
+    mniejsze strumienie bitów).
 Source:
   deu: Quelle
   eng: Source
@@ -3841,7 +3986,8 @@ Supported Image Files:
 The GUI might have died, but I'm going to keep converting!:
   deu: Die GUI ist eventuell abgestürzt, aber ich werde weiter konvertieren!
   eng: The GUI might have died, but I'm going to keep converting!
-  fra: L'interface graphique est peut-être morte, mais je vais continuer à me convertir !
+  fra: L'interface graphique est peut-être morte, mais je vais continuer à me convertir
+    !
   ita: L'interfaccia grafica sarà anche morta, ma continuerò a convertirmi!
   spa: ¡El GUI puede haber muerto, pero voy a seguir convirtiendo!
   zho: 图形界面可能已经崩溃，但转换将继续进行！
@@ -3863,17 +4009,25 @@ The more complex the block, the more quantization is used.:
   swe: Ju mer komplicerat blocket är, desto mer kvantisering används.
   pol: Im bardziej skomplikowany blok, tym więcej kwantyzacji jest używane.
 The purpose is to prevent blocking or banding artifacts in regions with few/zero AC coefficients.:
-  deu: Der Zweck ist, Blocking- oder Banding-Artefakte in Regionen mit wenigen/keinen AC-Koeffizienten zu verhindern.
-  eng: The purpose is to prevent blocking or banding artifacts in regions with few/zero AC coefficients.
-  fra: L'objectif est d'éviter de bloquer ou de banderoler des artefacts dans des régions où les coefficients AC sont faibles ou nuls.
-  ita: Lo scopo è quello di prevenire il blocco o il banding di artefatti in regioni con pochi/zeri coefficienti AC.
-  spa: El propósito es prevenir el bloqueo o los artefactos de bandas en regiones con coeficientes de CA bajos/cero.
+  deu: Der Zweck ist, Blocking- oder Banding-Artefakte in Regionen mit wenigen/keinen
+    AC-Koeffizienten zu verhindern.
+  eng: The purpose is to prevent blocking or banding artifacts in regions with few/zero
+    AC coefficients.
+  fra: L'objectif est d'éviter de bloquer ou de banderoler des artefacts dans des
+    régions où les coefficients AC sont faibles ou nuls.
+  ita: Lo scopo è quello di prevenire il blocco o il banding di artefatti in regioni
+    con pochi/zeri coefficienti AC.
+  spa: El propósito es prevenir el bloqueo o los artefactos de bandas en regiones
+    con coeficientes de CA bajos/cero.
   zho: 目的是为了防止在AC coefficients较少或为零的区域出现blocking或banding artifacts。
   jpn: これは、AC係数が少ない/ゼロの領域でのブロッキングやバンディングのアーチファクトを防ぐためです。
-  rus: Цель - предотвратить блокирование или артефакты полосатости в областях с небольшим количеством/нулевыми коэффициентами переменного тока.
-  por: O objectivo é evitar o bloqueio ou a colocação de artefactos de faixas em regiões com poucos/zero coeficientes AC.
+  rus: Цель - предотвратить блокирование или артефакты полосатости в областях с небольшим
+    количеством/нулевыми коэффициентами переменного тока.
+  por: O objectivo é evitar o bloqueio ou a colocação de artefactos de faixas em regiões
+    com poucos/zero coeficientes AC.
   swe: Syftet är att förhindra blockering eller bandning i områden med få/noll AC-koefficienter.
-  pol: Ma to na celu zapobieganie powstawaniu artefaktów blokowania lub pasmowania w regionach o małej lub zerowej liczbie współczynników AC.
+  pol: Ma to na celu zapobieganie powstawaniu artefaktów blokowania lub pasmowania
+    w regionach o małej lub zerowej liczbie współczynników AC.
 There is a conversion in process!:
   deu: Es ist eine Konvertierung am laufen!
   eng: There is a conversion in process!
@@ -3911,47 +4065,77 @@ There was an error during conversion and the queue has stopped:
   swe: Det uppstod ett fel under konverteringen och kön har stoppats.
   pol: Wystąpił błąd podczas konwersji i kolejka została zatrzymana
 This flag performs bi-linear interpolation of the corner reference samples for a strong smoothing effect.:
-  deu: Dieses Flag führt eine bi-lineare Interpolation der Eckreferenzsamples durch, um einen starken Glättungseffekt zu erzielen.
-  eng: This flag performs bi-linear interpolation of the corner reference samples for a strong smoothing effect.
-  fra: Ce drapeau effectue une interpolation bi-linéaire des échantillons de référence des coins pour un fort effet de lissage.
-  ita: Questa bandierina esegue l'interpolazione bi-lineare dei campioni di riferimento d'angolo per un forte effetto levigante.
-  spa: Este banderín realiza una interpolación bi-línea de las muestras de referencia de las esquinas para un fuerte efecto de suavizado.
+  deu: Dieses Flag führt eine bi-lineare Interpolation der Eckreferenzsamples durch,
+    um einen starken Glättungseffekt zu erzielen.
+  eng: This flag performs bi-linear interpolation of the corner reference samples
+    for a strong smoothing effect.
+  fra: Ce drapeau effectue une interpolation bi-linéaire des échantillons de référence
+    des coins pour un fort effet de lissage.
+  ita: Questa bandierina esegue l'interpolazione bi-lineare dei campioni di riferimento
+    d'angolo per un forte effetto levigante.
+  spa: Este banderín realiza una interpolación bi-línea de las muestras de referencia
+    de las esquinas para un fuerte efecto de suavizado.
   zho: 这个选项对corner reference samples进行双线性插值，以获得强平滑效果。
   jpn: このフラグは、強力なスムージング効果を得るために、コーナーリファレンスサンプルのバイリニア補間を行います。
-  rus: Этот флаг выполняет билинейную интерполяцию угловых опорных образцов для сильного эффекта сглаживания.
-  por: Esta bandeira efectua interpolação bi-linear das amostras de referência dos cantos para um forte efeito de alisamento.
-  swe: Denna flagga utför bi-lineär interpolering av hörnreferensproverna för en stark utjämningseffekt.
-  pol: Flaga ta wykonuje bi-liniową interpolację próbek referencyjnych narożników w celu uzyskania silnego efektu wygładzania.
+  rus: Этот флаг выполняет билинейную интерполяцию угловых опорных образцов для сильного
+    эффекта сглаживания.
+  por: Esta bandeira efectua interpolação bi-linear das amostras de referência dos
+    cantos para um forte efeito de alisamento.
+  swe: Denna flagga utför bi-lineär interpolering av hörnreferensproverna för en stark
+    utjämningseffekt.
+  pol: Flaga ta wykonuje bi-liniową interpolację próbek referencyjnych narożników
+    w celu uzyskania silnego efektu wygładzania.
 This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.:
-  deu: Dies verbessert erheblich die Kodiergeschwindigkeit auf Systemen, die anonsten bei der Kodierung von VP9 unausgelastet sind.
-  eng: This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.
-  fra: Cela améliore considérablement la vitesse de codage sur des systèmes qui sont autrement sous-utilisés lors du codage VP9.
-  ita: Questo migliora la velocità di codifica in modo significativo su sistemi che sono altrimenti sottoutilizzati durante la codifica VP9.
-  spa: Esto mejora significativamente la velocidad de codificación en los sistemas que de otra manera son subutilizados al codificar el VP9.
+  deu: Dies verbessert erheblich die Kodiergeschwindigkeit auf Systemen, die anonsten
+    bei der Kodierung von VP9 unausgelastet sind.
+  eng: This improves encoding speed significantly on systems that are otherwise underutilised
+    when encoding VP9.
+  fra: Cela améliore considérablement la vitesse de codage sur des systèmes qui sont
+    autrement sous-utilisés lors du codage VP9.
+  ita: Questo migliora la velocità di codifica in modo significativo su sistemi che
+    sono altrimenti sottoutilizzati durante la codifica VP9.
+  spa: Esto mejora significativamente la velocidad de codificación en los sistemas
+    que de otra manera son subutilizados al codificar el VP9.
   zho: 在编码VP9时资源利用不足的系统上，此选项能够显著提升编码速度。
   jpn: これにより、VP9をエンコードする際に十分に活用されていないシステムにおいて、エンコード速度が大幅に向上します。
-  rus: Это значительно повышает скорость кодирования на системах, которые в противном случае недостаточно используются при кодировании VP9.
-  por: Isto melhora significativamente a velocidade de codificação em sistemas que de outra forma são subutilizados ao codificar o VP9.
-  swe: Detta förbättrar kodningshastigheten avsevärt på system som annars är underutnyttjade vid kodning av VP9.
-  pol: Poprawia to znacznie szybkość kodowania na systemach, które w przeciwnym razie nie są w pełni wykorzystywane podczas kodowania VP9.
+  rus: Это значительно повышает скорость кодирования на системах, которые в противном
+    случае недостаточно используются при кодировании VP9.
+  por: Isto melhora significativamente a velocidade de codificação em sistemas que
+    de outra forma são subutilizados ao codificar o VP9.
+  swe: Detta förbättrar kodningshastigheten avsevärt på system som annars är underutnyttjade
+    vid kodning av VP9.
+  pol: Poprawia to znacznie szybkość kodowania na systemach, które w przeciwnym razie
+    nie są w pełni wykorzystywane podczas kodowania VP9.
 This is intended for use when you do not have a container to keep the stream headers for you:
-  deu: Dies ist für die Verwendung vorgesehen, wenn kein Container vorhanden ist, der die Stream-Header aufbewahrt
-  eng: This is intended for use when you do not have a container to keep the stream headers for you
-  fra: Il est destiné à être utilisé lorsque vous ne disposez pas d'un conteneur pour conserver les en-têtes de flux
-  ita: Questo è destinato all'uso quando non si dispone di un contenitore per mantenere le intestazioni dello stream per voi
-  spa: Está pensado para ser utilizado cuando no se dispone de un contenedor para guardar los encabezados de la corriente para usted
-  zho: This is intended for use when you do not have a container to keep the stream headers for you.
+  deu: Dies ist für die Verwendung vorgesehen, wenn kein Container vorhanden ist,
+    der die Stream-Header aufbewahrt
+  eng: This is intended for use when you do not have a container to keep the stream
+    headers for you
+  fra: Il est destiné à être utilisé lorsque vous ne disposez pas d'un conteneur pour
+    conserver les en-têtes de flux
+  ita: Questo è destinato all'uso quando non si dispone di un contenitore per mantenere
+    le intestazioni dello stream per voi
+  spa: Está pensado para ser utilizado cuando no se dispone de un contenedor para
+    guardar los encabezados de la corriente para usted
+  zho: This is intended for use when you do not have a container to keep the stream
+    headers for you.
   jpn: ストリームヘッダーを保持してくれるコンテナがない場合に使用することを想定しています。
-  rus: Это предназначено для использования, когда у вас нет контейнера для хранения заголовков потока.
-  por: Isto destina-se a ser utilizado quando não tem um contentor para guardar os cabeçalhos das serpentinas para si
-  swe: Detta är avsett att användas när du inte har en behållare som behåller stream headers åt dig.
-  pol: To jest przeznaczone do użycia, gdy nie masz kontenera, który przechowuje nagłówki strumienia dla Ciebie
+  rus: Это предназначено для использования, когда у вас нет контейнера для хранения
+    заголовков потока.
+  por: Isto destina-se a ser utilizado quando não tem um contentor para guardar os
+    cabeçalhos das serpentinas para si
+  swe: Detta är avsett att användas när du inte har en behållare som behåller stream
+    headers åt dig.
+  pol: To jest przeznaczone do użycia, gdy nie masz kontenera, który przechowuje nagłówki
+    strumienia dla Ciebie
 This is used for ultra-high bitrates with zero loss of quality.:
   deu: Dies wird für ultrahohe Bitraten ohne Qualitätsverluste verwendet.
   eng: This is used for ultra-high bitrates with zero loss of quality.
   fra: Il est utilisé pour les débits binaires ultra-élevés sans perte de qualité.
-  ita: Questo viene utilizzato per bitrate elevatissimi con perdita di qualità pari a zero.
-  spa: Se utiliza para velocidades de transmisión ultra altas con cero pérdida de calidad.
+  ita: Questo viene utilizzato per bitrate elevatissimi con perdita di qualità pari
+    a zero.
+  spa: Se utiliza para velocidades de transmisión ultra altas con cero pérdida de
+    calidad.
   zho: 用于实现无质量损失的超高比特率编码。
   jpn: これは、超高ビットレートで品質を損なうことなく使用されます。
   rus: Используется для сверхвысоких битрейтов с нулевой потерей качества.
@@ -4190,31 +4374,45 @@ Useful when you have the "Too many packets buffered for output stream" error:
   deu: Nützlich, wenn der Fehler "Too many packets buffered for output stream" auftritt
   eng: Useful when you have the "Too many packets buffered for output stream" error
   fra: Utile lorsque vous avez l'erreur "Too many packets buffered for output stream
-  ita: Utile quando si ha l'errore "Troppi pacchetti bufferizzati per il flusso di uscita".
-  spa: Útil cuando se tiene el error "Demasiados paquetes almacenados en la memoria intermedia para el flujo de salida".
+  ita: Utile quando si ha l'errore "Troppi pacchetti bufferizzati per il flusso di
+    uscita".
+  spa: Útil cuando se tiene el error "Demasiados paquetes almacenados en la memoria
+    intermedia para el flujo de salida".
   zho: 当出现“输出流缓冲的数据包太多”（Too many packets buffered for output stream）错误时有用。
   jpn: Too many packets buffered for output stream "というエラーが発生した場合に有効です。
-  rus: Полезно, когда у вас возникает ошибка "Слишком много пакетов буферизировано для выходного потока".
+  rus: Полезно, когда у вас возникает ошибка "Слишком много пакетов буферизировано
+    для выходного потока".
   por: Útil quando se tem o erro "Demasiados pacotes protegidos para o fluxo de saída".
   swe: Användbart när du får felet "För många paket buffras för utdataströmmen".
   pol: Przydatne, gdy masz błąd "Zbyt wiele pakietów buforowanych dla strumienia wyjściowego".
 Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.:
-  deu: Die Verwendung von 1 oder 2 erhöht die Kodiergeschwindigkeit auf Kosten einer gewissen Auswirkung auf die Qualität und die Genauigkeit der Ratenkontrolle.
-  eng: Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.
-  fra: L'utilisation de 1 ou 2 augmentera la vitesse d'encodage au détriment d'un certain impact sur la qualité et la précision du contrôle des taux.
-  ita: L'uso di 1 o 2 aumenterà la velocità di codifica a scapito di un certo impatto sulla qualità e sulla precisione del controllo del tasso.
-  spa: El uso de 1 o 2 aumentará la velocidad de codificación a expensas de tener algún impacto en la calidad y la precisión del control de la tasa.
+  deu: Die Verwendung von 1 oder 2 erhöht die Kodiergeschwindigkeit auf Kosten einer
+    gewissen Auswirkung auf die Qualität und die Genauigkeit der Ratenkontrolle.
+  eng: Using 1 or 2 will increase encoding speed at the expense of having some impact
+    on quality and rate control accuracy.
+  fra: L'utilisation de 1 ou 2 augmentera la vitesse d'encodage au détriment d'un
+    certain impact sur la qualité et la précision du contrôle des taux.
+  ita: L'uso di 1 o 2 aumenterà la velocità di codifica a scapito di un certo impatto
+    sulla qualità e sulla precisione del controllo del tasso.
+  spa: El uso de 1 o 2 aumentará la velocidad de codificación a expensas de tener
+    algún impacto en la calidad y la precisión del control de la tasa.
   zho: 使用1或2会提高编码速度，但代价是对质量和码率控制精度有一定影响。
   jpn: 1または2を使用すると、画質やレートコントロールの精度に多少の影響を与えますが、エンコード速度が向上します。
-  rus: Использование 1 или 2 увеличит скорость кодирования за счет некоторого влияния на качество и точность контроля скорости.
-  por: A utilização de 1 ou 2 aumentará a velocidade de codificação à custa de ter algum impacto na qualidade e exactidão do controlo da taxa.
-  swe: Om du använder 1 eller 2 ökar kodningshastigheten på bekostnad av en viss inverkan på kvaliteten och noggrannheten i hastighetsregleringen.
-  pol: Użycie 1 lub 2 zwiększy szybkość kodowania kosztem pewnego wpływu na jakość i dokładność kontroli tempa.
+  rus: Использование 1 или 2 увеличит скорость кодирования за счет некоторого влияния
+    на качество и точность контроля скорости.
+  por: A utilização de 1 ou 2 aumentará a velocidade de codificação à custa de ter
+    algum impacto na qualidade e exactidão do controlo da taxa.
+  swe: Om du använder 1 eller 2 ökar kodningshastigheten på bekostnad av en viss inverkan
+    på kvaliteten och noggrannheten i hastighetsregleringen.
+  pol: Użycie 1 lub 2 zwiększy szybkość kodowania kosztem pewnego wpływu na jakość
+    i dokładność kontroli tempa.
 Using a single frame thread gives a slight improvement in compression,:
-  deu: Die Verwendung eines einzigen Frame-Threads führt zu einer leichten Verbesserung der Komprimierung,
+  deu: Die Verwendung eines einzigen Frame-Threads führt zu einer leichten Verbesserung
+    der Komprimierung,
   eng: Using a single frame thread gives a slight improvement in compression,
   fra: L'utilisation d'un seul fil de trame donne une légère amélioration de la compression,
-  ita: L'utilizzo di una filettatura a telaio singolo offre un leggero miglioramento della compressione,
+  ita: L'utilizzo di una filettatura a telaio singolo offre un leggero miglioramento
+    della compressione,
   spa: Usar un solo hilo de cuadro da una ligera mejora en la compresión,
   zho: 使用单帧线程会使压缩率略有提高，
   jpn: シングルフレームスレッドを使用すると、圧縮率がわずかに向上します。
@@ -4357,27 +4555,36 @@ View GUI Debug Logs:
 'WARNING: This will take much longer and result in a larger file':
   deu: 'WARNUNG: Dies dauert viel länger und führt zu einer größeren Datei'
   eng: 'WARNING: This will take much longer and result in a larger file'
-  fra: 'AVERTISSEMENT : Cela prendra beaucoup plus de temps et entraînera un dossier plus volumineux'
+  fra: 'AVERTISSEMENT : Cela prendra beaucoup plus de temps et entraînera un dossier
+    plus volumineux'
   ita: 'ATTENZIONE: Ci vorrà molto più tempo e il risultato sarà un file più grande'
   spa: 'ADVERTENCIA: Esto tomará mucho más tiempo y resultará en un archivo más grande'
   zho: 警告：这将导致转换用时大幅延长，输出文件体积增大。
   jpn: 警告：この作業は時間がかかり、ファイルも大きくなります。
-  rus: 'ВНИМАНИЕ: Это займет гораздо больше времени и приведет к увеличению размера файла'
+  rus: 'ВНИМАНИЕ: Это займет гораздо больше времени и приведет к увеличению размера
+    файла'
   por: 'AVISO: Isto levará muito mais tempo e resultará num ficheiro maior'
   swe: 'VARNING: Detta tar mycket längre tid och resulterar i en större fil.'
   pol: 'OSTRZEŻENIE: To zajmie znacznie więcej czasu i spowoduje, że plik będzie większy'
 Wait for the current command to finish, and stop the next command from processing:
-  deu: Warten, bis der aktuelle Befehl beendet ist, und die Verarbeitung des nächsten Befehls stoppen
+  deu: Warten, bis der aktuelle Befehl beendet ist, und die Verarbeitung des nächsten
+    Befehls stoppen
   eng: Wait for the current command to finish, and stop the next command from processing
-  fra: Attendre la fin de la commande en cours et arrêter le traitement de la commande suivante
-  ita: Attendere che il comando corrente finisca e interrompere l'elaborazione del comando successivo
-  spa: Espere a que termine el comando actual y detenga el procesamiento del siguiente comando...
+  fra: Attendre la fin de la commande en cours et arrêter le traitement de la commande
+    suivante
+  ita: Attendere che il comando corrente finisca e interrompere l'elaborazione del
+    comando successivo
+  spa: Espere a que termine el comando actual y detenga el procesamiento del siguiente
+    comando...
   zho: 等待当前命令完成，之后暂不处理后面的命令
   jpn: 現在のコマンドが終了するのを待ち、次のコマンドの処理を停止する
-  rus: Дождитесь завершения выполнения текущей команды и остановите обработку следующей команды
+  rus: Дождитесь завершения выполнения текущей команды и остановите обработку следующей
+    команды
   por: Esperar que o comando actual termine, e parar o próximo comando de processar
-  swe: Vänta på att det aktuella kommandot avslutas och stoppa behandlingen av nästa kommando.
-  pol: Poczekaj na zakończenie bieżącego polecenia i zatrzymaj przetwarzanie następnego polecenia.
+  swe: Vänta på att det aktuella kommandot avslutas och stoppa behandlingen av nästa
+    kommando.
+  pol: Poczekaj na zakończenie bieżącego polecenia i zatrzymaj przetwarzanie następnego
+    polecenia.
 'Warning: Audio will not be modified':
   deu: 'Warnung: Audio wird nicht verändert'
   eng: 'Warning: Audio will not be modified'
@@ -4451,41 +4658,59 @@ Will fix first subtitle track to not be default:
   swe: Kommer att rätta till att det första undertextspåret inte är standard
   pol: Poprawi pierwszą ścieżkę napisów, aby nie była domyślna
 With b-adapt 0, the GOP structure is fixed based on the values of --keyint and --bframes.:
-  deu: Bei b-adapt 0 wird die GOP-Struktur anhand der Werte von --keyint und --bframes festgelegt.
-  eng: With b-adapt 0, the GOP structure is fixed based on the values of --keyint and --bframes.
-  fra: Avec l'adaptateur b 0, la structure du GOP est fixée sur la base des valeurs de --keyint et --bframes.
+  deu: Bei b-adapt 0 wird die GOP-Struktur anhand der Werte von --keyint und --bframes
+    festgelegt.
+  eng: With b-adapt 0, the GOP structure is fixed based on the values of --keyint
+    and --bframes.
+  fra: Avec l'adaptateur b 0, la structure du GOP est fixée sur la base des valeurs
+    de --keyint et --bframes.
   ita: Con b-adapt 0, la struttura GOP è fissa in base ai valori di --keyint e --bframes.
-  spa: Con b-adaptado 0, la estructura del GOP se fija en base a los valores de --keyint y --bframes.
+  spa: Con b-adaptado 0, la estructura del GOP se fija en base a los valores de --keyint
+    y --bframes.
   zho: 当b-adapt为0时，图像组（Group Of Pictures, GOP）结构是根据--keyint和--bframes的值确定并固定的。
   jpn: b-adapt 0では、--keyintおよび--bframesの値に基づいてGOP構造が固定されます。
-  rus: При b-adapt 0 структура GOP фиксируется на основе значений параметров --keyint и --bframes.
-  por: Com b-adapt 0, a estrutura do GPO é fixada com base nos valores de --int e --b-brack.
-  swe: Med b-adapt 0 fastställs GOP-strukturen baserat på värdena för --keyint och --bframes.
-  pol: Przy b-adapt 0, struktura GOP jest ustalana na podstawie wartości --keyint i --bframes.
+  rus: При b-adapt 0 структура GOP фиксируется на основе значений параметров --keyint
+    и --bframes.
+  por: Com b-adapt 0, a estrutura do GPO é fixada com base nos valores de --int e
+    --b-brack.
+  swe: Med b-adapt 0 fastställs GOP-strukturen baserat på värdena för --keyint och
+    --bframes.
+  pol: Przy b-adapt 0, struktura GOP jest ustalana na podstawie wartości --keyint
+    i --bframes.
 With b-adapt 1 a light lookahead is used to choose B frame placement.:
-  deu: Mit b-adapt 1 wird ein wenig vorausgeschaut, um die B-Frame-Platzierung zu wählen.
+  deu: Mit b-adapt 1 wird ein wenig vorausgeschaut, um die B-Frame-Platzierung zu
+    wählen.
   eng: With b-adapt 1 a light lookahead is used to choose B frame placement.
-  fra: Avec l'adaptateur b 1, un léger regard est utilisé pour choisir le placement des images B.
-  ita: Con b-adapt 1 si usa un leggero lookahead per scegliere il posizionamento del telaio B.
-  spa: Con b-adapt 1 se utiliza un lookahead ligero para elegir la colocación del marco B.
+  fra: Avec l'adaptateur b 1, un léger regard est utilisé pour choisir le placement
+    des images B.
+  ita: Con b-adapt 1 si usa un leggero lookahead per scegliere il posizionamento del
+    telaio B.
+  spa: Con b-adapt 1 se utiliza un lookahead ligero para elegir la colocación del
+    marco B.
   zho: 当b-adapt为1时，通过轻量级的lookahead来选择B帧的位置。
   jpn: b-adapt 1では、Bフレームの配置を選択するために軽いルックアヘッドが使用されます。
-  rus: При использовании b-adapt 1 для выбора размещения B-кадра используется легкая заставка.
-  por: Com b-adapt 1 é utilizada uma lookahead leve para escolher a colocação da moldura B.
+  rus: При использовании b-adapt 1 для выбора размещения B-кадра используется легкая
+    заставка.
+  por: Com b-adapt 1 é utilizada uma lookahead leve para escolher a colocação da moldura
+    B.
   swe: Med b-adapt 1 används en lätt framåtblick för att välja B-ramens placering.
-  pol: W przypadku b-adapt 1 do wyboru położenia ramki B wykorzystywana jest lekka perspektywa czasowa.
+  pol: W przypadku b-adapt 1 do wyboru położenia ramki B wykorzystywana jest lekka
+    perspektywa czasowa.
 With b-adapt 2 (trellis) a viterbi B path selection is performed:
   deu: Bei b-adapt 2 (Trellis) wird eine Viterbi-B-Pfadauswahl durchgeführt
   eng: With b-adapt 2 (trellis) a viterbi B path selection is performed
-  fra: Avec l'adaptateur b 2 (treillis), une sélection du chemin B de Viterbi est effectuée
-  ita: Con b-adapt 2 (traliccio) viene eseguita una selezione del percorso viterbi B
+  fra: Avec l'adaptateur b 2 (treillis), une sélection du chemin B de Viterbi est
+    effectuée
+  ita: Con b-adapt 2 (traliccio) viene eseguita una selezione del percorso viterbi
+    B
   spa: Con b-adapt 2 (espaldera) se realiza una selección de trayectoria B viterbi
   zho: 对于b-adapt 2 (trellis)，则执行viterbi B path selection。
   jpn: b-adapt 2 (トレリス)では、ビタビB経路選択を行います。
   rus: С помощью b-адаптации 2 (решетка) выполняется выбор пути Витерби B
   por: Com b-adapt 2 (treliças) é efectuada uma selecção de caminhos viterbi B
   swe: Med b-adapt 2 (trellis) utförs ett viterbi B-vägval.
-  pol: W przypadku b-adapt 2 (trellis) przeprowadzany jest wybór ścieżki B metodą viterbi
+  pol: W przypadku b-adapt 2 (trellis) przeprowadzany jest wybór ścieżki B metodą
+    viterbi
 Work Directory:
   deu: Arbeitsverzeichnis
   eng: Work Directory
@@ -4549,14 +4774,18 @@ already exists:
 and the amount of work performed by the full trellis version of --b-adapt lookahead.:
   deu: und der Arbeitsaufwand, der bei --b-adapt 2 (full trellis) durchgeführt wird.
   eng: and the amount of work performed by the full trellis version of --b-adapt lookahead.
-  fra: et la quantité de travail effectuée par la version complète en treillis de --b-adapt lookahead.
-  ita: e la quantità di lavoro svolto dalla versione completa della versione a traliccio di --b-adattate lookahead.
-  spa: y la cantidad de trabajo realizado por la versión completa de la espaldera de --b-adaptado lookahead.
+  fra: et la quantité de travail effectuée par la version complète en treillis de
+    --b-adapt lookahead.
+  ita: e la quantità di lavoro svolto dalla versione completa della versione a traliccio
+    di --b-adattate lookahead.
+  spa: y la cantidad de trabajo realizado por la versión completa de la espaldera
+    de --b-adaptado lookahead.
   zho: lookahead在full(trellis)模式下执行的工作量有二次方的影响。
   jpn: と、フルトレリス版の--b-adapt lookaheadによる作業量を示しています。
   rus: и объем работы, выполняемой версией полной решетки --b-adapt lookahead.
   por: e a quantidade de trabalho realizado pela versão completa de --b-adapt lookahead.
-  swe: och den mängd arbete som utförs av den fullständiga trellisversionen av --b-adapt lookahead.
+  swe: och den mängd arbete som utförs av den fullständiga trellisversionen av --b-adapt
+    lookahead.
   pol: oraz ilość pracy wykonanej przez wersję full trellis z --b-adapt lookahead.
 and you want keyframes to be random access points.:
   deu: und es ist gewünscht, dass die Keyframes zufällige Zugriffspunkte sind.
@@ -4633,14 +4862,19 @@ b-adapt:
 'b-adapt: Set the level of effort in determining B frame placement.':
   deu: 'b-adapt: Festlegen des Grades des Aufwands bei der Bestimmung der B-Frame-Platzierung.'
   eng: 'b-adapt: Set the level of effort in determining B frame placement.'
-  fra: "b-adapt : Fixe le niveau d'effort pour déterminer le placement de l'image B."
-  ita: 'b-adatta: Impostare il livello di sforzo nel determinare il posizionamento del telaio B.'
-  spa: 'b-adaptado: Establece el nivel de esfuerzo para determinar la colocación del marco B.'
+  fra: "b-adapt : Fixe le niveau d'effort pour déterminer le placement de l'image\
+    \ B."
+  ita: 'b-adatta: Impostare il livello di sforzo nel determinare il posizionamento
+    del telaio B.'
+  spa: 'b-adaptado: Establece el nivel de esfuerzo para determinar la colocación del
+    marco B.'
   zho: b-adapt：对决定B帧位置时的工作量水平进行调整。
   jpn: B-ADAPTBフレームの配置を決定する際の努力の度合いを設定します。
   rus: 'b-adapt: Установите уровень усилий при определении размещения рамки B.'
-  por: 'b-adapt: Definir o nível de esforço na determinação da colocação da moldura B.'
-  swe: 'b-anpassad: Ange nivån på ansträngningen när det gäller att bestämma placeringen av B-ramar.'
+  por: 'b-adapt: Definir o nível de esforço na determinação da colocação da moldura
+    B.'
+  swe: 'b-anpassad: Ange nivån på ansträngningen när det gäller att bestämma placeringen
+    av B-ramar.'
   pol: 'b-adapt: Ustaw poziom wysiłku przy określaniu umiejscowienia ramki B.'
 bad micro value:
   deu: schlechter Micro-Wert
@@ -4655,17 +4889,25 @@ bad micro value:
   swe: dåligt mikrovärde
   pol: zła wartość mikro
 best is recommended if you have lots of time and want the best compression efficiency.:
-  deu: best wird empfohlen, wenn viel Zeit zur Verfügung steht und die beste Komprimierungseffizienz gewünscht ist.
-  eng: best is recommended if you have lots of time and want the best compression efficiency.
-  fra: Le meilleur est recommandé si vous avez beaucoup de temps et si vous voulez obtenir la meilleure efficacité de compression.
-  ita: Il migliore è consigliato se si ha molto tempo a disposizione e si desidera la migliore efficienza di compressione.
-  spa: Se recomienda el mejor si tienes mucho tiempo y quieres la mejor eficiencia de compresión.
+  deu: best wird empfohlen, wenn viel Zeit zur Verfügung steht und die beste Komprimierungseffizienz
+    gewünscht ist.
+  eng: best is recommended if you have lots of time and want the best compression
+    efficiency.
+  fra: Le meilleur est recommandé si vous avez beaucoup de temps et si vous voulez
+    obtenir la meilleure efficacité de compression.
+  ita: Il migliore è consigliato se si ha molto tempo a disposizione e si desidera
+    la migliore efficienza di compressione.
+  spa: Se recomienda el mejor si tienes mucho tiempo y quieres la mejor eficiencia
+    de compresión.
   zho: 在时间充裕且希望获得最佳压缩效率的情况下，建议使用best。
   jpn: 時間に余裕があり、最高の圧縮効率を求める場合には、最高の製品をお勧めします。
-  rus: рекомендуется, если у вас много времени и вы хотите получить максимальную эффективность сжатия.
-  por: o melhor é recomendado se tiver muito tempo e quiser a melhor eficiência de compressão.
+  rus: рекомендуется, если у вас много времени и вы хотите получить максимальную эффективность
+    сжатия.
+  por: o melhor é recomendado se tiver muito tempo e quiser a melhor eficiência de
+    compressão.
   swe: rekommenderas om du har mycket tid och vill ha bästa möjliga kompressionseffektivitet.
-  pol: najlepszy jest zalecany, jeśli masz dużo czasu i chcesz uzyskać najlepszą wydajność kompresji.
+  pol: najlepszy jest zalecany, jeśli masz dużo czasu i chcesz uzyskać najlepszą wydajność
+    kompresji.
 bframes:
   deu: bframes
   eng: bframes
@@ -4811,7 +5053,8 @@ data tracks found:
   swe: 'ramtrådar: Antal samtidigt kodade ramar.'
   pol: 'frame-threads: Liczba jednocześnie kodowanych ramek.'
 good is the default and recommended for most applications:
-  deu: good ist die Standardeinstellung und wird für die meisten Anwendungszwecke empfohlen
+  deu: good ist die Standardeinstellung und wird für die meisten Anwendungszwecke
+    empfohlen
   eng: good is the default and recommended for most applications
   fra: good est la valeur par défaut et est recommandé pour la plupart des applications
   ita: buono è il valore predefinito e raccomandato per la maggior parte delle applicazioni
@@ -4823,15 +5066,21 @@ good is the default and recommended for most applications:
   swe: good är standard och rekommenderas för de flesta tillämpningar.
   pol: dobra jest domyślna i zalecana dla większości zastosowań
 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.':
-  deu: 'hdr10-opt: Aktiviert die Luma- und Chroma-QP-Optimierung auf Blockebene für HDR10-Inhalte.'
+  deu: 'hdr10-opt: Aktiviert die Luma- und Chroma-QP-Optimierung auf Blockebene für
+    HDR10-Inhalte.'
   eng: 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.'
-  fra: "hdr10-opt : Activer l'optimisation QP luma et chroma au niveau des blocs pour le contenu HDR10."
-  ita: "hdr10-opt: Attivare l'ottimizzazione a livello di blocco luma e chroma QP per i contenuti HDR10."
-  spa: 'hdr10-opt: Habilitar la optimización de la luma a nivel de bloque y la QP cromática para el contenido de HDR10.'
+  fra: "hdr10-opt : Activer l'optimisation QP luma et chroma au niveau des blocs pour\
+    \ le contenu HDR10."
+  ita: "hdr10-opt: Attivare l'ottimizzazione a livello di blocco luma e chroma QP\
+    \ per i contenuti HDR10."
+  spa: 'hdr10-opt: Habilitar la optimización de la luma a nivel de bloque y la QP
+    cromática para el contenido de HDR10.'
   zho: hdr10-opt：启用HDR10内容的块级亮度和色度量化参数（Quantization Parameter, QP）优化。
   jpn: HDR10-OPT:HDR10コンテンツに対して、ブロックレベルでのルーマおよびクロマのQP最適化を有効にします。
-  rus: 'hdr10-opt: Включение оптимизации QP на уровне лумы и цветности блока для контента HDR10.'
-  por: 'hdr10-opt: Permitir a optimização de luma a nível de bloco e de QP cromado para conteúdo HDR10.'
+  rus: 'hdr10-opt: Включение оптимизации QP на уровне лумы и цветности блока для контента
+    HDR10.'
+  por: 'hdr10-opt: Permitir a optimização de luma a nível de bloco e de QP cromado
+    para conteúdo HDR10.'
   swe: 'hdr10-opt: Aktivera QP-optimering på blocknivå för luma och kroma för HDR10-innehåll.'
   pol: 'hdr10-opt: Włącza optymalizację QP na poziomie bloku dla zawartości HDR10.'
 'hdr10: Force signaling of HDR10 parameters in SEI packets.':
@@ -4873,15 +5122,22 @@ installer:
 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.':
   deu: 'intra-refresh: Aktiviert Periodic Intra Refresh(PIR) anstelle der Keyframe-Einblendung.'
   eng: 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.'
-  fra: "intra-refresh : Active le rafraîchissement périodique intra (PIR) au lieu de l'insertion d'images clés."
-  ita: "intra-refresh: Abilita l'Intra Refresh(PIR) periodico invece dell'inserimento del keyframe."
-  spa: 'intra-refresco: Habilita el Refresco Intra Periódico (PIR) en lugar de la inserción de fotogramas clave.'
+  fra: "intra-refresh : Active le rafraîchissement périodique intra (PIR) au lieu\
+    \ de l'insertion d'images clés."
+  ita: "intra-refresh: Abilita l'Intra Refresh(PIR) periodico invece dell'inserimento\
+    \ del keyframe."
+  spa: 'intra-refresco: Habilita el Refresco Intra Periódico (PIR) en lugar de la
+    inserción de fotogramas clave.'
   zho: intra-refresh：启用周期性帧内刷新（Periodic Intra Refresh, PIR）代替关键帧插入。
   jpn: イントラリフレシュキーフレーム挿入の代わりにPIR（Periodic Intra Refresh）を有効にします。
-  rus: 'intra-refresh: Включает периодическое внутреннее обновление (PIR) вместо вставки ключевого кадра.'
-  por: 'intra-refresco: Permite a actualização periódica intra-refresco (PIR) em vez da inserção do quadro-chave.'
-  swe: 'intra-återuppdatering: Aktiverar Periodic Intra Refresh (PIR) i stället för att infoga nyckelramar.'
-  pol: 'intra-refresh: Włącza Periodic Intra Refresh(PIR) zamiast wstawiania klatek kluczowych.'
+  rus: 'intra-refresh: Включает периодическое внутреннее обновление (PIR) вместо вставки
+    ключевого кадра.'
+  por: 'intra-refresco: Permite a actualização periódica intra-refresco (PIR) em vez
+    da inserção do quadro-chave.'
+  swe: 'intra-återuppdatering: Aktiverar Periodic Intra Refresh (PIR) i stället för
+    att infoga nyckelramar.'
+  pol: 'intra-refresh: Włącza Periodic Intra Refresh(PIR) zamiast wstawiania klatek
+    kluczowych.'
 is a default profile and will not be removed:
   deu: ist ein Standardprofil und wird nicht entfernt
   eng: is a default profile and will not be removed
@@ -4919,17 +5175,27 @@ it will generally just increase memory use.:
   swe: Det kommer i allmänhet bara att öka minnesanvändningen.
   pol: generalnie zwiększy to tylko użycie pamięci.
 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)':
-  deu: 'keyint: Aktiviert Intra-Encoding durch Erzwingen von Keyframes alle 1 Sekunde (Blu-ray-Spezifikation)'
-  eng: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)'
-  fra: "keyint : Activer l'intra-encodage en forçant les images clés toutes les 1 seconde (spécification Blu-ray)"
-  ita: "keyint: Attivare l'Intra-Encoding forzando i keyframe ogni 1 secondo (Blu-ray spec)"
-  spa: 'keyint: Habilitar la intracodificación forzando los fotogramas clave cada 1 segundo (Blu-ray spec)'
-  zho: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)'
+  deu: 'keyint: Aktiviert Intra-Encoding durch Erzwingen von Keyframes alle 1 Sekunde
+    (Blu-ray-Spezifikation)'
+  eng: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray
+    spec)'
+  fra: "keyint : Activer l'intra-encodage en forçant les images clés toutes les 1\
+    \ seconde (spécification Blu-ray)"
+  ita: "keyint: Attivare l'Intra-Encoding forzando i keyframe ogni 1 secondo (Blu-ray\
+    \ spec)"
+  spa: 'keyint: Habilitar la intracodificación forzando los fotogramas clave cada
+    1 segundo (Blu-ray spec)'
+  zho: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray
+    spec)'
   jpn: keyint：1秒ごとにキーフレームを強制的に生成してイントラエンコードを有効にする（Blu-ray仕様）。
-  rus: 'keyint: Включить внутреннее кодирование путем принудительного воспроизведения ключевых кадров каждые 1 секунду (спецификация Blu-ray).'
-  por: 'keyint: Activar a Intra-Codificação forçando os keyframes a cada 1 segundo (especificação Blu-ray)'
-  swe: 'keyint: Aktivera intrakodning genom att tvinga fram keyframes var 1 sekund (Blu-ray-specifikation)'
-  pol: 'keyint: Włącz Intra-Encoding przez wymuszanie klatek kluczowych co 1 sekundę (specyfikacja Blu-ray)'
+  rus: 'keyint: Включить внутреннее кодирование путем принудительного воспроизведения
+    ключевых кадров каждые 1 секунду (спецификация Blu-ray).'
+  por: 'keyint: Activar a Intra-Codificação forçando os keyframes a cada 1 segundo
+    (especificação Blu-ray)'
+  swe: 'keyint: Aktivera intrakodning genom att tvinga fram keyframes var 1 sekund
+    (Blu-ray-specifikation)'
+  pol: 'keyint: Włącz Intra-Encoding przez wymuszanie klatek kluczowych co 1 sekundę
+    (specyfikacja Blu-ray)'
 lossless:
   deu: verlustfrei
   eng: lossless
@@ -4943,17 +5209,27 @@ lossless:
   swe: förlustfri
   pol: bezstratna
 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error':
-  deu: 'max_muxing_queue_size: Erhöhen, um den Fehler "Too many packets buffered for output stream" zu beheben'
-  eng: 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error'
-  fra: "max_muxing_queue_size : Augmenter pour corriger l'erreur \"Too many packets buffered for output stream"
-  ita: "max_muxing_queue_size: Alzare per correggere l'errore \"Troppi pacchetti bufferizzati per il flusso di uscita"
-  spa: 'tamaño_muxing_queue_size: Subir para corregir el error "Demasiados paquetes almacenados en la memoria intermedia para el flujo de salida".'
-  zho: max_muxing_queue_size：提高以解决 "输出流缓冲的数据包太多（Too many packets buffered for output stream）"的错误。
+  deu: 'max_muxing_queue_size: Erhöhen, um den Fehler "Too many packets buffered for
+    output stream" zu beheben'
+  eng: 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output
+    stream" error'
+  fra: "max_muxing_queue_size : Augmenter pour corriger l'erreur \"Too many packets\
+    \ buffered for output stream"
+  ita: "max_muxing_queue_size: Alzare per correggere l'errore \"Troppi pacchetti bufferizzati\
+    \ per il flusso di uscita"
+  spa: 'tamaño_muxing_queue_size: Subir para corregir el error "Demasiados paquetes
+    almacenados en la memoria intermedia para el flujo de salida".'
+  zho: max_muxing_queue_size：提高以解决 "输出流缓冲的数据包太多（Too many packets buffered for output
+    stream）"的错误。
   jpn: max_muxing_queue_sizeを変更しました。出力ストリームにバッファリングされるパケット数が多すぎる」というエラーを修正するために値を上げる。
-  rus: 'max_muxing_queue_size: Повышение для исправления ошибки "Слишком много пакетов буферизировано для выходного потока"'
-  por: 'max_muxing_queue_queue_size: Aumentar para corrigir o erro "Demasiados pacotes protegidos para o fluxo de saída'
-  swe: 'max_muxing_queue_size: Höj för att åtgärda felet "För många paket buffras för utdataströmmen".'
-  pol: 'max_muxing_queue_size: Podnieś, aby naprawić błąd "Zbyt wiele pakietów buforowanych dla strumienia wyjściowego"'
+  rus: 'max_muxing_queue_size: Повышение для исправления ошибки "Слишком много пакетов
+    буферизировано для выходного потока"'
+  por: 'max_muxing_queue_queue_size: Aumentar para corrigir o erro "Demasiados pacotes
+    protegidos para o fluxo de saída'
+  swe: 'max_muxing_queue_size: Höj för att åtgärda felet "För många paket buffras
+    för utdataströmmen".'
+  pol: 'max_muxing_queue_size: Podnieś, aby naprawić błąd "Zbyt wiele pakietów buforowanych
+    dla strumienia wyjściowego"'
 none:
   deu: keine
   eng: none
@@ -5015,16 +5291,21 @@ preset:
   swe: förinställd
   pol: wstępnie ustawiony
 'preset: The slower the preset, the better the compression and quality':
-  deu: 'Voreinstellung: Je langsamer die Voreinstellung, desto besser die Komprimierung und Qualität'
+  deu: 'Voreinstellung: Je langsamer die Voreinstellung, desto besser die Komprimierung
+    und Qualität'
   eng: 'preset: The slower the preset, the better the compression and quality'
-  fra: 'préréglé : Plus le préréglage est lent, meilleure est la compression et la qualité'
+  fra: 'préréglé : Plus le préréglage est lent, meilleure est la compression et la
+    qualité'
   ita: 'preimpostata: Più lento è il preset, migliore è la compressione e la qualità'
-  spa: 'preestablecido: Cuanto más lento el preajuste, mejor será la compresión y la calidad'
+  spa: 'preestablecido: Cuanto más lento el preajuste, mejor será la compresión y
+    la calidad'
   zho: preset：较慢的预设能提供更好的压缩比和质量。
   jpn: のプリセットがあります。プリセットの速度が遅いほど、圧縮率と品質が向上します
   rus: 'предустановка: Чем медленнее предустановка, тем лучше сжатие и качество'
-  por: 'pré-definido: Quanto mais lenta for a predefinição, melhor será a compressão e qualidade'
-  swe: 'förinställd: Ju långsammare förinställning, desto bättre komprimering och kvalitet.'
+  por: 'pré-definido: Quanto mais lenta for a predefinição, melhor será a compressão
+    e qualidade'
+  swe: 'förinställd: Ju långsammare förinställning, desto bättre komprimering och
+    kvalitet.'
   pol: 'ustawienie wstępne: Im wolniejszy preset, tym lepsza kompresja i jakość.'
 preventing large-scale patterns such as color banding in images.:
   deu: verhindert großflächige Muster wie z. B. Color Banding in Bildern.
@@ -5037,7 +5318,8 @@ preventing large-scale patterns such as color banding in images.:
   rus: предотвращение крупномасштабных деталей, таких как цветовые полосы на изображениях.
   por: prevenindo padrões em grande escala, tais como bandas de cor em imagens.
   swe: förhindra storskaliga mönster, t.ex. färgband i bilder.
-  pol: zapobieganie powstawaniu wielkoskalowych wzorów, takich jak kolorowy banding na obrazach.
+  pol: zapobieganie powstawaniu wielkoskalowych wzorów, takich jak kolorowy banding
+    na obrazach.
 profile:
   deu: Profil
   eng: profile
@@ -5066,8 +5348,10 @@ profile:
   deu: 'Profil: VP9-Kodierungsprofil - muss mit der Bittiefe übereinstimmen'
   eng: 'profile: VP9 coding profile - must match bit depth'
   fra: 'profil : Profil de codage VP9 - doit correspondre à la profondeur de bit'
-  ita: 'profilo: Profilo di codifica VP9 - deve corrispondere alla profondità della punta'
-  spa: 'perfil: Perfil de codificación del VP9 - debe coincidir con la profundidad del bit'
+  ita: 'profilo: Profilo di codifica VP9 - deve corrispondere alla profondità della
+    punta'
+  spa: 'perfil: Perfil de codificación del VP9 - debe coincidir con la profundidad
+    del bit'
   zho: profile：VP9编码规格——必须与位深度相匹配。
   jpn: プロファイルを使用しています。VP9コーディングプロファイル - ビット深度と一致する必要があります
   rus: 'профиль: Профиль кодирования VP9 - должен соответствовать битовой глубине'
@@ -5099,27 +5383,41 @@ rav1e github:
   swe: rav1e github
   pol: rav1e github
 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.':
-  deu: 'Kopfzeilen wiederholen: Wenn aktiviert, gibt x265 mit jedem Keyframe VPS-, SPS- und PPS-Header aus.'
-  eng: 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.'
-  fra: 'des en-têtes répétitifs : Si elle est activée, x265 émettra des en-têtes VPS, SPS et PPS avec chaque image clé.'
-  ita: 'ripeti-intestazioni: Se abilitato, x265 emetterà testate VPS, SPS e PPS con ogni fotogramma chiave.'
-  spa: 'repetición de los encabezamientos: Si se activa, x265 emitirá encabezados VPS, SPS y PPS con cada fotograma clave.'
+  deu: 'Kopfzeilen wiederholen: Wenn aktiviert, gibt x265 mit jedem Keyframe VPS-,
+    SPS- und PPS-Header aus.'
+  eng: 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with
+    every keyframe.'
+  fra: 'des en-têtes répétitifs : Si elle est activée, x265 émettra des en-têtes VPS,
+    SPS et PPS avec chaque image clé.'
+  ita: 'ripeti-intestazioni: Se abilitato, x265 emetterà testate VPS, SPS e PPS con
+    ogni fotogramma chiave.'
+  spa: 'repetición de los encabezamientos: Si se activa, x265 emitirá encabezados
+    VPS, SPS y PPS con cada fotograma clave.'
   zho: repeat-headers：如果启用，x265将随每个关键帧加入VPS，SPS和PPS标头。
   jpn: repeat-headersを使用します。有効にすると、x265はキーフレームごとにVPS、SPS、PPSの各ヘッダを出力します。
-  rus: 'повторять заголовки: Если включено, x265 будет выдавать заголовки VPS, SPS и PPS с каждым ключевым кадром.'
-  por: 'cabeçalhos de repetição: Se activado, x265 irá emitir cabeçalhos VPS, SPS, e PPS com cada quadro-chave.'
-  swe: 'upprepa rubriker: Om den är aktiverad kommer x265 att skicka ut VPS-, SPS och PPS-rubriker med varje nyckelbild.'
-  pol: 'repeat-headers: Jeśli włączone, x265 będzie emitować nagłówki VPS, SPS i PPS z każdą klatką kluczową.'
+  rus: 'повторять заголовки: Если включено, x265 будет выдавать заголовки VPS, SPS
+    и PPS с каждым ключевым кадром.'
+  por: 'cabeçalhos de repetição: Se activado, x265 irá emitir cabeçalhos VPS, SPS,
+    e PPS com cada quadro-chave.'
+  swe: 'upprepa rubriker: Om den är aktiverad kommer x265 att skicka ut VPS-, SPS
+    och PPS-rubriker med varje nyckelbild.'
+  pol: 'repeat-headers: Jeśli włączone, x265 będzie emitować nagłówki VPS, SPS i PPS
+    z każdą klatką kluczową.'
 since the entire reference frames are always available for motion compensation,:
-  deu: da immer die gesamten Referenzframes für die Bewegungskompensation zur Verfügung stehen,
+  deu: da immer die gesamten Referenzframes für die Bewegungskompensation zur Verfügung
+    stehen,
   eng: since the entire reference frames are always available for motion compensation,
-  fra: puisque les images de référence entières sont toujours disponibles pour la compensation de mouvement,
-  ita: poiché l'intero frame di riferimento è sempre disponibile per la compensazione del movimento,
-  spa: ya que todos los fotogramas de referencia están siempre disponibles para la compensación de movimiento,
+  fra: puisque les images de référence entières sont toujours disponibles pour la
+    compensation de mouvement,
+  ita: poiché l'intero frame di riferimento è sempre disponibile per la compensazione
+    del movimento,
+  spa: ya que todos los fotogramas de referencia están siempre disponibles para la
+    compensación de movimiento,
   zho: 因为总是可以获取完整的参考帧来进行运动补偿，
   jpn: は、リファレンスフレーム全体が常に動きの補正に利用できるからです。
   rus: поскольку для компенсации движения всегда доступны все опорные кадры,
-  por: uma vez que todos os quadros de referência estão sempre disponíveis para compensação de movimento,
+  por: uma vez que todos os quadros de referência estão sempre disponíveis para compensação
+    de movimento,
   swe: eftersom hela referensramar alltid är tillgängliga för rörelsekompensation,
   pol: ponieważ całe ramki odniesienia są zawsze dostępne dla kompensacji ruchu,
 starting next command:
@@ -5147,17 +5445,23 @@ subtitle tracks found:
   swe: undertextspår hittades
   pol: znaleziono ścieżki z napisami
 that move across the video from one side to the other and thereby refresh the image:
-  deu: die sich von einer Seite zur anderen durch das Video bewegen und dabei das Bild aktualisieren
-  eng: that move across the video from one side to the other and thereby refresh the image
+  deu: die sich von einer Seite zur anderen durch das Video bewegen und dabei das
+    Bild aktualisieren
+  eng: that move across the video from one side to the other and thereby refresh the
+    image
   fra: qui passent d'un côté à l'autre de la vidéo et rafraîchissent ainsi l'image
-  ita: che si muovono attraverso il video da un lato all'altro e quindi rinfrescano l'immagine
+  ita: che si muovono attraverso il video da un lato all'altro e quindi rinfrescano
+    l'immagine
   spa: que se mueven a través del video de un lado a otro y así refrescan la imagen
   zho: 这些intra blocks的位置在若干帧的时间内从视频一侧移动到另一侧，
   jpn: 映像の中を左右に移動することで映像を更新する
-  rus: которые перемещаются по видео с одной стороны на другую и тем самым обновляют изображение
+  rus: которые перемещаются по видео с одной стороны на другую и тем самым обновляют
+    изображение
   por: que se movem através do vídeo de um lado para o outro e assim refrescam a imagem
-  swe: som rör sig över videon från den ena sidan till den andra och på så sätt uppdaterar bilden.
-  pol: które przesuwają się po obrazie z jednej strony na drugą i w ten sposób odświeżają obraz
+  swe: som rör sig över videon från den ena sidan till den andra och på så sätt uppdaterar
+    bilden.
+  pol: które przesuwają się po obrazie z jednej strony na drugą i w ten sposób odświeżają
+    obraz
 the resolution-to-:
   deu: die Auflösung zu
   eng: the resolution-to-
@@ -5183,10 +5487,12 @@ to Blu-ray standards to burn to a physical disk:
   swe: till Blu-ray-standarder för att bränna till en fysisk disk
   pol: do standardów Blu-ray w celu wypalenia na dysku fizycznym
 'tune: Tune the settings for a particular type of source or situation':
-  deu: 'Feineinstellung: Die Einstellungen auf eine bestimmte Art von Quelle oder Situation abstimmen'
+  deu: 'Feineinstellung: Die Einstellungen auf eine bestimmte Art von Quelle oder
+    Situation abstimmen'
   eng: 'tune: Tune the settings for a particular type of source or situation'
   fra: 'afinar: Sintonizar los ajustes para un tipo de fuente o situación particular'
-  ita: 'sintonizzarsi: Sintonizzare le impostazioni per un particolare tipo di sorgente o situazione'
+  ita: 'sintonizzarsi: Sintonizzare le impostazioni per un particolare tipo di sorgente
+    o situazione'
   spa: 'afinar: Sintonizar los ajustes para un tipo de fuente o situación particular'
   zho: tune：针对特定类型的来源或情况调整设置。
   jpn: をチューニングします。特定の種類のソースや状況に合わせて設定をチューニングする
@@ -5231,17 +5537,22 @@ There are no videos to start converting:
   swe: Det finns inga videor att börja konvertera
   pol: Nie ma żadnych filmów do rozpoczęcia konwersji
 No crop, scale, rotation,flip nor any other filters will be applied.:
-  deu: Es werden weder Beschneiden, Skalieren, Drehen, Spiegeln noch andere Filter angewendet.
+  deu: Es werden weder Beschneiden, Skalieren, Drehen, Spiegeln noch andere Filter
+    angewendet.
   eng: No crop, scale, rotation,flip nor any other filters will be applied.
-  fra: Aucun filtre de culture, d'échelle, de rotation, de retournement ou autre ne sera appliqué.
+  fra: Aucun filtre de culture, d'échelle, de rotation, de retournement ou autre ne
+    sera appliqué.
   ita: Nessun ritaglio, scala, rotazione, flip o qualsiasi altro filtro sarà applicato.
-  spa: No se aplicará ningún filtro de recorte, escala, rotación, volteo ni ningún otro.
+  spa: No se aplicará ningún filtro de recorte, escala, rotación, volteo ni ningún
+    otro.
   zho: 不会应用裁切、缩放、旋转、翻转或任何其他滤镜。
   jpn: クロップ、スケール、ローテーション、フリップなどのフィルターは適用されません。
   rus: Обрезка, масштабирование, поворот, переворот и другие фильтры не применяются.
   por: Não se aplicará cultura, escala, rotação,flip nem qualquer outro filtro.
-  swe: Ingen beskärning, skalning, rotation, vändning eller andra filter kommer att tillämpas.
-  pol: Nie będą stosowane żadne filtry typu crop, scale, rotation, flip ani żadne inne.
+  swe: Ingen beskärning, skalning, rotation, vändning eller andra filter kommer att
+    tillämpas.
+  pol: Nie będą stosowane żadne filtry typu crop, scale, rotation, flip ani żadne
+    inne.
 Are you sure you want to stop the current encode?:
   deu: Sind Sie sicher, dass Sie die aktuelle Kodierung stoppen wollen?
   eng: Are you sure you want to stop the current encode?
@@ -5490,7 +5801,8 @@ Decoder:
   spa: 'Hardware: utilizar libavformat + decodificador de hardware para la entrada'
   zho: Hardware：使用libavformat+硬件解码器进行输入
   jpn: ハードウェア：入力にlibavformat＋ハードウェアデコーダを使用
-  rus: 'Аппаратное обеспечение: использование libavformat + аппаратного декодера для ввода'
+  rus: 'Аппаратное обеспечение: использование libavformat + аппаратного декодера для
+    ввода'
   por: 'Hardware: usar libavformat + descodificador de hardware para entrada'
   swe: 'Hårdvara: Använd libavformat + hårdvaruavkodare för inmatning.'
   pol: 'Sprzęt: użyj libavformat + dekoder sprzętowy dla wejścia'
@@ -5651,29 +5963,44 @@ Load:
   swe: Ladda
   pol: Obciążenie
 Drag and Drop to reorder - All items need to be same dimensions:
-  deu: Ziehen und Ablegen zum Neuordnen - Alle Elemente müssen die gleichen Abmessungen haben
+  deu: Ziehen und Ablegen zum Neuordnen - Alle Elemente müssen die gleichen Abmessungen
+    haben
   eng: Drag and Drop to reorder - All items need to be same dimensions
-  fra: Glissez et déposez pour réorganiser - Tous les éléments doivent avoir les mêmes dimensions.
+  fra: Glissez et déposez pour réorganiser - Tous les éléments doivent avoir les mêmes
+    dimensions.
   ita: Drag and Drop per riordinare - Tutti gli elementi devono avere le stesse dimensioni
-  spa: Arrastrar y soltar para reordenar - Todos los elementos deben tener las mismas dimensiones
+  spa: Arrastrar y soltar para reordenar - Todos los elementos deben tener las mismas
+    dimensiones
   zho: 拖放来重新排序 - 所有项目都需要相同的尺寸
   jpn: ドラッグ＆ドロップで再注文 - すべてのアイテムが同じ寸法である必要があります。
-  rus: Перетаскивание для изменения порядка - все предметы должны иметь одинаковые размеры
-  por: Arrastar e largar para reordenar - Todos os artigos precisam de ter as mesmas dimensões
+  rus: Перетаскивание для изменения порядка - все предметы должны иметь одинаковые
+    размеры
+  por: Arrastar e largar para reordenar - Todos os artigos precisam de ter as mesmas
+    dimensões
   swe: Dra och släpp för att beställa om - Alla artiklar måste ha samma mått.
-  pol: Przeciągnij i upuść, aby zmienić kolejność - Wszystkie elementy muszą mieć te same wymiary
+  pol: Przeciągnij i upuść, aby zmienić kolejność - Wszystkie elementy muszą mieć
+    te same wymiary
 The following items were excluded as they could not be identified as image or video files:
-  deu: Die folgenden Elemente wurden ausgeschlossen, da sie nicht als Bild- oder Videodateien identifiziert werden konnten
-  eng: The following items were excluded as they could not be identified as image or video files
-  fra: Les éléments suivants ont été exclus car ils n'ont pas pu être identifiés comme des fichiers image ou vidéo.
-  ita: I seguenti elementi sono stati esclusi perché non potevano essere identificati come file immagine o video
-  spa: Se han excluido los siguientes elementos por no poder ser identificados como archivos de imagen o vídeo
+  deu: Die folgenden Elemente wurden ausgeschlossen, da sie nicht als Bild- oder Videodateien
+    identifiziert werden konnten
+  eng: The following items were excluded as they could not be identified as image
+    or video files
+  fra: Les éléments suivants ont été exclus car ils n'ont pas pu être identifiés comme
+    des fichiers image ou vidéo.
+  ita: I seguenti elementi sono stati esclusi perché non potevano essere identificati
+    come file immagine o video
+  spa: Se han excluido los siguientes elementos por no poder ser identificados como
+    archivos de imagen o vídeo
   zho: 以下项目被排除在外，因为它们无法被识别为图像或视频文件
   jpn: 以下のものは、画像・映像ファイルとして識別できないため、除外しました。
-  rus: Следующие предметы были исключены, поскольку их нельзя было идентифицировать как файлы изображений или видеофайлы
-  por: Os seguintes itens foram excluídos por não poderem ser identificados como ficheiros de imagem ou de vídeo
-  swe: Följande poster har uteslutits eftersom de inte kunde identifieras som bild- eller videofiler
-  pol: Następujące pozycje zostały wyłączone, ponieważ nie można ich było zidentyfikować jako pliki obrazu lub wideo
+  rus: Следующие предметы были исключены, поскольку их нельзя было идентифицировать
+    как файлы изображений или видеофайлы
+  por: Os seguintes itens foram excluídos por não poderem ser identificados como ficheiros
+    de imagem ou de vídeo
+  swe: Följande poster har uteslutits eftersom de inte kunde identifieras som bild-
+    eller videofiler
+  pol: Następujące pozycje zostały wyłączone, ponieważ nie można ich było zidentyfikować
+    jako pliki obrazu lub wideo
 There are already items in this list:
   deu: Es gibt bereits Objekte in dieser Liste
   eng: There are already items in this list
@@ -5737,17 +6064,21 @@ does not support concatenating files together:
 'WARNING: This feature is not provided by the encoder software directly':
   deu: 'WARNUNG: Diese Funktion wird nicht direkt von der Encoder-Software bereitgestellt.'
   eng: 'WARNING: This feature is not provided by the encoder software directly'
-  fra: "AVERTISSEMENT : Cette fonction n'est pas fournie directement par le logiciel de l'encodeur."
+  fra: "AVERTISSEMENT : Cette fonction n'est pas fournie directement par le logiciel\
+    \ de l'encodeur."
   ita: 'ATTENZIONE: Questa funzione non è fornita direttamente dal software di codifica'
-  spa: 'ADVERTENCIA: Esta función no es proporcionada por el software del codificador directamente'
+  spa: 'ADVERTENCIA: Esta función no es proporcionada por el software del codificador
+    directamente'
   zho: 警告：编码器软件不直接提供这一功能。
   jpn: 警告：この機能は、エンコーダソフトウェアが直接提供するものではありません。
-  rus: 'ВНИМАНИЕ: Эта функция не обеспечивается непосредственно программным обеспечением энкодера'
+  rus: 'ВНИМАНИЕ: Эта функция не обеспечивается непосредственно программным обеспечением
+    энкодера'
   por: 'AVISO: Esta funcionalidade não é fornecida directamente pelo software codificador'
   swe: 'VARNING: Denna funktion tillhandahålls inte direkt av kodarprogramvaran.'
   pol: 'OSTRZEŻENIE: Ta funkcja nie jest dostępna bezpośrednio w oprogramowaniu enkodera'
 It is NOT supported by VCE or NVENC encoders, it will break the encoding:
-  deu: Sie wird NICHT von VCE- oder NVENC-Encodern unterstützt, da sie die Codierung unterbrechen würde.
+  deu: Sie wird NICHT von VCE- oder NVENC-Encodern unterstützt, da sie die Codierung
+    unterbrechen würde.
   eng: It is NOT supported by VCE or NVENC encoders, it will break the encoding
   fra: Elle n'est PAS supportée par les encodeurs VCE ou NVENC, elle interrompra l'encodage.
   ita: NON è supportata dagli encoder VCE o NVENC, interromperà la codifica
@@ -6119,15 +6450,22 @@ Please load in a video to configure a new profile:
   swe: 10-bit
   pol: 10-bit
 This encoder does not support duplicating audio tracks, please remove copied tracks!:
-  eng: This encoder does not support duplicating audio tracks, please remove copied tracks!
-  deu: Dieser Encoder unterstützt das Duplizieren von Audiospuren nicht, bitte entfernen Sie die kopierten Spuren!
-  fra: Cet encodeur ne prend pas en charge la duplication des pistes audio, veuillez supprimer les pistes copiées !
-  ita: Questo encoder non supporta la duplicazione di tracce audio, per favore rimuovi le tracce copiate!
-  spa: Este codificador no admite la duplicación de pistas de audio, por favor, elimine las pistas copiadas.
+  eng: This encoder does not support duplicating audio tracks, please remove copied
+    tracks!
+  deu: Dieser Encoder unterstützt das Duplizieren von Audiospuren nicht, bitte entfernen
+    Sie die kopierten Spuren!
+  fra: Cet encodeur ne prend pas en charge la duplication des pistes audio, veuillez
+    supprimer les pistes copiées !
+  ita: Questo encoder non supporta la duplicazione di tracce audio, per favore rimuovi
+    le tracce copiate!
+  spa: Este codificador no admite la duplicación de pistas de audio, por favor, elimine
+    las pistas copiadas.
   zho: 此编码器不支持复制音轨，请删除已复制的音轨!
   jpn: このエンコーダーはオーディオトラックの複製をサポートしていません。コピーしたトラックを削除してください。
-  rus: Этот кодер не поддерживает дублирование звуковых дорожек, пожалуйста, удалите скопированные дорожки!
-  por: Este codificador não suporta a duplicação de faixas de áudio, por favor remova as faixas copiadas!
+  rus: Этот кодер не поддерживает дублирование звуковых дорожек, пожалуйста, удалите
+    скопированные дорожки!
+  por: Este codificador não suporta a duplicação de faixas de áudio, por favor remova
+    as faixas copiadas!
   swe: Den här kodaren stöder inte duplicering av ljudspår, ta bort kopierade spår!
   pol: Ten koder nie obsługuje duplikowania ścieżek audio, usuń skopiowane ścieżki!
 Not supported by rigaya's hardware encoders:
@@ -6195,13 +6533,16 @@ Hint that encoding should happen in real-time if not faster:
   deu: Hinweis, dass die Kodierung in Echtzeit oder sogar schneller erfolgen sollte
   fra: Indiquez que l'encodage doit se faire en temps réel, sinon plus rapidement.
   ita: 'Suggerimento: la codifica dovrebbe avvenire in tempo reale, se non più velocemente'
-  spa: Indicación de que la codificación debe realizarse en tiempo real, si no más rápido
+  spa: Indicación de que la codificación debe realizarse en tiempo real, si no más
+    rápido
   zho: 提示编码应该实时发生，如果不是更快的话
   jpn: エンコードをリアルタイムで行うことを推奨します。
-  rus: Намек на то, что кодирование должно происходить в реальном времени, если не быстрее
+  rus: Намек на то, что кодирование должно происходить в реальном времени, если не
+    быстрее
   por: Dica de que a codificação deve acontecer em tempo real, se não mais rápido
   swe: En antydan om att kodning bör ske i realtid, om inte snabbare.
-  pol: Wskazówka, że kodowanie powinno odbywać się w czasie rzeczywistym, jeśli nie szybciej
+  pol: Wskazówka, że kodowanie powinno odbywać się w czasie rzeczywistym, jeśli nie
+    szybciej
 Frames Before:
   eng: Frames Before
   deu: Frames Vorher
@@ -6215,17 +6556,26 @@ Frames Before:
   swe: Frames före
   pol: Ramki Przed
 Other frames will come before the frames in this session. This helps smooth concatenation issues.:
-  eng: Other frames will come before the frames in this session. This helps smooth concatenation issues.
-  deu: Andere Rahmen werden vor den Rahmen in dieser Sitzung angezeigt. Dies hilft, Verkettungsprobleme zu vermeiden.
-  fra: Les autres cadres viendront avant les cadres de cette session. Cela permet d'atténuer les problèmes de concaténation.
-  ita: Gli altri fotogrammi verranno prima dei fotogrammi di questa sessione. Questo aiuta a smussare i problemi di concatenazione.
-  spa: Los demás fotogramas vendrán antes que los fotogramas de esta sesión. Esto ayuda a suavizar los problemas de concatenación.
+  eng: Other frames will come before the frames in this session. This helps smooth
+    concatenation issues.
+  deu: Andere Rahmen werden vor den Rahmen in dieser Sitzung angezeigt. Dies hilft,
+    Verkettungsprobleme zu vermeiden.
+  fra: Les autres cadres viendront avant les cadres de cette session. Cela permet
+    d'atténuer les problèmes de concaténation.
+  ita: Gli altri fotogrammi verranno prima dei fotogrammi di questa sessione. Questo
+    aiuta a smussare i problemi di concatenazione.
+  spa: Los demás fotogramas vendrán antes que los fotogramas de esta sesión. Esto
+    ayuda a suavizar los problemas de concatenación.
   zho: 其他的帧会在这个会话中的帧之前出现。这有助于平滑串联问题。
   jpn: 他のフレームは、このセッションのフレームより前に来ます。これは、連結の問題をスムーズにするのに役立ちます。
-  rus: Другие кадры будут идти перед кадрами в этой сессии. Это помогает сгладить проблемы конкатенации.
-  por: Outros quadros virão antes dos quadros nesta sessão. Isto ajuda a suavizar as questões de concatenação.
-  swe: Andra ramar kommer att komma före ramarna under denna session. Detta underlättar problem med sammanlänkning.
-  pol: Inne ramki będą się pojawiać przed ramkami w tej sesji. Ułatwia to rozwiązywanie problemów związanych z konkatenacją.
+  rus: Другие кадры будут идти перед кадрами в этой сессии. Это помогает сгладить
+    проблемы конкатенации.
+  por: Outros quadros virão antes dos quadros nesta sessão. Isto ajuda a suavizar
+    as questões de concatenação.
+  swe: Andra ramar kommer att komma före ramarna under denna session. Detta underlättar
+    problem med sammanlänkning.
+  pol: Inne ramki będą się pojawiać przed ramkami w tej sesji. Ułatwia to rozwiązywanie
+    problemów związanych z konkatenacją.
 Frames After:
   eng: Frames After
   deu: Frames nach
@@ -6239,17 +6589,26 @@ Frames After:
   swe: Bilder efter
   pol: Ramki Po
 Other frames will come after the frames in this session. This helps smooth concatenation issues.:
-  eng: Other frames will come after the frames in this session. This helps smooth concatenation issues.
-  deu: Andere Frames kommen nach den Frames in dieser Sitzung. Dies hilft, Verkettungsprobleme zu vermeiden.
-  fra: Les autres cadres viendront après les cadres de cette session. Cela permet d'atténuer les problèmes de concaténation.
-  ita: Gli altri fotogrammi verranno dopo i fotogrammi di questa sessione. Questo aiuta a smussare i problemi di concatenazione.
-  spa: Otros marcos vendrán después de los marcos de esta sesión. Esto ayuda a suavizar los problemas de concatenación.
+  eng: Other frames will come after the frames in this session. This helps smooth
+    concatenation issues.
+  deu: Andere Frames kommen nach den Frames in dieser Sitzung. Dies hilft, Verkettungsprobleme
+    zu vermeiden.
+  fra: Les autres cadres viendront après les cadres de cette session. Cela permet
+    d'atténuer les problèmes de concaténation.
+  ita: Gli altri fotogrammi verranno dopo i fotogrammi di questa sessione. Questo
+    aiuta a smussare i problemi di concatenazione.
+  spa: Otros marcos vendrán después de los marcos de esta sesión. Esto ayuda a suavizar
+    los problemas de concatenación.
   zho: 其他的帧将在这个会话中的帧之后出现。这有助于平滑连接问题。
   jpn: 他のフレームは、このセッションのフレームの後に来ます。これは、連結の問題をスムーズにするのに役立ちます。
-  rus: Другие кадры будут идти после кадров этой сессии. Это помогает сгладить проблемы с конкатенацией.
-  por: Outros quadros virão após os quadros nesta sessão. Isto ajuda a suavizar as questões de concatenação.
-  swe: Andra ramar kommer att följa efter ramarna i denna session. Detta bidrar till att underlätta problem med sammanlänkningar.
-  pol: Inne ramki będą pojawiać się po ramkach z tej sesji. Ułatwia to rozwiązywanie problemów związanych z konkatenacją.
+  rus: Другие кадры будут идти после кадров этой сессии. Это помогает сгладить проблемы
+    с конкатенацией.
+  por: Outros quadros virão após os quadros nesta sessão. Isto ajuda a suavizar as
+    questões de concatenação.
+  swe: Andra ramar kommer att följa efter ramarna i denna session. Detta bidrar till
+    att underlätta problem med sammanlänkningar.
+  pol: Inne ramki będą pojawiać się po ramkach z tej sesji. Ułatwia to rozwiązywanie
+    problemów związanych z konkatenacją.
 HEVC coding profile - must match bit depth:
   eng: HEVC coding profile - must match bit depth
   deu: HEVC-Codierungsprofil - muss der Bittiefe entsprechen
@@ -6430,3 +6789,15 @@ That file doesn't exist:
   por: Esse arquivo não existe
   swe: Den filen finns inte
   pol: Ten plik nie istnieje
+There are more than 100 files, skipping pre-processing.:
+  eng: There are more than 100 files, skipping pre-processing.
+  deu: Es gibt mehr als 100 Dateien, wobei die Vorverarbeitung übersprungen wird.
+  fra: Il y a plus de 100 fichiers, en sautant le prétraitement.
+  ita: Ci sono più di 100 file, saltando la pre-elaborazione.
+  spa: Hay más de 100 archivos, omitiendo el preprocesamiento.
+  zho: 有100多个文件，跳过预处理。
+  jpn: 前処理を省いて100ファイル以上あります。
+  rus: Имеется более 100 файлов, пропуская предварительную обработку.
+  por: Existem mais de 100 ficheiros, saltando o pré-processamento.
+  swe: Det finns mer än 100 filer, och du kan hoppa över förbehandlingen.
+  pol: Istnieje ponad 100 plików, z pominięciem przetwarzania wstępnego.

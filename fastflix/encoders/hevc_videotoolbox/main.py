@@ -6,7 +6,7 @@ from pathlib import Path
 import pkg_resources
 
 name = "HEVC (Video Toolbox)"
-requires = "hevc_videotoolbox"
+requires = "videotoolbox"
 icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_hevc_toolbox.png")).resolve())
 
 

@@ -2,6 +2,7 @@
 from pathlib import Path
 import os
 import logging
+import secrets
 
 from PySide2 import QtWidgets, QtGui, QtCore
 
@@ -189,7 +190,8 @@ class ConcatWindow(QtWidgets.QWidget):
         items = []
         skipped = []
         tasks = []
-        for file in Path(folder_name).glob("*"):
+        file_list = sorted(Path(folder_name).glob("*"), key=lambda x: x.name)
+        for file in file_list:
             if file.is_file():
                 tasks.append(
                     Task(
@@ -198,6 +200,9 @@ class ConcatWindow(QtWidgets.QWidget):
                         kwargs={"file": file, "list_of_items": items, "bad_items": skipped},
                     )
                 )
+            if len(tasks) > 100:
+                error_message(t("There are more than 100 files, skipping pre-processing."))
+                return self.save((x.name for x in file_list))
 
         ProgressBar(self.app, tasks, can_cancel=True, auto_run=True)
 
@@ -213,11 +218,12 @@ class ConcatWindow(QtWidgets.QWidget):
                 )
             )
 
-    def save(self):
-        concat_file = self.app.fastflix.config.work_path / "concat.txt"
+    def save(self, file_list=None):
+        concat_file = self.app.fastflix.config.work_path / f"concat_{secrets.token_hex(4)}.txt"
         with open(concat_file, "w") as f:
             f.write(
-                "\n".join([f"file '{self.folder_name}{os.sep}{item}'" for item in self.concat_area.table.get_items()])
+                "\n".join([f"file '{self.folder_name}{os.sep}{item}'"
+                           for item in (self.concat_area.table.get_items() if not file_list else file_list)])
             )
         self.main.input_video = concat_file
         self.main.source_video_path_widget.setText(str(self.main.input_video))
@@ -230,8 +236,9 @@ class ConcatWindow(QtWidgets.QWidget):
         self.main.widgets.deinterlace.setChecked(False)
         self.hide()
         self.main.page_update(build_thumbnail=True)
-        error_message(
-            "Make sure to manually supply the frame rate in the Advanced tab "
-            "(usually want to set both input and output to the same thing.)",
-            title="Set FPS in Advanced Tab",
-        )
+        # TODO present if images
+        # error_message(
+        #     "Make sure to manually supply the frame rate in the Advanced tab "
+        #     "(usually want to set both input and output to the same thing.)",
+        #     title="Set FPS in Advanced Tab",
+        # )
