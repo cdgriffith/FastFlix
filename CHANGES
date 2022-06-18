@@ -4,6 +4,7 @@
 
 * Fixing Apple videotoolbox were not being listed as options (thanks to sublimal)
 * Fixing concatenation of large amount of files could cause huge slowdowns to the app
+* Fixing thumbnails command did not work when ffmpeg was in a directory with a space in it's lineage (thanks to No Name)
 
 ## Version 4.9.3
 
