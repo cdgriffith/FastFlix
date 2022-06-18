@@ -222,8 +222,12 @@ class ConcatWindow(QtWidgets.QWidget):
         concat_file = self.app.fastflix.config.work_path / f"concat_{secrets.token_hex(4)}.txt"
         with open(concat_file, "w") as f:
             f.write(
-                "\n".join([f"file '{self.folder_name}{os.sep}{item}'"
-                           for item in (self.concat_area.table.get_items() if not file_list else file_list)])
+                "\n".join(
+                    [
+                        f"file '{self.folder_name}{os.sep}{item}'"
+                        for item in (self.concat_area.table.get_items() if not file_list else file_list)
+                    ]
+                )
             )
         self.main.input_video = concat_file
         self.main.source_video_path_widget.setText(str(self.main.input_video))
