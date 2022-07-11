@@ -5896,7 +5896,7 @@ Trim:
   fra: Découpage
   ita: Trim
   spa: Recorte
-  zho: 裁剪
+  zho: 修剪
   jpn: トリム
   rus: Отделка
   por: Trim
@@ -6299,7 +6299,7 @@ Extra svt av1 params in opt=1:opt2=0 format:
   fra: Paramètres supplémentaires de svt av1 au format opt=1:opt2=0
   ita: Parametri extra svt av1 nel formato opt=1:opt2=0
   spa: Parámetros extra svt av1 en formato opt=1:opt2=0
-  zho: 额外的svt av1参数为opt=1:opt2=0格式
+  zho: 额外的svt av1参数，格式为opt=1:opt2=0
   jpn: opt=1:opt2=0のフォーマットでの余分なsvt av1パラメータ
   rus: Дополнительные параметры svt av1 в формате opt=1:opt2=0
   por: Parâmetros av1 extra svt no formato opt=1:opt2=0
@@ -6347,7 +6347,7 @@ Method:
   fra: Méthode
   ita: Metodo
   spa: Método
-  zho: 方法
+  zho: 方式
   jpn: 方法
   rus: Метод
   por: Método
