@@ -5607,7 +5607,7 @@ Not all items in the queue were completed:
   fra: Tous les articles dans la file d'attente n'ont pas été complétés
   ita: Non tutti gli elementi in coda sono stati completati
   spa: No se han completado todos los elementos de la cola
-  zho: 并非队列中的所有项目都已完成
+  zho: 队列中有未完成的项目
   jpn: キュー内のすべてのアイテムが完了していない
   rus: Не все пункты в очереди были завершены
   por: Nem todos os itens da fila foram completados
@@ -5679,7 +5679,7 @@ FastFlix Wiki:
   fra: FastFlix Wiki
   ita: FastFlix Wiki
   spa: FastFlix Wiki
-  zho: FastFlix 维基百科
+  zho: FastFlix Wiki
   jpn: FastFlix Wiki
   rus: FastFlix Wiki
   por: FastFlix Wiki
@@ -5848,7 +5848,7 @@ Concatenation Builder:
   fra: Créateur de concaténation
   ita: Costruttore di concatenazioni
   spa: Constructor de Concatenación
-  zho: 串联生成器
+  zho: 创建合并序列
   jpn: コンカチネーションビルダー
   rus: Конструктор конкатенации
   por: Construtor de Concatenação
@@ -5896,7 +5896,7 @@ Trim:
   fra: Découpage
   ita: Trim
   spa: Recorte
-  zho: 修剪
+  zho: 裁剪
   jpn: トリム
   rus: Отделка
   por: Trim
@@ -5932,7 +5932,7 @@ Base Folder:
   fra: Dossier de base
   ita: Cartella base
   spa: Carpeta base
-  zho: 基本文件夹
+  zho: 当前文件夹
   jpn: ベースフォルダー
   rus: Базовая папка
   por: Pasta de base
@@ -5956,7 +5956,7 @@ Load:
   fra: Charger
   ita: Carica
   spa: Cargar
-  zho: 装载
+  zho: 载入
   jpn: ロード
   rus: Нагрузка
   por: Carga
@@ -5971,7 +5971,7 @@ Drag and Drop to reorder - All items need to be same dimensions:
   ita: Drag and Drop per riordinare - Tutti gli elementi devono avere le stesse dimensioni
   spa: Arrastrar y soltar para reordenar - Todos los elementos deben tener las mismas
     dimensiones
-  zho: 拖放来重新排序 - 所有项目都需要相同的尺寸
+  zho: 拖放来重新排序 - 所有项目的尺寸都需要相同
   jpn: ドラッグ＆ドロップで再注文 - すべてのアイテムが同じ寸法である必要があります。
   rus: Перетаскивание для изменения порядка - все предметы должны иметь одинаковые
     размеры
@@ -6055,7 +6055,7 @@ does not support concatenating files together:
   fra: ne supporte pas la concaténation de fichiers ensemble
   ita: non supporta la concatenazione di file
   spa: no admite la concatenación de archivos
-  zho: 不支持将文件串联起来
+  zho: 不支持将文件合并起来
   jpn: は、ファイルの連結をサポートしていません。
   rus: не поддерживает конкатенацию файлов вместе
   por: não suporta a concatenação de ficheiros em conjunto
@@ -6335,7 +6335,7 @@ Equalizer:
   fra: Égaliseur
   ita: Equalizzatore
   spa: Ecualizador
-  zho: 平衡器
+  zho: 均衡器
   jpn: イコライザー
   rus: Эквалайзер
   por: Equalizador
@@ -6359,7 +6359,7 @@ Color Formats:
   fra: Formats de couleur
   ita: Formati di colore
   spa: Formatos de color
-  zho: 彩色格式
+  zho: 色彩格式
   jpn: カラーフォーマット
   rus: Форматы цветов
   por: Formatos de cores
@@ -6486,7 +6486,7 @@ AVC coding profile:
   fra: Profil de codage AVC
   ita: Profilo di codifica AVC
   spa: Perfil de codificación AVC
-  zho: AVC编码简介
+  zho: AVC编码规格
   jpn: AVC符号化プロファイル
   rus: Профиль кодирования AVC
   por: Perfil de codificação AVC
@@ -6566,7 +6566,7 @@ Other frames will come before the frames in this session. This helps smooth conc
     aiuta a smussare i problemi di concatenazione.
   spa: Los demás fotogramas vendrán antes que los fotogramas de esta sesión. Esto
     ayuda a suavizar los problemas de concatenación.
-  zho: 其他的帧会在这个会话中的帧之前出现。这有助于平滑串联问题。
+  zho: 其他的帧会在这个会话中的帧之前出现。这有助于缓解合并中的问题。
   jpn: 他のフレームは、このセッションのフレームより前に来ます。これは、連結の問題をスムーズにするのに役立ちます。
   rus: Другие кадры будут идти перед кадрами в этой сессии. Это помогает сгладить
     проблемы конкатенации.
@@ -6599,7 +6599,7 @@ Other frames will come after the frames in this session. This helps smooth conca
     aiuta a smussare i problemi di concatenazione.
   spa: Otros marcos vendrán después de los marcos de esta sesión. Esto ayuda a suavizar
     los problemas de concatenación.
-  zho: 其他的帧将在这个会话中的帧之后出现。这有助于平滑连接问题。
+  zho: 其他的帧将在这个会话中的帧之后出现。这有助于缓解合并中的问题。
   jpn: 他のフレームは、このセッションのフレームの後に来ます。これは、連結の問題をスムーズにするのに役立ちます。
   rus: Другие кадры будут идти после кадров этой сессии. Это помогает сгладить проблемы
     с конкатенацией.
@@ -6615,7 +6615,7 @@ HEVC coding profile - must match bit depth:
   fra: Profil de codage HEVC - doit correspondre à la profondeur de bit
   ita: Profilo di codifica HEVC - deve corrispondere alla profondità di bit
   spa: 'Perfil de codificación HEVC: debe coincidir con la profundidad de bits'
-  zho: HEVC编码配置文件 - 必须与比特深度相匹配
+  zho: HEVC编码配置文件 - 必须与位深度相匹配
   jpn: HEVCコーディングプロファイル - ビット深度との一致が必要
   rus: Профиль кодирования HEVC - должен соответствовать битовой глубине
   por: Perfil de codificação HEVC - deve corresponder à profundidade do bit
@@ -6639,7 +6639,7 @@ Custom QSVEncC options:
   fra: Options personnalisées de QSVEncC
   ita: Opzioni QSVEncC personalizzate
   spa: Opciones personalizadas de QSVEncC
-  zho: 定制QSVEncC选项
+  zho: 自定义QSVEncC选项
   jpn: QSVEncCのカスタムオプション
   rus: Пользовательские опции QSVEncC
   por: Opções personalizadas de QSVEncC
@@ -6723,7 +6723,7 @@ Are you sure you want to proceed?:
   fra: Vous êtes sûr de vouloir continuer ?
   ita: Sei sicuro di voler procedere?
   spa: ¿Estás seguro de que quieres continuar?
-  zho: 你确定你要继续吗？
+  zho: 确定要继续吗？
   jpn: 本当に進めていいんですか？
   rus: Вы уверены, что хотите продолжить?
   por: Você tem certeza de que quer prosseguir?
@@ -6795,7 +6795,7 @@ There are more than 100 files, skipping pre-processing.:
   fra: Il y a plus de 100 fichiers, en sautant le prétraitement.
   ita: Ci sono più di 100 file, saltando la pre-elaborazione.
   spa: Hay más de 100 archivos, omitiendo el preprocesamiento.
-  zho: 有100多个文件，跳过预处理。
+  zho: 文件多于100个，跳过预处理。
   jpn: 前処理を省いて100ファイル以上あります。
   rus: Имеется более 100 файлов, пропуская предварительную обработку.
   por: Existem mais de 100 ficheiros, saltando o pré-processamento.
