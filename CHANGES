@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 4.10.0
+
+* Adding AVIF support using libsvtav1
+* Adding #352 default output directory to settings panel
+
 ## Version 4.9.4
 
 * Fixing Apple videotoolbox were not being listed as options (thanks to sublimal)

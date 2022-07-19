@@ -267,6 +267,16 @@ class SVTAV1Settings(EncoderSettings):
     svtav1_params: List[str] = Field(default_factory=list)
 
 
+class SVTAVIFSettings(EncoderSettings):
+    name = "AVIF (SVT AV1)"
+    single_pass: bool = True
+    speed: str = "7"  # Renamed preset in svtav1 encoder
+    qp: Optional[Union[int, float]] = 24
+    qp_mode: str = "qp"
+    bitrate: Optional[str] = None
+    svtav1_params: List[str] = Field(default_factory=list)
+
+
 class VP9Settings(EncoderSettings):
     name = "VP9"
     profile: int = 2
@@ -357,4 +367,5 @@ setting_types = {
     "vceencc_avc": VCEEncCAVCSettings,
     "hevc_videotoolbox": HEVCVideoToolboxSettings,
     "h264_videotoolbox": H264VideoToolboxSettings,
+    "svt_av1_avif": SVTAVIFSettings,
 }
