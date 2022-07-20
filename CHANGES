@@ -4,6 +4,7 @@
 
 * Adding AVIF support using libsvtav1
 * Adding #352 default output directory to settings panel
+* Adding support for audio profiles with pattern matching for rigaya's hardware encoders
 
 ## Version 4.9.4
 

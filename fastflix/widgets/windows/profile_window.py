@@ -196,10 +196,22 @@ class AudioSelect(FlixList):
 
         layout.addWidget(self.passthrough_checkbox, 0, 0)
         layout.addWidget(self.add_button, 0, 1, alignment=QtCore.Qt.AlignRight)
+
         layout.addWidget(self.scroll_area, 1, 0, 1, 2)
+
+        self.hardware_warning = QtWidgets.QLabel(t("Rigaya's encoders will only match one encoding per track"))
+        self.hardware_warning.hide()
+
+        layout.addWidget(self.hardware_warning, 2, 0)
         self.passthrough_checkbox.setChecked(True)
         # self.passthrough_checkbox.setChecked(True)
         super()._new_source(self.tracks)
+
+    def update_settings(self):
+        if getattr(self.main.current_encoder, "original_audio_tracks_only", False):
+            self.hardware_warning.show()
+        else:
+            self.hardware_warning.hide()
 
     def add_track(self):
         self.tracks.append(AudioProfile(self, self.app, self.main, self.inner_widget, len(self.tracks)))
@@ -436,6 +448,7 @@ class ProfileWindow(QtWidgets.QWidget):
             if encoder:
                 self.encoder = encoder
         self.encoder_tab.update_settings()
+        self.audio_select.update_settings()
         self.advanced_options = self.main.video_options.advanced.get_settings()
         self.advanced_tab.text_update(self.advanced_options)
 

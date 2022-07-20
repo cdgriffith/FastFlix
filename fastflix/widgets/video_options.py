@@ -163,7 +163,12 @@ class VideoOptions(QtWidgets.QTabWidget):
         if getattr(self.main.current_encoder, "enable_audio", False):
             self.audio.new_source(self.audio_formats)
             streams = copy.deepcopy(self.app.fastflix.current_video.streams)
-            self.audio.apply_profile_settings(profile, streams.audio, self.audio_formats)
+            self.audio.apply_profile_settings(
+                profile,
+                streams.audio,
+                self.audio_formats,
+                og_only=getattr(self.main.current_encoder, "original_audio_tracks_only", False),
+            )
         if getattr(self.main.current_encoder, "enable_subtitles", False):
             self.subtitles.new_source()
         if getattr(self.main.current_encoder, "enable_attachments", False):
@@ -193,7 +198,12 @@ class VideoOptions(QtWidgets.QTabWidget):
             profile = self.app.fastflix.config.profile
 
             if getattr(self.main.current_encoder, "enable_audio", False):
-                self.audio.apply_profile_settings(profile, streams.audio, self.audio_formats)
+                self.audio.apply_profile_settings(
+                    profile,
+                    streams.audio,
+                    self.audio_formats,
+                    og_only=getattr(self.main.current_encoder, "original_audio_tracks_only", False),
+                )
                 self.audio.update_audio_settings()
             if getattr(self.main.current_encoder, "enable_subtitles", False):
                 self.subtitles.get_settings()

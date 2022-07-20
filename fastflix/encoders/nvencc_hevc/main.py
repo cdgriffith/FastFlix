@@ -14,6 +14,7 @@ icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/
 enable_subtitles = True
 enable_audio = True
 enable_attachments = False
+original_audio_tracks_only = True
 
 # Taken from NVEncC64.exe --check-encoders
 audio_formats = [
