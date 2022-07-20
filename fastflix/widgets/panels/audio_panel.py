@@ -679,8 +679,12 @@ class AudioList(FlixList):
                 all_info=x,
                 disable_dup=disable_dups,
             )
-            self.tracks.append(new_item)
-
-        self.tracks.sort(key=lambda z: (int(not z.original), z.index))
+            for idx, tk in enumerate(self.tracks):
+                if tk.index > new_item.index:
+                    print(f"Inserting at {idx}")
+                    self.tracks.insert(idx, new_item)
+                    break
+            else:
+                self.tracks.append(new_item)
 
         super()._new_source(self.tracks)

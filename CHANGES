@@ -12,6 +12,7 @@
 * Fixing #319 no longer disables built in tracks for profile matching (thanks to Owen Quinlan)
 * Fixing #218 and #308 subtitle scaling with rigaya's hardware encoders needs to be scaled for 4K content (thanks to wynterca)
 * Fixing #350 subtitle burn in quoting (thanks to Maddie Davis)
+* Fixing #346 preserve the order of audio tracks when editing a queued job (thanks to Patrick Bassner)
 * Fixing Chinese translations (thanks to leonardyan)
 
 ## Version 4.9.4
