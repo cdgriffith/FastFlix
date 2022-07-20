@@ -86,6 +86,7 @@ class Container(QtWidgets.QMainWindow):
     #     self.setCursor(QtCore.Qt.ArrowCursor)
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+        self.app.fastflix.shutting_down = True
         if self.pb:
             try:
                 self.pb.stop_signal.emit()

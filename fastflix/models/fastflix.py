@@ -34,3 +34,6 @@ class FastFlix(BaseModel):
     conversion_list: List[Video] = Field(default_factory=list)
     current_video_encode_index = 0
     current_command_encode_index = 0
+
+    # State
+    shutting_down: bool = False
