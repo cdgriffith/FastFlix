@@ -281,7 +281,7 @@ class Audio(QtWidgets.QTabWidget):
         return self.widgets.enable_check.isChecked()
 
     @property
-    def conversion(self) -> dict[str, str]:
+    def conversion(self):
         if self.widgets.convert_to.currentIndex() == 0:
             return {"codec": "", "bitrate": ""}
         return {"codec": self.widgets.convert_to.currentText(), "bitrate": self.widgets.convert_bitrate.currentText()}
