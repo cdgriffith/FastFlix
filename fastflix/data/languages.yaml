@@ -6801,3 +6801,65 @@ There are more than 100 files, skipping pre-processing.:
   por: Existem mais de 100 ficheiros, saltando o pré-processamento.
   swe: Det finns mer än 100 filer, och du kan hoppa över förbehandlingen.
   pol: Istnieje ponad 100 plików, z pominięciem przetwarzania wstępnego.
+No audio tracks matched for this profile, enable first track?:
+  eng: No audio tracks matched for this profile, enable first track?
+  deu: Keine Audiospuren für dieses Profil gefunden, erste Spur aktivieren?
+  fra: Aucune piste audio ne correspond à ce profil, activez la première piste ?
+  ita: Non ci sono tracce audio corrispondenti per questo profilo, attivare la prima
+    traccia?
+  spa: No hay pistas de audio que coincidan con este perfil, habilitar la primera
+    pista?
+  zho: 此配置文件没有匹配的音轨，启用第一个音轨？
+  jpn: このプロファイルに一致するオーディオトラックがありません、最初のトラックを有効にしますか？
+  rus: Для этого профиля не подобраны звуковые дорожки, включить первую дорожку?
+  por: Não há faixas de áudio correspondentes a este perfil, permitir a primeira faixa?
+  swe: Inga ljudspår har matchats för den här profilen, aktivera det första spåret?
+  pol: Brak dopasowanych ścieżek audio dla tego profilu, włączyć pierwszą ścieżkę?
+No Audio Match:
+  eng: No Audio Match
+  deu: Keine Audioübereinstimmung
+  fra: Pas de correspondance audio
+  ita: Nessuna corrispondenza audio
+  spa: No hay coincidencia de audio
+  zho: 没有音频匹配
+  jpn: オーディオマッチングなし
+  rus: Нет звукового соответствия
+  por: Sem Audio Match
+  swe: Ingen ljudmatchning
+  pol: Brak dopasowania audio
+Unselect All:
+  eng: Unselect All
+  deu: Alle abwählen
+  fra: Désélectionner tout
+  ita: Deselezionare tutti
+  spa: Deseleccionar todo
+  zho: 取消选择所有
+  jpn: すべて選択解除
+  rus: Не выбирать все
+  por: Desseleccionar todos
+  swe: Avmarkera alla
+  pol: Nie wybieraj wszystkich
+Preserve All:
+  eng: Preserve All
+  deu: Alles bewahren
+  fra: Préserver tout
+  ita: Conservare tutto
+  spa: Conservar todo
+  zho: 保存所有
+  jpn: プリザーブオール
+  rus: Сохранить все
+  por: Preservar tudo
+  swe: Bevara allt
+  pol: Zachować wszystko
+Rigaya's encoders will only match one encoding per track:
+  eng: Rigaya's encoders will only match one encoding per track
+  deu: Rigayas Encoder passen nur eine Kodierung pro Spur an
+  fra: Les encodeurs de Rigaya ne correspondent qu'à un seul encodage par piste.
+  ita: I codificatori di Rigaya corrispondono solo a una codifica per traccia.
+  spa: Los codificadores de Rigaya sólo coincidirán con una codificación por pista
+  zho: Rigaya的编码器在每条轨道上只能匹配一个编码
+  jpn: Rigayaのエンコーダーは1トラックにつき1つのエンコーディングにしかマッチしません
+  rus: Кодировщики Rigaya будут соответствовать только одной кодировке на дорожку
+  por: Os codificadores de Rigaya corresponderão apenas a uma codificação por pista
+  swe: Rigayas kodare matchar endast en kodning per spår.
+  pol: Kodery Rigaya dopasują tylko jedno kodowanie na ścieżkę.
