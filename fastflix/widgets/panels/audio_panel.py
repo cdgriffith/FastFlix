@@ -14,7 +14,7 @@ from fastflix.models.encode import AudioTrack
 from fastflix.models.profiles import Profile, MatchType, MatchItem
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
-from fastflix.shared import no_border, error_message
+from fastflix.shared import no_border, error_message, yes_no_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
@@ -541,6 +541,14 @@ class AudioList(FlixList):
             for num, tt in enumerate(self.tracks):
                 if tt.index == idx:
                     return num
+
+        if self.tracks and not tracks:
+            enable = yes_no_message(
+                t("No audio tracks matched for this profile, enable first track?"), title="No Audio Match"
+            )
+            if enable:
+                self.tracks[0].widgets.enable_check.setChecked(True)
+            return super()._new_source(self.tracks)
 
         current_id = -1
         skip_tracks = []

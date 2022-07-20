@@ -145,7 +145,7 @@ def build(fastflix: FastFlix):
         remove_hdr,
         "--psnr --ssim" if settings.metrics else "",
         build_audio(video.video_settings.audio_tracks, video.streams.audio),
-        build_subtitle(video.video_settings.subtitle_tracks, video.streams.subtitle),
+        build_subtitle(video.video_settings.subtitle_tracks, video.streams.subtitle, video_height=video.height),
         settings.extra,
         "-o",
         f'"{clean_file_string(video.video_settings.output_path)}"',

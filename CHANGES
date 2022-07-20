@@ -4,8 +4,12 @@
 
 * Adding AVIF support using libsvtav1
 * Adding #352 default output directory to settings panel (thanks to Maddie Davis)
-* Adding support for audio profiles with pattern matching for rigaya's hardware encoders
+* Adding #306 support for audio profiles with pattern matching for rigaya's hardware encoders
 * Adding Select All feature for subtitles (thanks to ProFire)
+* Adding #325 builds for Ubuntu 22.04 (thanks to mrjayviper)
+* Adding #322 warning if profile audio match doesn't match anything (thanks to wynterca)
+* Fixing #319 no longer disables built in tracks for profile matching (thanks to Owen Quinlan)
+* Fixing #218 and #308 subtitle scaling with rigaya's hardware encoders needs to be scaled for 4K content (thanks to wynterca)
 * Fixing Chinese translations (thanks to leonardyan)
 
 ## Version 4.9.4
