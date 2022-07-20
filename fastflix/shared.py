@@ -260,6 +260,10 @@ def clean_file_string(source):
     return str(source).strip().strip("'\"")
 
 
+def quoted_path(source):
+    return str(source).strip().replace("\\", "\\\\\\\\").replace(":", "\\\\:").replace(" ", "\\ ").replace(",", "\\,")
+
+
 def sanitize(source):
     return str(sanitize_filepath(source, platform="Windows" if reusables.win_based else "Linux"))
     # return str().replace("\\", "/")
