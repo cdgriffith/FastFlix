@@ -30,6 +30,7 @@ from fastflix.models.encode import (
     VCEEncCSettings,
     H264VideoToolboxSettings,
     HEVCVideoToolboxSettings,
+    SVTAVIFSettings,
 )
 from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, AdvancedOptions
 from fastflix.shared import error_message
@@ -543,6 +544,8 @@ class ProfileWindow(QtWidgets.QWidget):
             new_profile.vceencc_hevc = self.encoder
         elif isinstance(self.encoder, VCEEncCAVCSettings):
             new_profile.vceencc_avc = self.encoder
+        elif isinstance(self.encoder, SVTAVIFSettings):
+            new_profile.svt_av1_avif = self.encoder
         else:
             logger.error("Profile cannot be saved! Unknown encoder type.")
             return

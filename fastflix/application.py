@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
-import os
 import sys
 
 import coloredlogs
 import reusables
 from PySide2 import QtGui, QtWidgets, QtCore
-from PySide2.QtGui import QPalette, QColor
-from PySide2.QtCore import Qt
 
 from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration, ffprobe_configuration, ffmpeg_opencl_support
 from fastflix.language import t

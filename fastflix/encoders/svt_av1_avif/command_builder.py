@@ -8,7 +8,7 @@ import secrets
 import reusables
 
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
-from fastflix.models.encode import SVTAV1Settings
+from fastflix.models.encode import SVTAVIFSettings
 from fastflix.models.fastflix import FastFlix
 
 logger = logging.getLogger("fastflix")
@@ -16,7 +16,7 @@ logger = logging.getLogger("fastflix")
 
 @reusables.log_exception("fastflix", show_traceback=True)
 def build(fastflix: FastFlix):
-    settings: SVTAV1Settings = fastflix.current_video.video_settings.video_encoder_settings
+    settings: SVTAVIFSettings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending = generate_all(fastflix, "libsvtav1", audio=False, subs=False)
 
     beginning += f"-strict experimental " f"-preset {settings.speed} " f"{generate_color_details(fastflix)} "

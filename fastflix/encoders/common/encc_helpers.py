@@ -52,7 +52,7 @@ def build_subtitle(subtitle_tracks: List[SubtitleTrack], subtitle_streams, video
     copies = []
     stream_ids = get_stream_pos(subtitle_streams)
 
-    scale = ",scale=2.0" if video_height > 1800 else {}
+    scale = ",scale=2.0" if video_height > 1800 else ""
 
     for track in sorted(subtitle_tracks, key=lambda x: x.outdex):
         sub_id = stream_ids[track.index]
