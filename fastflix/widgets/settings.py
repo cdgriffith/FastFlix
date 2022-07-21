@@ -130,6 +130,7 @@ class Settings(QtWidgets.QWidget):
         nvencc_label = QtWidgets.QLabel(
             link("https://github.com/rigaya/NVEnc/releases", "NVEncC", app.fastflix.config.theme)
         )
+        nvencc_label.setOpenExternalLinks(True)
         self.nvencc_path = QtWidgets.QLineEdit()
         if self.app.fastflix.config.nvencc:
             self.nvencc_path.setText(str(self.app.fastflix.config.nvencc))
@@ -142,6 +143,7 @@ class Settings(QtWidgets.QWidget):
         vceenc_label = QtWidgets.QLabel(
             link("https://github.com/rigaya/VCEEnc/releases", "VCEEncC", app.fastflix.config.theme)
         )
+        vceenc_label.setOpenExternalLinks(True)
         self.vceenc_path = QtWidgets.QLineEdit()
         if self.app.fastflix.config.vceencc:
             self.vceenc_path.setText(str(self.app.fastflix.config.vceencc))
@@ -154,6 +156,7 @@ class Settings(QtWidgets.QWidget):
         qsvencc_label = QtWidgets.QLabel(
             link("https://github.com/rigaya/QSVEnc/releases", "QSVEncC", app.fastflix.config.theme)
         )
+        qsvencc_label.setOpenExternalLinks(True)
         self.qsvenc_path = QtWidgets.QLineEdit()
         if self.app.fastflix.config.qsvencc:
             self.qsvenc_path.setText(str(self.app.fastflix.config.qsvencc))

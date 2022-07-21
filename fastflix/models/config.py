@@ -111,7 +111,7 @@ class Config(BaseModel):
     selected_profile: str = "Standard Profile"
     theme: str = "onyx"
     disable_version_check: bool = False
-    disable_update_check: bool = False
+    disable_update_check: bool = False  # old name
     disable_automatic_subtitle_burn_in: bool = False
     custom_after_run_scripts: Dict = Field(default_factory=dict)
     profiles: Dict[str, Profile] = Field(default_factory=get_preset_defaults)
@@ -287,6 +287,8 @@ class Config(BaseModel):
                 self.ffmpeg = Path(data.ffprobe)
             self.disable_automatic_subtitle_burn_in = data.get("disable_automatic_subtitle_burn_in")
             self.disable_update_check = data.get("disable_update_check")
+            self.disable_version_check = data.get("disable_update_check", self.disable_update_check)
+            self.disable_version_check = data.get("disable_version_check", self.disable_version_check)
             self.use_sane_audio = data.get("use_sane_audio")
             for audio_type in data.get("sane_audio_selection", []):
                 if audio_type not in self.sane_audio_selection:

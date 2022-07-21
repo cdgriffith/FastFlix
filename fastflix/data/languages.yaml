@@ -6863,3 +6863,39 @@ Rigaya's encoders will only match one encoding per track:
   por: Os codificadores de Rigaya corresponderão apenas a uma codificação por pista
   swe: Rigayas kodare matchar endast en kodning per spår.
   pol: Kodery Rigaya dopasują tylko jedno kodowanie na ścieżkę.
+Default Output Folder:
+  eng: Default Output Folder
+  deu: Standard-Ausgabeordner
+  fra: Dossier de sortie par défaut
+  ita: Cartella di output predefinita
+  spa: Carpeta de salida por defecto
+  zho: 默认输出文件夹
+  jpn: デフォルトの出力先フォルダ
+  rus: Папка вывода по умолчанию
+  por: Pasta de saída por defeito
+  swe: Standardmapp för utdata
+  pol: Domyślny folder wyjściowy
+Use same output directory as source file:
+  eng: Use same output directory as source file
+  deu: Gleiches Ausgabeverzeichnis wie Quelldatei verwenden
+  fra: Utiliser le même répertoire de sortie que le fichier source
+  ita: Usa la stessa directory di output del file sorgente
+  spa: Utilizar el mismo directorio de salida que el archivo de origen
+  zho: 使用与源文件相同的输出目录
+  jpn: ソースファイルと同じ出力ディレクトリを使用する
+  rus: Использовать тот же выходной каталог, что и исходный файл
+  por: Usar o mesmo directório de saída que o ficheiro fonte
+  swe: Använd samma utskriftskatalog som källfilen
+  pol: Użyj tego samego katalogu wyjściowego co plik źródłowy
+Please consider supporting FastFlix with a one time contribution!:
+  eng: Please consider supporting FastFlix with a one time contribution!
+  deu: Bitte unterstützen Sie FastFlix mit einer einmaligen Spende!
+  fra: Merci d'envisager de soutenir FastFlix par une contribution unique!
+  ita: Considerate di sostenere FastFlix con un contributo una tantum!
+  spa: Por favor, considere apoyar a FastFlix con una contribución única.
+  zho: 请考虑用一次性捐款支持FastFlix!
+  jpn: FastFlixへの1回限りの寄付をご検討ください。
+  rus: Пожалуйста, рассмотрите возможность поддержать FastFlix единовременным взносом!
+  por: Por favor, considere apoiar FastFlix com uma contribuição única!
+  swe: Överväg att stödja FastFlix med ett engångsbidrag!
+  pol: Proszę rozważyć wsparcie FastFlix jednorazową wpłatą!

@@ -6,6 +6,8 @@ import sys
 import coloredlogs
 import reusables
 from PySide2 import QtGui, QtWidgets, QtCore
+from PySide2.QtGui import QPalette, QColor
+from PySide2.QtCore import Qt
 
 from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration, ffprobe_configuration, ffmpeg_opencl_support
 from fastflix.language import t
@@ -14,7 +16,7 @@ from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
 from fastflix.resources import main_icon, breeze_styles_path, get_bool_env
-from fastflix.shared import file_date, message
+from fastflix.shared import file_date, message, latest_fastflix
 from fastflix.version import __version__
 from fastflix.widgets.container import Container
 from fastflix.widgets.progress_bar import ProgressBar, Task
@@ -195,6 +197,9 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
 
     container = Container(app)
     container.show()
+
+    if not app.fastflix.config.disable_version_check:
+        latest_fastflix(app=app, show_new_dialog=False)
 
     try:
         app.exec_()
