@@ -5,7 +5,7 @@ from subprocess import run, PIPE
 from typing import Optional
 import secrets
 
-from PySide2 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 
 from fastflix.flix import (
     generate_thumbnail_command,

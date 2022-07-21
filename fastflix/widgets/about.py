@@ -4,7 +4,7 @@ from pathlib import Path
 
 import reusables
 from box import __version__ as box_version
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.shared import base_path, link, pyinstaller

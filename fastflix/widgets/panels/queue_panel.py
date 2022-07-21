@@ -10,7 +10,7 @@ from pathlib import Path
 from appdirs import user_data_dir
 import reusables
 from box import Box
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp

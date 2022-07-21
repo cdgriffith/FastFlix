@@ -4,7 +4,7 @@ import os
 import logging
 import secrets
 
-from PySide2 import QtWidgets, QtGui, QtCore
+from PySide6 import QtWidgets, QtGui, QtCore
 
 from fastflix.language import t
 from fastflix.flix import probe

@@ -4,7 +4,7 @@ import logging
 
 from box import Box
 from iso639 import Lang
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
 from fastflix.language import t

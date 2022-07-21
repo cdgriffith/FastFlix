@@ -3,7 +3,7 @@ import logging
 from typing import List, Optional
 
 from box import Box
-from PySide2 import QtCore, QtWidgets, QtGui
+from PySide6 import QtCore, QtWidgets, QtGui
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t

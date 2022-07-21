@@ -9,8 +9,8 @@ from subprocess import run
 
 import reusables
 from appdirs import user_data_dir
-from PySide2 import QtCore, QtGui, QtWidgets
-from PySide2.QtWidgets import QAction
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtGui import QAction
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t

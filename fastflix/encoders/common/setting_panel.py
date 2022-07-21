@@ -4,7 +4,7 @@ from typing import List, Tuple, Union
 from pathlib import Path
 
 from box import Box
-from PySide2 import QtGui, QtWidgets, QtCore
+from PySide6 import QtGui, QtWidgets, QtCore
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t

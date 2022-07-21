@@ -25,7 +25,7 @@ except AttributeError:
     base_path = os.path.abspath(".")
     pyinstaller = False
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.resources import get_bool_env
