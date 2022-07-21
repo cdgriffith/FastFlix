@@ -230,10 +230,29 @@ class Subtitle(QtWidgets.QTabWidget):
 
 class SubtitleList(FlixList):
     def __init__(self, parent, app: FastFlixApp):
-        super().__init__(app, parent, "Subtitle Tracks", "subtitle")
+        top_layout = QtWidgets.QHBoxLayout()
+
+        top_layout.addWidget(QtWidgets.QLabel(t("Subtitle Tracks")))
+        top_layout.addStretch(1)
+
+        self.remove_all_button = QtWidgets.QPushButton(t("Unselect All"))
+        self.remove_all_button.setFixedWidth(150)
+        self.remove_all_button.clicked.connect(lambda: self.select_all(False))
+        self.save_all_button = QtWidgets.QPushButton(t("Preserve All"))
+        self.save_all_button.setFixedWidth(150)
+        self.save_all_button.clicked.connect(lambda: self.select_all(True))
+
+        top_layout.addWidget(self.remove_all_button)
+        top_layout.addWidget(self.save_all_button)
+
+        super().__init__(app, parent, "Subtitle Tracks", "subtitle", top_row_layout=top_layout)
         self.main = parent.main
         self.app = app
         self._first_selected = False
+
+    def select_all(self, select=True):
+        for track in self.tracks:
+            track.widgets.enable_check.setChecked(select)
 
     def lang_match(self, track: Union[Subtitle, dict], ignore_first=False):
         if not self.app.fastflix.config.opt("subtitle_select"):

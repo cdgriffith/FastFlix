@@ -8,7 +8,7 @@ FastFlix is a simple and friendly GUI for encoding videos.
 
 FastFlix keeps HDR10 metadata for x265, NVEncC HEVC, and VCEEncC HEVC, which will also be expanded to AV1 libraries when available.
 
-It needs `FFmpeg` (version 4.3 or greater) under the hood for the heavy lifting, and can work with a variety of encoders.
+It needs `FFmpeg` (version 4.3 or greater required, 5.0+ recommended) under the hood for the heavy lifting, and can work with a variety of encoders.
 
 Join us on [discord](https://discord.gg/GUBFP6f)!
 
@@ -18,14 +18,14 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 
  FastFlix supports the following encoders if available:
 
-| Encoder   | x265 |  NVENC HEVC | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | [VCEEncC HEVC](https://github.com/rigaya/VCEEnc/releases) | [QSVEncC HEVC](https://github.com/rigaya/QSVEnc/releases) | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | WEBP | GIF |
-| --------- | ---- | ---------- | ----------- | ----------- | ----------- |------| ----- | ------- |-----| --- | ---- | --- |
-| HDR10     |   ✓  |            |      ✓     |      ✓     |      ✓     |      |       |         | ✓   |  ✓* |      |     |
-| HDR10+    |   ✓  |            |      ✓     |            |            |      |       |         |     |     |      |     |
-| Audio     |   ✓  |      ✓     |      ✓*    |      ✓*    |      ✓*    |  ✓   |   ✓  |    ✓    | ✓   |  ✓   |      |     |
-| Subtitles |   ✓  |      ✓     |      ✓     |      ✓     |      ✓     |  ✓   |   ✓  |    ✓    | ✓   |      |      |     |
-| Covers    |   ✓  |      ✓     |            |            |            |  ✓   |   ✓  |    ✓    | ✓   |      |      |     |
-| bt.2020   |   ✓  |     ✓      |     ✓      |     ✓      |     ✓      |   ✓  |  ✓    |   ✓    | ✓   |  ✓   |      |     |
+| Encoder   | x265 |  NVENC HEVC | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | [VCEEncC HEVC](https://github.com/rigaya/VCEEnc/releases) | [QSVEncC HEVC](https://github.com/rigaya/QSVEnc/releases) | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 |
+| --------- | ---- | ---------- | ----------- | ----------- | ----------- |------| ----- | ------- |-----| --- |
+| HDR10     |   ✓  |            |      ✓     |      ✓     |      ✓     |      |       |         | ✓   |  ✓* |
+| HDR10+    |   ✓  |            |      ✓     |            |            |      |       |         |     |     |
+| Audio     |   ✓  |      ✓     |      ✓*    |      ✓*    |      ✓*    |  ✓   |   ✓  |    ✓    | ✓   |  ✓   |
+| Subtitles |   ✓  |      ✓     |      ✓     |      ✓     |      ✓     |  ✓   |   ✓  |    ✓    | ✓   |      |
+| Covers    |   ✓  |      ✓     |            |            |            |  ✓   |   ✓  |    ✓    | ✓   |      |
+| bt.2020   |   ✓  |     ✓      |     ✓      |     ✓      |     ✓      |   ✓  |  ✓    |   ✓    | ✓   |  ✓   |
 
 `✓ - Full support   |   ✓* - Limited support`
 
@@ -98,7 +98,7 @@ Check out the different ways you can help [support FastFlix](https://github.com/
 
 # License
 
-Copyright (C) 2019-2021 Chris Griffith
+Copyright (C) 2019-2022 Chris Griffith
 
 The code itself is licensed under the MIT which you can read in the `LICENSE` file. <br>
 Read more about the release licensing in the [docs](docs/README.md) folder. <br>

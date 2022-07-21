@@ -1716,6 +1716,7 @@ class Main(QtWidgets.QWidget):
             self.generate_thumbnail()
 
     def close(self, no_cleanup=False, from_container=False):
+        self.app.fastflix.shutting_down = True
         if not no_cleanup:
             try:
                 shutil.rmtree(self.temp_dir, ignore_errors=True)

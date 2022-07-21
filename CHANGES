@@ -1,5 +1,23 @@
 # Changelog
 
+## Version 4.10.0
+
+* Adding AVIF support using libsvtav1
+* Adding #352 default output directory to settings panel (thanks to Maddie Davis)
+* Adding #306 support for audio profiles with pattern matching for rigaya's hardware encoders
+* Adding #301 Select All feature for subtitles (thanks to ProFire and Genine-Collin)
+* Adding #325 build for Ubuntu 22.04 (thanks to mrjayviper)
+* Adding build for MacOS 12
+* Adding #322 warning if profile audio match doesn't match anything (thanks to wynterca)
+* Adding presumption that 4.x branch is last to support Windows 7 and 8 for update checks
+* Fixing #319 no longer disables built in tracks for profile matching (thanks to Owen Quinlan)
+* Fixing #218 and #308 subtitle scaling with rigaya's hardware encoders needs to be scaled for 4K content (thanks to wynterca)
+* Fixing #350 subtitle burn in quoting (thanks to Maddie Davis)
+* Fixing #346 preserve the order of audio tracks when editing a queued job (thanks to Patrick Bassner)
+* Fixing #187 closing the main app while a progress bar is active will now stop that task (thanks to Todd Wilkinson)
+* Fixing Chinese translations (thanks to leonardyan)
+* Fixing new version check not launching at startup
+
 ## Version 4.9.4
 
 * Fixing Apple videotoolbox were not being listed as options (thanks to sublimal)

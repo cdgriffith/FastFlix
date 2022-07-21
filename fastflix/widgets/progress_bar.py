@@ -86,6 +86,8 @@ class ProgressBar(QtWidgets.QFrame):
             for i, task in enumerate(self.tasks, start=1):
                 self.status.setText(task.name)
                 self.app.processEvents()
+                if self.app.fastflix.shutting_down:
+                    self.close()
                 try:
                     task.command(config=self.app.fastflix.config, app=self.app, **task.kwargs)
                 except Exception:
@@ -98,3 +100,6 @@ class ProgressBar(QtWidgets.QFrame):
     def update_progress(self, value):
         self.progress_bar.setValue(value)
         self.app.processEvents()
+        if self.app.fastflix.shutting_down:
+            self.stop_signal.emit()
+            self.close()

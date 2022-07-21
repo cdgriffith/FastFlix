@@ -47,15 +47,17 @@ def build_audio(audio_tracks: List[AudioTrack], audio_streams):
     return f" --audio-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
 
 
-def build_subtitle(subtitle_tracks: List[SubtitleTrack], subtitle_streams) -> str:
+def build_subtitle(subtitle_tracks: List[SubtitleTrack], subtitle_streams, video_height: int) -> str:
     command_list = []
     copies = []
     stream_ids = get_stream_pos(subtitle_streams)
 
+    scale = ",scale=2.0" if video_height > 1800 else ""
+
     for track in sorted(subtitle_tracks, key=lambda x: x.outdex):
         sub_id = stream_ids[track.index]
         if track.burn_in:
-            command_list.append(f"--vpp-subburn track={sub_id}")
+            command_list.append(f"--vpp-subburn track={sub_id}{scale}")
         else:
             copies.append(str(sub_id))
             if track.disposition:

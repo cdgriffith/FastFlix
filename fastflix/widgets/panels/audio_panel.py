@@ -14,7 +14,7 @@ from fastflix.models.encode import AudioTrack
 from fastflix.models.profiles import Profile, MatchType, MatchItem
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
-from fastflix.shared import no_border, error_message
+from fastflix.shared import no_border, error_message, yes_no_message
 from fastflix.widgets.panels.abstract_list import FlixList
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
@@ -219,9 +219,10 @@ class Audio(QtWidgets.QTabWidget):
             if self.widgets.downmix.currentIndex() > 0
             else self.channels
         )
-        self.widgets.convert_bitrate.clear()
-        self.widgets.convert_bitrate.addItems(self.get_conversion_bitrates(channels))
-        self.widgets.convert_bitrate.setCurrentIndex(3)
+        if self.conversion["codec"] not in lossless:
+            self.widgets.convert_bitrate.clear()
+            self.widgets.convert_bitrate.addItems(self.get_conversion_bitrates(channels))
+            self.widgets.convert_bitrate.setCurrentIndex(3)
         self.page_update()
 
     def update_conversion(self):
@@ -236,10 +237,20 @@ class Audio(QtWidgets.QTabWidget):
             self.widgets.convert_bitrate.show()
             self.widgets.bitrate_label.show()
             self.widgets.downmix.show()
-            if self.widgets.convert_to.currentText() in lossless:
+            if self.conversion["codec"] in lossless:
                 self.widgets.convert_bitrate.setDisabled(True)
+                self.widgets.convert_bitrate.addItem("lossless")
+                self.widgets.convert_bitrate.setCurrentText("lossless")
             else:
                 self.widgets.convert_bitrate.setDisabled(False)
+                self.widgets.convert_bitrate.clear()
+                channels = (
+                    channel_list[self.widgets.downmix.currentText()]
+                    if self.widgets.downmix.currentIndex() > 0
+                    else self.channels
+                )
+                self.widgets.convert_bitrate.addItems(self.get_conversion_bitrates(channels))
+                self.widgets.convert_bitrate.setCurrentIndex(3)
         self.page_update()
 
     def page_update(self):
@@ -406,7 +417,9 @@ class AudioList(FlixList):
         for track in self.tracks:
             track.update_codecs(allowed_formats or set())
 
-    def apply_profile_settings(self, profile: Profile, original_tracks: List[Box], audio_formats):
+    def apply_profile_settings(
+        self, profile: Profile, original_tracks: List[Box], audio_formats, og_only: bool = False
+    ):
         if profile.audio_filters:
             self.disable_all()
         else:
@@ -415,6 +428,25 @@ class AudioList(FlixList):
 
         disable_dups = "nvencc" in self.main.convert_to.lower() or "vcenc" in self.main.convert_to.lower()
         self.tracks = []
+
+        def update_track(new_track, downmix=None, conversion=None, bitrate=None):
+            if conversion:
+                new_track.widgets.convert_to.setCurrentText(conversion)
+                # Downmix must come first
+                if downmix:
+                    new_track.widgets.downmix.setCurrentText(downmix)
+                if conversion in lossless:
+                    new_track.widgets.convert_bitrate.setDisabled(True)
+                    new_track.widgets.convert_bitrate.addItem("lossless")
+                    new_track.widgets.convert_bitrate.setCurrentText("lossless")
+                else:
+                    if bitrate not in [
+                        new_track.widgets.convert_bitrate.itemText(i)
+                        for i in range(new_track.widgets.convert_bitrate.count())
+                    ]:
+                        new_track.widgets.convert_bitrate.addItem(bitrate)
+                    new_track.widgets.convert_bitrate.setCurrentText(bitrate)
+                    new_track.widgets.convert_bitrate.setDisabled(False)
 
         def gen_track(
             parent, audio_track, outdex, og=False, enabled=True, downmix=None, conversion=None, bitrate=None
@@ -438,20 +470,8 @@ class AudioList(FlixList):
                 disable_dup=disable_dups,
             )
 
-            if conversion:
-                new_track.widgets.convert_to.setCurrentText(conversion)
-                # Downmix must come first
-                if downmix:
-                    new_track.widgets.downmix.setCurrentText(downmix)
-                if conversion in lossless:
-                    new_track.widgets.convert_bitrate.setDisabled(True)
-                else:
-                    if bitrate not in [
-                        new_track.widgets.convert_bitrate.itemText(i)
-                        for i in range(new_track.widgets.convert_bitrate.count())
-                    ]:
-                        new_track.widgets.convert_bitrate.addItem(bitrate)
-                    new_track.widgets.convert_bitrate.setCurrentText(bitrate)
+            update_track(new_track=new_track, downmix=downmix, conversion=conversion, bitrate=bitrate)
+
             return new_track
 
         # First populate all original tracks and disable them
@@ -517,19 +537,53 @@ class AudioList(FlixList):
                     else:
                         tracks.extend(subset_tracks)
 
-        self.tracks.extend(
-            gen_track(
-                self,
-                track[0],
-                i,
-                enabled=True,
-                og=False,
-                conversion=track[1].conversion,
-                bitrate=track[1].bitrate,
-                downmix=track[1].downmix,
+        def find_track_num(idx):
+            for num, tt in enumerate(self.tracks):
+                if tt.index == idx:
+                    return num
+
+        if self.tracks and not tracks:
+            enable = yes_no_message(
+                t("No audio tracks matched for this profile, enable first track?"), title="No Audio Match"
             )
-            for i, track in enumerate(tracks, start=len(self.tracks) + 1)
-        )
+            if enable:
+                self.tracks[0].widgets.enable_check.setChecked(True)
+            return super()._new_source(self.tracks)
+
+        current_id = -1
+        skip_tracks = []
+        for idx, track in enumerate(tracks):
+            if track[0].index > current_id:
+                current_id = track[0].index
+                track_num = find_track_num(track[0].index)
+                self.tracks[track_num].widgets.enable_check.setChecked(True)
+                update_track(
+                    self.tracks[track_num],
+                    downmix=track[1].downmix,
+                    conversion=track[1].conversion,
+                    bitrate=track[1].bitrate,
+                )
+                skip_tracks.append(idx)
+
+        if not og_only:
+            additional_tracks = []
+            for i, track in enumerate(tracks, start=len(self.tracks) + 1):
+                if i not in skip_tracks:
+                    additional_tracks.append(
+                        gen_track(
+                            self,
+                            track[0],
+                            i,
+                            enabled=True,
+                            og=False,
+                            conversion=track[1].conversion,
+                            bitrate=track[1].bitrate,
+                            downmix=track[1].downmix,
+                        )
+                    )
+
+            self.tracks.extend(additional_tracks)
+
         super()._new_source(self.tracks)
 
     def update_audio_settings(self):
@@ -586,6 +640,8 @@ class AudioList(FlixList):
             new_track.widgets.convert_to.setCurrentText(track.conversion_codec)
             if track.conversion_codec in lossless:
                 new_track.widgets.convert_bitrate.setDisabled(True)
+                new_track.widgets.convert_bitrate.addItem("lossless")
+                new_track.widgets.convert_bitrate.setCurrentText("lossless")
             else:
                 if track.conversion_bitrate not in [
                     new_track.widgets.convert_bitrate.itemText(i)
@@ -594,6 +650,7 @@ class AudioList(FlixList):
                     new_track.widgets.convert_bitrate.addItem(track.conversion_bitrate)
                 new_track.widgets.convert_bitrate.setCurrentText(track.conversion_bitrate)
             new_track.widgets.title.setText(track.title)
+
             if track.language:
                 new_track.widgets.language.setCurrentText(Lang(track.language).name)
             else:
@@ -622,8 +679,12 @@ class AudioList(FlixList):
                 all_info=x,
                 disable_dup=disable_dups,
             )
-            self.tracks.append(new_item)
-
-        self.tracks.sort(key=lambda z: (int(not z.original), z.index))
+            for idx, tk in enumerate(self.tracks):
+                if tk.index > new_item.index:
+                    print(f"Inserting at {idx}")
+                    self.tracks.insert(idx, new_item)
+                    break
+            else:
+                self.tracks.append(new_item)
 
         super()._new_source(self.tracks)

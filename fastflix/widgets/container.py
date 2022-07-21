@@ -86,6 +86,7 @@ class Container(QtWidgets.QMainWindow):
     #     self.setCursor(QtCore.Qt.ArrowCursor)
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
+        self.app.fastflix.shutting_down = True
         if self.pb:
             try:
                 self.pb.stop_signal.emit()
@@ -184,7 +185,7 @@ class Container(QtWidgets.QMainWindow):
         version_action = QAction(
             self.si(QtWidgets.QStyle.SP_BrowserReload), t("Check for Newer Version of FastFlix"), self
         )
-        version_action.triggered.connect(lambda: latest_fastflix(no_new_dialog=True))
+        version_action.triggered.connect(lambda: latest_fastflix(show_new_dialog=True, app=self.app))
 
         ffmpeg_update_action = QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), t("Download Newest FFmpeg"), self)
         ffmpeg_update_action.triggered.connect(self.download_ffmpeg)

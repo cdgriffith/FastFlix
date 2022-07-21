@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from distutils.version import StrictVersion
 from pathlib import Path
 from subprocess import run
+import platform
 
 from appdirs import user_data_dir
 import pkg_resources
@@ -110,21 +111,55 @@ def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_acti
     return None
 
 
-def latest_fastflix(no_new_dialog=False):
+def latest_fastflix(app, show_new_dialog=False):
     from fastflix.version import __version__
 
-    url = "https://api.github.com/repos/cdgriffith/FastFlix/releases/latest"
+    url = "https://api.github.com/repos/cdgriffith/FastFlix/releases"
+    contrib = link(
+        url="https://github.com/sponsors/cdgriffith?frequency=one-time&sponsor=cdgriffith",
+        text=t("Please consider supporting FastFlix with a one time contribution!"),
+        theme=app.fastflix.config.theme,
+    )
+
+    logger.debug("Checking for newer versions of FastFlix")
+
     try:
-        data = requests.get(url, timeout=15 if no_new_dialog else 3).json()
+        data = requests.get(url, timeout=15 if not show_new_dialog else 3).json()
     except Exception:
         logger.warning(t("Could not connect to github to check for newer versions"))
-        if no_new_dialog:
+        if show_new_dialog:
             message(t("Could not connect to github to check for newer versions"))
         return
 
-    if data["tag_name"] != __version__ and StrictVersion(data["tag_name"]) > StrictVersion(__version__):
+    versions = sorted(
+        (tuple(int(y) for y in x["tag_name"].split(".")) for x in data if not x["prerelease"] and not x["draft"]),
+        reverse=True,
+    )
+
+    use_version = ".".join(str(x) for x in versions[0])
+    if reusables.win_based:
+
+        try:
+            win_ver = int(platform.platform().lower().split("-")[1])
+        except Exception:
+            logger.warning(f"Could not extract Windows version from {platform.platform()}, please report this message")
+            win_ver = 0
+
+        if win_ver < 10:
+            logger.debug(f"Detected legacy Windows version {win_ver}, looking for 4.x builds only")
+            for version in versions:
+                if version[0] == 4:
+                    use_version = ".".join(str(x) for x in version)
+                    break
+            else:
+                logger.warning("No 4.x Versions found for legacy Windows")
+                return
+
+    release = [x for x in data if x["tag_name"] == use_version][0]
+
+    if use_version != __version__ and StrictVersion(use_version) > StrictVersion(__version__):
         portable, installer = None, None
-        for asset in data["assets"]:
+        for asset in release["assets"]:
             if asset["name"].endswith("win64.zip"):
                 portable = asset["browser_download_url"]
             if asset["name"].endswith("installer.exe"):
@@ -132,21 +167,33 @@ def latest_fastflix(no_new_dialog=False):
 
         download_link = ""
         if installer:
-            download_link += (
-                f"<a href='{installer}'>{t('Download')} FastFlix {t('installer')} {data['tag_name']}</a><br>"
+            download_link += link(
+                url=installer,
+                text=f"{t('Download')} FastFlix {t('installer')} {use_version}",
+                theme=app.fastflix.config.theme,
             )
+            download_link += "<br><br>"
         if portable:
-            download_link += f"<a href='{portable}'>{t('Download')} FastFlix {t('portable')} {data['tag_name']}</a><br>"
+            download_link += link(
+                url=portable,
+                text=f"{t('Download')} FastFlix {t('portable')} {use_version}",
+                theme=app.fastflix.config.theme,
+            )
+            download_link += "<br><br>"
         if (not portable and not installer) or not reusables.win_based:
-            html_link = data["html_url"]
-            download_link = f"<a href='{html_link}'>{t('View')} FastFlix {data['tag_name']} now</a>"
+            html_link = release["html_url"]
+            download_link = link(
+                url=html_link, text=f"{t('View')} FastFlix {use_version}", theme=app.fastflix.config.theme
+            )
+        logger.debug(f"Newer version found: {use_version}")
         message(
-            f"{t('There is a newer version of FastFlix available!')} <br> {download_link}",
+            f"{t('There is a newer version of FastFlix available!')} <br><br> {download_link} <br><br> {contrib} 💓<br>",
             title=t("New Version"),
         )
         return
-    if no_new_dialog:
-        message(t("You are using the latest version of FastFlix"))
+    logger.debug("FastFlix is up tp date")
+    if show_new_dialog:
+        message(t(f"You are using the latest version of FastFlix") + f" <br><br> {contrib} 💓 <br>")
 
 
 def file_date():
@@ -258,6 +305,10 @@ def timedelta_to_str(delta):
 
 def clean_file_string(source):
     return str(source).strip().strip("'\"")
+
+
+def quoted_path(source):
+    return str(source).strip().replace("\\", "\\\\\\\\").replace(":", "\\\\:").replace(" ", "\\ ").replace(",", "\\,")
 
 
 def sanitize(source):

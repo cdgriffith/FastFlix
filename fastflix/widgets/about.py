@@ -46,9 +46,11 @@ class About(QtWidgets.QWidget):
         bundle_label = QtWidgets.QLabel(
             f"Conversion suites: {link('https://www.ffmpeg.org/download.html', 'FFmpeg', app.fastflix.config.theme)} ({t('Various')}), "
             f"{link('https://github.com/rigaya/NVEnc', 'NVEncC', app.fastflix.config.theme)} (MIT) "
+            f"{link('https://github.com/rigaya/QSVEnc', 'QSVEnc', app.fastflix.config.theme)} (MIT) "
             f"{link('https://github.com/rigaya/VCEEnc', 'VCEEnc', app.fastflix.config.theme)} (MIT)<br><br>"
             f"Encoders: <br> {link('https://github.com/rigaya/NVEnc', 'NVEncC', app.fastflix.config.theme)} (MIT), "
             f"{link('https://github.com/rigaya/VCEEnc', 'VCEEnc', app.fastflix.config.theme)} (MIT), "
+            f"{link('https://github.com/rigaya/QSVEnc', 'QSVEnc', app.fastflix.config.theme)} (MIT), "
             f"SVT AV1 (MIT), rav1e (MIT), aom (MIT), x265 (GPL), x264 (GPL), libvpx (BSD)"
         )
         bundle_label.setAlignment(QtCore.Qt.AlignCenter)

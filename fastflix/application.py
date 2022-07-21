@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import os
 import sys
 
 import coloredlogs
@@ -14,7 +13,7 @@ from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
 from fastflix.resources import main_icon, breeze_styles_path, get_bool_env
-from fastflix.shared import file_date, message
+from fastflix.shared import file_date, message, latest_fastflix
 from fastflix.version import __version__
 from fastflix.widgets.container import Container
 from fastflix.widgets.progress_bar import ProgressBar, Task
@@ -68,6 +67,7 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.vceencc_avc import main as vceencc_avc_plugin
     from fastflix.encoders.hevc_videotoolbox import main as hevc_videotoolbox_plugin
     from fastflix.encoders.h264_videotoolbox import main as h264_videotoolbox_plugin
+    from fastflix.encoders.svt_av1_avif import main as svt_av1_avif_plugin
 
     encoders = [
         hevc_plugin,
@@ -77,6 +77,7 @@ def init_encoders(app: FastFlixApp, **_):
         av1_plugin,
         rav1e_plugin,
         svt_av1_plugin,
+        svt_av1_avif_plugin,
         avc_plugin,
         vp9_plugin,
         gif_plugin,
@@ -193,6 +194,9 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
 
     container = Container(app)
     container.show()
+
+    if not app.fastflix.config.disable_version_check:
+        latest_fastflix(app=app, show_new_dialog=False)
 
     try:
         app.exec_()
