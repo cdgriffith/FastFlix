@@ -64,7 +64,7 @@ class About(QtWidgets.QWidget):
             f"{link('https://github.com/cdgriffith/Reusables', t('Reusables'), app.fastflix.config.theme)} {reusables.__version__} (MIT)<br>"
             "mistune (BSD), colorama (BSD), coloredlogs (MIT), Requests (Apache 2.0)<br>"
             "appdirs (MIT), iso639-lang (MIT), psutil (BSD), pathvalidate (MIT) <br>"
-            "BreezeStyleSheets (MIT), PySide2 (LGPL)"
+            "BreezeStyleSheets (MIT), PySide6 (LGPL)"
         )
         supporting_libraries_label.setAlignment(QtCore.Qt.AlignCenter)
         supporting_libraries_label.setOpenExternalLinks(True)

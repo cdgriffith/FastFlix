@@ -127,6 +127,9 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.setTabEnabled(1, getattr(encoder, "enable_audio", True))
         self.setTabEnabled(2, getattr(encoder, "enable_subtitles", True))
         self.setTabEnabled(3, getattr(encoder, "enable_attachments", True))
+        self.setTabVisible(1, getattr(encoder, "enable_audio", True))
+        self.setTabVisible(2, getattr(encoder, "enable_subtitles", True))
+        self.setTabVisible(3, getattr(encoder, "enable_attachments", True))
         self.selected = conversion
         self.current_settings.new_source()
         self.main.page_update(build_thumbnail=False)

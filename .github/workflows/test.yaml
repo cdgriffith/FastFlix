@@ -51,5 +51,5 @@ jobs:
 
     - name: Run tests
       env:
-        PYTEST_QT_API: pyside2
+        PYTEST_QT_API: pyside6
       run: pytest tests
