@@ -14,7 +14,7 @@ for root, dirs, files in os.walk('fastflix'):
 all_imports = collect_submodules('pydantic') + ['dataclasses', 'colorsys', 'typing_extensions', 'box']
 with open("requirements.txt", "r") as reqs:
     for line in reqs:
-        package = line.split("[")[0].split("=")[0].split(">")[0].split("<")[0].replace('"', '').replace("'", '').strip()
+        package = line.split("[")[0].split("=")[0].split(">")[0].split("<")[0].replace('"', '').replace("'", '').rstrip("~").strip()
         if package not in ("pyinstaller", "pypiwin32"):
             all_imports.append(package)
 
@@ -39,8 +39,9 @@ exe = EXE(pyz,
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
-          upx=True,
-          console=True , icon='fastflix\\data\\icon.ico')
+          upx=False,
+          console=True,
+          icon='fastflix\\data\\icon.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

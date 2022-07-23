@@ -107,6 +107,19 @@ def startup_options():
 
 
 def main():
+    if reusables.win_based:
+        import platform
+
+        try:
+            win_ver = int(platform.platform().lower().split("-")[1])
+        except Exception:
+            win_ver = 0
+        if win_ver < 10:
+            input(
+                "You are an unsupported Windows version, and may not be able to run FastFlix properly.\n"
+                "Download FastFlix 4.x versions for Windows 7/8 support [press enter to continue]"
+            )
+
     exit_code = startup_options()
     if exit_code is not None:
         return exit_code
