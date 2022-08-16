@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List
+from typing import Callable
 
 import reusables
 from PySide6 import QtCore, QtWidgets
@@ -15,7 +15,7 @@ logger = logging.getLogger("fastflix")
 class Task:
     name: str
     command: Callable
-    kwargs: Dict = field(default_factory=dict)
+    kwargs: dict = field(default_factory=dict)
 
 
 class ProgressBar(QtWidgets.QFrame):
@@ -25,7 +25,7 @@ class ProgressBar(QtWidgets.QFrame):
     def __init__(
         self,
         app: QtWidgets.QApplication,
-        tasks: List[Task],
+        tasks: list[Task],
         signal_task: bool = False,
         auto_run: bool = True,
         can_cancel: bool = False,
@@ -42,7 +42,7 @@ class ProgressBar(QtWidgets.QFrame):
 
         self.setMinimumWidth(400)
         self.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
-
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         self.status = QtWidgets.QLabel()
         self.progress_bar = QtWidgets.QProgressBar(self)
         self.progress_bar.setGeometry(30, 40, 500, 75)

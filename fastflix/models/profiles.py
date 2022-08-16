@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from pathlib import Path
-from typing import List, Optional, Union, Dict
+from typing import Optional, Union
 
 from pydantic import BaseModel, Field, validator
 from box import Box
@@ -49,8 +49,8 @@ class MatchType(Enum):
 
 
 class AudioMatch(BaseModel):
-    match_type: Union[MatchType, List[MatchType]]  # TODO figure out why when saved becomes list in yaml
-    match_item: Union[MatchItem, List[MatchType]]
+    match_type: Union[MatchType, list[MatchType]]  # TODO figure out why when saved becomes list in yaml
+    match_item: Union[MatchItem, list[MatchType]]
     match_input: str = "*"
     conversion: Optional[str] = None
     bitrate: Optional[str] = None
@@ -87,8 +87,8 @@ class AudioMatch(BaseModel):
 
 
 class SubtitleMatch(BaseModel):
-    match_type: Union[MatchType, List[MatchType]]
-    match_item: Union[MatchItem, List[MatchType]]
+    match_type: Union[MatchType, list[MatchType]]
+    match_item: Union[MatchItem, list[MatchType]]
     match_input: str
 
 
@@ -126,8 +126,8 @@ class Profile(BaseModel):
     remove_hdr: bool = False
     encoder: str = "HEVC (x265)"
 
-    audio_filters: Optional[List[AudioMatch]] = None
-    # subtitle_filters: Optional[List[SubtitleMatch]] = None
+    audio_filters: Optional[list[AudioMatch]] = None
+    # subtitle_filters: Optional[list[SubtitleMatch]] = None
 
     # Legacy Audio, here to properly import old profiles
     audio_language: Optional[str] = None

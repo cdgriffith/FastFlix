@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from typing import List, Dict
 import logging
 
 from fastflix.models.video import SubtitleTrack, AudioTrack
@@ -9,11 +8,11 @@ from fastflix.encoders.common.audio import lossless
 logger = logging.getLogger("fastflix")
 
 
-def get_stream_pos(streams) -> Dict:
+def get_stream_pos(streams) -> dict:
     return {x.index: i for i, x in enumerate(streams, start=1)}
 
 
-def build_audio(audio_tracks: List[AudioTrack], audio_streams):
+def build_audio(audio_tracks: list[AudioTrack], audio_streams):
     command_list = []
     copies = []
     track_ids = set()
@@ -47,7 +46,7 @@ def build_audio(audio_tracks: List[AudioTrack], audio_streams):
     return f" --audio-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
 
 
-def build_subtitle(subtitle_tracks: List[SubtitleTrack], subtitle_streams, video_height: int) -> str:
+def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video_height: int) -> str:
     command_list = []
     copies = []
     stream_ids = get_stream_pos(subtitle_streams)

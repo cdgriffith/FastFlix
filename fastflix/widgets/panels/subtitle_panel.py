@@ -92,6 +92,8 @@ class Subtitle(QtWidgets.QTabWidget):
                 except ValueError:
                     pass
                 break
+        if self.subtitle.disposition.get("forced"):
+            self.widgets.disposition.setCurrentIndex(dispositions.index("forced"))
 
         self.setFixedHeight(60)
         self.widgets.title.setToolTip(self.subtitle.to_yaml())

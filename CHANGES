@@ -5,7 +5,9 @@
 * Adding new GUI backend PySide6
 * Adding default source directory (thanks to Battlestar1965)
 * Adding hidden tabs for things that are not supported for a certain codec
-* Fixing settings panel would always want a restart if any paths to executables were filled on windows
+* Adding #345 Change the default priority of spawned tools (thanks to Maximo Piva)
+* Adding #371 Add "Stay on Top" (thanks to Hexenhammer)
+* Fixing settings panel would always want a restart if any paths to executables were filled on Windows
 * Removing support and builds for Windows 7 and 8
 * Removing support and builds for MacOS 10
 

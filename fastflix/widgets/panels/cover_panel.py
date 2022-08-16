@@ -215,7 +215,7 @@ class CoverPanel(QtWidgets.QWidget):
             + len(self.app.fastflix.current_video.video_settings.audio_tracks)
             + len(self.app.fastflix.current_video.video_settings.subtitle_tracks)
         )
-        attachments: List[AttachmentTrack] = []
+        attachments: list[AttachmentTrack] = []
 
         for filename in ("cover", "cover_land", "small_cover", "small_cover_land"):
             attachment, index = self.get_attachment(filename)
@@ -389,7 +389,7 @@ class CoverPanel(QtWidgets.QWidget):
 #             + len(self.app.fastflix.current_video.video_settings.audio_tracks)
 #             + len(self.app.fastflix.current_video.video_settings.subtitle_tracks)
 #         )
-#         attachments: List[AttachmentTrack] = []
+#         attachments: list[AttachmentTrack] = []
 #
 #         for filename in ("cover", "cover_land", "small_cover", "small_cover_land"):
 #             attachment = self.get_attachment(filename)

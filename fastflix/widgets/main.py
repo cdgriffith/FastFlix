@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import copy
 import datetime
 import logging
 import math
@@ -13,7 +12,6 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Tuple, Union, Optional
 from collections import namedtuple
-import inspect
 
 import pkg_resources
 import reusables

@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
-from pathlib import Path
 
-from box import Box
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel

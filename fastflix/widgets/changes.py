@@ -11,7 +11,6 @@ __all__ = ["Changes"]
 
 logger = logging.getLogger("fastflix")
 
-markdown = mistune.Markdown()
 
 issues = re.compile(r"\s(#\d+)\s")
 
@@ -37,7 +36,7 @@ class Changes(QtWidgets.QScrollArea):
             " <a href='https://github.com/cdgriffith/FastFlix/issues/\\1' style='color: black' >\\1</a> ", content
         ).replace("issues/#", "issues/")
 
-        self.label = QtWidgets.QLabel(markdown(linked_content))
+        self.label = QtWidgets.QLabel(mistune.html(linked_content))
         self.label.setOpenExternalLinks(True)
 
         # setting alignment to the text

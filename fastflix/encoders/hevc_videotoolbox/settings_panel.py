@@ -2,13 +2,11 @@
 import logging
 
 from box import Box
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
-from fastflix.language import t
 from fastflix.models.encode import HEVCVideoToolboxSettings
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 

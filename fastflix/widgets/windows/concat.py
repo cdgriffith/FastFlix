@@ -14,6 +14,9 @@ from fastflix.widgets.progress_bar import ProgressBar, Task
 logger = logging.getLogger("fastflix")
 
 
+BAD_FILES = ("Thumbs.db",)
+
+
 class MyModel(QtGui.QStandardItemModel):
     def dropMimeData(self, data, action, row, col, parent):
         """
@@ -193,6 +196,8 @@ class ConcatWindow(QtWidgets.QWidget):
         file_list = sorted(Path(folder_name).glob("*"), key=lambda x: x.name)
         for file in file_list:
             if file.is_file():
+                if file.name in BAD_FILES:
+                    continue
                 tasks.append(
                     Task(
                         f"Evaluating {file.name}",
@@ -202,7 +207,7 @@ class ConcatWindow(QtWidgets.QWidget):
                 )
             if len(tasks) > 100:
                 error_message(t("There are more than 100 files, skipping pre-processing."))
-                return self.save((x.name for x in file_list))
+                return self.save((x.name for x in file_list if x.name not in BAD_FILES))
 
         ProgressBar(self.app, tasks, can_cancel=True, auto_run=True)
 
@@ -236,10 +241,10 @@ class ConcatWindow(QtWidgets.QWidget):
         self.concat_area.table.buttons = []
         self.main.widgets.end_time.setText("0")
         self.main.widgets.start_time.setText("0")
-        self.main.app.fastflix.current_video.interlaced = False
-        self.main.widgets.deinterlace.setChecked(False)
         self.hide()
         self.main.page_update(build_thumbnail=True)
+        self.main.app.fastflix.current_video.interlaced = False
+        self.main.widgets.deinterlace.setChecked(False)
         # TODO present if images
         # error_message(
         #     "Make sure to manually supply the frame rate in the Advanced tab "

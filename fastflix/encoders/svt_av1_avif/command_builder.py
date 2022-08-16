@@ -17,7 +17,7 @@ logger = logging.getLogger("fastflix")
 @reusables.log_exception("fastflix", show_traceback=True)
 def build(fastflix: FastFlix):
     settings: SVTAVIFSettings = fastflix.current_video.video_settings.video_encoder_settings
-    beginning, ending = generate_all(fastflix, "libsvtav1", audio=False, subs=False)
+    beginning, ending = generate_all(fastflix, "libsvtav1", audio=False)
 
     beginning += f"-strict experimental " f"-preset {settings.speed} " f"{generate_color_details(fastflix)} "
 
@@ -74,10 +74,10 @@ def build(fastflix: FastFlix):
     pass_type = "bitrate" if settings.bitrate else "QP"
 
     if settings.bitrate:
-        command_1 = f"{beginning} -b:v {settings.bitrate} {settings.extra} {ending}"
+        command_1 = f"{beginning} -b:v {settings.bitrate} {settings.extra} {ending} -f avif "
 
     elif settings.qp is not None:
-        command_1 = f"{beginning} -{settings.qp_mode} {settings.qp} {settings.extra} {ending}"
+        command_1 = f"{beginning} -{settings.qp_mode} {settings.qp} {settings.extra} {ending} -f avif "
     else:
         return []
     return [Command(command=command_1, name=f"{pass_type}", exe="ffmpeg")]

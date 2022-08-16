@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
-from typing import List
 
 from fastflix.models.encode import AttachmentTrack
 from fastflix.shared import clean_file_string
@@ -15,7 +14,7 @@ def image_type(file: Path):
     return mime_type, ext_type
 
 
-def build_attachments(attachments: List[AttachmentTrack]) -> str:
+def build_attachments(attachments: list[AttachmentTrack]) -> str:
 
     commands = []
     for attachment in attachments:

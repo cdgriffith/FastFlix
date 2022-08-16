@@ -40,6 +40,7 @@ class Settings(QtWidgets.QWidget):
         self.config_file = self.app.fastflix.config.config_path
         self.setWindowTitle(t("Settings"))
         self.setMinimumSize(600, 200)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         layout = QtWidgets.QGridLayout()
 
         ffmpeg_label = QtWidgets.QLabel("FFmpeg")
@@ -217,6 +218,8 @@ class Settings(QtWidgets.QWidget):
         )
         layout.addWidget(self.default_source_dir, 18, 0, 1, 2)
 
+        # Layouts
+
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
         layout.addWidget(self.disable_version_check, 8, 0, 1, 2)
         layout.addWidget(QtWidgets.QLabel(t("GUI Logging Level")), 9, 0)
@@ -231,7 +234,7 @@ class Settings(QtWidgets.QWidget):
         button_layout.addWidget(cancel)
         button_layout.addWidget(save)
 
-        layout.addLayout(button_layout, 20, 0, 1, 3)
+        layout.addLayout(button_layout, 24, 0, 1, 3)
 
         self.setLayout(layout)
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import uuid
 from pathlib import Path
-from typing import List, Tuple, Union, Optional, Dict
+from typing import Tuple, Union, Optional
 
 import reusables
 from pydantic import BaseModel, Field
@@ -107,7 +107,7 @@ def generate_ending(
 def generate_filters(
     selected_track,
     source=None,
-    crop: Optional[Dict] = None,
+    crop: Optional[dict] = None,
     scale=None,
     scale_filter="lanczos",
     remove_hdr=False,

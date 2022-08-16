@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from typing import List, Optional
+from typing import Optional
 import logging
 
 from box import Box
@@ -366,7 +366,7 @@ class AudioList(FlixList):
             track.widgets.enable_check.setChecked(False)
 
     def new_source(self, codecs):
-        self.tracks: List[Audio] = []
+        self.tracks: list[Audio] = []
         self._first_selected = False
         disable_dup = "nvencc" in self.main.convert_to.lower()
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
@@ -418,7 +418,7 @@ class AudioList(FlixList):
             track.update_codecs(allowed_formats or set())
 
     def apply_profile_settings(
-        self, profile: Profile, original_tracks: List[Box], audio_formats, og_only: bool = False
+        self, profile: Profile, original_tracks: list[Box], audio_formats, og_only: bool = False
     ):
         if profile.audio_filters:
             self.disable_all()
@@ -565,6 +565,8 @@ class AudioList(FlixList):
                 )
                 skip_tracks.append(idx)
 
+        # TODO add missing og audio tracks
+
         if not og_only:
             additional_tracks = []
             for i, track in enumerate(tracks, start=len(self.tracks) + 1):
@@ -610,7 +612,7 @@ class AudioList(FlixList):
                 )
         self.app.fastflix.current_video.video_settings.audio_tracks = tracks
 
-    def reload(self, original_tracks: List[AudioTrack], audio_formats):
+    def reload(self, original_tracks: list[AudioTrack], audio_formats):
         disable_dups = "nvencc" in self.main.convert_to.lower() or "vcenc" in self.main.convert_to.lower()
 
         repopulated_tracks = set()

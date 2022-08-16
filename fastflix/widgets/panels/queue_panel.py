@@ -205,13 +205,18 @@ class EncodingQueue(FlixList):
         top_layout.addWidget(QtWidgets.QLabel(t("Queue")))
         top_layout.addStretch(1)
 
-        self.save_queue_button = QtWidgets.QPushButton(t("Save Queue to File"))
+        self.save_queue_button = QtWidgets.QPushButton(t("Save Queue"))
         self.save_queue_button.clicked.connect(self.manually_save_queue)
-        self.save_queue_button.setFixedWidth(150)
+        self.save_queue_button.setFixedWidth(110)
 
-        self.load_queue_button = QtWidgets.QPushButton(t("Load Queue from File"))
+        self.load_queue_button = QtWidgets.QPushButton(t("Load Queue"))
         self.load_queue_button.clicked.connect(self.manually_load_queue)
-        self.load_queue_button.setFixedWidth(160)
+        self.load_queue_button.setFixedWidth(110)
+
+        self.priority_widget = QtWidgets.QComboBox()
+        self.priority_widget.addItems(["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"])
+        self.priority_widget.setCurrentIndex(3)
+        self.priority_widget.currentIndexChanged.connect(self.set_priority)
 
         self.clear_queue = QtWidgets.QPushButton(
             QtGui.QIcon(get_icon("onyx-clear-queue", self.app.fastflix.config.theme)), t("Clear Completed")
@@ -260,8 +265,14 @@ class EncodingQueue(FlixList):
         self.after_done_combo.currentIndexChanged.connect(lambda: self.set_after_done())
         self.after_done_combo.setMaximumWidth(150)
 
+        priority_label = QtWidgets.QLabel(t("Priority"))
+        priority_label.setFixedWidth(55)
+
         top_layout.addWidget(self.load_queue_button, QtCore.Qt.AlignRight)
         top_layout.addWidget(self.save_queue_button, QtCore.Qt.AlignRight)
+        top_layout.addStretch(1)
+        top_layout.addWidget(priority_label, QtCore.Qt.AlignRight)
+        top_layout.addWidget(self.priority_widget, QtCore.Qt.AlignRight)
         top_layout.addStretch(1)
         top_layout.addWidget(QtWidgets.QLabel(t("After Conversion")))
         top_layout.addWidget(self.after_done_combo, QtCore.Qt.AlignRight)
@@ -508,3 +519,6 @@ class EncodingQueue(FlixList):
         BackgroundRunner(self.app.fastflix.log_queue).start_exec(
             self.after_done_action, str(after_done_path), shell=True
         )
+
+    def set_priority(self):
+        self.app.fastflix.worker_queue.put(["priority", self.priority_widget.currentText()])

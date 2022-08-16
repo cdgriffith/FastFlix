@@ -117,9 +117,9 @@ class VideoSettings(BaseModel):
         H264VideoToolboxSettings,
         SVTAVIFSettings,
     ] = None
-    audio_tracks: List[AudioTrack] = Field(default_factory=list)
-    subtitle_tracks: List[SubtitleTrack] = Field(default_factory=list)
-    attachment_tracks: List[AttachmentTrack] = Field(default_factory=list)
+    audio_tracks: list[AudioTrack] = Field(default_factory=list)
+    subtitle_tracks: list[SubtitleTrack] = Field(default_factory=list)
+    attachment_tracks: list[AttachmentTrack] = Field(default_factory=list)
     conversion_commands: List = Field(default_factory=list)
 
 
@@ -156,8 +156,8 @@ class Video(BaseModel):
     interlaced: Union[str, bool] = False
     concat: bool = False
 
-    hdr10_streams: List[Box] = Field(default_factory=list)
-    hdr10_plus: List[int] = Field(default_factory=list)
+    hdr10_streams: list[Box] = Field(default_factory=list)
+    hdr10_plus: list[int] = Field(default_factory=list)
 
     video_settings: VideoSettings = Field(default_factory=VideoSettings)
     status: Status = Field(default_factory=Status)

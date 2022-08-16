@@ -5,7 +5,7 @@ import logging
 import re
 from itertools import chain
 from pathlib import Path
-from typing import List, Union
+from typing import Union
 
 from box import Box, BoxList
 from PySide6 import QtCore, QtGui, QtWidgets
