@@ -1739,9 +1739,13 @@ class Main(QtWidgets.QWidget):
         if not self.output_video:
             error_message(t("Please specify output video"))
             return False
-        if self.input_video.resolve().absolute() == Path(self.output_video).resolve().absolute():
-            error_message(t("Output video path is same as source!"))
-            return False
+        try:
+            if self.input_video.resolve().absolute() == Path(self.output_video).resolve().absolute():
+                error_message(t("Output video path is same as source!"))
+                return False
+        except OSError:
+            # file system may not support resolving
+            pass
 
         if not self.output_video.lower().endswith(self.current_encoder.video_extension):
             sm = QtWidgets.QMessageBox()

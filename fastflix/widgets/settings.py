@@ -167,7 +167,10 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.qsvenc_path, 14, 1)
         layout.addWidget(qsvencc_path_button, 14, 2)
 
-        hdr10_parser_label = QtWidgets.QLabel(t("HDR10+ Parser"))
+        hdr10_parser_label = QtWidgets.QLabel(
+            link("https://github.com/quietvoid/hdr10plus_tool", "HDR10+ Parser Tool", app.fastflix.config.theme)
+        )
+        hdr10_parser_label.setOpenExternalLinks(True)
         self.hdr10_parser_path = QtWidgets.QLineEdit()
         if self.app.fastflix.config.hdr10plus_parser:
             self.hdr10_parser_path.setText(str(self.app.fastflix.config.hdr10plus_parser))
