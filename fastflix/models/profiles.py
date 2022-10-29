@@ -19,9 +19,11 @@ from fastflix.models.encode import (
     x264Settings,
     x265Settings,
     QSVEncCSettings,
+    QSVEncCAV1Settings,
     QSVEncCH264Settings,
     NVEncCSettings,
     NVEncCAVCSettings,
+    NVEncCAV1Settings,
     VCEEncCAVCSettings,
     VCEEncCSettings,
     HEVCVideoToolboxSettings,
@@ -155,9 +157,11 @@ class Profile(BaseModel):
     copy_settings: Optional[CopySettings] = None
     ffmpeg_hevc_nvenc: Optional[FFmpegNVENCSettings] = None
     qsvencc_hevc: Optional[QSVEncCSettings] = None
+    qsvencc_av1: Optional[QSVEncCAV1Settings] = None
     qsvencc_avc: Optional[QSVEncCH264Settings] = None
     nvencc_hevc: Optional[NVEncCSettings] = None
     nvencc_avc: Optional[NVEncCAVCSettings] = None
+    nvencc_av1: Optional[NVEncCAV1Settings] = None
     vceencc_hevc: Optional[VCEEncCSettings] = None
     vceencc_avc: Optional[VCEEncCAVCSettings] = None
     hevc_videotoolbox: Optional[HEVCVideoToolboxSettings] = None

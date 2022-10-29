@@ -3,6 +3,7 @@
 ## Version 5.0.0
 
 * Adding new GUI backend PySide6
+* Adding AV1 support for rigaya's Nvidia and Intel hardware encoders!
 * Adding default source directory (thanks to Battlestar1965)
 * Adding hidden tabs for things that are not supported for a certain codec
 * Adding #345 Change the default priority of spawned tools (thanks to Maximo Piva)

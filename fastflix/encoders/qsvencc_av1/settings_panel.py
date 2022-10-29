@@ -6,15 +6,22 @@ from PySide6 import QtCore, QtWidgets, QtGui
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
-from fastflix.models.encode import VCEEncCSettings
+from fastflix.models.encode import QSVEncCAV1Settings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
-from fastflix.resources import get_icon, loading_movie
-
+from fastflix.resources import loading_movie, get_icon
 
 logger = logging.getLogger("fastflix")
 
-presets = ["balanced", "fast", "slow"]
+presets = [
+    "best",
+    "higher",
+    "high",
+    "balanced",
+    "fast",
+    "faster",
+    "fastest",
+]
 
 recommended_bitrates = [
     "200k     (320x240p @ 30fps)",
@@ -58,8 +65,8 @@ def get_breaker():
     return breaker_line
 
 
-class VCEENCC(SettingPanel):
-    profile_name = "vceencc_hevc"
+class QSVEnc(SettingPanel):
+    profile_name = "qsvencc_hevc"
     hdr10plus_signal = QtCore.Signal(str)
     hdr10plus_ffmpeg_signal = QtCore.Signal(str)
 
@@ -76,11 +83,11 @@ class VCEENCC(SettingPanel):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
-        grid.addLayout(self._add_custom(title="Custom VCEEncC options", disable_both_passes=True), 10, 0, 1, 6)
+        grid.addLayout(self._add_custom(title="Custom QSVEncC options", disable_both_passes=True), 10, 0, 1, 6)
+
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        grid.addLayout(self.init_tier(), 1, 0, 1, 2)
-        grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
-        grid.addLayout(self.init_pre(), 3, 0, 1, 2)
+        # grid.addLayout(self.init_profile(), 1, 0, 1, 2)
+        grid.addLayout(self.init_lookahead(), 1, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -96,15 +103,20 @@ class VCEENCC(SettingPanel):
         qp_line.addLayout(self.init_min_q())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_max_q())
-        qp_line.addStretch(1)
-        qp_line.addLayout(self.init_ref())
-        qp_line.addStretch(1)
-        qp_line.addLayout(self.init_level())
-        qp_line.addStretch(1)
-        qp_line.addLayout(self.init_decoder())
-        qp_line.addStretch(1)
-        qp_line.addLayout(self.init_metrics())
-        grid.addLayout(qp_line, 6, 0, 1, 6)
+
+        grid.addLayout(qp_line, 5, 2, 1, 4)
+
+        advanced = QtWidgets.QHBoxLayout()
+        advanced.addLayout(self.init_10_bit())
+        advanced.addStretch(1)
+        advanced.addLayout(self.init_ref())
+        advanced.addStretch(1)
+        advanced.addLayout(self.init_b_frames())
+        advanced.addStretch(1)
+        advanced.addLayout(self.init_level())
+        advanced.addStretch(1)
+        advanced.addLayout(self.init_metrics())
+        grid.addLayout(advanced, 6, 2, 1, 4)
 
         grid.addLayout(self.init_dhdr10_info(), 7, 2, 1, 4)
 
@@ -115,8 +127,8 @@ class VCEENCC(SettingPanel):
 
         guide_label = QtWidgets.QLabel(
             link(
-                "https://github.com/rigaya/VCEEnc/blob/master/VCEEncC_Options.en.md",
-                t("VCEEncC Options"),
+                "https://github.com/rigaya/QSVEnc/blob/master/QSVEncC_Options.en.md",
+                t("QSVEncC Options"),
                 app.fastflix.config.theme,
             )
         )
@@ -128,7 +140,7 @@ class VCEENCC(SettingPanel):
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, 1, 4)
         grid.addWidget(warning_label, 11, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
-        grid.addWidget(QtWidgets.QLabel(t("VCEEncC Encoder support is still experimental!")), 11, 5, 1, 1)
+        grid.addWidget(QtWidgets.QLabel(t("QSVEncC AV1 Encoder is untested!")), 11, 5, 1, 1)
 
         self.setLayout(grid)
         self.hide()
@@ -145,33 +157,32 @@ class VCEENCC(SettingPanel):
             opt="preset",
         )
 
-    def init_pre(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addLayout(
-            self._add_check_box(
-                label="VBAQ", widget_name="vbaq", opt="vbaq", tooltip="Variance Based Adaptive Quantization"
-            )
-        )
-        layout.addLayout(self._add_check_box(label="Pre Encode", widget_name="pre_encode", opt="pre_encode"))
-        layout.addLayout(self._add_check_box(label="Pre Analysis", widget_name="pre_analysis", opt="pre_analysis"))
-        return layout
-
-    def init_tier(self):
+    def init_tune(self):
         return self._add_combo_box(
-            label="Tier",
-            tooltip="Set the encoding tier",
-            widget_name="tier",
-            options=["main", "high"],
-            opt="tier",
+            label="Tune",
+            widget_name="tune",
+            tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, ll - Low Latency, ull - Ultra Low Latency",
+            options=["hq", "ll", "ull", "lossless"],
+            opt="tune",
         )
 
-    def init_mv_precision(self):
+    # def init_profile(self):
+    #     # TODO auto
+    #     return self._add_combo_box(
+    #         label="Profile_encoderopt",
+    #         widget_name="profile",
+    #         tooltip="Enforce an encode profile",
+    #         options=["main", "main10"],
+    #         opt="profile",
+    #     )
+
+    def init_lookahead(self):
         return self._add_combo_box(
-            label="Motion vector accuracy",
-            tooltip="Q-pel is highest precision",
-            widget_name="mv_precision",
-            options=["q-pel", "half-pel", "full-pel"],
-            opt="mv_precision",
+            label="Lookahead",
+            tooltip="",
+            widget_name="lookahead",
+            opt="lookahead",
+            options=["off"] + [str(x) for x in range(10, 100)],
         )
 
     def init_level(self):
@@ -208,7 +219,13 @@ class VCEENCC(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Min Q")))
         layout.addWidget(
-            self._add_combo_box(widget_name="min_q", options=["I"] + self._qp_range(), min_width=45, opt="min_q")
+            self._add_combo_box(widget_name="min_q_i", options=["I"] + self._qp_range(), min_width=45, opt="min_q_i")
+        )
+        layout.addWidget(
+            self._add_combo_box(widget_name="min_q_p", options=["P"] + self._qp_range(), min_width=45, opt="min_q_p")
+        )
+        layout.addWidget(
+            self._add_combo_box(widget_name="min_q_b", options=["B"] + self._qp_range(), min_width=45, opt="min_q_b")
         )
         return layout
 
@@ -216,27 +233,43 @@ class VCEENCC(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(QtWidgets.QLabel(t("Max Q")))
         layout.addWidget(
-            self._add_combo_box(widget_name="max_q", options=["I"] + self._qp_range(), min_width=45, opt="max_q")
+            self._add_combo_box(widget_name="max_q_i", options=["I"] + self._qp_range(), min_width=45, opt="max_q_i")
+        )
+        layout.addWidget(
+            self._add_combo_box(widget_name="max_q_p", options=["P"] + self._qp_range(), min_width=45, opt="max_q_p")
+        )
+        layout.addWidget(
+            self._add_combo_box(widget_name="max_q_b", options=["B"] + self._qp_range(), min_width=45, opt="max_q_b")
         )
         return layout
+
+    def init_b_frames(self):
+        return self._add_combo_box(
+            widget_name="b_frames",
+            label="B Frames",
+            options=[t("Auto"), "0", "1", "2", "3", "4", "5", "6"],
+            opt="b_frames",
+            min_width=60,
+        )
 
     def init_ref(self):
         return self._add_combo_box(
             widget_name="ref",
             label="Ref Frames",
-            options=[t("Auto")] + [str(x) for x in range(17)],
+            options=[t("Auto"), "0", "1", "2", "3", "4", "5", "6"],
             opt="ref",
             min_width=60,
         )
 
-    def init_decoder(self):
-        return self._add_combo_box(
-            widget_name="decoder",
-            label="Decoder",
-            options=["Hardware", "Software"],
-            opt="decoder",
-            tooltip="Hardware: use libavformat + hardware decoder for input\nSoftware: use avcodec + software decoder",
-            min_width=80,
+    def init_10_bit(self):
+        return self._add_check_box(label="10-bit", widget_name="force_ten_bit", opt="force_ten_bit")
+
+    def init_metrics(self):
+        return self._add_check_box(
+            widget_name="metrics",
+            opt="metrics",
+            label="Metrics",
+            tooltip="Calculate PSNR and SSIM and show in the encoder output",
         )
 
     def init_dhdr10_info(self):
@@ -260,24 +293,10 @@ class VCEENCC(SettingPanel):
         layout.addWidget(self.extract_button)
         layout.addWidget(self.extract_label)
 
-        warning_label = QtWidgets.QLabel()
-        warning_label.setPixmap(QtGui.QIcon(get_icon("onyx-warning", self.app.fastflix.config.theme)).pixmap(22))
-        layout.addWidget(warning_label)
-        layout.addWidget(QtWidgets.QLabel("7.12+"))
-
         return layout
-
-    def init_metrics(self):
-        return self._add_check_box(
-            widget_name="metrics",
-            opt="metrics",
-            label="Metrics",
-            tooltip="Calculate PSNR and SSIM and show in the encoder output",
-        )
 
     def init_modes(self):
         layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="cqp")
-        self.widgets.cqp.setFixedWidth(250)
         return layout
 
     def mode_update(self):
@@ -290,26 +309,33 @@ class VCEENCC(SettingPanel):
             return
         self.updating_settings = True
 
+        if self.app.fastflix.current_video.current_video_stream.bit_depth > 8 and not self.main.remove_hdr:
+            self.widgets.force_ten_bit.setChecked(True)
+            self.widgets.force_ten_bit.setDisabled(True)
+        else:
+            self.widgets.force_ten_bit.setDisabled(False)
+
         if update:
             self.main.page_update()
         self.updating_settings = False
 
     def update_video_encoder_settings(self):
-        settings = VCEEncCSettings(
+        settings = QSVEncCAV1Settings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
-            tier=self.widgets.tier.currentText(),
-            mv_precision=self.widgets.mv_precision.currentText(),
-            max_q=self.widgets.max_q.currentText() if self.widgets.max_q.currentIndex() != 0 else None,
-            min_q=self.widgets.min_q.currentText() if self.widgets.min_q.currentIndex() != 0 else None,
+            force_ten_bit=self.widgets.force_ten_bit.isChecked(),
+            lookahead=self.widgets.lookahead.currentText() if self.widgets.lookahead.currentIndex() > 0 else None,
+            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),  # .replace("\\", "/"),
+            max_q_i=self.widgets.max_q_i.currentText() if self.widgets.max_q_i.currentIndex() != 0 else None,
+            max_q_p=self.widgets.max_q_p.currentText() if self.widgets.max_q_p.currentIndex() != 0 else None,
+            max_q_b=self.widgets.max_q_b.currentText() if self.widgets.max_q_b.currentIndex() != 0 else None,
+            min_q_i=self.widgets.min_q_i.currentText() if self.widgets.min_q_i.currentIndex() != 0 else None,
+            min_q_p=self.widgets.min_q_p.currentText() if self.widgets.min_q_p.currentIndex() != 0 else None,
+            min_q_b=self.widgets.min_q_b.currentText() if self.widgets.min_q_b.currentIndex() != 0 else None,
             extra=self.ffmpeg_extras,
             metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
+            b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
-            pre_encode=self.widgets.pre_encode.isChecked(),
-            pre_analysis=self.widgets.pre_analysis.isChecked(),
-            vbaq=self.widgets.vbaq.isChecked(),
-            decoder=self.widgets.decoder.currentText(),
-            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),
         )
 
         encode_type, q_value = self.get_mode_settings()
@@ -319,8 +345,10 @@ class VCEENCC(SettingPanel):
 
     def set_mode(self, x):
         self.mode = x.text()
-        self.widgets.min_q.setEnabled(self.mode.lower() == "bitrate")
-        self.widgets.max_q.setEnabled(self.mode.lower() == "bitrate")
+        for group in ("init", "max", "min"):
+            for frame_type in ("i", "p", "b"):
+                self.widgets[f"{group}_q_{frame_type}"].setEnabled(self.mode.lower() == "bitrate")
+        self.widgets.vbr_target.setEnabled(self.mode.lower() == "bitrate")
         self.main.build_commands()
 
     def new_source(self):
@@ -331,3 +359,8 @@ class VCEENCC(SettingPanel):
             self.extract_button.show()
         else:
             self.extract_button.hide()
+        if self.app.fastflix.current_video.current_video_stream.bit_depth > 8 and not self.main.remove_hdr:
+            self.widgets.force_ten_bit.setChecked(True)
+            self.widgets.force_ten_bit.setDisabled(True)
+        else:
+            self.widgets.force_ten_bit.setDisabled(False)
