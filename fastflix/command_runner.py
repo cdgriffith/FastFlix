@@ -9,28 +9,39 @@ from subprocess import PIPE
 from threading import Thread
 from typing import Literal
 
-from psutil import (
-    Popen,
-    HIGH_PRIORITY_CLASS,
-    REALTIME_PRIORITY_CLASS,
-    IDLE_PRIORITY_CLASS,
-    NORMAL_PRIORITY_CLASS,
-    ABOVE_NORMAL_PRIORITY_CLASS,
-    BELOW_NORMAL_PRIORITY_CLASS,
-)
+from psutil import Popen
+
+try:
+    from psutil import (
+        HIGH_PRIORITY_CLASS,
+        REALTIME_PRIORITY_CLASS,
+        IDLE_PRIORITY_CLASS,
+        NORMAL_PRIORITY_CLASS,
+        ABOVE_NORMAL_PRIORITY_CLASS,
+        BELOW_NORMAL_PRIORITY_CLASS,
+    )
+except ImportError:
+    priority_levels = {
+        "Realtime": 20,
+        "High": 10,
+        "Above Normal": 5,
+        "Normal": 0,
+        "Below Normal": -10,
+        "Idle": -20,
+    }
+else:
+    priority_levels = {
+        "Realtime": REALTIME_PRIORITY_CLASS,
+        "High": HIGH_PRIORITY_CLASS,
+        "Above Normal": ABOVE_NORMAL_PRIORITY_CLASS,
+        "Normal": NORMAL_PRIORITY_CLASS,
+        "Below Normal": BELOW_NORMAL_PRIORITY_CLASS,
+        "Idle": IDLE_PRIORITY_CLASS,
+    }
 
 logger = logging.getLogger("fastflix-core")
 
 __all__ = ["BackgroundRunner"]
-
-priority_levels = {
-    "Realtime": REALTIME_PRIORITY_CLASS,
-    "High": HIGH_PRIORITY_CLASS,
-    "Above Normal": ABOVE_NORMAL_PRIORITY_CLASS,
-    "Normal": NORMAL_PRIORITY_CLASS,
-    "Below Normal": BELOW_NORMAL_PRIORITY_CLASS,
-    "Idle": IDLE_PRIORITY_CLASS,
-}
 
 
 class BackgroundRunner:
