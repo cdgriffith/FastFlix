@@ -122,7 +122,7 @@ def build(fastflix: FastFlix):
         (f'--video-metadata title="{video.video_settings.video_title}"' if video.video_settings.video_title else ""),
         ("--chapter-copy" if video.video_settings.copy_chapters else ""),
         "-c",
-        "hevc",
+        "av1",
         (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
         vbv,
         (f"--qp-min {min_q}" if min_q and settings.bitrate else ""),
