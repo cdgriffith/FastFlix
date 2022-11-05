@@ -418,7 +418,7 @@ class Settings(QtWidgets.QWidget):
         if not dirname.exists():
             dirname = Path()
         dialog = QtWidgets.QFileDialog()
-        dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
+        dialog.setFileMode(QtWidgets.QFileDialog.Directory)
         dialog.setOption(QtWidgets.QFileDialog.ShowDirsOnly)
         work_path = dialog.getExistingDirectory(dir=str(dirname), caption="Work directory")
         if not work_path:

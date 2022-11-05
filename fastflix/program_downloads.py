@@ -75,24 +75,32 @@ def latest_ffmpeg(signal, stop_signal, **_):
         message(t("Download Cancelled"))
         return
 
-    gpl_ffmpeg = [asset for asset in data["assets"] if "master-latest-win64-gpl.zip" in asset["name"]]
+    gpl_ffmpeg = None
+    for asset in data["assets"]:
+        if "master-latest-win64-gpl.zip" in asset["name"]:
+            gpl_ffmpeg = asset
+            break
+        elif asset["name"].startswith("ffmpeg-N-") and asset["name"].endswith("win64-gpl.zip"):
+            gpl_ffmpeg = asset
+            break
+
     if not gpl_ffmpeg:
         shutil.rmtree(extract_folder, ignore_errors=True)
         message(
-            t("Could not find any matching FFmpeg containing 'win64-gpl-5' with")
+            t("Could not find any matching FFmpeg expected patterns, please check")
             + f" {t('latest release from')} <a href='https://github.com/BtbN/FFmpeg-Builds/releases/'>"
-            "https://github.com/BtbN/FFmpeg-Builds/releases/</a> "
+            "https://github.com/BtbN/FFmpeg-Builds/releases/</a> and reach out to FastFlix team about this issue if they exist."
         )
-        raise
+        raise Exception()
 
-    req = requests.get(gpl_ffmpeg[0]["browser_download_url"], stream=True)
+    req = requests.get(gpl_ffmpeg["browser_download_url"], stream=True)
 
     filename = ffmpeg_folder / "ffmpeg-full.zip"
     with open(filename, "wb") as f:
         for i, block in enumerate(req.iter_content(chunk_size=1024)):
             if i % 1000 == 0.0:
                 # logger.debug(f"Downloaded {i // 1000}MB")
-                signal.emit(int(((i * 1024) / gpl_ffmpeg[0]["size"]) * 90))
+                signal.emit(int(((i * 1024) / gpl_ffmpeg["size"]) * 90))
             f.write(block)
             if stop:
                 f.close()
