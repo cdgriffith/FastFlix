@@ -23,7 +23,7 @@ jobs:
         path: ${{ env.pythonLocation }}
         key: ${{ env.pythonLocation }}-black
 
-    - run: pip install black==22.6.0
+    - run: pip install black==22.10.0
     - run: python -m black --check .
 
   test:

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from copy import deepcopy
 
 from iso639 import Lang
@@ -8,8 +9,8 @@ from fastflix.models.profiles import AudioMatch, MatchType, MatchItem
 
 
 def apply_audio_filters(
-        audio_filters: list[AudioMatch] | None,
-        original_tracks: list[Box],
+    audio_filters: list[AudioMatch] | None,
+    original_tracks: list[Box],
 ):
     """
     The goal of this function is to take a set of audio_filters and figure out which tracks
@@ -17,7 +18,6 @@ def apply_audio_filters(
     """
 
     original_tracks = deepcopy(original_tracks)
-
 
     tracks = []
     for audio_match in audio_filters:
@@ -79,4 +79,3 @@ def apply_audio_filters(
                     tracks.extend(subset_tracks)
 
     return sorted(tracks, key=lambda x: x[0].index)
-
