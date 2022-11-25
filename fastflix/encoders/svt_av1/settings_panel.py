@@ -76,10 +76,9 @@ class SVT_AV1(SettingPanel):
         grid.addLayout(self.init_pix_fmt(), 1, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 3, 0, 1, 2)
-        grid.addLayout(self.init_profile(), 4, 0, 1, 2)
         grid.addLayout(self.init_qp_or_crf(), 5, 0, 1, 2)
-        grid.addLayout(self.init_sc_detection(), 6, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 7, 0, 1, 2)
+        grid.addLayout(self.init_sc_detection(), 4, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 5, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         grid.addLayout(self.init_single_pass(), 6, 2, 1, 1)
         grid.addLayout(self.init_svtav1_params(), 5, 2, 1, 4)
@@ -124,11 +123,6 @@ class SVT_AV1(SettingPanel):
             widget_name="pix_fmt",
             options=pix_fmts,
             opt="pix_fmt",
-        )
-
-    def init_profile(self):
-        return self._add_combo_box(
-            label="Profile", options=["main", "high", "professional"], widget_name="profile", opt="profile"
         )
 
     def init_sc_detection(self):
@@ -196,7 +190,6 @@ class SVT_AV1(SettingPanel):
             tile_columns=self.widgets.tile_columns.currentText(),
             tile_rows=self.widgets.tile_rows.currentText(),
             single_pass=self.widgets.single_pass.isChecked(),
-            profile=self.widgets.profile.currentText(),
             scene_detection=bool(self.widgets.sc_detection.currentIndex()),
             qp_mode=self.widgets.qp_mode.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import re
 import secrets
 
 import reusables
@@ -26,7 +25,6 @@ def build(fastflix: FastFlix):
         [
             f"tile-columns={settings.tile_columns}",
             f"tile-rows={settings.tile_rows}",
-            f"profile={settings.profile}",
             f"scd={1 if settings.scene_detection else 0}",
         ]
     )

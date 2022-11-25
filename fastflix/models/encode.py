@@ -308,7 +308,6 @@ class SVTAV1Settings(EncoderSettings):
     name = "AV1 (SVT AV1)"
     tile_columns: str = "0"
     tile_rows: str = "0"
-    profile: str = "main"
     scene_detection: bool = False
     single_pass: bool = False
     speed: str = "7"  # Renamed preset in svtav1 encoder
