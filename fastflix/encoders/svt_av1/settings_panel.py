@@ -127,7 +127,7 @@ class SVT_AV1(SettingPanel):
         )
 
     def init_tier(self):
-        return self._add_combo_box(label="Tier", options=["main", "high"], widget_name="tier", opt="tier")
+        return self._add_combo_box(label="Profile", options=["main", "high", "professional"], widget_name="tier", opt="tier")
 
     def init_sc_detection(self):
         return self._add_combo_box(
