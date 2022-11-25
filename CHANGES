@@ -8,11 +8,13 @@
 * Adding hidden tabs for things that are not supported for a certain codec
 * Adding #345 Change the default priority of spawned tools (thanks to Maximo Piva)
 * Adding #371 Add "Stay on Top" (thanks to Hexenhammer)
+* Adding rotation detection for side data list, used in phone videos a lot
 * Fixing #370 Audio Match not working correctly after 4.10.0 (thanks to Hexenhammer)
 * Fixing settings panel would always want a restart if any paths to executables were filled on Windows
 * Fixing #374 name of hdr10plus tool name and adding link in settings (thanks to Richard Harmonson)
 * Fixing check for output same as source on file systems that don't support resolve
 * Fixing #378 Deprecated features used for SVT-AV1 (thanks to DesertCookie)
+* Fixing #380 Not all subtitles have "codec_name" (thanks to No Name)
 * Removing support and builds for Windows 7 and 8
 * Removing support and builds for MacOS 10
 

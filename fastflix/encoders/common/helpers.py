@@ -89,6 +89,7 @@ def generate_ending(
     remove_metadata=True,
     null_ending=False,
     output_fps: Union[str, None] = None,
+    disable_rotate_metadata=False,
     **_,
 ) -> str:
     ending = (
@@ -97,6 +98,11 @@ def generate_ending(
         f"{f'-r {output_fps}' if output_fps else ''} "
         f"{audio} {subtitles} {cover} "
     )
+
+    # In case they use a mp4 container, nix the rotation
+    if not disable_rotate_metadata and not remove_metadata:
+        ending = f"-metadata:s:v rotate=0 {ending}"
+
     if output_video and not null_ending:
         ending += f'"{clean_file_string(sanitize(output_video))}"'
     else:
@@ -236,6 +242,7 @@ def generate_all(
         subtitles=subtitles,
         cover=attachments,
         output_video=fastflix.current_video.video_settings.output_path,
+        disable_rotate_metadata=encoder == "copy",
         **fastflix.current_video.video_settings.dict(),
     )
 

@@ -47,6 +47,8 @@ def determine_rotation(streams, track: int = 0) -> Tuple[int, int]:
     rotation = 0
     if "rotate" in streams.video[0].get("tags", {}):
         rotation = abs(int(video_stream.tags.rotate))
+    elif "rotation" in streams.video[0].get("side_data_list", [{}])[0]:
+        rotation = abs(int(streams.video[0].side_data_list[0].rotation))
 
     if rotation in (90, 270):
         video_width = video_stream.height

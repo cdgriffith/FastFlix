@@ -58,7 +58,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.first = first
         self.last = False
         self.subtitle_lang = subtitle.get("tags", {}).get("language")
-        self.subtitle_type = subtitle_types.get(subtitle["codec_name"], "text")
+        self.subtitle_type = subtitle_types.get(subtitle.get("codec_name", "text"), "text")
         self.setFixedHeight(60)
 
         self.widgets = Box(

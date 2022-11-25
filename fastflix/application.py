@@ -27,7 +27,10 @@ def create_app():
             QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
         if hasattr(QtCore.Qt, "AA_UseHighDpiPixmaps"):
             QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+
+    sys.argv += ["-platform", "windows:darkmode=2"]
     main_app = FastFlixApp(sys.argv)
+    main_app.allWindows()
     main_app.setApplicationDisplayName("FastFlix")
     my_font = QtGui.QFont("helvetica", 9)
     main_app.setFont(my_font)
