@@ -16,6 +16,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
 from fastflix.shared import no_border, error_message, yes_no_message
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.audio_processing import apply_audio_filters
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 logger = logging.getLogger("fastflix")
@@ -426,7 +427,6 @@ class AudioList(FlixList):
             self.enable_all()
             return
 
-        disable_dups = "nvencc" in self.main.convert_to.lower() or "vcenc" in self.main.convert_to.lower()
         self.tracks = []
 
         def update_track(new_track, downmix=None, conversion=None, bitrate=None):
@@ -467,7 +467,7 @@ class AudioList(FlixList):
                 available_audio_encoders=self.available_audio_encoders,
                 enabled=enabled,
                 all_info=audio_track,
-                disable_dup=disable_dups,
+                disable_dup=og_only,
             )
 
             update_track(new_track=new_track, downmix=downmix, conversion=conversion, bitrate=bitrate)
@@ -478,69 +478,7 @@ class AudioList(FlixList):
         for i, track in enumerate(original_tracks, start=1):
             self.tracks.append(gen_track(self, track, outdex=i, og=True, enabled=False))
 
-        tracks = []
-        for audio_match in profile.audio_filters:
-            if audio_match.match_item == MatchItem.ALL:
-                track_select = original_tracks.copy()
-                if track_select:
-                    if audio_match.match_type == MatchType.FIRST:
-                        track_select = [track_select[0]]
-                    elif audio_match.match_type == MatchType.LAST:
-                        track_select = [track_select[-1]]
-                    for track in track_select:
-                        tracks.append((track, audio_match))
-
-            elif audio_match.match_item == MatchItem.TITLE:
-                subset_tracks = []
-                for track in original_tracks:
-                    if audio_match.match_input.lower() in track.tags.get("title", "").casefold():
-                        subset_tracks.append((track, audio_match))
-                if subset_tracks:
-                    if audio_match.match_type == MatchType.FIRST:
-                        tracks.append(subset_tracks[0])
-                    elif audio_match.match_type == MatchType.LAST:
-                        tracks.append(subset_tracks[-1])
-                    else:
-                        tracks.extend(subset_tracks)
-
-            elif audio_match.match_item == MatchItem.TRACK:
-                for track in original_tracks:
-                    if track.index == int(audio_match.match_input):
-                        tracks.append((track, audio_match))
-
-            elif audio_match.match_item == MatchItem.LANGUAGE:
-                subset_tracks = []
-                for track in original_tracks:
-                    try:
-                        if Lang(audio_match.match_input) == Lang(track.tags["language"]):
-                            subset_tracks.append((track, audio_match))
-                    except (InvalidLanguageValue, KeyError):
-                        pass
-                if subset_tracks:
-                    if audio_match.match_type == MatchType.FIRST:
-                        tracks.append(subset_tracks[0])
-                    elif audio_match.match_type == MatchType.LAST:
-                        tracks.append(subset_tracks[-1])
-                    else:
-                        tracks.extend(subset_tracks)
-
-            elif audio_match.match_item == MatchItem.CHANNELS:
-                subset_tracks = []
-                for track in original_tracks:
-                    if int(audio_match.match_input) == track.channels:
-                        subset_tracks.append((track, audio_match))
-                if subset_tracks:
-                    if audio_match.match_type == MatchType.FIRST:
-                        tracks.append(subset_tracks[0])
-                    elif audio_match.match_type == MatchType.LAST:
-                        tracks.append(subset_tracks[-1])
-                    else:
-                        tracks.extend(subset_tracks)
-
-        def find_track_num(idx):
-            for num, tt in enumerate(self.tracks):
-                if tt.index == idx:
-                    return num
+        tracks = apply_audio_filters(profile.audio_filters, original_tracks=original_tracks)
 
         if self.tracks and not tracks:
             enable = yes_no_message(
@@ -550,26 +488,25 @@ class AudioList(FlixList):
                 self.tracks[0].widgets.enable_check.setChecked(True)
             return super()._new_source(self.tracks)
 
+        # Apply first set of conversions to the original audio tracks
         current_id = -1
         skip_tracks = []
         for idx, track in enumerate(tracks):
+            # track[0] is the Box() track object, track[1] is the AudioMatch it matched against
             if track[0].index > current_id:
                 current_id = track[0].index
-                track_num = find_track_num(track[0].index)
-                self.tracks[track_num].widgets.enable_check.setChecked(True)
+                self.tracks[track[0].index - 1].widgets.enable_check.setChecked(True)
                 update_track(
-                    self.tracks[track_num],
+                    self.tracks[track[0].index - 1],
                     downmix=track[1].downmix,
                     conversion=track[1].conversion,
                     bitrate=track[1].bitrate,
                 )
                 skip_tracks.append(idx)
 
-        # TODO add missing og audio tracks
-
         if not og_only:
             additional_tracks = []
-            for i, track in enumerate(tracks, start=len(self.tracks) + 1):
+            for i, track in enumerate(tracks):
                 if i not in skip_tracks:
                     additional_tracks.append(
                         gen_track(
