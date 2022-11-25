@@ -9,6 +9,7 @@
 * Adding #345 Change the default priority of spawned tools (thanks to Maximo Piva)
 * Adding #371 Add "Stay on Top" (thanks to Hexenhammer)
 * Adding rotation detection for side data list, used in phone videos a lot
+* Adding #366 All x265 possible profiles (thanks to DesertCookie)
 * Fixing #370 Audio Match not working correctly after 4.10.0 (thanks to Hexenhammer)
 * Fixing settings panel would always want a restart if any paths to executables were filled on Windows
 * Fixing #374 name of hdr10plus tool name and adding link in settings (thanks to Richard Harmonson)

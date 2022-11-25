@@ -50,4 +50,4 @@ class DebugPanel(QtWidgets.QTabWidget):
         self.addTab(self.get_textbox(Box(self.app.fastflix.encoders)), "Encoders")
         self.addTab(self.get_textbox(BoxList(self.app.fastflix.audio_encoders)), "Audio Encoders")
         if self.app.fastflix.current_video:
-            self.addTab(self.get_textbox(BoxList(self.app.fastflix.current_video)), "Current Video")
+            self.addTab(self.get_textbox(Box(self.app.fastflix.current_video.dict())), "Current Video")
