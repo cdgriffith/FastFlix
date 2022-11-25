@@ -369,7 +369,11 @@ class AudioList(FlixList):
     def new_source(self, codecs):
         self.tracks: list[Audio] = []
         self._first_selected = False
-        disable_dup = "nvencc" in self.main.convert_to.lower()
+        disable_dup = (
+            "nvencc" in self.main.convert_to.lower()
+            or "vcenc" in self.main.convert_to.lower()
+            or "qsvenc" in self.main.convert_to.lower()
+        )
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
             track_info, tags = self._get_track_info(x)
             new_item = Audio(
@@ -419,7 +423,11 @@ class AudioList(FlixList):
             track.update_codecs(allowed_formats or set())
 
     def apply_profile_settings(
-        self, profile: Profile, original_tracks: list[Box], audio_formats, og_only: bool = False
+        self,
+        profile: Profile,
+        original_tracks: list[Box],
+        audio_formats,
+        og_only: bool = False,
     ):
         if profile.audio_filters:
             self.disable_all()
@@ -550,7 +558,11 @@ class AudioList(FlixList):
         self.app.fastflix.current_video.video_settings.audio_tracks = tracks
 
     def reload(self, original_tracks: list[AudioTrack], audio_formats):
-        disable_dups = "nvencc" in self.main.convert_to.lower() or "vcenc" in self.main.convert_to.lower()
+        disable_dups = (
+            "nvencc" in self.main.convert_to.lower()
+            or "vcenc" in self.main.convert_to.lower()
+            or "qsvenc" in self.main.convert_to.lower()
+        )
 
         repopulated_tracks = set()
         for track in original_tracks:
