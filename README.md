@@ -16,18 +16,63 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 
 #  Encoders
 
- FastFlix supports the following encoders if available:
+## Software Encoders
 
-| Encoder   | x265 |  NVENC HEVC | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | [VCEEncC HEVC](https://github.com/rigaya/VCEEnc/releases) | [QSVEncC HEVC](https://github.com/rigaya/QSVEnc/releases) | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 |
-| --------- | ---- | ---------- | ----------- | ----------- | ----------- |------| ----- | ------- |-----| --- |
-| HDR10     |   ✓  |            |      ✓     |      ✓     |      ✓     |      |       |         | ✓   |  ✓* |
-| HDR10+    |   ✓  |            |      ✓     |            |            |      |       |         |     |     |
-| Audio     |   ✓  |      ✓     |      ✓*    |      ✓*    |      ✓*    |  ✓   |   ✓  |    ✓    | ✓   |  ✓   |
-| Subtitles |   ✓  |      ✓     |      ✓     |      ✓     |      ✓     |  ✓   |   ✓  |    ✓    | ✓   |      |
-| Covers    |   ✓  |      ✓     |            |            |            |  ✓   |   ✓  |    ✓    | ✓   |      |
-| bt.2020   |   ✓  |     ✓      |     ✓      |     ✓      |     ✓      |   ✓  |  ✓    |   ✓    | ✓   |  ✓   |
+| Encoder   | x265 | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 |
+|-----------|------|------|-------|---------|---------|-----|
+| HDR10     | ✓    |      |       |         | ✓       | ✓*  |
+| HDR10+    | ✓    |      |       |         |         |     |
+| Audio     | ✓    |  ✓   | ✓     | ✓       | ✓       | ✓   |
+| Subtitles | ✓    |  ✓   | ✓     | ✓       | ✓       |     |
+| Covers    | ✓    |  ✓   | ✓     | ✓       | ✓       |     |
+| bt.2020   | ✓    |   ✓  | ✓     | ✓       | ✓       | ✓   |
+
+## Hardware Encoders 
+
+These will require the appropriate hardware. Nvidia GPU for NVEnc, Intel GPU/CPU for QSVEnc, and AMD GPU for VCEEnc. 
+
+Most of these are using [rigaya's hardware encoders](https://github.com/rigaya?tab=repositories) that must be downloaded separately, 
+extracted to a directory of your choice, and then linked too in FastFlix Settings panel.
+
+### AV1
+
+Theis is only supported on the latest generation of graphics cards as of 2022, specifically the Intel Arc and Nvidia 4000 series. 
+
+| Encoder   | [NVEncC AV1](https://github.com/rigaya/NVEnc/releases) | [QSVEncC AV!](https://github.com/rigaya/QSVEnc/releases) |
+|-----------|--------------------------------------------------------|----------------------------------------------------------|
+| HDR10     | ✓                                                      | ✓                                                        |
+| HDR10+    | ✓                                                      | ✓                                                        |
+| Audio     | ✓*                                                     | ✓*                                                       |
+| Subtitles | ✓                                                      | ✓                                                        |
+| Covers    |                                                        |                                                          |
+| bt.2020   | ✓                                                      | ✓                                                        |
+
+### HEVC / H.265
+
+| Encoder   | NVENC HEVC | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | [VCEEncC HEVC](https://github.com/rigaya/VCEEnc/releases) | [QSVEncC HEVC](https://github.com/rigaya/QSVEnc/releases) |
+|-----------|------------|---------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|
+| HDR10     |            | ✓                                                       | ✓                                                         | ✓                                                         |
+| HDR10+    |            | ✓                                                       | ✓                                                         | ✓                                                         |
+| Audio     | ✓          | ✓*                                                      | ✓*                                                        | ✓*                                                        |
+| Subtitles | ✓          | ✓                                                       | ✓                                                         | ✓                                                         |
+| Covers    | ✓          |                                                         |                                                           |                                                           |
+| bt.2020   | ✓          | ✓                                                       | ✓                                                         | ✓                                                         |
+
+### AVC / H.264
+
+| Encoder   | [NVEncC AVC](https://github.com/rigaya/NVEnc/releases) | [VCEEncC AVC](https://github.com/rigaya/VCEEnc/releases) | [QSVEncC AVC](https://github.com/rigaya/QSVEnc/releases) |
+|-----------|--------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
+| HDR10     |                                                        |                                                          |                                                          |
+| HDR10+    |                                                        |                                                          |                                                          |
+| Audio     | ✓*                                                     | ✓*                                                       | ✓*                                                       |
+| Subtitles | ✓                                                      | ✓                                                        | ✓                                                        |
+| Covers    |                                                        |                                                          |                                                          |
+| bt.2020   | ✓                                                      | ✓                                                        | ✓                                                        |
 
 `✓ - Full support   |   ✓* - Limited support`
+
+
+
 
 # Releases
 
@@ -64,19 +109,21 @@ On any 10-bit or higher video output, FastFlix will copy the input HDR colorspac
 
 ## HDR10
 
-FastFlix was created to easily extract / copy HDR10 data, which it can do with the above listed encoders (x265, NVEncC, VCEEncC).
+FastFlix was created to easily extract / copy HDR10 data, which it can do with the above listed encoders (x265, NVEncC, VCEEncC, QSVEncC).
 
 VP9 has limited support to copy some existing HDR10 metadata, usually from other VP9 files. Will have the line "Mastering Display Metadata, has_primaries:1 has_luminance:1 ..." when it works.
 
-AV1 is still in development, and hopefully all encoder will support it in the future, but only SVT AV1 works through ffmpeg as of now.
+AV1 is still in development, and hopefully all encoder will support it in the future, but only SVT AV1 works through ffmpeg as of now for software encoders. 
 
+* QSVEnc - Works! 
+* NVEncC - Works!
 * rav1e -  can set mastering data and CLL via their CLI but [not through ffmpeg](https://github.com/xiph/rav1e/issues/2554).
 * SVT AV1 - Now supports HDR10 with latest master ffmpeg build, make sure to update before trying!
 * aomenc (libaom-av1) - does not look to support HDR10
 
 ## HDR10+
 
-For Windows users with Nvidia cards, NVEncC is the best option currently to use HDR10+.
+For Windows users with dedicated graphics cards, the best thing to do is use a hardware encoder, as they all support HDR10+ currently!
 
 FastFlix also supports using generated or [extracted JSON HDR10+ Metadata](https://github.com/cdgriffith/FastFlix/wiki/HDR10-Plus-Metadata-Extraction) with HEVC encodes via x265. However, that is highly
 dependent on a FFmpeg version that has been compiled with x265 that has HDR10+ support. [BtbN's Windows FFmpeg builds](https://github.com/BtbN/FFmpeg-Builds) 
