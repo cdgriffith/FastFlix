@@ -368,7 +368,11 @@ class AudioList(FlixList):
     def new_source(self, codecs):
         self.tracks: List[Audio] = []
         self._first_selected = False
-        disable_dup = "nvencc" in self.main.convert_to.lower()
+        disable_dup = (
+            "nvencc" in self.main.convert_to.lower()
+            or "vcenc" in self.main.convert_to.lower()
+            or "qsvenc" in self.main.convert_to.lower()
+        )
         for i, x in enumerate(self.app.fastflix.current_video.streams.audio, start=1):
             track_info, tags = self._get_track_info(x)
             new_item = Audio(
@@ -537,10 +541,7 @@ class AudioList(FlixList):
                     else:
                         tracks.extend(subset_tracks)
 
-        def find_track_num(idx):
-            for num, tt in enumerate(self.tracks):
-                if tt.index == idx:
-                    return num
+        tracks.sort(key=lambda x: x[0].index)
 
         if self.tracks and not tracks:
             enable = yes_no_message(
@@ -550,15 +551,16 @@ class AudioList(FlixList):
                 self.tracks[0].widgets.enable_check.setChecked(True)
             return super()._new_source(self.tracks)
 
+        # Apply first set of conversions to the original audio tracks
         current_id = -1
         skip_tracks = []
         for idx, track in enumerate(tracks):
+            # track[0] is the Box() track object, track[1] is the AudioMatch it matched against
             if track[0].index > current_id:
                 current_id = track[0].index
-                track_num = find_track_num(track[0].index)
-                self.tracks[track_num].widgets.enable_check.setChecked(True)
+                self.tracks[track[0].index - 1].widgets.enable_check.setChecked(True)
                 update_track(
-                    self.tracks[track_num],
+                    self.tracks[track[0].index - 1],
                     downmix=track[1].downmix,
                     conversion=track[1].conversion,
                     bitrate=track[1].bitrate,
@@ -567,7 +569,7 @@ class AudioList(FlixList):
 
         if not og_only:
             additional_tracks = []
-            for i, track in enumerate(tracks, start=len(self.tracks) + 1):
+            for i, track in enumerate(tracks):
                 if i not in skip_tracks:
                     additional_tracks.append(
                         gen_track(
@@ -611,7 +613,11 @@ class AudioList(FlixList):
         self.app.fastflix.current_video.video_settings.audio_tracks = tracks
 
     def reload(self, original_tracks: List[AudioTrack], audio_formats):
-        disable_dups = "nvencc" in self.main.convert_to.lower() or "vcenc" in self.main.convert_to.lower()
+        disable_dups = (
+            "nvencc" in self.main.convert_to.lower()
+            or "vcenc" in self.main.convert_to.lower()
+            or "qsvenc" in self.main.convert_to.lower()
+        )
 
         repopulated_tracks = set()
         for track in original_tracks:

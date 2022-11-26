@@ -246,11 +246,13 @@ class Config(BaseModel):
                 except MissingFF:
                     raise err from None
         if not self.hdr10plus_parser:
-            self.hdr10plus_parser = where("hdr10plus_parser")
+            self.hdr10plus_parser = find_hdr10plus_tool()
         if not self.nvencc:
             self.nvencc = where("NVEncC64") or where("NVEncC")
         if not self.vceencc:
             self.vceencc = where("VCEEncC64") or where("VCEEncC")
+        if not self.qsvencc:
+            self.qsvencc = where("QSVEncC64") or where("QSVEncC")
         self.profiles.update(get_preset_defaults())
 
         if self.selected_profile not in self.profiles:

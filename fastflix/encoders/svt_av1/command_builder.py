@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import re
 import secrets
 
 import reusables
@@ -19,17 +18,16 @@ def build(fastflix: FastFlix):
     settings: SVTAV1Settings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending = generate_all(fastflix, "libsvtav1")
 
-    beginning += (
-        f"-strict experimental "
-        f"-preset {settings.speed} "
-        f"-tile_columns {settings.tile_columns} "
-        f"-tile_rows {settings.tile_rows} "
-        f"-tier {settings.tier} "
-        f"-sc_detection {'true' if settings.scene_detection else 'false'} "
-        f"{generate_color_details(fastflix)} "
-    )
+    beginning += f"-strict experimental " f"-preset {settings.speed} " f"{generate_color_details(fastflix)} "
 
     svtav1_params = settings.svtav1_params.copy()
+    svtav1_params.extend(
+        [
+            f"tile-columns={settings.tile_columns}",
+            f"tile-rows={settings.tile_rows}",
+            f"scd={1 if settings.scene_detection else 0}",
+        ]
+    )
 
     if not fastflix.current_video.video_settings.remove_hdr:
 

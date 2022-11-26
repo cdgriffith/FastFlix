@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 4.10.1
+
+* Fixing #370 Audio Match not working correctly after 4.10.0 (thanks to Hexenhammer)
+* Fixing #378 Deprecated features used for SVT-AV1 (thanks to DesertCookie)
+* Fixing #380 Not all subtitles have "codec_name" (thanks to No Name)
+* Fixing configuration lookup for hdr10+ tool
+
 ## Version 4.10.0
 
 * Adding AVIF support using libsvtav1
