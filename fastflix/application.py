@@ -28,7 +28,8 @@ def create_app():
         if hasattr(QtCore.Qt, "AA_UseHighDpiPixmaps"):
             QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
-    sys.argv += ["-platform", "windows:darkmode=2"]
+    if reusables.win_based:
+        sys.argv += ["-platform", "windows:darkmode=2"]
     main_app = FastFlixApp(sys.argv)
     main_app.allWindows()
     main_app.setApplicationDisplayName("FastFlix")
