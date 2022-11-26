@@ -140,6 +140,7 @@ class VideoOptions(QtWidgets.QTabWidget):
             )
         # Page update does a reload which bases itself off the current encoder so we have to do audio formats after
         self.audio.allowed_formats(self._get_audio_formats(encoder))
+        self.update_profile()
 
     def get_settings(self):
         if not self.app.fastflix.current_video:
