@@ -25,7 +25,7 @@ except AttributeError:
     base_path = os.path.abspath(".")
     pyinstaller = False
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.resources import get_bool_env
@@ -70,6 +70,7 @@ class MyMessageBox(QtWidgets.QMessageBox):
 def message(msg, title=None):
     sm = QtWidgets.QMessageBox()
     sm.setText(msg)
+    sm.setWindowFlags(sm.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
     if title:
         sm.setWindowTitle(title)
     sm.setStandardButtons(QtWidgets.QMessageBox.Ok)
@@ -81,6 +82,7 @@ def error_message(msg, details=None, traceback=False, title=None):
     em = MyMessageBox()
     em.setText(msg)
     em.setWindowIcon(icon)
+    em.setWindowFlags(em.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
     if title:
         em.setWindowTitle(title)
     if details:
@@ -99,6 +101,7 @@ def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_acti
     sm.setText(msg)
     sm.addButton(yes_text, QtWidgets.QMessageBox.YesRole)
     sm.addButton(no_text, QtWidgets.QMessageBox.NoRole)
+    sm.setWindowFlags(sm.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
     sm.exec_()
     if sm.clickedButton().text() == yes_text:
         if yes_action:

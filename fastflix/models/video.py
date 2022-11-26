@@ -22,8 +22,10 @@ from fastflix.models.encode import (
     x265Settings,
     QSVEncCSettings,
     QSVEncCH264Settings,
+    QSVEncCAV1Settings,
     NVEncCSettings,
     NVEncCAVCSettings,
+    NVEncCAV1Settings,
     VCEEncCSettings,
     VCEEncCAVCSettings,
     HEVCVideoToolboxSettings,
@@ -45,6 +47,8 @@ def determine_rotation(streams, track: int = 0) -> Tuple[int, int]:
     rotation = 0
     if "rotate" in streams.video[0].get("tags", {}):
         rotation = abs(int(video_stream.tags.rotate))
+    elif "rotation" in streams.video[0].get("side_data_list", [{}])[0]:
+        rotation = abs(int(streams.video[0].side_data_list[0].rotation))
 
     if rotation in (90, 270):
         video_width = video_stream.height
@@ -108,18 +112,20 @@ class VideoSettings(BaseModel):
         CopySettings,
         FFmpegNVENCSettings,
         QSVEncCSettings,
+        QSVEncCAV1Settings,
         QSVEncCH264Settings,
         NVEncCSettings,
         NVEncCAVCSettings,
+        NVEncCAV1Settings,
         VCEEncCSettings,
         VCEEncCAVCSettings,
         HEVCVideoToolboxSettings,
         H264VideoToolboxSettings,
         SVTAVIFSettings,
     ] = None
-    audio_tracks: List[AudioTrack] = Field(default_factory=list)
-    subtitle_tracks: List[SubtitleTrack] = Field(default_factory=list)
-    attachment_tracks: List[AttachmentTrack] = Field(default_factory=list)
+    audio_tracks: list[AudioTrack] = Field(default_factory=list)
+    subtitle_tracks: list[SubtitleTrack] = Field(default_factory=list)
+    attachment_tracks: list[AttachmentTrack] = Field(default_factory=list)
     conversion_commands: List = Field(default_factory=list)
 
 
@@ -156,8 +162,8 @@ class Video(BaseModel):
     interlaced: Union[str, bool] = False
     concat: bool = False
 
-    hdr10_streams: List[Box] = Field(default_factory=list)
-    hdr10_plus: List[int] = Field(default_factory=list)
+    hdr10_streams: list[Box] = Field(default_factory=list)
+    hdr10_plus: list[int] = Field(default_factory=list)
 
     video_settings: VideoSettings = Field(default_factory=VideoSettings)
     status: Status = Field(default_factory=Status)

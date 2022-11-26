@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
-from pathlib import Path
 
-from box import Box
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
@@ -415,7 +413,30 @@ class HEVC(SettingPanel):
             label="Profile_encoderopt",
             tooltip="profile: Enforce an encode profile",
             widget_name="profile",
-            options=["default", "main", "main10", "mainstillpicture"],
+            options=[
+                "default",
+                "main",
+                "main10",
+                "mainstillpicture",
+                "msp",
+                "main-intra",
+                "main10-intra",
+                "main444-8",
+                "main444-intra",
+                "main444-stillpicture",
+                "main422-10 ",
+                "main422-10-intra",
+                "main444-10",
+                "main444-10-intra",
+                "main12",
+                "main12-intra",
+                "main422-12 ",
+                "main422-12-intra",
+                "main444-12 ",
+                "main444-12-intra",
+                "main444-16-intra ",
+                "main444-16-stillpicture",
+            ],
             opt="profile",
         )
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from pathlib import Path
-from typing import List, Optional, Union, Dict
+from typing import Optional, Union
 
 from pydantic import BaseModel, Field
 from box import Box
@@ -21,7 +21,7 @@ class AudioTrack(BaseModel):
     original: bool = False
     channels: int = 2
     friendly_info: str = ""
-    raw_info: Optional[Union[Dict, Box]] = None
+    raw_info: Optional[Union[dict, Box]] = None
 
 
 class SubtitleTrack(BaseModel):
@@ -62,7 +62,7 @@ class x265Settings(EncoderSettings):
     hdr10plus_metadata: str = ""
     crf: Optional[Union[int, float]] = 22
     bitrate: Optional[str] = None
-    x265_params: List[str] = Field(default_factory=list)
+    x265_params: list[str] = Field(default_factory=list)
     bframes: int = 4
     lossless: bool = False
     b_adapt: int = 2
@@ -130,8 +130,59 @@ class NVEncCSettings(EncoderSettings):
     force_ten_bit: bool = False
 
 
+class NVEncCAV1Settings(EncoderSettings):
+    name = "AV1 (NVEncC)"
+    preset: str = "quality"
+    profile: str = "auto"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    aq: str = "off"
+    aq_strength: int = 0
+    lookahead: Optional[int] = None
+    tier: str = "high"
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    multipass: str = "2pass-full"
+    mv_precision: str = "Auto"
+    init_q_i: Optional[str] = None
+    init_q_p: Optional[str] = None
+    init_q_b: Optional[str] = None
+    min_q_i: Optional[str] = None
+    min_q_p: Optional[str] = None
+    min_q_b: Optional[str] = None
+    max_q_i: Optional[str] = None
+    max_q_p: Optional[str] = None
+    max_q_b: Optional[str] = None
+    vbr_target: Optional[str] = None
+    b_frames: Optional[str] = None
+    b_ref_mode: str = "disabled"
+    ref: Optional[str] = None
+    metrics: bool = False
+    force_ten_bit: bool = False
+
+
 class QSVEncCSettings(EncoderSettings):
     name = "HEVC (QSVEncC)"
+    preset: str = "best"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    lookahead: Optional[str] = None
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    min_q_i: Optional[str] = None
+    min_q_p: Optional[str] = None
+    min_q_b: Optional[str] = None
+    max_q_i: Optional[str] = None
+    max_q_p: Optional[str] = None
+    max_q_b: Optional[str] = None
+    b_frames: Optional[str] = None
+    ref: Optional[str] = None
+    metrics: bool = False
+    force_ten_bit: bool = False
+
+
+class QSVEncCAV1Settings(EncoderSettings):
+    name = "AV1 (QSVEncC)"
     preset: str = "best"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[str] = None
@@ -257,14 +308,13 @@ class SVTAV1Settings(EncoderSettings):
     name = "AV1 (SVT AV1)"
     tile_columns: str = "0"
     tile_rows: str = "0"
-    tier: str = "main"
     scene_detection: bool = False
     single_pass: bool = False
     speed: str = "7"  # Renamed preset in svtav1 encoder
     qp: Optional[Union[int, float]] = 24
     qp_mode: str = "qp"
     bitrate: Optional[str] = None
-    svtav1_params: List[str] = Field(default_factory=list)
+    svtav1_params: list[str] = Field(default_factory=list)
 
 
 class SVTAVIFSettings(EncoderSettings):
@@ -274,7 +324,7 @@ class SVTAVIFSettings(EncoderSettings):
     qp: Optional[Union[int, float]] = 24
     qp_mode: str = "qp"
     bitrate: Optional[str] = None
-    svtav1_params: List[str] = Field(default_factory=list)
+    svtav1_params: list[str] = Field(default_factory=list)
 
 
 class VP9Settings(EncoderSettings):
@@ -360,8 +410,10 @@ setting_types = {
     "copy_settings": CopySettings,
     "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
     "qsvencc_hevc": QSVEncCSettings,
+    "qsvencc_av1": QSVEncCAV1Settings,
     "qsvencc_avc": QSVEncCH264Settings,
     "nvencc_hevc": NVEncCSettings,
+    "nvencc_av1": NVEncCAV1Settings,
     "nvencc_avc": NVEncCAVCSettings,
     "vceencc_hevc": VCEEncCSettings,
     "vceencc_avc": VCEEncCAVCSettings,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from pathlib import Path
-from typing import List, Optional, Union, Dict
+from typing import Optional, Union
 
 from pydantic import BaseModel, Field, validator
 from box import Box
@@ -19,9 +19,11 @@ from fastflix.models.encode import (
     x264Settings,
     x265Settings,
     QSVEncCSettings,
+    QSVEncCAV1Settings,
     QSVEncCH264Settings,
     NVEncCSettings,
     NVEncCAVCSettings,
+    NVEncCAV1Settings,
     VCEEncCAVCSettings,
     VCEEncCSettings,
     HEVCVideoToolboxSettings,
@@ -49,8 +51,8 @@ class MatchType(Enum):
 
 
 class AudioMatch(BaseModel):
-    match_type: Union[MatchType, List[MatchType]]  # TODO figure out why when saved becomes list in yaml
-    match_item: Union[MatchItem, List[MatchType]]
+    match_type: Union[MatchType, list[MatchType]]  # TODO figure out why when saved becomes list in yaml
+    match_item: Union[MatchItem, list[MatchType]]
     match_input: str = "*"
     conversion: Optional[str] = None
     bitrate: Optional[str] = None
@@ -87,8 +89,8 @@ class AudioMatch(BaseModel):
 
 
 class SubtitleMatch(BaseModel):
-    match_type: Union[MatchType, List[MatchType]]
-    match_item: Union[MatchItem, List[MatchType]]
+    match_type: Union[MatchType, list[MatchType]]
+    match_item: Union[MatchItem, list[MatchType]]
     match_input: str
 
 
@@ -126,8 +128,8 @@ class Profile(BaseModel):
     remove_hdr: bool = False
     encoder: str = "HEVC (x265)"
 
-    audio_filters: Optional[List[AudioMatch]] = None
-    # subtitle_filters: Optional[List[SubtitleMatch]] = None
+    audio_filters: Optional[list[AudioMatch]] = None
+    # subtitle_filters: Optional[list[SubtitleMatch]] = None
 
     # Legacy Audio, here to properly import old profiles
     audio_language: Optional[str] = None
@@ -155,9 +157,11 @@ class Profile(BaseModel):
     copy_settings: Optional[CopySettings] = None
     ffmpeg_hevc_nvenc: Optional[FFmpegNVENCSettings] = None
     qsvencc_hevc: Optional[QSVEncCSettings] = None
+    qsvencc_av1: Optional[QSVEncCAV1Settings] = None
     qsvencc_avc: Optional[QSVEncCH264Settings] = None
     nvencc_hevc: Optional[NVEncCSettings] = None
     nvencc_avc: Optional[NVEncCAVCSettings] = None
+    nvencc_av1: Optional[NVEncCAV1Settings] = None
     vceencc_hevc: Optional[VCEEncCSettings] = None
     vceencc_avc: Optional[VCEEncCAVCSettings] = None
     hevc_videotoolbox: Optional[HEVCVideoToolboxSettings] = None

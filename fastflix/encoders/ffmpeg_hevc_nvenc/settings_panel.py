@@ -2,14 +2,11 @@
 import logging
 
 from box import Box
-from PySide2 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
-from fastflix.language import t
 from fastflix.models.encode import FFmpegNVENCSettings
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.shared import link
-from fastflix.exceptions import FastFlixInternalException
 
 logger = logging.getLogger("fastflix")
 

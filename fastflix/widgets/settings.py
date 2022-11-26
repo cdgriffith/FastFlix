@@ -6,7 +6,7 @@ from pathlib import Path
 
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
@@ -40,6 +40,7 @@ class Settings(QtWidgets.QWidget):
         self.config_file = self.app.fastflix.config.config_path
         self.setWindowTitle(t("Settings"))
         self.setMinimumSize(600, 200)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         layout = QtWidgets.QGridLayout()
 
         ffmpeg_label = QtWidgets.QLabel("FFmpeg")
@@ -166,7 +167,10 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.qsvenc_path, 14, 1)
         layout.addWidget(qsvencc_path_button, 14, 2)
 
-        hdr10_parser_label = QtWidgets.QLabel(t("HDR10+ Parser"))
+        hdr10_parser_label = QtWidgets.QLabel(
+            link("https://github.com/quietvoid/hdr10plus_tool", "HDR10+ Parser Tool", app.fastflix.config.theme)
+        )
+        hdr10_parser_label.setOpenExternalLinks(True)
         self.hdr10_parser_path = QtWidgets.QLineEdit()
         if self.app.fastflix.config.hdr10plus_parser:
             self.hdr10_parser_path.setText(str(self.app.fastflix.config.hdr10plus_parser))
@@ -176,6 +180,7 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.hdr10_parser_path, 15, 1)
         layout.addWidget(hdr10_parser_path_button, 15, 2)
 
+        # OUTPUT DIR
         output_label = QtWidgets.QLabel(t("Default Output Folder"))
         self.output_path_line_edit = QtWidgets.QLineEdit()
         if self.app.fastflix.config.output_directory:
@@ -195,6 +200,29 @@ class Settings(QtWidgets.QWidget):
         )
         layout.addWidget(self.default_output_dir, 16, 0, 1, 2)
 
+        # SOURCE DIR
+
+        source_label = QtWidgets.QLabel(t("Default Source Folder"))
+        self.source_path_line_edit = QtWidgets.QLineEdit()
+        if self.app.fastflix.config.source_directory:
+            self.source_path_line_edit.setText(str(self.app.fastflix.config.source_directory))
+        source_label_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        source_label_path_button.clicked.connect(lambda: self.select_source_directory())
+        layout.addWidget(source_label, 19, 0)
+        layout.addWidget(self.source_path_line_edit, 19, 1)
+        layout.addWidget(source_label_path_button, 19, 2)
+
+        self.default_source_dir = QtWidgets.QCheckBox(t("No Default Source Folder"))
+        if not self.app.fastflix.config.source_directory:
+            self.default_source_dir.setChecked(True)
+            self.source_path_line_edit.setDisabled(True)
+        self.default_source_dir.clicked.connect(
+            lambda: self.source_path_line_edit.setDisabled(self.source_path_line_edit.isEnabled())
+        )
+        layout.addWidget(self.default_source_dir, 18, 0, 1, 2)
+
+        # Layouts
+
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
         layout.addWidget(self.disable_version_check, 8, 0, 1, 2)
         layout.addWidget(QtWidgets.QLabel(t("GUI Logging Level")), 9, 0)
@@ -209,7 +237,7 @@ class Settings(QtWidgets.QWidget):
         button_layout.addWidget(cancel)
         button_layout.addWidget(save)
 
-        layout.addLayout(button_layout, 18, 0, 1, 3)
+        layout.addLayout(button_layout, 24, 0, 1, 3)
 
         self.setLayout(layout)
 
@@ -249,22 +277,22 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.crop_detect_points = int(self.crop_detect_points_widget.currentText())
 
         new_nvencc = Path(self.nvencc_path.text()) if self.nvencc_path.text().strip() else None
-        if self.app.fastflix.config.nvencc != new_nvencc:
+        if str(self.app.fastflix.config.nvencc) != str(new_nvencc):
             restart_needed = True
         self.app.fastflix.config.nvencc = new_nvencc
 
         new_qsvencc = Path(self.qsvenc_path.text()) if self.qsvenc_path.text().strip() else None
-        if self.app.fastflix.config.qsvencc != new_qsvencc:
+        if str(self.app.fastflix.config.qsvencc) != str(new_qsvencc):
             restart_needed = True
         self.app.fastflix.config.qsvencc = new_qsvencc
 
         new_vce = Path(self.vceenc_path.text()) if self.vceenc_path.text().strip() else None
-        if self.app.fastflix.config.vceencc != new_vce:
+        if str(self.app.fastflix.config.vceencc) != str(new_vce):
             restart_needed = True
         self.app.fastflix.config.vceencc = new_vce
 
         new_hdr10_parser = Path(self.hdr10_parser_path.text()) if self.hdr10_parser_path.text().strip() else None
-        if self.app.fastflix.config.hdr10plus_parser != new_hdr10_parser:
+        if str(self.app.fastflix.config.hdr10plus_parser) != str(new_hdr10_parser):
             restart_needed = True
         self.app.fastflix.config.hdr10plus_parser = new_hdr10_parser
 
@@ -272,6 +300,11 @@ class Settings(QtWidgets.QWidget):
         if self.output_path_line_edit.text().strip() and not self.default_output_dir.isChecked():
             new_output_path = Path(self.output_path_line_edit.text())
         self.app.fastflix.config.output_directory = new_output_path
+
+        new_source_path = False
+        if self.source_path_line_edit.text().strip() and not self.default_source_dir.isChecked():
+            new_source_path = Path(self.source_path_line_edit.text())
+        self.app.fastflix.config.source_directory = new_source_path
 
         self.main.config_update()
         self.app.fastflix.config.save()
@@ -286,7 +319,7 @@ class Settings(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="FFmepg location", dir=str(dirname))
         if not filename or not filename[0]:
             return
-        self.ffmpeg_path.setText(filename[0])
+        self.ffmpeg_path.setText(str(Path(filename[0]).absolute()))
 
     def select_nvencc(self):
         dirname = Path(self.nvencc_path.text()).parent
@@ -295,7 +328,7 @@ class Settings(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="NVEncC location", dir=str(dirname))
         if not filename or not filename[0]:
             return
-        self.nvencc_path.setText(filename[0])
+        self.nvencc_path.setText(str(Path(filename[0]).absolute()))
 
     def select_qsvencc(self):
         dirname = Path(self.qsvenc_path.text()).parent
@@ -304,7 +337,7 @@ class Settings(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="QSVEncC location", dir=str(dirname))
         if not filename or not filename[0]:
             return
-        self.qsvenc_path.setText(filename[0])
+        self.qsvenc_path.setText(str(Path(filename[0]).absolute()))
 
     def select_vceenc(self):
         dirname = Path(self.vceenc_path.text()).parent
@@ -313,7 +346,7 @@ class Settings(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="VCEEncC location", dir=str(dirname))
         if not filename or not filename[0]:
             return
-        self.vceenc_path.setText(filename[0])
+        self.vceenc_path.setText(str(Path(filename[0]).absolute()))
 
     def select_hdr10_parser(self):
         dirname = Path(self.hdr10_parser_path.text()).parent
@@ -322,7 +355,7 @@ class Settings(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, caption="hdr10+ parser", dir=str(dirname))
         if not filename or not filename[0]:
             return
-        self.hdr10_parser_path.setText(filename[0])
+        self.hdr10_parser_path.setText(str(Path(filename[0]).absolute()))
 
     def select_output_directory(self):
         dirname = Path(self.output_path_line_edit.text()).parent
@@ -332,6 +365,15 @@ class Settings(QtWidgets.QWidget):
         if not filename:
             return
         self.output_path_line_edit.setText(filename)
+
+    def select_source_directory(self):
+        dirname = Path(self.source_path_line_edit.text()).parent
+        if not dirname.exists():
+            dirname = Path()
+        filename = QtWidgets.QFileDialog.getExistingDirectory(self, caption="Source Directory", dir=str(dirname))
+        if not filename:
+            return
+        self.source_path_line_edit.setText(filename)
 
     @staticmethod
     def path_check(name, new_path):
@@ -376,7 +418,7 @@ class Settings(QtWidgets.QWidget):
         if not dirname.exists():
             dirname = Path()
         dialog = QtWidgets.QFileDialog()
-        dialog.setFileMode(QtWidgets.QFileDialog.DirectoryOnly)
+        dialog.setFileMode(QtWidgets.QFileDialog.Directory)
         dialog.setOption(QtWidgets.QFileDialog.ShowDirsOnly)
         work_path = dialog.getExistingDirectory(dir=str(dirname), caption="Work directory")
         if not work_path:

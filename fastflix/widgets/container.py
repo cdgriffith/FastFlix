@@ -9,8 +9,8 @@ from subprocess import run
 
 import reusables
 from appdirs import user_data_dir
-from PySide2 import QtCore, QtGui, QtWidgets
-from PySide2.QtWidgets import QAction
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtGui import QAction
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
@@ -37,7 +37,8 @@ class Container(QtWidgets.QMainWindow):
         super().__init__(None)
         self.app = app
         self.pb = None
-
+        if self.app.fastflix.config.stay_on_top:
+            self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         self.logs = Logs()
         self.changes = Changes()
         self.about = None
@@ -135,12 +136,21 @@ class Container(QtWidgets.QMainWindow):
         setting_action.setShortcut("Ctrl+S")
         setting_action.triggered.connect(self.show_setting)
 
+        self.stay_on_top_action = QAction(t("Stay on Top"), self)
+        self.stay_on_top_action.triggered.connect(self.set_stay_top)
+        if self.app.fastflix.config.stay_on_top:
+            self.stay_on_top_action.setIcon(self.si(QtWidgets.QStyle.SP_DialogYesButton))
+        else:
+            self.stay_on_top_action.setIcon(self.si(QtWidgets.QStyle.SP_DialogNoButton))
+
         exit_action = QAction(self.si(QtWidgets.QStyle.SP_DialogCancelButton), t("Exit"), self)
         exit_action.setShortcut(QtGui.QKeySequence("Ctrl+Q"))
         exit_action.setStatusTip(t("Exit application"))
         exit_action.triggered.connect(self.close)
 
         file_menu.addAction(setting_action)
+        file_menu.addSeparator()
+        file_menu.addAction(self.stay_on_top_action)
         file_menu.addSeparator()
         file_menu.addAction(exit_action)
 
@@ -276,6 +286,19 @@ class Container(QtWidgets.QMainWindow):
         except Exception:
             error_message(t("Could not compress old logs"), traceback=True)
         self.pb = None
+
+    def set_stay_top(self):
+        if self.app.fastflix.config.stay_on_top:
+            # Change to not stay on top
+            self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
+            self.stay_on_top_action.setIcon(self.si(QtWidgets.QStyle.SP_DialogNoButton))
+        else:
+            self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+            self.stay_on_top_action.setIcon(self.si(QtWidgets.QStyle.SP_DialogYesButton))
+        self.show()
+
+        self.app.fastflix.config.stay_on_top = not self.app.fastflix.config.stay_on_top
+        self.app.fastflix.config.save()
 
 
 class OpenFolder(QtCore.QThread):

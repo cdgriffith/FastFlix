@@ -2,14 +2,42 @@
 # -*- coding: utf-8 -*-
 import datetime
 import logging
-import re
 import secrets
 import shlex
 from pathlib import Path
 from subprocess import PIPE
 from threading import Thread
+from typing import Literal
 
 from psutil import Popen
+
+try:
+    from psutil import (
+        HIGH_PRIORITY_CLASS,
+        REALTIME_PRIORITY_CLASS,
+        IDLE_PRIORITY_CLASS,
+        NORMAL_PRIORITY_CLASS,
+        ABOVE_NORMAL_PRIORITY_CLASS,
+        BELOW_NORMAL_PRIORITY_CLASS,
+    )
+except ImportError:
+    priority_levels = {
+        "Realtime": 20,
+        "High": 10,
+        "Above Normal": 5,
+        "Normal": 0,
+        "Below Normal": -10,
+        "Idle": -20,
+    }
+else:
+    priority_levels = {
+        "Realtime": REALTIME_PRIORITY_CLASS,
+        "High": HIGH_PRIORITY_CLASS,
+        "Above Normal": ABOVE_NORMAL_PRIORITY_CLASS,
+        "Normal": NORMAL_PRIORITY_CLASS,
+        "Below Normal": BELOW_NORMAL_PRIORITY_CLASS,
+        "Idle": IDLE_PRIORITY_CLASS,
+    }
 
 logger = logging.getLogger("fastflix-core")
 
@@ -69,6 +97,16 @@ class BackgroundRunner:
         self.started_at = datetime.datetime.now(datetime.timezone.utc)
 
         Thread(target=self.read_output).start()
+
+    def change_priority(
+        self, new_priority: Literal["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"]
+    ):
+        try:
+            if self.process:
+                self.process.nice(priority_levels[new_priority])
+                logger.info(f"Set command priority to {new_priority}")
+        except Exception:
+            logger.exception(f"Could not set process priority to {new_priority}")
 
     def read_output(self):
         with open(self.output_file, "r", encoding="utf-8", errors="ignore") as out_file, open(

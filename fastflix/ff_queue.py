@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from typing import List, Optional
+from typing import Optional
 import os
 from pathlib import Path
 import logging
@@ -17,7 +17,7 @@ from fastflix.models.config import Config
 logger = logging.getLogger("fastflix")
 
 
-def get_queue(queue_file: Path) -> List[Video]:
+def get_queue(queue_file: Path) -> list[Video]:
     if not queue_file.exists():
         return []
 
@@ -68,7 +68,7 @@ def get_queue(queue_file: Path) -> List[Video]:
     return queue
 
 
-def save_queue(queue: List[Video], queue_file: Path, config: Optional[Config] = None):
+def save_queue(queue: list[Video], queue_file: Path, config: Optional[Config] = None):
     items = []
 
     if config is not None:

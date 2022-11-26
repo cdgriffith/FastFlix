@@ -2,6 +2,7 @@
 import logging
 from pathlib import Path
 from queue import Empty
+from typing import Literal
 
 import reusables
 from appdirs import user_data_dir
@@ -27,6 +28,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
     command = None
     work_dir = None
     log_name = ""
+    priority: Literal["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"] = "Normal"
 
     def start_command():
         nonlocal currently_encoding
@@ -44,6 +46,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             command,
             work_dir=work_dir,
         )
+        runner.change_priority(priority)
 
     while True:
         if currently_encoding and not runner.is_alive():
@@ -103,3 +106,8 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                     runner.resume()
                 except Exception:
                     logger.exception("Could not resume command")
+
+            if request[0] == "priority":
+                priority = request[1]
+                if runner.is_alive():
+                    runner.change_priority(priority)

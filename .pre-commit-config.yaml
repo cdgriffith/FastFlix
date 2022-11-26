@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.4.0
     hooks:
     - id: mixed-line-ending
     - id: trailing-whitespace
@@ -19,7 +19,7 @@ repos:
     - id: detect-private-key
     - id: end-of-file-fixer
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 22.10.0
     hooks:
       - id: black
 #  - repo: https://github.com/pre-commit/mirrors-mypy

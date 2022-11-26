@@ -14,7 +14,7 @@ jobs:
 
       - uses: actions/setup-python@v3
         with:
-          python-version: 3.8
+          python-version: "3.10"
 
       - name: Gather build version
         run: |
@@ -24,7 +24,7 @@ jobs:
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-      - name: Install PySide2 apt requirements
+      - name: Install PySide6 apt requirements
         run: |
           sudo apt update
           sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 -y
@@ -56,22 +56,22 @@ jobs:
           dist/FastFlix --test
 
       - name: Upload standalone executable artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: FastFlix_${{ env.VERSION }}_ubuntu_22_x86_64
           path: |
             dist/FastFlix
             dist/LICENSE
 
-  build-linux:
+  build-ubuntu20:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v3
       with:
-        python-version: 3.8
+        python-version: "3.10"
 
     - name: Gather build version
       run: |
@@ -81,7 +81,7 @@ jobs:
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-    - name: Install PySide2 apt requirements
+    - name: Install PySide6 apt requirements
       run: |
         sudo apt update
         sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 -y
@@ -113,7 +113,7 @@ jobs:
         dist/FastFlix --test
 
     - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: FastFlix_${{ env.VERSION }}_ubuntu_20_x86_64
         path: |
@@ -125,10 +125,10 @@ jobs:
     runs-on: windows-2019
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
       with:
-        python-version: 3.8
+        python-version: "3.10"
 
     - name: Gather build version
       shell: powershell
@@ -191,7 +191,7 @@ jobs:
         move docs\build-licenses.txt LICENSE
 
     - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: FastFlix_${{ env.VERSION }}_win64
         path: |
@@ -199,72 +199,21 @@ jobs:
           LICENSE
 
     - name: Upload installer artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: FastFlix_${{ env.VERSION }}_installer
         path: FastFlix_${{ env.VERSION }}_installer.exe
 
-  build-macos-10:
-
-    runs-on: macOS-10.15
-
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-
-    - name: Gather build version
-      run: |
-        mkdir dist
-        echo "::set-env name=VERSION::$(python scripts/get_version.py)"
-        echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - uses: syphar/restore-pip-download-cache@v1
-
-    - name: Insatll requirements
-      run: |
-        python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade wheel typing_extensions pyinstaller
-        python -m pip install --upgrade -r requirements.txt
-
-    - name: Grab iso-639 lists
-      run: |
-        cp $(python -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
-        cp $(python -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
-
-    - name: Build executable
-      run: pyinstaller FastFlix_Nix_OneFile.spec
-
-    - name: Copy license to dist
-      run: |
-        cp docs/build-licenses.txt dist/LICENSE
-
-    - name: Test executable
-      run: |
-        chmod +x dist/FastFlix
-        dist/FastFlix --version
-        dist/FastFlix --test
-
-    - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: FastFlix_${{ env.VERSION }}_macos10
-        path: |
-          dist/FastFlix
-          dist/LICENSE
-
   build-macos-11:
 
-    runs-on: macOS-11
+    runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v3
       with:
-        python-version: 3.8
+        python-version: "3.10"
 
     - name: Gather build version
       run: |
@@ -301,7 +250,7 @@ jobs:
         dist/FastFlix --test
 
     - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: FastFlix_${{ env.VERSION }}_macos11
         path: |
@@ -310,13 +259,14 @@ jobs:
 
   build-macos-12:
 
-    runs-on: macOS-12
+    runs-on: macos-12
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v3
       with:
-        python-version: 3.8
+        python-version: "3.10"
 
     - name: Gather build version
       run: |
@@ -353,7 +303,7 @@ jobs:
         dist/FastFlix --test
 
     - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: FastFlix_${{ env.VERSION }}_macos12
         path: |

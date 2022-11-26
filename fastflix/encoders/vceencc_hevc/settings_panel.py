@@ -2,14 +2,15 @@
 import logging
 
 from box import Box
-from PySide2 import QtCore, QtWidgets, QtGui
+from PySide6 import QtCore, QtWidgets, QtGui
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
 from fastflix.models.encode import VCEEncCSettings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
-from fastflix.resources import get_icon
+from fastflix.resources import get_icon, loading_movie
+
 
 logger = logging.getLogger("fastflix")
 
@@ -103,7 +104,9 @@ class VCEENCC(SettingPanel):
         qp_line.addLayout(self.init_decoder())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_metrics())
-        grid.addLayout(qp_line, 5, 0, 1, 6)
+        grid.addLayout(qp_line, 6, 0, 1, 6)
+
+        grid.addLayout(self.init_dhdr10_info(), 7, 2, 1, 4)
 
         self.ffmpeg_level = QtWidgets.QLabel()
         grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
@@ -236,6 +239,34 @@ class VCEENCC(SettingPanel):
             min_width=80,
         )
 
+    def init_dhdr10_info(self):
+        layout = self._add_file_select(
+            label="HDR10+ Metadata",
+            widget_name="hdr10plus_metadata",
+            button_action=lambda: self.dhdr10_update(),
+            tooltip="dhdr10_info: Path to HDR10+ JSON metadata file",
+        )
+        self.labels["hdr10plus_metadata"].setFixedWidth(200)
+        self.extract_button = QtWidgets.QPushButton(t("Extract HDR10+"))
+        self.extract_button.hide()
+        self.extract_button.clicked.connect(self.extract_hdr10plus)
+
+        self.extract_label = QtWidgets.QLabel(self)
+        self.extract_label.hide()
+        self.movie = QtGui.QMovie(loading_movie)
+        self.movie.setScaledSize(QtCore.QSize(25, 25))
+        self.extract_label.setMovie(self.movie)
+
+        layout.addWidget(self.extract_button)
+        layout.addWidget(self.extract_label)
+
+        warning_label = QtWidgets.QLabel()
+        warning_label.setPixmap(QtGui.QIcon(get_icon("onyx-warning", self.app.fastflix.config.theme)).pixmap(22))
+        layout.addWidget(warning_label)
+        layout.addWidget(QtWidgets.QLabel("7.12+"))
+
+        return layout
+
     def init_metrics(self):
         return self._add_check_box(
             widget_name="metrics",
@@ -278,6 +309,7 @@ class VCEENCC(SettingPanel):
             pre_analysis=self.widgets.pre_analysis.isChecked(),
             vbaq=self.widgets.vbaq.isChecked(),
             decoder=self.widgets.decoder.currentText(),
+            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),
         )
 
         encode_type, q_value = self.get_mode_settings()
@@ -295,3 +327,7 @@ class VCEENCC(SettingPanel):
         if not self.app.fastflix.current_video:
             return
         super().new_source()
+        if self.app.fastflix.current_video.hdr10_plus:
+            self.extract_button.show()
+        else:
+            self.extract_button.hide()

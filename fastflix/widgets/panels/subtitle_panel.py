@@ -5,7 +5,7 @@ from typing import Union
 from box import Box
 from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
@@ -58,7 +58,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.first = first
         self.last = False
         self.subtitle_lang = subtitle.get("tags", {}).get("language")
-        self.subtitle_type = subtitle_types.get(subtitle["codec_name"], "text")
+        self.subtitle_type = subtitle_types.get(subtitle.get("codec_name", "text"), "text")
         self.setFixedHeight(60)
 
         self.widgets = Box(
@@ -92,6 +92,8 @@ class Subtitle(QtWidgets.QTabWidget):
                 except ValueError:
                     pass
                 break
+        if self.subtitle.disposition.get("forced"):
+            self.widgets.disposition.setCurrentIndex(dispositions.index("forced"))
 
         self.setFixedHeight(60)
         self.widgets.title.setToolTip(self.subtitle.to_yaml())

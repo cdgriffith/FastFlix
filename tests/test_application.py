@@ -2,7 +2,6 @@
 from box import Box
 
 from fastflix.application import init_encoders
-from fastflix.flix import ffmpeg_configuration, ffprobe_configuration, ffmpeg_audio_encoders
 from fastflix.models.config import Config
 
 fake_app = Box(default_box=True)

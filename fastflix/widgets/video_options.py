@@ -3,7 +3,7 @@
 import copy
 import logging
 
-from PySide2 import QtGui, QtWidgets, QtCore
+from PySide6 import QtGui, QtWidgets, QtCore
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
@@ -127,6 +127,9 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.setTabEnabled(1, getattr(encoder, "enable_audio", True))
         self.setTabEnabled(2, getattr(encoder, "enable_subtitles", True))
         self.setTabEnabled(3, getattr(encoder, "enable_attachments", True))
+        self.setTabVisible(1, getattr(encoder, "enable_audio", True))
+        self.setTabVisible(2, getattr(encoder, "enable_subtitles", True))
+        self.setTabVisible(3, getattr(encoder, "enable_attachments", True))
         self.selected = conversion
         self.current_settings.new_source()
         self.main.page_update(build_thumbnail=False)
@@ -140,6 +143,7 @@ class VideoOptions(QtWidgets.QTabWidget):
             )
         # Page update does a reload which bases itself off the current encoder so we have to do audio formats after
         self.audio.allowed_formats(self._get_audio_formats(encoder))
+        self.update_profile()
 
     def get_settings(self):
         if not self.app.fastflix.current_video:

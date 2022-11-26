@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import copy
 import datetime
 import logging
 import math
@@ -13,13 +12,12 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Tuple, Union, Optional
 from collections import namedtuple
-import inspect
 
 import pkg_resources
 import reusables
 from box import Box
 from pydantic import BaseModel, Field
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
 from fastflix.exceptions import FastFlixInternalException, FlixError
@@ -1741,9 +1739,13 @@ class Main(QtWidgets.QWidget):
         if not self.output_video:
             error_message(t("Please specify output video"))
             return False
-        if self.input_video.resolve().absolute() == Path(self.output_video).resolve().absolute():
-            error_message(t("Output video path is same as source!"))
-            return False
+        try:
+            if self.input_video.resolve().absolute() == Path(self.output_video).resolve().absolute():
+                error_message(t("Output video path is same as source!"))
+                return False
+        except OSError:
+            # file system may not support resolving
+            pass
 
         if not self.output_video.lower().endswith(self.current_encoder.video_extension):
             sm = QtWidgets.QMessageBox()

@@ -5,7 +5,7 @@ import os
 import shutil
 from distutils.version import StrictVersion
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Literal
 import json
 
 from appdirs import user_data_dir
@@ -83,7 +83,7 @@ def find_hdr10plus_tool():
     return None
 
 
-def where(filename: str) -> Optional[Path]:
+def where(filename: str) -> Path | None:
     if location := shutil.which(filename):
         return Path(location)
     return None
@@ -94,12 +94,12 @@ class Config(BaseModel):
     config_path: Path = Field(default_factory=get_config)
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
-    hdr10plus_parser: Optional[Path] = Field(default_factory=find_hdr10plus_tool)
-    nvencc: Optional[Path] = Field(default_factory=lambda: where("NVEncC64") or where("NVEncC"))
-    vceencc: Optional[Path] = Field(default_factory=lambda: where("VCEEncC64") or where("VCEEncC"))
-    qsvencc: Optional[Path] = Field(default_factory=lambda: where("QSVEncC64") or where("QSVEncC"))
-    output_directory: Optional[Path] = False
-    source_directory: Optional[Path] = False
+    hdr10plus_parser: Path | None = Field(default_factory=find_hdr10plus_tool)
+    nvencc: Path | None = Field(default_factory=lambda: where("NVEncC64") or where("NVEncC"))
+    vceencc: Path | None = Field(default_factory=lambda: where("VCEEncC64") or where("VCEEncC"))
+    qsvencc: Path | None = Field(default_factory=lambda: where("QSVEncC64") or where("QSVEncC"))
+    output_directory: Path | None = False
+    source_directory: Path | None = False
     output_name_format: str = "{source}-fastflix-{rand_4}.{ext}"
     flat_ui: bool = True
     language: str = "eng"
@@ -113,9 +113,11 @@ class Config(BaseModel):
     disable_version_check: bool = False
     disable_update_check: bool = False  # old name
     disable_automatic_subtitle_burn_in: bool = False
-    custom_after_run_scripts: Dict = Field(default_factory=dict)
-    profiles: Dict[str, Profile] = Field(default_factory=get_preset_defaults)
-    sane_audio_selection: List = Field(
+    custom_after_run_scripts: dict = Field(default_factory=dict)
+    profiles: dict[str, Profile] = Field(default_factory=get_preset_defaults)
+    priority: Literal["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"] = "Normal"
+    stay_on_top: bool = False
+    sane_audio_selection: list = Field(
         default_factory=lambda: [
             "aac",
             "ac3",

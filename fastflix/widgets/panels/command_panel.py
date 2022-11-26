@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 import reusables
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
