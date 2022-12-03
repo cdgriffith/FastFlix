@@ -206,7 +206,7 @@ class Config(BaseModel):
         self.portable_mode = portable_mode
         self.config_path = get_config(portable_mode=portable_mode)
         if portable_mode:
-            self.work_path = Path("fastflix_workspace")
+            self.work_path = Path(os.getenv("FF_WORKDIR", "fastflix_workspace"))
             self.work_path.mkdir(exist_ok=True)
 
         if not self.config_path.exists() or self.config_path.stat().st_size < 10:
