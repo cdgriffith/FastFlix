@@ -1,4 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
+import os
+
 from PyInstaller.utils.hooks import collect_submodules
 
 block_cipher = None
@@ -17,6 +19,10 @@ with open("requirements.txt", "r") as reqs:
         package = line.split("[")[0].split("=")[0].split(">")[0].split("<")[0].replace('"', '').replace("'", '').rstrip("~").strip()
         if package not in ("pyinstaller"):
             all_imports.append(package)
+
+portable_file = "fastflix\\portable.py"
+with open(portable_file, "w") as portable:
+    portable.write(" ")
 
 a = Analysis(['fastflix\\__main__.py'],
              binaries=[],
@@ -46,3 +52,5 @@ exe = EXE(pyz,
           runtime_tmpdir=None,
           console=True,
           icon='fastflix\\data\\icon.ico')
+
+os.unlink(portable_file)

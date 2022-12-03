@@ -26,13 +26,13 @@ except ImportError as err:
     sys.exit(1)
 
 
-def separate_app_process(worker_queue, status_queue, log_queue, queue_list, queue_lock):
+def separate_app_process(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False):
     """This prevents any QT components being imported in the main process"""
     from fastflix.application import start_app
 
     freeze_support()
     try:
-        start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock)
+        start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode)
     except Exception as err:
         print(f"Could not start GUI process - Error: {err}", file=sys.stderr)
         raise err
@@ -106,7 +106,7 @@ def startup_options():
         return 0
 
 
-def main():
+def main(portable_mode=False):
     if reusables.win_based:
         import platform
 
@@ -141,7 +141,7 @@ def main():
         try:
             gui_proc = Process(
                 target=separate_app_process,
-                args=(worker_queue, status_queue, log_queue, queue_list, queue_lock),
+                args=(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode),
             )
             gui_proc.start()
         except Exception:

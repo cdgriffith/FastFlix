@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 5.1.0
+
+* Adding AV1 support for rigaya's AMD hardware encoder!
+* Adding #192 a "true" portable mode for Windows (thanks to Demicro)
+* Fixing lookup for QSVEncC
+
+
 ## Version 5.0.0
 
 * Adding new GUI backend PySide6

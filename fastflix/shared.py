@@ -319,10 +319,10 @@ def sanitize(source):
     # return str().replace("\\", "/")
 
 
-def get_config():
+def get_config(portable_mode=False):
     config = os.getenv("FF_CONFIG")
     if config:
         return Path(config)
-    if Path("fastflix.yaml").exists():
+    if Path("fastflix.yaml").exists() or portable_mode:
         return Path("fastflix.yaml")
     return Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"

@@ -272,6 +272,27 @@ class VCEEncCSettings(EncoderSettings):
     decoder: str = "Hardware"
 
 
+class VCEEncCAV1Settings(EncoderSettings):
+    name = "AV1 (VCEEncC)"
+    preset: str = "slower"
+    bitrate: Optional[str] = "5000k"
+    cqp: Optional[str] = None
+    level: Optional[str] = None
+    hdr10plus_metadata: str = ""
+    mv_precision: str = "q-pel"
+    min_q: Optional[str] = None
+    max_q: Optional[str] = None
+    vbr_target: Optional[str] = None
+    b_frames: Optional[str] = None
+    ref: Optional[str] = None
+    metrics: bool = False
+    pre_encode: bool = False
+    pre_analysis: bool = False
+    vbaq: bool = False
+    decoder: str = "Hardware"
+    bitrate_mode: str = "vbr"
+
+
 class VCEEncCAVCSettings(EncoderSettings):
     name = "AVC (VCEEncC)"
     preset: str = "slow"
@@ -416,6 +437,7 @@ setting_types = {
     "nvencc_av1": NVEncCAV1Settings,
     "nvencc_avc": NVEncCAVCSettings,
     "vceencc_hevc": VCEEncCSettings,
+    "vceencc_av1": VCEEncCAV1Settings,
     "vceencc_avc": VCEEncCAVCSettings,
     "hevc_videotoolbox": HEVCVideoToolboxSettings,
     "h264_videotoolbox": H264VideoToolboxSettings,
