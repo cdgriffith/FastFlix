@@ -189,6 +189,7 @@ jobs:
       run: |
         move dist\*.exe .
         move docs\build-licenses.txt LICENSE
+        move build\FastFlix_Windows_OneFile\warn-FastFlix_Windows_OneFile.txt warnings.txt
 
     - name: Upload standalone executable artifact
       uses: actions/upload-artifact@v3
@@ -197,6 +198,7 @@ jobs:
         path: |
           FastFlix.exe
           LICENSE
+          warnings.txt
 
     - name: Upload installer artifact
       uses: actions/upload-artifact@v3
