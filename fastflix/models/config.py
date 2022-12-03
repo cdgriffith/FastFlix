@@ -258,7 +258,7 @@ class Config(BaseModel):
                 except MissingFF:
                     raise err from None
         if not self.hdr10plus_parser:
-            self.hdr10plus_parser = where("hdr10plus_parser", portable_mode=portable_mode)
+            self.hdr10plus_parser = find_hdr10plus_tool()
         if not self.nvencc:
             self.nvencc = where("NVEncC64", portable_mode=portable_mode) or where("NVEncC", portable_mode=portable_mode)
         if not self.vceencc:

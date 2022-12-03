@@ -65,7 +65,14 @@ class Container(QtWidgets.QMainWindow):
                 QTabBar::tab{ background-color: #4b5054; }
                 QComboBox{ border-radius:10px; }
                 QScrollArea{ border: 1px solid #919191; }
+                QWidget{font-size: 14px;}
                 """
+            )
+        else:
+            self.setStyleSheet(
+                """
+            QWidget{font-size: 14px;}
+            """
             )
         # self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         self.moveFlag = False
@@ -129,6 +136,7 @@ class Container(QtWidgets.QMainWindow):
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False)
         menubar.setFixedWidth(260)
+        menubar.setStyleSheet("font-size: 14px")
 
         file_menu = menubar.addMenu(t("File"))
 
