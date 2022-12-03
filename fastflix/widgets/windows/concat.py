@@ -5,6 +5,7 @@ import logging
 import secrets
 
 from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6.QtWidgets import QAbstractItemView
 
 from fastflix.language import t
 from fastflix.flix import probe
@@ -41,10 +42,10 @@ class ConcatTable(QtWidgets.QTableView):
         self.verticalHeader().hide()
         # self.horizontalHeader().hide()
         self.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        self.setSelectionBehavior(self.SelectRows)
-        self.setSelectionMode(self.SingleSelection)
+        self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.setShowGrid(False)
-        self.setDragDropMode(self.InternalMove)
+        self.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
         self.setDragDropOverwriteMode(False)
 
         # Set our custom model - this prevents row "shifting"
@@ -124,6 +125,7 @@ class ConcatWindow(QtWidgets.QWidget):
         super().__init__(None)
         self.app = app
         self.main = main
+        self.setStyleSheet("font-size: 14px")
         self.folder_name = str(Path.home())
         self.setWindowTitle(t("Concatenation Builder"))
 

@@ -74,6 +74,7 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.svt_av1_avif import main as svt_av1_avif_plugin
     from fastflix.encoders.nvencc_av1 import main as nvencc_av1_plugin
     from fastflix.encoders.qsvencc_av1 import main as qsvencc_av1_plugin
+    from fastflix.encoders.vceencc_av1 import main as vceencc_av1_plugin
 
     encoders = [
         hevc_plugin,
@@ -93,19 +94,20 @@ def init_encoders(app: FastFlixApp, **_):
 
     if app.fastflix.config.qsvencc:
         encoders.insert(1, qsvencc_plugin)
-        encoders.insert(5, qsvencc_av1_plugin)
-        encoders.insert(9, qsvencc_avc_plugin)
+        encoders.insert(encoders.index(av1_plugin), qsvencc_av1_plugin)
+        encoders.insert(encoders.index(avc_plugin), qsvencc_avc_plugin)
 
     if app.fastflix.config.nvencc:
         encoders.insert(1, nvencc_plugin)
-        encoders.insert(5, nvencc_av1_plugin)
-        encoders.insert(9, nvencc_avc_plugin)
+        encoders.insert(encoders.index(av1_plugin), nvencc_av1_plugin)
+        encoders.insert(encoders.index(avc_plugin), nvencc_avc_plugin)
 
     if app.fastflix.config.vceencc:
         if reusables.win_based:
             # HEVC AMF support only works on windows currently
             encoders.insert(1, vceencc_hevc_plugin)
-        encoders.insert(7, vceencc_avc_plugin)
+        encoders.insert(encoders.index(av1_plugin), vceencc_av1_plugin)
+        encoders.insert(encoders.index(avc_plugin), vceencc_avc_plugin)
 
     app.fastflix.encoders = {
         encoder.name: encoder
@@ -134,7 +136,7 @@ def register_app():
             logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
 
 
-def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
+def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False):
     app = create_app()
     app.fastflix = FastFlix(queue=queue_list, queue_lock=queue_lock)
     app.fastflix.log_queue = log_queue
@@ -154,7 +156,7 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock):
             title="Upgraded",
         )
     try:
-        app.fastflix.config.load()
+        app.fastflix.config.load(portable_mode=portable_mode)
     except MissingFF as err:
         if reusables.win_based and ask_for_ffmpeg():
             try:

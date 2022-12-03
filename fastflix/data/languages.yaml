@@ -6947,3 +6947,51 @@ Priority:
   por: Prioridade
   swe: Prioritet
   pol: Priorytet
+Bitrate Mode:
+  eng: Bitrate Mode
+  deu: Bitrate Modus
+  fra: Mode de débit binaire
+  ita: Modalità Bitrate
+  spa: Modo Bitrate
+  zho: 比特率模式
+  jpn: ビットレートモード
+  rus: Режим битрейта
+  por: Modo Bitrate
+  swe: Bitrate-läge
+  pol: Tryb bitrate
+VCEEncC AV1 Encoder is untested!:
+  eng: VCEEncC AV1 Encoder is untested!
+  deu: VCEEncC AV1 Encoder ist ungetestet!
+  fra: VCEEncC AV1 Encoder n'est pas testé !
+  ita: VCEEncC AV1 Encoder non è stato testato!
+  spa: El codificador VCEEncC AV1 no ha sido probado.
+  zho: VCEEncC AV1编码器未经测试!
+  jpn: VCEEncC AV1エンコーダは未検証です!
+  rus: VCEEncC AV1 Encoder не тестировался!
+  por: O codificador VCEEncC AV1 não foi testado!
+  swe: VCEEncC AV1 Encoder är otestad!
+  pol: VCEEncC AV1 Encoder nie jest testowany!
+QSVEncC AV1 Encoder is untested!:
+  eng: QSVEncC AV1 Encoder is untested!
+  deu: QSVEncC AV1 Encoder ist ungetestet!
+  fra: QSVEncC AV1 Encoder n'est pas testé !
+  ita: Il codificatore QSVEncC AV1 non è stato testato!
+  spa: El codificador QSVEncC AV1 no ha sido probado.
+  zho: QSVEncC AV1编码器未经测试!
+  jpn: QSVEncC AV1 Encoderは未検証です。
+  rus: Кодировщик QSVEncC AV1 не тестировался!
+  por: O codificador QSVEncC AV1 não foi testado!
+  swe: QSVEncC AV1 Encoder är otestad!
+  pol: QSVEncC AV1 Encoder nie jest testowany!
+NVEncC AV1 Encoder is untested!:
+  eng: NVEncC AV1 Encoder is untested!
+  deu: NVEncC AV1 Encoder ist ungetestet!
+  fra: L'encodeur NVEncC AV1 n'est pas testé !
+  ita: Il codificatore NVEncC AV1 non è stato testato!
+  spa: El codificador NVEncC AV1 no ha sido probado.
+  zho: NVEncC AV1编码器未经测试!
+  jpn: NVEncC AV1 Encoderは未検証です。
+  rus: NVEncC AV1 Encoder не тестировался!
+  por: O codificador NVEncC AV1 não foi testado!
+  swe: NVEncC AV1 Encoder är otestad!
+  pol: NVEncC AV1 Encoder nie jest testowany!

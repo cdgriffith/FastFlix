@@ -8,8 +8,17 @@ from fastflix.entry import main
 
 def start_fastflix():
     exit_code = 2
+    portable_mode = True
     try:
-        exit_code = main()
+        from fastflix import portable
+    except ImportError:
+        portable_mode = False
+
+    if portable_mode:
+        print("PORTABLE MODE DETECTED: now using local config file and workspace in same directory as the executable")
+
+    try:
+        exit_code = main(portable_mode)
     except Exception:
         traceback.print_exc()
         input(

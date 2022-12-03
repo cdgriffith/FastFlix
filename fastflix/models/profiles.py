@@ -26,6 +26,7 @@ from fastflix.models.encode import (
     NVEncCAV1Settings,
     VCEEncCAVCSettings,
     VCEEncCSettings,
+    VCEEncCAV1Settings,
     HEVCVideoToolboxSettings,
     H264VideoToolboxSettings,
     SVTAVIFSettings,
@@ -163,6 +164,7 @@ class Profile(BaseModel):
     nvencc_avc: Optional[NVEncCAVCSettings] = None
     nvencc_av1: Optional[NVEncCAV1Settings] = None
     vceencc_hevc: Optional[VCEEncCSettings] = None
+    vceencc_av1: Optional[VCEEncCAV1Settings] = None
     vceencc_avc: Optional[VCEEncCAVCSettings] = None
     hevc_videotoolbox: Optional[HEVCVideoToolboxSettings] = None
     h264_videotoolbox: Optional[H264VideoToolboxSettings] = None

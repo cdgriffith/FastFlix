@@ -30,6 +30,7 @@ from fastflix.models.encode import (
     FFmpegNVENCSettings,
     VCEEncCAVCSettings,
     VCEEncCSettings,
+    VCEEncCAV1Settings,
     H264VideoToolboxSettings,
     HEVCVideoToolboxSettings,
     SVTAVIFSettings,
@@ -548,6 +549,8 @@ class ProfileWindow(QtWidgets.QWidget):
             new_profile.ffmpeg_hevc_nvenc = self.encoder
         elif isinstance(self.encoder, VCEEncCSettings):
             new_profile.vceencc_hevc = self.encoder
+        elif isinstance(self.encoder, VCEEncCAV1Settings):
+            new_profile.vceencc_av1 = self.encoder
         elif isinstance(self.encoder, VCEEncCAVCSettings):
             new_profile.vceencc_avc = self.encoder
         elif isinstance(self.encoder, SVTAVIFSettings):

@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
@@ -28,8 +28,6 @@ jobs:
         run: |
           sudo apt update
           sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 -y
-
-      - uses: syphar/restore-pip-download-cache@v1
 
       - name: Install pip requirements
         run: |
@@ -69,7 +67,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - uses: actions/setup-python@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: "3.10"
 
@@ -85,8 +83,6 @@ jobs:
       run: |
         sudo apt update
         sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 -y
-
-    - uses: syphar/restore-pip-download-cache@v1
 
     - name: Install pip requirements
       run: |
@@ -120,13 +116,13 @@ jobs:
           dist/FastFlix
           dist/LICENSE
 
-  build-windows-2019:
+  build-windows-2022:
 
-    runs-on: windows-2019
+    runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: "3.10"
 
@@ -139,8 +135,6 @@ jobs:
         echo "::set-env name=VERSION::$env:VERSION"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - uses: syphar/restore-pip-download-cache@v1
 
     - name: Insatll requirements
       shell: cmd
@@ -211,7 +205,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - uses: actions/setup-python@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: "3.10"
 
@@ -222,8 +216,6 @@ jobs:
         echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - uses: syphar/restore-pip-download-cache@v1
 
     - name: Insatll requirements
       run: |
@@ -264,7 +256,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - uses: actions/setup-python@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: "3.10"
 
@@ -275,8 +267,6 @@ jobs:
         echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - uses: syphar/restore-pip-download-cache@v1
 
     - name: Insatll requirements
       run: |

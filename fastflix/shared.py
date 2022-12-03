@@ -69,6 +69,7 @@ class MyMessageBox(QtWidgets.QMessageBox):
 
 def message(msg, title=None):
     sm = QtWidgets.QMessageBox()
+    sm.setStyleSheet("font-size: 14px")
     sm.setText(msg)
     sm.setWindowFlags(sm.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
     if title:
@@ -80,6 +81,7 @@ def message(msg, title=None):
 
 def error_message(msg, details=None, traceback=False, title=None):
     em = MyMessageBox()
+    em.setStyleSheet("font-size: 14px")
     em.setText(msg)
     em.setWindowIcon(icon)
     em.setWindowFlags(em.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
@@ -97,6 +99,7 @@ def error_message(msg, details=None, traceback=False, title=None):
 
 def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_action=None, no_action=None):
     sm = QtWidgets.QMessageBox()
+    sm.setStyleSheet("font-size: 14px")
     sm.setWindowTitle(t(title))
     sm.setText(msg)
     sm.addButton(yes_text, QtWidgets.QMessageBox.YesRole)
@@ -319,10 +322,10 @@ def sanitize(source):
     # return str().replace("\\", "/")
 
 
-def get_config():
+def get_config(portable_mode=False):
     config = os.getenv("FF_CONFIG")
     if config:
         return Path(config)
-    if Path("fastflix.yaml").exists():
+    if Path("fastflix.yaml").exists() or portable_mode:
         return Path("fastflix.yaml")
     return Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"

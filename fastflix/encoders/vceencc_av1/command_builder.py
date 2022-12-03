@@ -2,18 +2,36 @@
 import logging
 
 from fastflix.encoders.common.helpers import Command
-from fastflix.models.encode import VCEEncCAVCSettings
+from fastflix.models.encode import VCEEncCAV1Settings
 from fastflix.models.video import Video
 from fastflix.models.fastflix import FastFlix
-from fastflix.shared import clean_file_string
 from fastflix.encoders.common.encc_helpers import build_subtitle, build_audio
+from fastflix.flix import clean_file_string
 
 logger = logging.getLogger("fastflix")
 
 
 def build(fastflix: FastFlix):
     video: Video = fastflix.current_video
-    settings: VCEEncCAVCSettings = fastflix.current_video.video_settings.video_encoder_settings
+    settings: VCEEncCAV1Settings = fastflix.current_video.video_settings.video_encoder_settings
+
+    master_display = None
+    if fastflix.current_video.master_display:
+        master_display = (
+            f'--master-display "G{fastflix.current_video.master_display.green}'
+            f"B{fastflix.current_video.master_display.blue}"
+            f"R{fastflix.current_video.master_display.red}"
+            f"WP{fastflix.current_video.master_display.white}"
+            f'L{fastflix.current_video.master_display.luminance}"'
+        )
+
+    max_cll = None
+    if fastflix.current_video.cll:
+        max_cll = f'--max-cll "{fastflix.current_video.cll}"'
+
+    dhdr = None
+    if settings.hdr10plus_metadata:
+        dhdr = f'--dhdr10-info "{settings.hdr10plus_metadata}"'
 
     trim = ""
     try:
@@ -72,10 +90,6 @@ def build(fastflix: FastFlix):
     elif video.video_settings.vsync == "vfr":
         vsync_setting = "vfr"
 
-    profile_opt = ""
-    if settings.profile.lower() != "auto":
-        profile_opt = f"--profile {settings.profile}"
-
     command = [
         f'"{clean_file_string(fastflix.config.vceencc)}"',
         ("--avhw" if settings.decoder == "Hardware" else "--avsw"),
@@ -95,16 +109,14 @@ def build(fastflix: FastFlix):
         (f'--video-metadata title="{video.video_settings.video_title}"' if video.video_settings.video_title else ""),
         ("--chapter-copy" if video.video_settings.copy_chapters else ""),
         "-c",
-        "avc",
-        (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
+        "av1",
+        (f"--{settings.bitrate_mode} {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
         vbv,
         (f"--qp-min {settings.min_q}" if settings.min_q and settings.bitrate else ""),
         (f"--qp-max {settings.max_q}" if settings.max_q and settings.bitrate else ""),
-        (f"--bframes {settings.b_frames}" if settings.b_frames else ""),
         (f"--ref {settings.ref}" if settings.ref else ""),
         "--preset",
         settings.preset,
-        profile_opt,
         "--level",
         (settings.level or "auto"),
         "--colormatrix",
@@ -113,6 +125,11 @@ def build(fastflix: FastFlix):
         (video.video_settings.color_transfer or "auto"),
         "--colorprim",
         (video.video_settings.color_primaries or "auto"),
+        (master_display if master_display else ""),
+        (max_cll if max_cll else ""),
+        (dhdr if dhdr else ""),
+        "--output-depth",
+        ("10" if video.current_video_stream.bit_depth > 8 and not video.video_settings.remove_hdr else "8"),
         "--motion-est",
         settings.mv_precision,
         ("--vbaq" if settings.vbaq else ""),

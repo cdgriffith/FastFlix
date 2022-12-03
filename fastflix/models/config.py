@@ -7,6 +7,7 @@ from distutils.version import StrictVersion
 from pathlib import Path
 from typing import Literal
 import json
+import sys
 
 from appdirs import user_data_dir
 from box import Box, BoxError
@@ -25,7 +26,6 @@ from fastflix.shared import get_config
 
 logger = logging.getLogger("fastflix")
 
-fastflix_folder = Path(os.getenv("FF_WORKDIR", user_data_dir("FastFlix", appauthor=False, roaming=True)))
 ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
 
 NO_OPT = object()
@@ -83,9 +83,12 @@ def find_hdr10plus_tool():
     return None
 
 
-def where(filename: str) -> Path | None:
+def where(filename: str, portable_mode=False) -> Path | None:
     if location := shutil.which(filename):
         return Path(location)
+    if portable_mode:
+        if (location := Path(filename)).exists():
+            return location
     return None
 
 
@@ -106,7 +109,7 @@ class Config(BaseModel):
     logging_level: int = 10
     crop_detect_points: int = 10
     continue_on_failure: bool = True
-    work_path: Path = fastflix_folder
+    work_path: Path = Path(os.getenv("FF_WORKDIR", user_data_dir("FastFlix", appauthor=False, roaming=True)))
     use_sane_audio: bool = True
     selected_profile: str = "Standard Profile"
     theme: str = "onyx"
@@ -117,6 +120,7 @@ class Config(BaseModel):
     profiles: dict[str, Profile] = Field(default_factory=get_preset_defaults)
     priority: Literal["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"] = "Normal"
     stay_on_top: bool = False
+    portable_mode: bool = False
     sane_audio_selection: list = Field(
         default_factory=lambda: [
             "aac",
@@ -198,7 +202,13 @@ class Config(BaseModel):
             return Profile(profile_version=2, audio_filters=[new_match], **raw_profile)
         return Profile(profile_version=2, **raw_profile)
 
-    def load(self):
+    def load(self, portable_mode=False):
+        self.portable_mode = portable_mode
+        self.config_path = get_config(portable_mode=portable_mode)
+        if portable_mode:
+            self.work_path = Path(os.getenv("FF_WORKDIR", "fastflix_workspace"))
+            self.work_path.mkdir(exist_ok=True)
+
         if not self.config_path.exists() or self.config_path.stat().st_size < 10:
             logger.debug(f"Creating new config file {self.config_path}")
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
@@ -248,11 +258,17 @@ class Config(BaseModel):
                 except MissingFF:
                     raise err from None
         if not self.hdr10plus_parser:
-            self.hdr10plus_parser = where("hdr10plus_parser")
+            self.hdr10plus_parser = find_hdr10plus_tool()
         if not self.nvencc:
-            self.nvencc = where("NVEncC64") or where("NVEncC")
+            self.nvencc = where("NVEncC64", portable_mode=portable_mode) or where("NVEncC", portable_mode=portable_mode)
         if not self.vceencc:
-            self.vceencc = where("VCEEncC64") or where("VCEEncC")
+            self.vceencc = where("VCEEncC64", portable_mode=portable_mode) or where(
+                "VCEEncC", portable_mode=portable_mode
+            )
+        if not self.qsvencc:
+            self.qsvencc = where("QSVEncC64", portable_mode=portable_mode) or where(
+                "QSVEncC", portable_mode=portable_mode
+            )
         self.profiles.update(get_preset_defaults())
 
         if self.selected_profile not in self.profiles:
