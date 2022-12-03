@@ -266,7 +266,7 @@ class Config(BaseModel):
                 "VCEEncC", portable_mode=portable_mode
             )
         if not self.qsvencc:
-            self.vceencc = where("QSVEncC64", portable_mode=portable_mode) or where(
+            self.qsvencc = where("QSVEncC64", portable_mode=portable_mode) or where(
                 "QSVEncC", portable_mode=portable_mode
             )
         self.profiles.update(get_preset_defaults())
