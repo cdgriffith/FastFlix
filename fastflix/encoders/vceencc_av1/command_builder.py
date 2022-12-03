@@ -152,4 +152,4 @@ def build(fastflix: FastFlix):
         f'"{clean_file_string(video.video_settings.output_path)}"',
     ]
 
-    return [Command(command=" ".join(x for x in command if x), name="NVEncC Encode", exe="NVEncE")]
+    return [Command(command=" ".join(x for x in command if x), name="VCEEncC Encode", exe="VCEEncC")]
