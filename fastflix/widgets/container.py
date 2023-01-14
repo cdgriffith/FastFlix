@@ -17,7 +17,7 @@ from fastflix.language import t
 from fastflix.models.config import setting_types
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
-from fastflix.resources import main_icon, get_icon
+from fastflix.resources import main_icon, get_icon, video_file_types
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message
 from fastflix.windows_tools import cleanup_windows_notification
 from fastflix.widgets.about import About
@@ -140,6 +140,9 @@ class Container(QtWidgets.QMainWindow):
 
         file_menu = menubar.addMenu(t("File"))
 
+        load_folder = QAction(self.si(QtWidgets.QStyle.SP_DirOpenIcon), t("Load Directory"), self)
+        load_folder.triggered.connect(self.open_many)
+
         setting_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogListView), t("Settings"), self)
         setting_action.setShortcut("Ctrl+S")
         setting_action.triggered.connect(self.show_setting)
@@ -156,6 +159,8 @@ class Container(QtWidgets.QMainWindow):
         exit_action.setStatusTip(t("Exit application"))
         exit_action.triggered.connect(self.close)
 
+        file_menu.addAction(load_folder)
+        file_menu.addSeparator()
         file_menu.addAction(setting_action)
         file_menu.addSeparator()
         file_menu.addAction(self.stay_on_top_action)
@@ -312,8 +317,7 @@ class Container(QtWidgets.QMainWindow):
         folder_name = QtWidgets.QFileDialog.getExistingDirectory(self)
         if not folder_name:
             return
-
-
+        self.main.open_many(paths=[x for x in Path(folder_name).glob("*") if x.name.lower().endswith(video_file_types)])
 
 
 class OpenFolder(QtCore.QThread):

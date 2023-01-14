@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 5.2.0
+
+* Adding load directory of videos support (thanks to a lot of people!)
+
 ## Version 5.1.0
 
 * Adding AV1 support for rigaya's AMD hardware encoder!

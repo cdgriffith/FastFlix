@@ -16,6 +16,12 @@ onyx_queue_add_icon = str(Path(pkg_resources.resource_filename(__name__, "data/i
 
 breeze_styles_path = Path(pkg_resources.resource_filename(__name__, "data/styles/breeze_styles")).resolve()
 
+# fmt: off
+video_file_types = ('.mkv', '.mp4', '.m4v', '.mov', '.avi', '.divx', '.webm', '.mpg', '.mp2', '.mpeg', '.mpe', '.mpv',
+                    '.ogg', '.m4p', '.wmv', '.mov', '.qt', '.flv', '.hevc', '.gif', '.webp', '.vob', '.ogv', '.ts',
+                    '.mts', '.m2ts', '.yuv', '.rm', '.svi', '.3gp', '.3g2', '.y4m')
+# fmt: on
+
 
 @lru_cache()
 def get_icon(name: str, theme: str):

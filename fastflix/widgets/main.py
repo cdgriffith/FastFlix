@@ -42,6 +42,7 @@ from fastflix.resources import (
     onyx_convert_icon,
     onyx_queue_add_icon,
     get_text_color,
+    video_file_types,
 )
 from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
 from fastflix.windows_tools import show_windows_notification, prevent_sleep_mode, allow_sleep_mode
@@ -999,6 +1000,14 @@ class Main(QtWidgets.QWidget):
         self.page_update()
 
     def open_many(self, paths: list):
+        if self.app.fastflix.current_video:
+            discard = yes_no_message(
+                f'{t("There is already a video being processed")}<br>' f'{t("Are you sure you want to discard it?")}',
+                title="Discard current video",
+            )
+            if not discard:
+                return
+
         self.disable_all()
         for path in paths:
             self.input_video = path
@@ -1010,7 +1019,7 @@ class Main(QtWidgets.QWidget):
                 logger.exception(f"Could not load video {self.input_video}")
             else:
                 self.add_to_queue()
-
+        self.enable_all()
 
     @property
     def generate_output_filename(self):
@@ -1942,7 +1951,7 @@ class Main(QtWidgets.QWidget):
 
         location = Path(clean_file_string(event.mimeData().urls()[0].toLocalFile()))
         if location.is_dir():
-            self.open_many(paths=list(location.glob("*"))) # TODO change
+            self.open_many(paths=[x for x in Path(location).glob("*") if x.name.lower().endswith(video_file_types)])
             return
 
         try:
