@@ -998,6 +998,20 @@ class Main(QtWidgets.QWidget):
             self.output_path_button.setDisabled(True)
         self.page_update()
 
+    def open_many(self, paths: list):
+        self.disable_all()
+        for path in paths:
+            self.input_video = path
+            self.source_video_path_widget.setText(str(self.input_video))
+            self.video_path_widget.setText(str(self.input_video))
+            try:
+                self.update_video_info()
+            except Exception:
+                logger.exception(f"Could not load video {self.input_video}")
+            else:
+                self.add_to_queue()
+
+
     @property
     def generate_output_filename(self):
         source = self.input_video.stem
@@ -1926,8 +1940,13 @@ class Main(QtWidgets.QWidget):
             if not discard:
                 return
 
+        location = Path(clean_file_string(event.mimeData().urls()[0].toLocalFile()))
+        if location.is_dir():
+            self.open_many(paths=list(location.glob("*"))) # TODO change
+            return
+
         try:
-            self.input_video = Path(clean_file_string(event.mimeData().urls()[0].toLocalFile()))
+            self.input_video = location
         except (ValueError, IndexError):
             return event.ignore()
         self.source_video_path_widget.setText(str(self.input_video))

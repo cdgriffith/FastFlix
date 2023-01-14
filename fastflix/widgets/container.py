@@ -308,6 +308,13 @@ class Container(QtWidgets.QMainWindow):
         self.app.fastflix.config.stay_on_top = not self.app.fastflix.config.stay_on_top
         self.app.fastflix.config.save()
 
+    def open_many(self):
+        folder_name = QtWidgets.QFileDialog.getExistingDirectory(self)
+        if not folder_name:
+            return
+
+
+
 
 class OpenFolder(QtCore.QThread):
     def __init__(self, parent, path):
