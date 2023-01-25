@@ -145,7 +145,7 @@ Check out the different ways you can help [support FastFlix](https://github.com/
 
 # License
 
-Copyright (C) 2019-2022 Chris Griffith
+Copyright (C) 2019-2023 Chris Griffith
 
 The code itself is licensed under the MIT which you can read in the `LICENSE` file. <br>
 Read more about the release licensing in the [docs](docs/README.md) folder. <br>
