@@ -17,7 +17,7 @@ exclude = '''
 
 [tool.poetry]
 name = "FastFlix"
-version = "6.2.0a0"
+version = "5.2.0a0"
 description = "GUI Encoder"
 license = "MIT"
 authors = ["Chris Griffith <chris@cdgriffith.com>", ]
@@ -38,3 +38,6 @@ pyside6 = ">=6.3,<7.0"
 python-box = {version = ">=6.0,<7.0", extras = ["all"]}
 requests = ">=2.28,<3.0"
 reusables = ">=0.9.6,<0.10.0"
+
+[tool.poetry.scripts]
+fastflix = "fastflix.__main__:start_fastflix"
