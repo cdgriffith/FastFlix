@@ -21,6 +21,7 @@ version = "6.2.0a0"
 description = "GUI Encoder"
 license = "MIT"
 authors = ["Chris Griffith <chris@cdgriffith.com>", ]
+include = ["fastflix", "AUTHORS", "CHANGES", "LICENSE", "README.md"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"
