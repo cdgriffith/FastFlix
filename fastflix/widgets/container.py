@@ -28,6 +28,7 @@ from fastflix.widgets.windows.profile_window import ProfileWindow
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
 from fastflix.widgets.windows.concat import ConcatWindow
+from fastflix.widgets.windows.multiple_files import MultipleFilesWindow
 
 logger = logging.getLogger("fastflix")
 
@@ -314,10 +315,13 @@ class Container(QtWidgets.QMainWindow):
         self.app.fastflix.config.save()
 
     def open_many(self):
-        folder_name = QtWidgets.QFileDialog.getExistingDirectory(self)
-        if not folder_name:
-            return
-        self.main.open_many(paths=[x for x in Path(folder_name).glob("*") if x.name.lower().endswith(video_file_types)])
+        self.mfw = MultipleFilesWindow(app=self.app, main=self.main)
+        self.mfw.show()
+
+        # folder_name = QtWidgets.QFileDialog.getExistingDirectory(self)
+        # if not folder_name:
+        #     return
+        # self.main.open_many(paths=[x for x in Path(folder_name).glob("*") if x.name.lower().endswith(video_file_types)])
 
 
 class OpenFolder(QtCore.QThread):

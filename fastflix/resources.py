@@ -9,6 +9,7 @@ main_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icon.ico"))
 
 changes_file = Path(pkg_resources.resource_filename(__name__, "CHANGES")).resolve()
 local_changes_file = Path(__file__).parent.parent / "CHANGES"
+local_package_changes_file = Path(__file__).parent / "CHANGES"
 
 loading_movie = str(Path(pkg_resources.resource_filename(__name__, "data/icons/loading.gif")).resolve())
 onyx_convert_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-convert.svg")).resolve())

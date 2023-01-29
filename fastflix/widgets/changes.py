@@ -5,7 +5,7 @@ import re
 import mistune
 from PySide6 import QtCore, QtWidgets
 
-from fastflix.resources import changes_file, local_changes_file
+from fastflix.resources import changes_file, local_changes_file, local_package_changes_file
 
 __all__ = ["Changes"]
 
@@ -27,6 +27,8 @@ class Changes(QtWidgets.QScrollArea):
 
         if changes_file.exists():
             content = changes_file.read_text(encoding="utf-8", errors="ignore")
+        elif local_package_changes_file.exists():
+            content = local_package_changes_file.read_text(encoding="utf-8", errors="ignore")
         else:
             if not local_changes_file.exists():
                 raise Exception("Could not locate changlog file")
