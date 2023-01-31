@@ -41,7 +41,7 @@ class MultipleFilesTable(QtWidgets.QTableView):
         super().__init__(parent)
         self.verticalHeader().hide()
         # self.horizontalHeader().hide()
-        self.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        # self.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.setShowGrid(False)
@@ -50,17 +50,26 @@ class MultipleFilesTable(QtWidgets.QTableView):
 
         # Set our custom model - this prevents row "shifting"
         self.model = MyModel()
-        self.model.setHorizontalHeaderLabels(["Filename", "Resolution", "Codec", "Remove"])
+        self.model.setHorizontalHeaderLabels(["Filename", "Resolution", "Codec", ""])
 
         self.setModel(self.model)
         self.buttons = []
+        self.setColumnWidth(0, 430)
+        self.setColumnWidth(1, 140)
+        self.setColumnWidth(2, 80)
+        self.setColumnWidth(3, 40)
 
     def update_items(self, items):
         self.model.clear()
-        self.model.setHorizontalHeaderLabels(["Filename", "Resolution", "Codec", "Remove"])
+        self.model.setHorizontalHeaderLabels(["Filename", "Resolution", "Codec", ""])
         self.buttons = []
         for item in items:
             self.add_item(*item)
+
+        self.setColumnWidth(0, 420)
+        self.setColumnWidth(1, 140)
+        self.setColumnWidth(2, 80)
+        self.setColumnWidth(3, 40)
 
     def add_item(self, name, resolution, codec):
         filename = QtGui.QStandardItem(name)
@@ -110,14 +119,37 @@ class MultipleFilesTable(QtWidgets.QTableView):
                     self.setIndexWidget(self.model.index(i, 3), item)
 
 
+# https://www.daniweb.com/programming/software-development/code/447834/applying-pyside-s-qabstracttablemodel
+
+
 class MultipleFilesScroll(QtWidgets.QScrollArea):
     def __init__(self, parent):
         super().__init__(parent)
         self.setWidgetResizable(True)
-        self.setMinimumWidth(500)
+        self.setMinimumWidth(700)
         self.setMinimumHeight(500)
         self.table = MultipleFilesTable(None)
+        # model = TestModel()
+        # proxyModel = QtCore.QSortFilterProxyModel()
+        # proxyModel.setSourceModel(model)
+        self.table.setSortingEnabled(True)
         self.setWidget(self.table)
+
+
+# def main():
+#     a = QApplication(sys.argv)
+#
+#     table = QTableView()
+#     model = TestModel()
+#     proxyModel = QSortFilterProxyModel()
+#     proxyModel.setSourceModel(model)
+#     table.setModel(proxyModel)
+#     table.setSortingEnabled(True)
+#     table.sortByColumn(0, Qt.AscendingOrder)
+#     table.reset()
+#     table.show()
+#
+#     sys.exit(a.exec())
 
 
 class MultipleFilesWindow(QtWidgets.QWidget):
@@ -143,15 +175,15 @@ class MultipleFilesWindow(QtWidgets.QWidget):
         # manual_layout.addWidget(manual_text)
         # manual_layout.addWidget(manual_button)
 
-        save_buttom = QtWidgets.QPushButton(t("Load"))
-        save_buttom.clicked.connect(self.save)
+        save_button = QtWidgets.QPushButton(t("Add to Queue"))
+        save_button.clicked.connect(self.save)
 
         top_bar = QtWidgets.QHBoxLayout()
         top_bar.addWidget(folder_button)
         top_bar.addStretch(1)
         top_bar.addWidget(self.base_folder_label)
         top_bar.addStretch(1)
-        top_bar.addWidget(save_buttom)
+        top_bar.addWidget(save_button)
 
         layout.addLayout(top_bar)
 
@@ -223,7 +255,7 @@ class MultipleFilesWindow(QtWidgets.QWidget):
             )
 
     def save(self):
-        self.main.open_many([Path(self.folder_name, x) for x in self.files_area.table.get_items()])
         self.hide()
+        self.main.open_many([Path(self.folder_name, x) for x in self.files_area.table.get_items()])
         self.files_area.table.model.clear()
         self.files_area.table.buttons = []

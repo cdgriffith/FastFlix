@@ -1008,17 +1008,32 @@ class Main(QtWidgets.QWidget):
             if not discard:
                 return
 
+        def open_em(signal, stop_signal, paths, **_):
+            stop = False
+
+            def stop_me():
+                nonlocal stop
+                stop = True
+
+            stop_signal.connect(stop_me)
+
+            total_items = len(paths)
+            for i, path in enumerate(paths):
+                if stop:
+                    return
+                self.input_video = path
+                self.source_video_path_widget.setText(str(self.input_video))
+                self.video_path_widget.setText(str(self.input_video))
+                try:
+                    self.update_video_info(hide_progress=True)
+                except Exception:
+                    logger.exception(f"Could not load video {self.input_video}")
+                else:
+                    self.add_to_queue()
+                signal.emit(int((i / total_items) * 100))
+
         self.disable_all()
-        for path in paths:
-            self.input_video = path
-            self.source_video_path_widget.setText(str(self.input_video))
-            self.video_path_widget.setText(str(self.input_video))
-            try:
-                self.update_video_info()
-            except Exception:
-                logger.exception(f"Could not load video {self.input_video}")
-            else:
-                self.add_to_queue()
+        ProgressBar(self.app, [Task(t("Loading Videos"), open_em, {"paths": paths})], signal_task=True, can_cancel=True)
         self.enable_all()
 
     @property
@@ -1410,7 +1425,7 @@ class Main(QtWidgets.QWidget):
         self.page_update()
 
     @reusables.log_exception("fastflix", show_traceback=False)
-    def update_video_info(self):
+    def update_video_info(self, hide_progress=False):
         self.loading_video = True
         self.output_video_path_widget.setText(self.generate_output_filename)
         self.output_video_path_widget.setDisabled(False)
@@ -1425,7 +1440,7 @@ class Main(QtWidgets.QWidget):
         ]
 
         try:
-            ProgressBar(self.app, tasks)
+            ProgressBar(self.app, tasks, hidden=hide_progress)
         except FlixError:
             error_message(f"{t('Not a video file')}<br>{self.input_video}")
             self.clear_current_video()

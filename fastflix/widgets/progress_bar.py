@@ -29,6 +29,7 @@ class ProgressBar(QtWidgets.QFrame):
         signal_task: bool = False,
         auto_run: bool = True,
         can_cancel: bool = False,
+        hidden: bool = False,
     ):
         super().__init__(None)
         self.app = app
@@ -56,7 +57,8 @@ class ProgressBar(QtWidgets.QFrame):
             self.layout.addWidget(cancel_button)
         self.setLayout(self.layout)
 
-        self.show()
+        if not hidden:
+            self.show()
         if auto_run:
             self.run()
 
