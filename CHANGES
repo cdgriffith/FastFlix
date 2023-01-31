@@ -3,6 +3,7 @@
 ## Version 5.2.0
 
 * Adding load directory of videos support (thanks to Chris / moonwhaler and a lot of others!)
+* Fixing #398 audio and subtitles disabled when editing queue item (thanks to philblue1 and Don Gafford)
 
 ## Version 5.1.0
 

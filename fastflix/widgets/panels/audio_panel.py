@@ -403,7 +403,11 @@ class AudioList(FlixList):
         self.update_audio_settings()
 
     def allowed_formats(self, allowed_formats=None):
-        disable_dups = "nvencc" in self.main.convert_to.lower()
+        disable_dups = (
+            "nvencc" in self.main.convert_to.lower()
+            or "vcenc" in self.main.convert_to.lower()
+            or "qsvenc" in self.main.convert_to.lower()
+        )
         tracks_need_removed = False
         for track in self.tracks:
             track.widgets.dup_button.setDisabled(disable_dups)

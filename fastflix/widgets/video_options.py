@@ -41,6 +41,8 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.main = parent
         self.app = app
 
+        self.reloading = False
+
         self.selected = 0
         self.commands = CommandList(self, self.app)
         self.current_settings = self.main.current_encoder.settings_panel(self, self.main, self.app)
@@ -142,8 +144,9 @@ class VideoOptions(QtWidgets.QTabWidget):
                 f"This encoder, {self.main.current_encoder.name} does not support concatenating files together"
             )
         # Page update does a reload which bases itself off the current encoder so we have to do audio formats after
-        self.audio.allowed_formats(self._get_audio_formats(encoder))
-        self.update_profile()
+        if not self.reloading:
+            self.audio.allowed_formats(self._get_audio_formats(encoder))
+            self.update_profile()
 
     def get_settings(self):
         if not self.app.fastflix.current_video:
@@ -217,12 +220,16 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.main.container.profile.update_settings()
 
     def reload(self):
-        self.change_conversion(self.app.fastflix.current_video.video_settings.video_encoder_settings.name)
-        self.main.widgets.convert_to.setCurrentIndex(
-            list(self.app.fastflix.encoders.keys()).index(
-                self.app.fastflix.current_video.video_settings.video_encoder_settings.name
+        self.reloading = True
+        try:
+            self.change_conversion(self.app.fastflix.current_video.video_settings.video_encoder_settings.name)
+            self.main.widgets.convert_to.setCurrentIndex(
+                list(self.app.fastflix.encoders.keys()).index(
+                    self.app.fastflix.current_video.video_settings.video_encoder_settings.name
+                )
             )
-        )
+        finally:
+            self.reloading = False
         try:
             self.current_settings.reload()
         except Exception:
