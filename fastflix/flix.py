@@ -2,6 +2,7 @@
 import logging
 import os
 import re
+import sys
 from pathlib import Path
 from subprocess import PIPE, CompletedProcess, Popen, TimeoutExpired, run, check_output
 from typing import List, Tuple, Union
@@ -194,7 +195,7 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         "json",
         "-show_format",
         "-show_streams",
-        f"{clean_file_string(file)}",
+        clean_file_string(file),
     ]
     result = execute(command)
     if result.returncode != 0:
@@ -292,14 +293,14 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
                 f"{ffmpeg}",
                 "-y",
                 "-i",
-                f"{clean_file_string(source)}",
+                clean_file_string(source),
                 "-map",
                 f"0:{stream}",
                 "-c",
                 "copy",
                 "-vframes",
                 "1",
-                f"{clean_file_string(file_name)}",
+                clean_file_string(file_name),
             ],
             work_dir=work_dir,
             timeout=5,
@@ -321,7 +322,8 @@ def generate_thumbnail_command(
         f'"{config.ffmpeg}"',
         f"-ss {start_time}" if start_time else "",
         "-loglevel warning",
-        f'-i "{clean_file_string(source)}"',
+        "-i",
+        clean_file_string(source),
         ("-init_hw_device opencl=ocl -filter_hw_device ocl" if enable_opencl else ""),
         filters,
         f"-map 0:{input_track}" if "-map" not in filters else "",
@@ -329,7 +331,7 @@ def generate_thumbnail_command(
         "-y",
         "-map_metadata -1",
         "-frames:v 1",
-        f'"{clean_file_string(output)}"',
+        clean_file_string(output),
     ]
     return " ".join(command_options)
 
@@ -352,7 +354,7 @@ def get_auto_crop(
             "-ss",
             f"{start_time}",
             "-i",
-            f"{clean_file_string(source)}",
+            clean_file_string(source),
             "-map",
             f"0:{input_track}",
             "-vf",
@@ -401,7 +403,7 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
                 f"{config.ffmpeg}",
                 "-hide_banner",
                 "-i",
-                f"{clean_file_string(source)}",
+                clean_file_string(source),
                 "-vf",
                 "idet",
                 "-frames:v",
@@ -518,7 +520,7 @@ def parse_hdr_details(app: FastFlixApp, **_):
                     "%+#1",
                     "-show_entries",
                     "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt",
-                    f"{clean_file_string(app.fastflix.current_video.source)}",
+                    clean_file_string(app.fastflix.current_video.source),
                 ]
             )
 

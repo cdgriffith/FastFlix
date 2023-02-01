@@ -29,7 +29,7 @@ class About(QtWidgets.QWidget):
             f"<br>{t('Author')}: {link('https://github.com/cdgriffith', 'Chris Griffith', app.fastflix.config.theme)}"
             f"<br>{t('License')}: MIT"
         )
-        label.setFont(QtGui.QFont("Arial", 14))
+        label.setFont(QtGui.QFont(self.app.font().family(), 14))
         label.setAlignment(QtCore.Qt.AlignCenter)
         label.setOpenExternalLinks(True)
         label.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -39,7 +39,7 @@ class About(QtWidgets.QWidget):
             f'{link("https://github.com/cdgriffith/FastFlix/wiki/Support-FastFlix", t("Support FastFlix"), app.fastflix.config.theme)}<br><br>'
         )
         support_label.setOpenExternalLinks(True)
-        support_label.setFont(QtGui.QFont("Arial", 12))
+        support_label.setFont(QtGui.QFont(self.app.font().family(), 12))
         support_label.setAlignment((QtCore.Qt.AlignCenter | QtCore.Qt.AlignTop))
         layout.addWidget(support_label)
 

@@ -188,7 +188,7 @@ class Main(QtWidgets.QWidget):
             )
         self.source_video_path_widget = QtWidgets.QLineEdit(motto)
         self.source_video_path_widget.setFixedHeight(20)
-        self.source_video_path_widget.setFont(QtGui.QFont("helvetica", 9))
+        self.source_video_path_widget.setFont(QtGui.QFont(self.app.font().family(), 9))
         self.source_video_path_widget.setDisabled(True)
         self.source_video_path_widget.setStyleSheet(
             f"padding: 0 0 -1px 5px; color: rgb({get_text_color(self.app.fastflix.config.theme)})"
@@ -197,7 +197,7 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget = QtWidgets.QLineEdit("")
         self.output_video_path_widget.setDisabled(True)
         self.output_video_path_widget.setFixedHeight(20)
-        self.output_video_path_widget.setFont(QtGui.QFont("helvetica", 9))
+        self.output_video_path_widget.setFont(QtGui.QFont(self.app.font().family(), 9))
         self.output_video_path_widget.setStyleSheet("padding: 0 0 -1px 5px")
         self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
         self.video_path_widget.setEnabled(False)

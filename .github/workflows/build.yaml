@@ -6,17 +6,20 @@ on:
     branches: [ master, develop ]
 
 jobs:
-  build-ubuntu22:
-    runs-on: ubuntu-22.04
+  build-nix:
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, macos-12 ]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
-      - name: Gather build version
+      - name: Gather build version (*nix)
         run: |
           mkdir dist
           echo "::set-env name=VERSION::$(python scripts/get_version.py)"
@@ -24,16 +27,23 @@ jobs:
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-      - name: Install PySide6 apt requirements
+      - name: Install PySide6 apt Requirements
         run: |
           sudo apt update
           sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 -y
+        if: ${{ startsWith(matrix.os, "ubuntu") }}
 
-      - name: Install pip requirements
+      - name: Install Python Dependencies
         run: |
-          python -m pip install --upgrade pip setuptools --ignore-installed
-          python -m pip install --upgrade wheel typing_extensions pyinstaller
-          python -m pip install --upgrade -r requirements.txt
+          python -m pip install --upgrade pip setuptools poetry --ignore-installed
+          poetry config virtualenvs.create false --local
+
+      - name: Poetry Install
+        run: poetry install --with dev --with test
+        continue-on-error: true
+
+      - name: Poetry Install 2
+        run: poetry install --with dev --with test
 
       - name: Grab iso-639 lists
         run: |
@@ -56,65 +66,66 @@ jobs:
       - name: Upload standalone executable artifact
         uses: actions/upload-artifact@v3
         with:
-          name: FastFlix_${{ env.VERSION }}_ubuntu_22_x86_64
+          name: FastFlix_${{ env.VERSION }}_${{ matrix.os }}_x86_64
           path: |
             dist/FastFlix
             dist/LICENSE
-
-  build-ubuntu20:
-    runs-on: ubuntu-20.04
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
-
-    - name: Gather build version
-      run: |
-        mkdir dist
-        echo "::set-env name=VERSION::$(python scripts/get_version.py)"
-        echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - name: Install PySide6 apt requirements
-      run: |
-        sudo apt update
-        sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 -y
-
-    - name: Install pip requirements
-      run: |
-        python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade wheel typing_extensions pyinstaller
-        python -m pip install --upgrade -r requirements.txt
-
-    - name: Grab iso-639 lists
-      run: |
-        cp $(python -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
-        cp $(python -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
-
-    - name: Build single executable
-      run: pyinstaller FastFlix_Nix_OneFile.spec
-
-    - name: Copy license to dist
-      run: |
-        cp docs/build-licenses.txt dist/LICENSE
-
-    - name: Test executable
-      run: |
-        chmod +x dist/FastFlix
-        dist/FastFlix --version
-        dist/FastFlix --test
-
-    - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: FastFlix_${{ env.VERSION }}_ubuntu_20_x86_64
-        path: |
-          dist/FastFlix
-          dist/LICENSE
+#
+#  build-ubuntu20:
+#    runs-on: ubuntu-20.04
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#
+#    - uses: actions/setup-python@v4
+#      with:
+#        python-version: "3.11"
+#
+#    - name: Gather build version
+#      run: |
+#        mkdir dist
+#        echo "::set-env name=VERSION::$(python scripts/get_version.py)"
+#        echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
+#      env:
+#        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+#
+#    - name: Install PySide6 apt requirements
+#      run: |
+#        sudo apt update
+#        sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 -y
+#
+#    - name: Install pip requirements
+#      run: |
+#        python -m pip install --upgrade pip setuptools --ignore-installed
+#        python -m pip install --upgrade wheel typing_extensions pyinstaller
+#        python -m pip install --upgrade -r requirements.txt
+#
+#    - name: Grab iso-639 lists
+#      run: |
+#        cp $(python -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
+#        cp $(python -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
+#
+#    - name: Build single executable
+#      run: pyinstaller FastFlix_Nix_OneFile.spec
+#
+#    - name: Copy license to dist
+#      run: |
+#        cp docs/build-licenses.txt dist/LICENSE
+#
+#    - name: Test executable
+#      run: |
+#        chmod +x dist/FastFlix
+#        dist/FastFlix --version
+#        dist/FastFlix --test
+#
+#    - name: Upload standalone executable artifact
+#      uses: actions/upload-artifact@v3
+#      with:
+#        name: FastFlix_${{ env.VERSION }}_ubuntu_20_x86_64
+#        path: |
+#          dist/FastFlix
+#          dist/LICENSE
+#
 
   build-windows-2022:
 
@@ -124,7 +135,7 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
       with:
-        python-version: "3.10"
+        python-version: "3.11"
 
     - name: Gather build version
       shell: powershell
@@ -136,12 +147,18 @@ jobs:
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
-    - name: Insatll requirements
-      shell: cmd
+    - name: Install Python Dependencies
       run: |
-        python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade pypiwin32 wheel typing_extensions pyinstaller
-        python -m pip install -r requirements.txt
+        python -m pip install --upgrade pip setuptools poetry --ignore-installed
+        poetry config virtualenvs.create false --local
+
+    - name: Poetry Install
+      run: poetry install --with dev
+      continue-on-error: true
+
+    - name: Poetry Install 2
+      run: poetry install --with dev
+
 
     - name: Grab iso-639 lists
       shell: powershell
@@ -197,105 +214,3 @@ jobs:
       with:
         name: FastFlix_${{ env.VERSION }}_installer
         path: FastFlix_${{ env.VERSION }}_installer.exe
-
-  build-macos-11:
-
-    runs-on: macos-11
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
-
-    - name: Gather build version
-      run: |
-        mkdir dist
-        echo "::set-env name=VERSION::$(python scripts/get_version.py)"
-        echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - name: Insatll requirements
-      run: |
-        python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade wheel typing_extensions pyinstaller
-        python -m pip install --upgrade -r requirements.txt
-
-    - name: Grab iso-639 lists
-      run: |
-        cp $(python -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
-        cp $(python -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
-
-    - name: Build executable
-      run: pyinstaller FastFlix_Nix_OneFile.spec
-
-    - name: Copy license to dist
-      run: |
-        cp docs/build-licenses.txt dist/LICENSE
-
-    - name: Test executable
-      run: |
-        chmod +x dist/FastFlix
-        dist/FastFlix --version
-        dist/FastFlix --test
-
-    - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: FastFlix_${{ env.VERSION }}_macos11
-        path: |
-          dist/FastFlix
-          dist/LICENSE
-
-  build-macos-12:
-
-    runs-on: macos-12
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
-
-    - name: Gather build version
-      run: |
-        mkdir dist
-        echo "::set-env name=VERSION::$(python scripts/get_version.py)"
-        echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
-      env:
-        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-    - name: Insatll requirements
-      run: |
-        python -m pip install --upgrade pip setuptools --ignore-installed
-        python -m pip install --upgrade wheel typing_extensions pyinstaller
-        python -m pip install --upgrade -r requirements.txt
-
-    - name: Grab iso-639 lists
-      run: |
-        cp $(python -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
-        cp $(python -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
-
-    - name: Build executable
-      run: pyinstaller FastFlix_Nix_OneFile.spec
-
-    - name: Copy license to dist
-      run: |
-        cp docs/build-licenses.txt dist/LICENSE
-
-    - name: Test executable
-      run: |
-        chmod +x dist/FastFlix
-        dist/FastFlix --version
-        dist/FastFlix --test
-
-    - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: FastFlix_${{ env.VERSION }}_macos12
-        path: |
-          dist/FastFlix
-          dist/LICENSE

@@ -52,6 +52,8 @@ def generate_ffmpeg_start(
     time_two = time_settings if not fast_seek else ""
     incoming_fps = f"-r {source_fps}" if source_fps else ""
     vsync_text = f"-vsync {vsync}" if vsync else ""
+    if video_title:
+        video_title.replace('"', '\\"')
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = clean_file_string(source)
     ffmpeg = clean_file_string(ffmpeg)
@@ -199,7 +201,7 @@ def generate_filters(
             else:
                 filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
         else:
-            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles={quoted_path(clean_file_string(source))}:si={burn_in_subtitle_track}[v]"
+            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles='{quoted_path(clean_file_string(source))}':si={burn_in_subtitle_track}[v]"
     elif filters:
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:

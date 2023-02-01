@@ -33,7 +33,7 @@ def create_app():
     main_app = FastFlixApp(sys.argv)
     main_app.allWindows()
     main_app.setApplicationDisplayName("FastFlix")
-    my_font = QtGui.QFont("helvetica", 9)
+    my_font = QtGui.QFont("Arial" if "Arial" in QtGui.QFontDatabase().families() else "Sans Serif", 9)
     main_app.setFont(my_font)
     main_app.setWindowIcon(QtGui.QIcon(main_icon))
     return main_app

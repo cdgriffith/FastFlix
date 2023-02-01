@@ -2,8 +2,11 @@
 
 ## Version 5.2.0
 
-* Adding load directory of videos support (thanks to Chris / moonwhaler and a lot of others!)
+* Adding #227 load directory of videos support (thanks to Chris / moonwhaler and a lot of others!)
+* Adding pip builds again allow for `pipx` install
+* Adding #367 safer font defaults (thanks to Archer Allstars)
 * Fixing #398 audio and subtitles disabled when editing queue item (thanks to philblue1 and Don Gafford)
+* Fixing #350 Unable to burn in subtitles (thanks to Maddie Davis)
 
 ## Version 5.1.0
 
