@@ -23,15 +23,14 @@ class ThumbnailCreator(QtCore.QThread):
         self.command = command
 
     def run(self):
-        self.main.thread_logging_signal.emit(f"INFO:{t('Generating thumbnail')}: {self.command}")
-        result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, shell=True)
+        self.main.thread_logging_signal.emit(f"DEBUG:{t('Generating thumbnail')}: {self.command}")
+        result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
         if result.returncode > 0:
             if "No such filter: 'zscale'" in result.stdout.decode(encoding="utf-8", errors="ignore"):
                 self.main.thread_logging_signal.emit(
                     "ERROR:Could not generate thumbnail because you are using an outdated FFmpeg! "
                     "Please use FFmpeg 4.3+ built against the latest zimg libraries. "
                     "Static builds available at https://ffmpeg.org/download.html "
-                    "(Linux distributions are often slow to update)"
                 )
             else:
                 self.main.thread_logging_signal.emit(f"ERROR:{t('Could not generate thumbnail')}: {result.stdout}")

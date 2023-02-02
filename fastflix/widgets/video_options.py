@@ -161,7 +161,6 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.attachments.update_cover_settings()
 
         self.advanced.update_settings()
-        self.main.container.profile.update_settings()
 
     def new_source(self):
         if not self.app.fastflix.current_video:
@@ -183,7 +182,6 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.current_settings.new_source()
         self.queue.new_source()
         self.advanced.new_source()
-        self.main.container.profile.update_settings()
         self.info.reset()
         self.debug.reset()
 
@@ -193,7 +191,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         if getattr(self.main.current_encoder, "enable_subtitles", False):
             self.subtitles.refresh()
         self.advanced.update_settings()
-        self.main.container.profile.update_settings()
+        # self.main.container.profile.update_settings()
 
     def update_profile(self):
         self.current_settings.update_profile()
@@ -217,7 +215,7 @@ class VideoOptions(QtWidgets.QTabWidget):
             if getattr(self.main.current_encoder, "enable_attachments", False):
                 self.attachments.update_cover_settings()
         self.advanced.update_settings()
-        self.main.container.profile.update_settings()
+        # self.main.container.profile.update_settings()
 
     def reload(self):
         self.reloading = True

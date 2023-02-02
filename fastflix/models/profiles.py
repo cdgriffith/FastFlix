@@ -128,6 +128,8 @@ class Profile(BaseModel):
     remove_metadata: bool = True
     remove_hdr: bool = False
     encoder: str = "HEVC (x265)"
+    resolution_method: str = "auto"
+    resolution_pixels: int | None = None
 
     audio_filters: Optional[list[AudioMatch]] = None
     # subtitle_filters: Optional[list[SubtitleMatch]] = None

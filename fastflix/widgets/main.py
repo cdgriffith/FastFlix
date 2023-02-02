@@ -65,6 +65,32 @@ Request = namedtuple(
 
 Response = namedtuple("Response", ["status", "video_uuid", "command_uuid"])
 
+resolutions = {
+    t("Auto"): {"method": "auto"},
+    t("Long Edge"): {"method": "long edge"},
+    t("Width"): {"method": "width"},
+    t("Height"): {"method": "height"},
+    "4320 LE": {"method": "long edge", "pixels": 4320},
+    "2160 LE": {"method": "long edge", "pixels": 2160},
+    "1440 LE": {"method": "long edge", "pixels": 1440},
+    "1080 LE": {"method": "long edge", "pixels": 1080},
+    "720 LE": {"method": "long edge", "pixels": 720},
+    "480 LE": {"method": "long edge", "pixels": 480},
+    "4320 H": {"method": "height", "pixels": 4320},
+    "2160 H": {"method": "height", "pixels": 2160},
+    "1440 H": {"method": "height", "pixels": 1440},
+    "1080 H": {"method": "height", "pixels": 1080},
+    "720 H": {"method": "height", "pixels": 720},
+    "480 H": {"method": "height", "pixels": 480},
+    "7680 W": {"method": "width", "pixels": 7680},
+    "3840 W": {"method": "width", "pixels": 3840},
+    "2560 W": {"method": "width", "pixels": 2560},
+    "1920 W": {"method": "width", "pixels": 1920},
+    "1280 W": {"method": "width", "pixels": 1280},
+    "1024 W": {"method": "width", "pixels": 1024},
+    "640 W": {"method": "width", "pixels": 640},
+}
+
 
 class CropWidgets(BaseModel):
     top: QtWidgets.QLineEdit = None
@@ -105,6 +131,8 @@ class MainWidgets(BaseModel):
     profile_box: QtWidgets.QComboBox = None
     thumb_time: QtWidgets.QSlider = None
     thumb_key: QtWidgets.QCheckBox = None
+    resolution_drop_down: QtWidgets.QComboBox = None
+    resolution_custom: QtWidgets.QLineEdit = None
 
     class Config:
         arbitrary_types_allowed = True
@@ -473,7 +501,6 @@ class Main(QtWidgets.QWidget):
         layout.addLayout(self.init_checkboxes())
         layout.addStretch(1)
         # custom_options = QtWidgets.QTextEdit()
-        # # custom_options.setWidt
         # custom_options.setPlaceholderText(t("Custom Encoder Options"))
         # custom_options.setMaximumHeight(90)
         # layout.addWidget(custom_options)
@@ -557,13 +584,38 @@ class Main(QtWidgets.QWidget):
             self.get_auto_crop()
         self.loading_video = True
         try:
-            self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
+            # self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
             self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") or 0 // 90)
 
             v_flip = self.app.fastflix.config.opt("vertical_flip")
             h_flip = self.app.fastflix.config.opt("horizontal_flip")
 
             self.widgets.flip.setCurrentIndex(self.flip_to_int(v_flip, h_flip))
+
+            res_method = self.app.fastflix.config.opt("resolution_method")
+            res_pix = self.app.fastflix.config.opt("resolution_pixels")
+            if not res_pix:
+                matcher = {"method": res_method}
+            else:
+                matcher = {"method": res_method, "pixels": res_pix}
+
+            if matcher in resolutions.values():
+                for k, v in resolutions.items():
+                    if v == matcher:
+                        self.widgets.resolution_drop_down.setCurrentText(k)
+                        break
+            else:
+                if "pixels" in matcher:
+                    del matcher["pixels"]
+                    if matcher in resolutions.values():
+                        for k, v in resolutions.items():
+                            if v == matcher:
+                                self.widgets.resolution_drop_down.setCurrentText(k)
+                                self.widgets.resolution_custom.setText(str(res_pix))
+                                break
+                else:
+                    self.widgets.resolution_drop_down.setCurrentIndex(0)
+
             try:
                 self.video_options.change_conversion(self.app.fastflix.config.opt("encoder"))
                 self.video_options.update_profile()
@@ -735,47 +787,72 @@ class Main(QtWidgets.QWidget):
         label = QtWidgets.QLabel(t("Resolution"))
         main_row.addWidget(label, alignment=QtCore.Qt.AlignLeft)
 
-        reset = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("undo")), "")
-        reset.setIconSize(QtCore.QSize(10, 10))
-        reset.clicked.connect(self.reset_scales)
-        reset.setFixedWidth(15)
-        reset.setStyleSheet(reset_button_style)
-        self.buttons.append(reset)
-        main_row.addWidget(reset, alignment=(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft))
-        main_row.addStretch(1)
+        self.widgets.resolution_drop_down = QtWidgets.QComboBox()
+        self.widgets.resolution_drop_down.addItems(list(resolutions.keys()))
+        self.widgets.resolution_drop_down.currentIndexChanged.connect(self.update_resolution)
 
-        self.widgets.scale.width, width_layout = self.build_hoz_int_field(f"{t('Width')} ")
-        self.widgets.scale.height, height_layout, lb, rb = self.build_hoz_int_field(
-            f"  {t('Height')} ", return_buttons=True
-        )
-        self.widgets.scale.height.setDisabled(True)
-        self.widgets.scale.height.setText("Auto")
-        lb.setDisabled(True)
-        rb.setDisabled(True)
+        self.widgets.resolution_custom = QtWidgets.QLineEdit()
+        self.widgets.resolution_custom.setValidator(only_int)
+        self.widgets.resolution_custom.setFixedWidth(120)
 
-        main_row.addLayout(width_layout)
-        main_row.addLayout(height_layout)
+        main_row.addWidget(self.widgets.resolution_drop_down, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignLeft))
+        main_row.addWidget(self.widgets.resolution_custom, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignCenter))
 
-        # TODO scale 0 error
+        # reset = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("undo")), "")
+        # reset.setIconSize(QtCore.QSize(10, 10))
+        # reset.clicked.connect(self.reset_scales)
+        # reset.setFixedWidth(15)
+        # reset.setStyleSheet(reset_button_style)
+        # self.buttons.append(reset)
+        # main_row.addWidget(reset, alignment=(QtCore.Qt.AlignTop | QtCore.Qt.AlignLeft))
+        # main_row.addStretch(1)
+        #
+        # self.widgets.scale.width, width_layout = self.build_hoz_int_field(f"{t('Width')} ")
+        # self.widgets.scale.height, height_layout, lb, rb = self.build_hoz_int_field(
+        #     f"  {t('Height')} ", return_buttons=True
+        # )
+        # self.widgets.scale.height.setDisabled(True)
+        # self.widgets.scale.height.setText("Auto")
+        # lb.setDisabled(True)
+        # rb.setDisabled(True)
+        #
+        # main_row.addLayout(width_layout)
+        # main_row.addLayout(height_layout)
+        #
+        #
+        # self.widgets.scale.width.textChanged.connect(lambda: self.scale_update())
+        # self.widgets.scale.height.textChanged.connect(lambda: self.scale_update())
+        #
+        # self.widgets.scale.keep_aspect = QtWidgets.QCheckBox(t("Keep aspect ratio"))
+        # self.widgets.scale.keep_aspect.setMaximumHeight(40)
+        # self.widgets.scale.keep_aspect.setChecked(True)
+        # self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
+        # self.widgets.scale.keep_aspect.toggled.connect(lambda: self.keep_aspect_update())
 
-        self.widgets.scale.width.textChanged.connect(lambda: self.scale_update())
-        self.widgets.scale.height.textChanged.connect(lambda: self.scale_update())
-
-        self.widgets.scale.keep_aspect = QtWidgets.QCheckBox(t("Keep aspect ratio"))
-        self.widgets.scale.keep_aspect.setMaximumHeight(40)
-        self.widgets.scale.keep_aspect.setChecked(True)
-        self.widgets.scale.keep_aspect.toggled.connect(lambda: self.toggle_disable((self.widgets.scale.height, lb, rb)))
-        self.widgets.scale.keep_aspect.toggled.connect(lambda: self.keep_aspect_update())
-
-        main_row.addWidget(self.widgets.scale.keep_aspect, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
+        # main_row.addWidget(self.widgets.scale.keep_aspect, alignment=(QtCore.Qt.AlignBottom | QtCore.Qt.AlignRight))
         scale_area.setLayout(main_row)
         return scale_area
 
+    def update_resolution(self):
+        if self.widgets.resolution_drop_down.currentIndex() == 0:
+            self.widgets.resolution_custom.setDisabled(True)
+            self.widgets.resolution_custom.setText("")
+            self.widgets.resolution_custom.setPlaceholderText("")
+        elif self.widgets.resolution_drop_down.currentIndex() in {1, 2, 3}:
+            self.widgets.resolution_custom.setDisabled(False)
+            self.widgets.resolution_custom.setText("")
+            self.widgets.resolution_custom.setPlaceholderText(self.widgets.resolution_drop_down.currentText())
+        else:
+            self.widgets.resolution_custom.setDisabled(True)
+            self.widgets.resolution_custom.setPlaceholderText("")
+
+        self.page_update(build_thumbnail=False)
+
     def reset_scales(self):
         self.loading_video = True
-        self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
+        # self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
         self.loading_video = False
-        self.widgets.scale.height.setText(str(self.app.fastflix.current_video.height))
+        # self.widgets.scale.height.setText(str(self.app.fastflix.current_video.height))
 
     def init_crop(self):
         crop_box = QtWidgets.QGroupBox()
@@ -1162,33 +1239,32 @@ class Main(QtWidgets.QWidget):
                 return None
             return crop
 
-    def keep_aspect_update(self) -> None:
-        keep_aspect = self.widgets.scale.keep_aspect.isChecked()
-
-        if keep_aspect:
-            # TODO need to find way to translate and keep logic
-            self.widgets.scale.height.setText("Auto")
-        else:
-            try:
-                scale_width = int(self.widgets.scale.width.text())
-                assert scale_width > 0
-            except (ValueError, AssertionError):
-                self.scale_updating = False
-                if self.widgets.scale.height.text() == "Auto":
-                    self.widgets.scale.height.setText("-8")
-                return logger.warning("Invalid width")
-
-            if self.app.fastflix.current_video.height == 0 or self.app.fastflix.current_video.width == 0:
-                return logger.warning("Input video does not exist or has 0 dimension")
-
-            ratio = self.app.fastflix.current_video.height / self.app.fastflix.current_video.width
-            scale_height = ratio * scale_width
-            mod = int(scale_height % 2)
-            if mod:
-                scale_height -= mod
-                logger.info(f"Have to adjust scale height by {mod} pixels")
-            self.widgets.scale.height.setText(str(int(scale_height)))
-        self.scale_update()
+    # def keep_aspect_update(self) -> None:
+    # keep_aspect = True #self.widgets.scale.keep_aspect.isChecked()
+    #
+    # if keep_aspect:
+    #     self.widgets.scale.height.setText("Auto")
+    # else:
+    #     try:
+    #         scale_width = int(self.widgets.scale.width.text())
+    #         assert scale_width > 0
+    #     except (ValueError, AssertionError):
+    #         self.scale_updating = False
+    #         if self.widgets.scale.height.text() == "Auto":
+    #             self.widgets.scale.height.setText("-8")
+    #         return logger.warning("Invalid width")
+    #
+    #     if self.app.fastflix.current_video.height == 0 or self.app.fastflix.current_video.width == 0:
+    #         return logger.warning("Input video does not exist or has 0 dimension")
+    #
+    #     ratio = self.app.fastflix.current_video.height / self.app.fastflix.current_video.width
+    #     scale_height = ratio * scale_width
+    #     mod = int(scale_height % 2)
+    #     if mod:
+    #         scale_height -= mod
+    #         logger.info(f"Have to adjust scale height by {mod} pixels")
+    #     self.widgets.scale.height.setText(str(int(scale_height)))
+    # self.scale_update()
 
     def disable_all(self):
         for name, widget in self.widgets.items():
@@ -1218,101 +1294,102 @@ class Main(QtWidgets.QWidget):
                 widget.setEnabled(True)
         for button in self.buttons:
             button.setEnabled(True)
-        if self.widgets.scale.keep_aspect.isChecked():
-            self.widgets.scale.height.setDisabled(True)
+        # if self.widgets.scale.keep_aspect.isChecked():
+        #     self.widgets.scale.height.setDisabled(True)
         self.output_path_button.setEnabled(True)
         self.output_video_path_widget.setEnabled(True)
         self.add_profile.setEnabled(True)
 
-    @reusables.log_exception("fastflix", show_traceback=False)
-    def scale_update(self):
-        if self.scale_updating or self.loading_video:
-            return False
-
-        self.scale_updating = True
-
-        keep_aspect = self.widgets.scale.keep_aspect.isChecked()
-
-        self.widgets.scale.height.setDisabled(keep_aspect)
-        height = self.app.fastflix.current_video.height
-        width = self.app.fastflix.current_video.width
-        if crop := self.build_crop():
-            width = crop.width
-            height = crop.height
-
-        if keep_aspect and (not height or not width):
-            self.scale_updating = False
-            return logger.warning(t("Invalid source dimensions"))
-            # return self.scale_warning_message.setText("Invalid source dimensions")
-
-        try:
-            scale_width = int(self.widgets.scale.width.text())
-            assert scale_width > 0
-        except (ValueError, AssertionError):
-            self.scale_updating = False
-            return logger.warning(t("Invalid width"))
-
-        if scale_width % 2:
-            self.scale_updating = False
-            # TODO add better colors / way
-            # self.widgets.scale.width.setStyleSheet("background-color: red;")
-            self.widgets.scale.width.setToolTip(
-                f"{t('Width must be divisible by 2 - Source width')}: {self.app.fastflix.current_video.width}"
-            )
-            return logger.warning(t("Width must be divisible by 2"))
-            # return self.scale_warning_message.setText("Width must be divisible by 8")
-        else:
-            self.widgets.scale.width.setToolTip(f"{t('Source width')}: {self.app.fastflix.current_video.width}")
-
-        if keep_aspect:
-            self.widgets.scale.height.setText("Auto")
-            # self.widgets.scale.width.setStyleSheet("background-color: white;")
-            # self.widgets.scale.height.setStyleSheet("background-color: white;")
-            self.page_update()
-            self.scale_updating = False
-            return
-            # ratio = self.app.fastflix.current_video.height / self.app.fastflix.current_video.width
-            # scale_height = ratio * scale_width
-            # self.widgets.scale.height.setText(str(int(scale_height)))
-            # mod = int(scale_height % 2)
-            # if mod:
-            #     scale_height -= mod
-            #     logger.info(f"Have to adjust scale height by {mod} pixels")
-            #     # self.scale_warning_message.setText()
-            # logger.info(f"height has -{mod}px off aspect")
-            # self.widgets.scale.height.setText(str(int(scale_height)))
-            # self.widgets.scale.width.setStyleSheet("background-color: white;")
-            # self.widgets.scale.height.setStyleSheet("background-color: white;")
-            # self.page_update()
-            # self.scale_updating = False
-            # return
-
-        scale_height = self.widgets.scale.height.text()
-        try:
-            scale_height = -8 if scale_height == "Auto" else int(scale_height)
-            assert scale_height == -8 or scale_height > 0
-        except (ValueError, AssertionError):
-            self.scale_updating = False
-            return logger.warning(t("Invalid height"))
-            # return self.scale_warning_message.setText("Invalid height")
-
-        if scale_height != -8 and scale_height % 2:
-            # self.widgets.scale.height.setStyleSheet("background-color: red;")
-            self.widgets.scale.height.setToolTip(
-                f"{t('Height must be divisible by 2 - Source height')}: {self.app.fastflix.current_video.height}"
-            )
-            self.scale_updating = False
-            return logger.warning(
-                f"{t('Height must be divisible by 2 - Source height')}: {self.app.fastflix.current_video.height}"
-            )
-        else:
-            self.widgets.scale.height.setToolTip(f"{t('Source height')}: {self.app.fastflix.current_video.height}")
-            # return self.scale_warning_message.setText("Height must be divisible by 8")
-        # self.scale_warning_message.setText("")
-        # self.widgets.scale.width.setStyleSheet("background-color: white;")
-        # self.widgets.scale.height.setStyleSheet("background-color: white;")
-        self.page_update()
-        self.scale_updating = False
+    # @reusables.log_exception("fastflix", show_traceback=False)
+    # def scale_update(self):
+    #     if self.scale_updating or self.loading_video:
+    #         return False
+    #
+    #     self.scale_updating = True
+    #
+    #     # keep_aspect = self.widgets.scale.keep_aspect.isChecked()
+    #     #
+    #     # self.widgets.scale.height.setDisabled(keep_aspect)
+    #     height = self.app.fastflix.current_video.height
+    #     width = self.app.fastflix.current_video.width
+    #     if crop := self.build_crop():
+    #         width = crop.width
+    #         height = crop.height
+    #
+    #     # if keep_aspect and (not height or not width):
+    #     if True and (not height or not width):
+    #         self.scale_updating = False
+    #         return logger.warning(t("Invalid source dimensions"))
+    #         # return self.scale_warning_message.setText("Invalid source dimensions")
+    #
+    #     try:
+    #         scale_width = int(self.widgets.scale.width.text())
+    #         assert scale_width > 0
+    #     except (ValueError, AssertionError):
+    #         self.scale_updating = False
+    #         return logger.warning(t("Invalid width"))
+    #
+    #     if scale_width % 2:
+    #         self.scale_updating = False
+    #         # self.widgets.scale.width.setStyleSheet("background-color: red;")
+    #         self.widgets.scale.width.setToolTip(
+    #             f"{t('Width must be divisible by 2 - Source width')}: {self.app.fastflix.current_video.width}"
+    #         )
+    #         return logger.warning(t("Width must be divisible by 2"))
+    #         # return self.scale_warning_message.setText("Width must be divisible by 8")
+    #     else:
+    #         self.widgets.scale.width.setToolTip(f"{t('Source width')}: {self.app.fastflix.current_video.width}")
+    #
+    #     # if keep_aspect:
+    #     if True:
+    #         self.widgets.scale.height.setText("Auto")
+    #         # self.widgets.scale.width.setStyleSheet("background-color: white;")
+    #         # self.widgets.scale.height.setStyleSheet("background-color: white;")
+    #         self.page_update()
+    #         self.scale_updating = False
+    #         return
+    #         # ratio = self.app.fastflix.current_video.height / self.app.fastflix.current_video.width
+    #         # scale_height = ratio * scale_width
+    #         # self.widgets.scale.height.setText(str(int(scale_height)))
+    #         # mod = int(scale_height % 2)
+    #         # if mod:
+    #         #     scale_height -= mod
+    #         #     logger.info(f"Have to adjust scale height by {mod} pixels")
+    #         #     # self.scale_warning_message.setText()
+    #         # logger.info(f"height has -{mod}px off aspect")
+    #         # self.widgets.scale.height.setText(str(int(scale_height)))
+    #         # self.widgets.scale.width.setStyleSheet("background-color: white;")
+    #         # self.widgets.scale.height.setStyleSheet("background-color: white;")
+    #         # self.page_update()
+    #         # self.scale_updating = False
+    #         # return
+    #
+    #     scale_height = self.widgets.scale.height.text()
+    #     try:
+    #         scale_height = -8 if scale_height == "Auto" else int(scale_height)
+    #         assert scale_height == -8 or scale_height > 0
+    #     except (ValueError, AssertionError):
+    #         self.scale_updating = False
+    #         return logger.warning(t("Invalid height"))
+    #         # return self.scale_warning_message.setText("Invalid height")
+    #
+    #     if scale_height != -8 and scale_height % 2:
+    #         # self.widgets.scale.height.setStyleSheet("background-color: red;")
+    #         self.widgets.scale.height.setToolTip(
+    #             f"{t('Height must be divisible by 2 - Source height')}: {self.app.fastflix.current_video.height}"
+    #         )
+    #         self.scale_updating = False
+    #         return logger.warning(
+    #             f"{t('Height must be divisible by 2 - Source height')}: {self.app.fastflix.current_video.height}"
+    #         )
+    #     else:
+    #         self.widgets.scale.height.setToolTip(f"{t('Source height')}: {self.app.fastflix.current_video.height}")
+    #         # return self.scale_warning_message.setText("Height must be divisible by 8")
+    #     # self.scale_warning_message.setText("")
+    #     # self.widgets.scale.width.setStyleSheet("background-color: white;")
+    #     # self.widgets.scale.height.setStyleSheet("background-color: white;")
+    #     self.page_update()
+    #     self.scale_updating = False
 
     def clear_current_video(self):
         self.loading_video = True
@@ -1342,8 +1419,8 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.bottom.setText("0")
         self.widgets.start_time.setText(self.number_to_time(0))
         self.widgets.end_time.setText(self.number_to_time(0))
-        self.widgets.scale.width.setText("0")
-        self.widgets.scale.height.setText("Auto")
+        # self.widgets.scale.width.setText("0")
+        # self.widgets.scale.height.setText("Auto")
         self.widgets.preview.setPixmap(QtGui.QPixmap())
         self.video_options.clear_tracks()
         self.disable_all()
@@ -1404,19 +1481,19 @@ class Main(QtWidgets.QWidget):
         if video.video_settings.vertical_flip and video.video_settings.horizontal_flip:
             self.widgets.flip.setCurrentIndex(3)
 
-        if self.app.fastflix.current_video.video_settings.scale:
-            w, h = self.app.fastflix.current_video.video_settings.scale.split(":")
-
-            self.widgets.scale.width.setText(w)
-            if h.startswith("-"):
-                self.widgets.scale.height.setText("Auto")
-                self.widgets.scale.keep_aspect.setChecked(True)
-            else:
-                self.widgets.scale.height.setText(h)
-        else:
-            self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
-            self.widgets.scale.height.setText("Auto")
-            self.widgets.scale.keep_aspect.setChecked(True)
+        # if self.app.fastflix.current_video.scale:
+        #     w, h = self.app.fastflix.current_video.scale.split(":")
+        #
+        #     self.widgets.scale.width.setText(w)
+        #     if h.startswith("-"):
+        #         self.widgets.scale.height.setText("Auto")
+        #         self.widgets.scale.keep_aspect.setChecked(True)
+        #     else:
+        #         self.widgets.scale.height.setText(h)
+        # else:
+        #     self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
+        #     self.widgets.scale.height.setText("Auto")
+        #     self.widgets.scale.keep_aspect.setChecked(True)
         self.video_options.reload()
         self.enable_all()
 
@@ -1468,20 +1545,20 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.bottom.setText("0")
         self.widgets.start_time.setText("0:00:00")
 
-        self.widgets.scale.width.setText(
-            str(
-                self.app.fastflix.current_video.width
-                + (self.app.fastflix.current_video.width % self.current_encoder.video_dimension_divisor)
-            )
-        )
-        self.widgets.scale.width.setToolTip(f"{t('Source width')}: {self.app.fastflix.current_video.width}")
-        self.widgets.scale.height.setText(
-            str(
-                self.app.fastflix.current_video.height
-                + (self.app.fastflix.current_video.height % self.current_encoder.video_dimension_divisor)
-            )
-        )
-        self.widgets.scale.height.setToolTip(f"{t('Source height')}: {self.app.fastflix.current_video.height}")
+        # self.widgets.scale.width.setText(
+        #     str(
+        #         self.app.fastflix.current_video.width
+        #         + (self.app.fastflix.current_video.width % self.current_encoder.video_dimension_divisor)
+        #     )
+        # )
+        # self.widgets.scale.width.setToolTip(f"{t('Source width')}: {self.app.fastflix.current_video.width}")
+        # self.widgets.scale.height.setText(
+        #     str(
+        #         self.app.fastflix.current_video.height
+        #         + (self.app.fastflix.current_video.height % self.current_encoder.video_dimension_divisor)
+        #     )
+        # )
+        # self.widgets.scale.height.setToolTip(f"{t('Source height')}: {self.app.fastflix.current_video.height}")
         self.widgets.video_track.addItems(text_video_tracks)
 
         self.widgets.video_track.setDisabled(bool(len(self.app.fastflix.current_video.streams.video) == 1))
@@ -1632,12 +1709,22 @@ class Main(QtWidgets.QWidget):
         pixmap = pixmap.scaled(420, 260, QtCore.Qt.KeepAspectRatio)
         self.widgets.preview.setPixmap(pixmap)
 
-    def build_scale(self):
-        width = self.widgets.scale.width.text()
-        height = self.widgets.scale.height.text()
-        if height == "Auto":
-            height = -8
-        return f"{width}:{height}"
+    # def build_scale(self):
+    #     width = self.widgets.scale.width.text()
+    #     height = self.widgets.scale.height.text()
+    #     if height == "Auto":
+    #         height = -8
+    #     return f"{width}:{height}"
+
+    def resolution_method(self):
+        return resolutions[self.widgets.resolution_drop_down.currentText()]["method"]
+
+    def resolution_pixels(self):
+        res = resolutions[self.widgets.resolution_drop_down.currentText()]
+        if "pixels" in res:
+            return res["pixels"]
+        if self.widgets.resolution_custom.text().strip():
+            return int(self.widgets.resolution_custom.text())
 
     def get_all_settings(self):
         if not self.initialized:
@@ -1650,18 +1737,19 @@ class Main(QtWidgets.QWidget):
         if self.end_time and (self.end_time - 0.1 <= self.app.fastflix.current_video.duration <= self.end_time + 0.1):
             end_time = 0
 
-        scale = self.build_scale()
-        if scale in (
-            f"{stream_info.width}:-8",
-            f"-8:{stream_info.height}",
-            f"{stream_info.width}:{stream_info.height}",
-        ):
-            scale = None
+        # scale = self.build_scale()
+        # if scale in (
+        #     f"{stream_info.width}:-8",
+        #     f"-8:{stream_info.height}",
+        #     f"{stream_info.width}:{stream_info.height}",
+        # ):
+        #     scale = None
 
         v_flip, h_flip = self.get_flips()
         self.app.fastflix.current_video.video_settings = VideoSettings(
             crop=self.build_crop(),
-            scale=scale,
+            resolution_method=self.resolution_method(),
+            resolution_pixels=self.resolution_pixels(),
             start_time=self.start_time,
             end_time=end_time,
             selected_track=self.original_video_track,
@@ -1728,8 +1816,8 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.left.setText("0")
         self.widgets.crop.right.setText("0")
         self.widgets.crop.bottom.setText("0")
-        self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
-        self.widgets.scale.height.setText(str(self.app.fastflix.current_video.height))
+        # self.widgets.scale.width.setText(str(self.app.fastflix.current_video.width))
+        # self.widgets.scale.height.setText(str(self.app.fastflix.current_video.height))
         self.loading_video = False
         self.page_update(build_thumbnail=True)
 
@@ -1741,7 +1829,7 @@ class Main(QtWidgets.QWidget):
         self.build_commands()
         if build_thumbnail:
             new_hash = (
-                f"{self.build_crop()}:{self.build_scale()}:{self.start_time}:{self.end_time}:"
+                f"{self.build_crop()}:{self.start_time}:{self.end_time}:"
                 f"{self.app.fastflix.current_video.video_settings.selected_track}:"
                 f"{int(self.remove_hdr)}:{self.preview_place}:{self.widgets.rotate.currentIndex()}:"
                 f"{self.widgets.flip.currentIndex()}"

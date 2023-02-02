@@ -374,7 +374,7 @@ class ProfileWindow(QtWidgets.QWidget):
             self.profile_name.setStyleSheet("background-color: #707070; border-radius: 10px; color: black")
         self.profile_name.setFixedWidth(300)
 
-        self.advanced_options: AdvancedOptions = main.video_options.advanced.get_settings()
+        self.advanced_options: AdvancedOptions = self.main.video_options.advanced.get_settings()
 
         self.encoder = x265Settings(crf=18)
 
@@ -396,10 +396,10 @@ class ProfileWindow(QtWidgets.QWidget):
         save_button.clicked.connect(self.save)
         save_button.setMaximumWidth(150)
         save_button.setFixedHeight(60)
-
         v_flip, h_flip = self.main.get_flips()
         self.main_settings = Box(
-            keep_aspect_ratio=self.main.widgets.scale.keep_aspect.isChecked(),
+            # keep_aspect_ratio=self.main.widgets.scale.keep_aspect.isChecked(),
+            keep_aspect_ratio=True,
             fast_seek=self.main.fast_time,
             rotate=self.main.widgets.rotate.currentIndex(),
             vertical_flip=v_flip,
@@ -407,6 +407,8 @@ class ProfileWindow(QtWidgets.QWidget):
             copy_chapters=self.main.copy_chapters,
             remove_metadata=self.main.remove_metadata,
             remove_hdr=self.main.remove_hdr,
+            resolution_method=self.main.resolution_method(),
+            resolution_pixels=self.main.resolution_pixels(),
         )
 
         self.tab_area = QtWidgets.QTabWidget()
@@ -501,6 +503,8 @@ class ProfileWindow(QtWidgets.QWidget):
             remove_metadata=self.main_settings.remove_metadata,
             remove_hdr=self.main_settings.remove_hdr,
             audio_filters=self.audio_select.get_settings(),
+            resolution_method=self.main_settings.resolution_method,
+            resolution_pixels=self.main_settings.resolution_pixels,
             # subtitle_filters=self.subtitle_select.get_settings(),
             subtitle_language=sub_lang,
             subtitle_select=subtitle_enabled,

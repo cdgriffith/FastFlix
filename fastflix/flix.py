@@ -2,15 +2,14 @@
 import logging
 import os
 import re
-import sys
 from pathlib import Path
 from subprocess import PIPE, CompletedProcess, Popen, TimeoutExpired, run, check_output
 from typing import List, Tuple, Union
 from distutils.version import LooseVersion
+import shlex
 
 import reusables
 from box import Box, BoxError
-from pathvalidate import sanitize_filepath
 
 from fastflix.exceptions import FlixError
 from fastflix.language import t
@@ -317,23 +316,31 @@ def generate_thumbnail_command(
     start_time: float = 0,
     input_track: int = 0,
     enable_opencl: bool = False,
-) -> str:
-    command_options = [
-        f'"{config.ffmpeg}"',
-        f"-ss {start_time}" if start_time else "",
-        "-loglevel warning",
-        "-i",
-        clean_file_string(source),
-        ("-init_hw_device opencl=ocl -filter_hw_device ocl" if enable_opencl else ""),
-        filters,
-        f"-map 0:{input_track}" if "-map" not in filters else "",
-        "-an",
-        "-y",
-        "-map_metadata -1",
-        "-frames:v 1",
-        clean_file_string(output),
-    ]
-    return " ".join(command_options)
+) -> list[str]:
+
+    command = [str(config.ffmpeg)]
+
+    # Trim from start this many seconds
+    if start_time:
+        command += ["-ss", str(start_time)]
+
+    # Less logging
+    # Video file input
+    command += ["-loglevel", "warning", "-i", clean_file_string(source)]
+
+    # Hardware acceleration with OpenCL
+    if enable_opencl:
+        command += ["-init_hw_device", "opencl=ocl", "-filter_hw_device", "ocl"]
+
+    command += shlex.split(filters)
+
+    # Apply video track selection
+    if "-map" not in filters:
+        command += ["-map", f"0:{input_track}"]
+
+    command += ["-an", "-y", "-map_metadata", "-1", "-frames:v", "1", clean_file_string(output)]
+
+    return command
 
 
 def get_auto_crop(

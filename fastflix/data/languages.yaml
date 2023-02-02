@@ -6995,3 +6995,51 @@ NVEncC AV1 Encoder is untested!:
   por: O codificador NVEncC AV1 não foi testado!
   swe: NVEncC AV1 Encoder är otestad!
   pol: NVEncC AV1 Encoder nie jest testowany!
+Load Directory:
+  eng: Load Directory
+  deu: Verzeichnis laden
+  fra: Chargement du répertoire
+  ita: Elenco dei carichi
+  spa: Cargar directorio
+  zho: 负载目录
+  jpn: ロードディレクトリ
+  rus: Каталог загрузки
+  por: Directório de Carga
+  swe: Lasta in katalogen
+  pol: Katalog ładunków
+Multiple Files:
+  eng: Multiple Files
+  deu: Mehrere Dateien
+  fra: Fichiers multiples
+  ita: File multipli
+  spa: Varios archivos
+  zho: 多个文件
+  jpn: 複数のファイル
+  rus: Множественные файлы
+  por: Ficheiros múltiplos
+  swe: Flera filer
+  pol: Wiele plików
+Drag and Drop to reorder:
+  eng: Drag and Drop to reorder
+  deu: Ziehen und Ablegen zum Neuordnen
+  fra: Glisser et déposer pour réorganiser
+  ita: Trascinare e rilasciare per riordinare
+  spa: Arrastrar y soltar para reordenar
+  zho: 拖放重新排序
+  jpn: ドラッグ＆ドロップで並び替え
+  rus: Перетаскивание для изменения порядка
+  por: Arrastar e largar para reordenar
+  swe: Dra och släpp för att ordna om
+  pol: Przeciągnij i upuść, aby zmienić kolejność
+Long Edge:
+  eng: Long Edge
+  deu: Lange Kante
+  fra: Bord long
+  ita: Bordo lungo
+  spa: Borde largo
+  zho: 长边
+  jpn: ロングエッジ
+  rus: Длинная кромка
+  por: Bordo Longo
+  swe: Lång kant
+  pol: Długa krawędź

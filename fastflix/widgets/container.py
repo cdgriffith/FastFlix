@@ -48,7 +48,6 @@ class Container(QtWidgets.QMainWindow):
         self.init_menu()
 
         self.main = Main(self, app)
-        self.profile = ProfileWindow(self.app, self.main)
 
         self.setCentralWidget(self.main)
         self.setBaseSize(QtCore.QSize(1350, 750))
@@ -251,7 +250,7 @@ class Container(QtWidgets.QMainWindow):
         if not self.app.fastflix.current_video:
             error_message(t("Please load in a video to configure a new profile"))
         else:
-            self.profile.show()
+            ProfileWindow(self.app, self.main).show()
 
     def show_profile(self):
         self.profile_details = ProfileDetails(
@@ -372,7 +371,7 @@ class ProfileDetails(QtWidgets.QWidget):
 
         main_section = QtWidgets.QVBoxLayout(self)
         profile_title = QtWidgets.QLabel(f"{t('Profile_window')}: {profile_name}")
-        profile_title.setFont(QtGui.QFont(self.app.font().family(), 10, weight=70))
+        # profile_title.setFont(QtGui.QFont(self.app.font().family(), 10, weight=70))
         main_section.addWidget(profile_title)
         for k, v in profile.dict().items():
             if k == "advanced_options":

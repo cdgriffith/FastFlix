@@ -83,7 +83,9 @@ class VideoSettings(BaseModel):
     video_title: str = ""
     selected_track: int = 0
     output_path: Path = None
-    scale: Optional[str] = None
+    # scale: Optional[str] = None
+    resolution_method: str = "auto"
+    resolution_pixels: int | None = None
     deinterlace: bool = False
     video_speed: Union[float, int] = 1
     tone_map: str = "hable"
@@ -243,3 +245,17 @@ class Video(BaseModel):
         if not stream:
             return ""
         return stream.get("avg_frame_rate", "")
+
+    @property
+    def scale(self):
+        if self.video_settings.resolution_method == "auto":
+            return None
+        if self.video_settings.resolution_method == "long edge":
+            if self.width > self.height:
+                return f"{self.video_settings.resolution_pixels}:-8"
+            else:
+                return f"-8:{self.video_settings.resolution_pixels}"
+        if self.video_settings.resolution_method == "width":
+            return f"{self.video_settings.resolution_pixels}:-8"
+        else:
+            return f"-8:{self.video_settings.resolution_pixels}"

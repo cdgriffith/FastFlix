@@ -236,6 +236,7 @@ def generate_all(
             burn_in_subtitle_track=burn_in_track,
             burn_in_subtitle_type=burn_in_type,
             enable_opencl=fastflix.opencl_support,
+            scale=fastflix.current_video.scale,
             **fastflix.current_video.video_settings.dict(),
         )
 
