@@ -119,7 +119,6 @@ class AdvancedOptions(BaseModel):
 class Profile(BaseModel):
     profile_version: Optional[int] = 1
     auto_crop: bool = False
-    keep_aspect_ratio: bool = True
     fast_seek: bool = True
     rotate: int = 0
     vertical_flip: bool = False

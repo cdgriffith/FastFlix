@@ -3090,11 +3090,11 @@ Profile_encoderopt:
   ita: Profilo
   spa: Perfil
   zho: 规格
-  jpn: Profile_encoderopt
-  rus: Profile_encoderopt
-  por: Perfil_encoderopt
-  swe: Profile_encoderopt
-  pol: Profil_encoderopt
+  jpn: Profile
+  rus: Profile
+  por: Perfil
+  swe: Profile
+  pol: Profil
 Profile_newprofiletooltip:
   deu: Profil
   eng: Profile

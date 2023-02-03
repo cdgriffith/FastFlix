@@ -310,7 +310,6 @@ class EncodingQueue(FlixList):
                 f"{t('Would you like to keep them in the queue?')}",
                 title="Recover Queue Items",
             ):
-
                 self.app.fastflix.conversion_list = new_queue
         self.new_source()
         save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
@@ -469,7 +468,6 @@ class EncodingQueue(FlixList):
         self.after_done_action = command
 
     def retry_video(self, current_video):
-
         for i, video in enumerate(self.app.fastflix.conversion_list):
             if video.uuid == current_video.uuid:
                 video.status.clear()

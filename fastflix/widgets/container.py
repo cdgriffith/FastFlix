@@ -58,7 +58,7 @@ class Container(QtWidgets.QMainWindow):
         if self.app.fastflix.config.theme == "onyx":
             self.setStyleSheet(
                 """
-                QAbstractItemView{ background-color: #707070; }
+                QAbstractItemView{ background-color: #4b5054; }
                 QPushButton{ border-radius:10px; }
                 QLineEdit{ background-color: #707070; color: black; border-radius: 10px; }
                 QTextEdit{ background-color: #707070; color: black; }

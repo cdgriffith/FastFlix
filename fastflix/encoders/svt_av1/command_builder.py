@@ -30,7 +30,6 @@ def build(fastflix: FastFlix):
     )
 
     if not fastflix.current_video.video_settings.remove_hdr:
-
         if (
             fastflix.current_video.video_settings.color_primaries == "bt2020"
             or fastflix.current_video.color_primaries == "bt2020"

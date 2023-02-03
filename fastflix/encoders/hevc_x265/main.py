@@ -8,7 +8,7 @@ import pkg_resources
 name = "HEVC (x265)"
 requires = "libx265"
 
-video_extension = "mkv"
+video_extensions = [".mkv", ".mp4", ".ts", ".mov", ".avi", ".mts", ".m2ts", ".m4v"]
 video_dimension_divisor = 1
 icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_x265.png")).resolve())
 

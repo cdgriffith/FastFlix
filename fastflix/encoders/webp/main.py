@@ -8,7 +8,7 @@ import pkg_resources
 name = "WebP"
 
 requires = "libwebp"
-video_extension = "webp"
+video_extension = ["webp"]
 video_dimension_divisor = 2
 icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_webp.png")).resolve())
 

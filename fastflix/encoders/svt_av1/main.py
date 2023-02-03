@@ -8,7 +8,7 @@ import pkg_resources
 name = "AV1 (SVT AV1)"
 requires = "libsvtav1"
 
-video_extension = "mkv"
+video_extensions = [".mkv", ".mp4", ".ts", ".mov", ".webm", ".avi", ".mts", ".m2ts", ".m4v"]
 video_dimension_divisor = 8
 icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_svt_av1.png")).resolve())
 

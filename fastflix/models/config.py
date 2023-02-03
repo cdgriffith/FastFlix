@@ -103,7 +103,7 @@ class Config(BaseModel):
     qsvencc: Path | None = Field(default_factory=lambda: where("QSVEncC64") or where("QSVEncC"))
     output_directory: Path | None = False
     source_directory: Path | None = False
-    output_name_format: str = "{source}-fastflix-{rand_4}.{ext}"
+    output_name_format: str = "{source}-fastflix-{rand_4}"
     flat_ui: bool = True
     language: str = "eng"
     logging_level: int = 10
@@ -273,6 +273,9 @@ class Config(BaseModel):
 
         if self.selected_profile not in self.profiles:
             self.selected_profile = "Standard Profile"
+
+        # 5.2.0 remove ext
+        self.output_name_format = self.output_name_format.replace(".{ext}", "").replace("{ext}", "")
 
     def save(self):
         items = self.dict()

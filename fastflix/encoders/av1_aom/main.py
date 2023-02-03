@@ -9,7 +9,7 @@ name = "AV1 (AOM)"
 requires = "libaom"
 icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_av1_aom.png")).resolve())
 
-video_extension = "mkv"
+video_extensions = [".mkv", ".mp4", ".ts", ".mov", ".webm", ".avi", ".mts", ".m2ts", ".m4v"]
 video_dimension_divisor = 8
 
 enable_subtitles = True

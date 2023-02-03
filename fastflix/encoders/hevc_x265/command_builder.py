@@ -98,7 +98,6 @@ def build(fastflix: FastFlix):
     x265_params.append(f"frame-threads={settings.frame_threads}")
 
     if not fastflix.current_video.video_settings.remove_hdr:
-
         if fastflix.current_video.video_settings.color_primaries:
             x265_params.append(f"colorprim={fastflix.current_video.video_settings.color_primaries}")
         elif fastflix.current_video.color_primaries:

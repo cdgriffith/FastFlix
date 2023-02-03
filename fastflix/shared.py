@@ -144,7 +144,6 @@ def latest_fastflix(app, show_new_dialog=False):
 
     use_version = ".".join(str(x) for x in versions[0])
     if reusables.win_based:
-
         try:
             win_ver = int(platform.platform().lower().split("-")[1])
         except Exception:

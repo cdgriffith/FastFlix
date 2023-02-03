@@ -317,7 +317,6 @@ def generate_thumbnail_command(
     input_track: int = 0,
     enable_opencl: bool = False,
 ) -> list[str]:
-
     command = [str(config.ffmpeg)]
 
     # Trim from start this many seconds

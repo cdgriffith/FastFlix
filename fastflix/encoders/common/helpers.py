@@ -139,7 +139,6 @@ def generate_filters(
     denoise: Union[str, None] = None,
     **_,
 ):
-
     filter_list = []
     if start_filters:
         filter_list.append(start_filters)

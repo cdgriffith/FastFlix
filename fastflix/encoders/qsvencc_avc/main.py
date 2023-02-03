@@ -7,7 +7,8 @@ import pkg_resources
 
 name = "AVC (QSVEncC)"
 
-video_extension = "mkv"
+video_extensions = ["mkv", "mp4", "mov", "m4v"]
+
 video_dimension_divisor = 1
 icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_qsvencc.png")).resolve())
 

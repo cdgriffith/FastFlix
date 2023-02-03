@@ -398,8 +398,6 @@ class ProfileWindow(QtWidgets.QWidget):
         save_button.setFixedHeight(60)
         v_flip, h_flip = self.main.get_flips()
         self.main_settings = Box(
-            # keep_aspect_ratio=self.main.widgets.scale.keep_aspect.isChecked(),
-            keep_aspect_ratio=True,
             fast_seek=self.main.fast_time,
             rotate=self.main.widgets.rotate.currentIndex(),
             vertical_flip=v_flip,
@@ -494,7 +492,6 @@ class ProfileWindow(QtWidgets.QWidget):
         new_profile = Profile(
             profile_version=2,
             auto_crop=self.primary_tab.auto_crop.isChecked(),
-            keep_aspect_ratio=self.main_settings.keep_aspect_ratio,
             fast_seek=self.main_settings.fast_seek,
             rotate=self.main_settings.rotate,
             vertical_flip=self.main_settings.vertical_flip,

@@ -152,7 +152,6 @@ class AV1(SettingPanel):
         self.main.build_commands()
 
     def update_video_encoder_settings(self):
-
         settings = AOMAV1Settings(
             usage=self.widgets.usage.currentText(),
             cpu_used=self.widgets.cpu_used.currentText(),

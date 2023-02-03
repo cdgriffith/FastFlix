@@ -6,7 +6,6 @@ from fastflix.models.fastflix import FastFlix
 
 
 def build(fastflix: FastFlix):
-
     beginning, ending = generate_all(fastflix, "copy", disable_filters=True)
     rotation = 0
     if "rotate" in fastflix.current_video.current_video_stream.get("tags", {}):
