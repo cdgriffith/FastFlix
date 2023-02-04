@@ -18,12 +18,7 @@ jobs:
       with:
         python-version: "3.11"
 
-    - uses: actions/cache@v2
-      with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ env.pythonLocation }}-black
-
-    - run: pip install black==22.10.0
+    - run: pip install black==23.1.0
     - run: python -m black --check .
 
   test:
@@ -40,8 +35,6 @@ jobs:
       run: |
         sudo apt update
         sudo apt install libopengl0 freeglut3 freeglut3-dev -y
-
-    - uses: syphar/restore-pip-download-cache@v1
 
     - name: Install requirements
       run: |
