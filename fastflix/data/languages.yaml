@@ -3101,24 +3101,24 @@ Profile_newprofiletooltip:
   fra: Profil
   ita: Profilo
   spa: Perfil
-  zho: 方案
-  jpn: Profile_newprofiletooltip
-  rus: Подсказка_нового_профиля
-  por: Profile_newprofiletooltip
-  swe: Profil_ny profilverktygstips
-  pol: Profile_newprofiletooltip
+  zho: 规格
+  jpn: Profile
+  rus: Profile
+  por: Perfil
+  swe: Profile
+  pol: Profil
 Profile_window:
   deu: Profil
   eng: Profile
   fra: Profil
   ita: Profilo
   spa: Perfil
-  zho: 方案
-  jpn: プロファイルウィンドウ
-  rus: Окно_профиля
-  por: Janela_de_Perfil
-  swe: Profil_fönster
-  pol: Okno_profilu
+  zho: 规格
+  jpn: Profile
+  rus: Profile
+  por: Perfil
+  swe: Profile
+  pol: Profil
 Profiles:
   deu: Profile
   eng: Profiles
@@ -7043,3 +7043,27 @@ Long Edge:
   por: Bordo Longo
   swe: Lång kant
   pol: Długa krawędź
+Filename:
+  eng: Filename
+  deu: Dateiname
+  fra: Nom de fichier
+  ita: Nome del file
+  spa: Archivo
+  zho: 文件名
+  jpn: ファイル名
+  rus: Имя файла
+  por: Nome do ficheiro
+  swe: Filnamn
+  pol: Nazwa pliku
+Folder:
+  eng: Folder
+  deu: Mappe
+  fra: Dossier
+  ita: Cartella
+  spa: Carpeta
+  zho: 文件夹
+  jpn: フォルダ
+  rus: Папка
+  por: Pasta
+  swe: Mapp
+  pol: Folder

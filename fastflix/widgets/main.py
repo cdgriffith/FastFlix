@@ -462,10 +462,9 @@ class Main(QtWidgets.QWidget):
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
 
-        self.widgets.output_type_combo.setFixedWidth(30)
-        self.widgets.output_type_combo.addItems(
-            [".mkv", ".mp4", ".ts", ".mov", ".webm", ".avi", ".mts", ".m2ts", ".m4v"]
-        )
+        self.widgets.output_type_combo.setFixedWidth(60)
+        self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
+
         self.widgets.output_type_combo.setFixedHeight(23)
         self.widgets.output_type_combo.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
 
@@ -609,6 +608,15 @@ class Main(QtWidgets.QWidget):
         try:
             # self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
             self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") or 0 // 90)
+
+            last = self.widgets.output_type_combo.currentText()
+
+            self.widgets.output_type_combo.clear()
+            self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
+            if last in {
+                self.widgets.output_type_combo.itemText(i) for i in range(self.widgets.output_type_combo.count())
+            }:
+                self.widgets.output_type_combo.setCurrentText(last)
 
             v_flip = self.app.fastflix.config.opt("vertical_flip")
             h_flip = self.app.fastflix.config.opt("horizontal_flip")

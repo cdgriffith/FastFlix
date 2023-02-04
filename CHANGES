@@ -2,7 +2,8 @@
 
 ## Version 5.2.0
 
-* Adding #227 load directory of videos support (thanks to Chris / moonwhaler and a lot of others!)
+* Adding #100 Output format selection (thanks to me)
+* Adding #227 load directory of videos support (thanks to Chris / moonwhaler and a lot of others)
 * Adding pip builds again allow for `pipx` install
 * Adding #367 safer font defaults (thanks to Archer Allstars)
 * Adding #242 and #400 resolution saves to the profile (thanks to x9sim9)
