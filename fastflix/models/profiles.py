@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from pathlib import Path
 from typing import Optional, Union
 
 from pydantic import BaseModel, Field, validator
-from box import Box
 from enum import Enum
 
 from fastflix.models.encode import (
@@ -32,7 +30,6 @@ from fastflix.models.encode import (
     SVTAVIFSettings,
 )
 
-from fastflix.encoders.common.audio import channel_list
 
 __all__ = ["MatchItem", "MatchType", "AudioMatch", "Profile", "SubtitleMatch", "AdvancedOptions"]
 

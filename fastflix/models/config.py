@@ -22,7 +22,6 @@ from fastflix.models.encode import (
 )
 from fastflix.models.profiles import Profile, AudioMatch, MatchItem, MatchType
 from fastflix.version import __version__
-from fastflix.shared import get_config
 
 logger = logging.getLogger("fastflix")
 
@@ -32,6 +31,15 @@ NO_OPT = object()
 
 
 outdated_settings = ("copy",)
+
+
+def get_config(portable_mode=False):
+    config = os.getenv("FF_CONFIG")
+    if config:
+        return Path(config)
+    if Path("fastflix.yaml").exists() or portable_mode:
+        return Path("fastflix.yaml")
+    return Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"
 
 
 def get_preset_defaults():

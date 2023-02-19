@@ -15,8 +15,6 @@ try:
     from fastflix.conversion_worker import queue_worker
     from fastflix.models.config import Config
     from fastflix.models.fastflix import FastFlix
-    from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
-    from fastflix.shared import base_path, error_message, file_date, latest_fastflix, message
     from fastflix.version import __version__
 
 except ImportError as err:
