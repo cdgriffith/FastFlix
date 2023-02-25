@@ -81,7 +81,7 @@ def generate_ffmpeg_start(
             f"{f'-maxrate:v {maxrate}k' if maxrate else ''}",
             f"{f'-bufsize:v {bufsize}k' if bufsize else ''}",
             ("-init_hw_device opencl=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
-            f"{track_title if video_track_title else ''}"
+            f"{track_title if video_track_title else ''}",
             " ",  # Leave space after commands
         ]
     )

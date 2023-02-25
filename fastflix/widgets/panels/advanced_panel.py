@@ -360,7 +360,6 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.layout.addWidget(label, self.last_row, 0, 1, 2)
 
     def init_titles(self):
-
         self.video_title = QtWidgets.QLineEdit()
         self.video_title.setPlaceholderText(t("Video Title"))
 
@@ -369,9 +368,10 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         self.layout.addWidget(QtWidgets.QLabel(t("Video Title")), self.last_row, 3, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.video_title, self.last_row, 4)
-        self.layout.addWidget(QtWidgets.QLabel(t("Video Track Title") + " ʘ"), self.last_row, 5, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(
+            QtWidgets.QLabel(t("Video Track Title") + " ʘ"), self.last_row, 5, alignment=QtCore.Qt.AlignRight
+        )
         self.layout.addWidget(self.video_track_title, self.last_row, 6)
-
 
     def init_custom_filters(self):
         self.last_row += 1

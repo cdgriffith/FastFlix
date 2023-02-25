@@ -12,8 +12,10 @@ from pathvalidate import sanitize_filename
 from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
 
+
 def file_date():
     return datetime.now().isoformat().replace(":", ".").rsplit(".", 1)[0]
+
 
 logger = logging.getLogger("fastflix-core")
 

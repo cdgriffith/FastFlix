@@ -1487,7 +1487,9 @@ class Main(QtWidgets.QWidget):
             self.video_options.advanced.video_title.setText("")
 
         video_track_title_name = [
-            v for k, v in self.app.fastflix.current_video.streams.video[0].get("tags", []).items() if k.upper() == "HANDLER_NAME"
+            v
+            for k, v in self.app.fastflix.current_video.streams.video[0].get("tags", []).items()
+            if k.upper() == "HANDLER_NAME"
         ]
 
         if video_track_title_name:
@@ -1496,7 +1498,6 @@ class Main(QtWidgets.QWidget):
             self.video_options.advanced.video_track_title.setText("")
 
         self.widgets.deinterlace.setChecked(self.app.fastflix.current_video.video_settings.deinterlace)
-
 
         self.video_options.new_source()
         self.enable_all()
