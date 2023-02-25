@@ -111,6 +111,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.add_spacer()
         self.layout.setRowStretch(self.last_row, True)
         self.init_hw_message()
+        self.init_titles()
         # self.add_spacer()
         # self.init_custom_filters()
 
@@ -358,6 +359,20 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         self.layout.addWidget(label, self.last_row, 0, 1, 2)
 
+    def init_titles(self):
+
+        self.video_title = QtWidgets.QLineEdit()
+        self.video_title.setPlaceholderText(t("Video Title"))
+
+        self.video_track_title = QtWidgets.QLineEdit()
+        self.video_track_title.setPlaceholderText(t("Video Track Title") + " ʘ")
+
+        self.layout.addWidget(QtWidgets.QLabel(t("Video Title")), self.last_row, 3, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.video_title, self.last_row, 4)
+        self.layout.addWidget(QtWidgets.QLabel(t("Video Track Title") + " ʘ"), self.last_row, 5, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(self.video_track_title, self.last_row, 6)
+
+
     def init_custom_filters(self):
         self.last_row += 1
 
@@ -574,6 +589,12 @@ class AdvancedPanel(QtWidgets.QWidget):
             else:
                 self.color_primaries_widget.setCurrentIndex(0)
 
+            if settings.video_title:
+                self.video_title.setText(settings.video_title)
+
+            if settings.video_track_title:
+                self.video_track_title.setText(settings.video_track_title)
+
         else:
             self.video_speed_widget.setCurrentIndex(
                 list(video_speeds.values()).index(self.app.fastflix.config.advanced_opt("video_speed"))
@@ -620,6 +641,8 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.contrast_widget.setText(self.app.fastflix.config.advanced_opt("contrast") or "")
 
             self.hdr_settings()
+            # self.video_title.setText("")
+            # self.video_track_title.setText("")
 
         # Set the frame rate
         if self.app.fastflix.current_video:

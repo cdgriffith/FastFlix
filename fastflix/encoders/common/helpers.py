@@ -38,6 +38,7 @@ def generate_ffmpeg_start(
     max_muxing_queue_size="default",
     fast_seek=True,
     video_title="",
+    video_track_title="",
     maxrate=None,
     bufsize=None,
     source_fps: Union[str, None] = None,
@@ -57,6 +58,9 @@ def generate_ffmpeg_start(
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = clean_file_string(source)
     ffmpeg = clean_file_string(ffmpeg)
+    if video_track_title:
+        video_track_title.replace('"', '\\"')
+    track_title = f'-metadata:s:v:0 HANDLER_NAME="{video_track_title}"'
 
     return " ".join(
         [
@@ -77,6 +81,7 @@ def generate_ffmpeg_start(
             f"{f'-maxrate:v {maxrate}k' if maxrate else ''}",
             f"{f'-bufsize:v {bufsize}k' if bufsize else ''}",
             ("-init_hw_device opencl=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
+            f"{track_title if video_track_title else ''}"
             " ",  # Leave space after commands
         ]
     )

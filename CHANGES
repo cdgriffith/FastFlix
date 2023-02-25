@@ -7,6 +7,7 @@
 * Adding pip builds again allow for `pipx` install
 * Adding #367 safer font defaults (thanks to Archer Allstars)
 * Adding #242 and #400 resolution saves to the profile (thanks to x9sim9)
+* Adding #409 Copy video track title information from input file (thanks to Don Gafford)
 * Fixing #398 audio and subtitles disabled when editing queue item (thanks to philblue1 and Don Gafford)
 * Fixing #350 Unable to burn in subtitles (thanks to Maddie Davis)
 

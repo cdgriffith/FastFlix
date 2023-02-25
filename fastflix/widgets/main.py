@@ -126,7 +126,6 @@ class MainWidgets(BaseModel):
     convert_button: QtWidgets.QPushButton = None
     deinterlace: QtWidgets.QCheckBox = None
     remove_hdr: QtWidgets.QCheckBox = None
-    video_title: QtWidgets.QLineEdit = None
     profile_box: QtWidgets.QComboBox = None
     thumb_time: QtWidgets.QSlider = None
     thumb_key: QtWidgets.QCheckBox = None
@@ -499,7 +498,7 @@ class Main(QtWidgets.QWidget):
         # title_label = QtWidgets.QLabel(t("Title"))
         # title_label.setFixedWidth(85)
         # title_label.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
-        self.widgets.video_title = QtWidgets.QLineEdit()
+        # self.widgets.video_title = QtWidgets.QLineEdit()
         # self.widgets.video_title.setFixedHeight(23)
         # self.widgets.video_title.setToolTip(t('Set the "title" tag, sometimes shown as "Movie Name"'))
         # self.widgets.video_title.textChanged.connect(lambda: self.page_update(build_thumbnail=False))
@@ -937,9 +936,9 @@ class Main(QtWidgets.QWidget):
         for widget in widget_list:
             widget.setDisabled(widget.isEnabled())
 
-    @property
-    def title(self):
-        return self.widgets.video_title.text()
+    # @property
+    # def title(self):
+    #     return self.widgets.video_title.text()
 
     def build_hoz_int_field(
         self,
@@ -1333,7 +1332,7 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.flip.setCurrentIndex(0)
         self.widgets.rotate.setCurrentIndex(0)
-        self.widgets.video_title.setText("")
+        # self.widgets.video_title.setText("")
 
         self.widgets.crop.top.setText("0")
         self.widgets.crop.left.setText("0")
@@ -1388,7 +1387,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.crop.bottom.setText("0")
         self.widgets.start_time.setText(self.number_to_time(video.video_settings.start_time))
         self.widgets.end_time.setText(self.number_to_time(end_time))
-        self.widgets.video_title.setText(self.app.fastflix.current_video.video_settings.video_title)
+        # self.widgets.video_title.setText(self.app.fastflix.current_video.video_settings.video_title)
 
         fn = Path(video.video_settings.output_path)
         self.widgets.output_directory.setText(str(fn.parent.absolute()))
@@ -1407,6 +1406,9 @@ class Main(QtWidgets.QWidget):
             self.widgets.flip.setCurrentIndex(2)
         if video.video_settings.vertical_flip and video.video_settings.horizontal_flip:
             self.widgets.flip.setCurrentIndex(3)
+
+        self.video_options.advanced.video_title.setText(video.video_settings.video_title)
+        self.video_options.advanced.video_track_title.setText(video.video_settings.video_track_title)
 
         self.video_options.reload()
         self.enable_all()
@@ -1480,16 +1482,27 @@ class Main(QtWidgets.QWidget):
             v for k, v in self.app.fastflix.current_video.format.get("tags", {}).items() if k.lower() == "title"
         ]
         if title_name:
-            self.widgets.video_title.setText(title_name[0])
+            self.video_options.advanced.video_title.setText(title_name[0])
         else:
-            self.widgets.video_title.setText("")
+            self.video_options.advanced.video_title.setText("")
+
+        video_track_title_name = [
+            v for k, v in self.app.fastflix.current_video.streams.video[0].get("tags", []).items() if k.upper() == "HANDLER_NAME"
+        ]
+
+        if video_track_title_name:
+            self.video_options.advanced.video_track_title.setText(video_track_title_name[0])
+        else:
+            self.video_options.advanced.video_track_title.setText("")
 
         self.widgets.deinterlace.setChecked(self.app.fastflix.current_video.video_settings.deinterlace)
+
 
         self.video_options.new_source()
         self.enable_all()
         # self.widgets.convert_button.setDisabled(False)
         # self.widgets.convert_button.setStyleSheet("background-color:green;")
+
         self.loading_video = False
         if self.app.fastflix.config.opt("auto_crop"):
             self.get_auto_crop()
@@ -1648,7 +1661,8 @@ class Main(QtWidgets.QWidget):
             deinterlace=self.widgets.deinterlace.isChecked(),
             remove_metadata=self.remove_metadata,
             copy_chapters=self.copy_chapters,
-            video_title=self.title,
+            video_title=self.video_options.advanced.video_title.text(),
+            video_track_title=self.video_options.advanced.video_track_title.text(),
             remove_hdr=self.remove_hdr,
         )
 

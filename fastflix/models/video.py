@@ -81,6 +81,7 @@ class VideoSettings(BaseModel):
     remove_metadata: bool = True
     copy_chapters: bool = True
     video_title: str = ""
+    video_track_title: str = ""
     selected_track: int = 0
     output_path: Path = None
     # scale: Optional[str] = None
