@@ -32,6 +32,7 @@ from fastflix.models.encode import (
     HEVCVideoToolboxSettings,
     H264VideoToolboxSettings,
     SVTAVIFSettings,
+    VVCSettings,
 )
 
 __all__ = ["VideoSettings", "Status", "Video", "Crop", "Status"]
@@ -127,6 +128,7 @@ class VideoSettings(BaseModel):
         HEVCVideoToolboxSettings,
         H264VideoToolboxSettings,
         SVTAVIFSettings,
+        VVCSettings,
     ] = None
     audio_tracks: list[AudioTrack] = Field(default_factory=list)
     subtitle_tracks: list[SubtitleTrack] = Field(default_factory=list)

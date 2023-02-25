@@ -62,6 +62,7 @@ def startup_options():
             import fastflix.encoders.copy.main
             import fastflix.encoders.gif.main
             import fastflix.encoders.hevc_x265.main
+            import fastflix.encoders.vvc.main
             import fastflix.encoders.rav1e.main
             import fastflix.encoders.svt_av1.main
             import fastflix.encoders.vp9.main

@@ -94,6 +94,7 @@ class ProgressBar(QtWidgets.QFrame):
                     task.command(config=self.app.fastflix.config, app=self.app, **task.kwargs)
                 except Exception:
                     logger.exception(f"Could not run task {task.name} with config {self.app.fastflix.config}")
+                    self.close()
                     raise
                 self.progress_bar.setValue(int(i * ratio))
                 if self.cancelled:

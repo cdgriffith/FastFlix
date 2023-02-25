@@ -70,6 +70,17 @@ class x265Settings(EncoderSettings):
     intra_smoothing: bool = True
     frame_threads: int = 0
 
+class VVCSettings(EncoderSettings):
+    name = "VVC"  # MUST match encoder main.name
+    preset: str = "medium"
+    qp: Optional[Union[int, float]] = 22
+    bitrate: Optional[str] = None
+    vvc_params: list[str] = Field(default_factory=list)
+    tier: str = "main"
+    subjopt: bool = True
+    levelidc: str | None = None
+    period: int | None = None
+
 
 class x264Settings(EncoderSettings):
     name = "AVC (x264)"
@@ -442,4 +453,5 @@ setting_types = {
     "hevc_videotoolbox": HEVCVideoToolboxSettings,
     "h264_videotoolbox": H264VideoToolboxSettings,
     "svt_av1_avif": SVTAVIFSettings,
+    "vvc": VVCSettings,
 }

@@ -28,6 +28,7 @@ from fastflix.models.encode import (
     HEVCVideoToolboxSettings,
     H264VideoToolboxSettings,
     SVTAVIFSettings,
+    VVCSettings,
 )
 
 
@@ -145,6 +146,7 @@ class Profile(BaseModel):
     advanced_options: AdvancedOptions = Field(default_factory=AdvancedOptions)
 
     x265: Optional[x265Settings] = None
+    vvc: Optional[VVCSettings] = None
     x264: Optional[x264Settings] = None
     rav1e: Optional[rav1eSettings] = None
     svt_av1: Optional[SVTAV1Settings] = None

@@ -34,6 +34,7 @@ from fastflix.models.encode import (
     H264VideoToolboxSettings,
     HEVCVideoToolboxSettings,
     SVTAVIFSettings,
+    VVCSettings,
 )
 from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, AdvancedOptions
 from fastflix.shared import error_message
@@ -514,6 +515,8 @@ class ProfileWindow(QtWidgets.QWidget):
 
         if isinstance(self.encoder, x265Settings):
             new_profile.x265 = self.encoder
+        if isinstance(self.encoder, VVCSettings):
+            new_profile.vcc = self.encoder
         elif isinstance(self.encoder, x264Settings):
             new_profile.x264 = self.encoder
         elif isinstance(self.encoder, rav1eSettings):
