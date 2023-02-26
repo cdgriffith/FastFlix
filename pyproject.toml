@@ -17,7 +17,7 @@ exclude = '''
 
 [tool.poetry]
 name = "FastFlix"
-version = "5.2.0b2"
+version = "5.2.0b3"
 description = "GUI Encoder"
 license = "MIT"
 authors = ["Chris Griffith <chris@cdgriffith.com>", ]
