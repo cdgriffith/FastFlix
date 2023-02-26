@@ -70,6 +70,7 @@ class x265Settings(EncoderSettings):
     intra_smoothing: bool = True
     frame_threads: int = 0
 
+
 class VVCSettings(EncoderSettings):
     name = "VVC"  # MUST match encoder main.name
     preset: str = "medium"

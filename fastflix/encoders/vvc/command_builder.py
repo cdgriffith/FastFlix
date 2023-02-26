@@ -90,7 +90,6 @@ def build(fastflix: FastFlix):
 
     vvc_params = settings.vvc_params.copy() or []
 
-
     if not fastflix.current_video.video_settings.remove_hdr:
         if fastflix.current_video.video_settings.color_primaries:
             vvc_params.append(f"colorprim={fastflix.current_video.video_settings.color_primaries}")
@@ -136,7 +135,6 @@ def build(fastflix: FastFlix):
         current_chroma_loc = fastflix.current_video.current_video_stream.get("chroma_location")
         if current_chroma_loc in chromaloc_mapping:
             vvc_params.append(f"chromaloc={chromaloc_mapping[current_chroma_loc]}")
-
 
     if fastflix.current_video.video_settings.maxrate:
         vvc_params.append(f"vbv-maxrate={fastflix.current_video.video_settings.maxrate}")

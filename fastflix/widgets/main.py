@@ -461,7 +461,7 @@ class Main(QtWidgets.QWidget):
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
 
-        self.widgets.output_type_combo.setFixedWidth(60)
+        self.widgets.output_type_combo.setFixedWidth(80)
         self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
 
         self.widgets.output_type_combo.setFixedHeight(23)
@@ -987,7 +987,7 @@ class Main(QtWidgets.QWidget):
         if not time_field:
             widget.setFixedWidth(45)
         else:
-            widget.setFixedWidth(85)
+            widget.setFixedWidth(95)
         widget.setStyleSheet("text-align: center")
         layout.addWidget(minus_button)
         layout.addWidget(widget)
@@ -1162,7 +1162,7 @@ class Main(QtWidgets.QWidget):
         )
         if filename and filename[0]:
             fn = Path(filename[0])
-            self.widgets.output_directory.setText(str(fn.parent.absolute()))
+            self.widgets.output_directory.setText(str(fn.parent.absolute()).rstrip("/").rstrip("\\"))
             self.output_video_path_widget.setText(fn.stem)
             self.widgets.output_type_combo.setCurrentText(fn.suffix)
 
@@ -1172,7 +1172,7 @@ class Main(QtWidgets.QWidget):
             dir=str(self.generate_output_filename[0]),
         )
         if dirname:
-            self.widgets.output_directory.setText(dirname)
+            self.widgets.output_directory.setText(dirname.rstrip("/").rstrip("\\"))
 
     def get_auto_crop(self):
         if not self.input_video or not self.initialized or self.loading_video:
@@ -1390,7 +1390,7 @@ class Main(QtWidgets.QWidget):
         # self.widgets.video_title.setText(self.app.fastflix.current_video.video_settings.video_title)
 
         fn = Path(video.video_settings.output_path)
-        self.widgets.output_directory.setText(str(fn.parent.absolute()))
+        self.widgets.output_directory.setText(str(fn.parent.absolute()).rstrip("/").rstrip("\\"))
         self.output_video_path_widget.setText(fn.stem)
         self.widgets.output_type_combo.setCurrentText(fn.suffix)
 
@@ -1422,7 +1422,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         folder, name = self.generate_output_filename
         self.output_video_path_widget.setText(name)
-        self.widgets.output_directory.setText(folder)
+        self.widgets.output_directory.setText(folder.rstrip("/").rstrip("\\"))
         self.output_video_path_widget.setDisabled(False)
         self.output_path_button.setDisabled(False)
         self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())

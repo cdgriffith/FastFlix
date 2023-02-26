@@ -8,47 +8,11 @@ from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
 from fastflix.models.encode import VVCSettings
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.resources import loading_movie, get_icon
-from fastflix.shared import link
-from fastflix.widgets.background_tasks import ExtractHDR10
+
 
 logger = logging.getLogger("fastflix")
 
 presets = ["faster", "fast", "medium", "slow", "slower"]
-
-"""
-libvvenc-vvc encoder AVOptions:
-  -preset            <int>        E..V....... set encoding preset(0: faster - 4: slower (from 0 to 4) (default medium)
-     faster          0            E..V....... 0
-     fast            1            E..V....... 1
-     medium          2            E..V....... 2
-     slow            3            E..V....... 3
-     slower          4            E..V....... 4
-  -qp                <int>        E..V....... set quantization (from 0 to 63) (default 32)
-  -period            <int>        E..V....... set (intra) refresh period in seconds (from 1 to INT_MAX) (default 1)
-  -subjopt           <boolean>    E..V....... set subjective (perceptually motivated) optimization (default true)
-  -vvenc-params      <dictionary> E..V....... set the vvenc configuration using a :-separated list of key=value parameters
-  -levelidc          <int>        E..V....... vvc level_idc (from 0 to 105) (default 0)
-     0               0            E..V....... auto
-     1               16           E..V....... 1
-     2               32           E..V....... 2
-     2.1             35           E..V....... 2.1
-     3               48           E..V....... 3
-     3.1             51           E..V....... 3.1
-     4               64           E..V....... 4
-     4.1             67           E..V....... 4.1
-     5               80           E..V....... 5
-     5.1             83           E..V....... 5.1
-     5.2             86           E..V....... 5.2
-     6               96           E..V....... 6
-     6.1             99           E..V....... 6.1
-     6.2             102          E..V....... 6.2
-     6.3             105          E..V....... 6.3
-  -tier              <int>        E..V....... set vvc tier (from 0 to 1) (default main)
-     main            0            E..V....... main
-     high            1            E..V....... high
-
-"""
 
 recommended_bitrates = [
     "150k     (320x240p @ 30fps)",
@@ -120,7 +84,6 @@ class VVC(SettingPanel):
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
-        # breaker_label.setFont(QtGui.QFont("", 8, weight=55))
 
         breaker.addWidget(get_breaker(), stretch=1)
         breaker.addWidget(breaker_label, alignment=QtCore.Qt.AlignHCenter)
@@ -128,14 +91,7 @@ class VVC(SettingPanel):
 
         grid.addLayout(breaker, 5, 0, 1, 6)
 
-        # grid.addLayout(self.init_aq_mode(), 6, 0, 1, 2)
-        # grid.addLayout(self.init_frame_threads(), 7, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 8, 0, 1, 2)
-        # grid.addLayout(self.init_vvc_row(), 6, 2, 1, 4)
-        # grid.addLayout(self.init_vvc_row_two(), 7, 2, 1, 4)
-        # grid.addLayout(self.init_hdr10_opt(), 5, 2, 1, 1)
-        # grid.addLayout(self.init_repeat_headers(), 5, 3, 1, 1)
-        # grid.addLayout(self.init_aq_mode(), 5, 4, 1, 2)
 
         grid.addLayout(self.init_vvc_params(), 8, 2, 1, 4)
 
@@ -146,13 +102,8 @@ class VVC(SettingPanel):
 
         grid.addLayout(self._add_custom(), 12, 0, 1, 6)
 
-
-
-
         self.setLayout(grid)
         self.hide()
-
-
 
     def init_tier(self):
         return self._add_combo_box(
@@ -184,10 +135,9 @@ class VVC(SettingPanel):
                 "6.1",
                 "6.2",
                 "6.3",
-                ],
+            ],
             opt="levelidc",
         )
-
 
     def init_preset(self):
         layout = self._add_combo_box(
@@ -202,7 +152,6 @@ class VVC(SettingPanel):
             opt="preset",
         )
         return layout
-
 
     def init_pix_fmt(self):
         return self._add_combo_box(
@@ -244,16 +193,13 @@ class VVC(SettingPanel):
         layout.addWidget(self.labels.vvc_params)
         self.widgets.vvc_params = QtWidgets.QLineEdit()
         self.widgets.vvc_params.setToolTip(tool_tip)
-        self.widgets.vvc_params.setText(
-            ":".join(self.app.fastflix.config.encoder_opt(self.profile_name, "vvc_params"))
-        )
+        self.widgets.vvc_params.setText(":".join(self.app.fastflix.config.encoder_opt(self.profile_name, "vvc_params")))
         self.opts["vvc_params"] = "vvc_params"
         self.widgets.vvc_params.textChanged.connect(lambda: self.main.page_update())
         layout.addWidget(self.widgets.vvc_params)
         return layout
 
     def setting_change(self, update=True, pix_change=False):
-
         if self.updating_settings or not self.main.input_video:
             return
         self.updating_settings = True
@@ -281,21 +227,8 @@ class VVC(SettingPanel):
 
         settings = VVCSettings(
             preset=self.widgets.preset.currentText(),
-            # intra_encoding=self.widgets.intra_encoding.isChecked(),
-
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
-            # profile=self.widgets.profile.currentText(),
-            # hdr10=self.widgets.hdr10.isChecked(),
-            # hdr10_opt=self.widgets.hdr10_opt.isChecked(),
-            # dhdr10_opt=self.widgets.dhdr10_opt.isChecked(),
-            # repeat_headers=self.widgets.repeat_headers.isChecked(),
-            # aq_mode=self.widgets.aq_mode.currentIndex(),
-            # bframes=self.widgets.bframes.currentIndex(),
-            # b_adapt=self.widgets.b_adapt.currentIndex(),
-            # intra_smoothing=self.widgets.intra_smoothing.isChecked(),
-            # frame_threads=self.widgets.frame_threads.currentIndex(),
-            # tune=self.widgets.tune.currentText(),
             tier=self.widgets.tier.currentText(),
             levelidc=self.widgets.levelidc.currentText(),
             vvc_params=vvc_params_text.split(":") if vvc_params_text else [],
