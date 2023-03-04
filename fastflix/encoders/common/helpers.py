@@ -60,7 +60,7 @@ def generate_ffmpeg_start(
     ffmpeg = clean_file_string(ffmpeg)
     if video_track_title:
         video_track_title.replace('"', '\\"')
-    track_title = f'-metadata:s:v:0 HANDLER_NAME="{video_track_title}"'
+    track_title = f'-metadata:s:v:0 title="{video_track_title}"'
 
     return " ".join(
         [

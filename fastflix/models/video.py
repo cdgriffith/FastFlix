@@ -87,7 +87,7 @@ class VideoSettings(BaseModel):
     output_path: Path = None
     # scale: Optional[str] = None
     resolution_method: str = "auto"
-    resolution_pixels: int | None = None
+    resolution_custom: str | None = None
     deinterlace: bool = False
     video_speed: Union[float, int] = 1
     tone_map: str = "hable"
@@ -253,12 +253,14 @@ class Video(BaseModel):
     def scale(self):
         if self.video_settings.resolution_method == "auto":
             return None
+        if self.video_settings.resolution_method == "custom":
+            return self.video_settings.resolution_custom
         if self.video_settings.resolution_method == "long edge":
             if self.width > self.height:
-                return f"{self.video_settings.resolution_pixels}:-8"
+                return f"{self.video_settings.resolution_custom}:-8"
             else:
-                return f"-8:{self.video_settings.resolution_pixels}"
+                return f"-8:{self.video_settings.resolution_custom}"
         if self.video_settings.resolution_method == "width":
-            return f"{self.video_settings.resolution_pixels}:-8"
+            return f"{self.video_settings.resolution_custom}:-8"
         else:
-            return f"-8:{self.video_settings.resolution_pixels}"
+            return f"-8:{self.video_settings.resolution_custom}"

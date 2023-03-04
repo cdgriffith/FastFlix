@@ -70,6 +70,7 @@ resolutions = {
     t("Long Edge"): {"method": "long edge"},
     t("Width"): {"method": "width"},
     t("Height"): {"method": "height"},
+    t("Custom (w:h)"): {"method": "custom"},
     "4320 LE": {"method": "long edge", "pixels": 4320},
     "2160 LE": {"method": "long edge", "pixels": 2160},
     "1440 LE": {"method": "long edge", "pixels": 1440},
@@ -623,7 +624,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.flip.setCurrentIndex(self.flip_to_int(v_flip, h_flip))
 
             res_method = self.app.fastflix.config.opt("resolution_method")
-            res_pix = self.app.fastflix.config.opt("resolution_pixels")
+            res_pix = self.app.fastflix.config.opt("resolution_custom")
             if not res_pix:
                 matcher = {"method": res_method}
             else:
@@ -827,7 +828,6 @@ class Main(QtWidgets.QWidget):
         self.widgets.resolution_drop_down.currentIndexChanged.connect(self.update_resolution)
 
         self.widgets.resolution_custom = QtWidgets.QLineEdit()
-        self.widgets.resolution_custom.setValidator(only_int)
         self.widgets.resolution_custom.setFixedWidth(150)
 
         main_row.addWidget(self.widgets.resolution_drop_down, alignment=QtCore.Qt.AlignLeft)
@@ -841,7 +841,7 @@ class Main(QtWidgets.QWidget):
             self.widgets.resolution_custom.setDisabled(True)
             self.widgets.resolution_custom.setText("")
             self.widgets.resolution_custom.setPlaceholderText(t("Auto"))
-        elif self.widgets.resolution_drop_down.currentIndex() in {1, 2, 3}:
+        elif self.widgets.resolution_drop_down.currentIndex() in {1, 2, 3, 4}:
             self.widgets.resolution_custom.setDisabled(False)
             self.widgets.resolution_custom.setPlaceholderText(self.widgets.resolution_drop_down.currentText())
             match resolutions[self.widgets.resolution_drop_down.currentText()]["method"]:
@@ -1132,12 +1132,12 @@ class Main(QtWidgets.QWidget):
         rand_4 = secrets.token_hex(2)
         rand_8 = secrets.token_hex(4)
         out_loc = f"{Path('~').expanduser()}{os.sep}"
+        if tx := self.widgets.output_directory.text():
+            out_loc = f"{tx}{os.sep}"
         if self.input_video:
             out_loc = f"{self.input_video.parent}{os.sep}"
         if self.app.fastflix.config.output_directory:
             out_loc = f"{self.app.fastflix.config.output_directory}{os.sep}"
-        if tx := self.widgets.output_directory.text():
-            out_loc = f"{tx}{os.sep}"
 
         gen_string = self.app.fastflix.config.output_name_format or "{source}-fastflix-{rand_4}"
 
@@ -1289,14 +1289,7 @@ class Main(QtWidgets.QWidget):
 
     def enable_all(self):
         for name, widget in self.widgets.items():
-            if name in {
-                "preview",
-                "convert_button",
-                "pause_resume",
-                "convert_to",
-                "profile_box",
-                "resolution_custom",
-            }:
+            if name in {"preview", "convert_button", "pause_resume", "convert_to", "profile_box"}:
                 continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
@@ -1309,7 +1302,7 @@ class Main(QtWidgets.QWidget):
         self.output_path_button.setEnabled(True)
         self.output_video_path_widget.setEnabled(True)
         self.add_profile.setEnabled(True)
-        self.resolution_pixels()
+        self.resolution_custom()
 
     def clear_current_video(self):
         self.loading_video = True
@@ -1489,7 +1482,7 @@ class Main(QtWidgets.QWidget):
         video_track_title_name = [
             v
             for k, v in self.app.fastflix.current_video.streams.video[0].get("tags", []).items()
-            if k.upper() == "HANDLER_NAME"
+            if k.upper() == "TITLE"
         ]
 
         if video_track_title_name:
@@ -1628,12 +1621,12 @@ class Main(QtWidgets.QWidget):
     def resolution_method(self):
         return resolutions[self.widgets.resolution_drop_down.currentText()]["method"]
 
-    def resolution_pixels(self):
+    def resolution_custom(self):
         res = resolutions[self.widgets.resolution_drop_down.currentText()]
         if "pixels" in res:
             return res["pixels"]
         if self.widgets.resolution_custom.text().strip():
-            return int(self.widgets.resolution_custom.text())
+            return self.widgets.resolution_custom.text()
 
     def get_all_settings(self):
         if not self.initialized:
@@ -1650,7 +1643,7 @@ class Main(QtWidgets.QWidget):
         self.app.fastflix.current_video.video_settings = VideoSettings(
             crop=self.build_crop(),
             resolution_method=self.resolution_method(),
-            resolution_pixels=self.resolution_pixels(),
+            resolution_custom=self.resolution_custom(),
             start_time=self.start_time,
             end_time=end_time,
             selected_track=self.original_video_track,
