@@ -191,6 +191,7 @@ class QSVEncCSettings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     force_ten_bit: bool = False
+    qp_mode: str = "cqp"
 
 
 class QSVEncCAV1Settings(EncoderSettings):
@@ -211,6 +212,7 @@ class QSVEncCAV1Settings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     force_ten_bit: bool = False
+    qp_mode: str = "cqp"
 
 
 class QSVEncCH264Settings(EncoderSettings):
@@ -231,6 +233,7 @@ class QSVEncCH264Settings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     force_ten_bit: bool = False
+    qp_mode: str = "cqp"
 
 
 class NVEncCAVCSettings(EncoderSettings):

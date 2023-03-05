@@ -96,4 +96,4 @@ audio_formats = [
 ]
 
 from fastflix.encoders.qsvencc_av1.command_builder import build
-from fastflix.encoders.qsvencc_av1.settings_panel import QSVEnc as settings_panel
+from fastflix.encoders.qsvencc_av1.settings_panel import QSVAV1Enc as settings_panel

@@ -105,7 +105,7 @@ def build(fastflix: FastFlix):
         ("--chapter-copy" if video.video_settings.copy_chapters else ""),
         "-c",
         "h264",
-        (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
+        (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--{settings.qp_mode} {settings.cqp}"),
         vbv,
         (f"--qp-min {min_q}" if min_q and settings.bitrate else ""),
         (f"--qp-max {max_q}" if max_q and settings.bitrate else ""),
