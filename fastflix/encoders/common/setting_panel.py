@@ -28,7 +28,6 @@ class SettingPanel(QtWidgets.QWidget):
         self.labels = Box()
         self.opts = Box()
         self.only_int = QtGui.QIntValidator()
-        self.only_float = QtGui.QDoubleValidator()
 
     def paintEvent(self, event):
         o = QtWidgets.QStyleOption()
@@ -350,7 +349,6 @@ class SettingPanel(QtWidgets.QWidget):
             self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
             self.widgets[f"custom_{qp_name}"].setFixedWidth(100)
             self.widgets[f"custom_{qp_name}"].setEnabled(custom_qp)
-            self.widgets[f"custom_{qp_name}"].setValidator(self.only_float)
             self.widgets[f"custom_{qp_name}"].textChanged.connect(lambda: self.main.build_commands())
 
         if config_opt:

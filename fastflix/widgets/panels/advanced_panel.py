@@ -89,7 +89,6 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.attachments = Box()
         self.updating = False
         self.only_int = QtGui.QIntValidator()
-        self.only_float = QtGui.QDoubleValidator()
 
         self.layout = QtWidgets.QGridLayout()
 
@@ -228,17 +227,14 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.last_row += 1
         self.brightness_widget = QtWidgets.QLineEdit()
         self.brightness_widget.setToolTip("Default is: 0")
-        self.brightness_widget.setValidator(self.only_float)
         self.brightness_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.contrast_widget = QtWidgets.QLineEdit()
         self.contrast_widget.setToolTip("Default is: 1")
-        self.contrast_widget.setValidator(self.only_float)
         self.contrast_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.saturation_widget = QtWidgets.QLineEdit()
         self.saturation_widget.setToolTip("Default is: 1")
-        self.saturation_widget.setValidator(self.only_float)
         self.saturation_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.add_row_label(t("Equalizer") + " ʘ", self.last_row)
