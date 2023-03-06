@@ -515,7 +515,7 @@ class ProfileWindow(QtWidgets.QWidget):
 
         if isinstance(self.encoder, x265Settings):
             new_profile.x265 = self.encoder
-        if isinstance(self.encoder, VVCSettings):
+        elif isinstance(self.encoder, VVCSettings):
             new_profile.vcc = self.encoder
         elif isinstance(self.encoder, x264Settings):
             new_profile.x264 = self.encoder
@@ -560,7 +560,7 @@ class ProfileWindow(QtWidgets.QWidget):
         elif isinstance(self.encoder, SVTAVIFSettings):
             new_profile.svt_av1_avif = self.encoder
         else:
-            logger.error("Profile cannot be saved! Unknown encoder type.")
+            logger.error(f"Profile cannot be saved! Unknown encoder type {self.encoder.__class__.__name__}.")
             return
 
         self.app.fastflix.config.profiles[profile_name] = new_profile
