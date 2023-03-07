@@ -129,6 +129,8 @@ class Config(BaseModel):
     priority: Literal["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"] = "Normal"
     stay_on_top: bool = False
     portable_mode: bool = False
+    ui_scale: str = "1"
+    clean_old_logs: bool = True
     sane_audio_selection: list = Field(
         default_factory=lambda: [
             "aac",
@@ -209,6 +211,17 @@ class Config(BaseModel):
 
             return Profile(profile_version=2, audio_filters=[new_match], **raw_profile)
         return Profile(profile_version=2, **raw_profile)
+
+    def pre_load(self, portable_mode=False):
+        """Used before application startup to see if there are any QT variables we need to set"""
+        self.config_path = get_config(portable_mode=portable_mode)
+        try:
+            data = Box.from_yaml(filename=self.config_path)
+        except Exception:
+            return
+
+        if "ui_scale" in data and str(data["ui_scale"]) != "1":
+            os.putenv("QT_SCALE_FACTOR", str(data["ui_scale"]))
 
     def load(self, portable_mode=False):
         self.portable_mode = portable_mode

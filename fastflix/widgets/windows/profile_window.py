@@ -9,7 +9,6 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
 from fastflix.language import t
 from fastflix.widgets.panels.abstract_list import FlixList
-from fastflix.models.config import get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import (
     AOMAV1Settings,
@@ -569,18 +568,3 @@ class ProfileWindow(QtWidgets.QWidget):
         self.main.widgets.profile_box.addItem(profile_name)
         self.main.widgets.profile_box.setCurrentText(profile_name)
         self.hide()
-
-    def delete_current_profile(self):
-        if self.app.fastflix.config.selected_profile in get_preset_defaults():
-            return error_message(
-                f"{self.app.fastflix.config.selected_profile} " f"{t('is a default profile and will not be removed')}"
-            )
-        self.main.loading_video = True
-        del self.app.fastflix.config.profiles[self.app.fastflix.config.selected_profile]
-        self.app.fastflix.config.selected_profile = "Standard Profile"
-        self.app.fastflix.config.save()
-        self.main.widgets.profile_box.clear()
-        self.main.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
-        self.main.loading_video = False
-        self.main.widgets.profile_box.setCurrentText("Standard Profile")
-        self.main.widgets.convert_to.setCurrentIndex(0)

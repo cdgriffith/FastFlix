@@ -130,7 +130,9 @@ def latest_fastflix(app, show_new_dialog=False):
     logger.debug("Checking for newer versions of FastFlix")
 
     try:
-        data = requests.get(url, timeout=15 if not show_new_dialog else 3).json()
+        response = requests.get(url, timeout=15 if not show_new_dialog else 3)
+        response.raise_for_status()
+        data = response.json()
     except Exception:
         logger.warning(t("Could not connect to github to check for newer versions"))
         if show_new_dialog:

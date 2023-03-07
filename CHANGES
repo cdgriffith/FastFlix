@@ -5,15 +5,19 @@
 * Adding #100 Output format selection (thanks to me)
 * Adding #227 load directory of videos support (thanks to Chris / moonwhaler and a lot of others)
 * Adding #233 Versatile Video Coding (aka x266) support (thanks to F.O.R.A.R.T.)
-* Adding pip builds again allow for `pipx` install
 * Adding #367 safer font defaults (thanks to Archer Allstars)
 * Adding #242 and #400 resolution saves to the profile (thanks to x9sim9)
 * Adding #409 Copy video track title information from input file (thanks to Don Gafford)
 * Adding #422 Add ICQ and LA-ICQ for rigayas QSV (thanks to @bender1984)
+* Adding pip builds again allow for `pipx` install
+* Adding UI scale
+* Adding default log cleanup on exit, can be disabled in settings
 * Fixing #398 audio and subtitles disabled when editing queue item (thanks to philblue1 and Don Gafford)
 * Fixing #350 Unable to burn in subtitles (thanks to Maddie Davis)
 * Fixing #413 Wrong equalizer settings with not US locales (thanks to Massimo Pissarello)
+* Fixing #421 Queue extras were not ever being cleaned up (thanks to Maddie Davis)
 * Fixing QSV AV1 setting panel issues
+* Fixing app could crash on startup if could not check for updates to github due to rate limiting
 
 ## Version 5.1.0
 

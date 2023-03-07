@@ -14,7 +14,7 @@ from PySide6.QtGui import QAction
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
-from fastflix.models.config import setting_types
+from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
 from fastflix.resources import main_icon, get_icon, video_file_types
@@ -121,11 +121,16 @@ class Container(QtWidgets.QMainWindow):
         for item in self.app.fastflix.config.work_path.iterdir():
             if item.is_dir() and item.stem.startswith("temp_"):
                 shutil.rmtree(item, ignore_errors=True)
+            if item.is_file() and item.name.startswith("concat_"):
+                item.unlink(missing_ok=True)
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".tiff", ".tif")):
                 item.unlink()
         shutil.rmtree(self.app.fastflix.config.work_path / "covers", ignore_errors=True)
         if reusables.win_based:
             cleanup_windows_notification()
+
+        if self.app.fastflix.config.clean_old_logs:
+            self.clean_old_logs(show_errors=False)
         self.main.close(from_container=True)
         super(Container, self).closeEvent(a0)
 
@@ -259,7 +264,19 @@ class Container(QtWidgets.QMainWindow):
         self.profile_details.show()
 
     def delete_profile(self):
-        self.profile.delete_current_profile()
+        if self.app.fastflix.config.selected_profile in get_preset_defaults():
+            return error_message(
+                f"{self.app.fastflix.config.selected_profile} " f"{t('is a default profile and will not be removed')}"
+            )
+        self.main.loading_video = True
+        del self.app.fastflix.config.profiles[self.app.fastflix.config.selected_profile]
+        self.app.fastflix.config.selected_profile = "Standard Profile"
+        self.app.fastflix.config.save()
+        self.main.widgets.profile_box.clear()
+        self.main.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
+        self.main.loading_video = False
+        self.main.widgets.profile_box.setCurrentText("Standard Profile")
+        self.main.widgets.convert_to.setCurrentIndex(0)
 
     def show_logs(self):
         self.logs.show()
@@ -293,11 +310,12 @@ class Container(QtWidgets.QMainWindow):
                 self.app.fastflix.config.ffprobe = ffprobe
         self.pb = None
 
-    def clean_old_logs(self):
+    def clean_old_logs(self, show_errors=True):
         try:
             self.pb = ProgressBar(self.app, [Task(t("Clean Old Logs"), clean_logs)], signal_task=True, can_cancel=False)
         except Exception:
-            error_message(t("Could not compress old logs"), traceback=True)
+            if show_errors:
+                error_message(t("Could not compress old logs"), traceback=True)
         self.pb = None
 
     def set_stay_top(self):
