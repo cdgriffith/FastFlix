@@ -31,8 +31,8 @@ known_language_list = [
 ]
 possible_detect_points = ["1", "2", "4", "6", "8", "10", "15", "20", "25", "50", "100"]
 
-scale_digits = ["1", "1.25", "1.5", "1.75", "2", "2.5", "3"]
-scale_percents = ["100%", "125%", "150%", "175%", "200%", "250%", "300%"]
+scale_digits = ["0", "1", "1.25", "1.5", "1.75", "2", "2.5", "3"]
+scale_percents = ["Disable Scaling", "100%", "125%", "150%", "175%", "200%", "250%", "300%"]
 
 
 class Settings(QtWidgets.QWidget):
