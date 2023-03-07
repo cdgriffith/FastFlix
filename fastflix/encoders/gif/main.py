@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __author__ = "Chris Griffith"
-from pathlib import Path
-
-import pkg_resources
+import importlib.resources
 
 name = "GIF"
 
 video_extensions = [".gif"]
 video_dimension_divisor = 1
-icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_gif.png")).resolve())
+
+ref = importlib.resources.files("fastflix") / f"data/encoders/icon_gif.png"
+with importlib.resources.as_file(ref) as icon_file:
+    icon = str(icon_file.resolve())
 
 enable_subtitles = False
 enable_audio = False

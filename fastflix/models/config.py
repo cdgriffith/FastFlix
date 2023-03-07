@@ -220,8 +220,13 @@ class Config(BaseModel):
         except Exception:
             return
 
-        if "ui_scale" in data and str(data["ui_scale"]) != "1":
-            os.putenv("QT_SCALE_FACTOR", str(data["ui_scale"]))
+        if "ui_scale" in data:
+            scale = str(data["ui_scale"])
+            if scale not in ("0", "1"):
+                os.putenv("QT_SCALE_FACTOR", scale)
+                os.putenv("FF_DPI_OFF", "0")
+            if scale == "0":
+                os.putenv("FF_DPI_OFF", "1")
 
     def load(self, portable_mode=False):
         self.portable_mode = portable_mode

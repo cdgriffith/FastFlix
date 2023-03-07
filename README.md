@@ -36,7 +36,7 @@ extracted to a directory of your choice, and then linked too in FastFlix Setting
 
 ### AV1
 
-Theis is only supported on the latest generation of graphics cards specifically the Intel Arc, Nvidia 4000 series and AMD 7000 series 
+AV1 is only supported on the latest generation of graphics cards specifically the Intel Arc, Nvidia 4000 series and AMD 7000 series 
 
 | Encoder   | [NVEncC AV1](https://github.com/rigaya/NVEnc/releases) | [QSVEncC AV1](https://github.com/rigaya/QSVEnc/releases) | [VCEEncC AV1](https://github.com/rigaya/VCEEnc/releases) |
 |-----------|--------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
@@ -129,6 +129,17 @@ FastFlix does not plan to support Dolby Vision's proprietary format at this time
 # Support FastFlix
 
 Check out the different ways you can help [support FastFlix](https://github.com/cdgriffith/FastFlix/wiki/Support-FastFlix)!
+
+# Multilingual Support
+
+FastFlix is machine translated using DeepL into Spanish (español), French (Français), German (Deutsch), 
+Italian (Italiano), Chinese (中文), Japanese (日本語), Portuguese (Português), Swedish (svenska), Ukrainian (Українська),
+Russian (русский), Polish (polskie) and Korean (한국어).
+
+If something sounds wrong in your language, please open an issue or ping me on the [discord](https://discord.gg/GUBFP6f) channel with which line in
+[the language file](https://github.com/cdgriffith/FastFlix/blob/master/fastflix/data/languages.yaml) needs fixed!
+
+Special thanks to [leonardyan](https://github.com/leonardyan) for numerous Chinese corrections!
 
 # License
 

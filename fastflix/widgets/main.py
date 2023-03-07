@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Tuple, Union, Optional
 from collections import namedtuple
 
-import pkg_resources
+import importlib.resources
 import reusables
 from box import Box
 from pydantic import BaseModel, Field
@@ -666,12 +666,23 @@ class Main(QtWidgets.QWidget):
 
     def init_flip(self):
         self.widgets.flip = QtWidgets.QComboBox()
-        rotation_folder = "../data/rotations/FastFlix"
+        rotation_folder = "data/rotations/FastFlix"
 
-        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder}.png")).resolve())
-        vert_flip_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} VF.png")).resolve())
-        hoz_flip_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} HF.png")).resolve())
-        rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
+        ref = importlib.resources.files("fastflix") / f"{rotation_folder}.png"
+        with importlib.resources.as_file(ref) as f:
+            no_rot_file = str(f.resolve())
+
+        ref = importlib.resources.files("fastflix") / f"{rotation_folder} VF.png"
+        with importlib.resources.as_file(ref) as f:
+            vert_flip_file = str(f.resolve())
+
+        ref = importlib.resources.files("fastflix") / f"{rotation_folder} HF.png"
+        with importlib.resources.as_file(ref) as f:
+            hoz_flip_file = str(f.resolve())
+
+        ref = importlib.resources.files("fastflix") / f"{rotation_folder} 180.png"
+        with importlib.resources.as_file(ref) as f:
+            rot_180_file = str(f.resolve())
 
         self.widgets.flip.addItems([t("No Flip"), t("Vertical Flip"), t("Horizontal Flip"), t("Vert + Hoz Flip")])
         self.widgets.flip.setItemIcon(0, QtGui.QIcon(no_rot_file))
@@ -693,12 +704,23 @@ class Main(QtWidgets.QWidget):
 
     def init_rotate(self):
         self.widgets.rotate = QtWidgets.QComboBox()
-        rotation_folder = "../data/rotations/FastFlix"
+        rotation_folder = "data/rotations/FastFlix"
 
-        no_rot_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder}.png")).resolve())
-        rot_90_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} C90.png")).resolve())
-        rot_270_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} CC90.png")).resolve())
-        rot_180_file = str(Path(pkg_resources.resource_filename(__name__, f"{rotation_folder} 180.png")).resolve())
+        ref = importlib.resources.files("fastflix") / f"{rotation_folder}.png"
+        with importlib.resources.as_file(ref) as f:
+            no_rot_file = str(f.resolve())
+
+        ref = importlib.resources.files("fastflix") / f"{rotation_folder} C90.png"
+        with importlib.resources.as_file(ref) as f:
+            rot_90_file = str(f.resolve())
+
+        ref = importlib.resources.files("fastflix") / f"{rotation_folder} CC90.png"
+        with importlib.resources.as_file(ref) as f:
+            rot_270_file = str(f.resolve())
+
+        ref = importlib.resources.files("fastflix") / f"{rotation_folder} 180.png"
+        with importlib.resources.as_file(ref) as f:
+            rot_180_file = str(f.resolve())
 
         self.widgets.rotate.addItems([t("No Rotation") + "   ", "90°", "180°", "270°"])
         self.widgets.rotate.setItemIcon(0, QtGui.QIcon(no_rot_file))

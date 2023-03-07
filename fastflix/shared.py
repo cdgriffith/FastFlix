@@ -10,7 +10,7 @@ from subprocess import run
 import platform
 
 from appdirs import user_data_dir
-import pkg_resources
+import importlib.resources
 import requests
 import reusables
 from pathvalidate import sanitize_filepath
@@ -32,8 +32,9 @@ from fastflix.resources import get_bool_env
 
 DEVMODE = get_bool_env("DEVMODE")
 
-my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
-icon = QtGui.QIcon(my_data)
+ref = importlib.resources.files("fastflix") / f"data/icon.ico"
+with importlib.resources.as_file(ref) as icon_file:
+    my_data = str(icon_file.resolve())
 
 logger = logging.getLogger("fastflix")
 no_border = (
@@ -75,7 +76,7 @@ def message(msg, title=None):
     if title:
         sm.setWindowTitle(title)
     sm.setStandardButtons(QtWidgets.QMessageBox.Ok)
-    sm.setWindowIcon(icon)
+    sm.setWindowIcon(QtGui.QIcon(my_data))
     sm.exec_()
 
 
@@ -83,7 +84,7 @@ def error_message(msg, details=None, traceback=False, title=None):
     em = MyMessageBox()
     em.setStyleSheet("font-size: 14px")
     em.setText(msg)
-    em.setWindowIcon(icon)
+    em.setWindowIcon(QtGui.QIcon(my_data))
     em.setWindowFlags(em.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
     if title:
         em.setWindowTitle(title)

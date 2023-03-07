@@ -19,6 +19,9 @@
     större inverkan på kvaliteten.
   pol: 4 lub 5 spowoduje wyłączenie optymalizacji zniekształceń współczynnika, co
     jeszcze bardziej wpłynie na jakość.
+  ukr: 4 або 5 вимикають оптимізацію спотворень швидкості, що ще більше впливає на
+    якість.
+  kor: 4 또는 5는 속도 왜곡 최적화를 해제하여 품질에 더 큰 영향을 미칩니다.
 AQ Strength:
   deu: Strärke des AQ
   eng: AQ Strength
@@ -31,6 +34,8 @@ AQ Strength:
   por: Força de AQ
   swe: AQ styrka
   pol: Siła AQ
+  ukr: Сила AQ
+  kor: AQ 강도
 About:
   deu: Über
   eng: About
@@ -43,6 +48,8 @@ About:
   por: Sobre
   swe: Om
   pol: O
+  ukr: Про
+  kor: 정보
 Adaptive Quantization:
   deu: Adaptive Quantisierung
   eng: Adaptive Quantization
@@ -55,6 +62,8 @@ Adaptive Quantization:
   por: Quantização adaptativa
   swe: Adaptiv kvantisering
   pol: Adaptacyjna kwantyzacja
+  ukr: Адаптивне квантування
+  kor: 적응형 양자화
 Add current video to queue?:
   deu: Aktuelles Video zur Warteschlange hinzufügen?
   eng: Add current video to queue?
@@ -67,6 +76,8 @@ Add current video to queue?:
   por: Adicionar vídeo actual à fila de espera?
   swe: Lägg till aktuell video i kön?
   pol: Dodać bieżący film do kolejki?
+  ukr: Додати поточне відео в чергу?
+  kor: 대기열에 현재 동영상을 추가하시겠습니까?
 Add to Queue:
   deu: Zur Warteschlange hinzufügen
   eng: Add to Queue
@@ -79,6 +90,8 @@ Add to Queue:
   por: Adicionar à Fila de espera
   swe: Lägg till i kö
   pol: Dodaj do kolejki
+  ukr: Додати в чергу
+  kor: 대기열에 추가
 Adding commands to the queue:
   deu: Hinzufügen von Befehlen zur Warteschlange
   eng: Adding commands to the queue
@@ -91,6 +104,8 @@ Adding commands to the queue:
   por: Acrescentar comandos à fila
   swe: Lägga till kommandon i kön
   pol: Dodawanie poleceń do kolejki
+  ukr: Додавання команд до черги
+  kor: 대기열에 명령 추가하기
 Additional x265 params:
   deu: Zusätzliche x265-Parameter
   eng: Additional x265 params
@@ -103,6 +118,8 @@ Additional x265 params:
   por: Parâmetros adicionais x265
   swe: Ytterligare parametrar för x265
   pol: Dodatkowe parametry x265
+  ukr: Додаткові параметри x265
+  kor: 추가 x265 매개변수
 Advanced:
   deu: Erweitert
   eng: Advanced
@@ -115,6 +132,8 @@ Advanced:
   por: Avançado
   swe: Avancerad
   pol: Zaawansowane
+  ukr: Розширений
+  kor: 고급
 After Conversion:
   deu: Nach der Konvertierung
   eng: After Conversion
@@ -127,6 +146,8 @@ After Conversion:
   por: Após a Conversão
   swe: Efter konvertering
   pol: Po konwersji
+  ukr: Після конверсії
+  kor: 전환 후
 All:
   deu: Alle
   eng: All
@@ -139,6 +160,8 @@ All:
   por: Todos
   swe: Alla
   pol: Wszystkie
+  ukr: Усе.
+  kor: 모두
 All queue items have completed:
   deu: Alle Elemente der Warteschlange sind abgeschlossen
   eng: All queue items have completed
@@ -151,6 +174,8 @@ All queue items have completed:
   por: Todos os itens da fila foram completados
   swe: Alla köposter har avslutats.
   pol: Wszystkie pozycje kolejki zostały zakończone
+  ukr: Всі елементи черги виконано
+  kor: 모든 대기열 항목이 완료되었습니다.
 Audio:
   deu: Audio
   eng: Audio
@@ -163,6 +188,8 @@ Audio:
   por: Áudio
   swe: Ljud
   pol: Audio
+  ukr: Аудіо
+  kor: 오디오
 Audio Tracks:
   deu: Audio-Spuren
   eng: Audio Tracks
@@ -175,6 +202,8 @@ Audio Tracks:
   por: Pistas de áudio
   swe: Ljudspår
   pol: Ścieżki dźwiękowe
+  ukr: Аудіодоріжки
+  kor: 오디오 트랙
 Audio select language:
   deu: Audio-Sprache auswählen
   eng: Audio select language
@@ -187,6 +216,8 @@ Audio select language:
   por: Seleccione a língua do áudio
   swe: Ljud väljer språk
   pol: Wybór języka audio
+  ukr: Вибір мови звуку
+  kor: 오디오 언어 선택
 Author:
   deu: Autor
   eng: Author
@@ -199,6 +230,8 @@ Author:
   por: Autor
   swe: Författare
   pol: Autor
+  ukr: Автор
+  kor: 작성자
 Auto:
   deu: Auto
   eng: Auto
@@ -211,6 +244,8 @@ Auto:
   por: Auto
   swe: Auto
   pol: Auto
+  ukr: Авто
+  kor: 자동
 Auto Burn-in first forced or default subtitle track:
   deu: Auto Einbrennen der ersten erzwungenen oder Standard-Untertitelspur
   eng: Auto Burn-in first forced or default subtitle track
@@ -224,6 +259,9 @@ Auto Burn-in first forced or default subtitle track:
   por: Auto Burn-in primeira faixa de subtítulos forçada ou por defeito
   swe: Automatisk inbränning av första tvingade eller standard undertextspår
   pol: Auto Burn-in pierwsza wymuszona lub domyślna ścieżka napisów
+  ukr: Автоматичне вбудовування першої примусової доріжки субтитрів або доріжки за
+    замовчуванням
+  kor: 자동 번인 첫 번째 강제 또는 기본 자막 트랙
 Auto Crop:
   deu: Automatisch beschneiden
   eng: Auto Crop
@@ -236,6 +274,8 @@ Auto Crop:
   por: Cultura Automóvel
   swe: Automatisk beskärning
   pol: Auto Crop
+  ukr: Автоматичне обрізання
+  kor: 자동 자르기
 Auto Crop - Finding black bars at:
   deu: Auto Crop - Finden von schwarzen Balken bei
   eng: Auto Crop - Finding black bars at
@@ -248,6 +288,8 @@ Auto Crop - Finding black bars at:
   por: Auto Crop - Encontrar barras pretas em
   swe: Automatisk beskärning - Hitta svarta streck vid
   pol: Automatyczne kadrowanie - znajdowanie czarnych pasków przy
+  ukr: Автоматичне обрізання - знаходження чорних смуг на
+  kor: 자동 자르기 - 다음에서 검은색 막대 찾기
 Automatically detect black borders:
   deu: Automatische Erkennung von schwarzen Rändern
   eng: Automatically detect black borders
@@ -260,6 +302,8 @@ Automatically detect black borders:
   por: Detectar automaticamente as bordas negras
   swe: Automatisk upptäckt av svarta kanter
   pol: Automatycznie wykrywa czarne krawędzie
+  ukr: Автоматичне виявлення чорних меж
+  kor: 검은색 테두리 자동 감지
 Automatically enabled when an interlaced video is detected:
   deu: Automatisch aktiviert, wenn ein Interlaced-Video erkannt wird
   eng: Automatically enabled when an interlaced video is detected
@@ -272,6 +316,8 @@ Automatically enabled when an interlaced video is detected:
   por: Activado automaticamente quando um vídeo entrelaçado é detectado
   swe: Aktiveras automatiskt när en interlaced video upptäcks.
   pol: Automatyczne włączanie po wykryciu obrazu z przeplotem
+  ukr: Автоматично вмикається, коли виявлено чересстрочне відео
+  kor: 인터레이스드 비디오가 감지되면 자동으로 활성화됩니다.
 B Adapt:
   deu: B Anpassen
   eng: B Adapt
@@ -284,6 +330,8 @@ B Adapt:
   por: B Adaptar
   swe: B Anpassning
   pol: B Przyjęcie
+  ukr: B Адаптуватися
+  kor: B 적응
 B Frames:
   deu: B-Frames
   eng: B Frames
@@ -296,6 +344,8 @@ B Frames:
   por: Molduras B
   swe: B-ramar
   pol: B Ramy
+  ukr: B Рамки
+  kor: B 프레임
 B Ref Mode:
   deu: B-Ref-Modus
   eng: B Ref Mode
@@ -308,6 +358,8 @@ B Ref Mode:
   por: B Modo Ref
   swe: B Ref Mode
   pol: B Ref Mode
+  ukr: B Реф-режим
+  kor: B 레퍼런스 모드
 Bit Depth:
   deu: Bit-Tiefe
   eng: Bit Depth
@@ -320,6 +372,8 @@ Bit Depth:
   por: Profundidade de bits
   swe: Bitdjup
   pol: Głębokość bitowa
+  ukr: Глибина біта
+  kor: 비트 깊이
 Bitrate:
   deu: Bitrate
   eng: Bitrate
@@ -332,6 +386,8 @@ Bitrate:
   por: Taxa de bits
   swe: Bitrate
   pol: Bitrate
+  ukr: Бітрейт
+  kor: 비트 전송률
 Block Size:
   deu: Blockgröße
   eng: Block Size
@@ -344,6 +400,8 @@ Block Size:
   por: Tamanho do bloco
   swe: Blockstorlek
   pol: Wielkość bloku
+  ukr: Розмір блоку
+  kor: 블록 크기
 Both Passes:
   deu: Beide Durchgänge
   eng: Both Passes
@@ -356,6 +414,8 @@ Both Passes:
   por: Ambos os Passes
   swe: Båda passen
   pol: Oba przejścia
+  ukr: Обидві перепустки
+  kor: 두 패스 모두
 Bottom:
   deu: Unten
   eng: Bottom
@@ -368,6 +428,8 @@ Bottom:
   por: Fundo
   swe: Botten
   pol: Na dole
+  ukr: Дно.
+  kor: 하단
 Break the video into columns to encode faster (lesser quality):
   deu: Das Video in Spalten aufteilen, um schneller zu kodieren (geringere Qualität)
   eng: Break the video into columns to encode faster (lesser quality)
@@ -380,6 +442,8 @@ Break the video into columns to encode faster (lesser quality):
   por: Quebrar o vídeo em colunas para codificar mais rapidamente (menor qualidade)
   swe: Dela upp videon i kolumner för att koda snabbare (sämre kvalitet)
   pol: Podziel film na kolumny, aby kodować szybciej (gorsza jakość)
+  ukr: Розбийте відео на колонки для швидшого кодування (з меншою якістю)
+  kor: 비디오를 열로 분할하여 더 빠르게 인코딩(품질 저하)
 Break the video into rows to encode faster (lesser quality):
   deu: Das Video in Zeilen aufteilen, um schneller zu kodieren (geringere Qualität)
   eng: Break the video into rows to encode faster (lesser quality)
@@ -392,6 +456,8 @@ Break the video into rows to encode faster (lesser quality):
   por: Quebrar o vídeo em filas para codificar mais rapidamente (menor qualidade)
   swe: Dela upp videon i rader för att koda snabbare (sämre kvalitet)
   pol: Podziel wideo na rzędy, aby kodować szybciej (gorsza jakość)
+  ukr: Розбийте відео на рядки для швидшого кодування (з меншою якістю)
+  kor: 동영상을 행 단위로 분할하여 더 빠르게 인코딩(품질 저하)
 Bufsize:
   deu: Bufsize
   eng: Bufsize
@@ -404,6 +470,8 @@ Bufsize:
   por: Bufsize
   swe: Bufsize
   pol: Bufsize
+  ukr: Bufsize
+  kor: Bufsize
 Build:
   deu: Erstellen
   eng: Build
@@ -416,6 +484,8 @@ Build:
   por: Construir
   swe: Bygg
   pol: Zbuduj
+  ukr: Побудова
+  kor: 빌드
 Burn In:
   deu: Einbrennen
   eng: Burn In
@@ -428,6 +498,8 @@ Burn In:
   por: Queimar em
   swe: Bränna in
   pol: Spalić się
+  ukr: Burn In
+  kor: 번 인
 CPU Used:
   deu: Verwendete CPU
   eng: CPU Used
@@ -440,6 +512,8 @@ CPU Used:
   por: CPU utilizada
   swe: CPU som används
   pol: Używany procesor
+  ukr: Використаний процесор
+  kor: 사용된 CPU
 Calculate PSNR and SSIM and show in the encoder output:
   deu: PSNR und SSIM berechnen und in der Kodierungsausgabe anzeigen
   eng: Calculate PSNR and SSIM and show in the encoder output
@@ -452,6 +526,8 @@ Calculate PSNR and SSIM and show in the encoder output:
   por: Calcular a PSNR e SSIM e mostrar na saída do codificador
   swe: Beräkna PSNR och SSIM och visa i utgången av kodaren.
   pol: Obliczyć PSNR i SSIM i pokazać na wyjściu kodera
+  ukr: Обчислити PSNR і SSIM і показати на виході кодера
+  kor: PSNR 및 SSIM을 계산하고 인코더 출력에 표시합니다.
 Cancel:
   deu: Abbrechen
   eng: Cancel
@@ -464,6 +540,8 @@ Cancel:
   por: Cancelar
   swe: Avbryt
   pol: Anuluj
+  ukr: Скасувати
+  kor: 취소
 Cancel Conversion:
   deu: Konvertierung abbrechen
   eng: Cancel Conversion
@@ -476,6 +554,8 @@ Cancel Conversion:
   por: Cancelar Conversão
   swe: Avbryt konvertering
   pol: Anuluj konwersję
+  ukr: Скасувати конверсію
+  kor: 전환 취소
 Cancel has been requested, killing encoding:
   deu: Abbrechen wurde angefordert, Kodierung wird abgebrochen
   eng: Cancel has been requested, killing encoding
@@ -488,6 +568,8 @@ Cancel has been requested, killing encoding:
   por: Foi pedido o cancelamento, codificação de mortes
   swe: Avbryt har begärts, dödande kodning
   pol: Zażądano anulowania, kodowanie zabijania
+  ukr: Було запитано скасування, що вбиває кодування
+  kor: 취소가 요청되어 인코딩이 종료되었습니다.
 Canceling current encode:
   deu: Abbrechen der aktuellen Kodierung
   eng: Canceling current encode
@@ -500,6 +582,8 @@ Canceling current encode:
   por: Cancelamento do código de corrente
   swe: Avbryta pågående kodning
   pol: Anulowanie bieżącego kodowania
+  ukr: Скасування поточного кодування
+  kor: 현재 인코딩 취소
 Cancelled:
   deu: Abgebrochen
   eng: Cancelled
@@ -512,6 +596,8 @@ Cancelled:
   por: Cancelado
   swe: Avbokad
   pol: Anulowane
+  ukr: Скасовано.
+  kor: 취소됨
 Cancelled - Ready to try again:
   deu: Abgebrochen - Bereit zum erneuten Versuch
   eng: Cancelled - Ready to try again
@@ -524,6 +610,8 @@ Cancelled - Ready to try again:
   por: Cancelado - Pronto para tentar novamente
   swe: Avbruten - redo att försöka igen
   pol: Anulowane - Gotowe do ponownej próby
+  ukr: Скасовано - Готові спробувати ще раз
+  kor: 취소됨 - 다시 시도할 준비가 되었습니다.
 Cannot remove afterwards!:
   deu: Kann nicht nachträglich entfernt werden!
   eng: Cannot remove afterwards!
@@ -536,6 +624,8 @@ Cannot remove afterwards!:
   por: Não é possível remover depois!
   swe: Kan inte tas bort efteråt!
   pol: Nie można go potem usunąć!
+  ukr: Неможливо видалити після цього!
+  kor: 이후에는 제거할 수 없습니다!
 Check for Newer Version of FastFlix:
   deu: Auf neuere Version von FastFlix überprüfen
   eng: Check for Newer Version of FastFlix
@@ -548,6 +638,8 @@ Check for Newer Version of FastFlix:
   por: Verificar a existência de uma versão mais recente de FastFlix
   swe: Kontrollera om det finns en nyare version av FastFlix
   pol: Sprawdź czy jest nowsza wersja FastFlixa
+  ukr: Перевірте наявність нової версії FastFlix
+  kor: 최신 버전의 FastFlix 확인
 Clean Old Logs:
   deu: Alte Protokolle löschen
   eng: Clean Old Logs
@@ -560,6 +652,8 @@ Clean Old Logs:
   por: Toros antigos limpos
   swe: Rengör gamla stockar
   pol: Czyszczenie starych kłód
+  ukr: Чисті старі колоди
+  kor: 오래된 로그 정리
 Clear Completed:
   deu: Erledigte entfernen
   eng: Clear Completed
@@ -572,6 +666,8 @@ Clear Completed:
   por: Limpar Completado
   swe: Klart slutfört
   pol: Wyczyszczone Zakończone
+  ukr: Очистити Завершено
+  kor: 완료 지우기
 Close GUI Only:
   deu: Nur GUI schließen
   eng: Close GUI Only
@@ -584,6 +680,8 @@ Close GUI Only:
   por: Fechar apenas GUI
   swe: Stäng endast GUI
   pol: Zamknij tylko GUI
+  ukr: Закрийте лише графічний інтерфейс
+  kor: GUI만 닫기
 CodeCalamity UHD HDR Encoding Guide:
   deu: CodeCalamity UHD HDR-Codierungsanleitung
   eng: CodeCalamity UHD HDR Encoding Guide
@@ -596,6 +694,8 @@ CodeCalamity UHD HDR Encoding Guide:
   por: CodeCalamity UHD Guia de Codificação de HDR
   swe: CodeCalamity UHD HDR-kodningsguide
   pol: CodeCalamity UHD HDR Encoding Guide
+  ukr: Посібник із кодування UHD HDR від CodeCalamity
+  kor: 코드캘러미티 UHD HDR 인코딩 가이드
 Color Primaries:
   deu: Grundfarbmodell
   eng: Color Primaries
@@ -608,6 +708,8 @@ Color Primaries:
   por: Primários de cor
   swe: Grundfärger
   pol: Prymitywy kolorystyczne
+  ukr: Кольорові праймери
+  kor: 색상 원색
 Color Space:
   deu: Farbraum
   eng: Color Space
@@ -620,6 +722,8 @@ Color Space:
   por: Espaço de cor
   swe: Färgrymd
   pol: Przestrzeń kolorów
+  ukr: Колірний простір
+  kor: 색 공간
 Color Transfer:
   deu: Übertragungsfunktion
   eng: Color Transfer
@@ -632,6 +736,8 @@ Color Transfer:
   por: Transferência de cor
   swe: Färgöverföring
   pol: Transfer kolorów
+  ukr: Передача кольору
+  kor: 컬러 전송
 Command has completed:
   deu: Befehl wurde abgeschlossen
   eng: Command has completed
@@ -644,6 +750,8 @@ Command has completed:
   por: Comando completado
   swe: Kommandot har slutförts.
   pol: Rozkaz został wykonany
+  ukr: Командування завершено
+  kor: 명령이 완료되었습니다.
 Command worker received request to pause current encode:
   deu: Befehlsablauf hat Anfrage erhalten, die aktuelle Kodierung zu pausieren
   eng: Command worker received request to pause current encode
@@ -658,6 +766,8 @@ Command worker received request to pause current encode:
   por: Comando operário recebeu pedido para pausar a codificação de corrente
   swe: Kommandotjänstemannen har mottagit en begäran om att pausa den pågående kodningen.
   pol: Command worker odebrał żądanie wstrzymania bieżącego kodowania
+  ukr: Командний працівник отримав запит на призупинення поточного кодування
+  kor: 명령 작업자가 현재 인코딩 일시 중지 요청을 받았습니다.
 Command worker received request to pause encoding after the current item completes:
   deu: Befehlsablauf hat Anfrage erhalten, das Encoding nach Abschluss des aktuellen
     Elements zu pausieren
@@ -678,6 +788,9 @@ Command worker received request to pause encoding after the current item complet
     det att det aktuella objektet har avslutats.
   pol: Pracownik poleceń otrzymał żądanie wstrzymania kodowania po zakończeniu bieżącego
     elementu
+  ukr: Командний працівник отримав запит на призупинення кодування після завершення
+    поточного елемента
+  kor: 현재 항목이 완료된 후 인코딩 일시 중지 요청을 받은 명령 작업자
 Command worker received request to resume encoding:
   deu: Befehlsablauf hat Anfrage erhalten, die Kodierung fortzusetzen
   eng: Command worker received request to resume encoding
@@ -690,6 +803,8 @@ Command worker received request to resume encoding:
   por: O trabalhador de comando recebeu um pedido para retomar a codificação
   swe: Kommandotjänstemannen har mottagit en begäran om att återuppta kodningen.
   pol: Command worker otrzymał żądanie wznowienia kodowania
+  ukr: Командний працівник отримав запит на відновлення кодування
+  kor: 명령 작업자가 인코딩 재개 요청을 받았습니다.
 Command worker received request to resume paused encode:
   deu: Befehlsablauf hat Anfrage erhalten, die pausierte Kodierung fortzusetzen
   eng: Command worker received request to resume paused encode
@@ -704,6 +819,8 @@ Command worker received request to resume paused encode:
   por: O trabalhador de comando recebeu pedido para retomar o codigo pausado
   swe: Kommandotjänstemannen har mottagit en begäran om att återuppta pausad kodning.
   pol: Command worker odebrał żądanie wznowienia wstrzymanego kodowania
+  ukr: Командний працівник отримав запит на відновлення призупиненого кодування
+  kor: 명령 작업자가 일시 중지된 인코딩을 다시 시작하라는 요청을 받았습니다.
 Commands to execute:
   deu: Befehle zum Ausführen
   eng: Commands to execute
@@ -716,6 +833,8 @@ Commands to execute:
   por: Comandos a executar
   swe: Kommandon som ska utföras
   pol: Polecenia do wykonania
+  ukr: Команди для виконання
+  kor: 실행할 명령
 Config File:
   deu: Konfig-Datei
   eng: Config File
@@ -728,6 +847,8 @@ Config File:
   por: Config File
   swe: Konfigurationsfil
   pol: Config File
+  ukr: Файл конфігурації
+  kor: 구성 파일
 Constant:
   deu: Konstant
   eng: Constant
@@ -740,6 +861,8 @@ Constant:
   por: Constante
   swe: Konstant
   pol: Stała
+  ukr: Постійна
+  kor: 상수
 Conversion:
   deu: Konvertierung
   eng: Conversion
@@ -752,6 +875,8 @@ Conversion:
   por: Conversão
   swe: Konvertering
   pol: Konwersja
+  ukr: Конвертація
+  kor: 전환
 Conversion cancelled, delete incomplete file:
   deu: Konvertierung abgebrochen, unvollständige Datei löschen
   eng: Conversion cancelled, delete incomplete file
@@ -764,6 +889,8 @@ Conversion cancelled, delete incomplete file:
   por: Conversão cancelada, apagar ficheiro incompleto
   swe: Konvertering avbruten, radera ofullständig fil
   pol: Konwersja anulowana, usuń niekompletny plik
+  ukr: Перетворення скасовано, видаліть неповний файл
+  kor: 변환 취소, 완료되지 않은 파일 삭제
 Conversion worker shutting down:
   deu: Konvertierungsablauf fährt herunter
   eng: Conversion worker shutting down
@@ -776,6 +903,8 @@ Conversion worker shutting down:
   por: Encerramento do trabalhador de conversão
   swe: Konverteringsarbetaren stänger av
   pol: Wyłączenie pracownika konwersji
+  ukr: Вимкнення конвертера
+  kor: 전환 작업자 종료
 Convert:
   deu: Konvertieren
   eng: Convert
@@ -788,6 +917,8 @@ Convert:
   por: Converta
   swe: Konvertera
   pol: Konwertuj
+  ukr: Перетворити
+  kor: 변환
 Convert BT2020 colorspace into bt709:
   deu: BT.2020-Farbraum nach BT.709 konvertieren
   eng: Convert BT.2020 colorspace into BT.709
@@ -800,6 +931,8 @@ Convert BT2020 colorspace into bt709:
   por: Converter o espaço de cor BT2020 em bt709
   swe: Konvertera BT2020-färgrymden till bt709
   pol: Konwersja przestrzeni kolorów BT2020 na bt709
+  ukr: Перетворення простору кольорів BT2020 у bt709
+  kor: BT2020 색공간을 bt709로 변환하기
 Copy Chapters:
   deu: Kapitel kopieren
   eng: Copy Chapters
@@ -812,6 +945,8 @@ Copy Chapters:
   por: Copiar Capítulos
   swe: Kopiera kapitel
   pol: Kopiowanie rozdziałów
+  ukr: Копіювати розділи
+  kor: 챕터 복사
 Copy Commands:
   deu: Befehle kopieren
   eng: Copy Commands
@@ -824,6 +959,8 @@ Copy Commands:
   por: Comandos de cópia
   swe: Kommandon för kopiering
   pol: Polecenia kopiowania
+  ukr: Команди копіювання
+  kor: 복사 명령
 Copy Cover:
   deu: Cover kopieren
   eng: Copy Cover
@@ -836,6 +973,8 @@ Copy Cover:
   por: Capa de cópia
   swe: Kopiera omslaget
   pol: Kopia Okładka
+  ukr: Копія обкладинки
+  kor: 표지 복사
 Copy Landscape Cover:
   deu: Querformatiges Cover kopieren
   eng: Copy Landscape Cover
@@ -848,6 +987,8 @@ Copy Landscape Cover:
   por: Cópia da capa da Paisagem
   swe: Kopiera landskapsomslag
   pol: Kopia Okładka krajobrazowa
+  ukr: Скопіювати обкладинку "Пейзаж
+  kor: 조경 표지 복사
 Copy Small Cover (no preview):
   deu: Kleines Cover kopieren (keine Vorschau)
   eng: Copy Small Cover (no preview)
@@ -860,6 +1001,8 @@ Copy Small Cover (no preview):
   por: Copiar Pequena Capa (sem pré-visualização)
   swe: Kopiera litet omslag (ingen förhandsgranskning)
   pol: Kopia Mała okładka (bez zapowiedzi)
+  ukr: Копія маленької обкладинки (без попереднього перегляду)
+  kor: 작은 표지 복사(미리 보기 없음)
 Copy Small Landscape Cover  (no preview):
   deu: Kleines Querformat-Cover kopieren (keine Vorschau)
   eng: Copy Small Landscape Cover  (no preview)
@@ -872,6 +1015,8 @@ Copy Small Landscape Cover  (no preview):
   por: Copiar Pequena Capa de Paisagem (sem pré-visualização)
   swe: Kopiera litet landskapsomslag (ingen förhandsgranskning)
   pol: Kopia Mała Okładka Krajobrazowa (bez podglądu)
+  ukr: Скопіювати малу обкладинку (без попереднього перегляду)
+  kor: 작은 조경 표지 복사(미리보기 없음)
 Copy all commands to the clipboard:
   deu: Kopiere alle Befehle in die Zwischenablage
   eng: Copy all commands to the clipboard
@@ -884,6 +1029,8 @@ Copy all commands to the clipboard:
   por: Copiar todos os comandos para a prancheta
   swe: Kopiera alla kommandon till klippbordet
   pol: Skopiuj wszystkie polecenia do schowka
+  ukr: Скопіюйте всі команди в буфер обміну
+  kor: 모든 명령을 클립보드에 복사
 Copy the chapter markers as is from incoming source.:
   deu: Unverändertes Kopieren der Kapitelmarkierungen aus der eingehenden Quelle.
   eng: Copy the chapter markers as is from incoming source.
@@ -896,6 +1043,8 @@ Copy the chapter markers as is from incoming source.:
   por: Copiar os marcadores de capítulo tal como são da fonte de entrada.
   swe: Kopiera kapitelmarkeringarna som de är från den inkommande källan.
   pol: Skopiuj znaczniki rozdziałów ze źródła przychodzącego w takiej postaci.
+  ukr: Скопіюйте маркери розділів як є з вхідного джерела.
+  kor: 챕터 마커를 수신 소스에서 그대로 복사합니다.
 Could not compress old logs:
   deu: Konnte alte Protokolle nicht komprimieren
   eng: Could not compress old logs
@@ -908,6 +1057,8 @@ Could not compress old logs:
   por: Não conseguia comprimir troncos velhos
   swe: Kunde inte komprimera gamla loggar
   pol: Nie można skompresować starych logów
+  ukr: Не вдалося стиснути старі журнали
+  kor: 이전 로그를 압축할 수 없음
 Could not connect to github to check for newer versions:
   deu: Konnte keine Verbindung zu Github herstellen, um nach neueren Versionen zu
     suchen
@@ -922,6 +1073,8 @@ Could not connect to github to check for newer versions:
   por: Não foi possível ligar ao github para verificar versões mais recentes
   swe: Kunde inte ansluta till github för att kontrollera om det fanns nyare versioner
   pol: Nie można połączyć się z githubem, aby sprawdzić, czy są nowsze wersje
+  ukr: Не вдалося підключитися до github, щоб перевірити наявність нових версій
+  kor: 최신 버전을 확인하기 위해 github에 연결할 수 없습니다.
 Could not create / access work directory:
   deu: Konnte Arbeitsverzeichnis nicht erstellen / aufrufen
   eng: Could not create / access work directory
@@ -934,6 +1087,8 @@ Could not create / access work directory:
   por: Não foi possível criar / aceder ao directório de trabalho
   swe: Kunde inte skapa/åtkomst till arbetskatalogen
   pol: Nie można utworzyć / uzyskać dostępu do katalogu roboczego
+  ukr: Не вдалося створити / отримати доступ до робочого каталогу
+  kor: 작업 디렉토리를 만들거나 액세스할 수 없습니다.
 Could not fix first subtitle track:
   deu: Konnte die erste Untertitelspur nicht reparieren
   eng: Could not fix first subtitle track
@@ -946,6 +1101,8 @@ Could not fix first subtitle track:
   por: Não foi possível fixar a primeira faixa de legendas
   swe: Det gick inte att fixa det första undertextspåret
   pol: Nie można naprawić pierwszej ścieżki napisów
+  ukr: Не вдалося виправити першу доріжку субтитрів
+  kor: 첫 번째 자막 트랙을 수정할 수 없습니다.
 Could not generate thumbnail:
   deu: Konnte kein Miniaturbild erzeugen
   eng: Could not generate thumbnail
@@ -958,6 +1115,8 @@ Could not generate thumbnail:
   por: Não pôde gerar miniaturas
   swe: Kunde inte generera miniatyrbild
   pol: Nie można wygenerować miniaturki
+  ukr: Не вдалося згенерувати мініатюру
+  kor: 썸네일을 생성할 수 없습니다.
 Could not load config file!:
   deu: Konnte Konfigurationsdatei nicht laden!
   eng: Could not load config file!
@@ -970,6 +1129,8 @@ Could not load config file!:
   por: Não foi possível carregar o ficheiro de configuração!
   swe: Kunde inte läsa in konfigurationsfilen!
   pol: Nie można załadować pliku konfiguracyjnego!
+  ukr: Не вдалося завантажити файл конфігурації!
+  kor: 구성 파일을 로드할 수 없습니다!
 Could not set language to:
   deu: Konnte die Sprache nicht ändern auf
   eng: Could not set language to
@@ -982,6 +1143,8 @@ Could not set language to:
   por: Não foi possível definir a linguagem para
   swe: Kunde inte ställa in språket till
   pol: Nie można ustawić języka na
+  ukr: Не вдалося встановити мову на
+  kor: 언어로 설정할 수 없습니다.
 Could not start FastFlix:
   deu: Konnte FastFlix nicht starten
   eng: Could not start FastFlix
@@ -994,6 +1157,8 @@ Could not start FastFlix:
   por: Não foi possível iniciar FastFlix
   swe: FastFlix kunde inte startas
   pol: Nie można uruchomić FastFlix
+  ukr: Не вдалося запустити FastFlix
+  kor: FastFlix를 시작할 수 없습니다.
 Cover:
   deu: Cover
   eng: Cover
@@ -1006,6 +1171,8 @@ Cover:
   por: Capa
   swe: Täckningen
   pol: Okładka
+  ukr: Обкладинка
+  kor: 커버
 Create Profile:
   deu: Profil erstellen
   eng: Create Profile
@@ -1018,6 +1185,8 @@ Create Profile:
   por: Criar Perfil
   swe: Skapa en profil
   pol: Utwórz profil
+  ukr: Створити профіль
+  kor: 프로필 만들기
 Crop:
   deu: Zuschneiden
   eng: Crop
@@ -1030,6 +1199,8 @@ Crop:
   por: Cultura
   swe: Grödor
   pol: Uprawy
+  ukr: Урожай
+  kor: 자르기
 Crop Detect Points:
   deu: Feststellungspunkte fürs Cropping
   eng: Crop Detect Points
@@ -1042,6 +1213,8 @@ Crop Detect Points:
   por: Pontos de Detecção de Culturas
   swe: Skördepunkter för upptäckt av grödor
   pol: Punkty wykrywania upraw
+  ukr: Точки виявлення посівів
+  kor: 자르기 감지 지점
 Current Profile Settings:
   deu: Aktuelle Profileinstellungen
   eng: Current Profile Settings
@@ -1054,6 +1227,8 @@ Current Profile Settings:
   por: Definições de perfil actuais
   swe: Nuvarande profilinställningar
   pol: Bieżące ustawienia profilu
+  ukr: Поточні налаштування профілю
+  kor: 현재 프로필 설정
 Currently only works for image based subtitles.:
   deu: Funktioniert derzeit nur bei bildbasierten Untertiteln.
   eng: Currently only works for image based subtitles.
@@ -1066,6 +1241,8 @@ Currently only works for image based subtitles.:
   por: Actualmente só funciona para legendas baseadas em imagens.
   swe: För närvarande fungerar endast bildbaserade undertexter.
   pol: Obecnie działa tylko dla napisów opartych na obrazkach.
+  ukr: Наразі працює лише для субтитрів на основі зображень.
+  kor: 현재는 이미지 기반 자막에서만 작동합니다.
 Custom NVEncC options:
   deu: angepasste NVEncC-Optionen
   eng: Custom NVEncC options
@@ -1078,6 +1255,8 @@ Custom NVEncC options:
   por: Opções NVEncC personalizadas
   swe: Anpassade NVEncC-alternativ
   pol: Niestandardowe opcje NVEncC
+  ukr: Спеціальні опції NVEncC
+  kor: 커스텀 NVEncC 옵션
 Custom ffmpeg options:
   deu: Benutzerdefinierte ffmpeg-Optionen
   eng: Custom ffmpeg options
@@ -1090,6 +1269,8 @@ Custom ffmpeg options:
   por: Opções ffmpeg personalizadas
   swe: Anpassade ffmpeg-alternativ
   pol: Niestandardowe opcje ffmpeg
+  ukr: Користувацькі параметри ffmpeg
+  kor: 사용자 지정 ffmpeg 옵션
 Deblock:
   deu: Deblocking
   eng: Deblock
@@ -1102,6 +1283,8 @@ Deblock:
   por: Desbloqueio
   swe: Deblockering
   pol: Deblock
+  ukr: Деблок.
+  kor: 차단 해제
 Default 4. This parameter has a quadratic effect on the amount of memory allocated:
   deu: Voreinstellung 4. Die Menge des mit diesem Parameter zugewiesenen Speichers
     wächst quadratisch.
@@ -1120,6 +1303,9 @@ Default 4. This parameter has a quadratic effect on the amount of memory allocat
   swe: Standard 4. Den här parametern har en kvadratisk effekt på mängden minne som
     tilldelas.
   pol: Domyślnie 4. Ten parametr ma kwadratowy wpływ na ilość przydzielonej pamięci.
+  ukr: За замовчуванням 4. Цей параметр має квадратичний вплив на обсяг виділеної
+    пам'яті
+  kor: 기본값 4. 이 매개 변수는 할당된 메모리 양에 2진법적인 영향을 미칩니다.
 Default disabled.:
   deu: Standardmäßig deaktiviert.
   eng: Default disabled.
@@ -1132,6 +1318,8 @@ Default disabled.:
   por: Default disabled.
   swe: Standardinställningen är inaktiverad.
   pol: Domyślnie wyłączone.
+  ukr: За замовчуванням вимкнено.
+  kor: 기본값은 비활성화되어 있습니다.
 Default enabled.:
   deu: Standardmäßig aktiviert.
   eng: Default enabled.
@@ -1144,6 +1332,8 @@ Default enabled.:
   por: Predefinição activada.
   swe: Standard aktiverad.
   pol: Domyślnie włączone.
+  ukr: За замовчуванням увімкнено.
+  kor: 기본적으로 활성화되어 있습니다.
 Default is an autodetected count based on the number of CPU cores and whether WPP is enabled or not.:
   deu: Standard ist eine automatisch ermittelte Anzahl basierend auf der Anzahl der
     CPU-Kerne und ob WPP aktiviert ist oder nicht.
@@ -1165,6 +1355,9 @@ Default is an autodetected count based on the number of CPU cores and whether WP
     och om WPP är aktiverat eller inte.
   pol: Domyślnie jest to automatycznie wykryta liczba na podstawie liczby rdzeni CPU
     i tego, czy WPP jest włączone czy nie.
+  ukr: За замовчуванням це автоматично визначений підрахунок на основі кількості ядер
+    процесора і того, чи ввімкнено WPP чи ні.
+  kor: 기본값은 CPU 코어 수와 WPP 활성화 여부에 따라 자동 감지된 횟수입니다.
 'Default: AQ enabled with auto-variance':
   deu: 'Voreinstellung: AQ aktiviert mit Auto-Varianz'
   eng: 'Default: AQ enabled with auto-variance'
@@ -1177,6 +1370,8 @@ Default is an autodetected count based on the number of CPU cores and whether WP
   por: 'Por omissão: AQ activado com auto-variância'
   swe: 'Standard: AQ aktiverad med automatisk variation'
   pol: 'Domyślnie: AQ włączona z auto-wariancją'
+  ukr: 'За замовчуванням: AQ увімкнено з автозмінністю'
+  kor: '기본값입니다: 자동 변동으로 AQ 사용'
 Deinterlace:
   deu: Deinterlace
   eng: Deinterlace
@@ -1189,6 +1384,8 @@ Deinterlace:
   por: Deinterlace
   swe: Deinterlace
   pol: Deinterlace
+  ukr: Деінтерлейс
+  kor: 디인터레이스
 Delete:
   deu: Löschen
   eng: Delete
@@ -1201,6 +1398,8 @@ Delete:
   por: Eliminar
   swe: Ta bort
   pol: Usuń
+  ukr: Видалити
+  kor: 삭제
 Delete Current Profile:
   deu: Aktuelles Profil löschen
   eng: Delete Current Profile
@@ -1213,6 +1412,8 @@ Delete Current Profile:
   por: Apagar perfil actual
   swe: Ta bort aktuell profil
   pol: Usuń bieżący profil
+  ukr: Видалити поточний профіль
+  kor: 현재 프로필 삭제
 Denoise:
   deu: Rauschunterdrückung
   eng: Denoise
@@ -1225,6 +1426,8 @@ Denoise:
   por: Denoise
   swe: Denoise
   pol: Denoise
+  ukr: Деніз.
+  kor: 노이즈 제거
 Detect HDR10+:
   deu: HDR10+ erkennen
   eng: Detect HDR10+
@@ -1237,6 +1440,8 @@ Detect HDR10+:
   por: Detectar HDR10+
   swe: Upptäcker HDR10+
   pol: Wykryj HDR10+
+  ukr: Виявлення HDR10+
+  kor: HDR10+ 감지
 Detecting Interlace:
   deu: Erkennen von Interlace
   eng: Detecting Interlace
@@ -1249,6 +1454,8 @@ Detecting Interlace:
   por: Detectar a Interlace
   swe: Upptäckt av interlace
   pol: Wykrywanie przeplotu
+  ukr: Виявлення інтерлейсу
+  kor: 인터레이스 감지
 Determine HDR details:
   deu: HDR-Details ermitteln
   eng: Determine HDR details
@@ -1261,6 +1468,8 @@ Determine HDR details:
   por: Determinar os detalhes do HDR
   swe: Bestämma HDR-detaljer
   pol: Określanie szczegółów HDR
+  ukr: Визначення деталей HDR
+  kor: HDR 디테일 결정
 Disable update check on startup:
   deu: Update-Prüfung beim Starten deaktivieren
   eng: Disable update check on startup
@@ -1273,6 +1482,8 @@ Disable update check on startup:
   por: Desactivar a verificação de actualização ao arrancar
   swe: Inaktivera uppdateringskontrollen vid start
   pol: Wyłączenie sprawdzania aktualizacji przy uruchamianiu
+  ukr: Вимкнути перевірку оновлень під час запуску
+  kor: 시작 시 업데이트 확인 비활성화
 Disposition:
   deu: Verwendung
   eng: Disposition
@@ -1285,6 +1496,8 @@ Disposition:
   por: Disposição
   swe: Avsättning
   pol: Dyspozycja
+  ukr: Диспозиція
+  kor: 처분
 Dither:
   deu: Dithern
   eng: Dither
@@ -1297,6 +1510,8 @@ Dither:
   por: Ou
   swe: Dither
   pol: Dither
+  ukr: Дітере.
+  kor: 디더
 Dither is an intentionally applied form of noise used to randomize quantization error,:
   deu: Dither dient dazu, sichtbare Quantisierungsfehler durch absichtliches Zufallsrauschen
     abzuschwächen.
@@ -1316,6 +1531,9 @@ Dither is an intentionally applied form of noise used to randomize quantization 
     o erro de quantização,
   swe: Dither är en avsiktligt tillämpad form av brus som används för att slumpa kvantiseringsfel,
   pol: Dither to celowo zastosowana forma szumu używana do randomizacji błędu kwantyzacji,
+  ukr: Дизер - це навмисно застосована форма шуму, яка використовується для рандомізації
+    помилки квантування,
+  kor: 디더는 양자화 오류를 무작위화하는 데 사용되는 의도적으로 적용된 노이즈 형태입니다,
 Download:
   deu: herunterladen
   eng: Download
@@ -1328,6 +1546,8 @@ Download:
   por: Descarregar
   swe: Ladda ner
   pol: Pobierz
+  ukr: Завантажити
+  kor: 다운로드
 Download Cancelled:
   deu: Download abgebrochen
   eng: Download Cancelled
@@ -1340,6 +1560,8 @@ Download Cancelled:
   por: Descarregar Cancelado
   swe: Ladda ner Cancelled
   pol: Pobierz Odwołane
+  ukr: Завантажити Скасовано
+  kor: 다운로드 취소
 Download Newest FFmpeg:
   deu: Neuestes FFmpeg herunterladen
   eng: Download Newest FFmpeg
@@ -1352,6 +1574,8 @@ Download Newest FFmpeg:
   por: Descarregar o mais recente FFmpeg
   swe: Hämta Nyaste FFmpeg
   pol: Pobierz Najnowszy FFmpeg
+  ukr: Завантажити останню версію FFmpeg
+  kor: 최신 FFmpeg 다운로드
 Downloading FFmpeg:
   deu: Herunterladen von FFmpeg
   eng: Downloading FFmpeg
@@ -1364,6 +1588,8 @@ Downloading FFmpeg:
   por: Descarregar FFmpeg
   swe: Hämta FFmpeg
   pol: Pobieranie FFmpeg
+  ukr: Завантаження FFmpeg
+  kor: FFmpeg 다운로드
 Dual License:
   deu: Doppellizenzierung
   eng: Dual License
@@ -1376,6 +1602,8 @@ Dual License:
   por: Dupla Licença
   swe: Dubbel licens
   pol: Podwójna licencja
+  ukr: Подвійна ліцензія
+  kor: 듀얼 라이선스
 Enable VBV:
   deu: VBV aktivieren
   eng: Enable VBV
@@ -1388,6 +1616,8 @@ Enable VBV:
   por: Activar VBV
   swe: Aktivera VBV
   pol: Włącz VBV
+  ukr: Увімкнути VBV
+  kor: VBV 사용
 Enable row based multi-threading:
   deu: Zeilenbasiertes Multithreading aktivieren
   eng: Enable row based multi-threading
@@ -1400,6 +1630,8 @@ Enable row based multi-threading:
   por: Habilitar multi-tarefas baseadas em filas
   swe: Aktivera radbaserad multi-threading
   pol: Włącz wielowątkowość opartą na wierszach
+  ukr: Увімкнути багатопоточність на основі рядків
+  kor: 행 기반 멀티 스레딩 사용
 Enable strong intra smoothing for 32x32 intra blocks.:
   deu: Aktivieren der starken Intra-Glättung für 32x32-Intra-Blöcke.
   eng: Enable strong intra smoothing for 32x32 intra blocks.
@@ -1412,6 +1644,8 @@ Enable strong intra smoothing for 32x32 intra blocks.:
   por: Permitir um forte alisamento intra para 32x32 intra blocos.
   swe: Aktivera stark intrautjämning för 32x32 intrablock.
   pol: Włącz silne wygładzanie wewnętrzne dla bloków wewnętrznych 32x32.
+  ukr: Увімкнути сильне внутрішнє згладжування для внутрішніх блоків 32x32.
+  kor: 32x32 인트라 블록에 강력한 인트라 스무딩을 활성화합니다.
 Enable the yadif filter:
   deu: Aktivieren des Yadif-Filters
   eng: Enable the yadif filter
@@ -1424,6 +1658,8 @@ Enable the yadif filter:
   por: Activar o filtro yadif
   swe: Aktivera yadif-filtret
   pol: Włącz filtr yadif
+  ukr: Увімкніть фільтр yadif
+  kor: 야디프 필터 사용
 Enabled:
   deu: Aktiviert
   eng: Enabled
@@ -1436,6 +1672,8 @@ Enabled:
   por: Activado
   swe: Aktiverad
   pol: Włączone
+  ukr: Увімкнено
+  kor: 활성화됨
 Enabled automatically when --master-display or --max-cll is specified.:
   deu: Wird automatisch aktiviert, wenn --master-display oder --max-cll angegeben
     wird.
@@ -1449,6 +1687,8 @@ Enabled automatically when --master-display or --max-cll is specified.:
   por: Activado automaticamente quando --master-display ou --max-cll é especificado.
   swe: Aktiveras automatiskt när --master-display eller --max-cll anges.
   pol: Włączane automatycznie gdy podane jest --master-display lub --max-cll.
+  ukr: Вмикається автоматично, коли вказано --master-display або --max-cll.
+  kor: 마스터 디스플레이 또는 --max-cll을 지정하면 자동으로 활성화됩니다.
 Enables the yadif filter.:
   deu: Aktiviert den Yadif-Filter.
   eng: Enables the yadif filter.
@@ -1461,6 +1701,8 @@ Enables the yadif filter.:
   por: Possibilita o filtro yadif.
   swe: Aktiverar yadif-filtret.
   pol: Włącza filtr yadif.
+  ukr: Вмикає фільтр yadif.
+  kor: 야디프 필터를 활성화합니다.
 Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.:
   deu: Ermöglicht echte verlustfreie Kodierung unter Umgehung von Skalierung, Transformation,
     Quantisierung und In-Loop-Filterung.
@@ -1482,6 +1724,9 @@ Enables true lossless coding by bypassing scaling, transform, quantization and i
     kvantisering och filtrering i loopen.
   pol: Umożliwia prawdziwie bezstratne kodowanie poprzez ominięcie skalowania, transformacji,
     kwantyzacji i filtrowania w pętli.
+  ukr: Забезпечує справжнє кодування без втрат, оминаючи масштабування, перетворення,
+    квантування та циклічну фільтрацію.
+  kor: 스케일링, 변환, 양자화 및 인루프 필터링을 우회하여 진정한 무손실 코딩을 지원합니다.
 Enabling cover thumbnails on your system:
   deu: Aktivieren von Cover-Miniaturansichten auf Ihrem System
   eng: Enabling cover thumbnails on your system
@@ -1494,6 +1739,8 @@ Enabling cover thumbnails on your system:
   por: Habilitação de miniaturas de cobertura no seu sistema
   swe: Aktivera miniatyrbilder på ditt system
   pol: Włączanie miniatur okładek w systemie
+  ukr: Увімкнення ескізів обкладинки у вашій системі
+  kor: 시스템에서 표지 썸네일 사용 설정하기
 Encoder:
   deu: Kodierer
   eng: Encoder
@@ -1506,6 +1753,8 @@ Encoder:
   por: Codificador
   swe: Kodare
   pol: Enkoder
+  ukr: Кодер
+  kor: 인코더
 Encoder Output:
   deu: Kodierer-Ausgabe
   eng: Encoder Output
@@ -1518,6 +1767,8 @@ Encoder Output:
   por: Saída do codificador
   swe: Kodarutgång
   pol: Wyjście enkodera
+  ukr: Вихід кодера
+  kor: 인코더 출력
 Encoder Settings:
   deu: Kodierer-Einstellung
   eng: Encoder Settings
@@ -1530,6 +1781,8 @@ Encoder Settings:
   por: Definições do codificador
   swe: Inställningar för kodare
   pol: Ustawienia enkodera
+  ukr: Налаштування кодера
+  kor: 인코더 설정
 Encoding Queue:
   deu: Kodierer-Warteschlange
   eng: Encoding Queue
@@ -1542,6 +1795,8 @@ Encoding Queue:
   por: Fila de Codificação
   swe: Kö för kodning
   pol: Kolejka kodowania
+  ukr: Черга кодування
+  kor: 인코딩 대기열
 Encoding Status:
   deu: Kodierungsstatus
   eng: Encoding Status
@@ -1554,6 +1809,8 @@ Encoding Status:
   por: Estado de Codificação
   swe: Kodning Status
   pol: Status kodowania
+  ukr: Статус кодування
+  kor: 인코딩 상태
 Encoding command:
   deu: Kodierungsbefehl
   eng: Encoding command
@@ -1566,6 +1823,8 @@ Encoding command:
   por: Comando de codificação
   swe: Kommando för kodning
   pol: Polecenie kodowania
+  ukr: Команда кодування
+  kor: 인코딩 명령
 Encoding complete:
   deu: Kodierung abgeschlossen
   eng: Encoding complete
@@ -1578,6 +1837,8 @@ Encoding complete:
   por: Codificação completa
   swe: Kodning slutförd
   pol: Kodowanie zakończone
+  ukr: Кодування завершено
+  kor: 인코딩 완료
 Encoding errored:
   deu: Error beim Kodieren
   eng: Encoding errored
@@ -1590,6 +1851,8 @@ Encoding errored:
   por: Codificação erradamente codificada
   swe: Fel i kodningen
   pol: Błąd kodowania
+  ukr: Помилка кодування
+  kor: 인코딩 오류
 End:
   deu: Beenden
   eng: End
@@ -1602,6 +1865,8 @@ End:
   por: Fim
   swe: Slut
   pol: Koniec
+  ukr: Кінець
+  kor: 종료
 Enforce an encode profile:
   deu: Erzwingen eines Kodiererprofils
   eng: Enforce an encode profile
@@ -1614,6 +1879,8 @@ Enforce an encode profile:
   por: Forçar um perfil de codificação
   swe: Genomföra en kodningsprofil
   pol: Wymuszenie profilu kodowania
+  ukr: Застосувати профіль кодування
+  kor: 인코딩 프로필 적용
 Error:
   deu: Fehler
   eng: Error
@@ -1626,6 +1893,8 @@ Error:
   por: Erro
   swe: Fel
   pol: Błąd
+  ukr: Помилка.
+  kor: 오류
 Error Updating Thumbnail:
   deu: Fehler beim Aktualisieren des Vorschaubildes
   eng: Error Updating Thumbnail
@@ -1638,6 +1907,8 @@ Error Updating Thumbnail:
   por: Actualização de miniaturas de erro
   swe: Fel vid uppdatering av miniatyrbild
   pol: Błąd aktualizacji miniatur
+  ukr: Мініатюра помилки оновлення
+  kor: 썸네일 업데이트 중 오류
 Error detected while converting:
   deu: Fehler beim Konvertieren erkannt
   eng: Error detected while converting
@@ -1650,6 +1921,8 @@ Error detected while converting:
   por: Erro detectado durante a conversão
   swe: Fel upptäckt under konverteringen
   pol: Błąd wykryty podczas konwersji
+  ukr: Виявлено помилку під час перетворення
+  kor: 변환하는 동안 오류가 감지되었습니다.
 Estimated file size based on bitrate:
   deu: Geschätzte Dateigröße basierend auf der Bitrate
   eng: Estimated file size based on bitrate
@@ -1662,6 +1935,8 @@ Estimated file size based on bitrate:
   por: Tamanho de ficheiro estimado com base na taxa de bits
   swe: Uppskattad filstorlek baserad på bitrate
   pol: Szacowany rozmiar pliku w oparciu o bitrate
+  ukr: Орієнтовний розмір файлу на основі бітрейту
+  kor: 비트 전송률에 따른 예상 파일 크기
 Estimated time left for current command:
   deu: Geschätzte Restzeit für den aktuellen Befehl
   eng: Estimated time left for current command
@@ -1674,6 +1949,8 @@ Estimated time left for current command:
   por: Tempo restante estimado para o comando actual
   swe: Beräknad tid som återstår för det aktuella kommandot
   pol: Szacowany czas pozostały do wykonania bieżącego polecenia
+  ukr: Орієнтовний час, що залишився для поточної команди
+  kor: 현재 명령에 남은 예상 시간
 Exit:
   deu: Beenden
   eng: Exit
@@ -1686,6 +1963,8 @@ Exit:
   por: Saída
   swe: Avsluta
   pol: Wyjście
+  ukr: Виходьте.
+  kor: 종료
 Exit application:
   deu: Anwendung beenden
   eng: Exit application
@@ -1698,6 +1977,8 @@ Exit application:
   por: Aplicação de saída
   swe: Avsluta programmet
   pol: Zakończ aplikację
+  ukr: Заявка на вихід
+  kor: 애플리케이션 종료
 Extra flags or options, cannot modify existing settings:
   deu: Zusätzliche Flags oder Optionen, kann bestehende Einstellungen nicht ändern
   eng: Extra flags or options, cannot modify existing settings
@@ -1711,6 +1992,8 @@ Extra flags or options, cannot modify existing settings:
   por: Bandeiras ou opções extra, não podem modificar as configurações existentes
   swe: Extra flaggor eller alternativ, kan inte ändra befintliga inställningar
   pol: Dodatkowe flagi lub opcje, nie mogą modyfikować istniejących ustawień
+  ukr: Додаткові прапори або опції, не можна змінювати існуючі налаштування
+  kor: 추가 플래그 또는 옵션은 기존 설정을 수정할 수 없습니다.
 Extra x265 params in opt=1:opt2=0 format:
   deu: Zusätzliche x265-Parameter im Format opt=1:opt2=0
   eng: Extra x265 params in opt=1:opt2=0 format
@@ -1723,6 +2006,8 @@ Extra x265 params in opt=1:opt2=0 format:
   por: Parâmetros extra x265 no formato opt=1:opt2=0
   swe: Extra x265-parametrar i formatet opt=1:opt2=0
   pol: Dodatkowe parametry x265 w formacie opt=1:opt2=0
+  ukr: Додаткові параметри x265 у форматі opt=1:opt2=0
+  kor: opt=1:opt2=0 형식의 추가 x265 매개변수
 Extract:
   deu: Auszug
   eng: Extract
@@ -1735,6 +2020,8 @@ Extract:
   por: Extracto
   swe: Utdrag
   pol: Wyciąg
+  ukr: Витяг
+  kor: 추출
 Extract HDR10+:
   deu: HDR10+ extrahieren
   eng: Extract HDR10+
@@ -1747,6 +2034,8 @@ Extract HDR10+:
   por: Extracto HDR10+
   swe: Extrahera HDR10+
   pol: Wyodrębnij HDR10+
+  ukr: Екстракт HDR10+
+  kor: HDR10+ 추출
 Extract covers:
   deu: Covers extrahieren
   eng: Extract covers
@@ -1759,6 +2048,8 @@ Extract covers:
   por: Capas de extractos
   swe: Utdrag omfattar
   pol: Wyciąg obejmuje
+  ukr: Обкладинки для екстрактів
+  kor: 추출 표지
 Extracted subtitles successfully:
   deu: Untertitel erfolgreich extrahiert
   eng: Extracted subtitles successfully
@@ -1771,6 +2062,8 @@ Extracted subtitles successfully:
   por: Legendas extraídas com sucesso
   swe: Extraherade undertexter framgångsrikt
   pol: Napisy zostały wyodrębnione pomyślnie
+  ukr: Успішно витягнуто субтитри
+  kor: 자막 추출 성공
 Extracting HDR10+ metadata:
   deu: HDR10+-Metadaten extrahieren
   eng: Extracting HDR10+ metadata
@@ -1783,6 +2076,8 @@ Extracting HDR10+ metadata:
   por: Extracção de metadados HDR10+
   swe: Extrahera HDR10+-metadata
   pol: Wyodrębnianie metadanych HDR10+
+  ukr: Вилучення метаданих HDR10+
+  kor: HDR10+ 메타데이터 추출
 Extracting subtitles to:
   deu: Extrahieren von Untertiteln auf
   eng: Extracting subtitles to
@@ -1795,6 +2090,8 @@ Extracting subtitles to:
   por: Extrair subtítulos para
   swe: Extrahera undertexter till
   pol: Wyciąganie napisów do
+  ukr: Вилучення субтитрів до
+  kor: 자막을 추출하여
 FFMPEG AV1 Encoding Guide:
   deu: FFMPEG AV1 Kodierungsanleitung
   eng: FFMPEG AV1 Encoding Guide
@@ -1807,6 +2104,8 @@ FFMPEG AV1 Encoding Guide:
   por: Guia de Codificação FFMPEG AV1
   swe: FFMPEG AV1 Kodningsguide
   pol: Przewodnik kodowania FFMPEG AV1
+  ukr: Посібник з кодування FFMPEG AV1
+  kor: FFMPEG AV1 인코딩 가이드
 FFMPEG AVC / H.264 Encoding Guide:
   deu: FFMPEG AVC / H.264 Kodierungsanleitung
   eng: FFMPEG AVC / H.264 Encoding Guide
@@ -1819,6 +2118,8 @@ FFMPEG AVC / H.264 Encoding Guide:
   por: Guia de Codificação FFMPEG AVC / H.264
   swe: FFMPEG AVC / H.264 Kodningsguide
   pol: Przewodnik kodowania FFMPEG AVC / H.264
+  ukr: Посібник з кодування FFMPEG AVC / H.264
+  kor: FFMPEG AVC/H.264 인코딩 가이드
 FFMPEG HEVC / H.265 Encoding Guide:
   deu: FFMPEG HEVC / H.265 Kodierungsanleitung
   eng: FFMPEG HEVC / H.265 Encoding Guide
@@ -1831,6 +2132,8 @@ FFMPEG HEVC / H.265 Encoding Guide:
   por: FFMPEG HEVC / H.265 Guia de Codificação
   swe: FFMPEG HEVC / H.265 Kodningsguide
   pol: Przewodnik kodowania FFMPEG HEVC / H.265
+  ukr: Посібник з кодування FFMPEG HEVC / H.265
+  kor: FFMPEG HEVC/H.265 인코딩 가이드
 FFMPEG VP9 Encoding Guide:
   deu: FFMPEG VP9 Kodierungsanleitung
   eng: FFMPEG VP9 Encoding Guide
@@ -1843,6 +2146,8 @@ FFMPEG VP9 Encoding Guide:
   por: Guia de Codificação FFMPEG VP9
   swe: Guide för FFMPEG VP9-kodning
   pol: Przewodnik kodowania FFMPEG VP9
+  ukr: Посібник з кодування FFMPEG VP9
+  kor: FFMPEG VP9 인코딩 가이드
 FFmpeg updated - Please restart FastFlix:
   deu: FFmpeg aktualisiert - Bitte FastFlix neustarten
   eng: FFmpeg updated - Please restart FastFlix
@@ -1855,6 +2160,8 @@ FFmpeg updated - Please restart FastFlix:
   por: FFmpeg actualizado - Por favor reinicie FastFlix
   swe: FFmpeg uppdaterad - starta om FastFlix
   pol: FFmpeg zaktualizowany - proszę zrestartować FastFlixa
+  ukr: Оновлено FFmpeg - будь ласка, перезапустіть FastFlix
+  kor: FFmpeg 업데이트 - FastFlix를 다시 시작하세요.
 FPS:
   deu: FPS
   eng: FPS
@@ -1867,6 +2174,8 @@ FPS:
   por: FPS
   swe: FPS
   pol: FPS
+  ukr: FPS
+  kor: FPS
 Fast first pass:
   deu: schneller erster Durchlauf
   eng: Fast first pass
@@ -1879,6 +2188,8 @@ Fast first pass:
   por: Primeira passagem rápida
   swe: Snabb första passage
   pol: Szybki pierwszy przejazd
+  ukr: Швидкий перший прохід
+  kor: 빠른 첫 패스
 File:
   deu: Datei
   eng: File
@@ -1891,6 +2202,8 @@ File:
   por: Ficheiro
   swe: Fil
   pol: Plik
+  ukr: Файл
+  kor: 파일
 Flat UI:
   deu: Flaches Design der GUI
   eng: Flat GUI design
@@ -1903,6 +2216,8 @@ Flat UI:
   por: IU plana
   swe: Platt användargränssnitt
   pol: Płaski UI
+  ukr: Плоский інтерфейс
+  kor: 플랫 UI
 For lossless, this is a size/speed tradeoff.:
   deu: Bei verlustfreier Kodierung ist dies ein Kompromiss zwischen Größe und Geschwindigkeit.
   eng: For lossless, this is a size/speed tradeoff.
@@ -1915,6 +2230,8 @@ For lossless, this is a size/speed tradeoff.:
   por: Para um sem perdas, esta é uma troca de tamanho/velocidade.
   swe: För lossless är detta en avvägning mellan storlek och hastighet.
   pol: W przypadku plików bezstratnych jest to kompromis między rozmiarem a szybkością.
+  ukr: Для lossless це компроміс між розміром і швидкістю.
+  kor: 무손실의 경우, 이는 크기와 속도의 절충안입니다.
 For lossy, this is a quality/speed tradeoff.:
   deu: Für verlustbehafteter Kodierung ist dies ein Kompromiss zwischen Qualität und
     Geschwindigkeit.
@@ -1928,6 +2245,8 @@ For lossy, this is a quality/speed tradeoff.:
   por: Para os perdedores, esta é uma troca qualidade/velocidade.
   swe: För förlustfilmer är detta en avvägning mellan kvalitet och hastighet.
   pol: W przypadku plików stratnych jest to kompromis między jakością a szybkością.
+  ukr: Для втрат це компроміс між якістю та швидкістю.
+  kor: 손실의 경우 이는 품질과 속도의 절충안입니다.
 Force HDR10 signaling:
   deu: HDR10-Signalisierung erzwingen
   eng: Force HDR10 signaling
@@ -1940,6 +2259,8 @@ Force HDR10 signaling:
   por: Forçar a sinalização HDR10
   swe: Forcera HDR10-signalering
   pol: Wymuszenie sygnalizacji HDR10
+  ukr: Примусовий сигнал HDR10
+  kor: 강제 HDR10 신호
 Frame Threads:
   deu: Frame-Threads
   eng: Frame Threads
@@ -1952,6 +2273,8 @@ Frame Threads:
   por: Roscas da moldura
   swe: Ramtrådar
   pol: Gwinty ramy
+  ukr: Каркасні різьблення
+  kor: 프레임 스레드
 Frames Per Second:
   deu: Frames pro Sekunde
   eng: Frames Per Second
@@ -1964,6 +2287,8 @@ Frames Per Second:
   por: Molduras por segundo
   swe: Bildrutor per sekund
   pol: Liczba klatek na sekundę
+  ukr: Кадри в секунду
+  kor: 초당 프레임 수
 GPU:
   deu: GPU
   eng: GPU
@@ -1976,6 +2301,8 @@ GPU:
   por: GPU
   swe: GPU
   pol: GPU
+  ukr: ГРАФІЧНИЙ ПРОЦЕСОР
+  kor: GPU
 GUI Logging Level:
   deu: GUI-Protokollierungsebene
   eng: GUI Logging Level
@@ -1988,6 +2315,8 @@ GUI Logging Level:
   por: Nível de registo GUI
   swe: GUI-loggningsnivå
   pol: Poziom logowania GUI
+  ukr: Рівень журналювання графічного інтерфейсу
+  kor: GUI 로깅 수준
 Gather FFmpeg audio encoders:
   deu: FFmpeg-Audio-Encoder abfragen
   eng: Gather FFmpeg audio encoders
@@ -2000,6 +2329,8 @@ Gather FFmpeg audio encoders:
   por: Reunir codificadores de áudio FFmpeg
   swe: Samla FFmpeg-ljudkodare
   pol: Zbierz kodery audio FFmpeg
+  ukr: Зібрати аудіокодери FFmpeg
+  kor: FFmpeg 오디오 인코더 수집
 Gather FFmpeg version:
   deu: FFmpeg-Version abfragen
   eng: Gather FFmpeg version
@@ -2012,6 +2343,8 @@ Gather FFmpeg version:
   por: Reúna a versão FFmpeg
   swe: Samla ihop FFmpeg-versionen
   pol: Zbierz wersję FFmpeg
+  ukr: Зібрати версію FFmpeg
+  kor: FFmpeg 버전 수집
 Gather FFprobe version:
   deu: FFprobe-Version abfragen
   eng: Gather FFprobe version
@@ -2024,6 +2357,8 @@ Gather FFprobe version:
   por: Reúna a versão FFprobe
   swe: Samla in FFprobe-versionen
   pol: Zbierz wersję FFprobe
+  ukr: Зібрати версію FFprobe
+  kor: FF프로브 버전 수집
 Generating thumbnail:
   deu: Miniaturansicht generieren
   eng: Generating thumbnail
@@ -2036,6 +2371,8 @@ Generating thumbnail:
   por: Gerar miniatura
   swe: Generering av miniatyrbild
   pol: Generowanie miniaturki
+  ukr: Створення мініатюри
+  kor: 썸네일 생성
 Google's VP9 HDR Encoding Guide:
   deu: VP9-HDR-Kodierungsanleitung von Google
   eng: Google's VP9 HDR Encoding Guide
@@ -2048,6 +2385,8 @@ Google's VP9 HDR Encoding Guide:
   por: Guia de Codificação HDR VP9 do Google
   swe: Googles VP9 HDR-kodningsguide för VP9
   pol: Przewodnik Google VP9 HDR Encoding Guide
+  ukr: Посібник із кодування VP9 HDR від Google
+  kor: Google의 VP9 HDR 인코딩 가이드
 HDR -> SDR Tone Map:
   deu: HDR -> SDR Tone Mapping
   eng: HDR -> SDR Tone Map
@@ -2060,6 +2399,8 @@ HDR -> SDR Tone Map:
   por: HDR -> Mapa de Tom SDR
   swe: HDR -> SDR-tonkarta
   pol: HDR -> SDR Mapa tonów
+  ukr: HDR -> SDR Tone Map
+  kor: HDR -> SDR 톤 맵
 HDR10 Optimizations:
   deu: HDR10-Optimierungen
   eng: HDR10 Optimizations
@@ -2072,6 +2413,8 @@ HDR10 Optimizations:
   por: Otimizações HDR10
   swe: HDR10-optimeringar
   pol: Optymalizacje HDR10
+  ukr: Оптимізація HDR10
+  kor: HDR10 최적화
 HDR10+ Metadata:
   deu: HDR10+-Metadaten
   eng: HDR10+ Metadata
@@ -2084,6 +2427,8 @@ HDR10+ Metadata:
   por: HDR10+ Metadados
   swe: HDR10+ Metadata
   pol: Metadane HDR10+
+  ukr: Метадані HDR10+
+  kor: HDR10+ 메타데이터
 HDR10+ Metadata Extraction:
   deu: HDR10+-Metadaten-Extraktion
   eng: HDR10+ Metadata Extraction
@@ -2096,6 +2441,8 @@ HDR10+ Metadata Extraction:
   por: HDR10+ Extracção de Metadados
   swe: Utdragning av HDR10+-metadata
   pol: Ekstrakcja metadanych HDR10+
+  ukr: Вилучення метаданих HDR10+
+  kor: HDR10+ 메타데이터 추출
 HDR10+ Optimizations:
   deu: HDR10+-Optimierungen
   eng: HDR10+ Optimizations
@@ -2108,6 +2455,8 @@ HDR10+ Optimizations:
   por: HDR10+ Optimizações
   swe: HDR10+-optimeringar
   pol: Optymalizacje HDR10+
+  ukr: Оптимізація HDR10+
+  kor: HDR10+ 최적화
 Have to select a video first:
   deu: Es muss zuerst ein Video ausgewählt werden
   eng: Have to select a video first
@@ -2120,6 +2469,8 @@ Have to select a video first:
   por: Ter de seleccionar primeiro um vídeo
   swe: Måste välja en video först
   pol: Najpierw trzeba wybrać wideo
+  ukr: Спочатку потрібно вибрати відео
+  kor: 먼저 동영상을 선택해야 합니다.
 Height:
   deu: Höhe
   eng: Height
@@ -2132,6 +2483,8 @@ Height:
   por: Altura
   swe: Höjd
   pol: Wysokość
+  ukr: Висота
+  kor: 높이
 Help:
   deu: Hilfe
   eng: Help
@@ -2144,6 +2497,8 @@ Help:
   por: Ajuda
   swe: Hjälp
   pol: Pomoc
+  ukr: Допоможіть!
+  kor: 도움말
 Hide NAL unit messages:
   deu: NAL-Meldungen (AVC/HEVC Network Abstraction Layer) ausblenden
   eng: Hide NAL unit (AVC/HEVC Network Abstraction Layer) messages
@@ -2156,6 +2511,8 @@ Hide NAL unit messages:
   por: Ocultar mensagens da unidade NAL
   swe: Dölja meddelanden från NAL-enheter
   pol: Ukryj komunikaty jednostki NAL
+  ukr: Приховати повідомлення NAL-блоку
+  kor: NAL 단위 메시지 숨기기
 Horizontal Flip:
   deu: Horizontal spiegeln
   eng: Horizontal Flip
@@ -2168,6 +2525,8 @@ Horizontal Flip:
   por: Horizontal Flip
   swe: Horisontell vändning
   pol: Przerzucanie poziome
+  ukr: Горизонтальне сальто
+  kor: 수평 뒤집기
 Init Q:
   deu: Init Q
   eng: Init Q
@@ -2180,6 +2539,8 @@ Init Q:
   por: Init Q
   swe: Init Q
   pol: Początkowe Q
+  ukr: Init Q
+  kor: 초기화 Q
 Initialize Encoders:
   deu: Kodierer initialisieren
   eng: Initialize Encoders
@@ -2192,6 +2553,8 @@ Initialize Encoders:
   por: Inicializar codificadores
   swe: Initialisera kodare
   pol: Inicjalizacja enkoderów
+  ukr: Ініціалізація кодерів
+  kor: 인코더 초기화
 Intra-Encoding:
   deu: Intra-Encoding
   eng: Intra-Encoding
@@ -2204,6 +2567,8 @@ Intra-Encoding:
   por: Codificação Intra-Encodificação
   swe: Intra-kodning
   pol: Intra-Encoding
+  ukr: Внутрішнє кодування
+  kor: 인트라 인코딩
 Intra-Smoothing:
   deu: Intra-Glättung
   eng: Intra-Smoothing
@@ -2216,6 +2581,8 @@ Intra-Smoothing:
   por: Intra-Suave
   swe: Intra-Smoothing
   pol: Intra-Smoothing
+  ukr: Внутрішнє згладжування
+  kor: 인트라 스무딩
 Intra-refresh:
   deu: Intra-Auffrischung
   eng: Intra-refresh
@@ -2228,6 +2595,8 @@ Intra-refresh:
   por: Intra-refresco
   swe: Inom en nypa
   pol: Intra-refresh
+  ukr: Внутрішнє оновлення
+  kor: 새로 고침 중
 Invalid Crop:
   deu: Ungültiges Cropping
   eng: Invalid Crop
@@ -2240,6 +2609,8 @@ Invalid Crop:
   por: Cultura inválida
   swe: Ogiltig gröda
   pol: Nieprawidłowy zbiór
+  ukr: Неприпустима культура
+  kor: 잘못된 자르기
 It is recommended that AQ-mode be enabled along with this feature:
   deu: Es wird empfohlen, dass zusammen mit dieser Funktion auch der AQ-Mode aktiviert
     wird
@@ -2253,6 +2624,8 @@ It is recommended that AQ-mode be enabled along with this feature:
   por: Recomenda-se que o AQ-mode seja activado juntamente com esta funcionalidade
   swe: Det rekommenderas att AQ-läge aktiveras tillsammans med denna funktion.
   pol: Zaleca się, aby wraz z tą funkcją włączony był tryb AQ.
+  ukr: Рекомендується увімкнути режим AQ разом з цією функцією
+  kor: 이 기능과 함께 AQ 모드를 활성화하는 것이 좋습니다.
 It saves a few bits and can help performance in the client's tonemapper.:
   deu: Er spart ein paar Bits und kann die Leistung im Tonemapper des Clients verbessern.
   eng: It saves a few bits and can help performance in the client's tonemapper.
@@ -2269,6 +2642,8 @@ It saves a few bits and can help performance in the client's tonemapper.:
   por: Poupa alguns bocados e pode ajudar o desempenho no tonemapper do cliente.
   swe: Det sparar några bitar och kan förbättra prestandan i klientens tonemapper.
   pol: Oszczędza to kilka bitów i może pomóc w wydajności tonemappera klienta.
+  ukr: Це економить кілька бітів і може підвищити продуктивність клієнтського тонамапера.
+  kor: 몇 비트를 절약하고 클라이언트 톤매퍼의 성능을 향상시킬 수 있습니다.
 Keep:
   deu: beibehalten
   eng: Keep
@@ -2281,6 +2656,8 @@ Keep:
   por: Guarde
   swe: Håll
   pol: Zachowaj
+  ukr: Тримай
+  kor: 유지
 Keep FastFlix Open:
   deu: FastFlix offen halten
   eng: Keep FastFlix Open
@@ -2293,6 +2670,8 @@ Keep FastFlix Open:
   por: Manter FastFlix aberto
   swe: Håll FastFlix öppet
   pol: Utrzymać FastFlix otwarty
+  ukr: Тримайте FastFlix відкритим
+  kor: FastFlix 계속 열기
 Keep aspect ratio:
   deu: Seitenverhältnis beibehalten
   eng: Keep aspect ratio
@@ -2305,6 +2684,8 @@ Keep aspect ratio:
   por: Manter relação de aspecto
   swe: Behåll bildförhållandet
   pol: Zachować proporcje
+  ukr: Зберігайте співвідношення сторін
+  kor: 화면 비율 유지
 LICENSES:
   deu: LIZENZEN
   eng: LICENSES
@@ -2317,6 +2698,8 @@ LICENSES:
   por: LICENÇAS
   swe: LICENSER
   pol: LICENCJE
+  ukr: ЛІЦЕНЗІЇ
+  kor: 라이선스
 Landscape Cover:
   deu: Querformatiges Cover
   eng: Landscape Cover
@@ -2329,6 +2712,8 @@ Landscape Cover:
   por: Cobertura paisagística
   swe: Landskapstäckning
   pol: Osłona krajobrazu
+  ukr: Ландшафтний покрив
+  kor: 조경 커버
 Language:
   deu: Sprache
   eng: Language
@@ -2341,6 +2726,8 @@ Language:
   por: Idioma
   swe: Språk
   pol: Język
+  ukr: Мова
+  kor: 언어
 Left:
   deu: Links
   eng: Left
@@ -2353,6 +2740,8 @@ Left:
   por: Esquerda
   swe: Vänster
   pol: Lewa
+  ukr: Ліворуч.
+  kor: 왼쪽
 Level:
   deu: Pegel
   eng: Level
@@ -2365,6 +2754,8 @@ Level:
   por: Nível
   swe: Nivå
   pol: Poziom
+  ukr: Рівень
+  kor: 레벨
 Log2 of number of tile columns to encode faster (lesser quality):
   deu: Log2 der Anzahl der Gitterspalten, um schneller zu kodieren (geringere Qualität)
   eng: Log2 of number of tile columns to encode faster (lesser quality)
@@ -2380,6 +2771,8 @@ Log2 of number of tile columns to encode faster (lesser quality):
     qualidade)
   swe: Log2 av antalet kakelkolumner för att koda snabbare (sämre kvalitet).
   pol: Log2 liczby kolumn kafelków do szybszego kodowania (gorsza jakość)
+  ukr: Log2 від кількості стовпчиків плитки для швидшого кодування (з меншою якістю)
+  kor: 더 빠르게 인코딩하기 위한 타일 열 수의 로그2(품질 저하)
 Log2 of number of tile rows to encode faster (lesser quality):
   deu: Log2 der Anzahl der Gitterzeilen, um schneller zu kodieren (geringere Qualität)
   eng: Log2 of number of tile rows to encode faster (lesser quality)
@@ -2392,6 +2785,8 @@ Log2 of number of tile rows to encode faster (lesser quality):
   por: Log2 do número de filas de azulejos a codificar mais rapidamente (menor qualidade)
   swe: Log2 av antalet kakelrader för att koda snabbare (sämre kvalitet).
   pol: Log2 liczby rzędów kafelków do szybszego kodowania (gorsza jakość)
+  ukr: Log2 від кількості рядів плиток для швидшого кодування (з меншою якістю)
+  kor: 더 빠르게 인코딩하기 위한 타일 행 수의 로그2(품질 저하)
 Lookahead:
   deu: Lookahead
   eng: Lookahead
@@ -2404,6 +2799,8 @@ Lookahead:
   por: Lookahead
   swe: Förhandsgranskning
   pol: Lookahead
+  ukr: Попереду.
+  kor: 룩어헤드
 Lossless:
   deu: Verlustfrei
   eng: Lossless
@@ -2416,6 +2813,8 @@ Lossless:
   por: Sem perdas
   swe: Förlustfri
   pol: Bezstratna
+  ukr: Без втрат
+  kor: 무손실
 Lossless encodes implicitly have no rate control, all rate control options are ignored.:
   deu: Verlustfreie Kodierungen haben implizit keine Ratenkontrolle, alle Optionen
     zur Ratenkontrolle werden ignoriert.
@@ -2437,6 +2836,9 @@ Lossless encodes implicitly have no rate control, all rate control options are i
     för hastighetsreglering ignoreras.
   pol: Kodowanie bezstratne domyślnie nie ma kontroli szybkości, wszystkie opcje kontroli
     szybkości są ignorowane.
+  ukr: Кодування без втрат неявно не передбачають керування швидкістю, всі опції керування
+    швидкістю ігноруються.
+  kor: 무손실 인코딩에는 암시적으로 속도 제어 기능이 없으며, 모든 속도 제어 옵션이 무시됩니다.
 Max Muxing Queue Size:
   deu: Max. Größe der Muxing-Warteschlange
   eng: Max Muxing Queue Size
@@ -2449,6 +2851,8 @@ Max Muxing Queue Size:
   por: Tamanho Máximo da Fila de Muxing
   swe: Maximal storlek på kö för samkörning
   pol: Maks. rozmiar kolejki muxingu
+  ukr: Максимальний розмір черги мікшування
+  kor: 최대 믹싱 대기열 크기
 Max Q:
   deu: Max Q
   eng: Max Q
@@ -2461,6 +2865,8 @@ Max Q:
   por: Máximo Q
   swe: Max Q
   pol: Max Q
+  ukr: Max Q
+  kor: 최대 Q
 Maximum B frames:
   deu: Max. Anzahl B-Frames
   eng: Maximum B frames
@@ -2473,6 +2879,8 @@ Maximum B frames:
   por: Máximo de armações B
   swe: Maximalt antal B-ramar
   pol: Maksymalne ramki B
+  ukr: Максимум кадрів B
+  kor: 최대 B 프레임
 'Maximum number of consecutive b-frames. ':
   deu: 'Maximale Anzahl aufeinanderfolgender B-Frames. '
   eng: 'Maximum number of consecutive b-frames. '
@@ -2485,6 +2893,8 @@ Maximum B frames:
   por: Número máximo de b-frames consecutivos.
   swe: Maximalt antal på varandra följande b-frames.
   pol: Maksymalna liczba kolejnych b-ramek.
+  ukr: Максимальна кількість послідовних b-кадрів.
+  kor: 최대 연속 B-프레임 수입니다.
 Maxrate:
   deu: Maxrate
   eng: Maxrate
@@ -2497,6 +2907,8 @@ Maxrate:
   por: Maxrate
   swe: Maxrate
   pol: Maxrate
+  ukr: Максимальна швидкість
+  kor: Maxrate
 Metrics:
   deu: Metriken
   eng: Metrics
@@ -2509,6 +2921,8 @@ Metrics:
   por: Métricas
   swe: Mätvärden
   pol: Metryka
+  ukr: Метрики
+  kor: 메트릭
 Min Q:
   deu: Min Q
   eng: Min Q
@@ -2521,6 +2935,8 @@ Min Q:
   por: Min Q
   swe: Min Q
   pol: Min Q
+  ukr: Min Q
+  kor: 민큐
 Motion vector accuracy:
   deu: Genauigkeit des Bewegungsvektors
   eng: Motion vector accuracy
@@ -2533,6 +2949,8 @@ Motion vector accuracy:
   por: Precisão do vector de movimento
   swe: Rörelsevektorernas noggrannhet
   pol: Dokładność wektora ruchu
+  ukr: Точність вектора руху
+  kor: 모션 벡터 정확도
 Multipass:
   deu: Multi-pass
   eng: Multipass
@@ -2545,6 +2963,8 @@ Multipass:
   por: Multipass
   swe: Multipass
   pol: Multipass
+  ukr: Мультипропуск
+  kor: 멀티패스
 NVEncC Encoder support is still experimental!:
   deu: NVEncC-Encoder-Unterstützung ist immer noch experimentell!
   eng: NVEncC Encoder support is still experimental!
@@ -2557,6 +2977,8 @@ NVEncC Encoder support is still experimental!:
   por: O suporte do codificador NVEncC ainda é experimental!
   swe: Stödet för NVEncC Encoder är fortfarande experimentellt!
   pol: Obsługa NVEncC Encoder jest wciąż eksperymentalna!
+  ukr: Підтримка NVEncC Encoder поки що експериментальна!
+  kor: NVEncC 인코더 지원은 아직 실험 단계입니다!
 NVEncC Options:
   deu: NVEncC-Optionen
   eng: NVEncC Options
@@ -2569,6 +2991,8 @@ NVEncC Options:
   por: Opções NVEncC
   swe: NVEncC-alternativ
   pol: Opcje NVEncC
+  ukr: Опції NVEncC
+  kor: NVEncC 옵션
 New Profile:
   deu: Neues Profil
   eng: New Profile
@@ -2581,6 +3005,8 @@ New Profile:
   por: Novo perfil
   swe: Ny profil
   pol: Nowy profil
+  ukr: Новий профіль
+  kor: 새 프로필
 New Version:
   deu: Neue Version
   eng: New Version
@@ -2593,6 +3019,8 @@ New Version:
   por: Nova versão
   swe: Ny version
   pol: Nowa wersja
+  ukr: Нова версія
+  kor: 새 버전
 No:
   deu: Nein
   eng: No
@@ -2605,6 +3033,8 @@ No:
   por: Não
   swe: Ingen
   pol: Nie
+  ukr: Ні.
+  kor: 아니요
 No Downmix:
   deu: Kein Downmix
   eng: No Downmix
@@ -2617,6 +3047,8 @@ No Downmix:
   por: Sem Downmix
   swe: Ingen nedblandning
   pol: Bez downmixu
+  ukr: Ніякого даунміксу
+  kor: 다운믹스 없음
 No Flip:
   deu: Keine Spiegelung
   eng: No Flip
@@ -2629,6 +3061,8 @@ No Flip:
   por: Sem Flip
   swe: Ingen flip
   pol: No Flip
+  ukr: Ніякого перевороту.
+  kor: 플립 없음
 No Rotation:
   deu: Keine Drehung
   eng: No Rotation
@@ -2641,6 +3075,8 @@ No Rotation:
   por: Sem Rotação
   swe: Ingen rotation
   pol: Brak rotacji
+  ukr: Без ротації
+  kor: 회전 없음
 No Source Selected:
   deu: Keine Quelle ausgewählt
   eng: No Source Selected
@@ -2653,6 +3089,8 @@ No Source Selected:
   por: Nenhuma Fonte Seleccionada
   swe: Ingen källa vald
   pol: Nie wybrano źródła
+  ukr: Джерело не вибрано
+  kor: 선택한 소스 없음
 No Video File:
   deu: Keine Videodatei
   eng: No Video File
@@ -2665,6 +3103,8 @@ No Video File:
   por: Nenhum ficheiro de vídeo
   swe: Ingen videofil
   pol: Brak pliku wideo
+  ukr: Немає відеофайлу
+  kor: 비디오 파일 없음
 No command found for:
   deu: Kein Befehl gefunden für
   eng: No command found for
@@ -2677,6 +3117,8 @@ No command found for:
   por: Nenhum comando encontrado para
   swe: Inget kommando hittades för
   pol: Nie znaleziono polecenia dla
+  ukr: Не знайдено жодної команди для
+  kor: 에 대한 명령을 찾을 수 없습니다.
 No crop, scale, rotation, flip nor any other filters will be applied.:
   deu: Es werden weder Zuschneiden, Skalieren, Drehen, Spiegeln noch andere Filter
     angewendet.
@@ -2695,6 +3137,8 @@ No crop, scale, rotation, flip nor any other filters will be applied.:
     tillämpas.
   pol: Nie zostaną zastosowane żadne filtry typu crop, scale, rotation, flip ani żadne
     inne.
+  ukr: Обрізання, масштабування, обертання, перевертання та інші фільтри не застосовуються.
+  kor: 자르기, 크기 조정, 회전, 뒤집기 또는 기타 필터가 적용되지 않습니다.
 No encoding is currently in process, starting encode:
   deu: Es wird momentan keine Kodierung durchgeführt, Kodierung wird gestartet
   eng: No encoding is currently in process, starting encode
@@ -2707,6 +3151,8 @@ No encoding is currently in process, starting encode:
   por: Nenhuma codificação está actualmente em processo, começando a codificação
   swe: Ingen kodning pågår för närvarande, börja koda.
   pol: Nie trwa obecnie kodowanie, rozpoczynamy kodowanie
+  ukr: Наразі кодування не виконується, починаємо кодування
+  kor: 현재 인코딩이 진행 중이며 인코딩 시작 중입니다.
 No new items in queue to convert:
   deu: Keine neuen Elemente in der Warteschlange zum Konvertieren
   eng: No new items in queue to convert
@@ -2719,6 +3165,8 @@ No new items in queue to convert:
   por: Não há artigos novos em fila de espera para converter
   swe: Inga nya objekt i kö för konvertering
   pol: Brak nowych pozycji w kolejce do konwersji
+  ukr: Немає нових товарів у черзі на конвертацію
+  kor: 변환할 대기열에 새 항목이 없습니다.
 No video found for:
   deu: Kein Video gefunden für
   eng: No video found for
@@ -2731,6 +3179,8 @@ No video found for:
   por: Nenhum vídeo encontrado para
   swe: Ingen video hittades för
   pol: Nie znaleziono wideo dla
+  ukr: Не знайдено жодного відео для
+  kor: 에 대한 동영상을 찾을 수 없습니다.
 None:
   deu: Keines
   eng: None
@@ -2743,6 +3193,8 @@ None:
   por: Nenhum
   swe: Ingen
   pol: Brak
+  ukr: Ні.
+  kor: 없음
 Not a valid int for time conversion:
   deu: Kein gültiger int für Zeitkonvertierung
   eng: Not a valid int for time conversion
@@ -2755,6 +3207,8 @@ Not a valid int for time conversion:
   por: Não é uma int válida para conversão de tempo
   swe: Inte ett giltigt int för tidskonvertering
   pol: Nie jest prawidłową liczbą całkowitą dla konwersji czasu
+  ukr: Не коректний int для перетворення часу
+  kor: 시간 변환에 유효한 인수가 아닙니다.
 Not a video file:
   deu: Keine Videodatei
   eng: Not a video file
@@ -2767,6 +3221,8 @@ Not a video file:
   por: Não é um ficheiro de vídeo
   swe: Inte en videofil
   pol: Nie jest to plik wideo
+  ukr: Не відеофайл
+  kor: 동영상 파일이 아닙니다.
 Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.:
   deu: Setzen der dynamischen HDR10+-Metadaten nur in die IDR und Frames, bei denen
     sich die Werte geändert haben.
@@ -2787,6 +3243,8 @@ Only put the HDR10+ dynamic metadata in the IDR and frames where the values have
   swe: Lägg endast in HDR10+ dynamiska metadata i IDR och ramar där värdena har ändrats.
   pol: Umieszczaj metadane dynamiczne HDR10+ tylko w IDR i klatkach, w których wartości
     uległy zmianie.
+  ukr: Динамічні метадані HDR10+ додавайте лише в IDR і кадри, де значення змінилися.
+  kor: HDR10+ 동적 메타데이터는 값이 변경된 IDR과 프레임에만 넣습니다.
 Only select first matching Audio Track:
   deu: Nur die erste passende Audiospur auswählen
   eng: Only select first matching Audio Track
@@ -2799,6 +3257,8 @@ Only select first matching Audio Track:
   por: Seleccionar apenas a primeira faixa de áudio correspondente
   swe: Endast välja första matchande ljudspår
   pol: Wybierz tylko pierwszą pasującą ścieżkę dźwiękową
+  ukr: Виберіть лише першу відповідну аудіодоріжку
+  kor: 일치하는 첫 번째 오디오 트랙만 선택
 Only select first matching Subtitle Track:
   deu: Nur die erste passende Untertitelspur auswählen
   eng: Only select first matching Subtitle Track
@@ -2811,6 +3271,8 @@ Only select first matching Subtitle Track:
   por: Seleccionar apenas a primeira faixa de subtítulos correspondente
   swe: Välj endast det första matchande undertextspåret
   pol: Wybierz tylko pierwszą pasującą ścieżkę napisów
+  ukr: Виберіть лише першу відповідну доріжку субтитрів
+  kor: 일치하는 첫 번째 자막 트랙만 선택
 Open Directory:
   deu: Verzeichnis öffnen
   eng: Open Directory
@@ -2823,6 +3285,8 @@ Open Directory:
   por: Directório Aberto
   swe: Öppen katalog
   pol: Katalog otwarty
+  ukr: Відкрити каталог
+  kor: 디렉터리 열기
 Open Log Directory:
   deu: Protokoll-Verzeichnis öffnen
   eng: Open Log Directory
@@ -2835,6 +3299,8 @@ Open Log Directory:
   por: Directório de Registo Aberto
   swe: Öppna loggkatalogen
   pol: Otwarty katalog dzienników
+  ukr: Відкрити каталог журналів
+  kor: 로그 디렉터리 열기
 Output:
   deu: Ausgabe
   eng: Output
@@ -2847,6 +3313,8 @@ Output:
   por: Saída
   swe: Utgång
   pol: Wyjście
+  ukr: Вихідні дані
+  kor: 출력
 Output FPS:
   deu: Ausgabe FPS
   eng: Output FPS
@@ -2859,6 +3327,8 @@ Output FPS:
   por: FPS de saída
   swe: Utgående FPS
   pol: Wyjście FPS
+  ukr: Вихідний FPS
+  kor: 출력 FPS
 Over-allocation of frame threads will not improve performance,:
   deu: Die Auswahl von mehr als der verfügbaren Frame-Threads verbessert nicht die
     Leistung,
@@ -2872,6 +3342,8 @@ Over-allocation of frame threads will not improve performance,:
   por: A sobre-atribuição de fios de moldura não melhorará o desempenho,
   swe: Överallokering av ramtrådar förbättrar inte prestandan,
   pol: Nadmierna alokacja wątków ramki nie poprawi wydajności,
+  ukr: Перерозподіл потоків кадрів не покращить продуктивність,
+  kor: 프레임 스레드를 과도하게 할당해도 성능이 향상되지 않습니다,
 Overlay this subtitle track onto the video during conversion.:
   deu: Diese Untertitelspur bei der Konvertierung auf das Video überlagern.
   eng: Overlay this subtitle track onto the video during conversion.
@@ -2884,6 +3356,8 @@ Overlay this subtitle track onto the video during conversion.:
   por: Sobreponha esta faixa de legendas no vídeo durante a conversão.
   swe: Lägg över detta undertextspår på videon under konverteringen.
   pol: Nałożenie tej ścieżki napisów na wideo podczas konwersji.
+  ukr: Накладіть цю доріжку субтитрів на відео під час конвертації.
+  kor: 변환하는 동안 이 자막 트랙을 동영상에 오버레이합니다.
 Override Source FPS:
   deu: Quell-FPS überschreiben
   eng: Override Source FPS
@@ -2896,6 +3370,8 @@ Override Source FPS:
   por: Substituir Fonte FPS
   swe: åsidosätta källan FPS
   pol: Zastąpić źródło FPS
+  ukr: Перевизначити вихідний FPS
+  kor: 소스 FPS 재정의
 Override the preset rate-control:
   deu: voreingestelle Rate Control überschreiben
   eng: Override the preset rate-control
@@ -2908,6 +3384,8 @@ Override the preset rate-control:
   por: Anular o controlo da taxa pré-definida
   swe: åsidosätta den förinställda hastighetsregleringen
   pol: Nadpisanie wstępnie ustawionej regulacji prędkości obrotowej
+  ukr: Замінити попередньо встановлений контроль швидкості
+  kor: 사전 설정 속도 제어 재정의
 PIR can replace keyframes by inserting a column of intra blocks in non-keyframes,:
   deu: PIR kann durch Einfügen einer Spalte von Intrablöcken in Nicht-Keyframes Keyframes
     ersetzen,
@@ -2927,6 +3405,9 @@ PIR can replace keyframes by inserting a column of intra blocks in non-keyframes
   swe: PIR kan ersätta keyframes genom att infoga en kolumn med intrablock i icke-keyframes,
   pol: PIR może zastąpić klatki kluczowe wstawiając kolumnę bloków intra do klatek
     nie będących klatkami kluczowymi,
+  ukr: PIR може замінювати ключові кадри, вставляючи стовпчик внутрішніх блоків у
+    неключові кадри,
+  kor: PIR은 비키프레임에 인트라 블록 열을 삽입하여 키프레임을 대체할 수 있습니다,
 Parse Video details:
   deu: Video-Details analysieren
   eng: Parse Video details
@@ -2939,6 +3420,8 @@ Parse Video details:
   por: Detalhes do vídeo de Parse
   swe: Analysera videodetaljer
   pol: Odczytuj szczegóły wideo
+  ukr: Деталі розбору відео
+  kor: 비디오 세부 정보 구문 분석
 Pause / Resume the current command:
   deu: Pause / Fortsetzen des aktuellen Befehls
   eng: Pause / Resume the current command
@@ -2951,6 +3434,8 @@ Pause / Resume the current command:
   por: Pausa / Retomar o comando actual
   swe: Pausa / återuppta det aktuella kommandot
   pol: Wstrzymanie / Wznowienie bieżącego polecenia
+  ukr: Призупинити / відновити поточну команду
+  kor: 현재 명령 일시 중지/재시작
 Pause Encode:
   deu: Kodierung pausieren
   eng: Pause Encode
@@ -2963,6 +3448,8 @@ Pause Encode:
   por: Codificação de Pausa
   swe: Pausa Kodning
   pol: Pauza Koduj
+  ukr: Кодування паузи
+  kor: 인코딩 일시 중지
 Pause Queue:
   deu: Warteschlange anhalten
   eng: Pause Queue
@@ -2975,6 +3462,8 @@ Pause Queue:
   por: Fila de Pausa
   swe: Pausa kö
   pol: Wstrzymaj kolejkę
+  ukr: Пауза Черга
+  kor: 대기열 일시 중지
 Pixel Format (requires at least 10-bit for HDR):
   deu: Pixelformat (erfordert mindestens 10-Bit für HDR)
   eng: Pixel Format (requires at least 10-bit for HDR)
@@ -2987,6 +3476,8 @@ Pixel Format (requires at least 10-bit for HDR):
   por: Formato Pixel (requer pelo menos 10 bits para HDR)
   swe: Pixelformat (kräver minst 10 bit för HDR)
   pol: Format pikseli (w przypadku HDR wymagany jest co najmniej 10-bitowy)
+  ukr: Формат пікселів (для HDR потрібно щонайменше 10 біт)
+  kor: 픽셀 형식(HDR의 경우 최소 10비트 필요)
 Please make sure seek method is set to exact:
   deu: Bitte sicherstellen, dass die Suchmethode auf exakt eingestellt ist
   eng: Please make sure seek method is set to exact
@@ -2999,6 +3490,8 @@ Please make sure seek method is set to exact:
   por: Por favor, certifique-se de que o método de busca está definido de forma exacta
   swe: Kontrollera att sökmetoden är inställd på exakt
   pol: Proszę upewnić się, że metoda wyszukiwania jest ustawiona na dokładną
+  ukr: Будь ласка, переконайтеся, що метод пошуку встановлений на exact
+  kor: 검색 방법이 정확한 것으로 설정되어 있는지 확인하세요.
 Please provide a profile name:
   deu: Bitte einen Profilnamen angeben
   eng: Please provide a profile name
@@ -3011,6 +3504,8 @@ Please provide a profile name:
   por: Por favor forneça um nome de perfil
   swe: Ange ett profilnamn
   pol: Proszę podać nazwę profilu
+  ukr: Будь ласка, вкажіть ім'я профілю
+  kor: 프로필 이름을 입력하세요.
 Please report this issue:
   deu: Bitte dieses Problem melden
   eng: Please report this issue
@@ -3023,6 +3518,8 @@ Please report this issue:
   por: Por favor, informe este número
   swe: Rapportera detta problem
   pol: Proszę zgłosić ten problem
+  ukr: Будь ласка, повідомте про цю проблему
+  kor: 이 문제를 신고해 주세요.
 Please restart FastFlix to apply settings:
   deu: Bitte FastFlix neustarten, um die Einstellungen zu übernehmen
   eng: Please restart FastFlix to apply settings
@@ -3035,6 +3532,8 @@ Please restart FastFlix to apply settings:
   por: Por favor reinicie FastFlix para aplicar definições
   swe: Starta om FastFlix för att tillämpa inställningarna
   pol: Proszę uruchomić ponownie FastFlix, aby zastosować ustawienia.
+  ukr: Будь ласка, перезапустіть FastFlix, щоб застосувати налаштування
+  kor: 설정을 적용하려면 FastFlix를 다시 시작하세요.
 Poster Cover:
   deu: Plakat-Cover
   eng: Poster Cover
@@ -3047,6 +3546,8 @@ Poster Cover:
   por: Capa do cartaz
   swe: Affischomslag
   pol: Okładka plakatu
+  ukr: Обкладинка плаката
+  kor: 포스터 표지
 Preserve:
   deu: Beibehalten
   eng: Preserve
@@ -3059,6 +3560,8 @@ Preserve:
   por: Conservar
   swe: Bevara
   pol: Zachować
+  ukr: Заповідник
+  kor: 보존
 Preset:
   deu: Voreinstellung
   eng: Preset
@@ -3071,6 +3574,8 @@ Preset:
   por: Predefinição
   swe: Förinställd
   pol: Wstępnie ustawiony
+  ukr: Попереднє налаштування
+  kor: 사전 설정
 Profile Name:
   deu: Profil-Name
   eng: Profile Name
@@ -3083,6 +3588,8 @@ Profile Name:
   por: Nome do perfil
   swe: Profilnamn
   pol: Nazwa profilu
+  ukr: Ім'я профілю Ім'я профілю
+  kor: 프로필 이름
 Profile_encoderopt:
   deu: Profil
   eng: Profile
@@ -3095,6 +3602,8 @@ Profile_encoderopt:
   por: Perfil
   swe: Profile
   pol: Profil
+  ukr: Profile_encoderopt
+  kor: 프로필_인코더옵트
 Profile_newprofiletooltip:
   deu: Profil
   eng: Profile
@@ -3107,6 +3616,8 @@ Profile_newprofiletooltip:
   por: Perfil
   swe: Profile
   pol: Profil
+  ukr: Profile_newprofiletooltip
+  kor: 프로필_새프로필툴팁
 Profile_window:
   deu: Profil
   eng: Profile
@@ -3119,6 +3630,8 @@ Profile_window:
   por: Perfil
   swe: Profile
   pol: Profil
+  ukr: Profile_window
+  kor: 프로필_창
 Profiles:
   deu: Profile
   eng: Profiles
@@ -3131,6 +3644,8 @@ Profiles:
   por: Perfis
   swe: Profiler
   pol: Profile
+  ukr: Профілі
+  kor: 프로필
 Python:
   deu: Python
   eng: Python
@@ -3143,6 +3658,8 @@ Python:
   por: Python
   swe: Python
   pol: Python
+  ukr: Python
+  kor: Python
 Q-pel is highest precision:
   deu: Q-pel ist die höchste Präzision
   eng: Q-pel is highest precision
@@ -3155,6 +3672,8 @@ Q-pel is highest precision:
   por: Q-pel é da mais alta precisão
   swe: Q-pel är den högsta precisionen
   pol: Q-pel to najwyższa precyzja
+  ukr: Q-pel - найвища точність
+  kor: 최고의 정밀도를 자랑하는 Q-pel
 Quality:
   deu: Qualität
   eng: Quality
@@ -3167,6 +3686,8 @@ Quality:
   por: Qualidade
   swe: Kvalitet
   pol: Jakość
+  ukr: Якість
+  kor: 품질
 Quality and compression efficiency vs speed trade-off:
   deu: Kompromiss zwischen Qualität/Komprimierungs-Effizienz und Geschwindigkeit
   eng: Quality and compression efficiency vs speed trade-off
@@ -3180,6 +3701,8 @@ Quality and compression efficiency vs speed trade-off:
   por: Qualidade e eficiência de compressão vs. compromisso de velocidade
   swe: Kvalitets- och komprimeringseffektivitet kontra hastighet
   pol: Kompromis pomiędzy jakością i wydajnością kompresji a szybkością
+  ukr: Компроміс між якістю та ефективністю стиснення і швидкістю
+  kor: 품질 및 압축 효율성 대 속도 트레이드 오프
 Quality/Speed ratio modifier:
   deu: Modifikator Qualitäts/Geschwindigkeits-Verhältnis
   eng: Quality/Speed ratio modifier
@@ -3192,6 +3715,8 @@ Quality/Speed ratio modifier:
   por: Modificador da relação qualidade/velocidade
   swe: Modifiering av förhållandet kvalitet/hastighet
   pol: Modyfikator stosunku jakość/prędkość
+  ukr: Модифікатор співвідношення якість/швидкість
+  kor: 품질/속도 비율 수정자
 Quality/Speed ratio modifier (defaults to -1):
   deu: 'Modifikator Qualitäts/Geschwindigkeits-Verhältnis (Standardwert: -1)'
   eng: Quality/Speed ratio modifier (defaults to -1)
@@ -3204,6 +3729,8 @@ Quality/Speed ratio modifier (defaults to -1):
   por: Modificador da relação qualidade/velocidade (valores por defeito para -1)
   swe: Modifiering av förhållandet kvalitet/hastighet (standardvärde -1)
   pol: Modyfikator stosunku jakość/prędkość (domyślnie -1)
+  ukr: Модифікатор співвідношення якість/швидкість (за замовчуванням -1)
+  kor: 품질/속도 비율 수정자(기본값은 -1)
 Quality/Speed ratio modifier (defaults to 4):
   deu: 'Modifikator Qualitäts/Geschwindigkeits-Verhältnis (Standardwert: 4)'
   eng: Quality/Speed ratio modifier (defaults to 4)
@@ -3216,6 +3743,8 @@ Quality/Speed ratio modifier (defaults to 4):
   por: Modificador da relação qualidade/velocidade (padrão para 4)
   swe: Modifiering av förhållandet kvalitet/hastighet (standardvärdet är 4).
   pol: Modyfikator stosunku jakość/prędkość (domyślnie 4)
+  ukr: Модифікатор співвідношення якість/швидкість (за замовчуванням 4)
+  kor: 품질/속도 비율 수정자(기본값은 4)
 Queue:
   deu: Warteschlange
   eng: Queue
@@ -3228,6 +3757,8 @@ Queue:
   por: Fila
   swe: Kö
   pol: Kolejka
+  ukr: Черга.
+  kor: 대기열
 Queue has been paused:
   deu: Die Warteschlange wurde pausiert
   eng: Queue has been paused
@@ -3240,6 +3771,8 @@ Queue has been paused:
   por: A fila foi interrompida
   swe: Kö har pausats
   pol: Kolejka została wstrzymana.
+  ukr: Чергу призупинено
+  kor: 대기열이 일시 중지되었습니다.
 RC Lookahead:
   deu: RC Lookahead
   eng: RC Lookahead
@@ -3252,6 +3785,8 @@ RC Lookahead:
   por: RC Lookahead
   swe: RC Lookahead
   pol: RC Lookahead
+  ukr: ТЦ Lookahead
+  kor: RC 룩어헤드
 Raise or lower per-block quantization based on complexity analysis of the source image.:
   deu: Erhöhen oder verringern der Quantisierung pro Block basierend auf der Komplexitätsanalyse
     des Quellbildes.
@@ -3273,6 +3808,9 @@ Raise or lower per-block quantization based on complexity analysis of the source
     källbilden.
   pol: Zwiększ lub zmniejsz kwantyzację per-block na podstawie analizy złożoności
     obrazu źródłowego.
+  ukr: Підвищуйте або знижуйте квантування на блок на основі аналізу складності вихідного
+    зображення.
+  kor: 소스 이미지의 복잡도 분석에 따라 블록당 양자화를 높이거나 낮춥니다.
 Rate Control:
   deu: Ratensteuerung
   eng: Rate Control
@@ -3285,6 +3823,8 @@ Rate Control:
   por: Controlo da taxa
   swe: Kontroll av hastighet
   pol: Kontrola stawek
+  ukr: Контроль швидкості
+  kor: 속도 제어
 Raw Commands:
   deu: Kommandozeilenbefehle
   eng: Raw Commands
@@ -3297,6 +3837,8 @@ Raw Commands:
   por: Comandos em bruto
   swe: Råkommandon
   pol: Polecenia surowe
+  ukr: Сирі команди
+  kor: 원시 명령
 Ready to encode:
   deu: Bereit zum Kodieren
   eng: Ready to encode
@@ -3309,6 +3851,8 @@ Ready to encode:
   por: Pronto a codificar
   swe: Redo att koda
   pol: Gotowość do kodowania
+  ukr: Готові до кодування
+  kor: 인코딩 준비 완료
 Reconstructed output pictures are bit-exact to the input pictures.:
   deu: Rekonstruierte Ausgabebilder entsprechen bit-genau den Eingangsbildern.
   eng: Reconstructed output pictures are bit-exact to the input pictures.
@@ -3325,6 +3869,8 @@ Reconstructed output pictures are bit-exact to the input pictures.:
   swe: De rekonstruerade utdatabilderna är bit-exakta i förhållande till de ingående
     bilderna.
   pol: Zrekonstruowane obrazy wyjściowe są bitowo dokładne w stosunku do obrazów wejściowych.
+  ukr: Реконструйовані вихідні зображення є побітово точними до вхідних зображень.
+  kor: 재구성된 출력 사진은 입력 사진과 비트가 일치합니다.
 Ref Frames:
   deu: Ref-Frames
   eng: Ref Frames
@@ -3337,6 +3883,8 @@ Ref Frames:
   por: Molduras de Reformas
   swe: Referensramar
   pol: Ref Frames
+  ukr: Референтні рамки
+  kor: 참조 프레임
 Remove HDR:
   deu: HDR entfernen
   eng: Remove HDR
@@ -3349,6 +3897,8 @@ Remove HDR:
   por: Retirar o HDR
   swe: Ta bort HDR
   pol: Usuń HDR
+  ukr: Видалити HDR
+  kor: HDR 제거
 Remove Metadata:
   deu: Metadaten entfernen
   eng: Remove Metadata
@@ -3361,6 +3911,8 @@ Remove Metadata:
   por: Remover Metadados
   swe: Ta bort metadata
   pol: Usuń metadane
+  ukr: Видалити метадані
+  kor: 메타데이터 제거
 Remove completed tasks:
   deu: Erledigte Aufgaben entfernen
   eng: Remove completed tasks
@@ -3373,6 +3925,8 @@ Remove completed tasks:
   por: Retirar tarefas concluídas
   swe: Ta bort avslutade uppgifter
   pol: Usuń zakończone zlecenia
+  ukr: Видалити виконані завдання
+  kor: 완료된 작업 제거
 Removing after done command:
   deu: Entfernen nach erledigtem Befehl
   eng: Removing after done command
@@ -3385,6 +3939,8 @@ Removing after done command:
   por: Remoção após comando feito
   swe: Ta bort efter kommandot done
   pol: Usuwanie po wykonaniu polecenia
+  ukr: Видалення після виконання команди
+  kor: 완료 후 제거 명령
 Repeat Headers:
   deu: Header wiederholen
   eng: Repeat Headers
@@ -3397,6 +3953,8 @@ Repeat Headers:
   por: Cabeçalhos de repetição
   swe: Upprepa rubriker
   pol: Powtarzanie nagłówków
+  ukr: Повторювані заголовки
+  kor: 반복 헤더
 Report Issue:
   deu: Problem melden
   eng: Report Issue
@@ -3409,6 +3967,8 @@ Report Issue:
   por: Edição do relatório
   swe: Rapportera frågan
   pol: Raport Wydanie
+  ukr: Випуск звіту
+  kor: 이슈 보고
 Resume Encode:
   deu: Kodierung fortsetzen
   eng: Resume Encode
@@ -3421,6 +3981,8 @@ Resume Encode:
   por: Código de currículo
   swe: Återuppta kodning
   pol: Wznów kodowanie
+  ukr: Відновити кодування
+  kor: 인코딩 재개
 Resume Queue:
   deu: Warteschlange fortsetzen
   eng: Resume Queue
@@ -3433,6 +3995,8 @@ Resume Queue:
   por: Fila de currículos
   swe: Återuppta kö
   pol: Wznów kolejkę
+  ukr: Поновити чергу
+  kor: 대기열 재개
 Reusables:
   deu: Wiederverwendbare Daten
   eng: Reusables
@@ -3445,6 +4009,8 @@ Reusables:
   por: Reutilizáveis
   swe: Återanvändbara varor
   pol: Materiały wielokrotnego użytku
+  ukr: Багаторазове використання
+  kor: 재사용 가능
 Right:
   deu: Rechts
   eng: Right
@@ -3457,6 +4023,8 @@ Right:
   por: Certo
   swe: Höger
   pol: Prawo
+  ukr: Так.
+  kor: 오른쪽
 Row Multi-Threading:
   deu: Zeilen-Multi-Threading
   eng: Row Multi-Threading
@@ -3469,6 +4037,8 @@ Row Multi-Threading:
   por: Linha Multi-Tarefa
   swe: Flertrådig rad
   pol: Wielowątkowość wierszy
+  ukr: Багатонитковість рядів
+  kor: 행 멀티 스레딩
 Row multithreading:
   deu: Zeilen-Multithreading
   eng: Row multithreading
@@ -3481,6 +4051,8 @@ Row multithreading:
   por: Multithreading de filas
   swe: Flertrådig rad
   pol: Wielowątkowość wierszy
+  ukr: Багатопоточність рядків
+  kor: 행 멀티스레딩
 'Running after done command:':
   deu: 'Läuft nach erledigtem Befehl:'
   eng: 'Running after done command:'
@@ -3493,6 +4065,8 @@ Row multithreading:
   por: 'Correr atrás de comando feito:'
   swe: 'Körs efter kommandot done:'
   pol: 'Uruchomienie po wykonaniu polecenia:'
+  ukr: 'Запуск після виконання команди:'
+  kor: '완료 명령 후 실행:'
 Running command:
   deu: Laufender Befehl
   eng: Running command
@@ -3505,6 +4079,8 @@ Running command:
   por: Comando de execução
   swe: Kommando som körs
   pol: Uruchomienie polecenia
+  ukr: Команда, що виконується
+  kor: 실행 중인 명령
 SVT-AV1 Encoding Guide:
   deu: SVT-AV1 Kodierungsanleitung
   eng: SVT-AV1 Encoding Guide
@@ -3517,6 +4093,8 @@ SVT-AV1 Encoding Guide:
   por: Guia de Codificação SVT-AV1
   swe: SVT-AV1 Kodningsguide
   pol: SVT-AV1 Przewodnik kodowania
+  ukr: Посібник з кодування SVT-AV1
+  kor: SVT-AV1 인코딩 가이드
 Same as Source:
   deu: identisch zur Quelle
   eng: Same as Source
@@ -3529,6 +4107,8 @@ Same as Source:
   por: O mesmo que a Fonte
   swe: Samma som för källan
   pol: Tak jak w przypadku źródła
+  ukr: Те саме, що й Джерело
+  kor: 소스와 동일
 Save:
   deu: speichern
   eng: Save
@@ -3541,6 +4121,8 @@ Save:
   por: Guardar
   swe: Spara
   pol: Zapisz
+  ukr: Зберегти
+  kor: 저장
 Save Commands:
   deu: Befehle speichern
   eng: Save Commands
@@ -3553,6 +4135,8 @@ Save Commands:
   por: Salvar Comandos
   swe: Spara kommandon
   pol: Zapisz polecenia
+  ukr: Збереження команд
+  kor: 명령 저장
 Save File:
   deu: Datei speichern
   eng: Save File
@@ -3565,6 +4149,8 @@ Save File:
   por: Guardar ficheiro
   swe: Spara fil
   pol: Zapisz plik
+  ukr: Зберегти файл
+  kor: 파일 저장
 Save commands to file:
   deu: Befehle in Datei speichern
   eng: Save commands to file
@@ -3577,6 +4163,8 @@ Save commands to file:
   por: Guardar comandos em ficheiro
   swe: Spara kommandon i en fil
   pol: Zapisywanie poleceń do pliku
+  ukr: Збереження команд у файл
+  kor: 파일에 명령 저장
 Scale:
   deu: Skala
   eng: Scale
@@ -3589,6 +4177,8 @@ Scale:
   por: Balança
   swe: Skala
   pol: Skala
+  ukr: Масштаб
+  kor: 규모
 Scrub away all incoming metadata, like video titles, unique markings and so on.:
   deu: Entfernen aller eingehenden Metadaten, wie Videotitel, eindeutige Markierungen
     usw.
@@ -3610,6 +4200,8 @@ Scrub away all incoming metadata, like video titles, unique markings and so on.:
     vidare.
   pol: Usuń wszystkie przychodzące metadane, takie jak tytuły wideo, unikalne oznaczenia
     i tak dalej.
+  ukr: Видаліть усі вхідні метадані, такі як назви відео, унікальні позначки тощо.
+  kor: 동영상 제목, 고유 표시 등과 같이 들어오는 모든 메타데이터를 삭제합니다.
 Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on:
   deu: Wählt aus, welche NVENC-fähige GPU genutzt werden soll. Die erste GPU ist 0,
     die zweite 1, usw
@@ -3631,6 +4223,9 @@ Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on:
     den andra är 1 osv.
   pol: Wybiera, który z układów GPU obsługujących NVENC ma zostać użyty. Pierwszy
     układ GPU to 0, drugi to 1, i tak dalej.
+  ukr: Вибирає, який графічний процесор з підтримкою NVENC використовувати. Перший
+    графічний процесор - 0, другий - 1 і так далі
+  kor: 사용할 NVENC 지원 GPU를 선택합니다. 첫 번째 GPU는 0, 두 번째는 1 등입니다.
 Set speed to 4 for first pass:
   deu: Setze Geschwindigkeit des ersten Durchlaufs auf 4
   eng: Set speed to 4 for first pass
@@ -3643,6 +4238,8 @@ Set speed to 4 for first pass:
   por: Definir velocidade para 4 na primeira passagem
   swe: Ställ in hastigheten på 4 för första passet.
   pol: Dla pierwszego przejazdu ustawić prędkość obrotową na 4
+  ukr: Встановіть швидкість на 4 для першого проходу
+  kor: 첫 번째 패스의 속도를 4로 설정
 Set the "title" tag, sometimes shown as "Movie Name":
   deu: Setzen des "Titel"-Tags, der manchmal als "Filmname" angezeigt wird
   eng: Set the "title" tag, sometimes shown as "Movie Name"
@@ -3655,6 +4252,8 @@ Set the "title" tag, sometimes shown as "Movie Name":
   por: Definir a etiqueta "título", por vezes exibida como "Nome do filme".
   swe: Ange "title"-taggen, som ibland visas som "Movie Name".
   pol: Ustaw znacznik "title", czasami wyświetlany jako "Movie Name".
+  ukr: Встановіть тег "title", який іноді відображається як "Назва фільму"
+  kor: '"제목" 태그(때로는 "동영상 이름"으로 표시됨)를 설정합니다.'
 Set the encoding level restriction:
   deu: Kodierungslevel-Einschränkung festlegen
   eng: Set the encoding level restriction
@@ -3667,6 +4266,8 @@ Set the encoding level restriction:
   por: Definir a restrição do nível de codificação
   swe: Ställ in begränsningen av kodningsnivån
   pol: Ustawienie ograniczenia poziomu kodowania
+  ukr: Встановіть обмеження на рівень кодування
+  kor: 인코딩 수준 제한 설정
 Set the encoding tier:
   deu: Kodierungsstufe festlegen
   eng: Set the encoding tier
@@ -3679,6 +4280,8 @@ Set the encoding tier:
   por: Definir o nível de codificação
   swe: Ställ in kodningsnivån
   pol: Ustawienie poziomu kodowania
+  ukr: Встановіть рівень кодування
+  kor: 인코딩 계층 설정
 Set the level of effort in determining B frame placement.:
   deu: Grad des Aufwands bei der Bestimmung der B-Frame-Platzierung festlegen.
   eng: Set the level of effort in determining B frame placement.
@@ -3692,6 +4295,8 @@ Set the level of effort in determining B frame placement.:
   por: Estabelecer o nível de esforço na determinação da colocação da moldura B.
   swe: Ange nivån på ansträngningen för att bestämma placeringen av B-ramar.
   pol: Ustaw poziom wysiłku przy określaniu rozmieszczenia ramki B.
+  ukr: Встановіть рівень зусиль при визначенні розміщення рамки B.
+  kor: B 프레임 배치를 결정할 때 노력 수준을 설정합니다.
 'Setting after done command to:':
   deu: 'Einstellung nach erledigtem Befehl setzen auf:'
   eng: 'Setting after done command to:'
@@ -3704,6 +4309,8 @@ Set the level of effort in determining B frame placement.:
   por: 'Definição após comando feito para:'
   swe: 'Ställ in kommandot efter utfört kommando till:'
   pol: 'Ustawienie po wykonaniu polecenia na:'
+  ukr: 'Встановлення після виконаної команди to:'
+  kor: '완료 후 명령어를 다음으로 설정합니다:'
 Settings:
   deu: Einstellungen
   eng: Settings
@@ -3716,6 +4323,8 @@ Settings:
   por: Definições
   swe: Inställningar
   pol: Ustawienia
+  ukr: Налаштування
+  kor: 설정
 Single Pass (Bitrate):
   deu: Ein einzelner Durchlauf (Bitrate)
   eng: Single Pass (Bitrate)
@@ -3728,6 +4337,8 @@ Single Pass (Bitrate):
   por: Passe único (Bitrate)
   swe: Enkelpass (Bitrate)
   pol: Pojedyncze przejście (Bitrate)
+  ukr: Один прохід (Бітрейт)
+  kor: 단일 패스(비트레이트)
 Single Pass (CRF):
   deu: Ein einzelner Durchlauf (CRF)
   eng: Single Pass (CRF)
@@ -3740,6 +4351,8 @@ Single Pass (CRF):
   por: Passe Único (CRF)
   swe: Enkel passage (CRF)
   pol: Pojedynczy przejazd (CRF)
+  ukr: Одноразовий пропуск (CRF)
+  kor: 싱글 패스(CRF)
 Size Estimate:
   deu: geschätzte Größe
   eng: Size Estimate
@@ -3752,6 +4365,8 @@ Size Estimate:
   por: Estimativa de tamanho
   swe: Uppskattad storlek
   pol: Szacunkowa wielkość
+  ukr: Оцінка розміру
+  kor: 크기 견적
 Slow is highest personal recommenced, as past that is much smaller gains:
   deu: Slow ist die maximale persönliche Empfehlung, da die Zugewinne bei noch langsamerem
     deutlich kleiner sind.
@@ -3770,6 +4385,9 @@ Slow is highest personal recommenced, as past that is much smaller gains:
   swe: Långsamt är högsta personliga återupptagen, som tidigare är mycket mindre vinster
   pol: Slow jest najwyższym osobistym wznowieniem, jak minęło to jest znacznie mniejsze
     zyski.
+  ukr: Повільний - це найвищий особистий приріст, оскільки в минулому це набагато
+    менший приріст
+  kor: 느리게 시작하는 것이 개인적으로 가장 높은 권장 사항이며, 그 이전에는 훨씬 적은 이득을 얻습니다.
 Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams).:
   deu: Langsamere Voreinstellungen erzielen im Allgemeinen eine bessere Komprimierungseffizienz
     (und erzeugen kleinere Bitströme).
@@ -3791,6 +4409,9 @@ Slower presets will generally achieve better compression efficiency (and generat
     (och genererar mindre bitströmmar).
   pol: Wolniejsze presety generalnie osiągają lepszą wydajność kompresji (i generują
     mniejsze strumienie bitów).
+  ukr: Повільніші пресети зазвичай забезпечують кращу ефективність стиснення (і генерують
+    менші бітові потоки).
+  kor: 일반적으로 느린 사전 설정은 더 나은 압축 효율을 달성하고 더 작은 비트 스트림을 생성합니다.
 Source:
   deu: Quelle
   eng: Source
@@ -3803,6 +4424,8 @@ Source:
   por: Fonte
   swe: Källa
   pol: Źródło
+  ukr: Джерело
+  kor: 출처
 Source Details:
   deu: Details zur Quelle
   eng: Source Details
@@ -3815,6 +4438,8 @@ Source Details:
   por: Detalhes da fonte
   swe: Information om källan
   pol: Źródło Szczegóły
+  ukr: Інформація про джерело
+  kor: 소스 세부 정보
 Source Frame Rate:
   deu: Bildrate der Quelle
   eng: Source Frame Rate
@@ -3827,6 +4452,8 @@ Source Frame Rate:
   por: Taxa da moldura de origem
   swe: Källans bildfrekvens
   pol: Źródło Częstotliwość odświeżania
+  ukr: Вихідна частота кадрів
+  kor: 소스 프레임 레이트
 Source height:
   deu: Höhe der Quelle
   eng: Source height
@@ -3839,6 +4466,8 @@ Source height:
   por: Altura da fonte
   swe: Källhöjd
   pol: Wysokość źródła
+  ukr: Висота джерела
+  kor: 소스 높이
 Source width:
   deu: Breite der Quelle
   eng: Source width
@@ -3851,6 +4480,8 @@ Source width:
   por: Largura da fonte
   swe: Källans bredd
   pol: Szerokość źródła
+  ukr: Ширина джерела
+  kor: 소스 너비
 Spatial AQ:
   deu: Spatila AQ
   eng: Spatial AQ
@@ -3863,6 +4494,8 @@ Spatial AQ:
   por: AQ Espacial
   swe: Rumsligt AQ
   pol: Przestrzenna AQ
+  ukr: Просторова добротність
+  kor: 공간 AQ
 Speed:
   deu: Geschwindigkeit
   eng: Speed
@@ -3875,6 +4508,8 @@ Speed:
   por: Velocidade
   swe: Hastighet
   pol: Prędkość
+  ukr: Швидкість
+  kor: 속도
 Start:
   deu: Start
   eng: Start
@@ -3887,6 +4522,8 @@ Start:
   por: Início
   swe: Starta
   pol: Start
+  ukr: Старт
+  kor: 시작
 Starting conversion process:
   deu: Konvertierungsprozess starten
   eng: Starting conversion process
@@ -3899,6 +4536,8 @@ Starting conversion process:
   por: Início do processo de conversão
   swe: Starta omvandlingsprocessen
   pol: Rozpoczęcie procesu konwersji
+  ukr: Початок процесу конверсії
+  kor: 전환 프로세스 시작
 Strength:
   deu: Stärke
   eng: Strength
@@ -3911,6 +4550,8 @@ Strength:
   por: Força
   swe: Styrka
   pol: Wytrzymałość
+  ukr: Сила
+  kor: 힘
 Subtitle Tracks:
   deu: Untertitelspuren
   eng: Subtitle Tracks
@@ -3923,6 +4564,8 @@ Subtitle Tracks:
   por: Faixas de subtítulos
   swe: Spår för undertexter
   pol: Ścieżki napisów
+  ukr: Доріжки субтитрів
+  kor: 자막 트랙
 Subtitle select language:
   deu: Untertitel-Sprache wählen
   eng: Subtitle select language
@@ -3935,6 +4578,8 @@ Subtitle select language:
   por: Subtítulo seleccionar idioma
   swe: Undertitel väljer språk
   pol: Wybór języka napisów
+  ukr: Вибір мови субтитрів
+  kor: 자막 언어 선택
 Subtitles:
   deu: Untertitel
   eng: Subtitles
@@ -3947,6 +4592,8 @@ Subtitles:
   por: Subtítulos
   swe: Undertexter
   pol: Napisy
+  ukr: Субтитри
+  kor: 자막
 Success:
   deu: Erfolg
   eng: Success
@@ -3959,6 +4606,8 @@ Success:
   por: Sucesso
   swe: Framgång
   pol: Sukces
+  ukr: Успіх
+  kor: 성공
 Support FastFlix:
   deu: Unterstützt FastFlix
   eng: Support FastFlix
@@ -3971,6 +4620,8 @@ Support FastFlix:
   por: Apoio FastFlix
   swe: Stöd för FastFlix
   pol: Obsługa FastFlix
+  ukr: Підтримка FastFlix
+  kor: FastFlix 지원
 Supported Image Files:
   deu: Unterstützte Bilddateien
   eng: Supported Image Files
@@ -3983,6 +4634,8 @@ Supported Image Files:
   por: Ficheiros de Imagem Suportados
   swe: Bildfiler som stöds
   pol: Obsługiwane pliki obrazów
+  ukr: Підтримувані файли зображень
+  kor: 지원되는 이미지 파일
 The GUI might have died, but I'm going to keep converting!:
   deu: Die GUI ist eventuell abgestürzt, aber ich werde weiter konvertieren!
   eng: The GUI might have died, but I'm going to keep converting!
@@ -3996,6 +4649,8 @@ The GUI might have died, but I'm going to keep converting!:
   por: A GUI pode ter morrido, mas eu vou continuar a converter-me!
   swe: GUI må ha dött, men jag kommer att fortsätta konvertera!
   pol: GUI może i umarło, ale ja zamierzam dalej konwertować!
+  ukr: Можливо, графічний інтерфейс помер, але я продовжу конвертувати!
+  kor: GUI는 죽었을지 모르지만 변환은 계속할 것입니다!
 The more complex the block, the more quantization is used.:
   deu: Je komplexer der Block ist, desto mehr Quantisierung wird verwendet.
   eng: The more complex the block, the more quantization is used.
@@ -4008,6 +4663,8 @@ The more complex the block, the more quantization is used.:
   por: Quanto mais complexo for o bloco, mais quantização é utilizada.
   swe: Ju mer komplicerat blocket är, desto mer kvantisering används.
   pol: Im bardziej skomplikowany blok, tym więcej kwantyzacji jest używane.
+  ukr: Чим складніший блок, тим більше квантування використовується.
+  kor: 블록이 복잡할수록 더 많은 양자화가 사용됩니다.
 The purpose is to prevent blocking or banding artifacts in regions with few/zero AC coefficients.:
   deu: Der Zweck ist, Blocking- oder Banding-Artefakte in Regionen mit wenigen/keinen
     AC-Koeffizienten zu verhindern.
@@ -4028,6 +4685,9 @@ The purpose is to prevent blocking or banding artifacts in regions with few/zero
   swe: Syftet är att förhindra blockering eller bandning i områden med få/noll AC-koefficienter.
   pol: Ma to na celu zapobieganie powstawaniu artefaktów blokowania lub pasmowania
     w regionach o małej lub zerowej liczbie współczynników AC.
+  ukr: Мета - запобігти артефактам блокування або смуги в регіонах з низькими/нульовими
+    коефіцієнтами змінного струму.
+  kor: 그 목적은 AC 계수가 거의 없거나 0인 영역에서 차단 또는 밴딩 아티팩트를 방지하는 것입니다.
 There is a conversion in process!:
   deu: Es ist eine Konvertierung am laufen!
   eng: There is a conversion in process!
@@ -4040,6 +4700,8 @@ There is a conversion in process!:
   por: Há uma conversão em processo!
   swe: Det pågår en omvandling!
   pol: Trwa przebudowa!
+  ukr: Відбувається конверсія!
+  kor: 전환이 진행 중입니다!
 There is a newer version of FastFlix available!:
   deu: Es ist eine neuere Version von FastFlix verfügbar!
   eng: There is a newer version of FastFlix available!
@@ -4052,6 +4714,8 @@ There is a newer version of FastFlix available!:
   por: Há uma versão mais recente de FastFlix disponível!
   swe: Det finns en nyare version av FastFlix!
   pol: Dostępna jest nowsza wersja FastFlix!
+  ukr: Доступна нова версія FastFlix!
+  kor: 최신 버전의 FastFlix를 사용할 수 있습니다!
 There was an error during conversion and the queue has stopped:
   deu: Es gab einen Fehler während der Konvertierung und die Warteschlange wurde angehalten
   eng: There was an error during conversion and the queue has stopped
@@ -4064,6 +4728,8 @@ There was an error during conversion and the queue has stopped:
   por: Houve um erro durante a conversão e a fila parou
   swe: Det uppstod ett fel under konverteringen och kön har stoppats.
   pol: Wystąpił błąd podczas konwersji i kolejka została zatrzymana
+  ukr: Виникла помилка під час конвертації і черга зупинилася
+  kor: 변환하는 동안 오류가 발생하여 대기열이 중지되었습니다.
 This flag performs bi-linear interpolation of the corner reference samples for a strong smoothing effect.:
   deu: Dieses Flag führt eine bi-lineare Interpolation der Eckreferenzsamples durch,
     um einen starken Glättungseffekt zu erzielen.
@@ -4085,6 +4751,9 @@ This flag performs bi-linear interpolation of the corner reference samples for a
     utjämningseffekt.
   pol: Flaga ta wykonuje bi-liniową interpolację próbek referencyjnych narożników
     w celu uzyskania silnego efektu wygładzania.
+  ukr: Цей прапорець виконує білінійну інтерполяцію кутових еталонних відліків для
+    сильного ефекту згладжування.
+  kor: 이 플래그는 강력한 스무딩 효과를 위해 코너 기준 샘플의 이중 선형 보간을 수행합니다.
 This improves encoding speed significantly on systems that are otherwise underutilised when encoding VP9.:
   deu: Dies verbessert erheblich die Kodiergeschwindigkeit auf Systemen, die anonsten
     bei der Kodierung von VP9 unausgelastet sind.
@@ -4106,6 +4775,9 @@ This improves encoding speed significantly on systems that are otherwise underut
     vid kodning av VP9.
   pol: Poprawia to znacznie szybkość kodowania na systemach, które w przeciwnym razie
     nie są w pełni wykorzystywane podczas kodowania VP9.
+  ukr: Це значно покращує швидкість кодування на системах, які інакше не використовуються
+    при кодуванні VP9.
+  kor: 이를 통해 VP9 인코딩 시 활용도가 낮은 시스템에서 인코딩 속도가 크게 향상됩니다.
 This is intended for use when you do not have a container to keep the stream headers for you:
   deu: Dies ist für die Verwendung vorgesehen, wenn kein Container vorhanden ist,
     der die Stream-Header aufbewahrt
@@ -4128,6 +4800,9 @@ This is intended for use when you do not have a container to keep the stream hea
     headers åt dig.
   pol: To jest przeznaczone do użycia, gdy nie masz kontenera, który przechowuje nagłówki
     strumienia dla Ciebie
+  ukr: Призначено для використання, коли у вас немає контейнера для зберігання заголовків
+    потоків
+  kor: 스트림 헤더를 보관할 컨테이너가 없을 때 사용하기 위한 것입니다.
 This is used for ultra-high bitrates with zero loss of quality.:
   deu: Dies wird für ultrahohe Bitraten ohne Qualitätsverluste verwendet.
   eng: This is used for ultra-high bitrates with zero loss of quality.
@@ -4142,6 +4817,8 @@ This is used for ultra-high bitrates with zero loss of quality.:
   por: Isto é utilizado para taxas de bits ultra-elevadas com perda de qualidade zero.
   swe: Detta används för extremt höga bithastigheter utan kvalitetsförlust.
   pol: Jest on używany do ultra-wysokich bitrate'ów bez utraty jakości.
+  ukr: Використовується для надвисоких бітрейтів з нульовою втратою якості.
+  kor: 품질 손실 없이 초고속 비트레이트에 사용됩니다.
 'This option is not recommenced unless you need to conform ':
   deu: 'Diese Option wird nicht empfohlen, es sei denn, Sie müssen konform sein '
   eng: 'This option is not recommenced unless you need to conform '
@@ -4154,6 +4831,8 @@ This is used for ultra-high bitrates with zero loss of quality.:
   por: Esta opção não é reiniciada a menos que precise de se conformar
   swe: Det här alternativet rekommenderas inte om du inte behöver anpassa dig till
   pol: Opcja ta nie jest zalecana, chyba że zachodzi konieczność zachowania zgodności
+  ukr: Ця опція не відновлюється, якщо вам не потрібно відповідати вимогам
+  kor: 이 옵션은 다음을 준수해야 하는 경우가 아니면 권장하지 않습니다.
 This will just copy the video track as is.:
   deu: Hiermit wird die Videospur einfach so kopiert, wie sie ist.
   eng: This will just copy the video track as is.
@@ -4166,6 +4845,8 @@ This will just copy the video track as is.:
   por: Isto irá apenas copiar a faixa de vídeo tal como está.
   swe: Detta kopierar bara videospåret som det är.
   pol: Spowoduje to skopiowanie ścieżki wideo w niezmienionej postaci.
+  ukr: Це просто скопіює відеодоріжку як є.
+  kor: 이렇게 하면 비디오 트랙이 그대로 복사됩니다.
 Tier:
   deu: Ebene
   eng: Tier
@@ -4178,6 +4859,8 @@ Tier:
   por: Nível
   swe: Nivå
   pol: Poziom
+  ukr: Ярус
+  kor: 계층
 Tile Columns:
   deu: Kachel-Spalten
   eng: Tile Columns
@@ -4190,6 +4873,8 @@ Tile Columns:
   por: Colunas de Ladrilho
   swe: Kakelpelare
   pol: Kolumny dachówkowe
+  ukr: Плиточні колони
+  kor: 타일 기둥
 Tile Rows:
   deu: Kachelzeilen
   eng: Tile Rows
@@ -4202,6 +4887,8 @@ Tile Rows:
   por: Fileiras de Azulejos
   swe: Rader av kakelplattor
   pol: Rzędy dachówek
+  ukr: Ряди плитки
+  kor: 타일 행
 Tiles:
   deu: Kacheln
   eng: Tiles
@@ -4214,6 +4901,8 @@ Tiles:
   por: Azulejos
   swe: Plattor
   pol: Płytki
+  ukr: Плитка
+  kor: 타일
 Time Left:
   deu: Verbleibende Dauer
   eng: Time Left
@@ -4226,6 +4915,8 @@ Time Left:
   por: Tempo restante
   swe: Tid kvar
   pol: Czas pozostały
+  ukr: Час, що залишився
+  kor: 남은 시간
 Time Elapsed:
   deu: Verstrichene Dauer
   eng: Time Elapsed
@@ -4238,6 +4929,8 @@ Time Elapsed:
   por: Tempo decorrido
   swe: Förfluten tid
   pol: Czas, który upłynął
+  ukr: Минув час
+  kor: 경과 시간
 Title:
   deu: Titel
   eng: Title
@@ -4250,6 +4943,8 @@ Title:
   por: Título
   swe: Titel
   pol: Tytuł
+  ukr: Назва
+  kor: 제목
 Top:
   deu: Oben
   eng: Top
@@ -4262,6 +4957,8 @@ Top:
   por: Início
   swe: Topp
   pol: Top
+  ukr: Верхня частина
+  kor: Top
 Total video height must be greater than 0:
   deu: Gesamthöhe des Videos muss größer als 0 sein
   eng: Total video height must be greater than 0
@@ -4274,6 +4971,8 @@ Total video height must be greater than 0:
   por: A altura total do vídeo deve ser superior a 0
   swe: Den totala videohöjden måste vara större än 0
   pol: Całkowita wysokość wideo musi być większa niż 0
+  ukr: Загальна висота відео повинна бути більше 0
+  kor: 총 동영상 높이는 0보다 커야 합니다.
 Tune:
   deu: Feineinstellung
   eng: Tune
@@ -4286,6 +4985,8 @@ Tune:
   por: Melodia
   swe: Stäm av
   pol: Dostosuj
+  ukr: Мелодія
+  kor: Tune
 Tune the settings for a particular type of source or situation:
   deu: Feineinstellungen für einen bestimmten Quelltyp oder eine bestimmte Situation
   eng: Tune the settings for a particular type of source or situation
@@ -4298,6 +4999,8 @@ Tune the settings for a particular type of source or situation:
   por: Ajustar as definições para um determinado tipo de fonte ou situação
   swe: Justera inställningarna för en viss typ av källa eller situation.
   pol: Dostosuj ustawienia do określonego typu źródła lub sytuacji
+  ukr: Налаштуйте параметри для певного типу джерела або ситуації
+  kor: 특정 유형의 소스 또는 상황에 맞게 설정 조정하기
 Unspecified:
   deu: Nicht spezifiziert
   eng: Unspecified
@@ -4310,6 +5013,8 @@ Unspecified:
   por: Não especificado
   swe: Ospecificerat
   pol: Nieokreślony
+  ukr: Не визначено
+  kor: 지정되지 않음
 Usage:
   deu: Verwendung
   eng: Usage
@@ -4322,6 +5027,8 @@ Usage:
   por: Utilização
   swe: Användning
   pol: Zastosowanie
+  ukr: Використання
+  kor: 사용법
 Use --bframes 0 to force all P/I low-latency encodes.:
   deu: --bframes 0 verwenden, um alle P/I-Codierungen mit niedriger Latenz zu erzwingen.
   eng: Use --bframes 0 to force all P/I low-latency encodes.
@@ -4334,6 +5041,9 @@ Use --bframes 0 to force all P/I low-latency encodes.:
   por: Use --bframes 0 para forçar todos os códigos P/I de baixa latência.
   swe: Använd --bframes 0 för att tvinga fram alla P/I-kodningar med låg latenstid.
   pol: Użyj --bframes 0 by wymusić wszystkie kodowania P/I o niskich opóźnieniach.
+  ukr: Використовуйте --bframes 0 для примусового використання усіх P/I кодувань з
+    низькою затримкою.
+  kor: 모든 P/I 저지연 인코딩을 강제하려면 --bframes 0을 사용합니다.
 Use B frames as references:
   deu: B-Frames als Referenz nutzen
   eng: Use B frames as references
@@ -4346,6 +5056,8 @@ Use B frames as references:
   por: Utilizar molduras B como referências
   swe: Använd B-ramar som referenser
   pol: Wykorzystanie ramek B jako punktów odniesienia
+  ukr: Використовуйте фрейми B як посилання
+  kor: B 프레임을 참조로 사용
 Use Sane Audio Selection (customizable in config file):
   deu: Nur sinnvolle Audioformate vorschlagen (anpassbar in der Konfigurationsdatei)
   eng: Use Sane Audio Selection (updatable in config file)
@@ -4358,6 +5070,8 @@ Use Sane Audio Selection (customizable in config file):
   por: Usar Selecção Áudio Sã (personalizável em ficheiro de configuração)
   swe: Använd Sane Audio Selection (anpassningsbart i konfigurationsfilen)
   pol: Użyj Sane Audio Selection (konfigurowalne w pliku konfiguracyjnym)
+  ukr: Використовуйте Sane Audio Selection (налаштовується у файлі конфігурації)
+  kor: 정상 오디오 선택 사용(구성 파일에서 사용자 지정 가능)
 Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   deu: Nützlich, wenn der Wunsch besteht, 0-Werte für max-cll und max-fall zu signalisieren.
   eng: Useful when there is a desire to signal 0 values for max-cll and max-fall.
@@ -4370,6 +5084,8 @@ Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   por: Útil quando há um desejo de assinalar valores 0 para max-cll e max-fall.
   swe: Användbart när det finns en önskan att signalera 0-värden för max-cll och max-fall.
   pol: Przydatne, gdy istnieje chęć zasygnalizowania wartości 0 dla max-cll i max-fall.
+  ukr: Корисно, коли є бажання сигналізувати про нульові значення для max-cll і max-fall.
+  kor: 최대-cll 및 최대-하락에 대해 0 값을 신호하고 싶을 때 유용합니다.
 Useful when you have the "Too many packets buffered for output stream" error:
   deu: Nützlich, wenn der Fehler "Too many packets buffered for output stream" auftritt
   eng: Useful when you have the "Too many packets buffered for output stream" error
@@ -4385,6 +5101,9 @@ Useful when you have the "Too many packets buffered for output stream" error:
   por: Útil quando se tem o erro "Demasiados pacotes protegidos para o fluxo de saída".
   swe: Användbart när du får felet "För många paket buffras för utdataströmmen".
   pol: Przydatne, gdy masz błąd "Zbyt wiele pakietów buforowanych dla strumienia wyjściowego".
+  ukr: Корисно, коли у вас виникає помилка "Занадто багато пакетів буферизовано для
+    вихідного потоку"
+  kor: '"출력 스트림에 버퍼링된 패킷이 너무 많습니다" 오류가 발생할 때 유용합니다.'
 Using 1 or 2 will increase encoding speed at the expense of having some impact on quality and rate control accuracy.:
   deu: Die Verwendung von 1 oder 2 erhöht die Kodiergeschwindigkeit auf Kosten einer
     gewissen Auswirkung auf die Qualität und die Genauigkeit der Ratenkontrolle.
@@ -4406,6 +5125,9 @@ Using 1 or 2 will increase encoding speed at the expense of having some impact o
     på kvaliteten och noggrannheten i hastighetsregleringen.
   pol: Użycie 1 lub 2 zwiększy szybkość kodowania kosztem pewnego wpływu na jakość
     i dokładność kontroli tempa.
+  ukr: Використання 1 або 2 збільшить швидкість кодування за рахунок певного впливу
+    на якість і точність контролю швидкості.
+  kor: 1 또는 2를 사용하면 인코딩 속도가 빨라지지만 품질 및 속도 제어 정확도에 약간의 영향을 줄 수 있습니다.
 Using a single frame thread gives a slight improvement in compression,:
   deu: Die Verwendung eines einzigen Frame-Threads führt zu einer leichten Verbesserung
     der Komprimierung,
@@ -4420,6 +5142,8 @@ Using a single frame thread gives a slight improvement in compression,:
   por: A utilização de um único fio de moldura dá uma ligeira melhoria na compressão,
   swe: Användning av en tråd med en enda ram ger en liten förbättring av komprimeringen,
   pol: Użycie pojedynczego wątku ramki daje niewielką poprawę kompresji,
+  ukr: Використання однієї каркасної нитки дає незначне покращення стиснення,
+  kor: 단일 프레임 스레드를 사용하면 압축률이 약간 향상됩니다,
 VBR Target:
   deu: VBR Zielrate
   eng: VBR Target
@@ -4432,6 +5156,8 @@ VBR Target:
   por: Alvo VBR
   swe: VBR-mål
   pol: VBR Cel
+  ukr: Ціль VBR
+  kor: VBR 타겟
 'Values: 0:none; 1:fast; 2:full(trellis) default':
   deu: 'Werte: 0:keine; 1:schnell; 2:voll(trellis) Standard'
   eng: 'Values: 0:none; 1:fast; 2:full(trellis) default'
@@ -4444,6 +5170,8 @@ VBR Target:
   por: 'Valores: 0:nenhum; 1:rápido; 2:cheio(trellis) por defeito'
   swe: 'Värden: 0:ingen; 1:snabb; 2:full(trellis) standard'
   pol: 'Wartości: 0:brak; 1:szybki; 2:pełny(trellis) domyślnie'
+  ukr: 'Значення: 0:none; 1:fast; 2:full(trellis) за замовчуванням'
+  kor: '값: 0:없음; 1:빠른; 2:전체(격자) 기본값'
 Variable:
   deu: Variabel
   eng: Variable
@@ -4456,6 +5184,8 @@ Variable:
   por: Variável
   swe: Variabel
   pol: Zmienna
+  ukr: Змінна
+  kor: 변수
 Various:
   deu: Verschiedene
   eng: Various
@@ -4468,6 +5198,8 @@ Various:
   por: Vários
   swe: Olika
   pol: Różne
+  ukr: Різне
+  kor: 다양한
 Vert + Hoz Flip:
   deu: Vert + Hoz spiegeln
   eng: Vert + Hoz Flip
@@ -4480,6 +5212,8 @@ Vert + Hoz Flip:
   por: Vert + Hoz Flip
   swe: Vert + Hoz Flip
   pol: Vert + Hoz Flip
+  ukr: Vert + Hoz Flip
+  kor: 수직 + 수평 플립
 Vertical Flip:
   deu: Vertikal spiegeln
   eng: Vertical Flip
@@ -4492,6 +5226,8 @@ Vertical Flip:
   por: Vertical Flip
   swe: Vertikal vändning
   pol: Przerzucanie pionowe
+  ukr: Вертикальний фліп
+  kor: 수직 플립
 Video Speed:
   deu: Video-Geschwindigkeit
   eng: Video Speed
@@ -4504,6 +5240,8 @@ Video Speed:
   por: Velocidade do vídeo
   swe: Videohastighet
   pol: Prędkość wideo
+  ukr: Швидкість відео
+  kor: 비디오 속도
 Video Track:
   deu: Video-Spur
   eng: Video Track
@@ -4516,6 +5254,8 @@ Video Track:
   por: Pista de vídeo
   swe: Videospår
   pol: Ścieżka wideo
+  ukr: Відео-доріжка
+  kor: 비디오 트랙
 View:
   deu: Ansicht
   eng: View
@@ -4528,6 +5268,8 @@ View:
   por: Ver
   swe: Visa
   pol: Zobacz
+  ukr: Вигляд
+  kor: 보기
 View Changes:
   deu: Änderungen anzeigen
   eng: View Changes
@@ -4540,6 +5282,8 @@ View Changes:
   por: Ver Alterações
   swe: Visa ändringar
   pol: Wyświetl zmiany
+  ukr: Переглянути зміни
+  kor: 변경 사항 보기
 View GUI Debug Logs:
   deu: GUI-Debug-Protokolle anzeigen
   eng: View GUI Debug Logs
@@ -4552,6 +5296,8 @@ View GUI Debug Logs:
   por: Ver Registos de Depuração GUI
   swe: Visa loggar för felsökning av GUI
   pol: Wyświetl dzienniki debugowania GUI
+  ukr: Перегляд журналів налагодження графічного інтерфейсу
+  kor: GUI 디버그 로그 보기
 'WARNING: This will take much longer and result in a larger file':
   deu: 'WARNUNG: Dies dauert viel länger und führt zu einer größeren Datei'
   eng: 'WARNING: This will take much longer and result in a larger file'
@@ -4566,6 +5312,9 @@ View GUI Debug Logs:
   por: 'AVISO: Isto levará muito mais tempo e resultará num ficheiro maior'
   swe: 'VARNING: Detta tar mycket längre tid och resulterar i en större fil.'
   pol: 'OSTRZEŻENIE: To zajmie znacznie więcej czasu i spowoduje, że plik będzie większy'
+  ukr: 'ПОПЕРЕДЖЕННЯ: Це займе набагато більше часу і призведе до збільшення розміру
+    файлу'
+  kor: '경고: 이렇게 하면 시간이 훨씬 더 오래 걸리고 파일 크기가 커집니다.'
 Wait for the current command to finish, and stop the next command from processing:
   deu: Warten, bis der aktuelle Befehl beendet ist, und die Verarbeitung des nächsten
     Befehls stoppen
@@ -4585,6 +5334,8 @@ Wait for the current command to finish, and stop the next command from processin
     kommando.
   pol: Poczekaj na zakończenie bieżącego polecenia i zatrzymaj przetwarzanie następnego
     polecenia.
+  ukr: Дочекайтеся завершення поточної команди і зупиніть обробку наступної команди
+  kor: 현재 명령이 완료될 때까지 기다렸다가 다음 명령의 처리를 중지합니다.
 'Warning: Audio will not be modified':
   deu: 'Warnung: Audio wird nicht verändert'
   eng: 'Warning: Audio will not be modified'
@@ -4597,6 +5348,8 @@ Wait for the current command to finish, and stop the next command from processin
   por: 'Advertência: O áudio não será modificado'
   swe: 'Varning: Ljudet kommer inte att ändras'
   pol: 'Ostrzeżenie: Dźwięk nie będzie modyfikowany'
+  ukr: 'Попередження: Звук не буде змінено'
+  kor: '경고: 오디오는 수정되지 않습니다.'
 Watch:
   deu: Beobachten
   eng: Watch
@@ -4609,6 +5362,8 @@ Watch:
   por: Ver
   swe: Titta på
   pol: Oglądaj
+  ukr: Дивись.
+  kor: 시계
 Width:
   deu: Breite
   eng: Width
@@ -4621,6 +5376,8 @@ Width:
   por: Largura
   swe: Bredd
   pol: Szerokość
+  ukr: Ширина
+  kor: 너비
 Width must be divisible by 2:
   deu: Breite muss durch 2 teilbar sein
   eng: Width must be divisible by 2
@@ -4633,6 +5390,8 @@ Width must be divisible by 2:
   por: A largura deve ser divisível por 2
   swe: Bredden måste vara delbar med 2
   pol: Szerokość musi być podzielna przez 2
+  ukr: Ширина повинна бути кратною 2
+  kor: 너비는 2로 나눌 수 있어야 합니다.
 Width must be divisible by 2 - Source width:
   deu: Breite muss durch 2 teilbar sein - Breite der Quelle
   eng: Width must be divisible by 2 - Source width
@@ -4645,6 +5404,8 @@ Width must be divisible by 2 - Source width:
   por: A largura deve ser divisível por 2 - Largura da fonte
   swe: Bredden måste vara delbar med 2 - Källans bredd
   pol: Szerokość musi być podzielna przez 2 - Szerokość źródła
+  ukr: Ширина повинна ділитися на 2 - ширина джерела
+  kor: 너비는 2로 나눌 수 있어야 합니다 - 소스 너비
 Will fix first subtitle track to not be default:
   deu: Hiermit wird die erste Untertitelspur nicht mehr als Standard gesetzt
   eng: Will fix first subtitle track to not be default
@@ -4657,6 +5418,8 @@ Will fix first subtitle track to not be default:
   por: Irá corrigir a primeira faixa de legendas para não ser por defeito
   swe: Kommer att rätta till att det första undertextspåret inte är standard
   pol: Poprawi pierwszą ścieżkę napisów, aby nie była domyślna
+  ukr: Виправлено, щоб перша доріжка субтитрів не була за замовчуванням
+  kor: 첫 번째 자막 트랙이 기본값이 아닌 것으로 수정됩니다.
 With b-adapt 0, the GOP structure is fixed based on the values of --keyint and --bframes.:
   deu: Bei b-adapt 0 wird die GOP-Struktur anhand der Werte von --keyint und --bframes
     festgelegt.
@@ -4677,6 +5440,8 @@ With b-adapt 0, the GOP structure is fixed based on the values of --keyint and -
     --bframes.
   pol: Przy b-adapt 0, struktura GOP jest ustalana na podstawie wartości --keyint
     i --bframes.
+  ukr: При b-adapt 0 структура GOP фіксується на основі значень --keyint та --bframes.
+  kor: b-adapt 0을 사용하면 --keyint 및 --bframes의 값을 기반으로 GOP 구조가 고정됩니다.
 With b-adapt 1 a light lookahead is used to choose B frame placement.:
   deu: Mit b-adapt 1 wird ein wenig vorausgeschaut, um die B-Frame-Platzierung zu
     wählen.
@@ -4696,6 +5461,8 @@ With b-adapt 1 a light lookahead is used to choose B frame placement.:
   swe: Med b-adapt 1 används en lätt framåtblick för att välja B-ramens placering.
   pol: W przypadku b-adapt 1 do wyboru położenia ramki B wykorzystywana jest lekka
     perspektywa czasowa.
+  ukr: З b-adapt 1 використовується світлий орієнтир для вибору розміщення кадру B.
+  kor: b-adapt 1을 사용하면 라이트 룩헤드를 사용하여 B 프레임 배치를 선택할 수 있습니다.
 With b-adapt 2 (trellis) a viterbi B path selection is performed:
   deu: Bei b-adapt 2 (Trellis) wird eine Viterbi-B-Pfadauswahl durchgeführt
   eng: With b-adapt 2 (trellis) a viterbi B path selection is performed
@@ -4711,6 +5478,9 @@ With b-adapt 2 (trellis) a viterbi B path selection is performed:
   swe: Med b-adapt 2 (trellis) utförs ett viterbi B-vägval.
   pol: W przypadku b-adapt 2 (trellis) przeprowadzany jest wybór ścieżki B metodą
     viterbi
+  ukr: За допомогою b-adapt 2 (решітка) виконується вибір шляху за критерієм вітербі
+    B
+  kor: b-adapt 2(트 렐리 스)를 사용하면 비터비 B 경로 선택이 수행됩니다.
 Work Directory:
   deu: Arbeitsverzeichnis
   eng: Work Directory
@@ -4723,6 +5493,8 @@ Work Directory:
   por: Directório de Trabalho
   swe: Arbetskatalog
   pol: Katalog prac
+  ukr: Робочий каталог
+  kor: 업무 디렉토리
 Yes:
   deu: Ja
   eng: Yes
@@ -4735,6 +5507,8 @@ Yes:
   por: Sim
   swe: Ja
   pol: Tak
+  ukr: Так.
+  kor: 예
 You are using the latest version of FastFlix:
   deu: Die aktuellste Version von FastFlix wird verwendet
   eng: You are using the latest version of FastFlix
@@ -4747,6 +5521,8 @@ You are using the latest version of FastFlix:
   por: Está a utilizar a última versão de FastFlix
   swe: Du använder den senaste versionen av FastFlix
   pol: Używasz najnowszej wersji FastFlix.
+  ukr: Ви використовуєте останню версію FastFlix
+  kor: 최신 버전의 FastFlix를 사용 중입니다.
 all conversions complete:
   deu: alle Konvertierungen abgeschlossen
   eng: all conversions complete
@@ -4759,6 +5535,8 @@ all conversions complete:
   por: todas as conversões completas
   swe: Alla konverteringar är avslutade.
   pol: wszystkie przebudowy zakończone
+  ukr: всі перетворення завершені
+  kor: 모든 전환 완료
 already exists:
   deu: bereits vorhanden
   eng: already exists
@@ -4771,6 +5549,8 @@ already exists:
   por: já existe
   swe: finns redan.
   pol: już istnieje
+  ukr: вже існує
+  kor: 이미 존재
 and the amount of work performed by the full trellis version of --b-adapt lookahead.:
   deu: und der Arbeitsaufwand, der bei --b-adapt 2 (full trellis) durchgeführt wird.
   eng: and the amount of work performed by the full trellis version of --b-adapt lookahead.
@@ -4787,6 +5567,8 @@ and the amount of work performed by the full trellis version of --b-adapt lookah
   swe: och den mängd arbete som utförs av den fullständiga trellisversionen av --b-adapt
     lookahead.
   pol: oraz ilość pracy wykonanej przez wersję full trellis z --b-adapt lookahead.
+  ukr: і обсяг роботи, який виконує повна решітчаста версія --b-adapt lookahead.
+  kor: 의 전체 트 렐리 스 버전이 수행하는 작업량과 --b- 적응 룩어헤드가 수행하는 작업량입니다.
 and you want keyframes to be random access points.:
   deu: und es ist gewünscht, dass die Keyframes zufällige Zugriffspunkte sind.
   eng: and you want keyframes to be random access points.
@@ -4799,6 +5581,8 @@ and you want keyframes to be random access points.:
   por: e pretende que os quadros-chave sejam pontos de acesso aleatórios.
   swe: och du vill att keyframes ska vara slumpmässiga åtkomstpunkter.
   pol: i chcesz, aby klatki kluczowe były losowymi punktami dostępu.
+  ukr: і ви хочете, щоб ключові кадри були випадковими точками доступу.
+  kor: 키프레임이 임의의 액세스 포인트가 되기를 원합니다.
 'aq-mode: Adaptive Quantization operating mode.':
   deu: 'aq-mode: Betriebsart "Adaptive Quantisierung".'
   eng: 'aq-mode: Adaptive Quantization operating mode.'
@@ -4811,6 +5595,8 @@ and you want keyframes to be random access points.:
   por: 'aq-mode: Modo de operação de quantificação adaptativa.'
   swe: 'aq-läge: Adaptiv kvantisering.'
   pol: 'aq-mode: Tryb pracy Adaptive Quantization.'
+  ukr: 'aq-режим: Режим роботи адаптивного квантування.'
+  kor: 'aq-mode: 적응형 양자화 작동 모드입니다.'
 are mere suggestions!:
   deu: sind lediglich Vorschläge!
   eng: are mere suggestions!
@@ -4823,6 +5609,8 @@ are mere suggestions!:
   por: são meras sugestões!
   swe: är bara förslag!
   pol: to tylko sugestie!
+  ukr: є лише припущеннями!
+  kor: 는 단순한 제안일 뿐입니다!
 attachment tracks found:
   deu: Dateianhang-Spuren gefunden
   eng: attachment tracks found
@@ -4835,6 +5623,8 @@ attachment tracks found:
   por: rastos de anexos encontrados
   swe: Spår för fastsättning hittades
   pol: znaleziono ślady mocowania
+  ukr: знайдено сліди кріплення
+  kor: 첨부 파일 트랙이 발견됨
 audio tracks found:
   deu: Audiospuren gefunden
   eng: audio tracks found
@@ -4847,6 +5637,8 @@ audio tracks found:
   por: faixas de áudio encontradas
   swe: Ljudspår som hittats
   pol: znalezione ścieżki dźwiękowe
+  ukr: знайдено аудіодоріжок
+  kor: 오디오 트랙이 발견됨
 b-adapt:
   deu: b-adapt
   eng: b-adapt
@@ -4859,6 +5651,8 @@ b-adapt:
   por: b-adapt
   swe: b-adapt
   pol: b-adapt
+  ukr: b-адаптуватися
+  kor: b-adapt
 'b-adapt: Set the level of effort in determining B frame placement.':
   deu: 'b-adapt: Festlegen des Grades des Aufwands bei der Bestimmung der B-Frame-Platzierung.'
   eng: 'b-adapt: Set the level of effort in determining B frame placement.'
@@ -4876,6 +5670,8 @@ b-adapt:
   swe: 'b-anpassad: Ange nivån på ansträngningen när det gäller att bestämma placeringen
     av B-ramar.'
   pol: 'b-adapt: Ustaw poziom wysiłku przy określaniu umiejscowienia ramki B.'
+  ukr: 'b-adapt: Встановити рівень зусиль при визначенні розміщення B-фреймів.'
+  kor: 'b-adapt: B 프레임 배치를 결정할 때 노력 수준을 설정합니다.'
 bad micro value:
   deu: schlechter Micro-Wert
   eng: bad micro value
@@ -4888,6 +5684,8 @@ bad micro value:
   por: mau microvalor
   swe: dåligt mikrovärde
   pol: zła wartość mikro
+  ukr: погане мікрозначення
+  kor: 잘못된 마이크로 값
 best is recommended if you have lots of time and want the best compression efficiency.:
   deu: best wird empfohlen, wenn viel Zeit zur Verfügung steht und die beste Komprimierungseffizienz
     gewünscht ist.
@@ -4908,6 +5706,9 @@ best is recommended if you have lots of time and want the best compression effic
   swe: rekommenderas om du har mycket tid och vill ha bästa möjliga kompressionseffektivitet.
   pol: najlepszy jest zalecany, jeśli masz dużo czasu i chcesz uzyskać najlepszą wydajność
     kompresji.
+  ukr: best рекомендується, якщо у вас багато часу і ви хочете отримати найкращу ефективність
+    стиснення.
+  kor: 는 시간이 많고 최상의 압축 효율을 원하는 경우 권장됩니다.
 bframes:
   deu: bframes
   eng: bframes
@@ -4920,6 +5721,8 @@ bframes:
   por: quadros
   swe: bframes
   pol: bframes
+  ukr: bframes
+  kor: bframes
 'bframes: Maximum number of consecutive b-frames. ':
   deu: 'bframes: Maximale Anzahl aufeinanderfolgender b-Frames. '
   eng: 'bframes: Maximum number of consecutive b-frames. '
@@ -4932,6 +5735,8 @@ bframes:
   por: 'quadros: Número máximo de b-frames consecutivos.'
   swe: 'bframes: Maximalt antal på varandra följande b-frames.'
   pol: 'bframes: Maksymalna liczba następujących po sobie ramek b.'
+  ukr: 'b-кадрів: Максимальна кількість послідовних b-кадрів.'
+  kor: '비프레임: 최대 연속 B-프레임 수입니다.'
 but it has severe performance implications.:
   deu: aber es hat schwerwiegende Auswirkungen auf die Leistung.
   eng: but it has severe performance implications.
@@ -4944,6 +5749,8 @@ but it has severe performance implications.:
   por: mas tem graves implicações em termos de desempenho.
   swe: men det har allvarliga konsekvenser för prestandan.
   pol: ale ma to poważne implikacje dla wydajności.
+  ukr: але це має серйозні наслідки для продуктивності.
+  kor: 하지만 성능에 심각한 영향을 미칩니다.
 but over a period of multiple frames instead of a single keyframe.:
   deu: aber über eine Dauer von mehreren Frames anstatt eines einzelnen Keyframes.
   eng: but over a period of multiple frames instead of a single keyframe.
@@ -4956,6 +5763,8 @@ but over a period of multiple frames instead of a single keyframe.:
   por: mas durante um período de múltiplos quadros em vez de um único quadro-chave.
   swe: men över en period av flera ramar i stället för en enda nyckelram.
   pol: ale w okresie wielu klatek zamiast pojedynczej klatki kluczowej.
+  ukr: але протягом періоду з декількох кадрів, а не одного ключового кадру.
+  kor: 하지만 단일 키프레임이 아닌 여러 프레임에 걸쳐 이루어집니다.
 cannot modify generated settings:
   deu: kann die generierten Einstellungen nicht ändern
   eng: cannot modify generated settings
@@ -4968,6 +5777,8 @@ cannot modify generated settings:
   por: não pode modificar as configurações geradas
   swe: kan inte ändra genererade inställningar
   pol: nie można modyfikować wygenerowanych ustawień
+  ukr: не може змінювати згенеровані налаштування
+  kor: 생성된 설정을 수정할 수 없습니다.
 channels:
   deu: Kanäle
   eng: channels
@@ -4980,6 +5791,8 @@ channels:
   por: canais
   swe: kanaler
   pol: kanały
+  ukr: канали
+  kor: 채널
 codec:
   deu: Codec
   eng: codec
@@ -4992,6 +5805,8 @@ codec:
   por: codec
   swe: codec
   pol: kodek
+  ukr: кодек
+  kor: 코덱
 compression level:
   deu: Komprimierungsstufe
   eng: compression level
@@ -5004,6 +5819,8 @@ compression level:
   por: nível de compressão
   swe: komprimeringsnivå
   pol: poziom kompresji
+  ukr: рівень стиснення
+  kor: 압축 수준
 data tracks found:
   deu: gefundene Datenspuren
   eng: data tracks found
@@ -5016,6 +5833,8 @@ data tracks found:
   por: pistas de dados encontradas
   swe: hittade dataspår
   pol: znalezione ścieżki danych
+  ukr: знайдено доріжки даних
+  kor: 데이터 트랙 발견
 'dhdr10-opt: Reduces SEI overhead':
   deu: 'dhdr10-opt: Reduziert SEI-Overhead'
   eng: 'dhdr10-opt: Reduces SEI overhead'
@@ -5028,6 +5847,8 @@ data tracks found:
   por: 'dhdr10-opt: Reduz as despesas gerais do SEI'
   swe: 'dhdr10-opt: Minskar SEI:s omkostnader'
   pol: 'dhdr10-opt: Redukuje koszty ogólne SEI'
+  ukr: 'dhdr10-opt: Зменшує накладні витрати SEI'
+  kor: 'DHDR10-opt: SEI 오버헤드 감소'
 'examples: level-idc=4.1:rc-lookahead=10':
   deu: 'Beispiele: level-idc=4.1:rc-lookahead=10'
   eng: 'examples: level-idc=4.1:rc-lookahead=10'
@@ -5040,6 +5861,8 @@ data tracks found:
   por: 'exemplos: level-idc=4.1:rc-lookahead=10'
   swe: 'exempel: level-idc=4.1:rc-lookahead=10'
   pol: 'przykłady: level-idc=4.1:rc-lookahead=10'
+  ukr: 'Приклади: level-idc=4.1:rc-lookahead=10'
+  kor: '예: level-idc=4.1:rc-lookahead=10'
 'frame-threads: Number of concurrently encoded frames.':
   deu: 'Frame-Threads: Anzahl der gleichzeitig kodierten Frames.'
   eng: 'frame-threads: Number of concurrently encoded frames.'
@@ -5052,6 +5875,8 @@ data tracks found:
   por: 'frame-threads: Número de quadros codificados em simultâneo.'
   swe: 'ramtrådar: Antal samtidigt kodade ramar.'
   pol: 'frame-threads: Liczba jednocześnie kodowanych ramek.'
+  ukr: 'frame-threads: Кількість одночасно закодованих кадрів.'
+  kor: '프레임 스레드: 동시에 인코딩되는 프레임 수입니다.'
 good is the default and recommended for most applications:
   deu: good ist die Standardeinstellung und wird für die meisten Anwendungszwecke
     empfohlen
@@ -5065,6 +5890,8 @@ good is the default and recommended for most applications:
   por: bom é o padrão e recomendado para a maioria das aplicações
   swe: good är standard och rekommenderas för de flesta tillämpningar.
   pol: dobra jest domyślna i zalecana dla większości zastosowań
+  ukr: good - за замовчуванням і рекомендується для більшості застосунків
+  kor: 좋음이 기본값이며 대부분의 애플리케이션에 권장됩니다.
 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.':
   deu: 'hdr10-opt: Aktiviert die Luma- und Chroma-QP-Optimierung auf Blockebene für
     HDR10-Inhalte.'
@@ -5083,6 +5910,9 @@ good is the default and recommended for most applications:
     para conteúdo HDR10.'
   swe: 'hdr10-opt: Aktivera QP-optimering på blocknivå för luma och kroma för HDR10-innehåll.'
   pol: 'hdr10-opt: Włącza optymalizację QP na poziomie bloku dla zawartości HDR10.'
+  ukr: 'hdr10-opt: Увімкнути оптимізацію QP люмінесценції та кольоровості на рівні
+    блоків для контенту з роздільною здатністю HDR10.'
+  kor: 'HDR10-opt: HDR10 콘텐츠에 대해 블록 레벨 루마 및 크로마 QP 최적화를 활성화합니다.'
 'hdr10: Force signaling of HDR10 parameters in SEI packets.':
   deu: 'hdr10: Erzwingt die Signalisierung von HDR10-Parametern in SEI-Paketen.'
   eng: 'hdr10: Force signaling of HDR10 parameters in SEI packets.'
@@ -5095,6 +5925,8 @@ good is the default and recommended for most applications:
   por: 'hdr10: Forçar a sinalização dos parâmetros HDR10 em pacotes SEI.'
   swe: 'hdr10: Påtvinga signalering av HDR10-parametrar i SEI-paket.'
   pol: 'hdr10: Wymuszenie sygnalizacji parametrów HDR10 w pakietach SEI.'
+  ukr: 'hdr10: Примусова сигналізація параметрів HDR10 у пакетах SEI.'
+  kor: 'HDR10: SEI 패킷에서 HDR10 파라미터를 강제 신호화합니다.'
 hq - High Quality, ll - Low Latency, ull - Ultra Low Latency:
   deu: hq - Hohe Qualität, ll - niedrige Latenz, ull - extrem niedrige Latenz
   eng: hq - High Quality, ll - Low Latency, ull - Ultra Low Latency
@@ -5107,6 +5939,8 @@ hq - High Quality, ll - Low Latency, ull - Ultra Low Latency:
   por: hq - Alta Qualidade, ll - Baixa Latência, ull - Latência Ultra Baixa
   swe: hq - Hög kvalitet, ll - Låg latenstid, ull - Ultralåg latenstid
   pol: hq - High Quality, ll - Low Latency, ull - Ultra Low Latency
+  ukr: hq - Висока якість, ll - Низька затримка, ull - Наднизька затримка
+  kor: hq - 고품질, ll - 저지연, ull - 초저지연
 installer:
   deu: Installationsprogramm
   eng: installer
@@ -5119,6 +5953,8 @@ installer:
   por: instalador
   swe: installatör
   pol: instalator
+  ukr: інсталятор
+  kor: 설치 관리자
 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.':
   deu: 'intra-refresh: Aktiviert Periodic Intra Refresh(PIR) anstelle der Keyframe-Einblendung.'
   eng: 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.'
@@ -5138,6 +5974,9 @@ installer:
     att infoga nyckelramar.'
   pol: 'intra-refresh: Włącza Periodic Intra Refresh(PIR) zamiast wstawiania klatek
     kluczowych.'
+  ukr: 'внутрішнє оновлення: Увімкнути періодичне внутрішнє оновлення (PIR) замість
+    вставки ключових кадрів.'
+  kor: '인트라-리프레시: 키프레임 삽입 대신 주기적 인트라 새로 고침(PIR)을 활성화합니다.'
 is a default profile and will not be removed:
   deu: ist ein Standardprofil und wird nicht entfernt
   eng: is a default profile and will not be removed
@@ -5150,6 +5989,8 @@ is a default profile and will not be removed:
   por: é um perfil padrão e não será removido
   swe: är en standardprofil och kommer inte att tas bort
   pol: jest profilem domyślnym i nie zostanie usunięty
+  ukr: є профілем за замовчуванням і не буде видалений
+  kor: 은 기본 프로필이며 제거되지 않습니다.
 is extremely source dependant:
   deu: ist extrem abhängig von der Quelle
   eng: is extremely source dependant
@@ -5162,6 +6003,8 @@ is extremely source dependant:
   por: é extremamente dependente da fonte
   swe: är extremt källberoende.
   pol: jest bardzo zależny od źródła
+  ukr: надзвичайно залежний від джерела
+  kor: 는 소스 종속성이 매우 높습니다.
 it will generally just increase memory use.:
   deu: erhöht im Allgemeinen nur den Speicherverbrauch.
   eng: it will generally just increase memory use.
@@ -5174,6 +6017,8 @@ it will generally just increase memory use.:
   por: geralmente só irá aumentar o uso de memória.
   swe: Det kommer i allmänhet bara att öka minnesanvändningen.
   pol: generalnie zwiększy to tylko użycie pamięci.
+  ukr: це, як правило, просто збільшить використання пам'яті.
+  kor: 를 사용하면 일반적으로 메모리 사용량만 증가합니다.
 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)':
   deu: 'keyint: Aktiviert Intra-Encoding durch Erzwingen von Keyframes alle 1 Sekunde
     (Blu-ray-Spezifikation)'
@@ -5196,6 +6041,9 @@ it will generally just increase memory use.:
     (Blu-ray-specifikation)'
   pol: 'keyint: Włącz Intra-Encoding przez wymuszanie klatek kluczowych co 1 sekundę
     (specyfikacja Blu-ray)'
+  ukr: 'keyint: Увімкнути внутрішнє кодування, примусово створюючи ключові кадри кожну
+    1 секунду (специфікація Blu-ray)'
+  kor: 'keyint: 1초마다 키프레임을 강제로 인코딩하여 인트라 인코딩 활성화(블루레이 사양)'
 lossless:
   deu: verlustfrei
   eng: lossless
@@ -5208,6 +6056,8 @@ lossless:
   por: sem perdas
   swe: förlustfri
   pol: bezstratna
+  ukr: без втрат
+  kor: 무손실
 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output stream" error':
   deu: 'max_muxing_queue_size: Erhöhen, um den Fehler "Too many packets buffered for
     output stream" zu beheben'
@@ -5230,6 +6080,9 @@ lossless:
     för utdataströmmen".'
   pol: 'max_muxing_queue_size: Podnieś, aby naprawić błąd "Zbyt wiele pakietów buforowanych
     dla strumienia wyjściowego"'
+  ukr: 'max_muxing_queue_size: Підвищити для виправлення помилки "Занадто багато пакетів
+    буферизовано для вихідного потоку"'
+  kor: 'MAX_MUXING_QUEUE_SIZE: "출력 스트림에 버퍼링된 패킷이 너무 많습니다" 오류를 수정하기 위해 증가'
 none:
   deu: keine
   eng: none
@@ -5242,6 +6095,8 @@ none:
   por: nenhuma
   swe: ingen
   pol: brak
+  ukr: ні
+  kor: 없음
 of:
   deu: von
   eng: of
@@ -5254,6 +6109,8 @@ of:
   por: de
   swe: på
   pol: z
+  ukr: з
+  kor: 의
 out file is already in queue:
   deu: Ausgabedatei ist bereits in der Warteschlange
   eng: out file is already in queue
@@ -5266,6 +6123,8 @@ out file is already in queue:
   por: O ficheiro já está em fila de espera
   swe: filen out finns redan i kön
   pol: plik out jest już w kolejce
+  ukr: out файл вже стоїть у черзі
+  kor: 출력 파일이 이미 대기열에 있습니다.
 portable:
   deu: portabel
   eng: portable
@@ -5278,6 +6137,8 @@ portable:
   por: portátil
   swe: bärbar
   pol: przenośny
+  ukr: портативний
+  kor: 휴대용
 preset:
   deu: Voreinstellung
   eng: preset
@@ -5290,6 +6151,8 @@ preset:
   por: pré-definido
   swe: förinställd
   pol: wstępnie ustawiony
+  ukr: попередньо встановлений
+  kor: 사전 설정
 'preset: The slower the preset, the better the compression and quality':
   deu: 'Voreinstellung: Je langsamer die Voreinstellung, desto besser die Komprimierung
     und Qualität'
@@ -5307,6 +6170,8 @@ preset:
   swe: 'förinställd: Ju långsammare förinställning, desto bättre komprimering och
     kvalitet.'
   pol: 'ustawienie wstępne: Im wolniejszy preset, tym lepsza kompresja i jakość.'
+  ukr: 'пресет: Чим повільніше попереднє налаштування, тим краще стиснення та якість'
+  kor: '프리셋: 프리셋: 프리셋이 느릴수록 압축 및 품질이 향상됩니다.'
 preventing large-scale patterns such as color banding in images.:
   deu: verhindert großflächige Muster wie z. B. Color Banding in Bildern.
   eng: preventing large-scale patterns such as color banding in images.
@@ -5320,6 +6185,8 @@ preventing large-scale patterns such as color banding in images.:
   swe: förhindra storskaliga mönster, t.ex. färgband i bilder.
   pol: zapobieganie powstawaniu wielkoskalowych wzorów, takich jak kolorowy banding
     na obrazach.
+  ukr: запобігання великомасштабним патернам, таким як кольорові смуги на зображеннях.
+  kor: 이미지의 컬러 밴딩과 같은 대규모 패턴을 방지합니다.
 profile:
   deu: Profil
   eng: profile
@@ -5332,6 +6199,8 @@ profile:
   por: perfil
   swe: profil
   pol: profil
+  ukr: профіль
+  kor: 프로필
 'profile: Enforce an encode profile':
   deu: 'Profil: Erzwingt ein Kodierungsprofil'
   eng: 'profile: Enforce an encode profile'
@@ -5344,6 +6213,8 @@ profile:
   por: 'perfil: Forçar um perfil de codificação'
   swe: 'profil: Genomdriva en kodningsprofil'
   pol: 'profil: Wymuszenie profilu kodowania'
+  ukr: 'профіль: Застосувати профіль кодування'
+  kor: '프로필을 설정합니다: 인코딩 프로필 적용'
 'profile: VP9 coding profile - must match bit depth':
   deu: 'Profil: VP9-Kodierungsprofil - muss mit der Bittiefe übereinstimmen'
   eng: 'profile: VP9 coding profile - must match bit depth'
@@ -5358,6 +6229,8 @@ profile:
   por: 'perfil: perfil de codificação VP9 - deve corresponder à profundidade do bit'
   swe: 'profil: VP9-kodningsprofil - måste matcha bitdjupet'
   pol: 'profil: Profil kodowania VP9 - musi być zgodny z głębią bitową'
+  ukr: 'профіль: Профіль кодування VP9 - має відповідати бітовій глибині'
+  kor: '프로파일: VP9 코딩 프로필 - 비트 심도와 일치해야 함'
 python-box:
   deu: python-box
   eng: python-box
@@ -5370,6 +6243,8 @@ python-box:
   por: python-box
   swe: python-box
   pol: python-box
+  ukr: python-box
+  kor: 파이썬 박스
 rav1e github:
   deu: rav1e github
   eng: rav1e github
@@ -5382,6 +6257,8 @@ rav1e github:
   por: rav1e github
   swe: rav1e github
   pol: rav1e github
+  ukr: rav1e github
+  kor: rav1e 깃허브
 'repeat-headers: If enabled, x265 will emit VPS, SPS, and PPS headers with every keyframe.':
   deu: 'Kopfzeilen wiederholen: Wenn aktiviert, gibt x265 mit jedem Keyframe VPS-,
     SPS- und PPS-Header aus.'
@@ -5403,6 +6280,9 @@ rav1e github:
     och PPS-rubriker med varje nyckelbild.'
   pol: 'repeat-headers: Jeśli włączone, x265 będzie emitować nagłówki VPS, SPS i PPS
     z każdą klatką kluczową.'
+  ukr: 'repeat-headers: Якщо увімкнено, x265 видаватиме заголовки VPS, SPS та PPS
+    з кожним ключовим кадром.'
+  kor: '반복 헤더: 활성화하면 x265는 모든 키프레임에 VPS, SPS, PPS 헤더를 전송합니다.'
 since the entire reference frames are always available for motion compensation,:
   deu: da immer die gesamten Referenzframes für die Bewegungskompensation zur Verfügung
     stehen,
@@ -5420,6 +6300,8 @@ since the entire reference frames are always available for motion compensation,:
     de movimento,
   swe: eftersom hela referensramar alltid är tillgängliga för rörelsekompensation,
   pol: ponieważ całe ramki odniesienia są zawsze dostępne dla kompensacji ruchu,
+  ukr: оскільки для компенсації руху завжди доступні всі системи відліку,
+  kor: 전체 기준 프레임을 항상 모션 보정에 사용할 수 있기 때문입니다,
 starting next command:
   deu: nächsten Befehl starten
   eng: starting next command
@@ -5432,6 +6314,8 @@ starting next command:
   por: início do próximo comando
   swe: startar nästa kommando
   pol: uruchamianie następnego polecenia
+  ukr: запуск наступної команди
+  kor: 다음 명령 시작
 subtitle tracks found:
   deu: Untertitelspuren gefunden
   eng: subtitle tracks found
@@ -5444,6 +6328,8 @@ subtitle tracks found:
   por: legendas encontradas
   swe: undertextspår hittades
   pol: znaleziono ścieżki z napisami
+  ukr: знайдено доріжки субтитрів
+  kor: 자막 트랙이 발견됨
 that move across the video from one side to the other and thereby refresh the image:
   deu: die sich von einer Seite zur anderen durch das Video bewegen und dabei das
     Bild aktualisieren
@@ -5462,6 +6348,8 @@ that move across the video from one side to the other and thereby refresh the im
     bilden.
   pol: które przesuwają się po obrazie z jednej strony na drugą i w ten sposób odświeżają
     obraz
+  ukr: які рухаються по відео з одного боку в інший і таким чином оновлюють зображення
+  kor: 비디오를 가로질러 한 쪽에서 다른 쪽으로 이동하여 이미지를 새로 고칩니다.
 the resolution-to-:
   deu: die Auflösung zu
   eng: the resolution-to-
@@ -5474,6 +6362,8 @@ the resolution-to-:
   por: a resolução de
   swe: resolutionen-till
   pol: rezolucja-
+  ukr: резолюція до
+  kor: 해상도 대비
 to Blu-ray standards to burn to a physical disk:
   deu: in Blu-ray-Standards zum Brennen auf einen physischen Datenträger
   eng: to Blu-ray standards to burn to a physical disk
@@ -5486,6 +6376,8 @@ to Blu-ray standards to burn to a physical disk:
   por: para os padrões Blu-ray para queimar num disco físico
   swe: till Blu-ray-standarder för att bränna till en fysisk disk
   pol: do standardów Blu-ray w celu wypalenia na dysku fizycznym
+  ukr: до стандартів Blu-ray для запису на фізичний диск
+  kor: 물리적 디스크에 레코딩하기 위해 블루레이 표준으로 변환합니다.
 'tune: Tune the settings for a particular type of source or situation':
   deu: 'Feineinstellung: Die Einstellungen auf eine bestimmte Art von Quelle oder
     Situation abstimmen'
@@ -5500,6 +6392,8 @@ to Blu-ray standards to burn to a physical disk:
   por: 'melodia: Sintonizar as definições para um determinado tipo de fonte ou situação'
   swe: 'melodi: Justera inställningarna för en viss typ av källa eller situation.'
   pol: 'dostroić: Dostosuj ustawienia do określonego typu źródła lub sytuacji.'
+  ukr: 'налаштувати: Налаштувати параметри для певного типу джерела або ситуації'
+  kor: '조정합니다: 특정 유형의 소스 또는 상황에 맞게 설정을 조정합니다.'
 video tracks found:
   deu: Videospuren gefunden
   eng: video tracks found
@@ -5512,6 +6406,8 @@ video tracks found:
   por: faixas de vídeo encontradas
   swe: videospår hittades
   pol: znaleziono ścieżki wideo
+  ukr: знайдено відео-доріжки
+  kor: 비디오 트랙이 발견됨
 vsync:
   deu: vsync
   eng: vsync
@@ -5524,6 +6420,8 @@ vsync:
   por: vsync
   swe: vsync
   pol: vsync
+  ukr: vsync
+  kor: vsync
 There are no videos to start converting:
   deu: Es sind keine Videos vorhanden, die konvertiert werden können
   eng: There are no videos to start converting
@@ -5536,6 +6434,8 @@ There are no videos to start converting:
   por: Não há vídeos para começar a converter
   swe: Det finns inga videor att börja konvertera
   pol: Nie ma żadnych filmów do rozpoczęcia konwersji
+  ukr: Немає відео, щоб почати конвертацію
+  kor: 변환을 시작할 동영상이 없습니다.
 No crop, scale, rotation,flip nor any other filters will be applied.:
   deu: Es werden weder Beschneiden, Skalieren, Drehen, Spiegeln noch andere Filter
     angewendet.
@@ -5553,6 +6453,8 @@ No crop, scale, rotation,flip nor any other filters will be applied.:
     tillämpas.
   pol: Nie będą stosowane żadne filtry typu crop, scale, rotation, flip ani żadne
     inne.
+  ukr: Обрізання, масштабування, обертання, перевертання та інші фільтри не застосовуються.
+  kor: 자르기, 크기 조정, 회전, 뒤집기 또는 기타 필터가 적용되지 않습니다.
 Are you sure you want to stop the current encode?:
   deu: Sind Sie sicher, dass Sie die aktuelle Kodierung stoppen wollen?
   eng: Are you sure you want to stop the current encode?
@@ -5565,6 +6467,8 @@ Are you sure you want to stop the current encode?:
   por: Tem a certeza de que quer parar o código actual?
   swe: Är du säker på att du vill stoppa den pågående kodningen?
   pol: Czy na pewno chcesz zatrzymać bieżące kodowanie?
+  ukr: Ви впевнені, що хочете зупинити поточне кодування?
+  kor: 현재 인코딩을 중지하시겠습니까?
 Confirm Stop Encode:
   deu: Bestätigen Sie Stop Encode
   eng: Confirm Stop Encode
@@ -5577,6 +6481,8 @@ Confirm Stop Encode:
   por: Confirmar Codificação de paragem
   swe: Bekräfta Stop Encode
   pol: Potwierdź Zatrzymaj Kodowanie
+  ukr: Підтвердити зупинку кодування
+  kor: 인코딩 중지 확인
 Use Sane Audio Selection (updatable in config file):
   deu: Audioauswahl verwenden (aktualisierbar in der Konfigurationsdatei)
   eng: Use Sane Audio Selection (updatable in config file)
@@ -5589,6 +6495,8 @@ Use Sane Audio Selection (updatable in config file):
   por: Use Sane Audio Selection (actualizável em ficheiro de configuração)
   swe: Använd Sane Audio Selection (kan uppdateras i konfigurationsfilen)
   pol: Użyj wyboru Sane Audio (aktualizowane w pliku konfiguracyjnym)
+  ukr: Використовуйте Sane Audio Selection (оновлюється у файлі конфігурації)
+  kor: 정상 오디오 선택 사용(구성 파일에서 업데이트 가능)
 HDR10+ Parser:
   deu: HDR10+ Parser
   eng: HDR10+ Parser
@@ -5601,6 +6509,8 @@ HDR10+ Parser:
   por: HDR10+ Parser
   swe: HDR10+ Parser
   pol: Parser HDR10+
+  ukr: Парсер HDR10+
+  kor: HDR10+ 파서
 Not all items in the queue were completed:
   deu: Nicht alle Elemente in der Warteschlange wurden abgeschlossen
   eng: Not all items in the queue were completed
@@ -5613,6 +6523,8 @@ Not all items in the queue were completed:
   por: Nem todos os itens da fila foram completados
   swe: Alla objekt i kön har inte slutförts
   pol: Nie wszystkie pozycje w kolejce zostały ukończone
+  ukr: Не всі пункти в черзі були завершені
+  kor: 대기열의 모든 항목이 완료된 것은 아닙니다.
 Would you like to keep them in the queue?:
   deu: Möchten Sie sie in der Warteschlange behalten?
   eng: Would you like to keep them in the queue?
@@ -5625,6 +6537,8 @@ Would you like to keep them in the queue?:
   por: Gostaria de os manter na fila de espera?
   swe: Vill du behålla dem i kön?
   pol: Czy chcesz je zatrzymać w kolejce?
+  ukr: Чи хотіли б ви тримати їх у черзі?
+  kor: 대기열에 계속 보관하시겠습니까?
 Recover Queue Items:
   deu: Warteschlangenelemente wiederherstellen
   eng: Recover Queue Items
@@ -5637,6 +6551,8 @@ Recover Queue Items:
   por: Recuperar artigos em fila de espera
   swe: Återskapa köobjekt
   pol: Odzyskaj elementy kolejki
+  ukr: Відновлення елементів черги
+  kor: 대기열 항목 복구
 There is already a video being processed:
   deu: Es ist bereits ein Video in Bearbeitung
   eng: There is already a video being processed
@@ -5649,6 +6565,8 @@ There is already a video being processed:
   por: Já há um vídeo a ser processado
   swe: Det finns redan en video som håller på att bearbetas
   pol: Film jest już w trakcie obróbki
+  ukr: Вже є відео, яке обробляється
+  kor: 이미 처리 중인 동영상이 있습니다.
 Are you sure you want to discard it?:
   deu: Sind Sie sicher, dass Sie es verwerfen wollen?
   eng: Are you sure you want to discard it?
@@ -5661,6 +6579,8 @@ Are you sure you want to discard it?:
   por: Tem a certeza de que quer descartá-la?
   swe: Är du säker på att du vill kasta den?
   pol: Czy na pewno chcesz go wyrzucić?
+  ukr: Ви впевнені, що хочете його викинути?
+  kor: 정말 삭제하시겠습니까?
 Discard current video:
   deu: Aktuelles Video verwerfen
   eng: Discard current video
@@ -5673,6 +6593,8 @@ Discard current video:
   por: Descarte vídeo actual
   swe: Kassera aktuell video
   pol: Odrzuć bieżący film
+  ukr: Відкинути поточне відео
+  kor: 현재 비디오 삭제
 FastFlix Wiki:
   deu: FastFlix Wiki
   eng: FastFlix Wiki
@@ -5685,6 +6607,8 @@ FastFlix Wiki:
   por: FastFlix Wiki
   swe: FastFlix Wiki
   pol: FastFlix Wiki
+  ukr: FastFlix Вікі
+  kor: FastFlix 위키
 Custom VCEEncC options:
   deu: angepasste VCEEncC-Optionen
   eng: Custom VCEEncC options
@@ -5697,6 +6621,8 @@ Custom VCEEncC options:
   por: Opções VCEEncC personalizadas
   swe: Anpassade VCEEncC-alternativ
   pol: Niestandardowe opcje VCEEncC
+  ukr: Користувацькі опції VCEEncC
+  kor: 사용자 지정 VCEEncC 옵션
 VBAQ:
   deu: VBAQ
   eng: VBAQ
@@ -5709,6 +6635,8 @@ VBAQ:
   por: VBAQ
   swe: VBAQ
   pol: VBAQ
+  ukr: VBAQ
+  kor: VBAQ
 Variance Based Adaptive Quantization:
   deu: Varianzbasierte adaptive Quantisierung
   eng: Variance Based Adaptive Quantization
@@ -5721,6 +6649,8 @@ Variance Based Adaptive Quantization:
   por: Quantização Adaptativa com Base na Variância
   swe: Variansbaserad adaptiv kvantisering
   pol: Adaptacyjna kwantyzacja oparta na wariancji
+  ukr: Адаптивне квантування на основі дисперсії
+  kor: 분산 기반 적응형 양자화
 Pre Encode:
   deu: Vor-Kodierung
   eng: Pre Encode
@@ -5733,6 +6663,8 @@ Pre Encode:
   por: Pré-Codificação
   swe: Förkodning
   pol: Kodowanie wstępne
+  ukr: Попереднє кодування
+  kor: 사전 인코딩
 Pre Analysis:
   deu: Vor-Analyse
   eng: Pre Analysis
@@ -5745,6 +6677,8 @@ Pre Analysis:
   por: Pré-análise
   swe: Föranalys
   pol: Analiza wstępna
+  ukr: Попередній аналіз
+  kor: 사전 분석
 VCEEncC Options:
   deu: VCEEncC-Optionen
   eng: VCEEncC Options
@@ -5757,6 +6691,8 @@ VCEEncC Options:
   por: Opções VCEEncC
   swe: VCEEncC-alternativ
   pol: Opcje VCEEncC
+  ukr: Параметри VCEEncC
+  kor: VCEEncC 옵션
 VCEEncC Encoder support is still experimental!:
   deu: VCEEncC-Encoder-Unterstützung ist immer noch experimentell!
   eng: VCEEncC Encoder support is still experimental!
@@ -5769,6 +6705,8 @@ VCEEncC Encoder support is still experimental!:
   por: O suporte do codificador VCEEncC ainda é experimental!
   swe: Stödet för VCEEncC Encoder är fortfarande experimentellt!
   pol: Obsługa VCEEncC Encoder jest wciąż eksperymentalna!
+  ukr: Підтримка VCEEncC Encoder поки що експериментальна!
+  kor: VCEEncC 인코더 지원은 아직 실험 단계입니다!
 Profile:
   deu: Profil
   eng: Profile
@@ -5781,6 +6719,8 @@ Profile:
   por: Perfil
   swe: Profil
   pol: Profil
+  ukr: Профіль
+  kor: 프로필
 Decoder:
   deu: Decoder
   eng: Decoder
@@ -5793,6 +6733,8 @@ Decoder:
   por: Descodificador
   swe: Avkodare
   pol: Dekoder
+  ukr: Декодер
+  kor: 디코더
 'Hardware: use libavformat + hardware decoder for input':
   deu: 'Hardware: Verwendung von libavformat + Hardware-Decoder für die Eingabe'
   eng: 'Hardware: use libavformat + hardware decoder for input'
@@ -5806,6 +6748,9 @@ Decoder:
   por: 'Hardware: usar libavformat + descodificador de hardware para entrada'
   swe: 'Hårdvara: Använd libavformat + hårdvaruavkodare för inmatning.'
   pol: 'Sprzęt: użyj libavformat + dekoder sprzętowy dla wejścia'
+  ukr: 'Апаратне забезпечення: використовуйте libavformat + апаратний декодер для
+    введення'
+  kor: '하드웨어: 입력 시 libavformat + 하드웨어 디코더 사용'
 'Software: use avcodec + software decoder':
   deu: 'Software: Verwendung von avcodec + Software-Decoder'
   eng: 'Software: use avcodec + software decoder'
@@ -5818,6 +6763,8 @@ Decoder:
   por: 'Software: utilizar avcodec + descodificador de software'
   swe: 'Programvara: Använd avcodec + mjukvaruavkodare'
   pol: 'Oprogramowanie: użyj avcodec + dekoder programowy'
+  ukr: 'Програмне забезпечення: використовуйте avcodec + програмний декодер'
+  kor: '소프트웨어: AV코덱 + 소프트웨어 디코더 사용'
 Preview - Press Q to Exit:
   deu: Vorschau - Drücken Sie Q zum Beenden
   eng: Preview - Press Q to Exit
@@ -5830,6 +6777,8 @@ Preview - Press Q to Exit:
   por: Pré-visualização - Imprensa Q para Sair
   swe: Förhandsgranskning - Tryck på Q för att avsluta
   pol: Podgląd - Naciśnij Q, aby wyjść
+  ukr: Попередній перегляд - натисніть Q, щоб вийти
+  kor: 미리보기 - Q를 눌러 종료
 Tools:
   deu: Werkzeuge
   eng: Tools
@@ -5842,6 +6791,8 @@ Tools:
   por: Ferramentas
   swe: Verktyg
   pol: Narzędzia
+  ukr: Інструменти
+  kor: 도구
 Concatenation Builder:
   deu: Verkettung Builder
   eng: Concatenation Builder
@@ -5854,6 +6805,8 @@ Concatenation Builder:
   por: Construtor de Concatenação
   swe: Byggare för sammankoppling
   pol: Konstruktor konkatenacji
+  ukr: Конструктор конкатенації
+  kor: 연결 빌더
 Brightness:
   deu: Helligkeit
   eng: Brightness
@@ -5866,6 +6819,8 @@ Brightness:
   por: Luminosidade
   swe: Ljusstyrka
   pol: Jasność
+  ukr: Яскравість
+  kor: 밝기
 Contrast:
   deu: Kontrast
   eng: Contrast
@@ -5878,6 +6833,8 @@ Contrast:
   por: Contraste
   swe: Kontrast
   pol: Kontrast
+  ukr: Контраст
+  kor: 대비
 Saturation:
   deu: Sättigung
   eng: Saturation
@@ -5890,6 +6847,8 @@ Saturation:
   por: Saturação
   swe: Mättnad
   pol: Nasycenie
+  ukr: Насиченість
+  kor: 채도
 Trim:
   deu: Zuschneiden
   eng: Trim
@@ -5902,6 +6861,8 @@ Trim:
   por: Trim
   swe: Trim
   pol: Trim
+  ukr: Обрізка
+  kor: 트림
 Resolution:
   deu: Auflösung
   eng: Resolution
@@ -5914,6 +6875,8 @@ Resolution:
   por: Resolução
   swe: Upplösning
   pol: Rezolucja
+  ukr: Резолюція
+  kor: 해상도
 Theme:
   deu: Thema
   eng: Theme
@@ -5926,6 +6889,8 @@ Theme:
   por: Tema
   swe: Tema
   pol: Temat
+  ukr: Тема
+  kor: 테마
 Base Folder:
   deu: Basis-Ordner
   eng: Base Folder
@@ -5938,6 +6903,8 @@ Base Folder:
   por: Pasta de base
   swe: Grundmapp
   pol: Podstawa Folder
+  ukr: Базова папка
+  kor: 기본 폴더
 Open Folder:
   deu: Ordner öffnen
   eng: Open Folder
@@ -5950,6 +6917,8 @@ Open Folder:
   por: Pasta Aberta
   swe: Öppna mapp
   pol: Otwórz folder
+  ukr: Відкрити папку
+  kor: 폴더 열기
 Load:
   deu: laden
   eng: Load
@@ -5962,6 +6931,8 @@ Load:
   por: Carga
   swe: Ladda
   pol: Obciążenie
+  ukr: Завантажити
+  kor: 로드
 Drag and Drop to reorder - All items need to be same dimensions:
   deu: Ziehen und Ablegen zum Neuordnen - Alle Elemente müssen die gleichen Abmessungen
     haben
@@ -5980,6 +6951,8 @@ Drag and Drop to reorder - All items need to be same dimensions:
   swe: Dra och släpp för att beställa om - Alla artiklar måste ha samma mått.
   pol: Przeciągnij i upuść, aby zmienić kolejność - Wszystkie elementy muszą mieć
     te same wymiary
+  ukr: Перетягніть, щоб змінити порядок - всі елементи повинні мати однакові розміри
+  kor: 드래그 앤 드롭으로 재주문 - 모든 항목의 크기가 동일해야 합니다.
 The following items were excluded as they could not be identified as image or video files:
   deu: Die folgenden Elemente wurden ausgeschlossen, da sie nicht als Bild- oder Videodateien
     identifiziert werden konnten
@@ -6001,6 +6974,9 @@ The following items were excluded as they could not be identified as image or vi
     eller videofiler
   pol: Następujące pozycje zostały wyłączone, ponieważ nie można ich było zidentyfikować
     jako pliki obrazu lub wideo
+  ukr: Наступні елементи були виключені, оскільки вони не могли бути ідентифіковані
+    як зображення або відеофайли
+  kor: 다음 항목은 이미지 또는 동영상 파일로 식별할 수 없으므로 제외되었습니다.
 There are already items in this list:
   deu: Es gibt bereits Objekte in dieser Liste
   eng: There are already items in this list
@@ -6013,6 +6989,8 @@ There are already items in this list:
   por: Já existem itens nesta lista
   swe: Det finns redan objekt i denna lista
   pol: Na tej liście znajdują się już pozycje
+  ukr: У цьому списку вже є пункти
+  kor: 이 목록에 이미 항목이 있습니다.
 if you open a new directory, they will all be removed.:
   deu: Wenn Sie ein neues Verzeichnis öffnen, werden sie alle entfernt.
   eng: if you open a new directory, they will all be removed.
@@ -6025,6 +7003,8 @@ if you open a new directory, they will all be removed.:
   por: se se abrir um novo directório, todos eles serão removidos.
   swe: Om du öppnar en ny katalog kommer alla dessa att tas bort.
   pol: jeśli otworzysz nowy katalog, wszystkie zostaną usunięte.
+  ukr: якщо ви відкриєте новий каталог, вони всі будуть видалені.
+  kor: 새 디렉터리를 열면 모두 제거됩니다.
 Continue:
   deu: Weiter
   eng: Continue
@@ -6037,6 +7017,8 @@ Continue:
   por: Continuar
   swe: Fortsätt
   pol: Kontynuuj
+  ukr: Продовжуйте
+  kor: 계속
 Confirm Change Folder:
   deu: Bestätigen Sie Ordner wechseln
   eng: Confirm Change Folder
@@ -6049,6 +7031,8 @@ Confirm Change Folder:
   por: Confirmar Pasta de Mudança
   swe: Bekräfta ändring av mapp
   pol: Potwierdź zmianę folderu
+  ukr: Підтвердити зміну папки
+  kor: 변경 폴더 확인
 does not support concatenating files together:
   deu: unterstützt nicht die Verkettung von Dateien
   eng: does not support concatenating files together
@@ -6061,6 +7045,8 @@ does not support concatenating files together:
   por: não suporta a concatenação de ficheiros em conjunto
   swe: stöder inte sammanfogning av filer
   pol: nie obsługuje konkatenacji plików razem
+  ukr: не підтримує об'єднання файлів разом
+  kor: 파일 연결은 지원하지 않습니다.
 'WARNING: This feature is not provided by the encoder software directly':
   deu: 'WARNUNG: Diese Funktion wird nicht direkt von der Encoder-Software bereitgestellt.'
   eng: 'WARNING: This feature is not provided by the encoder software directly'
@@ -6076,6 +7062,9 @@ does not support concatenating files together:
   por: 'AVISO: Esta funcionalidade não é fornecida directamente pelo software codificador'
   swe: 'VARNING: Denna funktion tillhandahålls inte direkt av kodarprogramvaran.'
   pol: 'OSTRZEŻENIE: Ta funkcja nie jest dostępna bezpośrednio w oprogramowaniu enkodera'
+  ukr: 'ПОПЕРЕДЖЕННЯ: Ця функція не надається безпосередньо програмним забезпеченням
+    кодера'
+  kor: '경고: 이 기능은 인코더 소프트웨어에서 직접 제공하지 않습니다.'
 It is NOT supported by VCE or NVENC encoders, it will break the encoding:
   deu: Sie wird NICHT von VCE- oder NVENC-Encodern unterstützt, da sie die Codierung
     unterbrechen würde.
@@ -6089,6 +7078,8 @@ It is NOT supported by VCE or NVENC encoders, it will break the encoding:
   por: NÃO é suportado por codificadores VCE ou NVENC, irá quebrar a codificação
   swe: Den stöds INTE av VCE- eller NVENC-kodare, eftersom den bryter kodningen.
   pol: NIE jest obsługiwany przez kodery VCE lub NVENC, spowoduje to przerwanie kodowania.
+  ukr: НЕ підтримується кодувальниками VCE або NVENC, це призведе до порушення кодування
+  kor: VCE 또는 NVENC 인코더에서는 지원되지 않으며 인코딩이 손상됩니다.
 Are you sure you want to continue?:
   deu: Sind Sie sicher, dass Sie fortfahren möchten?
   eng: Are you sure you want to continue?
@@ -6101,6 +7092,8 @@ Are you sure you want to continue?:
   por: Tem a certeza de que quer continuar?
   swe: Är du säker på att du vill fortsätta?
   pol: Czy na pewno chcesz kontynuować?
+  ukr: Ви впевнені, що хочете продовжувати?
+  kor: 계속 진행하시겠습니까?
 Pause Warning:
   deu: Pause Warnung
   eng: Pause Warning
@@ -6113,6 +7106,8 @@ Pause Warning:
   por: Aviso de Pausa
   swe: Varning för paus
   pol: Pauza Ostrzeżenie
+  ukr: Попередження про паузу
+  kor: 일시 중지 경고
 First:
   eng: First
   pol: Pierwszy
@@ -6125,6 +7120,8 @@ First:
   rus: Первый
   por: Primeiro
   swe: Första
+  ukr: По-перше.
+  kor: 먼저
 Last:
   eng: Last
   pol: Ostatnio
@@ -6137,6 +7134,8 @@ Last:
   rus: Последний
   por: Último
   swe: Senast
+  ukr: Останній
+  kor: 마지막
 Track Number:
   eng: Track Number
   pol: Numer ścieżki
@@ -6149,6 +7148,8 @@ Track Number:
   rus: Номер дорожки
   por: Número da faixa
   swe: Spårnummer
+  ukr: Номер доріжки
+  kor: 트랙 번호
 Channels:
   eng: Channels
   pol: Kanały
@@ -6161,6 +7162,8 @@ Channels:
   rus: Каналы
   por: Canais
   swe: Kanaler
+  ukr: Канали
+  kor: 채널
 Audio Select:
   eng: Audio Select
   pol: Audio Select (Wybór dźwięku)
@@ -6173,6 +7176,8 @@ Audio Select:
   rus: Выбор аудио
   por: Selecione o áudio
   swe: Ljudval
+  ukr: Вибір аудіо
+  kor: 오디오 선택
 Passthrough All:
   eng: Passthrough All
   pol: Passthrough Wszystkie
@@ -6185,6 +7190,8 @@ Passthrough All:
   rus: Пропускная способность Все
   por: Passagem de tudo
   swe: Genomströmning Alla
+  ukr: Пройди крізь усе
+  kor: 모두 통과
 Add Pattern Match:
   eng: Add Pattern Match
   pol: Dodaj dopasowanie wzoru
@@ -6197,6 +7204,8 @@ Add Pattern Match:
   rus: Добавить сопоставление шаблонов
   por: Adicionar Padrão de Combinação
   swe: Lägg till mönstermatchning
+  ukr: Додати відповідність шаблону
+  kor: 패턴 일치 추가
 contains:
   eng: contains
   pol: zawiera
@@ -6209,6 +7218,8 @@ contains:
   rus: содержит
   por: contém
   swe: innehåller
+  ukr: містить
+  kor: 포함
 Match:
   eng: Match
   pol: Mecz
@@ -6221,6 +7232,8 @@ Match:
   rus: Матч
   por: Combinar
   swe: Match
+  ukr: Матч
+  kor: 경기
 Select By:
   eng: Select By
   pol: Wybierz według
@@ -6233,6 +7246,8 @@ Select By:
   rus: Выберите по
   por: Selecione por
   swe: Välj efter
+  ukr: Виберіть по
+  kor: 선택 기준
 Advanced Options:
   eng: Advanced Options
   pol: Opcje zaawansowane
@@ -6245,6 +7260,8 @@ Advanced Options:
   rus: Дополнительные параметры
   por: Opções avançadas
   swe: Avancerade alternativ
+  ukr: Додаткові параметри
+  kor: 고급 옵션
 License:
   eng: License
   deu: Lizenz
@@ -6257,6 +7274,8 @@ License:
   por: Licença
   swe: Licens
   pol: Licencja
+  ukr: Ліцензія
+  kor: 라이선스
 Quantization Mode:
   eng: Quantization Mode
   deu: Quantisierungsmodus
@@ -6269,6 +7288,8 @@ Quantization Mode:
   por: Modo de quantificação
   swe: Kvantiseringsläge
   pol: Tryb kwantyzacji
+  ukr: Режим квантування
+  kor: 양자화 모드
 Use CRF or QP:
   eng: Use CRF or QP
   deu: CRF oder QP verwenden
@@ -6281,6 +7302,8 @@ Use CRF or QP:
   por: Use CRF ou QP
   swe: Använd CRF eller QP
   pol: Użyj CRF lub QP
+  ukr: Використовуйте CRF або QP
+  kor: CRF 또는 QP 사용
 Additional svt av1 params:
   eng: Additional svt av1 params
   deu: Zusätzliche svt av1-Parameter
@@ -6293,6 +7316,8 @@ Additional svt av1 params:
   por: Parâmetros adicionais svt av1
   swe: Ytterligare parametrar för svt av1
   pol: Dodatkowe parametry svt av1
+  ukr: Додаткові параметри svt av1
+  kor: 추가 SVT AV1 매개변수
 Extra svt av1 params in opt=1:opt2=0 format:
   eng: Extra svt av1 params in opt=1:opt2=0 format
   deu: Zusätzliche svt av1-Parameter im Format opt=1:opt2=0
@@ -6305,6 +7330,8 @@ Extra svt av1 params in opt=1:opt2=0 format:
   por: Parâmetros av1 extra svt no formato opt=1:opt2=0
   swe: Extra svt av1-parametrar i formatet opt=1:opt2=0
   pol: Dodatkowe parametry svt av1 w formacie opt=1:opt2=0
+  ukr: Додаткові параметри svt av1 у форматі opt=1:opt2=0
+  kor: opt=1:opt2=0 형식의 추가 svt av1 매개변수
 Max Colors:
   eng: Max Colors
   deu: Maximale Farben
@@ -6317,6 +7344,8 @@ Max Colors:
   por: Cores máximas
   swe: Max färger
   pol: Maks. kolory
+  ukr: Max Colors
+  kor: 최대 색상
 Frame Rate:
   eng: Frame Rate
   deu: Bildfrequenz
@@ -6329,6 +7358,8 @@ Frame Rate:
   por: Taxa de quadros
   swe: Bildfrekvens
   pol: Liczba klatek na sekundę
+  ukr: Частота кадрів
+  kor: 프레임 속도
 Equalizer:
   eng: Equalizer
   deu: Equalizer
@@ -6341,6 +7372,8 @@ Equalizer:
   por: Equalizador
   swe: Equalizer
   pol: Equalizer
+  ukr: Еквалайзер
+  kor: 이퀄라이저
 Method:
   eng: Method
   deu: Methode
@@ -6353,6 +7386,8 @@ Method:
   por: Método
   swe: Metod
   pol: Metoda
+  ukr: Метод
+  kor: 방법
 Color Formats:
   eng: Color Formats
   deu: Farbige Formate
@@ -6365,6 +7400,8 @@ Color Formats:
   por: Formatos de cores
   swe: Färgformat
   pol: Formaty kolorów
+  ukr: Кольорові формати
+  kor: 색상 형식
 Video Buffering:
   eng: Video Buffering
   deu: Video-Pufferung
@@ -6377,6 +7414,8 @@ Video Buffering:
   por: Buffer de vídeo
   swe: Videobuffring
   pol: Buforowanie wideo
+  ukr: Буферизація відео
+  kor: 비디오 버퍼링
 Verifier:
   eng: Verifier
   deu: Überprüfer
@@ -6389,6 +7428,8 @@ Verifier:
   por: Verificador
   swe: Kontrollör
   pol: Weryfikator
+  ukr: Верифікатор
+  kor: 검증자
 Statistics Mode:
   eng: Statistics Mode
   deu: Statistik-Modus
@@ -6401,6 +7442,8 @@ Statistics Mode:
   por: Modo Estatísticas
   swe: Statistikläge
   pol: Tryb statystyk
+  ukr: Режим статистики
+  kor: 통계 모드
 Scene Detection:
   eng: Scene Detection
   deu: Szene-Erkennung
@@ -6413,6 +7456,8 @@ Scene Detection:
   por: Detecção de cenas
   swe: Detektering av scener
   pol: Wykrywanie sceny
+  ukr: Виявлення сцени
+  kor: 장면 감지
 Determine OpenCL Support:
   eng: Determine OpenCL Support
   deu: Bestimmen Sie die OpenCL-Unterstützung
@@ -6425,6 +7470,8 @@ Determine OpenCL Support:
   por: Determinar o suporte do OpenCL
   swe: Fastställa stöd för OpenCL
   pol: Określanie obsługi OpenCL
+  ukr: Визначення підтримки OpenCL
+  kor: OpenCL 지원 결정
 Please load in a video to configure a new profile:
   eng: Please load in a video to configure a new profile
   deu: Bitte laden Sie ein Video zur Konfiguration eines neuen Profils
@@ -6437,6 +7484,8 @@ Please load in a video to configure a new profile:
   por: Por favor, carregue em um vídeo para configurar um novo perfil
   swe: Ladda in en video för att konfigurera en ny profil
   pol: Wczytaj film, jak skonfigurować nowy profil
+  ukr: Будь ласка, завантажте відео для налаштування нового профілю
+  kor: 새 프로필을 구성하려면 동영상을 로드하세요.
 10-bit:
   eng: 10-bit
   deu: 10-bit
@@ -6449,6 +7498,8 @@ Please load in a video to configure a new profile:
   por: 10 bit
   swe: 10-bit
   pol: 10-bit
+  ukr: 10-розрядний
+  kor: 10비트
 This encoder does not support duplicating audio tracks, please remove copied tracks!:
   eng: This encoder does not support duplicating audio tracks, please remove copied
     tracks!
@@ -6468,6 +7519,9 @@ This encoder does not support duplicating audio tracks, please remove copied tra
     as faixas copiadas!
   swe: Den här kodaren stöder inte duplicering av ljudspår, ta bort kopierade spår!
   pol: Ten koder nie obsługuje duplikowania ścieżek audio, usuń skopiowane ścieżki!
+  ukr: Цей кодер не підтримує дублювання аудіодоріжок, будь ласка, видаляйте скопійовані
+    доріжки!
+  kor: 이 인코더는 오디오 트랙 복제를 지원하지 않으므로 복사된 트랙을 제거하세요!
 Not supported by rigaya's hardware encoders:
   eng: Not supported by rigaya's hardware encoders
   deu: Wird von Rigayas Hardware-Encodern nicht unterstützt
@@ -6480,6 +7534,8 @@ Not supported by rigaya's hardware encoders:
   por: Não suportado pelos codificadores de hardware da rigaya
   swe: Stöds inte av Rigayas hårdvarukodare
   pol: Nieobsługiwane przez nadajniki sprzętowe firmy rigaya
+  ukr: Не підтримується апаратними кодувальниками rigaya
+  kor: 리가야의 하드웨어 인코더에서는 지원되지 않습니다.
 AVC coding profile:
   eng: AVC coding profile
   deu: AVC-Codierungsprofil
@@ -6492,6 +7548,8 @@ AVC coding profile:
   por: Perfil de codificação AVC
   swe: AVC-kodningsprofil
   pol: Profil kodowania AVC
+  ukr: Профіль кодування AVC
+  kor: AVC 코딩 프로파일
 Allow Software Encoding:
   eng: Allow Software Encoding
   deu: Software-Kodierung zulassen
@@ -6504,6 +7562,8 @@ Allow Software Encoding:
   por: Permitir a codificação de software
   swe: Tillåt kodning av programvara
   pol: Zezwalaj na kodowanie oprogramowania
+  ukr: Дозволити програмне кодування
+  kor: 소프트웨어 인코딩 허용
 Require Software Encoding:
   eng: Require Software Encoding
   deu: Software-Kodierung erforderlich
@@ -6516,6 +7576,8 @@ Require Software Encoding:
   por: Exigir codificação de software
   swe: Kräver kodning av programvara
   pol: Wymagane kodowanie oprogramowania
+  ukr: Вимагає кодування програмного забезпечення
+  kor: 소프트웨어 인코딩 필요
 Realtime Encoding:
   eng: Realtime Encoding
   deu: Kodierung in Echtzeit
@@ -6528,6 +7590,8 @@ Realtime Encoding:
   por: Codificação em tempo real
   swe: Kodning i realtid
   pol: Kodowanie w czasie rzeczywistym
+  ukr: Кодування в реальному часі
+  kor: 실시간 인코딩
 Hint that encoding should happen in real-time if not faster:
   eng: Hint that encoding should happen in real-time if not faster
   deu: Hinweis, dass die Kodierung in Echtzeit oder sogar schneller erfolgen sollte
@@ -6543,6 +7607,8 @@ Hint that encoding should happen in real-time if not faster:
   swe: En antydan om att kodning bör ske i realtid, om inte snabbare.
   pol: Wskazówka, że kodowanie powinno odbywać się w czasie rzeczywistym, jeśli nie
     szybciej
+  ukr: Підказка, що кодування має відбуватися в режимі реального часу, якщо не швидше
+  kor: 인코딩은 빠르지는 않더라도 실시간으로 이루어져야 한다는 힌트
 Frames Before:
   eng: Frames Before
   deu: Frames Vorher
@@ -6555,6 +7621,8 @@ Frames Before:
   por: Quadros antes
   swe: Frames före
   pol: Ramki Przed
+  ukr: Кадри до
+  kor: 프레임 이전
 Other frames will come before the frames in this session. This helps smooth concatenation issues.:
   eng: Other frames will come before the frames in this session. This helps smooth
     concatenation issues.
@@ -6576,6 +7644,9 @@ Other frames will come before the frames in this session. This helps smooth conc
     problem med sammanlänkning.
   pol: Inne ramki będą się pojawiać przed ramkami w tej sesji. Ułatwia to rozwiązywanie
     problemów związanych z konkatenacją.
+  ukr: Інші кадри з'являтимуться перед кадрами у цьому сеансі. Це допомагає згладити
+    проблеми з конкатенацією.
+  kor: 이 세션에서는 다른 프레임이 프레임보다 먼저 나옵니다. 이렇게 하면 연결 문제를 원활하게 해결할 수 있습니다.
 Frames After:
   eng: Frames After
   deu: Frames nach
@@ -6588,6 +7659,8 @@ Frames After:
   por: Quadros após
   swe: Bilder efter
   pol: Ramki Po
+  ukr: Кадри після
+  kor: 프레임 후
 Other frames will come after the frames in this session. This helps smooth concatenation issues.:
   eng: Other frames will come after the frames in this session. This helps smooth
     concatenation issues.
@@ -6609,6 +7682,9 @@ Other frames will come after the frames in this session. This helps smooth conca
     att underlätta problem med sammanlänkningar.
   pol: Inne ramki będą pojawiać się po ramkach z tej sesji. Ułatwia to rozwiązywanie
     problemów związanych z konkatenacją.
+  ukr: Інші кадри з'являться після кадрів цього сеансу. Це допомагає згладити проблеми
+    з конкатенацією.
+  kor: 다른 프레임은 이 세션의 프레임 다음에 올 것입니다. 이렇게 하면 연결 문제를 원활하게 해결할 수 있습니다.
 HEVC coding profile - must match bit depth:
   eng: HEVC coding profile - must match bit depth
   deu: HEVC-Codierungsprofil - muss der Bittiefe entsprechen
@@ -6621,6 +7697,8 @@ HEVC coding profile - must match bit depth:
   por: Perfil de codificação HEVC - deve corresponder à profundidade do bit
   swe: HEVC-kodningsprofil - måste matcha bitdjupet
   pol: Profil kodowania HEVC - musi być zgodny z głębią bitową
+  ukr: Профіль кодування HEVC - має відповідати глибині біт
+  kor: HEVC 코딩 프로파일 - 비트 심도와 일치해야 함
 Ignore Errors:
   eng: Ignore Errors
   deu: Fehler ignorieren
@@ -6633,6 +7711,8 @@ Ignore Errors:
   por: Ignorar erros
   swe: Ignorera fel
   pol: Ignoruj błędy
+  ukr: Ігнорувати помилки
+  kor: 오류 무시
 Custom QSVEncC options:
   eng: Custom QSVEncC options
   deu: Benutzerdefinierte QSVEncC-Optionen
@@ -6645,6 +7725,8 @@ Custom QSVEncC options:
   por: Opções personalizadas de QSVEncC
   swe: Anpassade QSVEncC-alternativ
   pol: Niestandardowe opcje QSVEncC
+  ukr: Користувацькі опції QSVEncC
+  kor: 사용자 지정 QSVEncC 옵션
 QSVEncC Options:
   eng: QSVEncC Options
   deu: QSVEncC-Optionen
@@ -6657,6 +7739,8 @@ QSVEncC Options:
   por: Opções QSVEncC
   swe: QSVEncC-alternativ
   pol: Opcje QSVEncC
+  ukr: Опції QSVEncC
+  kor: QSVEncC 옵션
 QSVEncC Encoder support is still experimental!:
   eng: QSVEncC Encoder support is still experimental!
   deu: QSVEncC Encoder Unterstützung ist noch experimentell!
@@ -6669,6 +7753,8 @@ QSVEncC Encoder support is still experimental!:
   por: O suporte ao codificador QSVEncC ainda é experimental!
   swe: Stödet för QSVEncC Encoder är fortfarande experimentellt!
   pol: Obsługa kodera QSVEncC jest wciąż eksperymentalna!
+  ukr: Підтримка QSVEncC Encoder поки що експериментальна!
+  kor: QSVEncC 인코더 지원은 아직 실험 단계입니다!
 Save Queue to File:
   eng: Save Queue to File
   deu: Warteschlange in Datei speichern
@@ -6681,6 +7767,8 @@ Save Queue to File:
   por: Salvar fila no arquivo
   swe: Spara kö till en fil
   pol: Zapisz kolejkę do pliku
+  ukr: Зберегти чергу у файл
+  kor: 대기열을 파일에 저장
 Load Queue from File:
   eng: Load Queue from File
   deu: Warteschlange aus Datei laden
@@ -6693,6 +7781,8 @@ Load Queue from File:
   por: Fila de carga do arquivo
   swe: Ladda kö från en fil
   pol: Wczytaj kolejkę z pliku
+  ukr: Завантаження черги з файлу
+  kor: 파일에서 대기열 로드
 This will remove all items in the queue currently:
   eng: This will remove all items in the queue currently
   deu: Damit werden alle Einträge in der Warteschlange entfernt.
@@ -6705,6 +7795,8 @@ This will remove all items in the queue currently:
   por: Isto removerá todos os itens da fila atualmente
   swe: Detta kommer att ta bort alla objekt i kön för närvarande
   pol: Spowoduje to usunięcie wszystkich elementów znajdujących się aktualnie w kolejce.
+  ukr: Це призведе до видалення всіх елементів у черзі на даний момент
+  kor: 이렇게 하면 현재 대기열에 있는 모든 항목이 제거됩니다.
 It will update it with the contents of:
   eng: It will update it with the contents of
   deu: Er aktualisiert sie mit dem Inhalt von
@@ -6717,6 +7809,8 @@ It will update it with the contents of:
   por: Ele o atualizará com o conteúdo de
   swe: Den kommer att uppdatera den med innehållet i
   pol: Zostanie ona zaktualizowana o zawartość
+  ukr: Він оновить його вмістом
+  kor: 다음과 같은 내용으로 업데이트됩니다.
 Are you sure you want to proceed?:
   eng: Are you sure you want to proceed?
   deu: Sind Sie sicher, dass Sie fortfahren wollen?
@@ -6729,6 +7823,8 @@ Are you sure you want to proceed?:
   por: Você tem certeza de que quer prosseguir?
   swe: Är du säker på att du vill fortsätta?
   pol: Czy jesteś pewien, że chcesz kontynuować?
+  ukr: Ви впевнені, що хочете продовжити?
+  kor: 계속 진행하시겠습니까?
 Overwrite existing queue?:
   eng: Overwrite existing queue?
   deu: Vorhandene Warteschlange überschreiben?
@@ -6741,6 +7837,8 @@ Overwrite existing queue?:
   por: Sobregravar a fila existente?
   swe: Skriva över befintlig kö?
   pol: Nadpisać istniejącą kolejkę?
+  ukr: Перезаписати існуючу чергу?
+  kor: 기존 대기열을 덮어쓰시겠습니까?
 Save Queue:
   eng: Save Queue
   deu: Warteschlange speichern
@@ -6753,6 +7851,8 @@ Save Queue:
   por: Salvar fila
   swe: Spara kö
   pol: Zapisz kolejkę
+  ukr: Зберегти чергу
+  kor: 대기열 저장
 Load Queue:
   eng: Load Queue
   deu: Warteschlange laden
@@ -6765,6 +7865,8 @@ Load Queue:
   por: Fila de carga
   swe: Belastningskö
   pol: Kolejka ładunkowa
+  ukr: Черга завантаження
+  kor: 로드 대기열
 Queue saved to:
   eng: Queue saved to
   deu: Warteschlange gespeichert in
@@ -6777,6 +7879,8 @@ Queue saved to:
   por: Fila salva para
   swe: Kö sparad till
   pol: Kolejka zapisana do
+  ukr: Черга збережена до
+  kor: 대기열이 저장된 위치
 That file doesn't exist:
   eng: That file doesn't exist
   deu: Diese Datei existiert nicht
@@ -6789,6 +7893,8 @@ That file doesn't exist:
   por: Esse arquivo não existe
   swe: Den filen finns inte
   pol: Ten plik nie istnieje
+  ukr: Такого файлу не існує
+  kor: 해당 파일이 존재하지 않습니다.
 There are more than 100 files, skipping pre-processing.:
   eng: There are more than 100 files, skipping pre-processing.
   deu: Es gibt mehr als 100 Dateien, wobei die Vorverarbeitung übersprungen wird.
@@ -6801,6 +7907,8 @@ There are more than 100 files, skipping pre-processing.:
   por: Existem mais de 100 ficheiros, saltando o pré-processamento.
   swe: Det finns mer än 100 filer, och du kan hoppa över förbehandlingen.
   pol: Istnieje ponad 100 plików, z pominięciem przetwarzania wstępnego.
+  ukr: Понад 100 файлів, без попередньої обробки.
+  kor: 전처리를 건너뛰고 100개가 넘는 파일이 있습니다.
 No audio tracks matched for this profile, enable first track?:
   eng: No audio tracks matched for this profile, enable first track?
   deu: Keine Audiospuren für dieses Profil gefunden, erste Spur aktivieren?
@@ -6815,6 +7923,8 @@ No audio tracks matched for this profile, enable first track?:
   por: Não há faixas de áudio correspondentes a este perfil, permitir a primeira faixa?
   swe: Inga ljudspår har matchats för den här profilen, aktivera det första spåret?
   pol: Brak dopasowanych ścieżek audio dla tego profilu, włączyć pierwszą ścieżkę?
+  ukr: Немає аудіодоріжок, що відповідають цьому профілю, увімкнути першу доріжку?
+  kor: 이 프로필에 일치하는 오디오 트랙이 없습니다. 첫 번째 트랙을 사용하시겠습니까?
 No Audio Match:
   eng: No Audio Match
   deu: Keine Audioübereinstimmung
@@ -6827,6 +7937,8 @@ No Audio Match:
   por: Sem Audio Match
   swe: Ingen ljudmatchning
   pol: Brak dopasowania audio
+  ukr: Немає звукового збігу
+  kor: 오디오 일치 없음
 Unselect All:
   eng: Unselect All
   deu: Alle abwählen
@@ -6839,6 +7951,8 @@ Unselect All:
   por: Desseleccionar todos
   swe: Avmarkera alla
   pol: Nie wybieraj wszystkich
+  ukr: Зняти позначку з усіх
+  kor: 모두 선택 취소
 Preserve All:
   eng: Preserve All
   deu: Alles bewahren
@@ -6851,6 +7965,8 @@ Preserve All:
   por: Preservar tudo
   swe: Bevara allt
   pol: Zachować wszystko
+  ukr: Зберегти все
+  kor: 모두 보존
 Rigaya's encoders will only match one encoding per track:
   eng: Rigaya's encoders will only match one encoding per track
   deu: Rigayas Encoder passen nur eine Kodierung pro Spur an
@@ -6863,6 +7979,8 @@ Rigaya's encoders will only match one encoding per track:
   por: Os codificadores de Rigaya corresponderão apenas a uma codificação por pista
   swe: Rigayas kodare matchar endast en kodning per spår.
   pol: Kodery Rigaya dopasują tylko jedno kodowanie na ścieżkę.
+  ukr: Кодувальники Rigaya підтримують лише одне кодування для кожної доріжки
+  kor: 리가야의 인코더는 트랙당 하나의 인코딩만 일치합니다.
 Default Output Folder:
   eng: Default Output Folder
   deu: Standard-Ausgabeordner
@@ -6875,6 +7993,8 @@ Default Output Folder:
   por: Pasta de saída por defeito
   swe: Standardmapp för utdata
   pol: Domyślny folder wyjściowy
+  ukr: Вихідна папка за замовчуванням
+  kor: 기본 출력 폴더
 Use same output directory as source file:
   eng: Use same output directory as source file
   deu: Gleiches Ausgabeverzeichnis wie Quelldatei verwenden
@@ -6887,6 +8007,8 @@ Use same output directory as source file:
   por: Usar o mesmo directório de saída que o ficheiro fonte
   swe: Använd samma utskriftskatalog som källfilen
   pol: Użyj tego samego katalogu wyjściowego co plik źródłowy
+  ukr: Використовуйте той самий вихідний каталог, що і вихідний файл
+  kor: 소스 파일과 동일한 출력 디렉터리 사용
 Please consider supporting FastFlix with a one time contribution!:
   eng: Please consider supporting FastFlix with a one time contribution!
   deu: Bitte unterstützen Sie FastFlix mit einer einmaligen Spende!
@@ -6899,6 +8021,8 @@ Please consider supporting FastFlix with a one time contribution!:
   por: Por favor, considere apoiar FastFlix com uma contribuição única!
   swe: Överväg att stödja FastFlix med ett engångsbidrag!
   pol: Proszę rozważyć wsparcie FastFlix jednorazową wpłatą!
+  ukr: Будь ласка, розгляньте можливість підтримати FastFlix одноразовим внеском!
+  kor: 일회성 후원으로 FastFlix를 후원해 주세요!
 Default Source Folder:
   eng: Default Source Folder
   deu: Standard-Quellordner
@@ -6911,6 +8035,8 @@ Default Source Folder:
   por: Pasta da fonte por defeito
   swe: Standardkällmapp för källan
   pol: Domyślny folder źródłowy
+  ukr: Папка джерела за замовчуванням
+  kor: 기본 소스 폴더
 No Default Source Folder:
   eng: No Default Source Folder
   deu: Kein Standard-Quellordner
@@ -6923,6 +8049,8 @@ No Default Source Folder:
   por: Sem pasta de origem por defeito
   swe: Ingen standardkällmapp
   pol: Nie Domyślny folder źródłowy
+  ukr: Відсутня папка джерела за замовчуванням
+  kor: 기본 소스 폴더 없음
 Stay on Top:
   eng: Stay on Top
   deu: Oben bleiben
@@ -6935,6 +8063,8 @@ Stay on Top:
   por: Fique no topo
   swe: Håll dig på topp
   pol: Zostań na szczycie
+  ukr: Залишайтеся на висоті
+  kor: 최신 정보 유지
 Priority:
   eng: Priority
   deu: Priorität
@@ -6947,6 +8077,8 @@ Priority:
   por: Prioridade
   swe: Prioritet
   pol: Priorytet
+  ukr: Пріоритет
+  kor: 우선 순위
 Bitrate Mode:
   eng: Bitrate Mode
   deu: Bitrate Modus
@@ -6959,6 +8091,8 @@ Bitrate Mode:
   por: Modo Bitrate
   swe: Bitrate-läge
   pol: Tryb bitrate
+  ukr: Режим бітрейту
+  kor: 비트레이트 모드
 VCEEncC AV1 Encoder is untested!:
   eng: VCEEncC AV1 Encoder is untested!
   deu: VCEEncC AV1 Encoder ist ungetestet!
@@ -6971,6 +8105,8 @@ VCEEncC AV1 Encoder is untested!:
   por: O codificador VCEEncC AV1 não foi testado!
   swe: VCEEncC AV1 Encoder är otestad!
   pol: VCEEncC AV1 Encoder nie jest testowany!
+  ukr: Кодер VCEEncC AV1 неперевірений!
+  kor: VCEEncC AV1 인코더는 테스트되지 않았습니다!
 QSVEncC AV1 Encoder is untested!:
   eng: QSVEncC AV1 Encoder is untested!
   deu: QSVEncC AV1 Encoder ist ungetestet!
@@ -6983,6 +8119,8 @@ QSVEncC AV1 Encoder is untested!:
   por: O codificador QSVEncC AV1 não foi testado!
   swe: QSVEncC AV1 Encoder är otestad!
   pol: QSVEncC AV1 Encoder nie jest testowany!
+  ukr: Кодер QSVEncC AV1 неперевірений!
+  kor: QSVEncC AV1 인코더는 테스트되지 않았습니다!
 NVEncC AV1 Encoder is untested!:
   eng: NVEncC AV1 Encoder is untested!
   deu: NVEncC AV1 Encoder ist ungetestet!
@@ -6995,6 +8133,8 @@ NVEncC AV1 Encoder is untested!:
   por: O codificador NVEncC AV1 não foi testado!
   swe: NVEncC AV1 Encoder är otestad!
   pol: NVEncC AV1 Encoder nie jest testowany!
+  ukr: Кодер NVEncC AV1 неперевірений!
+  kor: NVEncC AV1 인코더는 테스트되지 않았습니다!
 Load Directory:
   eng: Load Directory
   deu: Verzeichnis laden
@@ -7007,6 +8147,8 @@ Load Directory:
   por: Directório de Carga
   swe: Lasta in katalogen
   pol: Katalog ładunków
+  ukr: Завантажити каталог
+  kor: 디렉토리 로드
 Multiple Files:
   eng: Multiple Files
   deu: Mehrere Dateien
@@ -7019,6 +8161,8 @@ Multiple Files:
   por: Ficheiros múltiplos
   swe: Flera filer
   pol: Wiele plików
+  ukr: Кілька файлів
+  kor: 여러 파일
 Drag and Drop to reorder:
   eng: Drag and Drop to reorder
   deu: Ziehen und Ablegen zum Neuordnen
@@ -7031,6 +8175,8 @@ Drag and Drop to reorder:
   por: Arrastar e largar para reordenar
   swe: Dra och släpp för att ordna om
   pol: Przeciągnij i upuść, aby zmienić kolejność
+  ukr: Перетягніть, щоб змінити порядок
+  kor: 드래그 앤 드롭으로 재주문
 Long Edge:
   eng: Long Edge
   deu: Lange Kante
@@ -7043,6 +8189,8 @@ Long Edge:
   por: Bordo Longo
   swe: Lång kant
   pol: Długa krawędź
+  ukr: Довгий край
+  kor: 긴 가장자리
 Filename:
   eng: Filename
   deu: Dateiname
@@ -7055,6 +8203,8 @@ Filename:
   por: Nome do ficheiro
   swe: Filnamn
   pol: Nazwa pliku
+  ukr: Ім'я файлу
+  kor: 파일 이름
 Folder:
   eng: Folder
   deu: Mappe
@@ -7067,3 +8217,83 @@ Folder:
   por: Pasta
   swe: Mapp
   pol: Folder
+  ukr: Папка
+  kor: 폴더
+Custom (w:h):
+  eng: Custom (w:h)
+  ukr: Звичайний (нд:пт)
+  deu: Benutzerdefiniert (b:h)
+  fra: Sur mesure (l:h)
+  ita: Personalizzato (l:h)
+  spa: Personalizado (ancho:alto)
+  zho: 定制 (w:h)
+  jpn: カスタム（w：h）
+  rus: Пользовательский (w:h)
+  por: Personalizado (w:h)
+  swe: Anpassad (w:h)
+  pol: Niestandardowe (w:h)
+  kor: 사용자 지정(가로:세로)
+Video Title:
+  eng: Video Title
+  ukr: Назва відео
+  deu: Video-Titel
+  fra: Titre de la vidéo
+  ita: Titolo del video
+  spa: Título del vídeo
+  zho: 视频标题
+  jpn: 動画タイトル
+  rus: Название видео
+  por: Título do vídeo
+  swe: Titel på videon
+  pol: Tytuł wideo
+  kor: 비디오 제목
+Video Track Title:
+  eng: Video Track Title
+  ukr: Назва відео-доріжки
+  deu: Video Track Titel
+  fra: Titre de la piste vidéo
+  ita: Titolo della traccia video
+  spa: Título de la pista de vídeo
+  zho: 视频曲目名称
+  jpn: ビデオトラックタイトル
+  rus: Название видеодорожки
+  por: Título da faixa de vídeo
+  swe: Titel på videospåret
+  pol: Tytuł ścieżki wideo
+  kor: 비디오 트랙 제목
+Remove GUI logs and compress conversion logs older than 30 days at exit:
+  eng: Remove GUI logs and compress conversion logs older than 30 days at exit
+  ukr: Видалення логів графічного інтерфейсу та стиснення логів перетворень, старших
+    за 30 днів, при виході
+  deu: Entfernen von GUI-Protokollen und Komprimieren von Konvertierungsprotokollen,
+    die älter als 30 Tage sind, beim Beenden
+  fra: Suppression des journaux de l'interface graphique et compression des journaux
+    de conversion de plus de 30 jours à la sortie.
+  ita: Rimuovere i log dell'interfaccia grafica e comprimere i log di conversione
+    più vecchi di 30 giorni all'uscita.
+  spa: Elimina los registros GUI y comprime los registros de conversión de más de
+    30 días al salir.
+  zho: 在退出时删除GUI日志并压缩超过30天的转换日志
+  jpn: 終了時にGUIログを削除し、30日以上前の変換ログを圧縮します
+  rus: Удаление журналов GUI и сжатие журналов преобразования старше 30 дней при выходе
+  por: Remover registos GUI e comprimir registos de conversão com mais de 30 dias
+    à saída
+  swe: Ta bort GUI-loggar och komprimera konverteringsloggar som är äldre än 30 dagar
+    vid avslutningen.
+  pol: Usuń logi GUI i skompresuj logi konwersji starsze niż 30 dni przy wyjściu z
+    systemu
+  kor: 종료 시 GUI 로그를 제거하고 30일이 지난 전환 로그를 압축합니다.
+UI Scale:
+  eng: UI Scale
+  ukr: Шкала інтерфейсу
+  deu: UI-Skala
+  fra: Échelle de l'interface utilisateur
+  ita: Scala UI
+  spa: Escala de IU
+  zho: UI规模
+  jpn: UIスケール
+  rus: Шкала пользовательского интерфейса
+  por: Escala UI
+  swe: UI-skala
+  pol: Skala UI
+  kor: UI 스케일
