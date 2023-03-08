@@ -6,7 +6,7 @@ import importlib.resources
 name = "WebP"
 
 requires = "libwebp"
-video_extensions = ["webp"]
+video_extensions = [".webp"]
 video_dimension_divisor = 2
 
 ref = importlib.resources.files("fastflix") / f"data/encoders/icon_webp.png"

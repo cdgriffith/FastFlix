@@ -407,6 +407,7 @@ class ProfileWindow(QtWidgets.QWidget):
             remove_hdr=self.main.remove_hdr,
             resolution_method=self.main.resolution_method(),
             resolution_custom=self.main.resolution_custom(),
+            output_type=self.main.widgets.output_type_combo.currentText(),
         )
 
         self.tab_area = QtWidgets.QTabWidget()
@@ -502,6 +503,7 @@ class ProfileWindow(QtWidgets.QWidget):
             audio_filters=self.audio_select.get_settings(),
             resolution_method=self.main_settings.resolution_method,
             resolution_custom=self.main_settings.resolution_custom,
+            output_type=self.main.widgets.output_type_combo.currentText(),
             # subtitle_filters=self.subtitle_select.get_settings(),
             subtitle_language=sub_lang,
             subtitle_select=subtitle_enabled,

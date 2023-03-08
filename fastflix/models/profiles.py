@@ -127,6 +127,7 @@ class Profile(BaseModel):
     encoder: str = "HEVC (x265)"
     resolution_method: str = "auto"
     resolution_custom: str | None = None
+    output_type: str = ".mkv"
 
     audio_filters: Optional[list[AudioMatch]] = None
     # subtitle_filters: Optional[list[SubtitleMatch]] = None
