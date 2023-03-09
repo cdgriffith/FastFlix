@@ -1500,7 +1500,7 @@ class Main(QtWidgets.QWidget):
 
         video_track_title_name = [
             v
-            for k, v in self.app.fastflix.current_video.streams.video[0].get("tags", []).items()
+            for k, v in self.app.fastflix.current_video.streams.video[0].get("tags", {}).items()
             if k.upper() == "TITLE"
         ]
 

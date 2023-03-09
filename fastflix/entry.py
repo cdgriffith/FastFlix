@@ -41,7 +41,7 @@ def separate_app_process(worker_queue, status_queue, log_queue, queue_list, queu
             queue_list,
             queue_lock,
             portable_mode,
-            enable_scaling=settings["enable_scaling"],
+            enable_scaling=settings.get("enable_scaling", True),
         )
     except Exception as err:
         print(f"Could not start GUI process - Error: {err}", file=sys.stderr)

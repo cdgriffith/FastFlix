@@ -218,7 +218,7 @@ class Config(BaseModel):
         try:
             data = Box.from_yaml(filename=self.config_path)
         except Exception:
-            return
+            data = Box()
 
         output = {"enable_scaling": True}
 

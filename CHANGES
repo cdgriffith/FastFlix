@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 5.2.1
+
+* Fixing #426 Version 5.2 does not run on fresh install (thanks to Bandid0)
+* Fixing #427 Error loading videos that do not have tags (thanks to Maddie Davis)
+
 ## Version 5.2.0
 
 * Adding #100 Output format selection (thanks to me)
