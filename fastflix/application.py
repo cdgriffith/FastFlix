@@ -21,12 +21,14 @@ from fastflix.widgets.progress_bar import ProgressBar, Task
 logger = logging.getLogger("fastflix")
 
 
-def create_app():
-    if not get_bool_env("FF_DPI_OFF"):
+def create_app(enable_scaling):
+    if enable_scaling:
         if hasattr(QtCore.Qt, "AA_EnableHighDpiScaling"):
             QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
         if hasattr(QtCore.Qt, "AA_UseHighDpiPixmaps"):
             QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+    else:
+        QtWidgets.QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.Floor)
 
     if reusables.win_based:
         sys.argv += ["-platform", "windows:darkmode=2"]
@@ -138,8 +140,8 @@ def register_app():
             logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
 
 
-def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False):
-    app = create_app()
+def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False, enable_scaling=True):
+    app = create_app(enable_scaling=enable_scaling)
     app.fastflix = FastFlix(queue=queue_list, queue_lock=queue_lock)
     app.fastflix.log_queue = log_queue
     app.fastflix.status_queue = status_queue
