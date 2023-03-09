@@ -183,10 +183,16 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, por
         file.open(QtCore.QFile.OpenModeFlag.ReadOnly | QtCore.QFile.OpenModeFlag.Text)
         stream = QtCore.QTextStream(file)
         data = stream.readAll()
-        if not reusables.win_based:
-            data = data.replace("url(dark:", f"url({str(breeze_styles_path / 'dark')}/")
-            data = data.replace("url(light:", f"url({str(breeze_styles_path / 'light')}/")
-            data = data.replace("url(onyx:", f"url({str(breeze_styles_path / 'onyx')}/")
+        dark = str(breeze_styles_path / "dark")
+        light = str(breeze_styles_path / "light")
+        onyx = str(breeze_styles_path / "onyx")
+        if reusables.win_based:
+            dark = dark.replace("\\", "/")
+            light = light.replace("\\", "/")
+            onyx = onyx.replace("\\", "/")
+        data = data.replace("url(dark:", f"url({dark}/")
+        data = data.replace("url(light:", f"url({light}/")
+        data = data.replace("url(onyx:", f"url({onyx}/")
 
         app.setStyleSheet(data)
 

@@ -14,8 +14,9 @@
 * Adding Ukrainian ( Українська ) language support
 * Adding Korean ( 한국어 ) language support
 * Adding default log cleanup on exit, can be disabled in settings
-* Fixing #398 audio and subtitles disabled when editing queue item (thanks to philblue1 and Don Gafford)
+* Fixing #332 Command Window always shows "qt.svg: Cannot open file" errors (thanks to Wontell)
 * Fixing #350 Unable to burn in subtitles (thanks to Maddie Davis)
+* Fixing #398 audio and subtitles disabled when editing queue item (thanks to philblue1 and Don Gafford)
 * Fixing #413 Wrong equalizer settings with not US locales (thanks to Massimo Pissarello)
 * Fixing #421 Queue extras were not ever being cleaned up (thanks to Maddie Davis)
 * Fixing QSV AV1 setting panel issues
