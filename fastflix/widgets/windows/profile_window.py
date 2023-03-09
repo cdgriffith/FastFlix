@@ -9,7 +9,6 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
 from fastflix.language import t
 from fastflix.widgets.panels.abstract_list import FlixList
-from fastflix.models.config import get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import (
     AOMAV1Settings,
@@ -34,6 +33,7 @@ from fastflix.models.encode import (
     H264VideoToolboxSettings,
     HEVCVideoToolboxSettings,
     SVTAVIFSettings,
+    VVCSettings,
 )
 from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, AdvancedOptions
 from fastflix.shared import error_message
@@ -374,7 +374,7 @@ class ProfileWindow(QtWidgets.QWidget):
             self.profile_name.setStyleSheet("background-color: #707070; border-radius: 10px; color: black")
         self.profile_name.setFixedWidth(300)
 
-        self.advanced_options: AdvancedOptions = main.video_options.advanced.get_settings()
+        self.advanced_options: AdvancedOptions = self.main.video_options.advanced.get_settings()
 
         self.encoder = x265Settings(crf=18)
 
@@ -396,10 +396,8 @@ class ProfileWindow(QtWidgets.QWidget):
         save_button.clicked.connect(self.save)
         save_button.setMaximumWidth(150)
         save_button.setFixedHeight(60)
-
         v_flip, h_flip = self.main.get_flips()
         self.main_settings = Box(
-            keep_aspect_ratio=self.main.widgets.scale.keep_aspect.isChecked(),
             fast_seek=self.main.fast_time,
             rotate=self.main.widgets.rotate.currentIndex(),
             vertical_flip=v_flip,
@@ -407,6 +405,9 @@ class ProfileWindow(QtWidgets.QWidget):
             copy_chapters=self.main.copy_chapters,
             remove_metadata=self.main.remove_metadata,
             remove_hdr=self.main.remove_hdr,
+            resolution_method=self.main.resolution_method(),
+            resolution_custom=self.main.resolution_custom(),
+            output_type=self.main.widgets.output_type_combo.currentText(),
         )
 
         self.tab_area = QtWidgets.QTabWidget()
@@ -492,7 +493,6 @@ class ProfileWindow(QtWidgets.QWidget):
         new_profile = Profile(
             profile_version=2,
             auto_crop=self.primary_tab.auto_crop.isChecked(),
-            keep_aspect_ratio=self.main_settings.keep_aspect_ratio,
             fast_seek=self.main_settings.fast_seek,
             rotate=self.main_settings.rotate,
             vertical_flip=self.main_settings.vertical_flip,
@@ -501,6 +501,9 @@ class ProfileWindow(QtWidgets.QWidget):
             remove_metadata=self.main_settings.remove_metadata,
             remove_hdr=self.main_settings.remove_hdr,
             audio_filters=self.audio_select.get_settings(),
+            resolution_method=self.main_settings.resolution_method,
+            resolution_custom=self.main_settings.resolution_custom,
+            output_type=self.main.widgets.output_type_combo.currentText(),
             # subtitle_filters=self.subtitle_select.get_settings(),
             subtitle_language=sub_lang,
             subtitle_select=subtitle_enabled,
@@ -513,6 +516,8 @@ class ProfileWindow(QtWidgets.QWidget):
 
         if isinstance(self.encoder, x265Settings):
             new_profile.x265 = self.encoder
+        elif isinstance(self.encoder, VVCSettings):
+            new_profile.vcc = self.encoder
         elif isinstance(self.encoder, x264Settings):
             new_profile.x264 = self.encoder
         elif isinstance(self.encoder, rav1eSettings):
@@ -556,7 +561,7 @@ class ProfileWindow(QtWidgets.QWidget):
         elif isinstance(self.encoder, SVTAVIFSettings):
             new_profile.svt_av1_avif = self.encoder
         else:
-            logger.error("Profile cannot be saved! Unknown encoder type.")
+            logger.error(f"Profile cannot be saved! Unknown encoder type {self.encoder.__class__.__name__}.")
             return
 
         self.app.fastflix.config.profiles[profile_name] = new_profile
@@ -565,18 +570,3 @@ class ProfileWindow(QtWidgets.QWidget):
         self.main.widgets.profile_box.addItem(profile_name)
         self.main.widgets.profile_box.setCurrentText(profile_name)
         self.hide()
-
-    def delete_current_profile(self):
-        if self.app.fastflix.config.selected_profile in get_preset_defaults():
-            return error_message(
-                f"{self.app.fastflix.config.selected_profile} " f"{t('is a default profile and will not be removed')}"
-            )
-        self.main.loading_video = True
-        del self.app.fastflix.config.profiles[self.app.fastflix.config.selected_profile]
-        self.app.fastflix.config.selected_profile = "Standard Profile"
-        self.app.fastflix.config.save()
-        self.main.widgets.profile_box.clear()
-        self.main.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
-        self.main.loading_video = False
-        self.main.widgets.profile_box.setCurrentText("Standard Profile")
-        self.main.widgets.convert_to.setCurrentIndex(0)

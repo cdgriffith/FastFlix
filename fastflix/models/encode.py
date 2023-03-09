@@ -71,6 +71,18 @@ class x265Settings(EncoderSettings):
     frame_threads: int = 0
 
 
+class VVCSettings(EncoderSettings):
+    name = "VVC"  # MUST match encoder main.name
+    preset: str = "medium"
+    qp: Optional[Union[int, float]] = 22
+    bitrate: Optional[str] = None
+    vvc_params: list[str] = Field(default_factory=list)
+    tier: str = "main"
+    subjopt: bool = True
+    levelidc: str | None = None
+    period: int | None = None
+
+
 class x264Settings(EncoderSettings):
     name = "AVC (x264)"
     preset: str = "medium"
@@ -179,6 +191,7 @@ class QSVEncCSettings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     force_ten_bit: bool = False
+    qp_mode: str = "cqp"
 
 
 class QSVEncCAV1Settings(EncoderSettings):
@@ -199,6 +212,7 @@ class QSVEncCAV1Settings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     force_ten_bit: bool = False
+    qp_mode: str = "cqp"
 
 
 class QSVEncCH264Settings(EncoderSettings):
@@ -219,6 +233,7 @@ class QSVEncCH264Settings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     force_ten_bit: bool = False
+    qp_mode: str = "cqp"
 
 
 class NVEncCAVCSettings(EncoderSettings):
@@ -442,4 +457,5 @@ setting_types = {
     "hevc_videotoolbox": HEVCVideoToolboxSettings,
     "h264_videotoolbox": H264VideoToolboxSettings,
     "svt_av1_avif": SVTAVIFSettings,
+    "vvc": VVCSettings,
 }

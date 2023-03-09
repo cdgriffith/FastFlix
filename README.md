@@ -18,14 +18,14 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 
 ## Software Encoders
 
-| Encoder   | x265 | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 |
-|-----------|------|------|-------|---------|---------|-----|
-| HDR10     | ✓    |      |       |         | ✓       | ✓*  |
-| HDR10+    | ✓    |      |       |         |         |     |
-| Audio     | ✓    |  ✓   | ✓     | ✓       | ✓       | ✓   |
-| Subtitles | ✓    |  ✓   | ✓     | ✓       | ✓       |     |
-| Covers    | ✓    |  ✓   | ✓     | ✓       | ✓       |     |
-| bt.2020   | ✓    |   ✓  | ✓     | ✓       | ✓       | ✓   |
+| Encoder   | x265 | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | VVC |
+|-----------|------|------|-------|---------|---------|-----|-----|
+| HDR10     | ✓    |      |       |         | ✓       | ✓*  |     |
+| HDR10+    | ✓    |      |       |         |         |     |     |
+| Audio     | ✓    |  ✓   | ✓     | ✓       | ✓       | ✓   | ✓   |
+| Subtitles | ✓    |  ✓   | ✓     | ✓       | ✓       |     | ✓   |
+| Covers    | ✓    |  ✓   | ✓     | ✓       | ✓       |     | ✓   |
+| bt.2020   | ✓    |   ✓  | ✓     | ✓       | ✓       | ✓   | ✓   |
 
 ## Hardware Encoders 
 
@@ -36,27 +36,27 @@ extracted to a directory of your choice, and then linked too in FastFlix Setting
 
 ### AV1
 
-Theis is only supported on the latest generation of graphics cards as of 2022, specifically the Intel Arc and Nvidia 4000 series. 
+AV1 is only supported on the latest generation of graphics cards specifically the Intel Arc, Nvidia 4000 series and AMD 7000 series 
 
-| Encoder   | [NVEncC AV1](https://github.com/rigaya/NVEnc/releases) | [QSVEncC AV!](https://github.com/rigaya/QSVEnc/releases) |
-|-----------|--------------------------------------------------------|----------------------------------------------------------|
-| HDR10     | ✓                                                      | ✓                                                        |
-| HDR10+    | ✓                                                      | ✓                                                        |
-| Audio     | ✓*                                                     | ✓*                                                       |
-| Subtitles | ✓                                                      | ✓                                                        |
-| Covers    |                                                        |                                                          |
-| bt.2020   | ✓                                                      | ✓                                                        |
+| Encoder   | [NVEncC AV1](https://github.com/rigaya/NVEnc/releases) | [QSVEncC AV1](https://github.com/rigaya/QSVEnc/releases) | [VCEEncC AV1](https://github.com/rigaya/VCEEnc/releases) |
+|-----------|--------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
+| HDR10     | ✓                                                      | ✓                                                        | ✓                                                        |
+| HDR10+    | ✓                                                      | ✓                                                        | ✓                                                        |
+| Audio     | ✓*                                                     | ✓*                                                       | ✓*                                                       |
+| Subtitles | ✓                                                      | ✓                                                        | ✓                                                        |
+| Covers    |                                                        |                                                          |                                                          |
+| bt.2020   | ✓                                                      | ✓                                                        | ✓                                                        |
 
 ### HEVC / H.265
 
-| Encoder   | NVENC HEVC | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | [VCEEncC HEVC](https://github.com/rigaya/VCEEnc/releases) | [QSVEncC HEVC](https://github.com/rigaya/QSVEnc/releases) |
-|-----------|------------|---------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|
-| HDR10     |            | ✓                                                       | ✓                                                         | ✓                                                         |
-| HDR10+    |            | ✓                                                       | ✓                                                         | ✓                                                         |
-| Audio     | ✓          | ✓*                                                      | ✓*                                                        | ✓*                                                        |
-| Subtitles | ✓          | ✓                                                       | ✓                                                         | ✓                                                         |
-| Covers    | ✓          |                                                         |                                                           |                                                           |
-| bt.2020   | ✓          | ✓                                                       | ✓                                                         | ✓                                                         |
+| Encoder   | NVENC HEVC (ffmpeg) | [NVEncC HEVC](https://github.com/rigaya/NVEnc/releases) | [VCEEncC HEVC](https://github.com/rigaya/VCEEnc/releases) | [QSVEncC HEVC](https://github.com/rigaya/QSVEnc/releases) |
+|-----------|---------------------|---------------------------------------------------------|-----------------------------------------------------------|-----------------------------------------------------------|
+| HDR10     |                     | ✓                                                       | ✓                                                         | ✓                                                         |
+| HDR10+    |                     | ✓                                                       | ✓                                                         | ✓                                                         |
+| Audio     | ✓                   | ✓*                                                      | ✓*                                                        | ✓*                                                        |
+| Subtitles | ✓                   | ✓                                                       | ✓                                                         | ✓                                                         |
+| Covers    | ✓                   |                                                         |                                                           |                                                           |
+| bt.2020   | ✓                   | ✓                                                       | ✓                                                         | ✓                                                         |
 
 ### AVC / H.264
 
@@ -89,20 +89,6 @@ Windows: Go into FastFlix's settings and select the corresponding EXE file for e
 
 Linux: Install the rpm or deb and restart FastFlix
 
-
-## Running from source code
-
-Requires python3.8+
-
-```
-git clone https://github.com/cdgriffith/FastFlix.git
-cd FastFlix
-python3 -m venv venv
-. venv/bin/activate
-pip install -r requirements.txt
-python -m fastflix
-```
-
 # HDR
 
 On any 10-bit or higher video output, FastFlix will copy the input HDR colorspace (bt2020). Which is [different than HDR10 or HDR10+](https://codecalamity.com/hdr-hdr10-hdr10-hlg-and-dolby-vision/).
@@ -117,6 +103,7 @@ AV1 is still in development, and hopefully all encoder will support it in the fu
 
 * QSVEnc - Works! 
 * NVEncC - Works!
+* VCEEncC - Works!
 * rav1e -  can set mastering data and CLL via their CLI but [not through ffmpeg](https://github.com/xiph/rav1e/issues/2554).
 * SVT AV1 - Now supports HDR10 with latest master ffmpeg build, make sure to update before trying!
 * aomenc (libaom-av1) - does not look to support HDR10
@@ -143,16 +130,27 @@ FastFlix does not plan to support Dolby Vision's proprietary format at this time
 
 Check out the different ways you can help [support FastFlix](https://github.com/cdgriffith/FastFlix/wiki/Support-FastFlix)!
 
+# Multilingual Support
+
+FastFlix is machine translated using DeepL into Spanish (español), French (Français), German (Deutsch), 
+Italian (Italiano), Chinese (中文), Japanese (日本語), Portuguese (Português), Swedish (svenska), Ukrainian (Українська),
+Russian (русский), Polish (polskie) and Korean (한국어).
+
+If something sounds wrong in your language, please open an issue or ping me on the [discord](https://discord.gg/GUBFP6f) channel with which line in
+[the language file](https://github.com/cdgriffith/FastFlix/blob/master/fastflix/data/languages.yaml) needs fixed!
+
+Special thanks to [leonardyan](https://github.com/leonardyan) for numerous Chinese corrections!
+
 # License
 
-Copyright (C) 2019-2022 Chris Griffith
+Copyright (C) 2019-2023 Chris Griffith
 
 The code itself is licensed under the MIT which you can read in the `LICENSE` file. <br>
 Read more about the release licensing in the [docs](docs/README.md) folder. <br>
 
 Custom icons designed by Joey Catt | Onyx Studios
 
-Encoder icons for [VP9](https://commons.wikimedia.org/wiki/File:Vp9-logo-for-mediawiki.svg) and [AOM AV1](https://commons.wikimedia.org/wiki/File:AV1_logo_2018.svg) are from Wikimedia Commons all others are self created.
+Encoder icons for [VP9](https://commons.wikimedia.org/wiki/File:Vp9-logo-for-mediawiki.svg), [AOM AV1](https://commons.wikimedia.org/wiki/File:AV1_logo_2018.svg) and [VVC](https://en.wikipedia.org/wiki/File:Versatile_Video_Coding_(logo).svg) are from Wikimedia Commons all others are self created.
 
 Additional button icons from [https://uxwing.com](https://uxwing.com)
 

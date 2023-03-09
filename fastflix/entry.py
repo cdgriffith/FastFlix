@@ -15,8 +15,6 @@ try:
     from fastflix.conversion_worker import queue_worker
     from fastflix.models.config import Config
     from fastflix.models.fastflix import FastFlix
-    from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
-    from fastflix.shared import base_path, error_message, file_date, latest_fastflix, message
     from fastflix.version import __version__
 
 except ImportError as err:
@@ -28,11 +26,23 @@ except ImportError as err:
 
 def separate_app_process(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False):
     """This prevents any QT components being imported in the main process"""
+    from fastflix.models.config import Config
+
+    settings = Config().pre_load(portable_mode=portable_mode)
+
     from fastflix.application import start_app
 
     freeze_support()
     try:
-        start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode)
+        start_app(
+            worker_queue,
+            status_queue,
+            log_queue,
+            queue_list,
+            queue_lock,
+            portable_mode,
+            enable_scaling=settings["enable_scaling"],
+        )
     except Exception as err:
         print(f"Could not start GUI process - Error: {err}", file=sys.stderr)
         raise err
@@ -64,6 +74,7 @@ def startup_options():
             import fastflix.encoders.copy.main
             import fastflix.encoders.gif.main
             import fastflix.encoders.hevc_x265.main
+            import fastflix.encoders.vvc.main
             import fastflix.encoders.rav1e.main
             import fastflix.encoders.svt_av1.main
             import fastflix.encoders.vp9.main

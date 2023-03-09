@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __author__ = "Chris Griffith"
-from pathlib import Path
-
-import pkg_resources
+import importlib.resources
 
 name = "AVIF (SVT AV1)"
 requires = "libsvtav1"
 
-video_extension = "avif"
+video_extensions = [".avif"]
 video_dimension_divisor = 8
-icon = str(Path(pkg_resources.resource_filename(__name__, f"../../data/encoders/icon_svt_av1.png")).resolve())
+
+ref = importlib.resources.files("fastflix") / f"data/encoders/icon_svt_av1.png"
+with importlib.resources.as_file(ref) as icon_file:
+    icon = str(icon_file.resolve())
+
 
 enable_subtitles = True
 enable_audio = False

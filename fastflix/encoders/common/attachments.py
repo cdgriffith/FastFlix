@@ -15,7 +15,6 @@ def image_type(file: Path):
 
 
 def build_attachments(attachments: list[AttachmentTrack]) -> str:
-
     commands = []
     for attachment in attachments:
         if attachment.attachment_type == "cover":

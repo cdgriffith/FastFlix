@@ -6,10 +6,10 @@ from pathlib import Path
 from subprocess import PIPE, CompletedProcess, Popen, TimeoutExpired, run, check_output
 from typing import List, Tuple, Union
 from distutils.version import LooseVersion
+import shlex
 
 import reusables
 from box import Box, BoxError
-from pathvalidate import sanitize_filepath
 
 from fastflix.exceptions import FlixError
 from fastflix.language import t
@@ -194,7 +194,7 @@ def probe(app: FastFlixApp, file: Path) -> Box:
         "json",
         "-show_format",
         "-show_streams",
-        f"{clean_file_string(file)}",
+        clean_file_string(file),
     ]
     result = execute(command)
     if result.returncode != 0:
@@ -292,14 +292,14 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
                 f"{ffmpeg}",
                 "-y",
                 "-i",
-                f"{clean_file_string(source)}",
+                clean_file_string(source),
                 "-map",
                 f"0:{stream}",
                 "-c",
                 "copy",
                 "-vframes",
                 "1",
-                f"{clean_file_string(file_name)}",
+                clean_file_string(file_name),
             ],
             work_dir=work_dir,
             timeout=5,
@@ -316,22 +316,30 @@ def generate_thumbnail_command(
     start_time: float = 0,
     input_track: int = 0,
     enable_opencl: bool = False,
-) -> str:
-    command_options = [
-        f'"{config.ffmpeg}"',
-        f"-ss {start_time}" if start_time else "",
-        "-loglevel warning",
-        f'-i "{clean_file_string(source)}"',
-        ("-init_hw_device opencl=ocl -filter_hw_device ocl" if enable_opencl else ""),
-        filters,
-        f"-map 0:{input_track}" if "-map" not in filters else "",
-        "-an",
-        "-y",
-        "-map_metadata -1",
-        "-frames:v 1",
-        f'"{clean_file_string(output)}"',
-    ]
-    return " ".join(command_options)
+) -> list[str]:
+    command = [str(config.ffmpeg)]
+
+    # Trim from start this many seconds
+    if start_time:
+        command += ["-ss", str(start_time)]
+
+    # Less logging
+    # Video file input
+    command += ["-loglevel", "warning", "-i", clean_file_string(source)]
+
+    # Hardware acceleration with OpenCL
+    if enable_opencl:
+        command += ["-init_hw_device", "opencl=ocl", "-filter_hw_device", "ocl"]
+
+    command += shlex.split(filters)
+
+    # Apply video track selection
+    if "-map" not in filters:
+        command += ["-map", f"0:{input_track}"]
+
+    command += ["-an", "-y", "-map_metadata", "-1", "-frames:v", "1", clean_file_string(output)]
+
+    return command
 
 
 def get_auto_crop(
@@ -352,7 +360,7 @@ def get_auto_crop(
             "-ss",
             f"{start_time}",
             "-i",
-            f"{clean_file_string(source)}",
+            clean_file_string(source),
             "-map",
             f"0:{input_track}",
             "-vf",
@@ -401,7 +409,7 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
                 f"{config.ffmpeg}",
                 "-hide_banner",
                 "-i",
-                f"{clean_file_string(source)}",
+                clean_file_string(source),
                 "-vf",
                 "idet",
                 "-frames:v",
@@ -518,7 +526,7 @@ def parse_hdr_details(app: FastFlixApp, **_):
                     "%+#1",
                     "-show_entries",
                     "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt",
-                    f"{clean_file_string(app.fastflix.current_video.source)}",
+                    clean_file_string(app.fastflix.current_video.source),
                 ]
             )
 

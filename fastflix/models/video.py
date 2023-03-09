@@ -32,6 +32,7 @@ from fastflix.models.encode import (
     HEVCVideoToolboxSettings,
     H264VideoToolboxSettings,
     SVTAVIFSettings,
+    VVCSettings,
 )
 
 __all__ = ["VideoSettings", "Status", "Video", "Crop", "Status"]
@@ -81,9 +82,12 @@ class VideoSettings(BaseModel):
     remove_metadata: bool = True
     copy_chapters: bool = True
     video_title: str = ""
+    video_track_title: str = ""
     selected_track: int = 0
     output_path: Path = None
-    scale: Optional[str] = None
+    # scale: Optional[str] = None
+    resolution_method: str = "auto"
+    resolution_custom: str | None = None
     deinterlace: bool = False
     video_speed: Union[float, int] = 1
     tone_map: str = "hable"
@@ -124,6 +128,7 @@ class VideoSettings(BaseModel):
         HEVCVideoToolboxSettings,
         H264VideoToolboxSettings,
         SVTAVIFSettings,
+        VVCSettings,
     ] = None
     audio_tracks: list[AudioTrack] = Field(default_factory=list)
     subtitle_tracks: list[SubtitleTrack] = Field(default_factory=list)
@@ -243,3 +248,19 @@ class Video(BaseModel):
         if not stream:
             return ""
         return stream.get("avg_frame_rate", "")
+
+    @property
+    def scale(self):
+        if self.video_settings.resolution_method == "auto":
+            return None
+        if self.video_settings.resolution_method == "custom":
+            return self.video_settings.resolution_custom
+        if self.video_settings.resolution_method == "long edge":
+            if self.width > self.height:
+                return f"{self.video_settings.resolution_custom}:-8"
+            else:
+                return f"-8:{self.video_settings.resolution_custom}"
+        if self.video_settings.resolution_method == "width":
+            return f"{self.video_settings.resolution_custom}:-8"
+        else:
+            return f"-8:{self.video_settings.resolution_custom}"

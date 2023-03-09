@@ -14,10 +14,10 @@ from PySide6.QtGui import QAction
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
-from fastflix.models.config import setting_types
+from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
-from fastflix.resources import main_icon, get_icon
+from fastflix.resources import main_icon, get_icon, video_file_types
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message
 from fastflix.windows_tools import cleanup_windows_notification
 from fastflix.widgets.about import About
@@ -28,6 +28,7 @@ from fastflix.widgets.windows.profile_window import ProfileWindow
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
 from fastflix.widgets.windows.concat import ConcatWindow
+from fastflix.widgets.windows.multiple_files import MultipleFilesWindow
 
 logger = logging.getLogger("fastflix")
 
@@ -47,7 +48,6 @@ class Container(QtWidgets.QMainWindow):
         self.init_menu()
 
         self.main = Main(self, app)
-        self.profile = ProfileWindow(self.app, self.main)
 
         self.setCentralWidget(self.main)
         self.setBaseSize(QtCore.QSize(1350, 750))
@@ -58,7 +58,7 @@ class Container(QtWidgets.QMainWindow):
         if self.app.fastflix.config.theme == "onyx":
             self.setStyleSheet(
                 """
-                QAbstractItemView{ background-color: #707070; }
+                QAbstractItemView{ background-color: #4b5054; }
                 QPushButton{ border-radius:10px; }
                 QLineEdit{ background-color: #707070; color: black; border-radius: 10px; }
                 QTextEdit{ background-color: #707070; color: black; }
@@ -121,11 +121,16 @@ class Container(QtWidgets.QMainWindow):
         for item in self.app.fastflix.config.work_path.iterdir():
             if item.is_dir() and item.stem.startswith("temp_"):
                 shutil.rmtree(item, ignore_errors=True)
+            if item.is_file() and item.name.startswith("concat_"):
+                item.unlink(missing_ok=True)
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".tiff", ".tif")):
                 item.unlink()
         shutil.rmtree(self.app.fastflix.config.work_path / "covers", ignore_errors=True)
         if reusables.win_based:
             cleanup_windows_notification()
+
+        if self.app.fastflix.config.clean_old_logs:
+            self.clean_old_logs(show_errors=False)
         self.main.close(from_container=True)
         super(Container, self).closeEvent(a0)
 
@@ -139,6 +144,9 @@ class Container(QtWidgets.QMainWindow):
         menubar.setStyleSheet("font-size: 14px")
 
         file_menu = menubar.addMenu(t("File"))
+
+        load_folder = QAction(self.si(QtWidgets.QStyle.SP_DirOpenIcon), t("Load Directory"), self)
+        load_folder.triggered.connect(self.open_many)
 
         setting_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogListView), t("Settings"), self)
         setting_action.setShortcut("Ctrl+S")
@@ -156,6 +164,8 @@ class Container(QtWidgets.QMainWindow):
         exit_action.setStatusTip(t("Exit application"))
         exit_action.triggered.connect(self.close)
 
+        file_menu.addAction(load_folder)
+        file_menu.addSeparator()
         file_menu.addAction(setting_action)
         file_menu.addSeparator()
         file_menu.addAction(self.stay_on_top_action)
@@ -245,7 +255,7 @@ class Container(QtWidgets.QMainWindow):
         if not self.app.fastflix.current_video:
             error_message(t("Please load in a video to configure a new profile"))
         else:
-            self.profile.show()
+            ProfileWindow(self.app, self.main).show()
 
     def show_profile(self):
         self.profile_details = ProfileDetails(
@@ -254,7 +264,19 @@ class Container(QtWidgets.QMainWindow):
         self.profile_details.show()
 
     def delete_profile(self):
-        self.profile.delete_current_profile()
+        if self.app.fastflix.config.selected_profile in get_preset_defaults():
+            return error_message(
+                f"{self.app.fastflix.config.selected_profile} " f"{t('is a default profile and will not be removed')}"
+            )
+        self.main.loading_video = True
+        del self.app.fastflix.config.profiles[self.app.fastflix.config.selected_profile]
+        self.app.fastflix.config.selected_profile = "Standard Profile"
+        self.app.fastflix.config.save()
+        self.main.widgets.profile_box.clear()
+        self.main.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
+        self.main.loading_video = False
+        self.main.widgets.profile_box.setCurrentText("Standard Profile")
+        self.main.widgets.convert_to.setCurrentIndex(0)
 
     def show_logs(self):
         self.logs.show()
@@ -288,11 +310,12 @@ class Container(QtWidgets.QMainWindow):
                 self.app.fastflix.config.ffprobe = ffprobe
         self.pb = None
 
-    def clean_old_logs(self):
+    def clean_old_logs(self, show_errors=True):
         try:
             self.pb = ProgressBar(self.app, [Task(t("Clean Old Logs"), clean_logs)], signal_task=True, can_cancel=False)
         except Exception:
-            error_message(t("Could not compress old logs"), traceback=True)
+            if show_errors:
+                error_message(t("Could not compress old logs"), traceback=True)
         self.pb = None
 
     def set_stay_top(self):
@@ -307,6 +330,15 @@ class Container(QtWidgets.QMainWindow):
 
         self.app.fastflix.config.stay_on_top = not self.app.fastflix.config.stay_on_top
         self.app.fastflix.config.save()
+
+    def open_many(self):
+        self.mfw = MultipleFilesWindow(app=self.app, main=self.main)
+        self.mfw.show()
+
+        # folder_name = QtWidgets.QFileDialog.getExistingDirectory(self)
+        # if not folder_name:
+        #     return
+        # self.main.open_many(paths=[x for x in Path(folder_name).glob("*") if x.name.lower().endswith(video_file_types)])
 
 
 class OpenFolder(QtCore.QThread):
@@ -338,7 +370,7 @@ class ProfileDetails(QtWidgets.QWidget):
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QVBoxLayout()
         title = QtWidgets.QLabel(t("Encoder Settings"))
-        title.setFont(QtGui.QFont("helvetica", 9, weight=70))
+        title.setFont(QtGui.QFont(self.app.font().family(), 9, weight=70))
         layout.addWidget(title)
         for k, v in settings.dict().items():
             item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
@@ -357,7 +389,7 @@ class ProfileDetails(QtWidgets.QWidget):
 
         main_section = QtWidgets.QVBoxLayout(self)
         profile_title = QtWidgets.QLabel(f"{t('Profile_window')}: {profile_name}")
-        profile_title.setFont(QtGui.QFont("helvetica", 10, weight=70))
+        # profile_title.setFont(QtGui.QFont(self.app.font().family(), 10, weight=70))
         main_section.addWidget(profile_title)
         for k, v in profile.dict().items():
             if k == "advanced_options":

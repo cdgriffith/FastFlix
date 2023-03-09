@@ -21,19 +21,21 @@ from fastflix.widgets.progress_bar import ProgressBar, Task
 logger = logging.getLogger("fastflix")
 
 
-def create_app():
-    if not get_bool_env("FF_DPI_OFF"):
+def create_app(enable_scaling):
+    if enable_scaling:
         if hasattr(QtCore.Qt, "AA_EnableHighDpiScaling"):
             QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
         if hasattr(QtCore.Qt, "AA_UseHighDpiPixmaps"):
             QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+    else:
+        QtWidgets.QApplication.setHighDpiScaleFactorRoundingPolicy(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.Floor)
 
     if reusables.win_based:
         sys.argv += ["-platform", "windows:darkmode=2"]
     main_app = FastFlixApp(sys.argv)
     main_app.allWindows()
     main_app.setApplicationDisplayName("FastFlix")
-    my_font = QtGui.QFont("helvetica", 9)
+    my_font = QtGui.QFont("Arial" if "Arial" in QtGui.QFontDatabase().families() else "Sans Serif", 9)
     main_app.setFont(my_font)
     main_app.setWindowIcon(QtGui.QIcon(main_icon))
     return main_app
@@ -75,6 +77,7 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.nvencc_av1 import main as nvencc_av1_plugin
     from fastflix.encoders.qsvencc_av1 import main as qsvencc_av1_plugin
     from fastflix.encoders.vceencc_av1 import main as vceencc_av1_plugin
+    from fastflix.encoders.vvc import main as vvc_plugin
 
     encoders = [
         hevc_plugin,
@@ -89,6 +92,7 @@ def init_encoders(app: FastFlixApp, **_):
         vp9_plugin,
         gif_plugin,
         webp_plugin,
+        vvc_plugin,
         copy_plugin,
     ]
 
@@ -136,8 +140,8 @@ def register_app():
             logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
 
 
-def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False):
-    app = create_app()
+def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False, enable_scaling=True):
+    app = create_app(enable_scaling=enable_scaling)
     app.fastflix = FastFlix(queue=queue_list, queue_lock=queue_lock)
     app.fastflix.log_queue = log_queue
     app.fastflix.status_queue = status_queue
@@ -179,10 +183,16 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, por
         file.open(QtCore.QFile.OpenModeFlag.ReadOnly | QtCore.QFile.OpenModeFlag.Text)
         stream = QtCore.QTextStream(file)
         data = stream.readAll()
-        if not reusables.win_based:
-            data = data.replace("url(dark:", f"url({str(breeze_styles_path / 'dark')}/")
-            data = data.replace("url(light:", f"url({str(breeze_styles_path / 'light')}/")
-            data = data.replace("url(onyx:", f"url({str(breeze_styles_path / 'onyx')}/")
+        dark = str(breeze_styles_path / "dark")
+        light = str(breeze_styles_path / "light")
+        onyx = str(breeze_styles_path / "onyx")
+        if reusables.win_based:
+            dark = dark.replace("\\", "/")
+            light = light.replace("\\", "/")
+            onyx = onyx.replace("\\", "/")
+        data = data.replace("url(dark:", f"url({dark}/")
+        data = data.replace("url(light:", f"url({light}/")
+        data = data.replace("url(onyx:", f"url({onyx}/")
 
         app.setStyleSheet(data)
 

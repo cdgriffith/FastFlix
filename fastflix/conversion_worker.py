@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 from queue import Empty
 from typing import Literal
+from datetime import datetime
 
 import reusables
 from appdirs import user_data_dir
@@ -10,7 +11,10 @@ from pathvalidate import sanitize_filename
 
 from fastflix.command_runner import BackgroundRunner
 from fastflix.language import t
-from fastflix.shared import file_date
+
+
+def file_date():
+    return datetime.now().isoformat().replace(":", ".").rsplit(".", 1)[0]
 
 
 logger = logging.getLogger("fastflix-core")

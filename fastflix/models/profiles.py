@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from pathlib import Path
 from typing import Optional, Union
 
 from pydantic import BaseModel, Field, validator
-from box import Box
 from enum import Enum
 
 from fastflix.models.encode import (
@@ -30,9 +28,9 @@ from fastflix.models.encode import (
     HEVCVideoToolboxSettings,
     H264VideoToolboxSettings,
     SVTAVIFSettings,
+    VVCSettings,
 )
 
-from fastflix.encoders.common.audio import channel_list
 
 __all__ = ["MatchItem", "MatchType", "AudioMatch", "Profile", "SubtitleMatch", "AdvancedOptions"]
 
@@ -119,7 +117,6 @@ class AdvancedOptions(BaseModel):
 class Profile(BaseModel):
     profile_version: Optional[int] = 1
     auto_crop: bool = False
-    keep_aspect_ratio: bool = True
     fast_seek: bool = True
     rotate: int = 0
     vertical_flip: bool = False
@@ -128,6 +125,9 @@ class Profile(BaseModel):
     remove_metadata: bool = True
     remove_hdr: bool = False
     encoder: str = "HEVC (x265)"
+    resolution_method: str = "auto"
+    resolution_custom: str | None = None
+    output_type: str = ".mkv"
 
     audio_filters: Optional[list[AudioMatch]] = None
     # subtitle_filters: Optional[list[SubtitleMatch]] = None
@@ -147,6 +147,7 @@ class Profile(BaseModel):
     advanced_options: AdvancedOptions = Field(default_factory=AdvancedOptions)
 
     x265: Optional[x265Settings] = None
+    vvc: Optional[VVCSettings] = None
     x264: Optional[x264Settings] = None
     rav1e: Optional[rav1eSettings] = None
     svt_av1: Optional[SVTAV1Settings] = None

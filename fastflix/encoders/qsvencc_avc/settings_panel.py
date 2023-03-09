@@ -86,10 +86,11 @@ class QSVEncH264(SettingPanel):
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_profile(), 1, 0, 1, 2)
         grid.addLayout(self.init_lookahead(), 2, 0, 1, 2)
+        grid.addLayout(self.init_qp_mode(), 3, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
-        breaker_label.setFont(QtGui.QFont("helvetica", 8, weight=55))
+        breaker_label.setFont(QtGui.QFont(self.app.font().family(), 8, weight=55))
 
         breaker.addWidget(get_breaker(), stretch=1)
         breaker.addWidget(breaker_label, alignment=QtCore.Qt.AlignHCenter)
@@ -158,6 +159,16 @@ class QSVEncH264(SettingPanel):
             tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, ll - Low Latency, ull - Ultra Low Latency",
             options=["hq", "ll", "ull", "lossless"],
             opt="tune",
+        )
+
+    def init_qp_mode(self):
+        return self._add_combo_box(
+            label="QP Mode",
+            widget_name="qp_mode",
+            tooltip="Constant Quality, Intelligent Constant Quality, Intelligent + Lookahead Constant Quality",
+            options=["cqp", "icq", "la-icq"],
+            opt="qp_mode",
+            default="cqp",
         )
 
     def init_profile(self):
@@ -321,10 +332,10 @@ class QSVEncH264(SettingPanel):
 
     def set_mode(self, x):
         self.mode = x.text()
-        for group in ("init", "max", "min"):
+        for group in ("max", "min"):
             for frame_type in ("i", "p", "b"):
                 self.widgets[f"{group}_q_{frame_type}"].setEnabled(self.mode.lower() == "bitrate")
-        self.widgets.vbr_target.setEnabled(self.mode.lower() == "bitrate")
+        # self.widgets.vbr_target.setEnabled(self.mode.lower() == "bitrate")
         self.main.build_commands()
 
     def new_source(self):

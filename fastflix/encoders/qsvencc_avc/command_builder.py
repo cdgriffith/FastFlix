@@ -94,7 +94,7 @@ def build(fastflix: FastFlix):
         trim,
         (f"--vpp-rotate {video.video_settings.rotate * 90}" if video.video_settings.rotate else ""),
         transform,
-        (f'--output-res {video.video_settings.scale.replace(":", "x")}' if video.video_settings.scale else ""),
+        (f'--output-res {video.scale.replace(":", "x")}' if video.scale else ""),
         crop,
         (
             f"--video-metadata clear --metadata clear"
@@ -105,7 +105,7 @@ def build(fastflix: FastFlix):
         ("--chapter-copy" if video.video_settings.copy_chapters else ""),
         "-c",
         "h264",
-        (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
+        (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--{settings.qp_mode} {settings.cqp}"),
         vbv,
         (f"--qp-min {min_q}" if min_q and settings.bitrate else ""),
         (f"--qp-max {max_q}" if max_q and settings.bitrate else ""),

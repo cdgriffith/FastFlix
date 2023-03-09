@@ -55,6 +55,8 @@ class LargePreview(QtWidgets.QWidget):
 
     def generate_image(self):
         settings = self.main.app.fastflix.current_video.video_settings.dict()
+        if not self.main.app.fastflix.current_video.video_settings.video_encoder_settings:
+            return
 
         if (
             self.main.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"

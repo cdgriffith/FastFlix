@@ -6,9 +6,10 @@ from fastflix.models.fastflix import FastFlix
 
 
 def build(fastflix: FastFlix):
-
     beginning, ending = generate_all(fastflix, "copy", disable_filters=True)
     rotation = 0
+    if not fastflix.current_video.current_video_stream:
+        return []
     if "rotate" in fastflix.current_video.current_video_stream.get("tags", {}):
         rotation = abs(int(fastflix.current_video.current_video_stream.tags.rotate))
     elif "rotation" in fastflix.current_video.current_video_stream.get("side_data_list", [{}])[0]:

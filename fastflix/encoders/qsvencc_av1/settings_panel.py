@@ -65,8 +65,8 @@ def get_breaker():
     return breaker_line
 
 
-class QSVEnc(SettingPanel):
-    profile_name = "qsvencc_hevc"
+class QSVAV1Enc(SettingPanel):
+    profile_name = "qsvencc_av1"
     hdr10plus_signal = QtCore.Signal(str)
     hdr10plus_ffmpeg_signal = QtCore.Signal(str)
 
@@ -86,12 +86,12 @@ class QSVEnc(SettingPanel):
         grid.addLayout(self._add_custom(title="Custom QSVEncC options", disable_both_passes=True), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        # grid.addLayout(self.init_profile(), 1, 0, 1, 2)
         grid.addLayout(self.init_lookahead(), 1, 0, 1, 2)
+        grid.addLayout(self.init_qp_mode(), 2, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
-        breaker_label.setFont(QtGui.QFont("helvetica", 8, weight=55))
+        breaker_label.setFont(QtGui.QFont(self.app.font().family(), 8, weight=55))
 
         breaker.addWidget(get_breaker(), stretch=1)
         breaker.addWidget(breaker_label, alignment=QtCore.Qt.AlignHCenter)
@@ -164,6 +164,16 @@ class QSVEnc(SettingPanel):
             tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, ll - Low Latency, ull - Ultra Low Latency",
             options=["hq", "ll", "ull", "lossless"],
             opt="tune",
+        )
+
+    def init_qp_mode(self):
+        return self._add_combo_box(
+            label="QP Mode",
+            widget_name="qp_mode",
+            tooltip="Constant Quality, Intelligent Constant Quality, Intelligent + Lookahead Constant Quality",
+            options=["cqp", "icq", "la-icq"],
+            opt="qp_mode",
+            default="cqp",
         )
 
     # def init_profile(self):
@@ -336,6 +346,7 @@ class QSVEnc(SettingPanel):
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
+            qp_mode=self.widgets.qp_mode.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()
@@ -345,10 +356,10 @@ class QSVEnc(SettingPanel):
 
     def set_mode(self, x):
         self.mode = x.text()
-        for group in ("init", "max", "min"):
+        for group in ("max", "min"):
             for frame_type in ("i", "p", "b"):
                 self.widgets[f"{group}_q_{frame_type}"].setEnabled(self.mode.lower() == "bitrate")
-        self.widgets.vbr_target.setEnabled(self.mode.lower() == "bitrate")
+        # self.widgets.vbr_target.setEnabled(self.mode.lower() == "bitrate")
         self.main.build_commands()
 
     def new_source(self):

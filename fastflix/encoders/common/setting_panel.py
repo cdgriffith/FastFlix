@@ -28,7 +28,6 @@ class SettingPanel(QtWidgets.QWidget):
         self.labels = Box()
         self.opts = Box()
         self.only_int = QtGui.QIntValidator()
-        self.only_float = QtGui.QDoubleValidator()
 
     def paintEvent(self, event):
         o = QtWidgets.QStyleOption()
@@ -350,7 +349,6 @@ class SettingPanel(QtWidgets.QWidget):
             self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
             self.widgets[f"custom_{qp_name}"].setFixedWidth(100)
             self.widgets[f"custom_{qp_name}"].setEnabled(custom_qp)
-            self.widgets[f"custom_{qp_name}"].setValidator(self.only_float)
             self.widgets[f"custom_{qp_name}"].textChanged.connect(lambda: self.main.build_commands())
 
         if config_opt:
@@ -409,7 +407,7 @@ class SettingPanel(QtWidgets.QWidget):
                     self.widgets[widget_name].setChecked(checked)
             elif isinstance(self.widgets[widget_name], QtWidgets.QLineEdit):
                 data = self.app.fastflix.config.encoder_opt(self.profile_name, opt)
-                if widget_name in ("x265_params", "svtav1_params"):
+                if widget_name in ("x265_params", "svtav1_params", "vvc_params"):
                     data = ":".join(data)
                 self.widgets[widget_name].setText(str(data) or "")
         try:
@@ -473,7 +471,7 @@ class SettingPanel(QtWidgets.QWidget):
             elif isinstance(self.widgets[widget_name], QtWidgets.QCheckBox):
                 self.widgets[widget_name].setChecked(data)
             elif isinstance(self.widgets[widget_name], QtWidgets.QLineEdit):
-                if widget_name in ("x265_params", "svtav1_params"):
+                if widget_name in ("x265_params", "svtav1_params", "vvc_params"):
                     data = ":".join(data)
                 self.widgets[widget_name].setText(str(data) or "")
         if getattr(self, "qp_radio", None):

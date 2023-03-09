@@ -31,6 +31,9 @@ known_language_list = [
 ]
 possible_detect_points = ["1", "2", "4", "6", "8", "10", "15", "20", "25", "50", "100"]
 
+scale_digits = ["0", "1", "1.25", "1.5", "1.75", "2", "2.5", "3"]
+scale_percents = ["Disable Scaling", "100%", "125%", "150%", "175%", "200%", "250%", "300%"]
+
 
 class Settings(QtWidgets.QWidget):
     def __init__(self, app: FastFlixApp, main, *args, **kwargs):
@@ -128,6 +131,10 @@ class Settings(QtWidgets.QWidget):
         except ValueError:
             self.crop_detect_points_widget.setCurrentIndex(5)
 
+        self.ui_scale_widget = QtWidgets.QComboBox()
+        self.ui_scale_widget.addItems(scale_percents)
+        self.ui_scale_widget.setCurrentText(scale_percents[scale_digits.index(self.app.fastflix.config.ui_scale)])
+
         nvencc_label = QtWidgets.QLabel(
             link("https://github.com/rigaya/NVEnc/releases", "NVEncC", app.fastflix.config.theme)
         )
@@ -221,6 +228,11 @@ class Settings(QtWidgets.QWidget):
         )
         layout.addWidget(self.default_source_dir, 18, 0, 1, 2)
 
+        self.clean_old_logs_button = QtWidgets.QCheckBox(
+            t("Remove GUI logs and compress conversion logs older than 30 days at exit")
+        )
+        self.clean_old_logs_button.setChecked(self.app.fastflix.config.clean_old_logs)
+
         # Layouts
 
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
@@ -231,6 +243,10 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.theme, 10, 1)
         layout.addWidget(QtWidgets.QLabel(t("Crop Detect Points")), 11, 0, 1, 1)
         layout.addWidget(self.crop_detect_points_widget, 11, 1, 1, 1)
+
+        layout.addWidget(QtWidgets.QLabel(t("UI Scale")), 20, 0, 1, 1)
+        layout.addWidget(self.ui_scale_widget, 20, 1, 1, 1)
+        layout.addWidget(self.clean_old_logs_button, 21, 0, 1, 3)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
@@ -305,6 +321,13 @@ class Settings(QtWidgets.QWidget):
         if self.source_path_line_edit.text().strip() and not self.default_source_dir.isChecked():
             new_source_path = Path(self.source_path_line_edit.text())
         self.app.fastflix.config.source_directory = new_source_path
+
+        old_scale = self.app.fastflix.config.ui_scale
+        self.app.fastflix.config.ui_scale = scale_digits[scale_percents.index(self.ui_scale_widget.currentText())]
+        if self.app.fastflix.config.ui_scale != old_scale:
+            restart_needed = True
+
+        self.app.fastflix.config.clean_old_logs = self.clean_old_logs_button.isChecked()
 
         self.main.config_update()
         self.app.fastflix.config.save()

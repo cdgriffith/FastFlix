@@ -38,6 +38,7 @@ def generate_ffmpeg_start(
     max_muxing_queue_size="default",
     fast_seek=True,
     video_title="",
+    video_track_title="",
     maxrate=None,
     bufsize=None,
     source_fps: Union[str, None] = None,
@@ -52,9 +53,14 @@ def generate_ffmpeg_start(
     time_two = time_settings if not fast_seek else ""
     incoming_fps = f"-r {source_fps}" if source_fps else ""
     vsync_text = f"-vsync {vsync}" if vsync else ""
+    if video_title:
+        video_title.replace('"', '\\"')
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = clean_file_string(source)
     ffmpeg = clean_file_string(ffmpeg)
+    if video_track_title:
+        video_track_title.replace('"', '\\"')
+    track_title = f'-metadata:s:v:0 title="{video_track_title}"'
 
     return " ".join(
         [
@@ -75,6 +81,7 @@ def generate_ffmpeg_start(
             f"{f'-maxrate:v {maxrate}k' if maxrate else ''}",
             f"{f'-bufsize:v {bufsize}k' if bufsize else ''}",
             ("-init_hw_device opencl=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
+            f"{track_title if video_track_title else ''}",
             " ",  # Leave space after commands
         ]
     )
@@ -137,7 +144,6 @@ def generate_filters(
     denoise: Union[str, None] = None,
     **_,
 ):
-
     filter_list = []
     if start_filters:
         filter_list.append(start_filters)
@@ -199,7 +205,7 @@ def generate_filters(
             else:
                 filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
         else:
-            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles={quoted_path(clean_file_string(source))}:si={burn_in_subtitle_track}[v]"
+            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles='{quoted_path(clean_file_string(source))}':si={burn_in_subtitle_track}[v]"
     elif filters:
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:
@@ -234,6 +240,7 @@ def generate_all(
             burn_in_subtitle_track=burn_in_track,
             burn_in_subtitle_type=burn_in_type,
             enable_opencl=fastflix.opencl_support,
+            scale=fastflix.current_video.scale,
             **fastflix.current_video.video_settings.dict(),
         )
 

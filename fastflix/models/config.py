@@ -22,7 +22,6 @@ from fastflix.models.encode import (
 )
 from fastflix.models.profiles import Profile, AudioMatch, MatchItem, MatchType
 from fastflix.version import __version__
-from fastflix.shared import get_config
 
 logger = logging.getLogger("fastflix")
 
@@ -32,6 +31,15 @@ NO_OPT = object()
 
 
 outdated_settings = ("copy",)
+
+
+def get_config(portable_mode=False):
+    config = os.getenv("FF_CONFIG")
+    if config:
+        return Path(config)
+    if Path("fastflix.yaml").exists() or portable_mode:
+        return Path("fastflix.yaml")
+    return Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"
 
 
 def get_preset_defaults():
@@ -103,7 +111,7 @@ class Config(BaseModel):
     qsvencc: Path | None = Field(default_factory=lambda: where("QSVEncC64") or where("QSVEncC"))
     output_directory: Path | None = False
     source_directory: Path | None = False
-    output_name_format: str = "{source}-fastflix-{rand_4}.{ext}"
+    output_name_format: str = "{source}-fastflix-{rand_4}"
     flat_ui: bool = True
     language: str = "eng"
     logging_level: int = 10
@@ -121,6 +129,8 @@ class Config(BaseModel):
     priority: Literal["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"] = "Normal"
     stay_on_top: bool = False
     portable_mode: bool = False
+    ui_scale: str = "1"
+    clean_old_logs: bool = True
     sane_audio_selection: list = Field(
         default_factory=lambda: [
             "aac",
@@ -202,6 +212,24 @@ class Config(BaseModel):
             return Profile(profile_version=2, audio_filters=[new_match], **raw_profile)
         return Profile(profile_version=2, **raw_profile)
 
+    def pre_load(self, portable_mode=False):
+        """Used before application startup to see if there are any QT variables we need to set"""
+        self.config_path = get_config(portable_mode=portable_mode)
+        try:
+            data = Box.from_yaml(filename=self.config_path)
+        except Exception:
+            return
+
+        output = {"enable_scaling": True}
+
+        if "ui_scale" in data:
+            scale = str(data["ui_scale"])
+            if scale not in ("0", "1"):
+                os.putenv("QT_SCALE_FACTOR", scale)
+            if scale == "0":
+                output["enable_scaling"] = False
+        return output
+
     def load(self, portable_mode=False):
         self.portable_mode = portable_mode
         self.config_path = get_config(portable_mode=portable_mode)
@@ -273,6 +301,9 @@ class Config(BaseModel):
 
         if self.selected_profile not in self.profiles:
             self.selected_profile = "Standard Profile"
+
+        # 5.2.0 remove ext
+        self.output_name_format = self.output_name_format.replace(".{ext}", "").replace("{ext}", "")
 
     def save(self):
         items = self.dict()

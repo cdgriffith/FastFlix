@@ -314,7 +314,6 @@ class CoverPanel(QtWidgets.QWidget):
             )
 
     def new_source(self, attachments):
-
         self.clear_covers(reconnect=False)
 
         for attachment in attachments:

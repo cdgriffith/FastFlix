@@ -3,18 +3,40 @@ from pathlib import Path
 import os
 from functools import lru_cache
 
-import pkg_resources
+import importlib.resources
 
-main_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icon.ico")).resolve())
+ref = importlib.resources.files("fastflix") / "data/icon.ico"
+with importlib.resources.as_file(ref) as icon_file:
+    main_icon = str(icon_file.resolve())
 
-changes_file = Path(pkg_resources.resource_filename(__name__, "CHANGES")).resolve()
+ref = importlib.resources.files("fastflix") / "CHANGES"
+with importlib.resources.as_file(ref) as cf:
+    changes_file = cf.resolve()
 local_changes_file = Path(__file__).parent.parent / "CHANGES"
+local_package_changes_file = Path(__file__).parent / "CHANGES"
 
-loading_movie = str(Path(pkg_resources.resource_filename(__name__, "data/icons/loading.gif")).resolve())
-onyx_convert_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-convert.svg")).resolve())
-onyx_queue_add_icon = str(Path(pkg_resources.resource_filename(__name__, "data/icons/onyx-add-queue.svg")).resolve())
+ref = importlib.resources.files("fastflix") / "data/icons/loading.gif"
+with importlib.resources.as_file(ref) as icon_file:
+    loading_movie = str(icon_file.resolve())
 
-breeze_styles_path = Path(pkg_resources.resource_filename(__name__, "data/styles/breeze_styles")).resolve()
+ref = importlib.resources.files("fastflix") / "data/icons/onyx-convert.svg"
+with importlib.resources.as_file(ref) as icon_file:
+    onyx_convert_icon = str(icon_file.resolve())
+
+ref = importlib.resources.files("fastflix") / "data/icons/onyx-add-queue.svg"
+with importlib.resources.as_file(ref) as icon_file:
+    onyx_queue_add_icon = str(icon_file.resolve())
+
+ref = importlib.resources.files("fastflix") / "data/styles/breeze_styles"
+with importlib.resources.as_file(ref) as bf:
+    breeze_styles_path = bf.resolve()
+
+
+# fmt: off
+video_file_types = ('.mkv', '.mp4', '.m4v', '.mov', '.avi', '.divx', '.webm', '.mpg', '.mp2', '.mpeg', '.mpe', '.mpv',
+                    '.ogg', '.m4p', '.wmv', '.mov', '.qt', '.flv', '.hevc', '.gif', '.webp', '.vob', '.ogv', '.ts',
+                    '.mts', '.m2ts', '.yuv', '.rm', '.svi', '.3gp', '.3g2', '.y4m')
+# fmt: on
 
 
 @lru_cache()
@@ -25,11 +47,15 @@ def get_icon(name: str, theme: str):
     if theme == "selected":  # Used for bright tab colors
         folder = "selected"
 
-    location = Path(pkg_resources.resource_filename(__name__, f"data/icons/{folder}/{name}.svg"))
-    if not location.exists():
-        location = Path(pkg_resources.resource_filename(__name__, f"data/icons/{folder}/{name}.png"))
+    ref = importlib.resources.files("fastflix") / f"data/icons/{folder}/{name}.svg"
+    with importlib.resources.as_file(ref) as icon_file:
+        location = icon_file.resolve()
 
-    location = location.resolve()
+    if not location.exists():
+        ref = importlib.resources.files("fastflix") / f"data/icons/{folder}/{name}.png"
+        with importlib.resources.as_file(ref) as icon_file:
+            location = icon_file.resolve()
+
     if not location.exists():
         raise Exception(f"Cannot find: {location}")
     return str(location)

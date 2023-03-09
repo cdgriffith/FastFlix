@@ -10,7 +10,7 @@ from subprocess import run
 import platform
 
 from appdirs import user_data_dir
-import pkg_resources
+import importlib.resources
 import requests
 import reusables
 from pathvalidate import sanitize_filepath
@@ -32,8 +32,9 @@ from fastflix.resources import get_bool_env
 
 DEVMODE = get_bool_env("DEVMODE")
 
-my_data = str(Path(pkg_resources.resource_filename(__name__, f"../data/icon.ico")).resolve())
-icon = QtGui.QIcon(my_data)
+ref = importlib.resources.files("fastflix") / f"data/icon.ico"
+with importlib.resources.as_file(ref) as icon_file:
+    my_data = str(icon_file.resolve())
 
 logger = logging.getLogger("fastflix")
 no_border = (
@@ -75,7 +76,7 @@ def message(msg, title=None):
     if title:
         sm.setWindowTitle(title)
     sm.setStandardButtons(QtWidgets.QMessageBox.Ok)
-    sm.setWindowIcon(icon)
+    sm.setWindowIcon(QtGui.QIcon(my_data))
     sm.exec_()
 
 
@@ -83,7 +84,7 @@ def error_message(msg, details=None, traceback=False, title=None):
     em = MyMessageBox()
     em.setStyleSheet("font-size: 14px")
     em.setText(msg)
-    em.setWindowIcon(icon)
+    em.setWindowIcon(QtGui.QIcon(my_data))
     em.setWindowFlags(em.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
     if title:
         em.setWindowTitle(title)
@@ -130,7 +131,9 @@ def latest_fastflix(app, show_new_dialog=False):
     logger.debug("Checking for newer versions of FastFlix")
 
     try:
-        data = requests.get(url, timeout=15 if not show_new_dialog else 3).json()
+        response = requests.get(url, timeout=15 if not show_new_dialog else 3)
+        response.raise_for_status()
+        data = response.json()
     except Exception:
         logger.warning(t("Could not connect to github to check for newer versions"))
         if show_new_dialog:
@@ -144,7 +147,6 @@ def latest_fastflix(app, show_new_dialog=False):
 
     use_version = ".".join(str(x) for x in versions[0])
     if reusables.win_based:
-
         try:
             win_ver = int(platform.platform().lower().split("-")[1])
         except Exception:
@@ -314,7 +316,7 @@ def clean_file_string(source):
 
 
 def quoted_path(source):
-    return str(source).strip().replace("\\", "\\\\\\\\").replace(":", "\\\\:").replace(" ", "\\ ").replace(",", "\\,")
+    return str(source).strip().replace("\\", "\\\\").replace(":", "\\:").replace("'", "'\\\\\\''")
 
 
 def sanitize(source):
