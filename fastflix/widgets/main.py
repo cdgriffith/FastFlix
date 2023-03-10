@@ -773,7 +773,7 @@ class Main(QtWidgets.QWidget):
             return self.app.fastflix.encoders[
                 self.app.fastflix.current_video.video_settings.video_encoder_settings.name
             ]
-        except AttributeError:
+        except (AttributeError, KeyError):
             return self.app.fastflix.encoders[self.convert_to]
 
     def init_start_time(self):
@@ -1358,6 +1358,14 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=True)
     def reload_video_from_queue(self, video: Video):
+        if video.video_settings.video_encoder_settings.name not in self.app.fastflix.encoders:
+            error_message(
+                t("That video was added with an encoder that is no longer available, unable to load from queue")
+            )
+            raise FastFlixInternalException(
+                t("That video was added with an encoder that is no longer available, unable to load from queue")
+            )
+
         self.loading_video = True
 
         self.app.fastflix.current_video = video

@@ -404,8 +404,12 @@ class EncodingQueue(FlixList):
         save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
 
     def reload_from_queue(self, video):
-        self.main.reload_video_from_queue(video)
-        self.remove_item(video)
+        try:
+            self.main.reload_video_from_queue(video)
+        except FastFlixInternalException:
+            pass
+        else:
+            self.remove_item(video)
 
     def reset_pause_encode(self):
         self.pause_encode.setText(t("Pause Encode"))

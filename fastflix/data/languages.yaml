@@ -8353,3 +8353,27 @@ Extra vvc params in opt=1:opt2=0 format:
   pol: Dodatkowe parametry vvc w formacie opt=1:opt2=0
   ukr: Додаткові параметри vvc у форматі opt=1:opt2=0
   kor: opt=1:opt2=0 형식의 추가 vvc 매개변수
+That video was added with an encoder that is no longer available, unable to load from queue:
+  eng: That video was added with an encoder that is no longer available, unable to
+    load from queue
+  deu: Dieses Video wurde mit einem Encoder hinzugefügt, der nicht mehr verfügbar
+    ist und nicht aus der Warteschlange geladen werden kann
+  fra: Cette vidéo a été ajoutée avec un encodeur qui n'est plus disponible, impossible
+    de la charger à partir de la file d'attente.
+  ita: Il video è stato aggiunto con un encoder non più disponibile, non è possibile
+    caricarlo dalla coda.
+  spa: Ese vídeo se añadió con un codificador que ya no está disponible, no se puede
+    cargar desde la cola
+  zho: 该视频是用一个不再可用的编码器添加的，无法从队列中加载。
+  jpn: その動画は、利用できなくなったエンコーダーで追加されたため、キューから読み込むことができません。
+  rus: Это видео было добавлено с помощью кодировщика, который больше не доступен,
+    не удается загрузить из очереди
+  por: Esse vídeo foi adicionado com um codificador que já não está disponível, incapaz
+    de carregar a partir da fila
+  swe: Videon lades till med en kodare som inte längre är tillgänglig, kan inte laddas
+    från kön.
+  pol: Ten film został dodany za pomocą kodera, który nie jest już dostępny, nie można
+    go załadować z kolejki
+  ukr: Це відео було додано за допомогою кодера, який більше не доступний і не може
+    бути завантажений з черги
+  kor: 해당 동영상은 더 이상 사용할 수 없는 인코더로 추가되어 대기열에서 로드할 수 없습니다.

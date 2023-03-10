@@ -6,6 +6,7 @@
 * Fixing file extension drop down would not always set correct on encoder change (thanks to GT500org)
 * Fixing missing translations for VVC
 * Fixing VVC was adding extra params it did not support
+* Fixing trying to restore a video from the queue that was using an encoder that no longer exists
 
 ## Version 5.2.1
 
