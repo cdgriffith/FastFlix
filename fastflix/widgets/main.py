@@ -609,12 +609,6 @@ class Main(QtWidgets.QWidget):
             # self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
             self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") or 0 // 90)
 
-            # last = self.widgets.output_type_combo.currentText()
-
-            self.widgets.output_type_combo.clear()
-            self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
-            self.widgets.output_type_combo.setCurrentText(self.app.fastflix.config.opt("output_type"))
-
             v_flip = self.app.fastflix.config.opt("vertical_flip")
             h_flip = self.app.fastflix.config.opt("horizontal_flip")
 
@@ -760,6 +754,9 @@ class Main(QtWidgets.QWidget):
         if not self.initialized or not self.convert_to:
             return
         self.video_options.change_conversion(self.convert_to)
+        self.widgets.output_type_combo.clear()
+        self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
+        self.widgets.output_type_combo.setCurrentText(self.app.fastflix.config.opt("output_type"))
         if not self.app.fastflix.current_video:
             return
 

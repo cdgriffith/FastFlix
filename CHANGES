@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 5.2.2
+
+* Fixing #431 Missing ubuntu 20 builds (thanks to techore)
+* Fixing file extension drop down would not always set correct on encoder change (thanks to GT500org)
+* Fixing missing translations for VVC
+* Fixing VVC was adding extra params it did not support
+
 ## Version 5.2.1
 
 * Fixing #426 Version 5.2 does not run on fresh install (thanks to Bandid0)

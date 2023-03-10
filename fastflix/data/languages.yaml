@@ -8297,3 +8297,59 @@ UI Scale:
   swe: UI-skala
   pol: Skala UI
   kor: UI 스케일
+IDC Level:
+  eng: IDC Level
+  deu: IDC-Ebene
+  fra: Niveau IDC
+  ita: Livello IDC
+  spa: Nivel IDC
+  zho: IDC级别
+  jpn: IDCレベル
+  rus: Уровень IDC
+  por: Nível IDC
+  swe: IDC-nivå
+  pol: Poziom IDC
+  ukr: Рівень IDC
+  kor: IDC 레벨
+Set the IDC level:
+  eng: Set the IDC level
+  deu: Einstellen des IDC-Pegels
+  fra: Régler le niveau de l'IDC
+  ita: Impostare il livello IDC
+  spa: Ajustar el nivel IDC
+  zho: 设置IDC水平
+  jpn: IDCレベルを設定する
+  rus: Установите уровень IDC
+  por: Definir o nível IDC
+  swe: Ställ in IDC-nivån
+  pol: Ustawić poziom IDC
+  ukr: Встановіть рівень IDC
+  kor: IDC 수준 설정
+Additional vvc params:
+  eng: Additional vvc params
+  deu: Zusätzliche vvc-Parameter
+  fra: Paramètres supplémentaires de la vvc
+  ita: Parametri aggiuntivi di vvc
+  spa: Parámetros vvc adicionales
+  zho: 附加vvc参数
+  jpn: vvcの追加パラメータ
+  rus: Дополнительные параметры vvc
+  por: Parâmetros vvc adicionais
+  swe: Ytterligare parametrar för vvc
+  pol: Dodatkowe parametry vvc
+  ukr: Додаткові параметри vvc
+  kor: 추가 VVC 매개변수
+Extra vvc params in opt=1:opt2=0 format:
+  eng: Extra vvc params in opt=1:opt2=0 format
+  deu: Zusätzliche vvc-Parameter im Format opt=1:opt2=0
+  fra: Paramètres vvc supplémentaires au format opt=1:opt2=0
+  ita: Parametri vvc extra nel formato opt=1:opt2=0
+  spa: Parámetros vvc adicionales en formato opt=1:opt2=0
+  zho: opt=1:opt2=0格式的额外vvc参数
+  jpn: opt=1:opt2=0の形式でvvcパラメータを追加する。
+  rus: Дополнительные параметры vvc в формате opt=1:opt2=0
+  por: Parâmetros vvc adicionais no formato opt=1:opt2=0
+  swe: Extra vvc-parametrar i formatet opt=1:opt2=0
+  pol: Dodatkowe parametry vvc w formacie opt=1:opt2=0
+  ukr: Додаткові параметри vvc у форматі opt=1:opt2=0
+  kor: opt=1:opt2=0 형식의 추가 vvc 매개변수

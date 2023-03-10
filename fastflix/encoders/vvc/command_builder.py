@@ -90,52 +90,6 @@ def build(fastflix: FastFlix):
 
     vvc_params = settings.vvc_params.copy() or []
 
-    if not fastflix.current_video.video_settings.remove_hdr:
-        if fastflix.current_video.video_settings.color_primaries:
-            vvc_params.append(f"colorprim={fastflix.current_video.video_settings.color_primaries}")
-        elif fastflix.current_video.color_primaries:
-            if fastflix.current_video.color_primaries in vvc_valid_color_primaries:
-                vvc_params.append(f"colorprim={fastflix.current_video.color_primaries}")
-            elif fastflix.current_video.color_primaries in color_primaries_mapping:
-                vvc_params.append(f"colorprim={color_primaries_mapping[fastflix.current_video.color_primaries]}")
-
-        if fastflix.current_video.video_settings.color_transfer:
-            vvc_params.append(f"transfer={fastflix.current_video.video_settings.color_transfer}")
-        elif fastflix.current_video.color_transfer:
-            if fastflix.current_video.color_transfer in vvc_valid_color_transfers:
-                vvc_params.append(f"transfer={fastflix.current_video.color_transfer}")
-            elif fastflix.current_video.color_transfer in color_transfer_mapping:
-                vvc_params.append(f"transfer={color_transfer_mapping[fastflix.current_video.color_transfer]}")
-
-        if fastflix.current_video.video_settings.color_space:
-            vvc_params.append(f"colormatrix={fastflix.current_video.video_settings.color_space}")
-        elif fastflix.current_video.color_space:
-            if fastflix.current_video.color_space in vvc_valid_color_matrix:
-                vvc_params.append(f"colormatrix={fastflix.current_video.color_space}")
-            elif fastflix.current_video.color_space in color_matrix_mapping:
-                vvc_params.append(f"colormatrix={color_matrix_mapping[fastflix.current_video.color_space]}")
-
-            if fastflix.current_video.master_display:
-                settings.hdr10 = True
-                vvc_params.append(
-                    "master-display="
-                    f"G{fastflix.current_video.master_display.green}"
-                    f"B{fastflix.current_video.master_display.blue}"
-                    f"R{fastflix.current_video.master_display.red}"
-                    f"WP{fastflix.current_video.master_display.white}"
-                    f"L{fastflix.current_video.master_display.luminance}"
-                )
-
-            if fastflix.current_video.cll:
-                settings.hdr10 = True
-                vvc_params.append(f"max-cll={fastflix.current_video.cll}")
-
-            vvc_params.append(f"hdr10={'1' if settings.hdr10 else '0'}")
-
-        current_chroma_loc = fastflix.current_video.current_video_stream.get("chroma_location")
-        if current_chroma_loc in chromaloc_mapping:
-            vvc_params.append(f"chromaloc={chromaloc_mapping[current_chroma_loc]}")
-
     if fastflix.current_video.video_settings.maxrate:
         vvc_params.append(f"vbv-maxrate={fastflix.current_video.video_settings.maxrate}")
         vvc_params.append(f"vbv-bufsize={fastflix.current_video.video_settings.bufsize}")
