@@ -609,12 +609,6 @@ class Main(QtWidgets.QWidget):
             # self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
             self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") or 0 // 90)
 
-            # last = self.widgets.output_type_combo.currentText()
-
-            self.widgets.output_type_combo.clear()
-            self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
-            self.widgets.output_type_combo.setCurrentText(self.app.fastflix.config.opt("output_type"))
-
             v_flip = self.app.fastflix.config.opt("vertical_flip")
             h_flip = self.app.fastflix.config.opt("horizontal_flip")
 
@@ -760,6 +754,9 @@ class Main(QtWidgets.QWidget):
         if not self.initialized or not self.convert_to:
             return
         self.video_options.change_conversion(self.convert_to)
+        self.widgets.output_type_combo.clear()
+        self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
+        self.widgets.output_type_combo.setCurrentText(self.app.fastflix.config.opt("output_type"))
         if not self.app.fastflix.current_video:
             return
 
@@ -776,7 +773,7 @@ class Main(QtWidgets.QWidget):
             return self.app.fastflix.encoders[
                 self.app.fastflix.current_video.video_settings.video_encoder_settings.name
             ]
-        except AttributeError:
+        except (AttributeError, KeyError):
             return self.app.fastflix.encoders[self.convert_to]
 
     def init_start_time(self):
@@ -1361,6 +1358,14 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=True)
     def reload_video_from_queue(self, video: Video):
+        if video.video_settings.video_encoder_settings.name not in self.app.fastflix.encoders:
+            error_message(
+                t("That video was added with an encoder that is no longer available, unable to load from queue")
+            )
+            raise FastFlixInternalException(
+                t("That video was added with an encoder that is no longer available, unable to load from queue")
+            )
+
         self.loading_video = True
 
         self.app.fastflix.current_video = video
