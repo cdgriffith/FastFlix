@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 5.2.3
+
+* Fixing #433 queue_extras emptied on loading queue (thanks to Maddie Davis)
+
 ## Version 5.2.2
 
 * Fixing #431 Missing ubuntu 20 builds (thanks to techore)
