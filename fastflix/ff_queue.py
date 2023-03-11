@@ -75,10 +75,6 @@ def save_queue(queue: list[Video], queue_file: Path, config: Optional[Config] = 
         queue_covers = config.work_path / "covers"
         queue_covers.mkdir(parents=True, exist_ok=True)
         queue_data = config.work_path / "queue_extras"
-        try:
-            shutil.rmtree(queue_data, ignore_errors=True)
-        except Exception:
-            logger.exception("Could not clean up old queue_extras folder")
         queue_data.mkdir(parents=True, exist_ok=True)
     else:
         queue_data = Path()
