@@ -8428,3 +8428,54 @@ Constant Quality, Intelligent Constant Quality, Intelligent + Lookahead Constant
   ukr: Постійна якість, Інтелектуальна Постійна якість, Інтелектуальна + Lookahead
     Постійна якість
   kor: 일정한 품질, 지능형 일정한 품질, 지능형 + 룩어헤드 일정한 품질
+The following items were excluded as they could not be identified as a video files:
+  eng: The following items were excluded as they could not be identified as a video
+    files
+  deu: Die folgenden Elemente wurden ausgeschlossen, da sie nicht als Videodateien
+    identifiziert werden konnten
+  fra: Les éléments suivants ont été exclus car ils ne pouvaient pas être identifiés
+    comme des fichiers vidéo
+  ita: I seguenti elementi sono stati esclusi in quanto non potevano essere identificati
+    come file video
+  spa: Se excluyeron los siguientes elementos por no poder identificarse como archivos
+    de vídeo
+  zho: 以下项目被排除在外，因为它们不能被确定为视频文件
+  jpn: 以下のものは、ビデオファイルとして識別できないため、除外した。
+  rus: Следующие предметы были исключены, так как их нельзя было идентифицировать
+    как видеофайлы
+  por: Os seguintes itens foram excluídos por não poderem ser identificados como ficheiros
+    de vídeo
+  swe: Följande poster uteslöts eftersom de inte kunde identifieras som videofiler
+  pol: Następujące pozycje zostały wyłączone, ponieważ nie mogły być zidentyfikowane
+    jako pliki wideo
+  ukr: Наступні елементи були виключені, оскільки вони не могли бути ідентифіковані
+    як відеофайли
+  kor: 다음 항목은 동영상 파일로 식별할 수 없으므로 제외되었습니다.
+more:
+  eng: more
+  deu: mehr
+  fra: plus
+  ita: di più
+  spa: más
+  zho: 更多
+  jpn: も
+  rus: больше
+  por: mais
+  swe: mer
+  pol: więcej
+  ukr: більше
+  kor: 더 보기
+Loading Videos:
+  eng: Loading Videos
+  deu: Videos laden
+  fra: Chargement des vidéos
+  ita: Caricamento dei video
+  spa: Cargando vídeos
+  zho: 加载视频
+  jpn: 動画読み込み
+  rus: Загружаемые видеоролики
+  por: Carregamento de vídeos
+  swe: Lastning av videoklipp
+  pol: Ładowanie filmów
+  ukr: Завантаження відео
+  kor: 동영상 로드 중
