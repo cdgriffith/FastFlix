@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 5.3.0
+
+* Adding profile select in Load Directory window
+* Adding `avis` and `avifs` extensions for AV1 (thanks to u/zimmwisdom)
+* Fixing #439 QSVEnc QP mode select did not work in AVC / HEVC (thanks to sun6560032)
+
 ## Version 5.2.3
 
 * Fixing #433 queue_extras emptied on loading queue (thanks to Maddie Davis)

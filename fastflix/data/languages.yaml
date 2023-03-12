@@ -8377,3 +8377,54 @@ That video was added with an encoder that is no longer available, unable to load
   ukr: Це відео було додано за допомогою кодера, який більше не доступний і не може
     бути завантажений з черги
   kor: 해당 동영상은 더 이상 사용할 수 없는 인코더로 추가되어 대기열에서 로드할 수 없습니다.
+'This profile will be applied to all the selected items:':
+  eng: 'This profile will be applied to all the selected items:'
+  deu: 'Dieses Profil wird auf alle ausgewählten Artikel angewendet:'
+  fra: 'Ce profil sera appliqué à tous les éléments sélectionnés :'
+  ita: 'Questo profilo verrà applicato a tutti gli elementi selezionati:'
+  spa: 'Este perfil se aplicará a todos los elementos seleccionados:'
+  zho: 这个配置文件将被应用于所有选定的项目。
+  jpn: このプロファイルは、選択されたすべてのアイテムに適用されます。
+  rus: 'Этот профиль будет применен ко всем выбранным элементам:'
+  por: 'Este perfil será aplicado a todos os artigos seleccionados:'
+  swe: 'Profilen tillämpas på alla markerade objekt:'
+  pol: 'Ten profil zostanie zastosowany do wszystkich wybranych elementów:'
+  ukr: 'Цей профіль буде застосовано до всіх вибраних елементів:'
+  kor: '이 프로필은 선택한 모든 항목에 적용됩니다:'
+QP Mode:
+  eng: QP Mode
+  deu: QP-Modus
+  fra: Mode QP
+  ita: Modalità QP
+  spa: Modo QP
+  zho: QP模式
+  jpn: QPモード
+  rus: Режим QP
+  por: Modo QP
+  swe: QP-läge
+  pol: Tryb QP
+  ukr: Режим QP
+  kor: QP 모드
+Constant Quality, Intelligent Constant Quality, Intelligent + Lookahead Constant Quality:
+  eng: Constant Quality, Intelligent Constant Quality, Intelligent + Lookahead Constant
+    Quality
+  deu: Konstante Qualität, Intelligent Konstante Qualität, Intelligent + Lookahead
+    Konstante Qualität
+  fra: Qualité constante, intelligente Qualité constante, intelligente + Lookahead
+    Qualité constante
+  ita: Qualità costante, Intelligente Qualità costante, Intelligente + Lookahead Qualità
+    costante
+  spa: Calidad constante, Inteligente Calidad constante, Inteligente + Lookahead Calidad
+    constante
+  zho: 恒定质量，智能恒定质量，智能+前瞻恒定质量
+  jpn: 一定品質、インテリジェント一定品質、インテリジェント＋ルックアヘッド一定品質
+  rus: Постоянное качество, интеллектуальное постоянное качество, интеллектуальное
+    качество + опережающее постоянное качество
+  por: Qualidade Constante, Qualidade Constante Inteligente, Qualidade Constante Inteligente
+    + Lookahead
+  swe: Konstant kvalitet, intelligent Konstant kvalitet, intelligent + Lookahead Konstant
+    kvalitet
+  pol: Stała jakość, inteligentna stała jakość, inteligentna + Lookahead Stała jakość
+  ukr: Постійна якість, Інтелектуальна Постійна якість, Інтелектуальна + Lookahead
+    Постійна якість
+  kor: 일정한 품질, 지능형 일정한 품질, 지능형 + 룩어헤드 일정한 품질
