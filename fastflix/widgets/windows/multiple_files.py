@@ -187,9 +187,28 @@ class MultipleFilesWindow(QtWidgets.QWidget):
 
         layout.addLayout(top_bar)
 
+        profile_ara = QtWidgets.QHBoxLayout()
+
+        profile_ara.addWidget(QtWidgets.QLabel(t("This profile will be applied to all the selected items:")))
+        self.profile_box = QtWidgets.QComboBox()
+        self.profile_box.setStyleSheet("text-align: center;")
+        self.profile_box.addItems(self.app.fastflix.config.profiles.keys())
+        self.profile_box.view().setFixedWidth(self.profile_box.minimumSizeHint().width() + 50)
+        self.profile_box.setCurrentText(self.app.fastflix.config.selected_profile)
+        self.profile_box.currentIndexChanged.connect(self.change_profile)
+        self.profile_box.setFixedWidth(300)
+        self.profile_box.setFixedHeight(40)
+
+        profile_ara.addWidget(self.profile_box)
+
+        layout.addLayout(profile_ara)
         layout.addWidget(self.files_area)
         layout.addWidget(QtWidgets.QLabel(t("Drag and Drop to reorder")))
         self.setLayout(layout)
+
+    def change_profile(self):
+        self.main.widgets.profile_box.setCurrentText(self.profile_box.currentText())
+        # self.main.set_profile()
 
     def set_folder_name(self, name):
         self.base_folder_label.setText(f'{t("Base Folder")}: {name}')

@@ -6,7 +6,7 @@ import importlib.resources
 name = "AVIF (SVT AV1)"
 requires = "libsvtav1"
 
-video_extensions = [".avif"]
+video_extensions = [".avif", ".avis", ".avifs"]
 video_dimension_divisor = 8
 
 ref = importlib.resources.files("fastflix") / f"data/encoders/icon_svt_av1.png"

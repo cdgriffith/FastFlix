@@ -370,7 +370,7 @@ class ProfileDetails(QtWidgets.QWidget):
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QVBoxLayout()
         title = QtWidgets.QLabel(t("Encoder Settings"))
-        title.setFont(QtGui.QFont(self.app.font().family(), 9, weight=70))
+        # title.setFont(QtGui.QFont(self.app.font().family(), 9, weight=70))
         layout.addWidget(title)
         for k, v in settings.dict().items():
             item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())

@@ -323,6 +323,7 @@ class QSVEncH264(SettingPanel):
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
+            qp_mode=self.widgets.qp_mode.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

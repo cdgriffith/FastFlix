@@ -73,10 +73,10 @@ def build(fastflix: FastFlix):
     pass_type = "bitrate" if settings.bitrate else "QP"
 
     if settings.bitrate:
-        command_1 = f"{beginning} -b:v {settings.bitrate} {settings.extra} {ending} -f avif "
+        command_1 = f"{beginning} -b:v {settings.bitrate} {settings.extra} -f avif {ending}"
 
     elif settings.qp is not None:
-        command_1 = f"{beginning} -{settings.qp_mode} {settings.qp} {settings.extra} {ending} -f avif "
+        command_1 = f"{beginning} -{settings.qp_mode} {settings.qp} {settings.extra} -f avif {ending}"
     else:
         return []
     return [Command(command=command_1, name=f"{pass_type}", exe="ffmpeg")]
