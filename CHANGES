@@ -50,8 +50,8 @@
 
 * Adding AV1 support for rigaya's AMD hardware encoder!
 * Adding #192 a true portable mode for Windows (thanks to Demicro)
+* Fixing #374 lookup for hdr10plus_tool (thanks to techore)
 * Fixing lookup for QSVEncC
-* Fixing lookup for hdr10plus_tool
 * Fixing concat builder
 * Fixing #390 Wrong scale and behavior for DPI 250% on Windows (thanks to smtad)
 
