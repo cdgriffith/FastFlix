@@ -38,6 +38,26 @@ class Container(QtWidgets.QMainWindow):
         super().__init__(None)
         self.app = app
         self.pb = None
+
+        self.tray_icon = QtWidgets.QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QtGui.QIcon(main_icon))
+
+        show_action = QAction(t("Open FastFlix"), self)
+        quit_action = QAction(t("Exit"), self)
+        hide_action = QAction(t("Minimize to Tray"), self)
+        show_action.triggered.connect(self.show)
+        hide_action.triggered.connect(self.hide)
+        quit_action.triggered.connect(self.close)
+        tray_menu = QtWidgets.QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addAction(hide_action)
+        tray_menu.addAction(quit_action)
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
+
+        # self.tray_icon.setObjectName("FastFlix")
+        self.tray_icon.setToolTip("FastFlix")
+
         if self.app.fastflix.config.stay_on_top:
             self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         self.logs = Logs()

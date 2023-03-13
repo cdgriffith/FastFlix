@@ -81,7 +81,7 @@ class SVT_AV1_AVIF(SettingPanel):
         grid.setRowStretch(8, 1)
         guide_label = QtWidgets.QLabel(
             link(
-                "https://github.com/AOMediaCodec/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
+                "https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Ffmpeg.md",
                 t("SVT-AV1 Encoding Guide"),
                 app.fastflix.config.theme,
             )
