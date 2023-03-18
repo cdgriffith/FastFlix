@@ -1,0 +1,109 @@
+NVEnc (x64) 7.19 (r2468) by rigaya, Feb 21 2023 12:49:49 (gcc 11.3.0/Linux)
+  [NVENC API v12.0, CUDA 11.7]
+ reader: raw, y4m, avs, vpy, avsw, avhw [H.264/AVC, H.265/HEVC, MPEG2, VP8, VP9, VC-1, MPEG1, MPEG4, AV1]
+
+Environment Info
+OS : Ubuntu 22.04.2 LTS (5.19.0-35-generic) x64
+CPU: AMD Ryzen 9 5950X 16-Core Processor (16C/32T)
+RAM: Used 27568 MB, Total 64230 MB
+
+#0: NVIDIA GeForce RTX 3060 (3584 cores, 1777 MHz)[PCIe4x16][525.85]
+NVEnc features
+Codec: H.264/AVC
+Encoder Engines           1
+Max Bframes               4
+B Ref Mode                3 (each + only middle)
+RC Modes                  63 (CQP, CBR, CBRHQ, VBR, VBRHQ)
+Field Encoding            0 (no)
+MonoChrome                no
+FMO                       no
+Quater-Pel MV             yes
+B Direct Mode             yes
+CABAC                     yes
+Adaptive Transform        yes
+Max Temporal Layers       4
+Hierarchial P Frames      yes
+Hierarchial B Frames      yes
+Max Level                 62 (6.2)
+Min Level                 10 (1)
+4:4:4                     yes
+Min Width                 145
+Max Width                 4096
+Min Height                49
+Max Height                4096
+Multiple Refs             yes
+Max LTR Frames            8
+Dynamic Resolution Change yes
+Dynamic Bitrate Change    yes
+Forced constant QP        yes
+Dynamic RC Mode Change    no
+Subframe Readback         yes
+Constrained Encoding      yes
+Intra Refresh             yes
+Custom VBV Bufsize        yes
+Dynamic Slice Mode        yes
+Ref Pic Invalidiation     yes
+PreProcess                no
+Async Encoding            no
+Max MBs                   65536
+Lossless                  yes
+SAO                       no
+Me Only Mode              1 (I,P frames)
+Lookahead                 yes
+AQ (temporal)             yes
+Weighted Prediction       yes
+10bit depth               no
+
+Codec: H.265/HEVC
+Encoder Engines           1
+Max Bframes               5
+B Ref Mode                3 (each + only middle)
+RC Modes                  63 (CQP, CBR, CBRHQ, VBR, VBRHQ)
+Field Encoding            0 (no)
+MonoChrome                no
+Quater-Pel MV             yes
+B Direct Mode             no
+Max Temporal Layers       0
+Hierarchial P Frames      no
+Hierarchial B Frames      no
+Max Level                 186 (6.2)
+Min Level                 30 (1)
+4:4:4                     yes
+Min Width                 129
+Max Width                 8192
+Min Height                33
+Max Height                8192
+Multiple Refs             yes
+Max LTR Frames            7
+Dynamic Resolution Change yes
+Dynamic Bitrate Change    yes
+Forced constant QP        yes
+Dynamic RC Mode Change    no
+Subframe Readback         yes
+Constrained Encoding      yes
+Intra Refresh             yes
+Custom VBV Bufsize        yes
+Dynamic Slice Mode        yes
+Ref Pic Invalidiation     yes
+PreProcess                no
+Async Encoding            no
+Max MBs                   262144
+Lossless                  yes
+SAO                       yes
+Me Only Mode              1 (I,P frames)
+Lookahead                 yes
+AQ (temporal)             yes
+Weighted Prediction       yes
+10bit depth               yes
+
+
+NVDec features
+  H.264/AVC:  nv12, yv12
+  H.265/HEVC: nv12, yv12, yv12(10bit), yv12(12bit), yuv444, yuv444(10bit), yuv444(12bit)
+  MPEG1:      nv12, yv12
+  MPEG2:      nv12, yv12
+  MPEG4:      nv12, yv12
+  VP8:        nv12, yv12
+  VP9:        nv12, yv12, yv12(10bit), yv12(12bit)
+  VC-1:       nv12, yv12
+  AV1:        nv12, yv12, yv12(10bit)

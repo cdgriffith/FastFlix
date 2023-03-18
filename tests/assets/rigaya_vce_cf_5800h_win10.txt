@@ -1,0 +1,183 @@
+device #0: AMD Radeon
+H.264/AVC encode features
+acceleration:    Hardware-accelerated
+max profile:     High
+max level:       unknown
+max bitrate:     1000000 kbps
+ref frames:      1-16
+Bframe support:  no
+HW instances:    1
+pre analysis:    yes
+max streams:     16
+timeout support: yes
+
+H.264/AVC input:
+Width:       128 - 4096
+Height:      128 - 4096
+alignment:   32
+Interlace:   no
+pix format:  YUV420P[7], YV12[2], BGRA[3], RGBA[5], ARGB[4], NV12[1](native)
+memory type: DX11(native), OPENCL, OPENGL, HOST
+
+H.264/AVC output:
+Width:       128 - 4096
+Height:      128 - 4096
+alignment:   32
+Interlace:   no
+pix format:  NV12[1](native)
+memory type: DX11(native), OPENCL, OPENGL, HOST
+
+H.265/HEVC encode features
+10bit depth:     yes
+acceleration:    Hardware-accelerated
+max profile:     main
+max level:       unknown
+max bitrate:     1000000 kbps
+ref frames:      1-16
+pre analysis:    yes
+max streams:     16
+timeout support: yes
+
+H.265/HEVC input:
+Width:       128 - 4096
+Height:      128 - 4096
+alignment:   32
+Interlace:   no
+pix format:  YUV420P[7], YV12[2], BGRA[3], RGBA[5], ARGB[4], NV12[1](native), P010[10](native)
+memory type: DX11(native), OPENCL, OPENGL, HOST
+
+H.265/HEVC output:
+Width:       128 - 4096
+Height:      128 - 4096
+alignment:   32
+Interlace:   no
+pix format:  NV12[1](native), P010[10](native)
+memory type: DX11(native), OPENCL, OPENGL, HOST
+
+
+
+device #0: AMD Radeon
+H.264/AVC decode features
+10bit depth:     no
+acceleration:    Hardware-accelerated
+max streams:     16
+
+H.264/AVC output:
+Width:       32 - 4096
+Height:      32 - 2160
+alignment:   32
+Interlace:   yes
+pix format:  NV12[1](native), P010[10](native), P012[19](native), BGRA[3], RGBA[5]
+memory type: DX11(native)
+
+H.265/HEVC decode features
+10bit depth:     yes
+acceleration:    Hardware-accelerated
+max streams:     0
+
+H.265/HEVC output:
+Width:       32 - 7680
+Height:      32 - 4320
+alignment:   32
+Interlace:   yes
+pix format:  NV12[1](native), P010[10](native), P012[19](native), BGRA[3], RGBA[5]
+memory type: DX11(native)
+
+MPEG2 decode features
+10bit depth:     no
+acceleration:    Hardware-accelerated
+max streams:     16
+
+MPEG2 output:
+Width:       32 - 1920
+Height:      32 - 1080
+alignment:   32
+Interlace:   yes
+pix format:  NV12[1](native), P010[10](native), P012[19](native), BGRA[3], RGBA[5]
+memory type: DX11(native)
+
+VP9 decode features
+10bit depth:     yes
+acceleration:    Hardware-accelerated
+max streams:     16
+
+VP9 output:
+Width:       32 - 7680
+Height:      32 - 4320
+alignment:   32
+Interlace:   yes
+pix format:  NV12[1](native), P010[10](native), P012[19](native), BGRA[3], RGBA[5]
+memory type: DX11(native)
+
+VC-1 decode features
+10bit depth:     no
+acceleration:    Hardware-accelerated
+max streams:     16
+
+VC-1 output:
+Width:       32 - 1920
+Height:      32 - 1080
+alignment:   32
+Interlace:   yes
+pix format:  NV12[1](native), P010[10](native), P012[19](native), BGRA[3], RGBA[5]
+memory type: DX11(native)
+
+
+
+device #0: AMD Radeon
+AMFVideoConverter features
+acceleration:    GPU-accelerated
+
+input:
+Width:       32 - 2147483647
+Height:      32 - 2147483647
+alignment:   2
+Interlace:   no
+pix format:  NV12[1](native), YV12[2](native), BGRA[3](native), ARGB[4](native), RGBA[5](native), YUV420P[7](native), YUY2[9](native), UYVY[12](native)
+memory type: DX11(native), OPENCL(native), OPENGL(native), HOST
+
+output:
+Width:       32 - 2147483647
+Height:      32 - 2147483647
+alignment:   2
+Interlace:   no
+pix format:  NV12[1](native), YV12[2](native), BGRA[3](native), ARGB[4](native), RGBA[5](native), YUV420P[7](native)
+memory type: DX11(native), OPENCL(native), OPENGL(native), HOST
+
+AMFHQScaler features
+acceleration:    GPU-accelerated
+
+input:
+Width:       32 - 8192
+Height:      32 - 4096
+alignment:   2
+Interlace:   no
+pix format:  NV12[1](native), BGRA[3](native), ARGB[4](native), RGBA[5](native), P010[10](native), RGBA_F16[11](native), R10G10B10A2[13](native)
+memory type: DX11(native), OPENCL(native)
+
+output:
+Width:       32 - 16384
+Height:      32 - 8192
+alignment:   2
+Interlace:   no
+pix format:  NV12[1](native), BGRA[3](native), ARGB[4](native), RGBA[5](native), P010[10](native), RGBA_F16[11](native), R10G10B10A2[13](native)
+memory type: DX11(native), OPENCL(native)
+
+AMFVQEnhancer features
+acceleration:    GPU-accelerated
+
+input:
+Width:       32 - 8192
+Height:      32 - 4096
+alignment:   2
+Interlace:   no
+pix format:  NV12[1](native), BGRA[3](native), ARGB[4](native), RGBA[5](native), P010[10](native), RGBA_F16[11](native), R10G10B10A2[13](native)
+memory type: DX11(native), OPENCL(native)
+
+output:
+Width:       32 - 16384
+Height:      32 - 8192
+alignment:   2
+Interlace:   no
+pix format:  NV12[1](native), BGRA[3](native), ARGB[4](native), RGBA[5](native), P010[10](native), RGBA_F16[11](native), R10G10B10A2[13](native)
+memory type: DX11(native), OPENCL(native)
