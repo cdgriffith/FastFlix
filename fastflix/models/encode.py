@@ -69,6 +69,7 @@ class x265Settings(EncoderSettings):
     intra_refresh: bool = False
     intra_smoothing: bool = True
     frame_threads: int = 0
+    gop_size: int = 0
 
 
 class VVCSettings(EncoderSettings):

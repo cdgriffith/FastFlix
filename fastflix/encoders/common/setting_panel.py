@@ -134,6 +134,7 @@ class SettingPanel(QtWidgets.QWidget):
         tooltip="",
         validator=None,
         width=None,
+        placeholder=None,
     ):
         layout = QtWidgets.QHBoxLayout()
         self.labels[widget_name] = QtWidgets.QLabel(t(label))
@@ -141,6 +142,9 @@ class SettingPanel(QtWidgets.QWidget):
             self.labels[widget_name].setToolTip(self.translate_tip(tooltip))
 
         self.widgets[widget_name] = QtWidgets.QLineEdit()
+
+        if placeholder:
+            self.widgets[widget_name].setPlaceholderText(placeholder)
 
         if opt:
             default = str(self.app.fastflix.config.encoder_opt(self.profile_name, opt)) or default

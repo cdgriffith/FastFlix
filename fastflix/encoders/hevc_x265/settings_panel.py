@@ -62,6 +62,14 @@ pix_fmts = [
     "12-bit 444: yuv444p12le",
 ]
 
+# fmt: off
+gop_sizes = [t("Auto"), "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17",
+             "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34",
+             "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51",
+             "52", "53", "54", "55", "56", "57", "58", "59", "60", "70", "80", "90", "100", "110", "120", "140", "160",
+             "180", "200", "220", "240", "260", "280", "300", "400", "500", "600", "700", "800", "900", "1000"]
+# fmt: on
+
 
 def get_breaker():
     breaker_line = QtWidgets.QWidget()
@@ -105,6 +113,7 @@ class HEVC(SettingPanel):
         grid.addLayout(self.init_aq_mode(), 6, 0, 1, 2)
         grid.addLayout(self.init_frame_threads(), 7, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 8, 0, 1, 2)
+        grid.addLayout(self.init_gop(), 9, 0, 1, 2)
         grid.addLayout(self.init_x265_row(), 6, 2, 1, 4)
         grid.addLayout(self.init_x265_row_two(), 7, 2, 1, 4)
         # grid.addLayout(self.init_hdr10_opt(), 5, 2, 1, 1)
@@ -459,6 +468,11 @@ class HEVC(SettingPanel):
             opt="max_muxing_queue_size",
         )
 
+    def init_gop(self):
+        return self._add_combo_box(
+            label="Gop Size", tooltip="GOP Size", widget_name="gop_size", opt="gop_size", options=gop_sizes
+        )
+
     def init_modes(self):
         return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf")
 
@@ -594,6 +608,7 @@ class HEVC(SettingPanel):
             lossless=self.widgets.lossless.isChecked(),
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
+            gop_size=int(self.widgets.gop_size.currentText()) if self.widgets.gop_size.currentIndex() > 0 else 0,
         )
 
         encode_type, q_value = self.get_mode_settings()
