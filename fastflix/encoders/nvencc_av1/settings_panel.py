@@ -96,6 +96,7 @@ class NVENCC(SettingPanel):
         grid.addLayout(self.init_aq(), 5, 0, 1, 2)
         grid.addLayout(self.init_aq_strength(), 6, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 7, 0, 1, 2)
+        grid.addLayout(self.init_devices(), 8, 0, 1, 2)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_vbr_target())
@@ -150,6 +151,10 @@ class NVENCC(SettingPanel):
         self.hide()
         self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
         self.hdr10plus_ffmpeg_signal.connect(lambda x: self.ffmpeg_level.setText(x))
+
+    def init_devices(self):
+        devices = [f"{k}: {v['name']}" for k, v in self.app.fastflix.config.nvencc_devices.items()]
+        return self._add_combo_box(widget_name="device", label="Device", options=devices, opt="device")
 
     def init_preset(self):
         return self._add_combo_box(
@@ -430,6 +435,7 @@ class NVENCC(SettingPanel):
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
             vbr_target=self.widgets.vbr_target.currentText() if self.widgets.vbr_target.currentIndex() > 0 else None,
             b_ref_mode=self.widgets.b_ref_mode.currentText(),
+            device=int(self.widgets.device.currentText().split(":", 1)[0]),
         )
 
         encode_type, q_value = self.get_mode_settings()

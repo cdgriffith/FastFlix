@@ -81,6 +81,7 @@ class VCEENCC(SettingPanel):
         grid.addLayout(self.init_bitrate_mode(), 1, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
         grid.addLayout(self.init_pre(), 3, 0, 1, 2)
+        grid.addLayout(self.init_devices(), 6, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -134,6 +135,10 @@ class VCEENCC(SettingPanel):
         self.hide()
         self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
         self.hdr10plus_ffmpeg_signal.connect(lambda x: self.ffmpeg_level.setText(x))
+
+    def init_devices(self):
+        devices = [f"{k}: {v['name']}" for k, v in self.app.fastflix.config.vceencc_devices.items()]
+        return self._add_combo_box(widget_name="device", label="Device", options=devices, opt="device")
 
     def init_preset(self):
         return self._add_combo_box(
@@ -314,6 +319,7 @@ class VCEENCC(SettingPanel):
             decoder=self.widgets.decoder.currentText(),
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),
             bitrate_mode=self.widgets.bitrate_mode.currentText(),
+            device=int(self.widgets.device.currentText().split(":", 1)[0]),
         )
 
         encode_type, q_value = self.get_mode_settings()

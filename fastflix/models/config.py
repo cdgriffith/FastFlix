@@ -22,6 +22,7 @@ from fastflix.models.encode import (
 )
 from fastflix.models.profiles import Profile, AudioMatch, MatchItem, MatchType
 from fastflix.version import __version__
+from fastflix.rigaya_helpers import get_all_encoder_formats_and_devices
 
 logger = logging.getLogger("fastflix")
 
@@ -151,6 +152,13 @@ class Config(BaseModel):
             "tta",
         ]
     )
+    vceencc_encoders: list = Field(default_factory=list)
+    qsvencc_encoders: list = Field(default_factory=list)
+    nvencc_encoders: list = Field(default_factory=list)
+
+    vceencc_devices: dict = Field(default_factory=dict)
+    qsvencc_devices: dict = Field(default_factory=dict)
+    nvencc_devices: dict = Field(default_factory=dict)
 
     def encoder_opt(self, profile_name, profile_option_name):
         encoder_settings = getattr(self.profiles[self.selected_profile], profile_name)
@@ -304,6 +312,45 @@ class Config(BaseModel):
 
         # 5.2.0 remove ext
         self.output_name_format = self.output_name_format.replace(".{ext}", "").replace("{ext}", "")
+        # if StrictVersion(__version__) > StrictVersion(data.version):
+        #     logger.info(f"Clearing possible old config values from fastflix {data.verion}")
+        #     self.vceencc_encoders = []
+        #     self.nvencc_encoders = []
+        #     self.qsvencc_encoders = []
+
+        self.check_hw_encoders()
+
+    def check_hw_encoders(self):
+        if self.nvencc:
+            logger.info("Checking for available NVEncC encoders")
+            try:
+                self.nvencc_devices, self.nvencc_encoders = get_all_encoder_formats_and_devices(
+                    self.nvencc, is_nvenc=True
+                )
+            except Exception:
+                logger.exception("Errored while checking for available NVEncC formats")
+        else:
+            self.nvencc_encoders = []
+        if self.vceencc:
+            logger.info("Checking for available VCEEncC encoders")
+            try:
+                self.vceencc_devices, self.vceencc_encoders = get_all_encoder_formats_and_devices(
+                    self.vceencc, is_vce=True
+                )
+            except Exception:
+                logger.exception("Errored while checking for available VCEEncC formats")
+        else:
+            self.vceencc_encoders = []
+        if self.qsvencc:
+            logger.info("Checking for available QSVEncC encoders")
+            try:
+                self.qsvencc_devices, self.qsvencc_encoders = get_all_encoder_formats_and_devices(
+                    self.qsvencc, is_qsv=True
+                )
+            except Exception:
+                logger.exception("Errored while checking for available QSVEncC formats")
+        else:
+            self.qsvencc_encoders = []
 
     def save(self):
         items = self.dict()

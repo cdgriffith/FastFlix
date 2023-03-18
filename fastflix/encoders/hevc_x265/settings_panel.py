@@ -113,7 +113,7 @@ class HEVC(SettingPanel):
         grid.addLayout(self.init_aq_mode(), 6, 0, 1, 2)
         grid.addLayout(self.init_frame_threads(), 7, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 8, 0, 1, 2)
-        grid.addLayout(self.init_gop(), 9, 0, 1, 2)
+        # grid.addLayout(self.init_gop(), 9, 0, 1, 2)
         grid.addLayout(self.init_x265_row(), 6, 2, 1, 4)
         grid.addLayout(self.init_x265_row_two(), 7, 2, 1, 4)
         # grid.addLayout(self.init_hdr10_opt(), 5, 2, 1, 1)
@@ -608,7 +608,7 @@ class HEVC(SettingPanel):
             lossless=self.widgets.lossless.isChecked(),
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
-            gop_size=int(self.widgets.gop_size.currentText()) if self.widgets.gop_size.currentIndex() > 0 else 0,
+            # gop_size=int(self.widgets.gop_size.currentText()) if self.widgets.gop_size.currentIndex() > 0 else 0,
         )
 
         encode_type, q_value = self.get_mode_settings()

@@ -96,6 +96,7 @@ class NVENCC(SettingPanel):
         grid.addLayout(self.init_aq(), 5, 0, 1, 2)
         grid.addLayout(self.init_aq_strength(), 6, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 7, 0, 1, 2)
+        grid.addLayout(self.init_devices(), 8, 0, 1, 2)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_vbr_target())
@@ -143,8 +144,6 @@ class NVENCC(SettingPanel):
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, 1, 4)
-        grid.addWidget(warning_label, 11, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
-        grid.addWidget(QtWidgets.QLabel(t("NVEncC Encoder support is still experimental!")), 11, 5, 1, 1)
 
         self.setLayout(grid)
         self.hide()
@@ -344,6 +343,10 @@ class NVENCC(SettingPanel):
             min_width=60,
         )
 
+    def init_devices(self):
+        devices = [f"{k}: {v['name']}" for k, v in self.app.fastflix.config.nvencc_devices.items()]
+        return self._add_combo_box(widget_name="device", label="Device", options=devices, opt="device")
+
     def init_10_bit(self):
         return self._add_check_box(label="10-bit", widget_name="force_ten_bit", opt="force_ten_bit")
 
@@ -430,6 +433,7 @@ class NVENCC(SettingPanel):
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
             vbr_target=self.widgets.vbr_target.currentText() if self.widgets.vbr_target.currentIndex() > 0 else None,
             b_ref_mode=self.widgets.b_ref_mode.currentText(),
+            device=int(self.widgets.device.currentText().split(":", 1)[0]),
         )
 
         encode_type, q_value = self.get_mode_settings()

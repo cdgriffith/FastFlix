@@ -81,6 +81,7 @@ class VCEENCC(SettingPanel):
         grid.addLayout(self.init_tier(), 1, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
         grid.addLayout(self.init_pre(), 3, 0, 1, 2)
+        grid.addLayout(self.init_devices(), 6, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -127,13 +128,15 @@ class VCEENCC(SettingPanel):
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, 1, 4)
-        grid.addWidget(warning_label, 11, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
-        grid.addWidget(QtWidgets.QLabel(t("VCEEncC Encoder support is still experimental!")), 11, 5, 1, 1)
 
         self.setLayout(grid)
         self.hide()
         self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
         self.hdr10plus_ffmpeg_signal.connect(lambda x: self.ffmpeg_level.setText(x))
+
+    def init_devices(self):
+        devices = [f"{k}: {v['name']}" for k, v in self.app.fastflix.config.vceencc_devices.items()]
+        return self._add_combo_box(widget_name="device", label="Device", options=devices, opt="device")
 
     def init_preset(self):
         return self._add_combo_box(
@@ -310,6 +313,7 @@ class VCEENCC(SettingPanel):
             vbaq=self.widgets.vbaq.isChecked(),
             decoder=self.widgets.decoder.currentText(),
             hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),
+            device=int(self.widgets.device.currentText().split(":", 1)[0]),
         )
 
         encode_type, q_value = self.get_mode_settings()

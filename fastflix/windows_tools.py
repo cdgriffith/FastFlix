@@ -61,7 +61,7 @@ def show_windows_notification(title, msg, icon_path):
         tool_icon = LoadImage(hinst, icon_path, IMAGE_ICON, 0, 0, icon_flags)
 
         flags = NIF_ICON | NIF_MESSAGE | NIF_TIP
-        nid = (tool_window, 0, flags, WM_USER + 20, tool_icon, "FastFlix Notifications")
+        nid = (tool_window, 0, flags, WM_USER + 20, tool_icon, "FastFlix")
         Shell_NotifyIcon(NIM_ADD, nid)
 
     Shell_NotifyIcon(

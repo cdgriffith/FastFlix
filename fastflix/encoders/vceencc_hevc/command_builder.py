@@ -93,6 +93,8 @@ def build(fastflix: FastFlix):
     command = [
         f'"{clean_file_string(fastflix.config.vceencc)}"',
         ("--avhw" if settings.decoder == "Hardware" else "--avsw"),
+        "--device",
+        str(settings.device),
         "-i",
         f'"{clean_file_string(video.source)}"',
         (f"--video-streamid {stream_id}" if stream_id else ""),

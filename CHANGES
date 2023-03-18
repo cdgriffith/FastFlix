@@ -2,6 +2,7 @@
 
 ## Version 5.4.0
 
+* Adding #389 unlock GPU encoders by checking for supported codec (thanks to F.O.R.A.R.T.)
 * Adding #430 Minimise to tray (thanks to ProFire)
 * Fixing #441 outdated SVT-AV1 Encoding Guide link (thanks to Yuzbashi)
 
