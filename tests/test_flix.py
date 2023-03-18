@@ -16,17 +16,29 @@ assets = here / "assets"
 test_logs = {
     "vce": [
         {
-            "text": (assets / "rigaya_vce_cf_5800h_win10.txt").read_text(encoding="utf-8").splitlines(),
+            "text": (assets / "rigaya_vce_cf_5800h_win11.txt").read_text(encoding="utf-8").splitlines(),
             "result": VCEEncoder(device_number=0, device_name="AMD Radeon", formats=["H.264/AVC", "H.265/HEVC"]),
-        }
+        },
+        {
+            "text": (assets / "rigaya_vce_cf_rx7900xt_win11.txt").read_text(encoding="utf-8").splitlines(),
+            "result": VCEEncoder(
+                device_number=0, device_name="AMD Radeon RX 7900 XT", formats=["H.264/AVC", "H.265/HEVC", "AV1"]
+            ),
+        },
     ],
     "nvenc": [
         {
-            "text": (assets / "rigaya_nvenc_cf_3060_linux.txt").read_text(encoding="utf-8").splitlines(),
+            "text": (assets / "rigaya_nvenc_cf_rtx3060_linux.txt").read_text(encoding="utf-8").splitlines(),
             "result": NVENCEncoder(
                 device_number=0, device_name="NVIDIA GeForce RTX 3060", formats=["H.264/AVC", "H.265/HEVC"]
             ),
-        }
+        },
+        {
+            "text": (assets / "rigaya_nvenc_cf_rtx4090_win11.txt").read_text(encoding="utf-8").splitlines(),
+            "result": NVENCEncoder(
+                device_number=0, device_name="NVIDIA GeForce RTX 4090", formats=["H.264/AVC", "H.265/HEVC", "AV1"]
+            ),
+        },
     ],
     "qsv": [
         {

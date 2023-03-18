@@ -335,7 +335,7 @@ class NVENCC(SettingPanel):
         return self._add_combo_box(
             widget_name="b_frames",
             label="B Frames",
-            options=[t("Auto"), "0", "1", "2", "3", "4", "5", "6"],
+            options=[t("Auto"), "0", "1", "2", "3", "4", "5", "6", "7"],
             opt="b_frames",
             min_width=60,
         )
