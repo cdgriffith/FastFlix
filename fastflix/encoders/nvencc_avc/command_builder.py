@@ -15,28 +15,12 @@ def build(fastflix: FastFlix):
     video: Video = fastflix.current_video
     settings: NVEncCAVCSettings = fastflix.current_video.video_settings.video_encoder_settings
 
-    trim = ""
-    try:
-        if "/" in video.frame_rate:
-            over, under = [int(x) for x in video.frame_rate.split("/")]
-            rate = over / under
-        else:
-            rate = float(video.frame_rate)
-    except Exception:
-        logger.exception("Could not get framerate of this movie!")
-    else:
-        if video.video_settings.end_time:
-            end_frame = int(video.video_settings.end_time * rate)
-            start_frame = 0
-            if video.video_settings.start_time:
-                start_frame = int(video.video_settings.start_time * rate)
-            trim = f"--trim {start_frame}:{end_frame}"
-        elif video.video_settings.start_time:
-            trim = f"--seek {video.video_settings.start_time}"
-
-    if (video.frame_rate != video.average_frame_rate) and trim:
-        logger.warning("Cannot use 'trim' when working with variable frame rate videos")
-        trim = ""
+    seek = ""
+    seekto = ""
+    if video.video_settings.start_time:
+        seek = f"--seek {video.video_settings.start_time}"
+    if video.video_settings.end_time:
+        seekto = f"--seekto {video.video_settings.end_time}"
 
     transform = ""
     if video.video_settings.vertical_flip or video.video_settings.horizontal_flip:
@@ -97,7 +81,8 @@ def build(fastflix: FastFlix):
         "-i",
         f'"{clean_file_string(video.source)}"',
         (f"--video-streamid {stream_id}" if stream_id else ""),
-        trim,
+        seek,
+        seekto,
         (f"--vpp-rotate {video.video_settings.rotate * 90}" if video.video_settings.rotate else ""),
         transform,
         (f'--output-res {video.scale.replace(":", "x")}' if video.scale else ""),

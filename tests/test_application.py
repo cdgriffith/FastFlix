@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from box import Box
 
-from fastflix.application import init_encoders
+from fastflix.application import init_encoders, create_app
 from fastflix.models.config import Config
 
 fake_app = Box(default_box=True)
@@ -27,3 +27,8 @@ def test_init_encoders():
 # def test_get_audio_encoders():
 #     ffmpeg_audio_encoders(fake_app, fake_app.fastflix.config)
 #     assert len(getattr(fake_app.fastflix, "audio_encoders", [])) > 0
+
+
+# Write a pytest for the Pyqt6 application defined in the fastflix/application.py file.
+def test_application():
+    app = create_app(enable_scaling=False)

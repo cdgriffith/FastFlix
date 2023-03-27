@@ -133,7 +133,15 @@ def init_fastflix_directories(app: FastFlixApp):
     app.fastflix.log_path.mkdir(parents=True, exist_ok=True)
 
 
-def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False, enable_scaling=True):
+def app_setup(
+    enable_scaling: bool = True,
+    portable_mode: bool = False,
+    queue_list: list = None,
+    queue_lock=None,
+    status_queue=None,
+    log_queue=None,
+    worker_queue=None,
+):
     app = create_app(enable_scaling=enable_scaling)
     app.fastflix = FastFlix(queue=queue_list, queue_lock=queue_lock)
     app.fastflix.log_queue = log_queue
@@ -209,6 +217,20 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, por
 
     if not app.fastflix.config.disable_version_check:
         latest_fastflix(app=app, show_new_dialog=False)
+
+    return app
+
+
+def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False, enable_scaling=True):
+    app = app_setup(
+        enable_scaling=enable_scaling,
+        portable_mode=portable_mode,
+        queue_list=queue_list,
+        queue_lock=queue_lock,
+        status_queue=status_queue,
+        log_queue=log_queue,
+        worker_queue=worker_queue,
+    )
 
     try:
         app.exec_()
