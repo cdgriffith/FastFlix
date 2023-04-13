@@ -17,9 +17,8 @@ from fastflix.language import t
 from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
-from fastflix.resources import main_icon, get_icon, video_file_types
+from fastflix.resources import main_icon, get_icon
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message
-from fastflix.windows_tools import cleanup_windows_notification
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -39,6 +38,9 @@ class Container(QtWidgets.QMainWindow):
         self.app = app
         self.pb = None
 
+        self.app.setApplicationName("FastFlix")
+        self.app.setWindowIcon(QtGui.QIcon(main_icon))
+
         self.tray_icon = QtWidgets.QSystemTrayIcon(self)
         self.tray_icon.setIcon(QtGui.QIcon(main_icon))
 
@@ -55,7 +57,6 @@ class Container(QtWidgets.QMainWindow):
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
 
-        # self.tray_icon.setObjectName("FastFlix")
         self.tray_icon.setToolTip("FastFlix")
 
         if self.app.fastflix.config.stay_on_top:
@@ -146,8 +147,6 @@ class Container(QtWidgets.QMainWindow):
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".tiff", ".tif")):
                 item.unlink()
         shutil.rmtree(self.app.fastflix.config.work_path / "covers", ignore_errors=True)
-        if reusables.win_based:
-            cleanup_windows_notification()
 
         if self.app.fastflix.config.clean_old_logs:
             self.clean_old_logs(show_errors=False)

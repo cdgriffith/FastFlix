@@ -81,7 +81,7 @@ class VCEENCC(SettingPanel):
         grid.addLayout(self.init_bitrate_mode(), 1, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
         grid.addLayout(self.init_pre(), 3, 0, 1, 2)
-        grid.addLayout(self.init_devices(), 6, 0, 1, 2)
+        grid.addLayout(self.init_devices(), 7, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))

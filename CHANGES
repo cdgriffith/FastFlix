@@ -6,6 +6,8 @@
 * Adding #430 Minimise to tray (thanks to ProFire)
 * Changing rigaya encoders end time would use --trim instead of --seekto
 * Fixing #441 outdated SVT-AV1 Encoding Guide link (thanks to Yuzbashi)
+* Fixing #455 source FPS was not applied to rigaya encoders (thanks to F.O.R.A.R.T.)
+* Removing Windows toast notification due to prone to errors and incompatibility with tray minimize
 
 ## Version 5.3.0
 

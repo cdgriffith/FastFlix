@@ -180,7 +180,9 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.layout.addWidget(self.source_frame_rate, self.last_row, 6)
 
         self.last_row += 1
-        self.layout.addWidget(QtWidgets.QLabel(t("Output FPS")), self.last_row, 1, alignment=QtCore.Qt.AlignRight)
+        self.layout.addWidget(
+            QtWidgets.QLabel(t("Output FPS") + " ʘ"), self.last_row, 1, alignment=QtCore.Qt.AlignRight
+        )
         self.layout.addWidget(self.outgoing_fps_widget, self.last_row, 2)
         self.layout.addWidget(self.outgoing_same_as_source, self.last_row, 3)
 

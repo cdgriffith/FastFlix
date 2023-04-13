@@ -70,6 +70,8 @@ def build(fastflix: FastFlix):
     elif video.video_settings.vsync == "vfr":
         vsync_setting = "vfr"
 
+    source_fps = f"--fps {video.video_settings.source_fps}" if video.video_settings.source_fps else ""
+
     command = [
         f'"{clean_file_string(fastflix.config.qsvencc)}"',
         "-i",
@@ -77,6 +79,7 @@ def build(fastflix: FastFlix):
         (f"--video-streamid {stream_id}" if stream_id else ""),
         seek,
         seekto,
+        source_fps,
         (f"--vpp-rotate {video.video_settings.rotate * 90}" if video.video_settings.rotate else ""),
         transform,
         (f'--output-res {video.scale.replace(":", "x")}' if video.scale else ""),
