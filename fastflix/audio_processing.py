@@ -9,13 +9,15 @@ from fastflix.models.profiles import AudioMatch, MatchType, MatchItem
 
 
 def apply_audio_filters(
-    audio_filters: list[AudioMatch] | None,
+    audio_filters: list[AudioMatch] | bool | None,
     original_tracks: list[Box],
 ):
     """
     The goal of this function is to take a set of audio_filters and figure out which tracks
     apply and what conversions to set.
     """
+    if not audio_filters:
+        return []
 
     original_tracks = deepcopy(original_tracks)
 

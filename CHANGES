@@ -4,6 +4,7 @@
 
 * Adding #389 unlock GPU encoders by checking for supported codec (thanks to F.O.R.A.R.T.)
 * Adding #430 Minimise to tray (thanks to ProFire)
+* Adding #452 way to unselect all audio in a profile (thanks to HannesJo0139)
 * Changing rigaya encoders end time would use --trim instead of --seekto
 * Changing #450 -vsync to -fps_mode as -vsync is deprecated (thanks to GT500org)
 * Fixing #441 outdated SVT-AV1 Encoding Guide link (thanks to Yuzbashi)

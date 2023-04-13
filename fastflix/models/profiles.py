@@ -129,7 +129,7 @@ class Profile(BaseModel):
     resolution_custom: str | None = None
     output_type: str = ".mkv"
 
-    audio_filters: Optional[list[AudioMatch]] = None
+    audio_filters: Optional[list[AudioMatch] | bool] = None
     # subtitle_filters: Optional[list[SubtitleMatch]] = None
 
     # Legacy Audio, here to properly import old profiles

@@ -433,7 +433,7 @@ class AudioList(FlixList):
         audio_formats,
         og_only: bool = False,
     ):
-        if profile.audio_filters:
+        if isinstance(profile.audio_filters, list) or profile.audio_filters is False:
             self.disable_all()
         else:
             self.enable_all()
@@ -492,7 +492,7 @@ class AudioList(FlixList):
 
         tracks = apply_audio_filters(profile.audio_filters, original_tracks=original_tracks)
 
-        if self.tracks and not tracks:
+        if profile.audio_filters is not False and self.tracks and not tracks:
             enable = yes_no_message(
                 t("No audio tracks matched for this profile, enable first track?"), title="No Audio Match"
             )
