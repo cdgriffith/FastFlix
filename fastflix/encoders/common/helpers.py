@@ -52,7 +52,7 @@ def generate_ffmpeg_start(
     time_one = time_settings if fast_seek else ""
     time_two = time_settings if not fast_seek else ""
     incoming_fps = f"-r {source_fps}" if source_fps else ""
-    vsync_text = f"-vsync {vsync}" if vsync else ""
+    vsync_text = f"-fps_mode {vsync}" if vsync else ""
     if video_title:
         video_title.replace('"', '\\"')
     title = f'-metadata title="{video_title}"' if video_title else ""
