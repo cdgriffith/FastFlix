@@ -34,7 +34,7 @@ jobs:
     - name: Install PySide6 requirements
       run: |
         sudo apt update
-        sudo apt install libopengl0 freeglut3 freeglut3-dev -y
+        sudo apt install libopengl0 freeglut3 freeglut3-dev libxkvcommon-x11-0 xvfb -y
 
     - name: Install requirements
       run: |
