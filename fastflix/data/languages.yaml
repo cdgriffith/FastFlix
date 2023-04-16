@@ -8481,9 +8481,57 @@ Loading Videos:
   kor: 동영상 로드 중
 Open FastFlix:
   eng: Open FastFlix
+  deu: FastFlix öffnen
+  fra: Ouvrir FastFlix
+  ita: Aprire FastFlix
+  spa: Abrir FastFlix
+  zho: 打开FastFlix
+  jpn: FastFlixを開く
+  rus: Открыть FastFlix
+  por: Abrir FastFlix
+  swe: Öppna FastFlix
+  pol: Otwórz FastFlix
+  ukr: Відкрийте FastFlix
+  kor: FastFlix 열기
 Minimize to Tray:
   eng: Minimize to Tray
+  deu: In Ablage minimieren
+  fra: Réduire au plateau
+  ita: Riduci a icona nel vassoio
+  spa: Minimizar a bandeja
+  zho: 最小化到托盘
+  jpn: トレイに最小化する
+  rus: Свернуть в лоток
+  por: Minimizar para bandeja
+  swe: Minimera till facket
+  pol: Minimalizuj do tacki
+  ukr: Мінімізувати до лотка
+  kor: 트레이로 최소화
 Device:
   eng: Device
+  deu: Gerät
+  fra: Dispositif
+  ita: Dispositivo
+  spa: Dispositivo
+  zho: 器材
+  jpn: デバイス
+  rus: Устройство
+  por: Dispositivo
+  swe: Enhet
+  pol: Urządzenie
+  ukr: Пристрій
+  kor: 장치
 Don't Select Any Audio:
   eng: Don't Select Any Audio
+  deu: Wählen Sie kein Audio aus
+  fra: Ne pas sélectionner d'audio
+  ita: Non selezionare alcun audio
+  spa: No seleccione ningún audio
+  zho: 不要选择任何音频
+  jpn: 任意のオーディオを選択しない
+  rus: Не выбирайте аудио
+  por: Não seleccione nenhum áudio
+  swe: Välj inte något ljud
+  pol: Nie wybieraj żadnego dźwięku
+  ukr: Не вибирайте жодного аудіо
+  kor: 오디오 선택 안 함
