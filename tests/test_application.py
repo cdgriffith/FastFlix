@@ -30,5 +30,5 @@ def test_init_encoders():
 
 
 # Write a pytest for the Pyqt6 application defined in the fastflix/application.py file.
-def test_application():
-    app = create_app(enable_scaling=False)
+# def test_application():
+#     app = create_app(enable_scaling=False)

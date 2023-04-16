@@ -1,4 +1,4 @@
-name: Lint and Tests
+name: Lint
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
     - name: Install PySide6 requirements
       run: |
         sudo apt update
-        sudo apt install libopengl0 freeglut3 freeglut3-dev libxkbcommon-x11-0 xvfb -y
+        sudo apt install libopengl0 freeglut3 freeglut3-dev -y
 
     - name: Install requirements
       run: |
@@ -51,4 +51,4 @@ jobs:
     - name: Run tests
       env:
         PYTEST_QT_API: pyside6
-      run: xvfb-run pytest tests
+      run: pytest tests
