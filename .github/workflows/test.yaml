@@ -51,4 +51,4 @@ jobs:
     - name: Run tests
       env:
         PYTEST_QT_API: pyside6
-      run: pytest tests
+      run: xvfb-run pytest tests
