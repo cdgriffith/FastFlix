@@ -12,9 +12,8 @@ from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
-from fastflix.resources import main_icon, breeze_styles_path, get_bool_env
-from fastflix.shared import file_date, message, latest_fastflix
-from fastflix.version import __version__
+from fastflix.resources import main_icon, breeze_styles_path
+from fastflix.shared import file_date, message, latest_fastflix, DEVMODE
 from fastflix.widgets.container import Container
 from fastflix.widgets.progress_bar import ProgressBar, Task
 
@@ -96,22 +95,41 @@ def init_encoders(app: FastFlixApp, **_):
         copy_plugin,
     ]
 
-    if app.fastflix.config.qsvencc:
+    if DEVMODE:
         encoders.insert(1, qsvencc_plugin)
         encoders.insert(encoders.index(av1_plugin), qsvencc_av1_plugin)
         encoders.insert(encoders.index(avc_plugin), qsvencc_avc_plugin)
-
-    if app.fastflix.config.nvencc:
         encoders.insert(1, nvencc_plugin)
         encoders.insert(encoders.index(av1_plugin), nvencc_av1_plugin)
         encoders.insert(encoders.index(avc_plugin), nvencc_avc_plugin)
-
-    if app.fastflix.config.vceencc:
-        if reusables.win_based:
-            # HEVC AMF support only works on windows currently
-            encoders.insert(1, vceencc_hevc_plugin)
+        encoders.insert(1, vceencc_hevc_plugin)
         encoders.insert(encoders.index(av1_plugin), vceencc_av1_plugin)
         encoders.insert(encoders.index(avc_plugin), vceencc_avc_plugin)
+    else:
+        if app.fastflix.config.qsvencc:
+            if "H.265/HEVC" in app.fastflix.config.qsvencc_encoders:
+                encoders.insert(1, qsvencc_plugin)
+            if "AV1" in app.fastflix.config.qsvencc_encoders:
+                encoders.insert(encoders.index(av1_plugin), qsvencc_av1_plugin)
+            if "H.264/AVC" in app.fastflix.config.qsvencc_encoders:
+                encoders.insert(encoders.index(avc_plugin), qsvencc_avc_plugin)
+
+        if app.fastflix.config.nvencc:
+            if "H.265/HEVC" in app.fastflix.config.nvencc_encoders:
+                encoders.insert(1, nvencc_plugin)
+            if "AV1" in app.fastflix.config.nvencc_encoders:
+                encoders.insert(encoders.index(av1_plugin), nvencc_av1_plugin)
+            if "H.264/AVC" in app.fastflix.config.nvencc_encoders:
+                encoders.insert(encoders.index(avc_plugin), nvencc_avc_plugin)
+
+        if app.fastflix.config.vceencc:
+            if reusables.win_based and "H.265/HEVC" in app.fastflix.config.vceencc_encoders:
+                # HEVC AMF support only works on windows currently
+                encoders.insert(1, vceencc_hevc_plugin)
+            if "AV1" in app.fastflix.config.vceencc_encoders:
+                encoders.insert(encoders.index(av1_plugin), vceencc_av1_plugin)
+            if "H.264/AVC" in app.fastflix.config.vceencc_encoders:
+                encoders.insert(encoders.index(avc_plugin), vceencc_avc_plugin)
 
     app.fastflix.encoders = {
         encoder.name: encoder
@@ -125,22 +143,15 @@ def init_fastflix_directories(app: FastFlixApp):
     app.fastflix.log_path.mkdir(parents=True, exist_ok=True)
 
 
-def register_app():
-    """
-    On Windows you have to set the AppUser Model ID or else the
-    taskbar icon will not appear as expected.
-    """
-    if reusables.win_based:
-        try:
-            import ctypes
-
-            app_id = f"cdgriffith.fastflix.{__version__}".encode("utf-8")
-            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(app_id)
-        except Exception:
-            logger.exception("Could not set application ID for Windows, please raise issue in github with above error")
-
-
-def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False, enable_scaling=True):
+def app_setup(
+    enable_scaling: bool = True,
+    portable_mode: bool = False,
+    queue_list: list = None,
+    queue_lock=None,
+    status_queue=None,
+    log_queue=None,
+    worker_queue=None,
+):
     app = create_app(enable_scaling=enable_scaling)
     app.fastflix = FastFlix(queue=queue_list, queue_lock=queue_lock)
     app.fastflix.log_queue = log_queue
@@ -150,7 +161,6 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, por
     app.fastflix.config = Config()
     init_fastflix_directories(app)
     init_logging(app)
-    register_app()
     upgraded = app.fastflix.config.upgrade_check()
     if upgraded:
         # No translation will be possible in this case
@@ -217,6 +227,20 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, por
 
     if not app.fastflix.config.disable_version_check:
         latest_fastflix(app=app, show_new_dialog=False)
+
+    return app
+
+
+def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False, enable_scaling=True):
+    app = app_setup(
+        enable_scaling=enable_scaling,
+        portable_mode=portable_mode,
+        queue_list=queue_list,
+        queue_lock=queue_lock,
+        status_queue=status_queue,
+        log_queue=log_queue,
+        worker_queue=worker_queue,
+    )
 
     try:
         app.exec_()

@@ -69,6 +69,7 @@ class x265Settings(EncoderSettings):
     intra_refresh: bool = False
     intra_smoothing: bool = True
     frame_threads: int = 0
+    # gop_size: int = 0
 
 
 class VVCSettings(EncoderSettings):
@@ -140,6 +141,7 @@ class NVEncCSettings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     force_ten_bit: bool = False
+    device: int = 0
 
 
 class NVEncCAV1Settings(EncoderSettings):
@@ -171,6 +173,7 @@ class NVEncCAV1Settings(EncoderSettings):
     ref: Optional[str] = None
     metrics: bool = False
     force_ten_bit: bool = False
+    device: int = 0
 
 
 class QSVEncCSettings(EncoderSettings):
@@ -264,6 +267,7 @@ class NVEncCAVCSettings(EncoderSettings):
     metrics: bool = False
     b_frames: Optional[str] = None
     b_ref_mode: str = "disabled"
+    device: int = 0
 
 
 class VCEEncCSettings(EncoderSettings):
@@ -285,6 +289,7 @@ class VCEEncCSettings(EncoderSettings):
     pre_analysis: bool = False
     vbaq: bool = False
     decoder: str = "Hardware"
+    device: int = 0
 
 
 class VCEEncCAV1Settings(EncoderSettings):
@@ -306,6 +311,7 @@ class VCEEncCAV1Settings(EncoderSettings):
     vbaq: bool = False
     decoder: str = "Hardware"
     bitrate_mode: str = "vbr"
+    device: int = 0
 
 
 class VCEEncCAVCSettings(EncoderSettings):
@@ -327,6 +333,7 @@ class VCEEncCAVCSettings(EncoderSettings):
     pre_analysis: bool = False
     vbaq: bool = False
     decoder: str = "Hardware"
+    device: int = 0
 
 
 class rav1eSettings(EncoderSettings):

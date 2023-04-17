@@ -36,16 +36,14 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Status, Video, VideoSettings, Crop
 from fastflix.resources import (
     get_icon,
-    main_icon,
     group_box_style,
     reset_button_style,
     onyx_convert_icon,
     onyx_queue_add_icon,
     get_text_color,
-    video_file_types,
 )
 from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
-from fastflix.windows_tools import show_windows_notification, prevent_sleep_mode, allow_sleep_mode
+from fastflix.windows_tools import prevent_sleep_mode, allow_sleep_mode
 from fastflix.widgets.background_tasks import ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.video_options import VideoOptions
@@ -1887,13 +1885,8 @@ class Main(QtWidgets.QWidget):
             self.video_options.queue.new_source()
         else:
             self.video_options.show_queue()
-            if reusables.win_based:
-                try:
-                    show_windows_notification("FastFlix", t("All queue items have completed"), icon_path=main_icon)
-                except Exception:
-                    message(t("All queue items have completed"), title=t("Success"))
-            else:
-                message(t("All queue items have completed"), title=t("Success"))
+            # TODO add if check for on done
+            message(t("All queue items have completed"), title=t("Success"))
 
     #
     # @reusables.log_exception("fastflix", show_traceback=False)

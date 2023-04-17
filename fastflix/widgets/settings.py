@@ -246,6 +246,7 @@ class Settings(QtWidgets.QWidget):
 
         layout.addWidget(QtWidgets.QLabel(t("UI Scale")), 20, 0, 1, 1)
         layout.addWidget(self.ui_scale_widget, 20, 1, 1, 1)
+
         layout.addWidget(self.clean_old_logs_button, 21, 0, 1, 3)
 
         button_layout = QtWidgets.QHBoxLayout()

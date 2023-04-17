@@ -186,11 +186,14 @@ class AudioSelect(FlixList):
         self.main = main
 
         self.passthrough_checkbox = QtWidgets.QCheckBox(t("Passthrough All"))
+        self.disable_audio_checkbox = QtWidgets.QCheckBox(t("Don't Select Any Audio"))
+
         self.add_button = QtWidgets.QPushButton(f'  {t("Add Pattern Match")}  ')
         if self.app.fastflix.config.theme == "onyx":
             self.add_button.setStyleSheet("border-radius: 10px;")
 
         self.passthrough_checkbox.toggled.connect(self.passthrough_check)
+        self.disable_audio_checkbox.toggled.connect(self.disable_audio_check)
 
         self.add_button.clicked.connect(self.add_track)
 
@@ -199,15 +202,17 @@ class AudioSelect(FlixList):
         layout.removeWidget(self.scroll_area)
 
         layout.addWidget(self.passthrough_checkbox, 0, 0)
-        layout.addWidget(self.add_button, 0, 1, alignment=QtCore.Qt.AlignRight)
+        layout.addWidget(self.disable_audio_checkbox, 0, 1)
+        layout.addWidget(self.add_button, 0, 2, alignment=QtCore.Qt.AlignRight)
 
-        layout.addWidget(self.scroll_area, 1, 0, 1, 2)
+        layout.addWidget(self.scroll_area, 1, 0, 1, 3)
 
         self.hardware_warning = QtWidgets.QLabel(t("Rigaya's encoders will only match one encoding per track"))
         self.hardware_warning.hide()
 
         layout.addWidget(self.hardware_warning, 2, 0)
         self.passthrough_checkbox.setChecked(True)
+        self.disable_audio_checkbox.setChecked(False)
         # self.passthrough_checkbox.setChecked(True)
         super()._new_source(self.tracks)
 
@@ -229,6 +234,18 @@ class AudioSelect(FlixList):
 
     def passthrough_check(self):
         if self.passthrough_checkbox.isChecked():
+            if self.disable_audio_checkbox.isChecked():
+                self.disable_audio_checkbox.setChecked(False)
+            self.scroll_area.setDisabled(True)
+            self.add_button.setDisabled(True)
+        else:
+            self.scroll_area.setEnabled(True)
+            self.add_button.setEnabled(True)
+
+    def disable_audio_check(self):
+        if self.disable_audio_checkbox.isChecked():
+            if self.passthrough_checkbox.isChecked():
+                self.passthrough_checkbox.setChecked(False)
             self.scroll_area.setDisabled(True)
             self.add_button.setDisabled(True)
         else:
@@ -238,6 +255,8 @@ class AudioSelect(FlixList):
     def get_settings(self):
         if self.passthrough_checkbox.isChecked():
             return None
+        if self.disable_audio_checkbox.isChecked():
+            return False
         filters = []
         for track in self.tracks:
             filters.append(track.get_settings())

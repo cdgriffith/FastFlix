@@ -1,0 +1,138 @@
+device #0: AMD Radeon RX 7900 XT
+H.264/AVC encode features
+10bit depth:     no
+acceleration:    Hardware-accelerated
+max profile:     High
+max level:       unknown
+max bitrate:     100000 kbps
+ref frames:      1-16
+Bframe support:  yes
+HW instances:    2
+pre analysis:    yes
+max streams:     16
+timeout support: yes
+
+H.264/AVC input:
+Width:       128 - 4096
+Height:      128 - 4096
+alignment:   32
+Interlace:   no
+pix format:  YUV420P[7], YV12[2], BGRA[3], RGBA[5], ARGB[4], NV12[1](native)
+memory type: DX11(native), OPENCL, OPENGL, HOST
+
+H.264/AVC output:
+Width:       128 - 4096
+Height:      128 - 4096
+alignment:   32
+Interlace:   no
+pix format:  NV12[1](native)
+memory type: DX11(native), OPENCL, OPENGL, HOST
+
+H.265/HEVC encode features
+10bit depth:     yes
+acceleration:    Hardware-accelerated
+max profile:     main
+max level:       unknown
+max bitrate:     100000 kbps
+ref frames:      1-16
+pre analysis:    yes
+max streams:     16
+timeout support: yes
+
+H.265/HEVC input:
+Width:       128 - 8192
+Height:      128 - 4352
+alignment:   32
+Interlace:   no
+pix format:  YUV420P[7], YV12[2], BGRA[3], RGBA[5], ARGB[4], NV12[1](native), P010[10](native)
+memory type: DX11(native), OPENCL, OPENGL, HOST
+
+H.265/HEVC output:
+Width:       128 - 8192
+Height:      128 - 4352
+alignment:   32
+Interlace:   no
+pix format:  NV12[1](native), P010[10](native)
+memory type: DX11(native), OPENCL, OPENGL, HOST
+
+AV1 encode features
+10bit depth:     yes
+acceleration:    Hardware-accelerated
+max profile:     main
+max level:       unknown
+max bitrate:     160000 kbps
+Temporal layers: 4
+pre analysis:    yes
+max streams:     2
+timeout support: no
+
+AV1 input:
+Width:       128 - 8192
+Height:      128 - 4352
+alignment:   32
+Interlace:   no
+pix format:  YUV420P[7], YV12[2], BGRA[3], RGBA[5], ARGB[4], NV12[1](native), P010[10](native)
+memory type: DX11(native), OPENCL, OPENGL, HOST
+
+AV1 output:
+Width:       128 - 8192
+Height:      128 - 4352
+alignment:   32
+Interlace:   no
+pix format:  NV12[1](native), P010[10](native)
+memory type: DX11(native), OPENCL, OPENGL, HOST
+
+
+
+device #0: AMD Radeon RX 7900 XT
+H.264/AVC decode features
+10bit depth:     no
+acceleration:    Hardware-accelerated
+max streams:     16
+
+H.264/AVC output:
+Width:       32 - 4096
+Height:      32 - 4096
+alignment:   32
+Interlace:   yes
+pix format:  NV12[1](native), P010[10](native), P012[19](native), BGRA[3], RGBA[5]
+memory type: DX11(native)
+
+H.265/HEVC decode features
+10bit depth:     yes
+acceleration:    Hardware-accelerated
+max streams:     0
+
+H.265/HEVC output:
+Width:       32 - 7680
+Height:      32 - 4320
+alignment:   32
+Interlace:   yes
+pix format:  NV12[1](native), P010[10](native), P012[19](native), BGRA[3], RGBA[5]
+memory type: DX11(native)
+
+VP9 decode features
+10bit depth:     yes
+acceleration:    Hardware-accelerated
+max streams:     16
+
+VP9 output:
+Width:       32 - 7680
+Height:      32 - 4320
+alignment:   32
+Interlace:   yes
+pix format:  NV12[1](native), P010[10](native), P012[19](native), BGRA[3], RGBA[5]
+memory type: DX11(native)
+
+AV1 decode features
+10bit depth:     yes
+acceleration:    Hardware-accelerated
+max streams:     0
+
+AV1 output:
+Width:       32 - 7680
+Height:      32 - 4320
+alignment:   32
+Interlace:   yes
+pix format:  NV12[1](native), P010[10](native), P012[19](native), BGRA[3], RGBA[5]
+memory type: DX11(native)

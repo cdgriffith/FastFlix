@@ -17,9 +17,8 @@ from fastflix.language import t
 from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
-from fastflix.resources import main_icon, get_icon, video_file_types
+from fastflix.resources import main_icon, get_icon
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message
-from fastflix.windows_tools import cleanup_windows_notification
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 from fastflix.widgets.logs import Logs
@@ -38,6 +37,28 @@ class Container(QtWidgets.QMainWindow):
         super().__init__(None)
         self.app = app
         self.pb = None
+
+        self.app.setApplicationName("FastFlix")
+        self.app.setWindowIcon(QtGui.QIcon(main_icon))
+
+        self.tray_icon = QtWidgets.QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QtGui.QIcon(main_icon))
+
+        show_action = QAction(t("Open FastFlix"), self)
+        quit_action = QAction(t("Exit"), self)
+        hide_action = QAction(t("Minimize to Tray"), self)
+        show_action.triggered.connect(self.show)
+        hide_action.triggered.connect(self.hide)
+        quit_action.triggered.connect(self.close)
+        tray_menu = QtWidgets.QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addAction(hide_action)
+        tray_menu.addAction(quit_action)
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
+
+        self.tray_icon.setToolTip("FastFlix")
+
         if self.app.fastflix.config.stay_on_top:
             self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         self.logs = Logs()
@@ -126,8 +147,6 @@ class Container(QtWidgets.QMainWindow):
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".tiff", ".tif")):
                 item.unlink()
         shutil.rmtree(self.app.fastflix.config.work_path / "covers", ignore_errors=True)
-        if reusables.win_based:
-            cleanup_windows_notification()
 
         if self.app.fastflix.config.clean_old_logs:
             self.clean_old_logs(show_errors=False)

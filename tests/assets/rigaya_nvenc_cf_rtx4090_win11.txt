@@ -1,0 +1,151 @@
+NVEncC (x64) 7.01v3 (r2354) by rigaya, Oct 19 2022 12:47:01 (VC 1929/Win)
+  [NVENC API v12.0, CUDA 10.1]
+ reader: raw, y4m, avi, avs, vpy, avsw, avhw [H.264/AVC, H.265/HEVC, MPEG2, VP8, VP9, VC-1, MPEG1, MPEG4, AV1]
+
+Environment Info
+OS : Windows 11 x64 (22621) [UTF-8]
+CPU: AMD Ryzen 9 7950X 16-Core Processor [5.52GHz] (16C/32T)
+RAM: Used 15030 MB, Total 64660 MB
+
+#0: NVIDIA GeForce RTX 4090 (16384 cores, 2610 MHz)[PCIe4x16][522.25]
+NVEnc features
+Codec: H.264/AVC
+Encoder Engines           2
+Max Bframes               4
+B Ref Mode                3 (each + only middle)
+RC Modes                  63
+Field Encoding            0 (no)
+MonoChrome                no
+FMO                       no
+Quater-Pel MV             yes
+B Direct Mode             yes
+CABAC                     yes
+Adaptive Transform        yes
+Max Temporal Layers       4
+Hierarchial P Frames      yes
+Hierarchial B Frames      yes
+Max Level                 62 (6.2)
+Min Level                 10 (1)
+4:4:4                     yes
+Min Width                 145
+Max Width                 4096
+Min Height                49
+Max Height                4096
+Multiple Refs             yes
+Max LTR Frames            8
+Dynamic Resolution Change yes
+Dynamic Bitrate Change    yes
+Forced constant QP        yes
+Dynamic RC Mode Change    no
+Subframe Readback         yes
+Constrained Encoding      yes
+Intra Refresh             yes
+Custom VBV Bufsize        yes
+Dynamic Slice Mode        yes
+Ref Pic Invalidiation     yes
+PreProcess                no
+Async Encoding            yes
+Max MBs                   65536
+Lossless                  yes
+SAO                       no
+Me Only Mode              1 (I,P frames)
+Lookahead                 yes
+AQ (temporal)             yes
+Weighted Prediction       yes
+10bit depth               no
+
+Codec: H.265/HEVC
+Encoder Engines           2
+Max Bframes               5
+B Ref Mode                3 (each + only middle)
+RC Modes                  63
+Field Encoding            0 (no)
+MonoChrome                no
+Quater-Pel MV             yes
+B Direct Mode             no
+Max Temporal Layers       0
+Hierarchial P Frames      no
+Hierarchial B Frames      no
+Max Level                 186 (6.2)
+Min Level                 30 (1)
+4:4:4                     yes
+Min Width                 129
+Max Width                 8192
+Min Height                33
+Max Height                8192
+Multiple Refs             yes
+Max LTR Frames            7
+Dynamic Resolution Change yes
+Dynamic Bitrate Change    yes
+Forced constant QP        yes
+Dynamic RC Mode Change    no
+Subframe Readback         yes
+Constrained Encoding      yes
+Intra Refresh             yes
+Custom VBV Bufsize        yes
+Dynamic Slice Mode        yes
+Ref Pic Invalidiation     yes
+PreProcess                no
+Async Encoding            yes
+Max MBs                   262144
+Lossless                  yes
+SAO                       yes
+Me Only Mode              1 (I,P frames)
+Lookahead                 yes
+AQ (temporal)             yes
+Weighted Prediction       yes
+10bit depth               yes
+
+Codec: AV1
+Encoder Engines           2
+Max Bframes               7
+B Ref Mode                3 (each + only middle)
+RC Modes                  3
+Field Encoding            0 (no)
+MonoChrome                no
+Quater-Pel MV             yes
+B Direct Mode             no
+Max Temporal Layers       0
+Hierarchial P Frames      no
+Hierarchial B Frames      no
+Max Level                 23 (7.3)
+Min Level                 0 (2)
+4:4:4                     no
+Min Width                 192
+Max Width                 8192
+Min Height                128
+Max Height                8192
+Multiple Refs             yes
+Max LTR Frames            0
+Dynamic Resolution Change yes
+Dynamic Bitrate Change    yes
+Forced constant QP        yes
+Dynamic RC Mode Change    no
+Subframe Readback         yes
+Constrained Encoding      no
+Intra Refresh             yes
+Custom VBV Bufsize        yes
+Dynamic Slice Mode        no
+Ref Pic Invalidiation     yes
+PreProcess                no
+Async Encoding            yes
+Max MBs                   262144
+Lossless                  no
+SAO                       no
+Me Only Mode              0 (no)
+Lookahead                 yes
+AQ (temporal)             yes
+Weighted Prediction       no
+10bit depth               yes
+
+
+NVDec features
+  H.264/AVC:  nv12, yv12
+  H.265/HEVC: nv12, yv12, yv12(10bit), yv12(12bit), yuv444, yuv444(10bit), yuv444(12bit)
+  MPEG1:      nv12, yv12
+  MPEG2:      nv12, yv12
+  MPEG4:      nv12, yv12
+  VP8:        nv12, yv12
+  VP9:        nv12, yv12, yv12(10bit), yv12(12bit)
+  VC-1:       nv12, yv12
+  AV1:        nv12, yv12, yv12(10bit)

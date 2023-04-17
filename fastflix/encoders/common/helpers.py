@@ -31,6 +31,7 @@ def generate_ffmpeg_start(
     ffmpeg,
     encoder,
     selected_track,
+    ffmpeg_version,
     start_time=0,
     end_time=None,
     pix_fmt="yuv420p10le",
@@ -52,7 +53,16 @@ def generate_ffmpeg_start(
     time_one = time_settings if fast_seek else ""
     time_two = time_settings if not fast_seek else ""
     incoming_fps = f"-r {source_fps}" if source_fps else ""
-    vsync_text = f"-vsync {vsync}" if vsync else ""
+
+    vsync_type = "vsync"
+    try:
+        if ffmpeg_version.startswith("n") and int(ffmpeg_version[1:].split(".")[0]) >= 5:
+            vsync_type = "fps_mode"
+    except Exception:
+        pass
+
+    vsync_text = f"-{vsync_type} {vsync}" if vsync else ""
+
     if video_title:
         video_title.replace('"', '\\"')
     title = f'-metadata title="{video_title}"' if video_title else ""
@@ -260,6 +270,7 @@ def generate_all(
         filters=filters,
         concat=fastflix.current_video.concat,
         enable_opencl=fastflix.opencl_support,
+        ffmpeg_version=fastflix.ffmpeg_version,
         **fastflix.current_video.video_settings.dict(),
         **settings.dict(),
     )

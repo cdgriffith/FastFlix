@@ -2,17 +2,13 @@
 
 ![preview](./docs/gui_preview.png)
 
-FastFlix is a simple and friendly GUI for encoding videos.
+FastFlix is a handy GUI for encoding videos. 
 
 [Download latest release from Github](https://github.com/cdgriffith/FastFlix/releases/latest)
 
-FastFlix keeps HDR10 metadata for x265, NVEncC HEVC, and VCEEncC HEVC, which will also be expanded to AV1 libraries when available.
-
 It needs `FFmpeg` (version 4.3 or greater required, 5.0+ recommended) under the hood for the heavy lifting, and can work with a variety of encoders.
 
-Join us on [discord](https://discord.gg/GUBFP6f)!
-
-Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki) for help or more details, and please report bugs or ideas in the [github issue tracker](https://github.com/cdgriffith/FastFlix/issues)!
+Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki) for help or more details, and please report bugs in the [github issue tracker](https://github.com/cdgriffith/FastFlix/issues)!
 
 #  Encoders
 
@@ -136,7 +132,7 @@ FastFlix is machine translated using DeepL into Spanish (español), French (Fran
 Italian (Italiano), Chinese (中文), Japanese (日本語), Portuguese (Português), Swedish (svenska), Ukrainian (Українська),
 Russian (русский), Polish (polskie) and Korean (한국어).
 
-If something sounds wrong in your language, please open an issue or ping me on the [discord](https://discord.gg/GUBFP6f) channel with which line in
+If something sounds wrong in your language, please open an issue with which line in
 [the language file](https://github.com/cdgriffith/FastFlix/blob/master/fastflix/data/languages.yaml) needs fixed!
 
 Special thanks to [leonardyan](https://github.com/leonardyan) for numerous Chinese corrections!

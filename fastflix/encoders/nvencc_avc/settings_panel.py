@@ -96,6 +96,7 @@ class NVENCCAVC(SettingPanel):
         grid.addLayout(self.init_aq(), 5, 0, 1, 2)
         grid.addLayout(self.init_aq_strength(), 6, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 7, 0, 1, 2)
+        grid.addLayout(self.init_devices(), 8, 0, 1, 2)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_vbr_target())
@@ -141,13 +142,15 @@ class NVENCCAVC(SettingPanel):
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, 1, 4)
-        grid.addWidget(warning_label, 11, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
-        grid.addWidget(QtWidgets.QLabel(t("NVEncC Encoder support is still experimental!")), 11, 5, 1, 1)
 
         self.setLayout(grid)
         self.hide()
         self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
         self.hdr10plus_ffmpeg_signal.connect(lambda x: self.ffmpeg_level.setText(x))
+
+    def init_devices(self):
+        devices = [f"{k}: {v['name']}" for k, v in self.app.fastflix.config.nvencc_devices.items()]
+        return self._add_combo_box(widget_name="device", label="Device", options=devices, opt="device")
 
     def init_preset(self):
         return self._add_combo_box(
@@ -328,7 +331,7 @@ class NVENCCAVC(SettingPanel):
         return self._add_combo_box(
             widget_name="b_frames",
             label="B Frames",
-            options=[t("Auto"), "0", "1", "2", "3", "4", "5", "6"],
+            options=[t("Auto"), "0", "1", "2", "3", "4"],
             opt="b_frames",
             min_width=60,
         )

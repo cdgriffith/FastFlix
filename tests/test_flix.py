@@ -1,25 +1,68 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
 
-from box import Box
+from fastflix.rigaya_helpers import (
+    parse_vce_devices,
+    VCEEncoder,
+    parse_nvenc_devices,
+    NVENCEncoder,
+    QSVEncoder,
+    parse_qsv_devices,
+)
 
-from fastflix.flix import parse, parse_hdr_details
-from fastflix.models.config import Config
-from fastflix.models.video import Video
+here = Path(__file__).parent
+assets = here / "assets"
 
-fake_app = Box(default_box=True)
-fake_app.fastflix.config = Config()
+test_logs = {
+    "vce": [
+        {
+            "text": (assets / "rigaya_vce_cf_5800h_win11.txt").read_text(encoding="utf-8").splitlines(),
+            "result": VCEEncoder(device_number=0, device_name="AMD Radeon", formats=["H.264/AVC", "H.265/HEVC"]),
+        },
+        {
+            "text": (assets / "rigaya_vce_cf_rx7900xt_win11.txt").read_text(encoding="utf-8").splitlines(),
+            "result": VCEEncoder(
+                device_number=0, device_name="AMD Radeon RX 7900 XT", formats=["H.264/AVC", "H.265/HEVC", "AV1"]
+            ),
+        },
+    ],
+    "nvenc": [
+        {
+            "text": (assets / "rigaya_nvenc_cf_rtx3060_linux.txt").read_text(encoding="utf-8").splitlines(),
+            "result": NVENCEncoder(
+                device_number=0, device_name="NVIDIA GeForce RTX 3060", formats=["H.264/AVC", "H.265/HEVC"]
+            ),
+        },
+        {
+            "text": (assets / "rigaya_nvenc_cf_rtx4090_win11.txt").read_text(encoding="utf-8").splitlines(),
+            "result": NVENCEncoder(
+                device_number=0, device_name="NVIDIA GeForce RTX 4090", formats=["H.264/AVC", "H.265/HEVC", "AV1"]
+            ),
+        },
+    ],
+    "qsv": [
+        {
+            "text": (assets / "rigaya_qsv_cf_i5_9400_win10.txt").read_text(encoding="utf-8").splitlines(),
+            "result": QSVEncoder(
+                device_number=0,
+                device_name="Intel UHD Graphics 630",
+                formats=["H.264/AVC PG", "H.264/AVC FF", "H.265/HEVC PG", "MPEG2 PG", "MPEG2 FF"],
+            ),
+        }
+    ],
+}
 
 
-# def test_parse():
-#     fake_app.fastflix.current_video = Video(
-#         source=Path("tests", "media", "Beverly Hills Duck Pond - HDR10plus - Jessica Payne.mp4")
-#     )
-#     parse(fake_app)
-#     assert fake_app.fastflix.current_video.streams.video[0].codec_name == "hevc"
-#     assert fake_app.fastflix.current_video.streams.video[0].coded_width == 1920
-#     assert fake_app.fastflix.current_video.streams.video[0].coded_height == 1088
-#     assert fake_app.fastflix.current_video.streams.video[0].r_frame_rate == "30/1"
-#     assert fake_app.fastflix.current_video.streams.audio[0].codec_name == "aac"
-#     parse_hdr_details(fake_app)
-#     assert len(fake_app.fastflix.current_video.hdr10_streams) == 1
+def test_parse_vce():
+    for vce_test in test_logs["vce"]:
+        assert parse_vce_devices(vce_test["text"]) == vce_test["result"]
+
+
+def test_nvenc_parse():
+    for nvenc_test in test_logs["nvenc"]:
+        assert parse_nvenc_devices(nvenc_test["text"]) == nvenc_test["result"]
+
+
+def test_qsv_parse():
+    for qsv_test in test_logs["qsv"]:
+        assert parse_qsv_devices(qsv_test["text"]) == qsv_test["result"]
