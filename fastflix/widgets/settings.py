@@ -226,7 +226,15 @@ class Settings(QtWidgets.QWidget):
         self.default_source_dir.clicked.connect(
             lambda: self.source_path_line_edit.setDisabled(self.source_path_line_edit.isEnabled())
         )
-        layout.addWidget(self.default_source_dir, 18, 0, 1, 2)
+
+        self.sticky_tabs = QtWidgets.QCheckBox(t("Disable Automatic Tab Switching"))
+        self.sticky_tabs.setChecked(self.app.fastflix.config.sticky_tabs)
+
+        mm = QtWidgets.QHBoxLayout()
+        mm.addWidget(self.default_source_dir)
+        mm.addWidget(self.sticky_tabs)
+
+        layout.addLayout(mm, 18, 0, 1, 2)
 
         self.clean_old_logs_button = QtWidgets.QCheckBox(
             t("Remove GUI logs and compress conversion logs older than 30 days at exit")
@@ -329,6 +337,7 @@ class Settings(QtWidgets.QWidget):
             restart_needed = True
 
         self.app.fastflix.config.clean_old_logs = self.clean_old_logs_button.isChecked()
+        self.app.fastflix.config.sticky_tabs = self.sticky_tabs.isChecked()
 
         self.main.config_update()
         self.app.fastflix.config.save()
