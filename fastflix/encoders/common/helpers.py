@@ -47,6 +47,7 @@ def generate_ffmpeg_start(
     concat: bool = False,
     enable_opencl: bool = False,
     remove_hdr: bool = True,
+    start_extra: str = "",
     **_,
 ) -> str:
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
@@ -75,6 +76,7 @@ def generate_ffmpeg_start(
     return " ".join(
         [
             f'"{ffmpeg}"',
+            start_extra,
             "-y",
             time_one,
             incoming_fps,
@@ -237,6 +239,7 @@ def generate_all(
     subs: bool = True,
     disable_filters: bool = False,
     hw_upload: bool = False,
+    start_extra: str = "",
 ) -> Tuple[str, str]:
     settings = fastflix.current_video.video_settings.video_encoder_settings
 
@@ -282,6 +285,7 @@ def generate_all(
         concat=fastflix.current_video.concat,
         enable_opencl=fastflix.opencl_support,
         ffmpeg_version=fastflix.ffmpeg_version,
+        start_extra=start_extra,
         **fastflix.current_video.video_settings.dict(),
         **settings.dict(),
     )
