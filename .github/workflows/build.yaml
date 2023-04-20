@@ -35,15 +35,9 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          python -m pip install --upgrade pip setuptools poetry --ignore-installed
-          poetry config virtualenvs.create false --local
-
-      - name: Poetry Install
-        run: poetry install --with dev --with test
-        continue-on-error: true
-
-      - name: Poetry Install 2
-        run: poetry install --with dev --with test
+          python -m pip install --upgrade pip setuptools --ignore-installed
+          pip install .
+          pip install .[test]
 
       - name: Grab iso-639 lists
         run: |
@@ -94,15 +88,9 @@ jobs:
 
     - name: Install Python Dependencies
       run: |
-        python -m pip install --upgrade pip setuptools poetry --ignore-installed
-        poetry config virtualenvs.create false --local
-
-    - name: Poetry Install
-      run: poetry install --with dev
-      continue-on-error: true
-
-    - name: Poetry Install 2
-      run: poetry install --with dev
+        python -m pip install --upgrade pip setuptools --ignore-installed
+        pip install .
+        pip install .[test]
 
 
     - name: Grab iso-639 lists

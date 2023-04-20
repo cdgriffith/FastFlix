@@ -38,15 +38,9 @@ jobs:
 
     - name: Install requirements
       run: |
-        python -m pip install --upgrade pip setuptools poetry
-        poetry config virtualenvs.create false --local
-
-    - name: Poetry Install
-      run: poetry install --with dev
-      continue-on-error: true
-
-    - name: Poetry Install 2
-      run: poetry install --with dev
+        python -m pip install --upgrade pip setuptools
+        pip install .
+        pip install .[test]
 
     - name: Run tests
       env:
