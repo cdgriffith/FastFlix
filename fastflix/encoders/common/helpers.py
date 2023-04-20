@@ -152,6 +152,7 @@ def generate_filters(
     deblock: Union[str, None] = None,
     deblock_size: int = 4,
     denoise: Union[str, None] = None,
+    hw_upload: bool = False,
     **_,
 ):
     filter_list = []
@@ -201,6 +202,9 @@ def generate_filters(
         eq_filters.insert(0, "eq=eval=frame")
         filter_list.append(":".join(eq_filters))
 
+    if hw_upload:
+        filter_list.append("format=nv12|vaapi,hwupload")
+
     filters = ",".join(filter_list)
     if filters and custom_filters:
         filters = f"{filters},{custom_filters}"
@@ -220,13 +224,19 @@ def generate_filters(
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:
         return ""
+
     if raw_filters:
         return filter_complex
     return f' -filter_complex "{filter_complex}" -map "[v]" '
 
 
 def generate_all(
-    fastflix: FastFlix, encoder: str, audio: bool = True, subs: bool = True, disable_filters: bool = False
+    fastflix: FastFlix,
+    encoder: str,
+    audio: bool = True,
+    subs: bool = True,
+    disable_filters: bool = False,
+    hw_upload: bool = False,
 ) -> Tuple[str, str]:
     settings = fastflix.current_video.video_settings.video_encoder_settings
 
@@ -251,6 +261,7 @@ def generate_all(
             burn_in_subtitle_type=burn_in_type,
             enable_opencl=fastflix.opencl_support,
             scale=fastflix.current_video.scale,
+            hw_upload=hw_upload,
             **fastflix.current_video.video_settings.dict(),
         )
 

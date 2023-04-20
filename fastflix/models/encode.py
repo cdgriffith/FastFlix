@@ -447,6 +447,36 @@ class CopySettings(EncoderSettings):
     name = "Copy"
 
 
+class VAAPIH264Settings(EncoderSettings):
+    name = "vaapi_h264"
+
+    vaapi_device: str = "/dev/dri/renderD128"
+    low_power: bool = False
+    idr_interval: str = "0"
+    b_depth: str = "1"
+    async_depth: str = "2"
+    aud: bool = False
+    level: Optional[str] = "auto"
+    rc_mode: str = "auto"
+    qp: Optional[Union[int, float]] = 26
+    bitrate: Optional[str] = None
+
+
+class VAAPIHEVCSettings(EncoderSettings):
+    name = "vaapi_hevc"
+
+    vaapi_device: str = "/dev/dri/renderD128"
+    low_power: bool = False
+    idr_interval: str = "0"
+    b_depth: str = "1"
+    async_depth: str = "2"
+    aud: bool = False
+    level: Optional[str] = "auto"
+    rc_mode: str = "auto"
+    qp: Optional[Union[int, float]] = 26
+    bitrate: Optional[str] = None
+
+
 setting_types = {
     "x265": x265Settings,
     "x264": x264Settings,
@@ -471,4 +501,6 @@ setting_types = {
     "h264_videotoolbox": H264VideoToolboxSettings,
     "svt_av1_avif": SVTAVIFSettings,
     "vvc": VVCSettings,
+    "vaapi_h264": VAAPIH264Settings,
+    "vaapi_hevc": VAAPIHEVCSettings,
 }

@@ -18,6 +18,51 @@ ffmpeg_extra_command = ""
 
 pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
 
+recommended_bitrates = [
+    "150k  ",
+    "276k  ",
+    "512k  ",
+    "1024k",
+    "1800k",
+    "3000k",
+    "4000k",
+    "5000k",
+    "6000k",
+    "7500k",
+    "9000k",
+    "10000k",
+    "12000k",
+    "15000k",
+    "17500k",
+    "20000k",
+    "25000k",
+    "30000k",
+    "40000k",
+    "50000k",
+    "Custom",
+]
+
+recommended_qp = [
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+    "30",
+    "31",
+    "32",
+    "Custom",
+]
+
 
 class SettingPanel(QtWidgets.QWidget):
     def __init__(self, parent, main, app: FastFlixApp, *args, **kwargs):
@@ -533,6 +578,15 @@ class SettingPanel(QtWidgets.QWidget):
             else:
                 return "qp", int(qp_text.split(" ", 1)[0])
 
+    def init_pix_fmt(self, supported_formats=pix_fmts):
+        return self._add_combo_box(
+            label="Bit Depth",
+            tooltip="Pixel Format (requires at least 10-bit for HDR)",
+            widget_name="pix_fmt",
+            options=supported_formats,
+            opt="pix_fmt",
+        )
+
 
 class RigayaPanel(SettingPanel):
     def init_decoder(self):
@@ -543,4 +597,198 @@ class RigayaPanel(SettingPanel):
             opt="decoder",
             tooltip="Hardware: use libavformat + hardware decoder for input\nSoftware: use avcodec + software decoder",
             min_width=80,
+        )
+
+
+class VAAPIPanel(SettingPanel):
+    # h264_vaapi AVOptions:
+    #   -low_power         <boolean>    E..V....... Use low-power encoding mode (only available on some platforms; may not support all encoding features) (default false)
+    #   -idr_interval      <int>        E..V....... Distance (in I-frames) between IDR frames (from 0 to INT_MAX) (default 0)
+    #   -b_depth           <int>        E..V....... Maximum B-frame reference depth (from 1 to INT_MAX) (default 1)
+    #   -async_depth       <int>        E..V....... Maximum processing parallelism. Increase this to improve single channel performance. This option doesn't work if driver doesn't implement vaSyncBuffer function. (from 1 to 64) (default 2)
+    #   -max_frame_size    <int>        E..V....... Maximum frame size (in bytes) (from 0 to INT_MAX) (default 0)
+    #   -rc_mode           <int>        E..V....... Set rate control mode (from 0 to 6) (default auto)
+    #      auto            0            E..V....... Choose mode automatically based on other parameters
+    #      CQP             1            E..V....... Constant-quality
+    #      CBR             2            E..V....... Constant-bitrate
+    #      VBR             3            E..V....... Variable-bitrate
+    #      ICQ             4            E..V....... Intelligent constant-quality
+    #      QVBR            5            E..V....... Quality-defined variable-bitrate
+    #      AVBR            6            E..V....... Average variable-bitrate
+    #   -qp                <int>        E..V....... Constant QP (for P-frames; scaled by qfactor/qoffset for I/B) (from 0 to 52) (default 0)
+    #   -quality           <int>        E..V....... Set encode quality (trades off against speed, higher is faster) (from -1 to INT_MAX) (default -1)
+    #   -coder             <int>        E..V....... Entropy coder type (from 0 to 1) (default cabac)
+    #      cavlc           0            E..V.......
+    #      cabac           1            E..V.......
+    #      vlc             0            E..V.......
+    #      ac              1            E..V.......
+    #   -aud               <boolean>    E..V....... Include AUD (default false)
+    #   -sei               <flags>      E..V....... Set SEI to include (default identifier+timing+recovery_point+a53_cc)
+    #      identifier                   E..V....... Include encoder version identifier
+    #      timing                       E..V....... Include timing parameters (buffering_period and pic_timing)
+    #      recovery_point               E..V....... Include recovery points where appropriate
+    #      a53_cc                       E..V....... Include A/53 caption data
+    #   -profile           <int>        E..V....... Set profile (profile_idc and constraint_set*_flag) (from -99 to 65535) (default -99)
+    #      constrained_baseline 578          E..V.......
+    #      main            77           E..V.......
+    #      high            100          E..V.......
+    #      high10          110          E..V.......
+    #   -level             <int>        E..V....... Set level (level_idc) (from -99 to 255) (default -99)
+    #      1               10           E..V.......
+    #      1.1             11           E..V.......
+    #      1.2             12           E..V.......
+    #      1.3             13           E..V.......
+    #      2               20           E..V.......
+    #      2.1             21           E..V.......
+    #      2.2             22           E..V.......
+    #      3               30           E..V.......
+    #      3.1             31           E..V.......
+    #      3.2             32           E..V.......
+    #      4               40           E..V.......
+    #      4.1             41           E..V.......
+    #      4.2             42           E..V.......
+    #      5               50           E..V.......
+    #      5.1             51           E..V.......
+    #      5.2             52           E..V.......
+    #      6               60           E..V.......
+    #      6.1             61           E..V.......
+    #      6.2             62           E..V.......
+
+    # h265_vaapi AVOptions:
+    #   -low_power         <boolean>    E..V....... Use low-power encoding mode (only available on some platforms; may not support all encoding features) (default false)
+    #   -idr_interval      <int>        E..V....... Distance (in I-frames) between IDR frames (from 0 to INT_MAX) (default 0)
+    #   -b_depth           <int>        E..V....... Maximum B-frame reference depth (from 1 to INT_MAX) (default 1)
+    #   -async_depth       <int>        E..V....... Maximum processing parallelism. Increase this to improve single channel performance. This option doesn't work if driver doesn't implement vaSyncBuffer function. (from 1 to 64) (default 2)
+    #   -max_frame_size    <int>        E..V....... Maximum frame size (in bytes) (from 0 to INT_MAX) (default 0)
+    #   -rc_mode           <int>        E..V....... Set rate control mode (from 0 to 6) (default auto)
+    #      auto            0            E..V....... Choose mode automatically based on other parameters
+    #      CQP             1            E..V....... Constant-quality
+    #      CBR             2            E..V....... Constant-bitrate
+    #      VBR             3            E..V....... Variable-bitrate
+    #      ICQ             4            E..V....... Intelligent constant-quality
+    #      QVBR            5            E..V....... Quality-defined variable-bitrate
+    #      AVBR            6            E..V....... Average variable-bitrate
+    #   -qp                <int>        E..V....... Constant QP (for P-frames; scaled by qfactor/qoffset for I/B) (from 0 to 52) (default 0)
+    #   -aud               <boolean>    E..V....... Include AUD (default false)
+    #   -profile           <int>        E..V....... Set profile (general_profile_idc) (from -99 to 255) (default -99)
+    #      main            1            E..V.......
+    #      main10          2            E..V.......
+    #      rext            4            E..V.......
+    #   -tier              <int>        E..V....... Set tier (general_tier_flag) (from 0 to 1) (default main)
+    #      main            0            E..V.......
+    #      high            1            E..V.......
+    #   -level             <int>        E..V....... Set level (general_level_idc) (from -99 to 255) (default -99)
+    #      1               30           E..V.......
+    #      2               60           E..V.......
+    #      2.1             63           E..V.......
+    #      3               90           E..V.......
+    #      3.1             93           E..V.......
+    #      4               120          E..V.......
+    #      4.1             123          E..V.......
+    #      5               150          E..V.......
+    #      5.1             153          E..V.......
+    #      5.2             156          E..V.......
+    #      6               180          E..V.......
+    #      6.1             183          E..V.......
+    #      6.2             186          E..V.......
+    #   -sei               <flags>      E..V....... Set SEI to include (default hdr+a53_cc)
+    #      hdr                          E..V....... Include HDR metadata for mastering display colour volume and content light level information
+    #      a53_cc                       E..V....... Include A/53 caption data
+    #   -tiles             <image_size> E..V....... Tile columns x rows
+    def init_rc_mode(self):
+        # #   -rc_mode           <int>        E..V....... Set rate control mode (from 0 to 6) (default auto)
+        # #      auto            0            E..V....... Choose mode automatically based on other parameters
+        # #      CQP             1            E..V....... Constant-quality
+        # #      CBR             2            E..V....... Constant-bitrate
+        # #      VBR             3            E..V....... Variable-bitrate
+        # #      ICQ             4            E..V....... Intelligent constant-quality
+        # #      QVBR            5            E..V....... Quality-defined variable-bitrate
+        # #      AVBR            6            E..V....... Average variable-bitrate
+        return self._add_combo_box(
+            label="Rate Control Mode",
+            tooltip="Set rate control mode",
+            options=["auto", "CQP", "CBR", "VBR", "ICQ", "QVBR", "AVBR"],
+            widget_name="rc_mode",
+            opt="rc_mode",
+        )
+
+    def init_level(self):
+        #   -level             <int>        E..V....... Set level (general_level_idc) (from -99 to 255) (default -99)
+        #      1               30           E..V.......
+        #      2               60           E..V.......
+        #      2.1             63           E..V.......
+        #      3               90           E..V.......
+        #      3.1             93           E..V.......
+        #      4               120          E..V.......
+        #      4.1             123          E..V.......
+        #      5               150          E..V.......
+        #      5.1             153          E..V.......
+        #      5.2             156          E..V.......
+        #      6               180          E..V.......
+        #      6.1             183          E..V.......
+        #      6.2             186          E..V.......
+        return self._add_combo_box(
+            label="Level",
+            tooltip="Set level (general_level_idc)",
+            options=["auto", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"],
+            widget_name="level",
+            opt="level",
+        )
+
+    def init_aud(self):
+        return self._add_check_box(
+            label="AUD",
+            tooltip="Include AUD",
+            widget_name="aud",
+            opt="aud",
+        )
+
+    def init_async_depth(self):
+        return self._add_combo_box(
+            label="Async Depth",
+            tooltip="Maximum processing parallelism. Increase this to improve single channel performance. This option doesn't work if driver doesn't implement vaSyncBuffer function.",
+            options=[str(i) for i in range(1, 65)],
+            widget_name="async_depth",
+            opt="async_depth",
+            default="2",
+            width=40,
+        )
+
+    def init_b_depth(self):
+        return self._add_text_box(
+            label="B Depth",
+            tooltip="Maximum B-frame reference depth (from 1 to INT_MAX) (default 1)",
+            widget_name="b_depth",
+            opt="b_depth",
+            default="1",
+            width=40,
+        )
+
+    def init_idr_interval(self):
+        return self._add_text_box(
+            label="IDR Interval",
+            tooltip="Distance between IDR frames (from 0 to INT_MAX) (default 0)",
+            widget_name="idr_interval",
+            opt="idr_interval",
+            default="0",
+            width=40,
+        )
+
+    def init_low_power(self):
+        return self._add_check_box(
+            label="Low Power Mode", tooltip="Enable low power mode", widget_name="low_power", opt="low_power"
+        )
+
+    def init_modes(self):
+        layout = self._add_modes(recommended_bitrates, recommended_qp, qp_name="qp")
+        return layout
+
+    def init_vaapi_device(self):
+        return self._add_text_box(
+            label="VA-API Device",
+            tooltip="VA-API device to use (default /dev/dri/renderD128)",
+            widget_name="vaapi_device",
+            opt="vaapi_device",
+            default="/dev/dri/renderD128",
+            width=200,
         )
