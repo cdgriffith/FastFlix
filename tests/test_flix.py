@@ -48,7 +48,29 @@ test_logs = {
                 device_name="Intel UHD Graphics 630",
                 formats=["H.264/AVC PG", "H.264/AVC FF", "H.265/HEVC PG", "MPEG2 PG", "MPEG2 FF"],
             ),
-        }
+        },
+        {
+            "text": (assets / "rigaya_qsv_cf_i5_4670_win10.txt").read_text(encoding="utf-8").splitlines(),
+            "result": QSVEncoder(
+                device_number=0, device_name="Intel HD Graphics 4600", formats=["H.264/AVC PG", "MPEG2 PG", "MPEG2 FF"]
+            ),
+        },
+        {
+            "text": (assets / "rigaya_qsv_cf_arc_a380_win11.txt").read_text(encoding="utf-8").splitlines(),
+            "result": QSVEncoder(
+                device_number=0,
+                device_name="Intel Arc A380  Graphics",
+                formats=["H.264/AVC FF", "H.265/HEVC FF", "VP9 FF", "AV1 FF"],
+            ),
+        },
+        {
+            "text": (assets / "rigaya_qsv_cf_i9_12900K_ubuntu20.04.txt").read_text(encoding="utf-8").splitlines(),
+            "result": QSVEncoder(
+                device_number=0,
+                device_name="Intel Graphics / Driver : Intel iHD driver for Intel",
+                formats=["H.264/AVC PG", "H.264/AVC FF", "H.265/HEVC PG", "H.265/HEVC FF", "VP9 FF"],
+            ),
+        },
     ],
 }
 

@@ -142,6 +142,7 @@ class NVEncCSettings(EncoderSettings):
     metrics: bool = False
     force_ten_bit: bool = False
     device: int = 0
+    decoder: str = "Auto"
 
 
 class NVEncCAV1Settings(EncoderSettings):
@@ -174,6 +175,7 @@ class NVEncCAV1Settings(EncoderSettings):
     metrics: bool = False
     force_ten_bit: bool = False
     device: int = 0
+    decoder: str = "Auto"
 
 
 class QSVEncCSettings(EncoderSettings):
@@ -195,6 +197,7 @@ class QSVEncCSettings(EncoderSettings):
     metrics: bool = False
     force_ten_bit: bool = False
     qp_mode: str = "cqp"
+    decoder: str = "Auto"
 
 
 class QSVEncCAV1Settings(EncoderSettings):
@@ -216,6 +219,7 @@ class QSVEncCAV1Settings(EncoderSettings):
     metrics: bool = False
     force_ten_bit: bool = False
     qp_mode: str = "cqp"
+    decoder: str = "Auto"
 
 
 class QSVEncCH264Settings(EncoderSettings):
@@ -237,6 +241,7 @@ class QSVEncCH264Settings(EncoderSettings):
     metrics: bool = False
     force_ten_bit: bool = False
     qp_mode: str = "cqp"
+    decoder: str = "Auto"
 
 
 class NVEncCAVCSettings(EncoderSettings):
@@ -268,6 +273,7 @@ class NVEncCAVCSettings(EncoderSettings):
     b_frames: Optional[str] = None
     b_ref_mode: str = "disabled"
     device: int = 0
+    decoder: str = "Auto"
 
 
 class VCEEncCSettings(EncoderSettings):
@@ -288,7 +294,7 @@ class VCEEncCSettings(EncoderSettings):
     pre_encode: bool = False
     pre_analysis: bool = False
     vbaq: bool = False
-    decoder: str = "Hardware"
+    decoder: str = "Auto"
     device: int = 0
 
 
@@ -309,7 +315,7 @@ class VCEEncCAV1Settings(EncoderSettings):
     pre_encode: bool = False
     pre_analysis: bool = False
     vbaq: bool = False
-    decoder: str = "Hardware"
+    decoder: str = "Auto"
     bitrate_mode: str = "vbr"
     device: int = 0
 
@@ -332,7 +338,7 @@ class VCEEncCAVCSettings(EncoderSettings):
     pre_encode: bool = False
     pre_analysis: bool = False
     vbaq: bool = False
-    decoder: str = "Hardware"
+    decoder: str = "Auto"
     device: int = 0
 
 

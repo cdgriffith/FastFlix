@@ -246,7 +246,7 @@ class VCEENCCAVC(SettingPanel):
         return self._add_combo_box(
             widget_name="decoder",
             label="Decoder",
-            options=["Hardware", "Software"],
+            options=["Auto", "Hardware", "Software"],
             opt="decoder",
             tooltip="Hardware: use libavformat + hardware decoder for input\nSoftware: use avcodec + software decoder",
             min_width=80,

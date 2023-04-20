@@ -30,20 +30,14 @@ jobs:
       - name: Install PySide6 apt Requirements
         run: |
           sudo apt update
-          sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 libxcb-shape0-dev -y
+          sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 libxcb-shape0-dev libxcb-cursor-dev -y
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
 
       - name: Install Python Dependencies
         run: |
-          python -m pip install --upgrade pip setuptools poetry --ignore-installed
-          poetry config virtualenvs.create false --local
-
-      - name: Poetry Install
-        run: poetry install --with dev --with test
-        continue-on-error: true
-
-      - name: Poetry Install 2
-        run: poetry install --with dev --with test
+          python -m pip install --upgrade pip setuptools --ignore-installed
+          pip install .
+          pip install .[develop]
 
       - name: Grab iso-639 lists
         run: |
@@ -94,15 +88,9 @@ jobs:
 
     - name: Install Python Dependencies
       run: |
-        python -m pip install --upgrade pip setuptools poetry --ignore-installed
-        poetry config virtualenvs.create false --local
-
-    - name: Poetry Install
-      run: poetry install --with dev
-      continue-on-error: true
-
-    - name: Poetry Install 2
-      run: poetry install --with dev
+        python -m pip install --upgrade pip setuptools --ignore-installed
+        pip install .
+        pip install .[develop]
 
 
     - name: Grab iso-639 lists

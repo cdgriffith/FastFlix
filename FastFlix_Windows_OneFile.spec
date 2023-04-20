@@ -1,5 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 import os
+import toml
 
 from PyInstaller.utils.hooks import collect_submodules
 
@@ -14,9 +15,10 @@ for root, dirs, files in os.walk('fastflix'):
 		all_fastflix_files.append((os.path.join(root,file), root))
 
 all_imports = collect_submodules('pydantic') + ['dataclasses', 'colorsys', 'typing_extensions', 'box']
-with open("requirements.txt", "r") as reqs:
-    for line in reqs:
-        package = line.split("[")[0].split("=")[0].split(">")[0].split("<")[0].replace('"', '').replace("'", '').rstrip("~").strip()
+
+with open("pyproject.toml") as f:
+    for line in toml.load(f)["project"]["dependencies"]:
+        package = line.split("[")[0].split("=")[0].split(">")[0].split("<")[0].replace('"', '').replace("'",'').rstrip("~").strip()
         if package not in ("pyinstaller"):
             all_imports.append(package)
 

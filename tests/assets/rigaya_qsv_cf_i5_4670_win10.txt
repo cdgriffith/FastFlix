@@ -1,0 +1,153 @@
+QSVEncC (x64) 7.37 (r3038) by rigaya, Apr 12 2023 10:17:22 (VC 1934/Win)
+ Intel Media SDK API v2.09
+ reader: raw, avi, avs, vpy, avsw, avhw
+Environment Info
+OS : Windows 10 x64 (19045) [UTF-8]
+CPU: Intel Core i5-4670 @ 3.40GHz [TB: 3.81GHz] (4C/4T)
+RAM: Used 5230 MB, Total 16254 MB
+GPU: Intel HD Graphics 4600 (20EU) 200-1200MHz [84W] (20.19.15.5171)
+
+Media SDK Version: Hardware API v1.20
+
+Supported Enc features:
+Codec: H.264/AVC PG
+             CBR   VBR   AVBR  QVBR  CQP   LA    LAHRD ICQ   LAICQ VCM
+RC mode       o     o     o     o     o     o     o     o     o     o
+10bit depth   x     x     x     x     x     x     x     x     x     x
+Hyper Mode    x     x     x     x     x     x     x     x     x     x
+Interlace     o     o     o     o     o     o     o     o     o     x
+VUI info      o     o     o     o     o     o     o     o     o     o
+Trellis       o     o     o     o     o     o     o     o     o     x
+BFrame/GopRef o     o     o     o     o     o     o     o     o     x
+Adaptive_I    x     x     x     x     x     x     x     x     x     x
+Adaptive_B    x     x     x     x     x     x     x     x     x     x
+WeightP       o     o     o     o     o     o     o     o     o     x
+WeightB       o     o     o     o     o     o     o     o     o     x
+FadeDetect    x     x     x     x     x     x     x     x     x     x
+B_Pyramid     o     o     o     o     o     o     x     o     o     x
+ +ManyBframes o     o     o     o     o     x     x     o     x     x
+PyramQPOffset x     x     x     x     x     x     x     x     x     x
+TuneQuality   x     x     x     x     x     x     x     x     x     x
+ScenarioInfo  o     o     o     o     o     o     o     o     o     x
+MBBRC         o     o     o     o     x     x     x     o     x     x
+ExtBRC        o     o     o     o     x     x     x     o     x     x
+AdaptiveRef   x     x     x     x     x     x     x     x     x     x
+AdaptiveLTR   x     x     x     x     x     x     x     x     x     x
+AdaptiveCQM   x     x     x     x     x     x     x     x     x     x
+LA Quality    x     x     x     x     x     o     o     x     o     x
+QP Min/Max    o     o     o     o     o     o     o     o     o     x
+IntraRefresh  x     x     x     x     x     x     x     x     x     x
+No Deblock    x     x     x     x     x     x     x     x     x     x
+No GPB        x     x     x     x     x     x     x     x     x     x
+Windowed BRC  x     x     x     x     x     o     o     x     x     x
+PerMBQP(CQP)  x     x     x     x     o     x     x     x     x     x
+DirectBiasAdj x     x     x     x     x     x     x     x     x     x
+MVCostScaling x     x     x     x     x     x     x     x     x     x
+SAO           x     x     x     x     x     x     x     x     x     x
+Max CTU Size  x     x     x     x     x     x     x     x     x     x
+TSkip         x     x     x     x     x     x     x     x     x     x
+
+
+
+Codec: MPEG2 PG
+             CBR   VBR   AVBR  QVBR  CQP   LA    LAHRD ICQ   LAICQ VCM
+RC mode       o     o     o     x     o     x     x     x     x     x
+10bit depth   x     x     x     x     x     x     x     x     x     x
+Hyper Mode    x     x     x     x     x     x     x     x     x     x
+Interlace     o     o     o     x     o     x     x     x     x     x
+VUI info      o     o     o     x     o     x     x     x     x     x
+Trellis       o     o     o     x     o     x     x     x     x     x
+BFrame/GopRef o     o     o     x     o     x     x     x     x     x
+Adaptive_I    o     o     o     x     o     x     x     x     x     x
+Adaptive_B    o     o     o     x     o     x     x     x     x     x
+WeightP       o     o     o     x     o     x     x     x     x     x
+WeightB       o     o     o     x     o     x     x     x     x     x
+FadeDetect    x     x     x     x     x     x     x     x     x     x
+B_Pyramid     o     o     o     x     o     x     x     x     x     x
+ +ManyBframes o     o     o     x     o     x     x     x     x     x
+PyramQPOffset x     x     x     x     x     x     x     x     x     x
+TuneQuality   x     x     x     x     x     x     x     x     x     x
+ScenarioInfo  o     o     o     x     o     x     x     x     x     x
+MBBRC         o     o     o     x     x     x     x     x     x     x
+ExtBRC        o     o     o     x     x     x     x     x     x     x
+AdaptiveRef   x     x     x     x     x     x     x     x     x     x
+AdaptiveLTR   x     x     x     x     x     x     x     x     x     x
+AdaptiveCQM   x     x     x     x     x     x     x     x     x     x
+LA Quality    x     x     x     x     x     x     x     x     x     x
+QP Min/Max    o     o     o     x     o     x     x     x     x     x
+IntraRefresh  o     o     o     x     o     x     x     x     x     x
+No Deblock    o     o     o     x     o     x     x     x     x     x
+No GPB        x     x     x     x     x     x     x     x     x     x
+Windowed BRC  o     o     o     x     o     x     x     x     x     x
+PerMBQP(CQP)  x     x     x     x     x     x     x     x     x     x
+DirectBiasAdj o     o     o     x     o     x     x     x     x     x
+MVCostScaling o     o     o     x     o     x     x     x     x     x
+SAO           x     x     x     x     x     x     x     x     x     x
+Max CTU Size  x     x     x     x     x     x     x     x     x     x
+TSkip         x     x     x     x     x     x     x     x     x     x
+
+
+
+Codec: MPEG2 FF
+             CBR   VBR   AVBR  QVBR  CQP   LA    LAHRD ICQ   LAICQ VCM
+RC mode       o     o     o     x     o     x     x     x     x     x
+10bit depth   x     x     x     x     x     x     x     x     x     x
+Hyper Mode    x     x     x     x     x     x     x     x     x     x
+Interlace     o     o     o     x     o     x     x     x     x     x
+VUI info      o     o     o     x     o     x     x     x     x     x
+Trellis       o     o     o     x     o     x     x     x     x     x
+BFrame/GopRef o     o     o     x     o     x     x     x     x     x
+Adaptive_I    o     o     o     x     o     x     x     x     x     x
+Adaptive_B    o     o     o     x     o     x     x     x     x     x
+WeightP       o     o     o     x     o     x     x     x     x     x
+WeightB       o     o     o     x     o     x     x     x     x     x
+FadeDetect    x     x     x     x     x     x     x     x     x     x
+B_Pyramid     o     o     o     x     o     x     x     x     x     x
+ +ManyBframes o     o     o     x     o     x     x     x     x     x
+PyramQPOffset x     x     x     x     x     x     x     x     x     x
+TuneQuality   x     x     x     x     x     x     x     x     x     x
+ScenarioInfo  o     o     o     x     o     x     x     x     x     x
+MBBRC         o     o     o     x     x     x     x     x     x     x
+ExtBRC        o     o     o     x     x     x     x     x     x     x
+AdaptiveRef   x     x     x     x     x     x     x     x     x     x
+AdaptiveLTR   x     x     x     x     x     x     x     x     x     x
+AdaptiveCQM   x     x     x     x     x     x     x     x     x     x
+LA Quality    x     x     x     x     x     x     x     x     x     x
+QP Min/Max    o     o     o     x     o     x     x     x     x     x
+IntraRefresh  o     o     o     x     o     x     x     x     x     x
+No Deblock    o     o     o     x     o     x     x     x     x     x
+No GPB        x     x     x     x     x     x     x     x     x     x
+Windowed BRC  o     o     o     x     o     x     x     x     x     x
+PerMBQP(CQP)  x     x     x     x     x     x     x     x     x     x
+DirectBiasAdj o     o     o     x     o     x     x     x     x     x
+MVCostScaling o     o     o     x     o     x     x     x     x     x
+SAO           x     x     x     x     x     x     x     x     x     x
+Max CTU Size  x     x     x     x     x     x     x     x     x     x
+TSkip         x     x     x     x     x     x     x     x     x     x
+
+
+
+Supported Vpp features:
+
+Resize                o
+Deinterlace           o
+Scaling Quality       o
+Denoise               o
+Denoise2              x
+Mctf                  x
+Rotate                o
+Mirror                x
+Detail Enhancement    o
+Proc Amp.             o
+Image Stabilization   o
+Video Signal Info     o
+FPS Conversion        o
+FPS Conversion (Adv.) o
+
+
+Supported Decode features:
+
+        H.264  HEVC   MPEG2  VP8    VP9    AV1
+yuv420  8bit          8bit
+yuv422
+yuv444

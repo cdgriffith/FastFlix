@@ -17,7 +17,7 @@ from fastflix.language import t
 from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
-from fastflix.resources import main_icon, get_icon
+from fastflix.resources import main_icon, get_icon, changes_file, local_changes_file, local_package_changes_file
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
@@ -62,7 +62,7 @@ class Container(QtWidgets.QMainWindow):
         if self.app.fastflix.config.stay_on_top:
             self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         self.logs = Logs()
-        self.changes = Changes()
+        self.changes = None
         self.about = None
         self.profile_details = None
 
@@ -243,7 +243,9 @@ class Container(QtWidgets.QMainWindow):
         help_menu = menubar.addMenu(t("Help"))
         help_menu.addAction(wiki_action)
         help_menu.addSeparator()
-        help_menu.addAction(changes_action)
+
+        if changes_file.exists() or local_changes_file.exists() or local_package_changes_file.exists():
+            help_menu.addAction(changes_action)
         help_menu.addAction(report_action)
         help_menu.addAction(log_dir_action)
         help_menu.addAction(log_action)
@@ -301,6 +303,8 @@ class Container(QtWidgets.QMainWindow):
         self.logs.show()
 
     def show_changes(self):
+        if not self.changes:
+            self.changes = Changes()
         self.changes.show()
 
     def open_issues(self):

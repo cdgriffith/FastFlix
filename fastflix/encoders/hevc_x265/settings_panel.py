@@ -402,10 +402,63 @@ class HEVC(SettingPanel):
                 "preset: The slower the preset, the better the compression and quality\n"
                 "Slow is highest personal recommenced, as past that is much smaller gains"
             ),
-            connect="default",
+            connect=self.preset_update,
             opt="preset",
         )
         return layout
+
+    def preset_update(self):
+        def set_aq(num):
+            if self.widgets.tune.currentIndex() == 0:
+                self.widgets.aq_mode.setCurrentIndex(num)
+            if self.widgets["tune"].currentText() == "animation":
+                bframes = 5
+                if self.widgets.preset.currentIndex() >= 2:
+                    bframes = 6
+                if self.widgets.preset.currentIndex() >= 7:
+                    bframes = 10
+                self.widgets.bframes.setCurrentIndex(bframes)
+
+        if self.widgets["preset"].currentText() == "ultrafast":
+            self.widgets.bframes.setCurrentIndex(3)
+            self.widgets.b_adapt.setCurrentIndex(0)
+            set_aq(0)
+        elif self.widgets["preset"].currentText() == "superfast":
+            self.widgets.bframes.setCurrentIndex(3)
+            self.widgets.b_adapt.setCurrentIndex(0)
+            set_aq(0)
+        elif self.widgets["preset"].currentText() == "veryfast":
+            self.widgets.bframes.setCurrentIndex(4)
+            self.widgets.b_adapt.setCurrentIndex(0)
+            set_aq(2)
+        elif self.widgets["preset"].currentText() == "faster":
+            self.widgets.bframes.setCurrentIndex(4)
+            self.widgets.b_adapt.setCurrentIndex(0)
+            set_aq(2)
+        elif self.widgets["preset"].currentText() == "fast":
+            self.widgets.bframes.setCurrentIndex(4)
+            self.widgets.b_adapt.setCurrentIndex(0)
+            set_aq(2)
+        elif self.widgets["preset"].currentText() == "medium":
+            self.widgets.bframes.setCurrentIndex(4)
+            self.widgets.b_adapt.setCurrentIndex(2)
+            set_aq(2)
+        elif self.widgets["preset"].currentText() == "slow":
+            self.widgets.bframes.setCurrentIndex(4)
+            self.widgets.b_adapt.setCurrentIndex(2)
+            set_aq(2)
+        elif self.widgets["preset"].currentText() == "slower":
+            self.widgets.bframes.setCurrentIndex(8)
+            self.widgets.b_adapt.setCurrentIndex(2)
+            set_aq(2)
+        elif self.widgets["preset"].currentText() == "veryslow":
+            self.widgets.bframes.setCurrentIndex(8)
+            self.widgets.b_adapt.setCurrentIndex(2)
+            set_aq(2)
+        elif self.widgets["preset"].currentText() == "placebo":
+            self.widgets.bframes.setCurrentIndex(8)
+            self.widgets.b_adapt.setCurrentIndex(2)
+            set_aq(2)
 
     def init_tune(self):
         return self._add_combo_box(
@@ -413,9 +466,44 @@ class HEVC(SettingPanel):
             widget_name="tune",
             options=["default", "psnr", "ssim", "grain", "zerolatency", "fastdecode", "animation"],
             tooltip="tune: Tune the settings for a particular type of source or situation",
-            connect="default",
+            connect=self.tune_update,
             opt="tune",
         )
+
+    def tune_update(self):
+        self.widgets.aq_mode.setEnabled(True)
+        self.widgets.bframes.setEnabled(True)
+        self.widgets.b_adapt.setEnabled(True)
+        self.widgets.frame_threads.setEnabled(True)
+        self.widgets.aq_mode.setCurrentIndex(2)
+        self.widgets.bframes.setCurrentIndex(4)
+        self.widgets.b_adapt.setCurrentIndex(2)
+        self.widgets.frame_threads.setCurrentIndex(0)
+
+        if self.widgets["tune"].currentText() == "grain":
+            self.widgets.aq_mode.setCurrentIndex(0)
+            self.widgets.aq_mode.setEnabled(False)
+            self.widgets.bframes.setCurrentIndex(4)
+            self.widgets.b_adapt.setCurrentIndex(2)
+        elif self.widgets["tune"].currentText() == "psnr":
+            self.widgets.aq_mode.setCurrentIndex(0)
+            self.widgets.aq_mode.setEnabled(False)
+            self.widgets.bframes.setCurrentIndex(4)
+            self.widgets.b_adapt.setCurrentIndex(2)
+        elif self.widgets["tune"].currentText() == "zerolatency":
+            self.widgets.bframes.setCurrentIndex(0)
+            self.widgets.b_adapt.setCurrentIndex(0)
+            self.widgets.frame_treahds.setCurrentIndex(1)
+            self.widgets.bframes.setEnabled(False)
+            self.widgets.b_adapt.setEnabled(False)
+            self.widgets.frame_threads.setEnabled(False)
+        elif self.widgets["tune"].currentText() == "animation":
+            bframes = 5
+            if self.widgets.preset.currentIndex() >= 2:
+                bframes = 6
+            if self.widgets.preset.currentIndex() >= 7:
+                bframes = 10
+            self.widgets.bframes.setCurrentIndex(bframes)
 
     def init_profile(self):
         return self._add_combo_box(

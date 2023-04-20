@@ -3,9 +3,50 @@ import logging
 
 from fastflix.models.video import SubtitleTrack, AudioTrack
 from fastflix.encoders.common.audio import lossless
-
+from fastflix.models.fastflix import FastFlix
 
 logger = logging.getLogger("fastflix")
+
+
+def rigaya_avformat_reader(fastflix: FastFlix) -> str:
+    # Avisynth reader 	avs
+    # VapourSynth reader 	vpy
+    # avi reader 	avi
+    # y4m reader 	y4m
+    # raw reader 	yuv
+    # avhw/avsw reader 	others
+    ending = fastflix.current_video.source.suffix
+    if fastflix.current_video.video_settings.video_encoder_settings.decoder not in ("Hardware", "Software"):
+        if ending.lower() in (".avs", ".vpy", ".avi", ".y4m", ".yuv"):
+            return ""
+    return "--avhw" if fastflix.current_video.video_settings.video_encoder_settings.decoder == "Hardware" else "--avsw"
+
+
+def rigaya_auto_options(fastflix: FastFlix) -> str:
+    reader_format = rigaya_avformat_reader(fastflix)
+    if not reader_format:
+        output = ""
+        if fastflix.current_video.video_settings.color_space:
+            output += f"--colormatrix {fastflix.current_video.video_settings.color_space} "
+        if fastflix.current_video.video_settings.color_transfer:
+            output += f"--transfer {fastflix.current_video.video_settings.color_transfer} "
+        if fastflix.current_video.video_settings.color_primaries:
+            output += f"--colorprim {fastflix.current_video.video_settings.color_primaries} "
+        return output
+
+    return " ".join(
+        [
+            reader_format,
+            "--chromaloc auto",
+            "--colorrange auto",
+            "--colormatrix",
+            (fastflix.current_video.video_settings.color_space or "auto"),
+            "--transfer",
+            (fastflix.current_video.video_settings.color_transfer or "auto"),
+            "--colorprim",
+            (fastflix.current_video.video_settings.color_primaries or "auto"),
+        ]
+    )
 
 
 def get_stream_pos(streams) -> dict:
