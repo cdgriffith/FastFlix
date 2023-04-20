@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 5.4.1
+
+* Fixing #460 QSVEncC not listed as encoder with FastFlix 5.4.0 (thanks to zedfreak)
+* Fixing #451 x265 presets and tunes not being applied properly (thanks to HannesJo0139)
+* Fixing #442 improper options passed to rigaya's encoders for non libavformat readers (thanks to Joet73)
+
 ## Version 5.4.0
 
 * Adding #389 unlock GPU encoders by checking for supported codec (thanks to F.O.R.A.R.T.)

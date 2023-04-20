@@ -84,7 +84,7 @@ def run_check_features(executable, is_qsv=False):
     return outputs
 
 
-def get_all_encoder_formats_and_devices(executable, is_qsv=False, is_nvenc=True, is_vce=False) -> (dict, list[str]):
+def get_all_encoder_formats_and_devices(executable, is_qsv=False, is_nvenc=False, is_vce=False) -> (dict, list[str]):
     devices = {}
     encoders = set()
     for output in run_check_features(executable=executable, is_qsv=is_qsv):
@@ -101,5 +101,4 @@ def get_all_encoder_formats_and_devices(executable, is_qsv=False, is_nvenc=True,
         else:
             raise Exception("Must set at least one encoder type")
         devices[data.device_number] = {"name": data.device_name, "encoders": data.formats}
-
     return devices, list(encoders)

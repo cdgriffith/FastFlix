@@ -5,7 +5,12 @@ from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import VCEEncCSettings
 from fastflix.models.video import Video
 from fastflix.models.fastflix import FastFlix
-from fastflix.encoders.common.encc_helpers import build_subtitle, build_audio
+from fastflix.encoders.common.encc_helpers import (
+    build_subtitle,
+    build_audio,
+    rigaya_avformat_reader,
+    rigaya_auto_options,
+)
 from fastflix.flix import clean_file_string
 
 logger = logging.getLogger("fastflix")
@@ -78,7 +83,7 @@ def build(fastflix: FastFlix):
 
     command = [
         f'"{clean_file_string(fastflix.config.vceencc)}"',
-        ("--avhw" if settings.decoder == "Hardware" else "--avsw"),
+        rigaya_avformat_reader(fastflix),
         "--device",
         str(settings.device),
         "-i",
@@ -111,12 +116,7 @@ def build(fastflix: FastFlix):
         settings.tier,
         "--level",
         (settings.level or "auto"),
-        "--colormatrix",
-        (video.video_settings.color_space or "auto"),
-        "--transfer",
-        (video.video_settings.color_transfer or "auto"),
-        "--colorprim",
-        (video.video_settings.color_primaries or "auto"),
+        rigaya_auto_options(fastflix),
         (master_display if master_display else ""),
         (max_cll if max_cll else ""),
         (dhdr if dhdr else ""),
@@ -127,10 +127,6 @@ def build(fastflix: FastFlix):
         ("--vbaq" if settings.vbaq else ""),
         ("--pe" if settings.pre_encode else ""),
         ("--pa" if settings.pre_analysis else ""),
-        "--chromaloc",
-        "auto",
-        "--colorrange",
-        "auto",
         f"--avsync {vsync_setting}",
         (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
         ("--vpp-nnedi" if video.video_settings.deinterlace else ""),

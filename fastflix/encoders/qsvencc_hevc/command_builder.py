@@ -5,7 +5,12 @@ from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import QSVEncCSettings
 from fastflix.models.video import Video
 from fastflix.models.fastflix import FastFlix
-from fastflix.encoders.common.encc_helpers import build_subtitle, build_audio
+from fastflix.encoders.common.encc_helpers import (
+    build_subtitle,
+    build_audio,
+    rigaya_auto_options,
+    rigaya_avformat_reader,
+)
 from fastflix.flix import clean_file_string
 
 logger = logging.getLogger("fastflix")
@@ -92,6 +97,7 @@ def build(fastflix: FastFlix):
 
     command = [
         f'"{clean_file_string(fastflix.config.qsvencc)}"',
+        rigaya_avformat_reader(fastflix),
         "-i",
         f'"{clean_file_string(video.source)}"',
         (f"--video-streamid {stream_id}" if stream_id else ""),
@@ -122,21 +128,12 @@ def build(fastflix: FastFlix):
         (f"--la-depth {settings.lookahead}" if settings.lookahead else ""),
         "--level",
         (settings.level or "auto"),
-        "--colormatrix",
-        (video.video_settings.color_space or "auto"),
-        "--transfer",
-        (video.video_settings.color_transfer or "auto"),
-        "--colorprim",
-        (video.video_settings.color_primaries or "auto"),
+        rigaya_auto_options(fastflix),
         (master_display if master_display else ""),
         (max_cll if max_cll else ""),
         (dhdr if dhdr else ""),
         "--output-depth",
         bit_depth,
-        "--chromaloc",
-        "auto",
-        "--colorrange",
-        "auto",
         f"--avsync {vsync_setting}",
         (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
         ("--vpp-yadif" if video.video_settings.deinterlace else ""),
