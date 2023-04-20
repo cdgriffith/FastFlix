@@ -4,6 +4,7 @@ import logging
 from fastflix.models.video import SubtitleTrack, AudioTrack
 from fastflix.encoders.common.audio import lossless
 from fastflix.models.fastflix import FastFlix
+from fastflix.models.encode import VCEEncCAVCSettings, VCEEncCAV1Settings, VCEEncCSettings
 
 logger = logging.getLogger("fastflix")
 
@@ -46,6 +47,32 @@ def rigaya_auto_options(fastflix: FastFlix) -> str:
             (fastflix.current_video.video_settings.color_primaries or "auto"),
         ]
     )
+
+
+def pa_builder(settings: VCEEncCAVCSettings | VCEEncCAV1Settings | VCEEncCSettings):
+    if not settings.pre_analysis:
+        return ""
+    base = (
+        f"--pa sc={settings.pa_sc},"
+        f"ss={settings.pa_ss},"
+        f"activity-type={settings.pa_activity_type},"
+        f"caq-strength={settings.pa_caq_strength},"
+        f"ltr={'true' if settings.pa_ltr else 'false'},"
+    )
+    if settings.pa_initqpsc is not None:
+        base += f"initqpsc={settings.pa_initqpsc},"
+    if settings.pa_lookahead is not None:
+        base += f"lookahead={settings.pa_lookahead},"
+    if settings.pa_fskip_maxqp is not None:
+        base += f"fskip-maxqp={settings.pa_fskip_maxqp},"
+    if settings.pa_paq is not None:
+        base += f"paq={settings.pa_paq},"
+    if settings.pa_taq is not None:
+        base += f"taq={settings.pa_taq},"
+    if settings.pa_motion_quality is not None:
+        base += f"motion-quality={settings.pa_motion_quality},"
+
+    return base.rstrip(",")
 
 
 def get_stream_pos(streams) -> dict:

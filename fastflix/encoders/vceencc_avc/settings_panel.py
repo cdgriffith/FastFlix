@@ -4,7 +4,7 @@ import logging
 from box import Box
 from PySide6 import QtCore, QtWidgets, QtGui
 
-from fastflix.encoders.common.setting_panel import RigayaPanel
+from fastflix.encoders.common.setting_panel import VCEPanel
 from fastflix.language import t
 from fastflix.models.encode import VCEEncCAVCSettings
 from fastflix.models.fastflix_app import FastFlixApp
@@ -57,7 +57,7 @@ def get_breaker():
     return breaker_line
 
 
-class VCEENCCAVC(RigayaPanel):
+class VCEENCCAVC(VCEPanel):
     profile_name = "vceencc_avc"
     hdr10plus_signal = QtCore.Signal(str)
     hdr10plus_ffmpeg_signal = QtCore.Signal(str)
@@ -75,7 +75,7 @@ class VCEENCCAVC(RigayaPanel):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
-        grid.addLayout(self._add_custom(title="Custom VCEEncC options", disable_both_passes=True), 10, 0, 1, 6)
+        grid.addLayout(self._add_custom(title="Custom VCEEncC options", disable_both_passes=True), 11, 0, 1, 6)
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_profile(), 1, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
@@ -108,10 +108,13 @@ class VCEENCCAVC(RigayaPanel):
         qp_line.addLayout(self.init_metrics())
         grid.addLayout(qp_line, 5, 0, 1, 6)
 
-        self.ffmpeg_level = QtWidgets.QLabel()
-        grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
+        self.init_pa_row()
+        grid.addLayout(self.pa_area, 7, 0, 2, 6)
 
-        grid.setRowStretch(9, 1)
+        self.ffmpeg_level = QtWidgets.QLabel()
+        grid.addWidget(self.ffmpeg_level, 9, 2, 1, 4)
+
+        grid.setRowStretch(11, 1)
 
         guide_label = QtWidgets.QLabel(
             link(
@@ -126,7 +129,7 @@ class VCEENCCAVC(RigayaPanel):
 
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, 1, 4)
+        grid.addWidget(guide_label, 12, 0, 1, 4)
 
         self.setLayout(grid)
         self.hide()
@@ -178,7 +181,11 @@ class VCEENCCAVC(RigayaPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addLayout(self._add_check_box(label="VBAQ", widget_name="vbaq", opt="vbaq"))
         layout.addLayout(self._add_check_box(label="Pre Encode", widget_name="pre_encode", opt="pre_encode"))
-        layout.addLayout(self._add_check_box(label="Pre Analysis", widget_name="pre_analysis", opt="pre_analysis"))
+        layout.addLayout(
+            self._add_check_box(
+                label="Pre Analysis", widget_name="pre_analysis", opt="pre_analysis", connect=self.pa_changed
+            )
+        )
         return layout
 
     def init_level(self):
@@ -285,6 +292,17 @@ class VCEENCCAVC(RigayaPanel):
             decoder=self.widgets.decoder.currentText(),
             profile=self.widgets.profile.currentText(),
             device=int(self.widgets.device.currentText().split(":", 1)[0] or 0),
+            pa_sc=self.widgets.pa_sc.currentText(),
+            pa_ss=self.widgets.pa_ss.currentText(),
+            pa_activity_type=self.widgets.pa_activity_type.currentText(),
+            pa_caq_strength=self.widgets.pa_caq_strength.currentText(),
+            pa_initqpsc=self.widgets.pa_initqpsc.currentIndex() or None,
+            pa_lookahead=self.widgets.pa_initqpsc.currentIndex() or None,
+            pa_fskip_maxqp=int(self.widgets.pa_fskip_maxqp.text() or 0) or None,
+            pa_ltr=self.widgets.pa_ltr.isChecked(),
+            pa_paq=self.widgets.pa_paq.currentText(),
+            pa_taq=None if self.widgets.pa_taq.currentIndex() == 0 else self.widgets.pa_taq.currentText(),
+            pa_motion_quality=self.widgets.pa_motion_quality.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

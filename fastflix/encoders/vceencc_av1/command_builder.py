@@ -10,6 +10,7 @@ from fastflix.encoders.common.encc_helpers import (
     build_audio,
     rigaya_auto_options,
     rigaya_avformat_reader,
+    pa_builder,
 )
 from fastflix.flix import clean_file_string
 
@@ -124,7 +125,7 @@ def build(fastflix: FastFlix):
         settings.mv_precision,
         ("--vbaq" if settings.vbaq else ""),
         ("--pe" if settings.pre_encode else ""),
-        ("--pa" if settings.pre_analysis else ""),
+        pa_builder(settings),
         f"--avsync {vsync_setting}",
         (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
         ("--vpp-nnedi" if video.video_settings.deinterlace else ""),

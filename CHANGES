@@ -6,6 +6,7 @@
 * Adding #329 Hardware VAAPI encoding support for HEVC and H264
 * Adding #351 option to disable automatic tab switching (thanks to Wontell)
 * Adding #357 QSVencC adapt-ref, adapt-ltr, and adapt-qm parameters (thanks to F.O.R.A.R.T.)
+* Adding #368 VCEEncC Pre-Analysis options of sc, ss, activity type, caq, sc qp,lookahead, ltr, paq, taq and motion quality (thanks to Wontell)
 
 ## Version 5.4.1
 
@@ -160,7 +161,7 @@
 
 * Adding #313 basic vsync support for hardware encoders (thanks to Wontell)
 * Adding #312 additional pixel formats for most encoders (thanks to Owen Quinlan)
-* Adding "Auto" profile for VCEncC
+* Adding "Auto" profile for VCEEncC
 * Changing #292 back to PySide2 to be compatible with Windows 7 and 8 (thanks to Causemic)
 * Fixing #315 HDR10 info not parsed from subsequent video tracks than the first (thanks to msaintauret)
 * Fixing #310 QT was complaining about some PNG formats (thanks to Don Gafford)

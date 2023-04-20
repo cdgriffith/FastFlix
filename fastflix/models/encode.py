@@ -305,6 +305,17 @@ class VCEEncCSettings(EncoderSettings):
     vbaq: bool = False
     decoder: str = "Auto"
     device: int = 0
+    pa_sc: str = "medium"
+    pa_ss: str = "high"
+    pa_activity_type: str = "y"
+    pa_caq_strength: str = "medium"
+    pa_initqpsc: int | None = None
+    pa_lookahead: int | None = None
+    pa_fskip_maxqp: int = 35
+    pa_ltr: bool = True
+    pa_paq: str | None = None
+    pa_taq: int | None = None
+    pa_motion_quality: str | None = None
 
 
 class VCEEncCAV1Settings(EncoderSettings):
@@ -327,6 +338,17 @@ class VCEEncCAV1Settings(EncoderSettings):
     decoder: str = "Auto"
     bitrate_mode: str = "vbr"
     device: int = 0
+    pa_sc: str = "medium"
+    pa_ss: str = "high"
+    pa_activity_type: str = "y"
+    pa_caq_strength: str = "medium"
+    pa_initqpsc: int | None = None
+    pa_lookahead: int | None = None
+    pa_fskip_maxqp: int = 35
+    pa_ltr: bool = True
+    pa_paq: str | None = None
+    pa_taq: int | None = None
+    pa_motion_quality: str | None = None
 
 
 class VCEEncCAVCSettings(EncoderSettings):
@@ -349,6 +371,17 @@ class VCEEncCAVCSettings(EncoderSettings):
     vbaq: bool = False
     decoder: str = "Auto"
     device: int = 0
+    pa_sc: str = "medium"
+    pa_ss: str = "high"
+    pa_activity_type: str = "y"
+    pa_caq_strength: str = "medium"
+    pa_initqpsc: int | None = None
+    pa_lookahead: int | None = None
+    pa_fskip_maxqp: int = 35
+    pa_ltr: bool = True
+    pa_paq: str | None = None
+    pa_taq: int | None = None
+    pa_motion_quality: str | None = None
 
 
 class rav1eSettings(EncoderSettings):

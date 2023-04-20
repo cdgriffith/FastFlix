@@ -626,101 +626,162 @@ class QSVEncPanel(RigayaPanel):
         )
 
 
-class VAAPIPanel(SettingPanel):
-    # h264_vaapi AVOptions:
-    #   -low_power         <boolean>    E..V....... Use low-power encoding mode (only available on some platforms; may not support all encoding features) (default false)
-    #   -idr_interval      <int>        E..V....... Distance (in I-frames) between IDR frames (from 0 to INT_MAX) (default 0)
-    #   -b_depth           <int>        E..V....... Maximum B-frame reference depth (from 1 to INT_MAX) (default 1)
-    #   -async_depth       <int>        E..V....... Maximum processing parallelism. Increase this to improve single channel performance. This option doesn't work if driver doesn't implement vaSyncBuffer function. (from 1 to 64) (default 2)
-    #   -max_frame_size    <int>        E..V....... Maximum frame size (in bytes) (from 0 to INT_MAX) (default 0)
-    #   -rc_mode           <int>        E..V....... Set rate control mode (from 0 to 6) (default auto)
-    #      auto            0            E..V....... Choose mode automatically based on other parameters
-    #      CQP             1            E..V....... Constant-quality
-    #      CBR             2            E..V....... Constant-bitrate
-    #      VBR             3            E..V....... Variable-bitrate
-    #      ICQ             4            E..V....... Intelligent constant-quality
-    #      QVBR            5            E..V....... Quality-defined variable-bitrate
-    #      AVBR            6            E..V....... Average variable-bitrate
-    #   -qp                <int>        E..V....... Constant QP (for P-frames; scaled by qfactor/qoffset for I/B) (from 0 to 52) (default 0)
-    #   -quality           <int>        E..V....... Set encode quality (trades off against speed, higher is faster) (from -1 to INT_MAX) (default -1)
-    #   -coder             <int>        E..V....... Entropy coder type (from 0 to 1) (default cabac)
-    #      cavlc           0            E..V.......
-    #      cabac           1            E..V.......
-    #      vlc             0            E..V.......
-    #      ac              1            E..V.......
-    #   -aud               <boolean>    E..V....... Include AUD (default false)
-    #   -sei               <flags>      E..V....... Set SEI to include (default identifier+timing+recovery_point+a53_cc)
-    #      identifier                   E..V....... Include encoder version identifier
-    #      timing                       E..V....... Include timing parameters (buffering_period and pic_timing)
-    #      recovery_point               E..V....... Include recovery points where appropriate
-    #      a53_cc                       E..V....... Include A/53 caption data
-    #   -profile           <int>        E..V....... Set profile (profile_idc and constraint_set*_flag) (from -99 to 65535) (default -99)
-    #      constrained_baseline 578          E..V.......
-    #      main            77           E..V.......
-    #      high            100          E..V.......
-    #      high10          110          E..V.......
-    #   -level             <int>        E..V....... Set level (level_idc) (from -99 to 255) (default -99)
-    #      1               10           E..V.......
-    #      1.1             11           E..V.......
-    #      1.2             12           E..V.......
-    #      1.3             13           E..V.......
-    #      2               20           E..V.......
-    #      2.1             21           E..V.......
-    #      2.2             22           E..V.......
-    #      3               30           E..V.......
-    #      3.1             31           E..V.......
-    #      3.2             32           E..V.......
-    #      4               40           E..V.......
-    #      4.1             41           E..V.......
-    #      4.2             42           E..V.......
-    #      5               50           E..V.......
-    #      5.1             51           E..V.......
-    #      5.2             52           E..V.......
-    #      6               60           E..V.......
-    #      6.1             61           E..V.......
-    #      6.2             62           E..V.......
+class VCEPanel(RigayaPanel):
+    def init_pa_row(self):
+        #     pa_caq_strength: str | None = None
+        #     pa_initqpsc: int | None = None
+        #     pa_lookahead: int | None = None
+        #     pa_fskip_maxqp: int | None = None
+        #     pa_ltr: bool = False
+        #     pa_paq: str | None = None
+        #     pa_taq: int | None = None
+        #     pa_motion_quality: str | None = None
 
-    # h265_vaapi AVOptions:
-    #   -low_power         <boolean>    E..V....... Use low-power encoding mode (only available on some platforms; may not support all encoding features) (default false)
-    #   -idr_interval      <int>        E..V....... Distance (in I-frames) between IDR frames (from 0 to INT_MAX) (default 0)
-    #   -b_depth           <int>        E..V....... Maximum B-frame reference depth (from 1 to INT_MAX) (default 1)
-    #   -async_depth       <int>        E..V....... Maximum processing parallelism. Increase this to improve single channel performance. This option doesn't work if driver doesn't implement vaSyncBuffer function. (from 1 to 64) (default 2)
-    #   -max_frame_size    <int>        E..V....... Maximum frame size (in bytes) (from 0 to INT_MAX) (default 0)
-    #   -rc_mode           <int>        E..V....... Set rate control mode (from 0 to 6) (default auto)
-    #      auto            0            E..V....... Choose mode automatically based on other parameters
-    #      CQP             1            E..V....... Constant-quality
-    #      CBR             2            E..V....... Constant-bitrate
-    #      VBR             3            E..V....... Variable-bitrate
-    #      ICQ             4            E..V....... Intelligent constant-quality
-    #      QVBR            5            E..V....... Quality-defined variable-bitrate
-    #      AVBR            6            E..V....... Average variable-bitrate
-    #   -qp                <int>        E..V....... Constant QP (for P-frames; scaled by qfactor/qoffset for I/B) (from 0 to 52) (default 0)
-    #   -aud               <boolean>    E..V....... Include AUD (default false)
-    #   -profile           <int>        E..V....... Set profile (general_profile_idc) (from -99 to 255) (default -99)
-    #      main            1            E..V.......
-    #      main10          2            E..V.......
-    #      rext            4            E..V.......
-    #   -tier              <int>        E..V....... Set tier (general_tier_flag) (from 0 to 1) (default main)
-    #      main            0            E..V.......
-    #      high            1            E..V.......
-    #   -level             <int>        E..V....... Set level (general_level_idc) (from -99 to 255) (default -99)
-    #      1               30           E..V.......
-    #      2               60           E..V.......
-    #      2.1             63           E..V.......
-    #      3               90           E..V.......
-    #      3.1             93           E..V.......
-    #      4               120          E..V.......
-    #      4.1             123          E..V.......
-    #      5               150          E..V.......
-    #      5.1             153          E..V.......
-    #      5.2             156          E..V.......
-    #      6               180          E..V.......
-    #      6.1             183          E..V.......
-    #      6.2             186          E..V.......
-    #   -sei               <flags>      E..V....... Set SEI to include (default hdr+a53_cc)
-    #      hdr                          E..V....... Include HDR metadata for mastering display colour volume and content light level information
-    #      a53_cc                       E..V....... Include A/53 caption data
-    #   -tiles             <image_size> E..V....... Tile columns x rows
+        self.pa_row_1 = QtWidgets.QHBoxLayout()
+        self.pa_row_2 = QtWidgets.QHBoxLayout()
+        self.pa_area = QtWidgets.QVBoxLayout()
+
+        self.labels["pa_row1"] = QtWidgets.QLabel("       Pre Analysis  ")
+        self.labels["pa_row2"] = QtWidgets.QLabel("       Options       ")
+
+        self.pa_row_1.addWidget(self.labels["pa_row1"])
+        self.pa_row_2.addWidget(self.labels["pa_row2"])
+
+        self.pa_row_1.addStretch(1)
+        self.pa_row_2.addStretch(1)
+
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                label="Scene Change",
+                tooltip="Scene change detection method",
+                widget_name="pa_sc",
+                options=["none", "low", "medium", "high"],
+                opt="pa_sc",
+            )
+        )
+        self.pa_row_1.addStretch(1)
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                label="Static Scene",
+                tooltip="Sensitivity of static scene detection",
+                options=["none", "low", "medium", "high"],
+                widget_name="pa_ss",
+                opt="pa_ss",
+            )
+        )
+        self.pa_row_1.addStretch(1)
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                label="Activity Type",
+                tooltip="Activity type detection method",
+                options=["none", "y", "yuv"],
+                widget_name="pa_activity_type",
+                opt="pa_activity_type",
+            )
+        )
+        self.pa_row_1.addStretch(1)
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                opt="pa_caq_strength",
+                widget_name="pa_caq_strength",
+                label="CAQ Strength",
+                tooltip="Strength of CAQ",
+                options=["low", "medium", "high"],
+            )
+        )
+        self.pa_row_1.addStretch(1)
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                opt="pa_initqpsc",
+                widget_name="pa_initqpsc",
+                label="SC QP",
+                tooltip="Initial qp after scene change",
+                options=[t("Auto")] + [str(i) for i in range(1, 51)],
+            )
+        )
+        self.pa_row_1.addStretch(1)
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                opt="pa_lookahead",
+                widget_name="pa_lookahead",
+                label="Lookahead",
+                tooltip="Lookahead distance",
+                options=[t("Auto")] + [str(i) for i in range(1, 200)],
+            )
+        )
+
+        self.pa_row_2.addLayout(
+            self._add_text_box(
+                opt="pa_fskip_maxqp",
+                widget_name="pa_fskip_maxqp",
+                label="FSkip Max QP",
+                tooltip="Threshold to insert skip frame on static scene",
+            )
+        )
+        self.pa_row_2.addStretch(1)
+        self.pa_row_2.addLayout(
+            self._add_check_box(
+                opt="pa_ltr",
+                widget_name="pa_ltr",
+                label="LTR",
+                tooltip="Enable long-term reference frame",
+            )
+        )
+        self.pa_row_2.addStretch(1)
+        self.pa_row_2.addLayout(
+            self._add_combo_box(
+                opt="pa_paq",
+                widget_name="pa_paq",
+                label="PAQ",
+                tooltip="Perceptual AQ mode",
+                options=["none", "caq"],
+            )
+        )
+        self.pa_row_2.addStretch(1)
+        self.pa_row_2.addLayout(
+            self._add_combo_box(
+                opt="pa_taq",
+                widget_name="pa_taq",
+                label="TAQ",
+                tooltip="Temporal AQ mode",
+                options=["Auto", "0", "1", "2"],
+            )
+        )
+        self.pa_row_2.addStretch(1)
+        self.pa_row_2.addLayout(
+            self._add_combo_box(
+                opt="pa_motion_quality",
+                widget_name="pa_motion_quality",
+                label="Motion Quality",
+                tooltip="High motion quality boost mode",
+                options=["none", "auto"],
+            )
+        )
+        self.pa_changed()
+        self.pa_area.addLayout(self.pa_row_1)
+        self.pa_area.addLayout(self.pa_row_2)
+
+    def pa_changed(self):
+        for widget in self.widgets:
+            if widget.startswith("pa_"):
+                self.widgets[widget].setEnabled(self.widgets["pre_analysis"].isChecked())
+                if self.widgets["pre_analysis"].isChecked():
+                    self.widgets[widget].show()
+                    if widget in self.labels:
+                        self.labels[widget].show()
+                else:
+                    self.widgets[widget].hide()
+                    if widget in self.labels:
+                        self.labels[widget].hide()
+        if self.widgets["pre_analysis"].isChecked():
+            self.labels["pa_row1"].show()
+            self.labels["pa_row2"].show()
+        else:
+            self.labels["pa_row1"].hide()
+            self.labels["pa_row2"].hide()
+
+
+class VAAPIPanel(SettingPanel):
     def init_rc_mode(self):
         # #   -rc_mode           <int>        E..V....... Set rate control mode (from 0 to 6) (default auto)
         # #      auto            0            E..V....... Choose mode automatically based on other parameters
@@ -739,20 +800,6 @@ class VAAPIPanel(SettingPanel):
         )
 
     def init_level(self):
-        #   -level             <int>        E..V....... Set level (general_level_idc) (from -99 to 255) (default -99)
-        #      1               30           E..V.......
-        #      2               60           E..V.......
-        #      2.1             63           E..V.......
-        #      3               90           E..V.......
-        #      3.1             93           E..V.......
-        #      4               120          E..V.......
-        #      4.1             123          E..V.......
-        #      5               150          E..V.......
-        #      5.1             153          E..V.......
-        #      5.2             156          E..V.......
-        #      6               180          E..V.......
-        #      6.1             183          E..V.......
-        #      6.2             186          E..V.......
         return self._add_combo_box(
             label="Level",
             tooltip="Set level (general_level_idc)",
