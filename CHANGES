@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 5.5.0
+
+* Adding decoder option for NVEncC and QSVEncC
+
 ## Version 5.4.1
 
 * Fixing #460 QSVEncC not listed as encoder with FastFlix 5.4.0 (thanks to zedfreak)

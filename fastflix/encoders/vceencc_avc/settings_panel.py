@@ -4,7 +4,7 @@ import logging
 from box import Box
 from PySide6 import QtCore, QtWidgets, QtGui
 
-from fastflix.encoders.common.setting_panel import SettingPanel
+from fastflix.encoders.common.setting_panel import RigayaPanel
 from fastflix.language import t
 from fastflix.models.encode import VCEEncCAVCSettings
 from fastflix.models.fastflix_app import FastFlixApp
@@ -57,7 +57,7 @@ def get_breaker():
     return breaker_line
 
 
-class VCEENCCAVC(SettingPanel):
+class VCEENCCAVC(RigayaPanel):
     profile_name = "vceencc_avc"
     hdr10plus_signal = QtCore.Signal(str)
     hdr10plus_ffmpeg_signal = QtCore.Signal(str)
@@ -242,16 +242,6 @@ class VCEENCCAVC(SettingPanel):
             min_width=60,
         )
 
-    def init_decoder(self):
-        return self._add_combo_box(
-            widget_name="decoder",
-            label="Decoder",
-            options=["Auto", "Hardware", "Software"],
-            opt="decoder",
-            tooltip="Hardware: use libavformat + hardware decoder for input\nSoftware: use avcodec + software decoder",
-            min_width=80,
-        )
-
     def init_metrics(self):
         return self._add_check_box(
             widget_name="metrics",
@@ -294,7 +284,7 @@ class VCEENCCAVC(SettingPanel):
             vbaq=self.widgets.vbaq.isChecked(),
             decoder=self.widgets.decoder.currentText(),
             profile=self.widgets.profile.currentText(),
-            device=int(self.widgets.device.currentText().split(":", 1)[0]),
+            device=int(self.widgets.device.currentText().split(":", 1)[0] or 0),
         )
 
         encode_type, q_value = self.get_mode_settings()

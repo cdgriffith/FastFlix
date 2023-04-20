@@ -36,7 +36,6 @@ def rigaya_auto_options(fastflix: FastFlix) -> str:
 
     return " ".join(
         [
-            reader_format,
             "--chromaloc auto",
             "--colorrange auto",
             "--colormatrix",

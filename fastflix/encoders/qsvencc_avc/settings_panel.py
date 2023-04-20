@@ -4,7 +4,7 @@ import logging
 from box import Box
 from PySide6 import QtCore, QtWidgets, QtGui
 
-from fastflix.encoders.common.setting_panel import SettingPanel
+from fastflix.encoders.common.setting_panel import RigayaPanel
 from fastflix.language import t
 from fastflix.models.encode import QSVEncCH264Settings
 from fastflix.models.fastflix_app import FastFlixApp
@@ -65,7 +65,7 @@ def get_breaker():
     return breaker_line
 
 
-class QSVEncH264(SettingPanel):
+class QSVEncH264(RigayaPanel):
     profile_name = "qsvencc_avc"
 
     def __init__(self, parent, main, app: FastFlixApp):
@@ -99,6 +99,8 @@ class QSVEncH264(SettingPanel):
         grid.addLayout(breaker, 4, 0, 1, 6)
 
         qp_line = QtWidgets.QHBoxLayout()
+        qp_line.addLayout(self.init_decoder())
+        qp_line.addStretch(1)
         qp_line.addLayout(self.init_min_q())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_max_q())
@@ -324,6 +326,7 @@ class QSVEncH264(SettingPanel):
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
             qp_mode=self.widgets.qp_mode.currentText(),
+            decoder=self.widgets.decoder.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

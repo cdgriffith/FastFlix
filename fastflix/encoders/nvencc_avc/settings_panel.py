@@ -4,7 +4,7 @@ import logging
 from box import Box
 from PySide6 import QtCore, QtWidgets, QtGui
 
-from fastflix.encoders.common.setting_panel import SettingPanel
+from fastflix.encoders.common.setting_panel import RigayaPanel
 from fastflix.language import t
 from fastflix.models.encode import NVEncCAVCSettings
 from fastflix.models.fastflix_app import FastFlixApp
@@ -57,7 +57,7 @@ def get_breaker():
     return breaker_line
 
 
-class NVENCCAVC(SettingPanel):
+class NVENCCAVC(RigayaPanel):
     profile_name = "nvencc_avc"
     hdr10plus_signal = QtCore.Signal(str)
     hdr10plus_ffmpeg_signal = QtCore.Signal(str)
@@ -82,6 +82,7 @@ class NVENCCAVC(SettingPanel):
         # grid.addLayout(self.init_tier(), 1, 0, 1, 2)
         grid.addLayout(self.init_multipass(), 2, 0, 1, 2)
         grid.addLayout(self.init_lookahead(), 3, 0, 1, 2)
+        # grid.addLayout(self.init_decoder(), 5, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -117,14 +118,15 @@ class NVENCCAVC(SettingPanel):
         advanced.addLayout(self.init_level())
         advanced.addStretch(1)
         advanced.addLayout(self.init_b_ref_mode())
-        advanced.addStretch(1)
-        advanced.addLayout(self.init_metrics())
         grid.addLayout(advanced, 6, 2, 1, 4)
 
-        grid.addLayout(self.init_dhdr10_info(), 7, 2, 1, 4)
+        even_more = QtWidgets.QHBoxLayout()
+        even_more.addLayout(self.init_decoder())
+        even_more.addStretch(1)
+        even_more.addLayout(self.init_metrics())
+        grid.addLayout(even_more, 7, 2, 1, 4)
 
-        self.ffmpeg_level = QtWidgets.QLabel()
-        grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
+        grid.addLayout(self.init_dhdr10_info(), 8, 2, 1, 4)
 
         grid.setRowStretch(9, 1)
 
@@ -421,6 +423,8 @@ class NVENCCAVC(SettingPanel):
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
             vbr_target=self.widgets.vbr_target.currentText() if self.widgets.vbr_target.currentIndex() > 0 else None,
             b_ref_mode=self.widgets.b_ref_mode.currentText(),
+            device=int(self.widgets.device.currentText().split(":", 1)[0] or 0),
+            decoder=self.widgets.decoder.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

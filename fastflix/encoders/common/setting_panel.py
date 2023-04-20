@@ -532,3 +532,15 @@ class SettingPanel(QtWidgets.QWidget):
                 return "qp", custom_value
             else:
                 return "qp", int(qp_text.split(" ", 1)[0])
+
+
+class RigayaPanel(SettingPanel):
+    def init_decoder(self):
+        return self._add_combo_box(
+            widget_name="decoder",
+            label="Decoder",
+            options=["Auto", "Hardware", "Software"],
+            opt="decoder",
+            tooltip="Hardware: use libavformat + hardware decoder for input\nSoftware: use avcodec + software decoder",
+            min_width=80,
+        )
