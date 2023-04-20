@@ -30,14 +30,14 @@ jobs:
       - name: Install PySide6 apt Requirements
         run: |
           sudo apt update
-          sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 libxcb-shape0-dev -y
+          sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 libxcb-shape0-dev libxcb-cursor-dev -y
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
 
       - name: Install Python Dependencies
         run: |
-          python -m pip install --upgrade pip setuptools pyinstaller --ignore-installed
+          python -m pip install --upgrade pip setuptools --ignore-installed
           pip install .
-          pip install .[test]
+          pip install .[develop]
 
       - name: Grab iso-639 lists
         run: |
@@ -88,9 +88,9 @@ jobs:
 
     - name: Install Python Dependencies
       run: |
-        python -m pip install --upgrade pip setuptools pyinstaller --ignore-installed
+        python -m pip install --upgrade pip setuptools --ignore-installed
         pip install .
-        pip install .[test]
+        pip install .[develop]
 
 
     - name: Grab iso-639 lists
@@ -113,7 +113,7 @@ jobs:
         makensis.exe FastFlix.nsi
         move FastFlix_installer.exe dist\FastFlix_${{ env.VERSION }}_installer.exe
 
-    - uses: skymatic/code-sign-action@v1
+    - uses: skymatic/code-sign-action@latest
       with:
         certificate: '${{ secrets.CODE_CERT_B64 }}'
         password: '${{ secrets.CODE_CERT_PASS }}'
