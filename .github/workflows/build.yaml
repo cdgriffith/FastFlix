@@ -113,7 +113,7 @@ jobs:
         makensis.exe FastFlix.nsi
         move FastFlix_installer.exe dist\FastFlix_${{ env.VERSION }}_installer.exe
 
-    - uses: skymatic/code-sign-action@latest
+    - uses: skymatic/code-sign-action@v1
       with:
         certificate: '${{ secrets.CODE_CERT_B64 }}'
         password: '${{ secrets.CODE_CERT_PASS }}'
