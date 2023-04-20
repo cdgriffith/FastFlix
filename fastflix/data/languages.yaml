@@ -8535,3 +8535,15 @@ Don't Select Any Audio:
   pol: Nie wybieraj żadnego dźwięku
   ukr: Не вибирайте жодного аудіо
   kor: 오디오 선택 안 함
+Adaptive Reference Frames:
+  eng: Adaptive Reference Frames
+Adaptively select list of reference frames to improve encoding quality.:
+  eng: Adaptively select list of reference frames to improve encoding quality.
+Adaptive Long-Term Reference Frames:
+  eng: Adaptive Long-Term Reference Frames
+Mark, modify, or remove LTR frames based on encoding parameters and content properties.:
+  eng: Mark, modify, or remove LTR frames based on encoding parameters and content properties.
+Adaptive CQM:
+  eng: Adaptive CQM
+Adaptively select one of implementation-defined quantization matrices for each frame, to improve subjective visual quality under certain conditions.:
+  eng: Adaptively select one of implementation-defined quantization matrices for each frame, to improve subjective visual quality under certain conditions.

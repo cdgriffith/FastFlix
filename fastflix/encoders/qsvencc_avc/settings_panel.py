@@ -4,7 +4,7 @@ import logging
 from box import Box
 from PySide6 import QtCore, QtWidgets, QtGui
 
-from fastflix.encoders.common.setting_panel import RigayaPanel
+from fastflix.encoders.common.setting_panel import QSVEncPanel
 from fastflix.language import t
 from fastflix.models.encode import QSVEncCH264Settings
 from fastflix.models.fastflix_app import FastFlixApp
@@ -65,7 +65,7 @@ def get_breaker():
     return breaker_line
 
 
-class QSVEncH264(RigayaPanel):
+class QSVEncH264(QSVEncPanel):
     profile_name = "qsvencc_avc"
 
     def __init__(self, parent, main, app: FastFlixApp):
@@ -87,6 +87,9 @@ class QSVEncH264(RigayaPanel):
         grid.addLayout(self.init_profile(), 1, 0, 1, 2)
         grid.addLayout(self.init_lookahead(), 2, 0, 1, 2)
         grid.addLayout(self.init_qp_mode(), 3, 0, 1, 2)
+        grid.addLayout(self.init_adapt_ref(), 5, 0, 1, 2)
+        grid.addLayout(self.init_adapt_ltr(), 6, 0, 1, 2)
+        grid.addLayout(self.init_adapt_cqm(), 7, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -327,6 +330,9 @@ class QSVEncH264(RigayaPanel):
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
             qp_mode=self.widgets.qp_mode.currentText(),
             decoder=self.widgets.decoder.currentText(),
+            adapt_ltr=self.widgets.adapt_ltr.isChecked(),
+            adapt_cqm=self.widgets.adapt_cqm.isChecked(),
+            adapt_ref=self.widgets.adapt_ref.isChecked(),
         )
 
         encode_type, q_value = self.get_mode_settings()

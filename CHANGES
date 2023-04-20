@@ -4,7 +4,8 @@
 
 * Adding decoder option for NVEncC and QSVEncC
 * Adding #329 Hardware VAAPI encoding support for HEVC and H264
-* Adding #351 Option to disable automatic tab switching (thanks to Wontell)
+* Adding #351 option to disable automatic tab switching (thanks to Wontell)
+* Adding #357 QSVencC adapt-ref, adapt-ltr, and adapt-qm parameters (thanks to F.O.R.A.R.T.)
 
 ## Version 5.4.1
 

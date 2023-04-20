@@ -600,6 +600,32 @@ class RigayaPanel(SettingPanel):
         )
 
 
+class QSVEncPanel(RigayaPanel):
+    def init_adapt_ref(self):
+        return self._add_check_box(
+            label="Adaptive Reference Frames",
+            tooltip="Adaptively select list of reference frames to improve encoding quality.",
+            widget_name="adapt_ref",
+            opt="adapt_ref",
+        )
+
+    def init_adapt_ltr(self):
+        return self._add_check_box(
+            label="Adaptive Long-Term Reference Frames",
+            tooltip="Mark, modify, or remove LTR frames based on encoding parameters and content properties.",
+            widget_name="adapt_ltr",
+            opt="adapt_ltr",
+        )
+
+    def init_adapt_cqm(self):
+        return self._add_check_box(
+            label="Adaptive CQM",
+            tooltip="Adaptively select one of implementation-defined quantization matrices for each frame, to improve subjective visual quality under certain conditions.",
+            widget_name="adapt_cqm",
+            opt="adapt_cqm",
+        )
+
+
 class VAAPIPanel(SettingPanel):
     # h264_vaapi AVOptions:
     #   -low_power         <boolean>    E..V....... Use low-power encoding mode (only available on some platforms; may not support all encoding features) (default false)

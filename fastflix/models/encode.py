@@ -198,6 +198,9 @@ class QSVEncCSettings(EncoderSettings):
     force_ten_bit: bool = False
     qp_mode: str = "cqp"
     decoder: str = "Auto"
+    adapt_ref: bool = False
+    adapt_cqm: bool = False
+    adapt_ltr: bool = False
 
 
 class QSVEncCAV1Settings(EncoderSettings):
@@ -220,6 +223,9 @@ class QSVEncCAV1Settings(EncoderSettings):
     force_ten_bit: bool = False
     qp_mode: str = "cqp"
     decoder: str = "Auto"
+    adapt_ref: bool = False
+    adapt_cqm: bool = False
+    adapt_ltr: bool = False
 
 
 class QSVEncCH264Settings(EncoderSettings):
@@ -242,6 +248,9 @@ class QSVEncCH264Settings(EncoderSettings):
     force_ten_bit: bool = False
     qp_mode: str = "cqp"
     decoder: str = "Auto"
+    adapt_ref: bool = False
+    adapt_cqm: bool = False
+    adapt_ltr: bool = False
 
 
 class NVEncCAVCSettings(EncoderSettings):
