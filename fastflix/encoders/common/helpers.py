@@ -65,12 +65,12 @@ def generate_ffmpeg_start(
     vsync_text = f"-{vsync_type} {vsync}" if vsync else ""
 
     if video_title:
-        video_title.replace('"', '\\"')
+        video_title = video_title.replace('"', '\\"')
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = clean_file_string(source)
     ffmpeg = clean_file_string(ffmpeg)
     if video_track_title:
-        video_track_title.replace('"', '\\"')
+        video_track_title = video_track_title.replace('"', '\\"')
     track_title = f'-metadata:s:v:0 title="{video_track_title}"'
 
     return " ".join(

@@ -9233,37 +9233,267 @@ Include AUD:
   kor: AUD 포함
 Forced:
   eng: Forced
+  deu: Erzwungene
+  fra: Forcé
+  ita: Costretto
+  spa: Forzado
+  zho: 被迫的
+  jpn: フォースド
+  rus: Принудительный
+  por: Forçado
+  swe: Tvingad
+  pol: Wymuszona
+  ukr: Змушений
+  kor: 강제
 Default:
   eng: Default
+  deu: Standard
+  fra: Défaut
+  ita: Predefinito
+  spa: Por defecto
+  zho: 默认情况下
+  jpn: デフォルト
+  rus: По умолчанию
+  por: Predefinição
+  swe: Standard
+  pol: Domyślnie
+  ukr: За замовчуванням
+  kor: 기본값
 Hearing Impaired:
   eng: Hearing Impaired
+  deu: Schwerhörig
+  fra: Malentendants
+  ita: Non udenti
+  spa: Discapacidad auditiva
+  zho: 听力障碍者
+  jpn: 聴覚障害者
+  rus: Нарушение слуха
+  por: Deficiente Auditivo
+  swe: Hörselskadade
+  pol: Niesłyszący
+  ukr: Порушення слуху
+  kor: 청각 장애
 Original:
   eng: Original
+  deu: Original
+  fra: Original
+  ita: Originale
+  spa: Original
+  zho: 原创
+  jpn: オリジナル
+  rus: Оригинал
+  por: Original
+  swe: Original
+  pol: Oryginał
+  ukr: Оригінал
+  kor: 원본
 Comment:
   eng: Comment
+  deu: Kommentar
+  fra: Commentaire
+  ita: Commento
+  spa: Comentario
+  zho: 评论
+  jpn: コメント
+  rus: Комментарий
+  por: Comentário
+  swe: Kommentar
+  pol: Komentarz
+  ukr: Коментар
+  kor: 댓글
 Lyrics:
   eng: Lyrics
+  deu: Liedtext
+  fra: Paroles
+  ita: Testi
+  spa: Letra
+  zho: 歌词
+  jpn: 歌詞
+  rus: Лирика
+  por: Letra de música
+  swe: Texter
+  pol: Teksty piosenek
+  ukr: Тексти пісень
+  kor: 가사
 Karaoke:
   eng: Karaoke
+  deu: Karaoke
+  fra: Karaoké
+  ita: Karaoke
+  spa: Karaoke
+  zho: 卡拉OK
+  jpn: カラオケ
+  rus: Караоке
+  por: Karaoke
+  swe: Karaoke
+  pol: Karaoke
+  ukr: Караоке
+  kor: 노래방
 Dub:
   eng: Dub
+  deu: Dub
+  fra: Dub
+  ita: Dub
+  spa: Dub
+  zho: 录音
+  jpn: ダブ
+  rus: Dub
+  por: Dub
+  swe: Dub
+  pol: Dub
+  ukr: Дуб
+  kor: Dub
 Set:
   eng: Set
+  deu: Satz
+  fra: Set (jeu de mots)
+  ita: Set
+  spa: Establecer
+  zho: 设置
+  jpn: セット
+  rus: Установите
+  por: Conjunto
+  swe: Ställ in
+  pol: Ustaw
+  ukr: Набір
+  kor: 설정
 default:
   eng: default
+  deu: Standard
+  fra: par défaut
+  ita: predefinito
+  spa: por defecto
+  zho: 违约
+  jpn: デフォルト
+  rus: по умолчанию
+  por: padrão
+  swe: standard
+  pol: domyślnie
+  ukr: за замовчуванням
+  kor: 기본값
 original:
   eng: original
+  deu: Original
+  fra: original
+  ita: originale
+  spa: original
+  zho: 原始的
+  jpn: オリジナル
+  rus: оригинал
+  por: original
+  swe: original
+  pol: oryginał
+  ukr: оригінал
+  kor: 원본
 forced:
   eng: forced
+  deu: gezwungen
+  fra: forcée
+  ita: forzato
+  spa: forzado
+  zho: 被迫
+  jpn: 強制的
+  rus: принудительно
+  por: forçado
+  swe: tvingad
+  pol: wymuszona
+  ukr: вимушений
+  kor: forced
 dub:
   eng: dub
+  deu: Synchronisation
+  fra: dub
+  ita: doppiare
+  spa: dub
+  zho: 配音
+  jpn: ダブ
+  rus: dub
+  por: dub
+  swe: dub
+  pol: dub
+  ukr: дубляж
+  kor: dub
 Dispositions:
   eng: Dispositions
+  deu: Verfügungen
+  fra: Dispositions
+  ita: Disposizioni
+  spa: Disposiciones
+  zho: 处置
+  jpn: ディセンションズ
+  rus: Диспозиции
+  por: Disposições
+  swe: Dispositioner
+  pol: Dyspozycje
+  ukr: Диспозиції
+  kor: 처분
 karaoke:
   eng: karaoke
+  deu: Karaoke
+  fra: karaoké
+  ita: karaoke
+  spa: karaoke
+  zho: 卡拉OK
+  jpn: カラオケ
+  rus: караоке
+  por: karaoke
+  swe: karaoke
+  pol: karaoke
+  ukr: караоке
+  kor: 노래방
 lyrics:
   eng: lyrics
+  deu: Liedtext
+  fra: paroles
+  ita: testi
+  spa: letra
+  zho: 歌词
+  jpn: 詞
+  rus: лирика
+  por: lyrics
+  swe: texter
+  pol: tekst piosenki
+  ukr: тексти пісень
+  kor: 가사
 comment:
   eng: comment
+  deu: Kommentar
+  fra: commentaire
+  ita: commento
+  spa: comentario
+  zho: 评论
+  jpn: コメント
+  rus: комментарий
+  por: comentário
+  swe: kommentar
+  pol: komentarz
+  ukr: коментар
+  kor: 댓글
 No Extra:
   eng: No Extra
+  deu: Kein Extra
+  fra: Pas de supplément
+  ita: Nessun extra
+  spa: No Extra
+  zho: 没有额外的
+  jpn: 追加なし
+  rus: Без дополнительной оплаты
+  por: Sem Extra
+  swe: Ingen extra
+  pol: Bez dodatków
+  ukr: Без додаткових витрат
+  kor: 추가 비용 없음
+Threshold to insert skip frame on static scene:
+  eng: Threshold to insert skip frame on static scene
+  deu: Schwellenwert für das Einfügen von Überspringungsbildern bei statischen Szenen
+  fra: Seuil pour l'insertion d'un saut d'image sur une scène statique
+  ita: Soglia per l'inserimento di un frame di salto su una scena statica
+  spa: Umbral para insertar fotograma de salto en escena estática
+  zho: 在静态场景中插入跳帧的阈值
+  jpn: 静的なシーンでスキップフレームを挿入するための閾値
+  rus: Порог для вставки пропуска кадра на статичной сцене
+  por: Limiar para inserir moldura de saltar em cena estática
+  swe: Tröskelvärde för att infoga en överhoppningsram i en statisk scen
+  pol: Próg do wstawienia pominiętej klatki na statycznej scenie
+  ukr: Поріг для вставки пропускного кадру на статичній сцені
+  kor: 정적 장면에 스킵 프레임을 삽입하는 임계값

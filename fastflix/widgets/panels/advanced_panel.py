@@ -360,9 +360,11 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_titles(self):
         self.video_title = QtWidgets.QLineEdit()
         self.video_title.setPlaceholderText(t("Video Title"))
+        self.video_title.textChanged.connect(self.page_update)
 
         self.video_track_title = QtWidgets.QLineEdit()
         self.video_track_title.setPlaceholderText(t("Video Track Title") + " ʘ")
+        self.video_track_title.textChanged.connect(self.page_update)
 
         self.layout.addWidget(QtWidgets.QLabel(t("Video Title")), self.last_row, 3, alignment=QtCore.Qt.AlignRight)
         self.layout.addWidget(self.video_title, self.last_row, 4)
