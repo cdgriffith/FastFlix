@@ -140,7 +140,7 @@ def init_encoders(app: FastFlixApp, **_):
     app.fastflix.encoders = {
         encoder.name: encoder
         for encoder in encoders
-        if (not getattr(encoder, "requires", None)) or encoder.requires in app.fastflix.ffmpeg_config
+        if (not getattr(encoder, "requires", None)) or encoder.requires in app.fastflix.ffmpeg_config or DEVMODE
     }
 
 
