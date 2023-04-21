@@ -6,7 +6,7 @@
 * Adding option to disable messages on encoding completion or error
 * Adding #266 multiple disposition types for subtitles (thanks to lobofoots)
 * Adding #326 support for hwaccel decoding with ffmpeg nvenc (thanks to Jim Leonard)
-* Adding #329 Hardware VAAPI encoding support for HEVC, H264 and VP9
+* Adding #329 Hardware VAAPI encoding support for HEVC, H264, VP9 and MPEG2
 * Adding #351 option to disable automatic tab switching (thanks to Wontell)
 * Adding #357 QSVencC adapt-ref, adapt-ltr, and adapt-qm parameters (thanks to F.O.R.A.R.T.)
 * Adding #368 VCEEncC Pre-Analysis options of sc, ss, activity type, caq, sc qp,lookahead, ltr, paq, taq and motion quality (thanks to Wontell)

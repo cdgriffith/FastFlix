@@ -6,7 +6,7 @@ from PySide6 import QtCore, QtWidgets
 
 from fastflix.encoders.common.setting_panel import VAAPIPanel
 from fastflix.language import t
-from fastflix.models.encode import VAAPIH264Settings
+from fastflix.models.encode import VAAPIMPEG2Settings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
 
@@ -25,8 +25,8 @@ pix_fmts = [
 ]
 
 
-class VAAPIH264(VAAPIPanel):
-    profile_name = "vaapi_h264"  # must be same as profile name
+class VAAPIMPEG2(VAAPIPanel):
+    profile_name = "vaapi_mpeg2"  # must be same as profile name
 
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
@@ -38,9 +38,7 @@ class VAAPIH264(VAAPIPanel):
         self.mode = "QP"
 
         grid.addLayout(self.init_rc_mode(), 1, 0, 1, 2)
-        # grid.addLayout(self.init_tile_rows(), 2, 0, 1, 2) # profile
-        grid.addLayout(self.init_level(), 2, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 2, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         # grid.addLayout(self.init_vaapi_device(), 5, 2, 1, 1)
@@ -52,11 +50,7 @@ class VAAPIH264(VAAPIPanel):
         more_line.addStretch(1)
         more_line.addLayout(self.init_b_depth())
         more_line.addStretch(1)
-        more_line.addLayout(self.init_async_depth())
-        more_line.addStretch(1)
         more_line.addLayout(self.init_idr_interval())
-        more_line.addStretch(1)
-        more_line.addLayout(self.init_aud())
         more_line.addStretch(1)
         more_line.addLayout(self.init_low_power())
         grid.addLayout(more_line, 5, 0, 1, 6)
@@ -78,17 +72,13 @@ class VAAPIH264(VAAPIPanel):
         self.main.build_commands()
 
     def update_video_encoder_settings(self):
-        settings = VAAPIH264Settings(
+        settings = VAAPIMPEG2Settings(
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
-            # extra_both_passes=self.widgets.extra_both_passes.isChecked(),
             vaapi_device=self.widgets.vaapi_device.text(),
             low_power=self.widgets.low_power.isChecked(),
             idr_interval=self.widgets.idr_interval.text(),
             b_depth=self.widgets.b_depth.text(),
-            async_depth=self.widgets.async_depth.currentText(),
-            aud=self.widgets.aud.isChecked(),
-            level=None if self.widgets.level.currentIndex() == 0 else self.widgets.level.currentText(),
             rc_mode=self.widgets.rc_mode.currentText(),
         )
         encode_type, q_value = self.get_mode_settings()

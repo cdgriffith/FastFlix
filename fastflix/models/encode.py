@@ -493,7 +493,7 @@ class CopySettings(EncoderSettings):
 
 
 class VAAPIH264Settings(EncoderSettings):
-    name = "vaapi_h264"
+    name = "VAAPI H264"  # must be same as encoder name in main
 
     vaapi_device: str = "/dev/dri/renderD128"
     low_power: bool = False
@@ -509,7 +509,7 @@ class VAAPIH264Settings(EncoderSettings):
 
 
 class VAAPIHEVCSettings(EncoderSettings):
-    name = "vaapi_hevc"
+    name = "VAAPI HEVC"
 
     vaapi_device: str = "/dev/dri/renderD128"
     low_power: bool = False
@@ -525,7 +525,20 @@ class VAAPIHEVCSettings(EncoderSettings):
 
 
 class VAAPIVP9Settings(EncoderSettings):
-    name = "vaapi_vp9"
+    name = "VAAPI VP9"
+
+    vaapi_device: str = "/dev/dri/renderD128"
+    low_power: bool = False
+    idr_interval: str = "0"
+    b_depth: str = "1"
+    rc_mode: str = "auto"
+    qp: Optional[Union[int, float]] = 26
+    bitrate: Optional[str] = None
+    pix_fmt: str = "vaapi"
+
+
+class VAAPIMPEG2Settings(EncoderSettings):
+    name = "VAAPI MPEG2"
 
     vaapi_device: str = "/dev/dri/renderD128"
     low_power: bool = False
@@ -564,4 +577,5 @@ setting_types = {
     "vaapi_h264": VAAPIH264Settings,
     "vaapi_hevc": VAAPIHEVCSettings,
     "vaapi_vp9": VAAPIVP9Settings,
+    "vaapi_mpeg2": VAAPIMPEG2Settings,
 }
