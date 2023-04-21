@@ -11,15 +11,32 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.encoders.common.audio import lossless, channel_list
 from fastflix.language import t
 from fastflix.models.encode import AudioTrack
-from fastflix.models.profiles import Profile, MatchType, MatchItem
+from fastflix.models.profiles import Profile
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
 from fastflix.shared import no_border, error_message, yes_no_message
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.audio_processing import apply_audio_filters
+from fastflix.widgets.windows.disposition import Disposition
 
 language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
 logger = logging.getLogger("fastflix")
+
+disposition_options = [
+    "default",
+    "dub",
+    "original",
+    "comment",
+    "lyrics",
+    "karaoke",
+    "forced",
+    "visual_impaired",
+    "clean_effects",
+    "captions",
+    "descriptions",
+    "dependent",
+    "metadata",
+]
 
 
 class Audio(QtWidgets.QTabWidget):
@@ -42,6 +59,7 @@ class Audio(QtWidgets.QTabWidget):
         channels=2,
         all_info=None,
         disable_dup=False,
+        dispositions=None,
     ):
         self.loading = True
         super(Audio, self).__init__(parent)
@@ -83,6 +101,7 @@ class Audio(QtWidgets.QTabWidget):
             downmix=QtWidgets.QComboBox(),
             convert_to=None,
             convert_bitrate=None,
+            disposition=QtWidgets.QPushButton(),
         )
 
         self.widgets.up_button.setStyleSheet(no_border)
@@ -129,6 +148,16 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.track_number.setFixedWidth(20)
 
+        self.dispositions = dispositions or {k: False for k in disposition_options}
+
+        self.disposition_widget = Disposition(self, f"Audio Track {index}", subs=True)
+        self.set_dis_button()
+        self.widgets.disposition.clicked.connect(self.disposition_widget.show)
+
+        disposition_layout = QtWidgets.QHBoxLayout()
+        disposition_layout.addWidget(QtWidgets.QLabel(t("Dispositions")))
+        disposition_layout.addWidget(self.widgets.disposition)
+
         label = QtWidgets.QLabel(f"{t('Title')}: ")
         self.widgets.title.setFixedWidth(150)
         title_layout = QtWidgets.QHBoxLayout()
@@ -142,7 +171,7 @@ class Audio(QtWidgets.QTabWidget):
         grid.addWidget(self.widgets.track_number, 0, 1)
         grid.addWidget(self.widgets.audio_info, 0, 2)
         grid.addLayout(title_layout, 0, 3)
-        # grid.addWidget(self.widgets.title, 0, 4)
+        grid.addLayout(disposition_layout, 0, 4)
         grid.addLayout(self.init_conversion(), 0, 5)
         grid.addWidget(self.widgets.downmix, 0, 6)
         grid.addWidget(self.widgets.language, 0, 7)
@@ -200,6 +229,16 @@ class Audio(QtWidgets.QTabWidget):
         layout.addWidget(self.widgets.convert_bitrate)
 
         return layout
+
+    def set_dis_button(self):
+        output = ""
+        for disposition, is_set in self.dispositions.items():
+            if is_set:
+                output += f"{t(disposition)},"
+        if output:
+            self.widgets.disposition.setText(output.rstrip(","))
+        else:
+            self.widgets.disposition.setText(t("none"))
 
     def get_conversion_bitrates(self, channels=None):
         if not channels:
@@ -322,6 +361,7 @@ class Audio(QtWidgets.QTabWidget):
             original=False,
             codecs=self.codecs,
             channels=self.channels,
+            dispositions=self.dispositions,
         )
 
         self.parent.tracks.append(new)
@@ -393,6 +433,7 @@ class AudioList(FlixList):
                 enabled=True,
                 all_info=x,
                 disable_dup=disable_dup,
+                dispositions={k: bool(v) for k, v in x.disposition.items()},
             )
             self.tracks.append(new_item)
 
@@ -557,6 +598,7 @@ class AudioList(FlixList):
                         original=track.original,
                         raw_info=track.all_info,
                         friendly_info=track.audio,
+                        dispositions=track.dispositions,
                     )
                 )
         self.app.fastflix.current_video.video_settings.audio_tracks = tracks
@@ -589,6 +631,7 @@ class AudioList(FlixList):
                 available_audio_encoders=self.available_audio_encoders,
                 enabled=True,
                 disable_dup=disable_dups,
+                dispositions=track.dispositions,
             )
 
             new_track.widgets.downmix.setCurrentText(track.downmix)

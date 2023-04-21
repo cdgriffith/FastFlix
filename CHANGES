@@ -3,12 +3,16 @@
 ## Version 5.5.0
 
 * Adding decoder option for NVEncC and QSVEncC
-* Adding #326 Support for hwaccel decoding with ffmpeg nvenc (thanks to Jim Leonard)
+* Adding option to disable messages on encoding completion or error
+* Adding #266 multiple disposition types for subtitles (thanks to lobofoots)
+* Adding #326 support for hwaccel decoding with ffmpeg nvenc (thanks to Jim Leonard)
 * Adding #329 Hardware VAAPI encoding support for HEVC, H264 and VP9
 * Adding #351 option to disable automatic tab switching (thanks to Wontell)
 * Adding #357 QSVencC adapt-ref, adapt-ltr, and adapt-qm parameters (thanks to F.O.R.A.R.T.)
 * Adding #368 VCEEncC Pre-Analysis options of sc, ss, activity type, caq, sc qp,lookahead, ltr, paq, taq and motion quality (thanks to Wontell)
+* Adding #410 dispositions for audio tracks (thanks to Don Gafford)
 * Fixing videotoolbox setting panels not having custom_q
+* Fixing end of run command ran after message box was closed instead of before (thanks to sn6op)
 
 ## Version 5.4.1
 

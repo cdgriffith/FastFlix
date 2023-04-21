@@ -110,6 +110,15 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
                 f'--audio-metadata {audio_id}?handler="{track.title}" '
             )
 
+        added = ""
+        for disposition, is_set in track.dispositions.items():
+            if is_set:
+                added += f"{disposition},"
+        if added:
+            command_list.append(f"--audio-disposition {audio_id}?{added.rstrip(',')}")
+        else:
+            command_list.append(f"--audio-disposition {audio_id}?unset")
+
     return f" --audio-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
 
 
@@ -126,10 +135,15 @@ def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video
             command_list.append(f"--vpp-subburn track={sub_id}{scale}")
         else:
             copies.append(str(sub_id))
-            if track.disposition:
-                command_list.append(f"--sub-disposition {sub_id}?{track.disposition}")
+            added = ""
+            for disposition, is_set in track.dispositions.items():
+                if is_set:
+                    added += f"{disposition},"
+            if added:
+                command_list.append(f"--sub-disposition {sub_id}?{added.rstrip(',')}")
             else:
                 command_list.append(f"--sub-disposition {sub_id}?unset")
+
             command_list.append(f"--sub-metadata  {sub_id}?language='{track.language}'")
 
     commands = f" --sub-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"

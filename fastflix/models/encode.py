@@ -22,6 +22,7 @@ class AudioTrack(BaseModel):
     channels: int = 2
     friendly_info: str = ""
     raw_info: Optional[Union[dict, Box]] = None
+    dispositions: dict = Field(default_factory=dict)
 
 
 class SubtitleTrack(BaseModel):
@@ -31,6 +32,7 @@ class SubtitleTrack(BaseModel):
     burn_in: bool = False
     language: str = ""
     subtitle_type: str = ""
+    dispositions: dict = Field(default_factory=dict)
 
 
 class AttachmentTrack(BaseModel):

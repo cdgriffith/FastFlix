@@ -161,6 +161,7 @@ class Config(BaseModel):
     nvencc_devices: dict = Field(default_factory=dict)
 
     sticky_tabs: bool = False
+    disable_complete_message: bool = False
 
     def encoder_opt(self, profile_name, profile_option_name):
         encoder_settings = getattr(self.profiles[self.selected_profile], profile_name)

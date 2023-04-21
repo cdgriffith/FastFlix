@@ -9231,3 +9231,39 @@ Include AUD:
   pol: Zawierać AUD
   ukr: Включає AUD
   kor: AUD 포함
+Forced:
+  eng: Forced
+Default:
+  eng: Default
+Hearing Impaired:
+  eng: Hearing Impaired
+Original:
+  eng: Original
+Comment:
+  eng: Comment
+Lyrics:
+  eng: Lyrics
+Karaoke:
+  eng: Karaoke
+Dub:
+  eng: Dub
+Set:
+  eng: Set
+default:
+  eng: default
+original:
+  eng: original
+forced:
+  eng: forced
+dub:
+  eng: dub
+Dispositions:
+  eng: Dispositions
+karaoke:
+  eng: karaoke
+lyrics:
+  eng: lyrics
+comment:
+  eng: comment
+No Extra:
+  eng: No Extra

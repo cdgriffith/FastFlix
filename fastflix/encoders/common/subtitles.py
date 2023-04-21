@@ -20,10 +20,14 @@ def build_subtitle(
         else:
             outdex = track.outdex - (1 if burn_in_track else 0)
             command_list.append(f"-map {subtitle_file_index}:{track.index} -c:{outdex} copy ")
-            if track.disposition:
-                command_list.append(f"-disposition:{outdex} {track.disposition}")
-                if track.disposition in ("default", "forced"):
-                    subs_enabled = True
+            added = ""
+            for disposition, is_set in track.dispositions.items():
+                if is_set:
+                    added += f"{disposition}+"
+                    if disposition in ("default", "forced"):
+                        subs_enabled = True
+            if added:
+                command_list.append(f"-disposition:{outdex} {added.rstrip('+')}")
             else:
                 command_list.append(f"-disposition:{outdex} 0")
             command_list.append(f"-metadata:s:{outdex} language='{track.language}'")

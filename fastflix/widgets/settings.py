@@ -113,6 +113,10 @@ class Settings(QtWidgets.QWidget):
         elif self.app.fastflix.config.disable_version_check:
             self.disable_version_check.setChecked(True)
 
+        self.disable_end_message = QtWidgets.QCheckBox(t("Disable completion and error messages"))
+        if self.app.fastflix.config.disable_complete_message:
+            self.disable_end_message.setChecked(True)
+
         self.logger_level_widget = QtWidgets.QComboBox()
         self.logger_level_widget.addItems(["Debug", "Info", "Warning", "Error"])
         self.logger_level_widget.setCurrentIndex(int(self.app.fastflix.config.logging_level // 10) - 1)
@@ -256,6 +260,7 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.ui_scale_widget, 20, 1, 1, 1)
 
         layout.addWidget(self.clean_old_logs_button, 21, 0, 1, 3)
+        layout.addWidget(self.disable_end_message, 22, 0, 1, 3)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
@@ -338,6 +343,7 @@ class Settings(QtWidgets.QWidget):
 
         self.app.fastflix.config.clean_old_logs = self.clean_old_logs_button.isChecked()
         self.app.fastflix.config.sticky_tabs = self.sticky_tabs.isChecked()
+        self.app.fastflix.config.disable_complete_message = self.disable_end_message.isChecked()
 
         self.main.config_update()
         self.app.fastflix.config.save()
