@@ -22,18 +22,10 @@ audio_disposition_options = [
     "dub",
     "original",
     "comment",
-    "lyrics",
-    "karaoke",
     "visual_impaired",
-    "clean_effects",
-    "captions",
-    "descriptions",
-    "dependent",
-    "metadata",
 ]
 
 subtitle_disposition_options = [
-    "none",
     "dub",
     "original",
     "comment",

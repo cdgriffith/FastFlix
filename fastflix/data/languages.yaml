@@ -9358,7 +9358,7 @@ Set:
   ukr: Набір
   kor: 설정
 default:
-  eng: default
+  eng: Default
   deu: Standard
   fra: par défaut
   ita: predefinito
@@ -9372,7 +9372,7 @@ default:
   ukr: за замовчуванням
   kor: 기본값
 original:
-  eng: original
+  eng: Original
   deu: Original
   fra: original
   ita: originale
@@ -9386,7 +9386,7 @@ original:
   ukr: оригінал
   kor: 원본
 forced:
-  eng: forced
+  eng: Forced
   deu: gezwungen
   fra: forcée
   ita: forzato
@@ -9400,7 +9400,7 @@ forced:
   ukr: вимушений
   kor: forced
 dub:
-  eng: dub
+  eng: Dub
   deu: Synchronisation
   fra: dub
   ita: doppiare
@@ -9428,7 +9428,7 @@ Dispositions:
   ukr: Диспозиції
   kor: 처분
 karaoke:
-  eng: karaoke
+  eng: Karaoke
   deu: Karaoke
   fra: karaoké
   ita: karaoke
@@ -9442,7 +9442,7 @@ karaoke:
   ukr: караоке
   kor: 노래방
 lyrics:
-  eng: lyrics
+  eng: Lyrics
   deu: Liedtext
   fra: paroles
   ita: testi
@@ -9456,7 +9456,7 @@ lyrics:
   ukr: тексти пісень
   kor: 가사
 comment:
-  eng: comment
+  eng: Comment
   deu: Kommentar
   fra: commentaire
   ita: commento
@@ -9497,3 +9497,31 @@ Threshold to insert skip frame on static scene:
   pol: Próg do wstawienia pominiętej klatki na statycznej scenie
   ukr: Поріг для вставки пропускного кадру на статичній сцені
   kor: 정적 장면에 스킵 프레임을 삽입하는 임계값
+hearing_impaired:
+  eng: Hearing Impaired
+  deu: Schwerhörig
+  fra: Malentendants
+  ita: Non udenti
+  spa: Discapacidad auditiva
+  zho: 听力障碍者
+  jpn: 聴覚障害者
+  rus: Нарушение слуха
+  por: Deficiente Auditivo
+  swe: Hörselskadade
+  pol: Niesłyszący
+  ukr: Порушення слуху
+  kor: 청각 장애
+visual_impaired:
+  eng: Visual Impaired
+  deu: Sehbehindert
+  fra: Malvoyants
+  ita: Improvvisazione visiva
+  spa: Discapacidad visual
+  zho: 视觉障碍
+  jpn: 視覚障がい者
+  rus: Слабовидящие
+  por: Deficiente Visual
+  swe: Synskadade
+  pol: Niedowidzący
+  ukr: Порушення зору
+  kor: 시각 장애인
