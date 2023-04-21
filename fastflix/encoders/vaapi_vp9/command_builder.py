@@ -4,36 +4,29 @@
 import logging
 
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null, generate_filters
-from fastflix.models.encode import VAAPIHEVCSettings
+from fastflix.models.encode import VAAPIVP9Settings
 from fastflix.models.fastflix import FastFlix
 
 logger = logging.getLogger("fastflix")
 
 
 def build(fastflix: FastFlix):
-    settings: VAAPIHEVCSettings = fastflix.current_video.video_settings.video_encoder_settings
+    settings: VAAPIVP9Settings = fastflix.current_video.video_settings.video_encoder_settings
     start_extra = "-hwaccel vaapi " f"-vaapi_device {settings.vaapi_device} " "-hwaccel_output_format vaapi "
-    beginning, ending = generate_all(fastflix, "hevc_vaapi", start_extra=start_extra, hw_upload=True)
+    beginning, ending = generate_all(fastflix, "vp9_vaapi", start_extra=start_extra, hw_upload=True)
 
     beginning += (
         f"-vaapi_device {settings.vaapi_device} "
         "-hwaccel vaapi "
         "-hwaccel_output_format vaapi "
         f"-rc_mode {settings.rc_mode} "
-        f"-async_depth {settings.async_depth} "
         f"-b_depth {settings.b_depth} "
         f"-idr_interval {settings.idr_interval} "
         f"{generate_color_details(fastflix)} "
     )
 
-    if settings.aud:
-        beginning += f"-aud 1 "
-
     if settings.low_power:
         beginning += "-low-power 1 "
-
-    if settings.level:
-        beginning += f"-level {settings.level} "
 
     # ffmpeg -init_hw_device vaapi=foo:/dev/dri/renderD128  -hwaccel_device foo -i input.mp4 -filter_hw_device foo -vf 'format=nv12|vaapi,hwupload'
 

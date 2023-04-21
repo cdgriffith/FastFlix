@@ -31,6 +31,7 @@ from fastflix.models.encode import (
     VVCSettings,
     VAAPIH264Settings,
     VAAPIHEVCSettings,
+    VAAPIVP9Settings,
 )
 
 
@@ -173,3 +174,4 @@ class Profile(BaseModel):
     h264_videotoolbox: Optional[H264VideoToolboxSettings] = None
     vaapi_h264: Optional[VAAPIH264Settings] = None
     vaapi_hevc: Optional[VAAPIHEVCSettings] = None
+    vaapi_vp9: Optional[VAAPIVP9Settings] = None

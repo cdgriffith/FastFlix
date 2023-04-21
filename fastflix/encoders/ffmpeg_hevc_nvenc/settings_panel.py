@@ -96,6 +96,8 @@ class NVENC(SettingPanel):
         grid.addLayout(self.init_rc(), 6, 0, 1, 2)
         grid.addLayout(self.init_spatial_aq(), 7, 0, 1, 2)
 
+        grid.addLayout(self.init_hw_accel(), 4, 2, 1, 1)
+
         a = QtWidgets.QHBoxLayout()
         a.addLayout(self.init_rc_lookahead())
         a.addStretch(1)
@@ -182,6 +184,14 @@ class NVENC(SettingPanel):
                 "vbr_hq",
             ],
             opt="rc",
+        )
+
+    def init_hw_accel(self):
+        return self._add_check_box(
+            opt="hw_accel",
+            label="Hardware Decoding",
+            tooltip="Use hardware decoding",
+            widget_name="hw_accel",
         )
 
     def init_spatial_aq(self):
@@ -276,6 +286,7 @@ class NVENC(SettingPanel):
             gpu=int(self.widgets.gpu.currentText() or -1) if self.widgets.gpu.currentIndex() != 0 else -1,
             b_ref_mode=self.widgets.b_ref_mode.currentText(),
             tier=self.widgets.tier.currentText(),
+            hw_accel=self.widgets.hw_accel.isChecked(),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.qp = q_value if encode_type == "qp" else None

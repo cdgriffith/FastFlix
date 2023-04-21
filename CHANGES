@@ -4,7 +4,7 @@
 
 * Adding decoder option for NVEncC and QSVEncC
 * Adding #326 Support for hwaccel decoding with ffmpeg nvenc (thanks to Jim Leonard)
-* Adding #329 Hardware VAAPI encoding support for HEVC and H264
+* Adding #329 Hardware VAAPI encoding support for HEVC, H264 and VP9
 * Adding #351 option to disable automatic tab switching (thanks to Wontell)
 * Adding #357 QSVencC adapt-ref, adapt-ltr, and adapt-qm parameters (thanks to F.O.R.A.R.T.)
 * Adding #368 VCEEncC Pre-Analysis options of sc, ss, activity type, caq, sc qp,lookahead, ltr, paq, taq and motion quality (thanks to Wontell)

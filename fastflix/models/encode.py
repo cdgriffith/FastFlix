@@ -110,6 +110,7 @@ class FFmpegNVENCSettings(EncoderSettings):
     level: Optional[str] = None
     gpu: int = -1
     b_ref_mode: str = "disabled"
+    hw_accel: bool = False
 
 
 class NVEncCSettings(EncoderSettings):
@@ -519,6 +520,21 @@ class VAAPIHEVCSettings(EncoderSettings):
     bitrate: Optional[str] = None
 
 
+class VAAPIVP9Settings(EncoderSettings):
+    name = "vaapi_vp9"
+
+    vaapi_device: str = "/dev/dri/renderD128"
+    low_power: bool = False
+    idr_interval: str = "0"
+    b_depth: str = "1"
+    async_depth: str = "2"
+    aud: bool = False
+    level: Optional[str] = "auto"
+    rc_mode: str = "auto"
+    qp: Optional[Union[int, float]] = 26
+    bitrate: Optional[str] = None
+
+
 setting_types = {
     "x265": x265Settings,
     "x264": x264Settings,
@@ -545,4 +561,5 @@ setting_types = {
     "vvc": VVCSettings,
     "vaapi_h264": VAAPIH264Settings,
     "vaapi_hevc": VAAPIHEVCSettings,
+    "vaapi_vp9": VAAPIVP9Settings,
 }

@@ -6,7 +6,7 @@ from PySide6 import QtCore, QtWidgets
 
 from fastflix.encoders.common.setting_panel import VAAPIPanel
 from fastflix.language import t
-from fastflix.models.encode import VAAPIHEVCSettings
+from fastflix.models.encode import VAAPIVP9Settings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
 
@@ -25,8 +25,8 @@ pix_fmts = [
 ]
 
 
-class VAAPIHEVC(VAAPIPanel):
-    profile_name = "vaapi_hevc"  # must be same as profile name
+class VAAPIVP9(VAAPIPanel):
+    profile_name = "vaapi_vp9"  # must be same as profile name
 
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
@@ -38,10 +38,8 @@ class VAAPIHEVC(VAAPIPanel):
         self.mode = "QP"
 
         grid.addLayout(self.init_rc_mode(), 1, 0, 1, 2)
-        # grid.addLayout(self.init_tile_rows(), 2, 0, 1, 2) # profile
-        grid.addLayout(self.init_level(), 2, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 2, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 3, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         # grid.addLayout(self.init_vaapi_device(), 5, 2, 1, 1)
@@ -53,11 +51,7 @@ class VAAPIHEVC(VAAPIPanel):
         more_line.addStretch(1)
         more_line.addLayout(self.init_b_depth())
         more_line.addStretch(1)
-        more_line.addLayout(self.init_async_depth())
-        more_line.addStretch(1)
         more_line.addLayout(self.init_idr_interval())
-        more_line.addStretch(1)
-        more_line.addLayout(self.init_aud())
         more_line.addStretch(1)
         more_line.addLayout(self.init_low_power())
         grid.addLayout(more_line, 5, 0, 1, 6)
@@ -79,7 +73,7 @@ class VAAPIHEVC(VAAPIPanel):
         self.main.build_commands()
 
     def update_video_encoder_settings(self):
-        settings = VAAPIHEVCSettings(
+        settings = VAAPIVP9Settings(
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
             # extra_both_passes=self.widgets.extra_both_passes.isChecked(),
