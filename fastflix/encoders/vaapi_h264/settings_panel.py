@@ -26,7 +26,7 @@ pix_fmts = [
 
 
 class VAAPIH264(VAAPIPanel):
-    profile_name = "vaapi_h264"  # must be same as profile name
+    profile_name = "VAAPI H264"
 
     def __init__(self, parent, main, app: FastFlixApp):
         super().__init__(parent, main, app)
@@ -41,7 +41,6 @@ class VAAPIH264(VAAPIPanel):
         # grid.addLayout(self.init_tile_rows(), 2, 0, 1, 2) # profile
         grid.addLayout(self.init_level(), 2, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         # grid.addLayout(self.init_vaapi_device(), 5, 2, 1, 1)
@@ -83,7 +82,6 @@ class VAAPIH264(VAAPIPanel):
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
             # extra_both_passes=self.widgets.extra_both_passes.isChecked(),
-            pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             vaapi_device=self.widgets.vaapi_device.text(),
             low_power=self.widgets.low_power.isChecked(),
             idr_interval=self.widgets.idr_interval.text(),

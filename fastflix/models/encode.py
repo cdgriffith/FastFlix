@@ -505,6 +505,7 @@ class VAAPIH264Settings(EncoderSettings):
     rc_mode: str = "auto"
     qp: Optional[Union[int, float]] = 26
     bitrate: Optional[str] = None
+    pix_fmt: str = "vaapi"
 
 
 class VAAPIHEVCSettings(EncoderSettings):
@@ -520,6 +521,7 @@ class VAAPIHEVCSettings(EncoderSettings):
     rc_mode: str = "auto"
     qp: Optional[Union[int, float]] = 26
     bitrate: Optional[str] = None
+    pix_fmt: str = "vaapi"
 
 
 class VAAPIVP9Settings(EncoderSettings):
@@ -529,12 +531,10 @@ class VAAPIVP9Settings(EncoderSettings):
     low_power: bool = False
     idr_interval: str = "0"
     b_depth: str = "1"
-    async_depth: str = "2"
-    aud: bool = False
-    level: Optional[str] = "auto"
     rc_mode: str = "auto"
     qp: Optional[Union[int, float]] = 26
     bitrate: Optional[str] = None
+    pix_fmt: str = "vaapi"
 
 
 setting_types = {

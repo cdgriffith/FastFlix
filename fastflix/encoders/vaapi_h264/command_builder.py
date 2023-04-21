@@ -14,7 +14,7 @@ logger = logging.getLogger("fastflix")
 
 def build(fastflix: FastFlix):
     settings: VAAPIH264Settings = fastflix.current_video.video_settings.video_encoder_settings
-    start_extra = "-hwaccel vaapi " f"-vaapi_device {settings.vaapi_device} " "-hwaccel_output_format vaapi "
+    start_extra = f"-init_hw_device vaapi=hwdev:{settings.vaapi_device} -hwaccel vaapi -hwaccel_device hwdev -hwaccel_output_format vaapi "
     beginning, ending = generate_all(fastflix, "h264_vaapi", start_extra=start_extra, hw_upload=True)
 
     beginning += (
@@ -23,6 +23,7 @@ def build(fastflix: FastFlix):
         f"-b_depth {settings.b_depth} "
         f"-idr_interval {settings.idr_interval} "
         f"{generate_color_details(fastflix)} "
+        "-filter_hw_device hwdev "
     )
 
     if settings.aud:

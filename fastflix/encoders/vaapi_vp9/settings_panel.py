@@ -39,7 +39,6 @@ class VAAPIVP9(VAAPIPanel):
 
         grid.addLayout(self.init_rc_mode(), 1, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 2, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 3, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         # grid.addLayout(self.init_vaapi_device(), 5, 2, 1, 1)
@@ -76,15 +75,10 @@ class VAAPIVP9(VAAPIPanel):
         settings = VAAPIVP9Settings(
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             extra=self.ffmpeg_extras,
-            # extra_both_passes=self.widgets.extra_both_passes.isChecked(),
-            pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             vaapi_device=self.widgets.vaapi_device.text(),
             low_power=self.widgets.low_power.isChecked(),
             idr_interval=self.widgets.idr_interval.text(),
             b_depth=self.widgets.b_depth.text(),
-            async_depth=self.widgets.async_depth.currentText(),
-            aud=self.widgets.aud.isChecked(),
-            level=None if self.widgets.level.currentIndex() == 0 else self.widgets.level.currentText(),
             rc_mode=self.widgets.rc_mode.currentText(),
         )
         encode_type, q_value = self.get_mode_settings()
