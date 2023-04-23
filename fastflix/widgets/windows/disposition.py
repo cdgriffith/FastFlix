@@ -88,8 +88,7 @@ class Disposition(QtWidgets.QWidget):
         self.parent.dispositions["forced"] = self.forced.isChecked()
         self.parent.dispositions["default"] = self.default.isChecked()
         for dis in self.widgets:
-            if self.widgets[dis].isChecked():
-                self.parent.dispositions[dis] = True
+            self.parent.dispositions[dis] = self.widgets[dis].isChecked()
         self.parent.set_dis_button()
         self.parent.page_update()
         self.hide()
