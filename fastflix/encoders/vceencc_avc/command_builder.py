@@ -68,6 +68,15 @@ def build(fastflix: FastFlix):
 
     source_fps = f"--fps {video.video_settings.source_fps}" if video.video_settings.source_fps else ""
 
+    output_depth = settings.output_depth
+    if not settings.output_depth:
+        output_depth = (
+            "10"
+            if fastflix.current_video.current_video_stream.bit_depth > 8
+            and not fastflix.current_video.video_settings.remove_hdr
+            else "8"
+        )
+
     command = [
         f'"{clean_file_string(fastflix.config.vceencc)}"',
         rigaya_avformat_reader(fastflix),
@@ -103,6 +112,8 @@ def build(fastflix: FastFlix):
         profile_opt,
         "--level",
         (settings.level or "auto"),
+        "--output-depth",
+        output_depth,
         rigaya_auto_options(fastflix),
         "--motion-est",
         settings.mv_precision,

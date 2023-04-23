@@ -641,8 +641,8 @@ class VCEPanel(RigayaPanel):
         self.pa_row_2 = QtWidgets.QHBoxLayout()
         self.pa_area = QtWidgets.QVBoxLayout()
 
-        self.labels["pa_row1"] = QtWidgets.QLabel("       Pre Analysis  ")
-        self.labels["pa_row2"] = QtWidgets.QLabel("       Options       ")
+        self.labels["pa_row1"] = QtWidgets.QLabel(f"       {t('Pre Analysis')}")
+        self.labels["pa_row2"] = QtWidgets.QLabel(f"       {t('8-Bit Only')}")
 
         self.pa_row_1.addWidget(self.labels["pa_row1"])
         self.pa_row_2.addWidget(self.labels["pa_row2"])
@@ -779,6 +779,15 @@ class VCEPanel(RigayaPanel):
         else:
             self.labels["pa_row1"].hide()
             self.labels["pa_row2"].hide()
+
+    def init_output_depth(self):
+        return self._add_combo_box(
+            label="Output Depth",
+            widget_name="output_depth",
+            tooltip="Output Depth",
+            options=[t("Auto"), "8", "10"],
+            opt="output_depth",
+        )
 
 
 class VAAPIPanel(SettingPanel):

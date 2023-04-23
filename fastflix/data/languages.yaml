@@ -9539,3 +9539,31 @@ Disable completion and error messages:
   pol: Wyłącz komunikaty o ukończeniu i błędach
   ukr: Вимкнути повідомлення про завершення та помилки
   kor: 완료 및 오류 메시지 비활성화
+Output Depth:
+  eng: Output Depth
+  deu: Ausgabetiefe
+  fra: Profondeur de sortie
+  ita: Profondità di uscita
+  spa: Profundidad de salida
+  zho: 输出深度
+  jpn: 出力深度
+  rus: Глубина вывода
+  por: Profundidade de saída
+  swe: Utdata djup
+  pol: Głębokość wyjściowa
+  ukr: Глибина виводу
+  kor: 출력 깊이
+8-Bit Only:
+  eng: 8-Bit Only
+  deu: Nur 8-Bit
+  fra: 8 bits seulement
+  ita: Solo 8 bit
+  spa: Solo 8 bits
+  zho: 仅限8位
+  jpn: 8ビットのみ
+  rus: Только 8 бит
+  por: Apenas 8 bits
+  swe: Endast 8 bitar
+  pol: Tylko 8 bitów
+  ukr: Тільки 8 біт
+  kor: 8 비트 만

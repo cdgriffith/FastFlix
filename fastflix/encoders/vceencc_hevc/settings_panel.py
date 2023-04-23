@@ -80,7 +80,8 @@ class VCEENCC(VCEPanel):
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_tier(), 1, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
-        grid.addLayout(self.init_pre(), 3, 0, 1, 2)
+        grid.addLayout(self.init_output_depth(), 3, 0, 1, 2)
+        grid.addLayout(self.init_pre(), 4, 0, 1, 2)
         grid.addLayout(self.init_devices(), 9, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
@@ -91,7 +92,7 @@ class VCEENCC(VCEPanel):
         breaker.addWidget(breaker_label, alignment=QtCore.Qt.AlignHCenter)
         breaker.addWidget(get_breaker(), stretch=1)
 
-        grid.addLayout(breaker, 4, 0, 1, 6)
+        grid.addLayout(breaker, 5, 0, 1, 6)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_min_q())
@@ -322,6 +323,9 @@ class VCEENCC(VCEPanel):
             pa_paq=self.widgets.pa_paq.currentText(),
             pa_taq=None if self.widgets.pa_taq.currentIndex() == 0 else self.widgets.pa_taq.currentText(),
             pa_motion_quality=self.widgets.pa_motion_quality.currentText(),
+            output_depth=None
+            if self.widgets.output_depth.currentIndex() == 0
+            else self.widgets.output_depth.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

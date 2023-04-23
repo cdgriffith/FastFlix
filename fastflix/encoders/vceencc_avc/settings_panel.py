@@ -79,8 +79,9 @@ class VCEENCCAVC(VCEPanel):
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_profile(), 1, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
-        grid.addLayout(self.init_pre(), 3, 0, 1, 2)
-        grid.addLayout(self.init_devices(), 6, 0, 1, 2)
+        grid.addLayout(self.init_output_depth(), 3, 0, 1, 2)
+        grid.addLayout(self.init_pre(), 4, 0, 1, 2)
+        grid.addLayout(self.init_devices(), 10, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -90,7 +91,7 @@ class VCEENCCAVC(VCEPanel):
         breaker.addWidget(breaker_label, alignment=QtCore.Qt.AlignHCenter)
         breaker.addWidget(get_breaker(), stretch=1)
 
-        grid.addLayout(breaker, 4, 0, 1, 6)
+        grid.addLayout(breaker, 5, 0, 1, 6)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_min_q())
@@ -106,13 +107,10 @@ class VCEENCCAVC(VCEPanel):
         qp_line.addLayout(self.init_decoder())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_metrics())
-        grid.addLayout(qp_line, 5, 0, 1, 6)
+        grid.addLayout(qp_line, 6, 0, 1, 6)
 
         self.init_pa_row()
-        grid.addLayout(self.pa_area, 7, 0, 2, 6)
-
-        self.ffmpeg_level = QtWidgets.QLabel()
-        grid.addWidget(self.ffmpeg_level, 9, 2, 1, 4)
+        grid.addLayout(self.pa_area, 8, 0, 2, 6)
 
         grid.setRowStretch(11, 1)
 
@@ -303,6 +301,9 @@ class VCEENCCAVC(VCEPanel):
             pa_paq=self.widgets.pa_paq.currentText(),
             pa_taq=None if self.widgets.pa_taq.currentIndex() == 0 else self.widgets.pa_taq.currentText(),
             pa_motion_quality=self.widgets.pa_motion_quality.currentText(),
+            output_depth=None
+            if self.widgets.output_depth.currentIndex() == 0
+            else self.widgets.output_depth.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()
