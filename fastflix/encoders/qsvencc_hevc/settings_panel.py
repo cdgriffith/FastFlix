@@ -4,7 +4,7 @@ import logging
 from box import Box
 from PySide6 import QtCore, QtWidgets, QtGui
 
-from fastflix.encoders.common.setting_panel import SettingPanel
+from fastflix.encoders.common.setting_panel import QSVEncPanel
 from fastflix.language import t
 from fastflix.models.encode import QSVEncCSettings
 from fastflix.models.fastflix_app import FastFlixApp
@@ -65,7 +65,7 @@ def get_breaker():
     return breaker_line
 
 
-class QSVEnc(SettingPanel):
+class QSVEnc(QSVEncPanel):
     profile_name = "qsvencc_hevc"
     hdr10plus_signal = QtCore.Signal(str)
     hdr10plus_ffmpeg_signal = QtCore.Signal(str)
@@ -88,6 +88,9 @@ class QSVEnc(SettingPanel):
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_qp_mode(), 2, 0, 1, 2)
         grid.addLayout(self.init_lookahead(), 1, 0, 1, 2)
+        grid.addLayout(self.init_adapt_ref(), 5, 0, 1, 2)
+        grid.addLayout(self.init_adapt_ltr(), 6, 0, 1, 2)
+        grid.addLayout(self.init_adapt_cqm(), 7, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -100,6 +103,8 @@ class QSVEnc(SettingPanel):
         grid.addLayout(breaker, 4, 0, 1, 6)
 
         qp_line = QtWidgets.QHBoxLayout()
+        qp_line.addLayout(self.init_decoder())
+        qp_line.addStretch(1)
         qp_line.addLayout(self.init_min_q())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_max_q())
@@ -347,6 +352,10 @@ class QSVEnc(SettingPanel):
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
             qp_mode=self.widgets.qp_mode.currentText(),
+            decoder=self.widgets.decoder.currentText(),
+            adapt_ltr=self.widgets.adapt_ltr.isChecked(),
+            adapt_cqm=self.widgets.adapt_cqm.isChecked(),
+            adapt_ref=self.widgets.adapt_ref.isChecked(),
         )
 
         encode_type, q_value = self.get_mode_settings()

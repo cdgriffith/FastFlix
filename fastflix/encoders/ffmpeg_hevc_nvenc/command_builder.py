@@ -10,7 +10,7 @@ from fastflix.models.fastflix import FastFlix
 def build(fastflix: FastFlix):
     settings: FFmpegNVENCSettings = fastflix.current_video.video_settings.video_encoder_settings
 
-    beginning, ending = generate_all(fastflix, "hevc_nvenc")
+    beginning, ending = generate_all(fastflix, "hevc_nvenc", start_extra="-hwaccel auto" if settings.hw_accel else "")
 
     beginning += f'{f"-tune:v {settings.tune}" if settings.tune else ""} {generate_color_details(fastflix)} -spatial_aq:v {settings.spatial_aq} -tier:v {settings.tier} -rc-lookahead:v {settings.rc_lookahead} -gpu {settings.gpu} -b_ref_mode {settings.b_ref_mode} '
 

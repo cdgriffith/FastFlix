@@ -47,6 +47,7 @@ def generate_ffmpeg_start(
     concat: bool = False,
     enable_opencl: bool = False,
     remove_hdr: bool = True,
+    start_extra: str = "",
     **_,
 ) -> str:
     time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
@@ -64,17 +65,19 @@ def generate_ffmpeg_start(
     vsync_text = f"-{vsync_type} {vsync}" if vsync else ""
 
     if video_title:
-        video_title.replace('"', '\\"')
+        video_title = video_title.replace('"', '\\"')
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = clean_file_string(source)
     ffmpeg = clean_file_string(ffmpeg)
     if video_track_title:
-        video_track_title.replace('"', '\\"')
+        video_track_title = video_track_title.replace('"', '\\"')
     track_title = f'-metadata:s:v:0 title="{video_track_title}"'
 
     return " ".join(
         [
             f'"{ffmpeg}"',
+            start_extra,
+            ("-init_hw_device opencl=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
             "-y",
             time_one,
             incoming_fps,
@@ -90,7 +93,6 @@ def generate_ffmpeg_start(
             f"-pix_fmt {pix_fmt}",
             f"{f'-maxrate:v {maxrate}k' if maxrate else ''}",
             f"{f'-bufsize:v {bufsize}k' if bufsize else ''}",
-            ("-init_hw_device opencl=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
             f"{track_title if video_track_title else ''}",
             " ",  # Leave space after commands
         ]
@@ -134,6 +136,7 @@ def generate_filters(
     scale=None,
     scale_filter="lanczos",
     remove_hdr=False,
+    vaapi: bool = False,
     rotate=0,
     vertical_flip=None,
     horizontal_flip=None,
@@ -162,7 +165,8 @@ def generate_filters(
     if crop:
         filter_list.append(f"crop={crop['width']}:{crop['height']}:{crop['left']}:{crop['top']}")
     if scale:
-        filter_list.append(f"scale={scale}:flags={scale_filter}")
+        if not vaapi:
+            filter_list.append(f"scale={scale}:flags={scale_filter}")
     if rotate:
         if rotate == 1:
             filter_list.append(f"transpose=1")
@@ -180,15 +184,6 @@ def generate_filters(
         filter_list.append(f"deblock=filter={deblock}:block={deblock_size}")
     if denoise:
         filter_list.append(denoise)
-    if remove_hdr:
-        if enable_opencl:
-            filter_list.append(
-                f"format=p010,hwupload,tonemap_opencl=tonemap={tone_map}:desat=0:r=tv:p=bt709:t=bt709:m=bt709:format=nv12,hwdownload,format=nv12"
-            )
-        else:
-            filter_list.append(
-                f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
-            )
 
     eq_filters = []
     if brightness:
@@ -200,6 +195,23 @@ def generate_filters(
     if eq_filters:
         eq_filters.insert(0, "eq=eval=frame")
         filter_list.append(":".join(eq_filters))
+
+    if filter_list and vaapi:
+        filter_list.insert(0, "hwdownload")
+    if vaapi:
+        filter_list.append("format=nv12|vaapi,hwupload")
+
+    if remove_hdr:
+        if enable_opencl:
+            filter_list.append(
+                f"format=p010,hwupload,tonemap_opencl=tonemap={tone_map}:desat=0:r=tv:p=bt709:t=bt709:m=bt709:format=nv12,hwdownload,format=nv12"
+            )
+        elif vaapi:
+            filter_list.append(f"tonemap_vaapi=format=nv12:p=bt709:t=bt709:m=bt709")
+        else:
+            filter_list.append(
+                f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
+            )
 
     filters = ",".join(filter_list)
     if filters and custom_filters:
@@ -220,13 +232,21 @@ def generate_filters(
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:
         return ""
+
     if raw_filters:
         return filter_complex
     return f' -filter_complex "{filter_complex}" -map "[v]" '
 
 
 def generate_all(
-    fastflix: FastFlix, encoder: str, audio: bool = True, subs: bool = True, disable_filters: bool = False
+    fastflix: FastFlix,
+    encoder: str,
+    audio: bool = True,
+    subs: bool = True,
+    disable_filters: bool = False,
+    vaapi: bool = False,
+    start_extra: str = "",
+    **filters_extra,
 ) -> Tuple[str, str]:
     settings = fastflix.current_video.video_settings.video_encoder_settings
 
@@ -243,15 +263,22 @@ def generate_all(
 
     attachments = build_attachments(fastflix.current_video.video_settings.attachment_tracks)
 
+    enable_opencl = fastflix.opencl_support
+    if "enable_opencl" in filters_extra:
+        enable_opencl = filters_extra.pop("enable_opencl")
+
     filters = None
     if not disable_filters:
+        filter_details = fastflix.current_video.video_settings.dict().copy()
+        filter_details.update(filters_extra)
         filters = generate_filters(
             source=fastflix.current_video.source,
             burn_in_subtitle_track=burn_in_track,
             burn_in_subtitle_type=burn_in_type,
-            enable_opencl=fastflix.opencl_support,
             scale=fastflix.current_video.scale,
-            **fastflix.current_video.video_settings.dict(),
+            enable_opencl=enable_opencl,
+            vaapi=vaapi,
+            **filter_details,
         )
 
     ending = generate_ending(
@@ -269,8 +296,9 @@ def generate_all(
         encoder=encoder,
         filters=filters,
         concat=fastflix.current_video.concat,
-        enable_opencl=fastflix.opencl_support,
+        enable_opencl=enable_opencl,
         ffmpeg_version=fastflix.ffmpeg_version,
+        start_extra=start_extra,
         **fastflix.current_video.video_settings.dict(),
         **settings.dict(),
     )

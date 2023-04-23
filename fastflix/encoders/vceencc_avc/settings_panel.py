@@ -4,7 +4,7 @@ import logging
 from box import Box
 from PySide6 import QtCore, QtWidgets, QtGui
 
-from fastflix.encoders.common.setting_panel import SettingPanel
+from fastflix.encoders.common.setting_panel import VCEPanel
 from fastflix.language import t
 from fastflix.models.encode import VCEEncCAVCSettings
 from fastflix.models.fastflix_app import FastFlixApp
@@ -57,7 +57,7 @@ def get_breaker():
     return breaker_line
 
 
-class VCEENCCAVC(SettingPanel):
+class VCEENCCAVC(VCEPanel):
     profile_name = "vceencc_avc"
     hdr10plus_signal = QtCore.Signal(str)
     hdr10plus_ffmpeg_signal = QtCore.Signal(str)
@@ -75,12 +75,13 @@ class VCEENCCAVC(SettingPanel):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
-        grid.addLayout(self._add_custom(title="Custom VCEEncC options", disable_both_passes=True), 10, 0, 1, 6)
+        grid.addLayout(self._add_custom(title="Custom VCEEncC options", disable_both_passes=True), 11, 0, 1, 6)
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_profile(), 1, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
-        grid.addLayout(self.init_pre(), 3, 0, 1, 2)
-        grid.addLayout(self.init_devices(), 6, 0, 1, 2)
+        grid.addLayout(self.init_output_depth(), 3, 0, 1, 2)
+        grid.addLayout(self.init_pre(), 4, 0, 1, 2)
+        grid.addLayout(self.init_devices(), 10, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -90,7 +91,7 @@ class VCEENCCAVC(SettingPanel):
         breaker.addWidget(breaker_label, alignment=QtCore.Qt.AlignHCenter)
         breaker.addWidget(get_breaker(), stretch=1)
 
-        grid.addLayout(breaker, 4, 0, 1, 6)
+        grid.addLayout(breaker, 5, 0, 1, 6)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_min_q())
@@ -106,12 +107,12 @@ class VCEENCCAVC(SettingPanel):
         qp_line.addLayout(self.init_decoder())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_metrics())
-        grid.addLayout(qp_line, 5, 0, 1, 6)
+        grid.addLayout(qp_line, 6, 0, 1, 6)
 
-        self.ffmpeg_level = QtWidgets.QLabel()
-        grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
+        self.init_pa_row()
+        grid.addLayout(self.pa_area, 8, 0, 2, 6)
 
-        grid.setRowStretch(9, 1)
+        grid.setRowStretch(11, 1)
 
         guide_label = QtWidgets.QLabel(
             link(
@@ -126,7 +127,7 @@ class VCEENCCAVC(SettingPanel):
 
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, 1, 4)
+        grid.addWidget(guide_label, 12, 0, 1, 4)
 
         self.setLayout(grid)
         self.hide()
@@ -178,7 +179,11 @@ class VCEENCCAVC(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         layout.addLayout(self._add_check_box(label="VBAQ", widget_name="vbaq", opt="vbaq"))
         layout.addLayout(self._add_check_box(label="Pre Encode", widget_name="pre_encode", opt="pre_encode"))
-        layout.addLayout(self._add_check_box(label="Pre Analysis", widget_name="pre_analysis", opt="pre_analysis"))
+        layout.addLayout(
+            self._add_check_box(
+                label="Pre Analysis", widget_name="pre_analysis", opt="pre_analysis", connect=self.pa_changed
+            )
+        )
         return layout
 
     def init_level(self):
@@ -242,16 +247,6 @@ class VCEENCCAVC(SettingPanel):
             min_width=60,
         )
 
-    def init_decoder(self):
-        return self._add_combo_box(
-            widget_name="decoder",
-            label="Decoder",
-            options=["Auto", "Hardware", "Software"],
-            opt="decoder",
-            tooltip="Hardware: use libavformat + hardware decoder for input\nSoftware: use avcodec + software decoder",
-            min_width=80,
-        )
-
     def init_metrics(self):
         return self._add_check_box(
             widget_name="metrics",
@@ -294,7 +289,21 @@ class VCEENCCAVC(SettingPanel):
             vbaq=self.widgets.vbaq.isChecked(),
             decoder=self.widgets.decoder.currentText(),
             profile=self.widgets.profile.currentText(),
-            device=int(self.widgets.device.currentText().split(":", 1)[0]),
+            device=int(self.widgets.device.currentText().split(":", 1)[0] or 0),
+            pa_sc=self.widgets.pa_sc.currentText(),
+            pa_ss=self.widgets.pa_ss.currentText(),
+            pa_activity_type=self.widgets.pa_activity_type.currentText(),
+            pa_caq_strength=self.widgets.pa_caq_strength.currentText(),
+            pa_initqpsc=self.widgets.pa_initqpsc.currentIndex() or None,
+            pa_lookahead=self.widgets.pa_initqpsc.currentIndex() or None,
+            pa_fskip_maxqp=int(self.widgets.pa_fskip_maxqp.text() or 0) or None,
+            pa_ltr=self.widgets.pa_ltr.isChecked(),
+            pa_paq=self.widgets.pa_paq.currentText(),
+            pa_taq=None if self.widgets.pa_taq.currentIndex() == 0 else self.widgets.pa_taq.currentText(),
+            pa_motion_quality=self.widgets.pa_motion_quality.currentText(),
+            output_depth=None
+            if self.widgets.output_depth.currentIndex() == 0
+            else self.widgets.output_depth.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

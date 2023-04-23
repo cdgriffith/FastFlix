@@ -8535,3 +8535,1035 @@ Don't Select Any Audio:
   pol: Nie wybieraj żadnego dźwięku
   ukr: Не вибирайте жодного аудіо
   kor: 오디오 선택 안 함
+Adaptive Reference Frames:
+  eng: Adaptive Reference Frames
+  deu: Adaptive Referenzrahmen
+  fra: Cadres de référence adaptatifs
+  ita: Cornici di riferimento adattive
+  spa: Marcos de referencia adaptativos
+  zho: 自适应参考框架
+  jpn: アダプティブリファレンスフレーム
+  rus: Адаптивные опорные рамки
+  por: Quadros de referência adaptativos
+  swe: Adaptiva referensramar
+  pol: Adaptacyjne ramy odniesienia
+  ukr: Адаптивні системи відліку
+  kor: 적응형 참조 프레임
+Adaptively select list of reference frames to improve encoding quality.:
+  eng: Adaptively select list of reference frames to improve encoding quality.
+  deu: Adaptive Auswahl einer Liste von Referenzbildern zur Verbesserung der Kodierungsqualität.
+  fra: Sélection adaptative d'une liste de cadres de référence pour améliorer la qualité
+    de l'encodage.
+  ita: Selezione adattiva dell'elenco di fotogrammi di riferimento per migliorare
+    la qualità della codifica.
+  spa: Selección adaptativa de la lista de fotogramas de referencia para mejorar la
+    calidad de la codificación.
+  zho: 自适应地选择参考帧列表以提高编码质量。
+  jpn: エンコード品質を向上させるために、参照フレームのリストを適応的に選択する。
+  rus: Адаптивный выбор списка опорных кадров для улучшения качества кодирования.
+  por: Seleccionar de forma adaptativa a lista de quadros de referência para melhorar
+    a qualidade de codificação.
+  swe: Adaptivt val av lista över referensramar för att förbättra kodningskvaliteten.
+  pol: Adaptacyjne wybieranie listy ramek odniesienia w celu poprawy jakości kodowania.
+  ukr: Адаптивно вибирати список опорних кадрів для покращення якості кодування.
+  kor: 인코딩 품질을 개선하기 위해 참조 프레임 목록을 적응적으로 선택합니다.
+Adaptive Long-Term Reference Frames:
+  eng: Adaptive Long-Term Reference Frames
+  deu: Adaptive Langzeit-Referenzrahmen
+  fra: Cadres de référence adaptatifs à long terme
+  ita: Quadri di riferimento adattativi a lungo termine
+  spa: Marcos de referencia a largo plazo adaptables
+  zho: 自适应的长期参考框架
+  jpn: 適応型長期基準フレーム
+  rus: Адаптивные долгосрочные опорные кадры
+  por: Quadros de referência adaptativos de longo prazo
+  swe: Adaptiva referensramar på lång sikt
+  pol: Adaptacyjne długoterminowe ramy odniesienia
+  ukr: Адаптивні довгострокові системи координат
+  kor: 적응형 장기 참조 프레임
+Mark, modify, or remove LTR frames based on encoding parameters and content properties.:
+  eng: Mark, modify, or remove LTR frames based on encoding parameters and content
+    properties.
+  deu: Markieren, ändern oder entfernen Sie LTR-Frames auf der Grundlage von Kodierungsparametern
+    und Inhaltseigenschaften.
+  fra: Marquer, modifier ou supprimer les cadres LTR en fonction des paramètres d'encodage
+    et des propriétés du contenu.
+  ita: Contrassegnare, modificare o rimuovere le cornici LTR in base ai parametri
+    di codifica e alle proprietà del contenuto.
+  spa: Marque, modifique o elimine tramas LTR en función de los parámetros de codificación
+    y las propiedades del contenido.
+  zho: 根据编码参数和内容属性，标记、修改或删除LTR框架。
+  jpn: エンコーディングパラメータとコンテンツプロパティに基づいて、LTRフレームをマーク、修正、または削除する。
+  rus: Пометить, изменить или удалить кадры LTR на основе параметров кодирования и
+    свойств содержимого.
+  por: Marcar, modificar, ou remover quadros LTR com base em parâmetros de codificação
+    e propriedades de conteúdo.
+  swe: Markera, ändra eller ta bort LTR-ramar baserat på kodningsparametrar och innehållsegenskaper.
+  pol: Zaznaczaj, modyfikuj lub usuwaj ramki LTR w oparciu o parametry kodowania i
+    właściwości zawartości.
+  ukr: Позначати, змінювати або видаляти LTR-кадри на основі параметрів кодування
+    та властивостей вмісту.
+  kor: 인코딩 매개변수 및 콘텐츠 속성을 기반으로 LTR 프레임을 표시, 수정 또는 제거할 수 있습니다.
+Adaptive CQM:
+  eng: Adaptive CQM
+  deu: Adaptives CQM
+  fra: CQM adaptatif
+  ita: CQM adattivo
+  spa: CQM adaptable
+  zho: 自适应的CQM
+  jpn: アダプティブCQM
+  rus: Адаптивный CQM
+  por: CQM Adaptativo
+  swe: Adaptiv CQM
+  pol: Adaptacyjne CQM
+  ukr: Адаптивна система управління якістю
+  kor: 적응형 CQM
+? Adaptively select one of implementation-defined quantization matrices for each frame,
+  to improve subjective visual quality under certain conditions.
+: eng: Adaptively select one of implementation-defined quantization matrices for each
+    frame, to improve subjective visual quality under certain conditions.
+  deu: Adaptive Auswahl einer der implementierungsdefinierten Quantisierungsmatrizen
+    für jedes Bild, um die subjektive visuelle Qualität unter bestimmten Bedingungen
+    zu verbessern.
+  fra: Sélectionner de manière adaptative l'une des matrices de quantification définies
+    par l'implémentation pour chaque image, afin d'améliorer la qualité visuelle subjective
+    dans certaines conditions.
+  ita: Selezionare in modo adattivo una delle matrici di quantizzazione definite dall'implementazione
+    per ogni fotogramma, per migliorare la qualità visiva soggettiva in determinate
+    condizioni.
+  spa: Selecciona de forma adaptativa una de las matrices de cuantización definidas
+    por la aplicación para cada fotograma, con el fin de mejorar la calidad visual
+    subjetiva en determinadas condiciones.
+  zho: 为每一帧自适应地选择执行定义的量化矩阵之一，以改善某些条件下的主观视觉质量。
+  jpn: 特定の条件下で主観的な視覚品質を向上させるために、各フレームに対して実装定義された量子化マトリックスの1つを適応的に選択する。
+  rus: Адаптивный выбор одной из определяемых реализацией матриц квантования для каждого
+    кадра для улучшения субъективного визуального качества при определенных условиях.
+  por: Seleccionar de forma adaptativa uma das matrizes de quantização definidas pela
+    implementação para cada moldura, para melhorar a qualidade visual subjectiva sob
+    certas condições.
+  swe: Adaptivt välja en av de kvantiseringsmatriser som definieras av implementeringen
+    för varje bild för att förbättra den subjektiva visuella kvaliteten under vissa
+    förhållanden.
+  pol: Adaptacyjnie wybierz jedną z implementowanych matryc kwantyzacji dla każdej
+    klatki, aby poprawić subiektywną jakość wizualną w określonych warunkach.
+  ukr: Адаптивно вибирати одну з матриць квантування, визначених реалізацією, для
+    кожного кадру, щоб покращити суб'єктивну візуальну якість за певних умов.
+  kor: 특정 조건에서 주관적인 화질을 개선하기 위해 각 프레임에 대해 구현에 정의된 양자화 매트릭스 중 하나를 적응적으로 선택합니다.
+Hardware Decoding:
+  eng: Hardware Decoding
+  deu: Hardware-Dekodierung
+  fra: Décodage matériel
+  ita: Decodifica hardware
+  spa: Descodificación de hardware
+  zho: 硬件解码
+  jpn: ハードウェアデコード
+  rus: Аппаратное декодирование
+  por: Descodificação de Hardware
+  swe: Avkodning av hårdvara
+  pol: Dekodowanie sprzętowe
+  ukr: Апаратне декодування
+  kor: 하드웨어 디코딩
+Use hardware decoding:
+  eng: Use hardware decoding
+  deu: Hardware-Dekodierung verwenden
+  fra: Utiliser le décodage matériel
+  ita: Utilizzare la decodifica hardware
+  spa: Utilizar descodificación por hardware
+  zho: 使用硬件解码
+  jpn: ハードウェアデコードを使用する
+  rus: Используйте аппаратное декодирование
+  por: Utilizar a descodificação de hardware
+  swe: Använd hårdvaruavkodning
+  pol: Wykorzystanie dekodowania sprzętowego
+  ukr: Використовуйте апаратне декодування
+  kor: 하드웨어 디코딩 사용
+Scene Change:
+  eng: Scene Change
+  deu: Szenenwechsel
+  fra: Changement de scène
+  ita: Cambio di scena
+  spa: Cambio de escena
+  zho: 场景变化
+  jpn: シーンチェンジ
+  rus: Изменение сцены
+  por: Mudança de Cena
+  swe: Scenbyte
+  pol: Zmiana sceny
+  ukr: Зміна сцени
+  kor: 장면 변경
+Scene change detection method:
+  eng: Scene change detection method
+  deu: Verfahren zur Erkennung von Szenenänderungen
+  fra: Méthode de détection des changements de scène
+  ita: Metodo di rilevamento dei cambiamenti di scena
+  spa: Método de detección de cambios en la escena
+  zho: 场景变化检测方法
+  jpn: シーンチェンジ検出方法
+  rus: Метод обнаружения изменения сцены
+  por: Método de detecção de mudança de cenas
+  swe: Metod för att upptäcka scenförändringar
+  pol: Metoda wykrywania zmiany sceny
+  ukr: Метод виявлення зміни сцени
+  kor: 장면 변경 감지 방법
+Static Scene:
+  eng: Static Scene
+  deu: Statische Szene
+  fra: Scène statique
+  ita: Scena statica
+  spa: Escena estática
+  zho: 静态场面
+  jpn: 静止画シーン
+  rus: Статическая сцена
+  por: Cena estática
+  swe: Statisk scen
+  pol: Scena statyczna
+  ukr: Статична сцена
+  kor: 스태틱 씬
+Sensitivity of static scene detection:
+  eng: Sensitivity of static scene detection
+  deu: Empfindlichkeit der Erkennung statischer Szenen
+  fra: Sensibilité de la détection des scènes statiques
+  ita: Sensibilità del rilevamento di scene statiche
+  spa: Sensibilidad de la detección de escenas estáticas
+  zho: 静态场景检测的敏感度
+  jpn: 静止画シーン検出の感度
+  rus: Чувствительность обнаружения статических сцен
+  por: Sensibilidade da detecção de cena estática
+  swe: Känslighet för detektering av statiska scener
+  pol: Czułość wykrywania scen statycznych
+  ukr: Чутливість виявлення статичних сцен
+  kor: 정적 장면 감지 감도
+Activity Type:
+  eng: Activity Type
+  deu: Art der Tätigkeit
+  fra: Type d'activité
+  ita: Tipo di attività
+  spa: Tipo de actividad
+  zho: 活动类型
+  jpn: アクティビティタイプ
+  rus: Тип деятельности
+  por: Tipo de actividade
+  swe: Typ av verksamhet
+  pol: Rodzaj działalności
+  ukr: Тип діяльності
+  kor: 활동 유형
+Activity type detection method:
+  eng: Activity type detection method
+  deu: Methode zur Erkennung der Aktivitätsart
+  fra: Méthode de détection du type d'activité
+  ita: Metodo di rilevamento del tipo di attività
+  spa: Método de detección de la clase de actividad
+  zho: 活动类型检测方法
+  jpn: アクティビティタイプ検出方式
+  rus: Метод определения типа активности
+  por: Método de detecção do tipo de actividade
+  swe: Metod för att upptäcka aktivitetstyper
+  pol: Metoda wykrywania rodzaju aktywności
+  ukr: Метод визначення типу активності
+  kor: 활동 유형 감지 방법
+CAQ Strength:
+  eng: CAQ Strength
+  deu: CAQ-Stärke
+  fra: La force du CAQ
+  ita: Forza del CAQ
+  spa: Fuerza del CAQ
+  zho: CAQ的实力
+  jpn: CAQの強さ
+  rus: Сила CAQ
+  por: Força CAQ
+  swe: CAQ Styrka
+  pol: CAQ Siła
+  ukr: Сила CAQ
+  kor: CAQ 강도
+Strength of CAQ:
+  eng: Strength of CAQ
+  deu: Stärke des CAQ
+  fra: Force de la CAQ
+  ita: Forza del CAQ
+  spa: Fuerza de CAQ
+  zho: CAQ的实力
+  jpn: CAQの強さ
+  rus: Сила CAQ
+  por: Força do CAQ
+  swe: CAQ:s styrka
+  pol: Siła CAQ
+  ukr: Сильні сторони CAQ
+  kor: CAQ의 강점
+SC QP:
+  eng: SC QP
+  deu: SC QP
+  fra: SC QP
+  ita: SC QP
+  spa: SC QP
+  zho: SC QP
+  jpn: SC QP
+  rus: SC QP
+  por: SC QP
+  swe: SC QP
+  pol: SC QP
+  ukr: SC QP
+  kor: SC QP
+Initial qp after scene change:
+  eng: Initial qp after scene change
+  deu: Anfangs-QP nach Szenenwechsel
+  fra: QP initial après le changement de scène
+  ita: Qp iniziale dopo il cambio di scena
+  spa: qp inicial tras el cambio de escena
+  zho: 场景变化后的初始qp
+  jpn: シーンチェンジ後の初期qp
+  rus: Начальное qp после смены сцены
+  por: Qp inicial após mudança de cena
+  swe: Ursprunglig qp efter scenbyte
+  pol: Początkowe qp po zmianie sceny
+  ukr: Початковий qp після зміни сцени
+  kor: 씬 변경 후 초기 큐피
+Lookahead distance:
+  eng: Lookahead distance
+  deu: Voraussichtliche Entfernung
+  fra: Distance d'anticipation
+  ita: Distanza di sicurezza
+  spa: Distancia de seguridad
+  zho: 前瞻性距离
+  jpn: ルックアヘッド距離
+  rus: Расстояние в перспективе
+  por: Distância Lookahead
+  swe: Avstånd till nästa tidpunkt
+  pol: Odległość z wyprzedzeniem
+  ukr: Пряма видимість
+  kor: 전방 거리
+FSkip Max QP:
+  eng: FSkip Max QP
+  deu: FSkip Max QP
+  fra: FSkip Max QP
+  ita: FSkip Max QP
+  spa: FSkip Max QP
+  zho: 基金会最大QP
+  jpn: FSkip Max QP
+  rus: FSkip Max QP
+  por: FSkip Max QP
+  swe: FSkip Max QP
+  pol: FSkip Max QP
+  ukr: FSkip Max QP
+  kor: FSkip 최대 QP
+Threshold to insert skip frame on static:
+  eng: Threshold to insert skip frame on static
+  deu: Schwellenwert für das Einfügen eines Überspringungsrahmens bei statischen
+  fra: Seuil d'insertion d'une trame de saut sur les données statiques
+  ita: Soglia per l'inserimento di un frame di salto in caso di statica
+  spa: Umbral para insertar trama de salto en estático
+  zho: 在静态时插入跳帧的阈值
+  jpn: 静止画でスキップフレームを挿入するための閾値
+  rus: Порог для вставки пропуска кадра при статическом
+  por: Limiar para inserir moldura de saltar sobre estática
+  swe: Tröskelvärde för att infoga en överhoppningsram vid statisk
+  pol: Próg do wstawienia pominiętej ramki na statycznych
+  ukr: Поріг для вставки пропускного кадру на статиці
+  kor: 스태틱에 스킵 프레임을 삽입하는 임계값
+LTR:
+  eng: LTR
+  deu: LTR
+  fra: LTR
+  ita: LTR
+  spa: LTR
+  zho: LTR
+  jpn: LTR
+  rus: LTR
+  por: LTR
+  swe: LTR
+  pol: LTR
+  ukr: LTR
+  kor: LTR
+Enable long-term reference frame:
+  eng: Enable long-term reference frame
+  deu: Langfristigen Bezugsrahmen aktivieren
+  fra: Activer le cadre de référence à long terme
+  ita: Abilitazione del quadro di riferimento a lungo termine
+  spa: Habilitar el marco de referencia a largo plazo
+  zho: 启用长期参考框架
+  jpn: 長期的な基準フレームを有効にする
+  rus: Включить долгосрочную систему отсчета
+  por: Habilitar quadro de referência a longo prazo
+  swe: Aktivera långsiktig referensram
+  pol: Włączenie długoterminowej ramy odniesienia
+  ukr: Увімкніть довгострокову систему відліку
+  kor: 장기 참조 프레임 사용
+PAQ:
+  eng: PAQ
+  deu: PAQ
+  fra: PAQ
+  ita: PAQ
+  spa: PAQ
+  zho: PAQ
+  jpn: PAQ
+  rus: PAQ
+  por: PAQ
+  swe: PAQ
+  pol: PAQ
+  ukr: PAQ
+  kor: PAQ
+Perceptual AQ mode:
+  eng: Perceptual AQ mode
+  deu: Wahrnehmungs-AQ-Modus
+  fra: Mode QA perceptuel
+  ita: Modalità percettiva AQ
+  spa: Modo AQ perceptivo
+  zho: 感知型AQ模式
+  jpn: パーセプチュアルAQモード
+  rus: Перцептивный режим AQ
+  por: Modo AQ Perceptual
+  swe: Perceptuell AQ-läge
+  pol: Percepcyjny tryb AQ
+  ukr: Перцептивний режим AQ
+  kor: 지각 AQ 모드
+TAQ:
+  eng: TAQ
+  deu: TAQ
+  fra: TAQ
+  ita: TAQ
+  spa: TAQ
+  zho: TAQ
+  jpn: TAQ
+  rus: TAQ
+  por: TAQ
+  swe: TAQ
+  pol: TAQ
+  ukr: TAQ
+  kor: TAQ
+Temporal AQ mode:
+  eng: Temporal AQ mode
+  deu: Zeitlicher AQ-Modus
+  fra: Mode QA temporel
+  ita: Modalità AQ temporale
+  spa: Modo AQ temporal
+  zho: 时间性AQ模式
+  jpn: Temporal AQモード
+  rus: Временной режим AQ
+  por: Modo AQ temporal
+  swe: Temporellt AQ-läge
+  pol: Tryb czasowy AQ
+  ukr: Режим тимчасової амплітудно-частотної характеристики
+  kor: 템포럴 AQ 모드
+Motion Quality:
+  eng: Motion Quality
+  deu: Qualität der Bewegung
+  fra: Qualité du mouvement
+  ita: Qualità del movimento
+  spa: Calidad del movimiento
+  zho: 运动质量
+  jpn: モーションクオリティ
+  rus: Качество движения
+  por: Qualidade do movimento
+  swe: Rörelsekvalitet
+  pol: Motion Quality
+  ukr: Якість руху
+  kor: 모션 품질
+High motion quality boost mode:
+  eng: High motion quality boost mode
+  deu: Boost-Modus für hohe Bewegungsqualität
+  fra: Mode d'amélioration de la qualité du mouvement
+  ita: Modalità di incremento della qualità del movimento
+  spa: Modo de aumento de la calidad de movimiento
+  zho: 高运动质量提升模式
+  jpn: 高画質ブーストモード
+  rus: Режим повышения качества движения
+  por: Modo de impulso de alta qualidade de movimento
+  swe: Boost-läge för hög rörelsekvalitet
+  pol: Tryb zwiększenia jakości ruchu
+  ukr: Режим підвищення якості руху з високою роздільною здатністю
+  kor: 고화질 부스트 모드
+Disable Automatic Tab Switching:
+  eng: Disable Automatic Tab Switching
+  deu: Automatische Registerkartenumschaltung deaktivieren
+  fra: Désactiver la commutation automatique des onglets
+  ita: Disattivare la commutazione automatica delle schede
+  spa: Desactivar el cambio automático de pestañas
+  zho: 禁用自动标签切换
+  jpn: タブの自動切替を無効にする
+  rus: Отключить автоматическое переключение вкладок
+  por: Desactivar a troca automática de separadores
+  swe: Inaktivera automatisk byte av flikar
+  pol: Wyłączenie automatycznego przełączania kart
+  ukr: Вимкнути автоматичне перемикання вкладок
+  kor: 자동 탭 전환 비활성화
+Rate Control Mode:
+  eng: Rate Control Mode
+  deu: Ratenkontrollmodus
+  fra: Mode de contrôle des taux
+  ita: Modalità di controllo della velocità
+  spa: Modo de control de velocidad
+  zho: 速率控制模式
+  jpn: レートコントロールモード
+  rus: Режим управления скоростью
+  por: Modo de Controlo de Taxa
+  swe: Hastighetsstyrningsläge
+  pol: Tryb Rate Control
+  ukr: Режим регулювання швидкості
+  kor: 속도 제어 모드
+Set rate control mode:
+  eng: Set rate control mode
+  deu: Modus der Ratenkontrolle einstellen
+  fra: Régler le mode de contrôle du taux
+  ita: Impostare la modalità di controllo della velocità
+  spa: Ajustar el modo de control de velocidad
+  zho: 设置速率控制模式
+  jpn: レートコントロールモードを設定する
+  rus: Установите режим управления скоростью
+  por: Definir o modo de controlo da taxa
+  swe: Ställ in läget för hastighetsreglering
+  pol: Ustawienie trybu regulacji dawki
+  ukr: Встановіть режим регулювання швидкості
+  kor: 속도 제어 모드 설정
+VA-API Device:
+  eng: VA-API Device
+  deu: VA-API Gerät
+  fra: Dispositif VA-API
+  ita: Dispositivo VA-API
+  spa: Dispositivo VA-API
+  zho: VA-API设备
+  jpn: VA-APIデバイス
+  rus: Устройство VA-API
+  por: Dispositivo VA-API
+  swe: VA-API-enhet
+  pol: Urządzenie VA-API
+  ukr: Пристрій VA-API
+  kor: VA-API 장치
+VA-API device to use (default /dev/dri/renderD128):
+  eng: VA-API device to use (default /dev/dri/renderD128)
+  deu: Zu verwendendes VA-API-Gerät (Standard /dev/dri/renderD128)
+  fra: Périphérique VA-API à utiliser (par défaut /dev/dri/renderD128)
+  ita: Dispositivo VA-API da utilizzare (predefinito /dev/dri/renderD128)
+  spa: Dispositivo VA-API a utilizar (por defecto /dev/dri/renderD128)
+  zho: 要使用的VA-API设备（默认为/dev/dri/renderD128）。
+  jpn: 使用するVA-APIデバイス（デフォルト：/dev/dri/renderD128）
+  rus: Устройство VA-API для использования (по умолчанию /dev/dri/renderD128)
+  por: Dispositivo VA-API a utilizar (por defeito /dev/dri/renderD128)
+  swe: VA-API-enhet som ska användas (standard /dev/dri/renderD128)
+  pol: Urządzenie VA-API do wykorzystania (domyślnie /dev/dri/renderD128)
+  ukr: Пристрій VA-API для використання (за замовчуванням /dev/dri/renderD128)
+  kor: 사용할 VA-API 장치(기본값 /dev/dri/renderD128)
+B Depth:
+  eng: B Depth
+  deu: B Tiefe
+  fra: B Profondeur
+  ita: B Profondità
+  spa: B Profundidad
+  zho: B 深度
+  jpn: Bデプス
+  rus: B Глубина
+  por: B Profundidade
+  swe: B Djup
+  pol: B Głębokość
+  ukr: B Глибина
+  kor: B 깊이
+Maximum B-frame reference depth (from 1 to INT_MAX) (default 1):
+  eng: Maximum B-frame reference depth (from 1 to INT_MAX) (default 1)
+  deu: Maximale B-Frame-Referenztiefe (von 1 bis INT_MAX) (Standardwert 1)
+  fra: Profondeur de référence maximale de la trame B (de 1 à INT_MAX) (par défaut
+    1)
+  ita: Profondità massima di riferimento del fotogramma B (da 1 a INT_MAX) (valore
+    predefinito 1)
+  spa: Profundidad máxima de referencia de fotogramas B (de 1 a INT_MAX) (por defecto
+    1)
+  zho: 最大的B-帧参考深度（从1到INT_MAX）（默认为1）。
+  jpn: 最大Bフレーム参照深度（1～INT_MAX）（デフォルト1）
+  rus: Максимальная опорная глубина B-кадра (от 1 до INT_MAX) (по умолчанию 1)
+  por: Profundidade máxima de referência do quadro B (de 1 a INT_MAX) (por defeito
+    1)
+  swe: Maximalt referensdjup för B-frame (från 1 till INT_MAX) (standard 1).
+  pol: Maksymalna głębokość odniesienia klatki B (od 1 do INT_MAX) (domyślnie 1)
+  ukr: Максимальна глибина відліку B-кадру (від 1 до INT_MAX) (за замовчуванням 1)
+  kor: 최대 B-프레임 기준 깊이(1에서 INT_MAX까지)(기본값 1)
+IDR Interval:
+  eng: IDR Interval
+  deu: IDR-Intervall
+  fra: Intervalle IDR
+  ita: Intervallo IDR
+  spa: Intervalo IDR
+  zho: IDR 间隔
+  jpn: IDRインターバル
+  rus: Интервал IDR
+  por: Intervalo IDR
+  swe: IDR-intervall
+  pol: Interwał IDR
+  ukr: Інтервал IDR
+  kor: IDR 간격
+Distance between IDR frames (from 0 to INT_MAX) (default 0):
+  eng: Distance between IDR frames (from 0 to INT_MAX) (default 0)
+  deu: Abstand zwischen IDR-Rahmen (von 0 bis INT_MAX) (Standardwert 0)
+  fra: Distance entre les trames IDR (de 0 à INT_MAX) (par défaut 0)
+  ita: Distanza tra i frame IDR (da 0 a INT_MAX) (valore predefinito 0)
+  spa: Distancia entre tramas IDR (de 0 a INT_MAX) (por defecto 0)
+  zho: IDR帧之间的距离（从0到INT_MAX）（默认为0）。
+  jpn: IDRフレーム間の距離（0～INT_MAX）（デフォルト0）
+  rus: Расстояние между кадрами IDR (от 0 до INT_MAX) (по умолчанию 0)
+  por: Distância entre quadros IDR (de 0 a INT_MAX) (padrão 0)
+  swe: Avstånd mellan IDR-ramar (från 0 till INT_MAX) (standard 0)
+  pol: Odległość pomiędzy ramkami IDR (od 0 do INT_MAX) (domyślnie 0)
+  ukr: Відстань між кадрами IDR (від 0 до INT_MAX) (за замовчуванням 0)
+  kor: IDR 프레임 간 거리(0에서 INT_MAX까지)(기본값 0)
+Low Power Mode:
+  eng: Low Power Mode
+  deu: Energiesparmodus
+  fra: Mode basse consommation
+  ita: Modalità basso consumo
+  spa: Modo de bajo consumo
+  zho: 低功率模式
+  jpn: ローパワーモード
+  rus: Режим пониженного энергопотребления
+  por: Modo de baixo consumo
+  swe: Låg effekt
+  pol: Tryb niskiego poboru mocy
+  ukr: Режим низького енергоспоживання
+  kor: 저전력 모드
+Enable low power mode:
+  eng: Enable low power mode
+  deu: Aktivieren des Energiesparmodus
+  fra: Activer le mode basse consommation
+  ita: Abilitazione della modalità a basso consumo
+  spa: Activar el modo de bajo consumo
+  zho: 启用低功率模式
+  jpn: ローパワーモードを有効にする
+  rus: Включить режим низкого энергопотребления
+  por: Activar o modo de baixo consumo
+  swe: Aktivera lågeffektläge
+  pol: Włączenie trybu niskiego zużycia energii
+  ukr: Увімкнути режим низького енергоспоживання
+  kor: 저전력 모드 활성화
+VAAPI FFmpeg encoding:
+  eng: VAAPI FFmpeg encoding
+  deu: VAAPI FFmpeg-Kodierung
+  fra: Encodage VAAPI FFmpeg
+  ita: Codifica VAAPI FFmpeg
+  spa: Codificación VAAPI FFmpeg
+  zho: VAAPI FFmpeg 编码
+  jpn: VAAPI FFmpegエンコーディング
+  rus: Кодирование VAAPI FFmpeg
+  por: Codificação VAAPI FFmpeg
+  swe: VAAPI FFmpeg-kodning
+  pol: VAAPI Kodowanie FFmpeg
+  ukr: Кодування VAAPI FFmpeg
+  kor: VAAPI FFmpeg 인코딩
+Set level (general_level_idc):
+  eng: Set level (general_level_idc)
+  deu: Ebene festlegen (general_level_idc)
+  fra: Définir le niveau (general_level_idc)
+  ita: Impostare il livello (general_level_idc)
+  spa: Fijar nivel (general_level_idc)
+  zho: 设置级别（General_level_idc）。
+  jpn: 設定レベル（general_level_idc）
+  rus: Установить уровень (general_level_idc)
+  por: Definir nível (geral_level_idc)
+  swe: Ange nivå (general_level_idc)
+  pol: Ustaw poziom (general_level_idc)
+  ukr: Встановлений рівень (general_level_idc)
+  kor: 레벨 설정(일반_레벨_IDC)
+Async Depth:
+  eng: Async Depth
+  deu: Asynchrone Tiefe
+  fra: Profondeur asynchrone
+  ita: Profondità asincrona
+  spa: Profundidad asíncrona
+  zho: 异步深度
+  jpn: 非同期深度
+  rus: Асинхронная глубина
+  por: Profundidade Async
+  swe: Async-djup
+  pol: Głębokość asynchroniczna
+  ukr: Глибина асинхронізації
+  kor: 비동기 뎁스
+? Maximum processing parallelism. Increase this to improve single channel performance.
+  This option doesn't work if driver doesn't implement vaSyncBuffer function.
+: eng: Maximum processing parallelism. Increase this to improve single channel performance.
+    This option doesn't work if driver doesn't implement vaSyncBuffer function.
+  deu: Maximale Verarbeitungsparallelität. Erhöhen Sie diesen Wert, um die Leistung
+    eines einzelnen Kanals zu verbessern. Diese Option funktioniert nicht, wenn der
+    Treiber die Funktion vaSyncBuffer nicht implementiert.
+  fra: Parallélisme de traitement maximal. Augmentez-le pour améliorer les performances
+    d'un seul canal. Cette option ne fonctionne pas si le pilote n'implémente pas
+    la fonction vaSyncBuffer.
+  ita: Massimo parallelismo di elaborazione. Aumentare questo valore per migliorare
+    le prestazioni di un singolo canale. Questa opzione non funziona se il driver
+    non implementa la funzione vaSyncBuffer.
+  spa: Máximo paralelismo de procesamiento. Auméntelo para mejorar el rendimiento
+    de un solo canal. Esta opción no funciona si el controlador no implementa la función
+    vaSyncBuffer.
+  zho: 最大的处理并行性。增加这个选项可以提高单通道的性能。如果驱动程序没有实现vaSyncBuffer函数，这个选项就不起作用。
+  jpn: 最大処理並列度。シングルチャンネルの性能を向上させるために、これを増やします。ドライバがvaSyncBuffer関数を実装していない場合、このオプションは機能しません。
+  rus: Максимальный параллелизм обработки. Увеличьте это значение для повышения производительности
+    одного канала. Эта опция не работает, если драйвер не реализует функцию vaSyncBuffer.
+  por: Máximo paralelismo de processamento. Aumentar isto para melhorar o desempenho
+    de um único canal. Esta opção não funciona se o condutor não implementar a função
+    vaSyncBuffer.
+  swe: Maximal parallellitet i bearbetningen. Öka detta värde för att förbättra prestandan
+    för en enda kanal. Det här alternativet fungerar inte om drivrutinen inte implementerar
+    funktionen vaSyncBuffer.
+  pol: Maksymalna równoległość przetwarzania. Zwiększ to, aby poprawić wydajność pojedynczego
+    kanału. Opcja nie działa, jeżeli sterownik nie implementuje funkcji vaSyncBuffer.
+  ukr: Максимальний паралелізм обробки. Збільште цей параметр, щоб покращити одноканальну
+    продуктивність. Цей параметр не працює, якщо драйвер не реалізує функцію vaSyncBuffer.
+  kor: 최대 처리 병렬 처리. 단일 채널 성능을 향상시키려면 이 값을 높입니다. 이 옵션은 드라이버가 vaSyncBuffer 기능을 구현하지
+    않는 경우 작동하지 않습니다.
+AUD:
+  eng: AUD
+  deu: AUD
+  fra: AUD
+  ita: AUD
+  spa: AUD
+  zho: 澳元
+  jpn: 豪ドル
+  rus: AUD
+  por: AUD
+  swe: AUD
+  pol: AUD
+  ukr: AUD
+  kor: AUD
+Include AUD:
+  eng: Include AUD
+  deu: AUD einschließen
+  fra: Inclure l'AUD
+  ita: Includere AUD
+  spa: Incluir AUD
+  zho: 包括澳元
+  jpn: AUDを含む
+  rus: Включая AUD
+  por: Incluir AUD
+  swe: Inkludera AUD
+  pol: Zawierać AUD
+  ukr: Включає AUD
+  kor: AUD 포함
+Forced:
+  eng: Forced
+  deu: Erzwungene
+  fra: Forcé
+  ita: Costretto
+  spa: Forzado
+  zho: 被迫的
+  jpn: フォースド
+  rus: Принудительный
+  por: Forçado
+  swe: Tvingad
+  pol: Wymuszona
+  ukr: Змушений
+  kor: 강제
+Default:
+  eng: Default
+  deu: Standard
+  fra: Défaut
+  ita: Predefinito
+  spa: Por defecto
+  zho: 默认情况下
+  jpn: デフォルト
+  rus: По умолчанию
+  por: Predefinição
+  swe: Standard
+  pol: Domyślnie
+  ukr: За замовчуванням
+  kor: 기본값
+Hearing Impaired:
+  eng: Hearing Impaired
+  deu: Schwerhörig
+  fra: Malentendants
+  ita: Non udenti
+  spa: Discapacidad auditiva
+  zho: 听力障碍者
+  jpn: 聴覚障害者
+  rus: Нарушение слуха
+  por: Deficiente Auditivo
+  swe: Hörselskadade
+  pol: Niesłyszący
+  ukr: Порушення слуху
+  kor: 청각 장애
+Original:
+  eng: Original
+  deu: Original
+  fra: Original
+  ita: Originale
+  spa: Original
+  zho: 原创
+  jpn: オリジナル
+  rus: Оригинал
+  por: Original
+  swe: Original
+  pol: Oryginał
+  ukr: Оригінал
+  kor: 원본
+Comment:
+  eng: Comment
+  deu: Kommentar
+  fra: Commentaire
+  ita: Commento
+  spa: Comentario
+  zho: 评论
+  jpn: コメント
+  rus: Комментарий
+  por: Comentário
+  swe: Kommentar
+  pol: Komentarz
+  ukr: Коментар
+  kor: 댓글
+Lyrics:
+  eng: Lyrics
+  deu: Liedtext
+  fra: Paroles
+  ita: Testi
+  spa: Letra
+  zho: 歌词
+  jpn: 歌詞
+  rus: Лирика
+  por: Letra de música
+  swe: Texter
+  pol: Teksty piosenek
+  ukr: Тексти пісень
+  kor: 가사
+Karaoke:
+  eng: Karaoke
+  deu: Karaoke
+  fra: Karaoké
+  ita: Karaoke
+  spa: Karaoke
+  zho: 卡拉OK
+  jpn: カラオケ
+  rus: Караоке
+  por: Karaoke
+  swe: Karaoke
+  pol: Karaoke
+  ukr: Караоке
+  kor: 노래방
+Dub:
+  eng: Dub
+  deu: Dub
+  fra: Dub
+  ita: Dub
+  spa: Dub
+  zho: 录音
+  jpn: ダブ
+  rus: Dub
+  por: Dub
+  swe: Dub
+  pol: Dub
+  ukr: Дуб
+  kor: Dub
+Set:
+  eng: Set
+  deu: Satz
+  fra: Set (jeu de mots)
+  ita: Set
+  spa: Establecer
+  zho: 设置
+  jpn: セット
+  rus: Установите
+  por: Conjunto
+  swe: Ställ in
+  pol: Ustaw
+  ukr: Набір
+  kor: 설정
+default:
+  eng: Default
+  deu: Standard
+  fra: par défaut
+  ita: predefinito
+  spa: por defecto
+  zho: 违约
+  jpn: デフォルト
+  rus: по умолчанию
+  por: padrão
+  swe: standard
+  pol: domyślnie
+  ukr: за замовчуванням
+  kor: 기본값
+original:
+  eng: Original
+  deu: Original
+  fra: original
+  ita: originale
+  spa: original
+  zho: 原始的
+  jpn: オリジナル
+  rus: оригинал
+  por: original
+  swe: original
+  pol: oryginał
+  ukr: оригінал
+  kor: 원본
+forced:
+  eng: Forced
+  deu: gezwungen
+  fra: forcée
+  ita: forzato
+  spa: forzado
+  zho: 被迫
+  jpn: 強制的
+  rus: принудительно
+  por: forçado
+  swe: tvingad
+  pol: wymuszona
+  ukr: вимушений
+  kor: forced
+dub:
+  eng: Dub
+  deu: Synchronisation
+  fra: dub
+  ita: doppiare
+  spa: dub
+  zho: 配音
+  jpn: ダブ
+  rus: dub
+  por: dub
+  swe: dub
+  pol: dub
+  ukr: дубляж
+  kor: dub
+Dispositions:
+  eng: Dispositions
+  deu: Verfügungen
+  fra: Dispositions
+  ita: Disposizioni
+  spa: Disposiciones
+  zho: 处置
+  jpn: ディセンションズ
+  rus: Диспозиции
+  por: Disposições
+  swe: Dispositioner
+  pol: Dyspozycje
+  ukr: Диспозиції
+  kor: 처분
+karaoke:
+  eng: Karaoke
+  deu: Karaoke
+  fra: karaoké
+  ita: karaoke
+  spa: karaoke
+  zho: 卡拉OK
+  jpn: カラオケ
+  rus: караоке
+  por: karaoke
+  swe: karaoke
+  pol: karaoke
+  ukr: караоке
+  kor: 노래방
+lyrics:
+  eng: Lyrics
+  deu: Liedtext
+  fra: paroles
+  ita: testi
+  spa: letra
+  zho: 歌词
+  jpn: 詞
+  rus: лирика
+  por: lyrics
+  swe: texter
+  pol: tekst piosenki
+  ukr: тексти пісень
+  kor: 가사
+comment:
+  eng: Comment
+  deu: Kommentar
+  fra: commentaire
+  ita: commento
+  spa: comentario
+  zho: 评论
+  jpn: コメント
+  rus: комментарий
+  por: comentário
+  swe: kommentar
+  pol: komentarz
+  ukr: коментар
+  kor: 댓글
+No Extra:
+  eng: No Extra
+  deu: Kein Extra
+  fra: Pas de supplément
+  ita: Nessun extra
+  spa: No Extra
+  zho: 没有额外的
+  jpn: 追加なし
+  rus: Без дополнительной оплаты
+  por: Sem Extra
+  swe: Ingen extra
+  pol: Bez dodatków
+  ukr: Без додаткових витрат
+  kor: 추가 비용 없음
+Threshold to insert skip frame on static scene:
+  eng: Threshold to insert skip frame on static scene
+  deu: Schwellenwert für das Einfügen von Überspringungsbildern bei statischen Szenen
+  fra: Seuil pour l'insertion d'un saut d'image sur une scène statique
+  ita: Soglia per l'inserimento di un frame di salto su una scena statica
+  spa: Umbral para insertar fotograma de salto en escena estática
+  zho: 在静态场景中插入跳帧的阈值
+  jpn: 静的なシーンでスキップフレームを挿入するための閾値
+  rus: Порог для вставки пропуска кадра на статичной сцене
+  por: Limiar para inserir moldura de saltar em cena estática
+  swe: Tröskelvärde för att infoga en överhoppningsram i en statisk scen
+  pol: Próg do wstawienia pominiętej klatki na statycznej scenie
+  ukr: Поріг для вставки пропускного кадру на статичній сцені
+  kor: 정적 장면에 스킵 프레임을 삽입하는 임계값
+hearing_impaired:
+  eng: Hearing Impaired
+  deu: Schwerhörig
+  fra: Malentendants
+  ita: Non udenti
+  spa: Discapacidad auditiva
+  zho: 听力障碍者
+  jpn: 聴覚障害者
+  rus: Нарушение слуха
+  por: Deficiente Auditivo
+  swe: Hörselskadade
+  pol: Niesłyszący
+  ukr: Порушення слуху
+  kor: 청각 장애
+visual_impaired:
+  eng: Visual Impaired
+  deu: Sehbehindert
+  fra: Malvoyants
+  ita: Improvvisazione visiva
+  spa: Discapacidad visual
+  zho: 视觉障碍
+  jpn: 視覚障がい者
+  rus: Слабовидящие
+  por: Deficiente Visual
+  swe: Synskadade
+  pol: Niedowidzący
+  ukr: Порушення зору
+  kor: 시각 장애인
+Disable completion and error messages:
+  eng: Disable completion and error messages
+  deu: Abschluss- und Fehlermeldungen deaktivieren
+  fra: Désactiver les messages de complétion et d'erreur
+  ita: Disabilita messaggi di completamento e errori
+  spa: Deshabilitar mensajes de finalización y error
+  zho: 禁用完成和错误消息
+  jpn: 完了とエラーメッセージを無効にする
+  rus: Отключить сообщения об окончании и ошибках
+  por: Desativar mensagens de conclusão e erro
+  swe: Inaktivera meddelanden om slutförande och fel
+  pol: Wyłącz komunikaty o ukończeniu i błędach
+  ukr: Вимкнути повідомлення про завершення та помилки
+  kor: 완료 및 오류 메시지 비활성화
+Output Depth:
+  eng: Output Depth
+  deu: Ausgabetiefe
+  fra: Profondeur de sortie
+  ita: Profondità di uscita
+  spa: Profundidad de salida
+  zho: 输出深度
+  jpn: 出力深度
+  rus: Глубина вывода
+  por: Profundidade de saída
+  swe: Utdata djup
+  pol: Głębokość wyjściowa
+  ukr: Глибина виводу
+  kor: 출력 깊이
+8-Bit Only:
+  eng: 8-Bit Only
+  deu: Nur 8-Bit
+  fra: 8 bits seulement
+  ita: Solo 8 bit
+  spa: Solo 8 bits
+  zho: 仅限8位
+  jpn: 8ビットのみ
+  rus: Только 8 бит
+  por: Apenas 8 bits
+  swe: Endast 8 bitar
+  pol: Tylko 8 bitów
+  ukr: Тільки 8 біт
+  kor: 8 비트 만

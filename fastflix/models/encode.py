@@ -22,6 +22,7 @@ class AudioTrack(BaseModel):
     channels: int = 2
     friendly_info: str = ""
     raw_info: Optional[Union[dict, Box]] = None
+    dispositions: dict = Field(default_factory=dict)
 
 
 class SubtitleTrack(BaseModel):
@@ -31,6 +32,7 @@ class SubtitleTrack(BaseModel):
     burn_in: bool = False
     language: str = ""
     subtitle_type: str = ""
+    dispositions: dict = Field(default_factory=dict)
 
 
 class AttachmentTrack(BaseModel):
@@ -110,6 +112,7 @@ class FFmpegNVENCSettings(EncoderSettings):
     level: Optional[str] = None
     gpu: int = -1
     b_ref_mode: str = "disabled"
+    hw_accel: bool = False
 
 
 class NVEncCSettings(EncoderSettings):
@@ -198,6 +201,9 @@ class QSVEncCSettings(EncoderSettings):
     force_ten_bit: bool = False
     qp_mode: str = "cqp"
     decoder: str = "Auto"
+    adapt_ref: bool = False
+    adapt_cqm: bool = False
+    adapt_ltr: bool = False
 
 
 class QSVEncCAV1Settings(EncoderSettings):
@@ -220,6 +226,9 @@ class QSVEncCAV1Settings(EncoderSettings):
     force_ten_bit: bool = False
     qp_mode: str = "cqp"
     decoder: str = "Auto"
+    adapt_ref: bool = False
+    adapt_cqm: bool = False
+    adapt_ltr: bool = False
 
 
 class QSVEncCH264Settings(EncoderSettings):
@@ -242,6 +251,9 @@ class QSVEncCH264Settings(EncoderSettings):
     force_ten_bit: bool = False
     qp_mode: str = "cqp"
     decoder: str = "Auto"
+    adapt_ref: bool = False
+    adapt_cqm: bool = False
+    adapt_ltr: bool = False
 
 
 class NVEncCAVCSettings(EncoderSettings):
@@ -296,6 +308,18 @@ class VCEEncCSettings(EncoderSettings):
     vbaq: bool = False
     decoder: str = "Auto"
     device: int = 0
+    pa_sc: str = "medium"
+    pa_ss: str = "high"
+    pa_activity_type: str = "y"
+    pa_caq_strength: str = "medium"
+    pa_initqpsc: int | None = None
+    pa_lookahead: int | None = None
+    pa_fskip_maxqp: int = 35
+    pa_ltr: bool = True
+    pa_paq: str | None = None
+    pa_taq: int | None = None
+    pa_motion_quality: str | None = None
+    output_depth: str | None = None
 
 
 class VCEEncCAV1Settings(EncoderSettings):
@@ -318,6 +342,18 @@ class VCEEncCAV1Settings(EncoderSettings):
     decoder: str = "Auto"
     bitrate_mode: str = "vbr"
     device: int = 0
+    pa_sc: str = "medium"
+    pa_ss: str = "high"
+    pa_activity_type: str = "y"
+    pa_caq_strength: str = "medium"
+    pa_initqpsc: int | None = None
+    pa_lookahead: int | None = None
+    pa_fskip_maxqp: int = 35
+    pa_ltr: bool = True
+    pa_paq: str | None = None
+    pa_taq: int | None = None
+    pa_motion_quality: str | None = None
+    output_depth: str | None
 
 
 class VCEEncCAVCSettings(EncoderSettings):
@@ -340,6 +376,18 @@ class VCEEncCAVCSettings(EncoderSettings):
     vbaq: bool = False
     decoder: str = "Auto"
     device: int = 0
+    pa_sc: str = "medium"
+    pa_ss: str = "high"
+    pa_activity_type: str = "y"
+    pa_caq_strength: str = "medium"
+    pa_initqpsc: int | None = None
+    pa_lookahead: int | None = None
+    pa_fskip_maxqp: int = 35
+    pa_ltr: bool = True
+    pa_paq: str | None = None
+    pa_taq: int | None = None
+    pa_motion_quality: str | None = None
+    output_depth: str | None = None
 
 
 class rav1eSettings(EncoderSettings):
@@ -447,6 +495,64 @@ class CopySettings(EncoderSettings):
     name = "Copy"
 
 
+class VAAPIH264Settings(EncoderSettings):
+    name = "VAAPI H264"  # must be same as encoder name in main
+
+    vaapi_device: str = "/dev/dri/renderD128"
+    low_power: bool = False
+    idr_interval: str = "0"
+    b_depth: str = "1"
+    async_depth: str = "2"
+    aud: bool = False
+    level: Optional[str] = "auto"
+    rc_mode: str = "auto"
+    qp: Optional[Union[int, float]] = 26
+    bitrate: Optional[str] = None
+    pix_fmt: str = "vaapi"
+
+
+class VAAPIHEVCSettings(EncoderSettings):
+    name = "VAAPI HEVC"
+
+    vaapi_device: str = "/dev/dri/renderD128"
+    low_power: bool = False
+    idr_interval: str = "0"
+    b_depth: str = "1"
+    async_depth: str = "2"
+    aud: bool = False
+    level: Optional[str] = "auto"
+    rc_mode: str = "auto"
+    qp: Optional[Union[int, float]] = 26
+    bitrate: Optional[str] = None
+    pix_fmt: str = "vaapi"
+
+
+class VAAPIVP9Settings(EncoderSettings):
+    name = "VAAPI VP9"
+
+    vaapi_device: str = "/dev/dri/renderD128"
+    low_power: bool = False
+    idr_interval: str = "0"
+    b_depth: str = "1"
+    rc_mode: str = "auto"
+    qp: Optional[Union[int, float]] = 26
+    bitrate: Optional[str] = None
+    pix_fmt: str = "vaapi"
+
+
+class VAAPIMPEG2Settings(EncoderSettings):
+    name = "VAAPI MPEG2"
+
+    vaapi_device: str = "/dev/dri/renderD128"
+    low_power: bool = False
+    idr_interval: str = "0"
+    b_depth: str = "1"
+    rc_mode: str = "auto"
+    qp: Optional[Union[int, float]] = 26
+    bitrate: Optional[str] = None
+    pix_fmt: str = "vaapi"
+
+
 setting_types = {
     "x265": x265Settings,
     "x264": x264Settings,
@@ -471,4 +577,8 @@ setting_types = {
     "h264_videotoolbox": H264VideoToolboxSettings,
     "svt_av1_avif": SVTAVIFSettings,
     "vvc": VVCSettings,
+    "vaapi_h264": VAAPIH264Settings,
+    "vaapi_hevc": VAAPIHEVCSettings,
+    "vaapi_vp9": VAAPIVP9Settings,
+    "vaapi_mpeg2": VAAPIMPEG2Settings,
 }

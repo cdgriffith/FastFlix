@@ -108,11 +108,15 @@ def save_queue(queue: list[Video], queue_file: Path, config: Optional[Config] = 
                 video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"] = str(new_metadata_file)
             for track in video["video_settings"]["attachment_tracks"]:
                 if track.get("file_path"):
+                    if not Path(track["file_path"]).exists():
+                        logger.exception("Could not save cover to queue recovery location, removing cover")
+                        continue
                     new_file = queue_covers / f'{uuid.uuid4().hex}_{track["file_path"].name}'
                     try:
                         shutil.copy(track["file_path"], new_file)
                     except OSError:
                         logger.exception("Could not save cover to queue recovery location, removing cover")
+                        continue
                     update_conversion_command(video, str(track["file_path"]), str(new_file))
                     track["file_path"] = str(new_file)
 

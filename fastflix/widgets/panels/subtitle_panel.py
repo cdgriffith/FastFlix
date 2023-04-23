@@ -15,8 +15,9 @@ from fastflix.resources import loading_movie, get_icon
 from fastflix.shared import error_message, no_border
 from fastflix.widgets.background_tasks import ExtractSubtitleSRT
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.widgets.windows.disposition import Disposition
 
-dispositions = [
+disposition_options = [
     "none",
     "default",
     "dub",
@@ -48,7 +49,7 @@ language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] an
 class Subtitle(QtWidgets.QTabWidget):
     extract_completed_signal = QtCore.Signal()
 
-    def __init__(self, parent, subtitle, index, enabled=True, first=False):
+    def __init__(self, parent, subtitle, index, enabled=True, first=False, dispositions=None):
         self.loading = True
         super(Subtitle, self).__init__(parent)
         self.parent = parent
@@ -71,7 +72,7 @@ class Subtitle(QtWidgets.QTabWidget):
                 QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
             enable_check=QtWidgets.QCheckBox(t("Preserve")),
-            disposition=QtWidgets.QComboBox(),
+            disposition=QtWidgets.QPushButton(),
             language=QtWidgets.QComboBox(),
             burn_in=QtWidgets.QCheckBox(t("Burn In")),
         )
@@ -79,21 +80,21 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets.up_button.setStyleSheet(no_border)
         self.widgets.down_button.setStyleSheet(no_border)
 
-        self.widgets.disposition.addItems(dispositions)
+        # self.widgets.disposition.addItems(dispositions)
         self.widgets.enable_check.setChecked(enabled)
         self.widgets.enable_check.toggled.connect(self.update_enable)
         self.widgets.burn_in.toggled.connect(self.update_burn_in)
-        self.widgets.disposition.currentIndexChanged.connect(self.page_update)
-        self.widgets.disposition.setCurrentIndex(0)
-        for disposition, is_set in self.subtitle.disposition.items():
-            if is_set:
-                try:
-                    self.widgets.disposition.setCurrentIndex(dispositions.index(disposition))
-                except ValueError:
-                    pass
-                break
-        if self.subtitle.disposition.get("forced"):
-            self.widgets.disposition.setCurrentIndex(dispositions.index("forced"))
+        # self.widgets.disposition.currentIndexChanged.connect(self.page_update)
+        # self.widgets.disposition.setCurrentIndex(0)
+        # for disposition, is_set in self.subtitle.disposition.items():
+        #     if is_set:
+        #         try:
+        #             self.widgets.disposition.setCurrentIndex(dispositions.index(disposition))
+        #         except ValueError:
+        #             pass
+        #         break
+        # if self.subtitle.disposition.get("forced"):
+        #     self.widgets.disposition.setCurrentIndex(dispositions.index("forced"))
 
         self.setFixedHeight(60)
         self.widgets.title.setToolTip(self.subtitle.to_yaml())
@@ -112,8 +113,18 @@ class Subtitle(QtWidgets.QTabWidget):
         self.gif_label.setMovie(self.movie)
         # self.movie.start()
 
+        self.dispositions = dispositions if dispositions else {k: False for k in disposition_options}
+        if not dispositions:
+            for disposition, is_set in self.subtitle.disposition.items():
+                if is_set:
+                    self.dispositions[disposition] = True
+
+        self.disposition_widget = Disposition(self, f"Subtitle Track {index}", subs=True)
+        self.set_dis_button()
+        self.widgets.disposition.clicked.connect(self.disposition_widget.show)
+
         disposition_layout = QtWidgets.QHBoxLayout()
-        disposition_layout.addWidget(QtWidgets.QLabel(t("Disposition")))
+        disposition_layout.addWidget(QtWidgets.QLabel(t("Dispositions")))
         disposition_layout.addWidget(self.widgets.disposition)
 
         self.grid = QtWidgets.QGridLayout()
@@ -136,6 +147,24 @@ class Subtitle(QtWidgets.QTabWidget):
         self.loading = False
         self.updating_burn = False
         self.extract_completed_signal.connect(self.extraction_complete)
+
+    def set_dis_button(self):
+        output = ""
+        for disposition, is_set in self.dispositions.items():
+            if is_set:
+                output += f"{t(disposition)},"
+        if output:
+            self.widgets.disposition.setText(output.rstrip(","))
+        else:
+            self.widgets.disposition.setText(t("none"))
+
+    @property
+    def dis_forced(self):
+        return self.dispositions.get("forced", False)
+
+    @property
+    def dis_default(self):
+        return self.dispositions.get("default", False)
 
     def extraction_complete(self):
         self.grid.addWidget(self.widgets.extract, 0, 3)
@@ -191,9 +220,9 @@ class Subtitle(QtWidgets.QTabWidget):
         else:
             self.widgets.track_number.setText(f"{self.index}:{self.outdex}")
 
-    @property
-    def disposition(self):
-        return None if self.widgets.disposition.currentIndex() == 0 else self.widgets.disposition.currentText()
+    # @property
+    # def disposition(self):
+    #     return None
 
     @property
     def enabled(self):
@@ -299,10 +328,10 @@ class SubtitleList(FlixList):
         if self.app.fastflix.config.opt("subtitle_automatic_burn_in"):
             first_default, first_forced = None, None
             for track in self.tracks:
-                if not first_default and track.disposition == "default" and self.lang_match(track, ignore_first=True):
+                if not first_default and track.dis_default and self.lang_match(track, ignore_first=True):
                     first_default = track
                     break
-                if not first_forced and track.disposition == "forced" and self.lang_match(track, ignore_first=True):
+                if not first_forced and track.dis_forced and self.lang_match(track, ignore_first=True):
                     first_forced = track
                     break
             if not self.app.fastflix.config.disable_automatic_subtitle_burn_in:
@@ -323,7 +352,7 @@ class SubtitleList(FlixList):
                     SubtitleTrack(
                         index=track.index,
                         outdex=track.outdex,
-                        disposition=track.disposition,
+                        dispositions=track.dispositions,
                         language=track.language,
                         burn_in=track.burn_in,
                         subtitle_type=track.subtitle_type,
@@ -343,11 +372,8 @@ class SubtitleList(FlixList):
             track.widgets.enable_check.setChecked(enabled)
             if enabled:
                 existing_track = [x for x in original_tracks if x.index == track.index][0]
-                if existing_track.disposition:
-                    track.widgets.disposition.setCurrentText(existing_track.disposition)
-                else:
-                    track.widgets.disposition.setCurrentIndex(0)
+                track.dispositions = existing_track.dispositions.copy()
+                track.set_dis_button()
                 track.widgets.burn_in.setChecked(existing_track.burn_in)
                 track.widgets.language.setCurrentText(Lang(existing_track.language).name)
-
         super()._new_source(self.tracks)

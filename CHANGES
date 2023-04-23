@@ -1,5 +1,20 @@
 # Changelog
 
+## Version 5.5.0
+
+* Adding decoder option for NVEncC and QSVEncC
+* Adding option to disable messages on encoding completion or error
+* Adding #266 multiple disposition types for subtitles (thanks to lobofoots)
+* Adding #326 support for hwaccel decoding with ffmpeg nvenc (thanks to Jim Leonard)
+* Adding #329 Hardware VAAPI encoding support for HEVC, H264, VP9 and MPEG2
+* Adding #351 option to disable automatic tab switching (thanks to Wontell)
+* Adding #357 QSVencC adapt-ref, adapt-ltr, and adapt-qm parameters (thanks to F.O.R.A.R.T.)
+* Adding #368 VCEEncC Pre-Analysis options of sc, ss, activity type, caq, sc qp,lookahead, ltr, paq, taq and motion quality (thanks to Wontell)
+* Adding #379 #410 dispositions for audio tracks (thanks to markmarz and Don Gafford)
+* Fixing videotoolbox setting panels not having custom_q
+* Fixing end of run command ran after message box was closed instead of before (thanks to sn6op)
+* Fixing changing video or track title did not update the command
+
 ## Version 5.4.1
 
 * Fixing #460 QSVEncC not listed as encoder with FastFlix 5.4.0 (thanks to zedfreak)
@@ -153,7 +168,7 @@
 
 * Adding #313 basic vsync support for hardware encoders (thanks to Wontell)
 * Adding #312 additional pixel formats for most encoders (thanks to Owen Quinlan)
-* Adding "Auto" profile for VCEncC
+* Adding "Auto" profile for VCEEncC
 * Changing #292 back to PySide2 to be compatible with Windows 7 and 8 (thanks to Causemic)
 * Fixing #315 HDR10 info not parsed from subsequent video tracks than the first (thanks to msaintauret)
 * Fixing #310 QT was complaining about some PNG formats (thanks to Don Gafford)

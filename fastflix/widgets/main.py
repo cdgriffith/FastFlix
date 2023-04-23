@@ -1882,12 +1882,13 @@ class Main(QtWidgets.QWidget):
         self.set_convert_button()
 
         if not success:
-            error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
+            if not self.app.fastflix.config.disable_complete_message:
+                error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
             self.video_options.queue.new_source()
         else:
             self.video_options.show_queue()
-            # TODO add if check for on done
-            message(t("All queue items have completed"), title=t("Success"))
+            if not self.app.fastflix.config.disable_complete_message:
+                message(t("All queue items have completed"), title=t("Success"))
 
     #
     # @reusables.log_exception("fastflix", show_traceback=False)
@@ -1984,8 +1985,8 @@ class Main(QtWidgets.QWidget):
                 break
 
         if errored and not self.video_options.queue.ignore_errors.isChecked():
-            self.conversion_complete(success=False)
             self.end_encoding()
+            self.conversion_complete(success=False)
             return
 
         if not video_to_send:
@@ -1996,8 +1997,8 @@ class Main(QtWidgets.QWidget):
                     break
 
         if not video_to_send:
-            self.conversion_complete(success=True)
             self.end_encoding()
+            self.conversion_complete(success=True)
             return
 
         self.app.fastflix.currently_encoding = True

@@ -153,7 +153,7 @@ class H264VideoToolbox(SettingPanel):
         )
 
     def mode_update(self):
-        self.widgets.custom_q.setDisabled(self.widgets.crf.currentText() != "Custom")
+        # self.widgets.custom_q.setDisabled(self.widgets.crf.currentText() != "Custom")
         self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
         self.main.build_commands()
 

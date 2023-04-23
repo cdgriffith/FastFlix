@@ -50,4 +50,14 @@ def build_audio(audio_tracks, audio_file_index=0):
                 bitrate = f"-b:{track.outdex} {track.conversion_bitrate} "
             command_list.append(f"-c:{track.outdex} {track.conversion_codec} {bitrate} {downmix}")
 
+        if getattr(track, "dispositions", None):
+            added = ""
+            for disposition, is_set in track.dispositions.items():
+                if is_set:
+                    added += f"{disposition}+"
+            if added:
+                command_list.append(f"-disposition:{track.outdex} {added.rstrip('+')}")
+            else:
+                command_list.append(f"-disposition:{track.outdex} 0")
+
     return " ".join(command_list)

@@ -120,12 +120,17 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.current_settings.close()
         self.current_settings = encoder.settings_panel(self, self.main, self.app)
         self.current_settings.show()
+
+        index = self.currentIndex()
         self.removeTab(0)
         self.insertTab(0, self.current_settings, t("Quality"))
         self.setTabIcon(0, QtGui.QIcon(get_icon("onyx-quality", self.app.fastflix.config.theme)))
 
-        self.setCurrentIndex(0)
-        self.change_tab(0)
+        if not self.app.fastflix.config.sticky_tabs:
+            self.setCurrentIndex(0)
+            self.change_tab(0)
+        else:
+            self.setCurrentIndex(index)
         self.setTabEnabled(1, getattr(encoder, "enable_audio", True))
         self.setTabEnabled(2, getattr(encoder, "enable_subtitles", True))
         self.setTabEnabled(3, getattr(encoder, "enable_attachments", True))
@@ -266,10 +271,12 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.queue.new_source()
 
     def show_queue(self):
-        self.setCurrentWidget(self.queue)
+        if not self.app.fastflix.config.sticky_tabs:
+            self.setCurrentWidget(self.queue)
 
     def show_status(self):
-        self.setCurrentWidget(self.status)
+        if not self.app.fastflix.config.sticky_tabs:
+            self.setCurrentWidget(self.status)
 
     def cleanup(self):
         self.status.cleanup()

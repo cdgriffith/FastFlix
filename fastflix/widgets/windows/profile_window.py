@@ -10,31 +10,7 @@ from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_trans
 from fastflix.language import t
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.encode import (
-    AOMAV1Settings,
-    CopySettings,
-    GIFSettings,
-    SVTAV1Settings,
-    VP9Settings,
-    WebPSettings,
-    rav1eSettings,
-    x264Settings,
-    x265Settings,
-    QSVEncCSettings,
-    QSVEncCAV1Settings,
-    QSVEncCH264Settings,
-    NVEncCSettings,
-    NVEncCAVCSettings,
-    NVEncCAV1Settings,
-    FFmpegNVENCSettings,
-    VCEEncCAVCSettings,
-    VCEEncCSettings,
-    VCEEncCAV1Settings,
-    H264VideoToolboxSettings,
-    HEVCVideoToolboxSettings,
-    SVTAVIFSettings,
-    VVCSettings,
-)
+from fastflix.models.encode import x265Settings, setting_types
 from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, AdvancedOptions
 from fastflix.shared import error_message
 from fastflix.encoders.common.audio import channel_list
@@ -533,52 +509,10 @@ class ProfileWindow(QtWidgets.QWidget):
             advanced_options=self.advanced_options,
         )
 
-        if isinstance(self.encoder, x265Settings):
-            new_profile.x265 = self.encoder
-        elif isinstance(self.encoder, VVCSettings):
-            new_profile.vcc = self.encoder
-        elif isinstance(self.encoder, x264Settings):
-            new_profile.x264 = self.encoder
-        elif isinstance(self.encoder, rav1eSettings):
-            new_profile.rav1e = self.encoder
-        elif isinstance(self.encoder, SVTAV1Settings):
-            new_profile.svt_av1 = self.encoder
-        elif isinstance(self.encoder, VP9Settings):
-            new_profile.vp9 = self.encoder
-        elif isinstance(self.encoder, AOMAV1Settings):
-            new_profile.aom_av1 = self.encoder
-        elif isinstance(self.encoder, GIFSettings):
-            new_profile.gif = self.encoder
-        elif isinstance(self.encoder, WebPSettings):
-            new_profile.webp = self.encoder
-        elif isinstance(self.encoder, CopySettings):
-            new_profile.copy_settings = self.encoder
-        elif isinstance(self.encoder, NVEncCSettings):
-            new_profile.nvencc_hevc = self.encoder
-        elif isinstance(self.encoder, NVEncCAV1Settings):
-            new_profile.nvencc_av1 = self.encoder
-        elif isinstance(self.encoder, QSVEncCSettings):
-            new_profile.qsvencc_hevc = self.encoder
-        elif isinstance(self.encoder, QSVEncCAV1Settings):
-            new_profile.qsvencc_av1 = self.encoder
-        elif isinstance(self.encoder, QSVEncCH264Settings):
-            new_profile.qsvencc_avc = self.encoder
-        elif isinstance(self.encoder, H264VideoToolboxSettings):
-            new_profile.h264_videotoolbox = self.encoder
-        elif isinstance(self.encoder, HEVCVideoToolboxSettings):
-            new_profile.hevc_videotoolbox = self.encoder
-        elif isinstance(self.encoder, NVEncCAVCSettings):
-            new_profile.nvencc_avc = self.encoder
-        elif isinstance(self.encoder, FFmpegNVENCSettings):
-            new_profile.ffmpeg_hevc_nvenc = self.encoder
-        elif isinstance(self.encoder, VCEEncCSettings):
-            new_profile.vceencc_hevc = self.encoder
-        elif isinstance(self.encoder, VCEEncCAV1Settings):
-            new_profile.vceencc_av1 = self.encoder
-        elif isinstance(self.encoder, VCEEncCAVCSettings):
-            new_profile.vceencc_avc = self.encoder
-        elif isinstance(self.encoder, SVTAVIFSettings):
-            new_profile.svt_av1_avif = self.encoder
+        for snake_name, encoder_settings in setting_types.items():
+            if encoder_settings().name == self.encoder.name:
+                setattr(new_profile, snake_name, self.encoder)
+                break
         else:
             logger.error(f"Profile cannot be saved! Unknown encoder type {self.encoder.__class__.__name__}.")
             return

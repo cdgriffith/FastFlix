@@ -18,6 +18,51 @@ ffmpeg_extra_command = ""
 
 pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le", "12-bit: yuv420p12le"]
 
+recommended_bitrates = [
+    "150k  ",
+    "276k  ",
+    "512k  ",
+    "1024k",
+    "1800k",
+    "3000k",
+    "4000k",
+    "5000k",
+    "6000k",
+    "7500k",
+    "9000k",
+    "10000k",
+    "12000k",
+    "15000k",
+    "17500k",
+    "20000k",
+    "25000k",
+    "30000k",
+    "40000k",
+    "50000k",
+    "Custom",
+]
+
+recommended_qp = [
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+    "30",
+    "31",
+    "32",
+    "Custom",
+]
+
 
 class SettingPanel(QtWidgets.QWidget):
     def __init__(self, parent, main, app: FastFlixApp, *args, **kwargs):
@@ -532,3 +577,300 @@ class SettingPanel(QtWidgets.QWidget):
                 return "qp", custom_value
             else:
                 return "qp", int(qp_text.split(" ", 1)[0])
+
+    def init_pix_fmt(self, supported_formats=pix_fmts):
+        return self._add_combo_box(
+            label="Bit Depth",
+            tooltip="Pixel Format (requires at least 10-bit for HDR)",
+            widget_name="pix_fmt",
+            options=supported_formats,
+            opt="pix_fmt",
+        )
+
+
+class RigayaPanel(SettingPanel):
+    def init_decoder(self):
+        return self._add_combo_box(
+            widget_name="decoder",
+            label="Decoder",
+            options=["Auto", "Hardware", "Software"],
+            opt="decoder",
+            tooltip="Hardware: use libavformat + hardware decoder for input\nSoftware: use avcodec + software decoder",
+            min_width=80,
+        )
+
+
+class QSVEncPanel(RigayaPanel):
+    def init_adapt_ref(self):
+        return self._add_check_box(
+            label="Adaptive Reference Frames",
+            tooltip="Adaptively select list of reference frames to improve encoding quality.",
+            widget_name="adapt_ref",
+            opt="adapt_ref",
+        )
+
+    def init_adapt_ltr(self):
+        return self._add_check_box(
+            label="Adaptive Long-Term Reference Frames",
+            tooltip="Mark, modify, or remove LTR frames based on encoding parameters and content properties.",
+            widget_name="adapt_ltr",
+            opt="adapt_ltr",
+        )
+
+    def init_adapt_cqm(self):
+        return self._add_check_box(
+            label="Adaptive CQM",
+            tooltip="Adaptively select one of implementation-defined quantization matrices for each frame, to improve subjective visual quality under certain conditions.",
+            widget_name="adapt_cqm",
+            opt="adapt_cqm",
+        )
+
+
+class VCEPanel(RigayaPanel):
+    def init_pa_row(self):
+        #     pa_caq_strength: str | None = None
+        #     pa_initqpsc: int | None = None
+        #     pa_lookahead: int | None = None
+        #     pa_fskip_maxqp: int | None = None
+        #     pa_ltr: bool = False
+        #     pa_paq: str | None = None
+        #     pa_taq: int | None = None
+        #     pa_motion_quality: str | None = None
+
+        self.pa_row_1 = QtWidgets.QHBoxLayout()
+        self.pa_row_2 = QtWidgets.QHBoxLayout()
+        self.pa_area = QtWidgets.QVBoxLayout()
+
+        self.labels["pa_row1"] = QtWidgets.QLabel(f"       {t('Pre Analysis')}")
+        self.labels["pa_row2"] = QtWidgets.QLabel(f"       {t('8-Bit Only')}")
+
+        self.pa_row_1.addWidget(self.labels["pa_row1"])
+        self.pa_row_2.addWidget(self.labels["pa_row2"])
+
+        self.pa_row_1.addStretch(1)
+        self.pa_row_2.addStretch(1)
+
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                label="Scene Change",
+                tooltip="Scene change detection method",
+                widget_name="pa_sc",
+                options=["none", "low", "medium", "high"],
+                opt="pa_sc",
+            )
+        )
+        self.pa_row_1.addStretch(1)
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                label="Static Scene",
+                tooltip="Sensitivity of static scene detection",
+                options=["none", "low", "medium", "high"],
+                widget_name="pa_ss",
+                opt="pa_ss",
+            )
+        )
+        self.pa_row_1.addStretch(1)
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                label="Activity Type",
+                tooltip="Activity type detection method",
+                options=["none", "y", "yuv"],
+                widget_name="pa_activity_type",
+                opt="pa_activity_type",
+            )
+        )
+        self.pa_row_1.addStretch(1)
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                opt="pa_caq_strength",
+                widget_name="pa_caq_strength",
+                label="CAQ Strength",
+                tooltip="Strength of CAQ",
+                options=["low", "medium", "high"],
+            )
+        )
+        self.pa_row_1.addStretch(1)
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                opt="pa_initqpsc",
+                widget_name="pa_initqpsc",
+                label="SC QP",
+                tooltip="Initial qp after scene change",
+                options=[t("Auto")] + [str(i) for i in range(1, 51)],
+            )
+        )
+        self.pa_row_1.addStretch(1)
+        self.pa_row_1.addLayout(
+            self._add_combo_box(
+                opt="pa_lookahead",
+                widget_name="pa_lookahead",
+                label="Lookahead",
+                tooltip="Lookahead distance",
+                options=[t("Auto")] + [str(i) for i in range(1, 200)],
+            )
+        )
+
+        self.pa_row_2.addLayout(
+            self._add_text_box(
+                opt="pa_fskip_maxqp",
+                widget_name="pa_fskip_maxqp",
+                label="FSkip Max QP",
+                tooltip="Threshold to insert skip frame on static scene",
+            )
+        )
+        self.pa_row_2.addStretch(1)
+        self.pa_row_2.addLayout(
+            self._add_check_box(
+                opt="pa_ltr",
+                widget_name="pa_ltr",
+                label="LTR",
+                tooltip="Enable long-term reference frame",
+            )
+        )
+        self.pa_row_2.addStretch(1)
+        self.pa_row_2.addLayout(
+            self._add_combo_box(
+                opt="pa_paq",
+                widget_name="pa_paq",
+                label="PAQ",
+                tooltip="Perceptual AQ mode",
+                options=["none", "caq"],
+            )
+        )
+        self.pa_row_2.addStretch(1)
+        self.pa_row_2.addLayout(
+            self._add_combo_box(
+                opt="pa_taq",
+                widget_name="pa_taq",
+                label="TAQ",
+                tooltip="Temporal AQ mode",
+                options=["Auto", "0", "1", "2"],
+            )
+        )
+        self.pa_row_2.addStretch(1)
+        self.pa_row_2.addLayout(
+            self._add_combo_box(
+                opt="pa_motion_quality",
+                widget_name="pa_motion_quality",
+                label="Motion Quality",
+                tooltip="High motion quality boost mode",
+                options=["none", "auto"],
+            )
+        )
+        self.pa_changed()
+        self.pa_area.addLayout(self.pa_row_1)
+        self.pa_area.addLayout(self.pa_row_2)
+
+    def pa_changed(self):
+        for widget in self.widgets:
+            if widget.startswith("pa_"):
+                self.widgets[widget].setEnabled(self.widgets["pre_analysis"].isChecked())
+                if self.widgets["pre_analysis"].isChecked():
+                    self.widgets[widget].show()
+                    if widget in self.labels:
+                        self.labels[widget].show()
+                else:
+                    self.widgets[widget].hide()
+                    if widget in self.labels:
+                        self.labels[widget].hide()
+        if self.widgets["pre_analysis"].isChecked():
+            self.labels["pa_row1"].show()
+            self.labels["pa_row2"].show()
+        else:
+            self.labels["pa_row1"].hide()
+            self.labels["pa_row2"].hide()
+
+    def init_output_depth(self):
+        return self._add_combo_box(
+            label="Output Depth",
+            widget_name="output_depth",
+            tooltip="Output Depth",
+            options=[t("Auto"), "8", "10"],
+            opt="output_depth",
+        )
+
+
+class VAAPIPanel(SettingPanel):
+    def init_rc_mode(self):
+        # #   -rc_mode           <int>        E..V....... Set rate control mode (from 0 to 6) (default auto)
+        # #      auto            0            E..V....... Choose mode automatically based on other parameters
+        # #      CQP             1            E..V....... Constant-quality
+        # #      CBR             2            E..V....... Constant-bitrate
+        # #      VBR             3            E..V....... Variable-bitrate
+        # #      ICQ             4            E..V....... Intelligent constant-quality
+        # #      QVBR            5            E..V....... Quality-defined variable-bitrate
+        # #      AVBR            6            E..V....... Average variable-bitrate
+        return self._add_combo_box(
+            label="Rate Control Mode",
+            tooltip="Set rate control mode",
+            options=["auto", "CQP", "CBR", "VBR", "ICQ", "QVBR", "AVBR"],
+            widget_name="rc_mode",
+            opt="rc_mode",
+        )
+
+    def init_level(self):
+        return self._add_combo_box(
+            label="Level",
+            tooltip="Set level (general_level_idc)",
+            options=["auto", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"],
+            widget_name="level",
+            opt="level",
+        )
+
+    def init_aud(self):
+        return self._add_check_box(
+            label="AUD",
+            tooltip="Include AUD",
+            widget_name="aud",
+            opt="aud",
+        )
+
+    def init_async_depth(self):
+        return self._add_combo_box(
+            label="Async Depth",
+            tooltip="Maximum processing parallelism. Increase this to improve single channel performance. This option doesn't work if driver doesn't implement vaSyncBuffer function.",
+            options=[str(i) for i in range(1, 65)],
+            widget_name="async_depth",
+            opt="async_depth",
+            default="2",
+            width=40,
+        )
+
+    def init_b_depth(self):
+        return self._add_text_box(
+            label="B Depth",
+            tooltip="Maximum B-frame reference depth (from 1 to INT_MAX) (default 1)",
+            widget_name="b_depth",
+            opt="b_depth",
+            default="1",
+            width=40,
+        )
+
+    def init_idr_interval(self):
+        return self._add_text_box(
+            label="IDR Interval",
+            tooltip="Distance between IDR frames (from 0 to INT_MAX) (default 0)",
+            widget_name="idr_interval",
+            opt="idr_interval",
+            default="0",
+            width=40,
+        )
+
+    def init_low_power(self):
+        return self._add_check_box(
+            label="Low Power Mode", tooltip="Enable low power mode", widget_name="low_power", opt="low_power"
+        )
+
+    def init_modes(self):
+        layout = self._add_modes(recommended_bitrates, recommended_qp, qp_name="qp")
+        return layout
+
+    def init_vaapi_device(self):
+        return self._add_text_box(
+            label="VA-API Device",
+            tooltip="VA-API device to use (default /dev/dri/renderD128)",
+            widget_name="vaapi_device",
+            opt="vaapi_device",
+            default="/dev/dri/renderD128",
+            width=200,
+        )

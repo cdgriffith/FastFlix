@@ -77,6 +77,10 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.qsvencc_av1 import main as qsvencc_av1_plugin
     from fastflix.encoders.vceencc_av1 import main as vceencc_av1_plugin
     from fastflix.encoders.vvc import main as vvc_plugin
+    from fastflix.encoders.vaapi_h264 import main as vaapi_h264_plugin
+    from fastflix.encoders.vaapi_hevc import main as vaapi_hevc_plugin
+    from fastflix.encoders.vaapi_vp9 import main as vaapi_vp9_plugin
+    from fastflix.encoders.vaapi_mpeg2 import main as vaapi_mpeg2_plugin
 
     encoders = [
         hevc_plugin,
@@ -92,6 +96,10 @@ def init_encoders(app: FastFlixApp, **_):
         gif_plugin,
         webp_plugin,
         vvc_plugin,
+        vaapi_hevc_plugin,
+        vaapi_h264_plugin,
+        vaapi_vp9_plugin,
+        vaapi_mpeg2_plugin,
         copy_plugin,
     ]
 
@@ -134,7 +142,7 @@ def init_encoders(app: FastFlixApp, **_):
     app.fastflix.encoders = {
         encoder.name: encoder
         for encoder in encoders
-        if (not getattr(encoder, "requires", None)) or encoder.requires in app.fastflix.ffmpeg_config
+        if (not getattr(encoder, "requires", None)) or encoder.requires in app.fastflix.ffmpeg_config or DEVMODE
     }
 
 

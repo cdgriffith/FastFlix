@@ -32,6 +32,7 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
 
       run: |
-        pip install -q build
+        pip install .
+        pip install .[develop]
         python -m build --wheel
         twine upload dist/*.whl
