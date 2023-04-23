@@ -9525,3 +9525,17 @@ visual_impaired:
   pol: Niedowidzący
   ukr: Порушення зору
   kor: 시각 장애인
+Disable completion and error messages:
+  eng: Disable completion and error messages
+  deu: Abschluss- und Fehlermeldungen deaktivieren
+  fra: Désactiver les messages de complétion et d'erreur
+  ita: Disabilita messaggi di completamento e errori
+  spa: Deshabilitar mensajes de finalización y error
+  zho: 禁用完成和错误消息
+  jpn: 完了とエラーメッセージを無効にする
+  rus: Отключить сообщения об окончании и ошибках
+  por: Desativar mensagens de conclusão e erro
+  swe: Inaktivera meddelanden om slutförande och fel
+  pol: Wyłącz komunikaty o ukończeniu i błędach
+  ukr: Вимкнути повідомлення про завершення та помилки
+  kor: 완료 및 오류 메시지 비활성화
