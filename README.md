@@ -135,7 +135,8 @@ Russian (русский), Polish (polskie) and Korean (한국어).
 If something sounds wrong in your language, please open an issue with which line in
 [the language file](https://github.com/cdgriffith/FastFlix/blob/master/fastflix/data/languages.yaml) needs fixed!
 
-Special thanks to [leonardyan](https://github.com/leonardyan) for numerous Chinese corrections!
+Special thanks to [leonardyan](https://github.com/leonardyan) for numerous Chinese corrections and
+[Ta0ba0](https://github.com/Ta0ba0) for the Russian fixes!
 
 # License
 

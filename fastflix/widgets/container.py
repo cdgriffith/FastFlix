@@ -37,6 +37,7 @@ class Container(QtWidgets.QMainWindow):
         super().__init__(None)
         self.app = app
         self.pb = None
+        self.profile_window = None
 
         self.app.setApplicationName("FastFlix")
         self.app.setWindowIcon(QtGui.QIcon(main_icon))
@@ -276,7 +277,11 @@ class Container(QtWidgets.QMainWindow):
         if not self.app.fastflix.current_video:
             error_message(t("Please load in a video to configure a new profile"))
         else:
-            ProfileWindow(self.app, self.main).show()
+            if self.profile_window:
+                self.profile_window.show()
+            else:
+                self.profile_window = ProfileWindow(self.app, self.main, self)
+                self.profile_window.show()
 
     def show_profile(self):
         self.profile_details = ProfileDetails(

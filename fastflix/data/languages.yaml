@@ -44,7 +44,7 @@ About:
   spa: Acerca de
   zho: 关于
   jpn: について
-  rus: О сайте
+  rus: О программе
   por: Sobre
   swe: Om
   pol: O
@@ -58,7 +58,7 @@ Adaptive Quantization:
   spa: Cuantificación adaptativa
   zho: 自适应量化
   jpn: 適応型量子化
-  rus: Адаптивная квантизация
+  rus: Адаптивное Квантование
   por: Quantização adaptativa
   swe: Adaptiv kvantisering
   pol: Adaptacyjna kwantyzacja
@@ -270,7 +270,7 @@ Auto Crop:
   spa: Auto Crop
   zho: 自动裁切
   jpn: オートクロップ
-  rus: Автоматическое кадрирование
+  rus: Автообрезка
   por: Cultura Automóvel
   swe: Automatisk beskärning
   pol: Auto Crop
@@ -354,7 +354,7 @@ B Ref Mode:
   spa: Modo B Ref
   zho: B Ref模式
   jpn: B リファレンスモード
-  rus: B Ref Mode
+  rus: B Реф режим
   por: B Modo Ref
   swe: B Ref Mode
   pol: B Ref Mode
@@ -494,7 +494,7 @@ Burn In:
   spa: Quemar en
   zho: 内嵌
   jpn: バーンイン
-  rus: Сгореть
+  rus: Записать на
   por: Queimar em
   swe: Bränna in
   pol: Spalić się
@@ -564,7 +564,7 @@ Cancel has been requested, killing encoding:
   spa: Se ha solicitado la cancelación, matando la codificación
   zho: 已请求取消，正在终止编码
   jpn: キャンセルが要求された場合、エンコーディングを殺す
-  rus: Была запрошена отмена, убивающая кодировка
+  rus: Была запрошена отмена, прекращающая кодирование
   por: Foi pedido o cancelamento, codificação de mortes
   swe: Avbryt har begärts, dödande kodning
   pol: Zażądano anulowania, kodowanie zabijania
@@ -648,7 +648,7 @@ Clean Old Logs:
   spa: Limpiar los viejos troncos
   zho: 清理旧日志
   jpn: 古い丸太をきれいにする
-  rus: Очистить старые бревна
+  rus: Очистить старые журналы
   por: Toros antigos limpos
   swe: Rengör gamla stockar
   pol: Czyszczenie starych kłód
@@ -762,7 +762,7 @@ Command worker received request to pause current encode:
     actual
   zho: 命令执行程序收到了暂停当前编码的请求
   jpn: コマンドワーカーが現在のエンコードを一時停止するリクエストを受信
-  rus: Командный работник получил запрос на приостановку текущего кодирования
+  rus: Оператор получил запрос на приостановку текущего кодирования
   por: Comando operário recebeu pedido para pausar a codificação de corrente
   swe: Kommandotjänstemannen har mottagit en begäran om att pausa den pågående kodningen.
   pol: Command worker odebrał żądanie wstrzymania bieżącego kodowania
@@ -780,7 +780,7 @@ Command worker received request to pause encoding after the current item complet
     de que el elemento actual complete
   zho: 命令执行程序收到了在当前项目完成后暂停编码的请求
   jpn: コマンドワーカーが、現在のアイテムが完了した後にエンコードを一時停止するリクエストを受信した
-  rus: Командный работник получил запрос на приостановку кодирования после завершения
+  rus: Оператор получил запрос на приостановку кодирования после завершения
     текущего элемента
   por: O trabalhador de comando recebeu um pedido para pausar a codificação após a
     conclusão do artigo actual
@@ -799,7 +799,7 @@ Command worker received request to resume encoding:
   spa: El comandante recibió la solicitud de reanudar la codificación
   zho: 命令执行程序收到了恢复编码的请求
   jpn: コマンドワーカーがエンコード再開のリクエストを受信
-  rus: Командный работник получил запрос на возобновление кодирования
+  rus: Оператор получил запрос на возобновление кодирования
   por: O trabalhador de comando recebeu um pedido para retomar a codificação
   swe: Kommandotjänstemannen har mottagit en begäran om att återuppta kodningen.
   pol: Command worker otrzymał żądanie wznowienia kodowania
@@ -815,7 +815,7 @@ Command worker received request to resume paused encode:
     en pausa
   zho: 命令执行程序收到了恢复已暂停编码的请求
   jpn: コマンドワーカーが一時停止したエンコードの再開要求を受信
-  rus: Командный работник получил запрос на возобновление приостановленного кодирования
+  rus: Оператор получил запрос на возобновление приостановленного кодирования
   por: O trabalhador de comando recebeu pedido para retomar o codigo pausado
   swe: Kommandotjänstemannen har mottagit en begäran om att återuppta pausad kodning.
   pol: Command worker odebrał żądanie wznowienia wstrzymanego kodowania
@@ -843,7 +843,7 @@ Config File:
   spa: Archivo de configuración
   zho: 配置文件
   jpn: 設定ファイル
-  rus: Конфигурационный файл
+  rus: Файл конфигурации
   por: Config File
   swe: Konfigurationsfil
   pol: Config File
@@ -871,7 +871,7 @@ Conversion:
   spa: Conversión
   zho: 转换
   jpn: 変換
-  rus: Конверсия
+  rus: Конвертация
   por: Conversão
   swe: Konvertering
   pol: Konwersja
@@ -899,7 +899,7 @@ Conversion worker shutting down:
   spa: El cierre del trabajador de conversión
   zho: 正在关闭转换程序
   jpn: 変換作業者のシャットダウン
-  rus: Выключение конверсионного рабочего
+  rus: Выключение конвертера
   por: Encerramento do trabalhador de conversão
   swe: Konverteringsarbetaren stänger av
   pol: Wyłączenie pracownika konwersji
@@ -983,7 +983,7 @@ Copy Landscape Cover:
   spa: Copia de la portada del paisaje
   zho: 复制横向封面
   jpn: コピー・ランドスケープ・カバー
-  rus: Обложка для копирования пейзажа
+  rus: Копия обложки "пейзаж"
   por: Cópia da capa da Paisagem
   swe: Kopiera landskapsomslag
   pol: Kopia Okładka krajobrazowa
@@ -997,7 +997,7 @@ Copy Small Cover (no preview):
   spa: Copia de la portada pequeña (sin vista previa)
   zho: 复制小封面（无预览）
   jpn: Copy Small Cover（プレビューなし）
-  rus: Копия Малая обложка (без предварительного просмотра)
+  rus: Копия Малая обложка (без предпросмотра)
   por: Copiar Pequena Capa (sem pré-visualização)
   swe: Kopiera litet omslag (ingen förhandsgranskning)
   pol: Kopia Mała okładka (bez zapowiedzi)
@@ -1011,7 +1011,7 @@ Copy Small Landscape Cover  (no preview):
   spa: Copia de la cubierta de un pequeño paisaje (sin vista previa)
   zho: 复制横向小封面（无预览）
   jpn: Copy Small Landscape Cover (no preview)
-  rus: Копия Небольшая обложка с пейзажем (без предварительного просмотра)
+  rus: Копия малой обложки "пейзаж" (без предпросмотра)
   por: Copiar Pequena Capa de Paisagem (sem pré-visualização)
   swe: Kopiera litet landskapsomslag (ingen förhandsgranskning)
   pol: Kopia Mała Okładka Krajobrazowa (bez podglądu)
@@ -1195,11 +1195,11 @@ Crop:
   spa: Crop
   zho: 裁切
   jpn: クロップ
-  rus: Растениеводство
+  rus: Обрезка
   por: Cultura
   swe: Grödor
   pol: Uprawy
-  ukr: Урожай
+  ukr: Обрізка
   kor: 자르기
 Crop Detect Points:
   deu: Feststellungspunkte fürs Cropping
@@ -1209,11 +1209,11 @@ Crop Detect Points:
   spa: Puntos de detección de cultivos
   zho: 裁切检测点
   jpn: クロップディテクトポイント
-  rus: Точки обнаружения урожая
+  rus: Точки обнаружения обрезки
   por: Pontos de Detecção de Culturas
   swe: Skördepunkter för upptäckt av grödor
   pol: Punkty wykrywania upraw
-  ukr: Точки виявлення посівів
+  ukr: Точки виявлення обрізки
   kor: 자르기 감지 지점
 Current Profile Settings:
   deu: Aktuelle Profileinstellungen
@@ -1279,7 +1279,7 @@ Deblock:
   spa: Deblock
   zho: 去块
   jpn: デブロック
-  rus: Деблок
+  rus: Разблокировка
   por: Desbloqueio
   swe: Deblockering
   pol: Deblock
@@ -1328,7 +1328,7 @@ Default enabled.:
   spa: Por defecto habilitado.
   zho: 默认启用。
   jpn: デフォルトでは有効です。
-  rus: По умолчанию включена.
+  rus: По умолчанию включено.
   por: Predefinição activada.
   swe: Standard aktiverad.
   pol: Domyślnie włączone.
@@ -1422,7 +1422,7 @@ Denoise:
   spa: Denoise
   zho: 降噪
   jpn: デノアス
-  rus: Denoise
+  rus: Шумоподавление
   por: Denoise
   swe: Denoise
   pol: Denoise
@@ -1492,7 +1492,7 @@ Disposition:
   spa: Disposición
   zho: 分配
   jpn: 処分
-  rus: Утилизация
+  rus: Расположение
   por: Disposição
   swe: Avsättning
   pol: Dyspozycja
@@ -1506,7 +1506,7 @@ Dither:
   spa: Dither
   zho: 抖动
   jpn: ディザ
-  rus: Dither
+  rus: Дизеринг
   por: Ou
   swe: Dither
   pol: Dither
@@ -1525,7 +1525,7 @@ Dither is an intentionally applied form of noise used to randomize quantization 
     aleatorizar el error de cuantificación,
   zho: 抖动（Dither）是一种为了随机化量化误差（quantization error）而有意添加的噪声，
   jpn: ディザとは、量子化誤差をランダムにするために意図的にかけるノイズのことです。
-  rus: Dither - это намеренно применяемая форма шума, используемая для рандомизации
+  rus: Дизеринг - это намеренно применяемая форма шума, используемая для рандомизации
     ошибки квантования,
   por: A dither é uma forma de ruído intencionalmente aplicada utilizada para aleatorizar
     o erro de quantização,
@@ -1556,7 +1556,7 @@ Download Cancelled:
   spa: Descarga cancelada
   zho: 下载取消
   jpn: ダウンロード 中止
-  rus: Скачать Отменено
+  rus: Скачивание Отменено
   por: Descarregar Cancelado
   swe: Ladda ner Cancelled
   pol: Pobierz Odwołane
@@ -1716,7 +1716,7 @@ Enables true lossless coding by bypassing scaling, transform, quantization and i
     la cuantificación y el filtrado en bucle.
   zho: 绕过缩放、变换、量化和in-loop filtering，从而实现真正的无损编码。
   jpn: スケーリング、トランスフォーム、量子化、インループフィルタリングをバイパスすることで、真のロスレスコーディングを可能にします。
-  rus: Обеспечивает истинное кодирование без потерь, минуя масштабирование, преобразование,
+  rus: Обеспечивает прямое кодирование без потерь, минуя масштабирование, преобразование,
     квантование и фильтрацию в контуре.
   por: Permite uma verdadeira codificação sem perdas, contornando a escala, a transformação,
     a quantização e a filtragem em loop.
@@ -1945,7 +1945,7 @@ Estimated time left for current command:
   spa: Tiempo estimado para el comando actual
   zho: 当前命令的估计剩余时间
   jpn: 現在のコマンドの残り時間の目安
-  rus: Расчетное время, оставшееся до выполнения текущей команды
+  rus: Расчетное время, оставшееся до завершения текущей команды
   por: Tempo restante estimado para o comando actual
   swe: Beräknad tid som återstår för det aktuella kommandot
   pol: Szacowany czas pozostały do wykonania bieżącego polecenia
@@ -2016,7 +2016,7 @@ Extract:
   spa: Extracto
   zho: 提取
   jpn: エクストラクト
-  rus: Выписка
+  rus: Извлечение
   por: Extracto
   swe: Utdrag
   pol: Wyciąg
@@ -2044,7 +2044,7 @@ Extract covers:
   spa: Extraer las cubiertas
   zho: 提取封面
   jpn: 抽出物のカバー
-  rus: Выписка охватывает
+  rus: Извлечение обложек
   por: Capas de extractos
   swe: Utdrag omfattar
   pol: Wyciąg obejmuje
@@ -2212,7 +2212,7 @@ Flat UI:
   spa: GUI plana
   zho: 扁平化GUI
   jpn: フラットUI
-  rus: Плоский пользовательский интерфейс
+  rus: Плоский интерфейс
   por: IU plana
   swe: Platt användargränssnitt
   pol: Płaski UI
@@ -2269,7 +2269,7 @@ Frame Threads:
   spa: Hilos del marco
   zho: 帧线程
   jpn: フレーム スレッド
-  rus: Рамочные нити
+  rus: Кадровые потоки
   por: Roscas da moldura
   swe: Ramtrådar
   pol: Gwinty ramy
@@ -2521,7 +2521,7 @@ Horizontal Flip:
   spa: Volteo horizontal
   zho: 水平翻转
   jpn: 水平反転
-  rus: Горизонтальный переворот
+  rus: Отражение по горизонтали
   por: Horizontal Flip
   swe: Horisontell vändning
   pol: Przerzucanie poziome
@@ -2549,7 +2549,7 @@ Initialize Encoders:
   spa: Iniciar los codificadores
   zho: 初始化编码器
   jpn: エンコーダーの初期化
-  rus: Инициализация кодирующих устройств
+  rus: Инициализация энкодеров
   por: Inicializar codificadores
   swe: Initialisera kodare
   pol: Inicjalizacja enkoderów
@@ -2563,7 +2563,7 @@ Intra-Encoding:
   spa: Intracodificación
   zho: Intra-Encoding
   jpn: イントラエンコーディング
-  rus: Внутрикодирование
+  rus: Внутреннее кодирование
   por: Codificação Intra-Encodificação
   swe: Intra-kodning
   pol: Intra-Encoding
@@ -2577,7 +2577,7 @@ Intra-Smoothing:
   spa: Intra-Smoothing
   zho: Intra-Smoothing
   jpn: イントラ・スムージング
-  rus: Интраназальное разглаживание
+  rus: Внутреннее сглаживание
   por: Intra-Suave
   swe: Intra-Smoothing
   pol: Intra-Smoothing
@@ -2591,7 +2591,7 @@ Intra-refresh:
   spa: Intra-refresco
   zho: 帧内刷新
   jpn: イントラリフレシュ
-  rus: Внутриобновление
+  rus: Внутреннее обновление
   por: Intra-refresco
   swe: Inom en nypa
   pol: Intra-refresh
@@ -2605,7 +2605,7 @@ Invalid Crop:
   spa: Cultivo inválido
   zho: 无效裁切
   jpn: 無効なクロップ
-  rus: Неверный урожай
+  rus: Неверная обрезка
   por: Cultura inválida
   swe: Ogiltig gröda
   pol: Nieprawidłowy zbiór
@@ -2652,7 +2652,7 @@ Keep:
   spa: Manténgase en
   zho: 保留
   jpn: キープ
-  rus: Сохраните
+  rus: Сохранить
   por: Guarde
   swe: Håll
   pol: Zachowaj
@@ -2680,7 +2680,7 @@ Keep aspect ratio:
   spa: Mantener la relación de aspecto
   zho: 保持纵横比
   jpn: アスペクト比を保つ
-  rus: Сохраняйте соотношение сторон
+  rus: Сохранять соотношение сторон
   por: Manter relação de aspecto
   swe: Behåll bildförhållandet
   pol: Zachować proporcje
@@ -2708,7 +2708,7 @@ Landscape Cover:
   spa: Cubierta del paisaje
   zho: 横向封面
   jpn: ランドスケープカバー
-  rus: Ландшафтный покров
+  rus: Пейзажная обложка
   por: Cobertura paisagística
   swe: Landskapstäckning
   pol: Osłona krajobrazu
@@ -2795,7 +2795,7 @@ Lookahead:
   spa: Lookahead
   zho: 瞻前顾后
   jpn: ルックアヘッド
-  rus: Lookahead
+  rus: Опережение
   por: Lookahead
   swe: Förhandsgranskning
   pol: Lookahead
@@ -2875,7 +2875,7 @@ Maximum B frames:
   spa: Máximo de cuadros B
   zho: 最大B帧数量
   jpn: 最大Bフレーム
-  rus: Максимальное количество кадров B
+  rus: Максимум кадров B
   por: Máximo de armações B
   swe: Maximalt antal B-ramar
   pol: Maksymalne ramki B
@@ -2903,7 +2903,7 @@ Maxrate:
   spa: Maxrate
   zho: Maxrate
   jpn: マックスレート
-  rus: Maxrate
+  rus: Максимальная скорость
   por: Maxrate
   swe: Maxrate
   pol: Maxrate
@@ -2917,7 +2917,7 @@ Metrics:
   spa: Métricas
   zho: 衡量标准
   jpn: メトリクス
-  rus: Метрика
+  rus: Метрики
   por: Métricas
   swe: Mätvärden
   pol: Metryka
@@ -3057,7 +3057,7 @@ No Flip:
   spa: No hay vuelta atrás
   zho: 无翻转
   jpn: フリップなし
-  rus: Нет флипа
+  rus: Без поворота
   por: Sem Flip
   swe: Ingen flip
   pol: No Flip
@@ -3131,7 +3131,7 @@ No crop, scale, rotation, flip nor any other filters will be applied.:
     ni ningún otro.
   zho: 不会应用裁切、缩放、旋转、翻转或任何其他滤镜。
   jpn: 切り抜き、拡大縮小、回転、反転などのフィルターはかけられません。
-  rus: Обрезка, масштабирование, поворот, переворот и другие фильтры не применяются.
+  rus: Обрезка, масштабирование, вращение, переворот и другие фильтры не применяются.
   por: Não se aplicarão culturas, escamas, rotação, flip nem quaisquer outros filtros.
   swe: Ingen beskärning, skalning, rotation, vändning eller andra filter kommer att
     tillämpas.
@@ -3161,7 +3161,7 @@ No new items in queue to convert:
   spa: No hay nuevos elementos en la cola para convertir
   zho: 队列中没有新项目要转换
   jpn: 変換するためのキューに新しいアイテムがない
-  rus: Нет новых предметов в очереди на конвертацию
+  rus: Нет новых элементов в очереди на конвертацию
   por: Não há artigos novos em fila de espera para converter
   swe: Inga nya objekt i kö för konvertering
   pol: Brak nowych pozycji w kolejce do konwersji
@@ -3203,7 +3203,7 @@ Not a valid int for time conversion:
   spa: No es un int válido para la conversión de tiempo
   zho: 不是可用于时间转换的有效整数
   jpn: 時間変換に有効なintではない
-  rus: Не является допустимым значением int для преобразования времени
+  rus: Недопустимое значением int для преобразования времени
   por: Não é uma int válida para conversão de tempo
   swe: Inte ett giltigt int för tidskonvertering
   pol: Nie jest prawidłową liczbą całkowitą dla konwersji czasu
@@ -3281,7 +3281,7 @@ Open Directory:
   spa: Directorio Abierto
   zho: 打开目录
   jpn: オープンディレクトリ
-  rus: Открытая директория
+  rus: Открыть каталог
   por: Directório Aberto
   swe: Öppen katalog
   pol: Katalog otwarty
@@ -3295,7 +3295,7 @@ Open Log Directory:
   spa: Directorio abierto de registros
   zho: 打开日志目录
   jpn: オープン・ログ・ディレクトリ
-  rus: Открытый каталог журналов
+  rus: Открыть каталог журналов
   por: Directório de Registo Aberto
   swe: Öppna loggkatalogen
   pol: Otwarty katalog dzienników
@@ -3309,7 +3309,7 @@ Output:
   spa: Salida
   zho: 输出文件
   jpn: 出力
-  rus: Выход
+  rus: Результат
   por: Saída
   swe: Utgång
   pol: Wyjście
@@ -3352,7 +3352,7 @@ Overlay this subtitle track onto the video during conversion.:
   spa: Superponga esta pista de subtítulos en el vídeo durante la conversión.
   zho: 在转换时将此字幕轨叠加到视频上。
   jpn: 変換時にこの字幕トラックを映像に重ねて表示します。
-  rus: Наложите эту дорожку субтитров на видео во время конвертирования.
+  rus: Наложить эту дорожку субтитров на видео во время конвертирования.
   por: Sobreponha esta faixa de legendas no vídeo durante a conversão.
   swe: Lägg över detta undertextspår på videon under konverteringen.
   pol: Nałożenie tej ścieżki napisów na wideo podczas konwersji.
@@ -3486,7 +3486,7 @@ Please make sure seek method is set to exact:
   spa: Por favor, asegúrese de que el método de búsqueda se establece con exactitud
   zho: 请确保检索方式已设置为exact
   jpn: seek methodがexactに設定されていることを確認してください。
-  rus: Пожалуйста, убедитесь, что метод поиска установлен на exact
+  rus: Пожалуйста, убедитесь, что метод поиска установлен на точный
   por: Por favor, certifique-se de que o método de busca está definido de forma exacta
   swe: Kontrollera att sökmetoden är inställd på exakt
   pol: Proszę upewnić się, że metoda wyszukiwania jest ustawiona na dokładną
@@ -3528,7 +3528,7 @@ Please restart FastFlix to apply settings:
   spa: Por favor, reinicie FastFlix para aplicar la configuración
   zho: 请重新启动FastFlix以应用设置
   jpn: 設定を適用するには、FastFlixを再起動してください。
-  rus: Пожалуйста, перезапустите FastFlix, чтобы применить настройки
+  rus: Пожалуйста, перезапустите FastFlix для применения настроек
   por: Por favor reinicie FastFlix para aplicar definições
   swe: Starta om FastFlix för att tillämpa inställningarna
   pol: Proszę uruchomić ponownie FastFlix, aby zastosować ustawienia.
@@ -3598,7 +3598,7 @@ Profile_encoderopt:
   spa: Perfil
   zho: 规格
   jpn: Profile
-  rus: Profile
+  rus: Профиль_опции_энкодера
   por: Perfil
   swe: Profile
   pol: Profil
@@ -3612,7 +3612,7 @@ Profile_newprofiletooltip:
   spa: Perfil
   zho: 规格
   jpn: Profile
-  rus: Profile
+  rus: Профиль_подсказка_нового_профиля
   por: Perfil
   swe: Profile
   pol: Profil
@@ -3626,7 +3626,7 @@ Profile_window:
   spa: Perfil
   zho: 规格
   jpn: Profile
-  rus: Profile
+  rus: Профиль_окно
   por: Perfil
   swe: Profile
   pol: Profil
@@ -3711,7 +3711,7 @@ Quality/Speed ratio modifier:
   spa: Modificador de la relación calidad/velocidad
   zho: 调整质量与速度之比
   jpn: 画質・速度の調整
-  rus: Модификатор соотношения качества и скорости
+  rus: Регулятор соотношения качества и скорости
   por: Modificador da relação qualidade/velocidade
   swe: Modifiering av förhållandet kvalitet/hastighet
   pol: Modyfikator stosunku jakość/prędkość
@@ -3725,7 +3725,7 @@ Quality/Speed ratio modifier (defaults to -1):
   spa: Modificador de la relación calidad/velocidad (por defecto a -1)
   zho: 调整质量与速度之比（默认值为-1)
   jpn: 品質／速度比の修正（デフォルトは-1）
-  rus: Модификатор соотношения качества и скорости (по умолчанию -1)
+  rus: Регулятор соотношения качества и скорости (по умолчанию -1)
   por: Modificador da relação qualidade/velocidade (valores por defeito para -1)
   swe: Modifiering av förhållandet kvalitet/hastighet (standardvärde -1)
   pol: Modyfikator stosunku jakość/prędkość (domyślnie -1)
@@ -3739,7 +3739,7 @@ Quality/Speed ratio modifier (defaults to 4):
   spa: Modificador de la relación calidad/velocidad (por defecto a 4)
   zho: 调整质量与速度之比（默认值为4）
   jpn: Quality/Speed ratio modifier (デフォルトは4)
-  rus: Модификатор соотношения качества и скорости (по умолчанию равен 4)
+  rus: Регулятор соотношения качества и скорости (по умолчанию равен 4)
   por: Modificador da relação qualidade/velocidade (padrão para 4)
   swe: Modifiering av förhållandet kvalitet/hastighet (standardvärdet är 4).
   pol: Modyfikator stosunku jakość/prędkość (domyślnie 4)
@@ -3781,7 +3781,7 @@ RC Lookahead:
   spa: RC Lookahead
   zho: RC Lookahead
   jpn: RCルックアヘッド
-  rus: RC Lookahead
+  rus: RC Опережение
   por: RC Lookahead
   swe: RC Lookahead
   pol: RC Lookahead
@@ -3819,7 +3819,7 @@ Rate Control:
   spa: Control de velocidad
   zho: 速率控制
   jpn: レートコントロール
-  rus: Контроль тарифов
+  rus: Контроль скорости
   por: Controlo da taxa
   swe: Kontroll av hastighet
   pol: Kontrola stawek
@@ -3879,7 +3879,7 @@ Ref Frames:
   spa: Fotogramas de referencia
   zho: 参考框架
   jpn: レフフレーム
-  rus: Реф-рамки
+  rus: Реф-кадры
   por: Molduras de Reformas
   swe: Referensramar
   pol: Ref Frames
@@ -3977,7 +3977,7 @@ Resume Encode:
   spa: Reanudar la codificación
   zho: 恢复编码
   jpn: レジュームエンコード
-  rus: Кодирование резюме
+  rus: Возобновить кодирование
   por: Código de currículo
   swe: Återuppta kodning
   pol: Wznów kodowanie
@@ -3991,7 +3991,7 @@ Resume Queue:
   spa: Cola de reanudación
   zho: 恢复队列
   jpn: キューの再開
-  rus: Очередь возобновления
+  rus: Возобновить очередь
   por: Fila de currículos
   swe: Återuppta kö
   pol: Wznów kolejkę
@@ -4023,7 +4023,7 @@ Right:
   por: Certo
   swe: Höger
   pol: Prawo
-  ukr: Так.
+  ukr: Праворуч
   kor: 오른쪽
 Row Multi-Threading:
   deu: Zeilen-Multi-Threading
@@ -4061,7 +4061,7 @@ Row multithreading:
   spa: 'Corriendo tras el mando hecho:'
   zho: 在完成命令后运行。
   jpn: doneコマンドの後に実行。
-  rus: 'Выполняется после команды done:'
+  rus: 'Запуск после выполнения команды:'
   por: 'Correr atrás de comando feito:'
   swe: 'Körs efter kommandot done:'
   pol: 'Uruchomienie po wykonaniu polecenia:'
@@ -4215,7 +4215,7 @@ Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on:
     0, la segunda es 1, y así sucesivamente
   zho: 选择使用哪个NVENC功能的GPU。第一个GPU为0，第二个为1，以此类推。
   jpn: どのNVENC対応GPUを使用するかを選択します。最初のGPUは0、2番目は1、というように。
-  rus: Выбирает, какой GPU с поддержкой NVENC будет использоваться. Первый GPU - 0,
+  rus: Выбрать, какой GPU с поддержкой NVENC будет использоваться. Первый GPU - 0,
     второй - 1 и так далее.
   por: Selecciona qual a GPU NVENC capaz de utilizar. A primeira GPU é 0, a segunda
     é 1, e assim por diante
@@ -4234,7 +4234,7 @@ Set speed to 4 for first pass:
   spa: Establece la velocidad en 4 para la primera pasada
   zho: 第一遍速度设置为4
   jpn: 1パス目のスピードを4に設定
-  rus: Установите скорость на 4 для первого прохода
+  rus: Установить скорость на 4 для первого прохода
   por: Definir velocidade para 4 na primeira passagem
   swe: Ställ in hastigheten på 4 för första passet.
   pol: Dla pierwszego przejazdu ustawić prędkość obrotową na 4
@@ -4248,7 +4248,7 @@ Set the "title" tag, sometimes shown as "Movie Name":
   spa: Poner la etiqueta "título", a veces se muestra como "Nombre de la película"
   zho: 设置“标题”（title，有时显示为“电影名称”（Movie Name））标签
   jpn: '"title "タグを設定します。"Movie Name "と表示されることもあります。'
-  rus: Установите тег "title", который иногда отображается как "Название фильма".
+  rus: Установить тег "title", который иногда отображается как "Название фильма".
   por: Definir a etiqueta "título", por vezes exibida como "Nome do filme".
   swe: Ange "title"-taggen, som ibland visas som "Movie Name".
   pol: Ustaw znacznik "title", czasami wyświetlany jako "Movie Name".
@@ -4262,7 +4262,7 @@ Set the encoding level restriction:
   spa: Establezca la restricción del nivel de codificación
   zho: 设置编码级别限制
   jpn: エンコードレベル制限の設定
-  rus: Установите ограничение уровня кодирования
+  rus: Установить ограничение уровня кодирования
   por: Definir a restrição do nível de codificação
   swe: Ställ in begränsningen av kodningsnivån
   pol: Ustawienie ograniczenia poziomu kodowania
@@ -4276,7 +4276,7 @@ Set the encoding tier:
   spa: Establecer el nivel de codificación
   zho: 设置编码层
   jpn: エンコーディング層の設定
-  rus: Установите уровень кодировки
+  rus: Установить уровень кодировки
   por: Definir o nível de codificação
   swe: Ställ in kodningsnivån
   pol: Ustawienie poziomu kodowania
@@ -4291,7 +4291,7 @@ Set the level of effort in determining B frame placement.:
   spa: Establezca el nivel de esfuerzo para determinar la ubicación del cuadro B.
   zho: 对决定B帧位置时的工作量水平进行调整。
   jpn: Bフレームの配置を決める際の努力の度合いを設定します。
-  rus: Установите уровень усилий при определении размещения рамки B.
+  rus: Установить уровень усилий при определении размещения B кадра.
   por: Estabelecer o nível de esforço na determinação da colocação da moldura B.
   swe: Ange nivån på ansträngningen för att bestämma placeringen av B-ramar.
   pol: Ustaw poziom wysiłku przy określaniu rozmieszczenia ramki B.
@@ -4379,7 +4379,7 @@ Slow is highest personal recommenced, as past that is much smaller gains:
     más pequeño gana
   zho: 不建议使用比slow更慢的档位，因为获得的收益会小得多。
   jpn: スローは個人的には最高の再開で、過去にはもっと小さな利益がありました。
-  rus: Медленный - это наивысший личный возобновленный, так как в прошлом это гораздо
+  rus: Медленный - это наивысший личный показатель, так как ранее это гораздо
     меньший прирост
   por: Lento é o reinício pessoal mais elevado, pois o passado é um ganho muito menor
   swe: Långsamt är högsta personliga återupptagen, som tidigare är mycket mindre vinster
@@ -4434,7 +4434,7 @@ Source Details:
   spa: Detalles de la fuente
   zho: 源文件详情
   jpn: ソースの詳細
-  rus: Источник Подробнее
+  rus: Детали источника
   por: Detalhes da fonte
   swe: Information om källan
   pol: Źródło Szczegóły
@@ -4518,7 +4518,7 @@ Start:
   spa: Comienza
   zho: 开始
   jpn: スタート
-  rus: Начало
+  rus: Начать
   por: Início
   swe: Starta
   pol: Start
@@ -4546,7 +4546,7 @@ Strength:
   spa: Fuerza
   zho: 强度
   jpn: 強度
-  rus: Прочность
+  rus: Сила
   por: Força
   swe: Styrka
   pol: Wytrzymałość
@@ -4645,7 +4645,7 @@ The GUI might have died, but I'm going to keep converting!:
   spa: ¡El GUI puede haber muerto, pero voy a seguir convirtiendo!
   zho: 图形界面可能已经崩溃，但转换将继续进行！
   jpn: GUIは死んでしまったかもしれませんが、私は変換し続けるつもりです!
-  rus: Возможно, графический интерфейс умер, но я собираюсь продолжать конвертировать!
+  rus: Возможно, графический интерфейс умер, но конвертация продолжится!
   por: A GUI pode ter morrido, mas eu vou continuar a converter-me!
   swe: GUI må ha dött, men jag kommer att fortsätta konvertera!
   pol: GUI może i umarło, ale ja zamierzam dalej konwertować!
@@ -4767,8 +4767,8 @@ This improves encoding speed significantly on systems that are otherwise underut
     que de otra manera son subutilizados al codificar el VP9.
   zho: 在编码VP9时资源利用不足的系统上，此选项能够显著提升编码速度。
   jpn: これにより、VP9をエンコードする際に十分に活用されていないシステムにおいて、エンコード速度が大幅に向上します。
-  rus: Это значительно повышает скорость кодирования на системах, которые в противном
-    случае недостаточно используются при кодировании VP9.
+  rus: Это значительно повышает скорость кодирования на системах, которые по-другому
+    недостаточно используются при кодировании VP9.
   por: Isto melhora significativamente a velocidade de codificação em sistemas que
     de outra forma são subutilizados ao codificar o VP9.
   swe: Detta förbättrar kodningshastigheten avsevärt på system som annars är underutnyttjade
@@ -4827,7 +4827,7 @@ This is used for ultra-high bitrates with zero loss of quality.:
   spa: 'Esta opción no se reinicia a menos que se necesite conformar '
   zho: 除非您需要为了刻录到物理光盘而遵守蓝光标准，
   jpn: このオプションは、以下の条件を満たす必要がない限り、推奨されません。
-  rus: Этот вариант не рекомендуется использовать, если вам не нужно соответствовать
+  rus: Этот вариант не рекомендуется использовать, если не требуется соответствие
   por: Esta opção não é reiniciada a menos que precise de se conformar
   swe: Det här alternativet rekommenderas inte om du inte behöver anpassa dig till
   pol: Opcja ta nie jest zalecana, chyba że zachodzi konieczność zachowania zgodności
@@ -4855,7 +4855,7 @@ Tier:
   spa: Tier
   zho: 层级
   jpn: ティア
-  rus: Уровень
+  rus: Ярус
   por: Nível
   swe: Nivå
   pol: Poziom
@@ -4869,7 +4869,7 @@ Tile Columns:
   spa: Columnas de azulejos
   zho: Tile列数量
   jpn: タイルコラム
-  rus: Плиточные колонны
+  rus: Столбцы плитки
   por: Colunas de Ladrilho
   swe: Kakelpelare
   pol: Kolumny dachówkowe
@@ -4883,7 +4883,7 @@ Tile Rows:
   spa: Filas de azulejos
   zho: Tile行数量
   jpn: タイルの列
-  rus: Плиточные ряды
+  rus: Строки плитки
   por: Fileiras de Azulejos
   swe: Rader av kakelplattor
   pol: Rzędy dachówek
@@ -4897,7 +4897,7 @@ Tiles:
   spa: Baldosas
   zho: Tiles
   jpn: タイル
-  rus: Плитка
+  rus: Плитки
   por: Azulejos
   swe: Plattor
   pol: Płytki
@@ -4953,7 +4953,7 @@ Top:
   spa: Top
   zho: 上端
   jpn: トップ
-  rus: Топ
+  rus: Верх
   por: Início
   swe: Topp
   pol: Top
@@ -4985,7 +4985,7 @@ Tune:
   por: Melodia
   swe: Stäm av
   pol: Dostosuj
-  ukr: Мелодія
+  ukr: Налаштовання
   kor: Tune
 Tune the settings for a particular type of source or situation:
   deu: Feineinstellungen für einen bestimmten Quelltyp oder eine bestimmte Situation
@@ -5052,7 +5052,7 @@ Use B frames as references:
   spa: Utilizar los fotogramas B como referencia
   zho: 用B帧作为参考
   jpn: Bフレームを参考にする
-  rus: Используйте B-рамки в качестве эталонов
+  rus: Используйте B-кадры в качестве эталонов
   por: Utilizar molduras B como referências
   swe: Använd B-ramar som referenser
   pol: Wykorzystanie ramek B jako punktów odniesienia
@@ -5066,7 +5066,7 @@ Use Sane Audio Selection (customizable in config file):
   spa: Usar la Selección de Audio Sane (actualizable en el archivo de configuración)
   zho: 使用合理音频编码选择（可在配置文件中更改）
   jpn: Sane Audio Selectionの使用（設定ファイルでカスタマイズ可能）
-  rus: Использовать Sane Audio Selection (настраивается в конфигурационном файле)
+  rus: Использовать Разумный выбор аудио (настраивается в конфигурационном файле)
   por: Usar Selecção Áudio Sã (personalizável em ficheiro de configuração)
   swe: Använd Sane Audio Selection (anpassningsbart i konfigurationsfilen)
   pol: Użyj Sane Audio Selection (konfigurowalne w pliku konfiguracyjnym)
@@ -5208,7 +5208,7 @@ Vert + Hoz Flip:
   spa: Vert + Hoz Flip
   zho: 垂直+水平翻转
   jpn: Vert + Hoz Flip
-  rus: Vert + Hoz Flip
+  rus: Верт + Гор переворот
   por: Vert + Hoz Flip
   swe: Vert + Hoz Flip
   pol: Vert + Hoz Flip
@@ -5222,7 +5222,7 @@ Vertical Flip:
   spa: Volteo vertical
   zho: 垂直翻转
   jpn: 垂直反転
-  rus: Вертикальное сальто
+  rus: Вертикальный переворот
   por: Vertical Flip
   swe: Vertikal vändning
   pol: Przerzucanie pionowe
@@ -5264,7 +5264,7 @@ View:
   spa: Ver
   zho: 查看
   jpn: ビュー
-  rus: Посмотреть
+  rus: Просмотр
   por: Ver
   swe: Visa
   pol: Zobacz
@@ -5414,7 +5414,7 @@ Will fix first subtitle track to not be default:
   spa: Arreglará que la primera pista de subtítulos no sea la predeterminada
   zho: Will fix first subtitle track to not be default
   jpn: 最初の字幕トラックがデフォルトにならないように修正する
-  rus: Будет исправлена первая дорожка субтитров, чтобы она не была дорожкой по умолчанию
+  rus: Будет исправлено, чтобы первая дорожка субтитров не была дорожкой по умолчанию
   por: Irá corrigir a primeira faixa de legendas para não ser por defeito
   swe: Kommer att rätta till att det första undertextspåret inte är standard
   pol: Poprawi pierwszą ścieżkę napisów, aby nie była domyślna
@@ -5489,7 +5489,7 @@ Work Directory:
   spa: Directorio de trabajo
   zho: 工作目录
   jpn: 作業ディレクトリ
-  rus: Каталог работ
+  rus: Рабочий каталог
   por: Directório de Trabalho
   swe: Arbetskatalog
   pol: Katalog prac
@@ -5619,7 +5619,7 @@ attachment tracks found:
   spa: pistas de adjuntos encontradas
   zho: 发现附件轨
   jpn: アタッチメントトラックが見つかりました
-  rus: найдены следы крепления
+  rus: найдены следы прикрепления
   por: rastos de anexos encontrados
   swe: Spår för fastsättning hittades
   pol: znaleziono ślady mocowania
@@ -5651,7 +5651,7 @@ b-adapt:
   por: b-adapt
   swe: b-adapt
   pol: b-adapt
-  ukr: b-адаптуватися
+  ukr: b-adapt
   kor: b-adapt
 'b-adapt: Set the level of effort in determining B frame placement.':
   deu: 'b-adapt: Festlegen des Grades des Aufwands bei der Bestimmung der B-Frame-Platzierung.'
@@ -5664,7 +5664,7 @@ b-adapt:
     marco B.'
   zho: b-adapt：对决定B帧位置时的工作量水平进行调整。
   jpn: B-ADAPTBフレームの配置を決定する際の努力の度合いを設定します。
-  rus: 'b-adapt: Установите уровень усилий при определении размещения рамки B.'
+  rus: 'b-adapt: Установите уровень усилий при определении размещения B кадра.'
   por: 'b-adapt: Definir o nível de esforço na determinação da colocação da moldura
     B.'
   swe: 'b-anpassad: Ange nivån på ansträngningen när det gäller att bestämma placeringen
@@ -5904,7 +5904,7 @@ good is the default and recommended for most applications:
     cromática para el contenido de HDR10.'
   zho: hdr10-opt：启用HDR10内容的块级亮度和色度量化参数（Quantization Parameter, QP）优化。
   jpn: HDR10-OPT:HDR10コンテンツに対して、ブロックレベルでのルーマおよびクロマのQP最適化を有効にします。
-  rus: 'hdr10-opt: Включение оптимизации QP на уровне лумы и цветности блока для контента
+  rus: 'hdr10-opt: Включение оптимизации QP на уровне яркости и цветности блока для контента
     HDR10.'
   por: 'hdr10-opt: Permitir a optimização de luma a nível de bloco e de QP cromado
     para conteúdo HDR10.'
@@ -5949,7 +5949,7 @@ installer:
   spa: instalador
   zho: 安装程序
   jpn: インストーラ
-  rus: инсталлятор
+  rus: установщик
   por: instalador
   swe: installatör
   pol: instalator
@@ -6119,7 +6119,7 @@ out file is already in queue:
   spa: nuestro archivo ya está en la cola
   zho: out file is already in queue
   jpn: アウトファイルがすでにキューに入っている
-  rus: файл out уже находится в очереди
+  rus: выходной файл уже находится в очереди
   por: O ficheiro já está em fila de espera
   swe: filen out finns redan i kön
   pol: plik out jest już w kolejce
@@ -6147,7 +6147,7 @@ preset:
   spa: preestablecido
   zho: 预设
   jpn: プリセット
-  rus: предустановленный
+  rus: предустановка
   por: pré-definido
   swe: förinställd
   pol: wstępnie ustawiony
@@ -6477,7 +6477,7 @@ Confirm Stop Encode:
   spa: Confirmar parada de codificación
   zho: 确认停止编码
   jpn: 確認 停止 エンコード
-  rus: Подтверждение Остановить кодирование
+  rus: Подтверждение остановки кодирование
   por: Confirmar Codificação de paragem
   swe: Bekräfta Stop Encode
   pol: Potwierdź Zatrzymaj Kodowanie
@@ -6491,7 +6491,7 @@ Use Sane Audio Selection (updatable in config file):
   spa: Utilizar la selección de audio (actualizable en el archivo de configuración)
   zho: 使用音频合理选择（可在配置文件中更改）
   jpn: Sane Audio Selectionの使用（設定ファイルで変更可能）
-  rus: Use Sane Audio Selection (обновляется в конфигурационном файле)
+  rus: Используйте Разумный выбор аудио (обновляется в конфигурационном файле)
   por: Use Sane Audio Selection (actualizável em ficheiro de configuração)
   swe: Använd Sane Audio Selection (kan uppdateras i konfigurationsfilen)
   pol: Użyj wyboru Sane Audio (aktualizowane w pliku konfiguracyjnym)
@@ -6575,7 +6575,7 @@ Are you sure you want to discard it?:
   spa: ¿Estás seguro de que quieres descartarlo?
   zho: 您确定要丢弃它吗？
   jpn: 本当に捨てていいのか？
-  rus: Вы уверены, что хотите выбросить его?
+  rus: Вы уверены, что хотите отказаться от него?
   por: Tem a certeza de que quer descartá-la?
   swe: Är du säker på att du vill kasta den?
   pol: Czy na pewno chcesz go wyrzucić?
@@ -6589,7 +6589,7 @@ Discard current video:
   spa: Descartar el vídeo actual
   zho: 丢弃当前视频
   jpn: 現在の映像を捨てる
-  rus: Отбросить текущее видео
+  rus: Удалить текущее видео
   por: Descarte vídeo actual
   swe: Kassera aktuell video
   pol: Odrzuć bieżący film
@@ -6645,7 +6645,7 @@ Variance Based Adaptive Quantization:
   spa: Cuantización adaptativa basada en la varianza
   zho: 基于方差的自适应量化
   jpn: Variance Based Adaptive Quantization（分散ベースの適応型量子化
-  rus: Адаптивная квантизация на основе дисперсии
+  rus: Адаптивное квантование на основе дисперсии
   por: Quantização Adaptativa com Base na Variância
   swe: Variansbaserad adaptiv kvantisering
   pol: Adaptacyjna kwantyzacja oparta na wariancji
@@ -6773,7 +6773,7 @@ Preview - Press Q to Exit:
   spa: Vista previa - Pulse Q para salir
   zho: 预览 - 按Q键退出
   jpn: プレビュー - Qを押して終了
-  rus: Предварительный просмотр - Нажмите Q для выхода
+  rus: Предпросмотр - Нажмите Q для выхода
   por: Pré-visualização - Imprensa Q para Sair
   swe: Förhandsgranskning - Tryck på Q för att avsluta
   pol: Podgląd - Naciśnij Q, aby wyjść
@@ -6857,7 +6857,7 @@ Trim:
   spa: Recorte
   zho: 修剪
   jpn: トリム
-  rus: Отделка
+  rus: Подрезка
   por: Trim
   swe: Trim
   pol: Trim
@@ -6927,7 +6927,7 @@ Load:
   spa: Cargar
   zho: 载入
   jpn: ロード
-  rus: Нагрузка
+  rus: Загрузка
   por: Carga
   swe: Ladda
   pol: Obciążenie
@@ -6944,7 +6944,7 @@ Drag and Drop to reorder - All items need to be same dimensions:
     dimensiones
   zho: 拖放来重新排序 - 所有项目的尺寸都需要相同
   jpn: ドラッグ＆ドロップで再注文 - すべてのアイテムが同じ寸法である必要があります。
-  rus: Перетаскивание для изменения порядка - все предметы должны иметь одинаковые
+  rus: Перетаскивание для изменения порядка - все элементы должны иметь одинаковые
     размеры
   por: Arrastar e largar para reordenar - Todos os artigos precisam de ter as mesmas
     dimensões
@@ -6966,7 +6966,7 @@ The following items were excluded as they could not be identified as image or vi
     archivos de imagen o vídeo
   zho: 以下项目被排除在外，因为它们无法被识别为图像或视频文件
   jpn: 以下のものは、画像・映像ファイルとして識別できないため、除外しました。
-  rus: Следующие предметы были исключены, поскольку их нельзя было идентифицировать
+  rus: Следующие элементы были исключены, поскольку их нельзя было идентифицировать
     как файлы изображений или видеофайлы
   por: Os seguintes itens foram excluídos por não poderem ser identificados como ficheiros
     de imagem ou de vídeo
@@ -7229,7 +7229,7 @@ Match:
   spa: Partido
   zho: 匹配
   jpn: マッチ
-  rus: Матч
+  rus: Совпадение
   por: Combinar
   swe: Match
   ukr: Матч
@@ -7243,7 +7243,7 @@ Select By:
   spa: Seleccionar por
   zho: 选择方式
   jpn: セレクト・バイ
-  rus: Выберите по
+  rus: Выбрать по
   por: Selecione por
   swe: Välj efter
   ukr: Виберіть по
@@ -7480,7 +7480,7 @@ Please load in a video to configure a new profile:
   spa: Por favor, cargue un vídeo para configurar un nuevo perfil
   zho: 请加载一个视频来配置一个新的配置文件
   jpn: 新しいプロファイルを設定するためのビデオを読み込んでください。
-  rus: Пожалуйста, загрузите видео по настройке нового профиля
+  rus: Пожалуйста, загрузите видео для настройке нового профиля
   por: Por favor, carregue em um vídeo para configurar um novo perfil
   swe: Ladda in en video för att konfigurera en ny profil
   pol: Wczytaj film, jak skonfigurować nowy profil
@@ -7601,7 +7601,7 @@ Hint that encoding should happen in real-time if not faster:
     rápido
   zho: 提示编码应该实时发生，如果不是更快的话
   jpn: エンコードをリアルタイムで行うことを推奨します。
-  rus: Намек на то, что кодирование должно происходить в реальном времени, если не
+  rus: Подсказка, что кодирование должно происходить в режиме реального времени, если не
     быстрее
   por: Dica de que a codificação deve acontecer em tempo real, se não mais rápido
   swe: En antydan om att kodning bör ske i realtid, om inte snabbare.
@@ -7861,7 +7861,7 @@ Load Queue:
   spa: Cola de carga
   zho: 加载队列
   jpn: ロードキュー
-  rus: Очередь загрузки
+  rus: Загрузить очередь
   por: Fila de carga
   swe: Belastningskö
   pol: Kolejka ładunkowa
@@ -7947,7 +7947,7 @@ Unselect All:
   spa: Deseleccionar todo
   zho: 取消选择所有
   jpn: すべて選択解除
-  rus: Не выбирать все
+  rus: Снять выбор всего
   por: Desseleccionar todos
   swe: Avmarkera alla
   pol: Nie wybieraj wszystkich
@@ -8045,7 +8045,7 @@ No Default Source Folder:
   spa: No hay carpeta de origen por defecto
   zho: 没有默认的源文件夹
   jpn: デフォルトのソースフォルダなし
-  rus: Нет Исходная папка по умолчанию
+  rus: Нет Исходной папки по умолчанию
   por: Sem pasta de origem por defeito
   swe: Ingen standardkällmapp
   pol: Nie Domyślny folder źródłowy
@@ -8059,7 +8059,7 @@ Stay on Top:
   spa: Manténgase en la cima
   zho: 保持巅峰状态
   jpn: トップに君臨する
-  rus: Оставайтесь на вершине
+  rus: Оставаться поверх
   por: Fique no topo
   swe: Håll dig på topp
   pol: Zostań na szczycie
@@ -8143,7 +8143,7 @@ Load Directory:
   spa: Cargar directorio
   zho: 负载目录
   jpn: ロードディレクトリ
-  rus: Каталог загрузки
+  rus: Загрузить каталог
   por: Directório de Carga
   swe: Lasta in katalogen
   pol: Katalog ładunków
@@ -8157,7 +8157,7 @@ Multiple Files:
   spa: Varios archivos
   zho: 多个文件
   jpn: 複数のファイル
-  rus: Множественные файлы
+  rus: Множество файлов
   por: Ficheiros múltiplos
   swe: Flera filer
   pol: Wiele plików
@@ -8275,7 +8275,7 @@ Remove GUI logs and compress conversion logs older than 30 days at exit:
     30 días al salir.
   zho: 在退出时删除GUI日志并压缩超过30天的转换日志
   jpn: 終了時にGUIログを削除し、30日以上前の変換ログを圧縮します
-  rus: Удаление журналов GUI и сжатие журналов преобразования старше 30 дней при выходе
+  rus: Удаление журналов GUI и сжатие журналов конвертации старше 30 дней при выходе
   por: Remover registos GUI e comprimir registos de conversão com mais de 30 dias
     à saída
   swe: Ta bort GUI-loggar och komprimera konverteringsloggar som är äldre än 30 dagar
@@ -8292,7 +8292,7 @@ UI Scale:
   spa: Escala de IU
   zho: UI规模
   jpn: UIスケール
-  rus: Шкала пользовательского интерфейса
+  rus: Масштаб интерфейса
   por: Escala UI
   swe: UI-skala
   pol: Skala UI
@@ -8543,7 +8543,7 @@ Adaptive Reference Frames:
   spa: Marcos de referencia adaptativos
   zho: 自适应参考框架
   jpn: アダプティブリファレンスフレーム
-  rus: Адаптивные опорные рамки
+  rus: Адаптивные опорные кадры
   por: Quadros de referência adaptativos
   swe: Adaptiva referensramar
   pol: Adaptacyjne ramy odniesienia
@@ -8741,7 +8741,7 @@ Activity Type:
   spa: Tipo de actividad
   zho: 活动类型
   jpn: アクティビティタイプ
-  rus: Тип деятельности
+  rus: Тип активности
   por: Tipo de actividade
   swe: Typ av verksamhet
   pol: Rodzaj działalności
@@ -8825,7 +8825,7 @@ Lookahead distance:
   spa: Distancia de seguridad
   zho: 前瞻性距离
   jpn: ルックアヘッド距離
-  rus: Расстояние в перспективе
+  rus: Дистанция опережения
   por: Distância Lookahead
   swe: Avstånd till nästa tidpunkt
   pol: Odległość z wyprzedzeniem
@@ -9189,7 +9189,7 @@ Async Depth:
     vaSyncBuffer.
   zho: 最大的处理并行性。增加这个选项可以提高单通道的性能。如果驱动程序没有实现vaSyncBuffer函数，这个选项就不起作用。
   jpn: 最大処理並列度。シングルチャンネルの性能を向上させるために、これを増やします。ドライバがvaSyncBuffer関数を実装していない場合、このオプションは機能しません。
-  rus: Максимальный параллелизм обработки. Увеличьте это значение для повышения производительности
+  rus: Максимальная параллельность обработки. Увеличьте это значение для повышения производительности
     одного канала. Эта опция не работает, если драйвер не реализует функцию vaSyncBuffer.
   por: Máximo paralelismo de processamento. Aumentar isto para melhorar o desempenho
     de um único canal. Esta opção não funciona se o condutor não implementar a função
@@ -9309,7 +9309,7 @@ Lyrics:
   spa: Letra
   zho: 歌词
   jpn: 歌詞
-  rus: Лирика
+  rus: Тексты песен
   por: Letra de música
   swe: Texter
   pol: Teksty piosenek
@@ -9449,7 +9449,7 @@ lyrics:
   spa: letra
   zho: 歌词
   jpn: 詞
-  rus: лирика
+  rus: Тексты песен
   por: lyrics
   swe: texter
   pol: tekst piosenki
@@ -9477,7 +9477,7 @@ No Extra:
   spa: No Extra
   zho: 没有额外的
   jpn: 追加なし
-  rus: Без дополнительной оплаты
+  rus: Без доп. затрат
   por: Sem Extra
   swe: Ingen extra
   pol: Bez dodatków
