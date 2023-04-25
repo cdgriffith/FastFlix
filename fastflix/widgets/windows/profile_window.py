@@ -38,13 +38,13 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.parent_list = parent_list
         self.match_type = QtWidgets.QComboBox()
         self.match_type.addItems(match_type_locale)
-        self.match_type.currentIndexChanged.connect(self.update_combos)
+
         self.match_type.view().setFixedWidth(self.match_type.minimumSizeHint().width() + 50)
         self.setFixedHeight(120)
 
         self.match_item = QtWidgets.QComboBox()
         self.match_item.addItems(match_item_locale)
-        self.match_item.currentIndexChanged.connect(self.update_combos)
+
         self.match_item.view().setFixedWidth(self.match_item.minimumSizeHint().width() + 50)
 
         self.match_input_boxes = [
@@ -69,7 +69,6 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.match_input_boxes[4].view().setFixedWidth(self.match_input_boxes[4].minimumSizeHint().width() + 50)
 
         self.kill_myself = QtWidgets.QPushButton("X")
-        self.kill_myself.clicked.connect(lambda: self.parent_list.remove_track(self.index))
 
         # First Row
         self.grid = QtWidgets.QGridLayout()
@@ -87,9 +86,8 @@ class AudioProfile(QtWidgets.QTabWidget):
 
         self.convert_to = QtWidgets.QComboBox()
         self.convert_to.addItems(["None | Passthrough"] + main.video_options.audio_formats)
-        self.convert_to.currentIndexChanged.connect(self.update_conversion)
-        self.convert_to.view().setFixedWidth(self.convert_to.minimumSizeHint().width() + 50)
 
+        self.convert_to.view().setFixedWidth(self.convert_to.minimumSizeHint().width() + 50)
         self.bitrate = QtWidgets.QComboBox()
         self.bitrate.addItems([f"{x}k" for x in range(32, 1024, 32)])
         self.bitrate.view().setFixedWidth(self.bitrate.minimumSizeHint().width() + 50)
@@ -107,6 +105,11 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.grid.setColumnStretch(5, 0)
 
         self.setLayout(self.grid)
+
+        self.kill_myself.clicked.connect(lambda: self.parent_list.remove_track(self.index))
+        self.convert_to.currentIndexChanged.connect(self.update_conversion)
+        self.match_item.currentIndexChanged.connect(self.update_combos)
+        self.match_type.currentIndexChanged.connect(self.update_combos)
 
     def update_combos(self):
         self.match_input.hide()
@@ -199,7 +202,8 @@ class AudioSelect(FlixList):
             self.hardware_warning.hide()
 
     def add_track(self):
-        self.tracks.append(AudioProfile(self, self.app, self.main, self.inner_widget, len(self.tracks)))
+        new_track = AudioProfile(self, self.app, self.main, self.inner_widget, len(self.tracks))
+        self.tracks.append(new_track)
         self.reorder(height=126)
 
     def remove_track(self, index):
@@ -353,10 +357,11 @@ class EncoderOptions(QtWidgets.QTabWidget):
 
 
 class ProfileWindow(QtWidgets.QWidget):
-    def __init__(self, app: FastFlixApp, main, *args, **kwargs):
+    def __init__(self, app: FastFlixApp, main, container, *args, **kwargs):
         super().__init__(None, *args, **kwargs)
         self.app = app
         self.main = main
+        self.container = container
         self.config_file = self.app.fastflix.config.config_path
         self.setWindowTitle(t("New Profile"))
         self.setMinimumSize(500, 600)
@@ -522,4 +527,9 @@ class ProfileWindow(QtWidgets.QWidget):
         self.app.fastflix.config.save()
         self.main.widgets.profile_box.addItem(profile_name)
         self.main.widgets.profile_box.setCurrentText(profile_name)
-        self.hide()
+        self.container.profile_window = None
+        self.close()
+
+    def close(self):
+        self.container.profile_window = None
+        return super().close()

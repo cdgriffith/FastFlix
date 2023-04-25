@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 5.5.1
+
+* Fixing #465 Russian translation (thanks to Ta0ba0)
+* Fixing #466 AudioProfile could be deleted before fully created, causing runtime error (thanks to Jean-François Roy)
+* Fixing to only allow one new profile window at a time
+
 ## Version 5.5.0
 
 * Adding decoder option for NVEncC and QSVEncC
