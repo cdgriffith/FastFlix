@@ -28,6 +28,9 @@ known_language_list = [
     "Portuguese",
     "Swedish",
     "Polish",
+    "Romanian",
+    "Ukrainian",
+    "Korean",
 ]
 possible_detect_points = ["1", "2", "4", "6", "8", "10", "15", "20", "25", "50", "100"]
 

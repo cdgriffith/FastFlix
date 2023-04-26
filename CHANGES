@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 5.5.3
+
+* Fixing missing language options (thanks to RoDanny2021)
+
 ## Version 5.5.2
 
 * Adding #469 Romanian translations (thanks to RoDanny2021)
