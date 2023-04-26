@@ -169,6 +169,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         self.scale_updating = False
         self.last_thumb_hash = ""
+        self.page_updating = False
 
         self.large_preview = LargePreview(self)
 
@@ -843,12 +844,16 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.resolution_custom = QtWidgets.QLineEdit()
         self.widgets.resolution_custom.setFixedWidth(150)
+        self.widgets.resolution_custom.textChanged.connect(self.custom_res_update)
 
         main_row.addWidget(self.widgets.resolution_drop_down, alignment=QtCore.Qt.AlignLeft)
         main_row.addWidget(self.widgets.resolution_custom)
 
         scale_area.setLayout(main_row)
         return scale_area
+
+    def custom_res_update(self):
+        self.page_update(build_thumbnail=True)
 
     def update_resolution(self):
         if self.widgets.resolution_drop_down.currentIndex() == 0:
@@ -869,6 +874,10 @@ class Main(QtWidgets.QWidget):
                     self.widgets.resolution_custom.setText(str(self.app.fastflix.current_video.width))
                 case "height":
                     self.widgets.resolution_custom.setText(str(self.app.fastflix.current_video.height))
+                case "custom":
+                    self.widgets.resolution_custom.setText(
+                        f"{self.app.fastflix.current_video.width}:{self.app.fastflix.current_video.height}"
+                    )
                 case _:
                     self.widgets.resolution_custom.setText("")
         else:
@@ -1592,6 +1601,9 @@ class Main(QtWidgets.QWidget):
             settings["remove_hdr"] = True
 
         custom_filters = "scale='min(440\\,iw):-8'"
+        if self.resolution_method() == "custom":
+            custom_filters = f"scale={self.resolution_custom()},setsar=1:1"
+
         # if self.app.fastflix.current_video.color_transfer == "arib-std-b67":
         #     custom_filters += ",select=eq(pict_type\\,I)"
 
@@ -1740,22 +1752,28 @@ class Main(QtWidgets.QWidget):
         self.page_update(build_thumbnail=True)
 
     def page_update(self, build_thumbnail=True):
-        if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
-            return
-        self.last_page_update = time.time()
-        self.video_options.refresh()
-        self.build_commands()
-        if build_thumbnail:
-            new_hash = (
-                f"{self.build_crop()}:{self.start_time}:{self.end_time}:"
-                f"{self.app.fastflix.current_video.video_settings.selected_track}:"
-                f"{int(self.remove_hdr)}:{self.preview_place}:{self.widgets.rotate.currentIndex()}:"
-                f"{self.widgets.flip.currentIndex()}"
-            )
-            if new_hash == self.last_thumb_hash:
+        while self.page_updating:
+            time.sleep(0.1)
+        self.page_updating = True
+        try:
+            if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
                 return
-            self.last_thumb_hash = new_hash
-            self.generate_thumbnail()
+            self.last_page_update = time.time()
+            self.video_options.refresh()
+            self.build_commands()
+            if build_thumbnail:
+                new_hash = (
+                    f"{self.build_crop()}:{self.resolution_custom()}:{self.start_time}:{self.end_time}:"
+                    f"{self.app.fastflix.current_video.video_settings.selected_track}:"
+                    f"{int(self.remove_hdr)}:{self.preview_place}:{self.widgets.rotate.currentIndex()}:"
+                    f"{self.widgets.flip.currentIndex()}"
+                )
+                if new_hash == self.last_thumb_hash:
+                    return
+                self.last_thumb_hash = new_hash
+                self.generate_thumbnail()
+        finally:
+            self.page_updating = False
 
     def close(self, no_cleanup=False, from_container=False):
         self.app.fastflix.shutting_down = True
