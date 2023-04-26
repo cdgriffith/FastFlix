@@ -166,7 +166,7 @@ def generate_filters(
         filter_list.append(f"crop={crop['width']}:{crop['height']}:{crop['left']}:{crop['top']}")
     if scale:
         if not vaapi:
-            filter_list.append(f"scale={scale}:flags={scale_filter}")
+            filter_list.append(f"scale={scale}:flags={scale_filter},setsar=1:1")
     if rotate:
         if rotate == 1:
             filter_list.append(f"transpose=1")

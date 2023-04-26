@@ -130,7 +130,7 @@ Check out the different ways you can help [support FastFlix](https://github.com/
 
 FastFlix is machine translated using DeepL into Spanish (español), French (Français), German (Deutsch), 
 Italian (Italiano), Chinese (中文), Japanese (日本語), Portuguese (Português), Swedish (svenska), Ukrainian (Українська),
-Russian (русский), Polish (polskie) and Korean (한국어).
+Russian (русский), Polish (polskie), Korean (한국어), Romanian.
 
 If something sounds wrong in your language, please open an issue with which line in
 [the language file](https://github.com/cdgriffith/FastFlix/blob/master/fastflix/data/languages.yaml) needs fixed!

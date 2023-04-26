@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 5.5.2
+
+* Adding #469 Romanian translations (thanks to RoDanny2021)
+* Fixing #468 Custom resolutions not applying (thanks to GT500org)
+
 ## Version 5.5.1
 
 * Fixing #465 Russian translation (thanks to Ta0ba0)
