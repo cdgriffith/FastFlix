@@ -2,7 +2,7 @@
 import logging
 from pathlib import Path
 from subprocess import run, PIPE
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 import secrets
 
 from PySide6 import QtWidgets, QtCore, QtGui
@@ -13,6 +13,9 @@ from fastflix.flix import (
 from fastflix.encoders.common import helpers
 from fastflix.resources import get_icon
 from fastflix.language import t
+
+if TYPE_CHECKING:
+    from fastflix.widgets.main import Main
 
 __all__ = ["LargePreview"]
 
@@ -33,7 +36,7 @@ class ImageLabel(QtWidgets.QLabel):
 
 
 class LargePreview(QtWidgets.QWidget):
-    def __init__(self, parent):
+    def __init__(self, parent: "Main"):
         super().__init__()
         self.main = parent
         self.label = ImageLabel(self)
@@ -67,6 +70,7 @@ class LargePreview(QtWidgets.QWidget):
         filters = helpers.generate_filters(
             enable_opencl=self.main.app.fastflix.opencl_support,
             start_filters="select=eq(pict_type\\,I)" if self.main.widgets.thumb_key.isChecked() else None,
+            scale=self.main.app.fastflix.current_video.scale,
             **settings,
         )
 
