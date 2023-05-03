@@ -360,29 +360,6 @@ class NVENCC(RigayaPanel):
             tooltip="Calculate PSNR and SSIM and show in the encoder output",
         )
 
-    def init_dhdr10_info(self):
-        layout = self._add_file_select(
-            label="HDR10+ Metadata",
-            widget_name="hdr10plus_metadata",
-            button_action=lambda: self.dhdr10_update(),
-            tooltip="dhdr10_info: Path to HDR10+ JSON metadata file",
-        )
-        self.labels["hdr10plus_metadata"].setFixedWidth(200)
-        self.extract_button = QtWidgets.QPushButton(t("Extract HDR10+"))
-        self.extract_button.hide()
-        self.extract_button.clicked.connect(self.extract_hdr10plus)
-
-        self.extract_label = QtWidgets.QLabel(self)
-        self.extract_label.hide()
-        self.movie = QtGui.QMovie(loading_movie)
-        self.movie.setScaledSize(QtCore.QSize(25, 25))
-        self.extract_label.setMovie(self.movie)
-
-        layout.addWidget(self.extract_button)
-        layout.addWidget(self.extract_label)
-
-        return layout
-
     def init_modes(self):
         layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="cqp")
         return layout
@@ -416,7 +393,7 @@ class NVENCC(RigayaPanel):
             lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
             aq=self.widgets.aq.currentText(),
             aq_strength=self.widgets.aq_strength.currentIndex(),
-            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),  # .replace("\\", "/"),
+            copy_hdr10=self.widgets.copy_hdr10.isChecked(),
             multipass=self.widgets.multipass.currentText(),
             mv_precision=self.widgets.mv_precision.currentText(),
             init_q_i=self.widgets.init_q_i.currentText() if self.widgets.init_q_i.currentIndex() != 0 else None,
@@ -456,10 +433,6 @@ class NVENCC(RigayaPanel):
         if not self.app.fastflix.current_video:
             return
         super().new_source()
-        if self.app.fastflix.current_video.hdr10_plus:
-            self.extract_button.show()
-        else:
-            self.extract_button.hide()
         if self.app.fastflix.current_video.current_video_stream.bit_depth > 8 and not self.main.remove_hdr:
             self.widgets.force_ten_bit.setChecked(True)
             self.widgets.force_ten_bit.setDisabled(True)

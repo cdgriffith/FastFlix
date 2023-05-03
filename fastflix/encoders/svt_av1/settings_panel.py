@@ -131,13 +131,12 @@ class SVT_AV1(SettingPanel):
         )
 
     def init_single_pass(self):
-        layout = QtWidgets.QHBoxLayout()
-        layout.addWidget(QtWidgets.QLabel("Single Pass"))
-        self.widgets.single_pass = QtWidgets.QCheckBox()
-        self.widgets.single_pass.setChecked(False)
-        self.widgets.single_pass.toggled.connect(lambda: self.main.page_update())
-        layout.addWidget(self.widgets.single_pass)
-        return layout
+        return self._add_check_box(
+            label="Single Pass",
+            widget_name="single_pass",
+            tooltip="Single Pass Encoding",
+            opt="single_pass",
+        )
 
     def init_preset(self):
         return self._add_combo_box(

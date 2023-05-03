@@ -10275,3 +10275,37 @@ Output Depth:
   ukr: Тільки 8 біт
   kor: 8 비트 만
   ron: Numai 8-Bit
+Copy HDR10+:
+  eng: Copy HDR10+
+  deu: HDR10+ kopieren
+  fra: Copier HDR10+
+  ita: Copia HDR10+
+  spa: Copiar HDR10+
+  zho: 复制HDR10+
+  jpn: HDR10+をコピー
+  rus: Копировать HDR10+
+  por: Copiar HDR10+
+  swe: Kopiera HDR10+
+  pol: Skopiuj HDR10+
+  ukr: Скопіювати HDR10+
+  kor: HDR10+ 복사
+  ron: Copiați HDR10+
+Copy HDR10+ dynamic metadata from input file:
+  eng: Copy HDR10+ dynamic metadata from input file
+  deu: Kopieren Sie HDR10+ dynamische Metadaten aus der Eingabedatei
+  fra: Copier les métadonnées dynamiques HDR10+ du fichier d'entrée
+  ita: Copia i metadati dinamici HDR10+ dal file di input
+  spa: Copiar metadatos dinámicos HDR10+ del archivo de entrada
+  zho: 从输入文件复制HDR10+动态元数据
+  jpn: 入力ファイルからHDR10+ダイナミックメタデータをコピー
+  rus: Скопировать динамические метаданные HDR10+ из входного файла
+  por: Copiar metadados dinâmicos HDR10+ do arquivo de entrada
+  swe: Kopiera HDR10+ dynamisk metadata från inmatningsfilen
+  pol: Skopiuj dynamiczne metadane HDR10+ z pliku wejściowego
+  ukr: Скопіювати динамічні метадані HDR10+ з вхідного файлу
+  kor: 입력 파일에서 HDR10+ 동적 메타 데이터 복사
+  ron: Copiați metadatele dinamice HDR10+ din fișierul de intrare
+Single Pass:
+  eng: Single Pass
+Single Pass Encoding:
+  eng: Single Pass Encoding

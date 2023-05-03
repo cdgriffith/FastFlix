@@ -1238,6 +1238,9 @@ class Main(QtWidgets.QWidget):
             for x in times
         ]
         ProgressBar(self.app, tasks)
+        if not result_list:
+            logger.warning("Autocrop did not return crop points, please use a ffmpeg version with cropdetect filter")
+            return
 
         smallest = (self.app.fastflix.current_video.height + self.app.fastflix.current_video.width) * 2
         selected = result_list[0]

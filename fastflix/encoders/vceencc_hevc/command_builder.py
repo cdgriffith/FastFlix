@@ -36,8 +36,8 @@ def build(fastflix: FastFlix):
         max_cll = f'--max-cll "{fastflix.current_video.cll}"'
 
     dhdr = None
-    if settings.hdr10plus_metadata:
-        dhdr = f'--dhdr10-info "{settings.hdr10plus_metadata}"'
+    if settings.copy_hdr10:
+        dhdr = f"--dhdr10-info copy"
 
     seek = ""
     seekto = ""
