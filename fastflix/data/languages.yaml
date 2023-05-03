@@ -10307,5 +10307,31 @@ Copy HDR10+ dynamic metadata from input file:
   ron: Copiați metadatele dinamice HDR10+ din fișierul de intrare
 Single Pass:
   eng: Single Pass
+  deu: Einzelner Pass
+  fra: Passe unique
+  ita: Passaggio singolo
+  spa: Pase único
+  zho: 单次通过
+  jpn: シングルパス
+  rus: Одиночный проход
+  por: Passe único
+  swe: Enkelt pass
+  pol: Pojedyncze przejście
+  ron: O singură trecere
+  kor: 단일 패스
+  ukr: Одноразовий пропуск
 Single Pass Encoding:
   eng: Single Pass Encoding
+  deu: Single-Pass-Codierung
+  fra: Encodage à passage unique
+  ita: Codifica a passaggio singolo
+  spa: Codificación de una sola pasada
+  zho: 单程编码
+  jpn: シングルパスエンコード
+  rus: Однопроходное кодирование
+  por: Codificação de passagem única
+  swe: Kodning i ett enda steg
+  pol: Kodowanie jednoprzebiegowe
+  ron: Codificare cu o singură trecere
+  kor: 싱글 패스 인코딩
+  ukr: Однопрохідне кодування
