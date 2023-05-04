@@ -121,7 +121,7 @@ Additional x265 params:
   ita: Parametri aggiuntivi x265
   spa: Parámetros adicionales x265
   zho: 额外的x265参数
-  jpn: 追加のx265パラメター
+  jpn: 追加のx265パラメータ
   rus: Дополнительные параметры x265
   por: Parâmetros adicionais x265
   swe: Ytterligare parametrar för x265
@@ -136,7 +136,7 @@ Advanced:
   ita: Avanzato
   spa: Avanzado
   zho: 高级
-  jpn: アドバンスド
+  jpn: 高度な
   rus: Расширенный
   por: Avançado
   swe: Avancerad
@@ -181,7 +181,7 @@ All queue items have completed:
   ita: Tutte le voci della coda sono state completate
   spa: Todos los artículos de la cola se han completado
   zho: 所有排队项目已完成
-  jpn: すべてのキューアイテムが完了
+  jpn: すべてのキューアイテムが完了しました
   rus: Все пункты очереди завершены
   por: Todos os itens da fila foram completados
   swe: Alla köposter har avslutats.
@@ -226,7 +226,7 @@ Audio select language:
   ita: Audio seleziona la lingua
   spa: Audio seleccionar idioma
   zho: 选择音频语言
-  jpn: オーディオの選択言語
+  jpn: オーディオ言語の選択
   rus: Выбор языка аудио
   por: Seleccione a língua do áudio
   swe: Ljud väljer språk
@@ -256,7 +256,7 @@ Auto:
   ita: Auto
   spa: Auto
   zho: 自动
-  jpn: オート
+  jpn: 自動的
   rus: Авто
   por: Auto
   swe: Auto
@@ -271,7 +271,7 @@ Auto Burn-in first forced or default subtitle track:
   ita: Auto Burn-in prima traccia sottotitoli forzata o predefinita
   spa: Auto Burn-in primera pista de subtítulos forzados o por defecto
   zho: 自动内嵌第一条分配为forced或default的字幕轨
-  jpn: オートバーンイン最初の強制またはデフォルトの字幕トラック
+  jpn: 最初の強制またはデフォルトの字幕トラックを自動的にバーンインする
   rus: Автоматическое включение первой принудительной дорожки субтитров или дорожки
     субтитров по умолчанию
   por: Auto Burn-in primeira faixa de subtítulos forçada ou por defeito
@@ -288,7 +288,7 @@ Auto Crop:
   ita: Auto Crop
   spa: Auto Crop
   zho: 自动裁切
-  jpn: オートクロップ
+  jpn: 自動クロップ
   rus: Автообрезка
   por: Cultura Automóvel
   swe: Automatisk beskärning
@@ -303,7 +303,7 @@ Auto Crop - Finding black bars at:
   ita: Auto Crop - Trovare barre nere a
   spa: Auto Crop - Encontrar barras negras en
   zho: 自动裁切 - 寻找位于此时刻的黑边：
-  jpn: オートクロップ - 黒いバーを見つける
+  jpn: 自動クロップ - 黒いバーを見つける
   rus: Автообрезка - Нахождение черных полос в
   por: Auto Crop - Encontrar barras pretas em
   swe: Automatisk beskärning - Hitta svarta streck vid
@@ -333,7 +333,7 @@ Automatically enabled when an interlaced video is detected:
   ita: Abilitato automaticamente quando viene rilevato un video interlacciato
   spa: Se activa automáticamente cuando se detecta un vídeo entrelazado
   zho: 当检测到隔行扫描视频时自动启用此项。
-  jpn: インターレースビデオが検出されると自動的に有効になります。
+  jpn: インターレース動画が検出されると自動的に有効になります。
   rus: Автоматически включается при обнаружении чересстрочного видео
   por: Activado automaticamente quando um vídeo entrelaçado é detectado
   swe: Aktiveras automatiskt när en interlaced video upptäcks.
@@ -348,7 +348,7 @@ B Adapt:
   ita: B Adattare
   spa: B Adaptar
   zho: B Adapt
-  jpn: Bアダプタ
+  jpn: Bアダプト
   rus: B Адаптация
   por: B Adaptar
   swe: B Anpassning
@@ -438,7 +438,7 @@ Both Passes:
   ita: Entrambi i Pass
   spa: Ambos pases
   zho: 两遍均应用
-  jpn: 両方のパス
+  jpn: 1回目と2回目両方
   rus: Оба прохода
   por: Ambos os Passes
   swe: Båda passen
@@ -484,7 +484,7 @@ Break the video into rows to encode faster (lesser quality):
   ita: Suddividere il video in righe per codificare più velocemente (qualità inferiore)
   spa: Dividir el video en filas para codificar más rápido (menor calidad)
   zho: 将视频按行分割，以更快地进行编码（质量较差）。
-  jpn: 速くエンコードするためにビデオを列に分割する（画質は劣る）
+  jpn: 速くエンコードするためにビデオを列に分割する（画質は落ちる）
   rus: Разбейте видео на строки для более быстрого кодирования (с меньшим качеством)
   por: Quebrar o vídeo em filas para codificar mais rapidamente (menor qualidade)
   swe: Dela upp videon i rader för att koda snabbare (sämre kvalitet)
@@ -544,8 +544,8 @@ CPU Used:
   fra: CPU utilisé
   ita: CPU usata
   spa: CPU utilizado
-  zho: CPU用量
-  jpn: 使用CPU
+  zho: CPU使用率
+  jpn: CPU使用率
   rus: Используемый процессор
   por: CPU utilizada
   swe: CPU som används
@@ -590,7 +590,7 @@ Cancel Conversion:
   ita: Annullare la conversione
   spa: Cancelar la conversión
   zho: 取消转换
-  jpn: 変換キャンセル
+  jpn: 変換をキャンセルする
   rus: Отменить преобразование
   por: Cancelar Conversão
   swe: Avbryt konvertering
@@ -605,7 +605,7 @@ Cancel has been requested, killing encoding:
   ita: È stata richiesta la cancellazione, uccidendo la codifica
   spa: Se ha solicitado la cancelación, matando la codificación
   zho: 已请求取消，正在终止编码
-  jpn: キャンセルが要求された場合、エンコーディングを殺す
+  jpn: キャンセルが要求されました、エンコーディングを終了中
   rus: Была запрошена отмена, прекращающая кодирование
   por: Foi pedido o cancelamento, codificação de mortes
   swe: Avbryt har begärts, dödande kodning
@@ -635,7 +635,7 @@ Cancelled:
   ita: Cancellato
   spa: Cancelado
   zho: 已取消
-  jpn: キャンセル
+  jpn: キャンセルされた
   rus: Отменено
   por: Cancelado
   swe: Avbokad
@@ -649,8 +649,8 @@ Cancelled - Ready to try again:
   fra: Annulé - Prêt à réessayer
   ita: Annullato - Pronto a riprovare
   spa: Cancelado - Listo para intentarlo de nuevo
-  zho: 已取消 - 准备重试
-  jpn: キャンセル - 再試行の準備
+  zho: 已取消 - 已准备好重试
+  jpn: キャンセルされました - 再試行できます
   rus: Отменено - готовы повторить попытку
   por: Cancelado - Pronto para tentar novamente
   swe: Avbruten - redo att försöka igen
@@ -665,7 +665,7 @@ Cannot remove afterwards!:
   ita: Non può essere rimosso dopo!
   spa: No se puede quitar después!
   zho: 字幕内嵌之后无法去除！
-  jpn: 後から削除できない！？
+  jpn: バーンインした字幕は後から削除できない！
   rus: Невозможно потом удалить!
   por: Não é possível remover depois!
   swe: Kan inte tas bort efteråt!
@@ -680,7 +680,7 @@ Check for Newer Version of FastFlix:
   ita: Verifica la presenza di una versione più recente di FastFlix
   spa: Busca la nueva versión de FastFlix
   zho: 检查FastFlix更新
-  jpn: 新しいバージョンのFastFlixのチェック
+  jpn: 新しいバージョンのFastFlixをチェックする
   rus: Проверьте наличие новой версии FastFlix
   por: Verificar a existência de uma versão mais recente de FastFlix
   swe: Kontrollera om det finns en nyare version av FastFlix
@@ -695,7 +695,7 @@ Clean Old Logs:
   ita: Pulire i vecchi tronchi
   spa: Limpiar los viejos troncos
   zho: 清理旧日志
-  jpn: 古い丸太をきれいにする
+  jpn: 古いログを削除する
   rus: Очистить старые журналы
   por: Toros antigos limpos
   swe: Rengör gamla stockar
@@ -709,8 +709,8 @@ Clear Completed:
   fra: Clair Terminé
   ita: Chiaro Completato
   spa: Claro Completado
-  zho: 清理已完成项目
-  jpn: クリア完了
+  zho: 清理已完成。
+  jpn: 削除が完了しました。
   rus: Очистка завершена
   por: Limpar Completado
   swe: Klart slutfört
@@ -740,7 +740,7 @@ CodeCalamity UHD HDR Encoding Guide:
   ita: Guida alla codifica CodeCalamity UHD HDR
   spa: CodeCalamity UHD Guía de codificación HDR
   zho: CodeCalamity的UHD HDR编码指南（英文）
-  jpn: CodeCalamity UHD HDRエンコーディングガイド
+  jpn: CodeCalamity UHD HDRエンコーディングガイド（英語）
   rus: CodeCalamity Руководство по кодированию UHD HDR
   por: CodeCalamity UHD Guia de Codificação de HDR
   swe: CodeCalamity UHD HDR-kodningsguide
@@ -799,7 +799,7 @@ Command has completed:
   fra: Le commandement a terminé
   ita: Il comando ha completato
   spa: El comando ha completado
-  zho: 命令已完成
+  zho: 命令已完成。
   jpn: コマンドが完了しました。
   rus: Команда выполнена
   por: Comando completado
@@ -817,7 +817,7 @@ Command worker received request to pause current encode:
   spa: El trabajador del comando recibió una solicitud para pausar la codificación
     actual
   zho: 命令执行程序收到了暂停当前编码的请求
-  jpn: コマンドワーカーが現在のエンコードを一時停止するリクエストを受信
+  jpn: コマンドワーカーが現在のエンコードを一時停止するリクエストを受信しました
   rus: Оператор получил запрос на приостановку текущего кодирования
   por: Comando operário recebeu pedido para pausar a codificação de corrente
   swe: Kommandotjänstemannen har mottagit en begäran om att pausa den pågående kodningen.
@@ -836,7 +836,7 @@ Command worker received request to pause encoding after the current item complet
   spa: El trabajador del comando recibió la solicitud de pausar la codificación después
     de que el elemento actual complete
   zho: 命令执行程序收到了在当前项目完成后暂停编码的请求
-  jpn: コマンドワーカーが、現在のアイテムが完了した後にエンコードを一時停止するリクエストを受信した
+  jpn: コマンドワーカーが、現在のアイテムが完了した後にエンコードを一時停止するリクエストを受信しました
   rus: Оператор получил запрос на приостановку кодирования после завершения текущего
     элемента
   por: O trabalhador de comando recebeu um pedido para pausar a codificação após a
@@ -857,7 +857,7 @@ Command worker received request to resume encoding:
   ita: L'operatore di comando ha ricevuto la richiesta di riprendere la codifica
   spa: El comandante recibió la solicitud de reanudar la codificación
   zho: 命令执行程序收到了恢复编码的请求
-  jpn: コマンドワーカーがエンコード再開のリクエストを受信
+  jpn: コマンドワーカーがエンコード再開のリクエストを受信しました
   rus: Оператор получил запрос на возобновление кодирования
   por: O trabalhador de comando recebeu um pedido para retomar a codificação
   swe: Kommandotjänstemannen har mottagit en begäran om att återuppta kodningen.
@@ -874,7 +874,7 @@ Command worker received request to resume paused encode:
   spa: El trabajador del comando recibió la solicitud de reanudar la codificación
     en pausa
   zho: 命令执行程序收到了恢复已暂停编码的请求
-  jpn: コマンドワーカーが一時停止したエンコードの再開要求を受信
+  jpn: コマンドワーカーが一時停止したエンコードの再開要求を受信しました
   rus: Оператор получил запрос на возобновление приостановленного кодирования
   por: O trabalhador de comando recebeu pedido para retomar o codigo pausado
   swe: Kommandotjänstemannen har mottagit en begäran om att återuppta pausad kodning.
@@ -919,7 +919,7 @@ Constant:
   ita: Costante
   spa: Constante
   zho: 恒定
-  jpn: コンスタントに
+  jpn: 一定の
   rus: Постоянная
   por: Constante
   swe: Konstant
@@ -964,7 +964,7 @@ Conversion worker shutting down:
   ita: Operaio di conversione in chiusura
   spa: El cierre del trabajador de conversión
   zho: 正在关闭转换程序
-  jpn: 変換作業者のシャットダウン
+  jpn: コンバージョンワーカーのシャットダウンしている
   rus: Выключение конвертера
   por: Encerramento do trabalhador de conversão
   swe: Konverteringsarbetaren stänger av
@@ -1009,7 +1009,7 @@ Copy Chapters:
   ita: Copiare i capitoli
   spa: Copiar capítulos
   zho: 复制章节
-  jpn: コピーチャプター
+  jpn: チャプターをコピーする
   rus: Копирование глав
   por: Copiar Capítulos
   swe: Kopiera kapitel
@@ -1054,7 +1054,7 @@ Copy Landscape Cover:
   ita: Copiare la copertura del paesaggio
   spa: Copia de la portada del paisaje
   zho: 复制横向封面
-  jpn: コピー・ランドスケープ・カバー
+  jpn: ランドスケープ・カバーをコピーする
   rus: Копия обложки "пейзаж"
   por: Cópia da capa da Paisagem
   swe: Kopiera landskapsomslag
@@ -1069,7 +1069,7 @@ Copy Small Cover (no preview):
   ita: Copia copertina piccola (nessuna anteprima)
   spa: Copia de la portada pequeña (sin vista previa)
   zho: 复制小封面（无预览）
-  jpn: Copy Small Cover（プレビューなし）
+  jpn: Small Coverをコピーする（プレビューなし）
   rus: Копия Малая обложка (без предпросмотра)
   por: Copiar Pequena Capa (sem pré-visualização)
   swe: Kopiera litet omslag (ingen förhandsgranskning)
@@ -1084,7 +1084,7 @@ Copy Small Landscape Cover  (no preview):
   ita: Copia piccola copertura del paesaggio (nessuna anteprima)
   spa: Copia de la cubierta de un pequeño paisaje (sin vista previa)
   zho: 复制横向小封面（无预览）
-  jpn: Copy Small Landscape Cover (no preview)
+  jpn: Small Landscape Coverをコピーする(プレビューなし)
   rus: Копия малой обложки "пейзаж" (без предпросмотра)
   por: Copiar Pequena Capa de Paisagem (sem pré-visualização)
   swe: Kopiera litet landskapsomslag (ingen förhandsgranskning)
@@ -1099,7 +1099,7 @@ Copy all commands to the clipboard:
   ita: Copiare tutti i comandi negli appunti
   spa: Copia todos los comandos al portapapeles
   zho: 将所有命令复制到剪贴板
-  jpn: すべてのコマンドをクリップボードにコピー
+  jpn: すべてのコマンドをクリップボードにコピーする
   rus: Копирование всех команд в буфер обмена
   por: Copiar todos os comandos para a prancheta
   swe: Kopiera alla kommandon till klippbordet
@@ -1175,7 +1175,7 @@ Could not fix first subtitle track:
   fra: Impossible de réparer la première piste de sous-titres
   ita: Impossibile fissare la prima traccia dei sottotitoli
   spa: No se pudo arreglar la primera pista del subtítulo
-  zho: Could not fix first subtitle track
+  zho: 无法固定第1个字幕
   jpn: 1つ目の字幕トラックを固定できなかった
   rus: Не удалось зафиксировать первую дорожку субтитров
   por: Não foi possível fixar a primeira faixa de legendas
@@ -1265,7 +1265,7 @@ Create Profile:
   fra: Créer un profil
   ita: Crea profilo
   spa: Crear el perfil
-  zho: 创建方案
+  zho: 创建配置
   jpn: プロファイルの作成
   rus: Создать профиль
   por: Criar Perfil
@@ -1310,7 +1310,7 @@ Current Profile Settings:
   fra: Paramètres du profil actuel
   ita: Impostazioni del profilo corrente
   spa: Configuración del perfil actual
-  zho: 当前方案设置
+  zho: 当前配置
   jpn: 現在のプロファイル設定
   rus: Текущие настройки профиля
   por: Definições de perfil actuais
@@ -1464,8 +1464,8 @@ Default is an autodetected count based on the number of CPU cores and whether WP
   fra: 'Par défaut : AQ activé avec auto-variance'
   ita: 'Default: AQ abilitato con auto-varianza'
   spa: 'Por defecto: AQ habilitado con auto-varianza'
-  zho: 默认值为enabled + auto-variance
-  jpn: デフォルト。自動分散でAQを有効にする
+  zho: '默认值为enabled + auto-variance'
+  jpn: 'デフォルトは自動分散でAQを有効にする'
   rus: 'По умолчанию: AQ включен с автоматической дисперсией'
   por: 'Por omissão: AQ activado com auto-variância'
   swe: 'Standard: AQ aktiverad med automatisk variation'
@@ -1509,7 +1509,7 @@ Delete Current Profile:
   fra: Supprimer le profil actuel
   ita: Cancellare il profilo corrente
   spa: Borrar el perfil actual
-  zho: 删除当前方案
+  zho: 删除当前p配置
   jpn: 現在のプロフィールの削除
   rus: Удалить текущий профиль
   por: Apagar perfil actual
@@ -1570,7 +1570,7 @@ Determine HDR details:
   ita: Determinare i dettagli HDR
   spa: Determinar los detalles del HDR
   zho: 检测HDR详情
-  jpn: HDRの詳細を決める
+  jpn: HDRの詳細を検出
   rus: Определите детали HDR
   por: Determinar os detalhes do HDR
   swe: Bestämma HDR-detaljer
@@ -1668,8 +1668,8 @@ Download Cancelled:
   fra: Téléchargement annulé
   ita: Scaricamento annullato
   spa: Descarga cancelada
-  zho: 下载取消
-  jpn: ダウンロード 中止
+  zho: 下载已取消
+  jpn: ダウンロードはキャンセルされた
   rus: Скачивание Отменено
   por: Descarregar Cancelado
   swe: Ladda ner Cancelled
@@ -1684,7 +1684,7 @@ Download Newest FFmpeg:
   ita: Scarica il nuovo FFmpeg
   spa: Descargar el nuevo FFmpeg
   zho: 下载最新版FFmpeg
-  jpn: ダウンロード 最新のFFmpeg
+  jpn: 最新のFFmpegをダウンロードする
   rus: Скачать новейший FFmpeg
   por: Descarregar o mais recente FFmpeg
   swe: Hämta Nyaste FFmpeg
@@ -1699,7 +1699,7 @@ Downloading FFmpeg:
   ita: Scaricare FFmpeg
   spa: Descargar FFmpeg
   zho: 正在下载FFmpeg
-  jpn: FFmpegのダウンロード
+  jpn: FFmpegをダウンロード中
   rus: Загрузка FFmpeg
   por: Descarregar FFmpeg
   swe: Hämta FFmpeg
@@ -1714,7 +1714,7 @@ Dual License:
   ita: Doppia Licenza
   spa: Licencia doble
   zho: 双重许可
-  jpn: デュアルライセンス
+  jpn: 二重ライセンス
   rus: Двойная лицензия
   por: Dupla Licença
   swe: Dubbel licens
@@ -1758,7 +1758,7 @@ Enable strong intra smoothing for 32x32 intra blocks.:
   fra: Permettre un lissage intra fort pour les blocs intra 32x32.
   ita: Abilita una forte lisciatura intra per gli intrablocchi 32x32.
   spa: Habilitar un fuerte alisamiento interno para los bloqueos internos de 32x32.
-  zho: Enable strong intra smoothing for 32x32 intra blocks.
+  zho: 对32x32的内部j块启用强烈的内部舒缓（intra smoothing）。
   jpn: 32x32イントラブロックの強力なイントラ・スムージングを有効にする。
   rus: Включите сильное внутреннее сглаживание для внутренних блоков 32x32.
   por: Permitir um forte alisamento intra para 32x32 intra blocos.
@@ -1789,7 +1789,7 @@ Enabled:
   ita: Abilitato
   spa: Habilitado
   zho: 启用
-  jpn: 有効
+  jpn: 有効化
   rus: Включено
   por: Activado
   swe: Aktiverad
@@ -1861,7 +1861,7 @@ Enabling cover thumbnails on your system:
   ita: Abilita le miniature del coperchio del sistema
   spa: Habilitando las miniaturas de la cubierta en su sistema
   zho: 在系统上启用封面缩略图（英文）
-  jpn: お使いのシステムで表紙のサムネイルを有効にする
+  jpn: お使いのシステムでカバーのサムネイルを有効にする
   rus: Включение эскизов обложек в вашей системе
   por: Habilitação de miniaturas de cobertura no seu sistema
   swe: Aktivera miniatyrbilder på ditt system
@@ -1921,7 +1921,7 @@ Encoding Queue:
   ita: Coda di codifica
   spa: Cola de codificación
   zho: 编码队列
-  jpn: 符号化キュー
+  jpn: 変換キュー
   rus: Очередь кодирования
   por: Fila de Codificação
   swe: Kö för kodning
@@ -1950,7 +1950,7 @@ Encoding command:
   fra: Commande d'encodage
   ita: Comando di codifica
   spa: Comando de codificación
-  zho: 编码命令第
+  zho: 编码命令
   jpn: エンコードコマンド
   rus: Команда кодирования
   por: Comando de codificação
@@ -1979,7 +1979,7 @@ Encoding errored:
   eng: Encoding errored
   fra: Encodage erroné
   ita: Codifica errata
-  spa: ''
+  spa: error de codificación
   zho: 编码错误
   jpn: エンコーディングエラー
   rus: Ошибка кодирования
@@ -2010,7 +2010,7 @@ Enforce an encode profile:
   fra: Faire appliquer un profil codé
   ita: Applicare un profilo di codifica
   spa: Hacer cumplir un perfil de codificación
-  zho: 应用一个编码规格
+  zho: 应用一个编码配置
   jpn: エンコードプロファイルの適用
   rus: Применить профиль кодирования
   por: Forçar um perfil de codificação
@@ -2101,7 +2101,7 @@ Exit:
   ita: Uscita
   spa: Salga de
   zho: 退出
-  jpn: 出口
+  jpn: 退出
   rus: Выход
   por: Saída
   swe: Avsluta
@@ -2131,8 +2131,8 @@ Extra flags or options, cannot modify existing settings:
     existants
   ita: I flag o le opzioni extra, non possono modificare le impostazioni esistenti
   spa: Las banderas u opciones adicionales, no pueden modificar los ajustes existentes
-  zho: 额外的标志或选项，无法修改已有设置。
-  jpn: 既存の設定を変更できない、追加のフラグやオプション
+  zho: 有额外的标志或选项，无法修改已有设置。
+  jpn: 追加のフラグやオプションがあるため既存の設定を変更できない
   rus: Дополнительные флаги или опции, не могут изменять существующие настройки
   por: Bandeiras ou opções extra, não podem modificar as configurações existentes
   swe: Extra flaggor eller alternativ, kan inte ändra befintliga inställningar
@@ -2252,7 +2252,7 @@ FFMPEG AV1 Encoding Guide:
   ita: Guida alla codifica FFMPEG AV1
   spa: Guía de codificación del FFMPEG AV1
   zho: FFMPEG AV1编码指南（英文）
-  jpn: FFMPEG AV1エンコードガイド
+  jpn: FFMPEG AV1エンコードガイド（英語）
   rus: Руководство по кодированию FFMPEG AV1
   por: Guia de Codificação FFMPEG AV1
   swe: FFMPEG AV1 Kodningsguide
@@ -2267,7 +2267,7 @@ FFMPEG AVC / H.264 Encoding Guide:
   ita: Guida alla codifica FFMPEG AVC / H.264
   spa: Guía de codificación FFMPEG AVC / H.264
   zho: FFMPEG AVC / H.264 编码指南（英文）
-  jpn: FFMPEG AVC / H.264エンコードガイド
+  jpn: FFMPEG AVC / H.264エンコードガイド（英語）
   rus: Руководство по кодированию FFMPEG AVC / H.264
   por: Guia de Codificação FFMPEG AVC / H.264
   swe: FFMPEG AVC / H.264 Kodningsguide
@@ -2282,7 +2282,7 @@ FFMPEG HEVC / H.265 Encoding Guide:
   ita: Guida alla codifica FFMPEG HEVC / H.265
   spa: Guía de codificación FFMPEG HEVC / H.265
   zho: FFMPEG HEVC / H.265编码指南（英文）
-  jpn: FFMPEG HEVC / H.265 エンコーディングガイド
+  jpn: FFMPEG HEVC / H.265 エンコーディングガイド（英語）
   rus: Руководство по кодированию FFMPEG HEVC / H.265
   por: FFMPEG HEVC / H.265 Guia de Codificação
   swe: FFMPEG HEVC / H.265 Kodningsguide
@@ -2297,7 +2297,7 @@ FFMPEG VP9 Encoding Guide:
   ita: Guida alla codifica FFMPEG VP9
   spa: Guía de codificación del FFMPEG VP9
   zho: FFMPEG VP9编码指南（英文）
-  jpn: FFMPEG VP9エンコーディングガイド
+  jpn: FFMPEG VP9エンコーディングガイド（英語）
   rus: Руководство по кодированию FFMPEG VP9
   por: Guia de Codificação FFMPEG VP9
   swe: Guide för FFMPEG VP9-kodning
@@ -2311,8 +2311,8 @@ FFmpeg updated - Please restart FastFlix:
   fra: FFmpeg mis à jour - Veuillez redémarrer FastFlix
   ita: FFmpeg aggiornato - Si prega di riavviare FastFlix
   spa: FFmpeg actualizado - Por favor, reinicie FastFlix
-  zho: FFmpeg更新--请重新启动FastFlix。
-  jpn: FFmpegのアップデート - FastFlixを再起動してください。
+  zho: FFmpeg更新完成。请重新启动FastFlix。
+  jpn: FFmpegのアップデートしました。FastFlixを再起動してください。
   rus: FFmpeg обновлен - пожалуйста, перезапустите FastFlix
   por: FFmpeg actualizado - Por favor reinicie FastFlix
   swe: FFmpeg uppdaterad - starta om FastFlix
@@ -2342,7 +2342,7 @@ Fast first pass:
   ita: Primo passaggio veloce
   spa: Primera pasada rápida
   zho: 快速第一遍编码
-  jpn: 高速ファーストパス
+  jpn: 高速1回目
   rus: Быстрый первый проход
   por: Primeira passagem rápida
   swe: Snabb första passage
@@ -2419,7 +2419,7 @@ Force HDR10 signaling:
   ita: Forza segnalazione HDR10
   spa: Señalización de la fuerza HDR10
   zho: 强制发送HDR10信号
-  jpn: フォースHDR10シグナリング
+  jpn: HDR10シグナリングを強制
   rus: Принудительная передача сигнала HDR10
   por: Forçar a sinalização HDR10
   swe: Forcera HDR10-signalering
@@ -2449,7 +2449,7 @@ Frames Per Second:
   ita: Cornici al secondo
   spa: Cuadros por segundo
   zho: 每秒帧数
-  jpn: フレーム・パー・セカンド
+  jpn: 1秒ごとのフレーム数
   rus: Кадров в секунду
   por: Molduras por segundo
   swe: Bildrutor per sekund
@@ -2479,7 +2479,7 @@ GUI Logging Level:
   ita: Livello di registrazione GUI
   spa: Nivel de registro GUI
   zho: GUI日志级别
-  jpn: GUIロギングレベル
+  jpn: GUIログレベル
   rus: Уровень ведения журнала графического интерфейса
   por: Nível de registo GUI
   swe: GUI-loggningsnivå
@@ -2494,7 +2494,7 @@ Gather FFmpeg audio encoders:
   ita: Raccogliere gli encoder audio FFmpeg
   spa: Reúne los codificadores de audio FFmpeg
   zho: 获取FFmpeg音频编码器
-  jpn: FFmpegオーディオエンコーダの収集
+  jpn: FFmpegオーディオエンコーダの取得
   rus: Соберите аудиокодеры FFmpeg
   por: Reunir codificadores de áudio FFmpeg
   swe: Samla FFmpeg-ljudkodare
@@ -2509,7 +2509,7 @@ Gather FFmpeg version:
   ita: Raccogliere la versione FFmpeg
   spa: Reunir la versión FFmpeg
   zho: 获取FFmpeg版本
-  jpn: FFmpegのバージョンを集める
+  jpn: FFmpegのバージョンを取得
   rus: Соберите версию FFmpeg
   por: Reúna a versão FFmpeg
   swe: Samla ihop FFmpeg-versionen
@@ -2524,7 +2524,7 @@ Gather FFprobe version:
   ita: Raccogliere la versione FFprobe
   spa: Reunir la versión FFprobe
   zho: 获取FFprobe版本
-  jpn: FFprobeのバージョンを集める
+  jpn: FFprobeのバージョンを集取得
   rus: Соберите версию FFprobe
   por: Reúna a versão FFprobe
   swe: Samla in FFprobe-versionen
@@ -2554,7 +2554,7 @@ Google's VP9 HDR Encoding Guide:
   ita: Guida alla codifica HDR VP9 di Google
   spa: Guía de codificación HDR VP9 de Google
   zho: 谷歌VP9 HDR编码指南（英文）
-  jpn: GoogleのVP9 HDRエンコーディングガイド
+  jpn: GoogleのVP9 HDRエンコーディングガイド（英語）
   rus: Руководство по кодированию VP9 HDR от Google
   por: Guia de Codificação HDR VP9 do Google
   swe: Googles VP9 HDR-kodningsguide för VP9
@@ -2689,7 +2689,7 @@ Hide NAL unit messages:
   ita: Nascondere i messaggi delle unità NAL (AVC/HEVC Network Abstraction Layer)
   spa: Ocultar los mensajes de la unidad NAL (AVC/HEVC Network Abstraction Layer)
   zho: 隐藏NAL unit（AVC/HEVC网络抽象层）消息
-  jpn: NALユニットのメッセージを隠す
+  jpn: NALユニットのメッセージを非表示にする
   rus: Скрыть сообщения устройства NAL
   por: Ocultar mensagens da unidade NAL
   swe: Dölja meddelanden från NAL-enheter
@@ -2719,7 +2719,7 @@ Init Q:
   ita: Init Q
   spa: Init Q
   zho: 启动Q
-  jpn: Init Q
+  jpn: 初期化Q
   rus: Init Q
   por: Init Q
   swe: Init Q
@@ -2828,7 +2828,7 @@ It saves a few bits and can help performance in the client's tonemapper.:
   spa: Ahorra unos pocos bits y puede ayudar al rendimiento en el mapa de tonos del
     cliente.
   zho: 能够节省一些数据量，并有益于播放端色调映射的性能。
-  jpn: これにより数ビットが節約され、クライアントのトーンマッパーのパフォーマンスが向上します。
+  jpn: これによりビットが少し節約され、クライアントのトーンマッパーのパフォーマンスが向上します。
   rus: Это экономит несколько битов и может повысить производительность клиентского
     тонального маппера.
   por: Poupa alguns bocados e pode ajudar o desempenho no tonemapper do cliente.
@@ -2966,8 +2966,8 @@ Log2 of number of tile columns to encode faster (lesser quality):
   ita: Log2 del numero di colonne di tegole da codificare più velocemente (qualità
     inferiore)
   spa: Log2 del número de columnas de azulejos para codificar más rápido (menor calidad)
-  zho: Log2 of number of tile columns to encode faster (lesser quality)
-  jpn: タイルの列数のLog2で、より高速に（より低品質に）エンコードする。
+  zho: 块的列数的Log2来快速编码（画质降低）
+  jpn: タイルの列数のLog2で、より高速にエンコードする（画質は落ちる）。
   rus: Log2 количества столбцов плитки для более быстрого кодирования (меньшее качество)
   por: Log2 de número de colunas de ladrilhos para codificar mais rapidamente (menor
     qualidade)
@@ -2983,8 +2983,8 @@ Log2 of number of tile rows to encode faster (lesser quality):
   fra: Log2 du nombre de rangées de tuiles pour un encodage plus rapide (qualité moindre)
   ita: Log2 del numero di file di tegole da codificare più velocemente (qualità inferiore)
   spa: Log2 del número de filas de azulejos para codificar más rápido (menor calidad)
-  zho: Log2 of number of tile rows to encode faster (lesser quality)
-  jpn: タイル列数のLog2で、より高速に（より低品質に）エンコードする。
+  zho: 块的行数的Log2来快速编码（画质降低）
+  jpn: タイル列数のLog2で、より高速にエンコードする（画質は落ちる）。
   rus: Log2 числа рядов плиток для более быстрого кодирования (меньшее качество)
   por: Log2 do número de filas de azulejos a codificar mais rapidamente (menor qualidade)
   swe: Log2 av antalet kakelrader för att koda snabbare (sämre kvalitet).
@@ -2999,8 +2999,8 @@ Lookahead:
   fra: Lookahead
   ita: Lookahead
   spa: Lookahead
-  zho: 瞻前顾后
-  jpn: ルックアヘッド
+  zho: 看前面
+  jpn: 前のフレームを参照
   rus: Опережение
   por: Lookahead
   swe: Förhandsgranskning
@@ -3035,7 +3035,7 @@ Lossless encodes implicitly have no rate control, all rate control options are i
   spa: Los códigos sin pérdidas implícitamente no tienen control de la tasa, todas
     las opciones de control de la tasa son ignoradas.
   zho: 无损编码意味着没有码率控制，会忽略所有码率控制选项。
-  jpn: ロスレスエンコードでは、暗黙のうちにレートコントロールが行われず、すべてのレートコントロールオプションは無視されます。
+  jpn: ロスレスエンコードでは、レートコントロールが行われず、すべてのレートコントロールオプションは無視されます。
   rus: Кодирование без потерь неявно не имеет контроля скорости, все опции контроля
     скорости игнорируются.
   por: Os códigos sem perdas não têm implicitamente qualquer controlo de taxa, todas
@@ -3070,8 +3070,8 @@ Max Q:
   fra: Max Q
   ita: Q massimo
   spa: Max Q
-  zho: 最大Q值
-  jpn: マックスQ
+  zho: Q的最大值
+  jpn: Qの最大値
   rus: Макс Q
   por: Máximo Q
   swe: Max Q
@@ -3130,7 +3130,7 @@ Metrics:
   fra: Métriques
   ita: Metriche
   spa: Métricas
-  zho: 衡量标准
+  zho: 统计数据
   jpn: メトリクス
   rus: Метрики
   por: Métricas
@@ -3145,8 +3145,8 @@ Min Q:
   fra: Min Q
   ita: Min Q
   spa: Q mínimo
-  zho: 最小Q
-  jpn: Min Q
+  zho: Q最小值
+  jpn: Qの最小値
   rus: Мин Q
   por: Min Q
   swe: Min Q
@@ -3175,8 +3175,8 @@ Multipass:
   fra: Multipass
   ita: Multipass
   spa: Multipass
-  zho: 多通道
-  jpn: マルチパス
+  zho: 多次
+  jpn: 数回
   rus: Многопроходная
   por: Multipass
   swe: Multipass
@@ -3220,8 +3220,8 @@ New Profile:
   fra: Nouveau profil
   ita: Nuovo profilo
   spa: Nuevo perfil
-  zho: 新建方案
-  jpn: 新着情報
+  zho: 新建配置
+  jpn: プロフィールの新規作成
   rus: Новый профиль
   por: Novo perfil
   swe: Ny profil
@@ -3438,7 +3438,7 @@ Not a valid int for time conversion:
   ita: Non è un int valido per la conversione del tempo
   spa: No es un int válido para la conversión de tiempo
   zho: 不是可用于时间转换的有效整数
-  jpn: 時間変換に有効なintではない
+  jpn: 時間変換に有効な整数値ではない
   rus: Недопустимое значением int для преобразования времени
   por: Não é uma int válida para conversão de tempo
   swe: Inte ett giltigt int för tidskonvertering
@@ -3522,7 +3522,7 @@ Open Directory:
   ita: Elenco aperto
   spa: Directorio Abierto
   zho: 打开目录
-  jpn: オープンディレクトリ
+  jpn: ディレクトリを開く
   rus: Открыть каталог
   por: Directório Aberto
   swe: Öppen katalog
@@ -3537,7 +3537,7 @@ Open Log Directory:
   ita: Aprire l'elenco dei log
   spa: Directorio abierto de registros
   zho: 打开日志目录
-  jpn: オープン・ログ・ディレクトリ
+  jpn: ログのディレクトリを開く
   rus: Открыть каталог журналов
   por: Directório de Registo Aberto
   swe: Öppna loggkatalogen
@@ -3613,7 +3613,7 @@ Override Source FPS:
   ita: Annullare la sorgente FPS
   spa: Anular el FPS de la fuente
   zho: 覆盖源文件帧率
-  jpn: オーバーライド ソースFPS
+  jpn: ソースFPSをオーバーライド
   rus: Переопределение исходного FPS
   por: Substituir Fonte FPS
   swe: åsidosätta källan FPS
@@ -3697,7 +3697,7 @@ Pause Encode:
   ita: Pausa Codificare
   spa: Codificar la pausa
   zho: 暂停编码
-  jpn: ポーズ エンコード
+  jpn: エンコードを一時停止する
   rus: Приостановить кодирование
   por: Codificação de Pausa
   swe: Pausa Kodning
@@ -3712,7 +3712,7 @@ Pause Queue:
   ita: Coda di pausa
   spa: Pausa de la cola
   zho: 暂停队列
-  jpn: キューの一時停止
+  jpn: キューを一時停止する
   rus: Приостановить очередь
   por: Fila de Pausa
   swe: Pausa kö
@@ -3756,7 +3756,7 @@ Please provide a profile name:
   fra: Veuillez fournir un nom de profil
   ita: Si prega di fornire un nome di profilo
   spa: Por favor, proporcione un nombre de perfil
-  zho: 请提供方案名称
+  zho: 请提供配置名称
   jpn: プロフィール名を入力してください
   rus: Пожалуйста, укажите имя профиля
   por: Por favor forneça um nome de perfil
@@ -3817,7 +3817,7 @@ Preserve:
   ita: Conservare
   spa: Preservar
   zho: 保留
-  jpn: Preserve
+  jpn: 保留
   rus: Сохранить
   por: Conservar
   swe: Bevara
@@ -3846,7 +3846,7 @@ Profile Name:
   fra: Nom du profil
   ita: Nome del profilo
   spa: Nombre del perfil
-  zho: 方案名称
+  zho: 配置名称
   jpn: プロフィール名
   rus: Имя профиля
   por: Nome do perfil
@@ -3906,7 +3906,7 @@ Profiles:
   fra: Profils
   ita: Profili
   spa: Perfiles
-  zho: 方案
+  zho: 配置
   jpn: プロフィール
   rus: Профили
   por: Perfis
@@ -3922,7 +3922,7 @@ Python:
   ita: Python
   spa: Python
   zho: Python
-  jpn: パイソン
+  jpn: Python
   rus: Python
   por: Python
   swe: Python
@@ -4058,7 +4058,7 @@ RC Lookahead:
   ita: RC Lookahead
   spa: RC Lookahead
   zho: RC Lookahead
-  jpn: RCルックアヘッド
+  jpn: RC Lookahead
   rus: RC Опережение
   por: RC Lookahead
   swe: RC Lookahead
@@ -4098,8 +4098,8 @@ Rate Control:
   fra: Contrôle des tarifs
   ita: Controllo della velocità
   spa: Control de velocidad
-  zho: 速率控制
-  jpn: レートコントロール
+  zho: 速度控制
+  jpn: レート制御
   rus: Контроль скорости
   por: Controlo da taxa
   swe: Kontroll av hastighet
@@ -4163,8 +4163,8 @@ Ref Frames:
   fra: Ref Frames
   ita: Fotogrammi di rif.
   spa: Fotogramas de referencia
-  zho: 参考框架
-  jpn: レフフレーム
+  zho: 参考帧
+  jpn: リファレンスフレーム
   rus: Реф-кадры
   por: Molduras de Reformas
   swe: Referensramar
@@ -4239,7 +4239,7 @@ Repeat Headers:
   ita: Ripetere le intestazioni
   spa: Repetición de los encabezados
   zho: 重复标头
-  jpn: リピートヘッダー
+  jpn: ヘッダー重複
   rus: Повторяющиеся заголовки
   por: Cabeçalhos de repetição
   swe: Upprepa rubriker
@@ -4254,7 +4254,7 @@ Report Issue:
   ita: Segnala il problema
   spa: Informe
   zho: 报告问题
-  jpn: レポート課題
+  jpn: 問題を報告
   rus: Выпуск отчета
   por: Edição do relatório
   swe: Rapportera frågan
@@ -4269,7 +4269,7 @@ Resume Encode:
   ita: Riprendi Codifica
   spa: Reanudar la codificación
   zho: 恢复编码
-  jpn: レジュームエンコード
+  jpn: エンコード再開
   rus: Возобновить кодирование
   por: Código de currículo
   swe: Återuppta kodning
@@ -4298,8 +4298,8 @@ Reusables:
   fra: Réutilisables
   ita: Riutilizzabili
   spa: Reutilizables
-  zho: Reusables
-  jpn: リユース品
+  zho: 重复利用品
+  jpn: 再利用品
   rus: Многоразовые материалы
   por: Reutilizáveis
   swe: Återanvändbara varor
@@ -4328,8 +4328,8 @@ Row Multi-Threading:
   fra: Rangée Multi-Threading
   ita: Filettatura multi-filettatura
   spa: Fila Multi-Hilo
-  zho: 行多线程
-  jpn: 列のマルチスレッド化
+  zho: 行的多线程
+  jpn: 行のマルチスレッド化
   rus: Многопоточность строк
   por: Linha Multi-Tarefa
   swe: Flertrådig rad
@@ -4343,7 +4343,7 @@ Row multithreading:
   fra: Rangée de fils multiples
   ita: Fila multifilettatura
   spa: Fila multihilo
-  zho: 行多线程
+  zho: 行的多线程
   jpn: 行のマルチスレッド化
   rus: Многопоточность рядов
   por: Multithreading de filas
@@ -4358,8 +4358,8 @@ Row multithreading:
   fra: 'Courir après le commandement fait :'
   ita: 'Esecuzione dopo aver eseguito il comando:'
   spa: 'Corriendo tras el mando hecho:'
-  zho: 在完成命令后运行。
-  jpn: doneコマンドの後に実行。
+  zho: '在完成命令后运行。'
+  jpn: 'コマンド完了後に実行。'
   rus: 'Запуск после выполнения команды:'
   por: 'Correr atrás de comando feito:'
   swe: 'Körs efter kommandot done:'
@@ -4545,7 +4545,7 @@ Set speed to 4 for first pass:
   ita: Imposta la velocità a 4 per il primo passaggio
   spa: Establece la velocidad en 4 para la primera pasada
   zho: 第一遍速度设置为4
-  jpn: 1パス目のスピードを4に設定
+  jpn: 1回目のスピードを4に設定
   rus: Установить скорость на 4 для первого прохода
   por: Definir velocidade para 4 na primeira passagem
   swe: Ställ in hastigheten på 4 för första passet.
@@ -4620,8 +4620,8 @@ Set the level of effort in determining B frame placement.:
   fra: 'Régler après avoir fait la commande à :'
   ita: 'Impostare dopo il comando su:'
   spa: 'Estableciendo después de hacer el comando para:'
-  zho: 设置完成后命令为。
-  jpn: コマンドを実行した後の設定
+  zho: '设置完成后命令为。'
+  jpn: 'コマンドを実行した後の設定'
   rus: 'Установка после выполненной команды на:'
   por: 'Definição após comando feito para:'
   swe: 'Ställ in kommandot efter utfört kommando till:'
@@ -4651,7 +4651,7 @@ Single Pass (Bitrate):
   ita: Passaggio singolo (Bitrato)
   spa: Pase único (Bitrate)
   zho: 一遍编码（比特率）
-  jpn: シングルパス（ビットレート）
+  jpn: 1回のみ（ビットレート）
   rus: Однократный проход (битрейт)
   por: Passe único (Bitrate)
   swe: Enkelpass (Bitrate)
@@ -4666,7 +4666,7 @@ Single Pass (CRF):
   ita: Passaggio singolo (CRF)
   spa: Pase único (CRF)
   zho: 一遍编码（CRF）
-  jpn: シングルパス（CRF）
+  jpn: 1回のみ（CRF）
   rus: Однократный проход (CRF)
   por: Passe Único (CRF)
   swe: Enkel passage (CRF)
@@ -4689,29 +4689,21 @@ Size Estimate:
   ukr: Оцінка розміру
   kor: 크기 견적
   ron: Dimensiune estimată
-Slow is highest personal recommenced, as past that is much smaller gains:
-  deu: Slow ist die maximale persönliche Empfehlung, da die Zugewinne bei noch langsamerem
-    deutlich kleiner sind.
-  eng: Slow is highest personal recommenced, as past that is much smaller gains
-  fra: La lenteur est la plus haute personnelle recommencée, comme passé c'est des
-    gains beaucoup plus petits
-  ita: Lento è più alto personale è ricominciato, come passato che è molto più piccolo
-    guadagni
-  spa: La lentitud es la mayor recomenzada personal, ya que el pasado que es mucho
-    más pequeño gana
-  zho: 不建议使用比slow更慢的档位，因为获得的收益会小得多。
-  jpn: スローは個人的には最高の再開で、過去にはもっと小さな利益がありました。
-  rus: Медленный - это наивысший личный показатель, так как ранее это гораздо меньший
-    прирост
-  por: Lento é o reinício pessoal mais elevado, pois o passado é um ganho muito menor
-  swe: Långsamt är högsta personliga återupptagen, som tidigare är mycket mindre vinster
-  pol: Slow jest najwyższym osobistym wznowieniem, jak minęło to jest znacznie mniejsze
-    zyski.
-  ukr: Повільний - це найвищий особистий приріст, оскільки в минулому це набагато
-    менший приріст
-  kor: 느리게 시작하는 것이 개인적으로 가장 높은 권장 사항이며, 그 이전에는 훨씬 적은 이득을 얻습니다.
-  ron: Încet este cel mai înalt personal a reînceput, ca și trecut care este mult
-    mai mici câștiguri
+'"Slow" is the slowest personally recommended, presets slower this result in much smaller gains':
+  deu: '"Slow" ist die langsamste persönlich empfohlene Einstellung, langsamere Voreinstellungen führen zu viel geringeren Verstärkungen'
+  eng: '"Slow" is the slowest personally recommended, presets slower this result in much smaller gains'
+  fra: '"Slow" est le plus lent personnellement recommandé, les préréglages plus lents entraînent des gains beaucoup plus faibles'
+  ita: '"Slow" è il più lento consigliato personalmente, i preset più lenti si traducono in guadagni molto minori'
+  spa: '"Slow" es el más lento recomendado personalmente, los ajustes preestablecidos más lentos dan como resultado ganancias mucho menores'
+  zho: '个人建议使用slow。比这更慢的设定获得的好处会小得多。'
+  jpn: '個人的にはslowのプリセット設定はおすすめです。それよりも遅いプリセットを使うとメリットが多くないです。'
+  rus: '«Медленный» — самый медленный, рекомендуемый лично, предустановки медленнее, это приводит к гораздо меньшему приросту'
+  por: '"Slow" é o mais lento pessoalmente recomendado, predefinições mais lentas resultam em ganhos muito menores'
+  swe: '"Slow" är den långsammaste personligen rekommenderade, förinställningar långsammare detta resulterar i mycket mindre vinster'
+  pol: '„Slow” jest najwolniejszym osobiście zalecanym ustawieniem, wolniejsze ustawienia wstępne skutkują znacznie mniejszymi wzmocnieniami'
+  ukr: '"Повільний" є найповільнішим, рекомендованим особисто, попередні налаштування повільніше це призводить до набагато менших приростів'
+  kor: '"Slow"는 개인적으로 권장되는 가장 느린 속도이며 사전 설정을 느리게 하면 게인이 훨씬 작아집니다.'
+  ron: '„Slow” este cel mai lent recomandat personal, presetări mai lente, ceea ce duce la câștiguri mult mai mici'
 Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams).:
   deu: Langsamere Voreinstellungen erzielen im Allgemeinen eine bessere Komprimierungseffizienz
     (und erzeugen kleinere Bitströme).
@@ -4880,7 +4872,7 @@ Strength:
   ita: Forza
   spa: Fuerza
   zho: 强度
-  jpn: 強度
+  jpn: 強さ
   rus: Сила
   por: Força
   swe: Styrka
@@ -4955,7 +4947,7 @@ Support FastFlix:
   ita: Supporto FastFlix
   spa: Soporta FastFlix
   zho: 支持FastFlix
-  jpn: FastFlixのサポート
+  jpn: 'FastFlixを応援/寄付'
   rus: Поддержка FastFlix
   por: Apoio FastFlix
   swe: Stöd för FastFlix
@@ -5010,30 +5002,30 @@ The more complex the block, the more quantization is used.:
   kor: 블록이 복잡할수록 더 많은 양자화가 사용됩니다.
   ron: Cu cât blocul este mai complex, cu atât se utilizează mai multă cuantificare.
 The purpose is to prevent blocking or banding artifacts in regions with few/zero AC coefficients.:
-  deu: Der Zweck ist, Blocking- oder Banding-Artefakte in Regionen mit wenigen/keinen
-    AC-Koeffizienten zu verhindern.
-  eng: The purpose is to prevent blocking or banding artifacts in regions with few/zero
-    AC coefficients.
-  fra: L'objectif est d'éviter de bloquer ou de banderoler des artefacts dans des
-    régions où les coefficients AC sont faibles ou nuls.
-  ita: Lo scopo è quello di prevenire il blocco o il banding di artefatti in regioni
-    con pochi/zeri coefficienti AC.
-  spa: El propósito es prevenir el bloqueo o los artefactos de bandas en regiones
-    con coeficientes de CA bajos/cero.
-  zho: 目的是为了防止在AC coefficients较少或为零的区域出现blocking或banding artifacts。
-  jpn: これは、AC係数が少ない/ゼロの領域でのブロッキングやバンディングのアーチファクトを防ぐためです。
-  rus: Цель - предотвратить блокирование или артефакты полосатости в областях с небольшим
-    количеством/нулевыми коэффициентами переменного тока.
-  por: O objectivo é evitar o bloqueio ou a colocação de artefactos de faixas em regiões
-    com poucos/zero coeficientes AC.
-  swe: Syftet är att förhindra blockering eller bandning i områden med få/noll AC-koefficienter.
+  deu: "Der Zweck ist, Blocking- oder Banding-Artefakte in Regionen mit wenigen/keinen
+    AC-Koeffizienten zu verhindern."
+  eng: "The purpose is to prevent blocking or banding artifacts in regions with few/zero
+    AC coefficients."
+  fra: "L'objectif est d'éviter de bloquer ou de banderoler des artefacts dans des
+    régions où les coefficients AC sont faibles ou nuls."
+  ita: "Lo scopo è quello di prevenire il blocco o il banding di artefatti in regioni
+    con pochi/zeri coefficienti AC."
+  spa: "El propósito es prevenir el bloqueo o los artefactos de bandas en regiones
+    con coeficientes de CA bajos/cero."
+  zho: '目的是为了防止在AC coefficients较少或为零的区域出现blocking或banding artifacts。'
+  jpn: 'これは、AC係数が少ない/ゼロの領域でのブロッキングやバンディングのアーチファクトを防ぐためです。'
+  rus: "Цель - предотвратить блокирование или артефакты полосатости в областях с небольшим
+    количеством/нулевыми коэффициентами переменного тока."
+  por: "O objectivo é evitar o bloqueio ou a colocação de artefactos de faixas em regiões
+    com poucos/zero coeficientes AC."
+  swe: "Syftet är att förhindra blockering eller bandning i områden med få/noll AC-koefficienter."
   pol: Ma to na celu zapobieganie powstawaniu artefaktów blokowania lub pasmowania
     w regionach o małej lub zerowej liczbie współczynników AC.
-  ukr: Мета - запобігти артефактам блокування або смуги в регіонах з низькими/нульовими
-    коефіцієнтами змінного струму.
+  ukr: "Мета - запобігти артефактам блокування або смуги в регіонах з низькими/нульовими
+    коефіцієнтами змінного струму."
   kor: 그 목적은 AC 계수가 거의 없거나 0인 영역에서 차단 또는 밴딩 아티팩트를 방지하는 것입니다.
-  ron: Scopul este de a preveni apariția unor artefacte de blocare sau de bandaj în
-    regiunile cu coeficienți AC puțini/zero.
+  ron: "Scopul este de a preveni apariția unor artefacte de blocare sau de bandaj în
+    regiunile cu coeficienți AC puțini/zero."
 There is a conversion in process!:
   deu: Es ist eine Konvertierung am laufen!
   eng: There is a conversion in process!
@@ -5056,7 +5048,7 @@ There is a newer version of FastFlix available!:
   ita: C'è una versione più recente di FastFlix disponibile!
   spa: ¡Hay una nueva versión de FastFlix disponible!
   zho: FastFlix有更新可用
-  jpn: 新しいバージョンのFastFlixが登場しました。
+  jpn: 新しいバージョンのFastFlixがあります。
   rus: Доступна более новая версия FastFlix!
   por: Há uma versão mais recente de FastFlix disponível!
   swe: Det finns en nyare version av FastFlix!
@@ -5067,7 +5059,7 @@ There is a newer version of FastFlix available!:
 There was an error during conversion and the queue has stopped:
   deu: Es gab einen Fehler während der Konvertierung und die Warteschlange wurde angehalten
   eng: There was an error during conversion and the queue has stopped
-  fra: Il y a eu une erreur lors de la conversion et la file d'attente s'est arrêtée
+  fra: "Il y a eu une erreur lors de la conversion et la file d'attente s'est arrêtée"
   ita: C'è stato un errore durante la conversione e la coda si è fermata
   spa: Hubo un error durante la conversión y la cola se ha detenido
   zho: 转换过程中出现错误，队列已经停止
@@ -5175,9 +5167,9 @@ This is used for ultra-high bitrates with zero loss of quality.:
   ukr: Використовується для надвисоких бітрейтів з нульовою втратою якості.
   kor: 품질 손실 없이 초고속 비트레이트에 사용됩니다.
   ron: Acesta este utilizat pentru viteze de biți foarte mari, fără pierderi de calitate.
-'This option is not recommenced unless you need to conform ':
+'This option is not recommended unless you need to conform ':
   deu: 'Diese Option wird nicht empfohlen, es sei denn, Sie müssen konform sein '
-  eng: 'This option is not recommenced unless you need to conform '
+  eng: 'This option is not recommended unless you need to conform '
   fra: "Cette option n'est pas renouvelée, sauf si vous devez vous conformer "
   ita: 'Questa opzione non viene riavviata a meno che non sia necessario conformarsi '
   spa: 'Esta opción no se reinicia a menos que se necesite conformar '
@@ -6424,7 +6416,7 @@ is a default profile and will not be removed:
   fra: est un profil par défaut et ne sera pas supprimé
   ita: è un profilo predefinito e non verrà rimosso
   spa: es un perfil predeterminado y no se eliminará
-  zho: 是默认方案，不会被删除。
+  zho: 是默认配置，不会被删除。
   jpn: はデフォルトのプロファイルであり、削除されることはありません。
   rus: является профилем по умолчанию и не будет удален
   por: é um perfil padrão e não será removido
@@ -7045,7 +7037,7 @@ There is already a video being processed:
   ita: C'è già un video in elaborazione
   spa: Ya hay un vídeo en proceso
   zho: 已经有一个视频正在处理中
-  jpn: すでに処理中の映像がある
+  jpn: すでに処理中の動画がある
   rus: Видео уже обрабатывается
   por: Já há um vídeo a ser processado
   swe: Det finns redan en video som håller på att bearbetas
@@ -7060,7 +7052,7 @@ Are you sure you want to discard it?:
   ita: Sei sicuro di volerlo scartare?
   spa: ¿Estás seguro de que quieres descartarlo?
   zho: 您确定要丢弃它吗？
-  jpn: 本当に捨てていいのか？
+  jpn: 本当に破棄してもいいですか？
   rus: Вы уверены, что хотите отказаться от него?
   por: Tem a certeza de que quer descartá-la?
   swe: Är du säker på att du vill kasta den?
@@ -7075,7 +7067,7 @@ Discard current video:
   ita: Scartare il video corrente
   spa: Descartar el vídeo actual
   zho: 丢弃当前视频
-  jpn: 現在の映像を捨てる
+  jpn: 現在の動画を破棄する
   rus: Удалить текущее видео
   por: Descarte vídeo actual
   swe: Kassera aktuell video
@@ -7209,7 +7201,7 @@ Profile:
   fra: profil
   ita: profilo
   spa: perfil
-  zho: 方案
+  zho: 配置
   jpn: プロフィール
   rus: Профиль
   por: Perfil
@@ -7715,8 +7707,8 @@ Passthrough All:
   fra: Passthrough Tous
   ita: Passthrough Tutti
   spa: Transferencia Todos
-  zho: 穿透式所有
-  jpn: パススルー 全て
+  zho: 所有不更改
+  jpn: 全てパススルー
   rus: Пропускная способность Все
   por: Passagem de tudo
   swe: Genomströmning Alla
@@ -7776,7 +7768,7 @@ Select By:
   ita: Seleziona per
   spa: Seleccionar por
   zho: 选择方式
-  jpn: セレクト・バイ
+  jpn: で選ぶ
   rus: Выбрать по
   por: Selecione por
   swe: Välj efter
@@ -7791,7 +7783,7 @@ Advanced Options:
   ita: Opzioni avanzate
   spa: Opciones avanzadas
   zho: 高级选项
-  jpn: 詳細オプション
+  jpn: 高度な設定
   rus: Дополнительные параметры
   por: Opções avançadas
   swe: Avancerade alternativ
@@ -7970,7 +7962,7 @@ Verifier:
   ita: Verificatore
   spa: Verificador
   zho: 验证人
-  jpn: ベリファイア
+  jpn: 確認者
   rus: Верификатор
   por: Verificador
   swe: Kontrollör
@@ -8015,7 +8007,7 @@ Determine OpenCL Support:
   ita: Determinare il supporto OpenCL
   spa: Determinar la compatibilidad con OpenCL
   zho: 确定OpenCL支持
-  jpn: OpenCLのサポートを決定
+  jpn: OpenCLのサポートを検出
   rus: Определить поддержку OpenCL
   por: Determinar o suporte do OpenCL
   swe: Fastställa stöd för OpenCL
@@ -8030,7 +8022,7 @@ Please load in a video to configure a new profile:
   ita: Si prega di caricare un video per configurare un nuovo profilo
   spa: Por favor, cargue un vídeo para configurar un nuevo perfil
   zho: 请加载一个视频来配置一个新的配置文件
-  jpn: 新しいプロファイルを設定するためのビデオを読み込んでください。
+  jpn: 新しいプロファイルを設定するための動画をロードしてください。
   rus: Пожалуйста, загрузите видео для настройке нового профиля
   por: Por favor, carregue em um vídeo para configurar um novo perfil
   swe: Ladda in en video för att konfigurera en ny profil
@@ -8084,7 +8076,7 @@ Not supported by rigaya's hardware encoders:
   ita: Non supportato dagli encoder hardware di rigaya
   spa: No es compatible con los codificadores de hardware de Rigaya
   zho: 不被Rigaya的硬件编码器所支持
-  jpn: リガヤのハードウェアエンコーダには対応していません。
+  jpn: Rigayaのハードウェアエンコーダには対応していません。
   rus: Не поддерживается аппаратными кодерами rigaya
   por: Não suportado pelos codificadores de hardware da rigaya
   swe: Stöds inte av Rigayas hårdvarukodare
@@ -8129,7 +8121,7 @@ Require Software Encoding:
   ita: Richiedere la codifica del software
   spa: Requiere codificación de software
   zho: 要求软件编码
-  jpn: ソフトウェアエンコードを要求する
+  jpn: ソフトウェアエンコードは必要
   rus: Требуется программное кодирование
   por: Exigir codificação de software
   swe: Kräver kodning av programvara
@@ -8160,7 +8152,7 @@ Hint that encoding should happen in real-time if not faster:
   spa: Indicación de que la codificación debe realizarse en tiempo real, si no más
     rápido
   zho: 提示编码应该实时发生，如果不是更快的话
-  jpn: エンコードをリアルタイムで行うことを推奨します。
+  jpn: ヒント：エンコードはリアルタイムで実行すべきです。（それよりも速くなければ）
   rus: Подсказка, что кодирование должно происходить в режиме реального времени, если
     не быстрее
   por: Dica de que a codificação deve acontecer em tempo real, se não mais rápido
@@ -10311,8 +10303,8 @@ Single Pass:
   fra: Passe unique
   ita: Passaggio singolo
   spa: Pase único
-  zho: 单次通过
-  jpn: シングルパス
+  zho: 1次
+  jpn: 1回のみ
   rus: Одиночный проход
   por: Passe único
   swe: Enkelt pass
@@ -10326,8 +10318,8 @@ Single Pass Encoding:
   fra: Encodage à passage unique
   ita: Codifica a passaggio singolo
   spa: Codificación de una sola pasada
-  zho: 单程编码
-  jpn: シングルパスエンコード
+  zho: 1次编码
+  jpn: 1回のみのエンコード
   rus: Однопроходное кодирование
   por: Codificação de passagem única
   swe: Kodning i ett enda steg

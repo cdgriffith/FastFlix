@@ -346,7 +346,7 @@ class HEVC(SettingPanel):
             widget_name="intra_encoding",
             tooltip=(
                 "keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray spec)\n"
-                "This option is not recommenced unless you need to conform \n"
+                "This option is not recommended unless you need to conform \n"
                 "to Blu-ray standards to burn to a physical disk"
             ),
             opt="intra_encoding",
@@ -400,7 +400,7 @@ class HEVC(SettingPanel):
             options=presets,
             tooltip=(
                 "preset: The slower the preset, the better the compression and quality\n"
-                "Slow is highest personal recommenced, as past that is much smaller gains"
+                "\"Slow\" is the slowest personally recommended, presets slower this result in much smaller gains"
             ),
             connect=self.preset_update,
             opt="preset",
