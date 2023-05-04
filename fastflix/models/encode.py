@@ -146,6 +146,7 @@ class NVEncCSettings(EncoderSettings):
     force_ten_bit: bool = False
     device: int = 0
     decoder: str = "Auto"
+    copy_hdr10: bool = False
 
 
 class NVEncCAV1Settings(EncoderSettings):
@@ -179,6 +180,7 @@ class NVEncCAV1Settings(EncoderSettings):
     force_ten_bit: bool = False
     device: int = 0
     decoder: str = "Auto"
+    copy_hdr10: bool = False
 
 
 class QSVEncCSettings(EncoderSettings):
@@ -204,6 +206,7 @@ class QSVEncCSettings(EncoderSettings):
     adapt_ref: bool = False
     adapt_cqm: bool = False
     adapt_ltr: bool = False
+    copy_hdr10: bool = False
 
 
 class QSVEncCAV1Settings(EncoderSettings):
@@ -229,6 +232,7 @@ class QSVEncCAV1Settings(EncoderSettings):
     adapt_ref: bool = False
     adapt_cqm: bool = False
     adapt_ltr: bool = False
+    copy_hdr10: bool = False
 
 
 class QSVEncCH264Settings(EncoderSettings):
@@ -320,6 +324,7 @@ class VCEEncCSettings(EncoderSettings):
     pa_taq: int | None = None
     pa_motion_quality: str | None = None
     output_depth: str | None = None
+    copy_hdr10: bool = False
 
 
 class VCEEncCAV1Settings(EncoderSettings):
@@ -354,6 +359,7 @@ class VCEEncCAV1Settings(EncoderSettings):
     pa_taq: int | None = None
     pa_motion_quality: str | None = None
     output_depth: str | None
+    copy_hdr10: bool = False
 
 
 class VCEEncCAVCSettings(EncoderSettings):

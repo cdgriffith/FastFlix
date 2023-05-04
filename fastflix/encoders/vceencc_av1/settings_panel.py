@@ -247,34 +247,6 @@ class VCEENCC(VCEPanel):
             min_width=60,
         )
 
-    def init_dhdr10_info(self):
-        layout = self._add_file_select(
-            label="HDR10+ Metadata",
-            widget_name="hdr10plus_metadata",
-            button_action=lambda: self.dhdr10_update(),
-            tooltip="dhdr10_info: Path to HDR10+ JSON metadata file",
-        )
-        self.labels["hdr10plus_metadata"].setFixedWidth(200)
-        self.extract_button = QtWidgets.QPushButton(t("Extract HDR10+"))
-        self.extract_button.hide()
-        self.extract_button.clicked.connect(self.extract_hdr10plus)
-
-        self.extract_label = QtWidgets.QLabel(self)
-        self.extract_label.hide()
-        self.movie = QtGui.QMovie(loading_movie)
-        self.movie.setScaledSize(QtCore.QSize(25, 25))
-        self.extract_label.setMovie(self.movie)
-
-        layout.addWidget(self.extract_button)
-        layout.addWidget(self.extract_label)
-
-        warning_label = QtWidgets.QLabel()
-        warning_label.setPixmap(QtGui.QIcon(get_icon("onyx-warning", self.app.fastflix.config.theme)).pixmap(22))
-        layout.addWidget(warning_label)
-        layout.addWidget(QtWidgets.QLabel("7.12+"))
-
-        return layout
-
     def init_metrics(self):
         return self._add_check_box(
             widget_name="metrics",
@@ -316,7 +288,7 @@ class VCEENCC(VCEPanel):
             pre_analysis=self.widgets.pre_analysis.isChecked(),
             vbaq=self.widgets.vbaq.isChecked(),
             decoder=self.widgets.decoder.currentText(),
-            hdr10plus_metadata=self.widgets.hdr10plus_metadata.text().strip(),
+            copy_hdr10=self.widgets.copy_hdr10.isChecked(),
             bitrate_mode=self.widgets.bitrate_mode.currentText(),
             device=int(self.widgets.device.currentText().split(":", 1)[0] or 0),
             pa_sc=self.widgets.pa_sc.currentText(),
@@ -350,7 +322,7 @@ class VCEENCC(VCEPanel):
         if not self.app.fastflix.current_video:
             return
         super().new_source()
-        if self.app.fastflix.current_video.hdr10_plus:
-            self.extract_button.show()
-        else:
-            self.extract_button.hide()
+        # if self.app.fastflix.current_video.hdr10_plus:
+        #     self.extract_button.show()
+        # else:
+        #     self.extract_button.hide()

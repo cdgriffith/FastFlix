@@ -599,6 +599,15 @@ class RigayaPanel(SettingPanel):
             min_width=80,
         )
 
+    def init_dhdr10_info(self):
+        layout = self._add_check_box(
+            label="Copy HDR10+",
+            widget_name="copy_hdr10",
+            tooltip="Copy HDR10+ dynamic metadata from input file",
+            opt="copy_hdr10",
+        )
+        return layout
+
 
 class QSVEncPanel(RigayaPanel):
     def init_adapt_ref(self):

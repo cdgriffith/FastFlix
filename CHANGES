@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 5.5.4
+
+* Fixing #474 SVT-AV1 single pass would not be set on return from queue (thanks to veldspar)
+* Fixing #475 Autocrop can break with index error (thanks to No Name / phanluchoaofficial1152)
+* Fixing #477 HDR10+ not extracting with NVEncC encoder, switching to built in copy ability (thanks to Genine-Collin)
+
 ## Version 5.5.3
 
 * Fixing missing language options (thanks to RoDanny2021)

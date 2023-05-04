@@ -90,7 +90,7 @@ class EncodeItem(QtWidgets.QTabWidget):
                 o["file_path"] = str(o["file_path"])
         del settings.conversion_commands
 
-        title.setToolTip(settings.to_yaml())
+        title.setToolTip(settings.video_encoder_settings.to_yaml())
 
         open_button = QtWidgets.QPushButton(
             QtGui.QIcon(get_icon("play", self.parent.app.fastflix.config.theme)), t("Open Directory")
