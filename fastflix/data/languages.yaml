@@ -9943,8 +9943,8 @@ Hearing Impaired:
   fra: Malentendants
   ita: Non udenti
   spa: Discapacidad auditiva
-  zho: 听障者
-  jpn: 聴覚障がい者
+  zho: 听障
+  jpn: 耳の不自由
   rus: Нарушение слуха
   por: Deficiente Auditivo
   swe: Hörselskadade
@@ -10109,7 +10109,7 @@ Dispositions:
   ita: Disposizioni
   spa: Disposiciones
   zho: 处置
-  jpn: ディセンションズ
+  jpn: タグ
   rus: Диспозиции
   por: Disposições
   swe: Dispositioner
@@ -10139,7 +10139,7 @@ lyrics:
   ita: testi
   spa: letra
   zho: 歌词
-  jpn: 詞
+  jpn: 歌詞
   rus: Тексты песен
   por: lyrics
   swe: texter
@@ -10198,8 +10198,8 @@ hearing_impaired:
   fra: Malentendants
   ita: Non udenti
   spa: Discapacidad auditiva
-  zho: 听障者
-  jpn: 聴覚障がい者
+  zho: 听障
+  jpn: 耳の不自由
   rus: Нарушение слуха
   por: Deficiente Auditivo
   swe: Hörselskadade
@@ -10213,8 +10213,8 @@ visual_impaired:
   fra: Malvoyants
   ita: Improvvisazione visiva
   spa: Discapacidad visual
-  zho: 视障者
-  jpn: 視覚障がい者
+  zho: 视障
+  jpn: 目の不自由
   rus: Слабовидящие
   por: Deficiente Visual
   swe: Synskadade
@@ -10244,7 +10244,7 @@ Output Depth:
   ita: Profondità di uscita
   spa: Profundidad de salida
   zho: 输出深度
-  jpn: 出力深度
+  jpn: アウトプット深度
   rus: Глубина вывода
   por: Profundidade de saída
   swe: Utdata djup
