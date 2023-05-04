@@ -400,7 +400,7 @@ class HEVC(SettingPanel):
             options=presets,
             tooltip=(
                 "preset: The slower the preset, the better the compression and quality\n"
-                "\"Slow\" is the slowest personally recommended, presets slower this result in much smaller gains"
+                "\"Slow\" is the slowest personally recommended, presets slower than this result in much smaller gains"
             ),
             connect=self.preset_update,
             opt="preset",
