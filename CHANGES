@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 5.5.5
+
+* Fixed #479 some zho and jpn translations, fixed some typos (thanks to Jing Luo)
+* Fixing incorrect PNG profiles for mac toolbox icons
+
 ## Version 5.5.4
 
 * Fixing #474 SVT-AV1 single pass would not be set on return from queue (thanks to veldspar)
