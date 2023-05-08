@@ -3,6 +3,7 @@
 ## Version 5.5.5
 
 * Fixed #479 some zho and jpn translations, fixed some typos (thanks to Jing Luo)
+* Fixing incorrect PNG profiles for mac toolbox icons
 
 ## Version 5.5.4
 
