@@ -31,7 +31,7 @@ known_language_list = [
     "Romanian",
     "Ukrainian",
     "Korean",
-    #"Chinese (Traditional)"    #reserved for future use
+    # "Chinese (Traditional)"    #reserved for future use
 ]
 possible_detect_points = ["1", "2", "4", "6", "8", "10", "15", "20", "25", "50", "100"]
 
@@ -86,9 +86,9 @@ class Settings(QtWidgets.QWidget):
             if self.app.fastflix.config.language == "chs":
                 index = known_language_list.index("Chinese (Simplified)")
 
-            #reserved for future use
-            #elif self.app.fastflix.config.language == "cht":
-                #index = known_language_list.index("Chinese (Traditional)")
+            # reserved for future use
+            # elif self.app.fastflix.config.language == "cht":
+            # index = known_language_list.index("Chinese (Traditional)")
 
             else:
                 index = known_language_list.index(Lang(self.app.fastflix.config.language).name)
@@ -311,9 +311,9 @@ class Settings(QtWidgets.QWidget):
             if current_text == "Chinese (Simplified)":
                 self.app.fastflix.config.language = "chs"
 
-            #reserved for future use
-            #elif current_text != "Chinese (Traditional)":
-                #self.app.fastflix.config.language = "cht"
+            # reserved for future use
+            # elif current_text != "Chinese (Traditional)":
+            # self.app.fastflix.config.language = "cht"
 
             else:
                 self.app.fastflix.config.language = Lang(self.language_combo.currentText()).pt3
