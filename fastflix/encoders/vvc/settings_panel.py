@@ -146,7 +146,8 @@ class VVC(SettingPanel):
             options=presets,
             tooltip=(
                 "preset: The slower the preset, the better the compression and quality\n"
-                "Slow is highest personal recommenced, as past that is much smaller gains"
+                "Slow is the slowest preset personally recommended,\n"
+                "presets slower than this result in much smaller gains"
             ),
             connect="default",
             opt="preset",
