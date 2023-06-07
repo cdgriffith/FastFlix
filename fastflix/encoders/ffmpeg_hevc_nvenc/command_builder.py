@@ -10,7 +10,9 @@ from fastflix.models.fastflix import FastFlix
 def build(fastflix: FastFlix):
     settings: FFmpegNVENCSettings = fastflix.current_video.video_settings.video_encoder_settings
 
-    beginning, ending = generate_all(fastflix, "hevc_nvenc", start_extra="-hwaccel auto" if settings.hw_accel else "")
+    beginning, ending, output_fps = generate_all(
+        fastflix, "hevc_nvenc", start_extra="-hwaccel auto" if settings.hw_accel else ""
+    )
 
     beginning += f'{f"-tune:v {settings.tune}" if settings.tune else ""} {generate_color_details(fastflix)} -spatial_aq:v {settings.spatial_aq} -tier:v {settings.tier} -rc-lookahead:v {settings.rc_lookahead} -gpu {settings.gpu} -b_ref_mode {settings.b_ref_mode} '
 
@@ -28,7 +30,7 @@ def build(fastflix: FastFlix):
     command_1 = (
         f"{beginning} -pass 1 "
         f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} -2pass 1 '
-        f'{settings.extra if settings.extra_both_passes else ""} -an -sn -dn -f mp4 {null}'
+        f'{settings.extra if settings.extra_both_passes else ""} -an -sn -dn {output_fps} -f mp4 {null}'
     )
     command_2 = (
         f'{beginning} -pass 2 -passlogfile "{pass_log_file}" -2pass 1 '

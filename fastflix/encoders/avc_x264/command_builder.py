@@ -10,7 +10,7 @@ from fastflix.models.fastflix import FastFlix
 def build(fastflix: FastFlix):
     settings: x264Settings = fastflix.current_video.video_settings.video_encoder_settings
 
-    beginning, ending = generate_all(fastflix, "libx264")
+    beginning, ending, output_fps = generate_all(fastflix, "libx264")
 
     beginning += f'{f"-tune:v {settings.tune}" if settings.tune else ""} {generate_color_details(fastflix)} '
 
@@ -22,7 +22,7 @@ def build(fastflix: FastFlix):
     if settings.bitrate:
         command_1 = (
             f"{beginning} -pass 1 "
-            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} -an -sn -dn -f mp4 {null}'
+            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} -an -sn -dn {output_fps} -f mp4 {null}'
         )
         command_2 = (
             f'{beginning} -pass 2 -passlogfile "{pass_log_file}" '

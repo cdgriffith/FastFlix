@@ -110,11 +110,10 @@ def generate_ending(
     output_fps: Union[str, None] = None,
     disable_rotate_metadata=False,
     **_,
-) -> str:
+):
     ending = (
         f" {'-map_metadata -1' if remove_metadata else '-map_metadata 0'} "
         f"{'-map_chapters 0' if copy_chapters else '-map_chapters -1'} "
-        f"{f'-r {output_fps}' if output_fps else ''} "
         f"{audio} {subtitles} {cover} "
     )
 
@@ -126,7 +125,7 @@ def generate_ending(
         ending += f'"{clean_file_string(sanitize(output_video))}"'
     else:
         ending += null
-    return ending
+    return ending, f"{f'-r {output_fps}' if output_fps else ''} "
 
 
 def generate_filters(
@@ -247,7 +246,7 @@ def generate_all(
     vaapi: bool = False,
     start_extra: str = "",
     **filters_extra,
-) -> Tuple[str, str]:
+) -> Tuple[str, str, str]:
     settings = fastflix.current_video.video_settings.video_encoder_settings
 
     audio = build_audio(fastflix.current_video.video_settings.audio_tracks) if audio else ""
@@ -281,7 +280,7 @@ def generate_all(
             **filter_details,
         )
 
-    ending = generate_ending(
+    ending, output_fps = generate_ending(
         audio=audio,
         subtitles=subtitles,
         cover=attachments,
@@ -303,7 +302,7 @@ def generate_all(
         **settings.dict(),
     )
 
-    return beginning, ending
+    return beginning, ending, output_fps
 
 
 def generate_color_details(fastflix: FastFlix) -> str:

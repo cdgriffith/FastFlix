@@ -17,7 +17,7 @@ logger = logging.getLogger("fastflix")
 @reusables.log_exception("fastflix", show_traceback=True)
 def build(fastflix: FastFlix):
     settings: SVTAVIFSettings = fastflix.current_video.video_settings.video_encoder_settings
-    beginning, ending = generate_all(fastflix, "libsvtav1", audio=False)
+    beginning, ending, output_fps = generate_all(fastflix, "libsvtav1", audio=False)
 
     beginning += f"-strict experimental " f"-preset {settings.speed} " f"{generate_color_details(fastflix)} "
 

@@ -80,7 +80,7 @@ chromaloc_mapping = {"left": 0, "center": 1, "topleft": 2, "top": 3, "bottomleft
 def build(fastflix: FastFlix):
     settings: x265Settings = fastflix.current_video.video_settings.video_encoder_settings
 
-    beginning, ending = generate_all(fastflix, "libx265")
+    beginning, ending, output_fps = generate_all(fastflix, "libx265")
 
     if settings.tune and settings.tune != "default":
         beginning += f"-tune:v {settings.tune} "
@@ -182,7 +182,7 @@ def build(fastflix: FastFlix):
         command_1 = (
             f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1"])} '
             f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
-            f" -an -sn -dn -f mp4 {null}"
+            f" -an -sn -dn {output_fps} -f mp4 {null}"
         )
         command_2 = (
             f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "{pass_log_file}" '

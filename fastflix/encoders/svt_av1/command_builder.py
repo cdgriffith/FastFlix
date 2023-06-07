@@ -16,7 +16,7 @@ logger = logging.getLogger("fastflix")
 @reusables.log_exception("fastflix", show_traceback=True)
 def build(fastflix: FastFlix):
     settings: SVTAV1Settings = fastflix.current_video.video_settings.video_encoder_settings
-    beginning, ending = generate_all(fastflix, "libsvtav1")
+    beginning, ending, output_fps = generate_all(fastflix, "libsvtav1")
 
     beginning += f"-strict experimental " f"-preset {settings.speed} " f"{generate_color_details(fastflix)} "
 
@@ -93,11 +93,11 @@ def build(fastflix: FastFlix):
         return [Command(command=command_1, name=f"{pass_type}", exe="ffmpeg")]
     else:
         if settings.bitrate:
-            command_1 = f"{beginning} -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f matroska {null}"
+            command_1 = f"{beginning} -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f matroska {null}"
             command_2 = f"{beginning} -b:v {settings.bitrate} -pass 2 {settings.extra} {ending}"
 
         elif settings.qp is not None:
-            command_1 = f"{beginning} -qp {settings.qp} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f matroska {null}"
+            command_1 = f"{beginning} -qp {settings.qp} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f matroska {null}"
             command_2 = f"{beginning} -qp {settings.qp} -pass 2 {settings.extra} {ending}"
         else:
             return []

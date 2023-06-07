@@ -83,7 +83,7 @@ class Settings(QtWidgets.QWidget):
         self.language_combo = QtWidgets.QComboBox(self)
         self.language_combo.addItems(known_language_list)
         try:
-            if self.app.fastflix.config.language == "chs":
+            if self.app.fastflix.config.language in ("chs", "zho"):
                 index = known_language_list.index("Chinese (Simplified)")
 
             # reserved for future use

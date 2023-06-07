@@ -1181,7 +1181,7 @@ class Main(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getSaveFileName(
             self,
             caption="Save Video As",
-            dir=str(Path(*self.generate_output_filename)) + f".{self.widgets.output_type_combo.currentText()}",
+            dir=str(Path(*self.generate_output_filename)) + f"{self.widgets.output_type_combo.currentText()}",
             filter=f"Save File (*.{extension})",
         )
         if filename and filename[0]:

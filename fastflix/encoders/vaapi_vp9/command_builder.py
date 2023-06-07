@@ -13,7 +13,7 @@ logger = logging.getLogger("fastflix")
 def build(fastflix: FastFlix):
     settings: VAAPIVP9Settings = fastflix.current_video.video_settings.video_encoder_settings
     start_extra = f"-init_hw_device vaapi=hwdev:{settings.vaapi_device} -hwaccel vaapi -hwaccel_device hwdev -hwaccel_output_format vaapi "
-    beginning, ending = generate_all(
+    beginning, ending, output_fps = generate_all(
         fastflix,
         "vp9_vaapi",
         start_extra=start_extra,

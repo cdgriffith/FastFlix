@@ -7,7 +7,7 @@ from fastflix.models.fastflix import FastFlix
 def build(fastflix: FastFlix):
     settings: WebPSettings = fastflix.current_video.video_settings.video_encoder_settings
 
-    beginning, ending = generate_all(fastflix, "libwebp", audio=False, subs=False)
+    beginning, ending, output_fps = generate_all(fastflix, "libwebp", audio=False, subs=False)
 
     return [
         Command(

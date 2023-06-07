@@ -9,7 +9,7 @@ from fastflix.models.fastflix import FastFlix
 
 def build(fastflix: FastFlix):
     settings: VP9Settings = fastflix.current_video.video_settings.video_encoder_settings
-    beginning, ending = generate_all(fastflix, "libvpx-vp9")
+    beginning, ending, output_fps = generate_all(fastflix, "libvpx-vp9")
 
     beginning += f'{"-row-mt 1" if settings.row_mt else ""} ' f"{generate_color_details(fastflix)} "
 
@@ -33,13 +33,13 @@ def build(fastflix: FastFlix):
                     exe="ffmpeg",
                 )
             ]
-        command_1 = f"{beginning} -speed:v {'4' if settings.fast_first_pass else settings.speed} -b:v {settings.bitrate} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f webm {null}"
+        command_1 = f"{beginning} -speed:v {'4' if settings.fast_first_pass else settings.speed} -b:v {settings.bitrate} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f webm {null}"
         command_2 = (
             f"{beginning} -speed:v {settings.speed} -b:v {settings.bitrate} {details} -pass 2 {settings.extra} {ending}"
         )
 
     elif settings.crf:
-        command_1 = f"{beginning} -b:v 0 -crf:v {settings.crf} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f webm {null}"
+        command_1 = f"{beginning} -b:v 0 -crf:v {settings.crf} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f webm {null}"
         command_2 = (
             f"{beginning} -b:v 0 -crf:v {settings.crf} {details} "
             f'{"-pass 2" if not settings.single_pass else ""} {settings.extra} {ending}'
