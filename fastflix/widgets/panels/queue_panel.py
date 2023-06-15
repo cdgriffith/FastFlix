@@ -312,14 +312,14 @@ class EncodingQueue(FlixList):
             ):
                 self.app.fastflix.conversion_list = new_queue
 
-        registered_metadata = set()
-        for video in self.app.fastflix.conversion_list:
-            if getattr(video.video_settings.video_encoder_settings, "hdr10plus_metadata", None):
-                registered_metadata.add(Path(video.video_settings.video_encoder_settings.hdr10plus_metadata).name)
-
-        for metadata_file in (self.app.fastflix.config.work_path / "queue_extras").glob("*.json"):
-            if metadata_file.name not in registered_metadata:
-                metadata_file.unlink(missing_ok=True)
+        # registered_metadata = set()
+        # for video in self.app.fastflix.conversion_list:
+        #     if getattr(video.video_settings.video_encoder_settings, "hdr10plus_metadata", None):
+        #         registered_metadata.add(Path(video.video_settings.video_encoder_settings.hdr10plus_metadata).name)
+        #
+        # for metadata_file in (self.app.fastflix.config.work_path / "queue_extras").glob("*.json"):
+        #     if metadata_file.name not in registered_metadata:
+        #         metadata_file.unlink(missing_ok=True)
 
         self.new_source()
         save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
