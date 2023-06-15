@@ -9,7 +9,7 @@ from fastflix.models.fastflix import FastFlix
 
 def build(fastflix: FastFlix):
     settings: AOMAV1Settings = fastflix.current_video.video_settings.video_encoder_settings
-    beginning, ending = generate_all(fastflix, "libaom-av1")
+    beginning, ending, output_fps = generate_all(fastflix, "libaom-av1")
 
     beginning += (
         "-strict experimental "
@@ -25,7 +25,7 @@ def build(fastflix: FastFlix):
 
     if settings.bitrate:
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
-        command_1 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ""} -an -f matroska {null}'
+        command_1 = f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ""} -an {output_fps} -f matroska {null}'
         command_2 = (
             f'{beginning} -passlogfile "{pass_log_file}" -b:v {settings.bitrate} -pass 2 {settings.extra} {ending}'
         )

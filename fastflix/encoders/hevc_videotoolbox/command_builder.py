@@ -8,7 +8,7 @@ from fastflix.models.fastflix import FastFlix
 
 def build(fastflix: FastFlix):
     settings: HEVCVideoToolboxSettings = fastflix.current_video.video_settings.video_encoder_settings
-    beginning, ending = generate_all(fastflix, "hevc_videotoolbox")
+    beginning, ending, output_fps = generate_all(fastflix, "hevc_videotoolbox")
 
     beginning += generate_color_details(fastflix)
 
@@ -28,7 +28,7 @@ def build(fastflix: FastFlix):
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
         beginning += f" "
 
-        command_1 = f"{beginning} -b:v {settings.bitrate} {details} -pass 1 -passlogfile \"{pass_log_file}\" {settings.extra if settings.extra_both_passes else ''} -an -f mp4 {null}"
+        command_1 = f"{beginning} -b:v {settings.bitrate} {details} -pass 1 -passlogfile \"{pass_log_file}\" {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f mp4 {null}"
         command_2 = f'{beginning} -b:v {settings.bitrate} {details} -pass 2 -passlogfile "{pass_log_file}" {settings.extra} {ending}'
         return [
             Command(command=command_1, name=f"First pass bitrate", exe="ffmpeg"),

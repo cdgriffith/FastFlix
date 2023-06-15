@@ -14,7 +14,7 @@ logger = logging.getLogger("fastflix")
 
 def build(fastflix: FastFlix):
     settings: rav1eSettings = fastflix.current_video.video_settings.video_encoder_settings
-    beginning, ending = generate_all(fastflix, "librav1e")
+    beginning, ending, output_fps = generate_all(fastflix, "librav1e")
 
     beginning += (
         "-strict experimental "
@@ -59,7 +59,7 @@ def build(fastflix: FastFlix):
         command_1 = f"{beginning} -b:v {settings.bitrate} {settings.extra} {ending}"
         return [Command(command=command_1, name=f"{pass_type}", exe="ffmpeg")]
     else:
-        command_1 = f"{beginning} -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f matroska {null}"
+        command_1 = f"{beginning} -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f matroska {null}"
         command_2 = f"{beginning} -b:v {settings.bitrate} -pass 2 {settings.extra} {ending}"
         return [
             Command(command=command_1, name=f"First pass {pass_type}", exe="ffmpeg"),

@@ -1,8 +1,16 @@
 # Changelog
 
+## Version 5.5.6
+
+* Fixing #485 Cannot Restore Queue Containing HDR10+ Entries (thanks to Maddie Davis)
+* Fixing #487 Filename corrupted on path change (thanks to Maddie Davis)
+* Fixing #491 Can't open Setting in Chinese upgraded from old version (thanks to 谈天才)
+* Fixing #493 Profiles did not load config for remove hdr, remove metadata or copy chapter toggles (thanks to micron888)
+* Fixing #494 frame rate change in 2 pass mode ("Bitrate" mode) results in error for AVC x264 encoder (thanks to Ivan Gorin)
+
 ## Version 5.5.5
 
-* Fixed #479 some zho and jpn translations, fixed some typos (thanks to Jing Luo)
+* Fixing #479 some zho and jpn translations, fixed some typos (thanks to Jing Luo)
 * Fixing incorrect PNG profiles for mac toolbox icons
 
 ## Version 5.5.4

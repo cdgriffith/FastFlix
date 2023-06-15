@@ -644,6 +644,12 @@ class Main(QtWidgets.QWidget):
                 logger.error(
                     f"Profile not set properly as we don't have encoder: {self.app.fastflix.config.opt('encoder')}"
                 )
+
+            self.widgets.remove_hdr.setChecked(self.app.fastflix.config.opt("remove_hdr"))
+            # self.widgets.deinterlace.setChecked(self.app.fastflix.config.opt("deinterlace"))
+            self.widgets.chapters.setChecked(self.app.fastflix.config.opt("copy_chapters"))
+            self.widgets.remove_metadata.setChecked(self.app.fastflix.config.opt("remove_metadata"))
+
             if self.app.fastflix.current_video:
                 self.video_options.new_source()
         finally:
@@ -1142,6 +1148,7 @@ class Main(QtWidgets.QWidget):
                 except Exception:
                     logger.exception(f"Could not load video {self.input_video}")
                 else:
+                    self.page_update(build_thumbnail=False)
                     self.add_to_queue()
                 signal.emit(int((i / total_items) * 100))
 
@@ -1181,7 +1188,7 @@ class Main(QtWidgets.QWidget):
         filename = QtWidgets.QFileDialog.getSaveFileName(
             self,
             caption="Save Video As",
-            dir=str(Path(*self.generate_output_filename)) + f".{self.widgets.output_type_combo.currentText()}",
+            dir=str(Path(*self.generate_output_filename)) + f"{self.widgets.output_type_combo.currentText()}",
             filter=f"Save File (*.{extension})",
         )
         if filename and filename[0]:
@@ -1345,10 +1352,10 @@ class Main(QtWidgets.QWidget):
             self.widgets.video_track.removeItem(0)
         self.widgets.preview.setText(t("No Video File"))
 
-        self.widgets.deinterlace.setChecked(False)
-        self.widgets.remove_hdr.setChecked(False)
-        self.widgets.remove_metadata.setChecked(True)
-        self.widgets.chapters.setChecked(True)
+        # self.widgets.deinterlace.setChecked(False)
+        # self.widgets.remove_hdr.setChecked(False)
+        # self.widgets.remove_metadata.setChecked(True)
+        # self.widgets.chapters.setChecked(True)
 
         self.widgets.flip.setCurrentIndex(0)
         self.widgets.rotate.setCurrentIndex(0)
