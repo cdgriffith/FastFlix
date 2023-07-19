@@ -4223,7 +4223,7 @@ Removing after done command:
   chs: 在完成命令后删除
   jpn: 完了したコマンドの後に削除する
   rus: Удаление после выполнения команды
-  por: Removendo após feito o comando
+  por: Removendo o comando pós-conclusão
   swe: Ta bort efter kommandot done
   pol: Usuwanie po wykonaniu polecenia
   ukr: Видалення після виконання команди
@@ -4358,7 +4358,7 @@ Row multithreading:
   chs: '在完成命令后运行。'
   jpn: 'コマンド完了後に実行。'
   rus: 'Запуск после выполнения команды:'
-  por: 'Correr atrás de comando feito:'
+  por: 'Executando o comando pós-conclusão:'
   swe: 'Körs efter kommandot done:'
   pol: 'Uruchomienie po wykonaniu polecenia:'
   ukr: 'Запуск після виконання команди:'
@@ -6670,7 +6670,7 @@ profile:
   chs: '配置：应用一个编码配置'
   jpn: 'プロフィール：エンコードプロファイルを適用してください。'
   rus: 'профиль: Применить профиль кодирования'
-  por: 'perfil: Forçar um perfil de codificação'
+  por: 'profile: Forçar um perfil de codificação'
   swe: 'profil: Genomdriva en kodningsprofil'
   pol: 'profil: Wymuszenie profilu kodowania'
   ukr: 'профіль: Застосувати профіль кодування'
@@ -6687,7 +6687,7 @@ profile:
   chs: '配置：VP9编码规格——必须与位深度相匹配。'
   jpn: 'プロファイルを使用しています。VP9コーディングプロファイル - ビット深度と一致する必要があります'
   rus: 'профиль: Профиль кодирования VP9 - должен соответствовать битовой глубине'
-  por: 'perfil: Perfil de codificação VP9 - deve corresponder à profundidade do bit'
+  por: 'profile: Perfil de codificação VP9 - deve corresponder à profundidade do bit'
   swe: 'profil: VP9-kodningsprofil - måste matcha bitdjupet'
   pol: 'profil: Profil kodowania VP9 - musi być zgodny z głębią bitową'
   ukr: 'профіль: Профіль кодування VP9 - має відповідати бітовій глибині'
@@ -6739,7 +6739,7 @@ rav1e github:
   jpn: repeat-headersを有効にすると、x265はキーフレームごとにVPS、SPS、PPSの各ヘッダを出力します。
   rus: 'повторять заголовки: Если включено, x265 будет выдавать заголовки VPS, SPS
     и PPS с каждым ключевым кадром.'
-  por: 'repetir cabeçalhos: Se ativado, x265 emitirá cabeçalhos VPS, SPS e PPS em
+  por: 'repeat-headers: Se ativado, x265 emitirá cabeçalhos VPS, SPS e PPS em
     cada kkeyframe.'
   swe: 'upprepa rubriker: Om den är aktiverad kommer x265 att skicka ut VPS-, SPS
     och PPS-rubriker med varje nyckelbild.'
