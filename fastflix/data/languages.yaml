@@ -13,7 +13,7 @@
   jpn: 4または5を選択すると、レート歪みの最適化がオフになり、画質への影響がさらに大きくなります。
   rus: 4 или 5 отключает оптимизацию искажений скорости, что еще больше влияет на
     качество.
-  por: 4 ou 5 irá desligar a optimização da taxa de distorção, tendo um impacto ainda
+  por: 4 ou 5 desligará a optimização da taxa de distorção, tendo um impacto ainda
     maior na qualidade.
   swe: 4 eller 5 stänger av optimeringen av hastighetsförvrängning, vilket har ännu
     större inverkan på kvaliteten.
@@ -108,7 +108,7 @@ Adding commands to the queue:
   chs: 正在将命令添加到队列中
   jpn: キューにコマンドを追加する
   rus: Добавление команд в очередь
-  por: Acrescentar comandos à fila
+  por: Adicionar comandos à fila
   swe: Lägga till kommandon i kön
   pol: Dodawanie poleceń do kolejki
   ukr: Додавання команд до черги
@@ -335,7 +335,7 @@ Automatically enabled when an interlaced video is detected:
   chs: 当检测到隔行扫描视频时自动启用此项。
   jpn: インターレース動画が検出されると自動的に有効になります。
   rus: Автоматически включается при обнаружении чересстрочного видео
-  por: Activado automaticamente quando um vídeo entrelaçado é detectado
+  por: Habilitado automaticamente quando um vídeo entrelaçado é detectado
   swe: Aktiveras automatiskt när en interlaced video upptäcks.
   pol: Automatyczne włączanie po wykryciu obrazu z przeplotem
   ukr: Автоматично вмикається, коли виявлено чересстрочне відео
@@ -470,7 +470,7 @@ Break the video into columns to encode faster (lesser quality):
   chs: 将视频按列分割，以更快地进行编码（质量较差）。
   jpn: 速くエンコードするために動画を列に分割する（画質は落ちる）
   rus: Разбейте видео на колонки для более быстрого кодирования (с меньшим качеством)
-  por: Quebrar o vídeo em colunas para codificar mais rapidamente (menor qualidade)
+  por: Dividir o vídeo em colunas para codificar mais rapidamente (menor qualidade)
   swe: Dela upp videon i kolumner för att koda snabbare (sämre kvalitet)
   pol: Podziel film na kolumny, aby kodować szybciej (gorsza jakość)
   ukr: Розбийте відео на колонки для швидшого кодування (з меншою якістю)
@@ -486,7 +486,7 @@ Break the video into rows to encode faster (lesser quality):
   chs: 将视频按行分割，以更快地进行编码（质量较差）。
   jpn: 速くエンコードするためにビデオを列に分割する（画質は落ちる）
   rus: Разбейте видео на строки для более быстрого кодирования (с меньшим качеством)
-  por: Quebrar o vídeo em linhas para codificar mais rapidamente (menor qualidade)
+  por: Dividir o vídeo em linhas para codificar mais rapidamente (menor qualidade)
   swe: Dela upp videon i rader för att koda snabbare (sämre kvalitet)
   pol: Podziel wideo na rzędy, aby kodować szybciej (gorsza jakość)
   ukr: Розбийте відео на рядки для швидшого кодування (з меншою якістю)
@@ -965,7 +965,7 @@ Conversion worker shutting down:
   chs: 正在关闭转换程序
   jpn: コンバージョンワーカーのシャットダウンしている
   rus: Выключение конвертера
-  por: Worker de conversão encerrando
+  por: Encerrando o worker de conversão
   swe: Konverteringsarbetaren stänger av
   pol: Wyłączenie pracownika konwersji
   ukr: Вимкнення конвертера
@@ -1177,7 +1177,7 @@ Could not fix first subtitle track:
   chs: 无法固定第1个字幕
   jpn: 1つ目の字幕トラックを固定できなかった
   rus: Не удалось зафиксировать первую дорожку субтитров
-  por: Não foi possível corrigir a primeira faixa de legendas
+  por: Não foi possível corrigir a primeira faixa de legenda
   swe: Det gick inte att fixa det första undertextspåret
   pol: Nie można naprawić pierwszej ścieżki napisów
   ukr: Не вдалося виправити першу доріжку субтитрів
@@ -1222,7 +1222,7 @@ Could not set language to:
   chs: 无法将语言设置为
   jpn: 次の言語は設定できませんでした：
   rus: Не удалось установить язык на
-  por: Não foi possível definir a linguagem para
+  por: Não foi possível definir o idioma para
   swe: Kunde inte ställa in språket till
   pol: Nie można ustawić języka na
   ukr: Не вдалося встановити мову на
@@ -1267,7 +1267,7 @@ Create Profile:
   chs: 创建配置
   jpn: プロファイルの作成
   rus: Создать профиль
-  por: Criar Perfil
+  por: Criar perfil
   swe: Skapa en profil
   pol: Utwórz profil
   ukr: Створити профіль
@@ -1327,7 +1327,7 @@ Currently only works for image based subtitles.:
   chs: 目前只适用于基于图像的字幕。
   jpn: 現在のところ、画像ベースの字幕にしか対応していません。
   rus: В настоящее время работает только для субтитров на основе изображений.
-  por: Atualmente só funciona para legendas baseadas em imagens.
+  por: Atualmente, só funciona para legendas baseadas em imagens.
   swe: För närvarande fungerar endast bildbaserade undertexter.
   pol: Obecnie działa tylko dla napisów opartych na obrazkach.
   ukr: Наразі працює лише для субтитрів на основі зображень.
@@ -4650,7 +4650,7 @@ Single Pass (Bitrate):
   chs: 一遍编码（比特率）
   jpn: 1回のみ（ビットレート）
   rus: Однократный проход (битрейт)
-  por: Passe Único (Bitrate)
+  por: Passe único (Bitrate)
   swe: Enkelpass (Bitrate)
   pol: Pojedyncze przejście (Bitrate)
   ukr: Один прохід (Бітрейт)
@@ -4665,7 +4665,7 @@ Single Pass (CRF):
   chs: 一遍编码（CRF）
   jpn: 1回のみ（CRF）
   rus: Однократный проход (CRF)
-  por: Passe Único (CRF)
+  por: Passe único (CRF)
   swe: Enkel passage (CRF)
   pol: Pojedynczy przejazd (CRF)
   ukr: Одноразовий пропуск (CRF)
@@ -4695,7 +4695,7 @@ Slow is the slowest preset personally recommended,:
   chs: 个人建议使用slow。
   jpn: 個人的にはslowのプリセット設定はおすすめです。
   rus: Slow — самая медленная предустановка, рекомендуемая лично,
-  por: Slow é o preset mais lento recomendado pessoalmente,
+  por: Slow é, pessoalmente, o preset mais lento recomendado,
   swe: Slow är den långsammaste förinställningen som personligen rekommenderas,
   pol: Slow to najwolniejsze ustawienie wstępne, które osobiście zalecamy,
   ukr: Slow — це найповільніший пресет, рекомендований особисто, пресети,
