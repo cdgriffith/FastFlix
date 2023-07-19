@@ -25,7 +25,7 @@ known_language_list = [
     "German",
     "Japanese",
     "Russian",
-    "Portuguese",
+    "Portuguese (Brazilian)",
     "Swedish",
     "Polish",
     "Romanian",
