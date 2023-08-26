@@ -205,10 +205,14 @@ class MultipleFilesWindow(QtWidgets.QWidget):
         layout.addWidget(self.files_area)
         layout.addWidget(QtWidgets.QLabel(t("Drag and Drop to reorder")))
         self.setLayout(layout)
+        self.change_profile()
 
     def change_profile(self):
-        self.main.widgets.profile_box.setCurrentText(self.profile_box.currentText())
-        # self.main.set_profile()
+        if self.main.widgets.profile_box.currentText() == self.profile_box.currentText():
+            self.main.set_profile()
+        else:
+            self.main.widgets.profile_box.setCurrentText(self.profile_box.currentText())
+
 
     def set_folder_name(self, name):
         self.base_folder_label.setText(f'{t("Base Folder")}: {name}')

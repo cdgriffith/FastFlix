@@ -18,7 +18,7 @@ from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
 from fastflix.resources import main_icon, get_icon, changes_file, local_changes_file, local_package_changes_file
-from fastflix.shared import clean_logs, error_message, latest_fastflix, message
+from fastflix.shared import clean_logs, error_message, latest_fastflix, message, yes_no_message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 # from fastflix.widgets.logs import Logs
@@ -277,11 +277,11 @@ class Container(QtWidgets.QMainWindow):
         if not self.app.fastflix.current_video:
             error_message(t("Please load in a video to configure a new profile"))
         else:
+            self.main.page_update(build_thumbnail=False)
             if self.profile_window:
-                self.profile_window.show()
-            else:
-                self.profile_window = ProfileWindow(self.app, self.main, self)
-                self.profile_window.show()
+                self.profile_window.close()
+            self.profile_window = ProfileWindow(self.app, self.main, self)
+            self.profile_window.show()
 
     def show_profile(self):
         self.profile_details = ProfileDetails(
@@ -360,6 +360,14 @@ class Container(QtWidgets.QMainWindow):
         self.app.fastflix.config.save()
 
     def open_many(self):
+        if self.app.fastflix.current_video:
+            discard = yes_no_message(
+                f'{t("There is already a video being processed")}<br>' f'{t("Are you sure you want to discard it?")}',
+                title="Discard current video",
+            )
+            if not discard:
+                return
+        self.main.clear_current_video()
         self.mfw = MultipleFilesWindow(app=self.app, main=self.main)
         self.mfw.show()
 
