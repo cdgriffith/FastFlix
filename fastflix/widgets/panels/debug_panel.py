@@ -21,7 +21,14 @@ class DebugPanel(QtWidgets.QTabWidget):
         if not DEVMODE:
             self.hide()
             return
-        self.reset()
+        self.addTab(self.get_textbox(Box(self.app.fastflix.config.dict())), "Config")
+        self.addTab(self.get_textbox(Box(self.get_ffmpeg_details())), "FFmpeg Details")
+        self.addTab(self.get_textbox(BoxList(self.app.fastflix.conversion_list)), "Queue")
+        self.addTab(self.get_textbox(Box(self.app.fastflix.encoders)), "Encoders")
+        self.addTab(self.get_textbox(BoxList(self.app.fastflix.audio_encoders)), "Audio Encoders")
+        if self.app.fastflix.current_video:
+            self.cv = self.get_textbox(Box(self.app.fastflix.current_video.dict()))
+            self.addTab(self.cv, "Current Video")
 
     def get_textbox(self, obj: Union["Box", "BoxList"]) -> "QtWidgets.QTextBrowser":
         widget = QtWidgets.QTextBrowser(self)
@@ -41,13 +48,13 @@ class DebugPanel(QtWidgets.QTabWidget):
     def reset(self):
         if not DEVMODE:
             return
-        for i in range(self.count() - 1, -1, -1):
-            self.removeTab(i)
+        # for i in range(self.count() - 1, -1, -1):
+        #     self.removeTab(i)
 
-        self.addTab(self.get_textbox(Box(self.app.fastflix.config.dict())), "Config")
-        self.addTab(self.get_textbox(Box(self.get_ffmpeg_details())), "FFmpeg Details")
-        self.addTab(self.get_textbox(BoxList(self.app.fastflix.conversion_list)), "Queue")
-        self.addTab(self.get_textbox(Box(self.app.fastflix.encoders)), "Encoders")
-        self.addTab(self.get_textbox(BoxList(self.app.fastflix.audio_encoders)), "Audio Encoders")
         if self.app.fastflix.current_video:
-            self.addTab(self.get_textbox(Box(self.app.fastflix.current_video.dict())), "Current Video")
+            if hasattr(self, "cv"):
+                self.removeTab(self.count() - 1)
+                self.cv.close()
+                del self.cv
+            self.cv = self.get_textbox(Box(self.app.fastflix.current_video.dict()))
+            self.addTab(self.cv, "Current Video")

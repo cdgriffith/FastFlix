@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from box import Box
+import gc
+
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
@@ -47,6 +48,8 @@ class FlixList(QtWidgets.QWidget):
         return super().resizeEvent(event)
 
     def _new_source(self, widgets):
+        self.inner_widget.close()
+        del self.inner_widget
         self.inner_widget = QtWidgets.QWidget()
 
         layout = QtWidgets.QVBoxLayout()
@@ -116,9 +119,11 @@ class FlixList(QtWidgets.QWidget):
         raise NotImplementedError()
 
     def remove_track(self, track):
-        self.tracks.pop(self.tracks.index(track))
+        del self.tracks[self.tracks.index(track)]
         track.close()
+        del track
         self.reorder()
+        gc.collect(2)
 
     def remove_all(self):
         for widget in self.tracks:

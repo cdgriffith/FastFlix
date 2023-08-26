@@ -99,3 +99,9 @@ class Disposition(QtWidgets.QWidget):
         for dis in self.widgets:
             self.widgets[dis].setChecked(self.parent.dispositions.get(dis, False))
         super().show()
+
+    def close(self) -> bool:
+        del self.parent
+        del self.subs
+        del self.dispositions
+        return super().close()

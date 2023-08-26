@@ -14,7 +14,7 @@ from fastflix.models.encode import AudioTrack
 from fastflix.models.profiles import Profile
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
-from fastflix.shared import no_border, error_message, yes_no_message
+from fastflix.shared import no_border, error_message, yes_no_message, clear_list
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.audio_processing import apply_audio_filters
 from fastflix.widgets.windows.disposition import Disposition
@@ -377,6 +377,11 @@ class Audio(QtWidgets.QTabWidget):
         else:
             self.widgets.track_number.setText(f"{self.index}:{self.outdex}")
 
+    def close(self) -> bool:
+        del self.dispositions
+        del self.widgets
+        return super().close()
+
 
 class AudioList(FlixList):
     def __init__(self, parent, app: FastFlixApp):
@@ -407,6 +412,7 @@ class AudioList(FlixList):
             track.widgets.enable_check.setChecked(False)
 
     def new_source(self, codecs):
+        clear_list(self.tracks, close=True)
         self.tracks: list[Audio] = []
         self._first_selected = False
         disable_dup = (
@@ -480,7 +486,7 @@ class AudioList(FlixList):
             self.enable_all()
             return
 
-        self.tracks = []
+        clear_list(self.tracks)
 
         def update_track(new_track, downmix=None, conversion=None, bitrate=None):
             if conversion:
@@ -601,6 +607,7 @@ class AudioList(FlixList):
                         dispositions=track.dispositions,
                     )
                 )
+        clear_list(self.app.fastflix.current_video.video_settings.audio_tracks)
         self.app.fastflix.current_video.video_settings.audio_tracks = tracks
 
     def reload(self, original_tracks: list[AudioTrack], audio_formats):

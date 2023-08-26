@@ -486,9 +486,10 @@ class AdvancedPanel(QtWidgets.QWidget):
     def hdr_settings(self):
         if self.main.remove_hdr:
             self.color_primaries_widget.setCurrentText("bt709")
-            self.app.fastflix.current_video.video_settings.color_primaries = "bt709"
-            self.app.fastflix.current_video.video_settings.color_transfer = None
-            self.app.fastflix.current_video.video_settings.color_space = None
+            if self.app.fastflix.current_video:
+                self.app.fastflix.current_video.video_settings.color_primaries = "bt709"
+                self.app.fastflix.current_video.video_settings.color_transfer = None
+                self.app.fastflix.current_video.video_settings.color_space = None
             self.color_transfer_widget.setCurrentIndex(0)
             self.color_space_widget.setCurrentIndex(0)
         else:

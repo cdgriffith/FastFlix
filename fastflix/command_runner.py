@@ -4,6 +4,7 @@ import datetime
 import logging
 import secrets
 import shlex
+import time
 from pathlib import Path
 from subprocess import PIPE
 from threading import Thread
@@ -113,6 +114,7 @@ class BackgroundRunner:
             self.error_output_file, "r", encoding="utf-8", errors="ignore"
         ) as err_file:
             while True:
+                time.sleep(0.01)
                 if not self.is_alive():
                     excess = out_file.read()
                     logger.info(excess)

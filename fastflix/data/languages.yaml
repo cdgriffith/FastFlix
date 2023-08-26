@@ -10337,3 +10337,46 @@ Single Pass Encoding:
   ron: Codificare cu o singură trecere
   kor: 싱글 패스 인코딩
   ukr: Однопрохідне кодування
+Conversion suites:
+  eng: Conversion suites
+Encoders:
+  eng: Encoders
+Supporting libraries:
+  eng: Supporting libraries
+Packaged with:
+  eng: Packaged with
+Fast Seek:
+  eng: Fast Seek
+Rotate:
+  eng: Rotate
+Remove Hdr:
+  deu: HDR entfernen
+  eng: Remove HDR
+  fra: Supprimer le HDR
+  ita: Rimuovere HDR
+  spa: Eliminar HDR
+  chs: 去除HDR
+  jpn: HDRを削除
+  rus: Удалить HDR
+  por: Remover HDR
+  swe: Ta bort HDR
+  pol: Usuń HDR
+  ukr: Видалити HDR
+  kor: HDR 제거
+  ron: Îndepărtați HDR
+Resolution Method:
+  eng: Resolution Method
+Resolution Custom:
+  eng: Resolution Custom
+Output Type:
+  eng: Output Type
+Subtitle Language:
+  eng: Subtitle Language
+Subtitle Select:
+  eng: Subtitle Select
+Subtitle Select Preferred Language:
+  eng: Subtitle Select Preferred Language
+Subtitle Automatic Burn In:
+  eng: Subtitle Automatic Burn In
+Subtitle Select First Matching:
+  eng: Subtitle Select First Matching

@@ -11,6 +11,7 @@ from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.widgets.background_tasks import ExtractHDR10
 from fastflix.resources import group_box_style, get_icon
+from fastflix.shared import clear_list
 
 logger = logging.getLogger("fastflix")
 
@@ -73,6 +74,14 @@ class SettingPanel(QtWidgets.QWidget):
         self.labels = Box()
         self.opts = Box()
         self.only_int = QtGui.QIntValidator()
+
+    def close(self) -> bool:
+        for widget, item in self.widgets.items():
+            self.widgets[widget] = None
+        del self.widgets
+        del self.labels
+        del self.opts
+        return super().close()
 
     def paintEvent(self, event):
         o = QtWidgets.QStyleOption()

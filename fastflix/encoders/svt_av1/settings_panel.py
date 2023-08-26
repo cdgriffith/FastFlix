@@ -76,7 +76,7 @@ class SVT_AV1(SettingPanel):
         grid.addLayout(self.init_pix_fmt(), 1, 0, 1, 2)
         grid.addLayout(self.init_tile_rows(), 2, 0, 1, 2)
         grid.addLayout(self.init_tile_columns(), 3, 0, 1, 2)
-        grid.addLayout(self.init_qp_or_crf(), 5, 0, 1, 2)
+        grid.addLayout(self.init_qp_or_crf(), 6, 0, 1, 2)
         grid.addLayout(self.init_sc_detection(), 4, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 5, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)

@@ -186,12 +186,18 @@ class Video(BaseModel):
 
     @property
     def width(self):
-        w, _ = determine_rotation(self.streams, self.video_settings.selected_track)
+        track = 0
+        if hasattr(self, "video_settings"):
+            track = self.video_settings.selected_track
+        w, _ = determine_rotation(self.streams, track)
         return w
 
     @property
     def height(self):
-        _, h = determine_rotation(self.streams, self.video_settings.selected_track)
+        track = 0
+        if hasattr(self, "video_settings"):
+            track = self.video_settings.selected_track
+        _, h = determine_rotation(self.streams, track)
         return h
 
     @property

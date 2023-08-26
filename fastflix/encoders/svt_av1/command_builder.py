@@ -97,8 +97,8 @@ def build(fastflix: FastFlix):
             command_2 = f"{beginning} -b:v {settings.bitrate} -pass 2 {settings.extra} {ending}"
 
         elif settings.qp is not None:
-            command_1 = f"{beginning} -qp {settings.qp} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f matroska {null}"
-            command_2 = f"{beginning} -qp {settings.qp} -pass 2 {settings.extra} {ending}"
+            command_1 = f"{beginning} -{settings.qp_mode} {settings.qp} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f matroska {null}"
+            command_2 = f"{beginning} -{settings.qp_mode} {settings.qp} -pass 2 {settings.extra} {ending}"
         else:
             return []
         return [

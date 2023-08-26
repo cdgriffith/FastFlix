@@ -12,7 +12,7 @@ from fastflix.language import t
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import loading_movie, get_icon
-from fastflix.shared import error_message, no_border
+from fastflix.shared import error_message, no_border, clear_list
 from fastflix.widgets.background_tasks import ExtractSubtitleSRT
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.widgets.windows.disposition import Disposition
@@ -362,6 +362,7 @@ class SubtitleList(FlixList):
                     burn_in_count += 1
         if burn_in_count > 1:
             raise FastFlixInternalException(t("More than one track selected to burn in"))
+        clear_list(self.app.fastflix.current_video.video_settings.subtitle_tracks)
         self.app.fastflix.current_video.video_settings.subtitle_tracks = tracks
 
     def reload(self, original_tracks):
