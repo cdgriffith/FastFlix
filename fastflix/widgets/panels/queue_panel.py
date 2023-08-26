@@ -6,6 +6,7 @@ import sys
 import logging
 import os
 from pathlib import Path
+
 # import tracemalloc
 import gc
 
@@ -378,7 +379,7 @@ class EncodingQueue(FlixList):
             return
         super().reorder(update=update)
         # TODO find better reorder method
-        for i in range(len(self.tracks)-1, -1, -1):
+        for i in range(len(self.tracks) - 1, -1, -1):
             del self.app.fastflix.conversion_list[i]
 
         self.app.fastflix.conversion_list = []
@@ -394,7 +395,7 @@ class EncodingQueue(FlixList):
         save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
 
     def new_source(self):
-        for i in range(len(self.tracks)-1, -1, -1):
+        for i in range(len(self.tracks) - 1, -1, -1):
             self.tracks[i].close()
             del self.tracks[i]
 

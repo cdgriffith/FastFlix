@@ -213,7 +213,6 @@ class MultipleFilesWindow(QtWidgets.QWidget):
         else:
             self.main.widgets.profile_box.setCurrentText(self.profile_box.currentText())
 
-
     def set_folder_name(self, name):
         self.base_folder_label.setText(f'{t("Base Folder")}: {name}')
 

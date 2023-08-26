@@ -21,6 +21,7 @@ from fastflix.resources import main_icon, get_icon, changes_file, local_changes_
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message, yes_no_message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
+
 # from fastflix.widgets.logs import Logs
 from fastflix.widgets.main import Main
 from fastflix.widgets.windows.profile_window import ProfileWindow
