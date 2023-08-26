@@ -5,6 +5,7 @@ from pathlib import Path
 import logging
 import shutil
 import uuid
+import gc
 
 from box import Box, BoxError
 from ruamel.yaml import YAMLError
@@ -65,6 +66,7 @@ def get_queue(queue_file: Path) -> list[Video]:
         vs.video_encoder_settings = ves  # No idea why this has to be called after, otherwise reset to x265
         del video["video_settings"]
         queue.append(Video(**video, video_settings=vs, status=status))
+    del loaded
     return queue
 
 
@@ -122,8 +124,11 @@ def save_queue(queue: list[Video], queue_file: Path, config: Optional[Config] = 
 
         items.append(video)
     try:
-        Box(queue=items).to_yaml(filename=queue_file)
+        tmp = Box(queue=items)
+        tmp.to_yaml(filename=queue_file)
+        del tmp
     except Exception as err:
         logger.warning(items)
         logger.exception(f"Could not save queue! {err.__class__.__name__}: {err}")
         raise err from None
+    gc.collect(2)

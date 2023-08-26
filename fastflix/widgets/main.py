@@ -869,23 +869,24 @@ class Main(QtWidgets.QWidget):
         elif self.widgets.resolution_drop_down.currentIndex() in {1, 2, 3, 4}:
             self.widgets.resolution_custom.setDisabled(False)
             self.widgets.resolution_custom.setPlaceholderText(self.widgets.resolution_drop_down.currentText())
-            match resolutions[self.widgets.resolution_drop_down.currentText()]["method"]:
-                case "long edge":
-                    self.widgets.resolution_custom.setText(
-                        str(self.app.fastflix.current_video.width)
-                        if self.app.fastflix.current_video.width > self.app.fastflix.current_video.height
-                        else str(self.app.fastflix.current_video.height)
-                    )
-                case "width":
-                    self.widgets.resolution_custom.setText(str(self.app.fastflix.current_video.width))
-                case "height":
-                    self.widgets.resolution_custom.setText(str(self.app.fastflix.current_video.height))
-                case "custom":
-                    self.widgets.resolution_custom.setText(
-                        f"{self.app.fastflix.current_video.width}:{self.app.fastflix.current_video.height}"
-                    )
-                case _:
-                    self.widgets.resolution_custom.setText("")
+            if self.app.fastflix.current_video:
+                match resolutions[self.widgets.resolution_drop_down.currentText()]["method"]:
+                    case "long edge":
+                        self.widgets.resolution_custom.setText(
+                            str(self.app.fastflix.current_video.width)
+                            if self.app.fastflix.current_video.width > self.app.fastflix.current_video.height
+                            else str(self.app.fastflix.current_video.height)
+                        )
+                    case "width":
+                        self.widgets.resolution_custom.setText(str(self.app.fastflix.current_video.width))
+                    case "height":
+                        self.widgets.resolution_custom.setText(str(self.app.fastflix.current_video.height))
+                    case "custom":
+                        self.widgets.resolution_custom.setText(
+                            f"{self.app.fastflix.current_video.width}:{self.app.fastflix.current_video.height}"
+                        )
+                    case _:
+                        self.widgets.resolution_custom.setText("")
         else:
             self.widgets.resolution_custom.setDisabled(True)
             self.widgets.resolution_custom.setText("")
@@ -1676,7 +1677,6 @@ class Main(QtWidgets.QWidget):
     def get_all_settings(self):
         if not self.initialized:
             return
-        stream_info = self.app.fastflix.current_video.streams.video[self.video_track]
 
         end_time = self.end_time
         if self.end_time == float(self.app.fastflix.current_video.format.get("duration", 0)):
@@ -1685,6 +1685,8 @@ class Main(QtWidgets.QWidget):
             end_time = 0
 
         v_flip, h_flip = self.get_flips()
+
+        del self.app.fastflix.current_video.video_settings
         self.app.fastflix.current_video.video_settings = VideoSettings(
             crop=self.build_crop(),
             resolution_method=self.resolution_method(),
@@ -2103,6 +2105,7 @@ class Notifier(QtCore.QThread):
     def run(self):
         while True:
             # Message looks like (command, video_uuid, command_uuid)
+            # time.sleep(0.01)
             status = self.status_queue.get()
             self.app.processEvents()
             if status[0] == "exit":

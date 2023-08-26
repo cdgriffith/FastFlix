@@ -7,6 +7,9 @@ import logging
 import os
 from pathlib import Path
 
+# import tracemalloc
+import gc
+
 from appdirs import user_data_dir
 import reusables
 from box import Box
@@ -91,6 +94,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         del settings.conversion_commands
 
         title.setToolTip(settings.video_encoder_settings.to_yaml())
+        del settings
 
         open_button = QtWidgets.QPushButton(
             QtGui.QIcon(get_icon("play", self.parent.app.fastflix.config.theme)), t("Open Directory")
@@ -191,6 +195,16 @@ class EncodeItem(QtWidgets.QTabWidget):
     def page_update(self):
         if not self.loading:
             return self.parent.main.page_update(build_thumbnail=False)
+
+    def close(self) -> bool:
+        for widget, item in self.widgets.items():
+            item.close()
+            self.widgets[widget] = None
+        del self.video
+        del self.widgets
+        del self.parent
+        gc.collect()
+        return super().close()
 
 
 class EncodingQueue(FlixList):
@@ -365,6 +379,9 @@ class EncodingQueue(FlixList):
             return
         super().reorder(update=update)
         # TODO find better reorder method
+        for i in range(len(self.tracks) - 1, -1, -1):
+            del self.app.fastflix.conversion_list[i]
+
         self.app.fastflix.conversion_list = []
         for track in self.tracks:
             self.app.fastflix.conversion_list.append(track.video)
@@ -378,8 +395,10 @@ class EncodingQueue(FlixList):
         save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
 
     def new_source(self):
-        for track in self.tracks:
-            track.close()
+        for i in range(len(self.tracks) - 1, -1, -1):
+            self.tracks[i].close()
+            del self.tracks[i]
+
         self.tracks = []
 
         for i, video in enumerate(self.app.fastflix.conversion_list, start=1):
@@ -388,6 +407,13 @@ class EncodingQueue(FlixList):
             self.tracks[0].widgets.up_button.setDisabled(True)
             self.tracks[-1].widgets.down_button.setDisabled(True)
         super()._new_source(self.tracks)
+
+        # snapshot = tracemalloc.take_snapshot()
+        # top_stats = snapshot.statistics('lineno')
+        #
+        # print("[ Top 20 ]")
+        # for stat in top_stats[:20]:
+        #     print(stat)
 
     def clear_complete(self):
         for queued_item in self.tracks:
@@ -407,7 +433,7 @@ class EncodingQueue(FlixList):
         else:
             logger.error("No matching video found to remove from queue")
             return
-        self.app.fastflix.conversion_list.pop(pos)
+        del self.app.fastflix.conversion_list[pos]
 
         if not part_of_clear:
             self.new_source()

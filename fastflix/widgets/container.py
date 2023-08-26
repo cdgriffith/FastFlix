@@ -18,10 +18,11 @@ from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg
 from fastflix.resources import main_icon, get_icon, changes_file, local_changes_file, local_package_changes_file
-from fastflix.shared import clean_logs, error_message, latest_fastflix, message
+from fastflix.shared import clean_logs, error_message, latest_fastflix, message, yes_no_message
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
-from fastflix.widgets.logs import Logs
+
+# from fastflix.widgets.logs import Logs
 from fastflix.widgets.main import Main
 from fastflix.widgets.windows.profile_window import ProfileWindow
 from fastflix.widgets.progress_bar import ProgressBar, Task
@@ -62,7 +63,7 @@ class Container(QtWidgets.QMainWindow):
 
         if self.app.fastflix.config.stay_on_top:
             self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
-        self.logs = Logs()
+        # self.logs = Logs()
         self.changes = None
         self.about = None
         self.profile_details = None
@@ -224,8 +225,8 @@ class Container(QtWidgets.QMainWindow):
         log_dir_action = QAction(self.si(QtWidgets.QStyle.SP_DialogOpenButton), t("Open Log Directory"), self)
         log_dir_action.triggered.connect(self.show_log_dir)
 
-        log_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), t("View GUI Debug Logs"), self)
-        log_action.triggered.connect(self.show_logs)
+        # log_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogDetailedView), t("View GUI Debug Logs"), self)
+        # log_action.triggered.connect(self.show_logs)
 
         report_action = QAction(self.si(QtWidgets.QStyle.SP_DialogHelpButton), t("Report Issue"), self)
         report_action.triggered.connect(self.open_issues)
@@ -249,7 +250,7 @@ class Container(QtWidgets.QMainWindow):
             help_menu.addAction(changes_action)
         help_menu.addAction(report_action)
         help_menu.addAction(log_dir_action)
-        help_menu.addAction(log_action)
+        # help_menu.addAction(log_action)
         help_menu.addAction(clean_logs_action)
         help_menu.addSeparator()
         help_menu.addAction(version_action)
@@ -277,11 +278,11 @@ class Container(QtWidgets.QMainWindow):
         if not self.app.fastflix.current_video:
             error_message(t("Please load in a video to configure a new profile"))
         else:
+            self.main.page_update(build_thumbnail=False)
             if self.profile_window:
-                self.profile_window.show()
-            else:
-                self.profile_window = ProfileWindow(self.app, self.main, self)
-                self.profile_window.show()
+                self.profile_window.close()
+            self.profile_window = ProfileWindow(self.app, self.main, self)
+            self.profile_window.show()
 
     def show_profile(self):
         self.profile_details = ProfileDetails(
@@ -304,8 +305,8 @@ class Container(QtWidgets.QMainWindow):
         self.main.widgets.profile_box.setCurrentText("Standard Profile")
         self.main.widgets.convert_to.setCurrentIndex(0)
 
-    def show_logs(self):
-        self.logs.show()
+    # def show_logs(self):
+    #     self.logs.show()
 
     def show_changes(self):
         if not self.changes:
@@ -360,6 +361,14 @@ class Container(QtWidgets.QMainWindow):
         self.app.fastflix.config.save()
 
     def open_many(self):
+        if self.app.fastflix.current_video:
+            discard = yes_no_message(
+                f'{t("There is already a video being processed")}<br>' f'{t("Are you sure you want to discard it?")}',
+                title="Discard current video",
+            )
+            if not discard:
+                return
+        self.main.clear_current_video()
         self.mfw = MultipleFilesWindow(app=self.app, main=self.main)
         self.mfw.show()
 
@@ -425,7 +434,7 @@ class ProfileDetails(QtWidgets.QWidget):
             if k.lower().startswith("audio") or k.lower() == "profile_version":
                 continue
             if k not in setting_types.keys():
-                item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
+                item_1 = QtWidgets.QLabel(t(" ".join(str(k).split("_")).title()))
                 item_2 = QtWidgets.QLabel(str(v))
                 item_2.setMaximumWidth(150)
                 inner_layout = QtWidgets.QHBoxLayout()

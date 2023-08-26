@@ -44,11 +44,11 @@ class About(QtWidgets.QWidget):
         layout.addWidget(support_label)
 
         bundle_label = QtWidgets.QLabel(
-            f"Conversion suites: {link('https://www.ffmpeg.org/download.html', 'FFmpeg', app.fastflix.config.theme)} ({t('Various')}), "
+            f"{t('Conversion suites')}: {link('https://www.ffmpeg.org/download.html', 'FFmpeg', app.fastflix.config.theme)} ({t('Various')}), "
             f"{link('https://github.com/rigaya/NVEnc', 'NVEncC', app.fastflix.config.theme)} (MIT) "
             f"{link('https://github.com/rigaya/QSVEnc', 'QSVEnc', app.fastflix.config.theme)} (MIT) "
             f"{link('https://github.com/rigaya/VCEEnc', 'VCEEnc', app.fastflix.config.theme)} (MIT)<br><br>"
-            f"Encoders: <br> {link('https://github.com/rigaya/NVEnc', 'NVEncC', app.fastflix.config.theme)} (MIT), "
+            f"{t('Encoders')}: <br> {link('https://github.com/rigaya/NVEnc', 'NVEncC', app.fastflix.config.theme)} (MIT), "
             f"{link('https://github.com/rigaya/VCEEnc', 'VCEEnc', app.fastflix.config.theme)} (MIT), "
             f"{link('https://github.com/rigaya/QSVEnc', 'QSVEnc', app.fastflix.config.theme)} (MIT), "
             f"SVT AV1 (MIT), rav1e (MIT), aom (MIT), x265 (GPL), x264 (GPL), libvpx (BSD)"
@@ -58,7 +58,7 @@ class About(QtWidgets.QWidget):
         layout.addWidget(bundle_label)
 
         supporting_libraries_label = QtWidgets.QLabel(
-            "Supporting libraries<br>"
+            f"{t('Supporting libraries')}<br>"
             f"{link('https://www.python.org/', t('Python'), app.fastflix.config.theme)}{reusables.version_string} (PSF LICENSE), "
             f"{link('https://github.com/cdgriffith/Box', t('python-box'), app.fastflix.config.theme)} {box_version} (MIT), "
             f"{link('https://github.com/cdgriffith/Reusables', t('Reusables'), app.fastflix.config.theme)} {reusables.__version__} (MIT)<br>"
@@ -72,7 +72,7 @@ class About(QtWidgets.QWidget):
 
         if pyinstaller:
             pyinstaller_label = QtWidgets.QLabel(
-                f"Packaged with: {link('https://www.pyinstaller.org/index.html', 'PyInstaller', app.fastflix.config.theme)}"
+                f"{t('Packaged with')}: {link('https://www.pyinstaller.org/index.html', 'PyInstaller', app.fastflix.config.theme)}"
             )
             pyinstaller_label.setAlignment(QtCore.Qt.AlignCenter)
             pyinstaller_label.setOpenExternalLinks(True)

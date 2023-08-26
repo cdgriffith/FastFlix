@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 5.5.7
+
+* Fixing #503 missing CRF mode for SVT-AV1 (thanks to ignace72)
+* Fixing #506 excessive amounts of RAM used and not cleared - partially mitigated (thanks to 19Battlestar65)
+* Fixing #509 Portuguese translations (thanks to Felipe Augusto Arantes de Souza)
+* Fixing #513 Profile configuration issues, including with load directory (thanks to Nikita S.)
+* Fixing #516 Performance improvements due to constant stream reads (thanks to William Barath)
+
 ## Version 5.5.6
 
 * Fixing #485 Cannot Restore Queue Containing HDR10+ Entries (thanks to Maddie Davis)

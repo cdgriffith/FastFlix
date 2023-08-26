@@ -331,3 +331,10 @@ def get_config(portable_mode=False):
     if Path("fastflix.yaml").exists() or portable_mode:
         return Path("fastflix.yaml")
     return Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "fastflix.yaml"
+
+
+def clear_list(the_list: list, close=False):
+    for i in range(len(the_list) - 1, -1, -1):
+        if close:
+            the_list[i].close()
+        del the_list[i]

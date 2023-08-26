@@ -13,7 +13,7 @@
   jpn: 4または5を選択すると、レート歪みの最適化がオフになり、画質への影響がさらに大きくなります。
   rus: 4 или 5 отключает оптимизацию искажений скорости, что еще больше влияет на
     качество.
-  por: 4 ou 5 irá desligar a optimização da taxa de distorção, tendo um impacto ainda
+  por: 4 ou 5 desligará a optimização da taxa de distorção, tendo um impacto ainda
     maior na qualidade.
   swe: 4 eller 5 stänger av optimeringen av hastighetsförvrängning, vilket har ännu
     större inverkan på kvaliteten.
@@ -33,7 +33,7 @@ AQ Strength:
   chs: AQ强度
   jpn: AQの強さ
   rus: Сила AQ
-  por: Força de AQ
+  por: Intensidade de AQ
   swe: AQ styrka
   pol: Siła AQ
   ukr: Сила AQ
@@ -78,7 +78,7 @@ Add current video to queue?:
   chs: 将当前视频添加到队列中？
   jpn: 現在のビデオをキューに追加しますか？
   rus: Добавить текущее видео в очередь?
-  por: Adicionar vídeo actual à fila de espera?
+  por: Adicionar vídeo atual à fila de espera?
   swe: Lägg till aktuell video i kön?
   pol: Dodać bieżący film do kolejki?
   ukr: Додати поточне відео в чергу?
@@ -93,7 +93,7 @@ Add to Queue:
   chs: 添加到队列
   jpn: キューに追加
   rus: Добавить в очередь
-  por: Adicionar à Fila de espera
+  por: Adicionar à fila de espera
   swe: Lägg till i kö
   pol: Dodaj do kolejki
   ukr: Додати в чергу
@@ -108,7 +108,7 @@ Adding commands to the queue:
   chs: 正在将命令添加到队列中
   jpn: キューにコマンドを追加する
   rus: Добавление команд в очередь
-  por: Acrescentar comandos à fila
+  por: Adicionar comandos à fila
   swe: Lägga till kommandon i kön
   pol: Dodawanie poleceń do kolejki
   ukr: Додавання команд до черги
@@ -123,7 +123,7 @@ Additional x265 params:
   chs: 额外的x265参数
   jpn: 追加のx265パラメータ
   rus: Дополнительные параметры x265
-  por: Parâmetros adicionais x265
+  por: Parâmetros x265 adicionais
   swe: Ytterligare parametrar för x265
   pol: Dodatkowe parametry x265
   ukr: Додаткові параметри x265
@@ -153,7 +153,7 @@ After Conversion:
   chs: 转换后
   jpn: 変換後
   rus: После преобразования
-  por: Após a Conversão
+  por: Após a conversão
   swe: Efter konvertering
   pol: Po konwersji
   ukr: Після конверсії
@@ -213,7 +213,7 @@ Audio Tracks:
   chs: 音轨
   jpn: オーディオトラック
   rus: Аудиодорожки
-  por: Pistas de áudio
+  por: Faixas de áudio
   swe: Ljudspår
   pol: Ścieżki dźwiękowe
   ukr: Аудіодоріжки
@@ -228,7 +228,7 @@ Audio select language:
   chs: 选择音频语言
   jpn: オーディオ言語の選択
   rus: Выбор языка аудио
-  por: Seleccione a língua do áudio
+  por: Selecione a língua do áudio
   swe: Ljud väljer språk
   pol: Wybór języka audio
   ukr: Вибір мови звуку
@@ -274,7 +274,7 @@ Auto Burn-in first forced or default subtitle track:
   jpn: 最初の強制またはデフォルトの字幕トラックを自動的にバーンインする
   rus: Автоматическое включение первой принудительной дорожки субтитров или дорожки
     субтитров по умолчанию
-  por: Auto Burn-in primeira faixa de subtítulos forçada ou por defeito
+  por: Burn-in automático primeiro da legenda forçada ou padrão
   swe: Automatisk inbränning av första tvingade eller standard undertextspår
   pol: Auto Burn-in pierwsza wymuszona lub domyślna ścieżka napisów
   ukr: Автоматичне вбудовування першої примусової доріжки субтитрів або доріжки за
@@ -290,7 +290,7 @@ Auto Crop:
   chs: 自动裁切
   jpn: 自動クロップ
   rus: Автообрезка
-  por: Cultura Automóvel
+  por: Recorte automático
   swe: Automatisk beskärning
   pol: Auto Crop
   ukr: Автоматичне обрізання
@@ -305,7 +305,7 @@ Auto Crop - Finding black bars at:
   chs: 自动裁切 - 寻找位于此时刻的黑边：
   jpn: 自動クロップ - 黒いバーを見つける
   rus: Автообрезка - Нахождение черных полос в
-  por: Auto Crop - Encontrar barras pretas em
+  por: Recorte automático - Localizando barras pretas em
   swe: Automatisk beskärning - Hitta svarta streck vid
   pol: Automatyczne kadrowanie - znajdowanie czarnych pasków przy
   ukr: Автоматичне обрізання - знаходження чорних смуг на
@@ -320,7 +320,7 @@ Automatically detect black borders:
   chs: 自动检测黑边
   jpn: 黒枠を自動的に検出
   rus: Автоматическое определение черных границ
-  por: Detectar automaticamente as bordas negras
+  por: Detectar automaticamente bordas pretas
   swe: Automatisk upptäckt av svarta kanter
   pol: Automatycznie wykrywa czarne krawędzie
   ukr: Автоматичне виявлення чорних меж
@@ -335,7 +335,7 @@ Automatically enabled when an interlaced video is detected:
   chs: 当检测到隔行扫描视频时自动启用此项。
   jpn: インターレース動画が検出されると自動的に有効になります。
   rus: Автоматически включается при обнаружении чересстрочного видео
-  por: Activado automaticamente quando um vídeo entrelaçado é detectado
+  por: Habilitado automaticamente quando um vídeo entrelaçado é detectado
   swe: Aktiveras automatiskt när en interlaced video upptäcks.
   pol: Automatyczne włączanie po wykryciu obrazu z przeplotem
   ukr: Автоматично вмикається, коли виявлено чересстрочне відео
@@ -350,7 +350,7 @@ B Adapt:
   chs: B Adapt
   jpn: Bアダプト
   rus: B Адаптация
-  por: B Adaptar
+  por: Adaptação B
   swe: B Anpassning
   pol: B Przyjęcie
   ukr: B Адаптуватися
@@ -365,7 +365,7 @@ B Frames:
   chs: B帧
   jpn: Bフレーム
   rus: B Рамки
-  por: Molduras B
+  por: B-frames
   swe: B-ramar
   pol: B Ramy
   ukr: B Рамки
@@ -380,7 +380,7 @@ B Ref Mode:
   chs: B Ref模式
   jpn: B リファレンスモード
   rus: B Реф режим
-  por: B Modo Ref
+  por: Modo B Ref
   swe: B Ref Mode
   pol: B Ref Mode
   ukr: B Реф-режим
@@ -470,7 +470,7 @@ Break the video into columns to encode faster (lesser quality):
   chs: 将视频按列分割，以更快地进行编码（质量较差）。
   jpn: 速くエンコードするために動画を列に分割する（画質は落ちる）
   rus: Разбейте видео на колонки для более быстрого кодирования (с меньшим качеством)
-  por: Quebrar o vídeo em colunas para codificar mais rapidamente (menor qualidade)
+  por: Dividir o vídeo em colunas para codificar mais rapidamente (menor qualidade)
   swe: Dela upp videon i kolumner för att koda snabbare (sämre kvalitet)
   pol: Podziel film na kolumny, aby kodować szybciej (gorsza jakość)
   ukr: Розбийте відео на колонки для швидшого кодування (з меншою якістю)
@@ -486,7 +486,7 @@ Break the video into rows to encode faster (lesser quality):
   chs: 将视频按行分割，以更快地进行编码（质量较差）。
   jpn: 速くエンコードするためにビデオを列に分割する（画質は落ちる）
   rus: Разбейте видео на строки для более быстрого кодирования (с меньшим качеством)
-  por: Quebrar o vídeo em filas para codificar mais rapidamente (menor qualidade)
+  por: Dividir o vídeo em linhas para codificar mais rapidamente (menor qualidade)
   swe: Dela upp videon i rader för att koda snabbare (sämre kvalitet)
   pol: Podziel wideo na rzędy, aby kodować szybciej (gorsza jakość)
   ukr: Розбийте відео на рядки для швидшого кодування (з меншою якістю)
@@ -517,7 +517,7 @@ Build:
   chs: 构建
   jpn: ビルド
   rus: Построить
-  por: Construir
+  por: Build
   swe: Bygg
   pol: Zbuduj
   ukr: Побудова
@@ -532,7 +532,7 @@ Burn In:
   chs: 内嵌
   jpn: バーンイン
   rus: Записать на
-  por: Queimar em
+  por: Burn In
   swe: Bränna in
   pol: Spalić się
   ukr: Burn In
@@ -562,7 +562,7 @@ Calculate PSNR and SSIM and show in the encoder output:
   chs: 计算PSNR和SSIM，并显示在编码器输出中。
   jpn: PSNRとSSIMを計算し、エンコーダの出力に表示する
   rus: Вычислить PSNR и SSIM и показать на выходе кодера
-  por: Calcular a PSNR e SSIM e mostrar na saída do codificador
+  por: Calcular PSNR e SSIM e mostrá-los na saída do codificador
   swe: Beräkna PSNR och SSIM och visa i utgången av kodaren.
   pol: Obliczyć PSNR i SSIM i pokazać na wyjściu kodera
   ukr: Обчислити PSNR і SSIM і показати на виході кодера
@@ -607,7 +607,7 @@ Cancel has been requested, killing encoding:
   chs: 已请求取消，正在终止编码
   jpn: キャンセルが要求されました、エンコーディングを終了中
   rus: Была запрошена отмена, прекращающая кодирование
-  por: Foi pedido o cancelamento, codificação de mortes
+  por: Foi solicitado o cancelamento, parando a codificação
   swe: Avbryt har begärts, dödande kodning
   pol: Zażądano anulowania, kodowanie zabijania
   ukr: Було запитано скасування, що вбиває кодування
@@ -622,7 +622,7 @@ Canceling current encode:
   chs: 正在取消当前编码
   jpn: 現在のエンコードをキャンセルする
   rus: Отмена текущего кодирования
-  por: Cancelamento do código de corrente
+  por: Cancelando a codificação atual
   swe: Avbryta pågående kodning
   pol: Anulowanie bieżącego kodowania
   ukr: Скасування поточного кодування
@@ -682,7 +682,7 @@ Check for Newer Version of FastFlix:
   chs: 检查FastFlix更新
   jpn: 新しいバージョンのFastFlixをチェックする
   rus: Проверьте наличие новой версии FastFlix
-  por: Verificar a existência de uma versão mais recente de FastFlix
+  por: Verificar por uma versão mais recente do FastFlix
   swe: Kontrollera om det finns en nyare version av FastFlix
   pol: Sprawdź czy jest nowsza wersja FastFlixa
   ukr: Перевірте наявність нової версії FastFlix
@@ -697,7 +697,7 @@ Clean Old Logs:
   chs: 清理旧日志
   jpn: 古いログを削除する
   rus: Очистить старые журналы
-  por: Toros antigos limpos
+  por: Limpar logs antigos
   swe: Rengör gamla stockar
   pol: Czyszczenie starych kłód
   ukr: Чисті старі колоди
@@ -712,7 +712,7 @@ Clear Completed:
   chs: 清理已完成的项目
   jpn: 完了したタスクを削除
   rus: Очистка завершена
-  por: Limpar Completado
+  por: Limpar completados
   swe: Klart slutfört
   pol: Wyczyszczone Zakończone
   ukr: Очистити Завершено
@@ -727,7 +727,7 @@ Close GUI Only:
   chs: 只关闭GUI
   jpn: GUIのみを閉じる
   rus: Закрыть только графический интерфейс
-  por: Fechar apenas GUI
+  por: Fechar apenas a GUI
   swe: Stäng endast GUI
   pol: Zamknij tylko GUI
   ukr: Закрийте лише графічний інтерфейс
@@ -742,7 +742,7 @@ CodeCalamity UHD HDR Encoding Guide:
   chs: CodeCalamity的UHD HDR编码指南（英文）
   jpn: CodeCalamity UHD HDRエンコーディングガイド（英語）
   rus: CodeCalamity Руководство по кодированию UHD HDR
-  por: CodeCalamity UHD Guia de Codificação de HDR
+  por: Guia de codificação UHD HDR CodeCalamity
   swe: CodeCalamity UHD HDR-kodningsguide
   pol: CodeCalamity UHD HDR Encoding Guide
   ukr: Посібник із кодування UHD HDR від CodeCalamity
@@ -757,7 +757,7 @@ Color Primaries:
   chs: 原色
   jpn: カラープライマリー
   rus: Основные цвета
-  por: Primários de cor
+  por: Cores primárias
   swe: Grundfärger
   pol: Prymitywy kolorystyczne
   ukr: Кольорові праймери
@@ -819,7 +819,7 @@ Command worker received request to pause current encode:
   chs: 命令执行程序收到了暂停当前编码的请求
   jpn: コマンドワーカーが現在のエンコードを一時停止するリクエストを受信しました
   rus: Оператор получил запрос на приостановку текущего кодирования
-  por: Comando operário recebeu pedido para pausar a codificação de corrente
+  por: O worker recebeu uma solicitação para pausar a codificação atual
   swe: Kommandotjänstemannen har mottagit en begäran om att pausa den pågående kodningen.
   pol: Command worker odebrał żądanie wstrzymania bieżącego kodowania
   ukr: Командний працівник отримав запит на призупинення поточного кодування
@@ -839,8 +839,7 @@ Command worker received request to pause encoding after the current item complet
   jpn: コマンドワーカーが、現在のアイテムが完了した後にエンコードを一時停止するリクエストを受信しました
   rus: Оператор получил запрос на приостановку кодирования после завершения текущего
     элемента
-  por: O trabalhador de comando recebeu um pedido para pausar a codificação após a
-    conclusão do artigo actual
+  por: O worker recebeu uma solicitação para pausar a codificação atual após a sua conclusão
   swe: Kommandotjänstemannen har mottagit en begäran om att pausa kodningen efter
     det att det aktuella objektet har avslutats.
   pol: Pracownik poleceń otrzymał żądanie wstrzymania kodowania po zakończeniu bieżącego
@@ -859,7 +858,7 @@ Command worker received request to resume encoding:
   chs: 命令执行程序收到了恢复编码的请求
   jpn: コマンドワーカーがエンコード再開のリクエストを受信しました
   rus: Оператор получил запрос на возобновление кодирования
-  por: O trabalhador de comando recebeu um pedido para retomar a codificação
+  por: O worker recebeu uma solicitação para retomar a codificação
   swe: Kommandotjänstemannen har mottagit en begäran om att återuppta kodningen.
   pol: Command worker otrzymał żądanie wznowienia kodowania
   ukr: Командний працівник отримав запит на відновлення кодування
@@ -876,7 +875,7 @@ Command worker received request to resume paused encode:
   chs: 命令执行程序收到了恢复已暂停编码的请求
   jpn: コマンドワーカーが一時停止したエンコードの再開要求を受信しました
   rus: Оператор получил запрос на возобновление приостановленного кодирования
-  por: O trabalhador de comando recebeu pedido para retomar o codigo pausado
+  por: O worker recebeu uma solicitação para retomar a codificação pausada
   swe: Kommandotjänstemannen har mottagit en begäran om att återuppta pausad kodning.
   pol: Command worker odebrał żądanie wznowienia wstrzymanego kodowania
   ukr: Командний працівник отримав запит на відновлення призупиненого кодування
@@ -906,7 +905,7 @@ Config File:
   chs: 配置文件
   jpn: 設定ファイル
   rus: Файл конфигурации
-  por: Config File
+  por: Arquivo de configuração
   swe: Konfigurationsfil
   pol: Config File
   ukr: Файл конфігурації
@@ -951,7 +950,7 @@ Conversion cancelled, delete incomplete file:
   chs: 转换已取消，删除不完整的文件
   jpn: 変換がキャンセルされ、不完全なファイルを削除する
   rus: Преобразование отменено, удалите незавершенный файл
-  por: Conversão cancelada, apagar ficheiro incompleto
+  por: Conversão cancelada, apagar arquivo incompleto
   swe: Konvertering avbruten, radera ofullständig fil
   pol: Konwersja anulowana, usuń niekompletny plik
   ukr: Перетворення скасовано, видаліть неповний файл
@@ -966,7 +965,7 @@ Conversion worker shutting down:
   chs: 正在关闭转换程序
   jpn: コンバージョンワーカーのシャットダウンしている
   rus: Выключение конвертера
-  por: Encerramento do trabalhador de conversão
+  por: Encerrando o worker de conversão
   swe: Konverteringsarbetaren stänger av
   pol: Wyłączenie pracownika konwersji
   ukr: Вимкнення конвертера
@@ -981,7 +980,7 @@ Convert:
   chs: 转换
   jpn: 変換
   rus: Конвертировать
-  por: Converta
+  por: Converter
   swe: Konvertera
   pol: Konwertuj
   ukr: Перетворити
@@ -996,7 +995,7 @@ Convert BT2020 colorspace into bt709:
   chs: 将BT.2020色彩空间转换为BT.709
   jpn: BT2020色空間をbt709色空間に変換
   rus: Преобразование цветового пространства BT2020 в bt709
-  por: Converter o espaço de cor BT2020 em bt709
+  por: Converter colorspace BT2020 em bt709
   swe: Konvertera BT2020-färgrymden till bt709
   pol: Konwersja przestrzeni kolorów BT2020 na bt709
   ukr: Перетворення простору кольорів BT2020 у bt709
@@ -1011,7 +1010,7 @@ Copy Chapters:
   chs: 复制章节
   jpn: チャプターをコピーする
   rus: Копирование глав
-  por: Copiar Capítulos
+  por: Copiar capítulos
   swe: Kopiera kapitel
   pol: Kopiowanie rozdziałów
   ukr: Копіювати розділи
@@ -1026,7 +1025,7 @@ Copy Commands:
   chs: 复制命令
   jpn: コピーコマンド
   rus: Команды копирования
-  por: Comandos de cópia
+  por: Copiar comandos
   swe: Kommandon för kopiering
   pol: Polecenia kopiowania
   ukr: Команди копіювання
@@ -1041,7 +1040,7 @@ Copy Cover:
   chs: 复制封面
   jpn: コピーカバー
   rus: Копия обложки
-  por: Capa de cópia
+  por: Copiar capa
   swe: Kopiera omslaget
   pol: Kopia Okładka
   ukr: Копія обкладинки
@@ -1056,7 +1055,7 @@ Copy Landscape Cover:
   chs: 复制横向封面
   jpn: ランドスケープ・カバーをコピーする
   rus: Копия обложки "пейзаж"
-  por: Cópia da capa da Paisagem
+  por: Copiar capa de paisagem
   swe: Kopiera landskapsomslag
   pol: Kopia Okładka krajobrazowa
   ukr: Скопіювати обкладинку "Пейзаж
@@ -1071,7 +1070,7 @@ Copy Small Cover (no preview):
   chs: 复制小封面（无预览）
   jpn: Small Coverをコピーする（プレビューなし）
   rus: Копия Малая обложка (без предпросмотра)
-  por: Copiar Pequena Capa (sem pré-visualização)
+  por: Copiar capa pequena (sem visualização)
   swe: Kopiera litet omslag (ingen förhandsgranskning)
   pol: Kopia Mała okładka (bez zapowiedzi)
   ukr: Копія маленької обкладинки (без попереднього перегляду)
@@ -1086,7 +1085,7 @@ Copy Small Landscape Cover  (no preview):
   chs: 复制横向小封面（无预览）
   jpn: Small Landscape Coverをコピーする(プレビューなし)
   rus: Копия малой обложки "пейзаж" (без предпросмотра)
-  por: Copiar Pequena Capa de Paisagem (sem pré-visualização)
+  por: Copiar capa pequena de paisagem (sem visualização)
   swe: Kopiera litet landskapsomslag (ingen förhandsgranskning)
   pol: Kopia Mała Okładka Krajobrazowa (bez podglądu)
   ukr: Скопіювати малу обкладинку (без попереднього перегляду)
@@ -1101,7 +1100,7 @@ Copy all commands to the clipboard:
   chs: 将所有命令复制到剪贴板
   jpn: すべてのコマンドをクリップボードにコピーする
   rus: Копирование всех команд в буфер обмена
-  por: Copiar todos os comandos para a prancheta
+  por: Copiar todos os comandos para a área de transferência
   swe: Kopiera alla kommandon till klippbordet
   pol: Skopiuj wszystkie polecenia do schowka
   ukr: Скопіюйте всі команди в буфер обміну
@@ -1116,7 +1115,7 @@ Copy the chapter markers as is from incoming source.:
   chs: 将章节标记按原样从输入源复制。
   jpn: 入力ソースからチャプターマーカーをそのままコピーします。
   rus: Копирование маркеров глав как есть из входящего источника.
-  por: Copiar os marcadores de capítulo tal como são da fonte de entrada.
+  por: Copiar os marcadores de capítulo como estão na fonte.
   swe: Kopiera kapitelmarkeringarna som de är från den inkommande källan.
   pol: Skopiuj znaczniki rozdziałów ze źródła przychodzącego w takiej postaci.
   ukr: Скопіюйте маркери розділів як є з вхідного джерела.
@@ -1131,7 +1130,7 @@ Could not compress old logs:
   chs: 无法压缩旧日志
   jpn: 古いログを圧縮できなかった
   rus: Не удалось сжать старые журналы
-  por: Não conseguia comprimir troncos velhos
+  por: Não foi possível comprimir logs antigos
   swe: Kunde inte komprimera gamla loggar
   pol: Nie można skompresować starych logów
   ukr: Не вдалося стиснути старі журнали
@@ -1148,7 +1147,7 @@ Could not connect to github to check for newer versions:
   chs: 无法连接到github检查更新
   jpn: 新しいバージョンを確認するためにgithubに接続できませんでした。
   rus: Не удалось подключиться к github для проверки наличия новых версий
-  por: Não foi possível ligar ao github para verificar versões mais recentes
+  por: Não foi possível conectar ao github para verificar por versões mais recentes
   swe: Kunde inte ansluta till github för att kontrollera om det fanns nyare versioner
   pol: Nie można połączyć się z githubem, aby sprawdzić, czy są nowsze wersje
   ukr: Не вдалося підключитися до github, щоб перевірити наявність нових версій
@@ -1163,7 +1162,7 @@ Could not create / access work directory:
   chs: 无法创建/访问工作目录
   jpn: 作業用ディレクトリを作成できない／アクセスできない
   rus: Не удалось создать / получить доступ к рабочему каталогу
-  por: Não foi possível criar / aceder ao directório de trabalho
+  por: Não foi possível criar / acessar o diretório de trabalho
   swe: Kunde inte skapa/åtkomst till arbetskatalogen
   pol: Nie można utworzyć / uzyskać dostępu do katalogu roboczego
   ukr: Не вдалося створити / отримати доступ до робочого каталогу
@@ -1178,7 +1177,7 @@ Could not fix first subtitle track:
   chs: 无法固定第1个字幕
   jpn: 1つ目の字幕トラックを固定できなかった
   rus: Не удалось зафиксировать первую дорожку субтитров
-  por: Não foi possível fixar a primeira faixa de legendas
+  por: Não foi possível corrigir a primeira faixa de legenda
   swe: Det gick inte att fixa det första undertextspåret
   pol: Nie można naprawić pierwszej ścieżki napisów
   ukr: Не вдалося виправити першу доріжку субтитрів
@@ -1193,7 +1192,7 @@ Could not generate thumbnail:
   chs: 无法生成缩略图
   jpn: サムネイルを生成できませんでした
   rus: Не удалось создать миниатюру
-  por: Não pôde gerar miniaturas
+  por: Não foi possível gerar a miniatura
   swe: Kunde inte generera miniatyrbild
   pol: Nie można wygenerować miniaturki
   ukr: Не вдалося згенерувати мініатюру
@@ -1208,7 +1207,7 @@ Could not load config file!:
   chs: 无法加载配置文件!
   jpn: 設定ファイルの読み込みができませんでした。
   rus: Не удалось загрузить файл конфигурации!
-  por: Não foi possível carregar o ficheiro de configuração!
+  por: Não foi possível carregar o arquivo de configuração!
   swe: Kunde inte läsa in konfigurationsfilen!
   pol: Nie można załadować pliku konfiguracyjnego!
   ukr: Не вдалося завантажити файл конфігурації!
@@ -1223,7 +1222,7 @@ Could not set language to:
   chs: 无法将语言设置为
   jpn: 次の言語は設定できませんでした：
   rus: Не удалось установить язык на
-  por: Não foi possível definir a linguagem para
+  por: Não foi possível definir o idioma para
   swe: Kunde inte ställa in språket till
   pol: Nie można ustawić języka na
   ukr: Не вдалося встановити мову на
@@ -1238,7 +1237,7 @@ Could not start FastFlix:
   chs: 无法启动FastFlix
   jpn: FastFlixを起動できませんでした。
   rus: Не удалось запустить FastFlix
-  por: Não foi possível iniciar FastFlix
+  por: Não foi possível iniciar o FastFlix
   swe: FastFlix kunde inte startas
   pol: Nie można uruchomić FastFlix
   ukr: Не вдалося запустити FastFlix
@@ -1268,7 +1267,7 @@ Create Profile:
   chs: 创建配置
   jpn: プロファイルの作成
   rus: Создать профиль
-  por: Criar Perfil
+  por: Criar perfil
   swe: Skapa en profil
   pol: Utwórz profil
   ukr: Створити профіль
@@ -1283,7 +1282,7 @@ Crop:
   chs: 裁切
   jpn: クロップ
   rus: Обрезка
-  por: Cultura
+  por: Recortar
   swe: Grödor
   pol: Uprawy
   ukr: Обрізка
@@ -1298,7 +1297,7 @@ Crop Detect Points:
   chs: 裁切检测点
   jpn: クロップ検知ポイント
   rus: Точки обнаружения обрезки
-  por: Pontos de Detecção de Culturas
+  por: Pontos de detecção de corte
   swe: Skördepunkter för upptäckt av grödor
   pol: Punkty wykrywania upraw
   ukr: Точки виявлення обрізки
@@ -1313,7 +1312,7 @@ Current Profile Settings:
   chs: 当前配置
   jpn: 現在のプロファイル設定
   rus: Текущие настройки профиля
-  por: Definições de perfil actuais
+  por: Configurações de perfil atuais
   swe: Nuvarande profilinställningar
   pol: Bieżące ustawienia profilu
   ukr: Поточні налаштування профілю
@@ -1328,7 +1327,7 @@ Currently only works for image based subtitles.:
   chs: 目前只适用于基于图像的字幕。
   jpn: 現在のところ、画像ベースの字幕にしか対応していません。
   rus: В настоящее время работает только для субтитров на основе изображений.
-  por: Actualmente só funciona para legendas baseadas em imagens.
+  por: Atualmente, só funciona para legendas baseadas em imagens.
   swe: För närvarande fungerar endast bildbaserade undertexter.
   pol: Obecnie działa tylko dla napisów opartych na obrazkach.
   ukr: Наразі працює лише для субтитрів на основі зображень.
@@ -1373,7 +1372,7 @@ Deblock:
   chs: 去块
   jpn: デブロック
   rus: Разблокировка
-  por: Desbloqueio
+  por: Deblock
   swe: Deblockering
   pol: Deblock
   ukr: Деблок.
@@ -1392,8 +1391,8 @@ Default 4. This parameter has a quadratic effect on the amount of memory allocat
   jpn: デフォルトは4です。このパラメータは、割り当てられたメモリの量に二次的な影響を与えます。
   rus: По умолчанию 4. Этот параметр оказывает квадратичное влияние на объем выделяемой
     памяти
-  por: Default 4. Este parâmetro tem um efeito quadrático sobre a quantidade de memória
-    atribuída
+  por: Padrão 4. Este parâmetro tem um efeito quadrático sobre a quantidade de memória
+    alocada
   swe: Standard 4. Den här parametern har en kvadratisk effekt på mängden minne som
     tilldelas.
   pol: Domyślnie 4. Ten parametr ma kwadratowy wpływ na ilość przydzielonej pamięci.
@@ -1411,7 +1410,7 @@ Default disabled.:
   chs: 默认禁用。
   jpn: デフォルトは無効です。
   rus: По умолчанию отключено.
-  por: Default disabled.
+  por: Padrão desabilitado.
   swe: Standardinställningen är inaktiverad.
   pol: Domyślnie wyłączone.
   ukr: За замовчуванням вимкнено.
@@ -1426,7 +1425,7 @@ Default enabled.:
   chs: 默认启用。
   jpn: デフォルトでは有効です。
   rus: По умолчанию включено.
-  por: Predefinição activada.
+  por: Padrão habilitado.
   swe: Standard aktiverad.
   pol: Domyślnie włączone.
   ukr: За замовчуванням увімкнено.
@@ -1447,8 +1446,8 @@ Default is an autodetected count based on the number of CPU cores and whether WP
   jpn: デフォルトでは、CPUコア数とWPPが有効かどうかに基づいて自動検出されたカウントです。
   rus: По умолчанию это автоопределяемый подсчет, основанный на количестве ядер ЦП
     и на том, включен или нет WPP.
-  por: O valor por defeito é uma contagem autodetectada com base no número de núcleos
-    de CPU e se o WPP está ou não activado.
+  por: O padrão é uma contagem calculada pelo número de núcleos da CPU e se o WPP está
+    habilitado ou não.
   swe: Standardvärdet är ett automatiskt registrerat antal baserat på antalet CPU-kärnor
     och om WPP är aktiverat eller inte.
   pol: Domyślnie jest to automatycznie wykryta liczba na podstawie liczby rdzeni CPU
@@ -1467,7 +1466,7 @@ Default is an autodetected count based on the number of CPU cores and whether WP
   chs: '默认值为enabled + auto-variance'
   jpn: 'デフォルトは自動分散でAQを有効にする'
   rus: 'По умолчанию: AQ включен с автоматической дисперсией'
-  por: 'Por omissão: AQ activado com auto-variância'
+  por: 'Padrão: AQ habilitado com auto-variação'
   swe: 'Standard: AQ aktiverad med automatisk variation'
   pol: 'Domyślnie: AQ włączona z auto-wariancją'
   ukr: 'За замовчуванням: AQ увімкнено з автозмінністю'
@@ -1482,7 +1481,7 @@ Deinterlace:
   chs: 反交错
   jpn: デインタレース
   rus: Деинтерлейс
-  por: Deinterlace
+  por: Desentrelaçar
   swe: Deinterlace
   pol: Deinterlace
   ukr: Деінтерлейс
@@ -1497,7 +1496,7 @@ Delete:
   chs: 删除
   jpn: 削除
   rus: Удалить
-  por: Eliminar
+  por: Apagar
   swe: Ta bort
   pol: Usuń
   ukr: Видалити
@@ -1512,7 +1511,7 @@ Delete Current Profile:
   chs: 删除当前配置
   jpn: 現在のプロフィールを削除
   rus: Удалить текущий профиль
-  por: Apagar perfil actual
+  por: Apagar perfil atual
   swe: Ta bort aktuell profil
   pol: Usuń bieżący profil
   ukr: Видалити поточний профіль
@@ -1557,7 +1556,7 @@ Detecting Interlace:
   chs: 正在检测隔行扫描
   jpn: インターレースの検出
   rus: Обнаружение чересстрочной развертки
-  por: Detectar a Interlace
+  por: Detectar entrelaçamento
   swe: Upptäckt av interlace
   pol: Wykrywanie przeplotu
   ukr: Виявлення інтерлейсу
@@ -1572,7 +1571,7 @@ Determine HDR details:
   chs: 检测HDR详情
   jpn: HDRの詳細を検出
   rus: Определите детали HDR
-  por: Determinar os detalhes do HDR
+  por: Determinar detalhes do HDR
   swe: Bestämma HDR-detaljer
   pol: Określanie szczegółów HDR
   ukr: Визначення деталей HDR
@@ -1587,7 +1586,7 @@ Disable update check on startup:
   chs: 禁用启动时的更新检查
   jpn: 起動時のアップデートチェックを無効にする
   rus: Отключить проверку обновлений при запуске
-  por: Desactivar a verificação de actualização ao arrancar
+  por: Desabilitar a verificação de atualizações na inicialização
   swe: Inaktivera uppdateringskontrollen vid start
   pol: Wyłączenie sprawdzania aktualizacji przy uruchamianiu
   ukr: Вимкнути перевірку оновлень під час запуску
@@ -1617,7 +1616,7 @@ Dither:
   chs: 抖动
   jpn: ディザ
   rus: Дизеринг
-  por: Ou
+  por: Dither
   swe: Dither
   pol: Dither
   ukr: Дітере.
@@ -1638,8 +1637,8 @@ Dither is an intentionally applied form of noise used to randomize quantization 
   jpn: ディザとは、量子化誤差をランダムにするために意図的にかけるノイズのことです。
   rus: Дизеринг - это намеренно применяемая форма шума, используемая для рандомизации
     ошибки квантования,
-  por: A dither é uma forma de ruído intencionalmente aplicada utilizada para aleatorizar
-    o erro de quantização,
+  por: Dither é uma forma intencionalmente aplicada de ruído usado para randomizar o
+    erro de quantização,
   swe: Dither är en avsiktligt tillämpad form av brus som används för att slumpa kvantiseringsfel,
   pol: Dither to celowo zastosowana forma szumu używana do randomizacji błędu kwantyzacji,
   ukr: Дизер - це навмисно застосована форма шуму, яка використовується для рандомізації
@@ -1656,7 +1655,7 @@ Download:
   chs: 下载
   jpn: ダウンロード
   rus: Скачать
-  por: Descarregar
+  por: Download
   swe: Ladda ner
   pol: Pobierz
   ukr: Завантажити
@@ -1671,7 +1670,7 @@ Download Cancelled:
   chs: 下载已取消
   jpn: ダウンロードはキャンセルされた
   rus: Скачивание Отменено
-  por: Descarregar Cancelado
+  por: Download Cancelado
   swe: Ladda ner Cancelled
   pol: Pobierz Odwołane
   ukr: Завантажити Скасовано
@@ -1686,7 +1685,7 @@ Download Newest FFmpeg:
   chs: 下载最新版FFmpeg
   jpn: 最新のFFmpegをダウンロードする
   rus: Скачать новейший FFmpeg
-  por: Descarregar o mais recente FFmpeg
+  por: Fazer o download do FFmpeg mais recente
   swe: Hämta Nyaste FFmpeg
   pol: Pobierz Najnowszy FFmpeg
   ukr: Завантажити останню версію FFmpeg
@@ -1701,7 +1700,7 @@ Downloading FFmpeg:
   chs: 正在下载FFmpeg
   jpn: FFmpegをダウンロード中
   rus: Загрузка FFmpeg
-  por: Descarregar FFmpeg
+  por: Fazendo o download do FFmpeg
   swe: Hämta FFmpeg
   pol: Pobieranie FFmpeg
   ukr: Завантаження FFmpeg
@@ -1716,7 +1715,7 @@ Dual License:
   chs: 双重许可
   jpn: 二重ライセンス
   rus: Двойная лицензия
-  por: Dupla Licença
+  por: Licença Dupla
   swe: Dubbel licens
   pol: Podwójna licencja
   ukr: Подвійна ліцензія
@@ -1731,7 +1730,7 @@ Enable VBV:
   chs: 启用VBV
   jpn: VBVを有効にする
   rus: Включить VBV
-  por: Activar VBV
+  por: Habilitar VBV
   swe: Aktivera VBV
   pol: Włącz VBV
   ukr: Увімкнути VBV
@@ -1746,7 +1745,7 @@ Enable row based multi-threading:
   chs: 启用基于行的多线程
   jpn: 行ベースのマルチスレッド化
   rus: Включить многопоточность на основе строк
-  por: Habilitar multi-tarefas baseadas em filas
+  por: Habilitar multi-threading baseado em linhas
   swe: Aktivera radbaserad multi-threading
   pol: Włącz wielowątkowość opartą na wierszach
   ukr: Увімкнути багатопоточність на основі рядків
@@ -1761,7 +1760,7 @@ Enable strong intra smoothing for 32x32 intra blocks.:
   chs: 对32x32的内部j块启用强烈的内部舒缓（intra smoothing）。
   jpn: 32x32イントラブロックの強力なイントラ・スムージングを有効にする。
   rus: Включите сильное внутреннее сглаживание для внутренних блоков 32x32.
-  por: Permitir um forte alisamento intra para 32x32 intra blocos.
+  por: Habilitar forte intra-suavização para blocos intra 32x32.
   swe: Aktivera stark intrautjämning för 32x32 intrablock.
   pol: Włącz silne wygładzanie wewnętrzne dla bloków wewnętrznych 32x32.
   ukr: Увімкнути сильне внутрішнє згладжування для внутрішніх блоків 32x32.
@@ -1776,7 +1775,7 @@ Enable the yadif filter:
   chs: 启用yadif滤镜
   jpn: yadifフィルターを有効にする
   rus: Включите фильтр yadif
-  por: Activar o filtro yadif
+  por: Habilitar o filtro yadif
   swe: Aktivera yadif-filtret
   pol: Włącz filtr yadif
   ukr: Увімкніть фільтр yadif
@@ -1791,7 +1790,7 @@ Enabled:
   chs: 启用
   jpn: 有効化
   rus: Включено
-  por: Activado
+  por: Habilitado
   swe: Aktiverad
   pol: Włączone
   ukr: Увімкнено
@@ -1807,7 +1806,7 @@ Enabled automatically when --master-display or --max-cll is specified.:
   chs: 当指定--master-display或--max-cll时自动启用。
   jpn: --master-displayまたは--max-cllが指定された場合、自動的に有効になります。
   rus: Включается автоматически, если указано --master-display или --max-cll.
-  por: Activado automaticamente quando --master-display ou --max-cll é especificado.
+  por: Habilitado automaticamente quando --master-display ou --max-cll é especificado.
   swe: Aktiveras automatiskt när --master-display eller --max-cll anges.
   pol: Włączane automatycznie gdy podane jest --master-display lub --max-cll.
   ukr: Вмикається автоматично, коли вказано --master-display або --max-cll.
@@ -1822,7 +1821,7 @@ Enables the yadif filter.:
   chs: 启用yadif滤镜。
   jpn: yadifフィルターを有効にします。
   rus: Включает фильтр yadif.
-  por: Possibilita o filtro yadif.
+  por: Habilita o filtro yadif.
   swe: Aktiverar yadif-filtret.
   pol: Włącza filtr yadif.
   ukr: Вмикає фільтр yadif.
@@ -1843,8 +1842,8 @@ Enables true lossless coding by bypassing scaling, transform, quantization and i
   jpn: スケーリング、トランスフォーム、量子化、インループフィルタリングをバイパスすることで、真のロスレスコーディングを可能にします。
   rus: Обеспечивает прямое кодирование без потерь, минуя масштабирование, преобразование,
     квантование и фильтрацию в контуре.
-  por: Permite uma verdadeira codificação sem perdas, contornando a escala, a transformação,
-    a quantização e a filtragem em loop.
+  por: Habilita a codificação lossless ao ignorar dimensionamento, transformação, quantização
+    e filtragem em loop.
   swe: Möjliggör verklig förlustfri kodning genom att kringgå skalning, omvandling,
     kvantisering och filtrering i loopen.
   pol: Umożliwia prawdziwie bezstratne kodowanie poprzez ominięcie skalowania, transformacji,
@@ -1863,7 +1862,7 @@ Enabling cover thumbnails on your system:
   chs: 在系统上启用封面缩略图（英文）
   jpn: お使いのシステムでカバーのサムネイルを有効にする
   rus: Включение эскизов обложек в вашей системе
-  por: Habilitação de miniaturas de cobertura no seu sistema
+  por: Habilitando miniaturas de capa no seu sistema
   swe: Aktivera miniatyrbilder på ditt system
   pol: Włączanie miniatur okładek w systemie
   ukr: Увімкнення ескізів обкладинки у вашій системі
@@ -1908,7 +1907,7 @@ Encoder Settings:
   chs: 编码器设置
   jpn: エンコーダの設定
   rus: Настройки энкодера
-  por: Definições do codificador
+  por: Configurações do codificador
   swe: Inställningar för kodare
   pol: Ustawienia enkodera
   ukr: Налаштування кодера
@@ -1923,7 +1922,7 @@ Encoding Queue:
   chs: 编码队列
   jpn: 変換キュー
   rus: Очередь кодирования
-  por: Fila de Codificação
+  por: Fila de codificação
   swe: Kö för kodning
   pol: Kolejka kodowania
   ukr: Черга кодування
@@ -1938,7 +1937,7 @@ Encoding Status:
   chs: 编码状态
   jpn: エンコードステータス
   rus: Статус кодирования
-  por: Estado de Codificação
+  por: Status de codificação
   swe: Kodning Status
   pol: Status kodowania
   ukr: Статус кодування
@@ -1983,7 +1982,7 @@ Encoding errored:
   chs: 编码错误
   jpn: エンコーディングエラー
   rus: Ошибка кодирования
-  por: Codificação erradamente codificada
+  por: Codificação com erro
   swe: Fel i kodningen
   pol: Błąd kodowania
   ukr: Помилка кодування
@@ -2043,7 +2042,7 @@ Error Updating Thumbnail:
   chs: 缩略图更新错误
   jpn: サムネイルの更新エラー
   rus: Ошибка обновления миниатюры
-  por: Actualização de miniaturas de erro
+  por: Erro ao atualizar a miniatura
   swe: Fel vid uppdatering av miniatyrbild
   pol: Błąd aktualizacji miniatur
   ukr: Мініатюра помилки оновлення
@@ -2073,7 +2072,7 @@ Estimated file size based on bitrate:
   chs: 基于比特率的估计文件大小
   jpn: ビットレートに応じたファイルサイズの目安
   rus: Расчетный размер файла на основе битрейта
-  por: Tamanho de ficheiro estimado com base na taxa de bits
+  por: Tamanho do arquivo estimado com base na taxa de bits
   swe: Uppskattad filstorlek baserad på bitrate
   pol: Szacowany rozmiar pliku w oparciu o bitrate
   ukr: Орієнтовний розмір файлу на основі бітрейту
@@ -2088,7 +2087,7 @@ Estimated time left for current command:
   chs: 当前命令的估计剩余时间
   jpn: 現在のコマンドの残り時間の目安
   rus: Расчетное время, оставшееся до завершения текущей команды
-  por: Tempo restante estimado para o comando actual
+  por: Tempo estimado restante para o comando atual
   swe: Beräknad tid som återstår för det aktuella kommandot
   pol: Szacowany czas pozostały do wykonania bieżącego polecenia
   ukr: Орієнтовний час, що залишився для поточної команди
@@ -2118,7 +2117,7 @@ Exit application:
   chs: 退出应用
   jpn: アプリケーションの終了
   rus: Выход из приложения
-  por: Aplicação de saída
+  por: Sair da aplicação
   swe: Avsluta programmet
   pol: Zakończ aplikację
   ukr: Заявка на вихід
@@ -2134,7 +2133,7 @@ Extra flags or options, cannot modify existing settings:
   chs: 有额外的标志或选项，无法修改已有设置。
   jpn: 追加のフラグやオプションがあるため既存の設定を変更できない
   rus: Дополнительные флаги или опции, не могут изменять существующие настройки
-  por: Bandeiras ou opções extra, não podem modificar as configurações existentes
+  por: Flags ou opções extras, não podem modificar as configurações existentes
   swe: Extra flaggor eller alternativ, kan inte ändra befintliga inställningar
   pol: Dodatkowe flagi lub opcje, nie mogą modyfikować istniejących ustawień
   ukr: Додаткові прапори або опції, не можна змінювати існуючі налаштування
@@ -2149,7 +2148,7 @@ Extra x265 params in opt=1:opt2=0 format:
   chs: 额外的x265参数，格式为opt=1:opt2=0
   jpn: opt=1:opt2=0形式のx265パラメータが追加されました。
   rus: Дополнительные параметры x265 в формате opt=1:opt2=0
-  por: Parâmetros extra x265 no formato opt=1:opt2=0
+  por: Parâmetros x265 extras no formato opt=1:opt2=0
   swe: Extra x265-parametrar i formatet opt=1:opt2=0
   pol: Dodatkowe parametry x265 w formacie opt=1:opt2=0
   ukr: Додаткові параметри x265 у форматі opt=1:opt2=0
@@ -2164,7 +2163,7 @@ Extract:
   chs: 提取
   jpn: エクストラクト
   rus: Извлечение
-  por: Extracto
+  por: Extrair
   swe: Utdrag
   pol: Wyciąg
   ukr: Витяг
@@ -2179,7 +2178,7 @@ Extract HDR10+:
   chs: 提取HDR10+
   jpn: HDR10+の抽出
   rus: Извлечение HDR10+
-  por: Extracto HDR10+
+  por: Extrair HDR10+
   swe: Extrahera HDR10+
   pol: Wyodrębnij HDR10+
   ukr: Екстракт HDR10+
@@ -2194,7 +2193,7 @@ Extract covers:
   chs: 提取封面
   jpn: 抽出物のカバー
   rus: Извлечение обложек
-  por: Capas de extractos
+  por: Extrair capas
   swe: Utdrag omfattar
   pol: Wyciąg obejmuje
   ukr: Обкладинки для екстрактів
@@ -2224,7 +2223,7 @@ Extracting HDR10+ metadata:
   chs: 提取HDR10+元数据
   jpn: HDR10+メタデータの抽出
   rus: Извлечение метаданных HDR10+
-  por: Extracção de metadados HDR10+
+  por: Extraindo metadados HDR10+
   swe: Extrahera HDR10+-metadata
   pol: Wyodrębnianie metadanych HDR10+
   ukr: Вилучення метаданих HDR10+
@@ -2239,7 +2238,7 @@ Extracting subtitles to:
   chs: 提取字幕到
   jpn: に字幕を抽出します。
   rus: Извлечение субтитров в
-  por: Extrair subtítulos para
+  por: Extraindo legendas para
   swe: Extrahera undertexter till
   pol: Wyciąganie napisów do
   ukr: Вилучення субтитрів до
@@ -2254,7 +2253,7 @@ FFMPEG AV1 Encoding Guide:
   chs: FFMPEG AV1编码指南（英文）
   jpn: FFMPEG AV1エンコードガイド（英語）
   rus: Руководство по кодированию FFMPEG AV1
-  por: Guia de Codificação FFMPEG AV1
+  por: Guia de codificação FFMpeg AV1
   swe: FFMPEG AV1 Kodningsguide
   pol: Przewodnik kodowania FFMPEG AV1
   ukr: Посібник з кодування FFMPEG AV1
@@ -2269,7 +2268,7 @@ FFMPEG AVC / H.264 Encoding Guide:
   chs: FFMPEG AVC / H.264 编码指南（英文）
   jpn: FFMPEG AVC / H.264エンコードガイド（英語）
   rus: Руководство по кодированию FFMPEG AVC / H.264
-  por: Guia de Codificação FFMPEG AVC / H.264
+  por: Guia de codificação FFMpeg AVC / H.264
   swe: FFMPEG AVC / H.264 Kodningsguide
   pol: Przewodnik kodowania FFMPEG AVC / H.264
   ukr: Посібник з кодування FFMPEG AVC / H.264
@@ -2284,7 +2283,7 @@ FFMPEG HEVC / H.265 Encoding Guide:
   chs: FFMPEG HEVC / H.265编码指南（英文）
   jpn: FFMPEG HEVC / H.265 エンコーディングガイド（英語）
   rus: Руководство по кодированию FFMPEG HEVC / H.265
-  por: FFMPEG HEVC / H.265 Guia de Codificação
+  por: Guia de codificação FFMpeg HEVC / H.265
   swe: FFMPEG HEVC / H.265 Kodningsguide
   pol: Przewodnik kodowania FFMPEG HEVC / H.265
   ukr: Посібник з кодування FFMPEG HEVC / H.265
@@ -2299,7 +2298,7 @@ FFMPEG VP9 Encoding Guide:
   chs: FFMPEG VP9编码指南（英文）
   jpn: FFMPEG VP9エンコーディングガイド（英語）
   rus: Руководство по кодированию FFMPEG VP9
-  por: Guia de Codificação FFMPEG VP9
+  por: Guia de codificação FFMpeg VP9
   swe: Guide för FFMPEG VP9-kodning
   pol: Przewodnik kodowania FFMPEG VP9
   ukr: Посібник з кодування FFMPEG VP9
@@ -2314,7 +2313,7 @@ FFmpeg updated - Please restart FastFlix:
   chs: FFmpeg更新完成。请重新启动FastFlix。
   jpn: FFmpegのアップデートしました。FastFlixを再起動してください。
   rus: FFmpeg обновлен - пожалуйста, перезапустите FastFlix
-  por: FFmpeg actualizado - Por favor reinicie FastFlix
+  por: FFmpeg atualizado - Por favor, reinicie o FastFlix
   swe: FFmpeg uppdaterad - starta om FastFlix
   pol: FFmpeg zaktualizowany - proszę zrestartować FastFlixa
   ukr: Оновлено FFmpeg - будь ласка, перезапустіть FastFlix
@@ -2359,7 +2358,7 @@ File:
   chs: 文件
   jpn: ファイル
   rus: Файл
-  por: Ficheiro
+  por: Arquivo
   swe: Fil
   pol: Plik
   ukr: Файл
@@ -2374,7 +2373,7 @@ Flat UI:
   chs: 扁平化GUI
   jpn: フラットUI
   rus: Плоский интерфейс
-  por: IU plana
+  por: UI plana
   swe: Platt användargränssnitt
   pol: Płaski UI
   ukr: Плоский інтерфейс
@@ -2389,7 +2388,7 @@ For lossless, this is a size/speed tradeoff.:
   chs: 在无损编码时，此选项在大小与速度之间权衡。
   jpn: ロスレスの場合、これはサイズとスピードのトレードオフになります。
   rus: Для lossless это компромисс между размером и скоростью.
-  por: Para um sem perdas, esta é uma troca de tamanho/velocidade.
+  por: Para lossless, este é um tradeoff entre tamanho e velocidade.
   swe: För lossless är detta en avvägning mellan storlek och hastighet.
   pol: W przypadku plików bezstratnych jest to kompromis między rozmiarem a szybkością.
   ukr: Для lossless це компроміс між розміром і швидкістю.
@@ -2406,7 +2405,7 @@ For lossy, this is a quality/speed tradeoff.:
   chs: 在有损编码时，此选项在质量与速度之间权衡。
   jpn: ロッシーの場合、これは品質と速度のトレードオフになります。
   rus: Для lossy это компромисс между качеством и скоростью.
-  por: Para os perdedores, esta é uma troca qualidade/velocidade.
+  por: Para lossy, este é um tradeoff entre qualidade e velocidade.
   swe: För förlustfilmer är detta en avvägning mellan kvalitet och hastighet.
   pol: W przypadku plików stratnych jest to kompromis między jakością a szybkością.
   ukr: Для втрат це компроміс між якістю та швидкістю.
@@ -2421,7 +2420,7 @@ Force HDR10 signaling:
   chs: 强制发送HDR10信号
   jpn: HDR10シグナリングを強制
   rus: Принудительная передача сигнала HDR10
-  por: Forçar a sinalização HDR10
+  por: Forçar sinalização HDR10
   swe: Forcera HDR10-signalering
   pol: Wymuszenie sygnalizacji HDR10
   ukr: Примусовий сигнал HDR10
@@ -2436,7 +2435,7 @@ Frame Threads:
   chs: 帧线程
   jpn: フレーム スレッド
   rus: Кадровые потоки
-  por: Roscas da moldura
+  por: Threads por frame
   swe: Ramtrådar
   pol: Gwinty ramy
   ukr: Каркасні різьблення
@@ -2451,7 +2450,7 @@ Frames Per Second:
   chs: 每秒帧数
   jpn: 1秒ごとのフレーム数
   rus: Кадров в секунду
-  por: Molduras por segundo
+  por: Frames por segundo
   swe: Bildrutor per sekund
   pol: Liczba klatek na sekundę
   ukr: Кадри в секунду
@@ -2481,7 +2480,7 @@ GUI Logging Level:
   chs: GUI日志级别
   jpn: GUIログレベル
   rus: Уровень ведения журнала графического интерфейса
-  por: Nível de registo GUI
+  por: Nível de Logging da GUI
   swe: GUI-loggningsnivå
   pol: Poziom logowania GUI
   ukr: Рівень журналювання графічного інтерфейсу
@@ -2496,7 +2495,7 @@ Gather FFmpeg audio encoders:
   chs: 获取FFmpeg音频编码器
   jpn: FFmpegオーディオエンコーダの取得
   rus: Соберите аудиокодеры FFmpeg
-  por: Reunir codificadores de áudio FFmpeg
+  por: Verificar codificadores de áudio FFmpeg
   swe: Samla FFmpeg-ljudkodare
   pol: Zbierz kodery audio FFmpeg
   ukr: Зібрати аудіокодери FFmpeg
@@ -2511,7 +2510,7 @@ Gather FFmpeg version:
   chs: 获取FFmpeg版本
   jpn: FFmpegのバージョンを取得
   rus: Соберите версию FFmpeg
-  por: Reúna a versão FFmpeg
+  por: Verificar versão FFmpeg
   swe: Samla ihop FFmpeg-versionen
   pol: Zbierz wersję FFmpeg
   ukr: Зібрати версію FFmpeg
@@ -2526,7 +2525,7 @@ Gather FFprobe version:
   chs: 获取FFprobe版本
   jpn: FFprobeのバージョンを集取得
   rus: Соберите версию FFprobe
-  por: Reúna a versão FFprobe
+  por: Verificar versão FFprobe
   swe: Samla in FFprobe-versionen
   pol: Zbierz wersję FFprobe
   ukr: Зібрати версію FFprobe
@@ -2541,7 +2540,7 @@ Generating thumbnail:
   chs: 正在生成缩略图
   jpn: サムネイルの生成
   rus: Создание миниатюры
-  por: Gerar miniatura
+  por: Generando miniatura
   swe: Generering av miniatyrbild
   pol: Generowanie miniaturki
   ukr: Створення мініатюри
@@ -2556,7 +2555,7 @@ Google's VP9 HDR Encoding Guide:
   chs: 谷歌VP9 HDR编码指南（英文）
   jpn: GoogleのVP9 HDRエンコーディングガイド（英語）
   rus: Руководство по кодированию VP9 HDR от Google
-  por: Guia de Codificação HDR VP9 do Google
+  por: Guia de codificação HDR VP9 do Google
   swe: Googles VP9 HDR-kodningsguide för VP9
   pol: Przewodnik Google VP9 HDR Encoding Guide
   ukr: Посібник із кодування VP9 HDR від Google
@@ -2571,7 +2570,7 @@ HDR -> SDR Tone Map:
   chs: HDR -> SDR色调映射
   jpn: HDR→SDRトーンマップ
   rus: HDR -> SDR Карта тонов
-  por: HDR -> Mapa de Tom SDR
+  por: HDR -> Mapa de tom SDR
   swe: HDR -> SDR-tonkarta
   pol: HDR -> SDR Mapa tonów
   ukr: HDR -> SDR Tone Map
@@ -2601,7 +2600,7 @@ HDR10+ Metadata:
   chs: HDR10+元数据
   jpn: HDR10+メタデータ
   rus: Метаданные HDR10+
-  por: HDR10+ Metadados
+  por: Metadados HDR10+
   swe: HDR10+ Metadata
   pol: Metadane HDR10+
   ukr: Метадані HDR10+
@@ -2616,7 +2615,7 @@ HDR10+ Metadata Extraction:
   chs: HDR10+元数据提取指南（英文）
   jpn: HDR10+メタデータの抽出
   rus: Извлечение метаданных HDR10+
-  por: HDR10+ Extracção de Metadados
+  por: Extração de metadados HDR10+
   swe: Utdragning av HDR10+-metadata
   pol: Ekstrakcja metadanych HDR10+
   ukr: Вилучення метаданих HDR10+
@@ -2631,7 +2630,7 @@ HDR10+ Optimizations:
   chs: HDR10+优化
   jpn: HDR10+の最適化
   rus: Оптимизация HDR10+
-  por: HDR10+ Optimizações
+  por: Otimizações HDR10+
   swe: HDR10+-optimeringar
   pol: Optymalizacje HDR10+
   ukr: Оптимізація HDR10+
@@ -2646,7 +2645,7 @@ Have to select a video first:
   chs: 需要先选择一个视频
   jpn: 最初に動画を選択する必要があります。
   rus: Сначала нужно выбрать видео
-  por: Ter de seleccionar primeiro um vídeo
+  por: Tem de selecionar um vídeo primeiro
   swe: Måste välja en video först
   pol: Najpierw trzeba wybrać wideo
   ukr: Спочатку потрібно вибрати відео
@@ -2706,7 +2705,7 @@ Horizontal Flip:
   chs: 水平翻转
   jpn: 水平反転
   rus: Отражение по горизонтали
-  por: Horizontal Flip
+  por: Inversão horizontal
   swe: Horisontell vändning
   pol: Przerzucanie poziome
   ukr: Горизонтальне сальто
@@ -2751,7 +2750,7 @@ Intra-Encoding:
   chs: Intra-Encoding
   jpn: イントラエンコーディング
   rus: Внутреннее кодирование
-  por: Codificação Intra-Encodificação
+  por: Intra-Codificação
   swe: Intra-kodning
   pol: Intra-Encoding
   ukr: Внутрішнє кодування
@@ -2766,7 +2765,7 @@ Intra-Smoothing:
   chs: Intra-Smoothing
   jpn: イントラ・スムージング
   rus: Внутреннее сглаживание
-  por: Intra-Suave
+  por: Intra-Smoothing
   swe: Intra-Smoothing
   pol: Intra-Smoothing
   ukr: Внутрішнє згладжування
@@ -2781,7 +2780,7 @@ Intra-refresh:
   chs: 帧内刷新
   jpn: イントラリフレシュ
   rus: Внутреннее обновление
-  por: Intra-refresco
+  por: Intra-refresh
   swe: Inom en nypa
   pol: Intra-refresh
   ukr: Внутрішнє оновлення
@@ -2796,7 +2795,7 @@ Invalid Crop:
   chs: 无效裁切
   jpn: 無効なクロップ
   rus: Неверная обрезка
-  por: Cultura inválida
+  por: Recorte inválido
   swe: Ogiltig gröda
   pol: Nieprawidłowy zbiór
   ukr: Неприпустима культура
@@ -2812,7 +2811,7 @@ It is recommended that AQ-mode be enabled along with this feature:
   chs: 使用该功能时建议同时启用自适应量化。
   jpn: この機能と併せてAQモードを有効にすることを推奨します。
   rus: Рекомендуется включить режим AQ вместе с этой функцией
-  por: Recomenda-se que o AQ-mode seja activado juntamente com esta funcionalidade
+  por: É recomendável que o modo AQ seja habilitado junto com esse recurso
   swe: Det rekommenderas att AQ-läge aktiveras tillsammans med denna funktion.
   pol: Zaleca się, aby wraz z tą funkcją włączony był tryb AQ.
   ukr: Рекомендується увімкнути режим AQ разом з цією функцією
@@ -2831,7 +2830,7 @@ It saves a few bits and can help performance in the client's tonemapper.:
   jpn: これによりビットが少し節約され、クライアントのトーンマッパーのパフォーマンスが向上します。
   rus: Это экономит несколько битов и может повысить производительность клиентского
     тонального маппера.
-  por: Poupa alguns bocados e pode ajudar o desempenho no tonemapper do cliente.
+  por: Ele economiza alguns bits e pode ajudar no desempenho do tonemapper do cliente.
   swe: Det sparar några bitar och kan förbättra prestandan i klientens tonemapper.
   pol: Oszczędza to kilka bitów i może pomóc w wydajności tonemappera klienta.
   ukr: Це економить кілька бітів і може підвищити продуктивність клієнтського тонамапера.
@@ -2847,7 +2846,7 @@ Keep:
   chs: 保留
   jpn: キープ
   rus: Сохранить
-  por: Guarde
+  por: Manter
   swe: Håll
   pol: Zachowaj
   ukr: Тримай
@@ -2877,7 +2876,7 @@ Keep aspect ratio:
   chs: 保持纵横比
   jpn: アスペクト比を保つ
   rus: Сохранять соотношение сторон
-  por: Manter relação de aspecto
+  por: Manter a proporção
   swe: Behåll bildförhållandet
   pol: Zachować proporcje
   ukr: Зберігайте співвідношення сторін
@@ -2907,7 +2906,7 @@ Landscape Cover:
   chs: 横向封面
   jpn: ランドスケープカバー
   rus: Пейзажная обложка
-  por: Cobertura paisagística
+  por: Capa de paisagem
   swe: Landskapstäckning
   pol: Osłona krajobrazu
   ukr: Ландшафтний покрив
@@ -2969,8 +2968,7 @@ Log2 of number of tile columns to encode faster (lesser quality):
   chs: 块的列数的Log2来快速编码（画质降低）
   jpn: タイルの列数のLog2で、より高速にエンコードする（画質は落ちる）。
   rus: Log2 количества столбцов плитки для более быстрого кодирования (меньшее качество)
-  por: Log2 de número de colunas de ladrilhos para codificar mais rapidamente (menor
-    qualidade)
+  por: Log2 do número de colunas para codificar mais rapidamente (menor qualidade)
   swe: Log2 av antalet kakelkolumner för att koda snabbare (sämre kvalitet).
   pol: Log2 liczby kolumn kafelków do szybszego kodowania (gorsza jakość)
   ukr: Log2 від кількості стовпчиків плитки для швидшого кодування (з меншою якістю)
@@ -2986,7 +2984,7 @@ Log2 of number of tile rows to encode faster (lesser quality):
   chs: 块的行数的Log2来快速编码（画质降低）
   jpn: タイル列数のLog2で、より高速にエンコードする（画質は落ちる）。
   rus: Log2 числа рядов плиток для более быстрого кодирования (меньшее качество)
-  por: Log2 do número de filas de azulejos a codificar mais rapidamente (menor qualidade)
+  por: Log2 do número de linhas para codificar mais rapidamente (menor qualidade)
   swe: Log2 av antalet kakelrader för att koda snabbare (sämre kvalitet).
   pol: Log2 liczby rzędów kafelków do szybszego kodowania (gorsza jakość)
   ukr: Log2 від кількості рядів плиток для швидшого кодування (з меншою якістю)
@@ -3017,7 +3015,7 @@ Lossless:
   chs: 无损编码
   jpn: ロスレス
   rus: Без потерь
-  por: Sem perdas
+  por: Lossless
   swe: Förlustfri
   pol: Bezstratna
   ukr: Без втрат
@@ -3038,8 +3036,8 @@ Lossless encodes implicitly have no rate control, all rate control options are i
   jpn: ロスレスエンコードでは、レートコントロールが行われず、すべてのレートコントロールオプションは無視されます。
   rus: Кодирование без потерь неявно не имеет контроля скорости, все опции контроля
     скорости игнорируются.
-  por: Os códigos sem perdas não têm implicitamente qualquer controlo de taxa, todas
-    as opções de controlo de taxa são ignoradas.
+  por: Os códigos lossless não têm implicitamente nenhum controle de taxa, todas
+    as opções de controle de taxa são ignoradas.
   swe: Förlustfria kodningar har implicit ingen hastighetsreglering, alla alternativ
     för hastighetsreglering ignoreras.
   pol: Kodowanie bezstratne domyślnie nie ma kontroli szybkości, wszystkie opcje kontroli
@@ -3058,7 +3056,7 @@ Max Muxing Queue Size:
   chs: 最大混流队列大小
   jpn: 最大ミキシングキューサイズ
   rus: Максимальный размер очереди мультиплексирования
-  por: Tamanho Máximo da Fila de Muxing
+  por: Tamanho máximo da fila de muxing
   swe: Maximal storlek på kö för samkörning
   pol: Maks. rozmiar kolejki muxingu
   ukr: Максимальний розмір черги мікшування
@@ -3073,7 +3071,7 @@ Max Q:
   chs: Q的最大值
   jpn: Qの最大値
   rus: Макс Q
-  por: Máximo Q
+  por: Max Q
   swe: Max Q
   pol: Max Q
   ukr: Max Q
@@ -3088,7 +3086,7 @@ Maximum B frames:
   chs: 最大B帧数量
   jpn: 最大Bフレーム
   rus: Максимум кадров B
-  por: Máximo de armações B
+  por: Número máximo de B-frames
   swe: Maximalt antal B-ramar
   pol: Maksymalne ramki B
   ukr: Максимум кадрів B
@@ -3103,7 +3101,7 @@ Maximum B frames:
   chs: 连续b帧的最大数量。
   jpn: 連続するb-フレームの最大数。
   rus: Максимальное количество последовательных b-кадров.
-  por: Número máximo de b-frames consecutivos.
+  por: Número máximo de B-frames consecutivos.
   swe: Maximalt antal på varandra följande b-frames.
   pol: Maksymalna liczba kolejnych b-ramek.
   ukr: Максимальна кількість послідовних b-кадрів.
@@ -3163,7 +3161,7 @@ Motion vector accuracy:
   chs: 运动矢量精度
   jpn: モーションベクトルの精度
   rus: Точность вектора движения
-  por: Precisão do vector de movimento
+  por: Precisão do vetor de movimento
   swe: Rörelsevektorernas noggrannhet
   pol: Dokładność wektora ruchu
   ukr: Точність вектора руху
@@ -3193,7 +3191,7 @@ NVEncC Encoder support is still experimental!:
   chs: NVEncC编码器支持仍然是实验性的!
   jpn: NVEncCエンコーダのサポートはまだ実験的なものです。
   rus: Поддержка NVEncC Encoder все еще является экспериментальной!
-  por: O suporte do codificador NVEncC ainda é experimental!
+  por: O suporte para o codificador NVEncC ainda é experimental!
   swe: Stödet för NVEncC Encoder är fortfarande experimentellt!
   pol: Obsługa NVEncC Encoder jest wciąż eksperymentalna!
   ukr: Підтримка NVEncC Encoder поки що експериментальна!
@@ -3223,7 +3221,7 @@ New Profile:
   chs: 新建配置
   jpn: プロフィールの新規作成
   rus: Новый профиль
-  por: Novo perfil
+  por: Novo Perfil
   swe: Ny profil
   pol: Nowy profil
   ukr: Новий профіль
@@ -3283,7 +3281,7 @@ No Flip:
   chs: 无翻转
   jpn: 反転なし
   rus: Без поворота
-  por: Sem Flip
+  por: Sem inversão
   swe: Ingen flip
   pol: No Flip
   ukr: Ніякого перевороту.
@@ -3298,7 +3296,7 @@ No Rotation:
   chs: 无旋转
   jpn: 回転なし
   rus: Без вращения
-  por: Sem Rotação
+  por: Sem rotação
   swe: Ingen rotation
   pol: Brak rotacji
   ukr: Без ротації
@@ -3313,7 +3311,7 @@ No Source Selected:
   chs: 未选择源文件
   jpn: ソース選択されていない
   rus: Источник не выбран
-  por: Nenhuma Fonte Seleccionada
+  por: Nenhuma fonte selecionada
   swe: Ingen källa vald
   pol: Nie wybrano źródła
   ukr: Джерело не вибрано
@@ -3328,7 +3326,7 @@ No Video File:
   chs: 没有视频文件
   jpn: 動画ファイルなし
   rus: Нет видеофайла
-  por: Nenhum ficheiro de vídeo
+  por: Sem arquivo de vídeo
   swe: Ingen videofil
   pol: Brak pliku wideo
   ukr: Немає відеофайлу
@@ -3362,7 +3360,7 @@ No crop, scale, rotation, flip nor any other filters will be applied.:
   chs: 不会应用裁切、缩放、旋转、翻转或任何其他滤镜。
   jpn: 切り抜き、拡大縮小、回転、反転などのフィルターはかけられません。
   rus: Обрезка, масштабирование, вращение, переворот и другие фильтры не применяются.
-  por: Não se aplicarão culturas, escamas, rotação, flip nem quaisquer outros filtros.
+  por: Nenhum recorte, escala, rotação, inversão ou qualquer outro filtro será aplicado.
   swe: Ingen beskärning, skalning, rotation, vändning eller andra filter kommer att
     tillämpas.
   pol: Nie zostaną zastosowane żadne filtry typu crop, scale, rotation, flip ani żadne
@@ -3380,7 +3378,7 @@ No encoding is currently in process, starting encode:
   chs: 目前没有正在进行的编码，编码开始。
   jpn: 現在エンコード中のものはない。エンコード開始
   rus: В настоящее время кодирование не выполняется, начинаем кодирование
-  por: Nenhuma codificação está actualmente em processo, começando a codificação
+  por: Nenhuma codificação está em andamento, iniciando codificação
   swe: Ingen kodning pågår för närvarande, börja koda.
   pol: Nie trwa obecnie kodowanie, rozpoczynamy kodowanie
   ukr: Наразі кодування не виконується, починаємо кодування
@@ -3395,7 +3393,7 @@ No new items in queue to convert:
   chs: 队列中没有新项目要转换
   jpn: 変換するためのキューに新しいアイテムがない
   rus: Нет новых элементов в очереди на конвертацию
-  por: Não há artigos novos em fila de espera para converter
+  por: Nenhum item novo na fila para converter
   swe: Inga nya objekt i kö för konvertering
   pol: Brak nowych pozycji w kolejce do konwersji
   ukr: Немає нових товарів у черзі на конвертацію
@@ -3440,7 +3438,7 @@ Not a valid int for time conversion:
   chs: 不是可用于时间转换的有效整数
   jpn: 時間変換に有効な整数値ではない
   rus: Недопустимое значением int для преобразования времени
-  por: Não é uma int válida para conversão de tempo
+  por: Não é um int válido para a conversão de tempo
   swe: Inte ett giltigt int för tidskonvertering
   pol: Nie jest prawidłową liczbą całkowitą dla konwersji czasu
   ukr: Не коректний int для перетворення часу
@@ -3455,7 +3453,7 @@ Not a video file:
   chs: 不是视频文件
   jpn: 動画ファイルではありません
   rus: Не видеофайл
-  por: Não é um ficheiro de vídeo
+  por: Não é um arquivo de vídeo
   swe: Inte en videofil
   pol: Nie jest to plik wideo
   ukr: Не відеофайл
@@ -3476,8 +3474,8 @@ Only put the HDR10+ dynamic metadata in the IDR and frames where the values have
   jpn: HDR10+のダイナミックメタデータは、IDRと値が変化したフレームにのみ入れます。
   rus: Поместите динамические метаданные HDR10+ только в IDR и кадры, где значения
     изменились.
-  por: Coloque apenas os metadados dinâmicos HDR10+ no IDR e nas molduras onde os
-    valores mudaram.
+  por: Coloque os metadados dinâmicos HDR10+ apenas no IDR e nos quadros onde os valores
+    foram alterados.
   swe: Lägg endast in HDR10+ dynamiska metadata i IDR och ramar där värdena har ändrats.
   pol: Umieszczaj metadane dynamiczne HDR10+ tylko w IDR i klatkach, w których wartości
     uległy zmianie.
@@ -3494,7 +3492,7 @@ Only select first matching Audio Track:
   chs: 只选择第一条匹配的音轨
   jpn: 最初に一致したオーディオトラックのみを選択
   rus: Выберите только первую подходящую звуковую дорожку
-  por: Seleccionar apenas a primeira faixa de áudio correspondente
+  por: Selecione apenas a primeira Faixa de Áudio correspondente
   swe: Endast välja första matchande ljudspår
   pol: Wybierz tylko pierwszą pasującą ścieżkę dźwiękową
   ukr: Виберіть лише першу відповідну аудіодоріжку
@@ -3509,7 +3507,7 @@ Only select first matching Subtitle Track:
   chs: 只选择第一条匹配的字幕轨
   jpn: 最初にマッチした字幕トラックのみを選択
   rus: Выберите только первую подходящую дорожку субтитров
-  por: Seleccionar apenas a primeira faixa de subtítulos correspondente
+  por: Selecione apenas a primeira Faixa de Legenda correspondente
   swe: Välj endast det första matchande undertextspåret
   pol: Wybierz tylko pierwszą pasującą ścieżkę napisów
   ukr: Виберіть лише першу відповідну доріжку субтитрів
@@ -3524,7 +3522,7 @@ Open Directory:
   chs: 打开目录
   jpn: ディレクトリを開く
   rus: Открыть каталог
-  por: Directório Aberto
+  por: Abrir diretório
   swe: Öppen katalog
   pol: Katalog otwarty
   ukr: Відкрити каталог
@@ -3539,7 +3537,7 @@ Open Log Directory:
   chs: 打开日志目录
   jpn: ログのディレクトリを開く
   rus: Открыть каталог журналов
-  por: Directório de Registo Aberto
+  por: Abrir diretório de log
   swe: Öppna loggkatalogen
   pol: Otwarty katalog dzienników
   ukr: Відкрити каталог журналів
@@ -3569,7 +3567,7 @@ Output FPS:
   chs: 输出帧率
   jpn: 出力FPS
   rus: Выходной FPS
-  por: FPS de saída
+  por: FPS da saída
   swe: Utgående FPS
   pol: Wyjście FPS
   ukr: Вихідний FPS
@@ -3585,7 +3583,7 @@ Over-allocation of frame threads will not improve performance,:
   chs: 过多分配帧线程无法提高性能，
   jpn: フレームスレッドを過剰に割り当てても、パフォーマンスは向上しません。
   rus: Избыточное распределение потоков кадров не улучшит производительность,
-  por: A sobre-atribuição de fios de moldura não melhorará o desempenho,
+  por: A superalocação de threads por quadro não melhorará o desempenho,
   swe: Överallokering av ramtrådar förbättrar inte prestandan,
   pol: Nadmierna alokacja wątków ramki nie poprawi wydajności,
   ukr: Перерозподіл потоків кадрів не покращить продуктивність,
@@ -3600,7 +3598,7 @@ Overlay this subtitle track onto the video during conversion.:
   chs: 在转换时将此字幕轨叠加到视频上。
   jpn: 変換時にこの字幕トラックを映像に重ねて表示します。
   rus: Наложить эту дорожку субтитров на видео во время конвертирования.
-  por: Sobreponha esta faixa de legendas no vídeo durante a conversão.
+  por: Sobrepor esta faixa de legenda ao vídeo durante a conversão.
   swe: Lägg över detta undertextspår på videon under konverteringen.
   pol: Nałożenie tej ścieżki napisów na wideo podczas konwersji.
   ukr: Накладіть цю доріжку субтитрів на відео під час конвертації.
@@ -3615,7 +3613,7 @@ Override Source FPS:
   chs: 覆盖源文件帧率
   jpn: ソースFPSをオーバーライド
   rus: Переопределение исходного FPS
-  por: Substituir Fonte FPS
+  por: Sobrescrever FPS da fonte
   swe: åsidosätta källan FPS
   pol: Zastąpić źródło FPS
   ukr: Перевизначити вихідний FPS
@@ -3630,7 +3628,7 @@ Override the preset rate-control:
   chs: 覆盖预设的速率控制
   jpn: プリセットレートコントロールのオーバーライド
   rus: Отмена предустановленного регулирования скорости
-  por: Anular o controlo da taxa pré-definida
+  por: Sobrescrever o controle de taxa do preset
   swe: åsidosätta den förinställda hastighetsregleringen
   pol: Nadpisanie wstępnie ustawionej regulacji prędkości obrotowej
   ukr: Замінити попередньо встановлений контроль швидкості
@@ -3650,8 +3648,7 @@ PIR can replace keyframes by inserting a column of intra blocks in non-keyframes
   jpn: PIRは、非キーフレームにイントラブロックの列を挿入することで、キーフレームを置き換えることができます。
   rus: PIR может заменить ключевые кадры, вставляя колонку внутренних блоков в неключевые
     кадры,
-  por: O PIR pode substituir os quadros-chave, inserindo uma coluna de blocos intra-bloco
-    em quadros não-chave,
+  por: PIR pode substituir keyframes inserindo uma coluna de intra blocos em não-keyframes,
   swe: PIR kan ersätta keyframes genom att infoga en kolumn med intrablock i icke-keyframes,
   pol: PIR może zastąpić klatki kluczowe wstawiając kolumnę bloków intra do klatek
     nie będących klatkami kluczowymi,
@@ -3669,7 +3666,7 @@ Parse Video details:
   chs: 解析视频详情
   jpn: ビデオの詳細を解析する
   rus: Разбор деталей видео
-  por: Detalhes do vídeo de Parse
+  por: Analisar detalhes do vídeo
   swe: Analysera videodetaljer
   pol: Odczytuj szczegóły wideo
   ukr: Деталі розбору відео
@@ -3684,7 +3681,7 @@ Pause / Resume the current command:
   chs: 暂停/恢复当前命令
   jpn: 現在のコマンドを一時停止／再開する
   rus: Приостановить / возобновить выполнение текущей команды
-  por: Pausa / Retomar o comando actual
+  por: Pausar / Retomar o comando atual
   swe: Pausa / återuppta det aktuella kommandot
   pol: Wstrzymanie / Wznowienie bieżącego polecenia
   ukr: Призупинити / відновити поточну команду
@@ -3699,7 +3696,7 @@ Pause Encode:
   chs: 暂停编码
   jpn: エンコードを一時停止する
   rus: Приостановить кодирование
-  por: Codificação de Pausa
+  por: Pausar codificação
   swe: Pausa Kodning
   pol: Pauza Koduj
   ukr: Кодування паузи
@@ -3714,7 +3711,7 @@ Pause Queue:
   chs: 暂停队列
   jpn: キューを一時停止する
   rus: Приостановить очередь
-  por: Fila de Pausa
+  por: Pausar fila
   swe: Pausa kö
   pol: Wstrzymaj kolejkę
   ukr: Пауза Черга
@@ -3729,7 +3726,7 @@ Pixel Format (requires at least 10-bit for HDR):
   chs: 像素格式（HDR要求至少10-bit）
   jpn: ピクセルフォーマット（HDRでは10ビット以上が必要）
   rus: Формат пикселей (для HDR требуется не менее 10 бит)
-  por: Formato Pixel (requer pelo menos 10 bits para HDR)
+  por: Formato de pixel (requer pelo menos 10 bits para HDR)
   swe: Pixelformat (kräver minst 10 bit för HDR)
   pol: Format pikseli (w przypadku HDR wymagany jest co najmniej 10-bitowy)
   ukr: Формат пікселів (для HDR потрібно щонайменше 10 біт)
@@ -3744,7 +3741,7 @@ Please make sure seek method is set to exact:
   chs: 请确保检索方式已设置为exact
   jpn: seek methodがexactに設定されていることを確認してください。
   rus: Пожалуйста, убедитесь, что метод поиска установлен на точный
-  por: Por favor, certifique-se de que o método de busca está definido de forma exacta
+  por: Por favor, certifique-se de que o método de busca está definido como exato
   swe: Kontrollera att sökmetoden är inställd på exakt
   pol: Proszę upewnić się, że metoda wyszukiwania jest ustawiona na dokładną
   ukr: Будь ласка, переконайтеся, що метод пошуку встановлений на exact
@@ -3759,7 +3756,7 @@ Please provide a profile name:
   chs: 请提供配置名称
   jpn: プロフィール名を入力してください
   rus: Пожалуйста, укажите имя профиля
-  por: Por favor forneça um nome de perfil
+  por: Por favor, forneça um nome de perfil
   swe: Ange ett profilnamn
   pol: Proszę podać nazwę profilu
   ukr: Будь ласка, вкажіть ім'я профілю
@@ -3774,7 +3771,7 @@ Please report this issue:
   chs: 请报告这个问题
   jpn: この問題を報告してください
   rus: Пожалуйста, сообщите об этой проблеме
-  por: Por favor, informe este número
+  por: Por favor, informe este problema
   swe: Rapportera detta problem
   pol: Proszę zgłosić ten problem
   ukr: Будь ласка, повідомте про цю проблему
@@ -3789,7 +3786,7 @@ Please restart FastFlix to apply settings:
   chs: 请重新启动FastFlix以应用设置
   jpn: 設定を適用するには、FastFlixを再起動してください。
   rus: Пожалуйста, перезапустите FastFlix для применения настроек
-  por: Por favor reinicie FastFlix para aplicar definições
+  por: Por favor, reinicie o FastFlix para aplicar as configurações
   swe: Starta om FastFlix för att tillämpa inställningarna
   pol: Proszę uruchomić ponownie FastFlix, aby zastosować ustawienia.
   ukr: Будь ласка, перезапустіть FastFlix, щоб застосувати налаштування
@@ -3804,7 +3801,7 @@ Poster Cover:
   chs: 纵向封面
   jpn: ポスターカバー
   rus: Обложка плаката
-  por: Capa do cartaz
+  por: Capa de pôster
   swe: Affischomslag
   pol: Okładka plakatu
   ukr: Обкладинка плаката
@@ -3819,7 +3816,7 @@ Preserve:
   chs: 保留
   jpn: 保留
   rus: Сохранить
-  por: Conservar
+  por: Preservar
   swe: Bevara
   pol: Zachować
   ukr: Заповідник
@@ -3834,7 +3831,7 @@ Preset:
   chs: 预设
   jpn: プリセット
   rus: Предустановка
-  por: Predefinição
+  por: Preset
   swe: Förinställd
   pol: Wstępnie ustawiony
   ukr: Попереднє налаштування
@@ -3864,7 +3861,7 @@ Profile_encoderopt:
   chs: 配置
   jpn: プロフィール
   rus: Профиль_опции_энкодера
-  por: Perfil
+  por: Profile_encoderopt
   swe: Profile
   pol: Profil
   ukr: Profile_encoderopt
@@ -3879,7 +3876,7 @@ Profile_newprofiletooltip:
   chs: 配置
   jpn: プロフィール
   rus: Профиль_подсказка_нового_профиля
-  por: Perfil
+  por: Profile_newprofiletooltip
   swe: Profile
   pol: Profil
   ukr: Profile_newprofiletooltip
@@ -3894,7 +3891,7 @@ Profile_window:
   chs: 配置
   jpn: プロフィール
   rus: Профиль_окно
-  por: Perfil
+  por: Profile_window
   swe: Profile
   pol: Profil
   ukr: Profile_window
@@ -3939,7 +3936,7 @@ Q-pel is highest precision:
   chs: Q-pel是最高精度
   jpn: Q-pelは最高精度
   rus: Q-pel - высочайшая точность
-  por: Q-pel é da mais alta precisão
+  por: Q-pel possui a maior precisão
   swe: Q-pel är den högsta precisionen
   pol: Q-pel to najwyższa precyzja
   ukr: Q-pel - найвища точність
@@ -3970,7 +3967,7 @@ Quality and compression efficiency vs speed trade-off:
   chs: 在质量及压缩效率与速度之间进行权衡
   jpn: 画質と圧縮効率と速度のトレードオフ
   rus: Компромисс между качеством и эффективностью сжатия и скоростью
-  por: Qualidade e eficiência de compressão vs. compromisso de velocidade
+  por: Qualidade e eficiência de compressão vs velocidade
   swe: Kvalitets- och komprimeringseffektivitet kontra hastighet
   pol: Kompromis pomiędzy jakością i wydajnością kompresji a szybkością
   ukr: Компроміс між якістю та ефективністю стиснення і швидкістю
@@ -3985,7 +3982,7 @@ Quality/Speed ratio modifier:
   chs: 调整质量与速度之比
   jpn: 画質・速度の調整
   rus: Регулятор соотношения качества и скорости
-  por: Modificador da relação qualidade/velocidade
+  por: Modificador de qualidade/velocidade
   swe: Modifiering av förhållandet kvalitet/hastighet
   pol: Modyfikator stosunku jakość/prędkość
   ukr: Модифікатор співвідношення якість/швидкість
@@ -4000,7 +3997,7 @@ Quality/Speed ratio modifier (defaults to -1):
   chs: 调整质量与速度之比（默认值为-1)
   jpn: 品質／速度比の修正（デフォルトは-1）
   rus: Регулятор соотношения качества и скорости (по умолчанию -1)
-  por: Modificador da relação qualidade/velocidade (valores por defeito para -1)
+  por: Modificador de qualidade/velocidade (padrão -1)
   swe: Modifiering av förhållandet kvalitet/hastighet (standardvärde -1)
   pol: Modyfikator stosunku jakość/prędkość (domyślnie -1)
   ukr: Модифікатор співвідношення якість/швидкість (за замовчуванням -1)
@@ -4015,7 +4012,7 @@ Quality/Speed ratio modifier (defaults to 4):
   chs: 调整质量与速度之比（默认值为4）
   jpn: Quality/Speed ratio modifier (デフォルトは4)
   rus: Регулятор соотношения качества и скорости (по умолчанию равен 4)
-  por: Modificador da relação qualidade/velocidade (padrão para 4)
+  por: Modificador de qualidade/velocidade (padrão 4)
   swe: Modifiering av förhållandet kvalitet/hastighet (standardvärdet är 4).
   pol: Modyfikator stosunku jakość/prędkość (domyślnie 4)
   ukr: Модифікатор співвідношення якість/швидкість (за замовчуванням 4)
@@ -4045,7 +4042,7 @@ Queue has been paused:
   chs: 队列已暂停
   jpn: キューは一時停止している
   rus: Очередь была приостановлена
-  por: A fila foi interrompida
+  por: A fila foi pausada
   swe: Kö har pausats
   pol: Kolejka została wstrzymana.
   ukr: Чергу призупинено
@@ -4081,7 +4078,7 @@ Raise or lower per-block quantization based on complexity analysis of the source
   jpn: ソース画像の複雑さの分析に基づいて、ブロックごとの量子化率を上げるか下げる。
   rus: Повышение или понижение блочного квантования на основе анализа сложности исходного
     изображения.
-  por: Quantificação por bloco, para cima ou para baixo, com base na análise da complexidade
+  por: Aumentar ou diminuir a quantização por bloco com base na análise de complexidade
     da imagem de origem.
   swe: Öka eller sänka kvantiseringen per block baserat på en komplexitetsanalys av
     källbilden.
@@ -4101,7 +4098,7 @@ Rate Control:
   chs: 速度控制
   jpn: レート制御
   rus: Контроль скорости
-  por: Controlo da taxa
+  por: Controle de taxa
   swe: Kontroll av hastighet
   pol: Kontrola stawek
   ukr: Контроль швидкості
@@ -4116,7 +4113,7 @@ Raw Commands:
   chs: 原始命令
   jpn: 生コマンド
   rus: Необработанные команды
-  por: Comandos em bruto
+  por: Comandos brutos
   swe: Råkommandon
   pol: Polecenia surowe
   ukr: Сирі команди
@@ -4131,7 +4128,7 @@ Ready to encode:
   chs: 准备好编码
   jpn: エンコードの準備できました
   rus: Готовность к кодированию
-  por: Pronto a codificar
+  por: Pronto para codificar
   swe: Redo att koda
   pol: Gotowość do kodowania
   ukr: Готові до кодування
@@ -4149,7 +4146,7 @@ Reconstructed output pictures are bit-exact to the input pictures.:
   jpn: 再構成された出力画像は、入力画像とビットが一致しています。
   rus: Реконструированные выходные изображения являются битово-точными по отношению
     к входным изображениям.
-  por: As imagens de saída reconstruídas são bit-exactas para as imagens de entrada.
+  por: As imagens de saída reconstruídas são bit-exatas para as imagens de entrada.
   swe: De rekonstruerade utdatabilderna är bit-exakta i förhållande till de ingående
     bilderna.
   pol: Zrekonstruowane obrazy wyjściowe są bitowo dokładne w stosunku do obrazów wejściowych.
@@ -4166,7 +4163,7 @@ Ref Frames:
   chs: 参考帧
   jpn: リファレンスフレーム
   rus: Реф-кадры
-  por: Molduras de Reformas
+  por: Ref Frames
   swe: Referensramar
   pol: Ref Frames
   ukr: Референтні рамки
@@ -4181,7 +4178,7 @@ Remove HDR:
   chs: 去除HDR
   jpn: HDRを削除
   rus: Удалить HDR
-  por: Retirar o HDR
+  por: Remover HDR
   swe: Ta bort HDR
   pol: Usuń HDR
   ukr: Видалити HDR
@@ -4196,7 +4193,7 @@ Remove Metadata:
   chs: 去除元数据
   jpn: メタデータを削除
   rus: Удалить метаданные
-  por: Remover Metadados
+  por: Remover metadados
   swe: Ta bort metadata
   pol: Usuń metadane
   ukr: Видалити метадані
@@ -4211,7 +4208,7 @@ Remove completed tasks:
   chs: 删除已完成的任务
   jpn: 完了したタスクを削除する
   rus: Удалить выполненные задания
-  por: Retirar tarefas concluídas
+  por: Remover tarefas concluídas
   swe: Ta bort avslutade uppgifter
   pol: Usuń zakończone zlecenia
   ukr: Видалити виконані завдання
@@ -4226,7 +4223,7 @@ Removing after done command:
   chs: 在完成命令后删除
   jpn: 完了したコマンドの後に削除する
   rus: Удаление после выполнения команды
-  por: Remoção após comando feito
+  por: Removendo o comando pós-conclusão
   swe: Ta bort efter kommandot done
   pol: Usuwanie po wykonaniu polecenia
   ukr: Видалення після виконання команди
@@ -4241,7 +4238,7 @@ Repeat Headers:
   chs: 重复标头
   jpn: ヘッダー重複
   rus: Повторяющиеся заголовки
-  por: Cabeçalhos de repetição
+  por: Repetir cabeçalhos
   swe: Upprepa rubriker
   pol: Powtarzanie nagłówków
   ukr: Повторювані заголовки
@@ -4256,7 +4253,7 @@ Report Issue:
   chs: 报告问题
   jpn: 問題を報告
   rus: Выпуск отчета
-  por: Edição do relatório
+  por: Relatar problema
   swe: Rapportera frågan
   pol: Raport Wydanie
   ukr: Випуск звіту
@@ -4271,7 +4268,7 @@ Resume Encode:
   chs: 恢复编码
   jpn: エンコード再開
   rus: Возобновить кодирование
-  por: Código de currículo
+  por: Retomar codificação
   swe: Återuppta kodning
   pol: Wznów kodowanie
   ukr: Відновити кодування
@@ -4286,7 +4283,7 @@ Resume Queue:
   chs: 恢复队列
   jpn: キューの再開
   rus: Возобновить очередь
-  por: Fila de currículos
+  por: Retomar fila
   swe: Återuppta kö
   pol: Wznów kolejkę
   ukr: Поновити чергу
@@ -4316,7 +4313,7 @@ Right:
   chs: 右侧
   jpn: 右
   rus: Справа
-  por: Certo
+  por: Direita
   swe: Höger
   pol: Prawo
   ukr: Праворуч
@@ -4331,7 +4328,7 @@ Row Multi-Threading:
   chs: 行的多线程
   jpn: 行のマルチスレッド化
   rus: Многопоточность строк
-  por: Linha Multi-Tarefa
+  por: Multithreading de linhas
   swe: Flertrådig rad
   pol: Wielowątkowość wierszy
   ukr: Багатонитковість рядів
@@ -4346,7 +4343,7 @@ Row multithreading:
   chs: 行的多线程
   jpn: 行のマルチスレッド化
   rus: Многопоточность рядов
-  por: Multithreading de filas
+  por: Multithreading de linhas
   swe: Flertrådig rad
   pol: Wielowątkowość wierszy
   ukr: Багатопоточність рядків
@@ -4361,7 +4358,7 @@ Row multithreading:
   chs: '在完成命令后运行。'
   jpn: 'コマンド完了後に実行。'
   rus: 'Запуск после выполнения команды:'
-  por: 'Correr atrás de comando feito:'
+  por: 'Executando o comando pós-conclusão:'
   swe: 'Körs efter kommandot done:'
   pol: 'Uruchomienie po wykonaniu polecenia:'
   ukr: 'Запуск після виконання команди:'
@@ -4376,7 +4373,7 @@ Running command:
   chs: 运行命令
   jpn: 実行中のコマンド
   rus: Выполнение команды
-  por: Comando de execução
+  por: Comando em execução
   swe: Kommando som körs
   pol: Uruchomienie polecenia
   ukr: Команда, що виконується
@@ -4391,7 +4388,7 @@ SVT-AV1 Encoding Guide:
   chs: SVT-AV1编码指南
   jpn: SVT-AV1 エンコーディングガイド
   rus: Руководство по кодированию SVT-AV1
-  por: Guia de Codificação SVT-AV1
+  por: Guia de codificação SVT-AV1
   swe: SVT-AV1 Kodningsguide
   pol: SVT-AV1 Przewodnik kodowania
   ukr: Посібник з кодування SVT-AV1
@@ -4406,7 +4403,7 @@ Same as Source:
   chs: 与源文件相同
   jpn: ソースと同じ
   rus: То же, что и источник
-  por: O mesmo que a Fonte
+  por: Igual à fonte
   swe: Samma som för källan
   pol: Tak jak w przypadku źródła
   ukr: Те саме, що й Джерело
@@ -4421,7 +4418,7 @@ Save:
   chs: 保存
   jpn: 保存
   rus: Сохранить
-  por: Guardar
+  por: Salvar
   swe: Spara
   pol: Zapisz
   ukr: Зберегти
@@ -4436,7 +4433,7 @@ Save Commands:
   chs: 保存命令
   jpn: コマンドの保存
   rus: Сохранить команды
-  por: Salvar Comandos
+  por: Salvar comandos
   swe: Spara kommandon
   pol: Zapisz polecenia
   ukr: Збереження команд
@@ -4451,7 +4448,7 @@ Save File:
   chs: 保存文件
   jpn: ファイルの保存
   rus: Сохранить файл
-  por: Guardar ficheiro
+  por: Salvar arquivo
   swe: Spara fil
   pol: Zapisz plik
   ukr: Зберегти файл
@@ -4466,7 +4463,7 @@ Save commands to file:
   chs: 保存命令到文件
   jpn: コマンドをファイルに保存
   rus: Сохранить команды в файл
-  por: Guardar comandos em ficheiro
+  por: Salvar comandos para arquivo
   swe: Spara kommandon i en fil
   pol: Zapisywanie poleceń do pliku
   ukr: Збереження команд у файл
@@ -4481,7 +4478,7 @@ Scale:
   chs: 缩放
   jpn: スケール
   rus: Масштаб
-  por: Balança
+  por: Escala
   swe: Skala
   pol: Skala
   ukr: Масштаб
@@ -4502,7 +4499,7 @@ Scrub away all incoming metadata, like video titles, unique markings and so on.:
   jpn: 動画のタイトルやユニークなマークなど、元のメタデータをすべて消去します。
   rus: Удалите все входящие метаданные, такие как названия видео, уникальные метки
     и так далее.
-  por: Eliminar todos os metadados recebidos, como títulos de vídeo, marcações únicas
+  por: Remover todos os metadados de entrada, como títulos de vídeo, marcações únicas
     e assim por diante.
   swe: Ta bort alla inkommande metadata, som videotitlar, unika markeringar och så
     vidare.
@@ -4527,8 +4524,8 @@ Selects which NVENC capable GPU to use. First GPU is 0, second is 1, and so on:
   jpn: どのNVENC対応GPUを使用するか選択してください。最初のGPUは0、2番目は1。
   rus: Выбрать, какой GPU с поддержкой NVENC будет использоваться. Первый GPU - 0,
     второй - 1 и так далее.
-  por: Selecciona qual a GPU NVENC capaz de utilizar. A primeira GPU é 0, a segunda
-    é 1, e assim por diante
+  por: Seleciona qual GPU compatível com NVENC usar. A primeira GPU é 0, a segunda
+    é 1 e assim por diante.
   swe: Väljer vilken NVENC-kompatibel GPU som ska användas. Den första GPU:n är 0,
     den andra är 1 osv.
   pol: Wybiera, który z układów GPU obsługujących NVENC ma zostać użyty. Pierwszy
@@ -4547,7 +4544,7 @@ Set speed to 4 for first pass:
   chs: 第一遍速度设置为4
   jpn: 1回目のスピードを4に設定
   rus: Установить скорость на 4 для первого прохода
-  por: Definir velocidade para 4 na primeira passagem
+  por: Definir a velocidade para 4 para a primeira passagem
   swe: Ställ in hastigheten på 4 för första passet.
   pol: Dla pierwszego przejazdu ustawić prędkość obrotową na 4
   ukr: Встановіть швидкість на 4 для першого проходу
@@ -4562,7 +4559,7 @@ Set the "title" tag, sometimes shown as "Movie Name":
   chs: 设置“标题”（title，有时显示为“电影名称”（Movie Name））标签
   jpn: '"title"タグを設定します。"Movie Name"と表示されることもあります。'
   rus: Установить тег "title", который иногда отображается как "Название фильма".
-  por: Definir a etiqueta "título", por vezes exibida como "Nome do filme".
+  por: Definir a tag "title", às vezes mostrada como "Movie Name"
   swe: Ange "title"-taggen, som ibland visas som "Movie Name".
   pol: Ustaw znacznik "title", czasami wyświetlany jako "Movie Name".
   ukr: Встановіть тег "title", який іноді відображається як "Назва фільму"
@@ -4608,7 +4605,7 @@ Set the level of effort in determining B frame placement.:
   chs: 对决定B帧位置时的工作量水平进行调整。
   jpn: Bフレームの配置を決める際の努力の度合いを設定します。
   rus: Установить уровень усилий при определении размещения B кадра.
-  por: Estabelecer o nível de esforço na determinação da colocação da moldura B.
+  por: Definir o nível de esforço na determinação da colocação do B-frame.
   swe: Ange nivån på ansträngningen för att bestämma placeringen av B-ramar.
   pol: Ustaw poziom wysiłku przy określaniu rozmieszczenia ramki B.
   ukr: Встановіть рівень зусиль при визначенні розміщення рамки B.
@@ -4623,7 +4620,7 @@ Set the level of effort in determining B frame placement.:
   chs: '设置完成后命令为'
   jpn: 'コマンドを実行した後の設定'
   rus: 'Установка после выполненной команды на:'
-  por: 'Definição após comando feito para:'
+  por: 'Definindo o comando após a conclusão para:'
   swe: 'Ställ in kommandot efter utfört kommando till:'
   pol: 'Ustawienie po wykonaniu polecenia na:'
   ukr: 'Встановлення після виконаної команди to:'
@@ -4638,7 +4635,7 @@ Settings:
   chs: 设置
   jpn: 設定
   rus: Настройки
-  por: Definições
+  por: Configurações
   swe: Inställningar
   pol: Ustawienia
   ukr: Налаштування
@@ -4668,7 +4665,7 @@ Single Pass (CRF):
   chs: 一遍编码（CRF）
   jpn: 1回のみ（CRF）
   rus: Однократный проход (CRF)
-  por: Passe Único (CRF)
+  por: Passe único (CRF)
   swe: Enkel passage (CRF)
   pol: Pojedynczy przejazd (CRF)
   ukr: Одноразовий пропуск (CRF)
@@ -4698,7 +4695,7 @@ Slow is the slowest preset personally recommended,:
   chs: 个人建议使用slow。
   jpn: 個人的にはslowのプリセット設定はおすすめです。
   rus: Slow — самая медленная предустановка, рекомендуемая лично,
-  por: Slow é a predefinição mais lenta recomendada pessoalmente,
+  por: Slow é, pessoalmente, o preset mais lento recomendado,
   swe: Slow är den långsammaste förinställningen som personligen rekommenderas,
   pol: Slow to najwolniejsze ustawienie wstępne, które osobiście zalecamy,
   ukr: Slow — це найповільніший пресет, рекомендований особисто, пресети,
@@ -4713,7 +4710,7 @@ presets slower than this result in much smaller gains:
   chs: 比这更慢的设定获得的好处会小得多。
   jpn: それよりも遅いプリセットを使ってもメリットが多くないです。
   rus: более медленные предустановки дают гораздо меньший прирост
-  por: predefinições mais lentas do que esta resultam em ganhos muito menores
+  por: presets mais lentos que este resultam em ganhos muito menores
   swe: förinställningar långsammare än detta resulterar i mycket mindre vinster
   pol: ustawienia wolniejsze od tego powodują znacznie mniejsze wzmocnienia
   ukr: повільніші за цей, призводять до значно менших посилень
@@ -4734,8 +4731,8 @@ Slower presets will generally achieve better compression efficiency (and generat
   jpn: 一般的には、遅いプリセットの方が圧縮効率が良くなります（より小さなビットストリームを生成します）。
   rus: Более медленные пресеты обычно обеспечивают лучшую эффективность сжатия (и
     генерируют меньшие битовые потоки).
-  por: Pré-definições mais lentas irão geralmente alcançar uma melhor eficiência de
-    compressão (e gerar fluxos de bits mais pequenos).
+  por: Presets mais lentos geralmente alcançam melhor eficiência de compressão (e geram
+    bitstreams menores).
   swe: Långsammare förinställningar ger i allmänhet bättre kompressionseffektivitet
     (och genererar mindre bitströmmar).
   pol: Wolniejsze presety generalnie osiągają lepszą wydajność kompresji (i generują
@@ -4784,7 +4781,7 @@ Source Frame Rate:
   chs: 源帧率
   jpn: ソースフレームレート
   rus: Частота кадров источника
-  por: Taxa da moldura de origem
+  por: Taxa de frames da fonte
   swe: Källans bildfrekvens
   pol: Źródło Częstotliwość odświeżania
   ukr: Вихідна частота кадрів
@@ -4859,7 +4856,7 @@ Start:
   chs: 开始
   jpn: 開始
   rus: Начать
-  por: Início
+  por: Iniciar
   swe: Starta
   pol: Start
   ukr: Старт
@@ -4874,7 +4871,7 @@ Starting conversion process:
   chs: 开始转换过程
   jpn: 変換処理の開始
   rus: Начало процесса преобразования
-  por: Início do processo de conversão
+  por: Iniciando o processo de conversão
   swe: Starta omvandlingsprocessen
   pol: Rozpoczęcie procesu konwersji
   ukr: Початок процесу конверсії
@@ -4889,7 +4886,7 @@ Strength:
   chs: 强度
   jpn: 強さ
   rus: Сила
-  por: Força
+  por: Intensidade
   swe: Styrka
   pol: Wytrzymałość
   ukr: Сила
@@ -4904,7 +4901,7 @@ Subtitle Tracks:
   chs: 字幕轨
   jpn: 字幕トラック
   rus: Дорожки субтитров
-  por: Faixas de subtítulos
+  por: Faixas de legenda
   swe: Spår för undertexter
   pol: Ścieżki napisów
   ukr: Доріжки субтитрів
@@ -4919,7 +4916,7 @@ Subtitle select language:
   chs: 选择字幕语言
   jpn: 字幕選択言語
   rus: Выбор языка субтитров
-  por: Subtítulo seleccionar idioma
+  por: Legenda selecionar o idioma
   swe: Undertitel väljer språk
   pol: Wybór języka napisów
   ukr: Вибір мови субтитрів
@@ -4934,7 +4931,7 @@ Subtitles:
   chs: 字幕
   jpn: 字幕
   rus: Субтитры
-  por: Subtítulos
+  por: Legendas
   swe: Undertexter
   pol: Napisy
   ukr: Субтитри
@@ -4964,7 +4961,7 @@ Support FastFlix:
   chs: 支持FastFlix
   jpn: 'FastFlixを応援/寄付'
   rus: Поддержка FastFlix
-  por: Apoio FastFlix
+  por: Suporte FastFlix
   swe: Stöd för FastFlix
   pol: Obsługa FastFlix
   ukr: Підтримка FastFlix
@@ -4979,7 +4976,7 @@ Supported Image Files:
   chs: 支持的图像文件
   jpn: 対応画像ファイル
   rus: Поддерживаемые файлы изображений
-  por: Ficheiros de Imagem Suportados
+  por: Arquivos de imagem suportados
   swe: Bildfiler som stöds
   pol: Obsługiwane pliki obrazów
   ukr: Підтримувані файли зображень
@@ -4995,7 +4992,7 @@ The GUI might have died, but I'm going to keep converting!:
   chs: 图形界面可能已经崩溃，但转换将继续进行！
   jpn: GUIは固まってしまったかもしれませんが、私は変換し続けるつもりです!
   rus: Возможно, графический интерфейс умер, но конвертация продолжится!
-  por: A GUI pode ter morrido, mas eu vou continuar a converter-me!
+  por: A GUI pode ter morrido, mas vou continuar convertendo!
   swe: GUI må ha dött, men jag kommer att fortsätta konvertera!
   pol: GUI może i umarło, ale ja zamierzam dalej konwertować!
   ukr: Можливо, графічний інтерфейс помер, але я продовжу конвертувати!
@@ -5010,7 +5007,7 @@ The more complex the block, the more quantization is used.:
   chs: 越复杂的块，使用的量化也越高。
   jpn: ブロックが複雑になるほど、量子化の量が増えます。
   rus: Чем сложнее блок, тем больше используется квантование.
-  por: Quanto mais complexo for o bloco, mais quantização é utilizada.
+  por: Quanto mais complexo o bloco, mais quantização é usada.
   swe: Ju mer komplicerat blocket är, desto mer kvantisering används.
   pol: Im bardziej skomplikowany blok, tym więcej kwantyzacji jest używane.
   ukr: Чим складніший блок, тим більше квантування використовується.
@@ -5031,8 +5028,8 @@ The purpose is to prevent blocking or banding artifacts in regions with few/zero
   jpn: これは、AC係数が少ない/ゼロの領域でのブロッキングやバンディングのアーチファクトを防ぐためです。
   rus: Цель - предотвратить блокирование или артефакты полосатости в областях с небольшим
     количеством/нулевыми коэффициентами переменного тока.
-  por: "O objectivo é evitar o bloqueio ou a colocação de artefactos de faixas em regiões
-    com poucos/zero coeficientes AC."
+  por: O objetivo é evitar artefatos de bloqueio ou banding em regiões com poucos/nenhum
+    coeficiente AC.
   swe: Syftet är att förhindra blockering eller bandning i områden med få/noll AC-koefficienter.
   pol: Ma to na celu zapobieganie powstawaniu artefaktów blokowania lub pasmowania
     w regionach o małej lub zerowej liczbie współczynników AC.
@@ -5065,7 +5062,7 @@ There is a newer version of FastFlix available!:
   chs: FastFlix有更新可用
   jpn: 新しいバージョンのFastFlixがあります。
   rus: Доступна более новая версия FastFlix!
-  por: Há uma versão mais recente de FastFlix disponível!
+  por: Há uma versão mais recente do FastFlix disponível!
   swe: Det finns en nyare version av FastFlix!
   pol: Dostępna jest nowsza wersja FastFlix!
   ukr: Доступна нова версія FastFlix!
@@ -5080,7 +5077,7 @@ There was an error during conversion and the queue has stopped:
   chs: 转换过程中出现错误，队列已经停止
   jpn: 変換中にエラーが発生し、キューが停止されました
   rus: Во время преобразования произошла ошибка, и очередь остановилась
-  por: Houve um erro durante a conversão e a fila parou
+  por: Ocorreu um erro durante a conversão e a fila parou
   swe: Det uppstod ett fel under konverteringen och kön har stoppats.
   pol: Wystąpił błąd podczas konwersji i kolejka została zatrzymana
   ukr: Виникла помилка під час конвертації і черга зупинилася
@@ -5101,8 +5098,8 @@ This flag performs bi-linear interpolation of the corner reference samples for a
   jpn: このフラグは、強力なスムージング効果を得るために、コーナーリファレンスサンプルのバイリニア補間を行います。
   rus: Этот флаг выполняет билинейную интерполяцию угловых опорных образцов для сильного
     эффекта сглаживания.
-  por: Esta bandeira efectua interpolação bi-linear das amostras de referência dos
-    cantos para um forte efeito de alisamento.
+  por: Esta flag realiza interpolação bilinear das amostras de referência dos cantos
+    para um forte efeito de suavização.
   swe: Denna flagga utför bi-lineär interpolering av hörnreferensproverna för en stark
     utjämningseffekt.
   pol: Flaga ta wykonuje bi-liniową interpolację próbek referencyjnych narożników
@@ -5127,8 +5124,8 @@ This improves encoding speed significantly on systems that are otherwise underut
   jpn: これにより、VP9をエンコードする際に十分に利用されていないシステムにおいて、エンコード速度が大幅に向上します。
   rus: Это значительно повышает скорость кодирования на системах, которые по-другому
     недостаточно используются при кодировании VP9.
-  por: Isto melhora significativamente a velocidade de codificação em sistemas que
-    de outra forma são subutilizados ao codificar o VP9.
+  por: Isso melhora significativamente a velocidade de codificação em sistemas que
+    de outra forma são subutilizados ao codificar VP9.
   swe: Detta förbättrar kodningshastigheten avsevärt på system som annars är underutnyttjade
     vid kodning av VP9.
   pol: Poprawia to znacznie szybkość kodowania na systemach, które w przeciwnym razie
@@ -5154,8 +5151,8 @@ This is intended for use when you do not have a container to keep the stream hea
   jpn: ストリームヘッダーを保持してくれるコンテナがない場合に使用することを想定しています。
   rus: Это предназначено для использования, когда у вас нет контейнера для хранения
     заголовков потока.
-  por: Isto destina-se a ser utilizado quando não tem um contentor para guardar os
-    cabeçalhos das serpentinas para si
+  por: Isso é destinado para uso quando você não tem um contêiner para manter os
+    cabeçalhos do stream para você
   swe: Detta är avsett att användas när du inte har en behållare som behåller stream
     headers åt dig.
   pol: To jest przeznaczone do użycia, gdy nie masz kontenera, który przechowuje nagłówki
@@ -5176,7 +5173,7 @@ This is used for ultra-high bitrates with zero loss of quality.:
   chs: 用于实现无质量损失的超高比特率编码。
   jpn: これは、超高ビットレートで品質を損なうことなく使用されます。
   rus: Используется для сверхвысоких битрейтов с нулевой потерей качества.
-  por: Isto é utilizado para taxas de bits ultra-elevadas com perda de qualidade zero.
+  por: Isso é usado para taxas de bits ultra-altas sem perda de qualidade.
   swe: Detta används för extremt höga bithastigheter utan kvalitetsförlust.
   pol: Jest on używany do ultra-wysokich bitrate'ów bez utraty jakości.
   ukr: Використовується для надвисоких бітрейтів з нульовою втратою якості.
@@ -5191,7 +5188,7 @@ This is used for ultra-high bitrates with zero loss of quality.:
   chs: 除非您需要为了刻录到物理光盘而遵守蓝光标准，
   jpn: このオプションは、以下の場合でない限り、推奨されません。
   rus: Этот вариант не рекомендуется использовать, если не требуется соответствие
-  por: Esta opção não é reiniciada a menos que precise de se conformar
+  por: 'Esta opção não é recomendada, a menos que você precise usá-la '
   swe: Det här alternativet rekommenderas inte om du inte behöver anpassa dig till
   pol: Opcja ta nie jest zalecana, chyba że zachodzi konieczność zachowania zgodności
   ukr: Ця опція не відновлюється, якщо вам не потрібно відповідати вимогам
@@ -5206,7 +5203,7 @@ This will just copy the video track as is.:
   chs: 仅原样复制视频轨道。
   jpn: これにより、ビデオトラックがそのままコピーされます。
   rus: Это просто скопирует видеодорожку как есть.
-  por: Isto irá apenas copiar a faixa de vídeo tal como está.
+  por: Isso apenas copiará a faixa de vídeo como está.
   swe: Detta kopierar bara videospåret som det är.
   pol: Spowoduje to skopiowanie ścieżki wideo w niezmienionej postaci.
   ukr: Це просто скопіює відеодоріжку як є.
@@ -5236,7 +5233,7 @@ Tile Columns:
   chs: Tile列数量
   jpn: タイルの列数
   rus: Столбцы плитки
-  por: Colunas de Ladrilho
+  por: Colunas
   swe: Kakelpelare
   pol: Kolumny dachówkowe
   ukr: Плиточні колони
@@ -5251,7 +5248,7 @@ Tile Rows:
   chs: Tile行数量
   jpn: タイルの行数
   rus: Строки плитки
-  por: Fileiras de Azulejos
+  por: Linhas
   swe: Rader av kakelplattor
   pol: Rzędy dachówek
   ukr: Ряди плитки
@@ -5266,7 +5263,7 @@ Tiles:
   chs: Tiles
   jpn: タイル
   rus: Плитки
-  por: Azulejos
+  por: Tiles
   swe: Plattor
   pol: Płytki
   ukr: Плитка
@@ -5326,7 +5323,7 @@ Top:
   chs: 上端
   jpn: 上
   rus: Верх
-  por: Início
+  por: Topo
   swe: Topp
   pol: Top
   ukr: Верхня частина
@@ -5341,7 +5338,7 @@ Total video height must be greater than 0:
   chs: 视频总高度必须大于0
   jpn: 動画の全高が0より大きいこと
   rus: Общая высота видео должна быть больше 0
-  por: A altura total do vídeo deve ser superior a 0
+  por: A altura total do vídeo deve ser maior que 0
   swe: Den totala videohöjden måste vara större än 0
   pol: Całkowita wysokość wideo musi być większa niż 0
   ukr: Загальна висота відео повинна бути більше 0
@@ -5356,7 +5353,7 @@ Tune:
   chs: 调校
   jpn: チューニング
   rus: Настроить
-  por: Melodia
+  por: Ajustar
   swe: Stäm av
   pol: Dostosuj
   ukr: Налаштовання
@@ -5371,7 +5368,7 @@ Tune the settings for a particular type of source or situation:
   chs: 针对特定类型的源文件或情形调整设置。
   jpn: 特定の種類のソースや状況に合わせて設定を調整する
   rus: Настройте параметры для определенного типа источника или ситуации
-  por: Ajustar as definições para um determinado tipo de fonte ou situação
+  por: Ajustar as configurações para um tipo específico de fonte ou situação
   swe: Justera inställningarna för en viss typ av källa eller situation.
   pol: Dostosuj ustawienia do określonego typu źródła lub sytuacji
   ukr: Налаштуйте параметри для певного типу джерела або ситуації
@@ -5416,7 +5413,7 @@ Use --bframes 0 to force all P/I low-latency encodes.:
   chs: 使用--bframes 0强制进行全P/I帧的低延迟编码。
   jpn: すべてのP/I低レイテンシーエンコードを強制するには、--bframes 0を使用してください。
   rus: Используйте --bframes 0, чтобы заставить все P/I кодировать с низкой задержкой.
-  por: Use --bframes 0 para forçar todos os códigos P/I de baixa latência.
+  por: Use --bframes 0 para forçar todas as codificações P/I de baixa latência.
   swe: Använd --bframes 0 för att tvinga fram alla P/I-kodningar med låg latenstid.
   pol: Użyj --bframes 0 by wymusić wszystkie kodowania P/I o niskich opóźnieniach.
   ukr: Використовуйте --bframes 0 для примусового використання усіх P/I кодувань з
@@ -5432,7 +5429,7 @@ Use B frames as references:
   chs: 用B帧作为参考
   jpn: Bフレームを参考にする
   rus: Используйте B-кадры в качестве эталонов
-  por: Utilizar molduras B como referências
+  por: Use B-frames como referências
   swe: Använd B-ramar som referenser
   pol: Wykorzystanie ramek B jako punktów odniesienia
   ukr: Використовуйте фрейми B як посилання
@@ -5447,7 +5444,7 @@ Use Sane Audio Selection (customizable in config file):
   chs: 使用合理音频编码选择（可在配置文件中更改）
   jpn: 合理的なオーディオを選択する（設定ファイルでカスタマイズ可能）
   rus: Использовать Разумный выбор аудио (настраивается в конфигурационном файле)
-  por: Usar Selecção Áudio Sã (personalizável em ficheiro de configuração)
+  por: Usar Sane Audio Selection (customizável no arquivo de configuração)
   swe: Använd Sane Audio Selection (anpassningsbart i konfigurationsfilen)
   pol: Użyj Sane Audio Selection (konfigurowalne w pliku konfiguracyjnym)
   ukr: Використовуйте Sane Audio Selection (налаштовується у файлі конфігурації)
@@ -5462,7 +5459,7 @@ Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   chs: 当需要将max-cll及max-fall置0值时有用。
   jpn: max-cellとmax-fallの値を0にしたい場合に便利です。
   rus: Полезно, когда есть желание сигнализировать 0 значений для max-cll и max-fall.
-  por: Útil quando há um desejo de assinalar valores 0 para max-cll e max-fall.
+  por: Útil quando há o desejo de sinalizar valores 0 para max-cll e max-fall.
   swe: Användbart när det finns en önskan att signalera 0-värden för max-cll och max-fall.
   pol: Przydatne, gdy istnieje chęć zasygnalizowania wartości 0 dla max-cll i max-fall.
   ukr: Корисно, коли є бажання сигналізувати про нульові значення для max-cll і max-fall.
@@ -5480,7 +5477,7 @@ Useful when you have the "Too many packets buffered for output stream" error:
   jpn: '"Too many packets buffered for output stream"というエラーが発生した場合で役に立つ。'
   rus: Полезно, когда у вас возникает ошибка "Слишком много пакетов буферизировано
     для выходного потока".
-  por: Útil quando se tem o erro "Demasiados pacotes protegidos para o fluxo de saída".
+  por: Útil quando você tem o erro "Too many packets buffered for output stream"
   swe: Användbart när du får felet "För många paket buffras för utdataströmmen".
   pol: Przydatne, gdy masz błąd "Zbyt wiele pakietów buforowanych dla strumienia wyjściowego".
   ukr: Корисно, коли у вас виникає помилка "Занадто багато пакетів буферизовано для
@@ -5503,8 +5500,8 @@ Using 1 or 2 will increase encoding speed at the expense of having some impact o
   jpn: 1または2を使用すると、画質やレートコントロールの精度に多少の影響を与えますが、エンコード速度が向上します。
   rus: Использование 1 или 2 увеличит скорость кодирования за счет некоторого влияния
     на качество и точность контроля скорости.
-  por: A utilização de 1 ou 2 aumentará a velocidade de codificação à custa de ter
-    algum impacto na qualidade e exactidão do controlo da taxa.
+  por: Usar 1 ou 2 aumentará a velocidade de codificação às custas de ter algum impacto
+    na qualidade e na precisão do controle de taxa.
   swe: Om du använder 1 eller 2 ökar kodningshastigheten på bekostnad av en viss inverkan
     på kvaliteten och noggrannheten i hastighetsregleringen.
   pol: Użycie 1 lub 2 zwiększy szybkość kodowania kosztem pewnego wpływu na jakość
@@ -5525,7 +5522,7 @@ Using a single frame thread gives a slight improvement in compression,:
   chs: 使用单帧线程会使压缩率略有提高，
   jpn: シングルフレームスレッドを使用すると、圧縮率が少し向上します。
   rus: Использование одного кадрового потока дает небольшое улучшение сжатия,
-  por: A utilização de um único fio de moldura dá uma ligeira melhoria na compressão,
+  por: Usar um único thread por frame dá uma leve melhora na compressão,
   swe: Användning av en tråd med en enda ram ger en liten förbättring av komprimeringen,
   pol: Użycie pojedynczego wątku ramki daje niewielką poprawę kompresji,
   ukr: Використання однієї каркасної нитки дає незначне покращення стиснення,
@@ -5540,7 +5537,7 @@ VBR Target:
   chs: 目标VBR
   jpn: VBR目標
   rus: VBR Цель
-  por: Alvo VBR
+  por: Target VBR
   swe: VBR-mål
   pol: VBR Cel
   ukr: Ціль VBR
@@ -5555,7 +5552,7 @@ VBR Target:
   chs: '取值：0:none；1:fast；2:full(trellis)（默认）'
   jpn: '値を指定します。0：なし、1：速い、2：フル（tresllis）デフォルト'
   rus: 'Значения: 0:нет; 1:быстро; 2:полностью (решетка) по умолчанию'
-  por: 'Valores: 0:nenhum; 1:rápido; 2:cheio(trellis) por defeito'
+  por: 'Valores: 0:nenhum; 1:rápido; 2:completo(trellis) padrão'
   swe: 'Värden: 0:ingen; 1:snabb; 2:full(trellis) standard'
   pol: 'Wartości: 0:brak; 1:szybki; 2:pełny(trellis) domyślnie'
   ukr: 'Значення: 0:none; 1:fast; 2:full(trellis) за замовчуванням'
@@ -5585,7 +5582,7 @@ Various:
   chs: 多种许可
   jpn: 複数のライセンス
   rus: Разное
-  por: Vários
+  por: Diversos
   swe: Olika
   pol: Różne
   ukr: Різне
@@ -5600,7 +5597,7 @@ Vert + Hoz Flip:
   chs: 垂直+水平翻转
   jpn: 上下反転と左右反転
   rus: Верт + Гор переворот
-  por: Vert + Hoz Flip
+  por: Inv Vert + Hoz
   swe: Vert + Hoz Flip
   pol: Vert + Hoz Flip
   ukr: Vert + Hoz Flip
@@ -5615,7 +5612,7 @@ Vertical Flip:
   chs: 垂直翻转
   jpn: 垂直反転
   rus: Вертикальный переворот
-  por: Vertical Flip
+  por: Inversão vertical
   swe: Vertikal vändning
   pol: Przerzucanie pionowe
   ukr: Вертикальний фліп
@@ -5630,7 +5627,7 @@ Video Speed:
   chs: 视频速度
   jpn: ビデオスピード
   rus: Скорость видео
-  por: Velocidade do vídeo
+  por: Velocidade de vídeo
   swe: Videohastighet
   pol: Prędkość wideo
   ukr: Швидкість відео
@@ -5645,7 +5642,7 @@ Video Track:
   chs: 视频轨
   jpn: ビデオトラック
   rus: Видеодорожка
-  por: Pista de vídeo
+  por: Faixa de vídeo
   swe: Videospår
   pol: Ścieżka wideo
   ukr: Відео-доріжка
@@ -5690,7 +5687,7 @@ View GUI Debug Logs:
   chs: 查看GUI调试日志
   jpn: GUIのデバッグログを見る
   rus: Просмотр журналов отладки графического интерфейса
-  por: Ver Registos de Depuração GUI
+  por: Ver logs de debug da GUI
   swe: Visa loggar för felsökning av GUI
   pol: Wyświetl dzienniki debugowania GUI
   ukr: Перегляд журналів налагодження графічного інтерфейсу
@@ -5707,7 +5704,7 @@ View GUI Debug Logs:
   jpn: 注意喚起：結果としてこの作業はかなりの時間がかかり、ファイルも大きくなります。
   rus: 'ВНИМАНИЕ: Это займет гораздо больше времени и приведет к увеличению размера
     файла'
-  por: 'AVISO: Isto levará muito mais tempo e resultará num ficheiro maior'
+  por: 'AVISO: Isso levará muito mais tempo e resultará em um arquivo maior'
   swe: 'VARNING: Detta tar mycket längre tid och resulterar i en större fil.'
   pol: 'OSTRZEŻENIE: To zajmie znacznie więcej czasu i spowoduje, że plik będzie większy'
   ukr: 'ПОПЕРЕДЖЕННЯ: Це займе набагато більше часу і призведе до збільшення розміру
@@ -5729,7 +5726,7 @@ Wait for the current command to finish, and stop the next command from processin
   jpn: 現在のコマンドが終了するのを待ち、次のコマンドの処理を停止する
   rus: Дождитесь завершения выполнения текущей команды и остановите обработку следующей
     команды
-  por: Esperar que o comando actual termine, e parar o próximo comando de processar
+  por: Aguardar o término do comando atual e interromper o próximo comando
   swe: Vänta på att det aktuella kommandot avslutas och stoppa behandlingen av nästa
     kommando.
   pol: Poczekaj na zakończenie bieżącego polecenia i zatrzymaj przetwarzanie następnego
@@ -5746,7 +5743,7 @@ Wait for the current command to finish, and stop the next command from processin
   chs: 警告： 音频不会被修改
   jpn: 注意喚起：音声は変えません
   rus: 'Предупреждение: Аудио не будет изменено'
-  por: 'Advertência: O áudio não será modificado'
+  por: 'Aviso: O áudio não será modificado'
   swe: 'Varning: Ljudet kommer inte att ändras'
   pol: 'Ostrzeżenie: Dźwięk nie będzie modyfikowany'
   ukr: 'Попередження: Звук не буде змінено'
@@ -5761,7 +5758,7 @@ Watch:
   chs: 观看
   jpn: 閲覧
   rus: Смотреть
-  por: Ver
+  por: Assistir
   swe: Titta på
   pol: Oglądaj
   ukr: Дивись.
@@ -5791,7 +5788,7 @@ Width must be divisible by 2:
   chs: 宽度必须能被2整除
   jpn: 幅が2で割り切れること
   rus: Ширина должна быть кратной 2
-  por: A largura deve ser divisível por 2
+  por: Largura precisa ser divisível por 2
   swe: Bredden måste vara delbar med 2
   pol: Szerokość musi być podzielna przez 2
   ukr: Ширина повинна бути кратною 2
@@ -5806,7 +5803,7 @@ Width must be divisible by 2 - Source width:
   chs: 宽度必须能被2整除--源文件宽度
   jpn: 幅が2で割り切れること - ソースの幅
   rus: Ширина должна быть кратной 2 - Ширина источника
-  por: A largura deve ser divisível por 2 - Largura da fonte
+  por: Largura precisa ser divisível por 2 - Largura da fonte
   swe: Bredden måste vara delbar med 2 - Källans bredd
   pol: Szerokość musi być podzielna przez 2 - Szerokość źródła
   ukr: Ширина повинна ділитися на 2 - ширина джерела
@@ -5821,7 +5818,7 @@ Will fix first subtitle track to not be default:
   chs: 将修正第1个字幕成不是默认
   jpn: 最初の字幕トラックがデフォルトにならないように修正する
   rus: Будет исправлено, чтобы первая дорожка субтитров не была дорожкой по умолчанию
-  por: Irá corrigir a primeira faixa de legendas para não ser por defeito
+  por: Corrigirá a primeira faixa de legenda para não ser padrão
   swe: Kommer att rätta till att det första undertextspåret inte är standard
   pol: Poprawi pierwszą ścieżkę napisów, aby nie była domyślna
   ukr: Виправлено, щоб перша доріжка субтитрів не була за замовчуванням
@@ -5841,8 +5838,8 @@ With b-adapt 0, the GOP structure is fixed based on the values of --keyint and -
   jpn: b-adapt 0では、--keyintおよび--bframesの値に基づいてGOP構造が固定されます。
   rus: При b-adapt 0 структура GOP фиксируется на основе значений параметров --keyint
     и --bframes.
-  por: Com b-adapt 0, a estrutura do GPO é fixada com base nos valores de --int e
-    --b-brack.
+  por: Com b-adapt 0, a estrutura GOP é definida com base nos valores de --keyint e
+    --bframes.
   swe: Med b-adapt 0 fastställs GOP-strukturen baserat på värdena för --keyint och
     --bframes.
   pol: Przy b-adapt 0, struktura GOP jest ustalana na podstawie wartości --keyint
@@ -5864,8 +5861,8 @@ With b-adapt 1 a light lookahead is used to choose B frame placement.:
   jpn: b-adapt 1では、Bフレームの配置を選択するために軽いルックアヘッドが使用されます。
   rus: При использовании b-adapt 1 для выбора размещения B-кадра используется легкая
     заставка.
-  por: Com b-adapt 1 é utilizada uma lookahead leve para escolher a colocação da moldura
-    B.
+  por: Com b-adapt 1, um lookahead leve é usado para escolher o posicionamento do
+    B-frame.
   swe: Med b-adapt 1 används en lätt framåtblick för att välja B-ramens placering.
   pol: W przypadku b-adapt 1 do wyboru położenia ramki B wykorzystywana jest lekka
     perspektywa czasowa.
@@ -5884,7 +5881,7 @@ With b-adapt 2 (trellis) a viterbi B path selection is performed:
   chs: 对于b-adapt 2 (trellis)，则执行viterbi B path selection。
   jpn: b-adapt 2 (トレリス)では、ビタビB経路選択を行います。
   rus: С помощью b-адаптации 2 (решетка) выполняется выбор пути Витерби B
-  por: Com b-adapt 2 (treliças) é efectuada uma selecção de caminhos viterbi B
+  por: Com b-adapt 2 (trellis), é realizada uma seleção de caminho B viterbi
   swe: Med b-adapt 2 (trellis) utförs ett viterbi B-vägval.
   pol: W przypadku b-adapt 2 (trellis) przeprowadzany jest wybór ścieżki B metodą
     viterbi
@@ -5901,7 +5898,7 @@ Work Directory:
   chs: 工作目录
   jpn: 作業ディレクトリ
   rus: Рабочий каталог
-  por: Directório de Trabalho
+  por: Diretório de Trabalho
   swe: Arbetskatalog
   pol: Katalog prac
   ukr: Робочий каталог
@@ -5931,7 +5928,7 @@ You are using the latest version of FastFlix:
   chs: 当前FastFlix为最新版本
   jpn: FastFlixは最新版です。
   rus: Вы используете последнюю версию FastFlix
-  por: Está a utilizar a última versão de FastFlix
+  por: Você está usando a versão mais recente do FastFlix
   swe: Du använder den senaste versionen av FastFlix
   pol: Używasz najnowszej wersji FastFlix.
   ukr: Ви використовуєте останню версію FastFlix
@@ -5946,7 +5943,7 @@ all conversions complete:
   chs: 全部转换完成
   jpn: すべての変換が完了
   rus: все преобразования завершены
-  por: todas as conversões completas
+  por: todas as conversões concluídas
   swe: Alla konverteringar är avslutade.
   pol: wszystkie przebudowy zakończone
   ukr: всі перетворення завершені
@@ -5979,7 +5976,8 @@ and the amount of work performed by the full trellis version of --b-adapt lookah
   chs: lookahead在full(trellis)模式下执行的工作量有二次方的影响。
   jpn: と、フルtrellis版の--b-adapt lookaheadによる作業量を示しています。
   rus: и объем работы, выполняемой версией полной решетки --b-adapt lookahead.
-  por: e a quantidade de trabalho realizado pela versão completa de --b-adapt lookahead.
+  por: e a quantidade de trabalho realizado pela versão trellis completa de
+    --b-adapt lookahead.
   swe: och den mängd arbete som utförs av den fullständiga trellisversionen av --b-adapt
     lookahead.
   pol: oraz ilość pracy wykonanej przez wersję full trellis z --b-adapt lookahead.
@@ -5995,7 +5993,7 @@ and you want keyframes to be random access points.:
   chs: 最好让关键帧做随机访问点。
   jpn: で、キーフレームをランダムなアクセスポイントにしたほうがいい。
   rus: и вы хотите, чтобы ключевые кадры были случайными точками доступа.
-  por: e pretende que os quadros-chave sejam pontos de acesso aleatórios.
+  por: e você quer que os quadros-chave sejam pontos de acesso aleatórios.
   swe: och du vill att keyframes ska vara slumpmässiga åtkomstpunkter.
   pol: i chcesz, aby klatki kluczowe były losowymi punktami dostępu.
   ukr: і ви хочете, щоб ключові кадри були випадковими точками доступу.
@@ -6010,7 +6008,7 @@ and you want keyframes to be random access points.:
   chs: aq-mode：自适应量化（Adaptive Quantization）工作模式。
   jpn: aq-mode:Adaptive Quantization（適応型量子化）の動作モード。
   rus: 'aq-режим: Режим работы адаптивной квантизации.'
-  por: 'aq-mode: Modo de operação de quantificação adaptativa.'
+  por: 'aq-mode: Modo de operação de quantização adaptativa.'
   swe: 'aq-läge: Adaptiv kvantisering.'
   pol: 'aq-mode: Tryb pracy Adaptive Quantization.'
   ukr: 'aq-режим: Режим роботи адаптивного квантування.'
@@ -6040,7 +6038,7 @@ attachment tracks found:
   chs: 发现附件轨
   jpn: 添付トラックが見つかりました
   rus: найдены следы прикрепления
-  por: rastos de anexos encontrados
+  por: faixas de anexo encontradas
   swe: Spår för fastsättning hittades
   pol: znaleziono ślady mocowania
   ukr: знайдено сліди кріплення
@@ -6088,8 +6086,7 @@ b-adapt:
   chs: b-adapt：对决定B帧位置时的工作量水平进行调整。
   jpn: B-ADAPTBフレームの配置を決定する際の努力の度合いを設定します。
   rus: 'b-adapt: Установите уровень усилий при определении размещения B кадра.'
-  por: 'b-adapt: Definir o nível de esforço na determinação da colocação da moldura
-    B.'
+  por: 'b-adapt: Definir o nível de esforço na determinação do posicionamento do B-frame.'
   swe: 'b-anpassad: Ange nivån på ansträngningen när det gäller att bestämma placeringen
     av B-ramar.'
   pol: 'b-adapt: Ustaw poziom wysiłku przy określaniu umiejscowienia ramki B.'
@@ -6127,8 +6124,8 @@ best is recommended if you have lots of time and want the best compression effic
   jpn: 時間に余裕があり、最高の圧縮効率を求める場合には、bestを推奨します。
   rus: рекомендуется, если у вас много времени и вы хотите получить максимальную эффективность
     сжатия.
-  por: o melhor é recomendado se tiver muito tempo e quiser a melhor eficiência de
-    compressão.
+  por: melhor é recomendado se você tiver muito tempo e quiser a melhor eficiência
+    de compressão.
   swe: rekommenderas om du har mycket tid och vill ha bästa möjliga kompressionseffektivitet.
   pol: najlepszy jest zalecany, jeśli masz dużo czasu i chcesz uzyskać najlepszą wydajność
     kompresji.
@@ -6146,7 +6143,7 @@ bframes:
   chs: b帧
   jpn: Bフレーム
   rus: bframes
-  por: quadros
+  por: bframes
   swe: bframes
   pol: bframes
   ukr: bframes
@@ -6161,7 +6158,7 @@ bframes:
   chs: bframes：连续B帧的最大数量。
   jpn: 'bframes:連続するb-フレームの最大数。'
   rus: 'bframes: Максимальное количество последовательных b-кадров.'
-  por: 'quadros: Número máximo de b-frames consecutivos.'
+  por: 'bframes: Número máximo de b-frames consecutivos.'
   swe: 'bframes: Maximalt antal på varandra följande b-frames.'
   pol: 'bframes: Maksymalna liczba następujących po sobie ramek b.'
   ukr: 'b-кадрів: Максимальна кількість послідовних b-кадрів.'
@@ -6176,7 +6173,7 @@ but it has severe performance implications.:
   chs: 但对性能有严重影响。默认为根据CPU内核数和是否启用
   jpn: しかし、これはパフォーマンスに大きく影響します。
   rus: но это имеет серьезные последствия для производительности.
-  por: mas tem graves implicações em termos de desempenho.
+  por: mas tem implicações graves no desempenho.
   swe: men det har allvarliga konsekvenser för prestandan.
   pol: ale ma to poważne implikacje dla wydajności.
   ukr: але це має серйозні наслідки для продуктивності.
@@ -6191,7 +6188,7 @@ but over a period of multiple frames instead of a single keyframe.:
   chs: 从而刷新图像，而不使用单个关键帧。
   jpn: が、1つのキーフレームではなく、複数のフレームに渡って行われます。
   rus: но в течение нескольких кадров, а не одного ключевого кадра.
-  por: mas durante um período de múltiplos quadros em vez de um único quadro-chave.
+  por: mas ao longo de um período de vários frames em vez de um único keyframe.
   swe: men över en period av flera ramar i stället för en enda nyckelram.
   pol: ale w okresie wielu klatek zamiast pojedynczej klatki kluczowej.
   ukr: але протягом періоду з декількох кадрів, а не одного ключового кадру.
@@ -6206,7 +6203,7 @@ cannot modify generated settings:
   chs: 不能修改生成的设置
   jpn: 生成された設定を変更できない
   rus: не может изменять созданные настройки
-  por: não pode modificar as configurações geradas
+  por: não é possível modificar as configurações geradas
   swe: kan inte ändra genererade inställningar
   pol: nie można modyfikować wygenerowanych ustawień
   ukr: не може змінювати згенеровані налаштування
@@ -6266,7 +6263,7 @@ data tracks found:
   chs: 找到数据轨
   jpn: データトラックが見つかりました
   rus: найдены дорожки данных
-  por: pistas de dados encontradas
+  por: faixas de dados encontradas
   swe: hittade dataspår
   pol: znalezione ścieżki danych
   ukr: знайдено доріжки даних
@@ -6281,7 +6278,7 @@ data tracks found:
   chs: 'dhdr10-opt：减少SEI开销'
   jpn: 'dhdr10-opt:SEI のオーバーヘッドを削減'
   rus: 'dhdr10-opt: Уменьшает накладные расходы SEI'
-  por: 'dhdr10-opt: Reduz as despesas gerais do SEI'
+  por: 'dhdr10-opt: Reduz os custos gerais do SEI'
   swe: 'dhdr10-opt: Minskar SEI:s omkostnader'
   pol: 'dhdr10-opt: Redukuje koszty ogólne SEI'
   ukr: 'dhdr10-opt: Зменшує накладні витрати SEI'
@@ -6311,7 +6308,7 @@ data tracks found:
   chs: 'frame-threads：同时编码的帧数。'
   jpn: 'frame-threads。同時にエンコードされるフレームの数。'
   rus: 'frame-threads: Количество параллельно кодируемых кадров.'
-  por: 'frame-threads: Número de quadros codificados em simultâneo.'
+  por: 'frame-threads: Número de frames codificados simultaneamente.'
   swe: 'ramtrådar: Antal samtidigt kodade ramar.'
   pol: 'frame-threads: Liczba jednocześnie kodowanych ramek.'
   ukr: 'frame-threads: Кількість одночасно закодованих кадрів.'
@@ -6347,7 +6344,7 @@ good is the default and recommended for most applications:
   jpn: HDR10-OPT:HDR10コンテンツに対して、ブロックレベルでのルーマおよびクロマのQP最適化を有効にします。
   rus: 'hdr10-opt: Включение оптимизации QP на уровне яркости и цветности блока для
     контента HDR10.'
-  por: 'hdr10-opt: Permitir a optimização de luma a nível de bloco e de QP cromado
+  por: 'hdr10-opt: Ativar a otimização QP de luma e crominância em nível de bloco
     para conteúdo HDR10.'
   swe: 'hdr10-opt: Aktivera QP-optimering på blocknivå för luma och kroma för HDR10-innehåll.'
   pol: 'hdr10-opt: Włącza optymalizację QP na poziomie bloku dla zawartości HDR10.'
@@ -6365,7 +6362,7 @@ good is the default and recommended for most applications:
   chs: hdr10：强制在SEI包中发送HDR10参数。
   jpn: 'hdr10: SEIパケットのHDR10パラメータのシグナリングを強制する。'
   rus: 'hdr10: принудительная передача параметров HDR10 в пакетах SEI.'
-  por: 'hdr10: Forçar a sinalização dos parâmetros HDR10 em pacotes SEI.'
+  por: 'hdr10: Forçar a sinalização dos parâmetros HDR10 nos pacotes SEI.'
   swe: 'hdr10: Påtvinga signalering av HDR10-parametrar i SEI-paket.'
   pol: 'hdr10: Wymuszenie sygnalizacji parametrów HDR10 w pakietach SEI.'
   ukr: 'hdr10: Примусова сигналізація параметрів HDR10 у пакетах SEI.'
@@ -6380,7 +6377,7 @@ hq - High Quality, ll - Low Latency, ull - Ultra Low Latency:
   chs: hq - 高质量，ll - 低延迟，ull - 超低延迟。
   jpn: hq - 高品質, ll - 低遅延, ull - 超低遅延
   rus: hq - высокое качество, ll - низкая задержка, ull - сверхнизкая задержка
-  por: hq - Alta Qualidade, ll - Baixa Latência, ull - Latência Ultra Baixa
+  por: hq - Alta Qualidade, ll - Baixa Latência, ull - Ultra Baixa Latência
   swe: hq - Hög kvalitet, ll - Låg latenstid, ull - Ultralåg latenstid
   pol: hq - High Quality, ll - Low Latency, ull - Ultra Low Latency
   ukr: hq - Висока якість, ll - Низька затримка, ull - Наднизька затримка
@@ -6414,8 +6411,8 @@ installer:
   jpn: イントラリフレシュキーフレーム挿入の代わりにPIR（Periodic Intra Refresh）を有効にします。
   rus: 'intra-refresh: Включает периодическое внутреннее обновление (PIR) вместо вставки
     ключевого кадра.'
-  por: 'intra-refresco: Permite a actualização periódica intra-refresco (PIR) em vez
-    da inserção do quadro-chave.'
+  por: 'intra-refresh: Habilita o Periodic Intra Refresh (PIR) ao invés da inserção
+    de keyframes.'
   swe: 'intra-återuppdatering: Aktiverar Periodic Intra Refresh (PIR) i stället för
     att infoga nyckelramar.'
   pol: 'intra-refresh: Włącza Periodic Intra Refresh(PIR) zamiast wstawiania klatek
@@ -6486,8 +6483,8 @@ it will generally just increase memory use.:
   jpn: 'keyint：1秒ごとにキーフレームを強制的に生成してイントラエンコードを有効にする（Blu-ray仕様）。'
   rus: 'keyint: Включить внутреннее кодирование путем принудительного воспроизведения
     ключевых кадров каждые 1 секунду (спецификация Blu-ray).'
-  por: 'keyint: Activar a Intra-Codificação forçando os keyframes a cada 1 segundo
-    (especificação Blu-ray)'
+  por: 'keyint: Habilitar Intra-Encoding forçando keyframes a cada 1 segundo (especificação
+    Blu-ray)'
   swe: 'keyint: Aktivera intrakodning genom att tvinga fram keyframes var 1 sekund
     (Blu-ray-specifikation)'
   pol: 'keyint: Włącz Intra-Encoding przez wymuszanie klatek kluczowych co 1 sekundę
@@ -6506,7 +6503,7 @@ lossless:
   chs: 无损
   jpn: ロスレス
   rus: без потерь
-  por: sem perdas
+  por: lossless
   swe: förlustfri
   pol: bezstratna
   ukr: без втрат
@@ -6528,8 +6525,7 @@ lossless:
   jpn: max_muxing_queue_size 「出力ストリームにバッファリングされるパケット数が多すぎる」というエラーが発生した場合は値を上げてください。
   rus: 'max_muxing_queue_size: Повышение для исправления ошибки "Слишком много пакетов
     буферизировано для выходного потока"'
-  por: 'max_muxing_queue_queue_size: Aumentar para corrigir o erro "Demasiados pacotes
-    protegidos para o fluxo de saída'
+  por: 'max_muxing_queue_size: Aumentar para corrigir o erro "Too many packets buffered for output stream"'
   swe: 'max_muxing_queue_size: Höj för att åtgärda felet "För många paket buffras
     för utdataströmmen".'
   pol: 'max_muxing_queue_size: Podnieś, aby naprawić błąd "Zbyt wiele pakietów buforowanych
@@ -6548,7 +6544,7 @@ none:
   chs: 无
   jpn: なし
   rus: нет
-  por: nenhuma
+  por: nenhum
   swe: ingen
   pol: brak
   ukr: ні
@@ -6578,7 +6574,7 @@ out file is already in queue:
   chs: 输出文件已在队列中
   jpn: アウトファイルがすでにキューに入っている
   rus: выходной файл уже находится в очереди
-  por: O ficheiro já está em fila de espera
+  por: o arquivo de saída já está na fila
   swe: filen out finns redan i kön
   pol: plik out jest już w kolejce
   ukr: out файл вже стоїть у черзі
@@ -6608,7 +6604,7 @@ preset:
   chs: 预设
   jpn: プリセット
   rus: предустановка
-  por: pré-definido
+  por: preset
   swe: förinställd
   pol: wstępnie ustawiony
   ukr: попередньо встановлений
@@ -6626,8 +6622,7 @@ preset:
   chs: 'preset：较慢的预设能提供更好的压缩比和质量。'
   jpn: 'プリセットの速度が遅いほど、圧縮率と品質が向上します。'
   rus: 'предустановка: Чем медленнее предустановка, тем лучше сжатие и качество'
-  por: 'pré-definido: Quanto mais lenta for a predefinição, melhor será a compressão
-    e qualidade'
+  por: 'preset: Quanto mais lento o preset, melhor a compressão e a qualidade'
   swe: 'förinställd: Ju långsammare förinställning, desto bättre komprimering och
     kvalitet.'
   pol: 'ustawienie wstępne: Im wolniejszy preset, tym lepsza kompresja i jakość.'
@@ -6644,7 +6639,7 @@ preventing large-scale patterns such as color banding in images.:
   chs: 用以防止图像中出现色带等大面积图案。
   jpn: 画像のカラーバンディングのような大規模なパターンを防ぐことができます。
   rus: предотвращение крупномасштабных деталей, таких как цветовые полосы на изображениях.
-  por: prevenindo padrões em grande escala, tais como bandas de cor em imagens.
+  por: impedindo padrões em grande escala, como color banding em imagens.
   swe: förhindra storskaliga mönster, t.ex. färgband i bilder.
   pol: zapobieganie powstawaniu wielkoskalowych wzorów, takich jak kolorowy banding
     na obrazach.
@@ -6675,7 +6670,7 @@ profile:
   chs: '配置：应用一个编码配置'
   jpn: 'プロフィール：エンコードプロファイルを適用してください。'
   rus: 'профиль: Применить профиль кодирования'
-  por: 'perfil: Forçar um perfil de codificação'
+  por: 'profile: Forçar um perfil de codificação'
   swe: 'profil: Genomdriva en kodningsprofil'
   pol: 'profil: Wymuszenie profilu kodowania'
   ukr: 'профіль: Застосувати профіль кодування'
@@ -6692,7 +6687,7 @@ profile:
   chs: '配置：VP9编码规格——必须与位深度相匹配。'
   jpn: 'プロファイルを使用しています。VP9コーディングプロファイル - ビット深度と一致する必要があります'
   rus: 'профиль: Профиль кодирования VP9 - должен соответствовать битовой глубине'
-  por: 'perfil: perfil de codificação VP9 - deve corresponder à profundidade do bit'
+  por: 'profile: Perfil de codificação VP9 - deve corresponder à profundidade do bit'
   swe: 'profil: VP9-kodningsprofil - måste matcha bitdjupet'
   pol: 'profil: Profil kodowania VP9 - musi być zgodny z głębią bitową'
   ukr: 'профіль: Профіль кодування VP9 - має відповідати бітовій глибині'
@@ -6744,8 +6739,8 @@ rav1e github:
   jpn: repeat-headersを有効にすると、x265はキーフレームごとにVPS、SPS、PPSの各ヘッダを出力します。
   rus: 'повторять заголовки: Если включено, x265 будет выдавать заголовки VPS, SPS
     и PPS с каждым ключевым кадром.'
-  por: 'cabeçalhos de repetição: Se activado, x265 irá emitir cabeçalhos VPS, SPS,
-    e PPS com cada quadro-chave.'
+  por: 'repeat-headers: Se ativado, x265 emitirá cabeçalhos VPS, SPS e PPS em
+    cada kkeyframe.'
   swe: 'upprepa rubriker: Om den är aktiverad kommer x265 att skicka ut VPS-, SPS
     och PPS-rubriker med varje nyckelbild.'
   pol: 'repeat-headers: Jeśli włączone, x265 będzie emitować nagłówki VPS, SPS i PPS
@@ -6768,8 +6763,8 @@ since the entire reference frames are always available for motion compensation,:
   chs: 因为总是可以获取完整的参考帧来进行运动补偿，
   jpn: は、リファレンスフレーム全体が常に動きの補正に利用できるからです。
   rus: поскольку для компенсации движения всегда доступны все опорные кадры,
-  por: uma vez que todos os quadros de referência estão sempre disponíveis para compensação
-    de movimento,
+  por: uma vez que todos os frames de referência estão sempre disponíveis para a
+    compensação de movimento,
   swe: eftersom hela referensramar alltid är tillgängliga för rörelsekompensation,
   pol: ponieważ całe ramki odniesienia są zawsze dostępne dla kompensacji ruchu,
   ukr: оскільки для компенсації руху завжди доступні всі системи відліку,
@@ -6785,7 +6780,7 @@ starting next command:
   chs: 正在开始下一条命令
   jpn: 次のコマンドの開始
   rus: запуск следующей команды
-  por: início do próximo comando
+  por: iniciando o próximo comando
   swe: startar nästa kommando
   pol: uruchamianie następnego polecenia
   ukr: запуск наступної команди
@@ -6800,7 +6795,7 @@ subtitle tracks found:
   chs: 找到字幕轨
   jpn: 字幕トラックが見つかりました
   rus: найдены дорожки субтитров
-  por: legendas encontradas
+  por: faixas de legendas encontradas
   swe: undertextspår hittades
   pol: znaleziono ścieżki z napisami
   ukr: знайдено доріжки субтитрів
@@ -6819,7 +6814,8 @@ that move across the video from one side to the other and thereby refresh the im
   jpn: 画像の中を左右に移動することで画像を更新する
   rus: которые перемещаются по видео с одной стороны на другую и тем самым обновляют
     изображение
-  por: que se movem através do vídeo de um lado para o outro e assim refrescam a imagem
+  por: que se movem através do vídeo de um lado para o outro e, assim, atualizam a
+    imagem
   swe: som rör sig över videon från den ena sidan till den andra och på så sätt uppdaterar
     bilden.
   pol: które przesuwają się po obrazie z jednej strony na drugą i w ten sposób odświeżają
@@ -6852,7 +6848,7 @@ to Blu-ray standards to burn to a physical disk:
   chs: 否则不建议启用该选项。
   jpn: Blu-ray規格で物理ディスクに書き込むために
   rus: в стандарты Blu-ray для записи на физический диск
-  por: para os padrões Blu-ray para queimar num disco físico
+  por: para os padrões Blu-ray para gravar em um disco físico
   swe: till Blu-ray-standarder för att bränna till en fysisk disk
   pol: do standardów Blu-ray w celu wypalenia na dysku fizycznym
   ukr: до стандартів Blu-ray для запису на фізичний диск
@@ -6869,7 +6865,7 @@ to Blu-ray standards to burn to a physical disk:
   chs: 针对特定类型的来源或情况调整设置。
   jpn: 特定の種類のソースや状況に合わせて設定をチューニングする
   rus: 'настраивать: Настроить параметры для определенного типа источника или ситуации'
-  por: 'melodia: Sintonizar as definições para um determinado tipo de fonte ou situação'
+  por: 'tune: Ajustar as configurações para um tipo específico de fonte ou situação'
   swe: 'melodi: Justera inställningarna för en viss typ av källa eller situation.'
   pol: 'dostroić: Dostosuj ustawienia do określonego typu źródła lub sytuacji.'
   ukr: 'налаштувати: Налаштувати параметри для певного типу джерела або ситуації'
@@ -6932,7 +6928,8 @@ No crop, scale, rotation,flip nor any other filters will be applied.:
   chs: 不会应用裁切、缩放、旋转、翻转或任何其他滤镜。
   jpn: クロップ、スケール、ローテーション、フリップなどのフィルターは適用されません。
   rus: Обрезка, масштабирование, поворот, переворот и другие фильтры не применяются.
-  por: Não se aplicará cultura, escala, rotação,flip nem qualquer outro filtro.
+  por: Nenhum recorte, dimensionamento, rotação, inversão ou qualquer outro filtro
+    será aplicado.
   swe: Ingen beskärning, skalning, rotation, vändning eller andra filter kommer att
     tillämpas.
   pol: Nie będą stosowane żadne filtry typu crop, scale, rotation, flip ani żadne
@@ -6949,7 +6946,7 @@ Are you sure you want to stop the current encode?:
   chs: 你确定要停止当前的编码吗？
   jpn: 本当に現在実行中のエンコードを中止してもいいですか？
   rus: Вы уверены, что хотите остановить текущее кодирование?
-  por: Tem a certeza de que quer parar o código actual?
+  por: Tem certeza de que deseja parar a codificação atual?
   swe: Är du säker på att du vill stoppa den pågående kodningen?
   pol: Czy na pewno chcesz zatrzymać bieżące kodowanie?
   ukr: Ви впевнені, що хочете зупинити поточне кодування?
@@ -6964,7 +6961,7 @@ Confirm Stop Encode:
   chs: 确认停止编码
   jpn: エンコード中止を確認
   rus: Подтверждение остановки кодирование
-  por: Confirmar Codificação de paragem
+  por: Confirmar interrompimento de codificação
   swe: Bekräfta Stop Encode
   pol: Potwierdź Zatrzymaj Kodowanie
   ukr: Підтвердити зупинку кодування
@@ -6979,7 +6976,7 @@ Use Sane Audio Selection (updatable in config file):
   chs: 使用音频合理选择（可在配置文件中更改）
   jpn: 合理的なオーディオを選択する（設定ファイルで変更可能）
   rus: Используйте Разумный выбор аудио (обновляется в конфигурационном файле)
-  por: Use Sane Audio Selection (actualizável em ficheiro de configuração)
+  por: Usar a seleção de áudio Sane (atualizável no arquivo de configuração)
   swe: Använd Sane Audio Selection (kan uppdateras i konfigurationsfilen)
   pol: Użyj wyboru Sane Audio (aktualizowane w pliku konfiguracyjnym)
   ukr: Використовуйте Sane Audio Selection (оновлюється у файлі конфігурації)
@@ -7009,7 +7006,7 @@ Not all items in the queue were completed:
   chs: 队列中有未完成的项目
   jpn: キュー内のすべてのアイテムが完了していない
   rus: Не все пункты в очереди были завершены
-  por: Nem todos os itens da fila foram completados
+  por: Nem todos os itens da fila foram concluídos
   swe: Alla objekt i kön har inte slutförts
   pol: Nie wszystkie pozycje w kolejce zostały ukończone
   ukr: Не всі пункти в черзі були завершені
@@ -7024,7 +7021,7 @@ Would you like to keep them in the queue?:
   chs: 你想把他们留在队列中吗？
   jpn: このままキューに残しますか？
   rus: Хотите ли вы оставить их в очереди?
-  por: Gostaria de os manter na fila de espera?
+  por: Você gostaria de mantê-los na fila?
   swe: Vill du behålla dem i kön?
   pol: Czy chcesz je zatrzymać w kolejce?
   ukr: Чи хотіли б ви тримати їх у черзі?
@@ -7039,7 +7036,7 @@ Recover Queue Items:
   chs: 恢复队列中的项目
   jpn: キューアイテムの復元
   rus: Восстановление элементов очереди
-  por: Recuperar artigos em fila de espera
+  por: Recuperar itens da fila
   swe: Återskapa köobjekt
   pol: Odzyskaj elementy kolejki
   ukr: Відновлення елементів черги
@@ -7054,7 +7051,7 @@ There is already a video being processed:
   chs: 已经有一个视频正在处理中
   jpn: すでに処理中の動画があります
   rus: Видео уже обрабатывается
-  por: Já há um vídeo a ser processado
+  por: Já existe um vídeo sendo processado
   swe: Det finns redan en video som håller på att bearbetas
   pol: Film jest już w trakcie obróbki
   ukr: Вже є відео, яке обробляється
@@ -7069,7 +7066,7 @@ Are you sure you want to discard it?:
   chs: 您确定要丢弃它吗？
   jpn: 本当に破棄してもいいですか？
   rus: Вы уверены, что хотите отказаться от него?
-  por: Tem a certeza de que quer descartá-la?
+  por: Tem certeza de que deseja descartá-lo?
   swe: Är du säker på att du vill kasta den?
   pol: Czy na pewno chcesz go wyrzucić?
   ukr: Ви впевнені, що хочете його викинути?
@@ -7084,7 +7081,7 @@ Discard current video:
   chs: 丢弃当前视频
   jpn: 現在の動画を破棄する
   rus: Удалить текущее видео
-  por: Descarte vídeo actual
+  por: Descartar vídeo atual
   swe: Kassera aktuell video
   pol: Odrzuć bieżący film
   ukr: Відкинути поточне відео
@@ -7099,7 +7096,7 @@ FastFlix Wiki:
   chs: FastFlix Wiki
   jpn: FastFlix Wiki
   rus: FastFlix Wiki
-  por: FastFlix Wiki
+  por: Wiki FastFlix
   swe: FastFlix Wiki
   pol: FastFlix Wiki
   ukr: FastFlix Вікі
@@ -7144,7 +7141,7 @@ Variance Based Adaptive Quantization:
   chs: 基于方差的自适应量化
   jpn: Variance Based Adaptive Quantization（分散ベースの適応型量子化）
   rus: Адаптивное квантование на основе дисперсии
-  por: Quantização Adaptativa com Base na Variância
+  por: Quantização adaptativa baseada em variância
   swe: Variansbaserad adaptiv kvantisering
   pol: Adaptacyjna kwantyzacja oparta na wariancji
   ukr: Адаптивне квантування на основі дисперсії
@@ -7204,7 +7201,7 @@ VCEEncC Encoder support is still experimental!:
   chs: VCEEncC编码器支持仍然是实验性的!
   jpn: VCEEncCエンコーダのサポートはまだ実験的なものです。
   rus: Поддержка кодировщика VCEEncC все еще является экспериментальной!
-  por: O suporte do codificador VCEEncC ainda é experimental!
+  por: O suporte ao codificador VCEEncC ainda é experimental!
   swe: Stödet för VCEEncC Encoder är fortfarande experimentellt!
   pol: Obsługa VCEEncC Encoder jest wciąż eksperymentalna!
   ukr: Підтримка VCEEncC Encoder поки що експериментальна!
@@ -7250,7 +7247,7 @@ Decoder:
   jpn: 'ハードウェア：入力にlibavformat＋ハードウェアデコーダを使用'
   rus: 'Аппаратное обеспечение: использование libavformat + аппаратного декодера для
     ввода'
-  por: 'Hardware: usar libavformat + descodificador de hardware para entrada'
+  por: 'Hardware: usar libavformat + decodificador de hardware para entrada'
   swe: 'Hårdvara: Använd libavformat + hårdvaruavkodare för inmatning.'
   pol: 'Sprzęt: użyj libavformat + dekoder sprzętowy dla wejścia'
   ukr: 'Апаратне забезпечення: використовуйте libavformat + апаратний декодер для
@@ -7266,7 +7263,7 @@ Decoder:
   chs: 'Software：使用avcodec + 软件解码器'
   jpn: 'ソフトウェア：avcodec + ソフトウェアデコーダを使用'
   rus: 'Программное обеспечение: используйте avcodec + программный декодер'
-  por: 'Software: utilizar avcodec + descodificador de software'
+  por: 'Software: usar avcodec + decodificador de software'
   swe: 'Programvara: Använd avcodec + mjukvaruavkodare'
   pol: 'Oprogramowanie: użyj avcodec + dekoder programowy'
   ukr: 'Програмне забезпечення: використовуйте avcodec + програмний декодер'
@@ -7281,7 +7278,7 @@ Preview - Press Q to Exit:
   chs: 预览 - 按Q键退出
   jpn: プレビュー - Qを押して終了
   rus: Предпросмотр - Нажмите Q для выхода
-  por: Pré-visualização - Imprensa Q para Sair
+  por: Pré-visualização - Pressione Q para sair
   swe: Förhandsgranskning - Tryck på Q för att avsluta
   pol: Podgląd - Naciśnij Q, aby wyjść
   ukr: Попередній перегляд - натисніть Q, щоб вийти
@@ -7311,7 +7308,7 @@ Concatenation Builder:
   chs: 创建合并序列
   jpn: 連結ビルダー
   rus: Конструктор конкатенации
-  por: Construtor de Concatenação
+  por: Construtor de concatenação
   swe: Byggare för sammankoppling
   pol: Konstruktor konkatenacji
   ukr: Конструктор конкатенації
@@ -7416,7 +7413,7 @@ Base Folder:
   chs: 当前文件夹
   jpn: ベースフォルダー
   rus: Базовая папка
-  por: Pasta de base
+  por: Pasta Base
   swe: Grundmapp
   pol: Podstawa Folder
   ukr: Базова папка
@@ -7431,7 +7428,7 @@ Open Folder:
   chs: 打开文件夹
   jpn: フォルダを開く
   rus: Открыть папку
-  por: Pasta Aberta
+  por: Abrir pasta
   swe: Öppna mapp
   pol: Otwórz folder
   ukr: Відкрити папку
@@ -7446,7 +7443,7 @@ Load:
   chs: 载入
   jpn: ロード
   rus: Загрузка
-  por: Carga
+  por: Carregar
   swe: Ladda
   pol: Obciążenie
   ukr: Завантажити
@@ -7465,8 +7462,7 @@ Drag and Drop to reorder - All items need to be same dimensions:
   jpn: ドラッグ＆ドロップで並び替え - すべてのアイテムが同じ寸法である必要があります。
   rus: Перетаскивание для изменения порядка - все элементы должны иметь одинаковые
     размеры
-  por: Arrastar e largar para reordenar - Todos os artigos precisam de ter as mesmas
-    dimensões
+  por: Arraste e solte para reordenar - Todos os itens precisam ter as mesmas dimensões
   swe: Dra och släpp för att beställa om - Alla artiklar måste ha samma mått.
   pol: Przeciągnij i upuść, aby zmienić kolejność - Wszystkie elementy muszą mieć
     te same wymiary
@@ -7489,8 +7485,8 @@ The following items were excluded as they could not be identified as image or vi
   jpn: 以下のものは、画像・動画ファイルとして識別できないため、除外しました。
   rus: Следующие элементы были исключены, поскольку их нельзя было идентифицировать
     как файлы изображений или видеофайлы
-  por: Os seguintes itens foram excluídos por não poderem ser identificados como ficheiros
-    de imagem ou de vídeo
+  por: Os seguintes itens foram excluídos porque não puderam ser identificados como
+    arquivos de imagem ou vídeo
   swe: Följande poster har uteslutits eftersom de inte kunde identifieras som bild-
     eller videofiler
   pol: Następujące pozycje zostały wyłączone, ponieważ nie można ich było zidentyfikować
@@ -7524,7 +7520,7 @@ if you open a new directory, they will all be removed.:
   chs: 如果你打开一个新的目录，它们将被全部删除。
   jpn: 新しいディレクトリを開いた場合、それらはすべて削除されます。
   rus: если вы откроете новый каталог, все они будут удалены.
-  por: se se abrir um novo directório, todos eles serão removidos.
+  por: se você abrir um novo diretório, todos eles serão removidos.
   swe: Om du öppnar en ny katalog kommer alla dessa att tas bort.
   pol: jeśli otworzysz nowy katalog, wszystkie zostaną usunięte.
   ukr: якщо ви відкриєте новий каталог, вони всі будуть видалені.
@@ -7554,7 +7550,7 @@ Confirm Change Folder:
   chs: 确认更改文件夹
   jpn: 変更フォルダの確認
   rus: Подтверждение изменения папки
-  por: Confirmar Pasta de Mudança
+  por: Confirmar alteração de pasta
   swe: Bekräfta ändring av mapp
   pol: Potwierdź zmianę folderu
   ukr: Підтвердити зміну папки
@@ -7569,7 +7565,7 @@ does not support concatenating files together:
   chs: 不支持将文件合并起来
   jpn: は、ファイルの連結をサポートしていません。
   rus: не поддерживает конкатенацию файлов вместе
-  por: não suporta a concatenação de ficheiros em conjunto
+  por: não suporta a concatenação de arquivos
   swe: stöder inte sammanfogning av filer
   pol: nie obsługuje konkatenacji plików razem
   ukr: не підтримує об'єднання файлів разом
@@ -7587,7 +7583,7 @@ does not support concatenating files together:
   jpn: 注意喚起：この機能は、エンコーダソフトウェアが直接提供するものではありません。
   rus: 'ВНИМАНИЕ: Эта функция не обеспечивается непосредственно программным обеспечением
     энкодера'
-  por: 'AVISO: Esta funcionalidade não é fornecida directamente pelo software codificador'
+  por: 'AVISO: Este recurso não é fornecido diretamente pelo software do codificador'
   swe: 'VARNING: Denna funktion tillhandahålls inte direkt av kodarprogramvaran.'
   pol: 'OSTRZEŻENIE: Ta funkcja nie jest dostępna bezpośrednio w oprogramowaniu enkodera'
   ukr: 'ПОПЕРЕДЖЕННЯ: Ця функція не надається безпосередньо програмним забезпеченням
@@ -7604,7 +7600,7 @@ It is NOT supported by VCE or NVENC encoders, it will break the encoding:
   chs: VCE或NVENC编码器不支持该功能，它将破坏编码。
   jpn: VCEやNVENCのエンコーダではサポートされていません。
   rus: Он НЕ поддерживается кодировщиками VCE или NVENC, это нарушит кодирование
-  por: NÃO é suportado por codificadores VCE ou NVENC, irá quebrar a codificação
+  por: Isso NÃO é suportado pelos codificadores VCE ou NVENC, quebrará a codificação
   swe: Den stöds INTE av VCE- eller NVENC-kodare, eftersom den bryter kodningen.
   pol: NIE jest obsługiwany przez kodery VCE lub NVENC, spowoduje to przerwanie kodowania.
   ukr: НЕ підтримується кодувальниками VCE або NVENC, це призведе до порушення кодування
@@ -7619,7 +7615,7 @@ Are you sure you want to continue?:
   chs: 你确定你要继续吗?
   jpn: 本当に続けてもいいですか？
   rus: Вы уверены, что хотите продолжать?
-  por: Tem a certeza de que quer continuar?
+  por: Tem certeza de que deseja continuar?
   swe: Är du säker på att du vill fortsätta?
   pol: Czy na pewno chcesz kontynuować?
   ukr: Ви впевнені, що хочете продовжувати?
@@ -7710,7 +7706,7 @@ Audio Select:
   chs: 音频选择
   jpn: オーディオ選択
   rus: Выбор аудио
-  por: Selecione o áudio
+  por: Selecionar áudio
   swe: Ljudval
   ukr: Вибір аудіо
   kor: 오디오 선택
@@ -7725,7 +7721,7 @@ Passthrough All:
   chs: 所有不更改
   jpn: 全てパススルー
   rus: Пропускная способность Все
-  por: Passagem de tudo
+  por: Passthrough de Todos
   swe: Genomströmning Alla
   ukr: Пройди крізь усе
   kor: 모두 통과
@@ -7740,7 +7736,7 @@ Add Pattern Match:
   chs: 添加模式匹配
   jpn: パターンマッチの追加
   rus: Добавить сопоставление шаблонов
-  por: Adicionar Padrão de Combinação
+  por: Adicionar correspondência por padrão
   swe: Lägg till mönstermatchning
   ukr: Додати відповідність шаблону
   kor: 패턴 일치 추가
@@ -7770,7 +7766,7 @@ Match:
   chs: 匹配
   jpn: マッチ
   rus: Совпадение
-  por: Combinar
+  por: Corresponder
   swe: Match
   ukr: Матч
   kor: 경기
@@ -7785,7 +7781,7 @@ Select By:
   chs: 选择方式
   jpn: 選び方
   rus: Выбрать по
-  por: Selecione por
+  por: Selecionar por
   swe: Välj efter
   ukr: Виберіть по
   kor: 선택 기준
@@ -7829,7 +7825,7 @@ Quantization Mode:
   chs: 量化模式
   jpn: 量子化モード
   rus: Режим квантования
-  por: Modo de quantificação
+  por: Modo de quantização
   swe: Kvantiseringsläge
   pol: Tryb kwantyzacji
   ukr: Режим квантування
@@ -7844,7 +7840,7 @@ Use CRF or QP:
   chs: 使用CRF或QP
   jpn: CRFまたはQPを使用する
   rus: Используйте CRF или QP
-  por: Use CRF ou QP
+  por: Usar CRF ou QP
   swe: Använd CRF eller QP
   pol: Użyj CRF lub QP
   ukr: Використовуйте CRF або QP
@@ -7874,7 +7870,7 @@ Extra svt av1 params in opt=1:opt2=0 format:
   chs: 额外的svt av1参数，格式为opt=1:opt2=0
   jpn: opt=1:opt2=0のフォーマットでの他のsvt av1パラメータ
   rus: Дополнительные параметры svt av1 в формате opt=1:opt2=0
-  por: Parâmetros av1 extra svt no formato opt=1:opt2=0
+  por: Parâmetros extras svt av1 no formato opt=1:opt2=0
   swe: Extra svt av1-parametrar i formatet opt=1:opt2=0
   pol: Dodatkowe parametry svt av1 w formacie opt=1:opt2=0
   ukr: Додаткові параметри svt av1 у форматі opt=1:opt2=0
@@ -7889,7 +7885,7 @@ Max Colors:
   chs: 最大颜色
   jpn: 最大色数
   rus: Максимальные цвета
-  por: Cores máximas
+  por: Cores Máximas
   swe: Max färger
   pol: Maks. kolory
   ukr: Max Colors
@@ -7904,7 +7900,7 @@ Frame Rate:
   chs: 帧速率
   jpn: フレームレート
   rus: Частота кадров
-  por: Taxa de quadros
+  por: Taxa de Frames
   swe: Bildfrekvens
   pol: Liczba klatek na sekundę
   ukr: Частота кадрів
@@ -7949,7 +7945,7 @@ Color Formats:
   chs: 色彩格式
   jpn: カラーフォーマット
   rus: Форматы цветов
-  por: Formatos de cores
+  por: Formatos de cor
   swe: Färgformat
   pol: Formaty kolorów
   ukr: Кольорові формати
@@ -7964,7 +7960,7 @@ Video Buffering:
   chs: 视频缓冲
   jpn: ビデオバッファリング
   rus: Буферизация видео
-  por: Buffer de vídeo
+  por: Buffer de Vídeo
   swe: Videobuffring
   pol: Buforowanie wideo
   ukr: Буферизація відео
@@ -7994,7 +7990,7 @@ Statistics Mode:
   chs: 统计模式
   jpn: 統計モード
   rus: Режим статистики
-  por: Modo Estatísticas
+  por: Modo de Estatísticas
   swe: Statistikläge
   pol: Tryb statystyk
   ukr: Режим статистики
@@ -8024,7 +8020,7 @@ Determine OpenCL Support:
   chs: 确定OpenCL支持
   jpn: OpenCLのサポートを検出
   rus: Определить поддержку OpenCL
-  por: Determinar o suporte do OpenCL
+  por: Determinar o suporte OpenCL
   swe: Fastställa stöd för OpenCL
   pol: Określanie obsługi OpenCL
   ukr: Визначення підтримки OpenCL
@@ -8039,7 +8035,7 @@ Please load in a video to configure a new profile:
   chs: 请加载一个视频来配置一个新的配置文件
   jpn: 新しいプロファイルを設定するための動画をロードしてください。
   rus: Пожалуйста, загрузите видео для настройке нового профиля
-  por: Por favor, carregue em um vídeo para configurar um novo perfil
+  por: Por favor, carregue um vídeo para configurar um novo perfil
   swe: Ladda in en video för att konfigurera en ny profil
   pol: Wczytaj film, jak skonfigurować nowy profil
   ukr: Будь ласка, завантажте відео для налаштування нового профілю
@@ -8054,7 +8050,7 @@ Please load in a video to configure a new profile:
   chs: 10位
   jpn: 10ビット
   rus: 10-бит
-  por: 10 bit
+  por: 10-bit
   swe: 10-bit
   pol: 10-bit
   ukr: 10-розрядний
@@ -8093,7 +8089,7 @@ Not supported by rigaya's hardware encoders:
   chs: 不被Rigaya的硬件编码器所支持
   jpn: Rigayaのハードウェアエンコーダには対応していません。
   rus: Не поддерживается аппаратными кодерами rigaya
-  por: Não suportado pelos codificadores de hardware da rigaya
+  por: Não suportado pelos codificadores de hardware de Rigaya
   swe: Stöds inte av Rigayas hårdvarukodare
   pol: Nieobsługiwane przez nadajniki sprzętowe firmy rigaya
   ukr: Не підтримується апаратними кодувальниками rigaya
@@ -8123,7 +8119,7 @@ Allow Software Encoding:
   chs: 允许软件编码
   jpn: ソフトウェアエンコードを許可する
   rus: Разрешить программное кодирование
-  por: Permitir a codificação de software
+  por: Permitir codificação de software
   swe: Tillåt kodning av programvara
   pol: Zezwalaj na kodowanie oprogramowania
   ukr: Дозволити програмне кодування
@@ -8138,7 +8134,7 @@ Require Software Encoding:
   chs: 要求软件编码
   jpn: ソフトウェアエンコードは必要
   rus: Требуется программное кодирование
-  por: Exigir codificação de software
+  por: Requer codificação de software
   swe: Kräver kodning av programvara
   pol: Wymagane kodowanie oprogramowania
   ukr: Вимагає кодування програмного забезпечення
@@ -8170,7 +8166,7 @@ Hint that encoding should happen in real-time if not faster:
   jpn: ヒント：エンコードはリアルタイムで実行すべきです。（それよりも速くなければ）
   rus: Подсказка, что кодирование должно происходить в режиме реального времени, если
     не быстрее
-  por: Dica de que a codificação deve acontecer em tempo real, se não mais rápido
+  por: Infere que a codificação deveria acontecer em tempo real, se não mais rápido
   swe: En antydan om att kodning bör ske i realtid, om inte snabbare.
   pol: Wskazówka, że kodowanie powinno odbywać się w czasie rzeczywistym, jeśli nie
     szybciej
@@ -8187,7 +8183,7 @@ Frames Before:
   chs: 之前的帧数
   jpn: フレーム数 前
   rus: Кадры до
-  por: Quadros antes
+  por: Frames Antes
   swe: Frames före
   pol: Ramki Przed
   ukr: Кадри до
@@ -8208,8 +8204,8 @@ Other frames will come before the frames in this session. This helps smooth conc
   jpn: 他のフレームは、このセッションのフレームより前に来ます。これは、連結の問題をスムーズにするのに役立ちます。
   rus: Другие кадры будут идти перед кадрами в этой сессии. Это помогает сгладить
     проблемы конкатенации.
-  por: Outros quadros virão antes dos quadros nesta sessão. Isto ajuda a suavizar
-    as questões de concatenação.
+  por: Outros frames virão antes dos frames nesta sessão. Isso ajuda a suavizar os
+    problemas de concatenação.
   swe: Andra ramar kommer att komma före ramarna under denna session. Detta underlättar
     problem med sammanlänkning.
   pol: Inne ramki będą się pojawiać przed ramkami w tej sesji. Ułatwia to rozwiązywanie
@@ -8228,7 +8224,7 @@ Frames After:
   chs: 之后的帧数
   jpn: 後のフレーム数
   rus: Кадры после
-  por: Quadros após
+  por: Frames Depois
   swe: Bilder efter
   pol: Ramki Po
   ukr: Кадри після
@@ -8249,8 +8245,8 @@ Other frames will come after the frames in this session. This helps smooth conca
   jpn: 他のフレームは、このセッションのフレームの後に来ます。これは、連結の問題をスムーズにするのに役立ちます。
   rus: Другие кадры будут идти после кадров этой сессии. Это помогает сгладить проблемы
     с конкатенацией.
-  por: Outros quadros virão após os quadros nesta sessão. Isto ajuda a suavizar as
-    questões de concatenação.
+  por: Outros frames virão depois dos frames nesta sessão. Isso ajuda a suavizar os
+    problemas de concatenação.
   swe: Andra ramar kommer att följa efter ramarna i denna session. Detta bidrar till
     att underlätta problem med sammanlänkningar.
   pol: Inne ramki będą pojawiać się po ramkach z tej sesji. Ułatwia to rozwiązywanie
@@ -8269,7 +8265,7 @@ HEVC coding profile - must match bit depth:
   chs: HEVC编码配置文件 - 必须与位深度相匹配
   jpn: HEVCコーディングプロファイル - ビット深度との一致が必要
   rus: Профиль кодирования HEVC - должен соответствовать битовой глубине
-  por: Perfil de codificação HEVC - deve corresponder à profundidade do bit
+  por: HEVC coding profile - deve corresponder à profundidade de bits
   swe: HEVC-kodningsprofil - måste matcha bitdjupet
   pol: Profil kodowania HEVC - musi być zgodny z głębią bitową
   ukr: Профіль кодування HEVC - має відповідати глибині біт
@@ -8299,7 +8295,7 @@ Custom QSVEncC options:
   chs: 自定义QSVEncC选项
   jpn: QSVEncCのカスタムオプション
   rus: Пользовательские опции QSVEncC
-  por: Opções personalizadas de QSVEncC
+  por: Opções personalizadas QSVEncC
   swe: Anpassade QSVEncC-alternativ
   pol: Niestandardowe opcje QSVEncC
   ukr: Користувацькі опції QSVEncC
@@ -8344,7 +8340,7 @@ Save Queue to File:
   chs: 保存队列到文件
   jpn: キューをファイルに保存する
   rus: Сохранить очередь в файл
-  por: Salvar fila no arquivo
+  por: Salvar fila em arquivo
   swe: Spara kö till en fil
   pol: Zapisz kolejkę do pliku
   ukr: Зберегти чергу у файл
@@ -8359,7 +8355,7 @@ Load Queue from File:
   chs: 从文件中加载队列
   jpn: ファイルからキューを読み込む
   rus: Загрузка очереди из файла
-  por: Fila de carga do arquivo
+  por: Carregar fila do arquivo
   swe: Ladda kö från en fil
   pol: Wczytaj kolejkę z pliku
   ukr: Завантаження черги з файлу
@@ -8374,7 +8370,7 @@ This will remove all items in the queue currently:
   chs: 这将删除当前队列中的所有项目。
   jpn: これにより、現在キューにあるすべてのアイテムが削除されます。
   rus: Это приведет к удалению всех элементов в очереди в настоящее время
-  por: Isto removerá todos os itens da fila atualmente
+  por: Isso removerá todos os itens atualmente na fila
   swe: Detta kommer att ta bort alla objekt i kön för närvarande
   pol: Spowoduje to usunięcie wszystkich elementów znajdujących się aktualnie w kolejce.
   ukr: Це призведе до видалення всіх елементів у черзі на даний момент
@@ -8389,7 +8385,7 @@ It will update it with the contents of:
   chs: 将用以下内容更新
   jpn: 以下の内容で更新されます。
   rus: Он обновит его содержимым
-  por: Ele o atualizará com o conteúdo de
+  por: Ele irá atualizá-lo com o conteúdo de
   swe: Den kommer att uppdatera den med innehållet i
   pol: Zostanie ona zaktualizowana o zawartość
   ukr: Він оновить його вмістом
@@ -8404,7 +8400,7 @@ Are you sure you want to proceed?:
   chs: 确定要继续吗？
   jpn: 本当に進めてもいいですか？
   rus: Вы уверены, что хотите продолжить?
-  por: Você tem certeza de que quer prosseguir?
+  por: Tem certeza de que deseja prosseguir?
   swe: Är du säker på att du vill fortsätta?
   pol: Czy jesteś pewien, że chcesz kontynuować?
   ukr: Ви впевнені, що хочете продовжити?
@@ -8419,7 +8415,7 @@ Overwrite existing queue?:
   chs: 覆盖现有队列？
   jpn: 既存のキューを上書きしますか？
   rus: Перезаписать существующую очередь?
-  por: Sobregravar a fila existente?
+  por: Substituir a fila existente?
   swe: Skriva över befintlig kö?
   pol: Nadpisać istniejącą kolejkę?
   ukr: Перезаписати існуючу чергу?
@@ -8449,7 +8445,7 @@ Load Queue:
   chs: 加载队列
   jpn: キューをロードする
   rus: Загрузить очередь
-  por: Fila de carga
+  por: Carregar fila
   swe: Belastningskö
   pol: Kolejka ładunkowa
   ukr: Черга завантаження
@@ -8464,7 +8460,7 @@ Queue saved to:
   chs: 队列保存到
   jpn: に保存されました
   rus: Очередь сохранена в
-  por: Fila salva para
+  por: Fila salva em
   swe: Kö sparad till
   pol: Kolejka zapisana do
   ukr: Черга збережена до
@@ -8494,7 +8490,7 @@ There are more than 100 files, skipping pre-processing.:
   chs: 文件多于100个，跳过预处理。
   jpn: 100ファイル以上ありますので、プリプロセスをスキップします。
   rus: Имеется более 100 файлов, пропуская предварительную обработку.
-  por: Existem mais de 100 ficheiros, saltando o pré-processamento.
+  por: Existem mais de 100 arquivos, ignorando o pré-processamento.
   swe: Det finns mer än 100 filer, och du kan hoppa över förbehandlingen.
   pol: Istnieje ponad 100 plików, z pominięciem przetwarzania wstępnego.
   ukr: Понад 100 файлів, без попередньої обробки.
@@ -8511,7 +8507,7 @@ No audio tracks matched for this profile, enable first track?:
   chs: 此配置文件没有匹配的音轨，启用第一个音轨？
   jpn: このプロファイルに一致するオーディオトラックがありません。最初のトラックを有効にしますか？
   rus: Для этого профиля не подобраны звуковые дорожки, включить первую дорожку?
-  por: Não há faixas de áudio correspondentes a este perfil, permitir a primeira faixa?
+  por: Nenhuma faixa de áudio corresponde a este perfil, habilitar a primeira faixa?
   swe: Inga ljudspår har matchats för den här profilen, aktivera det första spåret?
   pol: Brak dopasowanych ścieżek audio dla tego profilu, włączyć pierwszą ścieżkę?
   ukr: Немає аудіодоріжок, що відповідають цьому профілю, увімкнути першу доріжку?
@@ -8526,7 +8522,7 @@ No Audio Match:
   chs: 没有音频匹配
   jpn: マッチしたオーディオはありません
   rus: Нет звукового соответствия
-  por: Sem Audio Match
+  por: Sem correspondência de áudio
   swe: Ingen ljudmatchning
   pol: Brak dopasowania audio
   ukr: Немає звукового збігу
@@ -8541,7 +8537,7 @@ Unselect All:
   chs: 取消选择所有
   jpn: すべて選択解除
   rus: Снять выбор всего
-  por: Desseleccionar todos
+  por: Desmarcar tudo
   swe: Avmarkera alla
   pol: Nie wybieraj wszystkich
   ukr: Зняти позначку з усіх
@@ -8571,7 +8567,7 @@ Rigaya's encoders will only match one encoding per track:
   chs: Rigaya的编码器在每条轨道上只能匹配一个编码
   jpn: Rigayaのエンコーダーは1トラックにつき1つのエンコーディングにしかマッチしません
   rus: Кодировщики Rigaya будут соответствовать только одной кодировке на дорожку
-  por: Os codificadores de Rigaya corresponderão apenas a uma codificação por pista
+  por: Os codificadores de Rigaya só irão corresponder a uma codificação por faixa.
   swe: Rigayas kodare matchar endast en kodning per spår.
   pol: Kodery Rigaya dopasują tylko jedno kodowanie na ścieżkę.
   ukr: Кодувальники Rigaya підтримують лише одне кодування для кожної доріжки
@@ -8587,7 +8583,7 @@ Default Output Folder:
   chs: 默认输出文件夹
   jpn: デフォルトの出力先フォルダ
   rus: Папка вывода по умолчанию
-  por: Pasta de saída por defeito
+  por: Pasta de saída padrão
   swe: Standardmapp för utdata
   pol: Domyślny folder wyjściowy
   ukr: Вихідна папка за замовчуванням
@@ -8602,7 +8598,7 @@ Use same output directory as source file:
   chs: 使用与源文件相同的输出目录
   jpn: ソースファイルと同じ出力ディレクトリを使用する
   rus: Использовать тот же выходной каталог, что и исходный файл
-  por: Usar o mesmo directório de saída que o ficheiro fonte
+  por: Usar o mesmo diretório de saída que o arquivo de origem
   swe: Använd samma utskriftskatalog som källfilen
   pol: Użyj tego samego katalogu wyjściowego co plik źródłowy
   ukr: Використовуйте той самий вихідний каталог, що і вихідний файл
@@ -8617,7 +8613,7 @@ Please consider supporting FastFlix with a one time contribution!:
   chs: 请考虑用一次性捐款支持FastFlix!
   jpn: FastFlixへの1回限りの寄付をご検討ください。
   rus: Пожалуйста, рассмотрите возможность поддержать FastFlix единовременным взносом!
-  por: Por favor, considere apoiar FastFlix com uma contribuição única!
+  por: Por favor, considere apoiar o FastFlix com uma contribuição única!
   swe: Överväg att stödja FastFlix med ett engångsbidrag!
   pol: Proszę rozważyć wsparcie FastFlix jednorazową wpłatą!
   ukr: Будь ласка, розгляньте можливість підтримати FastFlix одноразовим внеском!
@@ -8632,7 +8628,7 @@ Default Source Folder:
   chs: 默认的源文件夹
   jpn: デフォルトのソースフォルダ
   rus: Исходная папка по умолчанию
-  por: Pasta da fonte por defeito
+  por: Pasta de origem padrão
   swe: Standardkällmapp för källan
   pol: Domyślny folder źródłowy
   ukr: Папка джерела за замовчуванням
@@ -8647,7 +8643,7 @@ No Default Source Folder:
   chs: 没有默认的源文件夹
   jpn: デフォルトのソースフォルダはありません
   rus: Нет Исходной папки по умолчанию
-  por: Sem pasta de origem por defeito
+  por: Nenhuma pasta de origem padrão
   swe: Ingen standardkällmapp
   pol: Nie Domyślny folder źródłowy
   ukr: Відсутня папка джерела за замовчуванням
@@ -8662,7 +8658,7 @@ Stay on Top:
   chs: 窗口保持在最上方
   jpn: ウィンドウを最上位にする
   rus: Оставаться поверх
-  por: Fique no topo
+  por: Ficar no topo
   swe: Håll dig på topp
   pol: Zostań na szczycie
   ukr: Залишайтеся на висоті
@@ -8752,7 +8748,7 @@ Load Directory:
   chs: 加载目录
   jpn: ディレクトリをロードする
   rus: Загрузить каталог
-  por: Directório de Carga
+  por: Carregar diretório
   swe: Lasta in katalogen
   pol: Katalog ładunków
   ukr: Завантажити каталог
@@ -8767,7 +8763,7 @@ Multiple Files:
   chs: 多个文件
   jpn: 複数のファイル
   rus: Множество файлов
-  por: Ficheiros múltiplos
+  por: Vários arquivos
   swe: Flera filer
   pol: Wiele plików
   ukr: Кілька файлів
@@ -8782,7 +8778,7 @@ Drag and Drop to reorder:
   chs: 拖放重新排序
   jpn: ドラッグ＆ドロップで並び替え
   rus: Перетаскивание для изменения порядка
-  por: Arrastar e largar para reordenar
+  por: Arraste e solte para reordenar
   swe: Dra och släpp för att ordna om
   pol: Przeciągnij i upuść, aby zmienić kolejność
   ukr: Перетягніть, щоб змінити порядок
@@ -8797,7 +8793,7 @@ Long Edge:
   chs: 长边
   jpn: 長い端
   rus: Длинная кромка
-  por: Bordo Longo
+  por: Borda longa
   swe: Lång kant
   pol: Długa krawędź
   ukr: Довгий край
@@ -8812,7 +8808,7 @@ Filename:
   chs: 文件名
   jpn: ファイル名
   rus: Имя файла
-  por: Nome do ficheiro
+  por: Nome do arquivo
   swe: Filnamn
   pol: Nazwa pliku
   ukr: Ім'я файлу
@@ -8893,8 +8889,8 @@ Remove GUI logs and compress conversion logs older than 30 days at exit:
   chs: 在退出时删除GUI日志并压缩超过30天的转换日志
   jpn: 終了時にGUIログを削除し、30日以上前の変換ログを圧縮します
   rus: Удаление журналов GUI и сжатие журналов конвертации старше 30 дней при выходе
-  por: Remover registos GUI e comprimir registos de conversão com mais de 30 dias
-    à saída
+  por: Remover logs da GUI e comprimir logs de conversão mais antigos que 30 dias
+    na saída
   swe: Ta bort GUI-loggar och komprimera konverteringsloggar som är äldre än 30 dagar
     vid avslutningen.
   pol: Usuń logi GUI i skompresuj logi konwersji starsze niż 30 dni przy wyjściu z
@@ -8912,7 +8908,7 @@ UI Scale:
   chs: UI规模
   jpn: UIスケール
   rus: Масштаб интерфейса
-  por: Escala UI
+  por: Escala da UI
   swe: UI-skala
   pol: Skala UI
   kor: UI 스케일
@@ -8926,7 +8922,7 @@ IDC Level:
   chs: IDC级别
   jpn: IDCレベル
   rus: Уровень IDC
-  por: Nível IDC
+  por: Nível de IDC
   swe: IDC-nivå
   pol: Poziom IDC
   ukr: Рівень IDC
@@ -8941,7 +8937,7 @@ Set the IDC level:
   chs: 设置IDC水平
   jpn: IDCレベルを設定する
   rus: Установите уровень IDC
-  por: Definir o nível IDC
+  por: Definir o nível de IDC
   swe: Ställ in IDC-nivån
   pol: Ustawić poziom IDC
   ukr: Встановіть рівень IDC
@@ -8971,7 +8967,7 @@ Extra vvc params in opt=1:opt2=0 format:
   chs: opt=1:opt2=0格式的额外vvc参数
   jpn: opt=1:opt2=0の形式でvvcパラメータを追加する。
   rus: Дополнительные параметры vvc в формате opt=1:opt2=0
-  por: Parâmetros vvc adicionais no formato opt=1:opt2=0
+  por: Parâmetros vvc extras no formato opt=1:opt2=0
   swe: Extra vvc-parametrar i formatet opt=1:opt2=0
   pol: Dodatkowe parametry vvc w formacie opt=1:opt2=0
   ukr: Додаткові параметри vvc у форматі opt=1:opt2=0
@@ -8992,8 +8988,8 @@ That video was added with an encoder that is no longer available, unable to load
   jpn: その動画は、利用できなくなったエンコーダーで追加されたため、キューから読み込むことができません。
   rus: Это видео было добавлено с помощью кодировщика, который больше не доступен,
     не удается загрузить из очереди
-  por: Esse vídeo foi adicionado com um codificador que já não está disponível, incapaz
-    de carregar a partir da fila
+  por: Esse vídeo foi adicionado com um codificador que não está mais disponível, não
+    é possível carregar da fila
   swe: Videon lades till med en kodare som inte längre är tillgänglig, kan inte laddas
     från kön.
   pol: Ten film został dodany za pomocą kodera, który nie jest już dostępny, nie można
@@ -9012,7 +9008,7 @@ That video was added with an encoder that is no longer available, unable to load
   chs: 这个配置文件将被应用于所有选定的项目。
   jpn: このプロファイルは、選択されたすべてのアイテムに適用されます。
   rus: 'Этот профиль будет применен ко всем выбранным элементам:'
-  por: 'Este perfil será aplicado a todos os artigos seleccionados:'
+  por: 'Este perfil será aplicado a todos os itens selecionados:'
   swe: 'Profilen tillämpas på alla markerade objekt:'
   pol: 'Ten profil zostanie zastosowany do wszystkich wybranych elementów:'
   ukr: 'Цей профіль буде застосовано до всіх вибраних елементів:'
@@ -9048,7 +9044,7 @@ Constant Quality, Intelligent Constant Quality, Intelligent + Lookahead Constant
   jpn: 品質固定、インテリジェント品質固定、インテリジェント＋ルックアヘッド品質固定
   rus: Постоянное качество, интеллектуальное постоянное качество, интеллектуальное
     качество + опережающее постоянное качество
-  por: Qualidade Constante, Qualidade Constante Inteligente, Qualidade Constante Inteligente
+  por: Qualidade constante, Qualidade Constante Inteligente, Qualidade Constante Inteligente
     + Lookahead
   swe: Konstant kvalitet, intelligent Konstant kvalitet, intelligent + Lookahead Konstant
     kvalitet
@@ -9073,8 +9069,8 @@ The following items were excluded as they could not be identified as a video fil
   jpn: 以下のものは、動画ファイルとして識別できないため、除外した。
   rus: Следующие предметы были исключены, так как их нельзя было идентифицировать
     как видеофайлы
-  por: Os seguintes itens foram excluídos por não poderem ser identificados como ficheiros
-    de vídeo
+  por: Os seguintes itens foram excluídos, pois não puderam ser identificados como
+    arquivos de vídeo
   swe: Följande poster uteslöts eftersom de inte kunde identifieras som videofiler
   pol: Następujące pozycje zostały wyłączone, ponieważ nie mogły być zidentyfikowane
     jako pliki wideo
@@ -9107,7 +9103,7 @@ Loading Videos:
   chs: 加载视频
   jpn: 動画読み込み
   rus: Загружаемые видеоролики
-  por: Carregamento de vídeos
+  por: Carregando vídeos
   swe: Lastning av videoklipp
   pol: Ładowanie filmów
   ukr: Завантаження відео
@@ -9137,7 +9133,7 @@ Minimize to Tray:
   chs: 最小化到托盘
   jpn: トレイに最小化する
   rus: Свернуть в лоток
-  por: Minimizar para bandeja
+  por: Minimizar para a bandeja
   swe: Minimera till facket
   pol: Minimalizuj do tacki
   ukr: Мінімізувати до лотка
@@ -9167,7 +9163,7 @@ Don't Select Any Audio:
   chs: 不选择任何音频
   jpn: オーディオを選択しない
   rus: Не выбирайте аудио
-  por: Não seleccione nenhum áudio
+  por: Não selecione nenhum áudio
   swe: Välj inte något ljud
   pol: Nie wybieraj żadnego dźwięku
   ukr: Не вибирайте жодного аудіо
@@ -9182,7 +9178,7 @@ Adaptive Reference Frames:
   chs: 自适应参考Z帧
   jpn: アダプティブリファレンスフレーム
   rus: Адаптивные опорные кадры
-  por: Quadros de referência adaptativos
+  por: Frames de referência adaptativos
   swe: Adaptiva referensramar
   pol: Adaptacyjne ramy odniesienia
   ukr: Адаптивні системи відліку
@@ -9200,8 +9196,8 @@ Adaptively select list of reference frames to improve encoding quality.:
   chs: 自适应地选择参考帧的列表以提高编码质量。
   jpn: エンコード品質を向上させるために、参照フレームのリストを適応的に選択する。
   rus: Адаптивный выбор списка опорных кадров для улучшения качества кодирования.
-  por: Seleccionar de forma adaptativa a lista de quadros de referência para melhorar
-    a qualidade de codificação.
+  por: Selecionar adaptativamente a lista de quadros de referência para melhorar a
+    qualidade de codificação.
   swe: Adaptivt val av lista över referensramar för att förbättra kodningskvaliteten.
   pol: Adaptacyjne wybieranie listy ramek odniesienia w celu poprawy jakości kodowania.
   ukr: Адаптивно вибирати список опорних кадрів для покращення якості кодування.
@@ -9217,7 +9213,7 @@ Adaptive Long-Term Reference Frames:
   chs: 自适应的长期参考帧
   jpn: 適応型長期基準フレーム
   rus: Адаптивные долгосрочные опорные кадры
-  por: Quadros de referência adaptativos de longo prazo
+  por: Quadros de referência de longo prazo adaptativos
   swe: Adaptiva referensramar på lång sikt
   pol: Adaptacyjne długoterminowe ramy odniesienia
   ukr: Адаптивні довгострокові системи координат
@@ -9238,7 +9234,7 @@ Mark, modify, or remove LTR frames based on encoding parameters and content prop
   jpn: エンコーディングパラメータとコンテンツプロパティに基づいて、LTRフレームをマーク、修正、または削除する。
   rus: Пометить, изменить или удалить кадры LTR на основе параметров кодирования и
     свойств содержимого.
-  por: Marcar, modificar, ou remover quadros LTR com base em parâmetros de codificação
+  por: Marcar, modificar ou remover quadros LTR com base em parâmetros de codificação
     e propriedades de conteúdo.
   swe: Markera, ändra eller ta bort LTR-ramar baserat på kodningsparametrar och innehållsegenskaper.
   pol: Zaznaczaj, modyfikuj lub usuwaj ramki LTR w oparciu o parametry kodowania i
@@ -9283,9 +9279,9 @@ Adaptive CQM:
   jpn: 特定の条件下で主観的な視覚品質を向上させるために、各フレームに対して実装定義された量子化マトリックスの1つを適応的に選択する。
   rus: Адаптивный выбор одной из определяемых реализацией матриц квантования для каждого
     кадра для улучшения субъективного визуального качества при определенных условиях.
-  por: Seleccionar de forma adaptativa uma das matrizes de quantização definidas pela
-    implementação para cada moldura, para melhorar a qualidade visual subjectiva sob
-    certas condições.
+  por: Selecionar de forma adaptativa uma das matrizes de quantização definidas pela
+    implementação para cada frame, para melhorar a qualidade visual subjetiva em
+    determinadas condições.
   swe: Adaptivt välja en av de kvantiseringsmatriser som definieras av implementeringen
     för varje bild för att förbättra den subjektiva visuella kvaliteten under vissa
     förhållanden.
@@ -9306,7 +9302,7 @@ Hardware Decoding:
   chs: 硬件解码
   jpn: ハードウェアデコード
   rus: Аппаратное декодирование
-  por: Descodificação de Hardware
+  por: Decodificação de hardware
   swe: Avkodning av hårdvara
   pol: Dekodowanie sprzętowe
   ukr: Апаратне декодування
@@ -9321,7 +9317,7 @@ Use hardware decoding:
   chs: 使用硬件解码
   jpn: ハードウェアデコードを使用する
   rus: Используйте аппаратное декодирование
-  por: Utilizar a descodificação de hardware
+  por: Utilizar decodificação de hardware
   swe: Använd hårdvaruavkodning
   pol: Wykorzystanie dekodowania sprzętowego
   ukr: Використовуйте апаратне декодування
@@ -9351,7 +9347,7 @@ Scene change detection method:
   chs: 场景变化检测方法
   jpn: シーンチェンジ検出方法
   rus: Метод обнаружения изменения сцены
-  por: Método de detecção de mudança de cenas
+  por: Método de detecção de mudança de cena
   swe: Metod för att upptäcka scenförändringar
   pol: Metoda wykrywania zmiany sceny
   ukr: Метод виявлення зміни сцени
@@ -9396,7 +9392,7 @@ Activity Type:
   chs: 活动类型
   jpn: アクティビティタイプ
   rus: Тип активности
-  por: Tipo de actividade
+  por: Tipo de atividade
   swe: Typ av verksamhet
   pol: Rodzaj działalności
   ukr: Тип діяльності
@@ -9411,7 +9407,7 @@ Activity type detection method:
   chs: 活动类型检测方法
   jpn: アクティビティタイプ検出方式
   rus: Метод определения типа активности
-  por: Método de detecção do tipo de actividade
+  por: Método de detecção do tipo de atividade
   swe: Metod för att upptäcka aktivitetstyper
   pol: Metoda wykrywania rodzaju aktywności
   ukr: Метод визначення типу активності
@@ -9426,7 +9422,7 @@ CAQ Strength:
   chs: CAQ的实力
   jpn: CAQの強さ
   rus: Сила CAQ
-  por: Força CAQ
+  por: Intensidade do CAQ
   swe: CAQ Styrka
   pol: CAQ Siła
   ukr: Сила CAQ
@@ -9441,7 +9437,7 @@ Strength of CAQ:
   chs: CAQ的实力
   jpn: CAQの強さ
   rus: Сила CAQ
-  por: Força do CAQ
+  por: Intensidade do CAQ
   swe: CAQ:s styrka
   pol: Siła CAQ
   ukr: Сильні сторони CAQ
@@ -9516,7 +9512,7 @@ Threshold to insert skip frame on static:
   chs: 在静态时插入跳帧的阈值
   jpn: 静止画でスキップフレームを挿入するための閾値
   rus: Порог для вставки пропуска кадра при статическом
-  por: Limiar para inserir moldura de saltar sobre estática
+  por: Limite para inserir skip frame em frame estático
   swe: Tröskelvärde för att infoga en överhoppningsram vid statisk
   pol: Próg do wstawienia pominiętej ramki na statycznych
   ukr: Поріг для вставки пропускного кадру на статиці
@@ -9546,7 +9542,7 @@ Enable long-term reference frame:
   chs: 启用长期参考框架
   jpn: 長期的な参照フレームを有効にする
   rus: Включить долгосрочную систему отсчета
-  por: Habilitar quadro de referência a longo prazo
+  por: Habilitar frame de referência de longo prazo
   swe: Aktivera långsiktig referensram
   pol: Włączenie długoterminowej ramy odniesienia
   ukr: Увімкніть довгострокову систему відліку
@@ -9636,7 +9632,7 @@ High motion quality boost mode:
   chs: 高运动质量提升模式
   jpn: 高画質ブーストモード
   rus: Режим повышения качества движения
-  por: Modo de impulso de alta qualidade de movimento
+  por: Modo de aumento de qualidade de movimento
   swe: Boost-läge för hög rörelsekvalitet
   pol: Tryb zwiększenia jakości ruchu
   ukr: Режим підвищення якості руху з високою роздільною здатністю
@@ -9651,7 +9647,7 @@ Disable Automatic Tab Switching:
   chs: 禁用自动标签切换
   jpn: タブの自動切替を無効にする
   rus: Отключить автоматическое переключение вкладок
-  por: Desactivar a troca automática de separadores
+  por: Desativar a troca automática de guias
   swe: Inaktivera automatisk byte av flikar
   pol: Wyłączenie automatycznego przełączania kart
   ukr: Вимкнути автоматичне перемикання вкладок
@@ -9666,7 +9662,7 @@ Rate Control Mode:
   chs: 速率控制模式
   jpn: レートコントロールモード
   rus: Режим управления скоростью
-  por: Modo de Controlo de Taxa
+  por: Modo de controle da taxa
   swe: Hastighetsstyrningsläge
   pol: Tryb Rate Control
   ukr: Режим регулювання швидкості
@@ -9681,7 +9677,7 @@ Set rate control mode:
   chs: 设置速率控制模式
   jpn: レートコントロールモードを設定する
   rus: Установите режим управления скоростью
-  por: Definir o modo de controlo da taxa
+  por: Definir o modo de controle da taxa
   swe: Ställ in läget för hastighetsreglering
   pol: Ustawienie trybu regulacji dawki
   ukr: Встановіть режим регулювання швидкості
@@ -9711,7 +9707,7 @@ VA-API device to use (default /dev/dri/renderD128):
   chs: 要使用的VA-API设备（默认为/dev/dri/renderD128）。
   jpn: 使用するVA-APIデバイス（デフォルト：/dev/dri/renderD128）
   rus: Устройство VA-API для использования (по умолчанию /dev/dri/renderD128)
-  por: Dispositivo VA-API a utilizar (por defeito /dev/dri/renderD128)
+  por: Dispositivo VA-API a ser usado (padrão /dev/dri/renderD128)
   swe: VA-API-enhet som ska användas (standard /dev/dri/renderD128)
   pol: Urządzenie VA-API do wykorzystania (domyślnie /dev/dri/renderD128)
   ukr: Пристрій VA-API для використання (за замовчуванням /dev/dri/renderD128)
@@ -9726,7 +9722,7 @@ B Depth:
   chs: B深度
   jpn: B深度
   rus: B Глубина
-  por: B Profundidade
+  por: B Depth
   swe: B Djup
   pol: B Głębokość
   ukr: B Глибина
@@ -9744,8 +9740,7 @@ Maximum B-frame reference depth (from 1 to INT_MAX) (default 1):
   chs: 最大的B-帧参考深度（从1到INT_MAX）（默认为1）。
   jpn: 最大Bフレーム参照深度（1～INT_MAX）（デフォルト1）
   rus: Максимальная опорная глубина B-кадра (от 1 до INT_MAX) (по умолчанию 1)
-  por: Profundidade máxima de referência do quadro B (de 1 a INT_MAX) (por defeito
-    1)
+  por: Profundidade máxima de referência de B-frame (de 1 a INT_MAX) (padrão 1)
   swe: Maximalt referensdjup för B-frame (från 1 till INT_MAX) (standard 1).
   pol: Maksymalna głębokość odniesienia klatki B (od 1 do INT_MAX) (domyślnie 1)
   ukr: Максимальна глибина відліку B-кадру (від 1 до INT_MAX) (за замовчуванням 1)
@@ -9775,7 +9770,7 @@ Distance between IDR frames (from 0 to INT_MAX) (default 0):
   chs: IDR帧之间的距离（从0到INT_MAX）（默认为0）。
   jpn: IDRフレーム間の距離（0～INT_MAX）（デフォルト0）
   rus: Расстояние между кадрами IDR (от 0 до INT_MAX) (по умолчанию 0)
-  por: Distância entre quadros IDR (de 0 a INT_MAX) (padrão 0)
+  por: Distância entre frames IDR (de 0 a INT_MAX) (padrão 0)
   swe: Avstånd mellan IDR-ramar (från 0 till INT_MAX) (standard 0)
   pol: Odległość pomiędzy ramkami IDR (od 0 do INT_MAX) (domyślnie 0)
   ukr: Відстань між кадрами IDR (від 0 до INT_MAX) (за замовчуванням 0)
@@ -9805,7 +9800,7 @@ Enable low power mode:
   chs: 启用低功率模式
   jpn: ローパワーモードを有効にする
   rus: Включить режим низкого энергопотребления
-  por: Activar o modo de baixo consumo
+  por: Habilitar o modo de baixo consumo
   swe: Aktivera lågeffektläge
   pol: Włączenie trybu niskiego zużycia energii
   ukr: Увімкнути режим низького енергоспоживання
@@ -9877,8 +9872,8 @@ Async Depth:
   rus: Максимальная параллельность обработки. Увеличьте это значение для повышения
     производительности одного канала. Эта опция не работает, если драйвер не реализует
     функцию vaSyncBuffer.
-  por: Máximo paralelismo de processamento. Aumentar isto para melhorar o desempenho
-    de um único canal. Esta opção não funciona se o condutor não implementar a função
+  por: Paralelismo máximo de processamento. Aumente este valor para melhorar o desempenho
+    de um único canal. Esta opção não funciona se o driver não implementar a função
     vaSyncBuffer.
   swe: Maximal parallellitet i bearbetningen. Öka detta värde för att förbättra prestandan
     för en enda kanal. Det här alternativet fungerar inte om drivrutinen inte implementerar
@@ -9946,7 +9941,7 @@ Default:
   chs: 默认
   jpn: デフォルト
   rus: По умолчанию
-  por: Predefinição
+  por: Padrão
   swe: Standard
   pol: Domyślnie
   ukr: За замовчуванням
@@ -10006,7 +10001,7 @@ Lyrics:
   chs: 歌词
   jpn: 歌詞
   rus: Тексты песен
-  por: Letra de música
+  por: Letra
   swe: Texter
   pol: Teksty piosenek
   ukr: Тексти пісень
@@ -10156,7 +10151,7 @@ lyrics:
   chs: 歌词
   jpn: 歌詞
   rus: Тексты песен
-  por: lyrics
+  por: letra
   swe: texter
   pol: tekst piosenki
   ukr: тексти пісень
@@ -10201,7 +10196,7 @@ Threshold to insert skip frame on static scene:
   chs: 在静态场景中插入跳帧的阈值
   jpn: 静的なシーンでスキップフレームを挿入するための閾値
   rus: Порог для вставки пропуска кадра на статичной сцене
-  por: Limiar para inserir moldura de saltar em cena estática
+  por: Limite para inserir skip frame em cena estática
   swe: Tröskelvärde för att infoga en överhoppningsram i en statisk scen
   pol: Próg do wstawienia pominiętej klatki na statycznej scenie
   ukr: Поріг для вставки пропускного кадру на статичній сцені
@@ -10216,7 +10211,7 @@ hearing_impaired:
   chs: 听障
   jpn: 耳の不自由
   rus: Нарушение слуха
-  por: Deficiente Auditivo
+  por: hearing_impaired
   swe: Hörselskadade
   pol: Niesłyszący
   ukr: Порушення слуху
@@ -10231,7 +10226,7 @@ visual_impaired:
   chs: 视障
   jpn: 目の不自由
   rus: Слабовидящие
-  por: Deficiente Visual
+  por: visual_impaired
   swe: Synskadade
   pol: Niedowidzący
   ukr: Порушення зору
@@ -10246,7 +10241,7 @@ Disable completion and error messages:
   chs: 禁用完成和错误消息
   jpn: 完了とエラーメッセージを無効にする
   rus: Отключить сообщения об окончании и ошибках
-  por: Desativar mensagens de conclusão e erro
+  por: Desabilitar mensagens de conclusão e erro
   swe: Inaktivera meddelanden om slutförande och fel
   pol: Wyłącz komunikaty o ukończeniu i błędach
   ukr: Вимкнути повідомлення про завершення та помилки
@@ -10336,9 +10331,52 @@ Single Pass Encoding:
   chs: 1次编码
   jpn: 1回のみのエンコード
   rus: Однопроходное кодирование
-  por: Codificação de passagem única
+  por: Codificação de uma passagem
   swe: Kodning i ett enda steg
   pol: Kodowanie jednoprzebiegowe
   ron: Codificare cu o singură trecere
   kor: 싱글 패스 인코딩
   ukr: Однопрохідне кодування
+Conversion suites:
+  eng: Conversion suites
+Encoders:
+  eng: Encoders
+Supporting libraries:
+  eng: Supporting libraries
+Packaged with:
+  eng: Packaged with
+Fast Seek:
+  eng: Fast Seek
+Rotate:
+  eng: Rotate
+Remove Hdr:
+  deu: HDR entfernen
+  eng: Remove HDR
+  fra: Supprimer le HDR
+  ita: Rimuovere HDR
+  spa: Eliminar HDR
+  chs: 去除HDR
+  jpn: HDRを削除
+  rus: Удалить HDR
+  por: Remover HDR
+  swe: Ta bort HDR
+  pol: Usuń HDR
+  ukr: Видалити HDR
+  kor: HDR 제거
+  ron: Îndepărtați HDR
+Resolution Method:
+  eng: Resolution Method
+Resolution Custom:
+  eng: Resolution Custom
+Output Type:
+  eng: Output Type
+Subtitle Language:
+  eng: Subtitle Language
+Subtitle Select:
+  eng: Subtitle Select
+Subtitle Select Preferred Language:
+  eng: Subtitle Select Preferred Language
+Subtitle Automatic Burn In:
+  eng: Subtitle Automatic Burn In
+Subtitle Select First Matching:
+  eng: Subtitle Select First Matching

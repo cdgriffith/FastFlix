@@ -240,6 +240,10 @@ def app_setup(
 
 
 def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False, enable_scaling=True):
+    # import tracemalloc
+    #
+    # tracemalloc.start()
+
     app = app_setup(
         enable_scaling=enable_scaling,
         portable_mode=portable_mode,
