@@ -5,6 +5,7 @@ import secrets
 from fastflix.encoders.common.helpers import Command, generate_all, null
 from fastflix.models.encode import VVCSettings
 from fastflix.models.fastflix import FastFlix
+from fastflix.shared import clean_file_string, quoted_path
 
 vvc_valid_color_primaries = [
     "bt709",
@@ -106,13 +107,16 @@ def build(fastflix: FastFlix):
         return '-vvenc-params "{}" '.format(":".join(all_params)) if all_params else ""
 
     if settings.bitrate:
+        params = get_vvc_params(["pass=1", f"rcstatsfile={quoted_path(clean_file_string(pass_log_file))}"])
         command_1 = (
-            f'{beginning} {get_vvc_params(["pass=1", "no-slow-firstpass=1"])} '
-            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
+            f"{beginning} {params} "
+            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} '
+            f'-preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
             f" -an -sn -dn {output_fps} -f mp4 {null}"
         )
+        params2 = get_vvc_params(["pass=2", f"rcstatsfile={quoted_path(clean_file_string(pass_log_file))}"])
         command_2 = (
-            f'{beginning} {get_vvc_params(["pass=2"])} -passlogfile "{pass_log_file}" '
+            f'{beginning} {params2} -passlogfile "{pass_log_file}" '
             f"-b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} {ending}"
         )
         return [
@@ -122,7 +126,7 @@ def build(fastflix: FastFlix):
 
     elif settings.qp:
         command = (
-            f"{beginning} {get_vvc_params()}  -qp:v {settings.qp} "
+            f"{beginning} {get_vvc_params()}  -qp:v {settings.qp} -b:v 0 "
             f"-preset:v {settings.preset} {settings.extra} {ending}"
         )
         return [Command(command=command, name="Single pass CRF", exe="ffmpeg")]

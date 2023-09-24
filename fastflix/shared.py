@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 from datetime import datetime, timedelta
-from distutils.version import StrictVersion
+from packaging import version as packaging_version
 from pathlib import Path
 from subprocess import run
 import platform
@@ -165,7 +165,7 @@ def latest_fastflix(app, show_new_dialog=False):
 
     release = [x for x in data if x["tag_name"] == use_version][0]
 
-    if use_version != __version__ and StrictVersion(use_version) > StrictVersion(__version__):
+    if use_version != __version__ and packaging_version.parse(use_version) > packaging_version.parse(__version__):
         portable, installer = None, None
         for asset in release["assets"]:
             if asset["name"].endswith("win64.zip"):

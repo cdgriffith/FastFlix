@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 5.5.8
+
+* Fixing VVC encode options (thanks to Chriss)
+* Removing distutils in favor of packaging
+
 ## Version 5.5.7
 
 * Fixing #503 missing CRF mode for SVT-AV1 (thanks to ignace72)
