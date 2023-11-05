@@ -563,7 +563,7 @@ class HEVC(SettingPanel):
         )
 
     def init_modes(self):
-        return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf")
+        return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf", show_bitrate_passes=True)
 
     def mode_update(self):
         self.widgets.custom_crf.setDisabled(self.widgets.crf.currentText() != "Custom")
@@ -697,6 +697,7 @@ class HEVC(SettingPanel):
             lossless=self.widgets.lossless.isChecked(),
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
+            bitrate_passes=int(self.widgets.bitrate_passes.currentText()),
             # gop_size=int(self.widgets.gop_size.currentText()) if self.widgets.gop_size.currentIndex() > 0 else 0,
         )
 

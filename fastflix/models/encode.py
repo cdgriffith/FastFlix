@@ -72,6 +72,7 @@ class x265Settings(EncoderSettings):
     intra_smoothing: bool = True
     frame_threads: int = 0
     # gop_size: int = 0
+    bitrate_passes: int = 2
 
 
 class VVCSettings(EncoderSettings):
@@ -94,6 +95,7 @@ class x264Settings(EncoderSettings):
     pix_fmt: str = "yuv420p"
     crf: Optional[Union[int, float]] = 23
     bitrate: Optional[str] = None
+    bitrate_passes: int = 2
 
 
 class FFmpegNVENCSettings(EncoderSettings):

@@ -1,9 +1,12 @@
 # Changelog
 
-## Version 5.5.8
+## Version 5.6.0
 
+* Adding Passes option for bitrate mode in x265 and x264 (thanks to Chriss)
 * Fixing VVC encode options (thanks to Chriss)
 * Removing distutils in favor of packaging
+* Removing #525 invalid 12 bit options for x264 (thanks to Chriss)
+* Removing #497 #519 advanced checks for hardware encoders, due to them not always being detected (thanks to CptnFluffy)
 
 ## Version 5.5.7
 

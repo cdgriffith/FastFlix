@@ -1294,16 +1294,39 @@ class Main(QtWidgets.QWidget):
                 return None
             try:
                 assert crop.top >= 0, t("Top must be positive number")
-                assert crop.left >= 0, t("Left must be positive number")
-                assert crop.width > 0, t("Total video width must be greater than 0")
                 assert crop.height > 0, t("Total video height must be greater than 0")
-                assert crop.width <= self.app.fastflix.current_video.width, t("Width must be smaller than video width")
                 assert crop.height <= self.app.fastflix.current_video.height, t(
                     "Height must be smaller than video height"
                 )
             except AssertionError as err:
-                error_message(f"{t('Invalid Crop')}: {err}")
+                logger.warning(f"{t('Invalid Crop')}: {err}")
+                self.widgets.crop.top.setStyleSheet("color: red")
+                self.widgets.crop.bottom.setStyleSheet("color: red")
                 return None
+            try:
+                assert crop.left >= 0, t("Left must be positive number")
+                assert crop.width > 0, t("Total video width must be greater than 0")
+
+                assert crop.width <= self.app.fastflix.current_video.width, t("Width must be smaller than video width")
+
+            except AssertionError as err:
+                logger.warning(f"{t('Invalid Crop')}: {err}")
+                self.widgets.crop.left.setStyleSheet("color: red")
+                self.widgets.crop.right.setStyleSheet("color: red")
+                # error_message(f"{t('Invalid Crop')}: {err}")
+                return None
+            self.widgets.crop.left.setStyleSheet(
+                "color: black" if self.app.fastflix.config.theme != "dark" else "color: white"
+            )
+            self.widgets.crop.right.setStyleSheet(
+                "color: black" if self.app.fastflix.config.theme != "dark" else "color: white"
+            )
+            self.widgets.crop.top.setStyleSheet(
+                "color: black" if self.app.fastflix.config.theme != "dark" else "color: white"
+            )
+            self.widgets.crop.bottom.setStyleSheet(
+                "color: black" if self.app.fastflix.config.theme != "dark" else "color: white"
+            )
             return crop
 
     def disable_all(self):
