@@ -839,7 +839,8 @@ Command worker received request to pause encoding after the current item complet
   jpn: コマンドワーカーが、現在のアイテムが完了した後にエンコードを一時停止するリクエストを受信しました
   rus: Оператор получил запрос на приостановку кодирования после завершения текущего
     элемента
-  por: O worker recebeu uma solicitação para pausar a codificação atual após a sua conclusão
+  por: O worker recebeu uma solicitação para pausar a codificação atual após a sua
+    conclusão
   swe: Kommandotjänstemannen har mottagit en begäran om att pausa kodningen efter
     det att det aktuella objektet har avslutats.
   pol: Pracownik poleceń otrzymał żądanie wstrzymania kodowania po zakończeniu bieżącego
@@ -1446,8 +1447,8 @@ Default is an autodetected count based on the number of CPU cores and whether WP
   jpn: デフォルトでは、CPUコア数とWPPが有効かどうかに基づいて自動検出されたカウントです。
   rus: По умолчанию это автоопределяемый подсчет, основанный на количестве ядер ЦП
     и на том, включен или нет WPP.
-  por: O padrão é uma contagem calculada pelo número de núcleos da CPU e se o WPP está
-    habilitado ou não.
+  por: O padrão é uma contagem calculada pelo número de núcleos da CPU e se o WPP
+    está habilitado ou não.
   swe: Standardvärdet är ett automatiskt registrerat antal baserat på antalet CPU-kärnor
     och om WPP är aktiverat eller inte.
   pol: Domyślnie jest to automatycznie wykryta liczba na podstawie liczby rdzeni CPU
@@ -1463,8 +1464,8 @@ Default is an autodetected count based on the number of CPU cores and whether WP
   fra: 'Par défaut : AQ activé avec auto-variance'
   ita: 'Default: AQ abilitato con auto-varianza'
   spa: 'Por defecto: AQ habilitado con auto-varianza'
-  chs: '默认值为enabled + auto-variance'
-  jpn: 'デフォルトは自動分散でAQを有効にする'
+  chs: 默认值为enabled + auto-variance
+  jpn: デフォルトは自動分散でAQを有効にする
   rus: 'По умолчанию: AQ включен с автоматической дисперсией'
   por: 'Padrão: AQ habilitado com auto-variação'
   swe: 'Standard: AQ aktiverad med automatisk variation'
@@ -1637,8 +1638,8 @@ Dither is an intentionally applied form of noise used to randomize quantization 
   jpn: ディザとは、量子化誤差をランダムにするために意図的にかけるノイズのことです。
   rus: Дизеринг - это намеренно применяемая форма шума, используемая для рандомизации
     ошибки квантования,
-  por: Dither é uma forma intencionalmente aplicada de ruído usado para randomizar o
-    erro de quantização,
+  por: Dither é uma forma intencionalmente aplicada de ruído usado para randomizar
+    o erro de quantização,
   swe: Dither är en avsiktligt tillämpad form av brus som används för att slumpa kvantiseringsfel,
   pol: Dither to celowo zastosowana forma szumu używana do randomizacji błędu kwantyzacji,
   ukr: Дизер - це навмисно застосована форма шуму, яка використовується для рандомізації
@@ -1842,8 +1843,8 @@ Enables true lossless coding by bypassing scaling, transform, quantization and i
   jpn: スケーリング、トランスフォーム、量子化、インループフィルタリングをバイパスすることで、真のロスレスコーディングを可能にします。
   rus: Обеспечивает прямое кодирование без потерь, минуя масштабирование, преобразование,
     квантование и фильтрацию в контуре.
-  por: Habilita a codificação lossless ao ignorar dimensionamento, transformação, quantização
-    e filtragem em loop.
+  por: Habilita a codificação lossless ao ignorar dimensionamento, transformação,
+    quantização e filtragem em loop.
   swe: Möjliggör verklig förlustfri kodning genom att kringgå skalning, omvandling,
     kvantisering och filtrering i loopen.
   pol: Umożliwia prawdziwie bezstratne kodowanie poprzez ominięcie skalowania, transformacji,
@@ -3036,8 +3037,8 @@ Lossless encodes implicitly have no rate control, all rate control options are i
   jpn: ロスレスエンコードでは、レートコントロールが行われず、すべてのレートコントロールオプションは無視されます。
   rus: Кодирование без потерь неявно не имеет контроля скорости, все опции контроля
     скорости игнорируются.
-  por: Os códigos lossless não têm implicitamente nenhum controle de taxa, todas
-    as opções de controle de taxa são ignoradas.
+  por: Os códigos lossless não têm implicitamente nenhum controle de taxa, todas as
+    opções de controle de taxa são ignoradas.
   swe: Förlustfria kodningar har implicit ingen hastighetsreglering, alla alternativ
     för hastighetsreglering ignoreras.
   pol: Kodowanie bezstratne domyślnie nie ma kontroli szybkości, wszystkie opcje kontroli
@@ -4355,8 +4356,8 @@ Row multithreading:
   fra: 'Courir après le commandement fait :'
   ita: 'Esecuzione dopo aver eseguito il comando:'
   spa: 'Corriendo tras el mando hecho:'
-  chs: '在完成命令后运行。'
-  jpn: 'コマンド完了後に実行。'
+  chs: 在完成命令后运行。
+  jpn: コマンド完了後に実行。
   rus: 'Запуск после выполнения команды:'
   por: 'Executando o comando pós-conclusão:'
   swe: 'Körs efter kommandot done:'
@@ -4617,8 +4618,8 @@ Set the level of effort in determining B frame placement.:
   fra: 'Régler après avoir fait la commande à :'
   ita: 'Impostare dopo il comando su:'
   spa: 'Estableciendo después de hacer el comando para:'
-  chs: '设置完成后命令为'
-  jpn: 'コマンドを実行した後の設定'
+  chs: 设置完成后命令为
+  jpn: コマンドを実行した後の設定
   rus: 'Установка после выполненной команды на:'
   por: 'Definindo o comando após a conclusão para:'
   swe: 'Ställ in kommandot efter utfört kommando till:'
@@ -4731,8 +4732,8 @@ Slower presets will generally achieve better compression efficiency (and generat
   jpn: 一般的には、遅いプリセットの方が圧縮効率が良くなります（より小さなビットストリームを生成します）。
   rus: Более медленные пресеты обычно обеспечивают лучшую эффективность сжатия (и
     генерируют меньшие битовые потоки).
-  por: Presets mais lentos geralmente alcançam melhor eficiência de compressão (e geram
-    bitstreams menores).
+  por: Presets mais lentos geralmente alcançam melhor eficiência de compressão (e
+    geram bitstreams menores).
   swe: Långsammare förinställningar ger i allmänhet bättre kompressionseffektivitet
     (och genererar mindre bitströmmar).
   pol: Wolniejsze presety generalnie osiągają lepszą wydajność kompresji (i generują
@@ -4959,7 +4960,7 @@ Support FastFlix:
   ita: Supporto FastFlix
   spa: Soporta FastFlix
   chs: 支持FastFlix
-  jpn: 'FastFlixを応援/寄付'
+  jpn: FastFlixを応援/寄付
   rus: Поддержка FastFlix
   por: Suporte FastFlix
   swe: Stöd för FastFlix
@@ -5151,8 +5152,8 @@ This is intended for use when you do not have a container to keep the stream hea
   jpn: ストリームヘッダーを保持してくれるコンテナがない場合に使用することを想定しています。
   rus: Это предназначено для использования, когда у вас нет контейнера для хранения
     заголовков потока.
-  por: Isso é destinado para uso quando você não tem um contêiner para manter os
-    cabeçalhos do stream para você
+  por: Isso é destinado para uso quando você não tem um contêiner para manter os cabeçalhos
+    do stream para você
   swe: Detta är avsett att användas när du inte har en behållare som behåller stream
     headers åt dig.
   pol: To jest przeznaczone do użycia, gdy nie masz kontenera, który przechowuje nagłówki
@@ -5549,8 +5550,8 @@ VBR Target:
   fra: 'Les valeurs : 0:aucun ; 1:rapide ; 2:plein(treillis) par défaut'
   ita: 'Valori: 0:nessuno; 1:veloce; 2:pieno (traliccio) predefinito'
   spa: 'Valores: 0:ninguno; 1:rápido; 2:completo (enrejado) por defecto'
-  chs: '取值：0:none；1:fast；2:full(trellis)（默认）'
-  jpn: '値を指定します。0：なし、1：速い、2：フル（tresllis）デフォルト'
+  chs: 取值：0:none；1:fast；2:full(trellis)（默认）
+  jpn: 値を指定します。0：なし、1：速い、2：フル（tresllis）デフォルト
   rus: 'Значения: 0:нет; 1:быстро; 2:полностью (решетка) по умолчанию'
   por: 'Valores: 0:nenhum; 1:rápido; 2:completo(trellis) padrão'
   swe: 'Värden: 0:ingen; 1:snabb; 2:full(trellis) standard'
@@ -5838,8 +5839,8 @@ With b-adapt 0, the GOP structure is fixed based on the values of --keyint and -
   jpn: b-adapt 0では、--keyintおよび--bframesの値に基づいてGOP構造が固定されます。
   rus: При b-adapt 0 структура GOP фиксируется на основе значений параметров --keyint
     и --bframes.
-  por: Com b-adapt 0, a estrutura GOP é definida com base nos valores de --keyint e
-    --bframes.
+  por: Com b-adapt 0, a estrutura GOP é definida com base nos valores de --keyint
+    e --bframes.
   swe: Med b-adapt 0 fastställs GOP-strukturen baserat på värdena för --keyint och
     --bframes.
   pol: Przy b-adapt 0, struktura GOP jest ustalana na podstawie wartości --keyint
@@ -5976,8 +5977,8 @@ and the amount of work performed by the full trellis version of --b-adapt lookah
   chs: lookahead在full(trellis)模式下执行的工作量有二次方的影响。
   jpn: と、フルtrellis版の--b-adapt lookaheadによる作業量を示しています。
   rus: и объем работы, выполняемой версией полной решетки --b-adapt lookahead.
-  por: e a quantidade de trabalho realizado pela versão trellis completa de
-    --b-adapt lookahead.
+  por: e a quantidade de trabalho realizado pela versão trellis completa de --b-adapt
+    lookahead.
   swe: och den mängd arbete som utförs av den fullständiga trellisversionen av --b-adapt
     lookahead.
   pol: oraz ilość pracy wykonanej przez wersję full trellis z --b-adapt lookahead.
@@ -6077,8 +6078,8 @@ b-adapt:
 'b-adapt: Set the level of effort in determining B frame placement.':
   deu: 'b-adapt: Festlegen des Grades des Aufwands bei der Bestimmung der B-Frame-Platzierung.'
   eng: 'b-adapt: Set the level of effort in determining B frame placement.'
-  fra: "b-adapt : Fixe le niveau d'effort pour déterminer le placement de l'image\
-    \ B."
+  fra: "b-adapt : Fixe le niveau d'effort pour déterminer le placement de l'image
+    B."
   ita: 'b-adatta: Impostare il livello di sforzo nel determinare il posizionamento
     del telaio B.'
   spa: 'b-adaptado: Establece el nivel de esfuerzo para determinar la colocación del
@@ -6156,7 +6157,7 @@ bframes:
   ita: 'bframes: Numero massimo di b-frame consecutivi. '
   spa: 'bframes: Número máximo de b-frames consecutivos. '
   chs: bframes：连续B帧的最大数量。
-  jpn: 'bframes:連続するb-フレームの最大数。'
+  jpn: bframes:連続するb-フレームの最大数。
   rus: 'bframes: Максимальное количество последовательных b-кадров.'
   por: 'bframes: Número máximo de b-frames consecutivos.'
   swe: 'bframes: Maximalt antal på varandra följande b-frames.'
@@ -6275,8 +6276,8 @@ data tracks found:
   fra: 'dhdr10-opt : Réduire les frais généraux du SEI'
   ita: 'dhdr10-opt: Riduce le spese generali SEI'
   spa: 'dhdr10-opt: Reduce los gastos de SEI'
-  chs: 'dhdr10-opt：减少SEI开销'
-  jpn: 'dhdr10-opt:SEI のオーバーヘッドを削減'
+  chs: dhdr10-opt：减少SEI开销
+  jpn: dhdr10-opt:SEI のオーバーヘッドを削減
   rus: 'dhdr10-opt: Уменьшает накладные расходы SEI'
   por: 'dhdr10-opt: Reduz os custos gerais do SEI'
   swe: 'dhdr10-opt: Minskar SEI:s omkostnader'
@@ -6290,8 +6291,8 @@ data tracks found:
   fra: 'exemples : level-idc=4.1:rc-lookahead=10'
   ita: 'esempi: level-idc=4.1:rc-lookahead=10'
   spa: 'ejemplos: level-idc=4.1:rc-lookahead=10'
-  chs: '示例：level-idc=4.1:rc-lookahead=10。'
-  jpn: '例：level-idc=4.1:rc-lookahead=10'
+  chs: 示例：level-idc=4.1:rc-lookahead=10。
+  jpn: 例：level-idc=4.1:rc-lookahead=10
   rus: 'примеры: level-idc=4.1:rc-lookahead=10'
   por: 'exemplos: level-idc=4.1:rc-lookahead=10'
   swe: 'exempel: level-idc=4.1:rc-lookahead=10'
@@ -6305,8 +6306,8 @@ data tracks found:
   fra: 'des fils de trame : Nombre de trames codées simultanément.'
   ita: 'telaio-filettature: Numero di frame codificati simultaneamente.'
   spa: 'Hilos de marcos: Número de cuadros codificados simultáneamente.'
-  chs: 'frame-threads：同时编码的帧数。'
-  jpn: 'frame-threads。同時にエンコードされるフレームの数。'
+  chs: frame-threads：同时编码的帧数。
+  jpn: frame-threads。同時にエンコードされるフレームの数。
   rus: 'frame-threads: Количество параллельно кодируемых кадров.'
   por: 'frame-threads: Número de frames codificados simultaneamente.'
   swe: 'ramtrådar: Antal samtidigt kodade ramar.'
@@ -6334,10 +6335,10 @@ good is the default and recommended for most applications:
   deu: 'hdr10-opt: Aktiviert die Luma- und Chroma-QP-Optimierung auf Blockebene für
     HDR10-Inhalte.'
   eng: 'hdr10-opt: Enable block-level luma and chroma QP optimization for HDR10 content.'
-  fra: "hdr10-opt : Activer l'optimisation QP luma et chroma au niveau des blocs pour\
-    \ le contenu HDR10."
-  ita: "hdr10-opt: Attivare l'ottimizzazione a livello di blocco luma e chroma QP\
-    \ per i contenuti HDR10."
+  fra: "hdr10-opt : Activer l'optimisation QP luma et chroma au niveau des blocs pour
+    le contenu HDR10."
+  ita: "hdr10-opt: Attivare l'ottimizzazione a livello di blocco luma e chroma QP
+    per i contenuti HDR10."
   spa: 'hdr10-opt: Habilitar la optimización de la luma a nivel de bloque y la QP
     cromática para el contenido de HDR10.'
   chs: hdr10-opt：启用HDR10内容的块级亮度和色度量化参数（Quantization Parameter, QP）优化。
@@ -6401,10 +6402,10 @@ installer:
 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.':
   deu: 'intra-refresh: Aktiviert Periodic Intra Refresh(PIR) anstelle der Keyframe-Einblendung.'
   eng: 'intra-refresh: Enables Periodic Intra Refresh(PIR) instead of keyframe insertion.'
-  fra: "intra-refresh : Active le rafraîchissement périodique intra (PIR) au lieu\
-    \ de l'insertion d'images clés."
-  ita: "intra-refresh: Abilita l'Intra Refresh(PIR) periodico invece dell'inserimento\
-    \ del keyframe."
+  fra: "intra-refresh : Active le rafraîchissement périodique intra (PIR) au lieu
+    de l'insertion d'images clés."
+  ita: "intra-refresh: Abilita l'Intra Refresh(PIR) periodico invece dell'inserimento
+    del keyframe."
   spa: 'intra-refresco: Habilita el Refresco Intra Periódico (PIR) en lugar de la
     inserción de fotogramas clave.'
   chs: intra-refresh：启用周期性帧内刷新（Periodic Intra Refresh, PIR）代替关键帧插入。
@@ -6472,15 +6473,15 @@ it will generally just increase memory use.:
     (Blu-ray-Spezifikation)'
   eng: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray
     spec)'
-  fra: "keyint : Activer l'intra-encodage en forçant les images clés toutes les 1\
-    \ seconde (spécification Blu-ray)"
-  ita: "keyint: Attivare l'Intra-Encoding forzando i keyframe ogni 1 secondo (Blu-ray\
-    \ spec)"
+  fra: "keyint : Activer l'intra-encodage en forçant les images clés toutes les 1
+    seconde (spécification Blu-ray)"
+  ita: "keyint: Attivare l'Intra-Encoding forzando i keyframe ogni 1 secondo (Blu-ray
+    spec)"
   spa: 'keyint: Habilitar la intracodificación forzando los fotogramas clave cada
     1 segundo (Blu-ray spec)'
   chs: 'keyint: Enable Intra-Encoding by forcing keyframes every 1 second (Blu-ray
     spec)'
-  jpn: 'keyint：1秒ごとにキーフレームを強制的に生成してイントラエンコードを有効にする（Blu-ray仕様）。'
+  jpn: keyint：1秒ごとにキーフレームを強制的に生成してイントラエンコードを有効にする（Blu-ray仕様）。
   rus: 'keyint: Включить внутреннее кодирование путем принудительного воспроизведения
     ключевых кадров каждые 1 секунду (спецификация Blu-ray).'
   por: 'keyint: Habilitar Intra-Encoding forçando keyframes a cada 1 segundo (especificação
@@ -6514,10 +6515,10 @@ lossless:
     output stream" zu beheben'
   eng: 'max_muxing_queue_size: Raise to fix "Too many packets buffered for output
     stream" error'
-  fra: "max_muxing_queue_size : Augmenter pour corriger l'erreur \"Too many packets\
-    \ buffered for output stream"
-  ita: "max_muxing_queue_size: Alzare per correggere l'errore \"Troppi pacchetti bufferizzati\
-    \ per il flusso di uscita"
+  fra: "max_muxing_queue_size : Augmenter pour corriger l'erreur \"Too many packets
+    buffered for output stream"
+  ita: "max_muxing_queue_size: Alzare per correggere l'errore \"Troppi pacchetti bufferizzati
+    per il flusso di uscita"
   spa: 'tamaño_muxing_queue_size: Subir para corregir el error "Demasiados paquetes
     almacenados en la memoria intermedia para el flujo de salida".'
   chs: max_muxing_queue_size：提高以解决 "输出流缓冲的数据包太多（Too many packets buffered for output
@@ -6525,7 +6526,8 @@ lossless:
   jpn: max_muxing_queue_size 「出力ストリームにバッファリングされるパケット数が多すぎる」というエラーが発生した場合は値を上げてください。
   rus: 'max_muxing_queue_size: Повышение для исправления ошибки "Слишком много пакетов
     буферизировано для выходного потока"'
-  por: 'max_muxing_queue_size: Aumentar para corrigir o erro "Too many packets buffered for output stream"'
+  por: 'max_muxing_queue_size: Aumentar para corrigir o erro "Too many packets buffered
+    for output stream"'
   swe: 'max_muxing_queue_size: Höj för att åtgärda felet "För många paket buffras
     för utdataströmmen".'
   pol: 'max_muxing_queue_size: Podnieś, aby naprawić błąd "Zbyt wiele pakietów buforowanych
@@ -6619,8 +6621,8 @@ preset:
   ita: 'preimpostata: Più lento è il preset, migliore è la compressione e la qualità'
   spa: 'preestablecido: Cuanto más lento el preajuste, mejor será la compresión y
     la calidad'
-  chs: 'preset：较慢的预设能提供更好的压缩比和质量。'
-  jpn: 'プリセットの速度が遅いほど、圧縮率と品質が向上します。'
+  chs: preset：较慢的预设能提供更好的压缩比和质量。
+  jpn: プリセットの速度が遅いほど、圧縮率と品質が向上します。
   rus: 'предустановка: Чем медленнее предустановка, тем лучше сжатие и качество'
   por: 'preset: Quanto mais lento o preset, melhor a compressão e a qualidade'
   swe: 'förinställd: Ju långsammare förinställning, desto bättre komprimering och
@@ -6667,8 +6669,8 @@ profile:
   fra: 'profil : Appliquer un profil de codage'
   ita: 'profilo: Applicare un profilo di codifica'
   spa: 'perfil: Hacer cumplir un perfil codificado'
-  chs: '配置：应用一个编码配置'
-  jpn: 'プロフィール：エンコードプロファイルを適用してください。'
+  chs: 配置：应用一个编码配置
+  jpn: プロフィール：エンコードプロファイルを適用してください。
   rus: 'профиль: Применить профиль кодирования'
   por: 'profile: Forçar um perfil de codificação'
   swe: 'profil: Genomdriva en kodningsprofil'
@@ -6684,8 +6686,8 @@ profile:
     punta'
   spa: 'perfil: Perfil de codificación del VP9 - debe coincidir con la profundidad
     del bit'
-  chs: '配置：VP9编码规格——必须与位深度相匹配。'
-  jpn: 'プロファイルを使用しています。VP9コーディングプロファイル - ビット深度と一致する必要があります'
+  chs: 配置：VP9编码规格——必须与位深度相匹配。
+  jpn: プロファイルを使用しています。VP9コーディングプロファイル - ビット深度と一致する必要があります
   rus: 'профиль: Профиль кодирования VP9 - должен соответствовать битовой глубине'
   por: 'profile: Perfil de codificação VP9 - deve corresponder à profundidade do bit'
   swe: 'profil: VP9-kodningsprofil - måste matcha bitdjupet'
@@ -6739,8 +6741,8 @@ rav1e github:
   jpn: repeat-headersを有効にすると、x265はキーフレームごとにVPS、SPS、PPSの各ヘッダを出力します。
   rus: 'повторять заголовки: Если включено, x265 будет выдавать заголовки VPS, SPS
     и PPS с каждым ключевым кадром.'
-  por: 'repeat-headers: Se ativado, x265 emitirá cabeçalhos VPS, SPS e PPS em
-    cada kkeyframe.'
+  por: 'repeat-headers: Se ativado, x265 emitirá cabeçalhos VPS, SPS e PPS em cada
+    kkeyframe.'
   swe: 'upprepa rubriker: Om den är aktiverad kommer x265 att skicka ut VPS-, SPS
     och PPS-rubriker med varje nyckelbild.'
   pol: 'repeat-headers: Jeśli włączone, x265 będzie emitować nagłówki VPS, SPS i PPS
@@ -6763,8 +6765,8 @@ since the entire reference frames are always available for motion compensation,:
   chs: 因为总是可以获取完整的参考帧来进行运动补偿，
   jpn: は、リファレンスフレーム全体が常に動きの補正に利用できるからです。
   rus: поскольку для компенсации движения всегда доступны все опорные кадры,
-  por: uma vez que todos os frames de referência estão sempre disponíveis para a
-    compensação de movimento,
+  por: uma vez que todos os frames de referência estão sempre disponíveis para a compensação
+    de movimento,
   swe: eftersom hela referensramar alltid är tillgängliga för rörelsekompensation,
   pol: ponieważ całe ramki odniesienia są zawsze dostępne dla kompensacji ruchu,
   ukr: оскільки для компенсації руху завжди доступні всі системи відліку,
@@ -7243,8 +7245,8 @@ Decoder:
   fra: "Hardware : utiliser libavformat + décodeur matériel pour l'entrée"
   ita: "Hardware: usa libavformat + decoder hardware per l'ingresso"
   spa: 'Hardware: utilizar libavformat + decodificador de hardware para la entrada'
-  chs: 'Hardware：使用libavformat+硬件解码器'
-  jpn: 'ハードウェア：入力にlibavformat＋ハードウェアデコーダを使用'
+  chs: Hardware：使用libavformat+硬件解码器
+  jpn: ハードウェア：入力にlibavformat＋ハードウェアデコーダを使用
   rus: 'Аппаратное обеспечение: использование libavformat + аппаратного декодера для
     ввода'
   por: 'Hardware: usar libavformat + decodificador de hardware para entrada'
@@ -7260,8 +7262,8 @@ Decoder:
   fra: 'Software : utiliser avcodec + décodeur logiciel'
   ita: 'Software: usa avcodec + decoder software'
   spa: 'Software: utilizar avcodec + decodificador de software'
-  chs: 'Software：使用avcodec + 软件解码器'
-  jpn: 'ソフトウェア：avcodec + ソフトウェアデコーダを使用'
+  chs: Software：使用avcodec + 软件解码器
+  jpn: ソフトウェア：avcodec + ソフトウェアデコーダを使用
   rus: 'Программное обеспечение: используйте avcodec + программный декодер'
   por: 'Software: usar avcodec + decodificador de software'
   swe: 'Programvara: Använd avcodec + mjukvaruavkodare'
@@ -7574,8 +7576,8 @@ does not support concatenating files together:
 'WARNING: This feature is not provided by the encoder software directly':
   deu: 'WARNUNG: Diese Funktion wird nicht direkt von der Encoder-Software bereitgestellt.'
   eng: 'WARNING: This feature is not provided by the encoder software directly'
-  fra: "AVERTISSEMENT : Cette fonction n'est pas fournie directement par le logiciel\
-    \ de l'encodeur."
+  fra: "AVERTISSEMENT : Cette fonction n'est pas fournie directement par le logiciel
+    de l'encodeur."
   ita: 'ATTENZIONE: Questa funzione non è fornita direttamente dal software di codifica'
   spa: 'ADVERTENCIA: Esta función no es proporcionada por el software del codificador
     directamente'
@@ -8988,8 +8990,8 @@ That video was added with an encoder that is no longer available, unable to load
   jpn: その動画は、利用できなくなったエンコーダーで追加されたため、キューから読み込むことができません。
   rus: Это видео было добавлено с помощью кодировщика, который больше не доступен,
     не удается загрузить из очереди
-  por: Esse vídeo foi adicionado com um codificador que não está mais disponível, não
-    é possível carregar da fila
+  por: Esse vídeo foi adicionado com um codificador que não está mais disponível,
+    não é possível carregar da fila
   swe: Videon lades till med en kodare som inte längre är tillgänglig, kan inte laddas
     från kön.
   pol: Ten film został dodany za pomocą kodera, który nie jest już dostępny, nie można
@@ -9280,8 +9282,8 @@ Adaptive CQM:
   rus: Адаптивный выбор одной из определяемых реализацией матриц квантования для каждого
     кадра для улучшения субъективного визуального качества при определенных условиях.
   por: Selecionar de forma adaptativa uma das matrizes de quantização definidas pela
-    implementação para cada frame, para melhorar a qualidade visual subjetiva em
-    determinadas condições.
+    implementação para cada frame, para melhorar a qualidade visual subjetiva em determinadas
+    condições.
   swe: Adaptivt välja en av de kvantiseringsmatriser som definieras av implementeringen
     för varje bild för att förbättra den subjektiva visuella kvaliteten under vissa
     förhållanden.
@@ -9868,7 +9870,8 @@ Async Depth:
     de un solo canal. Esta opción no funciona si el controlador no implementa la función
     vaSyncBuffer.
   chs: 最大的处理并行性。增加这个选项可以提高单通道的性能。如果驱动程序没有实现vaSyncBuffer函数，这个选项就不起作用。
-  jpn: 最大処理並列度。シングルチャンネルの性能を向上させるために、これを増やします。ドライバがvaSyncBuffer関数を実装していない場合、このオプションは機能しません。
+  jpn:
+    最大処理並列度。シングルチャンネルの性能を向上させるために、これを増やします。ドライバがvaSyncBuffer関数を実装していない場合、このオプションは機能しません。
   rus: Максимальная параллельность обработки. Увеличьте это значение для повышения
     производительности одного канала. Эта опция не работает, если драйвер не реализует
     функцию vaSyncBuffer.
@@ -10339,16 +10342,94 @@ Single Pass Encoding:
   ukr: Однопрохідне кодування
 Conversion suites:
   eng: Conversion suites
+  deu: Konvertierungssuiten
+  fra: Suites de conversion
+  ita: Suite di conversione
+  spa: Salas de conversión
+  jpn: コンバージョン・スイート
+  rus: Конверсионные комплексы
+  por: Suites de conversão
+  swe: Sviter för konvertering
+  pol: Zestawy do konwersji
+  chs: 改装套件
+  ukr: Номери для переобладнання
+  kor: 전환 제품군
+  ron: Suite de conversie
 Encoders:
   eng: Encoders
+  deu: Drehgeber
+  fra: Encodeurs
+  ita: Encoder
+  spa: Codificadores
+  jpn: エンコーダ
+  rus: Энкодеры
+  por: Codificadores
+  swe: Kodare
+  pol: Kodery
+  chs: 编码器
+  ukr: Енкодери
+  kor: 인코더
+  ron: Codificatoare
 Supporting libraries:
   eng: Supporting libraries
+  deu: Unterstützung von Bibliotheken
+  fra: Soutenir les bibliothèques
+  ita: Biblioteche di supporto
+  spa: Apoyo a las bibliotecas
+  jpn: 図書館のサポート
+  rus: Поддержка библиотек
+  por: Apoio às bibliotecas
+  swe: Stöd till bibliotek
+  pol: Wspieranie bibliotek
+  chs: 支持图书馆
+  ukr: Підтримка бібліотек
+  kor: 지원 라이브러리
+  ron: Sprijinirea bibliotecilor
 Packaged with:
   eng: Packaged with
+  deu: Verpackt mit
+  fra: Emballé avec
+  ita: Confezionato con
+  spa: Envasado con
+  jpn: パッケージ
+  rus: В комплекте с
+  por: Embalado com
+  swe: Förpackad med
+  pol: W zestawie
+  chs: 包装包括
+  ukr: У комплекті з
+  kor: 함께 제공되는 패키지
+  ron: Ambalat cu
 Fast Seek:
   eng: Fast Seek
+  deu: Schnellsuche
+  fra: Recherche rapide
+  ita: Ricerca veloce
+  spa: Búsqueda rápida
+  jpn: ファスト・シーク
+  rus: Быстрый поиск
+  por: Procura rápida
+  swe: Snabb sökning
+  pol: Szybkie wyszukiwanie
+  chs: 快速查找
+  ukr: '"Форсаж'
+  kor: 빠른 검색
+  ron: Căutare rapidă
 Rotate:
   eng: Rotate
+  deu: Drehen Sie
+  fra: Rotation
+  ita: Ruotare
+  spa: Gire
+  jpn: 回転
+  rus: Поворот
+  por: Rodar
+  swe: Rotera
+  pol: Obrót
+  chs: 旋转
+  ukr: Поворот
+  kor: 회전
+  ron: Rotiți
 Remove Hdr:
   deu: HDR entfernen
   eng: Remove HDR
@@ -10366,17 +10447,151 @@ Remove Hdr:
   ron: Îndepărtați HDR
 Resolution Method:
   eng: Resolution Method
+  deu: Auflösung Methode
+  fra: Méthode de résolution
+  ita: Metodo di risoluzione
+  spa: Método de resolución
+  jpn: 解決方法
+  rus: Метод разрешения
+  por: Método de resolução
+  swe: Metod för upplösning
+  pol: Metoda rozdzielczości
+  chs: 解决方法
+  ukr: Метод розв'язання
+  kor: 해결 방법
+  ron: Metoda de rezoluție
 Resolution Custom:
   eng: Resolution Custom
+  deu: Auflösung Benutzerdefiniert
+  fra: Résolution Personnalisée
+  ita: Risoluzione personalizzata
+  spa: Resolución Personalizada
+  jpn: 解像度カスタム
+  rus: Разрешение Пользовательское
+  por: Resolução Personalizada
+  swe: Resolution Anpassad
+  pol: Rozdzielczość niestandardowa
+  chs: 自定义分辨率
+  ukr: Роздільна здатність Користувацька
+  kor: 해상도 사용자 지정
+  ron: Rezoluție Personalizată
 Output Type:
   eng: Output Type
+  deu: Ausgangstyp
+  fra: Type de sortie
+  ita: Tipo di uscita
+  spa: Tipo de salida
+  jpn: 出力タイプ
+  rus: Тип выхода
+  por: Tipo de saída
+  swe: Typ av utgång
+  pol: Typ wyjścia
+  chs: 输出类型
+  ukr: Тип виходу
+  kor: 출력 유형
+  ron: Tip de ieșire
 Subtitle Language:
   eng: Subtitle Language
+  deu: Sprache des Untertitels
+  fra: Langue des sous-titres
+  ita: Lingua dei sottotitoli
+  spa: Idioma de los subtítulos
+  jpn: 字幕言語
+  rus: Язык субтитров
+  por: Língua da legenda
+  swe: Språk för undertexter
+  pol: Język napisów
+  chs: 字幕语言
+  ukr: Мова субтитрів
+  kor: 자막 언어
+  ron: Subtitrare Limba
 Subtitle Select:
   eng: Subtitle Select
+  deu: Untertitel auswählen
+  fra: Sélection des sous-titres
+  ita: Selezione dei sottotitoli
+  spa: Selección de subtítulos
+  jpn: 字幕セレクト
+  rus: Выбор субтитров
+  por: Seleção de legendas
+  swe: Välj undertext
+  pol: Wybór napisów
+  chs: 字幕选择
+  ukr: Вибір субтитрів
+  kor: 자막 선택
+  ron: Selectare subtitrare
 Subtitle Select Preferred Language:
   eng: Subtitle Select Preferred Language
+  deu: Untertitel Bevorzugte Sprache auswählen
+  fra: Sous-titres Sélectionner la langue préférée
+  ita: Sottotitoli Selezionare la lingua preferita
+  spa: Subtítulos Seleccionar idioma preferido
+  jpn: 字幕 選択した言語
+  rus: Субтитры Выбор предпочтительного языка
+  por: Legendas Selecionar o idioma preferido
+  swe: Undertexter Välj önskat språk
+  pol: Napisy Wybierz preferowany język
+  chs: 字幕 选择首选语言
+  ukr: Субтитри Виберіть мову субтитрів
+  kor: 자막 기본 언어 선택
+  ron: Subtitrare Selectați limba preferată
 Subtitle Automatic Burn In:
   eng: Subtitle Automatic Burn In
+  deu: Untertitel Automatisches Einbrennen
+  fra: Gravure automatique des sous-titres
+  ita: Sottotitolo Burn In automatico
+  spa: Subtitulación Quemado automático
+  jpn: 字幕自動焼き込み
+  rus: Автоматическое включение субтитров
+  por: Subtitle Automatic Burn In (Gravação automática de legendas)
+  swe: Automatisk inbränning av undertexter
+  pol: Automatyczne włączanie napisów
+  chs: 字幕自动烧入
+  ukr: Субтитри Автоматичне вигоряння
+  kor: 자막 자동 번인
+  ron: Subtitrare Automatic Burn In
 Subtitle Select First Matching:
   eng: Subtitle Select First Matching
+  deu: Untertitel Erste Übereinstimmung auswählen
+  fra: Sélection des sous-titres Première correspondance
+  ita: Selezione del sottotitolo Prima corrispondenza
+  spa: Subtítulo Seleccionar primera coincidencia
+  jpn: 字幕選択 最初のマッチング
+  rus: Выбор субтитров Первое совпадение
+  por: Seleção de legendas Primeira correspondência
+  swe: Undertext Välj första matchning
+  pol: Wybór napisów Pierwsze dopasowanie
+  chs: 字幕选择首次匹配
+  ukr: Субтитри Виберіть перший збіг
+  kor: 자막 첫 번째 매칭 선택
+  ron: Subtitrare Selectați prima potrivire
+Passes:
+  eng: Passes
+  deu: Pässe
+  fra: Adopté
+  ita: Passaggi
+  spa: Pases
+  jpn: パス
+  rus: Проходит
+  por: Passa
+  swe: Godkänt
+  pol: Przełęcze
+  chs: 通过
+  ukr: Перепустки
+  kor: 패스
+  ron: Trece
+Custom:
+  eng: Custom
+  deu: Benutzerdefiniert
+  fra: Sur mesure
+  ita: Personalizzato
+  spa: A medida
+  jpn: カスタム
+  rus: Пользовательский
+  por: Personalizado
+  swe: Anpassad
+  pol: Niestandardowe
+  chs: 定制
+  ukr: Нестандартний
+  kor: 사용자 지정
+  ron: Personalizat

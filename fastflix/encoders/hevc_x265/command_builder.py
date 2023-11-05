@@ -179,19 +179,23 @@ def build(fastflix: FastFlix):
         return '-x265-params "{}" '.format(":".join(all_params)) if all_params else ""
 
     if settings.bitrate:
-        command_1 = (
-            f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1"])} '
-            f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
-            f" -an -sn -dn {output_fps} -f mp4 {null}"
-        )
-        command_2 = (
-            f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "{pass_log_file}" '
-            f"-b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} {ending}"
-        )
-        return [
-            Command(command=command_1, name="First pass bitrate", exe="ffmpeg"),
-            Command(command=command_2, name="Second pass bitrate", exe="ffmpeg"),
-        ]
+        if settings.bitrate_passes == 2:
+            command_1 = (
+                f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1"])} '
+                f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
+                f" -an -sn -dn {output_fps} -f mp4 {null}"
+            )
+            command_2 = (
+                f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "{pass_log_file}" '
+                f"-b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} {ending}"
+            )
+            return [
+                Command(command=command_1, name="First pass bitrate", exe="ffmpeg"),
+                Command(command=command_2, name="Second pass bitrate", exe="ffmpeg"),
+            ]
+        else:
+            command = f"{beginning} {get_x265_params()} -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} {ending}"
+            return [Command(command=command, name="Single pass bitrate", exe="ffmpeg")]
 
     elif settings.crf:
         command = (

@@ -115,29 +115,29 @@ def init_encoders(app: FastFlixApp, **_):
         encoders.insert(encoders.index(avc_plugin), vceencc_avc_plugin)
     else:
         if app.fastflix.config.qsvencc:
-            if "H.265/HEVC" in app.fastflix.config.qsvencc_encoders:
-                encoders.insert(1, qsvencc_plugin)
-            if "AV1" in app.fastflix.config.qsvencc_encoders:
-                encoders.insert(encoders.index(av1_plugin), qsvencc_av1_plugin)
-            if "H.264/AVC" in app.fastflix.config.qsvencc_encoders:
-                encoders.insert(encoders.index(avc_plugin), qsvencc_avc_plugin)
+            # if "H.265/HEVC" in app.fastflix.config.qsvencc_encoders:
+            encoders.insert(1, qsvencc_plugin)
+            # if "AV1" in app.fastflix.config.qsvencc_encoders:
+            encoders.insert(encoders.index(av1_plugin), qsvencc_av1_plugin)
+            # if "H.264/AVC" in app.fastflix.config.qsvencc_encoders:
+            encoders.insert(encoders.index(avc_plugin), qsvencc_avc_plugin)
 
         if app.fastflix.config.nvencc:
-            if "H.265/HEVC" in app.fastflix.config.nvencc_encoders:
-                encoders.insert(1, nvencc_plugin)
-            if "AV1" in app.fastflix.config.nvencc_encoders:
-                encoders.insert(encoders.index(av1_plugin), nvencc_av1_plugin)
-            if "H.264/AVC" in app.fastflix.config.nvencc_encoders:
-                encoders.insert(encoders.index(avc_plugin), nvencc_avc_plugin)
+            # if "H.265/HEVC" in app.fastflix.config.nvencc_encoders:
+            encoders.insert(1, nvencc_plugin)
+            # if "AV1" in app.fastflix.config.nvencc_encoders:
+            encoders.insert(encoders.index(av1_plugin), nvencc_av1_plugin)
+            # if "H.264/AVC" in app.fastflix.config.nvencc_encoders:
+            encoders.insert(encoders.index(avc_plugin), nvencc_avc_plugin)
 
         if app.fastflix.config.vceencc:
-            if reusables.win_based and "H.265/HEVC" in app.fastflix.config.vceencc_encoders:
-                # HEVC AMF support only works on windows currently
-                encoders.insert(1, vceencc_hevc_plugin)
-            if "AV1" in app.fastflix.config.vceencc_encoders:
-                encoders.insert(encoders.index(av1_plugin), vceencc_av1_plugin)
-            if "H.264/AVC" in app.fastflix.config.vceencc_encoders:
-                encoders.insert(encoders.index(avc_plugin), vceencc_avc_plugin)
+            # if reusables.win_based: # and "H.265/HEVC" in app.fastflix.config.vceencc_encoders:
+            # HEVC AMF support only works on windows currently
+            encoders.insert(1, vceencc_hevc_plugin)
+            # if "AV1" in app.fastflix.config.vceencc_encoders:
+            encoders.insert(encoders.index(av1_plugin), vceencc_av1_plugin)
+            # if "H.264/AVC" in app.fastflix.config.vceencc_encoders:
+            encoders.insert(encoders.index(avc_plugin), vceencc_avc_plugin)
 
     app.fastflix.encoders = {
         encoder.name: encoder

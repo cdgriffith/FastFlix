@@ -332,7 +332,15 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.hdr10plus_metadata.setText(filename[0])
         self.main.page_update()
 
-    def _add_modes(self, recommended_bitrates, recommended_qps, qp_name="crf", add_qp=True, disable_custom_qp=False):
+    def _add_modes(
+        self,
+        recommended_bitrates,
+        recommended_qps,
+        qp_name="crf",
+        add_qp=True,
+        disable_custom_qp=False,
+        show_bitrate_passes=False,
+    ):
         self.recommended_bitrates = recommended_bitrates
         self.recommended_qps = recommended_qps
         self.qp_name = qp_name
@@ -352,6 +360,10 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.bitrate = QtWidgets.QComboBox()
         # self.widgets.bitrate.setFixedWidth(250)
         self.widgets.bitrate.addItems(recommended_bitrates)
+        self.widgets.bitrate_passes = QtWidgets.QComboBox()
+        self.widgets.bitrate_passes.addItems(["1", "2"])
+        self.widgets.bitrate_passes.setCurrentIndex(1)
+        self.widgets.bitrate_passes.currentIndexChanged.connect(lambda: self.mode_update())
         config_opt = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
         custom_bitrate = False
         try:
@@ -372,8 +384,11 @@ class SettingPanel(QtWidgets.QWidget):
         bitrate_box_layout.addWidget(self.bitrate_radio)
         bitrate_box_layout.addWidget(self.widgets.bitrate, 1)
         bitrate_box_layout.addStretch(1)
+        if show_bitrate_passes:
+            bitrate_box_layout.addWidget(QtWidgets.QLabel(t("Passes") + ":"))
+            bitrate_box_layout.addWidget(self.widgets.bitrate_passes)
         bitrate_box_layout.addStretch(1)
-        bitrate_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
+        bitrate_box_layout.addWidget(QtWidgets.QLabel(t("Custom") + ":"))
         bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
         bitrate_box_layout.addWidget(QtWidgets.QLabel("k"))
 

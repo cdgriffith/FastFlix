@@ -51,13 +51,10 @@ recommended_crfs = [
 pix_fmts = [
     "8-bit: yuv420p",
     "10-bit: yuv420p10le",
-    "12-bit: yuv420p12le",
     "8-bit 422: yuv422p",
     "8-bit 444: yuv444p",
     "10-bit 422: yuv422p10le",
     "10-bit 444: yuv444p10le",
-    "12-bit 422: yuv422p12le",
-    "12-bit 444: yuv444p12le",
 ]
 
 
@@ -154,7 +151,7 @@ class AVC(SettingPanel):
         )
 
     def init_modes(self):
-        return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf")
+        return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf", show_bitrate_passes=True)
 
     def mode_update(self):
         self.widgets.custom_crf.setDisabled(self.widgets.crf.currentText() != "Custom")
@@ -181,6 +178,7 @@ class AVC(SettingPanel):
             extra=self.ffmpeg_extras,
             tune=tune if tune.lower() != "default" else None,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
+            bitrate_passes=int(self.widgets.bitrate_passes.currentText()),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.crf = q_value if encode_type == "qp" else None
