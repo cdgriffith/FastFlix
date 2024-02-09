@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 import logging
 import secrets
+from subprocess import run, PIPE
 
 from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtWidgets import QAbstractItemView
@@ -57,10 +58,10 @@ class HDR10PlusInjectWindow(QtWidgets.QWidget):
         line_3.addWidget(self.hdr10p_file_button)
 
         self.info_bubble = QtWidgets.QLabel("")
-        self.command_bubble = QtWidgets.QLabel("")
+        self.command_bubble = QtWidgets.QLineEdit("")
         self.command_bubble.setFixedWidth(400)
-        self.command_bubble.setWordWrap(True)
-        self.command_bubble.setFixedHeight(400)
+        # self.command_bubble.setWordWrap(True)
+        # self.command_bubble.setFixedHeight(400)
 
         layout = QtWidgets.QVBoxLayout()
 
@@ -69,11 +70,20 @@ class HDR10PlusInjectWindow(QtWidgets.QWidget):
         output_lin.addWidget(self.output_file)
         output_lin.addWidget(self.output_file_button)
 
+        bottom_line = QtWidgets.QHBoxLayout()
+        cancel = QtWidgets.QPushButton("Cancel")
+        cancel.clicked.connect(self.hide)
+        bottom_line.addWidget(cancel)
+        start = QtWidgets.QPushButton("Start")
+        start.clicked.connect(self.start)
+        bottom_line.addWidget(start)
+
         layout.addLayout(line_1)
         layout.addWidget(self.info_bubble)
         layout.addLayout(line_3)
         layout.addLayout(output_lin)
         layout.addWidget(self.command_bubble)
+        layout.addLayout(bottom_line)
         self.setLayout(layout)
 
     def movie_open(self):
@@ -129,6 +139,10 @@ class HDR10PlusInjectWindow(QtWidgets.QWidget):
             f"{self.app.fastflix.config.hdr10plus_parser} inject -i - -j {self.hdr10p_file.text()} -o - | "
             f'{self.app.fastflix.config.ffmpeg} -loglevel panic -i - -i {self.movie_file.text()} -map 0:0 -c:0 copy -map 1:a -map 1:s -map 1:d -c:1 copy "{self.output_file.text()}"'
         )
-        print(command)
 
+        print(command)
         self.command_bubble.setText(command)
+
+    def start(self):
+        run(self.command_bubble.text(), shell=True)
+        error_message("Done")

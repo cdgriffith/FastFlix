@@ -23,6 +23,8 @@ re_progressive = re.compile(r"Progressive:\s+(\d+)")
 
 logger = logging.getLogger("fastflix")
 
+HDR10_parser_version = None
+
 ffmpeg_valid_color_primaries = [
     "bt709",
     "bt470m",
@@ -558,16 +560,25 @@ def parse_hdr_details(app: FastFlixApp, **_):
                     )
 
 
+def get_hdr10_parser_version(config: Config) -> LooseVersion:
+    global HDR10_parser_version
+    if HDR10_parser_version:
+        return HDR10_parser_version
+    HDR10_parser_version_output = check_output([str(config.hdr10plus_parser), "--version"], encoding="utf-8")
+
+    _, version_string = HDR10_parser_version_output.rsplit(sep=" ", maxsplit=1)
+    HDR10_parser_version = LooseVersion(version_string)
+    logger.debug(f"Using HDR10 parser version {str(HDR10_parser_version).strip()}")
+    return HDR10_parser_version
+
+
 def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
     if not config.hdr10plus_parser or not config.hdr10plus_parser.exists():
         return
 
     hdr10plus_streams = []
 
-    hdr10_parser_version_output = check_output([str(config.hdr10plus_parser), "--version"], encoding="utf-8")
-    _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
-    hdr10_parser_version = LooseVersion(version_string)
-    logger.debug(f"Using HDR10 parser version {str(hdr10_parser_version).strip()}")
+    parser_version = get_hdr10_parser_version(config)
 
     for stream in app.fastflix.current_video.streams.video:
         logger.debug(f"Checking for hdr10+ in stream {stream.index}")
@@ -595,7 +606,7 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
         )
 
         hdr10_parser_command = [str(config.hdr10plus_parser), "--verify", "-"]
-        if hdr10_parser_version >= LooseVersion("1.0.0"):
+        if parser_version >= LooseVersion("1.0.0"):
             hdr10_parser_command.insert(-1, "extract")
 
         process_two = Popen(

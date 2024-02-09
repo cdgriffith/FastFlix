@@ -16,6 +16,8 @@ def build(fastflix: FastFlix):
         rotation = abs(int(fastflix.current_video.current_video_stream.side_data_list[0].rotation))
 
     rot = ""
+    # if fastflix.current_video.video_settings.rotate != 0:
+    #     rot = f"-display_rotation:s:v {rotation + (fastflix.current_video.video_settings.rotate * 90)}"
     if fastflix.current_video.video_settings.output_path.name.lower().endswith("mp4"):
         rot = f"-metadata:s:v rotate={rotation + (fastflix.current_video.video_settings.rotate * 90)}"
 

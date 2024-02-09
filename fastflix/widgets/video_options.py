@@ -192,6 +192,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.current_settings.new_source()
         self.queue.new_source()
         self.advanced.new_source()
+        # TODO disable on loading from directory
         self.info.reset()
         self.debug.reset()
 

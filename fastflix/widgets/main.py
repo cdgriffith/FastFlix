@@ -1558,6 +1558,7 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.deinterlace.setChecked(self.app.fastflix.current_video.video_settings.deinterlace)
 
+        logger.info("Updating video info")
         self.video_options.new_source()
         self.enable_all()
         # self.widgets.convert_button.setDisabled(False)

@@ -7,6 +7,7 @@ import reusables
 from PySide6 import QtCore, QtWidgets
 
 from fastflix.language import t
+from fastflix.models.fastflix_app import FastFlixApp
 
 logger = logging.getLogger("fastflix")
 
@@ -24,7 +25,7 @@ class ProgressBar(QtWidgets.QFrame):
 
     def __init__(
         self,
-        app: QtWidgets.QApplication,
+        app: FastFlixApp,
         tasks: list[Task],
         signal_task: bool = False,
         auto_run: bool = True,
@@ -86,6 +87,7 @@ class ProgressBar(QtWidgets.QFrame):
 
         else:
             for i, task in enumerate(self.tasks, start=1):
+                logger.info(f"Running task {task.name}")
                 self.status.setText(task.name)
                 self.app.processEvents()
                 if self.app.fastflix.shutting_down:
