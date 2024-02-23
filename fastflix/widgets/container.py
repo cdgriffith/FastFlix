@@ -29,7 +29,8 @@ from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
 from fastflix.widgets.windows.concat import ConcatWindow
 from fastflix.widgets.windows.multiple_files import MultipleFilesWindow
-from fastflix.widgets.windows.hdr10plus_inject import HDR10PlusInjectWindow
+
+# from fastflix.widgets.windows.hdr10plus_inject import HDR10PlusInjectWindow
 
 logger = logging.getLogger("fastflix")
 
@@ -214,11 +215,11 @@ class Container(QtWidgets.QMainWindow):
         concat_action.triggered.connect(self.show_concat)
         tools_menu.addAction(concat_action)
 
-        hdr10p_inject_action = QAction(
-            QtGui.QIcon(get_icon("onyx-queue", self.app.fastflix.config.theme)), t("HDR10+ Inject"), self
-        )
-        hdr10p_inject_action.triggered.connect(self.show_hdr10p_inject)
-        tools_menu.addAction(hdr10p_inject_action)
+        # hdr10p_inject_action = QAction(
+        #     QtGui.QIcon(get_icon("onyx-queue", self.app.fastflix.config.theme)), t("HDR10+ Inject"), self
+        # )
+        # hdr10p_inject_action.triggered.connect(self.show_hdr10p_inject)
+        # tools_menu.addAction(hdr10p_inject_action)
 
         wiki_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("FastFlix Wiki"), self)
         wiki_action.triggered.connect(self.show_wiki)
@@ -273,9 +274,9 @@ class Container(QtWidgets.QMainWindow):
         self.concat = ConcatWindow(app=self.app, main=self.main)
         self.concat.show()
 
-    def show_hdr10p_inject(self):
-        self.hdr10p_inject = HDR10PlusInjectWindow(app=self.app, main=self.main)
-        self.hdr10p_inject.show()
+    # def show_hdr10p_inject(self):
+    #     self.hdr10p_inject = HDR10PlusInjectWindow(app=self.app, main=self.main)
+    #     self.hdr10p_inject.show()
 
     def show_about(self):
         self.about = About(app=self.app)

@@ -77,7 +77,7 @@ def generate_ffmpeg_start(
         [
             f'"{ffmpeg}"',
             start_extra,
-            ("-init_hw_device opencl=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
+            ("-init_hw_device opencl:0.0=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
             "-y",
             time_one,
             incoming_fps,

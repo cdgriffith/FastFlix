@@ -331,7 +331,7 @@ def generate_thumbnail_command(
 
     # Hardware acceleration with OpenCL
     if enable_opencl:
-        command += ["-init_hw_device", "opencl=ocl", "-filter_hw_device", "ocl"]
+        command += ["-init_hw_device", "opencl:0.0=ocl", "-filter_hw_device", "ocl"]
 
     command += shlex.split(filters)
 
@@ -462,7 +462,7 @@ def ffmpeg_audio_encoders(app, config: Config) -> List:
 
 
 def ffmpeg_opencl_support(app, config: Config) -> bool:
-    cmd = execute([f"{config.ffmpeg}", "-hide_banner", "-log_level", "error", "-init_hw_device", "opencl", "-h"])
+    cmd = execute([f"{config.ffmpeg}", "-hide_banner", "-log_level", "error", "-init_hw_device", "opencl:0.0", "-h"])
     app.fastflix.opencl_support = cmd.returncode == 0
     return app.fastflix.opencl_support
 
