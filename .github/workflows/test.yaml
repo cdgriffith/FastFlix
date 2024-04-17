@@ -41,6 +41,7 @@ jobs:
         python -m pip install --upgrade pip setuptools
         pip install .
         pip install .[develop]
+        python -c "import platform;print(f'PLATFORM PLATFORM {platform.platform()}')"
 
     - name: Run tests
       env:
