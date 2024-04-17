@@ -35,8 +35,8 @@ def get_queue(queue_file: Path) -> list[Video]:
         video["video_settings"]["output_path"] = Path(video["video_settings"]["output_path"])
         encoder_settings = video["video_settings"]["video_encoder_settings"]
         ves = [x(**encoder_settings) for x in setting_types.values() if x().name == encoder_settings["name"]][0]
-        # TODO breaks - audio = [AudioTrack(**x) for x in video["audio_tracks"]]
-        # TODO breaks subtitles = [SubtitleTrack(**x) for x in video["subtitle_tracks"]]
+        audio = [AudioTrack(**x) for x in video["audio_tracks"]]
+        subtitles = [SubtitleTrack(**x) for x in video["subtitle_tracks"]]
         attachments = []
         for x in video["attachment_tracks"]:
             try:

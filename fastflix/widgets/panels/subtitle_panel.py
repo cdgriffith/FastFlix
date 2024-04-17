@@ -202,7 +202,10 @@ class Subtitle(QtWidgets.QTabWidget):
 
     @property
     def enabled(self):
-        return self.app.fastflix.current_video.subtitle_tracks[self.index].enabled
+        try:
+            return self.app.fastflix.current_video.subtitle_tracks[self.index].enabled
+        except IndexError:
+            return False
 
     @property
     def language(self):

@@ -13,6 +13,7 @@ channel_list = {
     "quad(side)": 4,
     "5.0": 5,
     "5.1": 6,
+    "5.1(side)": 6,
     "6.0": 6,
     "6.0(front)": 6,
     "hexagonal": 6,
@@ -42,8 +43,9 @@ def build_audio(audio_tracks, audio_file_index=0):
         if not track.conversion_codec or track.conversion_codec == "none":
             command_list.append(f"-c:{track.outdex} copy")
         elif track.conversion_codec:
+            cl = track.downmix if "downmix" in track and track.downmix else track.raw_info.channel_layout
             downmix = (
-                f"-ac:{track.outdex} {channel_list[track.downmix]} -filter:{track.outdex} aformat=channel_layouts={track.downmix}"
+                f"-ac:{track.outdex} {channel_list[cl]} -filter:{track.outdex} aformat=channel_layouts={cl}"
                 if track.downmix
                 else ""
             )

@@ -32,6 +32,9 @@ class ThumbnailCreator(QtCore.QThread):
                     "Please use FFmpeg 4.3+ built against the latest zimg libraries. "
                     "Static builds available at https://ffmpeg.org/download.html "
                 )
+            if "OpenCL mapping not usable" in result.stdout.decode(encoding="utf-8", errors="ignore"):
+                self.main.thread_logging_signal.emit("ERROR trying to use OpenCL for thumbnail generation")
+                self.main.thumbnail_complete.emit(2)
             else:
                 self.main.thread_logging_signal.emit(f"ERROR:{t('Could not generate thumbnail')}: {result.stdout}")
 
