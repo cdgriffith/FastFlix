@@ -3,11 +3,10 @@
 import logging
 import os
 import shutil
-from distutils.version import StrictVersion
+from packaging import version
 from pathlib import Path
 from typing import Literal
 import json
-import sys
 
 from appdirs import user_data_dir
 from box import Box, BoxError
@@ -163,6 +162,8 @@ class Config(BaseModel):
     sticky_tabs: bool = False
     disable_complete_message: bool = False
 
+    disable_cover_extraction: bool = False
+
     def encoder_opt(self, profile_name, profile_option_name):
         encoder_settings = getattr(self.profiles[self.selected_profile], profile_name)
         if encoder_settings:
@@ -266,7 +267,7 @@ class Config(BaseModel):
         if "version" not in data:
             raise ConfigError(f"Corrupt config file. Please fix or remove {self.config_path}")
 
-        if StrictVersion(__version__) < StrictVersion(data.version):
+        if version.parse(__version__) < version.parse(data.version):
             logger.warning(
                 f"This FastFlix version ({__version__}) is older "
                 f"than the one that generated the config file ({data.version}), "
@@ -315,7 +316,7 @@ class Config(BaseModel):
 
         # 5.2.0 remove ext
         self.output_name_format = self.output_name_format.replace(".{ext}", "").replace("{ext}", "")
-        # if StrictVersion(__version__) > StrictVersion(data.version):
+        # if version.parse(__version__) > version.parse(data.version):
         #     logger.info(f"Clearing possible old config values from fastflix {data.verion}")
         #     self.vceencc_encoders = []
         #     self.nvencc_encoders = []

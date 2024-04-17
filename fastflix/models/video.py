@@ -138,9 +138,9 @@ class VideoSettings(BaseModel):
         VAAPIVP9Settings,
         VAAPIMPEG2Settings,
     ] = None
-    audio_tracks: list[AudioTrack] = Field(default_factory=list)
-    subtitle_tracks: list[SubtitleTrack] = Field(default_factory=list)
-    attachment_tracks: list[AttachmentTrack] = Field(default_factory=list)
+    # audio_tracks: list[AudioTrack] = Field(default_factory=list)
+    # subtitle_tracks: list[SubtitleTrack] = Field(default_factory=list)
+    # attachment_tracks: list[AttachmentTrack] = Field(default_factory=list)
     conversion_commands: List = Field(default_factory=list)
 
 
@@ -181,6 +181,10 @@ class Video(BaseModel):
     hdr10_plus: list[int] = Field(default_factory=list)
 
     video_settings: VideoSettings = Field(default_factory=VideoSettings)
+    audio_tracks: list[AudioTrack] = Field(default_factory=list)
+    subtitle_tracks: list[SubtitleTrack] = Field(default_factory=list)
+    attachment_tracks: list[AttachmentTrack] = Field(default_factory=list)
+
     status: Status = Field(default_factory=Status)
     uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))
 

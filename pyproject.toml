@@ -30,6 +30,7 @@ dependencies = [
     "coloredlogs>=15.0,<16.0",
     "iso639-lang==0.0.9",
     "mistune>=2.0,<3.0",
+    "packaging>=23.2",
     "pathvalidate>=2.4,<3.0",
     "psutil>=5.9,<6.0",
     "pydantic>=1.9,<2.0",

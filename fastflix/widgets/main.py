@@ -2141,12 +2141,3 @@ class Notifier(QtCore.QThread):
                 return
             self.main.status_update_signal.emit(status)
             self.app.processEvents()
-            # if status[0] == "complete":
-            #     logger.debug("GUI received status queue complete")
-            #     self.main.completed.emit(0)
-            # elif status[0] == "error":
-            #     logger.debug("GUI received status queue errored")
-            #     self.main.completed.emit(1)
-            # elif status[0] == "cancelled":
-            #     logger.debug("GUI received status queue errored")
-            #     self.main.cancelled.emit("|".join(status[1:]))

@@ -14,6 +14,8 @@ def build_subtitle(
     burn_in_type = None
     subs_enabled = False
     for track in subtitle_tracks:
+        if not track.enabled:
+            continue
         if track.burn_in:
             burn_in_track = track.index
             burn_in_type = track.subtitle_type

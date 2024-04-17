@@ -86,6 +86,8 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
     stream_ids = get_stream_pos(audio_streams)
 
     for track in sorted(audio_tracks, key=lambda x: x.outdex):
+        if not track.enabled:
+            continue
         if track.index in track_ids:
             logger.warning("*EncC does not support copy and duplicate of audio tracks!")
         track_ids.add(track.index)
@@ -98,7 +100,10 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
             downmix = f"--audio-stream {audio_id}?:{track.downmix}" if track.downmix else ""
             bitrate = ""
             if track.conversion_codec not in lossless:
-                bitrate = f"--audio-bitrate {audio_id}?{track.conversion_bitrate.rstrip('k')} "
+                if track.conversion_bitrate:
+                    bitrate = f"--audio-bitrate {audio_id}?{track.conversion_bitrate} "
+                else:
+                    bitrate = f"--audio-quality {audio_id}?{track.conversion_aq} "
             command_list.append(
                 f"{downmix} --audio-codec {audio_id}?{track.conversion_codec} {bitrate} "
                 f"--audio-metadata {audio_id}?clear"
@@ -130,6 +135,8 @@ def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video
     scale = ",scale=2.0" if video_height > 1800 else ""
 
     for track in sorted(subtitle_tracks, key=lambda x: x.outdex):
+        if not track.enabled:
+            continue
         sub_id = stream_ids[track.index]
         if track.burn_in:
             command_list.append(f"--vpp-subburn track={sub_id}{scale}")

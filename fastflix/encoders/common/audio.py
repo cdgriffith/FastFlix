@@ -30,6 +30,8 @@ lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
 def build_audio(audio_tracks, audio_file_index=0):
     command_list = []
     for track in audio_tracks:
+        if not track.enabled:
+            continue
         command_list.append(
             f"-map {audio_file_index}:{track.index} "
             f'-metadata:s:{track.outdex} title="{track.title}" '
@@ -47,7 +49,8 @@ def build_audio(audio_tracks, audio_file_index=0):
             )
             bitrate = ""
             if track.conversion_codec not in lossless:
-                bitrate = f"-b:{track.outdex} {track.conversion_bitrate} "
+                channel_layout = f'-filter:{track.outdex} aformat=channel_layouts="{track.raw_info.channel_layout}"'
+                bitrate = f"-b:{track.outdex} {track.conversion_bitrate} {channel_layout}"
             command_list.append(f"-c:{track.outdex} {track.conversion_codec} {bitrate} {downmix}")
 
         if getattr(track, "dispositions", None):
