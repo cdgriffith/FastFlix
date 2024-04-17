@@ -1,7 +1,10 @@
 # Changelog
 
-## Version 5.6.1
+## Version 5.7.0
 
+* Adding new audio encoding panel
+* Adding support for audio quality targeting instead of bitrate
+* Fixing that audio and subtitles would be reset on change of encoder
 * Fixing #543 systems with more than one opencl device would break thumbnails and some encodings (thanks to swadomlic)
 * Fixing #505 (maybe) trying new methods to clean file paths for subtitles (thanks to Maddie Davis)
 
