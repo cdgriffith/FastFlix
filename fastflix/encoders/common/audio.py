@@ -47,7 +47,8 @@ def build_audio(audio_tracks, audio_file_index=0):
             )
             bitrate = ""
             if track.conversion_codec not in lossless:
-                bitrate = f"-b:{track.outdex} {track.conversion_bitrate} "
+                channel_layout = f'-filter:{track.outdex} aformat=channel_layouts="{track.raw_info.channel_layout}"'
+                bitrate = f"-b:{track.outdex} {track.conversion_bitrate} {channel_layout}"
             command_list.append(f"-c:{track.outdex} {track.conversion_codec} {bitrate} {downmix}")
 
         if getattr(track, "dispositions", None):

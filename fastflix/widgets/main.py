@@ -1487,7 +1487,7 @@ class Main(QtWidgets.QWidget):
         self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())
         tasks = [
             Task(t("Parse Video details"), parse),
-            Task(t("Extract covers"), extract_attachments),
+            # Task(t("Extract covers"), extract_attachments),
             Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.source_material)),
             Task(t("Determine HDR details"), parse_hdr_details),
             Task(t("Detect HDR10+"), detect_hdr10_plus),

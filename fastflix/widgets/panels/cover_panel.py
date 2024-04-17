@@ -212,8 +212,8 @@ class CoverPanel(QtWidgets.QWidget):
             return
         start_outdex = (
             1  # Video Track
-            + len(self.app.fastflix.current_video.video_settings.audio_tracks)
-            + len(self.app.fastflix.current_video.video_settings.subtitle_tracks)
+            + len(self.app.fastflix.current_video.audio_tracks)
+            + len(self.app.fastflix.current_video.subtitle_tracks)
         )
         attachments: list[AttachmentTrack] = []
 
@@ -230,7 +230,7 @@ class CoverPanel(QtWidgets.QWidget):
                     )
                 )
                 start_outdex += 1
-        self.app.fastflix.current_video.video_settings.attachment_tracks = attachments
+        self.app.fastflix.current_video.attachment_tracks = attachments
 
     def cover_passthrough_check(self):
         checked = self.cover_passthrough_checkbox.isChecked()
@@ -354,14 +354,14 @@ class CoverPanel(QtWidgets.QWidget):
         self.cover_land_passthrough_checkbox.toggled.connect(lambda: self.cover_land_passthrough_check())
         self.small_cover_land_passthrough_checkbox.toggled.connect(lambda: self.small_cover_land_passthrough_check())
 
-    def reload_from_queue(self, streams, settings: VideoSettings):
+    def reload_from_queue(self, streams, attachment_tracks):
         self.new_source(streams.attachment)
         self.cover_passthrough_checkbox.setChecked(False)
         self.cover_land_passthrough_checkbox.setChecked(False)
         self.small_cover_land_passthrough_checkbox.setChecked(False)
         self.small_cover_passthrough_checkbox.setChecked(False)
 
-        for attachment in settings.attachment_tracks:
+        for attachment in attachment_tracks:
             if attachment.filename == "cover":
                 if attachment.index is None:
                     self.cover_path.setText(str(attachment.file_path))
@@ -385,8 +385,8 @@ class CoverPanel(QtWidgets.QWidget):
 #     def update_cover_settings(self):
 #         start_outdex = (
 #             1  # Video Track
-#             + len(self.app.fastflix.current_video.video_settings.audio_tracks)
-#             + len(self.app.fastflix.current_video.video_settings.subtitle_tracks)
+#             + len(self.app.fastflix.current_video.audio_tracks)
+#             + len(self.app.fastflix.current_video.subtitle_tracks)
 #         )
 #         attachments: list[AttachmentTrack] = []
 #

@@ -376,6 +376,9 @@ def get_auto_crop(
     )
 
     width, height, x_crop, y_crop = None, None, None, None
+    if not output.stderr:
+        return 0, 0, 0, 0
+
     for line in output.stderr.splitlines():
         if line.startswith("[Parsed_cropdetect"):
             w, h, x, y = [int(x) for x in line.rsplit("=")[1].split(":")]
@@ -427,6 +430,10 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
         )
     except Exception:
         logger.exception("Error while running the interlace detection command")
+        return
+
+    if not output.stderr:
+        logger.warning("Could not extract interlaced information")
         return
 
     for line in output.stderr.splitlines():

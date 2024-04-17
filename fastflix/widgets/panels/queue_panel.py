@@ -87,11 +87,11 @@ class EncodeItem(QtWidgets.QTabWidget):
         title.setFixedWidth(300)
 
         settings = Box(copy.deepcopy(video.video_settings.dict()))
-        settings.output_path = str(settings.output_path)
-        for i, o in enumerate(settings.attachment_tracks):
-            if o.get("file_path"):
-                o["file_path"] = str(o["file_path"])
-        del settings.conversion_commands
+        # settings.output_path = str(settings.output_path)
+        # for i, o in enumerate(video.attachment_tracks):
+        #     if o.file_path:
+        #         o["file_path"] = str(o["file_path"])
+        # del settings.conversion_commands
 
         title.setToolTip(settings.video_encoder_settings.to_yaml())
         del settings
@@ -144,8 +144,8 @@ class EncodeItem(QtWidgets.QTabWidget):
         # grid.addWidget(self.widgets.track_number, 0, 1)
         grid.addWidget(title, 0, 1, 1, 3)
         grid.addWidget(QtWidgets.QLabel(f"{video.video_settings.video_encoder_settings.name}"), 0, 4)
-        grid.addWidget(QtWidgets.QLabel(f"{t('Audio Tracks')}: {len(video.video_settings.audio_tracks)}"), 0, 5)
-        grid.addWidget(QtWidgets.QLabel(f"{t('Subtitles')}: {len(video.video_settings.subtitle_tracks)}"), 0, 6)
+        grid.addWidget(QtWidgets.QLabel(f"{t('Audio Tracks')}: {len(video.audio_tracks)}"), 0, 5)
+        grid.addWidget(QtWidgets.QLabel(f"{t('Subtitles')}: {len(video.subtitle_tracks)}"), 0, 6)
         grid.addWidget(QtWidgets.QLabel(status), 0, 7)
         if not video.status.error and video.status.complete and not get_bool_env("FF_DOCKERMODE"):
             grid.addWidget(view_button, 0, 8)

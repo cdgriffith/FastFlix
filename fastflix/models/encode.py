@@ -14,7 +14,8 @@ class AudioTrack(BaseModel):
     downmix: Optional[str] = None
     title: str = ""
     language: str = ""
-    conversion_bitrate: str = ""
+    conversion_aq: Optional[int] = None
+    conversion_bitrate: Optional[str] = None
     conversion_codec: str = ""
     profile: Optional[str] = None
     enabled: bool = True
@@ -33,6 +34,8 @@ class SubtitleTrack(BaseModel):
     language: str = ""
     subtitle_type: str = ""
     dispositions: dict = Field(default_factory=dict)
+    enabled: bool = True
+    long_name: str = ""
 
 
 class AttachmentTrack(BaseModel):
