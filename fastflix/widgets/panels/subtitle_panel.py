@@ -144,16 +144,6 @@ class Subtitle(QtWidgets.QTabWidget):
         self.updating_burn = False
         self.extract_completed_signal.connect(self.extraction_complete)
 
-    # def set_dis_button(self):
-    #     output = ""
-    #     for disposition, is_set in self.dispositions.items():
-    #         if is_set:
-    #             output += f"{t(disposition)},"
-    #     if output:
-    #         self.widgets.disposition.setText(output.rstrip(","))
-    #     else:
-    #         self.widgets.disposition.setText(t("none"))
-
     def extraction_complete(self):
         self.grid.addWidget(self.widgets.extract, 0, 3)
         self.movie.stop()
@@ -209,10 +199,6 @@ class Subtitle(QtWidgets.QTabWidget):
             self.widgets.track_number.setText("❌")
         else:
             self.widgets.track_number.setText(f"{sub_track.index}:{sub_track.outdex}")
-
-    # @property
-    # def disposition(self):
-    #     return None
 
     @property
     def enabled(self):
@@ -369,28 +355,6 @@ class SubtitleList(FlixList):
     def get_settings(self):
         return  # TODO remove
 
-    # def get_settings(self):
-    #     tracks = []
-    #     burn_in_count = 0
-    #     for track in self.tracks:
-    #         if track.enabled:
-    #             tracks.append(
-    #                 SubtitleTrack(
-    #                     index=track.index,
-    #                     outdex=track.outdex,
-    #                     dispositions=track.dispositions,
-    #                     language=track.language,
-    #                     burn_in=track.burn_in,
-    #                     subtitle_type=track.subtitle_type,
-    #                 )
-    #             )
-    #             if track.burn_in:
-    #                 burn_in_count += 1
-    #     if burn_in_count > 1:
-    #         raise FastFlixInternalException(t("More than one track selected to burn in"))
-    #     clear_list(self.app.fastflix.current_video.subtitle_tracks)
-    #     self.app.fastflix.current_video.subtitle_tracks = tracks
-
     def reload(self, original_tracks):
         clear_list(self.tracks)
 
@@ -399,7 +363,6 @@ class SubtitleList(FlixList):
                 Subtitle(
                     app=self.app,
                     parent=self,
-                    subtitle=track,
                     index=i,
                     first=True if i == 0 else False,
                     enabled=track.enabled,

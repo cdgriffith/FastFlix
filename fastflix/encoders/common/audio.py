@@ -30,6 +30,8 @@ lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
 def build_audio(audio_tracks, audio_file_index=0):
     command_list = []
     for track in audio_tracks:
+        if not track.enabled:
+            continue
         command_list.append(
             f"-map {audio_file_index}:{track.index} "
             f'-metadata:s:{track.outdex} title="{track.title}" '

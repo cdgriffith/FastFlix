@@ -103,7 +103,7 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
                 if track.conversion_bitrate:
                     bitrate = f"--audio-bitrate {audio_id}?{track.conversion_bitrate} "
                 else:
-                    bitrate = f"--audio-profile {audio_id}?{track.conversion_aq} "
+                    bitrate = f"--audio-quality {audio_id}?{track.conversion_aq} "
             command_list.append(
                 f"{downmix} --audio-codec {audio_id}?{track.conversion_codec} {bitrate} "
                 f"--audio-metadata {audio_id}?clear"

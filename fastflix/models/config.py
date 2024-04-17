@@ -162,6 +162,8 @@ class Config(BaseModel):
     sticky_tabs: bool = False
     disable_complete_message: bool = False
 
+    disable_cover_extraction: bool = False
+
     def encoder_opt(self, profile_name, profile_option_name):
         encoder_settings = getattr(self.profiles[self.selected_profile], profile_name)
         if encoder_settings:
