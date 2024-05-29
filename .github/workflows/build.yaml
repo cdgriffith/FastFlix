@@ -91,7 +91,6 @@ jobs:
         python -m pip install --upgrade pip setuptools --ignore-installed
         pip install .
         pip install .[develop]
-        python -c "import platform;print(f'PLATFORM PLATFORM {platform.platform()}')"
 
 
     - name: Grab iso-639 lists

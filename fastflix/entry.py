@@ -122,8 +122,15 @@ def main(portable_mode=False):
         import platform
 
         try:
-            win_ver = int(platform.platform().lower().split("-")[1])
-        except Exception:
+            windows_version_string = platform.platform().lower().split("-")[1]
+            if "server" in windows_version_string:
+                # Windows-2022Server-10.0.20348-SP0
+                server_version = int(windows_version_string[:4])
+                win_ver = 0 if server_version < 2016 else 10
+            else:
+                win_ver = int(windows_version_string)
+        except Exception as error:
+            print(f"COULD NOT DETERMINE WINDOWS VERSION FROM: {platform.platform()} - {error}")
             win_ver = 0
         if win_ver < 10:
             input(
