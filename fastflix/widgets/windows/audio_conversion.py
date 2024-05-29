@@ -1,20 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
-from pathlib import Path
-from subprocess import run, PIPE
-from typing import Optional
-import secrets
 
-from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets
 
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import AudioTrack
 
-from fastflix.flix import (
-    generate_thumbnail_command,
-)
-from fastflix.encoders.common import helpers
-from fastflix.resources import get_icon
+
 from fastflix.language import t
 
 __all__ = ["AudioConversion"]
@@ -62,9 +54,10 @@ channel_list = {
 
 
 class AudioConversion(QtWidgets.QWidget):
-    def __init__(self, app: FastFlixApp, track_index, encoders):
+    def __init__(self, app: FastFlixApp, track_index, encoders, audio_track_update):
         super().__init__(None)
         self.app = app
+        self.audio_track_update = audio_track_update
         self.setWindowTitle(f"Audio Conversion for Track {track_index}")
         self.setMinimumWidth(400)
         self.audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[track_index]
@@ -175,7 +168,7 @@ class AudioConversion(QtWidgets.QWidget):
         if self.conversion_codec.currentIndex() != 0:
             self.audio_track.conversion_codec = self.conversion_codec.currentText()
         else:
-            self.audio_track.conversion_codec = None
+            self.audio_track.conversion_codec = ""
 
         if self.aq.currentIndex() != 10:
             self.audio_track.conversion_aq = self.aq.currentIndex()
@@ -188,5 +181,5 @@ class AudioConversion(QtWidgets.QWidget):
             self.audio_track.downmix = self.downmix.currentText()
         else:
             self.audio_track.downmix = None
-
+        self.audio_track_update()
         self.close()

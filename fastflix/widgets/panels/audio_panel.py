@@ -166,7 +166,10 @@ class Audio(QtWidgets.QTabWidget):
             pass
 
         self.conversion_box = AudioConversion(
-            self.app, track_index=self.index, encoders=self.app.fastflix.audio_encoders
+            self.app,
+            track_index=self.index,
+            encoders=self.app.fastflix.audio_encoders,
+            audio_track_update=self.page_update,
         )
         self.conversion_box.show()
 
@@ -204,6 +207,7 @@ class Audio(QtWidgets.QTabWidget):
 
     def page_update(self):
         if not self.loading:
+            self.check_conversion_button()
             return self.parent.main.page_update(build_thumbnail=False)
 
     @property
@@ -278,6 +282,15 @@ class Audio(QtWidgets.QTabWidget):
         if downmix:
             audio_track.downmix = downmix
         self.page_update()
+
+    def check_conversion_button(self):
+        audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
+        if audio_track.conversion_codec:
+            self.widgets.conversion.setStyleSheet("border-color: #0055ff")
+            self.widgets.conversion.setText(t("Conversion") + f": {audio_track.conversion_codec}")
+        else:
+            self.widgets.conversion.setStyleSheet("")
+            self.widgets.conversion.setText(t("Conversion"))
 
 
 class AudioList(FlixList):

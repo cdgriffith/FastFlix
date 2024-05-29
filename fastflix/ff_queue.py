@@ -50,17 +50,11 @@ def get_queue(queue_file: Path) -> list[Video]:
         crop = None
         if video["video_settings"]["crop"]:
             crop = Crop(**video["video_settings"]["crop"])
-        del video["audio_tracks"]
-        del video["subtitle_tracks"]
-        del video["attachment_tracks"]
         del video["video_settings"]["video_encoder_settings"]
         del video["status"]
         del video["video_settings"]["crop"]
         vs = VideoSettings(
             **video["video_settings"],
-            audio_tracks=audio,
-            subtitle_tracks=subtitles,
-            attachment_tracks=attachments,
             crop=crop,
         )
         vs.video_encoder_settings = ves  # No idea why this has to be called after, otherwise reset to x265
