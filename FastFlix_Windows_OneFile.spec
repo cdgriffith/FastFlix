@@ -15,6 +15,11 @@ for root, dirs, files in os.walk('fastflix'):
 		all_fastflix_files.append((os.path.join(root,file), root))
 
 all_imports = collect_submodules('pydantic') + ['dataclasses', 'colorsys', 'typing_extensions', 'box']
+with open("pyproject.toml") as f:
+    for line in toml.load(f)["project"]["dependencies"]:
+        package = line.split("[")[0].split("=")[0].split(">")[0].split("<")[0].replace('"', '').replace("'",'').rstrip("~").strip()
+        if package not in ("pyinstaller"):
+            all_imports.append(package)
 
 all_imports.remove("iso639-lang")
 all_imports.remove("python-box")
