@@ -1558,6 +1558,7 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.deinterlace.setChecked(self.app.fastflix.current_video.video_settings.deinterlace)
 
+        logger.info("Updating video info")
         self.video_options.new_source()
         self.enable_all()
         # self.widgets.convert_button.setDisabled(False)
@@ -1679,9 +1680,12 @@ class Main(QtWidgets.QWidget):
             logger.warning(text)
 
     @reusables.log_exception("fastflix", show_traceback=False)
-    def thumbnail_generated(self, success=False):
-        if not success or not self.thumb_file.exists():
+    def thumbnail_generated(self, status=0):
+        if status == 0 or not status or not self.thumb_file.exists():
             self.widgets.preview.setText(t("Error Updating Thumbnail"))
+            return
+        if status == 2:
+            self.generate_thumbnail()
             return
         pixmap = QtGui.QPixmap(str(self.thumb_file))
         pixmap = pixmap.scaled(420, 260, QtCore.Qt.KeepAspectRatio)
@@ -2140,12 +2144,3 @@ class Notifier(QtCore.QThread):
                 return
             self.main.status_update_signal.emit(status)
             self.app.processEvents()
-            # if status[0] == "complete":
-            #     logger.debug("GUI received status queue complete")
-            #     self.main.completed.emit(0)
-            # elif status[0] == "error":
-            #     logger.debug("GUI received status queue errored")
-            #     self.main.completed.emit(1)
-            # elif status[0] == "cancelled":
-            #     logger.debug("GUI received status queue errored")
-            #     self.main.cancelled.emit("|".join(status[1:]))

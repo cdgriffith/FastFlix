@@ -22,6 +22,11 @@ with open("pyproject.toml") as f:
         if package not in ("pyinstaller"):
             all_imports.append(package)
 
+all_imports.remove("iso639-lang")
+all_imports.remove("python-box")
+all_imports.append("box")
+all_imports.append("iso639")
+
 portable_file = "fastflix\\portable.py"
 with open(portable_file, "w") as portable:
     portable.write(" ")

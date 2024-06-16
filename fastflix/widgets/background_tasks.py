@@ -3,7 +3,7 @@
 import logging
 from pathlib import Path
 from subprocess import PIPE, STDOUT, Popen, run, check_output
-from distutils.version import LooseVersion
+from packaging import version
 
 from PySide6 import QtCore
 
@@ -32,6 +32,9 @@ class ThumbnailCreator(QtCore.QThread):
                     "Please use FFmpeg 4.3+ built against the latest zimg libraries. "
                     "Static builds available at https://ffmpeg.org/download.html "
                 )
+            if "OpenCL mapping not usable" in result.stdout.decode(encoding="utf-8", errors="ignore"):
+                self.main.thread_logging_signal.emit("ERROR trying to use OpenCL for thumbnail generation")
+                self.main.thumbnail_complete.emit(2)
             else:
                 self.main.thread_logging_signal.emit(f"ERROR:{t('Could not generate thumbnail')}: {result.stdout}")
 
@@ -114,7 +117,7 @@ class ExtractHDR10(QtCore.QThread):
             [str(self.app.fastflix.config.hdr10plus_parser), "--version"], encoding="utf-8"
         )
         _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
-        hdr10_parser_version = LooseVersion(version_string)
+        hdr10_parser_version = version.parse(version_string)
         self.main.thread_logging_signal.emit(f"Using HDR10 parser version {str(hdr10_parser_version).strip()}")
 
         ffmpeg_command = [
@@ -134,7 +137,7 @@ class ExtractHDR10(QtCore.QThread):
         ]
 
         hdr10_parser_command = [str(self.app.fastflix.config.hdr10plus_parser), "-o", clean_file_string(output), "-"]
-        if hdr10_parser_version >= LooseVersion("1.0.0"):
+        if hdr10_parser_version >= version.parse("1.0.0"):
             hdr10_parser_command.insert(1, "extract")
 
         self.main.thread_logging_signal.emit(

@@ -316,7 +316,21 @@ def clean_file_string(source):
 
 
 def quoted_path(source):
-    return str(source).strip().replace("\\", "\\\\").replace(":", "\\:").replace("'", "'\\\\\\''")
+    cleaned_string = (
+        str(source)
+        .strip()
+        .replace("\\", "\\\\")
+        .replace(":", "\\:")
+        .replace("'", "'\\\\\\''")
+        .replace("\r\n", "")
+        .replace("\n", "")
+        .replace("\r", "")
+    )
+    if " " in cleaned_string[0:4]:
+        logger.warning(f"Unexpected space at start of quoted path, attempting to fix: {cleaned_string}")
+        cleaned_string = cleaned_string[0:4].replace(" ", "") + cleaned_string[4:]
+        logger.warning(f"New path set to: {cleaned_string}")
+    return cleaned_string
 
 
 def sanitize(source):

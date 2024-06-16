@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import copy
 import logging
+from typing import TYPE_CHECKING
 
 from PySide6 import QtGui, QtWidgets, QtCore
 
@@ -18,6 +19,9 @@ from fastflix.widgets.panels.info_panel import InfoPanel
 from fastflix.widgets.panels.queue_panel import EncodingQueue
 from fastflix.widgets.panels.status_panel import StatusPanel
 from fastflix.widgets.panels.subtitle_panel import SubtitleList
+
+if TYPE_CHECKING:
+    from fastflix.widgets.main import Main
 
 logger = logging.getLogger("fastflix")
 
@@ -38,7 +42,7 @@ icons = {
 class VideoOptions(QtWidgets.QTabWidget):
     def __init__(self, parent, app: FastFlixApp, available_audio_encoders):
         super().__init__(parent)
-        self.main = parent
+        self.main: "Main" = parent
         self.app = app
 
         self.reloading = False
@@ -151,7 +155,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         # Page update does a reload which bases itself off the current encoder so we have to do audio formats after
         if not self.reloading:
             self.audio.allowed_formats(self._get_audio_formats(encoder))
-            self.update_profile()
+            # self.update_profile()
 
     def get_settings(self):
         if not self.app.fastflix.current_video:
@@ -192,6 +196,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.current_settings.new_source()
         self.queue.new_source()
         self.advanced.new_source()
+        # TODO disable on loading from directory
         self.info.reset()
         self.debug.reset()
 
@@ -246,15 +251,16 @@ class VideoOptions(QtWidgets.QTabWidget):
         if self.app.fastflix.current_video:
             streams = copy.deepcopy(self.app.fastflix.current_video.streams)
             settings = copy.deepcopy(self.app.fastflix.current_video.video_settings)
-            audio_tracks = settings.audio_tracks
-            subtitle_tracks = settings.subtitle_tracks
+            audio_tracks = copy.deepcopy(self.app.fastflix.current_video.audio_tracks or [])
+            subtitle_tracks = copy.deepcopy(self.app.fastflix.current_video.subtitle_tracks or [])
+            attachment_tracks = copy.deepcopy(self.app.fastflix.current_video.attachment_tracks or [])
             try:
                 if getattr(self.main.current_encoder, "enable_audio", False):
                     self.audio.reload(audio_tracks, self.audio_formats)
                 if getattr(self.main.current_encoder, "enable_subtitles", False):
                     self.subtitles.reload(subtitle_tracks)
                 if getattr(self.main.current_encoder, "enable_attachments", False):
-                    self.attachments.reload_from_queue(streams, settings)
+                    self.attachments.reload_from_queue(streams, attachment_tracks)
                 self.advanced.reset(settings=settings)
                 self.info.reset()
             except Exception:
@@ -263,7 +269,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.debug.reset()
 
     def clear_tracks(self):
-        self.current_settings.update_profile()
+        # self.current_settings.update_profile()
         self.audio.remove_all()
         self.subtitles.remove_all()
         self.attachments.clear_covers()

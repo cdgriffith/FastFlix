@@ -48,7 +48,7 @@ InstallDirRegKey HKLM "Software\FastFlix" "Install_Dir"
 Function .onInit
   ReadRegStr $0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\FastFlix" "UninstallString"
   ${If} $0 != ""
-    Messagebox MB_OK|MB_ICONINFORMATION  "You will now be prompted to first uninstall the previous version of FastFlix"
+    Messagebox MB_OK|MB_ICONINFORMATION  "You will now be prompted to first uninstall the previous version of FastFlix. Please ensure it is not currently running!"
     ExecWait '$0 _?=$INSTDIR'
   ${EndIf}
 FunctionEnd

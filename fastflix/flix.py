@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 from subprocess import PIPE, CompletedProcess, Popen, TimeoutExpired, run, check_output
 from typing import List, Tuple, Union
-from distutils.version import LooseVersion
+from packaging import version
 import shlex
 
 import reusables
@@ -22,6 +22,8 @@ re_bff = re.compile(r"BFF:\s+(\d+)")
 re_progressive = re.compile(r"Progressive:\s+(\d+)")
 
 logger = logging.getLogger("fastflix")
+
+HDR10_parser_version = None
 
 ffmpeg_valid_color_primaries = [
     "bt709",
@@ -273,6 +275,8 @@ def parse(app: FastFlixApp, **_):
 
 
 def extract_attachments(app: FastFlixApp, **_):
+    if app.fastflix.config.disable_cover_extraction:
+        return
     for track in app.fastflix.current_video.streams.attachment:
         filename = track.get("tags", {}).get("filename", "")
         if filename.rsplit(".", 1)[0] in ("cover", "small_cover", "cover_land", "small_cover_land"):
@@ -329,7 +333,7 @@ def generate_thumbnail_command(
 
     # Hardware acceleration with OpenCL
     if enable_opencl:
-        command += ["-init_hw_device", "opencl=ocl", "-filter_hw_device", "ocl"]
+        command += ["-init_hw_device", "opencl:0.0=ocl", "-filter_hw_device", "ocl"]
 
     command += shlex.split(filters)
 
@@ -374,6 +378,9 @@ def get_auto_crop(
     )
 
     width, height, x_crop, y_crop = None, None, None, None
+    if not output.stderr:
+        return 0, 0, 0, 0
+
     for line in output.stderr.splitlines():
         if line.startswith("[Parsed_cropdetect"):
             w, h, x, y = [int(x) for x in line.rsplit("=")[1].split(":")]
@@ -427,6 +434,10 @@ def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
         logger.exception("Error while running the interlace detection command")
         return
 
+    if not output.stderr:
+        logger.warning("Could not extract interlaced information")
+        return
+
     for line in output.stderr.splitlines():
         if "Single frame detection" in line:
             try:
@@ -460,7 +471,7 @@ def ffmpeg_audio_encoders(app, config: Config) -> List:
 
 
 def ffmpeg_opencl_support(app, config: Config) -> bool:
-    cmd = execute([f"{config.ffmpeg}", "-hide_banner", "-log_level", "error", "-init_hw_device", "opencl", "-h"])
+    cmd = execute([f"{config.ffmpeg}", "-hide_banner", "-log_level", "error", "-init_hw_device", "opencl:0.0", "-h"])
     app.fastflix.opencl_support = cmd.returncode == 0
     return app.fastflix.opencl_support
 
@@ -558,16 +569,25 @@ def parse_hdr_details(app: FastFlixApp, **_):
                     )
 
 
+def get_hdr10_parser_version(config: Config) -> version:
+    global HDR10_parser_version
+    if HDR10_parser_version:
+        return HDR10_parser_version
+    HDR10_parser_version_output = check_output([str(config.hdr10plus_parser), "--version"], encoding="utf-8")
+
+    _, version_string = HDR10_parser_version_output.rsplit(sep=" ", maxsplit=1)
+    HDR10_parser_version = version.parse(version_string)
+    logger.debug(f"Using HDR10 parser version {str(HDR10_parser_version).strip()}")
+    return HDR10_parser_version
+
+
 def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
     if not config.hdr10plus_parser or not config.hdr10plus_parser.exists():
         return
 
     hdr10plus_streams = []
 
-    hdr10_parser_version_output = check_output([str(config.hdr10plus_parser), "--version"], encoding="utf-8")
-    _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
-    hdr10_parser_version = LooseVersion(version_string)
-    logger.debug(f"Using HDR10 parser version {str(hdr10_parser_version).strip()}")
+    parser_version = get_hdr10_parser_version(config)
 
     for stream in app.fastflix.current_video.streams.video:
         logger.debug(f"Checking for hdr10+ in stream {stream.index}")
@@ -595,7 +615,7 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
         )
 
         hdr10_parser_command = [str(config.hdr10plus_parser), "--verify", "-"]
-        if hdr10_parser_version >= LooseVersion("1.0.0"):
+        if parser_version >= version.parse("1.0.0"):
             hdr10_parser_command.insert(-1, "extract")
 
         process_two = Popen(

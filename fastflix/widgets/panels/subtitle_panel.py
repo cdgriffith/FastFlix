@@ -49,22 +49,22 @@ language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] an
 class Subtitle(QtWidgets.QTabWidget):
     extract_completed_signal = QtCore.Signal()
 
-    def __init__(self, parent, subtitle, index, enabled=True, first=False, dispositions=None):
+    def __init__(self, app, parent, index, enabled=True, first=False):
         self.loading = True
         super(Subtitle, self).__init__(parent)
-        self.parent = parent
+        self.app = app
+        self.parent: "SubtitleList" = parent
+        self.setObjectName("Subtitle")
         self.index = index
         self.outdex = None
-        self.subtitle = Box(subtitle, default_box=True)
         self.first = first
         self.last = False
-        self.subtitle_lang = subtitle.get("tags", {}).get("language")
-        self.subtitle_type = subtitle_types.get(subtitle.get("codec_name", "text"), "text")
         self.setFixedHeight(60)
+        sub_track: SubtitleTrack = self.app.fastflix.current_video.subtitle_tracks[index]
 
         self.widgets = Box(
-            track_number=QtWidgets.QLabel(f"{self.index}:{self.outdex}" if enabled else "❌"),
-            title=QtWidgets.QLabel(f"  {self.subtitle.codec_long_name}"),
+            track_number=QtWidgets.QLabel(f"{sub_track.index}:{sub_track.outdex}" if enabled else "❌"),
+            title=QtWidgets.QLabel(f"  {sub_track.long_name}"),
             up_button=QtWidgets.QPushButton(
                 QtGui.QIcon(get_icon("up-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
@@ -72,7 +72,7 @@ class Subtitle(QtWidgets.QTabWidget):
                 QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
             enable_check=QtWidgets.QCheckBox(t("Preserve")),
-            disposition=QtWidgets.QPushButton(),
+            disposition=QtWidgets.QPushButton(t("Dispositions")),
             language=QtWidgets.QComboBox(),
             burn_in=QtWidgets.QCheckBox(t("Burn In")),
         )
@@ -97,7 +97,7 @@ class Subtitle(QtWidgets.QTabWidget):
         #     self.widgets.disposition.setCurrentIndex(dispositions.index("forced"))
 
         self.setFixedHeight(60)
-        self.widgets.title.setToolTip(self.subtitle.to_yaml())
+        # self.widgets.title.setToolTip(self.subtitle.to_yaml())
         self.widgets.burn_in.setToolTip(
             f"""{t("Overlay this subtitle track onto the video during conversion.")}\n
             {t("Please make sure seek method is set to exact")}.\n
@@ -113,14 +113,10 @@ class Subtitle(QtWidgets.QTabWidget):
         self.gif_label.setMovie(self.movie)
         # self.movie.start()
 
-        self.dispositions = dispositions if dispositions else {k: False for k in disposition_options}
-        if not dispositions:
-            for disposition, is_set in self.subtitle.disposition.items():
-                if is_set:
-                    self.dispositions[disposition] = True
-
-        self.disposition_widget = Disposition(self, f"Subtitle Track {index}", subs=True)
-        self.set_dis_button()
+        self.disposition_widget = Disposition(
+            app=self.app, parent=self, track_name=f"Subtitle Track {index}", track_index=index, audio=False
+        )
+        # self.set_dis_button()
         self.widgets.disposition.clicked.connect(self.disposition_widget.show)
 
         disposition_layout = QtWidgets.QHBoxLayout()
@@ -132,7 +128,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.grid.addWidget(self.widgets.track_number, 0, 1)
         self.grid.addWidget(self.widgets.title, 0, 2)
         self.grid.setColumnStretch(2, True)
-        if self.subtitle_type == "text":
+        if sub_track.subtitle_type == "text":
             self.grid.addWidget(self.widgets.extract, 0, 3)
             self.grid.addWidget(self.gif_label, 0, 3)
             self.gif_label.hide()
@@ -147,24 +143,6 @@ class Subtitle(QtWidgets.QTabWidget):
         self.loading = False
         self.updating_burn = False
         self.extract_completed_signal.connect(self.extraction_complete)
-
-    def set_dis_button(self):
-        output = ""
-        for disposition, is_set in self.dispositions.items():
-            if is_set:
-                output += f"{t(disposition)},"
-        if output:
-            self.widgets.disposition.setText(output.rstrip(","))
-        else:
-            self.widgets.disposition.setText(t("none"))
-
-    @property
-    def dis_forced(self):
-        return self.dispositions.get("forced", False)
-
-    @property
-    def dis_default(self):
-        return self.dispositions.get("default", False)
 
     def extraction_complete(self):
         self.grid.addWidget(self.widgets.extract, 0, 3)
@@ -214,19 +192,20 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets.down_button.setDisabled(self.last)
 
     def set_outdex(self, outdex):
+        self.app.fastflix.current_video.subtitle_tracks[self.index].outdex = outdex
+        sub_track: SubtitleTrack = self.app.fastflix.current_video.subtitle_tracks[self.index]
         self.outdex = outdex
         if not self.enabled:
             self.widgets.track_number.setText("❌")
         else:
-            self.widgets.track_number.setText(f"{self.index}:{self.outdex}")
-
-    # @property
-    # def disposition(self):
-    #     return None
+            self.widgets.track_number.setText(f"{sub_track.index}:{sub_track.outdex}")
 
     @property
     def enabled(self):
-        return self.widgets.enable_check.isChecked()
+        try:
+            return self.app.fastflix.current_video.subtitle_tracks[self.index].enabled
+        except IndexError:
+            return False
 
     @property
     def language(self):
@@ -238,7 +217,9 @@ class Subtitle(QtWidgets.QTabWidget):
 
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()
-        self.widgets.track_number.setText(f"{self.index}:{self.outdex}" if enabled else "❌")
+        sub_track = self.app.fastflix.current_video.subtitle_tracks[self.index]
+        sub_track.enabled = enabled
+        self.widgets.track_number.setText(f"{sub_track.index}:{sub_track.outdex}" if enabled else "❌")
         self.parent.reorder(update=True)
 
     def update_burn_in(self):
@@ -251,6 +232,8 @@ class Subtitle(QtWidgets.QTabWidget):
             error_message(t("There is an existing burn-in track, only one can be enabled at a time"))
         if enable and self.parent.main.fast_time:
             self.parent.main.widgets.fast_time.setCurrentText("exact")
+        sub_track = self.app.fastflix.current_video.subtitle_tracks[self.index]
+        sub_track.burn_in = enable
         self.updating_burn = False
         self.page_update()
 
@@ -263,7 +246,9 @@ class SubtitleList(FlixList):
     def __init__(self, parent, app: FastFlixApp):
         top_layout = QtWidgets.QHBoxLayout()
 
-        top_layout.addWidget(QtWidgets.QLabel(t("Subtitle Tracks")))
+        label = QtWidgets.QLabel(t("Subtitle Tracks"))
+        label.setFixedHeight(30)
+        top_layout.addWidget(label)
         top_layout.addStretch(1)
 
         self.remove_all_button = QtWidgets.QPushButton(t("Unselect All"))
@@ -317,9 +302,28 @@ class SubtitleList(FlixList):
     def new_source(self):
         self.tracks = []
         self._first_selected = False
+        audio_end = len(self.app.fastflix.current_video.audio_tracks)
         for index, track in enumerate(self.app.fastflix.current_video.streams.subtitle):
             enabled = self.lang_match(track)
-            new_item = Subtitle(self, track, index=track.index, first=True if index == 0 else False, enabled=enabled)
+            self.app.fastflix.current_video.subtitle_tracks.append(
+                SubtitleTrack(
+                    index=track.index,
+                    outdex=audio_end + index + 1,
+                    dispositions={k: bool(v) for k, v in track.disposition.items()},
+                    burn_in=False,
+                    language=track.get("tags", {}).get("language", ""),
+                    subtitle_type=subtitle_types.get(track.get("codec_name", "text"), "text"),
+                    enabled=enabled,
+                )
+            )
+
+            new_item = Subtitle(
+                app=self.app,
+                parent=self,
+                index=index,
+                first=True if index == 0 else False,
+                enabled=enabled,
+            )
             self.tracks.append(new_item)
         if self.tracks:
             self.tracks[0].set_first()
@@ -328,10 +332,18 @@ class SubtitleList(FlixList):
         if self.app.fastflix.config.opt("subtitle_automatic_burn_in"):
             first_default, first_forced = None, None
             for track in self.tracks:
-                if not first_default and track.dis_default and self.lang_match(track, ignore_first=True):
+                if (
+                    not first_default
+                    and self.app.fastflix.current_video.subtitle_tracks[track.index].dispositions.get("default", False)
+                    and self.lang_match(track, ignore_first=True)
+                ):
                     first_default = track
                     break
-                if not first_forced and track.dis_forced and self.lang_match(track, ignore_first=True):
+                if (
+                    not first_forced
+                    and self.app.fastflix.current_video.subtitle_tracks[track.index].dispositions.get("forced", False)
+                    and self.lang_match(track, ignore_first=True)
+                ):
                     first_forced = track
                     break
             if not self.app.fastflix.config.disable_automatic_subtitle_burn_in:
@@ -344,37 +356,35 @@ class SubtitleList(FlixList):
         self.get_settings()
 
     def get_settings(self):
-        tracks = []
-        burn_in_count = 0
-        for track in self.tracks:
-            if track.enabled:
-                tracks.append(
-                    SubtitleTrack(
-                        index=track.index,
-                        outdex=track.outdex,
-                        dispositions=track.dispositions,
-                        language=track.language,
-                        burn_in=track.burn_in,
-                        subtitle_type=track.subtitle_type,
-                    )
-                )
-                if track.burn_in:
-                    burn_in_count += 1
-        if burn_in_count > 1:
-            raise FastFlixInternalException(t("More than one track selected to burn in"))
-        clear_list(self.app.fastflix.current_video.video_settings.subtitle_tracks)
-        self.app.fastflix.current_video.video_settings.subtitle_tracks = tracks
+        return  # TODO remove
 
     def reload(self, original_tracks):
-        enabled_tracks = [x.index for x in original_tracks]
-        self.new_source()
-        for track in self.tracks:
-            enabled = track.index in enabled_tracks
-            track.widgets.enable_check.setChecked(enabled)
-            if enabled:
-                existing_track = [x for x in original_tracks if x.index == track.index][0]
-                track.dispositions = existing_track.dispositions.copy()
-                track.set_dis_button()
-                track.widgets.burn_in.setChecked(existing_track.burn_in)
-                track.widgets.language.setCurrentText(Lang(existing_track.language).name)
+        clear_list(self.tracks)
+
+        for i, track in enumerate(self.app.fastflix.current_video.subtitle_tracks):
+            self.tracks.append(
+                Subtitle(
+                    app=self.app,
+                    parent=self,
+                    index=i,
+                    first=True if i == 0 else False,
+                    enabled=track.enabled,
+                )
+            )
         super()._new_source(self.tracks)
+
+    def move_up(self, widget):
+        self.app.fastflix.current_video.subtitle_tracks.insert(
+            widget.index - 1, self.app.fastflix.current_video.subtitle_tracks.pop(widget.index)
+        )
+        index = self.tracks.index(widget)
+        self.tracks.insert(index - 1, self.tracks.pop(index))
+        self.reorder()
+
+    def move_down(self, widget):
+        self.app.fastflix.current_video.subtitle_tracks.insert(
+            widget.index + 1, self.app.fastflix.current_video.subtitle_tracks.pop(widget.index)
+        )
+        index = self.tracks.index(widget)
+        self.tracks.insert(index + 1, self.tracks.pop(index))
+        self.reorder()

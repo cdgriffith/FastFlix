@@ -77,7 +77,7 @@ def generate_ffmpeg_start(
         [
             f'"{ffmpeg}"',
             start_extra,
-            ("-init_hw_device opencl=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
+            ("-init_hw_device opencl:0.0=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
             "-y",
             time_one,
             incoming_fps,
@@ -250,18 +250,18 @@ def generate_all(
 ) -> Tuple[str, str, str]:
     settings = fastflix.current_video.video_settings.video_encoder_settings
 
-    audio = build_audio(fastflix.current_video.video_settings.audio_tracks) if audio else ""
+    audio = build_audio(fastflix.current_video.audio_tracks) if audio else ""
 
     subtitles, burn_in_track, burn_in_type = "", None, None
     if subs:
-        subtitles, burn_in_track, burn_in_type = build_subtitle(fastflix.current_video.video_settings.subtitle_tracks)
+        subtitles, burn_in_track, burn_in_type = build_subtitle(fastflix.current_video.subtitle_tracks)
         if burn_in_type == "text":
             for i, x in enumerate(fastflix.current_video.streams["subtitle"]):
                 if x["index"] == burn_in_track:
                     burn_in_track = i
                     break
 
-    attachments = build_attachments(fastflix.current_video.video_settings.attachment_tracks)
+    attachments = build_attachments(fastflix.current_video.attachment_tracks)
 
     enable_opencl = fastflix.opencl_support
     if "enable_opencl" in filters_extra:

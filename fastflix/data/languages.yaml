@@ -10595,3 +10595,123 @@ Custom:
   ukr: Нестандартний
   kor: 사용자 지정
   ron: Personalizat
+Codec:
+  eng: Codec
+  deu: Codec
+  fra: Codec
+  ita: Codec
+  spa: Códec
+  jpn: コーデック
+  rus: Кодек
+  por: Codec
+  swe: Kodning
+  pol: Kodek
+  chs: 编解码器
+  ukr: Кодек
+  kor: 코덱
+  ron: Codec
+Near Lossless:
+  eng: Near Lossless
+  deu: Fast verlustfrei
+  fra: Presque sans perte
+  ita: Quasi senza perdita
+  spa: Casi sin pérdidas
+  jpn: ニア・ロスレス
+  rus: Почти без потерь
+  por: Quase sem perdas
+  swe: Nära förlustfri
+  pol: Near Lossless
+  chs: 近乎无损
+  ukr: Майже без втрат
+  kor: 거의 무손실
+  ron: Aproape fără pierderi
+High Quality:
+  eng: High Quality
+  deu: Hohe Qualität
+  fra: Haute qualité
+  ita: Alta qualità
+  spa: Alta calidad
+  jpn: 高品質
+  rus: Высокое качество
+  por: Alta qualidade
+  swe: Hög kvalitet
+  pol: Wysoka jakość
+  chs: 高质量
+  ukr: Висока якість
+  kor: 고품질
+  ron: De înaltă calitate
+Medium Quality:
+  eng: Medium Quality
+  deu: Mittlere Qualität
+  fra: Qualité moyenne
+  ita: Qualità media
+  spa: Calidad media
+  jpn: ミディアム・クオリティ
+  rus: Среднее качество
+  por: Qualidade média
+  swe: Medelhög kvalitet
+  pol: Średnia jakość
+  chs: 中等质量
+  ukr: Середня якість
+  kor: 중간 품질
+  ron: Calitate medie
+Low Quality:
+  eng: Low Quality
+  deu: Geringe Qualität
+  fra: Faible qualité
+  ita: Bassa qualità
+  spa: Baja calidad
+  jpn: 低品質
+  rus: Низкое качество
+  por: Baixa qualidade
+  swe: Låg kvalitet
+  pol: Niska jakość
+  chs: 低质量
+  ukr: Низька якість
+  kor: 낮은 품질
+  ron: Calitate scăzută
+Custom Bitrate:
+  eng: Custom Bitrate
+  deu: Benutzerdefinierte Bitrate
+  fra: Bitrate personnalisé
+  ita: Bitrate personalizzato
+  spa: Velocidad de bits personalizada
+  jpn: カスタム・ビットレート
+  rus: Пользовательский битрейт
+  por: Taxa de bits personalizada
+  swe: Anpassad bitrate
+  pol: Niestandardowa szybkość transmisji
+  chs: 自定义比特率
+  ukr: Користувацький бітрейт
+  kor: 사용자 지정 비트레이트
+  ron: Bitrate personalizat
+Audio Quality:
+  eng: Audio Quality
+  deu: Audio-Qualität
+  fra: Qualité audio
+  ita: Qualità audio
+  spa: Calidad de audio
+  jpn: オーディオ品質
+  rus: Качество звука
+  por: Qualidade áudio
+  swe: Ljudkvalitet
+  pol: Jakość dźwięku
+  chs: 音频质量
+  ukr: Якість звуку
+  kor: 오디오 품질
+  ron: Calitatea audio
+Channel Layout:
+  eng: Channel Layout
+  deu: Kanal-Layout
+  fra: Disposition des canaux
+  ita: Layout del canale
+  spa: Disposición de los canales
+  jpn: チャンネルレイアウト
+  rus: Расположение каналов
+  por: Disposição dos canais
+  swe: Kanalens layout
+  pol: Układ kanałów
+  chs: 通道布局
+  ukr: Розташування каналів
+  kor: 채널 레이아웃
+  ron: Canal Layout

@@ -35,10 +35,10 @@ def get_queue(queue_file: Path) -> list[Video]:
         video["video_settings"]["output_path"] = Path(video["video_settings"]["output_path"])
         encoder_settings = video["video_settings"]["video_encoder_settings"]
         ves = [x(**encoder_settings) for x in setting_types.values() if x().name == encoder_settings["name"]][0]
-        audio = [AudioTrack(**x) for x in video["video_settings"]["audio_tracks"]]
-        subtitles = [SubtitleTrack(**x) for x in video["video_settings"]["subtitle_tracks"]]
+        audio = [AudioTrack(**x) for x in video["audio_tracks"]]
+        subtitles = [SubtitleTrack(**x) for x in video["subtitle_tracks"]]
         attachments = []
-        for x in video["video_settings"]["attachment_tracks"]:
+        for x in video["attachment_tracks"]:
             try:
                 attachment_path = x.pop("file_path")
             except KeyError:
@@ -50,17 +50,11 @@ def get_queue(queue_file: Path) -> list[Video]:
         crop = None
         if video["video_settings"]["crop"]:
             crop = Crop(**video["video_settings"]["crop"])
-        del video["video_settings"]["audio_tracks"]
-        del video["video_settings"]["subtitle_tracks"]
-        del video["video_settings"]["attachment_tracks"]
         del video["video_settings"]["video_encoder_settings"]
         del video["status"]
         del video["video_settings"]["crop"]
         vs = VideoSettings(
             **video["video_settings"],
-            audio_tracks=audio,
-            subtitle_tracks=subtitles,
-            attachment_tracks=attachments,
             crop=crop,
         )
         vs.video_encoder_settings = ves  # No idea why this has to be called after, otherwise reset to x265
@@ -108,7 +102,7 @@ def save_queue(queue: list[Video], queue_file: Path, config: Optional[Config] = 
                     str(new_metadata_file),
                 )
                 video["video_settings"]["video_encoder_settings"]["hdr10plus_metadata"] = str(new_metadata_file)
-            for track in video["video_settings"]["attachment_tracks"]:
+            for track in video["attachment_tracks"]:
                 if track.get("file_path"):
                     if not Path(track["file_path"]).exists():
                         logger.exception("Could not save cover to queue recovery location, removing cover")
