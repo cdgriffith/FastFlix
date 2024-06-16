@@ -19,6 +19,11 @@ with open("pyproject.toml") as f:
         if package not in ("pyinstaller"):
             all_imports.append(package)
 
+all_imports.remove("iso639-lang")
+all_imports.remove("python-box")
+all_imports.append("box")
+all_imports.append("iso639")
+
 a = Analysis(['fastflix/__main__.py'],
              binaries=[],
              datas=[('iso-639-3.tab', 'iso639'), ('iso-639-3.json', 'iso639'), ('CHANGES', 'fastflix/.'), ('docs/build-licenses.txt', 'docs')] + all_fastflix_files,

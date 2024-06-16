@@ -16,6 +16,11 @@ for root, dirs, files in os.walk('fastflix'):
 
 all_imports = collect_submodules('pydantic') + ['dataclasses', 'colorsys', 'typing_extensions', 'box']
 
+all_imports.remove("iso639-lang")
+all_imports.remove("python-box")
+all_imports.append("box")
+all_imports.append("iso639")
+
 with open("pyproject.toml") as f:
     for line in toml.load(f)["project"]["dependencies"]:
         package = line.split("[")[0].split("=")[0].split(">")[0].split("<")[0].replace('"', '').replace("'",'').rstrip("~").strip()
