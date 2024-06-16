@@ -163,7 +163,7 @@ class Container(QtWidgets.QMainWindow):
     def init_menu(self):
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False)
-        menubar.setFixedWidth(260)
+        menubar.setFixedWidth(360)
         menubar.setStyleSheet("font-size: 14px")
 
         file_menu = menubar.addMenu(t("File"))
