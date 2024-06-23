@@ -101,7 +101,12 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
             bitrate = ""
             if track.conversion_codec not in lossless:
                 if track.conversion_bitrate:
-                    bitrate = f"--audio-bitrate {audio_id}?{track.conversion_bitrate} "
+                    conversion_bitrate = (
+                        track.conversion_bitrate
+                        if track.conversion_bitrate.lower().endswith(("k", "m", "g", "kb", "mb", "gb"))
+                        else f"{track.conversion_bitrate}k"
+                    )
+                    bitrate = f"--audio-bitrate {audio_id}?{conversion_bitrate} "
                 else:
                     bitrate = f"--audio-quality {audio_id}?{track.conversion_aq} "
             command_list.append(

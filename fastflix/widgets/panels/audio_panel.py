@@ -189,21 +189,13 @@ class Audio(QtWidgets.QTabWidget):
         layout.addWidget(self.widgets.down_button)
         return layout
 
-    def get_conversion_bitrates(self, channels=None):
-        if not channels:
-            channels = self.channels or 2
-        bitrates = [x for x in range(16 * channels, (256 * channels) + 1, 16 * channels)]
-        if channels > 1:
-            bitrates.append(640)
-        return [f"{x}k" for x in sorted(set(bitrates))]
-
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()
         audio_track = self.app.fastflix.current_video.audio_tracks[self.index]
         audio_track.enabled = enabled
         self.widgets.track_number.setText(f"{audio_track.index}:{audio_track.outdex}" if enabled else "❌")
         self.parent.reorder(update=True)
-        self.parent.parent.subtitles.reorder()
+        # self.parent.parent.subtitles.reorder()
 
     def page_update(self):
         if not self.loading:

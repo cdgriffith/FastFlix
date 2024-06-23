@@ -59,12 +59,15 @@ class Subtitle(QtWidgets.QTabWidget):
         self.outdex = None
         self.first = first
         self.last = False
-        self.setFixedHeight(60)
+        # self.setFixedHeight(180)
         sub_track: SubtitleTrack = self.app.fastflix.current_video.subtitle_tracks[index]
+        long_name = (
+            f"  {sub_track.long_name}" if sub_track.long_name else f"  {t('Subtitle Type')}:{sub_track.subtitle_type}"
+        )
 
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{sub_track.index}:{sub_track.outdex}" if enabled else "❌"),
-            title=QtWidgets.QLabel(f"  {sub_track.long_name}"),
+            title=QtWidgets.QLabel(long_name),
             up_button=QtWidgets.QPushButton(
                 QtGui.QIcon(get_icon("up-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
@@ -135,7 +138,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
         self.grid.addLayout(disposition_layout, 0, 4)
         self.grid.addWidget(self.widgets.burn_in, 0, 5)
-        self.grid.addLayout(self.init_language(), 0, 6)
+        self.grid.addLayout(self.init_language(sub_track), 0, 6)
 
         self.grid.addWidget(self.widgets.enable_check, 0, 8)
 
@@ -170,11 +173,11 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets.extract.hide()
         self.movie.start()
 
-    def init_language(self):
+    def init_language(self, sub_track: SubtitleTrack):
         self.widgets.language.addItems(language_list)
         self.widgets.language.setMaximumWidth(110)
         try:
-            self.widgets.language.setCurrentIndex(language_list.index(Lang(self.subtitle_lang).name))
+            self.widgets.language.setCurrentIndex(language_list.index(Lang(sub_track.language).name))
         except Exception:
             self.widgets.language.setCurrentIndex(language_list.index("English"))
         self.widgets.language.currentIndexChanged.connect(self.page_update)

@@ -43,7 +43,10 @@ def build_audio(audio_tracks, audio_file_index=0):
         if not track.conversion_codec or track.conversion_codec == "none":
             command_list.append(f"-c:{track.outdex} copy")
         elif track.conversion_codec:
-            cl = track.downmix if "downmix" in track and track.downmix else track.raw_info.channel_layout
+            try:
+                cl = track.downmix if "downmix" in track and track.downmix else track.raw_info.channel_layout
+            except AssertionError:
+                cl = "stereo"
             downmix = (
                 f"-ac:{track.outdex} {channel_list[cl]} -filter:{track.outdex} aformat=channel_layouts={cl}"
                 if track.downmix
@@ -51,8 +54,13 @@ def build_audio(audio_tracks, audio_file_index=0):
             )
             bitrate = ""
             if track.conversion_codec not in lossless:
+                conversion_bitrate = (
+                    track.conversion_bitrate
+                    if track.conversion_bitrate.lower().endswith(("k", "m", "g", "kb", "mb", "gb"))
+                    else f"{track.conversion_bitrate}k"
+                )
                 channel_layout = f'-filter:{track.outdex} aformat=channel_layouts="{track.raw_info.channel_layout}"'
-                bitrate = f"-b:{track.outdex} {track.conversion_bitrate} {channel_layout}"
+                bitrate = f"-b:{track.outdex} {conversion_bitrate} {channel_layout}"
             command_list.append(f"-c:{track.outdex} {track.conversion_codec} {bitrate} {downmix}")
 
         if getattr(track, "dispositions", None):

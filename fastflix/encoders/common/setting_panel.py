@@ -450,6 +450,9 @@ class SettingPanel(QtWidgets.QWidget):
 
         return layout
 
+    def set_mode(self):
+        raise NotImplementedError("Child must implement this function")
+
     @property
     def ffmpeg_extras(self):
         return ffmpeg_extra_command
