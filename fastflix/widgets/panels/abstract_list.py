@@ -20,11 +20,13 @@ class FlixList(QtWidgets.QWidget):
         self.inner_layout = None
         self.list_type = list_type
 
-        layout = QtWidgets.QGridLayout()
+        layout = QtWidgets.QVBoxLayout()
         if top_row_layout:
-            layout.addLayout(top_row_layout, 0, 0)
+            layout.addLayout(top_row_layout)
         else:
-            layout.addWidget(QtWidgets.QLabel(t(list_name)))
+            header_text = QtWidgets.QLabel(t(list_name))
+            header_text.setFixedHeight(30)
+            layout.addWidget(header_text)
 
         self.inner_widget = QtWidgets.QWidget()
 

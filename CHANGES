@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 5.7.1
+
+* Fixing profile audio box not being able to select pattern match
+* Fixing #561 Subtitles all show as English in FastFlix subtitles screen (thanks to David James)
+* Fixing #562 Audio conversion window defaults channel layout to stereo (thanks to David James)
+* Fixing #563 No Thumbnails When Importing Video (thanks to Damundai)
+* Fixing #564 Audio custom bitrate box shows units in kilobits/second but passes bits/second as the parameter (thanks to tcmbackwards)
+
 ## Version 5.7.0
 
 * Adding new audio encoding panel

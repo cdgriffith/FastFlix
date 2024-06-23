@@ -1681,12 +1681,14 @@ class Main(QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def thumbnail_generated(self, status=0):
+        if status == 2:
+            self.app.fastflix.opencl_support = False
+            self.generate_thumbnail()
+            return
         if status == 0 or not status or not self.thumb_file.exists():
             self.widgets.preview.setText(t("Error Updating Thumbnail"))
             return
-        if status == 2:
-            self.generate_thumbnail()
-            return
+
         pixmap = QtGui.QPixmap(str(self.thumb_file))
         pixmap = pixmap.scaled(420, 260, QtCore.Qt.KeepAspectRatio)
         self.widgets.preview.setPixmap(pixmap)

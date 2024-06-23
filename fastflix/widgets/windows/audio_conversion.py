@@ -41,6 +41,7 @@ channel_list = {
     "quad(side)": 4,
     "5.0": 5,
     "5.1": 6,
+    "5.1(side)": 6,
     "6.0": 6,
     "6.0(front)": 6,
     "hexagonal": 6,
@@ -50,6 +51,17 @@ channel_list = {
     "7.0(front)": 7,
     "7.1": 8,
     "7.1(wide)": 8,
+}
+
+back_channel_list = {
+    1: "mono",
+    2: "stereo",
+    3: "2.1",
+    4: "3.1",
+    5: "5.0",
+    6: "5.1",
+    7: "6.1",
+    8: "7.1",
 }
 
 
@@ -118,11 +130,19 @@ class AudioConversion(QtWidgets.QWidget):
         quality_layout.addWidget(self.bitrate)
         quality_layout.addWidget(QtWidgets.QLabel("kb/s"))
 
-        # Downmix
+        channel_layout = self.audio_track.raw_info.get("channel_layout")
 
         self.downmix = QtWidgets.QComboBox()
         self.downmix.addItems([t("None")] + list(channel_list.keys()))
-        self.downmix.setCurrentIndex(2)
+        try:
+            if channel_layout:
+                self.downmix.setCurrentText(channel_layout)
+            else:
+                guess = back_channel_list[self.audio_track.raw_info.get("channels")]
+                logger.warning(f"Channel layout not found for {self.audio_track.title}, guessing {guess}")
+                self.downmix.setCurrentText(guess)
+        except Exception:
+            self.downmix.setCurrentIndex(2)
         if self.audio_track.downmix:
             self.downmix.setCurrentText(self.audio_track.downmix)
 
