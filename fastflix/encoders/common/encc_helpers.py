@@ -9,6 +9,26 @@ from fastflix.models.encode import VCEEncCAVCSettings, VCEEncCAV1Settings, VCEEn
 logger = logging.getLogger("fastflix")
 
 
+def audio_quality_converter(quality, codec, channels=2, track_number=1):
+    base = [120, 96, 72, 48, 24, 24, 16, 8, 8, 8][quality]
+
+    match codec:
+        case "libopus":
+            return f" --audio-bitrate {track_number}?{base * channels}k "
+        case "aac":
+            return f" --audio-quality {track_number}?{[2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.4, 0.2][quality]} "
+        case "libfdk_aac":
+            return f" --audio-quality {track_number}?{[1, 1, 2, 2, 3, 3, 4, 4, 5, 5][quality]} "
+        case "libvorbis" | "vorbis":
+            return f" --audio-quality {track_number}?{[10, 9, 8, 7, 6, 5, 4, 3, 2, 1][quality]} "
+        case "libmp3lame" | "mp3":
+            return f" --audio-quality {track_number}?{quality} "
+        case "ac3" | "eac3" | "truehd":
+            return f" --audio-bitrate {track_number}?{base * channels * 4}k "
+        case _:
+            return f" --audio-bitrate {track_number}?{base * channels}k "
+
+
 def rigaya_avformat_reader(fastflix: FastFlix) -> str:
     # Avisynth reader 	avs
     # VapourSynth reader 	vpy
@@ -108,7 +128,9 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
                     )
                     bitrate = f"--audio-bitrate {audio_id}?{conversion_bitrate} "
                 else:
-                    bitrate = f"--audio-quality {audio_id}?{track.conversion_aq} "
+                    bitrate = audio_quality_converter(
+                        track.conversion_aq, track.conversion_codec, track.raw_info.get("channels"), audio_id
+                    )
             command_list.append(
                 f"{downmix} --audio-codec {audio_id}?{track.conversion_codec} {bitrate} "
                 f"--audio-metadata {audio_id}?clear"

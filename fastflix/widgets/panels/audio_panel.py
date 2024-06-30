@@ -198,6 +198,8 @@ class Audio(QtWidgets.QTabWidget):
         # self.parent.parent.subtitles.reorder()
 
     def page_update(self):
+        self.app.fastflix.current_video.audio_tracks[self.index].title = self.title
+        self.app.fastflix.current_video.audio_tracks[self.index].language = self.language
         if not self.loading:
             self.check_conversion_button()
             return self.parent.main.page_update(build_thumbnail=False)
