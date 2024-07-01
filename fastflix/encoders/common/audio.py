@@ -28,6 +28,26 @@ channel_list = {
 lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
 
 
+def audio_quality_converter(quality, codec, channels=2, track_number=1):
+    base = [120, 96, 72, 48, 24, 24, 16, 8, 8, 8][quality]
+
+    match codec:
+        case "libopus":
+            return f" -vbr:{track_number} on -b:{track_number} {base * channels}k "
+        case "aac":
+            return f" -q:{track_number} {[2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.4, 0.2][quality]} "
+        case "libfdk_aac":
+            return f" -q:{track_number} {[1, 1, 2, 2, 3, 3, 4, 4, 5, 5][quality]} "
+        case "libvorbis" | "vorbis":
+            return f" -q:{track_number} {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1][quality]} "
+        case "libmp3lame" | "mp3":
+            return f" -q:{track_number} {quality} "
+        case "ac3" | "eac3" | "truehd":
+            return f" -b:{track_number} {base * channels * 4}k "
+        case _:
+            return f" -b:{track_number} {base * channels}k "
+
+
 def build_audio(audio_tracks, audio_file_index=0):
     command_list = []
     for track in audio_tracks:
@@ -52,15 +72,23 @@ def build_audio(audio_tracks, audio_file_index=0):
                 if track.downmix
                 else ""
             )
+            channel_layout = f'-filter:{track.outdex} aformat=channel_layouts="{track.raw_info.channel_layout}"'
+
             bitrate = ""
             if track.conversion_codec not in lossless:
-                conversion_bitrate = (
-                    track.conversion_bitrate
-                    if track.conversion_bitrate.lower().endswith(("k", "m", "g", "kb", "mb", "gb"))
-                    else f"{track.conversion_bitrate}k"
-                )
-                channel_layout = f'-filter:{track.outdex} aformat=channel_layouts="{track.raw_info.channel_layout}"'
-                bitrate = f"-b:{track.outdex} {conversion_bitrate} {channel_layout}"
+                if track.conversion_bitrate:
+                    conversion_bitrate = (
+                        track.conversion_bitrate
+                        if track.conversion_bitrate.lower().endswith(("k", "m", "g", "kb", "mb", "gb"))
+                        else f"{track.conversion_bitrate}k"
+                    )
+
+                    bitrate = f"-b:{track.outdex} {conversion_bitrate} {channel_layout}"
+                else:
+                    bitrate = audio_quality_converter(
+                        track.conversion_aq, track.conversion_codec, track.raw_info.get("channels"), track.outdex
+                    )
+
             command_list.append(f"-c:{track.outdex} {track.conversion_codec} {bitrate} {downmix}")
 
         if getattr(track, "dispositions", None):
@@ -73,4 +101,7 @@ def build_audio(audio_tracks, audio_file_index=0):
             else:
                 command_list.append(f"-disposition:{track.outdex} 0")
 
-    return " ".join(command_list)
+    end_command = " ".join(command_list)
+    if " truehd " or " opus " in end_command:
+        end_command += " -strict -2 "
+    return end_command

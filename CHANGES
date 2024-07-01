@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 5.7.2
+
+* Fixing audio quality targeting to be enabled properly for ffmpeg
+* Fixing #570 Changing audio language does not work (thanks to danielly2020)
+* Fixing Setting audio track title does not work (thanks to Horatio on Discord)
+* Fixing #571 AttributeError: 'NoneType' object has no attribute 'lower' (thanks to 'Dude' mikeSGman)
+* Removing builds for MacOS 11 as Github has deprecated it
+
 ## Version 5.7.1
 
 * Fixing profile audio box not being able to select pattern match
