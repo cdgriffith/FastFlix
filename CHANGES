@@ -2,7 +2,6 @@
 
 ## Version 5.7.2
 
-* Adding images for ubuntu 24.04
 * Fixing audio quality targeting to be enabled properly for ffmpeg
 * Fixing #570 Changing audio language does not work (thanks to danielly2020)
 * Fixing Setting audio track title does not work (thanks to Horatio on Discord)
