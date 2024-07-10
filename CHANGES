@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 5.7.3
+
+* Fixing #574 Downmix audio channels not working (thanks to eikixsh)
+* Fixing audio and subtitle track count in queue
+
 ## Version 5.7.2
 
 * Fixing audio quality targeting to be enabled properly for ffmpeg

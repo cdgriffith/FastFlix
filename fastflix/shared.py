@@ -122,11 +122,11 @@ def latest_fastflix(app, show_new_dialog=False):
     from fastflix.version import __version__
 
     url = "https://api.github.com/repos/cdgriffith/FastFlix/releases"
-    contrib = link(
-        url="https://github.com/sponsors/cdgriffith?frequency=one-time&sponsor=cdgriffith",
-        text=t("Please consider supporting FastFlix with a one time contribution!"),
-        theme=app.fastflix.config.theme,
-    )
+    # contrib = link(
+    #     url="https://github.com/sponsors/cdgriffith?frequency=one-time&sponsor=cdgriffith",
+    #     text=t("Please consider supporting FastFlix with a one time contribution!"),
+    #     theme=app.fastflix.config.theme,
+    # )
 
     logger.debug("Checking for newer versions of FastFlix")
 
@@ -195,13 +195,13 @@ def latest_fastflix(app, show_new_dialog=False):
             )
         logger.debug(f"Newer version found: {use_version}")
         message(
-            f"{t('There is a newer version of FastFlix available!')} <br><br> {download_link} <br><br> {contrib} 💓<br>",
+            f"{t('There is a newer version of FastFlix available!')} <br><br> {download_link} <br>",  # <br> {contrib} 💓<br>
             title=t("New Version"),
         )
         return
     logger.debug("FastFlix is up tp date")
     if show_new_dialog:
-        message(t(f"You are using the latest version of FastFlix") + f" <br><br> {contrib} 💓 <br>")
+        message(t(f"You are using the latest version of FastFlix") + f" <br>")  # <br> {contrib} 💓 <br>
 
 
 def file_date():

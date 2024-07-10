@@ -64,7 +64,7 @@ def build_audio(audio_tracks, audio_file_index=0):
             command_list.append(f"-c:{track.outdex} copy")
         elif track.conversion_codec:
             try:
-                cl = track.downmix if "downmix" in track and track.downmix else track.raw_info.channel_layout
+                cl = track.downmix if track.downmix else track.raw_info.channel_layout
             except AssertionError:
                 cl = "stereo"
             downmix = (

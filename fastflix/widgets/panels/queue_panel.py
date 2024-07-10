@@ -144,8 +144,12 @@ class EncodeItem(QtWidgets.QTabWidget):
         # grid.addWidget(self.widgets.track_number, 0, 1)
         grid.addWidget(title, 0, 1, 1, 3)
         grid.addWidget(QtWidgets.QLabel(f"{video.video_settings.video_encoder_settings.name}"), 0, 4)
-        grid.addWidget(QtWidgets.QLabel(f"{t('Audio Tracks')}: {len(video.audio_tracks)}"), 0, 5)
-        grid.addWidget(QtWidgets.QLabel(f"{t('Subtitles')}: {len(video.subtitle_tracks)}"), 0, 6)
+        grid.addWidget(
+            QtWidgets.QLabel(f"{t('Audio Tracks')}: {len([1 for x in video.audio_tracks if x.enabled])}"), 0, 5
+        )
+        grid.addWidget(
+            QtWidgets.QLabel(f"{t('Subtitles')}: {len([1 for x in video.subtitle_tracks if x.enabled])}"), 0, 6
+        )
         grid.addWidget(QtWidgets.QLabel(status), 0, 7)
         if not video.status.error and video.status.complete and not get_bool_env("FF_DOCKERMODE"):
             grid.addWidget(view_button, 0, 8)
