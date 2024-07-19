@@ -100,7 +100,7 @@ class Subtitle(QtWidgets.QTabWidget):
         #     self.widgets.disposition.setCurrentIndex(dispositions.index("forced"))
 
         self.setFixedHeight(60)
-        # self.widgets.title.setToolTip(self.subtitle.to_yaml())
+        self.widgets.title.setToolTip(sub_track.raw_info.to_yaml())
         self.widgets.burn_in.setToolTip(
             f"""{t("Overlay this subtitle track onto the video during conversion.")}\n
             {t("Please make sure seek method is set to exact")}.\n
@@ -308,6 +308,7 @@ class SubtitleList(FlixList):
         audio_end = len(self.app.fastflix.current_video.audio_tracks)
         for index, track in enumerate(self.app.fastflix.current_video.streams.subtitle):
             enabled = self.lang_match(track)
+            subtitle_type = subtitle_types.get(track.get("codec_name", "text"), "text")
             self.app.fastflix.current_video.subtitle_tracks.append(
                 SubtitleTrack(
                     index=track.index,
@@ -315,8 +316,10 @@ class SubtitleList(FlixList):
                     dispositions={k: bool(v) for k, v in track.disposition.items()},
                     burn_in=False,
                     language=track.get("tags", {}).get("language", ""),
-                    subtitle_type=subtitle_types.get(track.get("codec_name", "text"), "text"),
+                    subtitle_type=subtitle_type,
                     enabled=enabled,
+                    long_name=track.get("codec_long_name", f"{t('Subtitle Type')}:{subtitle_type}"),
+                    raw_info=track,
                 )
             )
 

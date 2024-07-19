@@ -36,6 +36,7 @@ class SubtitleTrack(BaseModel):
     dispositions: dict = Field(default_factory=dict)
     enabled: bool = True
     long_name: str = ""
+    raw_info: Optional[Union[dict, Box]] = None
 
 
 class AttachmentTrack(BaseModel):
