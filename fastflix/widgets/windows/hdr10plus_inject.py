@@ -135,7 +135,7 @@ class HDR10PlusInjectWindow(QtWidgets.QWidget):
 
         command = (
             f'{self.app.fastflix.config.ffmpeg} -loglevel panic -i "{self.movie_file.text()}" '
-            f'-map 0:{self.selected_stream["index"]} -c:v copy -vbsf hevc_mp4toannexb -f hevc - | '
+            f'-map 0:{self.selected_stream["index"]} -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | '
             f"{self.app.fastflix.config.hdr10plus_parser} inject -i - -j {self.hdr10p_file.text()} -o - | "
             f'{self.app.fastflix.config.ffmpeg} -loglevel panic -i - -i {self.movie_file.text()} -map 0:0 -c:0 copy -map 1:a -map 1:s -map 1:d -c:1 copy "{self.output_file.text()}"'
         )

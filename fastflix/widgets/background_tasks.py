@@ -129,7 +129,7 @@ class ExtractHDR10(QtCore.QThread):
             f"0:{track}",
             "-c:v",
             "copy",
-            "-vbsf",
+            "-bsf:v",
             "hevc_mp4toannexb",
             "-f",
             "hevc",

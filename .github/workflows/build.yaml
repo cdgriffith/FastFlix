@@ -107,6 +107,16 @@ jobs:
       shell: cmd
       run: pyinstaller FastFlix_Windows_Installer.spec
 
+    - uses: skymatic/code-sign-action@v1
+      with:
+        certificate: '${{ secrets.CODE_CERT_B64 }}'
+        password: '${{ secrets.CODE_CERT_PASS }}'
+        certificatesha1: '${{ secrets.CODE_CERT_THUMB }}'
+        description: 'FastFlix'
+        timestampUrl: 'http://timestamp.sectigo.com'
+        folder: 'dist\FastFlix'
+        recursive: false
+
     - name: Package installer
       shell: cmd
       run: |

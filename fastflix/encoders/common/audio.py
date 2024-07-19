@@ -64,15 +64,16 @@ def build_audio(audio_tracks, audio_file_index=0):
             command_list.append(f"-c:{track.outdex} copy")
         elif track.conversion_codec:
             try:
-                cl = track.downmix if track.downmix else track.raw_info.channel_layout
-            except AssertionError:
+                cl = track.downmix if track.downmix and track.downmix != "No Downmix" else track.raw_info.channel_layout
+            except (AssertionError, KeyError):
                 cl = "stereo"
+
             downmix = (
                 f"-ac:{track.outdex} {channel_list[cl]} -filter:{track.outdex} aformat=channel_layouts={cl}"
-                if track.downmix
+                if track.downmix and track.downmix != "No Downmix"
                 else ""
             )
-            channel_layout = f'-filter:{track.outdex} aformat=channel_layouts="{track.raw_info.channel_layout}"'
+            channel_layout = f'-filter:{track.outdex} aformat=channel_layouts="{channel_list[cl]}"'
 
             bitrate = ""
             if track.conversion_codec not in lossless:
