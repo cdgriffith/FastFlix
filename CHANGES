@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 5.7.4
+
+* Fixing $578 Missing code signing to FastFlix exec inside of the installer (thanks to Sam Katakouzinos)
+* Fixing #580 No Downmix key error on profile save (thanks to Hankuu)
+* Fixing #581 Fastflix could not recognize hevc video containing hdr10plus metadata with recent ffmpeg build (thanks to alpha-0)
+
 ## Version 5.7.3
 
 * Fixing #574 Downmix audio channels not working (thanks to eikixsh)

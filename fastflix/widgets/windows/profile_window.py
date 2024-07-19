@@ -154,7 +154,7 @@ class AudioProfile(QtWidgets.QTabWidget):
             match_input=match_input_value,
             conversion=self.convert_to.currentText() if self.convert_to.currentIndex() > 0 else None,
             bitrate=self.bitrate.currentText(),
-            downmix=self.downmix.currentText(),
+            downmix=self.downmix.currentText() if self.downmix.currentIndex() > 0 else None,
         )
 
 

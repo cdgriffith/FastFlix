@@ -117,7 +117,9 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
         if not track.conversion_codec or track.conversion_codec == "none":
             copies.append(str(audio_id))
         elif track.conversion_codec:
-            downmix = f"--audio-stream {audio_id}?:{track.downmix}" if track.downmix else ""
+            downmix = (
+                f"--audio-stream {audio_id}?:{track.downmix}" if track.downmix and track.downmix != "No Downmix" else ""
+            )
             bitrate = ""
             if track.conversion_codec not in lossless:
                 if track.conversion_bitrate:

@@ -603,7 +603,7 @@ def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
                 "panic",
                 "-c:v",
                 "copy",
-                "-vbsf",
+                "-bsf:v",
                 "hevc_mp4toannexb",
                 "-f",
                 "hevc",
