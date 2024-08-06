@@ -1,7 +1,12 @@
 # Changelog
 
-## Version 5.7.5
+## Version 5.8.0
 
+* Adding #354 M1 support (thanks to Nhunz and Anton)
+* Adding #536 Improve Profiles - save advanced options (thanks to CelticTaonga and DCNerds)
+* Fixing #185 audio channels not being set properly and resetting on encoder change (thanks to Tupsi)
+* Fixing #522 add file fails - fixed as of 5.7.0 (thanks to pcl5x2008)
+* Fixing #531 list limitation in readme that FFmpeg must support the software encoders listed (thanks to brunoais)
 * Fixing #586 audio channels being set incorrectly (thanks to Hankuu)
 * Fixing #588 audio and subtitle dispositions were not set from source (thanks to GeZorTenPlotZ)
 

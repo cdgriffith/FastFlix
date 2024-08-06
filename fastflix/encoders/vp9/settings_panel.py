@@ -42,6 +42,7 @@ pix_fmts = [
     "8-bit: yuv420p",
     "10-bit: yuv420p10le",
     "12-bit: yuv420p12le",
+    "8-bit 420 Transparent: yuva420p",
     "8-bit 422: yuv422p",
     "8-bit 444: yuv444p",
     "10-bit 422: yuv422p10le",
