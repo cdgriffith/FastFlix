@@ -3,6 +3,7 @@ from PyInstaller.utils.hooks import collect_submodules
 import toml
 import os
 import platform
+from subprocess import check_output
 
 block_cipher = None
 
@@ -40,16 +41,8 @@ a = Analysis(['fastflix/__main__.py'],
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 
-
-print("Platform Name:", platform.platform())
-
-arch = "i386"
-if 'arm64' in platform.platform():
-    arch = "arm64"
-elif 'x86_64' in platform.platform():
-    arch = "x86_64"
-
-print("Target Arch:", arch)
+arch = check_output("/usr/bin/arch").decode().strip()
+print("Arch output:", arch)
 
 exe = EXE(pyz,
           a.scripts,
