@@ -23,8 +23,8 @@ jobs:
         run: |
           mkdir dist
           echo "::set-env name=VERSION::$(python scripts/get_version.py)"
-          echo "::set-env name=ARCH::$(/usr/bin/arch)"
-          echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
+          echo "::set-env name=ARCH::$(python -c 'import platform; print(\"arm64\" if \"arm64\" in platform.platform() else \"x86_64\")')"
+          echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}} - on ${{env.ARCH}}"
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
