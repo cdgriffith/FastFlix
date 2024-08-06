@@ -13,9 +13,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -23,6 +23,7 @@ jobs:
         run: |
           mkdir dist
           echo "::set-env name=VERSION::$(python scripts/get_version.py)"
+          echo "::set-env name=ARCH::$(/usr/bin/arch)"
           echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
@@ -58,9 +59,9 @@ jobs:
           dist/FastFlix --test
 
       - name: Upload standalone executable artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: FastFlix_${{ env.VERSION }}_${{ matrix.os }}_x86_64
+          name: FastFlix_${{ env.VERSION }}_${{ matrix.os }}_${{ env.ARCH }}
           path: |
             dist/FastFlix
             dist/LICENSE
@@ -71,8 +72,8 @@ jobs:
     runs-on: windows-2022
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: "3.12"
 
@@ -145,7 +146,7 @@ jobs:
         move docs\build-licenses.txt LICENSE
 
     - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: FastFlix_${{ env.VERSION }}_win64
         path: |
