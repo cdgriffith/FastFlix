@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 5.7.5
+
+* Fixing #586 audio channels being set incorrectly (thanks to Hankuu)
+* Fixing #588 audio and subtitle dispositions were not set from source (thanks to GeZorTenPlotZ)
+
 ## Version 5.7.4
 
 * Fixing #579 Missing Infos and no Mouse-Over info in Subs-Panel since 5.7 (thanks to GeZorTenPlotZ)
