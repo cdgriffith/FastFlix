@@ -39,6 +39,18 @@ a = Analysis(['fastflix/__main__.py'],
              noarchive=False)
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
+
+
+print("Platform Name:", platform.platform())
+
+arch = "i386"
+if 'arm64' in platform.platform():
+    arch = "arm64"
+elif 'x86_64' in platform.platform():
+    arch = "x86_64"
+
+print("Target Arch:", arch)
+
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
@@ -52,7 +64,7 @@ exe = EXE(pyz,
           upx=False,
           upx_exclude=[],
           runtime_tmpdir=None,
-          target_arch='arm64' if 'arm64' in platform.platform() else 'x86_64',
+          target_arch=arch,
           console=True,
           icon='fastflix/data/icon.ico'
           )
