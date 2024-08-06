@@ -1,6 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_submodules
 import toml
+import os
+import platform
 
 block_cipher = None
 
@@ -50,4 +52,7 @@ exe = EXE(pyz,
           upx=False,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True , icon='fastflix/data/icon.ico')
+          target_arch='arm64' if 'arm64' in platform.platform() else 'x86_64',
+          console=True,
+          icon='fastflix/data/icon.ico'
+          )
