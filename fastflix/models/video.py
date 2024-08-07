@@ -109,34 +109,36 @@ class VideoSettings(BaseModel):
     brightness: Optional[float] = None
     contrast: Optional[float] = None
     saturation: Optional[float] = None
-    video_encoder_settings: Union[
-        x265Settings,
-        x264Settings,
-        rav1eSettings,
-        SVTAV1Settings,
-        AOMAV1Settings,
-        VP9Settings,
-        GIFSettings,
-        WebPSettings,
-        CopySettings,
-        FFmpegNVENCSettings,
-        QSVEncCSettings,
-        QSVEncCAV1Settings,
-        QSVEncCH264Settings,
-        NVEncCSettings,
-        NVEncCAVCSettings,
-        NVEncCAV1Settings,
-        VCEEncCSettings,
-        VCEEncCAVCSettings,
-        VCEEncCAV1Settings,
-        HEVCVideoToolboxSettings,
-        H264VideoToolboxSettings,
-        SVTAVIFSettings,
-        VVCSettings,
-        VAAPIH264Settings,
-        VAAPIHEVCSettings,
-        VAAPIVP9Settings,
-        VAAPIMPEG2Settings,
+    video_encoder_settings: Optional[
+        Union[
+            x265Settings,
+            x264Settings,
+            rav1eSettings,
+            SVTAV1Settings,
+            AOMAV1Settings,
+            VP9Settings,
+            GIFSettings,
+            WebPSettings,
+            CopySettings,
+            FFmpegNVENCSettings,
+            QSVEncCSettings,
+            QSVEncCAV1Settings,
+            QSVEncCH264Settings,
+            NVEncCSettings,
+            NVEncCAVCSettings,
+            NVEncCAV1Settings,
+            VCEEncCSettings,
+            VCEEncCAVCSettings,
+            VCEEncCAV1Settings,
+            HEVCVideoToolboxSettings,
+            H264VideoToolboxSettings,
+            SVTAVIFSettings,
+            VVCSettings,
+            VAAPIH264Settings,
+            VAAPIHEVCSettings,
+            VAAPIVP9Settings,
+            VAAPIMPEG2Settings,
+        ]
     ] = None
     # audio_tracks: list[AudioTrack] = Field(default_factory=list)
     # subtitle_tracks: list[SubtitleTrack] = Field(default_factory=list)
@@ -282,3 +284,6 @@ class Video(BaseModel):
             return f"{self.video_settings.resolution_custom}:-8"
         else:
             return f"-8:{self.video_settings.resolution_custom}"
+
+    class Config:
+        arbitrary_types_allowed = True

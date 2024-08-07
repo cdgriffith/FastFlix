@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from typing import Optional, Union
 
-from pydantic import BaseModel, Field, validator
+from pydantic import field_validator, BaseModel, Field
 from enum import Enum
 
 from fastflix.models.encode import (
@@ -61,19 +61,22 @@ class AudioMatch(BaseModel):
     bitrate: Optional[str] = None
     downmix: Optional[Union[str, int]] = None
 
-    @validator("match_type")
+    @field_validator("match_type")
+    @classmethod
     def match_type_must_be_enum(cls, v):
         if isinstance(v, list):
             return MatchType(v[0])
         return MatchType(v)
 
-    @validator("match_item")
+    @field_validator("match_item")
+    @classmethod
     def match_item_must_be_enum(cls, v):
         if isinstance(v, list):
             return MatchType(v[0])
         return MatchItem(v)
 
-    @validator("downmix")
+    @field_validator("downmix")
+    @classmethod
     def downmix_as_string(cls, v):
         fixed = {1: "monoo", 2: "stereo", 3: "2.1", 4: "3.1", 5: "5.0", 6: "5.1", 7: "6.1", 8: "7.1"}
         if isinstance(v, str) and v.isnumeric():
@@ -84,7 +87,8 @@ class AudioMatch(BaseModel):
             return None
         return v
 
-    @validator("bitrate")
+    @field_validator("bitrate")
+    @classmethod
     def bitrate_k_end(cls, v):
         if v and not v.endswith("k"):
             return f"{v}k"

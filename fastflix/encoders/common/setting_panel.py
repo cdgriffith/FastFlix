@@ -598,7 +598,11 @@ class SettingPanel(QtWidgets.QWidget):
                 if not custom_value:
                     logger.error("No value provided for custom QP/CRF value, defaulting to 30")
                     return "qp", 30
-                custom_value = float(self.widgets[f"custom_{self.qp_name}"].text().rstrip("."))
+                try:
+                    custom_value = float(self.widgets[f"custom_{self.qp_name}"].text().rstrip("."))
+                except ValueError:
+                    logger.error("Custom QP/CRF value is not a number, defaulting to 30")
+                    return "qp", 30
                 if custom_value.is_integer():
                     custom_value = int(custom_value)
                 return "qp", custom_value

@@ -25,6 +25,9 @@ class AudioTrack(BaseModel):
     raw_info: Optional[Union[dict, Box]] = None
     dispositions: dict = Field(default_factory=dict)
 
+    class Config:
+        arbitrary_types_allowed = True
+
 
 class SubtitleTrack(BaseModel):
     index: int
@@ -37,6 +40,9 @@ class SubtitleTrack(BaseModel):
     enabled: bool = True
     long_name: str = ""
     raw_info: Optional[Union[dict, Box]] = None
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class AttachmentTrack(BaseModel):
@@ -55,7 +61,7 @@ class EncoderSettings(BaseModel):
 
 
 class x265Settings(EncoderSettings):
-    name = "HEVC (x265)"  # MUST match encoder main.name
+    name: str = "HEVC (x265)"  # MUST match encoder main.name
     preset: str = "medium"
     intra_encoding: bool = False
     profile: str = "default"
@@ -80,7 +86,7 @@ class x265Settings(EncoderSettings):
 
 
 class VVCSettings(EncoderSettings):
-    name = "VVC"  # MUST match encoder main.name
+    name: str = "VVC"  # MUST match encoder main.name
     preset: str = "medium"
     qp: Optional[Union[int, float]] = 22
     bitrate: Optional[str] = None
@@ -92,7 +98,7 @@ class VVCSettings(EncoderSettings):
 
 
 class x264Settings(EncoderSettings):
-    name = "AVC (x264)"
+    name: str = "AVC (x264)"
     preset: str = "medium"
     profile: str = "default"
     tune: Optional[str] = None
@@ -103,13 +109,13 @@ class x264Settings(EncoderSettings):
 
 
 class FFmpegNVENCSettings(EncoderSettings):
-    name = "HEVC (NVENC)"
+    name: str = "HEVC (NVENC)"
     preset: str = "slow"
     profile: str = "main"
     tune: str = "hq"
     pix_fmt: str = "p010le"
     bitrate: Optional[str] = "6000k"
-    qp: Optional[str] = None
+    qp: Optional[Union[int, float]] = None
     cq: int = 0
     spatial_aq: int = 0
     rc_lookahead: int = 0
@@ -122,11 +128,11 @@ class FFmpegNVENCSettings(EncoderSettings):
 
 
 class NVEncCSettings(EncoderSettings):
-    name = "HEVC (NVEncC)"
+    name: str = "HEVC (NVEncC)"
     preset: str = "quality"
     profile: str = "auto"
     bitrate: Optional[str] = "5000k"
-    cqp: Optional[str] = None
+    cqp: Optional[Union[int, float]] = None
     aq: str = "off"
     aq_strength: int = 0
     lookahead: Optional[int] = None
@@ -156,11 +162,11 @@ class NVEncCSettings(EncoderSettings):
 
 
 class NVEncCAV1Settings(EncoderSettings):
-    name = "AV1 (NVEncC)"
+    name: str = "AV1 (NVEncC)"
     preset: str = "quality"
     profile: str = "auto"
     bitrate: Optional[str] = "5000k"
-    cqp: Optional[str] = None
+    cqp: Optional[Union[int, float]] = None
     aq: str = "off"
     aq_strength: int = 0
     lookahead: Optional[int] = None
@@ -190,10 +196,10 @@ class NVEncCAV1Settings(EncoderSettings):
 
 
 class QSVEncCSettings(EncoderSettings):
-    name = "HEVC (QSVEncC)"
+    name: str = "HEVC (QSVEncC)"
     preset: str = "best"
     bitrate: Optional[str] = "5000k"
-    cqp: Optional[str] = None
+    cqp: Optional[Union[int, float]] = None
     lookahead: Optional[str] = None
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
@@ -216,10 +222,10 @@ class QSVEncCSettings(EncoderSettings):
 
 
 class QSVEncCAV1Settings(EncoderSettings):
-    name = "AV1 (QSVEncC)"
+    name: str = "AV1 (QSVEncC)"
     preset: str = "best"
     bitrate: Optional[str] = "5000k"
-    cqp: Optional[str] = None
+    cqp: Optional[Union[int, float]] = None
     lookahead: Optional[str] = None
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
@@ -242,11 +248,11 @@ class QSVEncCAV1Settings(EncoderSettings):
 
 
 class QSVEncCH264Settings(EncoderSettings):
-    name = "AVC (QSVEncC)"
+    name: str = "AVC (QSVEncC)"
     preset: str = "best"
     profile: str = "auto"
     bitrate: Optional[str] = "5000k"
-    cqp: Optional[str] = None
+    cqp: Optional[Union[int, float]] = None
     lookahead: Optional[str] = None
     level: Optional[str] = None
     min_q_i: Optional[str] = None
@@ -267,11 +273,11 @@ class QSVEncCH264Settings(EncoderSettings):
 
 
 class NVEncCAVCSettings(EncoderSettings):
-    name = "AVC (NVEncC)"
+    name: str = "AVC (NVEncC)"
     preset: str = "quality"
     profile: str = "auto"
     bitrate: Optional[str] = "5000k"
-    cqp: Optional[str] = None
+    cqp: Optional[Union[int, float]] = None
     aq: str = "off"
     aq_strength: int = 0
     lookahead: Optional[int] = None
@@ -299,10 +305,10 @@ class NVEncCAVCSettings(EncoderSettings):
 
 
 class VCEEncCSettings(EncoderSettings):
-    name = "HEVC (VCEEncC)"
+    name: str = "HEVC (VCEEncC)"
     preset: str = "slow"
     bitrate: Optional[str] = "5000k"
-    cqp: Optional[str] = None
+    cqp: Optional[Union[int, float]] = None
     tier: str = "high"
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
@@ -334,10 +340,10 @@ class VCEEncCSettings(EncoderSettings):
 
 
 class VCEEncCAV1Settings(EncoderSettings):
-    name = "AV1 (VCEEncC)"
+    name: str = "AV1 (VCEEncC)"
     preset: str = "slower"
     bitrate: Optional[str] = "5000k"
-    cqp: Optional[str] = None
+    cqp: Optional[Union[int, float]] = None
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
     mv_precision: str = "q-pel"
@@ -364,16 +370,16 @@ class VCEEncCAV1Settings(EncoderSettings):
     pa_paq: str | None = None
     pa_taq: int | None = None
     pa_motion_quality: str | None = None
-    output_depth: str | None
+    output_depth: str | None = None
     copy_hdr10: bool = False
 
 
 class VCEEncCAVCSettings(EncoderSettings):
-    name = "AVC (VCEEncC)"
+    name: str = "AVC (VCEEncC)"
     preset: str = "slow"
     profile: str = "Auto"
     bitrate: Optional[str] = "5000k"
-    cqp: Optional[str] = None
+    cqp: Optional[Union[int, float]] = None
     tier: str = "high"
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
@@ -403,7 +409,7 @@ class VCEEncCAVCSettings(EncoderSettings):
 
 
 class rav1eSettings(EncoderSettings):
-    name = "AV1 (rav1e)"
+    name: str = "AV1 (rav1e)"
     speed: str = "-1"
     tile_columns: str = "-1"
     tile_rows: str = "-1"
@@ -414,7 +420,7 @@ class rav1eSettings(EncoderSettings):
 
 
 class SVTAV1Settings(EncoderSettings):
-    name = "AV1 (SVT AV1)"
+    name: str = "AV1 (SVT AV1)"
     tile_columns: str = "0"
     tile_rows: str = "0"
     scene_detection: bool = False
@@ -427,7 +433,7 @@ class SVTAV1Settings(EncoderSettings):
 
 
 class SVTAVIFSettings(EncoderSettings):
-    name = "AVIF (SVT AV1)"
+    name: str = "AVIF (SVT AV1)"
     single_pass: bool = True
     speed: str = "7"  # Renamed preset in svtav1 encoder
     qp: Optional[Union[int, float]] = 24
@@ -437,7 +443,7 @@ class SVTAVIFSettings(EncoderSettings):
 
 
 class VP9Settings(EncoderSettings):
-    name = "VP9"
+    name: str = "VP9"
     profile: int = 2
     quality: str = "good"
     speed: str = "0"
@@ -451,7 +457,7 @@ class VP9Settings(EncoderSettings):
 
 
 class HEVCVideoToolboxSettings(EncoderSettings):
-    name = "HEVC (Video Toolbox)"
+    name: str = "HEVC (Video Toolbox)"
     profile: int = 0
     allow_sw: bool = False
     require_sw: bool = False
@@ -464,7 +470,7 @@ class HEVCVideoToolboxSettings(EncoderSettings):
 
 
 class H264VideoToolboxSettings(EncoderSettings):
-    name = "H264 (Video Toolbox)"
+    name: str = "H264 (Video Toolbox)"
     profile: int = 0
     allow_sw: bool = False
     require_sw: bool = False
@@ -477,7 +483,7 @@ class H264VideoToolboxSettings(EncoderSettings):
 
 
 class AOMAV1Settings(EncoderSettings):
-    name = "AV1 (AOM)"
+    name: str = "AV1 (AOM)"
     tile_columns: str = "0"
     tile_rows: str = "0"
     usage: str = "good"
@@ -488,7 +494,7 @@ class AOMAV1Settings(EncoderSettings):
 
 
 class WebPSettings(EncoderSettings):
-    name = "WebP"
+    name: str = "WebP"
     lossless: str = "0"
     compression: str = "3"
     preset: str = "none"
@@ -496,7 +502,7 @@ class WebPSettings(EncoderSettings):
 
 
 class GIFSettings(EncoderSettings):
-    name = "GIF"
+    name: str = "GIF"
     fps: int = 15
     dither: str = "sierra2_4a"
     max_colors: str = "256"
@@ -504,11 +510,11 @@ class GIFSettings(EncoderSettings):
 
 
 class CopySettings(EncoderSettings):
-    name = "Copy"
+    name: str = "Copy"
 
 
 class VAAPIH264Settings(EncoderSettings):
-    name = "VAAPI H264"  # must be same as encoder name in main
+    name: str = "VAAPI H264"  # must be same as encoder name in main
 
     vaapi_device: str = "/dev/dri/renderD128"
     low_power: bool = False
@@ -524,7 +530,7 @@ class VAAPIH264Settings(EncoderSettings):
 
 
 class VAAPIHEVCSettings(EncoderSettings):
-    name = "VAAPI HEVC"
+    name: str = "VAAPI HEVC"
 
     vaapi_device: str = "/dev/dri/renderD128"
     low_power: bool = False
@@ -540,7 +546,7 @@ class VAAPIHEVCSettings(EncoderSettings):
 
 
 class VAAPIVP9Settings(EncoderSettings):
-    name = "VAAPI VP9"
+    name: str = "VAAPI VP9"
 
     vaapi_device: str = "/dev/dri/renderD128"
     low_power: bool = False
@@ -553,7 +559,7 @@ class VAAPIVP9Settings(EncoderSettings):
 
 
 class VAAPIMPEG2Settings(EncoderSettings):
-    name = "VAAPI MPEG2"
+    name: str = "VAAPI MPEG2"
 
     vaapi_device: str = "/dev/dri/renderD128"
     low_power: bool = False

@@ -19,7 +19,7 @@ if reusables.win_based:
 
 class Command(BaseModel):
     command: str
-    item = "command"
+    item: str = "command"
     name: str = ""
     exe: str = None
     shell: bool = False

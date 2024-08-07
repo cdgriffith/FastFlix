@@ -16,7 +16,7 @@ from collections import namedtuple
 import importlib.resources
 import reusables
 from box import Box
-from pydantic import BaseModel, Field
+from pydantic import ConfigDict, BaseModel, Field
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
@@ -96,17 +96,13 @@ class CropWidgets(BaseModel):
     bottom: QtWidgets.QLineEdit = None
     left: QtWidgets.QLineEdit = None
     right: QtWidgets.QLineEdit = None
-
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class ScaleWidgets(BaseModel):
     width: QtWidgets.QLineEdit = None
     height: QtWidgets.QLineEdit = None
-
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class MainWidgets(BaseModel):
@@ -134,9 +130,7 @@ class MainWidgets(BaseModel):
     output_directory_combo: QtWidgets.QComboBox = None
     output_type_combo: QtWidgets.QComboBox = Field(default_factory=QtWidgets.QComboBox)
     output_directory_select: QtWidgets.QPushButton = None
-
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def items(self):
         for key in dir(self):
