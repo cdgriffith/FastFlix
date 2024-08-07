@@ -398,9 +398,23 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.app.fastflix.current_video.video_settings.tone_map = self.tone_map_widget.currentText()
         self.app.fastflix.current_video.video_settings.vsync = non(self.vsync_widget.currentText())
 
-        self.app.fastflix.current_video.video_settings.brightness = self.brightness_widget.text() or None
-        self.app.fastflix.current_video.video_settings.saturation = self.saturation_widget.text() or None
-        self.app.fastflix.current_video.video_settings.contrast = self.contrast_widget.text() or None
+        try:
+            if self.brightness_widget.text().strip() != "":
+                self.app.fastflix.current_video.video_settings.brightness = str(float(self.brightness_widget.text()))
+        except ValueError:
+            logger.warning("Invalid brightness value")
+
+        try:
+            if self.saturation_widget.text().strip() != "":
+                self.app.fastflix.current_video.video_settings.saturation = str(float(self.saturation_widget.text()))
+        except ValueError:
+            logger.warning("Invalid saturation value")
+
+        try:
+            if self.contrast_widget.text().strip() != "":
+                self.app.fastflix.current_video.video_settings.contrast = str(float(self.contrast_widget.text()))
+        except ValueError:
+            logger.warning("Invalid contrast value")
 
         # self.app.fastflix.current_video.video_settings.first_pass_filters = self.first_filters.text() or None
         # self.app.fastflix.current_video.video_settings.second_filters = self.second_filters.text() or None
@@ -454,15 +468,36 @@ class AdvancedPanel(QtWidgets.QWidget):
             maxrate = int(self.maxrate_widget.text())
             bufsize = int(self.bufsize_widget.text())
 
+        contrast = None
+        if self.contrast_widget.text().strip() != "":
+            try:
+                contrast = str(float(self.contrast_widget.text()))
+            except ValueError:
+                logger.warning("Invalid contrast value")
+
+        saturation = None
+        if self.saturation_widget.text().strip() != "":
+            try:
+                saturation = str(float(self.saturation_widget.text()))
+            except ValueError:
+                logger.warning("Invalid saturation value")
+
+        brightness = None
+        if self.brightness_widget.text().strip() != "":
+            try:
+                brightness = str(float(self.brightness_widget.text()))
+            except ValueError:
+                logger.warning("Invalid brightness value")
+
         return AdvancedOptions(
             video_speed=video_speeds[self.video_speed_widget.currentText()],
             deblock=non(self.deblock_widget.currentText()),
             deblock_size=int(self.deblock_size_widget.currentText()),
             tone_map=self.tone_map_widget.currentText(),
             vsync=non(self.vsync_widget.currentText()),
-            brightness=(self.brightness_widget.text() or None),
-            saturation=(self.saturation_widget.text() or None),
-            contrast=(self.contrast_widget.text() or None),
+            brightness=brightness,
+            saturation=saturation,
+            contrast=contrast,
             maxrate=maxrate,
             bufsize=bufsize,
             source_fps=(None if self.incoming_same_as_source.isChecked() else self.incoming_fps_widget.text()),
