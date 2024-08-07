@@ -1421,11 +1421,15 @@ class Main(QtWidgets.QWidget):
         ]
         self.widgets.video_track.clear()
         self.widgets.video_track.addItems(text_video_tracks)
-        selected_track = 0
-        for track in self.app.fastflix.current_video.streams.video:
-            if track.index == self.app.fastflix.current_video.video_settings.selected_track:
-                selected_track = track.index
-        self.widgets.video_track.setCurrentIndex(selected_track)
+        for i, track in enumerate(text_video_tracks):
+            if int(track.split(":")[0]) == self.app.fastflix.current_video.video_settings.selected_track:
+                self.widgets.video_track.setCurrentIndex(i)
+                break
+        else:
+            logger.warning(
+                f"Could not find selected track {self.app.fastflix.current_video.video_settings.selected_track} "
+                f"in {text_video_tracks}"
+            )
 
         end_time = self.app.fastflix.current_video.video_settings.end_time or video.duration
         if self.app.fastflix.current_video.video_settings.crop:
@@ -1468,7 +1472,7 @@ class Main(QtWidgets.QWidget):
 
         self.app.fastflix.current_video.status = Status()
         self.loading_video = False
-        self.page_update()
+        self.page_update(build_thumbnail=True, force_build_thumbnail=True)
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self, hide_progress=False):
@@ -1786,7 +1790,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = False
         self.page_update(build_thumbnail=True)
 
-    def page_update(self, build_thumbnail=True):
+    def page_update(self, build_thumbnail=True, force_build_thumbnail=False):
         while self.page_updating:
             time.sleep(0.1)
         self.page_updating = True
@@ -1803,7 +1807,7 @@ class Main(QtWidgets.QWidget):
                     f"{int(self.remove_hdr)}:{self.preview_place}:{self.widgets.rotate.currentIndex()}:"
                     f"{self.widgets.flip.currentIndex()}"
                 )
-                if new_hash == self.last_thumb_hash:
+                if new_hash == self.last_thumb_hash and not force_build_thumbnail:
                     return
                 self.last_thumb_hash = new_hash
                 self.generate_thumbnail()
