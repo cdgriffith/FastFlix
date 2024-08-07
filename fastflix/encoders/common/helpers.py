@@ -269,7 +269,7 @@ def generate_all(
 
     filters = None
     if not disable_filters:
-        filter_details = fastflix.current_video.video_settings.dict().copy()
+        filter_details = fastflix.current_video.video_settings.model_dump().copy()
         filter_details.update(filters_extra)
         filters = generate_filters(
             source=fastflix.current_video.source,
@@ -287,7 +287,7 @@ def generate_all(
         cover=attachments,
         output_video=fastflix.current_video.video_settings.output_path,
         disable_rotate_metadata=encoder == "copy",
-        **fastflix.current_video.video_settings.dict(),
+        **fastflix.current_video.video_settings.model_dump(),
     )
 
     beginning = generate_ffmpeg_start(
@@ -299,8 +299,8 @@ def generate_all(
         enable_opencl=enable_opencl,
         ffmpeg_version=fastflix.ffmpeg_version,
         start_extra=start_extra,
-        **fastflix.current_video.video_settings.dict(),
-        **settings.dict(),
+        **fastflix.current_video.video_settings.model_dump(),
+        **settings.model_dump(),
     )
 
     return beginning, ending, output_fps

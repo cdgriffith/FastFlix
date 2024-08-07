@@ -421,7 +421,7 @@ class ProfileDetails(QtWidgets.QWidget):
         title = QtWidgets.QLabel(t("Encoder Settings"))
         # title.setFont(QtGui.QFont(self.app.font().family(), 9, weight=70))
         layout.addWidget(title)
-        for k, v in settings.dict().items():
+        for k, v in settings.model_dump().items():
             item_1 = QtWidgets.QLabel(" ".join(str(k).split("_")).title())
             item_2 = QtWidgets.QLabel(str(v))
             item_2.setMaximumWidth(150)
@@ -440,7 +440,7 @@ class ProfileDetails(QtWidgets.QWidget):
         profile_title = QtWidgets.QLabel(f"{t('Profile_window')}: {profile_name}")
         # profile_title.setFont(QtGui.QFont(self.app.font().family(), 10, weight=70))
         main_section.addWidget(profile_title)
-        for k, v in profile.dict().items():
+        for k, v in profile.model_dump().items():
             if k == "advanced_options":
                 continue
             if k.lower().startswith("audio") or k.lower() == "profile_version":
@@ -472,7 +472,7 @@ class ProfileDetails(QtWidgets.QWidget):
 
         advanced_section = QtWidgets.QVBoxLayout(self)
         advanced_section.addWidget(QtWidgets.QLabel(t("Advanced Options")))
-        for k, v in profile.advanced_options.dict().items():
+        for k, v in profile.advanced_options.model_dump().items():
             if k.endswith("_index"):
                 continue
             item_1 = QtWidgets.QLabel(k)

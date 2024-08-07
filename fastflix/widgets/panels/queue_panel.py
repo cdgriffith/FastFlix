@@ -86,7 +86,7 @@ class EncodeItem(QtWidgets.QTabWidget):
         )
         title.setFixedWidth(300)
 
-        settings = Box(copy.deepcopy(video.video_settings.dict()))
+        settings = Box(copy.deepcopy(video.video_settings.model_dump()))
         # settings.output_path = str(settings.output_path)
         # for i, o in enumerate(video.attachment_tracks):
         #     if o.file_path:

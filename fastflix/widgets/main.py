@@ -1625,7 +1625,7 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or self.loading_video:
             return
 
-        settings = self.app.fastflix.current_video.video_settings.dict()
+        settings = self.app.fastflix.current_video.video_settings.model_dump()
 
         if (
             self.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"

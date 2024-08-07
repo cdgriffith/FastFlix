@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List, Optional, Union, Tuple
 
 from box import Box
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from fastflix.models.encode import (
     AOMAV1Settings,
@@ -106,9 +106,9 @@ class VideoSettings(BaseModel):
     vsync: Optional[str] = None
     maxrate: Optional[int] = None
     bufsize: Optional[int] = None
-    brightness: Optional[float] = None
-    contrast: Optional[float] = None
-    saturation: Optional[float] = None
+    brightness: Optional[str] = None
+    contrast: Optional[str] = None
+    saturation: Optional[str] = None
     video_encoder_settings: Optional[
         Union[
             x265Settings,
@@ -144,6 +144,27 @@ class VideoSettings(BaseModel):
     # subtitle_tracks: list[SubtitleTrack] = Field(default_factory=list)
     # attachment_tracks: list[AttachmentTrack] = Field(default_factory=list)
     conversion_commands: List = Field(default_factory=list)
+
+    @field_validator("brightness", mode="before")
+    @classmethod
+    def brightness_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
+
+    @field_validator("contrast", mode="before")
+    @classmethod
+    def contrast_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return float(value)
+        return value
+
+    @field_validator("saturation", mode="before")
+    @classmethod
+    def saturation_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return float(value)
+        return value
 
 
 class Status(BaseModel):

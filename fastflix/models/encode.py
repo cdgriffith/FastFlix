@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from box import Box
 
 
@@ -126,6 +126,13 @@ class FFmpegNVENCSettings(EncoderSettings):
     b_ref_mode: str = "disabled"
     hw_accel: bool = False
 
+    @field_validator("qp", mode="before")
+    @classmethod
+    def qp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
+
 
 class NVEncCSettings(EncoderSettings):
     name: str = "HEVC (NVEncC)"
@@ -159,6 +166,13 @@ class NVEncCSettings(EncoderSettings):
     device: int = 0
     decoder: str = "Auto"
     copy_hdr10: bool = False
+
+    @field_validator("cqp", mode="before")
+    @classmethod
+    def cqp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
 
 
 class NVEncCAV1Settings(EncoderSettings):
@@ -194,6 +208,13 @@ class NVEncCAV1Settings(EncoderSettings):
     decoder: str = "Auto"
     copy_hdr10: bool = False
 
+    @field_validator("cqp", mode="before")
+    @classmethod
+    def cqp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
+
 
 class QSVEncCSettings(EncoderSettings):
     name: str = "HEVC (QSVEncC)"
@@ -219,6 +240,13 @@ class QSVEncCSettings(EncoderSettings):
     adapt_cqm: bool = False
     adapt_ltr: bool = False
     copy_hdr10: bool = False
+
+    @field_validator("cqp", mode="before")
+    @classmethod
+    def cqp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
 
 
 class QSVEncCAV1Settings(EncoderSettings):
@@ -246,6 +274,13 @@ class QSVEncCAV1Settings(EncoderSettings):
     adapt_ltr: bool = False
     copy_hdr10: bool = False
 
+    @field_validator("cqp", mode="before")
+    @classmethod
+    def cqp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
+
 
 class QSVEncCH264Settings(EncoderSettings):
     name: str = "AVC (QSVEncC)"
@@ -270,6 +305,13 @@ class QSVEncCH264Settings(EncoderSettings):
     adapt_ref: bool = False
     adapt_cqm: bool = False
     adapt_ltr: bool = False
+
+    @field_validator("cqp", mode="before")
+    @classmethod
+    def cqp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
 
 
 class NVEncCAVCSettings(EncoderSettings):
@@ -302,6 +344,13 @@ class NVEncCAVCSettings(EncoderSettings):
     b_ref_mode: str = "disabled"
     device: int = 0
     decoder: str = "Auto"
+
+    @field_validator("cqp", mode="before")
+    @classmethod
+    def cqp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
 
 
 class VCEEncCSettings(EncoderSettings):
@@ -338,6 +387,13 @@ class VCEEncCSettings(EncoderSettings):
     output_depth: str | None = None
     copy_hdr10: bool = False
 
+    @field_validator("cqp", mode="before")
+    @classmethod
+    def cqp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
+
 
 class VCEEncCAV1Settings(EncoderSettings):
     name: str = "AV1 (VCEEncC)"
@@ -373,6 +429,13 @@ class VCEEncCAV1Settings(EncoderSettings):
     output_depth: str | None = None
     copy_hdr10: bool = False
 
+    @field_validator("cqp", mode="before")
+    @classmethod
+    def cqp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
+
 
 class VCEEncCAVCSettings(EncoderSettings):
     name: str = "AVC (VCEEncC)"
@@ -406,6 +469,13 @@ class VCEEncCAVCSettings(EncoderSettings):
     pa_taq: int | None = None
     pa_motion_quality: str | None = None
     output_depth: str | None = None
+
+    @field_validator("cqp", mode="before")
+    @classmethod
+    def cqp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
 
 
 class rav1eSettings(EncoderSettings):
@@ -495,18 +565,43 @@ class AOMAV1Settings(EncoderSettings):
 
 class WebPSettings(EncoderSettings):
     name: str = "WebP"
-    lossless: str = "0"
+    lossless: str = "no"
     compression: str = "3"
     preset: str = "none"
-    qscale: Union[int, float] = 15
+    qscale: Union[int, float] = 75
+
+    @field_validator("lossless", mode="before")
+    @classmethod
+    def losslessq_new_value(cls, value):
+        if value == "0":
+            return "no"
+        if value == "1":
+            return "yes"
+        return value
+
+    @field_validator("qscale", mode="before")
+    @classmethod
+    def qscale_new_value(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
 
 
 class GIFSettings(EncoderSettings):
     name: str = "GIF"
-    fps: int = 15
+    fps: str = "15"
     dither: str = "sierra2_4a"
     max_colors: str = "256"
     stats_mode: str = "full"
+
+    @field_validator("fps", mode="before")
+    @classmethod
+    def fps_field_validate(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
+        if not value.isdigit():
+            raise ValueError("FPS must be a while number")
+        return value
 
 
 class CopySettings(EncoderSettings):

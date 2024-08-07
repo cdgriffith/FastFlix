@@ -16,11 +16,11 @@ def build(fastflix: FastFlix):
         args += f":max_colors={settings.max_colors}"
 
     palletgen_filters = generate_filters(
-        custom_filters=f"palettegen{args}", **fastflix.current_video.video_settings.dict()
+        custom_filters=f"palettegen{args}", **fastflix.current_video.video_settings.model_dump()
     )
 
     filters = generate_filters(
-        custom_filters=f"fps={settings.fps:.2f}", raw_filters=True, **fastflix.current_video.video_settings.dict()
+        custom_filters=f"fps={settings.fps}", raw_filters=True, **fastflix.current_video.video_settings.model_dump()
     )
 
     output_video = clean_file_string(fastflix.current_video.video_settings.output_path)
@@ -41,7 +41,7 @@ def build(fastflix: FastFlix):
         f'{beginning} {palletgen_filters} {settings.extra if settings.extra_both_passes else ""} -y "{temp_palette}"'
     )
 
-    gif_filters = f"fps={settings.fps:.2f}"
+    gif_filters = f"fps={settings.fps}"
     if filters:
         gif_filters += f",{filters}"
 

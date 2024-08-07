@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 from box import Box
 from PySide6 import QtWidgets
+import logging
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.models.encode import WebPSettings
 from fastflix.models.fastflix_app import FastFlixApp
+
+
+logger = logging.getLogger("fastflix")
 
 
 class WEBP(SettingPanel):
@@ -14,6 +18,7 @@ class WEBP(SettingPanel):
         super().__init__(parent, main, app)
         self.main = main
         self.app = app
+        self.mode = "qscale"
 
         grid = QtWidgets.QGridLayout()
 
@@ -31,7 +36,13 @@ class WEBP(SettingPanel):
         self.setLayout(grid)
 
     def init_lossless(self):
-        return self._add_combo_box(label="lossless", options=["yes", "no"], widget_name="lossless", default=1)
+        return self._add_combo_box(
+            label="lossless",
+            options=["yes", "no"],
+            widget_name="lossless",
+            default="yes",
+            opt="lossless",
+        )
 
     def init_compression(self):
         return self._add_combo_box(
@@ -40,6 +51,7 @@ class WEBP(SettingPanel):
             widget_name="compression",
             tooltip="For lossy, this is a quality/speed tradeoff.\nFor lossless, this is a size/speed tradeoff.",
             default=4,
+            opt="compression",
         )
 
     def init_preset(self):
@@ -48,67 +60,37 @@ class WEBP(SettingPanel):
             options=["none", "default", "picture", "photo", "drawing", "icon", "text"],
             widget_name="preset",
             default=1,
+            opt="preset",
         )
 
     def init_modes(self):
-        layout = QtWidgets.QGridLayout()
-        qscale_group_box = QtWidgets.QGroupBox()
-        qscale_group_box.setStyleSheet("QGroupBox{padding-top:5px; margin-top:-18px}")
-        qscale_box_layout = QtWidgets.QHBoxLayout()
-
-        self.widgets.mode = QtWidgets.QButtonGroup()
-        self.widgets.mode.buttonClicked.connect(self.set_mode)
-
-        qscale_radio = QtWidgets.QRadioButton("qscale")
-        qscale_radio.setChecked(True)
-        qscale_radio.setFixedWidth(80)
-        self.widgets.mode.addButton(qscale_radio)
-
-        self.widgets.qscale = QtWidgets.QComboBox()
-        self.widgets.qscale.setFixedWidth(250)
-        self.widgets.qscale.addItems([str(x) for x in range(0, 101, 5)] + ["Custom"])
-        self.widgets.qscale.setCurrentIndex(15)
-        self.widgets.qscale.currentIndexChanged.connect(lambda: self.mode_update())
-        self.widgets.custom_qscale = QtWidgets.QLineEdit("75")
-        self.widgets.custom_qscale.setFixedWidth(100)
-        self.widgets.custom_qscale.setDisabled(True)
-        self.widgets.custom_qscale.setValidator(self.only_int)
-        self.widgets.custom_qscale.textChanged.connect(lambda: self.main.build_commands())
-        qscale_box_layout.addWidget(qscale_radio)
-        qscale_box_layout.addWidget(self.widgets.qscale)
-        qscale_box_layout.addStretch()
-        qscale_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
-        qscale_box_layout.addWidget(self.widgets.custom_qscale)
-
-        qscale_group_box.setLayout(qscale_box_layout)
-
-        layout.addWidget(qscale_group_box, 0, 0)
-        return layout
+        return self._add_modes(
+            qp_name="qscale",
+            add_qp=True,
+            disable_bitrate=True,
+            recommended_qps=[str(x) for x in range(0, 101, 5)] + ["Custom"],
+            recommended_bitrates=[],
+        )
 
     def update_video_encoder_settings(self):
-        lossless = self.widgets.lossless.currentText()
-
         settings = WebPSettings(
-            lossless="1" if lossless == "yes" else "0",
+            lossless=self.widgets.lossless.currentText(),
             compression=self.widgets.compression.currentText(),
             preset=self.widgets.preset.currentText(),
             extra=self.ffmpeg_extras,
             pix_fmt="yuv420p",  # hack for thumbnails to show properly
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
-        qscale = self.widgets.qscale.currentText()
-        if self.widgets.custom_qscale.isEnabled():
-            if not self.widgets.custom_qscale.text():
-                settings.qscale = 75
-            else:
-                settings.qscale = int(self.widgets.custom_qscale.text())
-        else:
-            settings.qscale = int(qscale.split(" ", 1)[0])
+        _, qscale = self.get_mode_settings()
+        try:
+            settings.qscale = float(qscale)
+        except ValueError:
+            logger.warning("Invalid Qscale, using default 75")
+            settings.qscale = 75
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def new_source(self):
         super().new_source()
-        self.widgets.lossless.setCurrentIndex(0)
 
     def set_mode(self, x):
         self.mode = x.text()

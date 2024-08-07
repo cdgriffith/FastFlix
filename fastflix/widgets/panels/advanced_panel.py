@@ -228,14 +228,17 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_eq(self):
         self.last_row += 1
         self.brightness_widget = QtWidgets.QLineEdit()
+        self.brightness_widget.setValidator(QtGui.QDoubleValidator())
         self.brightness_widget.setToolTip("Default is: 0")
         self.brightness_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.contrast_widget = QtWidgets.QLineEdit()
+        self.contrast_widget.setValidator(QtGui.QDoubleValidator())
         self.contrast_widget.setToolTip("Default is: 1")
         self.contrast_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.saturation_widget = QtWidgets.QLineEdit()
+        self.saturation_widget.setValidator(QtGui.QDoubleValidator())
         self.saturation_widget.setToolTip("Default is: 1")
         self.saturation_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 

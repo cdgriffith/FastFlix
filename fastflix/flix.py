@@ -61,9 +61,14 @@ ffmpeg_valid_color_transfers = [
     "bt2020_10bit",
     "bt2020_12",
     "bt2020_12bit",
+    "bt2020-10",
+    "bt2020-10bit",
+    "bt2020-12",
+    "bt2020-12bit",
     "smpte2084",
     "smpte428",
     "smpte428_1",
+    "smpte428-1",
     "arib-std-b67",
 ]
 
