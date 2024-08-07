@@ -92,6 +92,19 @@ SectionEnd
 
 Section "Uninstall"
 
+    ${nsProcess::FindProcess} "FastFlix.exe" $R0
+
+    ${If} $R0 == 0
+        DetailPrint "FastFlix is running. Closing it down"
+        ${nsProcess::CloseProcess} "FastFlix.exe" $R0
+        DetailPrint "Waiting for FastFlix to close"
+        Sleep 2000
+    ${Else}
+        DetailPrint "FastFlix was not found to be running"
+    ${EndIf}
+
+    ${nsProcess::Unload}
+
   ; Remove registry keys
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\FastFlix"
   DeleteRegKey HKLM SOFTWARE\FastFlix
