@@ -152,6 +152,7 @@ class Audio(QtWidgets.QTabWidget):
             grid.addWidget(self.widgets.enable_check, 0, right_button_start_index)
             grid.addWidget(self.widgets.dup_button, 0, right_button_start_index + 1)
         self.setLayout(grid)
+        self.check_dis_button()
         self.conversion_box = None
         self.loading = False
 
