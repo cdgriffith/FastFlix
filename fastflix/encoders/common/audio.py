@@ -105,6 +105,6 @@ def build_audio(audio_tracks, audio_file_index=0):
                 command_list.append(f"-disposition:{track.outdex} 0")
 
     end_command = " ".join(command_list)
-    if " truehd " or " opus " in end_command:
+    if " truehd " in end_command or " opus " in end_command or " dca " in end_command:
         end_command += " -strict -2 "
     return end_command
