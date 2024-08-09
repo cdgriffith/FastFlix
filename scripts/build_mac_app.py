@@ -3,8 +3,12 @@ from pathlib import Path
 import sys
 import shutil
 from subprocess import check_output
+import platform
+import reusables
 
 from fastflix.version import __version__
+
+arch = "arm64" if "arm64" in platform.platform() else "x86_64"
 
 here = Path(__file__).parent
 plist_template = here.parent / "fastflix" / "data" / "Info.plist.template"
@@ -38,3 +42,5 @@ shutil.move(here.parent / "dist" / "FastFlix", macos_folder / "FastFlix")
 shutil.move(here.parent / "dist" / "LICENSE", macos_folder / "LICENSE")
 
 check_output(["chmod", "+x", macos_folder / "FastFlix"])
+
+reusables.archive(build_folder, name=f"FastFlix_{__version__}_{sys.argv[1]}_appbundle_{arch}.zip", archive_type="zip")
