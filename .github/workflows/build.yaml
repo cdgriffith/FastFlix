@@ -24,7 +24,7 @@ jobs:
           mkdir dist
           echo "::set-env name=VERSION::$(python scripts/get_version.py)"
           echo "::set-env name=ARCH::$(python scripts/get_arch.py)"
-          echo "Building branch ${{ env.GITHUB_REF }} - version ${{ env.VERSION }} - on ${{ env.ARCH }}"
+          echo Building branch ${{ env.GITHUB_REF }} - version ${{ env.VERSION }} - on ${{ env.ARCH }}
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
@@ -75,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: FastFlix_${{ env.VERSION }}_appbundle_${{ matrix.os }}_${{ env.ARCH }}
-          path: FastFlix.app
+          path: dist/*
 
 
   build-windows-2022:

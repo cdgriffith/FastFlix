@@ -9,7 +9,7 @@ from fastflix.version import __version__
 here = Path(__file__).parent
 plist_template = here.parent / "fastflix" / "data" / "Info.plist.template"
 
-build_folder = Path(here.parent / "FastFlix.app")
+build_folder = Path(here.parent / "dist" / "FastFlix.app")
 build_folder.mkdir(exist_ok=True)
 
 content_folder = build_folder / "Contents"
@@ -34,7 +34,7 @@ with open(plist_template) as in_file, open(content_folder / "Info.plist", "w") a
 
 shutil.copy(here.parent / "fastflix" / "data" / "icon.icns", resources_folder / "icon.icns")
 
-shutil.copy(here.parent / "dist" / "FastFlix", macos_folder / "FastFlix")
-shutil.copy(here.parent / "LICENSE", macos_folder / "LICENSE")
+shutil.move(here.parent / "dist" / "FastFlix", macos_folder / "FastFlix")
+shutil.move(here.parent / "dist" / "LICENSE", macos_folder / "LICENSE")
 
 check_output(["chmod", "+x", macos_folder / "FastFlix"])
