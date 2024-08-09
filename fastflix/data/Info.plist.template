@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>FastFlix</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleIconFile</key>
+	<string>icon.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.github.cdgriffith.FastFlix</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>PURE</string>
+	<key>CFBundleVersion</key>
+	<string>{version}</string>
+	<key>CFBundleName</key>
+	<string>FastFlix</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSDisablePersistence</key>
+	<true/>
+	<key>LSMinimumSystemVersion</key>
+	<string>{mac_version}</string>
+</dict>
+</plist>

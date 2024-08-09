@@ -301,9 +301,9 @@ class VCEENCC(VCEPanel):
             pa_paq=self.widgets.pa_paq.currentText(),
             pa_taq=None if self.widgets.pa_taq.currentIndex() == 0 else self.widgets.pa_taq.currentText(),
             pa_motion_quality=self.widgets.pa_motion_quality.currentText(),
-            output_depth=None
-            if self.widgets.output_depth.currentIndex() == 0
-            else self.widgets.output_depth.currentText(),
+            output_depth=(
+                None if self.widgets.output_depth.currentIndex() == 0 else self.widgets.output_depth.currentText()
+            ),
         )
 
         encode_type, q_value = self.get_mode_settings()

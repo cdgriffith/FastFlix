@@ -66,6 +66,17 @@ jobs:
             dist/FastFlix
             dist/LICENSE
 
+      - name: Build Mac App
+        if : ${{ startsWith(matrix.os, 'macos') }}
+        run: python scripts/build_mac_app.py "${{ matrix.os }}"
+
+      - name: Upload Mac App artifact
+        if : ${{ startsWith(matrix.os, 'macos') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: FastFlix_${{ env.VERSION }}_appbundle_${{ matrix.os }}_${{ env.ARCH }}
+          path: FastFlix.app
+
 
   build-windows-2022:
 

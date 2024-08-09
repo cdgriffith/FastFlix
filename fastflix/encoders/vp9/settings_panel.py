@@ -214,9 +214,9 @@ class VP9(SettingPanel):
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
             fast_first_pass=self.widgets.fast_first_pass.isChecked(),
-            tile_columns=self.widgets.tile_columns.currentText()
-            if self.widgets.tile_columns.currentIndex() > 0
-            else "-1",
+            tile_columns=(
+                self.widgets.tile_columns.currentText() if self.widgets.tile_columns.currentIndex() > 0 else "-1"
+            ),
             tile_rows=self.widgets.tile_rows.currentText() if self.widgets.tile_rows.currentIndex() > 0 else "-1",
         )
         encode_type, q_value = self.get_mode_settings()
