@@ -69,7 +69,7 @@ jobs:
         run: |
           python scripts/build_mac_app.py ${{ matrix.os }}
           pushd dist
-          7z a -mm=Deflate -mfb=258 -mpass=15 FastFlix_${{ env.VERSION }}_appbundle_$${{ matrix.os }}_${{ env.ARCH }}.zip FastFlix.app
+          7z a -mm=Deflate -mfb=258 -mpass=15 FastFlix_${{ env.VERSION }}_appbundle_${{ matrix.os }}_${{ env.ARCH }}.zip FastFlix.app
           popd
 
       - name: Upload executable artifacts
