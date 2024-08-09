@@ -12,22 +12,22 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - uses: actions/setup-python@v3
+    - uses: actions/setup-python@v5
       with:
         python-version: "3.12"
 
-    - run: pip install black==23.7.0
+    - run: pip install black==24.8.0
     - run: python -m black --check .
 
   test:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - uses: actions/setup-python@v3
+    - uses: actions/setup-python@v5
       with:
         python-version: "3.12"
 

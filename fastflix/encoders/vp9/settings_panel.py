@@ -42,6 +42,7 @@ pix_fmts = [
     "8-bit: yuv420p",
     "10-bit: yuv420p10le",
     "12-bit: yuv420p12le",
+    "8-bit 420 Transparent: yuva420p",
     "8-bit 422: yuv422p",
     "8-bit 444: yuv444p",
     "10-bit 422: yuv422p10le",
@@ -213,9 +214,9 @@ class VP9(SettingPanel):
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
             fast_first_pass=self.widgets.fast_first_pass.isChecked(),
-            tile_columns=self.widgets.tile_columns.currentText()
-            if self.widgets.tile_columns.currentIndex() > 0
-            else "-1",
+            tile_columns=(
+                self.widgets.tile_columns.currentText() if self.widgets.tile_columns.currentIndex() > 0 else "-1"
+            ),
             tile_rows=self.widgets.tile_rows.currentText() if self.widgets.tile_rows.currentIndex() > 0 else "-1",
         )
         encode_type, q_value = self.get_mode_settings()

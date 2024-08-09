@@ -357,7 +357,7 @@ class Config(BaseModel):
             self.qsvencc_encoders = []
 
     def save(self):
-        items = self.dict()
+        items = self.model_dump()
         del items["config_path"]
         for k, v in items.items():
             if isinstance(v, Path):

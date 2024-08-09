@@ -228,14 +228,17 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_eq(self):
         self.last_row += 1
         self.brightness_widget = QtWidgets.QLineEdit()
+        self.brightness_widget.setValidator(QtGui.QDoubleValidator())
         self.brightness_widget.setToolTip("Default is: 0")
         self.brightness_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.contrast_widget = QtWidgets.QLineEdit()
+        self.contrast_widget.setValidator(QtGui.QDoubleValidator())
         self.contrast_widget.setToolTip("Default is: 1")
         self.contrast_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.saturation_widget = QtWidgets.QLineEdit()
+        self.saturation_widget.setValidator(QtGui.QDoubleValidator())
         self.saturation_widget.setToolTip("Default is: 1")
         self.saturation_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
@@ -398,9 +401,23 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.app.fastflix.current_video.video_settings.tone_map = self.tone_map_widget.currentText()
         self.app.fastflix.current_video.video_settings.vsync = non(self.vsync_widget.currentText())
 
-        self.app.fastflix.current_video.video_settings.brightness = self.brightness_widget.text() or None
-        self.app.fastflix.current_video.video_settings.saturation = self.saturation_widget.text() or None
-        self.app.fastflix.current_video.video_settings.contrast = self.contrast_widget.text() or None
+        try:
+            if self.brightness_widget.text().strip() != "":
+                self.app.fastflix.current_video.video_settings.brightness = str(float(self.brightness_widget.text()))
+        except ValueError:
+            logger.warning("Invalid brightness value")
+
+        try:
+            if self.saturation_widget.text().strip() != "":
+                self.app.fastflix.current_video.video_settings.saturation = str(float(self.saturation_widget.text()))
+        except ValueError:
+            logger.warning("Invalid saturation value")
+
+        try:
+            if self.contrast_widget.text().strip() != "":
+                self.app.fastflix.current_video.video_settings.contrast = str(float(self.contrast_widget.text()))
+        except ValueError:
+            logger.warning("Invalid contrast value")
 
         # self.app.fastflix.current_video.video_settings.first_pass_filters = self.first_filters.text() or None
         # self.app.fastflix.current_video.video_settings.second_filters = self.second_filters.text() or None
@@ -454,15 +471,36 @@ class AdvancedPanel(QtWidgets.QWidget):
             maxrate = int(self.maxrate_widget.text())
             bufsize = int(self.bufsize_widget.text())
 
+        contrast = None
+        if self.contrast_widget.text().strip() != "":
+            try:
+                contrast = str(float(self.contrast_widget.text()))
+            except ValueError:
+                logger.warning("Invalid contrast value")
+
+        saturation = None
+        if self.saturation_widget.text().strip() != "":
+            try:
+                saturation = str(float(self.saturation_widget.text()))
+            except ValueError:
+                logger.warning("Invalid saturation value")
+
+        brightness = None
+        if self.brightness_widget.text().strip() != "":
+            try:
+                brightness = str(float(self.brightness_widget.text()))
+            except ValueError:
+                logger.warning("Invalid brightness value")
+
         return AdvancedOptions(
             video_speed=video_speeds[self.video_speed_widget.currentText()],
             deblock=non(self.deblock_widget.currentText()),
             deblock_size=int(self.deblock_size_widget.currentText()),
             tone_map=self.tone_map_widget.currentText(),
             vsync=non(self.vsync_widget.currentText()),
-            brightness=(self.brightness_widget.text() or None),
-            saturation=(self.saturation_widget.text() or None),
-            contrast=(self.contrast_widget.text() or None),
+            brightness=brightness,
+            saturation=saturation,
+            contrast=contrast,
             maxrate=maxrate,
             bufsize=bufsize,
             source_fps=(None if self.incoming_same_as_source.isChecked() else self.incoming_fps_widget.text()),
@@ -679,23 +717,78 @@ class AdvancedPanel(QtWidgets.QWidget):
     def new_source(self):
         self.reset()
 
-        if self.app.fastflix.current_video.color_primaries in ffmpeg_valid_color_primaries:
+        advanced_options: AdvancedOptions = self.app.fastflix.config.opt("advanced_options")
+
+        if color_primaries := advanced_options.color_primaries:
+            self.color_primaries_widget.setCurrentText(color_primaries)
+        elif self.app.fastflix.current_video.color_primaries in ffmpeg_valid_color_primaries:
             self.color_primaries_widget.setCurrentIndex(
                 ffmpeg_valid_color_primaries.index(self.app.fastflix.current_video.color_primaries) + 1
             )
         else:
             self.color_primaries_widget.setCurrentIndex(0)
 
-        if self.app.fastflix.current_video.color_transfer in ffmpeg_valid_color_transfers:
+        if color_transfer := advanced_options.color_transfer:
+            self.color_transfer_widget.setCurrentText(color_transfer)
+        elif self.app.fastflix.current_video.color_transfer in ffmpeg_valid_color_transfers:
             self.color_transfer_widget.setCurrentIndex(
                 ffmpeg_valid_color_transfers.index(self.app.fastflix.current_video.color_transfer) + 1
             )
         else:
             self.color_transfer_widget.setCurrentIndex(0)
 
-        if self.app.fastflix.current_video.color_space in ffmpeg_valid_color_space:
+        if color_space := advanced_options.color_space:
+            self.color_space_widget.setCurrentText(color_space)
+        elif self.app.fastflix.current_video.color_space in ffmpeg_valid_color_space:
             self.color_space_widget.setCurrentIndex(
                 ffmpeg_valid_color_space.index(self.app.fastflix.current_video.color_space) + 1
             )
         else:
             self.color_space_widget.setCurrentIndex(0)
+
+        if video_speed := advanced_options.video_speed:
+            self.video_speed_widget.setCurrentText(get_key(video_speeds, video_speed))
+
+        if deblock := advanced_options.deblock:
+            self.deblock_widget.setCurrentText(deblock)
+
+        if deblock_size := advanced_options.deblock_size:
+            self.deblock_size_widget.setCurrentText(str(deblock_size))
+
+        if tone_map := advanced_options.tone_map:
+            self.tone_map_widget.setCurrentText(tone_map)
+
+        if vsync := advanced_options.vsync:
+            self.vsync_widget.setCurrentText(vsync)
+
+        if brightness := advanced_options.brightness:
+            self.brightness_widget.setText(brightness)
+
+        if saturation := advanced_options.saturation:
+            self.saturation_widget.setText(saturation)
+
+        if contrast := advanced_options.contrast:
+            self.contrast_widget.setText(contrast)
+
+        if maxrate := advanced_options.maxrate:
+            self.maxrate_widget.setText(str(maxrate))
+
+        if bufsize := advanced_options.bufsize:
+            self.bufsize_widget.setText(str(bufsize))
+
+        if source_fps := advanced_options.source_fps:
+            self.incoming_fps_widget.setText(source_fps)
+            self.incoming_same_as_source.setChecked(False)
+        else:
+            self.incoming_same_as_source.setChecked(True)
+
+        if output_fps := advanced_options.output_fps:
+            self.outgoing_fps_widget.setText(output_fps)
+            self.outgoing_same_as_source.setChecked(False)
+        else:
+            self.outgoing_same_as_source.setChecked(True)
+
+        if denoise_type_index := advanced_options.denoise_type_index:
+            self.denoise_type_widget.setCurrentIndex(denoise_type_index)
+        if denoise_strength_index := advanced_options.denoise_strength_index:
+            self.denoise_strength_widget.setCurrentIndex(denoise_strength_index)

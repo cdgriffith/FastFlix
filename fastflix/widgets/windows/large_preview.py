@@ -57,7 +57,7 @@ class LargePreview(QtWidgets.QWidget):
         super(LargePreview, self).keyPressEvent(a0)
 
     def generate_image(self):
-        settings = self.main.app.fastflix.current_video.video_settings.dict()
+        settings = self.main.app.fastflix.current_video.video_settings.model_dump()
         if not self.main.app.fastflix.current_video.video_settings.video_encoder_settings:
             return
 

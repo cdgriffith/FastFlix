@@ -134,7 +134,6 @@ class VCEENCC(VCEPanel):
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 12, 0, 1, 4)
         grid.addWidget(warning_label, 12, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
-        grid.addWidget(QtWidgets.QLabel(t("VCEEncC AV1 Encoder is untested!")), 12, 5, 1, 1)
 
         self.setLayout(grid)
         self.hide()
@@ -302,9 +301,9 @@ class VCEENCC(VCEPanel):
             pa_paq=self.widgets.pa_paq.currentText(),
             pa_taq=None if self.widgets.pa_taq.currentIndex() == 0 else self.widgets.pa_taq.currentText(),
             pa_motion_quality=self.widgets.pa_motion_quality.currentText(),
-            output_depth=None
-            if self.widgets.output_depth.currentIndex() == 0
-            else self.widgets.output_depth.currentText(),
+            output_depth=(
+                None if self.widgets.output_depth.currentIndex() == 0 else self.widgets.output_depth.currentText()
+            ),
         )
 
         encode_type, q_value = self.get_mode_settings()

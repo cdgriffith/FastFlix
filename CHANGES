@@ -1,5 +1,23 @@
 # Changelog
 
+## Version 5.8.0
+
+* Adding #283 support for experimental DTS (dca) audio by adding -strict -2 (thanks to Sub7)
+* Adding #354 M1 support (thanks to Nhunz and Anton)
+* Adding #536 Improve Profiles - save advanced options (thanks to CelticTaonga and DCNerds)
+* Adding #568 center app on startup (thanks to Viet-Duc Le)
+* Adding #587 Distribute a mac app bundle (thanks to Ivan Novokhatski)
+* Adding #589 support for pydantic 2.x (thanks to dmo marillat)
+* Adding #592 Add alpha channel for VP9 (thjanks to subof)
+* Fixing #185 audio channels not being set properly and resetting on encoder change (thanks to Tupsi)
+* Fixing #522 add file fails - fixed as of 5.7.0 (thanks to pcl5x2008)
+* Fixing #531 list limitation in readme that FFmpeg must support the software encoders listed (thanks to brunoais)
+* Fixing #567 Profiles for WebP did not work (nor GIF dither) (thanks to jpert)
+* Fixing #582 BT.2020-10 Color transfer not maintained (thanks to Ryushin)
+* Fixing #585 error when trying to return a video from queue that has the video track after audio or subtitiles (thanks to Hankuu)
+* Fixing #586 audio channels being set incorrectly (thanks to Hankuu)
+* Fixing #588 audio and subtitle dispositions were not set from source (thanks to GeZorTenPlotZ)
+
 ## Version 5.7.4
 
 * Fixing #579 Missing Infos and no Mouse-Over info in Subs-Panel since 5.7 (thanks to GeZorTenPlotZ)

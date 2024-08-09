@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0
     hooks:
     - id: mixed-line-ending
     - id: trailing-whitespace
@@ -12,14 +12,18 @@ repos:
     - id: check-byte-order-marker
     - id: debug-statements
     - id: check-added-large-files
-      exclude: tests/media/.+
+      exclude: |
+        (?x)^(
+            tests/media/.+|
+            ^fastflix/data/icon.icns
+        )$
     - id: check-case-conflict
     - id: check-executables-have-shebangs
     - id: check-toml
     - id: detect-private-key
     - id: end-of-file-fixer
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 24.8.0
     hooks:
       - id: black
 #  - repo: https://github.com/pre-commit/mirrors-mypy

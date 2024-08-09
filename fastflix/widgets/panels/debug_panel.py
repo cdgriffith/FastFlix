@@ -21,13 +21,13 @@ class DebugPanel(QtWidgets.QTabWidget):
         if not DEVMODE:
             self.hide()
             return
-        self.addTab(self.get_textbox(Box(self.app.fastflix.config.dict())), "Config")
+        self.addTab(self.get_textbox(Box(self.app.fastflix.config.model_dump())), "Config")
         self.addTab(self.get_textbox(Box(self.get_ffmpeg_details())), "FFmpeg Details")
         self.addTab(self.get_textbox(BoxList(self.app.fastflix.conversion_list)), "Queue")
         self.addTab(self.get_textbox(Box(self.app.fastflix.encoders)), "Encoders")
         self.addTab(self.get_textbox(BoxList(self.app.fastflix.audio_encoders)), "Audio Encoders")
         if self.app.fastflix.current_video:
-            self.cv = self.get_textbox(Box(self.app.fastflix.current_video.dict()))
+            self.cv = self.get_textbox(Box(self.app.fastflix.current_video.model_dump()))
             self.addTab(self.cv, "Current Video")
 
     def get_textbox(self, obj: Union["Box", "BoxList"]) -> "QtWidgets.QTextBrowser":
@@ -56,5 +56,5 @@ class DebugPanel(QtWidgets.QTabWidget):
                 self.removeTab(self.count() - 1)
                 self.cv.close()
                 del self.cv
-            self.cv = self.get_textbox(Box(self.app.fastflix.current_video.dict()))
+            self.cv = self.get_textbox(Box(self.app.fastflix.current_video.model_dump()))
             self.addTab(self.cv, "Current Video")

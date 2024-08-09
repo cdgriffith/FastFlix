@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
+
+logger = logging.getLogger("fastflix")
 
 channel_list = {
     "mono": 1,
@@ -67,13 +70,12 @@ def build_audio(audio_tracks, audio_file_index=0):
                 cl = track.downmix if track.downmix and track.downmix != "No Downmix" else track.raw_info.channel_layout
             except (AssertionError, KeyError):
                 cl = "stereo"
+                logger.warning("Could not determine channel layout, defaulting to stereo, please manually specify")
 
             downmix = (
-                f"-ac:{track.outdex} {channel_list[cl]} -filter:{track.outdex} aformat=channel_layouts={cl}"
-                if track.downmix and track.downmix != "No Downmix"
-                else ""
+                f"-ac:{track.outdex} {channel_list[cl]}" if track.downmix and track.downmix != "No Downmix" else ""
             )
-            channel_layout = f'-filter:{track.outdex} aformat=channel_layouts="{channel_list[cl]}"'
+            channel_layout = f'-filter:{track.outdex} "aformat=channel_layouts={cl}"'
 
             bitrate = ""
             if track.conversion_codec not in lossless:
@@ -84,13 +86,13 @@ def build_audio(audio_tracks, audio_file_index=0):
                         else f"{track.conversion_bitrate}k"
                     )
 
-                    bitrate = f"-b:{track.outdex} {conversion_bitrate} {channel_layout}"
+                    bitrate = f"-b:{track.outdex} {conversion_bitrate}"
                 else:
                     bitrate = audio_quality_converter(
                         track.conversion_aq, track.conversion_codec, track.raw_info.get("channels"), track.outdex
                     )
 
-            command_list.append(f"-c:{track.outdex} {track.conversion_codec} {bitrate} {downmix}")
+            command_list.append(f"-c:{track.outdex} {track.conversion_codec} {bitrate} {downmix} {channel_layout}")
 
         if getattr(track, "dispositions", None):
             added = ""
@@ -103,6 +105,6 @@ def build_audio(audio_tracks, audio_file_index=0):
                 command_list.append(f"-disposition:{track.outdex} 0")
 
     end_command = " ".join(command_list)
-    if " truehd " or " opus " in end_command:
+    if " truehd " in end_command or " opus " in end_command or " dca " in end_command:
         end_command += " -strict -2 "
     return end_command
