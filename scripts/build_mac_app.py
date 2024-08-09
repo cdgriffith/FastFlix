@@ -40,7 +40,3 @@ shutil.copy(here.parent / "fastflix" / "data" / "icon.icns", resources_folder / 
 
 shutil.move(here.parent / "dist" / "FastFlix", macos_folder / "FastFlix")
 shutil.move(here.parent / "dist" / "LICENSE", macos_folder / "LICENSE")
-
-check_output(["chmod", "+x", macos_folder / "FastFlix"])
-
-reusables.archive(build_folder, name=f"FastFlix_{__version__}_{sys.argv[1]}_appbundle_{arch}.zip", archive_type="zip")

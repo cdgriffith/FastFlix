@@ -59,24 +59,26 @@ jobs:
           dist/FastFlix --test
 
       - name: Archive excutables
-        run: python scripts/build_nix_archive.py ${{ matrix.os }}
+        run: 7z a -mm=Deflate -mfb=258 -mpass=15 -r FastFlix_${{ env.VERSION }}_${{ matrix.os }}_${{ env.ARCH }}.zip dist/*
 
       - name: Upload standalone executable artifact
         uses: actions/upload-artifact@v4
         with:
           name: FastFlix_${{ env.VERSION }}_OUTER_DO_NOT_UPLOAD_${{ matrix.os }}_${{ env.ARCH }}
-          path: dist/*.zip
+          path: FastFlix_${{ env.VERSION }}_${{ matrix.os }}_${{ env.ARCH }}.zip
 
       - name: Build Mac App
         if : ${{ startsWith(matrix.os, 'macos') }}
-        run: python scripts/build_mac_app.py ${{ matrix.os }}
+        run: |
+          python scripts/build_mac_app.py ${{ matrix.os }}
+          7z a -mm=Deflate -mfb=258 -mpass=15 -r FastFlix_${{ env.VERSION }}_appbundle_$${{ matrix.os }}_${{ env.ARCH }}.zip dist/*
 
       - name: Upload Mac App artifact
         if : ${{ startsWith(matrix.os, 'macos') }}
         uses: actions/upload-artifact@v4
         with:
           name: FastFlix_${{ env.VERSION }}_OUTER_DO_NOT_UPLOAD_APPBUNDLE_${{ matrix.os }}_${{ env.ARCH }}
-          path: dist/FastFlix_${{ env.VERSION }}_appbundle_${{ matrix.os }}_${{ env.ARCH }}.zip
+          path: FastFlix_${{ env.VERSION }}_appbundle_${{ matrix.os }}_${{ env.ARCH }}.zip
 
 
   build-windows-2022:
