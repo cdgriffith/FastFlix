@@ -71,12 +71,15 @@ resolutions = {
     t("Custom (w:h)"): {"method": "custom"},
     "4320 LE": {"method": "long edge", "pixels": 4320},
     "2160 LE": {"method": "long edge", "pixels": 2160},
+    "1920 LE": {"method": "long edge", "pixels": 1920},
     "1440 LE": {"method": "long edge", "pixels": 1440},
+    "1280 LE": {"method": "long edge", "pixels": 1280},
     "1080 LE": {"method": "long edge", "pixels": 1080},
     "720 LE": {"method": "long edge", "pixels": 720},
     "480 LE": {"method": "long edge", "pixels": 480},
     "4320 H": {"method": "height", "pixels": 4320},
     "2160 H": {"method": "height", "pixels": 2160},
+    "1920 H": {"method": "height", "pixels": 1920},
     "1440 H": {"method": "height", "pixels": 1440},
     "1080 H": {"method": "height", "pixels": 1080},
     "720 H": {"method": "height", "pixels": 720},
@@ -1697,7 +1700,7 @@ class Main(QtWidgets.QWidget):
     def resolution_custom(self):
         res = resolutions[self.widgets.resolution_drop_down.currentText()]
         if "pixels" in res:
-            return res["pixels"]
+            return str(res["pixels"])
         if self.widgets.resolution_custom.text().strip():
             return self.widgets.resolution_custom.text()
 

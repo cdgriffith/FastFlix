@@ -81,12 +81,7 @@ class WEBP(SettingPanel):
             pix_fmt="yuv420p",  # hack for thumbnails to show properly
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
         )
-        _, qscale = self.get_mode_settings()
-        try:
-            settings.qscale = float(qscale)
-        except ValueError:
-            logger.warning("Invalid Qscale, using default 75")
-            settings.qscale = 75
+        _, settings.qscale = self.get_mode_settings()
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
     def new_source(self):
