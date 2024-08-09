@@ -23,6 +23,8 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 | Covers    | ✓    |  ✓   | ✓     | ✓       | ✓       |     | ✓   |
 | bt.2020   | ✓    |   ✓  | ✓     | ✓       | ✓       | ✓   | ✓   |
 
+If one of the above software encoders is not listed, it is due to your version of FFmpeg not having that encoder compiled in.
+
 ## Hardware Encoders 
 
 These will require the appropriate hardware. Nvidia GPU for NVEnc, Intel GPU/CPU for QSVEnc, and AMD GPU for VCEEnc. 

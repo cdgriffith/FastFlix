@@ -153,7 +153,6 @@ class QSVAV1Enc(QSVEncPanel):
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 11, 0, 1, 4)
         grid.addWidget(warning_label, 11, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
-        grid.addWidget(QtWidgets.QLabel(t("QSVEncC AV1 Encoder is untested!")), 11, 5, 1, 1)
 
         self.setLayout(grid)
         self.hide()

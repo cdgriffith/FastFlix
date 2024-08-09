@@ -152,6 +152,7 @@ class Audio(QtWidgets.QTabWidget):
             grid.addWidget(self.widgets.enable_check, 0, right_button_start_index)
             grid.addWidget(self.widgets.dup_button, 0, right_button_start_index + 1)
         self.setLayout(grid)
+        self.check_dis_button()
         self.conversion_box = None
         self.loading = False
 
@@ -202,6 +203,7 @@ class Audio(QtWidgets.QTabWidget):
         self.app.fastflix.current_video.audio_tracks[self.index].language = self.language
         if not self.loading:
             self.check_conversion_button()
+            self.check_dis_button()
             return self.parent.main.page_update(build_thumbnail=False)
 
     @property
@@ -285,6 +287,13 @@ class Audio(QtWidgets.QTabWidget):
         else:
             self.widgets.conversion.setStyleSheet("")
             self.widgets.conversion.setText(t("Conversion"))
+
+    def check_dis_button(self):
+        audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
+        if any(audio_track.dispositions.values()):
+            self.widgets.disposition.setStyleSheet("border-color: #0055ff")
+        else:
+            self.widgets.disposition.setStyleSheet("")
 
 
 class AudioList(FlixList):

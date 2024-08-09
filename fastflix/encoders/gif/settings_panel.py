@@ -42,6 +42,7 @@ class GIF(SettingPanel):
         return self._add_combo_box(
             label="Dither",
             widget_name="dither",
+            opt="dither",
             tooltip=(
                 "Dither is an intentionally applied form of noise used to randomize quantization error,\n"
                 "preventing large-scale patterns such as color banding in images."
@@ -77,7 +78,7 @@ class GIF(SettingPanel):
 
     def update_video_encoder_settings(self):
         self.app.fastflix.current_video.video_settings.video_encoder_settings = GIFSettings(
-            fps=int(self.widgets.fps.currentText()),
+            fps=self.widgets.fps.currentText(),
             dither=self.widgets.dither.currentText(),
             extra=self.ffmpeg_extras,
             pix_fmt="yuv420p",  # hack for thumbnails to show properly
@@ -88,5 +89,3 @@ class GIF(SettingPanel):
 
     def new_source(self):
         super().new_source()
-        self.widgets.fps.setCurrentIndex(14)
-        self.widgets.dither.setCurrentIndex(0)

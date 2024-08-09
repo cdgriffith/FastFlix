@@ -110,9 +110,10 @@ class BackgroundRunner:
             logger.exception(f"Could not set process priority to {new_priority}")
 
     def read_output(self):
-        with open(self.output_file, "r", encoding="utf-8", errors="ignore") as out_file, open(
-            self.error_output_file, "r", encoding="utf-8", errors="ignore"
-        ) as err_file:
+        with (
+            open(self.output_file, "r", encoding="utf-8", errors="ignore") as out_file,
+            open(self.error_output_file, "r", encoding="utf-8", errors="ignore") as err_file,
+        ):
             while True:
                 time.sleep(0.01)
                 if not self.is_alive():

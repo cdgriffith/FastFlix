@@ -143,6 +143,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.grid.addWidget(self.widgets.enable_check, 0, 8)
 
         self.setLayout(self.grid)
+        self.check_dis_button()
         self.loading = False
         self.updating_burn = False
         self.extract_completed_signal.connect(self.extraction_complete)
@@ -242,7 +243,15 @@ class Subtitle(QtWidgets.QTabWidget):
 
     def page_update(self):
         if not self.loading:
+            self.check_dis_button()
             return self.parent.main.page_update(build_thumbnail=False)
+
+    def check_dis_button(self):
+        track: SubtitleTrack = self.app.fastflix.current_video.subtitle_tracks[self.index]
+        if any(track.dispositions.values()):
+            self.widgets.disposition.setStyleSheet("border-color: #0055ff")
+        else:
+            self.widgets.disposition.setStyleSheet("")
 
 
 class SubtitleList(FlixList):

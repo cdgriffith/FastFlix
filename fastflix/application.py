@@ -233,6 +233,8 @@ def app_setup(
     container = Container(app)
     container.show()
 
+    container.move(QtGui.QGuiApplication.primaryScreen().availableGeometry().center() - container.rect().center())
+
     if not app.fastflix.config.disable_version_check:
         latest_fastflix(app=app, show_new_dialog=False)
 

@@ -16,7 +16,7 @@ from collections import namedtuple
 import importlib.resources
 import reusables
 from box import Box
-from pydantic import BaseModel, Field
+from pydantic import ConfigDict, BaseModel, Field
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
@@ -71,12 +71,15 @@ resolutions = {
     t("Custom (w:h)"): {"method": "custom"},
     "4320 LE": {"method": "long edge", "pixels": 4320},
     "2160 LE": {"method": "long edge", "pixels": 2160},
+    "1920 LE": {"method": "long edge", "pixels": 1920},
     "1440 LE": {"method": "long edge", "pixels": 1440},
+    "1280 LE": {"method": "long edge", "pixels": 1280},
     "1080 LE": {"method": "long edge", "pixels": 1080},
     "720 LE": {"method": "long edge", "pixels": 720},
     "480 LE": {"method": "long edge", "pixels": 480},
     "4320 H": {"method": "height", "pixels": 4320},
     "2160 H": {"method": "height", "pixels": 2160},
+    "1920 H": {"method": "height", "pixels": 1920},
     "1440 H": {"method": "height", "pixels": 1440},
     "1080 H": {"method": "height", "pixels": 1080},
     "720 H": {"method": "height", "pixels": 720},
@@ -96,17 +99,13 @@ class CropWidgets(BaseModel):
     bottom: QtWidgets.QLineEdit = None
     left: QtWidgets.QLineEdit = None
     right: QtWidgets.QLineEdit = None
-
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class ScaleWidgets(BaseModel):
     width: QtWidgets.QLineEdit = None
     height: QtWidgets.QLineEdit = None
-
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class MainWidgets(BaseModel):
@@ -134,9 +133,7 @@ class MainWidgets(BaseModel):
     output_directory_combo: QtWidgets.QComboBox = None
     output_type_combo: QtWidgets.QComboBox = Field(default_factory=QtWidgets.QComboBox)
     output_directory_select: QtWidgets.QPushButton = None
-
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def items(self):
         for key in dir(self):
@@ -1427,11 +1424,15 @@ class Main(QtWidgets.QWidget):
         ]
         self.widgets.video_track.clear()
         self.widgets.video_track.addItems(text_video_tracks)
-        selected_track = 0
-        for track in self.app.fastflix.current_video.streams.video:
-            if track.index == self.app.fastflix.current_video.video_settings.selected_track:
-                selected_track = track.index
-        self.widgets.video_track.setCurrentIndex(selected_track)
+        for i, track in enumerate(text_video_tracks):
+            if int(track.split(":")[0]) == self.app.fastflix.current_video.video_settings.selected_track:
+                self.widgets.video_track.setCurrentIndex(i)
+                break
+        else:
+            logger.warning(
+                f"Could not find selected track {self.app.fastflix.current_video.video_settings.selected_track} "
+                f"in {text_video_tracks}"
+            )
 
         end_time = self.app.fastflix.current_video.video_settings.end_time or video.duration
         if self.app.fastflix.current_video.video_settings.crop:
@@ -1474,7 +1475,7 @@ class Main(QtWidgets.QWidget):
 
         self.app.fastflix.current_video.status = Status()
         self.loading_video = False
-        self.page_update()
+        self.page_update(build_thumbnail=True, force_build_thumbnail=True)
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self, hide_progress=False):
@@ -1627,7 +1628,7 @@ class Main(QtWidgets.QWidget):
         if not self.input_video or self.loading_video:
             return
 
-        settings = self.app.fastflix.current_video.video_settings.dict()
+        settings = self.app.fastflix.current_video.video_settings.model_dump()
 
         if (
             self.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"
@@ -1699,7 +1700,7 @@ class Main(QtWidgets.QWidget):
     def resolution_custom(self):
         res = resolutions[self.widgets.resolution_drop_down.currentText()]
         if "pixels" in res:
-            return res["pixels"]
+            return str(res["pixels"])
         if self.widgets.resolution_custom.text().strip():
             return self.widgets.resolution_custom.text()
 
@@ -1792,7 +1793,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = False
         self.page_update(build_thumbnail=True)
 
-    def page_update(self, build_thumbnail=True):
+    def page_update(self, build_thumbnail=True, force_build_thumbnail=False):
         while self.page_updating:
             time.sleep(0.1)
         self.page_updating = True
@@ -1809,7 +1810,7 @@ class Main(QtWidgets.QWidget):
                     f"{int(self.remove_hdr)}:{self.preview_place}:{self.widgets.rotate.currentIndex()}:"
                     f"{self.widgets.flip.currentIndex()}"
                 )
-                if new_hash == self.last_thumb_hash:
+                if new_hash == self.last_thumb_hash and not force_build_thumbnail:
                     return
                 self.last_thumb_hash = new_hash
                 self.generate_thumbnail()

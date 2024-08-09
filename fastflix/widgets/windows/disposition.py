@@ -45,11 +45,15 @@ class Disposition(QtWidgets.QWidget):
         self.track_index = track_index
         self.audio = audio
 
-        self.setMinimumWidth(400)
+        self.setMinimumWidth(200)
 
         self.forced = QtWidgets.QCheckBox(t("Forced"))
 
         self.default = QtWidgets.QCheckBox(t("Default"))
+
+        track = self.get_track()
+        self.forced.setChecked(track.dispositions.get("forced", False))
+        self.default.setChecked(track.dispositions.get("default", False))
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(QtWidgets.QLabel(track_name))
@@ -71,16 +75,16 @@ class Disposition(QtWidgets.QWidget):
         group.addButton(none_extra)
         layout.addWidget(none_extra)
 
-        if audio:
-            for dis in audio_disposition_options:
-                self.widgets[dis] = QtWidgets.QRadioButton(t(dis))
-                group.addButton(self.widgets[dis])
-                layout.addWidget(self.widgets[dis])
-        else:
-            for dis in subtitle_disposition_options:
-                self.widgets[dis] = QtWidgets.QRadioButton(t(dis))
-                group.addButton(self.widgets[dis])
-                layout.addWidget(self.widgets[dis])
+        for dis in audio_disposition_options if audio else subtitle_disposition_options:
+            self.widgets[dis] = QtWidgets.QRadioButton(t(dis))
+            group.addButton(self.widgets[dis])
+            layout.addWidget(self.widgets[dis])
+
+        for track_dis, is_set in track.dispositions.items():
+            if is_set and track_dis in self.widgets.keys():
+                self.widgets[track_dis].setChecked(True)
+
+        self.parent.page_update()
 
         self.set_button = QtWidgets.QPushButton(t("Set"))
         self.set_button.clicked.connect(self.set_dispositions)
@@ -88,11 +92,13 @@ class Disposition(QtWidgets.QWidget):
 
         self.setLayout(layout)
 
-    def set_dispositions(self):
+    def get_track(self):
         if self.audio:
-            track = self.app.fastflix.current_video.audio_tracks[self.track_index]
-        else:
-            track = self.app.fastflix.current_video.subtitle_tracks[self.track_index]
+            return self.app.fastflix.current_video.audio_tracks[self.track_index]
+        return self.app.fastflix.current_video.subtitle_tracks[self.track_index]
+
+    def set_dispositions(self):
+        track = self.get_track()
 
         track.dispositions["forced"] = self.forced.isChecked()
         track.dispositions["default"] = self.default.isChecked()

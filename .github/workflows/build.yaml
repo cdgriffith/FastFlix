@@ -9,13 +9,13 @@ jobs:
   build-nix:
     strategy:
       matrix:
-        os: [ ubuntu-20.04, ubuntu-22.04, macos-12 ]
+        os: [ ubuntu-20.04, ubuntu-22.04, macos-12, macos-14 ]
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -23,7 +23,8 @@ jobs:
         run: |
           mkdir dist
           echo "::set-env name=VERSION::$(python scripts/get_version.py)"
-          echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}}"
+          echo "::set-env name=ARCH::$(python scripts/get_arch.py)"
+          echo Building branch ${{ env.GITHUB_REF }} - version ${{ env.VERSION }} - on ${{ env.ARCH }}
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
@@ -57,13 +58,27 @@ jobs:
           dist/FastFlix --version
           dist/FastFlix --test
 
+      - name: Archive excutables
+        run: 7z a -mm=Deflate -mfb=258 -mpass=15 -r FastFlix_${{ env.VERSION }}_${{ matrix.os }}_${{ env.ARCH }}.zip dist/*
+
       - name: Upload standalone executable artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: FastFlix_${{ env.VERSION }}_${{ matrix.os }}_x86_64
-          path: |
-            dist/FastFlix
-            dist/LICENSE
+          name: FastFlix_${{ env.VERSION }}_OUTER_DO_NOT_UPLOAD_${{ matrix.os }}_${{ env.ARCH }}
+          path: FastFlix_${{ env.VERSION }}_${{ matrix.os }}_${{ env.ARCH }}.zip
+
+      - name: Build Mac App
+        if : ${{ startsWith(matrix.os, 'macos') }}
+        run: |
+          python scripts/build_mac_app.py ${{ matrix.os }}
+          7z a -mm=Deflate -mfb=258 -mpass=15 -r FastFlix_${{ env.VERSION }}_appbundle_$${{ matrix.os }}_${{ env.ARCH }}.zip dist/*
+
+      - name: Upload Mac App artifact
+        if : ${{ startsWith(matrix.os, 'macos') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: FastFlix_${{ env.VERSION }}_OUTER_DO_NOT_UPLOAD_APPBUNDLE_${{ matrix.os }}_${{ env.ARCH }}
+          path: FastFlix_${{ env.VERSION }}_appbundle_${{ matrix.os }}_${{ env.ARCH }}.zip
 
 
   build-windows-2022:
@@ -71,8 +86,8 @@ jobs:
     runs-on: windows-2022
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: "3.12"
 
@@ -145,7 +160,7 @@ jobs:
         move docs\build-licenses.txt LICENSE
 
     - name: Upload standalone executable artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: FastFlix_${{ env.VERSION }}_win64
         path: |

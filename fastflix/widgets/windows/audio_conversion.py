@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
 
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import AudioTrack
@@ -109,6 +109,7 @@ class AudioConversion(QtWidgets.QWidget):
         self.aq.currentIndexChanged.connect(self.set_aq)
         self.bitrate = QtWidgets.QLineEdit()
         self.bitrate.setFixedWidth(50)
+        self.bitrate.setValidator(QtGui.QDoubleValidator())
 
         if self.audio_track.conversion_aq:
             self.aq.setCurrentIndex(self.audio_track.conversion_aq)

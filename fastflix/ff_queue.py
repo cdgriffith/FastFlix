@@ -84,7 +84,7 @@ def save_queue(queue: list[Video], queue_file: Path, config: Optional[Config] = 
             command["command"] = new_command
 
     for video in queue:
-        video = video.dict()
+        video = video.model_dump()
         video["source"] = os.fspath(video["source"])
         video["work_path"] = os.fspath(video["work_path"])
         video["video_settings"]["output_path"] = os.fspath(video["video_settings"]["output_path"])
