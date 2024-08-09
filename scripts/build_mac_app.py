@@ -21,8 +21,12 @@ macos_folder.mkdir(exist_ok=True)
 resources_folder = content_folder / "Resources"
 resources_folder.mkdir(exist_ok=True)
 
-mac_version = f"{sys.argv[1].split(" - ")[1]}.0"
-assert mac_version in ("12.0", "13.0", "14.0", "15.0")
+try:
+    mac_version = f"{sys.argv[1].split(" - ")[1]}.0"
+    assert mac_version in ("12.0", "13.0", "14.0", "15.0")
+except Exception:
+    print(f"Did not get expected input, received: {sys.argv}")
+    sys.exit(1)
 
 with open(plist_template) as in_file, open(content_folder / "Info.plist", "w") as out_file:
     template = in_file.read().format(version=__version__, mac_version=mac_version)

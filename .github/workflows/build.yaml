@@ -24,7 +24,7 @@ jobs:
           mkdir dist
           echo "::set-env name=VERSION::$(python scripts/get_version.py)"
           echo "::set-env name=ARCH::$(python scripts/get_arch.py)"
-          echo "Building branch ${{env.GITHUB_REF}} - version ${{env.VERSION}} - on ${{env.ARCH}}"
+          echo "Building branch ${{ env.GITHUB_REF }} - version ${{ env.VERSION }} - on ${{ env.ARCH }}"
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
@@ -68,7 +68,7 @@ jobs:
 
       - name: Build Mac App
         if : ${{ startsWith(matrix.os, 'macos') }}
-        run: python scripts/build_mac_app.py "${{ matrix.os }}"
+        run: python scripts/build_mac_app.py ${{ matrix.os }}
 
       - name: Upload Mac App artifact
         if : ${{ startsWith(matrix.os, 'macos') }}
