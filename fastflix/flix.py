@@ -92,7 +92,12 @@ ffmpeg_valid_color_space = [
 
 
 def clean_file_string(source):
-    return str(source).strip()
+    a = str(source)
+    if "\\ " in a:
+        logger.error(f"Found bad space in file path: {a} - source: {source}")
+    b = str(source).strip()
+    if "\\ " in b and "\\ " not in a:
+        logger.error(f"clean_file_string caused bad space in file path: {b} - source: {source}")
 
 
 def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:

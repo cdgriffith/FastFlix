@@ -30,7 +30,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.resources import get_bool_env
 
-DEVMODE = get_bool_env("DEVMODE")
+DEVMODE = True  # get_bool_env("DEVMODE")
 
 ref = importlib.resources.files("fastflix") / f"data/icon.ico"
 with importlib.resources.as_file(ref) as icon_file:

@@ -148,6 +148,12 @@ class MainWidgets(BaseModel):
                 yield key, getattr(self, key)
 
 
+def check_input(p, func_name):
+    p = str(p)
+    if p != p.replace("\\ ", "\\"):
+        logger.error(f"Path now contains spaces in {func_name}: {p}")
+
+
 class Main(QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal(int)
@@ -1103,6 +1109,7 @@ class Main(QtWidgets.QWidget):
                 return
 
         self.input_video = Path(clean_file_string(filename[0]))
+        check_input(self.input_video, "open_file")
         if not self.input_video.exists():
             logger.error(f"Could not find the input file, does it exist at: {self.input_video}")
             return
@@ -1489,6 +1496,7 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget.setDisabled(False)
         self.output_path_button.setDisabled(False)
         self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())
+        check_input(self.input_video, "update_video_info")
         tasks = [
             Task(t("Parse Video details"), parse),
             Task(t("Extract covers"), extract_attachments),
