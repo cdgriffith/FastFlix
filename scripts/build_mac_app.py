@@ -2,9 +2,8 @@
 from pathlib import Path
 import sys
 import shutil
-from subprocess import check_output
 import platform
-import reusables
+
 
 from fastflix.version import __version__
 

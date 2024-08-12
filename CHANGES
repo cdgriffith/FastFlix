@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 5.8.1
+
+* Fixing #598 'dict' object has no attribute 'to_yaml' (thanks to dmo marillat)
+* Fixing #599 Italian language translations (thanks to bovirus)
+
 ## Version 5.8.0
 
 * Adding #283 support for experimental DTS (dca) audio by adding -strict -2 (thanks to Sub7)
