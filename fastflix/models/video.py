@@ -2,6 +2,7 @@
 import uuid
 from pathlib import Path
 from typing import List, Optional, Union, Tuple
+import logging
 
 from box import Box
 from pydantic import BaseModel, Field, field_validator
@@ -40,6 +41,8 @@ from fastflix.models.encode import (
 )
 
 __all__ = ["VideoSettings", "Status", "Video", "Crop", "Status"]
+
+logger = logging.getLogger("fastflix")
 
 
 def determine_rotation(streams, track: int = 0) -> Tuple[int, int]:
@@ -210,6 +213,23 @@ class Video(BaseModel):
 
     status: Status = Field(default_factory=Status)
     uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
+    @field_validator("source", mode="before")
+    @classmethod
+    def source_to_path(cls, value):
+
+        if "\\ " in str(value):
+            logger.error(f"Invalid source path: {value}")
+            import inspect
+
+            for i, stack in enumerate(inspect.stack()):
+                if i == 0 or i > 6:
+                    continue
+                logger.debug(stack)
+
+        if not isinstance(value, Path):
+            return Path(value)
+        return value
 
     @property
     def width(self):

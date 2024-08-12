@@ -98,6 +98,7 @@ def clean_file_string(source):
     b = str(source).strip()
     if "\\ " in b and "\\ " not in a:
         logger.error(f"clean_file_string caused bad space in file path: {b} - source: {source}")
+    return b
 
 
 def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
