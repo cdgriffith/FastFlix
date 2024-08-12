@@ -345,7 +345,7 @@ B Adapt:
   deu: B Anpassen
   eng: B Adapt
   fra: B Adapter
-  ita: B Adatta
+  ita: B adattivo
   spa: B Adaptar
   chs: B Adapt
   jpn: Bアダプト
@@ -707,7 +707,7 @@ Clear Completed:
   deu: Erledigte entfernen
   eng: Clear Completed
   fra: Clair Terminé
-  ita: Azzeramento completato
+  ita: Azzera coda
   spa: Claro Completado
   chs: 清理已完成的项目
   jpn: 完了したタスクを削除
@@ -737,7 +737,7 @@ CodeCalamity UHD HDR Encoding Guide:
   deu: CodeCalamity UHD HDR-Codierungsanleitung
   eng: CodeCalamity UHD HDR Encoding Guide
   fra: Guide d'encodage CodeCalamity UHD HDR
-  ita: Guida alla codifica CodeCalamity UHD HDR
+  ita: Guida codifica CodeCalamity UHD HDR
   spa: CodeCalamity UHD Guía de codificación HDR
   chs: CodeCalamity的UHD HDR编码指南（英文）
   jpn: CodeCalamity UHD HDRエンコーディングガイド（英語）
@@ -752,7 +752,7 @@ Color Primaries:
   deu: Grundfarbmodell
   eng: Color Primaries
   fra: Les couleurs primaires
-  ita: Primarie di colore
+  ita: Colori primari
   spa: Primarias de color
   chs: 原色
   jpn: カラープライマリー
@@ -782,7 +782,7 @@ Color Transfer:
   deu: Übertragungsfunktion
   eng: Color Transfer
   fra: Transfert de couleur
-  ita: Trasferimento del colore
+  ita: Trasferimento colore
   spa: Transferencia de color
   chs: 色彩转换
   jpn: カラートランスファー
@@ -2249,7 +2249,7 @@ FFMPEG AV1 Encoding Guide:
   deu: FFMPEG AV1 Kodierungsanleitung
   eng: FFMPEG AV1 Encoding Guide
   fra: Guide d'encodage FFMPEG AV1
-  ita: Guida alla codifica FFMPEG AV1
+  ita: Guida codifica FFMPEG AV1
   spa: Guía de codificación del FFMPEG AV1
   chs: FFMPEG AV1编码指南（英文）
   jpn: FFMPEG AV1エンコードガイド（英語）
@@ -2264,7 +2264,7 @@ FFMPEG AVC / H.264 Encoding Guide:
   deu: FFMPEG AVC / H.264 Kodierungsanleitung
   eng: FFMPEG AVC / H.264 Encoding Guide
   fra: FFMPEG AVC / Guide d'encodage H.264
-  ita: Guida alla codifica FFMPEG AVC / H.264
+  ita: Guida codifica FFMPEG AVC / H.264
   spa: Guía de codificación FFMPEG AVC / H.264
   chs: FFMPEG AVC / H.264 编码指南（英文）
   jpn: FFMPEG AVC / H.264エンコードガイド（英語）
@@ -2279,7 +2279,7 @@ FFMPEG HEVC / H.265 Encoding Guide:
   deu: FFMPEG HEVC / H.265 Kodierungsanleitung
   eng: FFMPEG HEVC / H.265 Encoding Guide
   fra: FFMPEG HEVC / Guide d'encodage H.265
-  ita: Guida alla codifica FFMPEG HEVC / H.265
+  ita: Guida codifica FFMPEG HEVC / H.265
   spa: Guía de codificación FFMPEG HEVC / H.265
   chs: FFMPEG HEVC / H.265编码指南（英文）
   jpn: FFMPEG HEVC / H.265 エンコーディングガイド（英語）
@@ -2294,7 +2294,7 @@ FFMPEG VP9 Encoding Guide:
   deu: FFMPEG VP9 Kodierungsanleitung
   eng: FFMPEG VP9 Encoding Guide
   fra: FFMPEG Guide d'encodage VP9
-  ita: Guida alla codifica FFMPEG VP9
+  ita: Guida codifica FFMPEG VP9
   spa: Guía de codificación del FFMPEG VP9
   chs: FFMPEG VP9编码指南（英文）
   jpn: FFMPEG VP9エンコーディングガイド（英語）
@@ -2431,7 +2431,7 @@ Frame Threads:
   deu: Frame-Threads
   eng: Frame Threads
   fra: Fils de trame
-  ita: Thread fotogrammi
+  ita: N. thread fotogrammi
   spa: Hilos del marco
   chs: 帧线程
   jpn: フレーム スレッド
@@ -2551,7 +2551,7 @@ Google's VP9 HDR Encoding Guide:
   deu: VP9-HDR-Kodierungsanleitung von Google
   eng: Google's VP9 HDR Encoding Guide
   fra: Guide d'encodage HDR VP9 de Google
-  ita: Guida alla codifica HDR VP9 di Google
+  ita: Guida codifica HDR VP9 di Google
   spa: Guía de codificación HDR VP9 de Google
   chs: 谷歌VP9 HDR编码指南（英文）
   jpn: GoogleのVP9 HDRエンコーディングガイド（英語）
@@ -2611,7 +2611,7 @@ HDR10+ Metadata Extraction:
   deu: HDR10+-Metadaten-Extraktion
   eng: HDR10+ Metadata Extraction
   fra: Extraction de métadonnées HDR10+.
-  ita: Estrazione di metadati HDR10+
+  ita: Estrazione metadati HDR10+
   spa: Extracción de metadatos HDR10+
   chs: HDR10+元数据提取指南（英文）
   jpn: HDR10+メタデータの抽出
@@ -3011,7 +3011,7 @@ Lossless:
   deu: Verlustfrei
   eng: Lossless
   fra: Sans Perte
-  ita: Senza Perdite
+  ita: Loseless
   spa: Lossless
   chs: 无损编码
   jpn: ロスレス
@@ -3052,7 +3052,7 @@ Max Muxing Queue Size:
   deu: Max. Größe der Muxing-Warteschlange
   eng: Max Muxing Queue Size
   fra: Taille maximale de la file d'attente
-  ita: Dimensione massima coda muxing
+  ita: Dimensione max coda muxing
   spa: Tamaño máximo de la cola Muxing
   chs: 最大混流队列大小
   jpn: 最大ミキシングキューサイズ
@@ -3112,7 +3112,7 @@ Maxrate:
   deu: Maxrate
   eng: Maxrate
   fra: Maxrate
-  ita: Maxrate
+  ita: Rate max
   spa: Maxrate
   chs: Maxrate
   jpn: マックスレート
@@ -3827,7 +3827,7 @@ Preset:
   deu: Voreinstellung
   eng: Preset
   fra: Préréglage
-  ita: Profilo
+  ita: Pre-impostazione
   spa: Preset
   chs: 预设
   jpn: プリセット
@@ -4071,7 +4071,7 @@ Raise or lower per-block quantization based on complexity analysis of the source
     image.
   fra: Augmenter ou diminuer la quantification par bloc en fonction de l'analyse de
     la complexité de l'image source.
-  ita: Aumentare o diminuire la quantizzazione per blocco in base all'analisi della
+  ita: Aumenta o diminuisci la quantizzazione per blocco in base all'analisi della
     complessità dell'immagine sorgente.
   spa: Aumentar o disminuir la cuantificación por bloque basada en el análisis de
     la complejidad de la imagen de origen.
@@ -4384,7 +4384,7 @@ SVT-AV1 Encoding Guide:
   deu: SVT-AV1 Kodierungsanleitung
   eng: SVT-AV1 Encoding Guide
   fra: Guide d'encodage SVT-AV1
-  ita: Guida alla codifica SVT-AV1
+  ita: Guida codifica SVT-AV1
   spa: Guía de codificación del SVT-AV1
   chs: SVT-AV1编码指南
   jpn: SVT-AV1 エンコーディングガイド
@@ -4882,7 +4882,7 @@ Strength:
   deu: Stärke
   eng: Strength
   fra: Force
-  ita: Forza
+  ita: Intensità
   spa: Fuerza
   chs: 强度
   jpn: 強さ
@@ -5349,7 +5349,7 @@ Tune:
   deu: Feineinstellung
   eng: Tune
   fra: Tune
-  ita: Tune
+  ita: Sintonia
   spa: Sintoniza
   chs: 调校
   jpn: チューニング
@@ -6601,7 +6601,7 @@ preset:
   deu: Voreinstellung
   eng: preset
   fra: préréglage
-  ita: preimpostato
+  ita: pre-impostato
   spa: preestablecido
   chs: 预设
   jpn: プリセット
@@ -7457,7 +7457,7 @@ Drag and Drop to reorder - All items need to be same dimensions:
   eng: Drag and Drop to reorder - All items need to be same dimensions
   fra: Glissez et déposez pour réorganiser - Tous les éléments doivent avoir les mêmes
     dimensions.
-  ita: Drag and Drop per riordinare - Tutti gli elementi devono avere le stesse dimensioni
+  ita: Per riordinare trascina e rilascia  - tutti gli elementi devono avere le stesse dimensioni
   spa: Arrastrar y soltar para reordenar - Todos los elementos deben tener las mismas
     dimensiones
   chs: 拖放来重新排序 - 所有项目的尺寸都需要相同
@@ -7942,7 +7942,7 @@ Color Formats:
   eng: Color Formats
   deu: Farbige Formate
   fra: Formats de couleur
-  ita: Formati di colore
+  ita: Formati colore
   spa: Formatos de color
   chs: 色彩格式
   jpn: カラーフォーマット
@@ -8442,7 +8442,7 @@ Load Queue:
   eng: Load Queue
   deu: Warteschlange laden
   fra: File d'attente de chargement
-  ita: Coda carico
+  ita: Carica coda
   spa: Cola de carga
   chs: 加载队列
   jpn: キューをロードする
@@ -8730,7 +8730,7 @@ Drag and Drop to reorder:
   eng: Drag and Drop to reorder
   deu: Ziehen und Ablegen zum Neuordnen
   fra: Glisser et déposer pour réorganiser
-  ita: Trascinare e rilasciare per riordinare
+  ita: Per riordinare trascina e rilascia 
   spa: Arrastrar y soltar para reordenar
   chs: 拖放重新排序
   jpn: ドラッグ＆ドロップで並び替え
