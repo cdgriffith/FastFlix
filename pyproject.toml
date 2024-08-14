@@ -59,7 +59,7 @@ where = ["."]
 include = ["fastflix*"]
 
 [tool.setuptools.package-data]
-"*" = ['*.yaml', '*.ico', '*.svg', '*.png']
+"*" = ['*.yaml', '*.ico', '*.svg', '*.png', '*.qss']
 
 [build-system]
 requires = ["setuptools", "setuptools_scm[toml]>=6.2", "wheel"]
