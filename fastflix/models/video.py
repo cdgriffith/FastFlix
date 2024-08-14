@@ -194,7 +194,7 @@ class Status(BaseModel):
 
 
 class Video(BaseModel):
-    source: Path
+    source: str
     duration: Union[float, int] = 0
     streams: Box = None
 
@@ -216,9 +216,11 @@ class Video(BaseModel):
 
     @field_validator("source", mode="before")
     @classmethod
-    def source_to_path(cls, value):
+    def source_to_str(cls, value):
+        if not isinstance(value, str):
+            value = str(value)
 
-        if "\\ " in str(value):
+        if "\\ " in value:
             logger.error(f"Invalid source path: {value}")
             import inspect
 
@@ -227,9 +229,11 @@ class Video(BaseModel):
                     continue
                 logger.debug(stack)
 
-        if not isinstance(value, Path):
-            return Path(value)
         return value
+
+    @property
+    def source_path(self) -> Path:
+        return Path(self.source)
 
     @property
     def width(self):

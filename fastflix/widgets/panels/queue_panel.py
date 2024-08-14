@@ -539,16 +539,10 @@ class EncodingQueue(FlixList):
         for video in self.app.fastflix.conversion_list:
             if video.status.complete:
                 continue
-            if self.app.fastflix.current_video.source == video.source:
-                source_in_queue = True
             if self.app.fastflix.current_video.video_settings.output_path == video.video_settings.output_path:
                 raise FastFlixInternalException(
                     f"{video.video_settings.output_path} {t('out file is already in queue')}"
                 )
-
-        # if source_in_queue:
-        # TODO ask if ok
-        # return
 
         self.app.fastflix.conversion_list.append(copy.deepcopy(self.app.fastflix.current_video))
         self.new_source()

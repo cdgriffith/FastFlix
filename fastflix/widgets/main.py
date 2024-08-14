@@ -1094,7 +1094,11 @@ class Main(QtWidgets.QWidget):
             "Concatenation Text File (*.txt *.concat);; All Files (*)",
             dir=str(
                 self.app.fastflix.config.source_directory
-                or (self.app.fastflix.current_video.source.parent if self.app.fastflix.current_video else Path.home())
+                or (
+                    self.app.fastflix.current_video.source_path.parent
+                    if self.app.fastflix.current_video
+                    else Path.home()
+                )
             ),
         )
         if not filename or not filename[0]:

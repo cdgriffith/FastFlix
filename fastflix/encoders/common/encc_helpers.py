@@ -36,7 +36,7 @@ def rigaya_avformat_reader(fastflix: FastFlix) -> str:
     # y4m reader 	y4m
     # raw reader 	yuv
     # avhw/avsw reader 	others
-    ending = fastflix.current_video.source.suffix
+    ending = fastflix.current_video.source_path.suffix
     if fastflix.current_video.video_settings.video_encoder_settings.decoder not in ("Hardware", "Software"):
         if ending.lower() in (".avs", ".vpy", ".avi", ".y4m", ".yuv"):
             return ""

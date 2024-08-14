@@ -251,7 +251,7 @@ def get_concat_item(file, location=0):
 
 
 def parse(app: FastFlixApp, **_):
-    source = app.fastflix.current_video.source
+    source = app.fastflix.current_video.source_path
     if source.name.lower().endswith("txt"):
         source = get_concat_item(source)
         app.fastflix.current_video.concat = True
@@ -293,7 +293,7 @@ def extract_attachments(app: FastFlixApp, **_):
         if filename.rsplit(".", 1)[0] in ("cover", "small_cover", "cover_land", "small_cover_land"):
             extract_attachment(
                 app.fastflix.config.ffmpeg,
-                app.fastflix.current_video.source,
+                app.fastflix.current_video.source_path,
                 track.index,
                 app.fastflix.current_video.work_path,
                 filename,
