@@ -133,7 +133,7 @@ jobs:
     - name: Package installer
       shell: cmd
       run: |
-        makensis.exe FastFlix.nsi
+        makensis.exe /INPUTCHARSET UTF8 FastFlix.nsi
         move FastFlix_installer.exe dist\FastFlix_${{ env.VERSION }}_installer.exe
 
     - uses: skymatic/code-sign-action@v1
