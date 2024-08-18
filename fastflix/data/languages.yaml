@@ -88,7 +88,7 @@ Add to Queue:
   deu: Zur Warteschlange hinzufügen
   eng: Add to Queue
   fra: Ajouter à la file d'attente
-  ita: Aggiungi alla coda
+  ita: Aggiungi a coda
   spa: Añadir a la cola
   chs: 添加到队列
   jpn: キューに追加
@@ -1888,7 +1888,7 @@ Encoder Output:
   deu: Kodierer-Ausgabe
   eng: Encoder Output
   fra: Sortie de l'encodeur
-  ita: Uscita encoder
+  ita: Output encoder
   spa: Salida del codificador
   chs: 编码器输出
   jpn: エンコーダ出力
@@ -3277,7 +3277,7 @@ No Flip:
   deu: Keine Spiegelung
   eng: No Flip
   fra: Pas de retournement
-  ita: Senza capovolgere
+  ita: Non capovolgere
   spa: No hay vuelta atrás
   chs: 无翻转
   jpn: 反転なし
@@ -3292,7 +3292,7 @@ No Rotation:
   deu: Keine Drehung
   eng: No Rotation
   fra: Pas de rotation
-  ita: Nessuna rotazione
+  ita: No rotazione
   spa: No hay rotación
   chs: 无旋转
   jpn: 回転なし
