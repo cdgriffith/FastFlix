@@ -9,8 +9,6 @@
 ;--------------------------------
 
 !define PRODUCT_NAME      "FastFlix"
-!define VERSION           "5.8.0"
-!define PRODUCT_VERSION   "5.8.0.0"
 !define PRODUCT_AUTHOR    "Chris Griffith"
 !define PRODUCT_COPYRIGHT "(c) Chris Griffith 2021-2024"
 
@@ -73,13 +71,13 @@ InstallDirRegKey HKLM "Software\${PRODUCT_NAME}" "Install_Dir"
   LangString LSTR03 1033  "Start Menu Shortcuts"
   LangString LSTR04 1033  "Uninstall"
   LangString LSTR05 1033  "Thank you for installing ${PRODUCT_NAME}!"
-  
+
   LangString LSTR01 1040  "Prima di procedere all'installazione di ${PRODUCT_NAME} è necessario disinstallare la versione attualmente installata.$\r$\n$\r$\nAssicurati che ${PRODUCT_NAME} non sia attualmente in esecuzione!"
   LangString LSTR02 1040  "FastFlix (richiesto)"
   LangString LSTR03 1040  "Collegamenti menu Start"
   LangString LSTR04 1040  "Disinstalla"
   LangString LSTR05 1040  "Grazie per aver installato ${PRODUCT_NAME}!"
-  
+
 
 ;--------------------------------
 Function .onInit

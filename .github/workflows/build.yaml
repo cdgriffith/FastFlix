@@ -94,6 +94,8 @@ jobs:
       run: |
         mkdir dist
         New-Item -Path Env: -Name VERSION -Value $(python.exe scripts\get_version.py)
+        New-Item -Path Env: -Name EXACT_VERSION -Value $(python.exe scripts\get_version.py exact)
+        New-Item -Path Env: -Name PRODUCT_VERSION -Value $(python.exe scripts\get_version.py nsis)
         echo "Building branch $env:GITHUB_REF - version $env:VERSION"
         echo "::set-env name=VERSION::$env:VERSION"
       env:
@@ -133,7 +135,7 @@ jobs:
     - name: Package installer
       shell: cmd
       run: |
-        makensis.exe /INPUTCHARSET UTF8 FastFlix.nsi
+        makensis.exe /INPUTCHARSET UTF8 /DVERSION=${{ env.EXACT_VERSION }} /DPRODUCT_VERSION=${{ env.PRODUCT_VERSION }} FastFlix.nsi
         move FastFlix_installer.exe dist\FastFlix_${{ env.VERSION }}_installer.exe
 
     - uses: skymatic/code-sign-action@v1
