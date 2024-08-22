@@ -17,25 +17,16 @@ def write_and_exit(msg):
     sys.exit(0)
 
 
-if os.getenv("GITHUB_ACTIONS"):
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "exact":
+            write_and_exit(__version__)
+        elif sys.argv[1] == "nsis":
+            write_and_exit(f"{__version__}.0")
+
     branch = os.getenv("GITHUB_REF").rsplit("/", 1)[1]
 
     if branch == "master":
         write_and_exit(__version__)
-    else:
-        write_and_exit(f"{__version__}-{branch}-{now}")
-
-else:
-    build_id = os.getenv("APPVEYOR_BUILD_ID")
-    branch = os.getenv("APPVEYOR_REPO_BRANCH", "none")
-    pr_branch = os.getenv("APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH")
-    pr_number = os.getenv("APPVEYOR_PULL_REQUEST_NUMBER")
-
-    if not pr_branch and branch == "master":
-        write_and_exit(__version__)
-
-    elif pr_branch:
-        write_and_exit(f"{__version__}-pr-{pr_number}-{now}")
-
     else:
         write_and_exit(f"{__version__}-{branch}-{now}")

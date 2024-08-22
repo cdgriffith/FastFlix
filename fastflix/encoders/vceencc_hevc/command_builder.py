@@ -140,7 +140,6 @@ def build(fastflix: FastFlix):
         f"--avsync {vsync_setting}",
         (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
         ("--vpp-nnedi" if video.video_settings.deinterlace else ""),
-        (f"--vpp-colorspace hdr2sdr=mobius" if video.video_settings.remove_hdr else ""),
         remove_hdr,
         "--psnr --ssim" if settings.metrics else "",
         build_audio(video.audio_tracks, video.streams.audio),

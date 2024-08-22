@@ -43,7 +43,7 @@ About:
   deu: Über
   eng: About
   fra: À propos de
-  ita: Informazioni su
+  ita: Info su FastFlix
   spa: Acerca de
   chs: 关于
   jpn: Fastflixのバージョン情報
@@ -88,7 +88,7 @@ Add to Queue:
   deu: Zur Warteschlange hinzufügen
   eng: Add to Queue
   fra: Ajouter à la file d'attente
-  ita: Aggiungi alla coda
+  ita: Aggiungi a coda
   spa: Añadir a la cola
   chs: 添加到队列
   jpn: キューに追加
@@ -133,7 +133,7 @@ Advanced:
   deu: Erweitert
   eng: Advanced
   fra: Avancé
-  ita: Avanzato
+  ita: Avanzate
   spa: Avanzado
   chs: 高级
   jpn: 高度な設定
@@ -345,7 +345,7 @@ B Adapt:
   deu: B Anpassen
   eng: B Adapt
   fra: B Adapter
-  ita: B Adattare
+  ita: B adattivo
   spa: B Adaptar
   chs: B Adapt
   jpn: Bアダプト
@@ -390,7 +390,7 @@ Bit Depth:
   deu: Bit-Tiefe
   eng: Bit Depth
   fra: Profondeur de bit
-  ita: Profondità della punta
+  ita: Profondità (bit)
   spa: Profundidad de bits
   chs: 位深度
   jpn: ビット深度
@@ -420,7 +420,7 @@ Block Size:
   deu: Blockgröße
   eng: Block Size
   fra: Taille du bloc
-  ita: Dimensione del blocco
+  ita: Dimensione blocco
   spa: Tamaño del bloque
   chs: 块大小
   jpn: ブロックサイズ
@@ -497,7 +497,7 @@ Bufsize:
   deu: Bufsize
   eng: Bufsize
   fra: Bufsize
-  ita: Bufsize
+  ita: Dim. buffer
   spa: Bufsize
   chs: Bufsize
   jpn: Bufsize
@@ -677,7 +677,7 @@ Check for Newer Version of FastFlix:
   deu: Auf neuere Version von FastFlix überprüfen
   eng: Check for Newer Version of FastFlix
   fra: Consultez la nouvelle version de FastFlix
-  ita: Verifica la presenza di una versione più recente di FastFlix
+  ita: Verifica disponibilità aggiornamenti FastFlix
   spa: Busca la nueva versión de FastFlix
   chs: 检查FastFlix更新
   jpn: 新しいバージョンのFastFlixをチェックする
@@ -692,7 +692,7 @@ Clean Old Logs:
   deu: Alte Protokolle löschen
   eng: Clean Old Logs
   fra: Nettoyer les vieilles bûches
-  ita: Pulire i vecchi tronchi
+  ita: Azzera vecchi registri eventi
   spa: Limpiar los viejos troncos
   chs: 清理旧日志
   jpn: 古いログを削除する
@@ -707,7 +707,7 @@ Clear Completed:
   deu: Erledigte entfernen
   eng: Clear Completed
   fra: Clair Terminé
-  ita: Chiaro Completato
+  ita: Azzera coda
   spa: Claro Completado
   chs: 清理已完成的项目
   jpn: 完了したタスクを削除
@@ -737,7 +737,7 @@ CodeCalamity UHD HDR Encoding Guide:
   deu: CodeCalamity UHD HDR-Codierungsanleitung
   eng: CodeCalamity UHD HDR Encoding Guide
   fra: Guide d'encodage CodeCalamity UHD HDR
-  ita: Guida alla codifica CodeCalamity UHD HDR
+  ita: Guida codifica CodeCalamity UHD HDR
   spa: CodeCalamity UHD Guía de codificación HDR
   chs: CodeCalamity的UHD HDR编码指南（英文）
   jpn: CodeCalamity UHD HDRエンコーディングガイド（英語）
@@ -752,7 +752,7 @@ Color Primaries:
   deu: Grundfarbmodell
   eng: Color Primaries
   fra: Les couleurs primaires
-  ita: Primarie di colore
+  ita: Colori primari
   spa: Primarias de color
   chs: 原色
   jpn: カラープライマリー
@@ -767,7 +767,7 @@ Color Space:
   deu: Farbraum
   eng: Color Space
   fra: Espace de couleur
-  ita: Spazio di colore
+  ita: Spazio colore
   spa: Espacio de color
   chs: 色彩空间
   jpn: カラースペース
@@ -782,7 +782,7 @@ Color Transfer:
   deu: Übertragungsfunktion
   eng: Color Transfer
   fra: Transfert de couleur
-  ita: Trasferimento del colore
+  ita: Trasferimento colore
   spa: Transferencia de color
   chs: 色彩转换
   jpn: カラートランスファー
@@ -901,7 +901,7 @@ Config File:
   deu: Konfig-Datei
   eng: Config File
   fra: Fichier Config
-  ita: File di configurazione
+  ita: File configurazione
   spa: Archivo de configuración
   chs: 配置文件
   jpn: 設定ファイル
@@ -976,7 +976,7 @@ Convert:
   deu: Konvertieren
   eng: Convert
   fra: Convertir
-  ita: Convertire
+  ita: Converti
   spa: Convierte
   chs: 转换
   jpn: 変換
@@ -991,7 +991,7 @@ Convert BT2020 colorspace into bt709:
   deu: BT.2020-Farbraum nach BT.709 konvertieren
   eng: Convert BT.2020 colorspace into BT.709
   fra: Convertir l'espace colorimétrique BT.2020 en BT.709
-  ita: Convertire lo spazio di colore BT.2020 in BT.709
+  ita: Converti lo spazio colore BT.2020 in BT.709
   spa: Convierte el espacio de color BT.2020 en BT.709
   chs: 将BT.2020色彩空间转换为BT.709
   jpn: BT2020色空間をbt709色空間に変換
@@ -1006,7 +1006,7 @@ Copy Chapters:
   deu: Kapitel kopieren
   eng: Copy Chapters
   fra: Copier les chapitres
-  ita: Copiare i capitoli
+  ita: Copia capitoli
   spa: Copiar capítulos
   chs: 复制章节
   jpn: チャプターをコピーする
@@ -1021,7 +1021,7 @@ Copy Commands:
   deu: Befehle kopieren
   eng: Copy Commands
   fra: Commandes de copie
-  ita: Comandi di copia
+  ita: Comandi copia
   spa: Copiar comandos
   chs: 复制命令
   jpn: コピーコマンド
@@ -1036,7 +1036,7 @@ Copy Cover:
   deu: Cover kopieren
   eng: Copy Cover
   fra: Copie de la couverture
-  ita: Copia di copertina
+  ita: Copia copertina
   spa: Copia de la portada
   chs: 复制封面
   jpn: コピーカバー
@@ -1051,7 +1051,7 @@ Copy Landscape Cover:
   deu: Querformatiges Cover kopieren
   eng: Copy Landscape Cover
   fra: Copie de la couverture paysage
-  ita: Copiare la copertura del paesaggio
+  ita: Copia copertina orizzontale
   spa: Copia de la portada del paisaje
   chs: 复制横向封面
   jpn: ランドスケープ・カバーをコピーする
@@ -1081,7 +1081,7 @@ Copy Small Landscape Cover  (no preview):
   deu: Kleines Querformat-Cover kopieren (keine Vorschau)
   eng: Copy Small Landscape Cover  (no preview)
   fra: Copie de la petite couverture paysagère (pas de prévisualisation)
-  ita: Copia piccola copertura del paesaggio (nessuna anteprima)
+  ita: Copia piccola copertina orizzontale (nessuna anteprima)
   spa: Copia de la cubierta de un pequeño paisaje (sin vista previa)
   chs: 复制横向小封面（无预览）
   jpn: Small Landscape Coverをコピーする(プレビューなし)
@@ -1096,7 +1096,7 @@ Copy all commands to the clipboard:
   deu: Kopiere alle Befehle in die Zwischenablage
   eng: Copy all commands to the clipboard
   fra: Copier toutes les commandes dans le presse-papiers
-  ita: Copiare tutti i comandi negli appunti
+  ita: Copia tutti i comandi negli appunti
   spa: Copia todos los comandos al portapapeles
   chs: 将所有命令复制到剪贴板
   jpn: すべてのコマンドをクリップボードにコピーする
@@ -1111,7 +1111,7 @@ Copy the chapter markers as is from incoming source.:
   deu: Unverändertes Kopieren der Kapitelmarkierungen aus der eingehenden Quelle.
   eng: Copy the chapter markers as is from incoming source.
   fra: Copiez les marqueurs de chapitre tels quels à partir de la source entrante.
-  ita: Copiare i marcatori dei capitoli come da sorgente in entrata.
+  ita: Copia marcatori capitoli come da sorgente in entrata.
   spa: Copie los marcadores de capítulo tal como están de la fuente entrante.
   chs: 将章节标记按原样从输入源复制。
   jpn: 入力ソースからチャプターマーカーをそのままコピーします。
@@ -1203,7 +1203,7 @@ Could not load config file!:
   deu: Konnte Konfigurationsdatei nicht laden!
   eng: Could not load config file!
   fra: Impossible de charger le fichier de configuration !
-  ita: Impossibile caricare il file di configurazione!
+  ita: Impossibile caricare il file configurazione!
   spa: ¡No pude cargar el archivo de configuración!
   chs: 无法加载配置文件!
   jpn: 設定ファイルの読み込みができませんでした。
@@ -1248,7 +1248,7 @@ Cover:
   deu: Cover
   eng: Cover
   fra: Couverture
-  ita: Coprire
+  ita: Copertina
   spa: Cubre
   chs: 封面
   jpn: カバー
@@ -1293,7 +1293,7 @@ Crop Detect Points:
   deu: Feststellungspunkte fürs Cropping
   eng: Crop Detect Points
   fra: Points de détection des cultures
-  ita: Ritagliare i punti di rilevamento
+  ita: Ritaglia punti rilevamento
   spa: Puntos de detección de cultivos
   chs: 裁切检测点
   jpn: クロップ検知ポイント
@@ -1308,7 +1308,7 @@ Current Profile Settings:
   deu: Aktuelle Profileinstellungen
   eng: Current Profile Settings
   fra: Paramètres du profil actuel
-  ita: Impostazioni del profilo corrente
+  ita: Impostazioni profilo attuale
   spa: Configuración del perfil actual
   chs: 当前配置
   jpn: 現在のプロファイル設定
@@ -1477,7 +1477,7 @@ Deinterlace:
   deu: Deinterlace
   eng: Deinterlace
   fra: Deinterlace
-  ita: Deinterlace
+  ita: Deinterlaccia
   spa: Deinterlace
   chs: 反交错
   jpn: デインタレース
@@ -1507,7 +1507,7 @@ Delete Current Profile:
   deu: Aktuelles Profil löschen
   eng: Delete Current Profile
   fra: Supprimer le profil actuel
-  ita: Cancellare il profilo corrente
+  ita: Elimina profilo attuale
   spa: Borrar el perfil actual
   chs: 删除当前配置
   jpn: 現在のプロフィールを削除
@@ -1582,7 +1582,7 @@ Disable update check on startup:
   deu: Update-Prüfung beim Starten deaktivieren
   eng: Disable update check on startup
   fra: Désactiver la vérification de la mise à jour au démarrage
-  ita: Disattivare il controllo di aggiornamento all'avvio
+  ita: Disattiva controllo aggiornamenti programma all'avvio
   spa: Desactivar la comprobación de actualización al inicio
   chs: 禁用启动时的更新检查
   jpn: 起動時のアップデートチェックを無効にする
@@ -1858,7 +1858,7 @@ Enabling cover thumbnails on your system:
   deu: Aktivieren von Cover-Miniaturansichten auf Ihrem System
   eng: Enabling cover thumbnails on your system
   fra: Activation des vignettes de couverture sur votre système
-  ita: Abilita le miniature del coperchio del sistema
+  ita: Abilita miniature copertine nel sistema
   spa: Habilitando las miniaturas de la cubierta en su sistema
   chs: 在系统上启用封面缩略图（英文）
   jpn: お使いのシステムでカバーのサムネイルを有効にする
@@ -1888,7 +1888,7 @@ Encoder Output:
   deu: Kodierer-Ausgabe
   eng: Encoder Output
   fra: Sortie de l'encodeur
-  ita: Uscita encoder
+  ita: Output encoder
   spa: Salida del codificador
   chs: 编码器输出
   jpn: エンコーダ出力
@@ -1918,7 +1918,7 @@ Encoding Queue:
   deu: Kodierer-Warteschlange
   eng: Encoding Queue
   fra: File d'attente d'encodage
-  ita: Coda di codifica
+  ita: Coda codifica
   spa: Cola de codificación
   chs: 编码队列
   jpn: 変換キュー
@@ -1933,7 +1933,7 @@ Encoding Status:
   deu: Kodierungsstatus
   eng: Encoding Status
   fra: Statut d'encodage
-  ita: Stato di codifica
+  ita: Stato codifica
   spa: Estado de la codificación
   chs: 编码状态
   jpn: エンコードステータス
@@ -2098,7 +2098,7 @@ Exit:
   deu: Beenden
   eng: Exit
   fra: Sortie
-  ita: Uscita
+  ita: Esci
   spa: Salga de
   chs: 退出
   jpn: 退出
@@ -2249,7 +2249,7 @@ FFMPEG AV1 Encoding Guide:
   deu: FFMPEG AV1 Kodierungsanleitung
   eng: FFMPEG AV1 Encoding Guide
   fra: Guide d'encodage FFMPEG AV1
-  ita: Guida alla codifica FFMPEG AV1
+  ita: Guida codifica FFMPEG AV1
   spa: Guía de codificación del FFMPEG AV1
   chs: FFMPEG AV1编码指南（英文）
   jpn: FFMPEG AV1エンコードガイド（英語）
@@ -2264,7 +2264,7 @@ FFMPEG AVC / H.264 Encoding Guide:
   deu: FFMPEG AVC / H.264 Kodierungsanleitung
   eng: FFMPEG AVC / H.264 Encoding Guide
   fra: FFMPEG AVC / Guide d'encodage H.264
-  ita: Guida alla codifica FFMPEG AVC / H.264
+  ita: Guida codifica FFMPEG AVC / H.264
   spa: Guía de codificación FFMPEG AVC / H.264
   chs: FFMPEG AVC / H.264 编码指南（英文）
   jpn: FFMPEG AVC / H.264エンコードガイド（英語）
@@ -2279,7 +2279,7 @@ FFMPEG HEVC / H.265 Encoding Guide:
   deu: FFMPEG HEVC / H.265 Kodierungsanleitung
   eng: FFMPEG HEVC / H.265 Encoding Guide
   fra: FFMPEG HEVC / Guide d'encodage H.265
-  ita: Guida alla codifica FFMPEG HEVC / H.265
+  ita: Guida codifica FFMPEG HEVC / H.265
   spa: Guía de codificación FFMPEG HEVC / H.265
   chs: FFMPEG HEVC / H.265编码指南（英文）
   jpn: FFMPEG HEVC / H.265 エンコーディングガイド（英語）
@@ -2294,7 +2294,7 @@ FFMPEG VP9 Encoding Guide:
   deu: FFMPEG VP9 Kodierungsanleitung
   eng: FFMPEG VP9 Encoding Guide
   fra: FFMPEG Guide d'encodage VP9
-  ita: Guida alla codifica FFMPEG VP9
+  ita: Guida codifica FFMPEG VP9
   spa: Guía de codificación del FFMPEG VP9
   chs: FFMPEG VP9编码指南（英文）
   jpn: FFMPEG VP9エンコーディングガイド（英語）
@@ -2354,7 +2354,7 @@ File:
   deu: Datei
   eng: File
   fra: Fichier
-  ita: Archivio
+  ita: File
   spa: Archivo
   chs: 文件
   jpn: ファイル
@@ -2431,7 +2431,7 @@ Frame Threads:
   deu: Frame-Threads
   eng: Frame Threads
   fra: Fils de trame
-  ita: Filettature del telaio
+  ita: N. thread fotogrammi
   spa: Hilos del marco
   chs: 帧线程
   jpn: フレーム スレッド
@@ -2476,7 +2476,7 @@ GUI Logging Level:
   deu: GUI-Protokollierungsebene
   eng: GUI Logging Level
   fra: Niveau d'exploitation forestière
-  ita: Livello di registrazione GUI
+  ita: Livello registrazione GUI
   spa: Nivel de registro GUI
   chs: GUI日志级别
   jpn: GUIログレベル
@@ -2551,7 +2551,7 @@ Google's VP9 HDR Encoding Guide:
   deu: VP9-HDR-Kodierungsanleitung von Google
   eng: Google's VP9 HDR Encoding Guide
   fra: Guide d'encodage HDR VP9 de Google
-  ita: Guida alla codifica HDR VP9 di Google
+  ita: Guida codifica HDR VP9 di Google
   spa: Guía de codificación HDR VP9 de Google
   chs: 谷歌VP9 HDR编码指南（英文）
   jpn: GoogleのVP9 HDRエンコーディングガイド（英語）
@@ -2566,7 +2566,7 @@ HDR -> SDR Tone Map:
   deu: HDR -> SDR Tone Mapping
   eng: HDR -> SDR Tone Map
   fra: HDR -> SDR Carte des tons
-  ita: HDR -> Mappa dei toni SDR
+  ita: HDR -> Mappa toni SDR
   spa: HDR -> Mapa de tonos SDR
   chs: HDR -> SDR色调映射
   jpn: HDR→SDRトーンマップ
@@ -2611,7 +2611,7 @@ HDR10+ Metadata Extraction:
   deu: HDR10+-Metadaten-Extraktion
   eng: HDR10+ Metadata Extraction
   fra: Extraction de métadonnées HDR10+.
-  ita: Estrazione di metadati HDR10+
+  ita: Estrazione metadati HDR10+
   spa: Extracción de metadatos HDR10+
   chs: HDR10+元数据提取指南（英文）
   jpn: HDR10+メタデータの抽出
@@ -2686,7 +2686,7 @@ Hide NAL unit messages:
   deu: NAL-Meldungen (AVC/HEVC Network Abstraction Layer) ausblenden
   eng: Hide NAL unit (AVC/HEVC Network Abstraction Layer) messages
   fra: Cacher les messages de l'unité NAL (AVC/HEVC Network Abstraction Layer)
-  ita: Nascondere i messaggi delle unità NAL (AVC/HEVC Network Abstraction Layer)
+  ita: Nascondi messaggi unità NAL (AVC/HEVC Network Abstraction Layer)
   spa: Ocultar los mensajes de la unidad NAL (AVC/HEVC Network Abstraction Layer)
   chs: 隐藏NAL unit（AVC/HEVC网络抽象层）消息
   jpn: NALユニットのメッセージを非表示にする
@@ -2902,7 +2902,7 @@ Landscape Cover:
   deu: Querformatiges Cover
   eng: Landscape Cover
   fra: Couverture du paysage
-  ita: Copertura del paesaggio
+  ita: Copertina orizzontale
   spa: Cubierta del paisaje
   chs: 横向封面
   jpn: ランドスケープカバー
@@ -3011,7 +3011,7 @@ Lossless:
   deu: Verlustfrei
   eng: Lossless
   fra: Sans Perte
-  ita: Senza Perdite
+  ita: Loseless
   spa: Lossless
   chs: 无损编码
   jpn: ロスレス
@@ -3052,7 +3052,7 @@ Max Muxing Queue Size:
   deu: Max. Größe der Muxing-Warteschlange
   eng: Max Muxing Queue Size
   fra: Taille maximale de la file d'attente
-  ita: Dimensione massima della coda di Muxing
+  ita: Dimensione max coda muxing
   spa: Tamaño máximo de la cola Muxing
   chs: 最大混流队列大小
   jpn: 最大ミキシングキューサイズ
@@ -3082,7 +3082,7 @@ Maximum B frames:
   deu: Max. Anzahl B-Frames
   eng: Maximum B frames
   fra: Cadres B maximum
-  ita: Telaio massimo B
+  ita: B-frame max
   spa: Máximo de cuadros B
   chs: 最大B帧数量
   jpn: 最大Bフレーム
@@ -3112,7 +3112,7 @@ Maxrate:
   deu: Maxrate
   eng: Maxrate
   fra: Maxrate
-  ita: Maxrate
+  ita: Rate max
   spa: Maxrate
   chs: Maxrate
   jpn: マックスレート
@@ -3277,7 +3277,7 @@ No Flip:
   deu: Keine Spiegelung
   eng: No Flip
   fra: Pas de retournement
-  ita: Senza capovolgere
+  ita: Non capovolgere
   spa: No hay vuelta atrás
   chs: 无翻转
   jpn: 反転なし
@@ -3292,7 +3292,7 @@ No Rotation:
   deu: Keine Drehung
   eng: No Rotation
   fra: Pas de rotation
-  ita: Nessuna rotazione
+  ita: No rotazione
   spa: No hay rotación
   chs: 无旋转
   jpn: 回転なし
@@ -3419,7 +3419,7 @@ None:
   deu: Keines
   eng: None
   fra: Aucune
-  ita: Nessuno
+  ita: Nessuno/a
   spa: Ninguno
   chs: 无
   jpn: なし
@@ -3533,7 +3533,7 @@ Open Log Directory:
   deu: Protokoll-Verzeichnis öffnen
   eng: Open Log Directory
   fra: Répertoire des journaux ouverts
-  ita: Aprire l'elenco dei log
+  ita: Apri cartella registri eventi
   spa: Directorio abierto de registros
   chs: 打开日志目录
   jpn: ログのディレクトリを開く
@@ -3563,7 +3563,7 @@ Output FPS:
   deu: Ausgabe FPS
   eng: Output FPS
   fra: Sortie SPF
-  ita: Uscita FPS
+  ita: FPS output
   spa: Salida FPS
   chs: 输出帧率
   jpn: 出力FPS
@@ -3579,7 +3579,7 @@ Over-allocation of frame threads will not improve performance,:
     Leistung,
   eng: Over-allocation of frame threads will not improve performance,
   fra: Une allocation excessive des fils de trame n'améliorera pas les performances,
-  ita: La sovra-assegnazione delle filettature del telaio non migliorerà le prestazioni,
+  ita: La sovraallocazione dei thread fotogramma non migliorerà le prestazioni,
   spa: La sobreasignación de hilos del marco no mejorará el rendimiento,
   chs: 过多分配帧线程无法提高性能，
   jpn: フレームスレッドを過剰に割り当てても、パフォーマンスは向上しません。
@@ -3609,7 +3609,7 @@ Override Source FPS:
   deu: Quell-FPS überschreiben
   eng: Override Source FPS
   fra: Annuler la source FPS
-  ita: Annullare la sorgente FPS
+  ita: Sovrascrivi FPS sorgente
   spa: Anular el FPS de la fuente
   chs: 覆盖源文件帧率
   jpn: ソースFPSをオーバーライド
@@ -3692,7 +3692,7 @@ Pause Encode:
   deu: Kodierung pausieren
   eng: Pause Encode
   fra: Pause Encode
-  ita: Pausa Codificare
+  ita: Pausa codifica
   spa: Codificar la pausa
   chs: 暂停编码
   jpn: エンコードを一時停止する
@@ -3707,7 +3707,7 @@ Pause Queue:
   deu: Warteschlange anhalten
   eng: Pause Queue
   fra: Pause
-  ita: Coda di pausa
+  ita: Pausa coda
   spa: Pausa de la cola
   chs: 暂停队列
   jpn: キューを一時停止する
@@ -3827,7 +3827,7 @@ Preset:
   deu: Voreinstellung
   eng: Preset
   fra: Préréglage
-  ita: Preset
+  ita: Pre-impostazione
   spa: Preset
   chs: 预设
   jpn: プリセット
@@ -4071,7 +4071,7 @@ Raise or lower per-block quantization based on complexity analysis of the source
     image.
   fra: Augmenter ou diminuer la quantification par bloc en fonction de l'analyse de
     la complexité de l'image source.
-  ita: Aumentare o diminuire la quantizzazione per blocco in base all'analisi della
+  ita: Aumenta o diminuisci la quantizzazione per blocco in base all'analisi della
     complessità dell'immagine sorgente.
   spa: Aumentar o disminuir la cuantificación por bloque basada en el análisis de
     la complejidad de la imagen de origen.
@@ -4174,7 +4174,7 @@ Remove HDR:
   deu: HDR entfernen
   eng: Remove HDR
   fra: Supprimer le HDR
-  ita: Rimuovere HDR
+  ita: Rimuovi HDR
   spa: Eliminar HDR
   chs: 去除HDR
   jpn: HDRを削除
@@ -4189,7 +4189,7 @@ Remove Metadata:
   deu: Metadaten entfernen
   eng: Remove Metadata
   fra: Supprimer les métadonnées
-  ita: Rimuovere i metadati
+  ita: Rimuovi metadati
   spa: Eliminar los metadatos
   chs: 去除元数据
   jpn: メタデータを削除
@@ -4204,7 +4204,7 @@ Remove completed tasks:
   deu: Erledigte Aufgaben entfernen
   eng: Remove completed tasks
   fra: Supprimer les tâches terminées
-  ita: Rimuovere i compiti completati
+  ita: Rimuovi attività completate
   spa: Eliminar las tareas completadas
   chs: 删除已完成的任务
   jpn: 完了したタスクを削除する
@@ -4234,7 +4234,7 @@ Repeat Headers:
   deu: Header wiederholen
   eng: Repeat Headers
   fra: Répéter les en-têtes
-  ita: Ripetere le intestazioni
+  ita: Ripeti intestazioni
   spa: Repetición de los encabezados
   chs: 重复标头
   jpn: ヘッダー重複
@@ -4249,7 +4249,7 @@ Report Issue:
   deu: Problem melden
   eng: Report Issue
   fra: Numéro du rapport
-  ita: Segnala il problema
+  ita: Segnala bug
   spa: Informe
   chs: 报告问题
   jpn: 問題を報告
@@ -4384,7 +4384,7 @@ SVT-AV1 Encoding Guide:
   deu: SVT-AV1 Kodierungsanleitung
   eng: SVT-AV1 Encoding Guide
   fra: Guide d'encodage SVT-AV1
-  ita: Guida alla codifica SVT-AV1
+  ita: Guida codifica SVT-AV1
   spa: Guía de codificación del SVT-AV1
   chs: SVT-AV1编码指南
   jpn: SVT-AV1 エンコーディングガイド
@@ -4399,7 +4399,7 @@ Same as Source:
   deu: identisch zur Quelle
   eng: Same as Source
   fra: Même que la source
-  ita: Uguale alla fonte
+  ita: Uguale alla sorgente
   spa: Igual que la fuente
   chs: 与源文件相同
   jpn: ソースと同じ
@@ -4429,7 +4429,7 @@ Save Commands:
   deu: Befehle speichern
   eng: Save Commands
   fra: Commandes de sauvegarde
-  ita: Comandi di salvataggio
+  ita: Comandi salvataggio
   spa: Salvar los comandos
   chs: 保存命令
   jpn: コマンドの保存
@@ -4676,7 +4676,7 @@ Size Estimate:
   deu: geschätzte Größe
   eng: Size Estimate
   fra: Estimation de la taille
-  ita: Stima delle dimensioni
+  ita: Stima dimensioni
   spa: Estimación del tamaño
   chs: 预计文件大小
   jpn: サイズの目安
@@ -4747,7 +4747,7 @@ Source:
   deu: Quelle
   eng: Source
   fra: Source
-  ita: Fonte
+  ita: Sorgente
   spa: Fuente
   chs: 源文件
   jpn: ソース
@@ -4762,7 +4762,7 @@ Source Details:
   deu: Details zur Quelle
   eng: Source Details
   fra: Détails de la source
-  ita: Dettagli della fonte
+  ita: Dettagli sorgente
   spa: Detalles de la fuente
   chs: 源文件详情
   jpn: ソースの詳細
@@ -4777,7 +4777,7 @@ Source Frame Rate:
   deu: Bildrate der Quelle
   eng: Source Frame Rate
   fra: Taux de trame source
-  ita: Frame Rate della fonte
+  ita: Freq. fotogrammi sorgente
   spa: Velocidad de cuadro de la fuente
   chs: 源帧率
   jpn: ソースフレームレート
@@ -4852,7 +4852,7 @@ Start:
   deu: Start
   eng: Start
   fra: Démarrer
-  ita: Iniziare
+  ita: Inizio
   spa: Comienza
   chs: 开始
   jpn: 開始
@@ -4882,7 +4882,7 @@ Strength:
   deu: Stärke
   eng: Strength
   fra: Force
-  ita: Forza
+  ita: Intensità
   spa: Fuerza
   chs: 强度
   jpn: 強さ
@@ -4897,7 +4897,7 @@ Subtitle Tracks:
   deu: Untertitelspuren
   eng: Subtitle Tracks
   fra: Pistes de sous-titres
-  ita: Tracce dei sottotitoli
+  ita: Tracce sottotitoli
   spa: Pistas de subtítulos
   chs: 字幕轨
   jpn: 字幕トラック
@@ -5319,7 +5319,7 @@ Top:
   deu: Oben
   eng: Top
   fra: Top
-  ita: Top
+  ita: In alto
   spa: Top
   chs: 上端
   jpn: 上
@@ -5349,7 +5349,7 @@ Tune:
   deu: Feineinstellung
   eng: Tune
   fra: Tune
-  ita: Tune
+  ita: Sintonia
   spa: Sintoniza
   chs: 调校
   jpn: チューニング
@@ -5440,7 +5440,7 @@ Use Sane Audio Selection (customizable in config file):
   deu: Nur sinnvolle Audioformate vorschlagen (anpassbar in der Konfigurationsdatei)
   eng: Use Sane Audio Selection (updatable in config file)
   fra: Utiliser la sélection audio Sane (actualisable dans le fichier de configuration)
-  ita: Utilizzare Sane Audio Selection (aggiornabile nel file di configurazione)
+  ita: Utilizzare Sane Audio Selection (aggiornabile nel file configurazione)
   spa: Usar la Selección de Audio Sane (actualizable en el archivo de configuración)
   chs: 使用合理音频编码选择（可在配置文件中更改）
   jpn: 合理的なオーディオを選択する（設定ファイルでカスタマイズ可能）
@@ -5668,7 +5668,7 @@ View Changes:
   deu: Änderungen anzeigen
   eng: View Changes
   fra: Voir les changements
-  ita: Visualizza le modifiche
+  ita: Visualizza novità programma
   spa: Ver cambios
   chs: 查看更新记录
   jpn: 変更点を見る
@@ -5894,7 +5894,7 @@ Work Directory:
   deu: Arbeitsverzeichnis
   eng: Work Directory
   fra: Répertoire des travaux
-  ita: Elenco dei lavori
+  ita: Elenco lavori
   spa: Directorio de trabajo
   chs: 工作目录
   jpn: 作業ディレクトリ
@@ -6541,7 +6541,7 @@ none:
   deu: keine
   eng: none
   fra: aucun
-  ita: nessuno
+  ita: nessuno/a
   spa: ninguno
   chs: 无
   jpn: なし
@@ -6601,7 +6601,7 @@ preset:
   deu: Voreinstellung
   eng: preset
   fra: préréglage
-  ita: preimpostato
+  ita: pre-impostato
   spa: preestablecido
   chs: 预设
   jpn: プリセット
@@ -6973,7 +6973,7 @@ Use Sane Audio Selection (updatable in config file):
   deu: Audioauswahl verwenden (aktualisierbar in der Konfigurationsdatei)
   eng: Use Sane Audio Selection (updatable in config file)
   fra: Utiliser la sélection audio (mise à jour dans le fichier de configuration)
-  ita: Usa la selezione audio (aggiornabile nel file di configurazione)
+  ita: Usa la selezione audio (aggiornabile nel file configurazione)
   spa: Utilizar la selección de audio (actualizable en el archivo de configuración)
   chs: 使用音频合理选择（可在配置文件中更改）
   jpn: 合理的なオーディオを選択する（設定ファイルで変更可能）
@@ -7093,7 +7093,7 @@ FastFlix Wiki:
   deu: FastFlix Wiki
   eng: FastFlix Wiki
   fra: FastFlix Wiki
-  ita: FastFlix Wiki
+  ita: WiKi FastFlix
   spa: FastFlix Wiki
   chs: FastFlix Wiki
   jpn: FastFlix Wiki
@@ -7108,7 +7108,7 @@ Custom VCEEncC options:
   deu: angepasste VCEEncC-Optionen
   eng: Custom VCEEncC options
   fra: Options VCEEncC personnalisées
-  ita: Opzioni VCEEncC personalizzate
+  ita: Opzioni personalizzate VCEEncC
   spa: Opciones personalizadas de VCEEncC
   chs: 自定义VCEEncC选项
   jpn: VCEEncCのカスタムオプション
@@ -7305,7 +7305,7 @@ Concatenation Builder:
   deu: Verkettung Builder
   eng: Concatenation Builder
   fra: Créateur de concaténation
-  ita: Costruttore di concatenazioni
+  ita: Unisci file
   spa: Constructor de Concatenación
   chs: 创建合并序列
   jpn: 連結ビルダー
@@ -7425,7 +7425,7 @@ Open Folder:
   deu: Ordner öffnen
   eng: Open Folder
   fra: Ouvrir le dossier
-  ita: Aprire la cartella
+  ita: Apri cartella
   spa: Abrir carpeta
   chs: 打开文件夹
   jpn: フォルダを開く
@@ -7457,7 +7457,7 @@ Drag and Drop to reorder - All items need to be same dimensions:
   eng: Drag and Drop to reorder - All items need to be same dimensions
   fra: Glissez et déposez pour réorganiser - Tous les éléments doivent avoir les mêmes
     dimensions.
-  ita: Drag and Drop per riordinare - Tutti gli elementi devono avere le stesse dimensioni
+  ita: Per riordinare trascina e rilascia  - tutti gli elementi devono avere le stesse dimensioni
   spa: Arrastrar y soltar para reordenar - Todos los elementos deben tener las mismas
     dimensiones
   chs: 拖放来重新排序 - 所有项目的尺寸都需要相同
@@ -7897,7 +7897,7 @@ Frame Rate:
   eng: Frame Rate
   deu: Bildfrequenz
   fra: Fréquence d'images
-  ita: Frame Rate
+  ita: Freq. fotogrammi
   spa: Velocidad de fotogramas
   chs: 帧速率
   jpn: フレームレート
@@ -7942,7 +7942,7 @@ Color Formats:
   eng: Color Formats
   deu: Farbige Formate
   fra: Formats de couleur
-  ita: Formati di colore
+  ita: Formati colore
   spa: Formatos de color
   chs: 色彩格式
   jpn: カラーフォーマット
@@ -8086,7 +8086,7 @@ Not supported by rigaya's hardware encoders:
   eng: Not supported by rigaya's hardware encoders
   deu: Wird von Rigayas Hardware-Encodern nicht unterstützt
   fra: Non supporté par les encodeurs matériels de rigaya
-  ita: Non supportato dagli encoder hardware di rigaya
+  ita: Non supportato dagli encoder hardware 'rigaya'
   spa: No es compatible con los codificadores de hardware de Rigaya
   chs: 不被Rigaya的硬件编码器所支持
   jpn: Rigayaのハードウェアエンコーダには対応していません。
@@ -8277,7 +8277,7 @@ Ignore Errors:
   eng: Ignore Errors
   deu: Fehler ignorieren
   fra: Ignorer les erreurs
-  ita: Ignorare gli errori
+  ita: Ignora errori
   spa: Ignorar errores
   chs: 忽略错误
   jpn: エラーを無視する
@@ -8337,7 +8337,7 @@ Save Queue to File:
   eng: Save Queue to File
   deu: Warteschlange in Datei speichern
   fra: Enregistrer la file d'attente dans un fichier
-  ita: Salvare la coda su file
+  ita: Salva coda su file
   spa: Guardar la cola en un archivo
   chs: 保存队列到文件
   jpn: キューをファイルに保存する
@@ -8427,7 +8427,7 @@ Save Queue:
   eng: Save Queue
   deu: Warteschlange speichern
   fra: Sauvegarder la file d'attente
-  ita: Salvare la coda
+  ita: Salva coda
   spa: Guardar cola
   chs: 保存队列
   jpn: キューを保存する
@@ -8442,7 +8442,7 @@ Load Queue:
   eng: Load Queue
   deu: Warteschlange laden
   fra: File d'attente de chargement
-  ita: Coda di carico
+  ita: Carica coda
   spa: Cola de carga
   chs: 加载队列
   jpn: キューをロードする
@@ -8534,7 +8534,7 @@ Unselect All:
   eng: Unselect All
   deu: Alle abwählen
   fra: Désélectionner tout
-  ita: Deselezionare tutti
+  ita: Deseleziona tutti
   spa: Deseleccionar todo
   chs: 取消选择所有
   jpn: すべて選択解除
@@ -8549,7 +8549,7 @@ Preserve All:
   eng: Preserve All
   deu: Alles bewahren
   fra: Préserver tout
-  ita: Conservare tutto
+  ita: Conserva tutti
   spa: Conservar todo
   chs: 保存所有
   jpn: 全て保留
@@ -8580,7 +8580,7 @@ Default Output Folder:
   eng: Default Output Folder
   deu: Standard-Ausgabeordner
   fra: Dossier de sortie par défaut
-  ita: Cartella di output predefinita
+  ita: Cartella destinazione predefinita
   spa: Carpeta de salida por defecto
   chs: 默认输出文件夹
   jpn: デフォルトの出力先フォルダ
@@ -8595,7 +8595,7 @@ Use same output directory as source file:
   eng: Use same output directory as source file
   deu: Gleiches Ausgabeverzeichnis wie Quelldatei verwenden
   fra: Utiliser le même répertoire de sortie que le fichier source
-  ita: Usa la stessa directory di output del file sorgente
+  ita: Usa come cartella destinazione la stessa del file sorgente
   spa: Utilizar el mismo directorio de salida que el archivo de origen
   chs: 使用与源文件相同的输出目录
   jpn: ソースファイルと同じ出力ディレクトリを使用する
@@ -8640,7 +8640,7 @@ No Default Source Folder:
   eng: No Default Source Folder
   deu: Kein Standard-Quellordner
   fra: Pas de dossier source par défaut
-  ita: Nessuna cartella di origine predefinita
+  ita: Nessuna cartella sorgente predefinita
   spa: No hay carpeta de origen por defecto
   chs: 没有默认的源文件夹
   jpn: デフォルトのソースフォルダはありません
@@ -8655,7 +8655,7 @@ Stay on Top:
   eng: Stay on Top
   deu: Oben bleiben
   fra: Rester au top
-  ita: Rimanere al top
+  ita: Rimani in primo piano
   spa: Manténgase en la cima
   chs: 窗口保持在最上方
   jpn: ウィンドウを最上位にする
@@ -8700,7 +8700,7 @@ Load Directory:
   eng: Load Directory
   deu: Verzeichnis laden
   fra: Chargement du répertoire
-  ita: Elenco dei carichi
+  ita: Apri cartella
   spa: Cargar directorio
   chs: 加载目录
   jpn: ディレクトリをロードする
@@ -8730,7 +8730,7 @@ Drag and Drop to reorder:
   eng: Drag and Drop to reorder
   deu: Ziehen und Ablegen zum Neuordnen
   fra: Glisser et déposer pour réorganiser
-  ita: Trascinare e rilasciare per riordinare
+  ita: Per riordinare trascina e rilascia 
   spa: Arrastrar y soltar para reordenar
   chs: 拖放重新排序
   jpn: ドラッグ＆ドロップで並び替え
@@ -8760,7 +8760,7 @@ Filename:
   eng: Filename
   deu: Dateiname
   fra: Nom de fichier
-  ita: Nome del file
+  ita: Nome file
   spa: Archivo
   chs: 文件名
   jpn: ファイル名
@@ -8806,7 +8806,7 @@ Video Title:
   ukr: Назва відео
   deu: Video-Titel
   fra: Titre de la vidéo
-  ita: Titolo del video
+  ita: Titolo video
   spa: Título del vídeo
   chs: 视频标题
   jpn: 動画タイトル
@@ -8821,7 +8821,7 @@ Video Track Title:
   ukr: Назва відео-доріжки
   deu: Video Track Titel
   fra: Titre de la piste vidéo
-  ita: Titolo della traccia video
+  ita: Titolo traccia video
   spa: Título de la pista de vídeo
   chs: 视频曲目名称
   jpn: ビデオトラックタイトル
@@ -8839,7 +8839,7 @@ Remove GUI logs and compress conversion logs older than 30 days at exit:
     die älter als 30 Tage sind, beim Beenden
   fra: Suppression des journaux de l'interface graphique et compression des journaux
     de conversion de plus de 30 jours à la sortie.
-  ita: Rimuovere i log dell'interfaccia grafica e comprimere i log di conversione
+  ita: Rimuovi registri eventi GUI e comprimeri registri eventi conversione
     più vecchi di 30 giorni all'uscita.
   spa: Elimina los registros GUI y comprime los registros de conversión de más de
     30 días al salir.
@@ -9070,7 +9070,7 @@ Open FastFlix:
   eng: Open FastFlix
   deu: FastFlix öffnen
   fra: Ouvrir FastFlix
-  ita: Aprire FastFlix
+  ita: Apri FastFlix
   spa: Abrir FastFlix
   chs: 打开FastFlix
   jpn: FastFlixを開く
@@ -9599,7 +9599,7 @@ Disable Automatic Tab Switching:
   eng: Disable Automatic Tab Switching
   deu: Automatische Registerkartenumschaltung deaktivieren
   fra: Désactiver la commutation automatique des onglets
-  ita: Disattivare la commutazione automatica delle schede
+  ita: Disattiva commutazione automatica schede
   spa: Desactivar el cambio automático de pestañas
   chs: 禁用自动标签切换
   jpn: タブの自動切替を無効にする
@@ -10194,7 +10194,7 @@ Disable completion and error messages:
   eng: Disable completion and error messages
   deu: Abschluss- und Fehlermeldungen deaktivieren
   fra: Désactiver les messages de complétion et d'erreur
-  ita: Disabilita messaggi di completamento e errori
+  ita: Disabilita messaggi completamento attività ed errori
   spa: Deshabilitar mensajes de finalización y error
   chs: 禁用完成和错误消息
   jpn: 完了とエラーメッセージを無効にする
@@ -10209,7 +10209,7 @@ Output Depth:
   eng: Output Depth
   deu: Ausgabetiefe
   fra: Profondeur de sortie
-  ita: Profondità di uscita
+  ita: Profondità output
   spa: Profundidad de salida
   chs: 输出深度
   jpn: アウトプット深度
@@ -10344,7 +10344,7 @@ Packaged with:
   eng: Packaged with
   deu: Verpackt mit
   fra: Emballé avec
-  ita: Confezionato con
+  ita: Creato con
   spa: Envasado con
   jpn: パッケージ
   rus: В комплекте с
@@ -10389,7 +10389,7 @@ Remove Hdr:
   deu: HDR entfernen
   eng: Remove HDR
   fra: Supprimer le HDR
-  ita: Rimuovere HDR
+  ita: Rimuovi HDR
   spa: Eliminar HDR
   chs: 去除HDR
   jpn: HDRを削除
@@ -10404,7 +10404,7 @@ Resolution Method:
   eng: Resolution Method
   deu: Auflösung Methode
   fra: Méthode de résolution
-  ita: Metodo di risoluzione
+  ita: Metodo risoluzione
   spa: Método de resolución
   jpn: 解決方法
   rus: Метод разрешения
@@ -10434,7 +10434,7 @@ Output Type:
   eng: Output Type
   deu: Ausgangstyp
   fra: Type de sortie
-  ita: Tipo di uscita
+  ita: Tipo output
   spa: Tipo de salida
   jpn: 出力タイプ
   rus: Тип выхода

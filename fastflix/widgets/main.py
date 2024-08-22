@@ -1103,6 +1103,9 @@ class Main(QtWidgets.QWidget):
                 return
 
         self.input_video = Path(clean_file_string(filename[0]))
+        if not self.input_video.exists():
+            logger.error(f"Could not find the input file, does it exist at: {self.input_video}")
+            return
         self.source_video_path_widget.setText(str(self.input_video))
         self.video_path_widget.setText(str(self.input_video))
         try:
@@ -1992,6 +1995,10 @@ class Main(QtWidgets.QWidget):
             self.input_video = location
         except (ValueError, IndexError):
             return event.ignore()
+        if not self.input_video.exists():
+            logger.error(f"File does not exist {self.input_video}")
+            return event.ignore()
+
         self.source_video_path_widget.setText(str(self.input_video))
         self.video_path_widget.setText(str(self.input_video))
         try:

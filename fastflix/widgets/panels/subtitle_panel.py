@@ -100,7 +100,7 @@ class Subtitle(QtWidgets.QTabWidget):
         #     self.widgets.disposition.setCurrentIndex(dispositions.index("forced"))
 
         self.setFixedHeight(60)
-        self.widgets.title.setToolTip(sub_track.raw_info.to_yaml())
+        self.widgets.title.setToolTip(Box(sub_track.raw_info).to_yaml())
         self.widgets.burn_in.setToolTip(
             f"""{t("Overlay this subtitle track onto the video during conversion.")}\n
             {t("Please make sure seek method is set to exact")}.\n

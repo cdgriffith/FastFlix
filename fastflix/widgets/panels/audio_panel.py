@@ -80,7 +80,7 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.dup_button.setStyleSheet(no_border)
         self.widgets.delete_button.setStyleSheet(no_border)
 
-        self.widgets.audio_info.setToolTip(audio_track.raw_info.to_yaml())
+        self.widgets.audio_info.setToolTip(Box(audio_track.raw_info).to_yaml())
 
         self.widgets.language.addItems(["No Language Set"] + language_list)
         self.widgets.language.setMaximumWidth(150)

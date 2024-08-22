@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 5.8.1
+
+* Fixing #598 'dict' object has no attribute 'to_yaml' (thanks to dmo marillat)
+* Fixing #599 Italian language translations (thanks to bovirus)
+* Fixing #600 Update NSIS installer script #601 to include Italian (thanks to bovirus)
+* Fixing #603 Themes stylesheet aren't included in python package (thanks to dmo marillat)
+* Fixing #605 HDR2SDR double tonemapping in Rigaya NVENC and QSV Encoders (thanks to Darksyderz)
+
 ## Version 5.8.0
 
 * Adding #283 support for experimental DTS (dca) audio by adding -strict -2 (thanks to Sub7)
