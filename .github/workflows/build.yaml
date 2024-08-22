@@ -98,6 +98,8 @@ jobs:
         New-Item -Path Env: -Name PRODUCT_VERSION -Value $(python.exe scripts\get_version.py nsis)
         echo "Building branch $env:GITHUB_REF - version $env:VERSION"
         echo "::set-env name=VERSION::$env:VERSION"
+        echo "::set-env name=EXACT_VERSION::$env:EXACT_VERSION"
+        echo "::set-env name=PRODUCT_VERSION::$env:PRODUCT_VERSION"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
