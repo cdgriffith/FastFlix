@@ -170,7 +170,7 @@ jobs:
           LICENSE
 
     - name: Upload installer artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: FastFlix_${{ env.VERSION }}_installer
         path: FastFlix_${{ env.VERSION }}_installer.exe
