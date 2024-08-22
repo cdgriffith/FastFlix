@@ -18,10 +18,11 @@ def write_and_exit(msg):
 
 
 if __name__ == "__main__":
-    if sys.argv[1] == "exact":
-        write_and_exit(__version__)
-    elif sys.argv[1] == "nsis":
-        write_and_exit(f"{__version__}.0")
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "exact":
+            write_and_exit(__version__)
+        elif sys.argv[1] == "nsis":
+            write_and_exit(f"{__version__}.0")
 
     branch = os.getenv("GITHUB_REF").rsplit("/", 1)[1]
 
