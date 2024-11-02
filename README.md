@@ -124,10 +124,6 @@ FastFlix (v4.0.2+) passes through HLG color transfer information to everything e
 
 FastFlix does not plan to support Dolby Vision's proprietary format at this time.
 
-# Support FastFlix
-
-Check out the different ways you can help [support FastFlix](https://github.com/cdgriffith/FastFlix/wiki/Support-FastFlix)!
-
 # Multilingual Support
 
 FastFlix is machine translated using DeepL into Spanish (español), French (Français), German (Deutsch), 
