@@ -4953,21 +4953,6 @@ Success:
   ukr: Успіх
   kor: 성공
   ron: Succes
-Support FastFlix:
-  deu: Unterstützt FastFlix
-  eng: Support FastFlix
-  fra: Soutenez FastFlix
-  ita: Supporto FastFlix
-  spa: Soporta FastFlix
-  chs: 支持FastFlix
-  jpn: FastFlixを応援/寄付
-  rus: Поддержка FastFlix
-  por: Suporte FastFlix
-  swe: Stöd för FastFlix
-  pol: Obsługa FastFlix
-  ukr: Підтримка FastFlix
-  kor: FastFlix 지원
-  ron: Sprijină FastFlix
 Supported Image Files:
   deu: Unterstützte Bilddateien
   eng: Supported Image Files
@@ -8730,7 +8715,7 @@ Drag and Drop to reorder:
   eng: Drag and Drop to reorder
   deu: Ziehen und Ablegen zum Neuordnen
   fra: Glisser et déposer pour réorganiser
-  ita: Per riordinare trascina e rilascia 
+  ita: Per riordinare trascina e rilascia
   spa: Arrastrar y soltar para reordenar
   chs: 拖放重新排序
   jpn: ドラッグ＆ドロップで並び替え

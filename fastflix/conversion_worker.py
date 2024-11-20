@@ -39,7 +39,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
         log_queue.put(f"CLEAR_WINDOW:{video_uuid}:{command_uuid}")
         reusables.remove_file_handlers(logger)
         new_file_handler = reusables.get_file_handler(
-            log_path / sanitize_filename(f"flix_conversion_{log_name}_{file_date()}.log"),
+            log_path / sanitize_filename(f"flix_conversion_{log_name[:64]}_{file_date()}.log"),
             level=logging.DEBUG,
             log_format="%(asctime)s - %(message)s",
             encoding="utf-8",

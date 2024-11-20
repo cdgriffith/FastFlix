@@ -124,15 +124,15 @@ jobs:
       shell: cmd
       run: pyinstaller FastFlix_Windows_Installer.spec
 
-    - uses: skymatic/code-sign-action@v1
-      with:
-        certificate: '${{ secrets.CODE_CERT_B64 }}'
-        password: '${{ secrets.CODE_CERT_PASS }}'
-        certificatesha1: '${{ secrets.CODE_CERT_THUMB }}'
-        description: 'FastFlix'
-        timestampUrl: 'http://timestamp.sectigo.com'
-        folder: 'dist\FastFlix'
-        recursive: false
+#    - uses: skymatic/code-sign-action@v1
+#      with:
+#        certificate: '${{ secrets.CODE_CERT_B64 }}'
+#        password: '${{ secrets.CODE_CERT_PASS }}'
+#        certificatesha1: '${{ secrets.CODE_CERT_THUMB }}'
+#        description: 'FastFlix'
+#        timestampUrl: 'http://timestamp.sectigo.com'
+#        folder: 'dist\FastFlix'
+#        recursive: false
 
     - name: Package installer
       shell: cmd
@@ -140,15 +140,15 @@ jobs:
         makensis.exe /INPUTCHARSET UTF8 /DVERSION=${{ env.EXACT_VERSION }} /DPRODUCT_VERSION=${{ env.PRODUCT_VERSION }} FastFlix.nsi
         move FastFlix_installer.exe dist\FastFlix_${{ env.VERSION }}_installer.exe
 
-    - uses: skymatic/code-sign-action@v1
-      with:
-        certificate: '${{ secrets.CODE_CERT_B64 }}'
-        password: '${{ secrets.CODE_CERT_PASS }}'
-        certificatesha1: '${{ secrets.CODE_CERT_THUMB }}'
-        description: 'FastFlix'
-        timestampUrl: 'http://timestamp.sectigo.com'
-        folder: 'dist'
-        recursive: false
+#    - uses: skymatic/code-sign-action@v1
+#      with:
+#        certificate: '${{ secrets.CODE_CERT_B64 }}'
+#        password: '${{ secrets.CODE_CERT_PASS }}'
+#        certificatesha1: '${{ secrets.CODE_CERT_THUMB }}'
+#        description: 'FastFlix'
+#        timestampUrl: 'http://timestamp.sectigo.com'
+#        folder: 'dist'
+#        recursive: false
 
     - name: Test executable
       run: |

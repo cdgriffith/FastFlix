@@ -226,6 +226,7 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget.setFixedHeight(20)
         self.output_video_path_widget.setFont(QtGui.QFont(self.app.font().family(), 9))
         self.output_video_path_widget.setStyleSheet("padding: 0 0 -1px 5px")
+        self.output_video_path_widget.setMaxLength(220)
 
         # self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
         self.video_path_widget.setEnabled(False)

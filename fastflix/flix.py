@@ -486,7 +486,12 @@ def convert_mastering_display(data: Box) -> Tuple[Box, str]:
     cll = None
 
     def s(a, v, base=50_000):
-        upper, lower = [int(x) for x in a.get(v, "0/0").split("/")]
+        try:
+            upper, lower = [int(x) for x in a.get(v, "0/0").split("/")]
+        except ValueError:
+            raise FlixError(f"Could not parse HDR value {a} from {v}")
+        if lower <= 0:  # avoid division by zero
+            raise FlixError(f"HDR value outside expected range, {v} was {a}")
         if lower != base:
             upper *= base / lower
         value = int(upper)

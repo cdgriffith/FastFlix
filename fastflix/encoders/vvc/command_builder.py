@@ -87,7 +87,7 @@ def build(fastflix: FastFlix):
         beginning += f"-tier:v {settings.tier} "
 
     if settings.levelidc:
-        beginning += f"-levelidc {settings.levelidc} "
+        beginning += f"-level {settings.levelidc} "
 
     vvc_params = settings.vvc_params.copy() or []
 

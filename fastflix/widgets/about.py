@@ -35,14 +35,6 @@ class About(QtWidgets.QWidget):
         label.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         layout.addWidget(label)
 
-        support_label = QtWidgets.QLabel(
-            f'{link("https://github.com/cdgriffith/FastFlix/wiki/Support-FastFlix", t("Support FastFlix"), app.fastflix.config.theme)}<br><br>'
-        )
-        support_label.setOpenExternalLinks(True)
-        support_label.setFont(QtGui.QFont(self.app.font().family(), 12))
-        support_label.setAlignment((QtCore.Qt.AlignCenter | QtCore.Qt.AlignTop))
-        layout.addWidget(support_label)
-
         bundle_label = QtWidgets.QLabel(
             f"{t('Conversion suites')}: {link('https://www.ffmpeg.org/download.html', 'FFmpeg', app.fastflix.config.theme)} ({t('Various')}), "
             f"{link('https://github.com/rigaya/NVEnc', 'NVEncC', app.fastflix.config.theme)} (MIT) "

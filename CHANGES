@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 5.8.2
+
+* Fixing #610 Do not try to divide by zero if HDR metadata has bad values (thanks to Noelle Leigh)
+* Fixing #616 replace correct cmd line option for IDC level (thanks to pkleinejaeger)
+* Fixing too long of log file names could crash, limiting filename to 220 characters (thanks to ProFile)
+* Removing code signing as cert has expired
+
 ## Version 5.8.1
 
 * Fixing #598 'dict' object has no attribute 'to_yaml' (thanks to dmo marillat)
