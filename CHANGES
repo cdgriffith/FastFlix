@@ -4,6 +4,8 @@
 
 * Fixing #610 Do not try to divide by zero if HDR metadata has bad values (thanks to Noelle Leigh)
 * Fixing #616 replace correct cmd line option for IDC level (thanks to pkleinejaeger)
+* Fixing too long of log file names could crash (thanks to ProFile)
+* Removing code signing as cert has expired
 
 ## Version 5.8.1
 
