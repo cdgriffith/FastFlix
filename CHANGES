@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 5.9.0
+
+* Adding QP mode for FFmpeg Nvenc encoding
+* Adding more preview positions
+* Adding ultra high quality mode for ffmpeg nvenc encoder
+* Fixing #631 VVC Level can't be set to 0 anymore (thanks to GT500org)
+
 ## Version 5.8.2
 
 * Fixing #610 Do not try to divide by zero if HDR metadata has bad values (thanks to Noelle Leigh)

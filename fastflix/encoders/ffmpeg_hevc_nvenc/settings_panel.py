@@ -134,8 +134,8 @@ class NVENC(SettingPanel):
         return self._add_combo_box(
             label="Tune",
             widget_name="tune",
-            tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, ll - Low Latency, ull - Ultra Low Latency",
-            options=["hq", "ll", "ull", "lossless"],
+            tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, uqh - Ultra High Quality, ll - Low Latency, ull - Ultra Low Latency",
+            options=["hq", "uhq", "ll", "ull", "lossless"],
             opt="tune",
         )
 
@@ -248,10 +248,9 @@ class NVENC(SettingPanel):
         return layout
 
     def init_modes(self):
-        layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="qp", add_qp=False)
+        layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="qp")
         self.qp_radio.setChecked(False)
         self.bitrate_radio.setChecked(True)
-        self.qp_radio.setDisabled(True)
         return layout
 
     def mode_update(self):

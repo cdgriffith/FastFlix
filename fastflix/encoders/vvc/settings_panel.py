@@ -115,12 +115,13 @@ class VVC(SettingPanel):
         )
 
     def init_levels(self):
+        # https://github.com/fraunhoferhhi/vvenc/blob/cf8ba5ed74f8e8c7c9e7b6f81f7fb08bce6241b0/source/Lib/vvenc/vvencCfg.cpp#L159
         return self._add_combo_box(
             label="IDC Level",
             tooltip="Set the IDC level",
             widget_name="levelidc",
             options=[
-                "0",
+                t("auto"),
                 "1",
                 "2",
                 "2.1",
@@ -135,6 +136,7 @@ class VVC(SettingPanel):
                 "6.1",
                 "6.2",
                 "6.3",
+                "15.5",
             ],
             opt="levelidc",
         )
@@ -226,12 +228,14 @@ class VVC(SettingPanel):
 
         vvc_params_text = self.widgets.vvc_params.text().strip()
 
+        level = self.widgets.levelidc.currentText() if self.widgets.levelidc.currentIndex() > 0 else None
+
         settings = VVCSettings(
             preset=self.widgets.preset.currentText(),
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             tier=self.widgets.tier.currentText(),
-            levelidc=self.widgets.levelidc.currentText(),
+            levelidc=level,
             vvc_params=vvc_params_text.split(":") if vvc_params_text else [],
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
