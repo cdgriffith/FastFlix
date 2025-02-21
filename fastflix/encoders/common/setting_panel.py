@@ -519,7 +519,7 @@ class SettingPanel(QtWidgets.QWidget):
                 self.bitrate_radio.setChecked(False)
                 qp = str(self.app.fastflix.config.encoder_opt(self.profile_name, self.qp_name))
                 for i, rec in enumerate(self.recommended_qps):
-                    if rec.startswith(qp):
+                    if rec.split(" ")[0] == qp:
                         self.widgets[self.qp_name].setCurrentIndex(i)
                         break
                 else:

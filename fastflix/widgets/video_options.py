@@ -163,7 +163,7 @@ class VideoOptions(QtWidgets.QTabWidget):
 
         try:
             del self.app.fastflix.current_video.video_settings.video_encoder_settings
-        except KeyError:
+        except (KeyError, AttributeError):
             pass
         self.current_settings.update_video_encoder_settings()
 

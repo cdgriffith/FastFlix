@@ -1753,7 +1753,7 @@ class Main(QtWidgets.QWidget):
             video_title=self.video_options.advanced.video_title.text(),
             video_track_title=self.video_options.advanced.video_track_title.text(),
             remove_hdr=self.remove_hdr,
-            copy_data=self.widgets.copy_data.isChecked(),
+            # copy_data=self.widgets.copy_data.isChecked(),
         )
 
         self.video_options.get_settings()
