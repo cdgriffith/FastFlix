@@ -664,6 +664,7 @@ class Main(QtWidgets.QWidget):
 
             if self.app.fastflix.current_video:
                 self.video_options.new_source()
+            self.update_output_type()
         finally:
             # Hack to prevent a lot of thumbnail generation
             self.loading_video = False
@@ -771,18 +772,12 @@ class Main(QtWidgets.QWidget):
         if not self.initialized or not self.convert_to:
             return
         self.video_options.change_conversion(self.convert_to)
+        self.update_output_type()
+
+    def update_output_type(self):
         self.widgets.output_type_combo.clear()
         self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
         self.widgets.output_type_combo.setCurrentText(self.app.fastflix.config.opt("output_type"))
-        if not self.app.fastflix.current_video:
-            return
-
-        last = self.widgets.output_type_combo.currentText()
-
-        self.widgets.output_type_combo.clear()
-        self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
-        if last in {self.widgets.output_type_combo.itemText(i) for i in range(self.widgets.output_type_combo.count())}:
-            self.widgets.output_type_combo.setCurrentText(last)
 
     @property
     def current_encoder(self):
