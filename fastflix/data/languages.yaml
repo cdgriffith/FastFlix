@@ -1677,21 +1677,6 @@ Download Cancelled:
   ukr: Завантажити Скасовано
   kor: 다운로드 취소
   ron: Descărcați Anulat
-Download Newest FFmpeg:
-  deu: Neuestes FFmpeg herunterladen
-  eng: Download Newest FFmpeg
-  fra: Télécharger le dernier FFmpeg
-  ita: Scarica il nuovo FFmpeg
-  spa: Descargar el nuevo FFmpeg
-  chs: 下载最新版FFmpeg
-  jpn: 最新のFFmpegをダウンロードする
-  rus: Скачать новейший FFmpeg
-  por: Fazer o download do FFmpeg mais recente
-  swe: Hämta Nyaste FFmpeg
-  pol: Pobierz Najnowszy FFmpeg
-  ukr: Завантажити останню версію FFmpeg
-  kor: 최신 FFmpeg 다운로드
-  ron: Descărcați cel mai nou FFmpeg
 Downloading FFmpeg:
   deu: Herunterladen von FFmpeg
   eng: Downloading FFmpeg
@@ -7442,7 +7427,8 @@ Drag and Drop to reorder - All items need to be same dimensions:
   eng: Drag and Drop to reorder - All items need to be same dimensions
   fra: Glissez et déposez pour réorganiser - Tous les éléments doivent avoir les mêmes
     dimensions.
-  ita: Per riordinare trascina e rilascia  - tutti gli elementi devono avere le stesse dimensioni
+  ita: Per riordinare trascina e rilascia  - tutti gli elementi devono avere le stesse
+    dimensioni
   spa: Arrastrar y soltar para reordenar - Todos los elementos deben tener las mismas
     dimensiones
   chs: 拖放来重新排序 - 所有项目的尺寸都需要相同
@@ -8824,8 +8810,8 @@ Remove GUI logs and compress conversion logs older than 30 days at exit:
     die älter als 30 Tage sind, beim Beenden
   fra: Suppression des journaux de l'interface graphique et compression des journaux
     de conversion de plus de 30 jours à la sortie.
-  ita: Rimuovi registri eventi GUI e comprimeri registri eventi conversione
-    più vecchi di 30 giorni all'uscita.
+  ita: Rimuovi registri eventi GUI e comprimeri registri eventi conversione più vecchi
+    di 30 giorni all'uscita.
   spa: Elimina los registros GUI y comprime los registros de conversión de más de
     30 días al salir.
   chs: 在退出时删除GUI日志并压缩超过30天的转换日志
@@ -10685,3 +10671,59 @@ Pattern Match:
   ukr: Збіг за зразком
   kor: 패턴 일치
   ron: Potrivire model
+Download Stable FFmpeg:
+  eng: Download Stable FFmpeg
+  deu: Stable FFmpeg herunterladen
+  fra: Télécharger Stable FFmpeg
+  ita: Scarica FFmpeg stabile
+  spa: Descargar FFmpeg estable
+  jpn: 安定したFFmpegをダウンロード
+  rus: Скачать стабильный FFmpeg
+  por: Descarregar o Stable FFmpeg
+  swe: Ladda ner stabil FFmpeg
+  pol: Pobierz Stable FFmpeg
+  chs: 下载稳定版 FFmpeg
+  ukr: Завантажити стабільний FFmpeg
+  kor: 안정적인 FFmpeg 다운로드
+  ron: Descarcă Stable FFmpeg
+Download Nightly FFmpeg:
+  eng: Download Nightly FFmpeg
+  deu: Neuestes FFmpeg herunterladen
+  fra: Télécharger le dernier FFmpeg
+  ita: Scarica il nuovo FFmpeg
+  spa: Descargar el nuevo FFmpeg
+  chs: 下载最新版FFmpeg
+  jpn: 最新のFFmpegをダウンロードする
+  rus: Скачать новейший FFmpeg
+  por: Fazer o download do FFmpeg mais recente
+  swe: Hämta Nyaste FFmpeg
+  pol: Pobierz Najnowszy FFmpeg
+  ukr: Завантажити останню версію FFmpeg
+  kor: 최신 FFmpeg 다운로드
+  ron: Descărcați cel mai nou FFmpeg
+hq - High Quality, uhq - Ultra High Quality, ll - Low Latency, ull - Ultra Low Latency:
+  eng: hq - High Quality, uhq - Ultra High Quality, ll - Low Latency, ull - Ultra
+    Low Latency
+  deu: hq - Hohe Qualität, uhq - Ultrahohe Qualität, ll - Niedrige Latenzzeit, ull
+    - Ultra-niedrige Latenzzeit
+  fra: hq - Haute qualité, uhq - Ultra haute qualité, ll - Faible latence, ull - Ultra
+    faible latence
+  ita: hq - Alta qualità, uhq - Ultra alta qualità, ll - Bassa latenza, ull - Ultra
+    bassa latenza
+  spa: hq - Alta calidad, uhq - Calidad ultra alta, ll - Baja latencia, ull - Latencia
+    ultra baja
+  jpn: hq - 高画質、uhq - 超高画質、ll - 低遅延、ull - 超低遅延
+  rus: hq - высокое качество, uhq - сверхвысокое качество, ll - низкая задержка, ull
+    - сверхнизкая задержка
+  por: hq - Alta Qualidade, uhq - Ultra Alta Qualidade, ll - Baixa Latência, ull -
+    Ultra Baixa Latência
+  swe: hq - Hög kvalitet, uhq - Ultrahög kvalitet, ll - Låg latens, ull - Ultra låg
+    latens
+  pol: hq - wysoka jakość, uhq - bardzo wysoka jakość, ll - niskie opóźnienie, ull
+    - bardzo niskie opóźnienie
+  chs: hq - 高质量，uhq - 超高质量，ll - 低延迟，ull - 超低延迟
+  ukr: hq - висока якість, uhq - надвисока якість, ll - низька затримка, ull - наднизька
+    затримка
+  kor: hq - 고품질, uhq - 초고화질, ll - 저지연, ull - 초저지연
+  ron: hq - calitate înaltă, uhq - calitate ultra înaltă, ll - latență redusă, ull
+    - latență ultra redusă

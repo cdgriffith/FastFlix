@@ -16,7 +16,7 @@ from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.program_downloads import latest_ffmpeg
+from fastflix.program_downloads import latest_ffmpeg, grab_stable_ffmpeg
 from fastflix.resources import main_icon, get_icon, changes_file, local_changes_file, local_package_changes_file
 from fastflix.shared import clean_logs, error_message, latest_fastflix, message, yes_no_message
 from fastflix.widgets.about import About
@@ -244,7 +244,10 @@ class Container(QtWidgets.QMainWindow):
         )
         version_action.triggered.connect(lambda: latest_fastflix(show_new_dialog=True, app=self.app))
 
-        ffmpeg_update_action = QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), t("Download Newest FFmpeg"), self)
+        ffmpeg_update_stable_action = QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), t("Download Stable FFmpeg"), self)
+        ffmpeg_update_stable_action.triggered.connect(self.download_stable_ffmpeg)
+
+        ffmpeg_update_action = QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), t("Download Nightly FFmpeg"), self)
         ffmpeg_update_action.triggered.connect(self.download_ffmpeg)
 
         clean_logs_action = QAction(self.si(QtWidgets.QStyle.SP_DialogResetButton), t("Clean Old Logs"), self)
@@ -263,6 +266,7 @@ class Container(QtWidgets.QMainWindow):
         help_menu.addSeparator()
         help_menu.addAction(version_action)
         if reusables.win_based:
+            help_menu.addAction(ffmpeg_update_stable_action)
             help_menu.addAction(ffmpeg_update_action)
         help_menu.addSeparator()
         help_menu.addAction(about_action)
@@ -331,13 +335,19 @@ class Container(QtWidgets.QMainWindow):
     def show_log_dir(self):
         OpenFolder(self, str(self.app.fastflix.log_path)).run()
 
-    def download_ffmpeg(self):
+    def download_stable_ffmpeg(self):
+        self.download_ffmpeg(ffmpeg_version="stable")
+
+    def download_ffmpeg(self, ffmpeg_version="latest"):
         ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True)) / "bin"
         ffmpeg = ffmpeg_folder / "ffmpeg.exe"
         ffprobe = ffmpeg_folder / "ffprobe.exe"
         try:
             self.pb = ProgressBar(
-                self.app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True, can_cancel=True
+                self.app,
+                [Task(t("Downloading FFmpeg"), grab_stable_ffmpeg if ffmpeg_version == "stable" else latest_ffmpeg)],
+                signal_task=True,
+                can_cancel=True,
             )
         except FastFlixInternalException:
             pass

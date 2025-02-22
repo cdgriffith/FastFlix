@@ -134,7 +134,7 @@ class NVENC(SettingPanel):
         return self._add_combo_box(
             label="Tune",
             widget_name="tune",
-            tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, uqh - Ultra High Quality, ll - Low Latency, ull - Ultra Low Latency",
+            tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, uhq - Ultra High Quality, ll - Low Latency, ull - Ultra Low Latency",
             options=["hq", "uhq", "ll", "ull", "lossless"],
             opt="tune",
         )

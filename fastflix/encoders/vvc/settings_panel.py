@@ -121,7 +121,7 @@ class VVC(SettingPanel):
             tooltip="Set the IDC level",
             widget_name="levelidc",
             options=[
-                t("auto"),
+                t("Auto"),
                 "1",
                 "2",
                 "2.1",
