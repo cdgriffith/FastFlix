@@ -9,7 +9,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
     - run: python -m black --check .
 
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
     - name: Install PySide6 requirements
       run: |
         sudo apt update
-        sudo apt install libopengl0 freeglut3 freeglut3-dev -y
+        sudo apt install libopengl0 freeglut3-dev -y
 
     - name: Install requirements
       run: |

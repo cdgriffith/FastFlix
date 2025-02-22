@@ -5,6 +5,7 @@ import os
 import shutil
 import sys
 from pathlib import Path
+import re
 
 import requests
 import reusables
@@ -43,8 +44,16 @@ def ask_for_ffmpeg():
         sys.exit(1)
 
 
-def latest_ffmpeg(signal, stop_signal, **_):
+ffmpeg_version_re = re.compile(r"ffmpeg-n(\d+\.\d+)-latest-win64-gpl-")
+
+
+def grab_stable_ffmpeg(signal, stop_signal, **_):
+    return latest_ffmpeg(signal, stop_signal, ffmpeg_version="stable")
+
+
+def latest_ffmpeg(signal, stop_signal, ffmpeg_version="latest", **_):
     stop = False
+    logger.debug(f"Downloading {ffmpeg_version} FFmpeg")
 
     def stop_me():
         nonlocal stop
@@ -76,13 +85,18 @@ def latest_ffmpeg(signal, stop_signal, **_):
         return
 
     gpl_ffmpeg = None
-    for asset in data["assets"]:
-        if "master-latest-win64-gpl.zip" in asset["name"]:
-            gpl_ffmpeg = asset
-            break
-        elif asset["name"].startswith("ffmpeg-N-") and asset["name"].endswith("win64-gpl.zip"):
-            gpl_ffmpeg = asset
-            break
+
+    if ffmpeg_version == "latest":
+        for asset in data["assets"]:
+            if "master-latest-win64-gpl.zip" in asset["name"]:
+                gpl_ffmpeg = asset
+                break
+    else:
+        versions = []
+        for asset in data["assets"]:
+            if ver_match := ffmpeg_version_re.search(asset["name"]):
+                versions.append((float(ver_match.group(1)), asset))
+        gpl_ffmpeg = sorted(versions, key=lambda x: x[0], reverse=True)[0][1]
 
     if not gpl_ffmpeg:
         shutil.rmtree(extract_folder, ignore_errors=True)
@@ -92,6 +106,8 @@ def latest_ffmpeg(signal, stop_signal, **_):
             "https://github.com/BtbN/FFmpeg-Builds/releases/</a> and reach out to FastFlix team about this issue if they exist."
         )
         raise Exception()
+
+    logger.debug(f"Downloading version {gpl_ffmpeg['name']}")
 
     req = requests.get(gpl_ffmpeg["browser_download_url"], stream=True)
 

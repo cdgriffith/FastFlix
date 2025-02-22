@@ -10,7 +10,7 @@
 
 !define PRODUCT_NAME      "FastFlix"
 !define PRODUCT_AUTHOR    "Chris Griffith"
-!define PRODUCT_COPYRIGHT "(c) Chris Griffith 2021-2024"
+!define PRODUCT_COPYRIGHT "(c) Chris Griffith 2019-2025"
 
 VIProductVersion "${PRODUCT_VERSION}"
 VIFileVersion    "${PRODUCT_VERSION}"

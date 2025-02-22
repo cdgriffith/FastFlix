@@ -9,7 +9,7 @@ jobs:
   build-nix:
     strategy:
       matrix:
-        os: [ ubuntu-20.04, ubuntu-22.04, macos-12, macos-14 ]
+        os: [ ubuntu-24.04, macos-14 ]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -31,7 +31,7 @@ jobs:
       - name: Install PySide6 apt Requirements
         run: |
           sudo apt update
-          sudo apt install libopengl0 freeglut3 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 libxcb-shape0-dev libxcb-cursor-dev -y
+          sudo apt install libopengl0 freeglut3-dev libxcb-icccm4 libxkbcommon-x11-0 libxcb-xkb1 libxcb-render-util0 libxcb-randr0 libxcb-keysyms1 libxcb-image0 libxcb-shape0-dev libxcb-cursor-dev -y
         if: ${{ startsWith(matrix.os, 'ubuntu') }}
 
       - name: Install Python Dependencies

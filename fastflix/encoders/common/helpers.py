@@ -99,6 +99,18 @@ def generate_ffmpeg_start(
     )
 
 
+def rigaya_data(streams, copy_data=False, **_):
+    if not copy_data:
+        return ""
+    datas = []
+    for stream in streams:
+        if stream["codec_type"] == "data":
+            datas.append(str(stream["index"]))
+    if not datas:
+        return ""
+    return f"--data-copy {','.join(datas)}"
+
+
 def generate_ending(
     audio,
     subtitles,
@@ -109,6 +121,7 @@ def generate_ending(
     null_ending=False,
     output_fps: Union[str, None] = None,
     disable_rotate_metadata=False,
+    copy_data=False,
     **_,
 ):
     ending = (
@@ -116,6 +129,7 @@ def generate_ending(
         f"{'-map_chapters 0' if copy_chapters else '-map_chapters -1'} "
         f"{f'-r {output_fps}' if output_fps else ''} "
         f"{audio} {subtitles} {cover} "
+        f"{'-map 0:d -c:d copy ' if copy_data else ''}"
     )
 
     # In case they use a mp4 container, nix the rotation

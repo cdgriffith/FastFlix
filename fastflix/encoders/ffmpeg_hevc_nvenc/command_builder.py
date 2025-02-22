@@ -25,6 +25,10 @@ def build(fastflix: FastFlix):
     if settings.level:
         beginning += f"-level:v {settings.level} "
 
+    if not settings.bitrate:
+        command = (f"{beginning} -qp:v {settings.qp} -preset:v {settings.preset} " f"{settings.extra}") + ending
+        return [Command(command=command, name="Single QP encode", exe="ffmpeg")]
+
     pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
 
     command_1 = (

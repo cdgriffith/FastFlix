@@ -11,7 +11,7 @@ from fastflix.language import t
 from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.program_downloads import ask_for_ffmpeg, latest_ffmpeg
+from fastflix.program_downloads import ask_for_ffmpeg, grab_stable_ffmpeg
 from fastflix.resources import main_icon, breeze_styles_path
 from fastflix.shared import file_date, message, latest_fastflix, DEVMODE
 from fastflix.widgets.container import Container
@@ -182,7 +182,7 @@ def app_setup(
     except MissingFF as err:
         if reusables.win_based and ask_for_ffmpeg():
             try:
-                ProgressBar(app, [Task(t("Downloading FFmpeg"), latest_ffmpeg)], signal_task=True)
+                ProgressBar(app, [Task(t("Downloading FFmpeg"), grab_stable_ffmpeg)], signal_task=True)
                 app.fastflix.config.load()
             except Exception as err:
                 logger.exception(str(err))

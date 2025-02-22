@@ -190,7 +190,10 @@ def ffprobe_configuration(app, config: Config, **_):
 
 
 def probe(app: FastFlixApp, file: Path) -> Box:
-    """Run FFprobe on a file"""
+    """
+    Run FFprobe on a file
+    ffprobe -v quiet -loglevel panic -print_format json -show_format -show_streams
+    """
     command = [
         f"{app.fastflix.config.ffprobe}",
         "-v",

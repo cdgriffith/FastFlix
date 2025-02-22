@@ -134,6 +134,7 @@ class MainWidgets(BaseModel):
     output_type_combo: QtWidgets.QComboBox = Field(default_factory=QtWidgets.QComboBox)
     output_directory_select: QtWidgets.QPushButton = None
     model_config = ConfigDict(arbitrary_types_allowed=True)
+    copy_data: QtWidgets.QCheckBox = None
 
     def items(self):
         for key in dir(self):
@@ -394,8 +395,8 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.thumb_time = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self.widgets.thumb_time.setMinimum(1)
-        self.widgets.thumb_time.setMaximum(10)
-        self.widgets.thumb_time.setValue(2)
+        self.widgets.thumb_time.setMaximum(100)
+        self.widgets.thumb_time.setValue(25)
         self.widgets.thumb_time.setTickPosition(QtWidgets.QSlider.TicksBelow)
         self.widgets.thumb_time.setTickInterval(1)
         self.widgets.thumb_time.setAutoFillBackground(False)
@@ -572,8 +573,21 @@ class Main(QtWidgets.QWidget):
         extra_details_layout = QtWidgets.QVBoxLayout()
         extra_details_layout.addWidget(self.widgets.deinterlace)
         extra_details_layout.addWidget(self.widgets.remove_hdr)
-
         transform_layout.addLayout(extra_details_layout)
+
+        # another_layout = QtWidgets.QVBoxLayout()
+        #
+        # self.widgets.copy_data = QtWidgets.QCheckBox(t("Copy Data"))
+        # self.widgets.copy_data.setChecked(False)
+        # self.widgets.copy_data.toggled.connect(self.page_update)
+        # self.widgets.copy_data.setToolTip(
+        #     f'{t("Copy all data streams from the source file.")}'
+        # )
+        #
+        # another_layout.addWidget(self.widgets.copy_data)
+        # another_layout.addWidget(QtWidgets.QWidget())
+        # transform_layout.addLayout(another_layout)
+
         return transform_layout
 
     def init_video_track_select(self):
@@ -650,6 +664,7 @@ class Main(QtWidgets.QWidget):
 
             if self.app.fastflix.current_video:
                 self.video_options.new_source()
+            self.update_output_type()
         finally:
             # Hack to prevent a lot of thumbnail generation
             self.loading_video = False
@@ -757,18 +772,12 @@ class Main(QtWidgets.QWidget):
         if not self.initialized or not self.convert_to:
             return
         self.video_options.change_conversion(self.convert_to)
+        self.update_output_type()
+
+    def update_output_type(self):
         self.widgets.output_type_combo.clear()
         self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
         self.widgets.output_type_combo.setCurrentText(self.app.fastflix.config.opt("output_type"))
-        if not self.app.fastflix.current_video:
-            return
-
-        last = self.widgets.output_type_combo.currentText()
-
-        self.widgets.output_type_combo.clear()
-        self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
-        if last in {self.widgets.output_type_combo.itemText(i) for i in range(self.widgets.output_type_combo.count())}:
-            self.widgets.output_type_combo.setCurrentText(last)
 
     @property
     def current_encoder(self):
@@ -1624,7 +1633,7 @@ class Main(QtWidgets.QWidget):
 
     @property
     def preview_place(self) -> Union[float, int]:
-        ticks = self.app.fastflix.current_video.duration / 10
+        ticks = self.app.fastflix.current_video.duration / 100
         return (self.widgets.thumb_time.value() - 1) * ticks
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -1739,6 +1748,7 @@ class Main(QtWidgets.QWidget):
             video_title=self.video_options.advanced.video_title.text(),
             video_track_title=self.video_options.advanced.video_track_title.text(),
             remove_hdr=self.remove_hdr,
+            # copy_data=self.widgets.copy_data.isChecked(),
         )
 
         self.video_options.get_settings()

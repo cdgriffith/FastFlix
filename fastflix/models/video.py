@@ -109,6 +109,7 @@ class VideoSettings(BaseModel):
     brightness: Optional[str] = None
     contrast: Optional[str] = None
     saturation: Optional[str] = None
+    copy_data: bool = False
     video_encoder_settings: Optional[
         Union[
             x265Settings,
