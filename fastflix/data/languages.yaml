@@ -10727,3 +10727,33 @@ hq - High Quality, uhq - Ultra High Quality, ll - Low Latency, ull - Ultra Low L
   kor: hq - 고품질, uhq - 초고화질, ll - 저지연, ull - 초저지연
   ron: hq - calitate înaltă, uhq - calitate ultra înaltă, ll - latență redusă, ull
     - latență ultra redusă
+FFmpeg not found!:
+  eng: FFmpeg not found!
+  deu: FFmpeg nicht gefunden!
+  fra: FFmpeg introuvable !
+  ita: FFmpeg non trovato!
+  spa: ¡FFmpeg no encontrado!
+  jpn: FFmpegが見つかりません！
+  rus: FFmpeg не найден!
+  por: FFmpeg não encontrado!
+  swe: FFmpeg hittades inte!
+  pol: Nie znaleziono FFmpeg!
+  chs: 未找到 FFmpeg！
+  ukr: FFmpeg не знайдено!
+  kor: FFmpeg를 찾을 수 없습니다!
+  ron: FFmpeg nu a fost găsit!
+Automatically download FFmpeg?:
+  eng: Automatically download FFmpeg?
+  deu: Automatisches Herunterladen von FFmpeg?
+  fra: Télécharger automatiquement FFmpeg ?
+  ita: Scaricare automaticamente FFmpeg?
+  spa: ¿Descargar automáticamente FFmpeg?
+  jpn: FFmpegを自動的にダウンロードしますか？
+  rus: Автоматически загружать FFmpeg?
+  por: Descarregar automaticamente o FFmpeg?
+  swe: Ladda ner FFmpeg automatiskt?
+  pol: Automatycznie pobierać FFmpeg?
+  chs: 自动下载 FFmpeg？
+  ukr: Автоматично завантажити FFmpeg?
+  kor: FFmpeg를 자동으로 다운로드하시겠습니까?
+  ron: Descărcați automat FFmpeg?
