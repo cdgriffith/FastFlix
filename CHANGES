@@ -5,10 +5,13 @@
 * Adding QP mode for FFmpeg Nvenc encoding
 * Adding more preview positions
 * Adding ultra high quality mode for ffmpeg nvenc encoder
+* Adding Ubuntu 24.04 builds
 * Adding #633 download for stable version of ffmpeg by default on Windows (thanks to Maddie Davis)
 * Fixing #611 Extension type not being selected properly from profiles if encoders isn't switched (thanks to Hankuu)
 * Fixing #628 Custom QP/CRF saved in profile may not be restored correctly (thanks to Gregorio O. DeMojeca)
 * Fixing #631 VVC Level can't be set to 0 anymore (thanks to GT500org)
+* Removing Ubuntu 20.04 builds
+
 
 ## Version 5.8.2
 
