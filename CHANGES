@@ -3,6 +3,7 @@
 ## Version 5.10.0
 
 * Adding global disable interlace check (thanks to Wontell)
+* Changing profile bitrate selector to be text field (thanks to Wontell)
 
 
 ## Version 5.9.0
