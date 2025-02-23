@@ -1502,10 +1502,11 @@ class Main(QtWidgets.QWidget):
         tasks = [
             Task(t("Parse Video details"), parse),
             Task(t("Extract covers"), extract_attachments),
-            Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.source_material)),
             Task(t("Determine HDR details"), parse_hdr_details),
             Task(t("Detect HDR10+"), detect_hdr10_plus),
         ]
+        if not self.app.fastflix.config.disable_deinterlace_check:
+            tasks.append(Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.source_material)))
 
         try:
             ProgressBar(self.app, tasks, hidden=hide_progress)

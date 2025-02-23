@@ -407,7 +407,6 @@ def get_auto_crop(
 
 def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
     """http://www.aktau.be/2013/09/22/detecting-interlaced-video-with-ffmpeg/"""
-
     # Interlaced
     # [Parsed_idet_0 @ 00000] Repeated Fields: Neither:   815 Top:    88 Bottom:    98
     # [Parsed_idet_0 @ 00000] Single frame detection: TFF:   693 BFF:     0 Progressive:    39 Undetermined:   269

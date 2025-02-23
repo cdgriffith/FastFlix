@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 5.10.0
+
+* Adding global disable interlace check (thanks to Wontell)
+
+
 ## Version 5.9.0
 
 * Adding QP mode for FFmpeg Nvenc encoding

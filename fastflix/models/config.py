@@ -127,6 +127,7 @@ class Config(BaseModel):
     custom_after_run_scripts: dict = Field(default_factory=dict)
     profiles: dict[str, Profile] = Field(default_factory=get_preset_defaults)
     priority: Literal["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"] = "Normal"
+    disable_deinterlace_check: bool = False
     stay_on_top: bool = False
     portable_mode: bool = False
     ui_scale: str = "1"
