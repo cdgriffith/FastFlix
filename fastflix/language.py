@@ -10,7 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 import importlib.resources
 
-from appdirs import user_data_dir
+from platformdirs import user_data_dir
 from box import Box
 
 ref = importlib.resources.files("fastflix") / "data/languages.yaml"

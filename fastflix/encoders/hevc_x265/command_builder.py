@@ -170,7 +170,7 @@ def build(fastflix: FastFlix):
     if fastflix.current_video.cll:
         pass
 
-    pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
+    pass_log_file = f"pass_log_file_{secrets.token_hex(10)}.log"
 
     def get_x265_params(params=()):
         if not isinstance(params, (list, tuple)):
@@ -181,12 +181,12 @@ def build(fastflix: FastFlix):
     if settings.bitrate:
         if settings.bitrate_passes == 2:
             command_1 = (
-                f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1"])} '
-                f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
+                f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1", f"stats={pass_log_file}"])} '
+                f' -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
                 f" -an -sn -dn {output_fps} -f mp4 {null}"
             )
             command_2 = (
-                f'{beginning} {get_x265_params(["pass=2"])} -passlogfile "{pass_log_file}" '
+                f'{beginning} {get_x265_params(["pass=2", f"stats={pass_log_file}"])}  '
                 f"-b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} {ending}"
             )
             return [

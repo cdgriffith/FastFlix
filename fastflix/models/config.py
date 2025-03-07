@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Literal
 import json
 
-from appdirs import user_data_dir
+from platformdirs import user_data_dir
 from box import Box, BoxError
 from pydantic import BaseModel, Field
 from reusables import win_based

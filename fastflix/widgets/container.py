@@ -8,7 +8,7 @@ from pathlib import Path
 from subprocess import run
 
 import reusables
-from appdirs import user_data_dir
+from platformdirs import user_data_dir
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtGui import QAction
 
@@ -18,7 +18,15 @@ from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg, grab_stable_ffmpeg
 from fastflix.resources import main_icon, get_icon, changes_file, local_changes_file, local_package_changes_file
-from fastflix.shared import clean_logs, error_message, latest_fastflix, message, yes_no_message
+from fastflix.shared import (
+    clean_logs,
+    error_message,
+    latest_fastflix,
+    message,
+    yes_no_message,
+    parse_filesafe_datetime,
+    is_date_older_than_7days,
+)
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 
@@ -145,12 +153,18 @@ class Container(QtWidgets.QMainWindow):
 
         for item in self.app.fastflix.config.work_path.iterdir():
             if item.is_dir() and item.stem.startswith("temp_"):
-                shutil.rmtree(item, ignore_errors=True)
+                try:
+                    date_part = item.stem.split("_")[1]
+                    if is_date_older_than_7days(parse_filesafe_datetime(date_part)):
+                        shutil.rmtree(item, ignore_errors=True)
+                except Exception:
+                    logger.error(f"Failed to find datetime for temp folder {item.stem}, deleting!")
+                    shutil.rmtree(item, ignore_errors=True)
             if item.is_file() and item.name.startswith("concat_"):
                 item.unlink(missing_ok=True)
             if item.name.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".tiff", ".tif")):
                 item.unlink()
-        shutil.rmtree(self.app.fastflix.config.work_path / "covers", ignore_errors=True)
+        # shutil.rmtree(self.app.fastflix.config.work_path / "covers", ignore_errors=True)
 
         if self.app.fastflix.config.clean_old_logs:
             self.clean_old_logs(show_errors=False)

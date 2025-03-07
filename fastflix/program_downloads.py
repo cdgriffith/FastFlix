@@ -9,7 +9,7 @@ import re
 
 import requests
 import reusables
-from appdirs import user_data_dir
+from platformdirs import user_data_dir
 from PySide6 import QtWidgets
 
 from fastflix.language import t

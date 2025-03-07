@@ -2,7 +2,7 @@
 from pathlib import Path
 from typing import Any
 
-from appdirs import user_data_dir
+from platformdirs import user_data_dir
 from pydantic import BaseModel, Field
 
 from fastflix.models.config import Config
