@@ -2,11 +2,12 @@
 
 ## Version 5.10.0
 
-* Adding global disable interlace check (thanks to Wontell)
-* Changing profile bitrate selector to be text field (thanks to Wontell)
+* Adding global disable interlace check (thanks to Hexenhammer)
+* Changing profile bitrate selector to be text field (thanks to Hexenhammer)
 * Fixing #637 saving temp files for seven days to allow for better debug and recovery (thanks to marillat)
 * Fixing #638 switching archived library appdirs to maintained platformdirs (thanks to marillat)
 * Fixing x265 passlog file name was not being applied properly
+* Fixing audio conversion list for rigaya encoders (thanks to Hexenhammer)
 
 ## Version 5.9.0
 

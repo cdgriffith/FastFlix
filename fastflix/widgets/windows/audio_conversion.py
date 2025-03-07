@@ -53,6 +53,29 @@ channel_list = {
     "7.1(wide)": 8,
 }
 
+venc_channels = {
+    "mono": 1,
+    "stereo": 2,
+    "2.1": 3,
+    "3.0": 3,
+    "3.0(back)": 3,
+    "3.1": 4,
+    "4.0": 4,
+    "quad": 4,
+    "quad(side)": 4,
+    "5.0": 5,
+    "5.1": 6,
+    "6.0": 6,
+    "6.0(front)": 6,
+    "hexagonal": 6,
+    "6.1": 7,
+    "6.1(front)": 7,
+    "7.0": 7,
+    "7.0(front)": 7,
+    "7.1": 8,
+    "7.1(wide)": 8,
+}
+
 back_channel_list = {
     1: "mono",
     2: "stereo",
@@ -134,7 +157,12 @@ class AudioConversion(QtWidgets.QWidget):
         channel_layout = self.audio_track.raw_info.get("channel_layout")
 
         self.downmix = QtWidgets.QComboBox()
-        self.downmix.addItems([t("None")] + list(channel_list.keys()))
+
+        if "encc" in app.fastflix.current_video.video_settings.video_encoder_settings.name.lower():
+            self.downmix.addItems([t("None")] + list(venc_channels.keys()))
+        else:
+            self.downmix.addItems([t("None")] + list(channel_list.keys()))
+
         try:
             if channel_layout:
                 self.downmix.setCurrentText(channel_layout)
