@@ -8,7 +8,7 @@ try:
     import coloredlogs
     import requests
     import reusables
-    from appdirs import user_data_dir
+    from platformdirs import user_data_dir
     from box import Box
 
     import fastflix.language  # Have to set language first thing
@@ -53,7 +53,7 @@ def startup_options():
 
     if "--test" in options:
         try:
-            import appdirs
+            import platformdirs
             import box
             import colorama
             import coloredlogs

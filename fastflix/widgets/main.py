@@ -42,7 +42,14 @@ from fastflix.resources import (
     onyx_queue_add_icon,
     get_text_color,
 )
-from fastflix.shared import error_message, message, time_to_number, yes_no_message, clean_file_string
+from fastflix.shared import (
+    error_message,
+    message,
+    time_to_number,
+    yes_no_message,
+    clean_file_string,
+    get_filesafe_datetime,
+)
 from fastflix.windows_tools import prevent_sleep_mode, allow_sleep_mode
 from fastflix.widgets.background_tasks import ThumbnailCreator
 from fastflix.widgets.progress_bar import ProgressBar, Task
@@ -415,7 +422,7 @@ class Main(QtWidgets.QWidget):
         self.generate_thumbnail()
 
     def get_temp_work_path(self):
-        new_temp = self.app.fastflix.config.work_path / f"temp_{secrets.token_hex(12)}"
+        new_temp = self.app.fastflix.config.work_path / f"temp_{get_filesafe_datetime()}_{secrets.token_hex(8)}"
         if new_temp.exists():
             return self.get_temp_work_path()
         new_temp.mkdir()
@@ -1502,10 +1509,11 @@ class Main(QtWidgets.QWidget):
         tasks = [
             Task(t("Parse Video details"), parse),
             Task(t("Extract covers"), extract_attachments),
-            Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.source_material)),
             Task(t("Determine HDR details"), parse_hdr_details),
             Task(t("Detect HDR10+"), detect_hdr10_plus),
         ]
+        if not self.app.fastflix.config.disable_deinterlace_check:
+            tasks.append(Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.source_material)))
 
         try:
             ProgressBar(self.app, tasks, hidden=hide_progress)

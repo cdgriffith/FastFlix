@@ -9,7 +9,7 @@ from pathlib import Path
 from subprocess import run
 import platform
 
-from appdirs import user_data_dir
+from platformdirs import user_data_dir
 import importlib.resources
 import requests
 import reusables
@@ -352,3 +352,15 @@ def clear_list(the_list: list, close=False):
         if close:
             the_list[i].close()
         del the_list[i]
+
+
+def get_filesafe_datetime():
+    return datetime.now().strftime("%Y%m%d")
+
+
+def parse_filesafe_datetime(dt: str):
+    return datetime.strptime(dt, "%Y%m%d")
+
+
+def is_date_older_than_7days(dt: datetime):
+    return (datetime.now() - dt) > timedelta(days=7)

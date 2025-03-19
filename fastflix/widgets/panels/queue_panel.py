@@ -10,7 +10,7 @@ from pathlib import Path
 # import tracemalloc
 import gc
 
-from appdirs import user_data_dir
+from platformdirs import user_data_dir
 import reusables
 from box import Box
 from PySide6 import QtCore, QtGui, QtWidgets
