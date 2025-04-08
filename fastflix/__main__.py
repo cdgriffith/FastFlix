@@ -23,7 +23,7 @@ def start_fastflix():
         traceback.print_exc()
         input(
             "Error while running FastFlix!\n"
-            "Plese report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)"
+            "Please report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)"
         )
     except KeyboardInterrupt:
         pass

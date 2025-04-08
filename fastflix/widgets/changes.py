@@ -31,7 +31,7 @@ class Changes(QtWidgets.QScrollArea):
             content = local_package_changes_file.read_text(encoding="utf-8", errors="ignore")
         else:
             if not local_changes_file.exists():
-                raise Exception("Could not locate changlog file")
+                raise Exception("Could not locate changelog file")
             content = local_changes_file.read_text(encoding="utf-8", errors="ignore")
 
         linked_content = issues.sub(

@@ -318,7 +318,7 @@ class Config(BaseModel):
         # 5.2.0 remove ext
         self.output_name_format = self.output_name_format.replace(".{ext}", "").replace("{ext}", "")
         # if version.parse(__version__) > version.parse(data.version):
-        #     logger.info(f"Clearing possible old config values from fastflix {data.verion}")
+        #     logger.info(f"Clearing possible old config values from fastflix {data.version}")
         #     self.vceencc_encoders = []
         #     self.nvencc_encoders = []
         #     self.qsvencc_encoders = []
