@@ -199,7 +199,7 @@ def latest_fastflix(app, show_new_dialog=False):
             title=t("New Version"),
         )
         return
-    logger.debug("FastFlix is up tp date")
+    logger.debug("FastFlix is up to date")
     if show_new_dialog:
         message(t(f"You are using the latest version of FastFlix") + f" <br>")  # <br> {contrib} 💓 <br>
 
