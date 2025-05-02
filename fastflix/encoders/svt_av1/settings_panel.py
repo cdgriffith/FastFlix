@@ -70,7 +70,7 @@ class SVT_AV1(SettingPanel):
 
         self.widgets = Box(fps=None, mode=None, segment_size=None)
 
-        self.mode = "QP"
+        self.mode = "CRF"
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_pix_fmt(), 1, 0, 1, 2)
@@ -80,7 +80,7 @@ class SVT_AV1(SettingPanel):
         grid.addLayout(self.init_sc_detection(), 4, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 5, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
-        grid.addLayout(self.init_single_pass(), 6, 2, 1, 1)
+        # grid.addLayout(self.init_single_pass(), 6, 2, 1, 1)
         grid.addLayout(self.init_svtav1_params(), 5, 2, 1, 4)
 
         grid.setRowStretch(8, 1)
@@ -130,13 +130,13 @@ class SVT_AV1(SettingPanel):
             label="Scene Detection", options=["false", "true"], widget_name="sc_detection", opt="scene_detection"
         )
 
-    def init_single_pass(self):
-        return self._add_check_box(
-            label="Single Pass",
-            widget_name="single_pass",
-            tooltip="Single Pass Encoding",
-            opt="single_pass",
-        )
+    # def init_single_pass(self):
+    #     return self._add_check_box(
+    #         label="Single Pass",
+    #         widget_name="single_pass",
+    #         tooltip="Single Pass Encoding",
+    #         opt="single_pass",
+    #     )
 
     def init_preset(self):
         return self._add_combo_box(
@@ -151,7 +151,7 @@ class SVT_AV1(SettingPanel):
         return self._add_combo_box(
             label="Quantization Mode",
             widget_name="qp_mode",
-            options=["qp", "crf"],
+            options=["crf", "qp"],
             tooltip="Use CRF or QP",
             opt="qp_mode",
         )
@@ -174,7 +174,7 @@ class SVT_AV1(SettingPanel):
         return layout
 
     def init_modes(self):
-        return self._add_modes(recommended_bitrates, recommended_qp, qp_name="qp")
+        return self._add_modes(recommended_bitrates, recommended_qp, qp_name="qp", qp_display_name="CRF/QP")
 
     def mode_update(self):
         self.widgets.custom_qp.setDisabled(self.widgets.qp.currentText() != "Custom")
@@ -188,7 +188,8 @@ class SVT_AV1(SettingPanel):
             speed=self.widgets.speed.currentText(),
             tile_columns=self.widgets.tile_columns.currentText(),
             tile_rows=self.widgets.tile_rows.currentText(),
-            single_pass=self.widgets.single_pass.isChecked(),
+            # single_pass=self.widgets.single_pass.isChecked(),
+            single_pass=True,
             scene_detection=bool(self.widgets.sc_detection.currentIndex()),
             qp_mode=self.widgets.qp_mode.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),

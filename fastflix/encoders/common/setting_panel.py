@@ -346,7 +346,10 @@ class SettingPanel(QtWidgets.QWidget):
         disable_custom_qp=False,
         show_bitrate_passes=False,
         disable_bitrate=False,
+        qp_display_name=None,
     ):
+        if not qp_display_name:
+            qp_display_name = qp_name.upper()
         self.recommended_bitrates = recommended_bitrates
         self.recommended_qps = recommended_qps
         self.qp_name = qp_name
@@ -403,7 +406,7 @@ class SettingPanel(QtWidgets.QWidget):
             bitrate_box_layout.addWidget(self.widgets.custom_bitrate)
             bitrate_box_layout.addWidget(QtWidgets.QLabel("k"))
 
-            self.qp_radio = QtWidgets.QRadioButton(qp_name.upper())
+            self.qp_radio = QtWidgets.QRadioButton(qp_display_name)
             self.qp_radio.setChecked(True)
             self.qp_radio.setFixedWidth(80)
             self.qp_radio.setToolTip(qp_help)

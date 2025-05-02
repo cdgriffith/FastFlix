@@ -6,6 +6,7 @@ from box import Box
 from iso639 import Lang
 from PySide6 import QtCore, QtGui, QtWidgets
 
+from fastflix.exceptions import FastFlixError
 from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
 from fastflix.language import t
 from fastflix.widgets.panels.abstract_list import FlixList
@@ -147,6 +148,9 @@ class AudioProfile(QtWidgets.QTabWidget):
             match_input_value = str(self.match_input.currentIndex())
         else:
             raise Exception("Internal error, what do we do sir?")
+
+        if self.convert_to.currentIndex() > 0 and not self.bitrate.text().strip():
+            raise FastFlixError("No Bitrate")
 
         return AudioMatch(
             match_type=match_type_eng[self.match_type.currentIndex()],
@@ -509,6 +513,11 @@ class ProfileWindow(QtWidgets.QWidget):
             else self.advanced_tab.color_primaries_widget.currentText()
         )
 
+        try:
+            audio_settings = self.audio_select.get_settings()
+        except FastFlixError:
+            return error_message(t("Please provide bitrates for the audio streams"))
+
         new_profile = Profile(
             profile_version=2,
             auto_crop=self.primary_tab.auto_crop.isChecked(),
@@ -519,7 +528,7 @@ class ProfileWindow(QtWidgets.QWidget):
             copy_chapters=self.main_settings.copy_chapters,
             remove_metadata=self.main_settings.remove_metadata,
             remove_hdr=self.main_settings.remove_hdr,
-            audio_filters=self.audio_select.get_settings(),
+            audio_filters=audio_settings,
             resolution_method=self.main_settings.resolution_method,
             resolution_custom=self.main_settings.resolution_custom,
             output_type=self.main.widgets.output_type_combo.currentText(),

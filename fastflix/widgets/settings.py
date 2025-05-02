@@ -351,12 +351,12 @@ class Settings(QtWidgets.QWidget):
             restart_needed = True
         self.app.fastflix.config.hdr10plus_parser = new_hdr10_parser
 
-        new_output_path = False
+        new_output_path = None
         if self.output_path_line_edit.text().strip() and not self.default_output_dir.isChecked():
             new_output_path = Path(self.output_path_line_edit.text())
         self.app.fastflix.config.output_directory = new_output_path
 
-        new_source_path = False
+        new_source_path = None
         if self.source_path_line_edit.text().strip() and not self.default_source_dir.isChecked():
             new_source_path = Path(self.source_path_line_edit.text())
         self.app.fastflix.config.source_directory = new_source_path

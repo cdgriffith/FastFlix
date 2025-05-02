@@ -196,8 +196,7 @@ def app_setup(
         sys.exit(1)
 
     if app.fastflix.config.theme != "system":
-        QtCore.QDir.addSearchPath(app.fastflix.config.theme, str(breeze_styles_path / app.fastflix.config.theme))
-        file = QtCore.QFile(f"{app.fastflix.config.theme}:stylesheet.qss")
+        file = QtCore.QFile(str(breeze_styles_path / app.fastflix.config.theme / "stylesheet.qss"))
         file.open(QtCore.QFile.OpenModeFlag.ReadOnly | QtCore.QFile.OpenModeFlag.Text)
         stream = QtCore.QTextStream(file)
         data = stream.readAll()
@@ -233,7 +232,9 @@ def app_setup(
     container = Container(app)
     container.show()
 
-    container.move(QtGui.QGuiApplication.primaryScreen().availableGeometry().center() - container.rect().center())
+    # container.move(QtGui.QGuiApplication.primaryScreen().availableGeometry().center() - container.rect().center())
+    screen_geometry = QtGui.QGuiApplication.primaryScreen().availableGeometry()
+    container.move(screen_geometry.center() - container.rect().center())
 
     if not app.fastflix.config.disable_version_check:
         latest_fastflix(app=app, show_new_dialog=False)
@@ -257,7 +258,7 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, por
     )
 
     try:
-        app.exec_()
+        app.exec()
     except Exception:
         logger.exception("Error while running FastFlix")
         raise

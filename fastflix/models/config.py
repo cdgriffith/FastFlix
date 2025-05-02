@@ -24,7 +24,6 @@ from fastflix.version import __version__
 from fastflix.rigaya_helpers import get_all_encoder_formats_and_devices
 
 logger = logging.getLogger("fastflix")
-
 ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
 
 NO_OPT = object()
@@ -109,8 +108,8 @@ class Config(BaseModel):
     nvencc: Path | None = Field(default_factory=lambda: where("NVEncC64") or where("NVEncC"))
     vceencc: Path | None = Field(default_factory=lambda: where("VCEEncC64") or where("VCEEncC"))
     qsvencc: Path | None = Field(default_factory=lambda: where("QSVEncC64") or where("QSVEncC"))
-    output_directory: Path | None = False
-    source_directory: Path | None = False
+    output_directory: Path | None = None
+    source_directory: Path | None = None
     output_name_format: str = "{source}-fastflix-{rand_4}"
     flat_ui: bool = True
     language: str = "eng"
@@ -287,6 +286,12 @@ class Config(BaseModel):
                 continue
             if key in self and key not in ("config_path", "version"):
                 setattr(self, key, Path(value) if key in paths and value else value)
+
+        if self.output_directory is False:
+            self.output_directory = None
+
+        if self.source_directory is False:
+            self.source_directory = None
 
         if not self.ffmpeg or not self.ffmpeg.exists():
             self.ffmpeg = find_ffmpeg_file("ffmpeg", raise_on_missing=True)

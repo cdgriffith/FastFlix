@@ -497,7 +497,7 @@ class SVTAV1Settings(EncoderSettings):
     single_pass: bool = False
     speed: str = "7"  # Renamed preset in svtav1 encoder
     qp: Optional[Union[int, float]] = 24
-    qp_mode: str = "qp"
+    qp_mode: str = "crf"
     bitrate: Optional[str] = None
     svtav1_params: list[str] = Field(default_factory=list)
 
