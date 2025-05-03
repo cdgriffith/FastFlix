@@ -55,9 +55,7 @@ def windows_gpu_detect():
 
 
 def gpu_detect():
-    if system == "Linux":
-        return linux_gpu_detect()
-    elif system == "Windows":
+    if system == "Windows":
         return windows_gpu_detect()
     else:
         print("Unsupported OS")

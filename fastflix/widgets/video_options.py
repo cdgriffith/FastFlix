@@ -154,12 +154,12 @@ class VideoOptions(QtWidgets.QTabWidget):
             error_message(
                 f"This encoder, {self.main.current_encoder.name} does not support concatenating files together"
             )
+        if previous_encoder_no_audio:
+            self.audio.new_source(self.audio_formats)
         # Page update does a reload which bases itself off the current encoder so we have to do audio formats after
         if not self.reloading:
             self.audio.allowed_formats(self._get_audio_formats(encoder))
             # self.update_profile()
-        if previous_encoder_no_audio:
-            self.audio.new_source(self.audio_formats)
 
     def get_settings(self):
         if not self.app.fastflix.current_video:

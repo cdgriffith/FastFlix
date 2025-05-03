@@ -223,7 +223,9 @@ def app_setup(
     if platform.system() == "Windows":
         if app.fastflix.config.auto_gpu_check is None:
             app.fastflix.config.auto_gpu_check = yes_no_message(
-                "Do you want FastFlix to automatically detect your GPUs and download the optional encoders for them?\n\nThis will include downloading 7zip on Windows platform.",
+                t(
+                    "Do you want FastFlix to automatically detect your GPUs and download the optional encoders for them?\n\nThis will include downloading 7zip on Windows platform."
+                ),
                 title="Allow Optional Downloads",
             )
         if app.fastflix.config.auto_gpu_check:
