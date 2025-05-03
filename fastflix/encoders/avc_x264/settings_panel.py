@@ -154,7 +154,8 @@ class AVC(SettingPanel):
         return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf", show_bitrate_passes=True)
 
     def mode_update(self):
-        self.widgets.custom_crf.setDisabled(self.widgets.crf.currentText() != "Custom")
+        if "custom_crf" in self.widgets:
+            self.widgets.custom_crf.setDisabled(self.widgets.crf.currentText() != "Custom")
         self.widgets.custom_bitrate.setDisabled(self.widgets.bitrate.currentText() != "Custom")
         self.main.build_commands()
 
