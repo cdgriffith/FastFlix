@@ -175,6 +175,7 @@ class Main(QtWidgets.QWidget):
         self.scale_updating = False
         self.last_thumb_hash = ""
         self.page_updating = False
+        self.previous_encoder_no_audio = False
 
         self.large_preview = LargePreview(self)
 
@@ -778,8 +779,9 @@ class Main(QtWidgets.QWidget):
     def change_encoder(self):
         if not self.initialized or not self.convert_to:
             return
-        self.video_options.change_conversion(self.convert_to)
+        self.video_options.change_conversion(self.convert_to, previous_encoder_no_audio=self.previous_encoder_no_audio)
         self.update_output_type()
+        self.previous_encoder_no_audio = self.convert_to.lower() in ("copy", "modify", "gif")
 
     def update_output_type(self):
         self.widgets.output_type_combo.clear()

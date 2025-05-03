@@ -118,7 +118,7 @@ class VideoOptions(QtWidgets.QTabWidget):
     def audio_formats(self):
         return self._get_audio_formats()
 
-    def change_conversion(self, conversion):
+    def change_conversion(self, conversion, previous_encoder_no_audio=False):
         conversion = conversion.strip()
         encoder = self.app.fastflix.encoders[conversion]
         self.current_settings.close()
@@ -158,6 +158,8 @@ class VideoOptions(QtWidgets.QTabWidget):
         if not self.reloading:
             self.audio.allowed_formats(self._get_audio_formats(encoder))
             # self.update_profile()
+        if previous_encoder_no_audio:
+            self.audio.new_source(self.audio_formats)
 
     def get_settings(self):
         if not self.app.fastflix.current_video:

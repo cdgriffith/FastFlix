@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from pathlib import Path
 from typing import Optional, Union
 
 from pydantic import BaseModel, Field, field_validator
@@ -49,7 +48,7 @@ class AttachmentTrack(BaseModel):
     outdex: int
     index: Optional[int] = None
     attachment_type: str = "cover"
-    file_path: Optional[Path] = None
+    file_path: Optional[str] = None
     filename: Optional[str] = None
 
 

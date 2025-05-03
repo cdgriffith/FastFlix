@@ -10797,3 +10797,11 @@ Add Audio Track:
   eng: Add Audio Track
 Add Text Based Subtitle Track:
   eng: Add Text Based Subtitle Track
+Audio Normalization:
+  eng: Audio Normalization
+This will run the audio normalization process on all streams of:
+  eng: This will run the audio normalization process on all streams of
+"and create an output file with audio format ":
+  eng: "and create an output file with audio format "
+Please make sure the source and output files are specified:
+  eng: Please make sure the source and output files are specified

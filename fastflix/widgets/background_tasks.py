@@ -90,11 +90,12 @@ class ExtractSubtitleSRT(QtCore.QThread):
 
 
 class AudioNoramlize(QtCore.QThread):
-    def __init__(self, app: FastFlixApp, main, signal):
+    def __init__(self, app: FastFlixApp, main, audio_type, signal):
         super().__init__(main)
         self.main = main
         self.app = app
         self.signal = signal
+        self.audio_type = audio_type
 
     def run(self):
         try:
@@ -103,7 +104,7 @@ class AudioNoramlize(QtCore.QThread):
             if not out_file:
                 self.signal.emit("No source video provided")
             normalizer = FFmpegNormalize(
-                audio_codec="aac", extension=out_file.suffix.lstrip("."), video_codec="copy", progress=True
+                audio_codec=self.audio_type, extension=out_file.suffix.lstrip("."), video_codec="copy", progress=True
             )
             logger.info(f"Running audio normalization - will output video to {str(out_file)}")
             normalizer.add_media_file(str(self.app.fastflix.current_video.source), str(out_file))
