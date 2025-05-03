@@ -10757,3 +10757,33 @@ Automatically download FFmpeg?:
   ukr: Автоматично завантажити FFmpeg?
   kor: FFmpeg를 자동으로 다운로드하시겠습니까?
   ron: Descărcați automat FFmpeg?
+Parallel Encoding:
+  eng: Parallel Encoding
+  deu: Parallele Kodierung
+  fra: Encodage parallèle
+  ita: Codifica parallela
+  spa: Codificación paralela
+  jpn: パラレル・エンコーディング
+  rus: Параллельное кодирование
+  por: Codificação paralela
+  swe: Parallell kodning
+  pol: Kodowanie równoległe
+  chs: 并行编码
+  ukr: Паралельне кодування
+  kor: 병렬 인코딩
+  ron: Codificare paralelă
+Enable either auto split or parallel encoding mode.:
+  eng: Enable either auto split or parallel encoding mode.
+  deu: Aktivieren Sie entweder die automatische Aufteilung oder den parallelen Codierungsmodus.
+  fra: Activer le mode d'encodage auto split ou parallèle.
+  ita: Abilitare la modalità di codifica automatica o parallela.
+  spa: Habilita el modo de división automática o de codificación paralela.
+  jpn: 自動分割またはパラレルエンコーディングモードのいずれかを有効にする。
+  rus: Включите режим автоматического разделения или параллельного кодирования.
+  por: Ativar o modo de codificação automática ou paralela.
+  swe: Aktivera antingen auto split eller parallell kodning.
+  pol: Włącz tryb automatycznego podziału lub kodowania równoległego.
+  chs: 启用自动分割或并行编码模式。
+  ukr: Увімкніть режим автоматичного розділення або паралельного кодування.
+  kor: 자동 분할 또는 병렬 인코딩 모드를 활성화합니다.
+  ron: Activați divizarea automată sau modul de codare paralelă.
