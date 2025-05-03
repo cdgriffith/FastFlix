@@ -375,7 +375,7 @@ class SettingPanel(QtWidgets.QWidget):
             self.widgets.bitrate.addItems(recommended_bitrates)
             self.widgets.bitrate_passes = QtWidgets.QComboBox()
             self.widgets.bitrate_passes.addItems(["1", "2"])
-            self.widgets.bitrate_passes.currentIndexChanged.connect(lambda: self.mode_update())
+
             config_opt = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
             custom_bitrate = False
             try:
@@ -387,7 +387,6 @@ class SettingPanel(QtWidgets.QWidget):
                 self.widgets.bitrate.setCurrentText("Custom")
             else:
                 self.widgets.bitrate.setCurrentIndex(default_bitrate_index)
-            self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
             self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000" if not custom_bitrate else config_opt)
             self.widgets.custom_bitrate.setValidator(QtGui.QDoubleValidator())
             self.widgets.custom_bitrate.setFixedWidth(100)
@@ -429,7 +428,6 @@ class SettingPanel(QtWidgets.QWidget):
             if default_qp_index is not None:
                 self.widgets[qp_name].setCurrentIndex(default_qp_index)
 
-        self.widgets[qp_name].currentIndexChanged.connect(lambda: self.mode_update())
         if not disable_custom_qp:
             self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
             self.widgets[f"custom_{qp_name}"].setFixedWidth(100)
@@ -443,6 +441,9 @@ class SettingPanel(QtWidgets.QWidget):
             self.bitrate_radio.setChecked(True)
         if not disable_bitrate:
             qp_box_layout.addWidget(self.qp_radio)
+            self.widgets.bitrate_passes.currentIndexChanged.connect(lambda: self.mode_update())
+            self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
+        self.widgets[qp_name].currentIndexChanged.connect(lambda: self.mode_update())
         qp_box_layout.addWidget(self.widgets[qp_name], 1)
         qp_box_layout.addStretch(1)
         qp_box_layout.addStretch(1)

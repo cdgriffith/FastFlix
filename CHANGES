@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 5.11.1
+
+* Fixing custom_crf not being found (thanks to Norbert)
+
 ## Version 5.11.0
 
 * Adding parallel encoding options for rigaya hardware encoders (thanks to Hexenhammer)
