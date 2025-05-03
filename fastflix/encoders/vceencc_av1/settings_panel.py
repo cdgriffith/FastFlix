@@ -128,13 +128,9 @@ class VCEENCC(VCEPanel):
             )
         )
 
-        warning_label = QtWidgets.QLabel()
-        warning_label.setPixmap(QtGui.QIcon(get_icon("onyx-warning", self.app.fastflix.config.theme)).pixmap(22))
-
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
         grid.addWidget(guide_label, 12, 0, 1, 4)
-        grid.addWidget(warning_label, 12, 4, 1, 1, alignment=QtCore.Qt.AlignRight)
 
         self.setLayout(grid)
         self.hide()

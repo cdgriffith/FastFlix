@@ -17,6 +17,7 @@ from fastflix.language import t
 from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg, grab_stable_ffmpeg
+from fastflix.gpu_detect import update_rigaya_encoders
 from fastflix.resources import main_icon, get_icon, changes_file, local_changes_file, local_package_changes_file
 from fastflix.shared import (
     clean_logs,
@@ -264,6 +265,9 @@ class Container(QtWidgets.QMainWindow):
         ffmpeg_update_action = QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), t("Download Nightly FFmpeg"), self)
         ffmpeg_update_action.triggered.connect(self.download_ffmpeg)
 
+        rigaya_update_action = QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), t("Update Rigaya's Encoders"), self)
+        rigaya_update_action.triggered.connect(self.download_rigaya)
+
         clean_logs_action = QAction(self.si(QtWidgets.QStyle.SP_DialogResetButton), t("Clean Old Logs"), self)
         clean_logs_action.triggered.connect(self.clean_old_logs)
 
@@ -282,6 +286,7 @@ class Container(QtWidgets.QMainWindow):
         if reusables.win_based:
             help_menu.addAction(ffmpeg_update_stable_action)
             help_menu.addAction(ffmpeg_update_action)
+            help_menu.addAction(rigaya_update_action)
         help_menu.addSeparator()
         help_menu.addAction(about_action)
 
@@ -373,6 +378,18 @@ class Container(QtWidgets.QMainWindow):
             else:
                 self.app.fastflix.config.ffmpeg = ffmpeg
                 self.app.fastflix.config.ffprobe = ffprobe
+        self.pb = None
+
+    def download_rigaya(self):
+        try:
+            self.pb = ProgressBar(
+                self.app,
+                [Task(t("Updating Rigaya's encoders"), update_rigaya_encoders)],
+                signal_task=True,
+                can_cancel=True,
+            )
+        except Exception:
+            error_message(t("Could not update Rigaya's encoders"), traceback=True)
         self.pb = None
 
     def clean_old_logs(self, show_errors=True):

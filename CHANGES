@@ -1,7 +1,8 @@
 # Changelog
 
-## Version 5.11.1
+## Version 5.12.0
 
+* Adding automatic downloads for rigaya encoders on Windows
 * Fixing custom_crf not being found (thanks to Norbert)
 
 ## Version 5.11.0

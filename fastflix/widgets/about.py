@@ -57,6 +57,7 @@ class About(QtWidgets.QWidget):
             "mistune (BSD), colorama (BSD), coloredlogs (MIT), Requests (Apache 2.0)<br>"
             "appdirs (MIT), iso639-lang (MIT), psutil (BSD), pathvalidate (MIT) <br>"
             "BreezeStyleSheets (MIT), PySide6 (LGPL)"
+            f",{link('https://www.7-zip.org/', '7-Zip', app.fastflix.config.theme)} (GPL)"
         )
         supporting_libraries_label.setAlignment(QtCore.Qt.AlignCenter)
         supporting_libraries_label.setOpenExternalLinks(True)

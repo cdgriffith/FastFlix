@@ -6,6 +6,7 @@ import shutil
 import sys
 from pathlib import Path
 import re
+import subprocess
 
 import requests
 import reusables
@@ -17,6 +18,8 @@ from fastflix.shared import message
 from fastflix.exceptions import FastFlixError
 
 logger = logging.getLogger("fastflix")
+
+seven_zip_folder = Path(user_data_dir("7-Zip", appauthor=False, roaming=True))
 
 
 def ask_for_ffmpeg():
@@ -169,3 +172,129 @@ def latest_ffmpeg(signal, stop_signal, ffmpeg_version="latest", **_):
     signal.emit(100)
     # if done_alert:
     #     message(f"FFmpeg has been downloaded to {ffmpeg_folder}")
+
+
+def download_rigaya(stop_signal, seven_zip_path, app_name="NVEnc", **_):
+    """"""
+    stop = False
+    logger.debug(f"Downloading Rigaya {app_name}")
+
+    def stop_me():
+        nonlocal stop
+        stop = True
+
+    stop_signal.connect(stop_me)
+    asset_folder = Path(user_data_dir(app_name, appauthor=False, roaming=True))
+    asset_folder.mkdir(exist_ok=True)
+
+    url = f"https://api.github.com/repos/rigaya/{app_name}/releases/latest"
+
+    try:
+        data = requests.get(url, timeout=15).json()
+    except Exception:
+        logger.exception(t("Could not connect to GitHub to check for newer versions."))
+        raise
+
+    if stop:
+        logger.error(t("Download Cancelled"))
+        return
+
+    asset = None
+    for possible_asset in data["assets"]:
+        if "x64.7z" in possible_asset["name"]:
+            asset = possible_asset
+            break
+
+    if not asset:
+        logger.error(
+            "Could not find any matching expected patterns, please check"
+            f" {t('latest release from')} <a href='https://github.com/rigaya/NVEnc/releases/'>"
+            f"https://github.com/rigaya/{app_name}/releases/</a> "
+            f"and reach out to FastFlix team about this issue if they exist."
+        )
+        raise Exception()
+
+    logger.debug(f"Downloading version {asset['name']}")
+
+    req = requests.get(asset["browser_download_url"], stream=True)
+
+    filename = asset_folder / "download-full.7z"
+    with open(filename, "wb") as f:
+        for i, block in enumerate(req.iter_content(chunk_size=1024)):
+            f.write(block)
+            if stop:
+                f.close()
+                Path(filename).unlink()
+                message(t("Download Cancelled"))
+                return
+
+    if filename.stat().st_size < 1000:
+        logger.error(t("NVEnc was not properly downloaded as the file size is too small"))
+        try:
+            Path(filename).unlink()
+        except OSError:
+            pass
+        raise
+
+    try:
+        subprocess.run([seven_zip_path, "e", str(filename), "-o" + str(asset_folder), "-y"], check=True)
+    except Exception:
+        logger.exception("Could not extract nvenc files")
+        raise
+
+    if stop:
+        Path(filename).unlink()
+        return
+    file = next(asset_folder.glob(f"{app_name}*64.exe"))
+    if not file.exists():
+        logger.error(t("Could not find the executable in the extracted files"))
+        raise FastFlixError(t("Could not find the executable in the extracted files"))
+    return file
+
+
+def download_7zip(stop_signal, **_):
+    stop = False
+    logger.debug("Downloading 7-Zip")
+
+    def stop_me():
+        nonlocal stop
+        stop = True
+
+    stop_signal.connect(stop_me)
+    filename = seven_zip_folder / "7zr.exe"
+    seven_zip_folder.mkdir(exist_ok=True)
+
+    url = "https://www.7-zip.org/a/7zr.exe"
+
+    try:
+        req = requests.get(url, stream=True, timeout=15)
+        with open(filename, "wb") as f:
+            for i, block in enumerate(req.iter_content(chunk_size=1024)):
+                f.write(block)
+                if stop:
+                    f.close()
+                    Path(filename).unlink()
+                    message(t("Download Cancelled"))
+                    return
+    except Exception as e:
+        raise FastFlixError(f"Could not download 7-Zip: {e}")
+
+    if filename.stat().st_size < 1000:
+        try:
+            Path(filename).unlink()
+        except OSError:
+            pass
+        raise FastFlixError("Could not download 7-Zip - filesize too msall")
+
+    return filename
+
+
+def find_seven_zip_windows() -> Path | None:
+    """Finds the 7-Zip executable"""
+    seven_zip_path = seven_zip_folder / "7zr.exe"
+    seven_zip_on_path = shutil.which("7zr") or shutil.which("7z")
+    if seven_zip_path.exists():
+        return seven_zip_path
+    if seven_zip_on_path:
+        return Path(seven_zip_on_path)
+    return None
