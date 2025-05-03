@@ -375,7 +375,6 @@ class SettingPanel(QtWidgets.QWidget):
             self.widgets.bitrate.addItems(recommended_bitrates)
             self.widgets.bitrate_passes = QtWidgets.QComboBox()
             self.widgets.bitrate_passes.addItems(["1", "2"])
-            self.widgets.bitrate_passes.setCurrentIndex(1)
             self.widgets.bitrate_passes.currentIndexChanged.connect(lambda: self.mode_update())
             config_opt = self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate")
             custom_bitrate = False
@@ -399,6 +398,9 @@ class SettingPanel(QtWidgets.QWidget):
             bitrate_box_layout.addWidget(self.widgets.bitrate, 1)
             bitrate_box_layout.addStretch(1)
             if show_bitrate_passes:
+                self.widgets.bitrate_passes.setCurrentIndex(
+                    int(self.app.fastflix.config.encoder_opt(self.profile_name, "bitrate_passes")) - 1
+                )
                 bitrate_box_layout.addWidget(QtWidgets.QLabel(t("Passes") + ":"))
                 bitrate_box_layout.addWidget(self.widgets.bitrate_passes)
             bitrate_box_layout.addStretch(1)
@@ -655,6 +657,18 @@ class RigayaPanel(SettingPanel):
             opt="copy_hdr10",
         )
         return layout
+
+    def init_parallel_mode(self, add_split=False):
+        options = ["none", "parallel"]
+        if add_split:
+            options.insert(1, "split")
+        return self._add_combo_box(
+            label="Parallel Encoding",
+            widget_name="split_mode",
+            options=options,
+            opt="split_mode",
+            tooltip="Enable either auto split or parallel encoding mode.",
+        )
 
 
 class QSVEncPanel(RigayaPanel):

@@ -103,6 +103,12 @@ def build(fastflix: FastFlix):
     elif video.video_settings.vsync == "vfr":
         vsync_setting = "vfr"
 
+    split_mode = ""
+    if settings.split_mode == "split":
+        split_mode = f"--split-enc auto_forced"
+    elif settings.split_mode == "parallel":
+        split_mode = f"--parallel auto"
+
     source_fps = f"--fps {video.video_settings.source_fps}" if video.video_settings.source_fps else ""
 
     command = [
@@ -160,6 +166,7 @@ def build(fastflix: FastFlix):
         (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
         ("--vpp-yadif" if video.video_settings.deinterlace else ""),
         remove_hdr,
+        split_mode,
         "--psnr --ssim" if settings.metrics else "",
         build_audio(video.audio_tracks, video.streams.audio),
         build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height),
