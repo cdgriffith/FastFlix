@@ -184,5 +184,5 @@ def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video
 
     commands = f" --sub-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
     if commands:
-        return f"{commands} -m default_mode:infer_no_subs"
+        return commands
     return ""

@@ -110,7 +110,7 @@ class VCEENCC(VCEPanel):
 
         self.init_pa_row()
         grid.addLayout(self.pa_area, 7, 0, 2, 6)
-
+        grid.addLayout(self.init_parallel_mode(), 8, 4, 1, 2)
         grid.addLayout(self.init_dhdr10_info(), 9, 2, 1, 4)
 
         self.ffmpeg_level = QtWidgets.QLabel()
@@ -298,6 +298,7 @@ class VCEENCC(VCEPanel):
             output_depth=(
                 None if self.widgets.output_depth.currentIndex() == 0 else self.widgets.output_depth.currentText()
             ),
+            split_mode=self.widgets.split_mode.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

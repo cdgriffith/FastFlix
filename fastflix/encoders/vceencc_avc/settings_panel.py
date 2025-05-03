@@ -110,7 +110,8 @@ class VCEENCCAVC(VCEPanel):
         grid.addLayout(qp_line, 6, 0, 1, 6)
 
         self.init_pa_row()
-        grid.addLayout(self.pa_area, 8, 0, 2, 6)
+        grid.addLayout(self.pa_area, 8, 0, 2, 4)
+        grid.addLayout(self.init_parallel_mode(), 8, 4, 1, 2)
 
         grid.setRowStretch(11, 1)
 
@@ -304,6 +305,7 @@ class VCEENCCAVC(VCEPanel):
             output_depth=(
                 None if self.widgets.output_depth.currentIndex() == 0 else self.widgets.output_depth.currentText()
             ),
+            split_mode=self.widgets.split_mode.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

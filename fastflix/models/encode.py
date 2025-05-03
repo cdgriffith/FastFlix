@@ -166,6 +166,7 @@ class NVEncCSettings(EncoderSettings):
     device: int = 0
     decoder: str = "Auto"
     copy_hdr10: bool = False
+    split_mode: str = "none"
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -207,6 +208,7 @@ class NVEncCAV1Settings(EncoderSettings):
     device: int = 0
     decoder: str = "Auto"
     copy_hdr10: bool = False
+    split_mode: str = "none"
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -240,6 +242,7 @@ class QSVEncCSettings(EncoderSettings):
     adapt_cqm: bool = False
     adapt_ltr: bool = False
     copy_hdr10: bool = False
+    split_mode: str = "none"
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -273,6 +276,7 @@ class QSVEncCAV1Settings(EncoderSettings):
     adapt_cqm: bool = False
     adapt_ltr: bool = False
     copy_hdr10: bool = False
+    split_mode: str = "none"
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -305,6 +309,7 @@ class QSVEncCH264Settings(EncoderSettings):
     adapt_ref: bool = False
     adapt_cqm: bool = False
     adapt_ltr: bool = False
+    split_mode: str = "none"
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -344,6 +349,7 @@ class NVEncCAVCSettings(EncoderSettings):
     b_ref_mode: str = "disabled"
     device: int = 0
     decoder: str = "Auto"
+    split_mode: str = "none"
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -386,6 +392,7 @@ class VCEEncCSettings(EncoderSettings):
     pa_motion_quality: str | None = None
     output_depth: str | None = None
     copy_hdr10: bool = False
+    split_mode: str = "none"
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -428,6 +435,7 @@ class VCEEncCAV1Settings(EncoderSettings):
     pa_motion_quality: str | None = None
     output_depth: str | None = None
     copy_hdr10: bool = False
+    split_mode: str = "none"
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -469,6 +477,7 @@ class VCEEncCAVCSettings(EncoderSettings):
     pa_taq: int | None = None
     pa_motion_quality: str | None = None
     output_depth: str | None = None
+    split_mode: str = "none"
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -497,7 +506,7 @@ class SVTAV1Settings(EncoderSettings):
     single_pass: bool = False
     speed: str = "7"  # Renamed preset in svtav1 encoder
     qp: Optional[Union[int, float]] = 24
-    qp_mode: str = "qp"
+    qp_mode: str = "crf"
     bitrate: Optional[str] = None
     svtav1_params: list[str] = Field(default_factory=list)
 

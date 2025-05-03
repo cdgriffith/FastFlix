@@ -77,7 +77,7 @@ def build(fastflix: FastFlix):
         beginning += f" -svtav1-params \"{':'.join(svtav1_params)}\" "
 
     if not settings.single_pass:
-        pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
+        pass_log_file = f"pass_log_file_{secrets.token_hex(10)}"
         beginning += f'-passlogfile "{pass_log_file}" '
 
     pass_type = "bitrate" if settings.bitrate else "QP"

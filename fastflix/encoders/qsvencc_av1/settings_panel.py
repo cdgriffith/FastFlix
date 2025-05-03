@@ -131,8 +131,8 @@ class QSVAV1Enc(QSVEncPanel):
         # adapt_line.addLayout(self.init_adapt_cqm())
         # grid.addLayout(adapt_line, 7, 2, 1, 4)
         #
-        grid.addLayout(self.init_dhdr10_info(), 7, 2, 1, 4)
-
+        grid.addLayout(self.init_dhdr10_info(), 7, 2, 1, 2)
+        grid.addLayout(self.init_parallel_mode(), 7, 4, 1, 2)
         self.ffmpeg_level = QtWidgets.QLabel()
         grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
 
@@ -340,6 +340,7 @@ class QSVAV1Enc(QSVEncPanel):
             adapt_ltr=self.widgets.adapt_ltr.isChecked(),
             adapt_cqm=self.widgets.adapt_cqm.isChecked(),
             adapt_ref=self.widgets.adapt_ref.isChecked(),
+            split_mode=self.widgets.split_mode.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

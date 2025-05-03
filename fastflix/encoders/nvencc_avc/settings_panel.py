@@ -125,6 +125,7 @@ class NVENCCAVC(RigayaPanel):
         even_more.addStretch(1)
         even_more.addLayout(self.init_metrics())
         grid.addLayout(even_more, 7, 2, 1, 4)
+        grid.addLayout(self.init_parallel_mode(), 8, 4, 1, 2)
 
         grid.setRowStretch(9, 1)
 
@@ -399,6 +400,7 @@ class NVENCCAVC(RigayaPanel):
             b_ref_mode=self.widgets.b_ref_mode.currentText(),
             device=int(self.widgets.device.currentText().split(":", 1)[0] or 0),
             decoder=self.widgets.decoder.currentText(),
+            split_mode=self.widgets.split_mode.currentText(),
         )
 
         encode_type, q_value = self.get_mode_settings()

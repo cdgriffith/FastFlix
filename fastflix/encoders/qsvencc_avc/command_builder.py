@@ -119,6 +119,7 @@ def build(fastflix: FastFlix):
         (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
         ("--vpp-yadif" if video.video_settings.deinterlace else ""),
         remove_hdr,
+        "--parallel auto" if settings.split_mode == "parallel" else "",
         ("--adapt-ref" if settings.adapt_ref else ""),
         ("--adapt-ltr" if settings.adapt_ltr else ""),
         ("--adapt-cqm" if settings.adapt_cqm else ""),
