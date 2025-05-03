@@ -364,7 +364,7 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets.mode.buttonClicked.connect(self.set_mode)
         qp_help = (
             f"{qp_name.upper()} {t('is extremely source dependant')},\n"
-            f"{t('the resolution-to-')}{qp_name.upper()}{t('are mere suggestions!')}"
+            f"{t('the resolution-to-')}{qp_name.upper()} {t('are mere suggestions!')}"
         )
         config_opt = None
         if not disable_bitrate:
