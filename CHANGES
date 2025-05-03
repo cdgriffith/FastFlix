@@ -3,6 +3,8 @@
 ## Version 5.12.0
 
 * Adding automatic downloads for rigaya encoders on Windows
+* Adding audio normalization (thanks to Xoanon88)
+* Adding ability to add subtitle or audio track
 * Fixing custom_crf not being found (thanks to Norbert)
 
 ## Version 5.11.0

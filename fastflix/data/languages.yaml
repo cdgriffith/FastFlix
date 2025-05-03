@@ -10787,3 +10787,13 @@ Enable either auto split or parallel encoding mode.:
   ukr: Увімкніть режим автоматичного розділення або паралельного кодування.
   kor: 자동 분할 또는 병렬 인코딩 모드를 활성화합니다.
   ron: Activați divizarea automată sau modul de codare paralelă.
+Update Rigaya's Encoders:
+  eng: Update Rigaya's Encoders
+Detect GPUs:
+  eng: Detect GPUs
+Run Audio Normalize:
+  eng: Run Audio Normalize
+Add Audio Track:
+  eng: Add Audio Track
+Add Text Based Subtitle Track:
+  eng: Add Text Based Subtitle Track

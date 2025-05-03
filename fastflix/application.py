@@ -83,6 +83,7 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.vaapi_hevc import main as vaapi_hevc_plugin
     from fastflix.encoders.vaapi_vp9 import main as vaapi_vp9_plugin
     from fastflix.encoders.vaapi_mpeg2 import main as vaapi_mpeg2_plugin
+    from fastflix.encoders.modify import main as modify_plugin
 
     encoders = [
         hevc_plugin,
@@ -103,6 +104,7 @@ def init_encoders(app: FastFlixApp, **_):
         vaapi_vp9_plugin,
         vaapi_mpeg2_plugin,
         copy_plugin,
+        modify_plugin,
     ]
 
     if DEVMODE:

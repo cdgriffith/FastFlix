@@ -37,6 +37,7 @@ from fastflix.models.encode import (
     VAAPIHEVCSettings,
     VAAPIVP9Settings,
     VAAPIMPEG2Settings,
+    ModifySettings,
 )
 
 __all__ = ["VideoSettings", "Status", "Video", "Crop", "Status"]
@@ -139,6 +140,7 @@ class VideoSettings(BaseModel):
             VAAPIHEVCSettings,
             VAAPIVP9Settings,
             VAAPIMPEG2Settings,
+            ModifySettings,
         ]
     ] = None
     # audio_tracks: list[AudioTrack] = Field(default_factory=list)

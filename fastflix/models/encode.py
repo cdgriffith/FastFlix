@@ -617,6 +617,13 @@ class CopySettings(EncoderSettings):
     name: str = "Copy"
 
 
+class ModifySettings(EncoderSettings):
+    name: str = "Modify"
+    audio_normalize: bool = False
+    add_audio_track: str | None = None
+    add_subtitle_track: str | None = None
+
+
 class VAAPIH264Settings(EncoderSettings):
     name: str = "VAAPI H264"  # must be same as encoder name in main
 
@@ -685,6 +692,7 @@ setting_types = {
     "gif": GIFSettings,
     "webp": WebPSettings,
     "copy_settings": CopySettings,
+    "modify_settings": ModifySettings,
     "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
     "qsvencc_hevc": QSVEncCSettings,
     "qsvencc_av1": QSVEncCAV1Settings,
