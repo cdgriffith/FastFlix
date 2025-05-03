@@ -3,10 +3,13 @@
 ## Version 5.11.0
 
 * Adding parallel encoding options for rigaya hardware encoders (thanks to Hexenhammer)
+* Adding builds for Ubuntu 22.04 and mac 13 again
 * Changing SVT-AV1 to single pass only due to ffmpeg not allowing passlog files properly
 * Changing SVT-AV1 to CRF quantization mode by default
 * Fixing #642 Possible to create a profile without bitrate specified for audio stream (thanks to Xoanon88)
+* Fixing #644 various typos (thanks to luzpaz)
 * Fixing #646 PydanticSerializationUnexpectedValue warning during startup (thanks to Noelle Leigh)
+* Fixing #647 another typo (thanks to Noelle Leigh)
 * Fixing #649 1-Pass Bitrate stored in x265 profile not honored (thanks to Xoanon88)
 * Fixing how program is centered on multiple monitors
 * Fixing do not pass infer_no_subs to encc encoders
