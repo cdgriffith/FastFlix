@@ -39,6 +39,8 @@ dependencies = [
     "requests>=2.28,<3.0",
     "reusables>=0.9.6,<0.10.0",
     "setuptools>=75.8",
+    "wmi>=1.5.1; sys_platform == 'win32'",
+    "ffmpeg-normalize>=1.31.3,<2.0",
 ]
 
 [project.optional-dependencies]

@@ -131,6 +131,10 @@ class Config(BaseModel):
     portable_mode: bool = False
     ui_scale: str = "1"
     clean_old_logs: bool = True
+    auto_gpu_check: bool | None = None
+    gpu_fingerprint: str | None = None
+    opencl_support: bool | None = None
+    seven_zip: Path | None = None
     sane_audio_selection: list = Field(
         default_factory=lambda: [
             "aac",
@@ -274,7 +278,18 @@ class Config(BaseModel):
                 "there may be non-recoverable errors while loading it."
             )
 
-        paths = ("work_path", "ffmpeg", "ffprobe", "hdr10plus_parser", "nvencc", "output_directory", "source_directory")
+        paths = (
+            "work_path",
+            "ffmpeg",
+            "ffprobe",
+            "hdr10plus_parser",
+            "nvencc",
+            "output_directory",
+            "source_directory",
+            "seven_zip",
+            "vceencc",
+            "qsvencc",
+        )
         for key, value in data.items():
             if key == "profiles":
                 self.profiles = {}
@@ -328,7 +343,7 @@ class Config(BaseModel):
         #     self.nvencc_encoders = []
         #     self.qsvencc_encoders = []
 
-        self.check_hw_encoders()
+        # self.check_hw_encoders()
 
     def check_hw_encoders(self):
         if self.nvencc:

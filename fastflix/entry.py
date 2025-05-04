@@ -157,6 +157,7 @@ def main(portable_mode=False):
         exit_status = 1
 
         try:
+            logger.info("Preparing separate process for GUI - this may take a moment")
             gui_proc = Process(
                 target=separate_app_process,
                 args=(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode),

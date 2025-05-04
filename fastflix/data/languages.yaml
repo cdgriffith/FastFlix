@@ -10787,3 +10787,189 @@ Enable either auto split or parallel encoding mode.:
   ukr: Увімкніть режим автоматичного розділення або паралельного кодування.
   kor: 자동 분할 또는 병렬 인코딩 모드를 활성화합니다.
   ron: Activați divizarea automată sau modul de codare paralelă.
+Update Rigaya's Encoders:
+  eng: Update Rigaya's Encoders
+  deu: Aktualisieren von Rigayas Encodern
+  fra: Mise à jour des encodeurs de Rigaya
+  ita: Aggiornare gli encoder di Rigaya
+  spa: Actualizar los codificadores de Rigaya
+  jpn: リガヤのエンコーダーを更新
+  rus: Обновление кодировщиков Rigaya
+  por: Atualizar os codificadores de Rigaya
+  swe: Uppdatera Rigayas kodare
+  pol: Aktualizacja koderów Rigaya
+  chs: 更新 Rigaya 编码器
+  ukr: Оновлення кодерів Rigaya
+  kor: 리가야의 인코더 업데이트
+  ron: Actualizarea codificatoarelor Rigaya
+Detect GPUs:
+  eng: Detect GPUs
+  deu: GPUs erkennen
+  fra: Détecter les GPU
+  ita: Rilevare le GPU
+  spa: Detectar GPU
+  jpn: GPUの検出
+  rus: Обнаружение графических процессоров
+  por: Detetar GPUs
+  swe: Detektera GPU:er
+  pol: Wykrywanie procesorów graficznych
+  chs: 检测 GPU
+  ukr: Виявлення графічних процесорів
+  kor: GPU 감지
+  ron: Detectarea GPU-urilor
+Run Audio Normalize:
+  eng: Run Audio Normalize
+  deu: Audio normalisieren ausführen
+  fra: Exécuter la normalisation audio
+  ita: Esegui normalizzazione audio
+  spa: Ejecutar Normalizar Audio
+  jpn: オーディオ・ノーマライズの実行
+  rus: Выполнить нормализацию звука
+  por: Executar normalização de áudio
+  swe: Kör ljud Normalisera
+  pol: Uruchom normalizację dźwięku
+  chs: 运行音频正常化
+  ukr: Запустити нормалізацію звуку
+  kor: 오디오 정규화 실행
+  ron: Run Audio Normalize
+Add Audio Track:
+  eng: Add Audio Track
+  deu: Audiospur hinzufügen
+  fra: Ajouter une piste audio
+  ita: Aggiungi traccia audio
+  spa: Añadir pista de audio
+  jpn: オーディオトラックの追加
+  rus: Добавить аудиодорожку
+  por: Adicionar faixa de áudio
+  swe: Lägg till ljudspår
+  pol: Dodaj ścieżkę audio
+  chs: 添加音轨
+  ukr: Додати аудіодоріжку
+  kor: 오디오 트랙 추가
+  ron: Adăugați o pistă audio
+Add Text Based Subtitle Track:
+  eng: Add Text Based Subtitle Track
+  deu: Textbasierte Untertitelspur hinzufügen
+  fra: Ajouter une piste de sous-titres basée sur le texte
+  ita: Aggiungere una traccia di testo per i sottotitoli
+  spa: Añadir pista de subtítulos basada en texto
+  jpn: テキストベースの字幕トラックを追加
+  rus: Добавление дорожки субтитров на основе текста
+  por: Adicionar faixa de legendas com base em texto
+  swe: Lägg till textbaserat undertextspår
+  pol: Dodaj tekstową ścieżkę napisów
+  chs: 添加基于文本的字幕轨道
+  ukr: Додавання текстової доріжки субтитрів
+  kor: 텍스트 기반 자막 트랙 추가
+  ron: Adăugați o pistă de subtitrare bazată pe text
+Audio Normalization:
+  eng: Audio Normalization
+  deu: Audio-Normalisierung
+  fra: Normalisation audio
+  ita: Normalizzazione audio
+  spa: Normalización de audio
+  jpn: オーディオ・ノーマライゼーション
+  rus: Нормализация звука
+  por: Normalização de áudio
+  swe: Normalisering av ljud
+  pol: Normalizacja dźwięku
+  chs: 音频正常化
+  ukr: Нормалізація звуку
+  kor: 오디오 노멀라이제이션
+  ron: Normalizare audio
+This will run the audio normalization process on all streams of:
+  eng: This will run the audio normalization process on all streams of
+  deu: Dadurch wird der Audionormalisierungsprozess für alle Streams von
+  fra: Cette opération exécute le processus de normalisation audio sur tous les flux
+    de
+  ita: Eseguirà il processo di normalizzazione audio su tutti i flussi di
+  spa: Esto ejecutará el proceso de normalización de audio en todos los flujos de
+  jpn: のすべてのストリームに対してオーディオ正規化処理を実行します。
+  rus: Это запустит процесс нормализации звука для всех потоков
+  por: Isso executará o processo de normalização de áudio em todos os fluxos de
+  swe: Detta kommer att köra ljudnormaliseringsprocessen på alla strömmar av
+  pol: Spowoduje to uruchomienie procesu normalizacji dźwięku na wszystkich strumieniach
+  chs: 这将在所有音频流上运行音频规范化程序。
+  ukr: Це запустить процес нормалізації звуку на всіх потоках
+  kor: 이렇게 하면 다음의 모든 스트림에서 오디오 정규화 프로세스가 실행됩니다.
+  ron: Aceasta va rula procesul de normalizare audio pe toate fluxurile de
+'and create an output file with audio format ':
+  eng: 'and create an output file with audio format '
+  deu: und erstellen Sie eine Ausgabedatei im Audioformat
+  fra: et créer un fichier de sortie au format audio
+  ita: e creare un file di uscita con il formato audio
+  spa: y crear un archivo de salida con formato de audio
+  jpn: というオーディオ・フォーマットで出力ファイルを作成する。
+  rus: и создайте выходной файл с аудиоформатом
+  por: e criar um ficheiro de saída com o formato de áudio
+  swe: och skapa en utdatafil med ljudformat
+  pol: i utworzyć plik wyjściowy w formacie audio
+  chs: 并创建音频格式的输出文件
+  ukr: і створіть вихідний файл у форматі аудіо
+  kor: 를 클릭하고 오디오 형식의 출력 파일을 생성합니다.
+  ron: și creați un fișier de ieșire cu format audio
+Please make sure the source and output files are specified:
+  eng: Please make sure the source and output files are specified
+  deu: Bitte stellen Sie sicher, dass die Quell- und Ausgabedateien angegeben sind
+  fra: Veuillez vous assurer que les fichiers source et de sortie sont spécifiés.
+  ita: Accertarsi che i file di origine e di uscita siano specificati
+  spa: Asegúrese de que se especifican los archivos de origen y de salida
+  jpn: ソースファイルと出力ファイルが指定されていることを確認してください。
+  rus: Убедитесь, что исходный и выходной файлы указаны
+  por: Certifique-se de que os ficheiros de origem e de saída são especificados
+  swe: Kontrollera att käll- och utdatafilerna är specificerade
+  pol: Upewnij się, że podano pliki źródłowe i wyjściowe
+  chs: 请确保指定了源文件和输出文件
+  ukr: Будь ласка, переконайтеся, що вказані вихідний та вихідний файли
+  kor: 소스 및 출력 파일이 지정되었는지 확인하세요.
+  ron: Vă rugăm să vă asigurați că fișierele sursă și de ieșire sunt specificate
+? "Do you want FastFlix to automatically detect your GPUs and download the optional
+  encoders for them?\n\nThis will include downloading 7zip on Windows platform."
+: eng: "Do you want FastFlix to automatically detect your GPUs and download the optional
+    encoders for them?\n\nThis will include downloading 7zip on Windows platform."
+  deu: "Möchten Sie, dass FastFlix Ihre GPUs automatisch erkennt und die optionalen
+    Encoder für sie herunterlädt?\n\nDazu gehört auch das Herunterladen von 7zip auf
+    der Windows-Plattform."
+  fra: "Voulez-vous que FastFlix détecte automatiquement vos GPU et télécharge les
+    encodeurs optionnels pour eux ?\n\nCela inclut le téléchargement de 7zip sur la
+    plateforme Windows."
+  ita: "Volete che FastFlix rilevi automaticamente le vostre GPU e scarichi gli encoder
+    opzionali per esse?\n\nQuesto include il download di 7zip su piattaforma Windows."
+  spa: "¿Quieres que FastFlix detecte automáticamente tus GPU y descargue los codificadores
+    opcionales para ellas?\n\nEsto incluirá la descarga de 7zip en la plataforma Windows."
+  jpn: "FastFlixにGPUを自動的に検出させ、オプションのエンコーダをダウンロードさせたいですか？\n\nこれにはWindowsプラットフォームでの7zipのダウンロードも含まれます。"
+  rus: "Хотите, чтобы FastFlix автоматически определял ваши графические процессоры
+    и загружал для них дополнительные кодировщики?\n\nЭто включает загрузку 7zip на
+    платформе Windows."
+  por: "Quer que o FastFlix detecte automaticamente as suas GPUs e transfira os codificadores
+    opcionais para elas?\n\nIsso incluirá o download do 7zip na plataforma Windows."
+  swe: "Vill du att FastFlix automatiskt ska upptäcka dina GPU: er och ladda ner de
+    valfria kodarna för dem?\n\nDetta kommer att inkludera nedladdning av 7zip på
+    Windows-plattformen."
+  pol: "Czy chcesz, aby FastFlix automatycznie wykrywał twoje procesory graficzne
+    i pobierał dla nich opcjonalne kodery?\n\nObejmuje to pobranie programu 7zip na
+    platformę Windows."
+  chs: "您希望 FastFlix 自动检测您的 GPU 并为其下载可选编码器吗？\n\n这包括在 Windows 平台上下载 7zip。"
+  ukr: "Хочете, щоб FastFlix автоматично визначав ваш графічний процесор і завантажував
+    додаткові кодеки для нього?\n\nДля цього потрібно завантажити 7zip на платформі
+    Windows."
+  kor: "FastFlix가 자동으로 GPU를 감지하여 옵션 인코더를 다운로드하도록 하시겠습니까?\n\n여기에는 Windows 플랫폼에서 7zip
+    다운로드가 포함됩니다."
+  ron: "Doriți ca FastFlix să detecteze automat GPU-urile dvs. și să descarce codurile
+    opționale pentru acestea?\n\nAceasta va include descărcarea 7zip pe platforma
+    Windows."
+Allow Optional Downloads:
+  eng: Allow Optional Downloads
+  deu: Optionale Downloads zulassen
+  fra: Autoriser les téléchargements facultatifs
+  ita: Consentire i download opzionali
+  spa: Permitir descargas opcionales
+  jpn: オプションのダウンロードを許可する
+  rus: Разрешить необязательные загрузки
+  por: Permitir transferências opcionais
+  swe: Tillåt valfria nedladdningar
+  pol: Zezwalaj na opcjonalne pobieranie
+  chs: 允许可选下载
+  ukr: Дозволити додаткові завантаження
+  kor: 선택적 다운로드 허용
+  ron: Permiteți descărcări opționale

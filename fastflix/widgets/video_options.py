@@ -118,7 +118,7 @@ class VideoOptions(QtWidgets.QTabWidget):
     def audio_formats(self):
         return self._get_audio_formats()
 
-    def change_conversion(self, conversion):
+    def change_conversion(self, conversion, previous_encoder_no_audio=False):
         conversion = conversion.strip()
         encoder = self.app.fastflix.encoders[conversion]
         self.current_settings.close()
@@ -138,9 +138,11 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.setTabEnabled(1, getattr(encoder, "enable_audio", True))
         self.setTabEnabled(2, getattr(encoder, "enable_subtitles", True))
         self.setTabEnabled(3, getattr(encoder, "enable_attachments", True))
+        self.setTabEnabled(4, getattr(encoder, "enable_advanced", True))
         self.setTabVisible(1, getattr(encoder, "enable_audio", True))
         self.setTabVisible(2, getattr(encoder, "enable_subtitles", True))
         self.setTabVisible(3, getattr(encoder, "enable_attachments", True))
+        self.setTabVisible(4, getattr(encoder, "enable_advanced", True))
         self.selected = conversion
         self.current_settings.new_source()
         self.main.page_update(build_thumbnail=False)
@@ -152,6 +154,8 @@ class VideoOptions(QtWidgets.QTabWidget):
             error_message(
                 f"This encoder, {self.main.current_encoder.name} does not support concatenating files together"
             )
+        if previous_encoder_no_audio:
+            self.audio.new_source(self.audio_formats)
         # Page update does a reload which bases itself off the current encoder so we have to do audio formats after
         if not self.reloading:
             self.audio.allowed_formats(self._get_audio_formats(encoder))

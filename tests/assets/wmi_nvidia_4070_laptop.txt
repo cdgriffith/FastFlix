@@ -1,0 +1,27 @@
+{
+        AdapterCompatibility = "NVIDIA";
+        AdapterDACType = "Integrated RAMDAC";
+        AdapterRAM = 4293918720;
+        Availability = 8;
+        Caption = "NVIDIA GeForce RTX 4070 Laptop GPU";
+        ConfigManagerErrorCode = 0;
+        ConfigManagerUserConfig = FALSE;
+        CreationClassName = "Win32_VideoController";
+        Description = "NVIDIA GeForce RTX 4070 Laptop GPU";
+        DeviceID = "VideoController2";
+        DriverDate = "20240830000000.000000-000";
+        DriverVersion = "32.0.15.6103";
+        InfFilename = "oem215.inf";
+        InfSection = "Section456";
+        InstalledDisplayDrivers = "C:\\Windows\\System32\\DriverStore\\FileRepository\\nvdm.inf_amd64_1de70c131507c7ff\\nvldumdx.dll,C:\\Windows\\System32\\DriverStore\\FileRepository\\nvdm.inf_amd64_1
+de70c131507c7ff\\nvldumdx.dll,C:\\Windows\\System32\\DriverStore\\FileRepository\\nvdm.inf_amd64_1de70c131507c7ff\\nvldumdx.dll,C:\\Windows\\System32\\DriverStore\\FileRepository\\nvdm.inf_amd64_1de70c131507c7ff\\nvldumdx.dll";
+        Monochrome = FALSE;
+        Name = "NVIDIA GeForce RTX 4070 Laptop GPU";
+        PNPDeviceID = "PCI\\VEN_10DE&DEV_2860&SUBSYS_0BF91028&REV_A1\\4&7AB836C&0&0008";
+        Status = "OK";
+        SystemCreationClassName = "Win32_ComputerSystem";
+        SystemName = "DESKTOP-JURQVQS";
+        VideoArchitecture = 5;
+        VideoMemoryType = 2;
+        VideoProcessor = "NVIDIA GeForce RTX 4070 Laptop GPU";
+};

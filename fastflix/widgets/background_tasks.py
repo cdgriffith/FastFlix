@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+import os
 from pathlib import Path
 from subprocess import PIPE, STDOUT, Popen, run, check_output
 from packaging import version
 
 from PySide6 import QtCore
+from ffmpeg_normalize import FFmpegNormalize
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
@@ -85,6 +87,32 @@ class ExtractSubtitleSRT(QtCore.QThread):
             else:
                 self.main.thread_logging_signal.emit(f'INFO:{t("Extracted subtitles successfully")}')
         self.signal.emit()
+
+
+class AudioNoramlize(QtCore.QThread):
+    def __init__(self, app: FastFlixApp, main, audio_type, signal):
+        super().__init__(main)
+        self.main = main
+        self.app = app
+        self.signal = signal
+        self.audio_type = audio_type
+
+    def run(self):
+        try:
+            os.putenv("FFMPEG_PATH", str(self.app.fastflix.config.ffmpeg))
+            out_file = self.app.fastflix.current_video.video_settings.output_path
+            if not out_file:
+                self.signal.emit("No source video provided")
+            normalizer = FFmpegNormalize(
+                audio_codec=self.audio_type, extension=out_file.suffix.lstrip("."), video_codec="copy", progress=True
+            )
+            logger.info(f"Running audio normalization - will output video to {str(out_file)}")
+            normalizer.add_media_file(str(self.app.fastflix.current_video.source), str(out_file))
+            normalizer.run_normalization()
+            self.signal.emit("Completed")
+        except Exception as e:
+            logger.error(f"Audio normalization failed: {e}")
+            self.signal.emit("Failed")
 
 
 class ExtractHDR10(QtCore.QThread):

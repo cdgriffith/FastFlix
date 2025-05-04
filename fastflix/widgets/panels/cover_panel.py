@@ -224,7 +224,7 @@ class CoverPanel(QtWidgets.QWidget):
                     AttachmentTrack(
                         index=index,
                         outdex=start_outdex,
-                        file_path=attachment,
+                        file_path=str(attachment),
                         filename=filename,
                         attachment_type="cover",
                     )

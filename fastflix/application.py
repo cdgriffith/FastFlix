@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import platform
 import sys
 
 import coloredlogs
@@ -13,9 +14,10 @@ from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, grab_stable_ffmpeg
 from fastflix.resources import main_icon, breeze_styles_path
-from fastflix.shared import file_date, message, latest_fastflix, DEVMODE
+from fastflix.shared import file_date, message, latest_fastflix, DEVMODE, yes_no_message
 from fastflix.widgets.container import Container
 from fastflix.widgets.progress_bar import ProgressBar, Task
+from fastflix.gpu_detect import automatic_rigaya_download
 
 logger = logging.getLogger("fastflix")
 
@@ -81,6 +83,7 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.vaapi_hevc import main as vaapi_hevc_plugin
     from fastflix.encoders.vaapi_vp9 import main as vaapi_vp9_plugin
     from fastflix.encoders.vaapi_mpeg2 import main as vaapi_mpeg2_plugin
+    from fastflix.encoders.modify import main as modify_plugin
 
     encoders = [
         hevc_plugin,
@@ -101,6 +104,7 @@ def init_encoders(app: FastFlixApp, **_):
         vaapi_vp9_plugin,
         vaapi_mpeg2_plugin,
         copy_plugin,
+        modify_plugin,
     ]
 
     if DEVMODE:
@@ -169,6 +173,7 @@ def app_setup(
     app.fastflix.config = Config()
     init_fastflix_directories(app)
     init_logging(app)
+    logger.debug(f"GUI logging initialized, saving to {app.fastflix.log_path}")
     upgraded = app.fastflix.config.upgrade_check()
     if upgraded:
         # No translation will be possible in this case
@@ -215,6 +220,21 @@ def app_setup(
 
     logger.setLevel(app.fastflix.config.logging_level)
 
+    if platform.system() == "Windows":
+        if app.fastflix.config.auto_gpu_check is None:
+            app.fastflix.config.auto_gpu_check = yes_no_message(
+                t(
+                    "Do you want FastFlix to automatically detect your GPUs and download the optional encoders for them?\n\nThis will include downloading 7zip on Windows platform."
+                ),
+                title="Allow Optional Downloads",
+            )
+        if app.fastflix.config.auto_gpu_check:
+            ProgressBar(
+                app, [Task(name=t("Detect GPUs"), command=automatic_rigaya_download)], signal_task=True, can_cancel=True
+            )
+
+    app.fastflix.config.save()
+
     startup_tasks = [
         Task(t("Gather FFmpeg version"), ffmpeg_configuration),
         Task(t("Gather FFprobe version"), ffprobe_configuration),
@@ -246,7 +266,6 @@ def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, por
     # import tracemalloc
     #
     # tracemalloc.start()
-
     app = app_setup(
         enable_scaling=enable_scaling,
         portable_mode=portable_mode,
