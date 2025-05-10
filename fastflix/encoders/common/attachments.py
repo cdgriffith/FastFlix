@@ -5,10 +5,10 @@ from fastflix.models.encode import AttachmentTrack
 from fastflix.shared import clean_file_string
 
 
-def image_type(file: Path):
+def image_type(file: Path | str):
     mime_type = "image/jpeg"
     ext_type = "jpg"
-    if file.name.lower().endswith("png"):
+    if Path(file).suffix == "png":
         mime_type = "image/png"
         ext_type = "png"
     return mime_type, ext_type

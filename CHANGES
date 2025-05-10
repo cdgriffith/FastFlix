@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 5.12.1
+
+* Fixing #654 Failed to import attachment due to bad mime type gathering (thanks to larsk2)
+
 ## Version 5.12.0
 
 * Adding automatic downloads for rigaya encoders on Windows
