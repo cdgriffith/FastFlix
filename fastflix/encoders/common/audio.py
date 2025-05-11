@@ -36,19 +36,19 @@ def audio_quality_converter(quality, codec, channels=2, track_number=1):
 
     match codec:
         case "libopus":
-            return f" -vbr:{track_number} on -b:{track_number} {base * channels}k "
+            return f"-vbr:{track_number} on -b:{track_number} {base * channels}k"
         case "aac":
-            return f" -q:{track_number} {[2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.4, 0.2][quality]} "
+            return f"-q:{track_number} {[2, 1.8, 1.6, 1.4, 1.2, 1, 0.8, 0.6, 0.4, 0.2][quality]}"
         case "libfdk_aac":
-            return f" -q:{track_number} {[1, 1, 2, 2, 3, 3, 4, 4, 5, 5][quality]} "
+            return f"-q:{track_number} {[1, 1, 2, 2, 3, 3, 4, 4, 5, 5][quality]}"
         case "libvorbis" | "vorbis":
-            return f" -q:{track_number} {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1][quality]} "
+            return f"-q:{track_number} {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1][quality]}"
         case "libmp3lame" | "mp3":
-            return f" -q:{track_number} {quality} "
+            return f"-q:{track_number} {quality}"
         case "ac3" | "eac3" | "truehd":
-            return f" -b:{track_number} {base * channels * 4}k "
+            return f"-b:{track_number} {base * channels * 4}k"
         case _:
-            return f" -b:{track_number} {base * channels}k "
+            return f"-b:{track_number} {base * channels}k"
 
 
 def build_audio(audio_tracks, audio_file_index=0):
@@ -89,7 +89,7 @@ def build_audio(audio_tracks, audio_file_index=0):
                     bitrate = f"-b:{track.outdex} {conversion_bitrate}"
                 else:
                     bitrate = audio_quality_converter(
-                        track.conversion_aq, track.conversion_codec, track.raw_info.get("channels"), track.outdex
+                        track.conversion_aq or 0, track.conversion_codec, track.raw_info.get("channels"), track.outdex
                     )
 
             command_list.append(f"-c:{track.outdex} {track.conversion_codec} {bitrate} {downmix} {channel_layout}")

@@ -50,7 +50,7 @@ def generate_ffmpeg_start(
     start_extra: str = "",
     **_,
 ) -> str:
-    time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
+    time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""}'.strip()
     time_one = time_settings if fast_seek else ""
     time_two = time_settings if not fast_seek else ""
     incoming_fps = f"-r {source_fps}" if source_fps else ""
@@ -71,32 +71,41 @@ def generate_ffmpeg_start(
     ffmpeg = clean_file_string(ffmpeg)
     if video_track_title:
         video_track_title = video_track_title.replace('"', '\\"')
-    track_title = f'-metadata:s:v:0 title="{video_track_title}"'
+    track_title = f'-metadata:s:v:0 title="{video_track_title}"' if video_track_title else ""
 
-    return " ".join(
-        [
-            f'"{ffmpeg}"',
-            start_extra,
-            ("-init_hw_device opencl:0.0=ocl -filter_hw_device ocl " if enable_opencl and remove_hdr else ""),
-            "-y",
-            time_one,
-            incoming_fps,
-            f"{'-f concat -safe 0' if concat else ''}",
-            f'-i "{source}"',
-            time_two,
-            title,
-            f"{f'-max_muxing_queue_size {max_muxing_queue_size}' if max_muxing_queue_size != 'default' else ''}",
-            f'{f"-map 0:{selected_track}" if not filters else ""}',
-            vsync_text,
-            f'{filters if filters else ""}',
-            f"-c:v {encoder}",
-            f"-pix_fmt {pix_fmt}",
-            f"{f'-maxrate:v {maxrate}k' if maxrate else ''}",
-            f"{f'-bufsize:v {bufsize}k' if bufsize else ''}",
-            f"{track_title if video_track_title else ''}",
-            " ",  # Leave space after commands
-        ]
-    )
+    opencl_option = "-init_hw_device opencl:0.0=ocl -filter_hw_device ocl" if enable_opencl and remove_hdr else ""
+    concat_option = "-f concat -safe 0" if concat else ""
+    muxing_option = f"-max_muxing_queue_size {max_muxing_queue_size}" if max_muxing_queue_size != "default" else ""
+    map_option = f"-map 0:{selected_track}" if not filters else ""
+    maxrate_option = f"-maxrate:v {maxrate}k" if maxrate else ""
+    bufsize_option = f"-bufsize:v {bufsize}k" if bufsize else ""
+
+    # Create a list of command parts and filter out empty strings
+    command_parts = [
+        f'"{ffmpeg}"',
+        start_extra,
+        opencl_option,
+        "-y",
+        time_one,
+        incoming_fps,
+        concat_option,
+        f'-i "{source}"',
+        time_two,
+        title,
+        muxing_option,
+        map_option,
+        vsync_text,
+        filters or "",
+        f"-c:v {encoder}",
+        f"-pix_fmt {pix_fmt}",
+        maxrate_option,
+        bufsize_option,
+        track_title,
+    ]
+
+    # Filter out empty strings and join with a single space
+    # Add a trailing space to match expected output in tests
+    return " ".join(filter(None, command_parts)) + " "
 
 
 def rigaya_data(streams, copy_data=False, **_):
@@ -124,23 +133,25 @@ def generate_ending(
     copy_data=False,
     **_,
 ):
-    ending = (
-        f" {'-map_metadata -1' if remove_metadata else '-map_metadata 0'} "
-        f"{'-map_chapters 0' if copy_chapters else '-map_chapters -1'} "
-        f"{f'-r {output_fps}' if output_fps else ''} "
-        f"{audio} {subtitles} {cover} "
-        f"{'-map 0:d -c:d copy ' if copy_data else ''}"
-    )
+    metadata_option = "-map_metadata -1" if remove_metadata else "-map_metadata 0"
+    chapters_option = "-map_chapters 0" if copy_chapters else "-map_chapters -1"
+    fps_option = f"-r {output_fps}" if output_fps else ""
+    data_option = "-map 0:d -c:d copy" if copy_data else ""
+    rotate_option = "-metadata:s:v rotate=0" if not disable_rotate_metadata and not remove_metadata else ""
 
-    # In case they use a mp4 container, nix the rotation
-    if not disable_rotate_metadata and not remove_metadata:
-        ending = f"-metadata:s:v rotate=0 {ending}"
+    # Create a list of command parts
+    command_parts = [rotate_option, metadata_option, chapters_option, fps_option, audio, subtitles, cover, data_option]
+
+    # Filter out empty strings and join with a single space
+    # Add a leading space to match expected output in tests
+    ending = " " + " ".join(filter(None, command_parts))
 
     if output_video and not null_ending:
-        ending += f'"{clean_file_string(sanitize(output_video))}"'
+        ending += f' "{clean_file_string(sanitize(output_video))}"'
     else:
         ending += null
-    return ending, f"{f'-r {output_fps}' if output_fps else ''} "
+
+    return ending, fps_option
 
 
 def generate_filters(
@@ -175,7 +186,7 @@ def generate_filters(
     if start_filters:
         filter_list.append(start_filters)
     if deinterlace:
-        filter_list.append(f"yadif")
+        filter_list.append("yadif")
     if crop:
         filter_list.append(f"crop={crop['width']}:{crop['height']}:{crop['left']}:{crop['top']}")
     if scale:
@@ -183,11 +194,11 @@ def generate_filters(
             filter_list.append(f"scale={scale}:flags={scale_filter},setsar=1:1")
     if rotate:
         if rotate == 1:
-            filter_list.append(f"transpose=1")
+            filter_list.append("transpose=1")
         if rotate == 2:
-            filter_list.append(f"transpose=2,transpose=2")
+            filter_list.append("transpose=2,transpose=2")
         if rotate == 3:
-            filter_list.append(f"transpose=2")
+            filter_list.append("transpose=2")
     if vertical_flip:
         filter_list.append("vflip")
     if horizontal_flip:
@@ -227,7 +238,8 @@ def generate_filters(
                 f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
             )
 
-    filters = ",".join(filter_list)
+    filters = ",".join(filter_list) if filter_list else ""
+
     if filters and custom_filters:
         filters = f"{filters},{custom_filters}"
     elif not filters and custom_filters:
@@ -241,7 +253,8 @@ def generate_filters(
             else:
                 filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
         else:
-            filter_complex = f"[0:{selected_track}]{f'{filters},' if filters else ''}subtitles='{quoted_path(clean_file_string(source))}':si={burn_in_subtitle_track}[v]"
+            filter_prefix = f"{filters}," if filters else ""
+            filter_complex = f"[0:{selected_track}]{filter_prefix}subtitles='{quoted_path(clean_file_string(source))}':si={burn_in_subtitle_track}[v]"
     elif filters:
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:
@@ -249,6 +262,7 @@ def generate_filters(
 
     if raw_filters:
         return filter_complex
+
     return f' -filter_complex "{filter_complex}" -map "[v]" '
 
 
@@ -264,28 +278,28 @@ def generate_all(
 ) -> Tuple[str, str, str]:
     settings = fastflix.current_video.video_settings.video_encoder_settings
 
-    audio = build_audio(fastflix.current_video.audio_tracks) if audio else ""
+    audio_cmd = build_audio(fastflix.current_video.audio_tracks) if audio else ""
 
-    subtitles, burn_in_track, burn_in_type = "", None, None
+    subtitles_cmd, burn_in_track, burn_in_type = "", None, None
     if subs:
-        subtitles, burn_in_track, burn_in_type = build_subtitle(fastflix.current_video.subtitle_tracks)
+        subtitles_cmd, burn_in_track, burn_in_type = build_subtitle(fastflix.current_video.subtitle_tracks)
         if burn_in_type == "text":
             for i, x in enumerate(fastflix.current_video.streams["subtitle"]):
                 if x["index"] == burn_in_track:
                     burn_in_track = i
                     break
 
-    attachments = build_attachments(fastflix.current_video.attachment_tracks)
+    attachments_cmd = build_attachments(fastflix.current_video.attachment_tracks)
 
     enable_opencl = fastflix.opencl_support
     if "enable_opencl" in filters_extra:
         enable_opencl = filters_extra.pop("enable_opencl")
 
-    filters = None
+    filters_cmd = None
     if not disable_filters:
         filter_details = fastflix.current_video.video_settings.model_dump().copy()
         filter_details.update(filters_extra)
-        filters = generate_filters(
+        filters_cmd = generate_filters(
             source=fastflix.current_video.source,
             burn_in_subtitle_track=burn_in_track,
             burn_in_subtitle_type=burn_in_type,
@@ -296,9 +310,9 @@ def generate_all(
         )
 
     ending, output_fps = generate_ending(
-        audio=audio,
-        subtitles=subtitles,
-        cover=attachments,
+        audio=audio_cmd,
+        subtitles=subtitles_cmd,
+        cover=attachments_cmd,
         output_video=fastflix.current_video.video_settings.output_path,
         disable_rotate_metadata=encoder == "copy",
         **fastflix.current_video.video_settings.model_dump(),
@@ -308,7 +322,7 @@ def generate_all(
         source=fastflix.current_video.source,
         ffmpeg=fastflix.config.ffmpeg,
         encoder=encoder,
-        filters=filters,
+        filters=filters_cmd,
         concat=fastflix.current_video.concat,
         enable_opencl=enable_opencl,
         ffmpeg_version=fastflix.ffmpeg_version,
@@ -331,4 +345,7 @@ def generate_color_details(fastflix: FastFlix) -> str:
         details.append(f"-color_trc {fastflix.current_video.video_settings.color_transfer}")
     if fastflix.current_video.video_settings.color_space:
         details.append(f"-colorspace {fastflix.current_video.video_settings.color_space}")
-    return " ".join(details)
+
+    # Filter out any empty strings (though there shouldn't be any in this case)
+    # and join with a single space
+    return " ".join(filter(None, details))

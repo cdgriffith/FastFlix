@@ -1,10 +1,6 @@
-name: Lint
+name: Lint and Test
 
 on:
-  push:
-    branches-ignore:
-      - master
-      - main
   pull_request:
 
 jobs:
@@ -45,4 +41,4 @@ jobs:
     - name: Run tests
       env:
         PYTEST_QT_API: pyside6
-      run: pytest tests
+      run: pytest tests -v

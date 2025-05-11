@@ -52,8 +52,12 @@ def build(fastflix: FastFlix):
         if settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
             def convert_me(two_numbers, conversion_rate=50_000) -> str:
-                num_one, num_two = map(int, two_numbers.strip("()").split(","))
-                return f"{num_one / conversion_rate:0.4f},{num_two / conversion_rate:0.4f}"
+                try:
+                    num_one, num_two = map(float, two_numbers.strip("()").split(","))
+                    return f"{num_one / conversion_rate:0.4f},{num_two / conversion_rate:0.4f}"
+                except ValueError:
+                    # If the values are already in the correct format, just return them
+                    return two_numbers.strip("()")
 
             if fastflix.current_video.master_display:
                 svtav1_params.append(

@@ -3,6 +3,8 @@
 ## Version 5.12.1
 
 * Fixing #654 Failed to import attachment due to bad mime type gathering (thanks to larsk2)
+* Fixing missing unittests for common encoder options
+* Fixing some extra spaces in commands
 
 ## Version 5.12.0
 

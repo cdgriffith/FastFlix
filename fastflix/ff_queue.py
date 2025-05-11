@@ -44,7 +44,7 @@ def get_queue(queue_file: Path) -> list[Video]:
             except KeyError:
                 attachment_path = None
             attachment = AttachmentTrack(**x)
-            attachment.file_path = Path(attachment_path)
+            attachment.file_path = str(attachment_path) if attachment_path else None
             attachments.append(attachment)
         status = Status(**video["status"])
         crop = None

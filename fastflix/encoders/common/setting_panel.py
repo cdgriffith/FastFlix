@@ -91,7 +91,7 @@ class SettingPanel(QtWidgets.QWidget):
 
     @staticmethod
     def translate_tip(tooltip):
-        return "\n".join([t(x) for x in tooltip.split("\n") if x.strip()])
+        return "<br>".join([t(x) for x in tooltip.split("\n") if x.strip()])
 
     def determine_default(self, widget_name, opt, items: List, raise_error: bool = False):
         if widget_name == "pix_fmt":
