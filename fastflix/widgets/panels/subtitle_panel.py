@@ -3,7 +3,7 @@
 from typing import Union
 
 from box import Box
-from iso639 import Lang
+from iso639 import Lang, iter_langs
 from iso639.exceptions import InvalidLanguageValue
 from PySide6 import QtCore, QtGui, QtWidgets
 
@@ -41,7 +41,7 @@ subtitle_types = {
     "xsub": "text",
 }
 
-language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
+language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1]
 
 # TODO give warning about exact time needed for text based subtitles
 

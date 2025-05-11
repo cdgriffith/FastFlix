@@ -4,7 +4,7 @@ import logging
 import shutil
 from pathlib import Path
 
-from iso639 import Lang
+from iso639 import Lang, iter_langs
 from iso639.exceptions import InvalidLanguageValue
 from PySide6 import QtCore, QtGui, QtWidgets
 
@@ -14,7 +14,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import error_message, link
 
 logger = logging.getLogger("fastflix")
-language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
+language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1]
 
 known_language_list = [
     "English",
