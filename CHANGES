@@ -3,6 +3,7 @@
 ## Version 5.12.1
 
 * Fixing #654 Failed to import attachment due to bad mime type gathering (thanks to larsk2)
+* Fixing #659 current profile panel won't open (thanks to danielly2020)
 * Fixing missing unittests for common encoder options
 * Fixing some extra spaces in commands
 * Fixing logs were showing red for info commands

@@ -8,6 +8,7 @@ from enum import Enum
 from fastflix.models.encode import (
     AOMAV1Settings,
     CopySettings,
+    ModifySettings,
     GIFSettings,
     FFmpegNVENCSettings,
     SVTAV1Settings,
@@ -164,6 +165,7 @@ class Profile(BaseModel):
     aom_av1: Optional[AOMAV1Settings] = None
     gif: Optional[GIFSettings] = None
     webp: Optional[WebPSettings] = None
+    modify_settings: Optional[ModifySettings] = None
     copy_settings: Optional[CopySettings] = None
     ffmpeg_hevc_nvenc: Optional[FFmpegNVENCSettings] = None
     qsvencc_hevc: Optional[QSVEncCSettings] = None
