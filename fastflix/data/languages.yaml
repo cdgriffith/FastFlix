@@ -10973,15 +10973,116 @@ Allow Optional Downloads:
   ukr: Дозволити додаткові завантаження
   kor: 선택적 다운로드 허용
   ron: Permiteți descărcări opționale
-uses [fast] seek to a rough position ahead of timestamp, vs a specific [exact] frame lookup. (GIF encodings use [fast]):
-  eng: uses [fast] seek to a rough position ahead of timestamp, vs a specific [exact] frame lookup. (GIF encodings use [fast])
+"uses [fast] seek to a rough position ahead of timestamp, vs a specific [exact] frame lookup. (GIF encodings use [fast])":
+  eng: uses [fast] seek to a rough position ahead of timestamp, vs a specific
+    [exact] frame lookup. (GIF encodings use [fast])
+  deu: verwendet eine [schnelle] Suche nach einer groben Position vor dem
+    Zeitstempel, im Gegensatz zu einer spezifischen [exakten] Frame-Suche.
+    (GIF-Kodierungen verwenden [fast])
+  fra: utilise la recherche [rapide] d'une position approximative avant
+    l'horodatage, au lieu d'une recherche d'image spécifique [exacte]. (Les
+    encodages GIF utilisent [fast])
+  ita: utilizza la ricerca [veloce] di una posizione approssimativa prima del
+    timestamp, rispetto a una ricerca specifica [esatta] del fotogramma. (Le
+    codifiche GIF usano [fast])
+  spa: utiliza la búsqueda [rápida] a una posición aproximada por delante de la
+    marca de tiempo, frente a una búsqueda específica [exacta] de fotogramas.
+    (Las codificaciones GIF utilizan [rápido])
+  jpn:
+    は、[正確な]フレーム検索に対して、タイムスタンプより先の大まかな位置への[高速]シークを使用します。(GIFエンコーディングは[fast]を使用)
+  rus: использует [быстрый] поиск до приблизительной позиции впереди временной
+    метки, а не конкретный [точный] поиск кадра. (В кодировках GIF используется
+    [быстрый])
+  por: utiliza a pesquisa [rápida] para uma posição aproximada antes do carimbo
+    de data/hora, em vez de uma pesquisa de fotogramas [exacta] específica. (As
+    codificações GIF usam [fast])
+  swe: använder [snabb] sökning till en ungefärlig position före tidsstämpeln,
+    jämfört med en specifik [exakt] ramuppslagning. (GIF-kodningar använder
+    [fast])
+  pol: używa [szybkiego] wyszukiwania do przybliżonej pozycji przed znacznikiem
+    czasu, a nie konkretnego [dokładnego] wyszukiwania klatek. (Kodowania GIF
+    używają [fast])
+  chs: 使用[快速]查找时间戳前的大致位置，而不是特定的[精确]帧查找。(GIF 编码使用[快速]）。
+  ukr: використовує [швидкий] пошук приблизної позиції перед міткою часу, а не
+    пошук конкретного [точного] кадру. (Для кодувань GIF використовується
+    [fast])
+  kor: 는 타임스탬프보다 앞선 대략적인 위치로 [빠른] 탐색을 사용하고, 특정 [정확한] 프레임 조회는 [정확한] 탐색을 사용합니다.
+    (GIF 인코딩은 [fast] 사용)
+  ron: utilizează căutarea [rapidă] a unei poziții aproximative înainte de marca
+    temporală, față de o căutare specifică [exactă] a cadrului. (codificările
+    GIF utilizează [fast])
 Both must have values to be enabled:
   eng: Both must have values to be enabled
+  deu: Beide müssen Werte haben, um aktiviert zu werden
+  fra: Les deux doivent avoir des valeurs pour être activés
+  ita: Entrambi devono avere dei valori per essere abilitati
+  spa: Ambos deben tener valores para ser activados
+  jpn: どちらも有効にするには値が必要
+  rus: Оба должны иметь значения, чтобы быть включенными
+  por: Ambos devem ter valores para serem activados
+  swe: Båda måste ha värden för att aktiveras
+  pol: Oba muszą mieć wartości, aby były włączone
+  chs: 两者都必须有值才能启用
+  ukr: Обидва повинні мати значення, щоб бути ввімкненими
+  kor: 둘 다 활성화하려면 값이 있어야 합니다.
+  ron: Ambele trebuie să aibă valori pentru a fi activate
 Run a command after conversion completes:
   eng: Run a command after conversion completes
+  deu: Nach Abschluss der Konvertierung einen Befehl ausführen
+  fra: Exécuter une commande une fois la conversion terminée
+  ita: Eseguire un comando al termine della conversione
+  spa: Ejecutar un comando una vez finalizada la conversión
+  jpn: 変換完了後にコマンドを実行する
+  rus: Выполните команду после завершения преобразования
+  por: Executar um comando após a conclusão da conversão
+  swe: Kör ett kommando efter att konverteringen har slutförts
+  pol: Uruchom polecenie po zakończeniu konwersji
+  chs: 转换完成后运行命令
+  ukr: Запустити команду після завершення перетворення
+  kor: 변환이 완료된 후 명령 실행
+  ron: Rulați o comandă după finalizarea conversiei
 Primary Settings:
   eng: Primary Settings
+  deu: Primäre Einstellungen
+  fra: Paramètres primaires
+  ita: Impostazioni primarie
+  spa: Ajustes primarios
+  jpn: プライマリ設定
+  rus: Основные настройки
+  por: Definições primárias
+  swe: Primära inställningar
+  pol: Ustawienia podstawowe
+  chs: 主要设置
+  ukr: Основні налаштування
+  kor: 기본 설정
+  ron: Setări primare
 Video:
   eng: Video
+  deu: Video
+  fra: Vidéo
+  ita: Video
+  spa: Vídeo
+  jpn: ビデオ
+  rus: Видео
+  por: Vídeo
+  swe: Video
+  pol: Wideo
+  chs: 视频
+  ukr: Відео
+  kor: 비디오
+  ron: Video
 Disable interlace check:
   eng: Disable interlace check
+  deu: Zeilensprungprüfung deaktivieren
+  fra: Désactiver le contrôle de l'entrelacement
+  ita: Disabilita il controllo dell'interlacciamento
+  spa: Desactivar comprobación de entrelazado
+  jpn: インターレース・チェックを無効にする
+  rus: Отключение проверки чересстрочной развертки
+  por: Desativar o controlo de entrelaçamento
+  swe: Avaktivera interlace-kontroll
+  pol: Wyłączanie sprawdzania przeplotu
+  chs: 禁用隔行扫描检查
+  ukr: Вимкнути перевірку чересстрочності
+  kor: 인터레이스 검사 비활성화
+  ron: Dezactivați verificarea intercalării
