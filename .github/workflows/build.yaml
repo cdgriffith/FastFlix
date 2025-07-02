@@ -104,13 +104,6 @@ jobs:
         pip install .
         pip install .[develop]
 
-
-    - name: Grab iso-639 lists
-      shell: powershell
-      run: |
-        copy $(python -c "import iso639; print(iso639.mapping.TABLE_PATH)") iso-639-3.tab
-        copy $(python -c "import iso639; print(iso639.mapping.MAPPING_PATH)") iso-639-3.json
-
     - name: Build single executable
       shell: cmd
       run: pyinstaller FastFlix_Windows_OneFile.spec
