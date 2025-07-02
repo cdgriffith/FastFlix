@@ -12,10 +12,6 @@ from fastflix.encoders.common.helpers import (
 )
 from fastflix.models.encode import x265Settings
 
-from tests.conftest import (
-    fastflix_instance,
-)
-
 
 def test_command_class():
     """Test the Command class."""
@@ -181,7 +177,6 @@ def test_generate_all(fastflix_instance):
         mock.patch("fastflix.encoders.common.helpers.generate_ending") as mock_generate_ending,
         mock.patch("fastflix.encoders.common.helpers.generate_ffmpeg_start") as mock_generate_ffmpeg_start,
     ):
-
         # Set up the mock returns
         mock_build_audio.return_value = "-map 0:1 -c:a copy"
         mock_build_subtitle.return_value = ("-map 0:2 -c:s copy", None, None)

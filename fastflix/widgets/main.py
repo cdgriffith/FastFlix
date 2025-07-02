@@ -342,7 +342,7 @@ class Main(QtWidgets.QWidget):
         top_bar.addWidget(self.widgets.profile_box)
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
 
-        self.add_profile = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-new-profile")), f"")
+        self.add_profile = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-new-profile")), "")
         # add_profile.setFixedSize(QtCore.QSize(40, 40))
         self.add_profile.setFixedHeight(50)
         self.add_profile.setIconSize(QtCore.QSize(20, 20))
@@ -567,7 +567,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.deinterlace.setChecked(False)
         self.widgets.deinterlace.toggled.connect(self.interlace_update)
         self.widgets.deinterlace.setToolTip(
-            f'{t("Enables the yadif filter.")}\n' f'{t("Automatically enabled when an interlaced video is detected")}'
+            f"{t('Enables the yadif filter.')}\n{t('Automatically enabled when an interlaced video is detected')}"
         )
 
         self.widgets.remove_hdr = QtWidgets.QCheckBox(t("Remove HDR"))
@@ -1115,7 +1115,7 @@ class Main(QtWidgets.QWidget):
 
         if self.app.fastflix.current_video:
             discard = yes_no_message(
-                f'{t("There is already a video being processed")}<br>' f'{t("Are you sure you want to discard it?")}',
+                f"{t('There is already a video being processed')}<br>{t('Are you sure you want to discard it?')}",
                 title="Discard current video",
             )
             if not discard:
@@ -1141,7 +1141,7 @@ class Main(QtWidgets.QWidget):
     def open_many(self, paths: list):
         if self.app.fastflix.current_video:
             discard = yes_no_message(
-                f'{t("There is already a video being processed")}<br>' f'{t("Are you sure you want to discard it?")}',
+                f"{t('There is already a video being processed')}<br>{t('Are you sure you want to discard it?')}",
                 title="Discard current video",
             )
             if not discard:
@@ -1276,7 +1276,7 @@ class Main(QtWidgets.QWidget):
                 selected = result
                 smallest = total
 
-        r, b, l, tp = selected
+        r, b, l, tp = selected  # noqa: E741
 
         if tp + b > self.app.fastflix.current_video.height * 0.9 or r + l > self.app.fastflix.current_video.width * 0.9:
             logger.warning(
@@ -1437,10 +1437,10 @@ class Main(QtWidgets.QWidget):
         hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
         text_video_tracks = [
             (
-                f'{x.index}: {x.codec_name} {x.get("bit_depth", "8")}-bit '
-                f'{x["color_primaries"] if x.get("color_primaries") else ""}'
-                f'{" - HDR10" if x.index in hdr10_indexes else ""}'
-                f'{" | HDR10+" if x.index in self.app.fastflix.current_video.hdr10_plus else ""}'
+                f"{x.index}: {x.codec_name} {x.get('bit_depth', '8')}-bit "
+                f"{x['color_primaries'] if x.get('color_primaries') else ''}"
+                f"{' - HDR10' if x.index in hdr10_indexes else ''}"
+                f"{' | HDR10+' if x.index in self.app.fastflix.current_video.hdr10_plus else ''}"
             )
             for x in self.app.fastflix.current_video.streams.video
         ]
@@ -1532,10 +1532,10 @@ class Main(QtWidgets.QWidget):
         hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
         text_video_tracks = [
             (
-                f'{x.index}: {x.codec_name} {x.get("bit_depth", "8")}-bit '
-                f'{x["color_primaries"] if x.get("color_primaries") else ""}'
-                f'{" - HDR10" if x.index in hdr10_indexes else ""}'
-                f'{" | HDR10+" if x.index in self.app.fastflix.current_video.hdr10_plus else ""}'
+                f"{x.index}: {x.codec_name} {x.get('bit_depth', '8')}-bit "
+                f"{x['color_primaries'] if x.get('color_primaries') else ''}"
+                f"{' - HDR10' if x.index in hdr10_indexes else ''}"
+                f"{' | HDR10+' if x.index in self.app.fastflix.current_video.hdr10_plus else ''}"
             )
             for x in self.app.fastflix.current_video.streams.video
         ]
@@ -1984,7 +1984,7 @@ class Main(QtWidgets.QWidget):
         if exists:
             sm = QtWidgets.QMessageBox()
             sm.setWindowTitle(t("Cancelled"))
-            sm.setText(f"{t('Conversion cancelled, delete incomplete file')}\n" f"{video.video_settings.output_path}?")
+            sm.setText(f"{t('Conversion cancelled, delete incomplete file')}\n{video.video_settings.output_path}?")
             sm.addButton(t("Delete"), QtWidgets.QMessageBox.YesRole)
             sm.addButton(t("Keep"), QtWidgets.QMessageBox.NoRole)
             sm.exec_()
@@ -2004,7 +2004,7 @@ class Main(QtWidgets.QWidget):
 
         if self.app.fastflix.current_video:
             discard = yes_no_message(
-                f'{t("There is already a video being processed")}<br>' f'{t("Are you sure you want to discard it?")}',
+                f"{t('There is already a video being processed')}<br>{t('Are you sure you want to discard it?')}",
                 title="Discard current video",
             )
             if not discard:
@@ -2141,13 +2141,13 @@ class Main(QtWidgets.QWidget):
         for video in self.app.fastflix.conversion_list:
             if uuid == video.uuid:
                 return video
-        raise FlixError(f'{t("No video found for")} {uuid}')
+        raise FlixError(f"{t('No video found for')} {uuid}")
 
     def find_command(self, video: Video, uuid) -> int:
         for i, command in enumerate(video.video_settings.conversion_commands, start=1):
             if uuid == command.uuid:
                 return i
-        raise FlixError(f'{t("No command found for")} {uuid}')
+        raise FlixError(f"{t('No command found for')} {uuid}")
 
 
 class Notifier(QtCore.QThread):

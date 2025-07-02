@@ -1,18 +1,12 @@
 # -*- coding: utf-8 -*-
-from pathlib import Path
-import os
 import logging
-import secrets
-from subprocess import run, PIPE
+from subprocess import run
 
-from PySide6 import QtWidgets, QtGui, QtCore
-from PySide6.QtWidgets import QAbstractItemView
+from PySide6 import QtWidgets, QtGui
 
-from fastflix.language import t
 from fastflix.flix import probe
-from fastflix.shared import yes_no_message, error_message
-from fastflix.widgets.progress_bar import ProgressBar, Task
-from fastflix.resources import group_box_style, get_icon
+from fastflix.shared import error_message
+from fastflix.resources import get_icon
 
 logger = logging.getLogger("fastflix")
 
@@ -135,7 +129,7 @@ class HDR10PlusInjectWindow(QtWidgets.QWidget):
 
         command = (
             f'{self.app.fastflix.config.ffmpeg} -loglevel panic -i "{self.movie_file.text()}" '
-            f'-map 0:{self.selected_stream["index"]} -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | '
+            f"-map 0:{self.selected_stream['index']} -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | "
             f"{self.app.fastflix.config.hdr10plus_parser} inject -i - -j {self.hdr10p_file.text()} -o - | "
             f'{self.app.fastflix.config.ffmpeg} -loglevel panic -i - -i {self.movie_file.text()} -map 0:0 -c:0 copy -map 1:a -map 1:s -map 1:d -c:1 copy "{self.output_file.text()}"'
         )

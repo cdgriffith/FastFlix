@@ -4,11 +4,6 @@ from fastflix.encoders.common.subtitles import build_subtitle
 from fastflix.models.encode import SubtitleTrack
 
 
-from tests.conftest import (
-    sample_subtitle_tracks,
-)
-
-
 def test_build_subtitle_empty():
     """Test the build_subtitle function with an empty list."""
     result, burn_in_track, burn_in_type = build_subtitle([])

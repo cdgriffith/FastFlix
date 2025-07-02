@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 import secrets
 
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
@@ -21,7 +20,7 @@ def build(fastflix: FastFlix):
     )
 
     if settings.row_mt.lower() == "enabled":
-        beginning += f"-row-mt 1 "
+        beginning += "-row-mt 1 "
 
     if settings.bitrate:
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"

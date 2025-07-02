@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 import secrets
 
 from fastflix.encoders.common.helpers import Command, generate_all, null
@@ -152,7 +151,7 @@ def build(fastflix: FastFlix):
     if settings.hdr10plus_metadata:
         x265_params.append(f"dhdr10-info='{settings.hdr10plus_metadata}'")
         if settings.dhdr10_opt:
-            x265_params.append(f"dhdr10_opt=1")
+            x265_params.append("dhdr10_opt=1")
 
     if settings.intra_encoding:
         x265_params.append("keyint=1")
@@ -181,12 +180,12 @@ def build(fastflix: FastFlix):
     if settings.bitrate:
         if settings.bitrate_passes == 2:
             command_1 = (
-                f'{beginning} {get_x265_params(["pass=1", "no-slow-firstpass=1", f"stats={pass_log_file}"])} '
-                f' -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
+                f"{beginning} {get_x265_params(['pass=1', 'no-slow-firstpass=1', f'stats={pass_log_file}'])} "
+                f" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ''} "
                 f" -an -sn -dn {output_fps} -f mp4 {null}"
             )
             command_2 = (
-                f'{beginning} {get_x265_params(["pass=2", f"stats={pass_log_file}"])}  '
+                f"{beginning} {get_x265_params(['pass=2', f'stats={pass_log_file}'])}  "
                 f"-b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} {ending}"
             )
             return [

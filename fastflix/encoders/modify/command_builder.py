@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
-from pprint import pprint
 from fastflix.encoders.common.helpers import Command, generate_all
 from fastflix.models.fastflix import FastFlix
 from fastflix.shared import clean_file_string
@@ -16,7 +14,7 @@ def build(fastflix: FastFlix):
     ffmpeg = fastflix.config.ffmpeg
     source = fastflix.current_video.source
 
-    time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""} '
+    time_settings = f"{f'-ss {start_time}' if start_time else ''} {f'-to {end_time}' if end_time else ''} "
     time_one = time_settings if fast_seek else ""
     time_two = time_settings if not fast_seek else ""
 

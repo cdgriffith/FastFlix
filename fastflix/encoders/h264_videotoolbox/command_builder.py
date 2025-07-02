@@ -26,16 +26,16 @@ def build(fastflix: FastFlix):
 
     if settings.bitrate:
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
-        beginning += f" "
+        beginning += " "
 
-        command_1 = f"{beginning} -b:v {settings.bitrate} {details} -pass 1 -passlogfile \"{pass_log_file}\" {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f mp4 {null}"
+        command_1 = f'{beginning} -b:v {settings.bitrate} {details} -pass 1 -passlogfile "{pass_log_file}" {settings.extra if settings.extra_both_passes else ""} -an {output_fps} -f mp4 {null}'
         command_2 = f'{beginning} -b:v {settings.bitrate} {details} -pass 2 -passlogfile "{pass_log_file}" {settings.extra} {ending}'
         return [
-            Command(command=command_1, name=f"First pass bitrate", exe="ffmpeg"),
-            Command(command=command_2, name=f"Second pass bitrate", exe="ffmpeg"),
+            Command(command=command_1, name="First pass bitrate", exe="ffmpeg"),
+            Command(command=command_2, name="Second pass bitrate", exe="ffmpeg"),
         ]
     command_1 = f"{beginning} -q:v {settings.q} {details} {settings.extra} {ending}"
 
     return [
-        Command(command=command_1, name=f"Single pass constant quality", exe="ffmpeg"),
+        Command(command=command_1, name="Single pass constant quality", exe="ffmpeg"),
     ]

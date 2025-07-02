@@ -246,7 +246,7 @@ def app_setup(
     try:
         ProgressBar(app, startup_tasks)
     except Exception:
-        logger.exception(f'{t("Could not start FastFlix")}!')
+        logger.exception(f"{t('Could not start FastFlix')}!")
         sys.exit(1)
 
     container = Container(app)

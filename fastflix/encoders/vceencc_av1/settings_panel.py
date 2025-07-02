@@ -9,7 +9,6 @@ from fastflix.language import t
 from fastflix.models.encode import VCEEncCAV1Settings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
-from fastflix.resources import get_icon, loading_movie
 
 
 logger = logging.getLogger("fastflix")

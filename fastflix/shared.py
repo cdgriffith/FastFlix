@@ -32,7 +32,7 @@ from fastflix.resources import get_bool_env
 
 DEVMODE = get_bool_env("DEVMODE")
 
-ref = importlib.resources.files("fastflix") / f"data/icon.ico"
+ref = importlib.resources.files("fastflix") / "data/icon.ico"
 with importlib.resources.as_file(ref) as icon_file:
     my_data = str(icon_file.resolve())
 
@@ -201,7 +201,7 @@ def latest_fastflix(app, show_new_dialog=False):
         return
     logger.debug("FastFlix is up to date")
     if show_new_dialog:
-        message(t(f"You are using the latest version of FastFlix") + f" <br>")  # <br> {contrib} 💓 <br>
+        message(t("You are using the latest version of FastFlix") + " <br>")  # <br> {contrib} 💓 <br>
 
 
 def file_date():

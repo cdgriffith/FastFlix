@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import math
-import sys
 from pathlib import Path
 
 import reusables
@@ -96,7 +95,7 @@ class CommandList(QtWidgets.QWidget):
 
     def _prep_commands(self):
         commands = [x.command for x in self.commands if x.name != "hidden"]
-        return f"\r\n".join(commands) if reusables.win_based else f"\n".join(commands)
+        return "\r\n".join(commands) if reusables.win_based else "\n".join(commands)
 
     def copy_commands_to_clipboard(self):
         cmds = self._prep_commands()

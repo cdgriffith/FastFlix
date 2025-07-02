@@ -7,7 +7,6 @@ from iso639 import Lang, iter_langs
 from iso639.exceptions import InvalidLanguageValue
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp

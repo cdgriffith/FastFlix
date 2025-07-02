@@ -17,5 +17,5 @@ enable_audio = False
 enable_attachments = False
 enable_advanced = False
 
-from fastflix.encoders.modify.command_builder import build
-from fastflix.encoders.modify.settings_panel import Modify as settings_panel
+from fastflix.encoders.modify.command_builder import build  # noqa: F401,E402
+from fastflix.encoders.modify.settings_panel import Modify as settings_panel  # noqa: F401,E402

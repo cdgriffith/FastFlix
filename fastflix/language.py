@@ -5,6 +5,7 @@ proprietary format, and requires checking in binary files to git.
 
 So here is an easy stand-in that is better in ways I care about.
 """
+
 import os
 from functools import lru_cache
 from pathlib import Path

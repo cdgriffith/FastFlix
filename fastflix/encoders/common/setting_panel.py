@@ -269,7 +269,7 @@ class SettingPanel(QtWidgets.QWidget):
         if connect and connect != "default":
             self.ffmpeg_extras_widget.disconnect()
             if connect == "self":
-                connect = lambda: self.page_update()
+                connect = lambda: self.page_update()  # noqa: E731
             self.ffmpeg_extras_widget.textChanged.connect(connect)
             self.widgets["extra_both_passes"].toggled.connect(connect)
         else:

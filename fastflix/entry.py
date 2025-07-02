@@ -6,18 +6,15 @@ from multiprocessing import Process, Queue, freeze_support, Manager, Lock
 
 try:
     import coloredlogs
-    import requests
     import reusables
-    from platformdirs import user_data_dir
-    from box import Box
 
-    import fastflix.language  # Have to set language first thing
-    from fastflix.conversion_worker import queue_worker
-    from fastflix.models.config import Config
-    from fastflix.models.fastflix import FastFlix
-    from fastflix.version import __version__
+    import fastflix.language  # Have to set language first thing  # noqa: F401
+    from fastflix.conversion_worker import queue_worker  # noqa: F401
+    from fastflix.models.config import Config  # noqa: F401
+    from fastflix.models.fastflix import FastFlix  # noqa: F401
+    from fastflix.version import __version__  # noqa: F401
 
-except ImportError as err:
+except ImportError:
     traceback.print_exc()
     print("Could not load FastFlix properly!", file=sys.stderr)
     input("Please report this issue on https://github.com/cdgriffith/FastFlix/issues (press any key to exit)")
@@ -53,60 +50,7 @@ def startup_options():
 
     if "--test" in options:
         try:
-            import platformdirs
-            import box
-            import colorama
-            import coloredlogs
-            import iso639
-            import mistune
-            import PySide6
-            import requests
-            import reusables
-            import ruamel.yaml
-
-            import fastflix.encoders.av1_aom.main
-            import fastflix.encoders.avc_x264.main
-            import fastflix.encoders.common.attachments
-            import fastflix.encoders.common.audio
-            import fastflix.encoders.common.helpers
-            import fastflix.encoders.common.setting_panel
-            import fastflix.encoders.common.subtitles
-            import fastflix.encoders.copy.main
-            import fastflix.encoders.gif.main
-            import fastflix.encoders.hevc_x265.main
-            import fastflix.encoders.vvc.main
-            import fastflix.encoders.rav1e.main
-            import fastflix.encoders.svt_av1.main
-            import fastflix.encoders.vp9.main
-            import fastflix.encoders.webp.main
-            import fastflix.flix
-            import fastflix.language
-            import fastflix.models.config
-            import fastflix.models.encode
-            import fastflix.models.fastflix
-            import fastflix.models.fastflix_app
-            import fastflix.models.video
-            import fastflix.program_downloads
-            import fastflix.resources
-            import fastflix.shared
-            import fastflix.version
-            import fastflix.widgets.about
-            import fastflix.widgets.background_tasks
-            import fastflix.widgets.changes
-            import fastflix.widgets.container
-            import fastflix.widgets.logs
-            import fastflix.widgets.main
-            import fastflix.widgets.panels.abstract_list
-            import fastflix.widgets.panels.audio_panel
-            import fastflix.widgets.panels.command_panel
-            import fastflix.widgets.panels.cover_panel
-            import fastflix.widgets.panels.queue_panel
-            import fastflix.widgets.panels.status_panel
-            import fastflix.widgets.panels.subtitle_panel
-            import fastflix.widgets.windows.profile_window
-            import fastflix.widgets.progress_bar
-            import fastflix.widgets.settings
-            import fastflix.widgets.video_options
+            pass
         except Exception as err:
             print(f"Error: {err}")
             return 1

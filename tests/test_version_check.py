@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from subprocess import run, PIPE
 import re
 from packaging import version
 
@@ -12,6 +11,6 @@ def test_version():
 
     url = "https://api.github.com/repos/cdgriffith/FastFlix/releases/latest"
     data = requests.get(url).json()
-    assert (
-        version.parse(data["tag_name"]) < code_version
-    ), f"Last Release Version {version.parse(data['tag_name'])} vs Code Version {code_version}"
+    assert version.parse(data["tag_name"]) < code_version, (
+        f"Last Release Version {version.parse(data['tag_name'])} vs Code Version {code_version}"
+    )

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from subprocess import run, PIPE
 
 

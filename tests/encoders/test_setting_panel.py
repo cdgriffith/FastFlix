@@ -2,7 +2,7 @@
 import pytest
 from unittest import mock
 
-from fastflix.encoders.common.setting_panel import SettingPanel, RigayaPanel, QSVEncPanel, VCEPanel, VAAPIPanel
+from fastflix.encoders.common.setting_panel import SettingPanel, RigayaPanel
 
 
 @pytest.fixture
@@ -106,7 +106,6 @@ def test_rigaya_panel_init_decoder(mock_parent, mock_main, mock_app):
         mock.patch("fastflix.encoders.common.setting_panel.SettingPanel.__init__", return_value=None),
         mock.patch.object(RigayaPanel, "_add_combo_box") as mock_add_combo_box,
     ):
-
         # Create a RigayaPanel instance
         panel = RigayaPanel(mock_parent, mock_main, mock_app)
 

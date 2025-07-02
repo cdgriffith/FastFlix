@@ -2,12 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import re
-import secrets
 
 import reusables
 
-from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
+from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details
 from fastflix.models.encode import SVTAVIFSettings
 from fastflix.models.fastflix import FastFlix
 
@@ -19,7 +17,7 @@ def build(fastflix: FastFlix):
     settings: SVTAVIFSettings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending, output_fps = generate_all(fastflix, "libsvtav1", audio=False)
 
-    beginning += f"-strict experimental " f"-preset {settings.speed} " f"{generate_color_details(fastflix)} "
+    beginning += f"-strict experimental -preset {settings.speed} {generate_color_details(fastflix)} "
 
     svtav1_params = settings.svtav1_params.copy()
 
@@ -28,19 +26,19 @@ def build(fastflix: FastFlix):
             fastflix.current_video.video_settings.color_primaries == "bt2020"
             or fastflix.current_video.color_primaries == "bt2020"
         ):
-            svtav1_params.append(f"color-primaries=9")
+            svtav1_params.append("color-primaries=9")
 
         if (
             fastflix.current_video.video_settings.color_transfer == "smpte2084"
             or fastflix.current_video.color_transfer == "smpte2084"
         ):
-            svtav1_params.append(f"transfer-characteristics=16")
+            svtav1_params.append("transfer-characteristics=16")
 
         if (
             fastflix.current_video.video_settings.color_space
             and "bt2020" in fastflix.current_video.video_settings.color_space
         ) or (fastflix.current_video.color_space and "bt2020" in fastflix.current_video.color_space):
-            svtav1_params.append(f"matrix-coefficients=9")
+            svtav1_params.append("matrix-coefficients=9")
 
         enable_hdr = False
         if settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
@@ -68,7 +66,7 @@ def build(fastflix: FastFlix):
                 svtav1_params.append("enable-hdr=1")
 
     if svtav1_params:
-        beginning += f" -svtav1-params \"{':'.join(svtav1_params)}\" "
+        beginning += f' -svtav1-params "{":".join(svtav1_params)}" '
 
     pass_type = "bitrate" if settings.bitrate else "QP"
 

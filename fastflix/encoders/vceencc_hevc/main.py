@@ -8,7 +8,7 @@ name = "HEVC (VCEEncC)"
 video_extensions = [".mkv", ".mp4", ".ts", ".mov", ".avi", ".mts", ".m2ts", ".m4v"]
 video_dimension_divisor = 1
 
-ref = importlib.resources.files("fastflix") / f"data/encoders/icon_vceencc.png"
+ref = importlib.resources.files("fastflix") / "data/encoders/icon_vceencc.png"
 with importlib.resources.as_file(ref) as icon_file:
     icon = str(icon_file.resolve())
 
@@ -96,5 +96,5 @@ audio_formats = [
     "wmav2",
 ]
 
-from fastflix.encoders.vceencc_hevc.command_builder import build
-from fastflix.encoders.vceencc_hevc.settings_panel import VCEENCC as settings_panel
+from fastflix.encoders.vceencc_hevc.command_builder import build  # noqa: F401,E402
+from fastflix.encoders.vceencc_hevc.settings_panel import VCEENCC as settings_panel  # noqa: F401,E402

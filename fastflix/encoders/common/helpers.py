@@ -50,7 +50,7 @@ def generate_ffmpeg_start(
     start_extra: str = "",
     **_,
 ) -> str:
-    time_settings = f'{f"-ss {start_time}" if start_time else ""} {f"-to {end_time}" if end_time else ""}'.strip()
+    time_settings = f"{f'-ss {start_time}' if start_time else ''} {f'-to {end_time}' if end_time else ''}".strip()
     time_one = time_settings if fast_seek else ""
     time_two = time_settings if not fast_seek else ""
     incoming_fps = f"-r {source_fps}" if source_fps else ""
@@ -232,7 +232,7 @@ def generate_filters(
                 f"format=p010,hwupload,tonemap_opencl=tonemap={tone_map}:desat=0:r=tv:p=bt709:t=bt709:m=bt709:format=nv12,hwdownload,format=nv12"
             )
         elif vaapi:
-            filter_list.append(f"tonemap_vaapi=format=nv12:p=bt709:t=bt709:m=bt709")
+            filter_list.append("tonemap_vaapi=format=nv12:p=bt709:t=bt709:m=bt709")
         else:
             filter_list.append(
                 f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"

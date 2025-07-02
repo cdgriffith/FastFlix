@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from typing import Optional
 import logging
 
 from box import Box
 from iso639 import Lang, iter_langs
 from iso639.exceptions import InvalidLanguageValue
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6 import QtGui, QtWidgets
 
-from fastflix.encoders.common.audio import lossless, channel_list
 from fastflix.language import t
 from fastflix.models.encode import AudioTrack
 from fastflix.models.profiles import Profile

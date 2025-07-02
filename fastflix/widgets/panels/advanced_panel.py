@@ -329,13 +329,13 @@ class AdvancedPanel(QtWidgets.QWidget):
         # self.vbv_checkbox = QtWidgets.QCheckBox(t("Enable VBV"))
         # self.vbv_checkbox.toggled.connect(self.vbv_check_changed)
 
-        self.add_row_label(f'{t("Video Buffering")}\n{t("Verifier")} (VBV)', self.last_row)
+        self.add_row_label(f"{t('Video Buffering')}\n{t('Verifier')} (VBV)", self.last_row)
         self.layout.addWidget(
-            QtWidgets.QLabel(f'{t("Maxrate")} (kbps)'), self.last_row, 1, alignment=QtCore.Qt.AlignRight
+            QtWidgets.QLabel(f"{t('Maxrate')} (kbps)"), self.last_row, 1, alignment=QtCore.Qt.AlignRight
         )
         self.layout.addWidget(self.maxrate_widget, self.last_row, 2)
         self.layout.addWidget(
-            QtWidgets.QLabel(f'{t("Bufsize")} (kbps)'), self.last_row, 3, alignment=QtCore.Qt.AlignRight
+            QtWidgets.QLabel(f"{t('Bufsize')} (kbps)"), self.last_row, 3, alignment=QtCore.Qt.AlignRight
         )
         self.layout.addWidget(self.bufsize_widget, self.last_row, 4)
         self.layout.addWidget(QtWidgets.QLabel("Both must have values to be enabled"), self.last_row, 5, 1, 2)

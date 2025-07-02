@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-import pytest
-from unittest import mock
 
 from fastflix.encoders.common.audio import audio_quality_converter, build_audio, channel_list, lossless
-from fastflix.models.encode import AudioTrack
 
 
 def test_channel_list():

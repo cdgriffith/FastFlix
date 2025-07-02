@@ -90,12 +90,12 @@ def test_svt_av1_two_pass_qp():
                 ]
                 assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
                 assert len(result) == 2, f"Expected 2 Command objects, got {len(result)}"
-                assert (
-                    result[0].command == expected_commands[0]
-                ), f"Expected: {expected_commands[0]}\nGot: {result[0].command}"
-                assert (
-                    result[1].command == expected_commands[1]
-                ), f"Expected: {expected_commands[1]}\nGot: {result[1].command}"
+                assert result[0].command == expected_commands[0], (
+                    f"Expected: {expected_commands[0]}\nGot: {result[0].command}"
+                )
+                assert result[1].command == expected_commands[1], (
+                    f"Expected: {expected_commands[1]}\nGot: {result[1].command}"
+                )
 
 
 def test_svt_av1_single_pass_bitrate():
@@ -170,7 +170,7 @@ def test_svt_av1_with_hdr():
 
             # Mock the convert_me function to return predictable results
             with mock.patch("fastflix.encoders.svt_av1.command_builder.convert_me", create=True) as mock_convert_me:
-                mock_convert_me.side_effect = lambda x, y=50000: f"0.0100,0.0200" if y == 50000 else f"0.1000,0.0001"
+                mock_convert_me.side_effect = lambda x, y=50000: "0.0100,0.0200" if y == 50000 else "0.1000,0.0001"
 
                 result = build(fastflix)
 

@@ -9,7 +9,7 @@ video_extensions = [".mkv", ".mp4", ".ts", ".mov", ".avi", ".mts", ".m2ts", ".m4
 
 video_dimension_divisor = 1
 
-ref = importlib.resources.files("fastflix") / f"data/encoders/icon_qsvencc.png"
+ref = importlib.resources.files("fastflix") / "data/encoders/icon_qsvencc.png"
 with importlib.resources.as_file(ref) as icon_file:
     icon = str(icon_file.resolve())
 
@@ -97,5 +97,5 @@ audio_formats = [
     "wmav2",
 ]
 
-from fastflix.encoders.qsvencc_avc.command_builder import build
-from fastflix.encoders.qsvencc_avc.settings_panel import QSVEncH264 as settings_panel
+from fastflix.encoders.qsvencc_avc.command_builder import build  # noqa: F401,E402
+from fastflix.encoders.qsvencc_avc.settings_panel import QSVEncH264 as settings_panel  # noqa: F401,E402

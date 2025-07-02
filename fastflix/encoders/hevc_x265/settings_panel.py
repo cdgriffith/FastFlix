@@ -10,7 +10,6 @@ from fastflix.models.encode import x265Settings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import loading_movie, get_icon
 from fastflix.shared import link
-from fastflix.widgets.background_tasks import ExtractHDR10
 
 logger = logging.getLogger("fastflix")
 

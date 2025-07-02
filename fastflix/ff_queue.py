@@ -11,7 +11,7 @@ from box import Box, BoxError
 from ruamel.yaml import YAMLError
 
 from fastflix.models.video import Video, VideoSettings, Status, Crop
-from fastflix.models.encode import AudioTrack, SubtitleTrack, AttachmentTrack
+from fastflix.models.encode import AttachmentTrack
 from fastflix.models.encode import setting_types
 from fastflix.models.config import Config
 
@@ -107,7 +107,7 @@ def save_queue(queue: list[Video], queue_file: Path, config: Optional[Config] = 
                     if not Path(track["file_path"]).exists():
                         logger.exception("Could not save cover to queue recovery location, removing cover")
                         continue
-                    new_file = queue_covers / f'{uuid.uuid4().hex}_{track["file_path"].name}'
+                    new_file = queue_covers / f"{uuid.uuid4().hex}_{track['file_path'].name}"
                     try:
                         shutil.copy(track["file_path"], new_file)
                     except OSError:

@@ -25,7 +25,7 @@ resources_folder = content_folder / "Resources"
 resources_folder.mkdir(exist_ok=True)
 
 try:
-    mac_version = f"{sys.argv[1].split("-")[1]}.0"
+    mac_version = f"{sys.argv[1].split('-')[1]}.0"
     assert mac_version in ("12.0", "13.0", "14.0", "15.0")
 except Exception:
     print(f"Did not get expected input, received: {sys.argv}")

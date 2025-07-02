@@ -96,7 +96,11 @@ def test_build_attachments_non_cover_type():
     attachments = [
         AttachmentTrack(index=0, outdex=0, attachment_type="cover", file_path="cover.jpg", filename="cover"),
         AttachmentTrack(
-            index=1, outdex=1, attachment_type="font", file_path="font.ttf", filename="font"  # Non-cover type
+            index=1,
+            outdex=1,
+            attachment_type="font",
+            file_path="font.ttf",
+            filename="font",  # Non-cover type
         ),
     ]
 

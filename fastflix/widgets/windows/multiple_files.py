@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
-import os
 import logging
-import secrets
 
-from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6 import QtWidgets, QtGui
 from PySide6.QtWidgets import QAbstractItemView
 
 from fastflix.language import t
 from fastflix.flix import probe
-from fastflix.shared import yes_no_message, error_message, message
+from fastflix.shared import yes_no_message, error_message
 from fastflix.widgets.progress_bar import ProgressBar, Task
 
 logger = logging.getLogger("fastflix")
@@ -214,7 +212,7 @@ class MultipleFilesWindow(QtWidgets.QWidget):
             self.main.widgets.profile_box.setCurrentText(self.profile_box.currentText())
 
     def set_folder_name(self, name):
-        self.base_folder_label.setText(f'{t("Base Folder")}: {name}')
+        self.base_folder_label.setText(f"{t('Base Folder')}: {name}")
 
     def select_folder(self):
         if self.files_area.table.model.rowCount() > 0:

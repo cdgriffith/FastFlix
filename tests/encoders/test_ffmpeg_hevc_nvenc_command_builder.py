@@ -100,12 +100,12 @@ def test_ffmpeg_hevc_nvenc_bitrate():
                 ]
                 assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
                 assert len(result) == 2, f"Expected 2 Command objects, got {len(result)}"
-                assert (
-                    result[0].command == expected_commands[0]
-                ), f"Expected: {expected_commands[0]}\nGot: {result[0].command}"
-                assert (
-                    result[1].command == expected_commands[1]
-                ), f"Expected: {expected_commands[1]}\nGot: {result[1].command}"
+                assert result[0].command == expected_commands[0], (
+                    f"Expected: {expected_commands[0]}\nGot: {result[0].command}"
+                )
+                assert result[1].command == expected_commands[1], (
+                    f"Expected: {expected_commands[1]}\nGot: {result[1].command}"
+                )
 
 
 def test_ffmpeg_hevc_nvenc_with_rc_level():

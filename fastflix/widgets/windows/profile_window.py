@@ -4,7 +4,7 @@ import logging
 
 from box import Box
 from iso639 import Lang, iter_langs
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from fastflix.exceptions import FastFlixError
 from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
@@ -183,7 +183,7 @@ class AudioSelect(FlixList):
         self.audio_select_type.addButton(self.patter_match_checkbox)
         self.audio_select_type.buttonClicked.connect(self.set_audio_mode)
 
-        self.add_button = QtWidgets.QPushButton(f'  {t("Add Pattern Match")}  ')
+        self.add_button = QtWidgets.QPushButton(f"  {t('Add Pattern Match')}  ")
         if self.app.fastflix.config.theme == "onyx":
             self.add_button.setStyleSheet("border-radius: 10px;")
 
@@ -485,7 +485,7 @@ class ProfileWindow(QtWidgets.QWidget):
         if not profile_name:
             return error_message(t("Please provide a profile name"))
         if profile_name in self.app.fastflix.config.profiles:
-            return error_message(f'{t("Profile")} {self.profile_name.text().strip()} {t("already exists")}')
+            return error_message(f"{t('Profile')} {self.profile_name.text().strip()} {t('already exists')}")
 
         sub_lang = "en"
         subtitle_enabled = True

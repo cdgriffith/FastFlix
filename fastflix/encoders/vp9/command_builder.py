@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 import secrets
 
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
@@ -11,7 +10,7 @@ def build(fastflix: FastFlix):
     settings: VP9Settings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending, output_fps = generate_all(fastflix, "libvpx-vp9")
 
-    beginning += f'{"-row-mt 1" if settings.row_mt else ""} ' f"{generate_color_details(fastflix)} "
+    beginning += f"{'-row-mt 1' if settings.row_mt else ''} {generate_color_details(fastflix)} "
 
     if not settings.single_pass:
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
@@ -42,7 +41,7 @@ def build(fastflix: FastFlix):
         command_1 = f"{beginning} -b:v 0 -crf:v {settings.crf} {details} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f webm {null}"
         command_2 = (
             f"{beginning} -b:v 0 -crf:v {settings.crf} {details} "
-            f'{"-pass 2" if not settings.single_pass else ""} {settings.extra} {ending}'
+            f"{'-pass 2' if not settings.single_pass else ''} {settings.extra} {ending}"
         )
 
     else:

@@ -14,12 +14,6 @@ from fastflix.encoders.common.encc_helpers import (
 )
 from fastflix.models.encode import VCEEncCSettings
 
-from tests.conftest import (
-    fastflix_instance,
-    sample_audio_tracks,
-    sample_subtitle_tracks,
-)
-
 
 @pytest.fixture
 def encc_fastflix_instance(fastflix_instance):

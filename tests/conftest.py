@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 import pytest
 
 from box import Box
-from pydantic import BaseModel
 
 from fastflix.models.config import Config
 from fastflix.models.encode import EncoderSettings, AudioTrack, SubtitleTrack, AttachmentTrack
