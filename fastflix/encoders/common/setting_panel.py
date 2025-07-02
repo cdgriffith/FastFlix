@@ -450,7 +450,7 @@ class SettingPanel(QtWidgets.QWidget):
         if disable_custom_qp:
             qp_box_layout.addStretch(1)
         else:
-            qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
+            qp_box_layout.addWidget(QtWidgets.QLabel(t("Custom") + ":"))
             qp_box_layout.addWidget(self.widgets[f"custom_{qp_name}"])
         qp_box_layout.addWidget(QtWidgets.QLabel("  "))
 

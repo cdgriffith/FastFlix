@@ -10973,3 +10973,15 @@ Allow Optional Downloads:
   ukr: Дозволити додаткові завантаження
   kor: 선택적 다운로드 허용
   ron: Permiteți descărcări opționale
+uses [fast] seek to a rough position ahead of timestamp, vs a specific [exact] frame lookup. (GIF encodings use [fast]):
+  eng: uses [fast] seek to a rough position ahead of timestamp, vs a specific [exact] frame lookup. (GIF encodings use [fast])
+Both must have values to be enabled:
+  eng: Both must have values to be enabled
+Run a command after conversion completes:
+  eng: Run a command after conversion completes
+Primary Settings:
+  eng: Primary Settings
+Video:
+  eng: Video
+Disable interlace check:
+  eng: Disable interlace check

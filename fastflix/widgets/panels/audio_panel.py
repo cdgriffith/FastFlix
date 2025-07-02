@@ -80,7 +80,7 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.audio_info.setToolTip(Box(audio_track.raw_info).to_yaml())
 
-        self.widgets.language.addItems(["No Language Set"] + language_list)
+        self.widgets.language.addItems(["No Language Set", "Undefined"] + language_list)
         self.widgets.language.setMaximumWidth(150)
         if audio_track.language:
             try:

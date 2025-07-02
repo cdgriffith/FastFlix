@@ -279,7 +279,7 @@ class EncodingQueue(FlixList):
             actions.update(self.app.fastflix.config.custom_after_run_scripts)
 
         self.after_done_combo.addItems(sorted(actions))
-        self.after_done_combo.setToolTip("Run a command after conversion completes")
+        self.after_done_combo.setToolTip(t("Run a command after conversion completes"))
         self.after_done_combo.currentIndexChanged.connect(lambda: self.set_after_done())
         self.after_done_combo.setMaximumWidth(150)
 

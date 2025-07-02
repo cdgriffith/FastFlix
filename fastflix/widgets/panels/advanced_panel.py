@@ -338,7 +338,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             QtWidgets.QLabel(f"{t('Bufsize')} (kbps)"), self.last_row, 3, alignment=QtCore.Qt.AlignRight
         )
         self.layout.addWidget(self.bufsize_widget, self.last_row, 4)
-        self.layout.addWidget(QtWidgets.QLabel("Both must have values to be enabled"), self.last_row, 5, 1, 2)
+        self.layout.addWidget(QtWidgets.QLabel(t("Both must have values to be enabled")), self.last_row, 5, 1, 2)
 
     # def vbv_check_changed(self):
     #     self.bufsize_widget.setEnabled(self.vbv_checkbox.isChecked())

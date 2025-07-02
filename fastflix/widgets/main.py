@@ -826,8 +826,10 @@ class Main(QtWidgets.QWidget):
         self.widgets.fast_time.addItems(["fast", "exact"])
         self.widgets.fast_time.setCurrentIndex(0)
         self.widgets.fast_time.setToolTip(
-            "uses [fast] seek to a rough position ahead of timestamp, "
-            "vs a specific [exact] frame lookup. (GIF encodings use [fast])"
+            t(
+                "uses [fast] seek to a rough position ahead of timestamp, "
+                "vs a specific [exact] frame lookup. (GIF encodings use [fast])"
+            )
         )
         self.widgets.fast_time.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
         self.widgets.fast_time.setFixedWidth(65)
