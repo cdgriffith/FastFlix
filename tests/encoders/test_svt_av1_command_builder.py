@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from unittest import mock
 
+import reusables
+
 from fastflix.encoders.svt_av1.command_builder import build
 from fastflix.models.encode import SVTAV1Settings
 from fastflix.models.video import VideoSettings
@@ -85,12 +87,12 @@ def test_svt_av1_two_pass_qp():
 
                 # The expected command should be a list of two Command objects for two-pass encoding
                 expected_commands = [
-                    'ffmpeg -y -i input.mkv -strict experimental -preset 7 --color_details  -svtav1-params "tile-columns=0:tile-rows=0:scd=0:color-primaries=9:transfer-characteristics=16:matrix-coefficients=9" -passlogfile "pass_log_file_abcdef1234"  -crf 24 -pass 1  -an -r 24 -f matroska',
+                    f'ffmpeg -y -i input.mkv -strict experimental -preset 7 --color_details  -svtav1-params "tile-columns=0:tile-rows=0:scd=0:color-primaries=9:transfer-characteristics=16:matrix-coefficients=9" -passlogfile "pass_log_file_abcdef1234"  -crf 24 -pass 1  -an -r 24 -f matroska {"NUL" if reusables.win_based else "/dev/null"}',
                     'ffmpeg -y -i input.mkv -strict experimental -preset 7 --color_details  -svtav1-params "tile-columns=0:tile-rows=0:scd=0:color-primaries=9:transfer-characteristics=16:matrix-coefficients=9" -passlogfile "pass_log_file_abcdef1234"  -crf 24 -pass 2   output.mkv',
                 ]
                 assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
                 assert len(result) == 2, f"Expected 2 Command objects, got {len(result)}"
-                assert result[0].command.startswith(expected_commands[0]), (
+                assert result[0].command == expected_commands[0], (
                     f"Expected: {expected_commands[0]}\nGot: {result[0].command}"
                 )
                 assert result[1].command == expected_commands[1], (

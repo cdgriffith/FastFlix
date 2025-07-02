@@ -27,18 +27,6 @@ dependencies = [
     "ffmpeg-normalize>=1.31.3,<2.0",
 ]
 
-[project.optional-dependencies]
-develop = [
-    "wheel>=0.38.4",
-    "typing_extensions>=4.4",
-    "pyinstaller==6.13.0",
-    "pytest>=7.3",
-    "types-requests>=2.28",
-    "types-setuptools>=65.7",
-    "pre-commit>=3.0",
-    "ruff>=0.12"
-]
-
 [project.scripts]
 fastflix = "fastflix.__main__:start_fastflix"
 
