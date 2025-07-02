@@ -3,12 +3,12 @@
 import logging
 
 from box import Box
-from iso639 import Lang, iter_langs
+from iso639 import iter_langs
 from PySide6 import QtCore, QtWidgets
 
 from fastflix.exceptions import FastFlixError
 from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
-from fastflix.language import t
+from fastflix.language import t, Language
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import x265Settings, setting_types
@@ -16,7 +16,7 @@ from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, 
 from fastflix.shared import error_message
 from fastflix.encoders.common.audio import channel_list
 
-language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1]
+language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined"]
 
 logger = logging.getLogger("fastflix")
 
@@ -143,7 +143,7 @@ class AudioProfile(QtWidgets.QTabWidget):
         elif match_item_enum == MatchItem.TRACK:
             match_input_value = self.match_input.currentText()
         elif match_item_enum == MatchItem.LANGUAGE:
-            match_input_value = Lang(self.match_input.currentText()).pt2b
+            match_input_value = Language(self.match_input.currentText()).pt2b
         elif match_item_enum == MatchItem.CHANNELS:
             match_input_value = str(self.match_input.currentIndex())
         else:
@@ -495,7 +495,7 @@ class ProfileWindow(QtWidgets.QWidget):
             subtitle_enabled = False
         elif self.subtitle_select.sub_language.currentIndex() != 0:
             subtitle_select_preferred_language = True
-            sub_lang = Lang(self.subtitle_select.sub_language.currentText()).pt2b
+            sub_lang = Language(self.subtitle_select.sub_language.currentText()).pt2b
 
         self.advanced_options.color_space = (
             None

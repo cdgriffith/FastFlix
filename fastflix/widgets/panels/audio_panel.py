@@ -3,11 +3,11 @@
 import logging
 
 from box import Box
-from iso639 import Lang, iter_langs
+from iso639 import iter_langs
 from iso639.exceptions import InvalidLanguageValue
 from PySide6 import QtGui, QtWidgets
 
-from fastflix.language import t
+from fastflix.language import t, Language
 from fastflix.models.encode import AudioTrack
 from fastflix.models.profiles import Profile
 from fastflix.models.fastflix_app import FastFlixApp
@@ -18,7 +18,7 @@ from fastflix.audio_processing import apply_audio_filters
 from fastflix.widgets.windows.audio_conversion import AudioConversion
 from fastflix.widgets.windows.disposition import Disposition
 
-language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1]
+language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined"]
 logger = logging.getLogger("fastflix")
 
 disposition_options = [
@@ -84,7 +84,7 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.language.setMaximumWidth(150)
         if audio_track.language:
             try:
-                lang = Lang(audio_track.language).name
+                lang = Language(audio_track.language).name
             except InvalidLanguageValue:
                 pass
             else:
@@ -215,7 +215,7 @@ class Audio(QtWidgets.QTabWidget):
     def language(self) -> str:
         if self.widgets.language.currentIndex() == 0:
             return ""
-        return Lang(self.widgets.language.currentText()).pt2b
+        return Language(self.widgets.language.currentText()).pt2b
 
     @property
     def title(self) -> str:

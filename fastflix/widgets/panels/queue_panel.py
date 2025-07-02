@@ -6,8 +6,6 @@ import sys
 import logging
 import os
 from pathlib import Path
-
-# import tracemalloc
 import gc
 
 from platformdirs import user_data_dir

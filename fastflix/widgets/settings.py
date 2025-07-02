@@ -4,12 +4,12 @@ import logging
 import shutil
 from pathlib import Path
 
-from iso639 import Lang, iter_langs
+from iso639 import iter_langs
 from iso639.exceptions import InvalidLanguageValue
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.exceptions import FastFlixInternalException
-from fastflix.language import t
+from fastflix.language import t, Language
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import error_message, link
 
@@ -91,7 +91,7 @@ class Settings(QtWidgets.QWidget):
             # index = known_language_list.index("Chinese (Traditional)")
 
             else:
-                index = known_language_list.index(Lang(self.app.fastflix.config.language).name)
+                index = known_language_list.index(Language(self.app.fastflix.config.language).name)
         except (IndexError, InvalidLanguageValue):
             logger.exception(f"{t('Could not find language for')} {self.app.fastflix.config.language}")
             index = known_language_list.index("English")
@@ -320,7 +320,7 @@ class Settings(QtWidgets.QWidget):
             # self.app.fastflix.config.language = "cht"
 
             else:
-                self.app.fastflix.config.language = Lang(self.language_combo.currentText()).pt3
+                self.app.fastflix.config.language = Language(self.language_combo.currentText()).pt3
         except InvalidLanguageValue:
             error_message(
                 f"{t('Could not set language to')} {self.language_combo.currentText()}\n {t('Please report this issue')}"

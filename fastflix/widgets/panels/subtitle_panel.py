@@ -3,11 +3,11 @@
 from typing import Union
 
 from box import Box
-from iso639 import Lang, iter_langs
+from iso639 import iter_langs
 from iso639.exceptions import InvalidLanguageValue
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from fastflix.language import t
+from fastflix.language import t, Language
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import loading_movie, get_icon
@@ -40,7 +40,7 @@ subtitle_types = {
     "xsub": "text",
 }
 
-language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1]
+language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined"]
 
 # TODO give warning about exact time needed for text based subtitles
 
@@ -177,7 +177,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets.language.addItems(language_list)
         self.widgets.language.setMaximumWidth(110)
         try:
-            self.widgets.language.setCurrentIndex(language_list.index(Lang(sub_track.language).name))
+            self.widgets.language.setCurrentIndex(language_list.index(Language(sub_track.language).name))
         except Exception:
             self.widgets.language.setCurrentIndex(language_list.index("English"))
         self.widgets.language.currentIndexChanged.connect(self.page_update)
@@ -212,7 +212,7 @@ class Subtitle(QtWidgets.QTabWidget):
 
     @property
     def language(self):
-        return Lang(self.widgets.language.currentText()).pt2b
+        return Language(self.widgets.language.currentText()).pt2b
 
     @property
     def burn_in(self):
@@ -295,11 +295,11 @@ class SubtitleList(FlixList):
             self._first_selected = True
             return True
         try:
-            track_lang = Lang(language)
+            track_lang = Language(language)
         except InvalidLanguageValue:
             return True
         else:
-            if Lang(self.app.fastflix.config.opt("subtitle_language")) == track_lang:
+            if Language(self.app.fastflix.config.opt("subtitle_language")) == track_lang:
                 if (
                     not ignore_first
                     and self.app.fastflix.config.opt("subtitle_select_first_matching")

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
 
-from iso639 import Lang
 from iso639.exceptions import InvalidLanguageValue
 from box import Box
 
 from fastflix.models.profiles import AudioMatch, MatchType, MatchItem
+from fastflix.language import Language
 
 
 def apply_audio_filters(
@@ -55,7 +55,7 @@ def apply_audio_filters(
             subset_tracks = []
             for track in original_tracks:
                 try:
-                    if Lang(audio_match.match_input) == Lang(track.tags["language"]):
+                    if Language(audio_match.match_input) == Language(track.tags["language"]):
                         subset_tracks.append((track, audio_match))
                 except (InvalidLanguageValue, KeyError):
                     pass
