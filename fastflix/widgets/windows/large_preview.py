@@ -68,7 +68,7 @@ class LargePreview(QtWidgets.QWidget):
             settings["remove_hdr"] = True
 
         filters = helpers.generate_filters(
-            enable_opencl=self.main.app.fastflix.opencl_support,
+            enable_opencl=False,
             start_filters="select=eq(pict_type\\,I)" if self.main.widgets.thumb_key.isChecked() else None,
             scale=self.main.app.fastflix.current_video.scale,
             **settings,
@@ -82,7 +82,6 @@ class LargePreview(QtWidgets.QWidget):
             output=output,
             filters=filters,
             start_time=self.main.preview_place,
-            enable_opencl=self.main.app.fastflix.opencl_support,
             input_track=self.main.app.fastflix.current_video.video_settings.selected_track,
         )
         if thumb_command == self.last_command:

@@ -88,7 +88,13 @@ def main(portable_mode=False):
     logger = logging.getLogger("fastflix-core")
     logger.addHandler(reusables.get_stream_handler(level=logging.DEBUG))
     logger.setLevel(logging.DEBUG)
-    coloredlogs.install(level="DEBUG", logger=logger)
+    level_styles = {
+        "debug": {"color": "blue"},
+        "info": {"color": "green"},
+        "warning": {"color": "yellow", "bold": True},
+        "error": {"color": "red", "bold": True},
+    }
+    coloredlogs.install(level="DEBUG", logger=logger, level_styles=level_styles)
     logger.info(f"Starting FastFlix {__version__}")
 
     worker_queue = Queue()

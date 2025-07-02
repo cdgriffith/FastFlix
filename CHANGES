@@ -5,6 +5,7 @@
 * Fixing #654 Failed to import attachment due to bad mime type gathering (thanks to larsk2)
 * Fixing missing unittests for common encoder options
 * Fixing some extra spaces in commands
+* Fixing logs were showing red for info commands
 
 ## Version 5.12.0
 

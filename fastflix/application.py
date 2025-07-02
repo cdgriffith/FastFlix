@@ -52,7 +52,13 @@ def init_logging(app: FastFlixApp):
     logger.setLevel(logging.DEBUG)
     logger.addHandler(stream_handler)
     logger.addHandler(file_handler)
-    coloredlogs.install(level="DEBUG", logger=logger)
+    level_styles = {
+        "debug": {"color": "blue"},
+        "info": {"color": "green"},
+        "warning": {"color": "yellow", "bold": True},
+        "error": {"color": "red", "bold": True},
+    }
+    coloredlogs.install(level="DEBUG", logger=logger, level_styles=level_styles)
 
 
 def init_encoders(app: FastFlixApp, **_):
