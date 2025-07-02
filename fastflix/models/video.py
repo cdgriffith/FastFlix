@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List, Optional, Union, Tuple
 
 from box import Box
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 from fastflix.models.encode import (
     AOMAV1Settings,
@@ -309,5 +309,4 @@ class Video(BaseModel):
         else:
             return f"-8:{self.video_settings.resolution_custom}"
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)

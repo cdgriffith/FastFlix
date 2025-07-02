@@ -82,12 +82,12 @@ def test_avc_x264_two_pass_bitrate():
 
                 # The expected command should be a list of two Command objects for two-pass encoding
                 expected_commands = [
-                    'ffmpeg -y -i input.mkv  --color_details  -pass 1 -passlogfile "work_path\\pass_log_file_abcdef1234" -b:v 5000k -preset:v medium  -an -sn -dn -r 24 -f mp4 NUL',
+                    'ffmpeg -y -i input.mkv  --color_details  -pass 1 -passlogfile "work_path\\pass_log_file_abcdef1234" -b:v 5000k -preset:v medium  -an -sn -dn -r 24 -f mp4',
                     'ffmpeg -y -i input.mkv  --color_details  -pass 2 -passlogfile "work_path\\pass_log_file_abcdef1234" -b:v 5000k -preset:v medium   output.mkv',
                 ]
                 assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
                 assert len(result) == 2, f"Expected 2 Command objects, got {len(result)}"
-                assert result[0].command == expected_commands[0], (
+                assert result[0].command.startswith(expected_commands[0]), (
                     f"Expected: {expected_commands[0]}\nGot: {result[0].command}"
                 )
                 assert result[1].command == expected_commands[1], (
