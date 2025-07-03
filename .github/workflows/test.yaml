@@ -14,8 +14,13 @@ jobs:
       with:
         python-version: "3.12"
 
-    - run: pip install ruff==0.12
-    - run: python -m ruff check
+    - name: Install the latest version of uv and activate the environment
+      uses: astral-sh/setup-uv@v6
+      with:
+        activate-environment: true
+
+    - run: uv sync --frozen
+    - run: uv run ruff check
 
   test:
     runs-on: ubuntu-24.04
@@ -27,18 +32,20 @@ jobs:
       with:
         python-version: "3.12"
 
+    - name: Install the latest version of uv and activate the environment
+      uses: astral-sh/setup-uv@v6
+      with:
+        activate-environment: true
+
     - name: Install PySide6 requirements
       run: |
         sudo apt update
         sudo apt install libopengl0 freeglut3-dev -y
 
     - name: Install requirements
-      run: |
-        python -m pip install --upgrade pip setuptools
-        pip install .
-        pip install .[develop]
+      run: uv sync --frozen
 
     - name: Run tests
       env:
         PYTEST_QT_API: pyside6
-      run: pytest tests -v
+      run: uv run pytest tests -v
