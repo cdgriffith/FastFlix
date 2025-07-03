@@ -324,6 +324,8 @@ class AudioList(FlixList):
             track.widgets.enable_check.setChecked(False)
 
     def new_source(self, codecs):
+        if not self.app.fastflix.current_video:
+            return
         clear_list(self.tracks, close=True)
         self.app.fastflix.current_video.audio_tracks = []
         self.tracks: list[Audio] = []

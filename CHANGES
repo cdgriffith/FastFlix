@@ -3,6 +3,7 @@
 ## Version 5.12.2
 
 * Fixing #671 Switching to the NVEncC AV1 encoder will break FastFlix (thanks to Krawk)
+* Fixing error switching between copy and other encoders will break FastFlix
 
 ## Version 5.12.1
 
