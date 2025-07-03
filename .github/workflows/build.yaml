@@ -36,9 +36,8 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          python -m pip install --upgrade pip setuptools --ignore-installed
-          pip install .
-          pip install .[develop]
+          python -m pip install --upgrade pip setuptools uv --ignore-installed
+          uv sync --frozen
 
       - name: Build single executable
         run: pyinstaller FastFlix_Nix_OneFile.spec
@@ -100,9 +99,8 @@ jobs:
 
     - name: Install Python Dependencies
       run: |
-        python -m pip install --upgrade pip setuptools --ignore-installed
-        pip install .
-        pip install .[develop]
+        python -m pip install --upgrade pip setuptools uv --ignore-installed
+        uv sync --frozen
 
     - name: Build single executable
       shell: cmd
