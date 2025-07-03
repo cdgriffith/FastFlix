@@ -175,7 +175,7 @@ requires-dist = [
     { name = "pyside6", specifier = "==6.9.0" },
     { name = "python-box", extras = ["all"], specifier = ">=6.0,<7.0" },
     { name = "requests", specifier = ">=2.28,<3.0" },
-    { name = "reusables", specifier = ">=0.9.6,<0.10.0" },
+    { name = "reusables", specifier = ">=1.0.0" },
     { name = "setuptools", specifier = ">=75.8" },
     { name = "wmi", marker = "sys_platform == 'win32'", specifier = ">=1.5.1" },
 ]
@@ -675,11 +675,11 @@ wheels = [
 
 [[package]]
 name = "reusables"
-version = "0.9.6"
+version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a5/8f/b51b5932613b9a03fff66fe53a0acc40e5cd5b0f59cec87f16b684767f0b/reusables-0.9.6.tar.gz", hash = "sha256:d80e542d080fec741478851498cc7e5f7c624d4ee14d73a8fd4c48c2c6c21355", size = 61208, upload-time = "2020-09-26T15:46:57.813Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e8/a9/0bb8dea210ae14a217ab89da0765151194c54cb164c67bdfb01208851431/reusables-1.0.0.tar.gz", hash = "sha256:02e24e66e8970fe3f5a6ebaef691eced4e2388ae291f3747b1d63e561dba2b0b", size = 59709, upload-time = "2025-07-03T01:31:23.887Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/b3/c896311af8e1fdf550a2c1437d8033589c6d97c60d1f75f0a5eae7b5f1e3/reusables-0.9.6-py3-none-any.whl", hash = "sha256:a1b8fb50ccf8da61f8ccec326d3a559fa8e12702aefa53e7d23d0742b5227963", size = 61087, upload-time = "2020-09-26T15:46:56.156Z" },
+    { url = "https://files.pythonhosted.org/packages/54/68/1b2b93713e1fdd4cd06ba792b53d81574edd291eda0c7fdceca69d175843/reusables-1.0.0-py3-none-any.whl", hash = "sha256:1bd1fcb782ce4d67b60435e30e8d558be09231190ba798c2ab3488e258bcf3bf", size = 44934, upload-time = "2025-07-03T01:31:22.564Z" },
 ]
 
 [[package]]
