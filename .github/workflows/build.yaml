@@ -36,11 +36,11 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          python -m pip install --upgrade pip setuptools uv --ignore-installed
+          python -m pip install --upgrade uv
           uv sync --frozen
 
       - name: Build single executable
-        run: pyinstaller FastFlix_Nix_OneFile.spec
+        run: uv run pyinstaller FastFlix_Nix_OneFile.spec
 
       - name: Copy license to dist
         run: |
@@ -99,16 +99,16 @@ jobs:
 
     - name: Install Python Dependencies
       run: |
-        python -m pip install --upgrade pip setuptools uv --ignore-installed
+        python -m pip install --upgrade uv
         uv sync --frozen
 
     - name: Build single executable
       shell: cmd
-      run: pyinstaller FastFlix_Windows_OneFile.spec
+      run: uv run pyinstaller FastFlix_Windows_OneFile.spec
 
     - name: Build installer executable
       shell: cmd
-      run: pyinstaller FastFlix_Windows_Installer.spec
+      run: uv run pyinstaller FastFlix_Windows_Installer.spec
 
 #    - uses: skymatic/code-sign-action@v1
 #      with:
