@@ -95,3 +95,6 @@ audio_formats = [
     "wmav1",
     "wmav2",
 ]
+
+from fastflix.encoders.nvencc_av1.command_builder import build  # noqa: F401,E402
+from fastflix.encoders.nvencc_av1.settings_panel import NVENCC as settings_panel  # noqa: F401,E402
