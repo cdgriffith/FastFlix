@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from typing import Optional, Union
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from box import Box
 
 
@@ -24,8 +24,7 @@ class AudioTrack(BaseModel):
     raw_info: Optional[Union[dict, Box]] = None
     dispositions: dict = Field(default_factory=dict)
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class SubtitleTrack(BaseModel):
@@ -40,8 +39,7 @@ class SubtitleTrack(BaseModel):
     long_name: str = ""
     raw_info: Optional[Union[dict, Box]] = None
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class AttachmentTrack(BaseModel):

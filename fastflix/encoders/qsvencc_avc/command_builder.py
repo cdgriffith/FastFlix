@@ -88,10 +88,10 @@ def build(fastflix: FastFlix):
         source_fps,
         (f"--vpp-rotate {video.video_settings.rotate * 90}" if video.video_settings.rotate else ""),
         transform,
-        (f'--output-res {video.scale.replace(":", "x")}' if video.scale else ""),
+        (f"--output-res {video.scale.replace(':', 'x')}" if video.scale else ""),
         crop,
         (
-            f"--video-metadata clear --metadata clear"
+            "--video-metadata clear --metadata clear"
             if video.video_settings.remove_metadata
             else "--video-metadata copy  --metadata copy"
         ),

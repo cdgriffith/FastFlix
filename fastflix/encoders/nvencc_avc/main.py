@@ -8,7 +8,7 @@ name = "AVC (NVEncC)"
 video_extensions = [".mkv", ".mp4", ".ts", ".mov", ".avi", ".mts", ".m2ts", ".m4v"]
 video_dimension_divisor = 1
 
-ref = importlib.resources.files("fastflix") / f"data/encoders/icon_nvencc.png"
+ref = importlib.resources.files("fastflix") / "data/encoders/icon_nvencc.png"
 with importlib.resources.as_file(ref) as icon_file:
     icon = str(icon_file.resolve())
 
@@ -96,5 +96,5 @@ audio_formats = [
     "wmav2",
 ]
 
-from fastflix.encoders.nvencc_avc.command_builder import build
-from fastflix.encoders.nvencc_avc.settings_panel import NVENCCAVC as settings_panel
+from fastflix.encoders.nvencc_avc.command_builder import build  # noqa: F401,E402
+from fastflix.encoders.nvencc_avc.settings_panel import NVENCCAVC as settings_panel  # noqa: F401,E402

@@ -6,8 +6,6 @@ import sys
 import logging
 import os
 from pathlib import Path
-
-# import tracemalloc
 import gc
 
 from platformdirs import user_data_dir
@@ -250,7 +248,7 @@ class EncodingQueue(FlixList):
         # pause_queue.setFixedHeight(40)
         self.pause_queue.setFixedWidth(130)
         self.pause_queue.setToolTip(
-            t("Wait for the current command to finish," " and stop the next command from processing")
+            t("Wait for the current command to finish, and stop the next command from processing")
         )
 
         self.pause_encode = QtWidgets.QPushButton(
@@ -279,7 +277,7 @@ class EncodingQueue(FlixList):
             actions.update(self.app.fastflix.config.custom_after_run_scripts)
 
         self.after_done_combo.addItems(sorted(actions))
-        self.after_done_combo.setToolTip("Run a command after conversion completes")
+        self.after_done_combo.setToolTip(t("Run a command after conversion completes"))
         self.after_done_combo.currentIndexChanged.connect(lambda: self.set_after_done())
         self.after_done_combo.setMaximumWidth(150)
 
@@ -324,8 +322,7 @@ class EncodingQueue(FlixList):
             self.app.fastflix.conversion_list = new_queue
         elif new_queue:
             if yes_no_message(
-                f"{t('Not all items in the queue were completed')}\n"
-                f"{t('Would you like to keep them in the queue?')}",
+                f"{t('Not all items in the queue were completed')}\n{t('Would you like to keep them in the queue?')}",
                 title="Recover Queue Items",
             ):
                 self.app.fastflix.conversion_list = new_queue
@@ -347,7 +344,7 @@ class EncodingQueue(FlixList):
             self,
             caption=t("Save Queue"),
             dir=os.path.expanduser("~"),
-            filter=f"FastFlix Queue File (*.yaml)",
+            filter="FastFlix Queue File (*.yaml)",
         )
         if filename and filename[0]:
             save_queue(self.app.fastflix.conversion_list, filename[0], self.app.fastflix.config)
@@ -355,7 +352,7 @@ class EncodingQueue(FlixList):
 
     def manually_load_queue(self):
         filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption=t("Load Queue"), dir=os.path.expanduser("~"), filter=f"FastFlix Queue File (*.yaml)"
+            self, caption=t("Load Queue"), dir=os.path.expanduser("~"), filter="FastFlix Queue File (*.yaml)"
         )
         if filename and filename[0]:
             is_yes = True
@@ -364,7 +361,7 @@ class EncodingQueue(FlixList):
                     (
                         t("This will remove all items in the queue currently")
                         + "\n"
-                        + t(f"It will update it with the contents of")
+                        + t("It will update it with the contents of")
                         + f":\n\n {filename[0]}\n\n"
                         + t("Are you sure you want to proceed?")
                     ),
@@ -539,8 +536,8 @@ class EncodingQueue(FlixList):
         for video in self.app.fastflix.conversion_list:
             if video.status.complete:
                 continue
-            if self.app.fastflix.current_video.source == video.source:
-                source_in_queue = True
+            # if self.app.fastflix.current_video.source == video.source:
+            #     source_in_queue = True
             if self.app.fastflix.current_video.video_settings.output_path == video.video_settings.output_path:
                 raise FastFlixInternalException(
                     f"{video.video_settings.output_path} {t('out file is already in queue')}"

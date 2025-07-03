@@ -91,7 +91,7 @@ class SettingPanel(QtWidgets.QWidget):
 
     @staticmethod
     def translate_tip(tooltip):
-        return "\n".join([t(x) for x in tooltip.split("\n") if x.strip()])
+        return "<br>".join([t(x) for x in tooltip.split("\n") if x.strip()])
 
     def determine_default(self, widget_name, opt, items: List, raise_error: bool = False):
         if widget_name == "pix_fmt":
@@ -269,7 +269,7 @@ class SettingPanel(QtWidgets.QWidget):
         if connect and connect != "default":
             self.ffmpeg_extras_widget.disconnect()
             if connect == "self":
-                connect = lambda: self.page_update()
+                connect = lambda: self.page_update()  # noqa: E731
             self.ffmpeg_extras_widget.textChanged.connect(connect)
             self.widgets["extra_both_passes"].toggled.connect(connect)
         else:
@@ -450,7 +450,7 @@ class SettingPanel(QtWidgets.QWidget):
         if disable_custom_qp:
             qp_box_layout.addStretch(1)
         else:
-            qp_box_layout.addWidget(QtWidgets.QLabel("Custom:"))
+            qp_box_layout.addWidget(QtWidgets.QLabel(t("Custom") + ":"))
             qp_box_layout.addWidget(self.widgets[f"custom_{qp_name}"])
         qp_box_layout.addWidget(QtWidgets.QLabel("  "))
 

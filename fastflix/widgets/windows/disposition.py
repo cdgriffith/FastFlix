@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-from pathlib import Path
-from subprocess import run, PIPE
-from typing import Optional
-import secrets
 
-from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets
 
-from fastflix.flix import (
-    generate_thumbnail_command,
-)
-from fastflix.encoders.common import helpers
-from fastflix.resources import get_icon
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 

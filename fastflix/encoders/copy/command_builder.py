@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
-from pprint import pprint
 from fastflix.encoders.common.helpers import Command, generate_all
 from fastflix.models.fastflix import FastFlix
 

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 import secrets
 
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
@@ -12,7 +11,7 @@ def build(fastflix: FastFlix):
 
     beginning, ending, output_fps = generate_all(fastflix, "libx264")
 
-    beginning += f'{f"-tune:v {settings.tune}" if settings.tune else ""} {generate_color_details(fastflix)} '
+    beginning += f"{f'-tune:v {settings.tune}' if settings.tune else ''} {generate_color_details(fastflix)} "
 
     if settings.profile and settings.profile != "default":
         beginning += f"-profile:v {settings.profile} "
@@ -38,7 +37,7 @@ def build(fastflix: FastFlix):
             return [Command(command=command, name="Single pass bitrate", exe="ffmpeg")]
 
     elif settings.crf:
-        command = f"{beginning} -crf:v {settings.crf} " f"-preset:v {settings.preset} {settings.extra} {ending}"
+        command = f"{beginning} -crf:v {settings.crf} -preset:v {settings.preset} {settings.extra} {ending}"
         return [Command(command=command, name="Single pass CRF", exe="ffmpeg")]
 
     else:

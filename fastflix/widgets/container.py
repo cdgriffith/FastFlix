@@ -328,7 +328,7 @@ class Container(QtWidgets.QMainWindow):
     def delete_profile(self):
         if self.app.fastflix.config.selected_profile in get_preset_defaults():
             return error_message(
-                f"{self.app.fastflix.config.selected_profile} " f"{t('is a default profile and will not be removed')}"
+                f"{self.app.fastflix.config.selected_profile} {t('is a default profile and will not be removed')}"
             )
         self.main.loading_video = True
         del self.app.fastflix.config.profiles[self.app.fastflix.config.selected_profile]
@@ -416,7 +416,7 @@ class Container(QtWidgets.QMainWindow):
     def open_many(self):
         if self.app.fastflix.current_video:
             discard = yes_no_message(
-                f'{t("There is already a video being processed")}<br>' f'{t("Are you sure you want to discard it?")}',
+                f"{t('There is already a video being processed')}<br>{t('Are you sure you want to discard it?')}",
                 title="Discard current video",
             )
             if not discard:

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import re
 import secrets
 
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null

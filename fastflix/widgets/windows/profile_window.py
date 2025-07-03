@@ -3,12 +3,12 @@
 import logging
 
 from box import Box
-from iso639 import Lang
-from PySide6 import QtCore, QtGui, QtWidgets
+from iso639 import iter_langs
+from PySide6 import QtCore, QtWidgets
 
 from fastflix.exceptions import FastFlixError
 from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
-from fastflix.language import t
+from fastflix.language import t, Language
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import x265Settings, setting_types
@@ -16,7 +16,7 @@ from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, 
 from fastflix.shared import error_message
 from fastflix.encoders.common.audio import channel_list
 
-language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
+language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined"]
 
 logger = logging.getLogger("fastflix")
 
@@ -143,7 +143,7 @@ class AudioProfile(QtWidgets.QTabWidget):
         elif match_item_enum == MatchItem.TRACK:
             match_input_value = self.match_input.currentText()
         elif match_item_enum == MatchItem.LANGUAGE:
-            match_input_value = Lang(self.match_input.currentText()).pt2b
+            match_input_value = Language(self.match_input.currentText()).pt2b
         elif match_item_enum == MatchItem.CHANNELS:
             match_input_value = str(self.match_input.currentIndex())
         else:
@@ -183,7 +183,7 @@ class AudioSelect(FlixList):
         self.audio_select_type.addButton(self.patter_match_checkbox)
         self.audio_select_type.buttonClicked.connect(self.set_audio_mode)
 
-        self.add_button = QtWidgets.QPushButton(f'  {t("Add Pattern Match")}  ')
+        self.add_button = QtWidgets.QPushButton(f"  {t('Add Pattern Match')}  ")
         if self.app.fastflix.config.theme == "onyx":
             self.add_button.setStyleSheet("border-radius: 10px;")
 
@@ -440,11 +440,11 @@ class ProfileWindow(QtWidgets.QWidget):
         self.advanced_tab = AdvancedTab(self.advanced_options)
         self.primary_tab = PrimaryOptions(self.main_settings)
         self.encoder_tab = EncoderOptions(self.app, self)
-        self.tab_area.addTab(self.primary_tab, "Primary Settings")
-        self.tab_area.addTab(self.encoder_tab, "Video")
-        self.tab_area.addTab(self.audio_select, "Audio")
-        self.tab_area.addTab(self.subtitle_select, "Subtitles")
-        self.tab_area.addTab(self.advanced_tab, "Advanced Options")
+        self.tab_area.addTab(self.primary_tab, t("Primary Settings"))
+        self.tab_area.addTab(self.encoder_tab, t("Video"))
+        self.tab_area.addTab(self.audio_select, t("Audio"))
+        self.tab_area.addTab(self.subtitle_select, t("Subtitles"))
+        self.tab_area.addTab(self.advanced_tab, t("Advanced Options"))
         # self.tab_area.addTab(self.subtitle_select, "Subtitles")
         # self.tab_area.addTab(SubtitleSelect(self.app, self, "Subtitle Select", "subtitles"), "Subtitle Select")
 
@@ -485,7 +485,7 @@ class ProfileWindow(QtWidgets.QWidget):
         if not profile_name:
             return error_message(t("Please provide a profile name"))
         if profile_name in self.app.fastflix.config.profiles:
-            return error_message(f'{t("Profile")} {self.profile_name.text().strip()} {t("already exists")}')
+            return error_message(f"{t('Profile')} {self.profile_name.text().strip()} {t('already exists')}")
 
         sub_lang = "en"
         subtitle_enabled = True
@@ -495,7 +495,7 @@ class ProfileWindow(QtWidgets.QWidget):
             subtitle_enabled = False
         elif self.subtitle_select.sub_language.currentIndex() != 0:
             subtitle_select_preferred_language = True
-            sub_lang = Lang(self.subtitle_select.sub_language.currentText()).pt2b
+            sub_lang = Language(self.subtitle_select.sub_language.currentText()).pt2b
 
         self.advanced_options.color_space = (
             None

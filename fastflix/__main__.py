@@ -10,7 +10,7 @@ def start_fastflix():
     exit_code = 2
     portable_mode = True
     try:
-        from fastflix import portable
+        from fastflix import portable  # noqa: F401
     except ImportError:
         portable_mode = False
 

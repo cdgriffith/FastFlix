@@ -327,7 +327,6 @@ def generate_thumbnail_command(
     filters: str,
     start_time: float = 0,
     input_track: int = 0,
-    enable_opencl: bool = False,
 ) -> list[str]:
     command = [str(config.ffmpeg)]
 
@@ -338,10 +337,6 @@ def generate_thumbnail_command(
     # Less logging
     # Video file input
     command += ["-loglevel", "warning", "-i", clean_file_string(source)]
-
-    # Hardware acceleration with OpenCL
-    if enable_opencl:
-        command += ["-init_hw_device", "opencl:0.0=ocl", "-filter_hw_device", "ocl"]
 
     command += shlex.split(filters)
 

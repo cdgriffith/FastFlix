@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import re
-import secrets
 
-from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null, generate_filters
+from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details
 from fastflix.models.encode import VAAPIH264Settings
 from fastflix.models.fastflix import FastFlix
 
@@ -33,7 +31,7 @@ def build(fastflix: FastFlix):
     )
 
     if settings.aud:
-        beginning += f"-aud 1 "
+        beginning += "-aud 1 "
 
     if settings.low_power:
         beginning += "-low-power 1 "

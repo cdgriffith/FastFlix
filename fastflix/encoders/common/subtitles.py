@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import List, Tuple, Union
+from typing import Tuple, Union
 
 from fastflix.models.video import SubtitleTrack
 

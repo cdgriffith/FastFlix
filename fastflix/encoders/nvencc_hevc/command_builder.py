@@ -36,7 +36,7 @@ def build(fastflix: FastFlix):
 
     dhdr = None
     if settings.copy_hdr10:
-        dhdr = f"--dhdr10-info copy"
+        dhdr = "--dhdr10-info copy"
 
     seek = ""
     seekto = ""
@@ -105,9 +105,9 @@ def build(fastflix: FastFlix):
 
     split_mode = ""
     if settings.split_mode == "split":
-        split_mode = f"--split-enc auto_forced"
+        split_mode = "--split-enc auto_forced"
     elif settings.split_mode == "parallel":
-        split_mode = f"--parallel auto"
+        split_mode = "--parallel auto"
 
     source_fps = f"--fps {video.video_settings.source_fps}" if video.video_settings.source_fps else ""
 
@@ -124,10 +124,10 @@ def build(fastflix: FastFlix):
         source_fps,
         (f"--vpp-rotate {video.video_settings.rotate * 90}" if video.video_settings.rotate else ""),
         transform,
-        (f'--output-res {video.scale.replace(":", "x")}' if video.scale else ""),
+        (f"--output-res {video.scale.replace(':', 'x')}" if video.scale else ""),
         crop,
         (
-            f"--video-metadata clear --metadata clear"
+            "--video-metadata clear --metadata clear"
             if video.video_settings.remove_metadata
             else "--video-metadata copy  --metadata copy"
         ),

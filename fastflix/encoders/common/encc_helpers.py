@@ -100,6 +100,8 @@ def get_stream_pos(streams) -> dict:
 
 
 def build_audio(audio_tracks: list[AudioTrack], audio_streams):
+    if not audio_tracks:
+        return ""
     command_list = []
     copies = []
     track_ids = set()
@@ -152,7 +154,8 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
             command_list.append(f"--audio-disposition {audio_id}?{added.rstrip(',')}")
         else:
             command_list.append(f"--audio-disposition {audio_id}?unset")
-
+    if not command_list:
+        return ""
     return f" --audio-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
 
 
@@ -160,6 +163,8 @@ def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video
     command_list = []
     copies = []
     stream_ids = get_stream_pos(subtitle_streams)
+    if not subtitle_tracks:
+        return ""
 
     scale = ",scale=2.0" if video_height > 1800 else ""
 
@@ -182,7 +187,7 @@ def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video
 
             command_list.append(f"--sub-metadata  {sub_id}?language='{track.language}'")
 
+    if not command_list:
+        return ""
     commands = f" --sub-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
-    if commands:
-        return commands
-    return ""
+    return commands

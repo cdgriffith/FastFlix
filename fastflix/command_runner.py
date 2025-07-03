@@ -174,7 +174,7 @@ class BackgroundRunner:
     def kill(self, log=True):
         if self.process and self.process.poll() is None:
             if log:
-                logger.info(f"Killing worker process {self.process.pid}")
+                logger.warning(f"Stopping encoder worker process {self.process.pid}")
             try:
                 # if reusables.win_based:
                 #     os.kill(self.process.pid, signal.CTRL_C_EVENT)

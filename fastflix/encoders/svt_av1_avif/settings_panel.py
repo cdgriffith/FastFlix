@@ -124,7 +124,7 @@ class SVT_AV1_AVIF(SettingPanel):
         layout = QtWidgets.QHBoxLayout()
         self.labels.svtav1_params = QtWidgets.QLabel(t("Additional svt av1 params"))
         self.labels.svtav1_params.setFixedWidth(200)
-        tool_tip = f"{t('Extra svt av1 params in opt=1:opt2=0 format')},\n" f"{t('cannot modify generated settings')}"
+        tool_tip = f"{t('Extra svt av1 params in opt=1:opt2=0 format')},\n{t('cannot modify generated settings')}"
         self.labels.svtav1_params.setToolTip(tool_tip)
         layout.addWidget(self.labels.svtav1_params)
         self.widgets.svtav1_params = QtWidgets.QLineEdit()

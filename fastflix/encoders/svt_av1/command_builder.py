@@ -18,7 +18,7 @@ def build(fastflix: FastFlix):
     settings: SVTAV1Settings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending, output_fps = generate_all(fastflix, "libsvtav1")
 
-    beginning += f"-strict experimental " f"-preset {settings.speed} " f"{generate_color_details(fastflix)} "
+    beginning += f"-strict experimental -preset {settings.speed} {generate_color_details(fastflix)} "
 
     svtav1_params = settings.svtav1_params.copy()
     svtav1_params.extend(
@@ -34,26 +34,30 @@ def build(fastflix: FastFlix):
             fastflix.current_video.video_settings.color_primaries == "bt2020"
             or fastflix.current_video.color_primaries == "bt2020"
         ):
-            svtav1_params.append(f"color-primaries=9")
+            svtav1_params.append("color-primaries=9")
 
         if (
             fastflix.current_video.video_settings.color_transfer == "smpte2084"
             or fastflix.current_video.color_transfer == "smpte2084"
         ):
-            svtav1_params.append(f"transfer-characteristics=16")
+            svtav1_params.append("transfer-characteristics=16")
 
         if (
             fastflix.current_video.video_settings.color_space
             and "bt2020" in fastflix.current_video.video_settings.color_space
         ) or (fastflix.current_video.color_space and "bt2020" in fastflix.current_video.color_space):
-            svtav1_params.append(f"matrix-coefficients=9")
+            svtav1_params.append("matrix-coefficients=9")
 
         enable_hdr = False
         if settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
 
             def convert_me(two_numbers, conversion_rate=50_000) -> str:
-                num_one, num_two = map(int, two_numbers.strip("()").split(","))
-                return f"{num_one / conversion_rate:0.4f},{num_two / conversion_rate:0.4f}"
+                try:
+                    num_one, num_two = map(float, two_numbers.strip("()").split(","))
+                    return f"{num_one / conversion_rate:0.4f},{num_two / conversion_rate:0.4f}"
+                except ValueError:
+                    # If the values are already in the correct format, just return them
+                    return two_numbers.strip("()")
 
             if fastflix.current_video.master_display:
                 svtav1_params.append(
@@ -74,7 +78,7 @@ def build(fastflix: FastFlix):
                 svtav1_params.append("enable-hdr=1")
 
     if svtav1_params:
-        beginning += f" -svtav1-params \"{':'.join(svtav1_params)}\" "
+        beginning += f' -svtav1-params "{":".join(svtav1_params)}" '
 
     if not settings.single_pass:
         pass_log_file = f"pass_log_file_{secrets.token_hex(10)}"

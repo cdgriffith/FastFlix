@@ -5,7 +5,6 @@ from fastflix.encoders.common.helpers import Command, generate_filters
 from fastflix.models.encode import GIFSettings
 from fastflix.models.fastflix import FastFlix
 from fastflix.shared import clean_file_string
-from fastflix.flix import get_all_concat_items
 
 
 def build(fastflix: FastFlix):
@@ -27,13 +26,13 @@ def build(fastflix: FastFlix):
 
     beginning = (
         f'"{fastflix.config.ffmpeg}" -y '
-        f'{f"-ss {fastflix.current_video.video_settings.start_time}" if fastflix.current_video.video_settings.start_time else ""} '
-        f'{f"-to {fastflix.current_video.video_settings.end_time}" if fastflix.current_video.video_settings.end_time else ""} '
-        f'{f"-r {fastflix.current_video.video_settings.source_fps } " if fastflix.current_video.video_settings.source_fps else ""}'
+        f"{f'-ss {fastflix.current_video.video_settings.start_time}' if fastflix.current_video.video_settings.start_time else ''} "
+        f"{f'-to {fastflix.current_video.video_settings.end_time}' if fastflix.current_video.video_settings.end_time else ''} "
+        f"{f'-r {fastflix.current_video.video_settings.source_fps} ' if fastflix.current_video.video_settings.source_fps else ''}"
         f' -i "{fastflix.current_video.source}" '
     )
     if settings.extra:
-        beginning += f"  "
+        beginning += "  "
 
     temp_palette = fastflix.current_video.work_path / f"temp_palette_{secrets.token_hex(10)}.png"
 

@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
     - id: mixed-line-ending
     - id: trailing-whitespace
@@ -22,10 +22,16 @@ repos:
     - id: check-toml
     - id: detect-private-key
     - id: end-of-file-fixer
-  - repo: https://github.com/psf/black
-    rev: 24.8.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.12.1
     hooks:
-      - id: black
+      # Run the linter.
+      - id: ruff-check
+        args: [ --fix ]
+      # Run the formatter.
+      - id: ruff-format
+
 #  - repo: https://github.com/pre-commit/mirrors-mypy
 #    rev: 'v0.942'
 #    hooks:

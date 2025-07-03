@@ -2,19 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import re
-from itertools import chain
-from pathlib import Path
-from typing import Union
 
-from box import Box, BoxList
-from PySide6 import QtCore, QtGui, QtWidgets
+from box import Box
+from PySide6 import QtWidgets
 
-from fastflix.language import t
-from fastflix.models.encode import AttachmentTrack
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import Video
-from fastflix.shared import link
 
 logger = logging.getLogger("fastflix")
 

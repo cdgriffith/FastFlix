@@ -9,7 +9,6 @@ from fastflix.language import t
 from fastflix.models.encode import QSVEncCH264Settings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
-from fastflix.resources import get_icon
 
 logger = logging.getLogger("fastflix")
 

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 import secrets
 
 from fastflix.encoders.common.helpers import Command, generate_all, null
@@ -111,7 +110,7 @@ def build(fastflix: FastFlix):
         command_1 = (
             f"{beginning} {params} "
             f'-passlogfile "{pass_log_file}" -b:v {settings.bitrate} '
-            f'-preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ""} '
+            f"-preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ''} "
             f" -an -sn -dn {output_fps} -f mp4 {null}"
         )
         params2 = get_vvc_params(["pass=2", f"rcstatsfile={quoted_path(clean_file_string(pass_log_file))}"])

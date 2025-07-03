@@ -3,10 +3,8 @@ import logging
 
 from PySide6 import QtWidgets, QtGui
 
-from fastflix.exceptions import FastFlixError
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import AudioTrack
-from fastflix.shared import error_message
 from fastflix.language import t
 
 __all__ = ["AudioConversion"]

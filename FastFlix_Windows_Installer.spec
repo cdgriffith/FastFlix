@@ -26,7 +26,7 @@ all_imports.append("iso639")
 
 a = Analysis(['fastflix\\__main__.py'],
              binaries=[],
-             datas=[('iso-639-3.tab', 'iso639'), ('iso-639-3.json', 'iso639'), ('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files,
+             datas=[('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files,
              hiddenimports=all_imports,
              hookspath=[],
              runtime_hooks=[],

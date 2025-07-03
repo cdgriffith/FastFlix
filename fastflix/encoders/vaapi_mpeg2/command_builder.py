@@ -3,7 +3,7 @@
 
 import logging
 
-from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null, generate_filters
+from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details
 from fastflix.models.encode import VAAPIMPEG2Settings
 from fastflix.models.fastflix import FastFlix
 

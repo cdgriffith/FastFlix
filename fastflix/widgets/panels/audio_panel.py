@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from typing import Optional
 import logging
 
 from box import Box
-from iso639 import Lang
+from iso639 import iter_langs
 from iso639.exceptions import InvalidLanguageValue
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6 import QtGui, QtWidgets
 
-from fastflix.encoders.common.audio import lossless, channel_list
-from fastflix.language import t
+from fastflix.language import t, Language
 from fastflix.models.encode import AudioTrack
 from fastflix.models.profiles import Profile
 from fastflix.models.fastflix_app import FastFlixApp
@@ -20,7 +18,7 @@ from fastflix.audio_processing import apply_audio_filters
 from fastflix.widgets.windows.audio_conversion import AudioConversion
 from fastflix.widgets.windows.disposition import Disposition
 
-language_list = sorted((k for k, v in Lang._data["name"].items() if v["pt2B"] and v["pt1"]), key=lambda x: x.lower())
+language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined"]
 logger = logging.getLogger("fastflix")
 
 disposition_options = [
@@ -82,11 +80,11 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.audio_info.setToolTip(Box(audio_track.raw_info).to_yaml())
 
-        self.widgets.language.addItems(["No Language Set"] + language_list)
+        self.widgets.language.addItems(["No Language Set", "Undefined"] + language_list)
         self.widgets.language.setMaximumWidth(150)
         if audio_track.language:
             try:
-                lang = Lang(audio_track.language).name
+                lang = Language(audio_track.language).name
             except InvalidLanguageValue:
                 pass
             else:
@@ -217,7 +215,7 @@ class Audio(QtWidgets.QTabWidget):
     def language(self) -> str:
         if self.widgets.language.currentIndex() == 0:
             return ""
-        return Lang(self.widgets.language.currentText()).pt2b
+        return Language(self.widgets.language.currentText()).pt2b
 
     @property
     def title(self) -> str:

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from unittest.mock import MagicMock
 
 from box import Box
 
-from fastflix.application import init_encoders, create_app
+from fastflix.application import init_encoders
 from fastflix.models.config import Config
 
 # from fastflix.widgets.container import Container

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import os
 from pathlib import Path
 
 from PySide6 import QtWidgets, QtGui, QtCore
@@ -11,7 +10,7 @@ from fastflix.models.encode import ModifySettings
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import message, yes_no_message
 from fastflix.widgets.background_tasks import AudioNoramlize
-from fastflix.resources import loading_movie, get_icon
+from fastflix.resources import loading_movie
 
 logger = logging.getLogger("fastflix")
 

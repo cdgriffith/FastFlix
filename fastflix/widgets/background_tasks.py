@@ -57,7 +57,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
         filename = str(Path(self.main.output_video).parent / f"{self.main.output_video}.{self.index}.srt").replace(
             "\\", "/"
         )
-        self.main.thread_logging_signal.emit(f'INFO:{t("Extracting subtitles to")} {filename}')
+        self.main.thread_logging_signal.emit(f"INFO:{t('Extracting subtitles to')} {filename}")
 
         try:
             result = run(
@@ -78,14 +78,14 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 stderr=STDOUT,
             )
         except Exception as err:
-            self.main.thread_logging_signal.emit(f'ERROR:{t("Could not extract subtitle track")} {self.index} - {err}')
+            self.main.thread_logging_signal.emit(f"ERROR:{t('Could not extract subtitle track')} {self.index} - {err}")
         else:
             if result.returncode != 0:
                 self.main.thread_logging_signal.emit(
-                    f'WARNING:{t("Could not extract subtitle track")} {self.index}: {result.stdout}'
+                    f"WARNING:{t('Could not extract subtitle track')} {self.index}: {result.stdout}"
                 )
             else:
-                self.main.thread_logging_signal.emit(f'INFO:{t("Extracted subtitles successfully")}')
+                self.main.thread_logging_signal.emit(f"INFO:{t('Extracted subtitles successfully')}")
         self.signal.emit()
 
 
@@ -137,7 +137,7 @@ class ExtractHDR10(QtCore.QThread):
             )
             track = self.app.fastflix.current_video.hdr10_plus[0]
 
-        self.main.thread_logging_signal.emit(f'INFO:{t("Extracting HDR10+ metadata")} to {output}')
+        self.main.thread_logging_signal.emit(f"INFO:{t('Extracting HDR10+ metadata')} to {output}")
 
         self.ffmpeg_signal.emit("Extracting HDR10+ metadata")
 

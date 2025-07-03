@@ -4,7 +4,7 @@ import os
 import logging
 import secrets
 
-from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6 import QtWidgets, QtGui
 from PySide6.QtWidgets import QAbstractItemView
 
 from fastflix.language import t
@@ -160,7 +160,7 @@ class ConcatWindow(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def set_folder_name(self, name):
-        self.base_folder_label.setText(f'{t("Base Folder")}: {name}')
+        self.base_folder_label.setText(f"{t('Base Folder')}: {name}")
 
     def select_folder(self):
         if self.concat_area.table.model.rowCount() > 0:
