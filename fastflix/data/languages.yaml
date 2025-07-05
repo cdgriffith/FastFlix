@@ -11086,3 +11086,18 @@ Disable interlace check:
   ukr: Вимкнути перевірку чересстрочності
   kor: 인터레이스 검사 비활성화
   ron: Dezactivați verificarea intercalării
+Could not extract subtitle track:
+  eng: Could not extract subtitle track
+  deu: Untertitelspur konnte nicht extrahiert werden
+  fra: Impossible d'extraire la piste des sous-titres
+  ita: Impossibile estrarre la traccia dei sottotitoli
+  spa: No se ha podido extraer la pista de subtítulos
+  jpn: 字幕トラックを抽出できませんでした
+  rus: Не удалось извлечь дорожку субтитров
+  por: Não foi possível extrair a faixa de legendas
+  swe: Det gick inte att extrahera undertextspår
+  pol: Nie można wyodrębnić ścieżki napisów
+  chs: 无法提取字幕音轨
+  ukr: Не вдалося витягти доріжку субтитрів
+  kor: 자막 트랙을 추출할 수 없습니다.
+  ron: Nu s-a putut extrage pista de subtitrare

@@ -173,8 +173,6 @@ class VideoOptions(QtWidgets.QTabWidget):
 
         if getattr(self.main.current_encoder, "enable_audio", False):
             self.audio.update_audio_settings()
-        if getattr(self.main.current_encoder, "enable_subtitles", False):
-            self.subtitles.get_settings()
         if getattr(self.main.current_encoder, "enable_attachments", False):
             self.attachments.update_cover_settings()
 
