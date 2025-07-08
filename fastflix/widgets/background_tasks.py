@@ -55,8 +55,38 @@ class ExtractSubtitleSRT(QtCore.QThread):
         self.language = language
 
     def run(self):
+        subtitle_format = self._get_subtitle_format()
+        if subtitle_format is None:
+            self.main.thread_logging_signal.emit(
+                f"WARNING:{t('Could not determine subtitle format for track')} {self.index}, {t('skipping extraction')}"
+            )
+            self.signal.emit()
+            return
+
+        if subtitle_format == "srt":
+            extension = "srt"
+            output_args = ["-c", "srt", "-f", "srt"]
+        elif subtitle_format == "ass":
+            extension = "ass"
+            output_args = ["-c", "copy"]
+        elif subtitle_format == "ssa":
+            extension = "ssa"
+            output_args = ["-c", "copy"]
+        elif subtitle_format == "pgs":
+            extension = "sup"
+            output_args = ["-c", "copy"]
+        else:
+            self.main.thread_logging_signal.emit(
+                f"WARNING:{t('Subtitle Track')} {self.index} {t('is not in supported format (SRT, ASS, SSA, PGS), skipping extraction')}: {subtitle_format}"
+            )
+            self.signal.emit()
+            return
+
+        # filename = str(
+            # Path(self.main.output_video).parent / f"{self.main.output_video}.{self.index}.{self.language}.srt"
+        # ).replace("\\", "/")
         filename = str(
-            Path(self.main.output_video).parent / f"{self.main.output_video}.{self.index}.{self.language}.srt"
+            Path(self.main.output_video).parent / f"{self.main.output_video}.{self.index}.{self.language}.{extension}"
         ).replace("\\", "/")
         self.main.thread_logging_signal.emit(f"INFO:{t('Extracting subtitles to')} {filename}")
 
@@ -69,10 +99,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
                     self.main.input_video,
                     "-map",
                     f"0:s:{self.index}",
-                    "-c",
-                    "srt",
-                    "-f",
-                    "srt",
+                    *output_args,
                     filename,
                 ],
                 stdout=PIPE,
@@ -90,6 +117,48 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 self.main.thread_logging_signal.emit(f"INFO:{t('Extracted subtitles successfully')}")
         self.signal.emit()
 
+    def _get_subtitle_format(self):
+        try:
+            result = run(
+                [
+                    self.app.fastflix.config.ffprobe,
+                    "-v", "error",
+                    "-select_streams", f"s:{self.index}",
+                    "-show_entries", "stream=codec_name",
+                    "-of", "default=noprint_wrappers=1:nokey=1",
+                    self.main.input_video
+                ],
+                stdout=PIPE,
+                stderr=STDOUT,
+                text=True
+            )
+            
+            if result.returncode != 0:
+                self.main.thread_logging_signal.emit(
+                    f"WARNING:{t('Could not probe subtitle track')} {self.index}: {result.stdout}"
+                )
+                return None
+            
+            codec_name = result.stdout.strip().lower()
+            if codec_name in ["srt", "subrip", "xsub", "webvtt", "mov_text"]:
+                return "srt"
+            elif codec_name == "ass":
+                return "ass"
+            elif codec_name == "ssa":
+                return "ssa"
+            elif codec_name == "hdmv_pgs_subtitle":
+                return "pgs"
+            else:
+                self.main.thread_logging_signal.emit(
+                    f"WARNING:{t('Subtitle Track')} {self.index} {t('is not in supported format (SRT, ASS, SSA, PGS), skipping extraction')}: {codec_name}"
+                )
+                return None
+                
+        except Exception as err:
+            self.main.thread_logging_signal.emit(
+                f"WARNING:{t('Error checking subtitle format for track')} {self.index} - {err}"
+            )
+            return None
 
 class AudioNoramlize(QtCore.QThread):
     def __init__(self, app: FastFlixApp, main, audio_type, signal):
