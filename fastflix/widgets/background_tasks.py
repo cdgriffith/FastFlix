@@ -140,7 +140,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 return None
             
             codec_name = result.stdout.strip().lower()
-            if codec_name in ["srt", "subrip", "xsub", "webvtt", "mov_text"]:
+            if codec_name in ["subrip", "xsub", "webvtt", "mov_text"]:
                 return "srt"
             elif codec_name == "ass":
                 return "ass"
