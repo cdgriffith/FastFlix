@@ -208,19 +208,25 @@ class Settings(QtWidgets.QWidget):
         self.output_path_line_edit = QtWidgets.QLineEdit()
         if self.app.fastflix.config.output_directory:
             self.output_path_line_edit.setText(str(self.app.fastflix.config.output_directory))
-        output_label_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
-        output_label_path_button.clicked.connect(lambda: self.select_output_directory())
+        self.output_label_path_button = QtWidgets.QPushButton(
+            icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon)
+        )
+        self.output_label_path_button.clicked.connect(lambda: self.select_output_directory())
         layout.addWidget(output_label, 17, 0)
         layout.addWidget(self.output_path_line_edit, 17, 1)
-        layout.addWidget(output_label_path_button, 17, 2)
+        layout.addWidget(self.output_label_path_button, 17, 2)
 
         self.default_output_dir = QtWidgets.QCheckBox(t("Use same output directory as source file"))
         if not self.app.fastflix.config.output_directory:
             self.default_output_dir.setChecked(True)
             self.output_path_line_edit.setDisabled(True)
-        self.default_output_dir.clicked.connect(
-            lambda: self.output_path_line_edit.setDisabled(self.output_path_line_edit.isEnabled())
-        )
+            self.output_label_path_button.setDisabled(True)
+
+        def out_click():
+            self.output_path_line_edit.setDisabled(self.output_path_line_edit.isEnabled())
+            self.output_label_path_button.setEnabled(self.output_path_line_edit.isEnabled())
+
+        self.default_output_dir.clicked.connect(out_click)
         layout.addWidget(self.default_output_dir, 16, 0, 1, 2)
 
         # SOURCE DIR
@@ -239,10 +245,13 @@ class Settings(QtWidgets.QWidget):
         if not self.app.fastflix.config.source_directory:
             self.default_source_dir.setChecked(True)
             self.source_path_line_edit.setDisabled(True)
-        self.default_source_dir.clicked.connect(
-            lambda: self.source_path_line_edit.setDisabled(self.source_path_line_edit.isEnabled())
-        )
+            source_label_path_button.setDisabled(True)
 
+        def in_dir():
+            self.source_path_line_edit.setDisabled(self.source_path_line_edit.isEnabled())
+            source_label_path_button.setEnabled(self.source_path_line_edit.isEnabled())
+
+        self.default_source_dir.clicked.connect(in_dir)
         self.sticky_tabs = QtWidgets.QCheckBox(t("Disable Automatic Tab Switching"))
         self.sticky_tabs.setChecked(self.app.fastflix.config.sticky_tabs)
 

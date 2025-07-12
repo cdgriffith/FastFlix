@@ -11101,3 +11101,174 @@ Could not extract subtitle track:
   ukr: Не вдалося витягти доріжку субтитрів
   kor: 자막 트랙을 추출할 수 없습니다.
   ron: Nu s-a putut extrage pista de subtitrare
+Select Subtitle Track:
+  eng: Select Subtitle Track
+  deu: Untertitelspur auswählen
+  fra: Sélectionner la piste des sous-titres
+  ita: Selezionare la traccia dei sottotitoli
+  spa: Seleccionar pista de subtítulos
+  jpn: 字幕トラックを選択
+  rus: Выберите дорожку субтитров
+  por: Selecionar a faixa de legendas
+  swe: Välj undertextspår
+  pol: Wybór ścieżki napisów
+  chs: 选择字幕轨道
+  ukr: Виберіть доріжку субтитрів
+  kor: 자막 트랙 선택
+  ron: Selectați pista de subtitrare
+Subtitle Track:
+  eng: Subtitle Track
+  deu: Untertitel Spur
+  fra: Piste de sous-titres
+  ita: Traccia dei sottotitoli
+  spa: Pista de subtítulos
+  jpn: 字幕トラック
+  rus: Дорожка субтитров
+  por: Faixa de legendas
+  swe: Spår för undertexter
+  pol: Ścieżka napisów
+  chs: 字幕轨道
+  ukr: Доріжка з субтитрами
+  kor: 자막 트랙
+  ron: Track subtitrare
+Subtitle Files (*.srt *.ass *.vtt *.ssa);;All Files (*):
+  eng: Subtitle Files (*.srt *.ass *.vtt *.ssa);;All Files (*)
+  deu: Untertiteldateien (*.srt *.ass *.vtt *.ssa);;Alle Dateien (*)
+  fra: Fichiers de sous-titres (*.srt *.ass *.vtt *.ssa);;Tous les fichiers (*)
+  ita: File dei sottotitoli (*.srt *.ass *.vtt *.ssa);;Tutti i file (*)
+  spa: Archivos de subtítulos (*.srt *.ass *.vtt *.ssa);;Todos los archivos (*)
+  jpn: 字幕ファイル (*.srt *.ass *.vtt *.ssa);;すべてのファイル (*)
+  rus: Файлы субтитров (*.srt *.ass *.vtt *.ssa);;Все файлы (*)
+  por: Ficheiros de legendas (*.srt *.ass *.vtt *.ssa);;Todos os ficheiros (*)
+  swe: Undertextfiler (*.srt *.ass *.vtt *.ssa);;Alla filer (*)
+  pol: Pliki napisów (*.srt *.ass *.vtt *.ssa);;Wszystkie pliki (*)
+  chs: 字幕文件 (*.srt *.ass *.vtt *.ssa);;All Files (*)
+  ukr: Файли субтитрів (*.srt *.ass *.vtt *.ssa);;Всі файли (*)
+  kor: 자막 파일 (*.srt *.ass *.vtt *.ssa);;모든 파일 (*)
+  ron: Fișiere subtitrare (*.srt *.ass *.vtt *.ssa);;Toate fișierele (*)
+Select Audio Track:
+  eng: Select Audio Track
+  deu: Audiospur auswählen
+  fra: Sélectionner la piste audio
+  ita: Selezionare la traccia audio
+  spa: Seleccionar pista de audio
+  jpn: オーディオトラックを選択
+  rus: Выберите аудиодорожку
+  por: Selecionar faixa de áudio
+  swe: Välj ljudspår
+  pol: Wybierz ścieżkę audio
+  chs: 选择音轨
+  ukr: Виберіть аудіодоріжку
+  kor: 오디오 트랙 선택
+  ron: Selectați pista audio
+Audio Files (*.mp3 *.aac *.wav *.flac);;All Files (*):
+  eng: Audio Files (*.mp3 *.aac *.wav *.flac);;All Files (*)
+  deu: Audio-Dateien (*.mp3 *.aac *.wav *.flac);;Alle Dateien (*)
+  fra: Fichiers audio (*.mp3 *.aac *.wav *.flac);;Tous les fichiers (*)
+  ita: File audio (*.mp3 *.aac *.wav *.flac);;Tutti i file (*)
+  spa: Archivos de audio (*.mp3 *.aac *.wav *.flac);;Todos los archivos (*)
+  jpn: オーディオファイル (*.mp3 *.aac *.wav *.flac);;すべてのファイル (*)
+  rus: Аудиофайлы (*.mp3 *.aac *.wav *.flac);;Все файлы (*)
+  por: Ficheiros de áudio (*.mp3 *.aac *.wav *.flac);;Todos os ficheiros (*)
+  swe: Ljudfiler (*.mp3 *.aac *.wav *.flac);;Alla filer (*)
+  pol: Pliki audio (*.mp3 *.aac *.wav *.flac);;Wszystkie pliki (*)
+  chs: 音频文件 (*.mp3 *.aac *.wav *.flac);;All Files (*)
+  ukr: Аудіофайли (*.mp3 *.aac *.wav *.flac);;Всі файли (*)
+  kor: 오디오 파일(*.mp3 *.aac *.wav *.flac);;모든 파일(*)
+  ron: Fișiere audio (*.mp3 *.aac *.wav *.flac);;Toate fișierele (*)
+is not in supported format (SRT, ASS, SSA, PGS), skipping extraction:
+  eng: is not in supported format (SRT, ASS, SSA, PGS), skipping extraction
+  deu: nicht im unterstützten Format ist (SRT, ASS, SSA, PGS), wird die
+    Extraktion übersprungen
+  fra: n'est pas dans un format supporté (SRT, ASS, SSA, PGS), l'extraction est
+    ignorée.
+  ita: non è in un formato supportato (SRT, ASS, SSA, PGS), si salta
+    l'estrazione.
+  spa: no está en un formato compatible (SRT, ASS, SSA, PGS), se omite la
+    extracción
+  jpn: がサポートされているフォーマット（SRT、ASS、SSA、PGS）でない場合、抽出をスキップする。
+  rus: не в поддерживаемом формате (SRT, ASS, SSA, PGS), пропуск извлечения
+  por: não está num formato suportado (SRT, ASS, SSA, PGS), saltando a extração
+  swe: inte är i ett format som stöds (SRT, ASS, SSA, PGS), hoppa över
+    extraktionen
+  pol: nie jest w obsługiwanym formacie (SRT, ASS, SSA, PGS), pomijanie
+    ekstrakcji
+  chs: 不支持的格式（SRT、ASS、SSA、PGS），跳过提取
+  ukr: не у підтримуваному форматі (SRT, ASS, SSA, PGS), пропускається вилучення
+  kor: 가 지원되지 않는 형식(SRT, ASS, SSA, PGS)이므로 추출 건너뛰기
+  ron: nu este în format acceptat (SRT, ASS, SSA, PGS), extragerea este ignorată
+Could not determine subtitle format for track:
+  eng: Could not determine subtitle format for track
+  deu: Das Untertitelformat für die Spur konnte nicht ermittelt werden
+  fra: Impossible de déterminer le format des sous-titres pour la piste
+  ita: Impossibile determinare il formato dei sottotitoli per la traccia
+  spa: No se ha podido determinar el formato de subtítulos de la pista
+  jpn: トラックの字幕フォーマットを決定できませんでした
+  rus: Не удалось определить формат субтитров для дорожки
+  por: Não foi possível determinar o formato das legendas para a faixa
+  swe: Kunde inte fastställa undertextformat för spår
+  pol: Nie można określić formatu napisów dla ścieżki
+  chs: 无法确定轨道的字幕格式
+  ukr: Не вдалося визначити формат субтитрів для доріжки
+  kor: 트랙의 자막 형식을 결정할 수 없습니다.
+  ron: Nu s-a putut determina formatul subtitrărilor pentru pistă
+skipping extraction:
+  eng: skipping extraction
+  deu: Überspringen der Extraktion
+  fra: Sauter l'extraction
+  ita: saltare l'estrazione
+  spa: omitir la extracción
+  jpn: スキップ抽出
+  rus: пропуск добычи
+  por: saltar a extração
+  swe: hoppa över extraktion
+  pol: pomijanie ekstrakcji
+  chs: 跳转提取
+  ukr: пропуск видобутку
+  kor: 추출 건너뛰기
+  ron: omiterea extracției
+Could not probe subtitle track:
+  eng: Could not probe subtitle track
+  deu: Untertitelspur konnte nicht geprüft werden
+  fra: Impossible de sonder la piste de sous-titres
+  ita: Impossibile sondare la traccia dei sottotitoli
+  spa: No se ha podido sondear la pista de subtítulos
+  jpn: 字幕トラックをプローブできませんでした
+  rus: Не удалось обнаружить дорожку субтитров
+  por: Não foi possível sondar a faixa de legendas
+  swe: Kunde inte undersöka undertextspåret
+  pol: Nie można sondować ścieżki napisów
+  chs: 无法探测字幕轨道
+  ukr: Не вдалося дослідити доріжку субтитрів
+  kor: 자막 트랙을 조사할 수 없습니다.
+  ron: Nu s-a putut sonda pista de subtitrare
+Error checking subtitle format for track:
+  eng: Error checking subtitle format for track
+  deu: Fehler bei der Überprüfung des Untertitelformats für die Spur
+  fra: Erreur de vérification du format des sous-titres pour la piste
+  ita: Errore nella verifica del formato dei sottotitoli per la traccia
+  spa: Error al comprobar el formato de subtítulos de la pista
+  jpn: トラックの字幕フォーマットのチェックエラー
+  rus: Ошибка при проверке формата субтитров для дорожки
+  por: Erro ao verificar o formato da legenda para a faixa
+  swe: Fel vid kontroll av undertextformat för spår
+  pol: Błąd sprawdzania formatu napisów dla ścieżki
+  chs: 错误检查轨道的字幕格式
+  ukr: Помилка перевірки формату субтитрів для доріжки
+  kor: 트랙의 자막 형식 확인 중 오류 발생
+  ron: Eroare la verificarea formatului subtitrărilor pentru pistă
+'Note: start and end time will be ignored':
+  eng: 'Note: start and end time will be ignored'
+  deu: 'Hinweis: Start- und Endzeit werden ignoriert.'
+  fra: 'Note : les heures de début et de fin seront ignorées.'
+  ita: "Nota: l'ora di inizio e di fine viene ignorata."
+  spa: 'Nota: se ignorarán las horas de inicio y fin.'
+  jpn: 注：開始時間と終了時間は無視されます
+  rus: 'Примечание: время начала и окончания будет игнорироваться'
+  por: 'Nota: as horas de início e de fim serão ignoradas'
+  swe: 'Obs: start- och sluttid kommer att ignoreras'
+  pol: 'Uwaga: czas rozpoczęcia i zakończenia będzie ignorowany.'
+  chs: 注意：开始和结束时间将被忽略
+  ukr: 'Примітка: час початку та закінчення ігнорується'
+  kor: '참고: 시작 및 종료 시간은 무시됩니다.'
+  ron: 'Notă: ora de început și de sfârșit vor fi ignorate'
