@@ -55,6 +55,8 @@ class Modify(SettingPanel):
         grid.addWidget(add_sub_track, 4, 0, 1, 1)
         grid.addWidget(self.add_sub_track_file_path, 4, 1, 1, 2)
 
+        grid.addWidget(QtWidgets.QLabel(t("Note: start and end time will be ignored")), 5, 0)
+
         grid.addWidget(QtWidgets.QWidget(), 6, 0, 6, 1)
         grid.addLayout(self._add_custom(disable_both_passes=True), 11, 0, 1, 6)
         self.setLayout(grid)

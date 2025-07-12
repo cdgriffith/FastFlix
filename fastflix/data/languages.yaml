@@ -11101,3 +11101,25 @@ Could not extract subtitle track:
   ukr: Не вдалося витягти доріжку субтитрів
   kor: 자막 트랙을 추출할 수 없습니다.
   ron: Nu s-a putut extrage pista de subtitrare
+Select Subtitle Track:
+  eng: Select Subtitle Track
+Subtitle Track:
+  eng: Subtitle Track
+"Subtitle Files (*.srt *.ass *.vtt *.ssa);;All Files (*)":
+  eng: "Subtitle Files (*.srt *.ass *.vtt *.ssa);;All Files (*)"
+Select Audio Track:
+  eng: Select Audio Track
+"Audio Files (*.mp3 *.aac *.wav *.flac);;All Files (*)":
+  eng: "Audio Files (*.mp3 *.aac *.wav *.flac);;All Files (*)"
+"is not in supported format (SRT, ASS, SSA, PGS), skipping extraction":
+  eng: is not in supported format (SRT, ASS, SSA, PGS), skipping extraction
+Could not determine subtitle format for track:
+  eng: Could not determine subtitle format for track
+skipping extraction:
+  eng: skipping extraction
+Could not probe subtitle track:
+  eng: Could not probe subtitle track
+Error checking subtitle format for track:
+  eng: Error checking subtitle format for track
+"Note: start and end time will be ignored":
+  eng: "Note: start and end time will be ignored"

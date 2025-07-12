@@ -5,6 +5,8 @@
 * Fixing #675 "Default Source Folder" not used when adding Complete Folders (thanks to Krawk)
 * Fixing #678 Cannot copy the cover (thanks to danielly2020)
 * Fixing #679 Subtitle extraction (thanks to danielly2020)
+* Fixing adding subtitle track would fail if video has a title (thanks to The_Donn)
+
 
 ## Version 5.12.3
 
