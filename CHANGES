@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 5.12.4
+
+* Fixing #675 "Default Source Folder" not used when adding Complete Folders (thanks to Krawk)
+* Fixing #678 Cannot copy the cover (thanks to danielly2020)
+* Fixing #679 Subtitle extraction (thanks to danielly2020)
+
 ## Version 5.12.3
 
 * Fixing #673 changing subtitle langauge in the UI did not take effect in the command (thanks to danielly2020)

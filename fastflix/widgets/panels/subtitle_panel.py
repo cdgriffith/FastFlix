@@ -377,9 +377,6 @@ class SubtitleList(FlixList):
 
         super()._new_source(self.tracks)
 
-    # def get_settings(self):
-        # return  # TODO remove
-
     def reload(self, original_tracks):
         clear_list(self.tracks)
 

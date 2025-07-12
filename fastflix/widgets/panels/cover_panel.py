@@ -209,9 +209,9 @@ class CoverPanel(QtWidgets.QWidget):
         if not self.app.fastflix.current_video:
             return
         # start_outdex = (
-            # 1  # Video Track
-            # + len(self.app.fastflix.current_video.audio_tracks)
-            # + len(self.app.fastflix.current_video.subtitle_tracks)
+        # 1  # Video Track
+        # + len(self.app.fastflix.current_video.audio_tracks)
+        # + len(self.app.fastflix.current_video.subtitle_tracks)
         # )
         start_outdex = 1
 

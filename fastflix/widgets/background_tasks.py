@@ -83,7 +83,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
             return
 
         # filename = str(
-            # Path(self.main.output_video).parent / f"{self.main.output_video}.{self.index}.{self.language}.srt"
+        # Path(self.main.output_video).parent / f"{self.main.output_video}.{self.index}.{self.language}.srt"
         # ).replace("\\", "/")
         filename = str(
             Path(self.main.output_video).parent / f"{self.main.output_video}.{self.index}.{self.language}.{extension}"
@@ -122,23 +122,27 @@ class ExtractSubtitleSRT(QtCore.QThread):
             result = run(
                 [
                     self.app.fastflix.config.ffprobe,
-                    "-v", "error",
-                    "-select_streams", f"s:{self.index}",
-                    "-show_entries", "stream=codec_name",
-                    "-of", "default=noprint_wrappers=1:nokey=1",
-                    self.main.input_video
+                    "-v",
+                    "error",
+                    "-select_streams",
+                    f"s:{self.index}",
+                    "-show_entries",
+                    "stream=codec_name",
+                    "-of",
+                    "default=noprint_wrappers=1:nokey=1",
+                    self.main.input_video,
                 ],
                 stdout=PIPE,
                 stderr=STDOUT,
-                text=True
+                text=True,
             )
-            
+
             if result.returncode != 0:
                 self.main.thread_logging_signal.emit(
                     f"WARNING:{t('Could not probe subtitle track')} {self.index}: {result.stdout}"
                 )
                 return None
-            
+
             codec_name = result.stdout.strip().lower()
             if codec_name in ["subrip", "xsub", "webvtt", "mov_text"]:
                 return "srt"
@@ -153,12 +157,13 @@ class ExtractSubtitleSRT(QtCore.QThread):
                     f"WARNING:{t('Subtitle Track')} {self.index} {t('is not in supported format (SRT, ASS, SSA, PGS), skipping extraction')}: {codec_name}"
                 )
                 return None
-                
+
         except Exception as err:
             self.main.thread_logging_signal.emit(
                 f"WARNING:{t('Error checking subtitle format for track')} {self.index} - {err}"
             )
             return None
+
 
 class AudioNoramlize(QtCore.QThread):
     def __init__(self, app: FastFlixApp, main, audio_type, signal):
