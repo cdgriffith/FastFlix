@@ -30,7 +30,7 @@ disposition_options = [
 
 subtitle_types = {
     "dvd_subtitle": "picture",
-    "hdmv_pgs_subtitle": "picture",
+    "hdmv_pgs_subtitle": "pgs",
     "dvdsub": "picture",
     "subrip": "text",
     "ssa": "text",
@@ -130,7 +130,8 @@ class Subtitle(QtWidgets.QTabWidget):
         self.grid.addWidget(self.widgets.track_number, 0, 1)
         self.grid.addWidget(self.widgets.title, 0, 2)
         self.grid.setColumnStretch(2, True)
-        if sub_track.subtitle_type == "text":
+        # if sub_track.subtitle_type == "text":
+        if sub_track.subtitle_type in ["text", "pgs"]:
             self.grid.addWidget(self.widgets.extract, 0, 3)
             self.grid.addWidget(self.gif_label, 0, 3)
             self.gif_label.hide()
@@ -375,6 +376,9 @@ class SubtitleList(FlixList):
                     first_default.widgets.burn_in.setChecked(True)
 
         super()._new_source(self.tracks)
+
+    # def get_settings(self):
+        # return  # TODO remove
 
     def reload(self, original_tracks):
         clear_list(self.tracks)

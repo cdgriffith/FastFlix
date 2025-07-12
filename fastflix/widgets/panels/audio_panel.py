@@ -253,6 +253,7 @@ class Audio(QtWidgets.QTabWidget):
     def del_me(self):
         self.parent.remove_track(self)
         del self.app.fastflix.current_video.audio_tracks[self.index]
+        self.parent.reorder(update=True)
 
     def set_outdex(self, outdex):
         self.app.fastflix.current_video.audio_tracks[self.index].outdex = outdex
