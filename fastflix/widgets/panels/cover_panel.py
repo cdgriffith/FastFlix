@@ -208,11 +208,23 @@ class CoverPanel(QtWidgets.QWidget):
     def update_cover_settings(self):
         if not self.app.fastflix.current_video:
             return
-        start_outdex = (
-            1  # Video Track
-            + len(self.app.fastflix.current_video.audio_tracks)
-            + len(self.app.fastflix.current_video.subtitle_tracks)
-        )
+        # start_outdex = (
+        # 1  # Video Track
+        # + len(self.app.fastflix.current_video.audio_tracks)
+        # + len(self.app.fastflix.current_video.subtitle_tracks)
+        # )
+        start_outdex = 1
+
+        for audio_track in self.app.fastflix.current_video.audio_tracks:
+            if audio_track.enabled:
+                audio_track.outdex = start_outdex
+                start_outdex += 1
+
+        for subtitle_track in self.app.fastflix.current_video.subtitle_tracks:
+            if subtitle_track.enabled:
+                subtitle_track.outdex = start_outdex
+                start_outdex += 1
+
         attachments: list[AttachmentTrack] = []
 
         for filename in ("cover", "cover_land", "small_cover", "small_cover_land"):

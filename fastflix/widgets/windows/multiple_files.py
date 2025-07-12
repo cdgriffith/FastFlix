@@ -156,7 +156,7 @@ class MultipleFilesWindow(QtWidgets.QWidget):
         self.app = app
         self.main = main
         self.setStyleSheet("font-size: 14px")
-        self.folder_name = str(Path.home())
+        self.folder_name = str(self.app.fastflix.config.source_directory) or str(Path.home())
         self.setWindowTitle(t("Multiple Files"))
 
         self.files_area = MultipleFilesScroll(self)
