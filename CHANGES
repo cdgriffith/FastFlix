@@ -10,7 +10,7 @@
 
 ## Version 5.12.3
 
-* Fixing #673 changing subtitle langauge in the UI did not take effect in the command (thanks to danielly2020)
+* Fixing #673 changing subtitle language in the UI did not take effect in the command (thanks to danielly2020)
 * Fixing #673 extract subtitle command was looking for subtitle index, not absolute index (thanks to danielly2020)
 
 ## Version 5.12.2
