@@ -27,6 +27,9 @@ all_imports.remove("python-box")
 all_imports.append("box")
 all_imports.append("iso639")
 
+# Add pgsrip for OCR support
+all_imports.extend(["pgsrip", "pytesseract", "cv2", "numpy", "pysrt", "babelfish", "cleanit"])
+
 portable_file = "fastflix\\portable.py"
 with open(portable_file, "w") as portable:
     portable.write(" ")

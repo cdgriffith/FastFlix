@@ -269,8 +269,19 @@ class Settings(QtWidgets.QWidget):
         self.disable_deinterlace_button = QtWidgets.QCheckBox(t("Disable interlace check"))
         self.disable_deinterlace_button.setChecked(self.app.fastflix.config.disable_deinterlace_check)
 
-        # Layouts
+        # PGS OCR Settings
+        self.enable_pgs_ocr = QtWidgets.QCheckBox(t("Enable PGS to SRT OCR conversion"))
+        self.enable_pgs_ocr.setChecked(self.app.fastflix.config.enable_pgs_ocr)
+        self.enable_pgs_ocr.setToolTip(
+            t("Convert image-based PGS subtitles to text SRT using OCR.\n"
+              "Typically takes 3-5 minutes per movie.")
+        )
 
+        # Dependency status
+        self.ocr_status_label = QtWidgets.QLabel()
+        self.update_ocr_dependency_status()
+
+        # Layouts
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
         layout.addWidget(self.disable_version_check, 8, 0, 1, 2)
         layout.addWidget(QtWidgets.QLabel(t("GUI Logging Level")), 9, 0)
@@ -286,6 +297,8 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.clean_old_logs_button, 21, 0, 1, 3)
         layout.addWidget(self.disable_end_message, 22, 0, 1, 3)
         layout.addWidget(self.disable_deinterlace_button, 23, 0, 1, 3)
+        layout.addWidget(self.enable_pgs_ocr, 24, 0, 1, 2)
+        layout.addWidget(self.ocr_status_label, 24, 2, 1, 1)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
@@ -295,6 +308,30 @@ class Settings(QtWidgets.QWidget):
         layout.addLayout(button_layout, 25, 0, 1, 3)
 
         self.setLayout(layout)
+
+    def update_ocr_dependency_status(self):
+        """Update the OCR dependency status display"""
+        # Use config paths which use find_ocr_tool() - handles non-PATH locations
+        tesseract_ok = self.app.fastflix.config.tesseract_path is not None
+        mkvmerge_ok = self.app.fastflix.config.mkvmerge_path is not None
+        pgsrip_ok = self.app.fastflix.config.pgsrip_path is not None
+
+        status_parts = []
+        status_parts.append("✓ tesseract" if tesseract_ok else "✗ tesseract")
+        status_parts.append("✓ mkvtoolnix" if mkvmerge_ok else "✗ mkvtoolnix")
+        status_parts.append("✓ pgsrip" if pgsrip_ok else "✗ pgsrip")
+
+        status_text = " | ".join(status_parts)
+
+        if not all([tesseract_ok, mkvmerge_ok, pgsrip_ok]):
+            status_text += "\n" + link(
+                "https://github.com/cdgriffith/FastFlix/wiki/PGS-OCR-Setup",
+                "Click here for installation instructions",
+                self.app.fastflix.config.theme
+            )
+
+        self.ocr_status_label.setText(status_text)
+        self.ocr_status_label.setOpenExternalLinks(True)
 
     def save(self):
         new_ffmpeg = Path(self.ffmpeg_path.text())
@@ -379,6 +416,7 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.sticky_tabs = self.sticky_tabs.isChecked()
         self.app.fastflix.config.disable_complete_message = self.disable_end_message.isChecked()
         self.app.fastflix.config.disable_deinterlace_check = self.disable_deinterlace_button.isChecked()
+        self.app.fastflix.config.enable_pgs_ocr = self.enable_pgs_ocr.isChecked()
 
         self.main.config_update()
         self.app.fastflix.config.save()
