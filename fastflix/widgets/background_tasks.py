@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import importlib.util
 import logging
 import os
-import shutil
 from pathlib import Path
 from subprocess import PIPE, STDOUT, Popen, run, check_output
 from packaging import version
@@ -190,31 +190,30 @@ class ExtractSubtitleSRT(QtCore.QThread):
         if not self.app.fastflix.config.mkvmerge_path:
             missing.append("mkvtoolnix")
 
-        # Check pgsrip
-        if not self.app.fastflix.config.pgsrip_path:
-            missing.append("pgsrip")
+        # Check if pgsrip Python library is available
+        if importlib.util.find_spec("pgsrip") is None:
+            missing.append("pgsrip (Python library)")
 
         if missing:
             self.main.thread_logging_signal.emit(
                 f"ERROR:{t('Missing dependencies for PGS OCR')}: {', '.join(missing)}\n\n"
                 f"Install instructions:\n"
-                f"  Windows: Run setup_pgs_ocr_windows.bat in FastFlix folder\n"
-                f"  Linux: sudo apt install tesseract-ocr mkvtoolnix && pip install pgsrip\n"
-                f"  macOS: brew install tesseract mkvtoolnix && pip install pgsrip\n\n"
-                f"Or download manually:\n"
-                f"  Tesseract: https://github.com/UB-Mannheim/tesseract/wiki\n"
-                f"  MKVToolNix: https://mkvtoolnix.download/downloads.html\n"
-                f"  pgsrip: pip install pgsrip"
+                f"  pgsrip: pip install pgsrip\n"
+                f"  Linux: sudo apt install tesseract-ocr mkvtoolnix\n"
+                f"  macOS: brew install tesseract mkvtoolnix\n"
+                f"  Windows:\n"
+                f"    - Tesseract: https://github.com/UB-Mannheim/tesseract/wiki\n"
+                f"    - MKVToolNix: https://mkvtoolnix.download/downloads.html"
             )
             return False
 
         return True
 
     def _convert_sup_to_srt(self, sup_filepath: str) -> bool:
-        """Convert an already-extracted .sup file to .srt using pgsrip OCR
+        """Convert PGS subtitle to .srt using pgsrip OCR by processing the original MKV
 
         Args:
-            sup_filepath: Path to the extracted .sup file
+            sup_filepath: Path to the extracted .sup file (used for naming output)
 
         Returns:
             True if conversion successful, False otherwise
@@ -228,80 +227,87 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 f"INFO:{t('Converting .sup to .srt using OCR')} (this may take 3-5 minutes)..."
             )
 
-            # Convert 3-letter language code to 2-letter for pgsrip
-            # pgsrip uses 2-letter codes in filenames (e.g., "en" not "eng")
-            from fastflix.language import Language
-            try:
-                lang_2letter = Language(self.language).pt1  # Convert eng -> en
-            except:
-                lang_2letter = "en"  # Default to English if conversion fails
-
-            # Rename .sup file to use 2-letter language code (what pgsrip expects)
-            sup_path = Path(sup_filepath)
-            if f".{self.language}." in sup_path.name:
-                # Replace 3-letter with 2-letter in filename
-                new_name = sup_path.name.replace(f".{self.language}.", f".{lang_2letter}.")
-                new_sup_path = sup_path.parent / new_name
-                sup_path.rename(new_sup_path)
-                sup_filepath = str(new_sup_path)
-
-            # Run pgsrip on the already-extracted .sup file
-            pgsrip_cmd = str(self.app.fastflix.config.pgsrip_path) if self.app.fastflix.config.pgsrip_path else "pgsrip"
+            # Import pgsrip Python API
+            from pgsrip import pgsrip, Mkv, Options
+            from babelfish import Language as BabelLanguage
 
             # Set environment variables for pgsrip to find tesseract
-            import os
-            env = os.environ.copy()
             if self.app.fastflix.config.tesseract_path:
                 # Add tesseract directory to PATH so pytesseract can find it
                 tesseract_dir = str(Path(self.app.fastflix.config.tesseract_path).parent)
-                env['PATH'] = f"{tesseract_dir}{os.pathsep}{env.get('PATH', '')}"
-                env['TESSERACT_CMD'] = str(self.app.fastflix.config.tesseract_path)
+                os.environ["PATH"] = f"{tesseract_dir}{os.pathsep}{os.environ.get('PATH', '')}"
+                os.environ["TESSERACT_CMD"] = str(self.app.fastflix.config.tesseract_path)
 
-            pgsrip_result = run(
-                [
-                    pgsrip_cmd,
-                    "--language", lang_2letter,  # Use 2-letter code (e.g., "en", "es", "fr")
-                    "--force",                    # Overwrite existing files
-                    sup_filepath
-                ],
-                capture_output=True,
-                text=True,
-                timeout=600,  # 10 minute timeout for OCR
-                env=env  # Pass environment with TESSERACT_CMD
-            )
-
-            if pgsrip_result.returncode != 0:
-                error_msg = pgsrip_result.stderr if pgsrip_result.stderr else pgsrip_result.stdout
-                raise Exception(f"pgsrip failed with return code {pgsrip_result.returncode}: {error_msg}")
-
-            # pgsrip creates .srt file in same directory as .sup file
+            # pgsrip needs the original MKV file, not the extracted .sup
+            # The .sup file is a raw subtitle stream, but pgsrip expects an MKV container
             sup_path = Path(sup_filepath)
-            expected_srt = sup_path.with_suffix('.srt')
+            media = Mkv(self.main.input_video)
 
-            if not expected_srt.exists():
-                # Look for any .srt file created near the .sup
-                srt_files = list(sup_path.parent.glob("*.srt"))
-                if not srt_files:
-                    raise Exception(f"pgsrip completed but no .srt file found in {sup_path.parent}")
-                expected_srt = srt_files[0]
+            # Configure options for pgsrip
+            # BabelLanguage needs different constructors for 2-letter vs 3-letter codes
+            try:
+                # Detect if language code is 2-letter or 3-letter
+                if len(self.language) == 2:
+                    babel_lang = BabelLanguage.fromalpha2(self.language)
+                elif len(self.language) == 3:
+                    babel_lang = BabelLanguage(self.language)
+                else:
+                    # Try as language name
+                    babel_lang = BabelLanguage.fromname(self.language)
 
-            self.main.thread_logging_signal.emit(
-                f"INFO:{t('OCR conversion successful')}: {expected_srt.name}"
-            )
+                options = Options(
+                    languages={babel_lang},
+                    overwrite=True,  # Overwrite existing .srt files
+                    one_per_lang=True,  # Create one .srt per language
+                )
+            except Exception:
+                # Fallback to English if language code is invalid
+                options = Options(
+                    languages={BabelLanguage("eng")},
+                    overwrite=True,
+                    one_per_lang=True,
+                )
+
+            # Run pgsrip conversion using Python API on the original MKV
+            # This will create .srt files in the same directory as the video
+            pgsrip.rip(media, options)
+
+            # Look for the created .srt file
+            # pgsrip creates files with pattern: basename.language.srt
+            video_path = Path(self.main.input_video)
+            srt_pattern = f"{video_path.stem}.*.srt"
+            srt_files = list(video_path.parent.glob(srt_pattern))
+
+            if not srt_files:
+                # Fallback: look for any .srt in the video directory
+                srt_files = list(video_path.parent.glob(f"{video_path.stem}.srt"))
+
+            if not srt_files:
+                raise Exception(f"pgsrip completed but no .srt file found in {video_path.parent}")
+
+            # Move the .srt file to the expected location (same dir as .sup was)
+            created_srt = srt_files[0]
+            expected_srt = sup_path.with_suffix(".srt")
+
+            if created_srt != expected_srt:
+                # Move/rename to expected location
+                import shutil
+
+                shutil.move(str(created_srt), str(expected_srt))
+
+            self.main.thread_logging_signal.emit(f"INFO:{t('OCR conversion successful')}: {expected_srt.name}")
 
             # Optionally delete the .sup file since we have .srt now
             try:
                 sup_path.unlink()
                 self.main.thread_logging_signal.emit(f"INFO:{t('Removed .sup file, kept .srt')}")
-            except:
+            except Exception:
                 pass
 
             return True
 
         except Exception as err:
-            self.main.thread_logging_signal.emit(
-                f"ERROR:{t('OCR conversion failed')}: {err}"
-            )
+            self.main.thread_logging_signal.emit(f"ERROR:{t('OCR conversion failed')}: {err}")
             return False
 
 
