@@ -268,22 +268,25 @@ class ExtractSubtitleSRT(QtCore.QThread):
                     one_per_lang=True,
                 )
 
+            # Get list of existing .srt files before conversion
+            video_path = Path(self.main.input_video)
+            existing_srts = set(video_path.parent.glob("*.srt"))
+
             # Run pgsrip conversion using Python API on the original MKV
             # This will create .srt files in the same directory as the video
             pgsrip.rip(media, options)
 
-            # Look for the created .srt file
-            # pgsrip creates files with pattern: basename.language.srt
-            video_path = Path(self.main.input_video)
-            srt_pattern = f"{video_path.stem}.*.srt"
-            srt_files = list(video_path.parent.glob(srt_pattern))
+            # Find newly created .srt files
+            # Note: Can't use glob with video filename directly because special chars like []
+            # are interpreted as glob patterns. Instead, find new .srt files.
+            current_srts = set(video_path.parent.glob("*.srt"))
+            new_srts = current_srts - existing_srts
 
-            if not srt_files:
-                # Fallback: look for any .srt in the video directory
-                srt_files = list(video_path.parent.glob(f"{video_path.stem}.srt"))
-
-            if not srt_files:
+            if not new_srts:
                 raise Exception(f"pgsrip completed but no .srt file found in {video_path.parent}")
+
+            # Get the first new .srt file
+            srt_files = list(new_srts)
 
             # Move the .srt file to the expected location (same dir as .sup was)
             created_srt = srt_files[0]
