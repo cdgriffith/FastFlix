@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import importlib.util
 import logging
 import shutil
 from pathlib import Path
@@ -273,8 +274,7 @@ class Settings(QtWidgets.QWidget):
         self.enable_pgs_ocr = QtWidgets.QCheckBox(t("Enable PGS to SRT OCR conversion"))
         self.enable_pgs_ocr.setChecked(self.app.fastflix.config.enable_pgs_ocr)
         self.enable_pgs_ocr.setToolTip(
-            t("Convert image-based PGS subtitles to text SRT using OCR.\n"
-              "Typically takes 3-5 minutes per movie.")
+            t("Convert image-based PGS subtitles to text SRT using OCR.\nTypically takes 3-5 minutes per movie.")
         )
 
         # Dependency status
@@ -314,7 +314,9 @@ class Settings(QtWidgets.QWidget):
         # Use config paths which use find_ocr_tool() - handles non-PATH locations
         tesseract_ok = self.app.fastflix.config.tesseract_path is not None
         mkvmerge_ok = self.app.fastflix.config.mkvmerge_path is not None
-        pgsrip_ok = self.app.fastflix.config.pgsrip_path is not None
+
+        # Check if pgsrip Python library is available
+        pgsrip_ok = importlib.util.find_spec("pgsrip") is not None
 
         status_parts = []
         status_parts.append("✓ tesseract" if tesseract_ok else "✗ tesseract")
@@ -327,7 +329,7 @@ class Settings(QtWidgets.QWidget):
             status_text += "\n" + link(
                 "https://github.com/cdgriffith/FastFlix/wiki/PGS-OCR-Setup",
                 "Click here for installation instructions",
-                self.app.fastflix.config.theme
+                self.app.fastflix.config.theme,
             )
 
         self.ocr_status_label.setText(status_text)

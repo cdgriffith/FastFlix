@@ -111,22 +111,29 @@ def find_ocr_tool(name):
 
     # Special handling for tesseract on Windows (not in PATH by default)
     if name == "tesseract" and win_based:
-        # Check common install locations on all drives
-        import string
-        drives = [f"{d}:" for d in string.ascii_uppercase if Path(f"{d}:/").exists()]
+        # Check common install locations using environment variables
+        localappdata = os.getenv("LOCALAPPDATA")
+        program_files = os.getenv("PROGRAMFILES")
+        program_files_x86 = os.getenv("PROGRAMFILES(X86)")
 
-        for drive in drives:
-            common_paths = [
-                Path(f"{drive}/Program Files/Tesseract-OCR/tesseract.exe"),
-                Path(f"{drive}/Program Files (x86)/Tesseract-OCR/tesseract.exe"),
-            ]
-            for path in common_paths:
-                if path.exists():
-                    return path
+        common_paths = []
+        # Check user-local installation first
+        if localappdata:
+            common_paths.append(Path(localappdata) / "Programs" / "Tesseract-OCR" / "tesseract.exe")
+        # Check system-wide installations
+        if program_files:
+            common_paths.append(Path(program_files) / "Tesseract-OCR" / "tesseract.exe")
+        if program_files_x86:
+            common_paths.append(Path(program_files_x86) / "Tesseract-OCR" / "tesseract.exe")
+
+        for path in common_paths:
+            if path.exists():
+                return path
 
         # Check Windows registry for Tesseract install location
         try:
             import winreg
+
             # Try HKEY_LOCAL_MACHINE first (system-wide install)
             for root_key in [winreg.HKEY_LOCAL_MACHINE, winreg.HKEY_CURRENT_USER]:
                 try:
@@ -143,17 +150,24 @@ def find_ocr_tool(name):
 
     # Special handling for mkvmerge on Windows
     if name == "mkvmerge" and win_based:
-        import string
-        drives = [f"{d}:" for d in string.ascii_uppercase if Path(f"{d}:/").exists()]
+        # Check common install locations using environment variables
+        localappdata = os.getenv("LOCALAPPDATA")
+        program_files = os.getenv("PROGRAMFILES")
+        program_files_x86 = os.getenv("PROGRAMFILES(X86)")
 
-        for drive in drives:
-            common_paths = [
-                Path(f"{drive}/Program Files/MKVToolNix/mkvmerge.exe"),
-                Path(f"{drive}/Program Files (x86)/MKVToolNix/mkvmerge.exe"),
-            ]
-            for path in common_paths:
-                if path.exists():
-                    return path
+        common_paths = []
+        # Check user-local installation first
+        if localappdata:
+            common_paths.append(Path(localappdata) / "Programs" / "MKVToolNix" / "mkvmerge.exe")
+        # Check system-wide installations
+        if program_files:
+            common_paths.append(Path(program_files) / "MKVToolNix" / "mkvmerge.exe")
+        if program_files_x86:
+            common_paths.append(Path(program_files_x86) / "MKVToolNix" / "mkvmerge.exe")
+
+        for path in common_paths:
+            if path.exists():
+                return path
 
     # Check in FastFlix OCR tools folder
     ocr_folder = Path(user_data_dir("FastFlix_OCR", appauthor=False, roaming=True))
@@ -243,7 +257,6 @@ class Config(BaseModel):
     enable_pgs_ocr: bool = False
     tesseract_path: Path | None = Field(default_factory=lambda: find_ocr_tool("tesseract"))
     mkvmerge_path: Path | None = Field(default_factory=lambda: find_ocr_tool("mkvmerge"))
-    pgsrip_path: Path | None = Field(default_factory=lambda: find_ocr_tool("pgsrip"))
     pgs_ocr_language: str = "eng"
 
     def encoder_opt(self, profile_name, profile_option_name):
