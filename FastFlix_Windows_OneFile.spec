@@ -36,7 +36,7 @@ with open(portable_file, "w") as portable:
 
 a = Analysis(['fastflix\\__main__.py'],
              binaries=[],
-             datas=[('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files + copy_metadata('pgsrip') + copy_metadata('pytesseract') + copy_metadata('babelfish') + collect_data_files('babelfish'),
+             datas=[('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files + copy_metadata('pgsrip') + copy_metadata('pytesseract') + copy_metadata('babelfish') + copy_metadata('cleanit') + collect_data_files('babelfish'),
              hiddenimports=all_imports,
              hookspath=[],
              runtime_hooks=[],
