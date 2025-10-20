@@ -29,7 +29,7 @@ all_imports.extend(["pgsrip", "pytesseract", "cv2", "numpy", "pysrt", "babelfish
 
 a = Analysis(['fastflix\\__main__.py'],
              binaries=[],
-             datas=[('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files + copy_metadata('pgsrip') + copy_metadata('pytesseract') + copy_metadata('babelfish') + copy_metadata('cleanit') + collect_data_files('babelfish'),
+             datas=[('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files + copy_metadata('pgsrip') + copy_metadata('pytesseract') + copy_metadata('babelfish') + copy_metadata('cleanit') + collect_data_files('babelfish') + collect_data_files('cleanit'),
              hiddenimports=all_imports,
              hookspath=[],
              runtime_hooks=[],
