@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-from PyInstaller.utils.hooks import collect_submodules, copy_metadata
+from PyInstaller.utils.hooks import collect_submodules, copy_metadata, collect_data_files
 import toml
 
 block_cipher = None
@@ -29,7 +29,7 @@ all_imports.extend(["pgsrip", "pytesseract", "cv2", "numpy", "pysrt", "babelfish
 
 a = Analysis(['fastflix\\__main__.py'],
              binaries=[],
-             datas=[('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files + copy_metadata('pgsrip') + copy_metadata('pytesseract') + copy_metadata('babelfish'),
+             datas=[('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files + copy_metadata('pgsrip') + copy_metadata('pytesseract') + copy_metadata('babelfish') + collect_data_files('babelfish'),
              hiddenimports=all_imports,
              hookspath=[],
              runtime_hooks=[],
