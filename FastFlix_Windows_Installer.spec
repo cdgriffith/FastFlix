@@ -25,7 +25,7 @@ all_imports.append("box")
 all_imports.append("iso639")
 
 # Add pgsrip for OCR support
-all_imports.extend(["pgsrip", "pytesseract", "cv2", "numpy", "pysrt", "babelfish", "cleanit"])
+all_imports.extend(["pgsrip", "pytesseract", "cv2", "numpy", "pysrt", "babelfish", "babelfish.converters", "babelfish.converters.alpha2", "babelfish.converters.alpha3b", "babelfish.converters.alpha3t", "babelfish.converters.name", "babelfish.converters.opensubtitles", "cleanit"])
 
 a = Analysis(['fastflix\\__main__.py'],
              binaries=[],
