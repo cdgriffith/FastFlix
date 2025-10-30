@@ -246,6 +246,9 @@ class ExtractSubtitleSRT(QtCore.QThread):
             # pgsrip needs the original MKV file, not the extracted .sup
             # The .sup file is a raw subtitle stream, but pgsrip expects an MKV container
             sup_path = Path(sup_filepath)
+            video_path = Path(self.main.input_video)
+            # Use forward slashes for Windows compatibility with pgsrip
+            media = Mkv(video_path.as_posix())
 
             # Configure options for pgsrip
             # BabelLanguage needs different constructors for 2-letter vs 3-letter codes
@@ -273,20 +276,11 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 )
 
             # Get list of existing .srt files before conversion
-            video_path = Path(self.main.input_video)
             existing_srts = set(video_path.parent.glob("*.srt"))
 
             # Run pgsrip conversion using Python API on the original MKV
             # This will create .srt files in the same directory as the video
-            # Change to video directory to avoid Windows path issues with pgsrip
-            original_cwd = os.getcwd()
-            try:
-                os.chdir(video_path.parent)
-                # Re-create Mkv object with just the filename since we're in the directory
-                media_in_dir = Mkv(video_path.name)
-                pgsrip.rip(media_in_dir, options)
-            finally:
-                os.chdir(original_cwd)
+            pgsrip.rip(media, options)
 
             # Find newly created .srt files
             # Note: Can't use glob with video filename directly because special chars like []
