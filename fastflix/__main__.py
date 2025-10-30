@@ -39,9 +39,13 @@ def patch_pgsrip_for_pyinstaller():
 
         # Apply the monkey-patch
         pgsrip_mkv.MkvPgs.read_data = patched_read_data
-    except ImportError:
+        print("DEBUG: pgsrip monkey-patch applied successfully")
+    except ImportError as e:
         # pgsrip not installed, skip patching
-        pass
+        print(f"DEBUG: pgsrip monkey-patch skipped - ImportError: {e}")
+    except Exception as e:
+        # Other error during patching
+        print(f"DEBUG: pgsrip monkey-patch failed - {type(e).__name__}: {e}")
 
 
 def setup_ocr_environment():
