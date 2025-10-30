@@ -6,7 +6,7 @@ from babelfish import Language
 
 # Set up environment for tesseract and mkvextract
 # Update these paths to match your system
-tesseract_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+tesseract_path = r"C:\Program Files\Subtitle Edit\Tesseract302\tesseract.exe"
 mkvtoolnix_path = r"C:\Program Files\MKVToolNix"
 
 if Path(tesseract_path).exists():
