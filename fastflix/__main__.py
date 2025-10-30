@@ -8,6 +8,42 @@ from pathlib import Path
 from fastflix.entry import main
 
 
+def patch_pgsrip_for_pyinstaller():
+    """Monkey-patch pgsrip to fix temp folder creation in PyInstaller.
+
+    pgsrip's MediaPath.create_temp_folder() doesn't work correctly in frozen
+    PyInstaller executables, so we patch MkvPgs.read_data to handle it.
+    """
+    try:
+        import tempfile
+        from subprocess import check_output
+
+        # Import pgsrip.mkv module to patch it
+        from pgsrip import mkv as pgsrip_mkv
+
+        @classmethod
+        def patched_read_data(cls, media_path, track_id, temp_folder):
+            """Patched version that ensures temp_folder exists as a directory"""
+            # Check if temp_folder exists as a directory
+            temp_folder_path = Path(temp_folder)
+            if not temp_folder_path.exists() or not temp_folder_path.is_dir():
+                # Create our own temp folder if pgsrip's creation failed
+                temp_folder = tempfile.mkdtemp(prefix=f"{Path(str(media_path)).stem}_", suffix=".pgsrip")
+
+            lang_ext = f".{str(media_path.language)}" if media_path.language else ""
+            sup_file = os.path.join(temp_folder, f"{track_id}{lang_ext}.sup")
+            cmd = ["mkvextract", str(media_path), "tracks", f"{track_id}:{sup_file}"]
+            check_output(cmd)
+            with open(sup_file, mode="rb") as f:
+                return f.read()
+
+        # Apply the monkey-patch
+        pgsrip_mkv.MkvPgs.read_data = patched_read_data
+    except ImportError:
+        # pgsrip not installed, skip patching
+        pass
+
+
 def setup_ocr_environment():
     """Set up environment variables for OCR tools early in app startup.
 
@@ -16,6 +52,9 @@ def setup_ocr_environment():
     """
     import tempfile
     from fastflix.models.config import find_ocr_tool
+
+    # Patch pgsrip for PyInstaller compatibility before any imports
+    patch_pgsrip_for_pyinstaller()
 
     # Ensure TEMP/TMP point to standard locations for PyInstaller compatibility
     # pgsrip creates temp folders and needs writable temp directory

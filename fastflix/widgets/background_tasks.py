@@ -227,38 +227,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 f"INFO:{t('Converting .sup to .srt using OCR')} (this may take 3-5 minutes)..."
             )
 
-            # Import pgsrip Python API and patch for PyInstaller compatibility
-            import tempfile
-
-            # Patch pgsrip BEFORE importing to ensure it takes effect
-            from pgsrip import mkv as pgsrip_mkv
-            from pathlib import Path as PatchPath
-            import os as patch_os
-            from subprocess import check_output as patch_check_output
-
-            # Store original for fallback
-            _original_read_data = pgsrip_mkv.MkvPgs.read_data
-
-            @classmethod
-            def patched_read_data(cls, media_path, track_id, temp_folder):
-                """Patched version that ensures temp_folder is a directory for PyInstaller"""
-                # Ensure temp_folder is actually a directory
-                temp_folder_path = PatchPath(temp_folder)
-                if not temp_folder_path.exists():
-                    # Create our own temp folder if pgsrip's creation failed
-                    temp_folder = tempfile.mkdtemp(prefix=f"{PatchPath(str(media_path)).stem}_", suffix=".pgsrip")
-
-                lang_ext = f".{str(media_path.language)}" if media_path.language else ""
-                sup_file = patch_os.path.join(temp_folder, f"{track_id}{lang_ext}.sup")
-                cmd = ["mkvextract", str(media_path), "tracks", f"{track_id}:{sup_file}"]
-                patch_check_output(cmd)
-                with open(sup_file, mode="rb") as f:
-                    return f.read()
-
-            # Apply monkey-patch
-            pgsrip_mkv.MkvPgs.read_data = patched_read_data
-
-            # Now import the rest
+            # Import pgsrip Python API (patched in __main__.py for PyInstaller compatibility)
             from pgsrip import pgsrip, Mkv, Options
             from babelfish import Language as BabelLanguage
 
