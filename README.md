@@ -87,6 +87,19 @@ Windows: Go into FastFlix's settings and select the corresponding EXE file for e
 
 Linux: Install the rpm or deb and restart FastFlix
 
+# Subtitle Extraction
+
+FastFlix can extract subtitles from video files in various formats (SRT, ASS, SSA, PGS). For PGS (Presentation Graphic Stream) subtitles, FastFlix can perform OCR conversion to SRT format.
+
+## PGS to SRT OCR
+
+**Requirements**:
+- Tesseract OCR 4.x or higher
+- MKVToolNix (mkvextract, mkvmerge)
+- pgsrip Python library
+
+**Known Limitation**: PGS OCR only works when running FastFlix from source (`python -m fastflix`), not in PyInstaller-built executables due to a bug in pgsrip v0.1.12. See [WINDOWS_BUILD.md](WINDOWS_BUILD.md#pgs-to-srt-ocr-conversion-pyinstaller-builds) for details.
+
 # HDR
 
 On any 10-bit or higher video output, FastFlix will copy the input HDR colorspace (bt2020). Which is [different than HDR10 or HDR10+](https://codecalamity.com/hdr-hdr10-hdr10-hlg-and-dolby-vision/).

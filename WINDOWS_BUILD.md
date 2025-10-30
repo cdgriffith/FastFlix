@@ -118,6 +118,23 @@ The FastFlix executable doesn't include FFmpeg. You need to:
 2. Extract it somewhere
 3. Add the `bin` folder to your PATH, or configure it in FastFlix settings
 
+## Known Limitations
+
+### PGS to SRT OCR Conversion (PyInstaller builds)
+
+The PGS to SRT OCR feature works perfectly when running FastFlix from source (`python -m fastflix`), but has a known issue in PyInstaller-built executables:
+
+**Issue**: The pgsrip library (v0.1.12) has a bug where `MediaPath.create_temp_folder()` doesn't work correctly in frozen PyInstaller executables. This causes mkvextract to fail with exit code 2.
+
+**Workaround**: If you need PGS OCR functionality, run FastFlix from source instead of using the compiled executable.
+
+**Requirements** (when running from source):
+- Tesseract OCR 4.x or higher (auto-detected from PATH or Subtitle Edit installations)
+- MKVToolNix (mkvextract, mkvmerge) (auto-detected from PATH or standard install locations)
+- pgsrip Python library (installed via pip)
+
+This is a known upstream bug in pgsrip when used with PyInstaller and cannot be fixed without patching the pgsrip library itself.
+
 ## Notes
 
 - The build process creates a `portable.py` file temporarily (it's removed after)
