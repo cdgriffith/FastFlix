@@ -280,6 +280,13 @@ class ExtractSubtitleSRT(QtCore.QThread):
 
             # Run pgsrip conversion using Python API on the original MKV
             # This will create .srt files in the same directory as the video
+            # Enable verbose logging for debugging
+            import logging
+
+            logging.basicConfig(level=logging.DEBUG)
+            pgsrip_logger = logging.getLogger("pgsrip")
+            pgsrip_logger.setLevel(logging.DEBUG)
+
             pgsrip.rip(media, options)
 
             # Find newly created .srt files
