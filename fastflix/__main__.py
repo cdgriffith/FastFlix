@@ -53,9 +53,6 @@ def setup_ocr_environment():
     import tempfile
     from fastflix.models.config import find_ocr_tool
 
-    # Patch pgsrip for PyInstaller compatibility before any imports
-    patch_pgsrip_for_pyinstaller()
-
     # Ensure TEMP/TMP point to standard locations for PyInstaller compatibility
     # pgsrip creates temp folders and needs writable temp directory
     temp_dir = tempfile.gettempdir()
@@ -74,6 +71,9 @@ def setup_ocr_environment():
     if mkvmerge_path:
         mkvtoolnix_dir = str(Path(mkvmerge_path).parent)
         os.environ["PATH"] = f"{mkvtoolnix_dir}{os.pathsep}{os.environ.get('PATH', '')}"
+
+    # Patch pgsrip AFTER environment is set up
+    patch_pgsrip_for_pyinstaller()
 
 
 def start_fastflix():
