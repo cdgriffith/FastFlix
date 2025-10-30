@@ -113,8 +113,32 @@ def find_ocr_tool(name):
     if name == "tesseract" and win_based:
         # Check common install locations using environment variables
         localappdata = os.getenv("LOCALAPPDATA")
+        appdata = os.getenv("APPDATA")
         program_files = os.getenv("PROGRAMFILES")
         program_files_x86 = os.getenv("PROGRAMFILES(X86)")
+
+        # Check for Subtitle Edit's Tesseract installations and find the newest version
+        subtitle_edit_versions = []
+        if appdata:
+            subtitle_edit_dir = Path(appdata) / "Subtitle Edit"
+            if subtitle_edit_dir.exists():
+                # Find all Tesseract* directories
+                for tesseract_dir in subtitle_edit_dir.glob("Tesseract*"):
+                    tesseract_exe = tesseract_dir / "tesseract.exe"
+                    if tesseract_exe.exists():
+                        # Extract version number from directory name (e.g., Tesseract550 -> 550)
+                        version_str = tesseract_dir.name.replace("Tesseract", "")
+                        try:
+                            version = int(version_str)
+                            subtitle_edit_versions.append((version, tesseract_exe))
+                        except ValueError:
+                            # If we can't parse version, still add it with version 0
+                            subtitle_edit_versions.append((0, tesseract_exe))
+
+        # If we found Subtitle Edit versions, return the newest one
+        if subtitle_edit_versions:
+            subtitle_edit_versions.sort(reverse=True)  # Sort by version descending
+            return subtitle_edit_versions[0][1]
 
         common_paths = []
         # Check user-local installation first
