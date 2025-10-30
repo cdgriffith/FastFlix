@@ -231,6 +231,33 @@ class ExtractSubtitleSRT(QtCore.QThread):
             from pgsrip import pgsrip, Mkv, Options
             from babelfish import Language as BabelLanguage
 
+            # Monkey-patch pgsrip for PyInstaller compatibility
+            # pgsrip's temp folder creation doesn't work in frozen executables
+            import tempfile
+            from pgsrip import mkv as pgsrip_mkv
+
+            @classmethod
+            def patched_read_data(cls, media_path, track_id, temp_folder):
+                """Patched version that ensures temp_folder is a directory"""
+                from pathlib import Path
+                import os
+                from subprocess import check_output
+
+                # Ensure temp_folder is actually a directory
+                temp_folder_path = Path(temp_folder)
+                if not temp_folder_path.exists():
+                    # Create our own temp folder if pgsrip's creation failed
+                    temp_folder = tempfile.mkdtemp(prefix=f"{Path(str(media_path)).stem}_", suffix=".pgsrip")
+
+                lang_ext = f".{str(media_path.language)}" if media_path.language else ""
+                sup_file = os.path.join(temp_folder, f"{track_id}{lang_ext}.sup")
+                cmd = ["mkvextract", str(media_path), "tracks", f"{track_id}:{sup_file}"]
+                check_output(cmd)
+                with open(sup_file, mode="rb") as f:
+                    return f.read()
+
+            pgsrip_mkv.MkvPgs.read_data = patched_read_data
+
             # Set environment variables for pgsrip to find tesseract and mkvextract
             if self.app.fastflix.config.tesseract_path:
                 # Add tesseract directory to PATH so pytesseract can find it
