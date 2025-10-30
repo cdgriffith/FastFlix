@@ -227,7 +227,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 f"INFO:{t('Converting .sup to .srt using OCR')} (this may take 3-5 minutes)..."
             )
 
-            # Import pgsrip Python API (patched in __main__.py for PyInstaller compatibility)
+            # Import pgsrip Python API
             from pgsrip import pgsrip, Mkv, Options
             from babelfish import Language as BabelLanguage
 
@@ -244,14 +244,11 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 os.environ["PATH"] = f"{mkvtoolnix_dir}{os.pathsep}{os.environ.get('PATH', '')}"
 
             # pgsrip needs the original MKV file, not the extracted .sup
-            # The .sup file is a raw subtitle stream, but pgsrip expects an MKV container
             sup_path = Path(sup_filepath)
             video_path = Path(self.main.input_video)
-            # Use forward slashes for Windows compatibility with pgsrip
-            media = Mkv(video_path.as_posix())
+            media = Mkv(str(video_path))
 
             # Configure options for pgsrip
-            # BabelLanguage needs different constructors for 2-letter vs 3-letter codes
             try:
                 # Detect if language code is 2-letter or 3-letter
                 if len(self.language) == 2:
@@ -259,13 +256,12 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 elif len(self.language) == 3:
                     babel_lang = BabelLanguage(self.language)
                 else:
-                    # Try as language name
                     babel_lang = BabelLanguage.fromname(self.language)
 
                 options = Options(
                     languages={babel_lang},
-                    overwrite=True,  # Overwrite existing .srt files
-                    one_per_lang=True,  # Create one .srt per language
+                    overwrite=True,
+                    one_per_lang=True,
                 )
             except Exception:
                 # Fallback to English if language code is invalid
@@ -278,15 +274,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
             # Get list of existing .srt files before conversion
             existing_srts = set(video_path.parent.glob("*.srt"))
 
-            # Run pgsrip conversion using Python API on the original MKV
-            # This will create .srt files in the same directory as the video
-            # Enable verbose logging for debugging
-            import logging
-
-            logging.basicConfig(level=logging.DEBUG)
-            pgsrip_logger = logging.getLogger("pgsrip")
-            pgsrip_logger.setLevel(logging.DEBUG)
-
+            # Run pgsrip conversion using Python API
             pgsrip.rip(media, options)
 
             # Find newly created .srt files
