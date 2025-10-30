@@ -231,12 +231,17 @@ class ExtractSubtitleSRT(QtCore.QThread):
             from pgsrip import pgsrip, Mkv, Options
             from babelfish import Language as BabelLanguage
 
-            # Set environment variables for pgsrip to find tesseract
+            # Set environment variables for pgsrip to find tesseract and mkvextract
             if self.app.fastflix.config.tesseract_path:
                 # Add tesseract directory to PATH so pytesseract can find it
                 tesseract_dir = str(Path(self.app.fastflix.config.tesseract_path).parent)
                 os.environ["PATH"] = f"{tesseract_dir}{os.pathsep}{os.environ.get('PATH', '')}"
                 os.environ["TESSERACT_CMD"] = str(self.app.fastflix.config.tesseract_path)
+
+            if self.app.fastflix.config.mkvmerge_path:
+                # Add MKVToolNix directory to PATH so pgsrip can find mkvextract
+                mkvtoolnix_dir = str(Path(self.app.fastflix.config.mkvmerge_path).parent)
+                os.environ["PATH"] = f"{mkvtoolnix_dir}{os.pathsep}{os.environ.get('PATH', '')}"
 
             # pgsrip needs the original MKV file, not the extracted .sup
             # The .sup file is a raw subtitle stream, but pgsrip expects an MKV container
