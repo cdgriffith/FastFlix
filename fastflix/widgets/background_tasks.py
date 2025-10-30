@@ -266,6 +266,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
                     languages={babel_lang},
                     overwrite=True,  # Overwrite existing .srt files
                     one_per_lang=True,  # Create one .srt per language
+                    keep_temp_files=True,  # Keep temp files for debugging PyInstaller issues
                 )
             except Exception:
                 # Fallback to English if language code is invalid
@@ -273,6 +274,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
                     languages={BabelLanguage("eng")},
                     overwrite=True,
                     one_per_lang=True,
+                    keep_temp_files=True,  # Keep temp files for debugging PyInstaller issues
                 )
 
             # Get list of existing .srt files before conversion
