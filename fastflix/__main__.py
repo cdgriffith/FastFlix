@@ -14,7 +14,14 @@ def setup_ocr_environment():
     This is necessary for PyInstaller frozen executables where os.environ
     modifications later in the code don't properly propagate to subprocesses.
     """
+    import tempfile
     from fastflix.models.config import find_ocr_tool
+
+    # Ensure TEMP/TMP point to standard locations for PyInstaller compatibility
+    # pgsrip creates temp folders and needs writable temp directory
+    temp_dir = tempfile.gettempdir()
+    os.environ["TEMP"] = temp_dir
+    os.environ["TMP"] = temp_dir
 
     # Find tesseract and add to PATH
     tesseract_path = find_ocr_tool("tesseract")
