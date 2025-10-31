@@ -94,11 +94,9 @@ FastFlix can extract subtitles from video files in various formats (SRT, ASS, SS
 ## PGS to SRT OCR
 
 **Requirements**:
-- Tesseract OCR 4.x or higher
-- MKVToolNix (mkvextract, mkvmerge)
-- pgsrip Python library
-
-**Known Limitation**: PGS OCR only works when running FastFlix from source (`python -m fastflix`), not in PyInstaller-built executables due to a bug in pgsrip v0.1.12. See [WINDOWS_BUILD.md](WINDOWS_BUILD.md#pgs-to-srt-ocr-conversion-pyinstaller-builds) for details.
+- Tesseract OCR 4.x or higher (auto-detected from PATH or Subtitle Edit installations)
+- MKVToolNix (mkvextract, mkvmerge) (auto-detected from standard install locations)
+- pgsrip Python library (included in FastFlix)
 
 # HDR
 

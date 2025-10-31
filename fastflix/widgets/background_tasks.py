@@ -233,13 +233,11 @@ class ExtractSubtitleSRT(QtCore.QThread):
 
             # Set environment variables for pgsrip to find tesseract and mkvextract
             if self.app.fastflix.config.tesseract_path:
-                # Add tesseract directory to PATH so pytesseract can find it
                 tesseract_dir = str(Path(self.app.fastflix.config.tesseract_path).parent)
                 os.environ["PATH"] = f"{tesseract_dir}{os.pathsep}{os.environ.get('PATH', '')}"
                 os.environ["TESSERACT_CMD"] = str(self.app.fastflix.config.tesseract_path)
 
             if self.app.fastflix.config.mkvmerge_path:
-                # Add MKVToolNix directory to PATH so pgsrip can find mkvextract
                 mkvtoolnix_dir = str(Path(self.app.fastflix.config.mkvmerge_path).parent)
                 os.environ["PATH"] = f"{mkvtoolnix_dir}{os.pathsep}{os.environ.get('PATH', '')}"
 
@@ -278,8 +276,6 @@ class ExtractSubtitleSRT(QtCore.QThread):
             pgsrip.rip(media, options)
 
             # Find newly created .srt files
-            # Note: Can't use glob with video filename directly because special chars like []
-            # are interpreted as glob patterns. Instead, find new .srt files.
             current_srts = set(video_path.parent.glob("*.srt"))
             new_srts = current_srts - existing_srts
 
