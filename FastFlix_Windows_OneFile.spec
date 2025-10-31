@@ -2,7 +2,7 @@
 import os
 import toml
 
-from PyInstaller.utils.hooks import collect_submodules
+from PyInstaller.utils.hooks import collect_submodules, copy_metadata, collect_data_files
 
 block_cipher = None
 
@@ -27,13 +27,16 @@ all_imports.remove("python-box")
 all_imports.append("box")
 all_imports.append("iso639")
 
+# Add pgsrip for OCR support
+all_imports.extend(["pgsrip", "pytesseract", "cv2", "numpy", "pysrt", "babelfish", "babelfish.converters", "babelfish.converters.alpha2", "babelfish.converters.alpha3b", "babelfish.converters.alpha3t", "babelfish.converters.name", "babelfish.converters.opensubtitles", "cleanit"])
+
 portable_file = "fastflix\\portable.py"
 with open(portable_file, "w") as portable:
     portable.write(" ")
 
 a = Analysis(['fastflix\\__main__.py'],
              binaries=[],
-             datas=[('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files,
+             datas=[('CHANGES', 'fastflix\\.'), ('docs\\build-licenses.txt', 'docs')] + all_fastflix_files + copy_metadata('pgsrip') + copy_metadata('pytesseract') + copy_metadata('babelfish') + copy_metadata('cleanit') + copy_metadata('trakit') + collect_data_files('babelfish') + collect_data_files('cleanit'),
              hiddenimports=all_imports,
              hookspath=[],
              runtime_hooks=[],
