@@ -9,6 +9,7 @@ from pathlib import Path
 from subprocess import PIPE
 from threading import Thread
 from typing import Literal
+import sys
 
 from psutil import Popen
 
@@ -23,12 +24,12 @@ try:
     )
 except ImportError:
     priority_levels = {
-        "Realtime": 20,
-        "High": 10,
-        "Above Normal": 5,
+        "Realtime": -20,
+        "High": -10,
+        "Above Normal": -5,
         "Normal": 0,
-        "Below Normal": -10,
-        "Idle": -20,
+        "Below Normal": 10,
+        "Idle": 19 if sys.platform == "linux" else 20,
     }
 else:
     priority_levels = {
