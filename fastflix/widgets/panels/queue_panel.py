@@ -230,7 +230,10 @@ class EncodingQueue(FlixList):
         self.load_queue_button.setFixedWidth(110)
 
         self.priority_widget = QtWidgets.QComboBox()
-        self.priority_widget.addItems(["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"])
+        self.priority_widget.addItems(
+            ([] if reusables.win_based else ["Realtime"])
+            + ["High", "Above Normal", "Normal", "Below Normal", "Idle"]
+        )
         self.priority_widget.setCurrentIndex(3)
         self.priority_widget.currentIndexChanged.connect(self.set_priority)
 
