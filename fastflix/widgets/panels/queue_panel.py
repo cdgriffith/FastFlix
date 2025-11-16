@@ -234,7 +234,7 @@ class EncodingQueue(FlixList):
             ([] if reusables.win_based else ["Realtime"])
             + ["High", "Above Normal", "Normal", "Below Normal", "Idle"]
         )
-        self.priority_widget.setCurrentIndex(3)
+        self.priority_widget.setCurrentText("Normal")
         self.priority_widget.currentIndexChanged.connect(self.set_priority)
 
         self.clear_queue = QtWidgets.QPushButton(
