@@ -98,6 +98,20 @@ def where(filename: str, portable_mode=False) -> Path | None:
             return location
     return None
 
+def find_rigaya_encoder(base_name: str) -> Path | None:
+    """Find Rigaya encoder binaries with case-insensitive search."""
+    # Try common binary names in order of preference
+    candidates = [
+        f"{base_name}64", # Windows 64-bit
+        f"{base_name}", # Windows/Linux
+        f"{base_name.lower()}", # Linux lowercase
+    ]
+
+    for candidate in candidates:
+        if location := where(candidate):
+            return location
+    return None
+
 
 class Config(BaseModel):
     version: str = __version__
@@ -105,9 +119,9 @@ class Config(BaseModel):
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
     hdr10plus_parser: Path | None = Field(default_factory=find_hdr10plus_tool)
-    nvencc: Path | None = Field(default_factory=lambda: where("NVEncC64") or where("NVEncC"))
-    vceencc: Path | None = Field(default_factory=lambda: where("VCEEncC64") or where("VCEEncC"))
-    qsvencc: Path | None = Field(default_factory=lambda: where("QSVEncC64") or where("QSVEncC"))
+    nvencc: Path | None = Field(default_factory=lambda: find_rigaya_encoder("NVEncC"))
+    vceencc: Path | None = Field(default_factory=lambda: find_rigaya_encoder("VCEEncC"))
+    qsvencc: Path | None = Field(default_factory=lambda: find_rigaya_encoder("QSVEncC"))
     output_directory: Path | None = None
     source_directory: Path | None = None
     output_name_format: str = "{source}-fastflix-{rand_4}"
