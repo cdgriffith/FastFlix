@@ -5,7 +5,7 @@ authors = [{ name = "Chris Griffith", email = "chris@cdgriffith.com" }]
 readme = "README.md"
 #url = "https://fastflix.org"
 #download_url = "https://github.com/cdgriffith/FastFlix/releases"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dynamic = ["version"]
 dependencies = [
     "platformdirs~=4.3",
@@ -91,8 +91,8 @@ target-version = "py312"
 #ignore = []
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
-fixable = ["F401", "F541"]
-unfixable = []
+fixable = [ "F541"]
+unfixable = ["F401"]
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.
