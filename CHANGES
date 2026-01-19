@@ -2,6 +2,9 @@
 
 ## Version 5.12.5
 
+* Fixing crash when dragging non-video content over the main window
+* Fixing rotation setting not being applied correctly when loading profiles
+* Fixing flip settings not restoring correctly when returning video from queue
 * Fixing GIF encoder not applying resolution scaling
 * Fixing audio profile loading - validator returned wrong enum type (MatchType instead of MatchItem)
 * Fixing "monoo" typo in downmix mapping that caused mono downmix to fail

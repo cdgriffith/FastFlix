@@ -626,7 +626,7 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         try:
             # self.widgets.scale.keep_aspect.setChecked(self.app.fastflix.config.opt("keep_aspect_ratio"))
-            self.widgets.rotate.setCurrentIndex(self.app.fastflix.config.opt("rotate") or 0 // 90)
+            self.widgets.rotate.setCurrentIndex((self.app.fastflix.config.opt("rotate") or 0) // 90)
 
             v_flip = self.app.fastflix.config.opt("vertical_flip")
             h_flip = self.app.fastflix.config.opt("horizontal_flip")
@@ -1381,7 +1381,7 @@ class Main(QtWidgets.QWidget):
         self.output_path_button.setEnabled(True)
         self.output_video_path_widget.setEnabled(True)
         self.add_profile.setEnabled(True)
-        self.resolution_custom()
+        self.update_resolution()
 
     def clear_current_video(self):
         self.loading_video = True
@@ -1484,12 +1484,12 @@ class Main(QtWidgets.QWidget):
         self.widgets.remove_hdr.setChecked(self.app.fastflix.current_video.video_settings.remove_hdr)
         self.widgets.rotate.setCurrentIndex(video.video_settings.rotate)
         self.widgets.fast_time.setCurrentIndex(0 if video.video_settings.fast_seek else 1)
-        if video.video_settings.vertical_flip:
-            self.widgets.flip.setCurrentIndex(1)
-        if video.video_settings.horizontal_flip:
-            self.widgets.flip.setCurrentIndex(2)
         if video.video_settings.vertical_flip and video.video_settings.horizontal_flip:
             self.widgets.flip.setCurrentIndex(3)
+        elif video.video_settings.vertical_flip:
+            self.widgets.flip.setCurrentIndex(1)
+        elif video.video_settings.horizontal_flip:
+            self.widgets.flip.setCurrentIndex(2)
 
         self.video_options.advanced.video_title.setText(video.video_settings.video_title)
         self.video_options.advanced.video_track_title.setText(video.video_settings.video_track_title)
@@ -1915,7 +1915,7 @@ class Main(QtWidgets.QWidget):
         if self.app.fastflix.conversion_paused:
             return error_message("Queue is currently paused")
 
-        if not self.app.fastflix.conversion_list or self.app.fastflix.current_video:
+        if self.app.fastflix.current_video:
             add_current = True
             if self.app.fastflix.conversion_list and self.app.fastflix.current_video:
                 add_current = yes_no_message("Add current video to queue?", yes_text="Yes", no_text="No")
@@ -2038,7 +2038,7 @@ class Main(QtWidgets.QWidget):
         event.accept() if event.mimeData().hasUrls else event.ignore()
 
     def dragMoveEvent(self, event):
-        event.accept() if event.mimeData().hasUrls else event.ignoreAF()
+        event.accept() if event.mimeData().hasUrls else event.ignore()
 
     def status_update(self, status_response):
         response = Response(*status_response)
