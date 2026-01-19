@@ -56,7 +56,7 @@ class MatchType(Enum):
 
 class AudioMatch(BaseModel):
     match_type: Union[MatchType, list[MatchType]]  # TODO figure out why when saved becomes list in yaml
-    match_item: Union[MatchItem, list[MatchType]]
+    match_item: Union[MatchItem, list[MatchItem]]
     match_input: str = "*"
     conversion: Optional[str] = None
     bitrate: Optional[str] = None
@@ -73,13 +73,13 @@ class AudioMatch(BaseModel):
     @classmethod
     def match_item_must_be_enum(cls, v):
         if isinstance(v, list):
-            return MatchType(v[0])
+            return MatchItem(v[0])
         return MatchItem(v)
 
     @field_validator("downmix", mode="before")
     @classmethod
     def downmix_as_string(cls, v):
-        fixed = {1: "monoo", 2: "stereo", 3: "2.1", 4: "3.1", 5: "5.0", 6: "5.1", 7: "6.1", 8: "7.1"}
+        fixed = {1: "mono", 2: "stereo", 3: "2.1", 4: "3.1", 5: "5.0", 6: "5.1", 7: "6.1", 8: "7.1"}
         if isinstance(v, str) and v.isnumeric():
             v = int(v)
         if isinstance(v, int):
@@ -98,7 +98,7 @@ class AudioMatch(BaseModel):
 
 class SubtitleMatch(BaseModel):
     match_type: Union[MatchType, list[MatchType]]
-    match_item: Union[MatchItem, list[MatchType]]
+    match_item: Union[MatchItem, list[MatchItem]]
     match_input: str
 
 

@@ -133,7 +133,7 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
                     bitrate = f"--audio-bitrate {audio_id}?{conversion_bitrate} "
                 else:
                     bitrate = audio_quality_converter(
-                        track.conversion_aq, track.conversion_codec, track.raw_info.get("channels"), audio_id
+                        track.conversion_aq or 0, track.conversion_codec, track.raw_info.get("channels"), audio_id
                     )
             command_list.append(
                 f"{downmix} --audio-codec {audio_id}?{track.conversion_codec} {bitrate} "

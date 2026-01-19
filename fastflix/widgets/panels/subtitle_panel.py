@@ -377,6 +377,45 @@ class SubtitleList(FlixList):
 
         super()._new_source(self.tracks)
 
+    def apply_profile_settings(self):
+        """Re-apply subtitle filtering based on current profile settings."""
+        self._first_selected = False
+
+        for track in self.tracks:
+            sub_track = self.app.fastflix.current_video.subtitle_tracks[track.index]
+            enabled = self.lang_match(sub_track)
+            sub_track.enabled = enabled
+            track.widgets.enable_check.setChecked(enabled)
+
+        if self.app.fastflix.config.opt("subtitle_automatic_burn_in"):
+            # Reset any existing burn-in
+            for track in self.tracks:
+                track.widgets.burn_in.setChecked(False)
+
+            first_default, first_forced = None, None
+            for track in self.tracks:
+                if (
+                    not first_default
+                    and self.app.fastflix.current_video.subtitle_tracks[track.index].dispositions.get("default", False)
+                    and self.lang_match(track, ignore_first=True)
+                ):
+                    first_default = track
+                    break
+                if (
+                    not first_forced
+                    and self.app.fastflix.current_video.subtitle_tracks[track.index].dispositions.get("forced", False)
+                    and self.lang_match(track, ignore_first=True)
+                ):
+                    first_forced = track
+                    break
+            if not self.app.fastflix.config.disable_automatic_subtitle_burn_in:
+                if first_forced is not None:
+                    first_forced.widgets.burn_in.setChecked(True)
+                elif first_default is not None:
+                    first_default.widgets.burn_in.setChecked(True)
+
+        self.reorder(update=True)
+
     def reload(self, original_tracks):
         clear_list(self.tracks)
 

@@ -124,3 +124,5 @@ test.html
 iso-639-3.*
 build-dir/
 benchmarking/
+
+./.claude/settings.local.json

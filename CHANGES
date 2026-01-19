@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 5.12.5
+
+* Fixing GIF encoder not applying resolution scaling
+* Fixing audio profile loading - validator returned wrong enum type (MatchType instead of MatchItem)
+* Fixing "monoo" typo in downmix mapping that caused mono downmix to fail
+* Fixing undefined variable crash when creating duplicate audio tracks via profile filters
+* Fixing IndexError when applying profile audio filters to videos with non-sequential track indices
+* Fixing TypeError crash with Rigaya encoders when audio quality not explicitly set
+* Fixing AttributeError crash when audio track metadata is incomplete
+
 ## Version 5.12.4
 
 * Fixing #675 "Default Source Folder" not used when adding Complete Folders (thanks to Krawk)

@@ -68,7 +68,7 @@ def build_audio(audio_tracks, audio_file_index=0):
         elif track.conversion_codec:
             try:
                 cl = track.downmix if track.downmix and track.downmix != "No Downmix" else track.raw_info.channel_layout
-            except (AssertionError, KeyError):
+            except (AssertionError, KeyError, AttributeError):
                 cl = "stereo"
                 logger.warning("Could not determine channel layout, defaulting to stereo, please manually specify")
 

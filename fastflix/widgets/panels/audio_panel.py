@@ -431,7 +431,7 @@ class AudioList(FlixList):
             new_item = Audio(
                 parent=parent,
                 app=self.app,
-                index=i,
+                index=len(self.app.fastflix.current_video.audio_tracks) - 1,
                 disabled_dup=(
                     "nvencc" in self.main.convert_to.lower()
                     or "vcenc" in self.main.convert_to.lower()
@@ -462,18 +462,24 @@ class AudioList(FlixList):
             return
 
         # Apply first set of conversions to the original audio tracks
+        # Build a mapping from stream index to self.tracks position
+        stream_index_to_track = {
+            self.app.fastflix.current_video.audio_tracks[i].index: i for i in range(len(self.tracks))
+        }
         current_id = -1
         skip_tracks = []
         for idx, track in enumerate(tracks):
             # track[0] is the Box() track object, track[1] is the AudioMatch it matched against
             if track[0].index > current_id:
                 current_id = track[0].index
-                self.tracks[track[0].index - 1].widgets.enable_check.setChecked(True)
-                self.tracks[track[0].index - 1].update_track(
-                    downmix=track[1].downmix,
-                    conversion=track[1].conversion,
-                    bitrate=track[1].bitrate,
-                )
+                track_pos = stream_index_to_track.get(track[0].index)
+                if track_pos is not None:
+                    self.tracks[track_pos].widgets.enable_check.setChecked(True)
+                    self.tracks[track_pos].update_track(
+                        downmix=track[1].downmix,
+                        conversion=track[1].conversion,
+                        bitrate=track[1].bitrate,
+                    )
                 skip_tracks.append(idx)
 
         if not og_only:

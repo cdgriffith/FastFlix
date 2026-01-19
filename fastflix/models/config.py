@@ -98,13 +98,14 @@ def where(filename: str, portable_mode=False) -> Path | None:
             return location
     return None
 
+
 def find_rigaya_encoder(base_name: str) -> Path | None:
     """Find Rigaya encoder binaries with case-insensitive search."""
     # Try common binary names in order of preference
     candidates = [
-        f"{base_name}64", # Windows 64-bit
-        f"{base_name}", # Windows/Linux
-        f"{base_name.lower()}", # Linux lowercase
+        f"{base_name}64",  # Windows 64-bit
+        f"{base_name}",  # Windows/Linux
+        f"{base_name.lower()}",  # Linux lowercase
     ]
 
     for candidate in candidates:
