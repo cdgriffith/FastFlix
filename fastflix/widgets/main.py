@@ -8,10 +8,11 @@ import random
 import secrets
 import shutil
 import time
+from collections import namedtuple
 from datetime import timedelta
 from pathlib import Path
+from queue import Empty
 from typing import Tuple, Union, Optional
-from collections import namedtuple
 
 import importlib.resources
 import reusables
@@ -1844,13 +1845,28 @@ class Main(QtWidgets.QWidget):
 
     def close(self, no_cleanup=False, from_container=False):
         self.app.fastflix.shutting_down = True
+
+        # Signal worker process to shutdown gracefully
+        try:
+            self.app.fastflix.worker_queue.put(["shutdown"])
+        except Exception:
+            logger.debug("Could not send shutdown signal to worker")
+
+        # Shutdown async queue saver and wait for pending saves
+        from fastflix.ff_queue import shutdown_async_saver
+
+        shutdown_async_saver(timeout=5.0)
+
         if not no_cleanup:
             try:
                 shutil.rmtree(self.temp_dir, ignore_errors=True)
             except Exception:
                 pass
         self.video_options.cleanup()
-        self.notifier.terminate()
+        self.notifier.request_shutdown()
+        self.notifier.wait(1000)  # Wait up to 1 second for graceful shutdown
+        if self.notifier.isRunning():
+            self.notifier.terminate()
         super().close()
         if not from_container:
             self.container.close()
@@ -2157,22 +2173,26 @@ class Notifier(QtCore.QThread):
         self.app = app
         self.main: Main = parent
         self.status_queue = status_queue
+        self._shutdown = False
 
     def __del__(self):
         self.wait()
 
+    def request_shutdown(self):
+        """Request graceful shutdown of the thread."""
+        self._shutdown = True
+
     def run(self):
-        while True:
+        while not self._shutdown:
             # Message looks like (command, video_uuid, command_uuid)
-            # time.sleep(0.01)
-            status = self.status_queue.get()
+            try:
+                status = self.status_queue.get(timeout=0.5)
+            except Empty:
+                continue
             self.app.processEvents()
             if status[0] == "exit":
                 logger.debug("GUI received ask to exit")
-                try:
-                    self.terminate()
-                finally:
-                    self.main.close_event.emit()
+                self.main.close_event.emit()
                 return
             self.main.status_update_signal.emit(status)
             self.app.processEvents()

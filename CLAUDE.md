@@ -101,6 +101,12 @@ Key considerations:
 - Verify filter_complex syntax for multi-input/output chains
 - Check encoder-specific options in official docs
 
+## Changelog
+
+**IMPORTANT:** Always update the `CHANGES` file when making significant additions or bug fixes during a session. Add entries under the current version section at the top of the file using the format:
+- `* Adding {feature description}` for new features
+- `* Fixing {bug description}` for bug fixes
+
 ## Branching
 
 - `master`: Release branch

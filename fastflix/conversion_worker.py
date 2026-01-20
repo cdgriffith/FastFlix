@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from pathlib import Path
-from queue import Empty
+from queue import Empty, Full
 from typing import Literal
 from datetime import datetime
 
@@ -55,7 +55,10 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
     while True:
         if currently_encoding and not runner.is_alive():
             reusables.remove_file_handlers(logger)
-            log_queue.put("STOP_TIMER")
+            try:
+                log_queue.put("STOP_TIMER", timeout=1.0)
+            except Full:
+                pass  # GUI likely dead, ignore
             currently_encoding = False
 
             if runner.error_detected:
@@ -95,7 +98,10 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 runner.kill()
                 currently_encoding = False
                 status_queue.put(("cancelled", video_uuid, command_uuid))
-                log_queue.put("STOP_TIMER")
+                try:
+                    log_queue.put("STOP_TIMER", timeout=1.0)
+                except Full:
+                    pass  # GUI likely dead, ignore
 
             if request[0] == "pause encode":
                 logger.debug(t("Command worker received request to pause current encode"))
@@ -115,3 +121,12 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 priority = request[1]
                 if runner.is_alive():
                     runner.change_priority(priority)
+
+            if request[0] == "shutdown":
+                logger.debug(t("Shutdown signal received from GUI"))
+                if runner.is_alive():
+                    logger.info(t("Waiting for current encode to finish before shutdown"))
+                    # Don't kill current encode, let it finish
+                    continue
+                logger.debug(t("Worker shutting down gracefully"))
+                return

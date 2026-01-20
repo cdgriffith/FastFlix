@@ -164,14 +164,12 @@ def init_fastflix_directories(app: FastFlixApp):
 def app_setup(
     enable_scaling: bool = True,
     portable_mode: bool = False,
-    queue_list: list = None,
-    queue_lock=None,
     status_queue=None,
     log_queue=None,
     worker_queue=None,
 ):
     app = create_app(enable_scaling=enable_scaling)
-    app.fastflix = FastFlix(queue=queue_list, queue_lock=queue_lock)
+    app.fastflix = FastFlix()
     app.fastflix.log_queue = log_queue
     app.fastflix.status_queue = status_queue
     app.fastflix.worker_queue = worker_queue
@@ -268,15 +266,13 @@ def app_setup(
     return app
 
 
-def start_app(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False, enable_scaling=True):
+def start_app(worker_queue, status_queue, log_queue, portable_mode=False, enable_scaling=True):
     # import tracemalloc
     #
     # tracemalloc.start()
     app = app_setup(
         enable_scaling=enable_scaling,
         portable_mode=portable_mode,
-        queue_list=queue_list,
-        queue_lock=queue_lock,
         status_queue=status_queue,
         log_queue=log_queue,
         worker_queue=worker_queue,
