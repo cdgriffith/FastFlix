@@ -678,6 +678,8 @@ class Main(QtWidgets.QWidget):
             # Hack to prevent a lot of thumbnail generation
             self.loading_video = False
         self.page_update()
+        # Ensure window stays within screen bounds after profile change
+        self.container.ensure_window_in_bounds()
 
     def save_profile(self):
         self.video_options.get_settings()

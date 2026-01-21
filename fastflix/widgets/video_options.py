@@ -160,6 +160,8 @@ class VideoOptions(QtWidgets.QTabWidget):
         if not self.reloading:
             self.audio.allowed_formats(self._get_audio_formats(encoder))
             # self.update_profile()
+        # Ensure window stays within screen bounds after encoder change
+        self.main.container.ensure_window_in_bounds()
 
     def get_settings(self):
         if not self.app.fastflix.current_video:

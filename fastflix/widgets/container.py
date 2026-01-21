@@ -87,6 +87,7 @@ class Container(QtWidgets.QMainWindow):
         self.setBaseSize(QtCore.QSize(1350, 750))
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
+        self._constrain_to_screen()
         self.main.set_profile()
 
         if self.app.fastflix.config.theme == "onyx":
@@ -110,6 +111,84 @@ class Container(QtWidgets.QMainWindow):
             )
         # self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         self.moveFlag = False
+
+    def _constrain_to_screen(self):
+        """Ensure the window fits within the available screen geometry."""
+        screen = QtGui.QGuiApplication.primaryScreen()
+        if screen is None:
+            return
+        available = screen.availableGeometry()
+        # Set maximum size to screen available geometry with some margin
+        max_width = available.width() - 20
+        max_height = available.height() - 20
+        self.setMaximumSize(max_width, max_height)
+
+    def ensure_window_in_bounds(self):
+        """Public method to ensure window stays within screen bounds after content changes."""
+        self._constrain_to_screen()
+        screen = QtGui.QGuiApplication.primaryScreen()
+        if screen is None:
+            return
+        available = screen.availableGeometry()
+        geometry = self.geometry()
+
+        # Calculate new position if window is out of bounds
+        new_x = geometry.x()
+        new_y = geometry.y()
+        new_width = min(geometry.width(), available.width() - 20)
+        new_height = min(geometry.height(), available.height() - 20)
+
+        # Ensure window doesn't go off the right edge
+        if new_x + new_width > available.right():
+            new_x = max(available.left(), available.right() - new_width)
+
+        # Ensure window doesn't go off the bottom edge
+        if new_y + new_height > available.bottom():
+            new_y = max(available.top(), available.bottom() - new_height)
+
+        # Ensure window doesn't go off the left or top edges
+        new_x = max(available.left(), new_x)
+        new_y = max(available.top(), new_y)
+
+        # Apply the constrained geometry
+        self.setGeometry(new_x, new_y, new_width, new_height)
+
+    def resizeEvent(self, event: QtGui.QResizeEvent) -> None:
+        """Handle resize events to ensure window stays within screen bounds."""
+        super().resizeEvent(event)
+        screen = QtGui.QGuiApplication.primaryScreen()
+        if screen is None:
+            return
+        available = screen.availableGeometry()
+        geometry = self.geometry()
+
+        # Check if window exceeds screen boundaries and adjust
+        needs_move = False
+        new_x = geometry.x()
+        new_y = geometry.y()
+
+        # Ensure window doesn't go off the right edge
+        if geometry.right() > available.right():
+            new_x = max(available.left(), available.right() - geometry.width())
+            needs_move = True
+
+        # Ensure window doesn't go off the bottom edge
+        if geometry.bottom() > available.bottom():
+            new_y = max(available.top(), available.bottom() - geometry.height())
+            needs_move = True
+
+        # Ensure window doesn't go off the left edge
+        if geometry.left() < available.left():
+            new_x = available.left()
+            needs_move = True
+
+        # Ensure window doesn't go off the top edge
+        if geometry.top() < available.top():
+            new_y = available.top()
+            needs_move = True
+
+        if needs_move:
+            self.move(new_x, new_y)
 
     # def mousePressEvent(self, event):
     #     if event.button() == QtCore.Qt.LeftButton:
