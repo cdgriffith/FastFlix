@@ -11,6 +11,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import VideoSettings
 from fastflix.resources import get_icon
 from fastflix.models.profiles import AdvancedOptions
+from fastflix.ui_styles import get_onyx_label_style
 from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
 
 logger = logging.getLogger("fastflix")
@@ -138,7 +139,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         label = QtWidgets.QLabel(label)
         label.setFixedWidth(100)
         if self.app.fastflix.config.theme == "onyx":
-            label.setStyleSheet("color: #b5b5b5")
+            label.setStyleSheet(get_onyx_label_style(muted=True))
         self.layout.addWidget(label, row_number, 0, alignment=QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
     def init_fps(self):
@@ -356,7 +357,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.last_row += 1
         label = QtWidgets.QLabel("ʘ " + t("Not supported by rigaya's hardware encoders"))
         if self.app.fastflix.config.theme == "onyx":
-            label.setStyleSheet("color: #b5b5b5")
+            label.setStyleSheet(get_onyx_label_style(muted=True))
 
         self.layout.addWidget(label, self.last_row, 0, 1, 2)
 

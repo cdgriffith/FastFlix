@@ -14,6 +14,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
 from fastflix.ui_scale import scaler
 from fastflix.ui_constants import HEIGHTS, WIDTHS
+from fastflix.ui_styles import get_onyx_disposition_style
 from fastflix.shared import no_border, error_message, yes_no_message, clear_list
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.audio_processing import apply_audio_filters
@@ -341,18 +342,18 @@ class Audio(QtWidgets.QTabWidget):
     def check_conversion_button(self):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if audio_track.conversion_codec:
-            self.widgets.conversion.setStyleSheet("border-color: #4a555e; background-color: #4a555e")
+            self.widgets.conversion.setStyleSheet(get_onyx_disposition_style(enabled=True))
             self.widgets.conversion.setText(t("Conversion") + f": {audio_track.conversion_codec}")
         else:
-            self.widgets.conversion.setStyleSheet("")
+            self.widgets.conversion.setStyleSheet(get_onyx_disposition_style(enabled=False))
             self.widgets.conversion.setText(t("Conversion"))
 
     def check_dis_button(self):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if any(audio_track.dispositions.values()):
-            self.widgets.disposition.setStyleSheet("border-color: #4a555e; background-color: #4a555e")
+            self.widgets.disposition.setStyleSheet(get_onyx_disposition_style(enabled=True))
         else:
-            self.widgets.disposition.setStyleSheet("")
+            self.widgets.disposition.setStyleSheet(get_onyx_disposition_style(enabled=False))
 
 
 class AudioList(FlixList):

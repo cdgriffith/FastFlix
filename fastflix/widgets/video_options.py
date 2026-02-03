@@ -4,12 +4,13 @@ import copy
 import logging
 from typing import TYPE_CHECKING
 
-from PySide6 import QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
 from fastflix.ui_scale import scaler
+from fastflix.ui_styles import ONYX_COLORS, get_onyx_combobox_style
 from fastflix.shared import DEVMODE, error_message
 from fastflix.widgets.panels.advanced_panel import AdvancedPanel
 from fastflix.widgets.panels.audio_panel import AudioList
@@ -64,13 +65,13 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.setStyleSheet(
                 "QTabBar{ font-size: 13px; } "
                 "QTabBar::tab{ border-top: 2px solid transparent; } "
-                "QTabBar::tab:selected{ border-top: 2px solid #567781; } "
+                f"QTabBar::tab:selected{{ border-top: 2px solid {ONYX_COLORS['primary']}; }} "
                 "QLineEdit{ color: white; } "
                 "QTextEdit{ color: white; } "
                 "QPlainTextEdit{ color: white; } "
-                "QComboBox{ min-height: 1.1em; background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px; }"
+                f"QComboBox{{ min-height: 1.1em; {get_onyx_combobox_style()} }}"
                 "QComboBox:hover{ background-color: #6a8a96; } "
-                "QComboBox QAbstractItemView{ background-color: #1d2023; border: 2px solid #4a555e; } "
+                f"QComboBox QAbstractItemView{{ background-color: {ONYX_COLORS['dark_bg']}; border: 2px solid {ONYX_COLORS['input_bg']}; }} "
             )
 
         self.setIconSize(scaler.scale_size(20, 20))
@@ -91,6 +92,23 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.addTab(self.queue, QtGui.QIcon(get_icon("onyx-queue", app.fastflix.config.theme)), t("Encoding Queue"))
         if DEVMODE:
             self.addTab(self.debug, QtGui.QIcon(get_icon("info", app.fastflix.config.theme)), "Debug")
+
+        # Add separator line below tabs for onyx theme
+        self.tab_separator = None
+        if self.app.fastflix.config.theme == "onyx":
+            self.tab_separator = QtWidgets.QFrame(self)
+            self.tab_separator.setFrameShape(QtWidgets.QFrame.HLine)
+            self.tab_separator.setFixedHeight(3)
+            self.tab_separator.setStyleSheet(f"background-color: {ONYX_COLORS['primary']};")
+            self.tab_separator.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+            self.tab_separator.raise_()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self.tab_separator:
+            # Position the separator right below the tab bar
+            tab_bar_height = self.tabBar().height()
+            self.tab_separator.setGeometry(0, tab_bar_height, self.width(), 3)
 
     def resetTabIcons(self):
         for index, icon_name in icons.items():

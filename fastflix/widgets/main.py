@@ -24,6 +24,7 @@ from fastflix.encoders.common import helpers
 from fastflix.exceptions import FastFlixInternalException, FlixError
 from fastflix.ui_scale import scaler
 from fastflix.ui_constants import WIDTHS, HEIGHTS, ICONS
+from fastflix.ui_styles import ONYX_COLORS, get_onyx_combobox_style, get_onyx_button_style
 from fastflix.flix import (
     detect_hdr10_plus,
     detect_interlaced,
@@ -300,16 +301,7 @@ class Main(QtWidgets.QWidget):
         spacer.setFixedHeight(scaler.scale(HEIGHTS.SPACER_SMALL))
         self.grid.addWidget(spacer, 8, 0, 1, 14)
 
-        # Add separator line above tabs for onyx theme
-        if self.app.fastflix.config.theme == "onyx":
-            tab_separator = QtWidgets.QFrame()
-            tab_separator.setFrameShape(QtWidgets.QFrame.HLine)
-            tab_separator.setFixedHeight(1)
-            tab_separator.setStyleSheet("background-color: #567781;")
-            self.grid.addWidget(tab_separator, 9, 0, 1, 14)
-            self.grid.addWidget(self.video_options, 10, 0, 10, 14)
-        else:
-            self.grid.addWidget(self.video_options, 9, 0, 10, 14)
+        self.grid.addWidget(self.video_options, 9, 0, 10, 14)
 
         self.grid.setSpacing(5)
         self.paused = False
@@ -559,9 +551,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
         self.widgets.output_type_combo.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         if self.app.fastflix.config.theme == "onyx":
-            self.widgets.output_type_combo.setStyleSheet(
-                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
-            )
+            self.widgets.output_type_combo.setStyleSheet(get_onyx_combobox_style())
         self.widgets.output_type_combo.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
 
         output_layout.addWidget(self.widgets.output_type_combo)
@@ -628,9 +618,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.resolution_drop_down.addItems(list(resolutions.keys()))
         self.widgets.resolution_drop_down.currentIndexChanged.connect(self.update_resolution)
         if self.app.fastflix.config.theme == "onyx":
-            self.widgets.resolution_drop_down.setStyleSheet(
-                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
-            )
+            self.widgets.resolution_drop_down.setStyleSheet(get_onyx_combobox_style())
         res_row.addWidget(self.widgets.resolution_drop_down)
 
         self.widgets.resolution_custom = QtWidgets.QLineEdit()
@@ -675,9 +663,7 @@ class Main(QtWidgets.QWidget):
         time_reset.setToolTip(t("Reset start and end times"))
         time_reset.clicked.connect(self.reset_time)
         if self.app.fastflix.config.theme == "onyx":
-            time_reset.setStyleSheet(
-                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
-            )
+            time_reset.setStyleSheet(get_onyx_button_style())
         self.buttons.append(time_reset)
 
         self.widgets.fast_time = QtWidgets.QComboBox()
@@ -685,9 +671,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.fast_time.setCurrentIndex(0)
         self.widgets.fast_time.setFixedHeight(scaler.scale(22))
         if self.app.fastflix.config.theme == "onyx":
-            self.widgets.fast_time.setStyleSheet(
-                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
-            )
+            self.widgets.fast_time.setStyleSheet(get_onyx_combobox_style())
         self.widgets.fast_time.setToolTip(
             t(
                 "uses [fast] seek to a rough position ahead of timestamp, "
@@ -744,18 +728,14 @@ class Main(QtWidgets.QWidget):
         auto_crop.setToolTip(t("Automatically detect black borders"))
         auto_crop.clicked.connect(self.get_auto_crop)
         if self.app.fastflix.config.theme == "onyx":
-            auto_crop.setStyleSheet(
-                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
-            )
+            auto_crop.setStyleSheet(get_onyx_button_style())
         self.buttons.append(auto_crop)
         reset = QtWidgets.QPushButton(t("Reset"))
         reset.setFixedHeight(scaler.scale(22))
         reset.setToolTip(t("Reset crop"))
         reset.clicked.connect(self.reset_crop)
         if self.app.fastflix.config.theme == "onyx":
-            reset.setStyleSheet(
-                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
-            )
+            reset.setStyleSheet(get_onyx_button_style())
         self.buttons.append(reset)
         col1.addWidget(auto_crop)
         col1.addWidget(reset)
@@ -982,9 +962,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.flip.setIconSize(scaler.scale_size(ICONS.MEDIUM, ICONS.MEDIUM))
         self.widgets.flip.currentIndexChanged.connect(lambda: self.page_update())
         if self.app.fastflix.config.theme == "onyx":
-            self.widgets.flip.setStyleSheet(
-                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
-            )
+            self.widgets.flip.setStyleSheet(get_onyx_combobox_style())
         return self.widgets.flip
 
     def get_flips(self) -> Tuple[bool, bool]:
@@ -1023,9 +1001,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.rotate.setIconSize(scaler.scale_size(ICONS.MEDIUM, ICONS.MEDIUM))
         self.widgets.rotate.currentIndexChanged.connect(lambda: self.page_update())
         if self.app.fastflix.config.theme == "onyx":
-            self.widgets.rotate.setStyleSheet(
-                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
-            )
+            self.widgets.rotate.setStyleSheet(get_onyx_combobox_style())
         return self.widgets.rotate
 
     def change_output_types(self):
@@ -1220,7 +1196,7 @@ class Main(QtWidgets.QWidget):
                 )
                 border_width = scaler.scale(2)
                 margin = scaler.scale(7)
-                self.setStyleSheet(f"border: {border_width}px solid #567781; margin: {margin}px;")
+                self.setStyleSheet(f"border: {border_width}px solid {ONYX_COLORS['primary']}; margin: {margin}px;")
 
             def _on_scale_changed(self, factors):
                 """Called when scale factors change."""
@@ -1563,18 +1539,11 @@ class Main(QtWidgets.QWidget):
                 self.widgets.crop.right.setStyleSheet("color: red")
                 # error_message(f"{t('Invalid Crop')}: {err}")
                 return None
-            self.widgets.crop.left.setStyleSheet(
-                "color: black" if self.app.fastflix.config.theme != "dark" else "color: white"
-            )
-            self.widgets.crop.right.setStyleSheet(
-                "color: black" if self.app.fastflix.config.theme != "dark" else "color: white"
-            )
-            self.widgets.crop.top.setStyleSheet(
-                "color: black" if self.app.fastflix.config.theme != "dark" else "color: white"
-            )
-            self.widgets.crop.bottom.setStyleSheet(
-                "color: black" if self.app.fastflix.config.theme != "dark" else "color: white"
-            )
+            crop_text_color = "color: white" if self.app.fastflix.config.theme in ("dark", "onyx") else "color: black"
+            self.widgets.crop.left.setStyleSheet(crop_text_color)
+            self.widgets.crop.right.setStyleSheet(crop_text_color)
+            self.widgets.crop.top.setStyleSheet(crop_text_color)
+            self.widgets.crop.bottom.setStyleSheet(crop_text_color)
             return crop
 
     def disable_all(self):

@@ -13,6 +13,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import loading_movie, get_icon
 from fastflix.shared import error_message, no_border, clear_list
 from fastflix.ui_scale import scaler
+from fastflix.ui_styles import get_onyx_disposition_style
 from fastflix.widgets.background_tasks import ExtractSubtitleSRT
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.widgets.windows.disposition import Disposition
@@ -262,9 +263,9 @@ class Subtitle(QtWidgets.QTabWidget):
     def check_dis_button(self):
         track: SubtitleTrack = self.app.fastflix.current_video.subtitle_tracks[self.index]
         if any(track.dispositions.values()):
-            self.widgets.disposition.setStyleSheet("border-color: #4a555e; background-color: #4a555e")
+            self.widgets.disposition.setStyleSheet(get_onyx_disposition_style(enabled=True))
         else:
-            self.widgets.disposition.setStyleSheet("")
+            self.widgets.disposition.setStyleSheet(get_onyx_disposition_style(enabled=False))
 
 
 class SubtitleList(FlixList):
