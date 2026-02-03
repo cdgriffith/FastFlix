@@ -1,12 +1,13 @@
 # Changelog
 
-## Version 5.12.5
+## Version 5.13.0
 
-* Fixing window resizing beyond screen boundaries when switching profiles on macOS
+* Adding #712 audio profile title options: No Title, Generate Title, and Custom Title
 * Adding async queue saving to prevent GUI blocking during queue operations
 * Adding atomic file writes for queue to prevent corruption from interrupted saves
 * Adding file-based locking for queue operations to prevent race conditions between instances
 * Adding graceful shutdown handling for worker process and background threads
+* Fixing window resizing beyond screen boundaries when switching profiles on macOS
 * Fixing potential GUI freeze when log queue fills up during encoding
 * Fixing file handle leaks in command runner when process startup fails
 * Fixing crash when dragging non-video content over the main window

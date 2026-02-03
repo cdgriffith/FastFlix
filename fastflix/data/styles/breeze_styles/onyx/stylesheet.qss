@@ -277,7 +277,7 @@ QMenuBar::item
 
 QMenuBar::item:selected
 {
-    background: transparent;
+    background-color: #3daee9;
 }
 
 QMenuBar::item:disabled
@@ -296,7 +296,9 @@ QMenuBar::item:pressed
 QMenu
 {
     color: #eff0f1;
+    background-color: #1d2023;
     margin: 0.09em;
+    border: 1px solid #76797c;
 }
 
 QMenu::icon
@@ -395,10 +397,6 @@ QAbstractItemView
     border-radius: 0.09em;
 }
 
-QMenuBar::item:focus:!disabled
-{
-    border: 0.05em solid #3daee9;
-}
 
 QTabWidget:focus,
 QCheckBox:focus,
@@ -668,11 +666,6 @@ QFrame[frameShape="6"]:hover
     border: 0.05em solid #3daee9;
 }
 
-/* Don't provide an outline if we have a widget that takes up the space. */
-QFrame[frameShape] QAbstractItemView:hover
-{
-    border: 0em solid black;
-}
 
 /**
  *  Note: I can't really change the background of the toolbars
@@ -866,7 +859,13 @@ QComboBox QAbstractItemView
     background-color: #1d2023;
     selection-background-color: #2a79a3;
     outline-color: 0em;
-    border-radius: 0.09em;
+    border-radius: 4px;
+    border: 2px solid #76797c;
+}
+
+QComboBox QAbstractItemView::item
+{
+    border: none;
 }
 
 QComboBox::drop-down
@@ -1474,6 +1473,12 @@ QListView
 {
     /* Give space for elements aligned left or right. */
     padding: 0.2em;
+}
+
+QComboBox QListView
+{
+    background-color: #1d2023;
+    border: 2px solid #76797c;
 }
 
 QTableView::item,

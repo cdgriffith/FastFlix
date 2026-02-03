@@ -94,6 +94,7 @@ class Container(QtWidgets.QMainWindow):
             self.setStyleSheet(
                 """
                 QAbstractItemView{ background-color: #4b5054; }
+                QComboBox QAbstractItemView{ background-color: #1d2023; border: 2px solid #76797c; }
                 QPushButton{ border-radius:10px; }
                 QLineEdit{ background-color: #707070; color: black; border-radius: 10px; }
                 QTextEdit{ background-color: #707070; color: black; }

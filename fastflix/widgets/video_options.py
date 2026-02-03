@@ -64,6 +64,7 @@ class VideoOptions(QtWidgets.QTabWidget):
                 "*{ background-color: #4b5054; color: white} QTabWidget{margin-top: 34px; background-color: #4b5054;} "
                 "QTabBar{font-size: 13px; background-color: #4f5962}"
                 "QComboBox{min-height: 1.1em;}"
+                "QComboBox QAbstractItemView{ background-color: #1d2023; border: 2px solid #76797c; }"
             )
 
         self.setIconSize(QtCore.QSize(24, 24))

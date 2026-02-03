@@ -56,11 +56,19 @@ def build_audio(audio_tracks, audio_file_index=0):
     for track in audio_tracks:
         if not track.enabled:
             continue
-        command_list.append(
-            f"-map {audio_file_index}:{track.index} "
-            f'-metadata:s:{track.outdex} title="{track.title}" '
-            f'-metadata:s:{track.outdex} handler="{track.title}"'
-        )
+        if track.title:
+            command_list.append(
+                f"-map {audio_file_index}:{track.index} "
+                f'-metadata:s:{track.outdex} title="{track.title}" '
+                f'-metadata:s:{track.outdex} handler="{track.title}"'
+            )
+        else:
+            # No title - clear any existing title metadata
+            command_list.append(
+                f"-map {audio_file_index}:{track.index} "
+                f'-metadata:s:{track.outdex} title="" '
+                f'-metadata:s:{track.outdex} handler=""'
+            )
         if track.language:
             command_list.append(f"-metadata:s:{track.outdex} language={track.language}")
         if not track.conversion_codec or track.conversion_codec == "none":

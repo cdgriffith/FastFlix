@@ -37,7 +37,7 @@ from fastflix.models.encode import (
 )
 
 
-__all__ = ["MatchItem", "MatchType", "AudioMatch", "Profile", "SubtitleMatch", "AdvancedOptions"]
+__all__ = ["MatchItem", "MatchType", "TitleMode", "AudioMatch", "Profile", "SubtitleMatch", "AdvancedOptions"]
 
 
 class MatchItem(Enum):
@@ -54,6 +54,13 @@ class MatchType(Enum):
     LAST = 3
 
 
+class TitleMode(Enum):
+    ORIGINAL = 1
+    NO_TITLE = 2
+    GENERATE = 3
+    CUSTOM = 4
+
+
 class AudioMatch(BaseModel):
     match_type: Union[MatchType, list[MatchType]]  # TODO figure out why when saved becomes list in yaml
     match_item: Union[MatchItem, list[MatchItem]]
@@ -61,6 +68,8 @@ class AudioMatch(BaseModel):
     conversion: Optional[str] = None
     bitrate: Optional[str] = None
     downmix: Optional[Union[str, int]] = None
+    title_mode: Union[TitleMode, list[TitleMode]] = TitleMode.ORIGINAL
+    custom_title: Optional[str] = None
 
     @field_validator("match_type", mode="before")
     @classmethod
@@ -75,6 +84,15 @@ class AudioMatch(BaseModel):
         if isinstance(v, list):
             return MatchItem(v[0])
         return MatchItem(v)
+
+    @field_validator("title_mode", mode="before")
+    @classmethod
+    def title_mode_must_be_enum(cls, v):
+        if v is None:
+            return TitleMode.ORIGINAL
+        if isinstance(v, list):
+            return TitleMode(v[0])
+        return TitleMode(v)
 
     @field_validator("downmix", mode="before")
     @classmethod
