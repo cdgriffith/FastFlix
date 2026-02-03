@@ -232,10 +232,14 @@ class Audio(QtWidgets.QTabWidget):
         # self.widgets.up_button = QtWidgets.QPushButton("^")
         self.widgets.up_button.setDisabled(self.first)
         self.widgets.up_button.setFixedWidth(scaler.scale(17))
+        self.widgets.up_button.setFixedHeight(scaler.scale(20))
+        self.widgets.up_button.setIconSize(scaler.scale_size(12, 12))
         self.widgets.up_button.clicked.connect(lambda: self.parent.move_up(self))
         # self.widgets.down_button = QtWidgets.QPushButton("v")
         self.widgets.down_button.setDisabled(self.last)
         self.widgets.down_button.setFixedWidth(scaler.scale(17))
+        self.widgets.down_button.setFixedHeight(scaler.scale(20))
+        self.widgets.down_button.setIconSize(scaler.scale_size(12, 12))
         self.widgets.down_button.clicked.connect(lambda: self.parent.move_down(self))
         layout.addWidget(self.widgets.up_button)
         layout.addWidget(self.widgets.down_button)
@@ -337,7 +341,7 @@ class Audio(QtWidgets.QTabWidget):
     def check_conversion_button(self):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if audio_track.conversion_codec:
-            self.widgets.conversion.setStyleSheet("border-color: #0055ff")
+            self.widgets.conversion.setStyleSheet("border-color: #4a555e; background-color: #4a555e")
             self.widgets.conversion.setText(t("Conversion") + f": {audio_track.conversion_codec}")
         else:
             self.widgets.conversion.setStyleSheet("")
@@ -346,7 +350,7 @@ class Audio(QtWidgets.QTabWidget):
     def check_dis_button(self):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if any(audio_track.dispositions.values()):
-            self.widgets.disposition.setStyleSheet("border-color: #0055ff")
+            self.widgets.disposition.setStyleSheet("border-color: #4a555e; background-color: #4a555e")
         else:
             self.widgets.disposition.setStyleSheet("")
 

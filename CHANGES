@@ -2,15 +2,18 @@
 
 ## Version 5.13.0
 
+* Adding Keyframe checkbox to Settings menu as "Use keyframes for preview images" option (default enabled)
+* Adding preview time slider to overlay at bottom of preview image
+* Adding time display next to preview slider in H:MM:SS format
 * Adding #712 audio profile title options: No Title, Generate Title, and Custom Title
-* Adding Start/End Time tab to right-side options panel between Size and Crop tabs with compact 3-column layout
-* Fixing video track selector showing unnecessarily when source video has only one video track
-* Fixing visual border between filename area and video track selector
-* Fixing test suite hanging due to missing QApplication in PySide6 widget tests
 * Adding async queue saving to prevent GUI blocking during queue operations
 * Adding atomic file writes for queue to prevent corruption from interrupted saves
 * Adding file-based locking for queue operations to prevent race conditions between instances
 * Adding graceful shutdown handling for worker process and background threads
+* Adding Start/End Time tab to right-side options panel between Size and Crop tabs with compact 3-column layout
+* Fixing video track selector showing unnecessarily when source video has only one video track
+* Fixing visual border between filename area and video track selector
+* Fixing test suite hanging due to missing QApplication in PySide6 widget tests
 * Fixing window resizing beyond screen boundaries when switching profiles on macOS
 * Fixing potential GUI freeze when log queue fills up during encoding
 * Fixing file handle leaks in command runner when process startup fails

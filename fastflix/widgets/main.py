@@ -136,7 +136,7 @@ class MainWidgets(BaseModel):
     remove_hdr: QtWidgets.QCheckBox = None
     profile_box: QtWidgets.QComboBox = None
     thumb_time: QtWidgets.QSlider = None
-    thumb_key: QtWidgets.QCheckBox = None
+    preview_time_label: QtWidgets.QLabel = None
     resolution_drop_down: QtWidgets.QComboBox = None
     resolution_custom: QtWidgets.QLineEdit = None
     output_directory: QtWidgets.QPushButton = None
@@ -237,7 +237,9 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget.setDisabled(True)
         self.output_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.PATH_WIDGET))
         self.output_video_path_widget.setFont(QtGui.QFont(self.app.font().family(), 9))
-        self.output_video_path_widget.setStyleSheet("padding: 0 0 -1px 5px")
+        self.output_video_path_widget.setStyleSheet(
+            f"padding: 0 0 -1px 5px; color: rgb({get_text_color(self.app.fastflix.config.theme)})"
+        )
         self.output_video_path_widget.setMaxLength(220)
 
         # self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
@@ -291,20 +293,38 @@ class Main(QtWidgets.QWidget):
         # pi.addWidget(self.init_preview_image())
         # pi.addLayout(self.())
 
-        self.grid.addWidget(self.init_preview_image(), 0, 6, 6, 5)
-        self.grid.addLayout(self.init_thumb_time_selector(), 6, 6, 1, 5, (QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter))
+        self.grid.addWidget(self.init_preview_image(), 0, 6, 7, 5)
         # self.grid.addLayout(pi, 0, 6, 7, 5)
 
         spacer = QtWidgets.QLabel()
         spacer.setFixedHeight(scaler.scale(HEIGHTS.SPACER_SMALL))
         self.grid.addWidget(spacer, 8, 0, 1, 14)
-        self.grid.addWidget(self.video_options, 9, 0, 10, 14)
+
+        # Add separator line above tabs for onyx theme
+        if self.app.fastflix.config.theme == "onyx":
+            tab_separator = QtWidgets.QFrame()
+            tab_separator.setFrameShape(QtWidgets.QFrame.HLine)
+            tab_separator.setFixedHeight(1)
+            tab_separator.setStyleSheet("background-color: #567781;")
+            self.grid.addWidget(tab_separator, 9, 0, 1, 14)
+            self.grid.addWidget(self.video_options, 10, 0, 10, 14)
+        else:
+            self.grid.addWidget(self.video_options, 9, 0, 10, 14)
 
         self.grid.setSpacing(5)
         self.paused = False
 
         self.disable_all()
         self.setLayout(self.grid)
+
+        if self.app.fastflix.config.theme == "onyx":
+            self.setStyleSheet(
+                "QLabel{ color: white; } "
+                "QLineEdit{ color: white; } "
+                "QCheckBox{ color: white; } "
+                "QGroupBox{ color: white; } "
+            )
+
         self.show()
         self.initialized = True
         self.loading_video = False
@@ -336,11 +356,12 @@ class Main(QtWidgets.QWidget):
         source = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-source")), f"  {t('Source')}")
         source.setIconSize(scaler.scale_size(ICONS.MEDIUM, ICONS.MEDIUM))
         source.setFixedHeight(scaler.scale(HEIGHTS.TOP_BAR_BUTTON))
+        source.setStyleSheet("font-size: 14px;")
         source.setDefault(True)
         source.clicked.connect(lambda: self.open_file())
 
         self.widgets.profile_box = QtWidgets.QComboBox()
-        self.widgets.profile_box.setStyleSheet("text-align: center;")
+        self.widgets.profile_box.setStyleSheet("text-align: center; font-size: 14px;")
         self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
         self.widgets.profile_box.view().setFixedWidth(
             self.widgets.profile_box.minimumSizeHint().width() + scaler.scale(50)
@@ -409,29 +430,70 @@ class Main(QtWidgets.QWidget):
         return top_bar_right
 
     def init_thumb_time_selector(self):
-        layout = QtWidgets.QHBoxLayout()
+        """Create the preview time slider overlay widget with time display."""
+        container = QtWidgets.QWidget()
+        container.setStyleSheet("background-color: rgba(0, 0, 0, 50); border-radius: 5px;")
+        container.setFixedHeight(scaler.scale(32))
 
-        self.widgets.thumb_key = QtWidgets.QCheckBox("Keyframe")
-        self.widgets.thumb_key.setChecked(False)
-        self.widgets.thumb_key.clicked.connect(self.thumb_time_change)
+        layout = QtWidgets.QHBoxLayout(container)
+        layout.setContentsMargins(scaler.scale(10), scaler.scale(4), scaler.scale(10), scaler.scale(4))
 
         self.widgets.thumb_time = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self.widgets.thumb_time.setMinimum(1)
         self.widgets.thumb_time.setMaximum(100)
         self.widgets.thumb_time.setValue(25)
-        self.widgets.thumb_time.setTickPosition(QtWidgets.QSlider.TicksBelow)
-        self.widgets.thumb_time.setTickInterval(1)
         self.widgets.thumb_time.setAutoFillBackground(False)
         self.widgets.thumb_time.sliderReleased.connect(self.thumb_time_change)
+        self.widgets.thumb_time.valueChanged.connect(self.update_preview_time_label)
+        self.widgets.thumb_time.setStyleSheet("""
+            QSlider {
+                background: rgba(255, 255, 255, 0);
+            }
 
-        spacer = QtWidgets.QLabel()
-        spacer.setFixedWidth(scaler.scale(WIDTHS.SPACER_SMALL))
-        layout.addWidget(spacer)
-        layout.addWidget(self.widgets.thumb_key)
-        layout.addWidget(spacer)
+            QSlider::groove:horizontal {
+                background: rgba(255, 255, 255, 40);
+                height: 6px;
+                border-radius: 3px;
+            }
+            QSlider::handle:horizontal {
+                background: rgba(255, 255, 255, 255);
+                width: 12px;
+                height: 16px;
+                margin: -5px 0;
+                border-radius: 3px;
+            }
+            QSlider::sub-page:horizontal {
+                background: transparent;
+            }
+        """)
+
+        self.widgets.preview_time_label = QtWidgets.QLabel("0:00:00")
+        self.widgets.preview_time_label.setStyleSheet("color: white; font-weight: bold; background: transparent;")
+        self.widgets.preview_time_label.setFixedWidth(scaler.scale(70))
+        self.widgets.preview_time_label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
         layout.addWidget(self.widgets.thumb_time)
-        layout.addWidget(spacer)
-        return layout
+        layout.addWidget(self.widgets.preview_time_label)
+
+        return container
+
+    def update_preview_time_label(self):
+        """Update the time label when slider value changes."""
+        if not self.app.fastflix.current_video:
+            self.widgets.preview_time_label.setText("0:00:00")
+            return
+        time_seconds = self.preview_place
+        self.widgets.preview_time_label.setText(self.format_preview_time(time_seconds))
+
+    @staticmethod
+    def format_preview_time(seconds: float) -> str:
+        """Convert seconds to H:MM:SS format."""
+        if seconds < 0:
+            seconds = 0
+        hours = int(seconds // 3600)
+        minutes = int((seconds % 3600) // 60)
+        secs = int(seconds % 60)
+        return f"{hours}:{minutes:02d}:{secs:02d}"
 
     def thumb_time_change(self):
         self.generate_thumbnail()
@@ -478,6 +540,8 @@ class Main(QtWidgets.QWidget):
         source_layout = QtWidgets.QHBoxLayout()
         source_label = QtWidgets.QLabel(t("Source"))
         source_label.setFixedWidth(scaler.scale(WIDTHS.SOURCE_LABEL))
+        if self.app.fastflix.config.theme == "onyx":
+            source_label.setStyleSheet("color: white;")
         self.source_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         source_layout.addWidget(source_label)
         source_layout.addWidget(self.source_video_path_widget, stretch=True)
@@ -485,14 +549,19 @@ class Main(QtWidgets.QWidget):
         output_layout = QtWidgets.QHBoxLayout()
         output_label = QtWidgets.QLabel(t("Filename"))
         output_label.setFixedWidth(scaler.scale(WIDTHS.SOURCE_LABEL))
+        if self.app.fastflix.config.theme == "onyx":
+            output_label.setStyleSheet("color: white;")
         self.output_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
 
         self.widgets.output_type_combo.setFixedWidth(scaler.scale(WIDTHS.OUTPUT_TYPE))
         self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
-
         self.widgets.output_type_combo.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
+        if self.app.fastflix.config.theme == "onyx":
+            self.widgets.output_type_combo.setStyleSheet(
+                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
+            )
         self.widgets.output_type_combo.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
 
         output_layout.addWidget(self.widgets.output_type_combo)
@@ -539,6 +608,8 @@ class Main(QtWidgets.QWidget):
         """Create a tabbed widget with Size, Start/End Time, Crop, and Options tabs."""
         tabs = QtWidgets.QTabWidget()
         tabs.setIconSize(QtCore.QSize(scaler.scale(20), scaler.scale(20)))
+        if self.app.fastflix.config.theme == "onyx":
+            tabs.setStyleSheet("QLabel{ color: white; } QCheckBox{ color: white; }")
 
         # Tab 1: Size (Resolution + Transforms)
         size_tab = QtWidgets.QWidget()
@@ -556,6 +627,10 @@ class Main(QtWidgets.QWidget):
         self.widgets.resolution_drop_down = QtWidgets.QComboBox()
         self.widgets.resolution_drop_down.addItems(list(resolutions.keys()))
         self.widgets.resolution_drop_down.currentIndexChanged.connect(self.update_resolution)
+        if self.app.fastflix.config.theme == "onyx":
+            self.widgets.resolution_drop_down.setStyleSheet(
+                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
+            )
         res_row.addWidget(self.widgets.resolution_drop_down)
 
         self.widgets.resolution_custom = QtWidgets.QLineEdit()
@@ -599,12 +674,20 @@ class Main(QtWidgets.QWidget):
         time_reset.setFixedHeight(scaler.scale(22))
         time_reset.setToolTip(t("Reset start and end times"))
         time_reset.clicked.connect(self.reset_time)
+        if self.app.fastflix.config.theme == "onyx":
+            time_reset.setStyleSheet(
+                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
+            )
         self.buttons.append(time_reset)
 
         self.widgets.fast_time = QtWidgets.QComboBox()
         self.widgets.fast_time.addItems([t("Fast"), t("Exact")])
         self.widgets.fast_time.setCurrentIndex(0)
         self.widgets.fast_time.setFixedHeight(scaler.scale(22))
+        if self.app.fastflix.config.theme == "onyx":
+            self.widgets.fast_time.setStyleSheet(
+                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
+            )
         self.widgets.fast_time.setToolTip(
             t(
                 "uses [fast] seek to a rough position ahead of timestamp, "
@@ -660,11 +743,19 @@ class Main(QtWidgets.QWidget):
         auto_crop.setFixedHeight(scaler.scale(22))
         auto_crop.setToolTip(t("Automatically detect black borders"))
         auto_crop.clicked.connect(self.get_auto_crop)
+        if self.app.fastflix.config.theme == "onyx":
+            auto_crop.setStyleSheet(
+                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
+            )
         self.buttons.append(auto_crop)
         reset = QtWidgets.QPushButton(t("Reset"))
         reset.setFixedHeight(scaler.scale(22))
         reset.setToolTip(t("Reset crop"))
         reset.clicked.connect(self.reset_crop)
+        if self.app.fastflix.config.theme == "onyx":
+            reset.setStyleSheet(
+                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
+            )
         self.buttons.append(reset)
         col1.addWidget(auto_crop)
         col1.addWidget(reset)
@@ -890,6 +981,10 @@ class Main(QtWidgets.QWidget):
         self.widgets.flip.setItemIcon(3, QtGui.QIcon(rot_180_file))
         self.widgets.flip.setIconSize(scaler.scale_size(ICONS.MEDIUM, ICONS.MEDIUM))
         self.widgets.flip.currentIndexChanged.connect(lambda: self.page_update())
+        if self.app.fastflix.config.theme == "onyx":
+            self.widgets.flip.setStyleSheet(
+                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
+            )
         return self.widgets.flip
 
     def get_flips(self) -> Tuple[bool, bool]:
@@ -927,6 +1022,10 @@ class Main(QtWidgets.QWidget):
         self.widgets.rotate.setItemIcon(3, QtGui.QIcon(rot_270_file))
         self.widgets.rotate.setIconSize(scaler.scale_size(ICONS.MEDIUM, ICONS.MEDIUM))
         self.widgets.rotate.currentIndexChanged.connect(lambda: self.page_update())
+        if self.app.fastflix.config.theme == "onyx":
+            self.widgets.rotate.setStyleSheet(
+                "background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px;"
+            )
         return self.widgets.rotate
 
     def change_output_types(self):
@@ -943,6 +1042,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_to = QtWidgets.QComboBox()
         self.widgets.convert_to.setFixedWidth(scaler.scale(WIDTHS.ENCODER_MIN))
         self.widgets.convert_to.setFixedHeight(scaler.scale(HEIGHTS.TOP_BAR_BUTTON))
+        self.widgets.convert_to.setStyleSheet("font-size: 14px;")
         self.change_output_types()
         self.widgets.convert_to.view().setMinimumWidth(
             self.widgets.convert_to.minimumSizeHint().width() + scaler.scale(50)
@@ -1158,9 +1258,50 @@ class Main(QtWidgets.QWidget):
                 self.main.large_preview.show()
                 super(PreviewImage, self).mousePressEvent(QMouseEvent)
 
-        self.widgets.preview = PreviewImage(self)
+        # Create container widget to hold preview image and overlay slider
+        class PreviewContainer(QtWidgets.QWidget):
+            def __init__(self, main_widget):
+                super().__init__()
+                self.main_widget = main_widget
+                self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
 
-        return self.widgets.preview
+            def resizeEvent(self, event):
+                super().resizeEvent(event)
+                self.main_widget.reposition_thumb_overlay()
+
+            def showEvent(self, event):
+                super().showEvent(event)
+                self.main_widget.reposition_thumb_overlay()
+
+        self.preview_container = PreviewContainer(self)
+
+        # Use a stacked layout approach with a QVBoxLayout and overlay
+        container_layout = QtWidgets.QVBoxLayout(self.preview_container)
+        container_layout.setContentsMargins(0, 0, 0, 0)
+        container_layout.setSpacing(0)
+
+        self.widgets.preview = PreviewImage(self)
+        container_layout.addWidget(self.widgets.preview)
+
+        # Create the slider overlay and position it at the bottom
+        self.thumb_time_overlay = self.init_thumb_time_selector()
+        self.thumb_time_overlay.setParent(self.preview_container)
+        self.thumb_time_overlay.raise_()
+
+        return self.preview_container
+
+    def reposition_thumb_overlay(self):
+        """Reposition the thumb time overlay at the bottom of the preview container."""
+        if hasattr(self, "thumb_time_overlay") and hasattr(self, "preview_container"):
+            container_rect = self.preview_container.rect()
+            overlay_height = self.thumb_time_overlay.height()
+            margin = scaler.scale(15)
+            self.thumb_time_overlay.setGeometry(
+                margin,
+                container_rect.height() - overlay_height - margin,
+                container_rect.width() - (2 * margin),
+                overlay_height,
+            )
 
     def modify_int(self, widget, method="add", time_field=False):
         modifier = 1
@@ -1764,7 +1905,7 @@ class Main(QtWidgets.QWidget):
         #     custom_filters += ",select=eq(pict_type\\,I)"
 
         filters = helpers.generate_filters(
-            start_filters="select=eq(pict_type\\,I)" if self.widgets.thumb_key.isChecked() else None,
+            start_filters="select=eq(pict_type\\,I)" if self.app.fastflix.config.use_keyframes_for_preview else None,
             custom_filters=custom_filters,
             enable_opencl=False,
             **settings,

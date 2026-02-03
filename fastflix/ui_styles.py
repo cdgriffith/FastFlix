@@ -18,16 +18,16 @@ def get_scaled_stylesheet(theme: str) -> str:
 
     if theme == "onyx":
         base += f"""
-            QAbstractItemView {{ background-color: #4b5054; }}
+            QAbstractItemView {{ background-color: #4f5962; }}
             QComboBox QAbstractItemView {{ background-color: #1d2023; border: 2px solid #76797c; }}
             QPushButton {{ border-radius: {border_radius}px; }}
             QLineEdit {{
-                background-color: #707070;
+                background-color: #4a555e;
                 color: black;
                 border-radius: {border_radius}px;
             }}
-            QTextEdit {{ background-color: #707070; color: black; }}
-            QTabBar::tab {{ background-color: #4b5054; }}
+            QTextEdit {{ background-color: #4a555e; color: black; }}
+            QTabBar::tab {{ background-color: #4f5962; }}
             QComboBox {{ border-radius: {border_radius}px; }}
             QScrollArea {{ border: 1px solid #919191; }}
         """
@@ -42,8 +42,8 @@ def get_video_options_stylesheet(theme: str) -> str:
 
     if theme == "onyx":
         return f"""
-            * {{ background-color: #4b5054; color: white; }}
-            QTabWidget {{ margin-top: {scaler.scale(34)}px; background-color: #4b5054; }}
+            * {{ background-color: #4f5962; color: white; }}
+            QTabWidget {{ margin-top: {scaler.scale(34)}px; background-color: #4f5962; }}
             QTabBar {{ font-size: {tab_font_size}px; background-color: #4f5962; }}
             QComboBox {{ min-height: {combo_min_height}px; }}
         """

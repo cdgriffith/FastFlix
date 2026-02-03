@@ -43,7 +43,7 @@ class BaseHeights:
     TOP_BAR_BUTTON: int = 38
     PATH_WIDGET: int = 20
     COMBO_BOX: int = 22
-    PANEL_ITEM: int = 45
+    PANEL_ITEM: int = 62
     SCROLL_MIN: int = 150
     PREVIEW_MIN: int = 195
     OUTPUT_DIR: int = 18

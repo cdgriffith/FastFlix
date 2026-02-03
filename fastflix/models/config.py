@@ -183,6 +183,8 @@ class Config(BaseModel):
 
     disable_cover_extraction: bool = False
 
+    use_keyframes_for_preview: bool = True
+
     def encoder_opt(self, profile_name, profile_option_name):
         encoder_settings = getattr(self.profiles[self.selected_profile], profile_name)
         if encoder_settings:

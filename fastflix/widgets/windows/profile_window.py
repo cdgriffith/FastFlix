@@ -452,7 +452,7 @@ class ProfileWindow(QtWidgets.QWidget):
         profile_name_label.setFixedHeight(40)
         self.profile_name = QtWidgets.QLineEdit()
         if self.app.fastflix.config.theme == "onyx":
-            self.profile_name.setStyleSheet("background-color: #707070; border-radius: 10px; color: black")
+            self.profile_name.setStyleSheet("background-color: #4a555e; border-radius: 10px; color: black")
         self.profile_name.setFixedWidth(300)
 
         self.advanced_options: AdvancedOptions = self.main.video_options.advanced.get_settings()

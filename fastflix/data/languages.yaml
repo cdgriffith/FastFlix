@@ -5421,6 +5421,21 @@ Use Sane Audio Selection (customizable in config file):
   ukr: Використовуйте Sane Audio Selection (налаштовується у файлі конфігурації)
   kor: 정상 오디오 선택 사용(구성 파일에서 사용자 지정 가능)
   ron: Utilizați selecția audio Sane (personalizabilă în fișierul de configurare)
+Use keyframes for preview images:
+  deu: Keyframes für Vorschaubilder verwenden
+  eng: Use keyframes for preview images
+  fra: Utiliser les images clés pour les images de prévisualisation
+  ita: Usa i fotogrammi chiave per le immagini di anteprima
+  spa: Usar fotogramas clave para las imágenes de vista previa
+  chs: 使用关键帧作为预览图像
+  jpn: プレビュー画像にキーフレームを使用する
+  rus: Использовать ключевые кадры для предварительного просмотра
+  por: Usar quadros-chave para imagens de pré-visualização
+  swe: Använd nyckelbilder för förhandsgranskningsbilder
+  pol: Użyj klatek kluczowych dla obrazów podglądu
+  ukr: Використовувати ключові кадри для зображень попереднього перегляду
+  kor: 미리보기 이미지에 키프레임 사용
+  ron: Utilizați cadrele cheie pentru imaginile de previzualizare
 Useful when there is a desire to signal 0 values for max-cll and max-fall.:
   deu: Nützlich, wenn der Wunsch besteht, 0-Werte für max-cll und max-fall zu signalisieren.
   eng: Useful when there is a desire to signal 0 values for max-cll and max-fall.
@@ -11379,25 +11394,181 @@ Custom Title:
   ron: Titlu personalizat
 Flip:
   eng: Flip
+  deu: Flip
+  fra: Retournement
+  ita: Capovolgere
+  spa: Flip
+  jpn: フリップ
+  rus: Флип
+  por: Flip
+  swe: Vändning
+  pol: Klapka
+  chs: 翻转
+  ukr: Переверни.
+  kor: 플립
+  ron: Flip
 V Flip:
   eng: V Flip
+  deu: V Flip
+  fra: V Flip
+  ita: V Flip
+  spa: V Voltear
+  jpn: Vフリップ
+  rus: V Флип
+  por: V Flip
+  swe: V Vändning
+  pol: V Flip
+  chs: V 翻转
+  ukr: V-образне сальто
+  kor: V 플립
+  ron: V Flip
 H Flip:
   eng: H Flip
+  deu: H Flip
+  fra: H Flip
+  ita: H Flip
+  spa: H Flip
+  jpn: Hフリップ
+  rus: H Flip
+  por: H Flip
+  swe: H Flip
+  pol: H Flip
+  chs: 翻转
+  ukr: Переворот H.
+  kor: H 플립
+  ron: H Flip
 V+H Flip:
   eng: V+H Flip
+  deu: V+H Flip
+  fra: V+H Flip
+  ita: V+H Flip
+  spa: V+H Flip
+  jpn: V+Hフリップ
+  rus: V+H Flip
+  por: V+H Flip
+  swe: V+H Vändning
+  pol: V+H Flip
+  chs: V+H 翻转
+  ukr: V+H Flip
+  kor: V+H 플립
+  ron: V+H Flip
 Size:
   eng: Size
+  deu: Größe
+  fra: Taille
+  ita: Dimensione
+  spa: Talla
+  jpn: サイズ
+  rus: Размер
+  por: Tamanho
+  swe: Storlek
+  pol: Rozmiar
+  chs: 尺寸
+  ukr: Розмір
+  kor: 크기
+  ron: Mărime
 Reset:
   eng: Reset
+  deu: Zurücksetzen
+  fra: Remise à zéro
+  ita: Reset
+  spa: Restablecer
+  jpn: リセット
+  rus: Сброс
+  por: Reiniciar
+  swe: Återställning
+  pol: Reset
+  chs: 重置
+  ukr: Перезавантаження
+  kor: 초기화
+  ron: Resetare
 Reset start and end times:
   eng: Reset start and end times
+  deu: Start- und Endzeiten zurücksetzen
+  fra: Réinitialisation des heures de début et de fin
+  ita: Azzeramento degli orari di inizio e fine
+  spa: Restablecer las horas de inicio y fin
+  jpn: 開始時間と終了時間をリセット
+  rus: Сброс времени начала и окончания
+  por: Repor as horas de início e de fim
+  swe: Återställ start- och sluttider
+  pol: Resetowanie czasu rozpoczęcia i zakończenia
+  chs: 重置开始和结束时间
+  ukr: Скинути час початку та закінчення
+  kor: 시작 및 종료 시간 재설정
+  ron: Resetați orele de început și de sfârșit
 Fast:
   eng: Fast
+  deu: Schnell
+  fra: Rapide
+  ita: Veloce
+  spa: Rápido
+  jpn: 速い
+  rus: Быстрый
+  por: Rápido
+  swe: Snabb
+  pol: Szybko
+  chs: 快速
+  ukr: Швидко
+  kor: 빠른
+  ron: Rapid
 Exact:
   eng: Exact
+  deu: Genau
+  fra: Exactement
+  ita: Esattamente
+  spa: Exacto
+  jpn: 正確
+  rus: Точный адрес
+  por: Exato
+  swe: Exakt
+  pol: Dokładny
+  chs: 精确
+  ukr: Точно.
+  kor: 정확한
+  ron: Exact
 Start/End Time:
   eng: Start/End Time
+  deu: Beginn/Ende Uhrzeit
+  fra: Heure de début/fin
+  ita: Ora di inizio/fine
+  spa: Hora de inicio/fin
+  jpn: 開始/終了時間
+  rus: Время начала/окончания
+  por: Hora de início/fim
+  swe: Start- och sluttid
+  pol: Czas rozpoczęcia/zakończenia
+  chs: 开始/结束时间
+  ukr: Час початку/закінчення
+  kor: 시작/종료 시간
+  ron: Ora de începere/finalizare
 Reset crop:
   eng: Reset crop
+  deu: Ernte zurücksetzen
+  fra: Réinitialiser la culture
+  ita: Azzeramento del raccolto
+  spa: Restablecer cultivo
+  jpn: 作物をリセットする
+  rus: Сброс урожая
+  por: Redefinir a cultura
+  swe: Återställ grödan
+  pol: Resetowanie zbiorów
+  chs: 重置作物
+  ukr: Скинути врожай
+  kor: 자르기 초기화
+  ron: Resetarea culturii
 Options:
   eng: Options
+  deu: Optionen
+  fra: Options
+  ita: Opzioni
+  spa: Opciones
+  jpn: オプション
+  rus: Опции
+  por: Opções
+  swe: Alternativ
+  pol: Opcje
+  chs: 选项
+  ukr: Параметри
+  kor: 옵션
+  ron: Opțiuni

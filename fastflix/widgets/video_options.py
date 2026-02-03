@@ -62,10 +62,15 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.debug = DebugPanel(self, self.app)
         if self.app.fastflix.config.theme == "onyx":
             self.setStyleSheet(
-                "*{ background-color: #4b5054; color: white} QTabWidget{margin-top: 34px; background-color: #4b5054;} "
-                "QTabBar{font-size: 13px; background-color: #4f5962}"
-                "QComboBox{min-height: 1.1em;}"
-                "QComboBox QAbstractItemView{ background-color: #1d2023; border: 2px solid #76797c; }"
+                "QTabBar{ font-size: 13px; } "
+                "QTabBar::tab{ border-top: 2px solid transparent; } "
+                "QTabBar::tab:selected{ border-top: 2px solid #567781; } "
+                "QLineEdit{ color: white; } "
+                "QTextEdit{ color: white; } "
+                "QPlainTextEdit{ color: white; } "
+                "QComboBox{ min-height: 1.1em; background-color: #4a555e; color: white; border: 1px solid #4a555e; border-radius: 0px; }"
+                "QComboBox:hover{ background-color: #6a8a96; } "
+                "QComboBox QAbstractItemView{ background-color: #1d2023; border: 2px solid #4a555e; } "
             )
 
         self.setIconSize(scaler.scale_size(20, 20))

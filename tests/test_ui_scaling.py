@@ -226,7 +226,7 @@ class TestUIStyles:
 
         result = get_scaled_stylesheet("onyx")
         assert "QAbstractItemView" in result
-        assert "#4b5054" in result  # Onyx background color
+        assert "#4f5962" in result  # Onyx background color
 
     def test_get_menubar_stylesheet_returns_string(self):
         """get_menubar_stylesheet should return a string."""

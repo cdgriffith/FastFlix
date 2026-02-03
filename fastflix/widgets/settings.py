@@ -269,6 +269,9 @@ class Settings(QtWidgets.QWidget):
         self.disable_deinterlace_button = QtWidgets.QCheckBox(t("Disable interlace check"))
         self.disable_deinterlace_button.setChecked(self.app.fastflix.config.disable_deinterlace_check)
 
+        self.use_keyframes_for_preview = QtWidgets.QCheckBox(t("Use keyframes for preview images"))
+        self.use_keyframes_for_preview.setChecked(self.app.fastflix.config.use_keyframes_for_preview)
+
         # Layouts
 
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
@@ -286,13 +289,14 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.clean_old_logs_button, 21, 0, 1, 3)
         layout.addWidget(self.disable_end_message, 22, 0, 1, 3)
         layout.addWidget(self.disable_deinterlace_button, 23, 0, 1, 3)
+        layout.addWidget(self.use_keyframes_for_preview, 24, 0, 1, 3)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
         button_layout.addWidget(cancel)
         button_layout.addWidget(save)
 
-        layout.addLayout(button_layout, 25, 0, 1, 3)
+        layout.addLayout(button_layout, 26, 0, 1, 3)
 
         self.setLayout(layout)
 
@@ -379,6 +383,7 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.sticky_tabs = self.sticky_tabs.isChecked()
         self.app.fastflix.config.disable_complete_message = self.disable_end_message.isChecked()
         self.app.fastflix.config.disable_deinterlace_check = self.disable_deinterlace_button.isChecked()
+        self.app.fastflix.config.use_keyframes_for_preview = self.use_keyframes_for_preview.isChecked()
 
         self.main.config_update()
         self.app.fastflix.config.save()

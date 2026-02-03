@@ -36,7 +36,10 @@ def create_app(enable_scaling):
     main_app = FastFlixApp(sys.argv)
     main_app.allWindows()
     main_app.setApplicationDisplayName("FastFlix")
-    my_font = QtGui.QFont("Arial" if "Arial" in QtGui.QFontDatabase().families() else "Sans Serif", 9)
+    available_fonts = QtGui.QFontDatabase().families()
+    font_preference = ["Roboto", "Segoe UI", "Ubuntu", "Open Sans", "Sans Serif"]
+    selected_font = next((f for f in font_preference if f in available_fonts), "Sans Serif")
+    my_font = QtGui.QFont(selected_font, 9)
     main_app.setFont(my_font)
     main_app.setWindowIcon(QtGui.QIcon(main_icon))
     return main_app
