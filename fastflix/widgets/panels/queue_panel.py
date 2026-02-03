@@ -337,7 +337,7 @@ class EncodingQueue(FlixList):
         #         metadata_file.unlink(missing_ok=True)
 
         self.new_source()
-        save_queue_async(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+        # No explicit save needed - new_source() triggers reorder() which saves the queue
 
     def manually_save_queue(self):
         filename = QtWidgets.QFileDialog.getSaveFileName(
@@ -549,7 +549,7 @@ class EncodingQueue(FlixList):
 
         self.app.fastflix.conversion_list.append(copy.deepcopy(self.app.fastflix.current_video))
         self.new_source()
-        save_queue_async(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+        # No explicit save needed - new_source() triggers reorder() which saves the queue
 
     def run_after_done(self):
         if not self.after_done_action:

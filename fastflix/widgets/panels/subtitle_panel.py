@@ -237,7 +237,7 @@ class Subtitle(QtWidgets.QTabWidget):
             self.widgets.burn_in.setChecked(False)
             error_message(t("There is an existing burn-in track, only one can be enabled at a time"))
         if enable and self.parent.main.fast_time:
-            self.parent.main.widgets.fast_time.setCurrentText("exact")
+            self.parent.main.widgets.fast_time.setCurrentIndex(1)  # Set to "Exact"
         sub_track = self.app.fastflix.current_video.subtitle_tracks[self.index]
         sub_track.burn_in = enable
         self.updating_burn = False

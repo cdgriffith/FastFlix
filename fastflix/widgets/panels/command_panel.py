@@ -9,6 +9,8 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
+from fastflix.ui_scale import scaler
+from fastflix.ui_constants import HEIGHTS
 
 
 class Loop(QtWidgets.QGroupBox):
@@ -87,7 +89,7 @@ class CommandList(QtWidgets.QWidget):
         self.inner_widget = QtWidgets.QWidget()
 
         self.scroll_area = QtWidgets.QScrollArea(self)
-        self.scroll_area.setMinimumHeight(200)
+        self.scroll_area.setMinimumHeight(scaler.scale(HEIGHTS.SCROLL_MIN))
 
         layout.addWidget(self.scroll_area)
         self.commands = []

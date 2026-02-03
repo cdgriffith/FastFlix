@@ -28,6 +28,8 @@ from fastflix.shared import (
     parse_filesafe_datetime,
     is_date_older_than_7days,
 )
+from fastflix.ui_scale import scaler
+from fastflix.ui_styles import get_scaled_stylesheet, get_menubar_stylesheet
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 
@@ -45,11 +47,20 @@ logger = logging.getLogger("fastflix")
 
 
 class Container(QtWidgets.QMainWindow):
+    MIN_WIDTH = 900
+    MIN_HEIGHT = 500
+    BASE_WIDTH = 1200
+    BASE_HEIGHT = 680
+
     def __init__(self, app: FastFlixApp, **kwargs):
         super().__init__(None)
         self.app = app
         self.pb = None
         self.profile_window = None
+
+        self.setMinimumSize(self.MIN_WIDTH, self.MIN_HEIGHT)
+        # Initialize scaler with base size
+        scaler.calculate_factors(self.BASE_WIDTH, self.BASE_HEIGHT)
 
         self.app.setApplicationName("FastFlix")
         self.app.setWindowIcon(QtGui.QIcon(main_icon))
@@ -84,34 +95,21 @@ class Container(QtWidgets.QMainWindow):
         self.main = Main(self, app)
 
         self.setCentralWidget(self.main)
-        self.setBaseSize(QtCore.QSize(1350, 750))
+        self.setBaseSize(QtCore.QSize(self.BASE_WIDTH, self.BASE_HEIGHT))
+        # Set initial window size to base dimensions
+        self.resize(self.BASE_WIDTH, self.BASE_HEIGHT)
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
         self._constrain_to_screen()
         self.main.set_profile()
 
-        if self.app.fastflix.config.theme == "onyx":
-            self.setStyleSheet(
-                """
-                QAbstractItemView{ background-color: #4b5054; }
-                QComboBox QAbstractItemView{ background-color: #1d2023; border: 2px solid #76797c; }
-                QPushButton{ border-radius:10px; }
-                QLineEdit{ background-color: #707070; color: black; border-radius: 10px; }
-                QTextEdit{ background-color: #707070; color: black; }
-                QTabBar::tab{ background-color: #4b5054; }
-                QComboBox{ border-radius:10px; }
-                QScrollArea{ border: 1px solid #919191; }
-                QWidget{font-size: 14px;}
-                """
-            )
-        else:
-            self.setStyleSheet(
-                """
-            QWidget{font-size: 14px;}
-            """
-            )
+        self._update_scaled_styles()
         # self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         self.moveFlag = False
+
+    def _update_scaled_styles(self) -> None:
+        """Update all stylesheets based on current scale factors."""
+        self.setStyleSheet(get_scaled_stylesheet(self.app.fastflix.config.theme))
 
     def _constrain_to_screen(self):
         """Ensure the window fits within the available screen geometry."""
@@ -155,8 +153,12 @@ class Container(QtWidgets.QMainWindow):
         self.setGeometry(new_x, new_y, new_width, new_height)
 
     def resizeEvent(self, event: QtGui.QResizeEvent) -> None:
-        """Handle resize events to ensure window stays within screen bounds."""
+        """Handle resize events to ensure window stays within screen bounds and update scaling."""
         super().resizeEvent(event)
+        # Update scale factors based on new size
+        scaler.calculate_factors(event.size().width(), event.size().height())
+        self._update_scaled_styles()
+
         screen = QtGui.QGuiApplication.primaryScreen()
         if screen is None:
             return
@@ -220,7 +222,7 @@ class Container(QtWidgets.QMainWindow):
             sm.addButton(t("Cancel Conversion"), QtWidgets.QMessageBox.RejectRole)
             sm.addButton(t("Close GUI Only"), QtWidgets.QMessageBox.DestructiveRole)
             sm.addButton(t("Keep FastFlix Open"), QtWidgets.QMessageBox.AcceptRole)
-            sm.exec_()
+            sm.exec()
             if sm.clickedButton().text() == "Cancel Conversion":
                 self.app.fastflix.worker_queue.put(["cancel"])
                 time.sleep(0.5)
@@ -258,8 +260,8 @@ class Container(QtWidgets.QMainWindow):
     def init_menu(self):
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False)
-        menubar.setFixedWidth(360)
-        menubar.setStyleSheet("font-size: 14px")
+        menubar.setMinimumWidth(scaler.scale(300))
+        menubar.setStyleSheet(get_menubar_stylesheet())
 
         file_menu = menubar.addMenu(t("File"))
 
@@ -516,12 +518,6 @@ class OpenFolder(QtCore.QThread):
         super().__init__(parent)
         self.app = parent
         self.path = str(path)
-
-    def __del__(self):
-        try:
-            self.wait()
-        except BaseException:
-            pass
 
     def run(self):
         try:

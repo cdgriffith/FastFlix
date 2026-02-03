@@ -9,6 +9,7 @@ from PySide6 import QtGui, QtWidgets
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.ui_scale import scaler
 from fastflix.widgets.background_tasks import ExtractHDR10
 from fastflix.resources import group_box_style, get_icon
 
@@ -143,9 +144,9 @@ class SettingPanel(QtWidgets.QWidget):
         self.widgets[widget_name] = QtWidgets.QComboBox()
         self.widgets[widget_name].addItems(options)
         if min_width:
-            self.widgets[widget_name].setMinimumWidth(min_width)
+            self.widgets[widget_name].setMinimumWidth(scaler.scale(min_width))
         if width:
-            self.widgets[widget_name].setFixedWidth(width)
+            self.widgets[widget_name].setFixedWidth(scaler.scale(width))
 
         if opt:
             default = self.determine_default(
@@ -227,7 +228,7 @@ class SettingPanel(QtWidgets.QWidget):
                 self.widgets[widget_name].setValidator(self.only_int)
 
         if width:
-            self.widgets[widget_name].setFixedWidth(width)
+            self.widgets[widget_name].setFixedWidth(scaler.scale(width))
 
         layout.addWidget(self.labels[widget_name])
         layout.addWidget(self.widgets[widget_name])
@@ -369,7 +370,7 @@ class SettingPanel(QtWidgets.QWidget):
         config_opt = None
         if not disable_bitrate:
             self.bitrate_radio = QtWidgets.QRadioButton("Bitrate")
-            self.bitrate_radio.setFixedWidth(80)
+            self.bitrate_radio.setFixedWidth(scaler.scale(67))
             self.widgets.mode.addButton(self.bitrate_radio)
             self.widgets.bitrate = QtWidgets.QComboBox()
             self.widgets.bitrate.addItems(recommended_bitrates)
@@ -389,7 +390,7 @@ class SettingPanel(QtWidgets.QWidget):
                 self.widgets.bitrate.setCurrentIndex(default_bitrate_index)
             self.widgets.custom_bitrate = QtWidgets.QLineEdit("3000" if not custom_bitrate else config_opt)
             self.widgets.custom_bitrate.setValidator(QtGui.QDoubleValidator())
-            self.widgets.custom_bitrate.setFixedWidth(100)
+            self.widgets.custom_bitrate.setMinimumWidth(scaler.scale(83))
             self.widgets.custom_bitrate.setEnabled(custom_bitrate)
             self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
             self.widgets.custom_bitrate.setValidator(self.only_int)
@@ -409,7 +410,7 @@ class SettingPanel(QtWidgets.QWidget):
 
             self.qp_radio = QtWidgets.QRadioButton(qp_display_name)
             self.qp_radio.setChecked(True)
-            self.qp_radio.setFixedWidth(80)
+            self.qp_radio.setFixedWidth(scaler.scale(67))
             self.qp_radio.setToolTip(qp_help)
             self.widgets.mode.addButton(self.qp_radio)
 
@@ -430,7 +431,7 @@ class SettingPanel(QtWidgets.QWidget):
 
         if not disable_custom_qp:
             self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
-            self.widgets[f"custom_{qp_name}"].setFixedWidth(100)
+            self.widgets[f"custom_{qp_name}"].setMinimumWidth(scaler.scale(83))
             self.widgets[f"custom_{qp_name}"].setValidator(QtGui.QDoubleValidator())
             self.widgets[f"custom_{qp_name}"].setEnabled(custom_qp)
             self.widgets[f"custom_{qp_name}"].textChanged.connect(lambda: self.main.build_commands())

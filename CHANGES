@@ -3,6 +3,10 @@
 ## Version 5.13.0
 
 * Adding #712 audio profile title options: No Title, Generate Title, and Custom Title
+* Adding Start/End Time tab to right-side options panel between Size and Crop tabs with compact 3-column layout
+* Fixing video track selector showing unnecessarily when source video has only one video track
+* Fixing visual border between filename area and video track selector
+* Fixing test suite hanging due to missing QApplication in PySide6 widget tests
 * Adding async queue saving to prevent GUI blocking during queue operations
 * Adding atomic file writes for queue to prevent corruption from interrupted saves
 * Adding file-based locking for queue operations to prevent race conditions between instances
@@ -20,6 +24,7 @@
 * Fixing IndexError when applying profile audio filters to videos with non-sequential track indices
 * Fixing TypeError crash with Rigaya encoders when audio quality not explicitly set
 * Fixing AttributeError crash when audio track metadata is incomplete
+* Fixing queue file generation mismatch errors due to redundant save calls on startup and when adding to queue
 
 ## Version 5.12.4
 

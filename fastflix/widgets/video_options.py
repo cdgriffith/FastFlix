@@ -4,11 +4,12 @@ import copy
 import logging
 from typing import TYPE_CHECKING
 
-from PySide6 import QtGui, QtWidgets, QtCore
+from PySide6 import QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
+from fastflix.ui_scale import scaler
 from fastflix.shared import DEVMODE, error_message
 from fastflix.widgets.panels.advanced_panel import AdvancedPanel
 from fastflix.widgets.panels.audio_panel import AudioList
@@ -67,7 +68,7 @@ class VideoOptions(QtWidgets.QTabWidget):
                 "QComboBox QAbstractItemView{ background-color: #1d2023; border: 2px solid #76797c; }"
             )
 
-        self.setIconSize(QtCore.QSize(24, 24))
+        self.setIconSize(scaler.scale_size(20, 20))
         self.addTab(
             self.current_settings, QtGui.QIcon(get_icon("onyx-quality", app.fastflix.config.theme)), t("Quality")
         )

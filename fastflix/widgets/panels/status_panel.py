@@ -224,6 +224,7 @@ class Logs(QtWidgets.QTextBrowser):
 
     def closeEvent(self, event):
         self.hide()
+        event.ignore()
 
 
 class ElapsedTimeTicker(QtCore.QThread):
@@ -240,9 +241,6 @@ class ElapsedTimeTicker(QtCore.QThread):
 
         self.state_signal.connect(self.set_state)
         self.stop_signal.connect(self.on_stop)
-
-    def __del__(self):
-        self.wait()
 
     def run(self):
         while not self.stop_received:
@@ -268,9 +266,6 @@ class LogUpdater(QtCore.QThread):
         self.parent = parent
         self.log_queue = log_queue
         self._shutdown = False
-
-    def __del__(self):
-        self.wait()
 
     def request_shutdown(self):
         """Request graceful shutdown of the thread."""

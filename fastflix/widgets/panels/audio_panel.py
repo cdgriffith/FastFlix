@@ -12,6 +12,8 @@ from fastflix.models.encode import AudioTrack
 from fastflix.models.profiles import Profile, TitleMode
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
+from fastflix.ui_scale import scaler
+from fastflix.ui_constants import HEIGHTS, WIDTHS
 from fastflix.shared import no_border, error_message, yes_no_message, clear_list
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.audio_processing import apply_audio_filters
@@ -105,7 +107,7 @@ class Audio(QtWidgets.QTabWidget):
         self.index = index
         self.first = False
         self.last = False
-        self.setFixedHeight(60)
+        self.setFixedHeight(scaler.scale(HEIGHTS.PANEL_ITEM))
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[index]
 
         self.widgets = Box(
@@ -143,24 +145,24 @@ class Audio(QtWidgets.QTabWidget):
                     self.widgets.language.setCurrentText(lang)
 
         self.widgets.language.currentIndexChanged.connect(self.page_update)
-        self.widgets.title.setFixedWidth(150)
+        self.widgets.title.setFixedWidth(scaler.scale(WIDTHS.AUDIO_TITLE))
         self.widgets.title.textChanged.connect(self.page_update)
         # self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        self.widgets.audio_info.setFixedWidth(350)
+        self.widgets.audio_info.setFixedWidth(scaler.scale(WIDTHS.AUDIO_INFO))
 
         self.widgets.enable_check.setChecked(audio_track.enabled)
         self.widgets.enable_check.toggled.connect(self.update_enable)
 
         self.widgets.dup_button.clicked.connect(lambda: self.dup_me())
-        self.widgets.dup_button.setFixedWidth(20)
+        self.widgets.dup_button.setFixedWidth(scaler.scale(17))
         if disabled_dup:
             self.widgets.dup_button.hide()
             self.widgets.dup_button.setDisabled(True)
 
         self.widgets.delete_button.clicked.connect(lambda: self.del_me())
-        self.widgets.delete_button.setFixedWidth(20)
+        self.widgets.delete_button.setFixedWidth(scaler.scale(17))
 
-        self.widgets.track_number.setFixedWidth(20)
+        self.widgets.track_number.setFixedWidth(scaler.scale(17))
 
         self.disposition_widget = Disposition(
             app=app, parent=self, track_name=f"Audio Track {index}", track_index=index, audio=True
@@ -174,7 +176,7 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.disposition.setText(t("Dispositions"))
 
         label = QtWidgets.QLabel(f"{t('Title')}: ")
-        self.widgets.title.setFixedWidth(150)
+        self.widgets.title.setFixedWidth(scaler.scale(WIDTHS.AUDIO_TITLE))
         title_layout = QtWidgets.QHBoxLayout()
         title_layout.addStretch(False)
         title_layout.addWidget(label, stretch=False)
@@ -194,7 +196,7 @@ class Audio(QtWidgets.QTabWidget):
 
         if not audio_track.original:
             spacer = QtWidgets.QLabel()
-            spacer.setFixedWidth(63)
+            spacer.setFixedWidth(scaler.scale(53))
             grid.addWidget(spacer, 0, right_button_start_index)
             grid.addWidget(self.widgets.delete_button, 0, right_button_start_index + 1)
         else:
@@ -229,11 +231,11 @@ class Audio(QtWidgets.QTabWidget):
         # layout.setMargin(0)
         # self.widgets.up_button = QtWidgets.QPushButton("^")
         self.widgets.up_button.setDisabled(self.first)
-        self.widgets.up_button.setFixedWidth(20)
+        self.widgets.up_button.setFixedWidth(scaler.scale(17))
         self.widgets.up_button.clicked.connect(lambda: self.parent.move_up(self))
         # self.widgets.down_button = QtWidgets.QPushButton("v")
         self.widgets.down_button.setDisabled(self.last)
-        self.widgets.down_button.setFixedWidth(20)
+        self.widgets.down_button.setFixedWidth(scaler.scale(17))
         self.widgets.down_button.clicked.connect(lambda: self.parent.move_down(self))
         layout.addWidget(self.widgets.up_button)
         layout.addWidget(self.widgets.down_button)

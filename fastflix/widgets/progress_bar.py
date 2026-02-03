@@ -8,6 +8,7 @@ from PySide6 import QtCore, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.ui_scale import scaler
 
 logger = logging.getLogger("fastflix")
 
@@ -42,12 +43,12 @@ class ProgressBar(QtWidgets.QFrame):
         self.setObjectName("ProgressBar")
         self.setStyleSheet("#ProgressBar{border: 1px solid #aaa}")
 
-        self.setMinimumWidth(400)
+        self.setMinimumWidth(scaler.scale(333))
         self.setWindowFlags(QtCore.Qt.SplashScreen | QtCore.Qt.FramelessWindowHint)
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         self.status = QtWidgets.QLabel()
         self.progress_bar = QtWidgets.QProgressBar(self)
-        self.progress_bar.setGeometry(30, 40, 500, 75)
+        self.progress_bar.setGeometry(scaler.scale(25), scaler.scale(33), scaler.scale(417), scaler.scale(63))
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.addWidget(self.status)
