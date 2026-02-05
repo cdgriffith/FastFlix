@@ -7,6 +7,7 @@ thread cleanup patterns are followed.
 """
 
 import ast
+import os
 import sys
 from pathlib import Path
 
@@ -14,9 +15,27 @@ import pytest
 from PySide6 import QtWidgets
 
 
+def _can_create_qapp() -> bool:
+    """Check if we can create a QApplication (requires display on Linux)."""
+    # On Linux, Qt requires a display server
+    if sys.platform == "linux" and not os.environ.get("DISPLAY"):
+        return False
+    return True
+
+
+# Skip tests requiring display when in headless environment
+requires_display = pytest.mark.skipif(
+    not _can_create_qapp(),
+    reason="Test requires display server (set DISPLAY env var or use xvfb)",
+)
+
+
 @pytest.fixture(scope="module")
 def qapp():
     """Create a QApplication instance for tests that need Qt widgets."""
+    if not _can_create_qapp():
+        pytest.skip("Cannot create QApplication in headless environment")
+
     app = QtWidgets.QApplication.instance()
     if app is None:
         app = QtWidgets.QApplication(sys.argv)
@@ -39,6 +58,7 @@ class TestExecMethodUsage:
             # Check for .exec_() pattern - the deprecated method
             assert ".exec_()" not in content, f"Found deprecated exec_() in {py_file}"
 
+    @requires_display
     def test_exec_method_exists_on_qdialog(self, qapp):
         """Verify QMessageBox.exec() method exists (not exec_())."""
         box = QtWidgets.QMessageBox()
