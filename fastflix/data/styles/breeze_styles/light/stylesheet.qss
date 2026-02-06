@@ -276,7 +276,7 @@ QMenuBar::item
 
 QMenuBar::item:selected
 {
-    background: transparent;
+    background-color: rgba(51, 164, 223, 0.5);
 }
 
 QMenuBar::item:disabled
@@ -295,7 +295,9 @@ QMenuBar::item:pressed
 QMenu
 {
     color: #31363b;
+    background-color: #e0e1e2;
     margin: 0.09em;
+    border: 1px solid #76797c;
 }
 
 QMenu::icon
@@ -394,10 +396,6 @@ QAbstractItemView
     border-radius: 0.09em;
 }
 
-QMenuBar::item:focus:!disabled
-{
-    border: 0.05em solid rgba(51, 164, 223, 0.5);
-}
 
 QTabWidget:focus,
 QCheckBox:focus,
@@ -667,11 +665,6 @@ QFrame[frameShape="6"]:hover
     border: 0.05em solid rgba(51, 164, 223, 0.5);
 }
 
-/* Don't provide an outline if we have a widget that takes up the space. */
-QFrame[frameShape] QAbstractItemView:hover
-{
-    border: 0em solid black;
-}
 
 /**
  *  Note: I can't really change the background of the toolbars
@@ -862,10 +855,16 @@ QComboBox:hover:pressed:editable
 QComboBox QAbstractItemView
 {
     /* This happens for the drop-down menu always, whether editable or not.*/
-    background-color: #eff0f1;
+    background-color: #e0e1e2;
     selection-background-color: rgba(45, 147, 200, 0.5);
     outline-color: 0em;
-    border-radius: 0.09em;
+    border-radius: 4px;
+    border: 2px solid #76797c;
+}
+
+QComboBox QAbstractItemView::item
+{
+    border: none;
 }
 
 QComboBox::drop-down
@@ -1473,6 +1472,12 @@ QListView
 {
     /* Give space for elements aligned left or right. */
     padding: 0.2em;
+}
+
+QComboBox QListView
+{
+    background-color: #e0e1e2;
+    border: 2px solid #76797c;
 }
 
 QTableView::item,

@@ -16,7 +16,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
-from fastflix.ff_queue import get_queue, save_queue
+from fastflix.ff_queue import get_queue, save_queue, save_queue_async
 from fastflix.resources import get_icon, get_bool_env
 from fastflix.shared import no_border, open_folder, yes_no_message, message, error_message
 from fastflix.widgets.panels.abstract_list import FlixList
@@ -230,8 +230,10 @@ class EncodingQueue(FlixList):
         self.load_queue_button.setFixedWidth(110)
 
         self.priority_widget = QtWidgets.QComboBox()
-        self.priority_widget.addItems(["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"])
-        self.priority_widget.setCurrentIndex(3)
+        self.priority_widget.addItems(
+            ([] if reusables.win_based else ["Realtime"]) + ["High", "Above Normal", "Normal", "Below Normal", "Idle"]
+        )
+        self.priority_widget.setCurrentText("Normal")
         self.priority_widget.currentIndexChanged.connect(self.set_priority)
 
         self.clear_queue = QtWidgets.QPushButton(
@@ -302,8 +304,6 @@ class EncodingQueue(FlixList):
             self.queue_startup_check()
         except Exception:
             logger.exception("Could not load queue as it is outdated or malformed. Deleting for safety.")
-            # with self.app.fastflix.queue_lock:
-            #     save_queue([], queue_file=self.app.fastflix.queue_path, config=self.app.fastflix.config)
 
     def queue_startup_check(self, queue_file=None):
         new_queue = get_queue(queue_file or self.app.fastflix.queue_path)
@@ -337,7 +337,7 @@ class EncodingQueue(FlixList):
         #         metadata_file.unlink(missing_ok=True)
 
         self.new_source()
-        save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+        # No explicit save needed - new_source() triggers reorder() which saves the queue
 
     def manually_save_queue(self):
         filename = QtWidgets.QFileDialog.getSaveFileName(
@@ -393,7 +393,7 @@ class EncodingQueue(FlixList):
         if self.tracks:
             self.tracks[0].widgets.up_button.setDisabled(True)
             self.tracks[-1].widgets.down_button.setDisabled(True)
-        save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+        save_queue_async(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
 
     def new_source(self):
         for i in range(len(self.tracks) - 1, -1, -1):
@@ -438,7 +438,7 @@ class EncodingQueue(FlixList):
 
         if not part_of_clear:
             self.new_source()
-        save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+        save_queue_async(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
 
     def reload_from_queue(self, video):
         try:
@@ -549,7 +549,7 @@ class EncodingQueue(FlixList):
 
         self.app.fastflix.conversion_list.append(copy.deepcopy(self.app.fastflix.current_video))
         self.new_source()
-        save_queue(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+        # No explicit save needed - new_source() triggers reorder() which saves the queue
 
     def run_after_done(self):
         if not self.after_done_action:

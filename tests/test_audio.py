@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
+
 from box import Box
 
-from fastflix.models.profiles import AudioMatch, MatchType, MatchItem
+from .general import test_audio_tracks
 
 from fastflix.audio_processing import apply_audio_filters
-
-from .general import test_audio_tracks
+from fastflix.models.profiles import AudioMatch, MatchType, MatchItem
+from fastflix.models.encode import AudioTrack
+from fastflix.encoders.common.audio import build_audio
+from fastflix.encoders.common.encc_helpers import audio_quality_converter as encc_audio_quality_converter
 
 
 def test_audio_filters():
@@ -286,3 +289,140 @@ def test_audio_filters():
     ]
 
     assert result == expected_result, result
+
+
+class TestAudioMatchValidator:
+    """Tests for AudioMatch validator returning correct enum type."""
+
+    def test_match_item_validator_returns_match_item_from_list(self):
+        """Test that match_item_must_be_enum validator returns MatchItem, not MatchType."""
+        # When loaded from YAML, match_item may come as a list [int_value]
+        audio_match = AudioMatch(
+            match_type=MatchType.ALL,
+            match_item=[2],  # Simulates YAML loading - should become MatchItem.TITLE
+            match_input="*",
+        )
+        assert isinstance(audio_match.match_item, MatchItem)
+        assert audio_match.match_item == MatchItem.TITLE
+
+    def test_match_item_validator_returns_match_item_from_int(self):
+        """Test that match_item_must_be_enum validator returns MatchItem from int."""
+        audio_match = AudioMatch(
+            match_type=MatchType.ALL,
+            match_item=3,  # Should become MatchItem.TRACK
+            match_input="*",
+        )
+        assert isinstance(audio_match.match_item, MatchItem)
+        assert audio_match.match_item == MatchItem.TRACK
+
+    def test_match_item_validator_with_all_enum_values(self):
+        """Test validator with all MatchItem enum values."""
+        for item in MatchItem:
+            audio_match = AudioMatch(
+                match_type=MatchType.ALL,
+                match_item=[item.value],
+                match_input="*",
+            )
+            assert audio_match.match_item == item
+
+
+class TestDownmixMapping:
+    """Tests for downmix string mapping."""
+
+    def test_downmix_mono_is_correct(self):
+        """Test that mono downmix produces 'mono', not 'monoo'."""
+        audio_match = AudioMatch(
+            match_type=MatchType.ALL,
+            match_item=MatchItem.ALL,
+            match_input="*",
+            downmix=1,  # Should become "mono"
+        )
+        assert audio_match.downmix == "mono"
+
+    def test_downmix_stereo_mapping(self):
+        """Test that stereo downmix maps correctly."""
+        audio_match = AudioMatch(
+            match_type=MatchType.ALL,
+            match_item=MatchItem.ALL,
+            match_input="*",
+            downmix=2,
+        )
+        assert audio_match.downmix == "stereo"
+
+    def test_downmix_51_mapping(self):
+        """Test that 5.1 downmix maps correctly."""
+        audio_match = AudioMatch(
+            match_type=MatchType.ALL,
+            match_item=MatchItem.ALL,
+            match_input="*",
+            downmix=6,
+        )
+        assert audio_match.downmix == "5.1"
+
+    def test_downmix_string_passthrough(self):
+        """Test that string downmix values pass through unchanged."""
+        audio_match = AudioMatch(
+            match_type=MatchType.ALL,
+            match_item=MatchItem.ALL,
+            match_input="*",
+            downmix="stereo",
+        )
+        assert audio_match.downmix == "stereo"
+
+
+class TestEnccAudioQualityConverter:
+    """Tests for encc_helpers audio_quality_converter handling None."""
+
+    def test_audio_quality_converter_handles_zero(self):
+        """Test that audio_quality_converter handles quality=0 correctly."""
+        result = encc_audio_quality_converter(0, "libopus", channels=2, track_number=1)
+        assert "240k" in result
+
+    def test_audio_quality_converter_handles_valid_quality(self):
+        """Test that audio_quality_converter handles valid quality values."""
+        result = encc_audio_quality_converter(5, "aac", channels=2, track_number=1)
+        assert "audio-quality" in result or "audio-bitrate" in result
+
+
+class TestBuildAudioAttributeError:
+    """Tests for build_audio handling AttributeError when raw_info is None."""
+
+    def test_build_audio_with_none_raw_info(self):
+        """Test that build_audio handles None raw_info gracefully."""
+        track = AudioTrack(
+            index=1,
+            outdex=0,
+            codec="aac",
+            title="Test",
+            language="eng",
+            channels=2,
+            enabled=True,
+            raw_info=None,  # This should not cause AttributeError
+            conversion_codec="aac",
+            conversion_bitrate="128k",
+            downmix="stereo",
+            dispositions={"default": False},
+        )
+        # Should not raise AttributeError
+        result = build_audio([track])
+        assert "-c:0" in result and "aac" in result
+
+    def test_build_audio_with_raw_info_missing_channel_layout(self):
+        """Test that build_audio handles raw_info without channel_layout."""
+        track = AudioTrack(
+            index=1,
+            outdex=0,
+            codec="aac",
+            title="Test",
+            language="eng",
+            channels=2,
+            enabled=True,
+            raw_info=Box({"channels": 2}),  # Missing channel_layout
+            conversion_codec="aac",
+            conversion_bitrate="128k",
+            downmix=None,  # Will try to access raw_info.channel_layout
+            dispositions={"default": False},
+        )
+        # Should fall back to stereo without crashing
+        result = build_audio([track])
+        assert "-c:0" in result and "aac" in result

@@ -12,7 +12,7 @@ from fastflix.language import t, Language
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import x265Settings, setting_types
-from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, AdvancedOptions
+from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, TitleMode, AdvancedOptions
 from fastflix.shared import error_message
 from fastflix.encoders.common.audio import channel_list
 
@@ -29,6 +29,9 @@ match_item_locale = [t("All"), t("Title"), t("Track Number"), t("Language"), t("
 sub_match_item_enums = [MatchItem.ALL, MatchItem.TRACK, MatchItem.LANGUAGE]
 sub_match_item_locale = [t("All"), t("Track Number"), t("Language")]
 
+title_mode_enums = [TitleMode.ORIGINAL, TitleMode.NO_TITLE, TitleMode.GENERATE, TitleMode.CUSTOM]
+title_mode_locale = [t("Original Title"), t("No Title"), t("Generate Title"), t("Custom Title")]
+
 
 class AudioProfile(QtWidgets.QTabWidget):
     def __init__(self, parent_list, app, main, parent, index):
@@ -41,7 +44,7 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.match_type.addItems(match_type_locale)
 
         self.match_type.view().setFixedWidth(self.match_type.minimumSizeHint().width() + 50)
-        self.setFixedHeight(120)
+        self.setFixedHeight(150)
 
         self.match_item = QtWidgets.QComboBox()
         self.match_item.addItems(match_item_locale)
@@ -85,6 +88,16 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.downmix.setCurrentIndex(0)
         self.downmix.view().setFixedWidth(self.downmix.minimumSizeHint().width() + 50)
 
+        self.title_mode = QtWidgets.QComboBox()
+        self.title_mode.addItems(title_mode_locale)
+        self.title_mode.setCurrentIndex(0)
+        self.title_mode.view().setFixedWidth(self.title_mode.minimumSizeHint().width() + 50)
+
+        self.custom_title = QtWidgets.QLineEdit()
+        self.custom_title.setPlaceholderText(t("Enter custom title"))
+        self.custom_title.setDisabled(True)
+        self.custom_title.setFixedWidth(150)
+
         self.convert_to = QtWidgets.QComboBox()
         self.convert_to.addItems(["None | Passthrough"] + main.video_options.audio_formats)
 
@@ -101,6 +114,10 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.grid.addWidget(QtWidgets.QLabel(t("Bitrate")), 1, 2)
         self.grid.addWidget(self.bitrate, 1, 3)
         self.grid.addWidget(self.downmix, 1, 4)
+
+        self.grid.addWidget(QtWidgets.QLabel(t("Title")), 2, 0)
+        self.grid.addWidget(self.title_mode, 2, 1)
+        self.grid.addWidget(self.custom_title, 2, 2, 1, 2)
         self.grid.setColumnStretch(3, 0)
         self.grid.setColumnStretch(4, 0)
         self.grid.setColumnStretch(5, 0)
@@ -111,6 +128,11 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.convert_to.currentIndexChanged.connect(self.update_conversion)
         self.match_item.currentIndexChanged.connect(self.update_combos)
         self.match_type.currentIndexChanged.connect(self.update_combos)
+        self.match_type.currentIndexChanged.connect(self.update_title_mode_availability)
+        self.title_mode.currentIndexChanged.connect(self.update_custom_title_field)
+
+        # Initial state: disable Custom Title option since default is Match All
+        self.update_title_mode_availability()
 
     def update_combos(self):
         self.match_input.hide()
@@ -126,6 +148,35 @@ class AudioProfile(QtWidgets.QTabWidget):
         else:
             self.bitrate.setEnabled(True)
             self.downmix.setEnabled(True)
+
+    def update_title_mode_availability(self):
+        """Add/remove the Custom Title option based on match type."""
+        match_type = match_type_eng[self.match_type.currentIndex()]
+        custom_title_text = title_mode_locale[title_mode_enums.index(TitleMode.CUSTOM)]
+        has_custom_option = self.title_mode.findText(custom_title_text) != -1
+
+        if match_type == MatchType.ALL:
+            # Remove Custom Title option when Match All is selected
+            if has_custom_option:
+                custom_index = self.title_mode.findText(custom_title_text)
+                # If Custom Title was selected, switch to Original Title first
+                if self.title_mode.currentIndex() == custom_index:
+                    self.title_mode.setCurrentIndex(0)
+                    self.custom_title.setDisabled(True)
+                self.title_mode.removeItem(custom_index)
+        else:
+            # Add Custom Title option for First or Last
+            if not has_custom_option:
+                self.title_mode.addItem(custom_title_text)
+
+    def update_custom_title_field(self):
+        """Enable/disable the custom title text field based on title mode selection."""
+        current_text = self.title_mode.currentText()
+        custom_title_text = title_mode_locale[title_mode_enums.index(TitleMode.CUSTOM)]
+        if current_text == custom_title_text:
+            self.custom_title.setEnabled(True)
+        else:
+            self.custom_title.setDisabled(True)
 
     def set_outdex(self, pos):
         pass
@@ -152,6 +203,11 @@ class AudioProfile(QtWidgets.QTabWidget):
         if self.convert_to.currentIndex() > 0 and not self.bitrate.text().strip():
             raise FastFlixError("No Bitrate")
 
+        # Get title mode by matching the current text to the locale list
+        current_title_mode_text = self.title_mode.currentText()
+        title_mode_index = title_mode_locale.index(current_title_mode_text)
+        selected_title_mode = title_mode_enums[title_mode_index]
+
         return AudioMatch(
             match_type=match_type_eng[self.match_type.currentIndex()],
             match_item=match_item_enum,
@@ -159,6 +215,8 @@ class AudioProfile(QtWidgets.QTabWidget):
             conversion=self.convert_to.currentText() if self.convert_to.currentIndex() > 0 else None,
             bitrate=self.bitrate.text(),
             downmix=self.downmix.currentText() if self.downmix.currentIndex() > 0 else None,
+            title_mode=selected_title_mode,
+            custom_title=self.custom_title.text() if selected_title_mode == TitleMode.CUSTOM else None,
         )
 
 
@@ -227,13 +285,13 @@ class AudioSelect(FlixList):
     def add_track(self):
         new_track = AudioProfile(self, self.app, self.main, self.inner_widget, len(self.tracks))
         self.tracks.append(new_track)
-        self.reorder(height=126)
+        self.reorder(height=156)
 
     def remove_track(self, index):
         self.tracks.pop(index).close()
         for i, track in enumerate(self.tracks):
             track.index = i
-        self.reorder(height=126)
+        self.reorder(height=156)
 
     def set_audio_mode(self, button):
         if button.text() == self.passthrough_name:
@@ -394,7 +452,7 @@ class ProfileWindow(QtWidgets.QWidget):
         profile_name_label.setFixedHeight(40)
         self.profile_name = QtWidgets.QLineEdit()
         if self.app.fastflix.config.theme == "onyx":
-            self.profile_name.setStyleSheet("background-color: #707070; border-radius: 10px; color: black")
+            self.profile_name.setStyleSheet("background-color: #4a555e; border-radius: 10px; color: black")
         self.profile_name.setFixedWidth(300)
 
         self.advanced_options: AdvancedOptions = self.main.video_options.advanced.get_settings()

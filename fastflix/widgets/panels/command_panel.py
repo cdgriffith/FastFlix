@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import math
+import shlex
+import subprocess
+import sys
 from pathlib import Path
 
 import reusables
@@ -9,6 +11,17 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
+from fastflix.ui_scale import scaler
+from fastflix.ui_constants import HEIGHTS
+
+
+def _command_to_display_string(command):
+    """Convert a command (str or list) to a display string."""
+    if isinstance(command, str):
+        return command
+    if sys.platform == "win32":
+        return subprocess.list2cmdline(command)
+    return shlex.join(command)
 
 
 class Loop(QtWidgets.QGroupBox):
@@ -29,15 +42,10 @@ class Loop(QtWidgets.QGroupBox):
 class Command(QtWidgets.QTabWidget):
     def __init__(self, parent, command, number, name="", enabled=True, height=None):
         super(Command, self).__init__(parent)
-        self.command = command
+        self.command = _command_to_display_string(command)
         self.widget = QtWidgets.QTextBrowser()
         self.widget.setReadOnly(True)
-        if not height:
-            font_height = QtGui.QFontMetrics(self.widget.document().defaultFont()).height()
-            lines = math.ceil(len(command) / 200)
-            self.setMinimumHeight(int(font_height + ((lines + 2) * (font_height * 1.25))))
-        else:
-            self.setMinimumHeight(height)
+        self.custom_height = height
         self.number = number
         self.name = name
         self.label = QtWidgets.QLabel(f"{t('Command')} {self.number}" if not self.name else self.name)
@@ -52,6 +60,20 @@ class Command(QtWidgets.QTabWidget):
         grid.addStretch()
         self.setLayout(grid)
         self.widget.setText(self.command)
+
+        # Calculate height after setting text for accurate sizing
+        if not self.custom_height:
+            # Get the document size which accounts for actual text wrapping
+            doc_size = self.widget.document().size()
+            label_height = self.label.sizeHint().height()
+            # Add padding (30px) for margins and scrollbar if needed
+            required_height = int(doc_size.height() + label_height + 30)
+            # Set a reasonable minimum and maximum
+            min_height = 100
+            max_height = 500
+            self.setMinimumHeight(max(min_height, min(required_height, max_height)))
+        else:
+            self.setMinimumHeight(self.custom_height)
 
 
 class CommandList(QtWidgets.QWidget):
@@ -87,14 +109,14 @@ class CommandList(QtWidgets.QWidget):
         self.inner_widget = QtWidgets.QWidget()
 
         self.scroll_area = QtWidgets.QScrollArea(self)
-        self.scroll_area.setMinimumHeight(200)
+        self.scroll_area.setMinimumHeight(scaler.scale(HEIGHTS.SCROLL_MIN))
 
         layout.addWidget(self.scroll_area)
         self.commands = []
         self.setLayout(layout)
 
     def _prep_commands(self):
-        commands = [x.command for x in self.commands if x.name != "hidden"]
+        commands = [_command_to_display_string(x.command) for x in self.commands if x.name != "hidden"]
         return "\r\n".join(commands) if reusables.win_based else "\n".join(commands)
 
     def copy_commands_to_clipboard(self):
@@ -120,7 +142,7 @@ class CommandList(QtWidgets.QWidget):
         self.commands = []
         for index, item in enumerate(commands, 1):
             if item.item == "command":
-                new_item = Command(self.scroll_area, item.command, index, name=item.name)
+                new_item = Command(self.scroll_area, _command_to_display_string(item.command), index, name=item.name)
                 self.commands.append(item)
                 layout.addWidget(new_item)
         layout.addStretch()

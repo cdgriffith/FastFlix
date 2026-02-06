@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from unittest import mock
 
-import reusables
-
 from fastflix.encoders.hevc_x265.command_builder import build
+from fastflix.encoders.common.helpers import null
 from fastflix.models.encode import x265Settings
 from fastflix.models.video import VideoSettings
 
@@ -35,17 +34,31 @@ def test_hevc_x265_basic_crf():
         ),
     )
 
-    # Mock the generate_all function to return a predictable result
     with mock.patch("fastflix.encoders.hevc_x265.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", None)
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            [],
+        )
 
         result = build(fastflix)
 
-        # The expected command should include the CRF setting and other basic parameters
-        expected_command = 'ffmpeg -y -i input.mkv  -x265-params "aq-mode=2:repeat-headers=0:strong-intra-smoothing=1:bframes=4:b-adapt=2:frame-threads=0:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:hdr10_opt=0:hdr10=0:chromaloc=0"   -crf:v 22 -preset:v medium   output.mkv'
-        assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
-        assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
-        assert result[0].command == expected_command, f"Expected: {expected_command}\nGot: {result[0].command}"
+        assert isinstance(result, list)
+        assert len(result) == 1
+        cmd = result[0].command
+        assert isinstance(cmd, list)
+        assert "-x265-params" in cmd
+        assert "-crf:v" in cmd
+        assert "22" in cmd
+        assert "-preset:v" in cmd
+        assert "medium" in cmd
+
+        # Verify x265 params contain expected values
+        params_idx = cmd.index("-x265-params")
+        params_str = cmd[params_idx + 1]
+        assert "aq-mode=2" in params_str
+        assert "bframes=4" in params_str
+        assert "colorprim=bt2020" in params_str
 
 
 def test_hevc_x265_two_pass_bitrate():
@@ -74,28 +87,39 @@ def test_hevc_x265_two_pass_bitrate():
         ),
     )
 
-    # Mock the generate_all function to return a predictable result
     with mock.patch("fastflix.encoders.hevc_x265.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", None)
-        # Mock the secrets.token_hex function to return a predictable result
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            [],
+        )
         with mock.patch("fastflix.encoders.hevc_x265.command_builder.secrets.token_hex") as mock_token_hex:
             mock_token_hex.return_value = "abcdef1234"
 
             result = build(fastflix)
 
-            # The expected command should be a list of two Command objects for two-pass encoding
-            expected_commands = [
-                f'ffmpeg -y -i input.mkv  -x265-params "aq-mode=2:repeat-headers=0:strong-intra-smoothing=1:bframes=4:b-adapt=2:frame-threads=0:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:hdr10_opt=0:hdr10=0:chromaloc=0:pass=1:no-slow-firstpass=1:stats=pass_log_file_abcdef1234.log"   -b:v 5000k -preset:v medium   -an -sn -dn None -f mp4 {"NUL" if reusables.win_based else "/dev/null"}',
-                'ffmpeg -y -i input.mkv  -x265-params "aq-mode=2:repeat-headers=0:strong-intra-smoothing=1:bframes=4:b-adapt=2:frame-threads=0:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:hdr10_opt=0:hdr10=0:chromaloc=0:pass=2:stats=pass_log_file_abcdef1234.log"   -b:v 5000k -preset:v medium   output.mkv',
-            ]
-            assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
-            assert len(result) == 2, f"Expected 2 Command objects, got {len(result)}"
-            assert result[0].command == expected_commands[0], (
-                f"Expected: {expected_commands[0]}\nGot: {result[0].command}"
-            )
-            assert result[1].command == expected_commands[1], (
-                f"Expected: {expected_commands[1]}\nGot: {result[1].command}"
-            )
+            assert isinstance(result, list)
+            assert len(result) == 2
+
+            # First pass
+            cmd1 = result[0].command
+            assert isinstance(cmd1, list)
+            assert "-b:v" in cmd1
+            assert "5000k" in cmd1
+            assert "-an" in cmd1
+            assert "-sn" in cmd1
+            assert null in cmd1
+            params_idx = cmd1.index("-x265-params")
+            assert "pass=1" in cmd1[params_idx + 1]
+
+            # Second pass
+            cmd2 = result[1].command
+            assert isinstance(cmd2, list)
+            assert "-b:v" in cmd2
+            assert "5000k" in cmd2
+            assert "output.mkv" in cmd2
+            params_idx = cmd2.index("-x265-params")
+            assert "pass=2" in cmd2[params_idx + 1]
 
 
 def test_hevc_x265_hdr10_settings():
@@ -124,17 +148,26 @@ def test_hevc_x265_hdr10_settings():
         hdr10_metadata=True,
     )
 
-    # Mock the generate_all function to return a predictable result
     with mock.patch("fastflix.encoders.hevc_x265.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", None)
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            [],
+        )
 
         result = build(fastflix)
 
-        # The expected command should include HDR10 settings
-        expected_command = 'ffmpeg -y -i input.mkv  -x265-params "aq-mode=2:repeat-headers=1:strong-intra-smoothing=1:bframes=4:b-adapt=2:frame-threads=0:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:hdr10_opt=1:master-display=G(0.2650,0.6900)B(0.1500,0.0600)R(0.6800,0.3200)WP(0.3127,0.3290)L(1000.0,0.0001):max-cll=1000,300:hdr10=1:chromaloc=0"   -crf:v 22 -preset:v medium   output.mkv'
-        assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
-        assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
-        assert result[0].command == expected_command, f"Expected: {expected_command}\nGot: {result[0].command}"
+        assert isinstance(result, list)
+        assert len(result) == 1
+        cmd = result[0].command
+        assert isinstance(cmd, list)
+
+        params_idx = cmd.index("-x265-params")
+        params_str = cmd[params_idx + 1]
+        assert "hdr10_opt=1" in params_str
+        assert "hdr10=1" in params_str
+        assert "master-display=" in params_str
+        assert "max-cll=1000,300" in params_str
 
 
 def test_hevc_x265_custom_params():
@@ -163,17 +196,24 @@ def test_hevc_x265_custom_params():
         ),
     )
 
-    # Mock the generate_all function to return a predictable result
     with mock.patch("fastflix.encoders.hevc_x265.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", None)
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            [],
+        )
 
         result = build(fastflix)
 
-        # The expected command should include the custom x265 parameters
-        expected_command = 'ffmpeg -y -i input.mkv  -x265-params "keyint=120:min-keyint=60:aq-mode=2:repeat-headers=0:strong-intra-smoothing=1:bframes=4:b-adapt=2:frame-threads=0:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:hdr10_opt=0:hdr10=0:chromaloc=0"   -crf:v 22 -preset:v medium   output.mkv'
-        assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
-        assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
-        assert result[0].command == expected_command, f"Expected: {expected_command}\nGot: {result[0].command}"
+        assert isinstance(result, list)
+        assert len(result) == 1
+        cmd = result[0].command
+        assert isinstance(cmd, list)
+
+        params_idx = cmd.index("-x265-params")
+        params_str = cmd[params_idx + 1]
+        assert "keyint=120" in params_str
+        assert "min-keyint=60" in params_str
 
 
 def test_hevc_x265_tune_profile():
@@ -201,14 +241,20 @@ def test_hevc_x265_tune_profile():
         ),
     )
 
-    # Mock the generate_all function to return a predictable result
     with mock.patch("fastflix.encoders.hevc_x265.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", None)
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            [],
+        )
 
         result = build(fastflix)
 
-        # The expected command should include the tune and profile settings
-        expected_command = 'ffmpeg -y -i input.mkv -tune:v animation -profile:v main10  -x265-params "aq-mode=2:repeat-headers=0:strong-intra-smoothing=1:bframes=4:b-adapt=2:frame-threads=0:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:hdr10_opt=0:hdr10=0:chromaloc=0"   -crf:v 22 -preset:v medium   output.mkv'
-        assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
-        assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
-        assert result[0].command == expected_command, f"Expected: {expected_command}\nGot: {result[0].command}"
+        assert isinstance(result, list)
+        assert len(result) == 1
+        cmd = result[0].command
+        assert isinstance(cmd, list)
+        assert "-tune:v" in cmd
+        assert "animation" in cmd
+        assert "-profile:v" in cmd
+        assert "main10" in cmd

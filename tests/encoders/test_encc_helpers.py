@@ -142,7 +142,7 @@ def test_rigaya_avformat_reader_avs(encc_fastflix_instance):
 
     # Test the function
     result = rigaya_avformat_reader(encc_fastflix_instance)
-    assert result == ""
+    assert result == []
 
 
 def test_rigaya_avformat_reader_vpy(encc_fastflix_instance):
@@ -153,7 +153,7 @@ def test_rigaya_avformat_reader_vpy(encc_fastflix_instance):
 
     # Test the function
     result = rigaya_avformat_reader(encc_fastflix_instance)
-    assert result == ""
+    assert result == []
 
 
 def test_rigaya_avformat_reader_hardware(encc_fastflix_instance):
@@ -164,7 +164,7 @@ def test_rigaya_avformat_reader_hardware(encc_fastflix_instance):
 
     # Test the function
     result = rigaya_avformat_reader(encc_fastflix_instance)
-    assert result == "--avhw"
+    assert result == ["--avhw"]
 
 
 def test_rigaya_avformat_reader_software(encc_fastflix_instance):
@@ -175,14 +175,14 @@ def test_rigaya_avformat_reader_software(encc_fastflix_instance):
 
     # Test the function
     result = rigaya_avformat_reader(encc_fastflix_instance)
-    assert result == "--avsw"
+    assert result == ["--avsw"]
 
 
 def test_rigaya_auto_options_with_reader(encc_fastflix_instance):
     """Test the rigaya_auto_options function with a reader format."""
     # Set up the test
     with mock.patch("fastflix.encoders.common.encc_helpers.rigaya_avformat_reader") as mock_reader:
-        mock_reader.return_value = "--avhw"
+        mock_reader.return_value = ["--avhw"]
 
         # Set color settings
         encc_fastflix_instance.current_video.video_settings.color_space = "bt2020nc"
@@ -192,19 +192,19 @@ def test_rigaya_auto_options_with_reader(encc_fastflix_instance):
         # Test the function
         result = rigaya_auto_options(encc_fastflix_instance)
 
-        # Check that auto options are included
-        assert "--chromaloc auto" in result
-        assert "--colorrange auto" in result
-        assert "--colormatrix bt2020nc" in result
-        assert "--transfer smpte2084" in result
-        assert "--colorprim bt2020" in result
+        # Check that auto options are included as consecutive list elements
+        assert "--chromaloc" in result and "auto" in result
+        assert "--colorrange" in result
+        assert "--colormatrix" in result and "bt2020nc" in result
+        assert "--transfer" in result and "smpte2084" in result
+        assert "--colorprim" in result and "bt2020" in result
 
 
 def test_rigaya_auto_options_without_reader(encc_fastflix_instance):
     """Test the rigaya_auto_options function without a reader format."""
     # Set up the test
     with mock.patch("fastflix.encoders.common.encc_helpers.rigaya_avformat_reader") as mock_reader:
-        mock_reader.return_value = ""
+        mock_reader.return_value = []
 
         # Set color settings
         encc_fastflix_instance.current_video.video_settings.color_space = "bt2020nc"
@@ -215,11 +215,11 @@ def test_rigaya_auto_options_without_reader(encc_fastflix_instance):
         result = rigaya_auto_options(encc_fastflix_instance)
 
         # Check that only specific color options are included
-        assert "--colormatrix bt2020nc" in result
-        assert "--transfer smpte2084" in result
-        assert "--colorprim bt2020" in result
-        assert "--chromaloc auto" not in result
-        assert "--colorrange auto" not in result
+        assert "--colormatrix" in result and "bt2020nc" in result
+        assert "--transfer" in result and "smpte2084" in result
+        assert "--colorprim" in result and "bt2020" in result
+        assert "--chromaloc" not in result
+        assert "--colorrange" not in result
 
 
 def test_pa_builder_disabled():
@@ -292,7 +292,7 @@ def test_get_stream_pos():
 def test_build_audio_empty():
     """Test the build_audio function with an empty list."""
     result = build_audio([], [])
-    assert result == ""
+    assert result == []
 
 
 def test_build_audio_copy_tracks(sample_audio_tracks):
@@ -308,7 +308,7 @@ def test_build_audio_copy_tracks(sample_audio_tracks):
     result = build_audio(sample_audio_tracks, audio_streams)
 
     # Check that audio tracks are copied
-    assert "--audio-copy 1,2,3" in result
+    assert "--audio-copy" in result and "1,2,3" in result
 
 
 def test_build_audio_convert_tracks(sample_audio_tracks):
@@ -328,17 +328,17 @@ def test_build_audio_convert_tracks(sample_audio_tracks):
     result = build_audio(sample_audio_tracks, audio_streams)
 
     # Check that audio tracks are converted correctly
-    assert "--audio-stream 1?:stereo" in result
-    assert "--audio-codec 1?aac" in result
-    assert "--audio-bitrate 1?128k" in result
-    assert "--audio-codec 2?libmp3lame" in result
-    assert "--audio-quality 2?3" in result
+    assert "--audio-stream" in result and "1?:stereo" in result
+    assert "--audio-codec" in result and "1?aac" in result
+    assert "--audio-bitrate" in result and "1?128k" in result
+    assert "--audio-codec" in result and "2?libmp3lame" in result
+    assert "--audio-quality" in result and "2?3" in result
 
 
 def test_build_subtitle_empty():
     """Test the build_subtitle function with an empty list."""
     result = build_subtitle([], [], 1080)
-    assert result == ""
+    assert result == []
 
 
 def test_build_subtitle_copy_tracks(sample_subtitle_tracks):
@@ -354,17 +354,17 @@ def test_build_subtitle_copy_tracks(sample_subtitle_tracks):
     result = build_subtitle(sample_subtitle_tracks, subtitle_streams, 1080)
 
     # Check that subtitle tracks are copied
-    assert "--sub-copy 1,2,3" in result
+    assert "--sub-copy" in result and "1,2,3" in result
 
     # Check that dispositions are set correctly
-    assert "--sub-disposition 1?default" in result
-    assert "--sub-disposition 2?unset" in result
-    assert "--sub-disposition 3?forced" in result
+    assert "--sub-disposition" in result and "1?default" in result
+    assert "2?unset" in result
+    assert "3?forced" in result
 
     # Check that languages are set
-    assert "--sub-metadata  1?language='eng'" in result
-    assert "--sub-metadata  2?language='jpn'" in result
-    assert "--sub-metadata  3?language='eng'" in result
+    assert "--sub-metadata" in result and "1?language=eng" in result
+    assert "2?language=jpn" in result
+    assert "3?language=eng" in result
 
 
 def test_build_subtitle_with_burn_in(sample_subtitle_tracks):
@@ -380,10 +380,10 @@ def test_build_subtitle_with_burn_in(sample_subtitle_tracks):
     result = build_subtitle(sample_subtitle_tracks, subtitle_streams, 1080)
 
     # Check that the burn-in track is included with vpp-subburn
-    assert "--vpp-subburn track=1" in result
+    assert "--vpp-subburn" in result and "track=1" in result
 
     # Check that the other tracks are copied
-    assert "--sub-copy 2,3" in result
+    assert "--sub-copy" in result and "2,3" in result
 
 
 def test_build_subtitle_with_4k_scaling(sample_subtitle_tracks):
@@ -397,4 +397,4 @@ def test_build_subtitle_with_4k_scaling(sample_subtitle_tracks):
     result = build_subtitle(sample_subtitle_tracks, subtitle_streams, 2160)
 
     # Check that the burn-in track includes scale parameter
-    assert "--vpp-subburn track=1,scale=2.0" in result
+    assert "--vpp-subburn" in result and "track=1,scale=2.0" in result

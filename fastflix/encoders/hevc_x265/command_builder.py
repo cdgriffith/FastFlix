@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import secrets
+import shlex
 
 from fastflix.encoders.common.helpers import Command, generate_all, null
 from fastflix.models.encode import x265Settings
@@ -82,13 +83,10 @@ def build(fastflix: FastFlix):
     beginning, ending, output_fps = generate_all(fastflix, "libx265")
 
     if settings.tune and settings.tune != "default":
-        beginning += f"-tune:v {settings.tune} "
+        beginning.extend(["-tune:v", settings.tune])
 
     if settings.profile and settings.profile != "default":
-        beginning += f"-profile:v {settings.profile} "
-
-    # if settings.gop_size:
-    #     beginning += f"-g {settings.gop_size}"
+        beginning.extend(["-profile:v", settings.profile])
 
     x265_params = settings.x265_params.copy() or []
 
@@ -175,31 +173,46 @@ def build(fastflix: FastFlix):
         if not isinstance(params, (list, tuple)):
             params = [params]
         all_params = x265_params + list(params)
-        return '-x265-params "{}" '.format(":".join(all_params)) if all_params else ""
+        return ["-x265-params", ":".join(all_params)] if all_params else []
+
+    extra = shlex.split(settings.extra) if settings.extra else []
+    extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
 
     if settings.bitrate:
         if settings.bitrate_passes == 2:
             command_1 = (
-                f"{beginning} {get_x265_params(['pass=1', 'no-slow-firstpass=1', f'stats={pass_log_file}'])} "
-                f" -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra if settings.extra_both_passes else ''} "
-                f" -an -sn -dn {output_fps} -f mp4 {null}"
+                beginning
+                + get_x265_params(["pass=1", "no-slow-firstpass=1", f"stats={pass_log_file}"])
+                + ["-b:v", settings.bitrate, "-preset:v", settings.preset]
+                + extra_both
+                + ["-an", "-sn", "-dn"]
+                + output_fps
+                + ["-f", "mp4", null]
             )
             command_2 = (
-                f"{beginning} {get_x265_params(['pass=2', f'stats={pass_log_file}'])}  "
-                f"-b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} {ending}"
+                beginning
+                + get_x265_params(["pass=2", f"stats={pass_log_file}"])
+                + ["-b:v", settings.bitrate, "-preset:v", settings.preset]
+                + extra
+                + ending
             )
             return [
                 Command(command=command_1, name="First pass bitrate", exe="ffmpeg"),
                 Command(command=command_2, name="Second pass bitrate", exe="ffmpeg"),
             ]
         else:
-            command = f"{beginning} {get_x265_params()} -b:v {settings.bitrate} -preset:v {settings.preset} {settings.extra} {ending}"
+            command = (
+                beginning
+                + get_x265_params()
+                + ["-b:v", settings.bitrate, "-preset:v", settings.preset]
+                + extra
+                + ending
+            )
             return [Command(command=command, name="Single pass bitrate", exe="ffmpeg")]
 
     elif settings.crf:
         command = (
-            f"{beginning} {get_x265_params()}  -crf:v {settings.crf} "
-            f"-preset:v {settings.preset} {settings.extra} {ending}"
+            beginning + get_x265_params() + ["-crf:v", str(settings.crf), "-preset:v", settings.preset] + extra + ending
         )
         return [Command(command=command, name="Single pass CRF", exe="ffmpeg")]
 

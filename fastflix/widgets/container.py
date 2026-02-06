@@ -28,6 +28,8 @@ from fastflix.shared import (
     parse_filesafe_datetime,
     is_date_older_than_7days,
 )
+from fastflix.ui_scale import scaler
+from fastflix.ui_styles import get_scaled_stylesheet, get_menubar_stylesheet
 from fastflix.widgets.about import About
 from fastflix.widgets.changes import Changes
 
@@ -45,11 +47,20 @@ logger = logging.getLogger("fastflix")
 
 
 class Container(QtWidgets.QMainWindow):
+    MIN_WIDTH = 900
+    MIN_HEIGHT = 500
+    BASE_WIDTH = 1200
+    BASE_HEIGHT = 680
+
     def __init__(self, app: FastFlixApp, **kwargs):
         super().__init__(None)
         self.app = app
         self.pb = None
         self.profile_window = None
+
+        self.setMinimumSize(self.MIN_WIDTH, self.MIN_HEIGHT)
+        # Initialize scaler with base size
+        scaler.calculate_factors(self.BASE_WIDTH, self.BASE_HEIGHT)
 
         self.app.setApplicationName("FastFlix")
         self.app.setWindowIcon(QtGui.QIcon(main_icon))
@@ -84,32 +95,103 @@ class Container(QtWidgets.QMainWindow):
         self.main = Main(self, app)
 
         self.setCentralWidget(self.main)
-        self.setBaseSize(QtCore.QSize(1350, 750))
+        self.setBaseSize(QtCore.QSize(self.BASE_WIDTH, self.BASE_HEIGHT))
+        # Set initial window size to base dimensions
+        self.resize(self.BASE_WIDTH, self.BASE_HEIGHT)
         self.icon = QtGui.QIcon(main_icon)
         self.setWindowIcon(self.icon)
+        self._constrain_to_screen()
         self.main.set_profile()
 
-        if self.app.fastflix.config.theme == "onyx":
-            self.setStyleSheet(
-                """
-                QAbstractItemView{ background-color: #4b5054; }
-                QPushButton{ border-radius:10px; }
-                QLineEdit{ background-color: #707070; color: black; border-radius: 10px; }
-                QTextEdit{ background-color: #707070; color: black; }
-                QTabBar::tab{ background-color: #4b5054; }
-                QComboBox{ border-radius:10px; }
-                QScrollArea{ border: 1px solid #919191; }
-                QWidget{font-size: 14px;}
-                """
-            )
-        else:
-            self.setStyleSheet(
-                """
-            QWidget{font-size: 14px;}
-            """
-            )
+        self._update_scaled_styles()
         # self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         self.moveFlag = False
+
+    def _update_scaled_styles(self) -> None:
+        """Update all stylesheets based on current scale factors."""
+        self.setStyleSheet(get_scaled_stylesheet(self.app.fastflix.config.theme))
+
+    def _constrain_to_screen(self):
+        """Ensure the window fits within the available screen geometry."""
+        screen = QtGui.QGuiApplication.primaryScreen()
+        if screen is None:
+            return
+        available = screen.availableGeometry()
+        # Set maximum size to screen available geometry with some margin
+        max_width = available.width() - 20
+        max_height = available.height() - 20
+        self.setMaximumSize(max_width, max_height)
+
+    def ensure_window_in_bounds(self):
+        """Public method to ensure window stays within screen bounds after content changes."""
+        self._constrain_to_screen()
+        screen = QtGui.QGuiApplication.primaryScreen()
+        if screen is None:
+            return
+        available = screen.availableGeometry()
+        geometry = self.geometry()
+
+        # Calculate new position if window is out of bounds
+        new_x = geometry.x()
+        new_y = geometry.y()
+        new_width = min(geometry.width(), available.width() - 20)
+        new_height = min(geometry.height(), available.height() - 20)
+
+        # Ensure window doesn't go off the right edge
+        if new_x + new_width > available.right():
+            new_x = max(available.left(), available.right() - new_width)
+
+        # Ensure window doesn't go off the bottom edge
+        if new_y + new_height > available.bottom():
+            new_y = max(available.top(), available.bottom() - new_height)
+
+        # Ensure window doesn't go off the left or top edges
+        new_x = max(available.left(), new_x)
+        new_y = max(available.top(), new_y)
+
+        # Apply the constrained geometry
+        self.setGeometry(new_x, new_y, new_width, new_height)
+
+    def resizeEvent(self, event: QtGui.QResizeEvent) -> None:
+        """Handle resize events to ensure window stays within screen bounds and update scaling."""
+        super().resizeEvent(event)
+        # Update scale factors based on new size
+        scaler.calculate_factors(event.size().width(), event.size().height())
+        self._update_scaled_styles()
+
+        screen = QtGui.QGuiApplication.primaryScreen()
+        if screen is None:
+            return
+        available = screen.availableGeometry()
+        geometry = self.geometry()
+
+        # Check if window exceeds screen boundaries and adjust
+        needs_move = False
+        new_x = geometry.x()
+        new_y = geometry.y()
+
+        # Ensure window doesn't go off the right edge
+        if geometry.right() > available.right():
+            new_x = max(available.left(), available.right() - geometry.width())
+            needs_move = True
+
+        # Ensure window doesn't go off the bottom edge
+        if geometry.bottom() > available.bottom():
+            new_y = max(available.top(), available.bottom() - geometry.height())
+            needs_move = True
+
+        # Ensure window doesn't go off the left edge
+        if geometry.left() < available.left():
+            new_x = available.left()
+            needs_move = True
+
+        # Ensure window doesn't go off the top edge
+        if geometry.top() < available.top():
+            new_y = available.top()
+            needs_move = True
+
+        if needs_move:
+            self.move(new_x, new_y)
 
     # def mousePressEvent(self, event):
     #     if event.button() == QtCore.Qt.LeftButton:
@@ -140,7 +222,7 @@ class Container(QtWidgets.QMainWindow):
             sm.addButton(t("Cancel Conversion"), QtWidgets.QMessageBox.RejectRole)
             sm.addButton(t("Close GUI Only"), QtWidgets.QMessageBox.DestructiveRole)
             sm.addButton(t("Keep FastFlix Open"), QtWidgets.QMessageBox.AcceptRole)
-            sm.exec_()
+            sm.exec()
             if sm.clickedButton().text() == "Cancel Conversion":
                 self.app.fastflix.worker_queue.put(["cancel"])
                 time.sleep(0.5)
@@ -178,8 +260,8 @@ class Container(QtWidgets.QMainWindow):
     def init_menu(self):
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False)
-        menubar.setFixedWidth(360)
-        menubar.setStyleSheet("font-size: 14px")
+        menubar.setMinimumWidth(scaler.scale(300))
+        menubar.setStyleSheet(get_menubar_stylesheet())
 
         file_menu = menubar.addMenu(t("File"))
 
@@ -436,12 +518,6 @@ class OpenFolder(QtCore.QThread):
         super().__init__(parent)
         self.app = parent
         self.path = str(path)
-
-    def __del__(self):
-        try:
-            self.wait()
-        except BaseException:
-            pass
 
     def run(self):
         try:

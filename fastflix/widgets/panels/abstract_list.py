@@ -5,6 +5,8 @@ from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.ui_scale import scaler
+from fastflix.ui_constants import HEIGHTS
 
 
 class FlixList(QtWidgets.QWidget):
@@ -25,13 +27,13 @@ class FlixList(QtWidgets.QWidget):
             layout.addLayout(top_row_layout)
         else:
             header_text = QtWidgets.QLabel(t(list_name))
-            header_text.setFixedHeight(30)
+            header_text.setFixedHeight(scaler.scale(25))
             layout.addWidget(header_text)
 
         self.inner_widget = QtWidgets.QWidget()
 
         self.scroll_area = QtWidgets.QScrollArea(self)
-        self.scroll_area.setMinimumHeight(200)
+        self.scroll_area.setMinimumHeight(scaler.scale(HEIGHTS.SCROLL_MIN))
 
         layout.addWidget(self.scroll_area)
         self.tracks = []

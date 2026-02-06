@@ -2,7 +2,7 @@
 import logging
 import sys
 import traceback
-from multiprocessing import Process, Queue, freeze_support, Manager, Lock
+from multiprocessing import Process, Queue, freeze_support
 
 try:
     import coloredlogs
@@ -21,7 +21,7 @@ except ImportError:
     sys.exit(1)
 
 
-def separate_app_process(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode=False):
+def separate_app_process(worker_queue, status_queue, log_queue, portable_mode=False):
     """This prevents any QT components being imported in the main process"""
     from fastflix.models.config import Config
 
@@ -35,8 +35,6 @@ def separate_app_process(worker_queue, status_queue, log_queue, queue_list, queu
             worker_queue,
             status_queue,
             log_queue,
-            queue_list,
-            queue_lock,
             portable_mode,
             enable_scaling=settings.get("enable_scaling", True),
         )
@@ -101,27 +99,35 @@ def main(portable_mode=False):
     status_queue = Queue()
     log_queue = Queue()
 
-    queue_lock = Lock()
-    with Manager() as manager:
-        queue_list = manager.list()
-        exit_status = 1
+    exit_status = 1
 
-        try:
-            logger.info("Preparing separate process for GUI - this may take a moment")
-            gui_proc = Process(
-                target=separate_app_process,
-                args=(worker_queue, status_queue, log_queue, queue_list, queue_lock, portable_mode),
-            )
-            gui_proc.start()
-        except Exception:
-            logger.exception("Could not create GUI Process, please report this error!")
-            return exit_status
+    try:
+        logger.info("Preparing separate process for GUI - this may take a moment")
+        gui_proc = Process(
+            target=separate_app_process,
+            args=(worker_queue, status_queue, log_queue, portable_mode),
+        )
+        gui_proc.start()
+    except Exception:
+        logger.exception("Could not create GUI Process, please report this error!")
+        return exit_status
 
-        try:
-            queue_worker(gui_proc, worker_queue, status_queue, log_queue)
-            exit_status = 0
-        except Exception:
-            logger.exception("Exception occurred while running FastFlix core")
-        finally:
-            gui_proc.kill()
-            return exit_status
+    try:
+        queue_worker(gui_proc, worker_queue, status_queue, log_queue)
+        exit_status = 0
+    except Exception:
+        logger.exception("Exception occurred while running FastFlix core")
+    finally:
+        # Try graceful shutdown first - wait for GUI to exit cleanly
+        if gui_proc.is_alive():
+            logger.debug("Waiting for GUI process to exit gracefully...")
+            gui_proc.join(timeout=5.0)
+
+        # If still alive after timeout, force kill
+        if gui_proc.is_alive():
+            logger.warning("GUI process did not exit gracefully, forcing termination")
+            gui_proc.terminate()
+            gui_proc.join(timeout=2.0)
+            if gui_proc.is_alive():
+                gui_proc.kill()
+        return exit_status

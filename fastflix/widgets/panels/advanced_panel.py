@@ -11,6 +11,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import VideoSettings
 from fastflix.resources import get_icon
 from fastflix.models.profiles import AdvancedOptions
+from fastflix.ui_styles import get_onyx_label_style
 from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
 
 logger = logging.getLogger("fastflix")
@@ -138,7 +139,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         label = QtWidgets.QLabel(label)
         label.setFixedWidth(100)
         if self.app.fastflix.config.theme == "onyx":
-            label.setStyleSheet("color: #b5b5b5")
+            label.setStyleSheet(get_onyx_label_style(muted=True))
         self.layout.addWidget(label, row_number, 0, alignment=QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
     def init_fps(self):
@@ -228,17 +229,23 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_eq(self):
         self.last_row += 1
         self.brightness_widget = QtWidgets.QLineEdit()
-        self.brightness_widget.setValidator(QtGui.QDoubleValidator())
+        brightness_validator = QtGui.QDoubleValidator()
+        brightness_validator.setLocale(QtCore.QLocale.c())  # Use C locale to force dot as decimal separator
+        self.brightness_widget.setValidator(brightness_validator)
         self.brightness_widget.setToolTip("Default is: 0")
         self.brightness_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.contrast_widget = QtWidgets.QLineEdit()
-        self.contrast_widget.setValidator(QtGui.QDoubleValidator())
+        contrast_validator = QtGui.QDoubleValidator()
+        contrast_validator.setLocale(QtCore.QLocale.c())  # Use C locale to force dot as decimal separator
+        self.contrast_widget.setValidator(contrast_validator)
         self.contrast_widget.setToolTip("Default is: 1")
         self.contrast_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.saturation_widget = QtWidgets.QLineEdit()
-        self.saturation_widget.setValidator(QtGui.QDoubleValidator())
+        saturation_validator = QtGui.QDoubleValidator()
+        saturation_validator.setLocale(QtCore.QLocale.c())  # Use C locale to force dot as decimal separator
+        self.saturation_widget.setValidator(saturation_validator)
         self.saturation_widget.setToolTip("Default is: 1")
         self.saturation_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
@@ -356,7 +363,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.last_row += 1
         label = QtWidgets.QLabel("ʘ " + t("Not supported by rigaya's hardware encoders"))
         if self.app.fastflix.config.theme == "onyx":
-            label.setStyleSheet("color: #b5b5b5")
+            label.setStyleSheet(get_onyx_label_style(muted=True))
 
         self.layout.addWidget(label, self.last_row, 0, 1, 2)
 

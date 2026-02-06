@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import shlex
 
 from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import VCEEncCSettings
@@ -12,7 +13,6 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_auto_options,
     pa_builder,
 )
-from fastflix.flix import clean_file_string
 
 logger = logging.getLogger("fastflix")
 
@@ -20,52 +20,6 @@ logger = logging.getLogger("fastflix")
 def build(fastflix: FastFlix):
     video: Video = fastflix.current_video
     settings: VCEEncCSettings = fastflix.current_video.video_settings.video_encoder_settings
-
-    master_display = None
-    if fastflix.current_video.master_display:
-        master_display = (
-            f'--master-display "G{fastflix.current_video.master_display.green}'
-            f"B{fastflix.current_video.master_display.blue}"
-            f"R{fastflix.current_video.master_display.red}"
-            f"WP{fastflix.current_video.master_display.white}"
-            f'L{fastflix.current_video.master_display.luminance}"'
-        )
-
-    max_cll = None
-    if fastflix.current_video.cll:
-        max_cll = f'--max-cll "{fastflix.current_video.cll}"'
-
-    dhdr = None
-    if settings.copy_hdr10:
-        dhdr = "--dhdr10-info copy"
-
-    seek = ""
-    seekto = ""
-    if video.video_settings.start_time:
-        seek = f"--seek {video.video_settings.start_time}"
-    if video.video_settings.end_time:
-        seekto = f"--seekto {video.video_settings.end_time}"
-
-    transform = ""
-    if video.video_settings.vertical_flip or video.video_settings.horizontal_flip:
-        transform = f"--vpp-transform flip_x={'true' if video.video_settings.horizontal_flip else 'false'},flip_y={'true' if video.video_settings.vertical_flip else 'false'}"
-
-    remove_hdr = ""
-    if video.video_settings.remove_hdr:
-        remove_type = (
-            video.video_settings.tone_map
-            if video.video_settings.tone_map in ("mobius", "hable", "reinhard")
-            else "mobius"
-        )
-        remove_hdr = f"--vpp-colorspace hdr2sdr={remove_type}" if video.video_settings.remove_hdr else ""
-
-    crop = ""
-    if video.video_settings.crop:
-        crop = f"--crop {video.video_settings.crop.left},{video.video_settings.crop.top},{video.video_settings.crop.right},{video.video_settings.crop.bottom}"
-
-    vbv = ""
-    if video.video_settings.maxrate:
-        vbv = f"--max-bitrate {video.video_settings.maxrate} --vbv-bufsize {video.video_settings.bufsize}"
 
     try:
         stream_id = int(video.current_video_stream["id"], 16)
@@ -80,8 +34,6 @@ def build(fastflix: FastFlix):
     elif video.video_settings.vsync == "vfr":
         vsync_setting = "vfr"
 
-    source_fps = f"--fps {video.video_settings.source_fps}" if video.video_settings.source_fps else ""
-
     output_depth = settings.output_depth
     if not settings.output_depth:
         output_depth = (
@@ -92,62 +44,114 @@ def build(fastflix: FastFlix):
         )
 
     command = [
-        f'"{clean_file_string(fastflix.config.vceencc)}"',
-        rigaya_avformat_reader(fastflix),
-        "--device",
-        str(settings.device),
-        "-i",
-        f'"{clean_file_string(video.source)}"',
-        (f"--video-streamid {stream_id}" if stream_id else ""),
-        seek,
-        seekto,
-        source_fps,
-        (f"--vpp-rotate {video.video_settings.rotate * 90}" if video.video_settings.rotate else ""),
-        transform,
-        (f"--output-res {video.scale.replace(':', 'x')}" if video.scale else ""),
-        crop,
-        (
-            "--video-metadata clear --metadata clear"
-            if video.video_settings.remove_metadata
-            else "--video-metadata copy  --metadata copy"
-        ),
-        (f'--video-metadata title="{video.video_settings.video_title}"' if video.video_settings.video_title else ""),
-        ("--chapter-copy" if video.video_settings.copy_chapters else ""),
-        "-c",
-        "hevc",
-        (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--cqp {settings.cqp}"),
-        vbv,
-        (f"--qp-min {settings.min_q}" if settings.min_q and settings.bitrate else ""),
-        (f"--qp-max {settings.max_q}" if settings.max_q and settings.bitrate else ""),
-        (f"--ref {settings.ref}" if settings.ref else ""),
-        "--preset",
-        settings.preset,
-        "--tier",
-        settings.tier,
-        "--level",
-        (settings.level or "auto"),
-        rigaya_auto_options(fastflix),
-        (master_display if master_display else ""),
-        (max_cll if max_cll else ""),
-        (dhdr if dhdr else ""),
-        "--output-depth",
-        output_depth,
-        "--motion-est",
-        settings.mv_precision,
-        ("--vbaq" if settings.vbaq else ""),
-        ("--pe" if settings.pre_encode else ""),
-        pa_builder(settings),
-        f"--avsync {vsync_setting}",
-        (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
-        ("--vpp-nnedi" if video.video_settings.deinterlace else ""),
-        remove_hdr,
-        "--parallel auto" if settings.split_mode == "parallel" else "",
-        "--psnr --ssim" if settings.metrics else "",
-        build_audio(video.audio_tracks, video.streams.audio),
-        build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height),
-        settings.extra,
-        "-o",
-        f'"{clean_file_string(video.video_settings.output_path)}"',
+        str(fastflix.config.vceencc),
     ]
+    command.extend(rigaya_avformat_reader(fastflix))
+    command.extend(["--device", str(settings.device)])
+    command.extend(["-i", str(video.source)])
 
-    return [Command(command=" ".join(x for x in command if x), name="VCEEncC Encode", exe="VCEEncC")]
+    if stream_id:
+        command.extend(["--video-streamid", str(stream_id)])
+    if video.video_settings.start_time:
+        command.extend(["--seek", video.video_settings.start_time])
+    if video.video_settings.end_time:
+        command.extend(["--seekto", video.video_settings.end_time])
+    if video.video_settings.source_fps:
+        command.extend(["--fps", video.video_settings.source_fps])
+    if video.video_settings.rotate:
+        command.extend(["--vpp-rotate", str(video.video_settings.rotate * 90)])
+    if video.video_settings.vertical_flip or video.video_settings.horizontal_flip:
+        flip_x = "true" if video.video_settings.horizontal_flip else "false"
+        flip_y = "true" if video.video_settings.vertical_flip else "false"
+        command.extend(["--vpp-transform", f"flip_x={flip_x},flip_y={flip_y}"])
+    if video.scale:
+        command.extend(["--output-res", video.scale.replace(":", "x")])
+    if video.video_settings.crop:
+        crop = video.video_settings.crop
+        command.extend(["--crop", f"{crop.left},{crop.top},{crop.right},{crop.bottom}"])
+
+    if video.video_settings.remove_metadata:
+        command.extend(["--video-metadata", "clear", "--metadata", "clear"])
+    else:
+        command.extend(["--video-metadata", "copy", "--metadata", "copy"])
+
+    if video.video_settings.video_title:
+        command.extend(["--video-metadata", f"title={video.video_settings.video_title}"])
+    if video.video_settings.copy_chapters:
+        command.append("--chapter-copy")
+
+    command.extend(["-c", "hevc"])
+
+    if settings.bitrate:
+        command.extend(["--vbr", settings.bitrate.rstrip("k")])
+    else:
+        command.extend(["--cqp", settings.cqp])
+
+    if video.video_settings.maxrate:
+        command.extend(["--max-bitrate", str(video.video_settings.maxrate)])
+        command.extend(["--vbv-bufsize", str(video.video_settings.bufsize)])
+    if settings.min_q and settings.bitrate:
+        command.extend(["--qp-min", str(settings.min_q)])
+    if settings.max_q and settings.bitrate:
+        command.extend(["--qp-max", str(settings.max_q)])
+    if settings.ref:
+        command.extend(["--ref", str(settings.ref)])
+
+    command.extend(["--preset", settings.preset])
+    command.extend(["--tier", settings.tier])
+    command.extend(["--level", settings.level or "auto"])
+
+    command.extend(rigaya_auto_options(fastflix))
+
+    if fastflix.current_video.master_display:
+        md = fastflix.current_video.master_display
+        command.extend(
+            [
+                "--master-display",
+                f"G{md.green}B{md.blue}R{md.red}WP{md.white}L{md.luminance}",
+            ]
+        )
+    if fastflix.current_video.cll:
+        command.extend(["--max-cll", str(fastflix.current_video.cll)])
+    if settings.copy_hdr10:
+        command.extend(["--dhdr10-info", "copy"])
+
+    command.extend(["--output-depth", output_depth])
+    command.extend(["--motion-est", settings.mv_precision])
+
+    if settings.vbaq:
+        command.append("--vbaq")
+    if settings.pre_encode:
+        command.append("--pe")
+
+    pa = pa_builder(settings)
+    if pa:
+        command.append(pa)
+
+    command.extend(["--avsync", vsync_setting])
+
+    if video.interlaced and video.interlaced != "False":
+        command.extend(["--interlace", video.interlaced])
+    if video.video_settings.deinterlace:
+        command.append("--vpp-nnedi")
+    if video.video_settings.remove_hdr:
+        remove_type = (
+            video.video_settings.tone_map
+            if video.video_settings.tone_map in ("mobius", "hable", "reinhard")
+            else "mobius"
+        )
+        command.extend(["--vpp-colorspace", f"hdr2sdr={remove_type}"])
+    if settings.split_mode == "parallel":
+        command.extend(["--parallel", "auto"])
+    if settings.metrics:
+        command.extend(["--psnr", "--ssim"])
+
+    command.extend(build_audio(video.audio_tracks, video.streams.audio))
+    command.extend(build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height))
+
+    if settings.extra:
+        command.extend(shlex.split(settings.extra))
+
+    command.extend(["-o", str(video.video_settings.output_path)])
+
+    return [Command(command=command, name="VCEEncC Encode", exe="VCEEncC")]

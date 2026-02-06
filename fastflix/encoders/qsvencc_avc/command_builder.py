@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
+import shlex
+from typing import List
 
 from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import QSVEncCH264Settings
@@ -11,7 +13,6 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_auto_options,
     rigaya_avformat_reader,
 )
-from fastflix.flix import clean_file_string
 
 logger = logging.getLogger("fastflix")
 
@@ -19,42 +20,6 @@ logger = logging.getLogger("fastflix")
 def build(fastflix: FastFlix):
     video: Video = fastflix.current_video
     settings: QSVEncCH264Settings = fastflix.current_video.video_settings.video_encoder_settings
-
-    seek = ""
-    seekto = ""
-    if video.video_settings.start_time:
-        seek = f"--seek {video.video_settings.start_time}"
-    if video.video_settings.end_time:
-        seekto = f"--seekto {video.video_settings.end_time}"
-
-    transform = ""
-    if video.video_settings.vertical_flip or video.video_settings.horizontal_flip:
-        transform = f"--vpp-transform flip_x={'true' if video.video_settings.horizontal_flip else 'false'},flip_y={'true' if video.video_settings.vertical_flip else 'false'}"
-
-    remove_hdr = ""
-    if video.video_settings.remove_hdr:
-        remove_type = (
-            video.video_settings.tone_map
-            if video.video_settings.tone_map in ("mobius", "hable", "reinhard")
-            else "mobius"
-        )
-        remove_hdr = f"--vpp-colorspace hdr2sdr={remove_type}" if video.video_settings.remove_hdr else ""
-
-    crop = ""
-    if video.video_settings.crop:
-        crop = f"--crop {video.video_settings.crop.left},{video.video_settings.crop.top},{video.video_settings.crop.right},{video.video_settings.crop.bottom}"
-
-    vbv = ""
-    if video.video_settings.maxrate:
-        vbv = f"--max-bitrate {video.video_settings.maxrate} --vbv-bufsize {video.video_settings.bufsize}"
-
-    min_q = settings.min_q_i
-    if settings.min_q_i and settings.min_q_p and settings.min_q_b:
-        min_q = f"{settings.min_q_i}:{settings.min_q_p}:{settings.min_q_b}"
-
-    max_q = settings.max_q_i
-    if settings.max_q_i and settings.max_q_p and settings.max_q_b:
-        max_q = f"{settings.max_q_i}:{settings.max_q_p}:{settings.max_q_b}"
 
     try:
         stream_id = int(video.current_video_stream["id"], 16)
@@ -75,60 +40,131 @@ def build(fastflix: FastFlix):
     elif video.video_settings.vsync == "vfr":
         vsync_setting = "vfr"
 
-    source_fps = f"--fps {video.video_settings.source_fps}" if video.video_settings.source_fps else ""
+    min_q = settings.min_q_i
+    if settings.min_q_i and settings.min_q_p and settings.min_q_b:
+        min_q = f"{settings.min_q_i}:{settings.min_q_p}:{settings.min_q_b}"
 
-    command = [
-        f'"{clean_file_string(fastflix.config.qsvencc)}"',
-        rigaya_avformat_reader(fastflix),
-        "-i",
-        f'"{clean_file_string(video.source)}"',
-        (f"--video-streamid {stream_id}" if stream_id else ""),
-        seek,
-        seekto,
-        source_fps,
-        (f"--vpp-rotate {video.video_settings.rotate * 90}" if video.video_settings.rotate else ""),
-        transform,
-        (f"--output-res {video.scale.replace(':', 'x')}" if video.scale else ""),
-        crop,
-        (
-            "--video-metadata clear --metadata clear"
-            if video.video_settings.remove_metadata
-            else "--video-metadata copy  --metadata copy"
-        ),
-        (f'--video-metadata title="{video.video_settings.video_title}"' if video.video_settings.video_title else ""),
-        ("--chapter-copy" if video.video_settings.copy_chapters else ""),
-        "-c",
-        "h264",
-        (f"--vbr {settings.bitrate.rstrip('k')}" if settings.bitrate else f"--{settings.qp_mode} {settings.cqp}"),
-        vbv,
-        (f"--qp-min {min_q}" if min_q and settings.bitrate else ""),
-        (f"--qp-max {max_q}" if max_q and settings.bitrate else ""),
-        (f"--bframes {settings.b_frames}" if settings.b_frames else ""),
-        (f"--ref {settings.ref}" if settings.ref else ""),
-        "--quality",
-        settings.preset,
-        "--profile",
-        settings.profile,
-        (f"--la-depth {settings.lookahead}" if settings.lookahead else ""),
-        "--level",
-        (settings.level or "auto"),
-        rigaya_auto_options(fastflix),
-        "--output-depth",
-        bit_depth,
-        f"--avsync {vsync_setting}",
-        (f"--interlace {video.interlaced}" if video.interlaced and video.interlaced != "False" else ""),
-        ("--vpp-yadif" if video.video_settings.deinterlace else ""),
-        remove_hdr,
-        "--parallel auto" if settings.split_mode == "parallel" else "",
-        ("--adapt-ref" if settings.adapt_ref else ""),
-        ("--adapt-ltr" if settings.adapt_ltr else ""),
-        ("--adapt-cqm" if settings.adapt_cqm else ""),
-        "--psnr --ssim" if settings.metrics else "",
-        build_audio(video.audio_tracks, video.streams.audio),
-        build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height),
-        settings.extra,
-        "-o",
-        f'"{clean_file_string(video.video_settings.output_path)}"',
-    ]
+    max_q = settings.max_q_i
+    if settings.max_q_i and settings.max_q_p and settings.max_q_b:
+        max_q = f"{settings.max_q_i}:{settings.max_q_p}:{settings.max_q_b}"
 
-    return [Command(command=" ".join(x for x in command if x), name="QSVEncC Encode", exe="QSVEncC")]
+    command: List[str] = [str(fastflix.config.qsvencc)]
+
+    command.extend(rigaya_avformat_reader(fastflix))
+
+    command.extend(["-i", str(video.source)])
+
+    if stream_id:
+        command.extend(["--video-streamid", str(stream_id)])
+
+    if video.video_settings.start_time:
+        command.extend(["--seek", str(video.video_settings.start_time)])
+
+    if video.video_settings.end_time:
+        command.extend(["--seekto", str(video.video_settings.end_time)])
+
+    if video.video_settings.source_fps:
+        command.extend(["--fps", str(video.video_settings.source_fps)])
+
+    if video.video_settings.rotate:
+        command.extend(["--vpp-rotate", str(video.video_settings.rotate * 90)])
+
+    if video.video_settings.vertical_flip or video.video_settings.horizontal_flip:
+        flip_x = "true" if video.video_settings.horizontal_flip else "false"
+        flip_y = "true" if video.video_settings.vertical_flip else "false"
+        command.extend(["--vpp-transform", f"flip_x={flip_x},flip_y={flip_y}"])
+
+    if video.scale:
+        command.extend(["--output-res", video.scale.replace(":", "x")])
+
+    if video.video_settings.crop:
+        crop = video.video_settings.crop
+        command.extend(["--crop", f"{crop.left},{crop.top},{crop.right},{crop.bottom}"])
+
+    if video.video_settings.remove_metadata:
+        command.extend(["--video-metadata", "clear", "--metadata", "clear"])
+    else:
+        command.extend(["--video-metadata", "copy", "--metadata", "copy"])
+
+    if video.video_settings.video_title:
+        command.extend(["--video-metadata", f"title={video.video_settings.video_title}"])
+
+    if video.video_settings.copy_chapters:
+        command.append("--chapter-copy")
+
+    command.extend(["-c", "h264"])
+
+    if settings.bitrate:
+        command.extend(["--vbr", settings.bitrate.rstrip("k")])
+    else:
+        command.extend([f"--{settings.qp_mode}", str(settings.cqp)])
+
+    if video.video_settings.maxrate:
+        command.extend(
+            ["--max-bitrate", str(video.video_settings.maxrate), "--vbv-bufsize", str(video.video_settings.bufsize)]
+        )
+
+    if min_q and settings.bitrate:
+        command.extend(["--qp-min", str(min_q)])
+
+    if max_q and settings.bitrate:
+        command.extend(["--qp-max", str(max_q)])
+
+    if settings.b_frames:
+        command.extend(["--bframes", str(settings.b_frames)])
+
+    if settings.ref:
+        command.extend(["--ref", str(settings.ref)])
+
+    command.extend(["--quality", settings.preset])
+    command.extend(["--profile", settings.profile])
+
+    if settings.lookahead:
+        command.extend(["--la-depth", str(settings.lookahead)])
+
+    command.extend(["--level", settings.level or "auto"])
+
+    command.extend(rigaya_auto_options(fastflix))
+
+    command.extend(["--output-depth", bit_depth])
+
+    command.extend(["--avsync", vsync_setting])
+
+    if video.interlaced and video.interlaced != "False":
+        command.extend(["--interlace", str(video.interlaced)])
+
+    if video.video_settings.deinterlace:
+        command.append("--vpp-yadif")
+
+    if video.video_settings.remove_hdr:
+        remove_type = (
+            video.video_settings.tone_map
+            if video.video_settings.tone_map in ("mobius", "hable", "reinhard")
+            else "mobius"
+        )
+        command.extend(["--vpp-colorspace", f"hdr2sdr={remove_type}"])
+
+    if settings.split_mode == "parallel":
+        command.extend(["--parallel", "auto"])
+
+    if settings.adapt_ref:
+        command.append("--adapt-ref")
+
+    if settings.adapt_ltr:
+        command.append("--adapt-ltr")
+
+    if settings.adapt_cqm:
+        command.append("--adapt-cqm")
+
+    if settings.metrics:
+        command.extend(["--psnr", "--ssim"])
+
+    command.extend(build_audio(video.audio_tracks, video.streams.audio))
+    command.extend(build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height))
+
+    if settings.extra:
+        command.extend(shlex.split(settings.extra))
+
+    command.extend(["-o", str(video.video_settings.output_path)])
+
+    return [Command(command=command, name="QSVEncC Encode", exe="QSVEncC")]

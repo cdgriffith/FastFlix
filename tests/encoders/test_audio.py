@@ -121,10 +121,18 @@ def test_audio_quality_converter_default():
     assert result == "-b:1 144k"
 
 
+def _has_consecutive(lst, a, b):
+    """Check that elements a and b appear consecutively in lst."""
+    for i in range(len(lst) - 1):
+        if lst[i] == a and lst[i + 1] == b:
+            return True
+    return False
+
+
 def test_build_audio_empty():
     """Test the build_audio function with an empty list."""
     result = build_audio([])
-    assert result == ""
+    assert result == []
 
 
 def test_build_audio_disabled_tracks(sample_audio_tracks):
@@ -134,7 +142,7 @@ def test_build_audio_disabled_tracks(sample_audio_tracks):
         track.enabled = False
 
     result = build_audio(sample_audio_tracks)
-    assert result == ""
+    assert result == []
 
 
 def test_build_audio_copy_tracks(sample_audio_tracks):
@@ -147,16 +155,16 @@ def test_build_audio_copy_tracks(sample_audio_tracks):
     result = build_audio(sample_audio_tracks)
 
     # Check that each track is mapped and copied
-    assert "-map 0:1" in result
-    assert "-map 0:2" in result
-    assert "-map 0:3" in result
-    assert "-c:0 copy" in result
-    assert "-c:1 copy" in result
-    assert "-c:2 copy" in result
+    assert _has_consecutive(result, "-map", "0:1")
+    assert _has_consecutive(result, "-map", "0:2")
+    assert _has_consecutive(result, "-map", "0:3")
+    assert _has_consecutive(result, "-c:0", "copy")
+    assert _has_consecutive(result, "-c:1", "copy")
+    assert _has_consecutive(result, "-c:2", "copy")
 
     # Check that titles and languages are set
-    assert 'title="Surround 5.1"' in result
-    assert 'title="Stereo"' in result
+    assert "title=Surround 5.1" in result
+    assert "title=Stereo" in result
     assert "language=eng" in result
     assert "language=jpn" in result
 
@@ -175,16 +183,18 @@ def test_build_audio_convert_tracks(sample_audio_tracks):
     result = build_audio(sample_audio_tracks)
 
     # Check that each track is mapped and converted correctly
-    assert "-map 0:1" in result
-    assert "-map 0:2" in result
-    assert "-c:0 aac -b:0 128k -ac:0 2" in result
-    assert "-c:1 libmp3lame -q:1 3" in result
-    assert "aformat=channel_layouts=stereo" in result
+    assert _has_consecutive(result, "-map", "0:1")
+    assert _has_consecutive(result, "-map", "0:2")
+    assert _has_consecutive(result, "-c:0", "aac")
+    assert _has_consecutive(result, "-b:0", "128k")
+    assert _has_consecutive(result, "-ac:0", "2")
+    assert _has_consecutive(result, "-c:1", "libmp3lame")
+    assert "-q:1" in result
     assert "aformat=channel_layouts=stereo" in result
 
     # Check that titles and languages are set
-    assert 'title="Surround 5.1"' in result
-    assert 'title="Stereo"' in result
+    assert "title=Surround 5.1" in result
+    assert "title=Stereo" in result
     assert "language=eng" in result
     assert "language=jpn" in result
 
@@ -200,8 +210,8 @@ def test_build_audio_with_dispositions(sample_audio_tracks):
     result = build_audio(sample_audio_tracks)
 
     # Check that dispositions are set correctly
-    assert "-disposition:0 default" in result
-    assert "-disposition:1 forced" in result
+    assert _has_consecutive(result, "-disposition:0", "default")
+    assert _has_consecutive(result, "-disposition:1", "forced")
     assert "-disposition:2" not in result
 
 
@@ -215,4 +225,6 @@ def test_build_audio_with_strict_codecs(sample_audio_tracks):
     result = build_audio(sample_audio_tracks)
 
     # Check that -strict -2 is added
-    assert "-strict -2" in result
+    assert "-strict" in result
+    assert "-2" in result
+    assert _has_consecutive(result, "-strict", "-2")

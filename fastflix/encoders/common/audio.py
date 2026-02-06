@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+from typing import List
 
 logger = logging.getLogger("fastflix")
 
@@ -51,33 +52,54 @@ def audio_quality_converter(quality, codec, channels=2, track_number=1):
             return f"-b:{track_number} {base * channels}k"
 
 
-def build_audio(audio_tracks, audio_file_index=0):
+def _split_quality(quality_str: str) -> List[str]:
+    """Split a quality string like '-vbr:1 on -b:1 120k' into list items."""
+    return quality_str.split()
+
+
+def build_audio(audio_tracks, audio_file_index=0) -> List[str]:
     command_list = []
+    has_truehd = False
+    has_opus = False
+    has_dca = False
+
     for track in audio_tracks:
         if not track.enabled:
             continue
-        command_list.append(
-            f"-map {audio_file_index}:{track.index} "
-            f'-metadata:s:{track.outdex} title="{track.title}" '
-            f'-metadata:s:{track.outdex} handler="{track.title}"'
-        )
+        command_list.extend(["-map", f"{audio_file_index}:{track.index}"])
+        if track.title:
+            command_list.extend([f"-metadata:s:{track.outdex}", f"title={track.title}"])
+            command_list.extend([f"-metadata:s:{track.outdex}", f"handler={track.title}"])
+        else:
+            command_list.extend([f"-metadata:s:{track.outdex}", "title="])
+            command_list.extend([f"-metadata:s:{track.outdex}", "handler="])
+
         if track.language:
-            command_list.append(f"-metadata:s:{track.outdex} language={track.language}")
+            command_list.extend([f"-metadata:s:{track.outdex}", f"language={track.language}"])
         if not track.conversion_codec or track.conversion_codec == "none":
-            command_list.append(f"-c:{track.outdex} copy")
+            command_list.extend([f"-c:{track.outdex}", "copy"])
         elif track.conversion_codec:
+            if track.conversion_codec == "truehd":
+                has_truehd = True
+            elif track.conversion_codec == "opus":
+                has_opus = True
+            elif track.conversion_codec == "dca":
+                has_dca = True
+
             try:
                 cl = track.downmix if track.downmix and track.downmix != "No Downmix" else track.raw_info.channel_layout
-            except (AssertionError, KeyError):
+            except (AssertionError, KeyError, AttributeError):
                 cl = "stereo"
                 logger.warning("Could not determine channel layout, defaulting to stereo, please manually specify")
 
             downmix = (
-                f"-ac:{track.outdex} {channel_list[cl]}" if track.downmix and track.downmix != "No Downmix" else ""
+                [f"-ac:{track.outdex}", str(channel_list[cl])]
+                if track.downmix and track.downmix != "No Downmix"
+                else []
             )
-            channel_layout = f'-filter:{track.outdex} "aformat=channel_layouts={cl}"'
+            channel_layout = [f"-filter:{track.outdex}", f"aformat=channel_layouts={cl}"]
 
-            bitrate = ""
+            bitrate_parts = []
             if track.conversion_codec not in lossless:
                 if track.conversion_bitrate:
                     conversion_bitrate = (
@@ -85,14 +107,21 @@ def build_audio(audio_tracks, audio_file_index=0):
                         if track.conversion_bitrate.lower().endswith(("k", "m", "g", "kb", "mb", "gb"))
                         else f"{track.conversion_bitrate}k"
                     )
-
-                    bitrate = f"-b:{track.outdex} {conversion_bitrate}"
+                    bitrate_parts = [f"-b:{track.outdex}", conversion_bitrate]
                 else:
-                    bitrate = audio_quality_converter(
-                        track.conversion_aq or 0, track.conversion_codec, track.raw_info.get("channels"), track.outdex
+                    bitrate_parts = _split_quality(
+                        audio_quality_converter(
+                            track.conversion_aq or 0,
+                            track.conversion_codec,
+                            track.raw_info.get("channels"),
+                            track.outdex,
+                        )
                     )
 
-            command_list.append(f"-c:{track.outdex} {track.conversion_codec} {bitrate} {downmix} {channel_layout}")
+            command_list.extend([f"-c:{track.outdex}", track.conversion_codec])
+            command_list.extend(bitrate_parts)
+            command_list.extend(downmix)
+            command_list.extend(channel_layout)
 
         if getattr(track, "dispositions", None):
             added = ""
@@ -100,11 +129,10 @@ def build_audio(audio_tracks, audio_file_index=0):
                 if is_set:
                     added += f"{disposition}+"
             if added:
-                command_list.append(f"-disposition:{track.outdex} {added.rstrip('+')}")
+                command_list.extend([f"-disposition:{track.outdex}", added.rstrip("+")])
             else:
-                command_list.append(f"-disposition:{track.outdex} 0")
+                command_list.extend([f"-disposition:{track.outdex}", "0"])
 
-    end_command = " ".join(command_list)
-    if " truehd " in end_command or " opus " in end_command or " dca " in end_command:
-        end_command += " -strict -2 "
-    return end_command
+    if has_truehd or has_opus or has_dca:
+        command_list.extend(["-strict", "-2"])
+    return command_list

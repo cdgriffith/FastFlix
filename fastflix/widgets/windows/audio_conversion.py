@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtWidgets, QtGui, QtCore
 
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import AudioTrack
@@ -130,7 +130,9 @@ class AudioConversion(QtWidgets.QWidget):
         self.aq.currentIndexChanged.connect(self.set_aq)
         self.bitrate = QtWidgets.QLineEdit()
         self.bitrate.setFixedWidth(50)
-        self.bitrate.setValidator(QtGui.QDoubleValidator())
+        bitrate_validator = QtGui.QDoubleValidator()
+        bitrate_validator.setLocale(QtCore.QLocale.c())  # Use C locale to force dot as decimal separator
+        self.bitrate.setValidator(bitrate_validator)
 
         if self.audio_track.conversion_aq:
             self.aq.setCurrentIndex(self.audio_track.conversion_aq)

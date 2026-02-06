@@ -6,9 +6,11 @@ import secrets
 import shlex
 import time
 from pathlib import Path
+from queue import Full
 from subprocess import PIPE
 from threading import Thread
 from typing import Literal
+import sys
 
 from psutil import Popen
 
@@ -23,12 +25,12 @@ try:
     )
 except ImportError:
     priority_levels = {
-        "Realtime": 20,
-        "High": 10,
-        "Above Normal": 5,
+        "Realtime": -20,
+        "High": -10,
+        "Above Normal": -5,
         "Normal": 0,
-        "Below Normal": -10,
-        "Idle": -20,
+        "Below Normal": 10,
+        "Idle": 19 if sys.platform == "linux" else 20,
     }
 else:
     priority_levels = {
@@ -72,13 +74,23 @@ class BackgroundRunner:
         self.error_message = errors
         self.success_message = successes
         logger.info(f"Running command: {command}")
+        stdout_handle = None
+        stderr_handle = None
         try:
+            stdout_handle = open(self.output_file, "w")
+            stderr_handle = open(self.error_output_file, "w")
+            if isinstance(command, list):
+                popen_cmd = command
+            elif not shell:
+                popen_cmd = shlex.split(command.replace("\\", "\\\\"))
+            else:
+                popen_cmd = command
             self.process = Popen(
-                shlex.split(command.replace("\\", "\\\\")) if not shell and isinstance(command, str) else command,
+                popen_cmd,
                 shell=shell,
                 cwd=work_dir,
-                stdout=open(self.output_file, "w"),
-                stderr=open(self.error_output_file, "w"),
+                stdout=stdout_handle,
+                stderr=stderr_handle,
                 stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc on linux
                 encoding="utf-8",
             )
@@ -88,16 +100,25 @@ class BackgroundRunner:
                 "Please make sure encoder is executable and you have permissions to run it."
                 "Otherwise try running FastFlix as an administrator."
             )
+            if stdout_handle:
+                stdout_handle.close()
+            if stderr_handle:
+                stderr_handle.close()
             self.error_detected = True
             return
         except Exception:
             logger.exception("Could not start worker process")
+            if stdout_handle:
+                stdout_handle.close()
+            if stderr_handle:
+                stderr_handle.close()
             self.error_detected = True
             return
 
         self.started_at = datetime.datetime.now(datetime.timezone.utc)
 
-        Thread(target=self.read_output).start()
+        thread = Thread(target=self.read_output, daemon=True)
+        thread.start()
 
     def change_priority(
         self, new_priority: Literal["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"]
@@ -109,6 +130,13 @@ class BackgroundRunner:
         except Exception:
             logger.exception(f"Could not set process priority to {new_priority}")
 
+    def _safe_log_put(self, msg):
+        """Put message to log queue with timeout to prevent blocking if GUI is dead."""
+        try:
+            self.log_queue.put(msg, timeout=1.0)
+        except Full:
+            pass  # GUI likely dead, ignore
+
     def read_output(self):
         with (
             open(self.output_file, "r", encoding="utf-8", errors="ignore") as out_file,
@@ -119,18 +147,18 @@ class BackgroundRunner:
                 if not self.is_alive():
                     excess = out_file.read()
                     logger.info(excess)
-                    self.log_queue.put(excess)
+                    self._safe_log_put(excess)
 
                     err_excess = err_file.read()
                     logger.info(err_excess)
-                    self.log_queue.put(err_excess)
+                    self._safe_log_put(err_excess)
                     if self.process.returncode is not None and self.process.returncode > 0:
                         self.error_detected = True
                     break
                 line = out_file.readline().rstrip()
                 if line:
                     logger.info(line)
-                    self.log_queue.put(line)
+                    self._safe_log_put(line)
                     if not self.success_detected:
                         for success in self.success_message:
                             if success in line:
@@ -139,7 +167,7 @@ class BackgroundRunner:
                 err_line = err_file.readline().rstrip()
                 if err_line:
                     logger.info(err_line)
-                    self.log_queue.put(err_line)
+                    self._safe_log_put(err_line)
                     if "Conversion failed!" in err_line or "Error during output" in err_line:
                         self.error_detected = True
                     if not self.error_detected:

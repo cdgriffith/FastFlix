@@ -9,9 +9,12 @@ from PySide6 import QtGui, QtWidgets
 
 from fastflix.language import t, Language
 from fastflix.models.encode import AudioTrack
-from fastflix.models.profiles import Profile
+from fastflix.models.profiles import Profile, TitleMode
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
+from fastflix.ui_scale import scaler
+from fastflix.ui_constants import HEIGHTS, WIDTHS
+from fastflix.ui_styles import get_onyx_disposition_style
 from fastflix.shared import no_border, error_message, yes_no_message, clear_list
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.audio_processing import apply_audio_filters
@@ -20,6 +23,57 @@ from fastflix.widgets.windows.disposition import Disposition
 
 language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined"]
 logger = logging.getLogger("fastflix")
+
+# Mapping of channel counts to friendly names
+channels_to_layout = {
+    1: "Mono",
+    2: "Stereo",
+    3: "2.1",
+    4: "4.0",
+    5: "5.0",
+    6: "5.1",
+    7: "6.1",
+    8: "7.1",
+}
+
+# Mapping of codec names to friendly display names
+codec_display_names = {
+    "aac": "AAC",
+    "ac3": "AC3",
+    "eac3": "E-AC3",
+    "truehd": "TrueHD",
+    "dts": "DTS",
+    "dca": "DTS",
+    "flac": "FLAC",
+    "alac": "ALAC",
+    "opus": "Opus",
+    "libopus": "Opus",
+    "vorbis": "Vorbis",
+    "libvorbis": "Vorbis",
+    "mp3": "MP3",
+    "libmp3lame": "MP3",
+    "pcm_s16le": "PCM",
+    "pcm_s24le": "PCM",
+    "pcm_s32le": "PCM",
+}
+
+
+def generate_audio_title(codec: str, channels: int, downmix: str | None = None) -> str:
+    """Generate a friendly audio title like 'TrueHD 5.1' from codec and channel info."""
+    # Get friendly codec name
+    codec_lower = codec.lower() if codec else ""
+    friendly_codec = codec_display_names.get(codec_lower, codec.upper() if codec else "Audio")
+
+    # Determine channel layout
+    if downmix and downmix != "No Downmix":
+        # Use downmix layout directly (e.g., "stereo", "5.1")
+        channel_layout = downmix
+    else:
+        # Use channel count to determine layout
+        channel_layout = channels_to_layout.get(channels, f"{channels}ch")
+
+    return f"{friendly_codec} {channel_layout}"
+
 
 disposition_options = [
     "default",
@@ -54,7 +108,7 @@ class Audio(QtWidgets.QTabWidget):
         self.index = index
         self.first = False
         self.last = False
-        self.setFixedHeight(60)
+        self.setFixedHeight(scaler.scale(HEIGHTS.PANEL_ITEM))
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[index]
 
         self.widgets = Box(
@@ -92,24 +146,24 @@ class Audio(QtWidgets.QTabWidget):
                     self.widgets.language.setCurrentText(lang)
 
         self.widgets.language.currentIndexChanged.connect(self.page_update)
-        self.widgets.title.setFixedWidth(150)
+        self.widgets.title.setFixedWidth(scaler.scale(WIDTHS.AUDIO_TITLE))
         self.widgets.title.textChanged.connect(self.page_update)
         # self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        self.widgets.audio_info.setFixedWidth(350)
+        self.widgets.audio_info.setFixedWidth(scaler.scale(WIDTHS.AUDIO_INFO))
 
         self.widgets.enable_check.setChecked(audio_track.enabled)
         self.widgets.enable_check.toggled.connect(self.update_enable)
 
         self.widgets.dup_button.clicked.connect(lambda: self.dup_me())
-        self.widgets.dup_button.setFixedWidth(20)
+        self.widgets.dup_button.setFixedWidth(scaler.scale(17))
         if disabled_dup:
             self.widgets.dup_button.hide()
             self.widgets.dup_button.setDisabled(True)
 
         self.widgets.delete_button.clicked.connect(lambda: self.del_me())
-        self.widgets.delete_button.setFixedWidth(20)
+        self.widgets.delete_button.setFixedWidth(scaler.scale(17))
 
-        self.widgets.track_number.setFixedWidth(20)
+        self.widgets.track_number.setFixedWidth(scaler.scale(17))
 
         self.disposition_widget = Disposition(
             app=app, parent=self, track_name=f"Audio Track {index}", track_index=index, audio=True
@@ -123,7 +177,7 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.disposition.setText(t("Dispositions"))
 
         label = QtWidgets.QLabel(f"{t('Title')}: ")
-        self.widgets.title.setFixedWidth(150)
+        self.widgets.title.setFixedWidth(scaler.scale(WIDTHS.AUDIO_TITLE))
         title_layout = QtWidgets.QHBoxLayout()
         title_layout.addStretch(False)
         title_layout.addWidget(label, stretch=False)
@@ -143,7 +197,7 @@ class Audio(QtWidgets.QTabWidget):
 
         if not audio_track.original:
             spacer = QtWidgets.QLabel()
-            spacer.setFixedWidth(63)
+            spacer.setFixedWidth(scaler.scale(53))
             grid.addWidget(spacer, 0, right_button_start_index)
             grid.addWidget(self.widgets.delete_button, 0, right_button_start_index + 1)
         else:
@@ -178,11 +232,15 @@ class Audio(QtWidgets.QTabWidget):
         # layout.setMargin(0)
         # self.widgets.up_button = QtWidgets.QPushButton("^")
         self.widgets.up_button.setDisabled(self.first)
-        self.widgets.up_button.setFixedWidth(20)
+        self.widgets.up_button.setFixedWidth(scaler.scale(17))
+        self.widgets.up_button.setFixedHeight(scaler.scale(20))
+        self.widgets.up_button.setIconSize(scaler.scale_size(12, 12))
         self.widgets.up_button.clicked.connect(lambda: self.parent.move_up(self))
         # self.widgets.down_button = QtWidgets.QPushButton("v")
         self.widgets.down_button.setDisabled(self.last)
-        self.widgets.down_button.setFixedWidth(20)
+        self.widgets.down_button.setFixedWidth(scaler.scale(17))
+        self.widgets.down_button.setFixedHeight(scaler.scale(20))
+        self.widgets.down_button.setIconSize(scaler.scale_size(12, 12))
         self.widgets.down_button.clicked.connect(lambda: self.parent.move_down(self))
         layout.addWidget(self.widgets.up_button)
         layout.addWidget(self.widgets.down_button)
@@ -268,7 +326,7 @@ class Audio(QtWidgets.QTabWidget):
         del self.widgets
         return super().close()
 
-    def update_track(self, conversion=None, bitrate=None, downmix=None):
+    def update_track(self, conversion=None, bitrate=None, downmix=None, title=None):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if conversion:
             audio_track.conversion_codec = conversion
@@ -276,23 +334,26 @@ class Audio(QtWidgets.QTabWidget):
             audio_track.conversion_bitrate = bitrate
         if downmix:
             audio_track.downmix = downmix
+        if title is not None:
+            audio_track.title = title
+            self.widgets.title.setText(title)
         self.page_update()
 
     def check_conversion_button(self):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if audio_track.conversion_codec:
-            self.widgets.conversion.setStyleSheet("border-color: #0055ff")
+            self.widgets.conversion.setStyleSheet(get_onyx_disposition_style(enabled=True))
             self.widgets.conversion.setText(t("Conversion") + f": {audio_track.conversion_codec}")
         else:
-            self.widgets.conversion.setStyleSheet("")
+            self.widgets.conversion.setStyleSheet(get_onyx_disposition_style(enabled=False))
             self.widgets.conversion.setText(t("Conversion"))
 
     def check_dis_button(self):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if any(audio_track.dispositions.values()):
-            self.widgets.disposition.setStyleSheet("border-color: #0055ff")
+            self.widgets.disposition.setStyleSheet(get_onyx_disposition_style(enabled=True))
         else:
-            self.widgets.disposition.setStyleSheet("")
+            self.widgets.disposition.setStyleSheet(get_onyx_disposition_style(enabled=False))
 
 
 class AudioList(FlixList):
@@ -407,14 +468,38 @@ class AudioList(FlixList):
         clear_list(self.tracks)
 
         def gen_track(
-            parent, audio_track, outdex, og=False, enabled=True, downmix=None, conversion=None, bitrate=None
+            parent,
+            audio_track,
+            outdex,
+            og=False,
+            enabled=True,
+            downmix=None,
+            conversion=None,
+            bitrate=None,
+            title_mode=None,
+            custom_title=None,
         ) -> Audio:
             track_info, tags = self._get_track_info(audio_track)
+
+            # Determine title based on title_mode
+            if title_mode == TitleMode.NO_TITLE:
+                title = ""
+            elif title_mode == TitleMode.GENERATE:
+                # Generate title from codec and channel info
+                codec = conversion if conversion else audio_track.codec_name
+                title = generate_audio_title(codec, audio_track.channels, downmix)
+            elif title_mode == TitleMode.CUSTOM:
+                # Use custom title from the audio match
+                title = custom_title if custom_title else ""
+            else:
+                # Original title (default)
+                title = tags.get("title", "")
+
             self.app.fastflix.current_video.audio_tracks.append(
                 AudioTrack(
                     index=audio_track.index,
                     outdex=outdex,
-                    title=tags.get("title", ""),
+                    title=title,
                     language=tags.get("language", ""),
                     profile=audio_track.get("profile"),
                     channels=audio_track.channels,
@@ -431,7 +516,7 @@ class AudioList(FlixList):
             new_item = Audio(
                 parent=parent,
                 app=self.app,
-                index=i,
+                index=len(self.app.fastflix.current_video.audio_tracks) - 1,
                 disabled_dup=(
                     "nvencc" in self.main.convert_to.lower()
                     or "vcenc" in self.main.convert_to.lower()
@@ -462,18 +547,38 @@ class AudioList(FlixList):
             return
 
         # Apply first set of conversions to the original audio tracks
+        # Build a mapping from stream index to self.tracks position
+        stream_index_to_track = {
+            self.app.fastflix.current_video.audio_tracks[i].index: i for i in range(len(self.tracks))
+        }
         current_id = -1
         skip_tracks = []
         for idx, track in enumerate(tracks):
             # track[0] is the Box() track object, track[1] is the AudioMatch it matched against
             if track[0].index > current_id:
                 current_id = track[0].index
-                self.tracks[track[0].index - 1].widgets.enable_check.setChecked(True)
-                self.tracks[track[0].index - 1].update_track(
-                    downmix=track[1].downmix,
-                    conversion=track[1].conversion,
-                    bitrate=track[1].bitrate,
-                )
+                track_pos = stream_index_to_track.get(track[0].index)
+                if track_pos is not None:
+                    self.tracks[track_pos].widgets.enable_check.setChecked(True)
+
+                    # Determine title based on title_mode
+                    title_mode = track[1].title_mode
+                    if title_mode == TitleMode.NO_TITLE:
+                        title = ""
+                    elif title_mode == TitleMode.GENERATE:
+                        codec = track[1].conversion if track[1].conversion else track[0].codec_name
+                        title = generate_audio_title(codec, track[0].channels, track[1].downmix)
+                    elif title_mode == TitleMode.CUSTOM:
+                        title = track[1].custom_title if track[1].custom_title else ""
+                    else:
+                        title = None  # Keep original
+
+                    self.tracks[track_pos].update_track(
+                        downmix=track[1].downmix,
+                        conversion=track[1].conversion,
+                        bitrate=track[1].bitrate,
+                        title=title,
+                    )
                 skip_tracks.append(idx)
 
         if not og_only:
@@ -490,6 +595,8 @@ class AudioList(FlixList):
                             conversion=track[1].conversion,
                             bitrate=track[1].bitrate,
                             downmix=track[1].downmix,
+                            title_mode=track[1].title_mode,
+                            custom_title=track[1].custom_title,
                         )
                     )
 

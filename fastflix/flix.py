@@ -324,7 +324,7 @@ def generate_thumbnail_command(
     config: Config,
     source: Path,
     output: Path,
-    filters: str,
+    filters: list[str] | str,
     start_time: float = 0,
     input_track: int = 0,
 ) -> list[str]:
@@ -338,10 +338,13 @@ def generate_thumbnail_command(
     # Video file input
     command += ["-loglevel", "warning", "-i", clean_file_string(source)]
 
-    command += shlex.split(filters)
+    if isinstance(filters, list):
+        command += filters
+    else:
+        command += shlex.split(filters)
 
     # Apply video track selection
-    if "-map" not in filters:
+    if "-map" not in (filters if isinstance(filters, list) else shlex.split(filters)):
         command += ["-map", f"0:{input_track}"]
 
     command += ["-an", "-y", "-map_metadata", "-1", "-frames:v", "1", clean_file_string(output)]

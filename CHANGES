@@ -1,5 +1,41 @@
 # Changelog
 
+## Version 5.13.0
+
+* Adding resizable columns to Concatenation Builder window with minimum widths based on header text
+* Adding Keyframe checkbox to Settings menu as "Use keyframes for preview images" option (default enabled)
+* Adding preview time slider to overlay at bottom of preview image
+* Adding time display next to preview slider in H:MM:SS format
+* Adding #712 audio profile title options: No Title, Generate Title, and Custom Title
+* Adding async queue saving to prevent GUI blocking during queue operations
+* Adding atomic file writes for queue to prevent corruption from interrupted saves
+* Adding file-based locking for queue operations to prevent race conditions between instances
+* Adding graceful shutdown handling for worker process and background threads
+* Adding Start/End Time tab to right-side options panel between Size and Crop tabs with compact 3-column layout
+* Fixing #695 Qt6 decimal input fields enforcing locale-specific decimal separators (comma vs dot) by forcing C locale
+* Fixing #696 RAW command display boxes too small on macOS by using actual document size for height calculation
+* Fixing #687 dialogs staying on top of all windows and unable to minimize by removing WindowStaysOnTopHint flag
+* Fixing #337 #700 #597 refactoring all FFmpeg command building from string concatenation to List[str] to fix shlex.split() failures with quotes, special characters in titles, and Windows path handling issues
+* Fixing #481 MP4 subtitle copy mode using wrong codec - now uses mov_text instead of copy for MP4 containers
+* Fixing video track selector showing unnecessarily when source video has only one video track
+* Fixing visual border between filename area and video track selector
+* Fixing test suite hanging due to missing QApplication in PySide6 widget tests
+* Fixing window resizing beyond screen boundaries when switching profiles on macOS
+* Fixing potential GUI freeze when log queue fills up during encoding
+* Fixing file handle leaks in command runner when process startup fails
+* Fixing crash when dragging non-video content over the main window
+* Fixing rotation setting not being applied correctly when loading profiles
+* Fixing flip settings not restoring correctly when returning video from queue
+* Fixing GIF encoder not applying resolution scaling
+* Fixing audio profile loading - validator returned wrong enum type (MatchType instead of MatchItem)
+* Fixing "monoo" typo in downmix mapping that caused mono downmix to fail
+* Fixing undefined variable crash when creating duplicate audio tracks via profile filters
+* Fixing IndexError when applying profile audio filters to videos with non-sequential track indices
+* Fixing TypeError crash with Rigaya encoders when audio quality not explicitly set
+* Fixing AttributeError crash when audio track metadata is incomplete
+* Fixing queue file generation mismatch errors due to redundant save calls on startup and when adding to queue
+
+
 ## Version 5.12.4
 
 * Fixing #675 "Default Source Folder" not used when adding Complete Folders (thanks to Krawk)
@@ -10,7 +46,7 @@
 
 ## Version 5.12.3
 
-* Fixing #673 changing subtitle langauge in the UI did not take effect in the command (thanks to danielly2020)
+* Fixing #673 changing subtitle language in the UI did not take effect in the command (thanks to danielly2020)
 * Fixing #673 extract subtitle command was looking for subtitle index, not absolute index (thanks to danielly2020)
 
 ## Version 5.12.2

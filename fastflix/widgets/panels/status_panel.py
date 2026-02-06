@@ -6,6 +6,8 @@ import time
 from datetime import timedelta
 from typing import Optional
 
+from queue import Empty
+
 from PySide6 import QtCore, QtWidgets
 
 from fastflix.exceptions import FlixError
@@ -68,7 +70,10 @@ class StatusPanel(QtWidgets.QWidget):
         self.tick_signal.connect(self.update_time_elapsed)
 
     def cleanup(self):
-        self.inner_widget.log_updater.terminate()
+        self.inner_widget.log_updater.request_shutdown()
+        self.inner_widget.log_updater.wait(1000)  # Wait up to 1 second for graceful shutdown
+        if self.inner_widget.log_updater.isRunning():
+            self.inner_widget.log_updater.terminate()
         self.ticker_thread.stop_signal.emit()
         self.ticker_thread.terminate()
 
@@ -219,6 +224,7 @@ class Logs(QtWidgets.QTextBrowser):
 
     def closeEvent(self, event):
         self.hide()
+        event.ignore()
 
 
 class ElapsedTimeTicker(QtCore.QThread):
@@ -235,9 +241,6 @@ class ElapsedTimeTicker(QtCore.QThread):
 
         self.state_signal.connect(self.set_state)
         self.stop_signal.connect(self.on_stop)
-
-    def __del__(self):
-        self.wait()
 
     def run(self):
         while not self.stop_received:
@@ -262,13 +265,18 @@ class LogUpdater(QtCore.QThread):
         super().__init__(parent)
         self.parent = parent
         self.log_queue = log_queue
+        self._shutdown = False
 
-    def __del__(self):
-        self.wait()
+    def request_shutdown(self):
+        """Request graceful shutdown of the thread."""
+        self._shutdown = True
 
     def run(self):
-        while True:
-            msg = self.log_queue.get()
+        while not self._shutdown:
+            try:
+                msg = self.log_queue.get(timeout=0.5)
+            except Empty:
+                continue
             if msg.startswith("CLEAR_WINDOW"):
                 self.parent.clear_window.emit(msg)
                 self.parent.timer_signal.emit("START")

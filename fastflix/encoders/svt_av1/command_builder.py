@@ -3,6 +3,7 @@
 
 import logging
 import secrets
+import shlex
 
 import reusables
 
@@ -18,7 +19,8 @@ def build(fastflix: FastFlix):
     settings: SVTAV1Settings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending, output_fps = generate_all(fastflix, "libsvtav1")
 
-    beginning += f"-strict experimental -preset {settings.speed} {generate_color_details(fastflix)} "
+    beginning.extend(["-strict", "experimental", "-preset", str(settings.speed)])
+    beginning.extend(generate_color_details(fastflix))
 
     svtav1_params = settings.svtav1_params.copy()
     svtav1_params.extend(
@@ -78,31 +80,48 @@ def build(fastflix: FastFlix):
                 svtav1_params.append("enable-hdr=1")
 
     if svtav1_params:
-        beginning += f' -svtav1-params "{":".join(svtav1_params)}" '
+        beginning.extend(["-svtav1-params", ":".join(svtav1_params)])
 
     if not settings.single_pass:
         pass_log_file = f"pass_log_file_{secrets.token_hex(10)}"
-        beginning += f'-passlogfile "{pass_log_file}" '
+        beginning.extend(["-passlogfile", pass_log_file])
 
     pass_type = "bitrate" if settings.bitrate else "QP"
 
+    extra = shlex.split(settings.extra) if settings.extra else []
+    extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
+
     if settings.single_pass:
         if settings.bitrate:
-            command_1 = f"{beginning} -b:v {settings.bitrate} {settings.extra} {ending}"
+            command_1 = beginning + ["-b:v", settings.bitrate] + extra + ending
 
         elif settings.qp is not None:
-            command_1 = f"{beginning} -{settings.qp_mode} {settings.qp} {settings.extra} {ending}"
+            command_1 = beginning + [f"-{settings.qp_mode}", str(settings.qp)] + extra + ending
         else:
             return []
         return [Command(command=command_1, name=f"{pass_type}", exe="ffmpeg")]
     else:
         if settings.bitrate:
-            command_1 = f"{beginning} -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f matroska {null}"
-            command_2 = f"{beginning} -b:v {settings.bitrate} -pass 2 {settings.extra} {ending}"
+            command_1 = (
+                beginning
+                + ["-b:v", settings.bitrate, "-pass", "1"]
+                + extra_both
+                + ["-an"]
+                + output_fps
+                + ["-f", "matroska", null]
+            )
+            command_2 = beginning + ["-b:v", settings.bitrate, "-pass", "2"] + extra + ending
 
         elif settings.qp is not None:
-            command_1 = f"{beginning} -{settings.qp_mode} {settings.qp} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an {output_fps} -f matroska {null}"
-            command_2 = f"{beginning} -{settings.qp_mode} {settings.qp} -pass 2 {settings.extra} {ending}"
+            command_1 = (
+                beginning
+                + [f"-{settings.qp_mode}", str(settings.qp), "-pass", "1"]
+                + extra_both
+                + ["-an"]
+                + output_fps
+                + ["-f", "matroska", null]
+            )
+            command_2 = beginning + [f"-{settings.qp_mode}", str(settings.qp), "-pass", "2"] + extra + ending
         else:
             return []
         return [

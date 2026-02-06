@@ -13,6 +13,8 @@ from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import loading_movie, get_icon
 from fastflix.shared import error_message, no_border, clear_list
+from fastflix.ui_scale import scaler
+from fastflix.ui_styles import get_onyx_disposition_style
 from fastflix.widgets.background_tasks import ExtractSubtitleSRT
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.widgets.windows.disposition import Disposition
@@ -189,10 +191,14 @@ class Subtitle(QtWidgets.QTabWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(0)
         self.widgets.up_button.setDisabled(self.first)
-        self.widgets.up_button.setFixedWidth(20)
+        self.widgets.up_button.setFixedWidth(scaler.scale(17))
+        self.widgets.up_button.setFixedHeight(scaler.scale(20))
+        self.widgets.up_button.setIconSize(scaler.scale_size(12, 12))
         self.widgets.up_button.clicked.connect(lambda: self.parent.move_up(self))
         self.widgets.down_button.setDisabled(self.last)
-        self.widgets.down_button.setFixedWidth(20)
+        self.widgets.down_button.setFixedWidth(scaler.scale(17))
+        self.widgets.down_button.setFixedHeight(scaler.scale(20))
+        self.widgets.down_button.setIconSize(scaler.scale_size(12, 12))
         self.widgets.down_button.clicked.connect(lambda: self.parent.move_down(self))
         layout.addWidget(self.widgets.up_button)
         layout.addWidget(self.widgets.down_button)
@@ -273,7 +279,7 @@ class Subtitle(QtWidgets.QTabWidget):
             self.widgets.burn_in.setChecked(False)
             error_message(t("There is an existing burn-in track, only one can be enabled at a time"))
         if enable and self.parent.main.fast_time:
-            self.parent.main.widgets.fast_time.setCurrentText("exact")
+            self.parent.main.widgets.fast_time.setCurrentIndex(1)  # Set to "Exact"
         sub_track = self.app.fastflix.current_video.subtitle_tracks[self.index]
         sub_track.burn_in = enable
         self.updating_burn = False
@@ -293,9 +299,9 @@ class Subtitle(QtWidgets.QTabWidget):
     def check_dis_button(self):
         track: SubtitleTrack = self.app.fastflix.current_video.subtitle_tracks[self.index]
         if any(track.dispositions.values()):
-            self.widgets.disposition.setStyleSheet("border-color: #0055ff")
+            self.widgets.disposition.setStyleSheet(get_onyx_disposition_style(enabled=True))
         else:
-            self.widgets.disposition.setStyleSheet("")
+            self.widgets.disposition.setStyleSheet(get_onyx_disposition_style(enabled=False))
 
 
 class SubtitleList(FlixList):
@@ -412,6 +418,45 @@ class SubtitleList(FlixList):
                     first_default.widgets.burn_in.setChecked(True)
 
         super()._new_source(self.tracks)
+
+    def apply_profile_settings(self):
+        """Re-apply subtitle filtering based on current profile settings."""
+        self._first_selected = False
+
+        for track in self.tracks:
+            sub_track = self.app.fastflix.current_video.subtitle_tracks[track.index]
+            enabled = self.lang_match(sub_track)
+            sub_track.enabled = enabled
+            track.widgets.enable_check.setChecked(enabled)
+
+        if self.app.fastflix.config.opt("subtitle_automatic_burn_in"):
+            # Reset any existing burn-in
+            for track in self.tracks:
+                track.widgets.burn_in.setChecked(False)
+
+            first_default, first_forced = None, None
+            for track in self.tracks:
+                if (
+                    not first_default
+                    and self.app.fastflix.current_video.subtitle_tracks[track.index].dispositions.get("default", False)
+                    and self.lang_match(track, ignore_first=True)
+                ):
+                    first_default = track
+                    break
+                if (
+                    not first_forced
+                    and self.app.fastflix.current_video.subtitle_tracks[track.index].dispositions.get("forced", False)
+                    and self.lang_match(track, ignore_first=True)
+                ):
+                    first_forced = track
+                    break
+            if not self.app.fastflix.config.disable_automatic_subtitle_burn_in:
+                if first_forced is not None:
+                    first_forced.widgets.burn_in.setChecked(True)
+                elif first_default is not None:
+                    first_default.widgets.burn_in.setChecked(True)
+
+        self.reorder(update=True)
 
     def reload(self, original_tracks):
         clear_list(self.tracks)

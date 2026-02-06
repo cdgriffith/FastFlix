@@ -4,11 +4,13 @@ import copy
 import logging
 from typing import TYPE_CHECKING
 
-from PySide6 import QtGui, QtWidgets, QtCore
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
+from fastflix.ui_scale import scaler
+from fastflix.ui_styles import ONYX_COLORS, get_onyx_combobox_style
 from fastflix.shared import DEVMODE, error_message
 from fastflix.widgets.panels.advanced_panel import AdvancedPanel
 from fastflix.widgets.panels.audio_panel import AudioList
@@ -61,12 +63,18 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.debug = DebugPanel(self, self.app)
         if self.app.fastflix.config.theme == "onyx":
             self.setStyleSheet(
-                "*{ background-color: #4b5054; color: white} QTabWidget{margin-top: 34px; background-color: #4b5054;} "
-                "QTabBar{font-size: 13px; background-color: #4f5962}"
-                "QComboBox{min-height: 1.1em;}"
+                "QTabBar{ font-size: 13px; } "
+                "QTabBar::tab{ border-top: 2px solid transparent; } "
+                f"QTabBar::tab:selected{{ border-top: 2px solid {ONYX_COLORS['primary']}; }} "
+                "QLineEdit{ color: white; } "
+                "QTextEdit{ color: white; } "
+                "QPlainTextEdit{ color: white; } "
+                f"QComboBox{{ min-height: 1.1em; {get_onyx_combobox_style()} }}"
+                "QComboBox:hover{ background-color: #6a8a96; } "
+                f"QComboBox QAbstractItemView{{ background-color: {ONYX_COLORS['dark_bg']}; border: 2px solid {ONYX_COLORS['input_bg']}; }} "
             )
 
-        self.setIconSize(QtCore.QSize(24, 24))
+        self.setIconSize(scaler.scale_size(20, 20))
         self.addTab(
             self.current_settings, QtGui.QIcon(get_icon("onyx-quality", app.fastflix.config.theme)), t("Quality")
         )
@@ -84,6 +92,23 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.addTab(self.queue, QtGui.QIcon(get_icon("onyx-queue", app.fastflix.config.theme)), t("Encoding Queue"))
         if DEVMODE:
             self.addTab(self.debug, QtGui.QIcon(get_icon("info", app.fastflix.config.theme)), "Debug")
+
+        # Add separator line below tabs for onyx theme
+        self.tab_separator = None
+        if self.app.fastflix.config.theme == "onyx":
+            self.tab_separator = QtWidgets.QFrame(self)
+            self.tab_separator.setFrameShape(QtWidgets.QFrame.HLine)
+            self.tab_separator.setFixedHeight(3)
+            self.tab_separator.setStyleSheet(f"background-color: {ONYX_COLORS['primary']};")
+            self.tab_separator.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+            self.tab_separator.raise_()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self.tab_separator:
+            # Position the separator right below the tab bar
+            tab_bar_height = self.tabBar().height()
+            self.tab_separator.setGeometry(0, tab_bar_height, self.width(), 3)
 
     def resetTabIcons(self):
         for index, icon_name in icons.items():
@@ -160,6 +185,8 @@ class VideoOptions(QtWidgets.QTabWidget):
         if not self.reloading:
             self.audio.allowed_formats(self._get_audio_formats(encoder))
             # self.update_profile()
+        # Ensure window stays within screen bounds after encoder change
+        self.main.container.ensure_window_in_bounds()
 
     def get_settings(self):
         if not self.app.fastflix.current_video:
@@ -228,7 +255,7 @@ class VideoOptions(QtWidgets.QTabWidget):
                 )
                 self.audio.update_audio_settings()
             if getattr(self.main.current_encoder, "enable_subtitles", False):
-                self.subtitles.get_settings()
+                self.subtitles.apply_profile_settings()
             if getattr(self.main.current_encoder, "enable_attachments", False):
                 self.attachments.update_cover_settings()
         self.advanced.update_settings()

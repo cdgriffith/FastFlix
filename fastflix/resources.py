@@ -62,7 +62,7 @@ def get_icon(name: str, theme: str):
 
 
 def get_text_color(theme: str):
-    if theme.lower() == "dark":
+    if theme.lower() in ("dark", "onyx"):
         return "255, 255, 255"
     return "0, 0, 0"
 

@@ -205,7 +205,20 @@ def find_ocr_tool(name):
                 if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
                     return file
 
-    return None
+                  
+def find_rigaya_encoder(base_name: str) -> Path | None:
+    """Find Rigaya encoder binaries with case-insensitive search."""
+    # Try common binary names in order of preference
+    candidates = [
+        f"{base_name}64",  # Windows 64-bit
+        f"{base_name}",  # Windows/Linux
+        f"{base_name.lower()}",  # Linux lowercase
+    ]
+
+    for candidate in candidates:
+        if location := where(candidate):
+            return location
+
 
 
 class Config(BaseModel):
@@ -214,9 +227,9 @@ class Config(BaseModel):
     ffmpeg: Path = Field(default_factory=lambda: find_ffmpeg_file("ffmpeg"))
     ffprobe: Path = Field(default_factory=lambda: find_ffmpeg_file("ffprobe"))
     hdr10plus_parser: Path | None = Field(default_factory=find_hdr10plus_tool)
-    nvencc: Path | None = Field(default_factory=lambda: where("NVEncC64") or where("NVEncC"))
-    vceencc: Path | None = Field(default_factory=lambda: where("VCEEncC64") or where("VCEEncC"))
-    qsvencc: Path | None = Field(default_factory=lambda: where("QSVEncC64") or where("QSVEncC"))
+    nvencc: Path | None = Field(default_factory=lambda: find_rigaya_encoder("NVEncC"))
+    vceencc: Path | None = Field(default_factory=lambda: find_rigaya_encoder("VCEEncC"))
+    qsvencc: Path | None = Field(default_factory=lambda: find_rigaya_encoder("QSVEncC"))
     output_directory: Path | None = None
     source_directory: Path | None = None
     output_name_format: str = "{source}-fastflix-{rand_4}"
@@ -282,6 +295,9 @@ class Config(BaseModel):
     tesseract_path: Path | None = Field(default_factory=lambda: find_ocr_tool("tesseract"))
     mkvmerge_path: Path | None = Field(default_factory=lambda: find_ocr_tool("mkvmerge"))
     pgs_ocr_language: str = "eng"
+
+    use_keyframes_for_preview: bool = True
+
 
     def encoder_opt(self, profile_name, profile_option_name):
         encoder_settings = getattr(self.profiles[self.selected_profile], profile_name)
