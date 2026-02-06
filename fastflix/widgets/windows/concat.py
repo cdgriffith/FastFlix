@@ -40,8 +40,14 @@ class ConcatTable(QtWidgets.QTableView):
     def __init__(self, parent):
         super().__init__(parent)
         self.verticalHeader().hide()
-        # self.horizontalHeader().hide()
-        self.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.header_labels = ["Filename", "Resolution", "Codec", "Remove"]
+        self.min_column_widths = []
+
+        header = self.horizontalHeader()
+        header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Interactive)
+        header.setStretchLastSection(False)
+        header.sectionResized.connect(self._on_section_resized)
+
         self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.setShowGrid(False)
@@ -50,14 +56,110 @@ class ConcatTable(QtWidgets.QTableView):
 
         # Set our custom model - this prevents row "shifting"
         self.model = MyModel()
-        self.model.setHorizontalHeaderLabels(["Filename", "Resolution", "Codec", "Remove"])
+        self.model.setHorizontalHeaderLabels(self.header_labels)
 
         self.setModel(self.model)
         self.buttons = []
+        self._resizing = False
+
+    def _calculate_min_widths(self):
+        """Calculate minimum column widths based on header text."""
+        font_metrics = self.horizontalHeader().fontMetrics()
+        padding = 20  # Extra padding for header margins
+        self.min_column_widths = [font_metrics.horizontalAdvance(label) + padding for label in self.header_labels]
+
+    def _on_section_resized(self, logical_index, old_size, new_size):
+        """Enforce column width constraints when a section is resized."""
+        if self._resizing:
+            return
+
+        self._resizing = True
+        try:
+            if not self.min_column_widths:
+                self._calculate_min_widths()
+
+            header = self.horizontalHeader()
+            num_cols = len(self.header_labels)
+            viewport_width = self.viewport().width()
+
+            # Enforce minimum width for the resized column
+            if new_size < self.min_column_widths[logical_index]:
+                header.resizeSection(logical_index, self.min_column_widths[logical_index])
+                return
+
+            # Calculate total width of all columns and ensure they fit in viewport
+            total_width = sum(header.sectionSize(i) for i in range(num_cols))
+
+            if total_width > viewport_width:
+                # Column was made too wide, reduce it to fit
+                excess = total_width - viewport_width
+                max_allowed = new_size - excess
+                if max_allowed >= self.min_column_widths[logical_index]:
+                    header.resizeSection(logical_index, max_allowed)
+                else:
+                    # Can't shrink this column enough, revert to old size
+                    header.resizeSection(logical_index, old_size)
+        finally:
+            self._resizing = False
+
+    def set_column_widths(self, total_width):
+        """Set column widths with Filename taking 50% of total width."""
+        self._calculate_min_widths()
+
+        filename_width = int(total_width * 0.5)
+        resolution_width = int(total_width * 0.17)
+        codec_width = int(total_width * 0.17)
+        remove_width = int(total_width * 0.16)
+
+        # Ensure widths are at least the minimum
+        filename_width = max(filename_width, self.min_column_widths[0])
+        resolution_width = max(resolution_width, self.min_column_widths[1])
+        codec_width = max(codec_width, self.min_column_widths[2])
+        remove_width = max(remove_width, self.min_column_widths[3])
+
+        self.setColumnWidth(0, filename_width)
+        self.setColumnWidth(1, resolution_width)
+        self.setColumnWidth(2, codec_width)
+        self.setColumnWidth(3, remove_width)
+
+    def resizeEvent(self, event):
+        """Adjust columns to fit when the table is resized."""
+        super().resizeEvent(event)
+        if self._resizing or not self.min_column_widths:
+            return
+
+        self._resizing = True
+        try:
+            header = self.horizontalHeader()
+            num_cols = len(self.header_labels)
+            viewport_width = self.viewport().width()
+            total_width = sum(header.sectionSize(i) for i in range(num_cols))
+
+            if total_width > viewport_width:
+                # Columns are too wide, shrink the filename column (index 0) first
+                excess = total_width - viewport_width
+                current_filename_width = header.sectionSize(0)
+                new_filename_width = current_filename_width - excess
+
+                if new_filename_width >= self.min_column_widths[0]:
+                    header.resizeSection(0, new_filename_width)
+                else:
+                    # Filename at minimum, distribute reduction across other resizable columns
+                    header.resizeSection(0, self.min_column_widths[0])
+                    remaining_excess = excess - (current_filename_width - self.min_column_widths[0])
+
+                    # Shrink other columns proportionally
+                    for i in range(1, num_cols):
+                        current = header.sectionSize(i)
+                        reduction = remaining_excess // (num_cols - 1)
+                        new_width = max(current - reduction, self.min_column_widths[i])
+                        header.resizeSection(i, new_width)
+        finally:
+            self._resizing = False
 
     def update_items(self, items):
         self.model.clear()
-        self.model.setHorizontalHeaderLabels(["Filename", "Resolution", "Codec", "Remove"])
+        self.model.setHorizontalHeaderLabels(self.header_labels)
         self.buttons = []
         for item in items:
             self.add_item(*item)
@@ -114,10 +216,18 @@ class ConcatScroll(QtWidgets.QScrollArea):
     def __init__(self, parent):
         super().__init__(parent)
         self.setWidgetResizable(True)
-        self.setMinimumWidth(500)
+        self.setMinimumWidth(750)
         self.setMinimumHeight(500)
         self.table = ConcatTable(None)
         self.setWidget(self.table)
+
+    def showEvent(self, event):
+        """Set initial column widths when the scroll area is first shown."""
+        super().showEvent(event)
+        # Only set initial widths the first time the widget is shown
+        if not hasattr(self, "_initial_widths_set"):
+            self._initial_widths_set = True
+            self.table.set_column_widths(self.width())
 
 
 class ConcatWindow(QtWidgets.QWidget):

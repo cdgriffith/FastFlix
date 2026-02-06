@@ -229,17 +229,23 @@ class AdvancedPanel(QtWidgets.QWidget):
     def init_eq(self):
         self.last_row += 1
         self.brightness_widget = QtWidgets.QLineEdit()
-        self.brightness_widget.setValidator(QtGui.QDoubleValidator())
+        brightness_validator = QtGui.QDoubleValidator()
+        brightness_validator.setLocale(QtCore.QLocale.c())  # Use C locale to force dot as decimal separator
+        self.brightness_widget.setValidator(brightness_validator)
         self.brightness_widget.setToolTip("Default is: 0")
         self.brightness_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.contrast_widget = QtWidgets.QLineEdit()
-        self.contrast_widget.setValidator(QtGui.QDoubleValidator())
+        contrast_validator = QtGui.QDoubleValidator()
+        contrast_validator.setLocale(QtCore.QLocale.c())  # Use C locale to force dot as decimal separator
+        self.contrast_widget.setValidator(contrast_validator)
         self.contrast_widget.setToolTip("Default is: 1")
         self.contrast_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.saturation_widget = QtWidgets.QLineEdit()
-        self.saturation_widget.setValidator(QtGui.QDoubleValidator())
+        saturation_validator = QtGui.QDoubleValidator()
+        saturation_validator.setLocale(QtCore.QLocale.c())  # Use C locale to force dot as decimal separator
+        self.saturation_widget.setValidator(saturation_validator)
         self.saturation_widget.setToolTip("Default is: 1")
         self.saturation_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 

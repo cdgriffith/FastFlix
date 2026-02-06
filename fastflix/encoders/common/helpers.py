@@ -13,6 +13,23 @@ from fastflix.models.fastflix import FastFlix
 from fastflix.shared import clean_file_string, sanitize, quoted_path
 
 null = "/dev/null"
+
+
+def escape_title(title: str) -> str:
+    """Escape special characters in titles for FFmpeg commands.
+
+    Args:
+        title: The title string to escape
+
+    Returns:
+        Escaped title string safe for use in FFmpeg command
+    """
+    if not title:
+        return title
+    # Escape double quotes and backslashes for proper command line handling
+    return title.replace("\\", "\\\\").replace('"', '\\"')
+
+
 if reusables.win_based:
     null = "NUL"
 
@@ -65,12 +82,12 @@ def generate_ffmpeg_start(
     vsync_text = f"-{vsync_type} {vsync}" if vsync else ""
 
     if video_title:
-        video_title = video_title.replace('"', '\\"')
+        video_title = escape_title(video_title)
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = clean_file_string(source)
     ffmpeg = clean_file_string(ffmpeg)
     if video_track_title:
-        video_track_title = video_track_title.replace('"', '\\"')
+        video_track_title = escape_title(video_track_title)
     track_title = f'-metadata:s:v:0 title="{video_track_title}"' if video_track_title else ""
 
     opencl_option = "-init_hw_device opencl:0.0=ocl -filter_hw_device ocl" if enable_opencl and remove_hdr else ""
@@ -282,7 +299,9 @@ def generate_all(
 
     subtitles_cmd, burn_in_track, burn_in_type = "", None, None
     if subs:
-        subtitles_cmd, burn_in_track, burn_in_type = build_subtitle(fastflix.current_video.subtitle_tracks)
+        subtitles_cmd, burn_in_track, burn_in_type = build_subtitle(
+            fastflix.current_video.subtitle_tracks, output_path=fastflix.current_video.video_settings.output_path
+        )
         if burn_in_type == "text":
             for i, x in enumerate(fastflix.current_video.streams["subtitle"]):
                 if x["index"] == burn_in_track:

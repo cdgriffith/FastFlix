@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import math
 from pathlib import Path
 
 import reusables
@@ -34,12 +33,7 @@ class Command(QtWidgets.QTabWidget):
         self.command = command
         self.widget = QtWidgets.QTextBrowser()
         self.widget.setReadOnly(True)
-        if not height:
-            font_height = QtGui.QFontMetrics(self.widget.document().defaultFont()).height()
-            lines = math.ceil(len(command) / 200)
-            self.setMinimumHeight(int(font_height + ((lines + 2) * (font_height * 1.25))))
-        else:
-            self.setMinimumHeight(height)
+        self.custom_height = height
         self.number = number
         self.name = name
         self.label = QtWidgets.QLabel(f"{t('Command')} {self.number}" if not self.name else self.name)
@@ -54,6 +48,20 @@ class Command(QtWidgets.QTabWidget):
         grid.addStretch()
         self.setLayout(grid)
         self.widget.setText(self.command)
+
+        # Calculate height after setting text for accurate sizing
+        if not self.custom_height:
+            # Get the document size which accounts for actual text wrapping
+            doc_size = self.widget.document().size()
+            label_height = self.label.sizeHint().height()
+            # Add padding (30px) for margins and scrollbar if needed
+            required_height = int(doc_size.height() + label_height + 30)
+            # Set a reasonable minimum and maximum
+            min_height = 100
+            max_height = 500
+            self.setMinimumHeight(max(min_height, min(required_height, max_height)))
+        else:
+            self.setMinimumHeight(self.custom_height)
 
 
 class CommandList(QtWidgets.QWidget):

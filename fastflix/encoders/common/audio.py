@@ -57,10 +57,13 @@ def build_audio(audio_tracks, audio_file_index=0):
         if not track.enabled:
             continue
         if track.title:
+            from fastflix.encoders.common.helpers import escape_title
+
+            escaped_title = escape_title(track.title)
             command_list.append(
                 f"-map {audio_file_index}:{track.index} "
-                f'-metadata:s:{track.outdex} title="{track.title}" '
-                f'-metadata:s:{track.outdex} handler="{track.title}"'
+                f'-metadata:s:{track.outdex} title="{escaped_title}" '
+                f'-metadata:s:{track.outdex} handler="{escaped_title}"'
             )
         else:
             # No title - clear any existing title metadata

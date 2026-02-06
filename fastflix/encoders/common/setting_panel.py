@@ -4,7 +4,7 @@ from typing import List, Tuple, Union
 from pathlib import Path
 
 from box import Box
-from PySide6 import QtGui, QtWidgets
+from PySide6 import QtGui, QtWidgets, QtCore
 
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
@@ -432,7 +432,9 @@ class SettingPanel(QtWidgets.QWidget):
         if not disable_custom_qp:
             self.widgets[f"custom_{qp_name}"] = QtWidgets.QLineEdit("30" if not custom_qp else str(qp_value))
             self.widgets[f"custom_{qp_name}"].setMinimumWidth(scaler.scale(83))
-            self.widgets[f"custom_{qp_name}"].setValidator(QtGui.QDoubleValidator())
+            qp_validator = QtGui.QDoubleValidator()
+            qp_validator.setLocale(QtCore.QLocale.c())  # Use C locale to force dot as decimal separator
+            self.widgets[f"custom_{qp_name}"].setValidator(qp_validator)
             self.widgets[f"custom_{qp_name}"].setEnabled(custom_qp)
             self.widgets[f"custom_{qp_name}"].textChanged.connect(lambda: self.main.build_commands())
 

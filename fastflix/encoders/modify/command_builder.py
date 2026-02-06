@@ -11,13 +11,15 @@ def build(fastflix: FastFlix):
     ffmpeg = fastflix.config.ffmpeg
     source = fastflix.current_video.source
 
+    from fastflix.encoders.common.helpers import escape_title
+
     if video_title:
-        video_title = video_title.replace('"', '\\"')
+        video_title = escape_title(video_title)
     title = f'-metadata title="{video_title}"' if video_title else ""
     source = clean_file_string(source)
     ffmpeg = clean_file_string(ffmpeg)
     if video_track_title:
-        video_track_title = video_track_title.replace('"', '\\"')
+        video_track_title = escape_title(video_track_title)
     track_title = f'-metadata:s:v:0 title="{video_track_title}"'
 
     beginning = " ".join(
