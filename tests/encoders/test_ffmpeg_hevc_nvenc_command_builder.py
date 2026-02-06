@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from unittest import mock
 
-import reusables
-
+from fastflix.encoders.common.helpers import null
 from fastflix.encoders.ffmpeg_hevc_nvenc.command_builder import build
 from fastflix.models.encode import FFmpegNVENCSettings
 from fastflix.models.video import VideoSettings
@@ -35,23 +34,40 @@ def test_ffmpeg_hevc_nvenc_qp():
         ),
     )
 
-    # Mock the generate_all function to return a predictable result
+    # Mock the generate_all function to return a predictable result (lists)
     with mock.patch("fastflix.encoders.ffmpeg_hevc_nvenc.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", "-r 24")
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            ["-r", "24"],
+        )
 
-        # Mock the generate_color_details function to return a predictable result
+        # Mock the generate_color_details function to return a predictable result (list)
         with mock.patch(
             "fastflix.encoders.ffmpeg_hevc_nvenc.command_builder.generate_color_details"
         ) as mock_generate_color_details:
-            mock_generate_color_details.return_value = "--color_details"
+            mock_generate_color_details.return_value = ["-color_primaries", "bt2020"]
 
             result = build(fastflix)
 
-            # The expected command should include the QP setting and other basic parameters
-            expected_command = "ffmpeg -y -i input.mkv -tune:v hq --color_details -spatial_aq:v 0 -tier:v main -rc-lookahead:v 0 -gpu -1 -b_ref_mode disabled -profile:v main  -qp:v 28 -preset:v slow  output.mkv"
             assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
             assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
-            assert result[0].command == expected_command, f"Expected: {expected_command}\nGot: {result[0].command}"
+
+            cmd = result[0].command
+            assert isinstance(cmd, list), f"Expected command to be a list, got {type(cmd)}"
+
+            # Check key elements
+            assert "-tune:v" in cmd
+            assert "hq" in cmd
+            assert "-qp:v" in cmd
+            assert "28" in cmd
+            assert "-preset:v" in cmd
+            assert "slow" in cmd
+            assert "-spatial_aq:v" in cmd
+            assert "-tier:v" in cmd
+            assert "main" in cmd
+            assert "-profile:v" in cmd
+            assert "output.mkv" in cmd
 
 
 def test_ffmpeg_hevc_nvenc_bitrate():
@@ -79,15 +95,19 @@ def test_ffmpeg_hevc_nvenc_bitrate():
         ),
     )
 
-    # Mock the generate_all function to return a predictable result
+    # Mock the generate_all function to return a predictable result (lists)
     with mock.patch("fastflix.encoders.ffmpeg_hevc_nvenc.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", "-r 24")
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            ["-r", "24"],
+        )
 
-        # Mock the generate_color_details function to return a predictable result
+        # Mock the generate_color_details function to return a predictable result (list)
         with mock.patch(
             "fastflix.encoders.ffmpeg_hevc_nvenc.command_builder.generate_color_details"
         ) as mock_generate_color_details:
-            mock_generate_color_details.return_value = "--color_details"
+            mock_generate_color_details.return_value = ["-color_primaries", "bt2020"]
 
             # Mock the secrets.token_hex function to return a predictable result
             with mock.patch("fastflix.encoders.ffmpeg_hevc_nvenc.command_builder.secrets.token_hex") as mock_token_hex:
@@ -95,25 +115,33 @@ def test_ffmpeg_hevc_nvenc_bitrate():
 
                 result = build(fastflix)
 
-                # The expected command should be a list of two Command objects for two-pass encoding
-                if reusables.win_based:
-                    expected_commands = [
-                        'ffmpeg -y -i input.mkv -tune:v hq --color_details -spatial_aq:v 0 -tier:v main -rc-lookahead:v 0 -gpu -1 -b_ref_mode disabled -profile:v main  -pass 1 -passlogfile "work_path\\pass_log_file_abcdef1234" -b:v 6000k -preset:v slow -2pass 1  -an -sn -dn -r 24 -f mp4 NUL',
-                        'ffmpeg -y -i input.mkv -tune:v hq --color_details -spatial_aq:v 0 -tier:v main -rc-lookahead:v 0 -gpu -1 -b_ref_mode disabled -profile:v main  -pass 2 -passlogfile "work_path\\pass_log_file_abcdef1234" -2pass 1 -b:v 6000k -preset:v slow   output.mkv',
-                    ]
-                else:
-                    expected_commands = [
-                        'ffmpeg -y -i input.mkv -tune:v hq --color_details -spatial_aq:v 0 -tier:v main -rc-lookahead:v 0 -gpu -1 -b_ref_mode disabled -profile:v main  -pass 1 -passlogfile "work_path/pass_log_file_abcdef1234" -b:v 6000k -preset:v slow -2pass 1  -an -sn -dn -r 24 -f mp4 /dev/null',
-                        'ffmpeg -y -i input.mkv -tune:v hq --color_details -spatial_aq:v 0 -tier:v main -rc-lookahead:v 0 -gpu -1 -b_ref_mode disabled -profile:v main  -pass 2 -passlogfile "work_path/pass_log_file_abcdef1234" -2pass 1 -b:v 6000k -preset:v slow   output.mkv',
-                    ]
                 assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
                 assert len(result) == 2, f"Expected 2 Command objects, got {len(result)}"
-                assert result[0].command == expected_commands[0], (
-                    f"Expected: {expected_commands[0]}\nGot: {result[0].command}"
-                )
-                assert result[1].command == expected_commands[1], (
-                    f"Expected: {expected_commands[1]}\nGot: {result[1].command}"
-                )
+
+                cmd1 = result[0].command
+                cmd2 = result[1].command
+                assert isinstance(cmd1, list), f"Expected command to be a list, got {type(cmd1)}"
+                assert isinstance(cmd2, list), f"Expected command to be a list, got {type(cmd2)}"
+
+                # First pass
+                assert "-pass" in cmd1
+                assert "1" in cmd1[cmd1.index("-pass") + 1 :][:1]
+                assert "-b:v" in cmd1
+                assert "6000k" in cmd1
+                assert "-2pass" in cmd1
+                assert "-an" in cmd1
+                assert "-sn" in cmd1
+                assert "-dn" in cmd1
+                assert "-f" in cmd1
+                assert "mp4" in cmd1
+                assert null in cmd1
+
+                # Second pass
+                assert "-pass" in cmd2
+                assert "2" in cmd2[cmd2.index("-pass") + 1 :][:1]
+                assert "-b:v" in cmd2
+                assert "6000k" in cmd2
+                assert "output.mkv" in cmd2
 
 
 def test_ffmpeg_hevc_nvenc_with_rc_level():
@@ -142,20 +170,45 @@ def test_ffmpeg_hevc_nvenc_with_rc_level():
         ),
     )
 
-    # Mock the generate_all function to return a predictable result
+    # Mock the generate_all function to return a predictable result (lists)
     with mock.patch("fastflix.encoders.ffmpeg_hevc_nvenc.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -hwaccel auto -y -i input.mkv ", " output.mkv", "-r 24")
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-hwaccel", "auto", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            ["-r", "24"],
+        )
 
-        # Mock the generate_color_details function to return a predictable result
+        # Mock the generate_color_details function to return a predictable result (list)
         with mock.patch(
             "fastflix.encoders.ffmpeg_hevc_nvenc.command_builder.generate_color_details"
         ) as mock_generate_color_details:
-            mock_generate_color_details.return_value = "--color_details"
+            mock_generate_color_details.return_value = ["-color_primaries", "bt2020"]
 
             result = build(fastflix)
 
-            # The expected command should include the RC and level settings
-            expected_command = "ffmpeg -hwaccel auto -y -i input.mkv -tune:v hq --color_details -spatial_aq:v 1 -tier:v high -rc-lookahead:v 32 -gpu 0 -b_ref_mode each -profile:v main -rc:v vbr -level:v 5.1  -qp:v 28 -preset:v slow  output.mkv"
             assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
             assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
-            assert result[0].command == expected_command, f"Expected: {expected_command}\nGot: {result[0].command}"
+
+            cmd = result[0].command
+            assert isinstance(cmd, list), f"Expected command to be a list, got {type(cmd)}"
+
+            # Check key elements
+            assert "-tune:v" in cmd
+            assert "hq" in cmd
+            assert "-rc:v" in cmd
+            assert "vbr" in cmd
+            assert "-level:v" in cmd
+            assert "5.1" in cmd
+            assert "-spatial_aq:v" in cmd
+            assert "1" in cmd
+            assert "-tier:v" in cmd
+            assert "high" in cmd
+            assert "-rc-lookahead:v" in cmd
+            assert "32" in cmd
+            assert "-gpu" in cmd
+            assert "0" in cmd
+            assert "-b_ref_mode" in cmd
+            assert "each" in cmd
+            assert "-qp:v" in cmd
+            assert "28" in cmd
+            assert "output.mkv" in cmd

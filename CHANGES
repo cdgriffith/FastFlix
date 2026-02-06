@@ -15,7 +15,7 @@
 * Fixing #695 Qt6 decimal input fields enforcing locale-specific decimal separators (comma vs dot) by forcing C locale
 * Fixing #696 RAW command display boxes too small on macOS by using actual document size for height calculation
 * Fixing #687 dialogs staying on top of all windows and unable to minimize by removing WindowStaysOnTopHint flag
-* Fixing #337 double quotes and backslashes in titles causing command issues by properly escaping special characters and using shell=True on Windows to avoid shlex parsing
+* Fixing #337 #700 #597 refactoring all FFmpeg command building from string concatenation to List[str] to fix shlex.split() failures with quotes, special characters in titles, and Windows path handling issues
 * Fixing #481 MP4 subtitle copy mode using wrong codec - now uses mov_text instead of copy for MP4 containers
 * Fixing video track selector showing unnecessarily when source video has only one video track
 * Fixing visual border between filename area and video track selector

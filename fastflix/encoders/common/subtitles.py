@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from typing import Tuple, Union
+from typing import List, Tuple, Union
 
 from fastflix.models.video import SubtitleTrack
 
 
 def build_subtitle(
     subtitle_tracks: list[SubtitleTrack], subtitle_file_index=0, output_path=None
-) -> Tuple[str, Union[int, None], Union[str, None]]:
+) -> Tuple[List[str], Union[int, None], Union[str, None]]:
     command_list = []
     burn_in_track = None
     burn_in_type = None
@@ -34,7 +34,7 @@ def build_subtitle(
             outdex = track.outdex - (1 if burn_in_track else 0)
             # MP4 containers require mov_text codec for text subtitles instead of copy (#481)
             codec = "mov_text" if is_mp4 else "copy"
-            command_list.append(f"-map {subtitle_file_index}:{track.index} -c:{outdex} {codec} ")
+            command_list.extend(["-map", f"{subtitle_file_index}:{track.index}", f"-c:{outdex}", codec])
             added = ""
             for disposition, is_set in track.dispositions.items():
                 if is_set:
@@ -42,10 +42,10 @@ def build_subtitle(
                     if disposition in ("default", "forced"):
                         subs_enabled = True
             if added:
-                command_list.append(f"-disposition:{outdex} {added.rstrip('+')}")
+                command_list.extend([f"-disposition:{outdex}", added.rstrip("+")])
             else:
-                command_list.append(f"-disposition:{outdex} 0")
-            command_list.append(f"-metadata:s:{outdex} language='{track.language}'")
+                command_list.extend([f"-disposition:{outdex}", "0"])
+            command_list.extend([f"-metadata:s:{outdex}", f"language={track.language}"])
     if not subs_enabled:
-        command_list.append("-default_mode infer_no_subs")
-    return " ".join(command_list), burn_in_track, burn_in_type
+        command_list.extend(["-default_mode", "infer_no_subs"])
+    return command_list, burn_in_track, burn_in_type

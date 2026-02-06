@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import shlex
+import subprocess
+import sys
 from pathlib import Path
 
 import reusables
@@ -10,6 +13,15 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
 from fastflix.ui_scale import scaler
 from fastflix.ui_constants import HEIGHTS
+
+
+def _command_to_display_string(command):
+    """Convert a command (str or list) to a display string."""
+    if isinstance(command, str):
+        return command
+    if sys.platform == "win32":
+        return subprocess.list2cmdline(command)
+    return shlex.join(command)
 
 
 class Loop(QtWidgets.QGroupBox):
@@ -30,7 +42,7 @@ class Loop(QtWidgets.QGroupBox):
 class Command(QtWidgets.QTabWidget):
     def __init__(self, parent, command, number, name="", enabled=True, height=None):
         super(Command, self).__init__(parent)
-        self.command = command
+        self.command = _command_to_display_string(command)
         self.widget = QtWidgets.QTextBrowser()
         self.widget.setReadOnly(True)
         self.custom_height = height
@@ -104,7 +116,7 @@ class CommandList(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def _prep_commands(self):
-        commands = [x.command for x in self.commands if x.name != "hidden"]
+        commands = [_command_to_display_string(x.command) for x in self.commands if x.name != "hidden"]
         return "\r\n".join(commands) if reusables.win_based else "\n".join(commands)
 
     def copy_commands_to_clipboard(self):
@@ -130,7 +142,7 @@ class CommandList(QtWidgets.QWidget):
         self.commands = []
         for index, item in enumerate(commands, 1):
             if item.item == "command":
-                new_item = Command(self.scroll_area, item.command, index, name=item.name)
+                new_item = Command(self.scroll_area, _command_to_display_string(item.command), index, name=item.name)
                 self.commands.append(item)
                 layout.addWidget(new_item)
         layout.addStretch()

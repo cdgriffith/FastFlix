@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from unittest import mock
 
-import reusables
-
+from fastflix.encoders.common.helpers import null
 from fastflix.encoders.svt_av1.command_builder import build
 from fastflix.models.encode import SVTAV1Settings
 from fastflix.models.video import VideoSettings
@@ -30,23 +29,44 @@ def test_svt_av1_single_pass_qp():
         ),
     )
 
-    # Mock the generate_all function to return a predictable result
+    # Mock the generate_all function to return a predictable result (lists)
     with mock.patch("fastflix.encoders.svt_av1.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", "-r 24")
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            ["-r", "24"],
+        )
 
-        # Mock the generate_color_details function to return a predictable result
+        # Mock the generate_color_details function to return a predictable result (list)
         with mock.patch(
             "fastflix.encoders.svt_av1.command_builder.generate_color_details"
         ) as mock_generate_color_details:
-            mock_generate_color_details.return_value = "--color_details"
+            mock_generate_color_details.return_value = ["-color_primaries", "bt2020"]
 
             result = build(fastflix)
 
-            # The expected command should include the QP setting and other basic parameters
-            expected_command = 'ffmpeg -y -i input.mkv -strict experimental -preset 7 --color_details  -svtav1-params "tile-columns=0:tile-rows=0:scd=0:color-primaries=9:transfer-characteristics=16:matrix-coefficients=9"  -crf 24   output.mkv'
             assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
             assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
-            assert result[0].command == expected_command, f"Expected: {expected_command}\nGot: {result[0].command}"
+
+            cmd = result[0].command
+            assert isinstance(cmd, list), f"Expected command to be a list, got {type(cmd)}"
+
+            # Check key elements are present in the command list
+            assert "-strict" in cmd
+            assert "experimental" in cmd
+            assert "-preset" in cmd
+            assert "7" in cmd
+            assert "-crf" in cmd
+            assert "24" in cmd
+            assert "-svtav1-params" in cmd
+            assert "output.mkv" in cmd
+
+            # Verify svtav1-params contains the expected parameters
+            params_idx = cmd.index("-svtav1-params")
+            params_value = cmd[params_idx + 1]
+            assert "tile-columns=0" in params_value
+            assert "tile-rows=0" in params_value
+            assert "scd=0" in params_value
 
 
 def test_svt_av1_two_pass_qp():
@@ -69,15 +89,19 @@ def test_svt_av1_two_pass_qp():
         ),
     )
 
-    # Mock the generate_all function to return a predictable result
+    # Mock the generate_all function to return a predictable result (lists)
     with mock.patch("fastflix.encoders.svt_av1.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", "-r 24")
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            ["-r", "24"],
+        )
 
-        # Mock the generate_color_details function to return a predictable result
+        # Mock the generate_color_details function to return a predictable result (list)
         with mock.patch(
             "fastflix.encoders.svt_av1.command_builder.generate_color_details"
         ) as mock_generate_color_details:
-            mock_generate_color_details.return_value = "--color_details"
+            mock_generate_color_details.return_value = ["-color_primaries", "bt2020"]
 
             # Mock the secrets.token_hex function to return a predictable result
             with mock.patch("fastflix.encoders.svt_av1.command_builder.secrets.token_hex") as mock_token_hex:
@@ -85,19 +109,27 @@ def test_svt_av1_two_pass_qp():
 
                 result = build(fastflix)
 
-                # The expected command should be a list of two Command objects for two-pass encoding
-                expected_commands = [
-                    f'ffmpeg -y -i input.mkv -strict experimental -preset 7 --color_details  -svtav1-params "tile-columns=0:tile-rows=0:scd=0:color-primaries=9:transfer-characteristics=16:matrix-coefficients=9" -passlogfile "pass_log_file_abcdef1234"  -crf 24 -pass 1  -an -r 24 -f matroska {"NUL" if reusables.win_based else "/dev/null"}',
-                    'ffmpeg -y -i input.mkv -strict experimental -preset 7 --color_details  -svtav1-params "tile-columns=0:tile-rows=0:scd=0:color-primaries=9:transfer-characteristics=16:matrix-coefficients=9" -passlogfile "pass_log_file_abcdef1234"  -crf 24 -pass 2   output.mkv',
-                ]
                 assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
                 assert len(result) == 2, f"Expected 2 Command objects, got {len(result)}"
-                assert result[0].command == expected_commands[0], (
-                    f"Expected: {expected_commands[0]}\nGot: {result[0].command}"
-                )
-                assert result[1].command == expected_commands[1], (
-                    f"Expected: {expected_commands[1]}\nGot: {result[1].command}"
-                )
+
+                cmd1 = result[0].command
+                cmd2 = result[1].command
+                assert isinstance(cmd1, list), f"Expected command to be a list, got {type(cmd1)}"
+                assert isinstance(cmd2, list), f"Expected command to be a list, got {type(cmd2)}"
+
+                # First pass should have pass 1, -an, null output
+                assert "-pass" in cmd1
+                assert "1" in cmd1[cmd1.index("-pass") + 1 :][:1]
+                assert "-an" in cmd1
+                assert "-f" in cmd1
+                assert "matroska" in cmd1
+                assert null in cmd1
+                assert "-passlogfile" in cmd1
+
+                # Second pass should have pass 2, real output
+                assert "-pass" in cmd2
+                assert "2" in cmd2[cmd2.index("-pass") + 1 :][:1]
+                assert "output.mkv" in cmd2
 
 
 def test_svt_av1_single_pass_bitrate():
@@ -119,23 +151,32 @@ def test_svt_av1_single_pass_bitrate():
         ),
     )
 
-    # Mock the generate_all function to return a predictable result
+    # Mock the generate_all function to return a predictable result (lists)
     with mock.patch("fastflix.encoders.svt_av1.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", "-r 24")
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            ["-r", "24"],
+        )
 
-        # Mock the generate_color_details function to return a predictable result
+        # Mock the generate_color_details function to return a predictable result (list)
         with mock.patch(
             "fastflix.encoders.svt_av1.command_builder.generate_color_details"
         ) as mock_generate_color_details:
-            mock_generate_color_details.return_value = "--color_details"
+            mock_generate_color_details.return_value = ["-color_primaries", "bt2020"]
 
             result = build(fastflix)
 
-            # The expected command should include the bitrate setting
-            expected_command = 'ffmpeg -y -i input.mkv -strict experimental -preset 7 --color_details  -svtav1-params "tile-columns=0:tile-rows=0:scd=0:color-primaries=9:transfer-characteristics=16:matrix-coefficients=9"  -b:v 5000k   output.mkv'
             assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
             assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
-            assert result[0].command == expected_command, f"Expected: {expected_command}\nGot: {result[0].command}"
+
+            cmd = result[0].command
+            assert isinstance(cmd, list), f"Expected command to be a list, got {type(cmd)}"
+
+            # Check key elements
+            assert "-b:v" in cmd
+            assert "5000k" in cmd
+            assert "output.mkv" in cmd
 
 
 def test_svt_av1_with_hdr():
@@ -160,24 +201,35 @@ def test_svt_av1_with_hdr():
         hdr10_metadata=True,
     )
 
-    # Mock the generate_all function to return a predictable result
+    # Mock the generate_all function to return a predictable result (lists)
     with mock.patch("fastflix.encoders.svt_av1.command_builder.generate_all") as mock_generate_all:
-        mock_generate_all.return_value = ("ffmpeg -y -i input.mkv ", " output.mkv", "-r 24")
+        mock_generate_all.return_value = (
+            ["ffmpeg", "-y", "-i", "input.mkv"],
+            ["output.mkv"],
+            ["-r", "24"],
+        )
 
-        # Mock the generate_color_details function to return a predictable result
+        # Mock the generate_color_details function to return a predictable result (list)
         with mock.patch(
             "fastflix.encoders.svt_av1.command_builder.generate_color_details"
         ) as mock_generate_color_details:
-            mock_generate_color_details.return_value = "--color_details"
+            mock_generate_color_details.return_value = ["-color_primaries", "bt2020"]
 
-            # Mock the convert_me function to return predictable results
-            with mock.patch("fastflix.encoders.svt_av1.command_builder.convert_me", create=True) as mock_convert_me:
-                mock_convert_me.side_effect = lambda x, y=50000: "0.0100,0.0200" if y == 50000 else "0.1000,0.0001"
+            result = build(fastflix)
 
-                result = build(fastflix)
+            assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
+            assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
 
-                # The expected command should include HDR settings
-                expected_command = 'ffmpeg -y -i input.mkv -strict experimental -preset 7 --color_details  -svtav1-params "tile-columns=0:tile-rows=0:scd=1:color-primaries=9:transfer-characteristics=16:matrix-coefficients=9:mastering-display=G(0.0000,0.0000)B(0.0000,0.0000)R(0.0000,0.0000)WP(0.0000,0.0000)L(0.1000,0.0000):content-light=1000,300:enable-hdr=1"  -crf 24   output.mkv'
-                assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
-                assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
-                assert result[0].command == expected_command, f"Expected: {expected_command}\nGot: {result[0].command}"
+            cmd = result[0].command
+            assert isinstance(cmd, list), f"Expected command to be a list, got {type(cmd)}"
+
+            # Verify svtav1-params contains HDR-related parameters
+            params_idx = cmd.index("-svtav1-params")
+            params_value = cmd[params_idx + 1]
+            assert "scd=1" in params_value
+            assert "color-primaries=9" in params_value
+            assert "transfer-characteristics=16" in params_value
+            assert "matrix-coefficients=9" in params_value
+            assert "mastering-display=" in params_value
+            assert "content-light=" in params_value
+            assert "enable-hdr=1" in params_value

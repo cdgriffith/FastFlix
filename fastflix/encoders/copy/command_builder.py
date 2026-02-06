@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import shlex
+
 from fastflix.encoders.common.helpers import Command, generate_all
 from fastflix.models.fastflix import FastFlix
 
@@ -13,15 +15,21 @@ def build(fastflix: FastFlix):
     elif "rotation" in fastflix.current_video.current_video_stream.get("side_data_list", [{}])[0]:
         rotation = abs(int(fastflix.current_video.current_video_stream.side_data_list[0].rotation))
 
-    rot = ""
+    rot = []
     # if fastflix.current_video.video_settings.rotate != 0:
-    #     rot = f"-display_rotation:s:v {rotation + (fastflix.current_video.video_settings.rotate * 90)}"
+    #     rot = ["-display_rotation:s:v", str(rotation + (fastflix.current_video.video_settings.rotate * 90))]
     if fastflix.current_video.video_settings.output_path.name.lower().endswith("mp4"):
-        rot = f"-metadata:s:v rotate={rotation + (fastflix.current_video.video_settings.rotate * 90)}"
+        rot = ["-metadata:s:v", f"rotate={rotation + (fastflix.current_video.video_settings.rotate * 90)}"]
+
+    extra = (
+        shlex.split(fastflix.current_video.video_settings.video_encoder_settings.extra)
+        if fastflix.current_video.video_settings.video_encoder_settings.extra
+        else []
+    )
 
     return [
         Command(
-            command=f"{beginning} {rot} {fastflix.current_video.video_settings.video_encoder_settings.extra} {ending}",
+            command=beginning + rot + extra + ending,
             name="No Video Encoding",
             exe="ffmpeg",
         )

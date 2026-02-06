@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import shlex
+
 from fastflix.encoders.common.helpers import Command, generate_all
 from fastflix.models.encode import WebPSettings
 from fastflix.models.fastflix import FastFlix
@@ -9,11 +11,27 @@ def build(fastflix: FastFlix):
 
     beginning, ending, output_fps = generate_all(fastflix, "libwebp", audio=False, subs=False)
 
+    extra = shlex.split(settings.extra) if settings.extra else []
+
+    command = (
+        beginning
+        + [
+            "-lossless",
+            "1" if settings.lossless.lower() in ("1", "yes") else "0",
+            "-compression_level",
+            str(settings.compression),
+            "-qscale",
+            str(settings.qscale),
+            "-preset",
+            settings.preset,
+        ]
+        + extra
+        + ending
+    )
+
     return [
         Command(
-            command=f"{beginning}  -lossless {'1' if settings.lossless.lower() in ('1', 'yes') else '0'} "
-            f"-compression_level {settings.compression} "
-            f"-qscale {settings.qscale} -preset {settings.preset} {settings.extra} {ending}",
+            command=command,
             name="WebP",
             exe="ffmpeg",
         ),

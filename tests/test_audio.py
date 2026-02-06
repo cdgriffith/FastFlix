@@ -405,7 +405,7 @@ class TestBuildAudioAttributeError:
         )
         # Should not raise AttributeError
         result = build_audio([track])
-        assert "-c:0 aac" in result
+        assert "-c:0" in result and "aac" in result
 
     def test_build_audio_with_raw_info_missing_channel_layout(self):
         """Test that build_audio handles raw_info without channel_layout."""
@@ -425,4 +425,4 @@ class TestBuildAudioAttributeError:
         )
         # Should fall back to stereo without crashing
         result = build_audio([track])
-        assert "-c:0 aac" in result
+        assert "-c:0" in result and "aac" in result

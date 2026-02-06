@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import shlex
 
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details
 from fastflix.models.encode import VAAPIH264Settings
@@ -12,7 +13,16 @@ logger = logging.getLogger("fastflix")
 
 def build(fastflix: FastFlix):
     settings: VAAPIH264Settings = fastflix.current_video.video_settings.video_encoder_settings
-    start_extra = f"-init_hw_device vaapi=hwdev:{settings.vaapi_device} -hwaccel vaapi -hwaccel_device hwdev -hwaccel_output_format vaapi "
+    start_extra = [
+        "-init_hw_device",
+        f"vaapi=hwdev:{settings.vaapi_device}",
+        "-hwaccel",
+        "vaapi",
+        "-hwaccel_device",
+        "hwdev",
+        "-hwaccel_output_format",
+        "vaapi",
+    ]
     beginning, ending, output_fps = generate_all(
         fastflix,
         "h264_vaapi",
@@ -21,23 +31,29 @@ def build(fastflix: FastFlix):
         vaapi=True,
     )
 
-    beginning += (
-        f"-rc_mode {settings.rc_mode} "
-        f"-async_depth {settings.async_depth} "
-        f"-b_depth {settings.b_depth} "
-        f"-idr_interval {settings.idr_interval} "
-        f"{generate_color_details(fastflix)} "
-        "-filter_hw_device hwdev "
+    beginning.extend(
+        [
+            "-rc_mode",
+            str(settings.rc_mode),
+            "-async_depth",
+            str(settings.async_depth),
+            "-b_depth",
+            str(settings.b_depth),
+            "-idr_interval",
+            str(settings.idr_interval),
+        ]
     )
+    beginning.extend(generate_color_details(fastflix))
+    beginning.extend(["-filter_hw_device", "hwdev"])
 
     if settings.aud:
-        beginning += "-aud 1 "
+        beginning.extend(["-aud", "1"])
 
     if settings.low_power:
-        beginning += "-low-power 1 "
+        beginning.extend(["-low-power", "1"])
 
     if settings.level:
-        beginning += f"-level {settings.level} "
+        beginning.extend(["-level", str(settings.level)])
 
     # ffmpeg -init_hw_device vaapi=foo:/dev/dri/renderD128  -hwaccel_device foo -i input.mp4 -filter_hw_device foo -vf 'format=nv12|vaapi,hwupload'
 
@@ -68,11 +84,15 @@ def build(fastflix: FastFlix):
     pass_type = "bitrate" if settings.bitrate else "QP"
 
     if not settings.bitrate:
-        command_1 = f"{beginning} -qp {settings.qp} {settings.extra} {ending}"
+        command_1 = (
+            beginning + ["-qp", str(settings.qp)] + (shlex.split(settings.extra) if settings.extra else []) + ending
+        )
         return [Command(command=command_1, name=f"{pass_type}", exe="ffmpeg")]
 
     # if settings.single_pass:
-    command_1 = f"{beginning} -b:v {settings.bitrate} {settings.extra} {ending}"
+    command_1 = (
+        beginning + ["-b:v", settings.bitrate] + (shlex.split(settings.extra) if settings.extra else []) + ending
+    )
     return [Command(command=command_1, name=f"{pass_type}", exe="ffmpeg")]
     # else:
     #     command_1 = f"{beginning} -b:v {settings.bitrate} -pass 1 {settings.extra if settings.extra_both_passes else ''} -an -f matroska {null}"

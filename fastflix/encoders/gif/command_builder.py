@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import secrets
+import shlex
 
 from fastflix.encoders.common.helpers import Command, generate_filters
 from fastflix.models.encode import GIFSettings
 from fastflix.models.fastflix import FastFlix
-from fastflix.shared import clean_file_string
+from fastflix.shared import sanitize
 
 
 def build(fastflix: FastFlix):
@@ -43,6 +44,7 @@ def build(fastflix: FastFlix):
     )
 
     # Palette generation filters include the base filters + palettegen
+    # This returns List[str] since raw_filters=False (default)
     palettegen_filters = generate_filters(
         selected_track=video_settings.selected_track,
         source=fastflix.current_video.source,
@@ -61,29 +63,33 @@ def build(fastflix: FastFlix):
         custom_filters=f"fps={settings.fps},palettegen{args}",
     )
 
-    output_video = clean_file_string(fastflix.current_video.video_settings.output_path)
+    output_video = str(sanitize(fastflix.current_video.video_settings.output_path))
 
-    beginning = (
-        f'"{fastflix.config.ffmpeg}" -y '
-        f"{f'-ss {video_settings.start_time}' if video_settings.start_time else ''} "
-        f"{f'-to {video_settings.end_time}' if video_settings.end_time else ''} "
-        f"{f'-r {video_settings.source_fps} ' if video_settings.source_fps else ''}"
-        f' -i "{fastflix.current_video.source}" '
-    )
-    if settings.extra:
-        beginning += "  "
+    beginning = [str(fastflix.config.ffmpeg), "-y"]
+    if video_settings.start_time:
+        beginning.extend(["-ss", str(video_settings.start_time)])
+    if video_settings.end_time:
+        beginning.extend(["-to", str(video_settings.end_time)])
+    if video_settings.source_fps:
+        beginning.extend(["-r", str(video_settings.source_fps)])
+    beginning.extend(["-i", str(fastflix.current_video.source)])
 
     temp_palette = fastflix.current_video.work_path / f"temp_palette_{secrets.token_hex(10)}.png"
 
-    command_1 = (
-        f'{beginning} {palettegen_filters} {settings.extra if settings.extra_both_passes else ""} -y "{temp_palette}"'
-    )
+    extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
+    extra = shlex.split(settings.extra) if settings.extra else []
+
+    command_1 = beginning + palettegen_filters + extra_both + ["-y", str(temp_palette)]
 
     # For GIF creation, apply same base filters then use palette
     # Format: [base_filters];[v][1:v]paletteuse=dither={dither}[o]
+    filter_complex = f"{base_filters};[v][1:v]paletteuse=dither={settings.dither}[o]"
     command_2 = (
-        f'{beginning} -i "{temp_palette}" '
-        f'-filter_complex "{base_filters};[v][1:v]paletteuse=dither={settings.dither}[o]" -map "[o]" {settings.extra} -y "{output_video}" '
+        beginning
+        + ["-i", str(temp_palette)]
+        + ["-filter_complex", filter_complex, "-map", "[o]"]
+        + extra
+        + ["-y", output_video]
     )
 
     return [

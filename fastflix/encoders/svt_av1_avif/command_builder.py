@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import shlex
 
 import reusables
 
@@ -17,7 +18,8 @@ def build(fastflix: FastFlix):
     settings: SVTAVIFSettings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending, output_fps = generate_all(fastflix, "libsvtav1", audio=False)
 
-    beginning += f"-strict experimental -preset {settings.speed} {generate_color_details(fastflix)} "
+    beginning.extend(["-strict", "experimental", "-preset", str(settings.speed)])
+    beginning.extend(generate_color_details(fastflix))
 
     svtav1_params = settings.svtav1_params.copy()
 
@@ -66,15 +68,17 @@ def build(fastflix: FastFlix):
                 svtav1_params.append("enable-hdr=1")
 
     if svtav1_params:
-        beginning += f' -svtav1-params "{":".join(svtav1_params)}" '
+        beginning.extend(["-svtav1-params", ":".join(svtav1_params)])
 
     pass_type = "bitrate" if settings.bitrate else "QP"
 
+    extra = shlex.split(settings.extra) if settings.extra else []
+
     if settings.bitrate:
-        command_1 = f"{beginning} -b:v {settings.bitrate} {settings.extra} -f avif {ending}"
+        command_1 = beginning + ["-b:v", settings.bitrate] + extra + ["-f", "avif"] + ending
 
     elif settings.qp is not None:
-        command_1 = f"{beginning} -{settings.qp_mode} {settings.qp} {settings.extra} -f avif {ending}"
+        command_1 = beginning + [f"-{settings.qp_mode}", str(settings.qp)] + extra + ["-f", "avif"] + ending
     else:
         return []
     return [Command(command=command_1, name=f"{pass_type}", exe="ffmpeg")]

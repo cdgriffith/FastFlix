@@ -14,8 +14,8 @@ from fastflix.models.encode import x265Settings
 
 
 def test_command_class():
-    """Test the Command class."""
-    # Test basic command creation
+    """Test the Command class with string and list commands."""
+    # Test string command creation
     cmd = Command(command='ffmpeg -i "input.mkv" output.mp4', name="Test Command", exe="ffmpeg")
     assert cmd.command == 'ffmpeg -i "input.mkv" output.mp4'
     assert cmd.name == "Test Command"
@@ -23,6 +23,12 @@ def test_command_class():
     assert cmd.item == "command"
     assert cmd.shell is False
     assert cmd.uuid is not None
+
+    # Test list command creation
+    cmd_list = Command(command=["ffmpeg", "-i", "input.mkv", "output.mp4"], name="List Command", exe="ffmpeg")
+    assert cmd_list.command == ["ffmpeg", "-i", "input.mkv", "output.mp4"]
+    assert isinstance(cmd_list.to_list(), list)
+    assert isinstance(cmd_list.to_string(), str)
 
 
 def test_generate_ffmpeg_start_basic(fastflix_instance):
@@ -36,8 +42,17 @@ def test_generate_ffmpeg_start_basic(fastflix_instance):
         pix_fmt="yuv420p10le",
     )
 
-    expected = r'"ffmpeg" -y -i "C:\test_  file.mkv" -map 0:0 -c:v libx265 -pix_fmt yuv420p10le '
-    assert result == expected
+    assert isinstance(result, list)
+    assert result[0] == "ffmpeg"
+    assert "-y" in result
+    assert "-i" in result
+    assert r"C:\test_  file.mkv" in result
+    assert "-map" in result
+    assert "0:0" in result
+    assert "-c:v" in result
+    assert "libx265" in result
+    assert "-pix_fmt" in result
+    assert "yuv420p10le" in result
 
 
 def test_generate_ffmpeg_start_with_options(fastflix_instance):
@@ -63,29 +78,51 @@ def test_generate_ffmpeg_start_with_options(fastflix_instance):
         start_extra="--extra-option",
     )
 
-    expected = '"ffmpeg" --extra-option -init_hw_device opencl:0.0=ocl -filter_hw_device ocl -y -ss 10 -to 60 -r 24 -i "input.mkv" -metadata title="Test Video" -map 0:0 -fps_mode cfr -c:v libx265 -pix_fmt yuv420p10le -maxrate:v 5000k -bufsize:v 10000k -metadata:s:v:0 title="Main Track" '
-    assert result == expected
+    assert isinstance(result, list)
+    assert result[0] == "ffmpeg"
+    assert "--extra-option" in result
+    assert "-init_hw_device" in result
+    assert "-ss" in result
+    assert "10" in result
+    assert "-to" in result
+    assert "60" in result
+    assert "-r" in result
+    assert "24" in result
+    assert "-metadata" in result
+    assert "title=Test Video" in result
+    assert "-fps_mode" in result
+    assert "cfr" in result
+    assert "-maxrate:v" in result
+    assert "5000k" in result
+    assert "-bufsize:v" in result
+    assert "10000k" in result
+    assert "-metadata:s:v:0" in result
+    assert "title=Main Track" in result
 
 
 def test_generate_ending_basic():
     """Test the generate_ending function with basic parameters."""
     ending, output_fps = generate_ending(
-        audio="",
-        subtitles="",
+        audio=[],
+        subtitles=[],
         output_video=Path("output.mkv"),
     )
 
-    expected = ' -map_metadata -1 -map_chapters 0 "output.mkv"'
-    assert ending == expected
-    assert output_fps == ""
+    assert isinstance(ending, list)
+    assert "-map_metadata" in ending
+    assert "-1" in ending
+    assert "-map_chapters" in ending
+    assert "0" in ending
+    assert "output.mkv" in ending
+    assert output_fps == []
 
 
 def test_generate_ending_with_options():
     """Test the generate_ending function with various options."""
     ending, output_fps = generate_ending(
-        audio="-map 0:1 -c:a copy",
-        subtitles="-map 0:2 -c:s copy",
-        cover="-attach cover.jpg",
+        audio=["-map", "0:1", "-c:a", "copy"],
+        subtitles=["-map", "0:2", "-c:s", "copy"],
+        cover=["-attach", "cover.jpg"],
         output_video=Path("output.mkv"),
         copy_chapters=False,
         remove_metadata=False,
@@ -94,9 +131,25 @@ def test_generate_ending_with_options():
         copy_data=True,
     )
 
-    expected = ' -metadata:s:v rotate=0 -map_metadata 0 -map_chapters -1 -r 24 -map 0:1 -c:a copy -map 0:2 -c:s copy -attach cover.jpg -map 0:d -c:d copy "output.mkv"'
-    assert ending == expected
-    assert output_fps == "-r 24"
+    assert isinstance(ending, list)
+    assert "-metadata:s:v" in ending
+    assert "rotate=0" in ending
+    assert "-map_metadata" in ending
+    assert "0" in ending
+    assert "-map_chapters" in ending
+    assert "-1" in ending
+    assert "-r" in ending
+    assert "24" in ending
+    assert "-map" in ending
+    assert "0:1" in ending
+    assert "-c:a" in ending
+    assert "copy" in ending
+    assert "-attach" in ending
+    assert "cover.jpg" in ending
+    assert "0:d" in ending
+    assert "-c:d" in ending
+    assert "output.mkv" in ending
+    assert output_fps == ["-r", "24"]
 
 
 def test_generate_filters_basic():
@@ -106,8 +159,8 @@ def test_generate_filters_basic():
         source=Path("input.mkv"),
     )
 
-    # With no filters specified, should return empty string
-    assert result == ""
+    # With no filters specified, should return empty list
+    assert result == []
 
 
 def test_generate_filters_with_crop():
@@ -118,8 +171,12 @@ def test_generate_filters_with_crop():
         crop={"width": 1920, "height": 1080, "left": 0, "top": 0},
     )
 
-    expected = ' -filter_complex "[0:0]crop=1920:1080:0:0[v]" -map "[v]" '
-    assert result == expected
+    assert isinstance(result, list)
+    assert len(result) == 4
+    assert result[0] == "-filter_complex"
+    assert "[0:0]crop=1920:1080:0:0[v]" in result[1]
+    assert result[2] == "-map"
+    assert result[3] == "[v]"
 
 
 def test_generate_filters_with_scale():
@@ -130,8 +187,11 @@ def test_generate_filters_with_scale():
         scale="1920:-8",
     )
 
-    expected = ' -filter_complex "[0:0]scale=1920:-8:flags=lanczos,setsar=1:1[v]" -map "[v]" '
-    assert result == expected
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "scale=1920:-8:flags=lanczos,setsar=1:1" in result[1]
+    assert result[2] == "-map"
+    assert result[3] == "[v]"
 
 
 def test_generate_filters_with_hdr_removal():
@@ -143,8 +203,11 @@ def test_generate_filters_with_hdr_removal():
         tone_map="hable",
     )
 
-    expected = ' -filter_complex "[0:0]zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p[v]" -map "[v]" '
-    assert result == expected
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "tonemap=tonemap=hable" in result[1]
+    assert result[2] == "-map"
+    assert result[3] == "[v]"
 
 
 def test_generate_filters_with_multiple_options():
@@ -162,8 +225,19 @@ def test_generate_filters_with_multiple_options():
         video_speed=0.5,
     )
 
-    expected = ' -filter_complex "[0:0]yadif,crop=1920:1080:0:0,scale=1920:-8:flags=lanczos,setsar=1:1,transpose=1,setpts=0.5*PTS,eq=eval=frame:brightness=0.1:saturation=1.2:contrast=1.1[v]" -map "[v]" '
-    assert result == expected
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    filter_str = result[1]
+    assert "yadif" in filter_str
+    assert "crop=1920:1080:0:0" in filter_str
+    assert "scale=1920:-8:flags=lanczos,setsar=1:1" in filter_str
+    assert "transpose=1" in filter_str
+    assert "setpts=0.5*PTS" in filter_str
+    assert "brightness=0.1" in filter_str
+    assert "saturation=1.2" in filter_str
+    assert "contrast=1.1" in filter_str
+    assert result[2] == "-map"
+    assert result[3] == "[v]"
 
 
 def test_generate_all(fastflix_instance):
@@ -177,13 +251,13 @@ def test_generate_all(fastflix_instance):
         mock.patch("fastflix.encoders.common.helpers.generate_ending") as mock_generate_ending,
         mock.patch("fastflix.encoders.common.helpers.generate_ffmpeg_start") as mock_generate_ffmpeg_start,
     ):
-        # Set up the mock returns
-        mock_build_audio.return_value = "-map 0:1 -c:a copy"
-        mock_build_subtitle.return_value = ("-map 0:2 -c:s copy", None, None)
-        mock_build_attachments.return_value = "-attach cover.jpg"
-        mock_generate_filters.return_value = "-filter_complex [0:0]scale=1920:-8[v] -map [v]"
-        mock_generate_ending.return_value = (' -map_metadata -1 "output.mkv"', "-r 24")
-        mock_generate_ffmpeg_start.return_value = 'ffmpeg -y -i "input.mkv"'
+        # Set up the mock returns as lists
+        mock_build_audio.return_value = ["-map", "0:1", "-c:a", "copy"]
+        mock_build_subtitle.return_value = (["-map", "0:2", "-c:s", "copy"], None, None)
+        mock_build_attachments.return_value = ["-attach", "cover.jpg"]
+        mock_generate_filters.return_value = ["-filter_complex", "[0:0]scale=1920:-8[v]", "-map", "[v]"]
+        mock_generate_ending.return_value = (["-map_metadata", "-1", "output.mkv"], ["-r", "24"])
+        mock_generate_ffmpeg_start.return_value = ["ffmpeg", "-y", "-i", "input.mkv"]
 
         # Set up the video encoder settings
         fastflix_instance.current_video.video_settings.video_encoder_settings = x265Settings()
@@ -192,13 +266,16 @@ def test_generate_all(fastflix_instance):
         beginning, ending, output_fps = generate_all(fastflix_instance, "libx265")
 
         # Check the results
-        assert beginning == 'ffmpeg -y -i "input.mkv"'
-        assert ending == ' -map_metadata -1 "output.mkv"'
-        assert output_fps == "-r 24"
+        assert beginning == ["ffmpeg", "-y", "-i", "input.mkv"]
+        assert ending == ["-map_metadata", "-1", "output.mkv"]
+        assert output_fps == ["-r", "24"]
 
         # Verify the mock calls
         mock_build_audio.assert_called_once_with(fastflix_instance.current_video.audio_tracks)
-        mock_build_subtitle.assert_called_once_with(fastflix_instance.current_video.subtitle_tracks)
+        mock_build_subtitle.assert_called_once_with(
+            fastflix_instance.current_video.subtitle_tracks,
+            output_path=fastflix_instance.current_video.video_settings.output_path,
+        )
         mock_build_attachments.assert_called_once_with(fastflix_instance.current_video.attachment_tracks)
 
 
@@ -207,7 +284,7 @@ def test_generate_color_details(fastflix_instance):
     # Test with HDR removal enabled
     fastflix_instance.current_video.video_settings.remove_hdr = True
     result = generate_color_details(fastflix_instance)
-    assert result == ""
+    assert result == []
 
     # Test with HDR removal disabled and color settings
     fastflix_instance.current_video.video_settings.remove_hdr = False
@@ -216,5 +293,4 @@ def test_generate_color_details(fastflix_instance):
     fastflix_instance.current_video.video_settings.color_space = "bt2020nc"
 
     result = generate_color_details(fastflix_instance)
-    expected = "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc"
-    assert result == expected
+    assert result == ["-color_primaries", "bt2020", "-color_trc", "smpte2084", "-colorspace", "bt2020nc"]

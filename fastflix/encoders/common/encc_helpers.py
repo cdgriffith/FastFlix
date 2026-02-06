@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+from typing import List
 
 from fastflix.models.video import SubtitleTrack, AudioTrack
 from fastflix.encoders.common.audio import lossless
@@ -29,7 +30,7 @@ def audio_quality_converter(quality, codec, channels=2, track_number=1):
             return f" --audio-bitrate {track_number}?{base * channels}k "
 
 
-def rigaya_avformat_reader(fastflix: FastFlix) -> str:
+def rigaya_avformat_reader(fastflix: FastFlix) -> List[str]:
     # Avisynth reader 	avs
     # VapourSynth reader 	vpy
     # avi reader 	avi
@@ -39,34 +40,36 @@ def rigaya_avformat_reader(fastflix: FastFlix) -> str:
     ending = fastflix.current_video.source.suffix
     if fastflix.current_video.video_settings.video_encoder_settings.decoder not in ("Hardware", "Software"):
         if ending.lower() in (".avs", ".vpy", ".avi", ".y4m", ".yuv"):
-            return ""
-    return "--avhw" if fastflix.current_video.video_settings.video_encoder_settings.decoder == "Hardware" else "--avsw"
+            return []
+    return (
+        ["--avhw"] if fastflix.current_video.video_settings.video_encoder_settings.decoder == "Hardware" else ["--avsw"]
+    )
 
 
-def rigaya_auto_options(fastflix: FastFlix) -> str:
+def rigaya_auto_options(fastflix: FastFlix) -> List[str]:
     reader_format = rigaya_avformat_reader(fastflix)
     if not reader_format:
-        output = ""
+        output = []
         if fastflix.current_video.video_settings.color_space:
-            output += f"--colormatrix {fastflix.current_video.video_settings.color_space} "
+            output.extend(["--colormatrix", fastflix.current_video.video_settings.color_space])
         if fastflix.current_video.video_settings.color_transfer:
-            output += f"--transfer {fastflix.current_video.video_settings.color_transfer} "
+            output.extend(["--transfer", fastflix.current_video.video_settings.color_transfer])
         if fastflix.current_video.video_settings.color_primaries:
-            output += f"--colorprim {fastflix.current_video.video_settings.color_primaries} "
+            output.extend(["--colorprim", fastflix.current_video.video_settings.color_primaries])
         return output
 
-    return " ".join(
-        [
-            "--chromaloc auto",
-            "--colorrange auto",
-            "--colormatrix",
-            (fastflix.current_video.video_settings.color_space or "auto"),
-            "--transfer",
-            (fastflix.current_video.video_settings.color_transfer or "auto"),
-            "--colorprim",
-            (fastflix.current_video.video_settings.color_primaries or "auto"),
-        ]
-    )
+    return [
+        "--chromaloc",
+        "auto",
+        "--colorrange",
+        "auto",
+        "--colormatrix",
+        (fastflix.current_video.video_settings.color_space or "auto"),
+        "--transfer",
+        (fastflix.current_video.video_settings.color_transfer or "auto"),
+        "--colorprim",
+        (fastflix.current_video.video_settings.color_primaries or "auto"),
+    ]
 
 
 def pa_builder(settings: VCEEncCAVCSettings | VCEEncCAV1Settings | VCEEncCSettings):
@@ -99,9 +102,9 @@ def get_stream_pos(streams) -> dict:
     return {x.index: i for i, x in enumerate(streams, start=1)}
 
 
-def build_audio(audio_tracks: list[AudioTrack], audio_streams):
+def build_audio(audio_tracks: list[AudioTrack], audio_streams) -> List[str]:
     if not audio_tracks:
-        return ""
+        return []
     command_list = []
     copies = []
     track_ids = set()
@@ -115,14 +118,16 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
         track_ids.add(track.index)
         audio_id = stream_ids[track.index]
         if track.language:
-            command_list.append(f"--audio-metadata {audio_id}?language={track.language}")
+            command_list.extend(["--audio-metadata", f"{audio_id}?language={track.language}"])
         if not track.conversion_codec or track.conversion_codec == "none":
             copies.append(str(audio_id))
         elif track.conversion_codec:
             downmix = (
-                f"--audio-stream {audio_id}?:{track.downmix}" if track.downmix and track.downmix != "No Downmix" else ""
+                ["--audio-stream", f"{audio_id}?:{track.downmix}"]
+                if track.downmix and track.downmix != "No Downmix"
+                else []
             )
-            bitrate = ""
+            bitrate_parts = []
             if track.conversion_codec not in lossless:
                 if track.conversion_bitrate:
                     conversion_bitrate = (
@@ -130,41 +135,44 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams):
                         if track.conversion_bitrate.lower().endswith(("k", "m", "g", "kb", "mb", "gb"))
                         else f"{track.conversion_bitrate}k"
                     )
-                    bitrate = f"--audio-bitrate {audio_id}?{conversion_bitrate} "
+                    bitrate_parts = ["--audio-bitrate", f"{audio_id}?{conversion_bitrate}"]
                 else:
-                    bitrate = audio_quality_converter(
+                    quality_str = audio_quality_converter(
                         track.conversion_aq or 0, track.conversion_codec, track.raw_info.get("channels"), audio_id
                     )
-            command_list.append(
-                f"{downmix} --audio-codec {audio_id}?{track.conversion_codec} {bitrate} "
-                f"--audio-metadata {audio_id}?clear"
-            )
+                    bitrate_parts = quality_str.split()
+            command_list.extend(downmix)
+            command_list.extend(["--audio-codec", f"{audio_id}?{track.conversion_codec}"])
+            command_list.extend(bitrate_parts)
+            command_list.extend(["--audio-metadata", f"{audio_id}?clear"])
 
         if track.title:
-            command_list.append(
-                f'--audio-metadata {audio_id}?title="{track.title}" '
-                f'--audio-metadata {audio_id}?handler="{track.title}" '
-            )
+            command_list.extend(["--audio-metadata", f"{audio_id}?title={track.title}"])
+            command_list.extend(["--audio-metadata", f"{audio_id}?handler={track.title}"])
 
         added = ""
         for disposition, is_set in track.dispositions.items():
             if is_set:
                 added += f"{disposition},"
         if added:
-            command_list.append(f"--audio-disposition {audio_id}?{added.rstrip(',')}")
+            command_list.extend(["--audio-disposition", f"{audio_id}?{added.rstrip(',')}"])
         else:
-            command_list.append(f"--audio-disposition {audio_id}?unset")
+            command_list.extend(["--audio-disposition", f"{audio_id}?unset"])
     if not command_list:
-        return ""
-    return f" --audio-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
+        return []
+    result = []
+    if copies:
+        result.extend(["--audio-copy", ",".join(copies)])
+    result.extend(command_list)
+    return result
 
 
-def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video_height: int) -> str:
+def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video_height: int) -> List[str]:
     command_list = []
     copies = []
     stream_ids = get_stream_pos(subtitle_streams)
     if not subtitle_tracks:
-        return ""
+        return []
 
     scale = ",scale=2.0" if video_height > 1800 else ""
 
@@ -173,7 +181,7 @@ def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video
             continue
         sub_id = stream_ids[track.index]
         if track.burn_in:
-            command_list.append(f"--vpp-subburn track={sub_id}{scale}")
+            command_list.extend(["--vpp-subburn", f"track={sub_id}{scale}"])
         else:
             copies.append(str(sub_id))
             added = ""
@@ -181,13 +189,16 @@ def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video
                 if is_set:
                     added += f"{disposition},"
             if added:
-                command_list.append(f"--sub-disposition {sub_id}?{added.rstrip(',')}")
+                command_list.extend(["--sub-disposition", f"{sub_id}?{added.rstrip(',')}"])
             else:
-                command_list.append(f"--sub-disposition {sub_id}?unset")
+                command_list.extend(["--sub-disposition", f"{sub_id}?unset"])
 
-            command_list.append(f"--sub-metadata  {sub_id}?language='{track.language}'")
+            command_list.extend(["--sub-metadata", f"{sub_id}?language={track.language}"])
 
     if not command_list:
-        return ""
-    commands = f" --sub-copy {','.join(copies)} {' '.join(command_list)}" if copies else f" {' '.join(command_list)}"
-    return commands
+        return []
+    result = []
+    if copies:
+        result.extend(["--sub-copy", ",".join(copies)])
+    result.extend(command_list)
+    return result

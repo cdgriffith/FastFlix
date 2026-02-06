@@ -79,8 +79,14 @@ class BackgroundRunner:
         try:
             stdout_handle = open(self.output_file, "w")
             stderr_handle = open(self.error_output_file, "w")
+            if isinstance(command, list):
+                popen_cmd = command
+            elif not shell:
+                popen_cmd = shlex.split(command.replace("\\", "\\\\"))
+            else:
+                popen_cmd = command
             self.process = Popen(
-                shlex.split(command.replace("\\", "\\\\")) if not shell and isinstance(command, str) else command,
+                popen_cmd,
                 shell=shell,
                 cwd=work_dir,
                 stdout=stdout_handle,
