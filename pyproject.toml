@@ -25,6 +25,13 @@ dependencies = [
     "wmi>=1.5.1; sys_platform == 'win32'",
     "ffmpeg-normalize>=1.31.3,<2.0",
     "reusables>=1.0.0",
+    "pgsrip>=0.1.0",
+    "pytesseract>=0.3.0",
+    "babelfish>=0.6.0",
+    "cleanit>=0.4.0",
+    "trakit>=0.2.0",
+    "opencv-python>=4.8.0",
+    "pysrt>=1.1.0",
 ]
 
 [project.scripts]

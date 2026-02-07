@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import importlib.util
 import logging
 import os
 from pathlib import Path
@@ -46,13 +47,14 @@ class ThumbnailCreator(QtCore.QThread):
 
 
 class ExtractSubtitleSRT(QtCore.QThread):
-    def __init__(self, app: FastFlixApp, main, index, signal, language):
+    def __init__(self, app: FastFlixApp, main, index, signal, language, use_ocr=False):
         super().__init__(main)
         self.main = main
         self.app = app
         self.index = index
         self.signal = signal
         self.language = language
+        self.use_ocr = use_ocr
 
     def run(self):
         subtitle_format = self._get_subtitle_format()
@@ -62,6 +64,9 @@ class ExtractSubtitleSRT(QtCore.QThread):
             )
             self.signal.emit()
             return
+
+        # Flag to track if we need OCR conversion after extraction
+        should_convert_to_srt = False
 
         if subtitle_format == "srt":
             extension = "srt"
@@ -75,6 +80,8 @@ class ExtractSubtitleSRT(QtCore.QThread):
         elif subtitle_format == "pgs":
             extension = "sup"
             output_args = ["-c", "copy"]
+            # If OCR is requested, we'll extract .sup first, then convert after
+            should_convert_to_srt = self.use_ocr and self.app.fastflix.config.enable_pgs_ocr
         else:
             self.main.thread_logging_signal.emit(
                 f"WARNING:{t('Subtitle Track')} {self.index} {t('is not in supported format (SRT, ASS, SSA, PGS), skipping extraction')}: {subtitle_format}"
@@ -115,6 +122,13 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 )
             else:
                 self.main.thread_logging_signal.emit(f"INFO:{t('Extracted subtitles successfully')}")
+
+                # If this is PGS and OCR was requested, convert the .sup to .srt
+                if subtitle_format == "pgs" and should_convert_to_srt:
+                    if self._convert_sup_to_srt(filename):
+                        self.main.thread_logging_signal.emit(f"INFO:{t('Successfully converted to SRT with OCR')}")
+                    else:
+                        self.main.thread_logging_signal.emit(f"WARNING:{t('OCR conversion failed, kept .sup file')}")
         self.signal.emit()
 
     def _get_subtitle_format(self):
@@ -163,6 +177,138 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 f"WARNING:{t('Error checking subtitle format for track')} {self.index} - {err}"
             )
             return None
+
+    def _check_pgsrip_dependencies(self) -> bool:
+        """Check all required dependencies for pgsrip OCR conversion"""
+        missing = []
+
+        # Check tesseract (auto-detected from PATH or config)
+        if not self.app.fastflix.config.tesseract_path:
+            missing.append("tesseract-ocr")
+
+        # Check mkvmerge (CRITICAL - required by pgsrip but not documented)
+        if not self.app.fastflix.config.mkvmerge_path:
+            missing.append("mkvtoolnix")
+
+        # Check if pgsrip Python library is available
+        if importlib.util.find_spec("pgsrip") is None:
+            missing.append("pgsrip (Python library)")
+
+        if missing:
+            self.main.thread_logging_signal.emit(
+                f"ERROR:{t('Missing dependencies for PGS OCR')}: {', '.join(missing)}\n\n"
+                f"Install instructions:\n"
+                f"  pgsrip: pip install pgsrip\n"
+                f"  Linux: sudo apt install tesseract-ocr mkvtoolnix\n"
+                f"  macOS: brew install tesseract mkvtoolnix\n"
+                f"  Windows:\n"
+                f"    - Tesseract: https://github.com/UB-Mannheim/tesseract/wiki\n"
+                f"    - MKVToolNix: https://mkvtoolnix.download/downloads.html"
+            )
+            return False
+
+        return True
+
+    def _convert_sup_to_srt(self, sup_filepath: str) -> bool:
+        """Convert PGS subtitle to .srt using pgsrip OCR by processing the original MKV
+
+        Args:
+            sup_filepath: Path to the extracted .sup file (used for naming output)
+
+        Returns:
+            True if conversion successful, False otherwise
+        """
+        # Check dependencies first
+        if not self._check_pgsrip_dependencies():
+            return False
+
+        try:
+            self.main.thread_logging_signal.emit(
+                f"INFO:{t('Converting .sup to .srt using OCR')} (this may take 3-5 minutes)..."
+            )
+
+            # Import pgsrip Python API
+            from pgsrip import pgsrip, Mkv, Options
+            from babelfish import Language as BabelLanguage
+
+            # Set environment variables for pgsrip to find tesseract and mkvextract
+            if self.app.fastflix.config.tesseract_path:
+                tesseract_dir = str(Path(self.app.fastflix.config.tesseract_path).parent)
+                os.environ["PATH"] = f"{tesseract_dir}{os.pathsep}{os.environ.get('PATH', '')}"
+                os.environ["TESSERACT_CMD"] = str(self.app.fastflix.config.tesseract_path)
+
+            if self.app.fastflix.config.mkvmerge_path:
+                mkvtoolnix_dir = str(Path(self.app.fastflix.config.mkvmerge_path).parent)
+                os.environ["PATH"] = f"{mkvtoolnix_dir}{os.pathsep}{os.environ.get('PATH', '')}"
+
+            # pgsrip needs the original MKV file, not the extracted .sup
+            sup_path = Path(sup_filepath)
+            video_path = Path(self.main.input_video)
+            media = Mkv(str(video_path))
+
+            # Configure options for pgsrip
+            try:
+                # Detect if language code is 2-letter or 3-letter
+                if len(self.language) == 2:
+                    babel_lang = BabelLanguage.fromalpha2(self.language)
+                elif len(self.language) == 3:
+                    babel_lang = BabelLanguage(self.language)
+                else:
+                    babel_lang = BabelLanguage.fromname(self.language)
+
+                options = Options(
+                    languages={babel_lang},
+                    overwrite=True,
+                    one_per_lang=True,
+                )
+            except Exception:
+                # Fallback to English if language code is invalid
+                options = Options(
+                    languages={BabelLanguage("eng")},
+                    overwrite=True,
+                    one_per_lang=True,
+                )
+
+            # Get list of existing .srt files before conversion
+            existing_srts = set(video_path.parent.glob("*.srt"))
+
+            # Run pgsrip conversion using Python API
+            pgsrip.rip(media, options)
+
+            # Find newly created .srt files
+            current_srts = set(video_path.parent.glob("*.srt"))
+            new_srts = current_srts - existing_srts
+
+            if not new_srts:
+                raise Exception(f"pgsrip completed but no .srt file found in {video_path.parent}")
+
+            # Get the first new .srt file
+            srt_files = list(new_srts)
+
+            # Move the .srt file to the expected location (same dir as .sup was)
+            created_srt = srt_files[0]
+            expected_srt = sup_path.with_suffix(".srt")
+
+            if created_srt != expected_srt:
+                # Move/rename to expected location
+                import shutil
+
+                shutil.move(str(created_srt), str(expected_srt))
+
+            self.main.thread_logging_signal.emit(f"INFO:{t('OCR conversion successful')}: {expected_srt.name}")
+
+            # Optionally delete the .sup file since we have .srt now
+            try:
+                sup_path.unlink()
+                self.main.thread_logging_signal.emit(f"INFO:{t('Removed .sup file, kept .srt')}")
+            except Exception:
+                pass
+
+            return True
+
+        except Exception as err:
+            self.main.thread_logging_signal.emit(f"ERROR:{t('OCR conversion failed')}: {err}")
+            return False
 
 
 class AudioNoramlize(QtCore.QThread):

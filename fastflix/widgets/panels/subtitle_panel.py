@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import importlib.util
 from typing import Union
 
 from box import Box
@@ -108,8 +109,38 @@ class Subtitle(QtWidgets.QTabWidget):
             {t("Cannot remove afterwards!")}
             """
         )
-        self.widgets.extract = QtWidgets.QPushButton(t("Extract"))
-        self.widgets.extract.clicked.connect(self.extract)
+
+        # Setup extract button with OCR option for PGS subtitles
+        if sub_track.subtitle_type == "pgs":
+            self.widgets.extract = QtWidgets.QPushButton(t("Extract"))
+            extract_menu = QtWidgets.QMenu(self)
+
+            # Always offer .sup extraction (fast, no dependencies)
+            extract_menu.addAction(t("Extract as .sup (image - fast)"), lambda: self.extract(use_ocr=False))
+
+            # Check if OCR dependencies are available
+            ocr_action = extract_menu.addAction(
+                t("Convert to .srt (OCR - 3-5 min)"), lambda: self.extract(use_ocr=True)
+            )
+
+            # Enable OCR option only if user enabled it AND dependencies are available
+            if not self.app.fastflix.config.enable_pgs_ocr:
+                ocr_action.setEnabled(False)
+                ocr_action.setToolTip(t("Enable in Settings > 'Enable PGS to SRT OCR conversion'"))
+            else:
+                # Check if pgsrip Python library is available
+                pgsrip_ok = importlib.util.find_spec("pgsrip") is not None
+
+                if not (
+                    self.app.fastflix.config.tesseract_path and self.app.fastflix.config.mkvmerge_path and pgsrip_ok
+                ):
+                    ocr_action.setEnabled(False)
+                    ocr_action.setToolTip(t("Missing dependencies: tesseract, mkvtoolnix, or pgsrip"))
+
+            self.widgets.extract.setMenu(extract_menu)
+        else:
+            self.widgets.extract = QtWidgets.QPushButton(t("Extract"))
+            self.widgets.extract.clicked.connect(self.extract)
 
         self.gif_label = QtWidgets.QLabel(self)
         self.movie = QtGui.QMovie(loading_movie)
@@ -173,9 +204,14 @@ class Subtitle(QtWidgets.QTabWidget):
         layout.addWidget(self.widgets.down_button)
         return layout
 
-    def extract(self):
+    def extract(self, use_ocr=False):
         worker = ExtractSubtitleSRT(
-            self.parent.app, self.parent.main, self.index, self.extract_completed_signal, language=self.language
+            self.parent.app,
+            self.parent.main,
+            self.index,
+            self.extract_completed_signal,
+            language=self.language,
+            use_ocr=use_ocr,
         )
         worker.start()
         self.gif_label.show()
