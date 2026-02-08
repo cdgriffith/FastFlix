@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import importlib.util
 import logging
 import shutil
 from pathlib import Path
@@ -50,11 +49,13 @@ class Settings(QtWidgets.QWidget):
         self.setMinimumSize(600, 200)
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         layout = QtWidgets.QGridLayout()
+        layout.setColumnStretch(1, 1)
 
         ffmpeg_label = QtWidgets.QLabel("FFmpeg")
         self.ffmpeg_path = QtWidgets.QLineEdit()
         self.ffmpeg_path.setText(str(self.app.fastflix.config.ffmpeg))
         ffmpeg_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        ffmpeg_path_button.setFixedWidth(30)
         ffmpeg_path_button.clicked.connect(lambda: self.select_ffmpeg())
         layout.addWidget(ffmpeg_label, 0, 0)
         layout.addWidget(self.ffmpeg_path, 0, 1)
@@ -64,6 +65,7 @@ class Settings(QtWidgets.QWidget):
         self.ffprobe_path = QtWidgets.QLineEdit()
         self.ffprobe_path.setText(str(self.app.fastflix.config.ffprobe))
         ffprobe_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        ffprobe_path_button.setFixedWidth(30)
         ffprobe_path_button.clicked.connect(lambda: self.select_ffprobe())
         layout.addWidget(ffprobe_label, 1, 0)
         layout.addWidget(self.ffprobe_path, 1, 1)
@@ -73,6 +75,7 @@ class Settings(QtWidgets.QWidget):
         self.work_dir = QtWidgets.QLineEdit()
         self.work_dir.setText(str(self.app.fastflix.config.work_path))
         work_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        work_path_button.setFixedWidth(30)
         work_path_button.clicked.connect(lambda: self.select_work_path())
         layout.addWidget(work_dir_label, 2, 0)
         layout.addWidget(self.work_dir, 2, 1)
@@ -102,6 +105,7 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.language_combo, 5, 1)
 
         config_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_FileIcon))
+        config_button.setFixedWidth(30)
         config_button.clicked.connect(
             lambda: QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(self.config_file)))
         )
@@ -160,6 +164,7 @@ class Settings(QtWidgets.QWidget):
         if self.app.fastflix.config.nvencc:
             self.nvencc_path.setText(str(self.app.fastflix.config.nvencc))
         nvenc_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        nvenc_path_button.setFixedWidth(30)
         nvenc_path_button.clicked.connect(lambda: self.select_nvencc())
         layout.addWidget(nvencc_label, 12, 0)
         layout.addWidget(self.nvencc_path, 12, 1)
@@ -173,6 +178,7 @@ class Settings(QtWidgets.QWidget):
         if self.app.fastflix.config.vceencc:
             self.vceenc_path.setText(str(self.app.fastflix.config.vceencc))
         vceenc_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        vceenc_path_button.setFixedWidth(30)
         vceenc_path_button.clicked.connect(lambda: self.select_vceenc())
         layout.addWidget(vceenc_label, 13, 0)
         layout.addWidget(self.vceenc_path, 13, 1)
@@ -186,6 +192,7 @@ class Settings(QtWidgets.QWidget):
         if self.app.fastflix.config.qsvencc:
             self.qsvenc_path.setText(str(self.app.fastflix.config.qsvencc))
         qsvencc_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        qsvencc_path_button.setFixedWidth(30)
         qsvencc_path_button.clicked.connect(lambda: self.select_qsvencc())
         layout.addWidget(qsvencc_label, 14, 0)
         layout.addWidget(self.qsvenc_path, 14, 1)
@@ -199,6 +206,7 @@ class Settings(QtWidgets.QWidget):
         if self.app.fastflix.config.hdr10plus_parser:
             self.hdr10_parser_path.setText(str(self.app.fastflix.config.hdr10plus_parser))
         hdr10_parser_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        hdr10_parser_path_button.setFixedWidth(30)
         hdr10_parser_path_button.clicked.connect(lambda: self.select_hdr10_parser())
         layout.addWidget(hdr10_parser_label, 15, 0)
         layout.addWidget(self.hdr10_parser_path, 15, 1)
@@ -212,6 +220,7 @@ class Settings(QtWidgets.QWidget):
         self.output_label_path_button = QtWidgets.QPushButton(
             icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon)
         )
+        self.output_label_path_button.setFixedWidth(30)
         self.output_label_path_button.clicked.connect(lambda: self.select_output_directory())
         layout.addWidget(output_label, 17, 0)
         layout.addWidget(self.output_path_line_edit, 17, 1)
@@ -237,6 +246,7 @@ class Settings(QtWidgets.QWidget):
         if self.app.fastflix.config.source_directory:
             self.source_path_line_edit.setText(str(self.app.fastflix.config.source_directory))
         source_label_path_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        source_label_path_button.setFixedWidth(30)
         source_label_path_button.clicked.connect(lambda: self.select_source_directory())
         layout.addWidget(source_label, 19, 0)
         layout.addWidget(self.source_path_line_edit, 19, 1)
@@ -270,21 +280,8 @@ class Settings(QtWidgets.QWidget):
         self.disable_deinterlace_button = QtWidgets.QCheckBox(t("Disable interlace check"))
         self.disable_deinterlace_button.setChecked(self.app.fastflix.config.disable_deinterlace_check)
 
-
-        # PGS OCR Settings
-        self.enable_pgs_ocr = QtWidgets.QCheckBox(t("Enable PGS to SRT OCR conversion"))
-        self.enable_pgs_ocr.setChecked(self.app.fastflix.config.enable_pgs_ocr)
-        self.enable_pgs_ocr.setToolTip(
-            t("Convert image-based PGS subtitles to text SRT using OCR.\nTypically takes 3-5 minutes per movie.")
-        )
-
-        # Dependency status
-        self.ocr_status_label = QtWidgets.QLabel()
-        self.update_ocr_dependency_status()
-
         self.use_keyframes_for_preview = QtWidgets.QCheckBox(t("Use keyframes for preview images"))
         self.use_keyframes_for_preview.setChecked(self.app.fastflix.config.use_keyframes_for_preview)
-
 
         # Layouts
         layout.addWidget(self.use_sane_audio, 7, 0, 1, 2)
@@ -303,10 +300,42 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.disable_end_message, 22, 0, 1, 3)
         layout.addWidget(self.disable_deinterlace_button, 23, 0, 1, 3)
 
-        layout.addWidget(self.enable_pgs_ocr, 24, 0, 1, 2)
-        layout.addWidget(self.ocr_status_label, 24, 2, 1, 1)
+        layout.addWidget(self.use_keyframes_for_preview, 24, 0, 1, 3)
 
-        layout.addWidget(self.use_keyframes_for_preview, 25, 0, 1, 3)
+        # Detected External Programs section
+        detected_group = QtWidgets.QGroupBox(t("Detected External Programs"))
+        detected_layout = QtWidgets.QGridLayout()
+        detected_layout.setColumnStretch(1, 1)
+
+        programs = [
+            (self.app.fastflix.config.nvencc is not None, "NVEncC", t("NVIDIA hardware encoding")),
+            (self.app.fastflix.config.qsvencc is not None, "QSVEncC", t("Intel hardware encoding")),
+            (self.app.fastflix.config.vceencc is not None, "VCEEncC", t("AMD hardware encoding")),
+            (self.app.fastflix.config.hdr10plus_parser is not None, "HDR10+ Parser", t("HDR10+ metadata extraction")),
+            (self.app.fastflix.config.pgs_ocr_available, "Tesseract + pgsrip", t("PGS subtitle OCR")),
+        ]
+
+        for row, (detected, name, description) in enumerate(programs):
+            icon = "\u2714" if detected else "\u2718"
+            color = "green" if detected else "red"
+            status_label = QtWidgets.QLabel(f'<span style="color: {color}; font-size: 14px;">{icon}</span>')
+            detected_layout.addWidget(status_label, row, 0)
+            detected_layout.addWidget(QtWidgets.QLabel(f"<b>{name}</b>"), row, 1)
+            detected_layout.addWidget(QtWidgets.QLabel(description), row, 2)
+
+        if not self.app.fastflix.config.pgs_ocr_available:
+            ocr_link = QtWidgets.QLabel(
+                link(
+                    "https://github.com/cdgriffith/FastFlix/wiki/PGS-OCR-Setup",
+                    t("PGS OCR setup instructions"),
+                    self.app.fastflix.config.theme,
+                )
+            )
+            ocr_link.setOpenExternalLinks(True)
+            detected_layout.addWidget(ocr_link, len(programs), 0, 1, 3)
+
+        detected_group.setLayout(detected_layout)
+        layout.addWidget(detected_group, 25, 0, 1, 3)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addStretch()
@@ -316,32 +345,6 @@ class Settings(QtWidgets.QWidget):
         layout.addLayout(button_layout, 27, 0, 1, 3)
 
         self.setLayout(layout)
-
-    def update_ocr_dependency_status(self):
-        """Update the OCR dependency status display"""
-        # Use config paths which use find_ocr_tool() - handles non-PATH locations
-        tesseract_ok = self.app.fastflix.config.tesseract_path is not None
-        mkvmerge_ok = self.app.fastflix.config.mkvmerge_path is not None
-
-        # Check if pgsrip Python library is available
-        pgsrip_ok = importlib.util.find_spec("pgsrip") is not None
-
-        status_parts = []
-        status_parts.append("✓ tesseract" if tesseract_ok else "✗ tesseract")
-        status_parts.append("✓ mkvtoolnix" if mkvmerge_ok else "✗ mkvtoolnix")
-        status_parts.append("✓ pgsrip" if pgsrip_ok else "✗ pgsrip")
-
-        status_text = " | ".join(status_parts)
-
-        if not all([tesseract_ok, mkvmerge_ok, pgsrip_ok]):
-            status_text += "\n" + link(
-                "https://github.com/cdgriffith/FastFlix/wiki/PGS-OCR-Setup",
-                "Click here for installation instructions",
-                self.app.fastflix.config.theme,
-            )
-
-        self.ocr_status_label.setText(status_text)
-        self.ocr_status_label.setOpenExternalLinks(True)
 
     def save(self):
         new_ffmpeg = Path(self.ffmpeg_path.text())
@@ -426,7 +429,6 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.sticky_tabs = self.sticky_tabs.isChecked()
         self.app.fastflix.config.disable_complete_message = self.disable_end_message.isChecked()
         self.app.fastflix.config.disable_deinterlace_check = self.disable_deinterlace_button.isChecked()
-        self.app.fastflix.config.enable_pgs_ocr = self.enable_pgs_ocr.isChecked()
         self.app.fastflix.config.use_keyframes_for_preview = self.use_keyframes_for_preview.isChecked()
 
         self.main.config_update()

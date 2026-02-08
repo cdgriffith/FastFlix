@@ -5,6 +5,11 @@ import traceback
 from multiprocessing import freeze_support
 from pathlib import Path
 
+if sys.platform == "win32":
+    import ctypes
+
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("cdgriffith.FastFlix")
+
 from fastflix.entry import main
 
 

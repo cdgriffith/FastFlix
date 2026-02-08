@@ -23,6 +23,11 @@ logger = logging.getLogger("fastflix")
 
 
 def create_app(enable_scaling):
+    if sys.platform == "win32":
+        import ctypes
+
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("cdgriffith.FastFlix")
+
     if enable_scaling:
         if hasattr(QtCore.Qt, "AA_EnableHighDpiScaling"):
             QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
@@ -41,7 +46,12 @@ def create_app(enable_scaling):
     selected_font = next((f for f in font_preference if f in available_fonts), "Sans Serif")
     my_font = QtGui.QFont(selected_font, 9)
     main_app.setFont(my_font)
-    main_app.setWindowIcon(QtGui.QIcon(main_icon))
+    icon = QtGui.QIcon()
+    icon.addFile(main_icon, QtCore.QSize(16, 16))
+    icon.addFile(main_icon, QtCore.QSize(32, 32))
+    icon.addFile(main_icon, QtCore.QSize(48, 48))
+    icon.addFile(main_icon, QtCore.QSize(256, 256))
+    main_app.setWindowIcon(icon)
     return main_app
 
 
@@ -264,7 +274,7 @@ def app_setup(
     container.move(screen_geometry.center() - container.rect().center())
 
     if not app.fastflix.config.disable_version_check:
-        latest_fastflix(app=app, show_new_dialog=False)
+        QtCore.QTimer.singleShot(500, lambda: latest_fastflix(app=app, show_new_dialog=False))
 
     return app
 

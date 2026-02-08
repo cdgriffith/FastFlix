@@ -23,6 +23,11 @@ except ImportError:
 
 def separate_app_process(worker_queue, status_queue, log_queue, portable_mode=False):
     """This prevents any QT components being imported in the main process"""
+    if sys.platform == "win32":
+        import ctypes
+
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("cdgriffith.FastFlix")
+
     from fastflix.models.config import Config
 
     settings = Config().pre_load(portable_mode=portable_mode)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import importlib.util
+from pathlib import Path
 from typing import Union
 
 from box import Box
@@ -49,7 +49,7 @@ language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined
 
 
 class Subtitle(QtWidgets.QTabWidget):
-    extract_completed_signal = QtCore.Signal()
+    extract_completed_signal = QtCore.Signal(str)
 
     def __init__(self, app, parent, index, enabled=True, first=False):
         self.loading = True
@@ -123,21 +123,22 @@ class Subtitle(QtWidgets.QTabWidget):
                 t("Convert to .srt (OCR - 3-5 min)"), lambda: self.extract(use_ocr=True)
             )
 
-            # Enable OCR option only if user enabled it AND dependencies are available
-            if not self.app.fastflix.config.enable_pgs_ocr:
+            # Enable OCR option only if dependencies are available
+            if not self.app.fastflix.config.pgs_ocr_available:
                 ocr_action.setEnabled(False)
-                ocr_action.setToolTip(t("Enable in Settings > 'Enable PGS to SRT OCR conversion'"))
-            else:
-                # Check if pgsrip Python library is available
-                pgsrip_ok = importlib.util.find_spec("pgsrip") is not None
-
-                if not (
-                    self.app.fastflix.config.tesseract_path and self.app.fastflix.config.mkvmerge_path and pgsrip_ok
-                ):
-                    ocr_action.setEnabled(False)
-                    ocr_action.setToolTip(t("Missing dependencies: tesseract, mkvtoolnix, or pgsrip"))
+                ocr_action.setToolTip(t("Missing dependencies: tesseract or pgsrip"))
 
             self.widgets.extract.setMenu(extract_menu)
+            # Scale the dropdown arrow to match the up/down button icon sizes
+            arrow_size = scaler.scale(12)
+            arrow_right = scaler.scale(6)
+            arrow_pad = arrow_size + arrow_right + scaler.scale(4)
+            self.widgets.extract.setStyleSheet(
+                f"QPushButton {{ padding-right: {arrow_pad}px; }}"
+                f" QPushButton::menu-indicator {{ width: {arrow_size}px; height: {arrow_size}px;"
+                f" subcontrol-position: right center; subcontrol-origin: padding;"
+                f" right: {arrow_right}px; }}"
+            )
         else:
             self.widgets.extract = QtWidgets.QPushButton(t("Extract"))
             self.widgets.extract.clicked.connect(self.extract)
@@ -146,7 +147,21 @@ class Subtitle(QtWidgets.QTabWidget):
         self.movie = QtGui.QMovie(loading_movie)
         self.movie.setScaledSize(QtCore.QSize(25, 25))
         self.gif_label.setMovie(self.movie)
-        # self.movie.start()
+
+        self.cancel_button = QtWidgets.QPushButton(t("Cancel"))
+        self.cancel_button.clicked.connect(self.cancel_extraction)
+        self.cancel_button.hide()
+
+        self.view_button = QtWidgets.QPushButton(
+            QtGui.QIcon(get_icon("onyx-file-search", self.parent.app.fastflix.config.theme)), ""
+        )
+        self.view_button.setToolTip(t("Open containing folder"))
+        self.view_button.setFixedWidth(scaler.scale(30))
+        self.view_button.clicked.connect(self.view_extracted_file)
+        self.view_button.hide()
+
+        self._worker = None
+        self._last_extracted_path = ""
 
         self.disposition_widget = Disposition(
             app=self.app, parent=self, track_name=f"Subtitle Track {index}", track_index=index, audio=False
@@ -155,7 +170,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.widgets.disposition.clicked.connect(self.disposition_widget.show)
 
         disposition_layout = QtWidgets.QHBoxLayout()
-        disposition_layout.addWidget(QtWidgets.QLabel(t("Dispositions")))
+        # disposition_layout.addWidget(QtWidgets.QLabel(t("Dispositions")))
         disposition_layout.addWidget(self.widgets.disposition)
 
         self.grid = QtWidgets.QGridLayout()
@@ -163,10 +178,17 @@ class Subtitle(QtWidgets.QTabWidget):
         self.grid.addWidget(self.widgets.track_number, 0, 1)
         self.grid.addWidget(self.widgets.title, 0, 2)
         self.grid.setColumnStretch(2, True)
-        # if sub_track.subtitle_type == "text":
         if sub_track.subtitle_type in ["text", "pgs"]:
-            self.grid.addWidget(self.widgets.extract, 0, 3)
-            self.grid.addWidget(self.gif_label, 0, 3)
+            self.extract_container = QtWidgets.QWidget()
+            extract_layout = QtWidgets.QHBoxLayout()
+            extract_layout.setContentsMargins(0, 0, 0, 0)
+            extract_layout.setSpacing(2)
+            extract_layout.addWidget(self.widgets.extract)
+            extract_layout.addWidget(self.gif_label)
+            extract_layout.addWidget(self.cancel_button)
+            extract_layout.addWidget(self.view_button)
+            self.extract_container.setLayout(extract_layout)
+            self.grid.addWidget(self.extract_container, 0, 3)
             self.gif_label.hide()
 
         self.grid.addLayout(disposition_layout, 0, 4)
@@ -181,11 +203,30 @@ class Subtitle(QtWidgets.QTabWidget):
         self.updating_burn = False
         self.extract_completed_signal.connect(self.extraction_complete)
 
-    def extraction_complete(self):
-        self.grid.addWidget(self.widgets.extract, 0, 3)
+    def extraction_complete(self, path: str = ""):
         self.movie.stop()
         self.gif_label.hide()
+        self.cancel_button.hide()
         self.widgets.extract.show()
+        self._worker = None
+        if path:
+            self._last_extracted_path = path
+            self.view_button.show()
+        else:
+            self.view_button.hide()
+
+    def cancel_extraction(self):
+        if self._worker is not None:
+            self._worker.cancel()
+        self.movie.stop()
+        self.gif_label.hide()
+        self.cancel_button.hide()
+        self.widgets.extract.show()
+
+    def view_extracted_file(self):
+        if self._last_extracted_path:
+            parent_dir = str(Path(self._last_extracted_path).parent)
+            QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(parent_dir))
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
@@ -204,18 +245,48 @@ class Subtitle(QtWidgets.QTabWidget):
         layout.addWidget(self.widgets.down_button)
         return layout
 
+    def _get_extract_extension(self, use_ocr=False):
+        """Determine the file extension for subtitle extraction."""
+        sub_track = self.app.fastflix.current_video.subtitle_tracks[self.index]
+        if sub_track.subtitle_type == "pgs":
+            return "srt" if use_ocr else "sup"
+        codec_name = sub_track.raw_info.get("codec_name", "").lower() if sub_track.raw_info else ""
+        if codec_name == "ass":
+            return "ass"
+        elif codec_name == "ssa":
+            return "ssa"
+        return "srt"
+
     def extract(self, use_ocr=False):
-        worker = ExtractSubtitleSRT(
+        extension = self._get_extract_extension(use_ocr=use_ocr)
+        output_dir = Path(self.parent.main.output_video).parent
+        input_name = Path(self.parent.main.input_video).stem
+        default_name = f"{input_name}.{self.index}.{self.language}.{extension}"
+        default_path = str(output_dir / default_name)
+
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            caption=t("Save Subtitle As"),
+            dir=default_path,
+            filter=f"{t('Subtitle Files')} (*.{extension})",
+        )
+        if not filename:
+            return
+
+        self._worker = ExtractSubtitleSRT(
             self.parent.app,
             self.parent.main,
             self.index,
             self.extract_completed_signal,
             language=self.language,
             use_ocr=use_ocr,
+            output_path=filename,
         )
-        worker.start()
-        self.gif_label.show()
+        self._worker.start()
         self.widgets.extract.hide()
+        self.view_button.hide()
+        self.gif_label.show()
+        self.cancel_button.show()
         self.movie.start()
 
     def init_language(self, sub_track: SubtitleTrack):
@@ -332,10 +403,13 @@ class SubtitleList(FlixList):
         for track in self.tracks:
             track.widgets.enable_check.setChecked(select)
 
-    def lang_match(self, track: Union[Subtitle, dict], ignore_first=False):
+    def lang_match(self, track: Union[Subtitle, SubtitleTrack, dict], ignore_first=False):
         if not self.app.fastflix.config.opt("subtitle_select"):
             return False
-        language = track.language if isinstance(track, Subtitle) else track.get("tags", {}).get("language", "")
+        if isinstance(track, (Subtitle, SubtitleTrack)):
+            language = track.language
+        else:
+            language = track.get("tags", {}).get("language", "")
         if not self.app.fastflix.config.opt("subtitle_select_preferred_language"):
             if (
                 not ignore_first

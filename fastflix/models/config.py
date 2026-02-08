@@ -205,7 +205,7 @@ def find_ocr_tool(name):
                 if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
                     return file
 
-                  
+
 def find_rigaya_encoder(base_name: str) -> Path | None:
     """Find Rigaya encoder binaries with case-insensitive search."""
     # Try common binary names in order of preference
@@ -218,7 +218,6 @@ def find_rigaya_encoder(base_name: str) -> Path | None:
     for candidate in candidates:
         if location := where(candidate):
             return location
-
 
 
 class Config(BaseModel):
@@ -298,6 +297,11 @@ class Config(BaseModel):
 
     use_keyframes_for_preview: bool = True
 
+    @property
+    def pgs_ocr_available(self) -> bool:
+        import importlib.util
+
+        return self.tesseract_path is not None and importlib.util.find_spec("pgsrip") is not None
 
     def encoder_opt(self, profile_name, profile_option_name):
         encoder_settings = getattr(self.profiles[self.selected_profile], profile_name)

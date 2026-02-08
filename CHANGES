@@ -2,21 +2,33 @@
 
 ## Version 5.13.0
 
+* Adding #709 PGS to SRT OCR subtitle extraction feature (thanks to mikeSGman)
+* Adding #712 audio profile title options: No Title, Generate Title, and Custom Title (thanks to gaalos)
+* Adding "Detected External Programs" section to Settings showing status of NVEncC, QSVEncC, VCEEncC, HDR10+ Parser, and PGS OCR tools
 * Adding resizable columns to Concatenation Builder window with minimum widths based on header text
 * Adding Keyframe checkbox to Settings menu as "Use keyframes for preview images" option (default enabled)
 * Adding preview time slider to overlay at bottom of preview image
 * Adding time display next to preview slider in H:MM:SS format
-* Adding #712 audio profile title options: No Title, Generate Title, and Custom Title
 * Adding async queue saving to prevent GUI blocking during queue operations
 * Adding atomic file writes for queue to prevent corruption from interrupted saves
 * Adding file-based locking for queue operations to prevent race conditions between instances
 * Adding graceful shutdown handling for worker process and background threads
 * Adding Start/End Time tab to right-side options panel between Size and Crop tabs with compact 3-column layout
-* Fixing #695 Qt6 decimal input fields enforcing locale-specific decimal separators (comma vs dot) by forcing C locale
-* Fixing #696 RAW command display boxes too small on macOS by using actual document size for height calculation
-* Fixing #687 dialogs staying on top of all windows and unable to minimize by removing WindowStaysOnTopHint flag
-* Fixing #337 #700 #597 refactoring all FFmpeg command building from string concatenation to List[str] to fix shlex.split() failures with quotes, special characters in titles, and Windows path handling issues
-* Fixing #481 MP4 subtitle copy mode using wrong codec - now uses mov_text instead of copy for MP4 containers
+* Adding save dialog for subtitle extraction allowing users to choose output location, defaulting to the output directory
+* Fixing #337 #700 #597 refactoring all FFmpeg command building from string concatenation to List[str] to fix shlex.split() failures with quotes, special characters in titles, and Windows path handling issues (thanks to Xoanon88 and Buzz0016)
+* Fixing #481 MP4 subtitle copy mode using wrong codec - now uses mov_text instead of copy for MP4 containers (thanks to wmonte75)
+* Fixing #687 dialogs staying on top of all windows and unable to minimize by removing WindowStaysOnTopHint flag (thanks to Krawk)
+* Fixing #688 typo in changelog (thanks to luzpaz)
+* Fixing #695 Qt6 decimal input fields enforcing locale-specific decimal separators (comma vs dot) by forcing C locale (thanks to isben)
+* Fixing #696 RAW command display boxes too small on macOS by using actual document size for height calculation (thanks to isben)
+* Fixing #707 Rigaya encoder binary detection with case-insensitive search (thanks to anne-o-pixel)
+* Fixing #708 process priority niceness values inverted on Linux and removed Realtime option on non-Windows (thanks to JacobDev1)
+* Fixing Windows taskbar showing generic icon instead of FastFlix icon by setting AppUserModelID and deferring blocking version check until after event loop starts
+* Fixing Settings browse buttons column being too wide by setting fixed width and column stretch
+* Fixing PGS OCR requiring manual checkbox enable - now auto-detects availability from tesseract and pgsrip
+* Fixing PGS OCR subtitle extraction using pgsrip.Sup to process already-extracted .sup file instead of re-extracting from MKV (fixes wrong file path and mkvextract failures)
+* Fixing extract dropdown arrow being oversized by scaling the menu-indicator to match up/down button proportions
+* Fixing QFont::setPointSize warnings in PyInstaller executables by using pt instead of px for stylesheet font sizes
 * Fixing video track selector showing unnecessarily when source video has only one video track
 * Fixing visual border between filename area and video track selector
 * Fixing test suite hanging due to missing QApplication in PySide6 widget tests

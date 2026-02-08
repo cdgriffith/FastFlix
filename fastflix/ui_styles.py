@@ -24,10 +24,13 @@ ONYX_COLORS = {
 
 def get_scaled_stylesheet(theme: str) -> str:
     """Generate a scaled stylesheet based on the current theme and scale factors."""
-    font_size = scaler.scale_font(FONTS.LARGE)
+    # Use pt instead of px to prevent QFont::setPointSize warnings in frozen executables.
+    # Pixel-based font-size causes pointSize() to return -1, which triggers Qt warnings
+    # when fonts propagate to child widgets. Convert px to pt (at 96 DPI: pt = px * 0.75).
+    font_size_pt = max(6, round(scaler.scale_font(FONTS.LARGE) * 0.75))
     border_radius = scaler.scale(10)
 
-    base = f"QWidget {{ font-size: {font_size}px; }}"
+    base = f"QWidget {{ font-size: {font_size_pt}pt; }}"
 
     if theme == "onyx":
         base += f"""
@@ -50,14 +53,14 @@ def get_scaled_stylesheet(theme: str) -> str:
 
 def get_video_options_stylesheet(theme: str) -> str:
     """Generate scaled stylesheet for the video options tab widget."""
-    tab_font_size = scaler.scale_font(FONTS.MEDIUM)
+    tab_font_size_pt = max(6, round(scaler.scale_font(FONTS.MEDIUM) * 0.75))
     combo_min_height = scaler.scale(22)
 
     if theme == "onyx":
         return f"""
             * {{ background-color: #4f5962; color: white; }}
             QTabWidget {{ margin-top: {scaler.scale(34)}px; background-color: #4f5962; }}
-            QTabBar {{ font-size: {tab_font_size}px; background-color: #4f5962; }}
+            QTabBar {{ font-size: {tab_font_size_pt}pt; background-color: #4f5962; }}
             QComboBox {{ min-height: {combo_min_height}px; }}
         """
     return ""
@@ -65,8 +68,8 @@ def get_video_options_stylesheet(theme: str) -> str:
 
 def get_menubar_stylesheet() -> str:
     """Generate scaled stylesheet for the menu bar."""
-    font_size = scaler.scale_font(FONTS.LARGE)
-    return f"font-size: {font_size}px"
+    font_size_pt = max(6, round(scaler.scale_font(FONTS.LARGE) * 0.75))
+    return f"font-size: {font_size_pt}pt"
 
 
 def get_onyx_combobox_style() -> str:
