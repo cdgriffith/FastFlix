@@ -140,6 +140,8 @@ class MainWidgets(BaseModel):
     preview_time_label: QtWidgets.QLabel = None
     resolution_drop_down: QtWidgets.QComboBox = None
     resolution_custom: QtWidgets.QLineEdit = None
+    video_res_label: QtWidgets.QLabel = None
+    output_res_label: QtWidgets.QLabel = None
     output_directory: QtWidgets.QPushButton = None
     output_directory_combo: QtWidgets.QComboBox = None
     output_type_combo: QtWidgets.QComboBox = Field(default_factory=QtWidgets.QComboBox)
@@ -434,9 +436,12 @@ class Main(QtWidgets.QWidget):
         self.widgets.thumb_time.setMinimum(1)
         self.widgets.thumb_time.setMaximum(100)
         self.widgets.thumb_time.setValue(25)
+        self.widgets.thumb_time.setSingleStep(1)
+        self.widgets.thumb_time.setPageStep(10)
         self.widgets.thumb_time.setAutoFillBackground(False)
         self.widgets.thumb_time.sliderReleased.connect(self.thumb_time_change)
         self.widgets.thumb_time.valueChanged.connect(self.update_preview_time_label)
+        self.widgets.thumb_time.installEventFilter(self)
         self.widgets.thumb_time.setStyleSheet("""
             QSlider {
                 background: rgba(255, 255, 255, 0);
@@ -489,6 +494,20 @@ class Main(QtWidgets.QWidget):
 
     def thumb_time_change(self):
         self.generate_thumbnail()
+
+    def eventFilter(self, obj, event):
+        if obj == self.widgets.thumb_time:
+            if event.type() == QtCore.QEvent.KeyRelease and event.key() in (
+                QtCore.Qt.Key_Left,
+                QtCore.Qt.Key_Right,
+                QtCore.Qt.Key_Up,
+                QtCore.Qt.Key_Down,
+                QtCore.Qt.Key_PageUp,
+                QtCore.Qt.Key_PageDown,
+            ):
+                if not event.isAutoRepeat():
+                    self.thumb_time_change()
+        return super().eventFilter(obj, event)
 
     def get_temp_work_path(self):
         new_temp = self.app.fastflix.config.work_path / f"temp_{get_filesafe_datetime()}_{secrets.token_hex(8)}"
@@ -607,6 +626,12 @@ class Main(QtWidgets.QWidget):
         size_layout.setSpacing(scaler.scale(8))
         size_layout.setContentsMargins(scaler.scale(8), scaler.scale(8), scaler.scale(8), scaler.scale(8))
 
+        # Resolution info labels
+        self.widgets.video_res_label = QtWidgets.QLabel(t("Video Resolution") + ": --")
+        self.widgets.output_res_label = QtWidgets.QLabel(t("Output Resolution") + ": --")
+        size_layout.addWidget(self.widgets.video_res_label)
+        size_layout.addWidget(self.widgets.output_res_label)
+
         # Resolution row
         res_row = QtWidgets.QHBoxLayout()
         res_row.setSpacing(scaler.scale(4))
@@ -695,6 +720,13 @@ class Main(QtWidgets.QWidget):
             time_field=True,
         )
         self.widgets.start_time.textChanged.connect(lambda: self.page_update())
+        start_from_preview = QtWidgets.QPushButton()
+        start_from_preview.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DesktopIcon))
+        start_from_preview.setFixedSize(scaler.scale(24), scaler.scale(28))
+        start_from_preview.setToolTip(t("Set start time from preview position"))
+        start_from_preview.clicked.connect(lambda: self.set_time_from_preview(self.widgets.start_time))
+        self.buttons.append(start_from_preview)
+        start_row.addWidget(start_from_preview)
 
         self.widgets.end_time, end_row = self.build_hoz_int_field(
             t("End"),
@@ -703,6 +735,13 @@ class Main(QtWidgets.QWidget):
             time_field=True,
         )
         self.widgets.end_time.textChanged.connect(lambda: self.page_update())
+        end_from_preview = QtWidgets.QPushButton()
+        end_from_preview.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DesktopIcon))
+        end_from_preview.setFixedSize(scaler.scale(24), scaler.scale(28))
+        end_from_preview.setToolTip(t("Set end time from preview position"))
+        end_from_preview.clicked.connect(lambda: self.set_time_from_preview(self.widgets.end_time))
+        self.buttons.append(end_from_preview)
+        end_row.addWidget(end_from_preview)
 
         time_col2.addLayout(start_row)
         time_col2.addLayout(end_row)
@@ -1095,6 +1134,66 @@ class Main(QtWidgets.QWidget):
 
         self.page_update(build_thumbnail=False)
 
+    def update_resolution_labels(self):
+        if not self.initialized or not self.app.fastflix.current_video:
+            self.widgets.video_res_label.setText(t("Video Resolution") + ": --")
+            self.widgets.output_res_label.setText(t("Output Resolution") + ": --")
+            return
+
+        src_w = self.app.fastflix.current_video.width
+        src_h = self.app.fastflix.current_video.height
+        self.widgets.video_res_label.setText(t("Video Resolution") + f": {src_w}w {src_h}h")
+
+        # Start with source dimensions, apply crop
+        out_w = src_w
+        out_h = src_h
+        try:
+            crop_top = int(self.widgets.crop.top.text() or 0)
+            crop_bottom = int(self.widgets.crop.bottom.text() or 0)
+            crop_left = int(self.widgets.crop.left.text() or 0)
+            crop_right = int(self.widgets.crop.right.text() or 0)
+            out_w -= crop_left + crop_right
+            out_h -= crop_top + crop_bottom
+        except (ValueError, AttributeError):
+            pass
+
+        if out_w <= 0 or out_h <= 0:
+            self.widgets.output_res_label.setText(t("Output Resolution") + ": --")
+            return
+
+        # Apply scale based on resolution method
+        method = self.resolution_method()
+        custom = self.resolution_custom()
+
+        if method != "auto" and custom:
+            try:
+                if method == "custom":
+                    parts = custom.split(":")
+                    if len(parts) == 2:
+                        cw, ch = int(parts[0]), int(parts[1])
+                        if cw > 0 and ch > 0:
+                            out_w, out_h = cw, ch
+                elif method == "width":
+                    new_w = int(custom)
+                    out_h = ((out_h * new_w // out_w) // 8) * 8
+                    out_w = new_w
+                elif method == "height":
+                    new_h = int(custom)
+                    out_w = ((out_w * new_h // out_h) // 8) * 8
+                    out_h = new_h
+                elif method == "long edge":
+                    pixels = int(custom)
+                    if out_w >= out_h:
+                        out_h = ((out_h * pixels // out_w) // 8) * 8
+                        out_w = pixels
+                    else:
+                        out_w = ((out_w * pixels // out_h) // 8) * 8
+                        out_h = pixels
+            except (ValueError, ZeroDivisionError):
+                pass
+
+        self.widgets.output_res_label.setText(t("Output Resolution") + f": {out_w}w {out_h}h")
+
     def reset_crop(self):
         self.loading_video = True
         self.widgets.crop.top.setText("0")
@@ -1187,13 +1286,7 @@ class Main(QtWidgets.QWidget):
             def _update_scaled_sizes(self):
                 """Update minimum size, cursor, and stylesheet based on current scale factors."""
                 self.setMinimumSize(scaler.scale(WIDTHS.PREVIEW_MIN), scaler.scale(HEIGHTS.PREVIEW_MIN))
-                self.setCursor(
-                    QtGui.QCursor(
-                        QtGui.QPixmap(get_icon("onyx-magnifier", self.main.app.fastflix.config.theme)).scaledToWidth(
-                            scaler.scale(27)
-                        )
-                    )
-                )
+                self.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.ArrowCursor))
                 border_width = scaler.scale(2)
                 margin = scaler.scale(7)
                 self.setStyleSheet(f"border: {border_width}px solid {ONYX_COLORS['primary']}; margin: {margin}px;")
@@ -1224,14 +1317,9 @@ class Main(QtWidgets.QWidget):
                 super(PreviewImage, self).resizeEvent(event)
 
             def mousePressEvent(self, QMouseEvent):
-                if (
-                    not self.main.initialized
-                    or not self.main.app.fastflix.current_video
-                    or self.main.large_preview.isVisible()
-                ):
+                if not self.main.initialized or not self.main.app.fastflix.current_video:
                     return
-                self.main.large_preview.generate_image()
-                self.main.large_preview.show()
+                self.main.widgets.thumb_time.setFocus()
                 super(PreviewImage, self).mousePressEvent(QMouseEvent)
 
         # Create container widget to hold preview image and overlay slider
@@ -1264,10 +1352,29 @@ class Main(QtWidgets.QWidget):
         self.thumb_time_overlay.setParent(self.preview_container)
         self.thumb_time_overlay.raise_()
 
+        # Large preview button at top right
+        self.large_preview_button = QtWidgets.QPushButton(self.preview_container)
+        btn_size = scaler.scale(24)
+        self.large_preview_button.setFixedSize(btn_size, btn_size)
+        self.large_preview_button.setIcon(self.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_DesktopIcon))
+        self.large_preview_button.setToolTip(t("Large Preview"))
+        self.large_preview_button.clicked.connect(self.open_large_preview)
+        self.large_preview_button.setStyleSheet(
+            "QPushButton { background: rgba(0,0,0,128); border: none; border-radius: 4px; }"
+            "QPushButton:hover { background: rgba(0,0,0,180); }"
+        )
+        self.large_preview_button.raise_()
+
         return self.preview_container
 
+    def open_large_preview(self):
+        if not self.initialized or not self.app.fastflix.current_video or self.large_preview.isVisible():
+            return
+        self.large_preview.generate_image()
+        self.large_preview.show()
+
     def reposition_thumb_overlay(self):
-        """Reposition the thumb time overlay at the bottom of the preview container."""
+        """Reposition the thumb time overlay and large preview button."""
         if hasattr(self, "thumb_time_overlay") and hasattr(self, "preview_container"):
             container_rect = self.preview_container.rect()
             overlay_height = self.thumb_time_overlay.height()
@@ -1277,6 +1384,13 @@ class Main(QtWidgets.QWidget):
                 container_rect.height() - overlay_height - margin,
                 container_rect.width() - (2 * margin),
                 overlay_height,
+            )
+        if hasattr(self, "large_preview_button") and hasattr(self, "preview_container"):
+            btn_margin = scaler.scale(15)
+            btn_size = self.large_preview_button.width()
+            self.large_preview_button.move(
+                self.preview_container.width() - btn_size - btn_margin,
+                btn_margin,
             )
 
     def modify_int(self, widget, method="add", time_field=False):
@@ -1796,6 +1910,14 @@ class Main(QtWidgets.QWidget):
         # self.widgets.convert_button.setStyleSheet("background-color:green;")
 
         self.loading_video = False
+        self.update_resolution_labels()
+
+        # Set preview slider steps: ~1 per 10 seconds, minimum 100
+        slider_steps = max(100, int(self.app.fastflix.current_video.duration / 10))
+        self.widgets.thumb_time.setMaximum(slider_steps)
+        self.widgets.thumb_time.setPageStep(max(1, slider_steps // 20))
+        self.widgets.thumb_time.setValue(max(1, slider_steps // 4))
+
         if self.app.fastflix.config.opt("auto_crop"):
             self.get_auto_crop()
 
@@ -1824,6 +1946,11 @@ class Main(QtWidgets.QWidget):
     def number_to_time(number) -> str:
         return str(timedelta(seconds=round(number, 2)))[:10]
 
+    def set_time_from_preview(self, widget):
+        if not self.app.fastflix.current_video:
+            return
+        widget.setText(self.number_to_time(self.preview_place))
+
     @property
     def start_time(self) -> float:
         return time_to_number(self.widgets.start_time.text())
@@ -1850,7 +1977,7 @@ class Main(QtWidgets.QWidget):
 
     @property
     def preview_place(self) -> Union[float, int]:
-        ticks = self.app.fastflix.current_video.duration / 100
+        ticks = self.app.fastflix.current_video.duration / self.widgets.thumb_time.maximum()
         return (self.widgets.thumb_time.value() - 1) * ticks
 
     @reusables.log_exception("fastflix", show_traceback=False)
@@ -2031,6 +2158,7 @@ class Main(QtWidgets.QWidget):
             if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
                 return
             self.last_page_update = time.time()
+            self.update_resolution_labels()
             self.video_options.refresh()
             self.build_commands()
             if build_thumbnail:

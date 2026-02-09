@@ -57,11 +57,11 @@ def build(fastflix: FastFlix):
     if stream_id:
         command.extend(["--video-streamid", str(stream_id)])
     if video.video_settings.start_time:
-        command.extend(["--seek", video.video_settings.start_time])
+        command.extend(["--seek", str(video.video_settings.start_time)])
     if video.video_settings.end_time:
-        command.extend(["--seekto", video.video_settings.end_time])
+        command.extend(["--seekto", str(video.video_settings.end_time)])
     if video.video_settings.source_fps:
-        command.extend(["--fps", video.video_settings.source_fps])
+        command.extend(["--fps", str(video.video_settings.source_fps)])
     if video.video_settings.rotate:
         command.extend(["--vpp-rotate", str(video.video_settings.rotate * 90)])
     if video.video_settings.vertical_flip or video.video_settings.horizontal_flip:
@@ -89,7 +89,7 @@ def build(fastflix: FastFlix):
     if settings.bitrate:
         command.extend(["--vbr", settings.bitrate.rstrip("k")])
     else:
-        command.extend(["--cqp", settings.cqp])
+        command.extend(["--cqp", str(settings.cqp)])
 
     if video.video_settings.maxrate:
         command.extend(["--max-bitrate", str(video.video_settings.maxrate)])

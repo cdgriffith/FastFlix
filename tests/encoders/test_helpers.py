@@ -100,6 +100,86 @@ def test_generate_ffmpeg_start_with_options(fastflix_instance):
     assert "title=Main Track" in result
 
 
+def test_generate_ffmpeg_start_with_list_start_extra(fastflix_instance):
+    """Test generate_ffmpeg_start with start_extra as a list (VAAPI-style).
+
+    VAAPI encoders pass start_extra as a list of hardware init options.
+    Previously this crashed because shlex.split() was called on the list.
+    """
+    start_extra_list = [
+        "-init_hw_device",
+        "vaapi=hwdev:/dev/dri/renderD128",
+        "-hwaccel",
+        "vaapi",
+        "-hwaccel_device",
+        "hwdev",
+        "-hwaccel_output_format",
+        "vaapi",
+    ]
+    result = generate_ffmpeg_start(
+        source=Path("input.mkv"),
+        ffmpeg=Path("ffmpeg"),
+        encoder="hevc_vaapi",
+        selected_track=0,
+        ffmpeg_version="n5.0",
+        pix_fmt="vaapi",
+        start_extra=start_extra_list,
+    )
+
+    assert isinstance(result, list)
+    # All start_extra elements should appear in the command
+    assert "-init_hw_device" in result
+    assert "vaapi=hwdev:/dev/dri/renderD128" in result
+    assert "-hwaccel" in result
+    assert "vaapi" in result
+    assert "-hwaccel_device" in result
+    assert "hwdev" in result
+    assert "-hwaccel_output_format" in result
+    # start_extra should come before -y
+    init_idx = result.index("-init_hw_device")
+    y_idx = result.index("-y")
+    assert init_idx < y_idx
+
+
+def test_generate_ffmpeg_start_with_empty_list_start_extra(fastflix_instance):
+    """Test generate_ffmpeg_start with start_extra as an empty list."""
+    result = generate_ffmpeg_start(
+        source=Path("input.mkv"),
+        ffmpeg=Path("ffmpeg"),
+        encoder="libx265",
+        selected_track=0,
+        ffmpeg_version="n5.0",
+        pix_fmt="yuv420p10le",
+        start_extra=[],
+    )
+
+    assert isinstance(result, list)
+    assert result[0] == "ffmpeg"
+    assert "-y" in result
+
+
+def test_generate_ffmpeg_start_numeric_times_are_strings(fastflix_instance):
+    """Test that numeric start_time and end_time values are converted to strings."""
+    result = generate_ffmpeg_start(
+        source=Path("input.mkv"),
+        ffmpeg=Path("ffmpeg"),
+        encoder="libx265",
+        selected_track=0,
+        ffmpeg_version="n5.0",
+        pix_fmt="yuv420p10le",
+        start_time=10.5,
+        end_time=120.0,
+    )
+
+    assert isinstance(result, list)
+    for i, element in enumerate(result):
+        assert isinstance(element, str), f"Element at index {i} is {type(element).__name__}: {element!r}"
+    assert "-ss" in result
+    assert "10.5" in result
+    assert "-to" in result
+    assert "120.0" in result
+
+
 def test_generate_ending_basic():
     """Test the generate_ending function with basic parameters."""
     ending, output_fps = generate_ending(
@@ -277,6 +357,43 @@ def test_generate_all(fastflix_instance):
             output_path=fastflix_instance.current_video.video_settings.output_path,
         )
         mock_build_attachments.assert_called_once_with(fastflix_instance.current_video.attachment_tracks)
+
+
+def test_generate_all_with_list_start_extra(fastflix_instance):
+    """Test generate_all passes list start_extra through to generate_ffmpeg_start.
+
+    VAAPI encoders pass start_extra as a list. This test verifies the parameter
+    is forwarded correctly without being mangled by shlex.split().
+    """
+    with (
+        mock.patch("fastflix.encoders.common.helpers.build_audio") as mock_build_audio,
+        mock.patch("fastflix.encoders.common.helpers.build_subtitle") as mock_build_subtitle,
+        mock.patch("fastflix.encoders.common.helpers.build_attachments") as mock_build_attachments,
+        mock.patch("fastflix.encoders.common.helpers.generate_filters") as mock_generate_filters,
+        mock.patch("fastflix.encoders.common.helpers.generate_ending") as mock_generate_ending,
+        mock.patch("fastflix.encoders.common.helpers.generate_ffmpeg_start") as mock_generate_ffmpeg_start,
+    ):
+        mock_build_audio.return_value = []
+        mock_build_subtitle.return_value = ([], None, None)
+        mock_build_attachments.return_value = []
+        mock_generate_filters.return_value = []
+        mock_generate_ending.return_value = (["output.mkv"], [])
+        mock_generate_ffmpeg_start.return_value = ["ffmpeg", "-y", "-i", "input.mkv"]
+
+        fastflix_instance.current_video.video_settings.video_encoder_settings = x265Settings()
+
+        vaapi_start_extra = [
+            "-init_hw_device",
+            "vaapi=hwdev:/dev/dri/renderD128",
+            "-hwaccel",
+            "vaapi",
+        ]
+
+        generate_all(fastflix_instance, "hevc_vaapi", start_extra=vaapi_start_extra)
+
+        # Verify start_extra was passed as-is (list, not string)
+        call_kwargs = mock_generate_ffmpeg_start.call_args
+        assert call_kwargs.kwargs["start_extra"] == vaapi_start_extra
 
 
 def test_generate_color_details(fastflix_instance):

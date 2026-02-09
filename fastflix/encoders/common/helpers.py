@@ -69,13 +69,13 @@ def generate_ffmpeg_start(
     concat: bool = False,
     enable_opencl: bool = False,
     remove_hdr: bool = True,
-    start_extra: str = "",
+    start_extra: Union[List[str], str] = "",
     **_,
 ) -> List[str]:
     command = [str(ffmpeg)]
 
     if start_extra:
-        command.extend(shlex.split(start_extra))
+        command.extend(start_extra if isinstance(start_extra, list) else shlex.split(start_extra))
 
     if enable_opencl and remove_hdr:
         command.extend(["-init_hw_device", "opencl:0.0=ocl", "-filter_hw_device", "ocl"])
@@ -324,7 +324,7 @@ def generate_all(
     subs: bool = True,
     disable_filters: bool = False,
     vaapi: bool = False,
-    start_extra: str = "",
+    start_extra: Union[List[str], str] = "",
     **filters_extra,
 ) -> Tuple[List[str], List[str], List[str]]:
     settings = fastflix.current_video.video_settings.video_encoder_settings

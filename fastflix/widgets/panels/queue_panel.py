@@ -19,6 +19,7 @@ from fastflix.models.video import Video
 from fastflix.ff_queue import get_queue, save_queue, save_queue_async
 from fastflix.resources import get_icon, get_bool_env
 from fastflix.shared import no_border, open_folder, yes_no_message, message, error_message
+from fastflix.ui_scale import scaler
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.windows_tools import allow_sleep_mode, prevent_sleep_mode
@@ -98,14 +99,14 @@ class EncodeItem(QtWidgets.QTabWidget):
             QtGui.QIcon(get_icon("play", self.parent.app.fastflix.config.theme)), t("Open Directory")
         )
         open_button.setLayoutDirection(QtCore.Qt.RightToLeft)
-        open_button.setIconSize(QtCore.QSize(14, 14))
+        open_button.setIconSize(scaler.scale_size(12, 12))
         open_button.clicked.connect(lambda: open_folder(video.video_settings.output_path.parent))
 
         view_button = QtWidgets.QPushButton(
             QtGui.QIcon(get_icon("play", self.parent.app.fastflix.config.theme)), t("Watch")
         )
         view_button.setLayoutDirection(QtCore.Qt.RightToLeft)
-        view_button.setIconSize(QtCore.QSize(14, 14))
+        view_button.setIconSize(scaler.scale_size(12, 12))
         view_button.clicked.connect(
             lambda: QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(video.video_settings.output_path)))
         )
@@ -131,8 +132,10 @@ class EncodeItem(QtWidgets.QTabWidget):
         if not self.video.status.running:
             self.widgets.cancel_button.clicked.connect(lambda: self.parent.remove_item(self.video))
             self.widgets.reload_button.clicked.connect(lambda: self.parent.reload_from_queue(self.video))
-            self.widgets.cancel_button.setFixedWidth(25)
-            self.widgets.reload_button.setFixedWidth(25)
+            self.widgets.cancel_button.setFixedWidth(scaler.scale(20))
+            self.widgets.cancel_button.setIconSize(scaler.scale_size(12, 12))
+            self.widgets.reload_button.setFixedWidth(scaler.scale(20))
+            self.widgets.reload_button.setIconSize(scaler.scale_size(12, 12))
         else:
             self.widgets.cancel_button.hide()
             self.widgets.reload_button.hide()
@@ -154,7 +157,8 @@ class EncodeItem(QtWidgets.QTabWidget):
             grid.addWidget(open_button, 0, 9)
         elif add_retry:
             grid.addWidget(self.widgets.retry_button, 0, 8)
-            self.widgets.retry_button.setFixedWidth(25)
+            self.widgets.retry_button.setFixedWidth(scaler.scale(20))
+            self.widgets.retry_button.setIconSize(scaler.scale_size(12, 12))
             self.widgets.retry_button.clicked.connect(lambda: self.parent.retry_video(self.video))
 
         right_buttons = QtWidgets.QHBoxLayout()
@@ -170,9 +174,13 @@ class EncodeItem(QtWidgets.QTabWidget):
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(0)
-        self.widgets.up_button.setFixedWidth(20)
+        self.widgets.up_button.setFixedWidth(scaler.scale(17))
+        self.widgets.up_button.setFixedHeight(scaler.scale(20))
+        self.widgets.up_button.setIconSize(scaler.scale_size(12, 12))
         self.widgets.up_button.clicked.connect(lambda: self.parent.move_up(self))
-        self.widgets.down_button.setFixedWidth(20)
+        self.widgets.down_button.setFixedWidth(scaler.scale(17))
+        self.widgets.down_button.setFixedHeight(scaler.scale(20))
+        self.widgets.down_button.setIconSize(scaler.scale_size(12, 12))
         self.widgets.down_button.clicked.connect(lambda: self.parent.move_down(self))
         layout.addWidget(self.widgets.up_button)
         layout.addWidget(self.widgets.down_button)
@@ -438,7 +446,7 @@ class EncodingQueue(FlixList):
 
         if not part_of_clear:
             self.new_source()
-        save_queue_async(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
+            # Queue is saved by new_source() -> reorder() -> save_queue_async()
 
     def reload_from_queue(self, video):
         try:

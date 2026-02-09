@@ -11268,3 +11268,78 @@ Cleaned up partial file:
   ukr: Очищено частину файлу
   kor: 일부 파일 정리
   ron: Fișier parțial curățat
+Video Resolution:
+  eng: Video Resolution
+  deu: Video-Auflösung
+  fra: Résolution vidéo
+  ita: Risoluzione video
+  spa: Resolución de vídeo
+  jpn: ビデオ解像度
+  rus: Разрешение видео
+  por: Resolução de vídeo
+  swe: Videoupplösning
+  pol: Rozdzielczość wideo
+  chs: 视频分辨率
+  ukr: Роздільна здатність відео
+  kor: 비디오 해상도
+  ron: Rezoluție video
+Output Resolution:
+  eng: Output Resolution
+  deu: Ausgang Auflösung
+  fra: Résolution de sortie
+  ita: Risoluzione di uscita
+  spa: Resolución de salida
+  jpn: 出力解像度
+  rus: Выходное разрешение
+  por: Resolução de saída
+  swe: Utgångsupplösning
+  pol: Rozdzielczość wyjściowa
+  chs: 输出分辨率
+  ukr: Вихідна роздільна здатність
+  kor: 출력 해상도
+  ron: Rezoluția de ieșire
+Set start time from preview position:
+  eng: Set start time from preview position
+  deu: Startzeit von der Vorschauposition aus festlegen
+  fra: Régler l'heure de début à partir de la position de prévisualisation
+  ita: Impostare l'ora di inizio dalla posizione di anteprima
+  spa: Fijar la hora de inicio desde la posición de vista previa
+  jpn: プレビュー位置から開始時間を設定
+  rus: Установите время начала из позиции предварительного просмотра
+  por: Definir a hora de início a partir da posição de pré-visualização
+  swe: Ställ in starttid från förhandsgranskningsposition
+  pol: Ustaw czas rozpoczęcia z pozycji podglądu
+  chs: 从预览位置设置启动时间
+  ukr: Встановіть час запуску з позиції попереднього перегляду
+  kor: 미리보기 위치에서 시작 시간 설정
+  ron: Setați ora de începere din poziția de previzualizare
+Set end time from preview position:
+  eng: Set end time from preview position
+  deu: Endzeit von der Vorschauposition aus einstellen
+  fra: Définir l'heure de fin à partir de la position de prévisualisation
+  ita: Impostare l'ora di fine dalla posizione di anteprima
+  spa: Fijar la hora de finalización desde la posición de vista previa
+  jpn: プレビュー位置から終了時間を設定
+  rus: Установите время окончания из позиции предварительного просмотра
+  por: Definir a hora de fim a partir da posição de pré-visualização
+  swe: Ställ in sluttid från förhandsgranskningsposition
+  pol: Ustawianie czasu zakończenia z pozycji podglądu
+  chs: 从预览位置设置结束时间
+  ukr: Встановити час завершення з позиції попереднього перегляду
+  kor: 미리보기 위치에서 종료 시간 설정
+  ron: Setați ora finală din poziția de previzualizare
+Large Preview:
+  eng: Large Preview
+  deu: Große Vorschau
+  fra: Grand aperçu
+  ita: Anteprima grande
+  spa: Vista previa grande
+  jpn: 大きなプレビュー
+  rus: Большой предварительный просмотр
+  por: Pré-visualização grande
+  swe: Stor förhandsgranskning
+  pol: Duży podgląd
+  chs: 大型预览
+  ukr: Великий попередній перегляд
+  kor: 큰 미리보기
+  ron: Previzualizare mare
