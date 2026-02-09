@@ -23,6 +23,11 @@ def build(fastflix: FastFlix):
 
     svtav1_params = settings.svtav1_params.copy()
 
+    if settings.tune != "1":
+        svtav1_params.append(f"tune={settings.tune}")
+    if settings.sharpness != "0":
+        svtav1_params.append(f"sharpness={settings.sharpness}")
+
     if not fastflix.current_video.video_settings.remove_hdr:
         if (
             fastflix.current_video.video_settings.color_primaries == "bt2020"

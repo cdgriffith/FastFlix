@@ -38,6 +38,9 @@ class SubtitleTrack(BaseModel):
     enabled: bool = True
     long_name: str = ""
     raw_info: Optional[Union[dict, Box]] = None
+    external: bool = False
+    file_path: Optional[str] = None
+    file_index: int = 0
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -100,9 +103,13 @@ class x264Settings(EncoderSettings):
     profile: str = "default"
     tune: Optional[str] = None
     pix_fmt: str = "yuv420p"
+    aq_mode: str = "default"
+    psy_rd: Optional[str] = None
+    level: str = "auto"
     crf: Optional[Union[int, float]] = 23
     bitrate: Optional[str] = None
     bitrate_passes: int = 2
+    x264_params: list[str] = Field(default_factory=list)
 
 
 class FFmpegNVENCSettings(EncoderSettings):
@@ -502,6 +509,11 @@ class SVTAV1Settings(EncoderSettings):
     scene_detection: bool = False
     single_pass: bool = False
     speed: str = "7"  # Renamed preset in svtav1 encoder
+    tune: str = "1"  # 0=VQ (Psychovisual), 1=PSNR, 2=SSIM
+    film_grain: int = 0  # 0-50, 0=off
+    film_grain_denoise: bool = False
+    sharpness: str = "0"  # -7 to 7
+    fast_decode: str = "0"  # 0=off, 1=level 1, 2=level 2
     qp: Optional[Union[int, float]] = 24
     qp_mode: str = "crf"
     bitrate: Optional[str] = None
@@ -512,6 +524,8 @@ class SVTAVIFSettings(EncoderSettings):
     name: str = "AVIF (SVT AV1)"
     single_pass: bool = True
     speed: str = "7"  # Renamed preset in svtav1 encoder
+    tune: str = "1"  # 0=VQ (Psychovisual), 1=PSNR, 2=SSIM
+    sharpness: str = "0"  # -7 to 7
     qp: Optional[Union[int, float]] = 24
     qp_mode: str = "qp"
     bitrate: Optional[str] = None
@@ -610,6 +624,22 @@ class GIFSettings(EncoderSettings):
         return value
 
 
+class GifskiSettings(EncoderSettings):
+    name: str = "GIF (gifski)"
+    fps: str = "15"
+    quality: str = "90"
+    lossy_quality: str = "auto"
+    motion_quality: str = "auto"
+    fast: bool = False
+
+    @field_validator("fps", mode="before")
+    @classmethod
+    def fps_field_validate(cls, value):
+        if isinstance(value, (int, float)):
+            return str(int(value))
+        return value
+
+
 class CopySettings(EncoderSettings):
     name: str = "Copy"
 
@@ -687,6 +717,7 @@ setting_types = {
     "vp9": VP9Settings,
     "aom_av1": AOMAV1Settings,
     "gif": GIFSettings,
+    "gifski": GifskiSettings,
     "webp": WebPSettings,
     "copy_settings": CopySettings,
     "modify_settings": ModifySettings,

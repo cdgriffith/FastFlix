@@ -10,6 +10,7 @@ from fastflix.models.encode import (
     CopySettings,
     ModifySettings,
     GIFSettings,
+    GifskiSettings,
     FFmpegNVENCSettings,
     SVTAV1Settings,
     VP9Settings,
@@ -182,6 +183,7 @@ class Profile(BaseModel):
     vp9: Optional[VP9Settings] = None
     aom_av1: Optional[AOMAV1Settings] = None
     gif: Optional[GIFSettings] = None
+    gifski: Optional[GifskiSettings] = None
     webp: Optional[WebPSettings] = None
     modify_settings: Optional[ModifySettings] = None
     copy_settings: Optional[CopySettings] = None

@@ -82,6 +82,11 @@ class AVC(SettingPanel):
         grid.addLayout(self.init_profile(), 3, 0, 1, 2)
         grid.addLayout(self.init_pix_fmt(), 4, 0, 1, 2)
 
+        grid.addLayout(self.init_aq_mode(), 5, 0, 1, 2)
+        grid.addLayout(self.init_psy_rd(), 5, 2, 1, 4)
+        grid.addLayout(self.init_level(), 6, 0, 1, 2)
+        grid.addLayout(self.init_x264_params(), 6, 2, 1, 4)
+
         grid.setRowStretch(9, 1)
 
         guide_label = QtWidgets.QLabel(
@@ -150,6 +155,88 @@ class AVC(SettingPanel):
             opt="pix_fmt",
         )
 
+    def init_aq_mode(self):
+        return self._add_combo_box(
+            label="AQ Mode",
+            widget_name="aq_mode",
+            options=["default", "none", "variance", "autovariance", "autovariance-biased"],
+            tooltip=(
+                "aq-mode: Adaptive Quantization operating mode.\n"
+                "0: disabled\n"
+                "1: variance AQ (complexity mask)\n"
+                "2: autovariance AQ\n"
+                "3: autovariance AQ with bias to dark scenes\n"
+                "Default: variance AQ"
+            ),
+            opt="aq_mode",
+        )
+
+    def init_psy_rd(self):
+        return self._add_text_box(
+            label="Psy-RD",
+            widget_name="psy_rd",
+            tooltip=(
+                "psy-rd: Psychovisual rate-distortion optimization strength.\n"
+                "Format: rd:trellis (e.g. 1.0:0.0)\n"
+                "First value is psy-rd strength, second is psy-trellis strength.\n"
+                "Requires subme >= 6 for psy-rd and trellis for psy-trellis."
+            ),
+            opt="psy_rd",
+            placeholder="1.0:0.0",
+        )
+
+    def init_level(self):
+        return self._add_combo_box(
+            label="Level",
+            widget_name="level",
+            options=[
+                "auto",
+                "1",
+                "1.1",
+                "1.2",
+                "1.3",
+                "2",
+                "2.1",
+                "2.2",
+                "3",
+                "3.1",
+                "3.2",
+                "4",
+                "4.1",
+                "4.2",
+                "5",
+                "5.1",
+                "5.2",
+            ],
+            tooltip=(
+                "level: Set the H.264 level restriction.\n"
+                "Limits the maximum bitrate, resolution, and other parameters.\n"
+                "Useful for ensuring compatibility with target devices."
+            ),
+            opt="level",
+        )
+
+    def init_x264_params(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.labels.x264_params = QtWidgets.QLabel(t("Additional x264 params"))
+        self.labels.x264_params.setFixedWidth(200)
+        tool_tip = (
+            f"{t('Extra x264 params in opt=1:opt2=0 format')},\n"
+            f"{t('cannot modify generated settings')}\n"
+            f"{t('examples: rc-lookahead=40:ref=6')}\n"
+        )
+        self.labels.x264_params.setToolTip(tool_tip)
+        layout.addWidget(self.labels.x264_params)
+        self.widgets.x264_params = QtWidgets.QLineEdit()
+        self.widgets.x264_params.setToolTip(tool_tip)
+        self.widgets.x264_params.setText(
+            ":".join(self.app.fastflix.config.encoder_opt(self.profile_name, "x264_params"))
+        )
+        self.opts["x264_params"] = "x264_params"
+        self.widgets.x264_params.textChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.x264_params)
+        return layout
+
     def init_modes(self):
         return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf", show_bitrate_passes=True)
 
@@ -169,6 +256,8 @@ class AVC(SettingPanel):
 
     def update_video_encoder_settings(self):
         tune = self.widgets.tune.currentText()
+        x264_params_text = self.widgets.x264_params.text().strip()
+        psy_rd_text = self.widgets.psy_rd.text().strip()
 
         settings = x264Settings(
             preset=self.widgets.preset.currentText(),
@@ -179,6 +268,10 @@ class AVC(SettingPanel):
             tune=tune if tune.lower() != "default" else None,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
             bitrate_passes=int(self.widgets.bitrate_passes.currentText()),
+            aq_mode=self.widgets.aq_mode.currentText(),
+            psy_rd=psy_rd_text if psy_rd_text else None,
+            level=self.widgets.level.currentText(),
+            x264_params=x264_params_text.split(":") if x264_params_text else [],
         )
         encode_type, q_value = self.get_mode_settings()
         settings.crf = q_value if encode_type == "qp" else None

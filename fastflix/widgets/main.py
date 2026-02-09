@@ -67,8 +67,8 @@ only_int = QtGui.QIntValidator()
 
 Request = namedtuple(
     "Request",
-    ["request", "video_uuid", "command_uuid", "command", "work_dir", "log_name"],
-    defaults=[None, None, None, None, None],
+    ["request", "video_uuid", "command_uuid", "command", "work_dir", "log_name", "shell"],
+    defaults=[None, None, None, None, None, False],
 )
 
 Response = namedtuple("Response", ["status", "video_uuid", "command_uuid"])
@@ -2481,6 +2481,7 @@ class Main(QtWidgets.QWidget):
                 command=command.command,
                 work_dir=str(video.work_path),
                 log_name=video.video_settings.video_title or video.video_settings.output_path.stem,
+                shell=command.shell,
             )
         )
         video.status.running = True

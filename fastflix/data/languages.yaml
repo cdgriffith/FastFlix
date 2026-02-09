@@ -11343,3 +11343,112 @@ Large Preview:
   ukr: Великий попередній перегляд
   kor: 큰 미리보기
   ron: Previzualizare mare
+Fast Decode:
+  eng: Fast Decode
+  deu: Schnelles Dekodieren
+  fra: Décodage rapide
+  ita: Decodifica rapida
+  spa: Descodificación rápida
+  jpn: 高速デコード
+  rus: Быстрое декодирование
+  por: Descodificação rápida
+  swe: Snabb avkodning
+  pol: Szybkie dekodowanie
+  chs: 快速解码
+  ukr: Швидке декодування
+  kor: 빠른 디코딩
+  ron: Decodare rapidă
+Tune settings for faster decoding at the cost of quality:
+  eng: Tune settings for faster decoding at the cost of quality
+  deu: Einstellungen für eine schnellere Dekodierung auf Kosten der Qualität abstimmen
+  fra: Régler les paramètres pour un décodage plus rapide au détriment de la qualité
+  ita: Regolazione delle impostazioni per una decodifica più veloce a scapito della qualità
+  spa: Ajuste la configuración para una descodificación más rápida a costa de la calidad
+  jpn: 品質を犠牲にしながらも、より高速なデコードのために設定を調整する
+  rus: Настройте параметры для ускорения декодирования за счет снижения качества
+  por: Ajuste as definições para uma descodificação mais rápida à custa da qualidade
+  swe: Justera inställningarna för snabbare avkodning på bekostnad av kvaliteten
+  pol: Dostosowanie ustawień w celu szybszego dekodowania kosztem jakości
+  chs: 调整设置，加快解码速度，降低解码质量
+  ukr: Налаштуйте параметри для швидшого декодування ціною якості
+  kor: 품질을 희생하면서 더 빠른 디코딩을 위한 설정 조정
+  ron: Reglați setările pentru o decodare mai rapidă în detrimentul calității
+Film Grain:
+  eng: Film Grain
+  deu: Filmkorn
+  fra: Grain de pellicule
+  ita: Grana del film
+  spa: Grano de película
+  jpn: フィルムグレイン
+  rus: Зернистость пленки
+  por: Grão de película
+  swe: Filmkorn
+  pol: Ziarnistość filmu
+  chs: 胶片颗粒
+  ukr: Фільм Зерно
+  kor: 필름 그레인
+  ron: Granulația filmului
+Film grain synthesis level (0=off, higher=more grain):
+  eng: Film grain synthesis level (0=off, higher=more grain)
+  deu: Filmkornsynthesestufe (0=aus, höher=mehr Korn)
+  fra: Niveau de synthèse du grain du film (0=désactivé, plus élevé=plus de grain)
+  ita: Livello di sintesi della grana del film (0=spento, più alto=più grana)
+  spa: Nivel de síntesis del grano de la película (0=desactivado, mayor=más grano)
+  jpn: フィルムグレイン合成レベル（0＝オフ、高いほどグレインが多い）
+  rus: Уровень синтеза зернистости пленки (0=выключено, выше=больше зернистости)
+  por: Nível de síntese do grão do filme (0=desligado, mais alto=mais grão)
+  swe: Nivå för filmkornsyntes (0=av, högre=mer korn)
+  pol: Poziom syntezy ziarnistości filmu (0=wyłączony, wyższy=więcej ziarna)
+  chs: 胶片颗粒合成级别（0= 关闭，更高= 颗粒更多）
+  ukr: Рівень синтезу зернистості плівки (0=вимкнено, вище=більше зернистості)
+  kor: 필름 그레인 합성 수준(0=꺼짐, 높음=더 많은 그레인)
+  ron: Nivelul de sinteză a granulației filmului (0 = oprit, mai mare = mai multă granulație)
+Custom film grain value (0-50):
+  eng: Custom film grain value (0-50)
+  deu: Benutzerdefinierter Filmkornwert (0-50)
+  fra: Valeur de grain de film personnalisée (0-50)
+  ita: Valore di grana della pellicola personalizzato (0-50)
+  spa: Valor de grano de película personalizado (0-50)
+  jpn: カスタムフィルムグレイン値（0-50）
+  rus: Пользовательское значение зернистости пленки (0-50)
+  por: Valor de grão de filme personalizado (0-50)
+  swe: Anpassat värde för filmkorn (0-50)
+  pol: Niestandardowa wartość ziarnistości filmu (0-50)
+  chs: 自定义胶片颗粒值（0-50）
+  ukr: Індивідуальне значення зернистості плівки (0-50)
+  kor: 사용자 지정 필름 입자 값(0-50)
+  ron: Valoare personalizată a granulației filmului (0-50)
+Film Grain Denoise:
+  eng: Film Grain Denoise
+  deu: Filmkorn-Entrauschen
+  fra: Dénoisement du grain de film
+  ita: Denoise della grana del film
+  spa: Retoque de grano de película
+  jpn: フィルムグレインデノイズ
+  rus: Обесцвечивание зернистости пленки
+  por: Denoise de grãos de filme
+  swe: Filmkorn Denoise
+  pol: Odszumianie ziarna filmowego
+  chs: 胶片颗粒去噪
+  ukr: Фільм Зерно Деніз
+  kor: 필름 그레인 노이즈 제거
+  ron: Denozarea granulelor de film
+Apply denoising when film grain is enabled:
+  eng: Apply denoising when film grain is enabled
+  deu: Rauschunterdrückung anwenden, wenn Filmkorn aktiviert ist
+  fra: Appliquer le débruitage lorsque le grain de film est activé
+  ita: Applicare il denoising quando è abilitata la grana della pellicola
+  spa: Aplicar eliminación de ruido cuando el grano de película está activado
+  jpn: フィルムグレインが有効な場合にノイズ除去を適用する
+  rus: Применяйте ослабление, если включено зерно пленки
+  por: Aplicar a redução de ruído quando a granulação da película está activada
+  swe: Tillämpa denoising när filmkorn är aktiverat
+  pol: Zastosuj odszumianie, gdy ziarno filmu jest włączone
+  chs: 启用胶片颗粒时应用去噪功能
+  ukr: Застосувати денозацію, якщо ввімкнено зернистість плівки
+  kor: 필름 그레인이 활성화된 경우 노이즈 제거 적용
+  ron: Aplicați denoising atunci când granulația filmului este activată
+Application Locations:
+  eng: Application Locations
+Add External:
+  eng: Add External

@@ -18,7 +18,7 @@ def build(fastflix: FastFlix):
 
     details = [
         "-profile:v",
-        settings.profile,
+        str(settings.profile),
         "-allow_sw",
         clean_bool(settings.allow_sw),
         "-require_sw",

@@ -96,23 +96,22 @@ class EncodeItem(QtWidgets.QTabWidget):
         del settings
 
         open_button = QtWidgets.QPushButton(
-            QtGui.QIcon(get_icon("play", self.parent.app.fastflix.config.theme)), t("Open Directory")
+            self.parent.app.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_DirOpenIcon), t("Open Directory")
         )
-        open_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         open_button.setIconSize(scaler.scale_size(12, 12))
         open_button.clicked.connect(lambda: open_folder(video.video_settings.output_path.parent))
 
         view_button = QtWidgets.QPushButton(
-            QtGui.QIcon(get_icon("play", self.parent.app.fastflix.config.theme)), t("Watch")
+            self.parent.app.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_MediaPlay), t("Watch")
         )
-        view_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         view_button.setIconSize(scaler.scale_size(12, 12))
         view_button.clicked.connect(
             lambda: QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(video.video_settings.output_path)))
         )
 
-        open_button.setStyleSheet(no_border)
-        view_button.setStyleSheet(no_border)
+        button_style = no_border + " QPushButton { padding: 0 4px; }"
+        open_button.setStyleSheet(button_style)
+        view_button.setStyleSheet(button_style)
 
         add_retry = False
         status = t("Ready to encode")

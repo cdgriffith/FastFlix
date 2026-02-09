@@ -32,6 +32,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
     command = None
     work_dir = None
     log_name = ""
+    shell = False
     priority: Literal["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"] = "Normal"
 
     def start_command():
@@ -49,6 +50,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
         runner.start_exec(
             command,
             work_dir=work_dir,
+            shell=shell,
         )
         runner.change_priority(priority)
 
@@ -90,7 +92,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
             return
         else:
             if request[0] == "execute":
-                _, video_uuid, command_uuid, command, work_dir, log_name = request
+                _, video_uuid, command_uuid, command, work_dir, log_name, shell = request
                 start_command()
 
             if request[0] == "cancel":

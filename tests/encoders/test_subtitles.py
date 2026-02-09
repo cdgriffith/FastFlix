@@ -169,3 +169,82 @@ def test_build_subtitle_with_custom_file_index():
     # Check that the custom file index is used
     assert "-map" in result
     assert "1:0" in result
+
+
+def test_build_subtitle_with_external_track():
+    """Test the build_subtitle function with an external subtitle track using file_index."""
+    external_track = SubtitleTrack(
+        index=0,
+        outdex=1,
+        language="eng",
+        subtitle_type="text",
+        enabled=True,
+        burn_in=False,
+        long_name="[EXT] subs.srt",
+        dispositions={},
+        external=True,
+        file_path="/path/to/subs.srt",
+        file_index=1,
+    )
+
+    result, burn_in_track, burn_in_type = build_subtitle([external_track])
+
+    # External track should use its own file_index (1) in the -map
+    assert "-map" in result
+    assert "1:0" in result
+    assert burn_in_track is None
+    assert burn_in_type is None
+
+
+def test_build_subtitle_mixed_embedded_and_external():
+    """Test the build_subtitle function with both embedded and external tracks."""
+    embedded_track = SubtitleTrack(
+        index=2,
+        outdex=1,
+        language="eng",
+        subtitle_type="text",
+        enabled=True,
+        burn_in=False,
+        long_name="English",
+        dispositions={"default": True},
+        file_index=0,
+    )
+    external_track = SubtitleTrack(
+        index=0,
+        outdex=2,
+        language="jpn",
+        subtitle_type="text",
+        enabled=True,
+        burn_in=False,
+        long_name="[EXT] jp.srt",
+        dispositions={},
+        external=True,
+        file_path="/path/to/jp.srt",
+        file_index=1,
+    )
+
+    result, burn_in_track, burn_in_type = build_subtitle([embedded_track, external_track])
+
+    # Embedded track should map from file 0
+    assert "0:2" in result
+    # External track should map from file 1
+    assert "1:0" in result
+    assert burn_in_track is None
+
+
+def test_build_subtitle_external_defaults_no_break():
+    """Test that default file_index=0 preserves existing behavior for embedded tracks."""
+    track = SubtitleTrack(
+        index=3,
+        outdex=1,
+        language="eng",
+        subtitle_type="text",
+        enabled=True,
+        burn_in=False,
+        long_name="English",
+        dispositions={"default": True},
+    )
+
+    # Default file_index is 0, so -map should be 0:3
+    result, _, _ = build_subtitle([track])
+    assert "0:3" in result

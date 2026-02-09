@@ -73,8 +73,10 @@ class SVT_AV1_AVIF(SettingPanel):
         self.mode = "QP"
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 1, 0, 1, 2)
-        grid.addLayout(self.init_qp_or_crf(), 5, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 1, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 2, 0, 1, 2)
+        grid.addLayout(self.init_sharpness(), 3, 0, 1, 2)
+        grid.addLayout(self.init_qp_or_crf(), 4, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         grid.addLayout(self.init_svtav1_params(), 5, 2, 1, 4)
 
@@ -109,6 +111,24 @@ class SVT_AV1_AVIF(SettingPanel):
             options=[str(x) for x in range(14)],
             tooltip="Quality/Speed ratio modifier",
             opt="speed",
+        )
+
+    def init_tune(self):
+        return self._add_combo_box(
+            label="Tune",
+            widget_name="tune",
+            options=["0 - VQ (Psychovisual)", "1 - PSNR", "2 - SSIM"],
+            tooltip="Optimize encoding for different quality metrics",
+            opt="tune",
+        )
+
+    def init_sharpness(self):
+        return self._add_combo_box(
+            label="Sharpness",
+            widget_name="sharpness",
+            options=[str(x) for x in range(-7, 8)],
+            tooltip="Deblocking loop filter sharpness (-7 to 7, 0=default)",
+            opt="sharpness",
         )
 
     def init_qp_or_crf(self):
@@ -150,6 +170,8 @@ class SVT_AV1_AVIF(SettingPanel):
 
         settings = SVTAVIFSettings(
             speed=self.widgets.speed.currentText(),
+            tune=self.widgets.tune.currentText().split(" ")[0],
+            sharpness=self.widgets.sharpness.currentText(),
             qp_mode=self.widgets.qp_mode.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             extra=self.ffmpeg_extras,

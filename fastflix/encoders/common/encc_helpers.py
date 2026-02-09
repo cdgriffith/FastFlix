@@ -168,6 +168,8 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams) -> List[str]:
 
 
 def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video_height: int) -> List[str]:
+    # Rigaya encoders only support embedded streams, filter out external tracks
+    subtitle_tracks = [t for t in subtitle_tracks if not t.external]
     command_list = []
     copies = []
     stream_ids = get_stream_pos(subtitle_streams)

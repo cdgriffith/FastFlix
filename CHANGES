@@ -1,9 +1,12 @@
 # Changelog
 
-## Version 5.13.0
+## Version 6.0.0
 
 * Adding #709 PGS to SRT OCR subtitle extraction feature (thanks to mikeSGman)
 * Adding #712 audio profile title options: No Title, Generate Title, and Custom Title (thanks to gaalos)
+* Adding gifski GIF encoder support with automatic PATH detection and manual path configuration
+* Adding external subtitle file support - import .srt, .ass, .ssa, .vtt, and .sup files into the subtitle track list
+* Adding AVC (x264) encoder options: AQ Mode, Psy-RD, Level, and custom x264 params
 * Adding "Detected External Programs" section to Settings showing status of NVEncC, QSVEncC, VCEEncC, HDR10+ Parser, and PGS OCR tools
 * Adding resizable columns to Concatenation Builder window with minimum widths based on header text
 * Adding Keyframe checkbox to Settings menu as "Use keyframes for preview images" option (default enabled)

@@ -13,6 +13,7 @@ from PySide6 import QtCore, QtWidgets
 from fastflix.exceptions import FlixError
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.models.encode import GifskiSettings
 from fastflix.models.video import Video
 from fastflix.shared import time_to_number, timedelta_to_str
 
@@ -216,6 +217,12 @@ class Logs(QtWidgets.QTextBrowser):
             logger.error(f"Couldn't find video or command for UUID {video_uuid}:{command_uuid}")
             self.parent.current_video = None
             self.current_command = None
+        if self.parent.current_video and isinstance(
+            self.parent.current_video.video_settings.video_encoder_settings, GifskiSettings
+        ):
+            self.parent.size_label.setVisible(False)
+        else:
+            self.parent.size_label.setVisible(True)
         self.setText("")
         self.parent.started_at = datetime.datetime.now(datetime.timezone.utc)
 

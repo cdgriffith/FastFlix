@@ -70,6 +70,7 @@ def generate_ffmpeg_start(
     enable_opencl: bool = False,
     remove_hdr: bool = True,
     start_extra: Union[List[str], str] = "",
+    extra_inputs: Optional[List[str]] = None,
     **_,
 ) -> List[str]:
     command = [str(ffmpeg)]
@@ -96,6 +97,9 @@ def generate_ffmpeg_start(
         command.extend(["-f", "concat", "-safe", "0"])
 
     command.extend(["-i", str(source)])
+
+    if extra_inputs:
+        command.extend(extra_inputs)
 
     # Time settings for non-fast seek (after -i)
     if not fast_seek:
@@ -216,6 +220,7 @@ def generate_filters(
     horizontal_flip=None,
     burn_in_subtitle_track=None,
     burn_in_subtitle_type=None,
+    burn_in_file_index: int = 0,
     custom_filters=None,
     start_filters=None,
     raw_filters=False,
@@ -298,9 +303,9 @@ def generate_filters(
         if burn_in_subtitle_type == "picture":
             if filters:
                 # You have to overlay first for it to work when scaled
-                filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[subbed];[subbed]{filters}[v]"
+                filter_complex = f"[0:{selected_track}][{burn_in_file_index}:{burn_in_subtitle_track}]overlay[subbed];[subbed]{filters}[v]"
             else:
-                filter_complex = f"[0:{selected_track}][0:{burn_in_subtitle_track}]overlay[v]"
+                filter_complex = f"[0:{selected_track}][{burn_in_file_index}:{burn_in_subtitle_track}]overlay[v]"
         else:
             filter_prefix = f"{filters}," if filters else ""
             filter_complex = f"[0:{selected_track}]{filter_prefix}subtitles='{quoted_path(str(source))}':si={burn_in_subtitle_track}[v]"
@@ -331,16 +336,38 @@ def generate_all(
 
     audio_cmd = build_audio(fastflix.current_video.audio_tracks) if audio else []
 
+    # Assign file_index to external subtitle tracks and collect unique external file paths
+    subtitle_tracks = fastflix.current_video.subtitle_tracks
+    extra_input_files = []
+    for track in subtitle_tracks:
+        if track.external and track.file_path:
+            if track.file_path not in extra_input_files:
+                extra_input_files.append(track.file_path)
+            track.file_index = extra_input_files.index(track.file_path) + 1
+        else:
+            track.file_index = 0
+
     subtitles_cmd, burn_in_track, burn_in_type = [], None, None
     if subs:
         subtitles_cmd, burn_in_track, burn_in_type = build_subtitle(
-            fastflix.current_video.subtitle_tracks, output_path=fastflix.current_video.video_settings.output_path
+            subtitle_tracks, output_path=fastflix.current_video.video_settings.output_path
         )
         if burn_in_type == "text":
             for i, x in enumerate(fastflix.current_video.streams["subtitle"]):
                 if x["index"] == burn_in_track:
                     burn_in_track = i
                     break
+
+    # Look up external burn-in info from the track list
+    burn_in_file_path = None
+    burn_in_file_index = 0
+    if burn_in_track is not None:
+        for track in subtitle_tracks:
+            if track.burn_in and track.enabled:
+                if track.external and track.file_path:
+                    burn_in_file_path = track.file_path
+                    burn_in_file_index = track.file_index
+                break
 
     attachments_cmd = build_attachments(fastflix.current_video.attachment_tracks)
 
@@ -352,10 +379,15 @@ def generate_all(
     if not disable_filters:
         filter_details = fastflix.current_video.video_settings.model_dump().copy()
         filter_details.update(filters_extra)
+        # For text burn-in from external file, pass the external file path as source
+        filter_source = (
+            burn_in_file_path if (burn_in_file_path and burn_in_type == "text") else fastflix.current_video.source
+        )
         filters_cmd = generate_filters(
-            source=fastflix.current_video.source,
+            source=filter_source,
             burn_in_subtitle_track=burn_in_track,
             burn_in_subtitle_type=burn_in_type,
+            burn_in_file_index=burn_in_file_index,
             scale=fastflix.current_video.scale,
             enable_opencl=enable_opencl,
             vaapi=vaapi,
@@ -371,6 +403,19 @@ def generate_all(
         **fastflix.current_video.video_settings.model_dump(),
     )
 
+    # Build extra -i arguments for external subtitle files
+    # When fast seek is used, -ss/-to before -i only apply to the next input.
+    # External inputs need their own -ss/-to to stay in sync with the seeked video.
+    vs = fastflix.current_video.video_settings
+    extra_inputs = []
+    for file_path in extra_input_files:
+        if vs.fast_seek:
+            if vs.start_time:
+                extra_inputs.extend(["-ss", str(vs.start_time)])
+            if vs.end_time:
+                extra_inputs.extend(["-to", str(vs.end_time)])
+        extra_inputs.extend(["-i", str(file_path)])
+
     beginning = generate_ffmpeg_start(
         source=fastflix.current_video.source,
         ffmpeg=fastflix.config.ffmpeg,
@@ -380,6 +425,7 @@ def generate_all(
         enable_opencl=enable_opencl,
         ffmpeg_version=fastflix.ffmpeg_version,
         start_extra=start_extra,
+        extra_inputs=extra_inputs if extra_inputs else None,
         **fastflix.current_video.video_settings.model_dump(),
         **settings.model_dump(),
     )

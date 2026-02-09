@@ -57,6 +57,16 @@ recommended_qp = [
 ]
 pix_fmts = ["8-bit: yuv420p", "10-bit: yuv420p10le"]
 
+film_grain_options = [
+    "0 - Disabled",
+    "4 - Animation",
+    "6 - Light grain",
+    "8 - Normal",
+    "10 - Heavy grain",
+    "15 - Very heavy",
+    "Custom",
+]
+
 
 class SVT_AV1(SettingPanel):
     profile_name = "svt_av1"
@@ -73,17 +83,21 @@ class SVT_AV1(SettingPanel):
         self.mode = "CRF"
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        grid.addLayout(self.init_pix_fmt(), 1, 0, 1, 2)
-        grid.addLayout(self.init_tile_rows(), 2, 0, 1, 2)
-        grid.addLayout(self.init_tile_columns(), 3, 0, 1, 2)
-        grid.addLayout(self.init_qp_or_crf(), 6, 0, 1, 2)
-        grid.addLayout(self.init_sc_detection(), 4, 0, 1, 2)
-        grid.addLayout(self.init_max_mux(), 5, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 1, 0, 1, 2)
+        grid.addLayout(self.init_pix_fmt(), 2, 0, 1, 2)
+        grid.addLayout(self.init_tile_rows(), 3, 0, 1, 2)
+        grid.addLayout(self.init_tile_columns(), 4, 0, 1, 2)
+        grid.addLayout(self.init_sc_detection(), 5, 0, 1, 2)
+        grid.addLayout(self.init_max_mux(), 6, 0, 1, 2)
+        grid.addLayout(self.init_qp_or_crf(), 7, 0, 1, 2)
+        grid.addLayout(self.init_sharpness(), 8, 0, 1, 2)
+        grid.addLayout(self.init_fast_decode(), 9, 0, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
-        # grid.addLayout(self.init_single_pass(), 6, 2, 1, 1)
-        grid.addLayout(self.init_svtav1_params(), 5, 2, 1, 4)
+        grid.addLayout(self.init_film_grain(), 5, 2, 1, 4)
+        grid.addLayout(self.init_film_grain_denoise(), 6, 2, 1, 4)
+        grid.addLayout(self.init_svtav1_params(), 7, 2, 1, 4)
 
-        grid.setRowStretch(8, 1)
+        grid.setRowStretch(12, 1)
         guide_label = QtWidgets.QLabel(
             link(
                 "https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Ffmpeg.md",
@@ -93,8 +107,8 @@ class SVT_AV1(SettingPanel):
         )
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
-        grid.addWidget(guide_label, 11, 0, -1, 1)
+        grid.addLayout(self._add_custom(), 14, 0, 1, 6)
+        grid.addWidget(guide_label, 15, 0, -1, 1)
         self.setLayout(grid)
         self.hide()
 
@@ -147,6 +161,79 @@ class SVT_AV1(SettingPanel):
             opt="speed",
         )
 
+    def init_tune(self):
+        return self._add_combo_box(
+            label="Tune",
+            widget_name="tune",
+            options=["0 - VQ (Psychovisual)", "1 - PSNR", "2 - SSIM"],
+            tooltip="Optimize encoding for different quality metrics",
+            opt="tune",
+        )
+
+    def init_sharpness(self):
+        return self._add_combo_box(
+            label="Sharpness",
+            widget_name="sharpness",
+            options=[str(x) for x in range(-7, 8)],
+            tooltip="Deblocking loop filter sharpness (-7 to 7, 0=default)",
+            opt="sharpness",
+        )
+
+    def init_fast_decode(self):
+        return self._add_combo_box(
+            label="Fast Decode",
+            widget_name="fast_decode",
+            options=["0 - Disabled", "1 - Level 1", "2 - Level 2"],
+            tooltip="Tune settings for faster decoding at the cost of quality",
+            opt="fast_decode",
+        )
+
+    def init_film_grain(self):
+        layout = QtWidgets.QHBoxLayout()
+        self.labels.film_grain = QtWidgets.QLabel(t("Film Grain"))
+        self.labels.film_grain.setFixedWidth(200)
+        self.labels.film_grain.setToolTip(t("Film grain synthesis level (0=off, higher=more grain)"))
+        layout.addWidget(self.labels.film_grain)
+        self.widgets.film_grain = QtWidgets.QComboBox()
+        self.widgets.film_grain.addItems(film_grain_options)
+        self.widgets.film_grain.setToolTip(t("Film grain synthesis level (0=off, higher=more grain)"))
+        self.widgets.film_grain.currentIndexChanged.connect(lambda: self.film_grain_update())
+        self.opts["film_grain"] = "film_grain"
+        layout.addWidget(self.widgets.film_grain)
+        self.widgets.custom_film_grain = QtWidgets.QLineEdit()
+        self.widgets.custom_film_grain.setFixedWidth(60)
+        self.widgets.custom_film_grain.setDisabled(True)
+        self.widgets.custom_film_grain.setToolTip(t("Custom film grain value (0-50)"))
+        self.widgets.custom_film_grain.textChanged.connect(lambda: self.main.page_update())
+        layout.addWidget(self.widgets.custom_film_grain)
+
+        saved = self.app.fastflix.config.encoder_opt(self.profile_name, "film_grain")
+        if saved and str(saved) != "0":
+            matched = False
+            for i, opt in enumerate(film_grain_options):
+                if opt.startswith(str(saved)):
+                    self.widgets.film_grain.setCurrentIndex(i)
+                    matched = True
+                    break
+            if not matched:
+                self.widgets.film_grain.setCurrentIndex(len(film_grain_options) - 1)
+                self.widgets.custom_film_grain.setText(str(saved))
+
+        return layout
+
+    def film_grain_update(self):
+        custom = self.widgets.film_grain.currentText() == "Custom"
+        self.widgets.custom_film_grain.setDisabled(not custom)
+        self.main.page_update()
+
+    def init_film_grain_denoise(self):
+        return self._add_check_box(
+            label="Film Grain Denoise",
+            widget_name="film_grain_denoise",
+            tooltip="Apply denoising when film grain is enabled",
+            opt="film_grain_denoise",
+        )
+
     def init_qp_or_crf(self):
         return self._add_combo_box(
             label="Quantization Mode",
@@ -184,16 +271,30 @@ class SVT_AV1(SettingPanel):
     def update_video_encoder_settings(self):
         svtav1_params_text = self.widgets.svtav1_params.text().strip()
 
+        # Parse film grain value from combo box or custom field
+        film_grain_text = self.widgets.film_grain.currentText()
+        if film_grain_text == "Custom":
+            try:
+                film_grain = int(self.widgets.custom_film_grain.text())
+            except (ValueError, TypeError):
+                film_grain = 0
+        else:
+            film_grain = int(film_grain_text.split(" ")[0])
+
         settings = SVTAV1Settings(
             speed=self.widgets.speed.currentText(),
+            tune=self.widgets.tune.currentText().split(" ")[0],
             tile_columns=self.widgets.tile_columns.currentText(),
             tile_rows=self.widgets.tile_rows.currentText(),
-            # single_pass=self.widgets.single_pass.isChecked(),
             single_pass=True,
             scene_detection=bool(self.widgets.sc_detection.currentIndex()),
             qp_mode=self.widgets.qp_mode.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
+            film_grain=film_grain,
+            film_grain_denoise=self.widgets.film_grain_denoise.isChecked(),
+            sharpness=self.widgets.sharpness.currentText(),
+            fast_decode=self.widgets.fast_decode.currentText().split(" ")[0],
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
             svtav1_params=svtav1_params_text.split(":") if svtav1_params_text else [],

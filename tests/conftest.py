@@ -50,6 +50,8 @@ def create_fastflix_instance(
                             "color_transfer": "smpte2084",
                             "color_primaries": "bt2020",
                             "chroma_location": "left",
+                            "width": 3840,
+                            "height": 2160,
                         }
                     )
                 ]
@@ -257,6 +259,8 @@ def fastflix_instance(sample_audio_tracks, sample_attachment_tracks, sample_subt
                             "color_transfer": "smpte2084",
                             "color_primaries": "bt2020",
                             "chroma_location": "left",
+                            "width": 3840,
+                            "height": 2160,
                         }
                     )
                 ],

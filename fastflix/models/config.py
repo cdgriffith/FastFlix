@@ -229,6 +229,7 @@ class Config(BaseModel):
     nvencc: Path | None = Field(default_factory=lambda: find_rigaya_encoder("NVEncC"))
     vceencc: Path | None = Field(default_factory=lambda: find_rigaya_encoder("VCEEncC"))
     qsvencc: Path | None = Field(default_factory=lambda: find_rigaya_encoder("QSVEncC"))
+    gifski: Path | None = Field(default_factory=lambda: where("gifski"))
     output_directory: Path | None = None
     source_directory: Path | None = None
     output_name_format: str = "{source}-fastflix-{rand_4}"
@@ -424,6 +425,7 @@ class Config(BaseModel):
             "seven_zip",
             "vceencc",
             "qsvencc",
+            "gifski",
         )
         for key, value in data.items():
             if key == "profiles":
@@ -465,6 +467,12 @@ class Config(BaseModel):
             self.qsvencc = where("QSVEncC64", portable_mode=portable_mode) or where(
                 "QSVEncC", portable_mode=portable_mode
             )
+        if not self.gifski:
+            self.gifski = where("gifski", portable_mode=portable_mode)
+        if not self.gifski and win_based:
+            cargo_bin_path = Path(os.environ.get("USERPROFILE", "")) / ".cargo" / "bin" / "gifski.exe"
+            if cargo_bin_path.exists():
+                self.gifski = cargo_bin_path
         self.profiles.update(get_preset_defaults())
 
         if self.selected_profile not in self.profiles:

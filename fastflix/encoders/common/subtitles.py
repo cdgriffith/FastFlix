@@ -34,7 +34,8 @@ def build_subtitle(
             outdex = track.outdex - (1 if burn_in_track else 0)
             # MP4 containers require mov_text codec for text subtitles instead of copy (#481)
             codec = "mov_text" if is_mp4 else "copy"
-            command_list.extend(["-map", f"{subtitle_file_index}:{track.index}", f"-c:{outdex}", codec])
+            file_idx = track.file_index if track.file_index else subtitle_file_index
+            command_list.extend(["-map", f"{file_idx}:{track.index}", f"-c:{outdex}", codec])
             added = ""
             for disposition, is_set in track.dispositions.items():
                 if is_set:

@@ -83,7 +83,7 @@ def build(fastflix: FastFlix):
 
     # For GIF creation, apply same base filters then use palette
     # Format: [base_filters];[v][1:v]paletteuse=dither={dither}[o]
-    filter_complex = f"{base_filters};[v][1:v]paletteuse=dither={settings.dither}[o]"
+    filter_complex = f"{base_filters};[v][1:v]paletteuse=dither={settings.dither}:diff_mode=rectangle[o]"
     command_2 = (
         beginning
         + ["-i", str(temp_palette)]

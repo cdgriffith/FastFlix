@@ -23,6 +23,18 @@ def build(fastflix: FastFlix):
     beginning.extend(generate_color_details(fastflix))
 
     svtav1_params = settings.svtav1_params.copy()
+
+    if settings.tune != "1":
+        svtav1_params.append(f"tune={settings.tune}")
+    if settings.film_grain:
+        svtav1_params.append(f"film-grain={settings.film_grain}")
+        if settings.film_grain_denoise:
+            svtav1_params.append("film-grain-denoise=1")
+    if settings.sharpness != "0":
+        svtav1_params.append(f"sharpness={settings.sharpness}")
+    if settings.fast_decode != "0":
+        svtav1_params.append(f"fast-decode={settings.fast_decode}")
+
     svtav1_params.extend(
         [
             f"tile-columns={settings.tile_columns}",

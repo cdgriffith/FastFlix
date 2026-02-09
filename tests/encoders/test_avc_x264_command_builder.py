@@ -247,3 +247,177 @@ def test_avc_x264_profile_tune():
             assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
             assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
             assert result[0].command == expected_command, f"Expected: {expected_command}\nGot: {result[0].command}"
+
+
+def test_avc_x264_aq_mode():
+    """Test the build function with aq-mode setting."""
+    fastflix = create_fastflix_instance(
+        encoder_settings=x264Settings(
+            crf=23,
+            preset="medium",
+            profile="default",
+            tune=None,
+            pix_fmt="yuv420p",
+            bitrate=None,
+            aq_mode="autovariance",
+        ),
+        video_settings=VideoSettings(
+            remove_hdr=False,
+            maxrate=None,
+            bufsize=None,
+        ),
+    )
+
+    with mock.patch("fastflix.encoders.avc_x264.command_builder.generate_all") as mock_generate_all:
+        mock_generate_all.return_value = (["ffmpeg", "-y", "-i", "input.mkv"], ["output.mkv"], [])
+        with mock.patch(
+            "fastflix.encoders.avc_x264.command_builder.generate_color_details"
+        ) as mock_generate_color_details:
+            mock_generate_color_details.return_value = []
+
+            result = build(fastflix)
+
+            assert len(result) == 1
+            cmd = result[0].command
+            assert "-aq-mode" in cmd
+            assert "2" in cmd
+
+
+def test_avc_x264_psy_rd():
+    """Test the build function with psy-rd setting."""
+    fastflix = create_fastflix_instance(
+        encoder_settings=x264Settings(
+            crf=23,
+            preset="medium",
+            profile="default",
+            tune=None,
+            pix_fmt="yuv420p",
+            bitrate=None,
+            psy_rd="1.0:0.15",
+        ),
+        video_settings=VideoSettings(
+            remove_hdr=False,
+            maxrate=None,
+            bufsize=None,
+        ),
+    )
+
+    with mock.patch("fastflix.encoders.avc_x264.command_builder.generate_all") as mock_generate_all:
+        mock_generate_all.return_value = (["ffmpeg", "-y", "-i", "input.mkv"], ["output.mkv"], [])
+        with mock.patch(
+            "fastflix.encoders.avc_x264.command_builder.generate_color_details"
+        ) as mock_generate_color_details:
+            mock_generate_color_details.return_value = []
+
+            result = build(fastflix)
+
+            assert len(result) == 1
+            cmd = result[0].command
+            assert "-psy-rd" in cmd
+            assert "1.0:0.15" in cmd
+
+
+def test_avc_x264_level():
+    """Test the build function with level setting."""
+    fastflix = create_fastflix_instance(
+        encoder_settings=x264Settings(
+            crf=23,
+            preset="medium",
+            profile="default",
+            tune=None,
+            pix_fmt="yuv420p",
+            bitrate=None,
+            level="4.1",
+        ),
+        video_settings=VideoSettings(
+            remove_hdr=False,
+            maxrate=None,
+            bufsize=None,
+        ),
+    )
+
+    with mock.patch("fastflix.encoders.avc_x264.command_builder.generate_all") as mock_generate_all:
+        mock_generate_all.return_value = (["ffmpeg", "-y", "-i", "input.mkv"], ["output.mkv"], [])
+        with mock.patch(
+            "fastflix.encoders.avc_x264.command_builder.generate_color_details"
+        ) as mock_generate_color_details:
+            mock_generate_color_details.return_value = []
+
+            result = build(fastflix)
+
+            assert len(result) == 1
+            cmd = result[0].command
+            assert "-level" in cmd
+            assert "4.1" in cmd
+
+
+def test_avc_x264_x264_params():
+    """Test the build function with custom x264 parameters."""
+    fastflix = create_fastflix_instance(
+        encoder_settings=x264Settings(
+            crf=23,
+            preset="medium",
+            profile="default",
+            tune=None,
+            pix_fmt="yuv420p",
+            bitrate=None,
+            x264_params=["rc-lookahead=40", "ref=6"],
+        ),
+        video_settings=VideoSettings(
+            remove_hdr=False,
+            maxrate=None,
+            bufsize=None,
+        ),
+    )
+
+    with mock.patch("fastflix.encoders.avc_x264.command_builder.generate_all") as mock_generate_all:
+        mock_generate_all.return_value = (["ffmpeg", "-y", "-i", "input.mkv"], ["output.mkv"], [])
+        with mock.patch(
+            "fastflix.encoders.avc_x264.command_builder.generate_color_details"
+        ) as mock_generate_color_details:
+            mock_generate_color_details.return_value = []
+
+            result = build(fastflix)
+
+            assert len(result) == 1
+            cmd = result[0].command
+            assert "-x264-params" in cmd
+            params_idx = cmd.index("-x264-params")
+            params_str = cmd[params_idx + 1]
+            assert "rc-lookahead=40" in params_str
+            assert "ref=6" in params_str
+
+
+def test_avc_x264_defaults_no_extra():
+    """Test that defaults don't add aq-mode/psy-rd/level/x264-params."""
+    fastflix = create_fastflix_instance(
+        encoder_settings=x264Settings(
+            crf=23,
+            preset="medium",
+            profile="default",
+            tune=None,
+            pix_fmt="yuv420p",
+            bitrate=None,
+        ),
+        video_settings=VideoSettings(
+            remove_hdr=False,
+            maxrate=None,
+            bufsize=None,
+        ),
+    )
+
+    with mock.patch("fastflix.encoders.avc_x264.command_builder.generate_all") as mock_generate_all:
+        mock_generate_all.return_value = (["ffmpeg", "-y", "-i", "input.mkv"], ["output.mkv"], [])
+        with mock.patch(
+            "fastflix.encoders.avc_x264.command_builder.generate_color_details"
+        ) as mock_generate_color_details:
+            mock_generate_color_details.return_value = []
+
+            result = build(fastflix)
+
+            assert len(result) == 1
+            cmd = result[0].command
+            assert "-aq-mode" not in cmd
+            assert "-psy-rd" not in cmd
+            assert "-level" not in cmd
+            assert "-x264-params" not in cmd

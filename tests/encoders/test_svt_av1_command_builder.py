@@ -9,6 +9,34 @@ from fastflix.models.video import VideoSettings
 from tests.conftest import create_fastflix_instance
 
 
+def _build_with_settings(**kwargs):
+    """Helper to build SVT-AV1 commands with custom settings."""
+    defaults = dict(
+        qp=24,
+        qp_mode="crf",
+        speed="7",
+        tile_columns="0",
+        tile_rows="0",
+        scene_detection=False,
+        single_pass=True,
+        bitrate=None,
+    )
+    defaults.update(kwargs)
+    fastflix = create_fastflix_instance(
+        encoder_settings=SVTAV1Settings(**defaults),
+        video_settings=VideoSettings(remove_hdr=False, maxrate=None, bufsize=None),
+    )
+    with mock.patch("fastflix.encoders.svt_av1.command_builder.generate_all") as mock_gen:
+        mock_gen.return_value = (["ffmpeg", "-y", "-i", "input.mkv"], ["output.mkv"], ["-r", "24"])
+        with mock.patch("fastflix.encoders.svt_av1.command_builder.generate_color_details") as mock_color:
+            mock_color.return_value = []
+            result = build(fastflix)
+    cmd = result[0].command
+    params_idx = cmd.index("-svtav1-params")
+    params_value = cmd[params_idx + 1]
+    return cmd, params_value
+
+
 def test_svt_av1_single_pass_qp():
     """Test the build function with single-pass QP settings."""
     fastflix = create_fastflix_instance(
@@ -233,3 +261,44 @@ def test_svt_av1_with_hdr():
             assert "mastering-display=" in params_value
             assert "content-light=" in params_value
             assert "enable-hdr=1" in params_value
+
+
+def test_svt_av1_with_tune():
+    """Test that tune parameter is included when non-default."""
+    _, params = _build_with_settings(tune="0")
+    assert "tune=0" in params
+
+
+def test_svt_av1_with_film_grain():
+    """Test that film-grain parameter is included when set."""
+    _, params = _build_with_settings(film_grain=8)
+    assert "film-grain=8" in params
+    assert "film-grain-denoise" not in params
+
+
+def test_svt_av1_with_film_grain_denoise():
+    """Test that film-grain-denoise is included when both film_grain and denoise are set."""
+    _, params = _build_with_settings(film_grain=8, film_grain_denoise=True)
+    assert "film-grain=8" in params
+    assert "film-grain-denoise=1" in params
+
+
+def test_svt_av1_with_sharpness():
+    """Test that sharpness parameter is included when non-default."""
+    _, params = _build_with_settings(sharpness="3")
+    assert "sharpness=3" in params
+
+
+def test_svt_av1_with_fast_decode():
+    """Test that fast-decode parameter is included when non-default."""
+    _, params = _build_with_settings(fast_decode="2")
+    assert "fast-decode=2" in params
+
+
+def test_svt_av1_defaults_no_extra_params():
+    """Test that default settings don't add tune/film-grain/sharpness/fast-decode."""
+    _, params = _build_with_settings()
+    assert "tune=" not in params
+    assert "film-grain=" not in params
+    assert "sharpness=" not in params
+    assert "fast-decode=" not in params

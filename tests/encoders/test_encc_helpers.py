@@ -386,6 +386,36 @@ def test_build_subtitle_with_burn_in(sample_subtitle_tracks):
     assert "--sub-copy" in result and "2,3" in result
 
 
+def test_build_subtitle_filters_external_tracks(sample_subtitle_tracks):
+    """Test that build_subtitle filters out external subtitle tracks for rigaya encoders."""
+    from fastflix.models.encode import SubtitleTrack
+
+    # Add an external track
+    external_track = SubtitleTrack(
+        index=0,
+        outdex=3,
+        language="fre",
+        subtitle_type="text",
+        enabled=True,
+        burn_in=False,
+        long_name="[EXT] french.srt",
+        external=True,
+        file_path="/path/to/french.srt",
+        file_index=1,
+    )
+    tracks_with_external = sample_subtitle_tracks + [external_track]
+
+    subtitle_streams = [Box({"index": 0}), Box({"index": 1}), Box({"index": 2})]
+
+    result = build_subtitle(tracks_with_external, subtitle_streams, 1080)
+
+    # External track should not appear in the output
+    # Only embedded tracks should be processed
+    assert "french" not in str(result)
+    # Embedded tracks should still be present
+    assert "--sub-copy" in result or "--vpp-subburn" in result
+
+
 def test_build_subtitle_with_4k_scaling(sample_subtitle_tracks):
     """Test the build_subtitle function with 4K scaling."""
     # Set one track to burn-in

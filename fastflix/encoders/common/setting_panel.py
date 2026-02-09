@@ -113,6 +113,10 @@ class SettingPanel(QtWidgets.QWidget):
             try:
                 return items.index(opt)
             except Exception:
+                # Try matching by prefix (e.g. "1" matches "1 - PSNR")
+                for i, item in enumerate(items):
+                    if item.split(" - ")[0].strip() == opt:
+                        return i
                 if raise_error:
                     raise FastFlixInternalException
                 else:
@@ -503,7 +507,7 @@ class SettingPanel(QtWidgets.QWidget):
                     self.widgets[widget_name].setChecked(checked)
             elif isinstance(self.widgets[widget_name], QtWidgets.QLineEdit):
                 data = self.app.fastflix.config.encoder_opt(self.profile_name, opt)
-                if widget_name in ("x265_params", "svtav1_params", "vvc_params"):
+                if widget_name in ("x265_params", "x264_params", "svtav1_params", "vvc_params"):
                     data = ":".join(data)
                 self.widgets[widget_name].setText(str(data) or "")
         try:
@@ -567,7 +571,7 @@ class SettingPanel(QtWidgets.QWidget):
             elif isinstance(self.widgets[widget_name], QtWidgets.QCheckBox):
                 self.widgets[widget_name].setChecked(data)
             elif isinstance(self.widgets[widget_name], QtWidgets.QLineEdit):
-                if widget_name in ("x265_params", "svtav1_params", "vvc_params"):
+                if widget_name in ("x265_params", "x264_params", "svtav1_params", "vvc_params"):
                     data = ":".join(data)
                 self.widgets[widget_name].setText(str(data) or "")
         if getattr(self, "mode", None):
