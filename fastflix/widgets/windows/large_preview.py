@@ -66,6 +66,8 @@ class LargePreview(QtWidgets.QWidget):
             and self.main.app.fastflix.current_video.color_space.startswith("bt2020")
         ):
             settings["remove_hdr"] = True
+            if not settings.get("color_transfer"):
+                settings["color_transfer"] = self.main.app.fastflix.current_video.color_transfer
 
         filters = helpers.generate_filters(
             enable_opencl=False,

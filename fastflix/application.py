@@ -12,7 +12,7 @@ from fastflix.language import t
 from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.program_downloads import ask_for_ffmpeg, grab_stable_ffmpeg
+from fastflix.program_downloads import ask_for_ffmpeg, grab_stable_ffmpeg, download_hdr10plus_tool
 from fastflix.resources import main_icon, breeze_styles_path
 from fastflix.shared import file_date, message, latest_fastflix, DEVMODE, yes_no_message
 from fastflix.widgets.container import Container
@@ -253,6 +253,27 @@ def app_setup(
             ProgressBar(
                 app, [Task(name=t("Detect GPUs"), command=automatic_rigaya_download)], signal_task=True, can_cancel=True
             )
+
+        if app.fastflix.config.auto_hdr10plus_check is None and not app.fastflix.config.hdr10plus_parser:
+            app.fastflix.config.auto_hdr10plus_check = yes_no_message(
+                t(
+                    "HDR10+ tool not found. Do you want FastFlix to automatically download it?\n\nThis tool is used for extracting and injecting HDR10+ dynamic metadata during encoding."
+                ),
+                title="Download HDR10+ Tool",
+            )
+            if app.fastflix.config.auto_hdr10plus_check:
+                try:
+                    ProgressBar(
+                        app,
+                        [Task(t("Downloading HDR10+ Tool"), download_hdr10plus_tool)],
+                        signal_task=True,
+                        can_cancel=True,
+                    )
+                    from fastflix.models.config import find_hdr10plus_tool
+
+                    app.fastflix.config.hdr10plus_parser = find_hdr10plus_tool()
+                except Exception:
+                    logger.exception("Failed to download HDR10+ tool")
 
     app.fastflix.config.save()
 

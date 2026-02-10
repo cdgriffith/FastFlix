@@ -18,8 +18,6 @@ def build(fastflix: FastFlix):
 
     beginning.extend(
         [
-            "-strict",
-            "experimental",
             "-speed",
             str(settings.speed),
             "-tile-columns",
@@ -32,23 +30,34 @@ def build(fastflix: FastFlix):
     )
     beginning.extend(generate_color_details(fastflix))
 
-    # Currently unsupported https://github.com/xiph/rav1e/issues/2554
-    #         rav1e_options = []
-    # if side_data.master_display:
-    #     rav1e_options.append(
-    #         "mastering-display="
-    #         f"G{side_data.master_display.green}"
-    #         f"B{side_data.master_display.blue}"
-    #         f"R{side_data.master_display.red}"
-    #         f"WP{side_data.master_display.white}"
-    #         f"L{side_data.master_display.luminance}"
-    #     )
-    #
-    # if side_data.cll:
-    #     rav1e_options.append(f"content-light={side_data.cll}")
-    # if rav1e_options:
-    #     opts = ":".join(rav1e_options)
-    #     beginning += f'-rav1e-params "{opts}"'
+    rav1e_params = settings.rav1e_params.copy()
+
+    if settings.tune != "default":
+        rav1e_params.append(f"tune={settings.tune}")
+
+    if settings.photon_noise > 0:
+        rav1e_params.append(f"photon_noise={settings.photon_noise}")
+
+    if not settings.scene_detection:
+        rav1e_params.append("no_scene_detection=true")
+
+    if not fastflix.current_video.video_settings.remove_hdr:
+        if settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+            if fastflix.current_video.master_display:
+                rav1e_params.append(
+                    "mastering_display="
+                    f"G{fastflix.current_video.master_display.green}"
+                    f"B{fastflix.current_video.master_display.blue}"
+                    f"R{fastflix.current_video.master_display.red}"
+                    f"WP{fastflix.current_video.master_display.white}"
+                    f"L{fastflix.current_video.master_display.luminance}"
+                )
+
+            if fastflix.current_video.cll:
+                rav1e_params.append(f"content_light={fastflix.current_video.cll}")
+
+    if rav1e_params:
+        beginning.extend(["-rav1e-params", ":".join(rav1e_params)])
 
     if not settings.single_pass:
         pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"

@@ -122,7 +122,11 @@ class QSVEnc(QSVEncPanel):
         advanced.addLayout(self.init_metrics())
         grid.addLayout(advanced, 6, 2, 1, 4)
 
-        grid.addLayout(self.init_dhdr10_info(), 7, 2, 1, 2)
+        hdr_line = QtWidgets.QHBoxLayout()
+        hdr_line.addLayout(self.init_dhdr10_info())
+        hdr_line.addStretch(1)
+        hdr_line.addLayout(self.init_dolby_vision_copy())
+        grid.addLayout(hdr_line, 7, 2, 1, 2)
         grid.addLayout(self.init_parallel_mode(), 7, 4, 1, 2)
         self.ffmpeg_level = QtWidgets.QLabel()
         grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
@@ -311,6 +315,7 @@ class QSVEnc(QSVEncPanel):
             force_ten_bit=self.widgets.force_ten_bit.isChecked(),
             lookahead=self.widgets.lookahead.currentText() if self.widgets.lookahead.currentIndex() > 0 else None,
             copy_hdr10=self.widgets.copy_hdr10.isChecked(),
+            copy_dv=self.widgets.copy_dv.isChecked(),
             max_q_i=self.widgets.max_q_i.currentText() if self.widgets.max_q_i.currentIndex() != 0 else None,
             max_q_p=self.widgets.max_q_p.currentText() if self.widgets.max_q_p.currentIndex() != 0 else None,
             max_q_b=self.widgets.max_q_b.currentText() if self.widgets.max_q_b.currentIndex() != 0 else None,

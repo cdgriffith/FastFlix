@@ -31,7 +31,9 @@ def build(fastflix: FastFlix):
         brightness=video_settings.brightness,
         saturation=video_settings.saturation,
         contrast=video_settings.contrast,
-        custom_filters=f"fps={settings.fps}",
+        remove_hdr=video_settings.remove_hdr,
+        tone_map=video_settings.tone_map,
+        custom_filters=f"fps={settings.fps},format=yuv420p",
         raw_filters=True,
     )
 

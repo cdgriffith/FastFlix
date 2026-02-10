@@ -16,7 +16,7 @@ from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.program_downloads import latest_ffmpeg, grab_stable_ffmpeg
+from fastflix.program_downloads import latest_ffmpeg, grab_stable_ffmpeg, download_hdr10plus_tool
 from fastflix.gpu_detect import update_rigaya_encoders
 from fastflix.resources import main_icon, get_icon, changes_file, local_changes_file, local_package_changes_file
 from fastflix.shared import (
@@ -350,6 +350,9 @@ class Container(QtWidgets.QMainWindow):
         rigaya_update_action = QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), t("Update Rigaya's Encoders"), self)
         rigaya_update_action.triggered.connect(self.download_rigaya)
 
+        hdr10plus_download_action = QAction(self.si(QtWidgets.QStyle.SP_ArrowDown), t("Download HDR10+ Tool"), self)
+        hdr10plus_download_action.triggered.connect(self.download_hdr10plus_tool)
+
         clean_logs_action = QAction(self.si(QtWidgets.QStyle.SP_DialogResetButton), t("Clean Old Logs"), self)
         clean_logs_action.triggered.connect(self.clean_old_logs)
 
@@ -369,6 +372,7 @@ class Container(QtWidgets.QMainWindow):
             help_menu.addAction(ffmpeg_update_stable_action)
             help_menu.addAction(ffmpeg_update_action)
             help_menu.addAction(rigaya_update_action)
+            help_menu.addAction(hdr10plus_download_action)
         help_menu.addSeparator()
         help_menu.addAction(about_action)
 
@@ -472,6 +476,28 @@ class Container(QtWidgets.QMainWindow):
             )
         except Exception:
             error_message(t("Could not update Rigaya's encoders"), traceback=True)
+        self.pb = None
+
+    def download_hdr10plus_tool(self):
+        try:
+            self.pb = ProgressBar(
+                self.app,
+                [Task(t("Downloading HDR10+ Tool"), download_hdr10plus_tool)],
+                signal_task=True,
+                can_cancel=True,
+            )
+        except Exception:
+            error_message(t("Could not download HDR10+ tool"), traceback=True)
+        else:
+            from fastflix.models.config import find_hdr10plus_tool
+
+            result = find_hdr10plus_tool()
+            if result:
+                self.app.fastflix.config.hdr10plus_parser = result
+                self.app.fastflix.config.save()
+                message(f"{t('HDR10+ tool has been downloaded to')} {result}")
+            else:
+                error_message(t("Could not locate the downloaded HDR10+ tool"))
         self.pb = None
 
     def clean_old_logs(self, show_errors=True):

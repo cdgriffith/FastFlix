@@ -11450,5 +11450,991 @@ Apply denoising when film grain is enabled:
   ron: Aplicați denoising atunci când granulația filmului este activată
 Application Locations:
   eng: Application Locations
+  deu: Einsatzorte
+  fra: Lieux d'application
+  ita: Luoghi di applicazione
+  spa: Lugares de aplicación
+  jpn: 申請場所
+  rus: Места применения
+  por: Locais de aplicação
+  swe: Applikationsplatser
+  pol: Lokalizacje aplikacji
+  chs: 申请地点
+  ukr: Місця застосування
+  kor: 애플리케이션 위치
+  ron: Locații de aplicare
 Add External:
   eng: Add External
+  deu: Extern hinzufügen
+  fra: Ajouter un élément externe
+  ita: Aggiungi esterno
+  spa: Añadir externo
+  jpn: 外部追加
+  rus: Добавить внешний
+  por: Adicionar externo
+  swe: Lägg till extern
+  pol: Dodaj zewnętrzne
+  chs: 添加外部
+  ukr: Додати зовнішній
+  kor: 외부 추가
+  ron: Adăugați extern
+Optimize encoding for different quality metrics:
+  eng: Optimize encoding for different quality metrics
+  deu: Optimierung der Kodierung für verschiedene Qualitätsmetriken
+  fra: Optimiser l'encodage pour différentes mesures de qualité
+  ita: Ottimizzare la codifica per diverse metriche di qualità
+  spa: Optimizar la codificación para distintas métricas de calidad
+  jpn: さまざまな品質メトリクスに対してエンコーディングを最適化する
+  rus: Оптимизация кодирования для различных показателей качества
+  por: Otimizar a codificação para diferentes métricas de qualidade
+  swe: Optimera kodningen för olika kvalitetsmått
+  pol: Optymalizacja kodowania pod kątem różnych wskaźników jakości
+  chs: 针对不同质量指标优化编码
+  ukr: Оптимізуйте кодування для різних показників якості
+  kor: 다양한 품질 지표에 맞게 인코딩 최적화
+  ron: Optimizarea codării pentru diferite metrici de calitate
+AQ Mode:
+  eng: AQ Mode
+  deu: AQ-Modus
+  fra: Mode AQ
+  ita: Modalità AQ
+  spa: Modo AQ
+  jpn: AQモード
+  rus: Режим AQ
+  por: Modo AQ
+  swe: AQ-läge
+  pol: Tryb AQ
+  chs: AQ 模式
+  ukr: Режим AQ
+  kor: AQ 모드
+  ron: Modul AQ
+Adaptive quantization mode for quality distribution:
+  eng: Adaptive quantization mode for quality distribution
+  deu: Adaptiver Quantisierungsmodus für die Qualitätsverteilung
+  fra: Mode de quantification adaptatif pour la distribution de la qualité
+  ita: Modalità di quantizzazione adattiva per la distribuzione della qualità
+  spa: Modo de cuantificación adaptativo para la distribución de la calidad
+  jpn: 品質分布のための適応的量子化モード
+  rus: Адаптивный режим квантования для распределения качества
+  por: Modo de quantização adaptável para distribuição de qualidade
+  swe: Adaptivt kvantiseringsläge för kvalitetsfördelning
+  pol: Adaptacyjny tryb kwantyzacji dla dystrybucji jakości
+  chs: 质量分布的自适应量化模式
+  ukr: Адаптивний режим квантування для розподілу якості
+  kor: 품질 분배를 위한 적응형 양자화 모드
+  ron: Mod de cuantizare adaptiv pentru distribuția calității
+Noise removal amount (0=off, higher=more denoising):
+  eng: Noise removal amount (0=off, higher=more denoising)
+  deu: Rauschentfernungsgrad (0=aus, höher=mehr Rauschentfernung)
+  fra: Niveau de suppression du bruit (0=off, plus élevé=plus de débruitage)
+  ita: Quantità di rimozione del rumore (0=spento, più alto=più denoising)
+  spa: Cantidad de eliminación de ruido (0=no, mayor=mayor eliminación de ruido)
+  jpn: ノイズ除去量（0=オフ、高いほどノイズ除去量が多い）
+  rus: Количество удаляемых шумов (0=отключено, больше=больше шумов)
+  por: Quantidade de remoção de ruído (0=desligado, mais elevado=mais redução de ruído)
+  swe: Antal brusborttagningar (0=av, högre=mer brusborttagning)
+  pol: Ilość usuwanego szumu (0=wyłączone, wyższa=więcej odszumiania)
+  chs: 去噪量（0= 关闭，越高去噪量越大）
+  ukr: Рівень шумозаглушення (0=вимкнено, вище=більше шумозаглушення)
+  kor: 노이즈 제거량(0=끄기, 높음=노이즈 제거량 증가)
+  ron: Valoarea de eliminare a zgomotului (0 = dezactivat, mai mare = mai multă denotare)
+Custom denoise value (0-50):
+  eng: Custom denoise value (0-50)
+  deu: Benutzerdefinierter Entrauschungswert (0-50)
+  fra: Valeur de débruitage personnalisée (0-50)
+  ita: Valore di denoise personalizzato (0-50)
+  spa: Valor de eliminación de ruido personalizado (0-50)
+  jpn: カスタムノイズ除去値 (0-50)
+  rus: Пользовательское значение денуазиса (0-50)
+  por: Valor de redução de ruído personalizado (0-50)
+  swe: Anpassat värde för denoise (0-50)
+  pol: Niestandardowa wartość odszumiania (0-50)
+  chs: 自定义去噪值（0-50）
+  ukr: Користувацьке значення шумозаглушення (0-50)
+  kor: 사용자 지정 노이즈 제거 값(0-50)
+  ron: Valoare denoise personalizată (0-50)
+Additional aom params:
+  eng: Additional aom params
+  deu: Zusätzliche aom-Parameter
+  fra: Paramètres supplémentaires de l'aom
+  ita: Parametri aggiuntivi di aom
+  spa: Parámetros aom adicionales
+  jpn: 追加のaomパラメータ
+  rus: Дополнительные параметры aom
+  por: Parâmetros aom adicionais
+  swe: Ytterligare aom-parametrar
+  pol: Dodatkowe parametry aom
+  chs: 附加的 aom 参数
+  ukr: Додаткові параметри aom
+  kor: 추가 aom 매개변수
+  ron: Parame aom suplimentare
+Extra aom params in opt=1:opt2=0 format:
+  eng: Extra aom params in opt=1:opt2=0 format
+  deu: Zusätzliche aom-Parameter im Format opt=1:opt2=0
+  fra: Paramètres aom supplémentaires au format opt=1:opt2=0
+  ita: Parametri aom extra nel formato opt=1:opt2=0
+  spa: Parámetros aom adicionales en formato opt=1:opt2=0
+  jpn: opt=1:opt2=0形式の追加aomパラメータ
+  rus: Дополнительные параметры aom в формате opt=1:opt2=0
+  por: Parâmetros aom extra no formato opt=1:opt2=0
+  swe: Extra aom-parametrar i formatet opt=1:opt2=0
+  pol: Dodatkowe parametry aom w formacie opt=1:opt2=0
+  chs: 额外的 aom 参数，格式为 opt=1:opt2=0
+  ukr: Додаткові параметри aom у форматі opt=1:opt2=0
+  kor: opt=1:opt2=0 형식의 추가 aom 매개변수
+  ron: Parame aom suplimentare în format opt=1:opt2=0
+Quality tuning metric (Psychovisual for perceptual quality, Psnr for objective quality):
+  eng: Quality tuning metric (Psychovisual for perceptual quality, Psnr for objective quality)
+  deu: Metrik zur Qualitätsverbesserung (Psychovisual für Wahrnehmungsqualität, Psnr für objektive Qualität)
+  fra: Mesure d'ajustement de la qualité (Psychovisual pour la qualité perceptuelle, Psnr pour la qualité objective)
+  ita: Metrica di regolazione della qualità (Psychovisual per la qualità percettiva, Psnr per la qualità oggettiva)
+  spa: Métrica de ajuste de la calidad (Psicovisual para la calidad perceptiva, Psnr para la calidad objetiva)
+  jpn: 品質調整指標（知覚的品質はPsychovisual、客観的品質はPsnr）
+  rus: Метрика настройки качества (Psychovisual для перцептивного качества, Psnr для объективного качества)
+  por: Métrica de afinação da qualidade (Psychovisual para a qualidade perceptiva, Psnr para a qualidade objetiva)
+  swe: Kvalitetsjusteringsmått (psykovisuell för perceptuell kvalitet, Psnr för objektiv kvalitet)
+  pol: Metryka dostrajania jakości (Psychovisual dla jakości percepcyjnej, Psnr dla jakości obiektywnej)
+  chs: 质量调整指标（Psychovisual 表示感知质量，Psnr 表示客观质量）
+  ukr: Метрика налаштування якості (Psychovisual для якості сприйняття, Psnr для об'єктивної якості)
+  kor: 품질 조정 지표(지각적 품질에 대한 심리 시각적, 객관적 품질에 대한 Psnr)
+  ron: Măsură de reglare a calității (Psychovisual pentru calitatea perceptivă, Psnr pentru calitatea obiectivă)
+Enable scene detection for better keyframe placement:
+  eng: Enable scene detection for better keyframe placement
+  deu: Aktivieren Sie die Szenenerkennung für eine bessere Keyframe-Platzierung
+  fra: Activation de la détection de scène pour un meilleur placement des images clés
+  ita: Abilita il rilevamento della scena per un migliore posizionamento dei fotogrammi chiave
+  spa: Activar la detección de escenas para una mejor colocación de los fotogramas clave
+  jpn: より良いキーフレーム配置のためにシーン検出を有効にする
+  rus: Включите функцию обнаружения сцены для лучшего размещения ключевых кадров
+  por: Ativar a deteção de cenas para uma melhor colocação de fotogramas-chave
+  swe: Aktivera scenavkänning för bättre placering av nyckelrutor
+  pol: Włącz wykrywanie scen w celu lepszego rozmieszczenia klatek kluczowych
+  chs: 启用场景检测，更好地放置关键帧
+  ukr: Увімкніть розпізнавання сцени для кращого розміщення ключових кадрів
+  kor: 더 나은 키프레임 배치를 위한 장면 감지 활성화
+  ron: Activați detectarea scenei pentru o mai bună plasare a cadrelor cheie
+Photon Noise:
+  eng: Photon Noise
+  deu: Photonenrauschen
+  fra: Bruit des photons
+  ita: Rumore dei fotoni
+  spa: Ruido de fotones
+  jpn: フォトンノイズ
+  rus: Фотонный шум
+  por: Ruído de fotões
+  swe: Fotonbrus
+  pol: Szum fotonowy
+  chs: 光子噪声
+  ukr: Фотонний шум
+  kor: 광자 노이즈
+  ron: Zgomotul fotonic
+Film grain synthesis strength (0=off, higher=more grain):
+  eng: Film grain synthesis strength (0=off, higher=more grain)
+  deu: Stärke der Filmkornsynthese (0=aus, höher=mehr Korn)
+  fra: Force de synthèse du grain du film (0=off, plus élevé=plus de grain)
+  ita: Forza di sintesi della grana del film (0=spento, più alto=più grana)
+  spa: Intensidad de la síntesis del grano de la película (0=desactivado, mayor=más grano)
+  jpn: フィルムグレイン合成強度（0＝オフ、高い＝グレインが多い）
+  rus: Сила синтеза зерна пленки (0=отключено, выше=больше зерна)
+  por: Força de síntese do grão da película (0=desligado, mais alto=mais grão)
+  swe: Syntesstyrka för filmkorn (0=av, högre=mer korn)
+  pol: Siła syntezy ziaren filmu (0=wyłączona, wyższa=więcej ziaren)
+  chs: 薄膜晶粒合成强度（0= 关闭，越高= 晶粒越多）
+  ukr: Сила синтезу зерен плівки (0=виключено, вище=більше зерен)
+  kor: 필름 입자 합성 강도(0=끄기, 높음=입자 더 많이)
+  ron: Puterea de sinteză a granulației filmului (0 = oprit, mai mare = mai multă granulație)
+Custom photon noise value (0-64):
+  eng: Custom photon noise value (0-64)
+  deu: Benutzerdefinierter Photonenrauschwert (0-64)
+  fra: Valeur personnalisée du bruit des photons (0-64)
+  ita: Valore personalizzato del rumore dei fotoni (0-64)
+  spa: Valor de ruido fotónico personalizado (0-64)
+  jpn: カスタムフォトンノイズ値（0～64）
+  rus: Пользовательское значение фотонного шума (0-64)
+  por: Valor personalizado do ruído de fotões (0-64)
+  swe: Anpassat värde för fotonbrus (0-64)
+  pol: Niestandardowa wartość szumu fotonów (0-64)
+  chs: 自定义光子噪声值（0-64）
+  ukr: Користувацьке значення фотонного шуму (0-64)
+  kor: 커스텀 광자 노이즈 값(0-64)
+  ron: Valoare personalizată a zgomotului fotonic (0-64)
+Additional rav1e params:
+  eng: Additional rav1e params
+  deu: Zusätzliche rav1e-Parameter
+  fra: Paramètres supplémentaires de rav1e
+  ita: Parametri aggiuntivi di rav1e
+  spa: Parámetros adicionales de rav1e
+  jpn: rav1e の追加パラメータ
+  rus: Дополнительные параметры rav1e
+  por: Parâmetros rav1e adicionais
+  swe: Ytterligare rav1e-param
+  pol: Dodatkowe parametry rav1e
+  chs: 附加 rav1e 参数
+  ukr: Додаткові параметри rav1e
+  kor: 추가 rav1e 매개변수
+  ron: Parame suplimentare rav1e
+Extra rav1e params in opt=1:opt2=0 format:
+  eng: Extra rav1e params in opt=1:opt2=0 format
+  deu: Zusätzliche rav1e-Parameter im Format opt=1:opt2=0
+  fra: Paramètres rav1e supplémentaires au format opt=1:opt2=0
+  ita: Parametri rav1e extra nel formato opt=1:opt2=0
+  spa: Parámetros rav1e adicionales en formato opt=1:opt2=0
+  jpn: opt=1:opt2=0形式のrav1eパラメータを追加。
+  rus: Дополнительные параметры rav1e в формате opt=1:opt2=0
+  por: Parâmetros rav1e extra no formato opt=1:opt2=0
+  swe: Extra rav1e-parametrar i formatet opt=1:opt2=0
+  pol: Dodatkowe parametry rav1e w formacie opt=1:opt2=0
+  chs: 额外的 rav1e 参数，格式为 opt=1:opt2=0
+  ukr: Додаткові параметри rav1e у форматі opt=1:opt2=0
+  kor: opt=1:opt2=0 형식의 추가 rav1e 매개변수
+  ron: Parame rav1e suplimentare în format opt=1:opt2=0
+Sharpness:
+  eng: Sharpness
+  deu: Schärfe
+  fra: Netteté
+  ita: Nitidezza
+  spa: Nitidez
+  jpn: シャープネス
+  rus: Резкость
+  por: Nitidez
+  swe: Skärpa
+  pol: Ostrość
+  chs: 锐度
+  ukr: Різкість
+  kor: 선명도
+  ron: Sharpness
+Deblocking loop filter sharpness (-7 to 7, 0=default):
+  eng: Deblocking loop filter sharpness (-7 to 7, 0=default)
+  deu: Schärfe des Deblocking-Loop-Filters (-7 bis 7, 0=Standard)
+  fra: Netteté du filtre de la boucle de déblocage (-7 à 7, 0=par défaut)
+  ita: Nitidezza del filtro del loop di deblocking (da -7 a 7, 0=default)
+  spa: Nitidez del filtro del bucle de desbloqueo (-7 a 7, 0=por defecto)
+  jpn: デブロッキング・ループ・フィルターのシャープネス（-7～7、0=デフォルト）
+  rus: Резкость фильтра петли деблокирования (от -7 до 7, 0=умолчанию)
+  por: Nitidez do filtro do laço de desbloqueio (-7 a 7, 0=predefinição)
+  swe: Skärpa på filter för deblockeringsslinga (-7 till 7, 0=standard)
+  pol: Ostrość filtra pętli odblokowującej (-7 do 7, 0=domyślnie)
+  chs: 去时钟环路滤波器锐度（-7 至 7，0=默认值）
+  ukr: Різкість фільтра циклу деблокування (від -7 до 7, 0=за замовчуванням)
+  kor: 차단 해제 루프 필터 선명도(-7~7, 0=기본값)
+  ron: Ascuțimea filtrului buclei de deblocare (de la -7 la 7, 0=default)
+"0: disabled":
+  eng: "0: disabled"
+  deu: '0: deaktiviert'
+  fra: '0 : désactivé'
+  ita: '0: disabilitato'
+  spa: '0: desactivado'
+  jpn: 0：無効
+  rus: '0: отключено'
+  por: '0: desativado'
+  swe: '0: inaktiverad'
+  pol: '0: wyłączony'
+  chs: '0: 禁用'
+  ukr: '0: вимкнено'
+  kor: '0: 사용 안 함'
+  ron: '0: dezactivat'
+"1: variance AQ (complexity mask)":
+  eng: "1: variance AQ (complexity mask)"
+  deu: '1: Varianz AQ (Komplexitätsmaske)'
+  fra: '1 : variance AQ (masque de complexité)'
+  ita: '1: varianza AQ (maschera di complessità)'
+  spa: '1: varianza AQ (máscara de complejidad)'
+  jpn: 1：分散AQ（複雑さマスク）
+  rus: '1: дисперсия AQ (маска сложности)'
+  por: '1: variância AQ (máscara de complexidade)'
+  swe: '1: varians AQ (komplexitetsmask)'
+  pol: '1: wariancja AQ (maska złożoności)'
+  chs: 1：方差 AQ（复杂性掩码）
+  ukr: '1: дисперсія AQ (маска складності)'
+  kor: '1: 분산 AQ(복잡도 마스크)'
+  ron: '1: variație AQ (mască de complexitate)'
+"2: autovariance AQ":
+  eng: "2: autovariance AQ"
+  deu: '2: Autovarianz AQ'
+  fra: '2 : autovariance AQ'
+  ita: '2: autovarianza AQ'
+  spa: '2: autovarianza AQ'
+  jpn: '2: 自己分散AQ'
+  rus: '2: автовариация AQ'
+  por: '2: autovariância AQ'
+  swe: '2: autovarians AQ'
+  pol: '2: autowariancja AQ'
+  chs: 2：自变量 AQ
+  ukr: '2: автоваріація AQ'
+  kor: '2: 자동 분산 AQ'
+  ron: '2: autovarianța AQ'
+"3: autovariance AQ with bias to dark scenes":
+  eng: "3: autovariance AQ with bias to dark scenes"
+  deu: '3: Autovarianz AQ mit Vorliebe für dunkle Szenen'
+  fra: "3 : QA d'autovariance avec biais pour les scènes sombres"
+  ita: '3: autovarianza AQ con polarizzazione sulle scene scure'
+  spa: '3: autovarianza AQ con sesgo a escenas oscuras'
+  jpn: '3: 暗いシーンに偏った自己分散AQ'
+  rus: '3: автовариация AQ со смещением в сторону темных сцен'
+  por: '3: AQ de autovariância com tendência para cenas escuras'
+  swe: '3: autovarians AQ med förskjutning till mörka scener'
+  pol: '3: Autowariancja AQ z tendencją do ciemnych scen'
+  chs: 3：偏向于黑暗场景的自方差 AQ
+  ukr: '3: автоваріація AQ зі зміщенням до темних сцен'
+  kor: '3: 어두운 장면에 편향된 오토바리언스 AQ'
+  ron: '3: autovarianță AQ cu prejudecăți pentru scenele întunecate'
+"Default: variance AQ":
+  eng: "Default: variance AQ"
+  deu: 'Standard: Varianz AQ'
+  fra: 'Valeur par défaut : variance AQ'
+  ita: 'Predefinito: varianza AQ'
+  spa: 'Por defecto: varianza AQ'
+  jpn: デフォルト：分散 AQ
+  rus: 'По умолчанию: дисперсия AQ'
+  por: 'Predefinição: variância AQ'
+  swe: 'Standard: varians AQ'
+  pol: 'Wartość domyślna: wariancja AQ'
+  chs: 默认值：方差 AQ
+  ukr: 'За замовчуванням: дисперсія AQ'
+  kor: '기본값: 분산 AQ'
+  ron: 'Implicit: variație AQ'
+Psy-RD:
+  eng: Psy-RD
+  deu: Psy-RD
+  fra: Psy-RD
+  ita: Psy-RD
+  spa: Psy-RD
+  jpn: サイRD
+  rus: Psy-RD
+  por: Psy-RD
+  swe: Psy-RD
+  pol: Psy-RD
+  chs: Psy-RD
+  ukr: Psy-RD
+  kor: 싸이-RD
+  ron: Psy-RD
+"psy-rd: Psychovisual rate-distortion optimization strength.":
+  eng: "psy-rd: Psychovisual rate-distortion optimization strength."
+  deu: 'psy-rd: Psychovisuelle Rate-Verzerrungs-Optimierungsstärke.'
+  fra: "psy-rd : Force d'optimisation du taux de distorsion psychovisuelle."
+  ita: 'psy-rd: Forza di ottimizzazione del tasso di distorsione psicovisiva.'
+  spa: 'psy-rd: Fuerza de optimización de la distorsión de la tasa psicovisual.'
+  jpn: psy-rd：サイコビジュアル・レート・ディストーション最適化強度。
+  rus: 'psy-rd: Психовизуальная оптимизация скорости и искажений.'
+  por: 'psy-rd: Força de otimização da taxa de distorção psico-visual.'
+  swe: 'psy-rd: Optimering av psykovisuell hastighet-distorsion styrka.'
+  pol: 'psy-rd: Psychowizualna siła optymalizacji zniekształceń.'
+  chs: psy-rd：心理视觉速率-失真优化强度。
+  ukr: 'пси-рд: Сила оптимізації психовізуальних спотворень швидкості.'
+  kor: '싸이-rd: 심리 시각적 속도 왜곡 최적화 강도.'
+  ron: 'psy-rd: Putere de optimizare a ratei-distorsiunii psihovizuale.'
+"Format: rd:trellis (e.g. 1.0:0.0)":
+  eng: "Format: rd:trellis (e.g. 1.0:0.0)"
+  deu: 'Format: rd:trellis (z. B. 1.0:0.0)'
+  fra: 'Format : rd:trellis (par exemple 1.0:0.0)'
+  ita: 'Formato: rd:traliccio (ad es. 1.0:0.0)'
+  spa: 'Formato: rd:enrejado (por ejemplo, 1,0:0,0)'
+  jpn: フォーマット：rd:トレリス（例：1.0:0.0）
+  rus: 'Формат: rd:trellis (например, 1.0:0.0)'
+  por: 'Formato: rd:trellis (por exemplo, 1.0:0.0)'
+  swe: 'Format: rd:trellis (t.ex. 1,0:0,0)'
+  pol: 'Format: rd:trellis (np. 1.0:0.0)'
+  chs: 格式：rd:trellis（例如：1.0:0.0）
+  ukr: 'Формат: rd:trellis (наприклад, 1.0:0.0)'
+  kor: '형식: rd:격자(예: 1.0:0.0)'
+  ron: 'Format: rd:trellis (de exemplu, 1.0:0.0)'
+First value is psy-rd strength, second is psy-trellis strength.:
+  eng: First value is psy-rd strength, second is psy-trellis strength.
+  deu: Der erste Wert ist die Psy-rd-Stärke, der zweite die Psy-trellis-Stärke.
+  fra: La première valeur est la force psy-rd, la seconde la force psy-trellis.
+  ita: Il primo valore è la forza psy-rd, il secondo è la forza psy-trellis.
+  spa: El primer valor es la fuerza psy-rd, el segundo es la fuerza psy-trellis.
+  jpn: 最初の値はサイrdの強さ、2番目の値はサイ・トレリスの強さだ。
+  rus: Первое значение - сила psy-rd, второе - сила psy-trellis.
+  por: O primeiro valor é a força psy-rd, o segundo é a força psy-trellis.
+  swe: Det första värdet är psy-rd styrka, det andra är psy-trellis styrka.
+  pol: Pierwsza wartość to siła psy-rd, druga to siła psy-trellis.
+  chs: 第一个值是 psy-rd 强度，第二个值是 psy-trellis 强度。
+  ukr: Перше значення - це сила пси-руху, друге - сила пси-трелісу.
+  kor: 첫 번째 값은 싸이-드 강도, 두 번째 값은 싸이-트렐리스 강도입니다.
+  ron: Prima valoare este puterea psy-rd, a doua este puterea psy-trellis.
+Requires subme >= 6 for psy-rd and trellis for psy-trellis.:
+  eng: Requires subme >= 6 for psy-rd and trellis for psy-trellis.
+  deu: Erfordert subme >= 6 für psy-rd und trellis für psy-trellis.
+  fra: Requiert subme >= 6 pour psy-rd et trellis pour psy-trellis.
+  ita: Richiede subme >= 6 per psy-rd e traliccio per psy-trellis.
+  spa: Requiere subme >= 6 para psy-rd y trellis para psy-trellis.
+  jpn: psy-rdにはsubme >= 6、psy-trellisにはtrellisが必要。
+  rus: Требуется subme >= 6 для psy-rd и trellis для psy-trellis.
+  por: Requer subme >= 6 para psy-rd e trellis para psy-trellis.
+  swe: Kräver subme >= 6 för psy-rd och spaljé för psy-trellis.
+  pol: Wymaga subme >= 6 dla psy-rd i trellis dla psy-trellis.
+  chs: psy-rd 需要 subme >= 6，psy-trellis 需要 trellis。
+  ukr: Потрібен subme >= 6 для psy-rd і trellis для psy-trellis.
+  kor: psy-rd의 경우 subme >= 6, psy-trellis의 경우 trellis가 필요합니다.
+  ron: Necesită subme >= 6 pentru psy-rd și trellis pentru psy-trellis.
+"level: Set the H.264 level restriction.":
+  eng: "level: Set the H.264 level restriction."
+  deu: 'Stufe: Legen Sie die Beschränkung der H.264-Stufe fest.'
+  fra: 'niveau : Définit la restriction du niveau H.264.'
+  ita: 'livello: Imposta la restrizione del livello H.264.'
+  spa: 'nivel: Establece la restricción de nivel H.264.'
+  jpn: レベルを設定します：H.264レベルの制限を設定します。
+  rus: 'уровень: Установите ограничение уровня H.264.'
+  por: 'nível: Definir a restrição de nível H.264.'
+  swe: 'nivå: Ställ in begränsningen av H.264-nivån.'
+  pol: 'level: Ustaw ograniczenie poziomu H.264.'
+  chs: 级别：设置 H.264 级别限制。
+  ukr: 'рівень: Встановіть обмеження рівня H.264.'
+  kor: '레벨을 설정합니다: H.264 레벨 제한을 설정합니다.'
+  ron: 'nivel: Setați restricția nivelului H.264.'
+Limits the maximum bitrate, resolution, and other parameters.:
+  eng: Limits the maximum bitrate, resolution, and other parameters.
+  deu: Begrenzt die maximale Bitrate, Auflösung und andere Parameter.
+  fra: Limite le débit maximal, la résolution et d'autres paramètres.
+  ita: Limita la velocità massima di trasmissione, la risoluzione e altri parametri.
+  spa: Limita el bitrate máximo, la resolución y otros parámetros.
+  jpn: 最大ビットレート、解像度、その他のパラメーターを制限する。
+  rus: Ограничивает максимальный битрейт, разрешение и другие параметры.
+  por: Limita a taxa de bits máxima, a resolução e outros parâmetros.
+  swe: Begränsar den maximala bithastigheten, upplösningen och andra parametrar.
+  pol: Ogranicza maksymalną szybkość transmisji bitów, rozdzielczość i inne parametry.
+  chs: 限制最大比特率、分辨率和其他参数。
+  ukr: Обмежує максимальний бітрейт, роздільну здатність та інші параметри.
+  kor: 최대 비트 전송률, 해상도 및 기타 매개변수를 제한합니다.
+  ron: Limitează bitrate-ul maxim, rezoluția și alți parametri.
+Useful for ensuring compatibility with target devices.:
+  eng: Useful for ensuring compatibility with target devices.
+  deu: Nützlich, um die Kompatibilität mit den Zielgeräten zu gewährleisten.
+  fra: Utile pour assurer la compatibilité avec les appareils cibles.
+  ita: Utile per garantire la compatibilità con i dispositivi di destinazione.
+  spa: Útil para garantizar la compatibilidad con los dispositivos de destino.
+  jpn: ターゲット・デバイスとの互換性を確保するのに役立つ。
+  rus: Пригодится для обеспечения совместимости с целевыми устройствами.
+  por: Útil para garantir a compatibilidade com os dispositivos de destino.
+  swe: Användbar för att säkerställa kompatibilitet med målenheter.
+  pol: Przydatne do zapewnienia kompatybilności z urządzeniami docelowymi.
+  chs: 有助于确保与目标设备的兼容性。
+  ukr: Корисно для забезпечення сумісності з цільовими пристроями.
+  kor: 대상 디바이스와의 호환성을 보장하는 데 유용합니다.
+  ron: Util pentru asigurarea compatibilității cu dispozitivele țintă.
+Additional x264 params:
+  eng: Additional x264 params
+  deu: Zusätzliche x264-Parameter
+  fra: Paramètres x264 supplémentaires
+  ita: Parametri x264 aggiuntivi
+  spa: Parámetros x264 adicionales
+  jpn: 追加の x264 パラメータ
+  rus: Дополнительные параметры x264
+  por: Parâmetros x264 adicionais
+  swe: Ytterligare x264-parametrar
+  pol: Dodatkowe parametry x264
+  chs: 附加 x264 参数
+  ukr: Додаткові параметри x264
+  kor: 추가 x264 매개변수
+  ron: Parame x264 suplimentare
+Extra x264 params in opt=1:opt2=0 format:
+  eng: Extra x264 params in opt=1:opt2=0 format
+  deu: Zusätzliche x264-Parameter im Format opt=1:opt2=0
+  fra: Paramètres x264 supplémentaires au format opt=1:opt2=0
+  ita: Parametri x264 extra nel formato opt=1:opt2=0
+  spa: Parámetros x264 adicionales en formato opt=1:opt2=0
+  jpn: opt=1:opt2=0フォーマットの余分なx264パラメータ
+  rus: Дополнительные параметры x264 в формате opt=1:opt2=0
+  por: Parâmetros x264 extra no formato opt=1:opt2=0
+  swe: Extra x264-parametrar i formatet opt=1:opt2=0
+  pol: Dodatkowe parametry x264 w formacie opt=1:opt2=0
+  chs: 额外的 x264 参数，格式为 opt=1:opt2=0
+  ukr: Додаткові параметри x264 у форматі opt=1:opt2=0
+  kor: opt=1:opt2=0 형식의 추가 x264 매개변수
+  ron: Parame x264 suplimentare în format opt=1:opt2=0
+"examples: rc-lookahead=40:ref=6":
+  eng: "examples: rc-lookahead=40:ref=6"
+  deu: 'Beispiele: rc-lookahead=40:ref=6'
+  fra: 'exemples : rc-lookahead=40:ref=6'
+  ita: 'esempi: rc-lookahead=40:ref=6'
+  spa: 'ejemplos: rc-lookahead=40:ref=6'
+  jpn: 例：rc-lookahead=40:ref=6
+  rus: 'примеры: rc-lookahead=40:ref=6'
+  por: 'exemplos: rc-lookahead=40:ref=6'
+  swe: 'exempel: rc-lookahead=40:ref=6'
+  pol: 'Przykłady: rc-lookahead=40:ref=6'
+  chs: 示例：RC-lookahead=40:Ref=6
+  ukr: 'Приклади: rc-lookahead=40:ref=6'
+  kor: '예: rc-lookahead=40:ref=6'
+  ron: 'exemple: rc-lookahead=40:ref=6'
+Overall quality (1-100, higher is better quality but larger file size):
+  eng: Overall quality (1-100, higher is better quality but larger file size)
+  deu: Gesamtqualität (1-100, je höher, desto besser die Qualität, aber desto größer die Datei)
+  fra: Qualité globale (1-100, plus la valeur est élevée, meilleure est la qualité, mais plus le fichier est volumineux)
+  ita: Qualità complessiva (1-100, maggiore è la qualità ma maggiore è la dimensione del file)
+  spa: Calidad general (de 1 a 100; a mayor calidad, mayor tamaño del archivo)
+  jpn: 総合品質（1～100、高いほど高品質だがファイルサイズが大きい）
+  rus: Общее качество (1-100, выше - лучше качество, но больше размер файла)
+  por: Qualidade geral (1-100, quanto maior, melhor a qualidade mas maior o tamanho do ficheiro)
+  swe: Övergripande kvalitet (1-100, högre är bättre kvalitet men större filstorlek)
+  pol: Ogólna jakość (1-100, wyższa oznacza lepszą jakość, ale większy rozmiar pliku)
+  chs: 整体质量（1-100，越高质量越好，但文件大小越大）
+  ukr: Загальна якість (1-100, чим вище, тим краща якість, але більший розмір файлу)
+  kor: 전체 품질(1~100, 높을수록 품질이 좋지만 파일 크기가 커짐)
+  ron: Calitate generală (1-100, mai mare înseamnă calitate mai bună, dar dimensiune mai mare a fișierului)
+Lossy Quality:
+  eng: Lossy Quality
+  deu: Verlustbehaftete Qualität
+  fra: Qualité avec perte
+  ita: Qualità lossy
+  spa: Calidad con pérdidas
+  jpn: ロッシークオリティ
+  rus: Качество с потерями
+  por: Qualidade com perdas
+  swe: Förlustkvalitet
+  pol: Jakość stratna
+  chs: 有损质量
+  ukr: Якість із втратами
+  kor: 손실 품질
+  ron: Calitate Lossy
+Lower values reduce file size at cost of more noise/grain (1-100, or auto to let gifski decide):
+  eng: Lower values reduce file size at cost of more noise/grain (1-100, or auto to let gifski decide)
+  deu: Niedrigere Werte reduzieren die Dateigröße auf Kosten von mehr Rauschen/Körnung (1-100, oder Auto, um gifski entscheiden zu lassen)
+  fra: Des valeurs plus faibles réduisent la taille du fichier au prix de plus de bruit/grains (1-100, ou auto pour laisser gifski décider).
+  ita: Valori più bassi riducono le dimensioni del file al costo di un maggior rumore/grana (1-100, o auto per far decidere a gifski)
+  spa: Los valores más bajos reducen el tamaño del archivo a costa de más ruido/grano (1-100, o auto para dejar que gifski decida)
+  jpn: 値を下げるとファイルサイズが小さくなるが、その代償としてノイズやグレインが大きくなる（1-100、またはgifskiの判断に任せる場合はauto）。
+  rus: Более низкие значения уменьшают размер файла за счет большего количества шума/зерна (1-100, или авто, чтобы gifski сам решал).
+  por: Valores mais baixos reduzem o tamanho do ficheiro à custa de mais ruído/grão (1-100, ou automático para deixar o gifski decidir)
+  swe: Lägre värden minskar filstorleken på bekostnad av mer brus/korn (1-100, eller auto för att låta gifski bestämma)
+  pol: Niższe wartości zmniejszają rozmiar pliku kosztem większego szumu/ziarnistości (1-100 lub automatycznie, aby pozwolić gifski zdecydować).
+  chs: 数值越小，文件尺寸越小，但噪点/颗粒越多（1-100，或自动让 gifski 决定）。
+  ukr: Менші значення зменшують розмір файлу за рахунок більшого шуму/зернистості (1-100 або автоматично, щоб дозволити gifski вирішити).
+  kor: 값이 낮을수록 노이즈/입자가 커지는 대신 파일 크기가 줄어듭니다(1~100, 또는 자동 설정으로 기프스키가 결정).
+  ron: Valorile mai mici reduc dimensiunea fișierului cu prețul unui zgomot/grain mai mare (1-100, sau auto pentru a lăsa gifski să decidă)
+Lower values reduce file size for animations with motion (1-100, or auto to let gifski decide):
+  eng: Lower values reduce file size for animations with motion (1-100, or auto to let gifski decide)
+  deu: Niedrigere Werte reduzieren die Dateigröße für Animationen mit Bewegung (1-100, oder auto, um gifski entscheiden zu lassen)
+  fra: Des valeurs plus faibles réduisent la taille des fichiers pour les animations avec mouvement (1-100, ou auto pour laisser gifski décider).
+  ita: Valori più bassi riducono le dimensioni del file per le animazioni con movimento (1-100, o auto per far decidere a gifski)
+  spa: Los valores más bajos reducen el tamaño del archivo para animaciones con movimiento (1-100, o auto para dejar que gifski decida)
+  jpn: 値を小さくすると、動きのあるアニメーションのファイルサイズが小さくなります。
+  rus: Меньшие значения уменьшают размер файла для анимации с движением (1-100, или авто, чтобы gifski сам решал).
+  por: Valores mais baixos reduzem o tamanho do ficheiro para animações com movimento (1-100, ou automático para deixar o gifski decidir)
+  swe: Lägre värden minskar filstorleken för animationer med rörelse (1-100, eller auto för att låta gifski bestämma)
+  pol: Niższe wartości zmniejszają rozmiar pliku w przypadku animacji z ruchem (1-100 lub automatycznie, aby pozwolić gifski zdecydować).
+  chs: 较低的值可减少动态动画的文件大小（1-100，或自动让 gifski 决定）。
+  ukr: Менші значення зменшують розмір файлу для анімації з рухом (1-100 або автоматично, щоб gifski вирішив)
+  kor: 값이 낮을수록 모션이 있는 애니메이션의 파일 크기가 줄어듭니다(1~100 또는 자동, GIF 스키가 결정하도록 허용).
+  ron: Valorile mai mici reduc dimensiunea fișierului pentru animațiile cu mișcare (1-100, sau auto pentru a lăsa gifski să decidă)
+Fast Mode:
+  eng: Fast Mode
+  deu: Schneller Modus
+  fra: Mode rapide
+  ita: Modalità veloce
+  spa: Modo rápido
+  jpn: 高速モード
+  rus: Быстрый режим
+  por: Modo rápido
+  swe: Snabbt läge
+  pol: Tryb szybki
+  chs: 快速模式
+  ukr: Швидкий режим
+  kor: 빠른 모드
+  ron: Mod rapid
+Encode faster at cost of quality:
+  eng: Encode faster at cost of quality
+  deu: Schnellere Kodierung auf Kosten der Qualität
+  fra: Coder plus vite au détriment de la qualité
+  ita: Codificare più velocemente a scapito della qualità
+  spa: Codificar más rápido a costa de la calidad
+  jpn: 品質を犠牲にしてでも、より速くエンコードする
+  rus: Кодирование быстрее за счет снижения качества
+  por: Codificar mais rapidamente à custa da qualidade
+  swe: Snabbare kodning på bekostnad av kvalitet
+  pol: Szybsze kodowanie kosztem jakości
+  chs: 以质量为代价加快编码速度
+  ukr: Кодуйте швидше за рахунок якості
+  kor: 품질 비용으로 더 빠르게 인코딩
+  ron: Codificare mai rapidă în detrimentul calității
+Download HDR10+ Tool:
+  eng: Download HDR10+ Tool
+  deu: HDR10+ Tool herunterladen
+  fra: Télécharger l'outil HDR10
+  ita: Scarica lo strumento HDR10+
+  spa: Descargar la herramienta HDR10
+  jpn: HDR10+ツールのダウンロード
+  rus: Скачать инструмент HDR10+
+  por: Descarregar a ferramenta HDR10
+  swe: Ladda ner HDR10+ verktyg
+  pol: Pobierz narzędzie HDR10+
+  chs: 下载 HDR10+ 工具
+  ukr: Завантажити HDR10+ Tool
+  kor: HDR10+ 도구 다운로드
+  ron: Descărcați HDR10+ Tool
+Perceptual QPA:
+  eng: Perceptual QPA
+  deu: Wahrnehmungs-QPA
+  fra: QPA perceptuel
+  ita: QPA percettivo
+  spa: QPA perceptivo
+  jpn: 知覚的QPA
+  rus: Перцептивная QPA
+  por: QPA percetual
+  swe: Perceptuell QPA
+  pol: Percepcyjne QPA
+  chs: 感知 QPA
+  ukr: Перцептивний QPA
+  kor: 지각적 QPA
+  ron: QPA perceptual
+QPA perceptual optimization (enabled by default in vvenc).:
+  eng: QPA perceptual optimization (enabled by default in vvenc).
+  deu: QPA-Wahrnehmungsoptimierung (in vvenc standardmäßig aktiviert).
+  fra: Optimisation perceptuelle QPA (activée par défaut dans vvenc).
+  ita: Ottimizzazione percettiva QPA (abilitata di default in vvenc).
+  spa: Optimización perceptiva QPA (activada por defecto en vvenc).
+  jpn: QPA 知覚最適化（vvenc のデフォルトで有効）。
+  rus: Оптимизация восприятия QPA (включена по умолчанию в vvenc).
+  por: Otimização perceptiva QPA (activada por defeito em vvenc).
+  swe: QPA-perceptuell optimering (aktiverad som standard i vvenc).
+  pol: Optymalizacja percepcyjna QPA (domyślnie włączona w vvenc).
+  chs: QPA 感知优化（vvenc 默认启用）。
+  ukr: Оптимізація сприйняття QPA (у vvenc увімкнено за замовчуванням).
+  kor: QPA 지각 최적화(vvenc에서 기본적으로 활성화됨).
+  ron: Optimizarea percepției QPA (activată implicit în vvenc).
+Disabling sends -qpa 0 to vvenc.:
+  eng: Disabling sends -qpa 0 to vvenc.
+  deu: Bei Deaktivierung wird -qpa 0 an vvenc gesendet.
+  fra: La désactivation envoie -qpa 0 à vvenc.
+  ita: La disabilitazione invia -qpa 0 a vvenc.
+  spa: La desactivación envía -qpa 0 a vvenc.
+  jpn: 無効にすると-qpa 0がvvencに送られる。
+  rus: Отключение отправляет -qpa 0 на vvenc.
+  por: A desativação envia -qpa 0 para vvenc.
+  swe: Inaktivering skickar -qpa 0 till vvenc.
+  pol: Wyłączenie wysyła -qpa 0 do vvenc.
+  chs: 禁用后会向 vvenc 发送 -qpa 0。
+  ukr: Вимкнення надсилає -qpa 0 до vvenc.
+  kor: 비활성화하면 -qpa 0이 vvenc로 전송됩니다.
+  ron: Dezactivarea trimite -qpa 0 către vvenc.
+Intra Period:
+  eng: Intra Period
+  deu: Innerhalb des Zeitraums
+  fra: Intra période
+  ita: Intra periodo
+  spa: Dentro del periodo
+  jpn: 期中
+  rus: Внутрипериодный
+  por: Intra-período
+  swe: Inom perioden
+  pol: Wewnątrz okresu
+  chs: 期间内
+  ukr: Внутрішній період
+  kor: 기간 내
+  ron: În interiorul perioadei
+Intra refresh period in seconds. Auto lets vvenc decide.:
+  eng: Intra refresh period in seconds. Auto lets vvenc decide.
+  deu: Intra-Refresh-Zeitraum in Sekunden. Auto lässt vvenc entscheiden.
+  fra: Période de rafraîchissement interne en secondes. Auto laisse vvenc décider.
+  ita: Periodo di aggiornamento interno in secondi. Auto lascia decidere a vvenc.
+  spa: Periodo intra refresh en segundos. Auto deja que vvenc decida.
+  jpn: リフレッシュ期間（秒）。Autoはvvencが決定します。
+  rus: Период обновления в секундах. Авто позволяет vvenc принимать решения.
+  por: Período de atualização intra em segundos. Auto deixa o vvenc decidir.
+  swe: Intra refresh period i sekunder. Auto låter vvenc bestämma.
+  pol: Okres odświeżania w sekundach. Auto pozwala vvenc zdecydować.
+  chs: 刷新周期（秒）。自动由 vvenc 决定。
+  ukr: Період між оновленнями в секундах. Автоматично дозволяє vvenc вирішити.
+  kor: 새로 고침 간격(초). 자동을 선택하면 vvenc가 결정합니다.
+  ron: Perioada de reîmprospătare în secunde. Auto lasă vvenc să decidă.
+Threads:
+  eng: Threads
+  deu: Fäden
+  fra: Fils
+  ita: Fili
+  spa: Hilos
+  jpn: スレッド
+  rus: Нитки
+  por: Fios
+  swe: Trådar
+  pol: Nici
+  chs: 线程
+  ukr: Нитки
+  kor: 스레드
+  ron: Fire
+Number of threads for encoding. Auto lets vvenc decide.:
+  eng: Number of threads for encoding. Auto lets vvenc decide.
+  deu: Anzahl der Threads für die Kodierung. Auto lässt vvenc entscheiden.
+  fra: Nombre de threads pour l'encodage. Auto laisse vvenc décider.
+  ita: Numero di thread per la codifica. Auto lascia decidere a vvenc.
+  spa: Número de hilos para la codificación. Auto deja que vvenc decida.
+  jpn: エンコードのスレッド数。自動でvvencが決める。
+  rus: Количество потоков для кодирования. Авто позволяет vvenc решать.
+  por: Número de threads para codificação. Auto deixa o vvenc decidir.
+  swe: Antal trådar för kodning. Auto låter vvenc bestämma.
+  pol: Liczba wątków dla kodowania. Auto pozwala vvenc zdecydować.
+  chs: 编码线程数。自动由 vvenc 决定。
+  ukr: Кількість потоків для кодування. Автоматично дозволяє vvenc вирішити.
+  kor: 인코딩을 위한 스레드 수입니다. 자동을 선택하면 vvenc가 결정합니다.
+  ron: Numărul de fire pentru codare. Auto lasă vvenc să decidă.
+IFP (Inter-Frame Parallelism):
+  eng: IFP (Inter-Frame Parallelism)
+  deu: IFP (Inter-Frame-Parallelität)
+  fra: IFP (Inter-Frame Parallelism)
+  ita: IFP (Parallelismo inter-frame)
+  spa: IFP (paralelismo entre tramas)
+  jpn: IFP（フレーム間並列性）
+  rus: IFP (межкадровый параллелизм)
+  por: IFP (Paralelismo entre quadros)
+  swe: IFP (parallellism mellan ramar)
+  pol: IFP (równoległość międzyramkowa)
+  chs: IFP（帧间并行）
+  ukr: IFP (міжкадровий паралелізм)
+  kor: IFP(프레임 간 병렬 처리)
+  ron: IFP (Paralelism între cadre)
+Enable inter-frame parallelism for faster encoding (vvenc 1.11+).:
+  eng: Enable inter-frame parallelism for faster encoding (vvenc 1.11+).
+  deu: Aktivieren Sie Inter-Frame-Parallelität für schnellere Kodierung (vvenc 1.11+).
+  fra: Activation du parallélisme inter-images pour un encodage plus rapide (vvenc 1.11+).
+  ita: Abilita il parallelismo inter-frame per una codifica più veloce (vvenc 1.11+).
+  spa: Habilita el paralelismo entre fotogramas para una codificación más rápida (vvenc 1.11+).
+  jpn: フレーム間並列処理を有効にしてエンコードを高速化（vvenc 1.11+）。
+  rus: Включите межкадровый параллелизм для ускорения кодирования (vvenc 1.11+).
+  por: Ativar o paralelismo entre fotogramas para uma codificação mais rápida (vvenc 1.11+).
+  swe: Aktivera parallellism mellan ramar för snabbare kodning (vvenc 1.11+).
+  pol: Włączenie równoległości międzyramkowej w celu szybszego kodowania (vvenc 1.11+).
+  chs: 启用帧间并行，以加快编码速度（vvenc 1.11+）。
+  ukr: Увімкнути міжкадровий паралелізм для швидшого кодування (vvenc 1.11+).
+  kor: 더 빠른 인코딩을 위해 프레임 간 병렬 처리를 활성화합니다(vvenc 1.11+).
+  ron: Activați paralelismul inter-frame pentru o codificare mai rapidă (vvenc 1.11+).
+Appends ifp=1 to vvc-params.:
+  eng: Appends ifp=1 to vvc-params.
+  deu: Hängt ifp=1 an vvc-params an.
+  fra: Ajoute ifp=1 à vvc-params.
+  ita: Aggiunge ifp=1 a vvc-params.
+  spa: Añade ifp=1 a vvc-params.
+  jpn: vvc-paramsにifp=1を追加する。
+  rus: Добавляет ifp=1 к vvc-params.
+  por: Acrescenta ifp=1 a vvc-params.
+  swe: Lägger till ifp=1 till vvc-params.
+  pol: Dodaje ifp=1 do vvc-params.
+  chs: 将 ifp=1 添加到 vvc-params 中。
+  ukr: Додає до vvc-параметрів значення ifp=1.
+  kor: vvc-params에 ifp=1을 추가합니다.
+  ron: Adaugă ifp=1 la vvc-params.
+High quality GIF encoding:
+  eng: High quality GIF encoding
+  deu: Hochwertige GIF-Kodierung
+  fra: Encodage GIF de haute qualité
+  ita: Codifica GIF di alta qualità
+  spa: Codificación GIF de alta calidad
+  jpn: 高品質GIFエンコーディング
+  rus: Высококачественное кодирование GIF
+  por: Codificação GIF de alta qualidade
+  swe: GIF-kodning av hög kvalitet
+  pol: Wysokiej jakości kodowanie GIF
+  chs: 高质量 GIF 编码
+  ukr: Високоякісне кодування GIF
+  kor: 고품질 GIF 인코딩
+  ron: Codificare GIF de înaltă calitate
+HDR10+ detected — will be preserved via FFmpeg passthrough:
+  eng: HDR10+ detected — will be preserved via FFmpeg passthrough
+  deu: HDR10+ erkannt - wird über FFmpeg Passthrough erhalten
+  fra: HDR10+ détecté - sera préservé via FFmpeg passthrough
+  ita: Rilevato HDR10+ - sarà conservato tramite FFmpeg passthrough
+  spa: HDR10+ detectado - se conservará a través de FFmpeg passthrough
+  jpn: HDR10+を検出 - FFmpegパススルーで保存されます。
+  rus: HDR10+ обнаружен - будет сохранен через FFmpeg passthrough
+  por: HDR10+ detectado - será preservado através do FFmpeg passthrough
+  swe: HDR10+ upptäckt - kommer att bevaras via FFmpeg passthrough
+  pol: Wykryto HDR10+ - zostanie zachowany przez FFmpeg passthrough
+  chs: 检测到 HDR10+ - 将通过 FFmpeg 直通保存
+  ukr: Виявлено HDR10+ - буде збережено за допомогою проходження FFmpeg
+  kor: HDR10+ 감지 - FFmpeg 패스스루를 통해 보존됩니다.
+  ron: HDR10+ detectat - va fi păstrat prin intermediul FFmpeg passthrough
+Tune Content:
+  eng: Tune Content
+  deu: Inhalt abstimmen
+  fra: Contenu de l'accord
+  ita: Sintonizzare il contenuto
+  spa: Sintonizar contenido
+  jpn: チューン・コンテンツ
+  rus: Содержание мелодии
+  por: Conteúdo do Tune
+  swe: Tune Innehåll
+  pol: Dostrajanie zawartości
+  chs: 调整内容
+  ukr: Зміст мелодії
+  kor: 콘텐츠 조정
+  ron: Reglați conținutul
+Content type tuning.:
+  eng: Content type tuning.
+  deu: Abstimmung des Inhaltstyps.
+  fra: Réglage du type de contenu.
+  ita: Messa a punto del tipo di contenuto.
+  spa: Ajuste del tipo de contenido.
+  jpn: コンテンツタイプのチューニング。
+  rus: Настройка типа содержимого.
+  por: Afinação do tipo de conteúdo.
+  swe: Justering av innehållstyp.
+  pol: Dostrajanie typu zawartości.
+  chs: 内容类型调整。
+  ukr: Налаштування типу вмісту.
+  kor: 콘텐츠 유형 조정.
+  ron: Reglarea tipului de conținut.
+"screen: for screen capture content":
+  eng: "screen: for screen capture content"
+  deu: 'screen: für Bildschirmaufnahmen'
+  fra: "écran : pour le contenu de la capture d'écran"
+  ita: 'schermo: per il contenuto della cattura dello schermo'
+  spa: 'pantalla: para contenido de captura de pantalla'
+  jpn: 'screen: スクリーンキャプチャコンテンツ用'
+  rus: 'экран: для захвата содержимого экрана'
+  por: 'ecrã: para conteúdo de captura de ecrã'
+  swe: 'screen: för innehåll från skärmdump'
+  pol: 'ekran: dla zawartości przechwytywania ekranu'
+  chs: 屏幕：用于屏幕截图内容
+  ukr: 'screen: для вмісту скріншоту'
+  kor: '화면: 화면 캡처 콘텐츠의 경우'
+  ron: 'ecran: pentru conținutul capturii de ecran'
+"film: for film content":
+  eng: "film: for film content"
+  deu: 'Film: für Filminhalte'
+  fra: 'film : pour le contenu des films'
+  ita: 'film: per i contenuti cinematografici'
+  spa: 'película: para contenidos cinematográficos'
+  jpn: 'film: 映画コンテンツ用'
+  rus: 'фильм: для содержания фильмов'
+  por: 'filme: para conteúdos de filmes'
+  swe: 'film: för filminnehåll'
+  pol: 'Film: dla treści filmowych'
+  chs: 电影：用于电影内容
+  ukr: 'фільм: для кіноконтенту'
+  kor: '영화: 영화 콘텐츠용'
+  ron: 'film: pentru conținut cinematografic'
+Adaptive quantization mode.:
+  eng: Adaptive quantization mode.
+  deu: Adaptiver Quantisierungsmodus.
+  fra: Mode de quantification adaptative.
+  ita: Modalità di quantizzazione adattiva.
+  spa: Modo de cuantización adaptativa.
+  jpn: 適応量子化モード。
+  rus: Режим адаптивного квантования.
+  por: Modo de quantização adaptativa.
+  swe: Adaptivt kvantiseringsläge.
+  pol: Tryb kwantyzacji adaptacyjnej.
+  chs: 自适应量化模式
+  ukr: Режим адаптивного квантування.
+  kor: 적응형 양자화 모드.
+  ron: Mod de cuantizare adaptivă.
+Alt Ref Frames:
+  eng: Alt Ref Frames
+  deu: Alt-Ref-Rahmen
+  fra: Alt Ref Frames
+  ita: Cornici Alt Ref
+  spa: Alt Ref Marcos
+  jpn: オルトレフフレーム
+  rus: Alt Ref Frames
+  por: Quadros de referência Alt
+  swe: Alt Ref ramar
+  pol: Alt Ref Frames
+  chs: 辅助参考框
+  ukr: Alt Ref Frames
+  kor: 대체 참조 프레임
+  ron: Cadrele Alt Ref
+Enable automatic alternate reference frames.:
+  eng: Enable automatic alternate reference frames.
+  deu: Aktivieren Sie automatische alternative Referenzrahmen.
+  fra: Activer les cadres de référence alternatifs automatiques.
+  ita: Abilita i quadri di riferimento alternativi automatici.
+  spa: Activar marcos de referencia alternativos automáticos.
+  jpn: 自動代替参照フレームを有効にする。
+  rus: Включить автоматическое чередование систем отсчета.
+  por: Ativar quadros de referência alternativos automáticos.
+  swe: Aktivera automatiska alternativa referensramar.
+  pol: Włącz automatyczne alternatywne ramy odniesienia.
+  chs: 启用自动交替参照基准。
+  ukr: Увімкніть автоматичну альтернативну систему відліку.
+  kor: 자동 대체 참조 프레임을 사용하도록 설정합니다.
+  ron: Activați cadrele de referință alternative automate.
+Most impactful VP9 quality feature for multi-pass encoding.:
+  eng: Most impactful VP9 quality feature for multi-pass encoding.
+  deu: Die wichtigste VP9-Qualitätsfunktion für Multi-Pass-Codierung.
+  fra: Fonctionnalité de qualité VP9 la plus importante pour l'encodage multipasse.
+  ita: La funzione di qualità VP9 di maggior impatto per la codifica multi-pass.
+  spa: La función de calidad VP9 más impactante para la codificación multipase.
+  jpn: マルチパスエンコーディングのための最もインパクトのあるVP9品質機能。
+  rus: Наиболее эффективная функция качества VP9 для многопроходного кодирования.
+  por: A caraterística de qualidade VP9 mais impactante para codificação multi-passagem.
+  swe: Den mest effektiva VP9-kvalitetsfunktionen för multi-pass-kodning.
+  pol: Najważniejsza funkcja jakości VP9 dla kodowania wieloprzebiegowego.
+  chs: 对多通道编码影响最大的 VP9 质量功能。
+  ukr: Найвпливовіша характеристика якості VP9 для багатопрохідного кодування.
+  kor: 멀티패스 인코딩을 위한 가장 영향력 있는 VP9 품질 기능입니다.
+  ron: Cea mai importantă caracteristică de calitate VP9 pentru codarea multi-pass.
+Lag in Frames:
+  eng: Lag in Frames
+  deu: Verzögerung in Frames
+  fra: Décalage dans les encadrements
+  ita: Ritardo in fotogrammi
+  spa: Retraso en fotogramas
+  jpn: フレームの遅れ
+  rus: Отставание в кадрах
+  por: Atraso nos fotogramas
+  swe: Fördröjning i ramar
+  pol: Opóźnienie w ramkach
+  chs: 帧滞后
+  ukr: Відставання у кадрах
+  kor: 프레임 지연
+  ron: Decalaj în cadre
+Number of frames to look ahead for alternate reference frame selection.:
+  eng: Number of frames to look ahead for alternate reference frame selection.
+  deu: Anzahl der Bilder, die für die Auswahl des alternativen Referenzbildes vorauszusehen sind.
+  fra: Nombre d'images à anticiper pour la sélection du cadre de référence alternatif.
+  ita: Numero di fotogrammi da guardare avanti per la selezione del quadro di riferimento alternativo.
+  spa: Número de fotogramas que deben adelantarse para la selección del fotograma de referencia alternativo.
+  jpn: 代替参照フレーム選択のために先読みするフレーム数。
+  rus: Количество кадров для выбора альтернативного опорного кадра.
+  por: Número de fotogramas a considerar para a seleção do fotograma de referência alternativo.
+  swe: Antal bildrutor att se framåt för val av alternativ referensram.
+  pol: Liczba klatek do sprawdzenia w celu wybrania alternatywnej ramki odniesienia.
+  chs: 选择备用参考帧时的前瞻帧数。
+  ukr: Кількість кадрів для вибору альтернативного опорного кадру.
+  kor: 대체 기준 프레임 선택을 위해 앞을 내다볼 프레임 수입니다.
+  ron: Numărul de cadre pe care trebuie să le priviți înainte pentru selectarea cadrului de referință alternativ.
+"Recommended: 25.":
+  eng: "Recommended: 25."
+  deu: 'Empfohlen: 25.'
+  fra: 'Recommandé : 25.'
+  ita: 'Consigliato: 25.'
+  spa: 'Recomendado: 25.'
+  jpn: 推奨：25
+  rus: 'Рекомендуется: 25.'
+  por: 'Recomendado: 25.'
+  swe: 'Rekommenderas: 25.'
+  pol: 'Zalecane: 25.'
+  chs: 建议：25。
+  ukr: 'Рекомендовано: 25.'
+  kor: '권장: 25.'
+  ron: 'Recomandat: 25.'
+"Loop filter sharpness (0-7).":
+  eng: "Loop filter sharpness (0-7)."
+  deu: Schärfe des Schleifenfilters (0-7).
+  fra: Netteté du filtre de boucle (0-7).
+  ita: Nitidezza del filtro Loop (0-7).
+  spa: Nitidez del filtro de bucle (0-7).
+  jpn: ループフィルターのシャープネス（0-7）。
+  rus: Резкость контурного фильтра (0-7).
+  por: Nitidez do filtro de laço (0-7).
+  swe: Loop-filtrets skärpa (0-7).
+  pol: Ostrość filtra pętli (0-7).
+  chs: 环路滤波器清晰度（0-7）。
+  ukr: Різкість петлевого фільтра (0-7).
+  kor: 루프 필터 선명도(0~7).
+  ron: Finețea filtrului de buclă (0-7).
+Video Info:
+  eng: Video Info
+  deu: Video-Infos
+  fra: Info vidéo
+  ita: Video Info
+  spa: Información en vídeo
+  jpn: ビデオ情報
+  rus: Видеоинформация
+  por: Informações sobre o vídeo
+  swe: Videoinformation
+  pol: Informacje wideo
+  chs: 视频信息
+  ukr: Інформація про відео
+  kor: 비디오 정보
+  ron: Informații video

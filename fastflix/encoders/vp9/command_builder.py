@@ -24,6 +24,21 @@ def build(fastflix: FastFlix):
     #     if fastflix.current_video.color_space.startswith("bt2020"):
     #         beginning += "-color_primaries bt2020 -color_trc smpte2084 -colorspace bt2020nc -color_range 1"
 
+    if settings.auto_alt_ref >= 0:
+        beginning.extend(["-auto-alt-ref", str(settings.auto_alt_ref)])
+
+    if settings.lag_in_frames >= 0:
+        beginning.extend(["-lag-in-frames", str(settings.lag_in_frames)])
+
+    if settings.tune_content != "default":
+        beginning.extend(["-tune-content", settings.tune_content])
+
+    if settings.aq_mode >= 0:
+        beginning.extend(["-aq-mode", str(settings.aq_mode)])
+
+    if settings.sharpness >= 0:
+        beginning.extend(["-sharpness", str(settings.sharpness)])
+
     details = [
         "-quality:v",
         settings.quality,

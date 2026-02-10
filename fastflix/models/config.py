@@ -87,6 +87,10 @@ def find_hdr10plus_tool():
         return Path(location)
     if location := shutil.which("hdr10plus_parser"):
         return Path(location)
+    # Check the FFmpeg download folder (where auto-download places it)
+    hdr10plus_in_ffmpeg = ffmpeg_folder / "hdr10plus_tool.exe"
+    if hdr10plus_in_ffmpeg.exists():
+        return hdr10plus_in_ffmpeg
     return None
 
 
@@ -254,6 +258,7 @@ class Config(BaseModel):
     ui_scale: str = "1"
     clean_old_logs: bool = True
     auto_gpu_check: bool | None = None
+    auto_hdr10plus_check: bool | None = None
     gpu_fingerprint: str | None = None
     opencl_support: bool | None = None
     seven_zip: Path | None = None

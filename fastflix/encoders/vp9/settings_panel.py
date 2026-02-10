@@ -86,9 +86,16 @@ class VP9(SettingPanel):
 
         grid.addLayout(checkboxes, 5, 2, 1, 4)
 
-        # grid.addWidget(QtWidgets.QWidget(), 8, 0)
-        grid.setRowStretch(8, 1)
-        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
+        grid.addLayout(self.init_tune_content(), 7, 0, 1, 2)
+        grid.addLayout(self.init_aq_mode(), 7, 2, 1, 4)
+
+        grid.addLayout(self.init_auto_alt_ref(), 8, 0, 1, 2)
+        grid.addLayout(self.init_lag_in_frames(), 8, 2, 1, 4)
+
+        grid.addLayout(self.init_sharpness(), 9, 0, 1, 2)
+
+        grid.setRowStretch(10, 1)
+        grid.addLayout(self._add_custom(), 11, 0, 1, 6)
 
         link_1 = link(
             "https://trac.ffmpeg.org/wiki/Encode/VP9", t("FFMPEG VP9 Encoding Guide"), app.fastflix.config.theme
@@ -102,7 +109,7 @@ class VP9(SettingPanel):
         guide_label = QtWidgets.QLabel(f"{link_1} | {link_2}")
         guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, 1, 6)
+        grid.addWidget(guide_label, 12, 0, 1, 6)
         self.setLayout(grid)
         self.hide()
 
@@ -194,6 +201,51 @@ class VP9(SettingPanel):
     def init_single_pass(self):
         return self._add_check_box(label="Single Pass (CRF)", tooltip="", widget_name="single_pass", opt="single_pass")
 
+    def init_auto_alt_ref(self):
+        return self._add_combo_box(
+            label="Alt Ref Frames",
+            tooltip="Enable automatic alternate reference frames.\nMost impactful VP9 quality feature for multi-pass encoding.",
+            widget_name="auto_alt_ref",
+            options=["Default", "0 (disabled)", "1", "2", "3", "4", "5", "6"],
+            opt="auto_alt_ref",
+        )
+
+    def init_lag_in_frames(self):
+        return self._add_combo_box(
+            label="Lag in Frames",
+            tooltip="Number of frames to look ahead for alternate reference frame selection.\nRecommended: 25.",
+            widget_name="lag_in_frames",
+            options=["Default", "0", "10", "16", "20", "25", "30", "40", "50"],
+            opt="lag_in_frames",
+        )
+
+    def init_tune_content(self):
+        return self._add_combo_box(
+            label="Tune Content",
+            tooltip="Content type tuning.\nscreen: for screen capture content\nfilm: for film content",
+            widget_name="tune_content",
+            options=["default", "screen", "film"],
+            opt="tune_content",
+        )
+
+    def init_aq_mode(self):
+        return self._add_combo_box(
+            label="AQ Mode",
+            tooltip="Adaptive quantization mode.",
+            widget_name="aq_mode",
+            options=["Default", "0 (none)", "1 (variance)", "2 (complexity)", "3 (cyclic)", "4 (equator360)"],
+            opt="aq_mode",
+        )
+
+    def init_sharpness(self):
+        return self._add_combo_box(
+            label="Sharpness",
+            tooltip="Loop filter sharpness (0-7).",
+            widget_name="sharpness",
+            options=["Default", "0", "1", "2", "3", "4", "5", "6", "7"],
+            opt="sharpness",
+        )
+
     def init_modes(self):
         return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf")
 
@@ -203,6 +255,24 @@ class VP9(SettingPanel):
         self.main.build_commands()
 
     def update_video_encoder_settings(self):
+        auto_alt_ref_text = self.widgets.auto_alt_ref.currentText()
+        if not auto_alt_ref_text or auto_alt_ref_text == "Default":
+            auto_alt_ref = -1
+        else:
+            auto_alt_ref = int(auto_alt_ref_text.split()[0])
+
+        lag_in_frames_text = self.widgets.lag_in_frames.currentText()
+        lag_in_frames = -1 if not lag_in_frames_text or lag_in_frames_text == "Default" else int(lag_in_frames_text)
+
+        aq_mode_text = self.widgets.aq_mode.currentText()
+        if not aq_mode_text or aq_mode_text == "Default":
+            aq_mode = -1
+        else:
+            aq_mode = int(aq_mode_text.split()[0])
+
+        sharpness_text = self.widgets.sharpness.currentText()
+        sharpness = -1 if not sharpness_text or sharpness_text == "Default" else int(sharpness_text)
+
         settings = VP9Settings(
             quality=self.widgets.quality.currentText(),
             speed=self.widgets.speed.currentText(),
@@ -218,6 +288,11 @@ class VP9(SettingPanel):
                 self.widgets.tile_columns.currentText() if self.widgets.tile_columns.currentIndex() > 0 else "-1"
             ),
             tile_rows=self.widgets.tile_rows.currentText() if self.widgets.tile_rows.currentIndex() > 0 else "-1",
+            auto_alt_ref=auto_alt_ref,
+            lag_in_frames=lag_in_frames,
+            tune_content=self.widgets.tune_content.currentText(),
+            aq_mode=aq_mode,
+            sharpness=sharpness,
         )
         encode_type, q_value = self.get_mode_settings()
         settings.crf = q_value if encode_type == "qp" else None

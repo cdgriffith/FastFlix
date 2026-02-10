@@ -127,7 +127,11 @@ class NVENCC(RigayaPanel):
         even_more.addLayout(self.init_metrics())
         grid.addLayout(even_more, 7, 2, 1, 4)
 
-        grid.addLayout(self.init_dhdr10_info(), 8, 2, 1, 2)
+        hdr_line = QtWidgets.QHBoxLayout()
+        hdr_line.addLayout(self.init_dhdr10_info())
+        hdr_line.addStretch(1)
+        hdr_line.addLayout(self.init_dolby_vision_copy())
+        grid.addLayout(hdr_line, 8, 2, 1, 2)
         grid.addLayout(self.init_parallel_mode(add_split=True), 8, 4, 1, 2)
 
         grid.setRowStretch(9, 1)
@@ -391,6 +395,7 @@ class NVENCC(RigayaPanel):
             aq=self.widgets.aq.currentText(),
             aq_strength=self.widgets.aq_strength.currentIndex(),
             copy_hdr10=self.widgets.copy_hdr10.isChecked(),
+            copy_dv=self.widgets.copy_dv.isChecked(),
             multipass=self.widgets.multipass.currentText(),
             mv_precision=self.widgets.mv_precision.currentText(),
             init_q_i=self.widgets.init_q_i.currentText() if self.widgets.init_q_i.currentIndex() != 0 else None,

@@ -598,6 +598,36 @@ class Main(QtWidgets.QWidget):
         file_group_layout.addLayout(out_dir_layout)
         file_group_layout.addLayout(output_layout)
 
+        # Video info bar (bit depth, color space, chroma subsampling, HDR10, HDR10+)
+        self.video_bit_depth_label = QtWidgets.QLabel()
+        self.video_chroma_label = QtWidgets.QLabel()
+        self.video_hdr10_label = QtWidgets.QLabel()
+        self.video_hdr10plus_label = QtWidgets.QLabel()
+        for lbl in (
+            self.video_bit_depth_label,
+            self.video_chroma_label,
+            self.video_hdr10_label,
+            self.video_hdr10plus_label,
+        ):
+            lbl.hide()
+
+        info_layout = QtWidgets.QHBoxLayout()
+        self.video_info_label = QtWidgets.QLabel(t("Video Info"))
+        self.video_info_label.setFixedWidth(scaler.scale(WIDTHS.SOURCE_LABEL))
+        if self.app.fastflix.config.theme == "onyx":
+            self.video_info_label.setStyleSheet("color: white;")
+        self.video_info_label.hide()
+        info_layout.addWidget(self.video_info_label)
+        info_layout.addWidget(self.video_bit_depth_label)
+        info_layout.addSpacing(scaler.scale(12))
+        info_layout.addWidget(self.video_chroma_label)
+        info_layout.addSpacing(scaler.scale(12))
+        info_layout.addWidget(self.video_hdr10_label)
+        info_layout.addSpacing(scaler.scale(12))
+        info_layout.addWidget(self.video_hdr10plus_label)
+        info_layout.addStretch()
+        file_group_layout.addLayout(info_layout)
+
         layout.addWidget(file_group)
 
         layout.addWidget(self.init_video_track_select())
@@ -1726,6 +1756,10 @@ class Main(QtWidgets.QWidget):
         # self.widgets.scale.height.setText("Auto")
         self.widgets.preview.setPixmap(QtGui.QPixmap())
         self.video_options.clear_tracks()
+        self.video_bit_depth_label.hide()
+        self.video_chroma_label.hide()
+        self.video_hdr10_label.hide()
+        self.video_hdr10plus_label.hide()
         self.disable_all()
         self.loading_video = False
 
@@ -1813,6 +1847,7 @@ class Main(QtWidgets.QWidget):
         self.enable_all()
 
         self.app.fastflix.current_video.status = Status()
+        self.update_video_info_labels()
         self.loading_video = False
         self.page_update(build_thumbnail=True, force_build_thumbnail=True)
 
@@ -1911,6 +1946,7 @@ class Main(QtWidgets.QWidget):
 
         self.loading_video = False
         self.update_resolution_labels()
+        self.update_video_info_labels()
 
         # Set preview slider steps: ~1 per 10 seconds, minimum 100
         slider_steps = max(100, int(self.app.fastflix.current_video.duration / 10))
@@ -1923,6 +1959,67 @@ class Main(QtWidgets.QWidget):
 
         if not getattr(self.current_encoder, "enable_concat", False) and self.app.fastflix.current_video.concat:
             error_message(f"{self.current_encoder.name} {t('does not support concatenating files together')}")
+
+    @staticmethod
+    def _chroma_from_pix_fmt(pix_fmt: str) -> str:
+        if not pix_fmt:
+            return ""
+        fmt = pix_fmt.lower()
+        if "444" in fmt:
+            return "4:4:4"
+        if "422" in fmt:
+            return "4:2:2"
+        if "420" in fmt or fmt in ("nv12", "nv12m", "nv21", "p010le"):
+            return "4:2:0"
+        if "411" in fmt:
+            return "4:1:1"
+        if "410" in fmt:
+            return "4:1:0"
+        if "440" in fmt:
+            return "4:4:0"
+        return ""
+
+    def update_video_info_labels(self):
+        if not self.app.fastflix.current_video:
+            self.video_info_label.hide()
+            self.video_bit_depth_label.hide()
+            self.video_chroma_label.hide()
+            self.video_hdr10_label.hide()
+            self.video_hdr10plus_label.hide()
+            return
+
+        track_index = self.widgets.video_track.currentIndex()
+        if track_index < 0:
+            return
+        stream = self.app.fastflix.current_video.streams.video[track_index]
+        stream_idx = stream.index
+
+        bit_depth = stream.get("bit_depth", "8")
+        self.video_bit_depth_label.setText(f"{bit_depth}-bit")
+        self.video_bit_depth_label.show()
+        self.video_info_label.show()
+
+        chroma = self._chroma_from_pix_fmt(stream.get("pix_fmt", ""))
+        if chroma:
+            self.video_chroma_label.setText(chroma)
+            self.video_chroma_label.show()
+        else:
+            self.video_chroma_label.hide()
+
+        hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
+        if stream_idx in hdr10_indexes:
+            self.video_hdr10_label.setText("\u2714 HDR10")
+            self.video_hdr10_label.setStyleSheet("color: #00cc00;")
+            self.video_hdr10_label.show()
+        else:
+            self.video_hdr10_label.hide()
+
+        if self.app.fastflix.config.hdr10plus_parser and stream_idx in self.app.fastflix.current_video.hdr10_plus:
+            self.video_hdr10plus_label.setText("\u2714 HDR10+")
+            self.video_hdr10plus_label.setStyleSheet("color: #00cc00;")
+            self.video_hdr10plus_label.show()
+        else:
+            self.video_hdr10plus_label.hide()
 
     @property
     def video_track(self) -> int:
@@ -1992,6 +2089,8 @@ class Main(QtWidgets.QWidget):
             and self.app.fastflix.current_video.color_space.startswith("bt2020")
         ):
             settings["remove_hdr"] = True
+            if not settings.get("color_transfer"):
+                settings["color_transfer"] = self.app.fastflix.current_video.color_transfer
 
         custom_filters = "scale='min(440\\,iw):-8'"
         if self.resolution_method() == "custom":
@@ -2000,8 +2099,11 @@ class Main(QtWidgets.QWidget):
         # if self.app.fastflix.current_video.color_transfer == "arib-std-b67":
         #     custom_filters += ",select=eq(pict_type\\,I)"
 
+        use_keyframes = (
+            self.app.fastflix.config.use_keyframes_for_preview and self.app.fastflix.current_video.duration >= 60
+        )
         filters = helpers.generate_filters(
-            start_filters="select=eq(pict_type\\,I)" if self.app.fastflix.config.use_keyframes_for_preview else None,
+            start_filters="select=eq(pict_type\\,I)" if use_keyframes else None,
             custom_filters=custom_filters,
             enable_opencl=False,
             **settings,

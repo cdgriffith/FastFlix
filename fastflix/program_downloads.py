@@ -162,7 +162,12 @@ def latest_ffmpeg(signal, stop_signal, ffmpeg_version="latest", **_):
     sub_dir = next(Path(extract_folder).glob("ffmpeg-*"))
 
     for item in os.listdir(sub_dir):
+        dest = ffmpeg_folder / item
         try:
+            if dest.is_dir():
+                shutil.rmtree(str(dest))
+            elif dest.exists():
+                dest.unlink()
             shutil.move(str(sub_dir / item), str(ffmpeg_folder))
         except Exception as err:
             message(f"{t('Error while moving files in')} {ffmpeg_folder}: {err}")
@@ -287,6 +292,122 @@ def download_7zip(stop_signal, **_):
         raise FastFlixError("Could not download 7-Zip - filesize too msall")
 
     return filename
+
+
+def download_hdr10plus_tool(signal, stop_signal, **_):
+    stop = False
+    logger.debug("Downloading hdr10plus_tool")
+
+    def stop_me():
+        nonlocal stop
+        stop = True
+
+    stop_signal.connect(stop_me)
+    ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
+    ffmpeg_folder.mkdir(exist_ok=True)
+
+    extract_folder = ffmpeg_folder / "temp_hdr10plus_download"
+    if extract_folder.exists():
+        shutil.rmtree(extract_folder, ignore_errors=True)
+    if extract_folder.exists():
+        message(t("Could not delete previous temp extract directory: ") + str(extract_folder))
+        raise FastFlixError("Could not delete previous temp extract directory")
+
+    url = "https://api.github.com/repos/quietvoid/hdr10plus_tool/releases/latest"
+
+    try:
+        data = requests.get(url, timeout=15).json()
+    except Exception:
+        shutil.rmtree(extract_folder, ignore_errors=True)
+        message(t("Could not connect to github to check for newer versions."))
+        raise
+
+    if stop:
+        shutil.rmtree(extract_folder, ignore_errors=True)
+        message(t("Download Cancelled"))
+        return
+
+    asset = None
+    for possible_asset in data.get("assets", []):
+        if "x86_64-pc-windows-msvc.zip" in possible_asset["name"]:
+            asset = possible_asset
+            break
+
+    if not asset:
+        shutil.rmtree(extract_folder, ignore_errors=True)
+        message(
+            t("Could not find any matching expected patterns, please check")
+            + f" {t('latest release from')} <a href='https://github.com/quietvoid/hdr10plus_tool/releases/'>"
+            "https://github.com/quietvoid/hdr10plus_tool/releases/</a>"
+        )
+        raise Exception()
+
+    logger.debug(f"Downloading version {asset['name']}")
+
+    req = requests.get(asset["browser_download_url"], stream=True)
+
+    filename = ffmpeg_folder / "hdr10plus_tool.zip"
+    with open(filename, "wb") as f:
+        for i, block in enumerate(req.iter_content(chunk_size=1024)):
+            if i % 1000 == 0.0:
+                signal.emit(int(((i * 1024) / asset["size"]) * 90))
+            f.write(block)
+            if stop:
+                f.close()
+                Path(filename).unlink()
+                shutil.rmtree(extract_folder, ignore_errors=True)
+                message(t("Download Cancelled"))
+                return
+
+    if filename.stat().st_size < 1000:
+        message(t("hdr10plus_tool was not properly downloaded as the file size is too small"))
+        try:
+            Path(filename).unlink()
+        except OSError:
+            pass
+        raise FastFlixError("hdr10plus_tool download too small")
+
+    try:
+        reusables.extract(filename, path=extract_folder)
+    except Exception:
+        message(f"{t('Could not extract hdr10plus_tool files from')} {filename}!")
+        raise
+
+    if stop:
+        Path(filename).unlink()
+        shutil.rmtree(extract_folder, ignore_errors=True)
+        message(t("Download Cancelled"))
+        return
+
+    signal.emit(95)
+
+    try:
+        Path(filename).unlink()
+    except OSError:
+        pass
+
+    signal.emit(96)
+
+    exe_file = None
+    for item in extract_folder.rglob("hdr10plus_tool.exe"):
+        exe_file = item
+        break
+
+    if not exe_file:
+        shutil.rmtree(extract_folder, ignore_errors=True)
+        raise FastFlixError("Could not find hdr10plus_tool.exe in extracted files")
+
+    dest = ffmpeg_folder / "hdr10plus_tool.exe"
+    try:
+        shutil.move(str(exe_file), str(dest))
+    except Exception as err:
+        message(f"{t('Error while moving files in')} {ffmpeg_folder}: {err}")
+        raise
+
+    signal.emit(98)
+    shutil.rmtree(extract_folder, ignore_errors=True)
+    signal.emit(100)
+    return dest
 
 
 def find_seven_zip_windows() -> Path | None:

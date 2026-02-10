@@ -144,6 +144,8 @@ def build(fastflix: FastFlix):
         command.extend(["--max-cll", str(fastflix.current_video.cll)])
     if settings.copy_hdr10:
         command.extend(["--dhdr10-info", "copy"])
+    if settings.copy_dv:
+        command.extend(["--dolby-vision-rpu", "copy"])
 
     command.extend(["--output-depth", bit_depth])
     command.extend(["--multipass", settings.multipass])

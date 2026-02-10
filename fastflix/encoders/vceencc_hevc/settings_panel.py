@@ -110,7 +110,11 @@ class VCEENCC(VCEPanel):
         self.init_pa_row()
         grid.addLayout(self.pa_area, 7, 0, 2, 6)
         grid.addLayout(self.init_parallel_mode(), 8, 4, 1, 2)
-        grid.addLayout(self.init_dhdr10_info(), 9, 2, 1, 4)
+        hdr_line = QtWidgets.QHBoxLayout()
+        hdr_line.addLayout(self.init_dhdr10_info())
+        hdr_line.addStretch(1)
+        hdr_line.addLayout(self.init_dolby_vision_copy())
+        grid.addLayout(hdr_line, 9, 2, 1, 4)
 
         self.ffmpeg_level = QtWidgets.QLabel()
         grid.addWidget(self.ffmpeg_level, 10, 2, 1, 4)
@@ -279,6 +283,7 @@ class VCEENCC(VCEPanel):
             vbaq=self.widgets.vbaq.isChecked(),
             decoder=self.widgets.decoder.currentText(),
             copy_hdr10=self.widgets.copy_hdr10.isChecked(),
+            copy_dv=self.widgets.copy_dv.isChecked(),
             device=int(self.widgets.device.currentText().split(":", 1)[0] or 0),
             pa_sc=self.widgets.pa_sc.currentText(),
             pa_ss=self.widgets.pa_ss.currentText(),

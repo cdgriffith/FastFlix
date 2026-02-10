@@ -49,6 +49,7 @@ recommended_qps = [
 ]
 
 pix_fmts = [
+    "8-bit: yuv420p",
     "10-bit: yuv420p10le",
 ]
 
@@ -90,6 +91,12 @@ class VVC(SettingPanel):
         breaker.addWidget(get_breaker(), stretch=1)
 
         grid.addLayout(breaker, 5, 0, 1, 6)
+
+        grid.addLayout(self.init_subjopt(), 6, 0, 1, 2)
+        grid.addLayout(self.init_period(), 6, 2, 1, 4)
+
+        grid.addLayout(self.init_threads(), 7, 0, 1, 2)
+        grid.addLayout(self.init_ifp(), 7, 2, 1, 4)
 
         grid.addLayout(self.init_max_mux(), 8, 0, 1, 2)
 
@@ -166,6 +173,40 @@ class VVC(SettingPanel):
             opt="pix_fmt",
         )
 
+    def init_subjopt(self):
+        return self._add_check_box(
+            label="Perceptual QPA",
+            tooltip="QPA perceptual optimization (enabled by default in vvenc).\nDisabling sends -qpa 0 to vvenc.",
+            widget_name="subjopt",
+            opt="subjopt",
+        )
+
+    def init_period(self):
+        return self._add_combo_box(
+            label="Intra Period",
+            tooltip="Intra refresh period in seconds. Auto lets vvenc decide.",
+            widget_name="period",
+            options=["Auto", "0", "1", "2", "3", "5", "10"],
+            opt="period",
+        )
+
+    def init_threads(self):
+        return self._add_combo_box(
+            label="Threads",
+            tooltip="Number of threads for encoding. Auto lets vvenc decide.",
+            widget_name="threads",
+            options=["Auto", "1", "2", "4", "6", "8", "12", "16", "24", "32"],
+            opt="threads",
+        )
+
+    def init_ifp(self):
+        return self._add_check_box(
+            label="IFP (Inter-Frame Parallelism)",
+            tooltip="Enable inter-frame parallelism for faster encoding (vvenc 1.11+).\nAppends ifp=1 to vvc-params.",
+            widget_name="ifp",
+            opt="ifp",
+        )
+
     def init_max_mux(self):
         return self._add_combo_box(
             label="Max Muxing Queue Size",
@@ -230,6 +271,12 @@ class VVC(SettingPanel):
 
         level = self.widgets.levelidc.currentText() if self.widgets.levelidc.currentIndex() > 0 else None
 
+        period_text = self.widgets.period.currentText()
+        period = None if period_text == "Auto" else int(period_text)
+
+        threads_text = self.widgets.threads.currentText()
+        threads = 0 if threads_text == "Auto" else int(threads_text)
+
         settings = VVCSettings(
             preset=self.widgets.preset.currentText(),
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
@@ -239,6 +286,10 @@ class VVC(SettingPanel):
             vvc_params=vvc_params_text.split(":") if vvc_params_text else [],
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
+            subjopt=self.widgets.subjopt.isChecked(),
+            period=period,
+            threads=threads,
+            ifp=self.widgets.ifp.isChecked(),
         )
 
         encode_type, q_value = self.get_mode_settings()

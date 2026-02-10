@@ -16,6 +16,20 @@ from fastflix.shared import clean_file_string
 
 logger = logging.getLogger("fastflix")
 
+
+def _format_command(command):
+    """Format a command list as a copy-pastable shell string with proper quoting."""
+    if isinstance(command, str):
+        return command
+    parts = []
+    for arg in command:
+        if " " in arg or "'" in arg or "[" in arg or ";" in arg or "," in arg or "\\" in arg:
+            parts.append(f'"{arg}"')
+        else:
+            parts.append(arg)
+    return " ".join(parts)
+
+
 __all__ = ["ThumbnailCreator", "ExtractSubtitleSRT", "ExtractHDR10"]
 
 
@@ -26,7 +40,7 @@ class ThumbnailCreator(QtCore.QThread):
         self.command = command
 
     def run(self):
-        self.main.thread_logging_signal.emit(f"DEBUG:{t('Generating thumbnail')}: {self.command}")
+        self.main.thread_logging_signal.emit(f"DEBUG:{t('Generating thumbnail')}: {_format_command(self.command)}")
         result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
         if result.returncode > 0:
             if "No such filter: 'zscale'" in result.stdout.decode(encoding="utf-8", errors="ignore"):

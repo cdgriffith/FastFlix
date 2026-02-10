@@ -234,6 +234,7 @@ def generate_filters(
     deblock: Union[str, None] = None,
     deblock_size: int = 4,
     denoise: Union[str, None] = None,
+    color_transfer: Optional[str] = None,
     **_,
 ):
     filter_list = []
@@ -288,8 +289,9 @@ def generate_filters(
         elif vaapi:
             filter_list.append("tonemap_vaapi=format=nv12:p=bt709:t=bt709:m=bt709")
         else:
+            tin = color_transfer if color_transfer else "smpte2084"
             filter_list.append(
-                f"zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
+                f"zscale=tin={tin}:t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
             )
 
     filters = ",".join(filter_list) if filter_list else ""
@@ -422,7 +424,7 @@ def generate_all(
         encoder=encoder,
         filters=filters_cmd,
         concat=fastflix.current_video.concat,
-        enable_opencl=enable_opencl,
+        enable_opencl=enable_opencl if not disable_filters else False,
         ffmpeg_version=fastflix.ffmpeg_version,
         start_extra=start_extra,
         extra_inputs=extra_inputs if extra_inputs else None,

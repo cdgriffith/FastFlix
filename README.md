@@ -16,12 +16,12 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 
 | Encoder   | x265 | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | VVC |
 |-----------|------|------|-------|---------|---------|-----|-----|
-| HDR10     | ✓    |      |       |         | ✓       | ✓*  |     |
+| HDR10     | ✓    |      | ✓     | ✓       | ✓       | ✓*  | ✓   |
 | HDR10+    | ✓    |      |       |         |         |     |     |
-| Audio     | ✓    |  ✓   | ✓     | ✓       | ✓       | ✓   | ✓   |
-| Subtitles | ✓    |  ✓   | ✓     | ✓       | ✓       |     | ✓   |
-| Covers    | ✓    |  ✓   | ✓     | ✓       | ✓       |     | ✓   |
-| bt.2020   | ✓    |   ✓  | ✓     | ✓       | ✓       | ✓   | ✓   |
+| Audio     | ✓    | ✓    | ✓     | ✓       | ✓       | ✓   | ✓   |
+| Subtitles | ✓    | ✓    | ✓     | ✓       | ✓       |     | ✓   |
+| Covers    | ✓    | ✓    | ✓     | ✓       | ✓       |     | ✓   |
+| bt.2020   | ✓    | ✓    | ✓     | ✓       | ✓       | ✓   | ✓   |
 
 If one of the above software encoders is not listed, it is due to your version of FFmpeg not having that encoder compiled in.
 
@@ -120,14 +120,14 @@ FastFlix was created to easily extract / copy HDR10 data, which it can do with t
 
 VP9 has limited support to copy some existing HDR10 metadata, usually from other VP9 files. Will have the line "Mastering Display Metadata, has_primaries:1 has_luminance:1 ..." when it works.
 
-AV1 is still in development, and hopefully all encoder will support it in the future, but only SVT AV1 works through ffmpeg as of now for software encoders. 
+AV1 HDR10 support varies by encoder:
 
-* QSVEnc - Works! 
+* QSVEnc - Works!
 * NVEncC - Works!
 * VCEEncC - Works!
-* rav1e -  can set mastering data and CLL via their CLI but [not through ffmpeg](https://github.com/xiph/rav1e/issues/2554).
-* SVT AV1 - Now supports HDR10 with latest master ffmpeg build, make sure to update before trying!
-* aomenc (libaom-av1) - does not look to support HDR10
+* rav1e - Works! Mastering display and content light level passed via rav1e-params.
+* SVT AV1 - Works! Supports HDR10 with latest ffmpeg build.
+* aomenc (libaom-av1) - HDR10 color metadata (bt.2020/PQ) is passed through, but mastering display and content light level rely on FFmpeg's automatic side data passthrough.
 
 ## HDR10+
 
@@ -145,7 +145,7 @@ FastFlix (v4.0.2+) passes through HLG color transfer information to everything e
 
 ## Dolby Vision
 
-FastFlix does not plan to support Dolby Vision's proprietary format at this time.
+FastFlix v6.0.0+ supports copying existing Dolby Vision metadata from the input video for HEVC and AV1 videos used with rigaya's hardware encoders.
 
 # Multilingual Support
 

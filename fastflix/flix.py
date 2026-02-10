@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
 import os
 import re
@@ -174,7 +175,15 @@ def ffmpeg_configuration(app, config: Config, **_):
             config = [x[9:].strip() for x in line[len(line_denote) :].split(" ") if x.startswith("--enable")]
     app.fastflix.ffmpeg_version = version
     app.fastflix.ffmpeg_config = config
-    # return version, config
+
+    # Parse libavcodec major version (e.g. 62 for FFmpeg 8.x)
+    for line in res.stdout.split("\n"):
+        if line.strip().startswith("libavcodec"):
+            try:
+                app.fastflix.libavcodec_version = int(line.split()[1].rstrip("."))
+            except (ValueError, IndexError):
+                logger.warning(f"Could not parse libavcodec version from: {line.strip()}")
+            break
 
 
 def ffprobe_configuration(app, config: Config, **_):
@@ -347,7 +356,17 @@ def generate_thumbnail_command(
     if "-map" not in (filters if isinstance(filters, list) else shlex.split(filters)):
         command += ["-map", f"0:{input_track}"]
 
-    command += ["-an", "-y", "-map_metadata", "-1", "-frames:v", "1", clean_file_string(output)]
+    command += [
+        "-an",
+        "-y",
+        "-map_metadata",
+        "-1",
+        "-strict",
+        "unofficial",
+        "-frames:v",
+        "1",
+        clean_file_string(output),
+    ]
 
     return command
 
@@ -595,57 +614,97 @@ def get_hdr10_parser_version(config: Config) -> version:
     return HDR10_parser_version
 
 
+def _detect_hdr10_plus_ffprobe(app: FastFlixApp, config: Config, stream) -> bool:
+    """Detect HDR10+ in a stream using ffprobe frame side data. Works with any codec."""
+    logger.debug(f"Checking for hdr10+ via ffprobe in stream {stream.index}")
+    try:
+        result = execute(
+            [
+                str(config.ffprobe),
+                "-show_frames",
+                "-read_intervals",
+                "%+#1",
+                "-select_streams",
+                f"v:{stream.index}",
+                "-show_entries",
+                "frame=side_data_list",
+                "-of",
+                "json",
+                clean_file_string(app.fastflix.current_video.source),
+            ],
+            timeout=30,
+        )
+        if result.returncode != 0:
+            return False
+        data = json.loads(result.stdout)
+        for frame in data.get("frames", []):
+            for side_data in frame.get("side_data_list", []):
+                if "HDR10+" in side_data.get("side_data_type", ""):
+                    return True
+    except Exception:
+        logger.exception(f"Unexpected error during ffprobe HDR10+ detection for stream {stream.index}")
+    return False
+
+
+def _detect_hdr10_plus_tool(app: FastFlixApp, config: Config, stream) -> bool:
+    """Detect HDR10+ in an HEVC stream using hdr10plus_tool."""
+    logger.debug(f"Checking for hdr10+ via hdr10plus_tool in stream {stream.index}")
+    process = Popen(
+        [
+            str(config.ffmpeg),
+            "-y",
+            "-i",
+            clean_file_string(app.fastflix.current_video.source),
+            "-map",
+            f"0:{stream.index}",
+            "-loglevel",
+            "panic",
+            "-c:v",
+            "copy",
+            "-bsf:v",
+            "hevc_mp4toannexb",
+            "-f",
+            "hevc",
+            "-",
+        ],
+        stdout=PIPE,
+        stderr=PIPE,
+        stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
+    )
+
+    parser_version = get_hdr10_parser_version(config)
+    hdr10_parser_command = [str(config.hdr10plus_parser), "--verify", "-"]
+    if parser_version >= version.parse("1.0.0"):
+        hdr10_parser_command.insert(-1, "extract")
+
+    process_two = Popen(
+        hdr10_parser_command,
+        stdout=PIPE,
+        stderr=PIPE,
+        stdin=process.stdout,
+        encoding="utf-8",
+    )
+
+    try:
+        stdout, stderr = process_two.communicate()
+    except Exception:
+        logger.exception(f"Unexpected error while trying to detect HDR10+ metadata in stream {stream.index}")
+        return False
+    return "Dynamic HDR10+ metadata detected." in stdout
+
+
 def detect_hdr10_plus(app: FastFlixApp, config: Config, **_):
-    if not config.hdr10plus_parser or not config.hdr10plus_parser.exists():
-        return
+    has_hdr10plus_tool = config.hdr10plus_parser and config.hdr10plus_parser.exists()
 
     hdr10plus_streams = []
 
-    parser_version = get_hdr10_parser_version(config)
-
     for stream in app.fastflix.current_video.streams.video:
-        logger.debug(f"Checking for hdr10+ in stream {stream.index}")
-        process = Popen(
-            [
-                str(config.ffmpeg),
-                "-y",
-                "-i",
-                clean_file_string(app.fastflix.current_video.source),
-                "-map",
-                f"0:{stream.index}",
-                "-loglevel",
-                "panic",
-                "-c:v",
-                "copy",
-                "-bsf:v",
-                "hevc_mp4toannexb",
-                "-f",
-                "hevc",
-                "-",
-            ],
-            stdout=PIPE,
-            stderr=PIPE,
-            stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
-        )
-
-        hdr10_parser_command = [str(config.hdr10plus_parser), "--verify", "-"]
-        if parser_version >= version.parse("1.0.0"):
-            hdr10_parser_command.insert(-1, "extract")
-
-        process_two = Popen(
-            hdr10_parser_command,
-            stdout=PIPE,
-            stderr=PIPE,
-            stdin=process.stdout,
-            encoding="utf-8",
-        )
-
-        try:
-            stdout, stderr = process_two.communicate()
-        except Exception:
-            logger.exception(f"Unexpected error while trying to detect HDR10+ metadata in stream {stream.index}")
+        codec = stream.get("codec_name", "")
+        if has_hdr10plus_tool and codec == "hevc":
+            if _detect_hdr10_plus_tool(app, config, stream):
+                hdr10plus_streams.append(stream.index)
         else:
-            if "Dynamic HDR10+ metadata detected." in stdout:
+            if _detect_hdr10_plus_ffprobe(app, config, stream):
                 hdr10plus_streams.append(stream.index)
 
     if hdr10plus_streams:

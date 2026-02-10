@@ -10,6 +10,12 @@
 * Adding "Detected External Programs" section to Settings showing status of NVEncC, QSVEncC, VCEEncC, HDR10+ Parser, and PGS OCR tools
 * Adding resizable columns to Concatenation Builder window with minimum widths based on header text
 * Adding Keyframe checkbox to Settings menu as "Use keyframes for preview images" option (default enabled)
+* Adding video info bar below file area showing bit depth, color space, chroma subsampling, HDR10, and HDR10+ at a glance
+* Adding HDR10+ passthrough awareness for AOM AV1 encoder with FFmpeg 8.0+ version detection and UI indicators
+* Adding HDR10+ tool auto-download on Windows startup and Help menu
+* Adding AOM AV1 encoder options: Tune (psnr/ssim), Denoise, AQ Mode, allintra usage mode, and custom aom-params pass-through
+* Adding rav1e encoder options: Tune (Psychovisual/Psnr), Photon Noise (film grain synthesis), Scene Detection toggle, HDR10 metadata passthrough, and custom rav1e-params pass-through
+* Adding Dolby Vision copy support for NVEncC, QSVEncC, and VCEEncC HEVC/AV1 encoders
 * Adding preview time slider to overlay at bottom of preview image
 * Adding time display next to preview slider in H:MM:SS format
 * Adding async queue saving to prevent GUI blocking during queue operations
@@ -18,6 +24,8 @@
 * Adding graceful shutdown handling for worker process and background threads
 * Adding Start/End Time tab to right-side options panel between Size and Crop tabs with compact 3-column layout
 * Adding save dialog for subtitle extraction allowing users to choose output location, defaulting to the output directory
+* Adding VVC encoder options: Perceptual QPA toggle, Intra Period, Threads, IFP (inter-frame parallelism), 8-bit pixel format support, and HDR10 metadata passthrough (mastering display, content light level, color signaling, chroma location)
+* Adding VP9 encoder options: Auto Alt-Ref Frames, Lag in Frames, Tune Content, AQ Mode, and Sharpness
 * Fixing #337 #700 #597 refactoring all FFmpeg command building from string concatenation to List[str] to fix shlex.split() failures with quotes, special characters in titles, and Windows path handling issues (thanks to Xoanon88 and Buzz0016)
 * Fixing #481 MP4 subtitle copy mode using wrong codec - now uses mov_text instead of copy for MP4 containers (thanks to wmonte75)
 * Fixing #687 dialogs staying on top of all windows and unable to minimize by removing WindowStaysOnTopHint flag (thanks to Krawk)
@@ -26,6 +34,11 @@
 * Fixing #696 RAW command display boxes too small on macOS by using actual document size for height calculation (thanks to isben)
 * Fixing #707 Rigaya encoder binary detection with case-insensitive search (thanks to anne-o-pixel)
 * Fixing #708 process priority niceness values inverted on Linux and removed Realtime option on non-Windows (thanks to JacobDev1)
+* Fixing copy encoder failing when OpenCL is enabled by not adding hardware device flags when filters are disabled
+* Fixing zscale "no path between colorspaces" error during HDR tonemapping by explicitly specifying input transfer characteristic
+* Fixing thumbnail generation failing on non-full-range YUV sources (e.g. HDR AV1) with FFmpeg 8.0+ by adding -strict unofficial to mjpeg encoder
+* Fixing FFmpeg download failing when destination directories (e.g. presets) already exist from a previous install
+* Fixing HDR10+ detection to use ffprobe for non-HEVC codecs (AV1, VP9, etc.) and as fallback when hdr10plus_tool is unavailable
 * Fixing Windows taskbar showing generic icon instead of FastFlix icon by setting AppUserModelID and deferring blocking version check until after event loop starts
 * Fixing Settings browse buttons column being too wide by setting fixed width and column stretch
 * Fixing PGS OCR requiring manual checkbox enable - now auto-detects availability from tesseract and pgsrip
@@ -33,6 +46,7 @@
 * Fixing extract dropdown arrow being oversized by scaling the menu-indicator to match up/down button proportions
 * Fixing QFont::setPointSize warnings in PyInstaller executables by using pt instead of px for stylesheet font sizes
 * Fixing video track selector showing unnecessarily when source video has only one video track
+* Fixing rav1e and AOM AV1 custom params list being corrupted to "[]" string on profile load/reload, breaking HDR10+ metadata passthrough
 * Fixing visual border between filename area and video track selector
 * Fixing test suite hanging due to missing QApplication in PySide6 widget tests
 * Fixing window resizing beyond screen boundaries when switching profiles on macOS
