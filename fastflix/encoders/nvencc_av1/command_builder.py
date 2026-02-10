@@ -146,6 +146,7 @@ def build(fastflix: FastFlix):
         command.extend(["--dhdr10-info", "copy"])
     if settings.copy_dv:
         command.extend(["--dolby-vision-rpu", "copy"])
+        command.extend(["--dolby-vision-profile", "copy"])
 
     command.extend(["--output-depth", bit_depth])
     command.extend(["--multipass", settings.multipass])

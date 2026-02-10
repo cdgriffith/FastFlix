@@ -17,7 +17,7 @@ Check out [the FastFlix github wiki](https://github.com/cdgriffith/FastFlix/wiki
 | Encoder   | x265 | x264 | rav1e | AOM AV1 | SVT AV1 | VP9 | VVC |
 |-----------|------|------|-------|---------|---------|-----|-----|
 | HDR10     | ✓    |      | ✓     | ✓       | ✓       | ✓*  | ✓   |
-| HDR10+    | ✓    |      |       |         |         |     |     |
+| HDR10+    | ✓    |      |       | ✓       |         |     |     |
 | Audio     | ✓    | ✓    | ✓     | ✓       | ✓       | ✓   | ✓   |
 | Subtitles | ✓    | ✓    | ✓     | ✓       | ✓       |     | ✓   |
 | Covers    | ✓    | ✓    | ✓     | ✓       | ✓       |     | ✓   |

@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 6.0.1
+
+* Fixing Dolby Vision copy for Rigaya encoders (NVEncC, QSVEncC, VCEEncC) by adding --dolby-vision-profile copy alongside --dolby-vision-rpu copy
+* Fixing Readme to list AOM-AV1 as having HDR10+ support
+
+
 ## Version 6.0.0
 
 * Adding #709 PGS to SRT OCR subtitle extraction feature (thanks to mikeSGman)
