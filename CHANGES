@@ -34,6 +34,7 @@
 * Fixing #696 RAW command display boxes too small on macOS by using actual document size for height calculation (thanks to isben)
 * Fixing #707 Rigaya encoder binary detection with case-insensitive search (thanks to anne-o-pixel)
 * Fixing #708 process priority niceness values inverted on Linux and removed Realtime option on non-Windows (thanks to JacobDev1)
+* Fixing encoding incorrectly reported as successful when FFmpeg fails immediately (e.g. VAAPI on Windows) due to race condition between worker and output reader thread
 * Fixing copy encoder failing when OpenCL is enabled by not adding hardware device flags when filters are disabled
 * Fixing zscale "no path between colorspaces" error during HDR tonemapping by explicitly specifying input transfer characteristic
 * Fixing thumbnail generation failing on non-full-range YUV sources (e.g. HDR AV1) with FFmpeg 8.0+ by adding -strict unofficial to mjpeg encoder

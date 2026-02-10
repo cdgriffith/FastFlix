@@ -63,7 +63,14 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 pass  # GUI likely dead, ignore
             currently_encoding = False
 
-            if runner.error_detected:
+            # Check error_detected (set by read_output thread) AND check the
+            # process return code directly.  The read_output daemon thread may
+            # not have run yet when FFmpeg exits very quickly (e.g. VAAPI init
+            # failure on Windows), so we must not rely solely on error_detected.
+            process_failed = (
+                runner.process is not None and runner.process.returncode is not None and runner.process.returncode > 0
+            )
+            if runner.error_detected or process_failed:
                 logger.info(t("Error detected while converting"))
 
                 status_queue.put(("error", video_uuid, command_uuid))
