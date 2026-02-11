@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 6.1.0
+
+* Adding Terms and Agreements dialog shown on first startup requiring user acceptance before proceeding
+* Fixing #349 NVEncC audio conversion losing multichannel layout for EAC3 (thanks to Wontell)
+* Fixing #384 Remove HDR leaving Dolby Vision metadata traces in Rigaya encoder output (thanks to end2endzone)
+* Fixing #511 UI labels and buttons truncated in non-English translations by auto-shrinking text to fit (thanks to PegHorse)
+* Fixing #514 excessive memory usage when adding directory of files (thanks to gxcreator)
+* Fixing #548 incorrect aspect ratio for DVD sources with non-square pixels on auto resolution (thanks to DCNerds)
+* Fixing #600 anime subtitle size increasing during burn-in encoding (thanks to TinderboxUK)
+* Fixing #693 subtitle tracks losing title metadata during encoding (thanks to mpissarello)
+* Fixing #715 WINDOWS_BUILD.md needed updated to show Python 3.13 (thanks to Jack L)
+* Fixing Settings window staying on top and freezing when notification dialogs appeared behind it
+* Fixing tab bar scroll arrows being too small and both stuck on the right side - now larger with left arrow on far left
+
 ## Version 6.0.1
 
 * Fixing Dolby Vision copy for Rigaya encoders (NVEncC, QSVEncC, VCEEncC) by adding --dolby-vision-profile copy alongside --dolby-vision-rpu copy

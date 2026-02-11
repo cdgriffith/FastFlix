@@ -12,7 +12,7 @@ from fastflix.language import t, Language
 from fastflix.models.encode import SubtitleTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import loading_movie, get_icon
-from fastflix.shared import error_message, no_border, clear_list
+from fastflix.shared import error_message, no_border, clear_list, shrink_text_to_fit
 from fastflix.ui_scale import scaler
 from fastflix.ui_styles import get_onyx_disposition_style
 from fastflix.widgets.background_tasks import ExtractSubtitleSRT
@@ -580,6 +580,9 @@ class SubtitleList(FlixList):
         self.save_all_button.setFixedWidth(150)
         self.save_all_button.clicked.connect(lambda: self.select_all(True))
 
+        for w in (self.add_subtitle_button, self.remove_all_button, self.save_all_button):
+            shrink_text_to_fit(w)
+
         top_layout.addWidget(self.add_subtitle_button)
         top_layout.addWidget(self.remove_all_button)
         top_layout.addWidget(self.save_all_button)
@@ -688,6 +691,7 @@ class SubtitleList(FlixList):
                     dispositions={k: bool(v) for k, v in track.disposition.items()},
                     burn_in=False,
                     language=track.get("tags", {}).get("language", ""),
+                    title=track.get("tags", {}).get("title", ""),
                     subtitle_type=subtitle_type,
                     enabled=enabled,
                     long_name=track.get("codec_long_name", f"{t('Subtitle Type')}:{subtitle_type}"),

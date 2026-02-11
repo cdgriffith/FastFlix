@@ -47,6 +47,12 @@ def build_subtitle(
             else:
                 command_list.extend([f"-disposition:{outdex}", "0"])
             command_list.extend([f"-metadata:s:{outdex}", f"language={track.language}"])
+            if track.title:
+                command_list.extend([f"-metadata:s:{outdex}", f"title={track.title}"])
+                command_list.extend([f"-metadata:s:{outdex}", f"handler={track.title}"])
+            else:
+                command_list.extend([f"-metadata:s:{outdex}", "title="])
+                command_list.extend([f"-metadata:s:{outdex}", "handler="])
     if not subs_enabled:
         command_list.extend(["-default_mode", "infer_no_subs"])
     return command_list, burn_in_track, burn_in_type

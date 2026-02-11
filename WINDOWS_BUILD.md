@@ -4,7 +4,7 @@ This guide explains how to build FastFlix executables on Windows.
 
 ## Prerequisites
 
-1. **Python 3.12 or higher**
+1. **Python 3.13 or higher**
    - Download from [python.org](https://www.python.org/downloads/)
    - Make sure to check "Add Python to PATH" during installation
 

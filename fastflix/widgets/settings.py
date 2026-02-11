@@ -47,7 +47,7 @@ class Settings(QtWidgets.QWidget):
         self.config_file = self.app.fastflix.config.config_path
         self.setWindowTitle(t("Settings"))
         self.setMinimumSize(600, 200)
-        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.Window)
 
         main_layout = QtWidgets.QVBoxLayout()
 
@@ -429,7 +429,7 @@ class Settings(QtWidgets.QWidget):
         try:
             new_work_dir.mkdir(exist_ok=True, parents=True)
         except OSError:
-            error_message(f'{t("Could not create / access work directory")} "{new_work_dir}"')
+            error_message(f'{t("Could not create / access work directory")} "{new_work_dir}"', parent=self)
         else:
             self.app.fastflix.config.work_path = new_work_dir
         self.app.fastflix.config.use_sane_audio = self.use_sane_audio.isChecked()
@@ -451,7 +451,8 @@ class Settings(QtWidgets.QWidget):
                 self.app.fastflix.config.language = Language(self.language_combo.currentText()).pt3
         except InvalidLanguageValue:
             error_message(
-                f"{t('Could not set language to')} {self.language_combo.currentText()}\n {t('Please report this issue')}"
+                f"{t('Could not set language to')} {self.language_combo.currentText()}\n {t('Please report this issue')}",
+                parent=self,
             )
         self.app.fastflix.config.disable_version_check = self.disable_version_check.isChecked()
         log_level = (self.logger_level_widget.currentIndex() + 1) * 10
@@ -508,7 +509,7 @@ class Settings(QtWidgets.QWidget):
         self.main.config_update()
         self.app.fastflix.config.save()
         if updated_ffmpeg or old_lang != self.app.fastflix.config.language or restart_needed:
-            error_message(t("Please restart FastFlix to apply settings"))
+            error_message(t("Please restart FastFlix to apply settings"), parent=self)
         self.close()
 
     def select_ffmpeg(self):

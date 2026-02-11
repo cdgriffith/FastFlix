@@ -1831,7 +1831,7 @@ Encoder Settings:
 Encoding Queue:
   deu: Kodierer-Warteschlange
   eng: Encoding Queue
-  fra: File d'attente d'encodage
+  fra: Attente de chargement
   ita: Coda codifica
   spa: Cola de codificación
   chs: 编码队列
@@ -12438,3 +12438,312 @@ Video Info:
   ukr: Інформація про відео
   kor: 비디오 정보
   ron: Informații video
+Accept:
+  eng: Accept
+  deu: Akzeptieren
+  fra: Accepter
+  ita: Accetta
+  spa: Aceptar
+  chs: 接受
+  jpn: 同意する
+  rus: Принять
+  por: Aceitar
+  swe: Acceptera
+  pol: Akceptuj
+  ukr: Прийняти
+  kor: 동의
+  ron: Acceptă
+Reject:
+  eng: Reject
+  deu: Ablehnen
+  fra: Refuser
+  ita: Rifiuta
+  spa: Rechazar
+  chs: 拒绝
+  jpn: 拒否する
+  rus: Отклонить
+  por: Rejeitar
+  swe: Avvisa
+  pol: Odrzuć
+  ukr: Відхилити
+  kor: 거부
+  ron: Respinge
+FastFlix Terms and Agreements:
+  eng: FastFlix Terms and Agreements
+  deu: FastFlix Nutzungsbedingungen
+  fra: Conditions d'utilisation de FastFlix
+  ita: Termini e condizioni di FastFlix
+  spa: Términos y acuerdos de FastFlix
+  chs: FastFlix 条款和协议
+  jpn: FastFlix 利用規約
+  rus: Условия и соглашения FastFlix
+  por: Termos e acordos do FastFlix
+  swe: FastFlix villkor och avtal
+  pol: Warunki i umowy FastFlix
+  ukr: Умови та угоди FastFlix
+  kor: FastFlix 이용 약관
+  ron: Termeni și acorduri FastFlix
+"I have read and agree to the Terms and Agreements":
+  eng: I have read and agree to the Terms and Agreements
+  deu: Ich habe die Nutzungsbedingungen gelesen und stimme ihnen zu
+  fra: J'ai lu et j'accepte les conditions d'utilisation
+  ita: Ho letto e accetto i termini e le condizioni
+  spa: He leído y acepto los términos y acuerdos
+  chs: 我已阅读并同意条款和协议
+  jpn: 利用規約を読み、同意します
+  rus: Я прочитал и согласен с условиями и соглашениями
+  por: Li e concordo com os termos e acordos
+  swe: Jag har läst och godkänner villkoren och avtalen
+  pol: Przeczytałem i zgadzam się z warunkami i umowami
+  ukr: Я прочитав і погоджуюся з умовами та угодами
+  kor: 이용 약관을 읽었으며 동의합니다
+  ron: Am citit și sunt de acord cu termenii și acordurile
+"By using FastFlix, you agree to the following terms:":
+  eng: "By using FastFlix, you agree to the following terms:"
+  deu: "Durch die Nutzung von FastFlix stimmen Sie den folgenden Bedingungen zu:"
+  fra: "En utilisant FastFlix, vous acceptez les conditions suivantes :"
+  ita: "Utilizzando FastFlix, accetti i seguenti termini:"
+  spa: "Al usar FastFlix, aceptas los siguientes términos:"
+  chs: "使用 FastFlix 即表示您同意以下条款："
+  jpn: "FastFlixを使用することにより、以下の規約に同意するものとします："
+  rus: "Используя FastFlix, вы соглашаетесь со следующими условиями:"
+  por: "Ao usar o FastFlix, você concorda com os seguintes termos:"
+  swe: "Genom att använda FastFlix godkänner du följande villkor:"
+  pol: "Korzystając z FastFlix, zgadzasz się na następujące warunki:"
+  ukr: "Використовуючи FastFlix, ви погоджуєтеся з наступними умовами:"
+  kor: "FastFlix를 사용함으로써 다음 약관에 동의하게 됩니다:"
+  ron: "Prin utilizarea FastFlix, sunteți de acord cu următorii termeni:"
+1. Authorized Use Only:
+  eng: 1. Authorized Use Only
+  deu: 1. Nur autorisierte Nutzung
+  fra: 1. Utilisation autorisée uniquement
+  ita: 1. Solo uso autorizzato
+  spa: 1. Solo uso autorizado
+  chs: 1. 仅限授权使用
+  jpn: 1. 許可された使用のみ
+  rus: 1. Только авторизованное использование
+  por: 1. Apenas uso autorizado
+  swe: 1. Endast auktoriserad användning
+  pol: 1. Tylko autoryzowane użycie
+  ukr: 1. Лише авторизоване використання
+  kor: 1. 승인된 사용만 허용
+  ron: 1. Doar utilizare autorizată
+? "You must only use FastFlix to encode, transcode, or otherwise process video content that you own or have the legal rights to use. Unauthorized copying, encoding, or distribution of copyrighted material
+  is strictly prohibited."
+: eng: "You must only use FastFlix to encode, transcode, or otherwise process video content that you own or have the legal rights to use. Unauthorized copying, encoding, or distribution of copyrighted material
+    is strictly prohibited."
+  deu: "Sie dürfen FastFlix nur zum Kodieren, Transkodieren oder anderweitigen Verarbeiten von Videoinhalten verwenden, die Ihnen gehören oder für die Sie die gesetzlichen Nutzungsrechte besitzen. Das unbefugte
+    Kopieren, Kodieren oder Verbreiten von urheberrechtlich geschütztem Material ist strengstens untersagt."
+  fra: "Vous ne devez utiliser FastFlix que pour encoder, transcoder ou traiter des contenus vidéo dont vous êtes propriétaire ou pour lesquels vous disposez des droits légaux d'utilisation. La copie, l'encodage
+    ou la distribution non autorisés de matériel protégé par le droit d'auteur sont strictement interdits."
+  ita: "Devi utilizzare FastFlix solo per codificare, transcodificare o elaborare contenuti video di cui sei proprietario o per i quali possiedi i diritti legali di utilizzo. La copia, la codifica o la
+    distribuzione non autorizzata di materiale protetto da copyright è severamente vietata."
+  spa: "Solo debes usar FastFlix para codificar, transcodificar o procesar contenido de video del cual seas propietario o tengas los derechos legales de uso. La copia, codificación o distribución no autorizada
+    de material protegido por derechos de autor está estrictamente prohibida."
+  chs: "您只能使用 FastFlix 来编码、转码或以其他方式处理您拥有或具有合法使用权的视频内容。严禁未经授权复制、编码或分发受版权保护的材料。"
+  jpn: "FastFlixは、お客様が所有する、または使用する法的権利を有するビデオコンテンツのエンコード、トランスコード、またはその他の処理にのみ使用してください。著作権で保護された素材の無断複製、エンコード、または配布は固く禁じられています。"
+  rus: "Вы должны использовать FastFlix только для кодирования, перекодирования или иной обработки видеоконтента, который принадлежит вам или на использование которого у вас есть законные права. Несанкционированное
+    копирование, кодирование или распространение материалов, защищённых авторским правом, строго запрещено."
+  por: "Você deve usar o FastFlix apenas para codificar, transcodificar ou processar conteúdo de vídeo que você possui ou tem os direitos legais de uso. A cópia, codificação ou distribuição não autorizada
+    de material protegido por direitos autorais é estritamente proibida."
+  swe: "Du får bara använda FastFlix för att koda, transkoda eller på annat sätt bearbeta videoinnehåll som du äger eller har laglig rätt att använda. Otillåten kopiering, kodning eller distribution av
+    upphovsrättsskyddat material är strängt förbjuden."
+  pol: "FastFlix należy używać wyłącznie do kodowania, transkodowania lub innego przetwarzania treści wideo, których jesteś właścicielem lub do których masz prawa do użytkowania. Nieautoryzowane kopiowanie,
+    kodowanie lub dystrybucja materiałów chronionych prawem autorskim jest surowo zabronione."
+  ukr: "Ви повинні використовувати FastFlix лише для кодування, перекодування або іншої обробки відеоконтенту, який належить вам або на використання якого ви маєте законні права. Несанкціоноване копіювання,
+    кодування або розповсюдження матеріалів, захищених авторським правом, суворо заборонено."
+  kor: "FastFlix는 본인이 소유하거나 사용할 법적 권리가 있는 비디오 콘텐츠를 인코딩, 트랜스코딩 또는 처리하는 데에만 사용해야 합니다. 저작권이 있는 자료의 무단 복제, 인코딩 또는 배포는 엄격히 금지됩니다."
+  ron: "Trebuie să utilizați FastFlix doar pentru a codifica, transcoda sau prelucra conținut video pe care îl dețineți sau pentru care aveți drepturi legale de utilizare. Copierea, codificarea sau distribuirea
+    neautorizată a materialelor protejate de drepturi de autor este strict interzisă."
+2. No Developer Liability for Misuse:
+  eng: 2. No Developer Liability for Misuse
+  deu: 2. Keine Haftung der Entwickler bei Missbrauch
+  fra: 2. Aucune responsabilité des développeurs en cas d'utilisation abusive
+  ita: 2. Nessuna responsabilità degli sviluppatori per uso improprio
+  spa: 2. Sin responsabilidad del desarrollador por uso indebido
+  chs: 2. 开发者不对滥用承担责任
+  jpn: 2. 悪用に対する開発者の免責
+  rus: 2. Отсутствие ответственности разработчиков за злоупотребление
+  por: 2. Sem responsabilidade do desenvolvedor por uso indevido
+  swe: 2. Inget utvecklaransvar vid missbruk
+  pol: 2. Brak odpowiedzialności deweloperów za nadużycia
+  ukr: 2. Відсутність відповідальності розробників за зловживання
+  kor: 2. 오용에 대한 개발자 면책
+  ron: 2. Nicio responsabilitate a dezvoltatorilor pentru utilizarea abuzivă
+? "The developers and contributors of FastFlix are not responsible for any misuse of this software, including but not limited to the unauthorized reproduction or distribution of copyrighted content. You
+  assume full responsibility for how you use FastFlix."
+: eng: "The developers and contributors of FastFlix are not responsible for any misuse of this software, including but not limited to the unauthorized reproduction or distribution of copyrighted content.
+    You assume full responsibility for how you use FastFlix."
+  deu: "Die Entwickler und Mitwirkenden von FastFlix sind nicht verantwortlich für jeglichen Missbrauch dieser Software, einschließlich, aber nicht beschränkt auf die unbefugte Vervielfältigung oder Verbreitung
+    urheberrechtlich geschützter Inhalte. Sie übernehmen die volle Verantwortung für die Art und Weise, wie Sie FastFlix nutzen."
+  fra: "Les développeurs et contributeurs de FastFlix ne sont pas responsables de toute utilisation abusive de ce logiciel, y compris, mais sans s'y limiter, la reproduction ou la distribution non autorisées
+    de contenus protégés par le droit d'auteur. Vous assumez l'entière responsabilité de la manière dont vous utilisez FastFlix."
+  ita: "Gli sviluppatori e i contributori di FastFlix non sono responsabili per qualsiasi uso improprio di questo software, inclusa, ma non limitata alla riproduzione o distribuzione non autorizzata di
+    contenuti protetti da copyright. Ti assumi la piena responsabilità di come utilizzi FastFlix."
+  spa: "Los desarrolladores y colaboradores de FastFlix no son responsables de ningún uso indebido de este software, incluyendo, entre otros, la reproducción o distribución no autorizada de contenido protegido
+    por derechos de autor. Asumes toda la responsabilidad por cómo usas FastFlix."
+  chs: "FastFlix 的开发者和贡献者不对本软件的任何滥用行为承担责任，包括但不限于未经授权复制或分发受版权保护的内容。您对使用 FastFlix 的方式承担全部责任。"
+  jpn: "FastFlixの開発者および貢献者は、著作権で保護されたコンテンツの無断複製または配布を含むがこれに限定されない、本ソフトウェアのいかなる悪用についても責任を負いません。FastFlixの使用方法については、お客様が全責任を負うものとします。"
+  rus: "Разработчики и участники FastFlix не несут ответственности за любое злоупотребление данным программным обеспечением, включая, но не ограничиваясь, несанкционированное воспроизведение или распространение
+    контента, защищённого авторским правом. Вы несёте полную ответственность за то, как вы используете FastFlix."
+  por: "Os desenvolvedores e colaboradores do FastFlix não são responsáveis por qualquer uso indevido deste software, incluindo, mas não se limitando à reprodução ou distribuição não autorizada de conteúdo
+    protegido por direitos autorais. Você assume total responsabilidade pela forma como usa o FastFlix."
+  swe: "Utvecklarna och bidragsgivarna till FastFlix ansvarar inte för något missbruk av denna programvara, inklusive men inte begränsat till otillåten reproduktion eller distribution av upphovsrättsskyddat
+    innehåll. Du tar fullt ansvar för hur du använder FastFlix."
+  pol: "Deweloperzy i współtwórcy FastFlix nie ponoszą odpowiedzialności za jakiekolwiek nadużycia tego oprogramowania, w tym między innymi za nieautoryzowane powielanie lub dystrybucję treści chronionych
+    prawem autorskim. Ponosisz pełną odpowiedzialność za sposób korzystania z FastFlix."
+  ukr: "Розробники та учасники FastFlix не несуть відповідальності за будь-яке зловживання цим програмним забезпеченням, включаючи, але не обмежуючись, несанкціоноване відтворення або розповсюдження контенту,
+    захищеного авторським правом. Ви несете повну відповідальність за те, як ви використовуєте FastFlix."
+  kor: "FastFlix의 개발자 및 기여자는 저작권으로 보호되는 콘텐츠의 무단 복제 또는 배포를 포함하되 이에 국한되지 않는 본 소프트웨어의 오용에 대해 책임을 지지 않습니다. FastFlix 사용 방법에 대한 전적인 책임은 사용자에게 있습니다."
+  ron: "Dezvoltatorii și contribuitorii FastFlix nu sunt responsabili pentru nicio utilizare abuzivă a acestui software, inclusiv, dar fără a se limita la reproducerea sau distribuirea neautorizată a conținutului
+    protejat de drepturi de autor. Vă asumați întreaga responsabilitate pentru modul în care utilizați FastFlix."
+3. No Warranty:
+  eng: 3. No Warranty
+  deu: 3. Keine Gewährleistung
+  fra: 3. Aucune garantie
+  ita: 3. Nessuna garanzia
+  spa: 3. Sin garantía
+  chs: 3. 无保证
+  jpn: 3. 無保証
+  rus: 3. Отсутствие гарантий
+  por: 3. Sem garantia
+  swe: 3. Ingen garanti
+  pol: 3. Brak gwarancji
+  ukr: 3. Відсутність гарантій
+  kor: 3. 무보증
+  ron: 3. Fără garanție
+? 'FastFlix is provided "as-is" without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement.'
+: eng: 'FastFlix is provided "as-is" without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement.'
+  deu: 'FastFlix wird „wie besehen" ohne jegliche ausdrückliche oder stillschweigende Gewährleistung bereitgestellt, einschließlich, aber nicht beschränkt auf die Gewährleistung der Marktgängigkeit, der
+    Eignung für einen bestimmten Zweck und der Nichtverletzung von Rechten.'
+  fra: 'FastFlix est fourni « tel quel » sans garantie d''aucune sorte, expresse ou implicite, y compris, mais sans s''y limiter, les garanties de qualité marchande, d''adéquation à un usage particulier
+    et de non-contrefaçon.'
+  ita: 'FastFlix è fornito "così com''è" senza garanzia di alcun tipo, espressa o implicita, incluse, ma non limitate alle garanzie di commerciabilità, idoneità per uno scopo particolare e non violazione.'
+  spa: 'FastFlix se proporciona "tal cual" sin garantía de ningún tipo, expresa o implícita, incluyendo, entre otras, las garantías de comerciabilidad, idoneidad para un propósito particular y no infracción.'
+  chs: 'FastFlix 按"原样"提供，不提供任何明示或暗示的保证，包括但不限于适销性、特定用途适用性和不侵权的保证。'
+  jpn: FastFlixは、商品性、特定目的への適合性、および非侵害の保証を含むがこれに限定されない、明示または黙示のいかなる保証もなく「現状のまま」提供されます。
+  rus: FastFlix предоставляется «как есть» без каких-либо гарантий, явных или подразумеваемых, включая, но не ограничиваясь, гарантии товарной пригодности, пригодности для определённой цели и
+    ненарушения прав.
+  por: 'O FastFlix é fornecido "como está" sem garantia de qualquer tipo, expressa ou implícita, incluindo, mas não se limitando às garantias de comercialização, adequação a um propósito específico e não
+    violação.'
+  swe: 'FastFlix tillhandahålls "i befintligt skick" utan garanti av något slag, uttrycklig eller underförstådd, inklusive men inte begränsat till garantier om säljbarhet, lämplighet för ett visst ändamål
+    och icke-intrång.'
+  pol: 'FastFlix jest dostarczany „tak jak jest" bez jakiejkolwiek gwarancji, wyraźnej lub dorozumianej, w tym między innymi gwarancji przydatności handlowej, przydatności do określonego celu i nienaruszalności
+    praw.'
+  ukr: FastFlix надається «як є» без будь-яких гарантій, явних або неявних, включаючи, але не обмежуючись, гарантії придатності для продажу, придатності для певної мети та непорушення прав.
+  kor: 'FastFlix는 상품성, 특정 목적에의 적합성 및 비침해에 대한 보증을 포함하되 이에 국한되지 않는 어떠한 종류의 명시적 또는 묵시적 보증 없이 "있는 그대로" 제공됩니다.'
+  ron: 'FastFlix este furnizat „ca atare" fără garanție de niciun fel, expresă sau implicită, inclusiv, dar fără a se limita la garanțiile de vandabilitate, adecvare pentru un anumit scop și neîncălcare.'
+4. Copyright Compliance:
+  eng: 4. Copyright Compliance
+  deu: 4. Einhaltung des Urheberrechts
+  fra: 4. Conformité au droit d'auteur
+  ita: 4. Conformità al diritto d'autore
+  spa: 4. Cumplimiento de derechos de autor
+  chs: 4. 版权合规
+  jpn: 4. 著作権の遵守
+  rus: 4. Соблюдение авторских прав
+  por: 4. Conformidade com direitos autorais
+  swe: 4. Upphovsrättsefterlevnad
+  pol: 4. Zgodność z prawem autorskim
+  ukr: 4. Дотримання авторських прав
+  kor: 4. 저작권 준수
+  ron: 4. Conformitatea cu drepturile de autor
+? "You assume all responsibility for compliance with applicable copyright laws and regulations in your jurisdiction. It is your obligation to ensure that your use of FastFlix does not violate any third-party
+  rights."
+: eng: "You assume all responsibility for compliance with applicable copyright laws and regulations in your jurisdiction. It is your obligation to ensure that your use of FastFlix does not violate any third-party
+    rights."
+  deu: "Sie übernehmen die volle Verantwortung für die Einhaltung der geltenden Urheberrechtsgesetze und -vorschriften in Ihrem Rechtsgebiet. Es ist Ihre Pflicht sicherzustellen, dass Ihre Nutzung von FastFlix
+    keine Rechte Dritter verletzt."
+  fra: "Vous assumez l'entière responsabilité du respect des lois et réglementations applicables en matière de droit d'auteur dans votre juridiction. Il vous incombe de vous assurer que votre utilisation
+    de FastFlix ne viole aucun droit de tiers."
+  ita: "Ti assumi la piena responsabilità per la conformità alle leggi e ai regolamenti applicabili sul diritto d'autore nella tua giurisdizione. È tuo obbligo assicurarti che il tuo utilizzo di FastFlix
+    non violi alcun diritto di terzi."
+  spa: "Asumes toda la responsabilidad del cumplimiento de las leyes y regulaciones de derechos de autor aplicables en tu jurisdicción. Es tu obligación asegurarte de que tu uso de FastFlix no viole ningún
+    derecho de terceros."
+  chs: "您对遵守您所在司法管辖区适用的版权法律法规承担全部责任。确保您对 FastFlix 的使用不侵犯任何第三方权利是您的义务。"
+  jpn: "お客様の管轄区域で適用される著作権法および規制の遵守について、お客様が全責任を負うものとします。FastFlixの使用が第三者の権利を侵害しないことを確認するのは、お客様の義務です。"
+  rus: "Вы несёте полную ответственность за соблюдение применимых законов и нормативных актов об авторском праве в вашей юрисдикции. Вы обязаны убедиться, что ваше использование FastFlix не нарушает права
+    третьих лиц."
+  por: "Você assume toda a responsabilidade pelo cumprimento das leis e regulamentos de direitos autorais aplicáveis em sua jurisdição. É sua obrigação garantir que seu uso do FastFlix não viole nenhum
+    direito de terceiros."
+  swe: "Du tar fullt ansvar för efterlevnad av tillämpliga upphovsrättslagar och förordningar i din jurisdiktion. Det är din skyldighet att säkerställa att din användning av FastFlix inte kränker någon
+    tredje parts rättigheter."
+  pol: "Ponosisz pełną odpowiedzialność za przestrzeganie obowiązujących przepisów prawa autorskiego w Twojej jurysdykcji. Twoim obowiązkiem jest upewnienie się, że korzystanie z FastFlix nie narusza praw
+    osób trzecich."
+  ukr: "Ви несете повну відповідальність за дотримання чинних законів та нормативних актів про авторське право у вашій юрисдикції. Ви зобов'язані переконатися, що ваше використання FastFlix не порушує права
+    третіх осіб."
+  kor: "귀하의 관할권에서 적용되는 저작권법 및 규정을 준수할 모든 책임은 사용자에게 있습니다. FastFlix 사용이 제3자의 권리를 침해하지 않도록 하는 것은 사용자의 의무입니다."
+  ron: "Vă asumați întreaga responsabilitate pentru respectarea legilor și reglementărilor aplicabile privind drepturile de autor din jurisdicția dumneavoastră. Este obligația dumneavoastră să vă asigurați
+    că utilizarea FastFlix nu încalcă drepturile niciunui terț."
+5. Limitation of Liability:
+  eng: 5. Limitation of Liability
+  deu: 5. Haftungsbeschränkung
+  fra: 5. Limitation de responsabilité
+  ita: 5. Limitazione di responsabilità
+  spa: 5. Limitación de responsabilidad
+  chs: 5. 责任限制
+  jpn: 5. 責任の制限
+  rus: 5. Ограничение ответственности
+  por: 5. Limitação de responsabilidade
+  swe: 5. Ansvarsbegränsning
+  pol: 5. Ograniczenie odpowiedzialności
+  ukr: 5. Обмеження відповідальності
+  kor: 5. 책임 제한
+  ron: 5. Limitarea răspunderii
+? "In no event shall the developers or contributors of FastFlix be liable for any damages arising from the use of this software, including but not limited to direct, indirect, incidental, special, or consequential
+  damages."
+: eng: "In no event shall the developers or contributors of FastFlix be liable for any damages arising from the use of this software, including but not limited to direct, indirect, incidental, special,
+    or consequential damages."
+  deu: "Die Entwickler oder Mitwirkenden von FastFlix haften in keinem Fall für Schäden, die aus der Nutzung dieser Software entstehen, einschließlich, aber nicht beschränkt auf direkte, indirekte, zufällige,
+    besondere oder Folgeschäden."
+  fra: "En aucun cas, les développeurs ou contributeurs de FastFlix ne pourront être tenus responsables de tout dommage résultant de l'utilisation de ce logiciel, y compris, mais sans s'y limiter, les dommages
+    directs, indirects, accessoires, spéciaux ou consécutifs."
+  ita: "In nessun caso gli sviluppatori o i contributori di FastFlix saranno responsabili per eventuali danni derivanti dall'uso di questo software, inclusi, ma non limitati a danni diretti, indiretti,
+    incidentali, speciali o consequenziali."
+  spa: "En ningún caso los desarrolladores o colaboradores de FastFlix serán responsables de ningún daño derivado del uso de este software, incluyendo, entre otros, daños directos, indirectos, incidentales,
+    especiales o consecuentes."
+  chs: "在任何情况下，FastFlix 的开发者或贡献者均不对因使用本软件而产生的任何损害承担责任，包括但不限于直接、间接、附带、特殊或后果性损害。"
+  jpn: "いかなる場合も、FastFlixの開発者または貢献者は、直接的、間接的、偶発的、特別、または結果的損害を含むがこれに限定されない、本ソフトウェアの使用から生じるいかなる損害についても責任を負わないものとします。"
+  rus: "Ни при каких обстоятельствах разработчики или участники FastFlix не несут ответственности за любой ущерб, возникший в результате использования данного программного обеспечения, включая, но не ограничиваясь,
+    прямой, косвенный, случайный, особый или последующий ущерб."
+  por: "Em nenhum caso os desenvolvedores ou colaboradores do FastFlix serão responsáveis por quaisquer danos decorrentes do uso deste software, incluindo, mas não se limitando a danos diretos, indiretos,
+    incidentais, especiais ou consequenciais."
+  swe: "Under inga omständigheter ska utvecklarna eller bidragsgivarna till FastFlix hållas ansvariga för eventuella skador som uppstår till följd av användningen av denna programvara, inklusive men inte
+    begränsat till direkta, indirekta, tillfälliga, speciella eller följdskador."
+  pol: "W żadnym wypadku deweloperzy ani współtwórcy FastFlix nie ponoszą odpowiedzialności za jakiekolwiek szkody wynikające z użytkowania tego oprogramowania, w tym między innymi za szkody bezpośrednie,
+    pośrednie, przypadkowe, szczególne lub wynikowe."
+  ukr: "За жодних обставин розробники або учасники FastFlix не несуть відповідальності за будь-які збитки, що виникли внаслідок використання цього програмного забезпечення, включаючи, але не обмежуючись,
+    прямі, непрямі, випадкові, особливі або побічні збитки."
+  kor: "어떠한 경우에도 FastFlix의 개발자 또는 기여자는 직접적, 간접적, 부수적, 특별 또는 결과적 손해를 포함하되 이에 국한되지 않는 본 소프트웨어 사용으로 인해 발생하는 어떠한 손해에 대해서도 책임을 지지 않습니다."
+  ron: "În niciun caz dezvoltatorii sau contribuitorii FastFlix nu vor fi răspunzători pentru niciun fel de daune rezultate din utilizarea acestui software, inclusiv, dar fără a se limita la daune directe,
+    indirecte, incidentale, speciale sau consecutive."
+Copy Dolby Vision:
+  eng: Copy Dolby Vision
+  deu: Dolby Vision kopieren
+  fra: Copie Dolby Vision
+  ita: Copia Dolby Vision
+  spa: Copia Dolby Vision
+  jpn: ドルビービジョンをコピーする
+  rus: Копия Dolby Vision
+  por: Copiar Dolby Vision
+  swe: Kopia Dolby Vision
+  pol: Kopiowanie Dolby Vision
+  chs: 复制杜比视界
+  ukr: Копіювати Dolby Vision
+  kor: 돌비 비전 복사
+  ron: Copiere Dolby Vision
+Copy Dolby Vision RPU metadata from input file:
+  eng: Copy Dolby Vision RPU metadata from input file
+  deu: Dolby Vision RPU-Metadaten aus Eingabedatei kopieren
+  fra: Copier les métadonnées Dolby Vision RPU du fichier d'entrée
+  ita: Copia dei metadati Dolby Vision RPU dal file di ingresso
+  spa: Copiar metadatos Dolby Vision RPU del archivo de entrada
+  jpn: 入力ファイルからDolby Vision RPUメタデータをコピーする
+  rus: Копирование метаданных Dolby Vision RPU из входного файла
+  por: Copiar metadados Dolby Vision RPU do ficheiro de entrada
+  swe: Kopiera Dolby Vision RPU-metadata från inmatningsfilen
+  pol: Kopiowanie metadanych Dolby Vision RPU z pliku wejściowego
+  chs: 从输入文件复制杜比视界 RPU 元数据
+  ukr: Скопіюйте метадані Dolby Vision RPU з вхідного файлу
+  kor: 입력 파일에서 Dolby Vision RPU 메타데이터 복사하기
+  ron: Copierea metadatelor Dolby Vision RPU din fișierul de intrare

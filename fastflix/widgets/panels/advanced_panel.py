@@ -7,6 +7,7 @@ from box import Box
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
+from fastflix.shared import shrink_text_to_fit
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import VideoSettings
 from fastflix.resources import get_icon
@@ -137,9 +138,10 @@ class AdvancedPanel(QtWidgets.QWidget):
 
     def add_row_label(self, label, row_number):
         label = QtWidgets.QLabel(label)
-        label.setFixedWidth(100)
+        label.setFixedWidth(140)
         if self.app.fastflix.config.theme == "onyx":
             label.setStyleSheet(get_onyx_label_style(muted=True))
+        shrink_text_to_fit(label, padding=4)
         self.layout.addWidget(label, row_number, 0, alignment=QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
     def init_fps(self):

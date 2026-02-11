@@ -221,6 +221,16 @@ def app_setup(
         logger.exception(t("Could not load config file!"))
         sys.exit(1)
 
+    if not app.fastflix.config.terms_accepted:
+        from fastflix.widgets.terms_agreement import TermsAgreementDialog
+
+        dialog = TermsAgreementDialog()
+        if dialog.exec() == QtWidgets.QDialog.Accepted:
+            app.fastflix.config.terms_accepted = True
+            app.fastflix.config.save()
+        else:
+            sys.exit(0)
+
     if app.fastflix.config.theme != "system":
         file = QtCore.QFile(str(breeze_styles_path / app.fastflix.config.theme / "stylesheet.qss"))
         file.open(QtCore.QFile.OpenModeFlag.ReadOnly | QtCore.QFile.OpenModeFlag.Text)

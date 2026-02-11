@@ -17,7 +17,7 @@ class BaseWidths:
     PROFILE_BOX: int = 190
     ENCODER_MIN: int = 165
     CROP_BOX_MIN: int = 280
-    SOURCE_LABEL: int = 65
+    SOURCE_LABEL: int = 90
     RESOLUTION_CUSTOM: int = 115
     FLIP_DROPDOWN: int = 120
     ROTATE_DROPDOWN: int = 130

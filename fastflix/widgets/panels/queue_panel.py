@@ -18,7 +18,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video
 from fastflix.ff_queue import get_queue, save_queue, save_queue_async
 from fastflix.resources import get_icon, get_bool_env
-from fastflix.shared import no_border, open_folder, yes_no_message, message, error_message
+from fastflix.shared import no_border, open_folder, yes_no_message, message, error_message, shrink_text_to_fit
 from fastflix.ui_scale import scaler
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.exceptions import FastFlixInternalException
@@ -292,6 +292,17 @@ class EncodingQueue(FlixList):
 
         priority_label = QtWidgets.QLabel(t("Priority"))
         priority_label.setFixedWidth(55)
+
+        for w in (
+            self.save_queue_button,
+            self.load_queue_button,
+            self.clear_queue,
+            self.pause_queue,
+            self.pause_encode,
+            self.ignore_errors,
+            priority_label,
+        ):
+            shrink_text_to_fit(w)
 
         top_layout.addWidget(self.load_queue_button, QtCore.Qt.AlignRight)
         top_layout.addWidget(self.save_queue_button, QtCore.Qt.AlignRight)

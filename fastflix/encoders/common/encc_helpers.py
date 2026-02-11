@@ -122,11 +122,14 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams) -> List[str]:
         if not track.conversion_codec or track.conversion_codec == "none":
             copies.append(str(audio_id))
         elif track.conversion_codec:
-            downmix = (
-                ["--audio-stream", f"{audio_id}?:{track.downmix}"]
-                if track.downmix and track.downmix != "No Downmix"
-                else []
-            )
+            if track.downmix and track.downmix != "No Downmix":
+                downmix = ["--audio-stream", f"{audio_id}?:{track.downmix}"]
+            else:
+                raw_layout = track.raw_info.get("channel_layout", "") if track.raw_info else ""
+                if raw_layout:
+                    downmix = ["--audio-stream", f"{audio_id}?:{raw_layout}"]
+                else:
+                    downmix = []
             bitrate_parts = []
             if track.conversion_codec not in lossless:
                 if track.conversion_bitrate:

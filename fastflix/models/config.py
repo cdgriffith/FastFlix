@@ -302,6 +302,7 @@ class Config(BaseModel):
     pgs_ocr_language: str = "eng"
 
     use_keyframes_for_preview: bool = True
+    terms_accepted: bool = False
 
     @property
     def pgs_ocr_available(self) -> bool:

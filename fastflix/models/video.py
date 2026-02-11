@@ -296,6 +296,13 @@ class Video(BaseModel):
         return stream.get("avg_frame_rate", "")
 
     @property
+    def sar(self):
+        stream = self.current_video_stream
+        if not stream:
+            return ""
+        return stream.get("sample_aspect_ratio", "1:1")
+
+    @property
     def scale(self):
         if self.video_settings.resolution_method == "auto":
             return None

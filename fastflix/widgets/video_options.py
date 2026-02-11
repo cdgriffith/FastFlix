@@ -41,11 +41,47 @@ icons = {
 }
 
 
+class ScrollableTabBar(QtWidgets.QTabBar):
+    """Custom tab bar that positions scroll buttons at far left and far right."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setElideMode(QtCore.Qt.ElideRight)
+        self._left_btn = None
+        self._right_btn = None
+
+    def _find_scroll_buttons(self):
+        if self._left_btn and self._right_btn:
+            return
+        for child in self.findChildren(QtWidgets.QToolButton):
+            if child.arrowType() == QtCore.Qt.LeftArrow:
+                self._left_btn = child
+            elif child.arrowType() == QtCore.Qt.RightArrow:
+                self._right_btn = child
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._find_scroll_buttons()
+        btn_size = max(28, self.height())
+        if self._left_btn and self._left_btn.isVisible():
+            self._left_btn.setFixedSize(btn_size, self.height())
+            self._left_btn.move(0, 0)
+            self._left_btn.raise_()
+        if self._right_btn and self._right_btn.isVisible():
+            self._right_btn.setFixedSize(btn_size, self.height())
+            self._right_btn.move(self.width() - btn_size, 0)
+            self._right_btn.raise_()
+
+
 class VideoOptions(QtWidgets.QTabWidget):
     def __init__(self, parent, app: FastFlixApp, available_audio_encoders):
         super().__init__(parent)
         self.main: "Main" = parent
         self.app = app
+
+        # Install custom tab bar with better scroll buttons
+        custom_tab_bar = ScrollableTabBar(self)
+        self.setTabBar(custom_tab_bar)
 
         self.reloading = False
 
@@ -61,6 +97,11 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.advanced = AdvancedPanel(self, self.app)
         self.info = InfoPanel(self, self.app)
         self.debug = DebugPanel(self, self.app)
+        scroll_btn_size = max(28, self.tabBar().height())
+        scroll_btn_style = (
+            f"QTabBar QToolButton{{ min-width: {scroll_btn_size}px; min-height: {scroll_btn_size}px; "
+            f"font-size: 16px; font-weight: bold; }}"
+        )
         if self.app.fastflix.config.theme == "onyx":
             self.setStyleSheet(
                 "QTabBar{ font-size: 13px; } "
@@ -72,7 +113,10 @@ class VideoOptions(QtWidgets.QTabWidget):
                 f"QComboBox{{ min-height: 1.1em; {get_onyx_combobox_style()} }}"
                 "QComboBox:hover{ background-color: #6a8a96; } "
                 f"QComboBox QAbstractItemView{{ background-color: {ONYX_COLORS['dark_bg']}; border: 2px solid {ONYX_COLORS['input_bg']}; }} "
+                + scroll_btn_style
             )
+        else:
+            self.setStyleSheet(scroll_btn_style)
 
         self.setIconSize(scaler.scale_size(20, 20))
         self.addTab(

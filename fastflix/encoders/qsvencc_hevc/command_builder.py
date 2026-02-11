@@ -83,6 +83,8 @@ def build(fastflix: FastFlix):
 
     if video.video_settings.remove_metadata:
         command.extend(["--video-metadata", "clear", "--metadata", "clear"])
+    elif video.video_settings.remove_hdr:
+        command.extend(["--video-metadata", "clear", "--metadata", "copy"])
     else:
         command.extend(["--video-metadata", "copy", "--metadata", "copy"])
 
@@ -137,9 +139,9 @@ def build(fastflix: FastFlix):
     if fastflix.current_video.cll:
         command.extend(["--max-cll", str(fastflix.current_video.cll)])
 
-    if settings.copy_hdr10:
+    if settings.copy_hdr10 and not video.video_settings.remove_hdr:
         command.extend(["--dhdr10-info", "copy"])
-    if settings.copy_dv:
+    if settings.copy_dv and not video.video_settings.remove_hdr:
         command.extend(["--dolby-vision-rpu", "copy"])
         command.extend(["--dolby-vision-profile", "copy"])
 

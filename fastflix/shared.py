@@ -43,9 +43,62 @@ no_border = (
 )
 
 
+def _measure_text_width(metrics, text):
+    """Measure the widest line in potentially multi-line text."""
+    lines = text.split("\n")
+    return max(metrics.horizontalAdvance(line) for line in lines)
+
+
+def shrink_text_to_fit(widget, padding=10, min_point_size=6):
+    """Shrink a widget's font until its text fits within its fixed width.
+
+    Works with QLabel, QPushButton, QCheckBox, and similar widgets.
+    Call after setting the widget's text and fixed width.
+
+    Uses widget-level stylesheet to set font-size, because the global parent
+    stylesheet (QWidget { font-size: Xpt; }) overrides widget.setFont() calls.
+    A widget's own stylesheet takes precedence over inherited stylesheets.
+    """
+    import re
+
+    from fastflix.ui_constants import FONTS
+    from fastflix.ui_scale import scaler
+
+    width = widget.maximumWidth() if widget.maximumWidth() < 16777215 else widget.width()
+    if width <= 0:
+        return
+    text = widget.text()
+    if not text:
+        return
+
+    # Start from the app's actual styled font size (matches the global stylesheet).
+    app_font_size_pt = max(6, round(scaler.scale_font(FONTS.LARGE) * 0.75))
+    font = widget.font()
+    font.setPointSizeF(app_font_size_pt)
+
+    metrics = QtGui.QFontMetrics(font)
+    available = width - padding
+    if _measure_text_width(metrics, text) <= available:
+        return
+
+    size = float(app_font_size_pt)
+    while size > min_point_size:
+        size -= 0.5
+        font.setPointSizeF(size)
+        metrics = QtGui.QFontMetrics(font)
+        if _measure_text_width(metrics, text) <= available:
+            break
+
+    # Apply via widget stylesheet to override the global parent stylesheet.
+    existing = widget.styleSheet() or ""
+    existing = re.sub(r"font-size:\s*[^;]+;?\s*", "", existing).strip()
+    sep = " " if existing else ""
+    widget.setStyleSheet(f"{existing}{sep}font-size: {size}pt;")
+
+
 class MyMessageBox(QtWidgets.QMessageBox):
-    def __init__(self):
-        QtWidgets.QMessageBox.__init__(self)
+    def __init__(self, parent=None):
+        QtWidgets.QMessageBox.__init__(self, parent)
         self.setSizeGripEnabled(True)
 
     def event(self, e):
@@ -68,11 +121,10 @@ class MyMessageBox(QtWidgets.QMessageBox):
         return result
 
 
-def message(msg, title=None):
-    sm = QtWidgets.QMessageBox()
+def message(msg, title=None, parent=None):
+    sm = QtWidgets.QMessageBox(parent)
     sm.setStyleSheet("font-size: 14px")
     sm.setText(msg)
-    # Removed WindowStaysOnTopHint to allow minimizing dialog (#687)
     if title:
         sm.setWindowTitle(title)
     sm.setStandardButtons(QtWidgets.QMessageBox.Ok)
@@ -80,12 +132,11 @@ def message(msg, title=None):
     sm.exec_()
 
 
-def error_message(msg, details=None, traceback=False, title=None):
-    em = MyMessageBox()
+def error_message(msg, details=None, traceback=False, title=None, parent=None):
+    em = MyMessageBox(parent)
     em.setStyleSheet("font-size: 14px")
     em.setText(msg)
     em.setWindowIcon(QtGui.QIcon(my_data))
-    # Removed WindowStaysOnTopHint to allow minimizing dialog (#687)
     if title:
         em.setWindowTitle(title)
     if details:
@@ -98,14 +149,13 @@ def error_message(msg, details=None, traceback=False, title=None):
     em.exec_()
 
 
-def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_action=None, no_action=None):
-    sm = QtWidgets.QMessageBox()
+def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_action=None, no_action=None, parent=None):
+    sm = QtWidgets.QMessageBox(parent)
     sm.setStyleSheet("font-size: 14px")
     sm.setWindowTitle(t(title))
     sm.setText(msg)
     sm.addButton(yes_text, QtWidgets.QMessageBox.YesRole)
     sm.addButton(no_text, QtWidgets.QMessageBox.NoRole)
-    # Removed WindowStaysOnTopHint to allow minimizing dialog (#687)
     sm.exec_()
     if sm.clickedButton().text() == yes_text:
         if yes_action:

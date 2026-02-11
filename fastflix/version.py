@@ -1,4 +1,4 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__version__ = "6.0.1"
+__version__ = "6.1.0"
 __author__ = "Chris Griffith"

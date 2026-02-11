@@ -230,12 +230,14 @@ class MultipleFilesWindow(QtWidgets.QWidget):
         self.set_folder_name(folder_name)
 
         def check_to_add(file, list_of_items, bad_items, **_):
+            details = None
             try:
                 data = None
                 details = probe(self.app, file)
                 for stream in details.streams:
                     if stream.codec_type == "video":
                         data = (file.name, f"{stream.width}x{stream.height}", stream.codec_name)
+                        break
                 if not data:
                     raise Exception()
             except Exception:
@@ -243,6 +245,8 @@ class MultipleFilesWindow(QtWidgets.QWidget):
                 bad_items.append(file.name)
             else:
                 list_of_items.append(data)
+            finally:
+                del details
 
         items = []
         skipped = []

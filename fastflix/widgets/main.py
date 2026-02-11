@@ -52,6 +52,7 @@ from fastflix.shared import (
     yes_no_message,
     clean_file_string,
     get_filesafe_datetime,
+    shrink_text_to_fit,
 )
 from fastflix.windows_tools import prevent_sleep_mode, allow_sleep_mode
 from fastflix.widgets.background_tasks import ThumbnailCreator
@@ -276,14 +277,14 @@ class Main(QtWidgets.QWidget):
         self.grid = QtWidgets.QGridLayout()
 
         # Set column stretch factors:
-        # Left (cols 0-5) and Right (cols 11-13) stay fixed (stretch=0)
-        # Preview area (cols 6-10) expands to fill available space (stretch=1)
+        # Left (cols 0-5) stays fixed (stretch=0)
+        # Preview area (cols 6-10) and Right (cols 11-13) expand to fill space
         for col in range(6):
             self.grid.setColumnStretch(col, 0)
         for col in range(6, 11):
             self.grid.setColumnStretch(col, 1)
         for col in range(11, 14):
-            self.grid.setColumnStretch(col, 0)
+            self.grid.setColumnStretch(col, 1)
 
         # row: int, column: int, rowSpan: int, columnSpan: int
 
@@ -553,6 +554,7 @@ class Main(QtWidgets.QWidget):
         source_label.setFixedWidth(scaler.scale(WIDTHS.SOURCE_LABEL))
         if self.app.fastflix.config.theme == "onyx":
             source_label.setStyleSheet("color: white;")
+        shrink_text_to_fit(source_label)
         self.source_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         source_layout.addWidget(source_label)
         source_layout.addWidget(self.source_video_path_widget, stretch=True)
@@ -562,6 +564,7 @@ class Main(QtWidgets.QWidget):
         output_label.setFixedWidth(scaler.scale(WIDTHS.SOURCE_LABEL))
         if self.app.fastflix.config.theme == "onyx":
             output_label.setStyleSheet("color: white;")
+        shrink_text_to_fit(output_label)
         self.output_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
@@ -579,6 +582,7 @@ class Main(QtWidgets.QWidget):
         out_dir_label = QtWidgets.QLabel(t("Folder"))
         out_dir_label.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         out_dir_label.setFixedWidth(scaler.scale(WIDTHS.SOURCE_LABEL))
+        shrink_text_to_fit(out_dir_label)
         self.widgets.output_directory = QtWidgets.QPushButton()
         self.widgets.output_directory.setFixedHeight(scaler.scale(HEIGHTS.OUTPUT_DIR))
         self.widgets.output_directory.clicked.connect(self.save_directory)
@@ -616,6 +620,7 @@ class Main(QtWidgets.QWidget):
         self.video_info_label.setFixedWidth(scaler.scale(WIDTHS.SOURCE_LABEL))
         if self.app.fastflix.config.theme == "onyx":
             self.video_info_label.setStyleSheet("color: white;")
+        shrink_text_to_fit(self.video_info_label)
         self.video_info_label.hide()
         info_layout.addWidget(self.video_info_label)
         info_layout.addWidget(self.video_bit_depth_label)
@@ -667,6 +672,7 @@ class Main(QtWidgets.QWidget):
         res_row.setSpacing(scaler.scale(4))
         res_label = QtWidgets.QLabel(t("Resolution"))
         res_label.setFixedWidth(scaler.scale(68))
+        shrink_text_to_fit(res_label, padding=4)
         res_row.addWidget(res_label)
 
         self.widgets.resolution_drop_down = QtWidgets.QComboBox()
@@ -689,11 +695,13 @@ class Main(QtWidgets.QWidget):
 
         rot_label = QtWidgets.QLabel(t("Rotate"))
         rot_label.setFixedWidth(scaler.scale(68))
+        shrink_text_to_fit(rot_label, padding=4)
         transform_row.addWidget(rot_label)
         transform_row.addWidget(self.init_rotate())
 
         flip_label = QtWidgets.QLabel(t("Flip"))
-        flip_label.setFixedWidth(scaler.scale(30))
+        flip_label.setFixedWidth(scaler.scale(50))
+        shrink_text_to_fit(flip_label, padding=4)
         transform_row.addWidget(flip_label)
         transform_row.addWidget(self.init_flip())
         transform_row.addStretch(1)
@@ -928,6 +936,7 @@ class Main(QtWidgets.QWidget):
 
         track_label = QtWidgets.QLabel(t("Video Track"))
         track_label.setFixedWidth(scaler.scale(WIDTHS.VIDEO_TRACK_LABEL))
+        shrink_text_to_fit(track_label)
         layout.addWidget(track_label)
         layout.addWidget(self.widgets.video_track, stretch=1)
         layout.setSpacing(10)
@@ -1096,6 +1105,7 @@ class Main(QtWidgets.QWidget):
 
         encoder_label = QtWidgets.QLabel(f"{t('Encoder')}: ")
         encoder_label.setFixedWidth(scaler.scale(54))
+        shrink_text_to_fit(encoder_label, padding=4)
         layout.addWidget(self.widgets.convert_to, stretch=0)
         layout.setSpacing(10)
 

@@ -33,6 +33,7 @@ class SubtitleTrack(BaseModel):
     disposition: Optional[str] = ""
     burn_in: bool = False
     language: str = ""
+    title: str = ""
     subtitle_type: str = ""
     dispositions: dict = Field(default_factory=dict)
     enabled: bool = True
