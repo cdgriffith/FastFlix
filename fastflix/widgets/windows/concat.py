@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QAbstractItemView
 from fastflix.language import t
 from fastflix.flix import probe
 from fastflix.shared import yes_no_message, error_message
-from fastflix.widgets.progress_bar import ProgressBar, Task
+from fastflix.widgets.status_bar import Task
 
 logger = logging.getLogger("fastflix")
 
@@ -235,7 +235,6 @@ class ConcatWindow(QtWidgets.QWidget):
         super().__init__(None)
         self.app = app
         self.main = main
-        self.setStyleSheet("font-size: 14px")
         self.folder_name = str(self.app.fastflix.config.source_directory) or str(Path.home())
         self.setWindowTitle(t("Concatenation Builder"))
 
@@ -321,7 +320,7 @@ class ConcatWindow(QtWidgets.QWidget):
                 error_message(t("There are more than 100 files, skipping pre-processing."))
                 return self.save((x.name for x in file_list if x.name not in BAD_FILES))
 
-        ProgressBar(self.app, tasks, can_cancel=True, auto_run=True)
+        self.main.container.status_bar.run_tasks(tasks, can_cancel=True)
 
         self.concat_area.table.update_items(items)
         if skipped:

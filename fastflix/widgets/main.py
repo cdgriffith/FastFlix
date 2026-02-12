@@ -47,7 +47,6 @@ from fastflix.resources import (
 )
 from fastflix.shared import (
     error_message,
-    message,
     time_to_number,
     yes_no_message,
     clean_file_string,
@@ -56,7 +55,7 @@ from fastflix.shared import (
 )
 from fastflix.windows_tools import prevent_sleep_mode, allow_sleep_mode
 from fastflix.widgets.background_tasks import ThumbnailCreator
-from fastflix.widgets.progress_bar import ProgressBar, Task
+from fastflix.widgets.status_bar import Task, STATE_ENCODING, STATE_ERROR, STATE_COMPLETE, STATE_IDLE
 from fastflix.widgets.video_options import VideoOptions
 from fastflix.widgets.windows.large_preview import LargePreview
 
@@ -169,6 +168,8 @@ class Main(QtWidgets.QWidget):
     close_event = QtCore.Signal()
     status_update_signal = QtCore.Signal(tuple)
     thread_logging_signal = QtCore.Signal(str)
+    encoding_progress_signal = QtCore.Signal(int)
+    encoding_status_signal = QtCore.Signal(str, str)  # (message, state)
 
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
@@ -180,6 +181,7 @@ class Main(QtWidgets.QWidget):
         self.initialized = False
         self.loading_video = True
         self.scale_updating = False
+        self._top_bar_widgets = []  # widgets that share the same height in the top bar
         self.last_thumb_hash = ""
         self.page_updating = False
         self.previous_encoder_no_audio = False
@@ -231,7 +233,6 @@ class Main(QtWidgets.QWidget):
             )
         self.source_video_path_widget = QtWidgets.QLineEdit(motto)
         self.source_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.PATH_WIDGET))
-        self.source_video_path_widget.setFont(QtGui.QFont(self.app.font().family(), 9))
         self.source_video_path_widget.setDisabled(True)
         self.source_video_path_widget.setStyleSheet(
             f"padding: 0 0 -1px 5px; color: rgb({get_text_color(self.app.fastflix.config.theme)})"
@@ -240,7 +241,6 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget = QtWidgets.QLineEdit("")
         self.output_video_path_widget.setDisabled(True)
         self.output_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.PATH_WIDGET))
-        self.output_video_path_widget.setFont(QtGui.QFont(self.app.font().family(), 9))
         self.output_video_path_widget.setStyleSheet(
             f"padding: 0 0 -1px 5px; color: rgb({get_text_color(self.app.fastflix.config.theme)})"
         )
@@ -279,12 +279,13 @@ class Main(QtWidgets.QWidget):
         # Set column stretch factors:
         # Left (cols 0-5) stays fixed (stretch=0)
         # Preview area (cols 6-10) and Right (cols 11-13) expand to fill space
+        # Right columns get more stretch so preview is smaller
         for col in range(6):
             self.grid.setColumnStretch(col, 0)
         for col in range(6, 11):
             self.grid.setColumnStretch(col, 1)
         for col in range(11, 14):
-            self.grid.setColumnStretch(col, 1)
+            self.grid.setColumnStretch(col, 2)
 
         # row: int, column: int, rowSpan: int, columnSpan: int
 
@@ -312,6 +313,9 @@ class Main(QtWidgets.QWidget):
         self.disable_all()
         self.setLayout(self.grid)
 
+        # Keep all top bar widgets at the same height when the window scales
+        scaler.add_listener(self._on_scale_changed)
+
         if self.app.fastflix.config.theme == "onyx":
             self.setStyleSheet(
                 "QLabel{ color: white; } "
@@ -324,6 +328,12 @@ class Main(QtWidgets.QWidget):
         self.initialized = True
         self.loading_video = False
         self.last_page_update = time.time()
+
+    def _on_scale_changed(self, _factors):
+        """Update all top bar widgets to the same height when the window scale changes."""
+        h = scaler.scale(HEIGHTS.TOP_BAR_BUTTON)
+        for w in self._top_bar_widgets:
+            w.setFixedHeight(h)
 
     def fade_loop(self, percent=90):
         if self.input_video:
@@ -348,23 +358,26 @@ class Main(QtWidgets.QWidget):
     def init_top_bar(self):
         top_bar = QtWidgets.QHBoxLayout()
 
+        top_bar_h = scaler.scale(HEIGHTS.TOP_BAR_BUTTON)
+
         source = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-source")), f"  {t('Source')}")
         source.setIconSize(scaler.scale_size(ICONS.MEDIUM, ICONS.MEDIUM))
-        source.setFixedHeight(scaler.scale(HEIGHTS.TOP_BAR_BUTTON))
-        source.setStyleSheet("font-size: 14px;")
+        source.setFixedHeight(top_bar_h)
         source.setDefault(True)
         source.clicked.connect(lambda: self.open_file())
+        self._top_bar_widgets.append(source)
 
         self.widgets.profile_box = QtWidgets.QComboBox()
-        self.widgets.profile_box.setStyleSheet("text-align: center; font-size: 14px;")
+        self.widgets.profile_box.setStyleSheet("text-align: center;")
         self.widgets.profile_box.addItems(self.app.fastflix.config.profiles.keys())
         self.widgets.profile_box.view().setFixedWidth(
             self.widgets.profile_box.minimumSizeHint().width() + scaler.scale(50)
         )
         self.widgets.profile_box.setCurrentText(self.app.fastflix.config.selected_profile)
         self.widgets.profile_box.currentIndexChanged.connect(self.set_profile)
-        self.widgets.profile_box.setFixedWidth(scaler.scale(WIDTHS.PROFILE_BOX))
-        self.widgets.profile_box.setFixedHeight(scaler.scale(HEIGHTS.TOP_BAR_BUTTON))
+        self.widgets.profile_box.setMinimumWidth(scaler.scale(WIDTHS.PROFILE_BOX))
+        self.widgets.profile_box.setFixedHeight(top_bar_h)
+        self._top_bar_widgets.append(self.widgets.profile_box)
 
         top_bar.addWidget(source)
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
@@ -374,8 +387,9 @@ class Main(QtWidgets.QWidget):
         top_bar.addWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
 
         self.add_profile = QtWidgets.QPushButton(QtGui.QIcon(self.get_icon("onyx-new-profile")), "")
-        self.add_profile.setFixedHeight(scaler.scale(HEIGHTS.TOP_BAR_BUTTON))
+        self.add_profile.setFixedHeight(top_bar_h)
         self.add_profile.setIconSize(scaler.scale_size(ICONS.SMALL + 4, ICONS.SMALL + 4))
+        self._top_bar_widgets.append(self.add_profile)
         self.add_profile.setToolTip(t("New Profile"))
         # add_profile.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.add_profile.clicked.connect(lambda: self.container.new_profile())
@@ -394,29 +408,32 @@ class Main(QtWidgets.QWidget):
 
     def init_top_bar_right(self):
         top_bar_right = QtWidgets.QHBoxLayout()
-        theme = "QPushButton{ padding: 0 10px; font-size: 14px; }"
+        theme = "QPushButton{ padding: 0 10px; }"
         if self.app.fastflix.config.theme in ("dark", "onyx"):
             theme = """
             QPushButton {
               padding: 0 10px;
-              font-size: 14px;
               background-color: #4f4f4f;
               border: none;
               color: white; }
             QPushButton:hover {
               background-color: #6b6b6b; }"""
 
+        top_bar_h = scaler.scale(HEIGHTS.TOP_BAR_BUTTON)
+
         queue = QtWidgets.QPushButton(QtGui.QIcon(onyx_queue_add_icon), f"{t('Add to Queue')}  ")
         queue.setIconSize(scaler.scale_size(ICONS.LARGE, ICONS.LARGE))
-        queue.setFixedHeight(scaler.scale(HEIGHTS.TOP_BAR_BUTTON))
+        queue.setFixedHeight(top_bar_h)
         queue.setStyleSheet(theme)
         queue.setLayoutDirection(QtCore.Qt.RightToLeft)
         queue.clicked.connect(lambda: self.add_to_queue())
+        self._top_bar_widgets.append(queue)
 
         self.widgets.convert_button = QtWidgets.QPushButton(QtGui.QIcon(onyx_convert_icon), f"{t('Convert')}  ")
         self.widgets.convert_button.setIconSize(scaler.scale_size(ICONS.LARGE, ICONS.LARGE))
-        self.widgets.convert_button.setFixedHeight(scaler.scale(HEIGHTS.TOP_BAR_BUTTON))
+        self.widgets.convert_button.setFixedHeight(top_bar_h)
         self.widgets.convert_button.setStyleSheet(theme)
+        self._top_bar_widgets.append(self.widgets.convert_button)
         self.widgets.convert_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.widgets.convert_button.clicked.connect(lambda: self.encode_video())
         top_bar_right.addStretch(1)
@@ -531,10 +548,51 @@ class Main(QtWidgets.QWidget):
             self.widgets.pause_resume.setStyleSheet("background-color: orange;")
             logger.info("Resuming FFmpeg conversion")
 
-    def config_update(self):
+    def config_update(self, encoder_reload_needed=False):
         self.thumb_file = Path(self.app.fastflix.config.work_path, "thumbnail_preview.jpg")
-        self.change_output_types()
+        if encoder_reload_needed:
+            self.reload_encoders()
+        else:
+            self.change_output_types()
         self.page_update(build_thumbnail=True)
+
+    def reload_encoders(self):
+        """Re-run FFmpeg/encoder init after settings change, via status bar."""
+        from fastflix.application import init_encoders
+        from fastflix.flix import (
+            ffmpeg_audio_encoders,
+            ffmpeg_configuration,
+            ffmpeg_opencl_support,
+            ffprobe_configuration,
+        )
+
+        if self.app.fastflix.currently_encoding:
+            error_message(t("Cannot reload encoders while encoding is in progress"))
+            return
+
+        previous_encoder = self.convert_to
+
+        tasks = [
+            Task(t("Gather FFmpeg version"), ffmpeg_configuration),
+            Task(t("Gather FFprobe version"), ffprobe_configuration),
+            Task(t("Gather FFmpeg audio encoders"), ffmpeg_audio_encoders),
+            Task(t("Determine OpenCL Support"), ffmpeg_opencl_support),
+            Task(t("Initialize Encoders"), init_encoders),
+        ]
+
+        try:
+            self.container.status_bar.run_tasks(tasks, persist_complete=True)
+        except Exception:
+            logger.exception("Failed to reload encoders after settings change")
+            self.container.status_bar.set_state(STATE_ERROR, t("Failed to reload encoders"))
+            return
+
+        self.init_encoders_ui()
+
+        if previous_encoder and previous_encoder in self.app.fastflix.encoders:
+            self.widgets.convert_to.setCurrentText(previous_encoder)
+
+        self.container.status_bar.set_state(STATE_IDLE)
 
     def init_video_area(self):
         layout = QtWidgets.QVBoxLayout()
@@ -570,7 +628,8 @@ class Main(QtWidgets.QWidget):
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
 
         self.widgets.output_type_combo.setFixedWidth(scaler.scale(WIDTHS.OUTPUT_TYPE))
-        self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
+        if self.current_encoder:
+            self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
         self.widgets.output_type_combo.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         if self.app.fastflix.config.theme == "onyx":
             self.widgets.output_type_combo.setStyleSheet(get_onyx_combobox_style())
@@ -602,12 +661,14 @@ class Main(QtWidgets.QWidget):
         file_group_layout.addLayout(out_dir_layout)
         file_group_layout.addLayout(output_layout)
 
-        # Video info bar (bit depth, color space, chroma subsampling, HDR10, HDR10+)
+        # Video info bar (codec, bit depth, color space, chroma subsampling, HDR10, HDR10+)
+        self.video_codec_label = QtWidgets.QLabel()
         self.video_bit_depth_label = QtWidgets.QLabel()
         self.video_chroma_label = QtWidgets.QLabel()
         self.video_hdr10_label = QtWidgets.QLabel()
         self.video_hdr10plus_label = QtWidgets.QLabel()
         for lbl in (
+            self.video_codec_label,
             self.video_bit_depth_label,
             self.video_chroma_label,
             self.video_hdr10_label,
@@ -623,6 +684,8 @@ class Main(QtWidgets.QWidget):
         shrink_text_to_fit(self.video_info_label)
         self.video_info_label.hide()
         info_layout.addWidget(self.video_info_label)
+        info_layout.addWidget(self.video_codec_label)
+        info_layout.addSpacing(scaler.scale(12))
         info_layout.addWidget(self.video_bit_depth_label)
         info_layout.addSpacing(scaler.scale(12))
         info_layout.addWidget(self.video_chroma_label)
@@ -698,13 +761,13 @@ class Main(QtWidgets.QWidget):
         shrink_text_to_fit(rot_label, padding=4)
         transform_row.addWidget(rot_label)
         transform_row.addWidget(self.init_rotate())
+        transform_row.addStretch(1)
 
         flip_label = QtWidgets.QLabel(t("Flip"))
         flip_label.setFixedWidth(scaler.scale(50))
         shrink_text_to_fit(flip_label, padding=4)
         transform_row.addWidget(flip_label)
         transform_row.addWidget(self.init_flip())
-        transform_row.addStretch(1)
 
         size_layout.addLayout(transform_row)
         size_layout.addStretch(1)
@@ -758,13 +821,6 @@ class Main(QtWidgets.QWidget):
             time_field=True,
         )
         self.widgets.start_time.textChanged.connect(lambda: self.page_update())
-        start_from_preview = QtWidgets.QPushButton()
-        start_from_preview.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DesktopIcon))
-        start_from_preview.setFixedSize(scaler.scale(24), scaler.scale(28))
-        start_from_preview.setToolTip(t("Set start time from preview position"))
-        start_from_preview.clicked.connect(lambda: self.set_time_from_preview(self.widgets.start_time))
-        self.buttons.append(start_from_preview)
-        start_row.addWidget(start_from_preview)
 
         self.widgets.end_time, end_row = self.build_hoz_int_field(
             t("End"),
@@ -773,21 +829,38 @@ class Main(QtWidgets.QWidget):
             time_field=True,
         )
         self.widgets.end_time.textChanged.connect(lambda: self.page_update())
+
+        time_col2.addLayout(start_row)
+        time_col2.addLayout(end_row)
+        time_col2.addStretch(1)
+
+        # Column 3: "Set from preview" buttons
+        time_col3 = QtWidgets.QVBoxLayout()
+        time_col3.setSpacing(scaler.scale(4))
+
+        start_from_preview = QtWidgets.QPushButton()
+        start_from_preview.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DesktopIcon))
+        start_from_preview.setFixedSize(scaler.scale(24), scaler.scale(28))
+        start_from_preview.setToolTip(t("Set start time from preview position"))
+        start_from_preview.clicked.connect(lambda: self.set_time_from_preview(self.widgets.start_time))
+        self.buttons.append(start_from_preview)
+
         end_from_preview = QtWidgets.QPushButton()
         end_from_preview.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DesktopIcon))
         end_from_preview.setFixedSize(scaler.scale(24), scaler.scale(28))
         end_from_preview.setToolTip(t("Set end time from preview position"))
         end_from_preview.clicked.connect(lambda: self.set_time_from_preview(self.widgets.end_time))
         self.buttons.append(end_from_preview)
-        end_row.addWidget(end_from_preview)
 
-        time_col2.addLayout(start_row)
-        time_col2.addLayout(end_row)
-        time_col2.addStretch(1)
+        time_col3.addWidget(start_from_preview)
+        time_col3.addWidget(end_from_preview)
+        time_col3.addStretch(1)
 
         time_layout.addLayout(time_col1)
+        time_layout.addStretch(1)
         time_layout.addLayout(time_col2)
         time_layout.addStretch(1)
+        time_layout.addLayout(time_col3)
 
         tabs.addTab(time_tab, t("Start/End Time"))
 
@@ -1090,21 +1163,43 @@ class Main(QtWidgets.QWidget):
                 self.widgets.convert_to.setItemIcon(i, QtGui.QIcon(plugin.icon))
         icon_size = scaler.scale(33) if self.app.fastflix.config.flat_ui else scaler.scale(ICONS.XLARGE)
         self.widgets.convert_to.setIconSize(QtCore.QSize(icon_size, icon_size))
+        self._size_encoder_combo()
+
+    def init_encoders_ui(self):
+        """Populate the encoder dropdown and initialize the encoder settings panel.
+
+        Called after startup tasks have populated app.fastflix.encoders.
+        """
+        if not self.app.fastflix.encoders:
+            return
+        self.change_output_types()
+        if self.current_encoder:
+            self.video_options.change_conversion(self.convert_to)
+        self.set_profile()
+
+    def _size_encoder_combo(self):
+        """Size the encoder combo box to fit the longest possible encoder name."""
+        longest = "HEVC (Video Toolbox)"
+        if self.app.fastflix.encoders:
+            names = list(self.app.fastflix.encoders.keys())
+            longest = max(names, key=len) if names else longest
+        fm = self.widgets.convert_to.fontMetrics()
+        text_width = fm.horizontalAdvance(longest)
+        # Add padding for icon + dropdown arrow + margins
+        padding = scaler.scale(70)
+        self.widgets.convert_to.setMinimumWidth(text_width + padding)
 
     def init_encoder_drop_down(self):
         layout = QtWidgets.QHBoxLayout()
         self.widgets.convert_to = QtWidgets.QComboBox()
-        self.widgets.convert_to.setFixedWidth(scaler.scale(WIDTHS.ENCODER_MIN))
         self.widgets.convert_to.setFixedHeight(scaler.scale(HEIGHTS.TOP_BAR_BUTTON))
-        self.widgets.convert_to.setStyleSheet("font-size: 14px;")
+        self._top_bar_widgets.append(self.widgets.convert_to)
+        self._size_encoder_combo()
         self.change_output_types()
-        self.widgets.convert_to.view().setMinimumWidth(
-            self.widgets.convert_to.minimumSizeHint().width() + scaler.scale(50)
-        )
         self.widgets.convert_to.currentTextChanged.connect(self.change_encoder)
 
         encoder_label = QtWidgets.QLabel(f"{t('Encoder')}: ")
-        encoder_label.setFixedWidth(scaler.scale(54))
+        encoder_label.setMinimumWidth(scaler.scale(54))
         shrink_text_to_fit(encoder_label, padding=4)
         layout.addWidget(self.widgets.convert_to, stretch=0)
         layout.setSpacing(10)
@@ -1120,17 +1215,23 @@ class Main(QtWidgets.QWidget):
 
     def update_output_type(self):
         self.widgets.output_type_combo.clear()
+        if not self.current_encoder:
+            return
         self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
         self.widgets.output_type_combo.setCurrentText(self.app.fastflix.config.opt("output_type"))
 
     @property
     def current_encoder(self):
+        if not self.app.fastflix.encoders:
+            return None
         try:
             return self.app.fastflix.encoders[
                 self.app.fastflix.current_video.video_settings.video_encoder_settings.name
             ]
         except (AttributeError, KeyError):
-            return self.app.fastflix.encoders[self.convert_to]
+            if self.convert_to:
+                return self.app.fastflix.encoders.get(self.convert_to)
+            return None
 
     def reset_time(self):
         self.widgets.start_time.setText(self.number_to_time(0))
@@ -1532,7 +1633,9 @@ class Main(QtWidgets.QWidget):
                 signal.emit(int((i / total_items) * 100))
 
         self.disable_all()
-        ProgressBar(self.app, [Task(t("Loading Videos"), open_em, {"paths": paths})], signal_task=True, can_cancel=True)
+        self.container.status_bar.run_tasks(
+            [Task(t("Loading Videos"), open_em, {"paths": paths})], signal_task=True, can_cancel=True
+        )
         self.enable_all()
 
     @property
@@ -1623,7 +1726,7 @@ class Main(QtWidgets.QWidget):
             )
             for x in times
         ]
-        ProgressBar(self.app, tasks)
+        self.container.status_bar.run_tasks(tasks)
         if not result_list:
             logger.warning("Autocrop did not return crop points, please use a ffmpeg version with cropdetect filter")
             return
@@ -1880,7 +1983,7 @@ class Main(QtWidgets.QWidget):
             tasks.append(Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.source_material)))
 
         try:
-            ProgressBar(self.app, tasks, hidden=hide_progress)
+            self.container.status_bar.run_tasks(tasks)
         except FlixError:
             error_message(f"{t('Not a video file')}<br>{self.input_video}")
             self.clear_current_video()
@@ -1967,8 +2070,9 @@ class Main(QtWidgets.QWidget):
         if self.app.fastflix.config.opt("auto_crop"):
             self.get_auto_crop()
 
-        if not getattr(self.current_encoder, "enable_concat", False) and self.app.fastflix.current_video.concat:
-            error_message(f"{self.current_encoder.name} {t('does not support concatenating files together')}")
+        encoder = self.current_encoder
+        if encoder and not getattr(encoder, "enable_concat", False) and self.app.fastflix.current_video.concat:
+            error_message(f"{encoder.name} {t('does not support concatenating files together')}")
 
     @staticmethod
     def _chroma_from_pix_fmt(pix_fmt: str) -> str:
@@ -1992,6 +2096,7 @@ class Main(QtWidgets.QWidget):
     def update_video_info_labels(self):
         if not self.app.fastflix.current_video:
             self.video_info_label.hide()
+            self.video_codec_label.hide()
             self.video_bit_depth_label.hide()
             self.video_chroma_label.hide()
             self.video_hdr10_label.hide()
@@ -2003,6 +2108,13 @@ class Main(QtWidgets.QWidget):
             return
         stream = self.app.fastflix.current_video.streams.video[track_index]
         stream_idx = stream.index
+
+        codec = stream.get("codec_name", "")
+        if codec:
+            self.video_codec_label.setText(codec.upper())
+            self.video_codec_label.show()
+        else:
+            self.video_codec_label.hide()
 
         bit_depth = stream.get("bit_depth", "8")
         self.video_bit_depth_label.setText(f"{bit_depth}-bit")
@@ -2216,6 +2328,8 @@ class Main(QtWidgets.QWidget):
             or self.loading_video
         ):
             return False
+        if not self.current_encoder:
+            return False
         try:
             self.get_all_settings()
         except FastFlixInternalException as err:
@@ -2288,6 +2402,7 @@ class Main(QtWidgets.QWidget):
             self.page_updating = False
 
     def close(self, no_cleanup=False, from_container=False):
+        scaler.remove_listener(self._on_scale_changed)
         self.app.fastflix.shutting_down = True
 
         # Signal worker process to shutdown gracefully
@@ -2318,8 +2433,12 @@ class Main(QtWidgets.QWidget):
     @property
     def convert_to(self):
         if self.widgets.convert_to:
-            return self.widgets.convert_to.currentText().strip()
-        return list(self.app.fastflix.encoders.keys())[0]
+            text = self.widgets.convert_to.currentText().strip()
+            if text:
+                return text
+        if self.app.fastflix.encoders:
+            return list(self.app.fastflix.encoders.keys())[0]
+        return None
 
     def encoding_checks(self):
         if not self.input_video:
@@ -2399,6 +2518,9 @@ class Main(QtWidgets.QWidget):
         self.send_video_request_to_worker_queue(video_to_send)
         self.disable_all()
         self.video_options.show_status()
+        video_name = video_to_send.video_settings.video_title or video_to_send.video_settings.output_path.stem
+        self.encoding_status_signal.emit(f"{t('Encoding')}: {video_name}", STATE_ENCODING)
+        self.encoding_progress_signal.emit(0)
 
     def add_to_queue(self):
         try:
@@ -2427,13 +2549,13 @@ class Main(QtWidgets.QWidget):
         self.set_convert_button()
 
         if not success:
+            self.encoding_status_signal.emit(t("Encoding error"), STATE_ERROR)
             if not self.app.fastflix.config.disable_complete_message:
                 error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
             self.video_options.queue.new_source()
         else:
+            self.encoding_status_signal.emit(t("All conversions complete"), STATE_COMPLETE)
             self.video_options.show_queue()
-            if not self.app.fastflix.config.disable_complete_message:
-                message(t("All queue items have completed"), title=t("Success"))
 
     #
     # @reusables.log_exception("fastflix", show_traceback=False)
@@ -2514,6 +2636,8 @@ class Main(QtWidgets.QWidget):
 
                 if response.status == "cancelled":
                     video.status.cancelled = True
+                    self.encoding_status_signal.emit(t("Encoding cancelled"), STATE_IDLE)
+                    self.encoding_progress_signal.emit(0)
                     self.end_encoding()
                     self.conversion_cancelled(video)
                     self.video_options.update_queue()
@@ -2562,6 +2686,7 @@ class Main(QtWidgets.QWidget):
         self.video_options.queue.run_after_done()
         self.video_options.update_queue()
         self.set_convert_button()
+        self.encoding_progress_signal.emit(0)
 
     def send_next_video(self) -> bool:
         if not self.app.fastflix.currently_encoding:
@@ -2598,6 +2723,8 @@ class Main(QtWidgets.QWidget):
         )
         video.status.running = True
         self.video_options.update_queue()
+        video_name = video.video_settings.video_title or video.video_settings.output_path.stem
+        self.encoding_status_signal.emit(f"{t('Encoding')}: {video_name}", STATE_ENCODING)
 
     def find_video(self, uuid) -> Video:
         for video in self.app.fastflix.conversion_list:

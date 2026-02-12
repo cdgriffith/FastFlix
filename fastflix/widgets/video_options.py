@@ -9,6 +9,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
+from fastflix.ui_constants import FONTS
 from fastflix.ui_scale import scaler
 from fastflix.ui_styles import ONYX_COLORS, get_onyx_combobox_style
 from fastflix.shared import DEVMODE, error_message
@@ -87,7 +88,11 @@ class VideoOptions(QtWidgets.QTabWidget):
 
         self.selected = 0
         self.commands = CommandList(self, self.app)
-        self.current_settings = self.main.current_encoder.settings_panel(self, self.main, self.app)
+        encoder = self.main.current_encoder
+        if encoder:
+            self.current_settings = encoder.settings_panel(self, self.main, self.app)
+        else:
+            self.current_settings = QtWidgets.QWidget(self)
         self.tabBar().tabBarClicked.connect(self.change_tab)
         self.audio = AudioList(self, self.app)
         self.subtitles = SubtitleList(self, self.app)
@@ -98,13 +103,15 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.info = InfoPanel(self, self.app)
         self.debug = DebugPanel(self, self.app)
         scroll_btn_size = max(28, self.tabBar().height())
+        scroll_btn_font_pt = max(6, round(scaler.scale_font(FONTS.XLARGE) * 0.75))
+        tab_font_pt = max(6, round(scaler.scale_font(FONTS.LARGE) * 0.75))
         scroll_btn_style = (
             f"QTabBar QToolButton{{ min-width: {scroll_btn_size}px; min-height: {scroll_btn_size}px; "
-            f"font-size: 16px; font-weight: bold; }}"
+            f"font-size: {scroll_btn_font_pt}pt; font-weight: bold; }}"
         )
         if self.app.fastflix.config.theme == "onyx":
             self.setStyleSheet(
-                "QTabBar{ font-size: 13px; } "
+                f"QTabBar{{ font-size: {tab_font_pt}pt; }} "
                 "QTabBar::tab{ border-top: 2px solid transparent; } "
                 f"QTabBar::tab:selected{{ border-top: 2px solid {ONYX_COLORS['primary']}; }} "
                 "QLineEdit{ color: white; } "
@@ -189,7 +196,12 @@ class VideoOptions(QtWidgets.QTabWidget):
 
     def change_conversion(self, conversion, previous_encoder_no_audio=False):
         conversion = conversion.strip()
-        encoder = self.app.fastflix.encoders[conversion]
+        if not conversion or not self.app.fastflix.encoders:
+            return
+        encoder = self.app.fastflix.encoders.get(conversion)
+        if encoder is None:
+            logger.warning(f"Encoder '{conversion}' not found in available encoders")
+            return
         self.current_settings.close()
         self.current_settings = encoder.settings_panel(self, self.main, self.app)
         self.current_settings.show()
@@ -282,6 +294,8 @@ class VideoOptions(QtWidgets.QTabWidget):
         # self.main.container.profile.update_settings()
 
     def update_profile(self):
+        if not hasattr(self.current_settings, "update_profile"):
+            return
         self.current_settings.update_profile()
         if self.app.fastflix.current_video:
             streams = copy.deepcopy(self.app.fastflix.current_video.streams)
@@ -308,12 +322,13 @@ class VideoOptions(QtWidgets.QTabWidget):
     def reload(self):
         self.reloading = True
         try:
-            self.change_conversion(self.app.fastflix.current_video.video_settings.video_encoder_settings.name)
-            self.main.widgets.convert_to.setCurrentIndex(
-                list(self.app.fastflix.encoders.keys()).index(
-                    self.app.fastflix.current_video.video_settings.video_encoder_settings.name
-                )
-            )
+            encoder_name = self.app.fastflix.current_video.video_settings.video_encoder_settings.name
+            if encoder_name not in self.app.fastflix.encoders:
+                logger.warning(f"Encoder '{encoder_name}' not found during reload, skipping")
+                return
+            self.change_conversion(encoder_name)
+            encoder_keys = list(self.app.fastflix.encoders.keys())
+            self.main.widgets.convert_to.setCurrentIndex(encoder_keys.index(encoder_name))
         finally:
             self.reloading = False
         try:

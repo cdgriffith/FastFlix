@@ -25,6 +25,7 @@ class StatusPanel(QtWidgets.QWidget):
     bitrate = QtCore.Signal(str)
     nvencc_signal = QtCore.Signal(str)
     tick_signal = QtCore.Signal()
+    progress_percent = QtCore.Signal(int)
 
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
@@ -110,6 +111,8 @@ class StatusPanel(QtWidgets.QWidget):
             if not speed:
                 self.eta_label.setText(f"{t('Time Left')}: N/A")
             self.eta_label.setText(f"{t('Time Left')}: {timedelta_to_str(data)}")
+            if length:
+                self.progress_percent.emit(min(100, int(time_passed / length * 100)))
 
     def update_bitrate(self, bitrate):
         if not bitrate or bitrate.strip() == "N/A":
@@ -135,6 +138,14 @@ class StatusPanel(QtWidgets.QWidget):
         Example line:
         [53.1%] 19/35 frames: 150.57 fps, 5010 kb/s, remain 0:01:55, GPU 10%, VE 96%, VD 42%, est out size 920.6MB
         """
+        # Parse percentage from start of line like [53.1%]
+        if raw_line.startswith("[") and "%" in raw_line:
+            try:
+                pct_str = raw_line.split("]")[0].lstrip("[").rstrip("%")
+                self.progress_percent.emit(min(100, int(float(pct_str))))
+            except (ValueError, IndexError):
+                pass
+
         for section in raw_line.split(","):
             section = section.strip()
             if section.startswith("remain"):

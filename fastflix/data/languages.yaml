@@ -12747,3 +12747,63 @@ Copy Dolby Vision RPU metadata from input file:
   ukr: Скопіюйте метадані Dolby Vision RPU з вхідного файлу
   kor: 입력 파일에서 Dolby Vision RPU 메타데이터 복사하기
   ron: Copierea metadatelor Dolby Vision RPU din fișierul de intrare
+All conversions complete:
+  eng: All conversions complete
+  deu: Alle Konvertierungen abgeschlossen
+  fra: Toutes les conversions sont terminées
+  ita: Tutte le conversioni sono state completate
+  spa: Todas las conversiones completadas
+  jpn: すべてのコンバージョンが完了
+  rus: Все преобразования завершены
+  por: Todas as conversões concluídas
+  swe: Alla konverteringar slutförda
+  pol: Wszystkie konwersje zakończone
+  chs: 完成所有转换
+  ukr: Усі перетворення завершено
+  kor: 모든 전환 완료
+  ron: Toate conversiile sunt finalizate
+Encoding:
+  eng: Encoding
+  deu: Kodierung
+  fra: Encodage
+  ita: Codifica
+  spa: Codificación
+  jpn: エンコーディング
+  rus: Кодирование
+  por: Codificação
+  swe: Kodning
+  pol: Kodowanie
+  chs: 编码
+  ukr: Кодування
+  kor: 인코딩
+  ron: Codificare
+Complete:
+  eng: Complete
+  deu: Vollständig
+  fra: Compléter
+  ita: Completo
+  spa: Complete
+  jpn: 完全
+  rus: Полный
+  por: Completo
+  swe: Komplett
+  pol: Kompletny
+  chs: 完整
+  ukr: Завершено
+  kor: 완료
+  ron: Completați
+Ready:
+  eng: Ready
+  deu: Bereit
+  fra: Prêt
+  ita: Pronto
+  spa: Listo
+  jpn: 準備完了
+  rus: Готовые
+  por: Pronto
+  swe: Redo
+  pol: Gotowy
+  chs: 准备就绪
+  ukr: Готово.
+  kor: 준비
+  ron: Gata

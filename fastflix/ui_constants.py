@@ -51,6 +51,7 @@ class BaseHeights:
     SPACER_TINY: int = 2
     SPACER_SMALL: int = 4
     BUTTON_SIZE: int = 22
+    STATUS_BAR: int = 28
 
 
 @dataclass(frozen=True, slots=True)

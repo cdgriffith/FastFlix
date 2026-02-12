@@ -141,13 +141,11 @@ class TestCloseEventHandling:
 class TestWidgetParentAssignment:
     """Verify widgets are created with proper parent assignment."""
 
-    def test_progress_bar_is_toplevel_widget(self):
-        """ProgressBar should work as a top-level widget (None parent)."""
-        # This is intentional - ProgressBar is a splash screen
-        from fastflix.widgets.progress_bar import ProgressBar
+    def test_status_bar_can_be_imported(self):
+        """StatusBarWidget should be importable."""
+        from fastflix.widgets.status_bar import StatusBarWidget
 
-        # Just verify the class can be imported without errors
-        assert ProgressBar is not None
+        assert StatusBarWidget is not None
 
 
 class TestSignalDisconnection:

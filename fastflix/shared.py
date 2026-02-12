@@ -123,7 +123,6 @@ class MyMessageBox(QtWidgets.QMessageBox):
 
 def message(msg, title=None, parent=None):
     sm = QtWidgets.QMessageBox(parent)
-    sm.setStyleSheet("font-size: 14px")
     sm.setText(msg)
     if title:
         sm.setWindowTitle(title)
@@ -134,7 +133,6 @@ def message(msg, title=None, parent=None):
 
 def error_message(msg, details=None, traceback=False, title=None, parent=None):
     em = MyMessageBox(parent)
-    em.setStyleSheet("font-size: 14px")
     em.setText(msg)
     em.setWindowIcon(QtGui.QIcon(my_data))
     if title:
@@ -151,7 +149,6 @@ def error_message(msg, details=None, traceback=False, title=None, parent=None):
 
 def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_action=None, no_action=None, parent=None):
     sm = QtWidgets.QMessageBox(parent)
-    sm.setStyleSheet("font-size: 14px")
     sm.setWindowTitle(t(title))
     sm.setText(msg)
     sm.addButton(yes_text, QtWidgets.QMessageBox.YesRole)

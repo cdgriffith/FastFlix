@@ -2,7 +2,10 @@
 
 ## Version 6.1.0
 
+* Adding bottom status bar with animated icon showing encoding state, progress bar, and status messages
+* Adding startup tasks (FFmpeg config, GPU detect, HDR10+ download) running through the status bar with main window visible
 * Adding Terms and Agreements dialog shown on first startup requiring user acceptance before proceeding
+* Fixing #716 Maximize button not working (thanks to roxerqermik and 19Battlestar65)
 * Fixing #349 NVEncC audio conversion losing multichannel layout for EAC3 (thanks to Wontell)
 * Fixing #384 Remove HDR leaving Dolby Vision metadata traces in Rigaya encoder output (thanks to end2endzone)
 * Fixing #511 UI labels and buttons truncated in non-English translations by auto-shrinking text to fit (thanks to PegHorse)

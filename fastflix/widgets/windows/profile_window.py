@@ -459,12 +459,11 @@ class ProfileWindow(QtWidgets.QWidget):
 
         self.encoder = x265Settings(crf=18)
 
-        theme = "QPushButton{ padding: 0 10px; font-size: 14px;  }"
+        theme = "QPushButton{ padding: 0 10px; }"
         if self.app.fastflix.config.theme in ("dark", "onyx"):
             theme = """
             QPushButton {
               padding: 0 10px;
-              font-size: 14px;
               background-color: #4f4f4f;
               border: none;
               border-radius: 10px;

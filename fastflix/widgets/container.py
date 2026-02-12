@@ -23,7 +23,6 @@ from fastflix.shared import (
     clean_logs,
     error_message,
     latest_fastflix,
-    message,
     yes_no_message,
     parse_filesafe_datetime,
     is_date_older_than_7days,
@@ -36,8 +35,8 @@ from fastflix.widgets.changes import Changes
 # from fastflix.widgets.logs import Logs
 from fastflix.widgets.main import Main
 from fastflix.widgets.windows.profile_window import ProfileWindow
-from fastflix.widgets.progress_bar import ProgressBar, Task
 from fastflix.widgets.settings import Settings
+from fastflix.widgets.status_bar import StatusBarWidget, STATE_COMPLETE, STATE_ERROR
 from fastflix.widgets.windows.concat import ConcatWindow
 from fastflix.widgets.windows.multiple_files import MultipleFilesWindow
 
@@ -55,7 +54,6 @@ class Container(QtWidgets.QMainWindow):
     def __init__(self, app: FastFlixApp, **kwargs):
         super().__init__(None)
         self.app = app
-        self.pb = None
         self.profile_window = None
 
         self.setMinimumSize(self.MIN_WIDTH, self.MIN_HEIGHT)
@@ -94,7 +92,18 @@ class Container(QtWidgets.QMainWindow):
 
         self.main = Main(self, app)
 
-        self.setCentralWidget(self.main)
+        self.status_bar = StatusBarWidget(self.app, parent=self)
+
+        # Wrap Main + StatusBar in a vertical layout as the central widget
+        central = QtWidgets.QWidget(self)
+        central_layout = QtWidgets.QVBoxLayout(central)
+        central_layout.setContentsMargins(0, 0, 0, 0)
+        central_layout.setSpacing(0)
+        central_layout.addWidget(self.main)
+        central_layout.addWidget(self.status_bar)
+        central.setLayout(central_layout)
+
+        self.setCentralWidget(central)
         self.setBaseSize(QtCore.QSize(self.BASE_WIDTH, self.BASE_HEIGHT))
         # Set initial window size to base dimensions
         self.resize(self.BASE_WIDTH, self.BASE_HEIGHT)
@@ -102,6 +111,11 @@ class Container(QtWidgets.QMainWindow):
         self.setWindowIcon(self.icon)
         self._constrain_to_screen()
         self.main.set_profile()
+
+        # Connect encoding signals to status bar
+        self.main.encoding_status_signal.connect(lambda msg, state: self.status_bar.set_state(state, msg))
+        self.main.encoding_progress_signal.connect(self.status_bar.set_progress)
+        self.main.video_options.status.progress_percent.connect(self.status_bar.set_progress)
 
         self._update_scaled_styles()
         # self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
@@ -117,13 +131,15 @@ class Container(QtWidgets.QMainWindow):
         if screen is None:
             return
         available = screen.availableGeometry()
-        # Set maximum size to screen available geometry with some margin
-        max_width = available.width() - 20
-        max_height = available.height() - 20
-        self.setMaximumSize(max_width, max_height)
+        # Clamp current size to fit screen if needed, but don't set a maximum
+        # so the window can still be maximized via the title bar button
+        if self.width() > available.width() or self.height() > available.height():
+            self.resize(min(self.width(), available.width()), min(self.height(), available.height()))
 
     def ensure_window_in_bounds(self):
         """Public method to ensure window stays within screen bounds after content changes."""
+        if self.isMaximized() or self.isFullScreen():
+            return
         self._constrain_to_screen()
         screen = QtGui.QGuiApplication.primaryScreen()
         if screen is None:
@@ -155,9 +171,14 @@ class Container(QtWidgets.QMainWindow):
     def resizeEvent(self, event: QtGui.QResizeEvent) -> None:
         """Handle resize events to ensure window stays within screen bounds and update scaling."""
         super().resizeEvent(event)
-        # Update scale factors based on new size
+
+        # Always update scale factors and styles so the UI adapts to any window size
         scaler.calculate_factors(event.size().width(), event.size().height())
         self._update_scaled_styles()
+
+        # Don't adjust position when maximized/fullscreen — the OS manages geometry
+        if self.isMaximized() or self.isFullScreen():
+            return
 
         screen = QtGui.QGuiApplication.primaryScreen()
         if screen is None:
@@ -211,11 +232,10 @@ class Container(QtWidgets.QMainWindow):
 
     def closeEvent(self, a0: QtGui.QCloseEvent) -> None:
         self.app.fastflix.shutting_down = True
-        if self.pb:
-            try:
-                self.pb.stop_signal.emit()
-            except Exception:
-                pass
+        try:
+            self.status_bar.cancel()
+        except Exception:
+            pass
         if self.app.fastflix.currently_encoding:
             sm = QtWidgets.QMessageBox()
             sm.setText(f"<h2>{t('There is a conversion in process!')}</h2>")
@@ -251,6 +271,7 @@ class Container(QtWidgets.QMainWindow):
 
         if self.app.fastflix.config.clean_old_logs:
             self.clean_old_logs(show_errors=False)
+        self.status_bar.cleanup()
         self.main.close(from_container=True)
         super(Container, self).closeEvent(a0)
 
@@ -444,47 +465,56 @@ class Container(QtWidgets.QMainWindow):
         self.download_ffmpeg(ffmpeg_version="stable")
 
     def download_ffmpeg(self, ffmpeg_version="latest"):
+        from fastflix.widgets.status_bar import Task as SBTask
+
         ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True)) / "bin"
         ffmpeg = ffmpeg_folder / "ffmpeg.exe"
         ffprobe = ffmpeg_folder / "ffprobe.exe"
         try:
-            self.pb = ProgressBar(
-                self.app,
-                [Task(t("Downloading FFmpeg"), grab_stable_ffmpeg if ffmpeg_version == "stable" else latest_ffmpeg)],
+            self.status_bar.run_tasks(
+                [SBTask(t("Downloading FFmpeg"), grab_stable_ffmpeg if ffmpeg_version == "stable" else latest_ffmpeg)],
                 signal_task=True,
                 can_cancel=True,
+                persist_complete=True,
             )
         except FastFlixInternalException:
             pass
         except Exception as err:
-            message(f"{t('Could not download the newest FFmpeg')}: {err}")
+            self.status_bar.set_state(STATE_ERROR, f"{t('Could not download the newest FFmpeg')}: {err}")
         else:
             if not ffmpeg.exists() or not ffprobe.exists():
-                message(f"{t('Could not locate the downloaded files at')} {ffmpeg_folder}!")
+                self.status_bar.set_state(
+                    STATE_ERROR, f"{t('Could not locate the downloaded files at')} {ffmpeg_folder}!"
+                )
             else:
                 self.app.fastflix.config.ffmpeg = ffmpeg
                 self.app.fastflix.config.ffprobe = ffprobe
-        self.pb = None
+                self.status_bar.set_state(STATE_COMPLETE, t("FFmpeg downloaded successfully"))
 
     def download_rigaya(self):
+        from fastflix.widgets.status_bar import Task as SBTask
+
         try:
-            self.pb = ProgressBar(
-                self.app,
-                [Task(t("Updating Rigaya's encoders"), update_rigaya_encoders)],
+            self.status_bar.run_tasks(
+                [SBTask(t("Updating Rigaya's encoders"), update_rigaya_encoders)],
                 signal_task=True,
                 can_cancel=True,
+                persist_complete=True,
             )
         except Exception:
             error_message(t("Could not update Rigaya's encoders"), traceback=True)
-        self.pb = None
+        else:
+            self.status_bar.set_state(STATE_COMPLETE, t("Rigaya's encoders updated"))
 
     def download_hdr10plus_tool(self):
+        from fastflix.widgets.status_bar import Task as SBTask
+
         try:
-            self.pb = ProgressBar(
-                self.app,
-                [Task(t("Downloading HDR10+ Tool"), download_hdr10plus_tool)],
+            self.status_bar.run_tasks(
+                [SBTask(t("Downloading HDR10+ Tool"), download_hdr10plus_tool)],
                 signal_task=True,
                 can_cancel=True,
+                persist_complete=True,
             )
         except Exception:
             error_message(t("Could not download HDR10+ tool"), traceback=True)
@@ -495,18 +525,23 @@ class Container(QtWidgets.QMainWindow):
             if result:
                 self.app.fastflix.config.hdr10plus_parser = result
                 self.app.fastflix.config.save()
-                message(f"{t('HDR10+ tool has been downloaded to')} {result}")
+                self.status_bar.set_state(STATE_COMPLETE, f"{t('HDR10+ tool has been downloaded to')} {result}")
             else:
                 error_message(t("Could not locate the downloaded HDR10+ tool"))
-        self.pb = None
 
     def clean_old_logs(self, show_errors=True):
+        from fastflix.widgets.status_bar import Task as SBTask
+
         try:
-            self.pb = ProgressBar(self.app, [Task(t("Clean Old Logs"), clean_logs)], signal_task=True, can_cancel=False)
+            self.status_bar.run_tasks(
+                [SBTask(t("Clean Old Logs"), clean_logs)],
+                signal_task=True,
+                can_cancel=False,
+                persist_complete=True,
+            )
         except Exception:
             if show_errors:
                 error_message(t("Could not compress old logs"), traceback=True)
-        self.pb = None
 
     def set_stay_top(self):
         if self.app.fastflix.config.stay_on_top:

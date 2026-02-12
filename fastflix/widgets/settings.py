@@ -389,7 +389,7 @@ class Settings(QtWidgets.QWidget):
         for det_row, (detected, name, description) in enumerate(programs):
             icon = "\u2714" if detected else "\u2718"
             color = "green" if detected else "red"
-            status_label = QtWidgets.QLabel(f'<span style="color: {color}; font-size: 14px;">{icon}</span>')
+            status_label = QtWidgets.QLabel(f'<span style="color: {color};">{icon}</span>')
             detected_layout.addWidget(status_label, det_row, 0)
             detected_layout.addWidget(QtWidgets.QLabel(f"<b>{name}</b>"), det_row, 1)
             detected_layout.addWidget(QtWidgets.QLabel(description), det_row, 2)
@@ -420,8 +420,11 @@ class Settings(QtWidgets.QWidget):
         new_ffprobe = Path(self.ffprobe_path.text())
         new_work_dir = Path(self.work_dir.text())
         restart_needed = False
+        encoder_reload_needed = False
         try:
             updated_ffmpeg = self.update_ffmpeg(new_ffmpeg)
+            if updated_ffmpeg:
+                encoder_reload_needed = True
             self.update_ffprobe(new_ffprobe)
         except FastFlixInternalException:
             return
@@ -462,27 +465,27 @@ class Settings(QtWidgets.QWidget):
 
         new_nvencc = Path(self.nvencc_path.text()) if self.nvencc_path.text().strip() else None
         if str(self.app.fastflix.config.nvencc) != str(new_nvencc):
-            restart_needed = True
+            encoder_reload_needed = True
         self.app.fastflix.config.nvencc = new_nvencc
 
         new_qsvencc = Path(self.qsvenc_path.text()) if self.qsvenc_path.text().strip() else None
         if str(self.app.fastflix.config.qsvencc) != str(new_qsvencc):
-            restart_needed = True
+            encoder_reload_needed = True
         self.app.fastflix.config.qsvencc = new_qsvencc
 
         new_vce = Path(self.vceenc_path.text()) if self.vceenc_path.text().strip() else None
         if str(self.app.fastflix.config.vceencc) != str(new_vce):
-            restart_needed = True
+            encoder_reload_needed = True
         self.app.fastflix.config.vceencc = new_vce
 
         new_hdr10_parser = Path(self.hdr10_parser_path.text()) if self.hdr10_parser_path.text().strip() else None
         if str(self.app.fastflix.config.hdr10plus_parser) != str(new_hdr10_parser):
-            restart_needed = True
+            encoder_reload_needed = True
         self.app.fastflix.config.hdr10plus_parser = new_hdr10_parser
 
         new_gifski = Path(self.gifski_path.text()) if self.gifski_path.text().strip() else None
         if str(self.app.fastflix.config.gifski) != str(new_gifski):
-            restart_needed = True
+            encoder_reload_needed = True
         self.app.fastflix.config.gifski = new_gifski
 
         new_output_path = None
@@ -506,9 +509,9 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.disable_deinterlace_check = self.disable_deinterlace_button.isChecked()
         self.app.fastflix.config.use_keyframes_for_preview = self.use_keyframes_for_preview.isChecked()
 
-        self.main.config_update()
+        self.main.config_update(encoder_reload_needed=encoder_reload_needed)
         self.app.fastflix.config.save()
-        if updated_ffmpeg or old_lang != self.app.fastflix.config.language or restart_needed:
+        if old_lang != self.app.fastflix.config.language or restart_needed:
             error_message(t("Please restart FastFlix to apply settings"), parent=self)
         self.close()
 

@@ -15,8 +15,9 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import ask_for_ffmpeg, grab_stable_ffmpeg, download_hdr10plus_tool
 from fastflix.resources import main_icon, breeze_styles_path
 from fastflix.shared import file_date, message, latest_fastflix, DEVMODE, yes_no_message
+from fastflix.ui_constants import FONTS
 from fastflix.widgets.container import Container
-from fastflix.widgets.progress_bar import ProgressBar, Task
+from fastflix.widgets.status_bar import Task, STATE_IDLE, STATE_ERROR
 from fastflix.gpu_detect import automatic_rigaya_download
 
 logger = logging.getLogger("fastflix")
@@ -44,7 +45,7 @@ def create_app(enable_scaling):
     available_fonts = QtGui.QFontDatabase().families()
     font_preference = ["Roboto", "Segoe UI", "Ubuntu", "Open Sans", "Sans Serif"]
     selected_font = next((f for f in font_preference if f in available_fonts), "Sans Serif")
-    my_font = QtGui.QFont(selected_font, 9)
+    my_font = QtGui.QFont(selected_font, FONTS.SMALL)
     main_app.setFont(my_font)
     icon = QtGui.QIcon()
     icon.addFile(main_icon, QtCore.QSize(16, 16))
@@ -203,21 +204,17 @@ def app_setup(
             f"{app.fastflix.config.config_path}",
             title="Upgraded",
         )
+    missing_ff = False
     try:
         app.fastflix.config.load(portable_mode=portable_mode)
     except MissingFF as err:
         if reusables.win_based and ask_for_ffmpeg():
-            try:
-                ProgressBar(app, [Task(t("Downloading FFmpeg"), grab_stable_ffmpeg)], signal_task=True)
-                app.fastflix.config.load()
-            except Exception as err:
-                logger.exception(str(err))
-                sys.exit(1)
+            # User wants to download FFmpeg — will be handled after Container is shown
+            missing_ff = "download"
         else:
-            logger.error(f"Could not find {err} location, please manually set in {app.fastflix.config.config_path}")
-            sys.exit(1)
+            missing_ff = str(err)
+        logger.warning(f"FFmpeg not found during config load: {err}")
     except Exception:
-        # TODO give edit / delete options
         logger.exception(t("Could not load config file!"))
         sys.exit(1)
 
@@ -251,6 +248,54 @@ def app_setup(
 
     logger.setLevel(app.fastflix.config.logging_level)
 
+    # Initialize empty encoder/audio lists so Container can be created before startup tasks
+    if app.fastflix.encoders is None:
+        app.fastflix.encoders = {}
+    if app.fastflix.audio_encoders is None:
+        app.fastflix.audio_encoders = []
+
+    # Create and show Container immediately (UI starts disabled via Main.__init__)
+    container = Container(app)
+    container.show()
+
+    screen_geometry = QtGui.QGuiApplication.primaryScreen().availableGeometry()
+    container.move(screen_geometry.center() - container.rect().center())
+
+    # Disable entire window during startup tasks
+    container.setEnabled(False)
+    app.processEvents()
+
+    # Handle missing FFmpeg
+    if missing_ff:
+        if missing_ff == "download":
+            # Download FFmpeg through status bar
+            try:
+                container.status_bar.run_tasks(
+                    [Task(t("Downloading FFmpeg"), grab_stable_ffmpeg)],
+                    signal_task=True,
+                    persist_complete=True,
+                )
+                app.fastflix.config.load()
+            except Exception as err:
+                logger.exception(str(err))
+                container.status_bar.set_state(
+                    STATE_ERROR,
+                    t("FFmpeg not found") + " — " + t("configure in Settings") + " (Ctrl+S)",
+                )
+                container.setEnabled(True)
+                return app
+        else:
+            logger.error(
+                f"Could not find {missing_ff} location, please manually set in {app.fastflix.config.config_path}"
+            )
+            container.status_bar.set_state(
+                STATE_ERROR,
+                t("FFmpeg not found") + " — " + t("configure in Settings") + " (Ctrl+S)",
+            )
+            container.setEnabled(True)
+            return app
+
+    # GPU detect and HDR10+ download (Windows only, with user permission dialogs)
     if platform.system() == "Windows":
         if app.fastflix.config.auto_gpu_check is None:
             app.fastflix.config.auto_gpu_check = yes_no_message(
@@ -260,9 +305,14 @@ def app_setup(
                 title="Allow Optional Downloads",
             )
         if app.fastflix.config.auto_gpu_check:
-            ProgressBar(
-                app, [Task(name=t("Detect GPUs"), command=automatic_rigaya_download)], signal_task=True, can_cancel=True
-            )
+            try:
+                container.status_bar.run_tasks(
+                    [Task(name=t("Detect GPUs"), command=automatic_rigaya_download)],
+                    signal_task=True,
+                    can_cancel=True,
+                )
+            except Exception:
+                logger.exception("Failed to detect GPUs")
 
         if app.fastflix.config.auto_hdr10plus_check is None and not app.fastflix.config.hdr10plus_parser:
             app.fastflix.config.auto_hdr10plus_check = yes_no_message(
@@ -273,8 +323,7 @@ def app_setup(
             )
             if app.fastflix.config.auto_hdr10plus_check:
                 try:
-                    ProgressBar(
-                        app,
+                    container.status_bar.run_tasks(
                         [Task(t("Downloading HDR10+ Tool"), download_hdr10plus_tool)],
                         signal_task=True,
                         can_cancel=True,
@@ -287,6 +336,7 @@ def app_setup(
 
     app.fastflix.config.save()
 
+    # Run startup tasks (FFmpeg config, encoder init) through status bar
     startup_tasks = [
         Task(t("Gather FFmpeg version"), ffmpeg_configuration),
         Task(t("Gather FFprobe version"), ffprobe_configuration),
@@ -296,17 +346,19 @@ def app_setup(
     ]
 
     try:
-        ProgressBar(app, startup_tasks)
+        container.status_bar.run_tasks(startup_tasks, persist_complete=True)
     except Exception:
         logger.exception(f"{t('Could not start FastFlix')}!")
-        sys.exit(1)
+        container.status_bar.set_state(STATE_ERROR, t("Could not start FastFlix"))
+        container.setEnabled(True)
+        return app
 
-    container = Container(app)
-    container.show()
+    # Encoders are now populated — initialize the encoder UI
+    container.main.init_encoders_ui()
 
-    # container.move(QtGui.QGuiApplication.primaryScreen().availableGeometry().center() - container.rect().center())
-    screen_geometry = QtGui.QGuiApplication.primaryScreen().availableGeometry()
-    container.move(screen_geometry.center() - container.rect().center())
+    # Re-enable UI after startup tasks complete
+    container.setEnabled(True)
+    container.status_bar.set_state(STATE_IDLE)
 
     if not app.fastflix.config.disable_version_check:
         QtCore.QTimer.singleShot(500, lambda: latest_fastflix(app=app, show_new_dialog=False))
