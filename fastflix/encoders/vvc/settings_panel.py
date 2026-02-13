@@ -297,6 +297,43 @@ class VVC(SettingPanel):
         settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
+    def _set_period_from_value(self, value):
+        """Set period combo box from model value (None=Auto, else int)."""
+        if value is None:
+            self.widgets.period.setCurrentIndex(0)  # "Auto"
+            return
+        text = str(value)
+        for i in range(self.widgets.period.count()):
+            if self.widgets.period.itemText(i) == text:
+                self.widgets.period.setCurrentIndex(i)
+                return
+        self.widgets.period.setCurrentIndex(0)
+
+    def _set_threads_from_value(self, value):
+        """Set threads combo box from model value (0=Auto, else int)."""
+        if value == 0:
+            self.widgets.threads.setCurrentIndex(0)  # "Auto"
+            return
+        text = str(value)
+        for i in range(self.widgets.threads.count()):
+            if self.widgets.threads.itemText(i) == text:
+                self.widgets.threads.setCurrentIndex(i)
+                return
+        self.widgets.threads.setCurrentIndex(0)
+
+    def update_profile(self):
+        period = self.app.fastflix.config.encoder_opt(self.profile_name, "period")
+        self._set_period_from_value(period)
+        threads = self.app.fastflix.config.encoder_opt(self.profile_name, "threads")
+        self._set_threads_from_value(threads)
+        super().update_profile()
+
+    def reload(self):
+        super().reload()
+        settings = self.app.fastflix.current_video.video_settings.video_encoder_settings
+        self._set_period_from_value(settings.period)
+        self._set_threads_from_value(settings.threads)
+
     def set_mode(self, x):
         self.mode = x.text()
         self.main.build_commands()

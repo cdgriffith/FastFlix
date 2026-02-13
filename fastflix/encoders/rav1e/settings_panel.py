@@ -232,7 +232,10 @@ class RAV1E(SettingPanel):
             except (ValueError, TypeError):
                 photon_noise = 0
         else:
-            photon_noise = int(photon_noise_text.split(" ")[0])
+            try:
+                photon_noise = int(photon_noise_text.split(" ")[0])
+            except (ValueError, TypeError):
+                photon_noise = 0
 
         rav1e_params_text = self.widgets.rav1e_params.text().strip()
 
@@ -255,6 +258,32 @@ class RAV1E(SettingPanel):
         settings.qp = q_value if encode_type == "qp" else None
         settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
+
+    def _set_photon_noise_from_value(self, saved):
+        """Set photon noise combo box and custom field from an integer value."""
+        if not saved or str(saved) == "0":
+            self.widgets.photon_noise.setCurrentIndex(0)
+            return
+        matched = False
+        for i, opt in enumerate(photon_noise_options):
+            if opt.startswith(str(saved) + " "):
+                self.widgets.photon_noise.setCurrentIndex(i)
+                matched = True
+                break
+        if not matched:
+            self.widgets.photon_noise.setCurrentIndex(len(photon_noise_options) - 1)
+            self.widgets.custom_photon_noise.setText(str(saved))
+        self.photon_noise_update()
+
+    def update_profile(self):
+        saved = self.app.fastflix.config.encoder_opt(self.profile_name, "photon_noise")
+        self._set_photon_noise_from_value(saved)
+        super().update_profile()
+
+    def reload(self):
+        super().reload()
+        photon_noise = self.app.fastflix.current_video.video_settings.video_encoder_settings.photon_noise
+        self._set_photon_noise_from_value(photon_noise)
 
     def set_mode(self, x):
         self.mode = x.text()

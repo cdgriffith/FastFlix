@@ -8,7 +8,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dynamic = ["version"]
 dependencies = [
-    "platformdirs~=4.3",
+    "platformdirs~=4.7",
     "chardet>=5.1.0,<5.2.0",
     "colorama>=0.4,<1.0",
     "coloredlogs>=15.0,<16.0",
@@ -52,12 +52,12 @@ build-backend = "setuptools.build_meta"
 dev = [
     "pre-commit>=4.2.0",
     "pyinstaller>=6.13.0",
-    "pytest>=8.4.1",
-    "ruff>=0.12.1",
-    "types-requests>=2.32.4.20250611",
-    "types-setuptools>=80.9.0.20250529",
-    "typing-extensions>=4.14.0",
-    "wheel>=0.45.1",
+    "pytest>=9.0",
+    "ruff>=0.14",
+    "types-requests>=2.32",
+    "types-setuptools>=80.9",
+    "typing-extensions>=4.14",
+    "wheel>=0.45",
 ]
 
 [tool.setuptools.dynamic]

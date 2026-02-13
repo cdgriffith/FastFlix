@@ -11,6 +11,10 @@ from fastflix.models.fastflix import FastFlix
 from fastflix.models.video import Video, VideoSettings
 
 
+def pytest_configure(config):
+    config.addinivalue_line("markers", "local_only: mark test to run only locally (not on CI)")
+
+
 def create_fastflix_instance(
     encoder_settings: EncoderSettings, video_settings: Optional[VideoSettings] = None, hdr10_metadata: bool = False
 ):

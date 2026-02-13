@@ -289,7 +289,7 @@ class VCEENCC(VCEPanel):
             pa_activity_type=self.widgets.pa_activity_type.currentText(),
             pa_caq_strength=self.widgets.pa_caq_strength.currentText(),
             pa_initqpsc=self.widgets.pa_initqpsc.currentIndex() or None,
-            pa_lookahead=self.widgets.pa_initqpsc.currentIndex() or None,
+            pa_lookahead=self.widgets.pa_lookahead.currentIndex() or None,
             pa_fskip_maxqp=int(self.widgets.pa_fskip_maxqp.text() or 0) or None,
             pa_ltr=self.widgets.pa_ltr.isChecked(),
             pa_paq=self.widgets.pa_paq.currentText(),

@@ -12807,3 +12807,1143 @@ Ready:
   ukr: Готово.
   kor: 준비
   ron: Gata
+Visual Crop:
+  eng: Visual Crop
+  deu: Visueller Ausschnitt
+  fra: Recadrage visuel
+  ita: Ritaglio visivo
+  spa: Recorte visual
+  jpn: ビジュアル・クロップ
+  rus: Визуальное обрезание
+  por: Corte visual
+  swe: Visuell beskärning
+  pol: Visual Crop
+  chs: 视觉裁剪
+  ukr: Візуальне обрізання
+  kor: 시각적 자르기
+  ron: Crop vizual
+Preview:
+  eng: Preview
+  deu: Vorschau
+  fra: Avant-première
+  ita: Anteprima
+  spa: Vista previa
+  jpn: プレビュー
+  rus: Предварительный просмотр
+  por: Pré-visualização
+  swe: Förhandsgranskning
+  pol: Podgląd
+  chs: 预览
+  ukr: Попередній перегляд
+  kor: 미리 보기
+  ron: Previzualizare
+Set Start Time:
+  eng: Set Start Time
+  deu: Startzeit einstellen
+  fra: Définir l'heure de début
+  ita: Impostare l'ora di inizio
+  spa: Hora de inicio
+  jpn: 開始時間の設定
+  rus: Установить время начала
+  por: Definir hora de início
+  swe: Ställ in starttid
+  pol: Ustaw czas rozpoczęcia
+  chs: 设置开始时间
+  ukr: Встановити час запуску
+  kor: 시작 시간 설정
+  ron: Setați ora de începere
+Set End Time:
+  eng: Set End Time
+  deu: Endzeit einstellen
+  fra: Définir l'heure de fin
+  ita: Impostare l'ora di fine
+  spa: Fijar hora de finalización
+  jpn: 終了時間の設定
+  rus: Установить время окончания
+  por: Definir hora de fim
+  swe: Ställ in sluttid
+  pol: Ustaw czas zakończenia
+  chs: 设置结束时间
+  ukr: Встановити час завершення
+  kor: 종료 시간 설정
+  ron: Setați ora de sfârșit
+Close:
+  eng: Close
+  deu: Schließen Sie
+  fra: Fermer
+  ita: Chiudere
+  spa: Cerrar
+  jpn: 閉じる
+  rus: Закрыть
+  por: Fechar
+  swe: Nära
+  pol: Zamknij
+  chs: 关闭
+  ukr: Закрити
+  kor: 닫기
+  ron: Închidere
+Data & Attachments:
+  eng: Data & Attachments
+  deu: Daten & Anhänge
+  fra: Données et pièces jointes
+  ita: Dati e allegati
+  spa: Datos y anexos
+  jpn: データと添付ファイル
+  rus: Данные и вложения
+  por: Dados e anexos
+  swe: Data och bilagor
+  pol: Dane i załączniki
+  chs: 数据和附件
+  ukr: Дані та додатки
+  kor: 데이터 및 첨부 파일
+  ron: Date și anexe
+Data:
+  eng: Data
+  deu: Daten
+  fra: Données
+  ita: Dati
+  spa: Datos
+  jpn: データ
+  rus: Данные
+  por: Dados
+  swe: Uppgifter
+  pol: Dane
+  chs: 数据
+  ukr: Дані
+  kor: 데이터
+  ron: Date
+Attachment:
+  eng: Attachment
+  deu: Anlage
+  fra: Pièce jointe
+  ita: Allegato
+  spa: Adjunto
+  jpn: アタッチメント
+  rus: Вложение
+  por: Anexo
+  swe: Bilaga
+  pol: Załącznik
+  chs: 附件
+  ukr: Вкладення
+  kor: 첨부 파일
+  ron: Atașament
+Attachment streams are not supported in this output format:
+  eng: Attachment streams are not supported in this output format
+  deu: Attachment Streams werden in diesem Ausgabeformat nicht unterstützt
+  fra: Les flux de pièces jointes ne sont pas pris en charge dans ce format de sortie.
+  ita: I flussi di allegati non sono supportati in questo formato di output.
+  spa: Este formato de salida no admite flujos adjuntos.
+  jpn: この出力形式では、添付ストリームはサポートされていません。
+  rus: Потоки вложений не поддерживаются в этом формате вывода
+  por: Os fluxos de anexos não são suportados neste formato de saída
+  swe: Attachment-strömmar stöds inte i detta utdataformat
+  pol: Strumienie załączników nie są obsługiwane w tym formacie wyjściowym
+  chs: 此输出格式不支持附件流
+  ukr: Потоки вкладених файлів не підтримуються у цьому форматі виводу
+  kor: 첨부 파일 스트림은 이 출력 형식에서 지원되지 않습니다.
+  ron: Fluxurile atașate nu sunt acceptate în acest format de ieșire
+Auto-detect external subtitle files:
+  eng: Auto-detect external subtitle files
+  deu: Automatische Erkennung von externen Untertiteldateien
+  fra: Détection automatique des fichiers de sous-titres externes
+  ita: Rilevamento automatico dei file di sottotitoli esterni
+  spa: Detección automática de archivos de subtítulos externos
+  jpn: 外部字幕ファイルの自動検出
+  rus: Автоматическое определение внешних файлов субтитров
+  por: Deteção automática de ficheiros de legendas externos
+  swe: Automatisk detektering av externa undertextfiler
+  pol: Automatyczne wykrywanie zewnętrznych plików napisów
+  chs: 自动检测外部字幕文件
+  ukr: Автоматичне визначення зовнішніх файлів субтитрів
+  kor: 외부 자막 파일 자동 감지
+  ron: Detectarea automată a fișierelor externe de subtitrare
+Autocrop tried to crop too much:
+  eng: Autocrop tried to crop too much
+  deu: Autocrop hat versucht, zu viel zu beschneiden
+  fra: Autocrop a essayé de trop recadrer
+  ita: L'autocrop ha cercato di ritagliare troppo
+  spa: Autocrop intentó recortar demasiado
+  jpn: オートクロップが過剰にトリミングしようとした
+  rus: Автокроп пытался обрезать слишком много
+  por: O corte automático tentou cortar demasiado
+  swe: Autocrop försökte skörda för mycket
+  pol: Autocrop próbował przyciąć za dużo
+  chs: 自动裁剪试图裁剪太多
+  ukr: Автопосів намагався засіяти занадто багато
+  kor: 자동 자르기가 너무 많이 자르려고 했습니다.
+  ron: Autocrop a încercat să recolteze prea mult
+Bad image:
+  eng: Bad image
+  deu: Schlechtes Image
+  fra: Mauvaise image
+  ita: Immagine negativa
+  spa: Mala imagen
+  jpn: 悪いイメージ
+  rus: Плохое изображение
+  por: Má imagem
+  swe: Dålig image
+  pol: Zły wizerunek
+  chs: 形象不佳
+  ukr: Погане зображення
+  kor: 나쁜 이미지
+  ron: Imagine proastă
+Cannot reload encoders while encoding is in progress:
+  eng: Cannot reload encoders while encoding is in progress
+  deu: Kodierer können nicht neu geladen werden, während die Kodierung läuft
+  fra: Impossible de recharger les encodeurs lorsque l'encodage est en cours
+  ita: Impossibile ricaricare i codificatori mentre è in corso la codifica
+  spa: No se pueden recargar los codificadores mientras la codificación está en curso.
+  jpn: エンコード中にエンコーダをリロードできない
+  rus: Невозможно перезагрузить кодировщики во время выполнения кодирования
+  por: Não é possível recarregar os codificadores enquanto a codificação está a decorrer
+  swe: Kan inte ladda om kodare medan kodning pågår
+  pol: Nie można przeładować koderów, gdy kodowanie jest w toku
+  chs: 编码过程中无法重新加载编码器
+  ukr: Неможливо перезавантажити енкодери під час кодування
+  kor: 인코딩이 진행되는 동안 인코더를 다시 로드할 수 없습니다.
+  ron: Nu se pot reîncărca codificatoarele în timp ce codificarea este în curs
+Command:
+  eng: Command
+  deu: Befehl
+  fra: Commandement
+  ita: Comando
+  spa: Comando
+  jpn: コマンド
+  rus: Команда
+  por: Comando
+  swe: Kommando
+  pol: Polecenie
+  chs: 指挥
+  ukr: Командир.
+  kor: 명령
+  ron: Comanda
+Could not connect to GitHub to check for newer versions.:
+  eng: Could not connect to GitHub to check for newer versions.
+  deu: Es konnte keine Verbindung zu GitHub hergestellt werden, um nach neueren Versionen zu suchen.
+  fra: Impossible de se connecter à GitHub pour vérifier les nouvelles versions.
+  ita: Impossibile connettersi a GitHub per verificare la presenza di nuove versioni.
+  spa: No se ha podido conectar a GitHub para comprobar si hay versiones más recientes.
+  jpn: 新しいバージョンをチェックするためにGitHubに接続できませんでした。
+  rus: Не удалось подключиться к GitHub, чтобы проверить наличие новых версий.
+  por: Não foi possível conectar-se ao GitHub para verificar se há versões mais recentes.
+  swe: Det gick inte att ansluta till GitHub för att kontrollera om det finns nyare versioner.
+  pol: Nie można połączyć się z serwisem GitHub, aby sprawdzić dostępność nowszych wersji.
+  chs: 无法连接到 GitHub 以检查更新版本。
+  ukr: Не вдалося підключитися до GitHub, щоб перевірити наявність нових версій.
+  kor: 최신 버전을 확인하기 위해 GitHub에 연결할 수 없습니다.
+  ron: Nu s-a putut conecta la GitHub pentru a verifica dacă există versiuni mai noi.
+Could not connect to github to check for newer versions.:
+  eng: Could not connect to github to check for newer versions.
+  deu: Konnte keine Verbindung zu Github herstellen, um nach neueren Versionen zu suchen.
+  fra: Impossible de se connecter à github pour vérifier les nouvelles versions.
+  ita: Impossibile connettersi a github per verificare la presenza di nuove versioni.
+  spa: No se ha podido conectar a github para comprobar si hay versiones más recientes.
+  jpn: 新しいバージョンをチェックするためにgithubに接続できませんでした。
+  rus: Не удалось подключиться к github, чтобы проверить наличие новых версий.
+  por: Não foi possível conectar-se ao github para verificar se há versões mais recentes.
+  swe: Det gick inte att ansluta till github för att kontrollera om det finns nyare versioner.
+  pol: Nie można połączyć się z serwisem github, aby sprawdzić dostępność nowszych wersji.
+  chs: 无法连接到 github 以检查更新版本。
+  ukr: Не вдалося підключитися до github, щоб перевірити наявність нових версій.
+  kor: 최신 버전을 확인하기 위해 깃허브에 연결할 수 없습니다.
+  ron: Nu s-a putut conecta la github pentru a verifica dacă există versiuni mai noi.
+'Could not delete previous temp extract directory: ':
+  eng: 'Could not delete previous temp extract directory: '
+  deu: 'Das vorherige temporäre Extraktverzeichnis konnte nicht gelöscht werden:'
+  fra: "Impossible de supprimer le répertoire d'extraction temporaire précédent :"
+  ita: 'Impossibile eliminare la precedente directory di estrazione temporanea:'
+  spa: 'No se ha podido eliminar el directorio de extracción temporal anterior:'
+  jpn: 以前の一時解凍ディレクトリを削除できませんでした：
+  rus: 'Не удалось удалить предыдущий каталог временных распаковок:'
+  por: 'Não foi possível eliminar o anterior diretório de extração temporário:'
+  swe: 'Det gick inte att ta bort föregående temp extract-katalog:'
+  pol: 'Nie można usunąć poprzedniego katalogu temp extract:'
+  chs: 无法删除先前的临时解压缩目录：
+  ukr: 'Не вдалося видалити попередній каталог тимчасового розпакування:'
+  kor: '이전 임시 추출 디렉터리를 삭제할 수 없습니다:'
+  ron: 'Nu s-a putut șterge directorul anterior de extragere temporară:'
+Could not download HDR10+ tool:
+  eng: Could not download HDR10+ tool
+  deu: HDR10+ Tool konnte nicht heruntergeladen werden
+  fra: Impossible de télécharger l'outil HDR10
+  ita: Impossibile scaricare lo strumento HDR10+
+  spa: No se puede descargar la herramienta HDR10
+  jpn: HDR10+ツールをダウンロードできませんでした
+  rus: Не удалось загрузить инструмент HDR10+
+  por: Não foi possível descarregar a ferramenta HDR10
+  swe: Det gick inte att ladda ner HDR10+-verktyget
+  pol: Nie można pobrać narzędzia HDR10+
+  chs: 无法下载 HDR10+ 工具
+  ukr: Не вдалося завантажити інструмент HDR10+
+  kor: HDR10+ 도구를 다운로드할 수 없습니다.
+  ron: Nu s-a putut descărca instrumentul HDR10+
+Could not download the newest FFmpeg:
+  eng: Could not download the newest FFmpeg
+  deu: Konnte das neueste FFmpeg nicht herunterladen
+  fra: Impossible de télécharger la dernière version de FFmpeg
+  ita: Impossibile scaricare il nuovo FFmpeg
+  spa: No se ha podido descargar la última versión de FFmpeg
+  jpn: 最新のFFmpegをダウンロードできませんでした。
+  rus: Не удалось загрузить новейший FFmpeg
+  por: Não foi possível descarregar o FFmpeg mais recente
+  swe: Det gick inte att ladda ner den senaste FFmpeg
+  pol: Nie można pobrać najnowszej wersji FFmpeg
+  chs: 无法下载最新的 FFmpeg
+  ukr: Не вдалося завантажити найновіший FFmpeg
+  kor: 최신 FFmpeg를 다운로드할 수 없습니다.
+  ron: Nu s-a putut descărca cel mai nou FFmpeg
+Could not extract FFmpeg files from:
+  eng: Could not extract FFmpeg files from
+  deu: FFmpeg-Dateien konnten nicht extrahiert werden von
+  fra: Impossible d'extraire les fichiers FFmpeg de
+  ita: Impossibile estrarre i file FFmpeg da
+  spa: No se pueden extraer archivos FFmpeg de
+  jpn: からFFmpegファイルを抽出できませんでした。
+  rus: Не удалось извлечь файлы FFmpeg из
+  por: Não foi possível extrair ficheiros FFmpeg de
+  swe: Kunde inte extrahera FFmpeg-filer från
+  pol: Nie udało się wyodrębnić plików FFmpeg z
+  chs: 无法从以下文件中提取 FFmpeg 文件
+  ukr: Не вдалося розпакувати файли FFmpeg з
+  kor: 다음에서 FFmpeg 파일을 추출할 수 없습니다.
+  ron: Nu s-a putut extrage fișierele FFmpeg din
+Could not extract hdr10plus_tool files from:
+  eng: Could not extract hdr10plus_tool files from
+  deu: Die hdr10plus_tool-Dateien konnten nicht extrahiert werden aus
+  fra: Impossible d'extraire les fichiers hdr10plus_tool de
+  ita: Impossibile estrarre i file hdr10plus_tool da
+  spa: No se han podido extraer los archivos hdr10plus_tool de
+  jpn: からhdr10plus_toolファイルを展開できませんでした。
+  rus: Не удалось извлечь файлы hdr10plus_tool из
+  por: Não foi possível extrair os ficheiros hdr10plus_tool de
+  swe: Kunde inte extrahera hdr10plus_tool-filer från
+  pol: Nie udało się wyodrębnić plików hdr10plus_tool z pliku
+  chs: 无法从以下文件中提取 hdr10plus_tool 文件
+  ukr: Не вдалося розпакувати файли hdr10plus_tool з
+  kor: 다음에서 hdr10plus_tool 파일을 추출할 수 없습니다.
+  ron: Nu s-a putut extrage fișierele hdr10plus_tool din
+Could not find any matching FFmpeg expected patterns, please check:
+  eng: Could not find any matching FFmpeg expected patterns, please check
+  deu: Es konnten keine passenden FFmpeg-Muster gefunden werden, bitte überprüfen Sie
+  fra: Il n'a pas été possible de trouver des modèles correspondants aux attentes de FFmpeg, veuillez vérifier.
+  ita: Non è stato possibile trovare alcuno schema FFmpeg corrispondente, controllare
+  spa: No se ha encontrado ningún patrón esperado de FFmpeg que coincida, por favor, compruébelo
+  jpn: 一致するFFmpeg期待パターンが見つかりませんでした。
+  rus: Не удалось найти ни одного подходящего шаблона, ожидаемого FFmpeg, пожалуйста, проверьте
+  por: Não foi possível encontrar nenhum padrão esperado do FFmpeg, por favor verifique
+  swe: Kunde inte hitta några matchande FFmpeg förväntade mönster, vänligen kontrollera
+  pol: Nie znaleziono żadnych pasujących wzorców oczekiwanych przez FFmpeg, sprawdź
+  chs: 找不到任何匹配的 FFmpeg 预期模式，请检查
+  ukr: Не вдалося знайти відповідні шаблони FFmpeg, будь ласка, перевірте
+  kor: 일치하는 FFmpeg 예상 패턴을 찾을 수 없습니다.
+  ron: Nu a putut fi găsit niciun model FFmpeg așteptat, vă rugăm să verificați
+Could not find any matching expected patterns, please check:
+  eng: Could not find any matching expected patterns, please check
+  deu: Es konnten keine passenden erwarteten Muster gefunden werden, bitte überprüfen Sie
+  fra: Il n'a pas été possible de trouver les motifs attendus correspondants, veuillez vérifier.
+  ita: Non è stato possibile trovare alcun modello corrispondente a quello previsto, verificare
+  spa: No se ha encontrado ningún patrón que coincida con los esperados, por favor, compruébelo
+  jpn: 一致するパターンが見つかりませんでした。
+  rus: Не удалось найти ни одного подходящего шаблона, пожалуйста, проверьте
+  por: Não foi possível encontrar nenhum padrão esperado correspondente, verifique
+  swe: Kunde inte hitta några matchande förväntade mönster, vänligen kontrollera
+  pol: Nie znaleziono pasujących oczekiwanych wzorców, sprawdź
+  chs: 找不到匹配的预期模式，请检查
+  ukr: Не вдалося знайти відповідні шаблони, будь ласка, перевірте
+  kor: 예상 패턴과 일치하는 패턴을 찾을 수 없습니다.
+  ron: Nu a putut fi găsit niciun model așteptat corespunzător, vă rugăm să verificați
+Could not find language for:
+  eng: Could not find language for
+  deu: Konnte keine Sprache finden für
+  fra: Impossible de trouver la langue pour
+  ita: Impossibile trovare la lingua per
+  spa: No se ha podido encontrar el idioma para
+  jpn: の言語が見つからなかった。
+  rus: Не удалось найти язык для
+  por: Não foi possível encontrar a língua para
+  swe: Kunde inte hitta språk för
+  pol: Nie można znaleźć języka dla
+  chs: 找不到
+  ukr: Не могли знайти мову для
+  kor: 언어를 찾을 수 없습니다.
+  ron: Nu s-a putut găsi limba pentru
+Could not find the executable in the extracted files:
+  eng: Could not find the executable in the extracted files
+  deu: Die ausführbare Datei konnte in den extrahierten Dateien nicht gefunden werden
+  fra: Impossible de trouver l'exécutable dans les fichiers extraits
+  ita: Impossibile trovare l'eseguibile nei file estratti
+  spa: No se ha podido encontrar el ejecutable en los archivos extraídos
+  jpn: 解凍したファイルの中に実行ファイルが見つかりませんでした。
+  rus: Не удалось найти исполняемый файл в распакованных файлах
+  por: Não foi possível encontrar o executável nos ficheiros extraídos
+  swe: Kunde inte hitta den körbara filen i de extraherade filerna
+  pol: Nie można znaleźć pliku wykonywalnego w wyodrębnionych plikach
+  chs: 无法在提取的文件中找到可执行文件
+  ukr: Не вдалося знайти виконуваний файл у розпакованих файлах
+  kor: 압축을 푼 파일에서 실행 파일을 찾을 수 없습니다.
+  ron: Nu s-a putut găsi executabilul în fișierele extrase
+Could not locate the downloaded HDR10+ tool:
+  eng: Could not locate the downloaded HDR10+ tool
+  deu: Das heruntergeladene HDR10+-Tool konnte nicht gefunden werden.
+  fra: Impossible de localiser l'outil HDR10+ téléchargé
+  ita: Impossibile individuare lo strumento HDR10+ scaricato
+  spa: No se ha podido localizar la herramienta HDR10+ descargada
+  jpn: ダウンロードしたHDR10+ツールが見つかりません。
+  rus: Не удалось найти загруженный инструмент HDR10+
+  por: Não foi possível localizar a ferramenta HDR10+ descarregada
+  swe: Det gick inte att hitta det nedladdade HDR10+-verktyget
+  pol: Nie można zlokalizować pobranego narzędzia HDR10+
+  chs: 无法找到下载的 HDR10+ 工具
+  ukr: Не вдалося знайти завантажений інструмент HDR10+
+  kor: 다운로드한 HDR10+ 도구를 찾을 수 없습니다.
+  ron: Nu s-a putut localiza instrumentul HDR10+ descărcat
+Could not locate the downloaded files at:
+  eng: Could not locate the downloaded files at
+  deu: Die heruntergeladenen Dateien konnten nicht gefunden werden unter
+  fra: Impossible de localiser les fichiers téléchargés à l'adresse
+  ita: Impossibile individuare i file scaricati in
+  spa: No se han podido localizar los archivos descargados en
+  jpn: にダウンロードしたファイルが見つかりません。
+  rus: Не удалось обнаружить загруженные файлы по адресу
+  por: Não foi possível localizar os ficheiros descarregados em
+  swe: Det gick inte att hitta de nedladdade filerna på
+  pol: Nie można zlokalizować pobranych plików pod adresem
+  chs: 无法在
+  ukr: Не вдалося знайти завантажені файли за адресою
+  kor: 다운로드한 파일을 다음 위치에서 찾을 수 없습니다.
+  ron: Nu am putut localiza fișierele descărcate la adresa
+Could not update Rigaya's encoders:
+  eng: Could not update Rigaya's encoders
+  deu: Rigayas Geber konnten nicht aktualisiert werden
+  fra: Impossible de mettre à jour les encodeurs de Rigaya
+  ita: Impossibile aggiornare gli encoder di Rigaya
+  spa: No se pudieron actualizar los codificadores de Rigaya
+  jpn: リガヤのエンコーダーを更新できなかった
+  rus: Не удалось обновить кодеры Rigaya
+  por: Não foi possível atualizar os codificadores de Rigaya
+  swe: Kunde inte uppdatera Rigayas kodare
+  pol: Nie można zaktualizować koderów Rigaya
+  chs: 无法更新 Rigaya 编码器
+  ukr: Не вдалося оновити енкодери Rigaya
+  kor: 리가야의 인코더를 업데이트할 수 없습니다.
+  ron: Nu s-a putut actualiza codificatoarele Rigaya
+Custom Filters:
+  eng: Custom Filters
+  deu: Benutzerdefinierte Filter
+  fra: Filtres personnalisés
+  ita: Filtri personalizzati
+  spa: Filtros personalizados
+  jpn: カスタムフィルター
+  rus: Пользовательские фильтры
+  por: Filtros personalizados
+  swe: Anpassade filter
+  pol: Filtry niestandardowe
+  chs: 自定义过滤器
+  ukr: Користувацькі фільтри
+  kor: 사용자 지정 필터
+  ron: Filtre personalizate
+Data streams are not supported in this output format:
+  eng: Data streams are not supported in this output format
+  deu: Datenströme werden in diesem Ausgabeformat nicht unterstützt
+  fra: Les flux de données ne sont pas pris en charge dans ce format de sortie
+  ita: I flussi di dati non sono supportati in questo formato di uscita.
+  spa: No se admiten flujos de datos en este formato de salida
+  jpn: この出力フォーマットでは、データストリームはサポートされていません。
+  rus: Потоки данных не поддерживаются в этом формате вывода
+  por: Os fluxos de dados não são suportados neste formato de saída
+  swe: Dataströmmar stöds inte i detta utdataformat
+  pol: Strumienie danych nie są obsługiwane w tym formacie wyjściowym
+  chs: 此输出格式不支持数据流
+  ukr: Потоки даних не підтримуються у цьому форматі виводу
+  kor: 이 출력 형식에서는 데이터 스트림이 지원되지 않습니다.
+  ron: Fluxurile de date nu sunt acceptate în acest format de ieșire
+Downloading HDR10+ Tool:
+  eng: Downloading HDR10+ Tool
+  deu: Herunterladen des HDR10+ Tools
+  fra: Téléchargement de l'outil HDR10
+  ita: Scaricare lo strumento HDR10+
+  spa: Descarga de la herramienta HDR10
+  jpn: HDR10+ツールのダウンロード
+  rus: Загрузка инструмента HDR10+
+  por: Descarregar a ferramenta HDR10
+  swe: Ladda ner HDR10+-verktyget
+  pol: Pobieranie narzędzia HDR10+
+  chs: 下载 HDR10+ 工具
+  ukr: Завантаження HDR10+ Tool
+  kor: HDR10+ 도구 다운로드
+  ron: Descărcarea instrumentului HDR10+
+Encoding cancelled:
+  eng: Encoding cancelled
+  deu: Kodierung abgebrochen
+  fra: Encodage annulé
+  ita: Codifica annullata
+  spa: Codificación anulada
+  jpn: エンコード中止
+  rus: Кодирование отменено
+  por: Codificação anulada
+  swe: Kodning avbruten
+  pol: Kodowanie anulowane
+  chs: 编码取消
+  ukr: Кодування скасовано
+  kor: 인코딩 취소됨
+  ron: Codare anulată
+Encoding error:
+  eng: Encoding error
+  deu: Kodierungsfehler
+  fra: Erreur d'encodage
+  ita: Errore di codifica
+  spa: Error de codificación
+  jpn: エンコードエラー
+  rus: Ошибка кодирования
+  por: Erro de codificação
+  swe: Kodningsfel
+  pol: Błąd kodowania
+  chs: 编码错误
+  ukr: Помилка кодування
+  kor: 인코딩 오류
+  ron: Eroare de codare
+Error while moving files in:
+  eng: Error while moving files in
+  deu: Fehler beim Verschieben von Dateien in
+  fra: Erreur lors du déplacement de fichiers dans
+  ita: Errore durante lo spostamento dei file in
+  spa: Error al mover archivos en
+  jpn: のファイル移動中にエラーが発生しました。
+  rus: Ошибка при перемещении файлов в
+  por: Erro ao mover ficheiros em
+  swe: Fel vid flyttning av filer i
+  pol: Błąd podczas przenoszenia plików w
+  chs: 将文件移入
+  ukr: Помилка під час переміщення файлів
+  kor: 파일 이동 중 오류 발생
+  ron: Eroare în timpul mutării fișierelor în
+FFmpeg downloaded successfully:
+  eng: FFmpeg downloaded successfully
+  deu: FFmpeg erfolgreich heruntergeladen
+  fra: FFmpeg téléchargé avec succès
+  ita: FFmpeg è stato scaricato con successo
+  spa: FFmpeg se ha descargado correctamente
+  jpn: FFmpegのダウンロードに成功
+  rus: FFmpeg успешно загружен
+  por: FFmpeg descarregado com sucesso
+  swe: FFmpeg nedladdad framgångsrikt
+  pol: FFmpeg pobrany pomyślnie
+  chs: FFmpeg 下载成功
+  ukr: FFmpeg успішно завантажено
+  kor: FFmpeg 다운로드 성공
+  ron: FFmpeg descărcat cu succes
+FFmpeg not found:
+  eng: FFmpeg not found
+  deu: FFmpeg nicht gefunden
+  fra: FFmpeg introuvable
+  ita: FFmpeg non trovato
+  spa: FFmpeg no encontrado
+  jpn: FFmpegが見つからない
+  rus: FFmpeg не найден
+  por: FFmpeg não encontrado
+  swe: FFmpeg hittades inte
+  pol: Nie znaleziono FFmpeg
+  chs: 未找到 FFmpeg
+  ukr: FFmpeg не знайдено
+  kor: FFmpeg를 찾을 수 없음
+  ron: FFmpeg nu a fost găsit
+FFmpeg was not properly downloaded as the file size is too small:
+  eng: FFmpeg was not properly downloaded as the file size is too small
+  deu: FFmpeg wurde nicht richtig heruntergeladen, da die Datei zu klein ist
+  fra: FFmpeg n'a pas été correctement téléchargé car la taille du fichier est trop petite.
+  ita: FFmpeg non è stato scaricato correttamente perché le dimensioni del file sono troppo ridotte.
+  spa: FFmpeg no se ha descargado correctamente porque el tamaño del archivo es demasiado pequeño.
+  jpn: ファイルサイズが小さすぎるため、FFmpegが正しくダウンロードされませんでした。
+  rus: FFmpeg не удалось загрузить должным образом, так как размер файла слишком мал
+  por: O FFmpeg não foi descarregado corretamente porque o tamanho do ficheiro é demasiado pequeno
+  swe: FFmpeg laddades inte ner ordentligt eftersom filstorleken är för liten
+  pol: FFmpeg nie został poprawnie pobrany, ponieważ rozmiar pliku jest zbyt mały
+  chs: FFmpeg 无法正确下载，因为文件太小
+  ukr: FFmpeg не вдалося завантажити належним чином, оскільки розмір файлу замалий
+  kor: 파일 크기가 너무 작아서 FFmpeg가 제대로 다운로드되지 않았습니다.
+  ron: FFmpeg nu a fost descărcat corect deoarece dimensiunea fișierului este prea mică
+Failed to reload encoders:
+  eng: Failed to reload encoders
+  deu: Nachladen der Encoder fehlgeschlagen
+  fra: Échec du rechargement des codeurs
+  ita: Impossibile ricaricare gli encoder
+  spa: Fallo al recargar codificadores
+  jpn: エンコーダのリロードに失敗
+  rus: Не удалось перезагрузить энкодеры
+  por: Falha ao recarregar os codificadores
+  swe: Misslyckades med att ladda om pulsgivarna
+  pol: Nie udało się przeładować enkoderów
+  chs: 重新加载编码器失败
+  ukr: Не вдалося перезавантажити енкодери
+  kor: 인코더를 다시 로드하지 못함
+  ron: A eșuat reîncărcarea codificatoarelor
+First Pass:
+  eng: First Pass
+  deu: Erster Durchgang
+  fra: Premier passage
+  ita: Primo passaggio
+  spa: Primer pase
+  jpn: ファーストパス
+  rus: Первый проход
+  por: Primeira passagem
+  swe: Första passet
+  pol: Pierwsze przejście
+  chs: 第一次通过
+  ukr: Перший прохід
+  kor: 첫 번째 패스
+  ron: Prima trecere
+Font:
+  eng: Font
+  deu: Schriftart
+  fra: Police
+  ita: Carattere
+  spa: Fuente
+  jpn: フォント
+  rus: Шрифт
+  por: Tipo de letra
+  swe: Typsnitt
+  pol: Czcionka
+  chs: 字体
+  ukr: Шрифт
+  kor: 글꼴
+  ron: Font
+HDR10+ detected but requires FFmpeg 8.0+ for AV1 passthrough:
+  eng: HDR10+ detected but requires FFmpeg 8.0+ for AV1 passthrough
+  deu: HDR10+ wird erkannt, erfordert aber FFmpeg 8.0+ für AV1-Passthrough
+  fra: HDR10+ détecté mais nécessite FFmpeg 8.0+ pour le passthrough AV1
+  ita: HDR10+ rilevato ma richiede FFmpeg 8.0+ per il passthrough AV1
+  spa: Se detecta HDR10+ pero requiere FFmpeg 8.0+ para el paso a AV1
+  jpn: HDR10+は検出されたが、AV1パススルーにはFFmpeg 8.0+が必要。
+  rus: HDR10+ обнаружен, но требуется FFmpeg 8.0+ для AV1 passthrough
+  por: HDR10+ detectado mas requer FFmpeg 8.0+ para passagem AV1
+  swe: HDR10+ detekteras men kräver FFmpeg 8.0+ för AV1-passthrough
+  pol: HDR10+ wykryty, ale wymaga FFmpeg 8.0+ dla AV1 passthrough
+  chs: 检测到 HDR10+，但需要 FFmpeg 8.0+ 实现 AV1 直通
+  ukr: Визначено HDR10+, але для проходження AV1 потрібен FFmpeg 8.0+
+  kor: HDR10+가 감지되었지만 AV1 패스스루를 위해서는 FFmpeg 8.0+가 필요합니다.
+  ron: HDR10+ detectat, dar necesită FFmpeg 8.0+ pentru AV1 passthrough
+HDR10+ tool has been downloaded to:
+  eng: HDR10+ tool has been downloaded to
+  deu: Das Tool HDR10+ wurde heruntergeladen auf
+  fra: L'outil HDR10+ a été téléchargé sur
+  ita: Lo strumento HDR10+ è stato scaricato su
+  spa: La herramienta HDR10+ se ha descargado en
+  jpn: HDR10+ツールがダウンロードされました。
+  rus: Инструмент HDR10+ был загружен в
+  por: A ferramenta HDR10+ foi descarregada para
+  swe: HDR10+-verktyget har laddats ner till
+  pol: Narzędzie HDR10+ zostało pobrane do
+  chs: HDR10+ 工具已下载到
+  ukr: Інструмент HDR10+ було завантажено на
+  kor: HDR10+ 도구가 다운로드되었습니다.
+  ron: Instrumentul HDR10+ a fost descărcat la
+? "HDR10+ tool not found. Do you want FastFlix to automatically download it?\n\nThis tool is used for extracting and injecting HDR10+ dynamic metadata during encoding."
+: eng: "HDR10+ tool not found. Do you want FastFlix to automatically download it?\n\nThis tool is used for extracting and injecting HDR10+ dynamic metadata during encoding."
+  deu: "HDR10+ Tool nicht gefunden. Möchten Sie, dass FastFlix es automatisch herunterlädt?\n\nDieses Tool wird zum Extrahieren und Einfügen von dynamischen HDR10+-Metadaten während der Codierung verwendet."
+  fra: "L'outil HDR10+ n'a pas été trouvé. Voulez-vous que FastFlix le télécharge automatiquement ?\n\nCet outil est utilisé pour extraire et injecter des métadonnées dynamiques HDR10+ pendant l'encodage."
+  ita: "Strumento HDR10+ non trovato. Volete che FastFlix lo scarichi automaticamente?\n\nQuesto strumento viene utilizzato per estrarre e inserire i metadati dinamici HDR10+ durante la codifica."
+  spa: "No se ha encontrado la herramienta HDR10+. ¿Desea que FastFlix la descargue automáticamente?\n\nEsta herramienta se utiliza para extraer e inyectar metadatos dinámicos HDR10+ durante la codificación."
+  jpn: "HDR10+ツールが見つかりません。FastFlixに自動的にダウンロードさせますか？\n\nこのツールは、エンコード中にHDR10+ダイナミックメタデータを抽出・注入するために使用します。"
+  rus: "Инструмент HDR10+ не найден. Хотите, чтобы FastFlix автоматически загрузил его?\n\nЭтот инструмент используется для извлечения и вставки динамических метаданных HDR10+ во время кодирования."
+  por: "Ferramenta HDR10+ não encontrada. Quer que o FastFlix a descarregue automaticamente?\n\nEsta ferramenta é usada para extrair e injetar metadados dinâmicos HDR10+ durante a codificação."
+  swe: "HDR10+ verktyg hittades inte. Vill du att FastFlix automatiskt ska ladda ner det?\n\nDetta verktyg används för att extrahera och injicera HDR10+ dynamiska metadata under kodning."
+  pol: "Nie znaleziono narzędzia HDR10+. Czy chcesz, aby FastFlix automatycznie je pobrał?\n\nNarzędzie to służy do wyodrębniania i wstawiania dynamicznych metadanych HDR10+ podczas kodowania."
+  chs: "未找到 HDR10+ 工具。您想让 FastFlix 自动下载吗？\n\n该工具用于在编码过程中提取和注入 HDR10+ 动态元数据。"
+  ukr: "Інструмент HDR10+ не знайдено. Ви хочете, щоб FastFlix автоматично завантажив його?\n\nЦей інструмент використовується для вилучення та введення динамічних метаданих HDR10+ під час кодування."
+  kor: "HDR10+ 도구를 찾을 수 없습니다. FastFlix가 자동으로 다운로드하도록 하시겠습니까?\n\n이 도구는 인코딩 중에 HDR10+ 동적 메타데이터를 추출하고 삽입하는 데 사용됩니다."
+  ron: "Ferramenta HDR10+ não encontrada. Quer que o FastFlix a descarregue automaticamente?\n\nEsta ferramenta é usada para extrair e injetar metadados dinâmicos HDR10+ durante a codificação."
+Height must be smaller than video height:
+  eng: Height must be smaller than video height
+  deu: Höhe muss kleiner als die Videohöhe sein
+  fra: La hauteur doit être inférieure à celle de la vidéo
+  ita: L'altezza deve essere inferiore a quella del video
+  spa: La altura debe ser inferior a la altura del vídeo
+  jpn: 高さはビデオの高さより小さくなければならない
+  rus: Высота должна быть меньше высоты видео
+  por: A altura deve ser inferior à altura do vídeo
+  swe: Höjden måste vara mindre än videohöjden
+  pol: Wysokość musi być mniejsza niż wysokość wideo
+  chs: 高度必须小于视频高度
+  ukr: Висота повинна бути меншою за висоту відео
+  kor: 높이는 동영상 높이보다 작아야 합니다.
+  ron: Înălțimea trebuie să fie mai mică decât înălțimea videoclipului
+Left must be positive number:
+  eng: Left must be positive number
+  deu: Links muss eine positive Zahl sein
+  fra: La gauche doit être un nombre positif
+  ita: La sinistra deve essere un numero positivo
+  spa: Izquierda debe ser un número positivo
+  jpn: 左は正の数でなければならない
+  rus: Слева должно быть положительное число
+  por: A esquerda deve ser um número positivo
+  swe: Vänster måste vara ett positivt tal
+  pol: Left musi być liczbą dodatnią
+  chs: 左数必须是正数
+  ukr: Зліва повинно бути додатнім числом
+  kor: 왼쪽은 양수여야 합니다.
+  ron: Stânga trebuie să fie un număr pozitiv
+Missing dependencies for PGS OCR:
+  eng: Missing dependencies for PGS OCR
+  deu: Fehlende Abhängigkeiten für PGS OCR
+  fra: Dépendances manquantes pour PGS OCR
+  ita: Dipendenze mancanti per PGS OCR
+  spa: Faltan dependencias para PGS OCR
+  jpn: PGS OCRの欠落している依存関係
+  rus: Отсутствующие зависимости для PGS OCR
+  por: Dependências em falta para o PGS OCR
+  swe: Saknade beroenden för PGS OCR
+  pol: Brakujące zależności dla PGS OCR
+  chs: PGS OCR 缺少依赖项
+  ukr: Відсутні залежності для PGS OCR
+  kor: PGS OCR에 대한 누락된 종속성
+  ron: Dependențe lipsă pentru PGS OCR
+'Missing dependencies: tesseract or pgsrip':
+  eng: 'Missing dependencies: tesseract or pgsrip'
+  deu: 'Fehlende Abhängigkeiten: tesseract oder pgsrip'
+  fra: 'Dépendances manquantes : tesseract ou pgsrip'
+  ita: 'Dipendenze mancanti: tesseract o pgsrip'
+  spa: 'Dependencias que faltan: tesseract o pgsrip'
+  jpn: '欠けている依存関係: tesseract または pgsrip'
+  rus: 'Отсутствующие зависимости: tesseract или pgsrip'
+  por: 'Dependências em falta: tesseract ou pgsrip'
+  swe: 'Beroenden som saknas: tesseract eller pgsrip'
+  pol: 'Brakujące zależności: tesseract lub pgsrip'
+  chs: 缺少依赖项：tesseract 或 pgsrip
+  ukr: 'Відсутні залежності: tesseract або pgsrip'
+  kor: '누락된 종속성: 테서랙트 또는 pgsrip'
+  ron: 'Dependențe lipsă: tesseract sau pgsrip'
+NVEnc was not properly downloaded as the file size is too small:
+  eng: NVEnc was not properly downloaded as the file size is too small
+  deu: NVEnc wurde nicht richtig heruntergeladen, da die Datei zu klein ist
+  fra: NVEnc n'a pas été correctement téléchargé car la taille du fichier est trop petite.
+  ita: NVEnc non è stato scaricato correttamente perché le dimensioni del file sono troppo piccole
+  spa: NVEnc no se ha descargado correctamente porque el tamaño del archivo es demasiado pequeño.
+  jpn: ファイルサイズが小さすぎるため、NVEncが正しくダウンロードされませんでした。
+  rus: NVEnc не удалось загрузить должным образом, так как размер файла слишком мал
+  por: O NVEnc não foi descarregado corretamente porque o tamanho do ficheiro é demasiado pequeno
+  swe: NVEnc laddades inte ner ordentligt eftersom filstorleken är för liten
+  pol: Plik NVEnc nie został pobrany poprawnie, ponieważ był zbyt mały
+  chs: 由于文件太小，无法正确下载 NVEnc
+  ukr: NVEnc не вдалося завантажити належним чином, оскільки розмір файлу занадто малий
+  kor: 파일 크기가 너무 작아서 NVEnc가 제대로 다운로드되지 않았습니다.
+  ron: NVEnc nu a fost descărcat corect deoarece dimensiunea fișierului este prea mică
+Not deinterlacing will result in banding after encoding.:
+  eng: Not deinterlacing will result in banding after encoding.
+  deu: Ohne Deinterlacing kommt es nach der Kodierung zu Banding.
+  fra: L'absence de désentrelacement entraînera un effet de bande après l'encodage.
+  ita: Se non si esegue il deinterlacciamento, dopo la codifica si verifica il banding.
+  spa: Si no se desentrelaza, se producirán bandas después de la codificación.
+  jpn: デインターレースをしないと、エンコード後にバンディングが発生する。
+  rus: Отсутствие деинтерлейсинга приведет к появлению полос после кодирования.
+  por: A ausência de desentrelaçamento resultará em bandas após a codificação.
+  swe: Om deinterlacing inte används uppstår bandning efter kodning.
+  pol: Brak usuwania przeplotu spowoduje powstawanie pasm po zakodowaniu.
+  chs: 不去掉隔行扫描会导致编码后出现带状。
+  ukr: Якщо не зняти чересстрочність, це призведе до появи смуг після кодування.
+  kor: 디인터레이싱을 하지 않으면 인코딩 후 밴딩이 발생합니다.
+  ron: Neinterlațarea va duce la banding după codare.
+OCR conversion failed, kept .sup file:
+  eng: OCR conversion failed, kept .sup file
+  deu: OCR-Konvertierung fehlgeschlagen, .sup-Datei beibehalten
+  fra: La conversion OCR a échoué, le fichier .sup a été conservé
+  ita: Conversione OCR fallita, mantenuto il file .sup
+  spa: Error de conversión OCR, archivo .sup conservado
+  jpn: OCR変換に失敗し、.supファイルを保持
+  rus: Преобразование OCR не удалось, сохранился файл .sup
+  por: A conversão de OCR falhou, manteve o ficheiro .sup
+  swe: OCR-konvertering misslyckades, behöll .sup-fil
+  pol: Konwersja OCR nie powiodła się, zachowano plik .sup
+  chs: OCR 转换失败，保留 .sup 文件
+  ukr: OCR-перетворення не вдалося, збережено файл .sup
+  kor: OCR 변환 실패, .sup 파일 유지
+  ron: Conversia OCR a eșuat, a păstrat fișierul .sup
+Output video path is same as source!:
+  eng: Output video path is same as source!
+  deu: Der Videoausgangspfad ist derselbe wie die Quelle!
+  fra: Le chemin vidéo de sortie est le même que celui de la source !
+  ita: Il percorso video di uscita è lo stesso della sorgente!
+  spa: La ruta de vídeo de salida es la misma que la de la fuente.
+  jpn: 出力ビデオパスはソースと同じです！
+  rus: Выходной видеотракт совпадает с исходным!
+  por: O caminho do vídeo de saída é o mesmo da fonte!
+  swe: Utgående videosökväg är samma som källan!
+  pol: Wyjściowa ścieżka wideo jest taka sama jak źródłowa!
+  chs: 输出视频路径与信号源相同！
+  ukr: Вихідний відеошлях такий самий, як і вихідний!
+  kor: 출력 비디오 경로가 소스와 동일합니다!
+  ron: Calea video de ieșire este aceeași ca și sursa!
+PGS OCR setup instructions:
+  eng: PGS OCR setup instructions
+  deu: PGS OCR-Einrichtungsanweisungen
+  fra: Instructions de configuration de l'OCR PGS
+  ita: Istruzioni per l'impostazione di PGS OCR
+  spa: Instrucciones de configuración de PGS OCR
+  jpn: PGS OCRセットアップ手順
+  rus: Инструкции по настройке PGS OCR
+  por: Instruções de configuração do PGS OCR
+  swe: Instruktioner för installation av PGS OCR
+  pol: Instrukcje konfiguracji PGS OCR
+  chs: PGS OCR 设置说明
+  ukr: Інструкція з налаштування PGS OCR
+  kor: PGS OCR 설정 지침
+  ron: Instrucțiuni de configurare PGS OCR
+Please:
+  eng: Please
+  deu: Bitte
+  fra: S'il vous plaît
+  ita: Per favore
+  spa: Por favor,
+  jpn: お願い
+  rus: Пожалуйста,
+  por: Por favor
+  swe: Vänligen
+  pol: Proszę
+  chs: 请
+  ukr: Будь ласка.
+  kor: 제발
+  ron: Vă rog
+Please provide bitrates for the audio streams:
+  eng: Please provide bitrates for the audio streams
+  deu: Bitte geben Sie die Bitraten für die Audiostreams an
+  fra: Veuillez fournir les débits binaires pour les flux audio
+  ita: Fornire il bitrate dei flussi audio
+  spa: Indique la velocidad de bits de los flujos de audio
+  jpn: オーディオストリームのビットレートを教えてください。
+  rus: Пожалуйста, укажите битрейт аудиопотоков
+  por: Forneça as taxas de bits para os fluxos de áudio
+  swe: Vänligen ange bitrate för ljudströmmarna
+  pol: Podaj bitrate dla strumieni audio
+  chs: 请提供音频流的比特率
+  ukr: Будь ласка, вкажіть бітрейт для аудіопотоків
+  kor: 오디오 스트림의 비트레이트를 입력하세요.
+  ron: Vă rugăm să furnizați bitrate pentru fluxurile audio
+Please specify output video:
+  eng: Please specify output video
+  deu: Bitte geben Sie das Ausgangsvideo an
+  fra: Veuillez spécifier la vidéo de sortie
+  ita: Specificare il video in uscita
+  spa: Especifique el vídeo de salida
+  jpn: 出力ビデオを指定してください
+  rus: Пожалуйста, укажите выходное видео
+  por: Especificar o vídeo de saída
+  swe: Vänligen ange utmatningsvideo
+  pol: Należy określić wyjściowy sygnał wideo
+  chs: 请指定输出视频
+  ukr: Будь ласка, вкажіть вихідне відео
+  kor: 출력 비디오를 지정하세요.
+  ron: Vă rugăm să specificați ieșirea video
+Remove:
+  eng: Remove
+  deu: entfernen
+  fra: Retirer
+  ita: Rimuovere
+  spa: Eliminar
+  jpn: 削除
+  rus: Удалить
+  por: Remover
+  swe: Ta bort
+  pol: Usunąć
+  chs: 移除
+  ukr: Видалити
+  kor: 제거
+  ron: Eliminați
+Rigaya's encoders updated:
+  eng: Rigaya's encoders updated
+  deu: Rigayas Geber aktualisiert
+  fra: Mise à jour des encodeurs de Rigaya
+  ita: Aggiornamento dei codificatori di Rigaya
+  spa: Actualización de los codificadores de Rigaya
+  jpn: リガヤのエンコーダーが更新
+  rus: Обновление кодировщиков Rigaya
+  por: Atualização dos codificadores de Rigaya
+  swe: Rigayas pulsgivare uppdaterade
+  pol: Zaktualizowano kodery Rigaya
+  chs: 更新里加亚编码器
+  ukr: Оновлені енкодери Rigaya
+  kor: 리가야의 인코더 업데이트
+  ron: Codificatoarele Rigaya actualizate
+Second Pass:
+  eng: Second Pass
+  deu: Zweiter Durchgang
+  fra: Deuxième passage
+  ita: Secondo passaggio
+  spa: Segundo pase
+  jpn: セカンドパス
+  rus: Второе прохождение
+  por: Segunda passagem
+  swe: Andra passet
+  pol: Drugi przejazd
+  chs: 第二次通过
+  ukr: Другий прохід
+  kor: 두 번째 패스
+  ron: A doua trecere
+Select Subtitle File:
+  eng: Select Subtitle File
+  deu: Untertiteldatei auswählen
+  fra: Sélectionner le fichier de sous-titres
+  ita: Selezionare il file dei sottotitoli
+  spa: Seleccionar archivo de subtítulos
+  jpn: 字幕ファイルを選択
+  rus: Выберите файл субтитров
+  por: Selecionar ficheiro de legendas
+  swe: Välj undertextfil
+  pol: Wybierz plik napisów
+  chs: 选择字幕文件
+  ukr: Виберіть файл субтитрів
+  kor: 자막 파일 선택
+  ron: Selectați fișierul de subtitrare
+There is an existing burn-in track, only one can be enabled at a time:
+  eng: There is an existing burn-in track, only one can be enabled at a time
+  deu: Es gibt eine vorhandene Einbrennspur, es kann jeweils nur eine aktiviert werden
+  fra: Il y a une piste de déverminage existante, une seule peut être activée à la fois.
+  ita: Esiste una traccia di burn-in, ma è possibile attivarne solo una alla volta.
+  spa: Existe una pista de quemado, sólo se puede activar una a la vez
+  jpn: 既存のバーンイントラックがあり、一度に1つしか有効にできない。
+  rus: Имеется существующая дорожка прожига, одновременно может быть включена только одна.
+  por: Existe uma pista de burn-in, mas só pode ser activada uma de cada vez
+  swe: Det finns ett befintligt inbränningsspår, men endast ett kan aktiveras åt gången
+  pol: Istnieje ścieżka wypalania, tylko jedna może być włączona w danym momencie.
+  chs: 现有一条预烧轨道，每次只能启用一条
+  ukr: Існує існуюча доріжка вигоряння, одночасно може бути ввімкнена лише одна
+  kor: 기존 번인 트랙이 있으며, 한 번에 하나만 활성화할 수 있습니다.
+  ron: Există o cale de ardere existentă, numai una poate fi activată simultan
+This video has been detected to have an interlaced video.:
+  eng: This video has been detected to have an interlaced video.
+  deu: Dieses Video wurde als Zeilensprungvideo erkannt.
+  fra: Cette vidéo a été détectée comme étant une vidéo entrelacée.
+  ita: È stato rilevato che questo video è interlacciato.
+  spa: Se ha detectado que este vídeo está entrelazado.
+  jpn: このビデオはインターレースビデオとして検出されました。
+  rus: Было обнаружено, что это видео имеет чересстрочную развертку.
+  por: Foi detectado que este vídeo tem um vídeo entrelaçado.
+  swe: Den här videon har upptäckts ha en interlaced video.
+  pol: Wykryto, że to wideo ma przeplot.
+  chs: 检测到此视频为隔行扫描视频。
+  ukr: Виявлено, що це відео має чересстрочний формат.
+  kor: 이 동영상에 인터레이스된 동영상이 있는 것으로 감지되었습니다.
+  ron: Acest videoclip a fost detectat ca având un videoclip întrepătruns.
+Top must be positive number:
+  eng: Top must be positive number
+  deu: Oben muss eine positive Zahl sein
+  fra: Le sommet doit être un nombre positif
+  ita: Top deve essere un numero positivo
+  spa: Top debe ser un número positivo
+  jpn: トップは正の数でなければならない
+  rus: Top должно быть положительным числом
+  por: O topo deve ser um número positivo
+  swe: Top måste vara ett positivt tal
+  pol: Top musi być liczbą dodatnią
+  chs: 顶部必须是正数
+  ukr: Верхня частина має бути додатнім числом
+  kor: 상단은 양수여야 합니다.
+  ron: Topul trebuie să fie un număr pozitiv
+Total video width must be greater than 0:
+  eng: Total video width must be greater than 0
+  deu: Die Gesamtbreite des Videos muss größer als 0 sein.
+  fra: La largeur totale de la vidéo doit être supérieure à 0
+  ita: La larghezza totale del video deve essere maggiore di 0
+  spa: La anchura total del vídeo debe ser superior a 0
+  jpn: ビデオ幅の合計は0より大きくなければならない
+  rus: Общая ширина видео должна быть больше 0
+  por: A largura total do vídeo deve ser superior a 0
+  swe: Total videobredd måste vara större än 0
+  pol: Całkowita szerokość wideo musi być większa niż 0
+  chs: 视频总宽度必须大于 0
+  ukr: Загальна ширина відео повинна бути більшою за 0
+  kor: 총 동영상 너비는 0보다 커야 합니다.
+  ron: Lățimea video totală trebuie să fie mai mare decât 0
+Updating Rigaya's encoders:
+  eng: Updating Rigaya's encoders
+  deu: Aktualisierung der Rigaya-Geber
+  fra: Mise à jour des encodeurs de Rigaya
+  ita: Aggiornamento degli encoder di Rigaya
+  spa: Actualización de los codificadores de Rigaya
+  jpn: リガヤのエンコーダーをアップデート
+  rus: Обновление кодеров Rigaya
+  por: Atualização dos codificadores Rigaya
+  swe: Uppdatering av Rigayas kodare
+  pol: Aktualizacja enkoderów Rigaya
+  chs: 更新 Rigaya 编码器
+  ukr: Оновлення енкодерів Rigaya
+  kor: 리가야의 인코더 업데이트
+  ron: Actualizarea codificatoarelor Rigaya
+Waiting for current encode to finish before shutdown:
+  eng: Waiting for current encode to finish before shutdown
+  deu: Warten auf das Ende der aktuellen Kodierung vor dem Herunterfahren
+  fra: Attente de la fin de l'encodage en cours avant l'arrêt
+  ita: Attendere che la codifica in corso sia terminata prima di spegnersi
+  spa: Esperar a que finalice la codificación actual antes del apagado
+  jpn: シャットダウン前に現在のエンコードが終了するのを待つ
+  rus: Ожидание завершения текущего кодирования перед выключением
+  por: Aguardar que a codificação atual termine antes de encerrar
+  swe: Väntar på att aktuell kodning ska avslutas innan avstängning
+  pol: Oczekiwanie na zakończenie bieżącego kodowania przed wyłączeniem
+  chs: 关闭前等待当前编码完成
+  ukr: Очікування завершення поточного кодування перед вимкненням
+  kor: 종료하기 전에 현재 인코딩이 완료되기를 기다리는 중입니다.
+  ron: Așteptarea finalizării codării curente înainte de închidere
+Width must be smaller than video width:
+  eng: Width must be smaller than video width
+  deu: Die Breite muss kleiner sein als die Videobreite
+  fra: La largeur doit être inférieure à la largeur de la vidéo
+  ita: La larghezza deve essere inferiore alla larghezza del video
+  spa: La anchura debe ser inferior a la anchura del vídeo
+  jpn: 幅はビデオの幅より小さくなければならない
+  rus: Ширина должна быть меньше ширины видео
+  por: A largura deve ser inferior à largura do vídeo
+  swe: Bredden måste vara mindre än videobredden
+  pol: Szerokość musi być mniejsza niż szerokość wideo
+  chs: 宽度必须小于视频宽度
+  ukr: Ширина повинна бути меншою за ширину відео
+  kor: 너비는 동영상 너비보다 작아야 합니다.
+  ron: Lățimea trebuie să fie mai mică decât lățimea videoclipului
+and add it to PATH:
+  eng: and add it to PATH
+  deu: und fügen Sie es zu PATH hinzu
+  fra: et l'ajouter au PATH
+  ita: e aggiungerlo al PATH
+  spa: y añádelo a PATH
+  jpn: に追加する。
+  rus: и добавьте его в PATH
+  por: e adicioná-lo ao PATH
+  swe: och lägg till den i PATH
+  pol: i dodać go do PATH
+  chs: 并将其添加到 PATH
+  ukr: і додайте його до PATH
+  kor: 를 클릭하고 PATH에 추가합니다.
+  ron: și adăugați-l la PATH
+bottom:
+  eng: bottom
+  deu: unten
+  fra: fond
+  ita: fondo
+  spa: fondo
+  jpn: 下
+  rus: дно
+  por: fundo
+  swe: botten
+  pol: dno
+  chs: 底层
+  ukr: дно
+  kor: 하단
+  ron: fund
+configure in Settings:
+  eng: configure in Settings
+  deu: in den Einstellungen konfigurieren
+  fra: configurer dans Paramètres
+  ita: configurare in Impostazioni
+  spa: configurar en Ajustes
+  jpn: 設定
+  rus: настроить в разделе Настройки
+  por: configurar em Definições
+  swe: konfigurera i Inställningar
+  pol: skonfigurować w Ustawieniach
+  chs: 在设置中配置
+  ukr: налаштувати в Налаштуваннях
+  kor: 설정에서 구성
+  ron: configurați în Setări
+download a static FFmpeg:
+  eng: download a static FFmpeg
+  deu: ein statisches FFmpeg herunterladen
+  fra: télécharger un FFmpeg statique
+  ita: scaricare un FFmpeg statico
+  spa: descargar un FFmpeg estático
+  jpn: 静的なFFmpegをダウンロードする
+  rus: загрузить статический FFmpeg
+  por: descarregar um FFmpeg estático
+  swe: ladda ner en statisk FFmpeg
+  pol: pobierz statyczny FFmpeg
+  chs: 下载静态 FFmpeg
+  ukr: завантажити статичний FFmpeg
+  kor: 정적 FFmpeg 다운로드
+  ron: descărcați un FFmpeg static
+hdr10plus_tool was not properly downloaded as the file size is too small:
+  eng: hdr10plus_tool was not properly downloaded as the file size is too small
+  deu: hdr10plus_tool wurde nicht ordnungsgemäß heruntergeladen, da die Dateigröße zu klein ist
+  fra: hdr10plus_tool n'a pas été correctement téléchargé car la taille du fichier est trop petite
+  ita: hdr10plus_tool non è stato scaricato correttamente perché la dimensione del file è troppo piccola.
+  spa: hdr10plus_tool no se ha descargado correctamente porque el tamaño del archivo es demasiado pequeño.
+  jpn: ファイルサイズが小さすぎるため、hdr10plus_toolが正しくダウンロードされませんでした。
+  rus: hdr10plus_tool не был загружен должным образом, так как размер файла слишком мал
+  por: hdr10plus_tool não foi descarregado corretamente porque o tamanho do ficheiro é demasiado pequeno
+  swe: hdr10plus_tool laddades inte ner ordentligt eftersom filstorleken är för liten
+  pol: hdr10plus_tool nie został poprawnie pobrany, ponieważ rozmiar pliku jest zbyt mały
+  chs: 由于文件太小，无法正确下载 hdr10plus_tool
+  ukr: hdr10plus_tool не вдалося завантажити належним чином, оскільки розмір файлу занадто малий
+  kor: 파일 크기가 너무 작아서 hdr10plus_tool이 제대로 다운로드되지 않았습니다.
+  ron: hdr10plus_tool nu nu a fost descărcat corect deoarece dimensiunea fișierului este prea mică
+ignoring:
+  eng: ignoring
+  deu: Ignorieren von
+  fra: ignorant
+  ita: ignorare
+  spa: ignorando
+  jpn: 無視
+  rus: игнорирование
+  por: ignorando
+  swe: ignorerar
+  pol: ignorowanie
+  chs: 视而不见
+  ukr: ігнорування
+  kor: 무시
+  ron: ignorare
+latest release from:
+  eng: latest release from
+  deu: neueste Veröffentlichung von
+  fra: dernière publication de
+  ita: l'ultima uscita di
+  spa: último lanzamiento de
+  jpn: からの最新リリース
+  rus: последний релиз от
+  por: último lançamento da
+  swe: senaste utgåvan från
+  pol: najnowsze wydanie od
+  chs: 最新发布的
+  ukr: останній реліз від
+  kor: 최신 릴리스
+  ron: cea mai recentă versiune de la
+left:
+  eng: left
+  deu: links
+  fra: gauche
+  ita: sinistra
+  spa: izquierda
+  jpn: 左
+  rus: слева
+  por: esquerda
+  swe: vänster
+  pol: lewy
+  chs: 左侧
+  ukr: ліворуч
+  kor: 왼쪽
+  ron: stânga
+right:
+  eng: right
+  deu: rechts
+  fra: droit
+  ita: diritto
+  spa: derecha
+  jpn: 右
+  rus: справа
+  por: correto
+  swe: rätt
+  pol: prawo
+  chs: 对
+  ukr: Так.
+  kor: 오른쪽
+  ron: corect
+top:
+  eng: top
+  deu: top
+  fra: sommet
+  ita: top
+  spa: top
+  jpn: トップ
+  rus: топ
+  por: topo
+  swe: topp
+  pol: top
+  chs: 顶级
+  ukr: верхній
+  kor: top
+  ron: top

@@ -250,6 +250,13 @@ def app_setup(
 
         app.setStyleSheet(data)
 
+        # On Linux/KDE, applying a custom stylesheet can disrupt the platform
+        # icon theme for standard dialog icons (e.g., QFileDialog toolbar).
+        # Re-asserting the icon theme after stylesheet application restores them.
+        if sys.platform == "linux":
+            theme_name = QtGui.QIcon.themeName() or "breeze"
+            QtGui.QIcon.setThemeName(theme_name)
+
     logger.setLevel(app.fastflix.config.logging_level)
 
     # Initialize empty encoder/audio lists so Container can be created before startup tasks

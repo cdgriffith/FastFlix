@@ -11,6 +11,9 @@
 * Adding bottom status bar with animated icon showing encoding state, progress bar, and status messages
 * Adding startup tasks (FFmpeg config, GPU detect, HDR10+ download) running through the status bar with main window visible
 * Adding Terms and Agreements dialog shown on first startup requiring user acceptance before proceeding
+* Fixing #719 Unable to save/load film grain setting for SVT-AV1 (thanks to gabriel101x)
+* Fixing profile load/save for VVC period and threads, VP9 auto alt ref, lag in frames, AQ mode, and sharpness, rav1e photon noise, and AOM-AV1 denoise settings using integer as combo box index instead of matching by value
+* Fixing VCEEncC pre-analysis lookahead setting reading from wrong widget (pa_initqpsc instead of pa_lookahead) in HEVC, AV1, and AVC encoders
 * Fixing #716 Maximize button not working (thanks to roxerqermik and 19Battlestar65)
 * Fixing #349 NVEncC audio conversion losing multichannel layout for EAC3 (thanks to Wontell)
 * Fixing #384 Remove HDR leaving Dolby Vision metadata traces in Rigaya encoder output (thanks to end2endzone)

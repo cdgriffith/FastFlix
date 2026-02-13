@@ -299,6 +299,51 @@ class VP9(SettingPanel):
         settings.bitrate = q_value if encode_type == "bitrate" else None
         self.app.fastflix.current_video.video_settings.video_encoder_settings = settings
 
+    def _set_default_combo_from_value(self, widget_name, value, options):
+        """Set a combo box from model value where -1 means 'Default' and others match by first token."""
+        if value == -1:
+            self.widgets[widget_name].setCurrentIndex(0)  # "Default"
+            return
+        text = str(value)
+        for i, opt in enumerate(options):
+            if opt.split()[0] == text:
+                self.widgets[widget_name].setCurrentIndex(i)
+                return
+        self.widgets[widget_name].setCurrentIndex(0)
+
+    def update_profile(self):
+        auto_alt_ref_opts = ["Default", "0 (disabled)", "1", "2", "3", "4", "5", "6"]
+        lag_opts = ["Default", "0", "10", "16", "20", "25", "30", "40", "50"]
+        aq_opts = ["Default", "0 (none)", "1 (variance)", "2 (complexity)", "3 (cyclic)", "4 (equator360)"]
+        sharpness_opts = ["Default", "0", "1", "2", "3", "4", "5", "6", "7"]
+
+        self._set_default_combo_from_value(
+            "auto_alt_ref", self.app.fastflix.config.encoder_opt(self.profile_name, "auto_alt_ref"), auto_alt_ref_opts
+        )
+        self._set_default_combo_from_value(
+            "lag_in_frames", self.app.fastflix.config.encoder_opt(self.profile_name, "lag_in_frames"), lag_opts
+        )
+        self._set_default_combo_from_value(
+            "aq_mode", self.app.fastflix.config.encoder_opt(self.profile_name, "aq_mode"), aq_opts
+        )
+        self._set_default_combo_from_value(
+            "sharpness", self.app.fastflix.config.encoder_opt(self.profile_name, "sharpness"), sharpness_opts
+        )
+        super().update_profile()
+
+    def reload(self):
+        super().reload()
+        settings = self.app.fastflix.current_video.video_settings.video_encoder_settings
+        auto_alt_ref_opts = ["Default", "0 (disabled)", "1", "2", "3", "4", "5", "6"]
+        lag_opts = ["Default", "0", "10", "16", "20", "25", "30", "40", "50"]
+        aq_opts = ["Default", "0 (none)", "1 (variance)", "2 (complexity)", "3 (cyclic)", "4 (equator360)"]
+        sharpness_opts = ["Default", "0", "1", "2", "3", "4", "5", "6", "7"]
+
+        self._set_default_combo_from_value("auto_alt_ref", settings.auto_alt_ref, auto_alt_ref_opts)
+        self._set_default_combo_from_value("lag_in_frames", settings.lag_in_frames, lag_opts)
+        self._set_default_combo_from_value("aq_mode", settings.aq_mode, aq_opts)
+        self._set_default_combo_from_value("sharpness", settings.sharpness, sharpness_opts)
+
     def set_mode(self, x):
         self.mode = x.text()
         self.main.build_commands()

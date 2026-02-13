@@ -117,7 +117,7 @@ class VideoOptions(QtWidgets.QTabWidget):
                 f"QTabBar{{ font-size: {tab_font_pt}pt; }} "
                 "QTabBar::tab{ border-top: 2px solid transparent; } "
                 f"QTabBar::tab:selected{{ border-top: 2px solid {ONYX_COLORS['primary']}; }} "
-                "QLineEdit{ color: white; border-radius: 5px; min-height: 0px; } "
+                "QLineEdit{ color: white; border-radius: 5px; min-height: 1.1em; } "
                 "QTextEdit{ color: white; } "
                 "QPlainTextEdit{ color: white; } "
                 f"QComboBox{{ min-height: 1.1em; border-radius: 5px; {get_onyx_combobox_style()} }}"

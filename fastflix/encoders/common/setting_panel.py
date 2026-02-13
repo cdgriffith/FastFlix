@@ -95,6 +95,7 @@ class SettingPanel(QtWidgets.QWidget):
         return "<br>".join([t(x) for x in tooltip.split("\n") if x.strip()])
 
     def determine_default(self, widget_name, opt, items: List, raise_error: bool = False):
+        original_opt = opt
         if widget_name == "pix_fmt":
             items = [x.split(":")[1].strip() for x in items]
         elif widget_name in ("crf", "qp", "qscale"):
@@ -106,6 +107,24 @@ class SettingPanel(QtWidgets.QWidget):
             if not opt:
                 return 5
             items = [x.split("(")[0].split("-")[0].strip() for x in items]
+        elif widget_name in ("film_grain", "photon_noise"):
+            if opt is None or opt == 0:
+                return 0
+            opt = str(opt)
+            items = [x.split(" - ")[0].split(" ")[0].strip() for x in items]
+        elif widget_name == "period":
+            if opt is None:
+                return 0
+            opt = str(opt)
+        elif widget_name == "threads":
+            if opt == 0:
+                return 0
+            opt = str(opt)
+        elif widget_name in ("auto_alt_ref", "lag_in_frames", "aq_mode", "sharpness"):
+            if opt == -1:
+                return 0
+            opt = str(opt)
+            items = [x.split("(")[0].split()[0] for x in items]
         elif widget_name == "gpu":
             if opt == -1:
                 return 0
@@ -117,6 +136,10 @@ class SettingPanel(QtWidgets.QWidget):
                 for i, item in enumerate(items):
                     if item.split(" - ")[0].strip() == opt:
                         return i
+                # If original opt was an integer, use it directly as a combo box index
+                # (e.g. x265 aq_mode stores index 0-4, not a string label)
+                if isinstance(original_opt, int) and 0 <= original_opt < len(items):
+                    return original_opt
                 if raise_error:
                     raise FastFlixInternalException
                 else:
