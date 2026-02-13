@@ -17,6 +17,7 @@ enable_subtitles = True
 enable_audio = True
 enable_attachments = True
 enable_concat = True
+enable_data = True
 
 from fastflix.encoders.rav1e.command_builder import build  # noqa: F401,E402
 from fastflix.encoders.rav1e.settings_panel import RAV1E as settings_panel  # noqa: F401,E402

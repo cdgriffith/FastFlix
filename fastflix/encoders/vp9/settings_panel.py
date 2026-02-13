@@ -2,7 +2,7 @@
 import logging
 
 from box import Box
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
@@ -95,7 +95,7 @@ class VP9(SettingPanel):
         grid.addLayout(self.init_sharpness(), 9, 0, 1, 2)
 
         grid.setRowStretch(10, 1)
-        grid.addLayout(self._add_custom(), 11, 0, 1, 6)
+        custom_layout = self._add_custom()
 
         link_1 = link(
             "https://trac.ffmpeg.org/wiki/Encode/VP9", t("FFMPEG VP9 Encoding Guide"), app.fastflix.config.theme
@@ -107,9 +107,9 @@ class VP9(SettingPanel):
         )
 
         guide_label = QtWidgets.QLabel(f"{link_1} | {link_2}")
-        guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 12, 0, 1, 6)
+        custom_layout.addWidget(guide_label)
+        grid.addLayout(custom_layout, 11, 0, 1, 6)
         self.setLayout(grid)
         self.hide()
 

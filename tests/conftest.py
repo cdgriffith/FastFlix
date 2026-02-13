@@ -269,6 +269,8 @@ def fastflix_instance(sample_audio_tracks, sample_attachment_tracks, sample_subt
                     track.raw_info if hasattr(track, "raw_info") else Box({"index": track.index})
                     for track in sample_subtitle_tracks
                 ],
+                "data": [],
+                "attachment": [],
             }
         ),
         format=Box({}),

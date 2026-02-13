@@ -57,7 +57,7 @@ from fastflix.windows_tools import prevent_sleep_mode, allow_sleep_mode
 from fastflix.widgets.background_tasks import ThumbnailCreator
 from fastflix.widgets.status_bar import Task, STATE_ENCODING, STATE_ERROR, STATE_COMPLETE, STATE_IDLE
 from fastflix.widgets.video_options import VideoOptions
-from fastflix.widgets.windows.large_preview import LargePreview
+from fastflix.widgets.windows.crop_window import CropPreviewWindow
 
 logger = logging.getLogger("fastflix")
 
@@ -147,7 +147,6 @@ class MainWidgets(BaseModel):
     output_type_combo: QtWidgets.QComboBox = Field(default_factory=QtWidgets.QComboBox)
     output_directory_select: QtWidgets.QPushButton = None
     model_config = ConfigDict(arbitrary_types_allowed=True)
-    copy_data: QtWidgets.QCheckBox = None
 
     def items(self):
         for key in dir(self):
@@ -182,11 +181,12 @@ class Main(QtWidgets.QWidget):
         self.loading_video = True
         self.scale_updating = False
         self._top_bar_widgets = []  # widgets that share the same height in the top bar
+        self._preview_buttons = []  # square icon buttons that must stay fixed on scale change
         self.last_thumb_hash = ""
         self.page_updating = False
         self.previous_encoder_no_audio = False
 
-        self.large_preview = LargePreview(self)
+        self.crop_preview = CropPreviewWindow(self)
 
         self.notifier = Notifier(self, self.app, self.app.fastflix.status_queue)
         self.notifier.start()
@@ -232,7 +232,7 @@ class Main(QtWidgets.QWidget):
                 ]
             )
         self.source_video_path_widget = QtWidgets.QLineEdit(motto)
-        self.source_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.PATH_WIDGET))
+        self.source_video_path_widget.setMinimumHeight(scaler.scale(HEIGHTS.PATH_WIDGET))
         self.source_video_path_widget.setDisabled(True)
         self.source_video_path_widget.setStyleSheet(
             f"padding: 0 0 -1px 5px; color: rgb({get_text_color(self.app.fastflix.config.theme)})"
@@ -240,7 +240,7 @@ class Main(QtWidgets.QWidget):
 
         self.output_video_path_widget = QtWidgets.QLineEdit("")
         self.output_video_path_widget.setDisabled(True)
-        self.output_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.PATH_WIDGET))
+        self.output_video_path_widget.setMinimumHeight(scaler.scale(HEIGHTS.PATH_WIDGET))
         self.output_video_path_widget.setStyleSheet(
             f"padding: 0 0 -1px 5px; color: rgb({get_text_color(self.app.fastflix.config.theme)})"
         )
@@ -334,6 +334,11 @@ class Main(QtWidgets.QWidget):
         h = scaler.scale(HEIGHTS.TOP_BAR_BUTTON)
         for w in self._top_bar_widgets:
             w.setFixedHeight(h)
+        # Keep preview buttons square at the current scale
+        btn_size = scaler.scale(28)
+        for btn in self._preview_buttons:
+            btn.setFixedSize(btn_size, btn_size)
+            btn.setIconSize(QtCore.QSize(btn_size - 8, btn_size - 8))
 
     def fade_loop(self, percent=90):
         if self.input_video:
@@ -613,7 +618,7 @@ class Main(QtWidgets.QWidget):
         if self.app.fastflix.config.theme == "onyx":
             source_label.setStyleSheet("color: white;")
         shrink_text_to_fit(source_label)
-        self.source_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
+        self.source_video_path_widget.setMinimumHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         source_layout.addWidget(source_label)
         source_layout.addWidget(self.source_video_path_widget, stretch=True)
 
@@ -623,14 +628,14 @@ class Main(QtWidgets.QWidget):
         if self.app.fastflix.config.theme == "onyx":
             output_label.setStyleSheet("color: white;")
         shrink_text_to_fit(output_label)
-        self.output_video_path_widget.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
+        self.output_video_path_widget.setMinimumHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
 
         self.widgets.output_type_combo.setFixedWidth(scaler.scale(WIDTHS.OUTPUT_TYPE))
         if self.current_encoder:
             self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
-        self.widgets.output_type_combo.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
+        self.widgets.output_type_combo.setMinimumHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         if self.app.fastflix.config.theme == "onyx":
             self.widgets.output_type_combo.setStyleSheet(get_onyx_combobox_style())
         self.widgets.output_type_combo.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
@@ -639,11 +644,11 @@ class Main(QtWidgets.QWidget):
 
         out_dir_layout = QtWidgets.QHBoxLayout()
         out_dir_label = QtWidgets.QLabel(t("Folder"))
-        out_dir_label.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
+        out_dir_label.setMinimumHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         out_dir_label.setFixedWidth(scaler.scale(WIDTHS.SOURCE_LABEL))
         shrink_text_to_fit(out_dir_label)
         self.widgets.output_directory = QtWidgets.QPushButton()
-        self.widgets.output_directory.setFixedHeight(scaler.scale(HEIGHTS.OUTPUT_DIR))
+        self.widgets.output_directory.setMinimumHeight(scaler.scale(HEIGHTS.OUTPUT_DIR))
         self.widgets.output_directory.clicked.connect(self.save_directory)
 
         self.output_path_button = QtWidgets.QPushButton(icon=QtGui.QIcon(self.get_icon("onyx-output")))
@@ -716,7 +721,11 @@ class Main(QtWidgets.QWidget):
         tabs = QtWidgets.QTabWidget()
         tabs.setIconSize(QtCore.QSize(scaler.scale(20), scaler.scale(20)))
         if self.app.fastflix.config.theme == "onyx":
-            tabs.setStyleSheet("QLabel{ color: white; } QCheckBox{ color: white; }")
+            tabs.setStyleSheet(
+                "QLabel{ color: white; } QCheckBox{ color: white; } "
+                "QLineEdit{ border-radius: 5px; min-height: 0px; } "
+                "QComboBox{ border-radius: 5px; min-height: 0px; }"
+            )
 
         # Tab 1: Size (Resolution + Transforms)
         size_tab = QtWidgets.QWidget()
@@ -734,8 +743,7 @@ class Main(QtWidgets.QWidget):
         res_row = QtWidgets.QHBoxLayout()
         res_row.setSpacing(scaler.scale(4))
         res_label = QtWidgets.QLabel(t("Resolution"))
-        res_label.setFixedWidth(scaler.scale(68))
-        shrink_text_to_fit(res_label, padding=4)
+        res_label.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         res_row.addWidget(res_label)
 
         self.widgets.resolution_drop_down = QtWidgets.QComboBox()
@@ -782,10 +790,11 @@ class Main(QtWidgets.QWidget):
 
         # Column 1: Reset button and Seek mode
         time_col1 = QtWidgets.QVBoxLayout()
-        time_col1.setSpacing(scaler.scale(4))
+        time_col1.setSpacing(scaler.scale(10))
 
         time_reset = QtWidgets.QPushButton(t("Reset"))
-        time_reset.setFixedHeight(scaler.scale(22))
+        time_reset.setFixedHeight(scaler.scale(28))
+        time_reset.setFixedWidth(scaler.scale(80))
         time_reset.setToolTip(t("Reset start and end times"))
         time_reset.clicked.connect(self.reset_time)
         if self.app.fastflix.config.theme == "onyx":
@@ -795,7 +804,8 @@ class Main(QtWidgets.QWidget):
         self.widgets.fast_time = QtWidgets.QComboBox()
         self.widgets.fast_time.addItems([t("Fast"), t("Exact")])
         self.widgets.fast_time.setCurrentIndex(0)
-        self.widgets.fast_time.setFixedHeight(scaler.scale(22))
+        self.widgets.fast_time.setFixedHeight(scaler.scale(28))
+        self.widgets.fast_time.setFixedWidth(scaler.scale(80))
         if self.app.fastflix.config.theme == "onyx":
             self.widgets.fast_time.setStyleSheet(get_onyx_combobox_style())
         self.widgets.fast_time.setToolTip(
@@ -812,10 +822,11 @@ class Main(QtWidgets.QWidget):
 
         # Column 2: Start and End times stacked vertically
         time_col2 = QtWidgets.QVBoxLayout()
-        time_col2.setSpacing(scaler.scale(4))
+        time_col2.setSpacing(scaler.scale(14))
 
         self.widgets.start_time, start_row = self.build_hoz_int_field(
             t("Start"),
+            button_size=32,
             right_stretch=False,
             left_stretch=False,
             time_field=True,
@@ -824,6 +835,7 @@ class Main(QtWidgets.QWidget):
 
         self.widgets.end_time, end_row = self.build_hoz_int_field(
             t("End"),
+            button_size=32,
             left_stretch=False,
             right_stretch=False,
             time_field=True,
@@ -834,30 +846,39 @@ class Main(QtWidgets.QWidget):
         time_col2.addLayout(end_row)
         time_col2.addStretch(1)
 
-        # Column 3: "Set from preview" buttons
+        # Column 3: "Set from preview" buttons (must stay square on resize)
         time_col3 = QtWidgets.QVBoxLayout()
-        time_col3.setSpacing(scaler.scale(4))
+        time_col3.setSpacing(scaler.scale(14))
+
+        preview_btn_size = scaler.scale(28)
+        preview_btn_style = "padding: 0; margin: 0;"
 
         start_from_preview = QtWidgets.QPushButton()
         start_from_preview.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DesktopIcon))
-        start_from_preview.setFixedSize(scaler.scale(24), scaler.scale(28))
+        start_from_preview.setFixedSize(preview_btn_size, preview_btn_size)
+        start_from_preview.setIconSize(QtCore.QSize(preview_btn_size - 8, preview_btn_size - 8))
+        start_from_preview.setStyleSheet(preview_btn_style)
         start_from_preview.setToolTip(t("Set start time from preview position"))
         start_from_preview.clicked.connect(lambda: self.set_time_from_preview(self.widgets.start_time))
         self.buttons.append(start_from_preview)
+        self._preview_buttons.append(start_from_preview)
 
         end_from_preview = QtWidgets.QPushButton()
         end_from_preview.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DesktopIcon))
-        end_from_preview.setFixedSize(scaler.scale(24), scaler.scale(28))
+        end_from_preview.setFixedSize(preview_btn_size, preview_btn_size)
+        end_from_preview.setIconSize(QtCore.QSize(preview_btn_size - 8, preview_btn_size - 8))
+        end_from_preview.setStyleSheet(preview_btn_style)
         end_from_preview.setToolTip(t("Set end time from preview position"))
         end_from_preview.clicked.connect(lambda: self.set_time_from_preview(self.widgets.end_time))
         self.buttons.append(end_from_preview)
+        self._preview_buttons.append(end_from_preview)
 
         time_col3.addWidget(start_from_preview)
         time_col3.addWidget(end_from_preview)
         time_col3.addStretch(1)
 
         time_layout.addLayout(time_col1)
-        time_layout.addStretch(1)
+        time_layout.addSpacing(scaler.scale(20))
         time_layout.addLayout(time_col2)
         time_layout.addStretch(1)
         time_layout.addLayout(time_col3)
@@ -872,56 +893,68 @@ class Main(QtWidgets.QWidget):
 
         # Column 1: Auto and Reset buttons
         col1 = QtWidgets.QVBoxLayout()
-        col1.setSpacing(scaler.scale(4))
+        col1.setSpacing(scaler.scale(10))
         auto_crop = QtWidgets.QPushButton(t("Auto"))
-        auto_crop.setFixedHeight(scaler.scale(22))
+        auto_crop.setFixedHeight(scaler.scale(28))
         auto_crop.setToolTip(t("Automatically detect black borders"))
         auto_crop.clicked.connect(self.get_auto_crop)
         if self.app.fastflix.config.theme == "onyx":
             auto_crop.setStyleSheet(get_onyx_button_style())
         self.buttons.append(auto_crop)
         reset = QtWidgets.QPushButton(t("Reset"))
-        reset.setFixedHeight(scaler.scale(22))
+        reset.setFixedHeight(scaler.scale(28))
         reset.setToolTip(t("Reset crop"))
         reset.clicked.connect(self.reset_crop)
         if self.app.fastflix.config.theme == "onyx":
             reset.setStyleSheet(get_onyx_button_style())
         self.buttons.append(reset)
+        visual_crop = QtWidgets.QPushButton(t("Visual Crop"))
+        visual_crop.setFixedHeight(scaler.scale(28))
+        visual_crop.setToolTip(t("Visual Crop"))
+        visual_crop.clicked.connect(self.open_crop_preview)
+        if self.app.fastflix.config.theme == "onyx":
+            visual_crop.setStyleSheet(get_onyx_button_style())
+        self.buttons.append(visual_crop)
         col1.addWidget(auto_crop)
         col1.addWidget(reset)
+        col1.addWidget(visual_crop)
         col1.addStretch(1)
 
         # Crop input fields
-        field_width = scaler.scale(50)
-        field_height = scaler.scale(22)
+        field_width = scaler.scale(65)
+        field_height = scaler.scale(30)
 
         self.widgets.crop.top = QtWidgets.QLineEdit("0")
         self.widgets.crop.top.setValidator(only_int)
-        self.widgets.crop.top.setFixedSize(field_width, field_height)
+        self.widgets.crop.top.setFixedWidth(field_width)
+        self.widgets.crop.top.setFixedHeight(field_height)
         self.widgets.crop.top.setAlignment(QtCore.Qt.AlignCenter)
         self.widgets.crop.top.textChanged.connect(lambda: self.page_update())
 
         self.widgets.crop.bottom = QtWidgets.QLineEdit("0")
         self.widgets.crop.bottom.setValidator(only_int)
-        self.widgets.crop.bottom.setFixedSize(field_width, field_height)
+        self.widgets.crop.bottom.setFixedWidth(field_width)
+        self.widgets.crop.bottom.setFixedHeight(field_height)
         self.widgets.crop.bottom.setAlignment(QtCore.Qt.AlignCenter)
         self.widgets.crop.bottom.textChanged.connect(lambda: self.page_update())
 
         self.widgets.crop.left = QtWidgets.QLineEdit("0")
         self.widgets.crop.left.setValidator(only_int)
-        self.widgets.crop.left.setFixedSize(field_width, field_height)
+        self.widgets.crop.left.setFixedWidth(field_width)
+        self.widgets.crop.left.setFixedHeight(field_height)
         self.widgets.crop.left.setAlignment(QtCore.Qt.AlignCenter)
         self.widgets.crop.left.textChanged.connect(lambda: self.page_update())
 
         self.widgets.crop.right = QtWidgets.QLineEdit("0")
         self.widgets.crop.right.setValidator(only_int)
-        self.widgets.crop.right.setFixedSize(field_width, field_height)
+        self.widgets.crop.right.setFixedWidth(field_width)
+        self.widgets.crop.right.setFixedHeight(field_height)
         self.widgets.crop.right.setAlignment(QtCore.Qt.AlignCenter)
         self.widgets.crop.right.textChanged.connect(lambda: self.page_update())
 
         # Column 2: Top and Bottom
         col2 = QtWidgets.QVBoxLayout()
-        col2.setSpacing(scaler.scale(4))
+        col2.setSpacing(scaler.scale(12))
         top_row = QtWidgets.QHBoxLayout()
         top_row.addWidget(QtWidgets.QLabel(t("Top")))
         top_row.addWidget(self.widgets.crop.top)
@@ -934,7 +967,7 @@ class Main(QtWidgets.QWidget):
 
         # Column 3: Left and Right
         col3 = QtWidgets.QVBoxLayout()
-        col3.setSpacing(scaler.scale(4))
+        col3.setSpacing(scaler.scale(12))
         left_row = QtWidgets.QHBoxLayout()
         left_row.addWidget(QtWidgets.QLabel(t("Left")))
         left_row.addWidget(self.widgets.crop.left)
@@ -1001,7 +1034,7 @@ class Main(QtWidgets.QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         self.widgets.video_track = QtWidgets.QComboBox()
         self.widgets.video_track.addItems([])
-        self.widgets.video_track.setFixedHeight(scaler.scale(HEIGHTS.COMBO_BOX))
+        self.widgets.video_track.setMinimumHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         self.widgets.video_track.currentIndexChanged.connect(self.video_track_update)
         self.widgets.video_track.setStyleSheet("height: 5px")
         if self.app.fastflix.config.theme == "onyx":
@@ -1400,7 +1433,7 @@ class Main(QtWidgets.QWidget):
         if not time_field:
             widget.setFixedWidth(scaler.scale(38))
         else:
-            widget.setFixedWidth(scaler.scale(79))
+            widget.setFixedWidth(scaler.scale(105))
         widget.setStyleSheet("text-align: center")
         layout.addWidget(minus_button)
         layout.addWidget(widget)
@@ -1493,29 +1526,29 @@ class Main(QtWidgets.QWidget):
         self.thumb_time_overlay.setParent(self.preview_container)
         self.thumb_time_overlay.raise_()
 
-        # Large preview button at top right
-        self.large_preview_button = QtWidgets.QPushButton(self.preview_container)
+        # Visual crop button at top right
+        self.crop_preview_button = QtWidgets.QPushButton(self.preview_container)
         btn_size = scaler.scale(24)
-        self.large_preview_button.setFixedSize(btn_size, btn_size)
-        self.large_preview_button.setIcon(self.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_DesktopIcon))
-        self.large_preview_button.setToolTip(t("Large Preview"))
-        self.large_preview_button.clicked.connect(self.open_large_preview)
-        self.large_preview_button.setStyleSheet(
+        self.crop_preview_button.setFixedSize(btn_size, btn_size)
+        self.crop_preview_button.setIcon(QtGui.QIcon(get_icon("crop", self.app.fastflix.config.theme)))
+        self.crop_preview_button.setToolTip(t("Visual Crop"))
+        self.crop_preview_button.clicked.connect(self.open_crop_preview)
+        self.crop_preview_button.setStyleSheet(
             "QPushButton { background: rgba(0,0,0,128); border: none; border-radius: 4px; }"
             "QPushButton:hover { background: rgba(0,0,0,180); }"
         )
-        self.large_preview_button.raise_()
+        self.crop_preview_button.raise_()
 
         return self.preview_container
 
-    def open_large_preview(self):
-        if not self.initialized or not self.app.fastflix.current_video or self.large_preview.isVisible():
+    def open_crop_preview(self):
+        if not self.initialized or not self.app.fastflix.current_video or self.crop_preview.isVisible():
             return
-        self.large_preview.generate_image()
-        self.large_preview.show()
+        self.crop_preview.open_window()
+        self.crop_preview.show()
 
     def reposition_thumb_overlay(self):
-        """Reposition the thumb time overlay and large preview button."""
+        """Reposition the thumb time overlay and crop preview button."""
         if hasattr(self, "thumb_time_overlay") and hasattr(self, "preview_container"):
             container_rect = self.preview_container.rect()
             overlay_height = self.thumb_time_overlay.height()
@@ -1526,10 +1559,10 @@ class Main(QtWidgets.QWidget):
                 container_rect.width() - (2 * margin),
                 overlay_height,
             )
-        if hasattr(self, "large_preview_button") and hasattr(self, "preview_container"):
+        if hasattr(self, "crop_preview_button") and hasattr(self, "preview_container"):
             btn_margin = scaler.scale(15)
-            btn_size = self.large_preview_button.width()
-            self.large_preview_button.move(
+            btn_size = self.crop_preview_button.width()
+            self.crop_preview_button.move(
                 self.preview_container.width() - btn_size - btn_margin,
                 btn_margin,
             )
@@ -2315,7 +2348,6 @@ class Main(QtWidgets.QWidget):
             video_title=self.video_options.advanced.video_title.text(),
             video_track_title=self.video_options.advanced.video_track_title.text(),
             remove_hdr=self.remove_hdr,
-            # copy_data=self.widgets.copy_data.isChecked(),
         )
 
         self.video_options.get_settings()
@@ -2603,6 +2635,11 @@ class Main(QtWidgets.QWidget):
             logger.error(f"File does not exist {self.input_video}")
             return event.ignore()
 
+        # Defer heavy video loading so dropEvent returns immediately,
+        # releasing the Windows drag-drop COM lock (unfreezes Explorer).
+        QtCore.QTimer.singleShot(0, self._load_dropped_video)
+
+    def _load_dropped_video(self):
         self.source_video_path_widget.setText(str(self.input_video))
         self.video_path_widget.setText(str(self.input_video))
         try:

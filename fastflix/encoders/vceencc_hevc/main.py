@@ -15,6 +15,7 @@ with importlib.resources.as_file(ref) as icon_file:
 enable_subtitles = True
 enable_audio = True
 enable_attachments = False
+enable_data = True
 original_audio_tracks_only = True
 
 # Taken from VCEEncC64.exe --check-encoders

@@ -198,6 +198,11 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.sticky_tabs, row, 0, 1, 2)
         row += 1
 
+        self.auto_detect_subtitles = QtWidgets.QCheckBox(t("Auto-detect external subtitle files"))
+        self.auto_detect_subtitles.setChecked(self.app.fastflix.config.auto_detect_subtitles)
+        layout.addWidget(self.auto_detect_subtitles, row, 0, 1, 3)
+        row += 1
+
         # Default Output Directory
         self.default_output_dir = QtWidgets.QCheckBox(t("Use same output directory as source file"))
         layout.addWidget(self.default_output_dir, row, 0, 1, 2)
@@ -508,6 +513,7 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.disable_complete_message = self.disable_end_message.isChecked()
         self.app.fastflix.config.disable_deinterlace_check = self.disable_deinterlace_button.isChecked()
         self.app.fastflix.config.use_keyframes_for_preview = self.use_keyframes_for_preview.isChecked()
+        self.app.fastflix.config.auto_detect_subtitles = self.auto_detect_subtitles.isChecked()
 
         self.main.config_update(encoder_reload_needed=encoder_reload_needed)
         self.app.fastflix.config.save()

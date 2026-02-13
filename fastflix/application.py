@@ -42,6 +42,10 @@ def create_app(enable_scaling):
     main_app = FastFlixApp(sys.argv)
     main_app.allWindows()
     main_app.setApplicationDisplayName("FastFlix")
+
+    # On Linux, ensure an icon theme is set so QFileDialog toolbar icons appear
+    if sys.platform == "linux" and not QtGui.QIcon.themeName():
+        QtGui.QIcon.setThemeName("breeze")
     available_fonts = QtGui.QFontDatabase().families()
     font_preference = ["Roboto", "Segoe UI", "Ubuntu", "Open Sans", "Sans Serif"]
     selected_font = next((f for f in font_preference if f in available_fonts), "Sans Serif")

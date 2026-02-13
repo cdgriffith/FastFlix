@@ -54,6 +54,21 @@ class AttachmentTrack(BaseModel):
     filename: Optional[str] = None
 
 
+class DataTrack(BaseModel):
+    index: int  # Source stream index from FFprobe
+    outdex: int  # Output stream index
+    enabled: bool = True  # Whether to include in output
+    codec_name: str = ""  # e.g., "bin_data", "tmcd", "ttf"
+    codec_type: str = ""  # "data" or "attachment"
+    title: str = ""  # Track title from tags
+    mimetype: str = ""  # MIME type (attachments only)
+    filename: str = ""  # Filename (attachments only)
+    friendly_info: str = ""  # Display string for UI
+    raw_info: Optional[Union[dict, Box]] = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
 class EncoderSettings(BaseModel):
     max_muxing_queue_size: str = "1024"
     pix_fmt: str = "yuv420p10le"

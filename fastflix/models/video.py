@@ -11,6 +11,7 @@ from fastflix.models.encode import (
     AttachmentTrack,
     AudioTrack,
     CopySettings,
+    DataTrack,
     GIFSettings,
     GifskiSettings,
     FFmpegNVENCSettings,
@@ -212,6 +213,7 @@ class Video(BaseModel):
     audio_tracks: list[AudioTrack] = Field(default_factory=list)
     subtitle_tracks: list[SubtitleTrack] = Field(default_factory=list)
     attachment_tracks: list[AttachmentTrack] = Field(default_factory=list)
+    data_tracks: list[DataTrack] = Field(default_factory=list)
 
     status: Status = Field(default_factory=Status)
     uuid: str = Field(default_factory=lambda: str(uuid.uuid4()))

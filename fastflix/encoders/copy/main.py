@@ -16,6 +16,7 @@ enable_subtitles = True
 enable_audio = True
 enable_attachments = True
 enable_advanced = False
+enable_data = True
 
 from fastflix.encoders.copy.command_builder import build  # noqa: F401,E402
 from fastflix.encoders.copy.settings_panel import Copy as settings_panel  # noqa: F401,E402

@@ -2,6 +2,12 @@
 
 ## Version 6.1.0
 
+* Adding Visual Crop window for dragging crop edges directly on a video frame preview, with live overlay and divisible-by-8 snapping on save
+* Adding Data & Attachments tab for per-track control of data streams (timecodes, navigation) and non-image attachments (fonts)
+* Fixing UI scaling for Source/Folder/Filename text boxes, file extension dropdown, Resolution label, Start/End Time controls, and Crop input fields being too small
+* Adding language and disposition metadata parsing from auto-detected external subtitle filenames (e.g., video.forced.deu.srt)
+* Adding auto-detection of external subtitle files (.srt, .ass, .ssa, .vtt, .sup, .sub, .idx) when loading a video, configurable in Settings
+* Adding external subtitle support for Rigaya encoders (NVEncC, QSVEncC, VCEEncC) via --sub-source
 * Adding bottom status bar with animated icon showing encoding state, progress bar, and status messages
 * Adding startup tasks (FFmpeg config, GPU detect, HDR10+ download) running through the status bar with main window visible
 * Adding Terms and Agreements dialog shown on first startup requiring user acceptance before proceeding

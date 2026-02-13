@@ -16,6 +16,7 @@ enable_subtitles = False
 enable_audio = False
 enable_attachments = False
 enable_concat = False
+enable_data = False
 
 audio_formats = []
 

@@ -17,6 +17,7 @@ enable_subtitles = True
 enable_audio = True
 enable_attachments = True
 enable_concat = True
+enable_data = True
 
 from fastflix.encoders.svt_av1.command_builder import build  # noqa: F401,E402
 from fastflix.encoders.svt_av1.settings_panel import SVT_AV1 as settings_panel  # noqa: F401,E402

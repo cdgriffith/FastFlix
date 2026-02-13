@@ -75,7 +75,7 @@ class VCEENCC(VCEPanel):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 4, 4)
-        grid.addLayout(self._add_custom(title="Custom VCEEncC options", disable_both_passes=True), 11, 0, 1, 6)
+        custom_layout = self._add_custom(title="Custom VCEEncC options", disable_both_passes=True)
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_tier(), 1, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
@@ -128,10 +128,9 @@ class VCEENCC(VCEPanel):
                 app.fastflix.config.theme,
             )
         )
-
-        guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 12, 0, 1, 4)
+        custom_layout.addWidget(guide_label)
+        grid.addLayout(custom_layout, 11, 0, 1, 6)
 
         self.setLayout(grid)
         self.hide()

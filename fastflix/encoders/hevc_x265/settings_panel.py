@@ -128,7 +128,7 @@ class HEVC(SettingPanel):
 
         grid.setRowStretch(11, True)
 
-        grid.addLayout(self._add_custom(), 12, 0, 1, 6)
+        custom_layout = self._add_custom()
 
         link_1 = link(
             "https://trac.ffmpeg.org/wiki/Encode/H.265",
@@ -140,17 +140,12 @@ class HEVC(SettingPanel):
             t("CodeCalamity UHD HDR Encoding Guide"),
             app.fastflix.config.theme,
         )
-        link_3 = link(
-            "https://github.com/cdgriffith/FastFlix/wiki/HDR10-Plus-Metadata-Extraction",
-            t("HDR10+ Metadata Extraction"),
-            app.fastflix.config.theme,
-        )
 
-        guide_label = QtWidgets.QLabel(f"{link_1} | {link_2} | {link_3}")
-        guide_label.setAlignment(QtCore.Qt.AlignBottom)
+        guide_label = QtWidgets.QLabel(f"{link_1} | {link_2}")
         guide_label.setOpenExternalLinks(True)
+        custom_layout.addWidget(guide_label)
 
-        grid.addWidget(guide_label, 13, 0, 1, 6)
+        grid.addLayout(custom_layout, 12, 0, 1, 6)
 
         self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
         self.hdr10plus_ffmpeg_signal.connect(lambda x: self.ffmpeg_level.setText(x))
@@ -164,6 +159,15 @@ class HEVC(SettingPanel):
             button_action=lambda: self.dhdr10_update(),
             tooltip="dhdr10_info: Path to HDR10+ JSON metadata file",
         )
+        # Replace plain label with clickable wiki link
+        self.labels["hdr10plus_metadata"].setText(
+            link(
+                "https://github.com/cdgriffith/FastFlix/wiki/HDR10-Plus-Metadata-Extraction",
+                t("HDR10+ Metadata"),
+                self.app.fastflix.config.theme,
+            )
+        )
+        self.labels["hdr10plus_metadata"].setOpenExternalLinks(True)
         self.labels["hdr10plus_metadata"].setFixedWidth(200)
         return layout
 

@@ -17,6 +17,7 @@ from fastflix.widgets.panels.advanced_panel import AdvancedPanel
 from fastflix.widgets.panels.audio_panel import AudioList
 from fastflix.widgets.panels.command_panel import CommandList
 from fastflix.widgets.panels.cover_panel import CoverPanel
+from fastflix.widgets.panels.data_panel import DataList
 from fastflix.widgets.panels.debug_panel import DebugPanel
 from fastflix.widgets.panels.info_panel import InfoPanel
 from fastflix.widgets.panels.queue_panel import EncodingQueue
@@ -32,13 +33,14 @@ icons = {
     0: "onyx-quality",
     1: "onyx-audio",
     2: "onyx-cc",
-    3: "onyx-cover",
-    4: "onyx-advanced",
-    5: "onyx-source-details",
-    6: "onyx-raw-commands",
-    7: "onyx-status",
-    8: "onyx-queue",
-    9: "info",
+    3: "onyx-data",
+    4: "onyx-cover",
+    5: "onyx-advanced",
+    6: "onyx-source-details",
+    7: "onyx-raw-commands",
+    8: "onyx-status",
+    9: "onyx-queue",
+    10: "info",
 }
 
 
@@ -96,6 +98,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         self.tabBar().tabBarClicked.connect(self.change_tab)
         self.audio = AudioList(self, self.app)
         self.subtitles = SubtitleList(self, self.app)
+        self.data = DataList(self, self.app)
         self.status = StatusPanel(self, self.app)
         self.attachments = CoverPanel(self, self.app)
         self.queue = EncodingQueue(self, self.app)
@@ -114,10 +117,10 @@ class VideoOptions(QtWidgets.QTabWidget):
                 f"QTabBar{{ font-size: {tab_font_pt}pt; }} "
                 "QTabBar::tab{ border-top: 2px solid transparent; } "
                 f"QTabBar::tab:selected{{ border-top: 2px solid {ONYX_COLORS['primary']}; }} "
-                "QLineEdit{ color: white; } "
+                "QLineEdit{ color: white; border-radius: 5px; min-height: 0px; } "
                 "QTextEdit{ color: white; } "
                 "QPlainTextEdit{ color: white; } "
-                f"QComboBox{{ min-height: 1.1em; {get_onyx_combobox_style()} }}"
+                f"QComboBox{{ min-height: 1.1em; border-radius: 5px; {get_onyx_combobox_style()} }}"
                 "QComboBox:hover{ background-color: #6a8a96; } "
                 f"QComboBox QAbstractItemView{{ background-color: {ONYX_COLORS['dark_bg']}; border: 2px solid {ONYX_COLORS['input_bg']}; }} "
                 + scroll_btn_style
@@ -131,6 +134,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         )
         self.addTab(self.audio, QtGui.QIcon(get_icon("onyx-audio", app.fastflix.config.theme)), t("Audio"))
         self.addTab(self.subtitles, QtGui.QIcon(get_icon("onyx-cc", app.fastflix.config.theme)), t("Subtitles"))
+        self.addTab(self.data, QtGui.QIcon(get_icon("onyx-data", app.fastflix.config.theme)), t("Data"))
         self.addTab(self.attachments, QtGui.QIcon(get_icon("onyx-cover", app.fastflix.config.theme)), t("Cover"))
         self.addTab(self.advanced, QtGui.QIcon(get_icon("onyx-advanced", app.fastflix.config.theme)), t("Advanced"))
         self.addTab(
@@ -218,12 +222,14 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.setCurrentIndex(index)
         self.setTabEnabled(1, getattr(encoder, "enable_audio", True))
         self.setTabEnabled(2, getattr(encoder, "enable_subtitles", True))
-        self.setTabEnabled(3, getattr(encoder, "enable_attachments", True))
-        self.setTabEnabled(4, getattr(encoder, "enable_advanced", True))
+        self.setTabEnabled(3, getattr(encoder, "enable_data", False))
+        self.setTabEnabled(4, getattr(encoder, "enable_attachments", True))
+        self.setTabEnabled(5, getattr(encoder, "enable_advanced", True))
         self.setTabVisible(1, getattr(encoder, "enable_audio", True))
         self.setTabVisible(2, getattr(encoder, "enable_subtitles", True))
-        self.setTabVisible(3, getattr(encoder, "enable_attachments", True))
-        self.setTabVisible(4, getattr(encoder, "enable_advanced", True))
+        self.setTabVisible(3, getattr(encoder, "enable_data", False))
+        self.setTabVisible(4, getattr(encoder, "enable_attachments", True))
+        self.setTabVisible(5, getattr(encoder, "enable_advanced", True))
         self.selected = conversion
         self.current_settings.new_source()
         self.main.page_update(build_thumbnail=False)
@@ -256,6 +262,8 @@ class VideoOptions(QtWidgets.QTabWidget):
 
         if getattr(self.main.current_encoder, "enable_audio", False):
             self.audio.update_audio_settings()
+        if getattr(self.main.current_encoder, "enable_data", False):
+            self.data.get_settings()
         if getattr(self.main.current_encoder, "enable_attachments", False):
             self.attachments.update_cover_settings()
 
@@ -276,6 +284,8 @@ class VideoOptions(QtWidgets.QTabWidget):
             )
         if getattr(self.main.current_encoder, "enable_subtitles", False):
             self.subtitles.new_source()
+        if getattr(self.main.current_encoder, "enable_data", False):
+            self.data.new_source()
         if getattr(self.main.current_encoder, "enable_attachments", False):
             self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
         self.current_settings.new_source()
@@ -290,6 +300,8 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.audio.refresh()
         if getattr(self.main.current_encoder, "enable_subtitles", False):
             self.subtitles.refresh()
+        if getattr(self.main.current_encoder, "enable_data", False):
+            self.data.refresh()
         self.advanced.update_settings()
         # self.main.container.profile.update_settings()
 
@@ -342,11 +354,14 @@ class VideoOptions(QtWidgets.QTabWidget):
             audio_tracks = copy.deepcopy(self.app.fastflix.current_video.audio_tracks or [])
             subtitle_tracks = copy.deepcopy(self.app.fastflix.current_video.subtitle_tracks or [])
             attachment_tracks = copy.deepcopy(self.app.fastflix.current_video.attachment_tracks or [])
+            data_tracks = copy.deepcopy(self.app.fastflix.current_video.data_tracks or [])
             try:
                 if getattr(self.main.current_encoder, "enable_audio", False):
                     self.audio.reload(audio_tracks, self.audio_formats)
                 if getattr(self.main.current_encoder, "enable_subtitles", False):
                     self.subtitles.reload(subtitle_tracks)
+                if getattr(self.main.current_encoder, "enable_data", False):
+                    self.data.reload(data_tracks)
                 if getattr(self.main.current_encoder, "enable_attachments", False):
                     self.attachments.reload_from_queue(streams, attachment_tracks)
                 self.advanced.reset(settings=settings)
@@ -360,6 +375,7 @@ class VideoOptions(QtWidgets.QTabWidget):
         # self.current_settings.update_profile()
         self.audio.remove_all()
         self.subtitles.remove_all()
+        self.data.remove_all()
         self.attachments.clear_covers()
         self.commands.update_commands([])
         self.advanced.reset()

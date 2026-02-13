@@ -386,8 +386,8 @@ def test_build_subtitle_with_burn_in(sample_subtitle_tracks):
     assert "--sub-copy" in result and "2,3" in result
 
 
-def test_build_subtitle_filters_external_tracks(sample_subtitle_tracks):
-    """Test that build_subtitle filters out external subtitle tracks for rigaya encoders."""
+def test_build_subtitle_with_external_tracks(sample_subtitle_tracks):
+    """Test that build_subtitle generates --sub-source for external subtitle tracks."""
     from fastflix.models.encode import SubtitleTrack
 
     # Add an external track
@@ -409,11 +409,100 @@ def test_build_subtitle_filters_external_tracks(sample_subtitle_tracks):
 
     result = build_subtitle(tracks_with_external, subtitle_streams, 1080)
 
-    # External track should not appear in the output
-    # Only embedded tracks should be processed
-    assert "french" not in str(result)
+    # External track should use --sub-source
+    assert "--sub-source" in result
+    assert "/path/to/french.srt" in result
     # Embedded tracks should still be present
-    assert "--sub-copy" in result or "--vpp-subburn" in result
+    assert "--sub-copy" in result
+
+
+def test_build_subtitle_external_only():
+    """Test build_subtitle with only external tracks."""
+    from fastflix.models.encode import SubtitleTrack
+
+    external_track = SubtitleTrack(
+        index=0,
+        outdex=0,
+        language="eng",
+        subtitle_type="text",
+        enabled=True,
+        burn_in=False,
+        long_name="[EXT] english.srt",
+        external=True,
+        file_path="/path/to/english.srt",
+    )
+
+    result = build_subtitle([external_track], [], 1080)
+
+    assert "--sub-source" in result
+    assert "/path/to/english.srt" in result
+    assert "--sub-copy" not in result
+
+
+def test_build_subtitle_external_burn_in():
+    """Test build_subtitle with external track set to burn-in."""
+    from fastflix.models.encode import SubtitleTrack
+
+    external_track = SubtitleTrack(
+        index=0,
+        outdex=0,
+        language="eng",
+        subtitle_type="text",
+        enabled=True,
+        burn_in=True,
+        long_name="[EXT] english.srt",
+        external=True,
+        file_path="/path/to/english.srt",
+    )
+
+    result = build_subtitle([external_track], [], 1080)
+
+    assert "--vpp-subburn" in result
+    assert "filename=/path/to/english.srt" in result
+    assert "--sub-source" not in result
+
+
+def test_build_subtitle_external_burn_in_4k():
+    """Test build_subtitle with external burn-in at 4K resolution includes scale."""
+    from fastflix.models.encode import SubtitleTrack
+
+    external_track = SubtitleTrack(
+        index=0,
+        outdex=0,
+        language="eng",
+        subtitle_type="text",
+        enabled=True,
+        burn_in=True,
+        long_name="[EXT] english.srt",
+        external=True,
+        file_path="/path/to/english.srt",
+    )
+
+    result = build_subtitle([external_track], [], 2160)
+
+    assert "--vpp-subburn" in result
+    assert "filename=/path/to/english.srt,scale=2.0" in result
+
+
+def test_build_subtitle_external_disabled():
+    """Test build_subtitle with disabled external tracks returns empty."""
+    from fastflix.models.encode import SubtitleTrack
+
+    external_track = SubtitleTrack(
+        index=0,
+        outdex=0,
+        language="eng",
+        subtitle_type="text",
+        enabled=False,
+        burn_in=False,
+        long_name="[EXT] english.srt",
+        external=True,
+        file_path="/path/to/english.srt",
+    )
+
+    result = build_subtitle([external_track], [], 1080)
+
+    assert result == []
 
 
 def test_build_subtitle_with_4k_scaling(sample_subtitle_tracks):

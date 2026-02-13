@@ -17,6 +17,7 @@ enable_subtitles = True
 enable_audio = True
 enable_attachments = True
 enable_concat = True
+enable_data = True
 
 from fastflix.encoders.ffmpeg_hevc_nvenc.command_builder import build  # noqa: F401,E402
 from fastflix.encoders.ffmpeg_hevc_nvenc.settings_panel import NVENC as settings_panel  # noqa: F401,E402

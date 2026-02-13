@@ -41,12 +41,12 @@ class BaseHeights:
     """Base height values (~25% smaller than original for better default scaling)."""
 
     TOP_BAR_BUTTON: int = 38
-    PATH_WIDGET: int = 20
-    COMBO_BOX: int = 22
+    PATH_WIDGET: int = 28
+    COMBO_BOX: int = 28
     PANEL_ITEM: int = 62
     SCROLL_MIN: int = 150
     PREVIEW_MIN: int = 195
-    OUTPUT_DIR: int = 18
+    OUTPUT_DIR: int = 26
     HEADER: int = 23
     SPACER_TINY: int = 2
     SPACER_SMALL: int = 4

@@ -167,6 +167,7 @@ def generate_ending(
     output_fps: Union[str, None] = None,
     disable_rotate_metadata=False,
     copy_data=False,
+    data_tracks=None,
     **_,
 ):
     command = []
@@ -196,7 +197,22 @@ def generate_ending(
     if cover:
         command.extend(cover)
 
-    if copy_data:
+    if data_tracks:
+        has_data = False
+        has_attachment = False
+        for track in data_tracks:
+            if not track.enabled:
+                continue
+            command.extend(["-map", f"0:{track.index}"])
+            if track.codec_type == "data":
+                has_data = True
+            elif track.codec_type == "attachment":
+                has_attachment = True
+        if has_data:
+            command.extend(["-c:d", "copy"])
+        if has_attachment:
+            command.extend(["-c:t", "copy"])
+    elif copy_data:
         command.extend(["-map", "0:d", "-c:d", "copy"])
 
     if output_video and not null_ending:
@@ -411,6 +427,7 @@ def generate_all(
         cover=attachments_cmd,
         output_video=fastflix.current_video.video_settings.output_path,
         disable_rotate_metadata=encoder == "copy",
+        data_tracks=fastflix.current_video.data_tracks,
         **fastflix.current_video.video_settings.model_dump(),
     )
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
 from pathlib import Path
 from typing import Union
 
@@ -18,6 +19,8 @@ from fastflix.ui_styles import get_onyx_disposition_style
 from fastflix.widgets.background_tasks import ExtractSubtitleSRT
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.widgets.windows.disposition import Disposition
+
+logger = logging.getLogger("fastflix")
 
 disposition_options = [
     "none",
@@ -381,7 +384,76 @@ ext_subtitle_types = {
     ".ssa": "text",
     ".vtt": "text",
     ".sup": "picture",
+    ".sub": "picture",
+    ".idx": "picture",
 }
+
+SUBTITLE_DISPOSITION_TAGS = {
+    "forced": {"disposition": "forced", "title": "Forced"},
+    "sdh": {"disposition": "hearing_impaired", "title": "SDH"},
+    "hi": {"disposition": "hearing_impaired", "title": "SDH"},
+    "cc": {"disposition": "hearing_impaired", "title": "CC"},
+    "default": {"disposition": "default", "title": ""},
+    "commentary": {"disposition": "comment", "title": "Commentary"},
+    "comment": {"disposition": "comment", "title": "Commentary"},
+}
+
+SUBTITLE_DESCRIPTOR_TAGS = {
+    "normal": "Normal",
+    "full": "Full",
+}
+
+
+def parse_subtitle_filename_metadata(video_stem: str, subtitle_filename: str, subtitle_ext: str) -> dict:
+    """Parse language and disposition metadata from subtitle filename segments.
+
+    Given a video stem like "my video" and subtitle filename "my video.forced.deu.srt",
+    extracts the middle segments ("forced.deu") and classifies each as a disposition tag,
+    descriptor tag, or language code.
+
+    Returns dict with keys: language (str), title (str), dispositions (dict).
+    """
+    result = {"language": "", "title": "", "dispositions": {}}
+
+    if not subtitle_filename.startswith(video_stem):
+        return result
+
+    # Strip video stem prefix and subtitle extension to get middle segment
+    middle = subtitle_filename[len(video_stem) :]
+    if middle.lower().endswith(subtitle_ext.lower()):
+        middle = middle[: -len(subtitle_ext)]
+
+    # Strip leading dots
+    middle = middle.lstrip(".")
+    if not middle:
+        return result
+
+    segments = middle.split(".")
+    for segment in segments:
+        lower = segment.lower()
+
+        # Check disposition tags first (prevents "hi" → Hindi collision)
+        if lower in SUBTITLE_DISPOSITION_TAGS:
+            tag_info = SUBTITLE_DISPOSITION_TAGS[lower]
+            result["dispositions"][tag_info["disposition"]] = True
+            if tag_info["title"] and not result["title"]:
+                result["title"] = tag_info["title"]
+            continue
+
+        # Check descriptor tags (title-only, no disposition)
+        if lower in SUBTITLE_DESCRIPTOR_TAGS:
+            if not result["title"]:
+                result["title"] = SUBTITLE_DESCRIPTOR_TAGS[lower]
+            continue
+
+        # Try as a language code
+        try:
+            lang = Language(segment)
+            result["language"] = lang.pt2b
+        except InvalidLanguageValue:
+            pass
+
+    return result
 
 
 class ExternalSubtitle(QtWidgets.QTabWidget):
@@ -602,24 +674,29 @@ class SubtitleList(FlixList):
         filenames, _ = QtWidgets.QFileDialog.getOpenFileNames(
             self,
             caption=t("Select Subtitle File"),
-            filter=f"{t('Subtitle Files')} (*.srt *.ass *.ssa *.vtt *.sup)",
+            filter=f"{t('Subtitle Files')} (*.srt *.ass *.ssa *.vtt *.sup *.sub *.idx)",
         )
         if not filenames:
             return
+        video_stem = Path(self.app.fastflix.current_video.source).stem
         for filename in filenames:
-            ext = Path(filename).suffix.lower()
+            sub_path = Path(filename)
+            ext = sub_path.suffix.lower()
             sub_type = ext_subtitle_types.get(ext, "text")
             index = len(self.app.fastflix.current_video.subtitle_tracks)
             audio_end = len([x for x in self.app.fastflix.current_video.audio_tracks if x.enabled])
+            parsed = parse_subtitle_filename_metadata(video_stem, sub_path.name, sub_path.suffix)
             self.app.fastflix.current_video.subtitle_tracks.append(
                 SubtitleTrack(
                     index=0,
                     outdex=audio_end + index + 1,
                     burn_in=False,
-                    language="",
+                    language=parsed["language"],
+                    title=parsed["title"],
+                    dispositions=parsed["dispositions"],
                     subtitle_type=sub_type,
                     enabled=True,
-                    long_name=f"[EXT] {Path(filename).name}",
+                    long_name=f"[EXT] {sub_path.name}",
                     external=True,
                     file_path=str(filename),
                 )
@@ -707,6 +784,49 @@ class SubtitleList(FlixList):
                 enabled=enabled,
             )
             self.tracks.append(new_item)
+
+        if self.app.fastflix.config.auto_detect_subtitles:
+            try:
+                video_path = Path(self.app.fastflix.current_video.source)
+                video_dir = video_path.parent
+                video_stem = video_path.stem
+                detected_files = sorted(
+                    f
+                    for f in video_dir.iterdir()
+                    if f.name.startswith(video_stem) and f.suffix.lower() in ext_subtitle_types and f != video_path
+                )
+                for sub_file in detected_files:
+                    ext = sub_file.suffix.lower()
+                    sub_type = ext_subtitle_types.get(ext, "text")
+                    idx = len(self.app.fastflix.current_video.subtitle_tracks)
+                    audio_end = len(self.app.fastflix.current_video.audio_tracks)
+                    parsed = parse_subtitle_filename_metadata(video_stem, sub_file.name, sub_file.suffix)
+                    self.app.fastflix.current_video.subtitle_tracks.append(
+                        SubtitleTrack(
+                            index=0,
+                            outdex=audio_end + idx + 1,
+                            burn_in=False,
+                            language=parsed["language"],
+                            title=parsed["title"],
+                            dispositions=parsed["dispositions"],
+                            subtitle_type=sub_type,
+                            enabled=True,
+                            long_name=f"[EXT] {sub_file.name}",
+                            external=True,
+                            file_path=str(sub_file),
+                        )
+                    )
+                    new_widget = ExternalSubtitle(
+                        app=self.app,
+                        parent=self,
+                        index=idx,
+                        first=False,
+                        enabled=True,
+                    )
+                    self.tracks.append(new_widget)
+            except OSError:
+                logger.warning("Failed to scan directory for external subtitle files", exc_info=True)
+
         if self.tracks:
             self.tracks[0].set_first()
             self.tracks[-1].set_last()

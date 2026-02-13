@@ -17,6 +17,7 @@ enable_subtitles = False
 enable_audio = True
 enable_attachments = False
 enable_concat = True
+enable_data = True
 
 from fastflix.encoders.h264_videotoolbox.command_builder import build  # noqa: F401,E402
 from fastflix.encoders.h264_videotoolbox.settings_panel import H264VideoToolbox as settings_panel  # noqa: F401,E402

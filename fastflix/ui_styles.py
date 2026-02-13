@@ -29,6 +29,10 @@ def get_scaled_stylesheet(theme: str) -> str:
     # when fonts propagate to child widgets. Convert px to pt (at 96 DPI: pt = px * 0.75).
     font_size_pt = max(6, round(scaler.scale_font(FONTS.LARGE) * 0.75))
     border_radius = scaler.scale(10)
+    # Ensure text inputs are always tall enough for their rounded edges.
+    # The min-height must be at least 2 * border_radius so the left/right
+    # semicircles have room to render without clipping.
+    input_min_height = 2 * border_radius + scaler.scale(4)
 
     base = f"QWidget {{ font-size: {font_size_pt}pt; }}"
 
@@ -41,10 +45,11 @@ def get_scaled_stylesheet(theme: str) -> str:
                 background-color: #4a555e;
                 color: white;
                 border-radius: {border_radius}px;
+                min-height: {input_min_height}px;
             }}
             QTextEdit {{ background-color: #4a555e; color: white; }}
             QTabBar::tab {{ background-color: #4f5962; }}
-            QComboBox {{ border-radius: {border_radius}px; }}
+            QComboBox {{ border-radius: {border_radius}px; min-height: {input_min_height}px; }}
             QScrollArea {{ border: 1px solid #919191; }}
         """
 

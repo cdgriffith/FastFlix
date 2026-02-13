@@ -87,6 +87,14 @@ class FlixList(QtWidgets.QWidget):
                 and isinstance(self.app.fastflix.current_video.audio_tracks, list)
             ):
                 start = len([x for x in self.app.fastflix.current_video.audio_tracks if x.enabled]) + 1
+        elif self.list_type == "data":
+            # After video + audio + subtitles
+            if self.app.fastflix.current_video and self.app.fastflix.current_video.video_settings:
+                start = 1  # video
+                if isinstance(self.app.fastflix.current_video.audio_tracks, list):
+                    start += len([x for x in self.app.fastflix.current_video.audio_tracks if x.enabled])
+                if isinstance(self.app.fastflix.current_video.subtitle_tracks, list):
+                    start += len([x for x in self.app.fastflix.current_video.subtitle_tracks if x.enabled])
 
         for index, widget in enumerate(self.tracks, start):
             self.inner_layout.addWidget(widget)

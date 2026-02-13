@@ -2,7 +2,7 @@
 import logging
 
 from box import Box
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
@@ -74,7 +74,6 @@ class AVC(SettingPanel):
         self.updating_settings = False
 
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
-        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 1, 0, 1, 2)
@@ -89,6 +88,7 @@ class AVC(SettingPanel):
 
         grid.setRowStretch(9, 1)
 
+        custom_layout = self._add_custom()
         guide_label = QtWidgets.QLabel(
             link(
                 "https://trac.ffmpeg.org/wiki/Encode/H.264",
@@ -96,9 +96,9 @@ class AVC(SettingPanel):
                 app.fastflix.config.theme,
             )
         )
-        guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, 1, 6)
+        custom_layout.addWidget(guide_label)
+        grid.addLayout(custom_layout, 10, 0, 1, 6)
 
         self.setLayout(grid)
         self.hide()

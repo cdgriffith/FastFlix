@@ -17,6 +17,7 @@ enable_subtitles = True
 enable_audio = True
 enable_attachments = True
 enable_concat = True
+enable_data = True
 
 from fastflix.encoders.vvc.command_builder import build  # noqa: F401,E402
 from fastflix.encoders.vvc.settings_panel import VVC as settings_panel  # noqa: F401,E402

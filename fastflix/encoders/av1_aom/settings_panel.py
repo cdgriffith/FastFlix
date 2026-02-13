@@ -88,14 +88,14 @@ class AV1(SettingPanel):
         self.ffmpeg_level = QtWidgets.QLabel()
         grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
 
-        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
-        grid.setRowStretch(9, 1)
+        custom_layout = self._add_custom()
         guide_label = QtWidgets.QLabel(
             link("https://trac.ffmpeg.org/wiki/Encode/AV1", t("FFMPEG AV1 Encoding Guide"), app.fastflix.config.theme)
         )
-        guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, -1, 1)
+        custom_layout.addWidget(guide_label)
+        grid.addLayout(custom_layout, 10, 0, 1, 6)
+        grid.setRowStretch(9, 1)
 
         self.hdr10plus_signal.connect(self.done_hdr10plus_extract)
         self.hdr10plus_ffmpeg_signal.connect(lambda x: self.ffmpeg_level.setText(x))

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtWidgets
 
 from fastflix.encoders.common.setting_panel import VAAPIPanel
 from fastflix.language import t
@@ -61,14 +61,14 @@ class VAAPIH264(VAAPIPanel):
         more_line.addLayout(self.init_low_power())
         grid.addLayout(more_line, 5, 0, 1, 6)
 
-        grid.addLayout(self._add_custom(disable_both_passes=True), 10, 0, 1, 6)
         grid.setRowStretch(9, 1)
+        custom_layout = self._add_custom(disable_both_passes=True)
         guide_label = QtWidgets.QLabel(
             link("https://trac.ffmpeg.org/wiki/Hardware/VAAPI", t("VAAPI FFmpeg encoding"), app.fastflix.config.theme)
         )
-        guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addWidget(guide_label, 11, 0, 1, 6)
+        custom_layout.addWidget(guide_label)
+        grid.addLayout(custom_layout, 10, 0, 1, 6)
         self.setLayout(grid)
         self.hide()
 

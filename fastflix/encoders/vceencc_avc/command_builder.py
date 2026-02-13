@@ -9,6 +9,7 @@ from fastflix.models.fastflix import FastFlix
 from fastflix.encoders.common.encc_helpers import (
     build_subtitle,
     build_audio,
+    build_data,
     rigaya_auto_options,
     rigaya_avformat_reader,
     pa_builder,
@@ -140,6 +141,9 @@ def build(fastflix: FastFlix):
 
     command.extend(build_audio(video.audio_tracks, video.streams.audio))
     command.extend(build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height))
+    command.extend(
+        build_data(video.data_tracks, getattr(video.streams, "data", []), getattr(video.streams, "attachment", []))
+    )
 
     if settings.extra:
         command.extend(shlex.split(settings.extra))

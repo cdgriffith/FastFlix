@@ -3,7 +3,7 @@
 import logging
 
 from box import Box
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtWidgets
 
 from fastflix.encoders.common.setting_panel import SettingPanel
 from fastflix.language import t
@@ -81,6 +81,7 @@ class SVT_AV1_AVIF(SettingPanel):
         grid.addLayout(self.init_svtav1_params(), 5, 2, 1, 4)
 
         grid.setRowStretch(8, 1)
+        custom_layout = self._add_custom()
         guide_label = QtWidgets.QLabel(
             link(
                 "https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Ffmpeg.md",
@@ -88,10 +89,9 @@ class SVT_AV1_AVIF(SettingPanel):
                 app.fastflix.config.theme,
             )
         )
-        guide_label.setAlignment(QtCore.Qt.AlignBottom)
         guide_label.setOpenExternalLinks(True)
-        grid.addLayout(self._add_custom(), 10, 0, 1, 6)
-        grid.addWidget(guide_label, 11, 0, -1, 1)
+        custom_layout.addWidget(guide_label)
+        grid.addLayout(custom_layout, 10, 0, 1, 6)
         self.setLayout(grid)
         self.hide()
 

@@ -1,0 +1,15 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Bottom-left to top-right arm -->
+  <path d="M56 88 V184 H152"
+        stroke="#0B2C5F"
+        stroke-width="20"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <!-- Top-left to bottom-right overlapping arm -->
+  <path d="M104 40 H200 V136"
+        stroke="#0B2C5F"
+        stroke-width="20"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+</svg>
