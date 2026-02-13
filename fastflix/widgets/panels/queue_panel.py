@@ -551,6 +551,28 @@ class EncodingQueue(FlixList):
         if not self.main.build_commands():
             return False
 
+        # Re-resolve output filename with full encoder variables if user hasn't manually edited it
+        current_video = self.app.fastflix.current_video
+        if current_video.video_settings.template_generated_name and current_video.video_settings.output_path:
+            current_stem = current_video.video_settings.output_path.stem
+            if current_stem == current_video.video_settings.template_generated_name:
+                from fastflix.naming import resolve_pre_encode_variables, truncate_filename
+
+                gen_string = self.app.fastflix.config.output_name_format or "{source}-fastflix-{rand_4}"
+                new_name = resolve_pre_encode_variables(
+                    gen_string,
+                    current_video.source,
+                    video=current_video,
+                    encoder_settings=current_video.video_settings.video_encoder_settings,
+                    video_settings=current_video.video_settings,
+                )
+                directory = str(current_video.video_settings.output_path.parent)
+                extension = current_video.video_settings.output_path.suffix
+                new_name, _ = truncate_filename(new_name, directory, extension)
+                new_path = current_video.video_settings.output_path.with_stem(new_name)
+                current_video.video_settings.output_path = new_path
+                current_video.video_settings.template_generated_name = new_name
+
         for video in self.app.fastflix.conversion_list:
             if video.status.complete:
                 continue

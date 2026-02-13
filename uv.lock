@@ -266,7 +266,7 @@ dev = [
     { name = "types-requests", specifier = ">=2.32" },
     { name = "types-setuptools", specifier = ">=80.9" },
     { name = "typing-extensions", specifier = ">=4.14" },
-    { name = "wheel", specifier = ">=0.45" },
+    { name = "wheel", specifier = ">=0.46" },
 ]
 
 [[package]]

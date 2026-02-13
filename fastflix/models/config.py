@@ -265,6 +265,7 @@ class Config(BaseModel):
     sane_audio_selection: list = Field(
         default_factory=lambda: [
             "aac",
+            "aac_mf",
             "ac3",
             "alac",
             "dca",

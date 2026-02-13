@@ -57,7 +57,7 @@ dev = [
     "types-requests>=2.32",
     "types-setuptools>=80.9",
     "typing-extensions>=4.14",
-    "wheel>=0.45",
+    "wheel>=0.46",
 ]
 
 [tool.setuptools.dynamic]

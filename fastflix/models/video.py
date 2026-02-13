@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import uuid
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Union, Tuple
 
@@ -113,6 +114,7 @@ class VideoSettings(BaseModel):
     contrast: Optional[str] = None
     saturation: Optional[str] = None
     copy_data: bool = False
+    template_generated_name: str = ""
     video_encoder_settings: Optional[
         Union[
             x265Settings,
@@ -181,6 +183,7 @@ class Status(BaseModel):
     cancelled: bool = False
     subtitle_fixed: bool = False
     current_command: int = 0
+    encode_started_at: Optional[datetime] = None
 
     @property
     def ready(self) -> bool:
@@ -194,6 +197,7 @@ class Status(BaseModel):
         self.cancelled = False
         self.subtitle_fixed = False
         self.current_command = 0
+        self.encode_started_at = None
 
 
 class Video(BaseModel):

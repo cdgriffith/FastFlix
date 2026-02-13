@@ -39,6 +39,7 @@ channels_to_layout = {
 # Mapping of codec names to friendly display names
 codec_display_names = {
     "aac": "AAC",
+    "aac_mf": "AAC (MF)",
     "ac3": "AC3",
     "eac3": "E-AC3",
     "truehd": "TrueHD",

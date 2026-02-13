@@ -2,6 +2,8 @@
 
 ## Version 6.1.0
 
+* Adding Output Naming settings tab with template editor, clickable variable chips, live preview, and validation for customizing output filenames with 23 pre-encode variables
+* Adding always-on ffprobe validation of output files after every encode to catch silent failures
 * Adding Visual Crop window for dragging crop edges directly on a video frame preview, with live overlay and divisible-by-8 snapping on save
 * Adding Data & Attachments tab for per-track control of data streams (timecodes, navigation) and non-image attachments (fonts)
 * Fixing UI scaling for Source/Folder/Filename text boxes, file extension dropdown, Resolution label, Start/End Time controls, and Crop input fields being too small

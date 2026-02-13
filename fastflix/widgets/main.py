@@ -244,7 +244,12 @@ class Main(QtWidgets.QWidget):
         self.output_video_path_widget.setStyleSheet(
             f"padding: 0 0 -1px 5px; color: rgb({get_text_color(self.app.fastflix.config.theme)})"
         )
-        self.output_video_path_widget.setMaxLength(220)
+        self.output_video_path_widget.setMaxLength(250)
+
+        self._filename_was_truncated = False
+        self.filename_truncation_warning = QtWidgets.QLabel()
+        self.filename_truncation_warning.setStyleSheet("color: #cc8800; font-size: 11px; padding-left: 5px;")
+        self.filename_truncation_warning.hide()
 
         # self.output_video_path_widget.textChanged.connect(lambda x: self.page_update(build_thumbnail=False))
         self.video_path_widget.setEnabled(False)
@@ -665,6 +670,7 @@ class Main(QtWidgets.QWidget):
         file_group_layout.addLayout(source_layout)
         file_group_layout.addLayout(out_dir_layout)
         file_group_layout.addLayout(output_layout)
+        file_group_layout.addWidget(self.filename_truncation_warning)
 
         # Video info bar (codec, bit depth, color space, chroma subsampling, HDR10, HDR10+)
         self.video_codec_label = QtWidgets.QLabel()
@@ -1629,6 +1635,7 @@ class Main(QtWidgets.QWidget):
             self.output_video_path_widget.setDisabled(True)
             self.widgets.output_directory.setText("")
             self.output_path_button.setDisabled(True)
+            self.filename_truncation_warning.hide()
         self.page_update()
 
     def open_many(self, paths: list):
@@ -1673,10 +1680,8 @@ class Main(QtWidgets.QWidget):
 
     @property
     def generate_output_filename(self):
-        source = self.input_video.stem
-        iso_datetime = datetime.datetime.now().isoformat().replace(":", "-").split(".")[0]
-        rand_4 = secrets.token_hex(2)
-        rand_8 = secrets.token_hex(4)
+        from fastflix.naming import resolve_pre_encode_variables, truncate_filename
+
         out_loc = f"{Path('~').expanduser()}{os.sep}"
         if tx := self.widgets.output_directory.text():
             out_loc = f"{tx}{os.sep}"
@@ -1687,7 +1692,41 @@ class Main(QtWidgets.QWidget):
 
         gen_string = self.app.fastflix.config.output_name_format or "{source}-fastflix-{rand_4}"
 
-        return out_loc, gen_string.format(source=source, datetime=iso_datetime, rand_4=rand_4, rand_8=rand_8, ext="")
+        video = getattr(self.app.fastflix, "current_video", None)
+        encoder_settings = None
+        video_settings = None
+        if video:
+            video_settings = video.video_settings
+            encoder_settings = video.video_settings.video_encoder_settings
+
+        name = resolve_pre_encode_variables(
+            gen_string,
+            self.input_video,
+            video=video,
+            encoder_settings=encoder_settings,
+            video_settings=video_settings,
+        )
+
+        extension = ""
+        if self.current_encoder:
+            try:
+                extension = self.widgets.output_type_combo.currentText()
+            except Exception:
+                extension = self.current_encoder.video_extensions[0] if self.current_encoder.video_extensions else ""
+        name, was_truncated = truncate_filename(name, out_loc, extension)
+        self._filename_was_truncated = was_truncated
+
+        return out_loc, name
+
+    def _update_truncation_warning(self):
+        """Show or hide the filename truncation warning based on the last generate call."""
+        if self._filename_was_truncated:
+            self.filename_truncation_warning.setText(
+                t("Filename was truncated to fit the 250 character path limit. Some template variables may be missing.")
+            )
+            self.filename_truncation_warning.show()
+        else:
+            self.filename_truncation_warning.hide()
 
     @property
     def output_video(self):
@@ -1879,6 +1918,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.output_directory.setText("")
         self.output_path_button.setDisabled(True)
         self.output_video_path_widget.setDisabled(True)
+        self.filename_truncation_warning.hide()
         for i in range(self.widgets.video_track.count()):
             self.widgets.video_track.removeItem(0)
         self.widgets.preview.setText(t("No Video File"))
@@ -2003,9 +2043,11 @@ class Main(QtWidgets.QWidget):
         folder, name = self.generate_output_filename
         self.output_video_path_widget.setText(name)
         self.widgets.output_directory.setText(folder.rstrip("/").rstrip("\\"))
+        self._update_truncation_warning()
         self.output_video_path_widget.setDisabled(False)
         self.output_path_button.setDisabled(False)
         self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())
+        self.app.fastflix.current_video.video_settings.template_generated_name = name
         tasks = [
             Task(t("Parse Video details"), parse),
             Task(t("Extract covers"), extract_attachments),
@@ -2651,6 +2693,7 @@ class Main(QtWidgets.QWidget):
             self.output_video_path_widget.setDisabled(True)
             self.widgets.output_directory.setText("")
             self.output_path_button.setDisabled(True)
+            self.filename_truncation_warning.hide()
         self.page_update()
 
     def dragEnterEvent(self, event):
@@ -2688,6 +2731,7 @@ class Main(QtWidgets.QWidget):
                         break
                     else:
                         video.status.complete = True
+                        self._post_encode_process(video)
 
                 if response.status == "error":
                     video.status.error = True
@@ -2740,10 +2784,108 @@ class Main(QtWidgets.QWidget):
         self.set_convert_button()
         return False
 
+    def _post_encode_process(self, video: Video):
+        """Run ffprobe validation and post-encode rename on completed video."""
+        try:
+            from fastflix.naming import has_post_encode_placeholders
+
+            output_path = video.video_settings.output_path
+            if not output_path or not output_path.exists():
+                logger.warning(f"Post-encode: output file not found at {output_path}")
+                return
+
+            # Always run ffprobe for validation
+            try:
+                from fastflix.flix import probe
+
+                probe_data = probe(self.app, output_path)
+            except Exception:
+                logger.exception(f"Post-encode: ffprobe failed on {output_path}")
+                probe_data = None
+
+            self._validate_output(output_path, probe_data)
+
+            # Rename if post-encode placeholders exist in filename
+            if has_post_encode_placeholders(output_path.stem):
+                self._rename_with_post_encode_vars(video, probe_data)
+
+        except Exception:
+            logger.exception("Post-encode processing failed (encode itself succeeded)")
+
+    def _validate_output(self, output_path: Path, probe_data):
+        """Quick sanity check on the output file."""
+        if not output_path.exists():
+            logger.warning(f"Output validation: file does not exist: {output_path}")
+            return
+
+        file_size = output_path.stat().st_size
+        if file_size < 1024:
+            logger.warning(f"Output validation: file is suspiciously small ({file_size} bytes): {output_path}")
+
+        if not probe_data:
+            logger.warning(f"Output validation: no probe data available for {output_path}")
+            return
+
+        # Check for video stream
+        has_video = False
+        if hasattr(probe_data, "streams"):
+            for stream in probe_data.streams:
+                if stream.get("codec_type") == "video":
+                    has_video = True
+                    break
+        if not has_video:
+            logger.warning(f"Output validation: no video stream found in {output_path}")
+
+        # Check duration
+        if hasattr(probe_data, "format") and probe_data.format:
+            duration = probe_data.format.get("duration")
+            if duration:
+                try:
+                    if float(duration) <= 0:
+                        logger.warning(f"Output validation: duration is 0 or negative for {output_path}")
+                except (ValueError, TypeError):
+                    pass
+
+    def _rename_with_post_encode_vars(self, video: Video, probe_data):
+        """Resolve post-encode placeholders and rename the output file."""
+        from fastflix.naming import resolve_post_encode_variables
+
+        output_path = video.video_settings.output_path
+        encode_end = datetime.datetime.now(datetime.timezone.utc)
+        encode_start = video.status.encode_started_at
+
+        old_stem = output_path.stem
+        new_stem = resolve_post_encode_variables(
+            old_stem,
+            output_path,
+            probe_data,
+            encode_start=encode_start,
+            encode_end=encode_end,
+        )
+
+        if new_stem == old_stem:
+            return
+
+        new_path = output_path.with_stem(new_stem)
+
+        # Handle collision
+        if new_path.exists():
+            rand_suffix = secrets.token_hex(2)
+            new_path = output_path.with_stem(f"{new_stem}-{rand_suffix}")
+
+        try:
+            output_path.rename(new_path)
+            video.video_settings.output_path = new_path
+            logger.info(f"Post-encode rename: {output_path.name} -> {new_path.name}")
+        except OSError:
+            logger.exception(f"Post-encode rename failed: {output_path} -> {new_path}")
+
     def send_video_request_to_worker_queue(self, video: Video):
         command = video.video_settings.conversion_commands[video.status.current_command]
         self.app.fastflix.currently_encoding = True
         prevent_sleep_mode()
+        if video.status.current_command == 0:
+            video.status.encode_started_at = datetime.datetime.now(datetime.timezone.utc)
 
         # logger.info(f"Sending video {video.uuid} command {command.uuid} called from {inspect.stack()}")
 
