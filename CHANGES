@@ -2,14 +2,14 @@
 
 ## Version 6.1.0
 
-* Adding Output Naming settings tab with template editor, clickable variable chips, live preview, and validation for customizing output filenames with 23 pre-encode variables
+* Adding #717 Output Naming settings tab with template editor, clickable variable chips, live preview, and validation for customizing output filenames with 23 pre-encode variables (thanks to roxerqermik)
 * Adding always-on ffprobe validation of output files after every encode to catch silent failures
 * Adding Visual Crop window for dragging crop edges directly on a video frame preview, with live overlay and divisible-by-8 snapping on save
-* Adding Data & Attachments tab for per-track control of data streams (timecodes, navigation) and non-image attachments (fonts)
+* Adding #660 Data & Attachments tab for per-track control of data streams (timecodes, navigation) and non-image attachments (fonts) (thanks to techguru0)
 * Fixing UI scaling for Source/Folder/Filename text boxes, file extension dropdown, Resolution label, Start/End Time controls, and Crop input fields being too small
-* Adding language and disposition metadata parsing from auto-detected external subtitle filenames (e.g., video.forced.deu.srt)
-* Adding auto-detection of external subtitle files (.srt, .ass, .ssa, .vtt, .sup, .sub, .idx) when loading a video, configurable in Settings
-* Adding external subtitle support for Rigaya encoders (NVEncC, QSVEncC, VCEEncC) via --sub-source
+* Adding #706 language and disposition metadata parsing from auto-detected external subtitle filenames (e.g., video.forced.deu.srt) (thanks to mpek)
+* Adding #706 auto-detection of external subtitle files (.srt, .ass, .ssa, .vtt, .sup, .sub, .idx) when loading a video, configurable in Settings (thanks to mpek)
+* Adding #698 external subtitle support for Rigaya encoders (NVEncC, QSVEncC, VCEEncC) via --sub-source (thanks to Augusto7743)
 * Adding bottom status bar with animated icon showing encoding state, progress bar, and status messages
 * Adding startup tasks (FFmpeg config, GPU detect, HDR10+ download) running through the status bar with main window visible
 * Adding Terms and Agreements dialog shown on first startup requiring user acceptance before proceeding
