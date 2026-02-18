@@ -3,19 +3,16 @@
 ## Version 6.1.0
 
 * Adding #717 Output Naming settings tab with template editor, clickable variable chips, live preview, and validation for customizing output filenames with 23 pre-encode variables (thanks to roxerqermik)
-* Adding always-on ffprobe validation of output files after every encode to catch silent failures
-* Adding Visual Crop window for dragging crop edges directly on a video frame preview, with live overlay and divisible-by-8 snapping on save
 * Adding #660 Data & Attachments tab for per-track control of data streams (timecodes, navigation) and non-image attachments (fonts) (thanks to techguru0)
-* Fixing UI scaling for Source/Folder/Filename text boxes, file extension dropdown, Resolution label, Start/End Time controls, and Crop input fields being too small
 * Adding #706 language and disposition metadata parsing from auto-detected external subtitle filenames (e.g., video.forced.deu.srt) (thanks to mpek)
 * Adding #706 auto-detection of external subtitle files (.srt, .ass, .ssa, .vtt, .sup, .sub, .idx) when loading a video, configurable in Settings (thanks to mpek)
 * Adding #698 external subtitle support for Rigaya encoders (NVEncC, QSVEncC, VCEEncC) via --sub-source (thanks to Augusto7743)
+* Adding always-on ffprobe validation of output files after every encode to catch silent failures
+* Adding Visual Crop window for dragging crop edges directly on a video frame preview, with live overlay and divisible-by-8 snapping on save
 * Adding bottom status bar with animated icon showing encoding state, progress bar, and status messages
 * Adding startup tasks (FFmpeg config, GPU detect, HDR10+ download) running through the status bar with main window visible
 * Adding Terms and Agreements dialog shown on first startup requiring user acceptance before proceeding
 * Fixing #719 Unable to save/load film grain setting for SVT-AV1 (thanks to gabriel101x)
-* Fixing profile load/save for VVC period and threads, VP9 auto alt ref, lag in frames, AQ mode, and sharpness, rav1e photon noise, and AOM-AV1 denoise settings using integer as combo box index instead of matching by value
-* Fixing VCEEncC pre-analysis lookahead setting reading from wrong widget (pa_initqpsc instead of pa_lookahead) in HEVC, AV1, and AVC encoders
 * Fixing #716 Maximize button not working (thanks to roxerqermik and 19Battlestar65)
 * Fixing #349 NVEncC audio conversion losing multichannel layout for EAC3 (thanks to Wontell)
 * Fixing #384 Remove HDR leaving Dolby Vision metadata traces in Rigaya encoder output (thanks to end2endzone)
@@ -25,6 +22,10 @@
 * Fixing #600 anime subtitle size increasing during burn-in encoding (thanks to TinderboxUK)
 * Fixing #693 subtitle tracks losing title metadata during encoding (thanks to mpissarello)
 * Fixing #715 WINDOWS_BUILD.md needed updated to show Python 3.13 (thanks to Jack L)
+* Fixing #720 custom profile resolution settings (Height, Width, Long Edge, Custom, explicit like 640x480) being ignored when loading a video, defaulting to source resolution instead of profile resolution (thanks to Xoanon88)
+* Fixing UI scaling for Source/Folder/Filename text boxes, file extension dropdown, Resolution label, Start/End Time controls, and Crop input fields being too small
+* Fixing profile load/save for VVC period and threads, VP9 auto alt ref, lag in frames, AQ mode, and sharpness, rav1e photon noise, and AOM-AV1 denoise settings using integer as combo box index instead of matching by value
+* Fixing VCEEncC pre-analysis lookahead setting reading from wrong widget (pa_initqpsc instead of pa_lookahead) in HEVC, AV1, and AVC encoders
 * Fixing Settings window staying on top and freezing when notification dialogs appeared behind it
 * Fixing tab bar scroll arrows being too small and both stuck on the right side - now larger with left arrow on far left
 

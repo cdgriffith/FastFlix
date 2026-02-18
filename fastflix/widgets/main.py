@@ -1079,7 +1079,10 @@ class Main(QtWidgets.QWidget):
             if not res_pix:
                 matcher = {"method": res_method}
             else:
-                matcher = {"method": res_method, "pixels": res_pix}
+                try:
+                    matcher = {"method": res_method, "pixels": int(res_pix)}
+                except (ValueError, TypeError):
+                    matcher = {"method": res_method, "pixels": res_pix}
 
             if matcher in resolutions.values():
                 for k, v in resolutions.items():
@@ -1287,7 +1290,7 @@ class Main(QtWidgets.QWidget):
         elif self.widgets.resolution_drop_down.currentIndex() in {1, 2, 3, 4}:
             self.widgets.resolution_custom.setDisabled(False)
             self.widgets.resolution_custom.setPlaceholderText(self.widgets.resolution_drop_down.currentText())
-            if self.app.fastflix.current_video:
+            if self.app.fastflix.current_video and not self.loading_video:
                 match resolutions[self.widgets.resolution_drop_down.currentText()]["method"]:
                     case "long edge":
                         self.widgets.resolution_custom.setText(
