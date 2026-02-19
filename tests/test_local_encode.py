@@ -58,11 +58,11 @@ from fastflix.models.video import Video, VideoSettings
 # ---------------------------------------------------------------------------
 # Skip everything on CI
 # ---------------------------------------------------------------------------
-pytestmark = pytest.mark.local_only
+pytestmark = [pytest.mark.local_only]
 
 ON_CI = os.environ.get("CI", "").lower() in ("true", "1", "yes")
 if ON_CI:
-    pytestmark = [pytestmark, pytest.mark.skip(reason="Local-only tests skipped on CI")]
+    pytestmark.append(pytest.mark.skip(reason="Local-only tests skipped on CI"))
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -72,7 +72,7 @@ FFMPEG = shutil.which("ffmpeg")
 FFPROBE = shutil.which("ffprobe")
 
 if not FFMPEG or not FFPROBE:
-    pytestmark = [pytestmark, pytest.mark.skip(reason="ffmpeg/ffprobe not found")]
+    pytestmark.append(pytest.mark.skip(reason="ffmpeg/ffprobe not found"))
 
 
 # ---------------------------------------------------------------------------
