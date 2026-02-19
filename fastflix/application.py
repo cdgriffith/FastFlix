@@ -269,7 +269,9 @@ def app_setup(
     container = Container(app)
     container.show()
 
-    screen_geometry = QtGui.QGuiApplication.primaryScreen().availableGeometry()
+    cursor_pos = QtGui.QCursor.pos()
+    screen = QtGui.QGuiApplication.screenAt(cursor_pos) or QtGui.QGuiApplication.primaryScreen()
+    screen_geometry = screen.availableGeometry()
     container.move(screen_geometry.center() - container.rect().center())
 
     # Disable entire window during startup tasks

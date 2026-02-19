@@ -121,13 +121,20 @@ class Container(QtWidgets.QMainWindow):
         # self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         self.moveFlag = False
 
+    def _current_screen(self) -> QtGui.QScreen:
+        """Return the screen the window center is on, falling back to primary."""
+        screen = QtGui.QGuiApplication.screenAt(self.geometry().center())
+        if screen is None:
+            screen = QtGui.QGuiApplication.primaryScreen()
+        return screen
+
     def _update_scaled_styles(self) -> None:
         """Update all stylesheets based on current scale factors."""
         self.setStyleSheet(get_scaled_stylesheet(self.app.fastflix.config.theme))
 
     def _constrain_to_screen(self):
         """Ensure the window fits within the available screen geometry."""
-        screen = QtGui.QGuiApplication.primaryScreen()
+        screen = self._current_screen()
         if screen is None:
             return
         available = screen.availableGeometry()
@@ -141,7 +148,7 @@ class Container(QtWidgets.QMainWindow):
         if self.isMaximized() or self.isFullScreen():
             return
         self._constrain_to_screen()
-        screen = QtGui.QGuiApplication.primaryScreen()
+        screen = self._current_screen()
         if screen is None:
             return
         available = screen.availableGeometry()
@@ -180,7 +187,7 @@ class Container(QtWidgets.QMainWindow):
         if self.isMaximized() or self.isFullScreen():
             return
 
-        screen = QtGui.QGuiApplication.primaryScreen()
+        screen = self._current_screen()
         if screen is None:
             return
         available = screen.availableGeometry()
