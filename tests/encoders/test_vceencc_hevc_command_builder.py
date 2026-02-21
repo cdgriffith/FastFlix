@@ -137,6 +137,57 @@ def test_vceencc_hevc_with_bitrate():
     assert "--cqp" not in cmd
 
 
+def test_vceencc_hevc_exact_mode_uses_trim():
+    """Test that exact mode (fast_seek=False) uses --trim with frame numbers."""
+    fastflix = _make_fastflix(
+        encoder_settings=VCEEncCSettings(bitrate=None, cqp=20),
+        video_settings=VideoSettings(
+            start_time=10.0,
+            end_time=20.0,
+            fast_seek=False,
+            remove_hdr=False,
+            maxrate=None,
+            bufsize=None,
+        ),
+    )
+
+    with mock.patch("fastflix.encoders.vceencc_hevc.command_builder.rigaya_auto_options", return_value=[]):
+        result = build(fastflix)
+
+    cmd = result[0].command
+    for i, element in enumerate(cmd):
+        assert isinstance(element, str), f"Element at index {i} is {type(element).__name__}: {element!r}"
+
+    assert "--trim" in cmd
+    # 10.0 * (24000/1001) ≈ 239.76 → 239, 20.0 * (24000/1001) ≈ 479.52 → 479
+    assert "239:479" in cmd
+    assert "--seek" not in cmd
+    assert "--seekto" not in cmd
+
+
+def test_vceencc_hevc_fast_mode_uses_seek():
+    """Test that fast mode (fast_seek=True) still uses --seek/--seekto."""
+    fastflix = _make_fastflix(
+        encoder_settings=VCEEncCSettings(bitrate=None, cqp=20),
+        video_settings=VideoSettings(
+            start_time=10.0,
+            end_time=20.0,
+            fast_seek=True,
+            remove_hdr=False,
+            maxrate=None,
+            bufsize=None,
+        ),
+    )
+
+    with mock.patch("fastflix.encoders.vceencc_hevc.command_builder.rigaya_auto_options", return_value=[]):
+        result = build(fastflix)
+
+    cmd = result[0].command
+    assert "--seek" in cmd
+    assert "--seekto" in cmd
+    assert "--trim" not in cmd
+
+
 def test_vceencc_hevc_cqp_float_coercion():
     """Test that CQP as float (e.g., from Qt spinbox) is handled properly.
 

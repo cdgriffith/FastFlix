@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-from typing import List
+from typing import List, Optional
 
-from fastflix.models.video import SubtitleTrack, AudioTrack, DataTrack
+from fastflix.models.video import SubtitleTrack, AudioTrack, DataTrack, Video
 from fastflix.encoders.common.audio import lossless
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.encode import VCEEncCAVCSettings, VCEEncCAV1Settings, VCEEncCSettings
@@ -70,6 +70,56 @@ def rigaya_auto_options(fastflix: FastFlix) -> List[str]:
         "--colorprim",
         (fastflix.current_video.video_settings.color_primaries or "auto"),
     ]
+
+
+def _parse_frame_rate(frame_rate_str: str) -> Optional[float]:
+    """Parse a frame rate string like '24000/1001' or '30' into a float.
+
+    Returns None if the string is empty or cannot be parsed.
+    """
+    if not frame_rate_str:
+        return None
+    try:
+        if "/" in frame_rate_str:
+            num, den = frame_rate_str.split("/", 1)
+            denominator = float(den)
+            if denominator == 0:
+                return None
+            return float(num) / denominator
+        return float(frame_rate_str)
+    except (ValueError, ZeroDivisionError):
+        return None
+
+
+def rigaya_trim_or_seek(video: Video) -> List[str]:
+    """Build time trimming arguments for rigaya encoders.
+
+    In exact mode (fast_seek=False), uses --trim with frame numbers for precise cutting.
+    In fast mode (fast_seek=True), uses --seek/--seekto with timestamps.
+    Falls back to --seek/--seekto if frame rate is unavailable in exact mode.
+    """
+    start_time = video.video_settings.start_time
+    end_time = video.video_settings.end_time
+
+    if not start_time and not end_time:
+        return []
+
+    if not video.video_settings.fast_seek:
+        fps = _parse_frame_rate(video.frame_rate)
+        if fps:
+            start_frame = int(start_time * fps) if start_time else 0
+            if end_time:
+                end_frame = int(end_time * fps)
+            else:
+                end_frame = int(video.duration * fps)
+            return ["--trim", f"{start_frame}:{end_frame}"]
+
+    result = []
+    if start_time:
+        result.extend(["--seek", str(start_time)])
+    if end_time:
+        result.extend(["--seekto", str(end_time)])
+    return result
 
 
 def pa_builder(settings: VCEEncCAVCSettings | VCEEncCAV1Settings | VCEEncCSettings):

@@ -192,6 +192,16 @@ class DataList(FlixList):
             if track.widgets.enable_check.isEnabled():
                 track.widgets.enable_check.setChecked(select)
 
+    @staticmethod
+    def _get_name_tags(stream):
+        """Return a display string for any tags containing 'name' in their key."""
+        tags = stream.get("tags", {})
+        parts = []
+        for key, value in tags.items():
+            if "name" in key.lower() and value:
+                parts.append(f"{key}: {value}")
+        return ", ".join(parts)
+
     def _is_cover_attachment(self, stream):
         """Check if an attachment stream is a cover image (handled by cover panel)."""
         filename = stream.get("tags", {}).get("filename", "")
@@ -211,10 +221,16 @@ class DataList(FlixList):
         for stream in getattr(video.streams, "data", []):
             codec_name = stream.get("codec_name", "")
             codec_long_name = stream.get("codec_long_name", codec_name)
+            codec_tag_string = stream.get("codec_tag_string", "")
             title = stream.get("tags", {}).get("title", "")
             friendly = codec_long_name or codec_name
+            if codec_tag_string:
+                friendly = f"{friendly} [{codec_tag_string}]"
             if title:
                 friendly = f"{title} ({friendly})"
+            name_tags = self._get_name_tags(stream)
+            if name_tags:
+                friendly = f"{friendly} - {name_tags}"
 
             video.data_tracks.append(
                 DataTrack(
@@ -234,11 +250,17 @@ class DataList(FlixList):
             if self._is_cover_attachment(stream):
                 continue
             codec_name = stream.get("codec_name", "")
+            codec_tag_string = stream.get("codec_tag_string", "")
             filename = stream.get("tags", {}).get("filename", "")
             mimetype = stream.get("tags", {}).get("mimetype", "")
             friendly = filename if filename else codec_name
+            if codec_tag_string:
+                friendly = f"{friendly} [{codec_tag_string}]"
             if mimetype:
                 friendly = f"{friendly} ({mimetype})"
+            name_tags = self._get_name_tags(stream)
+            if name_tags:
+                friendly = f"{friendly} - {name_tags}"
 
             video.data_tracks.append(
                 DataTrack(

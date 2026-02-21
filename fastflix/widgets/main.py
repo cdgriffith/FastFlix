@@ -47,6 +47,7 @@ from fastflix.resources import (
 )
 from fastflix.shared import (
     error_message,
+    message,
     time_to_number,
     yes_no_message,
     clean_file_string,
@@ -2623,12 +2624,14 @@ class Main(QtWidgets.QWidget):
 
         if not success:
             self.encoding_status_signal.emit(t("Encoding error"), STATE_ERROR)
-            if not self.app.fastflix.config.disable_complete_message:
+            if self.app.fastflix.config.show_error_message:
                 error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
             self.video_options.queue.new_source()
         else:
             self.encoding_status_signal.emit(t("All conversions complete"), STATE_COMPLETE)
             self.video_options.show_queue()
+            if self.app.fastflix.config.show_complete_message:
+                message(t("All queue items have completed"), title=t("Success"))
 
     #
     # @reusables.log_exception("fastflix", show_traceback=False)

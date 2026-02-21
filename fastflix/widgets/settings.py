@@ -179,10 +179,14 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.disable_version_check, row, 0, 1, 2)
         row += 1
 
-        self.disable_end_message = QtWidgets.QCheckBox(t("Disable completion and error messages"))
-        if self.app.fastflix.config.disable_complete_message:
-            self.disable_end_message.setChecked(True)
-        layout.addWidget(self.disable_end_message, row, 0, 1, 2)
+        self.show_complete_message = QtWidgets.QCheckBox(t("Show completion popup message"))
+        self.show_complete_message.setChecked(self.app.fastflix.config.show_complete_message)
+        layout.addWidget(self.show_complete_message, row, 0, 1, 2)
+        row += 1
+
+        self.show_error_message = QtWidgets.QCheckBox(t("Show error popup message"))
+        self.show_error_message.setChecked(self.app.fastflix.config.show_error_message)
+        layout.addWidget(self.show_error_message, row, 0, 1, 2)
         row += 1
 
         self.clean_old_logs_button = QtWidgets.QCheckBox(
@@ -682,7 +686,8 @@ class Settings(QtWidgets.QWidget):
 
         self.app.fastflix.config.clean_old_logs = self.clean_old_logs_button.isChecked()
         self.app.fastflix.config.sticky_tabs = self.sticky_tabs.isChecked()
-        self.app.fastflix.config.disable_complete_message = self.disable_end_message.isChecked()
+        self.app.fastflix.config.show_complete_message = self.show_complete_message.isChecked()
+        self.app.fastflix.config.show_error_message = self.show_error_message.isChecked()
         self.app.fastflix.config.disable_deinterlace_check = self.disable_deinterlace_button.isChecked()
         self.app.fastflix.config.use_keyframes_for_preview = self.use_keyframes_for_preview.isChecked()
         self.app.fastflix.config.auto_detect_subtitles = self.auto_detect_subtitles.isChecked()

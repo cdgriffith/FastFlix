@@ -13,6 +13,7 @@ from fastflix.encoders.common.encc_helpers import (
     build_data,
     rigaya_auto_options,
     rigaya_avformat_reader,
+    rigaya_trim_or_seek,
 )
 
 logger = logging.getLogger("fastflix")
@@ -58,11 +59,7 @@ def build(fastflix: FastFlix):
     if stream_id:
         command.extend(["--video-streamid", str(stream_id)])
 
-    if video.video_settings.start_time:
-        command.extend(["--seek", str(video.video_settings.start_time)])
-
-    if video.video_settings.end_time:
-        command.extend(["--seekto", str(video.video_settings.end_time)])
+    command.extend(rigaya_trim_or_seek(video))
 
     if video.video_settings.source_fps:
         command.extend(["--fps", str(video.video_settings.source_fps)])

@@ -292,7 +292,8 @@ class Config(BaseModel):
     nvencc_devices: dict = Field(default_factory=dict)
 
     sticky_tabs: bool = False
-    disable_complete_message: bool = False
+    show_complete_message: bool = False
+    show_error_message: bool = True
 
     disable_cover_extraction: bool = False
 
@@ -446,6 +447,13 @@ class Config(BaseModel):
                 continue
             if key in self and key not in ("config_path", "version"):
                 setattr(self, key, Path(value) if key in paths and value else value)
+
+        # Migrate old disable_complete_message (inverted) to show_complete_message and show_error_message
+        if "disable_complete_message" in data:
+            if "show_complete_message" not in data:
+                self.show_complete_message = not data["disable_complete_message"]
+            if "show_error_message" not in data:
+                self.show_error_message = not data["disable_complete_message"]
 
         if self.output_directory is False:
             self.output_directory = None

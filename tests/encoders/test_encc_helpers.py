@@ -7,6 +7,8 @@ from fastflix.encoders.common.encc_helpers import (
     audio_quality_converter,
     rigaya_avformat_reader,
     rigaya_auto_options,
+    rigaya_trim_or_seek,
+    _parse_frame_rate,
     pa_builder,
     get_stream_pos,
     build_audio,
@@ -517,3 +519,216 @@ def test_build_subtitle_with_4k_scaling(sample_subtitle_tracks):
 
     # Check that the burn-in track includes scale parameter
     assert "--vpp-subburn" in result and "track=1,scale=2.0" in result
+
+
+# --- _parse_frame_rate tests ---
+
+
+def test_parse_frame_rate_rational():
+    """Test parsing a rational frame rate string like '24000/1001'."""
+    result = _parse_frame_rate("24000/1001")
+    assert result == pytest.approx(23.976, rel=1e-3)
+
+
+def test_parse_frame_rate_integer_string():
+    """Test parsing a plain integer frame rate string."""
+    result = _parse_frame_rate("30")
+    assert result == 30.0
+
+
+def test_parse_frame_rate_float_string():
+    """Test parsing a plain float frame rate string."""
+    result = _parse_frame_rate("29.97")
+    assert result == pytest.approx(29.97)
+
+
+def test_parse_frame_rate_empty():
+    """Test parsing an empty string returns None."""
+    assert _parse_frame_rate("") is None
+
+
+def test_parse_frame_rate_invalid():
+    """Test parsing an invalid string returns None."""
+    assert _parse_frame_rate("abc") is None
+
+
+def test_parse_frame_rate_zero_denominator():
+    """Test parsing a rational with zero denominator returns None."""
+    assert _parse_frame_rate("24000/0") is None
+
+
+# --- rigaya_trim_or_seek tests ---
+
+
+def test_rigaya_trim_or_seek_no_times(encc_fastflix_instance):
+    """Test that no arguments are returned when no start/end time is set."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.start_time = 0
+    video.video_settings.end_time = 0
+    result = rigaya_trim_or_seek(video)
+    assert result == []
+
+
+def test_rigaya_trim_or_seek_fast_mode(encc_fastflix_instance):
+    """Test fast mode (fast_seek=True) uses --seek and --seekto."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.fast_seek = True
+    video.video_settings.start_time = 10.5
+    video.video_settings.end_time = 120.0
+    result = rigaya_trim_or_seek(video)
+    assert "--seek" in result
+    assert "10.5" in result
+    assert "--seekto" in result
+    assert "120.0" in result
+
+
+def test_rigaya_trim_or_seek_fast_mode_start_only(encc_fastflix_instance):
+    """Test fast mode with only start_time set."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.fast_seek = True
+    video.video_settings.start_time = 5.0
+    video.video_settings.end_time = 0
+    result = rigaya_trim_or_seek(video)
+    assert result == ["--seek", "5.0"]
+    assert "--seekto" not in result
+
+
+def test_rigaya_trim_or_seek_fast_mode_end_only(encc_fastflix_instance):
+    """Test fast mode with only end_time set."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.fast_seek = True
+    video.video_settings.start_time = 0
+    video.video_settings.end_time = 30.0
+    result = rigaya_trim_or_seek(video)
+    assert "--seek" not in result
+    assert result == ["--seekto", "30.0"]
+
+
+def test_rigaya_trim_or_seek_exact_mode_with_frame_rate(encc_fastflix_instance):
+    """Test exact mode (fast_seek=False) with a parseable frame rate uses --trim."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.fast_seek = False
+    video.video_settings.start_time = 10.0
+    video.video_settings.end_time = 20.0
+    # Set a known frame rate on the stream
+    video.streams = Box(
+        {
+            "video": [
+                Box(
+                    {
+                        "index": 0,
+                        "codec_name": "hevc",
+                        "codec_type": "video",
+                        "pix_fmt": "yuv420p10le",
+                        "bit_depth": 10,
+                        "r_frame_rate": "24000/1001",
+                        "avg_frame_rate": "24000/1001",
+                        "width": 3840,
+                        "height": 2160,
+                    }
+                )
+            ],
+            "audio": [],
+            "subtitle": [],
+        }
+    )
+    result = rigaya_trim_or_seek(video)
+    assert result[0] == "--trim"
+    # 10.0 * (24000/1001) ≈ 239.76 → int = 239
+    # 20.0 * (24000/1001) ≈ 479.52 → int = 479
+    assert result[1] == "239:479"
+
+
+def test_rigaya_trim_or_seek_exact_mode_start_only(encc_fastflix_instance):
+    """Test exact mode with only start_time uses --trim from start_frame to end of video."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.fast_seek = False
+    video.video_settings.start_time = 10.0
+    video.video_settings.end_time = 0
+    video.duration = 60
+    video.streams = Box(
+        {
+            "video": [
+                Box(
+                    {
+                        "index": 0,
+                        "codec_name": "hevc",
+                        "codec_type": "video",
+                        "pix_fmt": "yuv420p10le",
+                        "bit_depth": 10,
+                        "r_frame_rate": "30",
+                        "avg_frame_rate": "30",
+                        "width": 3840,
+                        "height": 2160,
+                    }
+                )
+            ],
+            "audio": [],
+            "subtitle": [],
+        }
+    )
+    result = rigaya_trim_or_seek(video)
+    assert result == ["--trim", "300:1800"]
+
+
+def test_rigaya_trim_or_seek_exact_mode_end_only(encc_fastflix_instance):
+    """Test exact mode with only end_time uses --trim from frame 0."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.fast_seek = False
+    video.video_settings.start_time = 0
+    video.video_settings.end_time = 20.0
+    video.streams = Box(
+        {
+            "video": [
+                Box(
+                    {
+                        "index": 0,
+                        "codec_name": "hevc",
+                        "codec_type": "video",
+                        "pix_fmt": "yuv420p10le",
+                        "bit_depth": 10,
+                        "r_frame_rate": "30",
+                        "avg_frame_rate": "30",
+                        "width": 3840,
+                        "height": 2160,
+                    }
+                )
+            ],
+            "audio": [],
+            "subtitle": [],
+        }
+    )
+    result = rigaya_trim_or_seek(video)
+    assert result == ["--trim", "0:600"]
+
+
+def test_rigaya_trim_or_seek_exact_mode_no_frame_rate_fallback(encc_fastflix_instance):
+    """Test exact mode without frame rate falls back to --seek/--seekto."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.fast_seek = False
+    video.video_settings.start_time = 10.0
+    video.video_settings.end_time = 20.0
+    # Stream without r_frame_rate
+    video.streams = Box(
+        {
+            "video": [
+                Box(
+                    {
+                        "index": 0,
+                        "codec_name": "hevc",
+                        "codec_type": "video",
+                        "pix_fmt": "yuv420p10le",
+                        "bit_depth": 10,
+                        "width": 3840,
+                        "height": 2160,
+                    }
+                )
+            ],
+            "audio": [],
+            "subtitle": [],
+        }
+    )
+    result = rigaya_trim_or_seek(video)
+    assert "--seek" in result
+    assert "--seekto" in result
+    assert "--trim" not in result

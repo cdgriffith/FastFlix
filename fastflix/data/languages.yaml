@@ -14127,3 +14127,33 @@ Output Naming:
   ukr: Іменування виходів
   kor: 출력 이름 지정
   ron: Denumiri de ieșire
+Show completion popup message:
+  eng: Show completion popup message
+  deu: Popup-Meldung zum Abschluss anzeigen
+  fra: Afficher le message d'achèvement
+  ita: Mostra il messaggio popup di completamento
+  spa: Mostrar mensaje emergente de finalización
+  jpn: 完了ポップアップメッセージの表示
+  rus: Показать всплывающее сообщение о завершении
+  por: Mostrar mensagem pop-up de conclusão
+  swe: Visa popup-meddelande om slutförande
+  pol: Pokaż wyskakujący komunikat ukończenia
+  chs: 弹出显示完成信息
+  ukr: Показати спливаюче повідомлення про завершення
+  kor: 완료 팝업 메시지 표시
+  ron: Afișați mesajul pop-up de finalizare
+Show error popup message:
+  eng: Show error popup message
+  deu: Fehler-Popup-Meldung anzeigen
+  fra: Afficher un message d'erreur
+  ita: Mostra il messaggio popup di errore
+  spa: Mostrar mensaje emergente de error
+  jpn: エラーのポップアップメッセージを表示する
+  rus: Показать всплывающее сообщение об ошибке
+  por: Mostrar mensagem pop-up de erro
+  swe: Visa popup-meddelande för fel
+  pol: Pokaż wyskakujący komunikat o błędzie
+  chs: 弹出错误信息
+  ukr: Показати спливаюче повідомлення про помилку
+  kor: 오류 팝업 메시지 표시
+  ron: Afișați mesajul pop-up de eroare
