@@ -307,8 +307,32 @@ def extract_attachments(app: FastFlixApp, **_):
 
 
 def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, file_name: str):
+    output_path = work_dir / file_name
     try:
+        # First try -dump_attachment which works for true container attachments (fonts, etc.)
         execute(
+            [
+                f"{ffmpeg}",
+                "-y",
+                f"-dump_attachment:{stream}",
+                clean_file_string(file_name),
+                "-i",
+                clean_file_string(source),
+            ],
+            work_dir=work_dir,
+            timeout=10,
+        )
+        if output_path.exists() and output_path.stat().st_size > 0:
+            return
+    except TimeoutExpired:
+        pass
+    except Exception:
+        pass
+
+    # For attached_pic streams (cover art stored as video streams), pipe the image data out.
+    # Using Popen + communicate(timeout) avoids FFmpeg reading the entire file before exiting.
+    try:
+        proc = Popen(
             [
                 f"{ffmpeg}",
                 "-y",
@@ -318,15 +342,29 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
                 f"0:{stream}",
                 "-c",
                 "copy",
-                "-vframes",
+                "-frames:v",
                 "1",
-                clean_file_string(file_name),
+                "-f",
+                "image2pipe",
+                "pipe:1",
             ],
-            work_dir=work_dir,
-            timeout=5,
+            stdout=PIPE,
+            stderr=PIPE,
+            stdin=PIPE,
+            cwd=work_dir,
         )
-    except TimeoutExpired:
-        logger.warning(f"WARNING Timeout while extracting cover file {file_name}")
+        try:
+            stdout, _ = proc.communicate(timeout=3)
+        except TimeoutExpired:
+            proc.kill()
+            stdout, _ = proc.communicate()
+
+        if stdout:
+            output_path.write_bytes(stdout)
+        else:
+            logger.warning(f"No image data received when extracting cover file {file_name}")
+    except Exception:
+        logger.warning(f"Failed to extract cover file {file_name}", exc_info=True)
 
 
 def generate_thumbnail_command(

@@ -13947,3 +13947,183 @@ top:
   ukr: верхній
   kor: top
   ron: top
+Output Filename Template:
+  eng: Output Filename Template
+  deu: Vorlage für Ausgabedateinamen
+  fra: Modèle de nom de fichier de sortie
+  ita: Modello di nome del file di output
+  spa: Plantilla de nombre de archivo de salida
+  jpn: 出力ファイル名テンプレート
+  rus: Шаблон имени выходного файла
+  por: Modelo de nome de ficheiro de saída
+  swe: Mall för utdatafilens namn
+  pol: Szablon nazwy pliku wyjściowego
+  chs: 输出文件名模板
+  ukr: Шаблон імені вихідного файлу
+  kor: 출력 파일 이름 템플릿
+  ron: Șablon nume fișier de ieșire
+Reset to default template:
+  eng: Reset to default template
+  deu: Auf Standardvorlage zurücksetzen
+  fra: Réinitialiser le modèle par défaut
+  ita: Ripristino del modello predefinito
+  spa: Restablecer plantilla por defecto
+  jpn: デフォルトテンプレートにリセット
+  rus: Сброс к шаблону по умолчанию
+  por: Repor o modelo predefinido
+  swe: Återställ till standardmall
+  pol: Przywróć domyślny szablon
+  chs: 重置为默认模板
+  ukr: Скидання до шаблону за замовчуванням
+  kor: 기본 템플릿으로 재설정
+  ron: Resetare la șablonul implicit
+"Preview:":
+  eng: "Preview:"
+  deu: 'Vorschau:'
+  fra: 'Avant-première :'
+  ita: 'Anteprima:'
+  spa: 'Vista previa:'
+  jpn: プレビュー
+  rus: 'Предпросмотр:'
+  por: 'Pré-visualização:'
+  swe: 'Förhandsgranskning:'
+  pol: 'Podgląd:'
+  chs: 预览：
+  ukr: 'Попередній перегляд:'
+  kor: '미리 보기:'
+  ron: 'Previzualizare:'
+Pre-Encode Variables:
+  eng: Pre-Encode Variables
+  deu: Variablen vorcodieren
+  fra: Pré-codage des variables
+  ita: Pre-codifica delle variabili
+  spa: Precodificación de variables
+  jpn: 変数の事前エンコード
+  rus: Предварительное кодирование переменных
+  por: Pré-codificar variáveis
+  swe: Förkoda variabler
+  pol: Wstępne kodowanie zmiennych
+  chs: 预编码变量
+  ukr: Змінні попереднього кодування
+  kor: 사전 인코딩 변수
+  ron: Pre-codificarea variabilelor
+Example:
+  eng: Example
+  deu: Beispiel
+  fra: Exemple
+  ita: Esempio
+  spa: Ejemplo
+  jpn: 例
+  rus: Пример
+  por: Exemplo
+  swe: Exempel
+  pol: Przykład
+  chs: 示例
+  ukr: Приклад
+  kor: 예
+  ron: Exemplu
+Post-Encode Variables:
+  eng: Post-Encode Variables
+  deu: Post-Encode-Variablen
+  fra: Variables post-codées
+  ita: Variabili post-codifica
+  spa: Variables postcodificación
+  jpn: ポスト・エンコード変数
+  rus: Переменные после кодирования
+  por: Variáveis pós-codificadas
+  swe: Variabler efter kodning
+  pol: Zmienne po zakodowaniu
+  chs: 编码后变量
+  ukr: Змінні після кодування
+  kor: 인코딩 후 변수
+  ron: Variabilele Post-Encode
+Resolved after encoding completes; file will be renamed automatically:
+  eng: Resolved after encoding completes; file will be renamed automatically
+  deu: Nach Abschluss der Kodierung behoben; die Datei wird automatisch umbenannt
+  fra: Résolu une fois l'encodage terminé ; le fichier sera renommé automatiquement.
+  ita: Risolto al termine della codifica; il file verrà rinominato automaticamente.
+  spa: Resuelto una vez finalizada la codificación; el archivo se renombrará automáticamente.
+  jpn: エンコード完了後に解決。ファイル名は自動的に変更されます。
+  rus: Устранено после завершения кодирования; файл будет переименован автоматически
+  por: Resolvido após a conclusão da codificação; o ficheiro será renomeado automaticamente
+  swe: Löses efter att kodningen är klar; filen kommer att döpas om automatiskt
+  pol: Rozwiązane po zakończeniu kodowania; nazwa pliku zostanie zmieniona automatycznie.
+  chs: 编码完成后已解决；文件将自动重命名
+  ukr: Вирішено після завершення кодування; файл буде перейменовано автоматично
+  kor: 인코딩이 완료된 후 해결되며 파일 이름이 자동으로 변경됩니다.
+  ron: Rezolvat după finalizarea codării; fișierul va fi redenumit automat
+Description:
+  eng: Description
+  deu: Beschreibung
+  fra: Description
+  ita: Descrizione
+  spa: Descripción
+  jpn: 説明
+  rus: Описание
+  por: Descrição
+  swe: Beskrivning
+  pol: Opis
+  chs: 说明
+  ukr: Опис
+  kor: 설명
+  ron: Descriere
+Phase:
+  eng: Phase
+  deu: Phase
+  fra: Phase
+  ita: Fase
+  spa: Fase
+  jpn: フェーズ
+  rus: Фаза
+  por: Fase
+  swe: Fas
+  pol: Faza
+  chs: 阶段
+  ukr: Фаза
+  kor: 단계
+  ron: Faza
+Pre-Encode:
+  eng: Pre-Encode
+  deu: Vor-Codierung
+  fra: Pré-encodage
+  ita: Pre-codifica
+  spa: Precodificación
+  jpn: プリ・エンコード
+  rus: Предварительное кодирование
+  por: Pré-codificar
+  swe: Förkodning
+  pol: Wstępne kodowanie
+  chs: 预编码
+  ukr: Попередній код
+  kor: 사전 인코딩
+  ron: Pre-codificare
+Post-Encode:
+  eng: Post-Encode
+  deu: Post-Encode
+  fra: Post-Encode
+  ita: Post-codifica
+  spa: Post-Encode
+  jpn: ポスト・エンコード
+  rus: Post-Encode
+  por: Pós-codificação
+  swe: Post-kodning
+  pol: Post-Encode
+  chs: 编码后
+  ukr: Пост-енкод
+  kor: 인코딩 후
+  ron: Post-codificare
+Output Naming:
+  eng: Output Naming
+  deu: Benennung der Ausgabe
+  fra: Désignation des sorties
+  ita: Denominazione dell'uscita
+  spa: Nombres de salida
+  jpn: 出力ネーミング
+  rus: Именование выходных данных
+  por: Nomeação de saída
+  swe: Namngivning av utdata
+  pol: Nazewnictwo wyjścia
+  chs: 输出命名
+  ukr: Іменування виходів
+  kor: 출력 이름 지정
+  ron: Denumiri de ieșire

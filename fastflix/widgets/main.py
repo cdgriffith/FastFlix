@@ -893,13 +893,11 @@ class Main(QtWidgets.QWidget):
 
         # Tab 3: Crop (3-column layout)
         crop_tab = QtWidgets.QWidget()
-        crop_layout = QtWidgets.QHBoxLayout(crop_tab)
+        crop_layout = QtWidgets.QGridLayout(crop_tab)
         crop_layout.setSpacing(scaler.scale(12))
         crop_layout.setContentsMargins(scaler.scale(8), scaler.scale(8), scaler.scale(8), scaler.scale(8))
 
-        # Column 1: Auto and Reset buttons
-        col1 = QtWidgets.QVBoxLayout()
-        col1.setSpacing(scaler.scale(10))
+        # Buttons in left column (column 0)
         auto_crop = QtWidgets.QPushButton(t("Auto"))
         auto_crop.setFixedHeight(scaler.scale(28))
         auto_crop.setToolTip(t("Automatically detect black borders"))
@@ -921,10 +919,9 @@ class Main(QtWidgets.QWidget):
         if self.app.fastflix.config.theme == "onyx":
             visual_crop.setStyleSheet(get_onyx_button_style())
         self.buttons.append(visual_crop)
-        col1.addWidget(auto_crop)
-        col1.addWidget(reset)
-        col1.addWidget(visual_crop)
-        col1.addStretch(1)
+        crop_layout.addWidget(auto_crop, 0, 0)
+        crop_layout.addWidget(reset, 1, 0)
+        crop_layout.addWidget(visual_crop, 2, 0)
 
         # Crop input fields
         field_width = scaler.scale(65)
@@ -958,36 +955,35 @@ class Main(QtWidgets.QWidget):
         self.widgets.crop.right.setAlignment(QtCore.Qt.AlignCenter)
         self.widgets.crop.right.textChanged.connect(lambda: self.page_update())
 
-        # Column 2: Top and Bottom
-        col2 = QtWidgets.QVBoxLayout()
-        col2.setSpacing(scaler.scale(12))
+        # Row 0, Cols 1-2: Top (centered)
         top_row = QtWidgets.QHBoxLayout()
+        top_row.addStretch(1)
         top_row.addWidget(QtWidgets.QLabel(t("Top")))
         top_row.addWidget(self.widgets.crop.top)
-        bottom_row = QtWidgets.QHBoxLayout()
-        bottom_row.addWidget(QtWidgets.QLabel(t("Bottom")))
-        bottom_row.addWidget(self.widgets.crop.bottom)
-        col2.addLayout(top_row)
-        col2.addLayout(bottom_row)
-        col2.addStretch(1)
+        top_row.addStretch(1)
+        crop_layout.addLayout(top_row, 0, 1, 1, 2)
 
-        # Column 3: Left and Right
-        col3 = QtWidgets.QVBoxLayout()
-        col3.setSpacing(scaler.scale(12))
+        # Row 1, Col 1: Left
         left_row = QtWidgets.QHBoxLayout()
         left_row.addWidget(QtWidgets.QLabel(t("Left")))
         left_row.addWidget(self.widgets.crop.left)
+        crop_layout.addLayout(left_row, 1, 1)
+
+        # Row 1, Col 2: Right
         right_row = QtWidgets.QHBoxLayout()
         right_row.addWidget(QtWidgets.QLabel(t("Right")))
         right_row.addWidget(self.widgets.crop.right)
-        col3.addLayout(left_row)
-        col3.addLayout(right_row)
-        col3.addStretch(1)
+        crop_layout.addLayout(right_row, 1, 2)
 
-        crop_layout.addLayout(col1)
-        crop_layout.addLayout(col2)
-        crop_layout.addLayout(col3)
-        crop_layout.addStretch(1)
+        # Row 2, Cols 1-2: Bottom (centered)
+        bottom_row = QtWidgets.QHBoxLayout()
+        bottom_row.addStretch(1)
+        bottom_row.addWidget(QtWidgets.QLabel(t("Bottom")))
+        bottom_row.addWidget(self.widgets.crop.bottom)
+        bottom_row.addStretch(1)
+        crop_layout.addLayout(bottom_row, 2, 1, 1, 2)
+
+        crop_layout.setColumnStretch(3, 1)
 
         tabs.addTab(crop_tab, t("Crop"))
 

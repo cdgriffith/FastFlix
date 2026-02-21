@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 6.1.1
+
+* Fixing #722 Timeout while extracting covers (thanks to larsk2)
+* Fixing #722 Bottom Crop words cut off (thanks to larsk2)
+
 ## Version 6.1.0
 
 * Adding #717 Output Naming settings tab with template editor, clickable variable chips, live preview, and validation for customizing output filenames with 23 pre-encode variables (thanks to roxerqermik)
