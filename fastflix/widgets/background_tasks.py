@@ -10,6 +10,7 @@ from packaging import version
 from PySide6 import QtCore
 from ffmpeg_normalize import FFmpegNormalize
 
+from fastflix.flix import extract_attachments
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import clean_file_string
@@ -30,7 +31,7 @@ def _format_command(command):
     return " ".join(parts)
 
 
-__all__ = ["ThumbnailCreator", "ExtractSubtitleSRT", "ExtractHDR10"]
+__all__ = ["ThumbnailCreator", "ExtractSubtitleSRT", "ExtractHDR10", "ExtractCovers"]
 
 
 class ThumbnailCreator(QtCore.QThread):
@@ -496,3 +497,19 @@ class ExtractHDR10(QtCore.QThread):
         stdout, stderr = process_two.communicate()
         self.main.thread_logging_signal.emit(f"DEBUG: HDR10+ Extract: {stdout}")
         self.signal.emit(str(output))
+
+
+class ExtractCovers(QtCore.QThread):
+    def __init__(self, app: FastFlixApp, main, signal):
+        super().__init__(main)
+        self.main = main
+        self.app = app
+        self.signal = signal
+
+    def run(self):
+        try:
+            extract_attachments(app=self.app)
+            self.main.thread_logging_signal.emit(f"INFO:{t('Cover extraction complete')}")
+        except Exception as err:
+            self.main.thread_logging_signal.emit(f"WARNING:{t('Cover extraction failed')}: {err}")
+        self.signal.emit()

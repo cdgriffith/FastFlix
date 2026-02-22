@@ -28,7 +28,6 @@ from fastflix.ui_styles import ONYX_COLORS, get_onyx_combobox_style, get_onyx_bu
 from fastflix.flix import (
     detect_hdr10_plus,
     detect_interlaced,
-    extract_attachments,
     generate_thumbnail_command,
     get_auto_crop,
     parse,
@@ -55,7 +54,7 @@ from fastflix.shared import (
     shrink_text_to_fit,
 )
 from fastflix.windows_tools import prevent_sleep_mode, allow_sleep_mode
-from fastflix.widgets.background_tasks import ThumbnailCreator
+from fastflix.widgets.background_tasks import ThumbnailCreator, ExtractCovers
 from fastflix.widgets.status_bar import Task, STATE_ENCODING, STATE_ERROR, STATE_COMPLETE, STATE_IDLE
 from fastflix.widgets.video_options import VideoOptions
 from fastflix.widgets.windows.crop_window import CropPreviewWindow
@@ -134,6 +133,7 @@ class MainWidgets(BaseModel):
     preview: QtWidgets.QLabel = None
     convert_to: QtWidgets.QComboBox = None
     convert_button: QtWidgets.QPushButton = None
+    queue_button: QtWidgets.QPushButton = None
     deinterlace: QtWidgets.QCheckBox = None
     remove_hdr: QtWidgets.QCheckBox = None
     profile_box: QtWidgets.QComboBox = None
@@ -170,6 +170,7 @@ class Main(QtWidgets.QWidget):
     thread_logging_signal = QtCore.Signal(str)
     encoding_progress_signal = QtCore.Signal(int)
     encoding_status_signal = QtCore.Signal(str, str)  # (message, state)
+    cover_extraction_complete = QtCore.Signal()
 
     def __init__(self, parent, app: FastFlixApp):
         super().__init__(parent)
@@ -186,6 +187,8 @@ class Main(QtWidgets.QWidget):
         self.last_thumb_hash = ""
         self.page_updating = False
         self.previous_encoder_no_audio = False
+        self._cover_extract_thread = None
+        self._cover_extract_video_source = None
 
         self.crop_preview = CropPreviewWindow(self)
 
@@ -275,6 +278,7 @@ class Main(QtWidgets.QWidget):
         self.thumbnail_complete.connect(self.thumbnail_generated)
         self.status_update_signal.connect(self.status_update)
         self.thread_logging_signal.connect(self.thread_logger)
+        self.cover_extraction_complete.connect(self.on_cover_extraction_complete)
         self.encoding_worker = None
         self.command_runner = None
         self.side_data = Box()
@@ -432,13 +436,13 @@ class Main(QtWidgets.QWidget):
 
         top_bar_h = scaler.scale(HEIGHTS.TOP_BAR_BUTTON)
 
-        queue = QtWidgets.QPushButton(QtGui.QIcon(onyx_queue_add_icon), f"{t('Add to Queue')}  ")
-        queue.setIconSize(scaler.scale_size(ICONS.LARGE, ICONS.LARGE))
-        queue.setFixedHeight(top_bar_h)
-        queue.setStyleSheet(theme)
-        queue.setLayoutDirection(QtCore.Qt.RightToLeft)
-        queue.clicked.connect(lambda: self.add_to_queue())
-        self._top_bar_widgets.append(queue)
+        self.widgets.queue_button = QtWidgets.QPushButton(QtGui.QIcon(onyx_queue_add_icon), f"{t('Add to Queue')}  ")
+        self.widgets.queue_button.setIconSize(scaler.scale_size(ICONS.LARGE, ICONS.LARGE))
+        self.widgets.queue_button.setFixedHeight(top_bar_h)
+        self.widgets.queue_button.setStyleSheet(theme)
+        self.widgets.queue_button.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.widgets.queue_button.clicked.connect(lambda: self.add_to_queue())
+        self._top_bar_widgets.append(self.widgets.queue_button)
 
         self.widgets.convert_button = QtWidgets.QPushButton(QtGui.QIcon(onyx_convert_icon), f"{t('Convert')}  ")
         self.widgets.convert_button.setIconSize(scaler.scale_size(ICONS.LARGE, ICONS.LARGE))
@@ -448,7 +452,7 @@ class Main(QtWidgets.QWidget):
         self.widgets.convert_button.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.widgets.convert_button.clicked.connect(lambda: self.encode_video())
         top_bar_right.addStretch(1)
-        top_bar_right.addWidget(queue)
+        top_bar_right.addWidget(self.widgets.queue_button)
         top_bar_right.addWidget(self.widgets.convert_button)
         return top_bar_right
 
@@ -1877,7 +1881,7 @@ class Main(QtWidgets.QWidget):
 
     def disable_all(self):
         for name, widget in self.widgets.items():
-            if name in ("preview", "convert_button", "pause_resume", "convert_to", "profile_box"):
+            if name in ("preview", "convert_button", "queue_button", "pause_resume", "convert_to", "profile_box"):
                 continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
@@ -1893,7 +1897,7 @@ class Main(QtWidgets.QWidget):
 
     def enable_all(self):
         for name, widget in self.widgets.items():
-            if name in {"preview", "convert_button", "pause_resume", "convert_to", "profile_box"}:
+            if name in {"preview", "convert_button", "queue_button", "pause_resume", "convert_to", "profile_box"}:
                 continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
@@ -1909,6 +1913,14 @@ class Main(QtWidgets.QWidget):
         self.update_resolution()
 
     def clear_current_video(self):
+        if self._cover_extract_thread and self._cover_extract_thread.isRunning():
+            self._cover_extract_thread.wait(2000)
+            self._cover_extract_thread = None
+        self.widgets.queue_button.setEnabled(True)
+        self.widgets.queue_button.setToolTip("")
+        self.widgets.convert_button.setEnabled(True)
+        self.widgets.convert_button.setToolTip("")
+
         self.loading_video = True
         self.app.fastflix.current_video = None
         self.input_video = None
@@ -1963,7 +1975,6 @@ class Main(QtWidgets.QWidget):
 
         self.app.fastflix.current_video = video
         self.app.fastflix.current_video.work_path.mkdir(parents=True, exist_ok=True)
-        extract_attachments(app=self.app)
         self.input_video = video.source
         self.source_video_path_widget.setText(str(self.input_video))
         hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
@@ -2032,6 +2043,8 @@ class Main(QtWidgets.QWidget):
         self.video_options.reload()
         self.enable_all()
 
+        self._start_cover_extraction()
+
         self.app.fastflix.current_video.status = Status()
         self.update_video_info_labels()
         self.loading_video = False
@@ -2050,7 +2063,6 @@ class Main(QtWidgets.QWidget):
         self.app.fastflix.current_video.video_settings.template_generated_name = name
         tasks = [
             Task(t("Parse Video details"), parse),
-            Task(t("Extract covers"), extract_attachments),
             Task(t("Determine HDR details"), parse_hdr_details),
             Task(t("Detect HDR10+"), detect_hdr10_plus),
         ]
@@ -2131,6 +2143,8 @@ class Main(QtWidgets.QWidget):
         self.enable_all()
         # self.widgets.convert_button.setDisabled(False)
         # self.widgets.convert_button.setStyleSheet("background-color:green;")
+
+        self._start_cover_extraction()
 
         self.loading_video = False
         self.update_resolution_labels()
@@ -2495,6 +2509,8 @@ class Main(QtWidgets.QWidget):
                 shutil.rmtree(self.temp_dir, ignore_errors=True)
             except Exception:
                 pass
+        if self._cover_extract_thread and self._cover_extract_thread.isRunning():
+            self._cover_extract_thread.wait(3000)
         self.video_options.cleanup()
         self.notifier.request_shutdown()
         self.notifier.wait(1000)  # Wait up to 1 second for graceful shutdown
@@ -2539,6 +2555,47 @@ class Main(QtWidgets.QWidget):
             if sm.clickedButton().text() == "Cancel":
                 return False
         return True
+
+    def _start_cover_extraction(self):
+        """Start background cover extraction thread."""
+        if self.app.fastflix.config.disable_cover_extraction:
+            return
+        if not self.app.fastflix.current_video:
+            return
+        has_covers = any(
+            track.get("tags", {}).get("filename", "").rsplit(".", 1)[0]
+            in ("cover", "small_cover", "cover_land", "small_cover_land")
+            for track in self.app.fastflix.current_video.streams.attachment
+        )
+        if not has_covers:
+            return
+
+        self.widgets.queue_button.setDisabled(True)
+        self.widgets.queue_button.setToolTip(t("Extracting cover images..."))
+        self.widgets.convert_button.setDisabled(True)
+        self.widgets.convert_button.setToolTip(t("Extracting cover images..."))
+
+        self.video_options.attachments.set_extracting(True)
+
+        self._cover_extract_video_source = self.app.fastflix.current_video.source
+        self._cover_extract_thread = ExtractCovers(app=self.app, main=self, signal=self.cover_extraction_complete)
+        self._cover_extract_thread.start()
+
+    def on_cover_extraction_complete(self):
+        """Called when background cover extraction finishes."""
+        self._cover_extract_thread = None
+
+        self.widgets.queue_button.setEnabled(True)
+        self.widgets.queue_button.setToolTip("")
+        self.widgets.convert_button.setEnabled(True)
+        self.widgets.convert_button.setToolTip("")
+
+        if (
+            self.app.fastflix.current_video
+            and self.app.fastflix.current_video.source == self._cover_extract_video_source
+        ):
+            self.video_options.attachments.covers_extracted()
+        self._cover_extract_video_source = None
 
     def set_convert_button(self):
         if not self.app.fastflix.currently_encoding:
