@@ -2,8 +2,8 @@
 
 ## Version 6.1.1
 
-* Adding "Show completion popup message" (default off) and "Show error popup message" (default on) settings, replacing the old "Disable completion and error messages" toggle
-* Adding precise frame-based trimming (--trim) for rigaya encoders (NVEncC, QSVEncC, VCEEncC) when using Exact seek mode
+* Adding "Show completion popup message" (default off) and "Show error popup message" (default on) settings, replacing the old "Disable completion and error messages" toggle (thanks to Balthazar)
+* Adding #703 precise frame-based trimming (--trim) for rigaya encoders (NVEncC, QSVEncC, VCEEncC) when using Exact seek mode (thanks to Augusto7743)
 * Fixing #722 Timeout while extracting covers (thanks to larsk2)
 * Fixing #722 Bottom Crop words cut off (thanks to larsk2)
 
