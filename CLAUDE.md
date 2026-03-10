@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 FastFlix is a Python GUI application for video encoding/transcoding using PySide6 (Qt6). It wraps FFmpeg and supports 25+ encoder backends including x264, x265, AV1 variants, VP9, VVC, and hardware encoders (NVIDIA NVEncC, Intel QSVEncC, AMD VCEEncC).
 
-**Requirements:** Python 3.13+, FFmpeg 4.3+ (5.0+ recommended)
+**Requirements:** Python 3.13+, FFmpeg 8.0+
 
 ## Build & Development Commands
 

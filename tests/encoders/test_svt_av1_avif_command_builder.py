@@ -40,8 +40,7 @@ def test_svt_av1_avif_basic():
     assert "avif" in cmd
     assert "-qp" in cmd
     assert "24" in cmd
-    assert "-strict" in cmd
-    assert "experimental" in cmd
+    assert "-strict" not in cmd
 
 
 def test_svt_av1_avif_with_tune():

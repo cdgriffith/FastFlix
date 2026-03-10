@@ -40,7 +40,8 @@ def build(fastflix: FastFlix):
     output_video = str(sanitize(fastflix.current_video.video_settings.output_path))
 
     # Build FFmpeg command to output yuv4mpegpipe to stdout
-    ffmpeg_cmd = [str(fastflix.config.ffmpeg), "-y"]
+    ffmpeg_cmd = [str(fastflix.config.ffmpeg)]
+    ffmpeg_cmd.append("-y")
     if video_settings.start_time:
         ffmpeg_cmd.extend(["-ss", str(video_settings.start_time)])
     if video_settings.end_time:

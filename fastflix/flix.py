@@ -124,9 +124,6 @@ def guess_bit_depth(pix_fmt: str, color_primaries: str = None) -> int:
         "yuva420p",
         "yuva422p",
         "yuva444p",
-        "yuvj420p",
-        "yuvj422p",
-        "yuvj444p",
     )
 
     ten = ("yuv420p10le", "yuv422p10le", "yuv444p10le", "gbrp10le", "gray10le", "p010le")

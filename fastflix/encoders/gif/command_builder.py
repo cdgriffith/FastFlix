@@ -65,7 +65,8 @@ def build(fastflix: FastFlix):
 
     output_video = str(sanitize(fastflix.current_video.video_settings.output_path))
 
-    beginning = [str(fastflix.config.ffmpeg), "-y"]
+    beginning = [str(fastflix.config.ffmpeg)]
+    beginning.append("-y")
     if video_settings.start_time:
         beginning.extend(["-ss", str(video_settings.start_time)])
     if video_settings.end_time:

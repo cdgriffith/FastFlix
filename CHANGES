@@ -2,6 +2,15 @@
 
 ## Version 6.1.2
 
+* Adding FFmpeg 8.0+ version check on startup with option to download latest FFmpeg on Windows
+* Adding rotation and flip buttons to the visual crop window, allowing users to change rotation (0/90/180/270) and toggle horizontal/vertical flip without leaving the crop view
+* Removing -strict experimental from SVT-AV1 encoders (no longer needed with FFmpeg 8+)
+* Always using -fps_mode instead of deprecated -vsync for frame rate control
+* Updating visual crop window to show the video frame with rotation and flip applied, matching the final output so crop edges can be set intuitively in the rotated view
+* Updating Copy encoder to use modern FFmpeg display_rotation, display_hflip, and display_vflip for lossless rotation and flip metadata instead of deprecated rotate metadata tag, with support for MP4, MOV, MKV, and M4V containers
+* Simplifying non-copy encoder rotation handling to use FFmpeg's built-in auto-rotation instead of manual display_rotation overrides, which also properly handles source flips from the display matrix
+* Fixing visual crop window showing incorrect bounds and dimensions when user rotation is applied, by showing the frame in pre-rotation space where crop actually operates
+* Fixing video crop and dimension detection for rotated videos where display matrix rotation was not found when other side data (e.g., HDR mastering display) preceded it
 * Fixing cover extraction to not be during video load and blocking, but a background task
 
 ## Version 6.1.1

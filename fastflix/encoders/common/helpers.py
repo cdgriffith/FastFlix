@@ -53,7 +53,6 @@ def generate_ffmpeg_start(
     ffmpeg,
     encoder,
     selected_track,
-    ffmpeg_version,
     start_time=0,
     end_time=None,
     pix_fmt="yuv420p10le",
@@ -117,15 +116,8 @@ def generate_ffmpeg_start(
     if not filters:
         command.extend(["-map", f"0:{selected_track}"])
 
-    vsync_type = "vsync"
-    try:
-        if ffmpeg_version.startswith("n") and int(ffmpeg_version[1:].split(".")[0]) >= 5:
-            vsync_type = "fps_mode"
-    except Exception:
-        pass
-
     if vsync:
-        command.extend([f"-{vsync_type}", str(vsync)])
+        command.extend(["-fps_mode", str(vsync)])
 
     if filters:
         command.extend(filters)
@@ -165,14 +157,16 @@ def generate_ending(
     remove_metadata=True,
     null_ending=False,
     output_fps: Union[str, None] = None,
-    disable_rotate_metadata=False,
+    source_has_rotation=False,
     copy_data=False,
     data_tracks=None,
     **_,
 ):
     command = []
 
-    if not disable_rotate_metadata and not remove_metadata:
+    # When source had rotation and metadata is preserved, clear the legacy rotate tag
+    # to prevent players from double-rotating (the tag gets copied via -map_metadata 0)
+    if source_has_rotation and not remove_metadata:
         command.extend(["-metadata:s:v", "rotate=0"])
 
     if remove_metadata:
@@ -358,6 +352,9 @@ def generate_all(
 ) -> Tuple[List[str], List[str], List[str]]:
     settings = fastflix.current_video.video_settings.video_encoder_settings
 
+    # Detect source rotation for metadata clearing (FFmpeg auto-rotates during re-encoding)
+    source_rotation_degrees = fastflix.current_video.source_rotation
+
     audio_cmd = build_audio(fastflix.current_video.audio_tracks) if audio else []
 
     # Assign file_index to external subtitle tracks and collect unique external file paths
@@ -426,7 +423,7 @@ def generate_all(
         subtitles=subtitles_cmd,
         cover=attachments_cmd,
         output_video=fastflix.current_video.video_settings.output_path,
-        disable_rotate_metadata=encoder == "copy",
+        source_has_rotation=bool(source_rotation_degrees) and encoder != "copy",
         data_tracks=fastflix.current_video.data_tracks,
         **fastflix.current_video.video_settings.model_dump(),
     )
@@ -451,7 +448,6 @@ def generate_all(
         filters=filters_cmd,
         concat=fastflix.current_video.concat,
         enable_opencl=enable_opencl if not disable_filters else False,
-        ffmpeg_version=fastflix.ffmpeg_version,
         start_extra=start_extra,
         extra_inputs=extra_inputs if extra_inputs else None,
         **fastflix.current_video.video_settings.model_dump(),

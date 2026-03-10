@@ -316,6 +316,9 @@ class CropPreviewWindow(QtWidgets.QWidget):
         self.crop_values = {"top": 0, "bottom": 0, "left": 0, "right": 0}
         self.video_width = 0
         self.video_height = 0
+        self.rotate = 0  # 0-3 matching main UI (0=0°, 1=90°CW, 2=180°, 3=270°CW)
+        self.vertical_flip = False
+        self.horizontal_flip = False
         self.start_time: Optional[float] = None  # None means not set by user in this window
         self.end_time: Optional[float] = None
         self.last_path: Optional[Path] = None
@@ -359,6 +362,24 @@ class CropPreviewWindow(QtWidgets.QWidget):
         self.crop_btn.clicked.connect(lambda: self.switch_mode("crop"))
         self.preview_btn.clicked.connect(lambda: self.switch_mode("preview"))
 
+        self.rotate_btn = QtWidgets.QPushButton("0\u00b0")
+        self.rotate_btn.setFixedHeight(scaler.scale(28))
+        self.rotate_btn.setCursor(QtCore.Qt.PointingHandCursor)
+        self.rotate_btn.setToolTip(t("Rotate 90\u00b0 clockwise"))
+        self.rotate_btn.clicked.connect(self._cycle_rotate)
+
+        self.hflip_btn = QtWidgets.QPushButton(t("H Flip"))
+        self.hflip_btn.setFixedHeight(scaler.scale(28))
+        self.hflip_btn.setCursor(QtCore.Qt.PointingHandCursor)
+        self.hflip_btn.setToolTip(t("Toggle horizontal flip"))
+        self.hflip_btn.clicked.connect(self._toggle_hflip)
+
+        self.vflip_btn = QtWidgets.QPushButton(t("V Flip"))
+        self.vflip_btn.setFixedHeight(scaler.scale(28))
+        self.vflip_btn.setCursor(QtCore.Qt.PointingHandCursor)
+        self.vflip_btn.setToolTip(t("Toggle vertical flip"))
+        self.vflip_btn.clicked.connect(self._toggle_vflip)
+
         self.set_start_btn = QtWidgets.QPushButton(t("Set Start Time"))
         self.set_start_btn.setFixedHeight(scaler.scale(28))
         self.set_start_btn.setCursor(QtCore.Qt.PointingHandCursor)
@@ -386,6 +407,9 @@ class CropPreviewWindow(QtWidgets.QWidget):
         top_layout.addWidget(self.reset_btn)
         top_layout.addWidget(self.crop_btn)
         top_layout.addWidget(self.preview_btn)
+        top_layout.addWidget(self.rotate_btn)
+        top_layout.addWidget(self.hflip_btn)
+        top_layout.addWidget(self.vflip_btn)
         top_layout.addWidget(self.set_start_btn)
         top_layout.addWidget(self.set_end_btn)
         top_layout.addStretch(1)
@@ -492,6 +516,7 @@ class CropPreviewWindow(QtWidgets.QWidget):
         self.set_end_btn.setStyleSheet(end_style)
         self.save_btn.setStyleSheet(save_style)
         self.close_btn.setStyleSheet(close_style)
+        self._update_transform_button_styles()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -526,19 +551,33 @@ class CropPreviewWindow(QtWidgets.QWidget):
         if not video:
             return
 
-        self.video_width = video.width
-        self.video_height = video.height
+        # Read rotation/flip from main UI
+        self.rotate = self.main.widgets.rotate.currentIndex()
+        self.vertical_flip, self.horizontal_flip = self.main.get_flips()
 
-        # Read current crop values from main UI
+        # Compute post-rotation dimensions (swap width/height for 90°/270°)
+        if self.rotate in (1, 3):
+            self.video_width = video.height
+            self.video_height = video.width
+        else:
+            self.video_width = video.width
+            self.video_height = video.height
+
+        # Read current crop values from main UI (unrotated space)
         try:
-            self.crop_values = {
+            unrotated_crop = {
                 "top": int(self.main.widgets.crop.top.text() or 0),
                 "bottom": int(self.main.widgets.crop.bottom.text() or 0),
                 "left": int(self.main.widgets.crop.left.text() or 0),
                 "right": int(self.main.widgets.crop.right.text() or 0),
             }
         except (ValueError, AttributeError):
-            self.crop_values = {"top": 0, "bottom": 0, "left": 0, "right": 0}
+            unrotated_crop = {"top": 0, "bottom": 0, "left": 0, "right": 0}
+
+        # Transform crop from unrotated (main UI / FFmpeg) to rotated (display) space
+        self.crop_values = self._unrotated_to_rotated_crop(
+            unrotated_crop, self.rotate, self.vertical_flip, self.horizontal_flip
+        )
 
         # Read current start/end times from main UI
         self.start_time = time_to_number(self.main.widgets.start_time.text())
@@ -610,17 +649,25 @@ class CropPreviewWindow(QtWidgets.QWidget):
                 settings["color_transfer"] = video.color_transfer
 
         if with_crop:
-            # Apply current visual crop values for preview
-            crop = self.crop_values
-            cw = self.video_width - crop["left"] - crop["right"]
-            ch = self.video_height - crop["top"] - crop["bottom"]
-            settings["crop"] = {"width": cw, "height": ch, "left": crop["left"], "top": crop["top"]}
+            # Transform rotated crop values to unrotated space for FFmpeg
+            # (FFmpeg filter order: crop → scale → rotate → flip)
+            unrotated_crop = self._rotated_to_unrotated_crop(
+                self.crop_values, self.rotate, self.vertical_flip, self.horizontal_flip
+            )
+            cw = video.width - unrotated_crop["left"] - unrotated_crop["right"]
+            ch = video.height - unrotated_crop["top"] - unrotated_crop["bottom"]
+            settings["crop"] = {"width": cw, "height": ch, "left": unrotated_crop["left"], "top": unrotated_crop["top"]}
         else:
             # No crop for the base frame
             settings["crop"] = None
 
         # Don't apply scale for the crop window - we want full resolution frame
         settings["scale"] = None
+
+        # Apply rotation/flip so the preview matches the final output
+        settings["rotate"] = self.rotate
+        settings["vertical_flip"] = self.vertical_flip
+        settings["horizontal_flip"] = self.horizontal_flip
 
         filters = helpers.generate_filters(
             enable_opencl=False,
@@ -691,10 +738,16 @@ class CropPreviewWindow(QtWidgets.QWidget):
 
     def save_crop(self):
         """Snap crop to divisible-by-8 dimensions and write back to main UI."""
-        crop = self.crop_values
+        video = self.main.app.fastflix.current_video
+        if not video:
+            return
 
-        w = self.video_width - crop["left"] - crop["right"]
-        h = self.video_height - crop["top"] - crop["bottom"]
+        # Transform rotated crop to unrotated space for FFmpeg
+        crop = self._rotated_to_unrotated_crop(self.crop_values, self.rotate, self.vertical_flip, self.horizontal_flip)
+
+        # Snap to divisible-by-8 in unrotated space
+        w = video.width - crop["left"] - crop["right"]
+        h = video.height - crop["top"] - crop["bottom"]
 
         target_w = (w // 8) * 8
         target_h = (h // 8) * 8
@@ -708,11 +761,15 @@ class CropPreviewWindow(QtWidgets.QWidget):
         crop["top"] += h_diff // 2
         crop["bottom"] += h_diff - h_diff // 2
 
-        # Write to main UI crop fields
+        # Write unrotated crop to main UI
         self.main.widgets.crop.top.setText(str(crop["top"]))
         self.main.widgets.crop.bottom.setText(str(crop["bottom"]))
         self.main.widgets.crop.left.setText(str(crop["left"]))
         self.main.widgets.crop.right.setText(str(crop["right"]))
+
+        # Write rotation/flip back to main UI
+        self.main.widgets.rotate.setCurrentIndex(self.rotate)
+        self.main.widgets.flip.setCurrentIndex(self.main.flip_to_int(self.vertical_flip, self.horizontal_flip))
 
         # Write start/end times back to main UI
         if self.start_time is not None:
@@ -721,12 +778,117 @@ class CropPreviewWindow(QtWidgets.QWidget):
             self.main.widgets.end_time.setText(self.main.number_to_time(self.end_time))
 
         logger.info(
-            f"Crop saved: top={crop['top']} bottom={crop['bottom']} "
+            f"Crop saved (unrotated): top={crop['top']} bottom={crop['bottom']} "
             f"left={crop['left']} right={crop['right']} "
-            f"({self.video_width - crop['left'] - crop['right']}x"
-            f"{self.video_height - crop['top'] - crop['bottom']})"
+            f"({video.width - crop['left'] - crop['right']}x"
+            f"{video.height - crop['top'] - crop['bottom']})"
+            f" | rotate={self.rotate} vflip={self.vertical_flip} hflip={self.horizontal_flip}"
         )
         self.hide()
+
+    @staticmethod
+    def _unrotated_to_rotated_crop(crop, rotate, vflip, hflip):
+        """Transform crop from unrotated (FFmpeg) space to rotated (display) space.
+
+        FFmpeg filter order: crop → scale → rotate → flip.
+        Forward: apply rotation mapping, then flip.
+        """
+        ct, cr, cb, cl = crop["top"], crop["right"], crop["bottom"], crop["left"]
+        if rotate == 1:
+            ct, cr, cb, cl = cl, ct, cr, cb
+        elif rotate == 2:
+            ct, cr, cb, cl = cb, cl, ct, cr
+        elif rotate == 3:
+            ct, cr, cb, cl = cr, cb, cl, ct
+        if hflip:
+            cl, cr = cr, cl
+        if vflip:
+            ct, cb = cb, ct
+        return {"top": ct, "right": cr, "bottom": cb, "left": cl}
+
+    @staticmethod
+    def _rotated_to_unrotated_crop(crop, rotate, vflip, hflip):
+        """Transform crop from rotated (display) space to unrotated (FFmpeg) space.
+
+        Inverse of _unrotated_to_rotated_crop: undo flips first, then undo rotation.
+        """
+        ct, cr, cb, cl = crop["top"], crop["right"], crop["bottom"], crop["left"]
+        # Undo flips first
+        if hflip:
+            cl, cr = cr, cl
+        if vflip:
+            ct, cb = cb, ct
+        # Undo rotation (apply inverse rotation)
+        inv = (4 - rotate) % 4
+        if inv == 1:
+            ct, cr, cb, cl = cl, ct, cr, cb
+        elif inv == 2:
+            ct, cr, cb, cl = cb, cl, ct, cr
+        elif inv == 3:
+            ct, cr, cb, cl = cr, cb, cl, ct
+        return {"top": ct, "right": cr, "bottom": cb, "left": cl}
+
+    def _update_transform_button_styles(self):
+        """Update rotate/flip button text and style to reflect current state."""
+        labels = ["0\u00b0", "90\u00b0", "180\u00b0", "270\u00b0"]
+        self.rotate_btn.setText(labels[self.rotate])
+
+        active = (
+            "QPushButton { background: #567781; color: white; border: none; border-radius: 4px; padding: 4px 12px; }"
+        )
+        inactive = (
+            "QPushButton { background: #4a555e; color: #b5b5b5; border: none; border-radius: 4px; padding: 4px 12px; }"
+            "QPushButton:hover { background: #566068; }"
+        )
+        self.rotate_btn.setStyleSheet(active if self.rotate != 0 else inactive)
+        self.hflip_btn.setStyleSheet(active if self.horizontal_flip else inactive)
+        self.vflip_btn.setStyleSheet(active if self.vertical_flip else inactive)
+
+    def _cycle_rotate(self):
+        """Cycle rotation 0 -> 90 -> 180 -> 270 -> 0, transforming crop accordingly."""
+        old_rotate = self.rotate
+        self.rotate = (self.rotate + 1) % 4
+
+        # Transform crop: old rotated space -> unrotated -> new rotated space
+        unrotated = self._rotated_to_unrotated_crop(
+            self.crop_values, old_rotate, self.vertical_flip, self.horizontal_flip
+        )
+        self.crop_values = self._unrotated_to_rotated_crop(
+            unrotated, self.rotate, self.vertical_flip, self.horizontal_flip
+        )
+
+        # Swap dimensions if transposition changed (0/2 vs 1/3)
+        if (old_rotate in (1, 3)) != (self.rotate in (1, 3)):
+            self.video_width, self.video_height = self.video_height, self.video_width
+
+        self._update_button_styles()
+        self.update_size_label()
+        self.generate_image(with_crop=False)
+        if self.mode == "preview":
+            self.generate_image(with_crop=True)
+        self.image_widget.update()
+
+    def _toggle_hflip(self):
+        """Toggle horizontal flip, swapping left/right crop in display space."""
+        self.horizontal_flip = not self.horizontal_flip
+        self.crop_values["left"], self.crop_values["right"] = self.crop_values["right"], self.crop_values["left"]
+
+        self._update_button_styles()
+        self.generate_image(with_crop=False)
+        if self.mode == "preview":
+            self.generate_image(with_crop=True)
+        self.image_widget.update()
+
+    def _toggle_vflip(self):
+        """Toggle vertical flip, swapping top/bottom crop in display space."""
+        self.vertical_flip = not self.vertical_flip
+        self.crop_values["top"], self.crop_values["bottom"] = self.crop_values["bottom"], self.crop_values["top"]
+
+        self._update_button_styles()
+        self.generate_image(with_crop=False)
+        if self.mode == "preview":
+            self.generate_image(with_crop=True)
+        self.image_widget.update()
 
     def hideEvent(self, event):
         # Clean up temp file on close

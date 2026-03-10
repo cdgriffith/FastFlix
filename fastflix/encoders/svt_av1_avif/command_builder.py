@@ -18,7 +18,7 @@ def build(fastflix: FastFlix):
     settings: SVTAVIFSettings = fastflix.current_video.video_settings.video_encoder_settings
     beginning, ending, output_fps = generate_all(fastflix, "libsvtav1", audio=False)
 
-    beginning.extend(["-strict", "experimental", "-preset", str(settings.speed)])
+    beginning.extend(["-preset", str(settings.speed)])
     beginning.extend(generate_color_details(fastflix))
 
     svtav1_params = settings.svtav1_params.copy()

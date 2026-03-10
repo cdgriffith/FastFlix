@@ -80,8 +80,7 @@ def test_svt_av1_single_pass_qp():
             assert isinstance(cmd, list), f"Expected command to be a list, got {type(cmd)}"
 
             # Check key elements are present in the command list
-            assert "-strict" in cmd
-            assert "experimental" in cmd
+            assert "-strict" not in cmd
             assert "-preset" in cmd
             assert "7" in cmd
             assert "-crf" in cmd

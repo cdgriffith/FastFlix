@@ -15,13 +15,7 @@ def build(fastflix: FastFlix):
     beginning, ending, output_fps = generate_all(fastflix, "libaom-av1")
 
     if fastflix.current_video.hdr10_plus and "10" in settings.pix_fmt:
-        if fastflix.libavcodec_version >= 62:
-            logger.info("HDR10+ detected — passthrough will be handled automatically by FFmpeg 8.0+")
-        else:
-            logger.warning(
-                "HDR10+ detected but FFmpeg 8.0+ (libavcodec 62+) is required for AV1 HDR10+ passthrough. "
-                f"Current libavcodec version: {fastflix.libavcodec_version}"
-            )
+        logger.info("HDR10+ detected — passthrough will be handled automatically by FFmpeg 8.0+")
 
     beginning.extend(
         [

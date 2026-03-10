@@ -298,12 +298,8 @@ class AV1(SettingPanel):
         super().new_source()
         if self.app.fastflix.current_video.hdr10_plus:
             self.extract_button.show()
-            if self.app.fastflix.libavcodec_version >= 62:
-                self.hdr10plus_status_label.setStyleSheet("")
-                self.hdr10plus_status_label.setText(t("HDR10+ detected — will be preserved via FFmpeg passthrough"))
-            else:
-                self.hdr10plus_status_label.setStyleSheet("")
-                self.hdr10plus_status_label.setText(t("HDR10+ detected but requires FFmpeg 8.0+ for AV1 passthrough"))
+            self.hdr10plus_status_label.setStyleSheet("")
+            self.hdr10plus_status_label.setText(t("HDR10+ detected — will be preserved via FFmpeg passthrough"))
             self.hdr10plus_status_label.show()
         else:
             self.extract_button.hide()

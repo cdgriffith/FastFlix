@@ -201,6 +201,11 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.disable_deinterlace_button, row, 0, 1, 3)
         row += 1
 
+        self.suppress_ffmpeg_version_warning = QtWidgets.QCheckBox(t("Suppress FFmpeg version warning on startup"))
+        self.suppress_ffmpeg_version_warning.setChecked(self.app.fastflix.config.suppress_ffmpeg_version_warning)
+        layout.addWidget(self.suppress_ffmpeg_version_warning, row, 0, 1, 3)
+        row += 1
+
         self.use_keyframes_for_preview = QtWidgets.QCheckBox(t("Use keyframes for preview images"))
         self.use_keyframes_for_preview.setChecked(self.app.fastflix.config.use_keyframes_for_preview)
         layout.addWidget(self.use_keyframes_for_preview, row, 0, 1, 3)
@@ -689,6 +694,7 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.show_complete_message = self.show_complete_message.isChecked()
         self.app.fastflix.config.show_error_message = self.show_error_message.isChecked()
         self.app.fastflix.config.disable_deinterlace_check = self.disable_deinterlace_button.isChecked()
+        self.app.fastflix.config.suppress_ffmpeg_version_warning = self.suppress_ffmpeg_version_warning.isChecked()
         self.app.fastflix.config.use_keyframes_for_preview = self.use_keyframes_for_preview.isChecked()
         self.app.fastflix.config.auto_detect_subtitles = self.auto_detect_subtitles.isChecked()
 

@@ -38,7 +38,6 @@ def test_generate_ffmpeg_start_basic(fastflix_instance):
         ffmpeg=Path("ffmpeg"),
         encoder="libx265",
         selected_track=0,
-        ffmpeg_version="n5.0",
         pix_fmt="yuv420p10le",
     )
 
@@ -62,7 +61,6 @@ def test_generate_ffmpeg_start_with_options(fastflix_instance):
         ffmpeg=Path("ffmpeg"),
         encoder="libx265",
         selected_track=0,
-        ffmpeg_version="n5.0",
         pix_fmt="yuv420p10le",
         start_time=10,
         end_time=60,
@@ -121,7 +119,6 @@ def test_generate_ffmpeg_start_with_list_start_extra(fastflix_instance):
         ffmpeg=Path("ffmpeg"),
         encoder="hevc_vaapi",
         selected_track=0,
-        ffmpeg_version="n5.0",
         pix_fmt="vaapi",
         start_extra=start_extra_list,
     )
@@ -148,7 +145,6 @@ def test_generate_ffmpeg_start_with_empty_list_start_extra(fastflix_instance):
         ffmpeg=Path("ffmpeg"),
         encoder="libx265",
         selected_track=0,
-        ffmpeg_version="n5.0",
         pix_fmt="yuv420p10le",
         start_extra=[],
     )
@@ -165,7 +161,6 @@ def test_generate_ffmpeg_start_numeric_times_are_strings(fastflix_instance):
         ffmpeg=Path("ffmpeg"),
         encoder="libx265",
         selected_track=0,
-        ffmpeg_version="n5.0",
         pix_fmt="yuv420p10le",
         start_time=10.5,
         end_time=120.0,
@@ -207,7 +202,7 @@ def test_generate_ending_with_options():
         copy_chapters=False,
         remove_metadata=False,
         output_fps="24",
-        disable_rotate_metadata=False,
+        source_has_rotation=True,
         copy_data=True,
     )
 
@@ -403,7 +398,6 @@ def test_generate_ffmpeg_start_with_extra_inputs(fastflix_instance):
         ffmpeg=Path("ffmpeg"),
         encoder="libx265",
         selected_track=0,
-        ffmpeg_version="n5.0",
         pix_fmt="yuv420p10le",
         extra_inputs=["-i", "/path/to/subs.srt", "-i", "/path/to/subs2.ass"],
     )
@@ -426,7 +420,6 @@ def test_generate_ffmpeg_start_no_extra_inputs(fastflix_instance):
         ffmpeg=Path("ffmpeg"),
         encoder="libx265",
         selected_track=0,
-        ffmpeg_version="n5.0",
         pix_fmt="yuv420p10le",
     )
 

@@ -46,6 +46,16 @@ from fastflix.models.encode import (
 __all__ = ["VideoSettings", "Status", "Video", "Crop", "Status"]
 
 
+def get_stream_rotation(video_stream) -> int:
+    """Extract rotation angle in degrees (0, 90, 180, 270) from a video stream."""
+    if "rotate" in video_stream.get("tags", {}):
+        return abs(int(video_stream.tags.rotate))
+    for side_data in video_stream.get("side_data_list", []):
+        if "rotation" in side_data:
+            return abs(int(side_data.rotation))
+    return 0
+
+
 def determine_rotation(streams, track: int = 0) -> Tuple[int, int]:
     for stream in streams.video:
         if int(track) == stream["index"]:
@@ -54,11 +64,7 @@ def determine_rotation(streams, track: int = 0) -> Tuple[int, int]:
     else:
         return 0, 0
 
-    rotation = 0
-    if "rotate" in streams.video[0].get("tags", {}):
-        rotation = abs(int(video_stream.tags.rotate))
-    elif "rotation" in streams.video[0].get("side_data_list", [{}])[0]:
-        rotation = abs(int(streams.video[0].side_data_list[0].rotation))
+    rotation = get_stream_rotation(video_stream)
 
     if rotation in (90, 270):
         video_width = video_stream.height
@@ -237,6 +243,19 @@ class Video(BaseModel):
             track = self.video_settings.selected_track
         _, h = determine_rotation(self.streams, track)
         return h
+
+    @property
+    def source_rotation(self) -> int:
+        """Return source rotation in degrees (0, 90, 180, 270)."""
+        track = 0
+        if hasattr(self, "video_settings"):
+            track = self.video_settings.selected_track
+        if not self.streams or not self.streams.video:
+            return 0
+        for stream in self.streams.video:
+            if int(track) == stream["index"]:
+                return get_stream_rotation(stream)
+        return 0
 
     @property
     def master_display(self) -> Optional[Box]:

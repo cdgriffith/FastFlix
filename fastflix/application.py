@@ -183,6 +183,58 @@ def init_fastflix_directories(app: FastFlixApp):
     app.fastflix.log_path.mkdir(parents=True, exist_ok=True)
 
 
+def _handle_ffmpeg_version_warning_windows(app: FastFlixApp, container: Container):
+    msg = QtWidgets.QMessageBox(container)
+    msg.setIcon(QtWidgets.QMessageBox.Warning)
+    msg.setWindowTitle(t("FFmpeg Version Warning"))
+    msg.setText(
+        t(
+            "Your FFmpeg (libavcodec {version}) is older than the required FFmpeg 8.0+ (libavcodec 62+)."
+            " Some features may not work correctly."
+        ).format(version=app.fastflix.libavcodec_version)
+    )
+    cb = QtWidgets.QCheckBox(t("Don't show this warning again"))
+    msg.setCheckBox(cb)
+    download_btn = msg.addButton(t("Download Latest"), QtWidgets.QMessageBox.AcceptRole)
+    msg.addButton(t("Ignore"), QtWidgets.QMessageBox.RejectRole)
+    msg.exec()
+
+    if msg.clickedButton() == download_btn:
+        try:
+            container.status_bar.run_tasks(
+                [Task(t("Downloading FFmpeg"), grab_stable_ffmpeg)],
+                signal_task=True,
+                can_cancel=True,
+            )
+            ffmpeg_configuration(app)
+        except Exception:
+            logger.exception("Failed to download FFmpeg")
+
+    if cb.isChecked():
+        app.fastflix.config.suppress_ffmpeg_version_warning = True
+        app.fastflix.config.save()
+
+
+def _handle_ffmpeg_version_warning_other(app: FastFlixApp):
+    msg = QtWidgets.QMessageBox()
+    msg.setIcon(QtWidgets.QMessageBox.Warning)
+    msg.setWindowTitle(t("FFmpeg Version Warning"))
+    msg.setText(
+        t(
+            "Your FFmpeg (libavcodec {version}) is older than the required FFmpeg 8.0+ (libavcodec 62+)."
+            " Please update FFmpeg. Visit https://ffmpeg.org/download.html"
+        ).format(version=app.fastflix.libavcodec_version)
+    )
+    cb = QtWidgets.QCheckBox(t("Don't show this warning again"))
+    msg.setCheckBox(cb)
+    msg.addButton(t("OK"), QtWidgets.QMessageBox.AcceptRole)
+    msg.exec()
+
+    if cb.isChecked():
+        app.fastflix.config.suppress_ffmpeg_version_warning = True
+        app.fastflix.config.save()
+
+
 def app_setup(
     enable_scaling: bool = True,
     portable_mode: bool = False,
@@ -365,6 +417,13 @@ def app_setup(
         container.status_bar.set_state(STATE_ERROR, t("Could not start FastFlix"))
         container.setEnabled(True)
         return app
+
+    # Check FFmpeg version (libavcodec 62 = FFmpeg 8.x)
+    if not app.fastflix.config.suppress_ffmpeg_version_warning and 0 < app.fastflix.libavcodec_version < 62:
+        if reusables.win_based:
+            _handle_ffmpeg_version_warning_windows(app, container)
+        else:
+            _handle_ffmpeg_version_warning_other(app)
 
     # Encoders are now populated — initialize the encoder UI
     container.main.init_encoders_ui()

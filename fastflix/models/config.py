@@ -296,6 +296,7 @@ class Config(BaseModel):
     show_error_message: bool = True
 
     disable_cover_extraction: bool = False
+    suppress_ffmpeg_version_warning: bool = False
 
     # PGS to SRT OCR Settings
     enable_pgs_ocr: bool = False

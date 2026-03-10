@@ -22,11 +22,16 @@ class Copy(SettingPanel):
         grid = QtWidgets.QGridLayout()
 
         grid.addWidget(QtWidgets.QLabel(t("This will just copy the video track as is.")), 0, 0)
+        grid.addWidget(QtWidgets.QLabel(t("No crop, scale, nor any other filters will be applied.")), 1, 0)
         grid.addWidget(
-            QtWidgets.QLabel(t("No crop, scale, rotation,flip nor any other filters will be applied.")), 1, 0
+            QtWidgets.QLabel(
+                t("Rotation and flip will be set as display metadata for supported containers (MP4, MOV, MKV).")
+            ),
+            2,
+            0,
         )
-        grid.addWidget(QtWidgets.QWidget(), 2, 0, 10, 1)
-        grid.addLayout(self._add_custom(disable_both_passes=True), 11, 0, 1, 6)
+        grid.addWidget(QtWidgets.QWidget(), 3, 0, 10, 1)
+        grid.addLayout(self._add_custom(disable_both_passes=True), 12, 0, 1, 6)
         self.setLayout(grid)
         self.hide()
 
