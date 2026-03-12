@@ -529,6 +529,21 @@ def ffmpeg_audio_encoders(app, config: Config) -> List:
     return encoders
 
 
+def ffmpeg_video_encoders(app, config: Config) -> List:
+    cmd = execute([f"{config.ffmpeg}", "-hide_banner", "-encoders"])
+    encoders = []
+    start_line = " ------"
+    started = False
+    for line in cmd.stdout.splitlines():
+        if started:
+            if line.strip().startswith("V"):
+                encoders.append(line.strip().split(" ")[1])
+        elif line.startswith(start_line):
+            started = True
+    app.fastflix.video_encoders = encoders
+    return encoders
+
+
 def ffmpeg_opencl_support(app, config: Config) -> bool:
     if app.fastflix.config.opencl_support is not None:
         app.fastflix.opencl_support = app.fastflix.config.opencl_support

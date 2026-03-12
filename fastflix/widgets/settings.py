@@ -547,6 +547,31 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(gifski_path_button, row, 2)
         row += 1
 
+        # OpenCL Support
+        opencl_label = QtWidgets.QLabel(t("OpenCL Support"))
+        self.opencl_combo = QtWidgets.QComboBox()
+        self.opencl_combo.addItems([t("Auto"), t("Disable")])
+        if self.app.fastflix.config.opencl_support is False:
+            self.opencl_combo.setCurrentIndex(1)
+        else:
+            self.opencl_combo.setCurrentIndex(0)
+
+        self.opencl_status_label = QtWidgets.QLabel()
+        self._update_opencl_status()
+
+        opencl_detect_button = QtWidgets.QPushButton(t("Re-detect"))
+        opencl_detect_button.setFixedWidth(80)
+        opencl_detect_button.clicked.connect(self._run_opencl_detection)
+
+        opencl_row_layout = QtWidgets.QHBoxLayout()
+        opencl_row_layout.addWidget(self.opencl_combo)
+        opencl_row_layout.addWidget(self.opencl_status_label)
+        opencl_row_layout.addWidget(opencl_detect_button)
+
+        layout.addWidget(opencl_label, row, 0)
+        layout.addLayout(opencl_row_layout, row, 1, 1, 2)
+        row += 1
+
         # Detected External Programs section
         detected_group = QtWidgets.QGroupBox(t("Detected External Programs"))
         detected_layout = QtWidgets.QGridLayout()
@@ -698,6 +723,13 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.use_keyframes_for_preview = self.use_keyframes_for_preview.isChecked()
         self.app.fastflix.config.auto_detect_subtitles = self.auto_detect_subtitles.isChecked()
 
+        if self.opencl_combo.currentIndex() == 1:  # Disable
+            self.app.fastflix.config.opencl_support = False
+            self.app.fastflix.opencl_support = False
+        else:  # Auto
+            self._run_opencl_detection()
+            self.app.fastflix.config.opencl_support = None
+
         self.main.config_update(encoder_reload_needed=encoder_reload_needed)
         self.app.fastflix.config.save()
         if old_lang != self.app.fastflix.config.language or restart_needed:
@@ -757,6 +789,35 @@ class Settings(QtWidgets.QWidget):
         if not filename or not filename[0]:
             return
         self.gifski_path.setText(str(Path(filename[0]).absolute()))
+
+    def _update_opencl_status(self):
+        """Update the OpenCL status icon based on current detection state."""
+        if self.opencl_combo.currentIndex() == 1:  # Disable
+            self.opencl_status_label.setText("")
+        elif self.app.fastflix.opencl_support:
+            self.opencl_status_label.setText('<span style="color: green;">\u2714</span>')
+        else:
+            self.opencl_status_label.setText('<span style="color: red;">\u2718</span>')
+
+    def _run_opencl_detection(self):
+        """Run OpenCL detection using FFmpeg and update the status icon."""
+        from fastflix.flix import execute
+
+        cmd = execute(
+            [
+                str(self.app.fastflix.config.ffmpeg),
+                "-hide_banner",
+                "-log_level",
+                "error",
+                "-init_hw_device",
+                "opencl:0.0",
+                "-h",
+            ]
+        )
+        detected = cmd.returncode == 0
+        self.app.fastflix.opencl_support = detected
+        self._update_opencl_status()
+        logger.info(f"OpenCL re-detection result: {'supported' if detected else 'not supported'}")
 
     def select_output_directory(self):
         dirname = Path(self.output_path_line_edit.text()).parent

@@ -576,6 +576,7 @@ class Main(QtWidgets.QWidget):
         from fastflix.application import init_encoders
         from fastflix.flix import (
             ffmpeg_audio_encoders,
+            ffmpeg_video_encoders,
             ffmpeg_configuration,
             ffmpeg_opencl_support,
             ffprobe_configuration,
@@ -591,6 +592,7 @@ class Main(QtWidgets.QWidget):
             Task(t("Gather FFmpeg version"), ffmpeg_configuration),
             Task(t("Gather FFprobe version"), ffprobe_configuration),
             Task(t("Gather FFmpeg audio encoders"), ffmpeg_audio_encoders),
+            Task(t("Gather FFmpeg video encoders"), ffmpeg_video_encoders),
             Task(t("Determine OpenCL Support"), ffmpeg_opencl_support),
             Task(t("Initialize Encoders"), init_encoders),
         ]

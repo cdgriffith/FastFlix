@@ -40,7 +40,7 @@ class Modify(SettingPanel):
         grid.addWidget(self.extract_label, 2, 2, 1, 1)
 
         self.audio_format_combo = QtWidgets.QComboBox()
-        self.audio_format_combo.addItems(self.app.fastflix.config.sane_audio_selection)
+        self.audio_format_combo.addItems([t("Keep source format")] + self.app.fastflix.config.sane_audio_selection)
         grid.addWidget(self.audio_format_combo, 2, 1, 1, 1)
 
         add_audio_track = QtWidgets.QPushButton(t("Add Audio Track"))
@@ -99,17 +99,19 @@ class Modify(SettingPanel):
             message(t("Please make sure the source and output files are specified"))
             return
 
+        keep_source = self.audio_format_combo.currentIndex() == 0
         audio_type = self.audio_format_combo.currentText()
+        display_type = t("same as source") if keep_source else audio_type
         resp = yes_no_message(
             t("This will run the audio normalization process on all streams of")
             + f"\n{in_path}\n"
             + t("and create an output file with audio format ")
-            + f"{audio_type}\n@ {out_path}\n",
+            + f"{display_type}\n@ {out_path}\n",
             title="Audio Normalization",
         )
         if not resp:
             return
-        self.norm_thread = AudioNoramlize(self.app, self.main, audio_type, self.signal)
+        self.norm_thread = AudioNoramlize(self.app, self.main, audio_type, self.signal, keep_source=keep_source)
         self.norm_thread.start()
         self.movie.start()
         self.extract_label.show()

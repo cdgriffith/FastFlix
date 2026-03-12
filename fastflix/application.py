@@ -7,7 +7,13 @@ import coloredlogs
 import reusables
 from PySide6 import QtGui, QtWidgets, QtCore
 
-from fastflix.flix import ffmpeg_audio_encoders, ffmpeg_configuration, ffprobe_configuration, ffmpeg_opencl_support
+from fastflix.flix import (
+    ffmpeg_audio_encoders,
+    ffmpeg_video_encoders,
+    ffmpeg_configuration,
+    ffprobe_configuration,
+    ffmpeg_opencl_support,
+)
 from fastflix.language import t
 from fastflix.models.config import Config, MissingFF
 from fastflix.models.fastflix import FastFlix
@@ -171,10 +177,23 @@ def init_encoders(app: FastFlixApp, **_):
             # if "H.264/AVC" in app.fastflix.config.vceencc_encoders:
             encoders.insert(encoders.index(avc_plugin), vceencc_avc_plugin)
 
+    # Mapping from requires values to search terms for ffmpeg -encoders output.
+    # Most requires values (e.g. "vaapi", "libx264") appear directly in encoder names,
+    # but some compilation flags don't match encoder names and need explicit mapping.
+    requires_to_encoder = {
+        "cuda-llvm": "nvenc",
+    }
+
+    def _encoder_available(requires: str) -> bool:
+        if requires in app.fastflix.ffmpeg_config:
+            return True
+        search_term = requires_to_encoder.get(requires, requires)
+        return any(search_term in enc for enc in (app.fastflix.video_encoders or []))
+
     app.fastflix.encoders = {
         encoder.name: encoder
         for encoder in encoders
-        if (not getattr(encoder, "requires", None)) or encoder.requires in app.fastflix.ffmpeg_config or DEVMODE
+        if (not getattr(encoder, "requires", None)) or _encoder_available(encoder.requires) or DEVMODE
     }
 
 
@@ -406,6 +425,7 @@ def app_setup(
         Task(t("Gather FFmpeg version"), ffmpeg_configuration),
         Task(t("Gather FFprobe version"), ffprobe_configuration),
         Task(t("Gather FFmpeg audio encoders"), ffmpeg_audio_encoders),
+        Task(t("Gather FFmpeg video encoders"), ffmpeg_video_encoders),
         Task(t("Determine OpenCL Support"), ffmpeg_opencl_support),
         Task(t("Initialize Encoders"), init_encoders),
     ]

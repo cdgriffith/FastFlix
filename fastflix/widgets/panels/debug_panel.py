@@ -42,6 +42,7 @@ class DebugPanel(QtWidgets.QTabWidget):
             "ffmpeg version": self.app.fastflix.ffmpeg_version,
             "ffprobe version": self.app.fastflix.ffprobe_version,
             "ffmpeg config": self.app.fastflix.ffmpeg_config,
+            "ffmpeg video encoders": self.app.fastflix.video_encoders,
         }
         return data
 

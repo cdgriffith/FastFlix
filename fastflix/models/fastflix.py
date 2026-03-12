@@ -11,6 +11,7 @@ from fastflix.models.video import Video
 
 class FastFlix(BaseModel):
     audio_encoders: list[str] = None
+    video_encoders: list[str] = None
     encoders: dict = None
     config: Config = None
     data_path: Path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))

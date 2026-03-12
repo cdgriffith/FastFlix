@@ -388,12 +388,56 @@ class ExtractSubtitleSRT(QtCore.QThread):
 
 
 class AudioNoramlize(QtCore.QThread):
-    def __init__(self, app: FastFlixApp, main, audio_type, signal):
+    # Map FFprobe codec names to FFmpeg encoder names
+    codec_name_to_encoder = {
+        "aac": "aac",
+        "ac3": "ac3",
+        "eac3": "eac3",
+        "truehd": "truehd",
+        "dts": "dca",
+        "flac": "flac",
+        "alac": "alac",
+        "opus": "libopus",
+        "vorbis": "libvorbis",
+        "mp3": "libmp3lame",
+        "pcm_s16le": "pcm_s16le",
+        "pcm_s24le": "pcm_s24le",
+        "pcm_s32le": "pcm_s32le",
+        "wavpack": "libwavpack",
+        "tta": "tta",
+        "mp2": "mp2",
+    }
+
+    def __init__(self, app: FastFlixApp, main, audio_type, signal, keep_source=False):
         super().__init__(main)
         self.main = main
         self.app = app
         self.signal = signal
         self.audio_type = audio_type
+        self.keep_source = keep_source
+
+    def _detect_source_audio(self):
+        """Detect the source audio codec and bitrate from the first audio stream."""
+        streams = self.app.fastflix.current_video.streams
+        if not streams or not streams.audio:
+            return "aac", None
+
+        first_audio = streams.audio[0]
+        codec_name = first_audio.get("codec_name", "aac")
+        encoder = self.codec_name_to_encoder.get(codec_name, codec_name)
+
+        # Get source bitrate to encode at similar quality
+        bit_rate = first_audio.get("bit_rate")
+        if bit_rate:
+            try:
+                audio_bitrate = int(bit_rate) / 1000  # Convert to kbps
+            except (ValueError, TypeError):
+                audio_bitrate = None
+        else:
+            audio_bitrate = None
+
+        logger.info(f"Detected source audio: codec={codec_name}, encoder={encoder}, bitrate={audio_bitrate}k")
+        return encoder, audio_bitrate
 
     def run(self):
         try:
@@ -401,8 +445,19 @@ class AudioNoramlize(QtCore.QThread):
             out_file = self.app.fastflix.current_video.video_settings.output_path
             if not out_file:
                 self.signal.emit("No source video provided")
+
+            audio_codec = self.audio_type
+            audio_bitrate = None
+
+            if self.keep_source:
+                audio_codec, audio_bitrate = self._detect_source_audio()
+
             normalizer = FFmpegNormalize(
-                audio_codec=self.audio_type, extension=out_file.suffix.lstrip("."), video_codec="copy", progress=True
+                audio_codec=audio_codec,
+                audio_bitrate=audio_bitrate,
+                extension=out_file.suffix.lstrip("."),
+                video_codec="copy",
+                progress=True,
             )
             logger.info(f"Running audio normalization - will output video to {str(out_file)}")
             normalizer.add_media_file(str(self.app.fastflix.current_video.source), str(out_file))

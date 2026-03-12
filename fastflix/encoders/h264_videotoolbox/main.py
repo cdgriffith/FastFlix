@@ -13,7 +13,7 @@ ref = importlib.resources.files("fastflix") / "data/encoders/icon_h264_toolbox.p
 with importlib.resources.as_file(ref) as icon_file:
     icon = str(icon_file.resolve())
 
-enable_subtitles = False
+enable_subtitles = True
 enable_audio = True
 enable_attachments = False
 enable_concat = True
