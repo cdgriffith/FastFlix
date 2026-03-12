@@ -14172,3 +14172,457 @@ Cover extraction complete:
   ukr: Зняття кришки завершено
   kor: 표지 추출 완료
   ron: Extragerea capacului completă
+Suppress FFmpeg version warning on startup:
+  eng: Suppress FFmpeg version warning on startup
+  deu: FFmpeg-Versionswarnung beim Start unterdrücken
+  fra: Suppression de l'avertissement de version de FFmpeg au démarrage
+  ita: Sopprimere l'avviso di versione di FFmpeg all'avvio
+  spa: Suprimir la advertencia de versión de FFmpeg al inicio
+  jpn: 起動時の FFmpeg のバージョン警告を抑制する
+  rus: Подавление предупреждения о версии FFmpeg при запуске
+  por: Suprimir o aviso de versão do FFmpeg na inicialização
+  swe: Undertrycka FFmpeg-versionens varning vid start
+  pol: Wyłączenie ostrzeżenia o wersji FFmpeg podczas uruchamiania
+  chs: 抑制启动时的 FFmpeg 版本警告
+  ukr: Прибрати попередження про версію FFmpeg під час запуску
+  kor: 시작 시 FFmpeg 버전 경고 표시 안 함
+  ron: Suprimarea avertismentului privind versiunea FFmpeg la pornire
+Enable encoding history:
+  eng: Enable encoding history
+  deu: Kodierungsverlauf aktivieren
+  fra: Activer l'historique de l'encodage
+  ita: Abilita la cronologia di codifica
+  spa: Activar el historial de codificación
+  jpn: エンコード履歴を有効にする
+  rus: Включить историю кодирования
+  por: Ativar o histórico de codificação
+  swe: Aktivera kodningshistorik
+  pol: Włącz historię kodowania
+  chs: 启用编码历史记录
+  ukr: Увімкнути історію кодування
+  kor: 인코딩 기록 활성화
+  ron: Activați istoricul codării
+OpenCL Support:
+  eng: OpenCL Support
+  deu: OpenCL-Unterstützung
+  fra: Support OpenCL
+  ita: Supporto OpenCL
+  spa: Compatibilidad con OpenCL
+  jpn: OpenCLサポート
+  rus: Поддержка OpenCL
+  por: Suporte OpenCL
+  swe: OpenCL-stöd
+  pol: Obsługa OpenCL
+  chs: 支持 OpenCL
+  ukr: Підтримка OpenCL
+  kor: OpenCL 지원
+  ron: Suport OpenCL
+Disable:
+  eng: Disable
+  deu: Deaktivieren Sie
+  fra: Désactiver
+  ita: Disattivare
+  spa: Desactivar
+  jpn: 無効
+  rus: Отключить
+  por: Desativar
+  swe: Avaktivera
+  pol: Wyłącz
+  chs: 禁用
+  ukr: Вимкнути
+  kor: 비활성화
+  ron: Dezactivare
+Re-detect:
+  eng: Re-detect
+  deu: Erneutes Aufspüren
+  fra: Re-détecter
+  ita: Rilevare nuovamente
+  spa: Vuelva a detectar
+  jpn: 再検出
+  rus: Повторное обнаружение
+  por: Re-detetar
+  swe: Återupptäck
+  pol: Ponowne wykrywanie
+  chs: 重新检测
+  ukr: Повторне виявлення
+  kor: 다시 감지
+  ron: Re-detectați
+Select which audio encoders appear in audio codec dropdown lists.:
+  eng: Select which audio encoders appear in audio codec dropdown lists.
+  deu: Wählen Sie aus, welche Audio-Encoder in den Audio-Codec-Dropdown-Listen erscheinen.
+  fra: Sélectionner les encodeurs audio qui apparaissent dans les listes déroulantes des codecs audio.
+  ita: Selezionare quali codificatori audio appaiono negli elenchi a discesa dei codec audio.
+  spa: Selecciona qué codificadores de audio aparecen en las listas desplegables de codecs de audio.
+  jpn: オーディオコーデックのドロップダウンリストに表示されるオーディオエンコーダを選択します。
+  rus: Выберите, какие аудиокодеки будут отображаться в выпадающих списках аудиокодеков.
+  por: Selecionar quais os codificadores de áudio que aparecem nas listas pendentes de codecs de áudio.
+  swe: Välj vilka ljudkodare som ska visas i rullgardinslistorna för ljudkodare.
+  pol: Wybór koderów audio wyświetlanych na listach rozwijanych kodeków audio.
+  chs: 选择哪些音频编码器会出现在音频编解码器下拉列表中。
+  ukr: Виберіть, які аудіокодеки відображатимуться у випадаючих списках аудіокодеків.
+  kor: 오디오 코덱 드롭다운 목록에 표시되는 오디오 인코더를 선택합니다.
+  ron: Selectați codurile audio care apar în listele derulante de codecuri audio.
+Only encoders supported by your FFmpeg build are shown.:
+  eng: Only encoders supported by your FFmpeg build are shown.
+  deu: Es werden nur Encoder angezeigt, die von Ihrem FFmpeg-Build unterstützt werden.
+  fra: Seuls les encodeurs supportés par votre version de FFmpeg sont affichés.
+  ita: Vengono mostrati solo gli encoder supportati dalla propria versione di FFmpeg.
+  spa: Sólo se muestran los codificadores compatibles con su versión de FFmpeg.
+  jpn: FFmpegのビルドでサポートされているエンコーダのみが表示されます。
+  rus: Отображаются только кодировщики, поддерживаемые вашей сборкой FFmpeg.
+  por: Apenas são mostrados os codificadores suportados pela sua compilação do FFmpeg.
+  swe: Endast kodare som stöds av din FFmpeg-version visas.
+  pol: Wyświetlane są tylko kodery obsługiwane przez kompilację FFmpeg.
+  chs: 仅显示您的 FFmpeg 版本所支持的编码器。
+  ukr: Відображаються лише ті кодери, які підтримуються у вашій збірці FFmpeg.
+  kor: FFmpeg 빌드에서 지원하는 인코더만 표시됩니다.
+  ron: Sunt afișate numai codificatoarele acceptate de versiunea FFmpeg.
+Select All:
+  eng: Select All
+  deu: Alle auswählen
+  fra: Sélectionner tout
+  ita: Seleziona tutti
+  spa: Seleccionar todo
+  jpn: すべて選択
+  rus: Выбрать все
+  por: Selecionar tudo
+  swe: Välj alla
+  pol: Wybierz wszystko
+  chs: 全部选择
+  ukr: Вибрати все
+  kor: 모두 선택
+  ron: Selectați toate
+Deselect All:
+  eng: Deselect All
+  deu: Alle abwählen
+  fra: Désélectionner tout
+  ita: Deselezionare tutto
+  spa: Deseleccionar todo
+  jpn: すべて選択解除
+  rus: Отменить выбор всех
+  por: Desmarcar tudo
+  swe: Avmarkera alla
+  pol: Odznacz wszystko
+  chs: 全部取消选择
+  ukr: Зніміть позначку з усіх
+  kor: 모두 선택 해제
+  ron: Deselectați toate
+Audio Encoders:
+  eng: Audio Encoders
+  deu: Audio-Codierer
+  fra: Encodeurs audio
+  ita: Codificatori audio
+  spa: Codificadores de audio
+  jpn: オーディオ・エンコーダ
+  rus: Аудиокодеры
+  por: Codificadores de áudio
+  swe: Ljudkodare
+  pol: Kodery audio
+  chs: 音频编码器
+  ukr: Аудіокодери
+  kor: 오디오 인코더
+  ron: Codificatoare audio
+Rotate 90° clockwise:
+  eng: Rotate 90° clockwise
+  deu: 90° im Uhrzeigersinn drehen
+  fra: Rotation de 90° dans le sens des aiguilles d'une montre
+  ita: Ruotare di 90° in senso orario
+  spa: Girar 90° en el sentido de las agujas del reloj
+  jpn: 時計回りに90°回転
+  rus: Поверните на 90° по часовой стрелке
+  por: Rodar 90° no sentido dos ponteiros do relógio
+  swe: Rotera 90° medurs
+  pol: Obrót o 90° zgodnie z ruchem wskazówek zegara
+  chs: 顺时针旋转 90
+  ukr: Поверніть на 90° за годинниковою стрілкою
+  kor: 시계 방향으로 90° 회전
+  ron: Rotiți 90° în sensul acelor de ceasornic
+Toggle horizontal flip:
+  eng: Toggle horizontal flip
+  deu: Horizontal spiegeln umschalten
+  fra: Basculer à l'horizontale
+  ita: Alterna il capovolgimento orizzontale
+  spa: Voltear horizontalmente
+  jpn: トグル水平フリップ
+  rus: Переключение горизонтального переворота
+  por: Alternar inversão horizontal
+  swe: Växla horisontell flip
+  pol: Przełącz poziomą klapkę
+  chs: 切换水平翻转
+  ukr: Горизонтальне перевертання
+  kor: 수평 뒤집기 토글
+  ron: Comutare flip orizontal
+Toggle vertical flip:
+  eng: Toggle vertical flip
+  deu: Vertikal spiegeln umschalten
+  fra: Basculement vertical
+  ita: Alterna il capovolgimento verticale
+  spa: Alternar volteo vertical
+  jpn: トグル垂直フリップ
+  rus: Переключение вертикального переворота
+  por: Alternar inversão vertical
+  swe: Växla vertikal flip
+  pol: Przełącz przerzucanie w pionie
+  chs: 切换垂直翻转
+  ukr: Перемикач вертикального перегортання
+  kor: 세로 뒤집기 토글
+  ron: Toggle vertical flip
+Extracting cover images...:
+  eng: Extracting cover images...
+  deu: Extrahieren von Titelbildern...
+  fra: Extraction d'images de couverture...
+  ita: Estrazione di immagini di copertura...
+  spa: Extracción de imágenes de portada...
+  jpn: カバー画像の抽出...
+  rus: Извлечение изображений обложки...
+  por: Extração de imagens de cobertura...
+  swe: Extrahera täckbilder...
+  pol: Wyodrębnianie obrazów okładek...
+  chs: 提取封面图像...
+  ukr: Витягування зображень обкладинки...
+  kor: 표지 이미지 추출하기...
+  ron: Extragerea imaginilor de acoperire...
+Would you like to enable encoding history?:
+  eng: Would you like to enable encoding history?
+  deu: Möchten Sie den Kodierungsverlauf aktivieren?
+  fra: Souhaitez-vous activer l'historique de l'encodage ?
+  ita: Si desidera abilitare la cronologia di codifica?
+  spa: ¿Desea activar el historial de codificación?
+  jpn: エンコード履歴を有効にしますか？
+  rus: Хотите включить историю кодирования?
+  por: Gostaria de ativar o histórico de codificação?
+  swe: Vill du aktivera kodningshistorik?
+  pol: Czy chcesz włączyć historię kodowania?
+  chs: 您想启用编码历史记录吗？
+  ukr: Бажаєте увімкнути історію кодування?
+  kor: 기록 인코딩을 사용하시겠습니까?
+  ron: Doriți să activați istoricul codării?
+Enable Encoding History:
+  eng: Enable Encoding History
+  deu: Kodierungsverlauf aktivieren
+  fra: Activer l'historique du codage
+  ita: Abilita la cronologia di codifica
+  spa: Activar el historial de codificación
+  jpn: エンコード履歴を有効にする
+  rus: Включить историю кодирования
+  por: Ativar o histórico de codificação
+  swe: Aktivera kodningshistorik
+  pol: Włącz historię kodowania
+  chs: 启用编码历史记录
+  ukr: Увімкнути історію кодування
+  kor: 인코딩 기록 활성화
+  ron: Activați istoricul codării
+Gather FFmpeg video encoders:
+  eng: Gather FFmpeg video encoders
+  deu: Sammeln Sie FFmpeg-Video-Encoder
+  fra: Rassembler les encodeurs vidéo FFmpeg
+  ita: Raccogliere i codificatori video FFmpeg
+  spa: Reúne codificadores de vídeo FFmpeg
+  jpn: FFmpegビデオエンコーダを集める
+  rus: Соберите кодировщики видео FFmpeg
+  por: Reunir codificadores de vídeo FFmpeg
+  swe: Samla FFmpeg-videokodare
+  pol: Zbierz kodery wideo FFmpeg
+  chs: 收集 FFmpeg 视频编码器
+  ukr: Зібрати відеокодери FFmpeg
+  kor: FFmpeg 비디오 인코더 수집
+  ron: Gather FFmpeg coduri video
+Encoding History:
+  eng: Encoding History
+  deu: Geschichte der Kodierung
+  fra: Historique du codage
+  ita: Storia della codifica
+  spa: Historia de la codificación
+  jpn: エンコーディングの歴史
+  rus: История кодирования
+  por: Histórico de codificação
+  swe: Kodningshistorik
+  pol: Historia kodowania
+  chs: 编码历史
+  ukr: Історія кодування
+  kor: 인코딩 기록
+  ron: Istoricul codificării
+Clear History:
+  eng: Clear History
+  deu: Geschichte löschen
+  fra: Historique clair
+  ita: Storia chiara
+  spa: Historia clara
+  jpn: 明確な歴史
+  rus: Чистая история
+  por: Limpar histórico
+  swe: Tydlig historia
+  pol: Wyczyść historię
+  chs: 清除历史记录
+  ukr: Чиста історія
+  kor: 기록 지우기
+  ron: Istoric clar
+No encoding history yet.:
+  eng: No encoding history yet.
+  deu: Noch keine Kodierungsgeschichte.
+  fra: Pas encore d'historique d'encodage.
+  ita: Non c'è ancora una storia di codifica.
+  spa: Aún no hay historial de codificación.
+  jpn: エンコード履歴はまだない。
+  rus: История кодирования пока отсутствует.
+  por: Ainda não há historial de codificação.
+  swe: Ingen kodningshistorik ännu.
+  pol: Brak historii kodowania.
+  chs: 还没有编码历史。
+  ukr: Історії кодування поки що немає.
+  kor: 아직 인코딩 기록이 없습니다.
+  ron: Nu există încă un istoric al codării.
+History:
+  eng: History
+  deu: Geschichte
+  fra: L'histoire
+  ita: La storia
+  spa: Historia
+  jpn: 歴史
+  rus: История
+  por: História
+  swe: Historia
+  pol: Historia
+  chs: 历史
+  ukr: Історія
+  kor: 역사
+  ron: Istoric
+Apply Last Used Settings:
+  eng: Apply Last Used Settings
+  deu: Zuletzt verwendete Einstellungen übernehmen
+  fra: Appliquer les derniers réglages utilisés
+  ita: Applica le ultime impostazioni utilizzate
+  spa: Aplicar la última configuración utilizada
+  jpn: 最後に使用した設定を適用する
+  rus: Применить последние использованные настройки
+  por: Aplicar as últimas definições utilizadas
+  swe: Tillämpa senast använda inställningar
+  pol: Zastosuj ostatnio używane ustawienia
+  chs: 应用上次使用的设置
+  ukr: Застосувати останні використані налаштування
+  kor: 마지막으로 사용한 설정 적용
+  ron: Aplicați ultimele setări utilizate
+View History:
+  eng: View History
+  deu: Geschichte ansehen
+  fra: Voir l'historique
+  ita: Visualizza la storia
+  spa: Ver historial
+  jpn: 履歴を見る
+  rus: Посмотреть историю
+  por: Ver história
+  swe: Visa historik
+  pol: Wyświetl historię
+  chs: 查看历史
+  ukr: Переглянути історію
+  kor: 기록 보기
+  ron: Vezi istoricul
+Apply Settings:
+  eng: Apply Settings
+  deu: Einstellungen anwenden
+  fra: Appliquer les paramètres
+  ita: Applicare le impostazioni
+  spa: Aplicar ajustes
+  jpn: 設定を適用する
+  rus: Применить настройки
+  por: Aplicar definições
+  swe: Tillämpa inställningar
+  pol: Zastosuj ustawienia
+  chs: 应用设置
+  ukr: Застосувати налаштування
+  kor: 설정 적용
+  ron: Aplicați setările
+Details:
+  eng: Details
+  deu: Einzelheiten
+  fra: Détails
+  ita: Dettagli
+  spa: Detalles
+  jpn: 詳細
+  rus: Подробности
+  por: Detalhes
+  swe: Detaljer
+  pol: Szczegóły
+  chs: 详细信息
+  ukr: Деталі
+  kor: 세부 정보
+  ron: Detalii
+Duration:
+  eng: Duration
+  deu: Dauer
+  fra: Durée de l'accord
+  ita: Durata
+  spa: Duración
+  jpn: 期間
+  rus: Продолжительность
+  por: Duração
+  swe: Varaktighet
+  pol: Czas trwania
+  chs: 持续时间
+  ukr: Тривалість
+  kor: 기간
+  ron: Durată
+File Size:
+  eng: File Size
+  deu: Größe der Datei
+  fra: Taille du fichier
+  ita: Dimensione del file
+  spa: Tamaño del archivo
+  jpn: ファイルサイズ
+  rus: Размер файла
+  por: Tamanho do ficheiro
+  swe: Filstorlek
+  pol: Rozmiar pliku
+  chs: 文件大小
+  ukr: Розмір файлу
+  kor: 파일 크기
+  ron: Dimensiunea fișierului
+? This keeps a local record of your completed encodings, letting you review the settings used for any past video and quickly re-apply them to new ones.
+: eng: This keeps a local record of your completed encodings, letting you review the settings used for any past video and quickly re-apply them to new ones.
+  deu: Auf diese Weise wird ein lokaler Datensatz Ihrer abgeschlossenen Kodierungen gespeichert, so dass Sie die für frühere Videos verwendeten Einstellungen überprüfen und schnell auf neue Videos
+    anwenden können.
+  fra: Cela permet de conserver un enregistrement local de vos encodages terminés, ce qui vous permet de revoir les paramètres utilisés pour toute vidéo antérieure et de les réappliquer rapidement aux
+    nouvelles vidéos.
+  ita: In questo modo si mantiene una registrazione locale delle codifiche completate, consentendo di rivedere le impostazioni utilizzate per qualsiasi video passato e di riapplicarle rapidamente a
+    quelli nuovi.
+  spa: Esto mantiene un registro local de tus codificaciones completadas, permitiéndote revisar los ajustes utilizados para cualquier vídeo anterior y volver a aplicarlos rápidamente a los nuevos.
+  jpn: これにより、完成したエンコーディングのローカル記録が保持され、過去の動画に使用した設定を確認したり、新しい動画に素早く再適用したりすることができます。
+  rus: При этом сохраняется локальная запись о выполненных кодировках, что позволяет просмотреть настройки, использованные для любого прошлого видео, и быстро применить их к новым.
+  por: Isto mantém um registo local das suas codificações concluídas, permitindo-lhe rever as definições utilizadas em qualquer vídeo anterior e reaplicá-las rapidamente a novos vídeos.
+  swe: På så sätt sparas ett lokalt register över dina slutförda kodningar, så att du kan granska de inställningar som använts för en tidigare video och snabbt tillämpa dem på nya.
+  pol: Przechowuje to lokalny zapis ukończonych kodowań, umożliwiając przeglądanie ustawień używanych w poprzednich filmach i szybkie ponowne zastosowanie ich do nowych.
+  chs: 这将保留您已完成编码的本地记录，让您可以查看过去任何视频所使用的设置，并快速将其重新应用到新视频中。
+  ukr: Це дозволяє зберігати локальний запис завершених кодувань, що дає змогу переглядати налаштування, використані для будь-якого попереднього відео, і швидко застосовувати їх до нових.
+  kor: 이렇게 하면 완료된 인코딩의 로컬 기록이 유지되므로 과거 동영상에 사용된 설정을 검토하고 새 동영상에 빠르게 다시 적용할 수 있습니다.
+  ron: Acest lucru păstrează o înregistrare locală a codificărilor finalizate, permițându-vă să revizuiți setările utilizate pentru orice videoclip trecut și să le aplicați din nou rapid pentru cele
+    noi.
+All data is stored locally on your computer. Nothing is sent to the internet.:
+  eng: All data is stored locally on your computer. Nothing is sent to the internet.
+  deu: Alle Daten werden lokal auf Ihrem Computer gespeichert. Nichts wird an das Internet gesendet.
+  fra: Toutes les données sont stockées localement sur votre ordinateur. Rien n'est envoyé sur l'internet.
+  ita: Tutti i dati vengono memorizzati localmente sul computer. Nulla viene inviato a Internet.
+  spa: Todos los datos se almacenan localmente en tu ordenador. Nada se envía a Internet.
+  jpn: すべてのデータはあなたのコンピューターにローカルに保存されます。インターネットには何も送信されません。
+  rus: Все данные хранятся локально на вашем компьютере. Ничего не отправляется в Интернет.
+  por: Todos os dados são armazenados localmente no seu computador. Nada é enviado para a Internet.
+  swe: All data lagras lokalt på din dator. Ingenting skickas till internet.
+  pol: Wszystkie dane są przechowywane lokalnie na komputerze. Nic nie jest wysyłane do Internetu.
+  chs: 所有数据都存储在电脑本地。不会向互联网发送任何数据。
+  ukr: Всі дані зберігаються локально на вашому комп'ютері. Нічого не надсилається в інтернет.
+  kor: 모든 데이터는 컴퓨터에 로컬로 저장됩니다. 인터넷으로 전송되지 않습니다.
+  ron: Toate datele sunt stocate local pe computerul dvs. Nimic nu este trimis la internet.
+Max items:
+  eng: Max items
+  deu: Maximale Artikel
+  fra: Nombre maximal d'articles
+  ita: Articoli massimi
+  spa: Número máximo de artículos
+  jpn: 最大アイテム
+  rus: Максимум предметов
+  por: Máximo de artigos
+  swe: Max antal artiklar
+  pol: Maksymalna liczba elementów
+  chs: 最多项目
+  ukr: Максимум елементів
+  kor: 최대 항목
+  ron: Articole maxime

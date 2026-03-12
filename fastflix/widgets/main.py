@@ -569,6 +569,7 @@ class Main(QtWidgets.QWidget):
             self.reload_encoders()
         else:
             self.change_output_types()
+        self.container.rebuild_menu()
         self.page_update(build_thumbnail=True)
 
     def reload_encoders(self):
@@ -2797,6 +2798,11 @@ class Main(QtWidgets.QWidget):
                 if response.status == "error":
                     video.status.error = True
                     errored = True
+                    if self.app.fastflix.config.enable_history:
+                        try:
+                            self._record_history(video, success=False)
+                        except Exception:
+                            logger.exception("Failed to record history entry for errored encode")
                 break
 
         if errored and not self.video_options.queue.ignore_errors.isChecked():
@@ -2870,8 +2876,103 @@ class Main(QtWidgets.QWidget):
             if has_post_encode_placeholders(output_path.stem):
                 self._rename_with_post_encode_vars(video, probe_data)
 
+            # Record to history if enabled
+            if self.app.fastflix.config.enable_history:
+                try:
+                    self._record_history(video)
+                except Exception:
+                    logger.exception("Failed to record history entry")
+
         except Exception:
             logger.exception("Post-encode processing failed (encode itself succeeded)")
+
+    def _record_history(self, video: Video, success: bool = True):
+        """Record a completed or failed encoding to history."""
+        import uuid as uuid_mod
+        from datetime import datetime
+
+        from fastflix.models.history import (
+            HistoryEntry,
+            add_history_entry,
+            build_settings_summary,
+            get_history_thumbnails_dir,
+        )
+
+        output_path = video.video_settings.output_path
+        encoder_settings = video.video_settings.video_encoder_settings
+
+        # Build audio summary
+        audio_parts = []
+        for track in video.audio_tracks:
+            if track.enabled:
+                codec = track.conversion_codec if track.conversion_codec else track.codec
+                audio_parts.append(f"{track.language} ({codec})")
+        audio_summary = ", ".join(audio_parts) if audio_parts else ""
+
+        # Build subtitle summary
+        sub_parts = []
+        for track in video.subtitle_tracks:
+            if track.enabled:
+                sub_parts.append(f"{track.language} ({track.subtitle_type})")
+        subtitle_summary = ", ".join(sub_parts) if sub_parts else ""
+
+        # Resolution
+        resolution = ""
+        if video.width and video.height:
+            resolution = f"{video.width}x{video.height}"
+
+        # File size
+        file_size = 0
+        try:
+            if output_path and output_path.exists():
+                file_size = output_path.stat().st_size
+        except Exception:
+            pass
+
+        # Duration
+        duration = 0.0
+        if video.duration:
+            duration = video.duration
+
+        # Encode duration
+        encode_duration_secs = 0.0
+        if video.status.encode_started_at:
+            encode_duration_secs = (
+                datetime.now(video.status.encode_started_at.tzinfo) - video.status.encode_started_at
+            ).total_seconds()
+
+        entry_uuid = str(uuid_mod.uuid4())
+        thumbnail_filename = f"{entry_uuid}.jpg"
+
+        entry = HistoryEntry(
+            uuid=entry_uuid,
+            source=str(video.source),
+            output=str(output_path) if output_path else "",
+            encoder_name=encoder_settings.name,
+            encoder_settings=encoder_settings.model_dump(),
+            encoder_settings_summary=build_settings_summary(encoder_settings.model_dump()),
+            audio_summary=audio_summary,
+            subtitle_summary=subtitle_summary,
+            resolution=resolution,
+            duration=duration,
+            file_size=file_size,
+            completed_at=datetime.now().isoformat(),
+            thumbnail_filename=thumbnail_filename,
+            success=success,
+            encode_duration_secs=encode_duration_secs,
+        )
+
+        # Copy thumbnail
+        thumbs_dir = get_history_thumbnails_dir(self.app.fastflix.data_path)
+        thumbs_dir.mkdir(parents=True, exist_ok=True)
+        if self.thumb_file.exists():
+            try:
+                shutil.copy2(str(self.thumb_file), str(thumbs_dir / thumbnail_filename))
+            except Exception:
+                logger.warning("Failed to copy thumbnail for history entry")
+                entry.thumbnail_filename = ""
+
+        add_history_entry(self.app.fastflix.data_path, entry, max_items=self.app.fastflix.config.history_max_items)
 
     def _validate_output(self, output_path: Path, probe_data):
         """Quick sanity check on the output file."""

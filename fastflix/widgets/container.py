@@ -38,6 +38,7 @@ from fastflix.widgets.windows.profile_window import ProfileWindow
 from fastflix.widgets.settings import Settings
 from fastflix.widgets.status_bar import StatusBarWidget, STATE_COMPLETE, STATE_ERROR
 from fastflix.widgets.windows.concat import ConcatWindow
+from fastflix.widgets.windows.history_window import HistoryWindow
 from fastflix.widgets.windows.multiple_files import MultipleFilesWindow
 
 # from fastflix.widgets.windows.hdr10plus_inject import HDR10PlusInjectWindow
@@ -346,6 +347,21 @@ class Container(QtWidgets.QMainWindow):
         # hdr10p_inject_action.triggered.connect(self.show_hdr10p_inject)
         # tools_menu.addAction(hdr10p_inject_action)
 
+        if self.app.fastflix.config.enable_history:
+            history_menu = menubar.addMenu(t("History"))
+
+            self.apply_last_action = QAction(t("Apply Last Used Settings"), self)
+            self.apply_last_action.triggered.connect(self.apply_last_history)
+            history_menu.addAction(self.apply_last_action)
+
+            view_history_action = QAction(t("View History"), self)
+            view_history_action.triggered.connect(self.show_history)
+            history_menu.addAction(view_history_action)
+
+            history_menu.aboutToShow.connect(self._update_history_menu_state)
+        else:
+            self.apply_last_action = None
+
         wiki_action = QAction(self.si(QtWidgets.QStyle.SP_FileDialogInfoView), t("FastFlix Wiki"), self)
         wiki_action.triggered.connect(self.show_wiki)
 
@@ -403,6 +419,68 @@ class Container(QtWidgets.QMainWindow):
             help_menu.addAction(hdr10plus_download_action)
         help_menu.addSeparator()
         help_menu.addAction(about_action)
+
+    def rebuild_menu(self):
+        self.menuBar().clear()
+        self.init_menu()
+
+    def show_history(self):
+        self.history_window = HistoryWindow(app=self.app)
+        self.history_window.apply_settings_requested.connect(self._apply_history_entry)
+        self.history_window.show()
+
+    def _update_history_menu_state(self):
+        if self.apply_last_action is None:
+            return
+        from fastflix.models.history import load_history
+
+        has_video = self.app.fastflix.current_video is not None
+        has_history = bool(load_history(self.app.fastflix.data_path))
+        self.apply_last_action.setEnabled(has_video and has_history)
+
+    def apply_last_history(self):
+        from fastflix.models.history import load_history
+
+        entries = load_history(self.app.fastflix.data_path)
+        if not entries:
+            error_message(t("No encoding history available"))
+            return
+        self._apply_history_entry(entries[-1])
+
+    def _apply_history_entry(self, entry):
+        from fastflix.models.encode import setting_types
+
+        if not self.app.fastflix.current_video:
+            error_message(t("Please load a video first"))
+            return
+
+        # Find the settings class matching the encoder name
+        settings_class = None
+        for cls in setting_types.values():
+            if cls().name == entry.encoder_name:
+                settings_class = cls
+                break
+        if not settings_class:
+            error_message(f"{t('Encoder not available')}: {entry.encoder_name}")
+            return
+
+        # Check if encoder is available
+        if entry.encoder_name not in [e.name for e in self.app.fastflix.encoders.values()]:
+            error_message(f"{t('Encoder not available')}: {entry.encoder_name}")
+            return
+
+        try:
+            new_settings = settings_class(**entry.encoder_settings)
+            # Switch encoder first (creates panel from profile defaults)
+            self.main.widgets.convert_to.setCurrentText(entry.encoder_name)
+            # Then set our settings on the model
+            self.app.fastflix.current_video.video_settings.video_encoder_settings = new_settings
+            # Reload the panel widgets from the model settings
+            self.main.video_options.current_settings.reload()
+            self.main.page_update(build_thumbnail=False)
+        except Exception:
+            logger.exception("Failed to apply history settings")
+            error_message(t("Failed to apply settings from history"))
 
     def show_wiki(self):
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("https://github.com/cdgriffith/FastFlix/wiki"))

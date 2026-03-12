@@ -274,6 +274,7 @@ class EncodingQueue(FlixList):
 
         self.after_done_combo = QtWidgets.QComboBox()
         self.after_done_combo.addItem("None")
+        self.after_done_combo.addItem("exit")
         actions = set()
         if reusables.win_based:
             actions.update(done_actions["windows"].keys())
@@ -517,6 +518,8 @@ class EncodingQueue(FlixList):
 
         if option == "None":
             command = None
+        elif option == "exit":
+            command = "__exit__"
         elif option in self.app.fastflix.config.custom_after_run_scripts:
             command = self.app.fastflix.config.custom_after_run_scripts[option]
         elif reusables.win_based:
@@ -593,6 +596,10 @@ class EncodingQueue(FlixList):
 
     def run_after_done(self):
         if not self.after_done_action:
+            return
+        if self.after_done_action == "__exit__":
+            logger.info("Exiting FastFlix after conversion complete")
+            self.app.quit()
             return
         logger.info(f"Running after done action: {self.after_done_action}")
         BackgroundRunner(self.app.fastflix.log_queue).start_exec(

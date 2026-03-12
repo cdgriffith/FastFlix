@@ -307,6 +307,8 @@ class Config(BaseModel):
     use_keyframes_for_preview: bool = True
     terms_accepted: bool = False
     auto_detect_subtitles: bool = True
+    enable_history: bool | None = None
+    history_max_items: int = 50
 
     @property
     def pgs_ocr_available(self) -> bool:

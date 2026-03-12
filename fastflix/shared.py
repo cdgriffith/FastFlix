@@ -148,17 +148,50 @@ def error_message(msg, details=None, traceback=False, title=None, parent=None):
 
 
 def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_action=None, no_action=None, parent=None):
-    sm = QtWidgets.QMessageBox(parent)
-    sm.setWindowTitle(t(title))
-    sm.setText(msg)
-    sm.addButton(yes_text, QtWidgets.QMessageBox.YesRole)
-    sm.addButton(no_text, QtWidgets.QMessageBox.NoRole)
-    sm.exec_()
-    if sm.clickedButton().text() == yes_text:
+    dialog = QtWidgets.QDialog(parent)
+    dialog.setWindowTitle(t(title))
+    dialog._button_clicked = None
+
+    layout = QtWidgets.QVBoxLayout()
+    label = QtWidgets.QLabel(msg)
+    label.setWordWrap(True)
+    layout.addWidget(label)
+
+    button_layout = QtWidgets.QHBoxLayout()
+
+    no_button = QtWidgets.QPushButton(no_text)
+    no_button.setMinimumHeight(30)
+    no_button.setStyleSheet("QPushButton { background-color: #F44336; color: white; padding: 6px 20px; }")
+
+    def on_no():
+        dialog._button_clicked = False
+        dialog.reject()
+
+    no_button.clicked.connect(on_no)
+
+    yes_button = QtWidgets.QPushButton(yes_text)
+    yes_button.setMinimumHeight(30)
+    yes_button.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 6px 20px; }")
+
+    def on_yes():
+        dialog._button_clicked = True
+        dialog.accept()
+
+    yes_button.clicked.connect(on_yes)
+
+    button_layout.addWidget(no_button)
+    button_layout.addStretch()
+    button_layout.addWidget(yes_button)
+    layout.addLayout(button_layout)
+
+    dialog.setLayout(layout)
+    dialog.exec()
+
+    if dialog._button_clicked is True:
         if yes_action:
             return yes_action()
         return True
-    elif sm.clickedButton().text() == no_text:
+    elif dialog._button_clicked is False:
         if no_action:
             return no_action()
         return False

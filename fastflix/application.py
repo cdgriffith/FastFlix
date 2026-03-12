@@ -418,6 +418,22 @@ def app_setup(
                 except Exception:
                     logger.exception("Failed to download HDR10+ tool")
 
+    if app.fastflix.config.enable_history is None:
+        history_choice = yes_no_message(
+            t("Would you like to enable encoding history?")
+            + "\n\n"
+            + t(
+                "This keeps a local record of your completed encodings, letting you review the settings used for any past video and quickly re-apply them to new ones."
+            )
+            + "\n\n"
+            + t("All data is stored locally on your computer. Nothing is sent to the internet."),
+            title=t("Enable Encoding History"),
+        )
+        if history_choice is not None:
+            app.fastflix.config.enable_history = history_choice
+            if history_choice:
+                container.rebuild_menu()
+
     app.fastflix.config.save()
 
     # Run startup tasks (FFmpeg config, encoder init) through status bar
