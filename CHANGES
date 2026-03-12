@@ -14,6 +14,7 @@
 * Changing non-copy encoder rotation handling to use FFmpeg's built-in auto-rotation instead of manual display_rotation overrides, which also properly handles source flips from the display matrix
 * Changing -fps_mode to be used instead of deprecated -vsync for frame rate control
 * Fixing #725 encoder detection to check `ffmpeg -encoders` output in addition to compilation flags, so encoders like VAAPI are shown even when the build flag is absent (thanks to Davius and Generator)
+* Fixing #728 rigaya encoders (NVEncC, QSVEncC, VCEEncC) now pass --dolby-vision-rpu-prm crop=true when Dolby Vision RPU copy is enabled and a crop is applied (thanks to izzy697)
 * Fixing #730 6.1.1 arm no subtitles tab with VideoToolBox (Apple M1 and above) HEVC & H264 (thanks to enaveso)
 * Fixing visual crop window showing incorrect bounds and dimensions when user rotation is applied, by showing the frame in pre-rotation space where crop actually operates
 * Fixing video crop and dimension detection for rotated videos where display matrix rotation was not found when other side data (e.g., HDR mastering display) preceded it

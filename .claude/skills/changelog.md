@@ -1,7 +1,8 @@
 ---
 name: changelog
-description: Update the CHANGES changelog file with new entries
+description: Update the CHANGES changelog file with new entries. MUST be consulted whenever adding, modifying, or removing entries in the CHANGES file, including when referencing GitHub issues.
 user_invocable: true
+trigger: Always read this skill BEFORE writing any changelog entry. Triggered by any task that involves updating the CHANGES file, adding a fix/feature note, or referencing a GitHub issue in the changelog.
 ---
 
 # Changelog Skill

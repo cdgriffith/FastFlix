@@ -148,6 +148,8 @@ def build(fastflix: FastFlix):
     if settings.copy_dv and not video.video_settings.remove_hdr:
         command.extend(["--dolby-vision-rpu", "copy"])
         command.extend(["--dolby-vision-profile", "copy"])
+        if video.video_settings.crop:
+            command.extend(["--dolby-vision-rpu-prm", "crop=true"])
 
     command.extend(["--output-depth", bit_depth])
     command.extend(["--multipass", settings.multipass])
