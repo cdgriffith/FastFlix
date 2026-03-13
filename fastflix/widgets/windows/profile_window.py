@@ -352,6 +352,39 @@ class SubtitleSelect(QtWidgets.QWidget):
         self.setLayout(layout)
 
 
+class DataSelect(QtWidgets.QWidget):
+    def __init__(self, app, parent):
+        super().__init__()
+
+        self.app = app
+        self.parent = parent
+
+        self.data_select_type = QtWidgets.QButtonGroup()
+
+        self.passthrough_name = t("Passthrough All")
+        self.remove_all_name = t("Remove All")
+
+        self.passthrough_checkbox = QtWidgets.QRadioButton(self.passthrough_name)
+        self.remove_all_checkbox = QtWidgets.QRadioButton(self.remove_all_name)
+
+        self.data_select_type.addButton(self.passthrough_checkbox)
+        self.data_select_type.addButton(self.remove_all_checkbox)
+
+        self.passthrough_checkbox.setChecked(True)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.passthrough_checkbox)
+        layout.addWidget(self.remove_all_checkbox)
+        layout.addStretch(1)
+        self.setLayout(layout)
+
+    def get_settings(self):
+        """Return None for passthrough all, False for remove all."""
+        if self.remove_all_checkbox.isChecked():
+            return False
+        return None
+
+
 class AdvancedTab(QtWidgets.QTabWidget):
     def __init__(self, advanced_settings):
         super().__init__()
@@ -494,6 +527,7 @@ class ProfileWindow(QtWidgets.QWidget):
         self.tab_area.setMinimumWidth(500)
         self.audio_select = AudioSelect(self.app, self, self.main)
         self.subtitle_select = SubtitleSelect(self.app, self)
+        self.data_select = DataSelect(self.app, self)
         self.advanced_tab = AdvancedTab(self.advanced_options)
         self.primary_tab = PrimaryOptions(self.main_settings)
         self.encoder_tab = EncoderOptions(self.app, self)
@@ -501,6 +535,7 @@ class ProfileWindow(QtWidgets.QWidget):
         self.tab_area.addTab(self.encoder_tab, t("Video"))
         self.tab_area.addTab(self.audio_select, t("Audio"))
         self.tab_area.addTab(self.subtitle_select, t("Subtitles"))
+        self.tab_area.addTab(self.data_select, t("Data"))
         self.tab_area.addTab(self.advanced_tab, t("Advanced Options"))
         # self.tab_area.addTab(self.subtitle_select, "Subtitles")
         # self.tab_area.addTab(SubtitleSelect(self.app, self, "Subtitle Select", "subtitles"), "Subtitle Select")
@@ -586,6 +621,7 @@ class ProfileWindow(QtWidgets.QWidget):
             remove_metadata=self.main_settings.remove_metadata,
             remove_hdr=self.main_settings.remove_hdr,
             audio_filters=audio_settings,
+            data_passthrough=self.data_select.get_settings(),
             resolution_method=self.main_settings.resolution_method,
             resolution_custom=self.main_settings.resolution_custom,
             output_type=self.main.widgets.output_type_combo.currentText(),

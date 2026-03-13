@@ -216,6 +216,7 @@ class DataList(FlixList):
     def new_source(self):
         self.tracks = []
         video = self.app.fastflix.current_video
+        video.data_tracks = []
 
         # Add data streams
         for stream in getattr(video.streams, "data", []):
@@ -291,6 +292,13 @@ class DataList(FlixList):
             self.tracks[-1].set_last()
 
         super()._new_source(self.tracks)
+
+    def apply_profile_settings(self, profile):
+        """Apply profile data passthrough settings to data tracks."""
+        if profile.data_passthrough is False:
+            self.select_all(False)
+        else:
+            self.select_all(True)
 
     def get_settings(self):
         # Widget state is already written to data_tracks via set_outdex / update_enable

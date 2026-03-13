@@ -286,6 +286,7 @@ class VideoOptions(QtWidgets.QTabWidget):
             self.subtitles.new_source()
         if getattr(self.main.current_encoder, "enable_data", False):
             self.data.new_source()
+            self.data.apply_profile_settings(profile)
         if getattr(self.main.current_encoder, "enable_attachments", False):
             self.attachments.new_source(self.app.fastflix.current_video.streams.attachment)
         self.current_settings.new_source()
@@ -326,6 +327,8 @@ class VideoOptions(QtWidgets.QTabWidget):
                 self.audio.update_audio_settings()
             if getattr(self.main.current_encoder, "enable_subtitles", False):
                 self.subtitles.apply_profile_settings()
+            if getattr(self.main.current_encoder, "enable_data", False):
+                self.data.apply_profile_settings(profile)
             if getattr(self.main.current_encoder, "enable_attachments", False):
                 self.attachments.update_cover_settings()
         self.advanced.update_settings()

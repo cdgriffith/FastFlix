@@ -313,7 +313,12 @@ class Container(QtWidgets.QMainWindow):
         exit_action.setStatusTip(t("Exit application"))
         exit_action.triggered.connect(self.close)
 
+        clear_video_action = QAction(self.si(QtWidgets.QStyle.SP_DialogCloseButton), t("Clear Current Video"), self)
+        clear_video_action.triggered.connect(lambda: self.main.clear_current_video())
+
         file_menu.addAction(load_folder)
+        file_menu.addSeparator()
+        file_menu.addAction(clear_video_action)
         file_menu.addSeparator()
         file_menu.addAction(setting_action)
         file_menu.addSeparator()

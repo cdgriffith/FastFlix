@@ -158,6 +158,7 @@ class Profile(BaseModel):
     output_type: str = ".mkv"
 
     audio_filters: Optional[list[AudioMatch] | bool] = None
+    data_passthrough: Optional[bool] = None  # None = passthrough all, True = passthrough all, False = remove all
     # subtitle_filters: Optional[list[SubtitleMatch]] = None
 
     # Legacy Audio, here to properly import old profiles

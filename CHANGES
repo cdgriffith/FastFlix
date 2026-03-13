@@ -8,6 +8,8 @@
 * Adding FFmpeg 8.0+ version check on startup with option to download latest FFmpeg on Windows
 * Adding "Keep source format" option to Audio Normalize, which detects and uses the same audio codec and bitrate as the source video
 * Adding Audio Encoders tab in Settings to view and select which FFmpeg audio encoders appear in audio codec dropdowns
+* Adding Data tab to profile settings with passthrough all or remove all options for data and attachment streams
+* Adding clear current video X button next to source path and "Clear Current Video" option in File menu
 * Adding rotation and flip buttons to the visual crop window, allowing users to change rotation (0/90/180/270) and toggle horizontal/vertical flip without leaving the crop view
 * Changing visual crop window to show the video frame with rotation and flip applied, matching the final output so crop edges can be set intuitively in the rotated view
 * Changing Copy encoder to use modern FFmpeg display_rotation, display_hflip, and display_vflip for lossless rotation and flip metadata instead of deprecated rotate metadata tag, with support for MP4, MOV, MKV, and M4V containers

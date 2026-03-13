@@ -632,8 +632,24 @@ class Main(QtWidgets.QWidget):
             source_label.setStyleSheet("color: white;")
         shrink_text_to_fit(source_label)
         self.source_video_path_widget.setMinimumHeight(scaler.scale(HEIGHTS.COMBO_BOX))
+        self.clear_source_button = QtWidgets.QPushButton("✕")
+        self.clear_source_button.setFixedSize(scaler.scale(HEIGHTS.COMBO_BOX), scaler.scale(HEIGHTS.COMBO_BOX))
+        self.clear_source_button.setToolTip(t("Clear Current Video"))
+        self.clear_source_button.clicked.connect(self.clear_current_video)
+        self.clear_source_button.setDisabled(True)
+        if self.app.fastflix.config.theme == "onyx":
+            self.clear_source_button.setStyleSheet(
+                "QPushButton { color: #F44336; border: none; font-weight: bold; }"
+                "QPushButton:hover { background-color: #3a3a3a; border-radius: 4px; }"
+            )
+        else:
+            self.clear_source_button.setStyleSheet(
+                "QPushButton { color: #F44336; border: none; font-weight: bold; }"
+                "QPushButton:hover { background-color: #ddd; border-radius: 4px; }"
+            )
         source_layout.addWidget(source_label)
         source_layout.addWidget(self.source_video_path_widget, stretch=True)
+        source_layout.addWidget(self.clear_source_button)
 
         output_layout = QtWidgets.QHBoxLayout()
         output_label = QtWidgets.QLabel(t("Filename"))
@@ -1897,6 +1913,7 @@ class Main(QtWidgets.QWidget):
         self.output_path_button.setDisabled(True)
         self.output_video_path_widget.setDisabled(True)
         self.add_profile.setDisabled(True)
+        self.clear_source_button.setDisabled(True)
 
     def enable_all(self):
         for name, widget in self.widgets.items():
@@ -1913,6 +1930,7 @@ class Main(QtWidgets.QWidget):
         self.output_path_button.setEnabled(True)
         self.output_video_path_widget.setEnabled(True)
         self.add_profile.setEnabled(True)
+        self.clear_source_button.setEnabled(True)
         self.update_resolution()
 
     def clear_current_video(self):
@@ -2962,15 +2980,31 @@ class Main(QtWidgets.QWidget):
             encode_duration_secs=encode_duration_secs,
         )
 
-        # Copy thumbnail
+        # Generate thumbnail directly from source video
         thumbs_dir = get_history_thumbnails_dir(self.app.fastflix.data_path)
         thumbs_dir.mkdir(parents=True, exist_ok=True)
-        if self.thumb_file.exists():
-            try:
-                shutil.copy2(str(self.thumb_file), str(thumbs_dir / thumbnail_filename))
-            except Exception:
-                logger.warning("Failed to copy thumbnail for history entry")
+        thumb_output = thumbs_dir / thumbnail_filename
+        try:
+            from subprocess import PIPE, STDOUT
+            from subprocess import run as subprocess_run
+
+            from fastflix.flix import generate_thumbnail_command
+
+            thumb_command = generate_thumbnail_command(
+                config=self.app.fastflix.config,
+                source=video.source,
+                output=thumb_output,
+                filters=["-vf", "scale='min(440\\,iw):-8'"],
+                start_time=video.video_settings.start_time or 0,
+                input_track=video.video_settings.selected_track,
+            )
+            result = subprocess_run(thumb_command, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+            if result.returncode != 0 or not thumb_output.exists():
+                logger.warning("Failed to generate thumbnail for history entry")
                 entry.thumbnail_filename = ""
+        except Exception:
+            logger.warning("Failed to generate thumbnail for history entry")
+            entry.thumbnail_filename = ""
 
         add_history_entry(self.app.fastflix.data_path, entry, max_items=self.app.fastflix.config.history_max_items)
 
