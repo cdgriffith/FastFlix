@@ -9,7 +9,6 @@ import time
 import uuid
 from contextlib import contextmanager
 from pathlib import Path
-from queue import Queue, Empty
 from typing import Optional
 
 from box import Box, BoxError
@@ -99,7 +98,8 @@ class AsyncQueueSaver:
     """
 
     def __init__(self):
-        self._queue = Queue()
+        self._pending: dict[str, tuple] = {}  # keyed by str(queue_file)
+        self._event = threading.Event()
         self._shutdown = False
         self._thread = None
         self._lock = threading.Lock()
@@ -114,44 +114,51 @@ class AsyncQueueSaver:
     def _worker(self):
         """Background worker that processes save requests."""
         while not self._shutdown:
-            try:
-                request = self._queue.get(timeout=0.5)
-            except Empty:
-                continue
+            self._event.wait(timeout=0.5)
+            self._event.clear()
 
-            if request is None:  # Shutdown signal
-                break
+            while True:
+                with self._lock:
+                    if not self._pending:
+                        break
+                    # Pop one item (the latest save for that file supersedes any earlier ones)
+                    key, request = self._pending.popitem()
 
-            queue_data, queue_file, config, expected_generation = request
-            try:
-                save_queue(queue_data, queue_file, config, expected_generation=expected_generation)
-            except Exception:
-                logger.exception("Async queue save failed")
+                queue_data, queue_file, config = request
+                try:
+                    # No expected_generation — the latest queued save always has the most
+                    # up-to-date data (deep-copied from the live conversion_list), so it
+                    # is always authoritative and should never be skipped.
+                    save_queue(queue_data, queue_file, config, expected_generation=None)
+                except Exception:
+                    logger.exception("Async queue save failed")
 
     def save(self, queue: list, queue_file: Path, config: Optional["Config"] = None):
         """
         Queue a save operation to be performed asynchronously.
+
+        Only the latest save per queue file is kept — if a previous save for the
+        same file is still pending, it is superseded by this one (the newest save
+        always has the complete, current state).
 
         Args:
             queue: List of Video objects to save
             queue_file: Path to save the queue YAML file
             config: Optional Config object for work paths
         """
-        # Capture the expected generation at the time of queueing
-        # This allows us to detect if another save completed between queueing and execution
-        expected_generation = get_current_generation(queue_file)
-
-        # Make a deep copy of the queue data to avoid race conditions
         import copy
 
         try:
             queue_copy = copy.deepcopy(queue)
         except Exception:
             logger.warning("Could not deep copy queue for async save, falling back to sync save")
-            save_queue(queue, queue_file, config, expected_generation=expected_generation)
+            save_queue(queue, queue_file, config)
             return
 
-        self._queue.put((queue_copy, queue_file, config, expected_generation))
+        key = str(queue_file)
+        with self._lock:
+            self._pending[key] = (queue_copy, queue_file, config)
+        self._event.set()
 
     def shutdown(self, timeout: float = 5.0):
         """
@@ -161,7 +168,7 @@ class AsyncQueueSaver:
             timeout: Maximum time to wait for pending saves to complete
         """
         self._shutdown = True
-        self._queue.put(None)  # Signal worker to exit
+        self._event.set()  # Wake worker so it sees the shutdown flag
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=timeout)
 
@@ -173,12 +180,13 @@ class AsyncQueueSaver:
             timeout: Maximum time to wait
         """
         # Shutdown and restart the thread to ensure all pending saves complete
-        self._queue.put(None)  # Flush marker
+        self._shutdown = True
+        self._event.set()
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=timeout)
-            # Restart the thread for future saves
-            self._shutdown = False
-            self.start()
+        # Restart the thread for future saves
+        self._shutdown = False
+        self.start()
 
 
 # Global async saver instance

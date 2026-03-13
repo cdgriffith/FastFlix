@@ -14626,3 +14626,78 @@ Max items:
   ukr: Максимум елементів
   kor: 최대 항목
   ron: Articole maxime
+Clear Current Video:
+  eng: Clear Current Video
+  deu: Aktuelles Video löschen
+  fra: Effacer la vidéo actuelle
+  ita: Cancella il video corrente
+  spa: Borrar vídeo actual
+  jpn: クリア・カレント・ビデオ
+  rus: Очистить текущее видео
+  por: Limpar vídeo atual
+  swe: Rensa aktuell video
+  pol: Wyczyść bieżące wideo
+  chs: 清除当前视频
+  ukr: Очистити поточне відео
+  kor: 현재 비디오 지우기
+  ron: Ștergeți videoclipul curent
+Data Passthrough:
+  eng: Data Passthrough
+  deu: Daten-Passthrough
+  fra: Transmission des données
+  ita: Passaggio di dati
+  spa: Paso de datos
+  jpn: データ・パススルー
+  rus: Пропуск данных
+  por: Passagem de dados
+  swe: Genomströmning av data
+  pol: Przekazywanie danych
+  chs: 数据直通
+  ukr: Проходження даних
+  kor: 데이터 패스스루
+  ron: Passthrough de date
+Keep source format:
+  eng: Keep source format
+  deu: Quellformat beibehalten
+  fra: Conserver le format de la source
+  ita: Mantenere il formato della fonte
+  spa: Mantener el formato de origen
+  jpn: ソース形式を保持
+  rus: Сохраните формат источника
+  por: Manter o formato de origem
+  swe: Behåll källans format
+  pol: Zachowaj format źródła
+  chs: 保留源格式
+  ukr: Зберігати вихідний формат
+  kor: 소스 형식 유지
+  ron: Păstrați formatul sursei
+No crop, scale, nor any other filters will be applied.:
+  eng: No crop, scale, nor any other filters will be applied.
+  deu: Es werden weder Zuschneiden noch Skalieren noch andere Filter angewendet.
+  fra: Aucun recadrage, aucune mise à l'échelle, ni aucun autre filtre ne sera appliqué.
+  ita: Non verranno applicati ritagli, scale o altri filtri.
+  spa: No se aplicarán filtros de recorte, escala ni de ningún otro tipo.
+  jpn: クロップ、スケール、その他のフィルターは適用されない。
+  rus: Никакие обрезки, масштабирование или другие фильтры применяться не будут.
+  por: Não serão aplicados filtros de corte, escala ou outros.
+  swe: Inga beskärnings-, skalnings- eller andra filter kommer att tillämpas.
+  pol: Nie zostaną zastosowane żadne filtry przycinania, skalowania ani inne.
+  chs: 不会应用裁剪、缩放或任何其他滤镜。
+  ukr: Обрізання, масштабування та інші фільтри не застосовуються.
+  kor: 자르기, 스케일 또는 기타 필터가 적용되지 않습니다.
+  ron: Nu vor fi aplicate filtre de tăiere, de scalare sau orice alte filtre.
+Rotation and flip will be set as display metadata for supported containers (MP4, MOV, MKV).:
+  eng: Rotation and flip will be set as display metadata for supported containers (MP4, MOV, MKV).
+  deu: Drehung und Spiegelung werden für unterstützte Container (MP4, MOV, MKV) als Anzeigemetadaten festgelegt.
+  fra: La rotation et l'inversion seront définies comme métadonnées d'affichage pour les conteneurs pris en charge (MP4, MOV, MKV).
+  ita: Rotazione e capovolgimento saranno impostati come metadati di visualizzazione per i contenitori supportati (MP4, MOV, MKV).
+  spa: La rotación y el giro se establecerán como metadatos de visualización para los contenedores compatibles (MP4, MOV, MKV).
+  jpn: 回転と反転は、サポートされているコンテナ（MP4、MOV、MKV）の表示メタデータとして設定されます。
+  rus: Вращение и переворот будут заданы в качестве метаданных для отображения в поддерживаемых контейнерах (MP4, MOV, MKV).
+  por: A rotação e a inversão serão definidas como metadados de visualização para os contentores suportados (MP4, MOV, MKV).
+  swe: Rotation och flip kommer att ställas in som visningsmetadata för containrar som stöds (MP4, MOV, MKV).
+  pol: Obracanie i przerzucanie zostanie ustawione jako metadane wyświetlania dla obsługiwanych kontenerów (MP4, MOV, MKV).
+  chs: 旋转和翻转将被设置为受支持容器（MP4、MOV、MKV）的显示元数据。
+  ukr: Обертання та перевертання буде встановлено як метадані відображення для підтримуваних контейнерів (MP4, MOV, MKV).
+  kor: 회전 및 뒤집기는 지원되는 컨테이너(MP4, MOV, MKV)의 표시 메타데이터로 설정됩니다.
+  ron: Rotirea și întoarcerea vor fi setate ca metadate de afișare pentru containerele acceptate (MP4, MOV, MKV).
