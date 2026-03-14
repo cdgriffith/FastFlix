@@ -182,7 +182,6 @@ class VideoSettings(BaseModel):
 
 
 class Status(BaseModel):
-    success: bool = False
     error: bool = False
     complete: bool = False
     running: bool = False
@@ -193,10 +192,9 @@ class Status(BaseModel):
 
     @property
     def ready(self) -> bool:
-        return not self.success and not self.error and not self.complete and not self.running and not self.cancelled
+        return not self.error and not self.complete and not self.running and not self.cancelled
 
     def clear(self):
-        self.success = False
         self.error = False
         self.complete = False
         self.running = False

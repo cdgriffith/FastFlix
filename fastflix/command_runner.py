@@ -133,9 +133,9 @@ class BackgroundRunner:
     def _safe_log_put(self, msg):
         """Put message to log queue with timeout to prevent blocking if GUI is dead."""
         try:
-            self.log_queue.put(msg, timeout=1.0)
+            self.log_queue.put(msg, timeout=0.1)
         except Full:
-            pass  # GUI likely dead, ignore
+            pass  # GUI likely dead or log queue full, skip
 
     def read_output(self):
         with (

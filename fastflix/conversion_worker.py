@@ -54,6 +54,8 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
         )
         runner.change_priority(priority)
 
+    shutdown_requested = False
+
     while True:
         if currently_encoding and not runner.is_alive():
             reusables.remove_file_handlers(logger)
@@ -74,12 +76,12 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 logger.info(t("Error detected while converting"))
 
                 status_queue.put(("error", video_uuid, command_uuid))
-                if gui_died:
+                if gui_died or shutdown_requested:
                     return
                 continue
 
             status_queue.put(("complete", video_uuid, command_uuid))
-            if gui_died:
+            if gui_died or shutdown_requested:
                 return
 
         if not gui_died and not gui_proc.is_alive():
@@ -102,7 +104,7 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 _, video_uuid, command_uuid, command, work_dir, log_name, shell = request
                 start_command()
 
-            if request[0] == "cancel":
+            elif request[0] == "cancel":
                 logger.debug(t("Cancel has been requested, killing encoding"))
                 runner.kill()
                 currently_encoding = False
@@ -112,30 +114,30 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
                 except Full:
                     pass  # GUI likely dead, ignore
 
-            if request[0] == "pause encode":
+            elif request[0] == "pause encode":
                 logger.debug(t("Command worker received request to pause current encode"))
                 try:
                     runner.pause()
                 except Exception:
                     logger.exception("Could not pause command")
 
-            if request[0] == "resume encode":
+            elif request[0] == "resume encode":
                 logger.debug(t("Command worker received request to resume paused encode"))
                 try:
                     runner.resume()
                 except Exception:
                     logger.exception("Could not resume command")
 
-            if request[0] == "priority":
+            elif request[0] == "priority":
                 priority = request[1]
                 if runner.is_alive():
                     runner.change_priority(priority)
 
-            if request[0] == "shutdown":
+            elif request[0] == "shutdown":
                 logger.debug(t("Shutdown signal received from GUI"))
                 if runner.is_alive():
                     logger.info(t("Waiting for current encode to finish before shutdown"))
-                    # Don't kill current encode, let it finish
+                    shutdown_requested = True
                     continue
                 logger.debug(t("Worker shutting down gracefully"))
                 return

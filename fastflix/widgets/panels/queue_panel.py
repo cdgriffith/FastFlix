@@ -269,7 +269,6 @@ class EncodingQueue(FlixList):
         self.pause_encode.setToolTip(t("Pause / Resume the current command"))
 
         self.ignore_errors = QtWidgets.QCheckBox(t("Ignore Errors"))
-        self.ignore_errors.toggled.connect(self.ignore_failures)
         self.ignore_errors.setFixedWidth(150)
 
         self.after_done_combo = QtWidgets.QComboBox()
@@ -505,12 +504,6 @@ class EncodingQueue(FlixList):
             self.pause_encode.setIcon(self.app.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay))
             self.app.fastflix.worker_queue.put(["pause encode"])
         self.encode_paused = not self.encode_paused
-
-    def ignore_failures(self):
-        if self.ignore_errors.isChecked():
-            self.app.fastflix.worker_queue.put(["ignore error"])
-        else:
-            self.app.fastflix.worker_queue.put(["stop on error"])
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def set_after_done(self):

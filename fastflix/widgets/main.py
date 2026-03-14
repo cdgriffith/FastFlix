@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import datetime
 import logging
 import math
 import os
@@ -8,11 +7,9 @@ import random
 import secrets
 import shutil
 import time
-from collections import namedtuple
 from datetime import timedelta
 from pathlib import Path
-from queue import Empty
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union
 
 import importlib.resources
 import reusables
@@ -21,22 +18,18 @@ from pydantic import ConfigDict, BaseModel, Field
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.encoders.common import helpers
-from fastflix.exceptions import FastFlixInternalException, FlixError
+from fastflix.exceptions import FastFlixInternalException
 from fastflix.ui_scale import scaler
 from fastflix.ui_constants import WIDTHS, HEIGHTS, ICONS
 from fastflix.ui_styles import ONYX_COLORS, get_onyx_combobox_style, get_onyx_button_style
 from fastflix.flix import (
-    detect_hdr10_plus,
-    detect_interlaced,
     generate_thumbnail_command,
     get_auto_crop,
-    parse,
-    parse_hdr_details,
     get_concat_item,
 )
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
-from fastflix.models.video import Status, Video, VideoSettings, Crop
+from fastflix.models.video import Video, VideoSettings, Crop
 from fastflix.resources import (
     get_icon,
     group_box_style,
@@ -46,16 +39,17 @@ from fastflix.resources import (
 )
 from fastflix.shared import (
     error_message,
-    message,
     time_to_number,
     yes_no_message,
     clean_file_string,
     get_filesafe_datetime,
     shrink_text_to_fit,
 )
-from fastflix.windows_tools import prevent_sleep_mode, allow_sleep_mode
-from fastflix.widgets.background_tasks import ThumbnailCreator, ExtractCovers
-from fastflix.widgets.status_bar import Task, STATE_ENCODING, STATE_ERROR, STATE_COMPLETE, STATE_IDLE
+from fastflix.widgets.background_tasks import ThumbnailCreator
+from fastflix.widgets.main_encoding import EncodingMixin, Notifier
+from fastflix.widgets.main_post_encode import PostEncodeMixin
+from fastflix.widgets.main_video_load import VideoLoadMixin
+from fastflix.widgets.status_bar import Task, STATE_ERROR, STATE_IDLE
 from fastflix.widgets.video_options import VideoOptions
 from fastflix.widgets.windows.crop_window import CropPreviewWindow
 
@@ -65,13 +59,6 @@ root = os.path.abspath(os.path.dirname(__file__))
 
 only_int = QtGui.QIntValidator()
 
-Request = namedtuple(
-    "Request",
-    ["request", "video_uuid", "command_uuid", "command", "work_dir", "log_name", "shell"],
-    defaults=[None, None, None, None, None, False],
-)
-
-Response = namedtuple("Response", ["status", "video_uuid", "command_uuid"])
 
 resolutions = {
     t("Auto"): {"method": "auto"},
@@ -162,7 +149,7 @@ class MainWidgets(BaseModel):
                 yield key, getattr(self, key)
 
 
-class Main(QtWidgets.QWidget):
+class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
     completed = QtCore.Signal(int)
     thumbnail_complete = QtCore.Signal(int)
     close_event = QtCore.Signal()
@@ -1618,89 +1605,6 @@ class Main(QtWidgets.QWidget):
         widget.setText(str(new_value) if not time_field else self.number_to_time(new_value))
         self.build_commands()
 
-    @reusables.log_exception("fastflix", show_traceback=False)
-    def open_file(self):
-        filename = QtWidgets.QFileDialog.getOpenFileName(
-            self,
-            caption="Open Video",
-            filter="Video Files (*.mkv *.mp4 *.m4v *.mov *.avi *.divx *.webm *.mpg *.mp2 *.mpeg *.mpe *.mpv *.ogg *.m4p"
-            " *.wmv *.mov *.qt *.flv *.hevc *.gif *.webp *.vob *.ogv *.ts *.mts *.m2ts *.yuv *.rm *.svi *.3gp *.3g2"
-            " *.y4m *.avs *.vpy);;"
-            "Concatenation Text File (*.txt *.concat);; All Files (*)",
-            dir=str(
-                self.app.fastflix.config.source_directory
-                or (self.app.fastflix.current_video.source.parent if self.app.fastflix.current_video else Path.home())
-            ),
-        )
-        if not filename or not filename[0]:
-            return
-
-        if self.app.fastflix.current_video:
-            discard = yes_no_message(
-                f"{t('There is already a video being processed')}<br>{t('Are you sure you want to discard it?')}",
-                title="Discard current video",
-            )
-            if not discard:
-                return
-
-        self.input_video = Path(clean_file_string(filename[0]))
-        if not self.input_video.exists():
-            logger.error(f"Could not find the input file, does it exist at: {self.input_video}")
-            return
-        self.source_video_path_widget.setText(str(self.input_video))
-        self.video_path_widget.setText(str(self.input_video))
-        try:
-            self.update_video_info()
-        except Exception:
-            logger.exception(f"Could not load video {self.input_video}")
-            self.video_path_widget.setText("")
-            self.output_video_path_widget.setText("")
-            self.output_video_path_widget.setDisabled(True)
-            self.widgets.output_directory.setText("")
-            self.output_path_button.setDisabled(True)
-            self.filename_truncation_warning.hide()
-        self.page_update()
-
-    def open_many(self, paths: list):
-        if self.app.fastflix.current_video:
-            discard = yes_no_message(
-                f"{t('There is already a video being processed')}<br>{t('Are you sure you want to discard it?')}",
-                title="Discard current video",
-            )
-            if not discard:
-                return
-
-        def open_em(signal, stop_signal, paths, **_):
-            stop = False
-
-            def stop_me():
-                nonlocal stop
-                stop = True
-
-            stop_signal.connect(stop_me)
-
-            total_items = len(paths)
-            for i, path in enumerate(paths):
-                if stop:
-                    return
-                self.input_video = path
-                self.source_video_path_widget.setText(str(self.input_video))
-                self.video_path_widget.setText(str(self.input_video))
-                try:
-                    self.update_video_info(hide_progress=True)
-                except Exception:
-                    logger.exception(f"Could not load video {self.input_video}")
-                else:
-                    self.page_update(build_thumbnail=False)
-                    self.add_to_queue()
-                signal.emit(int((i / total_items) * 100))
-
-        self.disable_all()
-        self.container.status_bar.run_tasks(
-            [Task(t("Loading Videos"), open_em, {"paths": paths})], signal_task=True, can_cancel=True
-        )
-        self.enable_all()
-
     @property
     def generate_output_filename(self):
         from fastflix.naming import resolve_pre_encode_variables, truncate_filename
@@ -1932,326 +1836,6 @@ class Main(QtWidgets.QWidget):
         self.add_profile.setEnabled(True)
         self.clear_source_button.setEnabled(True)
         self.update_resolution()
-
-    def clear_current_video(self):
-        if self._cover_extract_thread and self._cover_extract_thread.isRunning():
-            self._cover_extract_thread.wait(2000)
-            self._cover_extract_thread = None
-        self.widgets.queue_button.setEnabled(True)
-        self.widgets.queue_button.setToolTip("")
-        self.widgets.convert_button.setEnabled(True)
-        self.widgets.convert_button.setToolTip("")
-
-        self.loading_video = True
-        self.app.fastflix.current_video = None
-        self.input_video = None
-        self.source_video_path_widget.setText("")
-        self.video_path_widget.setText(t("No Source Selected"))
-        self.output_video_path_widget.setText("")
-        self.widgets.output_directory.setText("")
-        self.output_path_button.setDisabled(True)
-        self.output_video_path_widget.setDisabled(True)
-        self.filename_truncation_warning.hide()
-        for i in range(self.widgets.video_track.count()):
-            self.widgets.video_track.removeItem(0)
-        self.widgets.preview.setText(t("No Video File"))
-
-        # self.widgets.deinterlace.setChecked(False)
-        # self.widgets.remove_hdr.setChecked(False)
-        # self.widgets.remove_metadata.setChecked(True)
-        # self.widgets.chapters.setChecked(True)
-
-        self.widgets.flip.setCurrentIndex(0)
-        self.widgets.rotate.setCurrentIndex(0)
-        # self.widgets.video_title.setText("")
-
-        self.widgets.crop.top.setText("0")
-        self.widgets.crop.left.setText("0")
-        self.widgets.crop.right.setText("0")
-        self.widgets.crop.bottom.setText("0")
-        self.widgets.start_time.setText(self.number_to_time(0))
-        self.widgets.end_time.setText(self.number_to_time(0))
-        # self.widgets.scale.width.setText("0")
-        # self.widgets.scale.height.setText("Auto")
-        self.widgets.preview.setPixmap(QtGui.QPixmap())
-        self.video_options.clear_tracks()
-        self.video_bit_depth_label.hide()
-        self.video_chroma_label.hide()
-        self.video_hdr10_label.hide()
-        self.video_hdr10plus_label.hide()
-        self.disable_all()
-        self.loading_video = False
-
-    @reusables.log_exception("fastflix", show_traceback=True)
-    def reload_video_from_queue(self, video: Video):
-        if video.video_settings.video_encoder_settings.name not in self.app.fastflix.encoders:
-            error_message(
-                t("That video was added with an encoder that is no longer available, unable to load from queue")
-            )
-            raise FastFlixInternalException(
-                t("That video was added with an encoder that is no longer available, unable to load from queue")
-            )
-
-        self.loading_video = True
-
-        self.app.fastflix.current_video = video
-        self.app.fastflix.current_video.work_path.mkdir(parents=True, exist_ok=True)
-        self.input_video = video.source
-        self.source_video_path_widget.setText(str(self.input_video))
-        hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
-        text_video_tracks = [
-            (
-                f"{x.index}: {x.codec_name} {x.get('bit_depth', '8')}-bit "
-                f"{x['color_primaries'] if x.get('color_primaries') else ''}"
-                f"{' - HDR10' if x.index in hdr10_indexes else ''}"
-                f"{' | HDR10+' if x.index in self.app.fastflix.current_video.hdr10_plus else ''}"
-            )
-            for x in self.app.fastflix.current_video.streams.video
-        ]
-        self.widgets.video_track.clear()
-        self.widgets.video_track.addItems(text_video_tracks)
-        # Show video track selector only when there's more than one video track
-        if len(self.app.fastflix.current_video.streams.video) > 1:
-            self.widgets.video_track_widget.show()
-        else:
-            self.widgets.video_track_widget.hide()
-        for i, track in enumerate(text_video_tracks):
-            if int(track.split(":")[0]) == self.app.fastflix.current_video.video_settings.selected_track:
-                self.widgets.video_track.setCurrentIndex(i)
-                break
-        else:
-            logger.warning(
-                f"Could not find selected track {self.app.fastflix.current_video.video_settings.selected_track} "
-                f"in {text_video_tracks}"
-            )
-
-        end_time = self.app.fastflix.current_video.video_settings.end_time or video.duration
-        if self.app.fastflix.current_video.video_settings.crop:
-            self.widgets.crop.top.setText(str(self.app.fastflix.current_video.video_settings.crop.top))
-            self.widgets.crop.left.setText(str(self.app.fastflix.current_video.video_settings.crop.left))
-            self.widgets.crop.right.setText(str(self.app.fastflix.current_video.video_settings.crop.right))
-            self.widgets.crop.bottom.setText(str(self.app.fastflix.current_video.video_settings.crop.bottom))
-        else:
-            self.widgets.crop.top.setText("0")
-            self.widgets.crop.left.setText("0")
-            self.widgets.crop.right.setText("0")
-            self.widgets.crop.bottom.setText("0")
-        self.widgets.start_time.setText(self.number_to_time(video.video_settings.start_time))
-        self.widgets.end_time.setText(self.number_to_time(end_time))
-        # self.widgets.video_title.setText(self.app.fastflix.current_video.video_settings.video_title)
-
-        fn = Path(video.video_settings.output_path)
-        self.widgets.output_directory.setText(str(fn.parent.absolute()).rstrip("/").rstrip("\\"))
-        self.output_video_path_widget.setText(fn.stem)
-        self.widgets.output_type_combo.setCurrentText(fn.suffix)
-
-        self.widgets.deinterlace.setChecked(self.app.fastflix.current_video.video_settings.deinterlace)
-        self.widgets.remove_metadata.setChecked(self.app.fastflix.current_video.video_settings.remove_metadata)
-        self.widgets.chapters.setChecked(self.app.fastflix.current_video.video_settings.copy_chapters)
-        self.widgets.remove_hdr.setChecked(self.app.fastflix.current_video.video_settings.remove_hdr)
-        self.widgets.rotate.setCurrentIndex(video.video_settings.rotate)
-        self.widgets.fast_time.setCurrentIndex(0 if video.video_settings.fast_seek else 1)
-        if video.video_settings.vertical_flip and video.video_settings.horizontal_flip:
-            self.widgets.flip.setCurrentIndex(3)
-        elif video.video_settings.vertical_flip:
-            self.widgets.flip.setCurrentIndex(1)
-        elif video.video_settings.horizontal_flip:
-            self.widgets.flip.setCurrentIndex(2)
-
-        self.video_options.advanced.video_title.setText(video.video_settings.video_title)
-        self.video_options.advanced.video_track_title.setText(video.video_settings.video_track_title)
-
-        self.video_options.reload()
-        self.enable_all()
-
-        self._start_cover_extraction()
-
-        self.app.fastflix.current_video.status = Status()
-        self.update_video_info_labels()
-        self.loading_video = False
-        self.page_update(build_thumbnail=True, force_build_thumbnail=True)
-
-    @reusables.log_exception("fastflix", show_traceback=False)
-    def update_video_info(self, hide_progress=False):
-        self.loading_video = True
-        folder, name = self.generate_output_filename
-        self.output_video_path_widget.setText(name)
-        self.widgets.output_directory.setText(folder.rstrip("/").rstrip("\\"))
-        self._update_truncation_warning()
-        self.output_video_path_widget.setDisabled(False)
-        self.output_path_button.setDisabled(False)
-        self.app.fastflix.current_video = Video(source=self.input_video, work_path=self.get_temp_work_path())
-        self.app.fastflix.current_video.video_settings.template_generated_name = name
-        tasks = [
-            Task(t("Parse Video details"), parse),
-            Task(t("Determine HDR details"), parse_hdr_details),
-            Task(t("Detect HDR10+"), detect_hdr10_plus),
-        ]
-        if not self.app.fastflix.config.disable_deinterlace_check:
-            tasks.append(Task(t("Detecting Interlace"), detect_interlaced, dict(source=self.source_material)))
-
-        try:
-            self.container.status_bar.run_tasks(tasks)
-        except FlixError:
-            error_message(f"{t('Not a video file')}<br>{self.input_video}")
-            self.clear_current_video()
-            return
-        except Exception:
-            logger.exception(f"Could not properly read the files {self.input_video}")
-            self.clear_current_video()
-            error_message(f"Could not properly read the file {self.input_video}")
-            return
-
-        hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
-        text_video_tracks = [
-            (
-                f"{x.index}: {x.codec_name} {x.get('bit_depth', '8')}-bit "
-                f"{x['color_primaries'] if x.get('color_primaries') else ''}"
-                f"{' - HDR10' if x.index in hdr10_indexes else ''}"
-                f"{' | HDR10+' if x.index in self.app.fastflix.current_video.hdr10_plus else ''}"
-            )
-            for x in self.app.fastflix.current_video.streams.video
-        ]
-        self.widgets.video_track.clear()
-        self.widgets.crop.top.setText("0")
-        self.widgets.crop.left.setText("0")
-        self.widgets.crop.right.setText("0")
-        self.widgets.crop.bottom.setText("0")
-        self.widgets.start_time.setText("0:00:00")
-
-        self.widgets.video_track.addItems(text_video_tracks)
-
-        # Show video track selector only when there's more than one video track
-        if len(self.app.fastflix.current_video.streams.video) > 1:
-            self.widgets.video_track_widget.show()
-        else:
-            self.widgets.video_track_widget.hide()
-
-        logger.debug(f"{len(self.app.fastflix.current_video.streams['video'])} {t('video tracks found')}")
-        logger.debug(f"{len(self.app.fastflix.current_video.streams['audio'])} {t('audio tracks found')}")
-
-        if self.app.fastflix.current_video.streams["subtitle"]:
-            logger.debug(f"{len(self.app.fastflix.current_video.streams['subtitle'])} {t('subtitle tracks found')}")
-        if self.app.fastflix.current_video.streams["attachment"]:
-            logger.debug(f"{len(self.app.fastflix.current_video.streams['attachment'])} {t('attachment tracks found')}")
-        if self.app.fastflix.current_video.streams["data"]:
-            logger.debug(f"{len(self.app.fastflix.current_video.streams['data'])} {t('data tracks found')}")
-
-        self.widgets.end_time.setText(self.number_to_time(self.app.fastflix.current_video.duration))
-        title_name = [
-            v for k, v in self.app.fastflix.current_video.format.get("tags", {}).items() if k.lower() == "title"
-        ]
-        if title_name:
-            self.video_options.advanced.video_title.setText(title_name[0])
-        else:
-            self.video_options.advanced.video_title.setText("")
-
-        video_track_title_name = [
-            v
-            for k, v in self.app.fastflix.current_video.streams.video[0].get("tags", {}).items()
-            if k.upper() == "TITLE"
-        ]
-
-        if video_track_title_name:
-            self.video_options.advanced.video_track_title.setText(video_track_title_name[0])
-        else:
-            self.video_options.advanced.video_track_title.setText("")
-
-        self.widgets.deinterlace.setChecked(self.app.fastflix.current_video.video_settings.deinterlace)
-
-        logger.info("Updating video info")
-        self.video_options.new_source()
-        self.enable_all()
-        # self.widgets.convert_button.setDisabled(False)
-        # self.widgets.convert_button.setStyleSheet("background-color:green;")
-
-        self._start_cover_extraction()
-
-        self.loading_video = False
-        self.update_resolution_labels()
-        self.update_video_info_labels()
-
-        # Set preview slider steps: ~1 per 10 seconds, minimum 100
-        slider_steps = max(100, int(self.app.fastflix.current_video.duration / 10))
-        self.widgets.thumb_time.setMaximum(slider_steps)
-        self.widgets.thumb_time.setPageStep(max(1, slider_steps // 20))
-        self.widgets.thumb_time.setValue(max(1, slider_steps // 4))
-
-        if self.app.fastflix.config.opt("auto_crop"):
-            self.get_auto_crop()
-
-        encoder = self.current_encoder
-        if encoder and not getattr(encoder, "enable_concat", False) and self.app.fastflix.current_video.concat:
-            error_message(f"{encoder.name} {t('does not support concatenating files together')}")
-
-    @staticmethod
-    def _chroma_from_pix_fmt(pix_fmt: str) -> str:
-        if not pix_fmt:
-            return ""
-        fmt = pix_fmt.lower()
-        if "444" in fmt:
-            return "4:4:4"
-        if "422" in fmt:
-            return "4:2:2"
-        if "420" in fmt or fmt in ("nv12", "nv12m", "nv21", "p010le"):
-            return "4:2:0"
-        if "411" in fmt:
-            return "4:1:1"
-        if "410" in fmt:
-            return "4:1:0"
-        if "440" in fmt:
-            return "4:4:0"
-        return ""
-
-    def update_video_info_labels(self):
-        if not self.app.fastflix.current_video:
-            self.video_info_label.hide()
-            self.video_codec_label.hide()
-            self.video_bit_depth_label.hide()
-            self.video_chroma_label.hide()
-            self.video_hdr10_label.hide()
-            self.video_hdr10plus_label.hide()
-            return
-
-        track_index = self.widgets.video_track.currentIndex()
-        if track_index < 0:
-            return
-        stream = self.app.fastflix.current_video.streams.video[track_index]
-        stream_idx = stream.index
-
-        codec = stream.get("codec_name", "")
-        if codec:
-            self.video_codec_label.setText(codec.upper())
-            self.video_codec_label.show()
-        else:
-            self.video_codec_label.hide()
-
-        bit_depth = stream.get("bit_depth", "8")
-        self.video_bit_depth_label.setText(f"{bit_depth}-bit")
-        self.video_bit_depth_label.show()
-        self.video_info_label.show()
-
-        chroma = self._chroma_from_pix_fmt(stream.get("pix_fmt", ""))
-        if chroma:
-            self.video_chroma_label.setText(chroma)
-            self.video_chroma_label.show()
-        else:
-            self.video_chroma_label.hide()
-
-        hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
-        if stream_idx in hdr10_indexes:
-            self.video_hdr10_label.setText("\u2714 HDR10")
-            self.video_hdr10_label.setStyleSheet("color: #00cc00;")
-            self.video_hdr10_label.show()
-        else:
-            self.video_hdr10_label.hide()
-
-        if self.app.fastflix.config.hdr10plus_parser and stream_idx in self.app.fastflix.current_video.hdr10_plus:
-            self.video_hdr10plus_label.setText("\u2714 HDR10+")
-            self.video_hdr10plus_label.setStyleSheet("color: #00cc00;")
-            self.video_hdr10plus_label.show()
-        else:
-            self.video_hdr10plus_label.hide()
 
     @property
     def video_track(self) -> int:
@@ -2486,8 +2070,8 @@ class Main(QtWidgets.QWidget):
         self.page_update(build_thumbnail=True)
 
     def page_update(self, build_thumbnail=True, force_build_thumbnail=False):
-        while self.page_updating:
-            time.sleep(0.1)
+        if self.page_updating:
+            return
         self.page_updating = True
         try:
             if not self.initialized or self.loading_video or not self.app.fastflix.current_video:
@@ -2551,185 +2135,8 @@ class Main(QtWidgets.QWidget):
             return list(self.app.fastflix.encoders.keys())[0]
         return None
 
-    def encoding_checks(self):
-        if not self.input_video:
-            error_message(t("Have to select a video first"))
-            return False
-        if not self.output_video:
-            error_message(t("Please specify output video"))
-            return False
-        try:
-            if self.input_video.resolve().absolute() == Path(self.output_video).resolve().absolute():
-                error_message(t("Output video path is same as source!"))
-                return False
-        except OSError:
-            # file system may not support resolving
-            pass
-
-        out_file_path = Path(self.output_video)
-        if out_file_path.exists() and out_file_path.stat().st_size > 0:
-            sm = QtWidgets.QMessageBox()
-            sm.setText("That output file already exists and is not empty!")
-            sm.addButton("Cancel", QtWidgets.QMessageBox.DestructiveRole)
-            sm.addButton("Overwrite", QtWidgets.QMessageBox.RejectRole)
-            sm.exec()
-            if sm.clickedButton().text() == "Cancel":
-                return False
-        return True
-
-    def _start_cover_extraction(self):
-        """Start background cover extraction thread."""
-        if self.app.fastflix.config.disable_cover_extraction:
-            return
-        if not self.app.fastflix.current_video:
-            return
-        has_covers = any(
-            track.get("tags", {}).get("filename", "").rsplit(".", 1)[0]
-            in ("cover", "small_cover", "cover_land", "small_cover_land")
-            for track in self.app.fastflix.current_video.streams.attachment
-        )
-        if not has_covers:
-            return
-
-        self.widgets.queue_button.setDisabled(True)
-        self.widgets.queue_button.setToolTip(t("Extracting cover images..."))
-        self.widgets.convert_button.setDisabled(True)
-        self.widgets.convert_button.setToolTip(t("Extracting cover images..."))
-
-        self.video_options.attachments.set_extracting(True)
-
-        self._cover_extract_video_source = self.app.fastflix.current_video.source
-        self._cover_extract_thread = ExtractCovers(app=self.app, main=self, signal=self.cover_extraction_complete)
-        self._cover_extract_thread.start()
-
-    def on_cover_extraction_complete(self):
-        """Called when background cover extraction finishes."""
-        self._cover_extract_thread = None
-
-        self.widgets.queue_button.setEnabled(True)
-        self.widgets.queue_button.setToolTip("")
-        self.widgets.convert_button.setEnabled(True)
-        self.widgets.convert_button.setToolTip("")
-
-        if (
-            self.app.fastflix.current_video
-            and self.app.fastflix.current_video.source == self._cover_extract_video_source
-        ):
-            self.video_options.attachments.covers_extracted()
-        self._cover_extract_video_source = None
-
-    def set_convert_button(self):
-        if not self.app.fastflix.currently_encoding:
-            self.widgets.convert_button.setText(f"{t('Convert')}  ")
-            self.widgets.convert_button.setIcon(QtGui.QIcon(self.get_icon("play-round")))
-            self.widgets.convert_button.setIconSize(scaler.scale_size(ICONS.MEDIUM, ICONS.MEDIUM))
-
-        else:
-            self.widgets.convert_button.setText(f"{t('Cancel')}  ")
-            self.widgets.convert_button.setIcon(QtGui.QIcon(self.get_icon("black-x")))
-            self.widgets.convert_button.setIconSize(scaler.scale_size(ICONS.MEDIUM, ICONS.MEDIUM))
-
     def get_icon(self, name):
         return get_icon(name, self.app.fastflix.config.theme)
-
-    @reusables.log_exception("fastflix", show_traceback=True)
-    def encode_video(self):
-        if self.app.fastflix.currently_encoding:
-            sure = yes_no_message(t("Are you sure you want to stop the current encode?"), title="Confirm Stop Encode")
-            if not sure:
-                return
-            logger.info(t("Canceling current encode"))
-            self.app.fastflix.worker_queue.put(["cancel"])
-            self.video_options.queue.reset_pause_encode()
-            return
-
-        if self.app.fastflix.conversion_paused:
-            return error_message("Queue is currently paused")
-
-        if self.app.fastflix.current_video:
-            add_current = True
-            if self.app.fastflix.conversion_list and self.app.fastflix.current_video:
-                add_current = yes_no_message("Add current video to queue?", yes_text="Yes", no_text="No")
-            if add_current:
-                if not self.add_to_queue():
-                    return
-
-        for video in self.app.fastflix.conversion_list:
-            if video.status.ready:
-                video_to_send: Video = video
-                break
-        else:
-            error_message(t("There are no videos to start converting"))
-            return
-
-        logger.debug(t("Starting conversion process"))
-
-        self.app.fastflix.currently_encoding = True
-        prevent_sleep_mode()
-        self.set_convert_button()
-        self.send_video_request_to_worker_queue(video_to_send)
-        self.disable_all()
-        self.video_options.show_status()
-        video_name = video_to_send.video_settings.video_title or video_to_send.video_settings.output_path.stem
-        self.encoding_status_signal.emit(f"{t('Encoding')}: {video_name}", STATE_ENCODING)
-        self.encoding_progress_signal.emit(0)
-
-    def add_to_queue(self):
-        try:
-            code = self.video_options.queue.add_to_queue()
-        except FastFlixInternalException as err:
-            error_message(str(err))
-            return
-        else:
-            if code is not None:
-                return code
-        # No update_queue() needed - add_to_queue() already called new_source()
-        self.video_options.show_queue()
-
-        # if self.converting:
-        #     commands = self.get_commands()
-        #     requests = ["add_items", str(self.app.fastflix.log_path), tuple(commands)]
-        #     self.app.fastflix.worker_queue.put(tuple(requests))
-
-        self.clear_current_video()
-        return True
-
-    # @reusables.log_exception("fastflix", show_traceback=False)
-    def conversion_complete(self, success: bool):
-        self.paused = False
-        allow_sleep_mode()
-        self.set_convert_button()
-
-        if not success:
-            self.encoding_status_signal.emit(t("Encoding error"), STATE_ERROR)
-            if self.app.fastflix.config.show_error_message:
-                error_message(t("There was an error during conversion and the queue has stopped"), title=t("Error"))
-            self.video_options.queue.new_source()
-        else:
-            self.encoding_status_signal.emit(t("All conversions complete"), STATE_COMPLETE)
-            self.video_options.show_queue()
-            if self.app.fastflix.config.show_complete_message:
-                message(t("All queue items have completed"), title=t("Success"))
-
-    #
-    # @reusables.log_exception("fastflix", show_traceback=False)
-    def conversion_cancelled(self, video: Video):
-        self.set_convert_button()
-
-        exists = video.video_settings.output_path.exists()
-
-        if exists:
-            sm = QtWidgets.QMessageBox()
-            sm.setWindowTitle(t("Cancelled"))
-            sm.setText(f"{t('Conversion cancelled, delete incomplete file')}\n{video.video_settings.output_path}?")
-            sm.addButton(t("Delete"), QtWidgets.QMessageBox.YesRole)
-            sm.addButton(t("Keep"), QtWidgets.QMessageBox.NoRole)
-            sm.exec()
-            if sm.clickedButton().text() == t("Delete"):
-                try:
-                    video.video_settings.output_path.unlink(missing_ok=True)
-                except OSError:
-                    pass
 
     @reusables.log_exception("fastflix", show_traceback=True)
     def dropEvent(self, event):
@@ -2761,382 +2168,8 @@ class Main(QtWidgets.QWidget):
         # releasing the Windows drag-drop COM lock (unfreezes Explorer).
         QtCore.QTimer.singleShot(0, self._load_dropped_video)
 
-    def _load_dropped_video(self):
-        self.source_video_path_widget.setText(str(self.input_video))
-        self.video_path_widget.setText(str(self.input_video))
-        try:
-            self.update_video_info()
-        except Exception:
-            logger.exception(f"Could not load video {self.input_video}")
-            self.video_path_widget.setText("")
-            self.output_video_path_widget.setText("")
-            self.output_video_path_widget.setDisabled(True)
-            self.widgets.output_directory.setText("")
-            self.output_path_button.setDisabled(True)
-            self.filename_truncation_warning.hide()
-        self.page_update()
-
     def dragEnterEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()
 
     def dragMoveEvent(self, event):
         event.accept() if event.mimeData().hasUrls else event.ignore()
-
-    def status_update(self, status_response):
-        response = Response(*status_response)
-        logger.debug(f"Updating queue from command worker: {response}")
-
-        video_to_send: Optional[Video] = None
-        errored = False
-        same_video = False
-
-        for video in self.app.fastflix.conversion_list:
-            if response.video_uuid == video.uuid:
-                video.status.running = False
-
-                if response.status == "cancelled":
-                    video.status.cancelled = True
-                    self.encoding_status_signal.emit(t("Encoding cancelled"), STATE_IDLE)
-                    self.encoding_progress_signal.emit(0)
-                    self.end_encoding()
-                    self.conversion_cancelled(video)
-                    self.video_options.update_queue()
-                    return
-
-                if response.status == "complete":
-                    video.status.current_command += 1
-                    if len(video.video_settings.conversion_commands) > video.status.current_command:
-                        same_video = True
-                        video_to_send = video
-                        break
-                    else:
-                        video.status.complete = True
-                        self._post_encode_process(video)
-
-                if response.status == "error":
-                    video.status.error = True
-                    errored = True
-                    if self.app.fastflix.config.enable_history:
-                        try:
-                            self._record_history(video, success=False)
-                        except Exception:
-                            logger.exception("Failed to record history entry for errored encode")
-                break
-
-        if errored and not self.video_options.queue.ignore_errors.isChecked():
-            self.end_encoding()
-            self.conversion_complete(success=False)
-            return
-
-        if not video_to_send:
-            for video in self.app.fastflix.conversion_list:
-                if video.status.ready:
-                    video_to_send = video
-                    # TODO ensure command int is in command list?
-                    break
-
-        if not video_to_send:
-            self.end_encoding()
-            self.conversion_complete(success=True)
-            return
-
-        self.app.fastflix.currently_encoding = True
-        if not same_video and self.app.fastflix.conversion_paused:
-            return self.end_encoding()
-
-        self.send_video_request_to_worker_queue(video_to_send)
-
-    def end_encoding(self):
-        self.app.fastflix.currently_encoding = False
-        allow_sleep_mode()
-        self.video_options.queue.run_after_done()
-        self.video_options.update_queue()
-        self.set_convert_button()
-        self.encoding_progress_signal.emit(0)
-
-    def send_next_video(self) -> bool:
-        if not self.app.fastflix.currently_encoding:
-            for video in self.app.fastflix.conversion_list:
-                if video.status.ready:
-                    video.status.running = True
-                    self.send_video_request_to_worker_queue(video)
-                    self.app.fastflix.currently_encoding = True
-                    prevent_sleep_mode()
-                    self.set_convert_button()
-                    return True
-        self.app.fastflix.currently_encoding = False
-        allow_sleep_mode()
-        self.set_convert_button()
-        return False
-
-    def _post_encode_process(self, video: Video):
-        """Run ffprobe validation and post-encode rename on completed video."""
-        try:
-            from fastflix.naming import has_post_encode_placeholders
-
-            output_path = video.video_settings.output_path
-            if not output_path or not output_path.exists():
-                logger.warning(f"Post-encode: output file not found at {output_path}")
-                return
-
-            # Always run ffprobe for validation
-            try:
-                from fastflix.flix import probe
-
-                probe_data = probe(self.app, output_path)
-            except Exception:
-                logger.exception(f"Post-encode: ffprobe failed on {output_path}")
-                probe_data = None
-
-            self._validate_output(output_path, probe_data)
-
-            # Rename if post-encode placeholders exist in filename
-            if has_post_encode_placeholders(output_path.stem):
-                self._rename_with_post_encode_vars(video, probe_data)
-
-            # Record to history if enabled
-            if self.app.fastflix.config.enable_history:
-                try:
-                    self._record_history(video)
-                except Exception:
-                    logger.exception("Failed to record history entry")
-
-        except Exception:
-            logger.exception("Post-encode processing failed (encode itself succeeded)")
-
-    def _record_history(self, video: Video, success: bool = True):
-        """Record a completed or failed encoding to history."""
-        import uuid as uuid_mod
-        from datetime import datetime
-
-        from fastflix.models.history import (
-            HistoryEntry,
-            add_history_entry,
-            build_settings_summary,
-            get_history_thumbnails_dir,
-        )
-
-        output_path = video.video_settings.output_path
-        encoder_settings = video.video_settings.video_encoder_settings
-
-        # Build audio summary
-        audio_parts = []
-        for track in video.audio_tracks:
-            if track.enabled:
-                codec = track.conversion_codec if track.conversion_codec else track.codec
-                audio_parts.append(f"{track.language} ({codec})")
-        audio_summary = ", ".join(audio_parts) if audio_parts else ""
-
-        # Build subtitle summary
-        sub_parts = []
-        for track in video.subtitle_tracks:
-            if track.enabled:
-                sub_parts.append(f"{track.language} ({track.subtitle_type})")
-        subtitle_summary = ", ".join(sub_parts) if sub_parts else ""
-
-        # Resolution
-        resolution = ""
-        if video.width and video.height:
-            resolution = f"{video.width}x{video.height}"
-
-        # File size
-        file_size = 0
-        try:
-            if output_path and output_path.exists():
-                file_size = output_path.stat().st_size
-        except Exception:
-            pass
-
-        # Duration
-        duration = 0.0
-        if video.duration:
-            duration = video.duration
-
-        # Encode duration
-        encode_duration_secs = 0.0
-        if video.status.encode_started_at:
-            encode_duration_secs = (
-                datetime.now(video.status.encode_started_at.tzinfo) - video.status.encode_started_at
-            ).total_seconds()
-
-        entry_uuid = str(uuid_mod.uuid4())
-        thumbnail_filename = f"{entry_uuid}.jpg"
-
-        entry = HistoryEntry(
-            uuid=entry_uuid,
-            source=str(video.source),
-            output=str(output_path) if output_path else "",
-            encoder_name=encoder_settings.name,
-            encoder_settings=encoder_settings.model_dump(),
-            encoder_settings_summary=build_settings_summary(encoder_settings.model_dump()),
-            audio_summary=audio_summary,
-            subtitle_summary=subtitle_summary,
-            resolution=resolution,
-            duration=duration,
-            file_size=file_size,
-            completed_at=datetime.now().isoformat(),
-            thumbnail_filename=thumbnail_filename,
-            success=success,
-            encode_duration_secs=encode_duration_secs,
-        )
-
-        # Generate thumbnail directly from source video
-        thumbs_dir = get_history_thumbnails_dir(self.app.fastflix.data_path)
-        thumbs_dir.mkdir(parents=True, exist_ok=True)
-        thumb_output = thumbs_dir / thumbnail_filename
-        try:
-            from subprocess import PIPE, STDOUT
-            from subprocess import run as subprocess_run
-
-            from fastflix.flix import generate_thumbnail_command
-
-            thumb_command = generate_thumbnail_command(
-                config=self.app.fastflix.config,
-                source=video.source,
-                output=thumb_output,
-                filters=["-vf", "scale='min(440\\,iw):-8'"],
-                start_time=video.video_settings.start_time or 0,
-                input_track=video.video_settings.selected_track,
-            )
-            result = subprocess_run(thumb_command, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-            if result.returncode != 0 or not thumb_output.exists():
-                logger.warning("Failed to generate thumbnail for history entry")
-                entry.thumbnail_filename = ""
-        except Exception:
-            logger.warning("Failed to generate thumbnail for history entry")
-            entry.thumbnail_filename = ""
-
-        add_history_entry(self.app.fastflix.data_path, entry, max_items=self.app.fastflix.config.history_max_items)
-
-    def _validate_output(self, output_path: Path, probe_data):
-        """Quick sanity check on the output file."""
-        if not output_path.exists():
-            logger.warning(f"Output validation: file does not exist: {output_path}")
-            return
-
-        file_size = output_path.stat().st_size
-        if file_size < 1024:
-            logger.warning(f"Output validation: file is suspiciously small ({file_size} bytes): {output_path}")
-
-        if not probe_data:
-            logger.warning(f"Output validation: no probe data available for {output_path}")
-            return
-
-        # Check for video stream
-        has_video = False
-        if hasattr(probe_data, "streams"):
-            for stream in probe_data.streams:
-                if stream.get("codec_type") == "video":
-                    has_video = True
-                    break
-        if not has_video:
-            logger.warning(f"Output validation: no video stream found in {output_path}")
-
-        # Check duration
-        if hasattr(probe_data, "format") and probe_data.format:
-            duration = probe_data.format.get("duration")
-            if duration:
-                try:
-                    if float(duration) <= 0:
-                        logger.warning(f"Output validation: duration is 0 or negative for {output_path}")
-                except (ValueError, TypeError):
-                    pass
-
-    def _rename_with_post_encode_vars(self, video: Video, probe_data):
-        """Resolve post-encode placeholders and rename the output file."""
-        from fastflix.naming import resolve_post_encode_variables
-
-        output_path = video.video_settings.output_path
-        encode_end = datetime.datetime.now(datetime.timezone.utc)
-        encode_start = video.status.encode_started_at
-
-        old_stem = output_path.stem
-        new_stem = resolve_post_encode_variables(
-            old_stem,
-            output_path,
-            probe_data,
-            encode_start=encode_start,
-            encode_end=encode_end,
-        )
-
-        if new_stem == old_stem:
-            return
-
-        new_path = output_path.with_stem(new_stem)
-
-        # Handle collision
-        if new_path.exists():
-            rand_suffix = secrets.token_hex(2)
-            new_path = output_path.with_stem(f"{new_stem}-{rand_suffix}")
-
-        try:
-            output_path.rename(new_path)
-            video.video_settings.output_path = new_path
-            logger.info(f"Post-encode rename: {output_path.name} -> {new_path.name}")
-        except OSError:
-            logger.exception(f"Post-encode rename failed: {output_path} -> {new_path}")
-
-    def send_video_request_to_worker_queue(self, video: Video):
-        command = video.video_settings.conversion_commands[video.status.current_command]
-        self.app.fastflix.currently_encoding = True
-        prevent_sleep_mode()
-        if video.status.current_command == 0:
-            video.status.encode_started_at = datetime.datetime.now(datetime.timezone.utc)
-
-        # logger.info(f"Sending video {video.uuid} command {command.uuid} called from {inspect.stack()}")
-
-        self.app.fastflix.worker_queue.put(
-            Request(
-                request="execute",
-                video_uuid=video.uuid,
-                command_uuid=command.uuid,
-                command=command.command,
-                work_dir=str(video.work_path),
-                log_name=video.video_settings.video_title or video.video_settings.output_path.stem,
-                shell=command.shell,
-            )
-        )
-        video.status.running = True
-        self.video_options.update_queue()
-        video_name = video.video_settings.video_title or video.video_settings.output_path.stem
-        self.encoding_status_signal.emit(f"{t('Encoding')}: {video_name}", STATE_ENCODING)
-
-    def find_video(self, uuid) -> Video:
-        for video in self.app.fastflix.conversion_list:
-            if uuid == video.uuid:
-                return video
-        raise FlixError(f"{t('No video found for')} {uuid}")
-
-    def find_command(self, video: Video, uuid) -> int:
-        for i, command in enumerate(video.video_settings.conversion_commands, start=1):
-            if uuid == command.uuid:
-                return i
-        raise FlixError(f"{t('No command found for')} {uuid}")
-
-
-class Notifier(QtCore.QThread):
-    def __init__(self, parent, app, status_queue):
-        super().__init__(parent)
-        self.app = app
-        self.main: Main = parent
-        self.status_queue = status_queue
-        self._shutdown = False
-
-    def request_shutdown(self):
-        """Request graceful shutdown of the thread."""
-        self._shutdown = True
-
-    def run(self):
-        while not self._shutdown:
-            # Message looks like (command, video_uuid, command_uuid)
-            try:
-                status = self.status_queue.get(timeout=0.5)
-            except Empty:
-                continue
-            self.app.processEvents()
-            if status[0] == "exit":
-                logger.debug("GUI received ask to exit")
-                self.main.close_event.emit()
-                return
-            self.main.status_update_signal.emit(status)
-            self.app.processEvents()

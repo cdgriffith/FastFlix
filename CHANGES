@@ -15,6 +15,8 @@
 * Changing Copy encoder to use modern FFmpeg display_rotation, display_hflip, and display_vflip for lossless rotation and flip metadata instead of deprecated rotate metadata tag, with support for MP4, MOV, MKV, and M4V containers
 * Changing non-copy encoder rotation handling to use FFmpeg's built-in auto-rotation instead of manual display_rotation overrides, which also properly handles source flips from the display matrix
 * Changing -fps_mode to be used instead of deprecated -vsync for frame rate control
+* Fixing page_update() busy-wait that could deadlock the GUI thread when called reentrantly
+* Fixing shutdown-while-encoding bug where the worker would lose the shutdown intent after the current encode finished, requiring a forceful GUI kill instead of graceful shutdown
 * Fixing #725 encoder detection to check `ffmpeg -encoders` output in addition to compilation flags, so encoders like VAAPI are shown even when the build flag is absent (thanks to Davius and Generator)
 * Fixing #728 rigaya encoders (NVEncC, QSVEncC, VCEEncC) now pass --dolby-vision-rpu-prm crop=true when Dolby Vision RPU copy is enabled and a crop is applied (thanks to izzy697)
 * Fixing #730 6.1.1 arm no subtitles tab with VideoToolBox (Apple M1 and above) HEVC & H264 (thanks to enaveso)
