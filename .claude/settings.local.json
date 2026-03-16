@@ -111,7 +111,8 @@
       "WebFetch(domain:www.phoronix.com)",
       "Bash(copy:*)",
       "Bash(ffprobe:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(git:*)"
     ]
   }
 }

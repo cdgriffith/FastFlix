@@ -4,6 +4,7 @@
 
 * Adding #724 "exit" option to the After Conversion dropdown, which closes FastFlix after all queue items complete (thanks to jrff123)
 * Adding #731 OpenCL Support setting (Auto/Disable) with re-detection button in Application Locations settings (thanks to sks2012)
+* Adding favicon to root of repo so it shows up on fastflix.org (thanks to Balthazar)
 * Adding encoding history feature with browsable history window, "Apply Last Used Settings" menu action, and startup opt-in prompt
 * Adding FFmpeg 8.0+ version check on startup with option to download latest FFmpeg on Windows
 * Adding "Keep source format" option to Audio Normalize, which detects and uses the same audio codec and bitrate as the source video
