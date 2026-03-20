@@ -156,6 +156,33 @@ class FFmpegNVENCSettings(EncoderSettings):
         return value
 
 
+class FFmpegAV1NVENCSettings(EncoderSettings):
+    name: str = "AV1 (NVENC)"
+    preset: str = "p5"
+    tune: str = "hq"
+    pix_fmt: str = "p010le"
+    bitrate: Optional[str] = None
+    qp: Optional[Union[int, float]] = 28
+    spatial_aq: int = 1
+    temporal_aq: int = 1
+    rc_lookahead: int = 16
+    rc: Optional[str] = None
+    multipass: str = "fullres"
+    aq_strength: int = 8
+    tier: str = "0"
+    level: Optional[str] = None
+    gpu: int = -1
+    b_ref_mode: str = "middle"
+    hw_accel: bool = False
+
+    @field_validator("qp", mode="before")
+    @classmethod
+    def qp_to_int(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
+
+
 class NVEncCSettings(EncoderSettings):
     name: str = "HEVC (NVEncC)"
     preset: str = "quality"
@@ -759,6 +786,7 @@ setting_types = {
     "copy_settings": CopySettings,
     "modify_settings": ModifySettings,
     "ffmpeg_hevc_nvenc": FFmpegNVENCSettings,
+    "ffmpeg_av1_nvenc": FFmpegAV1NVENCSettings,
     "qsvencc_hevc": QSVEncCSettings,
     "qsvencc_av1": QSVEncCAV1Settings,
     "qsvencc_avc": QSVEncCH264Settings,

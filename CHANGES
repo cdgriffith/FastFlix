@@ -2,6 +2,7 @@
 
 ## Version 6.2.0
 
+* Adding AV1 (NVENC) encoder for FFmpeg-based AV1 hardware encoding on NVIDIA GPUs (RTX 4000+) with quality-focused defaults including spatial/temporal AQ, lookahead, and multipass support
 * Adding #724 "exit" option to the After Conversion dropdown, which closes FastFlix after all queue items complete (thanks to jrff123)
 * Adding #731 OpenCL Support setting (Auto/Disable) with re-detection button in Application Locations settings (thanks to sks2012)
 * Adding favicon to root of repo so it shows up on fastflix.org (thanks to Balthazar)

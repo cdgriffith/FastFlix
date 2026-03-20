@@ -14716,3 +14716,183 @@ Are you sure you want to delete all encoding history?:
   ukr: Ви впевнені, що хочете видалити всю історію кодування?
   kor: 모든 인코딩 기록을 삭제하시겠습니까?
   ron: Sunteți sigur că doriți să ștergeți tot istoricul de codare?
+"preset: p1 (fastest) to p7 (slowest/best quality)":
+  eng: "preset: p1 (fastest) to p7 (slowest/best quality)"
+  deu: 'Voreinstellung: p1 (schnellste) bis p7 (langsamste/beste Qualität)'
+  fra: 'préréglage : p1 (le plus rapide) à p7 (le plus lent/la meilleure qualité)'
+  ita: 'preimpostazione: da p1 (più veloce) a p7 (più lenta/migliore qualità)'
+  spa: 'preajuste: p1 (más rápido) a p7 (más lento/mejor calidad)'
+  jpn: プリセット：P1（最速）～P7（最遅／最高品質）
+  rus: 'предустановки: от p1 (самый быстрый) до p7 (самый медленный/лучшее качество)'
+  por: 'predefinição: p1 (mais rápido) a p7 (mais lento/melhor qualidade)'
+  swe: 'förinställning: p1 (snabbast) till p7 (långsammast/bästa kvalitet)'
+  pol: 'ustawienie wstępne: p1 (najszybsze) do p7 (najwolniejsze/najlepsza jakość)'
+  chs: 预设：P1（最快）至 P7（最慢/最佳质量）
+  ukr: 'попереднє налаштування: p1 (найшвидше) - p7 (найповільніше/найкраща якість)'
+  kor: '프리셋: P1(가장 빠름)~P7(가장 느림/최고 품질)'
+  ron: 'presetare: p1 (cel mai rapid) până la p7 (cel mai lent/cea mai bună calitate)'
+Set the encoding tier (0 = main, 1 = high):
+  eng: Set the encoding tier (0 = main, 1 = high)
+  deu: Einstellen der Kodierungsebene (0 = Haupt, 1 = Hoch)
+  fra: Définir le niveau d'encodage (0 = principal, 1 = élevé)
+  ita: Impostare il livello di codifica (0 = principale, 1 = alto)
+  spa: Establezca el nivel de codificación (0 = principal, 1 = alto)
+  jpn: エンコーディングの階層を設定する（0＝メイン、1＝ハイ）
+  rus: Установите уровень кодирования (0 = основной, 1 = высокий).
+  por: Definir o nível de codificação (0 = principal, 1 = elevado)
+  swe: Ställ in kodningsnivån (0 = huvud, 1 = hög)
+  pol: Ustaw poziom kodowania (0 = główny, 1 = wysoki)
+  chs: 设置编码层（0 = 主层，1 = 高层）
+  ukr: Встановіть рівень кодування (0 = основний, 1 = високий)
+  kor: 인코딩 계층 설정(0 = 기본, 1 = 높음)
+  ron: Setați nivelul de codare (0 = principal, 1 = înalt)
+Set multipass encoding:
+  eng: Set multipass encoding
+  deu: Multipass-Codierung einstellen
+  fra: Définir l'encodage multipasse
+  ita: Impostare la codifica multipass
+  spa: Establecer codificación multipase
+  jpn: マルチパスエンコーディングの設定
+  rus: Установка многопроходного кодирования
+  por: Definir codificação multipasse
+  swe: Ställ in multipass-kodning
+  pol: Ustaw kodowanie wieloprzebiegowe
+  chs: 设置多通道编码
+  ukr: Встановити багатопрохідне кодування
+  kor: 멀티패스 인코딩 설정
+  ron: Setați codificarea multipasaj
+disabled - Single pass:
+  eng: disabled - Single pass
+  deu: deaktiviert - Einfacher Durchgang
+  fra: handicapés - Pass unique
+  ita: disabilitato - Passaggio singolo
+  spa: desactivado - Pase único
+  jpn: 無効 - シングルパス
+  rus: инвалид - однократный проход
+  por: com deficiência - Passe único
+  swe: funktionshindrad - Enkelbiljett
+  pol: wyłączone - pojedyncze przejście
+  chs: 禁用 - 单程
+  ukr: інваліди - одноразова перепустка
+  kor: 비활성화 - 단일 패스
+  ron: cu handicap - O singură trecere
+qres - Two pass (quarter resolution first pass):
+  eng: qres - Two pass (quarter resolution first pass)
+  deu: qres - Zwei Durchgänge (Viertelauflösung im ersten Durchgang)
+  fra: qres - Two pass (quart de résolution première passe)
+  ita: qres - Due passaggi (risoluzione di un quarto prima del passaggio)
+  spa: qres - Dos pasadas (primera pasada de la resolución del cuarto)
+  jpn: qres - 2パス（クォーター・レゾリューション・ファースト・パス）
+  rus: qres - Two pass (четверть разрешения первого прохода)
+  por: qres - Two pass (resolução de um quarto de hora na primeira passagem)
+  swe: qres - Two pass (kvartsupplösning första passet)
+  pol: qres - Two pass (pierwsze przejście w rozdzielczości ćwiartki)
+  chs: qres - 两次传递（四分之一分辨率第一次传递）
+  ukr: qres - Two pass (перший прохід з роздільною здатністю кварталу)
+  kor: qres - 투 패스(분기 해상도 첫 번째 패스)
+  ron: qres - Two pass (rezoluție trimestrială prima trecere)
+fullres - Two pass (full resolution first pass):
+  eng: fullres - Two pass (full resolution first pass)
+  deu: fullres - Zwei Durchgänge (erster Durchgang mit voller Auflösung)
+  fra: fullres - Two pass (première passe en pleine résolution)
+  ita: fullres - Due passaggi (primo passaggio a piena risoluzione)
+  spa: fullres - Dos pasadas (resolución completa en la primera pasada)
+  jpn: fullres - 2パス（フル解像度の1パス目）
+  rus: fullres - два прохода (первый проход с полным разрешением)
+  por: fullres - Duas passagens (resolução total na primeira passagem)
+  swe: fullres - Två pass (full upplösning första passet)
+  pol: fullres - Dwa przejścia (pierwsze przejście w pełnej rozdzielczości)
+  chs: fullres - 两通道（第一通道全分辨率）
+  ukr: fullres - два проходження (перший прохід з повною роздільною здатністю)
+  kor: 풀 해상도 - 투 패스(전체 해상도 첫 번째 패스)
+  ron: fullres - Două treceri (rezoluție completă la prima trecere)
+Enable spatial adaptive quantization for better quality in complex areas:
+  eng: Enable spatial adaptive quantization for better quality in complex areas
+  deu: Ermöglicht räumlich adaptive Quantisierung für bessere Qualität in komplexen Bereichen
+  fra: Quantification spatiale adaptative pour une meilleure qualité dans les zones complexes
+  ita: Abilitazione della quantizzazione spaziale adattiva per una migliore qualità in aree complesse
+  spa: Cuantificación espacial adaptativa para mejorar la calidad en zonas complejas
+  jpn: 空間適応型量子化により、複雑な領域での品質向上が可能
+  rus: Возможность пространственного адаптивного квантования для повышения качества в сложных областях
+  por: Ativar a quantização adaptativa espacial para uma melhor qualidade em áreas complexas
+  swe: Möjliggör rumslig adaptiv kvantisering för bättre kvalitet i komplexa områden
+  pol: Włączanie przestrzennej kwantyzacji adaptacyjnej dla lepszej jakości w złożonych obszarach
+  chs: 启用空间自适应量化，提高复杂区域的质量
+  ukr: Увімкніть просторове адаптивне квантування для кращої якості на складних ділянках
+  kor: 복잡한 영역에서 품질 향상을 위한 공간 적응형 양자화 지원
+  ron: Activați cuantizarea adaptivă spațială pentru o calitate mai bună în zonele complexe
+Temporal AQ:
+  eng: Temporal AQ
+  deu: Zeitliche AQ
+  fra: QA temporel
+  ita: QA temporale
+  spa: Temporal AQ
+  jpn: 時間的AQ
+  rus: Темпоральный AQ
+  por: QA temporal
+  swe: Temporär AQ
+  pol: Czasowe AQ
+  chs: 时间性 AQ
+  ukr: Темпоральна амплітуда
+  kor: 시간적 AQ
+  ron: Temporal AQ
+Enable temporal adaptive quantization for better quality in scenes with motion:
+  eng: Enable temporal adaptive quantization for better quality in scenes with motion
+  deu: Aktivieren der zeitlich adaptiven Quantisierung für bessere Qualität in Szenen mit Bewegung
+  fra: Activer la quantification adaptative temporelle pour une meilleure qualité dans les scènes avec mouvement
+  ita: Abilitazione della quantizzazione adattiva temporale per una migliore qualità nelle scene con movimento
+  spa: Activar la cuantificación temporal adaptativa para mejorar la calidad en escenas con movimiento
+  jpn: 動きのあるシーンの画質を向上させるために、時間適応量子化を有効にする
+  rus: Включение временного адаптивного квантования для повышения качества в сценах с движением
+  por: Ativar a quantização adaptativa temporal para uma melhor qualidade em cenas com movimento
+  swe: Aktivera temporal adaptiv kvantisering för bättre kvalitet i scener med rörelse
+  pol: Włącz czasową adaptacyjną kwantyzację dla lepszej jakości w scenach z ruchem
+  chs: 启用时间自适应量化，提高运动场景的质量
+  ukr: Увімкніть часове адаптивне квантування для кращої якості у сценах з рухом
+  kor: 움직임이 있는 장면의 화질 개선을 위한 시간적 적응형 양자화 활성화
+  ron: Activați cuantizarea adaptivă temporală pentru o calitate mai bună în scenele cu mișcare
+Number of frames to look ahead for rate-control (0 = disabled, 10-20 recommended):
+  eng: Number of frames to look ahead for rate-control (0 = disabled, 10-20 recommended)
+  deu: Anzahl der Frames, die für die Ratenkontrolle vorausgeschaut werden (0 = deaktiviert, 10-20 empfohlen)
+  fra: Nombre de trames à anticiper pour le contrôle du débit (0 = désactivé, 10-20 recommandé)
+  ita: Numero di fotogrammi da guardare avanti per il controllo della velocità (0 = disabilitato, 10-20 consigliato)
+  spa: Número de fotogramas que se adelantan para el control de velocidad (0 = desactivado, se recomienda 10-20)
+  jpn: レート制御のために先読みするフレーム数（0 = 無効、10～20を推奨）
+  rus: Количество кадров для контроля скорости (0 = отключено, рекомендуется 10-20)
+  por: Número de fotogramas a considerar para o controlo do débito (0 = desativado, 10-20 recomendado)
+  swe: Antal bildrutor att titta framåt för hastighetskontroll (0 = inaktiverad, 10-20 rekommenderas)
+  pol: Liczba ramek do sprawdzenia w celu kontroli szybkości (0 = wyłączone, zalecane 10-20)
+  chs: 速率控制的前瞻帧数（0 = 禁用，建议 10-20 帧）
+  ukr: Кількість кадрів, які потрібно переглянути для регулювання швидкості (0 = вимкнено, рекомендується 10-20)
+  kor: 속도 제어를 위해 미리 볼 프레임 수(0 = 비활성화, 10~20개 권장)
+  ron: Numărul de cadre pe care trebuie să le așteptați pentru controlul vitezei (0 = dezactivat, 10-20 recomandat)
+When Spatial AQ is enabled, sets AQ strength (1 = low, 15 = aggressive, default 8):
+  eng: When Spatial AQ is enabled, sets AQ strength (1 = low, 15 = aggressive, default 8)
+  deu: Wenn Spatial AQ aktiviert ist, legt die AQ-Stärke fest (1 = niedrig, 15 = aggressiv, Standardwert 8)
+  fra: Lorsque le QA spatial est activé, définit la force du QA (1 = faible, 15 = agressif, par défaut 8).
+  ita: Quando l'AQ spaziale è abilitato, imposta l'intensità dell'AQ (1 = bassa, 15 = aggressiva, valore predefinito 8).
+  spa: Cuando está activada la opción AQ Espacial, establece la intensidad de AQ (1 = baja, 15 = agresiva, por defecto 8)
+  jpn: 空間AQが有効な場合、AQの強さを設定する（1 = 低い、15 = 攻撃的、デフォルトは8）
+  rus: Если включена функция Spatial AQ, задает силу AQ (1 = низкая, 15 = агрессивная, по умолчанию 8).
+  por: Quando o AQ espacial está ativado, define a intensidade do AQ (1 = baixa, 15 = agressiva, predefinição 8)
+  swe: När Spatial AQ är aktiverat, ställer in AQ-styrkan (1 = låg, 15 = aggressiv, standard 8)
+  pol: Gdy funkcja AQ przestrzennego jest włączona, ustawia siłę AQ (1 = niska, 15 = agresywna, domyślnie 8).
+  chs: 启用空间 AQ 时，设置 AQ 强度（1 = 低，15 = 高，默认为 8）。
+  ukr: Якщо увімкнено Spatial AQ, встановлює силу AQ (1 = низька, 15 = агресивна, за замовчуванням 8)
+  kor: 공간 AQ가 활성화된 경우, AQ 강도를 설정합니다(1 = 낮음, 15 = 공격적, 기본값 8).
+  ron: Atunci când AQ spațial este activat, setează puterea AQ (1 = scăzută, 15 = agresivă, implicit 8)
+Please load a video first:
+  eng: Please load a video first
+  deu: Bitte laden Sie zuerst ein Video
+  fra: Veuillez d'abord charger une vidéo
+  ita: Caricare prima un video
+  spa: Cargue primero un vídeo
+  jpn: 最初にビデオをロードしてください。
+  rus: Пожалуйста, сначала загрузите видео
+  por: Carregue um vídeo primeiro
+  swe: Vänligen ladda en video först
+  pol: Najpierw załaduj wideo
+  chs: 请先加载视频
+  ukr: Будь ласка, спочатку завантажте відео
+  kor: 먼저 동영상을 로드하세요.
+  ron: Vă rugăm să încărcați mai întâi un videoclip

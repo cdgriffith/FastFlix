@@ -112,7 +112,8 @@
       "Bash(copy:*)",
       "Bash(ffprobe:*)",
       "Bash(gh api:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "WebFetch(domain:docs.nvidia.com)"
     ]
   }
 }

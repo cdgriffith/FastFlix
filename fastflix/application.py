@@ -92,6 +92,7 @@ def init_encoders(app: FastFlixApp, **_):
     from fastflix.encoders.gif import main as gif_plugin
     from fastflix.encoders.gifski import main as gifski_plugin
     from fastflix.encoders.ffmpeg_hevc_nvenc import main as nvenc_plugin
+    from fastflix.encoders.ffmpeg_av1_nvenc import main as ffmpeg_av1_nvenc_plugin
     from fastflix.encoders.hevc_x265 import main as hevc_plugin
     from fastflix.encoders.rav1e import main as rav1e_plugin
     from fastflix.encoders.svt_av1 import main as svt_av1_plugin
@@ -121,6 +122,7 @@ def init_encoders(app: FastFlixApp, **_):
         nvenc_plugin,
         hevc_videotoolbox_plugin,
         h264_videotoolbox_plugin,
+        ffmpeg_av1_nvenc_plugin,
         av1_plugin,
         rav1e_plugin,
         svt_av1_plugin,
