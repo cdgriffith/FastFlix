@@ -158,9 +158,15 @@ def ffmpeg_configuration(app, config: Config, **_):
     """Extract the version and libraries available from the specified version of FFmpeg"""
     res = execute([f"{config.ffmpeg}", "-version"])
     if res.returncode != 0:
-        logger.error(f"{config.ffmpeg} command stdout: {res.stdout}")
-        logger.error(f"{config.ffmpeg} command stderr: {res.stderr}")
-        raise FlixError(f'"{config.ffmpeg}" file not found or errored while executing. Return code {res.returncode}')
+        if not res.stdout or "ffmpeg version" not in res.stdout:
+            logger.error(f"{config.ffmpeg} command stdout: {res.stdout}")
+            logger.error(f"{config.ffmpeg} command stderr: {res.stderr}")
+            raise FlixError(
+                f'"{config.ffmpeg}" file not found or errored while executing. Return code {res.returncode}'
+            )
+        logger.warning(
+            f"{config.ffmpeg} returned non-zero exit code {res.returncode} but produced valid output, continuing"
+        )
     config = []
     try:
         version = res.stdout.split(" ", 4)[2]
@@ -187,7 +193,11 @@ def ffprobe_configuration(app, config: Config, **_):
     """Extract the version of ffprobe"""
     res = execute([f"{config.ffprobe}", "-version"])
     if res.returncode != 0:
-        raise FlixError(f'"{config.ffprobe}" file not found')
+        if not res.stdout or "ffprobe version" not in res.stdout:
+            raise FlixError(f'"{config.ffprobe}" file not found')
+        logger.warning(
+            f"{config.ffprobe} returned non-zero exit code {res.returncode} but produced valid output, continuing"
+        )
     try:
         version = res.stdout.split(" ", 4)[2]
     except (ValueError, IndexError):
@@ -214,7 +224,9 @@ def probe(app: FastFlixApp, file: Path) -> Box:
     ]
     result = execute(command)
     if result.returncode != 0:
-        raise FlixError(f"Error code returned running FFprobe: {result.stdout} - {result.stderr}")
+        if not result.stdout or not result.stdout.strip().startswith("{"):
+            raise FlixError(f"Error code returned running FFprobe: {result.stdout} - {result.stderr}")
+        logger.warning(f"FFprobe returned non-zero exit code {result.returncode} but produced output, continuing")
 
     if result.stdout.strip() == "{}":
         raise FlixError(f"No output from FFprobe, not a known video type. stderr: {result.stderr}")

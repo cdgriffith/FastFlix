@@ -122,6 +122,43 @@ class Container(QtWidgets.QMainWindow):
         # self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         self.moveFlag = False
 
+        # Listen for display topology changes (monitors added/removed/reconfigured)
+        gui_app = QtGui.QGuiApplication.instance()
+        gui_app.screenAdded.connect(self._on_screen_change)
+        gui_app.screenRemoved.connect(self._on_screen_change)
+        gui_app.primaryScreenChanged.connect(self._on_screen_change)
+        # Track geometry/DPI changes on all current screens
+        for screen in gui_app.screens():
+            self._connect_screen_signals(screen)
+        gui_app.screenAdded.connect(self._connect_screen_signals)
+
+    def _connect_screen_signals(self, screen: QtGui.QScreen) -> None:
+        """Connect geometry/DPI change signals for a screen."""
+        screen.geometryChanged.connect(self._on_screen_change)
+        screen.availableGeometryChanged.connect(self._on_screen_change)
+        screen.logicalDotsPerInchChanged.connect(self._on_screen_change)
+
+    def _on_screen_change(self, *_args) -> None:
+        """Handle display topology or geometry changes by re-validating window bounds."""
+        logger.debug("Screen change detected, re-validating window geometry")
+        # Use a short timer to coalesce rapid successive signals
+        if not hasattr(self, "_screen_change_timer"):
+            self._screen_change_timer = QtCore.QTimer(self)
+            self._screen_change_timer.setSingleShot(True)
+            self._screen_change_timer.setInterval(500)
+            self._screen_change_timer.timeout.connect(self._apply_screen_change)
+        self._screen_change_timer.start()
+
+    def _apply_screen_change(self) -> None:
+        """Apply window adjustments after a screen change."""
+        screen = self._current_screen()
+        if screen is None:
+            return
+        # Recalculate scale factors based on current window size
+        scaler.calculate_factors(self.width(), self.height())
+        self._update_scaled_styles()
+        self.ensure_window_in_bounds()
+
     def _current_screen(self) -> QtGui.QScreen:
         """Return the screen the window center is on, falling back to primary."""
         screen = QtGui.QGuiApplication.screenAt(self.geometry().center())

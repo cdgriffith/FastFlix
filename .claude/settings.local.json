@@ -113,7 +113,8 @@
       "Bash(ffprobe:*)",
       "Bash(gh api:*)",
       "Bash(git:*)",
-      "WebFetch(domain:docs.nvidia.com)"
+      "WebFetch(domain:docs.nvidia.com)",
+      "Bash(gh discussion:*)"
     ]
   }
 }

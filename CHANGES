@@ -1,12 +1,18 @@
 # Changelog
 
+## Version 6.2.1
+
+* Fixing #529 window geometry and menu anchoring issues when displays are powered off/on or reconfigured during use (thanks to wiznillyp)
+* Fixing #734 startup crash when FFmpeg/FFprobe exits with non-zero code despite producing valid output (e.g. custom builds that crash during cleanup) (thanks to kliffgomel)
+* Fixing #727 post-encode FFprobe failure when FFprobe crashes on cleanup but produces valid probe data (thanks to danycat201489-a11y)
+
 ## Version 6.2.0
 
 * Adding AV1 (NVENC) encoder for FFmpeg-based AV1 hardware encoding on NVIDIA GPUs (RTX 4000+) with quality-focused defaults including spatial/temporal AQ, lookahead, and multipass support
 * Adding #724 "exit" option to the After Conversion dropdown, which closes FastFlix after all queue items complete (thanks to jrff123)
 * Adding #731 OpenCL Support setting (Auto/Disable) with re-detection button in Application Locations settings (thanks to sks2012)
 * Adding favicon to root of repo so it shows up on fastflix.org (thanks to Balthazar)
-* Adding encoding history feature with browsable history window, "Apply Last Used Settings" menu action, and startup opt-in prompt
+* Adding #689 encoding history feature with browsable history window, "Apply Last Used Settings" menu action, and startup opt-in prompt (thanks to Augusto7743)
 * Adding FFmpeg 8.0+ version check on startup with option to download latest FFmpeg on Windows
 * Adding "Keep source format" option to Audio Normalize, which detects and uses the same audio codec and bitrate as the source video
 * Adding Audio Encoders tab in Settings to view and select which FFmpeg audio encoders appear in audio codec dropdowns
