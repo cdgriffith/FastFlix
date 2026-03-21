@@ -1610,7 +1610,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         video_settings = None
         if video:
             video_settings = video.video_settings
-            encoder_settings = video.video_settings.video_encoder_settings
+            encoder_settings = getattr(video_settings, "video_encoder_settings", None)
 
         name = resolve_pre_encode_variables(
             gen_string,

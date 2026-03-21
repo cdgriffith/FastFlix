@@ -700,7 +700,7 @@ class HEVC(SettingPanel):
             lossless=self.widgets.lossless.isChecked(),
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
-            bitrate_passes=int(self.widgets.bitrate_passes.currentText()),
+            bitrate_passes=int(self.widgets.bitrate_passes.currentText() or 1),
             # gop_size=int(self.widgets.gop_size.currentText()) if self.widgets.gop_size.currentIndex() > 0 else 0,
         )
 

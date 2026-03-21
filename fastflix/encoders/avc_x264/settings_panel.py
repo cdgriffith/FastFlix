@@ -267,7 +267,7 @@ class AVC(SettingPanel):
             extra=self.ffmpeg_extras,
             tune=tune if tune.lower() != "default" else None,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
-            bitrate_passes=int(self.widgets.bitrate_passes.currentText()),
+            bitrate_passes=int(self.widgets.bitrate_passes.currentText() or 1),
             aq_mode=self.widgets.aq_mode.currentText(),
             psy_rd=psy_rd_text if psy_rd_text else None,
             level=self.widgets.level.currentText(),

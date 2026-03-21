@@ -302,7 +302,7 @@ class AV1NVENC(SettingPanel):
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             gpu=int(self.widgets.gpu.currentText() or -1) if self.widgets.gpu.currentIndex() != 0 else -1,
             b_ref_mode=self.widgets.b_ref_mode.currentText(),
-            aq_strength=int(self.widgets.aq_strength.currentText()),
+            aq_strength=int(self.widgets.aq_strength.currentText() or 8),
             tier=self.widgets.tier.currentText(),
             hw_accel=self.widgets.hw_accel.isChecked(),
         )
