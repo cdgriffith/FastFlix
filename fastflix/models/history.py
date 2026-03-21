@@ -65,8 +65,11 @@ def load_history(data_path: Path) -> list[HistoryEntry]:
 
 def save_history(data_path: Path, entries: list[HistoryEntry]):
     history_file = get_history_file(data_path)
-    data = Box(entries=[e.model_dump() for e in entries])
-    data.to_yaml(filename=history_file, default_flow_style=False)
+    try:
+        data = Box(entries=[e.model_dump() for e in entries])
+        data.to_yaml(filename=history_file, default_flow_style=False)
+    except Exception:
+        logger.exception("Failed to save history file")
 
 
 def add_history_entry(data_path: Path, entry: HistoryEntry, max_items: int = DEFAULT_MAX_HISTORY):

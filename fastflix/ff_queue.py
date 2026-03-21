@@ -324,9 +324,13 @@ def save_queue(
 
     def update_conversion_command(vid, old_path: str, new_path: str):
         for command in vid["video_settings"]["conversion_commands"]:
-            new_command = command["command"].replace(old_path, new_path)
-            if new_command == command["command"]:
-                logger.error(f'Could not replace "{old_path}" with "{new_path}" in {command["command"]}')
+            cmd = command["command"]
+            if isinstance(cmd, list):
+                new_command = [arg.replace(old_path, new_path) for arg in cmd]
+            else:
+                new_command = cmd.replace(old_path, new_path)
+            if new_command == cmd:
+                logger.error(f'Could not replace "{old_path}" with "{new_path}" in {cmd}')
             command["command"] = new_command
 
     for video in queue:

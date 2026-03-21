@@ -430,6 +430,8 @@ class Container(QtWidgets.QMainWindow):
         self.init_menu()
 
     def show_history(self):
+        if hasattr(self, "history_window") and self.history_window is not None:
+            self.history_window.close()
         self.history_window = HistoryWindow(app=self.app)
         self.history_window.apply_settings_requested.connect(self._apply_history_entry)
         self.history_window.show()

@@ -536,20 +536,6 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         new_temp.mkdir()
         return new_temp
 
-    def pause_resume(self):
-        if not self.paused:
-            self.paused = True
-            self.app.fastflix.worker_queue.put(["pause"])
-            self.widgets.pause_resume.setText("Resume")
-            self.widgets.pause_resume.setStyleSheet("background-color: green;")
-            logger.info("Pausing FFmpeg conversion via pustils")
-        else:
-            self.paused = False
-            self.app.fastflix.worker_queue.put(["resume"])
-            self.widgets.pause_resume.setText("Pause")
-            self.widgets.pause_resume.setStyleSheet("background-color: orange;")
-            logger.info("Resuming FFmpeg conversion")
-
     def config_update(self, encoder_reload_needed=False):
         self.thumb_file = Path(self.app.fastflix.config.work_path, "thumbnail_preview.jpg")
         if encoder_reload_needed:
@@ -1804,7 +1790,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
 
     def disable_all(self):
         for name, widget in self.widgets.items():
-            if name in ("preview", "convert_button", "queue_button", "pause_resume", "convert_to", "profile_box"):
+            if name in ("preview", "convert_button", "queue_button", "convert_to", "profile_box"):
                 continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
@@ -1821,7 +1807,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
 
     def enable_all(self):
         for name, widget in self.widgets.items():
-            if name in {"preview", "convert_button", "queue_button", "pause_resume", "convert_to", "profile_box"}:
+            if name in {"preview", "convert_button", "queue_button", "convert_to", "profile_box"}:
                 continue
             if isinstance(widget, dict):
                 for sub_widget in widget.values():
