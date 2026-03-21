@@ -83,7 +83,7 @@ class AV1NVENC(SettingPanel):
         grid.addLayout(self.init_temporal_aq(), 7, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 8, 0, 1, 2)
 
-        grid.addLayout(self.init_hw_accel(), 2, 2, 1, 1)
+        grid.addLayout(self.init_hw_accel(), 3, 2, 1, 1)
 
         a = QtWidgets.QHBoxLayout()
         a.addLayout(self.init_rc_lookahead())
