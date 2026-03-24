@@ -412,6 +412,8 @@ def generate_thumbnail_command(
         "unofficial",
         "-frames:v",
         "1",
+        "-update",
+        "1",
         clean_file_string(output),
     ]
 

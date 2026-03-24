@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 6.2.2
+
+* Fixing #736 thumbnail and crop preview generation failing with FFmpeg 8.0+ by adding `-update 1` flag required by the image2 muxer for single-image output (thanks to kliffgomel)
+
 ## Version 6.2.1
 
 * Fixing #529 window geometry and menu anchoring issues when displays are powered off/on or reconfigured during use (thanks to wiznillyp)
