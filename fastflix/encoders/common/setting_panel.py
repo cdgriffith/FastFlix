@@ -401,11 +401,12 @@ class SettingPanel(QtWidgets.QWidget):
             self.bitrate_radio.setFixedWidth(scaler.scale(67))
             self.bitrate_radio.setStyleSheet(
                 "QRadioButton::indicator { width: 12px; height: 12px; border-image: none; border: 2px solid #888888; border-radius: 8px; background-color: transparent; }"
-                " QRadioButton::indicator:checked { border-image: none; border: 2px solid #4a9eed; background-color: #4a9eed; }"
+                " QRadioButton::indicator:checked { border-image: none; width: 10px; height: 10px; border: 3px solid #4a9eed; border-radius: 8px; background-color: white; }"
                 " QRadioButton::indicator:unchecked:hover { border-image: none; border: 2px solid #aaaaaa; }"
             )
             self.widgets.mode.addButton(self.bitrate_radio)
             self.widgets.bitrate = QtWidgets.QComboBox()
+            self.widgets.bitrate.setSizeAdjustPolicy(QtWidgets.QComboBox.SizeAdjustPolicy.AdjustToContents)
             self.widgets.bitrate.addItems(recommended_bitrates)
             self.widgets.bitrate_passes = QtWidgets.QComboBox()
             self.widgets.bitrate_passes.addItems(["1", "2"])
@@ -428,7 +429,7 @@ class SettingPanel(QtWidgets.QWidget):
             self.widgets.custom_bitrate.textChanged.connect(lambda: self.main.build_commands())
             self.widgets.custom_bitrate.setValidator(self.only_int)
             bitrate_box_layout.addWidget(self.bitrate_radio)
-            bitrate_box_layout.addWidget(self.widgets.bitrate, 1)
+            bitrate_box_layout.addWidget(self.widgets.bitrate)
             bitrate_box_layout.addStretch(1)
             if show_bitrate_passes:
                 self.widgets.bitrate_passes.setCurrentIndex(
@@ -447,12 +448,13 @@ class SettingPanel(QtWidgets.QWidget):
             self.qp_radio.setToolTip(qp_help)
             self.qp_radio.setStyleSheet(
                 "QRadioButton::indicator { width: 12px; height: 12px; border-image: none; border: 2px solid #888888; border-radius: 8px; background-color: transparent; }"
-                " QRadioButton::indicator:checked { border-image: none; border: 2px solid #4a9eed; background-color: #4a9eed; }"
+                " QRadioButton::indicator:checked { border-image: none; width: 10px; height: 10px; border: 3px solid #4a9eed; border-radius: 8px; background-color: white; }"
                 " QRadioButton::indicator:unchecked:hover { border-image: none; border: 2px solid #aaaaaa; }"
             )
             self.widgets.mode.addButton(self.qp_radio)
 
         self.widgets[qp_name] = QtWidgets.QComboBox()
+        self.widgets[qp_name].setSizeAdjustPolicy(QtWidgets.QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.widgets[qp_name].setToolTip(qp_help)
         self.widgets[qp_name].addItems(recommended_qps)
         custom_qp = False
@@ -485,7 +487,7 @@ class SettingPanel(QtWidgets.QWidget):
             self.widgets.bitrate_passes.currentIndexChanged.connect(lambda: self.mode_update())
             self.widgets.bitrate.currentIndexChanged.connect(lambda: self.mode_update())
         self.widgets[qp_name].currentIndexChanged.connect(lambda: self.mode_update())
-        qp_box_layout.addWidget(self.widgets[qp_name], 1)
+        qp_box_layout.addWidget(self.widgets[qp_name])
         qp_box_layout.addStretch(1)
         qp_box_layout.addStretch(1)
         if disable_custom_qp:

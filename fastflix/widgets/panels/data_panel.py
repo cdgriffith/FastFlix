@@ -96,10 +96,9 @@ class DataTrackWidget(QtWidgets.QTabWidget):
         if track is None:
             track = self.app.fastflix.current_video.data_tracks[self.index]
 
-        # Always read from the output type combo (reflects current user selection)
-        # rather than output_path which may be stale (updated later in build_commands)
+        # Use resolve_output_extension() which handles "Same as Source" → actual extension
         try:
-            ext_with_dot = self.parent.main.widgets.output_type_combo.currentText().lower()
+            ext_with_dot = self.parent.main.resolve_output_extension()
         except (AttributeError, RuntimeError):
             ext_with_dot = ""
 

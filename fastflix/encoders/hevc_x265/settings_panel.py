@@ -383,7 +383,7 @@ class HEVC(SettingPanel):
         )
 
     def init_lossless(self):
-        return self._add_check_box(
+        layout = self._add_check_box(
             label="Lossless",
             widget_name="lossless",
             tooltip=(
@@ -394,7 +394,19 @@ class HEVC(SettingPanel):
                 "Slower presets will generally achieve better compression efficiency (and generate smaller bitstreams)."
             ),
             opt="lossless",
+            connect=lambda: (self._toggle_lossless(), self.main.page_update(build_thumbnail=False)),
         )
+        return layout
+
+    def _toggle_lossless(self):
+        enabled = not self.widgets.lossless.isChecked()
+        self.qp_radio.setEnabled(enabled)
+        self.bitrate_radio.setEnabled(enabled)
+        self.widgets.crf.setEnabled(enabled)
+        self.widgets.custom_crf.setEnabled(enabled)
+        self.widgets.bitrate.setEnabled(enabled)
+        self.widgets.custom_bitrate.setEnabled(enabled)
+        self.widgets.bitrate_passes.setEnabled(enabled)
 
     def init_preset(self):
         layout = self._add_combo_box(

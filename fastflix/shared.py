@@ -25,7 +25,7 @@ except AttributeError:
     base_path = os.path.abspath(".")
     pyinstaller = False
 
-from PySide6 import QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
 from fastflix.resources import get_bool_env
@@ -153,15 +153,17 @@ def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_acti
     dialog._button_clicked = None
 
     layout = QtWidgets.QVBoxLayout()
+    layout.setContentsMargins(20, 15, 20, 15)
+    layout.setSpacing(15)
     label = QtWidgets.QLabel(msg)
-    label.setWordWrap(True)
+    label.setAlignment(QtCore.Qt.AlignCenter)
     layout.addWidget(label)
 
     button_layout = QtWidgets.QHBoxLayout()
 
     no_button = QtWidgets.QPushButton(no_text)
     no_button.setMinimumHeight(30)
-    no_button.setStyleSheet("QPushButton { background-color: #F44336; color: white; padding: 6px 20px; }")
+    no_button.setStyleSheet("QPushButton { background-color: #555555; color: white; padding: 6px 20px; }")
 
     def on_no():
         dialog._button_clicked = False
@@ -171,7 +173,7 @@ def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_acti
 
     yes_button = QtWidgets.QPushButton(yes_text)
     yes_button.setMinimumHeight(30)
-    yes_button.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 6px 20px; }")
+    yes_button.setStyleSheet("QPushButton { background-color: #4a9eed; color: white; padding: 6px 20px; }")
 
     def on_yes():
         dialog._button_clicked = True
@@ -185,6 +187,9 @@ def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_acti
     layout.addLayout(button_layout)
 
     dialog.setLayout(layout)
+    dialog.setWindowIcon(QtGui.QIcon(my_data))
+    dialog.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+    dialog.adjustSize()
     dialog.exec()
 
     if dialog._button_clicked is True:

@@ -298,6 +298,21 @@ Auto Crop - Finding black bars at:
   ukr: Автоматичне обрізання - знаходження чорних смуг на
   kor: 자동 자르기 - 다음에서 검은색 막대 찾기
   ron: Auto Crop - Găsirea barelor negre la
+Average Frame Rate:
+  eng: Average Frame Rate
+  deu: Durchschnittliche Bildrate
+  fra: Taux de rafraîchissement moyen
+  ita: Frequenza media dei fotogrammi
+  spa: Frecuencia de imagen media
+  jpn: 平均フレームレート
+  rus: Средняя частота кадров
+  por: Taxa de quadros média
+  swe: Genomsnittlig bildfrekvens
+  pol: Średnia liczba klatek na sekundę
+  chs: 平均帧频
+  ukr: Середня частота кадрів
+  kor: 평균 프레임 속도
+  ron: Rata medie a cadrelor
 Automatically detect black borders:
   deu: Automatische Erkennung von schwarzen Rändern
   eng: Automatically detect black borders
@@ -388,6 +403,21 @@ Bit Depth:
   ukr: Глибина біта
   kor: 비트 깊이
   ron: Adâncimea biților
+Bit Rate:
+  eng: Bit Rate
+  deu: Bitrate
+  fra: Débit binaire
+  ita: Velocità di trasmissione
+  spa: Tasa de bits
+  jpn: ビット・レート
+  rus: Скорость передачи данных
+  por: Taxa de bits
+  swe: Bithastighet
+  pol: Szybkość transmisji
+  chs: 比特率
+  ukr: Бітрейт
+  kor: 비트 전송률
+  ron: Rata de biți
 Bitrate:
   deu: Bitrate
   eng: Bitrate
@@ -403,6 +433,36 @@ Bitrate:
   ukr: Бітрейт
   kor: 비트 전송률
   ron: Bitrate
+Bits per Raw Sample:
+  eng: Bits per Raw Sample
+  deu: Bits pro Rohsample
+  fra: Bits par échantillon brut
+  ita: Bit per campione grezzo
+  spa: Bits por muestra bruta
+  jpn: 生サンプルあたりのビット数
+  rus: Биты на сырой образец
+  por: Bits por amostra bruta
+  swe: Bitar per råprov
+  pol: Bity na próbkę surową
+  chs: 每个原始采样的比特
+  ukr: Біти на сирий зразок
+  kor: 원시 샘플당 비트 수
+  ron: Biți pe eșantion brut
+Bits per Sample:
+  eng: Bits per Sample
+  deu: Bits pro Probe
+  fra: Bits par échantillon
+  ita: Bit per campione
+  spa: Bits por muestra
+  jpn: サンプルあたりのビット数
+  rus: Биты на образец
+  por: Bits por amostra
+  swe: Bitar per prov
+  pol: Bity na próbkę
+  chs: 每个采样比特
+  ukr: Біти на зразок
+  kor: 샘플당 비트 수
+  ron: Biți pe eșantion
 Block Size:
   deu: Blockgröße
   eng: Block Size
@@ -733,6 +793,21 @@ CodeCalamity UHD HDR Encoding Guide:
   ukr: Посібник із кодування UHD HDR від CodeCalamity
   kor: 코드캘러미티 UHD HDR 인코딩 가이드
   ron: CodeCalamity Ghid de codare UHD HDR
+Chroma Location:
+  eng: Chroma Location
+  deu: Chroma Standort
+  fra: Emplacement du chroma
+  ita: Posizione di Chroma
+  spa: Ubicación de Chroma
+  jpn: クロマ・ロケーション
+  rus: Расположение хрома
+  por: Localização do Chroma
+  swe: Chroma-läge
+  pol: Lokalizacja Chroma
+  chs: 色度位置
+  ukr: Розташування Chroma
+  kor: 크로마 위치
+  ron: Locația Chroma
 Color Primaries:
   deu: Grundfarbmodell
   eng: Color Primaries
@@ -748,6 +823,21 @@ Color Primaries:
   ukr: Кольорові праймери
   kor: 색상 원색
   ron: Primare de culoare
+Color Range:
+  eng: Color Range
+  deu: Farbpalette
+  fra: Gamme de couleurs
+  ita: Gamma di colori
+  spa: Gama de colores
+  jpn: カラー・レンジ
+  rus: Цветовая гамма
+  por: Gama de cores
+  swe: Färgområde
+  pol: Zakres kolorów
+  chs: 颜色范围
+  ukr: Колірна гамма
+  kor: 색상 범위
+  ron: Gama de culori
 Color Space:
   deu: Farbraum
   eng: Color Space
@@ -1558,6 +1648,21 @@ Disposition:
   ukr: Диспозиція
   kor: 처분
   ron: Dispoziție
+Display Aspect Ratio:
+  eng: Display Aspect Ratio
+  deu: Seitenverhältnis der Anzeige
+  fra: Rapport d'aspect de l'écran
+  ita: Rapporto d'aspetto del display
+  spa: Relación de aspecto de la pantalla
+  jpn: ディスプレイのアスペクト比
+  rus: Соотношение сторон экрана
+  por: Relação de aspeto do ecrã
+  swe: Bildskärmens bildförhållande
+  pol: Współczynnik proporcji wyświetlacza
+  chs: 显示屏宽高比
+  ukr: Співвідношення сторін дисплея
+  kor: 화면 비율 표시
+  ron: Raportul de aspect al afișajului
 Dither:
   deu: Dithern
   eng: Dither
@@ -1603,6 +1708,21 @@ Download:
   ukr: Завантажити
   kor: 다운로드
   ron: Descărcați
+Download JSON:
+  eng: Download JSON
+  deu: JSON herunterladen
+  fra: Télécharger JSON
+  ita: Scarica JSON
+  spa: Descargar JSON
+  jpn: JSONダウンロード
+  rus: Загрузить JSON
+  por: Descarregar JSON
+  swe: Ladda ner JSON
+  pol: Pobierz JSON
+  chs: 下载 JSON
+  ukr: Завантажити JSON
+  kor: JSON 다운로드
+  ron: Descărcați JSON
 Download Cancelled:
   deu: Download abgebrochen
   eng: Download Cancelled
@@ -1753,6 +1873,21 @@ Enables the yadif filter.:
   ukr: Вмикає фільтр yadif.
   kor: 야디프 필터를 활성화합니다.
   ron: Activează filtrul yadif.
+Enables deinterlacing (method selectable in Advanced panel).:
+  deu: Aktiviert Deinterlacing (Methode im Erweitert-Panel auswählbar).
+  eng: Enables deinterlacing (method selectable in Advanced panel).
+  fra: Active le désentrelacement (méthode sélectionnable dans le panneau Avancé).
+  ita: Abilita il deinterlacciamento (metodo selezionabile nel pannello Avanzato).
+  spa: Habilita el desentrelazado (método seleccionable en el panel Avanzado).
+  chs: 启用反交错（方法可在高级面板中选择）。
+  jpn: デインターレースを有効にします（方法は詳細パネルで選択可能）。
+  rus: Включает деинтерлейс (метод выбирается в панели Дополнительно).
+  por: Habilita o desentrelaçamento (método selecionável no painel Avançado).
+  swe: Aktiverar deinterlacing (metod valbar i panelen Avancerat).
+  pol: Włącza usuwanie przeplotu (metoda do wyboru w panelu Zaawansowane).
+  ukr: Вмикає деінтерлейс (метод обирається в панелі Додатково).
+  kor: 디인터레이스를 활성화합니다 (방법은 고급 패널에서 선택 가능).
+  ron: Activează deinterlacing (metoda selectabilă în panoul Avansat).
 Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.:
   deu: Ermöglicht echte verlustfreie Kodierung unter Umgehung von Skalierung, Transformation, Quantisierung und In-Loop-Filterung.
   eng: Enables true lossless coding by bypassing scaling, transform, quantization and in-loop filtering.
@@ -2263,6 +2398,21 @@ Fast first pass:
   ukr: Швидкий перший прохід
   kor: 빠른 첫 패스
   ron: Prima trecere rapidă
+Field Order:
+  eng: Field Order
+  deu: Feld Bestellung
+  fra: Ordre de mission
+  ita: Ordine di campo
+  spa: Orden de campo
+  jpn: フィールドオーダー
+  rus: Полевой заказ
+  por: Ordem de campo
+  swe: Fältbeställning
+  pol: Field Order
+  chs: 实地订单
+  ukr: Польовий порядок
+  kor: 필드 주문
+  ron: Comanda de câmp
 File:
   deu: Datei
   eng: File
@@ -2458,6 +2608,21 @@ Generating thumbnail:
   ukr: Створення мініатюри
   kor: 썸네일 생성
   ron: Generarea miniaturii
+General:
+  eng: General
+  deu: Allgemein
+  fra: Général
+  ita: Generale
+  spa: General
+  jpn: 一般
+  rus: Общие сведения
+  por: Geral
+  swe: Allmänt
+  pol: Ogólne
+  chs: 一般情况
+  ukr: Генерал
+  kor: 일반
+  ron: Generalități
 Google's VP9 HDR Encoding Guide:
   deu: VP9-HDR-Kodierungsanleitung von Google
   eng: Google's VP9 HDR Encoding Guide
@@ -2548,6 +2713,21 @@ HDR10+ Optimizations:
   ukr: Оптимізація HDR10+
   kor: HDR10+ 최적화
   ron: Optimizări HDR10+
+HDR tonemapping unavailable for preview - colors in output will differ from this thumbnail:
+  eng: HDR tonemapping unavailable for preview - colors in output will differ from this thumbnail
+  deu: HDR-Tonemapping in der Vorschau nicht verfügbar - die Farben in der Ausgabe weichen von dieser Miniaturansicht ab
+  fra: Le tonemapping HDR n'est pas disponible pour la prévisualisation - les couleurs de la sortie seront différentes de celles de la vignette.
+  ita: "Il tonemapping HDR non è disponibile per l'anteprima: i colori in uscita differiscono da questa miniatura."
+  spa: El mapeado tonal HDR no está disponible para la previsualización - los colores en la salida diferirán de esta miniatura
+  jpn: プレビューではHDRトーンマッピングを使用できません。
+  rus: Тонирование HDR недоступно для предварительного просмотра - цвета на выходе будут отличаться от этой миниатюры
+  por: Mapeamento de tons HDR indisponível para pré-visualização - as cores na saída serão diferentes desta miniatura
+  swe: HDR tonemapping är inte tillgänglig för förhandsgranskning - färgerna i resultatet kommer att skilja sig från denna miniatyrbild
+  pol: Mapowanie tonów HDR niedostępne w podglądzie - kolory na wyjściu będą się różnić od tej miniatury.
+  chs: 预览时无法使用 HDR 色调映射 - 输出中的颜色将与此缩略图不同
+  ukr: HDR тональність недоступна для попереднього перегляду - кольори на виході відрізнятимуться від цієї мініатюри
+  kor: 미리보기에서 HDR 톤 매핑을 사용할 수 없음 - 출력의 색상이 이 썸네일과 다를 수 있습니다.
+  ron: HDR tonemapping indisponibil pentru previzualizare - culorile din ieșire vor diferi de această miniatură
 Have to select a video first:
   deu: Es muss zuerst ein Video ausgewählt werden
   eng: Have to select a video first
@@ -2623,6 +2803,36 @@ Horizontal Flip:
   ukr: Горизонтальне сальто
   kor: 수평 뒤집기
   ron: Flip orizontal
+Has B-Frames:
+  eng: Has B-Frames
+  deu: Hat B-Frames
+  fra: A des cadres B
+  ita: Ha cornici B
+  spa: Tiene marcos B
+  jpn: Bフレーム
+  rus: Имеет B-образные рамки
+  por: Tem molduras B
+  swe: Har B-ramar
+  pol: Posiada ramki B
+  chs: 有 B 型框架
+  ukr: Має B-фрейми
+  kor: B-프레임 있음
+  ron: Are rame B
+Index:
+  eng: Index
+  deu: Index
+  fra: Index
+  ita: Indice
+  spa: Índice
+  jpn: インデックス
+  rus: Индекс
+  por: Índice
+  swe: Index
+  pol: Indeks
+  chs: 索引
+  ukr: Індекс
+  kor: 색인
+  ron: Index
 Init Q:
   deu: Init Q
   eng: Init Q
@@ -2713,6 +2923,21 @@ Invalid Crop:
   ukr: Неприпустима культура
   kor: 잘못된 자르기
   ron: Cultură invalidă
+JSON Files:
+  eng: JSON Files
+  deu: JSON-Dateien
+  fra: Fichiers JSON
+  ita: File JSON
+  spa: Archivos JSON
+  jpn: JSONファイル
+  rus: Файлы JSON
+  por: Ficheiros JSON
+  swe: JSON-filer
+  pol: Pliki JSON
+  chs: JSON 文件
+  ukr: Файли JSON
+  kor: JSON 파일
+  ron: Fișiere JSON
 It is recommended that AQ-mode be enabled along with this feature:
   deu: Es wird empfohlen, dass zusammen mit dieser Funktion auch der AQ-Mode aktiviert wird
   eng: It is recommended that AQ-mode be enabled along with this feature
@@ -3043,6 +3268,21 @@ Min Q:
   ukr: Min Q
   kor: 민큐
   ron: Min Q
+Mode:
+  deu: Modus
+  eng: Mode
+  fra: Mode
+  ita: Modalità
+  spa: Modo
+  chs: 模式
+  jpn: モード
+  rus: Режим
+  por: Modo
+  swe: Läge
+  pol: Tryb
+  ukr: Режим
+  kor: 모드
+  ron: Mod
 Motion vector accuracy:
   deu: Genauigkeit des Bewegungsvektors
   eng: Motion vector accuracy
@@ -3343,6 +3583,21 @@ Not a video file:
   ukr: Не відеофайл
   kor: 동영상 파일이 아닙니다.
   ron: Nu este un fișier video
+Number of Frames:
+  eng: Number of Frames
+  deu: Anzahl der Frames
+  fra: Nombre d'images
+  ita: Numero di fotogrammi
+  spa: Número de fotogramas
+  jpn: フレーム数
+  rus: Количество кадров
+  por: Número de fotogramas
+  swe: Antal ramar
+  pol: Liczba klatek
+  chs: 帧数
+  ukr: Кількість кадрів
+  kor: 프레임 수
+  ron: Număr de cadre
 Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.:
   deu: Setzen der dynamischen HDR10+-Metadaten nur in die IDR und Frames, bei denen sich die Werte geändert haben.
   eng: Only put the HDR10+ dynamic metadata in the IDR and frames where the values have changed.
@@ -3418,6 +3673,21 @@ Open Log Directory:
   ukr: Відкрити каталог журналів
   kor: 로그 디렉터리 열기
   ron: Deschideți directorul de jurnal
+Other:
+  eng: Other
+  deu: Andere
+  fra: Autres
+  ita: Altro
+  spa: Otros
+  jpn: その他
+  rus: Другие
+  por: Outros
+  swe: Övriga
+  pol: Inne
+  chs: 其他
+  ukr: Інше
+  kor: 기타
+  ron: Altele
 Output:
   deu: Ausgabe
   eng: Output
@@ -3583,6 +3853,21 @@ Pause Queue:
   ukr: Пауза Черга
   kor: 대기열 일시 중지
   ron: Pauză Coadă de așteptare
+Pixel Format:
+  eng: Pixel Format
+  deu: Pixel Format
+  fra: Format des pixels
+  ita: Formato pixel
+  spa: Formato de píxeles
+  jpn: ピクセル・フォーマット
+  rus: Пиксельный формат
+  por: Formato de pixel
+  swe: Pixelformat
+  pol: Format pikseli
+  chs: 像素格式
+  ukr: Формат пікселів
+  kor: 픽셀 형식
+  ron: Format pixel
 Pixel Format (requires at least 10-bit for HDR):
   deu: Pixelformat (erfordert mindestens 10-Bit für HDR)
   eng: Pixel Format (requires at least 10-bit for HDR)
@@ -3778,6 +4063,21 @@ Profiles:
   ukr: Профілі
   kor: 프로필
   ron: Profiluri
+Property:
+  eng: Property
+  deu: Eigentum
+  fra: Propriété
+  ita: Proprietà
+  spa: Propiedad
+  jpn: プロパティ
+  rus: Недвижимость
+  por: Imóveis
+  swe: Fastighet
+  pol: Nieruchomość
+  chs: 物业
+  ukr: Власність
+  kor: 속성
+  ron: Proprietate
 Python:
   deu: Python
   eng: Python
@@ -4258,6 +4558,51 @@ Same as Source:
   ukr: Те саме, що й Джерело
   kor: 소스와 동일
   ron: Același ca și Sursa
+Sample Aspect Ratio:
+  eng: Sample Aspect Ratio
+  deu: Muster Seitenverhältnis
+  fra: Rapport d'aspect de l'échantillon
+  ita: Rapporto d'aspetto del campione
+  spa: Relación de aspecto de la muestra
+  jpn: サンプル・アスペクト比
+  rus: Соотношение сторон образца
+  por: Amostra de rácio de aspeto
+  swe: Aspect Ratio för prov
+  pol: Przykładowy współczynnik proporcji
+  chs: 样品长宽比
+  ukr: Зразок співвідношення сторін
+  kor: 샘플 종횡비
+  ron: Raportul de aspect al eșantionului
+Sample Format:
+  eng: Sample Format
+  deu: Musterformat
+  fra: Modèle de format
+  ita: Formato campione
+  spa: Modelo de formato
+  jpn: サンプル・フォーマット
+  rus: Образец формата
+  por: Formato de amostra
+  swe: Exempel på format
+  pol: Przykładowy format
+  chs: 格式样本
+  ukr: Зразок формату
+  kor: 샘플 형식
+  ron: Exemplu de format
+Sample Rate:
+  eng: Sample Rate
+  deu: Stichprobenrate
+  fra: Taux d'échantillonnage
+  ita: Frequenza di campionamento
+  spa: Frecuencia de muestreo
+  jpn: サンプルレート
+  rus: Частота дискретизации
+  por: Taxa de amostragem
+  swe: Samplingsfrekvens
+  pol: Częstotliwość próbkowania
+  chs: 采样率
+  ukr: Частота дискретизації
+  kor: 샘플 속도
+  ron: Rata de eșantionare
 Save:
   deu: speichern
   eng: Save
@@ -4468,6 +4813,21 @@ Settings:
   ukr: Налаштування
   kor: 설정
   ron: Setări
+Side Data:
+  eng: Side Data
+  deu: Seite Daten
+  fra: Données latérales
+  ita: Dati laterali
+  spa: Datos laterales
+  jpn: サイドデータ
+  rus: Побочные данные
+  por: Dados laterais
+  swe: Sidodata
+  pol: Dane boczne
+  chs: 侧面数据
+  ukr: Побічні ефекти
+  kor: 사이드 데이터
+  ron: Date laterale
 Single Pass (Bitrate):
   deu: Ein einzelner Durchlauf (Bitrate)
   eng: Single Pass (Bitrate)
@@ -4783,6 +5143,21 @@ Supported Image Files:
   ukr: Підтримувані файли зображень
   kor: 지원되는 이미지 파일
   ron: Fișiere de imagine acceptate
+Tags:
+  eng: Tags
+  deu: Tags
+  fra: Tags
+  ita: Tag
+  spa: Etiquetas
+  jpn: タグ
+  rus: Теги
+  por: Etiquetas
+  swe: Etiketter
+  pol: Tagi
+  chs: 标签
+  ukr: Теги
+  kor: 태그
+  ron: Etichete
 The GUI might have died, but I'm going to keep converting!:
   deu: Die GUI ist eventuell abgestürzt, aber ich werde weiter konvertieren!
   eng: The GUI might have died, but I'm going to keep converting!
@@ -5308,6 +5683,21 @@ VBR Target:
   ukr: 'Значення: 0:none; 1:fast; 2:full(trellis) за замовчуванням'
   kor: '값: 0:없음; 1:빠른; 2:전체(격자) 기본값'
   ron: 'Valori: 0:niciunul; 1:rapid; 2:complet (spalier) implicit'
+Value:
+  eng: Value
+  deu: Wert
+  fra: Valeur
+  ita: Valore
+  spa: Valor
+  jpn: 価値
+  rus: Значение
+  por: Valor
+  swe: Värde
+  pol: Wartość
+  chs: 价值
+  ukr: Значення
+  kor: 가치
+  ron: Valoare
 Variable:
   deu: Variabel
   eng: Variable
@@ -6058,21 +6448,6 @@ good is the default and recommended for most applications:
   ukr: 'hdr10: Примусова сигналізація параметрів HDR10 у пакетах SEI.'
   kor: 'HDR10: SEI 패킷에서 HDR10 파라미터를 강제 신호화합니다.'
   ron: 'hdr10: Forțează semnalizarea parametrilor HDR10 în pachetele SEI.'
-hq - High Quality, ll - Low Latency, ull - Ultra Low Latency:
-  deu: hq - Hohe Qualität, ll - niedrige Latenz, ull - extrem niedrige Latenz
-  eng: hq - High Quality, ll - Low Latency, ull - Ultra Low Latency
-  fra: hq - Haute qualité, ll - Latence faible, ull - Latence ultra faible
-  ita: hq - Alta qualità, ll - Bassa latenza, ull - Ultra bassa latenza
-  spa: hq - Alta calidad, ll - Baja latencia, ull - Ultra baja latencia
-  chs: hq - 高质量，ll - 低延迟，ull - 超低延迟。
-  jpn: hq - 高品質, ll - 低遅延, ull - 超低遅延
-  rus: hq - высокое качество, ll - низкая задержка, ull - сверхнизкая задержка
-  por: hq - Alta Qualidade, ll - Baixa Latência, ull - Ultra Baixa Latência
-  swe: hq - Hög kvalitet, ll - Låg latenstid, ull - Ultralåg latenstid
-  pol: hq - High Quality, ll - Low Latency, ull - Ultra Low Latency
-  ukr: hq - Висока якість, ll - Низька затримка, ull - Наднизька затримка
-  kor: hq - 고품질, ll - 저지연, ull - 초저지연
-  ron: hq - Calitate înaltă, ll - Latență redusă, ull - Latență foarte redusă
 installer:
   deu: Installationsprogramm
   eng: installer
@@ -7078,6 +7453,21 @@ Drag and Drop to reorder - All items need to be same dimensions:
   ukr: Перетягніть, щоб змінити порядок - всі елементи повинні мати однакові розміри
   kor: 드래그 앤 드롭으로 재주문 - 모든 항목의 크기가 동일해야 합니다.
   ron: Trageți și plasați pentru a reordona - Toate articolele trebuie să aibă aceleași dimensiuni
+Drag and Drop to reorder, or drop a folder to load files - All items need to be same dimensions:
+  deu: Ziehen und Ablegen zum Neuordnen, oder Ordner ablegen um Dateien zu laden - Alle Elemente müssen die gleichen Abmessungen haben
+  eng: Drag and Drop to reorder, or drop a folder to load files - All items need to be same dimensions
+  fra: Glissez et déposez pour réorganiser, ou déposez un dossier pour charger les fichiers - Tous les éléments doivent avoir les mêmes dimensions
+  ita: Trascina e rilascia per riordinare, o rilascia una cartella per caricare i file - Tutti gli elementi devono avere le stesse dimensioni
+  spa: Arrastrar y soltar para reordenar, o soltar una carpeta para cargar archivos - Todos los elementos deben tener las mismas dimensiones
+  chs: 拖放来重新排序，或拖放文件夹来加载文件 - 所有项目的尺寸都需要相同
+  jpn: ドラッグ＆ドロップで並び替え、またはフォルダをドロップしてファイルを読み込み - すべてのアイテムが同じ寸法である必要があります
+  rus: Перетаскивание для изменения порядка или перетащите папку для загрузки файлов - все элементы должны иметь одинаковые размеры
+  por: Arraste e solte para reordenar, ou solte uma pasta para carregar arquivos - Todos os itens precisam ter as mesmas dimensões
+  swe: Dra och släpp för att ändra ordning, eller släpp en mapp för att ladda filer - Alla objekt måste ha samma dimensioner
+  pol: Przeciągnij i upuść, aby zmienić kolejność, lub upuść folder aby załadować pliki - Wszystkie elementy muszą mieć te same wymiary
+  ukr: Перетягніть, щоб змінити порядок, або перетягніть папку для завантаження файлів - всі елементи повинні мати однакові розміри
+  kor: 드래그 앤 드롭으로 재정렬하거나 폴더를 드롭하여 파일 로드 - 모든 항목의 크기가 동일해야 합니다
+  ron: Trageți și plasați pentru a reordona, sau plasați un folder pentru a încărca fișierele - Toate articolele trebuie să aibă aceleași dimensiuni
 The following items were excluded as they could not be identified as image or video files:
   deu: Die folgenden Elemente wurden ausgeschlossen, da sie nicht als Bild- oder Videodateien identifiziert werden konnten
   eng: The following items were excluded as they could not be identified as image or video files
@@ -10023,6 +10413,96 @@ Codec:
   ukr: Кодек
   kor: 코덱
   ron: Codec
+Codec & Profile:
+  eng: Codec & Profile
+  deu: Codec & Profil
+  fra: Codec et profil
+  ita: Codec e profilo
+  spa: Códec y perfil
+  jpn: コーデック＆プロファイル
+  rus: Кодек и профиль
+  por: Codec e perfil
+  swe: Codec & profil
+  pol: Kodek i profil
+  chs: 编解码器和简介
+  ukr: Кодек і профіль
+  kor: 코덱 및 프로필
+  ron: Codec și profil
+Codec Long Name:
+  eng: Codec Long Name
+  deu: Codec Langer Name
+  fra: Nom long du codec
+  ita: Nome lungo del codec
+  spa: Nombre largo del códec
+  jpn: コーデック・ロングネーム
+  rus: Длинное имя кодека
+  por: Nome longo do codec
+  swe: Codec långt namn
+  pol: Długa nazwa kodeka
+  chs: 编解码器长名称
+  ukr: Повна назва кодека
+  kor: 코덱 긴 이름
+  ron: Codec Nume lung
+Codec Name:
+  eng: Codec Name
+  deu: Codec-Name
+  fra: Nom du codec
+  ita: Nome del codec
+  spa: Nombre del códec
+  jpn: コーデック名
+  rus: Имя кодека
+  por: Nome do codec
+  swe: Codec-namn
+  pol: Nazwa kodeka
+  chs: 编解码器名称
+  ukr: Назва кодека
+  kor: 코덱 이름
+  ron: Nume codec
+Codec Type:
+  eng: Codec Type
+  deu: Codec-Typ
+  fra: Type de codec
+  ita: Tipo di codec
+  spa: Tipo de códec
+  jpn: コーデック・タイプ
+  rus: Тип кодека
+  por: Tipo de codec
+  swe: Codec-typ
+  pol: Typ kodeka
+  chs: 编解码器类型
+  ukr: Тип кодека
+  kor: 코덱 유형
+  ron: Tip codec
+'e.g. dts, truehd, aac':
+  eng: 'e.g. dts, truehd, aac'
+  deu: z.B. dts, truehd, aac
+  fra: par exemple, dts, truehd, aac
+  ita: ad esempio dts, truehd, aac
+  spa: por ejemplo, dts, truehd, aac
+  jpn: 例：DTS、Truehd、AAC
+  rus: например, dts, truehd, aac
+  por: por exemplo, dts, truehd, aac
+  swe: t.ex. dts, truehd, aac
+  pol: np. dts, truehd, aac
+  chs: 例如：DTS、TRUEHD、AAC
+  ukr: наприклад, dts, truehd, aac
+  kor: '예: DTS, TRUEHD, AAC'
+  ron: de ex. dts, truehd, aac
+'e.g. dts:DTS-HD MA':
+  eng: 'e.g. dts:DTS-HD MA'
+  deu: z.B. dts:DTS-HD MA
+  fra: par exemple dts:DTS-HD MA
+  ita: ad esempio dts:DTS-HD MA
+  spa: por ejemplo, dts:DTS-HD MA
+  jpn: 例：dts:DTS-HD MA
+  rus: например, dts:DTS-HD MA
+  por: por exemplo, dts:DTS-HD MA
+  swe: t.ex. dts:DTS-HD MA
+  pol: np. dts:DTS-HD MA
+  chs: 例如 dts:DTS-HD MA
+  ukr: наприклад, dts:DTS-HD MA
+  kor: '예: dts:DTS-HD MA'
+  ron: de ex. dts:DTS-HD MA
 Near Lossless:
   eng: Near Lossless
   deu: Fast verlustfrei
@@ -10098,6 +10578,21 @@ Custom Bitrate:
   ukr: Користувацький бітрейт
   kor: 사용자 지정 비트레이트
   ron: Bitrate personalizat
+AAC Profile:
+  eng: AAC Profile
+  deu: AAC-Profil
+  fra: Profil du CAA
+  ita: Profilo AAC
+  spa: Perfil de la CAA
+  jpn: AACプロフィール
+  rus: Профиль AAC
+  por: Perfil da AAC
+  swe: Profil AAC
+  pol: Profil AAC
+  chs: AAC 简介
+  ukr: Профіль AAC
+  kor: AAC 프로필
+  ron: Profilul AAC
 Audio Quality:
   eng: Audio Quality
   deu: Audio-Qualität
@@ -14142,6 +14637,21 @@ Show completion popup message:
   ukr: Показати спливаюче повідомлення про завершення
   kor: 완료 팝업 메시지 표시
   ron: Afișați mesajul pop-up de finalizare
+Keep source loaded after adding to queue:
+  eng: Keep source loaded after adding to queue
+  deu: Quelle nach Hinzufügen zur Warteschlange geladen lassen
+  fra: Maintenir la source chargée après l'avoir ajoutée à la file d'attente
+  ita: Mantenere la sorgente caricata dopo l'aggiunta alla coda
+  spa: Mantener la fuente cargada después de añadirla a la cola
+  jpn: キューに追加した後もソースをロードしたままにする
+  rus: Сохраняйте источник загруженным после добавления в очередь
+  por: Manter a fonte carregada após adicionar à fila
+  swe: Håll källan laddad efter att den har lagts till i kön
+  pol: Zachowaj załadowane źródło po dodaniu do kolejki
+  chs: 添加到队列后保持源加载
+  ukr: Тримати джерело завантаженим після додавання до черги
+  kor: 대기열에 추가한 후에도 소스가 로드된 상태로 유지
+  ron: Mențineți sursa încărcată după adăugarea la coadă
 Show error popup message:
   eng: Show error popup message
   deu: Fehler-Popup-Meldung anzeigen
@@ -15106,6 +15616,231 @@ Sharpen:
   ukr: Гостріше.
   kor: 샤프닝
   ron: Ascuțiți
+Vibrance:
+  eng: Vibrance
+  deu: Lebendigkeit
+  fra: Vibrance
+  ita: Vibrazione
+  spa: Vibrance
+  jpn: 活気
+  rus: Vibrance
+  por: Vibração
+  swe: Vibrance
+  pol: Wibracja
+  chs: 活力
+  ukr: Вібрація
+  kor: 활기
+  ron: Vibranță
+Color Temperature:
+  eng: Color Temperature
+  deu: Farbtemperatur
+  fra: Température de couleur
+  ita: Temperatura del colore
+  spa: Temperatura de color
+  jpn: 色温度
+  rus: Цветовая температура
+  por: Temperatura de cor
+  swe: Färgtemperatur
+  pol: Temperatura barwowa
+  chs: 色温
+  ukr: Колірна температура
+  kor: 색온도
+  ron: Temperatura de culoare
+Curves Preset:
+  eng: Curves Preset
+  deu: Kurven Voreinstellung
+  fra: Préréglage des courbes
+  ita: Curve preimpostate
+  spa: Preajuste de curvas
+  jpn: カーブ・プリセット
+  rus: Предварительная настройка кривых
+  por: Predefinição de curvas
+  swe: Förinställda kurvor
+  pol: Wstępne ustawienie krzywych
+  chs: 曲线预设
+  ukr: Попереднє налаштування кривих
+  kor: 커브 프리셋
+  ron: Curbe prestabilite
+Colorbalance:
+  eng: Colorbalance
+  deu: Farbbalance
+  fra: Équilibre des couleurs
+  ita: Colorbalance
+  spa: Colorbalance
+  jpn: カラーバランス
+  rus: Colorbalance
+  por: Balanço de cores
+  swe: Färgbalans
+  pol: Colorbalance
+  chs: 色彩平衡
+  ukr: Баланс кольорів
+  kor: 컬러 밸런스
+  ron: Colorbalance
+Unsharp Mask:
+  eng: Unsharp Mask
+  deu: Unscharf maskieren
+  fra: Masque de netteté
+  ita: Maschera non nitida
+  spa: Máscara de desenfoque
+  jpn: アンシャープマスク
+  rus: Маска нерезкости
+  por: Máscara de nitidez
+  swe: Oskärpa Mask
+  pol: Maska wyostrzająca
+  chs: 非清晰蒙版
+  ukr: Негостра маска
+  kor: 선명하지 않은 마스크
+  ron: Mască Unsharp
+Deflicker:
+  eng: Deflicker
+  deu: Deflicker
+  fra: Deflicker
+  ita: Deflicker
+  spa: Deflicker
+  jpn: デフリッカー
+  rus: Дефликер
+  por: Deflicker
+  swe: Deflicker
+  pol: Deflicker
+  chs: 除颤器
+  ukr: Мерехтіння
+  kor: 디플리커
+  ron: Deflicker
+Pad Aspect:
+  eng: Pad Aspect
+  deu: Pad-Aspekt
+  fra: Aspect du tampon
+  ita: Aspetto del pad
+  spa: Aspecto de la almohadilla
+  jpn: パッド・アスペクト
+  rus: Аспект площадки
+  por: Aspeto da almofada
+  swe: Pad Aspect
+  pol: Pad Aspect
+  chs: 垫子规格
+  ukr: Аспект прокладки
+  kor: 패드 측면
+  ron: Aspect pad
+Pad Color:
+  eng: Pad Color
+  deu: Pad Farbe
+  fra: Couleur du tampon
+  ita: Colore del tampone
+  spa: Color de la almohadilla
+  jpn: パッドカラー
+  rus: Цвет подушечки
+  por: Cor da almofada
+  swe: Pad färg
+  pol: Kolor podkładki
+  chs: 焊盘颜色
+  ukr: Колір подушечки
+  kor: 패드 색상
+  ron: Culoare tampon
+Color & Appearance:
+  eng: Color & Appearance
+  deu: Farbe und Erscheinungsbild
+  fra: Couleur et apparence
+  ita: Colore e aspetto
+  spa: Color y aspecto
+  jpn: 色と外観
+  rus: Цвет и внешний вид
+  por: Cor e aspeto
+  swe: Färg och utseende
+  pol: Kolor i wygląd
+  chs: 颜色和外观
+  ukr: Колір і зовнішній вигляд
+  kor: 색상 및 외관
+  ron: Culoare și aspect
+LUT3D:
+  eng: LUT3D
+  deu: LUT3D
+  fra: LUT3D
+  ita: LUT3D
+  spa: LUT3D
+  jpn: LUT3D
+  rus: LUT3D
+  por: LUT3D
+  swe: LUT3D
+  pol: LUT3D
+  chs: LUT3D
+  ukr: LUT3D
+  kor: LUT3D
+  ron: LUT3D
+Select LUT File:
+  eng: Select LUT File
+  deu: LUT-Datei auswählen
+  fra: Sélectionner le fichier LUT
+  ita: Selezionare il file LUT
+  spa: Seleccionar archivo LUT
+  jpn: LUTファイルを選択
+  rus: Выберите файл LUT
+  por: Selecionar ficheiro LUT
+  swe: Välj LUT-fil
+  pol: Wybierz plik LUT
+  chs: 选择 LUT 文件
+  ukr: Виберіть файл LUT
+  kor: LUT 파일 선택
+  ron: Selectați fișierul LUT
+LUT Files:
+  eng: LUT Files
+  deu: LUT-Dateien
+  fra: Fichiers LUT
+  ita: File LUT
+  spa: Archivos LUT
+  jpn: LUTファイル
+  rus: Файлы LUT
+  por: Ficheiros LUT
+  swe: LUT-filer
+  pol: Pliki LUT
+  chs: LUT 文件
+  ukr: LUT-файли
+  kor: LUT 파일
+  ron: Fișiere LUT
+No LUT file selected:
+  eng: No LUT file selected
+  deu: Keine LUT-Datei ausgewählt
+  fra: Aucun fichier LUT sélectionné
+  ita: Nessun file LUT selezionato
+  spa: No se ha seleccionado ningún archivo LUT
+  jpn: LUTファイルが選択されていない
+  rus: Файл LUT не выбран
+  por: Nenhum ficheiro LUT selecionado
+  swe: Ingen LUT-fil vald
+  pol: Nie wybrano pliku LUT
+  chs: 未选择 LUT 文件
+  ukr: Не вибрано файл LUT
+  kor: 선택한 LUT 파일 없음
+  ron: Nu este selectat niciun fișier LUT
+Pad color (e.g. black, white, 0x000000). FFmpeg only — rigaya always uses black.:
+  eng: Pad color (e.g. black, white, 0x000000). FFmpeg only — rigaya always uses black.
+  deu: Pad-Farbe (z.B. schwarz, weiß, 0x000000). Nur FFmpeg - Rigaya verwendet immer Schwarz.
+  fra: Couleur du bloc (par exemple noir, blanc, 0x000000). FFmpeg uniquement - rigaya utilise toujours le noir.
+  ita: Colore del pad (ad es. nero, bianco, 0x000000). Solo FFmpeg - rigaya usa sempre il nero.
+  spa: Color del pad (por ejemplo, negro, blanco, 0x000000). Sólo FFmpeg - rigaya siempre utiliza el negro.
+  jpn: パッドの色（例：黒、白、0x000000）。FFmpegのみ - rigayaは常に黒を使用します。
+  rus: Цвет блока (например, черный, белый, 0x000000). Только для FFmpeg - rigaya всегда использует черный цвет.
+  por: Cor do bloco (por exemplo, preto, branco, 0x000000). Apenas FFmpeg - rigaya usa sempre preto.
+  swe: Pad-färg (t.ex. svart, vit, 0x000000). Endast FFmpeg - rigaya använder alltid svart.
+  pol: Kolor podkładki (np. czarny, biały, 0x000000). Tylko FFmpeg - rigaya zawsze używa koloru czarnego.
+  chs: 垫色（如黑色、白色、0x000000）。仅限 FFmpeg - rigaya 始终使用黑色。
+  ukr: Колір пікселів (наприклад, чорний, білий, 0x000000). Тільки FFmpeg - rigaya завжди використовує чорний.
+  kor: '패드 색상(예: 검정, 흰색, 0x000000). FFmpeg 전용 - 리가야는 항상 검은색을 사용합니다.'
+  ron: Culoare pad (de exemplu, negru, alb, 0x000000). Numai FFmpeg - rigaya utilizează întotdeauna negru.
+? Not supported by rigaya's hardware encoders (Video Speed, Reverse Video, Deflicker, Vibrance, Color Temperature, Colorbalance)
+: eng: Not supported by rigaya's hardware encoders (Video Speed, Reverse Video, Deflicker, Vibrance, Color Temperature, Colorbalance)
+  deu: Nicht unterstützt von Rigayas Hardware-Encodern (Video Speed, Reverse Video, Deflicker, Vibrance, Color Temperature, Colorbalance)
+  fra: Non pris en charge par les encodeurs matériels de rigaya (vitesse vidéo, vidéo inversée, Deflicker, Vibrance, température des couleurs, balance des couleurs).
+  ita: Non supportato dai codificatori hardware di rigaya (Velocità video, Inversione video, Deflicker, Vibrazione, Temperatura colore, Bilanciamento colore).
+  spa: No es compatible con los codificadores hardware de rigaya (Velocidad de vídeo, Vídeo inverso, Deflicker, Vibrance, Temperatura de color, Colorbalance)
+  jpn: リガヤのハードウェアエンコーダ（ビデオスピード、リバースビデオ、デフリッカー、ビブランス、色温度、カラーバランス）ではサポートされていません。
+  rus: Не поддерживаются аппаратными кодировщиками rigaya (Скорость видео, Обратное видео, Дефликер, Вибрация, Цветовая температура, Цветовой баланс).
+  por: Não suportado pelos codificadores de hardware da rigaya (Velocidade de vídeo, Vídeo invertido, Deflicker, Vibração, Temperatura de cor, Balanço de cores)
+  swe: Stöds inte av Rigayas hårdvarukodare (Video Speed, Reverse Video, Deflicker, Vibrance, Color Temperature, Colorbalance)
+  pol: Nieobsługiwane przez kodery sprzętowe rigaya (prędkość wideo, odwrócenie wideo, migotanie, żywość, temperatura kolorów, balans kolorów).
+  chs: 不支持 rigaya 硬件编码器（视频速度、反向视频、去闪烁、亮度、色温、色差）。
+  ukr: Не підтримується апаратними кодерами rigaya (швидкість відео, реверс відео, мерехтіння, вібрація, колірна температура, колірний баланс)
+  kor: 리가야의 하드웨어 인코더(비디오 속도, 리버스 비디오, 디플리커, 생동감, 색온도, 컬러밸런스)에서는 지원되지 않습니다.
+  ron: Nu este acceptat de codificatoarele hardware ale rigaya (Video Speed, Reverse Video, Deflicker, Vibrance, Color Temperature, Colorbalance)
 Fast Start (MP4/MOV):
   eng: Fast Start (MP4/MOV)
   deu: Schnellstart (MP4/MOV)
@@ -15196,3 +15931,798 @@ Video Speed Warning:
   ukr: 'Попередження: При зміні швидкості відео звук не змінюється.'
   kor: '경고: 동영상 속도를 변경할 때 오디오는 수정되지 않습니다.'
   ron: 'Avertisment: Sunetul nu va fi modificat la schimbarea vitezei video.'
+Browse:
+  eng: Browse
+  deu: durchsuchen
+  fra: Parcourir
+  ita: Sfogliare
+  spa: Visite
+  jpn: ブラウズ
+  rus: Просмотреть
+  por: Navegar
+  swe: Bläddra
+  pol: Przeglądaj
+  chs: 浏览
+  ukr: Переглянути
+  kor: 찾아보기
+  ron: Răsfoiește
+Clear:
+  eng: Clear
+  deu: Klar
+  fra: Clair
+  ita: Libero
+  spa: Claro
+  jpn: クリア
+  rus: Очистить
+  por: Limpo
+  swe: Klart
+  pol: Wyczyść
+  chs: 清晰
+  ukr: Чисто
+  kor: 지우기
+  ron: Clar
+Thumbnail generation failed - preview may not be available:
+  eng: Thumbnail generation failed - preview may not be available
+  deu: Thumbnail-Generierung fehlgeschlagen - möglicherweise ist die Vorschau nicht verfügbar
+  fra: La génération de vignettes a échoué - l'aperçu n'est peut-être pas disponible
+  ita: Generazione di miniature non riuscita - l'anteprima potrebbe non essere disponibile
+  spa: Error en la generación de miniaturas - la vista previa puede no estar disponible
+  jpn: サムネイル生成に失敗 - プレビューが利用できない可能性があります。
+  rus: Не удалось создать миниатюру - предварительный просмотр может быть недоступен
+  por: Falha na geração de miniaturas - a pré-visualização pode não estar disponível
+  swe: Generering av miniatyrbild misslyckades - förhandsgranskning kanske inte är tillgänglig
+  pol: Generowanie miniatur nie powiodło się - podgląd może być niedostępny
+  chs: 缩略图生成失败 - 可能无法预览
+  ukr: Не вдалося згенерувати мініатюри - попередній перегляд може бути недоступним
+  kor: 썸네일 생성 실패 - 미리 보기를 사용할 수 없습니다.
+  ron: Generarea miniaturii a eșuat - este posibil ca previzualizarea să nu fie disponibilă
+Creation Time:
+  eng: Creation Time
+  deu: Schöpfungszeit
+  fra: Le temps de la création
+  ita: Tempo di creazione
+  spa: Tiempo de creación
+  jpn: 創造の時
+  rus: Время создания
+  por: Tempo de criação
+  swe: Skapelsetid
+  pol: Czas tworzenia
+  chs: 创建时间
+  ukr: Час створення
+  kor: 생성 시간
+  ron: Timpul creației
+Handler Name:
+  eng: Handler Name
+  deu: Name des Bearbeiters
+  fra: Nom du gestionnaire
+  ita: Nome del gestore
+  spa: Nombre del manipulador
+  jpn: ハンドラー名
+  rus: Имя обработчика
+  por: Nome do manipulador
+  swe: Handläggarens namn
+  pol: Nazwa administratora
+  chs: 处理程序名称
+  ukr: Ім'я обробника
+  kor: 핸들러 이름
+  ron: Numele manipulatorului
+Timecode:
+  eng: Timecode
+  deu: Zeitcode
+  fra: Code temporel
+  ita: Timecode
+  spa: Código de tiempo
+  jpn: タイムコード
+  rus: Таймкод
+  por: Código de tempo
+  swe: Tidkod
+  pol: Kod czasowy
+  chs: 时间码
+  ukr: Часовий код
+  kor: 타임코드
+  ron: Timecode
+Unknown:
+  eng: Unknown
+  deu: Unbekannt
+  fra: Inconnu
+  ita: Sconosciuto
+  spa: Desconocido
+  jpn: 不明
+  rus: Неизвестный
+  por: Desconhecido
+  swe: Okänd
+  pol: Nieznany
+  chs: 未知
+  ukr: Невідомо
+  kor: 알 수 없음
+  ron: Necunoscut
+Red X:
+  eng: Red X
+  deu: Rotes X
+  fra: Rouge X
+  ita: Rosso X
+  spa: Rojo X
+  jpn: レッドX
+  rus: Красный X
+  por: Vermelho X
+  swe: Röd X
+  pol: Czerwony X
+  chs: 红色 X
+  ukr: Червоний X
+  kor: 빨간색 X
+  ron: Roșu X
+Red Y:
+  eng: Red Y
+  deu: Rot Y
+  fra: Rouge Y
+  ita: Rosso Y
+  spa: Rojo Y
+  jpn: レッド・Y
+  rus: Красный Y
+  por: Vermelho Y
+  swe: Röd Y
+  pol: Czerwony Y
+  chs: 红色 Y
+  ukr: Червоний Y
+  kor: 빨간색 Y
+  ron: Roșu Y
+Green X:
+  eng: Green X
+  deu: Grün X
+  fra: Vert X
+  ita: Verde X
+  spa: Verde X
+  jpn: グリーンX
+  rus: Зеленый X
+  por: Verde X
+  swe: Grön X
+  pol: Green X
+  chs: 绿色 X
+  ukr: Зелений X
+  kor: 녹색 X
+  ron: Verde X
+Green Y:
+  eng: Green Y
+  deu: Grün Y
+  fra: Vert Y
+  ita: Verde Y
+  spa: Verde Y
+  jpn: グリーンY
+  rus: Зеленый Y
+  por: Verde Y
+  swe: Grön Y
+  pol: Zielony Y
+  chs: 绿色 Y
+  ukr: Зелений Y
+  kor: Green Y
+  ron: Verde Y
+Blue X:
+  eng: Blue X
+  deu: Blau X
+  fra: Bleu X
+  ita: Blu X
+  spa: Azul X
+  jpn: ブルーX
+  rus: Синий X
+  por: Azul X
+  swe: Blå X
+  pol: Blue X
+  chs: 蓝 X
+  ukr: Синій X
+  kor: 블루 X
+  ron: Albastru X
+Blue Y:
+  eng: Blue Y
+  deu: Blau Y
+  fra: Bleu Y
+  ita: Blu Y
+  spa: Azul Y
+  jpn: ブルー・Y
+  rus: Синий Y
+  por: Azul Y
+  swe: Blå Y
+  pol: Niebieski Y
+  chs: 蓝 Y
+  ukr: Синій Y
+  kor: Blue Y
+  ron: Albastru Y
+White Point X:
+  eng: White Point X
+  deu: Weißer Punkt X
+  fra: White Point X
+  ita: Punto bianco X
+  spa: Punto Blanco X
+  jpn: ホワイトポイントX
+  rus: Уайт Пойнт X
+  por: Ponto Branco X
+  swe: White Point X
+  pol: White Point X
+  chs: 白点 X
+  ukr: Біла точка X
+  kor: 화이트 포인트 X
+  ron: Punct alb X
+White Point Y:
+  eng: White Point Y
+  deu: Weißer Punkt Y
+  fra: White Point Y
+  ita: Punto Bianco Y
+  spa: Punto Blanco Y
+  jpn: ホワイトポイントY
+  rus: Уайт Пойнт Y
+  por: Ponto Branco Y
+  swe: White Point Y
+  pol: White Point Y
+  chs: 白点 Y
+  ukr: Біла точка Y
+  kor: 화이트 포인트 Y
+  ron: White Point Y
+Min Luminance:
+  eng: Min Luminance
+  deu: Min Leuchtdichte
+  fra: Luminance minimale
+  ita: Luminanza minima
+  spa: Luminancia mínima
+  jpn: 最低輝度
+  rus: Минимальная яркость
+  por: Luminância mínima
+  swe: Min Luminans
+  pol: Minimalna luminancja
+  chs: 最低亮度
+  ukr: Мінімальна яскравість
+  kor: 최소 휘도
+  ron: Luminozitate minimă
+Max Luminance:
+  eng: Max Luminance
+  deu: Maximale Leuchtdichte
+  fra: Luminance maximale
+  ita: Luminanza massima
+  spa: Luminancia máxima
+  jpn: 最大輝度
+  rus: Максимальная яркость
+  por: Luminância máxima
+  swe: Max luminans
+  pol: Maksymalna luminancja
+  chs: 最大亮度
+  ukr: Максимальна яскравість
+  kor: 최대 휘도
+  ron: Luminozitate maximă
+Max Content:
+  eng: Max Content
+  deu: Maximaler Inhalt
+  fra: Contenu maximal
+  ita: Contenuto massimo
+  spa: Contenido máximo
+  jpn: 最大コンテンツ
+  rus: Максимальное содержание
+  por: Conteúdo máximo
+  swe: Max innehåll
+  pol: Maksymalna zawartość
+  chs: 最大内容
+  ukr: Максимальний вміст
+  kor: 최대 콘텐츠
+  ron: Conținut maxim
+Max Average:
+  eng: Max Average
+  deu: Max Durchschnitt
+  fra: Max Moyenne
+  ita: Media massima
+  spa: Max Media
+  jpn: 最大平均
+  rus: Максимальное среднее
+  por: Média máxima
+  swe: Max Genomsnitt
+  pol: Maksymalna średnia
+  chs: 最大值 平均值
+  ukr: Максимальне середнє значення
+  kor: 최대 평균
+  ron: Max Medie
+Codec Tag String:
+  eng: Codec Tag String
+  deu: Codec Tag String
+  fra: Chaîne d'étiquettes de codec
+  ita: Stringa tag codec
+  spa: Cadena de etiquetas de códecs
+  jpn: コーデック・タグ文字列
+  rus: Строка тега кодека
+  por: Codec Tag String
+  swe: Codec Tag String
+  pol: Ciąg znacznika kodeka
+  chs: 编解码器标签字符串
+  ukr: Рядок тегу кодека
+  kor: 코덱 태그 문자열
+  ron: Codec Tag String
+Codec Tag:
+  eng: Codec Tag
+  deu: Codec-Tag
+  fra: Codec Tag
+  ita: Tag Codec
+  spa: Etiqueta del códec
+  jpn: コーデック・タグ
+  rus: Тег кодека
+  por: Etiqueta de codec
+  swe: Codec-tagg
+  pol: Znacznik kodeka
+  chs: 编解码器标签
+  ukr: Тег кодека
+  kor: 코덱 태그
+  ron: Etichetă Codec
+Coded Width:
+  eng: Coded Width
+  deu: Codierte Breite
+  fra: Largeur codée
+  ita: Larghezza codificata
+  spa: Anchura codificada
+  jpn: コード幅
+  rus: Кодированная ширина
+  por: Largura codificada
+  swe: Kodad bredd
+  pol: Kodowana szerokość
+  chs: 编码宽度
+  ukr: Кодована ширина
+  kor: 코드 너비
+  ron: Lățime codificată
+Coded Height:
+  eng: Coded Height
+  deu: Codierte Höhe
+  fra: Hauteur codée
+  ita: Altezza codificata
+  spa: Altura codificada
+  jpn: コード化された高さ
+  rus: Кодированная высота
+  por: Altura codificada
+  swe: Kodad höjd
+  pol: Kodowana wysokość
+  chs: 编码高度
+  ukr: Кодована висота
+  kor: 코딩된 높이
+  ron: Înălțime codificată
+Id:
+  eng: Id
+  deu: Id
+  fra: Id
+  ita: Id
+  spa: Id
+  jpn: アイド
+  rus: Id
+  por: Id
+  swe: Id
+  pol: Id
+  chs: 同上
+  ukr: Ідентифікатор
+  kor: Id
+  ron: Id
+Time Base:
+  eng: Time Base
+  deu: Zeitbasis
+  fra: Base de temps
+  ita: Base temporale
+  spa: Base temporal
+  jpn: タイムベース
+  rus: База времени
+  por: Base de tempo
+  swe: Tidsbas
+  pol: Baza czasowa
+  chs: 时基
+  ukr: Часовий базис
+  kor: 시간 기준
+  ron: Baza de timp
+Start Pts:
+  eng: Start Pts
+  deu: Start Pkt.
+  fra: Départ Pts
+  ita: Inizio Pts
+  spa: Inicio Pts
+  jpn: スタートポイント
+  rus: Старт Птс
+  por: Início Pts
+  swe: Start Pts
+  pol: Punkty startowe
+  chs: 起始点数
+  ukr: Стартовий бал
+  kor: 포인트 시작
+  ron: Start Pts
+Start Time:
+  eng: Start Time
+  deu: Startzeit
+  fra: Heure de début
+  ita: Ora di inizio
+  spa: Hora de inicio
+  jpn: 開始時間
+  rus: Время начала
+  por: Hora de início
+  swe: Starttid
+  pol: Godzina rozpoczęcia
+  chs: 开始时间
+  ukr: Час початку
+  kor: 시작 시간
+  ron: Ora de începere
+Duration Ts:
+  eng: Duration Ts
+  deu: Dauer Ts
+  fra: Durée Ts
+  ita: Durata Ts
+  spa: Duración Ts
+  jpn: 期間 Ts
+  rus: Продолжительность Ц
+  por: Duração Ts
+  swe: Varaktighet Ts
+  pol: Czas trwania Ts
+  chs: 持续时间 Ts
+  ukr: Тривалість Ts
+  kor: 지속 시간 Ts
+  ron: Durata Ts
+Extradata Size:
+  eng: Extradata Size
+  deu: Extradata Größe
+  fra: Extradata Taille
+  ita: Dimensione Extradata
+  spa: Tamaño Extradata
+  jpn: エクストラデータ・サイズ
+  rus: Размер Extradata
+  por: Tamanho da Extradata
+  swe: Extradata Storlek
+  pol: Rozmiar Extradata
+  chs: Extradata 尺寸
+  ukr: Розмір екстраданих
+  kor: 추가 데이터 크기
+  ron: Extradata Dimensiune
+Mime Codec String:
+  eng: Mime Codec String
+  deu: Mime Codec String
+  fra: Chaîne du codec Mime
+  ita: Stringa di codec mime
+  spa: Cadena de códecs Mime
+  jpn: Mimeコーデック文字列
+  rus: Строка кодека Mime
+  por: Cadeia de caracteres do codec Mime
+  swe: Mime Codec-sträng
+  pol: Ciąg kodeków Mime
+  chs: MIME 编解码字符串
+  ukr: Mime Codec String
+  kor: 마임 코덱 문자열
+  ron: Mime Codec String
+Initial Padding:
+  eng: Initial Padding
+  deu: Initiale Polsterung
+  fra: Rembourrage initial
+  ita: Imbottitura iniziale
+  spa: Relleno inicial
+  jpn: 初期パディング
+  rus: Начальная прокладка
+  por: Preenchimento inicial
+  swe: Initial stoppning
+  pol: Wypełnienie początkowe
+  chs: 初始填充
+  ukr: Початкове заповнення
+  kor: 이니셜 패딩
+  ron: Umplutura inițială
+R Frame Rate:
+  eng: R Frame Rate
+  deu: R Bildfrequenz
+  fra: R Taux de rafraîchissement
+  ita: R Frequenza fotogrammi
+  spa: R Frecuencia de imagen
+  jpn: R フレームレート
+  rus: R Частота кадров
+  por: R Taxa de quadros
+  swe: R Bildfrekvens
+  pol: R Liczba klatek na sekundę
+  chs: R 帧频
+  ukr: R Частота кадрів
+  kor: R 프레임 레이트
+  ron: R Rata cadrelor
+Avg Frame Rate:
+  eng: Avg Frame Rate
+  deu: Durchschnittliche Bildrate
+  fra: Taux de rafraîchissement moyen
+  ita: Frequenza media dei fotogrammi
+  spa: Frecuencia de imagen media
+  jpn: 平均フレームレート
+  rus: Средняя частота кадров
+  por: Taxa média de quadros
+  swe: Genomsnittlig bildfrekvens
+  pol: Średnia liczba klatek na sekundę
+  chs: 平均帧频
+  ukr: Середня частота кадрів
+  kor: 평균 프레임 속도
+  ron: Rata medie a cadrelor
+Nb Frames:
+  eng: Nb Frames
+  deu: Nb-Rahmen
+  fra: Cadres Nb
+  ita: Cornici Nb
+  spa: Nb Marcos
+  jpn: Nbフレーム
+  rus: Nb Рамки
+  por: Quadros Nb
+  swe: Nb ramar
+  pol: Nb Frames
+  chs: Nb 框架
+  ukr: Nb Рамки
+  kor: Nb 프레임
+  ron: Nb Cadre
+Codec Full Name:
+  eng: Codec Full Name
+  deu: Codec Vollständiger Name
+  fra: Nom complet du codec
+  ita: Nome completo del codec
+  spa: Nombre completo del códec
+  jpn: コーデック・フルネーム
+  rus: Полное имя кодека
+  por: Nome completo do codec
+  swe: Codec fullständigt namn
+  pol: Pełna nazwa kodeka
+  chs: 编解码器全名
+  ukr: Повна назва кодека
+  kor: 코덱 전체 이름
+  ron: Codec Nume complet
+Frames:
+  eng: Frames
+  deu: Rahmen
+  fra: Cadres
+  ita: Cornici
+  spa: Marcos
+  jpn: フレーム
+  rus: Рамки
+  por: Molduras
+  swe: Ramar
+  pol: Ramki
+  chs: 框架
+  ukr: Рамки
+  kor: 프레임
+  ron: Rame
+Format:
+  eng: Format
+  deu: Format
+  fra: Format
+  ita: Formato
+  spa: Formato
+  jpn: フォーマット
+  rus: Формат
+  por: Formato
+  swe: Format
+  pol: Format
+  chs: 格式
+  ukr: Формат
+  kor: 형식
+  ron: Format
+B-Frames:
+  eng: B-Frames
+  deu: B-Rahmen
+  fra: Cadres B
+  ita: Cornici B
+  spa: Marcos B
+  jpn: Bフレーム
+  rus: B-Frames
+  por: Quadros B
+  swe: B-ramar
+  pol: Ramki B
+  chs: B 型框架
+  ukr: B-фрейми
+  kor: B-프레임
+  ron: Rame B
+Chroma:
+  eng: Chroma
+  deu: Chroma
+  fra: Chroma
+  ita: Croma
+  spa: Croma
+  jpn: クロマ
+  rus: Chroma
+  por: Croma
+  swe: Chroma
+  pol: Chroma
+  chs: 色度
+  ukr: Chroma
+  kor: 크로마
+  ron: Chroma
+Sample AR:
+  eng: Sample AR
+  deu: Beispiel AR
+  fra: Exemple d'AR
+  ita: Campione AR
+  spa: Muestra AR
+  jpn: サンプルAR
+  rus: Образец AR
+  por: Amostra de AR
+  swe: Prov AR
+  pol: Przykładowy AR
+  chs: AR 示例
+  ukr: Зразок АР
+  kor: 샘플 AR
+  ron: Exemplu AR
+Display AR:
+  eng: Display AR
+  deu: AR anzeigen
+  fra: Affichage AR
+  ita: Visualizzazione AR
+  spa: Mostrar AR
+  jpn: ARディスプレイ
+  rus: Дисплей AR
+  por: Exibir AR
+  swe: Display AR
+  pol: Wyświetlacz AR
+  chs: 显示 AR
+  ukr: Дисплей AR
+  kor: 디스플레이 AR
+  ron: Afișare AR
+Range:
+  eng: Range
+  deu: Bereich
+  fra: Gamme
+  ita: Gamma
+  spa: Gama
+  jpn: レンジ
+  rus: Диапазон
+  por: Gama
+  swe: Räckvidd
+  pol: Zasięg
+  chs: 范围
+  ukr: Діапазон
+  kor: 범위
+  ron: Gama
+Space:
+  eng: Space
+  deu: Weltraum
+  fra: L'espace
+  ita: Spazio
+  spa: Espacio
+  jpn: スペース
+  rus: Космос
+  por: Espaço
+  swe: Utrymme
+  pol: Przestrzeń
+  chs: 空间
+  ukr: Простір
+  kor: 공간
+  ron: Spațiu
+Transfer:
+  eng: Transfer
+  deu: Übertragung
+  fra: Transfert
+  ita: Trasferimento
+  spa: Transferencia
+  jpn: 譲渡
+  rus: Передача
+  por: Transferência
+  swe: Överföring
+  pol: Transfer
+  chs: 转让
+  ukr: Переказ
+  kor: 전송
+  ron: Transfer
+Primaries:
+  eng: Primaries
+  deu: Vorwahlen
+  fra: Primaires
+  ita: Primarie
+  spa: Primarias
+  jpn: 予備選挙
+  rus: Праймериз
+  por: Primárias
+  swe: Primärval
+  pol: Premie
+  chs: 初选
+  ukr: Праймеріз
+  kor: 프라이머리
+  ron: Primare
+Mastering display metadata:
+  eng: Mastering display metadata
+  deu: Metadaten der Anzeige beherrschen
+  fra: Maîtriser les métadonnées d'affichage
+  ita: Padroneggiare i metadati di visualizzazione
+  spa: Dominar los metadatos de visualización
+  jpn: ディスプレイ・メタデータを使いこなす
+  rus: Освоение метаданных дисплея
+  por: Dominar os metadados de visualização
+  swe: Metadata för visning av mastering
+  pol: Opanowanie wyświetlania metadanych
+  chs: 掌握显示元数据
+  ukr: Освоєння метаданих дисплея
+  kor: 디스플레이 메타데이터 마스터하기
+  ron: Stăpânirea metadatelor de afișare
+Content light level metadata:
+  eng: Content light level metadata
+  deu: Metadaten der Inhaltsebene
+  fra: Métadonnées sur le niveau de luminosité du contenu
+  ita: Metadati sul livello di luce del contenuto
+  spa: Metadatos de nivel de iluminación del contenido
+  jpn: コンテンツ・ライト・レベルのメタデータ
+  rus: Метаданные уровня освещенности содержимого
+  por: Metadados de nível de luz do conteúdo
+  swe: Metadata för innehållets ljusnivå
+  pol: Metadane poziomu podświetlenia treści
+  chs: 内容轻量级元数据
+  ukr: Метадані про рівень освітленості вмісту
+  kor: 콘텐츠 조명 수준 메타데이터
+  ron: Metadate privind nivelul de luminozitate al conținutului
+Layout:
+  eng: Layout
+  deu: Layout
+  fra: Mise en page
+  ita: Layout
+  spa: Diseño
+  jpn: レイアウト
+  rus: Макет
+  por: Disposição
+  swe: Layout
+  pol: Układ
+  chs: 布局
+  ukr: Макет
+  kor: 레이아웃
+  ron: Layout
+Sample Fmt:
+  eng: Sample Fmt
+  deu: Muster Fmt
+  fra: Fmt de l'échantillon
+  ita: Esempio di Fmt
+  spa: Muestra Fmt
+  jpn: サンプル
+  rus: Образец Fmt
+  por: Fmt de amostra
+  swe: Exempel Fmt
+  pol: Przykładowy format
+  chs: 样本格式
+  ukr: Зразок Fmt
+  kor: 샘플 Fmt
+  ron: Exemplu Fmt
+Bits/Sample:
+  eng: Bits/Sample
+  deu: Bits/Probe
+  fra: Bits/échantillon
+  ita: Bit/Campione
+  spa: Bits/Muestra
+  jpn: ビット/サンプル
+  rus: Биты/образец
+  por: Bits/Amostra
+  swe: Bits/prov
+  pol: Bity/próbka
+  chs: 比特/样本
+  ukr: Біти/вибірка
+  kor: 비트/샘플
+  ron: Biți/echipament
+Type:
+  eng: Type
+  deu: Typ
+  fra: Type
+  ita: Tipo
+  spa: Tipo
+  jpn: タイプ
+  rus: Тип
+  por: Tipo
+  swe: Typ
+  pol: Typ
+  chs: 类型
+  ukr: Тип
+  kor: 유형
+  ron: Tip
+Bits/Raw Sample:
+  eng: Bits/Raw Sample
+  deu: Bits/Rohstichprobe
+  fra: Bits/Echantillon brut
+  ita: Bit/Campione grezzo
+  spa: Bits/Muestra en bruto
+  jpn: ビット/生サンプル
+  rus: Биты/сырой образец
+  por: Bits/Amostra bruta
+  swe: Bits/rått prov
+  pol: Bity/Próbka surowa
+  chs: 比特/原始样本
+  ukr: Біти / Сирий зразок
+  kor: 비트/원시 샘플
+  ron: Biți / Probă brută
+Audio Service Type:
+  eng: Audio Service Type
+  deu: Audio-Dienstart
+  fra: Type de service audio
+  ita: Tipo di servizio audio
+  spa: Tipo de servicio de audio
+  jpn: オーディオ・サービス・タイプ
+  rus: Тип аудиосервиса
+  por: Tipo de serviço de áudio
+  swe: Typ av ljudtjänst
+  pol: Typ usługi audio
+  chs: 音频服务类型
+  ukr: Тип аудіопослуги
+  kor: 오디오 서비스 유형
+  ron: Tip serviciu audio

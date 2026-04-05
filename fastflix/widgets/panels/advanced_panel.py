@@ -41,6 +41,11 @@ denoise_presets = {
         "moderate": "nlmeans=s=1.0:p=7:r=15",
         "strong": "nlmeans=s=10.0:p=13:r=25",
     },
+    "nlmeans_opencl": {
+        "weak": "nlmeans_opencl=s=1.0:p=3:r=9",
+        "moderate": "nlmeans_opencl=s=1.0:p=7:r=15",
+        "strong": "nlmeans_opencl=s=10.0:p=13:r=25",
+    },
     "atadenoise": {
         "weak": "atadenoise=0a=0.01:0b=0.02:1a=0.01:1b=0.02:2a=0.01:2b=0.02:s=9",
         "moderate": "atadenoise=0a=0.02:0b=0.04:1a=0.02:1b=0.04:2a=0.02:2b=0.04:s=9",
@@ -58,8 +63,56 @@ denoise_presets = {
     },
 }
 
+deinterlace_methods = ["yadif", "bwdif", "w3fdif", "estdif"]
+
+deinterlace_modes = ["send_frame", "send_field"]
+
+deinterlace_presets = {
+    "yadif": {"send_frame": "yadif", "send_field": "yadif=mode=1"},
+    "bwdif": {"send_frame": "bwdif", "send_field": "bwdif=mode=1"},
+    "w3fdif": {"send_frame": "w3fdif", "send_field": "w3fdif=mode=1"},
+    "estdif": {"send_frame": "estdif", "send_field": "estdif=mode=1"},
+}
+
 vsync = ["auto", "passthrough", "cfr", "vfr", "drop"]
 tone_map_items = ["none", "clip", "linear", "gamma", "reinhard", "hable", "mobius"]
+
+unsharp_presets = {
+    "light": "unsharp=5:5:0.5:5:5:0.0",
+    "medium": "unsharp=5:5:1.0:5:5:0.5",
+    "strong": "unsharp=7:7:1.5:7:7:1.0",
+}
+
+deflicker_presets = {
+    "light": "deflicker=mode=pm:size=3",
+    "medium": "deflicker=mode=pm:size=5",
+    "strong": "deflicker=mode=pm:size=11",
+}
+
+colorbalance_presets = {
+    "Warm Shadows": "colorbalance=rs=0.15:bs=-0.15",
+    "Cool Shadows": "colorbalance=rs=-0.15:bs=0.15",
+    "Warm Midtones": "colorbalance=rm=0.15:bm=-0.15",
+    "Cool Midtones": "colorbalance=rm=-0.15:bm=0.15",
+    "Warm Highlights": "colorbalance=rh=0.15:bh=-0.15",
+    "Cool Highlights": "colorbalance=rh=-0.15:bh=0.15",
+}
+
+curves_presets = [
+    "none",
+    "color_negative",
+    "cross_process",
+    "darker",
+    "increase_contrast",
+    "lighter",
+    "linear_contrast",
+    "medium_contrast",
+    "negative",
+    "strong_contrast",
+    "vintage",
+]
+
+pad_aspects = ["none", "16:9", "4:3", "1:1", "9:16", "21:9"]
 
 
 def non(value):
@@ -96,13 +149,14 @@ class AdvancedPanel(QtWidgets.QWidget):
         scroll.setFrameShape(QtWidgets.QFrame.NoFrame)
 
         container = QtWidgets.QWidget()
-        container.setMinimumHeight(670)
+        container.setMinimumHeight(860)
         self.inner_layout = QtWidgets.QVBoxLayout(container)
         self.inner_layout.setSpacing(6)
 
         self.inner_layout.addWidget(self.init_video_details_group())
         self.inner_layout.addWidget(self.init_fps_group())
         self.inner_layout.addWidget(self.init_video_processing_group())
+        self.inner_layout.addWidget(self.init_color_appearance_group())
         self.inner_layout.addWidget(self.init_color_group())
         self.inner_layout.addWidget(self.init_output_group())
         self.inner_layout.addStretch()
@@ -214,70 +268,13 @@ class AdvancedPanel(QtWidgets.QWidget):
         gl.addWidget(QtWidgets.QLabel(t("HDR -> SDR Tone Map")), row, 4, alignment=QtCore.Qt.AlignRight)
         gl.addWidget(self.tone_map_widget, row, 5)
 
-        # --- Equalizer row 1: Brightness / Contrast / Saturation ---
-        row += 1
-        c_locale = QtCore.QLocale.c()
-
-        self.brightness_widget = QtWidgets.QLineEdit()
-        brightness_validator = QtGui.QDoubleValidator()
-        brightness_validator.setLocale(c_locale)
-        self.brightness_widget.setValidator(brightness_validator)
-        self.brightness_widget.setToolTip("Default is: 0")
-
-        self.brightness_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
-
-        self.contrast_widget = QtWidgets.QLineEdit()
-        contrast_validator = QtGui.QDoubleValidator()
-        contrast_validator.setLocale(c_locale)
-        self.contrast_widget.setValidator(contrast_validator)
-        self.contrast_widget.setToolTip("Default is: 1")
-
-        self.contrast_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
-
-        self.saturation_widget = QtWidgets.QLineEdit()
-        saturation_validator = QtGui.QDoubleValidator()
-        saturation_validator.setLocale(c_locale)
-        self.saturation_widget.setValidator(saturation_validator)
-        self.saturation_widget.setToolTip("Default is: 1")
-
-        self.saturation_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
-
-        gl.addWidget(QtWidgets.QLabel(t("Brightness")), row, 0, alignment=QtCore.Qt.AlignRight)
-        gl.addWidget(self.brightness_widget, row, 1)
-        gl.addWidget(QtWidgets.QLabel(t("Contrast")), row, 2, alignment=QtCore.Qt.AlignRight)
-        gl.addWidget(self.contrast_widget, row, 3)
-        gl.addWidget(QtWidgets.QLabel(t("Saturation")), row, 4, alignment=QtCore.Qt.AlignRight)
-        gl.addWidget(self.saturation_widget, row, 5)
-
-        # --- Equalizer row 2: Gamma / Hue ---
-        row += 1
-
-        self.gamma_widget = QtWidgets.QLineEdit()
-        gamma_validator = QtGui.QDoubleValidator(0.1, 10.0, 2)
-        gamma_validator.setLocale(c_locale)
-        self.gamma_widget.setValidator(gamma_validator)
-        self.gamma_widget.setToolTip("Default is: 1 (range: 0.1 - 10.0)")
-
-        self.gamma_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
-
-        self.hue_widget = QtWidgets.QLineEdit()
-        hue_validator = QtGui.QDoubleValidator(-180.0, 180.0, 2)
-        hue_validator.setLocale(c_locale)
-        self.hue_widget.setValidator(hue_validator)
-        self.hue_widget.setToolTip("Default is: 0 (range: -180 - 180 degrees)")
-
-        self.hue_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
-
-        gl.addWidget(QtWidgets.QLabel(t("Gamma")), row, 0, alignment=QtCore.Qt.AlignRight)
-        gl.addWidget(self.gamma_widget, row, 1)
-        gl.addWidget(QtWidgets.QLabel(t("Hue")), row, 2, alignment=QtCore.Qt.AlignRight)
-        gl.addWidget(self.hue_widget, row, 3)
-
         # --- Denoise row ---
         row += 1
 
         self.denoise_type_widget = QtWidgets.QComboBox()
-        self.denoise_type_widget.addItems(["none", "nlmeans", "atadenoise", "hqdn3d", "vaguedenoiser"])
+        self.denoise_type_widget.addItems(
+            ["none", "nlmeans", "nlmeans_opencl", "atadenoise", "hqdn3d", "vaguedenoiser"]
+        )
         self.denoise_type_widget.setCurrentIndex(0)
         self.denoise_type_widget.currentIndexChanged.connect(self.page_update)
 
@@ -291,7 +288,25 @@ class AdvancedPanel(QtWidgets.QWidget):
         gl.addWidget(QtWidgets.QLabel(t("Strength")), row, 2, alignment=QtCore.Qt.AlignRight)
         gl.addWidget(self.denoise_strength_widget, row, 3)
 
-        # --- Deblock row ---
+        # --- Deinterlace row ---
+        row += 1
+
+        self.deinterlace_method_widget = QtWidgets.QComboBox()
+        self.deinterlace_method_widget.addItems(deinterlace_methods)
+        self.deinterlace_method_widget.setCurrentIndex(0)
+        self.deinterlace_method_widget.currentIndexChanged.connect(self.page_update)
+
+        self.deinterlace_mode_widget = QtWidgets.QComboBox()
+        self.deinterlace_mode_widget.addItems(deinterlace_modes)
+        self.deinterlace_mode_widget.setCurrentIndex(0)
+        self.deinterlace_mode_widget.currentIndexChanged.connect(self.page_update)
+
+        gl.addWidget(QtWidgets.QLabel(t("Deinterlace")), row, 0, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.deinterlace_method_widget, row, 1)
+        gl.addWidget(QtWidgets.QLabel(t("Mode")), row, 2, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.deinterlace_mode_widget, row, 3)
+
+        # --- Deblock / Deflicker row ---
         row += 1
 
         self.deblock_widget = QtWidgets.QComboBox()
@@ -306,13 +321,21 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.deblock_size_widget.currentIndexChanged.connect(self.page_update)
         self.deblock_size_widget.setCurrentIndex(2)
 
+        self.deflicker_widget = QtWidgets.QComboBox()
+        self.deflicker_widget.addItems(["none", "light", "medium", "strong"])
+        self.deflicker_widget.setCurrentIndex(0)
+        self.deflicker_widget.currentIndexChanged.connect(self.page_update)
+
         gl.addWidget(QtWidgets.QLabel(t("Deblock")), row, 0, alignment=QtCore.Qt.AlignRight)
         gl.addWidget(self.deblock_widget, row, 1)
         gl.addWidget(QtWidgets.QLabel(t("Block Size")), row, 2, alignment=QtCore.Qt.AlignRight)
         gl.addWidget(self.deblock_size_widget, row, 3)
+        gl.addWidget(QtWidgets.QLabel(t("Deflicker") + " ʘ"), row, 4, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.deflicker_widget, row, 5)
 
-        # --- Sharpen / GOP Length row ---
+        # --- Sharpen / Unsharp / GOP Length row ---
         row += 1
+        c_locale = QtCore.QLocale.c()
 
         self.sharpen_widget = QtWidgets.QLineEdit()
         sharpen_validator = QtGui.QDoubleValidator(0.0, 1.0, 2)
@@ -321,19 +344,170 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.sharpen_widget.setToolTip("Default is: 0 (range: 0.0 - 1.0)")
         self.sharpen_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
-        gl.addWidget(QtWidgets.QLabel(t("Sharpen")), row, 0, alignment=QtCore.Qt.AlignRight)
-        gl.addWidget(self.sharpen_widget, row, 1)
+        self.unsharp_widget = QtWidgets.QComboBox()
+        self.unsharp_widget.addItems(["none", "light", "medium", "strong"])
+        self.unsharp_widget.setCurrentIndex(0)
+        self.unsharp_widget.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.gop_length_widget = QtWidgets.QLineEdit()
         self.gop_length_widget.setValidator(QtGui.QIntValidator(0, 9999))
         self.gop_length_widget.setToolTip(t("GOP length in frames (leave empty for encoder default)"))
         self.gop_length_widget.textChanged.connect(self.page_update)
 
-        gl.addWidget(QtWidgets.QLabel(t("GOP Length")), row, 2, alignment=QtCore.Qt.AlignRight)
-        gl.addWidget(self.gop_length_widget, row, 3)
+        gl.addWidget(QtWidgets.QLabel(t("Sharpen")), row, 0, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.sharpen_widget, row, 1)
+        gl.addWidget(QtWidgets.QLabel(t("Unsharp Mask")), row, 2, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.unsharp_widget, row, 3)
+        gl.addWidget(QtWidgets.QLabel(t("GOP Length")), row, 4, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.gop_length_widget, row, 5)
+
+        # --- Pad row ---
+        row += 1
+
+        self.pad_aspect_widget = QtWidgets.QComboBox()
+        self.pad_aspect_widget.addItems(pad_aspects)
+        self.pad_aspect_widget.setCurrentIndex(0)
+        self.pad_aspect_widget.currentIndexChanged.connect(self.page_update)
+
+        self.pad_color_widget = QtWidgets.QLineEdit()
+        self.pad_color_widget.setPlaceholderText("black")
+        self.pad_color_widget.setToolTip(
+            t("Pad color (e.g. black, white, 0x000000). FFmpeg only — rigaya always uses black.")
+        )
+        self.pad_color_widget.textChanged.connect(self.page_update)
+
+        gl.addWidget(QtWidgets.QLabel(t("Pad Aspect")), row, 0, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.pad_aspect_widget, row, 1)
+        gl.addWidget(QtWidgets.QLabel(t("Pad Color")), row, 2, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.pad_color_widget, row, 3)
 
         self.setup_group(group, rows=6)
         return group
+
+    def init_color_appearance_group(self):
+        group = QtWidgets.QGroupBox(t("Color & Appearance"))
+        gl = QtWidgets.QGridLayout(group)
+        self.setup_grid(gl)
+        row = 0
+        c_locale = QtCore.QLocale.c()
+
+        # --- Equalizer row 1: Brightness / Contrast / Saturation ---
+        self.brightness_widget = QtWidgets.QLineEdit()
+        brightness_validator = QtGui.QDoubleValidator()
+        brightness_validator.setLocale(c_locale)
+        self.brightness_widget.setValidator(brightness_validator)
+        self.brightness_widget.setToolTip("Default is: 0")
+        self.brightness_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        self.contrast_widget = QtWidgets.QLineEdit()
+        contrast_validator = QtGui.QDoubleValidator()
+        contrast_validator.setLocale(c_locale)
+        self.contrast_widget.setValidator(contrast_validator)
+        self.contrast_widget.setToolTip("Default is: 1")
+        self.contrast_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        self.saturation_widget = QtWidgets.QLineEdit()
+        saturation_validator = QtGui.QDoubleValidator()
+        saturation_validator.setLocale(c_locale)
+        self.saturation_widget.setValidator(saturation_validator)
+        self.saturation_widget.setToolTip("Default is: 1")
+        self.saturation_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        gl.addWidget(QtWidgets.QLabel(t("Brightness")), row, 0, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.brightness_widget, row, 1)
+        gl.addWidget(QtWidgets.QLabel(t("Contrast")), row, 2, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.contrast_widget, row, 3)
+        gl.addWidget(QtWidgets.QLabel(t("Saturation")), row, 4, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.saturation_widget, row, 5)
+
+        # --- Equalizer row 2: Gamma / Hue / Vibrance ---
+        row += 1
+
+        self.gamma_widget = QtWidgets.QLineEdit()
+        gamma_validator = QtGui.QDoubleValidator(0.1, 10.0, 2)
+        gamma_validator.setLocale(c_locale)
+        self.gamma_widget.setValidator(gamma_validator)
+        self.gamma_widget.setToolTip("Default is: 1 (range: 0.1 - 10.0)")
+        self.gamma_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        self.hue_widget = QtWidgets.QLineEdit()
+        hue_validator = QtGui.QDoubleValidator(-180.0, 180.0, 2)
+        hue_validator.setLocale(c_locale)
+        self.hue_widget.setValidator(hue_validator)
+        self.hue_widget.setToolTip("Default is: 0 (range: -180 - 180 degrees)")
+        self.hue_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        self.vibrance_widget = QtWidgets.QLineEdit()
+        vibrance_validator = QtGui.QDoubleValidator(-2.0, 2.0, 2)
+        vibrance_validator.setLocale(c_locale)
+        self.vibrance_widget.setValidator(vibrance_validator)
+        self.vibrance_widget.setToolTip("Default is: 0 (range: -2.0 - 2.0)")
+        self.vibrance_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        gl.addWidget(QtWidgets.QLabel(t("Gamma")), row, 0, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.gamma_widget, row, 1)
+        gl.addWidget(QtWidgets.QLabel(t("Hue")), row, 2, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.hue_widget, row, 3)
+        gl.addWidget(QtWidgets.QLabel(t("Vibrance") + " ʘ"), row, 4, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.vibrance_widget, row, 5)
+
+        # --- Color Temperature / Curves / Colorbalance row ---
+        row += 1
+
+        self.color_temperature_widget = QtWidgets.QLineEdit()
+        color_temp_validator = QtGui.QIntValidator(1000, 40000)
+        self.color_temperature_widget.setValidator(color_temp_validator)
+        self.color_temperature_widget.setToolTip("Default is: 6500 Kelvin (range: 1000 - 40000)")
+        self.color_temperature_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        self.curves_preset_widget = QtWidgets.QComboBox()
+        self.curves_preset_widget.addItems(curves_presets)
+        self.curves_preset_widget.setCurrentIndex(0)
+        self.curves_preset_widget.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        self.colorbalance_widget = QtWidgets.QComboBox()
+        self.colorbalance_widget.addItems(["none"] + list(colorbalance_presets.keys()))
+        self.colorbalance_widget.setCurrentIndex(0)
+        self.colorbalance_widget.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        gl.addWidget(QtWidgets.QLabel(t("Color Temperature") + " ʘ"), row, 0, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.color_temperature_widget, row, 1)
+        gl.addWidget(QtWidgets.QLabel(t("Curves Preset")), row, 2, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.curves_preset_widget, row, 3)
+        gl.addWidget(QtWidgets.QLabel(t("Colorbalance") + " ʘ"), row, 4, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.colorbalance_widget, row, 5)
+
+        # --- LUT3D row ---
+        row += 1
+
+        self.lut3d_path_widget = QtWidgets.QLineEdit()
+        self.lut3d_path_widget.setPlaceholderText(t("No LUT file selected"))
+        self.lut3d_path_widget.setReadOnly(True)
+        self.lut3d_path_widget.textChanged.connect(self.page_update)
+
+        self.lut3d_browse_button = QtWidgets.QPushButton(t("Browse"))
+        self.lut3d_browse_button.clicked.connect(self.browse_lut3d)
+
+        self.lut3d_clear_button = QtWidgets.QPushButton(t("Clear"))
+        self.lut3d_clear_button.clicked.connect(lambda: self.lut3d_path_widget.setText(""))
+
+        gl.addWidget(QtWidgets.QLabel(t("LUT3D")), row, 0, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.lut3d_path_widget, row, 1, 1, 3)
+        gl.addWidget(self.lut3d_browse_button, row, 4)
+        gl.addWidget(self.lut3d_clear_button, row, 5)
+
+        self.setup_group(group, rows=4)
+        return group
+
+    def browse_lut3d(self):
+        file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self,
+            t("Select LUT File"),
+            "",
+            t("LUT Files") + " (*.cube *.3dl *.dat *.m3d);;All Files (*)",
+        )
+        if file_path:
+            self.lut3d_path_widget.setText(file_path)
 
     def init_color_group(self):
         group = QtWidgets.QGroupBox(t("Color"))
@@ -395,7 +569,13 @@ class AdvancedPanel(QtWidgets.QWidget):
         return group
 
     def init_hw_message(self):
-        label = QtWidgets.QLabel("ʘ " + t("Not supported by rigaya's hardware encoders (Video Speed, Reverse Video)"))
+        label = QtWidgets.QLabel(
+            "ʘ "
+            + t(
+                "Not supported by rigaya's hardware encoders"
+                " (Video Speed, Reverse Video, Deflicker, Vibrance, Color Temperature, Colorbalance)"
+            )
+        )
         if self.app.fastflix.config.theme == "onyx":
             label.setStyleSheet(get_onyx_label_style(muted=True))
         self.inner_layout.addWidget(label)
@@ -501,6 +681,55 @@ class AdvancedPanel(QtWidgets.QWidget):
         else:
             self.app.fastflix.current_video.video_settings.sharpen = None
 
+        if self.vibrance_widget.text().strip():
+            try:
+                self.app.fastflix.current_video.video_settings.vibrance = str(float(self.vibrance_widget.text()))
+            except ValueError:
+                logger.warning("Invalid vibrance value")
+        else:
+            self.app.fastflix.current_video.video_settings.vibrance = None
+
+        if self.color_temperature_widget.text().strip():
+            try:
+                self.app.fastflix.current_video.video_settings.color_temperature = str(
+                    int(self.color_temperature_widget.text())
+                )
+            except ValueError:
+                logger.warning("Invalid color temperature value")
+        else:
+            self.app.fastflix.current_video.video_settings.color_temperature = None
+
+        if self.curves_preset_widget.currentIndex() == 0:
+            self.app.fastflix.current_video.video_settings.curves_preset = None
+        else:
+            self.app.fastflix.current_video.video_settings.curves_preset = self.curves_preset_widget.currentText()
+
+        if self.colorbalance_widget.currentIndex() == 0:
+            self.app.fastflix.current_video.video_settings.colorbalance = None
+        else:
+            preset_name = self.colorbalance_widget.currentText()
+            self.app.fastflix.current_video.video_settings.colorbalance = colorbalance_presets[preset_name]
+
+        if self.unsharp_widget.currentIndex() == 0:
+            self.app.fastflix.current_video.video_settings.unsharp = None
+        else:
+            self.app.fastflix.current_video.video_settings.unsharp = unsharp_presets[self.unsharp_widget.currentText()]
+
+        if self.deflicker_widget.currentIndex() == 0:
+            self.app.fastflix.current_video.video_settings.deflicker = None
+        else:
+            self.app.fastflix.current_video.video_settings.deflicker = deflicker_presets[
+                self.deflicker_widget.currentText()
+            ]
+
+        if self.pad_aspect_widget.currentIndex() == 0:
+            self.app.fastflix.current_video.video_settings.pad_aspect = None
+        else:
+            self.app.fastflix.current_video.video_settings.pad_aspect = self.pad_aspect_widget.currentText()
+        self.app.fastflix.current_video.video_settings.pad_color = self.pad_color_widget.text().strip() or "black"
+
+        self.app.fastflix.current_video.video_settings.lut3d_path = self.lut3d_path_widget.text().strip() or None
+
         self.app.fastflix.current_video.video_settings.faststart = self.faststart_widget.isChecked()
 
         if self.gop_length_widget.text().strip():
@@ -530,6 +759,10 @@ class AdvancedPanel(QtWidgets.QWidget):
                 self.denoise_type_widget.currentText()
             ][self.denoise_strength_widget.currentText()]
 
+        self.app.fastflix.current_video.video_settings.deinterlace_filter = deinterlace_presets[
+            self.deinterlace_method_widget.currentText()
+        ][self.deinterlace_mode_widget.currentText()]
+
         if self.color_primaries_widget.currentIndex() == 0:
             self.app.fastflix.current_video.video_settings.color_primaries = None
         else:
@@ -554,6 +787,11 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         self.update_faststart_visibility()
         self.updating = False
+
+    def get_deinterlace_filter(self):
+        return deinterlace_presets[self.deinterlace_method_widget.currentText()][
+            self.deinterlace_mode_widget.currentText()
+        ]
 
     def get_settings(self):
         denoise = None
@@ -617,6 +855,37 @@ class AdvancedPanel(QtWidgets.QWidget):
             except ValueError:
                 logger.warning("Invalid GOP length value")
 
+        vibrance = None
+        if self.vibrance_widget.text().strip():
+            try:
+                vibrance = str(float(self.vibrance_widget.text()))
+            except ValueError:
+                logger.warning("Invalid vibrance value")
+
+        color_temperature = None
+        if self.color_temperature_widget.text().strip():
+            try:
+                color_temperature = str(int(self.color_temperature_widget.text()))
+            except ValueError:
+                logger.warning("Invalid color temperature value")
+
+        curves_preset = None
+        if self.curves_preset_widget.currentIndex() != 0:
+            curves_preset = self.curves_preset_widget.currentText()
+
+        colorbalance = None
+        if self.colorbalance_widget.currentIndex() != 0:
+            preset_name = self.colorbalance_widget.currentText()
+            colorbalance = colorbalance_presets[preset_name]
+
+        unsharp = None
+        if self.unsharp_widget.currentIndex() != 0:
+            unsharp = unsharp_presets[self.unsharp_widget.currentText()]
+
+        deflicker = None
+        if self.deflicker_widget.currentIndex() != 0:
+            deflicker = deflicker_presets[self.deflicker_widget.currentText()]
+
         return AdvancedOptions(
             video_speed=video_speeds[self.video_speed_widget.currentText()],
             reverse_video=self.reverse_video_widget.isChecked(),
@@ -630,6 +899,20 @@ class AdvancedPanel(QtWidgets.QWidget):
             gamma=gamma,
             hue=hue,
             sharpen=sharpen,
+            vibrance=vibrance,
+            color_temperature=color_temperature,
+            curves_preset=curves_preset,
+            curves_preset_index=self.curves_preset_widget.currentIndex(),
+            colorbalance=colorbalance,
+            colorbalance_index=self.colorbalance_widget.currentIndex(),
+            unsharp=unsharp,
+            unsharp_index=self.unsharp_widget.currentIndex(),
+            deflicker=deflicker,
+            deflicker_index=self.deflicker_widget.currentIndex(),
+            pad_aspect=(None if self.pad_aspect_widget.currentIndex() == 0 else self.pad_aspect_widget.currentText()),
+            pad_aspect_index=self.pad_aspect_widget.currentIndex(),
+            pad_color=self.pad_color_widget.text().strip() or "black",
+            lut3d_path=self.lut3d_path_widget.text().strip() or None,
             faststart=self.faststart_widget.isChecked(),
             deinterlace=self.main.widgets.deinterlace.isChecked(),
             gop_length=gop_length,
@@ -649,8 +932,8 @@ class AdvancedPanel(QtWidgets.QWidget):
             denoise=denoise,
             denoise_type_index=self.denoise_type_widget.currentIndex(),
             denoise_strength_index=self.denoise_strength_widget.currentIndex(),
-            # first_pass_filters=self.first_filters.text() or None,
-            # second_pass_filters=self.second_filters.text() or None,
+            deinterlace_method_index=self.deinterlace_method_widget.currentIndex(),
+            deinterlace_mode_index=self.deinterlace_mode_widget.currentIndex(),
         )
 
     def hdr_settings(self):
@@ -706,11 +989,23 @@ class AdvancedPanel(QtWidgets.QWidget):
         if not hasattr(self, "faststart_widget"):
             return
         ext = ""
-        # Check the output type combo first (always reflects current selection)
-        if hasattr(self.main, "widgets") and hasattr(self.main.widgets, "output_type_combo"):
-            ext = self.main.widgets.output_type_combo.currentText().lower()
+        # Use resolve_output_extension() which handles "Same as Source" → actual extension
+        try:
+            result = self.main.resolve_output_extension()
+            if isinstance(result, str):
+                ext = result
+        except Exception:
+            pass
+        # Fall back to reading combo directly (e.g. in tests with mock main)
+        if not ext:
+            try:
+                combo_text = self.main.widgets.output_type_combo.currentText().lower()
+                if isinstance(combo_text, str) and combo_text.startswith("."):
+                    ext = combo_text
+            except Exception:
+                pass
         # Fall back to output_path if available
-        elif self.app.fastflix.current_video and self.app.fastflix.current_video.video_settings.output_path:
+        if not ext and self.app.fastflix.current_video and self.app.fastflix.current_video.video_settings.output_path:
             ext = self.app.fastflix.current_video.video_settings.output_path.suffix.lower()
         self.faststart_widget.setVisible(ext in (".mp4", ".mov", ".m4v"))
 
@@ -724,6 +1019,45 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.gamma_widget.setText(settings.gamma or "")
             self.hue_widget.setText(settings.hue or "")
             self.sharpen_widget.setText(settings.sharpen or "")
+            self.vibrance_widget.setText(settings.vibrance or "")
+            self.color_temperature_widget.setText(settings.color_temperature or "")
+            if settings.curves_preset:
+                self.curves_preset_widget.setCurrentText(settings.curves_preset)
+            else:
+                self.curves_preset_widget.setCurrentIndex(0)
+            if settings.colorbalance:
+                for name, value in colorbalance_presets.items():
+                    if settings.colorbalance == value:
+                        self.colorbalance_widget.setCurrentText(name)
+                        break
+                else:
+                    self.colorbalance_widget.setCurrentIndex(0)
+            else:
+                self.colorbalance_widget.setCurrentIndex(0)
+            if settings.unsharp:
+                for name, value in unsharp_presets.items():
+                    if settings.unsharp == value:
+                        self.unsharp_widget.setCurrentText(name)
+                        break
+                else:
+                    self.unsharp_widget.setCurrentIndex(0)
+            else:
+                self.unsharp_widget.setCurrentIndex(0)
+            if settings.deflicker:
+                for name, value in deflicker_presets.items():
+                    if settings.deflicker == value:
+                        self.deflicker_widget.setCurrentText(name)
+                        break
+                else:
+                    self.deflicker_widget.setCurrentIndex(0)
+            else:
+                self.deflicker_widget.setCurrentIndex(0)
+            if settings.pad_aspect:
+                self.pad_aspect_widget.setCurrentText(settings.pad_aspect)
+            else:
+                self.pad_aspect_widget.setCurrentIndex(0)
+            self.pad_color_widget.setText(settings.pad_color if settings.pad_color != "black" else "")
+            self.lut3d_path_widget.setText(settings.lut3d_path or "")
             self.gop_length_widget.setText(str(settings.gop_length) if settings.gop_length else "")
             self.faststart_widget.setChecked(settings.faststart if hasattr(settings, "faststart") else True)
 
@@ -757,6 +1091,17 @@ class AdvancedPanel(QtWidgets.QWidget):
             else:
                 self.denoise_type_widget.setCurrentIndex(0)
                 self.denoise_strength_widget.setCurrentIndex(0)
+
+            if settings.deinterlace_filter:
+                for method, modes in deinterlace_presets.items():
+                    for mode_name, value in modes.items():
+                        if settings.deinterlace_filter == value:
+                            self.deinterlace_method_widget.setCurrentText(method)
+                            self.deinterlace_mode_widget.setCurrentText(mode_name)
+            else:
+                self.deinterlace_method_widget.setCurrentIndex(0)
+                self.deinterlace_mode_widget.setCurrentIndex(0)
+
             if settings.vsync:
                 self.vsync_widget.setCurrentText(settings.vsync)
             else:
@@ -825,6 +1170,13 @@ class AdvancedPanel(QtWidgets.QWidget):
                 self.app.fastflix.config.advanced_opt("denoise_strength_index")
             )
 
+            self.deinterlace_method_widget.setCurrentIndex(
+                self.app.fastflix.config.advanced_opt("deinterlace_method_index")
+            )
+            self.deinterlace_mode_widget.setCurrentIndex(
+                self.app.fastflix.config.advanced_opt("deinterlace_mode_index")
+            )
+
             vsync_value = self.app.fastflix.config.advanced_opt("vsync")
             self.vsync_widget.setCurrentIndex(0 if not vsync_value else (vsync.index(vsync_value) + 1))
 
@@ -842,6 +1194,16 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.gamma_widget.setText(self.app.fastflix.config.advanced_opt("gamma") or "")
             self.hue_widget.setText(self.app.fastflix.config.advanced_opt("hue") or "")
             self.sharpen_widget.setText(self.app.fastflix.config.advanced_opt("sharpen") or "")
+            self.vibrance_widget.setText(self.app.fastflix.config.advanced_opt("vibrance") or "")
+            self.color_temperature_widget.setText(self.app.fastflix.config.advanced_opt("color_temperature") or "")
+            self.curves_preset_widget.setCurrentIndex(self.app.fastflix.config.advanced_opt("curves_preset_index") or 0)
+            self.colorbalance_widget.setCurrentIndex(self.app.fastflix.config.advanced_opt("colorbalance_index") or 0)
+            self.unsharp_widget.setCurrentIndex(self.app.fastflix.config.advanced_opt("unsharp_index") or 0)
+            self.deflicker_widget.setCurrentIndex(self.app.fastflix.config.advanced_opt("deflicker_index") or 0)
+            self.pad_aspect_widget.setCurrentIndex(self.app.fastflix.config.advanced_opt("pad_aspect_index") or 0)
+            pad_color_val = self.app.fastflix.config.advanced_opt("pad_color")
+            self.pad_color_widget.setText(pad_color_val if pad_color_val and pad_color_val != "black" else "")
+            self.lut3d_path_widget.setText(self.app.fastflix.config.advanced_opt("lut3d_path") or "")
             gop_val = self.app.fastflix.config.advanced_opt("gop_length")
             self.gop_length_widget.setText(str(gop_val) if gop_val else "")
             faststart_val = self.app.fastflix.config.advanced_opt("faststart")
@@ -980,3 +1342,6 @@ class AdvancedPanel(QtWidgets.QWidget):
         denoise_strength_index = advanced_options.denoise_strength_index
         if denoise_strength_index is not None:
             self.denoise_strength_widget.setCurrentIndex(denoise_strength_index)
+
+        self.deinterlace_method_widget.setCurrentIndex(advanced_options.deinterlace_method_index)
+        self.deinterlace_mode_widget.setCurrentIndex(advanced_options.deinterlace_mode_index)

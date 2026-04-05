@@ -118,6 +118,9 @@ def build(fastflix: FastFlix):
     command.extend(["--quality", settings.preset])
     command.extend(["--profile", settings.profile])
 
+    if settings.tune:
+        command.extend(["--tune", settings.tune])
+
     if settings.lookahead:
         command.extend(["--la-depth", str(settings.lookahead)])
 

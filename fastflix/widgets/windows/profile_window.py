@@ -24,8 +24,24 @@ logger = logging.getLogger("fastflix")
 match_type_eng = [MatchType.ALL, MatchType.FIRST, MatchType.LAST]
 match_type_locale = [t("All"), t("First"), t("Last")]
 
-match_item_enums = [MatchItem.ALL, MatchItem.TITLE, MatchItem.TRACK, MatchItem.LANGUAGE, MatchItem.CHANNELS]
-match_item_locale = [t("All"), t("Title"), t("Track Number"), t("Language"), t("Channels")]
+match_item_enums = [
+    MatchItem.ALL,
+    MatchItem.TITLE,
+    MatchItem.TRACK,
+    MatchItem.LANGUAGE,
+    MatchItem.CHANNELS,
+    MatchItem.CODEC,
+    MatchItem.CODEC_PROFILE,
+]
+match_item_locale = [
+    t("All"),
+    t("Title"),
+    t("Track Number"),
+    t("Language"),
+    t("Channels"),
+    t("Codec"),
+    t("Codec & Profile"),
+]
 
 sub_match_item_enums = [MatchItem.ALL, MatchItem.TRACK, MatchItem.LANGUAGE]
 sub_match_item_locale = [t("All"), t("Track Number"), t("Language")]
@@ -58,6 +74,8 @@ class AudioProfile(QtWidgets.QTabWidget):
             QtWidgets.QComboBox(),
             QtWidgets.QComboBox(),
             QtWidgets.QComboBox(),
+            QtWidgets.QLineEdit(""),
+            QtWidgets.QLineEdit(""),
         ]
         self.match_input = self.match_input_boxes[0]
         self.match_input_boxes[0].setDisabled(True)
@@ -68,6 +86,8 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.match_input_boxes[4].addItems(
             ["none | unknown", "mono", "stereo", "3 | 2.1", "4", "5", "6 | 5.1", "7", "8 | 7.1", "9", "10"]
         )
+        self.match_input_boxes[5].setPlaceholderText(t("e.g. dts, truehd, aac"))
+        self.match_input_boxes[6].setPlaceholderText(t("e.g. dts:DTS-HD MA"))
 
         self.match_input_boxes[2].view().setFixedWidth(self.match_input_boxes[2].minimumSizeHint().width() + 50)
         self.match_input_boxes[3].view().setFixedWidth(self.match_input_boxes[3].minimumSizeHint().width() + 50)
@@ -198,6 +218,8 @@ class AudioProfile(QtWidgets.QTabWidget):
             match_input_value = Language(self.match_input.currentText()).pt2b
         elif match_item_enum == MatchItem.CHANNELS:
             match_input_value = str(self.match_input.currentIndex())
+        elif match_item_enum in (MatchItem.CODEC, MatchItem.CODEC_PROFILE):
+            match_input_value = self.match_input.text().strip()
         else:
             raise Exception("Internal error, what do we do sir?")
 
@@ -343,14 +365,43 @@ class SubtitleSelect(QtWidgets.QWidget):
 
         self.sub_burn_in = ToggleSwitch(t("Auto Burn-in first forced or default subtitle track"))
 
+        disposition_options = [t("Keep Source"), t("Clear All"), t("Set on First Track")]
+
+        default_disp_label = QtWidgets.QLabel(t("Default flag"))
+        self.default_disposition = QtWidgets.QComboBox()
+        self.default_disposition.addItems(disposition_options)
+        self.default_disposition.setFixedWidth(250)
+
+        forced_disp_label = QtWidgets.QLabel(t("Forced flag"))
+        self.forced_disposition = QtWidgets.QComboBox()
+        self.forced_disposition.addItems(disposition_options)
+        self.forced_disposition.setFixedWidth(250)
+
         layout = QtWidgets.QGridLayout()
         layout.addWidget(sub_language_label, 0, 0)
         layout.addWidget(self.sub_language, 0, 1)
         layout.addWidget(self.sub_first_only, 1, 0)
         layout.addWidget(self.sub_burn_in, 2, 0, 1, 2)
-        layout.addWidget(QtWidgets.QWidget(), 3, 0, 1, 2)
-        layout.setRowStretch(3, True)
+        layout.addWidget(default_disp_label, 3, 0)
+        layout.addWidget(self.default_disposition, 3, 1)
+        layout.addWidget(forced_disp_label, 4, 0)
+        layout.addWidget(self.forced_disposition, 4, 1)
+        layout.addWidget(QtWidgets.QWidget(), 5, 0, 1, 2)
+        layout.setRowStretch(5, True)
         self.setLayout(layout)
+
+    def get_default_disposition(self) -> str | None:
+        idx = self.default_disposition.currentIndex()
+        return [None, "clear", "first"][idx]
+
+    def get_forced_disposition(self) -> str | None:
+        idx = self.forced_disposition.currentIndex()
+        return [None, "clear", "first"][idx]
+
+    def set_disposition_from_profile(self, default_disp: str | None, forced_disp: str | None):
+        mapping = {None: 0, "clear": 1, "first": 2}
+        self.default_disposition.setCurrentIndex(mapping.get(default_disp, 0))
+        self.forced_disposition.setCurrentIndex(mapping.get(forced_disp, 0))
 
 
 class DataSelect(QtWidgets.QWidget):
@@ -521,7 +572,7 @@ class ProfileWindow(QtWidgets.QWidget):
             remove_hdr=self.main.remove_hdr,
             resolution_method=self.main.resolution_method(),
             resolution_custom=self.main.resolution_custom(),
-            output_type=self.main.widgets.output_type_combo.currentText(),
+            output_type=self.main.output_type_for_profile(),
         )
 
         self.tab_area = QtWidgets.QTabWidget()
@@ -625,13 +676,15 @@ class ProfileWindow(QtWidgets.QWidget):
             data_passthrough=self.data_select.get_settings(),
             resolution_method=self.main_settings.resolution_method,
             resolution_custom=self.main_settings.resolution_custom,
-            output_type=self.main.widgets.output_type_combo.currentText(),
+            output_type=self.main.output_type_for_profile(),
             # subtitle_filters=self.subtitle_select.get_settings(),
             subtitle_language=sub_lang,
             subtitle_select=subtitle_enabled,
             subtitle_automatic_burn_in=self.subtitle_select.sub_burn_in.isChecked(),
             subtitle_select_preferred_language=subtitle_select_preferred_language,
             subtitle_select_first_matching=self.subtitle_select.sub_first_only.isChecked(),
+            subtitle_default_disposition=self.subtitle_select.get_default_disposition(),
+            subtitle_forced_disposition=self.subtitle_select.get_forced_disposition(),
             encoder=self.encoder.name,
             advanced_options=self.advanced_options,
         )

@@ -267,6 +267,7 @@ def generate_filters(
     start_filters=None,
     raw_filters=False,
     deinterlace=False,
+    deinterlace_filter="yadif",
     contrast=None,
     brightness=None,
     saturation=None,
@@ -281,13 +282,13 @@ def generate_filters(
     deblock_size: int = 4,
     denoise: Union[str, None] = None,
     color_transfer: Optional[str] = None,
-    **_,
+    **_kw,
 ):
     filter_list = []
     if start_filters:
         filter_list.append(start_filters)
     if deinterlace:
-        filter_list.append("yadif")
+        filter_list.append(deinterlace_filter or "yadif")
     if crop:
         filter_list.append(f"crop={crop['width']}:{crop['height']}:{crop['left']}:{crop['top']}")
     if scale:
@@ -295,6 +296,16 @@ def generate_filters(
             filter_list.append(f"scale={scale}:flags={scale_filter},setsar=1:1")
     elif sar and sar != "1:1" and sar != "1/1":
         filter_list.append("setsar=1:1")
+    pad_aspect = _kw.get("pad_aspect")
+    if pad_aspect and pad_aspect != "none":
+        pad_color = _kw.get("pad_color", "black") or "black"
+        num, den = pad_aspect.split(":")
+        target_ratio = int(num) / int(den)
+        filter_list.append(
+            f"pad=w=if(gt(a\\,{target_ratio})\\,iw\\,ceil(ih*{target_ratio}/2)*2)"
+            f":h=if(gt(a\\,{target_ratio})\\,ceil(iw/{target_ratio}/2)*2\\,ih)"
+            f":x=(ow-iw)/2:y=(oh-ih)/2:color={pad_color}"
+        )
     if rotate:
         if rotate == 1:
             filter_list.append("transpose=1")
@@ -313,7 +324,14 @@ def generate_filters(
     if deblock:
         filter_list.append(f"deblock=filter={deblock}:block={deblock_size}")
     if denoise:
-        filter_list.append(denoise)
+        if denoise.startswith("nlmeans_opencl"):
+            filter_list.append(f"format=yuv420p,hwupload,{denoise},hwdownload,format=yuv420p")
+        else:
+            filter_list.append(denoise)
+    if _kw.get("deflicker"):
+        filter_list.append(_kw["deflicker"])
+    if _kw.get("unsharp"):
+        filter_list.append(_kw["unsharp"])
 
     eq_filters = []
     if brightness:
@@ -329,6 +347,16 @@ def generate_filters(
         filter_list.append(":".join(eq_filters))
     if hue:
         filter_list.append(f"hue=h={hue}")
+    if _kw.get("vibrance"):
+        filter_list.append(f"vibrance=intensity={_kw['vibrance']}")
+    if _kw.get("colorbalance"):
+        filter_list.append(_kw["colorbalance"])
+    if _kw.get("color_temperature"):
+        filter_list.append(f"colortemperature=temperature={_kw['color_temperature']}")
+    if _kw.get("curves_preset"):
+        filter_list.append(f"curves=preset={_kw['curves_preset']}")
+    if _kw.get("lut3d_path"):
+        filter_list.append(f"lut3d=file='{quoted_path(str(_kw['lut3d_path']))}'")
 
     if sharpen:
         filter_list.append(f"cas=strength={sharpen}")

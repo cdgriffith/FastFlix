@@ -85,8 +85,9 @@ class QSVEnc(QSVEncPanel):
         custom_layout = self._add_custom(title="Custom QSVEncC options", disable_both_passes=True)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 1, 0, 1, 2)
         grid.addLayout(self.init_qp_mode(), 2, 0, 1, 2)
-        grid.addLayout(self.init_lookahead(), 1, 0, 1, 2)
+        grid.addLayout(self.init_lookahead(), 3, 0, 1, 2)
         grid.addLayout(self.init_adapt_ref(), 5, 0, 1, 2)
         grid.addLayout(self.init_adapt_ltr(), 6, 0, 1, 2)
         grid.addLayout(self.init_adapt_cqm(), 7, 0, 1, 2)
@@ -164,7 +165,7 @@ class QSVEnc(QSVEncPanel):
             label="Tune",
             widget_name="tune",
             tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, ll - Low Latency, ull - Ultra Low Latency",
-            options=["hq", "ll", "ull", "lossless"],
+            options=["none", "hq", "ll", "ull", "lossless"],
             opt="tune",
         )
 
@@ -332,6 +333,7 @@ class QSVEnc(QSVEncPanel):
             adapt_cqm=self.widgets.adapt_cqm.isChecked(),
             adapt_ref=self.widgets.adapt_ref.isChecked(),
             split_mode=self.widgets.split_mode.currentText(),
+            tune=self.widgets.tune.currentText() if self.widgets.tune.currentIndex() != 0 else None,
         )
 
         encode_type, q_value = self.get_mode_settings()

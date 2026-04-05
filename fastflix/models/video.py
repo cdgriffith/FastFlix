@@ -104,6 +104,7 @@ class VideoSettings(BaseModel):
     resolution_method: str = "auto"
     resolution_custom: str | None = None
     deinterlace: bool = False
+    deinterlace_filter: str = "yadif"
     video_speed: Union[float, int] = 1
     reverse_video: bool = False
     tone_map: str = "hable"
@@ -124,6 +125,15 @@ class VideoSettings(BaseModel):
     gamma: Optional[str] = None
     hue: Optional[str] = None
     sharpen: Optional[str] = None
+    vibrance: Optional[str] = None
+    color_temperature: Optional[str] = None
+    curves_preset: Optional[str] = None
+    colorbalance: Optional[str] = None
+    unsharp: Optional[str] = None
+    deflicker: Optional[str] = None
+    pad_aspect: Optional[str] = None
+    pad_color: str = "black"
+    lut3d_path: Optional[str] = None
     faststart: bool = True
     gop_length: Optional[int] = None
     copy_data: bool = False
@@ -205,6 +215,20 @@ class VideoSettings(BaseModel):
     @field_validator("sharpen", mode="before")
     @classmethod
     def sharpen_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
+
+    @field_validator("vibrance", mode="before")
+    @classmethod
+    def vibrance_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
+
+    @field_validator("color_temperature", mode="before")
+    @classmethod
+    def color_temperature_to_str(cls, value):
         if isinstance(value, (int, float)):
             return str(value)
         return value

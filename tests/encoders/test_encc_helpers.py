@@ -833,8 +833,8 @@ def test_rigaya_extra_options_denoise_vaguedenoiser(encc_fastflix_instance):
 
 
 def test_rigaya_extra_options_denoise_all_presets_mapped():
-    """Test that all 12 known denoise presets have mappings."""
-    assert len(RIGAYA_DENOISE_MAP) == 12
+    """Test that all 15 known denoise presets have mappings (12 original + 3 nlmeans_opencl)."""
+    assert len(RIGAYA_DENOISE_MAP) == 15
 
 
 def test_rigaya_extra_options_denoise_unknown(encc_fastflix_instance):
@@ -944,3 +944,95 @@ def test_rigaya_extra_options_gop_length_none(encc_fastflix_instance):
     video.video_settings.gop_length = None
     result = rigaya_extra_options(video)
     assert "--gop-len" not in result
+
+
+def test_rigaya_extra_options_curves_preset(encc_fastflix_instance):
+    """Test that curves_preset generates --vpp-curves."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.curves_preset = "vintage"
+    result = rigaya_extra_options(video)
+    assert "--vpp-curves" in result
+    idx = result.index("--vpp-curves")
+    assert result[idx + 1] == "preset=vintage"
+
+
+def test_rigaya_extra_options_curves_preset_none(encc_fastflix_instance):
+    """Test that no curves_preset does not add --vpp-curves."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.curves_preset = None
+    result = rigaya_extra_options(video)
+    assert "--vpp-curves" not in result
+
+
+def test_rigaya_extra_options_lut3d(encc_fastflix_instance):
+    """Test that lut3d_path generates --vpp-colorspace with lut3d."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.lut3d_path = "/path/to/my.cube"
+    result = rigaya_extra_options(video)
+    assert "--vpp-colorspace" in result
+    idx = result.index("--vpp-colorspace")
+    assert "lut3d=/path/to/my.cube" in result[idx + 1]
+    assert "lut3d_interp=tetrahedral" in result[idx + 1]
+
+
+def test_rigaya_extra_options_lut3d_none(encc_fastflix_instance):
+    """Test that no lut3d_path does not add --vpp-colorspace."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.lut3d_path = None
+    result = rigaya_extra_options(video)
+    assert "--vpp-colorspace" not in result
+
+
+def test_rigaya_extra_options_unsharp_preset(encc_fastflix_instance):
+    """Test that unsharp preset generates --vpp-unsharp with correct parameters."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.unsharp = "unsharp=5:5:1.0:5:5:0.5"
+    result = rigaya_extra_options(video)
+    assert "--vpp-unsharp" in result
+    idx = result.index("--vpp-unsharp")
+    assert "radius=3,weight=0.6" in result[idx + 1]
+
+
+def test_rigaya_extra_options_unsharp_overrides_sharpen(encc_fastflix_instance):
+    """Test that when both unsharp and sharpen are set, unsharp takes priority."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.unsharp = "unsharp=5:5:0.5:5:5:0.0"
+    video.video_settings.sharpen = "0.8"
+    result = rigaya_extra_options(video)
+    # Should only have one --vpp-unsharp (from unsharp, not sharpen)
+    count = result.count("--vpp-unsharp")
+    assert count == 1
+    idx = result.index("--vpp-unsharp")
+    assert "radius=3,weight=0.3" in result[idx + 1]
+
+
+def test_rigaya_extra_options_pad_16_9(encc_fastflix_instance):
+    """Test that pad aspect 16:9 generates --vpp-pad for 4:3 source."""
+    video = encc_fastflix_instance.current_video
+    # Set up a 4:3 source (1440x1080) via streams
+    video.streams.video[0].width = 1440
+    video.streams.video[0].height = 1080
+    video.video_settings.pad_aspect = "16:9"
+    result = rigaya_extra_options(video)
+    assert "--vpp-pad" in result
+    idx = result.index("--vpp-pad")
+    # 1080 * 16/9 = 1920, pad_left = (1920-1440)/2 = 240
+    assert "240,0,240,0" in result[idx + 1]
+
+
+def test_rigaya_extra_options_pad_none(encc_fastflix_instance):
+    """Test that no pad_aspect does not add --vpp-pad."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.pad_aspect = None
+    result = rigaya_extra_options(video)
+    assert "--vpp-pad" not in result
+
+
+def test_rigaya_extra_options_nlmeans_opencl(encc_fastflix_instance):
+    """Test that nlmeans_opencl denoise maps to rigaya --vpp-nlmeans."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.denoise = "nlmeans_opencl=s=1.0:p=3:r=9"
+    result = rigaya_extra_options(video)
+    assert "--vpp-nlmeans" in result
+    idx = result.index("--vpp-nlmeans")
+    assert "sigma=1.0,h=1.0,patch=3,search=9" in result[idx + 1]

@@ -191,6 +191,11 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.show_error_message, row, 0, 1, 2)
         row += 1
 
+        self.keep_source_after_encode = ToggleSwitch(t("Keep source loaded after adding to queue"))
+        self.keep_source_after_encode.setChecked(self.app.fastflix.config.keep_source_after_encode)
+        layout.addWidget(self.keep_source_after_encode, row, 0, 1, 2)
+        row += 1
+
         self.clean_old_logs_button = ToggleSwitch(
             t("Remove GUI logs and compress conversion logs older than 30 days at exit")
         )
@@ -779,6 +784,7 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.sticky_tabs = self.sticky_tabs.isChecked()
         self.app.fastflix.config.show_complete_message = self.show_complete_message.isChecked()
         self.app.fastflix.config.show_error_message = self.show_error_message.isChecked()
+        self.app.fastflix.config.keep_source_after_encode = self.keep_source_after_encode.isChecked()
         self.app.fastflix.config.disable_deinterlace_check = self.disable_deinterlace_button.isChecked()
         self.app.fastflix.config.suppress_ffmpeg_version_warning = self.suppress_ffmpeg_version_warning.isChecked()
         self.app.fastflix.config.use_keyframes_for_preview = self.use_keyframes_for_preview.isChecked()

@@ -96,6 +96,7 @@ class SVT_AV1(SettingPanel):
         grid.addLayout(self.init_film_grain(), 5, 2, 1, 4)
         grid.addLayout(self.init_film_grain_denoise(), 6, 2, 1, 4)
         grid.addLayout(self.init_svtav1_params(), 7, 2, 1, 4)
+        grid.addLayout(self.init_lossless(), 8, 2, 1, 4)
 
         grid.setRowStretch(12, 1)
         custom_layout = self._add_custom()
@@ -234,6 +235,30 @@ class SVT_AV1(SettingPanel):
             opt="film_grain_denoise",
         )
 
+    def init_lossless(self):
+        layout = self._add_check_box(
+            label="Lossless",
+            widget_name="lossless",
+            tooltip=(
+                "Enable lossless encoding mode (requires SVT-AV1 v2.0+).\n"
+                "Produces bit-exact output with no quality loss.\n"
+                "Rate control options are ignored in lossless mode."
+            ),
+            opt="lossless",
+            connect=lambda: (self._toggle_lossless(), self.main.page_update(build_thumbnail=False)),
+        )
+        return layout
+
+    def _toggle_lossless(self):
+        enabled = not self.widgets.lossless.isChecked()
+        self.qp_radio.setEnabled(enabled)
+        self.bitrate_radio.setEnabled(enabled)
+        self.widgets.qp.setEnabled(enabled)
+        self.widgets.custom_qp.setEnabled(enabled)
+        self.widgets.bitrate.setEnabled(enabled)
+        self.widgets.custom_bitrate.setEnabled(enabled)
+        self.widgets.qp_mode.setEnabled(enabled)
+
     def init_qp_or_crf(self):
         return self._add_combo_box(
             label="Quantization Mode",
@@ -327,6 +352,7 @@ class SVT_AV1(SettingPanel):
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
             svtav1_params=svtav1_params_text.split(":") if svtav1_params_text else [],
+            lossless=self.widgets.lossless.isChecked(),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.qp = q_value if encode_type == "qp" else None

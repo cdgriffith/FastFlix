@@ -58,12 +58,13 @@ def test_panel_has_scroll_area(advanced_panel):
     assert len(scroll_areas) == 1, "Panel should have exactly one QScrollArea"
 
 
-def test_panel_has_five_groups(advanced_panel):
-    """The panel must contain exactly 5 QGroupBox sections."""
+def test_panel_has_six_groups(advanced_panel):
+    """The panel must contain exactly 6 QGroupBox sections."""
     groups = advanced_panel.findChildren(QtWidgets.QGroupBox)
-    assert len(groups) == 5, f"Expected 5 QGroupBox, found {len(groups)}"
+    assert len(groups) == 6, f"Expected 6 QGroupBox, found {len(groups)}"
     titles = sorted(g.title() for g in groups)
     assert "Color" in titles
+    assert "Color & Appearance" in titles
     assert "Frame Rate" in titles
     assert "Output" in titles
     assert "Video Details" in titles
@@ -100,6 +101,17 @@ def test_all_key_widgets_exist(advanced_panel):
         "sharpen_widget",
         "gop_length_widget",
         "faststart_widget",
+        "vibrance_widget",
+        "color_temperature_widget",
+        "curves_preset_widget",
+        "colorbalance_widget",
+        "unsharp_widget",
+        "deflicker_widget",
+        "pad_aspect_widget",
+        "pad_color_widget",
+        "lut3d_path_widget",
+        "lut3d_browse_button",
+        "lut3d_clear_button",
     ]
     for name in widgets:
         assert hasattr(advanced_panel, name), f"Missing widget: {name}"

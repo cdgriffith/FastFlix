@@ -2,15 +2,29 @@
 
 ## Version 6.3.0
 
+* Adding #202 new video filters to the Advanced panel: vibrance, color temperature, curves presets, colorbalance presets, unsharp mask, deflicker, pad/letterbox, LUT3D file loading, and nlmeans_opencl GPU-accelerated denoise — with rigaya hardware encoder support for curves (--vpp-curves), unsharp (--vpp-unsharp), pad (--vpp-pad), LUT3D (--vpp-colorspace lut3d), and nlmeans_opencl (--vpp-nlmeans)
+* Adding #212 full source and output file path tooltip on hover for queue items, with responsive text eliding for long file names (thanks to bmcassagne)
+* Adding #344 lossless encoding option for AVC (x264), AV1 (AOM), VP9, and AV1 (SVT-AV1) encoders
 * Adding #377 #550 #694 gamma and hue options to the Equalizer in the Advanced panel (FFmpeg eq/hue filters for software encoders, --vpp-tweak for rigaya) (thanks to lincsat, DCNerds, and Patrick Isbendjian)
 * Adding #405 sharpen filter (CAS) to the Advanced panel (FFmpeg cas filter for software encoders, --vpp-unsharp for rigaya)
 * Adding #447 GOP length setting to the Advanced panel (FFmpeg -g, rigaya --gop-len) (thanks to colemar)
-* Adding #498 deinterlace setting persistence in profiles
+* Adding #457 QSVEncC --tune parameter support (hq, ll, ull, lossless) for HEVC, AV1, and AVC encoders (thanks to Marco Ravich)
+* Adding #480 2-pass CRF encoding for the AOM AV1 encoder for improved quality (thanks to jimbow973)
+* Adding #498 deinterlace method and mode options (yadif, bwdif, w3fdif, estdif with send_frame/send_field modes) to the Advanced panel, with persistence in profiles
+* Adding #520 "Same as Source" option for the output file extension, matching the output container to the source format for batch encoding mixed MKV/MP4 files (thanks to x9sim9)
+* Adding #523 drag and drop folder support in the Concatenation Builder (thanks to GokieKS)
 * Adding #526 -movflags +faststart toggle for MP4/MOV containers, enabled by default (thanks to Aria)
+* Adding #594 codec and codec+profile matching options for audio profile pattern matching, allowing users to distinguish between e.g. DTS-HD MA and regular DTS tracks (thanks to Damundai)
+* Adding #665 profile-level control for subtitle "default" and "forced" disposition flags with Keep Source, Clear All, and Set on First Track modes (thanks to legoleigh)
+* Adding #677 "Keep source loaded after adding to queue" setting to allow tweaking and re-queuing the same source without reloading (thanks to Mine181)
+* Adding #682 HE-AAC and HE-AAC v2 audio profile selection for AAC and libfdk_aac codecs (thanks to Augusto7743)
 * Adding Reverse Video option in the Advanced panel (applies FFmpeg reverse video filter and areverse audio filter for converted tracks)
 * Adding rigaya encoder support for Equalizer (--vpp-tweak), Denoise (--vpp-nlmeans/knn/pmd), Deblock (--vpp-deblock), Output FPS (--vpp-fps), and Video Track Title — only Video Speed and Reverse Video remain unsupported
+* Adding structured table view to Source Details tab with grouped sections, human-readable value formatting, and Download JSON export button
 * Adding warning in Data & Attachments tab and reason text when tracks are incompatible with the output format (e.g. data streams in MKV)
-* Changing Advanced panel layout to use QGroupBox sections (Video Details, Frame Rate, Video Processing, Color, Output) for better visual hierarchy
+* Changing Advanced panel layout to use QGroupBox sections (Video Details, Frame Rate, Video Processing, Color & Appearance, Color, Output) with restoration filters separated from color correction filters
+* Fixing #741 VideoToolbox HEVC and H264 encoders passing invalid numeric profile index instead of profile name, causing "incorrect parameters" errors on macOS (thanks to enaveso)
+* Fixing #560 queue items could not be removed while encoding — now allows removing non-running items and grays out unavailable controls (move, reload, load queue) during encoding (thanks to 54x1)
 * Fixing #736 thumbnail and crop preview generation failing with FFmpeg 8.0+ by adding `-update 1` flag required by the image2 muxer for single-image output (thanks to kliffgomel)
 * Fixing #738 conversion error with Google Pixel videos by disabling data stream mapping for Matroska containers which do not support data streams (attachments like fonts are still allowed) (thanks to Hankuuuu)
 * Fixing attachment streams (fonts, etc.) losing mimetype/filename metadata during conversion due to `-map_metadata -1` stripping per-stream tags required by the muxers

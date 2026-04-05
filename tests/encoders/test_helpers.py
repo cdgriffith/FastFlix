@@ -635,3 +635,149 @@ def test_generate_color_details(fastflix_instance):
 
     result = generate_color_details(fastflix_instance)
     assert result == ["-color_primaries", "bt2020", "-color_trc", "smpte2084", "-colorspace", "bt2020nc"]
+
+
+def test_generate_filters_with_vibrance():
+    """Test the generate_filters function with vibrance."""
+    result = generate_filters(
+        selected_track=0,
+        source=Path("input.mkv"),
+        vibrance="0.5",
+    )
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "vibrance=intensity=0.5" in result[1]
+
+
+def test_generate_filters_with_color_temperature():
+    """Test the generate_filters function with color temperature."""
+    result = generate_filters(
+        selected_track=0,
+        source=Path("input.mkv"),
+        color_temperature="5000",
+    )
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "colortemperature=temperature=5000" in result[1]
+
+
+def test_generate_filters_with_curves_preset():
+    """Test the generate_filters function with curves preset."""
+    result = generate_filters(
+        selected_track=0,
+        source=Path("input.mkv"),
+        curves_preset="vintage",
+    )
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "curves=preset=vintage" in result[1]
+
+
+def test_generate_filters_with_colorbalance():
+    """Test the generate_filters function with colorbalance."""
+    result = generate_filters(
+        selected_track=0,
+        source=Path("input.mkv"),
+        colorbalance="colorbalance=rs=0.15:bs=-0.15",
+    )
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "colorbalance=rs=0.15:bs=-0.15" in result[1]
+
+
+def test_generate_filters_with_unsharp():
+    """Test the generate_filters function with unsharp mask."""
+    result = generate_filters(
+        selected_track=0,
+        source=Path("input.mkv"),
+        unsharp="unsharp=5:5:1.0:5:5:0.5",
+    )
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "unsharp=5:5:1.0:5:5:0.5" in result[1]
+
+
+def test_generate_filters_with_deflicker():
+    """Test the generate_filters function with deflicker."""
+    result = generate_filters(
+        selected_track=0,
+        source=Path("input.mkv"),
+        deflicker="deflicker=mode=pm:size=5",
+    )
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "deflicker=mode=pm:size=5" in result[1]
+
+
+def test_generate_filters_with_pad():
+    """Test the generate_filters function with pad aspect ratio."""
+    result = generate_filters(
+        selected_track=0,
+        source=Path("input.mkv"),
+        pad_aspect="16:9",
+        pad_color="black",
+    )
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "pad=" in result[1]
+    assert "color=black" in result[1]
+
+
+def test_generate_filters_with_lut3d():
+    """Test the generate_filters function with LUT3D file."""
+    result = generate_filters(
+        selected_track=0,
+        source=Path("input.mkv"),
+        lut3d_path="/path/to/my.cube",
+    )
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "lut3d=" in result[1]
+    assert "my.cube" in result[1]
+
+
+def test_generate_filters_with_nlmeans_opencl():
+    """Test the generate_filters function with nlmeans_opencl denoise."""
+    result = generate_filters(
+        selected_track=0,
+        source=Path("input.mkv"),
+        denoise="nlmeans_opencl=s=1.0:p=3:r=9",
+    )
+    assert isinstance(result, list)
+    assert result[0] == "-filter_complex"
+    assert "hwupload" in result[1]
+    assert "nlmeans_opencl=s=1.0:p=3:r=9" in result[1]
+    assert "hwdownload" in result[1]
+
+
+def test_generate_filters_filter_chain_order():
+    """Test that filters are applied in the correct order."""
+    result = generate_filters(
+        selected_track=0,
+        source=Path("input.mkv"),
+        deinterlace=True,
+        crop={"width": 1920, "height": 1080, "left": 0, "top": 0},
+        scale="1920:-8",
+        denoise="nlmeans=s=1.0:p=3:r=9",
+        deflicker="deflicker=mode=pm:size=5",
+        unsharp="unsharp=5:5:1.0:5:5:0.5",
+        brightness="0.1",
+        hue="10",
+        vibrance="0.5",
+        colorbalance="colorbalance=rs=0.15:bs=-0.15",
+        color_temperature="5000",
+        curves_preset="vintage",
+        sharpen="0.5",
+    )
+    assert isinstance(result, list)
+    filter_str = result[1]
+    # Verify ordering: denoise before deflicker before unsharp before eq before hue before vibrance
+    assert filter_str.index("nlmeans") < filter_str.index("deflicker")
+    assert filter_str.index("deflicker") < filter_str.index("unsharp")
+    assert filter_str.index("unsharp") < filter_str.index("eq=eval=frame")
+    assert filter_str.index("eq=eval=frame") < filter_str.index("hue=h=")
+    assert filter_str.index("hue=h=") < filter_str.index("vibrance")
+    assert filter_str.index("vibrance") < filter_str.index("colorbalance")
+    assert filter_str.index("colorbalance") < filter_str.index("colortemperature")
+    assert filter_str.index("colortemperature") < filter_str.index("curves=preset")
+    assert filter_str.index("curves=preset") < filter_str.index("cas=strength")

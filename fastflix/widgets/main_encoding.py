@@ -158,7 +158,8 @@ class EncodingMixin:
                 return code
         self.video_options.show_queue()
 
-        self.clear_current_video()
+        if not self.app.fastflix.config.keep_source_after_encode:
+            self.clear_current_video()
         return True
 
     def conversion_complete(self, success: bool):
@@ -265,6 +266,7 @@ class EncodingMixin:
         self.video_options.update_queue()
         self.set_convert_button()
         self.encoding_progress_signal.emit(0)
+        self.enable_all()
 
     def send_next_video(self) -> bool:
         if not self.app.fastflix.currently_encoding:

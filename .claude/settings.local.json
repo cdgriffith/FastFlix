@@ -124,7 +124,10 @@
       "Bash(curl -sL \"https://raw.githubusercontent.com/rigaya/VCEEnc/master/VCEEncC_Options.en.md\")",
       "mcp__claude_ai_Excalidraw__read_me",
       "mcp__claude_ai_Excalidraw__create_view",
-      "Bash(QT_QPA_PLATFORM=offscreen rtk uv:*)"
+      "Bash(QT_QPA_PLATFORM=offscreen rtk uv:*)",
+      "Bash(SKIP_NVIDIA=1 SKIP_INTEL=1 SKIP_AMD=1 uv run:*)",
+      "Bash([ -f \"/c/Users/Chris/Projects/FastFlix/fastflix/encoders/$encoder/command_builder.py\" ])",
+      "Bash(uv sync:*)"
     ]
   }
 }

@@ -196,6 +196,8 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams) -> List[str]:
                     bitrate_parts = quality_str.split()
             command_list.extend(downmix)
             command_list.extend(["--audio-codec", f"{audio_id}?{track.conversion_codec}"])
+            if track.conversion_profile:
+                command_list.extend(["--audio-profile", f"{audio_id}?{track.conversion_profile}"])
             command_list.extend(bitrate_parts)
             command_list.extend(["--audio-metadata", f"{audio_id}?clear"])
 
@@ -295,11 +297,21 @@ def build_data(data_tracks: list[DataTrack], data_streams, attachment_streams) -
 # atadenoise -> --vpp-knn (closest spatial/temporal alternative)
 # hqdn3d -> --vpp-pmd (closest spatial denoiser)
 # vaguedenoiser -> --vpp-pmd (no wavelet denoiser in rigaya)
+RIGAYA_UNSHARP_MAP: dict[str, list[str]] = {
+    "unsharp=5:5:0.5:5:5:0.0": ["--vpp-unsharp", "radius=3,weight=0.3"],
+    "unsharp=5:5:1.0:5:5:0.5": ["--vpp-unsharp", "radius=3,weight=0.6"],
+    "unsharp=7:7:1.5:7:7:1.0": ["--vpp-unsharp", "radius=5,weight=1.0"],
+}
+
 RIGAYA_DENOISE_MAP: dict[str, list[str]] = {
     # nlmeans weak/moderate/strong
     "nlmeans=s=1.0:p=3:r=9": ["--vpp-nlmeans", "sigma=1.0,h=1.0,patch=3,search=9"],
     "nlmeans=s=1.0:p=7:r=15": ["--vpp-nlmeans", "sigma=1.0,h=1.0,patch=7,search=15"],
     "nlmeans=s=10.0:p=13:r=25": ["--vpp-nlmeans", "sigma=10.0,h=10.0,patch=13,search=25"],
+    # nlmeans_opencl -> same rigaya nlmeans (natively GPU-accelerated)
+    "nlmeans_opencl=s=1.0:p=3:r=9": ["--vpp-nlmeans", "sigma=1.0,h=1.0,patch=3,search=9"],
+    "nlmeans_opencl=s=1.0:p=7:r=15": ["--vpp-nlmeans", "sigma=1.0,h=1.0,patch=7,search=15"],
+    "nlmeans_opencl=s=10.0:p=13:r=25": ["--vpp-nlmeans", "sigma=10.0,h=10.0,patch=13,search=25"],
     # atadenoise weak/moderate/strong -> knn
     "atadenoise=0a=0.01:0b=0.02:1a=0.01:1b=0.02:2a=0.01:2b=0.02:s=9": [
         "--vpp-knn",
@@ -378,14 +390,25 @@ def rigaya_extra_options(video: Video) -> List[str]:
     if tweak_parts:
         result.extend(["--vpp-tweak", ",".join(tweak_parts)])
 
-    # Sharpen
-    try:
-        if vs.sharpen is not None and vs.sharpen.strip():
-            val = float(vs.sharpen)
-            if val > 0:
-                result.extend(["--vpp-unsharp", f"radius=3,weight={max(0.0, min(1.0, val))}"])
-    except ValueError:
-        logger.warning(f"Invalid sharpen value for rigaya: {vs.sharpen}")
+    # Unsharp mask (preset-based, takes priority over CAS sharpen for --vpp-unsharp)
+    has_unsharp = False
+    if vs.unsharp:
+        rigaya_unsharp = RIGAYA_UNSHARP_MAP.get(vs.unsharp)
+        if rigaya_unsharp:
+            result.extend(rigaya_unsharp)
+            has_unsharp = True
+        else:
+            logger.warning(f"No rigaya unsharp mapping for: {vs.unsharp}")
+
+    # Sharpen (CAS) — only apply if unsharp mask is not already set (both use --vpp-unsharp)
+    if not has_unsharp:
+        try:
+            if vs.sharpen is not None and vs.sharpen.strip():
+                val = float(vs.sharpen)
+                if val > 0:
+                    result.extend(["--vpp-unsharp", f"radius=3,weight={max(0.0, min(1.0, val))}"])
+        except ValueError:
+            logger.warning(f"Invalid sharpen value for rigaya: {vs.sharpen}")
 
     # Denoise
     if vs.denoise:
@@ -401,6 +424,38 @@ def rigaya_extra_options(video: Video) -> List[str]:
             result.extend(["--vpp-deblock", "strength=30"])
         elif vs.deblock == "strong":
             result.extend(["--vpp-deblock", "strength=60"])
+
+    # Curves preset
+    if vs.curves_preset:
+        result.extend(["--vpp-curves", f"preset={vs.curves_preset}"])
+
+    # LUT3D
+    if vs.lut3d_path:
+        result.extend(["--vpp-colorspace", f"lut3d={vs.lut3d_path},lut3d_interp=tetrahedral"])
+
+    # Pad / Letterbox
+    if vs.pad_aspect and vs.pad_aspect != "none":
+        try:
+            num, den = vs.pad_aspect.split(":")
+            target_ratio = int(num) / int(den)
+            sw = video.width
+            sh = video.height
+            if vs.crop:
+                sw = vs.crop.get("width", sw) if isinstance(vs.crop, dict) else sw
+                sh = vs.crop.get("height", sh) if isinstance(vs.crop, dict) else sh
+            current_ratio = sw / sh if sh else 1
+            if current_ratio < target_ratio:
+                new_w = int(round(sh * target_ratio / 2) * 2)
+                pad_left = (new_w - sw) // 2
+                pad_right = new_w - sw - pad_left
+                result.extend(["--vpp-pad", f"{pad_left},{0},{pad_right},{0}"])
+            elif current_ratio > target_ratio:
+                new_h = int(round(sw / target_ratio / 2) * 2)
+                pad_top = (new_h - sh) // 2
+                pad_bottom = new_h - sh - pad_top
+                result.extend(["--vpp-pad", f"{0},{pad_top},{0},{pad_bottom}"])
+        except (ValueError, ZeroDivisionError):
+            logger.warning(f"Invalid pad aspect for rigaya: {vs.pad_aspect}")
 
     # Output FPS via --vpp-fps (won't conflict with --fps used for source_fps)
     if vs.output_fps:

@@ -16,6 +16,7 @@ class AudioTrack(BaseModel):
     conversion_aq: Optional[int] = None
     conversion_bitrate: Optional[str] = None
     conversion_codec: str = ""
+    conversion_profile: Optional[str] = None
     profile: Optional[str] = None
     enabled: bool = True
     original: bool = False
@@ -128,6 +129,7 @@ class x264Settings(EncoderSettings):
     bitrate: Optional[str] = None
     bitrate_passes: int = 2
     x264_params: list[str] = Field(default_factory=list)
+    lossless: bool = False
 
 
 class FFmpegNVENCSettings(EncoderSettings):
@@ -295,6 +297,7 @@ class QSVEncCSettings(EncoderSettings):
     copy_hdr10: bool = False
     copy_dv: bool = False
     split_mode: str = "none"
+    tune: Optional[str] = None
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -330,6 +333,7 @@ class QSVEncCAV1Settings(EncoderSettings):
     copy_hdr10: bool = False
     copy_dv: bool = False
     split_mode: str = "none"
+    tune: Optional[str] = None
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -363,6 +367,7 @@ class QSVEncCH264Settings(EncoderSettings):
     adapt_cqm: bool = False
     adapt_ltr: bool = False
     split_mode: str = "none"
+    tune: Optional[str] = None
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -573,6 +578,7 @@ class SVTAV1Settings(EncoderSettings):
     qp_mode: str = "crf"
     bitrate: Optional[str] = None
     svtav1_params: list[str] = Field(default_factory=list)
+    lossless: bool = False
 
 
 class SVTAVIFSettings(EncoderSettings):
@@ -604,6 +610,7 @@ class VP9Settings(EncoderSettings):
     tune_content: str = "default"
     aq_mode: int = -1  # -1 = codec default
     sharpness: int = -1  # -1 = codec default, 0-7
+    lossless: bool = False
 
 
 class HEVCVideoToolboxSettings(EncoderSettings):
@@ -644,7 +651,9 @@ class AOMAV1Settings(EncoderSettings):
     aq_mode: str = "default"  # default, 0=none, 1=variance, 2=complexity, 3=cyclic
     crf: Optional[Union[int, float]] = 26
     bitrate: Optional[str] = None
+    single_pass: bool = True
     aom_params: list[str] = Field(default_factory=list)
+    lossless: bool = False
 
 
 class WebPSettings(EncoderSettings):

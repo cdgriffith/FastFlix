@@ -122,6 +122,8 @@ def build_audio(audio_tracks, audio_file_index=0, reverse_video: bool = False) -
                     )
 
             command_list.extend([f"-c:{track.outdex}", track.conversion_codec])
+            if track.conversion_profile:
+                command_list.extend([f"-profile:{track.outdex}", track.conversion_profile])
             command_list.extend(bitrate_parts)
             command_list.extend(downmix)
             command_list.extend(channel_layout)

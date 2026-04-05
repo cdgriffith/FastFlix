@@ -39,6 +39,9 @@ def build(fastflix: FastFlix):
     if settings.sharpness >= 0:
         beginning.extend(["-sharpness", str(settings.sharpness)])
 
+    if settings.lossless:
+        beginning.extend(["-lossless", "1"])
+
     details = [
         "-quality:v",
         settings.quality,
@@ -52,6 +55,11 @@ def build(fastflix: FastFlix):
 
     extra = shlex.split(settings.extra) if settings.extra else []
     extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
+
+    if settings.lossless:
+        # Lossless mode — no rate control needed, VP9 forces quantizer to 0
+        command = beginning + ["-speed:v", str(settings.speed)] + details + extra + ending
+        return [Command(command=command, name="Single pass lossless", exe="ffmpeg")]
 
     if settings.bitrate:
         if settings.quality == "realtime":
