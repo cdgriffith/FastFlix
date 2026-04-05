@@ -5,7 +5,7 @@ import os
 import re
 from pathlib import Path
 from subprocess import PIPE, CompletedProcess, Popen, TimeoutExpired, run, check_output
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 from packaging import version
 import shlex
 
@@ -420,6 +420,38 @@ def generate_thumbnail_command(
     return command
 
 
+def parse_cropdetect_output(stderr: str, video_width: int, video_height: int) -> Optional[List[int]]:
+    """Parse FFmpeg cropdetect output and return crop margins [right, bottom, left, top].
+
+    Collects all detected crop rectangles as complete (w, h, x, y) tuples
+    and selects the most conservative crop (largest detected content area).
+    Returns None if no valid detections found.
+    """
+    detections = []
+    for line in stderr.splitlines():
+        if line.startswith("[Parsed_cropdetect"):
+            try:
+                w, h, x, y = [int(v) for v in line.rsplit("=")[1].split(":")]
+                detections.append((w, h, x, y))
+            except (ValueError, IndexError):
+                continue
+
+    if not detections:
+        return None
+
+    # Select the detection with the largest content area (most conservative crop)
+    best = max(detections, key=lambda d: d[0] * d[1])
+    w, h, x, y = best
+
+    right = video_width - w - x
+    bottom = video_height - h - y
+
+    if right < 0 or bottom < 0 or x < 0 or y < 0:
+        return None
+
+    return [right, bottom, x, y]
+
+
 def get_auto_crop(
     config: Config,
     source: Path,
@@ -451,24 +483,12 @@ def get_auto_crop(
         ]
     )
 
-    width, height, x_crop, y_crop = None, None, None, None
     if not output.stderr:
-        return 0, 0, 0, 0
+        return
 
-    for line in output.stderr.splitlines():
-        if line.startswith("[Parsed_cropdetect"):
-            w, h, x, y = [int(x) for x in line.rsplit("=")[1].split(":")]
-            if (not x_crop or (x_crop and x > x_crop)) and (not width or (width and w < width)):
-                width = w
-                x_crop = x
-            if (not height or (height and h < height)) and (not y_crop or (y_crop and y > y_crop)):
-                height = h
-                y_crop = y
-
-    if None in (width, height, x_crop, y_crop):
-        return 0, 0, 0, 0
-
-    result_list.append([video_width - width - x_crop, video_height - height - y_crop, x_crop, y_crop])
+    crop_margins = parse_cropdetect_output(output.stderr, video_width, video_height)
+    if crop_margins is not None:
+        result_list.append(crop_margins)
 
 
 def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):

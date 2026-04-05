@@ -282,6 +282,8 @@ def generate_filters(
     deblock_size: int = 4,
     denoise: Union[str, None] = None,
     color_transfer: Optional[str] = None,
+    color_primaries: Optional[str] = None,
+    color_space: Optional[str] = None,
     **_kw,
 ):
     filter_list = []
@@ -375,8 +377,10 @@ def generate_filters(
             filter_list.append("tonemap_vaapi=format=nv12:p=bt709:t=bt709:m=bt709")
         else:
             tin = color_transfer if color_transfer else "smpte2084"
+            pin = color_primaries if color_primaries else "bt2020"
+            min_val = color_space if color_space else "bt2020nc"
             filter_list.append(
-                f"zscale=tin={tin}:t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
+                f"zscale=tin={tin}:pin={pin}:min={min_val}:t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
             )
 
     filters = ",".join(filter_list) if filter_list else ""

@@ -64,11 +64,11 @@ def build(fastflix: FastFlix):
         flip_x = "true" if video.video_settings.horizontal_flip else "false"
         flip_y = "true" if video.video_settings.vertical_flip else "false"
         command.extend(["--vpp-transform", f"flip_x={flip_x},flip_y={flip_y}"])
-    if video.scale:
-        command.extend(["--output-res", video.scale.replace(":", "x")])
     if video.video_settings.crop:
         crop = video.video_settings.crop
         command.extend(["--crop", f"{crop.left},{crop.top},{crop.right},{crop.bottom}"])
+    if video.output_width is not None and video.output_height is not None:
+        command.extend(["--output-res", f"{video.output_width}x{video.output_height}"])
 
     if video.video_settings.remove_metadata:
         command.extend(["--video-metadata", "clear", "--metadata", "clear"])

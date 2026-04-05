@@ -67,14 +67,14 @@ resolutions = {
     t("Width"): {"method": "width"},
     t("Height"): {"method": "height"},
     t("Custom (w:h)"): {"method": "custom"},
-    "4320 LE": {"method": "long edge", "pixels": 4320},
-    "2160 LE": {"method": "long edge", "pixels": 2160},
+    "8K (4320 LE)": {"method": "long edge", "pixels": 4320},
+    "4K (2160 LE)": {"method": "long edge", "pixels": 2160},
     "1920 LE": {"method": "long edge", "pixels": 1920},
     "1440 LE": {"method": "long edge", "pixels": 1440},
     "1280 LE": {"method": "long edge", "pixels": 1280},
-    "1080 LE": {"method": "long edge", "pixels": 1080},
-    "720 LE": {"method": "long edge", "pixels": 720},
-    "480 LE": {"method": "long edge", "pixels": 480},
+    "1080p (1080 LE)": {"method": "long edge", "pixels": 1080},
+    "720p (720 LE)": {"method": "long edge", "pixels": 720},
+    "480p (480 LE)": {"method": "long edge", "pixels": 480},
     "4320 H": {"method": "height", "pixels": 4320},
     "2160 H": {"method": "height", "pixels": 2160},
     "1920 H": {"method": "height", "pixels": 1920},
@@ -82,11 +82,11 @@ resolutions = {
     "1080 H": {"method": "height", "pixels": 1080},
     "720 H": {"method": "height", "pixels": 720},
     "480 H": {"method": "height", "pixels": 480},
-    "7680 W": {"method": "width", "pixels": 7680},
-    "3840 W": {"method": "width", "pixels": 3840},
-    "2560 W": {"method": "width", "pixels": 2560},
-    "1920 W": {"method": "width", "pixels": 1920},
-    "1280 W": {"method": "width", "pixels": 1280},
+    "8K (7680 W)": {"method": "width", "pixels": 7680},
+    "4K (3840 W)": {"method": "width", "pixels": 3840},
+    "1440p (2560 W)": {"method": "width", "pixels": 2560},
+    "1080p (1920 W)": {"method": "width", "pixels": 1920},
+    "720p (1280 W)": {"method": "width", "pixels": 1280},
     "1024 W": {"method": "width", "pixels": 1024},
     "640 W": {"method": "width", "pixels": 640},
 }
@@ -1364,53 +1364,33 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         src_h = self.app.fastflix.current_video.height
         self.widgets.video_res_label.setText(t("Video Resolution") + f": {src_w}w {src_h}h")
 
-        # Start with source dimensions, apply crop
-        out_w = src_w
-        out_h = src_h
         try:
             crop_top = int(self.widgets.crop.top.text() or 0)
             crop_bottom = int(self.widgets.crop.bottom.text() or 0)
             crop_left = int(self.widgets.crop.left.text() or 0)
             crop_right = int(self.widgets.crop.right.text() or 0)
-            out_w -= crop_left + crop_right
-            out_h -= crop_top + crop_bottom
         except (ValueError, AttributeError):
-            pass
+            crop_top = crop_bottom = crop_left = crop_right = 0
 
-        if out_w <= 0 or out_h <= 0:
+        cropped_w = src_w - crop_left - crop_right
+        cropped_h = src_h - crop_top - crop_bottom
+        if cropped_w <= 0 or cropped_h <= 0:
             self.widgets.output_res_label.setText(t("Output Resolution") + ": --")
             return
 
-        # Apply scale based on resolution method
-        method = self.resolution_method()
-        custom = self.resolution_custom()
+        out_w, out_h = Video.compute_output_dimensions(
+            source_w=src_w,
+            source_h=src_h,
+            crop_top=crop_top,
+            crop_bottom=crop_bottom,
+            crop_left=crop_left,
+            crop_right=crop_right,
+            method=self.resolution_method(),
+            custom=self.resolution_custom(),
+        )
 
-        if method != "auto" and custom:
-            try:
-                if method == "custom":
-                    parts = custom.split(":")
-                    if len(parts) == 2:
-                        cw, ch = int(parts[0]), int(parts[1])
-                        if cw > 0 and ch > 0:
-                            out_w, out_h = cw, ch
-                elif method == "width":
-                    new_w = int(custom)
-                    out_h = ((out_h * new_w // out_w) // 8) * 8
-                    out_w = new_w
-                elif method == "height":
-                    new_h = int(custom)
-                    out_w = ((out_w * new_h // out_h) // 8) * 8
-                    out_h = new_h
-                elif method == "long edge":
-                    pixels = int(custom)
-                    if out_w >= out_h:
-                        out_h = ((out_h * pixels // out_w) // 8) * 8
-                        out_w = pixels
-                    else:
-                        out_w = ((out_w * pixels // out_h) // 8) * 8
-                        out_h = pixels
-            except (ValueError, ZeroDivisionError):
-                pass
+        if out_w is None or out_h is None:
+            out_w, out_h = cropped_w, cropped_h
 
         self.widgets.output_res_label.setText(t("Output Resolution") + f": {out_w}w {out_h}h")
 
@@ -1957,6 +1937,10 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             settings["remove_hdr"] = True
             if not settings.get("color_transfer"):
                 settings["color_transfer"] = self.app.fastflix.current_video.color_transfer
+            if not settings.get("color_primaries"):
+                settings["color_primaries"] = self.app.fastflix.current_video.color_primaries
+            if not settings.get("color_space"):
+                settings["color_space"] = self.app.fastflix.current_video.color_space
 
         custom_filters = "scale='min(440\\,iw):-8'"
         if self.resolution_method() == "custom":

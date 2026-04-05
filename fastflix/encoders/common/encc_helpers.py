@@ -438,11 +438,16 @@ def rigaya_extra_options(video: Video) -> List[str]:
         try:
             num, den = vs.pad_aspect.split(":")
             target_ratio = int(num) / int(den)
+            # Start with source dimensions, apply crop
             sw = video.width
             sh = video.height
             if vs.crop:
-                sw = vs.crop.get("width", sw) if isinstance(vs.crop, dict) else sw
-                sh = vs.crop.get("height", sh) if isinstance(vs.crop, dict) else sh
+                sw = sw - vs.crop.left - vs.crop.right
+                sh = sh - vs.crop.top - vs.crop.bottom
+            # If scale is applied, use scaled dimensions for pad calculation
+            if video.output_width is not None and video.output_height is not None:
+                sw = video.output_width
+                sh = video.output_height
             current_ratio = sw / sh if sh else 1
             if current_ratio < target_ratio:
                 new_w = int(round(sh * target_ratio / 2) * 2)
