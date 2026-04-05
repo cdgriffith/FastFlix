@@ -1723,6 +1723,10 @@ Download JSON:
   ukr: Завантажити JSON
   kor: JSON 다운로드
   ron: Descărcați JSON
+Download HDR10:
+  eng: Download HDR10
+Text Files:
+  eng: Text Files
 Download Cancelled:
   deu: Download abgebrochen
   eng: Download Cancelled
@@ -13752,6 +13756,8 @@ Data streams are not supported in this output format:
   ukr: Потоки даних не підтримуються у цьому форматі виводу
   kor: 이 출력 형식에서는 데이터 스트림이 지원되지 않습니다.
   ron: Fluxurile de date nu sunt acceptate în acest format de ieșire
+Data and attachment streams are not supported by hardware encoders for this output format:
+  eng: Data and attachment streams are not supported by hardware encoders for this output format
 Downloading HDR10+ Tool:
   eng: Downloading HDR10+ Tool
   deu: Herunterladen des HDR10+ Tools

@@ -20,6 +20,7 @@
 * Adding #682 HE-AAC and HE-AAC v2 audio profile selection for AAC and libfdk_aac codecs (thanks to Augusto7743)
 * Adding Reverse Video option in the Advanced panel (applies FFmpeg reverse video filter and areverse audio filter for converted tracks)
 * Adding rigaya encoder support for Equalizer (--vpp-tweak), Denoise (--vpp-nlmeans/knn/pmd), Deblock (--vpp-deblock), Output FPS (--vpp-fps), and Video Track Title — only Video Speed and Reverse Video remain unsupported
+* Adding #544 Download HDR10 Metadata button in Source Details tab for exporting mastering display and content light level data in x265-compatible format (thanks to yundebian918)
 * Adding structured table view to Source Details tab with grouped sections, human-readable value formatting, Download JSON export, and full path tooltips on source/output filename fields
 * Adding warning in Data & Attachments tab and reason text when tracks are incompatible with the output format (e.g. data streams in MKV)
 * Changing Advanced panel layout to use QGroupBox sections (Video Details, Frame Rate, Video Processing, Color & Appearance, Color, Output) with restoration filters separated from color correction filters
@@ -35,6 +36,7 @@
 * Fixing HDR tonemapping failing with zscale "no path between colorspaces" by passing complete source colorspace parameters (primaries, matrix, transfer) to the zscale filter, with fallback retry for crop previews when tonemapping still fails
 * Fixing bitrate combobox being unreadably small on x264 and x265 encoders — combo now sizes to fit its widest item
 * Fixing rigaya encoder pad/letterbox calculation ignoring crop dimensions due to incorrect type check
+* Fixing rigaya encoders (NVEncC, QSVEncC, VCEEncC) crashing with no output when data streams are copied to non-MKV containers — `--data-copy` and `--attachment-copy` are now only emitted for Matroska output
 * Fixing startup crash when queue file exists but is missing the 'queue' key
 
 ## Version 6.2.1

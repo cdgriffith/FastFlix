@@ -152,7 +152,12 @@ def build(fastflix: FastFlix):
     command.extend(build_audio(video.audio_tracks, video.streams.audio))
     command.extend(build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height))
     command.extend(
-        build_data(video.data_tracks, getattr(video.streams, "data", []), getattr(video.streams, "attachment", []))
+        build_data(
+            video.data_tracks,
+            getattr(video.streams, "data", []),
+            getattr(video.streams, "attachment", []),
+            video.video_settings.output_path,
+        )
     )
 
     if settings.extra:

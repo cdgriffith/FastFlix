@@ -112,7 +112,18 @@ class DataTrackWidget(QtWidgets.QTabWidget):
         incompatible = False
         reason = ""
 
-        if track.codec_type == "data" and ext_with_dot in NO_DATA_EXTENSIONS:
+        # Check if current encoder is a rigaya hardware encoder (NVEncC, QSVEncC, VCEEncC)
+        is_rigaya = False
+        try:
+            encoder_name = self.app.fastflix.current_video.video_settings.video_encoder_settings.name
+            is_rigaya = "encc" in encoder_name.lower()
+        except (AttributeError, RuntimeError):
+            pass
+
+        if is_rigaya and ext_with_dot not in {".mkv", ".mka"}:
+            incompatible = True
+            reason = t("Data and attachment streams are not supported by hardware encoders for this output format")
+        elif track.codec_type == "data" and ext_with_dot in NO_DATA_EXTENSIONS:
             incompatible = True
             reason = t("Data streams are not supported in this output format")
         elif track.codec_type == "attachment" and ext_with_dot in NO_ATTACHMENT_EXTENSIONS:

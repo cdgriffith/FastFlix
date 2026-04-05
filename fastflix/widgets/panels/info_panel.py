@@ -11,6 +11,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
+from fastflix.ui_scale import scaler
 from fastflix.ui_styles import ONYX_COLORS
 
 logger = logging.getLogger("fastflix")
@@ -273,12 +274,29 @@ class InfoPanel(QtWidgets.QTabWidget):
         self.main = parent.main
         self.attachments = Box()
 
-        self.download_button = QtWidgets.QPushButton(
-            QtGui.QIcon(get_icon("onyx-save", self.app.fastflix.config.theme)), t("Download JSON")
-        )
+        save_icon = QtGui.QIcon(get_icon("onyx-save", self.app.fastflix.config.theme))
+
+        # Expand the tab bar via stylesheet so corner widget buttons fit without clipping
+        self.tabBar().setStyleSheet(f"QTabBar::tab {{ min-height: {scaler.scale(28)}px; }}")
+
+        corner_widget = QtWidgets.QWidget()
+        corner_layout = QtWidgets.QHBoxLayout()
+        corner_layout.setContentsMargins(0, 0, 0, 0)
+        corner_layout.setSpacing(4)
+
+        self.hdr10_button = QtWidgets.QPushButton(save_icon, t("Download HDR10"))
+        self.hdr10_button.setToolTip(t("Download HDR10"))
+        self.hdr10_button.clicked.connect(self.save_hdr10)
+        self.hdr10_button.hide()
+        corner_layout.addWidget(self.hdr10_button)
+
+        self.download_button = QtWidgets.QPushButton(save_icon, t("Download JSON"))
         self.download_button.setToolTip(t("Download JSON"))
         self.download_button.clicked.connect(self.save_json)
-        self.setCornerWidget(self.download_button, QtCore.Qt.Corner.TopRightCorner)
+        corner_layout.addWidget(self.download_button)
+
+        corner_widget.setLayout(corner_layout)
+        self.setCornerWidget(corner_widget, QtCore.Qt.Corner.TopRightCorner)
 
     def reset(self):
         for i in range(self.count() - 1, -1, -1):
@@ -303,6 +321,40 @@ class InfoPanel(QtWidgets.QTabWidget):
         if max_content_height > 0:
             tab_bar_height = self.tabBar().sizeHint().height()
             self.setMinimumHeight(max_content_height + tab_bar_height + 16)
+
+        video = self.app.fastflix.current_video
+        if video and (video.master_display or video.cll):
+            self.hdr10_button.show()
+        else:
+            self.hdr10_button.hide()
+
+    def save_hdr10(self):
+        video = self.app.fastflix.current_video
+        if not video:
+            return
+
+        lines = []
+        if video.master_display:
+            md = video.master_display
+            lines.append(f"master-display=G{md.green}B{md.blue}R{md.red}WP{md.white}L{md.luminance}")
+        if video.cll:
+            lines.append(f"max-cll={video.cll}")
+
+        if not lines:
+            return
+
+        source_name = video.source.stem
+        filename = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            caption=t("Download HDR10"),
+            dir=str(Path("~").expanduser() / f"{source_name}_hdr10.txt"),
+            filter=f"{t('Text Files')} (*.txt)",
+        )
+        if filename and filename[0]:
+            try:
+                Path(filename[0]).write_text("\n".join(lines) + "\n", encoding="utf-8")
+            except Exception:
+                logger.exception("Failed to save HDR10 metadata")
 
     def save_json(self):
         if not self.app.fastflix.current_video:

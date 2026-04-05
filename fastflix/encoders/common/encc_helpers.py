@@ -268,9 +268,17 @@ def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video
     return result
 
 
-def build_data(data_tracks: list[DataTrack], data_streams, attachment_streams) -> List[str]:
+def build_data(data_tracks: list[DataTrack], data_streams, attachment_streams, output_path=None) -> List[str]:
     if not data_tracks:
         return []
+
+    # Rigaya encoders can only copy data/attachment streams to Matroska containers.
+    # MP4/MOV and other formats crash because the muxer can't handle data streams.
+    if output_path:
+        ext = str(output_path).rsplit(".", 1)[-1].lower() if "." in str(output_path) else ""
+        if f".{ext}" not in {".mkv", ".mka"}:
+            return []
+
     command_list = []
     data_copies = []
     attachment_copies = []

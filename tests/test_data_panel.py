@@ -114,6 +114,53 @@ class TestBuildDataRigaya:
         assert result[idx + 1] == "1,2"
 
 
+class TestBuildDataRigayaOutputFormat:
+    """Rigaya encoders can only copy data/attachment streams to MKV containers."""
+
+    def test_mp4_output_skips_data_copy(self):
+        tracks = [DataTrack(index=5, outdex=3, enabled=True, codec_type="data")]
+        data_streams = [Box({"index": 5})]
+        result = build_data(tracks, data_streams, [], output_path=Path("output.mp4"))
+        assert result == []
+
+    def test_mov_output_skips_data_copy(self):
+        tracks = [DataTrack(index=5, outdex=3, enabled=True, codec_type="data")]
+        data_streams = [Box({"index": 5})]
+        result = build_data(tracks, data_streams, [], output_path=Path("output.mov"))
+        assert result == []
+
+    def test_mkv_output_allows_data_copy(self):
+        tracks = [DataTrack(index=5, outdex=3, enabled=True, codec_type="data")]
+        data_streams = [Box({"index": 5})]
+        result = build_data(tracks, data_streams, [], output_path=Path("output.mkv"))
+        assert "--data-copy" in result
+
+    def test_mkv_output_allows_attachment_copy(self):
+        tracks = [DataTrack(index=10, outdex=5, enabled=True, codec_type="attachment")]
+        attachment_streams = [Box({"index": 10})]
+        result = build_data(tracks, [], attachment_streams, output_path=Path("output.mkv"))
+        assert "--attachment-copy" in result
+
+    def test_mp4_output_skips_attachment_copy(self):
+        tracks = [DataTrack(index=10, outdex=5, enabled=True, codec_type="attachment")]
+        attachment_streams = [Box({"index": 10})]
+        result = build_data(tracks, [], attachment_streams, output_path=Path("output.mp4"))
+        assert result == []
+
+    def test_ts_output_skips_data_copy(self):
+        tracks = [DataTrack(index=5, outdex=3, enabled=True, codec_type="data")]
+        data_streams = [Box({"index": 5})]
+        result = build_data(tracks, data_streams, [], output_path=Path("output.ts"))
+        assert result == []
+
+    def test_no_output_path_allows_data_copy(self):
+        """Backward compatibility: no output_path means no filtering."""
+        tracks = [DataTrack(index=5, outdex=3, enabled=True, codec_type="data")]
+        data_streams = [Box({"index": 5})]
+        result = build_data(tracks, data_streams, [])
+        assert "--data-copy" in result
+
+
 class TestGenerateEndingWithDataTracks:
     def test_with_data_tracks(self):
         tracks = [
