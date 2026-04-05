@@ -114,7 +114,16 @@
       "Bash(gh api:*)",
       "Bash(git:*)",
       "WebFetch(domain:docs.nvidia.com)",
-      "Bash(gh discussion:*)"
+      "Bash(gh discussion:*)",
+      "Bash(rtk git:*)",
+      "Bash(rtk uv:*)",
+      "Bash(rtk gh:*)",
+      "WebFetch(domain:github-production-user-asset-6210df.s3.amazonaws.com)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/rigaya/NVEnc/master/NVEncC_Options.en.md\")",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/rigaya/QSVEnc/master/QSVEncC_Options.en.md\")",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/rigaya/VCEEnc/master/VCEEncC_Options.en.md\")",
+      "mcp__claude_ai_Excalidraw__read_me",
+      "mcp__claude_ai_Excalidraw__create_view"
     ]
   }
 }

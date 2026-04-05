@@ -14,6 +14,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import x265Settings, setting_types
 from fastflix.models.profiles import AudioMatch, Profile, MatchItem, MatchType, TitleMode, AdvancedOptions
 from fastflix.shared import error_message
+from fastflix.widgets.toggle_switch import ToggleSwitch
 from fastflix.encoders.common.audio import channel_list
 
 language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined"]
@@ -337,10 +338,10 @@ class SubtitleSelect(QtWidgets.QWidget):
         self.sub_language.insertSeparator(1)
         self.sub_language.insertSeparator(3)
         self.sub_language.setFixedWidth(250)
-        self.sub_first_only = QtWidgets.QCheckBox(t("Only select first matching Subtitle Track"))
+        self.sub_first_only = ToggleSwitch(t("Only select first matching Subtitle Track"))
         self.sub_language.view().setFixedWidth(self.sub_language.minimumSizeHint().width() + 50)
 
-        self.sub_burn_in = QtWidgets.QCheckBox(t("Auto Burn-in first forced or default subtitle track"))
+        self.sub_burn_in = ToggleSwitch(t("Auto Burn-in first forced or default subtitle track"))
 
         layout = QtWidgets.QGridLayout()
         layout.addWidget(sub_language_label, 0, 0)
@@ -440,7 +441,7 @@ class PrimaryOptions(QtWidgets.QTabWidget):
         settings = "\n".join(f"{k:<30} {v}" for k, v in main_options.items())
         self.label.setText(f"<pre>{settings}</pre>")
 
-        self.auto_crop = QtWidgets.QCheckBox(t("Auto Crop"))
+        self.auto_crop = ToggleSwitch(t("Auto Crop"))
 
         layout.addWidget(self.auto_crop)
         layout.addStretch(1)

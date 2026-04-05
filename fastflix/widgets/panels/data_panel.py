@@ -12,6 +12,7 @@ from fastflix.resources import get_icon
 from fastflix.shared import no_border, shrink_text_to_fit
 from fastflix.ui_scale import scaler
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.widgets.toggle_switch import ToggleSwitch
 
 logger = logging.getLogger("fastflix")
 
@@ -19,7 +20,7 @@ COVER_NAMES = {"cover", "small_cover", "cover_land", "small_cover_land"}
 
 # Container support for data/attachment streams
 # MKV supports everything; MP4/M4V support timecodes but not font attachments
-NO_DATA_EXTENSIONS = {".gif", ".webm", ".webp", ".avif"}
+NO_DATA_EXTENSIONS = {".gif", ".webm", ".webp", ".avif", ".mkv", ".mka"}
 NO_ATTACHMENT_EXTENSIONS = {".gif", ".webm", ".webp", ".avif", ".mp4", ".m4v", ".mov", ".ts", ".mts", ".m2ts"}
 
 
@@ -53,7 +54,7 @@ class DataTrackWidget(QtWidgets.QTabWidget):
             down_button=QtWidgets.QPushButton(
                 QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
-            enable_check=QtWidgets.QCheckBox(t("Preserve")),
+            enable_check=ToggleSwitch(t("Preserve")),
         )
 
         self.widgets.up_button.setStyleSheet(no_border)

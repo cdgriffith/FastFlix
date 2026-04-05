@@ -14,6 +14,7 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_auto_options,
     rigaya_avformat_reader,
     rigaya_trim_or_seek,
+    rigaya_vpp_filters,
 )
 
 logger = logging.getLogger("fastflix")
@@ -141,6 +142,8 @@ def build(fastflix: FastFlix):
             else "mobius"
         )
         command.extend(["--vpp-colorspace", f"hdr2sdr={remove_type}"])
+
+    command.extend(rigaya_vpp_filters(video))
 
     if settings.split_mode == "parallel":
         command.extend(["--parallel", "auto"])

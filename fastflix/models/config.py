@@ -297,6 +297,8 @@ class Config(BaseModel):
 
     disable_cover_extraction: bool = False
     suppress_ffmpeg_version_warning: bool = False
+    suppress_video_speed_warning: bool = False
+    suppress_reverse_video_warning: bool = False
 
     # PGS to SRT OCR Settings
     enable_pgs_ocr: bool = False

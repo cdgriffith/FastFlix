@@ -241,9 +241,12 @@ def generate_filters(
     contrast=None,
     brightness=None,
     saturation=None,
+    gamma=None,
+    hue=None,
     enable_opencl: bool = False,
     tone_map: str = "hable",
     video_speed: Union[float, int] = 1,
+    reverse_video: bool = False,
     deblock: Union[str, None] = None,
     deblock_size: int = 4,
     denoise: Union[str, None] = None,
@@ -275,6 +278,8 @@ def generate_filters(
         filter_list.append("hflip")
     if video_speed and video_speed != 1:
         filter_list.append(f"setpts={video_speed}*PTS")
+    if reverse_video:
+        filter_list.append("reverse")
     if deblock:
         filter_list.append(f"deblock=filter={deblock}:block={deblock_size}")
     if denoise:
@@ -287,9 +292,13 @@ def generate_filters(
         eq_filters.append(f"saturation={saturation}")
     if contrast:
         eq_filters.append(f"contrast={contrast}")
+    if gamma:
+        eq_filters.append(f"gamma={gamma}")
     if eq_filters:
         eq_filters.insert(0, "eq=eval=frame")
         filter_list.append(":".join(eq_filters))
+    if hue:
+        filter_list.append(f"hue=h={hue}")
 
     if filter_list and vaapi:
         filter_list.insert(0, "hwdownload")
@@ -355,7 +364,14 @@ def generate_all(
     # Detect source rotation for metadata clearing (FFmpeg auto-rotates during re-encoding)
     source_rotation_degrees = fastflix.current_video.source_rotation
 
-    audio_cmd = build_audio(fastflix.current_video.audio_tracks) if audio else []
+    audio_cmd = (
+        build_audio(
+            fastflix.current_video.audio_tracks,
+            reverse_video=fastflix.current_video.video_settings.reverse_video,
+        )
+        if audio
+        else []
+    )
 
     # Assign file_index to external subtitle tracks and collect unique external file paths
     subtitle_tracks = fastflix.current_video.subtitle_tracks

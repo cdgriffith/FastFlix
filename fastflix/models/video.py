@@ -105,6 +105,7 @@ class VideoSettings(BaseModel):
     resolution_custom: str | None = None
     deinterlace: bool = False
     video_speed: Union[float, int] = 1
+    reverse_video: bool = False
     tone_map: str = "hable"
     denoise: Optional[str] = None
     deblock: Optional[str] = None
@@ -120,6 +121,8 @@ class VideoSettings(BaseModel):
     brightness: Optional[str] = None
     contrast: Optional[str] = None
     saturation: Optional[str] = None
+    gamma: Optional[str] = None
+    hue: Optional[str] = None
     copy_data: bool = False
     template_generated_name: str = ""
     video_encoder_settings: Optional[
@@ -180,6 +183,20 @@ class VideoSettings(BaseModel):
     def saturation_to_str(cls, value):
         if isinstance(value, (int, float)):
             return float(value)
+        return value
+
+    @field_validator("gamma", mode="before")
+    @classmethod
+    def gamma_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
+
+    @field_validator("hue", mode="before")
+    @classmethod
+    def hue_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
         return value
 
 

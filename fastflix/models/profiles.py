@@ -124,6 +124,7 @@ class SubtitleMatch(BaseModel):
 
 class AdvancedOptions(BaseModel):
     video_speed: float = 1
+    reverse_video: bool = False
     deblock: Optional[str] = None
     deblock_size: int = 16
     tone_map: str = "hable"
@@ -131,6 +132,8 @@ class AdvancedOptions(BaseModel):
     brightness: Optional[str] = None
     saturation: Optional[str] = None
     contrast: Optional[str] = None
+    gamma: Optional[str] = None
+    hue: Optional[str] = None
     maxrate: Optional[int] = None
     bufsize: Optional[int] = None
     source_fps: Optional[str] = None

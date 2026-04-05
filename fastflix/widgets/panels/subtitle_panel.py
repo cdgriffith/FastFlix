@@ -18,6 +18,7 @@ from fastflix.ui_scale import scaler
 from fastflix.ui_styles import get_onyx_disposition_style
 from fastflix.widgets.background_tasks import ExtractSubtitleSRT
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.widgets.toggle_switch import ToggleSwitch
 from fastflix.widgets.windows.disposition import Disposition
 
 logger = logging.getLogger("fastflix")
@@ -79,10 +80,10 @@ class Subtitle(QtWidgets.QTabWidget):
             down_button=QtWidgets.QPushButton(
                 QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
-            enable_check=QtWidgets.QCheckBox(t("Preserve")),
+            enable_check=ToggleSwitch(t("Preserve")),
             disposition=QtWidgets.QPushButton(t("Dispositions")),
             language=QtWidgets.QComboBox(),
-            burn_in=QtWidgets.QCheckBox(t("Burn In")),
+            burn_in=ToggleSwitch(t("Burn In")),
         )
 
         self.widgets.up_button.setStyleSheet(no_border)
@@ -480,10 +481,10 @@ class ExternalSubtitle(QtWidgets.QTabWidget):
             down_button=QtWidgets.QPushButton(
                 QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
-            enable_check=QtWidgets.QCheckBox(t("Preserve")),
+            enable_check=ToggleSwitch(t("Preserve")),
             disposition=QtWidgets.QPushButton(t("Dispositions")),
             language=QtWidgets.QComboBox(),
-            burn_in=QtWidgets.QCheckBox(t("Burn In")),
+            burn_in=ToggleSwitch(t("Burn In")),
             remove_button=QtWidgets.QPushButton(t("Remove")),
         )
 

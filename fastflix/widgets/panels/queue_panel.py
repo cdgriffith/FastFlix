@@ -24,6 +24,7 @@ from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.windows_tools import allow_sleep_mode, prevent_sleep_mode
 from fastflix.command_runner import BackgroundRunner
+from fastflix.widgets.toggle_switch import ToggleSwitch
 
 logger = logging.getLogger("fastflix")
 
@@ -210,7 +211,8 @@ class EncodeItem(QtWidgets.QTabWidget):
             item.close()
             self.widgets[widget] = None
         del self.video
-        del self.widgets
+        if hasattr(self, "widgets"):
+            del self.widgets
         del self.parent
         gc.collect()
         return super().close()
@@ -268,7 +270,7 @@ class EncodingQueue(FlixList):
         self.pause_encode.setFixedWidth(130)
         self.pause_encode.setToolTip(t("Pause / Resume the current command"))
 
-        self.ignore_errors = QtWidgets.QCheckBox(t("Ignore Errors"))
+        self.ignore_errors = ToggleSwitch(t("Ignore Errors"))
         self.ignore_errors.setFixedWidth(150)
 
         self.after_done_combo = QtWidgets.QComboBox()

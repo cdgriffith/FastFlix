@@ -297,6 +297,7 @@ def test_generate_filters_with_multiple_options():
         brightness="0.1",
         contrast="1.1",
         saturation="1.2",
+        gamma="1.5",
         video_speed=0.5,
     )
 
@@ -311,6 +312,7 @@ def test_generate_filters_with_multiple_options():
     assert "brightness=0.1" in filter_str
     assert "saturation=1.2" in filter_str
     assert "contrast=1.1" in filter_str
+    assert "gamma=1.5" in filter_str
     assert result[2] == "-map"
     assert result[3] == "[v]"
 
@@ -346,7 +348,10 @@ def test_generate_all(fastflix_instance):
         assert output_fps == ["-r", "24"]
 
         # Verify the mock calls
-        mock_build_audio.assert_called_once_with(fastflix_instance.current_video.audio_tracks)
+        mock_build_audio.assert_called_once_with(
+            fastflix_instance.current_video.audio_tracks,
+            reverse_video=fastflix_instance.current_video.video_settings.reverse_video,
+        )
         mock_build_subtitle.assert_called_once_with(
             fastflix_instance.current_video.subtitle_tracks,
             output_path=fastflix_instance.current_video.video_settings.output_path,

@@ -640,6 +640,7 @@ class CropPreviewWindow(QtWidgets.QWidget):
             return
 
         settings = video.video_settings.model_dump()
+        settings.pop("reverse_video", None)
 
         if video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le" and video.color_space.startswith(
             "bt2020"

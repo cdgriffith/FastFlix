@@ -12,6 +12,7 @@ from fastflix.language import t
 from fastflix.models.encode import AttachmentTrack
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import link
+from fastflix.widgets.toggle_switch import ToggleSwitch
 
 logger = logging.getLogger("fastflix")
 
@@ -43,15 +44,15 @@ class CoverPanel(QtWidgets.QWidget):
         layout.addWidget(info_label, 10, 0, 1, 9, QtCore.Qt.AlignLeft)
 
         poster_options_layout = QtWidgets.QHBoxLayout()
-        self.cover_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Cover"))
-        self.small_cover_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Small Cover (no preview)"))
+        self.cover_passthrough_checkbox = ToggleSwitch(t("Copy Cover"))
+        self.small_cover_passthrough_checkbox = ToggleSwitch(t("Copy Small Cover (no preview)"))
 
         poster_options_layout.addWidget(self.cover_passthrough_checkbox)
         poster_options_layout.addWidget(self.small_cover_passthrough_checkbox)
 
         land_options_layout = QtWidgets.QHBoxLayout()
-        self.cover_land_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Landscape Cover"))
-        self.small_cover_land_passthrough_checkbox = QtWidgets.QCheckBox(t("Copy Small Landscape Cover  (no preview)"))
+        self.cover_land_passthrough_checkbox = ToggleSwitch(t("Copy Landscape Cover"))
+        self.small_cover_land_passthrough_checkbox = ToggleSwitch(t("Copy Small Landscape Cover  (no preview)"))
 
         land_options_layout.addWidget(self.cover_land_passthrough_checkbox)
         land_options_layout.addWidget(self.small_cover_land_passthrough_checkbox)

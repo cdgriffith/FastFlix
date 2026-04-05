@@ -14896,3 +14896,185 @@ Please load a video first:
   ukr: Будь ласка, спочатку завантажте відео
   kor: 먼저 동영상을 로드하세요.
   ron: Vă rugăm să încărcați mai întâi un videoclip
+Reverse Video:
+  eng: Reverse Video
+  deu: Video umkehren
+  fra: Vidéo inversée
+  ita: Video inverso
+  spa: Vídeo inverso
+  jpn: リバースビデオ
+  rus: Обратное видео
+  por: Vídeo invertido
+  swe: Omvänd video
+  pol: Odwrócone wideo
+  chs: 反向视频
+  ukr: Зворотне відео
+  kor: 리버스 비디오
+  ron: Reverse Video
+Gamma:
+  eng: Gamma
+  deu: Gamma
+  fra: Gamma
+  ita: Gamma
+  spa: Gamma
+  jpn: ガンマ
+  rus: Гамма
+  por: Gama
+  swe: Gamma
+  pol: Gamma
+  chs: 伽马
+  ukr: Гамма.
+  kor: 감마
+  ron: Gamma
+Not supported by rigaya's hardware encoders (Video Speed, Reverse Video):
+  eng: Not supported by rigaya's hardware encoders (Video Speed, Reverse Video)
+  deu: Nicht unterstützt von Rigayas Hardware-Encodern (Video Speed, Reverse Video)
+  fra: Non pris en charge par les encodeurs matériels de rigaya (vitesse vidéo, vidéo inversée)
+  ita: Non supportato dai codificatori hardware di rigaya (Velocità video, Video inverso)
+  spa: No compatible con los codificadores hardware de rigaya (Velocidad de vídeo, Vídeo inverso)
+  jpn: リガヤのハードウェアエンコーダではサポートされていません（ビデオスピード、リバースビデオ）
+  rus: Не поддерживается аппаратными кодировщиками rigaya (Video Speed, Reverse Video).
+  por: Não suportado pelos codificadores de hardware da rigaya (velocidade de vídeo, vídeo invertido)
+  swe: Stöds inte av Rigayas hårdvarukodare (videohastighet, omvänd video)
+  pol: Nieobsługiwane przez kodery sprzętowe rigaya (Video Speed, Reverse Video).
+  chs: 不支持 rigaya 硬件编码器（视频速度、反向视频）
+  ukr: Не підтримується апаратними кодерами rigaya (Video Speed, Reverse Video)
+  kor: 리가야의 하드웨어 인코더(비디오 속도, 리버스 비디오)에서는 지원되지 않습니다.
+  ron: Nu este acceptat de codificatoarele hardware ale rigaya (Video Speed, Reverse Video)
+Reverse Video Warning:
+  eng: Reverse Video Warning
+  deu: Rückwärts-Video-Warnung
+  fra: Avertissement vidéo inversé
+  ita: Avviso video di retromarcia
+  spa: Advertencia de vídeo inverso
+  jpn: 逆再生ビデオ警告
+  rus: Видеопредупреждение о реверсе
+  por: Aviso de vídeo em marcha-atrás
+  swe: Varning för omvänd video
+  pol: Ostrzeżenie o odwróconym wideo
+  chs: 反向视频警告
+  ukr: Відеопопередження про рух заднім ходом
+  kor: 리버스 비디오 경고
+  ron: Avertizare video inversă
+The reverse filter buffers all video frames in memory.:
+  eng: The reverse filter buffers all video frames in memory.
+  deu: Der Umkehrfilter puffert alle Videobilder im Speicher.
+  fra: Le filtre inversé met en mémoire tampon toutes les images vidéo.
+  ita: Il filtro inverso memorizza tutti i fotogrammi video.
+  spa: El filtro inverso almacena todos los fotogramas de vídeo en la memoria.
+  jpn: リバースフィルターは、すべてのビデオフレームをメモリにバッファリングする。
+  rus: Обратный фильтр буферизирует все видеокадры в памяти.
+  por: O filtro reverso armazena todos os quadros de vídeo na memória.
+  swe: Det omvända filtret buffrar alla videobilder i minnet.
+  pol: Filtr wsteczny buforuje wszystkie klatki wideo w pamięci.
+  chs: 反向滤波器在内存中缓冲所有视频帧。
+  ukr: Зворотний фільтр буферизує всі відеокадри в пам'яті.
+  kor: 리버스 필터는 메모리의 모든 비디오 프레임을 버퍼링합니다.
+  ron: Filtrul invers stochează toate cadrele video în memorie.
+This may require significant RAM for long or high-resolution videos.:
+  eng: This may require significant RAM for long or high-resolution videos.
+  deu: Dies kann bei langen oder hochauflösenden Videos viel Arbeitsspeicher erfordern.
+  fra: Cela peut nécessiter une quantité importante de mémoire vive pour les vidéos longues ou à haute résolution.
+  ita: Ciò può richiedere una notevole quantità di RAM per i video lunghi o ad alta risoluzione.
+  spa: Esto puede requerir una cantidad considerable de RAM para vídeos largos o de alta resolución.
+  jpn: 長い動画や高解像度の動画では、かなりのRAMが必要になるかもしれない。
+  rus: Это может потребовать значительного объема оперативной памяти для длинных видеороликов или видеороликов с высоким разрешением.
+  por: Isto pode exigir uma quantidade significativa de RAM para vídeos longos ou de alta resolução.
+  swe: Detta kan kräva mycket RAM-minne för långa eller högupplösta videor.
+  pol: Może to wymagać znacznej ilości pamięci RAM w przypadku długich filmów lub filmów w wysokiej rozdzielczości.
+  chs: 对于长视频或高分辨率视频，这可能需要大量内存。
+  ukr: Це може вимагати значного обсягу оперативної пам'яті для довгих відео або відео з високою роздільною здатністю.
+  kor: 긴 동영상이나 고해상도 동영상의 경우 상당한 RAM이 필요할 수 있습니다.
+  ron: Acest lucru poate necesita memorie RAM semnificativă pentru videoclipuri lungi sau de înaltă rezoluție.
+Audio on converted (non-copy) tracks will also be reversed.:
+  eng: Audio on converted (non-copy) tracks will also be reversed.
+  deu: Der Ton auf konvertierten (nicht kopierten) Spuren wird ebenfalls umgekehrt.
+  fra: L'audio des pistes converties (non copiées) sera également inversé.
+  ita: Anche l'audio delle tracce convertite (non copiate) sarà invertito.
+  spa: El audio de las pistas convertidas (no copiadas) también se invertirá.
+  jpn: 変換された（コピーされていない）トラックのオーディオも反転されます。
+  rus: Аудио на конвертированных (не копированных) дорожках также будет перевернуто.
+  por: O áudio das faixas convertidas (não copiadas) também será invertido.
+  swe: Ljud på konverterade spår (som inte är kopior) kommer också att reverseras.
+  pol: Dźwięk na przekonwertowanych (niekopiowanych) ścieżkach również zostanie odwrócony.
+  chs: 已转换（非复制）音轨上的音频也会反转。
+  ukr: Звук на конвертованих (не копіях) доріжках також буде реверсовано.
+  kor: 변환된(복사본이 아닌) 트랙의 오디오도 반전됩니다.
+  ron: Audio pe pistele convertite (necopiate) va fi, de asemenea, inversat.
+Don't show this warning again:
+  eng: Don't show this warning again
+  deu: Zeigen Sie diese Warnung nicht mehr an
+  fra: Ne plus afficher cet avertissement
+  ita: Non mostrare più questo avviso
+  spa: No volver a mostrar este aviso
+  jpn: この警告を二度と表示しないでください
+  rus: Больше не показывайте это предупреждение
+  por: Não voltar a mostrar este aviso
+  swe: Visa inte denna varning igen
+  pol: Nie pokazuj więcej tego ostrzeżenia
+  chs: 不要再显示此警告
+  ukr: Не показуйте це попередження більше
+  kor: 이 경고를 다시 표시하지 마세요.
+  ron: Nu mai afișați acest avertisment
+OK:
+  eng: OK
+  deu: OK
+  fra: OK
+  ita: OK
+  spa: OK
+  jpn: OK
+  rus: OK
+  por: OK
+  swe: OK
+  pol: OK
+  chs: 好的
+  ukr: ГАРАЗД.
+  kor: 확인
+  ron: OK
+Hue:
+  eng: Hue
+  deu: Farbton
+  fra: Hue
+  ita: Tonalità
+  spa: Hue
+  jpn: 色相
+  rus: Hue
+  por: Matiz
+  swe: Hue
+  pol: Hue
+  chs: 色调
+  ukr: Відтінок
+  kor: 색조
+  ron: Hue
+Video Processing:
+  eng: Video Processing
+  deu: Videoverarbeitung
+  fra: Traitement vidéo
+  ita: Elaborazione video
+  spa: Tratamiento de vídeo
+  jpn: ビデオ加工
+  rus: Обработка видео
+  por: Processamento de vídeo
+  swe: Videobearbetning
+  pol: Przetwarzanie wideo
+  chs: 视频处理
+  ukr: Обробка відео
+  kor: 비디오 처리
+  ron: Procesare video
+Color:
+  eng: Color
+  deu: Farbe
+  fra: Couleur
+  ita: Colore
+  spa: Color
+  jpn: カラー
+  rus: Цвет
+  por: Cor
+  swe: Färg
+  pol: Kolor
+  chs: 颜色
+  ukr: Колір
+  kor: 색상
+  ron: Culoare
+Video Details:
+  eng: Video Details

@@ -12,6 +12,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.ui_scale import scaler
 from fastflix.widgets.background_tasks import ExtractHDR10
 from fastflix.resources import group_box_style, get_icon
+from fastflix.widgets.toggle_switch import ToggleSwitch
 
 
 logger = logging.getLogger("fastflix")
@@ -265,7 +266,7 @@ class SettingPanel(QtWidgets.QWidget):
     def _add_check_box(self, label, widget_name, opt, connect="default", enabled=True, tooltip=""):
         layout = QtWidgets.QHBoxLayout()
 
-        self.widgets[widget_name] = QtWidgets.QCheckBox(t(label))
+        self.widgets[widget_name] = ToggleSwitch(t(label))
         self.opts[widget_name] = opt
         self.widgets[widget_name].setChecked(self.app.fastflix.config.encoder_opt(self.profile_name, opt))
         self.widgets[widget_name].setDisabled(not enabled)
@@ -291,7 +292,7 @@ class SettingPanel(QtWidgets.QWidget):
         layout.addWidget(self.labels.ffmpeg_options)
         self.ffmpeg_extras_widget = QtWidgets.QLineEdit()
         self.ffmpeg_extras_widget.setText(ffmpeg_extra_command)
-        self.widgets["extra_both_passes"] = QtWidgets.QCheckBox(t("Both Passes"))
+        self.widgets["extra_both_passes"] = ToggleSwitch(t("Both Passes"))
         self.opts["extra_both_passes"] = "extra_both_passes"
 
         if connect and connect != "default":
@@ -398,6 +399,11 @@ class SettingPanel(QtWidgets.QWidget):
         if not disable_bitrate:
             self.bitrate_radio = QtWidgets.QRadioButton("Bitrate")
             self.bitrate_radio.setFixedWidth(scaler.scale(67))
+            self.bitrate_radio.setStyleSheet(
+                "QRadioButton::indicator { width: 12px; height: 12px; border-image: none; border: 2px solid #888888; border-radius: 8px; background-color: transparent; }"
+                " QRadioButton::indicator:checked { border-image: none; border: 2px solid #4a9eed; background-color: #4a9eed; }"
+                " QRadioButton::indicator:unchecked:hover { border-image: none; border: 2px solid #aaaaaa; }"
+            )
             self.widgets.mode.addButton(self.bitrate_radio)
             self.widgets.bitrate = QtWidgets.QComboBox()
             self.widgets.bitrate.addItems(recommended_bitrates)
@@ -439,6 +445,11 @@ class SettingPanel(QtWidgets.QWidget):
             self.qp_radio.setChecked(True)
             self.qp_radio.setFixedWidth(scaler.scale(67))
             self.qp_radio.setToolTip(qp_help)
+            self.qp_radio.setStyleSheet(
+                "QRadioButton::indicator { width: 12px; height: 12px; border-image: none; border: 2px solid #888888; border-radius: 8px; background-color: transparent; }"
+                " QRadioButton::indicator:checked { border-image: none; border: 2px solid #4a9eed; background-color: #4a9eed; }"
+                " QRadioButton::indicator:unchecked:hover { border-image: none; border: 2px solid #aaaaaa; }"
+            )
             self.widgets.mode.addButton(self.qp_radio)
 
         self.widgets[qp_name] = QtWidgets.QComboBox()

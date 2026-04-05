@@ -1,8 +1,15 @@
 # Changelog
 
-## Version 6.2.2
+## Version 6.3.0
 
+* Adding #377 #550 #694 gamma and hue options to the Equalizer in the Advanced panel (FFmpeg eq/hue filters for software encoders, --vpp-tweak for rigaya) (thanks to lincsat, DCNerds, and Patrick Isbendjian)
+* Adding Reverse Video option in the Advanced panel (applies FFmpeg reverse video filter and areverse audio filter for converted tracks)
+* Adding rigaya encoder support for Equalizer (--vpp-tweak), Denoise (--vpp-nlmeans/knn/pmd), Deblock (--vpp-deblock), Output FPS (--vpp-fps), and Video Track Title — only Video Speed and Reverse Video remain unsupported
+* Changing Advanced panel layout to use QGroupBox sections (Frame Rate, Video Processing, Color, Output) for better visual hierarchy
 * Fixing #736 thumbnail and crop preview generation failing with FFmpeg 8.0+ by adding `-update 1` flag required by the image2 muxer for single-image output (thanks to kliffgomel)
+* Fixing #738 conversion error with Google Pixel videos by disabling data stream mapping for Matroska containers which only support audio, video, and subtitle streams (thanks to Hankuuuu)
+* Fixing #739 unable to add more than 1 video per session due to AttributeError when closing audio track widgets (thanks to mrdav1)
+* Fixing startup crash when queue file exists but is missing the 'queue' key
 
 ## Version 6.2.1
 

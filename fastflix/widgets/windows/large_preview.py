@@ -58,6 +58,7 @@ class LargePreview(QtWidgets.QWidget):
 
     def generate_image(self):
         settings = self.main.app.fastflix.current_video.video_settings.model_dump()
+        settings.pop("reverse_video", None)
         if not self.main.app.fastflix.current_video.video_settings.video_encoder_settings:
             return
 

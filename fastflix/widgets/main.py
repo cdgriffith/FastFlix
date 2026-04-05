@@ -28,6 +28,7 @@ from fastflix.flix import (
     get_concat_item,
 )
 from fastflix.language import t
+from fastflix.widgets.toggle_switch import ToggleSwitch
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video, VideoSettings, Crop
 from fastflix.resources import (
@@ -114,15 +115,15 @@ class MainWidgets(BaseModel):
     flip: QtWidgets.QComboBox = None
     crop: CropWidgets = Field(default_factory=CropWidgets)
     scale: ScaleWidgets = Field(default_factory=ScaleWidgets)
-    remove_metadata: QtWidgets.QCheckBox = None
-    chapters: QtWidgets.QCheckBox = None
+    remove_metadata: ToggleSwitch = None
+    chapters: ToggleSwitch = None
     fast_time: QtWidgets.QComboBox = None
     preview: QtWidgets.QLabel = None
     convert_to: QtWidgets.QComboBox = None
     convert_button: QtWidgets.QPushButton = None
     queue_button: QtWidgets.QPushButton = None
-    deinterlace: QtWidgets.QCheckBox = None
-    remove_hdr: QtWidgets.QCheckBox = None
+    deinterlace: ToggleSwitch = None
+    remove_hdr: ToggleSwitch = None
     profile_box: QtWidgets.QComboBox = None
     thumb_time: QtWidgets.QSlider = None
     preview_time_label: QtWidgets.QLabel = None
@@ -612,8 +613,8 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self.clear_source_button.setDisabled(True)
         if self.app.fastflix.config.theme == "onyx":
             self.clear_source_button.setStyleSheet(
-                "QPushButton { color: #F44336; border: none; font-weight: bold; }"
-                "QPushButton:hover { background-color: #3a3a3a; border-radius: 4px; }"
+                "QPushButton { color: #cccccc; border: none; font-weight: bold; }"
+                "QPushButton:hover { color: #ffffff; background-color: #3a3a3a; border-radius: 4px; }"
             )
         else:
             self.clear_source_button.setStyleSheet(
@@ -990,26 +991,26 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         opts_layout.setSpacing(scaler.scale(4))
         opts_layout.setContentsMargins(scaler.scale(8), scaler.scale(8), scaler.scale(8), scaler.scale(8))
 
-        self.widgets.remove_metadata = QtWidgets.QCheckBox(t("Remove Metadata"))
+        self.widgets.remove_metadata = ToggleSwitch(t("Remove Metadata"))
         self.widgets.remove_metadata.setChecked(True)
         self.widgets.remove_metadata.toggled.connect(self.page_update)
         self.widgets.remove_metadata.setToolTip(
             t("Scrub away all incoming metadata, like video titles, unique markings and so on.")
         )
 
-        self.widgets.chapters = QtWidgets.QCheckBox(t("Copy Chapters"))
+        self.widgets.chapters = ToggleSwitch(t("Copy Chapters"))
         self.widgets.chapters.setChecked(True)
         self.widgets.chapters.toggled.connect(self.page_update)
         self.widgets.chapters.setToolTip(t("Copy the chapter markers as is from incoming source."))
 
-        self.widgets.deinterlace = QtWidgets.QCheckBox(t("Deinterlace"))
+        self.widgets.deinterlace = ToggleSwitch(t("Deinterlace"))
         self.widgets.deinterlace.setChecked(False)
         self.widgets.deinterlace.toggled.connect(self.interlace_update)
         self.widgets.deinterlace.setToolTip(
             f"{t('Enables the yadif filter.')}\n{t('Automatically enabled when an interlaced video is detected')}"
         )
 
-        self.widgets.remove_hdr = QtWidgets.QCheckBox(t("Remove HDR"))
+        self.widgets.remove_hdr = ToggleSwitch(t("Remove HDR"))
         self.widgets.remove_hdr.setChecked(False)
         self.widgets.remove_hdr.toggled.connect(self.hdr_update)
         self.widgets.remove_hdr.setToolTip(
@@ -1885,6 +1886,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             return
 
         settings = self.app.fastflix.current_video.video_settings.model_dump()
+        settings.pop("reverse_video", None)
 
         if (
             self.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"

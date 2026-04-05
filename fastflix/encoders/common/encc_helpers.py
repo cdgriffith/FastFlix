@@ -288,3 +288,117 @@ def build_data(data_tracks: list[DataTrack], data_streams, attachment_streams) -
     if attachment_copies:
         command_list.extend(["--attachment-copy", ",".join(attachment_copies)])
     return command_list
+
+
+# Mapping of FastFlix FFmpeg denoise preset strings to rigaya VPP equivalents.
+# nlmeans -> --vpp-nlmeans (direct equivalent: s->sigma/h, p->patch, r->search)
+# atadenoise -> --vpp-knn (closest spatial/temporal alternative)
+# hqdn3d -> --vpp-pmd (closest spatial denoiser)
+# vaguedenoiser -> --vpp-pmd (no wavelet denoiser in rigaya)
+RIGAYA_DENOISE_MAP: dict[str, list[str]] = {
+    # nlmeans weak/moderate/strong
+    "nlmeans=s=1.0:p=3:r=9": ["--vpp-nlmeans", "sigma=1.0,h=1.0,patch=3,search=9"],
+    "nlmeans=s=1.0:p=7:r=15": ["--vpp-nlmeans", "sigma=1.0,h=1.0,patch=7,search=15"],
+    "nlmeans=s=10.0:p=13:r=25": ["--vpp-nlmeans", "sigma=10.0,h=10.0,patch=13,search=25"],
+    # atadenoise weak/moderate/strong -> knn
+    "atadenoise=0a=0.01:0b=0.02:1a=0.01:1b=0.02:2a=0.01:2b=0.02:s=9": [
+        "--vpp-knn",
+        "radius=3,strength=0.04,lerp=0.2,th_lerp=0.8",
+    ],
+    "atadenoise=0a=0.02:0b=0.04:1a=0.02:1b=0.04:2a=0.02:2b=0.04:s=9": [
+        "--vpp-knn",
+        "radius=3,strength=0.08,lerp=0.2,th_lerp=0.8",
+    ],
+    "atadenoise=0a=0.04:0b=0.12:1a=0.04:1b=0.12:2a=0.04:2b=0.12:s=9": [
+        "--vpp-knn",
+        "radius=3,strength=0.16,lerp=0.2,th_lerp=0.8",
+    ],
+    # hqdn3d weak/moderate/strong -> pmd
+    "hqdn3d=luma_spatial=2:chroma_spatial=1.5:luma_tmp=3:chroma_tmp=2.25": [
+        "--vpp-pmd",
+        "apply_count=1,strength=50,threshold=80",
+    ],
+    "hqdn3d=luma_spatial=4:chroma_spatial=3:luma_tmp=6:chroma_tmp=4.5": [
+        "--vpp-pmd",
+        "apply_count=2,strength=80,threshold=100",
+    ],
+    "hqdn3d=luma_spatial=10:chroma_spatial=7.5:luma_tmp=15:chroma_tmp=11.25": [
+        "--vpp-pmd",
+        "apply_count=2,strength=100,threshold=120",
+    ],
+    # vaguedenoiser weak/moderate/strong -> pmd
+    "vaguedenoiser=threshold=1:method=soft:nsteps=5": ["--vpp-pmd", "apply_count=1,strength=50,threshold=80"],
+    "vaguedenoiser=threshold=3:method=soft:nsteps=5": ["--vpp-pmd", "apply_count=2,strength=80,threshold=100"],
+    "vaguedenoiser=threshold=6:method=soft:nsteps=5": ["--vpp-pmd", "apply_count=2,strength=100,threshold=120"],
+}
+
+
+def rigaya_vpp_filters(video: Video) -> List[str]:
+    """Build --vpp-* filter arguments for rigaya encoders from advanced panel settings."""
+    result: List[str] = []
+    vs = video.video_settings
+
+    # Equalizer via --vpp-tweak
+    tweak_parts = []
+    try:
+        if vs.brightness is not None and vs.brightness.strip():
+            val = float(vs.brightness)
+            if val != 0.0:
+                tweak_parts.append(f"brightness={max(-1.0, min(1.0, val))}")
+    except ValueError:
+        logger.warning(f"Invalid brightness value for rigaya: {vs.brightness}")
+    try:
+        if vs.contrast is not None and vs.contrast.strip():
+            val = float(vs.contrast)
+            if val != 1.0:
+                tweak_parts.append(f"contrast={max(-2.0, min(2.0, val))}")
+    except ValueError:
+        logger.warning(f"Invalid contrast value for rigaya: {vs.contrast}")
+    try:
+        if vs.saturation is not None and vs.saturation.strip():
+            val = float(vs.saturation)
+            if val != 1.0:
+                tweak_parts.append(f"saturation={max(0.0, min(3.0, val))}")
+    except ValueError:
+        logger.warning(f"Invalid saturation value for rigaya: {vs.saturation}")
+    try:
+        if vs.gamma is not None and vs.gamma.strip():
+            val = float(vs.gamma)
+            if val != 1.0:
+                tweak_parts.append(f"gamma={max(0.1, min(10.0, val))}")
+    except ValueError:
+        logger.warning(f"Invalid gamma value for rigaya: {vs.gamma}")
+    try:
+        if vs.hue is not None and vs.hue.strip():
+            val = float(vs.hue)
+            if val != 0.0:
+                tweak_parts.append(f"hue={max(-180.0, min(180.0, val))}")
+    except ValueError:
+        logger.warning(f"Invalid hue value for rigaya: {vs.hue}")
+    if tweak_parts:
+        result.extend(["--vpp-tweak", ",".join(tweak_parts)])
+
+    # Denoise
+    if vs.denoise:
+        rigaya_denoise = RIGAYA_DENOISE_MAP.get(vs.denoise)
+        if rigaya_denoise:
+            result.extend(rigaya_denoise)
+        else:
+            logger.warning(f"No rigaya denoise mapping for: {vs.denoise}")
+
+    # Deblock
+    if vs.deblock:
+        if vs.deblock == "weak":
+            result.extend(["--vpp-deblock", "strength=30"])
+        elif vs.deblock == "strong":
+            result.extend(["--vpp-deblock", "strength=60"])
+
+    # Output FPS via --vpp-fps (won't conflict with --fps used for source_fps)
+    if vs.output_fps:
+        result.extend(["--vpp-fps", f"fps={vs.output_fps}"])
+
+    # Video track title
+    if vs.video_track_title:
+        result.extend(["--video-metadata", f"title={vs.video_track_title}"])
+
+    return result

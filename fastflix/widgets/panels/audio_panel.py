@@ -19,6 +19,7 @@ from fastflix.shared import no_border, error_message, yes_no_message, clear_list
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.audio_processing import apply_audio_filters
 from fastflix.widgets.windows.audio_conversion import AudioConversion
+from fastflix.widgets.toggle_switch import ToggleSwitch
 from fastflix.widgets.windows.disposition import Disposition
 
 language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined"]
@@ -118,7 +119,7 @@ class Audio(QtWidgets.QTabWidget):
             audio_info=QtWidgets.QLabel(audio_track.friendly_info),
             up_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("up-arrow", self.app.fastflix.config.theme)), ""),
             down_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("down-arrow", self.app.fastflix.config.theme)), ""),
-            enable_check=QtWidgets.QCheckBox(t("Enabled")),
+            enable_check=ToggleSwitch(t("Enabled")),
             dup_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("onyx-copy", self.app.fastflix.config.theme)), ""),
             delete_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("black-x", self.app.fastflix.config.theme)), ""),
             language=QtWidgets.QComboBox(),
@@ -324,7 +325,8 @@ class Audio(QtWidgets.QTabWidget):
             self.widgets.track_number.setText(f"{audio_track.index}:{audio_track.outdex}")
 
     def close(self) -> bool:
-        del self.widgets
+        if hasattr(self, "widgets"):
+            del self.widgets
         return super().close()
 
     def update_track(self, conversion=None, bitrate=None, downmix=None, title=None):
