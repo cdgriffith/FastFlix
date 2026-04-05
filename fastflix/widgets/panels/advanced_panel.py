@@ -428,6 +428,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             msg.setWindowTitle(t("Reverse Video Warning"))
             msg.setText(
                 t("The reverse filter buffers all video frames in memory.")
+                + " "
                 + t("This may require significant RAM for long or high-resolution videos.")
                 + "\n\n"
                 + t("Audio on converted (non-copy) tracks will also be reversed.")
@@ -452,41 +453,53 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.app.fastflix.current_video.video_settings.tone_map = self.tone_map_widget.currentText()
         self.app.fastflix.current_video.video_settings.vsync = non(self.vsync_widget.currentText())
 
-        try:
-            if self.brightness_widget.text().strip() != "":
+        if self.brightness_widget.text().strip():
+            try:
                 self.app.fastflix.current_video.video_settings.brightness = str(float(self.brightness_widget.text()))
-        except ValueError:
-            logger.warning("Invalid brightness value")
+            except ValueError:
+                logger.warning("Invalid brightness value")
+        else:
+            self.app.fastflix.current_video.video_settings.brightness = None
 
-        try:
-            if self.saturation_widget.text().strip() != "":
+        if self.saturation_widget.text().strip():
+            try:
                 self.app.fastflix.current_video.video_settings.saturation = str(float(self.saturation_widget.text()))
-        except ValueError:
-            logger.warning("Invalid saturation value")
+            except ValueError:
+                logger.warning("Invalid saturation value")
+        else:
+            self.app.fastflix.current_video.video_settings.saturation = None
 
-        try:
-            if self.contrast_widget.text().strip() != "":
+        if self.contrast_widget.text().strip():
+            try:
                 self.app.fastflix.current_video.video_settings.contrast = str(float(self.contrast_widget.text()))
-        except ValueError:
-            logger.warning("Invalid contrast value")
+            except ValueError:
+                logger.warning("Invalid contrast value")
+        else:
+            self.app.fastflix.current_video.video_settings.contrast = None
 
-        try:
-            if self.gamma_widget.text().strip() != "":
+        if self.gamma_widget.text().strip():
+            try:
                 self.app.fastflix.current_video.video_settings.gamma = str(float(self.gamma_widget.text()))
-        except ValueError:
-            logger.warning("Invalid gamma value")
+            except ValueError:
+                logger.warning("Invalid gamma value")
+        else:
+            self.app.fastflix.current_video.video_settings.gamma = None
 
-        try:
-            if self.hue_widget.text().strip() != "":
+        if self.hue_widget.text().strip():
+            try:
                 self.app.fastflix.current_video.video_settings.hue = str(float(self.hue_widget.text()))
-        except ValueError:
-            logger.warning("Invalid hue value")
+            except ValueError:
+                logger.warning("Invalid hue value")
+        else:
+            self.app.fastflix.current_video.video_settings.hue = None
 
-        try:
-            if self.sharpen_widget.text().strip() != "":
+        if self.sharpen_widget.text().strip():
+            try:
                 self.app.fastflix.current_video.video_settings.sharpen = str(float(self.sharpen_widget.text()))
-        except ValueError:
-            logger.warning("Invalid sharpen value")
+            except ValueError:
+                logger.warning("Invalid sharpen value")
+        else:
+            self.app.fastflix.current_video.video_settings.sharpen = None
 
         self.app.fastflix.current_video.video_settings.faststart = self.faststart_widget.isChecked()
 
@@ -503,8 +516,12 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         if not self.incoming_same_as_source.isChecked():
             self.app.fastflix.current_video.video_settings.source_fps = self.incoming_fps_widget.text()
+        else:
+            self.app.fastflix.current_video.video_settings.source_fps = None
         if not self.outgoing_same_as_source.isChecked():
             self.app.fastflix.current_video.video_settings.output_fps = self.outgoing_fps_widget.text()
+        else:
+            self.app.fastflix.current_video.video_settings.output_fps = None
 
         if self.denoise_type_widget.currentIndex() == 0:
             self.app.fastflix.current_video.video_settings.denoise = None
@@ -712,6 +729,8 @@ class AdvancedPanel(QtWidgets.QWidget):
 
             if settings.deblock:
                 self.deblock_widget.setCurrentText(settings.deblock)
+            else:
+                self.deblock_widget.setCurrentIndex(0)
             self.deblock_size_widget.setCurrentText(str(settings.deblock_size))
             self.tone_map_widget.setCurrentText(settings.tone_map)
 
@@ -735,6 +754,9 @@ class AdvancedPanel(QtWidgets.QWidget):
                         if settings.denoise == value:
                             self.denoise_type_widget.setCurrentText(denoise_type)
                             self.denoise_strength_widget.setCurrentText(preset_name)
+            else:
+                self.denoise_type_widget.setCurrentIndex(0)
+                self.denoise_strength_widget.setCurrentIndex(0)
             if settings.vsync:
                 self.vsync_widget.setCurrentText(settings.vsync)
             else:
@@ -764,9 +786,13 @@ class AdvancedPanel(QtWidgets.QWidget):
 
             if settings.video_title:
                 self.video_title.setText(settings.video_title)
+            else:
+                self.video_title.setText("")
 
             if settings.video_track_title:
                 self.video_track_title.setText(settings.video_track_title)
+            else:
+                self.video_track_title.setText("")
 
         else:
             self.video_speed_widget.setCurrentIndex(
@@ -822,8 +848,8 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.faststart_widget.setChecked(faststart_val if faststart_val is not None else True)
 
             self.hdr_settings()
-            # self.video_title.setText("")
-            # self.video_track_title.setText("")
+            self.video_title.setText("")
+            self.video_track_title.setText("")
 
         # Set the frame rate
         if self.app.fastflix.current_video:
@@ -948,7 +974,9 @@ class AdvancedPanel(QtWidgets.QWidget):
         else:
             self.outgoing_same_as_source.setChecked(True)
 
-        if denoise_type_index := advanced_options.denoise_type_index:
+        denoise_type_index = advanced_options.denoise_type_index
+        if denoise_type_index is not None:
             self.denoise_type_widget.setCurrentIndex(denoise_type_index)
-        if denoise_strength_index := advanced_options.denoise_strength_index:
+        denoise_strength_index = advanced_options.denoise_strength_index
+        if denoise_strength_index is not None:
             self.denoise_strength_widget.setCurrentIndex(denoise_strength_index)

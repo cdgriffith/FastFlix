@@ -123,7 +123,8 @@
       "Bash(curl -sL \"https://raw.githubusercontent.com/rigaya/QSVEnc/master/QSVEncC_Options.en.md\")",
       "Bash(curl -sL \"https://raw.githubusercontent.com/rigaya/VCEEnc/master/VCEEncC_Options.en.md\")",
       "mcp__claude_ai_Excalidraw__read_me",
-      "mcp__claude_ai_Excalidraw__create_view"
+      "mcp__claude_ai_Excalidraw__create_view",
+      "Bash(QT_QPA_PLATFORM=offscreen rtk uv:*)"
     ]
   }
 }

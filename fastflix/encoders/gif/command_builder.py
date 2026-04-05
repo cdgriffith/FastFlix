@@ -40,6 +40,11 @@ def build(fastflix: FastFlix):
         brightness=video_settings.brightness,
         saturation=video_settings.saturation,
         contrast=video_settings.contrast,
+        gamma=video_settings.gamma,
+        hue=video_settings.hue,
+        sharpen=video_settings.sharpen,
+        denoise=video_settings.denoise,
+        deinterlace=video_settings.deinterlace,
         custom_filters=f"fps={settings.fps}",
         raw_filters=True,
     )
@@ -62,6 +67,11 @@ def build(fastflix: FastFlix):
         brightness=video_settings.brightness,
         saturation=video_settings.saturation,
         contrast=video_settings.contrast,
+        gamma=video_settings.gamma,
+        hue=video_settings.hue,
+        sharpen=video_settings.sharpen,
+        denoise=video_settings.denoise,
+        deinterlace=video_settings.deinterlace,
         custom_filters=f"fps={settings.fps},palettegen{args}",
     )
 

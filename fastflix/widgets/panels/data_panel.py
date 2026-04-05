@@ -19,7 +19,7 @@ logger = logging.getLogger("fastflix")
 COVER_NAMES = {"cover", "small_cover", "cover_land", "small_cover_land"}
 
 # Container support for data/attachment streams
-# MKV supports everything; MP4/M4V support timecodes but not font attachments
+# MKV only supports audio, video, subtitle, and attachment streams (not data streams)
 NO_DATA_EXTENSIONS = {".gif", ".webm", ".webp", ".avif", ".mkv", ".mka"}
 NO_ATTACHMENT_EXTENSIONS = {".gif", ".webm", ".webp", ".avif", ".mp4", ".m4v", ".mov", ".ts", ".mts", ".m2ts"}
 

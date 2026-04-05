@@ -48,4 +48,5 @@ jobs:
     - name: Run tests
       env:
         PYTEST_QT_API: pyside6
+        QT_QPA_PLATFORM: offscreen
       run: uv run pytest tests -v

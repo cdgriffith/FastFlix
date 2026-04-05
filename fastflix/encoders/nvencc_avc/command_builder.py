@@ -13,7 +13,7 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_auto_options,
     rigaya_avformat_reader,
     rigaya_trim_or_seek,
-    rigaya_vpp_filters,
+    rigaya_extra_options,
 )
 
 logger = logging.getLogger("fastflix")
@@ -80,7 +80,7 @@ def build(fastflix: FastFlix):
         command.extend(["--video-metadata", "copy", "--metadata", "copy"])
 
     if video.video_settings.video_title:
-        command.extend(["--video-metadata", f"title={video.video_settings.video_title}"])
+        command.extend(["--metadata", f"title={video.video_settings.video_title}"])
     if video.video_settings.copy_chapters:
         command.append("--chapter-copy")
 
@@ -141,7 +141,7 @@ def build(fastflix: FastFlix):
         )
         command.extend(["--vpp-colorspace", f"hdr2sdr={remove_type}"])
 
-    command.extend(rigaya_vpp_filters(video))
+    command.extend(rigaya_extra_options(video))
 
     if settings.split_mode == "parallel":
         command.extend(["--parallel", "auto"])

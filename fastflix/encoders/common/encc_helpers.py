@@ -72,7 +72,7 @@ def rigaya_auto_options(fastflix: FastFlix) -> List[str]:
     ]
 
 
-def _parse_frame_rate(frame_rate_str: str) -> Optional[float]:
+def parse_frame_rate(frame_rate_str: str) -> Optional[float]:
     """Parse a frame rate string like '24000/1001' or '30' into a float.
 
     Returns None if the string is empty or cannot be parsed.
@@ -105,7 +105,7 @@ def rigaya_trim_or_seek(video: Video) -> List[str]:
         return []
 
     if not video.video_settings.fast_seek:
-        fps = _parse_frame_rate(video.frame_rate)
+        fps = parse_frame_rate(video.frame_rate)
         if fps:
             start_frame = int(start_time * fps) if start_time else 0
             if end_time:
@@ -333,8 +333,8 @@ RIGAYA_DENOISE_MAP: dict[str, list[str]] = {
 }
 
 
-def rigaya_vpp_filters(video: Video) -> List[str]:
-    """Build --vpp-* filter arguments for rigaya encoders from advanced panel settings."""
+def rigaya_extra_options(video: Video) -> List[str]:
+    """Build extra VPP filter and encoder arguments for rigaya encoders from advanced panel settings."""
     result: List[str] = []
     vs = video.video_settings
 
@@ -411,7 +411,7 @@ def rigaya_vpp_filters(video: Video) -> List[str]:
         result.extend(["--video-metadata", f"title={vs.video_track_title}"])
 
     # GOP length
-    if vs.gop_length:
+    if vs.gop_length is not None:
         result.extend(["--gop-len", str(vs.gop_length)])
 
     return result

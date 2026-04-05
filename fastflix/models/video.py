@@ -109,7 +109,7 @@ class VideoSettings(BaseModel):
     tone_map: str = "hable"
     denoise: Optional[str] = None
     deblock: Optional[str] = None
-    deblock_size: int = 4
+    deblock_size: int = 16
     color_space: Optional[str] = None
     color_transfer: Optional[str] = None
     color_primaries: Optional[str] = None
@@ -178,14 +178,14 @@ class VideoSettings(BaseModel):
     @classmethod
     def contrast_to_str(cls, value):
         if isinstance(value, (int, float)):
-            return float(value)
+            return str(value)
         return value
 
     @field_validator("saturation", mode="before")
     @classmethod
     def saturation_to_str(cls, value):
         if isinstance(value, (int, float)):
-            return float(value)
+            return str(value)
         return value
 
     @field_validator("gamma", mode="before")

@@ -134,7 +134,7 @@ def generate_ffmpeg_start(
     if video_track_title:
         command.extend(["-metadata:s:v:0", f"title={video_track_title}"])
 
-    if gop_length:
+    if gop_length is not None:
         command.extend(["-g", str(gop_length)])
 
     return command

@@ -8,9 +8,9 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_avformat_reader,
     rigaya_auto_options,
     rigaya_trim_or_seek,
-    rigaya_vpp_filters,
+    rigaya_extra_options,
     RIGAYA_DENOISE_MAP,
-    _parse_frame_rate,
+    parse_frame_rate,
     pa_builder,
     get_stream_pos,
     build_audio,
@@ -523,40 +523,40 @@ def test_build_subtitle_with_4k_scaling(sample_subtitle_tracks):
     assert "--vpp-subburn" in result and "track=1,scale=2.0" in result
 
 
-# --- _parse_frame_rate tests ---
+# --- parse_frame_rate tests ---
 
 
-def test_parse_frame_rate_rational():
+def testparse_frame_rate_rational():
     """Test parsing a rational frame rate string like '24000/1001'."""
-    result = _parse_frame_rate("24000/1001")
+    result = parse_frame_rate("24000/1001")
     assert result == pytest.approx(23.976, rel=1e-3)
 
 
-def test_parse_frame_rate_integer_string():
+def testparse_frame_rate_integer_string():
     """Test parsing a plain integer frame rate string."""
-    result = _parse_frame_rate("30")
+    result = parse_frame_rate("30")
     assert result == 30.0
 
 
-def test_parse_frame_rate_float_string():
+def testparse_frame_rate_float_string():
     """Test parsing a plain float frame rate string."""
-    result = _parse_frame_rate("29.97")
+    result = parse_frame_rate("29.97")
     assert result == pytest.approx(29.97)
 
 
-def test_parse_frame_rate_empty():
+def testparse_frame_rate_empty():
     """Test parsing an empty string returns None."""
-    assert _parse_frame_rate("") is None
+    assert parse_frame_rate("") is None
 
 
-def test_parse_frame_rate_invalid():
+def testparse_frame_rate_invalid():
     """Test parsing an invalid string returns None."""
-    assert _parse_frame_rate("abc") is None
+    assert parse_frame_rate("abc") is None
 
 
-def test_parse_frame_rate_zero_denominator():
+def testparse_frame_rate_zero_denominator():
     """Test parsing a rational with zero denominator returns None."""
-    assert _parse_frame_rate("24000/0") is None
+    assert parse_frame_rate("24000/0") is None
 
 
 # --- rigaya_trim_or_seek tests ---
@@ -736,17 +736,17 @@ def test_rigaya_trim_or_seek_exact_mode_no_frame_rate_fallback(encc_fastflix_ins
     assert "--trim" not in result
 
 
-# --- rigaya_vpp_filters tests ---
+# --- rigaya_extra_options tests ---
 
 
-def test_rigaya_vpp_filters_equalizer_all(encc_fastflix_instance):
+def test_rigaya_extra_options_equalizer_all(encc_fastflix_instance):
     """Test --vpp-tweak with all four equalizer values set."""
     video = encc_fastflix_instance.current_video
     video.video_settings.brightness = "0.1"
     video.video_settings.contrast = "1.5"
     video.video_settings.saturation = "1.2"
     video.video_settings.gamma = "0.9"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-tweak" in result
     tweak_value = result[result.index("--vpp-tweak") + 1]
     assert "brightness=0.1" in tweak_value
@@ -755,12 +755,12 @@ def test_rigaya_vpp_filters_equalizer_all(encc_fastflix_instance):
     assert "gamma=0.9" in tweak_value
 
 
-def test_rigaya_vpp_filters_equalizer_partial(encc_fastflix_instance):
+def test_rigaya_extra_options_equalizer_partial(encc_fastflix_instance):
     """Test --vpp-tweak with only some values set."""
     video = encc_fastflix_instance.current_video
     video.video_settings.brightness = "0.2"
     video.video_settings.gamma = "2.0"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-tweak" in result
     tweak_value = result[result.index("--vpp-tweak") + 1]
     assert "brightness=0.2" in tweak_value
@@ -769,121 +769,121 @@ def test_rigaya_vpp_filters_equalizer_partial(encc_fastflix_instance):
     assert "saturation" not in tweak_value
 
 
-def test_rigaya_vpp_filters_equalizer_defaults_skipped(encc_fastflix_instance):
+def test_rigaya_extra_options_equalizer_defaults_skipped(encc_fastflix_instance):
     """Test that default values produce no --vpp-tweak."""
     video = encc_fastflix_instance.current_video
     video.video_settings.brightness = "0"
     video.video_settings.contrast = "1.0"
     video.video_settings.saturation = "1"
     video.video_settings.gamma = "1.0"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-tweak" not in result
 
 
-def test_rigaya_vpp_filters_equalizer_none(encc_fastflix_instance):
+def test_rigaya_extra_options_equalizer_none(encc_fastflix_instance):
     """Test that None values produce no --vpp-tweak."""
     video = encc_fastflix_instance.current_video
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-tweak" not in result
 
 
-def test_rigaya_vpp_filters_equalizer_clamping(encc_fastflix_instance):
+def test_rigaya_extra_options_equalizer_clamping(encc_fastflix_instance):
     """Test that values are clamped to rigaya ranges."""
     video = encc_fastflix_instance.current_video
     video.video_settings.brightness = "5.0"  # exceeds 1.0
     video.video_settings.saturation = "-1.0"  # below 0.0
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-tweak" in result
     tweak_value = result[result.index("--vpp-tweak") + 1]
     assert "brightness=1.0" in tweak_value
     assert "saturation=0.0" in tweak_value
 
 
-def test_rigaya_vpp_filters_denoise_nlmeans(encc_fastflix_instance):
+def test_rigaya_extra_options_denoise_nlmeans(encc_fastflix_instance):
     """Test denoise mapping for nlmeans presets."""
     video = encc_fastflix_instance.current_video
     video.video_settings.denoise = "nlmeans=s=1.0:p=3:r=9"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-nlmeans" in result
     assert "sigma=1.0,h=1.0,patch=3,search=9" in result
 
 
-def test_rigaya_vpp_filters_denoise_atadenoise(encc_fastflix_instance):
+def test_rigaya_extra_options_denoise_atadenoise(encc_fastflix_instance):
     """Test denoise mapping for atadenoise -> knn."""
     video = encc_fastflix_instance.current_video
     video.video_settings.denoise = "atadenoise=0a=0.02:0b=0.04:1a=0.02:1b=0.04:2a=0.02:2b=0.04:s=9"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-knn" in result
 
 
-def test_rigaya_vpp_filters_denoise_hqdn3d(encc_fastflix_instance):
+def test_rigaya_extra_options_denoise_hqdn3d(encc_fastflix_instance):
     """Test denoise mapping for hqdn3d -> pmd."""
     video = encc_fastflix_instance.current_video
     video.video_settings.denoise = "hqdn3d=luma_spatial=4:chroma_spatial=3:luma_tmp=6:chroma_tmp=4.5"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-pmd" in result
 
 
-def test_rigaya_vpp_filters_denoise_vaguedenoiser(encc_fastflix_instance):
+def test_rigaya_extra_options_denoise_vaguedenoiser(encc_fastflix_instance):
     """Test denoise mapping for vaguedenoiser -> pmd."""
     video = encc_fastflix_instance.current_video
     video.video_settings.denoise = "vaguedenoiser=threshold=3:method=soft:nsteps=5"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-pmd" in result
 
 
-def test_rigaya_vpp_filters_denoise_all_presets_mapped():
+def test_rigaya_extra_options_denoise_all_presets_mapped():
     """Test that all 12 known denoise presets have mappings."""
     assert len(RIGAYA_DENOISE_MAP) == 12
 
 
-def test_rigaya_vpp_filters_denoise_unknown(encc_fastflix_instance):
+def test_rigaya_extra_options_denoise_unknown(encc_fastflix_instance):
     """Test that unknown denoise strings are skipped."""
     video = encc_fastflix_instance.current_video
     video.video_settings.denoise = "unknown_filter=strength=5"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-nlmeans" not in result
     assert "--vpp-knn" not in result
     assert "--vpp-pmd" not in result
 
 
-def test_rigaya_vpp_filters_deblock_weak(encc_fastflix_instance):
+def test_rigaya_extra_options_deblock_weak(encc_fastflix_instance):
     """Test deblock weak mapping."""
     video = encc_fastflix_instance.current_video
     video.video_settings.deblock = "weak"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-deblock" in result
     assert "strength=30" in result
 
 
-def test_rigaya_vpp_filters_deblock_strong(encc_fastflix_instance):
+def test_rigaya_extra_options_deblock_strong(encc_fastflix_instance):
     """Test deblock strong mapping."""
     video = encc_fastflix_instance.current_video
     video.video_settings.deblock = "strong"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-deblock" in result
     assert "strength=60" in result
 
 
-def test_rigaya_vpp_filters_output_fps(encc_fastflix_instance):
+def test_rigaya_extra_options_output_fps(encc_fastflix_instance):
     """Test output FPS mapping."""
     video = encc_fastflix_instance.current_video
     video.video_settings.output_fps = "24"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-fps" in result
     assert "fps=24" in result
 
 
-def test_rigaya_vpp_filters_video_track_title(encc_fastflix_instance):
+def test_rigaya_extra_options_video_track_title(encc_fastflix_instance):
     """Test video track title mapping."""
     video = encc_fastflix_instance.current_video
     video.video_settings.video_track_title = "My Video"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--video-metadata" in result
     assert "title=My Video" in result
 
 
-def test_rigaya_vpp_filters_combined(encc_fastflix_instance):
+def test_rigaya_extra_options_combined(encc_fastflix_instance):
     """Test multiple features combined in a single call."""
     video = encc_fastflix_instance.current_video
     video.video_settings.brightness = "0.1"
@@ -892,7 +892,7 @@ def test_rigaya_vpp_filters_combined(encc_fastflix_instance):
     video.video_settings.deblock = "strong"
     video.video_settings.output_fps = "30"
     video.video_settings.video_track_title = "Test"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-tweak" in result
     assert "--vpp-nlmeans" in result
     assert "--vpp-deblock" in result
@@ -900,47 +900,47 @@ def test_rigaya_vpp_filters_combined(encc_fastflix_instance):
     assert "--video-metadata" in result
 
 
-def test_rigaya_vpp_filters_sharpen(encc_fastflix_instance):
+def test_rigaya_extra_options_sharpen(encc_fastflix_instance):
     """Test that sharpen generates --vpp-unsharp with correct parameters."""
     video = encc_fastflix_instance.current_video
     video.video_settings.sharpen = "0.7"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-unsharp" in result
     idx = result.index("--vpp-unsharp")
     assert "radius=3,weight=0.7" in result[idx + 1]
 
 
-def test_rigaya_vpp_filters_sharpen_zero(encc_fastflix_instance):
+def test_rigaya_extra_options_sharpen_zero(encc_fastflix_instance):
     """Test that sharpen value of 0 does not add --vpp-unsharp."""
     video = encc_fastflix_instance.current_video
     video.video_settings.sharpen = "0"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-unsharp" not in result
 
 
-def test_rigaya_vpp_filters_sharpen_clamped(encc_fastflix_instance):
+def test_rigaya_extra_options_sharpen_clamped(encc_fastflix_instance):
     """Test that sharpen value is clamped to 1.0 max."""
     video = encc_fastflix_instance.current_video
     video.video_settings.sharpen = "1.5"
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--vpp-unsharp" in result
     idx = result.index("--vpp-unsharp")
     assert "radius=3,weight=1.0" in result[idx + 1]
 
 
-def test_rigaya_vpp_filters_gop_length(encc_fastflix_instance):
+def test_rigaya_extra_options_gop_length(encc_fastflix_instance):
     """Test that gop_length generates --gop-len."""
     video = encc_fastflix_instance.current_video
     video.video_settings.gop_length = 250
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--gop-len" in result
     idx = result.index("--gop-len")
     assert result[idx + 1] == "250"
 
 
-def test_rigaya_vpp_filters_gop_length_none(encc_fastflix_instance):
+def test_rigaya_extra_options_gop_length_none(encc_fastflix_instance):
     """Test that no gop_length does not add --gop-len."""
     video = encc_fastflix_instance.current_video
     video.video_settings.gop_length = None
-    result = rigaya_vpp_filters(video)
+    result = rigaya_extra_options(video)
     assert "--gop-len" not in result
