@@ -196,23 +196,44 @@ def generate_ending(
     if cover:
         command.extend(cover)
 
+    mapped_data = False
     if data_tracks:
         has_data = False
         has_attachment = False
         for track in data_tracks:
             if not track.enabled:
                 continue
+            mapped_data = True
             command.extend(["-map", f"0:{track.index}"])
+            # Clear title/handler metadata (same as audio tracks)
+            if track.title:
+                command.extend([f"-metadata:s:{track.outdex}", f"title={track.title}"])
+                command.extend([f"-metadata:s:{track.outdex}", f"handler={track.title}"])
+            else:
+                command.extend([f"-metadata:s:{track.outdex}", "title="])
+                command.extend([f"-metadata:s:{track.outdex}", "handler="])
             if track.codec_type == "data":
                 has_data = True
             elif track.codec_type == "attachment":
                 has_attachment = True
+                # Restore mimetype/filename stripped by -map_metadata -1
+                # (required by the matroska muxer for attachment streams)
+                if track.mimetype:
+                    command.extend([f"-metadata:s:{track.outdex}", f"mimetype={track.mimetype}"])
+                if track.filename:
+                    command.extend([f"-metadata:s:{track.outdex}", f"filename={track.filename}"])
         if has_data:
             command.extend(["-c:d", "copy"])
         if has_attachment:
             command.extend(["-c:t", "copy"])
     elif copy_data:
+        mapped_data = True
         command.extend(["-map", "0:d", "-c:d", "copy"])
+
+    # Explicitly disable data/attachment streams when none are mapped to prevent
+    # FFmpeg from auto-including them (causes failures with formats like MKV)
+    if not mapped_data:
+        command.append("-dn")
 
     if faststart and output_video and output_video.suffix.lower() in (".mp4", ".mov", ".m4v"):
         command.extend(["-movflags", "+faststart"])

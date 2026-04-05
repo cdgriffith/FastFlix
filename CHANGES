@@ -9,9 +9,13 @@
 * Adding #526 -movflags +faststart toggle for MP4/MOV containers, enabled by default (thanks to Aria)
 * Adding Reverse Video option in the Advanced panel (applies FFmpeg reverse video filter and areverse audio filter for converted tracks)
 * Adding rigaya encoder support for Equalizer (--vpp-tweak), Denoise (--vpp-nlmeans/knn/pmd), Deblock (--vpp-deblock), Output FPS (--vpp-fps), and Video Track Title — only Video Speed and Reverse Video remain unsupported
+* Adding warning in Data & Attachments tab and reason text when tracks are incompatible with the output format (e.g. data streams in MKV)
 * Changing Advanced panel layout to use QGroupBox sections (Video Details, Frame Rate, Video Processing, Color, Output) for better visual hierarchy
 * Fixing #736 thumbnail and crop preview generation failing with FFmpeg 8.0+ by adding `-update 1` flag required by the image2 muxer for single-image output (thanks to kliffgomel)
-* Fixing #738 conversion error with Google Pixel videos by disabling data stream mapping for Matroska containers which only support audio, video, and subtitle streams (thanks to Hankuuuu)
+* Fixing #738 conversion error with Google Pixel videos by disabling data stream mapping for Matroska containers which do not support data streams (attachments like fonts are still allowed) (thanks to Hankuuuu)
+* Fixing attachment streams (fonts, etc.) losing mimetype/filename metadata during conversion due to `-map_metadata -1` stripping per-stream tags required by the muxers
+* Fixing cover image metadata targeting wrong output stream when data/attachment tracks are present (FFmpeg places `-map` streams before `-attach` streams in output order)
+* Fixing data streams being auto-included by FFmpeg when encoding to MKV, causing "Only audio, video, and subtitles are supported" errors — now explicitly excludes unmapped data with `-dn` and rechecks compatibility when output format changes
 * Fixing #739 unable to add more than 1 video per session due to AttributeError when closing audio track widgets (thanks to mrdav1)
 * Fixing startup crash when queue file exists but is missing the 'queue' key
 

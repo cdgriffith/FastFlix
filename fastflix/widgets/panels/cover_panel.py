@@ -232,6 +232,12 @@ class CoverPanel(QtWidgets.QWidget):
                 subtitle_track.outdex = start_outdex
                 start_outdex += 1
 
+        # Data/attachment tracks use -map and occupy output stream slots
+        # before -attach streams (FFmpeg places -map before -attach in output)
+        for data_track in getattr(self.app.fastflix.current_video, "data_tracks", []) or []:
+            if data_track.enabled:
+                start_outdex += 1
+
         attachments: list[AttachmentTrack] = []
 
         for filename in ("cover", "cover_land", "small_cover", "small_cover_land"):

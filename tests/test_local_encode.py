@@ -29,7 +29,10 @@ from platformdirs import user_data_dir
 from fastflix.models.config import Config
 from fastflix.models.encode import (
     AOMAV1Settings,
+    AttachmentTrack,
+    AudioTrack,
     CopySettings,
+    DataTrack,
     FFmpegNVENCSettings,
     GIFSettings,
     GifskiSettings,
@@ -68,6 +71,8 @@ if ON_CI:
 # Paths
 # ---------------------------------------------------------------------------
 TEST_SOURCE = Path(__file__).parent / "media" / "Beverly Hills Duck Pond - HDR10plus - Jessica Payne.mp4"
+TEST_SOURCE_ATTACHMENTS = Path(__file__).parent / "media" / "font_attachment_data.mkv"
+TEST_SOURCE_CHAPTERS = Path(__file__).parent / "media" / "chapters_timecode.mp4"
 FFMPEG = shutil.which("ffmpeg")
 FFPROBE = shutil.which("ffprobe")
 
@@ -490,3 +495,360 @@ def test_encode(encoder_id, settings, output_ext, expected_codec, is_rigaya, tmp
 
     run_commands(commands, work_path)
     verify_output(output_path, expected_codec)
+
+
+# ===========================================================================
+# Attachment / font preservation test
+# ===========================================================================
+def _probe_attachment_source() -> Optional[dict]:
+    if not FFPROBE or not TEST_SOURCE_ATTACHMENTS.exists():
+        return None
+    try:
+        result = subprocess.run(
+            [
+                FFPROBE,
+                "-v",
+                "quiet",
+                "-print_format",
+                "json",
+                "-show_streams",
+                "-show_format",
+                str(TEST_SOURCE_ATTACHMENTS),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        return json.loads(result.stdout)
+    except Exception:
+        return None
+
+
+def test_encode_preserves_attachments_and_cover(tmp_path):
+    """Encode MKV with font, cover, and data attachments → verify all are in output."""
+    if ON_CI:
+        pytest.skip("Skipped on CI")
+    if not FFMPEG or not FFPROBE:
+        pytest.skip("ffmpeg/ffprobe not found")
+    if not _has_ffmpeg_encoder("libx265"):
+        pytest.skip("libx265 not available")
+    if not TEST_SOURCE_ATTACHMENTS.exists():
+        pytest.skip("font_attachment_data.mkv not found")
+
+    probe = _probe_attachment_source()
+    assert probe is not None, "Could not probe attachment test source"
+
+    video_streams = [
+        s
+        for s in probe["streams"]
+        if s["codec_type"] == "video" and s.get("disposition", {}).get("attached_pic", 0) == 0
+    ]
+    audio_streams = [s for s in probe["streams"] if s["codec_type"] == "audio"]
+    attachment_streams = [s for s in probe["streams"] if s.get("codec_type") == "attachment"]
+
+    for stream in video_streams:
+        if "bits_per_raw_sample" in stream:
+            stream["bit_depth"] = int(stream["bits_per_raw_sample"])
+        else:
+            stream["bit_depth"] = guess_bit_depth(stream.get("pix_fmt", ""), stream.get("color_primaries"))
+
+    streams = Box(
+        {
+            "video": [Box(v) for v in video_streams],
+            "audio": [Box(a) for a in audio_streams],
+            "subtitle": [],
+            "data": [],
+            "attachment": [Box(a) for a in attachment_streams],
+        }
+    )
+
+    output_path = tmp_path / "output_attachments.mkv"
+    work_path = tmp_path / "work"
+    work_path.mkdir()
+
+    # Extract cover image to work_path (simulates what FastFlix does)
+    cover_path = work_path / "cover.png"
+    subprocess.run(
+        [FFMPEG, "-y", "-i", str(TEST_SOURCE_ATTACHMENTS), "-map", "0:4", "-c", "copy", str(cover_path)],
+        capture_output=True,
+        timeout=30,
+    )
+
+    video_settings = VideoSettings(
+        remove_hdr=False,
+        output_path=output_path,
+        end_time=2,
+    )
+    video_settings.video_encoder_settings = x265Settings(preset="ultrafast", crf=51)
+
+    video = Video(
+        source=TEST_SOURCE_ATTACHMENTS,
+        duration=10.0,
+        streams=streams,
+        format=Box(probe.get("format", {})),
+        video_settings=video_settings,
+        work_path=work_path,
+    )
+
+    # Audio track (stream 1: aac, copy)
+    # outdex: 1 (after video at 0)
+    video.audio_tracks = [
+        AudioTrack(
+            index=1,
+            outdex=1,
+            codec="aac",
+            enabled=True,
+            raw_info=Box({"channel_layout": "mono", "channels": 1, "codec_name": "aac"}),
+        ),
+    ]
+
+    # Set up data tracks (font + json + binary attachments from source)
+    # outdex starts at 2 (after video=0, audio=1)
+    # Stream 3: font (ttf), Stream 5: json attachment, Stream 6: binary attachment
+    video.data_tracks = [
+        DataTrack(
+            index=3,
+            outdex=2,
+            enabled=True,
+            codec_type="attachment",
+            codec_name="ttf",
+            mimetype="application/x-truetype-font",
+            filename="test_font.ttf",
+        ),
+        DataTrack(
+            index=5,
+            outdex=3,
+            enabled=True,
+            codec_type="attachment",
+            codec_name="",
+            mimetype="application/json",
+            filename="metadata.json",
+        ),
+        DataTrack(
+            index=6,
+            outdex=4,
+            enabled=True,
+            codec_type="attachment",
+            codec_name="",
+            mimetype="application/octet-stream",
+            filename="test_data.bin",
+        ),
+    ]
+
+    # Cover attachment via -attach (FFmpeg places after all -map streams)
+    # outdex: 5 (after video=0, audio=1, 3 data tracks=2,3,4)
+    video.attachment_tracks = [
+        AttachmentTrack(
+            index=4,
+            outdex=5,
+            file_path=str(cover_path),
+            filename="cover",
+            attachment_type="cover",
+        ),
+    ]
+
+    config = Config(
+        version="4.0.0",
+        ffmpeg=Path(FFMPEG),
+        ffprobe=Path(FFPROBE),
+        work_path=work_path,
+    )
+
+    fastflix = FastFlix(
+        config=config,
+        encoders={},
+        audio_encoders=[],
+        current_video=video,
+        ffmpeg_version="n5.0",
+    )
+
+    # Build and run
+    from fastflix.encoders.hevc_x265 import command_builder
+
+    commands = command_builder.build(fastflix)
+    assert commands, "Encoder returned no commands"
+    run_commands(commands, work_path)
+
+    # Verify output exists
+    assert output_path.exists(), "Output file does not exist"
+    assert output_path.stat().st_size > 0, "Output file is empty"
+
+    # Probe output and verify all streams
+    result = subprocess.run(
+        [FFPROBE, "-v", "quiet", "-print_format", "json", "-show_streams", str(output_path)],
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    assert result.returncode == 0, f"ffprobe failed: {result.stderr}"
+    output_data = json.loads(result.stdout)
+
+    out_video = [
+        s
+        for s in output_data["streams"]
+        if s["codec_type"] == "video" and s.get("disposition", {}).get("attached_pic", 0) == 0
+    ]
+    out_audio = [s for s in output_data["streams"] if s["codec_type"] == "audio"]
+    out_attachments = [s for s in output_data["streams"] if s["codec_type"] == "attachment"]
+    out_covers = [
+        s
+        for s in output_data["streams"]
+        if s["codec_type"] == "video" and s.get("disposition", {}).get("attached_pic", 0) == 1
+    ]
+
+    # Video and audio preserved
+    assert len(out_video) >= 1, "No video stream in output"
+    assert out_video[0]["codec_name"] == "hevc"
+    assert len(out_audio) >= 1, "No audio stream in output"
+
+    # Font attachment preserved with correct mimetype
+    font_attachments = [
+        s for s in out_attachments if s.get("tags", {}).get("mimetype") == "application/x-truetype-font"
+    ]
+    assert len(font_attachments) >= 1, f"Font attachment missing from output. Attachments found: {out_attachments}"
+
+    # JSON and binary attachments preserved
+    json_attachments = [s for s in out_attachments if s.get("tags", {}).get("filename") == "metadata.json"]
+    assert len(json_attachments) >= 1, f"JSON attachment missing from output. Attachments found: {out_attachments}"
+
+    bin_attachments = [s for s in out_attachments if s.get("tags", {}).get("filename") == "test_data.bin"]
+    assert len(bin_attachments) >= 1, f"Binary attachment missing from output. Attachments found: {out_attachments}"
+
+    # Cover image preserved
+    assert len(out_covers) >= 1, (
+        f"Cover image missing from output. All streams: {[s['codec_type'] for s in output_data['streams']]}"
+    )
+
+
+# ===========================================================================
+# Data stream exclusion test (MKV can't hold data streams)
+# ===========================================================================
+def test_encode_excludes_data_streams_for_mkv(tmp_path):
+    """Encode MP4 with data stream (timecode) to MKV — data must be excluded, not cause failure."""
+    if ON_CI:
+        pytest.skip("Skipped on CI")
+    if not FFMPEG or not FFPROBE:
+        pytest.skip("ffmpeg/ffprobe not found")
+    if not _has_ffmpeg_encoder("libx265"):
+        pytest.skip("libx265 not available")
+    if not TEST_SOURCE_CHAPTERS.exists():
+        pytest.skip("chapters_timecode.mp4 not found")
+
+    probe_result = subprocess.run(
+        [FFPROBE, "-v", "quiet", "-print_format", "json", "-show_streams", "-show_format", str(TEST_SOURCE_CHAPTERS)],
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    probe = json.loads(probe_result.stdout)
+
+    video_streams = [s for s in probe["streams"] if s["codec_type"] == "video"]
+    audio_streams = [s for s in probe["streams"] if s["codec_type"] == "audio"]
+    data_streams = [s for s in probe["streams"] if s["codec_type"] == "data"]
+
+    assert len(data_streams) >= 1, "Test file should have at least one data stream"
+
+    for stream in video_streams:
+        if "bits_per_raw_sample" in stream:
+            stream["bit_depth"] = int(stream["bits_per_raw_sample"])
+        else:
+            stream["bit_depth"] = guess_bit_depth(stream.get("pix_fmt", ""), stream.get("color_primaries"))
+
+    streams = Box(
+        {
+            "video": [Box(v) for v in video_streams],
+            "audio": [Box(a) for a in audio_streams],
+            "subtitle": [],
+            "data": [Box(d) for d in data_streams],
+            "attachment": [],
+        }
+    )
+
+    output_path = tmp_path / "output_no_data.mkv"
+    work_path = tmp_path / "work"
+    work_path.mkdir()
+
+    video_settings = VideoSettings(
+        remove_hdr=False,
+        output_path=output_path,
+        end_time=2,
+    )
+    video_settings.video_encoder_settings = x265Settings(preset="ultrafast", crf=51)
+
+    video = Video(
+        source=TEST_SOURCE_CHAPTERS,
+        duration=10.0,
+        streams=streams,
+        format=Box(probe.get("format", {})),
+        video_settings=video_settings,
+        work_path=work_path,
+    )
+
+    # Audio track (copy)
+    video.audio_tracks = [
+        AudioTrack(
+            index=1,
+            outdex=1,
+            codec="aac",
+            enabled=True,
+            raw_info=Box({"channel_layout": "mono", "channels": 1, "codec_name": "aac"}),
+        ),
+    ]
+
+    # Data track exists but is DISABLED (incompatible with MKV)
+    video.data_tracks = [
+        DataTrack(
+            index=2,
+            outdex=2,
+            enabled=False,
+            codec_type="data",
+            codec_name="bin_data",
+            title="",
+        ),
+    ]
+
+    config = Config(
+        version="4.0.0",
+        ffmpeg=Path(FFMPEG),
+        ffprobe=Path(FFPROBE),
+        work_path=work_path,
+    )
+
+    fastflix = FastFlix(
+        config=config,
+        encoders={},
+        audio_encoders=[],
+        current_video=video,
+        ffmpeg_version="n5.0",
+    )
+
+    # Build and run — this should NOT fail even though source has a data stream
+    from fastflix.encoders.hevc_x265 import command_builder
+
+    commands = command_builder.build(fastflix)
+    assert commands, "Encoder returned no commands"
+
+    # Verify -dn is in the command (explicitly disables data streams)
+    cmd_str = commands[0].to_string()
+    assert "-dn" in cmd_str, f"Expected -dn in command to exclude data streams: {cmd_str}"
+
+    run_commands(commands, work_path)
+
+    # Verify output
+    assert output_path.exists(), "Output file does not exist"
+    result = subprocess.run(
+        [FFPROBE, "-v", "quiet", "-print_format", "json", "-show_streams", str(output_path)],
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    output_data = json.loads(result.stdout)
+
+    out_video = [s for s in output_data["streams"] if s["codec_type"] == "video"]
+    out_audio = [s for s in output_data["streams"] if s["codec_type"] == "audio"]
+    out_data = [s for s in output_data["streams"] if s["codec_type"] == "data"]
+
+    assert len(out_video) >= 1, "No video stream in output"
+    assert out_video[0]["codec_name"] == "hevc"
+    assert len(out_audio) >= 1, "No audio stream in output"
+    assert len(out_data) == 0, f"Data streams should be excluded from MKV output, found: {out_data}"
