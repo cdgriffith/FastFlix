@@ -70,6 +70,7 @@ def generate_ffmpeg_start(
     remove_hdr: bool = True,
     start_extra: Union[List[str], str] = "",
     extra_inputs: Optional[List[str]] = None,
+    gop_length=None,
     **_,
 ) -> List[str]:
     command = [str(ffmpeg)]
@@ -133,6 +134,9 @@ def generate_ffmpeg_start(
     if video_track_title:
         command.extend(["-metadata:s:v:0", f"title={video_track_title}"])
 
+    if gop_length:
+        command.extend(["-g", str(gop_length)])
+
     return command
 
 
@@ -160,6 +164,7 @@ def generate_ending(
     source_has_rotation=False,
     copy_data=False,
     data_tracks=None,
+    faststart=True,
     **_,
 ):
     command = []
@@ -209,6 +214,9 @@ def generate_ending(
     elif copy_data:
         command.extend(["-map", "0:d", "-c:d", "copy"])
 
+    if faststart and output_video and output_video.suffix.lower() in (".mp4", ".mov", ".m4v"):
+        command.extend(["-movflags", "+faststart"])
+
     if output_video and not null_ending:
         command.append(str(sanitize(output_video)))
     else:
@@ -243,6 +251,7 @@ def generate_filters(
     saturation=None,
     gamma=None,
     hue=None,
+    sharpen=None,
     enable_opencl: bool = False,
     tone_map: str = "hable",
     video_speed: Union[float, int] = 1,
@@ -299,6 +308,9 @@ def generate_filters(
         filter_list.append(":".join(eq_filters))
     if hue:
         filter_list.append(f"hue=h={hue}")
+
+    if sharpen:
+        filter_list.append(f"cas=strength={sharpen}")
 
     if filter_list and vaapi:
         filter_list.insert(0, "hwdownload")

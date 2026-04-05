@@ -898,3 +898,49 @@ def test_rigaya_vpp_filters_combined(encc_fastflix_instance):
     assert "--vpp-deblock" in result
     assert "--vpp-fps" in result
     assert "--video-metadata" in result
+
+
+def test_rigaya_vpp_filters_sharpen(encc_fastflix_instance):
+    """Test that sharpen generates --vpp-unsharp with correct parameters."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.sharpen = "0.7"
+    result = rigaya_vpp_filters(video)
+    assert "--vpp-unsharp" in result
+    idx = result.index("--vpp-unsharp")
+    assert "radius=3,weight=0.7" in result[idx + 1]
+
+
+def test_rigaya_vpp_filters_sharpen_zero(encc_fastflix_instance):
+    """Test that sharpen value of 0 does not add --vpp-unsharp."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.sharpen = "0"
+    result = rigaya_vpp_filters(video)
+    assert "--vpp-unsharp" not in result
+
+
+def test_rigaya_vpp_filters_sharpen_clamped(encc_fastflix_instance):
+    """Test that sharpen value is clamped to 1.0 max."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.sharpen = "1.5"
+    result = rigaya_vpp_filters(video)
+    assert "--vpp-unsharp" in result
+    idx = result.index("--vpp-unsharp")
+    assert "radius=3,weight=1.0" in result[idx + 1]
+
+
+def test_rigaya_vpp_filters_gop_length(encc_fastflix_instance):
+    """Test that gop_length generates --gop-len."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.gop_length = 250
+    result = rigaya_vpp_filters(video)
+    assert "--gop-len" in result
+    idx = result.index("--gop-len")
+    assert result[idx + 1] == "250"
+
+
+def test_rigaya_vpp_filters_gop_length_none(encc_fastflix_instance):
+    """Test that no gop_length does not add --gop-len."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.gop_length = None
+    result = rigaya_vpp_filters(video)
+    assert "--gop-len" not in result

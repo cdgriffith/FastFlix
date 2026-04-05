@@ -378,6 +378,15 @@ def rigaya_vpp_filters(video: Video) -> List[str]:
     if tweak_parts:
         result.extend(["--vpp-tweak", ",".join(tweak_parts)])
 
+    # Sharpen
+    try:
+        if vs.sharpen is not None and vs.sharpen.strip():
+            val = float(vs.sharpen)
+            if val > 0:
+                result.extend(["--vpp-unsharp", f"radius=3,weight={max(0.0, min(1.0, val))}"])
+    except ValueError:
+        logger.warning(f"Invalid sharpen value for rigaya: {vs.sharpen}")
+
     # Denoise
     if vs.denoise:
         rigaya_denoise = RIGAYA_DENOISE_MAP.get(vs.denoise)
@@ -400,5 +409,9 @@ def rigaya_vpp_filters(video: Video) -> List[str]:
     # Video track title
     if vs.video_track_title:
         result.extend(["--video-metadata", f"title={vs.video_track_title}"])
+
+    # GOP length
+    if vs.gop_length:
+        result.extend(["--gop-len", str(vs.gop_length)])
 
     return result

@@ -134,6 +134,10 @@ class AdvancedOptions(BaseModel):
     contrast: Optional[str] = None
     gamma: Optional[str] = None
     hue: Optional[str] = None
+    sharpen: Optional[str] = None
+    faststart: bool = True
+    deinterlace: bool = False
+    gop_length: Optional[int] = None
     maxrate: Optional[int] = None
     bufsize: Optional[int] = None
     source_fps: Optional[str] = None

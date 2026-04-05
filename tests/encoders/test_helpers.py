@@ -299,6 +299,7 @@ def test_generate_filters_with_multiple_options():
         saturation="1.2",
         gamma="1.5",
         video_speed=0.5,
+        sharpen="0.5",
     )
 
     assert isinstance(result, list)
@@ -313,6 +314,7 @@ def test_generate_filters_with_multiple_options():
     assert "saturation=1.2" in filter_str
     assert "contrast=1.1" in filter_str
     assert "gamma=1.5" in filter_str
+    assert "cas=strength=0.5" in filter_str
     assert result[2] == "-map"
     assert result[3] == "[v]"
 

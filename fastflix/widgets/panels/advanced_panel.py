@@ -96,7 +96,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         scroll.setFrameShape(QtWidgets.QFrame.NoFrame)
 
         container = QtWidgets.QWidget()
-        container.setMinimumHeight(620)
+        container.setMinimumHeight(670)
         self.inner_layout = QtWidgets.QVBoxLayout(container)
         self.inner_layout.setSpacing(6)
 
@@ -140,9 +140,9 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.video_track_title.textChanged.connect(self.page_update)
 
         gl.addWidget(QtWidgets.QLabel(t("Video Title")), 0, 0, alignment=QtCore.Qt.AlignRight)
-        gl.addWidget(self.video_title, 0, 1, 1, 2)
-        gl.addWidget(QtWidgets.QLabel(t("Video Track Title")), 0, 3, alignment=QtCore.Qt.AlignRight)
-        gl.addWidget(self.video_track_title, 0, 4, 1, 2)
+        gl.addWidget(self.video_title, 0, 1)
+        gl.addWidget(QtWidgets.QLabel(t("Video Track Title")), 0, 2, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.video_track_title, 0, 3)
 
         self.setup_group(group, rows=1)
         return group
@@ -311,7 +311,28 @@ class AdvancedPanel(QtWidgets.QWidget):
         gl.addWidget(QtWidgets.QLabel(t("Block Size")), row, 2, alignment=QtCore.Qt.AlignRight)
         gl.addWidget(self.deblock_size_widget, row, 3)
 
-        self.setup_group(group, rows=5)
+        # --- Sharpen / GOP Length row ---
+        row += 1
+
+        self.sharpen_widget = QtWidgets.QLineEdit()
+        sharpen_validator = QtGui.QDoubleValidator(0.0, 1.0, 2)
+        sharpen_validator.setLocale(c_locale)
+        self.sharpen_widget.setValidator(sharpen_validator)
+        self.sharpen_widget.setToolTip("Default is: 0 (range: 0.0 - 1.0)")
+        self.sharpen_widget.textChanged.connect(lambda: self.page_update(build_thumbnail=True))
+
+        gl.addWidget(QtWidgets.QLabel(t("Sharpen")), row, 0, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.sharpen_widget, row, 1)
+
+        self.gop_length_widget = QtWidgets.QLineEdit()
+        self.gop_length_widget.setValidator(QtGui.QIntValidator(0, 9999))
+        self.gop_length_widget.setToolTip(t("GOP length in frames (leave empty for encoder default)"))
+        self.gop_length_widget.textChanged.connect(self.page_update)
+
+        gl.addWidget(QtWidgets.QLabel(t("GOP Length")), row, 2, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.gop_length_widget, row, 3)
+
+        self.setup_group(group, rows=6)
         return group
 
     def init_color_group(self):
@@ -363,7 +384,14 @@ class AdvancedPanel(QtWidgets.QWidget):
         gl.addWidget(self.bufsize_widget, 0, 3)
         gl.addWidget(QtWidgets.QLabel(t("Both must have values to be enabled")), 0, 4, 1, 2)
 
-        self.setup_group(group, rows=1)
+        self.faststart_widget = ToggleSwitch(t("Fast Start (MP4/MOV)"))
+        self.faststart_widget.setChecked(True)
+        self.faststart_widget.setToolTip(t("Moves metadata to the beginning of the file for faster streaming start"))
+        self.faststart_widget.stateChanged.connect(self.page_update)
+        self.faststart_widget.setVisible(False)
+        gl.addWidget(self.faststart_widget, 1, 0, 1, 2)
+
+        self.setup_group(group, rows=2)
         return group
 
     def init_hw_message(self):
@@ -454,6 +482,22 @@ class AdvancedPanel(QtWidgets.QWidget):
         except ValueError:
             logger.warning("Invalid hue value")
 
+        try:
+            if self.sharpen_widget.text().strip() != "":
+                self.app.fastflix.current_video.video_settings.sharpen = str(float(self.sharpen_widget.text()))
+        except ValueError:
+            logger.warning("Invalid sharpen value")
+
+        self.app.fastflix.current_video.video_settings.faststart = self.faststart_widget.isChecked()
+
+        if self.gop_length_widget.text().strip():
+            try:
+                self.app.fastflix.current_video.video_settings.gop_length = int(self.gop_length_widget.text())
+            except ValueError:
+                logger.warning("Invalid GOP length value")
+        else:
+            self.app.fastflix.current_video.video_settings.gop_length = None
+
         # self.app.fastflix.current_video.video_settings.first_pass_filters = self.first_filters.text() or None
         # self.app.fastflix.current_video.video_settings.second_filters = self.second_filters.text() or None
 
@@ -491,6 +535,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.app.fastflix.current_video.video_settings.maxrate = None
             self.app.fastflix.current_video.video_settings.bufsize = None
 
+        self.update_faststart_visibility()
         self.updating = False
 
     def get_settings(self):
@@ -541,6 +586,20 @@ class AdvancedPanel(QtWidgets.QWidget):
             except ValueError:
                 logger.warning("Invalid hue value")
 
+        sharpen = None
+        if self.sharpen_widget.text().strip() != "":
+            try:
+                sharpen = str(float(self.sharpen_widget.text()))
+            except ValueError:
+                logger.warning("Invalid sharpen value")
+
+        gop_length = None
+        if self.gop_length_widget.text().strip():
+            try:
+                gop_length = int(self.gop_length_widget.text())
+            except ValueError:
+                logger.warning("Invalid GOP length value")
+
         return AdvancedOptions(
             video_speed=video_speeds[self.video_speed_widget.currentText()],
             reverse_video=self.reverse_video_widget.isChecked(),
@@ -553,6 +612,10 @@ class AdvancedPanel(QtWidgets.QWidget):
             contrast=contrast,
             gamma=gamma,
             hue=hue,
+            sharpen=sharpen,
+            faststart=self.faststart_widget.isChecked(),
+            deinterlace=self.main.widgets.deinterlace.isChecked(),
+            gop_length=gop_length,
             maxrate=maxrate,
             bufsize=bufsize,
             source_fps=(None if self.incoming_same_as_source.isChecked() else self.incoming_fps_widget.text()),
@@ -619,7 +682,20 @@ class AdvancedPanel(QtWidgets.QWidget):
                     self.color_primaries_widget.setCurrentIndex(0)
 
     def page_update(self, build_thumbnail=False):
+        self.update_faststart_visibility()
         self.main.page_update(build_thumbnail=build_thumbnail)
+
+    def update_faststart_visibility(self):
+        if not hasattr(self, "faststart_widget"):
+            return
+        ext = ""
+        # Check the output type combo first (always reflects current selection)
+        if hasattr(self.main, "widgets") and hasattr(self.main.widgets, "output_type_combo"):
+            ext = self.main.widgets.output_type_combo.currentText().lower()
+        # Fall back to output_path if available
+        elif self.app.fastflix.current_video and self.app.fastflix.current_video.video_settings.output_path:
+            ext = self.app.fastflix.current_video.video_settings.output_path.suffix.lower()
+        self.faststart_widget.setVisible(ext in (".mp4", ".mov", ".m4v"))
 
     def reset(self, settings: VideoSettings = None):
         if settings:
@@ -630,6 +706,9 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.contrast_widget.setText(settings.contrast or "")
             self.gamma_widget.setText(settings.gamma or "")
             self.hue_widget.setText(settings.hue or "")
+            self.sharpen_widget.setText(settings.sharpen or "")
+            self.gop_length_widget.setText(str(settings.gop_length) if settings.gop_length else "")
+            self.faststart_widget.setChecked(settings.faststart if hasattr(settings, "faststart") else True)
 
             if settings.deblock:
                 self.deblock_widget.setCurrentText(settings.deblock)
@@ -736,6 +815,11 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.contrast_widget.setText(self.app.fastflix.config.advanced_opt("contrast") or "")
             self.gamma_widget.setText(self.app.fastflix.config.advanced_opt("gamma") or "")
             self.hue_widget.setText(self.app.fastflix.config.advanced_opt("hue") or "")
+            self.sharpen_widget.setText(self.app.fastflix.config.advanced_opt("sharpen") or "")
+            gop_val = self.app.fastflix.config.advanced_opt("gop_length")
+            self.gop_length_widget.setText(str(gop_val) if gop_val else "")
+            faststart_val = self.app.fastflix.config.advanced_opt("faststart")
+            self.faststart_widget.setChecked(faststart_val if faststart_val is not None else True)
 
             self.hdr_settings()
             # self.video_title.setText("")
@@ -835,6 +919,16 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         if hue := advanced_options.hue:
             self.hue_widget.setText(hue)
+
+        if sharpen := advanced_options.sharpen:
+            self.sharpen_widget.setText(sharpen)
+
+        if gop_length := advanced_options.gop_length:
+            self.gop_length_widget.setText(str(gop_length))
+
+        self.faststart_widget.setChecked(advanced_options.faststart)
+
+        self.main.widgets.deinterlace.setChecked(advanced_options.deinterlace)
 
         if maxrate := advanced_options.maxrate:
             self.maxrate_widget.setText(str(maxrate))

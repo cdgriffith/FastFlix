@@ -97,6 +97,9 @@ def test_all_key_widgets_exist(advanced_panel):
         "bufsize_widget",
         "video_title",
         "video_track_title",
+        "sharpen_widget",
+        "gop_length_widget",
+        "faststart_widget",
     ]
     for name in widgets:
         assert hasattr(advanced_panel, name), f"Missing widget: {name}"
@@ -174,3 +177,57 @@ def test_groups_not_compressed_at_small_size(advanced_panel):
             f"{group.title()} height is {actual_height}px, expected at least {expected_min}px for usability"
         )
     advanced_panel.hide()
+
+
+def test_page_update_does_not_crash(mock_parent, mock_app, qapp):
+    """page_update must not crash during or after init (widgets may not exist yet during init)."""
+    from fastflix.widgets.panels.advanced_panel import AdvancedPanel
+
+    # This would raise AttributeError if page_update references widgets before they're created
+    panel = AdvancedPanel(mock_parent, mock_app)
+    panel.page_update()
+    panel.page_update(build_thumbnail=True)
+
+
+def test_faststart_visible_for_mp4(advanced_panel):
+    """Fast Start toggle must not be hidden when output type is .mp4."""
+    combo = QtWidgets.QComboBox()
+    combo.addItems([".mp4", ".mkv"])
+    combo.setCurrentText(".mp4")
+    advanced_panel.main.widgets.output_type_combo = combo
+
+    advanced_panel.update_faststart_visibility()
+    assert not advanced_panel.faststart_widget.isHidden(), "Fast Start should not be hidden for .mp4"
+
+
+def test_faststart_visible_for_mov(advanced_panel):
+    """Fast Start toggle must not be hidden when output type is .mov."""
+    combo = QtWidgets.QComboBox()
+    combo.addItems([".mov", ".mkv"])
+    combo.setCurrentText(".mov")
+    advanced_panel.main.widgets.output_type_combo = combo
+
+    advanced_panel.update_faststart_visibility()
+    assert not advanced_panel.faststart_widget.isHidden(), "Fast Start should not be hidden for .mov"
+
+
+def test_faststart_hidden_for_mkv(advanced_panel):
+    """Fast Start toggle must be hidden when output type is .mkv."""
+    combo = QtWidgets.QComboBox()
+    combo.addItems([".mkv", ".mp4"])
+    combo.setCurrentText(".mkv")
+    advanced_panel.main.widgets.output_type_combo = combo
+
+    advanced_panel.update_faststart_visibility()
+    assert advanced_panel.faststart_widget.isHidden(), "Fast Start should be hidden for .mkv"
+
+
+def test_faststart_hidden_for_webm(advanced_panel):
+    """Fast Start toggle must be hidden when output type is .webm."""
+    combo = QtWidgets.QComboBox()
+    combo.addItems([".webm"])
+    combo.setCurrentText(".webm")
+    advanced_panel.main.widgets.output_type_combo = combo
+
+    advanced_panel.update_faststart_visibility()
+    assert advanced_panel.faststart_widget.isHidden(), "Fast Start should be hidden for .webm"

@@ -15078,3 +15078,121 @@ Color:
   ron: Culoare
 Video Details:
   eng: Video Details
+  deu: Video-Details
+  fra: Détails de la vidéo
+  ita: Dettagli video
+  spa: Detalles del vídeo
+  jpn: ビデオ詳細
+  rus: Подробности видео
+  por: Detalhes do vídeo
+  swe: Video Detaljer
+  pol: Szczegóły wideo
+  chs: 视频详情
+  ukr: Деталі відео
+  kor: 비디오 세부 정보
+  ron: Detalii video
+Sharpen:
+  eng: Sharpen
+  deu: Schärfen
+  fra: Aiguiser
+  ita: Affilare
+  spa: Afilar
+  jpn: 研ぐ
+  rus: Заточка
+  por: Afiar
+  swe: Skärpa
+  pol: Ostrzenie
+  chs: 锐化
+  ukr: Гостріше.
+  kor: 샤프닝
+  ron: Ascuțiți
+Fast Start (MP4/MOV):
+  eng: Fast Start (MP4/MOV)
+  deu: Schnellstart (MP4/MOV)
+  fra: Démarrage rapide (MP4/MOV)
+  ita: Avvio veloce (MP4/MOV)
+  spa: Inicio rápido (MP4/MOV)
+  jpn: ファストスタート（MP4/MOV）
+  rus: Быстрый старт (MP4/MOV)
+  por: Início rápido (MP4/MOV)
+  swe: Snabb start (MP4/MOV)
+  pol: Szybki start (MP4/MOV)
+  chs: 快速启动（MP4/MOV）
+  ukr: Швидкий старт (MP4/MOV)
+  kor: 빠른 시작(MP4/MOV)
+  ron: Start rapid (MP4/MOV)
+Moves metadata to the beginning of the file for faster streaming start:
+  eng: Moves metadata to the beginning of the file for faster streaming start
+  deu: Verschiebt Metadaten an den Anfang der Datei, um das Streaming zu beschleunigen
+  fra: Déplace les métadonnées au début du fichier pour un démarrage plus rapide de la lecture en continu.
+  ita: Sposta i metadati all'inizio del file per un avvio più rapido dello streaming.
+  spa: Desplaza los metadatos al principio del archivo para acelerar el inicio de la transmisión.
+  jpn: ストリーミング開始を高速化するために、メタデータをファイルの先頭に移動する。
+  rus: Перемещает метаданные в начало файла для ускорения начала потоковой передачи.
+  por: Move os metadados para o início do ficheiro para um início de transmissão mais rápido
+  swe: Flyttar metadata till början av filen för snabbare streamingstart
+  pol: Przenosi metadane na początek pliku w celu szybszego rozpoczęcia przesyłania strumieniowego.
+  chs: 将元数据移至文件开头，以更快地启动流式传输
+  ukr: Переміщує метадані на початок файлу для швидшого запуску потокового передавання
+  kor: 더 빠른 스트리밍 시작을 위해 메타데이터를 파일 앞부분으로 이동합니다.
+  ron: Mută metadatele la începutul fișierului pentru o pornire mai rapidă a fluxului
+GOP Length:
+  eng: GOP Length
+  deu: GOP-Länge
+  fra: Longueur du GOP
+  ita: Lunghezza GOP
+  spa: Longitud del GOP
+  jpn: GOPの長さ
+  rus: Длина GOP
+  por: Comprimento GOP
+  swe: GOP Längd
+  pol: Długość GOP
+  chs: GOP 长度
+  ukr: Довжина GOP
+  kor: GOP 길이
+  ron: GOP Lungime
+GOP length in frames (leave empty for encoder default):
+  eng: GOP length in frames (leave empty for encoder default)
+  deu: GOP-Länge in Frames (leer lassen für Encoder-Standard)
+  fra: Longueur du GOP en images (laisser vide pour la valeur par défaut de l'encodeur)
+  ita: Lunghezza GOP in fotogrammi (lasciare vuoto per l'encoder predefinito)
+  spa: Longitud del GOP en fotogramas (dejar vacío para el codificador por defecto)
+  jpn: GOPの長さ（フレーム単位）（エンコーダのデフォルトは空のまま
+  rus: Длина GOP в кадрах (оставить пустым для кодера по умолчанию)
+  por: Comprimento do GOP em fotogramas (deixar vazio para a predefinição do codificador)
+  swe: GOP-längd i bildrutor (lämna tom för standardkodning)
+  pol: Długość GOP w klatkach (pozostaw puste dla domyślnego kodera)
+  chs: 以帧为单位的 GOP 长度（编码器默认留空）
+  ukr: Довжина GOP у кадрах (залиште порожнім для кодера за замовчуванням)
+  kor: 프레임 단위의 GOP 길이(인코더 기본값을 위해 비워둠)
+  ron: Lungimea GOP în cadre (lăsați gol pentru codarea implicită)
+Video Speed Warning:
+  eng: Video Speed Warning
+  deu: Video-Geschwindigkeitswarnung
+  fra: Avertissement vidéo sur la vitesse
+  ita: Video Avviso di velocità
+  spa: Aviso de velocidad por vídeo
+  jpn: ビデオ速度警告
+  rus: Видеопредупреждение о скорости
+  por: Vídeo de aviso de velocidade
+  swe: Video Hastighetsvarning
+  pol: Wideo ostrzeżenie o prędkości
+  chs: 视频速度警告
+  ukr: Попередження про швидкість відео
+  kor: 비디오 속도 경고
+  ron: Avertizare video privind viteza
+"Warning: Audio will not be modified when changing video speed.":
+  eng: "Warning: Audio will not be modified when changing video speed."
+  deu: Achtung! Der Ton wird beim Ändern der Videogeschwindigkeit nicht verändert.
+  fra: "Avertissement : L'audio ne sera pas modifié lors de la modification de la vitesse de la vidéo."
+  ita: "Attenzione: L'audio non viene modificato quando si cambia la velocità del video."
+  spa: 'Advertencia: El audio no se modificará al cambiar la velocidad de vídeo.'
+  jpn: 警告ビデオスピードを変更しても音声は変更されません。
+  rus: 'Внимание: Звук не будет изменен при изменении скорости видео.'
+  por: 'Aviso: O áudio não será modificado quando a velocidade do vídeo for alterada.'
+  swe: 'Varning för ljud: Ljudet kommer inte att ändras när videohastigheten ändras.'
+  pol: 'Ostrzeżenie: Dźwięk nie zostanie zmodyfikowany podczas zmiany prędkości wideo.'
+  chs: 警告：改变视频速度时不会修改音频。
+  ukr: 'Попередження: При зміні швидкості відео звук не змінюється.'
+  kor: '경고: 동영상 속도를 변경할 때 오디오는 수정되지 않습니다.'
+  ron: 'Avertisment: Sunetul nu va fi modificat la schimbarea vitezei video.'

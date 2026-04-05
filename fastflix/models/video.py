@@ -123,6 +123,9 @@ class VideoSettings(BaseModel):
     saturation: Optional[str] = None
     gamma: Optional[str] = None
     hue: Optional[str] = None
+    sharpen: Optional[str] = None
+    faststart: bool = True
+    gop_length: Optional[int] = None
     copy_data: bool = False
     template_generated_name: str = ""
     video_encoder_settings: Optional[
@@ -195,6 +198,13 @@ class VideoSettings(BaseModel):
     @field_validator("hue", mode="before")
     @classmethod
     def hue_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
+
+    @field_validator("sharpen", mode="before")
+    @classmethod
+    def sharpen_to_str(cls, value):
         if isinstance(value, (int, float)):
             return str(value)
         return value
