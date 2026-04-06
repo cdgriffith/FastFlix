@@ -989,7 +989,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         if not hasattr(self, "faststart_widget"):
             return
         ext = ""
-        # Use resolve_output_extension() which handles "Same as Source" → actual extension
+        # Use resolve_output_extension() which handles "Source" → actual extension
         try:
             result = self.main.resolve_output_extension()
             if isinstance(result, str):

@@ -22,7 +22,6 @@ class BaseWidths:
     FLIP_DROPDOWN: int = 120
     ROTATE_DROPDOWN: int = 130
     PREVIEW_MIN: int = 330
-    OUTPUT_TYPE: int = 60
     VIDEO_TRACK_LABEL: int = 75
     ENCODER_LABEL: int = 50
     RESOLUTION_LABEL: int = 70

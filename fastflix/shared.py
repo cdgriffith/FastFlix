@@ -16,6 +16,11 @@ import reusables
 from pathvalidate import sanitize_filepath
 
 
+from PySide6 import QtCore, QtGui, QtWidgets
+
+from fastflix.language import t
+from fastflix.resources import get_bool_env
+
 try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
     # noinspection PyUnresolvedReferences
@@ -25,10 +30,11 @@ except AttributeError:
     base_path = os.path.abspath(".")
     pyinstaller = False
 
-from PySide6 import QtCore, QtGui, QtWidgets
+# Detect if running from the Go launcher (embeddable Python distribution)
+go_launcher = os.environ.get("FASTFLIX_BUNDLED") == "1"
 
-from fastflix.language import t
-from fastflix.resources import get_bool_env
+# True when running as any kind of packaged distribution (PyInstaller or Go launcher)
+bundled_mode = pyinstaller or go_launcher
 
 DEVMODE = get_bool_env("DEVMODE")
 

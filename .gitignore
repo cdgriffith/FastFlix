@@ -126,3 +126,12 @@ build-dir/
 benchmarking/
 
 ./.claude/settings.local.json
+
+# Go installer build artifacts
+cmd/installer/fastflix_dist.*
+cmd/*/*.syso
+cmd/installer/licenses.txt
+cmd/installer/terms_translations.json
+
+# Build script cache (downloaded Python embeddable, get-pip.py)
+scripts/cache/

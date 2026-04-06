@@ -1,0 +1,44 @@
+{
+  "RT_GROUP_ICON": {
+    "#1": {
+      "0000": "icon.ico"
+    }
+  },
+  "RT_MANIFEST": {
+    "#1": {
+      "0409": {
+        "identity": {
+          "name": "FastFlix.Installer",
+          "version": "6.3.0.0"
+        },
+        "description": "FastFlix Installer",
+        "minimum-os": "win10",
+        "execution-level": "asInvoker",
+        "dpi-awareness": "system",
+        "use-common-controls": true
+      }
+    }
+  },
+  "RT_VERSION": {
+    "#1": {
+      "0000": {
+        "fixed": {
+          "file_version": "6.3.0.0",
+          "product_version": "6.3.0.0"
+        },
+        "info": {
+          "0409": {
+            "CompanyName": "Chris Griffith",
+            "FileDescription": "FastFlix Installer",
+            "FileVersion": "6.3.0",
+            "InternalName": "FastFlix.Installer",
+            "LegalCopyright": "(c) Chris Griffith 2019-2025",
+            "OriginalFilename": "FastFlix_installer.exe",
+            "ProductName": "FastFlix",
+            "ProductVersion": "6.3.0"
+          }
+        }
+      }
+    }
+  }
+}

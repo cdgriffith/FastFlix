@@ -1,0 +1,44 @@
+{
+  "RT_GROUP_ICON": {
+    "#1": {
+      "0000": "icon.ico"
+    }
+  },
+  "RT_MANIFEST": {
+    "#1": {
+      "0409": {
+        "identity": {
+          "name": "FastFlix.Uninstaller",
+          "version": "6.3.0.0"
+        },
+        "description": "FastFlix Uninstaller",
+        "minimum-os": "win10",
+        "execution-level": "asInvoker",
+        "dpi-awareness": "system",
+        "use-common-controls": true
+      }
+    }
+  },
+  "RT_VERSION": {
+    "#1": {
+      "0000": {
+        "fixed": {
+          "file_version": "6.3.0.0",
+          "product_version": "6.3.0.0"
+        },
+        "info": {
+          "0409": {
+            "CompanyName": "Chris Griffith",
+            "FileDescription": "FastFlix Uninstaller",
+            "FileVersion": "6.3.0",
+            "InternalName": "FastFlix.Uninstaller",
+            "LegalCopyright": "(c) Chris Griffith 2019-2025",
+            "OriginalFilename": "uninstall.exe",
+            "ProductName": "FastFlix",
+            "ProductVersion": "6.3.0"
+          }
+        }
+      }
+    }
+  }
+}

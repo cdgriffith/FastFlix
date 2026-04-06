@@ -96,7 +96,7 @@ class DataTrackWidget(QtWidgets.QTabWidget):
         if track is None:
             track = self.app.fastflix.current_video.data_tracks[self.index]
 
-        # Use resolve_output_extension() which handles "Same as Source" → actual extension
+        # Use resolve_output_extension() which handles "Source" → actual extension
         try:
             ext_with_dot = self.parent.main.resolve_output_extension()
         except (AttributeError, RuntimeError):

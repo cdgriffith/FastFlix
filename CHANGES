@@ -11,7 +11,7 @@
 * Adding #457 QSVEncC --tune parameter support (hq, ll, ull, lossless) for HEVC, AV1, and AVC encoders (thanks to Marco Ravich)
 * Adding #480 2-pass CRF encoding for the AOM AV1 encoder for improved quality (thanks to jimbow973)
 * Adding #498 deinterlace method and mode options (yadif, bwdif, w3fdif, estdif with send_frame/send_field modes) to the Advanced panel, with persistence in profiles
-* Adding #520 "Same as Source" option for the output file extension, matching the output container to the source format for batch encoding mixed MKV/MP4 files (thanks to x9sim9)
+* Adding #520 "Source" option for the output file extension, matching the output container to the source format for batch encoding mixed MKV/MP4 files (thanks to x9sim9)
 * Adding #523 drag and drop folder support in the Concatenation Builder (thanks to GokieKS)
 * Adding #526 -movflags +faststart toggle for MP4/MOV containers, enabled by default (thanks to Aria)
 * Adding #594 codec and codec+profile matching options for audio profile pattern matching, allowing users to distinguish between e.g. DTS-HD MA and regular DTS tracks (thanks to Damundai)

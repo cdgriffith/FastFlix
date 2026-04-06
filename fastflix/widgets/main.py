@@ -638,8 +638,8 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
 
-        self.widgets.output_type_combo.setFixedWidth(scaler.scale(WIDTHS.OUTPUT_TYPE))
-        self.widgets.output_type_combo.addItem(t("Same as Source"))
+        self.widgets.output_type_combo.setSizeAdjustPolicy(QtWidgets.QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.widgets.output_type_combo.addItem(t("Source"))
         if self.current_encoder:
             self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
         self.widgets.output_type_combo.setMinimumHeight(scaler.scale(HEIGHTS.COMBO_BOX))
@@ -1259,7 +1259,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self.widgets.output_type_combo.clear()
         if not self.current_encoder:
             return
-        self.widgets.output_type_combo.addItem(t("Same as Source"))
+        self.widgets.output_type_combo.addItem(t("Source"))
         self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
         saved = self.app.fastflix.config.opt("output_type")
         if saved == "same_as_source":
@@ -1268,9 +1268,9 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             self.widgets.output_type_combo.setCurrentText(saved)
 
     def resolve_output_extension(self) -> str:
-        """Resolve the actual output file extension, handling 'Same as Source'."""
+        """Resolve the actual output file extension, handling 'Source' option."""
         combo_text = self.widgets.output_type_combo.currentText()
-        if combo_text == t("Same as Source"):
+        if combo_text == t("Source"):
             if self.app.fastflix.current_video:
                 source_ext = self.app.fastflix.current_video.source.suffix.lower()
                 if self.current_encoder and source_ext in self.current_encoder.video_extensions:
@@ -1295,7 +1295,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
 
     def output_type_for_profile(self) -> str:
         """Return the output type value to store in profiles."""
-        if self.widgets.output_type_combo.currentText() == t("Same as Source"):
+        if self.widgets.output_type_combo.currentText() == t("Source"):
             return "same_as_source"
         return self.widgets.output_type_combo.currentText()
 

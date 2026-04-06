@@ -127,7 +127,19 @@
       "Bash(QT_QPA_PLATFORM=offscreen rtk uv:*)",
       "Bash(SKIP_NVIDIA=1 SKIP_INTEL=1 SKIP_AMD=1 uv run:*)",
       "Bash([ -f \"/c/Users/Chris/Projects/FastFlix/fastflix/encoders/$encoder/command_builder.py\" ])",
-      "Bash(uv sync:*)"
+      "Bash(uv sync:*)",
+      "Bash(wc -l fastflix/**/*.py fastflix/*.py)",
+      "Bash(go version:*)",
+      "PowerShell(Get-Command:*)",
+      "PowerShell(Test-Path:*)",
+      "Bash(export PATH=\"/c/Program Files/Go/bin:$PATH\")",
+      "Bash(go mod:*)",
+      "Bash(C:/Users/Chris/Projects/FastFlix/dist/FastFlix/FastFlix.exe --version)",
+      "Bash(C:/Users/Chris/Projects/FastFlix/dist/FastFlix/FastFlix.exe --test)",
+      "Bash(du -sh *.dll *.pyd)",
+      "Read(//c/Users/Chris/Projects/FastFlix/dist/FastFlix/lib/PySide6/**)",
+      "Bash(du -sh Qt6WebEngine* Qt6Quick* Qt6Qml* Qt6Designer* Qt63D* Qt6Pdf* Qt6Multimedia* opengl32sw.dll)",
+      "Bash(go build:*)"
     ]
   }
 }
