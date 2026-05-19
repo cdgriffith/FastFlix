@@ -13,23 +13,29 @@ def build(fastflix: FastFlix):
 
     beginning.extend(generate_color_details(fastflix))
 
+    hevc_profiles = {1: "main", 2: "main10"}
+
     def clean_bool(item):
         return "true" if item else "false"
 
-    details = [
-        "-profile:v",
-        str(settings.profile),
-        "-allow_sw",
-        clean_bool(settings.allow_sw),
-        "-require_sw",
-        clean_bool(settings.require_sw),
-        "-realtime",
-        clean_bool(settings.realtime),
-        "-frames_before",
-        clean_bool(settings.frames_before),
-        "-frames_after",
-        clean_bool(settings.frames_after),
-    ]
+    details = []
+    profile_name = hevc_profiles.get(settings.profile)
+    if profile_name:
+        details.extend(["-profile:v", profile_name])
+    details.extend(
+        [
+            "-allow_sw",
+            clean_bool(settings.allow_sw),
+            "-require_sw",
+            clean_bool(settings.require_sw),
+            "-realtime",
+            clean_bool(settings.realtime),
+            "-frames_before",
+            clean_bool(settings.frames_before),
+            "-frames_after",
+            clean_bool(settings.frames_after),
+        ]
+    )
 
     extra = shlex.split(settings.extra) if settings.extra else []
     extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []

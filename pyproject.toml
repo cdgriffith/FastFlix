@@ -50,9 +50,11 @@ build-backend = "setuptools.build_meta"
 
 [dependency-groups]
 dev = [
+    "deepl>=1.29.0",
     "pre-commit>=4.2.0",
     "pyinstaller>=6.13.0",
     "pytest>=9.0",
+    "pytest-xdist>=3.5",
     "ruff>=0.14",
     "types-requests>=2.32",
     "types-setuptools>=80.9",
@@ -62,6 +64,12 @@ dev = [
 
 [tool.setuptools.dynamic]
 version = { attr = "fastflix.version.__version__" }
+
+[tool.pytest.ini_options]
+markers = [
+    "local_only: Tests that require local tools (FFmpeg, encoders) and skip on CI",
+    "e2e: End-to-end encode tests that run real FFmpeg encodes (local only, skip on CI)",
+]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

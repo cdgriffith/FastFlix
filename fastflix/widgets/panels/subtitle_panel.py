@@ -18,6 +18,7 @@ from fastflix.ui_scale import scaler
 from fastflix.ui_styles import get_onyx_disposition_style
 from fastflix.widgets.background_tasks import ExtractSubtitleSRT
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.widgets.toggle_switch import ToggleSwitch
 from fastflix.widgets.windows.disposition import Disposition
 
 logger = logging.getLogger("fastflix")
@@ -79,10 +80,10 @@ class Subtitle(QtWidgets.QTabWidget):
             down_button=QtWidgets.QPushButton(
                 QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
-            enable_check=QtWidgets.QCheckBox(t("Preserve")),
+            enable_check=ToggleSwitch(t("Preserve")),
             disposition=QtWidgets.QPushButton(t("Dispositions")),
             language=QtWidgets.QComboBox(),
-            burn_in=QtWidgets.QCheckBox(t("Burn In")),
+            burn_in=ToggleSwitch(t("Burn In")),
         )
 
         self.widgets.up_button.setStyleSheet(no_border)
@@ -480,10 +481,10 @@ class ExternalSubtitle(QtWidgets.QTabWidget):
             down_button=QtWidgets.QPushButton(
                 QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
-            enable_check=QtWidgets.QCheckBox(t("Preserve")),
+            enable_check=ToggleSwitch(t("Preserve")),
             disposition=QtWidgets.QPushButton(t("Dispositions")),
             language=QtWidgets.QComboBox(),
-            burn_in=QtWidgets.QCheckBox(t("Burn In")),
+            burn_in=ToggleSwitch(t("Burn In")),
             remove_button=QtWidgets.QPushButton(t("Remove")),
         )
 
@@ -865,6 +866,28 @@ class SubtitleList(FlixList):
             enabled = self.lang_match(sub_track)
             sub_track.enabled = enabled
             track.widgets.enable_check.setChecked(enabled)
+
+        # Apply disposition overrides from profile
+        default_mode = self.app.fastflix.config.opt("subtitle_default_disposition", None)
+        forced_mode = self.app.fastflix.config.opt("subtitle_forced_disposition", None)
+        if default_mode or forced_mode:
+            first_default_set = False
+            first_forced_set = False
+            for track in self.tracks:
+                sub_track = self.app.fastflix.current_video.subtitle_tracks[track.index]
+                if not sub_track.enabled:
+                    continue
+                if default_mode == "clear":
+                    sub_track.dispositions["default"] = False
+                elif default_mode == "first":
+                    sub_track.dispositions["default"] = not first_default_set
+                    first_default_set = True
+                if forced_mode == "clear":
+                    sub_track.dispositions["forced"] = False
+                elif forced_mode == "first":
+                    sub_track.dispositions["forced"] = not first_forced_set
+                    first_forced_set = True
+                track.check_dis_button()
 
         if self.app.fastflix.config.opt("subtitle_automatic_burn_in"):
             # Reset any existing burn-in

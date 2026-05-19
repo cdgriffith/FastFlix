@@ -1,5 +1,44 @@
 # Changelog
 
+## Version 6.3.0
+
+* Adding #202 new video filters to the Advanced panel: vibrance, color temperature, curves presets, colorbalance presets, unsharp mask, deflicker, pad/letterbox, LUT3D file loading, and nlmeans_opencl GPU-accelerated denoise — with rigaya hardware encoder support for curves (--vpp-curves), unsharp (--vpp-unsharp), pad (--vpp-pad), LUT3D (--vpp-colorspace lut3d), and nlmeans_opencl (--vpp-nlmeans)
+* Adding #212 full source and output file path tooltip on hover for queue items, with responsive text eliding for long file names (thanks to bmcassagne)
+* Adding #344 lossless encoding option for AVC (x264), AV1 (AOM), VP9, and AV1 (SVT-AV1) encoders
+* Adding #377 #550 #694 gamma and hue options to the Equalizer in the Advanced panel (FFmpeg eq/hue filters for software encoders, --vpp-tweak for rigaya) (thanks to lincsat, DCNerds, and Patrick Isbendjian)
+* Adding #405 sharpen filter (CAS) to the Advanced panel (FFmpeg cas filter for software encoders, --vpp-unsharp for rigaya)
+* Adding #447 GOP length setting to the Advanced panel (FFmpeg -g, rigaya --gop-len) (thanks to colemar)
+* Adding #457 QSVEncC --tune parameter support (hq, ll, ull, lossless) for HEVC, AV1, and AVC encoders (thanks to Marco Ravich)
+* Adding #480 2-pass CRF encoding for the AOM AV1 encoder for improved quality (thanks to jimbow973)
+* Adding #498 deinterlace method and mode options (yadif, bwdif, w3fdif, estdif with send_frame/send_field modes) to the Advanced panel, with persistence in profiles
+* Adding #520 "Source" option for the output file extension, matching the output container to the source format for batch encoding mixed MKV/MP4 files (thanks to x9sim9)
+* Adding #523 drag and drop folder support in the Concatenation Builder (thanks to GokieKS)
+* Adding #526 -movflags +faststart toggle for MP4/MOV containers, enabled by default (thanks to Aria)
+* Adding #594 codec and codec+profile matching options for audio profile pattern matching, allowing users to distinguish between e.g. DTS-HD MA and regular DTS tracks (thanks to Damundai)
+* Adding #665 profile-level control for subtitle "default" and "forced" disposition flags with Keep Source, Clear All, and Set on First Track modes (thanks to legoleigh)
+* Adding #677 "Keep source loaded after adding to queue" setting to allow tweaking and re-queuing the same source without reloading (thanks to Mine181)
+* Adding #682 HE-AAC and HE-AAC v2 audio profile selection for AAC and libfdk_aac codecs (thanks to Augusto7743)
+* Adding Reverse Video option in the Advanced panel (applies FFmpeg reverse video filter and areverse audio filter for converted tracks)
+* Adding rigaya encoder support for Equalizer (--vpp-tweak), Denoise (--vpp-nlmeans/knn/pmd), Deblock (--vpp-deblock), Output FPS (--vpp-fps), and Video Track Title — only Video Speed and Reverse Video remain unsupported
+* Adding #544 Download HDR10 Metadata button in Source Details tab for exporting mastering display and content light level data in x265-compatible format (thanks to yundebian918)
+* Adding structured table view to Source Details tab with grouped sections, human-readable value formatting, Download JSON export, and full path tooltips on source/output filename fields
+* Adding warning in Data & Attachments tab and reason text when tracks are incompatible with the output format (e.g. data streams in MKV)
+* Changing Advanced panel layout to use QGroupBox sections (Video Details, Frame Rate, Video Processing, Color & Appearance, Color, Output) with restoration filters separated from color correction filters
+* Fixing #741 VideoToolbox HEVC and H264 encoders passing invalid numeric profile index instead of profile name, causing "incorrect parameters" errors on macOS (thanks to enaveso)
+* Fixing #560 queue items could not be removed while encoding — now allows removing non-running items and grays out unavailable controls (move, reload, load queue) during encoding (thanks to 54x1)
+* Fixing #736 thumbnail and crop preview generation failing with FFmpeg 8.0+ by adding `-update 1` flag required by the image2 muxer for single-image output (thanks to kliffgomel)
+* Fixing #738 conversion error with Google Pixel videos by disabling data stream mapping for Matroska containers which do not support data streams (attachments like fonts are still allowed) (thanks to Hankuuuu)
+* Fixing attachment streams (fonts, etc.) losing mimetype/filename metadata during conversion due to `-map_metadata -1` stripping per-stream tags required by the muxers
+* Fixing cover image metadata targeting wrong output stream when data/attachment tracks are present (FFmpeg places `-map` streams before `-attach` streams in output order)
+* Fixing data streams being auto-included by FFmpeg when encoding to MKV, causing "Only audio, video, and subtitles are supported" errors — now explicitly excludes unmapped data with `-dn` and rechecks compatibility when output format changes
+* Fixing #739 unable to add more than 1 video per session due to AttributeError when closing audio track widgets (thanks to mrdav1)
+* Fixing #130 auto-crop producing invalid crop rectangles for non-standard aspect ratios (4:3 FHD, 2.76:1 ultra-wide) due to independent dimension tracking across cropdetect frames and Python falsy-zero bug (thanks to hallmansm)
+* Fixing HDR tonemapping failing with zscale "no path between colorspaces" by passing complete source colorspace parameters (primaries, matrix, transfer) to the zscale filter, with fallback retry for crop previews when tonemapping still fails
+* Fixing bitrate combobox being unreadably small on x264 and x265 encoders — combo now sizes to fit its widest item
+* Fixing rigaya encoder pad/letterbox calculation ignoring crop dimensions due to incorrect type check
+* Fixing rigaya encoders (NVEncC, QSVEncC, VCEEncC) crashing with no output when data streams are copied to non-MKV containers — `--data-copy` and `--attachment-copy` are now only emitted for Matroska output
+* Fixing startup crash when queue file exists but is missing the 'queue' key
+
 ## Version 6.2.1
 
 * Fixing #529 window geometry and menu anchoring issues when displays are powered off/on or reconfigured during use (thanks to wiznillyp)

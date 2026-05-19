@@ -57,7 +57,7 @@ def _split_quality(quality_str: str) -> List[str]:
     return quality_str.split()
 
 
-def build_audio(audio_tracks, audio_file_index=0) -> List[str]:
+def build_audio(audio_tracks, audio_file_index=0, reverse_video: bool = False) -> List[str]:
     command_list = []
     has_truehd = False
     has_opus = False
@@ -97,7 +97,10 @@ def build_audio(audio_tracks, audio_file_index=0) -> List[str]:
                 if track.downmix and track.downmix != "No Downmix"
                 else []
             )
-            channel_layout = [f"-filter:{track.outdex}", f"aformat=channel_layouts={cl}"]
+            audio_filter = (
+                f"areverse,aformat=channel_layouts={cl}" if reverse_video else f"aformat=channel_layouts={cl}"
+            )
+            channel_layout = [f"-filter:{track.outdex}", audio_filter]
 
             bitrate_parts = []
             if track.conversion_codec not in lossless:
@@ -119,6 +122,8 @@ def build_audio(audio_tracks, audio_file_index=0) -> List[str]:
                     )
 
             command_list.extend([f"-c:{track.outdex}", track.conversion_codec])
+            if track.conversion_profile:
+                command_list.extend([f"-profile:{track.outdex}", track.conversion_profile])
             command_list.extend(bitrate_parts)
             command_list.extend(downmix)
             command_list.extend(channel_layout)

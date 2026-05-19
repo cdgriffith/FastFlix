@@ -1,6 +1,6 @@
 # Building FastFlix on Windows
 
-This guide explains how to build FastFlix executables on Windows.
+This guide explains how to build FastFlix executables and the installer on Windows.
 
 ## Prerequisites
 
@@ -8,126 +8,180 @@ This guide explains how to build FastFlix executables on Windows.
    - Download from [python.org](https://www.python.org/downloads/)
    - Make sure to check "Add Python to PATH" during installation
 
-2. **Git** (to clone/update the repository)
+2. **Go 1.22 or higher**
+   - Download from [go.dev](https://go.dev/dl/)
+   - Needed for the launcher, installer, and uninstaller binaries
+
+3. **go-winres** (for embedding icons and manifests)
+   ```bash
+   go install github.com/tc-hib/go-winres@latest
+   ```
+
+4. **uv** (Python package manager)
+   ```bash
+   pip install uv
+   ```
+
+5. **Git** (to clone/update the repository)
    - Download from [git-scm.com](https://git-scm.com/download/win)
 
-## Build Steps
+## Quick Build (Full Installer)
 
-### 1. Open Command Prompt or PowerShell
-
-Navigate to where you want to clone/have the FastFlix repository:
-
-```bash
-cd C:\path\to\your\projects
-git clone https://github.com/cdgriffith/FastFlix.git
-cd FastFlix
-```
-
-Or if you already have it:
+If you just want to build the installer from scratch:
 
 ```bash
 cd C:\path\to\FastFlix
+
+# Install Python dependencies
+uv sync --frozen
+
+# Install zstandard for archive compression
+uv run pip install zstandard
+
+# Build the full distribution + archive (downloads embeddable Python, installs deps, builds Go binaries)
+uv run python scripts/build_distribution.py --archive
+
+# Generate icon/manifest resources for the installer
+cd cmd\installer
+go-winres make
+cd ..\..
+
+# Build the installer
+go build -ldflags="-s -w -H windowsgui -X main.Version=6.3.0" -o dist\FastFlix_installer.exe .\cmd\installer
 ```
 
-### 2. Create and Activate Virtual Environment
+The installer will be at `dist\FastFlix_installer.exe` (~87 MB).
+
+## What the Build Script Does
+
+`scripts/build_distribution.py --archive` performs these steps automatically:
+
+1. Downloads the official Python 3.13 embeddable distribution (~11 MB)
+2. Configures the embeddable Python to find installed packages
+3. Builds a FastFlix wheel and installs it with all dependencies
+4. Builds the Go launcher (`FastFlix.exe`) and uninstaller (`uninstall.exe`)
+5. Trims unused PySide6 modules (~527 MB savings)
+6. Copies licenses and generates translated terms text
+7. Creates a compressed `tar.zst` archive (~83 MB)
+
+The archive is then embedded into the Go installer binary via `go:embed`.
+
+## Building Individual Components
+
+### Launcher Only
 
 ```bash
-python -m venv venv
-venv\Scripts\activate
+go build -ldflags="-s -w -X main.Version=6.3.0" -o dist\FastFlix\FastFlix.exe .\cmd\launcher
 ```
 
-You should see `(venv)` in your command prompt.
-
-### 3. Install Dependencies
+### Uninstaller Only
 
 ```bash
-pip install --upgrade pip
-pip install -e ".[dev]"
+cd cmd\uninstaller
+go-winres make
+cd ..\..
+go build -ldflags="-s -w -H windowsgui" -o dist\FastFlix\uninstall.exe .\cmd\uninstaller
 ```
 
-This installs FastFlix in editable mode with all development dependencies including PyInstaller.
-
-### 4. Build the Executable
-
-You have two options:
-
-#### Option A: Single Executable (Recommended for distribution)
+### Installer Only (requires archive already built)
 
 ```bash
-pyinstaller FastFlix_Windows_OneFile.spec
+cd cmd\installer
+go-winres make
+cd ..\..
+go build -ldflags="-s -w -H windowsgui -X main.Version=6.3.0" -o dist\FastFlix_installer.exe .\cmd\installer
 ```
 
-The executable will be in: `dist\FastFlix.exe`
-
-#### Option B: Directory with Multiple Files (Faster startup)
+## Testing the Build
 
 ```bash
-pyinstaller FastFlix_Windows_Installer.spec
+# Test launcher
+dist\FastFlix\FastFlix.exe --version
+dist\FastFlix\FastFlix.exe --test
+
+# Launch the full app
+dist\FastFlix\FastFlix.exe
+
+# Test the installer
+dist\FastFlix_installer.exe
 ```
 
-The executable will be in: `dist\FastFlix\FastFlix.exe`
+## Running Without Building (For Development)
 
-### 5. Test the Build
-
-```bash
-cd dist
-FastFlix.exe
-```
-
-Or for the installer version:
+If you just want to test changes without building executables:
 
 ```bash
-cd dist\FastFlix
-FastFlix.exe
-```
-
-## Running Without Building (For Testing)
-
-If you just want to test changes without building an executable:
-
-```bash
+uv sync --frozen
 python -m fastflix
 ```
 
 ## Troubleshooting
 
-### Missing Dependencies
+### Missing Go
 
-If you get import errors, try reinstalling:
-
+If `go build` fails with "go: command not found", ensure Go is installed and in your PATH:
 ```bash
-pip install --upgrade --force-reinstall -e ".[dev]"
+go version
+```
+
+### Missing go-winres
+
+The installer and uninstaller need `go-winres` to embed icons:
+```bash
+go install github.com/tc-hib/go-winres@latest
+```
+
+### Missing licenses.txt or terms_translations.json
+
+These are generated by the build script. If building the installer manually:
+```bash
+copy docs\build-licenses.txt cmd\installer\licenses.txt
+uv run python scripts/build_distribution.py --archive
 ```
 
 ### Build Errors
 
 1. Make sure you're in the FastFlix root directory
-2. Ensure the virtual environment is activated (you see `(venv)`)
-3. Try deleting `build` and `dist` folders and rebuilding:
-
-```bash
-rmdir /s /q build dist
-pyinstaller FastFlix_Windows_OneFile.spec
-```
+2. Try deleting `dist` and rebuilding:
+   ```bash
+   rmdir /s /q dist
+   uv run python scripts/build_distribution.py --archive
+   ```
 
 ### FFmpeg Not Found
 
-The FastFlix executable doesn't include FFmpeg. You need to:
+The FastFlix distribution doesn't include FFmpeg. You need to:
 
 1. Download FFmpeg from [ffmpeg.org](https://ffmpeg.org/download.html#build-windows)
 2. Extract it somewhere
 3. Add the `bin` folder to your PATH, or configure it in FastFlix settings
 
-## Known Limitations
+## Architecture
 
-### PGS to SRT OCR (PyInstaller builds)
+The Windows distribution uses three Go binaries instead of PyInstaller:
 
-Due to an upstream issue in pgsrip v0.1.12, PGS to SRT OCR conversion does not work in PyInstaller-built executables. The feature works perfectly when running from source (`python -m fastflix`).
+| Binary | Purpose | Console |
+|--------|---------|---------|
+| `FastFlix.exe` | Go launcher — sets up Python environment and runs `python.exe -m fastflix` | Yes (for logs) |
+| `uninstall.exe` | Standalone uninstaller — registered with Windows Add/Remove Programs | No (GUI) |
+| `FastFlix_installer.exe` | Dark-themed installer with embedded distribution archive | No (GUI) |
 
-If you need PGS OCR functionality, please run FastFlix from source instead of using the compiled executable.
+The installer supports two modes:
+- **Install for just me** — installs to `%LOCALAPPDATA%\Programs\FastFlix` (no admin required)
+- **Install for all users** — installs to `%ProgramFiles%\FastFlix` (triggers UAC)
+
+## Linux/macOS
+
+Linux and macOS builds still use PyInstaller:
+
+```bash
+uv run pyinstaller FastFlix_Nix_OneFile.spec
+```
 
 ## Notes
 
-- The build process creates a `portable.py` file temporarily (it's removed after)
-- The `.spec` files automatically collect all dependencies from `pyproject.toml`
-- The icon is located at `fastflix\data\icon.ico`
+- The Go launcher is built as a **console app** (not GUI) so users can see log output
+- The installer and uninstaller are built with `-H windowsgui` (no console window)
+- Icons are embedded via `go-winres` — `.syso` files are gitignored
+- The distribution archive uses Zstandard compression (level 22) for best ratio
+- PySide6 trimming removes WebEngine (193 MB), Quick/QML, 3D, Designer, and other unused Qt modules

@@ -178,6 +178,11 @@ def build(fastflix: FastFlix):
     extra = shlex.split(settings.extra) if settings.extra else []
     extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
 
+    if settings.lossless:
+        # Lossless mode — no rate control needed, x265 handles it via lossless=1 param
+        command = beginning + get_x265_params() + ["-preset:v", settings.preset] + extra + ending
+        return [Command(command=command, name="Single pass lossless", exe="ffmpeg")]
+
     if settings.bitrate:
         if settings.bitrate_passes == 2:
             command_1 = (

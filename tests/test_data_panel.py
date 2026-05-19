@@ -114,11 +114,65 @@ class TestBuildDataRigaya:
         assert result[idx + 1] == "1,2"
 
 
+class TestBuildDataRigayaOutputFormat:
+    """Rigaya encoders can only copy data/attachment streams to MKV containers."""
+
+    def test_mp4_output_skips_data_copy(self):
+        tracks = [DataTrack(index=5, outdex=3, enabled=True, codec_type="data")]
+        data_streams = [Box({"index": 5})]
+        result = build_data(tracks, data_streams, [], output_path=Path("output.mp4"))
+        assert result == []
+
+    def test_mov_output_skips_data_copy(self):
+        tracks = [DataTrack(index=5, outdex=3, enabled=True, codec_type="data")]
+        data_streams = [Box({"index": 5})]
+        result = build_data(tracks, data_streams, [], output_path=Path("output.mov"))
+        assert result == []
+
+    def test_mkv_output_allows_data_copy(self):
+        tracks = [DataTrack(index=5, outdex=3, enabled=True, codec_type="data")]
+        data_streams = [Box({"index": 5})]
+        result = build_data(tracks, data_streams, [], output_path=Path("output.mkv"))
+        assert "--data-copy" in result
+
+    def test_mkv_output_allows_attachment_copy(self):
+        tracks = [DataTrack(index=10, outdex=5, enabled=True, codec_type="attachment")]
+        attachment_streams = [Box({"index": 10})]
+        result = build_data(tracks, [], attachment_streams, output_path=Path("output.mkv"))
+        assert "--attachment-copy" in result
+
+    def test_mp4_output_skips_attachment_copy(self):
+        tracks = [DataTrack(index=10, outdex=5, enabled=True, codec_type="attachment")]
+        attachment_streams = [Box({"index": 10})]
+        result = build_data(tracks, [], attachment_streams, output_path=Path("output.mp4"))
+        assert result == []
+
+    def test_ts_output_skips_data_copy(self):
+        tracks = [DataTrack(index=5, outdex=3, enabled=True, codec_type="data")]
+        data_streams = [Box({"index": 5})]
+        result = build_data(tracks, data_streams, [], output_path=Path("output.ts"))
+        assert result == []
+
+    def test_no_output_path_allows_data_copy(self):
+        """Backward compatibility: no output_path means no filtering."""
+        tracks = [DataTrack(index=5, outdex=3, enabled=True, codec_type="data")]
+        data_streams = [Box({"index": 5})]
+        result = build_data(tracks, data_streams, [])
+        assert "--data-copy" in result
+
+
 class TestGenerateEndingWithDataTracks:
     def test_with_data_tracks(self):
         tracks = [
             DataTrack(index=5, outdex=3, enabled=True, codec_type="data"),
-            DataTrack(index=10, outdex=4, enabled=True, codec_type="attachment"),
+            DataTrack(
+                index=10,
+                outdex=4,
+                enabled=True,
+                codec_type="attachment",
+                mimetype="application/x-truetype-font",
+                filename="test_font.ttf",
+            ),
         ]
         result, _ = generate_ending(
             audio=[],
@@ -132,6 +186,35 @@ class TestGenerateEndingWithDataTracks:
         assert "-c:d" in result
         assert "copy" in result
         assert "-c:t" in result
+        assert "-metadata:s:4" in result
+        assert "mimetype=application/x-truetype-font" in result
+        assert "filename=test_font.ttf" in result
+        # Both tracks should have title/handler cleared
+        assert "-metadata:s:3" in result
+        assert "title=" in result
+        assert "handler=" in result
+
+    def test_data_track_title_and_handler_metadata(self):
+        """Data/attachment tracks must set title and handler metadata (empty string when not set)."""
+        tracks = [
+            DataTrack(index=5, outdex=2, enabled=True, codec_type="data", title="Timecode"),
+            DataTrack(index=6, outdex=3, enabled=True, codec_type="data", title=""),
+        ]
+        result, _ = generate_ending(
+            audio=[],
+            subtitles=[],
+            output_video=Path("output.mp4"),
+            data_tracks=tracks,
+        )
+        result_str = " ".join(result)
+        # Track with title should have it set
+        assert "-metadata:s:2" in result
+        assert "title=Timecode" in result_str
+        assert "handler=Timecode" in result_str
+        # Track without title should have empty strings
+        assert "-metadata:s:3" in result
+        assert "title=" in result
+        assert "handler=" in result
 
     def test_with_disabled_data_tracks(self):
         tracks = [
@@ -183,7 +266,16 @@ class TestGenerateEndingWithDataTracks:
 
     def test_attachment_only_codec(self):
         """When only attachment tracks, should set -c:t copy but not -c:d."""
-        tracks = [DataTrack(index=10, outdex=4, enabled=True, codec_type="attachment")]
+        tracks = [
+            DataTrack(
+                index=10,
+                outdex=4,
+                enabled=True,
+                codec_type="attachment",
+                mimetype="application/x-truetype-font",
+                filename="test_font.ttf",
+            )
+        ]
         result, _ = generate_ending(
             audio=[],
             subtitles=[],
@@ -192,3 +284,91 @@ class TestGenerateEndingWithDataTracks:
         )
         assert "-c:t" in result
         assert "-c:d" not in result
+        assert "mimetype=application/x-truetype-font" in result
+        assert "filename=test_font.ttf" in result
+
+    def test_attachment_mimetype_restored_after_metadata_strip(self):
+        """Mimetype and filename must be emitted per-stream so matroska muxer accepts attachments."""
+        tracks = [
+            DataTrack(
+                index=3,
+                outdex=2,
+                enabled=True,
+                codec_type="attachment",
+                mimetype="application/x-truetype-font",
+                filename="test_font.ttf",
+            ),
+            DataTrack(
+                index=5,
+                outdex=3,
+                enabled=True,
+                codec_type="attachment",
+                mimetype="application/json",
+                filename="metadata.json",
+            ),
+            DataTrack(
+                index=6,
+                outdex=4,
+                enabled=True,
+                codec_type="attachment",
+                mimetype="application/octet-stream",
+                filename="test_data.bin",
+            ),
+        ]
+        result, _ = generate_ending(
+            audio=[],
+            subtitles=[],
+            output_video=Path("output.mkv"),
+            data_tracks=tracks,
+            remove_metadata=True,
+        )
+        # -map_metadata -1 strips metadata, so per-stream mimetype must be restored
+        assert "-map_metadata" in result
+        # Font attachment
+        assert "-metadata:s:2" in result
+        assert "mimetype=application/x-truetype-font" in result
+        assert "filename=test_font.ttf" in result
+        # JSON attachment
+        assert "-metadata:s:3" in result
+        assert "mimetype=application/json" in result
+        assert "filename=metadata.json" in result
+        # Binary attachment
+        assert "-metadata:s:4" in result
+        assert "mimetype=application/octet-stream" in result
+        assert "filename=test_data.bin" in result
+
+    def test_attachment_without_mimetype_no_metadata(self):
+        """Attachments without mimetype/filename should not emit empty metadata."""
+        tracks = [
+            DataTrack(index=3, outdex=2, enabled=True, codec_type="attachment"),
+        ]
+        result, _ = generate_ending(
+            audio=[],
+            subtitles=[],
+            output_video=Path("output.mkv"),
+            data_tracks=tracks,
+        )
+        assert "-c:t" in result
+        assert "mimetype=" not in " ".join(result)
+        assert "filename=" not in " ".join(result)
+
+    def test_data_tracks_no_mimetype_for_data_type(self):
+        """Data streams (not attachments) should never get mimetype metadata."""
+        tracks = [
+            DataTrack(
+                index=5,
+                outdex=3,
+                enabled=True,
+                codec_type="data",
+                mimetype="application/octet-stream",
+                filename="some_data.bin",
+            ),
+        ]
+        result, _ = generate_ending(
+            audio=[],
+            subtitles=[],
+            output_video=Path("output.mkv"),
+            data_tracks=tracks,
+        )
+        assert "-c:d" in result
+        assert "mimetype=" not in " ".join(result)

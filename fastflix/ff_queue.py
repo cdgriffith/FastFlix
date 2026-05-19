@@ -3,6 +3,7 @@ import gc
 import logging
 import os
 import shutil
+from datetime import datetime
 import tempfile
 import threading
 import time
@@ -258,6 +259,20 @@ def get_queue(queue_file: Path) -> list[Video]:
     # Update generation tracker with the loaded file's generation
     if "_generation" in loaded:
         set_current_generation(queue_file, loaded["_generation"])
+
+    if "queue" not in loaded:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        error_file = queue_file.parent / f"queue_error_{timestamp}.yaml"
+        try:
+            shutil.copy2(queue_file, error_file)
+            logger.warning(
+                f"Queue file is missing 'queue' key, cannot load. "
+                f"Saved copy to: {error_file} — "
+                f"please raise an issue at https://github.com/cdgriffith/FastFlix/issues and attach this file"
+            )
+        except OSError:
+            logger.warning("Queue file is missing 'queue' key, cannot load. Could not save a copy of the file.")
+        return []
 
     queue = []
     for video in loaded["queue"]:

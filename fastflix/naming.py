@@ -259,11 +259,10 @@ def resolve_pre_encode_variables(
 
     # Output resolution
     if video_settings is not None and video is not None:
-        scale = video.scale
-        if scale:
-            variables["resolution"] = scale.replace(":", "x").replace("-8", "auto")
+        if video.output_width is not None and video.output_height is not None:
+            variables["resolution"] = f"{video.output_width}x{video.output_height}"
         else:
-            variables["resolution"] = f"{video.width}x{video.height}"
+            variables["resolution"] = f"{video.cropped_width}x{video.cropped_height}"
     else:
         variables["resolution"] = variables.get("source_resolution", "N-A")
 

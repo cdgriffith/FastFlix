@@ -12,14 +12,15 @@ from fastflix.resources import get_icon
 from fastflix.shared import no_border, shrink_text_to_fit
 from fastflix.ui_scale import scaler
 from fastflix.widgets.panels.abstract_list import FlixList
+from fastflix.widgets.toggle_switch import ToggleSwitch
 
 logger = logging.getLogger("fastflix")
 
 COVER_NAMES = {"cover", "small_cover", "cover_land", "small_cover_land"}
 
 # Container support for data/attachment streams
-# MKV supports everything; MP4/M4V support timecodes but not font attachments
-NO_DATA_EXTENSIONS = {".gif", ".webm", ".webp", ".avif"}
+# MKV does not support data streams (attachments like fonts are fine)
+NO_DATA_EXTENSIONS = {".gif", ".webm", ".webp", ".avif", ".mkv", ".mka"}
 NO_ATTACHMENT_EXTENSIONS = {".gif", ".webm", ".webp", ".avif", ".mp4", ".m4v", ".mov", ".ts", ".mts", ".m2ts"}
 
 
@@ -43,21 +44,26 @@ class DataTrackWidget(QtWidgets.QTabWidget):
         else:
             type_badge = t("Data")
 
+        self.incompatible = False
+
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{track.index}:{track.outdex}" if enabled else "❌"),
             info_label=QtWidgets.QLabel(f"  {track.friendly_info}"),
             type_badge=QtWidgets.QLabel(type_badge),
+            warning_label=QtWidgets.QLabel(""),
             up_button=QtWidgets.QPushButton(
                 QtGui.QIcon(get_icon("up-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
             down_button=QtWidgets.QPushButton(
                 QtGui.QIcon(get_icon("down-arrow", self.parent.app.fastflix.config.theme)), ""
             ),
-            enable_check=QtWidgets.QCheckBox(t("Preserve")),
+            enable_check=ToggleSwitch(t("Preserve")),
         )
 
         self.widgets.up_button.setStyleSheet(no_border)
         self.widgets.down_button.setStyleSheet(no_border)
+        self.widgets.warning_label.setStyleSheet("color: #cc6600; font-size: 11px;")
+        self.widgets.warning_label.hide()
 
         self.widgets.enable_check.setChecked(enabled)
         self.widgets.enable_check.toggled.connect(self.update_enable)
@@ -81,32 +87,66 @@ class DataTrackWidget(QtWidgets.QTabWidget):
         self.grid.setColumnStretch(2, True)
         self.grid.addWidget(self.widgets.type_badge, 0, 3)
         self.grid.addWidget(self.widgets.enable_check, 0, 4)
+        self.grid.addWidget(self.widgets.warning_label, 1, 1, 1, 4)
 
         self.setLayout(self.grid)
         self.loading = False
 
-    def _check_compatibility(self, track: DataTrack):
-        output_path = self.app.fastflix.current_video.video_settings.output_path
-        if not output_path:
-            return
-        ext = str(output_path).rsplit(".", 1)[-1].lower() if "." in str(output_path) else ""
-        ext_with_dot = f".{ext}"
+    def _check_compatibility(self, track: DataTrack = None):
+        if track is None:
+            track = self.app.fastflix.current_video.data_tracks[self.index]
+
+        # Use resolve_output_extension() which handles "Source" → actual extension
+        try:
+            ext_with_dot = self.parent.main.resolve_output_extension()
+        except (AttributeError, RuntimeError):
+            ext_with_dot = ""
+
+        if not ext_with_dot:
+            output_path = self.app.fastflix.current_video.video_settings.output_path
+            if not output_path:
+                return
+            ext = str(output_path).rsplit(".", 1)[-1].lower() if "." in str(output_path) else ""
+            ext_with_dot = f".{ext}"
 
         incompatible = False
         reason = ""
 
-        if track.codec_type == "data" and ext_with_dot in NO_DATA_EXTENSIONS:
+        # Check if current encoder is a rigaya hardware encoder (NVEncC, QSVEncC, VCEEncC)
+        is_rigaya = False
+        try:
+            encoder_name = self.app.fastflix.current_video.video_settings.video_encoder_settings.name
+            is_rigaya = "encc" in encoder_name.lower()
+        except (AttributeError, RuntimeError):
+            pass
+
+        if is_rigaya and ext_with_dot not in {".mkv", ".mka"}:
+            incompatible = True
+            reason = t("Data and attachment streams are not supported by hardware encoders for this output format")
+        elif track.codec_type == "data" and ext_with_dot in NO_DATA_EXTENSIONS:
             incompatible = True
             reason = t("Data streams are not supported in this output format")
         elif track.codec_type == "attachment" and ext_with_dot in NO_ATTACHMENT_EXTENSIONS:
             incompatible = True
             reason = t("Attachment streams are not supported in this output format")
 
-        if incompatible:
+        if incompatible and not self.incompatible:
+            # Became incompatible — disable and dim
+            self.incompatible = True
             self.widgets.enable_check.setChecked(False)
             self.widgets.enable_check.setEnabled(False)
             self.widgets.enable_check.setToolTip(reason)
+            self.widgets.warning_label.setText(f"⚠ {reason}")
+            self.widgets.warning_label.show()
+            self.setStyleSheet("QTabWidget#DataTrack { background-color: rgba(0, 0, 0, 30); }")
             track.enabled = False
+        elif not incompatible and self.incompatible:
+            # Was incompatible but now compatible — re-enable
+            self.incompatible = False
+            self.widgets.enable_check.setEnabled(True)
+            self.widgets.enable_check.setToolTip("")
+            self.widgets.warning_label.hide()
+            self.setStyleSheet("")
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
@@ -299,6 +339,12 @@ class DataList(FlixList):
             self.select_all(False)
         else:
             self.select_all(True)
+
+    def refresh(self):
+        """Recheck compatibility for all tracks when output format may have changed."""
+        for track_widget in self.tracks:
+            track_widget._check_compatibility()
+        super().refresh()
 
     def get_settings(self):
         # Widget state is already written to data_tracks via set_outdex / update_enable

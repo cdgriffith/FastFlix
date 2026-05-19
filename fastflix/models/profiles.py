@@ -48,6 +48,8 @@ class MatchItem(Enum):
     TRACK = 3
     LANGUAGE = 4
     CHANNELS = 5
+    CODEC = 6
+    CODEC_PROFILE = 7
 
 
 class MatchType(Enum):
@@ -68,6 +70,7 @@ class AudioMatch(BaseModel):
     match_item: Union[MatchItem, list[MatchItem]]
     match_input: str = "*"
     conversion: Optional[str] = None
+    conversion_profile: Optional[str] = None
     bitrate: Optional[str] = None
     downmix: Optional[Union[str, int]] = None
     title_mode: Union[TitleMode, list[TitleMode]] = TitleMode.ORIGINAL
@@ -124,6 +127,7 @@ class SubtitleMatch(BaseModel):
 
 class AdvancedOptions(BaseModel):
     video_speed: float = 1
+    reverse_video: bool = False
     deblock: Optional[str] = None
     deblock_size: int = 16
     tone_map: str = "hable"
@@ -131,6 +135,14 @@ class AdvancedOptions(BaseModel):
     brightness: Optional[str] = None
     saturation: Optional[str] = None
     contrast: Optional[str] = None
+    gamma: Optional[str] = None
+    hue: Optional[str] = None
+    sharpen: Optional[str] = None
+    faststart: bool = True
+    deinterlace: bool = False
+    deinterlace_method_index: int = 0
+    deinterlace_mode_index: int = 0
+    gop_length: Optional[int] = None
     maxrate: Optional[int] = None
     bufsize: Optional[int] = None
     source_fps: Optional[str] = None
@@ -141,6 +153,20 @@ class AdvancedOptions(BaseModel):
     denoise: Optional[str] = None
     denoise_type_index: int = 0
     denoise_strength_index: int = 0
+    vibrance: Optional[str] = None
+    color_temperature: Optional[str] = None
+    curves_preset: Optional[str] = None
+    curves_preset_index: int = 0
+    colorbalance: Optional[str] = None
+    colorbalance_index: int = 0
+    unsharp: Optional[str] = None
+    unsharp_index: int = 0
+    deflicker: Optional[str] = None
+    deflicker_index: int = 0
+    pad_aspect: Optional[str] = None
+    pad_aspect_index: int = 0
+    pad_color: str = "black"
+    lut3d_path: Optional[str] = None
 
 
 class Profile(BaseModel):
@@ -173,6 +199,8 @@ class Profile(BaseModel):
     subtitle_select_preferred_language: Optional[bool] = None
     subtitle_automatic_burn_in: Optional[bool] = None
     subtitle_select_first_matching: Optional[bool] = None
+    subtitle_default_disposition: Optional[str] = None  # None=keep source, "clear", "first"
+    subtitle_forced_disposition: Optional[str] = None  # None=keep source, "clear", "first"
 
     advanced_options: AdvancedOptions = Field(default_factory=AdvancedOptions)
 

@@ -243,6 +243,9 @@ class VideoLoadMixin:
     @reusables.log_exception("fastflix", show_traceback=False)
     def update_video_info(self, hide_progress=False):
         self.loading_video = True
+        self.skip_hdr_thumbnail = False
+        if hasattr(self, "thumb_warning_label"):
+            self.clear_thumb_warning()
         folder, name = self.generate_output_filename
         self.output_video_path_widget.setText(name)
         self.widgets.output_directory.setText(folder.rstrip("/").rstrip("\\"))

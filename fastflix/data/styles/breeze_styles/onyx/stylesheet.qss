@@ -219,49 +219,51 @@ QRadioButton:disabled
 
 QRadioButton::indicator
 {
-    width: 1em;
-    height: 1em;
-}
-
-QRadioButton::indicator:unchecked,
-QRadioButton::indicator:unchecked:focus
-{
-    border-image: url(onyx:radio_unchecked_disabled.png);
+    width: 12px;
+    height: 12px;
+    border: 2px solid #76797c;
+    border-radius: 8px;
+    background-color: transparent;
 }
 
 QRadioButton::indicator:unchecked:hover,
 QRadioButton::indicator:unchecked:pressed
 {
-    border: none;
-    outline: none;
-    border-image: url(onyx:radio_unchecked.png);
+    border: 2px solid #aaaaaa;
 }
 
 QRadioButton::indicator:checked
 {
-    border: none;
-    outline: none;
-    border-image: url(onyx:radio_checked.png);
+    width: 10px;
+    height: 10px;
+    border: 3px solid #4a9eed;
+    border-radius: 8px;
+    background-color: white;
 }
 
 QRadioButton::indicator:checked:hover,
 QRadioButton::indicator:checked:focus,
 QRadioButton::indicator:checked:pressed
 {
-    border: none;
-    outline: none;
-    border-image: url(onyx:radio_checked.png);
+    width: 10px;
+    height: 10px;
+    border: 3px solid #4a9eed;
+    border-radius: 8px;
+    background-color: white;
 }
 
 QRadioButton::indicator:checked:disabled
 {
-    outline: none;
-    border-image: url(onyx:radio_checked_disabled.png);
+    width: 10px;
+    height: 10px;
+    border: 3px solid #76797c;
+    border-radius: 8px;
+    background-color: #aaaaaa;
 }
 
 QRadioButton::indicator:unchecked:disabled
 {
-    border-image: url(onyx:radio_unchecked_disabled.png);
+    border: 2px solid #5a5a5a;
 }
 
 QMenuBar
@@ -408,7 +410,7 @@ QSlider:focus
 
 QLineEdit
 {
-    background-color: #1d2023;
+    background-color: #434c54;
     padding: 0.23em;
     border-style: solid;
     border: 0.05em solid #76797c;
@@ -786,6 +788,7 @@ QPushButton:pressed
 
 QComboBox
 {
+    background-color: #434c54;
     border: 0.05em solid #76797c;
     border-radius: 0.09em;
     padding: 4px 10px;
@@ -794,7 +797,7 @@ QComboBox
 
 QComboBox:editable
 {
-    background-color: #1d2023;
+    background-color: #434c54;
 }
 
 QPushButton:checked
@@ -850,7 +853,7 @@ QTreeView:hover:pressed
 
 QComboBox:hover:pressed:editable
 {
-    background-color: #1d2023;
+    background-color: #434c54;
 }
 
 QComboBox QAbstractItemView

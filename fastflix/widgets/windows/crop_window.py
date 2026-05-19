@@ -640,6 +640,7 @@ class CropPreviewWindow(QtWidgets.QWidget):
             return
 
         settings = video.video_settings.model_dump()
+        settings.pop("reverse_video", None)
 
         if video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le" and video.color_space.startswith(
             "bt2020"
@@ -647,6 +648,10 @@ class CropPreviewWindow(QtWidgets.QWidget):
             settings["remove_hdr"] = True
             if not settings.get("color_transfer"):
                 settings["color_transfer"] = video.color_transfer
+            if not settings.get("color_primaries"):
+                settings["color_primaries"] = video.color_primaries
+            if not settings.get("color_space"):
+                settings["color_space"] = video.color_space
 
         if with_crop:
             # Transform rotated crop values to unrotated space for FFmpeg
@@ -669,13 +674,9 @@ class CropPreviewWindow(QtWidgets.QWidget):
         settings["vertical_flip"] = self.vertical_flip
         settings["horizontal_flip"] = self.horizontal_flip
 
-        filters = helpers.generate_filters(
-            enable_opencl=False,
-            start_filters="select=eq(pict_type\\,I)"
-            if self.main.app.fastflix.config.use_keyframes_for_preview
-            else None,
-            **settings,
-        )
+        start_filters = "select=eq(pict_type\\,I)" if self.main.app.fastflix.config.use_keyframes_for_preview else None
+
+        filters = helpers.generate_filters(enable_opencl=False, start_filters=start_filters, **settings)
 
         output = self.main.app.fastflix.config.work_path / f"crop_preview_{secrets.token_hex(16)}.tiff"
 
@@ -692,8 +693,27 @@ class CropPreviewWindow(QtWidgets.QWidget):
 
         thumb_run = run(thumb_command, shell=True, stderr=PIPE, stdout=PIPE)
         if thumb_run.returncode > 0:
-            logger.warning(f"Could not generate crop preview: {thumb_run.stdout} |----| {thumb_run.stderr}")
-            return
+            stderr_text = thumb_run.stderr.decode(encoding="utf-8", errors="ignore")
+            if settings.get("remove_hdr") and "no path between colorspaces" in stderr_text:
+                logger.warning(
+                    "HDR tonemapping failed for crop preview (video color metadata may be incomplete), "
+                    "retrying without HDR conversion"
+                )
+                settings["remove_hdr"] = False
+                filters = helpers.generate_filters(enable_opencl=False, start_filters=start_filters, **settings)
+                output = self.main.app.fastflix.config.work_path / f"crop_preview_{secrets.token_hex(16)}.tiff"
+                thumb_command = generate_thumbnail_command(
+                    config=self.main.app.fastflix.config,
+                    source=self.main.source_material,
+                    output=output,
+                    filters=filters,
+                    start_time=self._get_preview_time(),
+                    input_track=video.video_settings.selected_track,
+                )
+                thumb_run = run(thumb_command, shell=True, stderr=PIPE, stdout=PIPE)
+            if thumb_run.returncode > 0:
+                logger.warning(f"Could not generate crop preview: {thumb_run.stdout} |----| {thumb_run.stderr}")
+                return
 
         pixmap = QtGui.QPixmap(str(output))
 

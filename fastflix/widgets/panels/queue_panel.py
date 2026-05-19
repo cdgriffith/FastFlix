@@ -24,6 +24,7 @@ from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.windows_tools import allow_sleep_mode, prevent_sleep_mode
 from fastflix.command_runner import BackgroundRunner
+from fastflix.widgets.toggle_switch import ToggleSwitch
 
 logger = logging.getLogger("fastflix")
 
@@ -44,6 +45,27 @@ done_actions = {
 }
 
 after_done_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "after_done_logs"
+
+
+class ElidedLabel(QtWidgets.QLabel):
+    """A QLabel that elides text with an ellipsis when it doesn't fit."""
+
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
+        self._full_text = text
+        self.setMinimumWidth(0)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+
+    def setText(self, text):
+        self._full_text = text
+        super().setText(text)
+        self.update()
+
+    def resizeEvent(self, event):
+        metrics = QtGui.QFontMetrics(self.font())
+        elided = metrics.elidedText(self._full_text, QtCore.Qt.ElideRight, self.width())
+        super().setText(elided)
+        super().resizeEvent(event)
 
 
 class EncodeItem(QtWidgets.QTabWidget):
@@ -78,22 +100,13 @@ class EncodeItem(QtWidgets.QTabWidget):
         for widget in self.widgets.values():
             widget.setStyleSheet(no_border)
 
-        title = QtWidgets.QLabel(
+        title_text = (
             video.video_settings.video_title
             if video.video_settings.video_title
             else video.video_settings.output_path.name
         )
-        title.setFixedWidth(300)
-
-        settings = Box(copy.deepcopy(video.video_settings.model_dump()))
-        # settings.output_path = str(settings.output_path)
-        # for i, o in enumerate(video.attachment_tracks):
-        #     if o.file_path:
-        #         o["file_path"] = str(o["file_path"])
-        # del settings.conversion_commands
-
-        title.setToolTip(settings.video_encoder_settings.to_yaml())
-        del settings
+        title = ElidedLabel(title_text)
+        title.setToolTip(f"{t('Source')}: {video.source}\n{t('Output')}: {video.video_settings.output_path}")
 
         open_button = QtWidgets.QPushButton(
             self.parent.app.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_DirOpenIcon), t("Open Directory")
@@ -210,7 +223,8 @@ class EncodeItem(QtWidgets.QTabWidget):
             item.close()
             self.widgets[widget] = None
         del self.video
-        del self.widgets
+        if hasattr(self, "widgets"):
+            del self.widgets
         del self.parent
         gc.collect()
         return super().close()
@@ -268,7 +282,7 @@ class EncodingQueue(FlixList):
         self.pause_encode.setFixedWidth(130)
         self.pause_encode.setToolTip(t("Pause / Resume the current command"))
 
-        self.ignore_errors = QtWidgets.QCheckBox(t("Ignore Errors"))
+        self.ignore_errors = ToggleSwitch(t("Ignore Errors"))
         self.ignore_errors.setFixedWidth(150)
 
         self.after_done_combo = QtWidgets.QComboBox()
@@ -392,10 +406,6 @@ class EncodingQueue(FlixList):
                 self.queue_startup_check(filename)
 
     def reorder(self, update=True):
-        if self.app.fastflix.currently_encoding:
-            # TODO error?
-            logger.warning("Reorder queue called while encoding")
-            return
         super().reorder(update=update)
         # TODO find better reorder method
         for i in range(len(self.tracks) - 1, -1, -1):
@@ -405,12 +415,22 @@ class EncodingQueue(FlixList):
         for track in self.tracks:
             self.app.fastflix.conversion_list.append(track.video)
 
-        for track in self.tracks:
-            track.widgets.up_button.setDisabled(False)
-            track.widgets.down_button.setDisabled(False)
-        if self.tracks:
-            self.tracks[0].widgets.up_button.setDisabled(True)
-            self.tracks[-1].widgets.down_button.setDisabled(True)
+        encoding = self.app.fastflix.currently_encoding
+        if encoding:
+            for track in self.tracks:
+                track.widgets.up_button.setDisabled(True)
+                track.widgets.down_button.setDisabled(True)
+                track.widgets.reload_button.setDisabled(True)
+        else:
+            for track in self.tracks:
+                track.widgets.up_button.setDisabled(False)
+                track.widgets.down_button.setDisabled(False)
+                track.widgets.reload_button.setDisabled(False)
+            if self.tracks:
+                self.tracks[0].widgets.up_button.setDisabled(True)
+                self.tracks[-1].widgets.down_button.setDisabled(True)
+
+        self.load_queue_button.setDisabled(encoding)
         save_queue_async(self.app.fastflix.conversion_list, self.app.fastflix.queue_path, self.app.fastflix.config)
 
     def new_source(self):
@@ -441,8 +461,7 @@ class EncodingQueue(FlixList):
         self.new_source()
 
     def remove_item(self, video, part_of_clear=False):
-        if self.app.fastflix.currently_encoding:
-            # TODO error
+        if video.status.running:
             return
 
         for i, vid in enumerate(self.app.fastflix.conversion_list):
@@ -459,6 +478,8 @@ class EncodingQueue(FlixList):
             # Queue is saved by new_source() -> reorder() -> save_queue_async()
 
     def reload_from_queue(self, video):
+        if self.app.fastflix.currently_encoding:
+            return
         try:
             self.main.reload_video_from_queue(video)
         except FastFlixInternalException:

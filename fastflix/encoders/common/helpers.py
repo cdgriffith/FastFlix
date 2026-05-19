@@ -70,6 +70,7 @@ def generate_ffmpeg_start(
     remove_hdr: bool = True,
     start_extra: Union[List[str], str] = "",
     extra_inputs: Optional[List[str]] = None,
+    gop_length=None,
     **_,
 ) -> List[str]:
     command = [str(ffmpeg)]
@@ -133,6 +134,9 @@ def generate_ffmpeg_start(
     if video_track_title:
         command.extend(["-metadata:s:v:0", f"title={video_track_title}"])
 
+    if gop_length is not None:
+        command.extend(["-g", str(gop_length)])
+
     return command
 
 
@@ -160,6 +164,7 @@ def generate_ending(
     source_has_rotation=False,
     copy_data=False,
     data_tracks=None,
+    faststart=True,
     **_,
 ):
     command = []
@@ -191,23 +196,47 @@ def generate_ending(
     if cover:
         command.extend(cover)
 
+    mapped_data = False
     if data_tracks:
         has_data = False
         has_attachment = False
         for track in data_tracks:
             if not track.enabled:
                 continue
+            mapped_data = True
             command.extend(["-map", f"0:{track.index}"])
+            # Clear title/handler metadata (same as audio tracks)
+            if track.title:
+                command.extend([f"-metadata:s:{track.outdex}", f"title={track.title}"])
+                command.extend([f"-metadata:s:{track.outdex}", f"handler={track.title}"])
+            else:
+                command.extend([f"-metadata:s:{track.outdex}", "title="])
+                command.extend([f"-metadata:s:{track.outdex}", "handler="])
             if track.codec_type == "data":
                 has_data = True
             elif track.codec_type == "attachment":
                 has_attachment = True
+                # Restore mimetype/filename stripped by -map_metadata -1
+                # (required by the matroska muxer for attachment streams)
+                if track.mimetype:
+                    command.extend([f"-metadata:s:{track.outdex}", f"mimetype={track.mimetype}"])
+                if track.filename:
+                    command.extend([f"-metadata:s:{track.outdex}", f"filename={track.filename}"])
         if has_data:
             command.extend(["-c:d", "copy"])
         if has_attachment:
             command.extend(["-c:t", "copy"])
     elif copy_data:
+        mapped_data = True
         command.extend(["-map", "0:d", "-c:d", "copy"])
+
+    # Explicitly disable data/attachment streams when none are mapped to prevent
+    # FFmpeg from auto-including them (causes failures with formats like MKV)
+    if not mapped_data:
+        command.append("-dn")
+
+    if faststart and output_video and output_video.suffix.lower() in (".mp4", ".mov", ".m4v"):
+        command.extend(["-movflags", "+faststart"])
 
     if output_video and not null_ending:
         command.append(str(sanitize(output_video)))
@@ -238,23 +267,30 @@ def generate_filters(
     start_filters=None,
     raw_filters=False,
     deinterlace=False,
+    deinterlace_filter="yadif",
     contrast=None,
     brightness=None,
     saturation=None,
+    gamma=None,
+    hue=None,
+    sharpen=None,
     enable_opencl: bool = False,
     tone_map: str = "hable",
     video_speed: Union[float, int] = 1,
+    reverse_video: bool = False,
     deblock: Union[str, None] = None,
     deblock_size: int = 4,
     denoise: Union[str, None] = None,
     color_transfer: Optional[str] = None,
-    **_,
+    color_primaries: Optional[str] = None,
+    color_space: Optional[str] = None,
+    **_kw,
 ):
     filter_list = []
     if start_filters:
         filter_list.append(start_filters)
     if deinterlace:
-        filter_list.append("yadif")
+        filter_list.append(deinterlace_filter or "yadif")
     if crop:
         filter_list.append(f"crop={crop['width']}:{crop['height']}:{crop['left']}:{crop['top']}")
     if scale:
@@ -262,6 +298,16 @@ def generate_filters(
             filter_list.append(f"scale={scale}:flags={scale_filter},setsar=1:1")
     elif sar and sar != "1:1" and sar != "1/1":
         filter_list.append("setsar=1:1")
+    pad_aspect = _kw.get("pad_aspect")
+    if pad_aspect and pad_aspect != "none":
+        pad_color = _kw.get("pad_color", "black") or "black"
+        num, den = pad_aspect.split(":")
+        target_ratio = int(num) / int(den)
+        filter_list.append(
+            f"pad=w=if(gt(a\\,{target_ratio})\\,iw\\,ceil(ih*{target_ratio}/2)*2)"
+            f":h=if(gt(a\\,{target_ratio})\\,ceil(iw/{target_ratio}/2)*2\\,ih)"
+            f":x=(ow-iw)/2:y=(oh-ih)/2:color={pad_color}"
+        )
     if rotate:
         if rotate == 1:
             filter_list.append("transpose=1")
@@ -275,10 +321,19 @@ def generate_filters(
         filter_list.append("hflip")
     if video_speed and video_speed != 1:
         filter_list.append(f"setpts={video_speed}*PTS")
+    if reverse_video:
+        filter_list.append("reverse")
     if deblock:
         filter_list.append(f"deblock=filter={deblock}:block={deblock_size}")
     if denoise:
-        filter_list.append(denoise)
+        if denoise.startswith("nlmeans_opencl"):
+            filter_list.append(f"format=yuv420p,hwupload,{denoise},hwdownload,format=yuv420p")
+        else:
+            filter_list.append(denoise)
+    if _kw.get("deflicker"):
+        filter_list.append(_kw["deflicker"])
+    if _kw.get("unsharp"):
+        filter_list.append(_kw["unsharp"])
 
     eq_filters = []
     if brightness:
@@ -287,9 +342,26 @@ def generate_filters(
         eq_filters.append(f"saturation={saturation}")
     if contrast:
         eq_filters.append(f"contrast={contrast}")
+    if gamma:
+        eq_filters.append(f"gamma={gamma}")
     if eq_filters:
         eq_filters.insert(0, "eq=eval=frame")
         filter_list.append(":".join(eq_filters))
+    if hue:
+        filter_list.append(f"hue=h={hue}")
+    if _kw.get("vibrance"):
+        filter_list.append(f"vibrance=intensity={_kw['vibrance']}")
+    if _kw.get("colorbalance"):
+        filter_list.append(_kw["colorbalance"])
+    if _kw.get("color_temperature"):
+        filter_list.append(f"colortemperature=temperature={_kw['color_temperature']}")
+    if _kw.get("curves_preset"):
+        filter_list.append(f"curves=preset={_kw['curves_preset']}")
+    if _kw.get("lut3d_path"):
+        filter_list.append(f"lut3d=file='{quoted_path(str(_kw['lut3d_path']))}'")
+
+    if sharpen:
+        filter_list.append(f"cas=strength={sharpen}")
 
     if filter_list and vaapi:
         filter_list.insert(0, "hwdownload")
@@ -305,8 +377,10 @@ def generate_filters(
             filter_list.append("tonemap_vaapi=format=nv12:p=bt709:t=bt709:m=bt709")
         else:
             tin = color_transfer if color_transfer else "smpte2084"
+            pin = color_primaries if color_primaries else "bt2020"
+            min_val = color_space if color_space else "bt2020nc"
             filter_list.append(
-                f"zscale=tin={tin}:t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
+                f"zscale=tin={tin}:pin={pin}:min={min_val}:t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
             )
 
     filters = ",".join(filter_list) if filter_list else ""
@@ -355,7 +429,14 @@ def generate_all(
     # Detect source rotation for metadata clearing (FFmpeg auto-rotates during re-encoding)
     source_rotation_degrees = fastflix.current_video.source_rotation
 
-    audio_cmd = build_audio(fastflix.current_video.audio_tracks) if audio else []
+    audio_cmd = (
+        build_audio(
+            fastflix.current_video.audio_tracks,
+            reverse_video=fastflix.current_video.video_settings.reverse_video,
+        )
+        if audio
+        else []
+    )
 
     # Assign file_index to external subtitle tracks and collect unique external file paths
     subtitle_tracks = fastflix.current_video.subtitle_tracks
