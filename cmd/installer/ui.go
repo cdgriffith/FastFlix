@@ -8,6 +8,7 @@ import (
 	"runtime"
 	"strings"
 	"syscall"
+	"time"
 	"unsafe"
 
 	"golang.org/x/sys/windows/registry"
@@ -129,6 +130,9 @@ const (
 	idcLaunch    = 109
 	idcInstInfo  = 110
 	idcClose     = 111
+	idcAd        = 112
+	idcAdLink    = 113
+	idtCountdown = 2
 	idtProcCheck = 1
 	idcDlgEdit   = 201
 	idcDlgClose  = 202
@@ -178,6 +182,10 @@ type wndState struct {
 	hProgLabel    syscall.Handle
 	hLaunchBtn    syscall.Handle
 	hCloseBtn     syscall.Handle
+	hAdText       syscall.Handle
+	hAdLink       syscall.Handle
+	hAdPromo      syscall.Handle
+	countdown     int // seconds remaining before Launch button enables
 	hInstallInfo  syscall.Handle // label showing where previous versions were found
 
 	processRunning  bool
@@ -461,29 +469,47 @@ func createControls(hwnd, hInst uintptr) {
 		warningStyle, pad/2, y, cx-pad, warnH, idcWarning, hwnd, hInst)
 	setFont(state.hWarning, state.hNormalFont)
 
-	// Progress bar + label + launch button — placed where the buttons normally are
-	// so they appear in a natural position when buttons are hidden during install
-	progY := int32(winHeight) * 58 / 100
+	// --- Install progress + ad area (all hidden until install starts) ---
+	// Progress bar right below the title/version area (~48%)
+	progY := int32(winHeight) * 53 / 100
 	progH := int32(winHeight) * 3 / 100
 	labelH := int32(winHeight) * 4 / 100
 
-	// Custom progress bar (owner-drawn static for dark bg + rounded corners)
 	state.hProgress = createCtl("STATIC", "",
 		wsChild|ssOwnerDraw, pad, progY, btnW, progH, idcProgress, hwnd, hInst)
 
 	state.hProgLabel = createCtl("STATIC", "",
-		wsChild|ssCenter, pad, progY+progH+labelH/3, btnW, labelH, idcProgLabel, hwnd, hInst)
+		wsChild|ssCenter, pad, progY+progH+labelH/4, btnW, labelH, idcProgLabel, hwnd, hInst)
 	setFont(state.hProgLabel, state.hNormalFont)
 
-	// Launch button — below the progress label (hidden until install completes)
-	state.hLaunchBtn = createCtl("BUTTON", "Launch FastFlix",
+	// Ad text below progress (hidden until install starts)
+	adY := progY + progH + labelH + labelH
+	adH := int32(winHeight) * 8 / 100
+	state.hAdText = createCtl("STATIC",
+		"Please check out my new project",
+		wsChild|ssCenter, pad, adY, btnW, adH, idcAd, hwnd, hInst)
+	setFont(state.hAdText, state.hNormalFont)
+
+	state.hAdLink = createCtl("STATIC", "Beautiphoto",
+		wsChild|ssCenter|ssNotify, pad, adY+adH, btnW, ctlH, idcAdLink, hwnd, hInst)
+	setFont(state.hAdLink, state.hNormalFont)
+
+	adPromoY := adY + adH + ctlH + ctlH/4
+	adPromoH := int32(winHeight) * 4 / 100
+	state.hAdPromo = createCtl("STATIC", "Use Promo code FastFlix0626 for half off for a year!",
+		wsChild|ssCenter, pad, adPromoY, btnW, adPromoH, 0, hwnd, hInst)
+	setFont(state.hAdPromo, state.hSmallFont)
+
+	// Launch button near bottom (hidden until install completes)
+	launchY := int32(winHeight) - btnH - int32(winHeight)*12/100
+	state.hLaunchBtn = createCtl("BUTTON", "Launch FastFlix (8)",
 		wsChild|wsTabStop|bsOwnerDraw,
-		pad, progY+progH+labelH+labelH, btnW, btnH, idcLaunch, hwnd, hInst)
+		pad, launchY, btnW, btnH, idcLaunch, hwnd, hInst)
 
 	// Close button — small, centered at bottom, visible during uninstall/install screens
 	closeBtnW := cx * 20 / 100
 	closeBtnH := int32(winHeight) * 4 / 100
-	closeY := int32(winHeight) - closeBtnH - int32(winHeight)*8/100
+	closeY := int32(winHeight) - closeBtnH - int32(winHeight)*13/100
 	state.hCloseBtn = createCtl("BUTTON", "Close",
 		wsChild|wsVisible|wsTabStop|bsOwnerDraw,
 		(cx-closeBtnW)/2, closeY, closeBtnW, closeBtnH, idcClose, hwnd, hInst)
@@ -534,6 +560,9 @@ func wndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintptr {
 		ctl := syscall.Handle(lParam)
 		setTextColor.Call(uintptr(hdc), clrText)
 		setBkMode.Call(uintptr(hdc), transparent)
+		if ctl == state.hAdLink {
+			setTextColor.Call(uintptr(hdc), clrAccent)
+		}
 		if ctl == state.hWarning {
 			setTextColor.Call(uintptr(hdc), clrRed)
 		}
@@ -551,9 +580,30 @@ func wndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintptr {
 	case wmCommand:
 		handleCommand(int(wParam&0xFFFF), int((wParam>>16)&0xFFFF))
 		return 0
+	case 0x0020: // WM_SETCURSOR
+		// Show hand cursor over clickable links
+		ctl := syscall.Handle(wParam)
+		if ctl == state.hAdLink {
+			hand, _, _ := user32DLL.NewProc("LoadCursorW").Call(0, 32649) // IDC_HAND
+			user32DLL.NewProc("SetCursor").Call(hand)
+			return 1
+		}
 	case wmTimer:
 		if int(wParam) == idtProcCheck {
 			checkProcessTimer()
+		}
+		if int(wParam) == idtCountdown {
+			state.countdown--
+			if state.countdown <= 0 {
+				// Enable the launch button
+				user32DLL.NewProc("KillTimer").Call(uintptr(hwnd), idtCountdown)
+				setText(state.hLaunchBtn, "Launch FastFlix")
+				enableWindow.Call(uintptr(state.hLaunchBtn), 1)
+				invalidateRect.Call(uintptr(state.hLaunchBtn), 0, 1)
+			} else {
+				setText(state.hLaunchBtn, fmt.Sprintf("Launch FastFlix (%d)", state.countdown))
+				invalidateRect.Call(uintptr(state.hLaunchBtn), 0, 1)
+			}
 		}
 		return 0
 	case wmClose:
@@ -849,6 +899,13 @@ func handleCommand(id, notif int) {
 		if notif == bnClicked {
 			go doInstallForAllUsers()
 		}
+	case idcAdLink:
+		if notif == 0 { // STN_CLICKED
+			url, _ := syscall.UTF16PtrFromString("https://beautiphoto.com")
+			open, _ := syscall.UTF16PtrFromString("open")
+			syscall.NewLazyDLL("shell32.dll").NewProc("ShellExecuteW").Call(
+				0, uintptr(unsafe.Pointer(open)), uintptr(unsafe.Pointer(url)), 0, 0, 1)
+		}
 	case idcClose:
 		postQuitMessage.Call(0)
 	case idcLaunch:
@@ -1058,6 +1115,53 @@ func onUninstallClicked() {
 	updateButtonState()
 }
 
+// shouldShowAd returns true while the Beautiphoto promo is active (through 2026-06-30).
+func shouldShowAd() bool {
+	promoEnd := time.Date(2026, 7, 1, 0, 0, 0, 0, time.Local)
+	return time.Now().Before(promoEnd)
+}
+
+// showAdDuringInstall shows the ad text as soon as install begins (while progress bar is visible).
+func showAdDuringInstall() {
+	if shouldShowAd() {
+		showWindow.Call(uintptr(state.hAdText), swShow)
+		showWindow.Call(uintptr(state.hAdLink), swShow)
+		showWindow.Call(uintptr(state.hAdPromo), swShow)
+	}
+}
+
+// showPostInstallScreen hides progress, shows launch button with countdown.
+func showPostInstallScreen() {
+	// Hide progress bar and label
+	showWindow.Call(uintptr(state.hProgress), swHide)
+	showWindow.Call(uintptr(state.hProgLabel), swHide)
+
+	showAd := shouldShowAd()
+	// Ad should already be visible from showAdDuringInstall, but ensure it
+	if showAd {
+		showWindow.Call(uintptr(state.hAdText), swShow)
+		showWindow.Call(uintptr(state.hAdLink), swShow)
+		showWindow.Call(uintptr(state.hAdPromo), swShow)
+	}
+
+	// Show launch button with countdown
+	state.countdown = 8
+	if !showAd {
+		state.countdown = 0
+	}
+
+	showWindow.Call(uintptr(state.hLaunchBtn), swShow)
+	if state.countdown > 0 {
+		setText(state.hLaunchBtn, fmt.Sprintf("Launch FastFlix (%d)", state.countdown))
+		enableWindow.Call(uintptr(state.hLaunchBtn), 0)
+		invalidateRect.Call(uintptr(state.hLaunchBtn), 0, 1)
+		setTimer.Call(uintptr(state.hwnd), idtCountdown, 1000, 0)
+	} else {
+		setText(state.hLaunchBtn, "Launch FastFlix")
+		enableWindow.Call(uintptr(state.hLaunchBtn), 1)
+	}
+}
+
 func resetUninstallButton() {
 	resetText := "Uninstall previous version"
 	if len(state.existingInstalls) > 1 {
@@ -1167,6 +1271,7 @@ func doInstallFromGUI(mode installMode) {
 	showWindow.Call(uintptr(state.hProgress), swShow)
 	showWindow.Call(uintptr(state.hProgLabel), swShow)
 	setText(state.hProgLabel, "Installing...")
+	showAdDuringInstall()
 
 	installDir, regRoot, startMenu := installPaths(mode)
 	os.MkdirAll(installDir, 0755)
@@ -1196,9 +1301,8 @@ func doInstallFromGUI(mode installMode) {
 	setProgress(100)
 	setText(state.hProgLabel, "Installation complete!")
 
-	// Show Launch button instead of closing
 	state.installedDir = installDir
-	showWindow.Call(uintptr(state.hLaunchBtn), swShow)
+	showPostInstallScreen()
 }
 
 // doInstallForAllUsers triggers UAC immediately, then the elevated process does everything.
@@ -1244,6 +1348,7 @@ func doInstallForAllUsers() {
 	showWindow.Call(uintptr(state.hProgress), swShow)
 	showWindow.Call(uintptr(state.hProgLabel), swShow)
 	setText(state.hProgLabel, "Installing to Program Files...")
+	showAdDuringInstall()
 
 	// Poll for completion with smooth animated progress
 	// Uses an ease-out curve: fast at start, slows as it approaches 95%
@@ -1269,7 +1374,7 @@ func doInstallForAllUsers() {
 	setText(state.hProgLabel, "Installation complete!")
 
 	state.installedDir = installDir
-	showWindow.Call(uintptr(state.hLaunchBtn), swShow)
+	showPostInstallScreen()
 }
 
 // --- Scrollable text dialog ---

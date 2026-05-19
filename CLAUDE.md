@@ -29,8 +29,12 @@ uv run pytest tests/encoders/test_hevc_x265_command_builder.py -v
 # Run the application
 python -m fastflix
 
-# Build executables
-uv run pyinstaller FastFlix_Windows_OneFile.spec
+# Build Windows distribution + installer (Go-based, replaces PyInstaller)
+uv run python scripts/build_distribution.py --archive  # Full dist + archive
+cd cmd/installer && go-winres make && cd ../..          # Icon/manifest resources
+go build -ldflags="-s -w -H windowsgui -X main.Version=6.3.0 -X main.BuildDate=$(date +%Y-%m-%d)" -o dist/FastFlix_installer.exe ./cmd/installer
+
+# Build Linux/macOS executables (still uses PyInstaller)
 uv run pyinstaller FastFlix_Nix_OneFile.spec
 ```
 

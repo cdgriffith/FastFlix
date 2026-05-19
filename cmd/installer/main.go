@@ -17,8 +17,9 @@ import (
 	"unsafe"
 )
 
-// Version is set at build time via -ldflags="-X main.Version=6.3.0"
+// Version and BuildDate are set at build time via -ldflags
 var Version = "dev"
+var BuildDate = "" // format: 2006-01-02
 
 func main() {
 	runtime.LockOSThread()
