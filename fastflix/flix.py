@@ -16,6 +16,7 @@ from fastflix.exceptions import FlixError
 from fastflix.language import t
 from fastflix.models.config import Config
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.shared import clean_env
 
 here = os.path.abspath(os.path.dirname(__file__))
 re_tff = re.compile(r"TFF:\s+(\d+)")
@@ -151,6 +152,7 @@ def execute(command: List, work_dir: Union[Path, str] = None, timeout: int = Non
         cwd=work_dir,
         timeout=timeout,
         encoding="utf-8",
+        env=clean_env(),
     )
 
 
@@ -361,6 +363,7 @@ def extract_attachment(ffmpeg: Path, source: Path, stream: int, work_dir: Path, 
             stderr=PIPE,
             stdin=PIPE,
             cwd=work_dir,
+            env=clean_env(),
         )
         try:
             stdout, _ = proc.communicate(timeout=3)
@@ -732,6 +735,7 @@ def _detect_hdr10_plus_tool(app: FastFlixApp, config: Config, stream) -> bool:
         stdout=PIPE,
         stderr=PIPE,
         stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
+        env=clean_env(),
     )
 
     parser_version = get_hdr10_parser_version(config)
