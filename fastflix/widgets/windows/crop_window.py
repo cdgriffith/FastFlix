@@ -9,6 +9,7 @@ from PySide6 import QtWidgets, QtCore, QtGui
 
 from fastflix.encoders.common import helpers
 from fastflix.flix import generate_thumbnail_command
+from fastflix.shared import clean_env
 from fastflix.language import t
 from fastflix.shared import time_to_number
 from fastflix.ui_scale import scaler
@@ -690,7 +691,7 @@ class CropPreviewWindow(QtWidgets.QWidget):
 
         logger.info(f"Generating crop preview: {thumb_command}")
 
-        thumb_run = run(thumb_command, shell=True, stderr=PIPE, stdout=PIPE)
+        thumb_run = run(thumb_command, shell=True, stderr=PIPE, stdout=PIPE, env=clean_env())
         if thumb_run.returncode > 0:
             logger.warning(f"Could not generate crop preview: {thumb_run.stdout} |----| {thumb_run.stderr}")
             return
