@@ -2,6 +2,7 @@
 from dataclasses import dataclass, field
 from subprocess import run, PIPE
 
+from fastflix.shared import clean_env
 
 @dataclass
 class Encoder:
@@ -72,11 +73,11 @@ def parse_qsv_devices(split_text: list[str]) -> QSVEncoder:
 def run_check_features(executable, is_qsv=False):
     outputs = []
     if is_qsv:
-        result = run([executable, "--check-features"], stdout=PIPE, stderr=PIPE, encoding="utf-8")
+        result = run([executable, "--check-features"], stdout=PIPE, stderr=PIPE, encoding="utf-8", env=clean_env())
         outputs.append(result.stdout.splitlines())
     else:
         for i in range(10):
-            result = run([executable, "--check-features", str(i)], stdout=PIPE, stderr=PIPE, encoding="utf-8")
+            result = run([executable, "--check-features", str(i)], stdout=PIPE, stderr=PIPE, encoding="utf-8", env=clean_env())
             if result.stderr:
                 break
             outputs.append(result.stdout.splitlines())
