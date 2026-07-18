@@ -25,6 +25,17 @@ except AttributeError:
     base_path = os.path.abspath(".")
     pyinstaller = False
 
+def clean_env():
+    """Return a copy of os.environ with PyInstaller's LD_LIBRARY_PATH removed.
+
+    PyInstaller sets LD_LIBRARY_PATH to its bundled lib dir, which causes
+    system tools like ffmpeg to load incompatible shared libraries.
+    """
+    env = os.environ.copy()
+    if pyinstaller:
+        env.pop("LD_LIBRARY_PATH", None)
+    return env
+
 from PySide6 import QtGui, QtWidgets
 
 from fastflix.language import t
