@@ -141,7 +141,8 @@ class PostEncodeMixin:
             from subprocess import run as subprocess_run
 
             from fastflix.flix import generate_thumbnail_command
-
+            from fastflix.shared import clean_env
+            
             thumb_command = generate_thumbnail_command(
                 config=self.app.fastflix.config,
                 source=video.source,
@@ -150,7 +151,7 @@ class PostEncodeMixin:
                 start_time=video.video_settings.start_time or 0,
                 input_track=video.video_settings.selected_track,
             )
-            result = subprocess_run(thumb_command, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+            result = subprocess_run(thumb_command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, env=clean_env())
             if result.returncode != 0 or not thumb_output.exists():
                 logger.warning("Failed to generate thumbnail for history entry")
                 entry.thumbnail_filename = ""
