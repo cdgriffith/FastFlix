@@ -14,6 +14,8 @@ import sys
 
 from psutil import Popen
 
+from fastflix.shared import clean_env
+
 try:
     from psutil import (
         HIGH_PRIORITY_CLASS,
@@ -93,6 +95,7 @@ class BackgroundRunner:
                 stderr=stderr_handle,
                 stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc on linux
                 encoding="utf-8",
+                env=clean_env(),
             )
         except PermissionError:
             logger.error(
