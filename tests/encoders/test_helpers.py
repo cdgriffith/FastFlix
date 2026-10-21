@@ -742,6 +742,7 @@ def test_generate_filters_with_nlmeans_opencl():
         selected_track=0,
         source=Path("input.mkv"),
         denoise="nlmeans_opencl=s=1.0:p=3:r=9",
+        enable_opencl=True,
     )
     assert isinstance(result, list)
     assert result[0] == "-filter_complex"
@@ -781,3 +782,119 @@ def test_generate_filters_filter_chain_order():
     assert filter_str.index("colorbalance") < filter_str.index("colortemperature")
     assert filter_str.index("colortemperature") < filter_str.index("curves=preset")
     assert filter_str.index("curves=preset") < filter_str.index("cas=strength")
+
+
+def test_reverse_forces_input_side_seek():
+    cmd = generate_ffmpeg_start(
+        source=Path("in.mkv"),
+        ffmpeg=Path("ffmpeg"),
+        encoder="libx265",
+        selected_track=0,
+        start_time=5,
+        end_time=10,
+        fast_seek=False,
+        reverse_video=True,
+        filters=["-filter_complex", "[0:0]reverse[v]", "-map", "[v]"],
+    )
+    assert cmd.index("-ss") < cmd.index("-i")
+    assert cmd.index("-to") < cmd.index("-i")
+
+
+def test_exact_seek_without_reverse_stays_after_input():
+    cmd = generate_ffmpeg_start(
+        source=Path("in.mkv"), ffmpeg=Path("ffmpeg"), encoder="libx265", selected_track=0, start_time=5, fast_seek=False
+    )
+    assert cmd.index("-ss") > cmd.index("-i")
+
+
+def test_nlmeans_opencl_inits_device_without_hdr_removal():
+    cmd = generate_ffmpeg_start(
+        source=Path("in.mkv"),
+        ffmpeg=Path("ffmpeg"),
+        encoder="libx265",
+        selected_track=0,
+        enable_opencl=True,
+        remove_hdr=False,
+        denoise="nlmeans_opencl=s=1.0:p=3:r=9",
+    )
+    assert "-init_hw_device" in cmd
+    assert "-filter_hw_device" in cmd
+
+
+def test_no_opencl_device_without_need():
+    cmd = generate_ffmpeg_start(
+        source=Path("in.mkv"),
+        ffmpeg=Path("ffmpeg"),
+        encoder="libx265",
+        selected_track=0,
+        enable_opencl=True,
+        remove_hdr=False,
+    )
+    assert "-init_hw_device" not in cmd
+
+
+def test_nlmeans_opencl_pix_fmt_matches_source():
+    f10 = generate_filters(0, denoise="nlmeans_opencl=s=1.0:p=3:r=9", enable_opencl=True, source_pix_fmt="yuv420p10le")
+    assert "format=p010,hwupload,nlmeans_opencl=s=1.0:p=3:r=9,hwdownload,format=p010" in f10[1]
+    f8 = generate_filters(0, denoise="nlmeans_opencl=s=1.0:p=3:r=9", enable_opencl=True, source_pix_fmt="yuv420p")
+    assert "format=yuv420p,hwupload" in f8[1]
+
+
+def test_nlmeans_opencl_falls_back_to_cpu_without_opencl():
+    f = generate_filters(0, denoise="nlmeans_opencl=s=1.0:p=3:r=9", enable_opencl=False)
+    assert "hwupload" not in f[1]
+    assert "nlmeans=s=1.0:p=3:r=9" in f[1]
+    assert "opencl" not in f[1]
+
+
+def test_copy_with_reverse_does_not_reverse_audio(fastflix_instance):
+    fastflix_instance.current_video.video_settings.reverse_video = True
+    fastflix_instance.current_video.video_settings.video_encoder_settings = x265Settings()
+    for t in fastflix_instance.current_video.audio_tracks:
+        t.conversion_codec = "aac"
+        t.conversion_bitrate = "128k"
+    beginning, ending, _ = generate_all(fastflix_instance, "copy", disable_filters=True, subs=False)
+    assert "areverse" not in " ".join(ending)
+    assert "reverse" not in " ".join(beginning)
+
+
+def test_pad_applied_after_rotation():
+    f = generate_filters(0, rotate=1, pad_aspect="16:9", pad_color="black")[1]
+    assert f.index("transpose=1") < f.index("pad=")
+
+
+def test_text_burn_in_before_reverse():
+    f = generate_filters(0, reverse_video=True, burn_in_subtitle_track=0, burn_in_subtitle_type="text", source="a.mkv")[
+        1
+    ]
+    assert f.index("subtitles=") < f.index("reverse")
+    assert f.count("subtitles=") == 1
+    f = generate_filters(0, burn_in_subtitle_track=0, burn_in_subtitle_type="text", source="a.mkv", scale="1280:-8")[1]
+    assert f.index("scale=") < f.index("subtitles=")
+
+
+def test_gop_length_zero_not_emitted():
+    base = dict(source=Path("in.mkv"), ffmpeg=Path("ffmpeg"), encoder="libx264", selected_track=0)
+    assert "-g" not in generate_ffmpeg_start(gop_length=0, **base)
+    assert "-g" not in generate_ffmpeg_start(gop_length=None, **base)
+    cmd = generate_ffmpeg_start(gop_length=48, **base)
+    assert cmd[cmd.index("-g") + 1] == "48"
+
+
+def test_data_track_metadata_uses_real_output_index():
+    from fastflix.models.encode import DataTrack
+
+    track = DataTrack(
+        index=5, outdex=99, codec_type="attachment", codec_name="ttf", mimetype="font/ttf", filename="a.ttf"
+    )
+    audio = ["-map", "0:1", "-c:1", "copy", "-map", "0:2"]
+    subs = ["-map", "0:3"]
+    cmd, _ = generate_ending(audio, subs, data_tracks=[track], output_video=Path("o.mkv"))
+    # video + 2 audio + 1 subtitle -> data stream is output index 4
+    assert "-metadata:s:4" in cmd
+    assert "-metadata:s:99" not in cmd
+    assert cmd[cmd.index("-metadata:s:4") + 1] in ("title=", "handler=")
+    assert "mimetype=font/ttf" in cmd
+    # Burned-in subtitle produces no map, so index shifts down
+    cmd, _ = generate_ending(audio, [], data_tracks=[track], output_video=Path("o.mkv"))
+    assert "-metadata:s:3" in cmd

@@ -175,7 +175,7 @@ class TestGenerateEndingWithDataTracks:
             ),
         ]
         result, _ = generate_ending(
-            audio=[],
+            audio=["-map", "0:1", "-map", "0:2"],
             subtitles=[],
             output_video=Path("output.mkv"),
             data_tracks=tracks,
@@ -201,7 +201,7 @@ class TestGenerateEndingWithDataTracks:
             DataTrack(index=6, outdex=3, enabled=True, codec_type="data", title=""),
         ]
         result, _ = generate_ending(
-            audio=[],
+            audio=["-map", "0:1"],
             subtitles=[],
             output_video=Path("output.mp4"),
             data_tracks=tracks,
@@ -316,7 +316,7 @@ class TestGenerateEndingWithDataTracks:
             ),
         ]
         result, _ = generate_ending(
-            audio=[],
+            audio=["-map", "0:1"],
             subtitles=[],
             output_video=Path("output.mkv"),
             data_tracks=tracks,

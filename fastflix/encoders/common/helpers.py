@@ -71,14 +71,21 @@ def generate_ffmpeg_start(
     start_extra: Union[List[str], str] = "",
     extra_inputs: Optional[List[str]] = None,
     gop_length=None,
+    denoise: Optional[str] = None,
+    reverse_video: bool = False,
     **_,
 ) -> List[str]:
     command = [str(ffmpeg)]
+    uses_nlmeans_opencl = bool(denoise) and denoise.startswith("nlmeans_opencl")
+    # The reverse filter operates on the filtergraph output, so output-side (exact) seeking would trim the
+    # already reversed timeline (mirrored segment) and desync copied streams. Always seek on the input side.
+    if reverse_video and filters:
+        fast_seek = True
 
     if start_extra:
         command.extend(start_extra if isinstance(start_extra, list) else shlex.split(start_extra))
 
-    if enable_opencl and remove_hdr:
+    if enable_opencl and (remove_hdr or uses_nlmeans_opencl):
         command.extend(["-init_hw_device", "opencl:0.0=ocl", "-filter_hw_device", "ocl"])
 
     command.append("-y")
@@ -134,7 +141,7 @@ def generate_ffmpeg_start(
     if video_track_title:
         command.extend(["-metadata:s:v:0", f"title={video_track_title}"])
 
-    if gop_length is not None:
+    if gop_length is not None and gop_length > 0:
         command.extend(["-g", str(gop_length)])
 
     return command
@@ -200,18 +207,25 @@ def generate_ending(
     if data_tracks:
         has_data = False
         has_attachment = False
+        # Compute the real output stream index from what is actually mapped (video + audio + subtitles that are
+        # not burned in), instead of trusting the stored outdex which can go stale.
+        next_outdex = (
+            1 + sum(1 for x in (audio or []) if x == "-map") + sum(1 for x in (subtitles or []) if x == "-map")
+        )
         for track in data_tracks:
             if not track.enabled:
                 continue
             mapped_data = True
             command.extend(["-map", f"0:{track.index}"])
+            outdex = next_outdex
+            next_outdex += 1
             # Clear title/handler metadata (same as audio tracks)
             if track.title:
-                command.extend([f"-metadata:s:{track.outdex}", f"title={track.title}"])
-                command.extend([f"-metadata:s:{track.outdex}", f"handler={track.title}"])
+                command.extend([f"-metadata:s:{outdex}", f"title={track.title}"])
+                command.extend([f"-metadata:s:{outdex}", f"handler={track.title}"])
             else:
-                command.extend([f"-metadata:s:{track.outdex}", "title="])
-                command.extend([f"-metadata:s:{track.outdex}", "handler="])
+                command.extend([f"-metadata:s:{outdex}", "title="])
+                command.extend([f"-metadata:s:{outdex}", "handler="])
             if track.codec_type == "data":
                 has_data = True
             elif track.codec_type == "attachment":
@@ -219,9 +233,9 @@ def generate_ending(
                 # Restore mimetype/filename stripped by -map_metadata -1
                 # (required by the matroska muxer for attachment streams)
                 if track.mimetype:
-                    command.extend([f"-metadata:s:{track.outdex}", f"mimetype={track.mimetype}"])
+                    command.extend([f"-metadata:s:{outdex}", f"mimetype={track.mimetype}"])
                 if track.filename:
-                    command.extend([f"-metadata:s:{track.outdex}", f"filename={track.filename}"])
+                    command.extend([f"-metadata:s:{outdex}", f"filename={track.filename}"])
         if has_data:
             command.extend(["-c:d", "copy"])
         if has_attachment:
@@ -284,6 +298,7 @@ def generate_filters(
     color_transfer: Optional[str] = None,
     color_primaries: Optional[str] = None,
     color_space: Optional[str] = None,
+    source_pix_fmt: Optional[str] = None,
     **_kw,
 ):
     filter_list = []
@@ -298,16 +313,6 @@ def generate_filters(
             filter_list.append(f"scale={scale}:flags={scale_filter},setsar=1:1")
     elif sar and sar != "1:1" and sar != "1/1":
         filter_list.append("setsar=1:1")
-    pad_aspect = _kw.get("pad_aspect")
-    if pad_aspect and pad_aspect != "none":
-        pad_color = _kw.get("pad_color", "black") or "black"
-        num, den = pad_aspect.split(":")
-        target_ratio = int(num) / int(den)
-        filter_list.append(
-            f"pad=w=if(gt(a\\,{target_ratio})\\,iw\\,ceil(ih*{target_ratio}/2)*2)"
-            f":h=if(gt(a\\,{target_ratio})\\,ceil(iw/{target_ratio}/2)*2\\,ih)"
-            f":x=(ow-iw)/2:y=(oh-ih)/2:color={pad_color}"
-        )
     if rotate:
         if rotate == 1:
             filter_list.append("transpose=1")
@@ -319,15 +324,39 @@ def generate_filters(
         filter_list.append("vflip")
     if horizontal_flip:
         filter_list.append("hflip")
+    # Pad after rotation/flip so the target aspect is applied to the final orientation
+    pad_aspect = _kw.get("pad_aspect")
+    if pad_aspect and pad_aspect != "none":
+        pad_color = _kw.get("pad_color", "black") or "black"
+        num, den = pad_aspect.split(":")
+        target_ratio = int(num) / int(den)
+        filter_list.append(
+            f"pad=w=if(gt(a\\,{target_ratio})\\,iw\\,ceil(ih*{target_ratio}/2)*2)"
+            f":h=if(gt(a\\,{target_ratio})\\,ceil(iw/{target_ratio}/2)*2\\,ih)"
+            f":x=(ow-iw)/2:y=(oh-ih)/2:color={pad_color}"
+        )
     if video_speed and video_speed != 1:
         filter_list.append(f"setpts={video_speed}*PTS")
+    text_sub_filter = None
+    if burn_in_subtitle_track is not None and burn_in_subtitle_type != "picture":
+        original_size = f":original_size={source_width}x{source_height}" if source_width and source_height else ""
+        text_sub_filter = f"subtitles='{quoted_path(str(source))}':si={burn_in_subtitle_track}{original_size}"
     if reverse_video:
+        if text_sub_filter:
+            # Burn subtitles in before reversing so they stay in sync with the reversed video
+            filter_list.append(text_sub_filter)
+            text_sub_filter = None
         filter_list.append("reverse")
     if deblock:
         filter_list.append(f"deblock=filter={deblock}:block={deblock_size}")
     if denoise:
         if denoise.startswith("nlmeans_opencl"):
-            filter_list.append(f"format=yuv420p,hwupload,{denoise},hwdownload,format=yuv420p")
+            if enable_opencl:
+                bits_fmt = "p010" if any(x in (source_pix_fmt or "") for x in ("10", "12", "16")) else "yuv420p"
+                filter_list.append(f"format={bits_fmt},hwupload,{denoise},hwdownload,format={bits_fmt}")
+            else:
+                # No OpenCL device available (e.g. previews), fall back to the equivalent CPU filter
+                filter_list.append(denoise.replace("nlmeans_opencl", "nlmeans", 1))
         else:
             filter_list.append(denoise)
     if _kw.get("deflicker"):
@@ -399,8 +428,10 @@ def generate_filters(
                 filter_complex = f"[0:{selected_track}][{burn_in_file_index}:{burn_in_subtitle_track}]overlay[v]"
         else:
             filter_prefix = f"{filters}," if filters else ""
-            original_size = f":original_size={source_width}x{source_height}" if source_width and source_height else ""
-            filter_complex = f"[0:{selected_track}]{filter_prefix}subtitles='{quoted_path(str(source))}':si={burn_in_subtitle_track}{original_size}[v]"
+            if text_sub_filter:
+                filter_complex = f"[0:{selected_track}]{filter_prefix}{text_sub_filter}[v]"
+            else:
+                filter_complex = f"[0:{selected_track}]{filters}[v]"
     elif filters:
         filter_complex = f"[0:{selected_track}]{filters}[v]"
     else:
@@ -432,7 +463,8 @@ def generate_all(
     audio_cmd = (
         build_audio(
             fastflix.current_video.audio_tracks,
-            reverse_video=fastflix.current_video.video_settings.reverse_video,
+            # Video filters (including reverse) are not applied when disabled (copy), keep audio forward then
+            reverse_video=fastflix.current_video.video_settings.reverse_video and not disable_filters,
         )
         if audio
         else []
@@ -495,6 +527,7 @@ def generate_all(
             scale=fastflix.current_video.scale,
             sar=fastflix.current_video.sar,
             enable_opencl=enable_opencl,
+            source_pix_fmt=fastflix.current_video.pix_fmt,
             vaapi=vaapi,
             **filter_details,
         )
@@ -514,8 +547,10 @@ def generate_all(
     # External inputs need their own -ss/-to to stay in sync with the seeked video.
     vs = fastflix.current_video.video_settings
     extra_inputs = []
+    # Reverse forces input-side seeking (see generate_ffmpeg_start)
+    input_seek = vs.fast_seek or bool(filters_cmd and vs.reverse_video)
     for file_path in extra_input_files:
-        if vs.fast_seek:
+        if input_seek:
             if vs.start_time:
                 extra_inputs.extend(["-ss", str(vs.start_time)])
             if vs.end_time:
