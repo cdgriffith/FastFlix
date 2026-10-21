@@ -84,7 +84,13 @@ func TestRemoveInstalledFilesKeepsUserFiles(t *testing.T) {
 }
 
 func TestScheduleSelfDelete(t *testing.T) {
-	dir := filepath.Join(t.TempDir(), "FastFlix")
+	for _, name := range []string{"FastFlix", "FastFlix José", "Fast & Flix", "Fast 100%"} {
+		t.Run(name, func(t *testing.T) { testScheduleSelfDelete(t, name) })
+	}
+}
+
+func testScheduleSelfDelete(t *testing.T, name string) {
+	dir := filepath.Join(t.TempDir(), name)
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		t.Fatal(err)
 	}

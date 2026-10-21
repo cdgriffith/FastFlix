@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"syscall"
@@ -313,6 +314,8 @@ func processImagePath(pid uint32) string {
 
 // ScheduleSelfDelete deletes self and then (if empty) dir after the current process exits. It writes a temp
 // .bat that retries until the exe is unlocked and then deletes itself, and runs it hidden and detached.
+// The paths are passed through environment variables (UTF-16 in the process environment) rather than written
+// into the script, so non-ASCII, '%' or '&' characters in them need no batch escaping or code page handling.
 func ScheduleSelfDelete(self, dir string) error {
 	if err := ValidatePathString(self); err != nil {
 		return err
@@ -320,16 +323,15 @@ func ScheduleSelfDelete(self, dir string) error {
 	if err := ValidatePathString(dir); err != nil {
 		return err
 	}
-	esc := func(s string) string { return strings.ReplaceAll(s, "%", "%%") }
 	script := "@echo off\r\n" +
 		"setlocal\r\n" +
 		"set n=0\r\n" +
 		":retry\r\n" +
 		"set /a n+=1\r\n" +
 		"ping 127.0.0.1 -n 2 >nul\r\n" +
-		"del /f /q \"" + esc(self) + "\" >nul 2>&1\r\n" +
-		"if exist \"" + esc(self) + "\" if %n% lss 60 goto retry\r\n" +
-		"rmdir \"" + esc(dir) + "\" >nul 2>&1\r\n" +
+		"del /f /q \"%FF_CLEANUP_SELF%\" >nul 2>&1\r\n" +
+		"if exist \"%FF_CLEANUP_SELF%\" if %n% lss 60 goto retry\r\n" +
+		"rmdir \"%FF_CLEANUP_DIR%\" >nul 2>&1\r\n" +
 		"(goto) 2>nul & del \"%~f0\"\r\n"
 
 	f, err := os.CreateTemp("", "fastflix-cleanup-*.bat")
@@ -344,25 +346,20 @@ func ScheduleSelfDelete(self, dir string) error {
 	}
 	f.Close()
 
-	cmdExe := filepath.Join(os.Getenv("SystemRoot"), "System32", "cmd.exe")
-	cmdLine := `"` + cmdExe + `" /d /c ""` + bat + `""`
-	argv, err := syscall.UTF16PtrFromString(cmdLine)
-	if err != nil {
-		return err
-	}
-	exe, _ := syscall.UTF16PtrFromString(cmdExe)
-	var si windows.StartupInfo
-	si.Cb = uint32(unsafe.Sizeof(si))
-	si.Flags = windows.STARTF_USESHOWWINDOW
-	si.ShowWindow = windows.SW_HIDE
-	var pi windows.ProcessInformation
+	// CREATE_NO_WINDOW gives cmd a hidden console that ping inherits. DETACHED_PROCESS must not be used: with no
+	// console at all, every console child (ping) would pop up its own visible window.
 	const createNoWindow = 0x08000000
-	const detachedProcess = 0x00000008
-	if err := windows.CreateProcess(exe, argv, nil, nil, false, createNoWindow|detachedProcess, nil, nil, &si, &pi); err != nil {
+	cmdExe := filepath.Join(os.Getenv("SystemRoot"), "System32", "cmd.exe")
+	cmd := exec.Command(cmdExe)
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		CmdLine:       `"` + cmdExe + `" /d /c ""` + bat + `""`,
+		HideWindow:    true,
+		CreationFlags: createNoWindow,
+	}
+	cmd.Env = append(os.Environ(), "FF_CLEANUP_SELF="+self, "FF_CLEANUP_DIR="+dir)
+	if err := cmd.Start(); err != nil {
 		os.Remove(bat)
 		return err
 	}
-	windows.CloseHandle(pi.Thread)
-	windows.CloseHandle(pi.Process)
-	return nil
+	return cmd.Process.Release()
 }
