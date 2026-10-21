@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import secrets
 import shlex
 
-from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
+from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details
 from fastflix.models.encode import FFmpegAV1NVENCSettings
 from fastflix.models.fastflix import FastFlix
 
@@ -47,51 +46,11 @@ def build(fastflix: FastFlix):
         beginning.extend(["-aq-strength:v", str(settings.aq_strength)])
 
     extra = shlex.split(settings.extra) if settings.extra else []
-    extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
 
     if not settings.bitrate:
         command = beginning + ["-qp:v", str(settings.qp), "-preset:v", settings.preset] + extra + ending
         return [Command(command=command, name="Single QP encode", exe="ffmpeg")]
 
-    pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
-
-    command_1 = (
-        beginning
-        + [
-            "-pass",
-            "1",
-            "-passlogfile",
-            str(pass_log_file),
-            "-b:v",
-            settings.bitrate,
-            "-preset:v",
-            settings.preset,
-            "-2pass",
-            "1",
-        ]
-        + extra_both
-        + ["-an", "-sn", "-dn"]
-        + output_fps
-        + ["-f", "mp4", null]
-    )
-    command_2 = (
-        beginning
-        + [
-            "-pass",
-            "2",
-            "-passlogfile",
-            str(pass_log_file),
-            "-2pass",
-            "1",
-            "-b:v",
-            settings.bitrate,
-            "-preset:v",
-            settings.preset,
-        ]
-        + extra
-        + ending
-    )
-    return [
-        Command(command=command_1, name="First pass bitrate", exe="ffmpeg"),
-        Command(command=command_2, name="Second pass bitrate", exe="ffmpeg"),
-    ]
+    # NVENC performs two-pass internally via -multipass; FFmpeg's -pass/-2pass are not supported by NVENC
+    command = beginning + ["-b:v", settings.bitrate, "-preset:v", settings.preset] + extra + ending
+    return [Command(command=command, name="Bitrate encode", exe="ffmpeg")]

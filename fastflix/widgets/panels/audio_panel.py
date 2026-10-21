@@ -19,6 +19,7 @@ from fastflix.shared import no_border, error_message, yes_no_message, clear_list
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.audio_processing import apply_audio_filters
 from fastflix.widgets.windows.audio_conversion import AudioConversion
+from fastflix.widgets.toggle_switch import ToggleSwitch
 from fastflix.widgets.windows.disposition import Disposition
 
 language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined"]
@@ -52,6 +53,7 @@ codec_display_names = {
     "vorbis": "Vorbis",
     "libvorbis": "Vorbis",
     "mp3": "MP3",
+    "libfdk_aac": "FDK AAC",
     "libmp3lame": "MP3",
     "pcm_s16le": "PCM",
     "pcm_s24le": "PCM",
@@ -118,7 +120,7 @@ class Audio(QtWidgets.QTabWidget):
             audio_info=QtWidgets.QLabel(audio_track.friendly_info),
             up_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("up-arrow", self.app.fastflix.config.theme)), ""),
             down_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("down-arrow", self.app.fastflix.config.theme)), ""),
-            enable_check=QtWidgets.QCheckBox(t("Enabled")),
+            enable_check=ToggleSwitch(t("Enabled")),
             dup_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("onyx-copy", self.app.fastflix.config.theme)), ""),
             delete_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("black-x", self.app.fastflix.config.theme)), ""),
             language=QtWidgets.QComboBox(),
@@ -324,13 +326,16 @@ class Audio(QtWidgets.QTabWidget):
             self.widgets.track_number.setText(f"{audio_track.index}:{audio_track.outdex}")
 
     def close(self) -> bool:
-        del self.widgets
+        if hasattr(self, "widgets"):
+            del self.widgets
         return super().close()
 
-    def update_track(self, conversion=None, bitrate=None, downmix=None, title=None):
+    def update_track(self, conversion=None, bitrate=None, downmix=None, title=None, conversion_profile=None):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if conversion:
             audio_track.conversion_codec = conversion
+        if conversion_profile:
+            audio_track.conversion_profile = conversion_profile
         if bitrate:
             audio_track.conversion_bitrate = bitrate
         if downmix:
@@ -344,7 +349,10 @@ class Audio(QtWidgets.QTabWidget):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if audio_track.conversion_codec:
             self.widgets.conversion.setStyleSheet(get_onyx_disposition_style(enabled=True))
-            self.widgets.conversion.setText(t("Conversion") + f": {audio_track.conversion_codec}")
+            profile_display = {"aac_he": " (HE-AAC)", "aac_he_v2": " (HE-AAC v2)"}.get(
+                audio_track.conversion_profile, ""
+            )
+            self.widgets.conversion.setText(t("Conversion") + f": {audio_track.conversion_codec}{profile_display}")
         else:
             self.widgets.conversion.setStyleSheet(get_onyx_disposition_style(enabled=False))
             self.widgets.conversion.setText(t("Conversion"))
@@ -476,6 +484,7 @@ class AudioList(FlixList):
             enabled=True,
             downmix=None,
             conversion=None,
+            conversion_profile=None,
             bitrate=None,
             title_mode=None,
             custom_title=None,
@@ -510,6 +519,7 @@ class AudioList(FlixList):
                     friendly_info=track_info,
                     downmix=downmix,
                     conversion_codec=conversion,
+                    conversion_profile=conversion_profile,
                     conversion_bitrate=bitrate,
                     dispositions={k: bool(v) for k, v in audio_track.disposition.items()},
                 )
@@ -577,6 +587,7 @@ class AudioList(FlixList):
                     self.tracks[track_pos].update_track(
                         downmix=track[1].downmix,
                         conversion=track[1].conversion,
+                        conversion_profile=track[1].conversion_profile,
                         bitrate=track[1].bitrate,
                         title=title,
                     )
@@ -594,6 +605,7 @@ class AudioList(FlixList):
                             enabled=True,
                             og=False,
                             conversion=track[1].conversion,
+                            conversion_profile=track[1].conversion_profile,
                             bitrate=track[1].bitrate,
                             downmix=track[1].downmix,
                             title_mode=track[1].title_mode,

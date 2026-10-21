@@ -248,3 +248,91 @@ def test_build_subtitle_external_defaults_no_break():
     # Default file_index is 0, so -map should be 0:3
     result, _, _ = build_subtitle([track])
     assert "0:3" in result
+
+
+def test_disposition_clear_default():
+    """When profile clears default, no track should have default disposition."""
+    tracks = [
+        SubtitleTrack(index=0, outdex=1, language="eng", enabled=True, dispositions={"default": True, "forced": False}),
+        SubtitleTrack(
+            index=1, outdex=2, language="jpn", enabled=True, dispositions={"default": False, "forced": False}
+        ),
+    ]
+    # Simulate "clear" mode — clear default from all tracks
+    for track in tracks:
+        track.dispositions["default"] = False
+
+    result, _, _ = build_subtitle(tracks)
+    # No default disposition means infer_no_subs should be added
+    assert "-default_mode" in result
+    assert "infer_no_subs" in result
+    # Verify disposition:1 is "0" (no flags)
+    disp_idx = result.index("-disposition:1")
+    assert result[disp_idx + 1] == "0"
+
+
+def test_disposition_set_first_default():
+    """When profile sets default on first, only first enabled track gets default."""
+    tracks = [
+        SubtitleTrack(
+            index=0, outdex=1, language="eng", enabled=True, dispositions={"default": False, "forced": False}
+        ),
+        SubtitleTrack(
+            index=1, outdex=2, language="jpn", enabled=True, dispositions={"default": False, "forced": False}
+        ),
+    ]
+    # Simulate "first" mode — set default on first enabled, clear rest
+    first_set = False
+    for track in tracks:
+        track.dispositions["default"] = not first_set
+        first_set = True
+
+    result, _, _ = build_subtitle(tracks)
+    # First track should have default, second should not
+    assert "-default_mode" not in result  # default is set, so no infer_no_subs
+    disp1_idx = result.index("-disposition:1")
+    assert "default" in result[disp1_idx + 1]
+    disp2_idx = result.index("-disposition:2")
+    assert result[disp2_idx + 1] == "0"
+
+
+def test_disposition_clear_forced():
+    """When profile clears forced, no track should have forced disposition."""
+    tracks = [
+        SubtitleTrack(index=0, outdex=1, language="eng", enabled=True, dispositions={"default": False, "forced": True}),
+        SubtitleTrack(
+            index=1, outdex=2, language="jpn", enabled=True, dispositions={"default": False, "forced": False}
+        ),
+    ]
+    # Simulate "clear" mode
+    for track in tracks:
+        track.dispositions["forced"] = False
+
+    result, _, _ = build_subtitle(tracks)
+    assert "-default_mode" in result
+    # First track should have disposition "0"
+    disp_idx = result.index("-disposition:1")
+    assert result[disp_idx + 1] == "0"
+
+
+def test_disposition_set_first_forced():
+    """When profile sets forced on first, only first enabled track gets forced."""
+    tracks = [
+        SubtitleTrack(
+            index=0, outdex=1, language="eng", enabled=True, dispositions={"default": False, "forced": False}
+        ),
+        SubtitleTrack(
+            index=1, outdex=2, language="jpn", enabled=True, dispositions={"default": False, "forced": False}
+        ),
+    ]
+    # Simulate "first" mode
+    first_set = False
+    for track in tracks:
+        track.dispositions["forced"] = not first_set
+        first_set = True
+
+    result, _, _ = build_subtitle(tracks)
+    disp1_idx = result.index("-disposition:1")
+    assert "forced" in result[disp1_idx + 1]
+    disp2_idx = result.index("-disposition:2")
+    assert result[disp2_idx + 1] == "0"

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
 import os
+import sys
 from functools import lru_cache
 
 import importlib.resources
@@ -84,3 +85,21 @@ def get_bool_env(variable: str):
     if var.lower() in ("1", "on", "yes", "true", "t"):
         return True
     return False
+
+
+def clean_env() -> dict:
+    """Return a copy of os.environ that is safe for launching external tools (FFmpeg, FFprobe, rigaya, etc).
+
+    A PyInstaller onefile build points LD_LIBRARY_PATH at its bundled libraries, so system binaries such as
+    /usr/bin/ffmpeg would load those (e.g. an incompatible libass) instead of the system ones. PyInstaller keeps
+    the user's original value in LD_LIBRARY_PATH_ORIG, which is restored here (or the variable is removed).
+    Kept in this Qt-free module so the conversion worker process can use it without importing PySide6.
+    """
+    env = os.environ.copy()
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        original = env.pop("LD_LIBRARY_PATH_ORIG", None)
+        if original is not None:
+            env["LD_LIBRARY_PATH"] = original
+        else:
+            env.pop("LD_LIBRARY_PATH", None)
+    return env

@@ -145,7 +145,7 @@ def test_nvencc_hevc_with_crop_scale():
         video_settings=VideoSettings(
             crop=Crop(left=10, top=20, right=10, bottom=20, width=1900, height=1040),
             resolution_method="custom",
-            resolution_custom="1280x720",
+            resolution_custom="1280:720",
             remove_hdr=False,
             maxrate=None,
             bufsize=None,

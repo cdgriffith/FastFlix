@@ -1,0 +1,22 @@
+# Test LUT - swaps red and blue channels for obvious visual difference
+# Size 2: entries ordered R-fastest, then G, then B
+# Input (R,G,B) -> Output (B,G,R)
+TITLE "Test Red-Blue Swap"
+LUT_3D_SIZE 2
+
+# (0,0,0) -> (0,0,0)
+0.0 0.0 0.0
+# (1,0,0) -> (0,0,1)
+0.0 0.0 1.0
+# (0,1,0) -> (0,1,0)
+0.0 1.0 0.0
+# (1,1,0) -> (0,1,1)
+0.0 1.0 1.0
+# (0,0,1) -> (1,0,0)
+1.0 0.0 0.0
+# (1,0,1) -> (1,0,1)
+1.0 0.0 1.0
+# (0,1,1) -> (1,1,0)
+1.0 1.0 0.0
+# (1,1,1) -> (1,1,1)
+1.0 1.0 1.0

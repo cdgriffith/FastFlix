@@ -12,8 +12,10 @@ from platformdirs import user_data_dir
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtGui import QAction
 
+from fastflix.resources import clean_env
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
+from fastflix.version import __version__
 from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.program_downloads import latest_ffmpeg, grab_stable_ffmpeg, download_hdr10plus_tool
@@ -90,6 +92,12 @@ class Container(QtWidgets.QMainWindow):
         self.profile_details = None
 
         self.init_menu()
+
+        self.version_label = QtWidgets.QLabel(f"{__version__}", self)
+        self.version_label.setStyleSheet("color: #808080; background: transparent;")
+        self.version_label.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        self.version_label.adjustSize()
+        self.version_label.raise_()
 
         self.main = Main(self, app)
 
@@ -213,9 +221,18 @@ class Container(QtWidgets.QMainWindow):
         # Apply the constrained geometry
         self.setGeometry(new_x, new_y, new_width, new_height)
 
+    def _position_version_label(self):
+        menubar = self.menuBar()
+        menubar_height = menubar.height()
+        y = (menubar_height - self.version_label.height()) // 2
+        x = self.width() - self.version_label.width() - 8
+        self.version_label.move(x, y)
+        self.version_label.raise_()
+
     def resizeEvent(self, event: QtGui.QResizeEvent) -> None:
         """Handle resize events to ensure window stays within screen bounds and update scaling."""
         super().resizeEvent(event)
+        self._position_version_label()
 
         # Always update scale factors and styles so the UI adapts to any window size
         scaler.calculate_factors(event.size().width(), event.size().height())
@@ -716,7 +733,7 @@ class OpenFolder(QtCore.QThread):
             elif sys.platform == "darwin":
                 run(["open", self.path])
             else:
-                run(["xdg-open", self.path])
+                run(["xdg-open", self.path], env=clean_env())
         except FileNotFoundError:
             logger.error(f"Do not know which command to use to open: {self.path}")
 

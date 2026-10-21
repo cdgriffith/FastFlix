@@ -52,12 +52,36 @@ def audio_quality_converter(quality, codec, channels=2, track_number=1):
             return f"-b:{track_number} {base * channels}k"
 
 
+AAC_HE_PROFILES = ("aac_he", "aac_he_v2")
+
+
+def resolve_aac_profile(codec: str, profile, channels=None):
+    """Return the AAC profile that is safe to request, or None for the encoder default.
+
+    - HE-AAC / HE-AACv2 are only supported by libfdk_aac. FFmpeg's native ``aac`` encoder fails with
+      "Invalid argument" (-22) when asked for them, so the profile is dropped for every other codec.
+    - HE-AACv2 (Parametric Stereo) requires exactly 2 channels; for any other channel count it falls back
+      to HE-AAC (v1), which supports mono and multichannel.
+    """
+    if not profile:
+        return None
+    if codec != "libfdk_aac":
+        if profile in AAC_HE_PROFILES:
+            logger.warning(f"AAC profile {profile} is only supported by libfdk_aac, ignoring for codec {codec}")
+            return None
+        return profile
+    if profile == "aac_he_v2" and channels is not None and channels != 2:
+        logger.warning(f"HE-AACv2 requires stereo output (got {channels} channels), falling back to HE-AAC")
+        return "aac_he"
+    return profile
+
+
 def _split_quality(quality_str: str) -> List[str]:
     """Split a quality string like '-vbr:1 on -b:1 120k' into list items."""
     return quality_str.split()
 
 
-def build_audio(audio_tracks, audio_file_index=0) -> List[str]:
+def build_audio(audio_tracks, audio_file_index=0, reverse_video: bool = False) -> List[str]:
     command_list = []
     has_truehd = False
     has_opus = False
@@ -97,7 +121,10 @@ def build_audio(audio_tracks, audio_file_index=0) -> List[str]:
                 if track.downmix and track.downmix != "No Downmix"
                 else []
             )
-            channel_layout = [f"-filter:{track.outdex}", f"aformat=channel_layouts={cl}"]
+            audio_filter = (
+                f"areverse,aformat=channel_layouts={cl}" if reverse_video else f"aformat=channel_layouts={cl}"
+            )
+            channel_layout = [f"-filter:{track.outdex}", audio_filter]
 
             bitrate_parts = []
             if track.conversion_codec not in lossless:
@@ -119,6 +146,9 @@ def build_audio(audio_tracks, audio_file_index=0) -> List[str]:
                     )
 
             command_list.extend([f"-c:{track.outdex}", track.conversion_codec])
+            aac_profile = resolve_aac_profile(track.conversion_codec, track.conversion_profile, channel_list.get(cl))
+            if aac_profile:
+                command_list.extend([f"-profile:{track.outdex}", aac_profile])
             command_list.extend(bitrate_parts)
             command_list.extend(downmix)
             command_list.extend(channel_layout)

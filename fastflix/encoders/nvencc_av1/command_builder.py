@@ -13,6 +13,7 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_auto_options,
     rigaya_avformat_reader,
     rigaya_trim_or_seek,
+    rigaya_extra_options,
 )
 
 logger = logging.getLogger("fastflix")
@@ -73,11 +74,11 @@ def build(fastflix: FastFlix):
         flip_x = "true" if video.video_settings.horizontal_flip else "false"
         flip_y = "true" if video.video_settings.vertical_flip else "false"
         command.extend(["--vpp-transform", f"flip_x={flip_x},flip_y={flip_y}"])
-    if video.scale:
-        command.extend(["--output-res", video.scale.replace(":", "x")])
     if video.video_settings.crop:
         crop = video.video_settings.crop
         command.extend(["--crop", f"{crop.left},{crop.top},{crop.right},{crop.bottom}"])
+    if video.output_width is not None and video.output_height is not None:
+        command.extend(["--output-res", f"{video.output_width}x{video.output_height}"])
 
     if video.video_settings.remove_metadata:
         command.extend(["--video-metadata", "clear", "--metadata", "clear"])
@@ -87,7 +88,7 @@ def build(fastflix: FastFlix):
         command.extend(["--video-metadata", "copy", "--metadata", "copy"])
 
     if video.video_settings.video_title:
-        command.extend(["--video-metadata", f"title={video.video_settings.video_title}"])
+        command.extend(["--metadata", f"title={video.video_settings.video_title}"])
     if video.video_settings.copy_chapters:
         command.append("--chapter-copy")
 
@@ -160,13 +161,16 @@ def build(fastflix: FastFlix):
         command.extend(["--interlace", str(video.interlaced)])
     if video.video_settings.deinterlace:
         command.append("--vpp-yadif")
+    hdr2sdr_param = None
     if video.video_settings.remove_hdr:
         remove_type = (
             video.video_settings.tone_map
             if video.video_settings.tone_map in ("mobius", "hable", "reinhard")
             else "mobius"
         )
-        command.extend(["--vpp-colorspace", f"hdr2sdr={remove_type}"])
+        hdr2sdr_param = f"hdr2sdr={remove_type}"
+
+    command.extend(rigaya_extra_options(video, hdr2sdr=hdr2sdr_param))
 
     if settings.split_mode == "split":
         command.extend(["--split-enc", "auto_forced"])
@@ -179,7 +183,12 @@ def build(fastflix: FastFlix):
     command.extend(build_audio(video.audio_tracks, video.streams.audio))
     command.extend(build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height))
     command.extend(
-        build_data(video.data_tracks, getattr(video.streams, "data", []), getattr(video.streams, "attachment", []))
+        build_data(
+            video.data_tracks,
+            getattr(video.streams, "data", []),
+            getattr(video.streams, "attachment", []),
+            video.video_settings.output_path,
+        )
     )
 
     if settings.extra:

@@ -4,11 +4,11 @@ import os
 import logging
 import secrets
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtWidgets import QAbstractItemView
 
 from fastflix.language import t
-from fastflix.flix import probe
+from fastflix.flix import probe, clean_file_string
 from fastflix.shared import yes_no_message, error_message
 from fastflix.widgets.status_bar import Task
 
@@ -235,8 +235,11 @@ class ConcatWindow(QtWidgets.QWidget):
         super().__init__(None)
         self.app = app
         self.main = main
-        self.folder_name = str(self.app.fastflix.config.source_directory) or str(Path.home())
+        source_dir = self.app.fastflix.config.source_directory
+        videos_dir = Path.home() / "Videos"
+        self.folder_name = str(source_dir) if source_dir else str(videos_dir if videos_dir.exists() else Path.home())
         self.setWindowTitle(t("Concatenation Builder"))
+        self.setAcceptDrops(True)
 
         self.concat_area = ConcatScroll(self)
         self.base_folder_label = QtWidgets.QLabel()
@@ -244,13 +247,6 @@ class ConcatWindow(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         folder_button = QtWidgets.QPushButton(t("Open Folder"))
         folder_button.clicked.connect(self.select_folder)
-
-        # manual_layout = QtWidgets.QHBoxLayout()
-        # manual_text = QtWidgets.QLineEdit()
-        # manual_button = QtWidgets.QPushButton("+")
-        # manual_button.clicked.connect(lambda: self.concat_area.table.add_item(manual_text.text()))
-        # manual_layout.addWidget(manual_text)
-        # manual_layout.addWidget(manual_button)
 
         save_buttom = QtWidgets.QPushButton(t("Load"))
         save_buttom.clicked.connect(self.save)
@@ -265,13 +261,50 @@ class ConcatWindow(QtWidgets.QWidget):
         layout.addLayout(top_bar)
 
         layout.addWidget(self.concat_area)
-        layout.addWidget(QtWidgets.QLabel(t("Drag and Drop to reorder - All items need to be same dimensions")))
+        layout.addWidget(
+            QtWidgets.QLabel(
+                t("Drag and Drop to reorder, or drop a folder to load files - All items need to be same dimensions")
+            )
+        )
         self.setLayout(layout)
 
     def set_folder_name(self, name):
         self.base_folder_label.setText(f"{t('Base Folder')}: {name}")
 
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        if not event.mimeData().hasUrls():
+            return event.ignore()
+
+        event.setDropAction(QtCore.Qt.CopyAction)
+        event.accept()
+
+        location = Path(clean_file_string(event.mimeData().urls()[0].toLocalFile()))
+        if not location.is_dir():
+            return
+
+        # Defer heavy folder loading so dropEvent returns immediately,
+        # releasing the Windows drag-drop COM lock (unfreezes Explorer).
+        QtCore.QTimer.singleShot(0, lambda: self.load_folder(str(location)))
+
     def select_folder(self):
+        folder_name = QtWidgets.QFileDialog.getExistingDirectory(self, dir=self.folder_name)
+        if not folder_name:
+            return
+        self.load_folder(folder_name)
+
+    def load_folder(self, folder_name):
         if self.concat_area.table.model.rowCount() > 0:
             if not yes_no_message(
                 f"{t('There are already items in this list')},\n"
@@ -280,9 +313,7 @@ class ConcatWindow(QtWidgets.QWidget):
                 "Confirm Change Folder",
             ):
                 return
-        folder_name = QtWidgets.QFileDialog.getExistingDirectory(self, dir=self.folder_name)
-        if not folder_name:
-            return
+
         self.folder_name = folder_name
         self.set_folder_name(folder_name)
 

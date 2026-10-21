@@ -17,7 +17,8 @@ def build(fastflix: FastFlix):
 
     beginning.extend(generate_color_details(fastflix))
 
-    if settings.profile and settings.profile != "default":
+    # libx264 refuses lossless (-qp 0) with the baseline/main/high/high10/high422 profiles, only high444 is valid
+    if settings.profile and settings.profile != "default" and (not settings.lossless or settings.profile == "high444"):
         beginning.extend(["-profile:v", settings.profile])
 
     if settings.aq_mode and settings.aq_mode != "default":
@@ -38,6 +39,11 @@ def build(fastflix: FastFlix):
 
     extra = shlex.split(settings.extra) if settings.extra else []
     extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
+
+    if settings.lossless:
+        # Lossless mode — use QP 0 which is mathematically lossless, no rate control needed
+        command = beginning + ["-qp", "0", "-preset:v", settings.preset] + extra + ending
+        return [Command(command=command, name="Single pass lossless", exe="ffmpeg")]
 
     if settings.bitrate:
         if settings.bitrate_passes == 2:

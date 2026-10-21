@@ -101,7 +101,7 @@ def test_svt_av1_two_pass_qp():
     fastflix = create_fastflix_instance(
         encoder_settings=SVTAV1Settings(
             qp=24,
-            qp_mode="crf",
+            qp_mode="qp",
             speed="7",
             tile_columns="0",
             tile_rows="0",

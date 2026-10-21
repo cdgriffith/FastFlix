@@ -14,7 +14,7 @@ import sys
 
 from psutil import Popen
 
-from fastflix.shared import clean_env
+from fastflix.resources import clean_env
 
 try:
     from psutil import (

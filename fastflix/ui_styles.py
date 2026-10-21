@@ -12,7 +12,7 @@ from fastflix.ui_constants import FONTS
 # Onyx theme color constants
 ONYX_COLORS = {
     "primary": "#567781",  # Blue accent (borders, selected tabs)
-    "input_bg": "#4a555e",  # Input field backgrounds
+    "input_bg": "#434c54",  # Input field backgrounds
     "dropdown_bg": "#4e6172",  # Dropdown backgrounds
     "text": "#ffffff",  # White text
     "text_muted": "#b5b5b5",  # Muted/disabled text
@@ -42,12 +42,12 @@ def get_scaled_stylesheet(theme: str) -> str:
             QComboBox QAbstractItemView {{ background-color: #1d2023; border: 2px solid #76797c; }}
             QPushButton {{ border-radius: {border_radius}px; }}
             QLineEdit {{
-                background-color: #4a555e;
+                background-color: {ONYX_COLORS["input_bg"]};
                 color: white;
                 border-radius: {border_radius}px;
                 min-height: {input_min_height}px;
             }}
-            QTextEdit {{ background-color: #4a555e; color: white; }}
+            QTextEdit {{ background-color: {ONYX_COLORS["input_bg"]}; color: white; }}
             QTabBar::tab {{ background-color: #4f5962; }}
             QComboBox {{ border-radius: {border_radius}px; min-height: {input_min_height}px; }}
             QScrollArea {{ border: 1px solid #919191; }}

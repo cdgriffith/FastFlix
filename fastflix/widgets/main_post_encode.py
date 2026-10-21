@@ -142,7 +142,7 @@ class PostEncodeMixin:
 
             from fastflix.flix import generate_thumbnail_command
             from fastflix.shared import clean_env
-            
+
             thumb_command = generate_thumbnail_command(
                 config=self.app.fastflix.config,
                 source=video.source,

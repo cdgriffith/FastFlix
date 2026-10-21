@@ -228,3 +228,65 @@ def test_build_audio_with_strict_codecs(sample_audio_tracks):
     assert "-strict" in result
     assert "-2" in result
     assert _has_consecutive(result, "-strict", "-2")
+
+
+def test_build_audio_with_conversion_profile(sample_audio_tracks):
+    """Test build_audio emits -profile:X when conversion_profile is set (libfdk_aac only)."""
+    sample_audio_tracks[0].conversion_codec = "libfdk_aac"
+    sample_audio_tracks[0].conversion_profile = "aac_he"
+    sample_audio_tracks[0].conversion_bitrate = "64k"
+
+    result = build_audio(sample_audio_tracks)
+
+    assert _has_consecutive(result, "-c:0", "libfdk_aac")
+    assert _has_consecutive(result, "-profile:0", "aac_he")
+    assert _has_consecutive(result, "-b:0", "64k")
+
+
+def test_build_audio_with_conversion_profile_he_v2(sample_audio_tracks):
+    """Test build_audio emits -profile:X aac_he_v2."""
+    sample_audio_tracks[0].conversion_codec = "libfdk_aac"
+    sample_audio_tracks[0].conversion_profile = "aac_he_v2"
+    sample_audio_tracks[0].conversion_bitrate = "48k"
+    sample_audio_tracks[0].downmix = "stereo"
+
+    result = build_audio(sample_audio_tracks)
+
+    assert _has_consecutive(result, "-c:0", "libfdk_aac")
+    assert _has_consecutive(result, "-profile:0", "aac_he_v2")
+
+
+def test_build_audio_he_v2_falls_back_to_he_for_surround(sample_audio_tracks):
+    """HE-AACv2 needs stereo; a 5.1 output falls back to HE-AAC."""
+    sample_audio_tracks[0].conversion_codec = "libfdk_aac"
+    sample_audio_tracks[0].conversion_profile = "aac_he_v2"
+    sample_audio_tracks[0].conversion_bitrate = "96k"
+    sample_audio_tracks[0].downmix = "No Downmix"
+
+    result = build_audio(sample_audio_tracks)
+
+    assert _has_consecutive(result, "-profile:0", "aac_he")
+
+
+def test_build_audio_native_aac_ignores_he_profile(sample_audio_tracks):
+    """FFmpeg's native aac encoder fails on HE profiles, so they must not be emitted."""
+    for profile in ("aac_he", "aac_he_v2"):
+        sample_audio_tracks[0].conversion_codec = "aac"
+        sample_audio_tracks[0].conversion_profile = profile
+        sample_audio_tracks[0].conversion_bitrate = "128k"
+
+        result = build_audio(sample_audio_tracks)
+
+        assert "-profile:0" not in result
+
+
+def test_build_audio_no_profile_when_none(sample_audio_tracks):
+    """Test build_audio does NOT emit -profile:X when conversion_profile is None."""
+    sample_audio_tracks[0].conversion_codec = "aac"
+    sample_audio_tracks[0].conversion_profile = None
+    sample_audio_tracks[0].conversion_bitrate = "128k"
+
+    result = build_audio(sample_audio_tracks)
+
+    assert _has_consecutive(result, "-c:0", "aac")
+    assert "-profile:0" not in result

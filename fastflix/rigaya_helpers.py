@@ -2,7 +2,8 @@
 from dataclasses import dataclass, field
 from subprocess import run, PIPE
 
-from fastflix.shared import clean_env
+from fastflix.resources import clean_env
+
 
 @dataclass
 class Encoder:
@@ -77,7 +78,9 @@ def run_check_features(executable, is_qsv=False):
         outputs.append(result.stdout.splitlines())
     else:
         for i in range(10):
-            result = run([executable, "--check-features", str(i)], stdout=PIPE, stderr=PIPE, encoding="utf-8", env=clean_env())
+            result = run(
+                [executable, "--check-features", str(i)], stdout=PIPE, stderr=PIPE, encoding="utf-8", env=clean_env()
+            )
             if result.stderr:
                 break
             outputs.append(result.stdout.splitlines())

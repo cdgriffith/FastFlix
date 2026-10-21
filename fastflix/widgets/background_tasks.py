@@ -45,15 +45,24 @@ class ThumbnailCreator(QtCore.QThread):
         self.main.thread_logging_signal.emit(f"DEBUG:{t('Generating thumbnail')}: {_format_command(self.command)}")
         result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, env=clean_env())
         if result.returncode > 0:
-            if "No such filter: 'zscale'" in result.stdout.decode(encoding="utf-8", errors="ignore"):
+            output_text = result.stdout.decode(encoding="utf-8", errors="ignore")
+            if "No such filter: 'zscale'" in output_text:
                 self.main.thread_logging_signal.emit(
                     "ERROR:Could not generate thumbnail because you are using an outdated FFmpeg! "
                     "Please use FFmpeg 4.3+ built against the latest zimg libraries. "
                     "Static builds available at https://ffmpeg.org/download.html "
                 )
-            if "OpenCL mapping not usable" in result.stdout.decode(encoding="utf-8", errors="ignore"):
+            if "OpenCL mapping not usable" in output_text:
                 self.main.thread_logging_signal.emit("ERROR trying to use OpenCL for thumbnail generation")
                 self.main.thumbnail_complete.emit(2)
+                return
+            elif "no path between colorspaces" in output_text:
+                self.main.thread_logging_signal.emit(
+                    "WARNING:HDR tonemapping failed for thumbnail (video color metadata may be incomplete), "
+                    "retrying without HDR conversion"
+                )
+                self.main.thumbnail_complete.emit(3)
+                return
             else:
                 self.main.thread_logging_signal.emit(f"ERROR:{t('Could not generate thumbnail')}: {result.stdout}")
 
@@ -498,7 +507,9 @@ class ExtractHDR10(QtCore.QThread):
         self.ffmpeg_signal.emit("Extracting HDR10+ metadata")
 
         hdr10_parser_version_output = check_output(
-            [str(self.app.fastflix.config.hdr10plus_parser), "--version"], encoding="utf-8"
+            [str(self.app.fastflix.config.hdr10plus_parser), "--version"],
+            encoding="utf-8",
+            env=clean_env(),
         )
         _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
         hdr10_parser_version = version.parse(version_string)

@@ -26,7 +26,8 @@ def build(fastflix: FastFlix):
 
     if settings.tune != "1":
         svtav1_params.append(f"tune={settings.tune}")
-    if settings.film_grain:
+    # Film grain synthesis is not compatible with lossless mode
+    if settings.film_grain and not settings.lossless:
         svtav1_params.append(f"film-grain={settings.film_grain}")
         if settings.film_grain_denoise:
             svtav1_params.append("film-grain-denoise=1")
@@ -91,6 +92,9 @@ def build(fastflix: FastFlix):
             if enable_hdr:
                 svtav1_params.append("enable-hdr=1")
 
+    if settings.lossless:
+        svtav1_params.append("lossless=1")
+
     if svtav1_params:
         beginning.extend(["-svtav1-params", ":".join(svtav1_params)])
 
@@ -103,7 +107,13 @@ def build(fastflix: FastFlix):
     extra = shlex.split(settings.extra) if settings.extra else []
     extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
 
-    if settings.single_pass:
+    if settings.lossless:
+        # Lossless mode — no rate control needed
+        command = beginning + extra + ending
+        return [Command(command=command, name="Single pass lossless", exe="ffmpeg")]
+
+    # SVT-AV1 does not support CRF with multi-pass
+    if settings.single_pass or (not settings.bitrate and settings.qp_mode == "crf"):
         if settings.bitrate:
             command_1 = beginning + ["-b:v", settings.bitrate] + extra + ending
 

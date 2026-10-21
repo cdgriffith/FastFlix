@@ -104,11 +104,13 @@ class VideoSettings(BaseModel):
     resolution_method: str = "auto"
     resolution_custom: str | None = None
     deinterlace: bool = False
+    deinterlace_filter: str = "yadif"
     video_speed: Union[float, int] = 1
+    reverse_video: bool = False
     tone_map: str = "hable"
     denoise: Optional[str] = None
     deblock: Optional[str] = None
-    deblock_size: int = 4
+    deblock_size: int = 16
     color_space: Optional[str] = None
     color_transfer: Optional[str] = None
     color_primaries: Optional[str] = None
@@ -120,6 +122,20 @@ class VideoSettings(BaseModel):
     brightness: Optional[str] = None
     contrast: Optional[str] = None
     saturation: Optional[str] = None
+    gamma: Optional[str] = None
+    hue: Optional[str] = None
+    sharpen: Optional[str] = None
+    vibrance: Optional[str] = None
+    color_temperature: Optional[str] = None
+    curves_preset: Optional[str] = None
+    colorbalance: Optional[str] = None
+    unsharp: Optional[str] = None
+    deflicker: Optional[str] = None
+    pad_aspect: Optional[str] = None
+    pad_color: str = "black"
+    lut3d_path: Optional[str] = None
+    faststart: bool = True
+    gop_length: Optional[int] = None
     copy_data: bool = False
     template_generated_name: str = ""
     video_encoder_settings: Optional[
@@ -172,14 +188,49 @@ class VideoSettings(BaseModel):
     @classmethod
     def contrast_to_str(cls, value):
         if isinstance(value, (int, float)):
-            return float(value)
+            return str(value)
         return value
 
     @field_validator("saturation", mode="before")
     @classmethod
     def saturation_to_str(cls, value):
         if isinstance(value, (int, float)):
-            return float(value)
+            return str(value)
+        return value
+
+    @field_validator("gamma", mode="before")
+    @classmethod
+    def gamma_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
+
+    @field_validator("hue", mode="before")
+    @classmethod
+    def hue_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
+
+    @field_validator("sharpen", mode="before")
+    @classmethod
+    def sharpen_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
+
+    @field_validator("vibrance", mode="before")
+    @classmethod
+    def vibrance_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
+        return value
+
+    @field_validator("color_temperature", mode="before")
+    @classmethod
+    def color_temperature_to_str(cls, value):
+        if isinstance(value, (int, float)):
+            return str(value)
         return value
 
 
@@ -327,20 +378,118 @@ class Video(BaseModel):
             return ""
         return stream.get("sample_aspect_ratio", "1:1")
 
+    @staticmethod
+    def compute_output_dimensions(
+        source_w: int,
+        source_h: int,
+        crop_top: int = 0,
+        crop_bottom: int = 0,
+        crop_left: int = 0,
+        crop_right: int = 0,
+        method: str = "auto",
+        custom: Optional[str] = None,
+    ) -> Tuple[Optional[int], Optional[int]]:
+        """Compute final output width and height after crop + scale + rounding.
+
+        Returns (None, None) if method is "auto" or inputs are invalid.
+        Returns (width, height) with the auto-calculated dimension rounded to the nearest multiple of 8
+        (or of N for a custom w:-N / -N:h value; -1 rounds to the nearest integer).
+        """
+        cropped_w = source_w - crop_left - crop_right
+        cropped_h = source_h - crop_top - crop_bottom
+
+        if cropped_w <= 0 or cropped_h <= 0:
+            return None, None
+
+        if method == "auto" or not custom:
+            return None, None
+
+        def snap(value: float, multiple: int = 8) -> int:
+            """Round to the nearest multiple (half up), never below one multiple."""
+            return max(int((value + multiple / 2) // multiple) * multiple, multiple)
+
+        try:
+            if method == "custom":
+                parts = custom.split(":")
+                if len(parts) != 2:
+                    return None, None
+                w, h = int(parts[0]), int(parts[1])
+                if w > 0 and h > 0:
+                    return w, h
+                if w > 0 and h < 0:
+                    # -1 nearest int, -2 even, -N multiple of N (FFmpeg scale semantics)
+                    return w, snap(cropped_h * w / cropped_w, -h)
+                if h > 0 and w < 0:
+                    return snap(cropped_w * h / cropped_h, -w), h
+                return None, None
+
+            pixels = int(custom)
+            if pixels <= 0:
+                return None, None
+
+            if method == "width":
+                return pixels, snap(cropped_h * pixels / cropped_w)
+
+            if method == "height":
+                return snap(cropped_w * pixels / cropped_h), pixels
+
+            if method == "long edge":
+                if cropped_w >= cropped_h:
+                    return pixels, snap(cropped_h * pixels / cropped_w)
+                return snap(cropped_w * pixels / cropped_h), pixels
+        except (ValueError, ZeroDivisionError):
+            return None, None
+
+        return None, None
+
     @property
-    def scale(self):
-        if self.video_settings.resolution_method == "auto":
+    def cropped_width(self) -> int:
+        if not self.video_settings.crop:
+            return self.width
+        return self.width - self.video_settings.crop.left - self.video_settings.crop.right
+
+    @property
+    def cropped_height(self) -> int:
+        if not self.video_settings.crop:
+            return self.height
+        return self.height - self.video_settings.crop.top - self.video_settings.crop.bottom
+
+    @property
+    def output_width(self) -> Optional[int]:
+        crop = self.video_settings.crop
+        w, _ = self.compute_output_dimensions(
+            source_w=self.width,
+            source_h=self.height,
+            crop_top=crop.top if crop else 0,
+            crop_bottom=crop.bottom if crop else 0,
+            crop_left=crop.left if crop else 0,
+            crop_right=crop.right if crop else 0,
+            method=self.video_settings.resolution_method,
+            custom=self.video_settings.resolution_custom,
+        )
+        return w
+
+    @property
+    def output_height(self) -> Optional[int]:
+        crop = self.video_settings.crop
+        _, h = self.compute_output_dimensions(
+            source_w=self.width,
+            source_h=self.height,
+            crop_top=crop.top if crop else 0,
+            crop_bottom=crop.bottom if crop else 0,
+            crop_left=crop.left if crop else 0,
+            crop_right=crop.right if crop else 0,
+            method=self.video_settings.resolution_method,
+            custom=self.video_settings.resolution_custom,
+        )
+        return h
+
+    @property
+    def scale(self) -> Optional[str]:
+        ow = self.output_width
+        oh = self.output_height
+        if ow is None or oh is None:
             return None
-        if self.video_settings.resolution_method == "custom":
-            return self.video_settings.resolution_custom
-        if self.video_settings.resolution_method == "long edge":
-            if self.width > self.height:
-                return f"{self.video_settings.resolution_custom}:-8"
-            else:
-                return f"-8:{self.video_settings.resolution_custom}"
-        if self.video_settings.resolution_method == "width":
-            return f"{self.video_settings.resolution_custom}:-8"
-        else:
-            return f"-8:{self.video_settings.resolution_custom}"
+        return f"{ow}:{oh}"
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

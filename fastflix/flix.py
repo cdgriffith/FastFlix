@@ -5,7 +5,7 @@ import os
 import re
 from pathlib import Path
 from subprocess import PIPE, CompletedProcess, Popen, TimeoutExpired, run, check_output
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 from packaging import version
 import shlex
 
@@ -415,10 +415,49 @@ def generate_thumbnail_command(
         "unofficial",
         "-frames:v",
         "1",
+        "-update",
+        "1",
         clean_file_string(output),
     ]
 
     return command
+
+
+def parse_cropdetect_output(stderr: str, video_width: int, video_height: int) -> Optional[List[int]]:
+    """Parse FFmpeg cropdetect output and return crop margins [right, bottom, left, top].
+
+    Collects all detected crop rectangles as (w, h, x, y) tuples, discards invalid ones (cropdetect reports
+    negative sizes on fully black frames), and returns the union of the remaining content rectangles. Each edge is
+    therefore tracked independently, so mixed letterbox/pillarbox samples never over-crop.
+    Returns None if no valid detections found.
+    """
+    detections = []
+    for line in stderr.splitlines():
+        if line.startswith("[Parsed_cropdetect"):
+            try:
+                w, h, x, y = [int(v) for v in line.rsplit("=")[1].split(":")]
+            except (ValueError, IndexError):
+                continue
+            if w <= 0 or h <= 0 or x < 0 or y < 0:
+                continue
+            detections.append((w, h, x, y))
+
+    if not detections:
+        return None
+
+    left = min(x for _, _, x, _ in detections)
+    top = min(y for _, _, _, y in detections)
+    content_right = max(x + w for w, _, x, _ in detections)
+    content_bottom = max(y + h for _, h, _, y in detections)
+
+    x, y = left, top
+    right = video_width - content_right
+    bottom = video_height - content_bottom
+
+    if right < 0 or bottom < 0:
+        return None
+
+    return [right, bottom, x, y]
 
 
 def get_auto_crop(
@@ -452,24 +491,12 @@ def get_auto_crop(
         ]
     )
 
-    width, height, x_crop, y_crop = None, None, None, None
     if not output.stderr:
-        return 0, 0, 0, 0
+        return
 
-    for line in output.stderr.splitlines():
-        if line.startswith("[Parsed_cropdetect"):
-            w, h, x, y = [int(x) for x in line.rsplit("=")[1].split(":")]
-            if (not x_crop or (x_crop and x > x_crop)) and (not width or (width and w < width)):
-                width = w
-                x_crop = x
-            if (not height or (height and h < height)) and (not y_crop or (y_crop and y > y_crop)):
-                height = h
-                y_crop = y
-
-    if None in (width, height, x_crop, y_crop):
-        return 0, 0, 0, 0
-
-    result_list.append([video_width - width - x_crop, video_height - height - y_crop, x_crop, y_crop])
+    crop_margins = parse_cropdetect_output(output.stderr, video_width, video_height)
+    if crop_margins is not None:
+        result_list.append(crop_margins)
 
 
 def detect_interlaced(app: FastFlixApp, config: Config, source: Path, **_):
@@ -671,7 +698,9 @@ def get_hdr10_parser_version(config: Config) -> version:
     global HDR10_parser_version
     if HDR10_parser_version:
         return HDR10_parser_version
-    HDR10_parser_version_output = check_output([str(config.hdr10plus_parser), "--version"], encoding="utf-8")
+    HDR10_parser_version_output = check_output(
+        [str(config.hdr10plus_parser), "--version"], encoding="utf-8", env=clean_env()
+    )
 
     _, version_string = HDR10_parser_version_output.rsplit(sep=" ", maxsplit=1)
     HDR10_parser_version = version.parse(version_string)
@@ -749,6 +778,7 @@ def _detect_hdr10_plus_tool(app: FastFlixApp, config: Config, stream) -> bool:
         stderr=PIPE,
         stdin=process.stdout,
         encoding="utf-8",
+        env=clean_env(),
     )
 
     try:

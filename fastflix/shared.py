@@ -16,6 +16,11 @@ import reusables
 from pathvalidate import sanitize_filepath
 
 
+from PySide6 import QtCore, QtGui, QtWidgets
+
+from fastflix.language import t
+from fastflix.resources import clean_env, get_bool_env  # noqa: F401 (clean_env re-exported)
+
 try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
     # noinspection PyUnresolvedReferences
@@ -25,21 +30,11 @@ except AttributeError:
     base_path = os.path.abspath(".")
     pyinstaller = False
 
-def clean_env():
-    """Return a copy of os.environ with PyInstaller's LD_LIBRARY_PATH removed.
+# Detect if running from the Go launcher (embeddable Python distribution)
+go_launcher = os.environ.get("FASTFLIX_BUNDLED") == "1"
 
-    PyInstaller sets LD_LIBRARY_PATH to its bundled lib dir, which causes
-    system tools like ffmpeg to load incompatible shared libraries.
-    """
-    env = os.environ.copy()
-    if pyinstaller:
-        env.pop("LD_LIBRARY_PATH", None)
-    return env
-
-from PySide6 import QtGui, QtWidgets
-
-from fastflix.language import t
-from fastflix.resources import get_bool_env
+# True when running as any kind of packaged distribution (PyInstaller or Go launcher)
+bundled_mode = pyinstaller or go_launcher
 
 DEVMODE = get_bool_env("DEVMODE")
 
@@ -164,15 +159,18 @@ def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_acti
     dialog._button_clicked = None
 
     layout = QtWidgets.QVBoxLayout()
+    layout.setContentsMargins(20, 15, 20, 15)
+    layout.setSpacing(15)
     label = QtWidgets.QLabel(msg)
     label.setWordWrap(True)
+    label.setAlignment(QtCore.Qt.AlignCenter)
     layout.addWidget(label)
 
     button_layout = QtWidgets.QHBoxLayout()
 
     no_button = QtWidgets.QPushButton(no_text)
     no_button.setMinimumHeight(30)
-    no_button.setStyleSheet("QPushButton { background-color: #F44336; color: white; padding: 6px 20px; }")
+    no_button.setStyleSheet("QPushButton { background-color: #555555; color: white; padding: 6px 20px; }")
 
     def on_no():
         dialog._button_clicked = False
@@ -182,7 +180,7 @@ def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_acti
 
     yes_button = QtWidgets.QPushButton(yes_text)
     yes_button.setMinimumHeight(30)
-    yes_button.setStyleSheet("QPushButton { background-color: #4CAF50; color: white; padding: 6px 20px; }")
+    yes_button.setStyleSheet("QPushButton { background-color: #4a9eed; color: white; padding: 6px 20px; }")
 
     def on_yes():
         dialog._button_clicked = True
@@ -196,6 +194,9 @@ def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_acti
     layout.addLayout(button_layout)
 
     dialog.setLayout(layout)
+    dialog.setWindowIcon(QtGui.QIcon(my_data))
+    dialog.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+    dialog.adjustSize()
     dialog.exec()
 
     if dialog._button_clicked is True:
@@ -336,7 +337,7 @@ def open_folder(path):
         elif sys.platform == "darwin":
             run(["open", path])
         else:
-            run(["xdg-open", path])
+            run(["xdg-open", path], env=clean_env())
     except FileNotFoundError:
         logger.error(f"Do not know which command to use to open: {path}")
 
