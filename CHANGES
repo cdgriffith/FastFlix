@@ -59,6 +59,8 @@
 * Fixing Source Details tab leaving the HDR10 button visible after clearing the video, rendering tag text as HTML, and silently ignoring save errors
 * Fixing missing word wrap in yes/no dialogs, queue titles not eliding, and disabled toggle switches not looking disabled
 * Fixing missing and English-only translations for new strings
+* Adding SVT-AV1 tune options 3 (IQ), 4 (MS-SSIM) and 5 (VMAF) (IQ and MS-SSIM for AVIF), Variance Boost (strength and octile), temporal filtering, startup mini-gop size and quantization matrix (min/max) options to the SVT-AV1 encoder
+
 
 ## Version 6.2.1
 

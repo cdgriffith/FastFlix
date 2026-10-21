@@ -35,6 +35,22 @@ def build(fastflix: FastFlix):
         svtav1_params.append(f"sharpness={settings.sharpness}")
     if settings.fast_decode != "0":
         svtav1_params.append(f"fast-decode={settings.fast_decode}")
+    if settings.enable_variance_boost:
+        svtav1_params.append("enable-variance-boost=1")
+        if settings.variance_boost_strength != "2":
+            svtav1_params.append(f"variance-boost-strength={settings.variance_boost_strength}")
+        if settings.variance_octile != "5":
+            svtav1_params.append(f"variance-octile={settings.variance_octile}")
+    if settings.enable_tf != "1":
+        svtav1_params.append(f"enable-tf={settings.enable_tf}")
+    if settings.startup_mg_size != "0":
+        svtav1_params.append(f"startup-mg-size={settings.startup_mg_size}")
+    if settings.enable_qm:
+        svtav1_params.append("enable-qm=1")
+        if settings.qm_min != "8":
+            svtav1_params.append(f"qm-min={settings.qm_min}")
+        if settings.qm_max != "15":
+            svtav1_params.append(f"qm-max={settings.qm_max}")
 
     svtav1_params.extend(
         [

@@ -92,13 +92,21 @@ class SVT_AV1(SettingPanel):
         grid.addLayout(self.init_qp_or_crf(), 7, 0, 1, 2)
         grid.addLayout(self.init_sharpness(), 8, 0, 1, 2)
         grid.addLayout(self.init_fast_decode(), 9, 0, 1, 2)
+        grid.addLayout(self.init_enable_tf(), 10, 0, 1, 2)
+        grid.addLayout(self.init_startup_mg_size(), 11, 0, 1, 2)
+        grid.addLayout(self.init_variance_boost(), 9, 2, 1, 4)
+        grid.addLayout(self.init_variance_strength(), 10, 2, 1, 2)
+        grid.addLayout(self.init_variance_octile(), 10, 4, 1, 2)
+        grid.addLayout(self.init_enable_qm(), 11, 2, 1, 2)
+        grid.addLayout(self.init_qm_min(), 12, 2, 1, 2)
+        grid.addLayout(self.init_qm_max(), 12, 4, 1, 2)
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         grid.addLayout(self.init_film_grain(), 5, 2, 1, 4)
         grid.addLayout(self.init_film_grain_denoise(), 6, 2, 1, 4)
         grid.addLayout(self.init_svtav1_params(), 7, 2, 1, 4)
         grid.addLayout(self.init_lossless(), 8, 2, 1, 4)
 
-        grid.setRowStretch(12, 1)
+        grid.setRowStretch(13, 1)
         custom_layout = self._add_custom()
         guide_label = QtWidgets.QLabel(
             link(
@@ -166,8 +174,18 @@ class SVT_AV1(SettingPanel):
         return self._add_combo_box(
             label="Tune",
             widget_name="tune",
-            options=["0 - VQ (Psychovisual)", "1 - PSNR", "2 - SSIM"],
-            tooltip="Optimize encoding for different quality metrics",
+            options=[
+                "0 - VQ (Psychovisual)",
+                "1 - PSNR",
+                "2 - SSIM",
+                "3 - IQ (still image)",
+                "4 - MS-SSIM",
+                "5 - VMAF (video only)",
+            ],
+            tooltip=(
+                "Optimize encoding for different quality metrics.\n"
+                "Tunes 3-5 require a recent SVT-AV1 build (3.0+); older builds will fail."
+            ),
             opt="tune",
         )
 
@@ -187,6 +205,76 @@ class SVT_AV1(SettingPanel):
             options=["0 - Disabled", "1 - Level 1", "2 - Level 2"],
             tooltip="Tune settings for faster decoding at the cost of quality",
             opt="fast_decode",
+        )
+
+    def init_enable_tf(self):
+        return self._add_combo_box(
+            label="Temporal Filtering",
+            widget_name="enable_tf",
+            options=["0 - Off", "1 - On", "2 - Adaptive"],
+            tooltip="Enable ALT-REF (temporally filtered) frames (2 = adaptive requires a recent SVT-AV1 build)",
+            opt="enable_tf",
+        )
+
+    def init_startup_mg_size(self):
+        return self._add_combo_box(
+            label="Startup Mini-GOP",
+            widget_name="startup_mg_size",
+            options=["0 - Off", "2 - 3 temporal layers", "3 - 4 temporal layers", "4 - 5 temporal layers"],
+            tooltip="Alternate mini-gop configuration for the first mini-gop after a key frame",
+            opt="startup_mg_size",
+        )
+
+    def init_variance_boost(self):
+        return self._add_check_box(
+            label="Variance Boost",
+            widget_name="enable_variance_boost",
+            tooltip="Enable Variance Boost, improves quality in low-contrast areas (requires a recent SVT-AV1 build)",
+            opt="enable_variance_boost",
+        )
+
+    def init_variance_strength(self):
+        return self._add_combo_box(
+            label="Boost Strength",
+            widget_name="variance_boost_strength",
+            options=["1 - Mild", "2 - Gentle", "3 - Medium", "4 - Aggressive"],
+            tooltip="Variance curve strength for Variance Boost",
+            opt="variance_boost_strength",
+        )
+
+    def init_variance_octile(self):
+        return self._add_combo_box(
+            label="Boost Octile",
+            widget_name="variance_octile",
+            options=[str(x) for x in range(1, 9)],
+            tooltip="Variance algorithm 8x8 block selectivity (1=first octile, 4=median, 5=default, 8=maximum)",
+            opt="variance_octile",
+        )
+
+    def init_enable_qm(self):
+        return self._add_check_box(
+            label="Quantization Matrices",
+            widget_name="enable_qm",
+            tooltip="Enable quantization matrices",
+            opt="enable_qm",
+        )
+
+    def init_qm_min(self):
+        return self._add_combo_box(
+            label="QM Min",
+            widget_name="qm_min",
+            options=[str(x) for x in range(0, 16)],
+            tooltip="Minimum quantization matrix flatness (0-15, default 8)",
+            opt="qm_min",
+        )
+
+    def init_qm_max(self):
+        return self._add_combo_box(
+            label="QM Max",
+            widget_name="qm_max",
+            options=[str(x) for x in range(0, 16)],
+            tooltip="Maximum quantization matrix flatness (0-15, default 15)",
+            opt="qm_max",
         )
 
     def init_film_grain(self):
@@ -326,7 +414,7 @@ class SVT_AV1(SettingPanel):
         film_grain_text = self.widgets.film_grain.currentText()
         if film_grain_text == "Custom":
             try:
-                film_grain = int(self.widgets.custom_film_grain.text())
+                film_grain = max(0, min(50, int(self.widgets.custom_film_grain.text())))
             except (ValueError, TypeError):
                 film_grain = 0
         else:
@@ -349,6 +437,14 @@ class SVT_AV1(SettingPanel):
             film_grain_denoise=self.widgets.film_grain_denoise.isChecked(),
             sharpness=self.widgets.sharpness.currentText(),
             fast_decode=self.widgets.fast_decode.currentText().split(" ")[0],
+            enable_variance_boost=self.widgets.enable_variance_boost.isChecked(),
+            variance_boost_strength=self.widgets.variance_boost_strength.currentText().split(" ")[0],
+            variance_octile=self.widgets.variance_octile.currentText(),
+            enable_tf=self.widgets.enable_tf.currentText().split(" ")[0],
+            startup_mg_size=self.widgets.startup_mg_size.currentText().split(" ")[0],
+            enable_qm=self.widgets.enable_qm.isChecked(),
+            qm_min=self.widgets.qm_min.currentText(),
+            qm_max=self.widgets.qm_max.currentText(),
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
             svtav1_params=svtav1_params_text.split(":") if svtav1_params_text else [],
