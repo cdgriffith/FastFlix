@@ -191,3 +191,16 @@ def test_call_with_timeout():
     release.set()
     with pytest.raises(ValueError):
         call_with_timeout(lambda: (_ for _ in ()).throw(ValueError("x")), 1)
+
+
+def test_follow_progress_sleeps_when_idle_and_emits_frames():
+    import io
+
+    from fastflix.widgets.background_tasks import follow_progress
+
+    f = io.StringIO("frame=1\nother\nframe=2\n")
+    running = iter([True] * 6 + [False])
+    emitted, sleeps = [], []
+    follow_progress(lambda: next(running), f, emitted.append, sleep=sleeps.append)
+    assert emitted == ["frame=1", "frame=2"]
+    assert len(sleeps) >= 1

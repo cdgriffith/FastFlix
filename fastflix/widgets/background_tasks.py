@@ -3,6 +3,7 @@
 import importlib.util
 import logging
 import os
+import time
 from pathlib import Path
 from subprocess import PIPE, STDOUT, Popen, run, check_output
 from packaging import version
@@ -480,6 +481,16 @@ class AudioNoramlize(QtCore.QThread):
             self.signal.emit("Failed")
 
 
+def follow_progress(is_running, f, emit, sleep=time.sleep, interval=0.1):
+    """Tail ffmpeg progress lines from f, sleeping when no new data is available."""
+    while is_running():
+        if line := f.readline().rstrip():
+            if line.startswith("frame"):
+                emit(line)
+        else:
+            sleep(interval)
+
+
 class ExtractHDR10(QtCore.QThread):
     def __init__(self, app: FastFlixApp, main, signal, ffmpeg_signal):
         super().__init__(main)
@@ -539,13 +550,15 @@ class ExtractHDR10(QtCore.QThread):
             f"Running command: {' '.join(ffmpeg_command)} | {' '.join(hdr10_parser_command)}"
         )
 
-        process = Popen(
-            ffmpeg_command,
-            stdout=PIPE,
-            stderr=open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "wb"),
-            # stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
-            env=clean_env(),
-        )
+        progress_file = self.app.fastflix.current_video.work_path / "hdr10extract_out.txt"
+        with open(progress_file, "wb") as ffmpeg_stderr:
+            process = Popen(
+                ffmpeg_command,
+                stdout=PIPE,
+                stderr=ffmpeg_stderr,
+                # stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
+                env=clean_env(),
+            )
 
         process_two = Popen(
             hdr10_parser_command,
@@ -557,13 +570,8 @@ class ExtractHDR10(QtCore.QThread):
             env=clean_env(),
         )
 
-        with open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "r", encoding="utf-8") as f:
-            while True:
-                if process.poll() is not None or process_two.poll() is not None:
-                    break
-                if line := f.readline().rstrip():
-                    if line.startswith("frame"):
-                        self.ffmpeg_signal.emit(line)
+        with open(progress_file, "r", encoding="utf-8") as f:
+            follow_progress(lambda: process.poll() is None and process_two.poll() is None, f, self.ffmpeg_signal.emit)
 
         stdout, stderr = process_two.communicate()
         self.main.thread_logging_signal.emit(f"DEBUG: HDR10+ Extract: {stdout}")
