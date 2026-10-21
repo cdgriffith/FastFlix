@@ -45,6 +45,8 @@ class DataTrackWidget(QtWidgets.QTabWidget):
             type_badge = t("Data")
 
         self.incompatible = False
+        # User's selection prior to being auto-disabled for container incompatibility
+        self._enabled_before_incompatible = enabled
 
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{track.index}:{track.outdex}" if enabled else "❌"),
@@ -133,6 +135,7 @@ class DataTrackWidget(QtWidgets.QTabWidget):
         if incompatible and not self.incompatible:
             # Became incompatible — disable and dim
             self.incompatible = True
+            self._enabled_before_incompatible = bool(track.enabled)
             self.widgets.enable_check.setChecked(False)
             self.widgets.enable_check.setEnabled(False)
             self.widgets.enable_check.setToolTip(reason)
@@ -147,6 +150,11 @@ class DataTrackWidget(QtWidgets.QTabWidget):
             self.widgets.enable_check.setToolTip("")
             self.widgets.warning_label.hide()
             self.setStyleSheet("")
+            # Restore what the user had selected before the auto-disable
+            restore = self._enabled_before_incompatible
+            self.widgets.enable_check.setChecked(restore)
+            track.enabled = restore
+            self.widgets.track_number.setText(f"{track.index}:{track.outdex}" if restore else "❌")
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()

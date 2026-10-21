@@ -372,3 +372,57 @@ class TestGenerateEndingWithDataTracks:
         )
         assert "-c:d" in result
         assert "mimetype=" not in " ".join(result)
+
+
+class TestDataTrackWidgetCompatibilityRestore:
+    """The user's Preserve selection must survive an incompatible -> compatible container switch."""
+
+    @staticmethod
+    def _make_widget(extension, user_enabled):
+        from unittest import mock
+
+        from PySide6 import QtWidgets
+
+        from fastflix.widgets.panels.data_panel import DataTrackWidget
+
+        QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+
+        track = DataTrack(index=3, outdex=1, codec_type="data", codec_name="bin_data", enabled=user_enabled)
+        app = mock.MagicMock()
+        app.fastflix.config.theme = "onyx"
+        app.fastflix.current_video.data_tracks = [track]
+        app.fastflix.current_video.video_settings.video_encoder_settings.name = "x265"
+
+        parent = QtWidgets.QWidget()
+        parent.app = app
+        parent.main = mock.MagicMock()
+        parent.main.resolve_output_extension.return_value = extension
+        parent.reorder = mock.MagicMock()
+        widget = DataTrackWidget(app, parent, 0, enabled=user_enabled)
+        return widget, track, parent
+
+    def test_enabled_selection_restored(self):
+        widget, track, parent = self._make_widget(".mp4", True)
+        assert track.enabled is True
+
+        parent.main.resolve_output_extension.return_value = ".mkv"  # data streams unsupported in MKV
+        widget._check_compatibility()
+        assert widget.incompatible is True
+        assert track.enabled is False
+        assert not widget.widgets.enable_check.isEnabled()
+
+        parent.main.resolve_output_extension.return_value = ".mp4"
+        widget._check_compatibility()
+        assert widget.incompatible is False
+        assert widget.widgets.enable_check.isEnabled()
+        assert track.enabled is True
+        assert widget.widgets.enable_check.isChecked()
+
+    def test_disabled_selection_stays_disabled(self):
+        widget, track, parent = self._make_widget(".mp4", False)
+        parent.main.resolve_output_extension.return_value = ".mkv"
+        widget._check_compatibility()
+        parent.main.resolve_output_extension.return_value = ".mp4"
+        widget._check_compatibility()
+        assert track.enabled is False
+        assert not widget.widgets.enable_check.isChecked()

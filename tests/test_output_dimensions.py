@@ -32,7 +32,7 @@ class TestComputeOutputDimensions:
     def test_width_scaling_4_3(self):
         w, h = Video.compute_output_dimensions(1440, 1080, method="width", custom="720")
         assert w == 720
-        assert h == 536  # 1080*720/1440=540, rounded to nearest 8 = 536
+        assert h == 544  # 1080*720/1440=540, rounded to nearest multiple of 8 (half up) = 544
         assert h % 8 == 0
 
     def test_width_scaling_ultrawide(self):
@@ -66,7 +66,7 @@ class TestComputeOutputDimensions:
     def test_long_edge_square(self):
         w, h = Video.compute_output_dimensions(1000, 1000, method="long edge", custom="500")
         assert w == 500
-        assert h == 496  # 500 rounded down to nearest multiple of 8
+        assert h == 504  # 500 rounded to nearest multiple of 8
 
     # Custom scaling
     def test_custom_explicit(self):
@@ -79,6 +79,42 @@ class TestComputeOutputDimensions:
 
     def test_custom_zero_dimension(self):
         assert Video.compute_output_dimensions(1920, 1080, method="custom", custom="0:720") == (None, None)
+
+    # Auto dimension with -1/-2/-N (FFmpeg scale semantics)
+    def test_custom_auto_height_even(self):
+        assert Video.compute_output_dimensions(1920, 1080, method="custom", custom="1280:-2") == (1280, 720)
+
+    def test_custom_auto_width_even(self):
+        assert Video.compute_output_dimensions(1920, 1080, method="custom", custom="-2:720") == (1280, 720)
+
+    def test_custom_auto_nearest_integer(self):
+        # 1000x333 -> width 500 -> 166.5 -> 167 (half up)
+        assert Video.compute_output_dimensions(1000, 333, method="custom", custom="500:-1") == (500, 167)
+
+    def test_custom_auto_even_rounds_to_even(self):
+        # 1000x333 -> width 500 -> 166.5 -> nearest even = 166 or 168 (half up -> 168)
+        w, h = Video.compute_output_dimensions(1000, 333, method="custom", custom="500:-2")
+        assert w == 500 and h % 2 == 0
+
+    def test_custom_auto_multiple_of_n(self):
+        w, h = Video.compute_output_dimensions(1920, 800, method="custom", custom="-8:480")
+        assert h == 480
+        assert w % 8 == 0
+        assert w == 1152  # 1920*480/800
+
+    def test_custom_auto_uses_cropped_aspect(self):
+        # Crop to 1440x1080 then scale height 540 -> width 720
+        w, h = Video.compute_output_dimensions(
+            1920, 1080, crop_left=240, crop_right=240, method="custom", custom="-2:540"
+        )
+        assert (w, h) == (720, 540)
+
+    def test_custom_both_negative_invalid(self):
+        assert Video.compute_output_dimensions(1920, 1080, method="custom", custom="-1:-1") == (None, None)
+
+    def test_custom_auto_minus_one_via_video_scale(self):
+        v = TestVideoOutputProperties.make_video(method="custom", custom="-1:720")
+        assert v.scale == "1280:720"
 
     # Rounding
     def test_rounding_to_multiple_of_8(self):
@@ -124,7 +160,7 @@ class TestComputeOutputDimensions:
         )
         assert w == 720
         # 1080*720/1440 = 540
-        assert h == 536  # rounded to multiple of 8
+        assert h == 544  # 540 rounded to nearest multiple of 8
         assert h % 8 == 0
 
     def test_crop_letterbox_ultrawide(self):
@@ -201,7 +237,7 @@ class TestVideoOutputProperties:
     def test_output_width_with_scale(self):
         v = self.make_video(method="width", custom="960")
         assert v.output_width == 960
-        assert v.output_height == 536  # 1080*960/1920 = 540 -> round to 536
+        assert v.output_height == 544  # 1080*960/1920 = 540 -> nearest multiple of 8
         assert v.output_height % 8 == 0
 
     def test_scale_property_auto(self):
@@ -218,5 +254,5 @@ class TestVideoOutputProperties:
             method="width",
             custom="720",
         )
-        # Cropped: 1440x1080, scale width to 720 -> height = 1080*720/1440=540 -> round to 536
-        assert v.scale == "720:536"
+        # Cropped: 1440x1080, scale width to 720 -> height = 1080*720/1440=540 -> nearest 544
+        assert v.scale == "720:544"

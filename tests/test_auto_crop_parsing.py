@@ -118,3 +118,33 @@ class TestParseCropdetectOutput:
         result = parse_cropdetect_output(stderr, 3840, 2160)
         # Most conservative: 3840*1602 > 3840*1600
         assert result == [0, 279, 0, 279]
+
+
+# Real FFmpeg 8 stderr: a fully black 320x240 frame (cropdetect reports negative sizes), followed by a
+# 320x160 picture letterboxed with 40px bars while the detected width ramps up from 302.
+BLACK_FRAME_STDERR = """\
+[Parsed_cropdetect_1 @ 00000297c31cf4c0] x1:319 x2:0 y1:239 y2:0 w:-318 h:-238 x:320 y:240 pts:80000 t:0.080000 limit:0.094118 crop=-318:-238:320:240
+[Parsed_cropdetect_1 @ 00000297c31cf4c0] x1:319 x2:0 y1:239 y2:0 w:-318 h:-238 x:320 y:240 pts:120000 t:0.120000 limit:0.094118 crop=-318:-238:320:240
+[Parsed_cropdetect_1 @ 00000297c31cf4c0] x1:18 x2:319 y1:40 y2:199 w:302 h:160 x:18 y:40 pts:200000 t:0.200000 limit:0.094118 crop=302:160:18:40
+[Parsed_cropdetect_1 @ 00000297c31cf4c0] x1:6 x2:319 y1:40 y2:199 w:314 h:160 x:6 y:40 pts:400000 t:0.400000 limit:0.094118 crop=314:160:6:40
+[Parsed_cropdetect_1 @ 00000297c31cf4c0] x1:0 x2:319 y1:40 y2:199 w:320 h:160 x:0 y:40 pts:520000 t:0.520000 limit:0.094118 crop=320:160:0:40
+"""
+
+
+class TestCropdetectBlackFramesAndUnion:
+    def test_negative_detections_are_ignored(self):
+        assert parse_cropdetect_output(BLACK_FRAME_STDERR, 320, 240) == [0, 40, 0, 40]
+
+    def test_only_black_frames_returns_none(self):
+        stderr = "\n".join(line for line in BLACK_FRAME_STDERR.splitlines() if "w:-318" in line)
+        assert parse_cropdetect_output(stderr, 320, 240) is None
+
+    def test_union_of_mixed_letterbox_and_pillarbox(self):
+        # Sample A has only top/bottom bars, sample B only left/right bars: nothing may be cropped
+        stderr = make_stderr((1920, 800, 0, 140), (1440, 1080, 240, 0))
+        assert parse_cropdetect_output(stderr, 1920, 1080) == [0, 0, 0, 0]
+
+    def test_union_tracks_each_edge_independently(self):
+        stderr = make_stderr((1800, 900, 60, 100), (1780, 920, 100, 80))
+        # left 60, top 80, content right = max(1860, 1880) = 1880, bottom = max(1000, 1000) = 1000
+        assert parse_cropdetect_output(stderr, 1920, 1080) == [40, 80, 60, 80]

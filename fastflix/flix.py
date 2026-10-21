@@ -423,8 +423,9 @@ def generate_thumbnail_command(
 def parse_cropdetect_output(stderr: str, video_width: int, video_height: int) -> Optional[List[int]]:
     """Parse FFmpeg cropdetect output and return crop margins [right, bottom, left, top].
 
-    Collects all detected crop rectangles as complete (w, h, x, y) tuples
-    and selects the most conservative crop (largest detected content area).
+    Collects all detected crop rectangles as (w, h, x, y) tuples, discards invalid ones (cropdetect reports
+    negative sizes on fully black frames), and returns the union of the remaining content rectangles. Each edge is
+    therefore tracked independently, so mixed letterbox/pillarbox samples never over-crop.
     Returns None if no valid detections found.
     """
     detections = []
@@ -432,21 +433,25 @@ def parse_cropdetect_output(stderr: str, video_width: int, video_height: int) ->
         if line.startswith("[Parsed_cropdetect"):
             try:
                 w, h, x, y = [int(v) for v in line.rsplit("=")[1].split(":")]
-                detections.append((w, h, x, y))
             except (ValueError, IndexError):
                 continue
+            if w <= 0 or h <= 0 or x < 0 or y < 0:
+                continue
+            detections.append((w, h, x, y))
 
     if not detections:
         return None
 
-    # Select the detection with the largest content area (most conservative crop)
-    best = max(detections, key=lambda d: d[0] * d[1])
-    w, h, x, y = best
+    left = min(x for _, _, x, _ in detections)
+    top = min(y for _, _, _, y in detections)
+    content_right = max(x + w for w, _, x, _ in detections)
+    content_bottom = max(y + h for _, h, _, y in detections)
 
-    right = video_width - w - x
-    bottom = video_height - h - y
+    x, y = left, top
+    right = video_width - content_right
+    bottom = video_height - content_bottom
 
-    if right < 0 or bottom < 0 or x < 0 or y < 0:
+    if right < 0 or bottom < 0:
         return None
 
     return [right, bottom, x, y]

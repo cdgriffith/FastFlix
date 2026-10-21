@@ -64,6 +64,8 @@ class ToggleSwitch(QtWidgets.QCheckBox):
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
+        if not self.isEnabled():
+            painter.setOpacity(0.4)
 
         # Calculate track position (vertically centered)
         track_y = (self.height() - self._track_height) // 2

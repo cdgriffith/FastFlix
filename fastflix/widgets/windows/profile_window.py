@@ -130,11 +130,25 @@ class AudioProfile(QtWidgets.QTabWidget):
         self.bitrate.setDisabled(True)
         self.downmix.setDisabled(True)
 
+        # Values passed to FFmpeg -profile:a (HE profiles are only supported by libfdk_aac)
+        self.aac_profile_values = [None, "aac_he", "aac_he_v2"]
+        self.aac_profile = QtWidgets.QComboBox()
+        self.aac_profile.addItems(
+            [
+                t("AAC-LC (default)"),
+                f"HE-AAC ({t('libfdk_aac only')})",
+                f"HE-AAC v2 ({t('libfdk_aac only')})",
+            ]
+        )
+        self.aac_profile.setToolTip(t("HE-AAC profiles require the libfdk_aac encoder"))
+        self.aac_profile.setDisabled(True)
+
         self.grid.addWidget(QtWidgets.QLabel(t("Conversion")), 1, 0)
         self.grid.addWidget(self.convert_to, 1, 1)
         self.grid.addWidget(QtWidgets.QLabel(t("Bitrate")), 1, 2)
         self.grid.addWidget(self.bitrate, 1, 3)
         self.grid.addWidget(self.downmix, 1, 4)
+        self.grid.addWidget(self.aac_profile, 1, 5)
 
         self.grid.addWidget(QtWidgets.QLabel(t("Title")), 2, 0)
         self.grid.addWidget(self.title_mode, 2, 1)
@@ -169,6 +183,11 @@ class AudioProfile(QtWidgets.QTabWidget):
         else:
             self.bitrate.setEnabled(True)
             self.downmix.setEnabled(True)
+        if self.convert_to.currentIndex() > 0 and "aac" in self.convert_to.currentText().lower():
+            self.aac_profile.setEnabled(True)
+        else:
+            self.aac_profile.setDisabled(True)
+            self.aac_profile.setCurrentIndex(0)
 
     def update_title_mode_availability(self):
         """Add/remove the Custom Title option based on match type."""
@@ -236,6 +255,9 @@ class AudioProfile(QtWidgets.QTabWidget):
             match_item=match_item_enum,
             match_input=match_input_value,
             conversion=self.convert_to.currentText() if self.convert_to.currentIndex() > 0 else None,
+            conversion_profile=self.aac_profile_values[self.aac_profile.currentIndex()]
+            if self.aac_profile.isEnabled()
+            else None,
             bitrate=self.bitrate.text(),
             downmix=self.downmix.currentText() if self.downmix.currentIndex() > 0 else None,
             title_mode=selected_title_mode,
@@ -397,11 +419,6 @@ class SubtitleSelect(QtWidgets.QWidget):
     def get_forced_disposition(self) -> str | None:
         idx = self.forced_disposition.currentIndex()
         return [None, "clear", "first"][idx]
-
-    def set_disposition_from_profile(self, default_disp: str | None, forced_disp: str | None):
-        mapping = {None: 0, "clear": 1, "first": 2}
-        self.default_disposition.setCurrentIndex(mapping.get(default_disp, 0))
-        self.forced_disposition.setCurrentIndex(mapping.get(forced_disp, 0))
 
 
 class DataSelect(QtWidgets.QWidget):

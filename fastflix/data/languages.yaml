@@ -1723,10 +1723,6 @@ Download JSON:
   ukr: Завантажити JSON
   kor: JSON 다운로드
   ron: Descărcați JSON
-Download HDR10:
-  eng: Download HDR10
-Text Files:
-  eng: Text Files
 Download Cancelled:
   deu: Download abgebrochen
   eng: Download Cancelled
@@ -13756,8 +13752,6 @@ Data streams are not supported in this output format:
   ukr: Потоки даних не підтримуються у цьому форматі виводу
   kor: 이 출력 형식에서는 데이터 스트림이 지원되지 않습니다.
   ron: Fluxurile de date nu sunt acceptate în acest format de ieșire
-Data and attachment streams are not supported by hardware encoders for this output format:
-  eng: Data and attachment streams are not supported by hardware encoders for this output format
 Downloading HDR10+ Tool:
   eng: Downloading HDR10+ Tool
   deu: Herunterladen des HDR10+ Tools
@@ -16732,3 +16726,198 @@ Audio Service Type:
   ukr: Тип аудіопослуги
   kor: 오디오 서비스 유형
   ron: Tip serviciu audio
+Keep Source:
+  deu: Quelle beibehalten
+  eng: Keep Source
+  fra: Conserver la source
+  ita: Mantieni sorgente
+  spa: Mantener origen
+  chs: 保留源文件设置
+  jpn: ソースを維持
+  rus: Оставить как в источнике
+  por: Manter origem
+  swe: Behåll källa
+  pol: Zachowaj źródło
+  ukr: Залишити як в джерелі
+  kor: 원본 유지
+  ron: Păstrați sursa
+Clear All:
+  deu: Alle löschen
+  eng: Clear All
+  fra: Tout effacer
+  ita: Cancella tutto
+  spa: Borrar todo
+  chs: 全部清除
+  jpn: すべてクリア
+  rus: Очистить все
+  por: Limpar tudo
+  swe: Rensa alla
+  pol: Wyczyść wszystko
+  ukr: Очистити все
+  kor: 모두 지우기
+  ron: Ștergeți tot
+Set on First Track:
+  deu: Auf erster Spur setzen
+  eng: Set on First Track
+  fra: Définir sur la première piste
+  ita: Imposta sulla prima traccia
+  spa: Establecer en la primera pista
+  chs: 设置在第一条轨道上
+  jpn: 最初のトラックに設定
+  rus: Установить на первой дорожке
+  por: Definir na primeira faixa
+  swe: Ange på första spåret
+  pol: Ustaw na pierwszej ścieżce
+  ukr: Встановити на першій доріжці
+  kor: 첫 번째 트랙에 설정
+  ron: Setați pe prima pistă
+Default flag:
+  deu: Standard-Flag
+  eng: Default flag
+  fra: Indicateur par défaut
+  ita: Flag predefinito
+  spa: Indicador predeterminado
+  chs: 默认标志
+  jpn: デフォルトフラグ
+  rus: Флаг «по умолчанию»
+  por: Sinalizador padrão
+  swe: Standardflagga
+  pol: Flaga domyślna
+  ukr: Прапорець «за замовчуванням»
+  kor: 기본 플래그
+  ron: Marcaj implicit
+Forced flag:
+  deu: Forced-Flag
+  eng: Forced flag
+  fra: Indicateur forcé
+  ita: Flag forzato
+  spa: Indicador forzado
+  chs: 强制标志
+  jpn: 強制フラグ
+  rus: Флаг «принудительно»
+  por: Sinalizador forçado
+  swe: Tvingad flagga
+  pol: Flaga wymuszona
+  ukr: Прапорець «примусово»
+  kor: 강제 플래그
+  ron: Marcaj forțat
+Embeddable Python:
+  deu: Einbettbares Python
+  eng: Embeddable Python
+  fra: Python intégrable
+  ita: Python incorporabile
+  spa: Python incrustable
+  chs: 可嵌入的 Python
+  jpn: 埋め込み可能な Python
+  rus: Встраиваемый Python
+  por: Python incorporável
+  swe: Inbäddningsbar Python
+  pol: Osadzalny Python
+  ukr: Вбудований Python
+  kor: 임베디드 Python
+  ron: Python încorporabil
+Download HDR10:
+  deu: HDR10 herunterladen
+  eng: Download HDR10
+  fra: Télécharger HDR10
+  ita: Scarica HDR10
+  spa: Descargar HDR10
+  chs: 下载 HDR10
+  jpn: HDR10をダウンロード
+  rus: Скачать HDR10
+  por: Transferir HDR10
+  swe: Ladda ner HDR10
+  pol: Pobierz HDR10
+  ukr: Завантажити HDR10
+  kor: HDR10 다운로드
+  ron: Descărcați HDR10
+Text Files:
+  deu: Textdateien
+  eng: Text Files
+  fra: Fichiers texte
+  ita: File di testo
+  spa: Archivos de texto
+  chs: 文本文件
+  jpn: テキストファイル
+  rus: Текстовые файлы
+  por: Ficheiros de texto
+  swe: Textfiler
+  pol: Pliki tekstowe
+  ukr: Текстові файли
+  kor: 텍스트 파일
+  ron: Fișiere text
+Data and attachment streams are not supported by hardware encoders for this output format:
+  deu: Daten- und Anhangsströme werden von Hardware-Encodern für dieses Ausgabeformat nicht unterstützt
+  eng: Data and attachment streams are not supported by hardware encoders for this output format
+  fra: Les flux de données et de pièces jointes ne sont pas pris en charge par les encodeurs matériels pour ce format de sortie
+  ita: I flussi di dati e allegati non sono supportati dagli encoder hardware per questo formato di output
+  spa: Los flujos de datos y adjuntos no son compatibles con los codificadores por hardware para este formato de salida
+  chs: 此输出格式的硬件编码器不支持数据流和附件流
+  jpn: この出力形式では、ハードウェアエンコーダーはデータストリームと添付ストリームをサポートしていません
+  rus: Потоки данных и вложений не поддерживаются аппаратными кодировщиками для этого выходного формата
+  por: Os fluxos de dados e anexos não são suportados pelos codificadores de hardware para este formato de saída
+  swe: Data- och bilagoströmmar stöds inte av hårdvarukodare för detta utdataformat
+  pol: Strumienie danych i załączników nie są obsługiwane przez enkodery sprzętowe dla tego formatu wyjściowego
+  ukr: Потоки даних і вкладень не підтримуються апаратними кодувальниками для цього вихідного формату
+  kor: 이 출력 형식에서는 하드웨어 인코더가 데이터 및 첨부 스트림을 지원하지 않습니다
+  ron: Fluxurile de date și atașamente nu sunt acceptate de codificatoarele hardware pentru acest format de ieșire
+Could not save file:
+  deu: Datei konnte nicht gespeichert werden
+  eng: Could not save file
+  fra: Impossible d'enregistrer le fichier
+  ita: Impossibile salvare il file
+  spa: No se pudo guardar el archivo
+  chs: 无法保存文件
+  jpn: ファイルを保存できませんでした
+  rus: Не удалось сохранить файл
+  por: Não foi possível guardar o ficheiro
+  swe: Det gick inte att spara filen
+  pol: Nie można zapisać pliku
+  ukr: Не вдалося зберегти файл
+  kor: 파일을 저장할 수 없습니다
+  ron: Fișierul nu a putut fi salvat
+AAC-LC (default):
+  deu: AAC-LC (Standard)
+  eng: AAC-LC (default)
+  fra: AAC-LC (par défaut)
+  ita: AAC-LC (predefinito)
+  spa: AAC-LC (predeterminado)
+  chs: AAC-LC（默认）
+  jpn: AAC-LC（デフォルト）
+  rus: AAC-LC (по умолчанию)
+  por: AAC-LC (predefinição)
+  swe: AAC-LC (standard)
+  pol: AAC-LC (domyślnie)
+  ukr: AAC-LC (за замовчуванням)
+  kor: AAC-LC (기본값)
+  ron: AAC-LC (implicit)
+libfdk_aac only:
+  deu: nur libfdk_aac
+  eng: libfdk_aac only
+  fra: libfdk_aac uniquement
+  ita: solo libfdk_aac
+  spa: solo libfdk_aac
+  chs: 仅限 libfdk_aac
+  jpn: libfdk_aac のみ
+  rus: только libfdk_aac
+  por: apenas libfdk_aac
+  swe: endast libfdk_aac
+  pol: tylko libfdk_aac
+  ukr: лише libfdk_aac
+  kor: libfdk_aac 전용
+  ron: doar libfdk_aac
+HE-AAC profiles require the libfdk_aac encoder:
+  deu: HE-AAC-Profile erfordern den Encoder libfdk_aac
+  eng: HE-AAC profiles require the libfdk_aac encoder
+  fra: Les profils HE-AAC nécessitent l'encodeur libfdk_aac
+  ita: I profili HE-AAC richiedono l'encoder libfdk_aac
+  spa: Los perfiles HE-AAC requieren el codificador libfdk_aac
+  chs: HE-AAC 配置文件需要 libfdk_aac 编码器
+  jpn: HE-AACプロファイルにはlibfdk_aacエンコーダーが必要です
+  rus: Профили HE-AAC требуют кодировщик libfdk_aac
+  por: Os perfis HE-AAC requerem o codificador libfdk_aac
+  swe: HE-AAC-profiler kräver kodaren libfdk_aac
+  pol: Profile HE-AAC wymagają enkodera libfdk_aac
+  ukr: Профілі HE-AAC потребують кодувальника libfdk_aac
+  kor: HE-AAC 프로필에는 libfdk_aac 인코더가 필요합니다
+  ron: Profilurile HE-AAC necesită codificatorul libfdk_aac
