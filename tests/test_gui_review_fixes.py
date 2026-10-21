@@ -140,3 +140,37 @@ def test_field_change_debounced_only_when_user_is_typing():
     main_mod.Main._field_changed(fake)
     fake.page_update.assert_called_once()
     fake._page_update_timer.start.assert_not_called()
+
+
+def test_reindex_after_delete_shifts_later_tracks():
+    from types import SimpleNamespace
+
+    from fastflix.widgets.panels.audio_panel import reindex_after_delete
+
+    tracks = [
+        SimpleNamespace(index=0, disposition_widget=SimpleNamespace(track_index=0)),
+        SimpleNamespace(index=2, disposition_widget=SimpleNamespace(track_index=2)),
+        SimpleNamespace(index=3, disposition_widget=SimpleNamespace(track_index=3)),
+    ]
+    reindex_after_delete(tracks, 1)
+    assert [x.index for x in tracks] == [0, 1, 2]
+    assert [x.disposition_widget.track_index for x in tracks] == [0, 1, 2]
+
+
+def test_del_me_reindexes_before_reorder():
+    from types import SimpleNamespace
+
+    from fastflix.widgets.panels.audio_panel import Audio
+
+    remaining = SimpleNamespace(index=3, disposition_widget=SimpleNamespace(track_index=3))
+    me = SimpleNamespace(index=2)
+    audio_tracks = ["a", "b", "me", "c"]
+    seen = {}
+    parent = mock.MagicMock()
+    parent.tracks = [me, remaining]
+    parent.remove_track.side_effect = lambda w: seen.update(index=remaining.index, n=len(audio_tracks))
+    me.parent = parent
+    me.app = SimpleNamespace(fastflix=SimpleNamespace(current_video=SimpleNamespace(audio_tracks=audio_tracks)))
+    Audio.del_me(me)
+    assert audio_tracks == ["a", "b", "c"]
+    assert seen == {"index": 2, "n": 3}
