@@ -103,6 +103,23 @@ def rigaya_hdr_static_metadata(fastflix: FastFlix) -> List[str]:
     return result
 
 
+# Valid --profile values per codec, from the NVEncC options documentation
+NVENC_PROFILES = {
+    "hevc": ("main", "main10", "main444"),
+    "av1": ("main", "high"),
+    "avc": ("baseline", "main", "high", "high10", "high422", "high444"),
+}
+
+
+def nvenc_profile_args(profile: Optional[str], codec: str) -> List[str]:
+    if not profile or profile.lower() == "auto":
+        return []
+    if profile.lower() not in NVENC_PROFILES[codec]:
+        logger.warning(f"Profile {profile} is not valid for NVEncC {codec}, ignoring")
+        return []
+    return ["--profile", profile.lower()]
+
+
 def parse_frame_rate(frame_rate_str: str) -> Optional[float]:
     """Parse a frame rate string like '24000/1001' or '30' into a float.
 

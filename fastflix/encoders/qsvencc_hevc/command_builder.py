@@ -124,7 +124,10 @@ def build(fastflix: FastFlix):
         command.extend(["--tune", tune])
 
     if settings.lookahead:
-        command.extend(["--la-depth", str(settings.lookahead)])
+        if settings.bitrate or settings.qp_mode == "la-icq":
+            command.extend(["--la-depth", str(settings.lookahead)])
+        else:
+            logger.warning(f"QSVEncC ignores lookahead depth in {settings.qp_mode} mode, ignoring lookahead")
 
     command.extend(["--level", settings.level or "auto"])
 

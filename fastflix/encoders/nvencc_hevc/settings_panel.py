@@ -77,8 +77,10 @@ class NVENCC(RigayaPanel):
         custom_layout = self._add_custom(title="Custom NVEncC options", disable_both_passes=True)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        # grid.addLayout(self.init_profile(), 1, 0, 1, 2)
-        grid.addLayout(self.init_tier(), 1, 0, 1, 2)
+        profile_tier = QtWidgets.QHBoxLayout()
+        profile_tier.addLayout(self.init_profile())
+        profile_tier.addLayout(self.init_tier())
+        grid.addLayout(profile_tier, 1, 0, 1, 2)
         grid.addLayout(self.init_multipass(), 2, 0, 1, 2)
         grid.addLayout(self.init_lookahead(), 3, 0, 1, 2)
         # grid.addLayout(self.init_decoder(), 5, 0, 1, 2)
@@ -171,15 +173,14 @@ class NVENCC(RigayaPanel):
             opt="tune",
         )
 
-    # def init_profile(self):
-    #
-    #     return self._add_combo_box(
-    #         label="Profile_encoderopt",
-    #         widget_name="profile",
-    #         tooltip="Enforce an encode profile",
-    #         options=["main", "main10"],
-    #         opt="profile",
-    #     )
+    def init_profile(self):
+        return self._add_combo_box(
+            label="Profile_encoderopt",
+            widget_name="profile",
+            tooltip="Enforce an encode profile",
+            options=["auto", "main", "main10", "main444"],
+            opt="profile",
+        )
 
     def init_tier(self):
         return self._add_combo_box(
@@ -387,7 +388,7 @@ class NVENCC(RigayaPanel):
     def update_video_encoder_settings(self):
         settings = NVEncCSettings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
-            # profile=self.widgets.profile.currentText(),
+            profile=self.widgets.profile.currentText(),
             force_ten_bit=self.widgets.force_ten_bit.isChecked(),
             tier=self.widgets.tier.currentText(),
             lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,

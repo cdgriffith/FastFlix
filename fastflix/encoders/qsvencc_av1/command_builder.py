@@ -124,7 +124,11 @@ def build(fastflix: FastFlix):
         command.extend(["--tune", tune])
 
     if settings.lookahead:
-        command.extend(["--la-depth", str(settings.lookahead)])
+        if settings.bitrate:
+            # AV1 lookahead is the EncTools LookAheadDepth on top of bitrate control, which needs ExtBRC
+            command.extend(["--la-depth", str(settings.lookahead), "--extbrc"])
+        else:
+            logger.warning("QSVEncC AV1 lookahead requires a bitrate rate control mode, ignoring lookahead")
 
     command.extend(["--level", settings.level or "auto"])
 

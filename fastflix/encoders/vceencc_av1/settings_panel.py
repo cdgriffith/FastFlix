@@ -78,7 +78,6 @@ class VCEENCC(VCEPanel):
         custom_layout = self._add_custom(title="Custom VCEEncC options", disable_both_passes=True)
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_bitrate_mode(), 1, 0, 1, 2)
-        grid.addLayout(self.init_mv_precision(), 2, 0, 1, 2)
         grid.addLayout(self.init_output_depth(), 3, 0, 1, 2)
         grid.addLayout(self.init_pre(), 4, 0, 1, 2)
 
@@ -98,6 +97,8 @@ class VCEENCC(VCEPanel):
         qp_line.addLayout(self.init_max_q())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_ref())
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_b_frames())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_level())
         qp_line.addStretch(1)
@@ -155,11 +156,6 @@ class VCEENCC(VCEPanel):
 
     def init_pre(self):
         layout = QtWidgets.QHBoxLayout()
-        layout.addLayout(
-            self._add_check_box(
-                label="VBAQ", widget_name="vbaq", opt="vbaq", tooltip="Variance Based Adaptive Quantization"
-            )
-        )
         layout.addLayout(self._add_check_box(label="Pre Encode", widget_name="pre_encode", opt="pre_encode"))
         layout.addLayout(
             self._add_check_box(
@@ -168,13 +164,13 @@ class VCEENCC(VCEPanel):
         )
         return layout
 
-    def init_mv_precision(self):
+    def init_b_frames(self):
         return self._add_combo_box(
-            label="Motion vector accuracy",
-            tooltip="Q-pel is highest precision",
-            widget_name="mv_precision",
-            options=["q-pel", "half-pel", "full-pel"],
-            opt="mv_precision",
+            widget_name="b_frames",
+            label="B Frames",
+            options=[t("Auto")] + [str(x) for x in range(3)],
+            opt="b_frames",
+            min_width=60,
         )
 
     def init_level(self):
@@ -275,16 +271,15 @@ class VCEENCC(VCEPanel):
     def update_video_encoder_settings(self):
         settings = VCEEncCAV1Settings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
-            mv_precision=self.widgets.mv_precision.currentText(),
             max_q=self.widgets.max_q.currentText() if self.widgets.max_q.currentIndex() != 0 else None,
             min_q=self.widgets.min_q.currentText() if self.widgets.min_q.currentIndex() != 0 else None,
             extra=self.ffmpeg_extras,
             metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
+            b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             pre_encode=self.widgets.pre_encode.isChecked(),
             pre_analysis=self.widgets.pre_analysis.isChecked(),
-            vbaq=self.widgets.vbaq.isChecked(),
             decoder=self.widgets.decoder.currentText(),
             copy_hdr10=self.widgets.copy_hdr10.isChecked(),
             copy_dv=self.widgets.copy_dv.isChecked(),

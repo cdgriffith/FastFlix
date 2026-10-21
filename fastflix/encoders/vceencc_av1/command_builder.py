@@ -97,6 +97,8 @@ def build(fastflix: FastFlix):
         command.extend(["--qp-min", str(settings.min_q)])
     if settings.max_q and settings.bitrate:
         command.extend(["--qp-max", str(settings.max_q)])
+    if settings.b_frames:
+        command.extend(["--bframes", str(settings.b_frames)])
     if settings.ref:
         command.extend(["--ref", str(settings.ref)])
 
@@ -115,10 +117,6 @@ def build(fastflix: FastFlix):
             command.extend(["--dolby-vision-rpu-prm", "crop=true"])
 
     command.extend(["--output-depth", output_depth])
-    command.extend(["--motion-est", settings.mv_precision])
-
-    if settings.vbaq:
-        command.append("--vbaq")
     if settings.pre_encode:
         command.append("--pe")
 
