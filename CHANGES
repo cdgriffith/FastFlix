@@ -59,6 +59,13 @@
 * Fixing Source Details tab leaving the HDR10 button visible after clearing the video, rendering tag text as HTML, and silently ignoring save errors
 * Fixing missing word wrap in yes/no dialogs, queue titles not eliding, and disabled toggle switches not looking disabled
 * Fixing missing and English-only translations for new strings
+* Fixing PGS (hdmv_pgs_subtitle) burn-in generating a text subtitles filter that fails; bitmap subtitles are now overlaid, and after tone mapping
+* Fixing bitmap subtitle tracks (PGS/VobSub) failing MP4/MOV encodes (they are now skipped) and -default_mode being passed to non-Matroska muxers
+* Fixing burn-in of the first subtitle track not renumbering later subtitle tracks, and external subtitle burn-in track lookup
+* Fixing audio conversion crashing on channel layouts such as 5.1.2, 7.1.4 and octagonal, unknown layouts being forced to stereo, and AC-3 quality bitrates exceeding the 640k limit
+* Fixing HDR tone mapping being applied after color grading filters, dimming burned-in bitmap subtitles, dropping to 8-bit for 10-bit targets, and not tagging the SDR output as bt709
+* Fixing invalid pad colors breaking the filter chain, backslashes in custom start options being removed on Windows, and eq being forced to per-frame evaluation
+* Fixing PGS OCR reporting failure when the .srt already exists, not handling ISO 639-2/B language codes (fre, ger, chi), and modifying the global PATH
 
 ## Version 6.2.1
 

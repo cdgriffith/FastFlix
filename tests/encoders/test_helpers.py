@@ -625,7 +625,7 @@ def test_generate_color_details(fastflix_instance):
     # Test with HDR removal enabled
     fastflix_instance.current_video.video_settings.remove_hdr = True
     result = generate_color_details(fastflix_instance)
-    assert result == []
+    assert result == ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"]
 
     # Test with HDR removal disabled and color settings
     fastflix_instance.current_video.video_settings.remove_hdr = False
@@ -775,8 +775,8 @@ def test_generate_filters_filter_chain_order():
     # Verify ordering: denoise before deflicker before unsharp before eq before hue before vibrance
     assert filter_str.index("nlmeans") < filter_str.index("deflicker")
     assert filter_str.index("deflicker") < filter_str.index("unsharp")
-    assert filter_str.index("unsharp") < filter_str.index("eq=eval=frame")
-    assert filter_str.index("eq=eval=frame") < filter_str.index("hue=h=")
+    assert filter_str.index("unsharp") < filter_str.index("eq=brightness")
+    assert filter_str.index("eq=brightness") < filter_str.index("hue=h=")
     assert filter_str.index("hue=h=") < filter_str.index("vibrance")
     assert filter_str.index("vibrance") < filter_str.index("colorbalance")
     assert filter_str.index("colorbalance") < filter_str.index("colortemperature")

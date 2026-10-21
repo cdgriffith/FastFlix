@@ -97,7 +97,7 @@ def test_audio_quality_converter_ac3():
     """Test the audio_quality_converter function with ac3 codec."""
     # Test with different quality levels and channel counts
     result = audio_quality_converter(0, "ac3", channels=2, track_number=1)
-    assert result == "-b:1 960k"
+    assert result == "-b:1 640k"  # clamped to the AC-3 maximum
 
     result = audio_quality_converter(5, "ac3", channels=6, track_number=1)
     assert result == "-b:1 576k"

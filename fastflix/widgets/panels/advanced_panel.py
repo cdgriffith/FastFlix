@@ -12,6 +12,7 @@ from fastflix.models.video import VideoSettings
 from fastflix.models.profiles import AdvancedOptions
 from fastflix.widgets.toggle_switch import ToggleSwitch
 from fastflix.ui_styles import get_onyx_label_style
+from fastflix.encoders.common.helpers import validate_ffmpeg_color
 from fastflix.flix import ffmpeg_valid_color_primaries, ffmpeg_valid_color_transfers, ffmpeg_valid_color_space
 
 logger = logging.getLogger("fastflix")
@@ -755,7 +756,9 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.app.fastflix.current_video.video_settings.pad_aspect = None
         else:
             self.app.fastflix.current_video.video_settings.pad_aspect = self.pad_aspect_widget.currentText()
-        self.app.fastflix.current_video.video_settings.pad_color = self.pad_color_widget.text().strip() or "black"
+        self.app.fastflix.current_video.video_settings.pad_color = validate_ffmpeg_color(
+            self.pad_color_widget.text().strip() or "black"
+        )
 
         self.app.fastflix.current_video.video_settings.lut3d_path = self.lut3d_path_widget.text().strip() or None
 
