@@ -20,6 +20,34 @@ from fastflix.shared import clean_file_string
 logger = logging.getLogger("fastflix")
 
 
+def resolve_babel_language(code):
+    """Map a language code or name to a babelfish Language, defaulting to English.
+
+    FFprobe reports ISO 639-2/B codes (fre, ger, chi) which ``Language(code)`` rejects (it expects 639-3).
+    """
+    from babelfish import Language
+
+    code = (code or "").strip()
+    try:
+        if len(code) == 2:
+            return Language.fromalpha2(code.lower())
+        if len(code) == 3:
+            try:
+                return Language(code.lower())
+            except ValueError:
+                return Language.fromalpha3b(code.lower())
+        return Language.fromname(code)
+    except Exception:
+        return Language("eng")
+
+
+def pgsrip_srt_path(sup_path):
+    """Path pgsrip will write the OCR result to for the given .sup file."""
+    from pgsrip.media_path import MediaPath
+
+    return Path(str(MediaPath(str(sup_path)).translate(number=0, extension="srt")))
+
+
 def _format_command(command):
     """Format a command list as a copy-pastable shell string with proper quoting."""
     if isinstance(command, str):
@@ -314,12 +342,11 @@ class ExtractSubtitleSRT(QtCore.QThread):
             from babelfish import Language as BabelLanguage
             import pytesseract
 
-            # Set environment variables for pgsrip to find tesseract
+            # pytesseract uses its own module-level variable; the PATH is only extended for the OCR run
+            old_path = os.environ.get("PATH", "")
             if self.app.fastflix.config.tesseract_path:
                 tesseract_dir = str(Path(self.app.fastflix.config.tesseract_path).parent)
-                os.environ["PATH"] = f"{tesseract_dir}{os.pathsep}{os.environ.get('PATH', '')}"
-                os.environ["TESSERACT_CMD"] = str(self.app.fastflix.config.tesseract_path)
-                # pytesseract uses its own module-level variable, not the env var
+                os.environ["PATH"] = f"{tesseract_dir}{os.pathsep}{old_path}"
                 pytesseract.pytesseract.tesseract_cmd = str(self.app.fastflix.config.tesseract_path)
 
             # pgsrip's MediaPath parses the filename for language codes and may transform them
@@ -339,16 +366,8 @@ class ExtractSubtitleSRT(QtCore.QThread):
 
             # Configure options for pgsrip
             try:
-                # Detect if language code is 2-letter or 3-letter
-                if len(self.language) == 2:
-                    babel_lang = BabelLanguage.fromalpha2(self.language)
-                elif len(self.language) == 3:
-                    babel_lang = BabelLanguage(self.language)
-                else:
-                    babel_lang = BabelLanguage.fromname(self.language)
-
                 options = Options(
-                    languages={babel_lang},
+                    languages={resolve_babel_language(self.language)},
                     overwrite=True,
                     one_per_lang=True,
                 )
@@ -360,24 +379,20 @@ class ExtractSubtitleSRT(QtCore.QThread):
                     one_per_lang=True,
                 )
 
-            # Get list of existing .srt files before conversion
-            existing_srts = set(sup_path.parent.glob("*.srt"))
+            # pgsrip writes next to the .sup, derive that path instead of diffing the directory listing
+            # (which misses results that overwrite an already existing .srt)
+            expected_srt = pgsrip_srt_path(sup_path)
+            started = time.time()
 
-            # Run pgsrip conversion using Python API
-            pgsrip.rip(media, options)
+            try:
+                pgsrip.rip(media, options)
+            finally:
+                os.environ["PATH"] = old_path
 
-            # Find newly created .srt files
-            current_srts = set(sup_path.parent.glob("*.srt"))
-            new_srts = current_srts - existing_srts
+            if not expected_srt.exists() or expected_srt.stat().st_mtime < started - 2:
+                raise Exception(f"pgsrip completed but no .srt file was written at {expected_srt}")
 
-            if not new_srts:
-                raise Exception(f"pgsrip completed but no .srt file found in {sup_path.parent}")
-
-            # Get the first new .srt file
-            srt_files = list(new_srts)
-
-            # Move the .srt file to the user's originally desired location
-            created_srt = srt_files[0]
+            created_srt = expected_srt
 
             if created_srt != desired_srt:
                 import shutil

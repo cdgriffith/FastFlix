@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+import re
 import shlex
 import subprocess
 import sys
@@ -16,6 +18,25 @@ from fastflix.models.fastflix import FastFlix
 from fastflix.shared import sanitize, quoted_path
 
 null = "/dev/null"
+
+BITMAP_SUBTITLE_TYPES = ("picture", "pgs")
+
+_COLOR_NAME = re.compile(r"^[A-Za-z]+$")
+_COLOR_HEX = re.compile(r"^(0x|#)[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$")
+_COLOR_ALPHA = re.compile(r"^(0x[0-9A-Fa-f]{1,2}|[0-9]*\.?[0-9]+)$")
+
+
+def validate_ffmpeg_color(value, default="black") -> str:
+    """Return value if it is an ffmpeg colour (name or 0xRRGGBB/#RRGGBB, optional @alpha), otherwise default."""
+    if not isinstance(value, str):
+        return default
+    value = value.strip()
+    color, _, alpha = value.partition("@")
+    if not (_COLOR_NAME.match(color) or _COLOR_HEX.match(color)):
+        return default
+    if "@" in value and not _COLOR_ALPHA.match(alpha):
+        return default
+    return value
 
 
 if reusables.win_based:
@@ -83,7 +104,9 @@ def generate_ffmpeg_start(
         fast_seek = True
 
     if start_extra:
-        command.extend(start_extra if isinstance(start_extra, list) else shlex.split(start_extra))
+        command.extend(
+            start_extra if isinstance(start_extra, list) else shlex.split(start_extra, posix=(os.name != "nt"))
+        )
 
     if enable_opencl and (remove_hdr or uses_nlmeans_opencl):
         command.extend(["-init_hw_device", "opencl:0.0=ocl", "-filter_hw_device", "ocl"])
@@ -299,6 +322,7 @@ def generate_filters(
     color_primaries: Optional[str] = None,
     color_space: Optional[str] = None,
     source_pix_fmt: Optional[str] = None,
+    target_pix_fmt: Optional[str] = None,
     **_kw,
 ):
     filter_list = []
@@ -327,7 +351,7 @@ def generate_filters(
     # Pad after rotation/flip so the target aspect is applied to the final orientation
     pad_aspect = _kw.get("pad_aspect")
     if pad_aspect and pad_aspect != "none":
-        pad_color = _kw.get("pad_color", "black") or "black"
+        pad_color = validate_ffmpeg_color(_kw.get("pad_color", "black") or "black")
         num, den = pad_aspect.split(":")
         target_ratio = int(num) / int(den)
         filter_list.append(
@@ -338,7 +362,7 @@ def generate_filters(
     if video_speed and video_speed != 1:
         filter_list.append(f"setpts={video_speed}*PTS")
     text_sub_filter = None
-    if burn_in_subtitle_track is not None and burn_in_subtitle_type != "picture":
+    if burn_in_subtitle_track is not None and burn_in_subtitle_type not in BITMAP_SUBTITLE_TYPES:
         original_size = f":original_size={source_width}x{source_height}" if source_width and source_height else ""
         text_sub_filter = f"subtitles='{quoted_path(str(source))}':si={burn_in_subtitle_track}{original_size}"
     if reverse_video:
@@ -364,6 +388,27 @@ def generate_filters(
     if _kw.get("unsharp"):
         filter_list.append(_kw["unsharp"])
 
+    software_tonemap = None
+    if remove_hdr and not enable_opencl and not vaapi:
+        tin = color_transfer if color_transfer else "smpte2084"
+        pin = color_primaries if color_primaries else "bt2020"
+        min_val = color_space if color_space else "bt2020nc"
+        keep_bits = (
+            bool(target_pix_fmt)
+            and target_pix_fmt.startswith("yuv")
+            and ("10" in target_pix_fmt or "12" in target_pix_fmt)
+        )
+        out_fmt = target_pix_fmt if keep_bits else "yuv420p"
+        software_tonemap = (
+            f"zscale=tin={tin}:pin={pin}:min={min_val}:t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,"
+            f"tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format={out_fmt}"
+        )
+    bitmap_burn_in = burn_in_subtitle_track is not None and burn_in_subtitle_type in BITMAP_SUBTITLE_TYPES
+    # Bitmap subtitles are overlaid on the tone-mapped (SDR) frames, so tone map first and overlay straight after.
+    tonemap_before_overlay = software_tonemap if bitmap_burn_in else None
+    if software_tonemap and not bitmap_burn_in:
+        filter_list.append(software_tonemap)
+
     eq_filters = []
     if brightness:
         eq_filters.append(f"brightness={brightness}")
@@ -374,8 +419,7 @@ def generate_filters(
     if gamma:
         eq_filters.append(f"gamma={gamma}")
     if eq_filters:
-        eq_filters.insert(0, "eq=eval=frame")
-        filter_list.append(":".join(eq_filters))
+        filter_list.append("eq=" + ":".join(eq_filters))
     if hue:
         filter_list.append(f"hue=h={hue}")
     if _kw.get("vibrance"):
@@ -404,13 +448,6 @@ def generate_filters(
             )
         elif vaapi:
             filter_list.append("tonemap_vaapi=format=nv12:p=bt709:t=bt709:m=bt709")
-        else:
-            tin = color_transfer if color_transfer else "smpte2084"
-            pin = color_primaries if color_primaries else "bt2020"
-            min_val = color_space if color_space else "bt2020nc"
-            filter_list.append(
-                f"zscale=tin={tin}:pin={pin}:min={min_val}:t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap={tone_map}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
-            )
 
     filters = ",".join(filter_list) if filter_list else ""
 
@@ -420,12 +457,18 @@ def generate_filters(
         filters = custom_filters
 
     if burn_in_subtitle_track is not None:
-        if burn_in_subtitle_type == "picture":
+        if bitmap_burn_in:
+            # You have to overlay first for it to work when scaled
+            base = f"[0:{selected_track}]"
+            tonemap_prefix = ""
+            if tonemap_before_overlay:
+                tonemap_prefix = f"{base}{tonemap_before_overlay}[tonemapped];"
+                base = "[tonemapped]"
+            overlay = f"{base}[{burn_in_file_index}:{burn_in_subtitle_track}]overlay"
             if filters:
-                # You have to overlay first for it to work when scaled
-                filter_complex = f"[0:{selected_track}][{burn_in_file_index}:{burn_in_subtitle_track}]overlay[subbed];[subbed]{filters}[v]"
+                filter_complex = f"{tonemap_prefix}{overlay}[subbed];[subbed]{filters}[v]"
             else:
-                filter_complex = f"[0:{selected_track}][{burn_in_file_index}:{burn_in_subtitle_track}]overlay[v]"
+                filter_complex = f"{tonemap_prefix}{overlay}[v]"
         else:
             filter_prefix = f"{filters}," if filters else ""
             if text_sub_filter:
@@ -486,7 +529,8 @@ def generate_all(
         subtitles_cmd, burn_in_track, burn_in_type = build_subtitle(
             subtitle_tracks, output_path=fastflix.current_video.video_settings.output_path
         )
-        if burn_in_type == "text":
+        burn_in_is_external = any(x.burn_in and x.enabled and x.external for x in subtitle_tracks)
+        if burn_in_type == "text" and not burn_in_is_external:
             for i, x in enumerate(fastflix.current_video.streams["subtitle"]):
                 if x["index"] == burn_in_track:
                     burn_in_track = i
@@ -531,6 +575,7 @@ def generate_all(
             sar=fastflix.current_video.sar,
             enable_opencl=enable_opencl,
             source_pix_fmt=fastflix.current_video.pix_fmt,
+            target_pix_fmt=getattr(settings, "pix_fmt", None),
             vaapi=vaapi,
             **filter_details,
         )
@@ -578,7 +623,7 @@ def generate_all(
 
 def generate_color_details(fastflix: FastFlix) -> List[str]:
     if fastflix.current_video.video_settings.remove_hdr:
-        return []
+        return ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"]
 
     details = []
     if fastflix.current_video.video_settings.color_primaries:

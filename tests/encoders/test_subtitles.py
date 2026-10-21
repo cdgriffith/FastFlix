@@ -74,9 +74,10 @@ def test_build_subtitle_with_burn_in(sample_subtitle_tracks):
     # Check that the other tracks are mapped and copied with adjusted outdex
     assert "-map" in result
     assert "0:1" in result
-    assert "-c:1" in result
+    assert "-c:0" in result
     assert "0:2" in result
-    assert "-c:2" in result
+    assert "-c:1" in result
+    assert "-c:2" not in result
     assert "copy" in result
 
     # Check that languages are set
@@ -84,8 +85,8 @@ def test_build_subtitle_with_burn_in(sample_subtitle_tracks):
     assert "language=eng" in result
 
     # Check that dispositions are set correctly
+    assert "-disposition:0" in result
     assert "-disposition:1" in result
-    assert "-disposition:2" in result
     assert "forced" in result
 
     # Check that burn-in track and type are set correctly
