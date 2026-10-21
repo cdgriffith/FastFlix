@@ -6,23 +6,26 @@
 // Build:
 //   cd cmd/uninstaller && go-winres make && cd ../..
 //   go build -ldflags="-s -w -H windowsgui" -o uninstall.exe ./cmd/uninstaller
+//   (scripts/build_distribution.py does all of this and injects the version)
 
 package main
 
 import (
-	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"syscall"
 	"unsafe"
 
+	"github.com/cdgriffith/fastflix-installer/cmd/internal/ffinstall"
 	"golang.org/x/sys/windows/registry"
 )
 
-const productName = "FastFlix"
+const productName = ffinstall.ProductName
+
+// Version is set at build time via -ldflags="-X main.Version=..."
+var Version = "dev"
 
 // Win32 API
 var (
@@ -51,6 +54,9 @@ var st struct {
 
 	installDir string
 	selfPath   string
+	regRoot    registry.Key // registry root that owns this install (HKLM for all-users, HKCU for per-user)
+	regOwned   bool         // true if that root's keys actually point at installDir
+	allUsers   bool
 	winW, winH int
 	iconSz     int
 	silent     bool
@@ -80,12 +86,12 @@ const (
 
 type rect struct{ Left, Top, Right, Bottom int32 }
 type paintStruct struct {
-	HDC      syscall.Handle
-	Erase    int32
-	RcPaint  rect
-	Restore  int32
+	HDC       syscall.Handle
+	Erase     int32
+	RcPaint   rect
+	Restore   int32
 	IncUpdate int32
-	Reserved [32]byte
+	Reserved  [32]byte
 }
 type msg struct {
 	Hwnd    syscall.Handle
@@ -97,9 +103,9 @@ type msg struct {
 }
 type drawItemStruct struct {
 	CtlType, CtlID, ItemID, ItemAction, ItemState uint32
-	HwndItem, HDC                                  syscall.Handle
-	RcItem                                         rect
-	ItemData                                       uintptr
+	HwndItem, HDC                                 syscall.Handle
+	RcItem                                        rect
+	ItemData                                      uintptr
 }
 type wndClassExW struct {
 	Size       uint32
@@ -141,20 +147,40 @@ func main() {
 		}
 	}
 
-	// Silent mode — just do it and exit
-	if st.silent {
-		doUninstall()
+	st.regRoot, st.regOwned = detectRegRoot(st.installDir, args)
+	st.allUsers = st.regRoot == registry.LOCAL_MACHINE || ffinstall.IsProtectedPath(st.installDir)
+
+	// All-users installs (HKLM / Program Files) need admin, in silent mode as well
+	if st.allUsers && !ffinstall.IsAdmin() {
+		relaunchElevated(st.selfPath, args)
 		return
 	}
 
-	// If in Program Files and not admin, elevate and re-run with GUI
-	if isProtected(st.installDir) && !isAdmin() {
-		relaunchElevated(st.selfPath, args)
+	// Silent mode — never remove files out from under a running FastFlix
+	if st.silent {
+		if isRunning() {
+			os.Exit(1)
+		}
+		doUninstall()
 		return
 	}
 
 	// Show GUI
 	showGUI()
+}
+
+// detectRegRoot finds which registry root registered the install living in dir. owned is false when no
+// registry key points at dir (the registry is then left untouched).
+func detectRegRoot(dir string, args []string) (root registry.Key, owned bool) {
+	for _, r := range []registry.Key{registry.CURRENT_USER, registry.LOCAL_MACHINE} {
+		if d := ffinstall.ReadInstallDirFromRegistry(r); d != "" && strings.EqualFold(filepath.Clean(d), filepath.Clean(dir)) {
+			return r, true
+		}
+	}
+	if containsArg(args, "--allusers") || ffinstall.IsProtectedPath(dir) {
+		return registry.LOCAL_MACHINE, false
+	}
+	return registry.CURRENT_USER, false
 }
 
 func showGUI() {
@@ -164,11 +190,17 @@ func showGUI() {
 	screenW, _, _ := user32.NewProc("GetSystemMetrics").Call(0)
 	screenH, _, _ := user32.NewProc("GetSystemMetrics").Call(1)
 	st.winW = int(screenW) * 20 / 100
-	if st.winW < 400 { st.winW = 400 }
+	if st.winW < 400 {
+		st.winW = 400
+	}
 	st.winH = st.winW * 150 / 100
-	if st.winH > int(screenH)*85/100 { st.winH = int(screenH) * 85 / 100 }
+	if st.winH > int(screenH)*85/100 {
+		st.winH = int(screenH) * 85 / 100
+	}
 	st.iconSz = st.winW * 30 / 100
-	if st.iconSz > 256 { st.iconSz = 256 }
+	if st.iconSz > 256 {
+		st.iconSz = 256
+	}
 
 	ret, _, _ := gdi32.NewProc("CreateSolidBrush").Call(clrBg)
 	st.hBgBrush = syscall.Handle(ret)
@@ -211,7 +243,7 @@ func showGUI() {
 	createControls(hwnd, hInst)
 
 	// Check if running on startup
-	if isRunning("FastFlix.exe") {
+	if isRunning() {
 		setText(st.hStatus, "\u26D4  FastFlix is running, please close it first")
 		user32.NewProc("ShowWindow").Call(uintptr(st.hStatus), 5)
 		user32.NewProc("EnableWindow").Call(uintptr(st.hUninstBtn), 0)
@@ -227,7 +259,9 @@ func showGUI() {
 	var m msg
 	for {
 		r, _, _ := user32.NewProc("GetMessageW").Call(uintptr(unsafe.Pointer(&m)), 0, 0, 0)
-		if r == 0 { break }
+		if r == 0 {
+			break
+		}
 		user32.NewProc("TranslateMessage").Call(uintptr(unsafe.Pointer(&m)))
 		user32.NewProc("DispatchMessageW").Call(uintptr(unsafe.Pointer(&m)))
 	}
@@ -291,12 +325,14 @@ func wndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintptr {
 		ctl := syscall.Handle(lParam)
 		gdi32.NewProc("SetTextColor").Call(uintptr(hdc), clrText)
 		gdi32.NewProc("SetBkMode").Call(uintptr(hdc), 1)
-		if ctl == st.hStatus { gdi32.NewProc("SetTextColor").Call(uintptr(hdc), clrRed) }
+		if ctl == st.hStatus {
+			gdi32.NewProc("SetTextColor").Call(uintptr(hdc), clrRed)
+		}
 		return uintptr(st.hBgBrush)
 	case 0x0135: // WM_CTLCOLORBTN
 		return uintptr(st.hBgBrush)
 	case 0x002B: // WM_DRAWITEM
-		dis := (*drawItemStruct)(unsafe.Pointer(lParam))
+		dis := *(**drawItemStruct)(unsafe.Pointer(&lParam))
 		if dis.HwndItem == st.hProgress {
 			drawProgress(dis)
 		} else {
@@ -305,8 +341,12 @@ func wndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintptr {
 		return 1
 	case 0x0111: // WM_COMMAND
 		id := int(wParam & 0xFFFF)
-		if id == idClose { user32.NewProc("PostQuitMessage").Call(0) }
-		if id == idUninstall { go onUninstall() }
+		if id == idClose {
+			user32.NewProc("PostQuitMessage").Call(0)
+		}
+		if id == idUninstall {
+			go onUninstall()
+		}
 		return 0
 	case 0x0113: // WM_TIMER
 		checkProc()
@@ -348,7 +388,7 @@ func paint(hwnd syscall.Handle) {
 	gdi32.NewProc("SetTextColor").Call(hdc, clrSub)
 	gdi32.NewProc("SelectObject").Call(hdc, uintptr(st.hFont))
 	vr := rect{0, iconBot + tH, int32(st.winW), iconBot + tH + int32(st.winH)*4/100}
-	txt := "Uninstaller"
+	txt := "Uninstaller " + Version
 	user32.NewProc("DrawTextW").Call(hdc, uintptr(unsafe.Pointer(utf16P(txt))),
 		uintptr(len(txt)), uintptr(unsafe.Pointer(&vr)), 0x21)
 
@@ -365,8 +405,14 @@ func drawBtn(dis *drawItemStruct) {
 
 	bg := uintptr(clrBtn)
 	txt := uintptr(clrBtnTxt)
-	if isClose { bg = clrBtnCls; txt = 0x00202020 }
-	if disabled { bg = clrBtnDis; txt = clrSub }
+	if isClose {
+		bg = clrBtnCls
+		txt = 0x00202020
+	}
+	if disabled {
+		bg = clrBtnDis
+		txt = clrSub
+	}
 
 	// Clear + rounded rect
 	user32.NewProc("FillRect").Call(hdc, uintptr(unsafe.Pointer(&rc)), uintptr(st.hBgBrush))
@@ -402,7 +448,9 @@ func drawProgress(dis *drawItemStruct) {
 	gdi32.NewProc("RoundRect").Call(hdc, uintptr(rc.Left), uintptr(rc.Top), uintptr(rc.Right), uintptr(rc.Bottom), uintptr(cornerR), uintptr(cornerR))
 	if progressVal > 0 {
 		fillW := (rc.Right - rc.Left) * int32(progressVal) / 100
-		if fillW < cornerR*2 { fillW = cornerR * 2 }
+		if fillW < cornerR*2 {
+			fillW = cornerR * 2
+		}
 		fb, _, _ := gdi32.NewProc("CreateSolidBrush").Call(clrBtnCls)
 		gdi32.NewProc("SelectObject").Call(hdc, fb)
 		gdi32.NewProc("RoundRect").Call(hdc, uintptr(rc.Left), uintptr(rc.Top), uintptr(rc.Left+fillW), uintptr(rc.Bottom), uintptr(cornerR), uintptr(cornerR))
@@ -415,7 +463,7 @@ func drawProgress(dis *drawItemStruct) {
 }
 
 func onUninstall() {
-	if isRunning("FastFlix.exe") {
+	if isRunning() {
 		setText(st.hStatus, "\u26D4  FastFlix is running, please close it first")
 		user32.NewProc("ShowWindow").Call(uintptr(st.hStatus), 5)
 		user32.NewProc("EnableWindow").Call(uintptr(st.hUninstBtn), 0)
@@ -434,7 +482,11 @@ func onUninstall() {
 	doUninstall()
 
 	setProgress(100)
-	setText(st.hProgLabel, "FastFlix has been removed.")
+	if _, err := os.Stat(filepath.Join(st.installDir, ffinstall.UserConfigName)); err == nil {
+		setText(st.hProgLabel, "FastFlix has been removed (settings file kept).")
+	} else {
+		setText(st.hProgLabel, "FastFlix has been removed.")
+	}
 
 	// Show close button again
 	user32.NewProc("ShowWindow").Call(uintptr(st.hCloseBtn), 5)
@@ -443,62 +495,35 @@ func onUninstall() {
 func doUninstall() {
 	setProgress(10)
 
-	// Shortcuts
-	for _, sm := range []string{
-		filepath.Join(os.Getenv("APPDATA"), "Microsoft", "Windows", "Start Menu", "Programs", productName),
-		filepath.Join(os.Getenv("ProgramData"), "Microsoft", "Windows", "Start Menu", "Programs", productName),
-	} { os.RemoveAll(sm) }
-	for _, d := range []string{
-		filepath.Join(os.Getenv("USERPROFILE"), "Desktop", productName+".lnk"),
-		filepath.Join(os.Getenv("PUBLIC"), "Desktop", productName+".lnk"),
-	} { os.Remove(d) }
+	// Shortcuts: only the ones belonging to the kind of install being removed
+	if st.regRoot == registry.LOCAL_MACHINE {
+		os.RemoveAll(filepath.Join(os.Getenv("ProgramData"), "Microsoft", "Windows", "Start Menu", "Programs", productName))
+		os.Remove(filepath.Join(os.Getenv("PUBLIC"), "Desktop", productName+".lnk"))
+	} else {
+		os.RemoveAll(filepath.Join(os.Getenv("APPDATA"), "Microsoft", "Windows", "Start Menu", "Programs", productName))
+		os.Remove(filepath.Join(os.Getenv("USERPROFILE"), "Desktop", productName+".lnk"))
+	}
 
 	setProgress(30)
 
-	// Registry (all paths including WOW6432Node for old 32-bit NSIS installs)
-	regPaths := []string{
-		`Software\Microsoft\Windows\CurrentVersion\Uninstall\` + productName,
-		`Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\` + productName,
-		`SOFTWARE\` + productName,
-	}
-	for _, root := range []registry.Key{registry.LOCAL_MACHINE, registry.CURRENT_USER} {
-		for _, p := range regPaths {
-			registry.DeleteKey(root, p)
-		}
+	// Registry: only the root that registered this install (and only if it really points at this directory)
+	if st.regOwned {
+		ffinstall.CleanRegistry(st.regRoot)
 	}
 
 	setProgress(50)
 
-	// Remove files (except self)
-	cleanSelf := filepath.Clean(st.selfPath)
-	cleanDir := filepath.Clean(st.installDir)
-	filepath.Walk(cleanDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil { return nil }
-		c := filepath.Clean(path)
-		if c == cleanSelf || c == cleanDir { return nil }
-		if info.IsDir() { os.RemoveAll(path); return filepath.SkipDir }
-		os.Remove(path)
-		return nil
-	})
+	// Remove the files the installer put here. User files (portable fastflix.yaml etc.) are left alone and
+	// the folder is only removed if it ends up empty. The running uninstaller removes itself after exit.
+	ffinstall.RemoveInstalledFiles(st.installDir, st.selfPath)
 
 	setProgress(90)
 
-	// Schedule self + dir deletion — uses a loop to retry until our process exits.
-	// The /w flag on ping waits 1s per ping. We retry rmdir in a loop.
-	delCmd := fmt.Sprintf(
-		`:retry`+"\n"+
-			`ping 127.0.0.1 -n 2 >nul`+"\n"+
-			`del /f /q "%s" 2>nul`+"\n"+
-			`if exist "%s" goto retry`+"\n"+
-			`rmdir /s /q "%s"`,
-		cleanSelf, cleanSelf, cleanDir)
-	cmd := exec.Command("cmd", "/c", delCmd)
-	cmd.SysProcAttr = &syscall.SysProcAttr{CreationFlags: 0x08000000}
-	cmd.Start()
+	ffinstall.ScheduleSelfDelete(st.selfPath, st.installDir)
 }
 
 func checkProc() {
-	running := isRunning("FastFlix.exe")
+	running := isRunning()
 	if running {
 		setText(st.hStatus, "\u26D4  FastFlix is running, please close it first")
 		user32.NewProc("ShowWindow").Call(uintptr(st.hStatus), 5)
@@ -527,7 +552,10 @@ func inval(h syscall.Handle) {
 	user32.NewProc("InvalidateRect").Call(uintptr(h), 0, 1)
 }
 func mkFont(fam string, sz int, bold bool) syscall.Handle {
-	w := int32(400); if bold { w = 700 }
+	w := int32(400)
+	if bold {
+		w = 700
+	}
 	h, _, _ := gdi32.NewProc("CreateFontW").Call(uintptr(uint32(-sz)), 0, 0, 0, uintptr(w), 0, 0, 0, 1, 0, 0, 5, 0, uintptr(unsafe.Pointer(utf16P(fam))))
 	return syscall.Handle(h)
 }
@@ -542,28 +570,20 @@ func mkStatic(txt string, style uint32, x, y, w, h int32, parent, hInst uintptr)
 }
 
 func containsArg(a []string, f string) bool {
-	for _, v := range a { if strings.EqualFold(v, f) { return true } }; return false
+	for _, v := range a {
+		if strings.EqualFold(v, f) {
+			return true
+		}
+	}
+	return false
 }
-func isRunning(name string) bool {
-	snap, e := syscall.CreateToolhelp32Snapshot(2, 0); if e != nil { return false }
-	defer syscall.CloseHandle(snap)
-	var pe syscall.ProcessEntry32; pe.Size = uint32(unsafe.Sizeof(pe))
-	e = syscall.Process32First(snap, &pe)
-	for e == nil {
-		if strings.EqualFold(syscall.UTF16ToString(pe.ExeFile[:]), name) { return true }
-		e = syscall.Process32Next(snap, &pe)
-	}; return false
-}
-func isProtected(dir string) bool {
-	d := strings.ToLower(filepath.Clean(dir))
-	for _, e := range []string{"ProgramFiles", "ProgramW6432", "ProgramFiles(x86)"} {
-		r := strings.ToLower(os.Getenv(e)); if r != "" && strings.HasPrefix(d, r) { return true }
-	}; return false
-}
-func isAdmin() bool { _, e := os.Open("\\\\.\\PHYSICALDRIVE0"); return e == nil }
+func isRunning() bool { return ffinstall.IsRunning(st.installDir) }
+
 func relaunchElevated(self string, args []string) {
-	v, _ := syscall.UTF16PtrFromString("runas"); e, _ := syscall.UTF16PtrFromString(self)
-	a, _ := syscall.UTF16PtrFromString(strings.Join(args, " ")); c, _ := syscall.UTF16PtrFromString(filepath.Dir(self))
+	v, _ := syscall.UTF16PtrFromString("runas")
+	e, _ := syscall.UTF16PtrFromString(self)
+	a, _ := syscall.UTF16PtrFromString(strings.Join(args, " "))
+	c, _ := syscall.UTF16PtrFromString(filepath.Dir(self))
 	syscall.NewLazyDLL("shell32.dll").NewProc("ShellExecuteW").Call(0, uintptr(unsafe.Pointer(v)), uintptr(unsafe.Pointer(e)), uintptr(unsafe.Pointer(a)), uintptr(unsafe.Pointer(c)), 1)
 }
 

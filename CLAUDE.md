@@ -29,10 +29,12 @@ uv run pytest tests/encoders/test_hevc_x265_command_builder.py -v
 # Run the application
 python -m fastflix
 
-# Build Windows distribution + installer (Go-based, replaces PyInstaller)
-uv run python scripts/build_distribution.py --archive  # Full dist + archive
-cd cmd/installer && go-winres make && cd ../..          # Icon/manifest resources
-go build -ldflags="-s -w -H windowsgui -X main.Version=6.3.0 -X main.BuildDate=$(date +%Y-%m-%d)" -o dist/FastFlix_installer.exe ./cmd/installer
+# Build Windows distribution + installer (Go-based, replaces PyInstaller). Needs Go and
+# go-winres (go install github.com/tc-hib/go-winres@v0.3.3) on PATH. The script syncs winres.json versions,
+# runs go-winres for each cmd/, builds FastFlix.exe + uninstall.exe, and injects Version/BuildDate via -ldflags.
+uv run --with zstandard python scripts/build_distribution.py --archive --installer   # -> dist/FastFlix_installer.exe
+uv run --with zstandard python scripts/build_distribution.py --archive               # dist + archive only
+GOOS=windows go vet ./... && go test ./cmd/internal/...                                # Go checks
 
 # Build Linux/macOS executables (still uses PyInstaller)
 uv run pyinstaller FastFlix_Nix_OneFile.spec

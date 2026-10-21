@@ -4,7 +4,8 @@
 // Replaces PyInstaller to avoid antivirus false positives caused by the
 // PyInstaller bootloader's temp-extraction behavior.
 //
-// Build: go build -ldflags="-s -w" -o FastFlix.exe ./cmd/launcher
+// Build: go build -ldflags="-s -w -X main.Version=6.3.0 -X main.BuildDate=2026-01-01" -o FastFlix.exe ./cmd/launcher
+// (scripts/build_distribution.py does this and runs go-winres first.)
 
 package main
 
@@ -18,8 +19,9 @@ import (
 	"unsafe"
 )
 
-// Version is set at build time via -ldflags="-X main.Version=6.3.0"
+// Version and BuildDate are set at build time via -ldflags
 var Version = "dev"
+var BuildDate = "" // format: 2006-01-02
 
 func main() {
 	// Resolve install directory from the launcher's own location
@@ -33,12 +35,12 @@ func main() {
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "--version":
-			fmt.Printf("FastFlix %s\n", Version)
+			if BuildDate != "" {
+				fmt.Printf("FastFlix %s (built %s)\n", Version, BuildDate)
+			} else {
+				fmt.Printf("FastFlix %s\n", Version)
+			}
 			os.Exit(0)
-		case "--test":
-			// Pass --test through to Python for startup validation
-			runPython(installDir, "python.exe", true)
-			return
 		case "--help":
 			fmt.Printf("FastFlix %s\n", Version)
 			fmt.Println("Usage: FastFlix.exe [--version] [--test] [--help]")
@@ -46,11 +48,12 @@ func main() {
 		}
 	}
 
-	// Normal launch: use python.exe (console visible for log output)
-	runPython(installDir, "python.exe", false)
+	// Normal launch (and --test): use python.exe (console visible for log output) and pass every
+	// argument through to FastFlix, so e.g. "FastFlix.exe movie.mkv" or "--test" reach `python -m fastflix`.
+	runPython(installDir, "python.exe", os.Args[1:])
 }
 
-func runPython(installDir, pythonBin string, passArgs bool) {
+func runPython(installDir, pythonBin string, extraArgs []string) {
 	pythonDir := filepath.Join(installDir, "python")
 	libDir := filepath.Join(installDir, "lib")
 	pythonExe := filepath.Join(pythonDir, pythonBin)
@@ -60,10 +63,10 @@ func runPython(installDir, pythonBin string, passArgs bool) {
 		fatal("Python not found at %s\nPlease reinstall FastFlix.", pythonExe)
 	}
 
-	// Build environment
+	// Build environment. PYTHONHOME/PYTHONPATH are intentionally NOT set: the embeddable distribution's
+	// python313._pth file (see scripts/build_distribution.py) fixes sys.path, including ../lib, and makes
+	// Python ignore those variables.
 	env := os.Environ()
-	env = setEnv(env, "PYTHONHOME", pythonDir)
-	env = setEnv(env, "PYTHONPATH", libDir)
 	env = setEnv(env, "FASTFLIX_BUNDLED", "1")
 
 	// Detect portable mode: fastflix.yaml next to the launcher
@@ -82,10 +85,7 @@ func runPython(installDir, pythonBin string, passArgs bool) {
 	env = setEnv(env, "QT_PLUGIN_PATH", filepath.Join(pyside6Dir, "plugins"))
 
 	// Build command: python -m fastflix [args...]
-	args := []string{pythonExe, "-m", "fastflix"}
-	if passArgs && len(os.Args) > 1 {
-		args = append(args, os.Args[1:]...)
-	}
+	args := append([]string{pythonExe, "-m", "fastflix"}, extraArgs...)
 
 	// Set working directory to install dir so base_path resolves correctly
 	cmd := exec.Command(args[0], args[1:]...)

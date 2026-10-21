@@ -1,20 +1,23 @@
 // FastFlix Installer
 //
-// Polished GUI installer using lxn/walk with dark theme.
+// Polished GUI installer drawn with raw Win32 calls and a dark theme.
 // Supports per-user and all-users installation modes.
 //
-// Build:
-//   go build -ldflags="-s -w -H windowsgui -X main.Version=6.3.0" -o FastFlix_installer.exe ./cmd/installer
+// Build (scripts/build_distribution.py --installer does all of this and injects the version):
+//   cd cmd/installer && go-winres make && cd ../..
+//   go build -ldflags="-s -w -H windowsgui -X main.Version=6.3.0 -X main.BuildDate=2026-01-01" -o FastFlix_installer.exe ./cmd/installer
 
 package main
 
 import (
 	"os"
-	"os/exec"
 	"runtime"
 	"strings"
 	"syscall"
 	"unsafe"
+
+	"github.com/cdgriffith/fastflix-installer/cmd/internal/ffinstall"
+	"golang.org/x/sys/windows/registry"
 )
 
 // Version and BuildDate are set at build time via -ldflags
@@ -24,11 +27,11 @@ var BuildDate = "" // format: 2006-01-02
 func main() {
 	runtime.LockOSThread()
 
-	// Single-instance check via named mutex (skip for elevated helpers and uninstall mode)
+	// Single-instance check via named mutex (skipped for the silent elevated helpers)
 	args := os.Args[1:]
-	isHelper := containsArg(args, "--elevated-install") || containsArg(args, "--elevated-copy") || containsArg(args, "--uninstall")
+	isHelper := containsArg(args, "--elevated-install") || containsArg(args, "--elevated-uninstall")
 	if !isHelper {
-		mutexName, _ := syscall.UTF16PtrFromString("Global\\FastFlixInstaller")
+		mutexName, _ := syscall.UTF16PtrFromString(`Global\FastFlixInstaller`)
 		handle, _, err := kernel32DLL.NewProc("CreateMutexW").Call(0, 1, uintptr(unsafe.Pointer(mutexName)))
 		if handle != 0 && err == syscall.ERROR_ALREADY_EXISTS {
 			messageBox("FastFlix Installer", "The FastFlix installer is already running.", 0x40)
@@ -37,8 +40,6 @@ func main() {
 		// mutex handle stays open until process exits — no need to close it
 	}
 
-	// Handle command-line flags
-
 	// --elevated-install: silent elevated helper (extracts + registry + shortcuts)
 	// Called by the GUI installer when "Install for all users" is clicked
 	if containsArg(args, "--elevated-install") {
@@ -46,9 +47,9 @@ func main() {
 		return
 	}
 
-	// Legacy --elevated-copy for backwards compat
-	if containsArg(args, "--elevated-copy") {
-		runElevatedCopy(args)
+	// --elevated-uninstall: silent elevated helper that removes protected (Program Files) installs
+	if containsArg(args, "--elevated-uninstall") {
+		runElevatedUninstall(args)
 		return
 	}
 
@@ -56,57 +57,75 @@ func main() {
 	runInstallerGUI()
 }
 
-// runElevatedCopy is a silent elevated helper that copies an already-extracted
-// distribution from a temp directory to Program Files and writes HKLM registry.
-// Called with: --elevated-copy --source <tempdir> --dest <installdir>
-func runElevatedCopy(args []string) {
-	src := getArgValue(args, "--source")
-	dst := getArgValue(args, "--dest")
-	if src == "" || dst == "" {
-		os.Exit(1)
-	}
-
-	// Copy files from temp to Program Files
-	os.MkdirAll(dst, 0755)
-	// Use robocopy for reliable admin copy
-	cmd := exec.Command("robocopy", src, dst, "/E", "/NFL", "/NDL", "/NJH", "/NJS", "/nc", "/ns", "/np")
-	cmd.SysProcAttr = &syscall.SysProcAttr{CreationFlags: 0x08000000}
-	cmd.Run()
-	// robocopy returns non-zero on success (1=files copied), only 8+ is error
-
-	// Write HKLM registry
-	_, regRoot, startMenu := installPaths(modeAllUsers)
-	writeRegistry(dst, regRoot)
-	writeInstalledSize(dst, regRoot)
-	createShortcuts(dst, startMenu)
-
-	// Write success marker
-	os.WriteFile(src+`\.done`, []byte("ok"), 0644)
-}
-
 // runElevatedInstall does everything: extract embedded archive to dest, registry, shortcuts.
-// Called as an elevated process — no UI, writes a marker file when done.
+// Called as an elevated process — no UI. Writes "ok" (optionally followed by a warning line) or
+// "error: <message>" to the marker file when done, so the GUI can report the outcome.
 func runElevatedInstall(args []string) {
 	dst := getArgValue(args, "--dest")
 	marker := getArgValue(args, "--marker")
-	if dst == "" {
+	if dst == "" || marker == "" {
 		os.Exit(1)
+	}
+	writeMarker := func(s string) { os.WriteFile(marker, []byte(s), 0644) }
+
+	// Only ever install to the all-users location
+	expected, regRoot, startMenu := installPaths(modeAllUsers)
+	if !strings.EqualFold(strings.TrimRight(dst, `\`), expected) {
+		writeMarker("error: unexpected install location")
+		return
 	}
 
 	// Extract embedded archive directly to destination (includes uninstall.exe)
-	os.MkdirAll(dst, 0755)
-	extractTarZstd(distArchive, dst, nil)
+	if err := installFiles(dst, nil); err != nil {
+		writeMarker("error: " + err.Error())
+		return
+	}
 
 	// Write HKLM registry + shortcuts
-	_, regRoot, startMenu := installPaths(modeAllUsers)
 	writeRegistry(dst, regRoot)
 	writeInstalledSize(dst, regRoot)
-	createShortcuts(dst, startMenu)
-
-	// Write completion marker
-	if marker != "" {
-		os.WriteFile(marker, []byte("ok"), 0644)
+	if err := createShortcuts(dst, startMenu); err != nil {
+		writeMarker("ok\nwarning: " + err.Error())
+		return
 	}
+	writeMarker("ok")
+}
+
+// runElevatedUninstall removes the given protected install directories (--dir, repeatable), then all HKLM
+// keys and the common Start Menu / public desktop shortcuts. Elevated, no UI; writes a marker when done.
+func runElevatedUninstall(args []string) {
+	marker := getArgValue(args, "--marker")
+	if marker == "" {
+		os.Exit(1)
+	}
+	var problems []string
+	for i, a := range args {
+		if !strings.EqualFold(a, "--dir") || i+1 >= len(args) {
+			continue
+		}
+		dir := args[i+1]
+		if _, err := os.Stat(dir); err != nil {
+			continue // already gone
+		}
+		if err := ffinstall.RemoveInstalledFiles(dir, ""); err != nil {
+			problems = append(problems, err.Error())
+		}
+	}
+
+	ffinstall.CleanRegistry(registry.LOCAL_MACHINE)
+	_, commonSM := startMenuDirs()
+	os.RemoveAll(commonSM)
+	os.Remove(publicDesktopShortcut())
+
+	if len(problems) > 0 {
+		os.WriteFile(marker, []byte("error: "+strings.Join(problems, "; ")), 0644)
+		return
+	}
+	os.WriteFile(marker, []byte("ok"), 0644)
+}
+
+func publicDesktopShortcut() string {
+	return os.Getenv("PUBLIC") + `\Desktop\` + productName + ".lnk"
 }
 
 func getArgValue(args []string, key string) string {
