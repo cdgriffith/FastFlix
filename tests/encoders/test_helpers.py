@@ -358,7 +358,7 @@ def test_generate_all(fastflix_instance):
             fastflix_instance.current_video.subtitle_tracks,
             output_path=fastflix_instance.current_video.video_settings.output_path,
         )
-        mock_build_attachments.assert_called_once_with(fastflix_instance.current_video.attachment_tracks)
+        mock_build_attachments.assert_called_once_with(fastflix_instance.current_video.attachment_tracks, 0)
 
 
 def test_generate_all_with_list_start_extra(fastflix_instance):

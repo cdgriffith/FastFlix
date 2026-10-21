@@ -503,7 +503,10 @@ def generate_all(
                     burn_in_file_index = track.file_index
                 break
 
-    attachments_cmd = build_attachments(fastflix.current_video.attachment_tracks)
+    mapped_attachment_count = sum(
+        1 for track in fastflix.current_video.data_tracks if track.enabled and track.codec_type == "attachment"
+    )
+    attachments_cmd = build_attachments(fastflix.current_video.attachment_tracks, mapped_attachment_count)
 
     enable_opencl = fastflix.opencl_support
     if "enable_opencl" in filters_extra:

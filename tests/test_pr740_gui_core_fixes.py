@@ -105,3 +105,13 @@ def test_elided_label_does_not_force_width(qapp):
     assert label.text() != long_text
     assert label.text().endswith("\u2026")
     assert label.fullText() == long_text
+
+
+def test_legacy_deinterlace_filters_map_to_presets():
+    from fastflix.widgets.panels.advanced_panel import deinterlace_presets, legacy_deinterlace_filters
+
+    assert legacy_deinterlace_filters["bwdif"] == ("bwdif", "send_frame")
+    assert legacy_deinterlace_filters["yadif=mode=1"] == ("yadif", "send_field")
+    assert legacy_deinterlace_filters["estdif=mode=1"] == ("estdif", "send_field")
+    for method, mode in legacy_deinterlace_filters.values():
+        assert mode in deinterlace_presets[method]

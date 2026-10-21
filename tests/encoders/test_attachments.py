@@ -72,17 +72,17 @@ def test_build_attachments_with_cover(sample_attachment_tracks):
     # Verify the structure by checking index-based ordering for first attachment
     first_attach_idx = result.index("-attach")
     assert result[first_attach_idx + 1] == "cover.jpg"
-    assert result[first_attach_idx + 2] == "-metadata:s:0"
+    assert result[first_attach_idx + 2] == "-metadata:s:t:0"
     assert result[first_attach_idx + 3] == "mimetype=image/jpeg"
-    assert result[first_attach_idx + 4] == "-metadata:s:0"
+    assert result[first_attach_idx + 4] == "-metadata:s:t:0"
     assert result[first_attach_idx + 5] == "filename=cover.jpg"
 
     # Verify the structure for second attachment
     second_attach_idx = result.index("-attach", first_attach_idx + 1)
     assert result[second_attach_idx + 1] == "thumbnail.png"
-    assert result[second_attach_idx + 2] == "-metadata:s:1"
+    assert result[second_attach_idx + 2] == "-metadata:s:t:1"
     assert result[second_attach_idx + 3] == "mimetype=image/png"
-    assert result[second_attach_idx + 4] == "-metadata:s:1"
+    assert result[second_attach_idx + 4] == "-metadata:s:t:1"
     assert result[second_attach_idx + 5] == "filename=thumbnail.png"
 
 
@@ -110,17 +110,17 @@ def test_build_attachments_with_custom_paths():
     # Verify first attachment with custom path and filename
     first_attach_idx = result.index("-attach")
     assert result[first_attach_idx + 1] == "path/to/cover.jpg"
-    assert result[first_attach_idx + 2] == "-metadata:s:0"
+    assert result[first_attach_idx + 2] == "-metadata:s:t:0"
     assert result[first_attach_idx + 3] == "mimetype=image/jpeg"
-    assert result[first_attach_idx + 4] == "-metadata:s:0"
+    assert result[first_attach_idx + 4] == "-metadata:s:t:0"
     assert result[first_attach_idx + 5] == "filename=movie_cover.jpg"
 
     # Verify second attachment with spaces in path and custom filename
     second_attach_idx = result.index("-attach", first_attach_idx + 1)
     assert result[second_attach_idx + 1] == "path/with spaces/thumbnail.png"
-    assert result[second_attach_idx + 2] == "-metadata:s:1"
+    assert result[second_attach_idx + 2] == "-metadata:s:t:1"
     assert result[second_attach_idx + 3] == "mimetype=image/png"
-    assert result[second_attach_idx + 4] == "-metadata:s:1"
+    assert result[second_attach_idx + 4] == "-metadata:s:t:1"
     assert result[second_attach_idx + 5] == "filename=movie_thumbnail.png"
 
 
@@ -153,7 +153,16 @@ def test_build_attachments_non_cover_type():
     # Verify the structure of the single cover attachment
     attach_idx = result.index("-attach")
     assert result[attach_idx + 1] == "cover.jpg"
-    assert result[attach_idx + 2] == "-metadata:s:0"
+    assert result[attach_idx + 2] == "-metadata:s:t:0"
     assert result[attach_idx + 3] == "mimetype=image/jpeg"
-    assert result[attach_idx + 4] == "-metadata:s:0"
+    assert result[attach_idx + 4] == "-metadata:s:t:0"
     assert result[attach_idx + 5] == "filename=cover.jpg"
+
+
+def test_build_attachments_offset_by_mapped_attachments(sample_attachment_tracks):
+    """Cover attachments are indexed after attachment streams mapped from the source."""
+    result = build_attachments(sample_attachment_tracks, mapped_attachment_count=2)
+    first_attach_idx = result.index("-attach")
+    assert result[first_attach_idx + 2] == "-metadata:s:t:2"
+    second_attach_idx = result.index("-attach", first_attach_idx + 1)
+    assert result[second_attach_idx + 2] == "-metadata:s:t:3"

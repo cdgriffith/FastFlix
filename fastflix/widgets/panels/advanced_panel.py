@@ -75,6 +75,13 @@ deinterlace_presets = {
     "estdif": {"send_frame": "estdif=mode=frame", "send_field": "estdif=mode=field"},
 }
 
+# Filter strings saved by earlier versions, mapped to the (method, mode) they were selected as
+legacy_deinterlace_filters = {
+    f"{method}{suffix}": (method, mode)
+    for method in deinterlace_presets
+    for suffix, mode in (("", "send_frame"), ("=mode=1", "send_field"))
+}
+
 vsync = ["auto", "passthrough", "cfr", "vfr", "drop"]
 tone_map_items = ["none", "clip", "linear", "gamma", "reinhard", "hable", "mobius"]
 
@@ -1109,6 +1116,9 @@ class AdvancedPanel(QtWidgets.QWidget):
                         if settings.deinterlace_filter == value:
                             self.deinterlace_method_widget.setCurrentText(method)
                             self.deinterlace_mode_widget.setCurrentText(mode_name)
+                if legacy := legacy_deinterlace_filters.get(settings.deinterlace_filter):
+                    self.deinterlace_method_widget.setCurrentText(legacy[0])
+                    self.deinterlace_mode_widget.setCurrentText(legacy[1])
             else:
                 self.deinterlace_method_widget.setCurrentIndex(0)
                 self.deinterlace_mode_widget.setCurrentIndex(0)
