@@ -69,7 +69,7 @@ def test_qsvencc_av1_tune_hq():
         encoder_settings=QSVEncCAV1Settings(
             bitrate=None,
             cqp=22,
-            tune="hq",
+            tune="vmaf",
         ),
     )
 
@@ -79,7 +79,7 @@ def test_qsvencc_av1_tune_hq():
     cmd = result[0].command
     assert "--tune" in cmd
     tune_idx = cmd.index("--tune")
-    assert cmd[tune_idx + 1] == "hq"
+    assert cmd[tune_idx + 1] == "vmaf"
 
 
 def test_qsvencc_av1_tune_ll():
@@ -88,7 +88,7 @@ def test_qsvencc_av1_tune_ll():
         encoder_settings=QSVEncCAV1Settings(
             bitrate=None,
             cqp=22,
-            tune="ll",
+            tune="psnr",
         ),
     )
 
@@ -98,7 +98,7 @@ def test_qsvencc_av1_tune_ll():
     cmd = result[0].command
     assert "--tune" in cmd
     tune_idx = cmd.index("--tune")
-    assert cmd[tune_idx + 1] == "ll"
+    assert cmd[tune_idx + 1] == "psnr"
 
 
 def test_qsvencc_av1_tune_lossless():
@@ -107,7 +107,7 @@ def test_qsvencc_av1_tune_lossless():
         encoder_settings=QSVEncCAV1Settings(
             bitrate=None,
             cqp=22,
-            tune="lossless",
+            tune="perceptual",
         ),
     )
 
@@ -117,7 +117,7 @@ def test_qsvencc_av1_tune_lossless():
     cmd = result[0].command
     assert "--tune" in cmd
     tune_idx = cmd.index("--tune")
-    assert cmd[tune_idx + 1] == "lossless"
+    assert cmd[tune_idx + 1] == "perceptual"
 
 
 def test_qsvencc_av1_tune_none():
@@ -174,7 +174,7 @@ def test_qsvencc_av1_all_elements_are_strings():
             lookahead="32",
             b_frames="3",
             ref="4",
-            tune="ll",
+            tune="psnr",
         ),
         video_settings=VideoSettings(
             start_time=5.5,

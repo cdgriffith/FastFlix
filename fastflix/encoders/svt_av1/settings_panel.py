@@ -240,9 +240,9 @@ class SVT_AV1(SettingPanel):
             label="Lossless",
             widget_name="lossless",
             tooltip=(
-                "Enable lossless encoding mode (requires SVT-AV1 v2.0+).\n"
+                "Enable lossless encoding mode (requires SVT-AV1 3.0+; 3.1.1+ recommended for 10-bit).\n"
                 "Produces bit-exact output with no quality loss.\n"
-                "Rate control options are ignored in lossless mode."
+                "Rate control and film grain options are ignored in lossless mode."
             ),
             opt="lossless",
             connect=lambda: (self._toggle_lossless(), self.main.page_update(build_thumbnail=False)),

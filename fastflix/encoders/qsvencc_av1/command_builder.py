@@ -4,7 +4,7 @@ import shlex
 from typing import List
 
 from fastflix.encoders.common.helpers import Command
-from fastflix.models.encode import QSVEncCAV1Settings
+from fastflix.models.encode import sanitize_qsv_tune, QSVEncCAV1Settings
 from fastflix.models.video import Video
 from fastflix.models.fastflix import FastFlix
 from fastflix.encoders.common.encc_helpers import (
@@ -118,8 +118,9 @@ def build(fastflix: FastFlix):
 
     command.extend(["--quality", settings.preset])
 
-    if settings.tune:
-        command.extend(["--tune", settings.tune])
+    tune = sanitize_qsv_tune(settings.tune)
+    if tune:
+        command.extend(["--tune", tune])
 
     if settings.lookahead:
         command.extend(["--la-depth", str(settings.lookahead)])
@@ -158,15 +159,16 @@ def build(fastflix: FastFlix):
     if video.video_settings.deinterlace:
         command.append("--vpp-yadif")
 
+    hdr2sdr_param = None
     if video.video_settings.remove_hdr:
         remove_type = (
             video.video_settings.tone_map
             if video.video_settings.tone_map in ("mobius", "hable", "reinhard")
             else "mobius"
         )
-        command.extend(["--vpp-colorspace", f"hdr2sdr={remove_type}"])
+        hdr2sdr_param = f"hdr2sdr={remove_type}"
 
-    command.extend(rigaya_extra_options(video))
+    command.extend(rigaya_extra_options(video, hdr2sdr=hdr2sdr_param))
 
     if settings.split_mode == "parallel":
         command.extend(["--parallel", "auto"])

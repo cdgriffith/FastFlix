@@ -70,6 +70,20 @@ class DataTrack(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
+QSVENC_TUNE_VALUES = ("default", "psnr", "ssim", "ms_ssim", "vmaf", "perceptual")
+
+
+def sanitize_qsv_tune(value) -> Optional[str]:
+    """Return a valid QSVEncC --tune value (comma separated list), or None.
+
+    Older configs stored NVEncC values (hq, ll, ull, lossless) which QSVEncC rejects; those are dropped.
+    """
+    if not value or not isinstance(value, str):
+        return None
+    parts = [p.strip() for p in value.split(",") if p.strip().lower() in QSVENC_TUNE_VALUES]
+    return ",".join(p.lower() for p in parts) or None
+
+
 class EncoderSettings(BaseModel):
     max_muxing_queue_size: str = "1024"
     pix_fmt: str = "yuv420p10le"
@@ -299,6 +313,11 @@ class QSVEncCSettings(EncoderSettings):
     split_mode: str = "none"
     tune: Optional[str] = None
 
+    @field_validator("tune", mode="before")
+    @classmethod
+    def validate_qsv_tune(cls, value):
+        return sanitize_qsv_tune(value)
+
     @field_validator("cqp", mode="before")
     @classmethod
     def cqp_to_int(cls, value):
@@ -335,6 +354,11 @@ class QSVEncCAV1Settings(EncoderSettings):
     split_mode: str = "none"
     tune: Optional[str] = None
 
+    @field_validator("tune", mode="before")
+    @classmethod
+    def validate_qsv_tune(cls, value):
+        return sanitize_qsv_tune(value)
+
     @field_validator("cqp", mode="before")
     @classmethod
     def cqp_to_int(cls, value):
@@ -368,6 +392,11 @@ class QSVEncCH264Settings(EncoderSettings):
     adapt_ltr: bool = False
     split_mode: str = "none"
     tune: Optional[str] = None
+
+    @field_validator("tune", mode="before")
+    @classmethod
+    def validate_qsv_tune(cls, value):
+        return sanitize_qsv_tune(value)
 
     @field_validator("cqp", mode="before")
     @classmethod

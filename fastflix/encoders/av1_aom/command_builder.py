@@ -37,7 +37,7 @@ def build(fastflix: FastFlix):
     if settings.tune != "default":
         beginning.extend(["-tune", settings.tune])
 
-    if settings.denoise_noise_level > 0:
+    if settings.denoise_noise_level > 0 and not settings.lossless:
         beginning.extend(["-denoise-noise-level", str(settings.denoise_noise_level)])
 
     if settings.aq_mode != "default":

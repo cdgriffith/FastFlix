@@ -117,8 +117,7 @@ class AudioConversion(QtWidgets.QWidget):
         profile_map = {"aac_he": 1, "aac_he_v2": 2}
         self.aac_profile.setCurrentIndex(profile_map.get(self.audio_track.conversion_profile, 0))
 
-        aac_codecs = ("aac", "libfdk_aac")
-        show_profile = self.conversion_codec.currentText() in aac_codecs
+        show_profile = self.conversion_codec.currentText() == "libfdk_aac"
         self.aac_profile_label.setVisible(show_profile)
         self.aac_profile.setVisible(show_profile)
 
@@ -231,8 +230,8 @@ class AudioConversion(QtWidgets.QWidget):
         else:
             self.aq.setEnabled(True)
 
-        aac_codecs = ("aac", "libfdk_aac")
-        show_profile = codec in aac_codecs
+        # HE-AAC profiles are only supported by libfdk_aac (the native FFmpeg/rigaya aac encoder rejects them)
+        show_profile = codec == "libfdk_aac"
         self.aac_profile_label.setVisible(show_profile)
         self.aac_profile.setVisible(show_profile)
         if not show_profile:
@@ -245,7 +244,8 @@ class AudioConversion(QtWidgets.QWidget):
             self.audio_track.conversion_codec = ""
 
         profile_values = {0: None, 1: "aac_he", 2: "aac_he_v2"}
-        self.audio_track.conversion_profile = profile_values.get(self.aac_profile.currentIndex())
+        profile = profile_values.get(self.aac_profile.currentIndex())
+        self.audio_track.conversion_profile = profile if self.audio_track.conversion_codec == "libfdk_aac" else None
 
         if self.aq.currentIndex() != 10:
             self.audio_track.conversion_aq = self.aq.currentIndex()

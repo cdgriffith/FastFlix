@@ -171,8 +171,14 @@ class QSVAV1Enc(QSVEncPanel):
         return self._add_combo_box(
             label="Tune",
             widget_name="tune",
-            tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, ll - Low Latency, ull - Ultra Low Latency",
-            options=["none", "hq", "ll", "ull", "lossless"],
+            tooltip=(
+                "Tune the encode quality mode\n"
+                "default - Default\n"
+                "psnr / ssim / ms_ssim - Optimize for the metric\n"
+                "vmaf - Optimize for VMAF\n"
+                "perceptual - Perceptual quality"
+            ),
+            options=["none", "default", "psnr", "ssim", "ms_ssim", "vmaf", "perceptual"],
             opt="tune",
         )
 

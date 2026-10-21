@@ -3,11 +3,15 @@ import logging
 from typing import List, Optional
 
 from fastflix.models.video import SubtitleTrack, AudioTrack, DataTrack, Video
-from fastflix.encoders.common.audio import lossless
+from fastflix.encoders.common.audio import lossless, resolve_aac_profile, channel_list
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.encode import VCEEncCAVCSettings, VCEEncCAV1Settings, VCEEncCSettings
 
 logger = logging.getLogger("fastflix")
+
+
+# FastFlix (FFmpeg) AAC profile name -> libavcodec profile name used by rigaya's --audio-profile
+RIGAYA_AUDIO_PROFILES = {"aac_low": "LC", "aac_he": "HE-AAC", "aac_he_v2": "HE-AACv2"}
 
 
 def audio_quality_converter(quality, codec, channels=2, track_number=1):
@@ -196,8 +200,16 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams) -> List[str]:
                     bitrate_parts = quality_str.split()
             command_list.extend(downmix)
             command_list.extend(["--audio-codec", f"{audio_id}?{track.conversion_codec}"])
-            if track.conversion_profile:
-                command_list.extend(["--audio-profile", f"{audio_id}?{track.conversion_profile}"])
+            # rigaya matches the profile against libavcodec's profile names (LC, HE-AAC, HE-AACv2)
+            if track.downmix and track.downmix != "No Downmix":
+                out_channels = channel_list.get(track.downmix)
+            else:
+                out_channels = track.raw_info.get("channels") if track.raw_info else None
+            aac_profile = resolve_aac_profile(track.conversion_codec, track.conversion_profile, out_channels)
+            if aac_profile:
+                command_list.extend(
+                    ["--audio-profile", f"{audio_id}?{RIGAYA_AUDIO_PROFILES.get(aac_profile, aac_profile)}"]
+                )
             command_list.extend(bitrate_parts)
             command_list.extend(["--audio-metadata", f"{audio_id}?clear"])
 
@@ -353,8 +365,11 @@ RIGAYA_DENOISE_MAP: dict[str, list[str]] = {
 }
 
 
-def rigaya_extra_options(video: Video) -> List[str]:
-    """Build extra VPP filter and encoder arguments for rigaya encoders from advanced panel settings."""
+def rigaya_extra_options(video: Video, hdr2sdr: Optional[str] = None) -> List[str]:
+    """Build extra VPP filter and encoder arguments for rigaya encoders from advanced panel settings.
+
+    ``hdr2sdr`` is an optional ``hdr2sdr=<tonemap>`` parameter that gets merged with LUT3D into one --vpp-colorspace.
+    """
     result: List[str] = []
     vs = video.video_settings
 
@@ -437,9 +452,14 @@ def rigaya_extra_options(video: Video) -> List[str]:
     if vs.curves_preset:
         result.extend(["--vpp-curves", f"preset={vs.curves_preset}"])
 
-    # LUT3D
+    # --vpp-colorspace may only be given once, so hdr2sdr and lut3d are combined into a single argument
+    colorspace_parts = []
+    if hdr2sdr:
+        colorspace_parts.append(hdr2sdr)
     if vs.lut3d_path:
-        result.extend(["--vpp-colorspace", f"lut3d={vs.lut3d_path},lut3d_interp=tetrahedral"])
+        colorspace_parts.append(f"lut3d={vs.lut3d_path},lut3d_interp=tetrahedral")
+    if colorspace_parts:
+        result.extend(["--vpp-colorspace", ",".join(colorspace_parts)])
 
     # Pad / Letterbox
     if vs.pad_aspect and vs.pad_aspect != "none":
@@ -452,7 +472,11 @@ def rigaya_extra_options(video: Video) -> List[str]:
             if vs.crop:
                 sw = sw - vs.crop.left - vs.crop.right
                 sh = sh - vs.crop.top - vs.crop.bottom
-            # If scale is applied, use scaled dimensions for pad calculation
+            # rigaya applies --vpp-rotate before resize and pad (crop happens at input), so a 90/270 degree
+            # rotation swaps the cropped dimensions before padding.
+            if vs.rotate in (1, 3):
+                sw, sh = sh, sw
+            # --output-res is the final (post-rotation) size, so scaled dimensions are used as-is
             if video.output_width is not None and video.output_height is not None:
                 sw = video.output_width
                 sh = video.output_height
@@ -479,7 +503,7 @@ def rigaya_extra_options(video: Video) -> List[str]:
         result.extend(["--video-metadata", f"title={vs.video_track_title}"])
 
     # GOP length
-    if vs.gop_length is not None:
+    if vs.gop_length is not None and vs.gop_length > 0:
         result.extend(["--gop-len", str(vs.gop_length)])
 
     return result
