@@ -5,6 +5,7 @@ from __future__ import annotations
 import datetime
 import logging
 import secrets
+import threading
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -14,6 +15,30 @@ if TYPE_CHECKING:
     from fastflix.widgets.main import Main
 
 logger = logging.getLogger("fastflix")
+
+
+PROBE_TIMEOUT = 60
+THUMBNAIL_TIMEOUT = 60
+
+
+def call_with_timeout(func, timeout: float, *args, **kwargs):
+    """Run func in a daemon thread; raise TimeoutError if it has not finished in time."""
+    outcome: dict = {}
+
+    def target():
+        try:
+            outcome["value"] = func(*args, **kwargs)
+        except BaseException as err:
+            outcome["error"] = err
+
+    thread = threading.Thread(target=target, daemon=True)
+    thread.start()
+    thread.join(timeout)
+    if thread.is_alive():
+        raise TimeoutError(f"Timed out after {timeout}s")
+    if "error" in outcome:
+        raise outcome["error"]
+    return outcome.get("value")
 
 
 class PostEncodeMixin:
@@ -35,7 +60,7 @@ class PostEncodeMixin:
             try:
                 from fastflix.flix import probe
 
-                probe_data = probe(self.app, output_path)
+                probe_data = call_with_timeout(probe, PROBE_TIMEOUT, self.app, output_path)
             except Exception:
                 logger.exception(f"Post-encode: ffprobe failed on {output_path}")
                 probe_data = None
@@ -151,7 +176,9 @@ class PostEncodeMixin:
                 start_time=video.video_settings.start_time or 0,
                 input_track=video.video_settings.selected_track,
             )
-            result = subprocess_run(thumb_command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, env=clean_env())
+            result = subprocess_run(
+                thumb_command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, env=clean_env(), timeout=THUMBNAIL_TIMEOUT
+            )
             if result.returncode != 0 or not thumb_output.exists():
                 logger.warning("Failed to generate thumbnail for history entry")
                 entry.thumbnail_filename = ""

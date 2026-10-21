@@ -174,3 +174,20 @@ def test_del_me_reindexes_before_reorder():
     Audio.del_me(me)
     assert audio_tracks == ["a", "b", "c"]
     assert seen == {"index": 2, "n": 3}
+
+
+def test_call_with_timeout():
+    import threading
+    import time
+
+    from fastflix.widgets.main_post_encode import call_with_timeout
+
+    assert call_with_timeout(lambda x: x * 2, 1, 21) == 42
+    release = threading.Event()
+    start = time.time()
+    with pytest.raises(TimeoutError):
+        call_with_timeout(lambda: release.wait(5), 0.2)
+    assert time.time() - start < 2
+    release.set()
+    with pytest.raises(ValueError):
+        call_with_timeout(lambda: (_ for _ in ()).throw(ValueError("x")), 1)
