@@ -61,6 +61,12 @@
 * Fixing missing and English-only translations for new strings
 * Adding SVT-AV1 tune options 3 (IQ), 4 (MS-SSIM) and 5 (VMAF) (IQ and MS-SSIM for AVIF), Variance Boost (strength and octile), temporal filtering, startup mini-gop size and quantization matrix (min/max) options to the SVT-AV1 encoder
 
+* Fixing config file being written non-atomically; it is now replaced atomically with a .bak kept, and a corrupt or truncated config falls back to the backup (or defaults, keeping the bad file aside) instead of preventing startup
+* Fixing a single invalid profile or wrongly-typed config value preventing FastFlix from starting
+* Fixing legacy fastflix.json upgrade setting the ffmpeg path from the ffprobe value
+* Fixing a single unreadable queue item discarding the entire saved queue; bad items are skipped and the original queue file is kept aside
+* Fixing queue file lock handling and replacing the queue file atomically on Windows, and cleaning up leftover temporary queue files
+* Fixing a corrupt history file being overwritten with an empty history, and history thumbnail deletion following paths outside the thumbnails folder
 
 ## Version 6.2.1
 
