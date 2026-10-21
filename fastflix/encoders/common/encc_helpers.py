@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
+import shlex
+import sys
 from typing import List, Optional
 
 from fastflix.models.video import SubtitleTrack, AudioTrack, DataTrack, Video
@@ -74,6 +76,30 @@ def rigaya_auto_options(fastflix: FastFlix) -> List[str]:
         "--colorprim",
         (fastflix.current_video.video_settings.color_primaries or "auto"),
     ]
+
+
+def split_extra_args(text: str) -> List[str]:
+    """Split user supplied custom arguments like a shell; backslashes stay literal on Windows (paths)."""
+    lex = shlex.shlex(text, posix=True)
+    lex.whitespace_split = True
+    lex.commenters = ""
+    if sys.platform == "win32":
+        lex.escape = ""
+    return list(lex)
+
+
+def rigaya_hdr_static_metadata(fastflix: FastFlix) -> List[str]:
+    """--master-display / --max-cll, skipped when tone mapping to SDR since they would describe HDR content."""
+    video = fastflix.current_video
+    if video.video_settings.remove_hdr:
+        return []
+    result = []
+    if video.master_display:
+        md = video.master_display
+        result.extend(["--master-display", f"G{md.green}B{md.blue}R{md.red}WP{md.white}L{md.luminance}"])
+    if video.cll:
+        result.extend(["--max-cll", str(video.cll)])
+    return result
 
 
 def parse_frame_rate(frame_rate_str: str) -> Optional[float]:

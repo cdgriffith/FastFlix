@@ -14,6 +14,8 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_avformat_reader,
     rigaya_trim_or_seek,
     rigaya_extra_options,
+    split_extra_args,
+    rigaya_hdr_static_metadata,
 )
 
 logger = logging.getLogger("fastflix")
@@ -63,7 +65,7 @@ def build(fastflix: FastFlix):
     command.extend(["--device", str(settings.device)])
     command.extend(["-i", str(video.source)])
 
-    if stream_id:
+    if stream_id is not None:
         command.extend(["--video-streamid", str(stream_id)])
     command.extend(rigaya_trim_or_seek(video))
     if video.video_settings.source_fps:
@@ -134,16 +136,7 @@ def build(fastflix: FastFlix):
 
     command.extend(rigaya_auto_options(fastflix))
 
-    if fastflix.current_video.master_display:
-        md = fastflix.current_video.master_display
-        command.extend(
-            [
-                "--master-display",
-                f"G{md.green}B{md.blue}R{md.red}WP{md.white}L{md.luminance}",
-            ]
-        )
-    if fastflix.current_video.cll:
-        command.extend(["--max-cll", str(fastflix.current_video.cll)])
+    command.extend(rigaya_hdr_static_metadata(fastflix))
     if settings.copy_hdr10 and not video.video_settings.remove_hdr:
         command.extend(["--dhdr10-info", "copy"])
     if settings.copy_dv and not video.video_settings.remove_hdr:
@@ -192,7 +185,7 @@ def build(fastflix: FastFlix):
     )
 
     if settings.extra:
-        command.extend(settings.extra.split())
+        command.extend(split_extra_args(settings.extra))
 
     command.extend(["-o", str(video.video_settings.output_path)])
 

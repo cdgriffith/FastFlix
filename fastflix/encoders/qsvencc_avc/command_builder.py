@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import shlex
 from typing import List
 
 from fastflix.encoders.common.helpers import Command
@@ -15,6 +14,7 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_avformat_reader,
     rigaya_trim_or_seek,
     rigaya_extra_options,
+    split_extra_args,
 )
 
 logger = logging.getLogger("fastflix")
@@ -57,7 +57,7 @@ def build(fastflix: FastFlix):
 
     command.extend(["-i", str(video.source)])
 
-    if stream_id:
+    if stream_id is not None:
         command.extend(["--video-streamid", str(stream_id)])
 
     command.extend(rigaya_trim_or_seek(video))
@@ -176,7 +176,7 @@ def build(fastflix: FastFlix):
     )
 
     if settings.extra:
-        command.extend(shlex.split(settings.extra))
+        command.extend(split_extra_args(settings.extra))
 
     command.extend(["-o", str(video.video_settings.output_path)])
 
