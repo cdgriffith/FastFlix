@@ -59,6 +59,16 @@
 * Fixing Source Details tab leaving the HDR10 button visible after clearing the video, rendering tag text as HTML, and silently ignoring save errors
 * Fixing missing word wrap in yes/no dialogs, queue titles not eliding, and disabled toggle switches not looking disabled
 * Fixing missing and English-only translations for new strings
+* Fixing encodes killed by a signal (out of memory, crash) being reported as successful
+* Fixing cancel, pause and resume not affecting every process of a piped or shell-run command
+* Fixing Download FFmpeg latest from the version warning dialog raising an error
+* Fixing AMD (Advanced Micro Devices, ATI) GPUs not being detected, and GPU encoder downloads that fail or are cancelled never being retried
+* Fixing the encoder worker leaving ffmpeg running or hanging on exit after a crash or closing the GUI
+* Fixing HDR10+ detection checking the wrong stream and reading entire files
+* Fixing the FastFlix update check failing on unusual release tags and having its timeouts reversed
+* Fixing file paths with spaces near the start being altered in subtitle and LUT filters
+* Fixing FFmpeg, rigaya encoder and hdr10plus_tool downloads lacking timeouts and checksum verification, and picking the wrong FFmpeg build or version
+* Fixing concat list files resolving relative paths and escaped quotes incorrectly
 
 ## Version 6.2.1
 
