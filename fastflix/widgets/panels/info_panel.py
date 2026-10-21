@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import html
 import json
 import logging
 from pathlib import Path
@@ -11,6 +12,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
+from fastflix.shared import error_message
 from fastflix.ui_scale import scaler
 from fastflix.ui_styles import ONYX_COLORS
 
@@ -173,8 +175,10 @@ def build_section_group(title, fields, is_onyx):
     row = 0
     col = 0
     for label_text, value_text in fields:
-        key_label = QtWidgets.QLabel(f"<b>{label_text}:</b>")
+        key_label = QtWidgets.QLabel(f"<b>{html.escape(str(label_text))}:</b>")
+        key_label.setTextFormat(QtCore.Qt.TextFormat.RichText)
         val_label = QtWidgets.QLabel(str(value_text))
+        val_label.setTextFormat(QtCore.Qt.TextFormat.PlainText)
         val_label.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.TextSelectableByMouse)
         grid.addWidget(key_label, row, col * 2)
         grid.addWidget(val_label, row, col * 2 + 1)
@@ -300,7 +304,13 @@ class InfoPanel(QtWidgets.QTabWidget):
 
     def reset(self):
         for i in range(self.count() - 1, -1, -1):
+            old_widget = self.widget(i)
             self.removeTab(i)
+            if old_widget is not None:
+                old_widget.deleteLater()
+
+        self.setMinimumHeight(0)
+        self.hdr10_button.hide()
 
         if not self.app.fastflix.current_video:
             return
@@ -325,8 +335,6 @@ class InfoPanel(QtWidgets.QTabWidget):
         video = self.app.fastflix.current_video
         if video and (video.master_display or video.cll):
             self.hdr10_button.show()
-        else:
-            self.hdr10_button.hide()
 
     def save_hdr10(self):
         video = self.app.fastflix.current_video
@@ -355,6 +363,7 @@ class InfoPanel(QtWidgets.QTabWidget):
                 Path(filename[0]).write_text("\n".join(lines) + "\n", encoding="utf-8")
             except Exception:
                 logger.exception("Failed to save HDR10 metadata")
+                error_message(f"{t('Could not save file')}: {filename[0]}", traceback=True, parent=self)
 
     def save_json(self):
         if not self.app.fastflix.current_video:

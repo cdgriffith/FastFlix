@@ -392,7 +392,8 @@ class Video(BaseModel):
         """Compute final output width and height after crop + scale + rounding.
 
         Returns (None, None) if method is "auto" or inputs are invalid.
-        Returns (width, height) with the auto-calculated dimension rounded to nearest multiple of 8.
+        Returns (width, height) with the auto-calculated dimension rounded to the nearest multiple of 8
+        (or of N for a custom w:-N / -N:h value; -1 rounds to the nearest integer).
         """
         cropped_w = source_w - crop_left - crop_right
         cropped_h = source_h - crop_top - crop_bottom
@@ -403,12 +404,23 @@ class Video(BaseModel):
         if method == "auto" or not custom:
             return None, None
 
+        def snap(value: float, multiple: int = 8) -> int:
+            """Round to the nearest multiple (half up), never below one multiple."""
+            return max(int((value + multiple / 2) // multiple) * multiple, multiple)
+
         try:
             if method == "custom":
                 parts = custom.split(":")
-                if len(parts) == 2:
-                    w, h = int(parts[0]), int(parts[1])
-                    return (w, h) if w > 0 and h > 0 else (None, None)
+                if len(parts) != 2:
+                    return None, None
+                w, h = int(parts[0]), int(parts[1])
+                if w > 0 and h > 0:
+                    return w, h
+                if w > 0 and h < 0:
+                    # -1 nearest int, -2 even, -N multiple of N (FFmpeg scale semantics)
+                    return w, snap(cropped_h * w / cropped_w, -h)
+                if h > 0 and w < 0:
+                    return snap(cropped_w * h / cropped_h, -w), h
                 return None, None
 
             pixels = int(custom)
@@ -416,23 +428,15 @@ class Video(BaseModel):
                 return None, None
 
             if method == "width":
-                out_w = pixels
-                out_h = ((cropped_h * pixels // cropped_w) // 8) * 8
-                return out_w, max(out_h, 8)
+                return pixels, snap(cropped_h * pixels / cropped_w)
 
             if method == "height":
-                out_h = pixels
-                out_w = ((cropped_w * pixels // cropped_h) // 8) * 8
-                return max(out_w, 8), out_h
+                return snap(cropped_w * pixels / cropped_h), pixels
 
             if method == "long edge":
                 if cropped_w >= cropped_h:
-                    out_w = pixels
-                    out_h = ((cropped_h * pixels // cropped_w) // 8) * 8
-                else:
-                    out_h = pixels
-                    out_w = ((cropped_w * pixels // cropped_h) // 8) * 8
-                return max(out_w, 8), max(out_h, 8)
+                    return pixels, snap(cropped_h * pixels / cropped_w)
+                return snap(cropped_w * pixels / cropped_h), pixels
         except (ValueError, ZeroDivisionError):
             return None, None
 

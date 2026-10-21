@@ -1758,12 +1758,8 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             logger.warning("Autocrop did not return crop points, please use a ffmpeg version with cropdetect filter")
             return
 
-        smallest = (self.app.fastflix.current_video.height + self.app.fastflix.current_video.width) * 2
-        selected = result_list[0]
-        for result in result_list:
-            if (total := sum(result)) < smallest:
-                selected = result
-                smallest = total
+        # Union of content areas across samples: the smallest crop per edge (results are [right, bottom, left, top])
+        selected = [min(result[i] for result in result_list) for i in range(4)]
 
         r, b, l, tp = selected  # noqa: E741
 

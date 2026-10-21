@@ -232,6 +232,25 @@ def create_real_fastflix(encoder_settings, output_path: Path, work_path: Path, i
     return fastflix
 
 
+# ffprobe reports animated WebP output as "webp_anim"
+CODEC_ALIASES = {"webp": {"webp", "webp_anim"}}
+
+# Messages hardware encoders emit when the GPU / driver / device is missing or unusable
+HARDWARE_UNAVAILABLE_MARKERS = (
+    "no nvenc capable devices",
+    "cannot load nvcuda",
+    "openencodesessionex failed",
+    "no capable devices found",
+    "failed to initialize",
+    "device setup failed",
+    "no device available",
+    "unsupported device",
+    "not supported on current platform",
+    "unknown encoder",
+    "error initializing output stream",
+)
+
+
 # ---------------------------------------------------------------------------
 # Helper: verify output with ffprobe
 # ---------------------------------------------------------------------------
@@ -251,13 +270,14 @@ def verify_output(output_path: Path, expected_codec: str):
     video_streams = [s for s in data["streams"] if s["codec_type"] == "video"]
     assert len(video_streams) >= 1, "No video stream in output"
     actual_codec = video_streams[0]["codec_name"]
-    assert actual_codec == expected_codec, f"Expected codec {expected_codec}, got {actual_codec}"
+    accepted = CODEC_ALIASES.get(expected_codec, {expected_codec})
+    assert actual_codec in accepted, f"Expected codec {expected_codec}, got {actual_codec}"
 
 
 # ---------------------------------------------------------------------------
 # Helper: run a Command list
 # ---------------------------------------------------------------------------
-def run_commands(commands, work_path: Path):
+def run_commands(commands, work_path: Path, hardware: bool = False):
     for cmd in commands:
         if cmd.shell:
             cmd_to_run = cmd.to_string()
@@ -271,6 +291,10 @@ def run_commands(commands, work_path: Path):
             shell=cmd.shell,
             cwd=str(work_path),
         )
+        if result.returncode != 0 and hardware:
+            output = (result.stderr + "\n" + result.stdout).lower()
+            if any(marker in output for marker in HARDWARE_UNAVAILABLE_MARKERS):
+                pytest.skip(f"Hardware encoder unavailable in this environment: {result.stderr[-300:].strip()}")
         assert result.returncode == 0, (
             f"Command '{cmd.name}' failed (exit {result.returncode}):\n"
             f"CMD: {cmd.to_string()}\n"
@@ -493,7 +517,8 @@ def test_encode(encoder_id, settings, output_ext, expected_codec, is_rigaya, tmp
 
     assert commands, f"Encoder {encoder_id} returned no commands"
 
-    run_commands(commands, work_path)
+    hardware = is_rigaya or encoder_id.endswith(("nvenc", "qsv", "amf", "vaapi"))
+    run_commands(commands, work_path, hardware=hardware)
     verify_output(output_path, expected_codec)
 
 
