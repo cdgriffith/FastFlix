@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import html
 import logging
 
 from box import Box
@@ -497,7 +498,7 @@ class AdvancedTab(QtWidgets.QTabWidget):
     def text_update(self, advanced_settings):
         ignored = ("color_primaries", "color_transfer", "color_space", "denoise_type_index", "denoise_strength_index")
         settings = "\n".join(f"{k:<30} {v}" for k, v in advanced_settings.model_dump().items() if k not in ignored)
-        self.label.setText(f"<pre>{settings}</pre>")
+        self.label.setText(f"<pre>{html.escape(settings)}</pre>")
 
 
 class PrimaryOptions(QtWidgets.QTabWidget):
@@ -507,7 +508,7 @@ class PrimaryOptions(QtWidgets.QTabWidget):
         layout = QtWidgets.QVBoxLayout()
         self.label = QtWidgets.QLabel()
         settings = "\n".join(f"{k:<30} {v}" for k, v in main_options.items())
-        self.label.setText(f"<pre>{settings}</pre>")
+        self.label.setText(f"<pre>{html.escape(settings)}</pre>")
 
         self.auto_crop = ToggleSwitch(t("Auto Crop"))
 
@@ -536,7 +537,7 @@ class EncoderOptions(QtWidgets.QTabWidget):
 
     def update_settings(self):
         settings = "\n".join(f"{k:<30} {v}" for k, v in self.main.encoder.model_dump().items())
-        self.label.setText(f"<pre>{settings}</pre>")
+        self.label.setText(f"<pre>{html.escape(settings)}</pre>")
 
 
 class ProfileWindow(QtWidgets.QWidget):

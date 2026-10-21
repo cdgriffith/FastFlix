@@ -95,6 +95,16 @@ disposition_options = [
 ]
 
 
+def reindex_after_delete(tracks, deleted_index: int) -> None:
+    """Shift widget indexes that pointed past a deleted audio_tracks entry."""
+    for track in tracks:
+        if track.index > deleted_index:
+            track.index -= 1
+            disposition = getattr(track, "disposition_widget", None)
+            if disposition is not None and hasattr(disposition, "track_index"):
+                disposition.track_index = track.index
+
+
 class Audio(QtWidgets.QTabWidget):
     def __init__(
         self,
@@ -130,6 +140,15 @@ class Audio(QtWidgets.QTabWidget):
             conversion=QtWidgets.QPushButton(t("Conversion")),
         )
 
+        for button, label in (
+            (self.widgets.up_button, "Move Up"),
+            (self.widgets.down_button, "Move Down"),
+            (self.widgets.dup_button, "Duplicate"),
+            (self.widgets.delete_button, "Delete"),
+        ):
+            button.setToolTip(t(label))
+            button.setAccessibleName(t(label))
+
         self.widgets.up_button.setStyleSheet(no_border)
         self.widgets.down_button.setStyleSheet(no_border)
         self.widgets.dup_button.setStyleSheet(no_border)
@@ -150,7 +169,7 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.language.currentIndexChanged.connect(self.page_update)
         self.widgets.title.setFixedWidth(scaler.scale(WIDTHS.AUDIO_TITLE))
-        self.widgets.title.textChanged.connect(self.page_update)
+        self.widgets.title.editingFinished.connect(self.page_update)
         # self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.widgets.audio_info.setFixedWidth(scaler.scale(WIDTHS.AUDIO_INFO))
 
@@ -312,8 +331,9 @@ class Audio(QtWidgets.QTabWidget):
         self.parent.reorder()
 
     def del_me(self):
-        self.parent.remove_track(self)
         del self.app.fastflix.current_video.audio_tracks[self.index]
+        reindex_after_delete([x for x in self.parent.tracks if x is not self], self.index)
+        self.parent.remove_track(self)
         self.parent.reorder(update=True)
 
     def set_outdex(self, outdex):

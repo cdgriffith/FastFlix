@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 from pathlib import Path
-from subprocess import run, PIPE
 from typing import Optional, TYPE_CHECKING
 import secrets
 
@@ -10,9 +9,9 @@ from PySide6 import QtWidgets, QtCore, QtGui
 from fastflix.flix import (
     generate_thumbnail_command,
 )
-from fastflix.shared import clean_env
 from fastflix.encoders.common import helpers
 from fastflix.resources import get_icon
+from fastflix.widgets.windows.crop_window import run_preview_command
 from fastflix.language import t
 
 if TYPE_CHECKING:
@@ -95,7 +94,9 @@ class LargePreview(QtWidgets.QWidget):
 
         logger.info(f"Generating large thumbnail: {thumb_command}")
 
-        thumb_run = run(thumb_command, shell=True, stderr=PIPE, stdout=PIPE, env=clean_env())
+        thumb_run = run_preview_command(thumb_command)
+        if thumb_run is None:
+            return
         if thumb_run.returncode > 0:
             logger.warning(f"Could not generate large thumbnail: {thumb_run.stdout} |----| {thumb_run.stderr}")
             return

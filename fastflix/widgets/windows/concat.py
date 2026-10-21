@@ -243,6 +243,7 @@ class ConcatWindow(QtWidgets.QWidget):
 
         self.concat_area = ConcatScroll(self)
         self.base_folder_label = QtWidgets.QLabel()
+        self.base_folder_label.setTextFormat(QtCore.Qt.TextFormat.PlainText)
         self.set_folder_name(self.folder_name)
         layout = QtWidgets.QVBoxLayout()
         folder_button = QtWidgets.QPushButton(t("Open Folder"))
