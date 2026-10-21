@@ -123,10 +123,10 @@ def test_video_streamid_nonzero(name):
 
 
 def test_split_extra_args_keeps_windows_backslashes(monkeypatch):
-    from fastflix.encoders.common import encc_helpers
+    from fastflix.encoders.common import helpers
 
-    monkeypatch.setattr(encc_helpers.sys, "platform", "win32")
-    assert encc_helpers.split_extra_args(r"--log C:\logs\enc.log --x 'a b'") == [
+    monkeypatch.setattr(helpers.sys, "platform", "win32")
+    assert helpers.split_extra_args(r"--log C:\logs\enc.log --x 'a b'") == [
         "--log",
         r"C:\logs\enc.log",
         "--x",

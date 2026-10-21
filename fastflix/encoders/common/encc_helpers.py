@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
-import shlex
-import sys
 from fractions import Fraction
 from typing import List, Optional
 
 from fastflix.models.video import SubtitleTrack, AudioTrack, DataTrack, Video
 from fastflix.encoders.common.audio import lossless, resolve_aac_profile, channel_list
+from fastflix.encoders.common.helpers import split_extra_args  # noqa: F401  (re-exported for builders)
 from fastflix.models.fastflix import FastFlix
 from fastflix.models.encode import VCEEncCAVCSettings, VCEEncCAV1Settings, VCEEncCSettings
 
@@ -77,16 +76,6 @@ def rigaya_auto_options(fastflix: FastFlix) -> List[str]:
         "--colorprim",
         (fastflix.current_video.video_settings.color_primaries or "auto"),
     ]
-
-
-def split_extra_args(text: str) -> List[str]:
-    """Split user supplied custom arguments like a shell; backslashes stay literal on Windows (paths)."""
-    lex = shlex.shlex(text, posix=True)
-    lex.whitespace_split = True
-    lex.commenters = ""
-    if sys.platform == "win32":
-        lex.escape = ""
-    return list(lex)
 
 
 def rigaya_hdr_static_metadata(fastflix: FastFlix) -> List[str]:

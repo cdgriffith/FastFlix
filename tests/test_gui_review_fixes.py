@@ -216,3 +216,32 @@ def test_show_log_dir_uses_desktop_services():
     url = open_url.call_args.args[0]
     assert url.isLocalFile()
     assert not hasattr(container, "OpenFolder")
+
+
+def test_audio_title_is_synced_to_the_model_on_every_edit():
+    """Typing a title then queueing without leaving the field must still use the typed title."""
+    from types import SimpleNamespace
+
+    from fastflix.widgets.panels.audio_panel import Audio
+
+    track = SimpleNamespace(title="old")
+    me = SimpleNamespace(
+        index=0,
+        title="typed title",
+        app=SimpleNamespace(fastflix=SimpleNamespace(current_video=SimpleNamespace(audio_tracks=[track]))),
+    )
+    Audio.sync_title(me)
+    assert track.title == "typed title"
+
+
+def test_audio_title_sync_ignores_stale_index():
+    from types import SimpleNamespace
+
+    from fastflix.widgets.panels.audio_panel import Audio
+
+    me = SimpleNamespace(
+        index=5,
+        title="x",
+        app=SimpleNamespace(fastflix=SimpleNamespace(current_video=SimpleNamespace(audio_tracks=[]))),
+    )
+    Audio.sync_title(me)

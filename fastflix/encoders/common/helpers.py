@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 import re
 import shlex
 import subprocess
@@ -69,6 +68,16 @@ class Command(BaseModel):
         return shlex.join(self.command)
 
 
+def split_extra_args(text: str) -> List[str]:
+    """Split user supplied custom arguments like a shell; backslashes stay literal on Windows (paths)."""
+    lex = shlex.shlex(text, posix=True)
+    lex.whitespace_split = True
+    lex.commenters = ""
+    if sys.platform == "win32":
+        lex.escape = ""
+    return list(lex)
+
+
 def generate_ffmpeg_start(
     source,
     ffmpeg,
@@ -104,9 +113,7 @@ def generate_ffmpeg_start(
         fast_seek = True
 
     if start_extra:
-        command.extend(
-            start_extra if isinstance(start_extra, list) else shlex.split(start_extra, posix=(os.name != "nt"))
-        )
+        command.extend(start_extra if isinstance(start_extra, list) else split_extra_args(start_extra))
 
     if enable_opencl and (remove_hdr or uses_nlmeans_opencl):
         command.extend(["-init_hw_device", "opencl:0.0=ocl", "-filter_hw_device", "ocl"])

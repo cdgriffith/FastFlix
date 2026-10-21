@@ -240,7 +240,7 @@ def test_pad_filter_uses_validated_color():
 
 
 def test_start_extra_keeps_windows_backslashes():
-    with mock.patch("fastflix.encoders.common.helpers.os.name", "nt"):
+    with mock.patch("fastflix.encoders.common.helpers.sys.platform", "win32"):
         cmd = generate_ffmpeg_start(
             source=Path("a.mkv"),
             ffmpeg=Path("ffmpeg"),

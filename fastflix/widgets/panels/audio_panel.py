@@ -169,6 +169,7 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.language.currentIndexChanged.connect(self.page_update)
         self.widgets.title.setFixedWidth(scaler.scale(WIDTHS.AUDIO_TITLE))
+        self.widgets.title.textChanged.connect(self.sync_title)
         self.widgets.title.editingFinished.connect(self.page_update)
         # self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.widgets.audio_info.setFixedWidth(scaler.scale(WIDTHS.AUDIO_INFO))
@@ -275,6 +276,12 @@ class Audio(QtWidgets.QTabWidget):
         self.widgets.track_number.setText(f"{audio_track.index}:{audio_track.outdex}" if enabled else "❌")
         self.parent.reorder(update=True)
         # self.parent.parent.subtitles.reorder()
+
+    def sync_title(self):
+        """Keep the model's title current while typing; the full command rebuild waits for editingFinished."""
+        audio_tracks = self.app.fastflix.current_video.audio_tracks
+        if 0 <= self.index < len(audio_tracks):
+            audio_tracks[self.index].title = self.title
 
     def page_update(self):
         self.app.fastflix.current_video.audio_tracks[self.index].title = self.title

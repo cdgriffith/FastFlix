@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 from pathlib import Path
 from unittest import mock
 
@@ -96,6 +97,22 @@ def test_generate_ffmpeg_start_with_options(fastflix_instance):
     assert "10000k" in result
     assert "-metadata:s:v:0" in result
     assert "title=Main Track" in result
+
+
+def test_generate_ffmpeg_start_string_start_extra_strips_quotes(fastflix_instance):
+    """Quoted values in a user supplied start_extra string must not keep literal quote characters."""
+    result = generate_ffmpeg_start(
+        source=Path("input.mkv"),
+        ffmpeg=Path("ffmpeg"),
+        encoder="libx265",
+        selected_track=0,
+        pix_fmt="yuv420p",
+        start_extra=r'-metadata title="My Movie" -i "C:\my dir\a.srt"',
+    )
+    assert "title=My Movie" in result
+    assert not any('"' in token for token in result)
+    if sys.platform == "win32":
+        assert r"C:\my dir\a.srt" in result
 
 
 def test_generate_ffmpeg_start_with_list_start_extra(fastflix_instance):
