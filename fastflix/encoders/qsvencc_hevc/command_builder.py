@@ -14,6 +14,7 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_avformat_reader,
     rigaya_trim_or_seek,
     rigaya_extra_options,
+    qvbr_quality_value,
     split_extra_args,
     rigaya_hdr_static_metadata,
 )
@@ -95,7 +96,10 @@ def build(fastflix: FastFlix):
 
     command.extend(["-c", "hevc"])
 
-    if settings.bitrate:
+    qvbr = qvbr_quality_value(settings)
+    if settings.bitrate and qvbr:
+        command.extend(["--qvbr", settings.bitrate.rstrip("k"), "--qvbr-quality", qvbr])
+    elif settings.bitrate:
         command.extend(["--vbr", settings.bitrate.rstrip("k")])
     else:
         command.extend([f"--{settings.qp_mode}", str(settings.cqp)])

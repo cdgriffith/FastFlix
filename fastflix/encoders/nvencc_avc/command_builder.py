@@ -15,6 +15,7 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_trim_or_seek,
     rigaya_extra_options,
     nvenc_profile_args,
+    qvbr_quality_value,
     nvenc_tune_args,
     split_extra_args,
 )
@@ -89,7 +90,10 @@ def build(fastflix: FastFlix):
 
     command.extend(["-c", "avc"])
 
-    if settings.bitrate:
+    qvbr = qvbr_quality_value(settings)
+    if qvbr:
+        command.extend(["--qvbr", qvbr])
+    elif settings.bitrate:
         command.extend(["--vbr", settings.bitrate.rstrip("k")])
     else:
         command.extend(["--cqp", str(settings.cqp)])
@@ -98,13 +102,13 @@ def build(fastflix: FastFlix):
         command.extend(["--max-bitrate", str(video.video_settings.maxrate)])
         command.extend(["--vbv-bufsize", str(video.video_settings.bufsize)])
 
-    if settings.vbr_target is not None and settings.bitrate:
+    if settings.vbr_target is not None and settings.bitrate and not qvbr:
         command.extend(["--vbr-quality", str(settings.vbr_target)])
-    if init_q and settings.bitrate:
+    if init_q and (settings.bitrate or qvbr):
         command.extend(["--qp-init", str(init_q)])
-    if min_q and settings.bitrate:
+    if min_q and (settings.bitrate or qvbr):
         command.extend(["--qp-min", str(min_q)])
-    if max_q and settings.bitrate:
+    if max_q and (settings.bitrate or qvbr):
         command.extend(["--qp-max", str(max_q)])
     if settings.b_frames:
         command.extend(["--bframes", str(settings.b_frames)])

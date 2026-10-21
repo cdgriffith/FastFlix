@@ -15,6 +15,7 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_extra_options,
     split_extra_args,
     pa_builder,
+    qvbr_quality_value,
 )
 
 logger = logging.getLogger("fastflix")
@@ -82,7 +83,10 @@ def build(fastflix: FastFlix):
 
     command.extend(["-c", "avc"])
 
-    if settings.bitrate:
+    qvbr = qvbr_quality_value(settings)
+    if qvbr:
+        command.extend(["--qvbr", qvbr])
+    elif settings.bitrate:
         command.extend(["--vbr", settings.bitrate.rstrip("k")])
     else:
         command.extend(["--cqp", str(settings.cqp)])
@@ -90,9 +94,9 @@ def build(fastflix: FastFlix):
     if video.video_settings.maxrate:
         command.extend(["--max-bitrate", str(video.video_settings.maxrate)])
         command.extend(["--vbv-bufsize", str(video.video_settings.bufsize)])
-    if settings.min_q and settings.bitrate:
+    if settings.min_q and (settings.bitrate or qvbr):
         command.extend(["--qp-min", str(settings.min_q)])
-    if settings.max_q and settings.bitrate:
+    if settings.max_q and (settings.bitrate or qvbr):
         command.extend(["--qp-max", str(settings.max_q)])
     if settings.b_frames:
         command.extend(["--bframes", str(settings.b_frames)])

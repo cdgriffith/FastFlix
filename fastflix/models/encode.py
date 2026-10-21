@@ -205,6 +205,7 @@ class NVEncCSettings(EncoderSettings):
     profile: str = "auto"
     tune: str = "hq"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     aq: str = "off"
     aq_strength: int = 0
@@ -249,6 +250,7 @@ class NVEncCAV1Settings(EncoderSettings):
     profile: str = "auto"
     tune: str = "hq"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     aq: str = "off"
     aq_strength: int = 0
@@ -291,6 +293,7 @@ class QSVEncCSettings(EncoderSettings):
     name: str = "HEVC (QSVEncC)"
     preset: str = "best"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     lookahead: Optional[str] = None
     level: Optional[str] = None
@@ -332,6 +335,7 @@ class QSVEncCAV1Settings(EncoderSettings):
     name: str = "AV1 (QSVEncC)"
     preset: str = "best"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     lookahead: Optional[str] = None
     level: Optional[str] = None
@@ -374,6 +378,7 @@ class QSVEncCH264Settings(EncoderSettings):
     preset: str = "best"
     profile: str = "auto"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     lookahead: Optional[str] = None
     level: Optional[str] = None
@@ -414,6 +419,7 @@ class NVEncCAVCSettings(EncoderSettings):
     profile: str = "auto"
     tune: str = "hq"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     aq: str = "off"
     aq_strength: int = 0
@@ -497,6 +503,7 @@ class VCEEncCAV1Settings(EncoderSettings):
     name: str = "AV1 (VCEEncC)"
     preset: str = "slower"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
@@ -542,6 +549,7 @@ class VCEEncCAVCSettings(EncoderSettings):
     preset: str = "slow"
     profile: str = "Auto"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     tier: str = "high"
     level: Optional[str] = None

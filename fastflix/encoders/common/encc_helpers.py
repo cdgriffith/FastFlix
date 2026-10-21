@@ -137,6 +137,14 @@ def nvenc_tune_args(tune: Optional[str], codec: str) -> List[str]:
     return ["--tune", tune.lower()]
 
 
+def qvbr_quality_value(settings) -> Optional[str]:
+    """Quality for quality based VBR (--qvbr), None when QVBR is off."""
+    value = getattr(settings, "qvbr_quality", None)
+    if value is None or str(value).strip().lower() in ("", "off", "auto", "none"):
+        return None
+    return str(value).strip()
+
+
 def parse_frame_rate(frame_rate_str: str) -> Optional[float]:
     """Parse a frame rate string like '24000/1001' or '30' into a float.
 

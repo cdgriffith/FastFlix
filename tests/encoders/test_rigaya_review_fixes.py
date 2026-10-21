@@ -370,3 +370,92 @@ def test_nvenc_panel_tune_roundtrip(panel_factory, name):
     assert collected(panel, app).tune == "hq"
     panel.widgets.tune.setCurrentText(options[1])
     assert collected(panel, app).tune == options[1]
+
+
+# Item 12: quality based VBR
+
+QVBR_NAMES = [
+    "nvencc_hevc",
+    "nvencc_av1",
+    "nvencc_avc",
+    "qsvencc_hevc",
+    "qsvencc_av1",
+    "qsvencc_avc",
+    "vceencc_av1",
+    "vceencc_avc",
+]
+
+
+@pytest.mark.parametrize("name", ["nvencc_hevc", "nvencc_av1", "nvencc_avc", "vceencc_av1", "vceencc_avc"])
+@pytest.mark.parametrize("mode", ["bitrate", "cqp"])
+def test_qvbr_quality_only_replaces_rate_control(name, mode):
+    """NVEncC and VCEEncC --qvbr takes the quality (equivalent to --vbr 0 --vbr-quality/--qvbr-quality)."""
+    kwargs = {"bitrate": "5000k"} if mode == "bitrate" else {"bitrate": None, "cqp": 22}
+    cmd = build(name, qvbr_quality="28", **kwargs)
+    assert value_after(cmd, "--qvbr") == "28"
+    for flag in ("--vbr", "--cqp", "--cbr"):
+        assert flag not in cmd
+
+
+@pytest.mark.parametrize("name", ["qsvencc_hevc", "qsvencc_av1", "qsvencc_avc"])
+def test_qsv_qvbr_uses_bitrate_and_quality(name):
+    cmd = build(name, qvbr_quality="28", bitrate="6000k")
+    assert value_after(cmd, "--qvbr") == "6000"
+    assert value_after(cmd, "--qvbr-quality") == "28"
+    assert "--vbr" not in cmd
+
+
+@pytest.mark.parametrize("name", ["qsvencc_hevc", "qsvencc_av1", "qsvencc_avc"])
+def test_qsv_qvbr_needs_bitrate_mode(name):
+    cmd = build(name, qvbr_quality="28", bitrate=None, cqp=23, qp_mode="icq")
+    assert "--qvbr" not in cmd
+    assert "--qvbr-quality" not in cmd
+    assert value_after(cmd, "--icq") == "23"
+
+
+@pytest.mark.parametrize("name", QVBR_NAMES)
+def test_qvbr_off_by_default(name):
+    cmd = build(name)
+    assert "--qvbr" not in cmd
+    assert "--qvbr-quality" not in cmd
+
+
+def test_vce_av1_legacy_qvbr_bitrate_mode_does_not_send_bitrate_as_quality():
+    cmd = build("vceencc_av1", bitrate_mode="qvbr", bitrate="5000k")
+    assert value_after(cmd, "--qvbr") == "23"
+
+
+def test_vce_av1_bitrate_modes():
+    assert value_after(build("vceencc_av1", bitrate_mode="cbr", bitrate="5000k"), "--cbr") == "5000"
+
+
+def test_vce_hevc_has_no_qvbr():
+    """VCEEncC documents --qvbr for H.264 and AV1 only."""
+    assert not hasattr(enc.VCEEncCSettings(), "qvbr_quality")
+
+
+@pytest.mark.parametrize("settings_name", ["NVEncCSettings", "QSVEncCSettings", "VCEEncCAV1Settings"])
+def test_qvbr_old_profiles_load(settings_name):
+    cls = getattr(enc, settings_name)
+    assert cls().qvbr_quality == "off"
+    old = cls().model_dump()
+    del old["qvbr_quality"]
+    assert cls.model_validate(old).qvbr_quality == "off"
+
+
+@pytest.mark.parametrize("name", QVBR_NAMES)
+def test_qvbr_panel_roundtrip(panel_factory, name):
+    panel, app = panel_factory(name)
+    options = [panel.widgets.qvbr_quality.itemText(i) for i in range(panel.widgets.qvbr_quality.count())]
+    assert options[0] == "off"
+    assert "23" in options
+    assert int(options[-1]) == (63 if name == "nvencc_av1" else 51)
+    assert collected(panel, app).qvbr_quality == "off"
+    panel.widgets.qvbr_quality.setCurrentText("30")
+    assert collected(panel, app).qvbr_quality == "30"
+
+
+def test_vce_av1_panel_no_longer_offers_qvbr_bitrate_mode(panel_factory):
+    panel, _ = panel_factory("vceencc_av1")
+    options = [panel.widgets.bitrate_mode.itemText(i) for i in range(panel.widgets.bitrate_mode.count())]
+    assert "qvbr" not in options

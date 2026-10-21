@@ -107,6 +107,8 @@ class NVENCC(RigayaPanel):
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_max_q())
 
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_qvbr_quality())
         grid.addLayout(qp_line, 5, 2, 1, 4)
 
         advanced = QtWidgets.QHBoxLayout()
@@ -327,6 +329,16 @@ class NVENCC(RigayaPanel):
             min_width=60,
         )
 
+    def init_qvbr_quality(self):
+        return self._add_combo_box(
+            label="QVBR Quality",
+            widget_name="qvbr_quality",
+            tooltip="Quality based VBR (--qvbr), lower is higher quality. Replaces the Bitrate or QP selection above.\nOff uses the selected rate control mode",
+            options=["off"] + [str(x) for x in range(1, 64)],
+            opt="qvbr_quality",
+            min_width=60,
+        )
+
     def init_b_frames(self):
         return self._add_combo_box(
             widget_name="b_frames",
@@ -403,6 +415,7 @@ class NVENCC(RigayaPanel):
             min_q_p=self.widgets.min_q_p.currentText() if self.widgets.min_q_p.currentIndex() != 0 else None,
             min_q_b=self.widgets.min_q_b.currentText() if self.widgets.min_q_b.currentIndex() != 0 else None,
             extra=self.ffmpeg_extras,
+            qvbr_quality=self.widgets.qvbr_quality.currentText(),
             metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
