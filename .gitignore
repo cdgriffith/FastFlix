@@ -125,7 +125,7 @@ iso-639-3.*
 build-dir/
 benchmarking/
 
-./.claude/settings.local.json
+.claude/settings.local.json
 
 # Go installer build artifacts
 cmd/installer/fastflix_dist.*

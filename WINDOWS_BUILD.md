@@ -1,33 +1,30 @@
 # Building FastFlix on Windows
 
-This guide explains how to build FastFlix executables and the installer on Windows.
+This guide explains how to build the FastFlix Windows distribution, launcher, uninstaller and installer.
 
 ## Prerequisites
 
 1. **Python 3.13 or higher**
    - Download from [python.org](https://www.python.org/downloads/)
-   - Make sure to check "Add Python to PATH" during installation
 
 2. **Go 1.22 or higher**
    - Download from [go.dev](https://go.dev/dl/)
    - Needed for the launcher, installer, and uninstaller binaries
 
-3. **go-winres** (for embedding icons and manifests)
+3. **go-winres** (for embedding icons, manifests and version info) - pinned version
    ```bash
-   go install github.com/tc-hib/go-winres@latest
+   go install github.com/tc-hib/go-winres@v0.3.3
    ```
+   Make sure `%GOPATH%\bin` (usually `%USERPROFILE%\go\bin`) is on your `PATH`.
 
-4. **uv** (Python package manager)
+4. **uv** (Python package manager; also used to pin the bundled dependencies to `uv.lock`)
    ```bash
    pip install uv
    ```
 
 5. **Git** (to clone/update the repository)
-   - Download from [git-scm.com](https://git-scm.com/download/win)
 
 ## Quick Build (Full Installer)
-
-If you just want to build the installer from scratch:
 
 ```bash
 cd C:\path\to\FastFlix
@@ -35,80 +32,65 @@ cd C:\path\to\FastFlix
 # Install Python dependencies
 uv sync --frozen
 
-# Install zstandard for archive compression
-uv run pip install zstandard
-
-# Build the full distribution + archive (downloads embeddable Python, installs deps, builds Go binaries)
-uv run python scripts/build_distribution.py --archive
-
-# Generate icon/manifest resources for the installer
-cd cmd\installer
-go-winres make
-cd ..\..
-
-# Build the installer
-go build -ldflags="-s -w -H windowsgui -X main.Version=6.3.0" -o dist\FastFlix_installer.exe .\cmd\installer
+# Build the distribution, the archive, all Go binaries and the installer in one go
+uv run --with zstandard python scripts/build_distribution.py --archive --installer
 ```
 
-The installer will be at `dist\FastFlix_installer.exe` (~87 MB).
+The installer will be at `dist\FastFlix_installer.exe` (~87 MB). The script reads the version from
+`fastflix/version.py`, updates `cmd\*\winres\winres.json` (file/product version and copyright year) and passes
+`-X main.Version=<version> -X main.BuildDate=<date>` to every Go build, so the installer, launcher and uninstaller
+always report the right version.
+
+Use `--archive` without `--installer` to stop after writing `cmd\installer\fastflix_dist.tar.zst`.
+Use `--arch arm64` to bundle the ARM64 Python and wheels.
 
 ## What the Build Script Does
 
-`scripts/build_distribution.py --archive` performs these steps automatically:
-
-1. Downloads the official Python 3.13 embeddable distribution (~11 MB)
-2. Configures the embeddable Python to find installed packages
-3. Builds a FastFlix wheel and installs it with all dependencies
-4. Builds the Go launcher (`FastFlix.exe`) and uninstaller (`uninstall.exe`)
-5. Trims unused PySide6 modules (~527 MB savings)
+1. Downloads the official Python 3.13 embeddable distribution (~11 MB). The patch version is the single constant
+   `DEFAULT_PYTHON_VERSION` in `scripts/build_distribution.py` (override with `--python-version`).
+2. Configures the embeddable Python to find installed packages (`python313._pth`)
+3. Builds a FastFlix wheel (the `dist\wheels` folder is wiped first, exactly one wheel must result) and installs it
+   with all dependencies pinned by `uv.lock` (`uv export` + `uv pip install --target`), resolved for the *bundled*
+   CPython 3.13 / `win_amd64` (or `win_arm64`), not for the build host's Python
+4. Runs `go-winres make` and builds the Go launcher (`FastFlix.exe`) and uninstaller (`uninstall.exe`)
+5. Trims unused PySide6 modules (~527 MB savings); third-party licence files are kept
 6. Copies licenses and generates translated terms text
-7. Creates a compressed `tar.zst` archive (~83 MB)
-
-The archive is then embedded into the Go installer binary via `go:embed`.
+7. Creates a compressed `tar.zst` archive (~83 MB) that is embedded into the installer via `go:embed`
+8. With `--installer`: runs `go-winres make` for the installer and builds `dist\FastFlix_installer.exe`
 
 ## Building Individual Components
 
-### Launcher Only
+The build script is the supported path (it also syncs versions and generates resources). To rebuild a single piece
+by hand, run `go-winres make` in the command's directory first, then:
 
 ```bash
-go build -ldflags="-s -w -X main.Version=6.3.0" -o dist\FastFlix\FastFlix.exe .\cmd\launcher
+# Launcher (console app, needs stdout for logs)
+go build -ldflags="-s -w -X main.Version=6.3.0 -X main.BuildDate=2026-01-01" -o dist\FastFlix\FastFlix.exe .\cmd\launcher
+
+# Uninstaller (GUI)
+go build -ldflags="-s -w -H windowsgui -X main.Version=6.3.0" -o dist\FastFlix\uninstall.exe .\cmd\uninstaller
+
+# Installer (GUI, requires cmd\installer\fastflix_dist.tar.zst, licenses.txt, terms_translations.json from --archive)
+go build -ldflags="-s -w -H windowsgui -X main.Version=6.3.0 -X main.BuildDate=2026-01-01" -o dist\FastFlix_installer.exe .\cmd\installer
 ```
 
-### Uninstaller Only
+## Checks
 
 ```bash
-cd cmd\uninstaller
-go-winres make
-cd ..\..
-go build -ldflags="-s -w -H windowsgui" -o dist\FastFlix\uninstall.exe .\cmd\uninstaller
-```
-
-### Installer Only (requires archive already built)
-
-```bash
-cd cmd\installer
-go-winres make
-cd ..\..
-go build -ldflags="-s -w -H windowsgui -X main.Version=6.3.0" -o dist\FastFlix_installer.exe .\cmd\installer
+GOOS=windows go vet ./...          # needs the installer's embedded files to exist (run the build script once)
+go test ./cmd/internal/...          # path-safety / uninstall logic
 ```
 
 ## Testing the Build
 
 ```bash
-# Test launcher
 dist\FastFlix\FastFlix.exe --version
-dist\FastFlix\FastFlix.exe --test
-
-# Launch the full app
-dist\FastFlix\FastFlix.exe
-
-# Test the installer
-dist\FastFlix_installer.exe
+dist\FastFlix\FastFlix.exe --test     # headless startup validation; arguments are passed through to FastFlix
+dist\FastFlix\FastFlix.exe            # launch the app
+dist\FastFlix_installer.exe           # run the installer
 ```
 
 ## Running Without Building (For Development)
-
-If you just want to test changes without building executables:
 
 ```bash
 uv sync --frozen
@@ -117,44 +99,35 @@ python -m fastflix
 
 ## Troubleshooting
 
-### Missing Go
+### Missing Go / go-winres
 
-If `go build` fails with "go: command not found", ensure Go is installed and in your PATH:
+The build script stops with a clear error if `go` or `go-winres` is not on `PATH`:
 ```bash
 go version
+go install github.com/tc-hib/go-winres@v0.3.3
 ```
 
-### Missing go-winres
+### `zstandard` not installed
 
-The installer and uninstaller need `go-winres` to embed icons:
-```bash
-go install github.com/tc-hib/go-winres@latest
-```
+`zstandard` is not a project dependency; run the script with `uv run --with zstandard python ...`.
 
 ### Missing licenses.txt or terms_translations.json
 
-These are generated by the build script. If building the installer manually:
-```bash
-copy docs\build-licenses.txt cmd\installer\licenses.txt
-uv run python scripts/build_distribution.py --archive
-```
+These are generated by `scripts/build_distribution.py --archive`.
 
 ### Build Errors
 
-1. Make sure you're in the FastFlix root directory
-2. Try deleting `dist` and rebuilding:
-   ```bash
-   rmdir /s /q dist
-   uv run python scripts/build_distribution.py --archive
-   ```
+Try deleting `dist` and rebuilding:
+```bash
+rmdir /s /q dist
+uv run --with zstandard python scripts/build_distribution.py --archive --installer
+```
 
 ### FFmpeg Not Found
 
-The FastFlix distribution doesn't include FFmpeg. You need to:
-
-1. Download FFmpeg from [ffmpeg.org](https://ffmpeg.org/download.html#build-windows)
-2. Extract it somewhere
-3. Add the `bin` folder to your PATH, or configure it in FastFlix settings
+The FastFlix distribution doesn't include FFmpeg. Download it from
+[ffmpeg.org](https://ffmpeg.org/download.html#build-windows), add its `bin` folder to your PATH, or configure it in
+FastFlix settings.
 
 ## Architecture
 
@@ -162,13 +135,29 @@ The Windows distribution uses three Go binaries instead of PyInstaller:
 
 | Binary | Purpose | Console |
 |--------|---------|---------|
-| `FastFlix.exe` | Go launcher — sets up Python environment and runs `python.exe -m fastflix` | Yes (for logs) |
-| `uninstall.exe` | Standalone uninstaller — registered with Windows Add/Remove Programs | No (GUI) |
+| `FastFlix.exe` | Go launcher - sets up the Python environment and runs `python.exe -m fastflix <args>` | Yes (for logs) |
+| `uninstall.exe` | Standalone uninstaller - registered with Windows Add/Remove Programs | No (GUI) |
 | `FastFlix_installer.exe` | Dark-themed installer with embedded distribution archive | No (GUI) |
 
+Shared safety logic (path validation, manifest-based removal, registry cleanup, self-delete) lives in
+`cmd/internal/ffinstall`.
+
 The installer supports two modes:
-- **Install for just me** — installs to `%LOCALAPPDATA%\Programs\FastFlix` (no admin required)
-- **Install for all users** — installs to `%ProgramFiles%\FastFlix` (triggers UAC)
+- **Install for just me** - installs to `%LOCALAPPDATA%\Programs\FastFlix` (no admin required)
+- **Install for all users** - installs to `%ProgramFiles%\FastFlix` (triggers UAC)
+
+The installer writes `install_manifest.txt` next to the files it installs. Uninstalling (from Add/Remove Programs or
+from the installer's "Uninstall previous version" button) removes only what the installer put there, leaves user
+files such as a portable `fastflix.yaml`, only removes the folder if it ends up empty, and only touches the registry
+root (HKLM or HKCU) that registered that install. Upgrades remove the old version the same way, so a portable
+config survives.
+
+## CI
+
+The `build-windows-2022` job in `.github/workflows/build.yaml` installs Go and go-winres, runs the build script with
+`--archive --installer`, runs `go vet` / `go test`, smoke-tests `FastFlix.exe --version` / `--test`, and uploads
+`FastFlix_<version>_installer` (the installer) and `FastFlix_<version>_win64` (a portable zip of the distribution).
+The old PyInstaller one-file build and the NSIS installer (`FastFlix.nsi`) are no longer built on Windows.
 
 ## Linux/macOS
 
@@ -182,6 +171,6 @@ uv run pyinstaller FastFlix_Nix_OneFile.spec
 
 - The Go launcher is built as a **console app** (not GUI) so users can see log output
 - The installer and uninstaller are built with `-H windowsgui` (no console window)
-- Icons are embedded via `go-winres` — `.syso` files are gitignored
+- Icons/manifests are embedded via `go-winres` - `.syso` files are gitignored
 - The distribution archive uses Zstandard compression (level 22) for best ratio
 - PySide6 trimming removes WebEngine (193 MB), Quick/QML, 3D, Designer, and other unused Qt modules

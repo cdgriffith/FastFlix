@@ -8,10 +8,9 @@ import (
 	"runtime"
 	"strings"
 	"syscall"
-	"time"
 	"unsafe"
 
-	"golang.org/x/sys/windows/registry"
+	"github.com/cdgriffith/fastflix-installer/cmd/internal/ffinstall"
 )
 
 // Win32 API bindings
@@ -22,40 +21,40 @@ var (
 	dwmapiDLL   = syscall.NewLazyDLL("dwmapi.dll")
 	comctl32DLL = syscall.NewLazyDLL("comctl32.dll")
 
-	registerClassExW      = user32DLL.NewProc("RegisterClassExW")
-	createWindowExW       = user32DLL.NewProc("CreateWindowExW")
-	showWindow            = user32DLL.NewProc("ShowWindow")
-	updateWindow          = user32DLL.NewProc("UpdateWindow")
-	getMessageW           = user32DLL.NewProc("GetMessageW")
-	translateMessage      = user32DLL.NewProc("TranslateMessage")
-	dispatchMessageW      = user32DLL.NewProc("DispatchMessageW")
-	defWindowProcW        = user32DLL.NewProc("DefWindowProcW")
-	postQuitMessage       = user32DLL.NewProc("PostQuitMessage")
-	sendMessageW          = user32DLL.NewProc("SendMessageW")
-	enableWindow          = user32DLL.NewProc("EnableWindow")
-	setTimer              = user32DLL.NewProc("SetTimer")
-	destroyWindow         = user32DLL.NewProc("DestroyWindow")
-	getSystemMetrics      = user32DLL.NewProc("GetSystemMetrics")
-	invalidateRect        = user32DLL.NewProc("InvalidateRect")
-	loadImageW            = user32DLL.NewProc("LoadImageW")
-	loadIconW             = user32DLL.NewProc("LoadIconW")
-	drawIconEx            = user32DLL.NewProc("DrawIconEx")
-	beginPaint            = user32DLL.NewProc("BeginPaint")
-	endPaint              = user32DLL.NewProc("EndPaint")
-	fillRectProc          = user32DLL.NewProc("FillRect")
-	setWindowTextW        = user32DLL.NewProc("SetWindowTextW")
-	getClientRectProc     = user32DLL.NewProc("GetClientRect")
-	getWindowTextW        = user32DLL.NewProc("GetWindowTextW")
-	isWindowProc          = user32DLL.NewProc("IsWindow")
-	setForegroundWindow   = user32DLL.NewProc("SetForegroundWindow")
+	registerClassExW    = user32DLL.NewProc("RegisterClassExW")
+	createWindowExW     = user32DLL.NewProc("CreateWindowExW")
+	showWindow          = user32DLL.NewProc("ShowWindow")
+	updateWindow        = user32DLL.NewProc("UpdateWindow")
+	getMessageW         = user32DLL.NewProc("GetMessageW")
+	translateMessage    = user32DLL.NewProc("TranslateMessage")
+	dispatchMessageW    = user32DLL.NewProc("DispatchMessageW")
+	defWindowProcW      = user32DLL.NewProc("DefWindowProcW")
+	postQuitMessage     = user32DLL.NewProc("PostQuitMessage")
+	sendMessageW        = user32DLL.NewProc("SendMessageW")
+	enableWindow        = user32DLL.NewProc("EnableWindow")
+	setTimer            = user32DLL.NewProc("SetTimer")
+	destroyWindow       = user32DLL.NewProc("DestroyWindow")
+	getSystemMetrics    = user32DLL.NewProc("GetSystemMetrics")
+	invalidateRect      = user32DLL.NewProc("InvalidateRect")
+	loadImageW          = user32DLL.NewProc("LoadImageW")
+	loadIconW           = user32DLL.NewProc("LoadIconW")
+	drawIconEx          = user32DLL.NewProc("DrawIconEx")
+	beginPaint          = user32DLL.NewProc("BeginPaint")
+	endPaint            = user32DLL.NewProc("EndPaint")
+	fillRectProc        = user32DLL.NewProc("FillRect")
+	setWindowTextW      = user32DLL.NewProc("SetWindowTextW")
+	getClientRectProc   = user32DLL.NewProc("GetClientRect")
+	getWindowTextW      = user32DLL.NewProc("GetWindowTextW")
+	isWindowProc        = user32DLL.NewProc("IsWindow")
+	setForegroundWindow = user32DLL.NewProc("SetForegroundWindow")
 
-	createSolidBrush      = gdi32DLL.NewProc("CreateSolidBrush")
-	createFontW           = gdi32DLL.NewProc("CreateFontW")
-	selectObject          = gdi32DLL.NewProc("SelectObject")
-	setTextColor          = gdi32DLL.NewProc("SetTextColor")
-	setBkMode             = gdi32DLL.NewProc("SetBkMode")
-	drawTextW             = user32DLL.NewProc("DrawTextW")
-	deleteObject          = gdi32DLL.NewProc("DeleteObject")
+	createSolidBrush = gdi32DLL.NewProc("CreateSolidBrush")
+	createFontW      = gdi32DLL.NewProc("CreateFontW")
+	selectObject     = gdi32DLL.NewProc("SelectObject")
+	setTextColor     = gdi32DLL.NewProc("SetTextColor")
+	setBkMode        = gdi32DLL.NewProc("SetBkMode")
+	drawTextW        = user32DLL.NewProc("DrawTextW")
+	deleteObject     = gdi32DLL.NewProc("DeleteObject")
 
 	initCommonControlsEx  = comctl32DLL.NewProc("InitCommonControlsEx")
 	dwmSetWindowAttribute = dwmapiDLL.NewProc("DwmSetWindowAttribute")
@@ -130,9 +129,6 @@ const (
 	idcLaunch    = 109
 	idcInstInfo  = 110
 	idcClose     = 111
-	idcAd        = 112
-	idcAdLink    = 113
-	idtCountdown = 2
 	idtProcCheck = 1
 	idcDlgEdit   = 201
 	idcDlgClose  = 202
@@ -140,17 +136,17 @@ const (
 
 // Colors (COLORREF = 0x00BBGGRR)
 const (
-	clrBg       = 0x00333333
-	clrText     = 0x00E6E6E6
-	clrSubtext  = 0x00A0A0A0
-	clrAccent   = 0x00F0AA46 // #46AAF0 in BGR (cyan)
-	clrRed      = 0x003C3CDC
-	clrBtnBg    = 0x00F0D030 // bright cyan #30D0F0 in BGR
-	clrBtnText  = 0x00202020 // dark text on bright buttons
-	clrBtnDis   = 0x00555555
-	clrBtnRed   = 0x004848CC
+	clrBg        = 0x00333333
+	clrText      = 0x00E6E6E6
+	clrSubtext   = 0x00A0A0A0
+	clrAccent    = 0x00F0AA46 // #46AAF0 in BGR (cyan)
+	clrRed       = 0x003C3CDC
+	clrBtnBg     = 0x00F0D030 // bright cyan #30D0F0 in BGR
+	clrBtnText   = 0x00202020 // dark text on bright buttons
+	clrBtnDis    = 0x00555555
+	clrBtnRed    = 0x004848CC
 	clrBtnRedDis = 0x00444466
-	clrEditBg   = 0x003A3A3A
+	clrEditBg    = 0x003A3A3A
 )
 
 // Window dimensions — computed at runtime from screen size
@@ -161,9 +157,9 @@ var (
 )
 
 type wndState struct {
-	hwnd      syscall.Handle
-	hInstance syscall.Handle
-	hBgBrush  syscall.Handle
+	hwnd       syscall.Handle
+	hInstance  syscall.Handle
+	hBgBrush   syscall.Handle
 	hEditBrush syscall.Handle
 
 	hTitleFont  syscall.Handle
@@ -182,24 +178,20 @@ type wndState struct {
 	hProgLabel    syscall.Handle
 	hLaunchBtn    syscall.Handle
 	hCloseBtn     syscall.Handle
-	hAdText       syscall.Handle
-	hAdLink       syscall.Handle
-	hAdPromo      syscall.Handle
-	countdown     int // seconds remaining before Launch button enables
 	hInstallInfo  syscall.Handle // label showing where previous versions were found
 
-	processRunning  bool
-	installing      bool
-	agreeChecked    bool   // owner-drawn checkbox state
-	termsLinkX      int32    // X position where "Terms and Conditions" text starts (for hit-test)
-	installedDir    string   // set after install completes, for launch button
-	progressValue   int      // 0-100 progress percentage
-	uninstallNeedsAdmin bool // true if any existing install is in Program Files
-	existingInstalls []existingInstall // all detected installs (for info display)
-	existingFound   bool
-	existingVersion string
-	existingDir     string
-	previousRemoved bool
+	processRunning      bool
+	installing          bool
+	agreeChecked        bool              // owner-drawn checkbox state
+	termsLinkX          int32             // X position where "Terms and Conditions" text starts (for hit-test)
+	installedDir        string            // set after install completes, for launch button
+	progressValue       int               // 0-100 progress percentage
+	uninstallNeedsAdmin bool              // true if any existing install is in Program Files
+	existingInstalls    []existingInstall // all detected installs (for info display)
+	existingFound       bool
+	existingVersion     string
+	existingDir         string
+	previousRemoved     bool
 }
 
 var state wndState
@@ -221,12 +213,12 @@ type wndClassExW struct {
 }
 
 type paintStruct struct {
-	HDC      syscall.Handle
-	Erase    int32
-	RcPaint  rect
-	Restore  int32
+	HDC       syscall.Handle
+	Erase     int32
+	RcPaint   rect
+	Restore   int32
 	IncUpdate int32
-	Reserved [32]byte
+	Reserved  [32]byte
 }
 
 type rect struct{ Left, Top, Right, Bottom int32 }
@@ -354,7 +346,7 @@ func runInstallerGUI() {
 
 	// Detect existing installs and process state BEFORE creating controls
 	detectExistingInstall()
-	state.processRunning = isProcessRunning("FastFlix.exe")
+	state.processRunning = fastflixRunning()
 
 	createControls(hwnd, hInst)
 
@@ -380,7 +372,7 @@ const bsAutoRadioButton = 0x00000009
 
 func createControls(hwnd, hInst uintptr) {
 	cx := int32(winWidth)
-	pad := cx * 9 / 100       // ~9% padding on each side
+	pad := cx * 9 / 100 // ~9% padding on each side
 	btnW := cx - pad*2
 	btnH := int32(winHeight) * 7 / 100 // button height ~7% of window
 
@@ -482,27 +474,9 @@ func createControls(hwnd, hInst uintptr) {
 		wsChild|ssCenter, pad, progY+progH+labelH/4, btnW, labelH, idcProgLabel, hwnd, hInst)
 	setFont(state.hProgLabel, state.hNormalFont)
 
-	// Ad text below progress (hidden until install starts)
-	adY := progY + progH + labelH + labelH
-	adH := int32(winHeight) * 8 / 100
-	state.hAdText = createCtl("STATIC",
-		"Please check out my new project",
-		wsChild|ssCenter, pad, adY, btnW, adH, idcAd, hwnd, hInst)
-	setFont(state.hAdText, state.hNormalFont)
-
-	state.hAdLink = createCtl("STATIC", "Beautiphoto",
-		wsChild|ssCenter|ssNotify, pad, adY+adH, btnW, ctlH, idcAdLink, hwnd, hInst)
-	setFont(state.hAdLink, state.hNormalFont)
-
-	adPromoY := adY + adH + ctlH + ctlH/4
-	adPromoH := int32(winHeight) * 4 / 100
-	state.hAdPromo = createCtl("STATIC", "Use Promo code FastFlix0626 for half off for a year!",
-		wsChild|ssCenter, pad, adPromoY, btnW, adPromoH, 0, hwnd, hInst)
-	setFont(state.hAdPromo, state.hSmallFont)
-
 	// Launch button near bottom (hidden until install completes)
 	launchY := int32(winHeight) - btnH - int32(winHeight)*12/100
-	state.hLaunchBtn = createCtl("BUTTON", "Launch FastFlix (8)",
+	state.hLaunchBtn = createCtl("BUTTON", "Launch FastFlix",
 		wsChild|wsTabStop|bsOwnerDraw,
 		pad, launchY, btnW, btnH, idcLaunch, hwnd, hInst)
 
@@ -560,9 +534,6 @@ func wndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintptr {
 		ctl := syscall.Handle(lParam)
 		setTextColor.Call(uintptr(hdc), clrText)
 		setBkMode.Call(uintptr(hdc), transparent)
-		if ctl == state.hAdLink {
-			setTextColor.Call(uintptr(hdc), clrAccent)
-		}
 		if ctl == state.hWarning {
 			setTextColor.Call(uintptr(hdc), clrRed)
 		}
@@ -570,7 +541,7 @@ func wndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintptr {
 	case wmCtlColorBtn:
 		return uintptr(state.hBgBrush)
 	case wmDrawItem:
-		dis := (*drawItemStruct)(unsafe.Pointer(lParam))
+		dis := *(**drawItemStruct)(unsafe.Pointer(&lParam))
 		if dis.HwndItem == state.hProgress {
 			drawProgressBar(dis)
 		} else {
@@ -580,30 +551,9 @@ func wndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintptr {
 	case wmCommand:
 		handleCommand(int(wParam&0xFFFF), int((wParam>>16)&0xFFFF))
 		return 0
-	case 0x0020: // WM_SETCURSOR
-		// Show hand cursor over clickable links
-		ctl := syscall.Handle(wParam)
-		if ctl == state.hAdLink {
-			hand, _, _ := user32DLL.NewProc("LoadCursorW").Call(0, 32649) // IDC_HAND
-			user32DLL.NewProc("SetCursor").Call(hand)
-			return 1
-		}
 	case wmTimer:
 		if int(wParam) == idtProcCheck {
 			checkProcessTimer()
-		}
-		if int(wParam) == idtCountdown {
-			state.countdown--
-			if state.countdown <= 0 {
-				// Enable the launch button
-				user32DLL.NewProc("KillTimer").Call(uintptr(hwnd), idtCountdown)
-				setText(state.hLaunchBtn, "Launch FastFlix")
-				enableWindow.Call(uintptr(state.hLaunchBtn), 1)
-				invalidateRect.Call(uintptr(state.hLaunchBtn), 0, 1)
-			} else {
-				setText(state.hLaunchBtn, fmt.Sprintf("Launch FastFlix (%d)", state.countdown))
-				invalidateRect.Call(uintptr(state.hLaunchBtn), 0, 1)
-			}
 		}
 		return 0
 	case wmClose:
@@ -649,6 +599,9 @@ func paintWindow(hwnd syscall.Handle) {
 	setTextColor.Call(hdc, clrSubtext)
 	selectObject.Call(hdc, uintptr(state.hNormalFont))
 	ver := "version " + Version
+	if BuildDate != "" {
+		ver += " (" + BuildDate + ")"
+	}
 	verY := titleY + titleH - int32(winHeight)*1/100
 	verH := int32(winHeight) * 4 / 100
 	verR := rect{0, verY, int32(winWidth), verY + verH}
@@ -899,13 +852,6 @@ func handleCommand(id, notif int) {
 		if notif == bnClicked {
 			go doInstallForAllUsers()
 		}
-	case idcAdLink:
-		if notif == 0 { // STN_CLICKED
-			url, _ := syscall.UTF16PtrFromString("https://beautiphoto.com")
-			open, _ := syscall.UTF16PtrFromString("open")
-			syscall.NewLazyDLL("shell32.dll").NewProc("ShellExecuteW").Call(
-				0, uintptr(unsafe.Pointer(open)), uintptr(unsafe.Pointer(url)), 0, 0, 1)
-		}
 	case idcClose:
 		postQuitMessage.Call(0)
 	case idcLaunch:
@@ -963,7 +909,7 @@ func updateButtonState() {
 
 func onUninstallClicked() {
 	// Re-check if FastFlix is running right now
-	if isProcessRunning("FastFlix.exe") {
+	if fastflixRunning() {
 		state.processRunning = true
 		showWindow.Call(uintptr(state.hWarning), swShow)
 		enableWindow.Call(uintptr(state.hUninstallBtn), 0)
@@ -979,71 +925,31 @@ func onUninstallClicked() {
 
 	installs := findAllExistingInstalls()
 
-	// Check upfront if ANY install is in a protected path — request UAC once
-	needsAdmin := false
+	// Installs in a protected path (Program Files) are removed by ONE elevated helper run (single UAC prompt):
+	// it deletes the files we installed (user files are kept), all HKLM keys and the common Start Menu entry.
+	var protectedDirs []string
+	needsElevation := false
 	for _, inst := range installs {
-		if inst.InstallDir != "" && isProtectedPath(inst.InstallDir) {
-			needsAdmin = true
-			break
-		}
-	}
-	if needsAdmin && !isAdmin() {
-		// Build a single elevated cmd that removes all protected directories + registry + shortcuts
-		var cmds []string
-		for _, inst := range installs {
-			if inst.InstallDir != "" && isProtectedPath(inst.InstallDir) {
-				cmds = append(cmds, fmt.Sprintf(`rmdir /s /q "%s"`, inst.InstallDir))
+		if installNeedsAdmin(inst) {
+			needsElevation = true
+			if inst.InstallDir != "" {
+				if _, err := os.Stat(inst.InstallDir); err == nil {
+					protectedDirs = append(protectedDirs, inst.InstallDir)
+				}
 			}
 		}
-		// Also remove common Start Menu
-		commonSM := filepath.Join(os.Getenv("ProgramData"), "Microsoft", "Windows", "Start Menu", "Programs", productName)
-		cmds = append(cmds, fmt.Sprintf(`rmdir /s /q "%s"`, commonSM))
-		// Also clean HKLM registry keys via reg.exe
-		cmds = append(cmds, fmt.Sprintf(`reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall\%s" /f`, productName))
-		cmds = append(cmds, fmt.Sprintf(`reg delete "HKLM\SOFTWARE\%s" /f`, productName))
-
-		cmdStr := strings.Join(cmds, " & ")
-		verb, _ := syscall.UTF16PtrFromString("runas")
-		exe, _ := syscall.UTF16PtrFromString("cmd.exe")
-		argPtr, _ := syscall.UTF16PtrFromString("/c " + cmdStr)
-		cwdPtr, _ := syscall.UTF16PtrFromString(".")
-		shell32 := syscall.NewLazyDLL("shell32.dll")
-		retUAC, _, _ := shell32.NewProc("ShellExecuteW").Call(0,
-			uintptr(unsafe.Pointer(verb)), uintptr(unsafe.Pointer(exe)),
-			uintptr(unsafe.Pointer(argPtr)), uintptr(unsafe.Pointer(cwdPtr)), 0)
-
-		if retUAC <= 32 {
-			// User cancelled UAC — show error and stay on uninstall page
+	}
+	if needsElevation && !ffinstall.IsAdmin() {
+		setText(state.hUninstallBtn, "Removing (elevated)...")
+		invalidateRect.Call(uintptr(state.hUninstallBtn), 0, 1)
+		if ok, detail := elevatedUninstall(protectedDirs); !ok {
 			messageBox("Administrator Access Required",
-				"The previous installation is in a protected location (Program Files).\n\nAdministrator access is required to remove it. Please click Uninstall again and accept the permission prompt.",
+				"The previous installation is in a protected location (Program Files).\n\n"+
+					"Administrator access is required to remove it ("+detail+"). Please click Uninstall again and accept the permission prompt.",
 				0x30)
 			resetUninstallButton()
 			return
 		}
-
-		setText(state.hUninstallBtn, "Removing (elevated)...")
-		invalidateRect.Call(uintptr(state.hUninstallBtn), 0, 1)
-
-		// Give the elevated process time to start before polling
-		sleepMs(3000)
-
-		// Wait for protected directories to disappear (up to 60 seconds)
-		for i := 0; i < 60; i++ {
-			allGone := true
-			for _, inst := range installs {
-				if inst.InstallDir != "" && isProtectedPath(inst.InstallDir) {
-					if _, err := os.Stat(inst.InstallDir); err == nil {
-						allGone = false
-					}
-				}
-			}
-			if allGone {
-				break
-			}
-			sleepMs(1000)
-		}
-		// Extra wait for registry cleanup to complete
-		sleepMs(2000)
 	}
 
 	// Clean up all installs directly — we don't call existing uninstallers
@@ -1051,19 +957,6 @@ func onUninstallClicked() {
 	// cleanupInstallation handles: dirs, shortcuts, desktop icons, registry.
 	for _, inst := range installs {
 		cleanupInstallation(inst)
-	}
-
-	// For protected paths that were removed by elevated cmd, also verify
-	// the directory is actually gone before checking registry
-	for _, inst := range installs {
-		if inst.InstallDir != "" && isProtectedPath(inst.InstallDir) {
-			// If directory is gone, the elevated cleanup succeeded
-			if _, err := os.Stat(inst.InstallDir); err != nil {
-				// Dir is gone — also clean any remaining Start Menu shortcuts we can access
-				userSM := filepath.Join(os.Getenv("APPDATA"), "Microsoft", "Windows", "Start Menu", "Programs", productName)
-				os.RemoveAll(userSM)
-			}
-		}
 	}
 
 	// Final verify — only transition if installs are actually gone
@@ -1081,8 +974,8 @@ func onUninstallClicked() {
 		var realRemaining []string
 		for _, inst := range remaining {
 			if inst.InstallDir != "" {
-				if _, err := os.Stat(inst.InstallDir); err == nil {
-					// Directory still exists on disk
+				// Only FastFlix files count; preserved user files (fastflix.yaml) do not
+				if ffinstall.LooksInstalled(inst.InstallDir) {
 					realRemaining = append(realRemaining, inst.InstallDir)
 				}
 			}
@@ -1098,10 +991,7 @@ func onUninstallClicked() {
 			return
 		}
 		// Dirs are gone but registry lingers — clean it up and continue
-		for _, root := range []registry.Key{registry.LOCAL_MACHINE, registry.CURRENT_USER} {
-			registry.DeleteKey(root, `Software\Microsoft\Windows\CurrentVersion\Uninstall\`+productName)
-			registry.DeleteKey(root, `SOFTWARE\`+productName)
-		}
+		cleanAllRegistryKeys()
 	}
 
 	// Uninstall succeeded — show agree checkbox + install buttons
@@ -1115,51 +1005,14 @@ func onUninstallClicked() {
 	updateButtonState()
 }
 
-// shouldShowAd returns true while the Beautiphoto promo is active (through 2026-06-30).
-func shouldShowAd() bool {
-	promoEnd := time.Date(2026, 7, 1, 0, 0, 0, 0, time.Local)
-	return time.Now().Before(promoEnd)
-}
-
-// showAdDuringInstall shows the ad text as soon as install begins (while progress bar is visible).
-func showAdDuringInstall() {
-	if shouldShowAd() {
-		showWindow.Call(uintptr(state.hAdText), swShow)
-		showWindow.Call(uintptr(state.hAdLink), swShow)
-		showWindow.Call(uintptr(state.hAdPromo), swShow)
-	}
-}
-
-// showPostInstallScreen hides progress, shows launch button with countdown.
+// showPostInstallScreen hides progress and shows the launch button.
 func showPostInstallScreen() {
-	// Hide progress bar and label
 	showWindow.Call(uintptr(state.hProgress), swHide)
 	showWindow.Call(uintptr(state.hProgLabel), swHide)
 
-	showAd := shouldShowAd()
-	// Ad should already be visible from showAdDuringInstall, but ensure it
-	if showAd {
-		showWindow.Call(uintptr(state.hAdText), swShow)
-		showWindow.Call(uintptr(state.hAdLink), swShow)
-		showWindow.Call(uintptr(state.hAdPromo), swShow)
-	}
-
-	// Show launch button with countdown
-	state.countdown = 8
-	if !showAd {
-		state.countdown = 0
-	}
-
 	showWindow.Call(uintptr(state.hLaunchBtn), swShow)
-	if state.countdown > 0 {
-		setText(state.hLaunchBtn, fmt.Sprintf("Launch FastFlix (%d)", state.countdown))
-		enableWindow.Call(uintptr(state.hLaunchBtn), 0)
-		invalidateRect.Call(uintptr(state.hLaunchBtn), 0, 1)
-		setTimer.Call(uintptr(state.hwnd), idtCountdown, 1000, 0)
-	} else {
-		setText(state.hLaunchBtn, "Launch FastFlix")
-		enableWindow.Call(uintptr(state.hLaunchBtn), 1)
-	}
+	setText(state.hLaunchBtn, "Launch FastFlix")
+	enableWindow.Call(uintptr(state.hLaunchBtn), 1)
 }
 
 func resetUninstallButton() {
@@ -1173,7 +1026,7 @@ func resetUninstallButton() {
 }
 
 func checkProcessTimer() {
-	running := isProcessRunning("FastFlix.exe")
+	running := fastflixRunning()
 	if running != state.processRunning {
 		state.processRunning = running
 		if running {
@@ -1191,8 +1044,9 @@ func detectExistingInstall() {
 		return
 	}
 
-	// Filter: only keep installs where the directory has a real FastFlix install
-	// (not just a leftover uninstall.exe from incomplete self-deletion)
+	// Filter: only keep installs where the directory has a real FastFlix install. A folder holding only
+	// leftovers (e.g. a portable fastflix.yaml or an orphaned uninstall.exe) is NOT deleted here -- nothing is
+	// removed before the user consents -- it is simply not treated as an install.
 	var real []existingInstall
 	for _, inst := range installs {
 		if inst.InstallDir != "" {
@@ -1203,20 +1057,23 @@ func detectExistingInstall() {
 			} else if _, err := os.Stat(pythonDir); err == nil {
 				real = append(real, inst)
 			}
-			// Dir with only uninstall.exe is a leftover — clean it up
-			if _, err := os.Stat(inst.InstallDir); err == nil {
-				if _, err2 := os.Stat(ffExe); err2 != nil {
-					if _, err3 := os.Stat(pythonDir); err3 != nil {
-						os.RemoveAll(inst.InstallDir)
-					}
-				}
-			}
 		}
 	}
 
-	// If all were orphaned registry keys (dirs gone), clean them up silently
+	// Orphaned registry keys (directory is gone entirely) are stale Add/Remove Programs entries of ours;
+	// drop them so they don't linger. Never touch anything on disk here.
 	if len(real) == 0 {
-		cleanAllRegistryKeys()
+		allGone := true
+		for _, inst := range installs {
+			if inst.InstallDir != "" {
+				if _, err := os.Stat(inst.InstallDir); err == nil {
+					allGone = false
+				}
+			}
+		}
+		if allGone {
+			cleanAllRegistryKeys()
+		}
 		return // No actual installs on disk — skip uninstall screen
 	}
 
@@ -1230,7 +1087,7 @@ func detectExistingInstall() {
 		}
 	}
 	for _, inst := range real {
-		if inst.InstallDir != "" && isProtectedPath(inst.InstallDir) {
+		if installNeedsAdmin(inst) {
 			state.uninstallNeedsAdmin = true
 			break
 		}
@@ -1240,19 +1097,18 @@ func detectExistingInstall() {
 // buildInstallInfoText creates a human-readable summary of where previous installs were found.
 func buildInstallInfoText() string {
 	var lines []string
-	programFiles := strings.ToLower(os.Getenv("ProgramFiles"))
-	localAppData := strings.ToLower(os.Getenv("LOCALAPPDATA"))
+	programFiles := os.Getenv("ProgramFiles")
+	localAppData := os.Getenv("LOCALAPPDATA")
 
 	for _, inst := range state.existingInstalls {
 		ver := inst.Version
 		if ver == "" {
 			ver = "unknown version"
 		}
-		dirLower := strings.ToLower(inst.InstallDir)
 		location := inst.InstallDir
-		if programFiles != "" && strings.HasPrefix(dirLower, programFiles) {
+		if programFiles != "" && ffinstall.IsWithin(programFiles, inst.InstallDir) {
 			location = "Program Files"
-		} else if localAppData != "" && strings.HasPrefix(dirLower, localAppData) {
+		} else if localAppData != "" && ffinstall.IsWithin(localAppData, inst.InstallDir) {
 			location = "Local Apps"
 		}
 		lines = append(lines, fmt.Sprintf("%s found in %s", ver, location))
@@ -1271,13 +1127,11 @@ func doInstallFromGUI(mode installMode) {
 	showWindow.Call(uintptr(state.hProgress), swShow)
 	showWindow.Call(uintptr(state.hProgLabel), swShow)
 	setText(state.hProgLabel, "Installing...")
-	showAdDuringInstall()
 
 	installDir, regRoot, startMenu := installPaths(mode)
-	os.MkdirAll(installDir, 0755)
 
 	lastPct := -1
-	err := extractTarZstd(distArchive, installDir, func(current, total int) {
+	err := installFiles(installDir, func(current, total int) {
 		pct := (current * 95) / total // 0-95% for extraction
 		if pct != lastPct {           // only update on actual change
 			lastPct = pct
@@ -1286,6 +1140,9 @@ func doInstallFromGUI(mode installMode) {
 		}
 	})
 	if err != nil {
+		// installFiles already removed the partially extracted files
+		os.Remove(installDir)
+		state.installing = false
 		messageBox("Installation Failed", "Failed to extract files:\n"+err.Error(), 0x10)
 		postQuitMessage.Call(0)
 		return
@@ -1296,10 +1153,14 @@ func doInstallFromGUI(mode installMode) {
 
 	writeRegistry(installDir, regRoot)
 	writeInstalledSize(installDir, regRoot)
-	createShortcuts(installDir, startMenu)
+	shortcutErr := createShortcuts(installDir, startMenu)
 
 	setProgress(100)
 	setText(state.hProgLabel, "Installation complete!")
+	if shortcutErr != nil {
+		messageBox("Shortcut Not Created",
+			"FastFlix was installed, but the Start Menu shortcut could not be created:\n"+shortcutErr.Error(), 0x30)
+	}
 
 	state.installedDir = installDir
 	showPostInstallScreen()
@@ -1312,30 +1173,21 @@ func doInstallForAllUsers() {
 	updateButtonState()
 
 	installDir, _, _ := installPaths(modeAllUsers)
-	selfPath, _ := os.Executable()
 
 	// Create a temp dir for the done marker
 	tempDir, err := os.MkdirTemp("", "fastflix-install-*")
 	if err != nil {
+		state.installing = false
+		updateButtonState()
 		messageBox("Installation Failed", "Failed to create temp directory:\n"+err.Error(), 0x10)
 		return
 	}
+	defer os.RemoveAll(tempDir)
 	doneMarker := filepath.Join(tempDir, ".done")
 
 	// Trigger UAC IMMEDIATELY — elevated process does extract + registry + shortcuts
-	verb, _ := syscall.UTF16PtrFromString("runas")
-	exe, _ := syscall.UTF16PtrFromString(selfPath)
-	cmdArgs := fmt.Sprintf(`--elevated-install --dest "%s" --marker "%s"`, installDir, doneMarker)
-	argPtr, _ := syscall.UTF16PtrFromString(cmdArgs)
-	cwd, _ := syscall.UTF16PtrFromString(".")
-
-	shell32 := syscall.NewLazyDLL("shell32.dll")
-	shellExec := shell32.NewProc("ShellExecuteW")
-	ret, _, _ := shellExec.Call(0, uintptr(unsafe.Pointer(verb)), uintptr(unsafe.Pointer(exe)),
-		uintptr(unsafe.Pointer(argPtr)), uintptr(unsafe.Pointer(cwd)), 0)
-	if ret <= 32 {
+	if !launchElevated(fmt.Sprintf(`--elevated-install --dest "%s" --marker "%s"`, installDir, doneMarker)) {
 		// User cancelled UAC or error
-		os.RemoveAll(tempDir)
 		state.installing = false
 		updateButtonState()
 		return
@@ -1348,30 +1200,36 @@ func doInstallForAllUsers() {
 	showWindow.Call(uintptr(state.hProgress), swShow)
 	showWindow.Call(uintptr(state.hProgLabel), swShow)
 	setText(state.hProgLabel, "Installing to Program Files...")
-	showAdDuringInstall()
 
-	// Poll for completion with smooth animated progress
-	// Uses an ease-out curve: fast at start, slows as it approaches 95%
-	for i := 1; i <= 600; i++ { // up to 5 minutes (500ms intervals)
-		if _, err := os.Stat(doneMarker); err == nil {
-			break
-		}
-		// Ease-out: progress = 95 * (1 - e^(-i/30))
-		// At i=15 (~7.5s): ~35%, i=30 (~15s): ~55%, i=60 (~30s): ~76%, i=90 (~45s): ~86%
-		progress := 95.0 * (1.0 - math.Exp(-float64(i)/30.0))
-		pct := int(progress)
+	// Poll for completion with smooth animated progress (ease-out curve: fast at start, slows towards 95%)
+	result, done := waitForMarker(doneMarker, 300, func(i int) {
+		pct := int(95.0 * (1.0 - math.Exp(-float64(i)/30.0)))
 		if pct > 95 {
 			pct = 95
 		}
 		setProgress(pct)
 		setText(state.hProgLabel, fmt.Sprintf("Installing to Program Files... %d%%", pct))
-		sleepMs(500)
-	}
+	})
 
-	os.RemoveAll(tempDir)
+	if !done || strings.HasPrefix(result, "error") {
+		var msg string
+		if !done {
+			msg = "The installation timed out and may be incomplete."
+		} else {
+			msg = "The installation failed:\n" + strings.TrimSpace(strings.TrimPrefix(result, "error:"))
+		}
+		state.installing = false
+		messageBox("Installation Failed", msg, 0x10)
+		postQuitMessage.Call(0)
+		return
+	}
 
 	setProgress(100)
 	setText(state.hProgLabel, "Installation complete!")
+	if i := strings.Index(result, "warning:"); i >= 0 {
+		messageBox("Shortcut Not Created",
+			"FastFlix was installed, but the Start Menu shortcut could not be created:\n"+strings.TrimSpace(result[i+len("warning:"):]), 0x30)
+	}
 
 	state.installedDir = installDir
 	showPostInstallScreen()
@@ -1475,7 +1333,7 @@ func dialogWndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintpt
 		gdi32DLL.NewProc("SetBkColor").Call(uintptr(hdc), clrEditBg)
 		return uintptr(state.hEditBrush)
 	case wmDrawItem:
-		drawButton((*drawItemStruct)(unsafe.Pointer(lParam)))
+		drawButton(*(**drawItemStruct)(unsafe.Pointer(&lParam)))
 		return 1
 	case wmCommand:
 		if int(wParam&0xFFFF) == idcDlgClose {

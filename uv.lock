@@ -179,18 +179,6 @@ wheels = [
 ]
 
 [[package]]
-name = "deepl"
-version = "1.29.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/74/48/7d46c6372b01a01d7b577841c3270812d6979e383b515dceb9298f1cbf10/deepl-1.29.0.tar.gz", hash = "sha256:494b1606c4885aa8a8e1f34fa516865c12e2bc27d6b159147f2ce06782e125ec", size = 54357, upload-time = "2026-04-01T09:31:35.838Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f4/61/f92e365f753abe2217276f7f4b38b36983e49886d4257320a047c493ff9e/deepl-1.29.0-py3-none-any.whl", hash = "sha256:23046778dfb173d22cf6306e6a7c182f3bfabfbdff9e52e746fc960c65c475ec", size = 48469, upload-time = "2026-04-01T09:31:33.907Z" },
-]
-
-[[package]]
 name = "distlib"
 version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -240,7 +228,6 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "deepl" },
     { name = "pre-commit" },
     { name = "pyinstaller" },
     { name = "pytest" },
@@ -282,7 +269,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "deepl", specifier = ">=1.29.0" },
     { name = "pre-commit", specifier = ">=4.2.0" },
     { name = "pyinstaller", specifier = ">=6.13.0" },
     { name = "pytest", specifier = ">=9.0" },

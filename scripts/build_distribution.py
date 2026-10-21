@@ -3,19 +3,24 @@
 Build script for FastFlix distribution using embeddable Python.
 
 Replaces PyInstaller by bundling the official Python embeddable distribution
-with pip-installed dependencies. The output is a self-contained directory
+with the pinned dependencies. The output is a self-contained directory
 that can be launched via the Go launcher.
 
 Usage:
-    python scripts/build_distribution.py [--python-version 3.13.1] [--arch amd64] [--output dist/FastFlix]
+    python scripts/build_distribution.py [--python-version 3.13.16] [--arch amd64] [--output dist/FastFlix]
+        [--archive] [--installer]
 
 Requirements:
-    - Internet access (downloads Python embeddable distribution and get-pip.py)
-    - Or: pre-downloaded files in scripts/cache/
+    - Go and go-winres (go install github.com/tc-hib/go-winres@v0.3.3) on PATH
+    - uv on PATH (dependencies are pinned from uv.lock via `uv export`)
+    - Internet access (downloads Python embeddable distribution and wheels)
+    - Or: pre-downloaded embeddable Python in scripts/cache/
 """
 
 import argparse
+import json
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -26,6 +31,16 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CACHE_DIR = PROJECT_ROOT / "scripts" / "cache"
+
+# Single source of truth for the bundled interpreter. Must be a 3.13.x patch release that
+# has python-<ver>-embed-<arch>.zip published on python.org. Wheels are resolved for its minor version.
+DEFAULT_PYTHON_VERSION = "3.13.16"
+
+# Go commands that get built (directories under cmd/)
+GO_CMDS = ("installer", "launcher", "uninstaller")
+
+# Packages whose "tests" directory is known to be safe to delete (never imported at runtime).
+SAFE_TEST_DIR_PACKAGES = ("numpy", "cv2", "psutil", "pydantic", "pydantic_core", "requests", "chardet")
 
 
 def detect_arch():
@@ -48,10 +63,6 @@ def download_file(url, dest):
 def get_python_url(version, arch):
     """Get the download URL for the Python embeddable distribution."""
     return f"https://www.python.org/ftp/python/{version}/python-{version}-embed-{arch}.zip"
-
-
-def get_pip_url():
-    return "https://bootstrap.pypa.io/get-pip.py"
 
 
 def extract_python(python_zip, target_dir):
@@ -93,64 +104,138 @@ def configure_pth_file(python_dir):
     pth_file.write_text("\n".join(new_lines) + "\n")
 
 
-def bootstrap_pip(python_dir):
-    """No longer needed — we use the system Python's pip to install into --target.
+def get_version():
+    """Return fastflix.version.__version__ (parsed from the file so there are no import side effects)."""
+    text = (PROJECT_ROOT / "fastflix" / "version.py").read_text(encoding="utf-8")
+    match = re.search(r'__version__\s*=\s*"([^"]+)"', text)
+    if not match:
+        print("  ERROR: could not read __version__ from fastflix/version.py")
+        sys.exit(1)
+    return match.group(1)
 
-    Kept as a no-op for the build step numbering.
-    """
-    pass
+
+def four_part_version(version):
+    """Convert a PEP 440 version (6.3.0, 6.3.0b1) to the X.X.X.X form used by Windows resources."""
+    match = re.match(r"^(\d+)\.(\d+)\.(\d+)(?:(?:a|b|rc)(\d+))?", version)
+    if not match:
+        return f"{version}.0"
+    major, minor, patch, pre = match.groups()
+    return f"{major}.{minor}.{patch}.{pre or 0}"
+
+
+def require_tool(name, hint):
+    if shutil.which(name) is None:
+        print(f"  ERROR: '{name}' not found on PATH. {hint}")
+        sys.exit(1)
+
+
+def patch_winres(version):
+    """Sync version numbers and copyright year in every cmd/*/winres/winres.json with fastflix/version.py."""
+    four = four_part_version(version)
+    year = datetime.now().year
+    for cmd in GO_CMDS:
+        path = PROJECT_ROOT / "cmd" / cmd / "winres" / "winres.json"
+        old_text = path.read_text(encoding="utf-8")
+        data = json.loads(old_text)
+        data["RT_MANIFEST"]["#1"]["0409"]["identity"]["version"] = four
+        ver = data["RT_VERSION"]["#1"]["0000"]
+        ver["fixed"]["file_version"] = four
+        ver["fixed"]["product_version"] = four
+        info = ver["info"]["0409"]
+        info["FileVersion"] = version
+        info["ProductVersion"] = version
+        info["LegalCopyright"] = re.sub(r"2019-\d{4}", f"2019-{year}", info["LegalCopyright"])
+        new_text = json.dumps(data, indent=2) + "\n"
+        if new_text != old_text:
+            path.write_text(new_text, encoding="utf-8", newline="\n")
+            print(f"  Updated {path.relative_to(PROJECT_ROOT)} -> {version}")
+
+
+def run_winres(cmd):
+    """Generate the .syso resource (icon, manifest, version info) for cmd/<cmd>."""
+    subprocess.run(["go-winres", "make"], check=True, cwd=PROJECT_ROOT / "cmd" / cmd)
+
+
+def go_build(cmd, output, version, gui):
+    """Build cmd/<cmd> with version and build date injected."""
+    ldflags = f"-s -w -X main.Version={version} -X main.BuildDate={datetime.now().strftime('%Y-%m-%d')}"
+    if gui:
+        ldflags += " -H windowsgui"
+    subprocess.run(
+        ["go", "build", f"-ldflags={ldflags}", "-o", str(output), f"./cmd/{cmd}"],
+        check=True,
+        cwd=PROJECT_ROOT,
+    )
+    print(f"  Built {output.name} ({output.stat().st_size / 1024 / 1024:.1f} MB)")
 
 
 def build_wheel(project_root):
-    """Build a wheel of FastFlix using the system Python.
+    """Build a wheel of FastFlix with `uv build` (the uv-managed venv has no pip).
 
-    The embeddable Python doesn't have setuptools in its build isolation
-    environment, so we build the wheel with the system Python first.
+    The wheel directory is wiped first so a stale wheel can never be bundled.
     """
     wheel_dir = project_root / "dist" / "wheels"
+    if wheel_dir.exists():
+        shutil.rmtree(wheel_dir)
     wheel_dir.mkdir(parents=True, exist_ok=True)
 
-    print("  Building FastFlix wheel with system Python...")
-    subprocess.run(
-        [sys.executable, "-m", "pip", "wheel", str(project_root), "--wheel-dir", str(wheel_dir), "--no-deps"],
-        check=True,
-    )
+    print("  Building FastFlix wheel...")
+    require_tool("uv", "Install uv: https://docs.astral.sh/uv/")
+    subprocess.run(["uv", "build", "--wheel", "--out-dir", str(wheel_dir), str(project_root)], check=True)
 
-    # Find the built wheel
     wheels = list(wheel_dir.glob("fastflix-*.whl"))
-    if not wheels:
-        print("  ERROR: No wheel built")
+    if len(wheels) != 1:
+        print(f"  ERROR: expected exactly one fastflix wheel in {wheel_dir}, found {len(wheels)}: {wheels}")
         sys.exit(1)
+    print(f"  Built {wheels[0].name} (fastflix/version.py says {get_version()})")
     return wheels[0]
 
 
-def install_dependencies(python_dir, lib_dir, project_root):
+def export_requirements(project_root, dest):
+    """Write the exact dependency pins from uv.lock (runtime deps only, not the project itself)."""
+    require_tool("uv", "Install uv: https://docs.astral.sh/uv/")
+    result = subprocess.run(
+        ["uv", "export", "--frozen", "--no-dev", "--no-hashes", "--no-emit-project", "--format", "requirements.txt"],
+        check=True,
+        capture_output=True,
+        text=True,
+        cwd=project_root,
+    )
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(result.stdout, encoding="utf-8")
+    return dest
+
+
+def install_dependencies(lib_dir, project_root, python_version, arch):
     """Install FastFlix and all dependencies into the lib directory.
 
-    Uses the SYSTEM Python's pip (not the embeddable one) to avoid build
-    isolation issues. The --target flag installs everything into lib_dir.
+    Uses `uv pip install --target` with an explicit target platform/interpreter, so wheels are resolved for the
+    *bundled* CPython 3.13 (win_amd64/win_arm64) rather than for whatever Python runs this script. (Plain
+    `pip --platform` cannot be used because a few pure-Python dependencies are sdist-only.) Dependency versions
+    are pinned to uv.lock via `uv export`.
     """
     lib_dir.mkdir(parents=True, exist_ok=True)
 
-    # Build fastflix wheel with system Python
     wheel_path = build_wheel(project_root)
+    requirements = export_requirements(project_root, project_root / "dist" / "requirements-build.txt")
 
-    # Install using system Python's pip with --target
-    print("  Installing FastFlix wheel and dependencies...")
-    subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            str(wheel_path),
-            "--target",
-            str(lib_dir),
-            "--no-warn-script-location",
-            "--no-cache-dir",
-        ],
-        check=True,
-    )
+    py_minor = ".".join(python_version.split(".")[:2])
+    uv_platform = "aarch64-pc-windows-msvc" if arch == "arm64" else "x86_64-pc-windows-msvc"
+    target_args = [
+        "--target",
+        str(lib_dir),
+        "--python-version",
+        py_minor,
+        "--python-platform",
+        uv_platform,
+        "--no-deps",  # the requirements file is fully resolved and pinned by uv
+    ]
+
+    print(f"  Installing pinned dependencies for CPython {py_minor} / {uv_platform}...")
+    subprocess.run(["uv", "pip", "install", "-r", str(requirements), *target_args], check=True, cwd=project_root)
+
+    print("  Installing FastFlix wheel...")
+    subprocess.run(["uv", "pip", "install", str(wheel_path), *target_args], check=True, cwd=project_root)
 
 
 def prepare_installer_resources():
@@ -204,41 +289,32 @@ def generate_terms_json(installer_dir):
 
 
 def build_go_launcher(output_dir):
-    """Build the Go launcher binary and place it in the distribution."""
-    from fastflix.version import __version__
+    """Build the Go launcher and uninstaller and place them in the distribution."""
+    version = get_version()
+    require_tool("go", "Install Go: https://go.dev/dl/")
+    require_tool("go-winres", "Install it: go install github.com/tc-hib/go-winres@v0.3.3")
 
-    launcher_exe = output_dir / "FastFlix.exe"
-    print(f"  Building launcher -> {launcher_exe}")
-    subprocess.run(
-        [
-            "go",
-            "build",
-            f"-ldflags=-s -w -X main.Version={__version__}",
-            "-o",
-            str(launcher_exe),
-            "./cmd/launcher",
-        ],
-        check=True,
-        cwd=PROJECT_ROOT,
-    )
-    print(f"  Launcher built ({launcher_exe.stat().st_size / 1024 / 1024:.1f} MB)")
+    patch_winres(version)
+    for cmd in ("launcher", "uninstaller"):
+        run_winres(cmd)
 
-    # Build standalone uninstaller
-    uninstaller_exe = output_dir / "uninstall.exe"
-    print(f"  Building uninstaller -> {uninstaller_exe}")
-    subprocess.run(
-        [
-            "go",
-            "build",
-            "-ldflags=-s -w",
-            "-o",
-            str(uninstaller_exe),
-            "./cmd/uninstaller",
-        ],
-        check=True,
-        cwd=PROJECT_ROOT,
-    )
-    print(f"  Uninstaller built ({uninstaller_exe.stat().st_size / 1024 / 1024:.1f} MB)")
+    print(f"  Building launcher -> {output_dir / 'FastFlix.exe'}")
+    go_build("launcher", output_dir / "FastFlix.exe", version, gui=False)
+
+    print(f"  Building uninstaller -> {output_dir / 'uninstall.exe'}")
+    go_build("uninstaller", output_dir / "uninstall.exe", version, gui=True)
+
+
+def build_go_installer(output_exe):
+    """Build the installer. Requires cmd/installer/fastflix_dist.tar.zst (see --archive)."""
+    version = get_version()
+    require_tool("go", "Install Go: https://go.dev/dl/")
+    require_tool("go-winres", "Install it: go install github.com/tc-hib/go-winres@v0.3.3")
+    patch_winres(version)
+    run_winres("installer")
+    output_exe.parent.mkdir(parents=True, exist_ok=True)
+    print(f"  Building installer -> {output_exe}")
+    go_build("installer", output_exe, version, gui=True)
 
 
 def copy_data_files(output_dir, project_root):
@@ -270,10 +346,8 @@ def copy_data_files(output_dir, project_root):
     except FileNotFoundError:
         pass
 
-    from fastflix.version import __version__
-
     timestamp = datetime.now().strftime("%Y.%m.%d-%H.%M")
-    version_file.write_text(f"{__version__}-{branch}-{timestamp}")
+    version_file.write_text(f"{get_version()}-{branch}-{timestamp}")
 
 
 def create_dist_archive(output_dir, archive_path):
@@ -287,7 +361,7 @@ def create_dist_archive(output_dir, archive_path):
     try:
         import zstandard
     except ImportError:
-        print("  ERROR: zstandard package not installed. Run: pip install zstandard")
+        print("  ERROR: zstandard package not installed. Run this script via: uv run --with zstandard python ...")
         sys.exit(1)
 
     print(f"  Creating distribution archive: {archive_path}")
@@ -457,16 +531,14 @@ def cleanup_dist(lib_dir):
     patterns_to_remove = [
         # Python cache files
         "**/__pycache__",
-        # Test directories
-        "**/tests",
-        "**/test",
+        # Test directories: only for known-safe packages (a blanket **/test* delete can break packages
+        # that import from a "test" module at runtime)
+        *[f"{pkg}/tests" for pkg in SAFE_TEST_DIR_PACKAGES],
         # Documentation
         "**/*.md",
         "**/*.rst",
-        # Dist-info extras (keep METADATA and RECORD)
-        "**/*.dist-info/LICENSE*",
-        "**/*.dist-info/NOTICE*",
-        "**/*.dist-info/AUTHORS*",
+        # NOTE: dist-info LICENSE/NOTICE/AUTHORS files and licenses/ dirs are intentionally kept
+        # (license compliance for redistributed third-party packages).
         # Type stubs (not needed at runtime)
         "**/*.pyi",
         # Pip itself (not needed at runtime)
@@ -492,14 +564,21 @@ def cleanup_dist(lib_dir):
 
 def main():
     parser = argparse.ArgumentParser(description="Build FastFlix distribution")
-    parser.add_argument("--python-version", default="3.13.1", help="Python version to embed")
+    parser.add_argument("--python-version", default=DEFAULT_PYTHON_VERSION, help="Python version to embed")
     parser.add_argument("--arch", default=None, help="Architecture: amd64 or arm64")
     parser.add_argument("--output", default=None, help="Output directory")
     parser.add_argument("--archive", action="store_true", help="Create tar.zst archive for installer embedding")
+    parser.add_argument(
+        "--installer", action="store_true", help="Also build dist/FastFlix_installer.exe (implies --archive)"
+    )
     parser.add_argument("--skip-download", action="store_true", help="Use cached downloads only")
     args = parser.parse_args()
 
     arch = args.arch or detect_arch()
+    if arch not in ("amd64", "arm64"):
+        parser.error("--arch must be amd64 or arm64")
+    if args.installer:
+        args.archive = True
     output_dir = Path(args.output) if args.output else PROJECT_ROOT / "dist" / "FastFlix"
 
     print("Building FastFlix distribution")
@@ -536,12 +615,11 @@ def main():
     configure_pth_file(python_dir)
 
     # Step 4: Bootstrap pip
-    print("[4/6] Bootstrapping pip...")
-    bootstrap_pip(python_dir)
+    print("[4/6] (pip bootstrap not needed)")
 
     # Step 5: Install dependencies
     print("[5/6] Installing FastFlix and dependencies...")
-    install_dependencies(python_dir, lib_dir, PROJECT_ROOT)
+    install_dependencies(lib_dir, PROJECT_ROOT, args.python_version, arch)
 
     # Step 6: Build Go launcher
     print("[6/7] Building Go launcher...")
@@ -563,6 +641,10 @@ def main():
         prepare_installer_resources()
         archive_path = PROJECT_ROOT / "cmd" / "installer" / "fastflix_dist.tar.zst"
         create_dist_archive(output_dir, archive_path)
+
+    if args.installer:
+        print("Building installer...")
+        build_go_installer(PROJECT_ROOT / "dist" / "FastFlix_installer.exe")
 
 
 if __name__ == "__main__":
