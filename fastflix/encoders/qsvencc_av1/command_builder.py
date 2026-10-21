@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import shlex
 from typing import List
 
 from fastflix.encoders.common.helpers import Command
@@ -15,6 +14,9 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_avformat_reader,
     rigaya_trim_or_seek,
     rigaya_extra_options,
+    qvbr_quality_value,
+    split_extra_args,
+    rigaya_hdr_static_metadata,
 )
 
 logger = logging.getLogger("fastflix")
@@ -57,7 +59,7 @@ def build(fastflix: FastFlix):
 
     command.extend(["-i", str(video.source)])
 
-    if stream_id:
+    if stream_id is not None:
         command.extend(["--video-streamid", str(stream_id)])
 
     command.extend(rigaya_trim_or_seek(video))
@@ -94,7 +96,10 @@ def build(fastflix: FastFlix):
 
     command.extend(["-c", "av1"])
 
-    if settings.bitrate:
+    qvbr = qvbr_quality_value(settings)
+    if settings.bitrate and qvbr:
+        command.extend(["--qvbr", settings.bitrate.rstrip("k"), "--qvbr-quality", qvbr])
+    elif settings.bitrate:
         command.extend(["--vbr", settings.bitrate.rstrip("k")])
     else:
         command.extend([f"--{settings.qp_mode}", str(settings.cqp)])
@@ -123,23 +128,17 @@ def build(fastflix: FastFlix):
         command.extend(["--tune", tune])
 
     if settings.lookahead:
-        command.extend(["--la-depth", str(settings.lookahead)])
+        if settings.bitrate:
+            # AV1 lookahead is the EncTools LookAheadDepth on top of bitrate control, which needs ExtBRC
+            command.extend(["--la-depth", str(settings.lookahead), "--extbrc"])
+        else:
+            logger.warning("QSVEncC AV1 lookahead requires a bitrate rate control mode, ignoring lookahead")
 
     command.extend(["--level", settings.level or "auto"])
 
     command.extend(rigaya_auto_options(fastflix))
 
-    if fastflix.current_video.master_display:
-        md = fastflix.current_video.master_display
-        command.extend(
-            [
-                "--master-display",
-                f"G{md.green}B{md.blue}R{md.red}WP{md.white}L{md.luminance}",
-            ]
-        )
-
-    if fastflix.current_video.cll:
-        command.extend(["--max-cll", str(fastflix.current_video.cll)])
+    command.extend(rigaya_hdr_static_metadata(fastflix))
 
     if settings.copy_hdr10 and not video.video_settings.remove_hdr:
         command.extend(["--dhdr10-info", "copy"])
@@ -197,7 +196,7 @@ def build(fastflix: FastFlix):
     )
 
     if settings.extra:
-        command.extend(shlex.split(settings.extra))
+        command.extend(split_extra_args(settings.extra))
 
     command.extend(["-o", str(video.video_settings.output_path)])
 

@@ -84,6 +84,16 @@
 * Fixing deleting a duplicated audio track breaking the remaining audio tracks, and audio title edits rebuilding commands on every keystroke
 * Fixing HDR10+ extraction using a full CPU core while waiting, and post-encode validation hanging with no timeout
 * Fixing file paths being rendered as rich text in concat, multiple files and profile windows, and removing the unused HDR10+ Inject window
+* Fixing VCEEncC pre analysis (`--pa`) being passed as a single argument containing a space
+* Fixing invalid `--vpp-deblock` parameters on NVEncC, QSVEncC and VCEEncC
+* Fixing output frame rate using a non-existent `--vpp-fps` option; NVEncC now uses `--vpp-fruc`, QSVEncC and VCEEncC ignore it with a warning
+* Fixing HDR10 mastering display and max CLL metadata being written when tone mapping to SDR on rigaya encoders
+* Fixing NVEncC custom arguments being split on whitespace instead of shell quoting, and video stream id 0 being ignored on rigaya encoders
+* Fixing NVEncC AV1 emitting HEVC only `--tier`, and VCEEncC AV1 emitting H.264/HEVC only `--motion-est` and `--vbaq`
+* Fixing NVEncC profile, and VCEEncC HEVC/AV1 B frames being collected but never passed to the encoder
+* Fixing QSVEncC lookahead depth being passed with rate control modes that ignore it, and AV1 lookahead missing `--extbrc`
+* Fixing rigaya encoder detection finding no devices when the encoder prints warnings, and hanging on a stuck encoder
+* Adding NVEncC `--tune` option (hq, uhq, lowlatency, ultralowlatency, lossless) and NVEncC / QSVEncC / VCEEncC quality based VBR (`--qvbr`)
 
 ## Version 6.2.1
 

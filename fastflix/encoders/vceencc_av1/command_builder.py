@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import shlex
 
 from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import VCEEncCAV1Settings
@@ -14,7 +13,10 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_avformat_reader,
     rigaya_trim_or_seek,
     rigaya_extra_options,
+    split_extra_args,
+    rigaya_hdr_static_metadata,
     pa_builder,
+    qvbr_quality_value,
 )
 
 logger = logging.getLogger("fastflix")
@@ -53,7 +55,7 @@ def build(fastflix: FastFlix):
     command.extend(["--device", str(settings.device)])
     command.extend(["-i", str(video.source)])
 
-    if stream_id:
+    if stream_id is not None:
         command.extend(["--video-streamid", str(stream_id)])
     command.extend(rigaya_trim_or_seek(video))
     if video.video_settings.source_fps:
@@ -84,7 +86,12 @@ def build(fastflix: FastFlix):
 
     command.extend(["-c", "av1"])
 
-    if settings.bitrate:
+    qvbr = qvbr_quality_value(settings)
+    if not qvbr and settings.bitrate_mode == "qvbr":
+        qvbr = "23"
+    if qvbr:
+        command.extend(["--qvbr", qvbr])
+    elif settings.bitrate:
         command.extend([f"--{settings.bitrate_mode}", settings.bitrate.rstrip("k")])
     else:
         command.extend(["--cqp", str(settings.cqp)])
@@ -92,10 +99,12 @@ def build(fastflix: FastFlix):
     if video.video_settings.maxrate:
         command.extend(["--max-bitrate", str(video.video_settings.maxrate)])
         command.extend(["--vbv-bufsize", str(video.video_settings.bufsize)])
-    if settings.min_q and settings.bitrate:
+    if settings.min_q and (settings.bitrate or qvbr):
         command.extend(["--qp-min", str(settings.min_q)])
-    if settings.max_q and settings.bitrate:
+    if settings.max_q and (settings.bitrate or qvbr):
         command.extend(["--qp-max", str(settings.max_q)])
+    if settings.b_frames:
+        command.extend(["--bframes", str(settings.b_frames)])
     if settings.ref:
         command.extend(["--ref", str(settings.ref)])
 
@@ -104,16 +113,7 @@ def build(fastflix: FastFlix):
 
     command.extend(rigaya_auto_options(fastflix))
 
-    if fastflix.current_video.master_display:
-        md = fastflix.current_video.master_display
-        command.extend(
-            [
-                "--master-display",
-                f"G{md.green}B{md.blue}R{md.red}WP{md.white}L{md.luminance}",
-            ]
-        )
-    if fastflix.current_video.cll:
-        command.extend(["--max-cll", str(fastflix.current_video.cll)])
+    command.extend(rigaya_hdr_static_metadata(fastflix))
     if settings.copy_hdr10 and not video.video_settings.remove_hdr:
         command.extend(["--dhdr10-info", "copy"])
     if settings.copy_dv and not video.video_settings.remove_hdr:
@@ -123,16 +123,12 @@ def build(fastflix: FastFlix):
             command.extend(["--dolby-vision-rpu-prm", "crop=true"])
 
     command.extend(["--output-depth", output_depth])
-    command.extend(["--motion-est", settings.mv_precision])
-
-    if settings.vbaq:
-        command.append("--vbaq")
     if settings.pre_encode:
         command.append("--pe")
 
     pa = pa_builder(settings)
     if pa:
-        command.append(pa)
+        command.extend(pa)
 
     command.extend(["--avsync", vsync_setting])
 
@@ -168,7 +164,7 @@ def build(fastflix: FastFlix):
     )
 
     if settings.extra:
-        command.extend(shlex.split(settings.extra))
+        command.extend(split_extra_args(settings.extra))
 
     command.extend(["-o", str(video.video_settings.output_path)])
 

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
+import shlex
+import sys
+from fractions import Fraction
 from typing import List, Optional
 
 from fastflix.models.video import SubtitleTrack, AudioTrack, DataTrack, Video
@@ -76,6 +79,72 @@ def rigaya_auto_options(fastflix: FastFlix) -> List[str]:
     ]
 
 
+def split_extra_args(text: str) -> List[str]:
+    """Split user supplied custom arguments like a shell; backslashes stay literal on Windows (paths)."""
+    lex = shlex.shlex(text, posix=True)
+    lex.whitespace_split = True
+    lex.commenters = ""
+    if sys.platform == "win32":
+        lex.escape = ""
+    return list(lex)
+
+
+def rigaya_hdr_static_metadata(fastflix: FastFlix) -> List[str]:
+    """--master-display / --max-cll, skipped when tone mapping to SDR since they would describe HDR content."""
+    video = fastflix.current_video
+    if video.video_settings.remove_hdr:
+        return []
+    result = []
+    if video.master_display:
+        md = video.master_display
+        result.extend(["--master-display", f"G{md.green}B{md.blue}R{md.red}WP{md.white}L{md.luminance}"])
+    if video.cll:
+        result.extend(["--max-cll", str(video.cll)])
+    return result
+
+
+# Valid --profile values per codec, from the NVEncC options documentation
+NVENC_PROFILES = {
+    "hevc": ("main", "main10", "main444"),
+    "av1": ("main", "high"),
+    "avc": ("baseline", "main", "high", "high10", "high422", "high444"),
+}
+
+
+def nvenc_profile_args(profile: Optional[str], codec: str) -> List[str]:
+    if not profile or profile.lower() == "auto":
+        return []
+    if profile.lower() not in NVENC_PROFILES[codec]:
+        logger.warning(f"Profile {profile} is not valid for NVEncC {codec}, ignoring")
+        return []
+    return ["--profile", profile.lower()]
+
+
+# Valid --tune values per codec, from the NVEncC options documentation (uhq: HEVC/AV1 only, lossless: H.264/HEVC)
+NVENC_TUNES = {
+    "hevc": ("hq", "uhq", "lowlatency", "ultralowlatency", "lossless"),
+    "av1": ("hq", "uhq", "lowlatency", "ultralowlatency"),
+    "avc": ("hq", "lowlatency", "ultralowlatency", "lossless"),
+}
+
+
+def nvenc_tune_args(tune: Optional[str], codec: str) -> List[str]:
+    if not tune or tune.lower() == "hq":
+        return []
+    if tune.lower() not in NVENC_TUNES[codec]:
+        logger.warning(f"Tune {tune} is not valid for NVEncC {codec}, ignoring")
+        return []
+    return ["--tune", tune.lower()]
+
+
+def qvbr_quality_value(settings) -> Optional[str]:
+    """Quality for quality based VBR (--qvbr), None when QVBR is off."""
+    value = getattr(settings, "qvbr_quality", None)
+    if value is None or str(value).strip().lower() in ("", "off", "auto", "none"):
+        return None
+    return str(value).strip()
+
+
 def parse_frame_rate(frame_rate_str: str) -> Optional[float]:
     """Parse a frame rate string like '24000/1001' or '30' into a float.
 
@@ -126,11 +195,11 @@ def rigaya_trim_or_seek(video: Video) -> List[str]:
     return result
 
 
-def pa_builder(settings: VCEEncCAVCSettings | VCEEncCAV1Settings | VCEEncCSettings):
+def pa_builder(settings: VCEEncCAVCSettings | VCEEncCAV1Settings | VCEEncCSettings) -> List[str]:
     if not settings.pre_analysis:
-        return ""
+        return []
     base = (
-        f"--pa sc={settings.pa_sc},"
+        f"sc={settings.pa_sc},"
         f"ss={settings.pa_ss},"
         f"activity-type={settings.pa_activity_type},"
         f"caq-strength={settings.pa_caq_strength},"
@@ -149,7 +218,7 @@ def pa_builder(settings: VCEEncCAVCSettings | VCEEncCAV1Settings | VCEEncCSettin
     if settings.pa_motion_quality is not None:
         base += f"motion-quality={settings.pa_motion_quality},"
 
-    return base.rstrip(",")
+    return ["--pa", base.rstrip(",")]
 
 
 def get_stream_pos(streams) -> dict:
@@ -365,10 +434,22 @@ RIGAYA_DENOISE_MAP: dict[str, list[str]] = {
 }
 
 
-def rigaya_extra_options(video: Video, hdr2sdr: Optional[str] = None) -> List[str]:
+def output_fps_to_fraction(value: str) -> Optional[str]:
+    """Convert a user supplied frame rate ("30", "23.976", "24000/1001") to the <int>/<int> form --vpp-fruc needs."""
+    try:
+        fraction = Fraction(str(value).strip()).limit_denominator(1001)
+    except (ValueError, ZeroDivisionError):
+        return None
+    if fraction <= 0:
+        return None
+    return f"{fraction.numerator}/{fraction.denominator}"
+
+
+def rigaya_extra_options(video: Video, hdr2sdr: Optional[str] = None, fruc: bool = False) -> List[str]:
     """Build extra VPP filter and encoder arguments for rigaya encoders from advanced panel settings.
 
     ``hdr2sdr`` is an optional ``hdr2sdr=<tonemap>`` parameter that gets merged with LUT3D into one --vpp-colorspace.
+    ``fruc`` is True for NVEncC, the only rigaya encoder with a target frame rate filter (--vpp-fruc fps=).
     """
     result: List[str] = []
     vs = video.video_settings
@@ -444,9 +525,9 @@ def rigaya_extra_options(video: Video, hdr2sdr: Optional[str] = None) -> List[st
     # Deblock
     if vs.deblock:
         if vs.deblock == "weak":
-            result.extend(["--vpp-deblock", "strength=30"])
+            result.extend(["--vpp-deblock", "qp=24"])
         elif vs.deblock == "strong":
-            result.extend(["--vpp-deblock", "strength=60"])
+            result.extend(["--vpp-deblock", "qp=36,alpha=2,beta=2"])
 
     # Curves preset
     if vs.curves_preset:
@@ -494,9 +575,15 @@ def rigaya_extra_options(video: Video, hdr2sdr: Optional[str] = None) -> List[st
         except (ValueError, ZeroDivisionError):
             logger.warning(f"Invalid pad aspect for rigaya: {vs.pad_aspect}")
 
-    # Output FPS via --vpp-fps (won't conflict with --fps used for source_fps)
+    # Output FPS: only NVEncC has a target frame rate filter (Turing+, Windows only, processes in 8 bit)
     if vs.output_fps:
-        result.extend(["--vpp-fps", f"fps={vs.output_fps}"])
+        fps_fraction = output_fps_to_fraction(vs.output_fps) if fruc else None
+        if fps_fraction:
+            result.extend(["--vpp-fruc", f"fps={fps_fraction}"])
+        elif fruc:
+            logger.warning(f"Invalid output frame rate for NVEncC, ignoring: {vs.output_fps}")
+        else:
+            logger.warning("QSVEncC and VCEEncC have no output frame rate filter, ignoring the output frame rate")
 
     # Video track title
     if vs.video_track_title:
