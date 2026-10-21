@@ -9,7 +9,7 @@ import shutil
 import time
 from datetime import timedelta
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import importlib.resources
 import reusables
@@ -90,6 +90,16 @@ resolutions = {
     "1024 W": {"method": "width", "pixels": 1024},
     "640 W": {"method": "width", "pixels": 640},
 }
+
+
+def dropped_local_path(mime_data) -> Optional[Path]:
+    """First local-file URL from a drop, or None."""
+    if not mime_data.hasUrls():
+        return None
+    for url in mime_data.urls():
+        if url.isLocalFile() and url.toLocalFile():
+            return Path(clean_file_string(url.toLocalFile()))
+    return None
 
 
 class CropWidgets(BaseModel):
@@ -173,6 +183,12 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self._top_bar_widgets = []  # widgets that share the same height in the top bar
         self._preview_buttons = []  # square icon buttons that must stay fixed on scale change
         self.last_thumb_hash = ""
+        self._thumb_worker: Optional[ThumbnailCreator] = None
+        self._thumb_pending = False
+        self._page_update_timer = QtCore.QTimer(self)
+        self._page_update_timer.setSingleShot(True)
+        self._page_update_timer.setInterval(300)
+        self._page_update_timer.timeout.connect(self.page_update)
         self.page_updating = False
         self.previous_encoder_no_audio = False
         self._cover_extract_thread = None
@@ -840,7 +856,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             left_stretch=False,
             time_field=True,
         )
-        self.widgets.start_time.textChanged.connect(lambda: self.page_update())
+        self.widgets.start_time.textChanged.connect(self._field_changed)
 
         self.widgets.end_time, end_row = self.build_hoz_int_field(
             t("End"),
@@ -849,7 +865,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             right_stretch=False,
             time_field=True,
         )
-        self.widgets.end_time.textChanged.connect(lambda: self.page_update())
+        self.widgets.end_time.textChanged.connect(self._field_changed)
 
         time_col2.addLayout(start_row)
         time_col2.addLayout(end_row)
@@ -935,28 +951,28 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self.widgets.crop.top.setFixedWidth(field_width)
         self.widgets.crop.top.setFixedHeight(field_height)
         self.widgets.crop.top.setAlignment(QtCore.Qt.AlignCenter)
-        self.widgets.crop.top.textChanged.connect(lambda: self.page_update())
+        self.widgets.crop.top.textChanged.connect(self._field_changed)
 
         self.widgets.crop.bottom = QtWidgets.QLineEdit("0")
         self.widgets.crop.bottom.setValidator(only_int)
         self.widgets.crop.bottom.setFixedWidth(field_width)
         self.widgets.crop.bottom.setFixedHeight(field_height)
         self.widgets.crop.bottom.setAlignment(QtCore.Qt.AlignCenter)
-        self.widgets.crop.bottom.textChanged.connect(lambda: self.page_update())
+        self.widgets.crop.bottom.textChanged.connect(self._field_changed)
 
         self.widgets.crop.left = QtWidgets.QLineEdit("0")
         self.widgets.crop.left.setValidator(only_int)
         self.widgets.crop.left.setFixedWidth(field_width)
         self.widgets.crop.left.setFixedHeight(field_height)
         self.widgets.crop.left.setAlignment(QtCore.Qt.AlignCenter)
-        self.widgets.crop.left.textChanged.connect(lambda: self.page_update())
+        self.widgets.crop.left.textChanged.connect(self._field_changed)
 
         self.widgets.crop.right = QtWidgets.QLineEdit("0")
         self.widgets.crop.right.setValidator(only_int)
         self.widgets.crop.right.setFixedWidth(field_width)
         self.widgets.crop.right.setFixedHeight(field_height)
         self.widgets.crop.right.setAlignment(QtCore.Qt.AlignCenter)
-        self.widgets.crop.right.textChanged.connect(lambda: self.page_update())
+        self.widgets.crop.right.textChanged.connect(self._field_changed)
 
         # Row 0, Cols 1-2: Top (centered)
         top_row = QtWidgets.QHBoxLayout()
@@ -1971,12 +1987,36 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             start_time=self.preview_place if not self.app.fastflix.current_video.concat else None,
             input_track=self.app.fastflix.current_video.video_settings.selected_track,
         )
+        self._start_thumbnail_worker(thumb_command)
+
+    def _field_changed(self):
+        """Debounce page updates while the user is typing; programmatic changes update immediately."""
+        sender = self.sender()
+        if sender is not None and sender.hasFocus():
+            self._page_update_timer.start()
+        else:
+            self.page_update()
+
+    def _start_thumbnail_worker(self, thumb_command):
+        if self._thumb_worker is not None:
+            self._thumb_pending = True
+            return
         try:
             self.thumb_file.unlink()
         except OSError:
             pass
         worker = ThumbnailCreator(self, thumb_command)
+        self._thumb_worker = worker
+        worker.finished.connect(self._thumbnail_worker_finished)
         worker.start()
+
+    def _thumbnail_worker_finished(self):
+        worker, self._thumb_worker = self._thumb_worker, None
+        if worker is not None:
+            worker.deleteLater()
+        if self._thumb_pending:
+            self._thumb_pending = False
+            self.generate_thumbnail()
 
     @property
     def source_material(self):
@@ -2202,7 +2242,8 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=True)
     def dropEvent(self, event):
-        if not event.mimeData().hasUrls:
+        location = dropped_local_path(event.mimeData())
+        if location is None:
             return event.ignore()
 
         event.setDropAction(QtCore.Qt.CopyAction)
@@ -2216,12 +2257,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             if not discard:
                 return
 
-        location = Path(clean_file_string(event.mimeData().urls()[0].toLocalFile()))
-
-        try:
-            self.input_video = location
-        except (ValueError, IndexError):
-            return event.ignore()
+        self.input_video = location
         if not self.input_video.exists():
             logger.error(f"File does not exist {self.input_video}")
             return event.ignore()
@@ -2231,7 +2267,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         QtCore.QTimer.singleShot(0, self._load_dropped_video)
 
     def dragEnterEvent(self, event):
-        event.accept() if event.mimeData().hasUrls else event.ignore()
+        event.accept() if event.mimeData().hasUrls() else event.ignore()
 
     def dragMoveEvent(self, event):
-        event.accept() if event.mimeData().hasUrls else event.ignore()
+        event.accept() if event.mimeData().hasUrls() else event.ignore()

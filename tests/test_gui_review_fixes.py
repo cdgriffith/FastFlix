@@ -85,3 +85,58 @@ def test_large_preview_uses_shared_runner():
     src = inspect.getsource(large_preview.LargePreview.generate_image)
     assert "shell=True" not in src
     assert "run_preview_command" in src
+
+
+def test_dropped_local_path(qapp, tmp_path):
+    from PySide6 import QtCore
+
+    from fastflix.widgets.main import dropped_local_path
+
+    f = tmp_path / "a.mkv"
+    f.write_text("x")
+    mime = QtCore.QMimeData()
+    assert dropped_local_path(mime) is None
+
+    mime.setUrls([QtCore.QUrl("https://example.com/x.mkv"), QtCore.QUrl.fromLocalFile(str(f))])
+    assert dropped_local_path(mime) == f
+
+    mime = QtCore.QMimeData()
+    mime.setUrls([QtCore.QUrl("https://example.com/x.mkv")])
+    assert dropped_local_path(mime) is None
+
+
+def test_thumbnail_requests_do_not_run_concurrently():
+    from fastflix.widgets import main as main_mod
+
+    fake = mock.MagicMock()
+    fake._thumb_worker = None
+    fake._thumb_pending = False
+    with mock.patch.object(main_mod, "ThumbnailCreator") as creator:
+        main_mod.Main._start_thumbnail_worker(fake, ["ffmpeg", "1"])
+        main_mod.Main._start_thumbnail_worker(fake, ["ffmpeg", "2"])
+        main_mod.Main._start_thumbnail_worker(fake, ["ffmpeg", "3"])
+    assert creator.call_count == 1
+    assert fake._thumb_pending is True
+
+    worker = fake._thumb_worker
+    main_mod.Main._thumbnail_worker_finished(fake)
+    worker.deleteLater.assert_called_once()
+    assert fake._thumb_worker is None
+    assert fake._thumb_pending is False
+    fake.generate_thumbnail.assert_called_once()
+
+
+def test_field_change_debounced_only_when_user_is_typing():
+    from fastflix.widgets import main as main_mod
+
+    fake = mock.MagicMock()
+    fake.sender.return_value.hasFocus.return_value = True
+    main_mod.Main._field_changed(fake)
+    fake._page_update_timer.start.assert_called_once()
+    fake.page_update.assert_not_called()
+
+    fake = mock.MagicMock()
+    fake.sender.return_value.hasFocus.return_value = False
+    main_mod.Main._field_changed(fake)
+    fake.page_update.assert_called_once()
+    fake._page_update_timer.start.assert_not_called()
