@@ -112,6 +112,12 @@
 * Fixing HEVC in MP4, M4V and MOV not being tagged hvc1, which prevented playback in QuickTime, iOS and Safari (x265, NVENC, VAAPI and VideoToolbox)
 * Fixing VideoToolbox bitrate mode running a useless first pass (VideoToolbox ignores two-pass), it is now a single pass with an optional constant bit rate setting
 * Fixing HEVC VideoToolbox failing when the profile (Main/Main10) did not match the selected bit depth
+* Fixing VVC (libvvenc) two-pass encoding and bitrate caps failing at encoder init by using FFmpeg -pass/-passlogfile instead of pass/rcstatsfile/vbv-* keys in -vvenc-params
+* Fixing VP9 CRF encoding ignoring the Speed setting (and the fast first pass option) in single and two-pass modes
+* Fixing GIF encoding of HDR sources producing washed-out colors by tone mapping when Remove HDR is set, and dropping frames to the target FPS before scaling so GIF creation is faster
+* Fixing x265 two-pass stats file being written to the working directory instead of the FastFlix work path, and x265 HDR10 settings leaking into later rebuilds of the same video
+* Fixing HDR10 metadata (mastering display, max CLL) being dropped for 4:2:2 and 4:4:4 10/12-bit output in x265, x264, SVT-AV1, rav1e and VVC encoders
+* Adding HDR10 mastering display and content light level metadata for 10-bit AVC (x264) encodes
 
 ## Version 6.2.1
 

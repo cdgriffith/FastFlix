@@ -98,7 +98,14 @@ def build(fastflix: FastFlix):
     elif settings.crf:
         command_1 = (
             beginning
-            + ["-b:v", "0", "-crf:v", str(settings.crf)]
+            + [
+                "-speed:v",
+                str("4" if settings.fast_first_pass else settings.speed),
+                "-b:v",
+                "0",
+                "-crf:v",
+                str(settings.crf),
+            ]
             + details
             + ["-pass", "1"]
             + extra_both
@@ -108,7 +115,7 @@ def build(fastflix: FastFlix):
         )
         command_2 = (
             beginning
-            + ["-b:v", "0", "-crf:v", str(settings.crf)]
+            + ["-speed:v", str(settings.speed), "-b:v", "0", "-crf:v", str(settings.crf)]
             + details
             + (["-pass", "2"] if not settings.single_pass else [])
             + extra

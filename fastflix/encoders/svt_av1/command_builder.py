@@ -7,6 +7,7 @@ import shlex
 
 import reusables
 
+from fastflix.encoders.common.hdr_metadata import is_hdr_bit_depth
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
 from fastflix.models.encode import SVTAV1Settings
 from fastflix.models.fastflix import FastFlix
@@ -80,7 +81,7 @@ def build(fastflix: FastFlix):
             svtav1_params.append("matrix-coefficients=9")
 
         enable_hdr = False
-        if settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+        if is_hdr_bit_depth(settings.pix_fmt):
 
             def convert_me(two_numbers, conversion_rate=50_000) -> str:
                 try:
