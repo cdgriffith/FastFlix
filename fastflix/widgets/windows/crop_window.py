@@ -2,7 +2,7 @@
 import logging
 import secrets
 from pathlib import Path
-from subprocess import run, PIPE
+from subprocess import run, PIPE, TimeoutExpired
 from typing import Optional, TYPE_CHECKING
 
 from PySide6 import QtWidgets, QtCore, QtGui
@@ -20,6 +20,18 @@ if TYPE_CHECKING:
 __all__ = ["CropPreviewWindow"]
 
 logger = logging.getLogger("fastflix")
+
+
+PREVIEW_TIMEOUT = 60
+
+
+def run_preview_command(command: list, timeout: int = PREVIEW_TIMEOUT):
+    """Run a thumbnail command without a shell; returns None if it timed out."""
+    try:
+        return run(command, stderr=PIPE, stdout=PIPE, env=clean_env(), timeout=timeout)
+    except TimeoutExpired:
+        logger.warning(f"Preview generation timed out after {timeout}s")
+        return None
 
 
 class CropImageWidget(QtWidgets.QWidget):
@@ -333,6 +345,11 @@ class CropPreviewWindow(QtWidgets.QWidget):
             size = screen.size()
             self.setMaximumWidth(size.width())
             self.setMaximumHeight(size.height())
+
+        self._slider_timer = QtCore.QTimer(self)
+        self._slider_timer.setSingleShot(True)
+        self._slider_timer.setInterval(200)
+        self._slider_timer.timeout.connect(self._regenerate_for_slider)
 
         self._build_ui()
 
@@ -692,7 +709,9 @@ class CropPreviewWindow(QtWidgets.QWidget):
 
         logger.info(f"Generating crop preview: {thumb_command}")
 
-        thumb_run = run(thumb_command, shell=True, stderr=PIPE, stdout=PIPE, env=clean_env())
+        thumb_run = run_preview_command(thumb_command)
+        if thumb_run is None:
+            return
         if thumb_run.returncode > 0:
             stderr_text = thumb_run.stderr.decode(encoding="utf-8", errors="ignore")
             if settings.get("remove_hdr") and "no path between colorspaces" in stderr_text:
@@ -711,7 +730,9 @@ class CropPreviewWindow(QtWidgets.QWidget):
                     start_time=self._get_preview_time(),
                     input_track=video.video_settings.selected_track,
                 )
-                thumb_run = run(thumb_command, shell=True, stderr=PIPE, stdout=PIPE, env=clean_env())
+                thumb_run = run_preview_command(thumb_command)
+            if thumb_run is None:
+                return
             if thumb_run.returncode > 0:
                 logger.warning(f"Could not generate crop preview: {thumb_run.stdout} |----| {thumb_run.stderr}")
                 return
@@ -739,6 +760,9 @@ class CropPreviewWindow(QtWidgets.QWidget):
         self.image_widget.update()
 
     def slider_changed(self):
+        self._slider_timer.start()
+
+    def _regenerate_for_slider(self):
         self.generate_image(with_crop=False)
         if self.mode == "preview":
             self.generate_image(with_crop=True)

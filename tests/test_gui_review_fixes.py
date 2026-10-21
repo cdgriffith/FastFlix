@@ -53,3 +53,35 @@ def test_notifier_does_not_process_events_off_thread():
     from fastflix.widgets.main_encoding import Notifier
 
     assert "processEvents" not in inspect.getsource(Notifier.run)
+
+
+def test_run_preview_command_no_shell_with_timeout():
+    from fastflix.widgets.windows import crop_window
+
+    fake = mock.MagicMock(return_value=mock.MagicMock(returncode=0))
+    cmd = ["ffmpeg", "-i", "a&b^c%d.mkv", "out.tiff"]
+    with mock.patch.object(crop_window, "run", fake):
+        result = crop_window.run_preview_command(cmd)
+    assert result is fake.return_value
+    assert fake.call_args.args[0] == cmd
+    assert not fake.call_args.kwargs.get("shell")
+    assert fake.call_args.kwargs["timeout"] > 0
+
+
+def test_run_preview_command_timeout_returns_none():
+    import subprocess
+
+    from fastflix.widgets.windows import crop_window
+
+    with mock.patch.object(crop_window, "run", side_effect=subprocess.TimeoutExpired("ffmpeg", 1)):
+        assert crop_window.run_preview_command(["ffmpeg"]) is None
+
+
+def test_large_preview_uses_shared_runner():
+    import inspect
+
+    from fastflix.widgets.windows import large_preview
+
+    src = inspect.getsource(large_preview.LargePreview.generate_image)
+    assert "shell=True" not in src
+    assert "run_preview_command" in src
