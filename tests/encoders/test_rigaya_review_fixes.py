@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from box import Box
 
-from fastflix.encoders.common.encc_helpers import NVENC_PROFILES
+from fastflix.encoders.common.encc_helpers import NVENC_PROFILES, NVENC_TUNES
 from fastflix.models import encode as enc
 from fastflix.models.video import VideoSettings
 
@@ -322,3 +322,51 @@ def test_vce_panel_b_frames(panel_factory, name):
     assert collected(panel, app).b_frames is None
     panel.widgets.b_frames.setCurrentText("2")
     assert collected(panel, app).b_frames == "2"
+
+
+# Item 11: NVEncC --tune
+
+
+@pytest.mark.parametrize(
+    "name,tune,emitted",
+    [
+        ("nvencc_hevc", "uhq", True),
+        ("nvencc_hevc", "lowlatency", True),
+        ("nvencc_hevc", "ultralowlatency", True),
+        ("nvencc_hevc", "lossless", True),
+        ("nvencc_hevc", "hq", False),
+        ("nvencc_av1", "uhq", True),
+        ("nvencc_av1", "lowlatency", True),
+        ("nvencc_av1", "lossless", False),
+        ("nvencc_avc", "lowlatency", True),
+        ("nvencc_avc", "lossless", True),
+        ("nvencc_avc", "uhq", False),
+        ("nvencc_hevc", "bogus", False),
+    ],
+)
+def test_nvenc_tune(name, tune, emitted):
+    cmd = build(name, tune=tune)
+    if emitted:
+        assert value_after(cmd, "--tune") == tune
+    else:
+        assert "--tune" not in cmd
+
+
+@pytest.mark.parametrize("settings_name", ["NVEncCSettings", "NVEncCAV1Settings", "NVEncCAVCSettings"])
+def test_nvenc_tune_defaults_and_old_profiles_load(settings_name):
+    cls = getattr(enc, settings_name)
+    assert cls().tune == "hq"
+    old = cls().model_dump()
+    del old["tune"]
+    assert cls.model_validate(old).tune == "hq"
+
+
+@pytest.mark.parametrize("name", ["nvencc_hevc", "nvencc_av1", "nvencc_avc"])
+def test_nvenc_panel_tune_roundtrip(panel_factory, name):
+    panel, app = panel_factory(name)
+    options = [panel.widgets.tune.itemText(i) for i in range(panel.widgets.tune.count())]
+    assert options == list(NVENC_TUNES[name.split("_")[1]])
+    assert options[0] == "hq"
+    assert collected(panel, app).tune == "hq"
+    panel.widgets.tune.setCurrentText(options[1])
+    assert collected(panel, app).tune == options[1]

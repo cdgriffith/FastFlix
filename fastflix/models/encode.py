@@ -203,6 +203,7 @@ class NVEncCSettings(EncoderSettings):
     name: str = "HEVC (NVEncC)"
     preset: str = "quality"
     profile: str = "auto"
+    tune: str = "hq"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[Union[int, float]] = None
     aq: str = "off"
@@ -246,6 +247,7 @@ class NVEncCAV1Settings(EncoderSettings):
     name: str = "AV1 (NVEncC)"
     preset: str = "quality"
     profile: str = "auto"
+    tune: str = "hq"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[Union[int, float]] = None
     aq: str = "off"
@@ -410,6 +412,7 @@ class NVEncCAVCSettings(EncoderSettings):
     name: str = "AVC (NVEncC)"
     preset: str = "quality"
     profile: str = "auto"
+    tune: str = "hq"
     bitrate: Optional[str] = "5000k"
     cqp: Optional[Union[int, float]] = None
     aq: str = "off"

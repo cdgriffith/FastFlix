@@ -96,6 +96,7 @@ class NVENCC(RigayaPanel):
         grid.addLayout(self.init_aq_strength(), 6, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 7, 0, 1, 2)
         grid.addLayout(self.init_devices(), 8, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 9, 0, 1, 2)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_vbr_target())
@@ -133,7 +134,7 @@ class NVENCC(RigayaPanel):
         grid.addLayout(hdr_line, 8, 2, 1, 2)
         grid.addLayout(self.init_parallel_mode(add_split=True), 8, 4, 1, 2)
 
-        grid.setRowStretch(9, 1)
+        grid.setRowStretch(11, 1)
 
         guide_label = QtWidgets.QLabel(
             link(
@@ -169,8 +170,14 @@ class NVENCC(RigayaPanel):
         return self._add_combo_box(
             label="Tune",
             widget_name="tune",
-            tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, ll - Low Latency, ull - Ultra Low Latency",
-            options=["hq", "ll", "ull", "lossless"],
+            tooltip=(
+                "Tune the preset for a type of source or situation\n"
+                "hq - High Quality (default)\n"
+                "uhq - Ultra High Quality (HEVC and AV1, requires Turing or newer)\n"
+                "lowlatency / ultralowlatency - Streaming oriented\n"
+                "lossless - Lossless output (H.264 and HEVC)"
+            ),
+            options=["hq", "uhq", "lowlatency", "ultralowlatency"],
             opt="tune",
         )
 
@@ -377,6 +384,7 @@ class NVENCC(RigayaPanel):
         settings = NVEncCAV1Settings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
             profile=self.widgets.profile.currentText(),
+            tune=self.widgets.tune.currentText(),
             force_ten_bit=self.widgets.force_ten_bit.isChecked(),
             lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
             aq=self.widgets.aq.currentText(),

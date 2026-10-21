@@ -120,6 +120,23 @@ def nvenc_profile_args(profile: Optional[str], codec: str) -> List[str]:
     return ["--profile", profile.lower()]
 
 
+# Valid --tune values per codec, from the NVEncC options documentation (uhq: HEVC/AV1 only, lossless: H.264/HEVC)
+NVENC_TUNES = {
+    "hevc": ("hq", "uhq", "lowlatency", "ultralowlatency", "lossless"),
+    "av1": ("hq", "uhq", "lowlatency", "ultralowlatency"),
+    "avc": ("hq", "lowlatency", "ultralowlatency", "lossless"),
+}
+
+
+def nvenc_tune_args(tune: Optional[str], codec: str) -> List[str]:
+    if not tune or tune.lower() == "hq":
+        return []
+    if tune.lower() not in NVENC_TUNES[codec]:
+        logger.warning(f"Tune {tune} is not valid for NVEncC {codec}, ignoring")
+        return []
+    return ["--tune", tune.lower()]
+
+
 def parse_frame_rate(frame_rate_str: str) -> Optional[float]:
     """Parse a frame rate string like '24000/1001' or '30' into a float.
 

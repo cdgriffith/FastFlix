@@ -15,6 +15,7 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_trim_or_seek,
     rigaya_extra_options,
     nvenc_profile_args,
+    nvenc_tune_args,
     split_extra_args,
     rigaya_hdr_static_metadata,
 )
@@ -122,6 +123,7 @@ def build(fastflix: FastFlix):
     command.extend(["--bref-mode", settings.b_ref_mode])
     command.extend(["--preset", settings.preset])
     command.extend(nvenc_profile_args(settings.profile, "av1"))
+    command.extend(nvenc_tune_args(settings.tune, "av1"))
 
     if settings.lookahead:
         command.extend(["--lookahead", str(settings.lookahead)])
