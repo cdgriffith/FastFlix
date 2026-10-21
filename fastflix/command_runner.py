@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 from queue import Full
 from subprocess import PIPE
-from threading import Thread
+from threading import Thread, current_thread
 from typing import Literal
 import sys
 
@@ -61,6 +61,7 @@ class BackgroundRunner:
         self.error_message = []
         self.success_message = []
         self.started_at = None
+        self._reader_thread = None
 
     def start_exec(self, command, work_dir: str = None, shell: bool = False, errors=(), successes=()):
         self.clean()
@@ -120,8 +121,13 @@ class BackgroundRunner:
 
         self.started_at = datetime.datetime.now(datetime.timezone.utc)
 
-        thread = Thread(target=self.read_output, daemon=True)
-        thread.start()
+        self._reader_thread = Thread(target=self.read_output, daemon=True)
+        self._reader_thread.start()
+
+    def join_reader(self, timeout: float = 1.0):
+        thread = self._reader_thread
+        if thread and thread.is_alive() and thread is not current_thread():
+            thread.join(timeout=timeout)
 
     def change_priority(
         self, new_priority: Literal["Realtime", "High", "Above Normal", "Normal", "Below Normal", "Idle"]
@@ -141,13 +147,14 @@ class BackgroundRunner:
             pass  # GUI likely dead or log queue full, skip
 
     def read_output(self):
+        process = self.process
         with (
             open(self.output_file, "r", encoding="utf-8", errors="ignore") as out_file,
             open(self.error_output_file, "r", encoding="utf-8", errors="ignore") as err_file,
         ):
             while True:
                 time.sleep(0.01)
-                if not self.is_alive():
+                if process is None or process.poll() is not None:
                     excess = out_file.read()
                     logger.info(excess)
                     self._safe_log_put(excess)
@@ -155,7 +162,7 @@ class BackgroundRunner:
                     err_excess = err_file.read()
                     logger.info(err_excess)
                     self._safe_log_put(err_excess)
-                    if self.process.returncode is not None and self.process.returncode > 0:
+                    if process is not None and process.returncode not in (None, 0) and not self.killed:
                         self.error_detected = True
                     break
                 line = out_file.readline().rstrip()
@@ -201,34 +208,50 @@ class BackgroundRunner:
 
     def clean(self):
         self.kill(log=False)
+        self.join_reader(timeout=2.0)
         self.process = None
+        self._reader_thread = None
         self.error_detected = False
         self.success_detected = False
         self.killed = False
         self.started_at = None
 
+    def _process_tree(self):
+        """The direct child plus every descendant (e.g. both sides of a shell pipe)."""
+        if not self.process:
+            return []
+        try:
+            descendants = self.process.children(recursive=True)
+        except Exception:
+            descendants = []
+        return [*descendants, self.process]
+
     def kill(self, log=True):
+        self.killed = True
         if self.process and self.process.poll() is None:
             if log:
                 logger.warning(f"Stopping encoder worker process {self.process.pid}")
-            try:
-                # if reusables.win_based:
-                #     os.kill(self.process.pid, signal.CTRL_C_EVENT)
-                # else:
-                #     os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
-                self.process.terminate()
-                self.process.kill()
-            except Exception as err:
-                if log:
-                    logger.exception(f"Couldn't terminate process: {err}")
-        self.killed = True
+            for proc in self._process_tree():
+                try:
+                    proc.kill()
+                except Exception as err:
+                    if log:
+                        logger.warning(f"Couldn't terminate process: {err}")
 
     def pause(self):
         if not self.process:
             return False
-        self.process.suspend()
+        for proc in self._process_tree():
+            try:
+                proc.suspend()
+            except Exception as err:
+                logger.warning(f"Couldn't suspend process: {err}")
 
     def resume(self):
         if not self.process:
             return False
-        self.process.resume()
+        for proc in self._process_tree():
+            try:
+                proc.resume()
+            except Exception as err:
+                logger.warning(f"Couldn't resume process: {err}")
