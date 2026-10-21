@@ -4,7 +4,7 @@
 import logging
 import shlex
 
-from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details
+from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, hevc_tag_args
 from fastflix.encoders.common.vaapi import vaapi_level_args, vaapi_rate_control_args, vaapi_sw_format
 from fastflix.models.encode import VAAPIHEVCSettings
 from fastflix.models.fastflix import FastFlix
@@ -43,6 +43,7 @@ def build(fastflix: FastFlix):
             str(settings.idr_interval),
         ]
     )
+    beginning.extend(hevc_tag_args(fastflix.current_video.video_settings.output_path))
     beginning.extend(generate_color_details(fastflix))
     beginning.extend(["-filter_hw_device", "hwdev"])
 

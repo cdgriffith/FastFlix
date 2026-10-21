@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 from typing import Optional, Union
 
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+from pydantic import BaseModel, Field, field_validator, model_validator, ConfigDict
 from box import Box
+
+from fastflix.encoders.common.nvenc_options import migrate_legacy_options
 
 
 class AudioTrack(BaseModel):
@@ -163,6 +165,20 @@ class FFmpegNVENCSettings(EncoderSettings):
     gpu: int = -1
     b_ref_mode: str = "disabled"
     hw_accel: bool = False
+    multipass: str = "fullres"
+    temporal_aq: int = 0
+    aq_strength: int = 8
+    tf_level: str = "default"
+    lookahead_level: str = "default"
+    split_encode_mode: str = "default"
+    weighted_pred: int = 0
+    unidir_b: bool = False
+    no_scenecut: bool = False
+
+    @model_validator(mode="before")
+    @classmethod
+    def migrate_legacy_nvenc(cls, data):
+        return migrate_legacy_options(data)
 
     @field_validator("qp", mode="before")
     @classmethod
@@ -190,6 +206,12 @@ class FFmpegAV1NVENCSettings(EncoderSettings):
     gpu: int = -1
     b_ref_mode: str = "middle"
     hw_accel: bool = False
+    cq: int = 0
+    tf_level: str = "default"
+    lookahead_level: str = "default"
+    split_encode_mode: str = "default"
+    weighted_pred: int = 0
+    no_scenecut: bool = False
 
     @field_validator("qp", mode="before")
     @classmethod
@@ -672,6 +694,7 @@ class HEVCVideoToolboxSettings(EncoderSettings):
     q: Optional[int] = 50
     bitrate: Optional[str] = None
     pix_fmt: str = "p010le"
+    constant_bit_rate: bool = False
 
 
 class H264VideoToolboxSettings(EncoderSettings):
@@ -685,6 +708,7 @@ class H264VideoToolboxSettings(EncoderSettings):
     q: Optional[int] = 50
     bitrate: Optional[str] = None
     pix_fmt: str = "yuv420p"
+    constant_bit_rate: bool = False
 
 
 class AOMAV1Settings(EncoderSettings):

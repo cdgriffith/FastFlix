@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from unittest import mock
 
 from fastflix.encoders.h264_videotoolbox.command_builder import build
-from fastflix.encoders.common.helpers import null
 from fastflix.models.encode import H264VideoToolboxSettings
 from fastflix.models.video import VideoSettings
 
@@ -108,54 +106,58 @@ def test_quality_mode_no_bitrate_flags():
 
 
 # ---------------------------------------------------------------------------
-# Bitrate (two-pass) mode
+# Bitrate mode (VideoToolbox ignores -pass, so it is a single pass encode)
 # ---------------------------------------------------------------------------
-def test_bitrate_mode_two_passes():
-    """Bitrate mode must produce exactly two Commands."""
-    result = build(_make_fastflix(encoder_settings=H264VideoToolboxSettings(q=None, bitrate="4000k")))
+def test_bitrate_mode_single_command():
+    """videotoolboxenc.c has no multi-pass support, so bitrate mode must be one command."""
+    fastflix = _make_fastflix(encoder_settings=H264VideoToolboxSettings(q=None, bitrate="6000k"))
+    result = build(fastflix)
 
-    assert len(result) == 2
-    assert "First pass" in result[0].name
-    assert "Second pass" in result[1].name
+    assert len(result) == 1
+    assert result[0].name == "Single pass bitrate"
 
 
-def test_bitrate_mode_pass_flags():
-    """Each pass carries correct -pass value."""
-    result = build(_make_fastflix(encoder_settings=H264VideoToolboxSettings(q=None, bitrate="4000k")))
+def test_bitrate_mode_no_pass_flags():
+    fastflix = _make_fastflix(encoder_settings=H264VideoToolboxSettings(q=None, bitrate="6000k"))
+    cmd = build(fastflix)[0].command
 
-    cmd1 = result[0].command
-    assert cmd1[cmd1.index("-pass") + 1] == "1"
-    cmd2 = result[1].command
-    assert cmd2[cmd2.index("-pass") + 1] == "2"
+    assert "-pass" not in cmd
+    assert "-passlogfile" not in cmd
+    assert "-an" not in cmd
 
 
 def test_bitrate_mode_bitrate_value():
-    """-b:v must carry the exact bitrate string in both passes."""
-    result = build(_make_fastflix(encoder_settings=H264VideoToolboxSettings(q=None, bitrate="1800k")))
+    """-b:v must carry the exact bitrate string."""
+    fastflix = _make_fastflix(encoder_settings=H264VideoToolboxSettings(q=None, bitrate="12000k"))
+    cmd = build(fastflix)[0].command
 
-    for cmd_obj in result:
-        cmd = cmd_obj.command
-        idx = cmd.index("-b:v")
-        assert cmd[idx + 1] == "1800k"
-
-
-def test_bitrate_mode_first_pass_null():
-    """First pass sends output to null device and skips audio."""
-    cmd1 = build(_make_fastflix(encoder_settings=H264VideoToolboxSettings(q=None, bitrate="4000k")))[0].command
-
-    assert null in cmd1
-    assert "-an" in cmd1
+    assert cmd[cmd.index("-b:v") + 1] == "12000k"
+    assert "-q:v" not in cmd
 
 
-def test_bitrate_mode_passlogfile_shared():
-    """Both passes must reference the same -passlogfile path."""
-    with mock.patch("fastflix.encoders.h264_videotoolbox.command_builder.secrets.token_hex", return_value="cafe0123"):
-        result = build(_make_fastflix(encoder_settings=H264VideoToolboxSettings(q=None, bitrate="4000k")))
+def test_constant_bit_rate_off_by_default():
+    fastflix = _make_fastflix(encoder_settings=H264VideoToolboxSettings(q=None, bitrate="6000k"))
+    assert "-constant_bit_rate" not in build(fastflix)[0].command
 
-    log1 = result[0].command[result[0].command.index("-passlogfile") + 1]
-    log2 = result[1].command[result[1].command.index("-passlogfile") + 1]
-    assert log1 == log2
-    assert "cafe0123" in log1
+
+def test_constant_bit_rate_opt_in():
+    fastflix = _make_fastflix(
+        encoder_settings=H264VideoToolboxSettings(q=None, bitrate="6000k", constant_bit_rate=True)
+    )
+    cmd = build(fastflix)[0].command
+    assert cmd[cmd.index("-constant_bit_rate") + 1] == "true"
+
+
+def test_constant_bit_rate_ignored_in_quality_mode():
+    fastflix = _make_fastflix(encoder_settings=H264VideoToolboxSettings(q=50, bitrate=None, constant_bit_rate=True))
+    assert "-constant_bit_rate" not in build(fastflix)[0].command
+
+
+def test_extra_options_bitrate_mode():
+    fastflix = _make_fastflix(encoder_settings=H264VideoToolboxSettings(q=None, bitrate="6000k", extra="-tag:v xyz1"))
+    cmd = build(fastflix)[0].command
+
+    assert cmd[cmd.index("-tag:v") + 1] == "xyz1"
 
 
 # ---------------------------------------------------------------------------
@@ -194,34 +196,6 @@ def test_extra_options_quality():
 
     assert "-tag:v" in cmd
     assert "avc1" in cmd
-
-
-def test_extra_both_passes_bitrate():
-    """Extra appears in BOTH passes when extra_both_passes is True."""
-    result = build(
-        _make_fastflix(
-            encoder_settings=H264VideoToolboxSettings(
-                q=None, bitrate="4000k", extra="-tag:v avc1", extra_both_passes=True
-            )
-        )
-    )
-
-    assert "-tag:v" in result[0].command
-    assert "-tag:v" in result[1].command
-
-
-def test_extra_only_second_pass_by_default():
-    """Without extra_both_passes, first pass must NOT have extra options."""
-    result = build(
-        _make_fastflix(
-            encoder_settings=H264VideoToolboxSettings(
-                q=None, bitrate="4000k", extra="-tag:v avc1", extra_both_passes=False
-            )
-        )
-    )
-
-    assert "-tag:v" not in result[0].command
-    assert "-tag:v" in result[1].command
 
 
 # ---------------------------------------------------------------------------
