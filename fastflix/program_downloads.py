@@ -5,6 +5,7 @@ import os
 import shutil
 import sys
 from pathlib import Path
+import hashlib
 import re
 import subprocess
 
@@ -47,7 +48,95 @@ def ask_for_ffmpeg():
         sys.exit(1)
 
 
-ffmpeg_version_re = re.compile(r"ffmpeg-n(\d+\.\d+)-latest-win64-gpl-")
+ffmpeg_version_re = re.compile(r"^ffmpeg-n(\d+)\.(\d+)-latest-win64-gpl-\d+(?:\.\d+)*\.zip$")
+latest_ffmpeg_name = "ffmpeg-master-latest-win64-gpl.zip"
+REQUEST_TIMEOUT = 15
+DOWNLOAD_TIMEOUT = 30
+
+
+def get_release_json(url: str) -> dict:
+    resp = requests.get(url, timeout=REQUEST_TIMEOUT)
+    resp.raise_for_status()
+    return resp.json()
+
+
+def release_assets(data) -> list:
+    """Return the assets of a GitHub release response, with a clear error for API error payloads."""
+    if not isinstance(data, dict) or "assets" not in data:
+        detail = data.get("message", "") if isinstance(data, dict) else ""
+        hint = " (GitHub API rate limit reached, try again later)" if "rate limit" in detail.lower() else ""
+        raise FastFlixError(f"Unexpected response from GitHub: {detail or 'no assets listed'}{hint}")
+    return data["assets"]
+
+
+def select_stable_ffmpeg_asset(assets) -> dict | None:
+    best = None
+    best_version = None
+    for asset in assets:
+        if match := ffmpeg_version_re.match(asset["name"]):
+            version = (int(match.group(1)), int(match.group(2)))
+            if best_version is None or version > best_version:
+                best, best_version = asset, version
+    return best
+
+
+def select_latest_ffmpeg_asset(assets) -> dict | None:
+    for asset in assets:
+        if asset["name"] == latest_ffmpeg_name:
+            return asset
+    return None
+
+
+def expected_sha256(asset: dict, assets: list) -> str | None:
+    """Find a published SHA256 for an asset: GitHub's `digest` field, or a checksums.sha256 file in the release."""
+    digest = asset.get("digest")
+    if isinstance(digest, str) and digest.lower().startswith("sha256:"):
+        return digest.split(":", 1)[1].strip().lower()
+    for other in assets:
+        if other["name"] == "checksums.sha256":
+            try:
+                resp = requests.get(other["browser_download_url"], timeout=REQUEST_TIMEOUT)
+                resp.raise_for_status()
+            except Exception:
+                logger.warning("Could not download checksums.sha256")
+                return None
+            for line in resp.text.splitlines():
+                parts = line.split(maxsplit=1)
+                if len(parts) == 2 and parts[1].strip().lstrip("*") == asset["name"]:
+                    return parts[0].strip().lower()
+    return None
+
+
+def verify_sha256(path, expected: str | None):
+    if not expected:
+        logger.warning(f"No published checksum available for {Path(path).name}, skipping integrity verification")
+        return
+    sha = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            sha.update(chunk)
+    if sha.hexdigest().lower() != expected.lower():
+        try:
+            Path(path).unlink()
+        except OSError:
+            pass
+        raise FastFlixError(f"SHA256 checksum mismatch for {Path(path).name}, download discarded")
+    logger.debug(f"SHA256 verified for {Path(path).name}")
+
+
+def download_file(url: str, filename, progress, is_stopped) -> bool:
+    """Stream url to filename. Returns False (and removes the partial file) if cancelled."""
+    req = requests.get(url, stream=True, timeout=DOWNLOAD_TIMEOUT)
+    req.raise_for_status()
+    with open(filename, "wb") as f:
+        for i, block in enumerate(req.iter_content(chunk_size=1024)):
+            progress(i)
+            f.write(block)
+            if is_stopped():
+                f.close()
+                Path(filename).unlink(missing_ok=True)
+                return False
+    return True
 
 
 def grab_stable_ffmpeg(signal, stop_signal, **_):
@@ -76,7 +165,8 @@ def latest_ffmpeg(signal, stop_signal, ffmpeg_version="latest", **_):
     url = "https://api.github.com/repos/BtbN/FFmpeg-Builds/releases/latest"
 
     try:
-        data = requests.get(url, timeout=15).json()
+        data = get_release_json(url)
+        assets = release_assets(data)
     except Exception:
         shutil.rmtree(extract_folder, ignore_errors=True)
         message(t("Could not connect to github to check for newer versions."))
@@ -87,19 +177,10 @@ def latest_ffmpeg(signal, stop_signal, ffmpeg_version="latest", **_):
         message(t("Download Cancelled"))
         return
 
-    gpl_ffmpeg = None
-
     if ffmpeg_version == "latest":
-        for asset in data["assets"]:
-            if "master-latest-win64-gpl.zip" in asset["name"]:
-                gpl_ffmpeg = asset
-                break
+        gpl_ffmpeg = select_latest_ffmpeg_asset(assets)
     else:
-        versions = []
-        for asset in data["assets"]:
-            if ver_match := ffmpeg_version_re.search(asset["name"]):
-                versions.append((float(ver_match.group(1)), asset))
-        gpl_ffmpeg = sorted(versions, key=lambda x: x[0], reverse=True)[0][1]
+        gpl_ffmpeg = select_stable_ffmpeg_asset(assets)
 
     if not gpl_ffmpeg:
         shutil.rmtree(extract_folder, ignore_errors=True)
@@ -108,25 +189,20 @@ def latest_ffmpeg(signal, stop_signal, ffmpeg_version="latest", **_):
             + f" {t('latest release from')} <a href='https://github.com/BtbN/FFmpeg-Builds/releases/'>"
             "https://github.com/BtbN/FFmpeg-Builds/releases/</a> and reach out to FastFlix team about this issue if they exist."
         )
-        raise Exception()
+        raise FastFlixError("Could not find a matching FFmpeg build in the latest release")
 
     logger.debug(f"Downloading version {gpl_ffmpeg['name']}")
 
-    req = requests.get(gpl_ffmpeg["browser_download_url"], stream=True)
-
     filename = ffmpeg_folder / "ffmpeg-full.zip"
-    with open(filename, "wb") as f:
-        for i, block in enumerate(req.iter_content(chunk_size=1024)):
-            if i % 1000 == 0.0:
-                # logger.debug(f"Downloaded {i // 1000}MB")
-                signal.emit(int(((i * 1024) / gpl_ffmpeg["size"]) * 90))
-            f.write(block)
-            if stop:
-                f.close()
-                Path(filename).unlink()
-                shutil.rmtree(extract_folder, ignore_errors=True)
-                message(t("Download Cancelled"))
-                return
+
+    def progress(i):
+        if i % 1000 == 0:
+            signal.emit(int(((i * 1024) / gpl_ffmpeg["size"]) * 90))
+
+    if not download_file(gpl_ffmpeg["browser_download_url"], filename, progress, lambda: stop):
+        shutil.rmtree(extract_folder, ignore_errors=True)
+        message(t("Download Cancelled"))
+        return
 
     if filename.stat().st_size < 1000:
         message(t("FFmpeg was not properly downloaded as the file size is too small"))
@@ -134,7 +210,9 @@ def latest_ffmpeg(signal, stop_signal, ffmpeg_version="latest", **_):
             Path(filename).unlink()
         except OSError:
             pass
-        raise
+        raise FastFlixError("FFmpeg was not properly downloaded as the file size is too small")
+
+    verify_sha256(filename, expected_sha256(gpl_ffmpeg, assets))
 
     try:
         reusables.extract(filename, path=extract_folder)
@@ -159,7 +237,9 @@ def latest_ffmpeg(signal, stop_signal, ffmpeg_version="latest", **_):
         pass
 
     signal.emit(96)
-    sub_dir = next(Path(extract_folder).glob("ffmpeg-*"))
+    sub_dir = next(Path(extract_folder).glob("ffmpeg-*"), None)
+    if sub_dir is None:
+        raise FastFlixError("Could not find the FFmpeg folder in the extracted files")
 
     for item in os.listdir(sub_dir):
         dest = ffmpeg_folder / item
@@ -195,7 +275,8 @@ def download_rigaya(stop_signal, seven_zip_path, app_name="NVEnc", **_):
     url = f"https://api.github.com/repos/rigaya/{app_name}/releases/latest"
 
     try:
-        data = requests.get(url, timeout=15).json()
+        data = get_release_json(url)
+        assets = release_assets(data)
     except Exception:
         logger.exception(t("Could not connect to GitHub to check for newer versions."))
         raise
@@ -205,7 +286,7 @@ def download_rigaya(stop_signal, seven_zip_path, app_name="NVEnc", **_):
         return
 
     asset = None
-    for possible_asset in data["assets"]:
+    for possible_asset in assets:
         if "x64.7z" in possible_asset["name"]:
             asset = possible_asset
             break
@@ -217,21 +298,14 @@ def download_rigaya(stop_signal, seven_zip_path, app_name="NVEnc", **_):
             f"https://github.com/rigaya/{app_name}/releases/</a> "
             f"and reach out to FastFlix team about this issue if they exist."
         )
-        raise Exception()
+        raise FastFlixError(f"Could not find a matching {app_name} release asset")
 
     logger.debug(f"Downloading version {asset['name']}")
 
-    req = requests.get(asset["browser_download_url"], stream=True)
-
     filename = asset_folder / "download-full.7z"
-    with open(filename, "wb") as f:
-        for i, block in enumerate(req.iter_content(chunk_size=1024)):
-            f.write(block)
-            if stop:
-                f.close()
-                Path(filename).unlink()
-                message(t("Download Cancelled"))
-                return
+    if not download_file(asset["browser_download_url"], filename, lambda i: None, lambda: stop):
+        message(t("Download Cancelled"))
+        return
 
     if filename.stat().st_size < 1000:
         logger.error(t("NVEnc was not properly downloaded as the file size is too small"))
@@ -239,7 +313,9 @@ def download_rigaya(stop_signal, seven_zip_path, app_name="NVEnc", **_):
             Path(filename).unlink()
         except OSError:
             pass
-        raise
+        raise FastFlixError(f"{app_name} was not properly downloaded as the file size is too small")
+
+    verify_sha256(filename, expected_sha256(asset, assets))
 
     try:
         subprocess.run([seven_zip_path, "e", str(filename), "-o" + str(asset_folder), "-y"], check=True)
@@ -250,8 +326,8 @@ def download_rigaya(stop_signal, seven_zip_path, app_name="NVEnc", **_):
     if stop:
         Path(filename).unlink()
         return
-    file = next(asset_folder.glob(f"{app_name}*64.exe"))
-    if not file.exists():
+    file = next(asset_folder.glob(f"{app_name}*64.exe"), None)
+    if not file or not file.exists():
         logger.error(t("Could not find the executable in the extracted files"))
         raise FastFlixError(t("Could not find the executable in the extracted files"))
     return file
@@ -272,15 +348,9 @@ def download_7zip(stop_signal, **_):
     url = "https://www.7-zip.org/a/7zr.exe"
 
     try:
-        req = requests.get(url, stream=True, timeout=15)
-        with open(filename, "wb") as f:
-            for i, block in enumerate(req.iter_content(chunk_size=1024)):
-                f.write(block)
-                if stop:
-                    f.close()
-                    Path(filename).unlink()
-                    message(t("Download Cancelled"))
-                    return
+        if not download_file(url, filename, lambda i: None, lambda: stop):
+            message(t("Download Cancelled"))
+            return
     except Exception as e:
         raise FastFlixError(f"Could not download 7-Zip: {e}")
 
@@ -289,8 +359,9 @@ def download_7zip(stop_signal, **_):
             Path(filename).unlink()
         except OSError:
             pass
-        raise FastFlixError("Could not download 7-Zip - filesize too msall")
+        raise FastFlixError("Could not download 7-Zip - filesize too small")
 
+    logger.warning("No published checksum for 7zr.exe, skipping integrity verification")
     return filename
 
 
@@ -316,7 +387,8 @@ def download_hdr10plus_tool(signal, stop_signal, **_):
     url = "https://api.github.com/repos/quietvoid/hdr10plus_tool/releases/latest"
 
     try:
-        data = requests.get(url, timeout=15).json()
+        data = get_release_json(url)
+        assets = release_assets(data)
     except Exception:
         shutil.rmtree(extract_folder, ignore_errors=True)
         message(t("Could not connect to github to check for newer versions."))
@@ -328,7 +400,7 @@ def download_hdr10plus_tool(signal, stop_signal, **_):
         return
 
     asset = None
-    for possible_asset in data.get("assets", []):
+    for possible_asset in assets:
         if "x86_64-pc-windows-msvc.zip" in possible_asset["name"]:
             asset = possible_asset
             break
@@ -340,24 +412,20 @@ def download_hdr10plus_tool(signal, stop_signal, **_):
             + f" {t('latest release from')} <a href='https://github.com/quietvoid/hdr10plus_tool/releases/'>"
             "https://github.com/quietvoid/hdr10plus_tool/releases/</a>"
         )
-        raise Exception()
+        raise FastFlixError("Could not find a matching hdr10plus_tool release asset")
 
     logger.debug(f"Downloading version {asset['name']}")
 
-    req = requests.get(asset["browser_download_url"], stream=True)
-
     filename = ffmpeg_folder / "hdr10plus_tool.zip"
-    with open(filename, "wb") as f:
-        for i, block in enumerate(req.iter_content(chunk_size=1024)):
-            if i % 1000 == 0.0:
-                signal.emit(int(((i * 1024) / asset["size"]) * 90))
-            f.write(block)
-            if stop:
-                f.close()
-                Path(filename).unlink()
-                shutil.rmtree(extract_folder, ignore_errors=True)
-                message(t("Download Cancelled"))
-                return
+
+    def progress(i):
+        if i % 1000 == 0:
+            signal.emit(int(((i * 1024) / asset["size"]) * 90))
+
+    if not download_file(asset["browser_download_url"], filename, progress, lambda: stop):
+        shutil.rmtree(extract_folder, ignore_errors=True)
+        message(t("Download Cancelled"))
+        return
 
     if filename.stat().st_size < 1000:
         message(t("hdr10plus_tool was not properly downloaded as the file size is too small"))
@@ -366,6 +434,8 @@ def download_hdr10plus_tool(signal, stop_signal, **_):
         except OSError:
             pass
         raise FastFlixError("hdr10plus_tool download too small")
+
+    verify_sha256(filename, expected_sha256(asset, assets))
 
     try:
         reusables.extract(filename, path=extract_folder)
