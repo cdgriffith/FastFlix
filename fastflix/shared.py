@@ -210,6 +210,35 @@ def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_acti
     return None
 
 
+def parse_release_version(tag):
+    try:
+        return packaging_version.parse(str(tag).strip().lstrip("vV"))
+    except packaging_version.InvalidVersion:
+        return None
+
+
+def select_release(data, legacy_windows=False):
+    """Pick the newest stable release from the GitHub releases response; None if nothing usable."""
+    best, best_version = None, None
+    if not isinstance(data, list):
+        return None
+    for release in data:
+        if not isinstance(release, dict) or release.get("prerelease") or release.get("draft"):
+            continue
+        version = parse_release_version(release.get("tag_name", ""))
+        if version is None or version.is_prerelease:
+            continue
+        if legacy_windows and version.major != 4:
+            continue
+        if best_version is None or version > best_version:
+            best, best_version = release, version
+    return best
+
+
+def safe_release_url(url):
+    return isinstance(url, str) and url.startswith("https://github.com/cdgriffith/FastFlix/")
+
+
 def latest_fastflix(app, show_new_dialog=False):
     from fastflix.version import __version__
 
@@ -223,7 +252,7 @@ def latest_fastflix(app, show_new_dialog=False):
     logger.debug("Checking for newer versions of FastFlix")
 
     try:
-        response = requests.get(url, timeout=15 if not show_new_dialog else 3)
+        response = requests.get(url, timeout=15 if show_new_dialog else 3)
         response.raise_for_status()
         data = response.json()
     except Exception:
@@ -232,12 +261,7 @@ def latest_fastflix(app, show_new_dialog=False):
             message(t("Could not connect to github to check for newer versions"))
         return
 
-    versions = sorted(
-        (tuple(int(y) for y in x["tag_name"].split(".")) for x in data if not x["prerelease"] and not x["draft"]),
-        reverse=True,
-    )
-
-    use_version = ".".join(str(x) for x in versions[0])
+    legacy_windows = False
     if reusables.win_based:
         try:
             win_ver = int(platform.platform().lower().split("-")[1])
@@ -245,21 +269,29 @@ def latest_fastflix(app, show_new_dialog=False):
             logger.warning(f"Could not extract Windows version from {platform.platform()}, please report this message")
             win_ver = 0
 
-        if win_ver < 10:
+        legacy_windows = win_ver < 10
+        if legacy_windows:
             logger.debug(f"Detected legacy Windows version {win_ver}, looking for 4.x builds only")
-            for version in versions:
-                if version[0] == 4:
-                    use_version = ".".join(str(x) for x in version)
-                    break
-            else:
-                logger.warning("No 4.x Versions found for legacy Windows")
-                return
 
-    release = [x for x in data if x["tag_name"] == use_version][0]
+    release = select_release(data, legacy_windows=legacy_windows)
+    if release is None:
+        logger.warning("No usable FastFlix releases found in the GitHub response")
+        if show_new_dialog:
+            message(t("Could not connect to github to check for newer versions"))
+        return
+    use_version = str(parse_release_version(release["tag_name"]))
 
-    if use_version != __version__ and packaging_version.parse(use_version) > packaging_version.parse(__version__):
+    try:
+        current_version = packaging_version.parse(__version__)
+    except packaging_version.InvalidVersion:
+        logger.warning(f"Could not parse current FastFlix version {__version__}")
+        return
+
+    if packaging_version.parse(use_version) > current_version:
         portable, installer = None, None
         for asset in release["assets"]:
+            if not safe_release_url(asset.get("browser_download_url")):
+                continue
             if asset["name"].endswith("win64.zip"):
                 portable = asset["browser_download_url"]
             if asset["name"].endswith("installer.exe"):
@@ -281,7 +313,9 @@ def latest_fastflix(app, show_new_dialog=False):
             )
             download_link += "<br><br>"
         if (not portable and not installer) or not reusables.win_based:
-            html_link = release["html_url"]
+            html_link = release.get("html_url")
+            if not safe_release_url(html_link):
+                html_link = "https://github.com/cdgriffith/FastFlix/releases"
             download_link = link(
                 url=html_link, text=f"{t('View')} FastFlix {use_version}", theme=app.fastflix.config.theme
             )
@@ -418,10 +452,6 @@ def quoted_path(source):
         .replace("\n", "")
         .replace("\r", "")
     )
-    if " " in cleaned_string[0:4]:
-        logger.warning(f"Unexpected space at start of quoted path, attempting to fix: {cleaned_string}")
-        cleaned_string = cleaned_string[0:4].replace(" ", "") + cleaned_string[4:]
-        logger.warning(f"New path set to: {cleaned_string}")
     return cleaned_string
 
 

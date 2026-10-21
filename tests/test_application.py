@@ -49,3 +49,16 @@ def test_init_encoders():
 # Write a pytest for the Pyqt6 application defined in the fastflix/application.py file.
 # def test_application():
 #     app = create_app(enable_scaling=False)
+
+
+def test_refresh_ffmpeg_info_passes_config(monkeypatch):
+    from fastflix import application
+
+    calls = []
+    monkeypatch.setattr(application, "ffmpeg_configuration", lambda app, config, **_: calls.append(("conf", config)))
+    monkeypatch.setattr(application, "ffmpeg_audio_encoders", lambda app, config: calls.append(("audio", config)))
+    monkeypatch.setattr(application, "ffmpeg_video_encoders", lambda app, config: calls.append(("video", config)))
+    monkeypatch.setattr(application, "init_encoders", lambda app, **_: calls.append(("init", None)))
+    application._refresh_ffmpeg_info(fake_app)
+    assert [c[0] for c in calls] == ["conf", "audio", "video", "init"]
+    assert calls[0][1] is fake_app.fastflix.config
