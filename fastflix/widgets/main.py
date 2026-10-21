@@ -1110,7 +1110,12 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
                 )
 
             self.widgets.remove_hdr.setChecked(self.app.fastflix.config.opt("remove_hdr"))
-            self.widgets.deinterlace.setChecked(self.app.fastflix.config.advanced_opt("deinterlace"))
+            self.widgets.deinterlace.setChecked(
+                bool(
+                    self.app.fastflix.config.advanced_opt("deinterlace")
+                    or (self.app.fastflix.current_video and self.app.fastflix.current_video.interlaced)
+                )
+            )
             self.widgets.chapters.setChecked(self.app.fastflix.config.opt("copy_chapters"))
             self.widgets.remove_metadata.setChecked(self.app.fastflix.config.opt("remove_metadata"))
 

@@ -68,10 +68,11 @@ deinterlace_methods = ["yadif", "bwdif", "w3fdif", "estdif"]
 deinterlace_modes = ["send_frame", "send_field"]
 
 deinterlace_presets = {
-    "yadif": {"send_frame": "yadif", "send_field": "yadif=mode=1"},
-    "bwdif": {"send_frame": "bwdif", "send_field": "bwdif=mode=1"},
-    "w3fdif": {"send_frame": "w3fdif", "send_field": "w3fdif=mode=1"},
-    "estdif": {"send_frame": "estdif", "send_field": "estdif=mode=1"},
+    # Note: bwdif, w3fdif and estdif default to one frame per field, so the mode must always be explicit
+    "yadif": {"send_frame": "yadif=mode=send_frame", "send_field": "yadif=mode=send_field"},
+    "bwdif": {"send_frame": "bwdif=mode=send_frame", "send_field": "bwdif=mode=send_field"},
+    "w3fdif": {"send_frame": "w3fdif=mode=frame", "send_field": "w3fdif=mode=field"},
+    "estdif": {"send_frame": "estdif=mode=frame", "send_field": "estdif=mode=field"},
 }
 
 vsync = ["auto", "passthrough", "cfr", "vfr", "drop"]
@@ -350,7 +351,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.unsharp_widget.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=True))
 
         self.gop_length_widget = QtWidgets.QLineEdit()
-        self.gop_length_widget.setValidator(QtGui.QIntValidator(0, 9999))
+        self.gop_length_widget.setValidator(QtGui.QIntValidator(1, 9999))
         self.gop_length_widget.setToolTip(t("GOP length in frames (leave empty for encoder default)"))
         self.gop_length_widget.textChanged.connect(self.page_update)
 
@@ -584,7 +585,25 @@ class AdvancedPanel(QtWidgets.QWidget):
         widget.setDisabled(myself.isChecked())
         self.page_update()
 
+    def get_gop_length(self):
+        """GOP length in frames, or None when empty/invalid/less than 1 (encoder default)"""
+        text = self.gop_length_widget.text().strip()
+        if not text:
+            return None
+        try:
+            value = int(text)
+        except ValueError:
+            logger.warning("Invalid GOP length value")
+            return None
+        return value if value >= 1 else None
+
+    def _is_programmatic_change(self) -> bool:
+        return self.updating or getattr(self.main, "loading_video", False)
+
     def on_video_speed_changed(self):
+        if self._is_programmatic_change():
+            self.page_update()
+            return
         if not self.app.fastflix.config.suppress_video_speed_warning:
             current_speed = video_speeds[self.video_speed_widget.currentText()]
             if current_speed != 1:
@@ -602,6 +621,9 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.page_update()
 
     def on_reverse_video_changed(self):
+        if self._is_programmatic_change():
+            self.page_update()
+            return
         if self.reverse_video_widget.isChecked() and not self.app.fastflix.config.suppress_reverse_video_warning:
             msg = QtWidgets.QMessageBox()
             msg.setIcon(QtWidgets.QMessageBox.Warning)
@@ -732,13 +754,7 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         self.app.fastflix.current_video.video_settings.faststart = self.faststart_widget.isChecked()
 
-        if self.gop_length_widget.text().strip():
-            try:
-                self.app.fastflix.current_video.video_settings.gop_length = int(self.gop_length_widget.text())
-            except ValueError:
-                logger.warning("Invalid GOP length value")
-        else:
-            self.app.fastflix.current_video.video_settings.gop_length = None
+        self.app.fastflix.current_video.video_settings.gop_length = self.get_gop_length()
 
         # self.app.fastflix.current_video.video_settings.first_pass_filters = self.first_filters.text() or None
         # self.app.fastflix.current_video.video_settings.second_filters = self.second_filters.text() or None
@@ -848,12 +864,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             except ValueError:
                 logger.warning("Invalid sharpen value")
 
-        gop_length = None
-        if self.gop_length_widget.text().strip():
-            try:
-                gop_length = int(self.gop_length_widget.text())
-            except ValueError:
-                logger.warning("Invalid GOP length value")
+        gop_length = self.get_gop_length()
 
         vibrance = None
         if self.vibrance_widget.text().strip():
@@ -1058,7 +1069,7 @@ class AdvancedPanel(QtWidgets.QWidget):
                 self.pad_aspect_widget.setCurrentIndex(0)
             self.pad_color_widget.setText(settings.pad_color if settings.pad_color != "black" else "")
             self.lut3d_path_widget.setText(settings.lut3d_path or "")
-            self.gop_length_widget.setText(str(settings.gop_length) if settings.gop_length else "")
+            self.gop_length_widget.setText(str(settings.gop_length) if settings.gop_length is not None else "")
             self.faststart_widget.setChecked(settings.faststart if hasattr(settings, "faststart") else True)
 
             if settings.deblock:
@@ -1205,7 +1216,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.pad_color_widget.setText(pad_color_val if pad_color_val and pad_color_val != "black" else "")
             self.lut3d_path_widget.setText(self.app.fastflix.config.advanced_opt("lut3d_path") or "")
             gop_val = self.app.fastflix.config.advanced_opt("gop_length")
-            self.gop_length_widget.setText(str(gop_val) if gop_val else "")
+            self.gop_length_widget.setText(str(gop_val) if gop_val is not None else "")
             faststart_val = self.app.fastflix.config.advanced_opt("faststart")
             self.faststart_widget.setChecked(faststart_val if faststart_val is not None else True)
 
@@ -1311,12 +1322,15 @@ class AdvancedPanel(QtWidgets.QWidget):
         if sharpen := advanced_options.sharpen:
             self.sharpen_widget.setText(sharpen)
 
-        if gop_length := advanced_options.gop_length:
-            self.gop_length_widget.setText(str(gop_length))
+        if advanced_options.gop_length is not None:
+            self.gop_length_widget.setText(str(advanced_options.gop_length))
 
         self.faststart_widget.setChecked(advanced_options.faststart)
 
-        self.main.widgets.deinterlace.setChecked(advanced_options.deinterlace)
+        # A profile default must never clear auto-detected interlacing
+        self.main.widgets.deinterlace.setChecked(
+            bool(advanced_options.deinterlace or self.app.fastflix.current_video.interlaced)
+        )
 
         if maxrate := advanced_options.maxrate:
             self.maxrate_widget.setText(str(maxrate))

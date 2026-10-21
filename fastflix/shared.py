@@ -162,6 +162,7 @@ def yes_no_message(msg, title=None, yes_text=t("Yes"), no_text=t("No"), yes_acti
     layout.setContentsMargins(20, 15, 20, 15)
     layout.setSpacing(15)
     label = QtWidgets.QLabel(msg)
+    label.setWordWrap(True)
     label.setAlignment(QtCore.Qt.AlignCenter)
     layout.addWidget(label)
 

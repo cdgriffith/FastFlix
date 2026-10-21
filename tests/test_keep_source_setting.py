@@ -12,6 +12,8 @@ Verifies:
 from pathlib import Path
 from unittest import mock
 
+import tempfile
+
 import pytest
 
 from fastflix.models.config import Config
@@ -88,12 +90,16 @@ class TestAddToQueueBehavior:
                 "app": mock_main.app,
                 "video_options": mock_main.video_options,
                 "clear_current_video": mock_main.clear_current_video,
+                "get_temp_work_path": lambda: Path(tempfile.mkdtemp()),
             }
         )
+        old_uuid = mock_main.app.fastflix.current_video.uuid
         result = EncodingMixin.add_to_queue(mixin)
 
         assert result is True
         mock_main.clear_current_video.assert_not_called()
+        # kept source gets a fresh identity so it can't collide with the queued copy
+        assert mock_main.app.fastflix.current_video.uuid != old_uuid
 
     def test_no_clear_on_error(self, mock_main):
         """If add_to_queue raises, clear_current_video should not be called."""
