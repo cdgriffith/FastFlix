@@ -292,6 +292,7 @@ def generate_filters(
     sar=None,
     remove_hdr=False,
     vaapi: bool = False,
+    vaapi_format: str = "nv12",
     rotate=0,
     vertical_flip=None,
     horizontal_flip=None,
@@ -333,8 +334,7 @@ def generate_filters(
     if crop:
         filter_list.append(f"crop={crop['width']}:{crop['height']}:{crop['left']}:{crop['top']}")
     if scale:
-        if not vaapi:
-            filter_list.append(f"scale={scale}:flags={scale_filter},setsar=1:1")
+        filter_list.append(f"scale={scale}:flags={scale_filter},setsar=1:1")
     elif sar and sar != "1:1" and sar != "1/1":
         filter_list.append("setsar=1:1")
     if rotate:
@@ -436,18 +436,17 @@ def generate_filters(
     if sharpen:
         filter_list.append(f"cas=strength={sharpen}")
 
-    if filter_list and vaapi:
-        filter_list.insert(0, "hwdownload")
-    if vaapi:
-        filter_list.append("format=nv12|vaapi,hwupload")
+    # VAAPI frames are processed as software frames and uploaded last (after custom filters and subtitle burn-in)
+    vaapi_tail = f"format={vaapi_format},hwupload" if vaapi else ""
 
     if remove_hdr:
-        if enable_opencl:
+        if enable_opencl and not vaapi:
             filter_list.append(
                 f"format=p010,hwupload,tonemap_opencl=tonemap={tone_map}:desat=0:r=tv:p=bt709:t=bt709:m=bt709:format=nv12,hwdownload,format=nv12"
             )
         elif vaapi:
-            filter_list.append("tonemap_vaapi=format=nv12:p=bt709:t=bt709:m=bt709")
+            tonemap_format = "p010" if vaapi_format == "p010le" else "nv12"
+            vaapi_tail = f"format=p010le,hwupload,tonemap_vaapi=format={tonemap_format}:p=bt709:t=bt709:m=bt709"
 
     filters = ",".join(filter_list) if filter_list else ""
 
@@ -455,6 +454,12 @@ def generate_filters(
         filters = f"{filters},{custom_filters}"
     elif not filters and custom_filters:
         filters = custom_filters
+
+    if vaapi_tail:
+        if text_sub_filter:
+            text_sub_filter = f"{text_sub_filter},{vaapi_tail}"
+        else:
+            filters = f"{filters},{vaapi_tail}" if filters else vaapi_tail
 
     if burn_in_subtitle_track is not None:
         if bitmap_burn_in:

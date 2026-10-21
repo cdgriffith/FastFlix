@@ -941,6 +941,15 @@ class VAAPIPanel(SettingPanel):
             opt="level",
         )
 
+    def init_bit_depth(self):
+        return self._add_combo_box(
+            label="Bit Depth",
+            tooltip="8-bit uploads frames as nv12, 10-bit as p010 (required for 10-bit HDR output)",
+            options=["8-bit", "10-bit"],
+            widget_name="bit_depth",
+            opt="bit_depth",
+        )
+
     def init_aud(self):
         return self._add_check_box(
             label="AUD",

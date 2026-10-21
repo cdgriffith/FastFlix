@@ -802,6 +802,7 @@ class VAAPIHEVCSettings(EncoderSettings):
     qp: Optional[Union[int, float]] = 26
     bitrate: Optional[str] = None
     pix_fmt: str = "vaapi"
+    bit_depth: str = "8-bit"
 
 
 class VAAPIVP9Settings(EncoderSettings):
@@ -815,6 +816,7 @@ class VAAPIVP9Settings(EncoderSettings):
     qp: Optional[Union[int, float]] = 26
     bitrate: Optional[str] = None
     pix_fmt: str = "vaapi"
+    bit_depth: str = "8-bit"
 
 
 class VAAPIMPEG2Settings(EncoderSettings):

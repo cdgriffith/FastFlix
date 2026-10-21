@@ -101,6 +101,10 @@
 * Fixing HDR tone mapping being applied after color grading filters, dimming burned-in bitmap subtitles, dropping to 8-bit for 10-bit targets, and not tagging the SDR output as bt709
 * Fixing invalid pad colors breaking the filter chain, backslashes in custom start options being removed on Windows, and eq being forced to per-frame evaluation
 * Fixing PGS OCR reporting failure when the .srt already exists, not handling ISO 639-2/B language codes (fre, ger, chi), and modifying the global PATH
+* Fixing VAAPI encoders passing the invalid `-low-power` option instead of `-low_power`
+* Fixing VAAPI scaling being silently dropped, and VAAPI filters (crop, rotate, scale, burn-in) now run on software frames before `hwupload` so sources the GPU cannot hardware-decode no longer fail at `hwdownload`
+* Adding 8-bit/10-bit selection for VAAPI HEVC and VP9 (nv12/p010 upload with Main10/Profile 2), and fixing VAAPI HDR to SDR tone mapping so it receives 10-bit p010 input
+* Fixing VAAPI ICQ/QVBR rate control to use `-global_quality`, avoiding incoherent rate control and bitrate combinations, and no longer emitting `-level auto`
 
 ## Version 6.2.1
 
