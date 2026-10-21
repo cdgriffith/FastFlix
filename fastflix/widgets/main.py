@@ -1113,7 +1113,10 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             self.widgets.deinterlace.setChecked(
                 bool(
                     self.app.fastflix.config.advanced_opt("deinterlace")
-                    or (self.app.fastflix.current_video and self.app.fastflix.current_video.interlaced)
+                    or (
+                        self.app.fastflix.current_video
+                        and self.app.fastflix.current_video.interlaced not in (False, "False", "", None)
+                    )
                 )
             )
             self.widgets.chapters.setChecked(self.app.fastflix.config.opt("copy_chapters"))

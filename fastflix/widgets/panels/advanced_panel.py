@@ -1339,7 +1339,10 @@ class AdvancedPanel(QtWidgets.QWidget):
 
         # A profile default must never clear auto-detected interlacing
         self.main.widgets.deinterlace.setChecked(
-            bool(advanced_options.deinterlace or self.app.fastflix.current_video.interlaced)
+            bool(
+                advanced_options.deinterlace
+                or self.app.fastflix.current_video.interlaced not in (False, "False", "", None)
+            )
         )
 
         if maxrate := advanced_options.maxrate:
