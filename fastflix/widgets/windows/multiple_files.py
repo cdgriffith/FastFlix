@@ -2,7 +2,7 @@
 from pathlib import Path
 import logging
 
-from PySide6 import QtWidgets, QtGui
+from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtWidgets import QAbstractItemView
 
 from fastflix.language import t
@@ -160,6 +160,7 @@ class MultipleFilesWindow(QtWidgets.QWidget):
 
         self.files_area = MultipleFilesScroll(self)
         self.base_folder_label = QtWidgets.QLabel()
+        self.base_folder_label.setTextFormat(QtCore.Qt.TextFormat.PlainText)
         self.set_folder_name(self.folder_name)
         layout = QtWidgets.QVBoxLayout()
         folder_button = QtWidgets.QPushButton(t("Open Folder"))

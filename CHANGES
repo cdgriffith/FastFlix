@@ -59,6 +59,13 @@
 * Fixing Source Details tab leaving the HDR10 button visible after clearing the video, rendering tag text as HTML, and silently ignoring save errors
 * Fixing missing word wrap in yes/no dialogs, queue titles not eliding, and disabled toggle switches not looking disabled
 * Fixing missing and English-only translations for new strings
+* Fixing the overwrite confirmation allowing Esc to overwrite an existing output file
+* Fixing the after-done action running when an encode is cancelled or paused
+* Fixing crop and large preview images not rendering (ffmpeg was run through a shell) and hanging without a timeout
+* Fixing drag and drop of non-file URLs and slow rebuilds and overlapping thumbnail generation while typing start, end or crop values
+* Fixing deleting a duplicated audio track breaking the remaining audio tracks, and audio title edits rebuilding commands on every keystroke
+* Fixing HDR10+ extraction using a full CPU core while waiting, and post-encode validation hanging with no timeout
+* Fixing file paths being rendered as rich text in concat, multiple files and profile windows, and removing the unused HDR10+ Inject window
 
 ## Version 6.2.1
 

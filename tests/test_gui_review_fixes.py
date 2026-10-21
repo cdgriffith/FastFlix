@@ -204,3 +204,15 @@ def test_follow_progress_sleeps_when_idle_and_emits_frames():
     follow_progress(lambda: next(running), f, emitted.append, sleep=sleeps.append)
     assert emitted == ["frame=1", "frame=2"]
     assert len(sleeps) >= 1
+
+
+def test_show_log_dir_uses_desktop_services():
+    from fastflix.widgets import container
+
+    fake = mock.MagicMock()
+    fake.app.fastflix.log_path = "C:/logs dir"
+    with mock.patch.object(container.QtGui.QDesktopServices, "openUrl") as open_url:
+        container.Container.show_log_dir(fake)
+    url = open_url.call_args.args[0]
+    assert url.isLocalFile()
+    assert not hasattr(container, "OpenFolder")

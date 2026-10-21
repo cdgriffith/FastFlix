@@ -364,12 +364,9 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             )
             return
         if percent > 0:
-            op = QtWidgets.QGraphicsOpacityEffect()
-            op.setOpacity(percent)
             self.source_video_path_widget.setStyleSheet(
                 f"color: rgba({get_text_color(self.app.fastflix.config.theme)}, {percent / 100}); padding: 0 0 -1px 5px;"
             )
-            self.source_video_path_widget.setGraphicsEffect(op)
             QtCore.QTimer.singleShot(200, lambda: self.fade_loop(percent - 10))
         else:
             self.source_video_path_widget.setStyleSheet(

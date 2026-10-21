@@ -2,17 +2,14 @@
 # -*- coding: utf-8 -*-
 import logging
 import shutil
-import sys
 import time
 from pathlib import Path
-from subprocess import run
 
 import reusables
 from platformdirs import user_data_dir
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtGui import QAction
 
-from fastflix.resources import clean_env
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.version import __version__
@@ -43,7 +40,6 @@ from fastflix.widgets.windows.concat import ConcatWindow
 from fastflix.widgets.windows.history_window import HistoryWindow
 from fastflix.widgets.windows.multiple_files import MultipleFilesWindow
 
-# from fastflix.widgets.windows.hdr10plus_inject import HDR10PlusInjectWindow
 
 logger = logging.getLogger("fastflix")
 
@@ -400,12 +396,6 @@ class Container(QtWidgets.QMainWindow):
         concat_action.triggered.connect(self.show_concat)
         tools_menu.addAction(concat_action)
 
-        # hdr10p_inject_action = QAction(
-        #     QtGui.QIcon(get_icon("onyx-queue", self.app.fastflix.config.theme)), t("HDR10+ Inject"), self
-        # )
-        # hdr10p_inject_action.triggered.connect(self.show_hdr10p_inject)
-        # tools_menu.addAction(hdr10p_inject_action)
-
         if self.app.fastflix.config.enable_history:
             history_menu = menubar.addMenu(t("History"))
 
@@ -550,10 +540,6 @@ class Container(QtWidgets.QMainWindow):
         self.concat = ConcatWindow(app=self.app, main=self.main)
         self.concat.show()
 
-    # def show_hdr10p_inject(self):
-    #     self.hdr10p_inject = HDR10PlusInjectWindow(app=self.app, main=self.main)
-    #     self.hdr10p_inject.show()
-
     def show_about(self):
         self.about = About(app=self.app)
         self.about.show()
@@ -605,7 +591,7 @@ class Container(QtWidgets.QMainWindow):
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("https://github.com/cdgriffith/FastFlix/issues"))
 
     def show_log_dir(self):
-        OpenFolder(self, str(self.app.fastflix.log_path)).run()
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(str(self.app.fastflix.log_path)))
 
     def download_stable_ffmpeg(self):
         self.download_ffmpeg(ffmpeg_version="stable")
@@ -718,24 +704,6 @@ class Container(QtWidgets.QMainWindow):
         # if not folder_name:
         #     return
         # self.main.open_many(paths=[x for x in Path(folder_name).glob("*") if x.name.lower().endswith(video_file_types)])
-
-
-class OpenFolder(QtCore.QThread):
-    def __init__(self, parent, path):
-        super().__init__(parent)
-        self.app = parent
-        self.path = str(path)
-
-    def run(self):
-        try:
-            if reusables.win_based:
-                run(["explorer", self.path])
-            elif sys.platform == "darwin":
-                run(["open", self.path])
-            else:
-                run(["xdg-open", self.path], env=clean_env())
-        except FileNotFoundError:
-            logger.error(f"Do not know which command to use to open: {self.path}")
 
 
 class ProfileDetails(QtWidgets.QWidget):
