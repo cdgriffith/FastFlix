@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import secrets
 import shlex
 
-from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
+from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details
 from fastflix.models.encode import H264VideoToolboxSettings
 from fastflix.models.fastflix import FastFlix
 
@@ -38,35 +37,15 @@ def build(fastflix: FastFlix):
     )
 
     extra = shlex.split(settings.extra) if settings.extra else []
-    extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
 
     if settings.bitrate:
-        pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
-
-        command_1 = (
-            beginning
-            + ["-b:v", settings.bitrate]
-            + details
-            + ["-pass", "1", "-passlogfile", str(pass_log_file)]
-            + extra_both
-            + ["-an"]
-            + output_fps
-            + ["-f", "mp4", null]
-        )
-        command_2 = (
-            beginning
-            + ["-b:v", settings.bitrate]
-            + details
-            + ["-pass", "2", "-passlogfile", str(pass_log_file)]
-            + extra
-            + ending
-        )
-        return [
-            Command(command=command_1, name="First pass bitrate", exe="ffmpeg"),
-            Command(command=command_2, name="Second pass bitrate", exe="ffmpeg"),
-        ]
-    command_1 = beginning + ["-q:v", str(settings.q)] + details + extra + ending
+        bitrate_args = ["-b:v", settings.bitrate]
+        if settings.constant_bit_rate:
+            bitrate_args.extend(["-constant_bit_rate", "true"])
+        command = beginning + bitrate_args + details + extra + ending
+        return [Command(command=command, name="Single pass bitrate", exe="ffmpeg")]
+    command = beginning + ["-q:v", str(settings.q)] + details + extra + ending
 
     return [
-        Command(command=command_1, name="Single pass constant quality", exe="ffmpeg"),
+        Command(command=command, name="Single pass constant quality", exe="ffmpeg"),
     ]

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from unittest import mock
+
+import pytest
 
 from fastflix.encoders.hevc_videotoolbox.command_builder import build
-from fastflix.encoders.common.helpers import null
 from fastflix.models.encode import HEVCVideoToolboxSettings
 from fastflix.models.video import VideoSettings
 
@@ -28,7 +28,7 @@ def test_profile_auto_omitted():
 
 def test_profile_main():
     """Profile index 1 → -profile:v main."""
-    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(profile=1, q=50))
+    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(profile=1, q=50, pix_fmt="yuv420p"))
     cmd = build(fastflix)[0].command
 
     idx = cmd.index("-profile:v")
@@ -37,7 +37,7 @@ def test_profile_main():
 
 def test_profile_main10():
     """Profile index 2 → -profile:v main10."""
-    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(profile=2, q=50))
+    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(profile=2, q=50, pix_fmt="p010le"))
     cmd = build(fastflix)[0].command
 
     idx = cmd.index("-profile:v")
@@ -83,69 +83,58 @@ def test_quality_mode_no_bitrate_flags():
 
 
 # ---------------------------------------------------------------------------
-# Bitrate (two-pass) mode
+# Bitrate mode (VideoToolbox ignores -pass, so it is a single pass encode)
 # ---------------------------------------------------------------------------
-def test_bitrate_mode_two_passes():
-    """Bitrate mode must produce exactly two Commands."""
+def test_bitrate_mode_single_command():
+    """videotoolboxenc.c has no multi-pass support, so bitrate mode must be one command."""
     fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="6000k"))
     result = build(fastflix)
 
-    assert len(result) == 2
-    assert "First pass" in result[0].name
-    assert "Second pass" in result[1].name
+    assert len(result) == 1
+    assert result[0].name == "Single pass bitrate"
 
 
-def test_bitrate_mode_pass_flags():
-    """Each pass command carries -pass 1 / -pass 2."""
+def test_bitrate_mode_no_pass_flags():
     fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="6000k"))
-    result = build(fastflix)
+    cmd = build(fastflix)[0].command
 
-    cmd1 = result[0].command
-    assert cmd1[cmd1.index("-pass") + 1] == "1"
-
-    cmd2 = result[1].command
-    assert cmd2[cmd2.index("-pass") + 1] == "2"
+    assert "-pass" not in cmd
+    assert "-passlogfile" not in cmd
+    assert "-an" not in cmd
 
 
 def test_bitrate_mode_bitrate_value():
     """-b:v must carry the exact bitrate string."""
     fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="12000k"))
-    result = build(fastflix)
+    cmd = build(fastflix)[0].command
 
-    for cmd_obj in result:
-        cmd = cmd_obj.command
-        idx = cmd.index("-b:v")
-        assert cmd[idx + 1] == "12000k"
+    assert cmd[cmd.index("-b:v") + 1] == "12000k"
+    assert "-q:v" not in cmd
 
 
-def test_bitrate_mode_first_pass_null_output():
-    """First pass discards output to null device."""
+def test_constant_bit_rate_off_by_default():
     fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="6000k"))
-    cmd1 = build(fastflix)[0].command
-
-    assert null in cmd1
-    assert "-an" in cmd1  # no audio in first pass
+    assert "-constant_bit_rate" not in build(fastflix)[0].command
 
 
-def test_bitrate_mode_second_pass_no_audio_suppression():
-    """Second pass must NOT suppress audio (no -an flag)."""
-    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="6000k"))
-    cmd2 = build(fastflix)[1].command
+def test_constant_bit_rate_opt_in():
+    fastflix = _make_fastflix(
+        encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="6000k", constant_bit_rate=True)
+    )
+    cmd = build(fastflix)[0].command
+    assert cmd[cmd.index("-constant_bit_rate") + 1] == "true"
 
-    assert "-an" not in cmd2
+
+def test_constant_bit_rate_ignored_in_quality_mode():
+    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(q=50, bitrate=None, constant_bit_rate=True))
+    assert "-constant_bit_rate" not in build(fastflix)[0].command
 
 
-def test_bitrate_mode_passlogfile_shared():
-    """Both passes must reference the same -passlogfile path."""
-    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="6000k"))
+def test_extra_options_bitrate_mode():
+    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="6000k", extra="-tag:v xyz1"))
+    cmd = build(fastflix)[0].command
 
-    with mock.patch("fastflix.encoders.hevc_videotoolbox.command_builder.secrets.token_hex", return_value="deadbeef"):
-        result = build(fastflix)
-
-    logfile_1 = result[0].command[result[0].command.index("-passlogfile") + 1]
-    logfile_2 = result[1].command[result[1].command.index("-passlogfile") + 1]
-    assert logfile_1 == logfile_2
-    assert "deadbeef" in logfile_1
+    assert cmd[cmd.index("-tag:v") + 1] == "xyz1"
 
 
 # ---------------------------------------------------------------------------
@@ -220,40 +209,6 @@ def test_extra_options_quality_mode():
 
     assert "-tag:v" in cmd
     assert "hvc1" in cmd
-
-
-def test_extra_options_bitrate_second_pass():
-    """Custom extra options appear in second pass of bitrate mode."""
-    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="6000k", extra="-tag:v hvc1"))
-    result = build(fastflix)
-
-    cmd2 = result[1].command
-    assert "-tag:v" in cmd2
-    assert "hvc1" in cmd2
-
-
-def test_extra_both_passes():
-    """Extra options appear in BOTH passes when extra_both_passes is True."""
-    fastflix = _make_fastflix(
-        encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="6000k", extra="-tag:v hvc1", extra_both_passes=True)
-    )
-    result = build(fastflix)
-
-    cmd1 = result[0].command
-    cmd2 = result[1].command
-    assert "-tag:v" in cmd1
-    assert "-tag:v" in cmd2
-
-
-def test_no_extra_in_first_pass_by_default():
-    """Without extra_both_passes, first pass must NOT have extra options."""
-    fastflix = _make_fastflix(
-        encoder_settings=HEVCVideoToolboxSettings(q=None, bitrate="6000k", extra="-tag:v hvc1", extra_both_passes=False)
-    )
-    result = build(fastflix)
-
-    cmd1 = result[0].command
-    assert "-tag:v" not in cmd1
 
 
 def test_empty_extra_no_crash():
@@ -404,3 +359,23 @@ def test_settings_defaults():
     assert s.realtime is False
     assert s.frames_before is False
     assert s.frames_after is False
+
+
+# ---------------------------------------------------------------------------
+# Profile must match the pixel format (videotoolboxenc.c rejects main10 with 8-bit input)
+# ---------------------------------------------------------------------------
+@pytest.mark.parametrize(
+    "profile,pix_fmt,expected",
+    [(1, "p010le", "main10"), (2, "yuv420p", "main"), (1, "yuv420p", "main"), (2, "p010le", "main10")],
+)
+def test_profile_follows_pix_fmt(profile, pix_fmt, expected):
+    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(profile=profile, q=50, pix_fmt=pix_fmt))
+    cmd = build(fastflix)[0].command
+
+    assert cmd[cmd.index("-profile:v") + 1] == expected
+
+
+@pytest.mark.parametrize("pix_fmt", ["p010le", "yuv420p"])
+def test_profile_auto_still_omitted(pix_fmt):
+    fastflix = _make_fastflix(encoder_settings=HEVCVideoToolboxSettings(profile=0, q=50, pix_fmt=pix_fmt))
+    assert "-profile:v" not in build(fastflix)[0].command

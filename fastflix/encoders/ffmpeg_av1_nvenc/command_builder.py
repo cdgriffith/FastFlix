@@ -2,6 +2,7 @@
 import shlex
 
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details
+from fastflix.encoders.common.nvenc_options import advanced_args, uses_cq
 from fastflix.models.encode import FFmpegAV1NVENCSettings
 from fastflix.models.fastflix import FastFlix
 
@@ -45,7 +46,16 @@ def build(fastflix: FastFlix):
     if settings.aq_strength != 8:
         beginning.extend(["-aq-strength:v", str(settings.aq_strength)])
 
+    beginning.extend(advanced_args(settings))
+    cq_mode = uses_cq(settings)
+    if cq_mode and not settings.rc:
+        beginning.extend(["-rc:v", "vbr"])
+
     extra = shlex.split(settings.extra) if settings.extra else []
+
+    if cq_mode:
+        command = beginning + ["-cq:v", str(settings.cq), "-b:v", "0", "-preset:v", settings.preset] + extra + ending
+        return [Command(command=command, name="Constant quality encode", exe="ffmpeg")]
 
     if not settings.bitrate:
         command = beginning + ["-qp:v", str(settings.qp), "-preset:v", settings.preset] + extra + ending

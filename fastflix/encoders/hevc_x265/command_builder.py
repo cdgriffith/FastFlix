@@ -2,7 +2,7 @@
 import secrets
 import shlex
 
-from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.encoders.common.helpers import Command, generate_all, hevc_tag_args, null
 from fastflix.models.encode import x265Settings
 from fastflix.models.fastflix import FastFlix
 
@@ -81,6 +81,7 @@ def build(fastflix: FastFlix):
     settings: x265Settings = fastflix.current_video.video_settings.video_encoder_settings
 
     beginning, ending, output_fps = generate_all(fastflix, "libx265")
+    beginning.extend(hevc_tag_args(fastflix.current_video.video_settings.output_path))
 
     if settings.tune and settings.tune != "default":
         beginning.extend(["-tune:v", settings.tune])

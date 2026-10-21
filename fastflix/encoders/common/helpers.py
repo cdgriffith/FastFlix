@@ -589,3 +589,10 @@ def generate_color_details(fastflix: FastFlix) -> List[str]:
         details.extend(["-colorspace", fastflix.current_video.video_settings.color_space])
 
     return details
+
+
+def hevc_tag_args(output_path: Union[str, Path, None]) -> List[str]:
+    """Tag HEVC as hvc1 for mp4/m4v/mov, FFmpeg defaults to hev1 which QuickTime, iOS and Safari will not play."""
+    if output_path and Path(output_path).suffix.lower() in (".mp4", ".m4v", ".mov"):
+        return ["-tag:v", "hvc1"]
+    return []

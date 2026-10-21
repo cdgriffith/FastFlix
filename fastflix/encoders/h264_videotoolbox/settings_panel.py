@@ -61,6 +61,7 @@ class H264VideoToolbox(SettingPanel):
         grid.addLayout(self.init_realtime(), 4, 0, 1, 2)
         grid.addLayout(self.init_frames_before(), 5, 0, 1, 2)
         grid.addLayout(self.init_frames_after(), 6, 0, 1, 2)
+        grid.addLayout(self.init_constant_bit_rate(), 5, 2, 1, 2)
         grid.addLayout(self.init_max_mux(), 7, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
@@ -147,6 +148,14 @@ class H264VideoToolbox(SettingPanel):
             opt="frames_after",
         )
 
+    def init_constant_bit_rate(self):
+        return self._add_check_box(
+            label="Constant Bit Rate",
+            tooltip="Require constant bit rate in bitrate mode (macOS 13 or newer)",
+            widget_name="constant_bit_rate",
+            opt="constant_bit_rate",
+        )
+
     def init_modes(self):
         return self._add_modes(
             recommended_bitrates, [str(x) for x in range(1, 101)], qp_name="q", disable_custom_qp=True
@@ -169,6 +178,7 @@ class H264VideoToolbox(SettingPanel):
             realtime=self.widgets.realtime.isChecked(),
             frames_before=self.widgets.frames_before.isChecked(),
             frames_after=self.widgets.frames_after.isChecked(),
+            constant_bit_rate=self.widgets.constant_bit_rate.isChecked(),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.q = q_value if encode_type == "qp" else None

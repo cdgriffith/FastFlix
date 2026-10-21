@@ -59,6 +59,13 @@
 * Fixing Source Details tab leaving the HDR10 button visible after clearing the video, rendering tag text as HTML, and silently ignoring save errors
 * Fixing missing word wrap in yes/no dialogs, queue titles not eliding, and disabled toggle switches not looking disabled
 * Fixing missing and English-only translations for new strings
+* Fixing removed NVENC presets and rate control modes (hp, hq, ll, lossless, vbr_hq, ...) in saved profiles and queues, they are now converted to the equivalent p1-p7 preset and tune
+* Adding NVENC multipass selection (disabled, qres, fullres) for HEVC bitrate encodes
+* Adding HEVC and AV1 NVENC temporal AQ, AQ strength, constant quality (CQ), temporal filter, lookahead level, split encode, weighted prediction, unidirectional B-frames and no scenecut options
+* Fixing AV1 NVENC AQ Strength showing the wrong value when loading a profile
+* Fixing HEVC in MP4, M4V and MOV not being tagged hvc1, which prevented playback in QuickTime, iOS and Safari (x265, NVENC, VAAPI and VideoToolbox)
+* Fixing VideoToolbox bitrate mode running a useless first pass (VideoToolbox ignores two-pass), it is now a single pass with an optional constant bit rate setting
+* Fixing HEVC VideoToolbox failing when the profile (Main/Main10) did not match the selected bit depth
 
 ## Version 6.2.1
 
