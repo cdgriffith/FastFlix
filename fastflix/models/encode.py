@@ -598,11 +598,19 @@ class SVTAV1Settings(EncoderSettings):
     scene_detection: bool = False
     single_pass: bool = False
     speed: str = "7"  # Renamed preset in svtav1 encoder
-    tune: str = "1"  # 0=VQ (Psychovisual), 1=PSNR, 2=SSIM
+    tune: str = "1"  # 0=VQ, 1=PSNR, 2=SSIM, 3=IQ, 4=MS-SSIM, 5=VMAF (video only)
     film_grain: int = 0  # 0-50, 0=off
     film_grain_denoise: bool = False
     sharpness: str = "0"  # -7 to 7
     fast_decode: str = "0"  # 0=off, 1=level 1, 2=level 2
+    enable_variance_boost: bool = False
+    variance_boost_strength: str = "2"  # 1-4
+    variance_octile: str = "5"  # 1-8
+    enable_tf: str = "1"  # 0=off, 1=on, 2=adaptive
+    startup_mg_size: str = "0"  # 0=off, 2-4
+    enable_qm: bool = False
+    qm_min: str = "8"  # 0-15
+    qm_max: str = "15"  # 0-15
     qp: Optional[Union[int, float]] = 24
     qp_mode: str = "crf"
     bitrate: Optional[str] = None
@@ -614,7 +622,7 @@ class SVTAVIFSettings(EncoderSettings):
     name: str = "AVIF (SVT AV1)"
     single_pass: bool = True
     speed: str = "7"  # Renamed preset in svtav1 encoder
-    tune: str = "1"  # 0=VQ (Psychovisual), 1=PSNR, 2=SSIM
+    tune: str = "1"  # 0=VQ, 1=PSNR, 2=SSIM, 3=IQ, 4=MS-SSIM, 5=VMAF (video only)
     sharpness: str = "0"  # -7 to 7
     qp: Optional[Union[int, float]] = 24
     qp_mode: str = "qp"

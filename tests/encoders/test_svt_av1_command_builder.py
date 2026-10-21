@@ -301,3 +301,64 @@ def test_svt_av1_defaults_no_extra_params():
     assert "film-grain=" not in params
     assert "sharpness=" not in params
     assert "fast-decode=" not in params
+
+
+def test_svt_av1_new_options_default_output_unchanged():
+    _, params = _build_with_settings()
+    for key in ("variance", "enable-tf", "qm", "startup-mg-size"):
+        assert key not in params
+
+
+def test_svt_av1_variance_boost_enabled_defaults():
+    _, params = _build_with_settings(enable_variance_boost=True)
+    parts = params.split(":")
+    assert "enable-variance-boost=1" in parts
+    assert not any(p.startswith("variance-boost-strength") or p.startswith("variance-octile") for p in parts)
+
+
+def test_svt_av1_variance_boost_custom_values():
+    _, params = _build_with_settings(enable_variance_boost=True, variance_boost_strength="3", variance_octile="7")
+    parts = params.split(":")
+    assert "enable-variance-boost=1" in parts
+    assert "variance-boost-strength=3" in parts
+    assert "variance-octile=7" in parts
+
+
+def test_svt_av1_variance_values_ignored_when_disabled():
+    _, params = _build_with_settings(variance_boost_strength="3", variance_octile="7")
+    assert "variance" not in params
+
+
+def test_svt_av1_tune_new_values():
+    _, params = _build_with_settings(tune="3")
+    assert "tune=3" in params.split(":")
+
+
+def test_svt_av1_enable_tf_startup_mg_size():
+    _, params = _build_with_settings(enable_tf="2", startup_mg_size="3")
+    parts = params.split(":")
+    assert "enable-tf=2" in parts
+    assert "startup-mg-size=3" in parts
+
+
+def test_svt_av1_quant_matrices():
+    _, params = _build_with_settings(enable_qm=True, qm_min="2", qm_max="10")
+    parts = params.split(":")
+    assert "enable-qm=1" in parts
+    assert "qm-min=2" in parts
+    assert "qm-max=10" in parts
+    _, params = _build_with_settings(enable_qm=True)
+    assert params.split(":").count("enable-qm=1") == 1
+    assert "qm-min" not in params
+
+
+def test_svt_av1_user_params_merge_and_ui_wins():
+    _, params = _build_with_settings(svtav1_params=["enable-tf=0", "foo=1"], enable_tf="2")
+    parts = params.split(":")
+    assert parts[:2] == ["enable-tf=0", "foo=1"]
+    assert parts.index("enable-tf=2") > parts.index("enable-tf=0")
+
+
+def test_svt_av1_film_grain_full_range():
+    _, params = _build_with_settings(film_grain=50)
+    assert "film-grain=50" in params.split(":")
