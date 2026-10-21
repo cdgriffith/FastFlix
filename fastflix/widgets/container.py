@@ -12,6 +12,7 @@ from platformdirs import user_data_dir
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtGui import QAction
 
+from fastflix.resources import clean_env
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t
 from fastflix.version import __version__
@@ -732,7 +733,7 @@ class OpenFolder(QtCore.QThread):
             elif sys.platform == "darwin":
                 run(["open", self.path])
             else:
-                run(["xdg-open", self.path])
+                run(["xdg-open", self.path], env=clean_env())
         except FileNotFoundError:
             logger.error(f"Do not know which command to use to open: {self.path}")
 

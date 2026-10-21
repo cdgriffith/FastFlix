@@ -4,6 +4,7 @@ from subprocess import run
 
 from PySide6 import QtWidgets, QtGui
 
+from fastflix.resources import clean_env
 from fastflix.flix import probe
 from fastflix.shared import error_message
 from fastflix.resources import get_icon
@@ -138,5 +139,5 @@ class HDR10PlusInjectWindow(QtWidgets.QWidget):
         self.command_bubble.setText(command)
 
     def start(self):
-        run(self.command_bubble.text(), shell=True)
+        run(self.command_bubble.text(), shell=True, env=clean_env())
         error_message("Done")

@@ -25,6 +25,7 @@
 * Adding warning in Data & Attachments tab and reason text when tracks are incompatible with the output format (e.g. data streams in MKV)
 * Adding Go-based Windows installer, launcher and uninstaller using an embeddable Python distribution (per-user and all-users installs, Add/Remove Programs integration, upgrades from previous NSIS installs) replacing the PyInstaller and NSIS Windows builds, plus a portable zip release
 * Changing Advanced panel layout to use QGroupBox sections (Video Details, Frame Rate, Video Processing, Color & Appearance, Color, Output) with restoration filters separated from color correction filters
+* Fixing #766 FFmpeg and other external tools failing on Linux PyInstaller builds (e.g. AUR fastflix-bin) with library symbol errors due to inherited bundled `LD_LIBRARY_PATH` (thanks to anne-o-pixel)
 * Fixing #741 VideoToolbox HEVC and H264 encoders passing invalid numeric profile index instead of profile name, causing "incorrect parameters" errors on macOS (thanks to enaveso)
 * Fixing #560 queue items could not be removed while encoding — now allows removing non-running items and grays out unavailable controls (move, reload, load queue) during encoding (thanks to 54x1)
 * Fixing #736 thumbnail and crop preview generation failing with FFmpeg 8.0+ by adding `-update 1` flag required by the image2 muxer for single-image output (thanks to kliffgomel)

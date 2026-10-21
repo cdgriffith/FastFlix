@@ -19,7 +19,7 @@ from pathvalidate import sanitize_filepath
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
-from fastflix.resources import get_bool_env
+from fastflix.resources import clean_env, get_bool_env  # noqa: F401 (clean_env re-exported)
 
 try:
     # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -337,7 +337,7 @@ def open_folder(path):
         elif sys.platform == "darwin":
             run(["open", path])
         else:
-            run(["xdg-open", path])
+            run(["xdg-open", path], env=clean_env())
     except FileNotFoundError:
         logger.error(f"Do not know which command to use to open: {path}")
 

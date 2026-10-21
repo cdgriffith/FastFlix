@@ -11,6 +11,7 @@ from PySide6 import QtCore
 from ffmpeg_normalize import FFmpegNormalize
 
 from fastflix.flix import extract_attachments
+from fastflix.shared import clean_env
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import clean_file_string
@@ -42,7 +43,7 @@ class ThumbnailCreator(QtCore.QThread):
 
     def run(self):
         self.main.thread_logging_signal.emit(f"DEBUG:{t('Generating thumbnail')}: {_format_command(self.command)}")
-        result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+        result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, env=clean_env())
         if result.returncode > 0:
             output_text = result.stdout.decode(encoding="utf-8", errors="ignore")
             if "No such filter: 'zscale'" in output_text:
@@ -165,6 +166,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 command,
                 stdout=PIPE,
                 stderr=STDOUT,
+                env=clean_env(),
             )
             stdout, _ = self._process.communicate()
             returncode = self._process.returncode
@@ -233,6 +235,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 stdout=PIPE,
                 stderr=STDOUT,
                 text=True,
+                env=clean_env(),
             )
 
             if result.returncode != 0:
@@ -504,7 +507,9 @@ class ExtractHDR10(QtCore.QThread):
         self.ffmpeg_signal.emit("Extracting HDR10+ metadata")
 
         hdr10_parser_version_output = check_output(
-            [str(self.app.fastflix.config.hdr10plus_parser), "--version"], encoding="utf-8"
+            [str(self.app.fastflix.config.hdr10plus_parser), "--version"],
+            encoding="utf-8",
+            env=clean_env(),
         )
         _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
         hdr10_parser_version = version.parse(version_string)
@@ -539,6 +544,7 @@ class ExtractHDR10(QtCore.QThread):
             stdout=PIPE,
             stderr=open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "wb"),
             # stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
+            env=clean_env(),
         )
 
         process_two = Popen(
@@ -548,6 +554,7 @@ class ExtractHDR10(QtCore.QThread):
             stdin=process.stdout,
             encoding="utf-8",
             cwd=str(self.app.fastflix.current_video.work_path),
+            env=clean_env(),
         )
 
         with open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "r", encoding="utf-8") as f:
