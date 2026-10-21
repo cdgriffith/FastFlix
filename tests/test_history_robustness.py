@@ -19,22 +19,45 @@ def _entry(uuid, thumb=""):
     return HistoryEntry(uuid=uuid, source="s", output="o", encoder_name="x265", thumbnail_filename=thumb)
 
 
-def test_corrupt_history_not_overwritten_by_add(tmp_path, caplog):
+def _corrupt_copies(tmp_path):
+    return sorted(tmp_path.glob("history.yaml.corrupt-*"))
+
+
+def test_corrupt_history_is_moved_aside_not_lost_by_add(tmp_path, caplog):
     save_history(tmp_path, [_entry("1"), _entry("2")])
     hf = get_history_file(tmp_path)
     hf.write_text("entries: [unclosed")
     with caplog.at_level(logging.ERROR, logger="fastflix"):
         add_history_entry(tmp_path, _entry("3"))
-    assert hf.read_text() == "entries: [unclosed"
+    copies = _corrupt_copies(tmp_path)
+    assert len(copies) == 1
+    assert copies[0].read_text() == "entries: [unclosed"
+    assert [e.uuid for e in load_history(tmp_path)] == ["3"]
     assert caplog.records
 
 
-def test_corrupt_history_not_overwritten_by_trim_and_delete(tmp_path):
+def test_corrupt_history_is_moved_aside_by_trim_and_delete(tmp_path):
     hf = get_history_file(tmp_path)
     hf.write_text("entries: [unclosed")
     trim_history(tmp_path, 1)
-    delete_history_entry(tmp_path, "1")
-    assert hf.read_text() == "entries: [unclosed"
+    assert len(_corrupt_copies(tmp_path)) == 1
+    assert _corrupt_copies(tmp_path)[0].read_text() == "entries: [unclosed"
+
+
+def test_unreadable_history_is_left_alone(tmp_path, monkeypatch):
+    """A transient read failure (file locked by another process) must never move or overwrite the file."""
+    save_history(tmp_path, [_entry("1")])
+    hf = get_history_file(tmp_path)
+    before = hf.read_text()
+
+    def locked(*a, **k):
+        raise PermissionError("locked")
+
+    monkeypatch.setattr(history.Box, "from_yaml", locked)
+    add_history_entry(tmp_path, _entry("2"))
+    monkeypatch.undo()
+    assert hf.read_text() == before
+    assert not _corrupt_copies(tmp_path)
 
 
 def test_missing_history_still_adds(tmp_path):

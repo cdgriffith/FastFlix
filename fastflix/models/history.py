@@ -4,6 +4,7 @@ import logging
 import os
 import shutil
 import tempfile
+import time
 from pathlib import Path
 from box import Box
 from pydantic import BaseModel, Field
@@ -51,6 +52,10 @@ class HistoryLoadError(Exception):
     pass
 
 
+class HistoryCorruptError(HistoryLoadError):
+    """The history file was read but its content is not valid YAML."""
+
+
 def load_history_strict(data_path: Path) -> list[HistoryEntry]:
     """Like load_history, but raises HistoryLoadError if an existing history file cannot be read."""
     history_file = get_history_file(data_path)
@@ -58,8 +63,10 @@ def load_history_strict(data_path: Path) -> list[HistoryEntry]:
         return []
     try:
         data = Box.from_yaml(filename=history_file)
+    except OSError as err:
+        raise HistoryLoadError(f"Failed to read history file {history_file}: {err}") from err
     except Exception as err:
-        raise HistoryLoadError(f"Failed to load history file {history_file}: {err}") from err
+        raise HistoryCorruptError(f"Failed to parse history file {history_file}: {err}") from err
     entries = []
     for item in data.get("entries", []):
         try:
@@ -115,6 +122,16 @@ def _delete_thumbnail(thumbs_dir: Path, filename: str):
 def _load_for_update(data_path: Path) -> list[HistoryEntry] | None:
     try:
         return load_history_strict(data_path)
+    except HistoryCorruptError:
+        history_file = get_history_file(data_path)
+        aside = history_file.with_name(f"{history_file.name}.corrupt-{time.strftime('%Y%m%d-%H%M%S')}")
+        try:
+            os.replace(history_file, aside)
+        except OSError:
+            logger.exception("History file is corrupt and could not be moved aside, not modifying it")
+            return None
+        logger.exception(f"History file is corrupt, moved it to {aside} and starting a new history")
+        return []
     except HistoryLoadError:
         logger.exception("History file is unreadable, not modifying it to avoid losing existing history")
         return None

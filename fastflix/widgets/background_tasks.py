@@ -5,7 +5,7 @@ import logging
 import os
 import time
 from pathlib import Path
-from subprocess import PIPE, STDOUT, Popen, run, check_output
+from subprocess import PIPE, STDOUT, Popen, TimeoutExpired, run, check_output
 from packaging import version
 
 from PySide6 import QtCore
@@ -72,7 +72,12 @@ class ThumbnailCreator(QtCore.QThread):
 
     def run(self):
         self.main.thread_logging_signal.emit(f"DEBUG:{t('Generating thumbnail')}: {_format_command(self.command)}")
-        result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, env=clean_env())
+        try:
+            result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, env=clean_env(), timeout=120)
+        except TimeoutExpired:
+            self.main.thread_logging_signal.emit(f"ERROR:{t('Could not generate thumbnail')}: timed out")
+            self.main.thumbnail_complete.emit(0)
+            return
         if result.returncode > 0:
             output_text = result.stdout.decode(encoding="utf-8", errors="ignore")
             if "No such filter: 'zscale'" in output_text:
@@ -342,11 +347,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
             from babelfish import Language as BabelLanguage
             import pytesseract
 
-            # pytesseract uses its own module-level variable; the PATH is only extended for the OCR run
-            old_path = os.environ.get("PATH", "")
             if self.app.fastflix.config.tesseract_path:
-                tesseract_dir = str(Path(self.app.fastflix.config.tesseract_path).parent)
-                os.environ["PATH"] = f"{tesseract_dir}{os.pathsep}{old_path}"
                 pytesseract.pytesseract.tesseract_cmd = str(self.app.fastflix.config.tesseract_path)
 
             # pgsrip's MediaPath parses the filename for language codes and may transform them
@@ -384,6 +385,11 @@ class ExtractSubtitleSRT(QtCore.QThread):
             expected_srt = pgsrip_srt_path(sup_path)
             started = time.time()
 
+            # The PATH is only extended for the OCR run itself, set right before the try so it is always restored
+            old_path = os.environ.get("PATH", "")
+            if self.app.fastflix.config.tesseract_path:
+                tesseract_dir = str(Path(self.app.fastflix.config.tesseract_path).parent)
+                os.environ["PATH"] = f"{tesseract_dir}{os.pathsep}{old_path}"
             try:
                 pgsrip.rip(media, options)
             finally:

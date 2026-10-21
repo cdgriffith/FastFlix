@@ -66,7 +66,7 @@
 * Fixing legacy fastflix.json upgrade setting the ffmpeg path from the ffprobe value
 * Fixing a single unreadable queue item discarding the entire saved queue; bad items are skipped and the original queue file is kept aside
 * Fixing queue file lock handling and replacing the queue file atomically on Windows, and cleaning up leftover temporary queue files
-* Fixing a corrupt history file being overwritten with an empty history, and history thumbnail deletion following paths outside the thumbnails folder
+* Fixing a corrupt history file being overwritten with an empty history (it is now moved aside to history.yaml.corrupt-<time> and a new history started, while a file that is only temporarily unreadable is left untouched), and history thumbnail deletion following paths outside the thumbnails folder
 * Fixing encodes killed by a signal (out of memory, crash) being reported as successful
 * Fixing cancel, pause and resume not affecting every process of a piped or shell-run command
 * Fixing Download FFmpeg latest from the version warning dialog raising an error
@@ -81,6 +81,7 @@
 * Fixing the after-done action running when an encode is cancelled or paused
 * Fixing crop and large preview images not rendering (ffmpeg was run through a shell) and hanging without a timeout
 * Fixing drag and drop of non-file URLs and slow rebuilds and overlapping thumbnail generation while typing start, end or crop values
+* Fixing a hung FFmpeg thumbnail process blocking all later thumbnail generation (it now times out after 2 minutes)
 * Fixing deleting a duplicated audio track breaking the remaining audio tracks, and audio title edits rebuilding commands on every keystroke
 * Fixing HDR10+ extraction using a full CPU core while waiting, and post-encode validation hanging with no timeout
 * Fixing file paths being rendered as rich text in concat, multiple files and profile windows, and removing the unused HDR10+ Inject window
@@ -99,7 +100,7 @@
 * Fixing burn-in of the first subtitle track not renumbering later subtitle tracks, and external subtitle burn-in track lookup
 * Fixing audio conversion crashing on channel layouts such as 5.1.2, 7.1.4 and octagonal, unknown layouts being forced to stereo, and AC-3 quality bitrates exceeding the 640k limit
 * Fixing HDR tone mapping being applied after color grading filters, dimming burned-in bitmap subtitles, dropping to 8-bit for 10-bit targets, and not tagging the SDR output as bt709
-* Fixing invalid pad colors breaking the filter chain, backslashes in custom start options being removed on Windows, and eq being forced to per-frame evaluation
+* Fixing invalid pad colors breaking the filter chain, quoted values and backslashes in custom start options being mangled on Windows, and eq being forced to per-frame evaluation
 * Fixing PGS OCR reporting failure when the .srt already exists, not handling ISO 639-2/B language codes (fre, ger, chi), and modifying the global PATH
 * Fixing VAAPI encoders passing the invalid `-low-power` option instead of `-low_power`
 * Fixing VAAPI scaling being silently dropped, and VAAPI filters (crop, rotate, scale, burn-in) now run on software frames before `hwupload` so sources the GPU cannot hardware-decode no longer fail at `hwdownload`

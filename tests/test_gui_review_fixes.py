@@ -245,3 +245,20 @@ def test_audio_title_sync_ignores_stale_index():
         app=SimpleNamespace(fastflix=SimpleNamespace(current_video=SimpleNamespace(audio_tracks=[]))),
     )
     Audio.sync_title(me)
+
+
+def test_thumbnail_creator_gives_up_on_a_hung_ffmpeg():
+    """A stuck thumbnail ffmpeg must finish (reporting failure) so queued thumbnail requests are not blocked forever."""
+    import subprocess
+    from types import SimpleNamespace
+
+    from fastflix.widgets import background_tasks
+
+    main = mock.MagicMock()
+    fake = SimpleNamespace(main=main, command=["ffmpeg", "-i", "x"])
+    with mock.patch.object(
+        background_tasks, "run", side_effect=subprocess.TimeoutExpired(cmd="ffmpeg", timeout=1)
+    ) as run_mock:
+        background_tasks.ThumbnailCreator.run(fake)
+    assert run_mock.call_args.kwargs.get("timeout")
+    main.thumbnail_complete.emit.assert_called_once_with(0)

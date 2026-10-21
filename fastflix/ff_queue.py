@@ -64,7 +64,8 @@ def queue_file_lock(queue_file: Path, timeout: float = 30.0):
                     if lock_file.exists():
                         age = time.time() - lock_file.stat().st_mtime
                         if age > 60:
-                            # Only remove the lock if it is still the exact same stale lock we looked at
+                            # Best effort: skip removal if the lock changed since we looked. Not atomic, but the release
+                            # path only deletes a lock that still carries its own token, which limits the damage.
                             stale_content = lock_file.read_text()
                             if lock_file.read_text() == stale_content and time.time() - lock_file.stat().st_mtime > 60:
                                 logger.warning(
