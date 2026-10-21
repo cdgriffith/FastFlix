@@ -17,7 +17,8 @@ def build(fastflix: FastFlix):
 
     beginning.extend(generate_color_details(fastflix))
 
-    if settings.profile and settings.profile != "default":
+    # libx264 refuses lossless (-qp 0) with the baseline/main/high/high10/high422 profiles, only high444 is valid
+    if settings.profile and settings.profile != "default" and (not settings.lossless or settings.profile == "high444"):
         beginning.extend(["-profile:v", settings.profile])
 
     if settings.aq_mode and settings.aq_mode != "default":

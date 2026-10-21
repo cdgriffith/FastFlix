@@ -133,15 +133,16 @@ def build(fastflix: FastFlix):
         command.extend(["--interlace", str(video.interlaced)])
     if video.video_settings.deinterlace:
         command.append("--vpp-yadif")
+    hdr2sdr_param = None
     if video.video_settings.remove_hdr:
         remove_type = (
             video.video_settings.tone_map
             if video.video_settings.tone_map in ("mobius", "hable", "reinhard")
             else "mobius"
         )
-        command.extend(["--vpp-colorspace", f"hdr2sdr={remove_type}"])
+        hdr2sdr_param = f"hdr2sdr={remove_type}"
 
-    command.extend(rigaya_extra_options(video))
+    command.extend(rigaya_extra_options(video, hdr2sdr=hdr2sdr_param))
 
     if settings.split_mode == "parallel":
         command.extend(["--parallel", "auto"])

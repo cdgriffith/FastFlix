@@ -26,7 +26,8 @@ def build(fastflix: FastFlix):
 
     if settings.tune != "1":
         svtav1_params.append(f"tune={settings.tune}")
-    if settings.film_grain:
+    # Film grain synthesis is not compatible with lossless mode
+    if settings.film_grain and not settings.lossless:
         svtav1_params.append(f"film-grain={settings.film_grain}")
         if settings.film_grain_denoise:
             svtav1_params.append("film-grain-denoise=1")
