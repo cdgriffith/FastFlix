@@ -204,3 +204,9 @@ def test_rav1e_combined_params():
     assert "tune" in param_keys
     assert "photon_noise" in param_keys
     assert "no_scene_detection" in param_keys
+
+
+def test_rav1e_hdr10_metadata_for_422_10bit():
+    result = _build_with_settings(hdr10=True, pix_fmt="yuv422p10le")
+    params = result[0].command[result[0].command.index("-rav1e-params") + 1]
+    assert "mastering_display=" in params
