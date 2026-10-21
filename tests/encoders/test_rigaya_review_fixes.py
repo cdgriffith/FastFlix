@@ -131,3 +131,30 @@ def test_split_extra_args_keeps_windows_backslashes(monkeypatch):
         "--x",
         "a b",
     ]
+
+
+# Item 1: --pa and its parameters are separate argv tokens
+
+
+@pytest.mark.parametrize("name", ["vceencc_hevc", "vceencc_av1", "vceencc_avc"])
+def test_vce_pre_analysis_is_two_tokens(name):
+    cmd = build(name, pre_analysis=True)
+    assert all(" " not in x for x in cmd if x.startswith("--"))
+    assert value_after(cmd, "--pa").startswith("sc=medium,ss=high")
+
+
+# Item 3: output fps is only available via NVEncC's --vpp-fruc
+
+
+@pytest.mark.parametrize("name", ["nvencc_hevc", "nvencc_av1", "nvencc_avc"])
+def test_nvenc_output_fps_uses_fruc(name):
+    cmd = build(name, video_settings=vs(output_fps="60"))
+    assert value_after(cmd, "--vpp-fruc") == "fps=60/1"
+    assert "--vpp-fps" not in cmd
+
+
+@pytest.mark.parametrize("name", [x for x in BUILDERS if not x.startswith("nvenc")])
+def test_other_vendors_skip_output_fps(name):
+    cmd = build(name, video_settings=vs(output_fps="60"))
+    for flag in ("--vpp-fps", "--vpp-fruc", "--vpp-frc"):
+        assert flag not in cmd

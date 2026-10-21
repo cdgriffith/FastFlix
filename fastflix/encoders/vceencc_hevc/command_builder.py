@@ -125,7 +125,7 @@ def build(fastflix: FastFlix):
 
     pa = pa_builder(settings)
     if pa:
-        command.append(pa)
+        command.extend(pa)
 
     command.extend(["--avsync", vsync_setting])
 

@@ -19,6 +19,10 @@ from fastflix.encoders.common.encc_helpers import (
 from fastflix.models.encode import VCEEncCSettings
 
 
+def value_after(cmd, flag):
+    return cmd[cmd.index(flag) + 1]
+
+
 @pytest.fixture
 def encc_fastflix_instance(fastflix_instance):
     """
@@ -235,7 +239,7 @@ def test_pa_builder_disabled():
 
     # Test the function
     result = pa_builder(settings)
-    assert result == ""
+    assert result == []
 
 
 def test_pa_builder_basic():
@@ -247,7 +251,7 @@ def test_pa_builder_basic():
 
     # Test the function
     result = pa_builder(settings)
-    assert result == "--pa sc=medium,ss=high,activity-type=y,caq-strength=medium,ltr=true,fskip-maxqp=35"
+    assert result == ["--pa", "sc=medium,ss=high,activity-type=y,caq-strength=medium,ltr=true,fskip-maxqp=35"]
 
 
 def test_pa_builder_with_optional_params():
@@ -270,6 +274,9 @@ def test_pa_builder_with_optional_params():
 
     # Test the function
     result = pa_builder(settings)
+    assert result[0] == "--pa"
+    assert len(result) == 2
+    result = result[1]
     assert "sc=medium" in result
     assert "ss=high" in result
     assert "activity-type=y" in result
@@ -852,8 +859,8 @@ def test_rigaya_extra_options_deblock_weak(encc_fastflix_instance):
     video = encc_fastflix_instance.current_video
     video.video_settings.deblock = "weak"
     result = rigaya_extra_options(video)
-    assert "--vpp-deblock" in result
-    assert "strength=30" in result
+    assert value_after(result, "--vpp-deblock") == "qp=24"
+    assert "strength=30" not in result
 
 
 def test_rigaya_extra_options_deblock_strong(encc_fastflix_instance):
@@ -861,17 +868,43 @@ def test_rigaya_extra_options_deblock_strong(encc_fastflix_instance):
     video = encc_fastflix_instance.current_video
     video.video_settings.deblock = "strong"
     result = rigaya_extra_options(video)
-    assert "--vpp-deblock" in result
-    assert "strength=60" in result
+    assert value_after(result, "--vpp-deblock") == "qp=36,alpha=2,beta=2"
 
 
 def test_rigaya_extra_options_output_fps(encc_fastflix_instance):
     """Test output FPS mapping."""
     video = encc_fastflix_instance.current_video
     video.video_settings.output_fps = "24"
-    result = rigaya_extra_options(video)
-    assert "--vpp-fps" in result
-    assert "fps=24" in result
+    result = rigaya_extra_options(video, fruc=True)
+    assert value_after(result, "--vpp-fruc") == "fps=24/1"
+    assert "--vpp-fps" not in result
+
+
+@pytest.mark.parametrize(
+    "value,expected", [("30", "30/1"), ("23.976", "2997/125"), ("24000/1001", "24000/1001"), ("59.94", "2997/50")]
+)
+def test_rigaya_extra_options_output_fps_fraction(encc_fastflix_instance, value, expected):
+    video = encc_fastflix_instance.current_video
+    video.video_settings.output_fps = value
+    assert value_after(rigaya_extra_options(video, fruc=True), "--vpp-fruc") == f"fps={expected}"
+
+
+def test_rigaya_extra_options_output_fps_invalid(encc_fastflix_instance):
+    video = encc_fastflix_instance.current_video
+    video.video_settings.output_fps = "fast"
+    assert "--vpp-fruc" not in rigaya_extra_options(video, fruc=True)
+
+
+def test_rigaya_extra_options_output_fps_unsupported_vendor_skipped(encc_fastflix_instance, caplog):
+    """QSVEncC and VCEEncC have no output-fps filter (VCE --vpp-frc takes no fps), so nothing is emitted."""
+    video = encc_fastflix_instance.current_video
+    video.video_settings.output_fps = "24"
+    with caplog.at_level("WARNING", logger="fastflix"):
+        result = rigaya_extra_options(video)
+    assert "--vpp-fps" not in result
+    assert "--vpp-fruc" not in result
+    assert "--vpp-frc" not in result
+    assert "output frame rate" in caplog.text.lower()
 
 
 def test_rigaya_extra_options_video_track_title(encc_fastflix_instance):
@@ -892,11 +925,11 @@ def test_rigaya_extra_options_combined(encc_fastflix_instance):
     video.video_settings.deblock = "strong"
     video.video_settings.output_fps = "30"
     video.video_settings.video_track_title = "Test"
-    result = rigaya_extra_options(video)
+    result = rigaya_extra_options(video, fruc=True)
     assert "--vpp-tweak" in result
     assert "--vpp-nlmeans" in result
     assert "--vpp-deblock" in result
-    assert "--vpp-fps" in result
+    assert "--vpp-fruc" in result
     assert "--video-metadata" in result
 
 

@@ -163,7 +163,7 @@ def build(fastflix: FastFlix):
         )
         hdr2sdr_param = f"hdr2sdr={remove_type}"
 
-    command.extend(rigaya_extra_options(video, hdr2sdr=hdr2sdr_param))
+    command.extend(rigaya_extra_options(video, hdr2sdr=hdr2sdr_param, fruc=True))
 
     if settings.split_mode == "split":
         command.extend(["--split-enc", "auto_forced"])
