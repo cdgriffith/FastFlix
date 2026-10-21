@@ -59,6 +59,10 @@
 * Fixing Source Details tab leaving the HDR10 button visible after clearing the video, rendering tag text as HTML, and silently ignoring save errors
 * Fixing missing word wrap in yes/no dialogs, queue titles not eliding, and disabled toggle switches not looking disabled
 * Fixing missing and English-only translations for new strings
+* Fixing VAAPI encoders passing the invalid `-low-power` option instead of `-low_power`
+* Fixing VAAPI scaling being silently dropped, and VAAPI filters (crop, rotate, scale, burn-in) now run on software frames before `hwupload` so sources the GPU cannot hardware-decode no longer fail at `hwdownload`
+* Adding 8-bit/10-bit selection for VAAPI HEVC and VP9 (nv12/p010 upload with Main10/Profile 2), and fixing VAAPI HDR to SDR tone mapping so it receives 10-bit p010 input
+* Fixing VAAPI ICQ/QVBR rate control to use `-global_quality`, avoiding incoherent rate control and bitrate combinations, and no longer emitting `-level auto`
 
 ## Version 6.2.1
 
