@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import datetime
 import logging
+import shutil
+import uuid as uuid_mod
 from collections import namedtuple
 from pathlib import Path
 from queue import Empty
@@ -34,6 +36,19 @@ Request = namedtuple(
 )
 
 Response = namedtuple("Response", ["status", "video_uuid", "command_uuid"])
+
+
+def refresh_video_identity(video: Video, new_work_path: Path) -> None:
+    """Give a video a fresh uuid and work_path (seeded with the old work_path contents)."""
+    old_work_path = video.work_path
+    new_work_path.mkdir(parents=True, exist_ok=True)
+    if old_work_path and Path(old_work_path).is_dir():
+        try:
+            shutil.copytree(old_work_path, new_work_path, dirs_exist_ok=True)
+        except OSError as err:
+            logger.warning(f"Could not copy work files to new work path: {err}")
+    video.work_path = new_work_path
+    video.uuid = str(uuid_mod.uuid4())
 
 
 class Notifier(QtCore.QThread):
@@ -160,6 +175,10 @@ class EncodingMixin:
 
         if not self.app.fastflix.config.keep_source_after_encode:
             self.clear_current_video()
+        else:
+            # The queued copy owns the current uuid and work_path; the kept source needs its own so the
+            # next queue entry doesn't collide on status updates, removal, retry or temp file cleanup.
+            refresh_video_identity(self.app.fastflix.current_video, self.get_temp_work_path())
         return True
 
     def conversion_complete(self, success: bool):

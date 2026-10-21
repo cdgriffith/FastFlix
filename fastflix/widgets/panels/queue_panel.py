@@ -48,23 +48,45 @@ after_done_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True))
 
 
 class ElidedLabel(QtWidgets.QLabel):
-    """A QLabel that elides text with an ellipsis when it doesn't fit."""
+    """A QLabel that elides text with an ellipsis when it doesn't fit.
+
+    The label always reports a small minimum width and ignores the text width in its size policy, so the full
+    text never forces its row wider; the displayed text is re-elided on every resize.
+    """
+
+    MIN_WIDTH = 24
 
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
         self._full_text = text
-        self.setMinimumWidth(0)
-        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Preferred)
 
     def setText(self, text):
         self._full_text = text
-        super().setText(text)
-        self.update()
+        self.setToolTip(text)
+        self._apply_elision()
+        self.updateGeometry()
+
+    def fullText(self):
+        return self._full_text
+
+    def minimumSizeHint(self):
+        hint = super().minimumSizeHint()
+        return QtCore.QSize(self.MIN_WIDTH, hint.height())
+
+    def sizeHint(self):
+        metrics = QtGui.QFontMetrics(self.font())
+        return QtCore.QSize(metrics.horizontalAdvance(self._full_text), super().sizeHint().height())
+
+    def elided_text(self, width=None):
+        metrics = QtGui.QFontMetrics(self.font())
+        return metrics.elidedText(self._full_text, QtCore.Qt.ElideRight, self.width() if width is None else width)
+
+    def _apply_elision(self):
+        super().setText(self.elided_text())
 
     def resizeEvent(self, event):
-        metrics = QtGui.QFontMetrics(self.font())
-        elided = metrics.elidedText(self._full_text, QtCore.Qt.ElideRight, self.width())
-        super().setText(elided)
+        self._apply_elision()
         super().resizeEvent(event)
 
 
