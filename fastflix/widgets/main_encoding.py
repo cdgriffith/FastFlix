@@ -51,6 +51,18 @@ def refresh_video_identity(video: Video, new_work_path: Path) -> None:
     video.uuid = str(uuid_mod.uuid4())
 
 
+def build_overwrite_prompt(parent=None):
+    """Confirmation box where Cancel is the default and escape button; returns (box, cancel, overwrite)."""
+    box = QtWidgets.QMessageBox(parent)
+    box.setIcon(QtWidgets.QMessageBox.Icon.Warning)
+    box.setText(t("That output file already exists and is not empty!"))
+    cancel = box.addButton(t("Cancel"), QtWidgets.QMessageBox.ButtonRole.RejectRole)
+    overwrite = box.addButton(t("Overwrite"), QtWidgets.QMessageBox.ButtonRole.AcceptRole)
+    box.setDefaultButton(cancel)
+    box.setEscapeButton(cancel)
+    return box, cancel, overwrite
+
+
 class Notifier(QtCore.QThread):
     def __init__(self, parent, app, status_queue):
         super().__init__(parent)
@@ -70,13 +82,11 @@ class Notifier(QtCore.QThread):
                 status = self.status_queue.get(timeout=0.5)
             except Empty:
                 continue
-            self.app.processEvents()
             if status[0] == "exit":
                 logger.debug("GUI received ask to exit")
                 self.main.close_event.emit()
                 return
             self.main.status_update_signal.emit(status)
-            self.app.processEvents()
 
 
 class EncodingMixin:
@@ -101,12 +111,9 @@ class EncodingMixin:
 
         out_file_path = Path(self.output_video)
         if out_file_path.exists() and out_file_path.stat().st_size > 0:
-            sm = QtWidgets.QMessageBox()
-            sm.setText("That output file already exists and is not empty!")
-            sm.addButton("Cancel", QtWidgets.QMessageBox.DestructiveRole)
-            sm.addButton("Overwrite", QtWidgets.QMessageBox.RejectRole)
+            sm, _cancel, overwrite = build_overwrite_prompt(self)
             sm.exec()
-            if sm.clickedButton().text() == "Cancel":
+            if sm.clickedButton() is not overwrite:
                 return False
         return True
 
@@ -193,6 +200,7 @@ class EncodingMixin:
             self.video_options.queue.new_source()
         else:
             self.encoding_status_signal.emit(t("All conversions complete"), STATE_COMPLETE)
+            self.video_options.queue.run_after_done()
             self.video_options.show_queue()
             if self.app.fastflix.config.show_complete_message:
                 message(t("All queue items have completed"), title=t("Success"))
@@ -281,7 +289,6 @@ class EncodingMixin:
     def end_encoding(self):
         self.app.fastflix.currently_encoding = False
         allow_sleep_mode()
-        self.video_options.queue.run_after_done()
         self.video_options.update_queue()
         self.set_convert_button()
         self.encoding_progress_signal.emit(0)
