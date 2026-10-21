@@ -83,6 +83,95 @@ func TestRemoveInstalledFilesKeepsUserFiles(t *testing.T) {
 	}
 }
 
+func writeFiles(t *testing.T, dir string, files ...string) {
+	t.Helper()
+	for _, f := range files {
+		p := filepath.Join(dir, f)
+		if filepath.Ext(f) == "" && f == "python" {
+			if err := os.MkdirAll(p, 0755); err != nil {
+				t.Fatal(err)
+			}
+			continue
+		}
+		if err := os.MkdirAll(filepath.Dir(p), 0755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(p, []byte("x"), 0644); err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+func TestLooksInstalledRequiresFastFlixExe(t *testing.T) {
+	cases := []struct {
+		name  string
+		files []string
+		want  bool
+	}{
+		{"only uninstall.exe", []string{"uninstall.exe"}, false},
+		{"only python", []string{"python"}, false},
+		{"only FastFlix.exe", []string{"FastFlix.exe"}, false},
+		{"exe + uninstall", []string{"FastFlix.exe", "uninstall.exe"}, true},
+		{"exe + python", []string{"FastFlix.exe", "python"}, true},
+		{"exe + manifest", []string{"FastFlix.exe", ManifestName}, true},
+	}
+	for _, c := range cases {
+		dir := t.TempDir()
+		writeFiles(t, dir, c.files...)
+		if got := LooksInstalled(dir); got != c.want {
+			t.Errorf("%s: LooksInstalled = %v, want %v", c.name, got, c.want)
+		}
+	}
+}
+
+func TestRemoveInstalledFilesRefusesWeakEvidence(t *testing.T) {
+	for _, files := range [][]string{{"uninstall.exe", "a.txt"}, {"python", "a.txt"}} {
+		dir := filepath.Join(t.TempDir(), "FastFlix")
+		writeFiles(t, dir, files...)
+		if RemoveInstalledFiles(dir, "") == nil {
+			t.Errorf("%v: should be refused", files)
+		}
+		if !exists(dir, "a.txt") {
+			t.Errorf("%v: user file was deleted", files)
+		}
+	}
+}
+
+func TestRemoveInstalledFilesLegacyBranch(t *testing.T) {
+	// Wrong folder name: refused, nothing deleted
+	bad := filepath.Join(t.TempDir(), "Documents")
+	writeFiles(t, bad, "FastFlix.exe", "uninstall.exe", "precious.docx")
+	if RemoveInstalledFiles(bad, "") == nil {
+		t.Error("legacy removal should be refused when the folder is not named FastFlix")
+	}
+	if !exists(bad, "precious.docx") || !exists(bad, "FastFlix.exe") {
+		t.Error("refused legacy removal must not delete anything")
+	}
+
+	// FastFlix.exe without uninstall.exe (named correctly): refused
+	noUn := filepath.Join(t.TempDir(), "FastFlix")
+	writeFiles(t, noUn, "FastFlix.exe", "other.dll")
+	if LooksInstalled(noUn) {
+		t.Fatal("exe alone should not look installed")
+	}
+	if RemoveInstalledFiles(noUn, "") == nil {
+		t.Error("legacy removal should be refused without uninstall.exe")
+	}
+
+	// Proper legacy install: everything but fastflix.yaml goes
+	good := filepath.Join(t.TempDir(), "fastflix")
+	writeFiles(t, good, "FastFlix.exe", "uninstall.exe", "old.dll", UserConfigName)
+	if err := RemoveInstalledFiles(good, ""); err != nil {
+		t.Fatal(err)
+	}
+	if exists(good, "old.dll") || exists(good, "FastFlix.exe") {
+		t.Error("legacy files should have been removed")
+	}
+	if !exists(good, UserConfigName) {
+		t.Error("fastflix.yaml should have been kept")
+	}
+}
+
 func TestScheduleSelfDelete(t *testing.T) {
 	for _, name := range []string{"FastFlix", "FastFlix José", "Fast & Flix", "Fast 100%"} {
 		t.Run(name, func(t *testing.T) { testScheduleSelfDelete(t, name) })

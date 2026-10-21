@@ -3,6 +3,7 @@ package main
 import (
 	"archive/tar"
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -10,11 +11,11 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
-	"time"
 	"unsafe"
 
 	"github.com/cdgriffith/fastflix-installer/cmd/internal/ffinstall"
 	"github.com/klauspost/compress/zstd"
+	"golang.org/x/sys/windows"
 	"golang.org/x/sys/windows/registry"
 )
 
@@ -277,65 +278,123 @@ func cleanAllRegistryKeys() {
 	}
 }
 
-// launchElevated starts the installer exe elevated (UAC) with the given arguments. Returns false if the
-// user declined the prompt or ShellExecute failed.
-func launchElevated(args string) bool {
+// Exit codes of the elevated helpers (--elevated-install / --elevated-uninstall). The elevated process never
+// writes to a user-controlled location; the unelevated GUI learns the outcome from the process exit code only.
+const (
+	exitOK             = 0 // success
+	exitError          = 1 // generic failure / bad arguments
+	exitBadLocation    = 2 // install location is not the expected all-users location
+	exitOKWithWarnings = 3 // success, but a non-fatal step (shortcut) failed
+	exitInstallFailed  = 4 // extracting the files failed
+	exitUninstallProbs = 5 // some directories could not be removed
+)
+
+// describeExit turns a helper exit code into a user-facing message.
+func describeExit(code uint32) string {
+	switch code {
+	case exitBadLocation:
+		return "unexpected install location (exit code 2)"
+	case exitInstallFailed:
+		return "the files could not be extracted (exit code 4)"
+	case exitUninstallProbs:
+		return "some files could not be removed (exit code 5)"
+	}
+	return fmt.Sprintf("the elevated helper failed (exit code %d)", code)
+}
+
+// shellExecuteInfo mirrors SHELLEXECUTEINFOW.
+type shellExecuteInfo struct {
+	Size       uint32
+	Mask       uint32
+	Hwnd       uintptr
+	Verb       *uint16
+	File       *uint16
+	Parameters *uint16
+	Directory  *uint16
+	Show       int32
+	InstApp    uintptr
+	IDList     uintptr
+	Class      *uint16
+	KeyClass   uintptr
+	HotKey     uint32
+	Icon       uintptr
+	Process    windows.Handle
+}
+
+// launchElevated starts the installer exe elevated (UAC) with the given arguments and returns the process
+// handle (caller must CloseHandle it). declined is true if the user cancelled the UAC prompt.
+func launchElevated(args string) (h windows.Handle, declined bool, err error) {
 	selfPath, err := os.Executable()
 	if err != nil {
-		return false
+		return 0, false, err
 	}
+	const seeMaskNoCloseProcess, seeMaskNoAsync = 0x40, 0x100
 	verb, _ := syscall.UTF16PtrFromString("runas")
 	exe, _ := syscall.UTF16PtrFromString(selfPath)
 	argPtr, _ := syscall.UTF16PtrFromString(args)
 	cwd, _ := syscall.UTF16PtrFromString(filepath.Dir(selfPath))
-	ret, _, _ := syscall.NewLazyDLL("shell32.dll").NewProc("ShellExecuteW").Call(0,
-		uintptr(unsafe.Pointer(verb)), uintptr(unsafe.Pointer(exe)),
-		uintptr(unsafe.Pointer(argPtr)), uintptr(unsafe.Pointer(cwd)), 0) // SW_HIDE
-	return ret > 32
+	info := shellExecuteInfo{
+		Mask: seeMaskNoCloseProcess | seeMaskNoAsync,
+		Verb: verb, File: exe, Parameters: argPtr, Directory: cwd, Show: 0, // SW_HIDE
+	}
+	info.Size = uint32(unsafe.Sizeof(info))
+	ret, _, callErr := syscall.NewLazyDLL("shell32.dll").NewProc("ShellExecuteExW").Call(uintptr(unsafe.Pointer(&info)))
+	if ret == 0 {
+		if errors.Is(callErr, windows.ERROR_CANCELLED) {
+			return 0, true, nil
+		}
+		return 0, false, callErr
+	}
+	if info.Process == 0 {
+		return 0, false, errors.New("no process handle returned")
+	}
+	return info.Process, false, nil
+}
+
+// waitElevated waits up to maxSeconds for the elevated process to exit (calling tick every 500ms so the GUI
+// can animate) and returns its exit code. done is false on timeout. The handle is closed.
+func waitElevated(h windows.Handle, maxSeconds int, tick func(i int)) (code uint32, done bool) {
+	defer windows.CloseHandle(h)
+	for i := 1; i <= maxSeconds*2; i++ {
+		ev, _ := windows.WaitForSingleObject(h, 500)
+		if ev == windows.WAIT_OBJECT_0 {
+			if err := windows.GetExitCodeProcess(h, &code); err != nil {
+				return exitError, true
+			}
+			return code, true
+		}
+		if tick != nil {
+			tick(i)
+		}
+	}
+	return 0, false
 }
 
 // elevatedUninstall removes the given (protected) install directories plus all HKLM keys and the common
 // Start Menu entry in one elevated helper run. Returns false if elevation was refused or the helper failed.
 func elevatedUninstall(dirs []string) (ok bool, detail string) {
-	tempDir, err := os.MkdirTemp("", "fastflix-uninstall-*")
-	if err != nil {
-		return false, err.Error()
-	}
-	defer os.RemoveAll(tempDir)
-	marker := filepath.Join(tempDir, ".done")
-
-	args := `--elevated-uninstall --marker "` + marker + `"`
+	args := `--elevated-uninstall`
 	for _, d := range dirs {
 		if err := ffinstall.ValidatePathString(d); err != nil {
 			return false, err.Error()
 		}
 		args += ` --dir "` + d + `"`
 	}
-	if !launchElevated(args) {
+	h, declined, err := launchElevated(args)
+	if declined {
 		return false, "elevation was declined"
 	}
-	result, done := waitForMarker(marker, 120, nil)
+	if err != nil {
+		return false, err.Error()
+	}
+	code, done := waitElevated(h, 120, nil)
 	if !done {
 		return false, "timed out waiting for the elevated helper"
 	}
-	if strings.HasPrefix(result, "error") {
-		return false, result
+	if code != exitOK {
+		return false, describeExit(code)
 	}
 	return true, ""
-}
-
-// waitForMarker polls for a marker file for up to maxSeconds and returns its contents.
-func waitForMarker(marker string, maxSeconds int, tick func(i int)) (string, bool) {
-	for i := 1; i <= maxSeconds*2; i++ {
-		if data, err := os.ReadFile(marker); err == nil {
-			return strings.TrimSpace(string(data)), true
-		}
-		if tick != nil {
-			tick(i)
-		}
-		time.Sleep(500 * time.Millisecond)
-	}
-	return "", false
 }
 
 // fastflixRunning reports whether FastFlix (or an orphaned bundled python.exe) is running.

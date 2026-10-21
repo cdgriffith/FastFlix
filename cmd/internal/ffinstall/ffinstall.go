@@ -111,14 +111,20 @@ func forbiddenRoots() []string {
 	return roots
 }
 
-// LooksInstalled reports whether dir contains FastFlix files (FastFlix.exe, uninstall.exe or the python runtime).
+// exists reports whether name exists in dir.
+func exists(dir, name string) bool {
+	_, err := os.Stat(filepath.Join(dir, name))
+	return err == nil
+}
+
+// LooksInstalled reports whether dir is a FastFlix install: FastFlix.exe must exist AND at least one other
+// install artifact (the manifest, uninstall.exe or the python runtime). A bare uninstall.exe or python folder
+// is not proof of anything.
 func LooksInstalled(dir string) bool {
-	for _, name := range []string{"FastFlix.exe", "uninstall.exe", "python"} {
-		if _, err := os.Stat(filepath.Join(dir, name)); err == nil {
-			return true
-		}
+	if !exists(dir, "FastFlix.exe") {
+		return false
 	}
-	return false
+	return exists(dir, ManifestName) || exists(dir, "uninstall.exe") || exists(dir, "python")
 }
 
 // SafeToRemove returns nil only if dir is plausibly a FastFlix install directory that is safe to delete from.
@@ -212,7 +218,13 @@ func RemoveInstalledFiles(dir, self string) error {
 	if _, err := os.Stat(filepath.Join(dir, "python")); err == nil {
 		return RemoveOwned(dir, distEntries, self)
 	}
-	// Legacy one-folder install: remove everything but user config
+	// Legacy one-folder install (old PyInstaller/NSIS): remove everything but user config. Because this deletes
+	// the whole folder, demand much stronger evidence: the folder must be named FastFlix and hold both
+	// FastFlix.exe and uninstall.exe.
+	if !strings.EqualFold(filepath.Base(filepath.Clean(dir)), ProductName) ||
+		!exists(dir, "FastFlix.exe") || !exists(dir, "uninstall.exe") {
+		return fmt.Errorf("refusing to remove %q: not a recognizable legacy FastFlix install folder", dir)
+	}
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		return err

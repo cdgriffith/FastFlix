@@ -58,47 +58,38 @@ func main() {
 }
 
 // runElevatedInstall does everything: extract embedded archive to dest, registry, shortcuts.
-// Called as an elevated process — no UI. Writes "ok" (optionally followed by a warning line) or
-// "error: <message>" to the marker file when done, so the GUI can report the outcome.
+// Called as an elevated process — no UI. The outcome is reported only through the process exit code (see the
+// exit* constants); the elevated process never writes to a path chosen by the unelevated caller.
 func runElevatedInstall(args []string) {
 	dst := getArgValue(args, "--dest")
-	marker := getArgValue(args, "--marker")
-	if dst == "" || marker == "" {
-		os.Exit(1)
+	if dst == "" {
+		os.Exit(exitError)
 	}
-	writeMarker := func(s string) { os.WriteFile(marker, []byte(s), 0644) }
 
 	// Only ever install to the all-users location
 	expected, regRoot, startMenu := installPaths(modeAllUsers)
 	if !strings.EqualFold(strings.TrimRight(dst, `\`), expected) {
-		writeMarker("error: unexpected install location")
-		return
+		os.Exit(exitBadLocation)
 	}
 
 	// Extract embedded archive directly to destination (includes uninstall.exe)
 	if err := installFiles(dst, nil); err != nil {
-		writeMarker("error: " + err.Error())
-		return
+		os.Exit(exitInstallFailed)
 	}
 
 	// Write HKLM registry + shortcuts
 	writeRegistry(dst, regRoot)
 	writeInstalledSize(dst, regRoot)
 	if err := createShortcuts(dst, startMenu); err != nil {
-		writeMarker("ok\nwarning: " + err.Error())
-		return
+		os.Exit(exitOKWithWarnings)
 	}
-	writeMarker("ok")
+	os.Exit(exitOK)
 }
 
 // runElevatedUninstall removes the given protected install directories (--dir, repeatable), then all HKLM
-// keys and the common Start Menu / public desktop shortcuts. Elevated, no UI; writes a marker when done.
+// keys and the common Start Menu / public desktop shortcuts. Elevated, no UI; reports via exit code.
 func runElevatedUninstall(args []string) {
-	marker := getArgValue(args, "--marker")
-	if marker == "" {
-		os.Exit(1)
-	}
-	var problems []string
+	problems := false
 	for i, a := range args {
 		if !strings.EqualFold(a, "--dir") || i+1 >= len(args) {
 			continue
@@ -107,8 +98,10 @@ func runElevatedUninstall(args []string) {
 		if _, err := os.Stat(dir); err != nil {
 			continue // already gone
 		}
+		// RemoveInstalledFiles validates the directory (SafeToRemove) and refuses anything that is not
+		// clearly a FastFlix install, including the legacy delete-everything branch.
 		if err := ffinstall.RemoveInstalledFiles(dir, ""); err != nil {
-			problems = append(problems, err.Error())
+			problems = true
 		}
 	}
 
@@ -117,11 +110,10 @@ func runElevatedUninstall(args []string) {
 	os.RemoveAll(commonSM)
 	os.Remove(publicDesktopShortcut())
 
-	if len(problems) > 0 {
-		os.WriteFile(marker, []byte("error: "+strings.Join(problems, "; ")), 0644)
-		return
+	if problems {
+		os.Exit(exitUninstallProbs)
 	}
-	os.WriteFile(marker, []byte("ok"), 0644)
+	os.Exit(exitOK)
 }
 
 func publicDesktopShortcut() string {

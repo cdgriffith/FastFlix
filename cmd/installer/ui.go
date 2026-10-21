@@ -1174,22 +1174,15 @@ func doInstallForAllUsers() {
 
 	installDir, _, _ := installPaths(modeAllUsers)
 
-	// Create a temp dir for the done marker
-	tempDir, err := os.MkdirTemp("", "fastflix-install-*")
-	if err != nil {
+	// Trigger UAC IMMEDIATELY — elevated process does extract + registry + shortcuts. The result comes back
+	// as the process exit code; nothing user-writable is shared with the elevated process.
+	proc, declined, launchErr := launchElevated(fmt.Sprintf(`--elevated-install --dest "%s"`, installDir))
+	if declined || launchErr != nil {
 		state.installing = false
 		updateButtonState()
-		messageBox("Installation Failed", "Failed to create temp directory:\n"+err.Error(), 0x10)
-		return
-	}
-	defer os.RemoveAll(tempDir)
-	doneMarker := filepath.Join(tempDir, ".done")
-
-	// Trigger UAC IMMEDIATELY — elevated process does extract + registry + shortcuts
-	if !launchElevated(fmt.Sprintf(`--elevated-install --dest "%s" --marker "%s"`, installDir, doneMarker)) {
-		// User cancelled UAC or error
-		state.installing = false
-		updateButtonState()
+		if launchErr != nil {
+			messageBox("Installation Failed", "Could not start the elevated installer:\n"+launchErr.Error(), 0x10)
+		}
 		return
 	}
 
@@ -1201,8 +1194,8 @@ func doInstallForAllUsers() {
 	showWindow.Call(uintptr(state.hProgLabel), swShow)
 	setText(state.hProgLabel, "Installing to Program Files...")
 
-	// Poll for completion with smooth animated progress (ease-out curve: fast at start, slows towards 95%)
-	result, done := waitForMarker(doneMarker, 300, func(i int) {
+	// Wait for completion with smooth animated progress (ease-out curve: fast at start, slows towards 95%)
+	code, done := waitElevated(proc, 300, func(i int) {
 		pct := int(95.0 * (1.0 - math.Exp(-float64(i)/30.0)))
 		if pct > 95 {
 			pct = 95
@@ -1211,12 +1204,12 @@ func doInstallForAllUsers() {
 		setText(state.hProgLabel, fmt.Sprintf("Installing to Program Files... %d%%", pct))
 	})
 
-	if !done || strings.HasPrefix(result, "error") {
+	if !done || (code != exitOK && code != exitOKWithWarnings) {
 		var msg string
 		if !done {
 			msg = "The installation timed out and may be incomplete."
 		} else {
-			msg = "The installation failed:\n" + strings.TrimSpace(strings.TrimPrefix(result, "error:"))
+			msg = "The installation failed:\n" + describeExit(code)
 		}
 		state.installing = false
 		messageBox("Installation Failed", msg, 0x10)
@@ -1226,9 +1219,9 @@ func doInstallForAllUsers() {
 
 	setProgress(100)
 	setText(state.hProgLabel, "Installation complete!")
-	if i := strings.Index(result, "warning:"); i >= 0 {
+	if code == exitOKWithWarnings {
 		messageBox("Shortcut Not Created",
-			"FastFlix was installed, but the Start Menu shortcut could not be created:\n"+strings.TrimSpace(result[i+len("warning:"):]), 0x30)
+			"FastFlix was installed, but the Start Menu shortcut could not be created.", 0x30)
 	}
 
 	state.installedDir = installDir
