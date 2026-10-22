@@ -96,41 +96,41 @@ jobs:
       run: |
         mkdir dist
         New-Item -Path Env: -Name VERSION -Value $(python.exe scripts\get_version.py)
-        New-Item -Path Env: -Name EXACT_VERSION -Value $(python.exe scripts\get_version.py exact)
-        New-Item -Path Env: -Name PRODUCT_VERSION -Value $(python.exe scripts\get_version.py nsis)
         echo "Building branch $env:GITHUB_REF - version $env:VERSION"
         echo "::set-env name=VERSION::$env:VERSION"
-        echo "::set-env name=EXACT_VERSION::$env:EXACT_VERSION"
-        echo "::set-env name=PRODUCT_VERSION::$env:PRODUCT_VERSION"
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: "1.24"
+        cache-dependency-path: go.sum
+
+    - name: Install go-winres (icon / manifest / version resources)
+      shell: bash
+      run: |
+        go install github.com/tc-hib/go-winres@v0.3.3
+        echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
     - name: Install Python Dependencies
       run: uv sync --frozen
 
-    - name: Build single executable
+    # Builds python runtime + dependencies (pinned by uv.lock), runs go-winres for the launcher and
+    # uninstaller, builds FastFlix.exe + uninstall.exe, writes cmd/installer/fastflix_dist.tar.zst, then
+    # runs go-winres for the installer and builds dist\FastFlix_installer.exe with
+    # -ldflags "-s -w -H windowsgui -X main.Version=<fastflix/version.py> -X main.BuildDate=<today>".
+    - name: Build distribution and installer
       shell: cmd
-      run: uv run pyinstaller FastFlix_Windows_OneFile.spec
+      run: uv run --with zstandard python scripts\build_distribution.py --archive --installer
 
-    - name: Build installer executable
+    - name: Go vet
       shell: cmd
-      run: uv run pyinstaller FastFlix_Windows_Installer.spec
+      run: go vet ./...
 
-#    - uses: skymatic/code-sign-action@v1
-#      with:
-#        certificate: '${{ secrets.CODE_CERT_B64 }}'
-#        password: '${{ secrets.CODE_CERT_PASS }}'
-#        certificatesha1: '${{ secrets.CODE_CERT_THUMB }}'
-#        description: 'FastFlix'
-#        timestampUrl: 'http://timestamp.sectigo.com'
-#        folder: 'dist\FastFlix'
-#        recursive: false
-
-    - name: Package installer
+    - name: Go tests
       shell: cmd
-      run: |
-        makensis.exe /INPUTCHARSET UTF8 /DVERSION=${{ env.EXACT_VERSION }} /DPRODUCT_VERSION=${{ env.PRODUCT_VERSION }} FastFlix.nsi
-        move FastFlix_installer.exe dist\FastFlix_${{ env.VERSION }}_installer.exe
+      run: go test ./cmd/internal/...
 
 #    - uses: skymatic/code-sign-action@v1
 #      with:
@@ -140,29 +140,29 @@ jobs:
 #        description: 'FastFlix'
 #        timestampUrl: 'http://timestamp.sectigo.com'
 #        folder: 'dist'
-#        recursive: false
+#        recursive: true
 
-    - name: Test executable
-      run: |
-        dist\FastFlix.exe --version
-        dist\FastFlix.exe --test
-
-    - name: Package single executable
+    - name: Test launcher
       shell: cmd
       run: |
-        move dist\*.exe .
-        move docs\build-licenses.txt LICENSE
+        dist\FastFlix\FastFlix.exe --version
+        dist\FastFlix\FastFlix.exe --test
 
-    - name: Upload standalone executable artifact
+    - name: Package installer and portable archive
+      shell: cmd
+      run: |
+        move dist\FastFlix_installer.exe dist\FastFlix_${{ env.VERSION }}_installer.exe
+        copy docs\build-licenses.txt dist\FastFlix\LICENSE
+        7z a -mm=Deflate -mfb=258 -mpass=15 dist\FastFlix_${{ env.VERSION }}_win64.zip .\dist\FastFlix\*
+
+    - name: Upload portable archive artifact
       uses: actions/upload-artifact@v4
       with:
         name: FastFlix_${{ env.VERSION }}_win64
-        path: |
-          FastFlix.exe
-          LICENSE
+        path: dist/FastFlix_${{ env.VERSION }}_win64.zip
 
     - name: Upload installer artifact
       uses: actions/upload-artifact@v4
       with:
         name: FastFlix_${{ env.VERSION }}_installer
-        path: FastFlix_${{ env.VERSION }}_installer.exe
+        path: dist/FastFlix_${{ env.VERSION }}_installer.exe

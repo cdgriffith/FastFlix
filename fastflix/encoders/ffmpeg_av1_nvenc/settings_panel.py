@@ -21,6 +21,8 @@ presets = [
     "p7",
 ]
 
+SPLIT_OPTIONS = ["default", "disabled", "auto", "forced", "2", "3", "4"]
+
 recommended_bitrates = [
     "800k   (320x240p @ 30fps)",
     "1000k  (640x360p @ 30fps)",
@@ -96,6 +98,22 @@ class AV1NVENC(SettingPanel):
         a.addStretch(1)
         a.addLayout(self.init_aq_strength())
         grid.addLayout(a, 4, 2, 1, 4)
+
+        c = QtWidgets.QHBoxLayout()
+        c.addLayout(self.init_tf_level())
+        c.addStretch(1)
+        c.addLayout(self.init_lookahead_level())
+        c.addStretch(1)
+        c.addLayout(self.init_split_encode_mode())
+        grid.addLayout(c, 5, 2, 1, 4)
+
+        d = QtWidgets.QHBoxLayout()
+        d.addLayout(self.init_cq())
+        d.addStretch(1)
+        d.addLayout(self.init_weighted_pred())
+        d.addStretch(1)
+        d.addLayout(self.init_no_scenecut())
+        grid.addLayout(d, 6, 2, 1, 4)
 
         grid.setRowStretch(9, 1)
 
@@ -254,15 +272,70 @@ class AV1NVENC(SettingPanel):
         return layout
 
     def init_aq_strength(self):
-        layout = self._add_combo_box(
+        return self._add_text_box(
             label="AQ Strength",
             tooltip="When Spatial AQ is enabled, sets AQ strength (1 = low, 15 = aggressive, default 8)",
             widget_name="aq_strength",
             opt="aq_strength",
-            options=[str(x) for x in range(1, 16)],
+            validator="int",
+            default="8",
+            width=30,
         )
-        self.widgets.aq_strength.setMinimumWidth(50)
-        return layout
+
+    def init_cq(self):
+        return self._add_text_box(
+            label="CQ",
+            tooltip="Constant quality target (0-63 max, 0 = off). When set in quality mode, uses VBR with -cq instead of constant QP",
+            widget_name="cq",
+            opt="cq",
+            validator="int",
+            default="0",
+            width=30,
+        )
+
+    def init_tf_level(self):
+        return self._add_combo_box(
+            label="Temporal Filter",
+            tooltip="Strength of the NVENC temporal filter (0 = off, 4 = on), needs B-frames and lookahead",
+            widget_name="tf_level",
+            options=["default", "0", "4"],
+            opt="tf_level",
+        )
+
+    def init_lookahead_level(self):
+        return self._add_combo_box(
+            label="Lookahead Level",
+            tooltip="Lookahead level, higher may improve quality at the expense of performance (needs RC Lookahead)",
+            widget_name="lookahead_level",
+            options=["default", "auto", "0", "1", "2", "3"],
+            opt="lookahead_level",
+        )
+
+    def init_split_encode_mode(self):
+        return self._add_combo_box(
+            label="Split Encode",
+            tooltip="Split frame encoding across multiple NVENC engines (high-end GPUs with more than one NVENC)",
+            widget_name="split_encode_mode",
+            options=SPLIT_OPTIONS,
+            opt="split_encode_mode",
+        )
+
+    def init_weighted_pred(self):
+        return self._add_combo_box(
+            label="Weighted Prediction",
+            tooltip="Enable weighted prediction (not compatible with B-frames)",
+            widget_name="weighted_pred",
+            options=["off", "on"],
+            opt="weighted_pred",
+        )
+
+    def init_no_scenecut(self):
+        return self._add_check_box(
+            opt="no_scenecut",
+            label="No Scenecut",
+            tooltip="When lookahead is enabled, disable adaptive I-frame insertion at scene cuts",
+            widget_name="no_scenecut",
+        )
 
     def init_modes(self):
         layout = self._add_modes(recommended_bitrates, recommended_crfs, qp_name="qp")
@@ -302,9 +375,15 @@ class AV1NVENC(SettingPanel):
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             gpu=int(self.widgets.gpu.currentText() or -1) if self.widgets.gpu.currentIndex() != 0 else -1,
             b_ref_mode=self.widgets.b_ref_mode.currentText(),
-            aq_strength=int(self.widgets.aq_strength.currentText() or 8),
+            aq_strength=int(self.widgets.aq_strength.text() or 8),
             tier=self.widgets.tier.currentText(),
             hw_accel=self.widgets.hw_accel.isChecked(),
+            cq=int(self.widgets.cq.text() or 0),
+            tf_level=self.widgets.tf_level.currentText(),
+            lookahead_level=self.widgets.lookahead_level.currentText(),
+            split_encode_mode=self.widgets.split_encode_mode.currentText(),
+            weighted_pred=self.widgets.weighted_pred.currentIndex(),
+            no_scenecut=self.widgets.no_scenecut.isChecked(),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.qp = q_value if encode_type == "qp" else None

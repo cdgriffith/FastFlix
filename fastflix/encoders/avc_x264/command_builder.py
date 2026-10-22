@@ -2,6 +2,7 @@
 import secrets
 import shlex
 
+from fastflix.encoders.common.hdr_metadata import is_hdr_bit_depth, parse_master_display
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
 from fastflix.models.encode import x264Settings
 from fastflix.models.fastflix import FastFlix
@@ -17,7 +18,8 @@ def build(fastflix: FastFlix):
 
     beginning.extend(generate_color_details(fastflix))
 
-    if settings.profile and settings.profile != "default":
+    # libx264 refuses lossless (-qp 0) with the baseline/main/high/high10/high422 profiles, only high444 is valid
+    if settings.profile and settings.profile != "default" and (not settings.lossless or settings.profile == "high444"):
         beginning.extend(["-profile:v", settings.profile])
 
     if settings.aq_mode and settings.aq_mode != "default":
@@ -31,6 +33,14 @@ def build(fastflix: FastFlix):
         beginning.extend(["-level", settings.level])
 
     x264_params = settings.x264_params.copy()
+
+    if not fastflix.current_video.video_settings.remove_hdr and is_hdr_bit_depth(settings.pix_fmt):
+        master_display = parse_master_display(fastflix.current_video.master_display)
+        if master_display:
+            x264_params.append(f"mastering-display={master_display.to_x265()}")
+        if fastflix.current_video.cll:
+            x264_params.append(f"cll={fastflix.current_video.cll}")
+
     if x264_params:
         beginning.extend(["-x264-params", ":".join(x264_params)])
 
@@ -38,6 +48,11 @@ def build(fastflix: FastFlix):
 
     extra = shlex.split(settings.extra) if settings.extra else []
     extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
+
+    if settings.lossless:
+        # Lossless mode — use QP 0 which is mathematically lossless, no rate control needed
+        command = beginning + ["-qp", "0", "-preset:v", settings.preset] + extra + ending
+        return [Command(command=command, name="Single pass lossless", exe="ffmpeg")]
 
     if settings.bitrate:
         if settings.bitrate_passes == 2:

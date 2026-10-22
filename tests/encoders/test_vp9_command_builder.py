@@ -189,3 +189,23 @@ def test_vp9_all_elements_are_strings():
         cmd = r.command
         for i, element in enumerate(cmd):
             assert isinstance(element, str), f"Element at index {i} is {type(element).__name__}: {element!r}"
+
+
+def test_vp9_crf_two_pass_has_speed_in_both_passes():
+    result = _build_with_settings(crf=31, speed="2", single_pass=False, fast_first_pass=False)
+    for res in result:
+        cmd = res.command
+        assert cmd[cmd.index("-speed:v") + 1] == "2"
+
+
+def test_vp9_crf_fast_first_pass_uses_speed_4_only_in_first_pass():
+    result = _build_with_settings(crf=31, speed="1", single_pass=False, fast_first_pass=True)
+    c1, c2 = result[0].command, result[1].command
+    assert c1[c1.index("-speed:v") + 1] == "4"
+    assert c2[c2.index("-speed:v") + 1] == "1"
+
+
+def test_vp9_crf_single_pass_has_speed():
+    result = _build_with_settings(crf=31, speed="3", single_pass=True)
+    cmd = result[0].command
+    assert cmd[cmd.index("-speed:v") + 1] == "3"

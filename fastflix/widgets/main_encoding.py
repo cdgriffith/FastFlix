@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import datetime
 import logging
+import shutil
+import uuid as uuid_mod
 from collections import namedtuple
 from pathlib import Path
 from queue import Empty
@@ -36,6 +38,31 @@ Request = namedtuple(
 Response = namedtuple("Response", ["status", "video_uuid", "command_uuid"])
 
 
+def refresh_video_identity(video: Video, new_work_path: Path) -> None:
+    """Give a video a fresh uuid and work_path (seeded with the old work_path contents)."""
+    old_work_path = video.work_path
+    new_work_path.mkdir(parents=True, exist_ok=True)
+    if old_work_path and Path(old_work_path).is_dir():
+        try:
+            shutil.copytree(old_work_path, new_work_path, dirs_exist_ok=True)
+        except OSError as err:
+            logger.warning(f"Could not copy work files to new work path: {err}")
+    video.work_path = new_work_path
+    video.uuid = str(uuid_mod.uuid4())
+
+
+def build_overwrite_prompt(parent=None):
+    """Confirmation box where Cancel is the default and escape button; returns (box, cancel, overwrite)."""
+    box = QtWidgets.QMessageBox(parent)
+    box.setIcon(QtWidgets.QMessageBox.Icon.Warning)
+    box.setText(t("That output file already exists and is not empty!"))
+    cancel = box.addButton(t("Cancel"), QtWidgets.QMessageBox.ButtonRole.RejectRole)
+    overwrite = box.addButton(t("Overwrite"), QtWidgets.QMessageBox.ButtonRole.AcceptRole)
+    box.setDefaultButton(cancel)
+    box.setEscapeButton(cancel)
+    return box, cancel, overwrite
+
+
 class Notifier(QtCore.QThread):
     def __init__(self, parent, app, status_queue):
         super().__init__(parent)
@@ -55,13 +82,11 @@ class Notifier(QtCore.QThread):
                 status = self.status_queue.get(timeout=0.5)
             except Empty:
                 continue
-            self.app.processEvents()
             if status[0] == "exit":
                 logger.debug("GUI received ask to exit")
                 self.main.close_event.emit()
                 return
             self.main.status_update_signal.emit(status)
-            self.app.processEvents()
 
 
 class EncodingMixin:
@@ -86,12 +111,9 @@ class EncodingMixin:
 
         out_file_path = Path(self.output_video)
         if out_file_path.exists() and out_file_path.stat().st_size > 0:
-            sm = QtWidgets.QMessageBox()
-            sm.setText("That output file already exists and is not empty!")
-            sm.addButton("Cancel", QtWidgets.QMessageBox.DestructiveRole)
-            sm.addButton("Overwrite", QtWidgets.QMessageBox.RejectRole)
+            sm, _cancel, overwrite = build_overwrite_prompt(self)
             sm.exec()
-            if sm.clickedButton().text() == "Cancel":
+            if sm.clickedButton() is not overwrite:
                 return False
         return True
 
@@ -158,7 +180,12 @@ class EncodingMixin:
                 return code
         self.video_options.show_queue()
 
-        self.clear_current_video()
+        if not self.app.fastflix.config.keep_source_after_encode:
+            self.clear_current_video()
+        else:
+            # The queued copy owns the current uuid and work_path; the kept source needs its own so the
+            # next queue entry doesn't collide on status updates, removal, retry or temp file cleanup.
+            refresh_video_identity(self.app.fastflix.current_video, self.get_temp_work_path())
         return True
 
     def conversion_complete(self, success: bool):
@@ -173,6 +200,7 @@ class EncodingMixin:
             self.video_options.queue.new_source()
         else:
             self.encoding_status_signal.emit(t("All conversions complete"), STATE_COMPLETE)
+            self.video_options.queue.run_after_done()
             self.video_options.show_queue()
             if self.app.fastflix.config.show_complete_message:
                 message(t("All queue items have completed"), title=t("Success"))
@@ -261,10 +289,10 @@ class EncodingMixin:
     def end_encoding(self):
         self.app.fastflix.currently_encoding = False
         allow_sleep_mode()
-        self.video_options.queue.run_after_done()
         self.video_options.update_queue()
         self.set_convert_button()
         self.encoding_progress_signal.emit(0)
+        self.enable_all()
 
     def send_next_video(self) -> bool:
         if not self.app.fastflix.currently_encoding:

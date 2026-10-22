@@ -117,8 +117,17 @@ class SVT_AV1_AVIF(SettingPanel):
         return self._add_combo_box(
             label="Tune",
             widget_name="tune",
-            options=["0 - VQ (Psychovisual)", "1 - PSNR", "2 - SSIM"],
-            tooltip="Optimize encoding for different quality metrics",
+            options=[
+                "0 - VQ (Psychovisual)",
+                "1 - PSNR",
+                "2 - SSIM",
+                "3 - IQ (still image)",
+                "4 - MS-SSIM",
+            ],
+            tooltip=(
+                "Optimize encoding for different quality metrics.\n"
+                "Tunes 3-4 require a recent SVT-AV1 build (3.0+); older builds will fail."
+            ),
             opt="tune",
         )
 

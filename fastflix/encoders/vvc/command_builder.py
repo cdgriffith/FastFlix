@@ -2,80 +2,20 @@
 import secrets
 import shlex
 
+from fastflix.encoders.common.hdr_metadata import (
+    chromaloc_mapping,
+    color_matrix_mapping,
+    color_primaries_mapping,
+    color_transfer_mapping,
+    is_hdr_bit_depth,
+    parse_master_display,
+    valid_color_matrix,
+    valid_color_primaries,
+    valid_color_transfers,
+)
 from fastflix.encoders.common.helpers import Command, generate_all, null
 from fastflix.models.encode import VVCSettings
 from fastflix.models.fastflix import FastFlix
-from fastflix.shared import clean_file_string, quoted_path
-
-vvc_valid_color_primaries = [
-    "bt709",
-    "unknown",
-    "reserved",
-    "bt470m",
-    "bt470bg",
-    "smpte170m",
-    "smpte240m",
-    "film",
-    "bt2020",
-    "smpte428",
-    "smpte431",
-    "smpte432",
-]
-
-vvc_valid_color_transfers = [
-    "bt709",
-    "unknown",
-    "reserved",
-    "bt470m",
-    "bt470bg",
-    "smpte170m",
-    "smpte240m",
-    "linear",
-    "log100",
-    "log316",
-    "iec61966-2-4",
-    "bt1361e",
-    "iec61966-2-1",
-    "bt2020-10",
-    "bt2020-12",
-    "smpte2084",
-    "smpte428",
-    "arib-std-b67",
-]
-
-vvc_valid_color_matrix = [
-    "gbr",
-    "bt709",
-    "unknown",
-    "reserved",
-    "fcc",
-    "bt470bg",
-    "smpte170m",
-    "smpte240m",
-    "ycgco",
-    "bt2020nc",
-    "bt2020c",
-    "smpte2085",
-    "chroma-derived-nc",
-    "chroma-derived-c",
-    "ictcp",
-]
-
-color_primaries_mapping = {"smpte428_1": "smpte428"}
-
-color_transfer_mapping = {
-    "iec61966_2_4": "iec61966-2-4",
-    "iec61966_2_1": "iec61966-2-1",
-    "bt2020_10": "bt2020-10",
-    "bt2020_10bit": "bt2020-10",
-    "bt2020_12": "bt2020-12",
-    "bt2020_12bit": "bt2020-12",
-    "smpte428_1": "smpte428",
-}
-
-color_matrix_mapping = {"bt2020_ncl": "bt2020nc", "bt2020_cl": "bt2020c"}
-
-chromaloc_mapping = {"left": 0, "center": 1, "topleft": 2, "top": 3, "bottomleft": 4, "bottom": 5}
 
 
 def build(fastflix: FastFlix):
@@ -103,10 +43,6 @@ def build(fastflix: FastFlix):
     if settings.ifp:
         vvc_params.append("ifp=1")
 
-    if fastflix.current_video.video_settings.maxrate:
-        vvc_params.append(f"vbv-maxrate={fastflix.current_video.video_settings.maxrate}")
-        vvc_params.append(f"vbv-bufsize={fastflix.current_video.video_settings.bufsize}")
-
     if not fastflix.current_video.video_settings.remove_hdr:
         # Color primaries/transfer/matrix via FFmpeg flags (libvvenc reads these for VUI)
         if fastflix.current_video.video_settings.color_primaries:
@@ -114,7 +50,7 @@ def build(fastflix: FastFlix):
         elif fastflix.current_video.color_primaries:
             cp = fastflix.current_video.color_primaries
             cp = color_primaries_mapping.get(cp, cp)
-            if cp in vvc_valid_color_primaries:
+            if cp in valid_color_primaries:
                 beginning.extend(["-color_primaries", cp])
 
         if fastflix.current_video.video_settings.color_transfer:
@@ -122,7 +58,7 @@ def build(fastflix: FastFlix):
         elif fastflix.current_video.color_transfer:
             ct = fastflix.current_video.color_transfer
             ct = color_transfer_mapping.get(ct, ct)
-            if ct in vvc_valid_color_transfers:
+            if ct in valid_color_transfers:
                 beginning.extend(["-color_trc", ct])
 
         if fastflix.current_video.video_settings.color_space:
@@ -130,15 +66,13 @@ def build(fastflix: FastFlix):
         elif fastflix.current_video.color_space:
             cs = fastflix.current_video.color_space
             cs = color_matrix_mapping.get(cs, cs)
-            if cs in vvc_valid_color_matrix:
+            if cs in valid_color_matrix:
                 beginning.extend(["-colorspace", cs])
 
-        if settings.pix_fmt in ("yuv420p10le",):
-            if fastflix.current_video.master_display:
-                # vvenc format: Gx,Gy,Bx,By,Rx,Ry,WPx,WPy,Lmax,Lmin (bare numbers, comma-separated)
-                md = fastflix.current_video.master_display
-                md_values = ",".join(v.strip("()") for v in [md.green, md.blue, md.red, md.white, md.luminance])
-                vvc_params.append(f"MasteringDisplayColourVolume={md_values}")
+        if is_hdr_bit_depth(settings.pix_fmt):
+            master_display = parse_master_display(fastflix.current_video.master_display)
+            if master_display:
+                vvc_params.append(f"MasteringDisplayColourVolume={master_display.to_vvenc()}")
 
             if fastflix.current_video.cll:
                 vvc_params.append(f"MaxContentLightLevel={fastflix.current_video.cll}")
@@ -149,31 +83,25 @@ def build(fastflix: FastFlix):
 
     pass_log_file = fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}"
 
-    def get_vvc_params(params=()):
-        if not isinstance(params, (list, tuple)):
-            params = [params]
-        all_params = vvc_params + list(params)
-        return ["-vvenc-params", ":".join(all_params)] if all_params else []
+    vvenc_params = ["-vvenc-params", ":".join(vvc_params)] if vvc_params else []
 
     extra = shlex.split(settings.extra) if settings.extra else []
     extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
 
     if settings.bitrate:
-        params = get_vvc_params(["pass=1", f"rcstatsfile={quoted_path(clean_file_string(str(pass_log_file)))}"])
         command_1 = (
             beginning
-            + params
-            + ["-passlogfile", str(pass_log_file), "-b:v", settings.bitrate, "-preset:v", settings.preset]
+            + vvenc_params
+            + ["-pass", "1", "-passlogfile", str(pass_log_file), "-b:v", settings.bitrate, "-preset:v", settings.preset]
             + extra_both
             + ["-an", "-sn", "-dn"]
             + output_fps
             + ["-f", "mp4", null]
         )
-        params2 = get_vvc_params(["pass=2", f"rcstatsfile={quoted_path(clean_file_string(str(pass_log_file)))}"])
         command_2 = (
             beginning
-            + params2
-            + ["-passlogfile", str(pass_log_file), "-b:v", settings.bitrate, "-preset:v", settings.preset]
+            + vvenc_params
+            + ["-pass", "2", "-passlogfile", str(pass_log_file), "-b:v", settings.bitrate, "-preset:v", settings.preset]
             + extra
             + ending
         )
@@ -185,7 +113,7 @@ def build(fastflix: FastFlix):
     elif settings.qp:
         command = (
             beginning
-            + get_vvc_params()
+            + vvenc_params
             + ["-qp:v", str(settings.qp), "-b:v", "0", "-preset:v", settings.preset]
             + extra
             + ending

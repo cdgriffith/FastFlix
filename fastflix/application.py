@@ -204,6 +204,14 @@ def init_fastflix_directories(app: FastFlixApp):
     app.fastflix.log_path.mkdir(parents=True, exist_ok=True)
 
 
+def _refresh_ffmpeg_info(app: FastFlixApp):
+    config = app.fastflix.config
+    ffmpeg_configuration(app, config)
+    ffmpeg_audio_encoders(app, config)
+    ffmpeg_video_encoders(app, config)
+    init_encoders(app)
+
+
 def _handle_ffmpeg_version_warning_windows(app: FastFlixApp, container: Container):
     msg = QtWidgets.QMessageBox(container)
     msg.setIcon(QtWidgets.QMessageBox.Warning)
@@ -227,7 +235,7 @@ def _handle_ffmpeg_version_warning_windows(app: FastFlixApp, container: Containe
                 signal_task=True,
                 can_cancel=True,
             )
-            ffmpeg_configuration(app)
+            _refresh_ffmpeg_info(app)
         except Exception:
             logger.exception("Failed to download FFmpeg")
 

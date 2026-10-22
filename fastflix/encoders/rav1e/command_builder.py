@@ -5,6 +5,7 @@ import logging
 import secrets
 import shlex
 
+from fastflix.encoders.common.hdr_metadata import is_hdr_bit_depth, parse_master_display
 from fastflix.encoders.common.helpers import Command, generate_all, generate_color_details, null
 from fastflix.models.encode import rav1eSettings
 from fastflix.models.fastflix import FastFlix
@@ -42,16 +43,10 @@ def build(fastflix: FastFlix):
         rav1e_params.append("no_scene_detection=true")
 
     if not fastflix.current_video.video_settings.remove_hdr:
-        if settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
-            if fastflix.current_video.master_display:
-                rav1e_params.append(
-                    "mastering_display="
-                    f"G{fastflix.current_video.master_display.green}"
-                    f"B{fastflix.current_video.master_display.blue}"
-                    f"R{fastflix.current_video.master_display.red}"
-                    f"WP{fastflix.current_video.master_display.white}"
-                    f"L{fastflix.current_video.master_display.luminance}"
-                )
+        if is_hdr_bit_depth(settings.pix_fmt):
+            master_display = parse_master_display(fastflix.current_video.master_display)
+            if master_display:
+                rav1e_params.append(f"mastering_display={master_display.to_rav1e()}")
 
             if fastflix.current_video.cll:
                 rav1e_params.append(f"content_light={fastflix.current_video.cll}")

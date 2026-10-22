@@ -9,7 +9,7 @@ import shutil
 import time
 from datetime import timedelta
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import importlib.resources
 import reusables
@@ -28,6 +28,7 @@ from fastflix.flix import (
     get_concat_item,
 )
 from fastflix.language import t
+from fastflix.widgets.toggle_switch import ToggleSwitch
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.video import Video, VideoSettings, Crop
 from fastflix.resources import (
@@ -66,14 +67,14 @@ resolutions = {
     t("Width"): {"method": "width"},
     t("Height"): {"method": "height"},
     t("Custom (w:h)"): {"method": "custom"},
-    "4320 LE": {"method": "long edge", "pixels": 4320},
-    "2160 LE": {"method": "long edge", "pixels": 2160},
+    "8K (4320 LE)": {"method": "long edge", "pixels": 4320},
+    "4K (2160 LE)": {"method": "long edge", "pixels": 2160},
     "1920 LE": {"method": "long edge", "pixels": 1920},
     "1440 LE": {"method": "long edge", "pixels": 1440},
     "1280 LE": {"method": "long edge", "pixels": 1280},
-    "1080 LE": {"method": "long edge", "pixels": 1080},
-    "720 LE": {"method": "long edge", "pixels": 720},
-    "480 LE": {"method": "long edge", "pixels": 480},
+    "1080p (1080 LE)": {"method": "long edge", "pixels": 1080},
+    "720p (720 LE)": {"method": "long edge", "pixels": 720},
+    "480p (480 LE)": {"method": "long edge", "pixels": 480},
     "4320 H": {"method": "height", "pixels": 4320},
     "2160 H": {"method": "height", "pixels": 2160},
     "1920 H": {"method": "height", "pixels": 1920},
@@ -81,14 +82,24 @@ resolutions = {
     "1080 H": {"method": "height", "pixels": 1080},
     "720 H": {"method": "height", "pixels": 720},
     "480 H": {"method": "height", "pixels": 480},
-    "7680 W": {"method": "width", "pixels": 7680},
-    "3840 W": {"method": "width", "pixels": 3840},
-    "2560 W": {"method": "width", "pixels": 2560},
-    "1920 W": {"method": "width", "pixels": 1920},
-    "1280 W": {"method": "width", "pixels": 1280},
+    "8K (7680 W)": {"method": "width", "pixels": 7680},
+    "4K (3840 W)": {"method": "width", "pixels": 3840},
+    "1440p (2560 W)": {"method": "width", "pixels": 2560},
+    "1080p (1920 W)": {"method": "width", "pixels": 1920},
+    "720p (1280 W)": {"method": "width", "pixels": 1280},
     "1024 W": {"method": "width", "pixels": 1024},
     "640 W": {"method": "width", "pixels": 640},
 }
+
+
+def dropped_local_path(mime_data) -> Optional[Path]:
+    """First local-file URL from a drop, or None."""
+    if not mime_data.hasUrls():
+        return None
+    for url in mime_data.urls():
+        if url.isLocalFile() and url.toLocalFile():
+            return Path(clean_file_string(url.toLocalFile()))
+    return None
 
 
 class CropWidgets(BaseModel):
@@ -114,15 +125,15 @@ class MainWidgets(BaseModel):
     flip: QtWidgets.QComboBox = None
     crop: CropWidgets = Field(default_factory=CropWidgets)
     scale: ScaleWidgets = Field(default_factory=ScaleWidgets)
-    remove_metadata: QtWidgets.QCheckBox = None
-    chapters: QtWidgets.QCheckBox = None
+    remove_metadata: ToggleSwitch = None
+    chapters: ToggleSwitch = None
     fast_time: QtWidgets.QComboBox = None
     preview: QtWidgets.QLabel = None
     convert_to: QtWidgets.QComboBox = None
     convert_button: QtWidgets.QPushButton = None
     queue_button: QtWidgets.QPushButton = None
-    deinterlace: QtWidgets.QCheckBox = None
-    remove_hdr: QtWidgets.QCheckBox = None
+    deinterlace: ToggleSwitch = None
+    remove_hdr: ToggleSwitch = None
     profile_box: QtWidgets.QComboBox = None
     thumb_time: QtWidgets.QSlider = None
     preview_time_label: QtWidgets.QLabel = None
@@ -172,6 +183,12 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self._top_bar_widgets = []  # widgets that share the same height in the top bar
         self._preview_buttons = []  # square icon buttons that must stay fixed on scale change
         self.last_thumb_hash = ""
+        self._thumb_worker: Optional[ThumbnailCreator] = None
+        self._thumb_pending = False
+        self._page_update_timer = QtCore.QTimer(self)
+        self._page_update_timer.setSingleShot(True)
+        self._page_update_timer.setInterval(300)
+        self._page_update_timer.timeout.connect(self.page_update)
         self.page_updating = False
         self.previous_encoder_no_audio = False
         self._cover_extract_thread = None
@@ -190,6 +207,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self.setAcceptDrops(True)
 
         self.input_video = None
+        self.skip_hdr_thumbnail = False
         self.video_path_widget = QtWidgets.QLineEdit(t("No Source Selected"))
         motto = ""
         if self.app.fastflix.config.language == "eng":
@@ -228,6 +246,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self.source_video_path_widget.setStyleSheet(
             f"padding: 0 0 -1px 5px; color: rgb({get_text_color(self.app.fastflix.config.theme)})"
         )
+        self.source_video_path_widget.textChanged.connect(self.source_video_path_widget.setToolTip)
 
         self.output_video_path_widget = QtWidgets.QLineEdit("")
         self.output_video_path_widget.setDisabled(True)
@@ -236,6 +255,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             f"padding: 0 0 -1px 5px; color: rgb({get_text_color(self.app.fastflix.config.theme)})"
         )
         self.output_video_path_widget.setMaxLength(250)
+        self.output_video_path_widget.textChanged.connect(lambda: self.update_output_tooltip())
 
         self._filename_was_truncated = False
         self.filename_truncation_warning = QtWidgets.QLabel()
@@ -344,12 +364,9 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             )
             return
         if percent > 0:
-            op = QtWidgets.QGraphicsOpacityEffect()
-            op.setOpacity(percent)
             self.source_video_path_widget.setStyleSheet(
                 f"color: rgba({get_text_color(self.app.fastflix.config.theme)}, {percent / 100}); padding: 0 0 -1px 5px;"
             )
-            self.source_video_path_widget.setGraphicsEffect(op)
             QtCore.QTimer.singleShot(200, lambda: self.fade_loop(percent - 10))
         else:
             self.source_video_path_widget.setStyleSheet(
@@ -612,8 +629,8 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self.clear_source_button.setDisabled(True)
         if self.app.fastflix.config.theme == "onyx":
             self.clear_source_button.setStyleSheet(
-                "QPushButton { color: #F44336; border: none; font-weight: bold; }"
-                "QPushButton:hover { background-color: #3a3a3a; border-radius: 4px; }"
+                "QPushButton { color: #cccccc; border: none; font-weight: bold; }"
+                "QPushButton:hover { color: #ffffff; background-color: #3a3a3a; border-radius: 4px; }"
             )
         else:
             self.clear_source_button.setStyleSheet(
@@ -634,13 +651,15 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_video_path_widget, stretch=True)
 
-        self.widgets.output_type_combo.setFixedWidth(scaler.scale(WIDTHS.OUTPUT_TYPE))
+        self.widgets.output_type_combo.setSizeAdjustPolicy(QtWidgets.QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.widgets.output_type_combo.addItem(t("Source"))
         if self.current_encoder:
             self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
         self.widgets.output_type_combo.setMinimumHeight(scaler.scale(HEIGHTS.COMBO_BOX))
         if self.app.fastflix.config.theme == "onyx":
             self.widgets.output_type_combo.setStyleSheet(get_onyx_combobox_style())
         self.widgets.output_type_combo.currentIndexChanged.connect(lambda: self.page_update(build_thumbnail=False))
+        self.widgets.output_type_combo.currentIndexChanged.connect(lambda: self.update_output_tooltip())
 
         output_layout.addWidget(self.widgets.output_type_combo)
 
@@ -834,7 +853,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             left_stretch=False,
             time_field=True,
         )
-        self.widgets.start_time.textChanged.connect(lambda: self.page_update())
+        self.widgets.start_time.textChanged.connect(self._field_changed)
 
         self.widgets.end_time, end_row = self.build_hoz_int_field(
             t("End"),
@@ -843,7 +862,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             right_stretch=False,
             time_field=True,
         )
-        self.widgets.end_time.textChanged.connect(lambda: self.page_update())
+        self.widgets.end_time.textChanged.connect(self._field_changed)
 
         time_col2.addLayout(start_row)
         time_col2.addLayout(end_row)
@@ -929,28 +948,28 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self.widgets.crop.top.setFixedWidth(field_width)
         self.widgets.crop.top.setFixedHeight(field_height)
         self.widgets.crop.top.setAlignment(QtCore.Qt.AlignCenter)
-        self.widgets.crop.top.textChanged.connect(lambda: self.page_update())
+        self.widgets.crop.top.textChanged.connect(self._field_changed)
 
         self.widgets.crop.bottom = QtWidgets.QLineEdit("0")
         self.widgets.crop.bottom.setValidator(only_int)
         self.widgets.crop.bottom.setFixedWidth(field_width)
         self.widgets.crop.bottom.setFixedHeight(field_height)
         self.widgets.crop.bottom.setAlignment(QtCore.Qt.AlignCenter)
-        self.widgets.crop.bottom.textChanged.connect(lambda: self.page_update())
+        self.widgets.crop.bottom.textChanged.connect(self._field_changed)
 
         self.widgets.crop.left = QtWidgets.QLineEdit("0")
         self.widgets.crop.left.setValidator(only_int)
         self.widgets.crop.left.setFixedWidth(field_width)
         self.widgets.crop.left.setFixedHeight(field_height)
         self.widgets.crop.left.setAlignment(QtCore.Qt.AlignCenter)
-        self.widgets.crop.left.textChanged.connect(lambda: self.page_update())
+        self.widgets.crop.left.textChanged.connect(self._field_changed)
 
         self.widgets.crop.right = QtWidgets.QLineEdit("0")
         self.widgets.crop.right.setValidator(only_int)
         self.widgets.crop.right.setFixedWidth(field_width)
         self.widgets.crop.right.setFixedHeight(field_height)
         self.widgets.crop.right.setAlignment(QtCore.Qt.AlignCenter)
-        self.widgets.crop.right.textChanged.connect(lambda: self.page_update())
+        self.widgets.crop.right.textChanged.connect(self._field_changed)
 
         # Row 0, Cols 1-2: Top (centered)
         top_row = QtWidgets.QHBoxLayout()
@@ -990,26 +1009,27 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         opts_layout.setSpacing(scaler.scale(4))
         opts_layout.setContentsMargins(scaler.scale(8), scaler.scale(8), scaler.scale(8), scaler.scale(8))
 
-        self.widgets.remove_metadata = QtWidgets.QCheckBox(t("Remove Metadata"))
+        self.widgets.remove_metadata = ToggleSwitch(t("Remove Metadata"))
         self.widgets.remove_metadata.setChecked(True)
         self.widgets.remove_metadata.toggled.connect(self.page_update)
         self.widgets.remove_metadata.setToolTip(
             t("Scrub away all incoming metadata, like video titles, unique markings and so on.")
         )
 
-        self.widgets.chapters = QtWidgets.QCheckBox(t("Copy Chapters"))
+        self.widgets.chapters = ToggleSwitch(t("Copy Chapters"))
         self.widgets.chapters.setChecked(True)
         self.widgets.chapters.toggled.connect(self.page_update)
         self.widgets.chapters.setToolTip(t("Copy the chapter markers as is from incoming source."))
 
-        self.widgets.deinterlace = QtWidgets.QCheckBox(t("Deinterlace"))
+        self.widgets.deinterlace = ToggleSwitch(t("Deinterlace"))
         self.widgets.deinterlace.setChecked(False)
         self.widgets.deinterlace.toggled.connect(self.interlace_update)
         self.widgets.deinterlace.setToolTip(
-            f"{t('Enables the yadif filter.')}\n{t('Automatically enabled when an interlaced video is detected')}"
+            f"{t('Enables deinterlacing (method selectable in Advanced panel).')}\n"
+            f"{t('Automatically enabled when an interlaced video is detected')}"
         )
 
-        self.widgets.remove_hdr = QtWidgets.QCheckBox(t("Remove HDR"))
+        self.widgets.remove_hdr = ToggleSwitch(t("Remove HDR"))
         self.widgets.remove_hdr.setChecked(False)
         self.widgets.remove_hdr.toggled.connect(self.hdr_update)
         self.widgets.remove_hdr.setToolTip(
@@ -1103,7 +1123,15 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
                 )
 
             self.widgets.remove_hdr.setChecked(self.app.fastflix.config.opt("remove_hdr"))
-            # self.widgets.deinterlace.setChecked(self.app.fastflix.config.opt("deinterlace"))
+            self.widgets.deinterlace.setChecked(
+                bool(
+                    self.app.fastflix.config.advanced_opt("deinterlace")
+                    or (
+                        self.app.fastflix.current_video
+                        and self.app.fastflix.current_video.interlaced not in (False, "False", "", None)
+                    )
+                )
+            )
             self.widgets.chapters.setChecked(self.app.fastflix.config.opt("copy_chapters"))
             self.widgets.remove_metadata.setChecked(self.app.fastflix.config.opt("remove_metadata"))
 
@@ -1252,8 +1280,45 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self.widgets.output_type_combo.clear()
         if not self.current_encoder:
             return
+        self.widgets.output_type_combo.addItem(t("Source"))
         self.widgets.output_type_combo.addItems(self.current_encoder.video_extensions)
-        self.widgets.output_type_combo.setCurrentText(self.app.fastflix.config.opt("output_type"))
+        saved = self.app.fastflix.config.opt("output_type")
+        if saved == "same_as_source":
+            self.widgets.output_type_combo.setCurrentIndex(0)
+        else:
+            self.widgets.output_type_combo.setCurrentText(saved)
+
+    def resolve_output_extension(self) -> str:
+        """Resolve the actual output file extension, handling 'Source' option."""
+        combo_text = self.widgets.output_type_combo.currentText()
+        if combo_text == t("Source"):
+            if self.app.fastflix.current_video:
+                source_ext = self.app.fastflix.current_video.source.suffix.lower()
+                if self.current_encoder and source_ext in self.current_encoder.video_extensions:
+                    return source_ext
+            # Source ext not supported by encoder — fall back to first supported
+            if self.current_encoder and self.current_encoder.video_extensions:
+                return self.current_encoder.video_extensions[0]
+            return ".mkv"
+        return combo_text
+
+    def update_output_tooltip(self):
+        directory = self.widgets.output_directory.text()
+        name = self.output_video_path_widget.text()
+        if directory and name:
+            try:
+                ext = self.resolve_output_extension()
+            except Exception:
+                ext = ""
+            self.output_video_path_widget.setToolTip(str(Path(directory) / f"{name}{ext}"))
+        else:
+            self.output_video_path_widget.setToolTip("")
+
+    def output_type_for_profile(self) -> str:
+        """Return the output type value to store in profiles."""
+        if self.widgets.output_type_combo.currentText() == t("Source"):
+            return "same_as_source"
+        return self.widgets.output_type_combo.currentText()
 
     @property
     def current_encoder(self):
@@ -1320,53 +1385,33 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         src_h = self.app.fastflix.current_video.height
         self.widgets.video_res_label.setText(t("Video Resolution") + f": {src_w}w {src_h}h")
 
-        # Start with source dimensions, apply crop
-        out_w = src_w
-        out_h = src_h
         try:
             crop_top = int(self.widgets.crop.top.text() or 0)
             crop_bottom = int(self.widgets.crop.bottom.text() or 0)
             crop_left = int(self.widgets.crop.left.text() or 0)
             crop_right = int(self.widgets.crop.right.text() or 0)
-            out_w -= crop_left + crop_right
-            out_h -= crop_top + crop_bottom
         except (ValueError, AttributeError):
-            pass
+            crop_top = crop_bottom = crop_left = crop_right = 0
 
-        if out_w <= 0 or out_h <= 0:
+        cropped_w = src_w - crop_left - crop_right
+        cropped_h = src_h - crop_top - crop_bottom
+        if cropped_w <= 0 or cropped_h <= 0:
             self.widgets.output_res_label.setText(t("Output Resolution") + ": --")
             return
 
-        # Apply scale based on resolution method
-        method = self.resolution_method()
-        custom = self.resolution_custom()
+        out_w, out_h = Video.compute_output_dimensions(
+            source_w=src_w,
+            source_h=src_h,
+            crop_top=crop_top,
+            crop_bottom=crop_bottom,
+            crop_left=crop_left,
+            crop_right=crop_right,
+            method=self.resolution_method(),
+            custom=self.resolution_custom(),
+        )
 
-        if method != "auto" and custom:
-            try:
-                if method == "custom":
-                    parts = custom.split(":")
-                    if len(parts) == 2:
-                        cw, ch = int(parts[0]), int(parts[1])
-                        if cw > 0 and ch > 0:
-                            out_w, out_h = cw, ch
-                elif method == "width":
-                    new_w = int(custom)
-                    out_h = ((out_h * new_w // out_w) // 8) * 8
-                    out_w = new_w
-                elif method == "height":
-                    new_h = int(custom)
-                    out_w = ((out_w * new_h // out_h) // 8) * 8
-                    out_h = new_h
-                elif method == "long edge":
-                    pixels = int(custom)
-                    if out_w >= out_h:
-                        out_h = ((out_h * pixels // out_w) // 8) * 8
-                        out_w = pixels
-                    else:
-                        out_w = ((out_w * pixels // out_h) // 8) * 8
-                        out_h = pixels
-            except (ValueError, ZeroDivisionError):
-                pass
+        if out_w is None or out_h is None:
+            out_w, out_h = cropped_w, cropped_h
 
         self.widgets.output_res_label.setText(t("Output Resolution") + f": {out_w}w {out_h}h")
 
@@ -1541,6 +1586,19 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         )
         self.crop_preview_button.raise_()
 
+        # Thumbnail warning indicator at top left
+        self.thumb_warning_label = QtWidgets.QLabel(self.preview_container)
+        warn_size = scaler.scale(24)
+        self.thumb_warning_label.setFixedSize(warn_size, warn_size)
+        self.thumb_warning_label.setPixmap(
+            QtGui.QIcon(get_icon("onyx-warning", self.app.fastflix.config.theme)).pixmap(warn_size, warn_size)
+        )
+        self.thumb_warning_label.setStyleSheet(
+            "QLabel { background: rgba(0,0,0,128); border: none; border-radius: 4px; padding: 2px; }"
+        )
+        self.thumb_warning_label.hide()
+        self.thumb_warning_label.raise_()
+
         return self.preview_container
 
     def open_crop_preview(self):
@@ -1568,6 +1626,9 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
                 self.preview_container.width() - btn_size - btn_margin,
                 btn_margin,
             )
+        if hasattr(self, "thumb_warning_label") and hasattr(self, "preview_container"):
+            warn_margin = scaler.scale(15)
+            self.thumb_warning_label.move(warn_margin, warn_margin)
 
     def modify_int(self, widget, method="add", time_field=False):
         modifier = 1
@@ -1623,7 +1684,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         extension = ""
         if self.current_encoder:
             try:
-                extension = self.widgets.output_type_combo.currentText()
+                extension = self.resolve_output_extension()
             except Exception:
                 extension = self.current_encoder.video_extensions[0] if self.current_encoder.video_extensions else ""
         name, was_truncated = truncate_filename(name, out_loc, extension)
@@ -1646,17 +1707,18 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         return clean_file_string(
             Path(
                 self.widgets.output_directory.text(),
-                f"{self.output_video_path_widget.text()}{self.widgets.output_type_combo.currentText()}",
+                f"{self.output_video_path_widget.text()}{self.resolve_output_extension()}",
             )
         )
 
     @reusables.log_exception("fastflix", show_traceback=False)
     def save_file(self, extension="mkv"):
+        resolved_ext = self.resolve_output_extension()
         filename = QtWidgets.QFileDialog.getSaveFileName(
             self,
             caption="Save Video As",
-            dir=str(Path(*self.generate_output_filename)) + f"{self.widgets.output_type_combo.currentText()}",
-            filter=f"Save File (*.{extension})",
+            dir=str(Path(*self.generate_output_filename)) + resolved_ext,
+            filter=f"Save File (*{resolved_ext})",
         )
         if filename and filename[0]:
             fn = Path(filename[0])
@@ -1671,6 +1733,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         )
         if dirname:
             self.widgets.output_directory.setText(dirname.rstrip("/").rstrip("\\"))
+            self.update_output_tooltip()
 
     def get_auto_crop(self):
         if not self.input_video or not self.initialized or self.loading_video:
@@ -1716,12 +1779,8 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             logger.warning("Autocrop did not return crop points, please use a ffmpeg version with cropdetect filter")
             return
 
-        smallest = (self.app.fastflix.current_video.height + self.app.fastflix.current_video.width) * 2
-        selected = result_list[0]
-        for result in result_list:
-            if (total := sum(result)) < smallest:
-                selected = result
-                smallest = total
+        # Union of content areas across samples: the smallest crop per edge (results are [right, bottom, left, top])
+        selected = [min(result[i] for result in result_list) for i in range(4)]
 
         r, b, l, tp = selected  # noqa: E741
 
@@ -1885,14 +1944,20 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             return
 
         settings = self.app.fastflix.current_video.video_settings.model_dump()
+        settings.pop("reverse_video", None)
 
         if (
-            self.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"
+            not self.skip_hdr_thumbnail
+            and self.app.fastflix.current_video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le"
             and self.app.fastflix.current_video.color_space.startswith("bt2020")
         ):
             settings["remove_hdr"] = True
             if not settings.get("color_transfer"):
                 settings["color_transfer"] = self.app.fastflix.current_video.color_transfer
+            if not settings.get("color_primaries"):
+                settings["color_primaries"] = self.app.fastflix.current_video.color_primaries
+            if not settings.get("color_space"):
+                settings["color_space"] = self.app.fastflix.current_video.color_space
 
         custom_filters = "scale='min(440\\,iw):-8'"
         if self.resolution_method() == "custom":
@@ -1919,12 +1984,36 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             start_time=self.preview_place if not self.app.fastflix.current_video.concat else None,
             input_track=self.app.fastflix.current_video.video_settings.selected_track,
         )
+        self._start_thumbnail_worker(thumb_command)
+
+    def _field_changed(self):
+        """Debounce page updates while the user is typing; programmatic changes update immediately."""
+        sender = self.sender()
+        if sender is not None and sender.hasFocus():
+            self._page_update_timer.start()
+        else:
+            self.page_update()
+
+    def _start_thumbnail_worker(self, thumb_command):
+        if self._thumb_worker is not None:
+            self._thumb_pending = True
+            return
         try:
             self.thumb_file.unlink()
         except OSError:
             pass
         worker = ThumbnailCreator(self, thumb_command)
+        self._thumb_worker = worker
+        worker.finished.connect(self._thumbnail_worker_finished)
         worker.start()
+
+    def _thumbnail_worker_finished(self):
+        worker, self._thumb_worker = self._thumb_worker, None
+        if worker is not None:
+            worker.deleteLater()
+        if self._thumb_pending:
+            self._thumb_pending = False
+            self.generate_thumbnail()
 
     @property
     def source_material(self):
@@ -1940,15 +2029,38 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         except Exception:
             logger.warning(text)
 
+    def set_thumb_warning(self, message: str):
+        """Show a warning icon overlay on the thumbnail with a tooltip."""
+        self.thumb_warning_label.setToolTip(message)
+        self.thumb_warning_label.show()
+        self.thumb_warning_label.raise_()
+
+    def clear_thumb_warning(self):
+        """Hide the thumbnail warning overlay."""
+        self.thumb_warning_label.setToolTip("")
+        self.thumb_warning_label.hide()
+
     @reusables.log_exception("fastflix", show_traceback=False)
     def thumbnail_generated(self, status=0):
         if status == 2:
             self.app.fastflix.opencl_support = False
             self.generate_thumbnail()
             return
+        if status == 3:
+            self.skip_hdr_thumbnail = True
+            self.generate_thumbnail()
+            return
         if status == 0 or not status or not self.thumb_file.exists():
+            self.set_thumb_warning(t("Thumbnail generation failed - preview may not be available"))
             self.widgets.preview.setText(t("Error Updating Thumbnail"))
             return
+
+        if self.skip_hdr_thumbnail:
+            self.set_thumb_warning(
+                t("HDR tonemapping unavailable for preview - colors in output will differ from this thumbnail")
+            )
+        else:
+            self.clear_thumb_warning()
 
         pixmap = QtGui.QPixmap(str(self.thumb_file))
         pixmap = pixmap.scaled(420, 260, QtCore.Qt.KeepAspectRatio)
@@ -1990,6 +2102,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             horizontal_flip=h_flip,
             output_path=Path(clean_file_string(self.output_video)),
             deinterlace=self.widgets.deinterlace.isChecked(),
+            deinterlace_filter=self.video_options.advanced.get_deinterlace_filter(),
             remove_metadata=self.remove_metadata,
             copy_chapters=self.copy_chapters,
             video_title=self.video_options.advanced.video_title.text(),
@@ -2126,7 +2239,8 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
 
     @reusables.log_exception("fastflix", show_traceback=True)
     def dropEvent(self, event):
-        if not event.mimeData().hasUrls:
+        location = dropped_local_path(event.mimeData())
+        if location is None:
             return event.ignore()
 
         event.setDropAction(QtCore.Qt.CopyAction)
@@ -2140,12 +2254,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             if not discard:
                 return
 
-        location = Path(clean_file_string(event.mimeData().urls()[0].toLocalFile()))
-
-        try:
-            self.input_video = location
-        except (ValueError, IndexError):
-            return event.ignore()
+        self.input_video = location
         if not self.input_video.exists():
             logger.error(f"File does not exist {self.input_video}")
             return event.ignore()
@@ -2155,7 +2264,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         QtCore.QTimer.singleShot(0, self._load_dropped_video)
 
     def dragEnterEvent(self, event):
-        event.accept() if event.mimeData().hasUrls else event.ignore()
+        event.accept() if event.mimeData().hasUrls() else event.ignore()
 
     def dragMoveEvent(self, event):
-        event.accept() if event.mimeData().hasUrls else event.ignore()
+        event.accept() if event.mimeData().hasUrls() else event.ignore()

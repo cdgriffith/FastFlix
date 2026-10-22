@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass, field
-from subprocess import run, PIPE
+import logging
+from subprocess import run, PIPE, TimeoutExpired
+
+from fastflix.resources import clean_env
+
+logger = logging.getLogger("fastflix")
+
+CHECK_FEATURES_TIMEOUT = 60
 
 
 @dataclass
@@ -69,17 +76,38 @@ def parse_qsv_devices(split_text: list[str]) -> QSVEncoder:
     return encoder
 
 
+def _check_features(executable, args, quiet_failure=False) -> list[str] | None:
+    command = [str(executable), "--check-features", *args]
+    try:
+        result = run(
+            command, stdout=PIPE, stderr=PIPE, encoding="utf-8", env=clean_env(), timeout=CHECK_FEATURES_TIMEOUT
+        )
+    except TimeoutExpired:
+        logger.warning(f"Timed out after {CHECK_FEATURES_TIMEOUT}s running {' '.join(command)}")
+        return None
+    except OSError as err:
+        logger.warning(f"Could not run {' '.join(command)}: {err}")
+        return None
+    if result.returncode != 0:
+        log = logger.debug if quiet_failure else logger.warning
+        log(f"{' '.join(command)} exited with code {result.returncode}: {(result.stderr or '').strip()[:500]}")
+        return None
+    return result.stdout.splitlines()
+
+
 def run_check_features(executable, is_qsv=False):
     outputs = []
     if is_qsv:
-        result = run([executable, "--check-features"], stdout=PIPE, stderr=PIPE, encoding="utf-8")
-        outputs.append(result.stdout.splitlines())
+        output = _check_features(executable, [])
+        if output is not None:
+            outputs.append(output)
     else:
         for i in range(10):
-            result = run([executable, "--check-features", str(i)], stdout=PIPE, stderr=PIPE, encoding="utf-8")
-            if result.stderr:
+            # Running past the last device is expected to fail, only the first device failing is worth a warning
+            output = _check_features(executable, [str(i)], quiet_failure=i > 0)
+            if output is None:
                 break
-            outputs.append(result.stdout.splitlines())
+            outputs.append(output)
 
     return outputs
 

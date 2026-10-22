@@ -100,6 +100,8 @@ class VCEENCC(VCEPanel):
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_ref())
         qp_line.addStretch(1)
+        qp_line.addLayout(self.init_b_frames())
+        qp_line.addStretch(1)
         qp_line.addLayout(self.init_level())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_decoder())
@@ -182,6 +184,15 @@ class VCEENCC(VCEPanel):
             widget_name="mv_precision",
             options=["q-pel", "half-pel", "full-pel"],
             opt="mv_precision",
+        )
+
+    def init_b_frames(self):
+        return self._add_combo_box(
+            widget_name="b_frames",
+            label="B Frames",
+            options=[t("Auto")] + [str(x) for x in range(3)],
+            opt="b_frames",
+            min_width=60,
         )
 
     def init_level(self):
@@ -277,6 +288,7 @@ class VCEENCC(VCEPanel):
             metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             ref=self.widgets.ref.currentText() if self.widgets.ref.currentIndex() != 0 else None,
+            b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
             pre_encode=self.widgets.pre_encode.isChecked(),
             pre_analysis=self.widgets.pre_analysis.isChecked(),
             vbaq=self.widgets.vbaq.isChecked(),

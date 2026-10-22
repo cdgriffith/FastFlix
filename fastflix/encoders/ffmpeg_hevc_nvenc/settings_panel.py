@@ -11,26 +11,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 logger = logging.getLogger("fastflix")
 
 
-presets = [
-    "slow",
-    "medium",
-    "fast",
-    "hp",
-    "hq",
-    "bd",
-    "ll",
-    "llhq",
-    "llhp",
-    "lossless",
-    "losslesshp",
-    "p1",
-    "p2",
-    "p3",
-    "p4",
-    "p5",
-    "p6",
-    "p7",
-]
+presets = ["slow", "medium", "fast", "p1", "p2", "p3", "p4", "p5", "p6", "p7"]
 
 recommended_bitrates = [
     "800k   (320x240p @ 30fps)",
@@ -66,6 +47,8 @@ recommended_crfs = [
     "Custom",
 ]
 
+SPLIT_OPTIONS = ["default", "disabled", "auto", "forced", "2", "3"]
+
 pix_fmts = ["8-bit: yuv420p", "10-bit: p010le"]
 
 
@@ -97,6 +80,7 @@ class NVENC(SettingPanel):
         grid.addLayout(self.init_spatial_aq(), 7, 0, 1, 2)
 
         grid.addLayout(self.init_hw_accel(), 4, 2, 1, 1)
+        grid.addLayout(self.init_multipass(), 8, 0, 1, 2)
 
         a = QtWidgets.QHBoxLayout()
         a.addLayout(self.init_rc_lookahead())
@@ -107,6 +91,30 @@ class NVENC(SettingPanel):
         a.addStretch(1)
         a.addLayout(self.init_b_ref_mode())
         grid.addLayout(a, 3, 2, 1, 4)
+
+        b = QtWidgets.QHBoxLayout()
+        b.addLayout(self.init_temporal_aq())
+        b.addStretch(1)
+        b.addLayout(self.init_aq_strength())
+        b.addStretch(1)
+        b.addLayout(self.init_cq())
+        b.addStretch(1)
+        b.addLayout(self.init_weighted_pred())
+        grid.addLayout(b, 5, 2, 1, 4)
+
+        c = QtWidgets.QHBoxLayout()
+        c.addLayout(self.init_tf_level())
+        c.addStretch(1)
+        c.addLayout(self.init_lookahead_level())
+        c.addStretch(1)
+        c.addLayout(self.init_split_encode_mode())
+        grid.addLayout(c, 6, 2, 1, 4)
+
+        d = QtWidgets.QHBoxLayout()
+        d.addLayout(self.init_unidir_b())
+        d.addStretch(1)
+        d.addLayout(self.init_no_scenecut())
+        grid.addLayout(d, 7, 2, 1, 4)
 
         grid.setRowStretch(9, 1)
 
@@ -171,19 +179,17 @@ class NVENC(SettingPanel):
             label="Rate Control",
             tooltip="Override the preset rate-control",
             widget_name="rc",
-            options=[
-                "default",
-                "vbr",
-                "cbr",
-                "vbr_minqp",
-                "ll_2pass_quality",
-                "ll_2pass_size",
-                "vbr_2pass",
-                "cbr_ld_hq",
-                "cbr_hq",
-                "vbr_hq",
-            ],
+            options=["default", "constqp", "vbr", "cbr"],
             opt="rc",
+        )
+
+    def init_multipass(self):
+        return self._add_combo_box(
+            label="Multipass",
+            tooltip="Set multipass encoding for bitrate mode\ndisabled - Single pass\nqres - Two pass (quarter resolution first pass)\nfullres - Two pass (full resolution first pass)",
+            widget_name="multipass",
+            options=["disabled", "qres", "fullres"],
+            opt="multipass",
         )
 
     def init_hw_accel(self):
@@ -201,6 +207,89 @@ class NVENC(SettingPanel):
             widget_name="spatial_aq",
             options=["off", "on"],
             opt="spatial_aq",
+        )
+
+    def init_temporal_aq(self):
+        return self._add_combo_box(
+            label="Temporal AQ",
+            tooltip="Enable temporal adaptive quantization for better quality in scenes with motion",
+            widget_name="temporal_aq",
+            options=["off", "on"],
+            opt="temporal_aq",
+        )
+
+    def init_aq_strength(self):
+        return self._add_text_box(
+            label="AQ Strength",
+            tooltip="When Spatial AQ is enabled, sets AQ strength (1 = low, 15 = aggressive, default 8)",
+            widget_name="aq_strength",
+            opt="aq_strength",
+            validator="int",
+            default="8",
+            width=30,
+        )
+
+    def init_cq(self):
+        return self._add_text_box(
+            label="CQ",
+            tooltip="Constant quality target (0-51 max, 0 = off). When set in quality mode, uses VBR with -cq instead of constant QP",
+            widget_name="cq",
+            opt="cq",
+            validator="int",
+            default="0",
+            width=30,
+        )
+
+    def init_tf_level(self):
+        return self._add_combo_box(
+            label="Temporal Filter",
+            tooltip="Strength of the NVENC temporal filter (0 = off, 4 = on), needs B-frames and lookahead",
+            widget_name="tf_level",
+            options=["default", "0", "4"],
+            opt="tf_level",
+        )
+
+    def init_lookahead_level(self):
+        return self._add_combo_box(
+            label="Lookahead Level",
+            tooltip="Lookahead level, higher may improve quality at the expense of performance (needs RC Lookahead)",
+            widget_name="lookahead_level",
+            options=["default", "auto", "0", "1", "2", "3"],
+            opt="lookahead_level",
+        )
+
+    def init_split_encode_mode(self):
+        return self._add_combo_box(
+            label="Split Encode",
+            tooltip="Split frame encoding across multiple NVENC engines (high-end GPUs with more than one NVENC)",
+            widget_name="split_encode_mode",
+            options=SPLIT_OPTIONS,
+            opt="split_encode_mode",
+        )
+
+    def init_weighted_pred(self):
+        return self._add_combo_box(
+            label="Weighted Prediction",
+            tooltip="Enable weighted prediction (not compatible with B-frames)",
+            widget_name="weighted_pred",
+            options=["off", "on"],
+            opt="weighted_pred",
+        )
+
+    def init_no_scenecut(self):
+        return self._add_check_box(
+            opt="no_scenecut",
+            label="No Scenecut",
+            tooltip="When lookahead is enabled, disable adaptive I-frame insertion at scene cuts",
+            widget_name="no_scenecut",
+        )
+
+    def init_unidir_b(self):
+        return self._add_check_box(
+            opt="unidir_b",
+            label="Unidirectional B",
+            tooltip="Use unidirectional B-frames",
+            widget_name="unidir_b",
         )
 
     def init_rc_lookahead(self):
@@ -286,6 +375,16 @@ class NVENC(SettingPanel):
             b_ref_mode=self.widgets.b_ref_mode.currentText(),
             tier=self.widgets.tier.currentText(),
             hw_accel=self.widgets.hw_accel.isChecked(),
+            multipass=self.widgets.multipass.currentText(),
+            temporal_aq=self.widgets.temporal_aq.currentIndex(),
+            aq_strength=int(self.widgets.aq_strength.text() or 8),
+            cq=int(self.widgets.cq.text() or 0),
+            tf_level=self.widgets.tf_level.currentText(),
+            lookahead_level=self.widgets.lookahead_level.currentText(),
+            split_encode_mode=self.widgets.split_encode_mode.currentText(),
+            weighted_pred=self.widgets.weighted_pred.currentIndex(),
+            no_scenecut=self.widgets.no_scenecut.isChecked(),
+            unidir_b=self.widgets.unidir_b.isChecked(),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.qp = q_value if encode_type == "qp" else None

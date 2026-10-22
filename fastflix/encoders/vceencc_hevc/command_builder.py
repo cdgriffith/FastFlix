@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import shlex
 
 from fastflix.encoders.common.helpers import Command
 from fastflix.models.encode import VCEEncCSettings
@@ -13,6 +12,9 @@ from fastflix.encoders.common.encc_helpers import (
     rigaya_avformat_reader,
     rigaya_auto_options,
     rigaya_trim_or_seek,
+    rigaya_extra_options,
+    split_extra_args,
+    rigaya_hdr_static_metadata,
     pa_builder,
 )
 
@@ -52,7 +54,7 @@ def build(fastflix: FastFlix):
     command.extend(["--device", str(settings.device)])
     command.extend(["-i", str(video.source)])
 
-    if stream_id:
+    if stream_id is not None:
         command.extend(["--video-streamid", str(stream_id)])
     command.extend(rigaya_trim_or_seek(video))
     if video.video_settings.source_fps:
@@ -63,11 +65,11 @@ def build(fastflix: FastFlix):
         flip_x = "true" if video.video_settings.horizontal_flip else "false"
         flip_y = "true" if video.video_settings.vertical_flip else "false"
         command.extend(["--vpp-transform", f"flip_x={flip_x},flip_y={flip_y}"])
-    if video.scale:
-        command.extend(["--output-res", video.scale.replace(":", "x")])
     if video.video_settings.crop:
         crop = video.video_settings.crop
         command.extend(["--crop", f"{crop.left},{crop.top},{crop.right},{crop.bottom}"])
+    if video.output_width is not None and video.output_height is not None:
+        command.extend(["--output-res", f"{video.output_width}x{video.output_height}"])
 
     if video.video_settings.remove_metadata:
         command.extend(["--video-metadata", "clear", "--metadata", "clear"])
@@ -77,7 +79,7 @@ def build(fastflix: FastFlix):
         command.extend(["--video-metadata", "copy", "--metadata", "copy"])
 
     if video.video_settings.video_title:
-        command.extend(["--video-metadata", f"title={video.video_settings.video_title}"])
+        command.extend(["--metadata", f"title={video.video_settings.video_title}"])
     if video.video_settings.copy_chapters:
         command.append("--chapter-copy")
 
@@ -95,6 +97,8 @@ def build(fastflix: FastFlix):
         command.extend(["--qp-min", str(settings.min_q)])
     if settings.max_q and settings.bitrate:
         command.extend(["--qp-max", str(settings.max_q)])
+    if settings.b_frames:
+        command.extend(["--bframes", str(settings.b_frames)])
     if settings.ref:
         command.extend(["--ref", str(settings.ref)])
 
@@ -104,16 +108,7 @@ def build(fastflix: FastFlix):
 
     command.extend(rigaya_auto_options(fastflix))
 
-    if fastflix.current_video.master_display:
-        md = fastflix.current_video.master_display
-        command.extend(
-            [
-                "--master-display",
-                f"G{md.green}B{md.blue}R{md.red}WP{md.white}L{md.luminance}",
-            ]
-        )
-    if fastflix.current_video.cll:
-        command.extend(["--max-cll", str(fastflix.current_video.cll)])
+    command.extend(rigaya_hdr_static_metadata(fastflix))
     if settings.copy_hdr10 and not video.video_settings.remove_hdr:
         command.extend(["--dhdr10-info", "copy"])
     if settings.copy_dv and not video.video_settings.remove_hdr:
@@ -132,7 +127,7 @@ def build(fastflix: FastFlix):
 
     pa = pa_builder(settings)
     if pa:
-        command.append(pa)
+        command.extend(pa)
 
     command.extend(["--avsync", vsync_setting])
 
@@ -140,13 +135,17 @@ def build(fastflix: FastFlix):
         command.extend(["--interlace", video.interlaced])
     if video.video_settings.deinterlace:
         command.append("--vpp-nnedi")
+    hdr2sdr_param = None
     if video.video_settings.remove_hdr:
         remove_type = (
             video.video_settings.tone_map
             if video.video_settings.tone_map in ("mobius", "hable", "reinhard")
             else "mobius"
         )
-        command.extend(["--vpp-colorspace", f"hdr2sdr={remove_type}"])
+        hdr2sdr_param = f"hdr2sdr={remove_type}"
+
+    command.extend(rigaya_extra_options(video, hdr2sdr=hdr2sdr_param))
+
     if settings.split_mode == "parallel":
         command.extend(["--parallel", "auto"])
     if settings.metrics:
@@ -155,11 +154,16 @@ def build(fastflix: FastFlix):
     command.extend(build_audio(video.audio_tracks, video.streams.audio))
     command.extend(build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height))
     command.extend(
-        build_data(video.data_tracks, getattr(video.streams, "data", []), getattr(video.streams, "attachment", []))
+        build_data(
+            video.data_tracks,
+            getattr(video.streams, "data", []),
+            getattr(video.streams, "attachment", []),
+            video.video_settings.output_path,
+        )
     )
 
     if settings.extra:
-        command.extend(shlex.split(settings.extra))
+        command.extend(split_extra_args(settings.extra))
 
     command.extend(["-o", str(video.video_settings.output_path)])
 

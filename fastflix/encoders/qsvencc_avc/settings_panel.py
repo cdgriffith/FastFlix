@@ -84,11 +84,12 @@ class QSVEncH264(QSVEncPanel):
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
         grid.addLayout(self.init_profile(), 1, 0, 1, 2)
-        grid.addLayout(self.init_lookahead(), 2, 0, 1, 2)
-        grid.addLayout(self.init_qp_mode(), 3, 0, 1, 2)
-        grid.addLayout(self.init_adapt_ref(), 5, 0, 1, 2)
-        grid.addLayout(self.init_adapt_ltr(), 6, 0, 1, 2)
-        grid.addLayout(self.init_adapt_cqm(), 7, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 2, 0, 1, 2)
+        grid.addLayout(self.init_lookahead(), 3, 0, 1, 2)
+        grid.addLayout(self.init_qp_mode(), 4, 0, 1, 2)
+        grid.addLayout(self.init_adapt_ref(), 6, 0, 1, 2)
+        grid.addLayout(self.init_adapt_ltr(), 7, 0, 1, 2)
+        grid.addLayout(self.init_adapt_cqm(), 8, 0, 1, 2)
 
         breaker = QtWidgets.QHBoxLayout()
         breaker_label = QtWidgets.QLabel(t("Advanced"))
@@ -98,7 +99,7 @@ class QSVEncH264(QSVEncPanel):
         breaker.addWidget(breaker_label, alignment=QtCore.Qt.AlignHCenter)
         breaker.addWidget(get_breaker(), stretch=1)
 
-        grid.addLayout(breaker, 4, 0, 1, 6)
+        grid.addLayout(breaker, 5, 0, 1, 6)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_decoder())
@@ -107,7 +108,9 @@ class QSVEncH264(QSVEncPanel):
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_max_q())
 
-        grid.addLayout(qp_line, 5, 2, 1, 4)
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_qvbr_quality())
+        grid.addLayout(qp_line, 6, 2, 1, 4)
 
         advanced = QtWidgets.QHBoxLayout()
         advanced.addLayout(self.init_10_bit())
@@ -119,13 +122,13 @@ class QSVEncH264(QSVEncPanel):
         advanced.addLayout(self.init_level())
         advanced.addStretch(1)
         advanced.addLayout(self.init_metrics())
-        grid.addLayout(advanced, 6, 2, 1, 4)
+        grid.addLayout(advanced, 7, 2, 1, 4)
 
         self.ffmpeg_level = QtWidgets.QLabel()
-        grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
-        grid.addLayout(self.init_parallel_mode(), 7, 4, 1, 2)
+        grid.addWidget(self.ffmpeg_level, 9, 2, 1, 4)
+        grid.addLayout(self.init_parallel_mode(), 8, 4, 1, 2)
 
-        grid.setRowStretch(9, 1)
+        grid.setRowStretch(10, 1)
 
         guide_label = QtWidgets.QLabel(
             link(
@@ -136,7 +139,7 @@ class QSVEncH264(QSVEncPanel):
         )
         guide_label.setOpenExternalLinks(True)
         custom_layout.addWidget(guide_label)
-        grid.addLayout(custom_layout, 10, 0, 1, 6)
+        grid.addLayout(custom_layout, 11, 0, 1, 6)
 
         self.setLayout(grid)
         self.hide()
@@ -155,8 +158,14 @@ class QSVEncH264(QSVEncPanel):
         return self._add_combo_box(
             label="Tune",
             widget_name="tune",
-            tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, ll - Low Latency, ull - Ultra Low Latency",
-            options=["hq", "ll", "ull", "lossless"],
+            tooltip=(
+                "Tune the encode quality mode\n"
+                "default - Default\n"
+                "psnr / ssim / ms_ssim - Optimize for the metric\n"
+                "vmaf - Optimize for VMAF\n"
+                "perceptual - Perceptual quality"
+            ),
+            options=["none", "default", "psnr", "ssim", "ms_ssim", "vmaf", "perceptual"],
             opt="tune",
         )
 
@@ -252,6 +261,16 @@ class QSVEncH264(QSVEncPanel):
         )
         return layout
 
+    def init_qvbr_quality(self):
+        return self._add_combo_box(
+            label="QVBR Quality",
+            widget_name="qvbr_quality",
+            tooltip="Quality based VBR (--qvbr-quality, QSVEncC default 23), lower is higher quality.\nUses the selected bitrate as the target, only applies in Bitrate mode. Off uses plain VBR",
+            options=["off"] + [str(x) for x in range(1, 52)],
+            opt="qvbr_quality",
+            min_width=60,
+        )
+
     def init_b_frames(self):
         return self._add_combo_box(
             widget_name="b_frames",
@@ -318,6 +337,7 @@ class QSVEncH264(QSVEncPanel):
             min_q_p=self.widgets.min_q_p.currentText() if self.widgets.min_q_p.currentIndex() != 0 else None,
             min_q_b=self.widgets.min_q_b.currentText() if self.widgets.min_q_b.currentIndex() != 0 else None,
             extra=self.ffmpeg_extras,
+            qvbr_quality=self.widgets.qvbr_quality.currentText(),
             metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,
@@ -328,6 +348,7 @@ class QSVEncH264(QSVEncPanel):
             adapt_cqm=self.widgets.adapt_cqm.isChecked(),
             adapt_ref=self.widgets.adapt_ref.isChecked(),
             split_mode=self.widgets.split_mode.currentText(),
+            tune=self.widgets.tune.currentText() if self.widgets.tune.currentIndex() != 0 else None,
         )
 
         encode_type, q_value = self.get_mode_settings()
@@ -340,7 +361,7 @@ class QSVEncH264(QSVEncPanel):
         for group in ("max", "min"):
             for frame_type in ("i", "p", "b"):
                 self.widgets[f"{group}_q_{frame_type}"].setEnabled(self.mode.lower() == "bitrate")
-        # self.widgets.vbr_target.setEnabled(self.mode.lower() == "bitrate")
+        self.widgets.qvbr_quality.setEnabled(self.mode.lower() == "bitrate")
         self.main.build_commands()
 
     def new_source(self):

@@ -2,13 +2,14 @@
 import logging
 import secrets
 from pathlib import Path
-from subprocess import run, PIPE
+from subprocess import run, PIPE, TimeoutExpired
 from typing import Optional, TYPE_CHECKING
 
 from PySide6 import QtWidgets, QtCore, QtGui
 
 from fastflix.encoders.common import helpers
 from fastflix.flix import generate_thumbnail_command
+from fastflix.shared import clean_env
 from fastflix.language import t
 from fastflix.shared import time_to_number
 from fastflix.ui_scale import scaler
@@ -19,6 +20,18 @@ if TYPE_CHECKING:
 __all__ = ["CropPreviewWindow"]
 
 logger = logging.getLogger("fastflix")
+
+
+PREVIEW_TIMEOUT = 60
+
+
+def run_preview_command(command: list, timeout: int = PREVIEW_TIMEOUT):
+    """Run a thumbnail command without a shell; returns None if it timed out."""
+    try:
+        return run(command, stderr=PIPE, stdout=PIPE, env=clean_env(), timeout=timeout)
+    except TimeoutExpired:
+        logger.warning(f"Preview generation timed out after {timeout}s")
+        return None
 
 
 class CropImageWidget(QtWidgets.QWidget):
@@ -333,6 +346,11 @@ class CropPreviewWindow(QtWidgets.QWidget):
             self.setMaximumWidth(size.width())
             self.setMaximumHeight(size.height())
 
+        self._slider_timer = QtCore.QTimer(self)
+        self._slider_timer.setSingleShot(True)
+        self._slider_timer.setInterval(200)
+        self._slider_timer.timeout.connect(self._regenerate_for_slider)
+
         self._build_ui()
 
     def _build_ui(self):
@@ -640,6 +658,7 @@ class CropPreviewWindow(QtWidgets.QWidget):
             return
 
         settings = video.video_settings.model_dump()
+        settings.pop("reverse_video", None)
 
         if video.video_settings.video_encoder_settings.pix_fmt == "yuv420p10le" and video.color_space.startswith(
             "bt2020"
@@ -647,6 +666,10 @@ class CropPreviewWindow(QtWidgets.QWidget):
             settings["remove_hdr"] = True
             if not settings.get("color_transfer"):
                 settings["color_transfer"] = video.color_transfer
+            if not settings.get("color_primaries"):
+                settings["color_primaries"] = video.color_primaries
+            if not settings.get("color_space"):
+                settings["color_space"] = video.color_space
 
         if with_crop:
             # Transform rotated crop values to unrotated space for FFmpeg
@@ -669,13 +692,9 @@ class CropPreviewWindow(QtWidgets.QWidget):
         settings["vertical_flip"] = self.vertical_flip
         settings["horizontal_flip"] = self.horizontal_flip
 
-        filters = helpers.generate_filters(
-            enable_opencl=False,
-            start_filters="select=eq(pict_type\\,I)"
-            if self.main.app.fastflix.config.use_keyframes_for_preview
-            else None,
-            **settings,
-        )
+        start_filters = "select=eq(pict_type\\,I)" if self.main.app.fastflix.config.use_keyframes_for_preview else None
+
+        filters = helpers.generate_filters(enable_opencl=False, start_filters=start_filters, **settings)
 
         output = self.main.app.fastflix.config.work_path / f"crop_preview_{secrets.token_hex(16)}.tiff"
 
@@ -690,10 +709,33 @@ class CropPreviewWindow(QtWidgets.QWidget):
 
         logger.info(f"Generating crop preview: {thumb_command}")
 
-        thumb_run = run(thumb_command, shell=True, stderr=PIPE, stdout=PIPE)
-        if thumb_run.returncode > 0:
-            logger.warning(f"Could not generate crop preview: {thumb_run.stdout} |----| {thumb_run.stderr}")
+        thumb_run = run_preview_command(thumb_command)
+        if thumb_run is None:
             return
+        if thumb_run.returncode > 0:
+            stderr_text = thumb_run.stderr.decode(encoding="utf-8", errors="ignore")
+            if settings.get("remove_hdr") and "no path between colorspaces" in stderr_text:
+                logger.warning(
+                    "HDR tonemapping failed for crop preview (video color metadata may be incomplete), "
+                    "retrying without HDR conversion"
+                )
+                settings["remove_hdr"] = False
+                filters = helpers.generate_filters(enable_opencl=False, start_filters=start_filters, **settings)
+                output = self.main.app.fastflix.config.work_path / f"crop_preview_{secrets.token_hex(16)}.tiff"
+                thumb_command = generate_thumbnail_command(
+                    config=self.main.app.fastflix.config,
+                    source=self.main.source_material,
+                    output=output,
+                    filters=filters,
+                    start_time=self._get_preview_time(),
+                    input_track=video.video_settings.selected_track,
+                )
+                thumb_run = run_preview_command(thumb_command)
+            if thumb_run is None:
+                return
+            if thumb_run.returncode > 0:
+                logger.warning(f"Could not generate crop preview: {thumb_run.stdout} |----| {thumb_run.stderr}")
+                return
 
         pixmap = QtGui.QPixmap(str(output))
 
@@ -718,6 +760,9 @@ class CropPreviewWindow(QtWidgets.QWidget):
         self.image_widget.update()
 
     def slider_changed(self):
+        self._slider_timer.start()
+
+    def _regenerate_for_slider(self):
         self.generate_image(with_crop=False)
         if self.mode == "preview":
             self.generate_image(with_crop=True)
