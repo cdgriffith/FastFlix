@@ -2,6 +2,7 @@
 
 ## Version 6.3.0
 
+* Adding back the Beautiphoto installer promo with code FF30OFF2026 (30% off for a year), shown until 2027-01-01 UTC
 * Adding #202 new video filters to the Advanced panel: vibrance, color temperature, curves presets, colorbalance presets, unsharp mask, deflicker, pad/letterbox, LUT3D file loading, and nlmeans_opencl GPU-accelerated denoise — with rigaya hardware encoder support for curves (--vpp-curves), unsharp (--vpp-unsharp), pad (--vpp-pad), LUT3D (--vpp-colorspace lut3d), and nlmeans_opencl (--vpp-nlmeans)
 * Adding #212 full source and output file path tooltip on hover for queue items, with responsive text eliding for long file names (thanks to bmcassagne)
 * Adding #344 lossless encoding option for AVC (x264), AV1 (AOM), VP9, and AV1 (SVT-AV1) encoders
