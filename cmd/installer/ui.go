@@ -48,6 +48,21 @@ var (
 	getWindowTextW      = user32DLL.NewProc("GetWindowTextW")
 	isWindowProc        = user32DLL.NewProc("IsWindow")
 	setForegroundWindow = user32DLL.NewProc("SetForegroundWindow")
+	killTimer           = user32DLL.NewProc("KillTimer")
+	getDC               = user32DLL.NewProc("GetDC")
+	releaseDC           = user32DLL.NewProc("ReleaseDC")
+	openClipboard       = user32DLL.NewProc("OpenClipboard")
+	emptyClipboard      = user32DLL.NewProc("EmptyClipboard")
+	setClipboardData    = user32DLL.NewProc("SetClipboardData")
+	closeClipboard      = user32DLL.NewProc("CloseClipboard")
+
+	globalAlloc   = kernel32DLL.NewProc("GlobalAlloc")
+	globalLock    = kernel32DLL.NewProc("GlobalLock")
+	globalUnlock  = kernel32DLL.NewProc("GlobalUnlock")
+	globalFree    = kernel32DLL.NewProc("GlobalFree")
+	rtlMoveMemory = kernel32DLL.NewProc("RtlMoveMemory")
+
+	getTextExtentPoint32W = gdi32DLL.NewProc("GetTextExtentPoint32W")
 
 	createSolidBrush = gdi32DLL.NewProc("CreateSolidBrush")
 	createFontW      = gdi32DLL.NewProc("CreateFontW")
@@ -115,6 +130,9 @@ const (
 	dtCenter     = 0x00000001
 	dtSingleLine = 0x00000020
 	dtVCenter    = 0x00000004
+
+	cfUnicodeText = 13
+	gmemMoveable  = 0x0002
 )
 
 // Control IDs
@@ -132,7 +150,9 @@ const (
 	idcClose     = 111
 	idcAd        = 112
 	idcAdLink    = 113
-	idtCountdown = 2
+	idcAdPromo   = 114
+	idcAdCopy    = 115
+	idtCopied    = 2
 	idtProcCheck = 1
 	idcDlgEdit   = 201
 	idcDlgClose  = 202
@@ -185,7 +205,8 @@ type wndState struct {
 	hAdText       syscall.Handle
 	hAdLink       syscall.Handle
 	hAdPromo      syscall.Handle
-	countdown     int            // seconds remaining before Launch button enables
+	hAdCopy       syscall.Handle // copy icon beside the promo code
+	hIconFont     syscall.Handle
 	hInstallInfo  syscall.Handle // label showing where previous versions were found
 
 	processRunning      bool
@@ -300,6 +321,7 @@ func runInstallerGUI() {
 	state.hTitleFont = makeFont("Segoe UI", titlePt, true)
 	state.hNormalFont = makeFont("Segoe UI", normalPt, false)
 	state.hSmallFont = makeFont("Segoe UI", smallPt, false)
+	state.hIconFont = makeFont("Segoe MDL2 Assets", smallPt, false)
 
 	// App icon
 	ret, _, _ = loadImageW.Call(hInst, uintptr(1), imageIcon, uintptr(iconSz), uintptr(iconSz), 0)
@@ -494,11 +516,23 @@ func createControls(hwnd, hInst uintptr) {
 		wsChild|ssCenter|ssNotify, pad, adY+adH, btnW, ctlH, idcAdLink, hwnd, hInst)
 	setFont(state.hAdLink, state.hNormalFont)
 
+	// Promo text and copy icon are sized to the text and centered as one row,
+	// so the icon sits right beside the code instead of at the window edge.
 	adPromoY := adY + adH + ctlH + ctlH/4
 	adPromoH := int32(winHeight) * 4 / 100
-	state.hAdPromo = createCtl("STATIC", "Use Promo code FF30OFF2026 for 30% off for a year!",
-		wsChild|ssCenter, pad, adPromoY, btnW, adPromoH, 0, hwnd, hInst)
+	copyW := adPromoH
+	gap := adPromoH / 4
+	promoW := textWidth(hwnd, state.hSmallFont, adPromoText) + 4
+	if promoW <= 4 || promoW > btnW-gap-copyW {
+		promoW = btnW - gap - copyW
+	}
+	promoX := pad + (btnW-(promoW+gap+copyW))/2
+	state.hAdPromo = createCtl("STATIC", adPromoText,
+		wsChild|ssCenter|ssNotify, promoX, adPromoY, promoW, adPromoH, idcAdPromo, hwnd, hInst)
 	setFont(state.hAdPromo, state.hSmallFont)
+	state.hAdCopy = createCtl("STATIC", glyphCopy,
+		wsChild|ssCenter|ssNotify, promoX+promoW+gap, adPromoY, copyW, adPromoH, idcAdCopy, hwnd, hInst)
+	setFont(state.hAdCopy, state.hIconFont)
 
 	// Launch button near bottom (hidden until install completes)
 	launchY := int32(winHeight) - btnH - int32(winHeight)*12/100
@@ -560,7 +594,7 @@ func wndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintptr {
 		ctl := syscall.Handle(lParam)
 		setTextColor.Call(uintptr(hdc), clrText)
 		setBkMode.Call(uintptr(hdc), transparent)
-		if ctl == state.hAdLink {
+		if ctl == state.hAdLink || ctl == state.hAdCopy {
 			setTextColor.Call(uintptr(hdc), clrAccent)
 		}
 		if ctl == state.hWarning {
@@ -583,7 +617,7 @@ func wndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintptr {
 	case 0x0020: // WM_SETCURSOR
 		// Show hand cursor over clickable links
 		ctl := syscall.Handle(wParam)
-		if ctl == state.hAdLink {
+		if ctl == state.hAdLink || ctl == state.hAdPromo || ctl == state.hAdCopy {
 			hand, _, _ := user32DLL.NewProc("LoadCursorW").Call(0, 32649) // IDC_HAND
 			user32DLL.NewProc("SetCursor").Call(hand)
 			return 1
@@ -592,18 +626,9 @@ func wndProc(hwnd syscall.Handle, m uint32, wParam, lParam uintptr) uintptr {
 		if int(wParam) == idtProcCheck {
 			checkProcessTimer()
 		}
-		if int(wParam) == idtCountdown {
-			state.countdown--
-			if state.countdown <= 0 {
-				// Enable the launch button
-				user32DLL.NewProc("KillTimer").Call(uintptr(hwnd), idtCountdown)
-				setText(state.hLaunchBtn, "Launch FastFlix")
-				enableWindow.Call(uintptr(state.hLaunchBtn), 1)
-				invalidateRect.Call(uintptr(state.hLaunchBtn), 0, 1)
-			} else {
-				setText(state.hLaunchBtn, fmt.Sprintf("Launch FastFlix (%d)", state.countdown))
-				invalidateRect.Call(uintptr(state.hLaunchBtn), 0, 1)
-			}
+		if int(wParam) == idtCopied {
+			killTimer.Call(uintptr(hwnd), idtCopied)
+			setText(state.hAdCopy, glyphCopy)
 		}
 		return 0
 	case wmClose:
@@ -909,6 +934,10 @@ func handleCommand(id, notif int) {
 			syscall.NewLazyDLL("shell32.dll").NewProc("ShellExecuteW").Call(
 				0, uintptr(unsafe.Pointer(open)), uintptr(unsafe.Pointer(url)), 0, 0, 1)
 		}
+	case idcAdPromo, idcAdCopy:
+		if notif == 0 { // STN_CLICKED
+			copyPromoCode()
+		}
 	case idcClose:
 		postQuitMessage.Call(0)
 	case idcLaunch:
@@ -1070,44 +1099,105 @@ func shouldShowAd() bool {
 	return time.Now().UTC().Before(adPromoEnd)
 }
 
+const (
+	adPromoCode = "FF30OFF2026"
+	adPromoText = "Use Promo code " + adPromoCode + " for 30% off for a year!"
+
+	// Segoe MDL2 Assets glyphs (Windows 10+).
+	glyphCopy  = ""
+	glyphCheck = ""
+)
+
+// showAd shows the Beautiphoto promo controls.
+func showAd() {
+	showWindow.Call(uintptr(state.hAdText), swShow)
+	showWindow.Call(uintptr(state.hAdLink), swShow)
+	showWindow.Call(uintptr(state.hAdPromo), swShow)
+	showWindow.Call(uintptr(state.hAdCopy), swShow)
+}
+
 // showAdDuringInstall shows the ad text as soon as install begins (while progress bar is visible).
 func showAdDuringInstall() {
 	if shouldShowAd() {
-		showWindow.Call(uintptr(state.hAdText), swShow)
-		showWindow.Call(uintptr(state.hAdLink), swShow)
-		showWindow.Call(uintptr(state.hAdPromo), swShow)
+		showAd()
 	}
 }
 
-// showPostInstallScreen hides progress, shows launch button with countdown.
+// showPostInstallScreen hides progress and shows the launch button.
 func showPostInstallScreen() {
 	showWindow.Call(uintptr(state.hProgress), swHide)
 	showWindow.Call(uintptr(state.hProgLabel), swHide)
 
-	showAd := shouldShowAd()
-	// Ad should already be visible from showAdDuringInstall, but ensure it
-	if showAd {
-		showWindow.Call(uintptr(state.hAdText), swShow)
-		showWindow.Call(uintptr(state.hAdLink), swShow)
-		showWindow.Call(uintptr(state.hAdPromo), swShow)
-	}
-
-	// Show launch button with countdown
-	state.countdown = 8
-	if !showAd {
-		state.countdown = 0
+	if shouldShowAd() {
+		showAd()
 	}
 
 	showWindow.Call(uintptr(state.hLaunchBtn), swShow)
-	if state.countdown > 0 {
-		setText(state.hLaunchBtn, fmt.Sprintf("Launch FastFlix (%d)", state.countdown))
-		enableWindow.Call(uintptr(state.hLaunchBtn), 0)
-		invalidateRect.Call(uintptr(state.hLaunchBtn), 0, 1)
-		setTimer.Call(uintptr(state.hwnd), idtCountdown, 1000, 0)
-	} else {
-		setText(state.hLaunchBtn, "Launch FastFlix")
-		enableWindow.Call(uintptr(state.hLaunchBtn), 1)
+	setText(state.hLaunchBtn, "Launch FastFlix")
+	enableWindow.Call(uintptr(state.hLaunchBtn), 1)
+}
+
+// copyPromoCode puts the promo code on the clipboard and flips the copy icon
+// to a check mark for two seconds.
+func copyPromoCode() {
+	if !copyToClipboard(adPromoCode) {
+		return
 	}
+	setText(state.hAdCopy, glyphCheck)
+	setTimer.Call(uintptr(state.hwnd), idtCopied, 2000, 0)
+}
+
+// copyToClipboard replaces the clipboard contents with text (CF_UNICODETEXT).
+// Returns false if the clipboard could not be opened or written.
+func copyToClipboard(text string) bool {
+	utf16, err := syscall.UTF16FromString(text)
+	if err != nil {
+		return false
+	}
+	if r, _, _ := openClipboard.Call(uintptr(state.hwnd)); r == 0 {
+		return false
+	}
+	defer closeClipboard.Call()
+	emptyClipboard.Call()
+
+	size := uintptr(len(utf16) * 2)
+	hMem, _, _ := globalAlloc.Call(gmemMoveable, size)
+	if hMem == 0 {
+		return false
+	}
+	ptr, _, _ := globalLock.Call(hMem)
+	if ptr == 0 {
+		globalFree.Call(hMem)
+		return false
+	}
+	rtlMoveMemory.Call(ptr, uintptr(unsafe.Pointer(&utf16[0])), size)
+	globalUnlock.Call(hMem)
+
+	// On success the clipboard owns hMem; only free it if the handoff failed.
+	if r, _, _ := setClipboardData.Call(cfUnicodeText, hMem); r == 0 {
+		globalFree.Call(hMem)
+		return false
+	}
+	return true
+}
+
+// textWidth returns the pixel width of text drawn in font on hwnd's DC.
+func textWidth(hwnd uintptr, font syscall.Handle, text string) int32 {
+	utf16, err := syscall.UTF16FromString(text)
+	if err != nil {
+		return 0
+	}
+	hdc, _, _ := getDC.Call(hwnd)
+	if hdc == 0 {
+		return 0
+	}
+	defer releaseDC.Call(hwnd, hdc)
+	old, _, _ := selectObject.Call(hdc, uintptr(font))
+	defer selectObject.Call(hdc, old)
+	var size struct{ CX, CY int32 }
+	getTextExtentPoint32W.Call(hdc, uintptr(unsafe.Pointer(&utf16[0])), uintptr(len(utf16)-1),
+		uintptr(unsafe.Pointer(&size)))
+	return size.CX
 }
 
 func resetUninstallButton() {
