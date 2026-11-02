@@ -9,7 +9,7 @@ jobs:
   build-nix:
     strategy:
       matrix:
-        os: [ ubuntu-22.04, ubuntu-24.04, macos-14 ]
+        os: [ ubuntu-22.04, ubuntu-24.04, macos-15 ]
     runs-on: ${{ matrix.os }}
 
     steps:
