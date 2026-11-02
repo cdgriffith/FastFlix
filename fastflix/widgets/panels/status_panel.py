@@ -16,6 +16,7 @@ from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.models.encode import GifskiSettings
 from fastflix.models.video import Video
 from fastflix.shared import time_to_number, timedelta_to_str
+from fastflix.widgets.toggle_switch import ToggleSwitch
 
 logger = logging.getLogger("fastflix")
 
@@ -39,7 +40,7 @@ class StatusPanel(QtWidgets.QWidget):
 
         layout = QtWidgets.QGridLayout()
 
-        self.hide_nal = QtWidgets.QCheckBox(t("Hide NAL unit messages"))
+        self.hide_nal = ToggleSwitch(t("Hide NAL unit messages"))
         self.hide_nal.setChecked(True)
 
         self.eta_label = QtWidgets.QLabel(f"{t('Time Left')}: N/A")

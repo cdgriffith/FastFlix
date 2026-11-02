@@ -82,3 +82,8 @@ def test_svt_av1_avif_bitrate():
     assert "2000k" in cmd
     assert "-f" in cmd
     assert "avif" in cmd
+
+
+def test_svt_av1_avif_tune_iq():
+    cmd = _build_with_settings(tune="3")[0].command
+    assert "tune=3" in cmd[cmd.index("-svtav1-params") + 1].split(":")

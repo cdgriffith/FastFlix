@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 from typing import Optional, Union
 
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+from pydantic import BaseModel, Field, field_validator, model_validator, ConfigDict
 from box import Box
+
+from fastflix.encoders.common.nvenc_options import migrate_legacy_options
 
 
 class AudioTrack(BaseModel):
@@ -16,6 +18,7 @@ class AudioTrack(BaseModel):
     conversion_aq: Optional[int] = None
     conversion_bitrate: Optional[str] = None
     conversion_codec: str = ""
+    conversion_profile: Optional[str] = None
     profile: Optional[str] = None
     enabled: bool = True
     original: bool = False
@@ -67,6 +70,20 @@ class DataTrack(BaseModel):
     raw_info: Optional[Union[dict, Box]] = None
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
+QSVENC_TUNE_VALUES = ("default", "psnr", "ssim", "ms_ssim", "vmaf", "perceptual")
+
+
+def sanitize_qsv_tune(value) -> Optional[str]:
+    """Return a valid QSVEncC --tune value (comma separated list), or None.
+
+    Older configs stored NVEncC values (hq, ll, ull, lossless) which QSVEncC rejects; those are dropped.
+    """
+    if not value or not isinstance(value, str):
+        return None
+    parts = [p.strip() for p in value.split(",") if p.strip().lower() in QSVENC_TUNE_VALUES]
+    return ",".join(p.lower() for p in parts) or None
 
 
 class EncoderSettings(BaseModel):
@@ -128,6 +145,7 @@ class x264Settings(EncoderSettings):
     bitrate: Optional[str] = None
     bitrate_passes: int = 2
     x264_params: list[str] = Field(default_factory=list)
+    lossless: bool = False
 
 
 class FFmpegNVENCSettings(EncoderSettings):
@@ -147,6 +165,20 @@ class FFmpegNVENCSettings(EncoderSettings):
     gpu: int = -1
     b_ref_mode: str = "disabled"
     hw_accel: bool = False
+    multipass: str = "fullres"
+    temporal_aq: int = 0
+    aq_strength: int = 8
+    tf_level: str = "default"
+    lookahead_level: str = "default"
+    split_encode_mode: str = "default"
+    weighted_pred: int = 0
+    unidir_b: bool = False
+    no_scenecut: bool = False
+
+    @model_validator(mode="before")
+    @classmethod
+    def migrate_legacy_nvenc(cls, data):
+        return migrate_legacy_options(data)
 
     @field_validator("qp", mode="before")
     @classmethod
@@ -174,6 +206,12 @@ class FFmpegAV1NVENCSettings(EncoderSettings):
     gpu: int = -1
     b_ref_mode: str = "middle"
     hw_accel: bool = False
+    cq: int = 0
+    tf_level: str = "default"
+    lookahead_level: str = "default"
+    split_encode_mode: str = "default"
+    weighted_pred: int = 0
+    no_scenecut: bool = False
 
     @field_validator("qp", mode="before")
     @classmethod
@@ -187,7 +225,9 @@ class NVEncCSettings(EncoderSettings):
     name: str = "HEVC (NVEncC)"
     preset: str = "quality"
     profile: str = "auto"
+    tune: str = "hq"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     aq: str = "off"
     aq_strength: int = 0
@@ -230,7 +270,9 @@ class NVEncCAV1Settings(EncoderSettings):
     name: str = "AV1 (NVEncC)"
     preset: str = "quality"
     profile: str = "auto"
+    tune: str = "hq"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     aq: str = "off"
     aq_strength: int = 0
@@ -273,6 +315,7 @@ class QSVEncCSettings(EncoderSettings):
     name: str = "HEVC (QSVEncC)"
     preset: str = "best"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     lookahead: Optional[str] = None
     level: Optional[str] = None
@@ -295,6 +338,12 @@ class QSVEncCSettings(EncoderSettings):
     copy_hdr10: bool = False
     copy_dv: bool = False
     split_mode: str = "none"
+    tune: Optional[str] = None
+
+    @field_validator("tune", mode="before")
+    @classmethod
+    def validate_qsv_tune(cls, value):
+        return sanitize_qsv_tune(value)
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -308,6 +357,7 @@ class QSVEncCAV1Settings(EncoderSettings):
     name: str = "AV1 (QSVEncC)"
     preset: str = "best"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     lookahead: Optional[str] = None
     level: Optional[str] = None
@@ -330,6 +380,12 @@ class QSVEncCAV1Settings(EncoderSettings):
     copy_hdr10: bool = False
     copy_dv: bool = False
     split_mode: str = "none"
+    tune: Optional[str] = None
+
+    @field_validator("tune", mode="before")
+    @classmethod
+    def validate_qsv_tune(cls, value):
+        return sanitize_qsv_tune(value)
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -344,6 +400,7 @@ class QSVEncCH264Settings(EncoderSettings):
     preset: str = "best"
     profile: str = "auto"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     lookahead: Optional[str] = None
     level: Optional[str] = None
@@ -363,6 +420,12 @@ class QSVEncCH264Settings(EncoderSettings):
     adapt_cqm: bool = False
     adapt_ltr: bool = False
     split_mode: str = "none"
+    tune: Optional[str] = None
+
+    @field_validator("tune", mode="before")
+    @classmethod
+    def validate_qsv_tune(cls, value):
+        return sanitize_qsv_tune(value)
 
     @field_validator("cqp", mode="before")
     @classmethod
@@ -376,7 +439,9 @@ class NVEncCAVCSettings(EncoderSettings):
     name: str = "AVC (NVEncC)"
     preset: str = "quality"
     profile: str = "auto"
+    tune: str = "hq"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     aq: str = "off"
     aq_strength: int = 0
@@ -460,6 +525,7 @@ class VCEEncCAV1Settings(EncoderSettings):
     name: str = "AV1 (VCEEncC)"
     preset: str = "slower"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     level: Optional[str] = None
     hdr10plus_metadata: str = ""
@@ -505,6 +571,7 @@ class VCEEncCAVCSettings(EncoderSettings):
     preset: str = "slow"
     profile: str = "Auto"
     bitrate: Optional[str] = "5000k"
+    qvbr_quality: str = "off"
     cqp: Optional[Union[int, float]] = None
     tier: str = "high"
     level: Optional[str] = None
@@ -564,22 +631,31 @@ class SVTAV1Settings(EncoderSettings):
     scene_detection: bool = False
     single_pass: bool = False
     speed: str = "7"  # Renamed preset in svtav1 encoder
-    tune: str = "1"  # 0=VQ (Psychovisual), 1=PSNR, 2=SSIM
+    tune: str = "1"  # 0=VQ, 1=PSNR, 2=SSIM, 3=IQ, 4=MS-SSIM, 5=VMAF (video only)
     film_grain: int = 0  # 0-50, 0=off
     film_grain_denoise: bool = False
     sharpness: str = "0"  # -7 to 7
     fast_decode: str = "0"  # 0=off, 1=level 1, 2=level 2
+    enable_variance_boost: bool = False
+    variance_boost_strength: str = "2"  # 1-4
+    variance_octile: str = "5"  # 1-8
+    enable_tf: str = "1"  # 0=off, 1=on, 2=adaptive
+    startup_mg_size: str = "0"  # 0=off, 2-4
+    enable_qm: bool = False
+    qm_min: str = "8"  # 0-15
+    qm_max: str = "15"  # 0-15
     qp: Optional[Union[int, float]] = 24
     qp_mode: str = "crf"
     bitrate: Optional[str] = None
     svtav1_params: list[str] = Field(default_factory=list)
+    lossless: bool = False
 
 
 class SVTAVIFSettings(EncoderSettings):
     name: str = "AVIF (SVT AV1)"
     single_pass: bool = True
     speed: str = "7"  # Renamed preset in svtav1 encoder
-    tune: str = "1"  # 0=VQ (Psychovisual), 1=PSNR, 2=SSIM
+    tune: str = "1"  # 0=VQ, 1=PSNR, 2=SSIM, 3=IQ, 4=MS-SSIM, 5=VMAF (video only)
     sharpness: str = "0"  # -7 to 7
     qp: Optional[Union[int, float]] = 24
     qp_mode: str = "qp"
@@ -604,6 +680,7 @@ class VP9Settings(EncoderSettings):
     tune_content: str = "default"
     aq_mode: int = -1  # -1 = codec default
     sharpness: int = -1  # -1 = codec default, 0-7
+    lossless: bool = False
 
 
 class HEVCVideoToolboxSettings(EncoderSettings):
@@ -617,6 +694,7 @@ class HEVCVideoToolboxSettings(EncoderSettings):
     q: Optional[int] = 50
     bitrate: Optional[str] = None
     pix_fmt: str = "p010le"
+    constant_bit_rate: bool = False
 
 
 class H264VideoToolboxSettings(EncoderSettings):
@@ -630,6 +708,7 @@ class H264VideoToolboxSettings(EncoderSettings):
     q: Optional[int] = 50
     bitrate: Optional[str] = None
     pix_fmt: str = "yuv420p"
+    constant_bit_rate: bool = False
 
 
 class AOMAV1Settings(EncoderSettings):
@@ -644,7 +723,9 @@ class AOMAV1Settings(EncoderSettings):
     aq_mode: str = "default"  # default, 0=none, 1=variance, 2=complexity, 3=cyclic
     crf: Optional[Union[int, float]] = 26
     bitrate: Optional[str] = None
+    single_pass: bool = True
     aom_params: list[str] = Field(default_factory=list)
+    lossless: bool = False
 
 
 class WebPSettings(EncoderSettings):
@@ -745,6 +826,7 @@ class VAAPIHEVCSettings(EncoderSettings):
     qp: Optional[Union[int, float]] = 26
     bitrate: Optional[str] = None
     pix_fmt: str = "vaapi"
+    bit_depth: str = "8-bit"
 
 
 class VAAPIVP9Settings(EncoderSettings):
@@ -758,6 +840,7 @@ class VAAPIVP9Settings(EncoderSettings):
     qp: Optional[Union[int, float]] = 26
     bitrate: Optional[str] = None
     pix_fmt: str = "vaapi"
+    bit_depth: str = "8-bit"
 
 
 class VAAPIMPEG2Settings(EncoderSettings):

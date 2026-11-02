@@ -56,88 +56,94 @@ def queue_worker(gui_proc, worker_queue, status_queue, log_queue):
 
     shutdown_requested = False
 
-    while True:
-        if currently_encoding and not runner.is_alive():
-            reusables.remove_file_handlers(logger)
-            try:
-                log_queue.put("STOP_TIMER", timeout=1.0)
-            except Full:
-                pass  # GUI likely dead, ignore
-            currently_encoding = False
-
-            # Check error_detected (set by read_output thread) AND check the
-            # process return code directly.  The read_output daemon thread may
-            # not have run yet when FFmpeg exits very quickly (e.g. VAAPI init
-            # failure on Windows), so we must not rely solely on error_detected.
-            process_failed = (
-                runner.process is not None and runner.process.returncode is not None and runner.process.returncode > 0
-            )
-            if runner.error_detected or process_failed:
-                logger.info(t("Error detected while converting"))
-
-                status_queue.put(("error", video_uuid, command_uuid))
-                if gui_died or shutdown_requested:
-                    return
-                continue
-
-            status_queue.put(("complete", video_uuid, command_uuid))
-            if gui_died or shutdown_requested:
-                return
-
-        if not gui_died and not gui_proc.is_alive():
-            gui_proc.join()
-            gui_died = True
-            if runner.is_alive() or currently_encoding:
-                logger.info(t("The GUI might have died, but I'm going to keep converting!"))
-            else:
-                logger.debug(t("Conversion worker shutting down"))
-                return
-        try:
-            request = worker_queue.get(block=True, timeout=0.05)
-        except Empty:
-            continue
-        except KeyboardInterrupt:
-            status_queue.put(("exit",))
-            return
-        else:
-            if request[0] == "execute":
-                _, video_uuid, command_uuid, command, work_dir, log_name, shell = request
-                start_command()
-
-            elif request[0] == "cancel":
-                logger.debug(t("Cancel has been requested, killing encoding"))
-                runner.kill()
-                currently_encoding = False
-                status_queue.put(("cancelled", video_uuid, command_uuid))
+    try:
+        while True:
+            if currently_encoding and not runner.is_alive():
+                reusables.remove_file_handlers(logger)
                 try:
                     log_queue.put("STOP_TIMER", timeout=1.0)
                 except Full:
                     pass  # GUI likely dead, ignore
+                currently_encoding = False
 
-            elif request[0] == "pause encode":
-                logger.debug(t("Command worker received request to pause current encode"))
-                try:
-                    runner.pause()
-                except Exception:
-                    logger.exception("Could not pause command")
+                # Check error_detected (set by read_output thread) AND check the
+                # process return code directly.  The read_output daemon thread may
+                # not have run yet when FFmpeg exits very quickly (e.g. VAAPI init
+                # failure on Windows), so we must not rely solely on error_detected.
+                runner.join_reader(timeout=1.0)
+                process_failed = (
+                    runner.process is not None and runner.process.returncode not in (None, 0) and not runner.killed
+                )
+                if runner.error_detected or process_failed:
+                    logger.info(t("Error detected while converting"))
 
-            elif request[0] == "resume encode":
-                logger.debug(t("Command worker received request to resume paused encode"))
-                try:
-                    runner.resume()
-                except Exception:
-                    logger.exception("Could not resume command")
-
-            elif request[0] == "priority":
-                priority = request[1]
-                if runner.is_alive():
-                    runner.change_priority(priority)
-
-            elif request[0] == "shutdown":
-                logger.debug(t("Shutdown signal received from GUI"))
-                if runner.is_alive():
-                    logger.info(t("Waiting for current encode to finish before shutdown"))
-                    shutdown_requested = True
+                    status_queue.put(("error", video_uuid, command_uuid))
+                    if gui_died or shutdown_requested:
+                        return
                     continue
-                logger.debug(t("Worker shutting down gracefully"))
+
+                status_queue.put(("complete", video_uuid, command_uuid))
+                if gui_died or shutdown_requested:
+                    return
+
+            if not gui_died and not gui_proc.is_alive():
+                gui_proc.join()
+                gui_died = True
+                if runner.is_alive() or currently_encoding:
+                    logger.info(t("The GUI might have died, but I'm going to keep converting!"))
+                else:
+                    logger.debug(t("Conversion worker shutting down"))
+                    return
+            try:
+                request = worker_queue.get(block=True, timeout=0.05)
+            except Empty:
+                continue
+            except KeyboardInterrupt:
+                status_queue.put(("exit",))
                 return
+            else:
+                if request[0] == "execute":
+                    _, video_uuid, command_uuid, command, work_dir, log_name, shell = request
+                    start_command()
+
+                elif request[0] == "cancel":
+                    logger.debug(t("Cancel has been requested, killing encoding"))
+                    runner.kill()
+                    currently_encoding = False
+                    status_queue.put(("cancelled", video_uuid, command_uuid))
+                    try:
+                        log_queue.put("STOP_TIMER", timeout=1.0)
+                    except Full:
+                        pass  # GUI likely dead, ignore
+
+                elif request[0] == "pause encode":
+                    logger.debug(t("Command worker received request to pause current encode"))
+                    try:
+                        runner.pause()
+                    except Exception:
+                        logger.exception("Could not pause command")
+
+                elif request[0] == "resume encode":
+                    logger.debug(t("Command worker received request to resume paused encode"))
+                    try:
+                        runner.resume()
+                    except Exception:
+                        logger.exception("Could not resume command")
+
+                elif request[0] == "priority":
+                    priority = request[1]
+                    if runner.is_alive():
+                        runner.change_priority(priority)
+
+                elif request[0] == "shutdown":
+                    logger.debug(t("Shutdown signal received from GUI"))
+                    if runner.is_alive():
+                        logger.info(t("Waiting for current encode to finish before shutdown"))
+                        shutdown_requested = True
+                        continue
+                    logger.debug(t("Worker shutting down gracefully"))
+                    return
+    finally:
+        runner.kill(log=False)
+        if gui_died:
+            log_queue.cancel_join_thread()

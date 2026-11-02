@@ -1,16 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import copy
 import logging
 import os
 import shutil
+import tempfile
+import time
 from packaging import version
 from pathlib import Path
 from typing import Literal
 import json
 
 from platformdirs import user_data_dir
-from box import Box, BoxError
-from pydantic import BaseModel, Field
+from box import Box
+from pydantic import BaseModel, Field, TypeAdapter
 from reusables import win_based
 
 from fastflix.exceptions import ConfigError, MissingFF
@@ -294,9 +297,12 @@ class Config(BaseModel):
     sticky_tabs: bool = False
     show_complete_message: bool = False
     show_error_message: bool = True
+    keep_source_after_encode: bool = False
 
     disable_cover_extraction: bool = False
     suppress_ffmpeg_version_warning: bool = False
+    suppress_video_speed_warning: bool = False
+    suppress_reverse_video_warning: bool = False
 
     # PGS to SRT OCR Settings
     enable_pgs_ocr: bool = False
@@ -381,7 +387,10 @@ class Config(BaseModel):
         self.config_path = get_config(portable_mode=portable_mode)
         try:
             data = Box.from_yaml(filename=self.config_path)
+        except FileNotFoundError:
+            data = Box()
         except Exception:
+            logger.exception(f"Could not read config file {self.config_path} for pre-load settings")
             data = Box()
 
         output = {"enable_scaling": True}
@@ -401,7 +410,8 @@ class Config(BaseModel):
             self.work_path = Path(os.getenv("FF_WORKDIR", "fastflix_workspace"))
             self.work_path.mkdir(exist_ok=True)
 
-        if not self.config_path.exists() or self.config_path.stat().st_size < 10:
+        data = self._read_config_data()
+        if data is None:
             logger.debug(f"Creating new config file {self.config_path}")
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
             self.save()
@@ -412,12 +422,6 @@ class Config(BaseModel):
                 self.ffprobe = find_ffmpeg_file("ffmpeg.ffprobe", raise_on_missing=True)
             return
         logger.debug(f"Using config file {self.config_path}")
-        try:
-            data = Box.from_yaml(filename=self.config_path)
-        except BoxError as err:
-            raise ConfigError(f"{self.config_path}: {err}")
-        if "version" not in data:
-            raise ConfigError(f"Corrupt config file. Please fix or remove {self.config_path}")
 
         if version.parse(__version__) < version.parse(data.version):
             logger.warning(
@@ -443,12 +447,27 @@ class Config(BaseModel):
             if key == "profiles":
                 self.profiles = {}
                 for k, v in value.items():
-                    if v.get("profile_version", 1) == 1:
-                        self.profiles[k] = self.profile_v1_to_v2(k, v)
-                    else:
-                        self.profiles[k] = Profile(**v)
+                    raw = copy.deepcopy(v)
+                    try:
+                        if v.get("profile_version", 1) == 1:
+                            self.profiles[k] = self.profile_v1_to_v2(k, v)
+                        else:
+                            self.profiles[k] = Profile(**v)
+                    except Exception:
+                        logger.exception(f'Skipping profile "{k}" that could not be loaded. Raw data: {raw}')
                 continue
-            if key in self and key not in ("config_path", "version"):
+            field = Config.model_fields.get(key)
+            if field is not None and key not in ("config_path", "version"):
+                if key in ("output_directory", "source_directory") and value is False:
+                    setattr(self, key, value)
+                    continue
+                if field.annotation is str and isinstance(value, (int, float)) and not isinstance(value, bool):
+                    value = str(value)
+                try:
+                    TypeAdapter(field.annotation).validate_python(value)
+                except Exception:
+                    logger.warning(f"Ignoring config value {key}={value!r}, it is not a valid {field.annotation}")
+                    continue
                 setattr(self, key, Path(value) if key in paths and value else value)
 
         # Migrate old disable_complete_message (inverted) to show_complete_message and show_error_message
@@ -549,7 +568,77 @@ class Config(BaseModel):
         items["profiles"] = {
             k: json.loads(v.json()) for k, v in self.profiles.items() if k not in get_preset_defaults().keys()
         }
-        return Box(items).to_yaml(filename=self.config_path, default_flow_style=False)
+        config_path = Path(self.config_path)
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+        fd, temp_path = tempfile.mkstemp(suffix=".tmp", prefix=f"{config_path.name}.", dir=config_path.parent)
+        try:
+            os.close(fd)
+            result = Box(items).to_yaml(filename=temp_path, default_flow_style=False)
+            if self._is_valid_config_file(config_path):
+                try:
+                    shutil.copy2(config_path, self._backup_path(config_path))
+                except OSError:
+                    logger.exception("Could not back up previous config file")
+            os.replace(temp_path, config_path)
+        except Exception:
+            try:
+                os.unlink(temp_path)
+            except OSError:
+                pass
+            raise
+        return result
+
+    @staticmethod
+    def _backup_path(path: Path) -> Path:
+        return path.with_name(path.name + ".bak")
+
+    @staticmethod
+    def _is_valid_config_file(path: Path) -> bool:
+        try:
+            if not path.exists() or path.stat().st_size < 10:
+                return False
+            return "version" in Box.from_yaml(filename=path)
+        except Exception:
+            return False
+
+    def _read_config_data(self):
+        """Returns the config data, or None if a new config should be created.
+        Falls back to the .bak file, and moves unreadable files aside rather than deleting them."""
+        path = Path(self.config_path)
+        backup = self._backup_path(path)
+        if not path.exists():
+            return None
+        problem = None
+        try:
+            if path.stat().st_size >= 10:
+                data = Box.from_yaml(filename=path)
+                if "version" in data:
+                    return data
+                problem = "missing version"
+            elif path.stat().st_size > 0 or backup.exists():
+                problem = "file is truncated"
+            else:
+                return None
+        except Exception as err:
+            problem = f"{err.__class__.__name__}: {err}"
+
+        logger.error(f"Config file {path} is unreadable ({problem}), trying backup {backup}")
+        corrupt = path.with_name(f"{path.name}.corrupt-{time.strftime('%Y%m%d_%H%M%S')}")
+        try:
+            shutil.move(str(path), str(corrupt))
+        except OSError as err:
+            raise ConfigError(f"{path}: {problem}. Could not move it aside: {err}") from None
+        logger.error(f"Moved unreadable config to {corrupt}")
+        if self._is_valid_config_file(backup):
+            try:
+                data = Box.from_yaml(filename=backup)
+                shutil.copy2(backup, path)
+                logger.error(f"Restored config from backup {backup}")
+                return data
+            except Exception:
+                logger.exception("Could not restore config from backup")
+        logger.error(f"No usable backup, starting with default settings. Old file kept at {corrupt}")
+        return None
 
     @property
     def profile(self):
@@ -567,7 +656,7 @@ class Config(BaseModel):
             if data.get("ffmpeg"):
                 self.ffmpeg = Path(data.ffmpeg)
             if data.get("ffprobe"):
-                self.ffmpeg = Path(data.ffprobe)
+                self.ffprobe = Path(data.ffprobe)
             self.disable_automatic_subtitle_burn_in = data.get("disable_automatic_subtitle_burn_in")
             self.disable_update_check = data.get("disable_update_check")
             self.disable_version_check = data.get("disable_update_check", self.disable_update_check)

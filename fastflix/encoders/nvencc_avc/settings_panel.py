@@ -77,7 +77,7 @@ class NVENCCAVC(RigayaPanel):
         custom_layout = self._add_custom(title="Custom NVEncC options", disable_both_passes=True)
 
         grid.addLayout(self.init_preset(), 0, 0, 1, 2)
-        # grid.addLayout(self.init_profile(), 1, 0, 1, 2)
+        grid.addLayout(self.init_profile(), 1, 0, 1, 2)
         # grid.addLayout(self.init_tier(), 1, 0, 1, 2)
         grid.addLayout(self.init_multipass(), 2, 0, 1, 2)
         grid.addLayout(self.init_lookahead(), 3, 0, 1, 2)
@@ -97,6 +97,7 @@ class NVENCCAVC(RigayaPanel):
         grid.addLayout(self.init_aq_strength(), 6, 0, 1, 2)
         grid.addLayout(self.init_mv_precision(), 7, 0, 1, 2)
         grid.addLayout(self.init_devices(), 8, 0, 1, 2)
+        grid.addLayout(self.init_tune(), 9, 0, 1, 2)
 
         qp_line = QtWidgets.QHBoxLayout()
         qp_line.addLayout(self.init_vbr_target())
@@ -107,6 +108,8 @@ class NVENCCAVC(RigayaPanel):
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_max_q())
 
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_qvbr_quality())
         grid.addLayout(qp_line, 5, 2, 1, 4)
 
         advanced = QtWidgets.QHBoxLayout()
@@ -126,7 +129,7 @@ class NVENCCAVC(RigayaPanel):
         grid.addLayout(even_more, 7, 2, 1, 4)
         grid.addLayout(self.init_parallel_mode(), 8, 4, 1, 2)
 
-        grid.setRowStretch(9, 1)
+        grid.setRowStretch(11, 1)
 
         guide_label = QtWidgets.QLabel(
             link(
@@ -162,20 +165,25 @@ class NVENCCAVC(RigayaPanel):
         return self._add_combo_box(
             label="Tune",
             widget_name="tune",
-            tooltip="Tune the settings for a particular type of source or situation\nhq - High Quality, ll - Low Latency, ull - Ultra Low Latency",
-            options=["hq", "ll", "ull", "lossless"],
+            tooltip=(
+                "Tune the preset for a type of source or situation\n"
+                "hq - High Quality (default)\n"
+                "uhq - Ultra High Quality (HEVC and AV1, requires Turing or newer)\n"
+                "lowlatency / ultralowlatency - Streaming oriented\n"
+                "lossless - Lossless output (H.264 and HEVC)"
+            ),
+            options=["hq", "lowlatency", "ultralowlatency", "lossless"],
             opt="tune",
         )
 
-    # def init_profile(self):
-    #     # TODO auto
-    #     return self._add_combo_box(
-    #         label="Profile_encoderopt",
-    #         widget_name="profile",
-    #         tooltip="Enforce an encode profile",
-    #         options=["main", "main10"],
-    #         opt="profile",
-    #     )
+    def init_profile(self):
+        return self._add_combo_box(
+            label="Profile_encoderopt",
+            widget_name="profile",
+            tooltip="Enforce an encode profile",
+            options=["auto", "baseline", "main", "high", "high10", "high422", "high444"],
+            opt="profile",
+        )
 
     # def init_tier(self):
     #     return self._add_combo_box(
@@ -323,6 +331,16 @@ class NVENCCAVC(RigayaPanel):
             min_width=60,
         )
 
+    def init_qvbr_quality(self):
+        return self._add_combo_box(
+            label="QVBR Quality",
+            widget_name="qvbr_quality",
+            tooltip="Quality based VBR (--qvbr), lower is higher quality. Replaces the Bitrate or QP selection above.\nOff uses the selected rate control mode",
+            options=["off"] + [str(x) for x in range(1, 52)],
+            opt="qvbr_quality",
+            min_width=60,
+        )
+
     def init_b_frames(self):
         return self._add_combo_box(
             widget_name="b_frames",
@@ -370,7 +388,8 @@ class NVENCCAVC(RigayaPanel):
     def update_video_encoder_settings(self):
         settings = NVEncCAVCSettings(
             preset=self.widgets.preset.currentText().split("-")[0].strip(),
-            # profile=self.widgets.profile.currentText(),
+            profile=self.widgets.profile.currentText(),
+            tune=self.widgets.tune.currentText(),
             # tier=self.widgets.tier.currentText(),
             lookahead=self.widgets.lookahead.currentIndex() if self.widgets.lookahead.currentIndex() > 0 else None,
             aq=self.widgets.aq.currentText(),
@@ -387,6 +406,7 @@ class NVENCCAVC(RigayaPanel):
             min_q_p=self.widgets.min_q_p.currentText() if self.widgets.min_q_p.currentIndex() != 0 else None,
             min_q_b=self.widgets.min_q_b.currentText() if self.widgets.min_q_b.currentIndex() != 0 else None,
             extra=self.ffmpeg_extras,
+            qvbr_quality=self.widgets.qvbr_quality.currentText(),
             metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,

@@ -83,6 +83,8 @@ class VP9(SettingPanel):
         checkboxes.addLayout(self.init_row_mt())
         checkboxes.addStretch(1)
         checkboxes.addLayout(self.init_fast_first_pass())
+        checkboxes.addStretch(1)
+        checkboxes.addLayout(self.init_lossless())
 
         grid.addLayout(checkboxes, 5, 2, 1, 4)
 
@@ -201,6 +203,31 @@ class VP9(SettingPanel):
     def init_single_pass(self):
         return self._add_check_box(label="Single Pass (CRF)", tooltip="", widget_name="single_pass", opt="single_pass")
 
+    def init_lossless(self):
+        layout = self._add_check_box(
+            label="Lossless",
+            widget_name="lossless",
+            tooltip=(
+                "Enable lossless encoding mode.\n"
+                "Produces bit-exact output with no quality loss.\n"
+                "Rate control options are ignored in lossless mode."
+            ),
+            opt="lossless",
+            connect=lambda: (self._toggle_lossless(), self.main.page_update(build_thumbnail=False)),
+        )
+        return layout
+
+    def _toggle_lossless(self):
+        enabled = not self.widgets.lossless.isChecked()
+        self.qp_radio.setEnabled(enabled)
+        self.bitrate_radio.setEnabled(enabled)
+        self.widgets.crf.setEnabled(enabled)
+        self.widgets.custom_crf.setEnabled(enabled)
+        self.widgets.bitrate.setEnabled(enabled)
+        self.widgets.custom_bitrate.setEnabled(enabled)
+        self.widgets.single_pass.setEnabled(enabled)
+        self.widgets.fast_first_pass.setEnabled(enabled)
+
     def init_auto_alt_ref(self):
         return self._add_combo_box(
             label="Alt Ref Frames",
@@ -293,6 +320,7 @@ class VP9(SettingPanel):
             tune_content=self.widgets.tune_content.currentText(),
             aq_mode=aq_mode,
             sharpness=sharpness,
+            lossless=self.widgets.lossless.isChecked(),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.crf = q_value if encode_type == "qp" else None

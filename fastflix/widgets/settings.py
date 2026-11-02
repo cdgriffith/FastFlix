@@ -20,6 +20,7 @@ from fastflix.naming import (
 )
 from fastflix.shared import error_message, link, yes_no_message
 from fastflix.widgets.flow_layout import FlowLayout
+from fastflix.widgets.toggle_switch import ToggleSwitch
 
 logger = logging.getLogger("fastflix")
 language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1]
@@ -168,61 +169,66 @@ class Settings(QtWidgets.QWidget):
         row += 1
 
         # Checkboxes
-        self.use_sane_audio = QtWidgets.QCheckBox(t("Use Sane Audio Selection (updatable in config file)"))
+        self.use_sane_audio = ToggleSwitch(t("Use Sane Audio Selection (updatable in config file)"))
         if self.app.fastflix.config.use_sane_audio:
             self.use_sane_audio.setChecked(True)
         layout.addWidget(self.use_sane_audio, row, 0, 1, 2)
         row += 1
 
-        self.disable_version_check = QtWidgets.QCheckBox(t("Disable update check on startup"))
+        self.disable_version_check = ToggleSwitch(t("Disable update check on startup"))
         if self.app.fastflix.config.disable_version_check:
             self.disable_version_check.setChecked(True)
         layout.addWidget(self.disable_version_check, row, 0, 1, 2)
         row += 1
 
-        self.show_complete_message = QtWidgets.QCheckBox(t("Show completion popup message"))
+        self.show_complete_message = ToggleSwitch(t("Show completion popup message"))
         self.show_complete_message.setChecked(self.app.fastflix.config.show_complete_message)
         layout.addWidget(self.show_complete_message, row, 0, 1, 2)
         row += 1
 
-        self.show_error_message = QtWidgets.QCheckBox(t("Show error popup message"))
+        self.show_error_message = ToggleSwitch(t("Show error popup message"))
         self.show_error_message.setChecked(self.app.fastflix.config.show_error_message)
         layout.addWidget(self.show_error_message, row, 0, 1, 2)
         row += 1
 
-        self.clean_old_logs_button = QtWidgets.QCheckBox(
+        self.keep_source_after_encode = ToggleSwitch(t("Keep source loaded after adding to queue"))
+        self.keep_source_after_encode.setChecked(self.app.fastflix.config.keep_source_after_encode)
+        layout.addWidget(self.keep_source_after_encode, row, 0, 1, 2)
+        row += 1
+
+        self.clean_old_logs_button = ToggleSwitch(
             t("Remove GUI logs and compress conversion logs older than 30 days at exit")
         )
         self.clean_old_logs_button.setChecked(self.app.fastflix.config.clean_old_logs)
         layout.addWidget(self.clean_old_logs_button, row, 0, 1, 3)
         row += 1
 
-        self.disable_deinterlace_button = QtWidgets.QCheckBox(t("Disable interlace check"))
+        self.disable_deinterlace_button = ToggleSwitch(t("Disable interlace check"))
         self.disable_deinterlace_button.setChecked(self.app.fastflix.config.disable_deinterlace_check)
         layout.addWidget(self.disable_deinterlace_button, row, 0, 1, 3)
         row += 1
 
-        self.suppress_ffmpeg_version_warning = QtWidgets.QCheckBox(t("Suppress FFmpeg version warning on startup"))
+        self.suppress_ffmpeg_version_warning = ToggleSwitch(t("Suppress FFmpeg version warning on startup"))
         self.suppress_ffmpeg_version_warning.setChecked(self.app.fastflix.config.suppress_ffmpeg_version_warning)
         layout.addWidget(self.suppress_ffmpeg_version_warning, row, 0, 1, 3)
         row += 1
 
-        self.use_keyframes_for_preview = QtWidgets.QCheckBox(t("Use keyframes for preview images"))
+        self.use_keyframes_for_preview = ToggleSwitch(t("Use keyframes for preview images"))
         self.use_keyframes_for_preview.setChecked(self.app.fastflix.config.use_keyframes_for_preview)
         layout.addWidget(self.use_keyframes_for_preview, row, 0, 1, 3)
         row += 1
 
-        self.sticky_tabs = QtWidgets.QCheckBox(t("Disable Automatic Tab Switching"))
+        self.sticky_tabs = ToggleSwitch(t("Disable Automatic Tab Switching"))
         self.sticky_tabs.setChecked(self.app.fastflix.config.sticky_tabs)
         layout.addWidget(self.sticky_tabs, row, 0, 1, 2)
         row += 1
 
-        self.auto_detect_subtitles = QtWidgets.QCheckBox(t("Auto-detect external subtitle files"))
+        self.auto_detect_subtitles = ToggleSwitch(t("Auto-detect external subtitle files"))
         self.auto_detect_subtitles.setChecked(self.app.fastflix.config.auto_detect_subtitles)
         layout.addWidget(self.auto_detect_subtitles, row, 0, 1, 3)
         row += 1
 
-        self.enable_history = QtWidgets.QCheckBox(t("Enable encoding history"))
+        self.enable_history = ToggleSwitch(t("Enable encoding history"))
         self.enable_history.setChecked(bool(self.app.fastflix.config.enable_history))
         layout.addWidget(self.enable_history, row, 0, 1, 3)
         row += 1
@@ -253,7 +259,7 @@ class Settings(QtWidgets.QWidget):
         row += 1
 
         # Default Output Directory
-        self.default_output_dir = QtWidgets.QCheckBox(t("Use same output directory as source file"))
+        self.default_output_dir = ToggleSwitch(t("Use same output directory as source file"))
         layout.addWidget(self.default_output_dir, row, 0, 1, 2)
         row += 1
 
@@ -283,7 +289,7 @@ class Settings(QtWidgets.QWidget):
         self.default_output_dir.clicked.connect(out_click)
 
         # Default Source Directory
-        self.default_source_dir = QtWidgets.QCheckBox(t("No Default Source Folder"))
+        self.default_source_dir = ToggleSwitch(t("No Default Source Folder"))
         layout.addWidget(self.default_source_dir, row, 0, 1, 2)
         row += 1
 
@@ -504,7 +510,7 @@ class Settings(QtWidgets.QWidget):
 
         self.audio_encoder_checkboxes = {}
         for encoder_name in all_encoders:
-            cb = QtWidgets.QCheckBox(encoder_name)
+            cb = ToggleSwitch(encoder_name)
             cb.setChecked(encoder_name in sane_set)
             self.audio_encoder_checkboxes[encoder_name] = cb
             scroll_layout.addWidget(cb)
@@ -778,6 +784,7 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.sticky_tabs = self.sticky_tabs.isChecked()
         self.app.fastflix.config.show_complete_message = self.show_complete_message.isChecked()
         self.app.fastflix.config.show_error_message = self.show_error_message.isChecked()
+        self.app.fastflix.config.keep_source_after_encode = self.keep_source_after_encode.isChecked()
         self.app.fastflix.config.disable_deinterlace_check = self.disable_deinterlace_button.isChecked()
         self.app.fastflix.config.suppress_ffmpeg_version_warning = self.suppress_ffmpeg_version_warning.isChecked()
         self.app.fastflix.config.use_keyframes_for_preview = self.use_keyframes_for_preview.isChecked()

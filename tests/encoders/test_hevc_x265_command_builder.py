@@ -258,3 +258,80 @@ def test_hevc_x265_tune_profile():
         assert "animation" in cmd
         assert "-profile:v" in cmd
         assert "main10" in cmd
+
+
+def _x265_fastflix(pix_fmt="yuv420p10le", remove_hdr=False, hdr10=False, **kwargs):
+    defaults = dict(
+        crf=None,
+        bitrate="5000k",
+        bitrate_passes=2,
+        preset="medium",
+        profile="default",
+        tune="default",
+        hdr10=hdr10,
+        hdr10_opt=False,
+        repeat_headers=True,
+        aq_mode=2,
+        bframes=4,
+        b_adapt=2,
+        frame_threads=0,
+        intra_smoothing=True,
+        pix_fmt=pix_fmt,
+    )
+    defaults.update(kwargs)
+    return create_fastflix_instance(
+        encoder_settings=x265Settings(**defaults),
+        video_settings=VideoSettings(remove_hdr=remove_hdr, maxrate=None, bufsize=None),
+        hdr10_metadata=True,
+    )
+
+
+def _x265_build(fastflix):
+    with mock.patch("fastflix.encoders.hevc_x265.command_builder.generate_all") as mock_generate_all:
+        mock_generate_all.return_value = (["ffmpeg", "-y", "-i", "input.mkv"], ["output.mkv"], [])
+        return build(fastflix)
+
+
+def _x265_params(cmd):
+    return cmd[cmd.index("-x265-params") + 1]
+
+
+def test_hevc_x265_stats_file_in_work_path_and_quoted():
+    fastflix = _x265_fastflix()
+    result = _x265_build(fastflix)
+    work = fastflix.current_video.work_path.as_posix()
+    for cmd in (result[0].command, result[1].command):
+        params = _x265_params(cmd)
+        stats = [p for p in params.split(":") if p.startswith("stats=")]
+        assert stats, params
+        assert stats[0].startswith(f"stats='{work}/pass_log_file_"), stats[0]
+        assert stats[0].endswith(".log'")
+
+
+def test_hevc_x265_stats_file_quote_in_path_is_escaped():
+    from fastflix.encoders.hevc_x265.command_builder import quote_x265_value
+
+    assert quote_x265_value("a'b") == "'a'" + chr(92) + "''b'"
+
+
+def test_hevc_x265_does_not_mutate_settings_hdr10():
+    fastflix = _x265_fastflix(hdr10=False)
+    _x265_build(fastflix)
+    assert fastflix.current_video.video_settings.video_encoder_settings.hdr10 is False
+
+
+def test_hevc_x265_rebuild_after_remove_hdr_has_no_hdr10():
+    fastflix = _x265_fastflix(hdr10=False)
+    _x265_build(fastflix)
+    fastflix.current_video.video_settings.remove_hdr = True
+    params = _x265_params(_x265_build(fastflix)[0].command)
+    assert "hdr10=1" not in params
+    assert "master-display" not in params
+
+
+def test_hevc_x265_hdr_metadata_for_444_12bit():
+    fastflix = _x265_fastflix(pix_fmt="yuv444p12le", bitrate=None, crf=22)
+    params = _x265_params(_x265_build(fastflix)[0].command)
+    assert "master-display=G(" in params
+    assert "max-cll=1000,300" in params
+    assert "hdr10=1" in params

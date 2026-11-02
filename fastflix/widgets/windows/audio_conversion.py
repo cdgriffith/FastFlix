@@ -108,6 +108,23 @@ class AudioConversion(QtWidgets.QWidget):
         conversion_layout.addWidget(QtWidgets.QLabel(t("Codec")))
         conversion_layout.addWidget(self.conversion_codec, 2)
 
+        # AAC Profile
+
+        self.aac_profile_label = QtWidgets.QLabel(t("AAC Profile"))
+        self.aac_profile = QtWidgets.QComboBox()
+        self.aac_profile.addItems(["AAC-LC", "HE-AAC", "HE-AAC v2"])
+
+        profile_map = {"aac_he": 1, "aac_he_v2": 2}
+        self.aac_profile.setCurrentIndex(profile_map.get(self.audio_track.conversion_profile, 0))
+
+        show_profile = self.conversion_codec.currentText() == "libfdk_aac"
+        self.aac_profile_label.setVisible(show_profile)
+        self.aac_profile.setVisible(show_profile)
+
+        aac_profile_layout = QtWidgets.QHBoxLayout()
+        aac_profile_layout.addWidget(self.aac_profile_label)
+        aac_profile_layout.addWidget(self.aac_profile, 2)
+
         # AQ vs Bitrate
 
         self.aq = QtWidgets.QComboBox()
@@ -191,6 +208,7 @@ class AudioConversion(QtWidgets.QWidget):
 
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(conversion_layout)
+        layout.addLayout(aac_profile_layout)
         layout.addLayout(quality_layout)
         layout.addLayout(downmix_layout)
         layout.addLayout(yes_no_layout)
@@ -205,19 +223,29 @@ class AudioConversion(QtWidgets.QWidget):
             self.bitrate.setDisabled(True)
 
     def codec_changed(self):
-        if self.conversion_codec.currentText() in ["libopus"]:
+        codec = self.conversion_codec.currentText()
+        if codec in ["libopus"]:
             self.aq.setCurrentIndex(10)
             self.aq.setDisabled(True)
-            # self.bitrate.setEnabled(True)
         else:
             self.aq.setEnabled(True)
-            # self.bitrate.setDisabled(True)
+
+        # HE-AAC profiles are only supported by libfdk_aac (the native FFmpeg/rigaya aac encoder rejects them)
+        show_profile = codec == "libfdk_aac"
+        self.aac_profile_label.setVisible(show_profile)
+        self.aac_profile.setVisible(show_profile)
+        if not show_profile:
+            self.aac_profile.setCurrentIndex(0)
 
     def save(self):
         if self.conversion_codec.currentIndex() != 0:
             self.audio_track.conversion_codec = self.conversion_codec.currentText()
         else:
             self.audio_track.conversion_codec = ""
+
+        profile_values = {0: None, 1: "aac_he", 2: "aac_he_v2"}
+        profile = profile_values.get(self.aac_profile.currentIndex())
+        self.audio_track.conversion_profile = profile if self.audio_track.conversion_codec == "libfdk_aac" else None
 
         if self.aq.currentIndex() != 10:
             self.audio_track.conversion_aq = self.aq.currentIndex()

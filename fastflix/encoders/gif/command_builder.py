@@ -18,11 +18,15 @@ def build(fastflix: FastFlix):
     # Convert crop to dict if it exists (generate_filters expects dict, not Pydantic model)
     crop = video_settings.crop.model_dump() if video_settings.crop else None
 
-    args = f"=stats_mode={settings.stats_mode}"
+    palettegen_args = f"=stats_mode={settings.stats_mode}"
     if settings.max_colors != "256":
-        args += f":max_colors={settings.max_colors}"
+        palettegen_args += f":max_colors={settings.max_colors}"
 
-    # Build base filters for fps and scale (applied before palette operations)
+    # Dropping frames first avoids scaling/tone mapping frames that never reach the GIF; with a speed change the
+    # frame rate has to be set after setpts, so it stays at the end of the chain then.
+    fps_first = video_settings.video_speed == 1
+    fps_filter = f"fps={settings.fps}"
+
     # Scale must use lanczos for better GIF quality
     base_filters = generate_filters(
         selected_track=video_settings.selected_track,
@@ -34,33 +38,22 @@ def build(fastflix: FastFlix):
         vertical_flip=video_settings.vertical_flip,
         horizontal_flip=video_settings.horizontal_flip,
         video_speed=video_settings.video_speed,
+        reverse_video=video_settings.reverse_video,
         deblock=video_settings.deblock,
         deblock_size=video_settings.deblock_size,
         brightness=video_settings.brightness,
         saturation=video_settings.saturation,
         contrast=video_settings.contrast,
-        custom_filters=f"fps={settings.fps}",
+        gamma=video_settings.gamma,
+        hue=video_settings.hue,
+        sharpen=video_settings.sharpen,
+        denoise=video_settings.denoise,
+        deinterlace=video_settings.deinterlace,
+        remove_hdr=video_settings.remove_hdr,
+        tone_map=video_settings.tone_map,
+        start_filters=fps_filter if fps_first else None,
+        custom_filters=None if fps_first else fps_filter,
         raw_filters=True,
-    )
-
-    # Palette generation filters include the base filters + palettegen
-    # This returns List[str] since raw_filters=False (default)
-    palettegen_filters = generate_filters(
-        selected_track=video_settings.selected_track,
-        source=fastflix.current_video.source,
-        crop=crop,
-        scale=scale,
-        scale_filter="lanczos",
-        rotate=video_settings.rotate,
-        vertical_flip=video_settings.vertical_flip,
-        horizontal_flip=video_settings.horizontal_flip,
-        video_speed=video_settings.video_speed,
-        deblock=video_settings.deblock,
-        deblock_size=video_settings.deblock_size,
-        brightness=video_settings.brightness,
-        saturation=video_settings.saturation,
-        contrast=video_settings.contrast,
-        custom_filters=f"fps={settings.fps},palettegen{args}",
     )
 
     output_video = str(sanitize(fastflix.current_video.video_settings.output_path))
@@ -80,7 +73,10 @@ def build(fastflix: FastFlix):
     extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
     extra = shlex.split(settings.extra) if settings.extra else []
 
-    command_1 = beginning + palettegen_filters + extra_both + ["-y", str(temp_palette)]
+    palettegen_graph = f"{base_filters};[v]palettegen{palettegen_args}[palette]"
+    command_1 = (
+        beginning + ["-filter_complex", palettegen_graph, "-map", "[palette]"] + extra_both + ["-y", str(temp_palette)]
+    )
 
     # For GIF creation, apply same base filters then use palette
     # Format: [base_filters];[v][1:v]paletteuse=dither={dither}[o]

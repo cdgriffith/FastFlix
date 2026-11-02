@@ -85,6 +85,7 @@ class AVC(SettingPanel):
         grid.addLayout(self.init_psy_rd(), 5, 2, 1, 4)
         grid.addLayout(self.init_level(), 6, 0, 1, 2)
         grid.addLayout(self.init_x264_params(), 6, 2, 1, 4)
+        grid.addLayout(self.init_lossless(), 7, 0, 1, 2)
 
         grid.setRowStretch(9, 1)
 
@@ -216,6 +217,31 @@ class AVC(SettingPanel):
             opt="level",
         )
 
+    def init_lossless(self):
+        layout = self._add_check_box(
+            label="Lossless",
+            widget_name="lossless",
+            tooltip=(
+                "Enable true lossless coding by bypassing all lossy compression.\n"
+                "Reconstructed output pictures are bit-exact to the input pictures.\n"
+                "All rate control options are ignored in lossless mode.\n"
+                "Slower presets will generally achieve better compression efficiency."
+            ),
+            opt="lossless",
+            connect=lambda: (self._toggle_lossless(), self.main.page_update(build_thumbnail=False)),
+        )
+        return layout
+
+    def _toggle_lossless(self):
+        enabled = not self.widgets.lossless.isChecked()
+        self.qp_radio.setEnabled(enabled)
+        self.bitrate_radio.setEnabled(enabled)
+        self.widgets.crf.setEnabled(enabled)
+        self.widgets.custom_crf.setEnabled(enabled)
+        self.widgets.bitrate.setEnabled(enabled)
+        self.widgets.custom_bitrate.setEnabled(enabled)
+        self.widgets.bitrate_passes.setEnabled(enabled)
+
     def init_x264_params(self):
         layout = QtWidgets.QHBoxLayout()
         self.labels.x264_params = QtWidgets.QLabel(t("Additional x264 params"))
@@ -272,6 +298,7 @@ class AVC(SettingPanel):
             psy_rd=psy_rd_text if psy_rd_text else None,
             level=self.widgets.level.currentText(),
             x264_params=x264_params_text.split(":") if x264_params_text else [],
+            lossless=self.widgets.lossless.isChecked(),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.crf = q_value if encode_type == "qp" else None

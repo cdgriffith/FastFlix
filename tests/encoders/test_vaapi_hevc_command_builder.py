@@ -114,8 +114,6 @@ def test_vaapi_hevc_start_extra_contains_hw_init():
                 "vaapi",
                 "-hwaccel_device",
                 "hwdev",
-                "-hwaccel_output_format",
-                "vaapi",
             ]
 
 
@@ -161,4 +159,4 @@ def test_vaapi_hevc_all_elements_are_strings():
     assert "-level" in cmd
     assert "5.1" in cmd
     assert "-aud" in cmd
-    assert "-low-power" in cmd
+    assert "-low_power" in cmd

@@ -161,6 +161,37 @@ def test_aom_av1_row_mt_disabled():
     assert "-row-mt" not in cmd
 
 
+def test_aom_av1_two_pass_crf():
+    """Test 2-pass CRF encoding produces two commands."""
+    result = _build_with_settings(single_pass=False)
+    assert len(result) == 2
+    cmd1 = result[0].command
+    cmd2 = result[1].command
+    # First pass: CRF + pass 1 + null output
+    assert "-crf" in cmd1
+    assert "26" in cmd1
+    assert "-pass" in cmd1
+    assert "1" in cmd1
+    assert "-passlogfile" in cmd1
+    assert "-an" in cmd1
+    # Second pass: CRF + pass 2 + real output
+    assert "-crf" in cmd2
+    assert "26" in cmd2
+    assert "-pass" in cmd2
+    assert "2" in cmd2
+    assert "-passlogfile" in cmd2
+
+
+def test_aom_av1_single_pass_crf():
+    """Test single-pass CRF (default) produces one command."""
+    result = _build_with_settings(single_pass=True)
+    assert len(result) == 1
+    cmd = result[0].command
+    assert "-crf" in cmd
+    assert "-pass" not in cmd
+    assert "-passlogfile" not in cmd
+
+
 def test_aom_av1_all_elements_are_strings():
     """Test that all command elements are strings."""
     result = _build_with_settings()

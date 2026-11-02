@@ -106,6 +106,8 @@ class VCEENCCAVC(VCEPanel):
         qp_line.addLayout(self.init_decoder())
         qp_line.addStretch(1)
         qp_line.addLayout(self.init_metrics())
+        qp_line.addStretch(1)
+        qp_line.addLayout(self.init_qvbr_quality())
         grid.addLayout(qp_line, 6, 0, 1, 6)
 
         self.init_pa_row()
@@ -225,6 +227,16 @@ class VCEENCCAVC(VCEPanel):
         )
         return layout
 
+    def init_qvbr_quality(self):
+        return self._add_combo_box(
+            label="QVBR Quality",
+            widget_name="qvbr_quality",
+            tooltip="Quality based VBR (--qvbr), lower is higher quality. Replaces the Bitrate or QP selection above.\nOff uses the selected rate control mode",
+            options=["off"] + [str(x) for x in range(1, 52)],
+            opt="qvbr_quality",
+            min_width=60,
+        )
+
     def init_b_frames(self):
         return self._add_combo_box(
             widget_name="b_frames",
@@ -276,6 +288,7 @@ class VCEENCCAVC(VCEPanel):
             max_q=self.widgets.max_q.currentText() if self.widgets.max_q.currentIndex() != 0 else None,
             min_q=self.widgets.min_q.currentText() if self.widgets.min_q.currentIndex() != 0 else None,
             extra=self.ffmpeg_extras,
+            qvbr_quality=self.widgets.qvbr_quality.currentText(),
             metrics=self.widgets.metrics.isChecked(),
             level=self.widgets.level.currentText() if self.widgets.level.currentIndex() != 0 else None,
             b_frames=self.widgets.b_frames.currentText() if self.widgets.b_frames.currentIndex() != 0 else None,

@@ -249,3 +249,50 @@ def test_vvc_hdr10_all_elements_are_strings():
     cmd = result[0].command
     for i, element in enumerate(cmd):
         assert isinstance(element, str), f"Element at index {i} is {type(element).__name__}: {element!r}"
+
+
+def _params(cmd):
+    return cmd[cmd.index("-vvenc-params") + 1] if "-vvenc-params" in cmd else ""
+
+
+def _pass_value(cmd):
+    return cmd[cmd.index("-pass") + 1]
+
+
+def test_vvc_two_pass_uses_ffmpeg_pass_flags_not_vvenc_params():
+    """libvvenc.c rejects pass/passes/rcstatsfile inside vvenc-params; -pass and -passlogfile must be used."""
+    result = _build_with_settings(qp=None, bitrate="6000k")
+    cmd1, cmd2 = result[0].command, result[1].command
+    assert _pass_value(cmd1) == "1"
+    assert _pass_value(cmd2) == "2"
+    assert cmd1[cmd1.index("-passlogfile") + 1] == cmd2[cmd2.index("-passlogfile") + 1]
+    for cmd in (cmd1, cmd2):
+        params = _params(cmd).lower()
+        assert "pass=" not in params
+        assert "rcstatsfile" not in params
+
+
+def test_vvc_no_x265_vbv_keys_in_vvenc_params():
+    """vbv-maxrate/vbv-bufsize are unknown vvenc options (init fails); -maxrate/-bufsize come from generate_all."""
+    fastflix = create_fastflix_instance(
+        encoder_settings=VVCSettings(qp=22, bitrate=None, preset="medium", tier="main"),
+        video_settings=VideoSettings(remove_hdr=False, maxrate=5000, bufsize=10000),
+    )
+    with mock.patch("fastflix.encoders.vvc.command_builder.generate_all") as mock_gen:
+        mock_gen.return_value = (["ffmpeg", "-y", "-i", "input.mkv"], ["output.mkv"], [])
+        cmd = build(fastflix)[0].command
+    assert "vbv" not in _params(cmd)
+
+
+def test_vvc_mastering_display_uses_vvenc_integer_format():
+    result = _build_with_settings(hdr10=True, pix_fmt="yuv420p10le")
+    params = _params(result[0].command)
+    assert "MasteringDisplayColourVolume=" in params
+    assert "(" not in params
+
+
+def test_vvc_hdr_metadata_for_422_10bit():
+    result = _build_with_settings(hdr10=True, pix_fmt="yuv422p10le")
+    params = _params(result[0].command)
+    assert "MasteringDisplayColourVolume=" in params
+    assert "MaxContentLightLevel=1000,300" in params

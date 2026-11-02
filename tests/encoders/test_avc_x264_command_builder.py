@@ -421,3 +421,36 @@ def test_avc_x264_defaults_no_extra():
             assert "-psy-rd" not in cmd
             assert "-level" not in cmd
             assert "-x264-params" not in cmd
+
+
+def _x264_hdr_params(pix_fmt, remove_hdr=False, hdr10=True):
+    fastflix = create_fastflix_instance(
+        encoder_settings=x264Settings(crf=23, preset="medium", pix_fmt=pix_fmt, bitrate=None),
+        video_settings=VideoSettings(remove_hdr=remove_hdr, maxrate=None, bufsize=None),
+        hdr10_metadata=hdr10,
+    )
+    with mock.patch("fastflix.encoders.avc_x264.command_builder.generate_all") as mock_gen:
+        mock_gen.return_value = (["ffmpeg", "-y", "-i", "input.mkv"], ["output.mkv"], [])
+        cmd = build(fastflix)[0].command
+    return cmd[cmd.index("-x264-params") + 1] if "-x264-params" in cmd else ""
+
+
+def test_avc_x264_10bit_master_display_and_cll():
+    params = _x264_hdr_params("yuv420p10le")
+    assert "mastering-display=G(" in params
+    assert "cll=1000,300" in params
+
+
+def test_avc_x264_10bit_422_master_display():
+    assert "mastering-display=G(" in _x264_hdr_params("yuv422p10le")
+
+
+def test_avc_x264_8bit_no_hdr_metadata():
+    params = _x264_hdr_params("yuv420p")
+    assert "mastering-display" not in params
+    assert "cll=" not in params
+
+
+def test_avc_x264_remove_hdr_no_hdr_metadata():
+    params = _x264_hdr_params("yuv420p10le", remove_hdr=True)
+    assert "mastering-display" not in params

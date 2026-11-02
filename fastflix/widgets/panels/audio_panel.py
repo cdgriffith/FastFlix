@@ -19,6 +19,7 @@ from fastflix.shared import no_border, error_message, yes_no_message, clear_list
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.audio_processing import apply_audio_filters
 from fastflix.widgets.windows.audio_conversion import AudioConversion
+from fastflix.widgets.toggle_switch import ToggleSwitch
 from fastflix.widgets.windows.disposition import Disposition
 
 language_list = [v.name for v in iter_langs() if v.pt2b and v.pt1] + ["Undefined"]
@@ -52,6 +53,7 @@ codec_display_names = {
     "vorbis": "Vorbis",
     "libvorbis": "Vorbis",
     "mp3": "MP3",
+    "libfdk_aac": "FDK AAC",
     "libmp3lame": "MP3",
     "pcm_s16le": "PCM",
     "pcm_s24le": "PCM",
@@ -93,6 +95,16 @@ disposition_options = [
 ]
 
 
+def reindex_after_delete(tracks, deleted_index: int) -> None:
+    """Shift widget indexes that pointed past a deleted audio_tracks entry."""
+    for track in tracks:
+        if track.index > deleted_index:
+            track.index -= 1
+            disposition = getattr(track, "disposition_widget", None)
+            if disposition is not None and hasattr(disposition, "track_index"):
+                disposition.track_index = track.index
+
+
 class Audio(QtWidgets.QTabWidget):
     def __init__(
         self,
@@ -118,7 +130,7 @@ class Audio(QtWidgets.QTabWidget):
             audio_info=QtWidgets.QLabel(audio_track.friendly_info),
             up_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("up-arrow", self.app.fastflix.config.theme)), ""),
             down_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("down-arrow", self.app.fastflix.config.theme)), ""),
-            enable_check=QtWidgets.QCheckBox(t("Enabled")),
+            enable_check=ToggleSwitch(t("Enabled")),
             dup_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("onyx-copy", self.app.fastflix.config.theme)), ""),
             delete_button=QtWidgets.QPushButton(QtGui.QIcon(get_icon("black-x", self.app.fastflix.config.theme)), ""),
             language=QtWidgets.QComboBox(),
@@ -127,6 +139,15 @@ class Audio(QtWidgets.QTabWidget):
             disposition=QtWidgets.QPushButton(),
             conversion=QtWidgets.QPushButton(t("Conversion")),
         )
+
+        for button, label in (
+            (self.widgets.up_button, "Move Up"),
+            (self.widgets.down_button, "Move Down"),
+            (self.widgets.dup_button, "Duplicate"),
+            (self.widgets.delete_button, "Delete"),
+        ):
+            button.setToolTip(t(label))
+            button.setAccessibleName(t(label))
 
         self.widgets.up_button.setStyleSheet(no_border)
         self.widgets.down_button.setStyleSheet(no_border)
@@ -148,7 +169,8 @@ class Audio(QtWidgets.QTabWidget):
 
         self.widgets.language.currentIndexChanged.connect(self.page_update)
         self.widgets.title.setFixedWidth(scaler.scale(WIDTHS.AUDIO_TITLE))
-        self.widgets.title.textChanged.connect(self.page_update)
+        self.widgets.title.textChanged.connect(self.sync_title)
+        self.widgets.title.editingFinished.connect(self.page_update)
         # self.widgets.audio_info.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.widgets.audio_info.setFixedWidth(scaler.scale(WIDTHS.AUDIO_INFO))
 
@@ -255,6 +277,12 @@ class Audio(QtWidgets.QTabWidget):
         self.parent.reorder(update=True)
         # self.parent.parent.subtitles.reorder()
 
+    def sync_title(self):
+        """Keep the model's title current while typing; the full command rebuild waits for editingFinished."""
+        audio_tracks = self.app.fastflix.current_video.audio_tracks
+        if 0 <= self.index < len(audio_tracks):
+            audio_tracks[self.index].title = self.title
+
     def page_update(self):
         self.app.fastflix.current_video.audio_tracks[self.index].title = self.title
         self.app.fastflix.current_video.audio_tracks[self.index].language = self.language
@@ -310,8 +338,9 @@ class Audio(QtWidgets.QTabWidget):
         self.parent.reorder()
 
     def del_me(self):
-        self.parent.remove_track(self)
         del self.app.fastflix.current_video.audio_tracks[self.index]
+        reindex_after_delete([x for x in self.parent.tracks if x is not self], self.index)
+        self.parent.remove_track(self)
         self.parent.reorder(update=True)
 
     def set_outdex(self, outdex):
@@ -324,13 +353,16 @@ class Audio(QtWidgets.QTabWidget):
             self.widgets.track_number.setText(f"{audio_track.index}:{audio_track.outdex}")
 
     def close(self) -> bool:
-        del self.widgets
+        if hasattr(self, "widgets"):
+            del self.widgets
         return super().close()
 
-    def update_track(self, conversion=None, bitrate=None, downmix=None, title=None):
+    def update_track(self, conversion=None, bitrate=None, downmix=None, title=None, conversion_profile=None):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if conversion:
             audio_track.conversion_codec = conversion
+        if conversion_profile:
+            audio_track.conversion_profile = conversion_profile
         if bitrate:
             audio_track.conversion_bitrate = bitrate
         if downmix:
@@ -344,7 +376,10 @@ class Audio(QtWidgets.QTabWidget):
         audio_track: AudioTrack = self.app.fastflix.current_video.audio_tracks[self.index]
         if audio_track.conversion_codec:
             self.widgets.conversion.setStyleSheet(get_onyx_disposition_style(enabled=True))
-            self.widgets.conversion.setText(t("Conversion") + f": {audio_track.conversion_codec}")
+            profile_display = {"aac_he": " (HE-AAC)", "aac_he_v2": " (HE-AAC v2)"}.get(
+                audio_track.conversion_profile, ""
+            )
+            self.widgets.conversion.setText(t("Conversion") + f": {audio_track.conversion_codec}{profile_display}")
         else:
             self.widgets.conversion.setStyleSheet(get_onyx_disposition_style(enabled=False))
             self.widgets.conversion.setText(t("Conversion"))
@@ -476,6 +511,7 @@ class AudioList(FlixList):
             enabled=True,
             downmix=None,
             conversion=None,
+            conversion_profile=None,
             bitrate=None,
             title_mode=None,
             custom_title=None,
@@ -510,6 +546,7 @@ class AudioList(FlixList):
                     friendly_info=track_info,
                     downmix=downmix,
                     conversion_codec=conversion,
+                    conversion_profile=conversion_profile,
                     conversion_bitrate=bitrate,
                     dispositions={k: bool(v) for k, v in audio_track.disposition.items()},
                 )
@@ -577,6 +614,7 @@ class AudioList(FlixList):
                     self.tracks[track_pos].update_track(
                         downmix=track[1].downmix,
                         conversion=track[1].conversion,
+                        conversion_profile=track[1].conversion_profile,
                         bitrate=track[1].bitrate,
                         title=title,
                     )
@@ -594,6 +632,7 @@ class AudioList(FlixList):
                             enabled=True,
                             og=False,
                             conversion=track[1].conversion,
+                            conversion_profile=track[1].conversion_profile,
                             bitrate=track[1].bitrate,
                             downmix=track[1].downmix,
                             title_mode=track[1].title_mode,

@@ -83,10 +83,15 @@ class AV1(SettingPanel):
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         grid.addLayout(self.init_denoise(), 5, 2, 1, 4)
         grid.addLayout(self.init_aom_params(), 6, 2, 1, 4)
-        grid.addLayout(self.init_hdr10plus_row(), 7, 2, 1, 4)
+        checkboxes = QtWidgets.QHBoxLayout()
+        checkboxes.addLayout(self.init_single_pass())
+        checkboxes.addStretch(1)
+        checkboxes.addLayout(self.init_lossless())
+        grid.addLayout(checkboxes, 7, 2, 1, 4)
+        grid.addLayout(self.init_hdr10plus_row(), 8, 2, 1, 4)
 
         self.ffmpeg_level = QtWidgets.QLabel()
-        grid.addWidget(self.ffmpeg_level, 8, 2, 1, 4)
+        grid.addWidget(self.ffmpeg_level, 9, 2, 1, 4)
 
         custom_layout = self._add_custom()
         guide_label = QtWidgets.QLabel(
@@ -310,6 +315,38 @@ class AV1(SettingPanel):
             except Exception:
                 pass
 
+    def init_single_pass(self):
+        return self._add_check_box(
+            label="Single Pass (uncheck for 2-pass CRF)",
+            widget_name="single_pass",
+            tooltip="Uncheck for 2-pass encoding which improves quality at the cost of encoding time",
+            opt="single_pass",
+        )
+
+    def init_lossless(self):
+        layout = self._add_check_box(
+            label="Lossless",
+            widget_name="lossless",
+            tooltip=(
+                "Enable lossless encoding mode.\n"
+                "Produces bit-exact output with no quality loss.\n"
+                "Rate control options are ignored in lossless mode."
+            ),
+            opt="lossless",
+            connect=lambda: (self._toggle_lossless(), self.main.page_update(build_thumbnail=False)),
+        )
+        return layout
+
+    def _toggle_lossless(self):
+        enabled = not self.widgets.lossless.isChecked()
+        self.qp_radio.setEnabled(enabled)
+        self.bitrate_radio.setEnabled(enabled)
+        self.widgets.crf.setEnabled(enabled)
+        self.widgets.custom_crf.setEnabled(enabled)
+        self.widgets.bitrate.setEnabled(enabled)
+        self.widgets.custom_bitrate.setEnabled(enabled)
+        self.widgets.single_pass.setEnabled(enabled)
+
     def init_modes(self):
         return self._add_modes(recommended_bitrates, recommended_crfs, qp_name="crf")
 
@@ -342,9 +379,11 @@ class AV1(SettingPanel):
             max_muxing_queue_size=self.widgets.max_mux.currentText(),
             pix_fmt=self.widgets.pix_fmt.currentText().split(":")[1].strip(),
             denoise_noise_level=denoise_noise_level,
+            single_pass=self.widgets.single_pass.isChecked(),
             extra=self.ffmpeg_extras,
             extra_both_passes=self.widgets.extra_both_passes.isChecked(),
             aom_params=aom_params_text.split(":") if aom_params_text else [],
+            lossless=self.widgets.lossless.isChecked(),
         )
         encode_type, q_value = self.get_mode_settings()
         settings.crf = q_value if encode_type == "qp" else None

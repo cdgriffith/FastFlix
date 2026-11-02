@@ -80,4 +80,33 @@ def apply_audio_filters(
                 else:
                     tracks.extend(subset_tracks)
 
+        elif audio_match.match_item == MatchItem.CODEC:
+            subset_tracks = []
+            for track in original_tracks:
+                if audio_match.match_input.lower() == track.codec_name.lower():
+                    subset_tracks.append((track, audio_match))
+            if subset_tracks:
+                if audio_match.match_type == MatchType.FIRST:
+                    tracks.append(subset_tracks[0])
+                elif audio_match.match_type == MatchType.LAST:
+                    tracks.append(subset_tracks[-1])
+                else:
+                    tracks.extend(subset_tracks)
+
+        elif audio_match.match_item == MatchItem.CODEC_PROFILE:
+            subset_tracks = []
+            match_codec, _, match_profile = audio_match.match_input.partition(":")
+            for track in original_tracks:
+                if match_codec.lower() == track.codec_name.lower():
+                    track_profile = track.get("profile", "") or ""
+                    if match_profile.lower() == track_profile.lower():
+                        subset_tracks.append((track, audio_match))
+            if subset_tracks:
+                if audio_match.match_type == MatchType.FIRST:
+                    tracks.append(subset_tracks[0])
+                elif audio_match.match_type == MatchType.LAST:
+                    tracks.append(subset_tracks[-1])
+                else:
+                    tracks.extend(subset_tracks)
+
     return sorted(tracks, key=lambda x: x[0].index)

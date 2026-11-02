@@ -7,7 +7,7 @@ from box import __version__ as box_version
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from fastflix.language import t
-from fastflix.shared import base_path, link, pyinstaller
+from fastflix.shared import base_path, bundled_mode, go_launcher, link
 from fastflix.version import __version__
 
 __all__ = ["About"]
@@ -63,14 +63,23 @@ class About(QtWidgets.QWidget):
         supporting_libraries_label.setOpenExternalLinks(True)
         layout.addWidget(supporting_libraries_label)
 
-        if pyinstaller:
-            pyinstaller_label = QtWidgets.QLabel(
-                f"{t('Packaged with')}: {link('https://www.pyinstaller.org/index.html', 'PyInstaller', app.fastflix.config.theme)}"
-            )
-            pyinstaller_label.setAlignment(QtCore.Qt.AlignCenter)
-            pyinstaller_label.setOpenExternalLinks(True)
+        if bundled_mode:
+            if go_launcher:
+                packaged_text = (
+                    f"{t('Packaged with')}: "
+                    f"{link('https://go.dev/', 'Go Launcher', app.fastflix.config.theme)} + "
+                    f"{link('https://www.python.org/', t('Embeddable Python'), app.fastflix.config.theme)}"
+                )
+            else:
+                packaged_text = (
+                    f"{t('Packaged with')}: "
+                    f"{link('https://www.pyinstaller.org/index.html', 'PyInstaller', app.fastflix.config.theme)}"
+                )
+            packaged_label = QtWidgets.QLabel(packaged_text)
+            packaged_label.setAlignment(QtCore.Qt.AlignCenter)
+            packaged_label.setOpenExternalLinks(True)
             layout.addWidget(QtWidgets.QLabel())
-            layout.addWidget(pyinstaller_label)
+            layout.addWidget(packaged_label)
 
         license_label = QtWidgets.QLabel(
             link(

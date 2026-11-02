@@ -5,6 +5,7 @@ from PySide6 import QtWidgets
 
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.widgets.toggle_switch import ToggleSwitch
 
 __all__ = ["Disposition"]
 
@@ -38,9 +39,9 @@ class Disposition(QtWidgets.QWidget):
 
         self.setMinimumWidth(200)
 
-        self.forced = QtWidgets.QCheckBox(t("Forced"))
+        self.forced = ToggleSwitch(t("Forced"))
 
-        self.default = QtWidgets.QCheckBox(t("Default"))
+        self.default = ToggleSwitch(t("Default"))
 
         track = self.get_track()
         self.forced.setChecked(track.dispositions.get("forced", False))

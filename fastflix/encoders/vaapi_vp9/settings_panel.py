@@ -39,6 +39,7 @@ class VAAPIVP9(VAAPIPanel):
 
         grid.addLayout(self.init_rc_mode(), 1, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 2, 0, 1, 2)
+        grid.addLayout(self.init_bit_depth(), 3, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         # grid.addLayout(self.init_vaapi_device(), 5, 2, 1, 1)
@@ -79,6 +80,7 @@ class VAAPIVP9(VAAPIPanel):
             low_power=self.widgets.low_power.isChecked(),
             idr_interval=self.widgets.idr_interval.text(),
             b_depth=self.widgets.b_depth.text(),
+            bit_depth=self.widgets.bit_depth.currentText(),
             rc_mode=self.widgets.rc_mode.currentText(),
         )
         encode_type, q_value = self.get_mode_settings()

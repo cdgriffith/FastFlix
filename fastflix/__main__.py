@@ -37,11 +37,16 @@ def setup_ocr_environment():
 
 def start_fastflix():
     exit_code = 2
-    portable_mode = True
-    try:
-        from fastflix import portable  # noqa: F401
-    except ImportError:
-        portable_mode = False
+
+    # Portable mode: Go launcher sets FASTFLIX_PORTABLE=1, PyInstaller uses portable.py import
+    portable_mode = os.environ.get("FASTFLIX_PORTABLE") == "1"
+    if not portable_mode:
+        try:
+            from fastflix import portable  # noqa: F401
+
+            portable_mode = True
+        except ImportError:
+            pass
 
     if portable_mode:
         print("PORTABLE MODE DETECTED: now using local config file and workspace in same directory as the executable")

@@ -3,6 +3,7 @@ import gc
 import logging
 import os
 import shutil
+from datetime import datetime
 import tempfile
 import threading
 import time
@@ -43,6 +44,7 @@ def queue_file_lock(queue_file: Path, timeout: float = 30.0):
     lock_file = queue_file.with_suffix(".lock")
     start_time = time.time()
     lock_acquired = False
+    lock_token = f"{os.getpid()}:{uuid.uuid4().hex}"
 
     # First acquire the in-process lock
     with _queue_file_lock:
@@ -52,7 +54,7 @@ def queue_file_lock(queue_file: Path, timeout: float = 30.0):
                 # Try to create lock file exclusively
                 # os.O_CREAT | os.O_EXCL fails if file exists
                 fd = os.open(str(lock_file), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-                os.write(fd, str(os.getpid()).encode())
+                os.write(fd, lock_token.encode())
                 os.close(fd)
                 lock_acquired = True
                 break
@@ -62,10 +64,15 @@ def queue_file_lock(queue_file: Path, timeout: float = 30.0):
                     if lock_file.exists():
                         age = time.time() - lock_file.stat().st_mtime
                         if age > 60:
-                            # Stale lock, remove it
-                            logger.warning(f"Removing stale queue lock file (age: {age:.1f}s)")
-                            lock_file.unlink(missing_ok=True)
-                            continue
+                            # Best effort: skip removal if the lock changed since we looked. Not atomic, but the release
+                            # path only deletes a lock that still carries its own token, which limits the damage.
+                            stale_content = lock_file.read_text()
+                            if lock_file.read_text() == stale_content and time.time() - lock_file.stat().st_mtime > 60:
+                                logger.warning(
+                                    f"Removing stale queue lock file (age: {age:.1f}s, owner: {stale_content!r})"
+                                )
+                                lock_file.unlink(missing_ok=True)
+                                continue
                 except OSError:
                     pass
                 time.sleep(0.1)
@@ -82,9 +89,12 @@ def queue_file_lock(queue_file: Path, timeout: float = 30.0):
         try:
             yield True
         finally:
-            # Release the lock
+            # Release the lock, but only if it is still ours
             try:
-                lock_file.unlink(missing_ok=True)
+                if lock_file.read_text() == lock_token:
+                    lock_file.unlink(missing_ok=True)
+                else:
+                    logger.warning("Queue lock file changed while held, leaving it in place")
             except OSError:
                 pass
 
@@ -245,9 +255,62 @@ def set_current_generation(queue_file: Path, generation: str):
     _generation_tracker[str(queue_file)] = generation
 
 
+def _settings_class_by_name(name):
+    for cls in setting_types.values():
+        if cls.model_fields["name"].default == name:
+            return cls
+    raise KeyError(f"Unknown encoder settings name: {name!r}")
+
+
+def _cleanup_stale_tmp_files(queue_file: Path, max_age: float = 600.0):
+    try:
+        for tmp_file in queue_file.parent.glob("queue_*.yaml.tmp"):
+            try:
+                if time.time() - tmp_file.stat().st_mtime > max_age:
+                    tmp_file.unlink()
+                    logger.info(f"Removed leftover temporary queue file {tmp_file}")
+            except OSError:
+                pass
+    except OSError:
+        pass
+
+
+def _load_queue_item(video) -> Video:
+    video["source"] = Path(video["source"])
+    video["work_path"] = Path(video["work_path"])
+    video["video_settings"]["output_path"] = Path(video["video_settings"]["output_path"])
+    encoder_settings = video["video_settings"]["video_encoder_settings"]
+    ves = _settings_class_by_name(encoder_settings["name"])(**encoder_settings)
+    attachments = []
+    for x in video["attachment_tracks"]:
+        try:
+            attachment_path = x.pop("file_path")
+        except KeyError:
+            attachment_path = None
+        attachment = AttachmentTrack(**x)
+        attachment.file_path = str(attachment_path) if attachment_path else None
+        attachments.append(attachment)
+    status = Status(**video["status"])
+    crop = None
+    if video["video_settings"]["crop"]:
+        crop = Crop(**video["video_settings"]["crop"])
+    del video["video_settings"]["video_encoder_settings"]
+    del video["status"]
+    del video["video_settings"]["crop"]
+    vs = VideoSettings(
+        **video["video_settings"],
+        crop=crop,
+    )
+    vs.video_encoder_settings = ves  # No idea why this has to be called after, otherwise reset to x265
+    del video["video_settings"]
+    return Video(**video, video_settings=vs, status=status)
+
+
 def get_queue(queue_file: Path) -> list[Video]:
     if not queue_file.exists():
         return []
+
+    _cleanup_stale_tmp_files(queue_file)
 
     try:
         loaded = Box.from_yaml(filename=queue_file)
@@ -259,38 +322,38 @@ def get_queue(queue_file: Path) -> list[Video]:
     if "_generation" in loaded:
         set_current_generation(queue_file, loaded["_generation"])
 
+    if "queue" not in loaded:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        error_file = queue_file.parent / f"queue_error_{timestamp}.yaml"
+        try:
+            shutil.copy2(queue_file, error_file)
+            logger.warning(
+                f"Queue file is missing 'queue' key, cannot load. "
+                f"Saved copy to: {error_file} — "
+                f"please raise an issue at https://github.com/cdgriffith/FastFlix/issues and attach this file"
+            )
+        except OSError:
+            logger.warning("Queue file is missing 'queue' key, cannot load. Could not save a copy of the file.")
+        return []
+
     queue = []
-    for video in loaded["queue"]:
-        video["source"] = Path(video["source"])
-        video["work_path"] = Path(video["work_path"])
-        video["video_settings"]["output_path"] = Path(video["video_settings"]["output_path"])
-        encoder_settings = video["video_settings"]["video_encoder_settings"]
-        ves = [x(**encoder_settings) for x in setting_types.values() if x().name == encoder_settings["name"]][0]
-        # audio = [AudioTrack(**x) for x in video["audio_tracks"]]
-        # subtitles = [SubtitleTrack(**x) for x in video["subtitle_tracks"]]
-        attachments = []
-        for x in video["attachment_tracks"]:
-            try:
-                attachment_path = x.pop("file_path")
-            except KeyError:
-                attachment_path = None
-            attachment = AttachmentTrack(**x)
-            attachment.file_path = str(attachment_path) if attachment_path else None
-            attachments.append(attachment)
-        status = Status(**video["status"])
-        crop = None
-        if video["video_settings"]["crop"]:
-            crop = Crop(**video["video_settings"]["crop"])
-        del video["video_settings"]["video_encoder_settings"]
-        del video["status"]
-        del video["video_settings"]["crop"]
-        vs = VideoSettings(
-            **video["video_settings"],
-            crop=crop,
-        )
-        vs.video_encoder_settings = ves  # No idea why this has to be called after, otherwise reset to x265
-        del video["video_settings"]
-        queue.append(Video(**video, video_settings=vs, status=status))
+    skipped = 0
+    for index, video in enumerate(loaded["queue"]):
+        try:
+            queue.append(_load_queue_item(video))
+        except Exception:
+            skipped += 1
+            logger.exception(f"Skipping queue item #{index + 1} that could not be loaded")
+    if skipped:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        error_file = queue_file.parent / f"queue_error_{timestamp}.yaml"
+        try:
+            shutil.copy2(queue_file, error_file)
+            logger.warning(
+                f"Skipped {skipped} unreadable queue item(s). Saved a copy of the original queue to: {error_file}"
+            )
+        except OSError:
+            logger.warning(f"Skipped {skipped} unreadable queue item(s). Could not save a copy of the original queue.")
     del loaded
     return queue
 
@@ -378,8 +441,8 @@ def save_queue(
             current_file_generation = get_queue_generation(queue_file)
             if current_file_generation is not None and current_file_generation != expected_generation:
                 logger.error(
-                    f"Queue file generation mismatch! Expected '{expected_generation}', "
-                    f"but file has '{current_file_generation}'. "
+                    f"Queue save dropped: generation mismatch for {queue_file}! Expected '{expected_generation}', "
+                    f"but file has '{current_file_generation}' ({len(items)} item(s) not saved). "
                     "Another save completed between queue and execution. "
                     "Skipping this save to avoid overwriting newer data."
                 )
@@ -403,9 +466,7 @@ def save_queue(
                 tmp.to_yaml(filename=temp_path)
                 del tmp
 
-                # Atomic rename (on POSIX this is atomic, on Windows it replaces)
-                # Use shutil.move for cross-platform compatibility
-                shutil.move(temp_path, queue_file)
+                os.replace(temp_path, queue_file)
 
                 # Update the generation tracker after successful save
                 set_current_generation(queue_file, new_generation)

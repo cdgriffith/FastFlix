@@ -16,8 +16,13 @@ def image_type(file: Path | str) -> tuple[str | None, str | None]:
     return mime_type, ext_type
 
 
-def build_attachments(attachments: list[AttachmentTrack]) -> List[str]:
+def build_attachments(attachments: list[AttachmentTrack], mapped_attachment_count: int = 0) -> List[str]:
+    """
+    FFmpeg creates -attach streams after all mapped streams, so address them by attachment-type index
+    (after any attachment streams mapped from the source) rather than a stored absolute stream index.
+    """
     commands = []
+    attachment_index = mapped_attachment_count
     for attachment in attachments:
         if attachment.attachment_type == "cover":
             mime_type, ext_type = image_type(attachment.file_path)
@@ -25,10 +30,11 @@ def build_attachments(attachments: list[AttachmentTrack]) -> List[str]:
                 [
                     "-attach",
                     str(attachment.file_path),
-                    f"-metadata:s:{attachment.outdex}",
+                    f"-metadata:s:t:{attachment_index}",
                     f"mimetype={mime_type}",
-                    f"-metadata:s:{attachment.outdex}",
+                    f"-metadata:s:t:{attachment_index}",
                     f"filename={attachment.filename}.{ext_type}",
                 ]
             )
+            attachment_index += 1
     return commands

@@ -2,85 +2,32 @@
 import secrets
 import shlex
 
-from fastflix.encoders.common.helpers import Command, generate_all, null
+from fastflix.encoders.common.hdr_metadata import (
+    chromaloc_mapping,
+    color_matrix_mapping,
+    color_primaries_mapping,
+    color_transfer_mapping,
+    is_hdr_bit_depth,
+    parse_master_display,
+    valid_color_matrix,
+    valid_color_primaries,
+    valid_color_transfers,
+)
+from fastflix.encoders.common.helpers import Command, generate_all, hevc_tag_args, null
 from fastflix.models.encode import x265Settings
 from fastflix.models.fastflix import FastFlix
 
-x265_valid_color_primaries = [
-    "bt709",
-    "unknown",
-    "reserved",
-    "bt470m",
-    "bt470bg",
-    "smpte170m",
-    "smpte240m",
-    "film",
-    "bt2020",
-    "smpte428",
-    "smpte431",
-    "smpte432",
-]
 
-x265_valid_color_transfers = [
-    "bt709",
-    "unknown",
-    "reserved",
-    "bt470m",
-    "bt470bg",
-    "smpte170m",
-    "smpte240m",
-    "linear",
-    "log100",
-    "log316",
-    "iec61966-2-4",
-    "bt1361e",
-    "iec61966-2-1",
-    "bt2020-10",
-    "bt2020-12",
-    "smpte2084",
-    "smpte428",
-    "arib-std-b67",
-]
-
-x265_valid_color_matrix = [
-    "gbr",
-    "bt709",
-    "unknown",
-    "reserved",
-    "fcc",
-    "bt470bg",
-    "smpte170m",
-    "smpte240m",
-    "ycgco",
-    "bt2020nc",
-    "bt2020c",
-    "smpte2085",
-    "chroma-derived-nc",
-    "chroma-derived-c",
-    "ictcp",
-]
-
-color_primaries_mapping = {"smpte428_1": "smpte428"}
-
-color_transfer_mapping = {
-    "iec61966_2_4": "iec61966-2-4",
-    "iec61966_2_1": "iec61966-2-1",
-    "bt2020_10": "bt2020-10",
-    "bt2020_10bit": "bt2020-10",
-    "bt2020_12": "bt2020-12",
-    "bt2020_12bit": "bt2020-12",
-    "smpte428_1": "smpte428",
-}
-
-color_matrix_mapping = {"bt2020_ncl": "bt2020nc", "bt2020_cl": "bt2020c"}
-
-chromaloc_mapping = {"left": 0, "center": 1, "topleft": 2, "top": 3, "bottomleft": 4, "bottom": 5}
+def quote_x265_value(value: str) -> str:
+    """Single-quote a value for -x265-params (ffmpeg splits on ':' and honours quotes, so 'C:/x' is kept whole)."""
+    return "'" + str(value).replace("'", "'\\''") + "'"
 
 
 def build(fastflix: FastFlix):
     settings: x265Settings = fastflix.current_video.video_settings.video_encoder_settings
 
     beginning, ending, output_fps = generate_all(fastflix, "libx265")
+    beginning.extend(hevc_tag_args(fastflix.current_video.video_settings.output_path))
 
     if settings.tune and settings.tune != "default":
         beginning.extend(["-tune:v", settings.tune])
@@ -101,7 +48,7 @@ def build(fastflix: FastFlix):
         if fastflix.current_video.video_settings.color_primaries:
             x265_params.append(f"colorprim={fastflix.current_video.video_settings.color_primaries}")
         elif fastflix.current_video.color_primaries:
-            if fastflix.current_video.color_primaries in x265_valid_color_primaries:
+            if fastflix.current_video.color_primaries in valid_color_primaries:
                 x265_params.append(f"colorprim={fastflix.current_video.color_primaries}")
             elif fastflix.current_video.color_primaries in color_primaries_mapping:
                 x265_params.append(f"colorprim={color_primaries_mapping[fastflix.current_video.color_primaries]}")
@@ -109,7 +56,7 @@ def build(fastflix: FastFlix):
         if fastflix.current_video.video_settings.color_transfer:
             x265_params.append(f"transfer={fastflix.current_video.video_settings.color_transfer}")
         elif fastflix.current_video.color_transfer:
-            if fastflix.current_video.color_transfer in x265_valid_color_transfers:
+            if fastflix.current_video.color_transfer in valid_color_transfers:
                 x265_params.append(f"transfer={fastflix.current_video.color_transfer}")
             elif fastflix.current_video.color_transfer in color_transfer_mapping:
                 x265_params.append(f"transfer={color_transfer_mapping[fastflix.current_video.color_transfer]}")
@@ -117,30 +64,25 @@ def build(fastflix: FastFlix):
         if fastflix.current_video.video_settings.color_space:
             x265_params.append(f"colormatrix={fastflix.current_video.video_settings.color_space}")
         elif fastflix.current_video.color_space:
-            if fastflix.current_video.color_space in x265_valid_color_matrix:
+            if fastflix.current_video.color_space in valid_color_matrix:
                 x265_params.append(f"colormatrix={fastflix.current_video.color_space}")
             elif fastflix.current_video.color_space in color_matrix_mapping:
                 x265_params.append(f"colormatrix={color_matrix_mapping[fastflix.current_video.color_space]}")
 
-        if settings.pix_fmt in ("yuv420p10le", "yuv420p12le"):
+        if is_hdr_bit_depth(settings.pix_fmt):
+            hdr10 = settings.hdr10
             x265_params.append(f"hdr10_opt={'1' if settings.hdr10_opt else '0'}")
 
-            if fastflix.current_video.master_display:
-                settings.hdr10 = True
-                x265_params.append(
-                    "master-display="
-                    f"G{fastflix.current_video.master_display.green}"
-                    f"B{fastflix.current_video.master_display.blue}"
-                    f"R{fastflix.current_video.master_display.red}"
-                    f"WP{fastflix.current_video.master_display.white}"
-                    f"L{fastflix.current_video.master_display.luminance}"
-                )
+            master_display = parse_master_display(fastflix.current_video.master_display)
+            if master_display:
+                hdr10 = True
+                x265_params.append(f"master-display={master_display.to_x265()}")
 
             if fastflix.current_video.cll:
-                settings.hdr10 = True
+                hdr10 = True
                 x265_params.append(f"max-cll={fastflix.current_video.cll}")
 
-            x265_params.append(f"hdr10={'1' if settings.hdr10 else '0'}")
+            x265_params.append(f"hdr10={'1' if hdr10 else '0'}")
 
         current_chroma_loc = fastflix.current_video.current_video_stream.get("chroma_location")
         if current_chroma_loc in chromaloc_mapping:
@@ -164,10 +106,9 @@ def build(fastflix: FastFlix):
         x265_params.append(f"vbv-maxrate={fastflix.current_video.video_settings.maxrate}")
         x265_params.append(f"vbv-bufsize={fastflix.current_video.video_settings.bufsize}")
 
-    if fastflix.current_video.cll:
-        pass
-
-    pass_log_file = f"pass_log_file_{secrets.token_hex(10)}.log"
+    pass_log_file = quote_x265_value(
+        (fastflix.current_video.work_path / f"pass_log_file_{secrets.token_hex(10)}.log").as_posix()
+    )
 
     def get_x265_params(params=()):
         if not isinstance(params, (list, tuple)):
@@ -177,6 +118,11 @@ def build(fastflix: FastFlix):
 
     extra = shlex.split(settings.extra) if settings.extra else []
     extra_both = shlex.split(settings.extra) if settings.extra and settings.extra_both_passes else []
+
+    if settings.lossless:
+        # Lossless mode — no rate control needed, x265 handles it via lossless=1 param
+        command = beginning + get_x265_params() + ["-preset:v", settings.preset] + extra + ending
+        return [Command(command=command, name="Single pass lossless", exe="ffmpeg")]
 
     if settings.bitrate:
         if settings.bitrate_passes == 2:

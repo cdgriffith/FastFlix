@@ -41,6 +41,7 @@ class VAAPIHEVC(VAAPIPanel):
         # grid.addLayout(self.init_tile_rows(), 2, 0, 1, 2) # profile
         grid.addLayout(self.init_level(), 2, 0, 1, 2)
         grid.addLayout(self.init_max_mux(), 3, 0, 1, 2)
+        grid.addLayout(self.init_bit_depth(), 4, 0, 1, 2)
 
         grid.addLayout(self.init_modes(), 0, 2, 5, 4)
         # grid.addLayout(self.init_vaapi_device(), 5, 2, 1, 1)
@@ -88,6 +89,7 @@ class VAAPIHEVC(VAAPIPanel):
             b_depth=self.widgets.b_depth.text(),
             async_depth=self.widgets.async_depth.currentText(),
             aud=self.widgets.aud.isChecked(),
+            bit_depth=self.widgets.bit_depth.currentText(),
             level=None if self.widgets.level.currentIndex() == 0 else self.widgets.level.currentText(),
             rc_mode=self.widgets.rc_mode.currentText(),
         )

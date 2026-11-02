@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from unittest import mock
 
-from fastflix.encoders.common.helpers import null
 from fastflix.encoders.ffmpeg_hevc_nvenc.command_builder import build
 from fastflix.models.encode import FFmpegNVENCSettings
 from fastflix.models.video import VideoSettings
@@ -63,7 +62,7 @@ def test_ffmpeg_hevc_nvenc_qp():
             assert "28" in cmd
             assert "-preset:v" in cmd
             assert "slow" in cmd
-            assert "-spatial_aq:v" in cmd
+            assert "-spatial-aq:v" in cmd
             assert "-tier:v" in cmd
             assert "main" in cmd
             assert "-profile:v" in cmd
@@ -109,39 +108,19 @@ def test_ffmpeg_hevc_nvenc_bitrate():
         ) as mock_generate_color_details:
             mock_generate_color_details.return_value = ["-color_primaries", "bt2020"]
 
-            # Mock the secrets.token_hex function to return a predictable result
-            with mock.patch("fastflix.encoders.ffmpeg_hevc_nvenc.command_builder.secrets.token_hex") as mock_token_hex:
-                mock_token_hex.return_value = "abcdef1234"
+            result = build(fastflix)
 
-                result = build(fastflix)
+            assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
+            assert len(result) == 1, f"Expected 1 Command object, got {len(result)}"
 
-                assert isinstance(result, list), f"Expected a list of Command objects, got {type(result)}"
-                assert len(result) == 2, f"Expected 2 Command objects, got {len(result)}"
-
-                cmd1 = result[0].command
-                cmd2 = result[1].command
-                assert isinstance(cmd1, list), f"Expected command to be a list, got {type(cmd1)}"
-                assert isinstance(cmd2, list), f"Expected command to be a list, got {type(cmd2)}"
-
-                # First pass
-                assert "-pass" in cmd1
-                assert "1" in cmd1[cmd1.index("-pass") + 1 :][:1]
-                assert "-b:v" in cmd1
-                assert "6000k" in cmd1
-                assert "-2pass" in cmd1
-                assert "-an" in cmd1
-                assert "-sn" in cmd1
-                assert "-dn" in cmd1
-                assert "-f" in cmd1
-                assert "mp4" in cmd1
-                assert null in cmd1
-
-                # Second pass
-                assert "-pass" in cmd2
-                assert "2" in cmd2[cmd2.index("-pass") + 1 :][:1]
-                assert "-b:v" in cmd2
-                assert "6000k" in cmd2
-                assert "output.mkv" in cmd2
+            cmd = result[0].command
+            assert "-b:v" in cmd
+            assert "6000k" in cmd
+            # FFmpeg NVENC does not support -pass/-2pass; two-pass is done internally via -multipass
+            assert "-pass" not in cmd
+            assert "-2pass" not in cmd
+            assert "-multipass:v" in cmd
+            assert "output.mkv" in cmd
 
 
 def test_ffmpeg_hevc_nvenc_with_rc_level():
@@ -199,7 +178,7 @@ def test_ffmpeg_hevc_nvenc_with_rc_level():
             assert "vbr" in cmd
             assert "-level:v" in cmd
             assert "5.1" in cmd
-            assert "-spatial_aq:v" in cmd
+            assert "-spatial-aq:v" in cmd
             assert "1" in cmd
             assert "-tier:v" in cmd
             assert "high" in cmd

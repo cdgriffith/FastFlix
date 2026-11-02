@@ -27,13 +27,45 @@ channel_list = {
     "7.0(front)": 7,
     "7.1": 8,
     "7.1(wide)": 8,
+    "2.2": 4,
+    "3.1.2": 6,
+    "4.1": 5,
+    "5.0(side)": 5,
+    "5.1.2": 8,
+    "5.1.4": 10,
+    "6.1(back)": 7,
+    "7.1(wide-side)": 8,
+    "7.1.2": 10,
+    "7.1.4": 12,
+    "7.2.3": 12,
+    "9.1.4": 14,
+    "9.1.6": 16,
+    "octagonal": 8,
+    "cube": 8,
+    "hexadecagonal": 16,
+    "downmix": 2,
+    "22.2": 24,
 }
+
+
+def channels_for_layout(layout, channels=None):
+    """Channel count for an ffprobe layout name, falling back to the stream's ``channels`` field."""
+    if layout in channel_list:
+        return channel_list[layout]
+    if isinstance(channels, int) and channels > 0:
+        return channels
+    return None
+
+
+# Encoder bitrate ceilings in kbps (ac3enc.c: AC-3 tops out at 640k, E-AC-3 at 128 * sample_rate bits/s = 6144k @48kHz)
+max_bitrate_kbps = {"ac3": 640, "eac3": 6144}
 
 lossless = ["flac", "truehd", "alac", "tta", "wavpack", "mlp"]
 
 
 def audio_quality_converter(quality, codec, channels=2, track_number=1):
     base = [120, 96, 72, 48, 24, 24, 16, 8, 8, 8][quality]
+    channels = channels or 2
 
     match codec:
         case "libopus":
@@ -47,9 +79,36 @@ def audio_quality_converter(quality, codec, channels=2, track_number=1):
         case "libmp3lame" | "mp3":
             return f"-q:{track_number} {quality}"
         case "ac3" | "eac3" | "truehd":
-            return f"-b:{track_number} {base * channels * 4}k"
+            bitrate = base * channels * 4
+            if codec in max_bitrate_kbps:
+                bitrate = min(bitrate, max_bitrate_kbps[codec])
+            return f"-b:{track_number} {bitrate}k"
         case _:
             return f"-b:{track_number} {base * channels}k"
+
+
+AAC_HE_PROFILES = ("aac_he", "aac_he_v2")
+
+
+def resolve_aac_profile(codec: str, profile, channels=None):
+    """Return the AAC profile that is safe to request, or None for the encoder default.
+
+    - HE-AAC / HE-AACv2 are only supported by libfdk_aac. FFmpeg's native ``aac`` encoder fails with
+      "Invalid argument" (-22) when asked for them, so the profile is dropped for every other codec.
+    - HE-AACv2 (Parametric Stereo) requires exactly 2 channels; for any other channel count it falls back
+      to HE-AAC (v1), which supports mono and multichannel.
+    """
+    if not profile:
+        return None
+    if codec != "libfdk_aac":
+        if profile in AAC_HE_PROFILES:
+            logger.warning(f"AAC profile {profile} is only supported by libfdk_aac, ignoring for codec {codec}")
+            return None
+        return profile
+    if profile == "aac_he_v2" and channels is not None and channels != 2:
+        logger.warning(f"HE-AACv2 requires stereo output (got {channels} channels), falling back to HE-AAC")
+        return "aac_he"
+    return profile
 
 
 def _split_quality(quality_str: str) -> List[str]:
@@ -57,7 +116,7 @@ def _split_quality(quality_str: str) -> List[str]:
     return quality_str.split()
 
 
-def build_audio(audio_tracks, audio_file_index=0) -> List[str]:
+def build_audio(audio_tracks, audio_file_index=0, reverse_video: bool = False) -> List[str]:
     command_list = []
     has_truehd = False
     has_opus = False
@@ -89,15 +148,26 @@ def build_audio(audio_tracks, audio_file_index=0) -> List[str]:
             try:
                 cl = track.downmix if track.downmix and track.downmix != "No Downmix" else track.raw_info.channel_layout
             except (AssertionError, KeyError, AttributeError):
-                cl = "stereo"
-                logger.warning("Could not determine channel layout, defaulting to stereo, please manually specify")
+                cl = None
+                logger.warning("Could not determine channel layout, not forcing a channel layout filter")
+
+            try:
+                source_channels = track.raw_info.get("channels") or track.channels
+            except AttributeError:
+                source_channels = track.channels
+            out_channels = channels_for_layout(cl, source_channels)
 
             downmix = (
                 [f"-ac:{track.outdex}", str(channel_list[cl])]
-                if track.downmix and track.downmix != "No Downmix"
+                if track.downmix and track.downmix != "No Downmix" and cl in channel_list
                 else []
             )
-            channel_layout = [f"-filter:{track.outdex}", f"aformat=channel_layouts={cl}"]
+            audio_filters = []
+            if reverse_video:
+                audio_filters.append("areverse")
+            if cl in channel_list:
+                audio_filters.append(f"aformat=channel_layouts={cl}")
+            channel_layout = [f"-filter:{track.outdex}", ",".join(audio_filters)] if audio_filters else []
 
             bitrate_parts = []
             if track.conversion_codec not in lossless:
@@ -113,12 +183,15 @@ def build_audio(audio_tracks, audio_file_index=0) -> List[str]:
                         audio_quality_converter(
                             track.conversion_aq or 0,
                             track.conversion_codec,
-                            track.raw_info.get("channels"),
+                            out_channels,
                             track.outdex,
                         )
                     )
 
             command_list.extend([f"-c:{track.outdex}", track.conversion_codec])
+            aac_profile = resolve_aac_profile(track.conversion_codec, track.conversion_profile, out_channels)
+            if aac_profile:
+                command_list.extend([f"-profile:{track.outdex}", aac_profile])
             command_list.extend(bitrate_parts)
             command_list.extend(downmix)
             command_list.extend(channel_layout)

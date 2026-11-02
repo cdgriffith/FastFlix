@@ -3,19 +3,49 @@
 import importlib.util
 import logging
 import os
+import time
 from pathlib import Path
-from subprocess import PIPE, STDOUT, Popen, run, check_output
+from subprocess import PIPE, STDOUT, Popen, TimeoutExpired, run, check_output
 from packaging import version
 
 from PySide6 import QtCore
 from ffmpeg_normalize import FFmpegNormalize
 
 from fastflix.flix import extract_attachments
+from fastflix.shared import clean_env
 from fastflix.language import t
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.shared import clean_file_string
 
 logger = logging.getLogger("fastflix")
+
+
+def resolve_babel_language(code):
+    """Map a language code or name to a babelfish Language, defaulting to English.
+
+    FFprobe reports ISO 639-2/B codes (fre, ger, chi) which ``Language(code)`` rejects (it expects 639-3).
+    """
+    from babelfish import Language
+
+    code = (code or "").strip()
+    try:
+        if len(code) == 2:
+            return Language.fromalpha2(code.lower())
+        if len(code) == 3:
+            try:
+                return Language(code.lower())
+            except ValueError:
+                return Language.fromalpha3b(code.lower())
+        return Language.fromname(code)
+    except Exception:
+        return Language("eng")
+
+
+def pgsrip_srt_path(sup_path):
+    """Path pgsrip will write the OCR result to for the given .sup file."""
+    from pgsrip.media_path import MediaPath
+
+    return Path(str(MediaPath(str(sup_path)).translate(number=0, extension="srt")))
 
 
 def _format_command(command):
@@ -42,17 +72,31 @@ class ThumbnailCreator(QtCore.QThread):
 
     def run(self):
         self.main.thread_logging_signal.emit(f"DEBUG:{t('Generating thumbnail')}: {_format_command(self.command)}")
-        result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT)
+        try:
+            result = run(self.command, stdin=PIPE, stdout=PIPE, stderr=STDOUT, env=clean_env(), timeout=120)
+        except TimeoutExpired:
+            self.main.thread_logging_signal.emit(f"ERROR:{t('Could not generate thumbnail')}: timed out")
+            self.main.thumbnail_complete.emit(0)
+            return
         if result.returncode > 0:
-            if "No such filter: 'zscale'" in result.stdout.decode(encoding="utf-8", errors="ignore"):
+            output_text = result.stdout.decode(encoding="utf-8", errors="ignore")
+            if "No such filter: 'zscale'" in output_text:
                 self.main.thread_logging_signal.emit(
                     "ERROR:Could not generate thumbnail because you are using an outdated FFmpeg! "
                     "Please use FFmpeg 4.3+ built against the latest zimg libraries. "
                     "Static builds available at https://ffmpeg.org/download.html "
                 )
-            if "OpenCL mapping not usable" in result.stdout.decode(encoding="utf-8", errors="ignore"):
+            if "OpenCL mapping not usable" in output_text:
                 self.main.thread_logging_signal.emit("ERROR trying to use OpenCL for thumbnail generation")
                 self.main.thumbnail_complete.emit(2)
+                return
+            elif "no path between colorspaces" in output_text:
+                self.main.thread_logging_signal.emit(
+                    "WARNING:HDR tonemapping failed for thumbnail (video color metadata may be incomplete), "
+                    "retrying without HDR conversion"
+                )
+                self.main.thumbnail_complete.emit(3)
+                return
             else:
                 self.main.thread_logging_signal.emit(f"ERROR:{t('Could not generate thumbnail')}: {result.stdout}")
 
@@ -156,6 +200,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 command,
                 stdout=PIPE,
                 stderr=STDOUT,
+                env=clean_env(),
             )
             stdout, _ = self._process.communicate()
             returncode = self._process.returncode
@@ -224,6 +269,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
                 stdout=PIPE,
                 stderr=STDOUT,
                 text=True,
+                env=clean_env(),
             )
 
             if result.returncode != 0:
@@ -301,12 +347,7 @@ class ExtractSubtitleSRT(QtCore.QThread):
             from babelfish import Language as BabelLanguage
             import pytesseract
 
-            # Set environment variables for pgsrip to find tesseract
             if self.app.fastflix.config.tesseract_path:
-                tesseract_dir = str(Path(self.app.fastflix.config.tesseract_path).parent)
-                os.environ["PATH"] = f"{tesseract_dir}{os.pathsep}{os.environ.get('PATH', '')}"
-                os.environ["TESSERACT_CMD"] = str(self.app.fastflix.config.tesseract_path)
-                # pytesseract uses its own module-level variable, not the env var
                 pytesseract.pytesseract.tesseract_cmd = str(self.app.fastflix.config.tesseract_path)
 
             # pgsrip's MediaPath parses the filename for language codes and may transform them
@@ -326,16 +367,8 @@ class ExtractSubtitleSRT(QtCore.QThread):
 
             # Configure options for pgsrip
             try:
-                # Detect if language code is 2-letter or 3-letter
-                if len(self.language) == 2:
-                    babel_lang = BabelLanguage.fromalpha2(self.language)
-                elif len(self.language) == 3:
-                    babel_lang = BabelLanguage(self.language)
-                else:
-                    babel_lang = BabelLanguage.fromname(self.language)
-
                 options = Options(
-                    languages={babel_lang},
+                    languages={resolve_babel_language(self.language)},
                     overwrite=True,
                     one_per_lang=True,
                 )
@@ -347,24 +380,25 @@ class ExtractSubtitleSRT(QtCore.QThread):
                     one_per_lang=True,
                 )
 
-            # Get list of existing .srt files before conversion
-            existing_srts = set(sup_path.parent.glob("*.srt"))
+            # pgsrip writes next to the .sup, derive that path instead of diffing the directory listing
+            # (which misses results that overwrite an already existing .srt)
+            expected_srt = pgsrip_srt_path(sup_path)
+            started = time.time()
 
-            # Run pgsrip conversion using Python API
-            pgsrip.rip(media, options)
+            # The PATH is only extended for the OCR run itself, set right before the try so it is always restored
+            old_path = os.environ.get("PATH", "")
+            if self.app.fastflix.config.tesseract_path:
+                tesseract_dir = str(Path(self.app.fastflix.config.tesseract_path).parent)
+                os.environ["PATH"] = f"{tesseract_dir}{os.pathsep}{old_path}"
+            try:
+                pgsrip.rip(media, options)
+            finally:
+                os.environ["PATH"] = old_path
 
-            # Find newly created .srt files
-            current_srts = set(sup_path.parent.glob("*.srt"))
-            new_srts = current_srts - existing_srts
+            if not expected_srt.exists() or expected_srt.stat().st_mtime < started - 2:
+                raise Exception(f"pgsrip completed but no .srt file was written at {expected_srt}")
 
-            if not new_srts:
-                raise Exception(f"pgsrip completed but no .srt file found in {sup_path.parent}")
-
-            # Get the first new .srt file
-            srt_files = list(new_srts)
-
-            # Move the .srt file to the user's originally desired location
-            created_srt = srt_files[0]
+            created_srt = expected_srt
 
             if created_srt != desired_srt:
                 import shutil
@@ -468,6 +502,16 @@ class AudioNoramlize(QtCore.QThread):
             self.signal.emit("Failed")
 
 
+def follow_progress(is_running, f, emit, sleep=time.sleep, interval=0.1):
+    """Tail ffmpeg progress lines from f, sleeping when no new data is available."""
+    while is_running():
+        if line := f.readline().rstrip():
+            if line.startswith("frame"):
+                emit(line)
+        else:
+            sleep(interval)
+
+
 class ExtractHDR10(QtCore.QThread):
     def __init__(self, app: FastFlixApp, main, signal, ffmpeg_signal):
         super().__init__(main)
@@ -495,7 +539,9 @@ class ExtractHDR10(QtCore.QThread):
         self.ffmpeg_signal.emit("Extracting HDR10+ metadata")
 
         hdr10_parser_version_output = check_output(
-            [str(self.app.fastflix.config.hdr10plus_parser), "--version"], encoding="utf-8"
+            [str(self.app.fastflix.config.hdr10plus_parser), "--version"],
+            encoding="utf-8",
+            env=clean_env(),
         )
         _, version_string = hdr10_parser_version_output.rsplit(sep=" ", maxsplit=1)
         hdr10_parser_version = version.parse(version_string)
@@ -525,12 +571,15 @@ class ExtractHDR10(QtCore.QThread):
             f"Running command: {' '.join(ffmpeg_command)} | {' '.join(hdr10_parser_command)}"
         )
 
-        process = Popen(
-            ffmpeg_command,
-            stdout=PIPE,
-            stderr=open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "wb"),
-            # stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
-        )
+        progress_file = self.app.fastflix.current_video.work_path / "hdr10extract_out.txt"
+        with open(progress_file, "wb") as ffmpeg_stderr:
+            process = Popen(
+                ffmpeg_command,
+                stdout=PIPE,
+                stderr=ffmpeg_stderr,
+                # stdin=PIPE,  # FFmpeg can try to read stdin and wrecks havoc
+                env=clean_env(),
+            )
 
         process_two = Popen(
             hdr10_parser_command,
@@ -539,15 +588,11 @@ class ExtractHDR10(QtCore.QThread):
             stdin=process.stdout,
             encoding="utf-8",
             cwd=str(self.app.fastflix.current_video.work_path),
+            env=clean_env(),
         )
 
-        with open(self.app.fastflix.current_video.work_path / "hdr10extract_out.txt", "r", encoding="utf-8") as f:
-            while True:
-                if process.poll() is not None or process_two.poll() is not None:
-                    break
-                if line := f.readline().rstrip():
-                    if line.startswith("frame"):
-                        self.ffmpeg_signal.emit(line)
+        with open(progress_file, "r", encoding="utf-8") as f:
+            follow_progress(lambda: process.poll() is None and process_two.poll() is None, f, self.ffmpeg_signal.emit)
 
         stdout, stderr = process_two.communicate()
         self.main.thread_logging_signal.emit(f"DEBUG: HDR10+ Extract: {stdout}")
