@@ -70,6 +70,8 @@ class Subtitle(QtWidgets.QTabWidget):
         long_name = (
             f"  {sub_track.long_name}" if sub_track.long_name else f"  {t('Subtitle Type')}:{sub_track.subtitle_type}"
         )
+        if sub_track.title:
+            long_name = f"{long_name} - {sub_track.title}"
 
         self.widgets = Box(
             track_number=QtWidgets.QLabel(f"{sub_track.index}:{sub_track.outdex}" if enabled else "❌"),
@@ -204,7 +206,7 @@ class Subtitle(QtWidgets.QTabWidget):
         self.setLayout(self.grid)
         self.check_dis_button()
         self.loading = False
-        self.updating_burn = False
+        self.restore_burn_in(sub_track)
         self.extract_completed_signal.connect(self.extraction_complete)
 
     def extraction_complete(self, path: str = ""):
@@ -337,6 +339,12 @@ class Subtitle(QtWidgets.QTabWidget):
     @property
     def burn_in(self):
         return self.widgets.burn_in.isChecked()
+
+    def restore_burn_in(self, sub_track: SubtitleTrack):
+        """Show the track's stored burn-in state (e.g. when editing a queued item) without re-running validation."""
+        self.updating_burn = True
+        self.widgets.burn_in.setChecked(bool(sub_track.burn_in))
+        self.updating_burn = False
 
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()
@@ -527,7 +535,7 @@ class ExternalSubtitle(QtWidgets.QTabWidget):
         self.setLayout(self.grid)
         self.check_dis_button()
         self.loading = False
-        self.updating_burn = False
+        self.restore_burn_in(sub_track)
 
     def init_move_buttons(self):
         layout = QtWidgets.QVBoxLayout()
@@ -589,6 +597,12 @@ class ExternalSubtitle(QtWidgets.QTabWidget):
     @property
     def burn_in(self):
         return self.widgets.burn_in.isChecked()
+
+    def restore_burn_in(self, sub_track: SubtitleTrack):
+        """Show the track's stored burn-in state (e.g. when editing a queued item) without re-running validation."""
+        self.updating_burn = True
+        self.widgets.burn_in.setChecked(bool(sub_track.burn_in))
+        self.updating_burn = False
 
     def update_enable(self):
         enabled = self.widgets.enable_check.isChecked()

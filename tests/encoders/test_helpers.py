@@ -915,3 +915,23 @@ def test_data_track_metadata_uses_real_output_index():
     # Burned-in subtitle produces no map, so index shifts down
     cmd, _ = generate_ending(audio, [], data_tracks=[track], output_video=Path("o.mkv"))
     assert "-metadata:s:3" in cmd
+
+
+def _text_burn_filter(**kwargs):
+    base = dict(burn_in_subtitle_track=0, burn_in_subtitle_type="text", source="a.mkv")
+    return generate_filters(0, source_width=1920, source_height=1080, **base, **kwargs)[1]
+
+
+def test_text_burn_in_original_size_uses_cropped_size():
+    """#756: burned-in text was stretched after a crop because original_size was the uncropped source size."""
+    crop = {"width": 1920, "height": 800, "left": 0, "top": 140}
+    assert "original_size=1920x800" in _text_burn_filter(crop=crop)
+    assert "original_size=1920x800" in _text_burn_filter(crop=crop, scale="1280:-8")
+    assert "original_size=1920x1080" in _text_burn_filter()
+
+
+def test_text_burn_in_original_size_rotation_and_pad():
+    assert "original_size=1080x1920" in _text_burn_filter(rotate=1)
+    assert "original_size=1080x1920" in _text_burn_filter(rotate=3)
+    assert "original_size=1920x1080" in _text_burn_filter(rotate=2)
+    assert "original_size" not in _text_burn_filter(pad_aspect="4:3")
