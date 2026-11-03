@@ -68,3 +68,11 @@ def test_successful_download_stores_fingerprint(monkeypatch):
     gpu_detect.automatic_rigaya_download(config, None, MagicMock(), MagicMock())
     assert config.gpu_fingerprint == "fp"
     assert config.nvencc == Path("nvenc.exe")
+
+
+def test_windows_detect_survives_wmi_import_failure(monkeypatch):
+    """#774: a broken pywin32/wmi install must degrade GPU detection, not abort the startup task."""
+    monkeypatch.setitem(__import__("sys").modules, "wmi", None)  # forces ImportError on `import wmi`
+    result = gpu_detect.windows_gpu_detect()
+    assert not result.exist()
+    assert not result.fingerprint

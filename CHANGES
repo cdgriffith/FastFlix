@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 6.3.1
+
+* Fixing #774 Windows installer builds failing to detect GPUs ("No module named 'pywintypes'") because the bundled embeddable Python never processed pywin32.pth; the pywin32 directories are now added to python313._pth, and a WMI failure now skips GPU detection instead of aborting the startup task
+
 ## Version 6.3.0
 
 * Adding back the Beautiphoto installer promo with code FF30OFF2026 (30% off for a year), shown until 2027-01-01 UTC; clicking the code or its copy icon copies it to the clipboard, and the Launch FastFlix button no longer has a countdown
