@@ -7,7 +7,6 @@ import random
 import secrets
 import shutil
 import time
-from datetime import timedelta
 from pathlib import Path
 from typing import Optional, Tuple, Union
 
@@ -41,6 +40,7 @@ from fastflix.resources import (
 from fastflix.shared import (
     error_message,
     time_to_number,
+    number_to_time,
     yes_no_message,
     clean_file_string,
     get_filesafe_datetime,
@@ -1902,7 +1902,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
 
     @staticmethod
     def number_to_time(number) -> str:
-        return str(timedelta(seconds=round(number, 2)))[:10]
+        return number_to_time(number)
 
     def set_time_from_preview(self, widget):
         if not self.app.fastflix.current_video:

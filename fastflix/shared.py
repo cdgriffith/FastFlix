@@ -334,6 +334,18 @@ def file_date():
     return datetime.now().isoformat().replace(":", ".").rsplit(".", 1)[0]
 
 
+def number_to_time(number) -> str:
+    """Format seconds as H:MM:SS with millisecond precision (H:MM:SS.mmm) when there is a fraction."""
+    total_ms = max(int(round(float(number or 0) * 1000)), 0)
+    hours, remainder = divmod(total_ms, 3_600_000)
+    minutes, remainder = divmod(remainder, 60_000)
+    seconds, milliseconds = divmod(remainder, 1000)
+    result = f"{hours}:{minutes:02}:{seconds:02}"
+    if milliseconds:
+        result += f".{milliseconds:03}"
+    return result
+
+
 def time_to_number(string_time: str) -> float:
     string_time = string_time.rstrip(".")
     try:
@@ -341,14 +353,14 @@ def time_to_number(string_time: str) -> float:
     except ValueError:
         pass
     base, *extra = string_time.split(".")
-    micro = 0
+    total = 0.0
     if extra and len(extra) == 1:
-        try:
-            micro = int(extra[0])
-        except ValueError:
+        # Keep the fraction as digits: int("003") would turn ".003" into ".3" (#773)
+        fraction = extra[0].strip()
+        if not fraction.isdigit():
             logger.info(t("bad micro value"))
             return 0
-    total = float(f".{micro}")
+        total = float(f"0.{fraction}")
     for i, v in enumerate(reversed(base.split(":"))):
         try:
             v = int(v)
@@ -356,7 +368,8 @@ def time_to_number(string_time: str) -> float:
             logger.info(f"{t('Not a valid int for time conversion')}: {v}")
         else:
             total += v * (60**i)
-    return total
+    # Round away float noise (3945 + 0.003 -> 3945.0030000000001) so commands get the exact typed value
+    return round(total, 6)
 
 
 def link(url, text, theme):
