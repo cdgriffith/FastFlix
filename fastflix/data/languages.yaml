@@ -14667,6 +14667,21 @@ Show completion popup message:
   ukr: Показати спливаюче повідомлення про завершення
   kor: 완료 팝업 메시지 표시
   ron: Afișați mesajul pop-up de finalizare
+Play a sound when the queue completes:
+  eng: Play a sound when the queue completes
+  deu: Einen Ton abspielen, wenn die Warteschlange abgeschlossen ist
+  fra: Jouer un son lorsque la file d'attente est terminée
+  ita: Riproduci un suono al termine della coda
+  spa: Reproducir un sonido cuando se complete la cola
+  jpn: キューが完了したらサウンドを再生する
+  rus: Воспроизводить звук по завершении очереди
+  por: Reproduzir um som quando a fila terminar
+  swe: Spela upp ett ljud när kön är klar
+  pol: Odtwórz dźwięk po zakończeniu kolejki
+  chs: 队列完成时播放提示音
+  ukr: Відтворювати звук після завершення черги
+  kor: 대기열이 완료되면 소리 재생
+  ron: Redă un sunet când coada este finalizată
 Keep source loaded after adding to queue:
   eng: Keep source loaded after adding to queue
   deu: Quelle nach Hinzufügen zur Warteschlange geladen lassen

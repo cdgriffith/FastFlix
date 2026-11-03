@@ -141,3 +141,10 @@ def test_number_to_time_millisecond_precision(number, expected):
 @pytest.mark.parametrize("seconds", [0, 0.001, 1.05, 3945.003, 11145.009, 36000.999])
 def test_time_round_trip(seconds):
     assert shared.time_to_number(shared.number_to_time(seconds)) == seconds
+
+
+def test_play_completion_sound_never_raises(monkeypatch):
+    """#745 #755: a missing/broken sound backend must not break queue completion."""
+    monkeypatch.setattr(shared.QtWidgets.QApplication, "beep", lambda: (_ for _ in ()).throw(RuntimeError("no audio")))
+    monkeypatch.setattr(shared.sys, "platform", "linux")
+    shared.play_completion_sound()

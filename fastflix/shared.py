@@ -330,6 +330,19 @@ def latest_fastflix(app, show_new_dialog=False):
         message(t("You are using the latest version of FastFlix") + " <br>")  # <br> {contrib} 💓 <br>
 
 
+def play_completion_sound():
+    """Play the system notification sound, a popup-free way to know the queue finished (#745, #755)."""
+    try:
+        if sys.platform == "win32":
+            import winsound
+
+            winsound.MessageBeep(winsound.MB_ICONASTERISK)
+        else:
+            QtWidgets.QApplication.beep()
+    except Exception:
+        logger.debug("Could not play completion sound", exc_info=True)
+
+
 def file_date():
     return datetime.now().isoformat().replace(":", ".").rsplit(".", 1)[0]
 

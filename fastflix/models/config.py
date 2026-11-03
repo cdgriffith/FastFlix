@@ -296,6 +296,7 @@ class Config(BaseModel):
 
     sticky_tabs: bool = False
     show_complete_message: bool = False
+    play_complete_sound: bool = False
     show_error_message: bool = True
     keep_source_after_encode: bool = False
 
