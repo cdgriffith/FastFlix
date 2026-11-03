@@ -886,7 +886,7 @@ class Settings(QtWidgets.QWidget):
             [
                 str(self.app.fastflix.config.ffmpeg),
                 "-hide_banner",
-                "-log_level",
+                "-loglevel",
                 "error",
                 "-init_hw_device",
                 "opencl:0.0",

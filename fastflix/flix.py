@@ -616,7 +616,7 @@ def ffmpeg_opencl_support(app, config: Config) -> bool:
     if app.fastflix.config.opencl_support is not None:
         app.fastflix.opencl_support = app.fastflix.config.opencl_support
         return app.fastflix.opencl_support
-    cmd = execute([f"{config.ffmpeg}", "-hide_banner", "-log_level", "error", "-init_hw_device", "opencl:0.0", "-h"])
+    cmd = execute([f"{config.ffmpeg}", "-hide_banner", "-loglevel", "error", "-init_hw_device", "opencl:0.0", "-h"])
     app.fastflix.opencl_support = cmd.returncode == 0
     app.fastflix.config.opencl_support = app.fastflix.opencl_support
     return app.fastflix.opencl_support
