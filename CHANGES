@@ -3,6 +3,7 @@
 ## Version 6.3.1
 
 * Adding #745 #755 Settings option to play a sound when the queue completes, as a popup-free alternative to the completion message (thanks to Augusto7743)
+* Adding #747 source frame rate (FPS) to the Video Info line under the source file (thanks to Augusto7743)
 * Adding #762 Maxrate without Bufsize for NVEncC, QSVEncC and VCEEncC, which pick the VBV buffer size automatically (thanks to Augusto7743)
 * Adding #765 subtitle track titles to the subtitle panel, so tracks can be told apart without checking MediaInfo (thanks to gojetablade)
 * Fixing #764 portable FastFlix sharing queue.yaml, history and logs with the installed version in AppData; portable mode now keeps them in a fastflix_data folder next to its fastflix.yaml (thanks to Egosumumbravir)
