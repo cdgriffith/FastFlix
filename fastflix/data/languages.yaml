@@ -13242,6 +13242,21 @@ Copy Dolby Vision RPU metadata from input file:
   ukr: Скопіюйте метадані Dolby Vision RPU з вхідного файлу
   kor: 입력 파일에서 Dolby Vision RPU 메타데이터 복사하기
   ron: Copierea metadatelor Dolby Vision RPU din fișierul de intrare
+Only the base layer and RPU are kept, so dual-layer profile 7 sources become profile 8.1:
+  eng: Only the base layer and RPU are kept, so dual-layer profile 7 sources become profile 8.1
+  deu: Nur Basisschicht und RPU werden übernommen, daher werden zweischichtige Quellen mit Profil 7 zu Profil 8.1
+  fra: Seuls la couche de base et le RPU sont conservés, les sources double couche en profil 7 deviennent donc du profil 8.1
+  ita: Vengono mantenuti solo il livello base e l'RPU, quindi le sorgenti a doppio livello con profilo 7 diventano profilo 8.1
+  spa: Solo se conservan la capa base y el RPU, por lo que las fuentes de doble capa con perfil 7 pasan a perfil 8.1
+  jpn: ベースレイヤーとRPUのみが保持されるため、デュアルレイヤーのプロファイル7のソースはプロファイル8.1になります
+  rus: Сохраняются только базовый слой и RPU, поэтому двухслойные источники профиля 7 становятся профилем 8.1
+  por: Apenas a camada base e o RPU são mantidos, pelo que as fontes de camada dupla com perfil 7 passam a perfil 8.1
+  swe: Endast baslagret och RPU behålls, så tvålagerskällor med profil 7 blir profil 8.1
+  pol: Zachowywana jest tylko warstwa bazowa i RPU, więc dwuwarstwowe źródła w profilu 7 stają się profilem 8.1
+  chs: 仅保留基础层和 RPU，因此双层的配置文件 7 片源会变为配置文件 8.1
+  ukr: Зберігаються лише базовий шар і RPU, тому двошарові джерела профілю 7 стають профілем 8.1
+  kor: 기본 레이어와 RPU만 유지되므로 듀얼 레이어 프로파일 7 소스는 프로파일 8.1이 됩니다
+  ron: Se păstrează doar stratul de bază și RPU, astfel încât sursele cu două straturi în profilul 7 devin profilul 8.1
 All conversions complete:
   eng: All conversions complete
   deu: Alle Konvertierungen abgeschlossen
