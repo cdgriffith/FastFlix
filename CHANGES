@@ -3,6 +3,7 @@
 ## Version 6.3.1
 
 * Adding #765 subtitle track titles to the subtitle panel, so tracks can be told apart without checking MediaInfo (thanks to gojetablade)
+* Fixing #764 portable FastFlix sharing queue.yaml, history and logs with the installed version in AppData; portable mode now keeps them in a fastflix_data folder next to its fastflix.yaml (thanks to Egosumumbravir)
 * Fixing #767 OpenCL detection passing the invalid -log_level option to FFmpeg instead of -loglevel (thanks to cinnamonmatexfce)
 * Fixing #772 #773 Start/End time losing millisecond precision (01:05:45.003 was sent to FFmpeg as 3945.3); times now parse leading-zero fractions correctly and display with millisecond precision (thanks to SkyAprilGit)
 * Fixing #756 Burn In toggle showing unticked when editing a subtitle track again after an encode, and burned-in text subtitles being stretched after cropping or rotating (thanks to eikixsh)

@@ -8,6 +8,14 @@ from pydantic import BaseModel, Field
 from fastflix.models.config import Config
 from fastflix.models.video import Video
 
+# Portable installs keep the queue, history and logs next to the portable fastflix.yaml instead of in the shared
+# per-user data folder, so they don't share state with an installed FastFlix (#764)
+PORTABLE_DATA_DIR = "fastflix_data"
+
+
+def portable_data_path() -> Path:
+    return Path(PORTABLE_DATA_DIR).absolute()
+
 
 class FastFlix(BaseModel):
     audio_encoders: list[str] = None
@@ -29,6 +37,11 @@ class FastFlix(BaseModel):
     log_queue: Any = None
 
     current_video: Video | None = None
+
+    def use_portable_paths(self):
+        self.data_path = portable_data_path()
+        self.log_path = self.data_path / "logs"
+        self.queue_path = self.data_path / "queue.yaml"
 
     # Conversion
     currently_encoding: bool = False
