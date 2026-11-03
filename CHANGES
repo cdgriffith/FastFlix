@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 6.3.2
+
+* Fixing PyPI release workflow failing with "No module named build" (6.3.0 and 6.3.1 were not published to PyPI); the wheel is now built with uv build and uploaded with uvx twine
+
 ## Version 6.3.1
 
 * Adding #745 #755 Settings option to play a sound when the queue completes, as a popup-free alternative to the completion message (thanks to Augusto7743)

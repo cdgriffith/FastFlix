@@ -20,18 +20,18 @@ jobs:
       with:
         python-version: '3.13'
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install uv --upgrade
-        uv sync --frozen
-        uv run pip install setuptools wheel twine build --upgrade
+    - name: Install uv
+      run: python -m pip install uv --upgrade
 
-
+    # `uv run pip install ...` put build/twine in the system Python instead of the project .venv, so
+    # `uv run python -m build` failed with "No module named build". uv builds the wheel itself (isolated build
+    # env from pyproject's build-system) and uvx runs twine in its own environment.
     - name: Build and Publish
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
 
       run: |
-        uv run python -m build --wheel
-        uv run twine upload dist/*.whl
+        uv build --wheel
+        uvx twine check dist/*.whl
+        uvx twine upload dist/*.whl
