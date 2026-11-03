@@ -163,9 +163,8 @@ def generate_ffmpeg_start(
     command.extend(["-c:v", encoder])
     command.extend(["-pix_fmt", pix_fmt])
 
-    if maxrate:
+    if maxrate and bufsize:
         command.extend(["-maxrate:v", f"{maxrate}k"])
-    if bufsize:
         command.extend(["-bufsize:v", f"{bufsize}k"])
 
     if video_track_title:

@@ -10953,6 +10953,21 @@ Both must have values to be enabled:
   ukr: Обидва повинні мати значення, щоб бути ввімкненими
   kor: 둘 다 활성화하려면 값이 있어야 합니다.
   ron: Ambele trebuie să aibă valori pentru a fi activate
+Bufsize is optional for rigaya encoders, others need both:
+  eng: Bufsize is optional for rigaya encoders, others need both
+  deu: Bufsize ist für rigaya-Encoder optional, andere benötigen beide Werte
+  fra: Bufsize est facultatif pour les encodeurs rigaya, les autres nécessitent les deux
+  ita: Bufsize è facoltativo per gli encoder rigaya, gli altri richiedono entrambi
+  spa: Bufsize es opcional para los codificadores de rigaya, los demás necesitan ambos
+  jpn: rigayaエンコーダーではBufsizeは省略可能、その他は両方が必要です
+  rus: Bufsize необязателен для кодировщиков rigaya, остальным нужны оба значения
+  por: Bufsize é opcional para os codificadores rigaya, os restantes precisam de ambos
+  swe: Bufsize är valfritt för rigaya-kodare, andra kräver båda
+  pol: Bufsize jest opcjonalny dla koderów rigaya, pozostałe wymagają obu wartości
+  chs: rigaya 编码器的 Bufsize 为可选，其他编码器需要两者都填写
+  ukr: Bufsize необов'язковий для кодувальників rigaya, іншим потрібні обидва значення
+  kor: rigaya 인코더에서는 Bufsize가 선택 사항이며, 다른 인코더는 둘 다 필요합니다
+  ron: Bufsize este opțional pentru encoderele rigaya, celelalte au nevoie de ambele
 Run a command after conversion completes:
   eng: Run a command after conversion completes
   deu: Nach Abschluss der Konvertierung einen Befehl ausführen

@@ -109,7 +109,8 @@ def build(fastflix: FastFlix):
 
     if video.video_settings.maxrate:
         command.extend(["--max-bitrate", str(video.video_settings.maxrate)])
-        command.extend(["--vbv-bufsize", str(video.video_settings.bufsize)])
+        if video.video_settings.bufsize:
+            command.extend(["--vbv-bufsize", str(video.video_settings.bufsize)])
 
     if settings.vbr_target is not None and settings.bitrate and not qvbr:
         command.extend(["--vbr-quality", str(settings.vbr_target)])

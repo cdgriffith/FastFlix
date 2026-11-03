@@ -102,9 +102,9 @@ def build(fastflix: FastFlix):
         command.extend([f"--{settings.qp_mode}", str(settings.cqp)])
 
     if video.video_settings.maxrate:
-        command.extend(
-            ["--max-bitrate", str(video.video_settings.maxrate), "--vbv-bufsize", str(video.video_settings.bufsize)]
-        )
+        command.extend(["--max-bitrate", str(video.video_settings.maxrate)])
+        if video.video_settings.bufsize:
+            command.extend(["--vbv-bufsize", str(video.video_settings.bufsize)])
 
     if min_q and settings.bitrate:
         command.extend(["--qp-min", str(min_q)])

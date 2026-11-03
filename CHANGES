@@ -2,6 +2,7 @@
 
 ## Version 6.3.1
 
+* Adding #762 Maxrate without Bufsize for NVEncC, QSVEncC and VCEEncC, which pick the VBV buffer size automatically (thanks to Augusto7743)
 * Adding #765 subtitle track titles to the subtitle panel, so tracks can be told apart without checking MediaInfo (thanks to gojetablade)
 * Fixing #764 portable FastFlix sharing queue.yaml, history and logs with the installed version in AppData; portable mode now keeps them in a fastflix_data folder next to its fastflix.yaml (thanks to Egosumumbravir)
 * Fixing #767 OpenCL detection passing the invalid -log_level option to FFmpeg instead of -loglevel (thanks to cinnamonmatexfce)

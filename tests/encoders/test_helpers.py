@@ -935,3 +935,13 @@ def test_text_burn_in_original_size_rotation_and_pad():
     assert "original_size=1080x1920" in _text_burn_filter(rotate=3)
     assert "original_size=1920x1080" in _text_burn_filter(rotate=2)
     assert "original_size" not in _text_burn_filter(pad_aspect="4:3")
+
+
+def test_ffmpeg_vbv_needs_both_maxrate_and_bufsize():
+    """#762: maxrate alone is only for rigaya encoders, FFmpeg encoders still need both."""
+    base = dict(source=Path("in.mkv"), ffmpeg=Path("ffmpeg"), encoder="libx264", selected_track=0)
+    cmd = generate_ffmpeg_start(maxrate=8000, bufsize=None, **base)
+    assert "-maxrate:v" not in cmd and "-bufsize:v" not in cmd
+    cmd = generate_ffmpeg_start(maxrate=8000, bufsize=16000, **base)
+    assert cmd[cmd.index("-maxrate:v") + 1] == "8000k"
+    assert cmd[cmd.index("-bufsize:v") + 1] == "16000k"
