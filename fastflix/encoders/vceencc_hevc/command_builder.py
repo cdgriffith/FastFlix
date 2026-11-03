@@ -152,7 +152,14 @@ def build(fastflix: FastFlix):
         command.extend(["--psnr", "--ssim"])
 
     command.extend(build_audio(video.audio_tracks, video.streams.audio))
-    command.extend(build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height))
+    command.extend(
+        build_subtitle(
+            video.subtitle_tracks,
+            video.streams.subtitle,
+            video_height=video.height,
+            remove_metadata=video.video_settings.remove_metadata,
+        )
+    )
     command.extend(
         build_data(
             video.data_tracks,

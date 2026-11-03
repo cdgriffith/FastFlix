@@ -6,6 +6,7 @@
 * Fixing #767 OpenCL detection passing the invalid -log_level option to FFmpeg instead of -loglevel (thanks to cinnamonmatexfce)
 * Fixing #772 #773 Start/End time losing millisecond precision (01:05:45.003 was sent to FFmpeg as 3945.3); times now parse leading-zero fractions correctly and display with millisecond precision (thanks to SkyAprilGit)
 * Fixing #756 Burn In toggle showing unticked when editing a subtitle track again after an encode, and burned-in text subtitles being stretched after cropping or rotating (thanks to eikixsh)
+* Fixing #761 Remove Metadata not clearing subtitle track metadata for NVEncC, QSVEncC and VCEEncC (--sub-metadata clear on copied tracks only) (thanks to Augusto7743)
 * Fixing #774 Windows installer builds failing to detect GPUs ("No module named 'pywintypes'") because the bundled embeddable Python never processed pywin32.pth; the pywin32 directories are now added to python313._pth, and a WMI failure now skips GPU detection instead of aborting the startup task (thanks to bhazard451)
 
 ## Version 6.3.0
