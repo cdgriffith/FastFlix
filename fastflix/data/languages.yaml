@@ -10953,6 +10953,21 @@ Both must have values to be enabled:
   ukr: Обидва повинні мати значення, щоб бути ввімкненими
   kor: 둘 다 활성화하려면 값이 있어야 합니다.
   ron: Ambele trebuie să aibă valori pentru a fi activate
+Bufsize is optional for rigaya encoders, others need both:
+  eng: Bufsize is optional for rigaya encoders, others need both
+  deu: Bufsize ist für rigaya-Encoder optional, andere benötigen beide Werte
+  fra: Bufsize est facultatif pour les encodeurs rigaya, les autres nécessitent les deux
+  ita: Bufsize è facoltativo per gli encoder rigaya, gli altri richiedono entrambi
+  spa: Bufsize es opcional para los codificadores de rigaya, los demás necesitan ambos
+  jpn: rigayaエンコーダーではBufsizeは省略可能、その他は両方が必要です
+  rus: Bufsize необязателен для кодировщиков rigaya, остальным нужны оба значения
+  por: Bufsize é opcional para os codificadores rigaya, os restantes precisam de ambos
+  swe: Bufsize är valfritt för rigaya-kodare, andra kräver båda
+  pol: Bufsize jest opcjonalny dla koderów rigaya, pozostałe wymagają obu wartości
+  chs: rigaya 编码器的 Bufsize 为可选，其他编码器需要两者都填写
+  ukr: Bufsize необов'язковий для кодувальників rigaya, іншим потрібні обидва значення
+  kor: rigaya 인코더에서는 Bufsize가 선택 사항이며, 다른 인코더는 둘 다 필요합니다
+  ron: Bufsize este opțional pentru encoderele rigaya, celelalte au nevoie de ambele
 Run a command after conversion completes:
   eng: Run a command after conversion completes
   deu: Nach Abschluss der Konvertierung einen Befehl ausführen
@@ -13242,6 +13257,21 @@ Copy Dolby Vision RPU metadata from input file:
   ukr: Скопіюйте метадані Dolby Vision RPU з вхідного файлу
   kor: 입력 파일에서 Dolby Vision RPU 메타데이터 복사하기
   ron: Copierea metadatelor Dolby Vision RPU din fișierul de intrare
+Only the base layer and RPU are kept, so dual-layer profile 7 sources become profile 8.1:
+  eng: Only the base layer and RPU are kept, so dual-layer profile 7 sources become profile 8.1
+  deu: Nur Basisschicht und RPU werden übernommen, daher werden zweischichtige Quellen mit Profil 7 zu Profil 8.1
+  fra: Seuls la couche de base et le RPU sont conservés, les sources double couche en profil 7 deviennent donc du profil 8.1
+  ita: Vengono mantenuti solo il livello base e l'RPU, quindi le sorgenti a doppio livello con profilo 7 diventano profilo 8.1
+  spa: Solo se conservan la capa base y el RPU, por lo que las fuentes de doble capa con perfil 7 pasan a perfil 8.1
+  jpn: ベースレイヤーとRPUのみが保持されるため、デュアルレイヤーのプロファイル7のソースはプロファイル8.1になります
+  rus: Сохраняются только базовый слой и RPU, поэтому двухслойные источники профиля 7 становятся профилем 8.1
+  por: Apenas a camada base e o RPU são mantidos, pelo que as fontes de camada dupla com perfil 7 passam a perfil 8.1
+  swe: Endast baslagret och RPU behålls, så tvålagerskällor med profil 7 blir profil 8.1
+  pol: Zachowywana jest tylko warstwa bazowa i RPU, więc dwuwarstwowe źródła w profilu 7 stają się profilem 8.1
+  chs: 仅保留基础层和 RPU，因此双层的配置文件 7 片源会变为配置文件 8.1
+  ukr: Зберігаються лише базовий шар і RPU, тому двошарові джерела профілю 7 стають профілем 8.1
+  kor: 기본 레이어와 RPU만 유지되므로 듀얼 레이어 프로파일 7 소스는 프로파일 8.1이 됩니다
+  ron: Se păstrează doar stratul de bază și RPU, astfel încât sursele cu două straturi în profilul 7 devin profilul 8.1
 All conversions complete:
   eng: All conversions complete
   deu: Alle Konvertierungen abgeschlossen
@@ -14637,6 +14667,21 @@ Show completion popup message:
   ukr: Показати спливаюче повідомлення про завершення
   kor: 완료 팝업 메시지 표시
   ron: Afișați mesajul pop-up de finalizare
+Play a sound when the queue completes:
+  eng: Play a sound when the queue completes
+  deu: Einen Ton abspielen, wenn die Warteschlange abgeschlossen ist
+  fra: Jouer un son lorsque la file d'attente est terminée
+  ita: Riproduci un suono al termine della coda
+  spa: Reproducir un sonido cuando se complete la cola
+  jpn: キューが完了したらサウンドを再生する
+  rus: Воспроизводить звук по завершении очереди
+  por: Reproduzir um som quando a fila terminar
+  swe: Spela upp ett ljud när kön är klar
+  pol: Odtwórz dźwięk po zakończeniu kolejki
+  chs: 队列完成时播放提示音
+  ukr: Відтворювати звук після завершення черги
+  kor: 대기열이 완료되면 소리 재생
+  ron: Redă un sunet când coada este finalizată
 Keep source loaded after adding to queue:
   eng: Keep source loaded after adding to queue
   deu: Quelle nach Hinzufügen zur Warteschlange geladen lassen

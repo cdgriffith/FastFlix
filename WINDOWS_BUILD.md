@@ -48,7 +48,9 @@ Use `--arch arm64` to bundle the ARM64 Python and wheels.
 
 1. Downloads the official Python 3.13 embeddable distribution (~11 MB). The patch version is the single constant
    `DEFAULT_PYTHON_VERSION` in `scripts/build_distribution.py` (override with `--python-version`).
-2. Configures the embeddable Python to find installed packages (`python313._pth`)
+2. Configures the embeddable Python to find installed packages (`python313._pth`): enables `import site` and adds
+   `../lib` plus the pywin32 directories (`../lib/win32`, `../lib/win32/lib`, `../lib/Pythonwin`), because `.pth`
+   files in `lib` (such as `pywin32.pth`) are not processed for a `._pth` path entry
 3. Builds a FastFlix wheel (the `dist\wheels` folder is wiped first, exactly one wheel must result) and installs it
    with all dependencies pinned by `uv.lock` (`uv export` + `uv pip install --target`), resolved for the *bundled*
    CPython 3.13 / `win_amd64` (or `win_arm64`), not for the build host's Python

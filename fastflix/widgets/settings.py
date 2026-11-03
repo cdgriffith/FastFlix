@@ -186,6 +186,11 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(self.show_complete_message, row, 0, 1, 2)
         row += 1
 
+        self.play_complete_sound = ToggleSwitch(t("Play a sound when the queue completes"))
+        self.play_complete_sound.setChecked(self.app.fastflix.config.play_complete_sound)
+        layout.addWidget(self.play_complete_sound, row, 0, 1, 2)
+        row += 1
+
         self.show_error_message = ToggleSwitch(t("Show error popup message"))
         self.show_error_message.setChecked(self.app.fastflix.config.show_error_message)
         layout.addWidget(self.show_error_message, row, 0, 1, 2)
@@ -783,6 +788,7 @@ class Settings(QtWidgets.QWidget):
         self.app.fastflix.config.clean_old_logs = self.clean_old_logs_button.isChecked()
         self.app.fastflix.config.sticky_tabs = self.sticky_tabs.isChecked()
         self.app.fastflix.config.show_complete_message = self.show_complete_message.isChecked()
+        self.app.fastflix.config.play_complete_sound = self.play_complete_sound.isChecked()
         self.app.fastflix.config.show_error_message = self.show_error_message.isChecked()
         self.app.fastflix.config.keep_source_after_encode = self.keep_source_after_encode.isChecked()
         self.app.fastflix.config.disable_deinterlace_check = self.disable_deinterlace_button.isChecked()
@@ -886,7 +892,7 @@ class Settings(QtWidgets.QWidget):
             [
                 str(self.app.fastflix.config.ffmpeg),
                 "-hide_banner",
-                "-log_level",
+                "-loglevel",
                 "error",
                 "-init_hw_device",
                 "opencl:0.0",

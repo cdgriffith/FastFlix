@@ -278,6 +278,8 @@ def app_setup(
     app.fastflix.worker_queue = worker_queue
 
     app.fastflix.config = Config()
+    if portable_mode:
+        app.fastflix.use_portable_paths()
     init_fastflix_directories(app)
     init_logging(app)
     logger.debug(f"GUI logging initialized, saving to {app.fastflix.log_path}")

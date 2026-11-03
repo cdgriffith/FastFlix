@@ -163,9 +163,8 @@ def generate_ffmpeg_start(
     command.extend(["-c:v", encoder])
     command.extend(["-pix_fmt", pix_fmt])
 
-    if maxrate:
+    if maxrate and bufsize:
         command.extend(["-maxrate:v", f"{maxrate}k"])
-    if bufsize:
         command.extend(["-bufsize:v", f"{bufsize}k"])
 
     if video_track_title:
@@ -290,6 +289,23 @@ def generate_ending(
     return command, fps_option
 
 
+def _subtitle_original_size(source_width, source_height, crop, rotate, pad_aspect) -> str:
+    """original_size for the subtitles filter.
+
+    libass corrects the pixel aspect by (frame w/h) / (original_size w/h), so original_size must have the aspect of
+    the frame the filter sees, minus any scaling. Using the uncropped source size stretched burned-in text after a
+    crop or rotation (#756). Pad changes the frame to a size only known after scaling, so it is omitted there.
+    """
+    if pad_aspect and pad_aspect != "none":
+        return ""
+    width, height = (crop["width"], crop["height"]) if crop else (source_width, source_height)
+    if not width or not height:
+        return ""
+    if rotate in (1, 3):
+        width, height = height, width
+    return f":original_size={width}x{height}"
+
+
 def generate_filters(
     selected_track,
     source=None,
@@ -370,7 +386,7 @@ def generate_filters(
         filter_list.append(f"setpts={video_speed}*PTS")
     text_sub_filter = None
     if burn_in_subtitle_track is not None and burn_in_subtitle_type not in BITMAP_SUBTITLE_TYPES:
-        original_size = f":original_size={source_width}x{source_height}" if source_width and source_height else ""
+        original_size = _subtitle_original_size(source_width, source_height, crop, rotate, pad_aspect)
         text_sub_filter = f"subtitles='{quoted_path(str(source))}':si={burn_in_subtitle_track}{original_size}"
     if reverse_video:
         if text_sub_filter:

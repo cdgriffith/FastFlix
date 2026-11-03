@@ -73,6 +73,10 @@ def extract_python(python_zip, target_dir):
         zf.extractall(target_dir)
 
 
+# sys.path entries (relative to python/) added to the embeddable distribution's ._pth file
+PTH_LIB_ENTRIES = ["../lib", "../lib/win32", "../lib/win32/lib", "../lib/Pythonwin"]
+
+
 def configure_pth_file(python_dir):
     """Configure the ._pth file to enable site packages and find our lib directory.
 
@@ -80,6 +84,9 @@ def configure_pth_file(python_dir):
     We need to:
     1. Uncomment 'import site' to enable pip/site-packages
     2. Add '../lib' so Python can find our installed packages
+    3. Add the pywin32 directories that lib/pywin32.pth would normally add. site.main() only processes
+       .pth files in real site-packages dirs, and ../lib is not one, so pywin32.pth is ignored and
+       pywintypes (in lib/win32/lib) is not importable, which breaks wmi / GPU detection (#774).
     """
     pth_files = list(python_dir.glob("python*._pth"))
     if not pth_files:
@@ -98,8 +105,10 @@ def configure_pth_file(python_dir):
         else:
             new_lines.append(line)
 
-    # Add our lib directory
-    new_lines.append("../lib")
+    # Add our lib directory, plus the pywin32 dirs lib/pywin32.pth would add (it is ignored, see above)
+    for entry in PTH_LIB_ENTRIES:
+        if entry not in new_lines:
+            new_lines.append(entry)
 
     pth_file.write_text("\n".join(new_lines) + "\n")
 

@@ -7,7 +7,6 @@ import random
 import secrets
 import shutil
 import time
-from datetime import timedelta
 from pathlib import Path
 from typing import Optional, Tuple, Union
 
@@ -41,6 +40,7 @@ from fastflix.resources import (
 from fastflix.shared import (
     error_message,
     time_to_number,
+    number_to_time,
     yes_no_message,
     clean_file_string,
     get_filesafe_datetime,
@@ -692,12 +692,14 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         self.video_codec_label = QtWidgets.QLabel()
         self.video_bit_depth_label = QtWidgets.QLabel()
         self.video_chroma_label = QtWidgets.QLabel()
+        self.video_fps_label = QtWidgets.QLabel()
         self.video_hdr10_label = QtWidgets.QLabel()
         self.video_hdr10plus_label = QtWidgets.QLabel()
         for lbl in (
             self.video_codec_label,
             self.video_bit_depth_label,
             self.video_chroma_label,
+            self.video_fps_label,
             self.video_hdr10_label,
             self.video_hdr10plus_label,
         ):
@@ -716,6 +718,8 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
         info_layout.addWidget(self.video_bit_depth_label)
         info_layout.addSpacing(scaler.scale(12))
         info_layout.addWidget(self.video_chroma_label)
+        info_layout.addSpacing(scaler.scale(12))
+        info_layout.addWidget(self.video_fps_label)
         info_layout.addSpacing(scaler.scale(12))
         info_layout.addWidget(self.video_hdr10_label)
         info_layout.addSpacing(scaler.scale(12))
@@ -1902,7 +1906,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
 
     @staticmethod
     def number_to_time(number) -> str:
-        return str(timedelta(seconds=round(number, 2)))[:10]
+        return number_to_time(number)
 
     def set_time_from_preview(self, widget):
         if not self.app.fastflix.current_video:

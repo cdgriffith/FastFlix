@@ -147,6 +147,7 @@ class VideoLoadMixin:
         self.video_options.clear_tracks()
         self.video_bit_depth_label.hide()
         self.video_chroma_label.hide()
+        self.video_fps_label.hide()
         self.video_hdr10_label.hide()
         self.video_hdr10plus_label.hide()
         self.disable_all()
@@ -355,6 +356,20 @@ class VideoLoadMixin:
             error_message(f"{encoder.name} {t('does not support concatenating files together')}")
 
     @staticmethod
+    def _fps_from_stream(stream) -> str:
+        """Frame rate text such as "23.976 fps" from ffprobe's avg_frame_rate (falling back to r_frame_rate)."""
+        for key in ("avg_frame_rate", "r_frame_rate"):
+            rate = str(stream.get(key) or "")
+            try:
+                num, _, den = rate.partition("/")
+                fps = float(num) / float(den or 1)
+            except (ValueError, ZeroDivisionError):
+                continue
+            if fps > 0:
+                return f"{fps:.3f}".rstrip("0").rstrip(".") + " fps"
+        return ""
+
+    @staticmethod
     def _chroma_from_pix_fmt(pix_fmt: str) -> str:
         if not pix_fmt:
             return ""
@@ -379,6 +394,7 @@ class VideoLoadMixin:
             self.video_codec_label.hide()
             self.video_bit_depth_label.hide()
             self.video_chroma_label.hide()
+            self.video_fps_label.hide()
             self.video_hdr10_label.hide()
             self.video_hdr10plus_label.hide()
             return
@@ -407,6 +423,13 @@ class VideoLoadMixin:
             self.video_chroma_label.show()
         else:
             self.video_chroma_label.hide()
+
+        fps = self._fps_from_stream(stream)
+        if fps:
+            self.video_fps_label.setText(fps)
+            self.video_fps_label.show()
+        else:
+            self.video_fps_label.hide()
 
         hdr10_indexes = [x.index for x in self.app.fastflix.current_video.hdr10_streams]
         if stream_idx in hdr10_indexes:

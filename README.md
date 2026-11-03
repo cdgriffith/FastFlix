@@ -147,6 +147,8 @@ FastFlix (v4.0.2+) passes through HLG color transfer information to everything e
 
 FastFlix v6.0.0+ supports copying existing Dolby Vision metadata from the input video for HEVC and AV1 videos used with rigaya's hardware encoders.
 
+rigaya's encoders only output the base layer plus RPU (BL+RPU), so dual-layer Dolby Vision profile 7 sources (with an enhancement layer, such as 7.6) are converted to profile 8.1 rather than copied as-is. Keep that in mind for sources where the enhancement layer matters.
+
 # Multilingual Support
 
 FastFlix is machine translated using DeepL into Spanish (español), French (Français), German (Deutsch), 

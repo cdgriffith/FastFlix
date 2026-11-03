@@ -97,3 +97,54 @@ def test_latest_fastflix_timeouts_and_bad_data(monkeypatch):
     auto_timeout = calls["timeout"]
     shared.latest_fastflix(app=None, show_new_dialog=True)
     assert auto_timeout < calls["timeout"]
+
+
+# --- #773 millisecond precision for Start/End time ---
+
+
+@pytest.mark.parametrize(
+    "text,expected",
+    [
+        ("01:05:45.003", 3945.003),
+        ("03:05:45.009", 11145.009),
+        ("02:02:56.077", 7376.077),
+        ("02:02:56.07", 7376.07),
+        ("02:02:56.0077", 7376.0077),
+        ("0:00:01.05", 1.05),
+        ("0:00:01.5", 1.5),
+        ("0:00:01.500", 1.5),
+        ("1:00:00", 3600),
+        ("90.25", 90.25),
+        ("0:00:10.", 10),
+        ("0:00:01.abc", 0),
+    ],
+)
+def test_time_to_number_keeps_leading_zero_fractions(text, expected):
+    assert shared.time_to_number(text) == expected
+
+
+@pytest.mark.parametrize(
+    "number,expected",
+    [
+        (0, "0:00:00"),
+        (3945.003, "1:05:45.003"),
+        (11145.009, "3:05:45.009"),
+        (1.5, "0:00:01.500"),
+        (36000.25, "10:00:00.250"),
+        (3946.0029999999, "1:05:46.003"),
+    ],
+)
+def test_number_to_time_millisecond_precision(number, expected):
+    assert shared.number_to_time(number) == expected
+
+
+@pytest.mark.parametrize("seconds", [0, 0.001, 1.05, 3945.003, 11145.009, 36000.999])
+def test_time_round_trip(seconds):
+    assert shared.time_to_number(shared.number_to_time(seconds)) == seconds
+
+
+def test_play_completion_sound_never_raises(monkeypatch):
+    """#745 #755: a missing/broken sound backend must not break queue completion."""
+    monkeypatch.setattr(shared.QtWidgets.QApplication, "beep", lambda: (_ for _ in ()).throw(RuntimeError("no audio")))
+    monkeypatch.setattr(shared.sys, "platform", "linux")
+    shared.play_completion_sound()

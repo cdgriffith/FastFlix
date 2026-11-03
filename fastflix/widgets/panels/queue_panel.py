@@ -8,7 +8,6 @@ import os
 from pathlib import Path
 import gc
 
-from platformdirs import user_data_dir
 import reusables
 from box import Box
 from PySide6 import QtCore, QtGui, QtWidgets
@@ -43,8 +42,6 @@ done_actions = {
         "hibernate": "shutdown /h",
     },
 }
-
-after_done_path = Path(user_data_dir("FastFlix", appauthor=False, roaming=True)) / "after_done_logs"
 
 
 class ElidedLabel(QtWidgets.QLabel):
@@ -639,7 +636,7 @@ class EncodingQueue(FlixList):
             return
         logger.info(f"Running after done action: {self.after_done_action}")
         BackgroundRunner(self.app.fastflix.log_queue).start_exec(
-            self.after_done_action, str(after_done_path), shell=True
+            self.after_done_action, str(self.app.fastflix.data_path / "after_done_logs"), shell=True
         )
 
     def set_priority(self):

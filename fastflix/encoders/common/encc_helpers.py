@@ -292,7 +292,9 @@ def build_audio(audio_tracks: list[AudioTrack], audio_streams) -> List[str]:
     return result
 
 
-def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video_height: int) -> List[str]:
+def build_subtitle(
+    subtitle_tracks: list[SubtitleTrack], subtitle_streams, video_height: int, remove_metadata: bool = False
+) -> List[str]:
     embedded_tracks = [t for t in subtitle_tracks if not t.external]
     external_tracks = [t for t in subtitle_tracks if t.external]
     command_list = []
@@ -318,7 +320,12 @@ def build_subtitle(subtitle_tracks: list[SubtitleTrack], subtitle_streams, video
             else:
                 command_list.extend(["--sub-disposition", f"{sub_id}?unset"])
 
+            if remove_metadata:
+                # Only copied tracks are listed, so unselected subtitles are not brought back (#761)
+                command_list.extend(["--sub-metadata", f"{sub_id}?clear"])
             command_list.extend(["--sub-metadata", f"{sub_id}?language={track.language}"])
+            if remove_metadata and track.title:
+                command_list.extend(["--sub-metadata", f"{sub_id}?title={track.title}"])
 
     for track in sorted(external_tracks, key=lambda x: x.outdex):
         if not track.enabled:

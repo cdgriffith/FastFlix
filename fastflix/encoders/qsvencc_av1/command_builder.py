@@ -105,9 +105,9 @@ def build(fastflix: FastFlix):
         command.extend([f"--{settings.qp_mode}", str(settings.cqp)])
 
     if video.video_settings.maxrate:
-        command.extend(
-            ["--max-bitrate", str(video.video_settings.maxrate), "--vbv-bufsize", str(video.video_settings.bufsize)]
-        )
+        command.extend(["--max-bitrate", str(video.video_settings.maxrate)])
+        if video.video_settings.bufsize:
+            command.extend(["--vbv-bufsize", str(video.video_settings.bufsize)])
 
     if min_q and settings.bitrate:
         command.extend(["--qp-min", str(min_q)])
@@ -185,7 +185,14 @@ def build(fastflix: FastFlix):
         command.extend(["--psnr", "--ssim"])
 
     command.extend(build_audio(video.audio_tracks, video.streams.audio))
-    command.extend(build_subtitle(video.subtitle_tracks, video.streams.subtitle, video_height=video.height))
+    command.extend(
+        build_subtitle(
+            video.subtitle_tracks,
+            video.streams.subtitle,
+            video_height=video.height,
+            remove_metadata=video.video_settings.remove_metadata,
+        )
+    )
     command.extend(
         build_data(
             video.data_tracks,

@@ -1069,3 +1069,27 @@ def test_rigaya_extra_options_nlmeans_opencl(encc_fastflix_instance):
     assert "--vpp-nlmeans" in result
     idx = result.index("--vpp-nlmeans")
     assert "sigma=1.0,h=1.0,patch=3,search=9" in result[idx + 1]
+
+
+def test_build_subtitle_remove_metadata_clears_copied_tracks(sample_subtitle_tracks):
+    """#761: Remove Metadata clears subtitle metadata for rigaya encoders, only for tracks being copied."""
+    for track in sample_subtitle_tracks:
+        track.enabled = True
+        track.burn_in = False
+    sample_subtitle_tracks[1].enabled = False
+    sample_subtitle_tracks[2].title = "Signs"
+    subtitle_streams = [Box({"index": 0}), Box({"index": 1}), Box({"index": 2})]
+
+    result = build_subtitle(sample_subtitle_tracks, subtitle_streams, 1080, remove_metadata=True)
+
+    assert result[result.index("--sub-copy") + 1] == "1,3"
+    assert "1?clear" in result and "3?clear" in result
+    assert "2?clear" not in result
+    # clear comes first so the language/title set afterwards are kept
+    assert result.index("1?clear") < result.index("1?language=eng")
+    assert result.index("3?clear") < result.index("3?title=Signs")
+
+
+def test_build_subtitle_keeps_metadata_by_default(sample_subtitle_tracks):
+    subtitle_streams = [Box({"index": 0}), Box({"index": 1}), Box({"index": 2})]
+    assert not [x for x in build_subtitle(sample_subtitle_tracks, subtitle_streams, 1080) if x.endswith("?clear")]

@@ -565,7 +565,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         gl.addWidget(self.maxrate_widget, 0, 1)
         gl.addWidget(QtWidgets.QLabel(f"{t('Bufsize')} (kbps)"), 0, 2, alignment=QtCore.Qt.AlignRight)
         gl.addWidget(self.bufsize_widget, 0, 3)
-        gl.addWidget(QtWidgets.QLabel(t("Both must have values to be enabled")), 0, 4, 1, 2)
+        gl.addWidget(QtWidgets.QLabel(t("Bufsize is optional for rigaya encoders, others need both")), 0, 4, 1, 2)
 
         self.faststart_widget = ToggleSwitch(t("Fast Start (MP4/MOV)"))
         self.faststart_widget.setChecked(True)
@@ -804,15 +804,19 @@ class AdvancedPanel(QtWidgets.QWidget):
         else:
             self.app.fastflix.current_video.video_settings.color_space = self.color_space_widget.currentText()
 
-        if self.maxrate_widget.text() and self.bufsize_widget.text():
-            self.app.fastflix.current_video.video_settings.maxrate = int(self.maxrate_widget.text())
-            self.app.fastflix.current_video.video_settings.bufsize = int(self.bufsize_widget.text())
-        else:
-            self.app.fastflix.current_video.video_settings.maxrate = None
-            self.app.fastflix.current_video.video_settings.bufsize = None
+        # Max bitrate may be set alone (rigaya encoders pick the VBV buffer size automatically, #762);
+        # FFmpeg and x265 still only apply VBV when both are set
+        maxrate, bufsize = self.get_vbv()
+        self.app.fastflix.current_video.video_settings.maxrate = maxrate
+        self.app.fastflix.current_video.video_settings.bufsize = bufsize
 
         self.update_faststart_visibility()
         self.updating = False
+
+    def get_vbv(self) -> tuple[int | None, int | None]:
+        maxrate = int(self.maxrate_widget.text()) if self.maxrate_widget.text() else None
+        bufsize = int(self.bufsize_widget.text()) if maxrate and self.bufsize_widget.text() else None
+        return maxrate, bufsize
 
     def get_deinterlace_filter(self):
         return deinterlace_presets[self.deinterlace_method_widget.currentText()][
@@ -826,11 +830,7 @@ class AdvancedPanel(QtWidgets.QWidget):
                 self.denoise_strength_widget.currentText()
             ]
 
-        maxrate = None
-        bufsize = None
-        if self.maxrate_widget.text() and self.bufsize_widget.text():
-            maxrate = int(self.maxrate_widget.text())
-            bufsize = int(self.bufsize_widget.text())
+        maxrate, bufsize = self.get_vbv()
 
         contrast = None
         if self.contrast_widget.text().strip() != "":
@@ -1133,7 +1133,7 @@ class AdvancedPanel(QtWidgets.QWidget):
 
             if settings.maxrate:
                 self.maxrate_widget.setText(str(settings.maxrate))
-                self.bufsize_widget.setText(str(settings.bufsize))
+                self.bufsize_widget.setText(str(settings.bufsize) if settings.bufsize else "")
             else:
                 self.maxrate_widget.setText("")
                 self.bufsize_widget.setText("")
@@ -1207,9 +1207,8 @@ class AdvancedPanel(QtWidgets.QWidget):
             # VBV
             maxrate = self.app.fastflix.config.advanced_opt("maxrate")
             bufsize = self.app.fastflix.config.advanced_opt("bufsize")
-            vbv = bool(maxrate and bufsize)
-            self.maxrate_widget.setText(str(maxrate) if maxrate and vbv else "")
-            self.bufsize_widget.setText(str(bufsize) if maxrate and vbv else "")
+            self.maxrate_widget.setText(str(maxrate) if maxrate else "")
+            self.bufsize_widget.setText(str(bufsize) if maxrate and bufsize else "")
 
             # Equalizer
             self.brightness_widget.setText(self.app.fastflix.config.advanced_opt("brightness") or "")

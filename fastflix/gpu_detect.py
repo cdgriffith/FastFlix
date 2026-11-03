@@ -48,11 +48,15 @@ def classify_vendor(name: str | None) -> str | None:
 
 
 def windows_gpu_detect():
-    import wmi
-
-    computer = wmi.WMI()
-    gpu_info = computer.Win32_VideoController()
     detected_gpus = DetectGPU()
+    try:
+        import wmi
+
+        computer = wmi.WMI()
+        gpu_info = computer.Win32_VideoController()
+    except Exception:
+        logger.exception("Could not query GPUs through WMI, skipping GPU detection")
+        return detected_gpus
     fingerprinter = set()
     for adapter in gpu_info:
         vendor = classify_vendor(adapter.AdapterCompatibility)

@@ -706,7 +706,10 @@ class RigayaPanel(SettingPanel):
         layout = self._add_check_box(
             label="Copy Dolby Vision",
             widget_name="copy_dv",
-            tooltip="Copy Dolby Vision RPU metadata from input file",
+            tooltip=(
+                "Copy Dolby Vision RPU metadata from input file\n"
+                "Only the base layer and RPU are kept, so dual-layer profile 7 sources become profile 8.1"
+            ),
             opt="copy_dv",
         )
         return layout

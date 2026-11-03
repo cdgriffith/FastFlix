@@ -118,7 +118,13 @@ def main(portable_mode=False):
         return exit_status
 
     try:
-        queue_worker(gui_proc, worker_queue, status_queue, log_queue)
+        log_dir = None
+        if portable_mode:
+            from fastflix.models.fastflix import portable_data_path
+
+            log_dir = portable_data_path() / "logs"
+            log_dir.mkdir(parents=True, exist_ok=True)
+        queue_worker(gui_proc, worker_queue, status_queue, log_queue, log_dir=log_dir)
         exit_status = 0
     except Exception:
         logger.exception("Exception occurred while running FastFlix core")

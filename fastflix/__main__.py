@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import multiprocessing
 import os
 import sys
 import traceback
@@ -35,8 +36,24 @@ def setup_ocr_environment():
         os.environ["PATH"] = f"{mkvtoolnix_dir}{os.pathsep}{os.environ.get('PATH', '')}"
 
 
+def configure_multiprocessing():
+    """Use the "fork" start method on Linux, which was the default before Python 3.14.
+
+    Python 3.14 switched the Linux default to "forkserver". In frozen (PyInstaller) builds the forkserver is started
+    by re-running the executable, which starts FastFlix again instead, so every GUI process launch spawned another
+    FastFlix until the system ran out of memory (#750). The main process never imports Qt, so forking it is safe.
+    """
+    if not sys.platform.startswith("linux") or multiprocessing.get_start_method(allow_none=True) is not None:
+        return
+    try:
+        multiprocessing.set_start_method("fork")
+    except (RuntimeError, ValueError):
+        pass
+
+
 def start_fastflix():
     exit_code = 2
+    configure_multiprocessing()
 
     # Portable mode: Go launcher sets FASTFLIX_PORTABLE=1, PyInstaller uses portable.py import
     portable_mode = os.environ.get("FASTFLIX_PORTABLE") == "1"

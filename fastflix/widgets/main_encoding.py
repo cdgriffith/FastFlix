@@ -18,7 +18,7 @@ from fastflix.exceptions import FastFlixInternalException, FlixError
 from fastflix.language import t
 from fastflix.models.video import Video
 from fastflix.resources import get_icon
-from fastflix.shared import error_message, message, yes_no_message
+from fastflix.shared import error_message, message, play_completion_sound, yes_no_message
 from fastflix.ui_constants import ICONS
 from fastflix.ui_scale import scaler
 from fastflix.widgets.status_bar import STATE_COMPLETE, STATE_ENCODING, STATE_ERROR, STATE_IDLE
@@ -202,6 +202,8 @@ class EncodingMixin:
             self.encoding_status_signal.emit(t("All conversions complete"), STATE_COMPLETE)
             self.video_options.queue.run_after_done()
             self.video_options.show_queue()
+            if self.app.fastflix.config.play_complete_sound:
+                play_completion_sound()
             if self.app.fastflix.config.show_complete_message:
                 message(t("All queue items have completed"), title=t("Success"))
 

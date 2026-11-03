@@ -253,3 +253,23 @@ def test_nvencc_hevc_all_elements_are_strings():
     assert isinstance(cmd, list)
     for i, element in enumerate(cmd):
         assert isinstance(element, str), f"Element at index {i} is {type(element).__name__}: {element!r}"
+
+
+def _nvencc_cmd(maxrate, bufsize):
+    fastflix = _make_fastflix(
+        encoder_settings=NVEncCSettings(bitrate=None, cqp=20),
+        video_settings=VideoSettings(remove_hdr=False, maxrate=maxrate, bufsize=bufsize),
+    )
+    with mock.patch("fastflix.encoders.nvencc_hevc.command_builder.rigaya_auto_options", return_value=[]):
+        return build(fastflix)[0].command
+
+
+def test_nvencc_hevc_max_bitrate_without_bufsize():
+    """#762: NVEncC picks the VBV buffer size automatically, so max bitrate can be used alone."""
+    cmd = _nvencc_cmd(maxrate=8000, bufsize=None)
+    assert cmd[cmd.index("--max-bitrate") + 1] == "8000"
+    assert "--vbv-bufsize" not in cmd
+    assert cmd[cmd.index("--max-bitrate") + 2] != "None"
+
+    cmd = _nvencc_cmd(maxrate=8000, bufsize=16000)
+    assert cmd[cmd.index("--vbv-bufsize") + 1] == "16000"
