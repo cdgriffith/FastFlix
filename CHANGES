@@ -4,6 +4,7 @@
 
 * Adding Unselect All and Preserve All buttons to the Audio tab, matching the Subtitles tab (thanks to Balthazar)
 * Adding Strict Interleaving option to the Advanced panel (-max_interleave_delta 0), so copied audio is no longer muxed gigabytes ahead of the video; Auto turns it on unless subtitle, data or cover streams are kept, which could make FFmpeg buffer most of the video in memory (thanks to Norbert)
+* Fixing #743 .mov sources with a timecode (tmcd) data track failing to encode to .mp4 ("Could not find tag for codec none"); the timecode is now written with -timecode for MP4/M4V output, and other data tracks MP4 cannot hold are turned off for MP4 like they are for MKV (thanks to rcarlos243)
 * Fixing PyPI release workflow failing with "No module named build" (6.3.0 and 6.3.1 were not published to PyPI); the wheel is now built with uv build and uploaded with uvx twine
 
 ## Version 6.3.1

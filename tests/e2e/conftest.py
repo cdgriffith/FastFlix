@@ -277,6 +277,7 @@ def create_fastflix(
                     codec_name=codec_name,
                     codec_type="data",
                     title=title,
+                    raw_info=stream,
                 )
             )
             if enabled:

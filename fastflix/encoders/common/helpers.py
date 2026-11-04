@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 from fastflix.encoders.common.attachments import build_attachments
 from fastflix.encoders.common.audio import build_audio
 from fastflix.encoders.common.subtitles import build_subtitle
+from fastflix.models.encode import MP4_MUXER_EXTENSIONS
 from fastflix.models.fastflix import FastFlix
 from fastflix.shared import sanitize, quoted_path
 
@@ -234,6 +235,8 @@ def generate_ending(
         command.extend(cover)
 
     mapped_data = False
+    timecode = ""
+    is_mp4 = bool(output_video) and output_video.suffix.lower() in MP4_MUXER_EXTENSIONS
     if data_tracks:
         has_data = False
         has_attachment = False
@@ -244,6 +247,11 @@ def generate_ending(
         )
         for track in data_tracks:
             if not track.enabled:
+                continue
+            if is_mp4 and not track.mp4_copyable():
+                # The MP4 muxer cannot copy these (#743); it writes its own tmcd track from -timecode instead
+                if track.is_timecode() and not timecode:
+                    timecode = track.timecode()
                 continue
             mapped_data = True
             command.extend(["-map", f"0:{track.index}"])
@@ -278,6 +286,9 @@ def generate_ending(
     # FFmpeg from auto-including them (causes failures with formats like MKV)
     if not mapped_data:
         command.append("-dn")
+
+    if timecode:
+        command.extend(["-timecode", timecode])
 
     if faststart and output_video and output_video.suffix.lower() in (".mp4", ".mov", ".m4v"):
         command.extend(["-movflags", "+faststart"])
