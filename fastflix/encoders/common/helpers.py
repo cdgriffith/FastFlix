@@ -201,6 +201,7 @@ def generate_ending(
     copy_data=False,
     data_tracks=None,
     faststart=True,
+    strict_interleave: Optional[bool] = None,
     **_,
 ):
     command = []
@@ -281,12 +282,29 @@ def generate_ending(
     if faststart and output_video and output_video.suffix.lower() in (".mp4", ".mov", ".m4v"):
         command.extend(["-movflags", "+faststart"])
 
+    if _use_strict_interleave(strict_interleave, subtitles, cover, mapped_data):
+        command.extend(["-max_interleave_delta", "0"])
+
     if output_video and not null_ending:
         command.append(str(sanitize(output_video)))
     else:
         command.append(null)
 
     return command, fps_option
+
+
+def _use_strict_interleave(strict_interleave: Optional[bool], subtitles, cover, mapped_data) -> bool:
+    """Whether to pass -max_interleave_delta 0 (None means auto).
+
+    With FFmpeg's default 10 second limit, copied audio can be flushed far ahead of a slow-starting video encoder, so
+    players need gigabytes of read-ahead. 0 makes the muxer wait for a packet from every stream, which keeps the file
+    interleaved but buffers in memory until sparse streams (subtitles, data, cover art) produce one. An empty forced
+    subtitle track could hold most of the movie in RAM, so auto only turns it on when none of those are muxed.
+    """
+    if strict_interleave is not None:
+        return strict_interleave
+    has_subtitles = bool(subtitles) and "-map" in subtitles
+    return not (has_subtitles or cover or mapped_data)
 
 
 def _subtitle_original_size(source_width, source_height, crop, rotate, pad_aspect) -> str:

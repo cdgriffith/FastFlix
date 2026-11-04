@@ -135,6 +135,7 @@ class VideoSettings(BaseModel):
     pad_color: str = "black"
     lut3d_path: Optional[str] = None
     faststart: bool = True
+    strict_interleave: Optional[bool] = None
     gop_length: Optional[int] = None
     copy_data: bool = False
     template_generated_name: str = ""

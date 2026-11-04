@@ -574,6 +574,23 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.faststart_widget.setVisible(False)
         gl.addWidget(self.faststart_widget, 1, 0, 1, 2)
 
+        self.strict_interleave_widget = QtWidgets.QComboBox()
+        self.strict_interleave_widget.addItems([t("Auto"), t("Always"), t("Never")])
+        self.strict_interleave_widget.setToolTip(
+            t(
+                "Passes -max_interleave_delta 0 so copied audio stays interleaved with the video"
+                " and the file plays without huge read-ahead"
+            )
+            + "\n"
+            + t(
+                "Auto turns it on unless subtitle, data or cover streams are kept,"
+                " as sparse streams can make FFmpeg buffer much of the video in memory"
+            )
+        )
+        self.strict_interleave_widget.currentIndexChanged.connect(self.page_update)
+        gl.addWidget(QtWidgets.QLabel(t("Strict Interleaving")), 1, 2, alignment=QtCore.Qt.AlignRight)
+        gl.addWidget(self.strict_interleave_widget, 1, 3)
+
         self.setup_group(group, rows=2)
         return group
 
@@ -592,6 +609,12 @@ class AdvancedPanel(QtWidgets.QWidget):
     def fps_update(self, myself, widget):
         widget.setDisabled(myself.isChecked())
         self.page_update()
+
+    def get_strict_interleave(self):
+        return {1: True, 2: False}.get(self.strict_interleave_widget.currentIndex())
+
+    def set_strict_interleave(self, value):
+        self.strict_interleave_widget.setCurrentIndex({True: 1, False: 2}.get(value, 0))
 
     def get_gop_length(self):
         """GOP length in frames, or None when empty/invalid/less than 1 (encoder default)"""
@@ -763,6 +786,7 @@ class AdvancedPanel(QtWidgets.QWidget):
         self.app.fastflix.current_video.video_settings.lut3d_path = self.lut3d_path_widget.text().strip() or None
 
         self.app.fastflix.current_video.video_settings.faststart = self.faststart_widget.isChecked()
+        self.app.fastflix.current_video.video_settings.strict_interleave = self.get_strict_interleave()
 
         self.app.fastflix.current_video.video_settings.gop_length = self.get_gop_length()
 
@@ -935,6 +959,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             pad_color=self.pad_color_widget.text().strip() or "black",
             lut3d_path=self.lut3d_path_widget.text().strip() or None,
             faststart=self.faststart_widget.isChecked(),
+            strict_interleave=self.get_strict_interleave(),
             deinterlace=self.main.widgets.deinterlace.isChecked(),
             gop_length=gop_length,
             maxrate=maxrate,
@@ -1081,6 +1106,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.lut3d_path_widget.setText(settings.lut3d_path or "")
             self.gop_length_widget.setText(str(settings.gop_length) if settings.gop_length is not None else "")
             self.faststart_widget.setChecked(settings.faststart if hasattr(settings, "faststart") else True)
+            self.set_strict_interleave(getattr(settings, "strict_interleave", None))
 
             if settings.deblock:
                 self.deblock_widget.setCurrentText(settings.deblock)
@@ -1231,6 +1257,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.gop_length_widget.setText(str(gop_val) if gop_val is not None else "")
             faststart_val = self.app.fastflix.config.advanced_opt("faststart")
             self.faststart_widget.setChecked(faststart_val if faststart_val is not None else True)
+            self.set_strict_interleave(self.app.fastflix.config.advanced_opt("strict_interleave", None))
 
             self.hdr_settings()
             self.video_title.setText("")
@@ -1338,6 +1365,7 @@ class AdvancedPanel(QtWidgets.QWidget):
             self.gop_length_widget.setText(str(advanced_options.gop_length))
 
         self.faststart_widget.setChecked(advanced_options.faststart)
+        self.set_strict_interleave(advanced_options.strict_interleave)
 
         # A profile default must never clear auto-detected interlacing
         self.main.widgets.deinterlace.setChecked(
