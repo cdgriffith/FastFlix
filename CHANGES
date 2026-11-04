@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 6.3.3
+
+* Fixing #777 a saved NVEncC, VCEEncC, QSVEncC, gifski or hdr10plus_tool location that no longer exists keeping the encoder listed, so the encode failed with "FileNotFoundError: [WinError 2]"; missing locations are now searched for again on startup, and a missing encoder program is reported by name (thanks to Xoanon88)
+
 ## Version 6.3.2
 
 * Adding Unselect All and Preserve All buttons to the Audio tab, matching the Subtitles tab (thanks to Balthazar)

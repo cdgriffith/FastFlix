@@ -110,6 +110,22 @@ class BackgroundRunner:
                 stderr_handle.close()
             self.error_detected = True
             return
+        except FileNotFoundError:
+            program = popen_cmd[0] if isinstance(popen_cmd, list) and popen_cmd else popen_cmd
+            if shell:
+                logger.error(f"Could not start the command, a file it needs was not found: {program}")
+            else:
+                logger.error(
+                    f"Could not start the encoder, the program does not exist: {program}\n"
+                    "Please check its location in Settings, "
+                    "or re-download it with Help > Update Rigaya's Encoders"
+                )
+            if stdout_handle:
+                stdout_handle.close()
+            if stderr_handle:
+                stderr_handle.close()
+            self.error_detected = True
+            return
         except Exception:
             logger.exception("Could not start worker process")
             if stdout_handle:

@@ -494,6 +494,14 @@ class Config(BaseModel):
                     self.ffprobe = find_ffmpeg_file("ffmpeg.ffprobe", raise_on_missing=True)
                 except MissingFF:
                     raise err from None
+        # #777: a saved tool path that no longer exists kept the encoder listed, then the encode failed with
+        # "FileNotFoundError: [WinError 2]". Forget missing paths so they are searched for again below.
+        for key in ("hdr10plus_parser", "nvencc", "vceencc", "qsvencc", "gifski"):
+            path = getattr(self, key)
+            if path and not Path(path).exists():
+                logger.warning(f"{key} was set to {path}, which no longer exists, searching for it again")
+                setattr(self, key, None)
+
         if not self.hdr10plus_parser:
             self.hdr10plus_parser = find_hdr10plus_tool()
         if not self.nvencc:
