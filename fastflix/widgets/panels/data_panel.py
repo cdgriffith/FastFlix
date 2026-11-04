@@ -6,7 +6,7 @@ from box import Box
 from PySide6 import QtGui, QtWidgets
 
 from fastflix.language import t
-from fastflix.models.encode import DataTrack
+from fastflix.models.encode import DataTrack, MP4_MUXER_EXTENSIONS
 from fastflix.models.fastflix_app import FastFlixApp
 from fastflix.resources import get_icon
 from fastflix.shared import no_border, shrink_text_to_fit
@@ -126,6 +126,9 @@ class DataTrackWidget(QtWidgets.QTabWidget):
             incompatible = True
             reason = t("Data and attachment streams are not supported by hardware encoders for this output format")
         elif track.codec_type == "data" and ext_with_dot in NO_DATA_EXTENSIONS:
+            incompatible = True
+            reason = t("Data streams are not supported in this output format")
+        elif ext_with_dot in MP4_MUXER_EXTENSIONS and not track.mp4_copyable() and not track.is_timecode():
             incompatible = True
             reason = t("Data streams are not supported in this output format")
         elif track.codec_type == "attachment" and ext_with_dot in NO_ATTACHMENT_EXTENSIONS:

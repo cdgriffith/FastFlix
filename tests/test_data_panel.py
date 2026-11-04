@@ -197,8 +197,8 @@ class TestGenerateEndingWithDataTracks:
     def test_data_track_title_and_handler_metadata(self):
         """Data/attachment tracks must set title and handler metadata (empty string when not set)."""
         tracks = [
-            DataTrack(index=5, outdex=2, enabled=True, codec_type="data", title="Timecode"),
-            DataTrack(index=6, outdex=3, enabled=True, codec_type="data", title=""),
+            DataTrack(index=5, outdex=2, enabled=True, codec_name="bin_data", codec_type="data", title="Timecode"),
+            DataTrack(index=6, outdex=3, enabled=True, codec_name="bin_data", codec_type="data", title=""),
         ]
         result, _ = generate_ending(
             audio=["-map", "0:1"],

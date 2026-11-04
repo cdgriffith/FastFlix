@@ -15,7 +15,7 @@ from fastflix.resources import get_icon
 from fastflix.ui_scale import scaler
 from fastflix.ui_constants import HEIGHTS, WIDTHS
 from fastflix.ui_styles import get_onyx_disposition_style
-from fastflix.shared import no_border, error_message, yes_no_message, clear_list
+from fastflix.shared import no_border, error_message, yes_no_message, clear_list, shrink_text_to_fit
 from fastflix.widgets.panels.abstract_list import FlixList
 from fastflix.audio_processing import apply_audio_filters
 from fastflix.widgets.windows.audio_conversion import AudioConversion
@@ -394,7 +394,27 @@ class Audio(QtWidgets.QTabWidget):
 
 class AudioList(FlixList):
     def __init__(self, parent, app: FastFlixApp):
-        super(AudioList, self).__init__(app, parent, "Audio Tracks", "audio")
+        top_layout = QtWidgets.QHBoxLayout()
+
+        label = QtWidgets.QLabel(t("Audio Tracks"))
+        label.setFixedHeight(30)
+        top_layout.addWidget(label)
+        top_layout.addStretch(1)
+
+        self.remove_all_button = QtWidgets.QPushButton(t("Unselect All"))
+        self.remove_all_button.setFixedWidth(150)
+        self.remove_all_button.clicked.connect(lambda: self.select_all(False))
+        self.save_all_button = QtWidgets.QPushButton(t("Preserve All"))
+        self.save_all_button.setFixedWidth(150)
+        self.save_all_button.clicked.connect(lambda: self.select_all(True))
+
+        for w in (self.remove_all_button, self.save_all_button):
+            shrink_text_to_fit(w)
+
+        top_layout.addWidget(self.remove_all_button)
+        top_layout.addWidget(self.save_all_button)
+
+        super(AudioList, self).__init__(app, parent, "Audio Tracks", "audio", top_row_layout=top_layout)
         self.available_audio_encoders = app.fastflix.audio_encoders
         self.app = app
         self.parent = parent
@@ -413,13 +433,15 @@ class AudioList(FlixList):
         track_info += f" - {track.channels} {t('channels')}"
         return track_info, tags
 
-    def enable_all(self):
+    def select_all(self, select=True):
         for track in self.tracks:
-            track.widgets.enable_check.setChecked(True)
+            track.widgets.enable_check.setChecked(select)
+
+    def enable_all(self):
+        self.select_all(True)
 
     def disable_all(self):
-        for track in self.tracks:
-            track.widgets.enable_check.setChecked(False)
+        self.select_all(False)
 
     def new_source(self, codecs):
         if not self.app.fastflix.current_video:

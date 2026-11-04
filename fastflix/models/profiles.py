@@ -139,6 +139,7 @@ class AdvancedOptions(BaseModel):
     hue: Optional[str] = None
     sharpen: Optional[str] = None
     faststart: bool = True
+    strict_interleave: Optional[bool] = None
     deinterlace: bool = False
     deinterlace_method_index: int = 0
     deinterlace_mode_index: int = 0

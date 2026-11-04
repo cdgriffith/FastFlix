@@ -921,3 +921,69 @@ def test_filter_lut3d(encoder_id, is_rigaya, tmp_path):
             swap_confirmed += 1
 
     assert swap_confirmed >= 3, f"LUT3D R/B swap not detected: only {swap_confirmed}/5 sample points matched"
+
+
+# ===========================================================================
+# #743: .mov with a QuickTime timecode (tmcd) data track -> .mp4 / .mov
+# ===========================================================================
+@pytest.mark.skipif(not has_ffmpeg_encoder("libx264"), reason="libx264 not available")
+@pytest.mark.parametrize("output_ext", [".mp4", ".mov"])
+def test_tmcd_mov_source(output_ext, tmp_path):
+    """The MP4 muxer cannot copy tmcd tracks; FastFlix must still encode and keep the timecode."""
+    source = tmp_path / "tmcd_source.mov"
+    subprocess.run(
+        [
+            FFMPEG,
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-y",
+            "-f",
+            "lavfi",
+            "-i",
+            "testsrc2=size=320x240:rate=24",
+            "-f",
+            "lavfi",
+            "-i",
+            "sine=frequency=440:sample_rate=48000",
+            "-t",
+            "2",
+            "-c:v",
+            "libx264",
+            "-c:a",
+            "aac",
+            "-timecode",
+            "01:00:00:00",
+            str(source),
+        ],
+        check=True,
+    )
+    output_path = tmp_path / f"tmcd_out{output_ext}"
+    work_path = tmp_path / "work"
+    work_path.mkdir()
+
+    fastflix = create_fastflix(
+        source_path=source,
+        encoder_settings=x264Settings(preset="ultrafast", crf=28, pix_fmt="yuv420p"),
+        output_path=output_path,
+        work_path=work_path,
+        include_data=True,
+        include_attachments=False,
+    )
+    assert any(t.is_timecode() for t in fastflix.current_video.data_tracks)
+
+    module = __import__("fastflix.encoders.avc_x264.command_builder", fromlist=["build"])
+    run_commands(module.build(fastflix), work_path)
+    verify_output(output_path, "h264")
+
+    probe = json.loads(
+        subprocess.run(
+            [FFPROBE, "-v", "error", "-show_streams", "-of", "json", str(output_path)],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    )
+    tmcd = [s for s in probe["streams"] if s.get("codec_tag_string") == "tmcd"]
+    assert tmcd, "timecode track was lost"
+    assert tmcd[0].get("tags", {}).get("timecode") == "01:00:00:00"

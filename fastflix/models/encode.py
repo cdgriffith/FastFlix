@@ -71,6 +71,32 @@ class DataTrack(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
+    def _raw(self, key, default=""):
+        if not self.raw_info:
+            return default
+        return self.raw_info.get(key, default) or default
+
+    def is_timecode(self) -> bool:
+        """QuickTime timecode (tmcd) data track."""
+        return self.codec_type == "data" and "tmcd" in (self.codec_name, self._raw("codec_tag_string"))
+
+    def timecode(self) -> str:
+        tags = self._raw("tags", {})
+        return (tags.get("timecode", "") if tags else "") or ""
+
+    def mp4_copyable(self) -> bool:
+        """Whether the MP4 muxer can stream-copy this data track.
+
+        The MP4 muxer has no tag for data streams without a known codec ("Could not find tag for codec none"), such as
+        QuickTime tmcd timecode tracks or phone camera metadata tracks (#743). Timecode is kept with -timecode instead.
+        """
+        return self.codec_type != "data" or (
+            not self.is_timecode() and self.codec_name.lower() not in ("", "none", "unknown")
+        )
+
+
+MP4_MUXER_EXTENSIONS = {".mp4", ".m4v"}
+
 
 QSVENC_TUNE_VALUES = ("default", "psnr", "ssim", "ms_ssim", "vmaf", "perceptual")
 

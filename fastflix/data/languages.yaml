@@ -16966,3 +16966,78 @@ HE-AAC profiles require the libfdk_aac encoder:
   ukr: Профілі HE-AAC потребують кодувальника libfdk_aac
   kor: HE-AAC 프로필에는 libfdk_aac 인코더가 필요합니다
   ron: Profilurile HE-AAC necesită codificatorul libfdk_aac
+Always:
+  deu: Immer
+  eng: Always
+  fra: Toujours
+  ita: Sempre
+  spa: Siempre
+  chs: 始终
+  jpn: 常に
+  rus: Всегда
+  por: Sempre
+  swe: Alltid
+  pol: Zawsze
+  ukr: Завжди
+  kor: 항상
+  ron: Întotdeauna
+Never:
+  deu: Nie
+  eng: Never
+  fra: Jamais
+  ita: Mai
+  spa: Nunca
+  chs: 从不
+  jpn: しない
+  rus: Никогда
+  por: Nunca
+  swe: Aldrig
+  pol: Nigdy
+  ukr: Ніколи
+  kor: 안 함
+  ron: Niciodată
+Strict Interleaving:
+  deu: Striktes Interleaving
+  eng: Strict Interleaving
+  fra: Entrelacement strict
+  ita: Interleaving rigoroso
+  spa: Entrelazado estricto
+  chs: 严格交错
+  jpn: 厳密なインターリーブ
+  rus: Строгое чередование
+  por: Intercalação estrita
+  swe: Strikt interfoliering
+  pol: Ścisły przeplot
+  ukr: Суворе чергування
+  kor: 엄격한 인터리빙
+  ron: Intercalare strictă
+Passes -max_interleave_delta 0 so copied audio stays interleaved with the video and the file plays without huge read-ahead:
+  deu: Übergibt -max_interleave_delta 0, damit kopiertes Audio mit dem Video verzahnt bleibt und die Datei ohne riesigen Vorauslese-Puffer abgespielt wird
+  eng: Passes -max_interleave_delta 0 so copied audio stays interleaved with the video and the file plays without huge read-ahead
+  fra: Passe -max_interleave_delta 0 pour que l'audio copié reste entrelacé avec la vidéo et que le fichier se lise sans énorme lecture anticipée
+  ita: Passa -max_interleave_delta 0 in modo che l'audio copiato resti interlacciato con il video e il file si riproduca senza un'enorme lettura anticipata
+  spa: Pasa -max_interleave_delta 0 para que el audio copiado se mantenga entrelazado con el vídeo y el archivo se reproduzca sin una enorme lectura anticipada
+  chs: 传递 -max_interleave_delta 0，使复制的音频与视频保持交错，文件播放时无需大量预读
+  jpn: -max_interleave_delta 0 を渡し、コピーした音声を映像とインターリーブしたままにして、大量の先読みなしで再生できるようにします
+  rus: Передаёт -max_interleave_delta 0, чтобы скопированное аудио чередовалось с видео и файл воспроизводился без огромного упреждающего чтения
+  por: Passa -max_interleave_delta 0 para que o áudio copiado fique intercalado com o vídeo e o arquivo seja reproduzido sem uma enorme leitura antecipada
+  swe: Skickar -max_interleave_delta 0 så att kopierat ljud förblir interfolierat med videon och filen spelas upp utan enorm förhandsläsning
+  pol: Przekazuje -max_interleave_delta 0, aby skopiowany dźwięk pozostał przeplatany z obrazem, a plik odtwarzał się bez ogromnego odczytu z wyprzedzeniem
+  ukr: Передає -max_interleave_delta 0, щоб скопійоване аудіо чергувалося з відео і файл відтворювався без величезного попереднього читання
+  kor: -max_interleave_delta 0을 전달하여 복사된 오디오가 비디오와 인터리브된 상태를 유지하고 파일이 대량의 미리 읽기 없이 재생되도록 합니다
+  ron: Transmite -max_interleave_delta 0 pentru ca sunetul copiat să rămână intercalat cu videoclipul și fișierul să fie redat fără citire anticipată uriașă
+? Auto turns it on unless subtitle, data or cover streams are kept, as sparse streams can make FFmpeg buffer much of the video in memory
+: deu: Auto aktiviert es, sofern keine Untertitel-, Daten- oder Cover-Streams behalten werden, da spärliche Streams FFmpeg einen Großteil des Videos im Speicher puffern lassen können
+  eng: Auto turns it on unless subtitle, data or cover streams are kept, as sparse streams can make FFmpeg buffer much of the video in memory
+  fra: Auto l'active sauf si des flux de sous-titres, de données ou de couverture sont conservés, car les flux clairsemés peuvent obliger FFmpeg à garder une grande partie de la vidéo en mémoire
+  ita: Auto lo attiva a meno che non vengano mantenuti flussi di sottotitoli, dati o copertina, poiché i flussi sparsi possono far bufferizzare a FFmpeg gran parte del video in memoria
+  spa: Auto lo activa salvo que se conserven pistas de subtítulos, datos o portada, ya que las pistas dispersas pueden hacer que FFmpeg almacene gran parte del vídeo en memoria
+  chs: 自动模式下，除非保留字幕、数据或封面流，否则会启用，因为稀疏流可能使 FFmpeg 在内存中缓冲大量视频
+  jpn: 自動では、字幕・データ・カバーのストリームを残さない場合に有効になります。疎なストリームがあると FFmpeg が映像の大部分をメモリにバッファすることがあるためです
+  rus: Авто включает его, если не сохраняются потоки субтитров, данных или обложки, так как разреженные потоки могут заставить FFmpeg буферизовать в памяти большую часть видео
+  por: Auto ativa a opção a menos que faixas de legenda, dados ou capa sejam mantidas, pois faixas esparsas podem fazer o FFmpeg armazenar grande parte do vídeo na memória
+  swe: Auto slår på det om inga undertext-, data- eller omslagsströmmar behålls, eftersom glesa strömmar kan få FFmpeg att buffra en stor del av videon i minnet
+  pol: Auto włącza to, chyba że zachowywane są strumienie napisów, danych lub okładki, ponieważ rzadkie strumienie mogą sprawić, że FFmpeg zbuforuje w pamięci dużą część wideo
+  ukr: Авто вмикає це, якщо не зберігаються потоки субтитрів, даних або обкладинки, бо розріджені потоки можуть змусити FFmpeg буферизувати в пам'яті більшу частину відео
+  kor: 자동은 자막, 데이터 또는 커버 스트림을 유지하지 않을 때 켜집니다. 드문 스트림이 있으면 FFmpeg가 비디오의 많은 부분을 메모리에 버퍼링할 수 있기 때문입니다
+  ron: Auto îl activează doar dacă nu sunt păstrate fluxuri de subtitrări, date sau copertă, deoarece fluxurile rare pot face FFmpeg să păstreze în memorie o mare parte din videoclip
