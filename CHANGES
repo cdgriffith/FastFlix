@@ -2,6 +2,7 @@
 
 ## Version 6.3.2
 
+* Adding Unselect All and Preserve All buttons to the Audio tab, matching the Subtitles tab (thanks to Balthazar)
 * Fixing PyPI release workflow failing with "No module named build" (6.3.0 and 6.3.1 were not published to PyPI); the wheel is now built with uv build and uploaded with uvx twine
 
 ## Version 6.3.1
