@@ -2,6 +2,7 @@
 
 ## Version 6.3.3
 
+* Adding a Components Directory setting; FFmpeg, hdr10plus_tool, NVEncC, QSVEncC, VCEEncC and 7-Zip downloads from the Help menu are saved there and searched for there first, falling back to the default AppData locations when it is empty (thanks to 19Battlestar65)
 * Fixing #777 a saved NVEncC, VCEEncC, QSVEncC, gifski or hdr10plus_tool location that no longer exists keeping the encoder listed, so the encode failed with "FileNotFoundError: [WinError 2]"; missing locations are now searched for again on startup, and a missing encoder program is reported by name (thanks to Xoanon88)
 
 ## Version 6.3.2

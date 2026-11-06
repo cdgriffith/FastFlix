@@ -26,7 +26,10 @@ def test_missing_rigaya_path_is_searched_again(tmp_path, monkeypatch):
     def fake_where(name, portable_mode=False):
         return real_exe if name == "VCEEncC64" else None
 
-    with mock.patch("fastflix.models.config.where", side_effect=fake_where):
+    with (
+        mock.patch("fastflix.models.config.where", side_effect=fake_where),
+        mock.patch("fastflix.models.config.find_component_file", return_value=None),
+    ):
         config = Config()
         config.load()
 

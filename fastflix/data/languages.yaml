@@ -17041,3 +17041,11 @@ Passes -max_interleave_delta 0 so copied audio stays interleaved with the video 
   ukr: Авто вмикає це, якщо не зберігаються потоки субтитрів, даних або обкладинки, бо розріджені потоки можуть змусити FFmpeg буферизувати в пам'яті більшу частину відео
   kor: 자동은 자막, 데이터 또는 커버 스트림을 유지하지 않을 때 켜집니다. 드문 스트림이 있으면 FFmpeg가 비디오의 많은 부분을 메모리에 버퍼링할 수 있기 때문입니다
   ron: Auto îl activează doar dacă nu sunt păstrate fluxuri de subtitrări, date sau copertă, deoarece fluxurile rare pot face FFmpeg să păstreze în memorie o mare parte din videoclip
+Components Directory:
+  eng: Components Directory
+Could not create / access components directory:
+  eng: Could not create / access components directory
+Downloaded components (FFmpeg, NVEnc, QSVEnc, VCEEnc, etc.) are saved to and searched for here first.:
+  eng: Downloaded components (FFmpeg, NVEnc, QSVEnc, VCEEnc, etc.) are saved to and searched for here first.
+Leave empty to use the default AppData locations.:
+  eng: Leave empty to use the default AppData locations.

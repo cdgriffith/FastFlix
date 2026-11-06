@@ -11,16 +11,14 @@ import subprocess
 
 import requests
 import reusables
-from platformdirs import user_data_dir
 from PySide6 import QtWidgets
 
+from fastflix.component_folders import component_folder, component_search_folders
 from fastflix.language import t
 from fastflix.shared import message
 from fastflix.exceptions import FastFlixError
 
 logger = logging.getLogger("fastflix")
-
-seven_zip_folder = Path(user_data_dir("7-Zip", appauthor=False, roaming=True))
 
 
 def ask_for_ffmpeg():
@@ -152,8 +150,8 @@ def latest_ffmpeg(signal, stop_signal, ffmpeg_version="latest", **_):
         stop = True
 
     stop_signal.connect(stop_me)
-    ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
-    ffmpeg_folder.mkdir(exist_ok=True)
+    ffmpeg_folder = component_folder("FFmpeg")
+    ffmpeg_folder.mkdir(parents=True, exist_ok=True)
 
     extract_folder = ffmpeg_folder / "temp_download"
     if extract_folder.exists():
@@ -269,8 +267,8 @@ def download_rigaya(stop_signal, seven_zip_path, app_name="NVEnc", **_):
         stop = True
 
     stop_signal.connect(stop_me)
-    asset_folder = Path(user_data_dir(app_name, appauthor=False, roaming=True))
-    asset_folder.mkdir(exist_ok=True)
+    asset_folder = component_folder(app_name)
+    asset_folder.mkdir(parents=True, exist_ok=True)
 
     url = f"https://api.github.com/repos/rigaya/{app_name}/releases/latest"
 
@@ -342,8 +340,9 @@ def download_7zip(stop_signal, **_):
         stop = True
 
     stop_signal.connect(stop_me)
+    seven_zip_folder = component_folder("7-Zip")
     filename = seven_zip_folder / "7zr.exe"
-    seven_zip_folder.mkdir(exist_ok=True)
+    seven_zip_folder.mkdir(parents=True, exist_ok=True)
 
     url = "https://www.7-zip.org/a/7zr.exe"
 
@@ -374,8 +373,8 @@ def download_hdr10plus_tool(signal, stop_signal, **_):
         stop = True
 
     stop_signal.connect(stop_me)
-    ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
-    ffmpeg_folder.mkdir(exist_ok=True)
+    ffmpeg_folder = component_folder("FFmpeg")
+    ffmpeg_folder.mkdir(parents=True, exist_ok=True)
 
     extract_folder = ffmpeg_folder / "temp_hdr10plus_download"
     if extract_folder.exists():
@@ -482,10 +481,10 @@ def download_hdr10plus_tool(signal, stop_signal, **_):
 
 def find_seven_zip_windows() -> Path | None:
     """Finds the 7-Zip executable"""
-    seven_zip_path = seven_zip_folder / "7zr.exe"
     seven_zip_on_path = shutil.which("7zr") or shutil.which("7z")
-    if seven_zip_path.exists():
-        return seven_zip_path
+    for folder in component_search_folders("7-Zip"):
+        if (folder / "7zr.exe").exists():
+            return folder / "7zr.exe"
     if seven_zip_on_path:
         return Path(seven_zip_on_path)
     return None
