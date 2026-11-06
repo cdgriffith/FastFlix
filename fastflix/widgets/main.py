@@ -1146,8 +1146,20 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             # Hack to prevent a lot of thumbnail generation
             self.loading_video = False
         self.page_update()
+        self._refresh_generated_output_name()
         # Ensure window stays within screen bounds after profile change
         self.container.ensure_window_in_bounds()
+
+    def _refresh_generated_output_name(self):
+        """Re-resolve the output name template (e.g. {profile}) unless the user edited the name by hand."""
+        video = self.app.fastflix.current_video
+        if not video or not self.input_video:
+            return
+        generated = video.video_settings.template_generated_name
+        if generated and self.output_video_path_widget.text() == generated:
+            _, name = self.generate_output_filename
+            self.output_video_path_widget.setText(name)
+            video.video_settings.template_generated_name = name
 
     def save_profile(self):
         self.video_options.get_settings()
@@ -1683,6 +1695,7 @@ class Main(VideoLoadMixin, EncodingMixin, PostEncodeMixin, QtWidgets.QWidget):
             video=video,
             encoder_settings=encoder_settings,
             video_settings=video_settings,
+            profile_name=self.app.fastflix.config.selected_profile,
         )
 
         extension = ""

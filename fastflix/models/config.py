@@ -23,12 +23,11 @@ from fastflix.models.encode import (
     setting_types,
 )
 from fastflix.models.profiles import Profile, AudioMatch, MatchItem, MatchType
+from fastflix.component_folders import component_search_folders, set_components_dir
 from fastflix.version import __version__
 from fastflix.rigaya_helpers import get_all_encoder_formats_and_devices
 
 logger = logging.getLogger("fastflix")
-ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True))
-
 NO_OPT = object()
 
 
@@ -66,16 +65,13 @@ def find_ffmpeg_file(name, raise_on_missing=False):
     if (ff_location := shutil.which(name)) is not None:
         return Path(ff_location).absolute()
 
-    if not ffmpeg_folder.exists():
-        if raise_on_missing:
-            raise MissingFF(name)
-        return None
-    for file in ffmpeg_folder.iterdir():
-        if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
-            return file
-    else:
-        if (ffmpeg_folder / "bin").exists():
-            for file in (ffmpeg_folder / "bin").iterdir():
+    for ffmpeg_folder in component_search_folders("FFmpeg"):
+        if not ffmpeg_folder.exists():
+            continue
+        for sub_folder in (ffmpeg_folder, ffmpeg_folder / "bin"):
+            if not sub_folder.is_dir():
+                continue
+            for file in sub_folder.iterdir():
                 if file.is_file() and file.name.lower() in (name, f"{name}.exe"):
                     return file
     if raise_on_missing:
@@ -91,9 +87,35 @@ def find_hdr10plus_tool():
     if location := shutil.which("hdr10plus_parser"):
         return Path(location)
     # Check the FFmpeg download folder (where auto-download places it)
-    hdr10plus_in_ffmpeg = ffmpeg_folder / "hdr10plus_tool.exe"
-    if hdr10plus_in_ffmpeg.exists():
-        return hdr10plus_in_ffmpeg
+    for ffmpeg_folder in component_search_folders("FFmpeg"):
+        hdr10plus_in_ffmpeg = ffmpeg_folder / "hdr10plus_tool.exe"
+        if hdr10plus_in_ffmpeg.exists():
+            return hdr10plus_in_ffmpeg
+    return None
+
+
+def resolve_tool_file(path: Path | None, name: str) -> Path | None:
+    """Return path as a file; if it is a folder, the named binary inside it (or its bin folder), else None."""
+    if not path:
+        return None
+    path = Path(path)
+    if not path.is_dir():
+        return path
+    for folder in (path, path / "bin"):
+        for candidate in (f"{name}.exe", name):
+            if (folder / candidate).is_file():
+                return folder / candidate
+    return None
+
+
+def find_component_file(folder_name: str, *names: str) -> Path | None:
+    """Look for a downloaded tool in the components folder, then the default AppData folder."""
+    wanted = {f"{n.lower()}{ext}" for n in names for ext in ("", ".exe")}
+    for folder in component_search_folders(folder_name):
+        if folder.is_dir():
+            for file in folder.iterdir():
+                if file.is_file() and file.name.lower() in wanted:
+                    return file
     return None
 
 
@@ -245,6 +267,7 @@ class Config(BaseModel):
     logging_level: int = 10
     crop_detect_points: int = 10
     continue_on_failure: bool = True
+    components_dir: Path | None = None
     work_path: Path = Path(os.getenv("FF_WORKDIR", user_data_dir("FastFlix", appauthor=False, roaming=True)))
     use_sane_audio: bool = True
     selected_profile: str = "Standard Profile"
@@ -433,6 +456,7 @@ class Config(BaseModel):
 
         paths = (
             "work_path",
+            "components_dir",
             "ffmpeg",
             "ffprobe",
             "hdr10plus_parser",
@@ -484,6 +508,11 @@ class Config(BaseModel):
         if self.source_directory is False:
             self.source_directory = None
 
+        set_components_dir(self.components_dir)
+        # #250 #252: a folder saved as the ffmpeg/ffprobe path passed .exists() and then failed to run with
+        # "PermissionError: [Errno 13]". Use the binary inside the folder, or search for it again.
+        self.ffmpeg = resolve_tool_file(self.ffmpeg, "ffmpeg")
+        self.ffprobe = resolve_tool_file(self.ffprobe, "ffprobe")
         if not self.ffmpeg or not self.ffmpeg.exists():
             self.ffmpeg = find_ffmpeg_file("ffmpeg", raise_on_missing=True)
         if not self.ffprobe or not self.ffprobe.exists():
@@ -494,17 +523,33 @@ class Config(BaseModel):
                     self.ffprobe = find_ffmpeg_file("ffmpeg.ffprobe", raise_on_missing=True)
                 except MissingFF:
                     raise err from None
+        # #777: a saved tool path that no longer exists kept the encoder listed, then the encode failed with
+        # "FileNotFoundError: [WinError 2]". Forget missing paths so they are searched for again below.
+        for key in ("hdr10plus_parser", "nvencc", "vceencc", "qsvencc", "gifski"):
+            path = getattr(self, key)
+            if path and not Path(path).is_file():
+                logger.warning(f"{key} was set to {path}, which is not an existing file, searching for it again")
+                setattr(self, key, None)
+
         if not self.hdr10plus_parser:
             self.hdr10plus_parser = find_hdr10plus_tool()
         if not self.nvencc:
-            self.nvencc = where("NVEncC64", portable_mode=portable_mode) or where("NVEncC", portable_mode=portable_mode)
+            self.nvencc = (
+                where("NVEncC64", portable_mode=portable_mode)
+                or where("NVEncC", portable_mode=portable_mode)
+                or find_component_file("NVEnc", "NVEncC64", "NVEncC")
+            )
         if not self.vceencc:
-            self.vceencc = where("VCEEncC64", portable_mode=portable_mode) or where(
-                "VCEEncC", portable_mode=portable_mode
+            self.vceencc = (
+                where("VCEEncC64", portable_mode=portable_mode)
+                or where("VCEEncC", portable_mode=portable_mode)
+                or find_component_file("VCEEnc", "VCEEncC64", "VCEEncC")
             )
         if not self.qsvencc:
-            self.qsvencc = where("QSVEncC64", portable_mode=portable_mode) or where(
-                "QSVEncC", portable_mode=portable_mode
+            self.qsvencc = (
+                where("QSVEncC64", portable_mode=portable_mode)
+                or where("QSVEncC", portable_mode=portable_mode)
+                or find_component_file("QSVEnc", "QSVEncC64", "QSVEncC")
             )
         if not self.gifski:
             self.gifski = where("gifski", portable_mode=portable_mode)

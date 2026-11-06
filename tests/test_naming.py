@@ -362,3 +362,16 @@ class TestVariableRegistries:
     def test_pre_encode_no_placeholders(self):
         for var in PRE_ENCODE_VARIABLES:
             assert not var.placeholder
+
+
+class TestProfileVariable:
+    def test_profile_in_template(self):
+        from fastflix.naming import resolve_pre_encode_variables
+
+        name = resolve_pre_encode_variables("{source} ({profile})", Path("Some Movie.mkv"), profile_name="DVD")
+        assert name == "Some Movie (DVD)"
+
+    def test_profile_defaults_when_missing(self):
+        from fastflix.naming import resolve_pre_encode_variables
+
+        assert resolve_pre_encode_variables("{profile}", Path("a.mkv")) == "N-A"

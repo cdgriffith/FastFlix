@@ -8,6 +8,7 @@ from iso639 import iter_langs
 from iso639.exceptions import InvalidLanguageValue
 from PySide6 import QtCore, QtGui, QtWidgets
 
+from fastflix.component_folders import default_component_folder, set_components_dir
 from fastflix.exceptions import FastFlixInternalException
 from fastflix.language import t, Language
 from fastflix.models.fastflix_app import FastFlixApp
@@ -113,6 +114,25 @@ class Settings(QtWidgets.QWidget):
         layout.addWidget(work_dir_label, row, 0)
         layout.addWidget(self.work_dir, row, 1)
         layout.addWidget(work_path_button, row, 2)
+        row += 1
+
+        # Components Directory (FFmpeg, NVEnc, etc. downloads)
+        components_dir_label = QtWidgets.QLabel(t("Components Directory"))
+        self.components_dir = QtWidgets.QLineEdit()
+        self.components_dir.setPlaceholderText(str(default_component_folder("FFmpeg").parent))
+        self.components_dir.setToolTip(
+            t("Downloaded components (FFmpeg, NVEnc, QSVEnc, VCEEnc, etc.) are saved to and searched for here first.")
+            + " "
+            + t("Leave empty to use the default AppData locations.")
+        )
+        if self.app.fastflix.config.components_dir:
+            self.components_dir.setText(str(self.app.fastflix.config.components_dir))
+        components_dir_button = QtWidgets.QPushButton(icon=self.style().standardIcon(QtWidgets.QStyle.SP_DirIcon))
+        components_dir_button.setFixedWidth(30)
+        components_dir_button.clicked.connect(lambda: self.select_components_dir())
+        layout.addWidget(components_dir_label, row, 0)
+        layout.addWidget(self.components_dir, row, 1)
+        layout.addWidget(components_dir_button, row, 2)
         row += 1
 
         # Language
@@ -703,6 +723,21 @@ class Settings(QtWidgets.QWidget):
             error_message(f'{t("Could not create / access work directory")} "{new_work_dir}"', parent=self)
         else:
             self.app.fastflix.config.work_path = new_work_dir
+        components_text = self.components_dir.text().strip()
+        if components_text:
+            new_components_dir = Path(components_text)
+            try:
+                new_components_dir.mkdir(exist_ok=True, parents=True)
+            except OSError:
+                error_message(
+                    f'{t("Could not create / access components directory")} "{new_components_dir}"', parent=self
+                )
+            else:
+                self.app.fastflix.config.components_dir = new_components_dir
+                set_components_dir(new_components_dir)
+        else:
+            self.app.fastflix.config.components_dir = None
+            set_components_dir(None)
         self.app.fastflix.config.use_sane_audio = self.use_sane_audio.isChecked()
         self.app.fastflix.config.sane_audio_selection = [
             name for name, cb in self.audio_encoder_checkboxes.items() if cb.isChecked()
@@ -971,6 +1006,18 @@ class Settings(QtWidgets.QWidget):
         if not work_path:
             return
         self.work_dir.setText(work_path)
+
+    def select_components_dir(self):
+        dirname = Path(self.components_dir.text() or ".")
+        if not dirname.exists():
+            dirname = Path()
+        dialog = QtWidgets.QFileDialog()
+        dialog.setFileMode(QtWidgets.QFileDialog.Directory)
+        dialog.setOption(QtWidgets.QFileDialog.ShowDirsOnly)
+        components_dir = dialog.getExistingDirectory(dir=str(dirname), caption=t("Components Directory"))
+        if not components_dir:
+            return
+        self.components_dir.setText(components_dir)
 
     def update_setting(self, name, value):
         setattr(self.app.fastflix.config, name, value)

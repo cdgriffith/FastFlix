@@ -3,10 +3,8 @@
 import logging
 import shutil
 import time
-from pathlib import Path
 
 import reusables
-from platformdirs import user_data_dir
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtGui import QAction
 
@@ -15,6 +13,7 @@ from fastflix.language import t
 from fastflix.version import __version__
 from fastflix.models.config import setting_types, get_preset_defaults
 from fastflix.models.fastflix_app import FastFlixApp
+from fastflix.component_folders import component_folder
 from fastflix.program_downloads import latest_ffmpeg, grab_stable_ffmpeg, download_hdr10plus_tool
 from fastflix.gpu_detect import update_rigaya_encoders
 from fastflix.resources import main_icon, get_icon, changes_file, local_changes_file, local_package_changes_file
@@ -599,7 +598,7 @@ class Container(QtWidgets.QMainWindow):
     def download_ffmpeg(self, ffmpeg_version="latest"):
         from fastflix.widgets.status_bar import Task as SBTask
 
-        ffmpeg_folder = Path(user_data_dir("FFmpeg", appauthor=False, roaming=True)) / "bin"
+        ffmpeg_folder = component_folder("FFmpeg") / "bin"
         ffmpeg = ffmpeg_folder / "ffmpeg.exe"
         ffprobe = ffmpeg_folder / "ffprobe.exe"
         try:
