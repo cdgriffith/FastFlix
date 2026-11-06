@@ -601,6 +601,7 @@ class EncodingQueue(FlixList):
                     video=current_video,
                     encoder_settings=current_video.video_settings.video_encoder_settings,
                     video_settings=current_video.video_settings,
+                    profile_name=self.app.fastflix.config.selected_profile,
                 )
                 directory = str(current_video.video_settings.output_path.parent)
                 extension = current_video.video_settings.output_path.suffix

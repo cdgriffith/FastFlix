@@ -35,6 +35,7 @@ PRE_ENCODE_VARIABLES = [
     TemplateVariable("time", "Time only (queue time)", VariablePhase.PRE_ENCODE, "14-30-00"),
     TemplateVariable("rand_4", "4-char random hex", VariablePhase.PRE_ENCODE, "a3f1"),
     TemplateVariable("rand_8", "8-char random hex", VariablePhase.PRE_ENCODE, "a3f1b2c4"),
+    TemplateVariable("profile", "Selected profile name", VariablePhase.PRE_ENCODE, "1080p Film"),
     TemplateVariable("encoder", "Short encoder name", VariablePhase.PRE_ENCODE, "x265"),
     TemplateVariable("codec", "Full codec name", VariablePhase.PRE_ENCODE, "HEVC (x265)"),
     TemplateVariable("preset", "Encoder preset", VariablePhase.PRE_ENCODE, "medium"),
@@ -163,6 +164,7 @@ def resolve_pre_encode_variables(
     video=None,
     encoder_settings=None,
     video_settings=None,
+    profile_name: str = "",
 ) -> str:
     """Resolve all pre-encode variables in a template string.
 
@@ -182,6 +184,7 @@ def resolve_pre_encode_variables(
         "time": time_only,
         "rand_4": secrets.token_hex(2),
         "rand_8": secrets.token_hex(4),
+        "profile": profile_name or "N-A",
     }
 
     # Encoder-specific variables

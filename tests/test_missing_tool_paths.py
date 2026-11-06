@@ -66,3 +66,33 @@ def test_runner_reports_missing_program(tmp_path, caplog):
     assert runner.error_detected
     assert missing in caplog.text
     assert "does not exist" in caplog.text
+
+
+def test_resolve_tool_file_handles_folders(tmp_path):
+    from fastflix.models.config import resolve_tool_file
+
+    assert resolve_tool_file(None, "ffmpeg") is None
+    binary = tmp_path / "bin" / "ffmpeg.exe"
+    binary.parent.mkdir()
+    binary.write_text("")
+    assert resolve_tool_file(binary, "ffmpeg") == binary
+    assert resolve_tool_file(tmp_path / "bin", "ffmpeg") == binary
+    assert resolve_tool_file(tmp_path, "ffmpeg") == binary
+    assert resolve_tool_file(tmp_path / "bin", "ffprobe") is None
+
+
+def test_ffmpeg_saved_as_folder_is_not_kept(tmp_path, monkeypatch):
+    folder = tmp_path / "Cellar" / "bin"
+    folder.mkdir(parents=True)
+    real = folder / "ffmpeg.exe"
+    real.write_text("")
+    (folder / "ffprobe.exe").write_text("")
+    config_file = tmp_path / "fastflix.yaml"
+    config_file.write_text(f"version: 6.3.2\nffmpeg: '{folder}'\nffprobe: '{folder}'\n", encoding="utf-8")
+    monkeypatch.setenv("FF_CONFIG", str(config_file))
+
+    config = Config()
+    config.load()
+
+    assert config.ffmpeg == real
+    assert config.ffprobe == folder / "ffprobe.exe"

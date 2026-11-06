@@ -94,6 +94,20 @@ def find_hdr10plus_tool():
     return None
 
 
+def resolve_tool_file(path: Path | None, name: str) -> Path | None:
+    """Return path as a file; if it is a folder, the named binary inside it (or its bin folder), else None."""
+    if not path:
+        return None
+    path = Path(path)
+    if not path.is_dir():
+        return path
+    for folder in (path, path / "bin"):
+        for candidate in (f"{name}.exe", name):
+            if (folder / candidate).is_file():
+                return folder / candidate
+    return None
+
+
 def find_component_file(folder_name: str, *names: str) -> Path | None:
     """Look for a downloaded tool in the components folder, then the default AppData folder."""
     wanted = {f"{n.lower()}{ext}" for n in names for ext in ("", ".exe")}
@@ -495,6 +509,10 @@ class Config(BaseModel):
             self.source_directory = None
 
         set_components_dir(self.components_dir)
+        # #250 #252: a folder saved as the ffmpeg/ffprobe path passed .exists() and then failed to run with
+        # "PermissionError: [Errno 13]". Use the binary inside the folder, or search for it again.
+        self.ffmpeg = resolve_tool_file(self.ffmpeg, "ffmpeg")
+        self.ffprobe = resolve_tool_file(self.ffprobe, "ffprobe")
         if not self.ffmpeg or not self.ffmpeg.exists():
             self.ffmpeg = find_ffmpeg_file("ffmpeg", raise_on_missing=True)
         if not self.ffprobe or not self.ffprobe.exists():
@@ -509,8 +527,8 @@ class Config(BaseModel):
         # "FileNotFoundError: [WinError 2]". Forget missing paths so they are searched for again below.
         for key in ("hdr10plus_parser", "nvencc", "vceencc", "qsvencc", "gifski"):
             path = getattr(self, key)
-            if path and not Path(path).exists():
-                logger.warning(f"{key} was set to {path}, which no longer exists, searching for it again")
+            if path and not Path(path).is_file():
+                logger.warning(f"{key} was set to {path}, which is not an existing file, searching for it again")
                 setattr(self, key, None)
 
         if not self.hdr10plus_parser:
